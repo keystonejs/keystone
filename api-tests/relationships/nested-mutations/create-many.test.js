@@ -1,11 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const {
-  multiAdapterRunners,
-  setupServer,
-  graphqlRequest,
-  networkedGraphqlRequest,
-} = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -298,12 +293,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'throws when trying to read after nested create',
-          runner(setupKeystone, async ({ app }) => {
+          runner(setupKeystone, async ({ keystone }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item that does the nested create
-            const { errors } = await networkedGraphqlRequest({
-              app,
+            const { errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -319,22 +313,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               `,
             });
 
-            expect(errors).toMatchObject([
-              {
-                message: 'You do not have access to this resource',
-              },
-            ]);
+            expect(errors).toHaveLength(1);
+            const error = errors[0];
+            expect(error.message).toEqual('You do not have access to this resource');
+            expect(error.path).toHaveLength(2);
+            expect(error.path[0]).toEqual('createUserToNotesNoRead');
+            expect(error.path[1]).toEqual('notes');
           })
         );
 
         test(
           'does not throw when create nested from within create mutation',
-          runner(setupKeystone, async ({ app }) => {
+          runner(setupKeystone, async ({ keystone }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item that does the nested create
-            const { errors } = await networkedGraphqlRequest({
-              app,
+            const { errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -353,7 +347,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'does not throw when create nested from within update mutation',
-          runner(setupKeystone, async ({ app, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to update
@@ -362,8 +356,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update an item that does the nested create
-            const { errors } = await networkedGraphqlRequest({
-              app,
+            const { errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -387,13 +380,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('create: false on related list', () => {
         test(
           'throws error when creating nested within create mutation',
-          runner(setupKeystone, async ({ keystone, app }) => {
+          runner(setupKeystone, async ({ keystone }) => {
             const userName = sampleOne(alphanumGenerator);
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item that does the nested create
-            const { errors } = await networkedGraphqlRequest({
-              app,
+            const { errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createUserToNotesNoCreate(data: {
@@ -407,19 +399,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Assert it throws an access denied error
-
-            expect(errors).toMatchObject([
-              {
-                data: {
-                  errors: expect.arrayContaining([
-                    expect.objectContaining({
-                      message:
-                        'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>',
-                    }),
-                  ]),
-                },
-              },
-            ]);
+            expect(errors).toHaveLength(1);
+            const error = errors[0];
+            expect(error.message).toEqual(
+              'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>'
+            );
+            expect(error.path).toHaveLength(1);
+            expect(error.path[0]).toEqual('createUserToNotesNoCreate');
 
             // Confirm it didn't insert either of the records anyway
             const {
@@ -448,7 +434,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'throws error when creating nested within update mutation',
-          runner(setupKeystone, async ({ keystone, app, create }) => {
+          runner(setupKeystone, async ({ keystone, create }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to update
@@ -457,8 +443,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update an item that does the nested create
-            const { errors } = await networkedGraphqlRequest({
-              app,
+            const { errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUserToNotesNoCreate(
@@ -475,18 +460,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Assert it throws an access denied error
-            expect(errors).toMatchObject([
-              {
-                data: {
-                  errors: expect.arrayContaining([
-                    expect.objectContaining({
-                      message:
-                        'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>',
-                    }),
-                  ]),
-                },
-              },
-            ]);
+            expect(errors).toHaveLength(1);
+            const error = errors[0];
+            expect(error.message).toEqual(
+              'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>'
+            );
+            expect(error.path).toHaveLength(1);
+            expect(error.path[0]).toEqual('updateUserToNotesNoCreate');
 
             // Confirm it didn't insert the record anyway
             const {

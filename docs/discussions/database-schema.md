@@ -61,14 +61,21 @@ keystone.createList('Post', {
 });
 ```
 
-If we consider the above `many-to-many` relationship we know that each `Post` has a multiple `authors` of type `User`.
-This means that we `Post` needs to store multiple reference to `Users`, and also each `User` can be referenced by multiple `Posts`.
+If we consider the above `many-to-many` relationship we know that each `Post` has multiple `authors` of type `User`.
+This means that `Post` needs to store multiple references to `Users`, and also each `User` can be referenced by multiple `Posts`.
 
 To store this information we use a join table with two columns.
 One column holds a reference to `Posts` and the other holds a reference to `Users`.
 In PostgreSQL this is implemented as a table where the contents of each column is a [foreign key](https://www.postgresql.org/docs/12/ddl-constraints.html#DDL-CONSTRAINTS-FK) referencing the respective table.
-In MongoDB this is implemented as a collection the contents of each field is an `ObjectID` referencing the respective column.
 
+In MongoDB this is implemented as a collection where the contents of each field is an `ObjectID` referencing the respective [document](https://docs.mongodb.com/manual/core/document/). The above many-to-many example would result in a collection named `post_authors_manies` with a joining document of this format:
+```javascript
+{
+  "_id": ObjectID,
+  "Post_left_id": ObjectID,
+  "User_right_id": ObjectID,
+}
+```
 The two-sided cases is handled using the same pattern, however the generated table/collection and column/fields names will be different.
 
 ## One-to-one

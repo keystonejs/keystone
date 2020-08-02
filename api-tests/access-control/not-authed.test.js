@@ -1,4 +1,4 @@
-const { multiAdapterRunners, authedGraphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners } = require('@keystonejs/test-utils');
 const { FAKE_ID, nameFn, listAccessVariations, setupKeystone } = require('./utils');
 
 const expectNoAccess = (data, errors, name) => {
@@ -30,7 +30,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
               test(`denied: ${JSON.stringify(access)}`, async () => {
                 const createMutationName = `create${nameFn[mode](access)}`;
                 const query = `mutation { ${createMutationName}(data: { name: "bar" }) { id } }`;
-                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                const { data, errors } = await keystone.executeGraphQL({ query });
                 expectNoAccess(data, errors, createMutationName);
               });
             });
@@ -47,14 +47,14 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
               test(`'all' denied: ${JSON.stringify(access)}`, async () => {
                 const allQueryName = `all${nameFn[mode](access)}s`;
                 const query = `query { ${allQueryName} { id } }`;
-                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                const { data, errors } = await keystone.executeGraphQL({ query });
                 expectNoAccess(data, errors, allQueryName);
               });
 
               test(`meta denied: ${JSON.stringify(access)}`, async () => {
                 const metaName = `_all${nameFn[mode](access)}sMeta`;
                 const query = `query { ${metaName} { count } }`;
-                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                const { data, errors } = await keystone.executeGraphQL({ query });
                 expect(data[metaName].count).toBe(null);
                 expect(errors).toHaveLength(1);
                 const error = errors[0];
@@ -67,7 +67,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
               test(`single denied: ${JSON.stringify(access)}`, async () => {
                 const singleQueryName = nameFn[mode](access);
                 const query = `query { ${singleQueryName}(where: { id: "abc123" }) { id } }`;
-                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                const { data, errors } = await keystone.executeGraphQL({ query });
                 expectNoAccess(data, errors, singleQueryName);
               });
             });
@@ -84,7 +84,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
               test(`denies: ${JSON.stringify(access)}`, async () => {
                 const updateMutationName = `update${nameFn[mode](access)}`;
                 const query = `mutation { ${updateMutationName}(id: "${FAKE_ID}", data: { name: "bar" }) { id } }`;
-                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                const { data, errors } = await keystone.executeGraphQL({ query });
                 expectNoAccess(data, errors, updateMutationName);
               });
             });
@@ -101,14 +101,14 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
               test(`single denied: ${JSON.stringify(access)}`, async () => {
                 const deleteMutationName = `delete${nameFn[mode](access)}`;
                 const query = `mutation { ${deleteMutationName}(id: "${FAKE_ID}") { id } }`;
-                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                const { data, errors } = await keystone.executeGraphQL({ query });
                 expectNoAccess(data, errors, deleteMutationName);
               });
 
               test(`multi denied: ${JSON.stringify(access)}`, async () => {
                 const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
                 const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID}"]) { id } }`;
-                const { data, errors } = await authedGraphqlRequest({ keystone, query });
+                const { data, errors } = await keystone.executeGraphQL({ query });
                 expectNoAccess(data, errors, multiDeleteMutationName);
               });
             });

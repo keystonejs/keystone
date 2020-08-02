@@ -1,10 +1,5 @@
 const { Text } = require('@keystonejs/fields');
-const {
-  multiAdapterRunners,
-  setupServer,
-  graphqlRequest,
-  networkedGraphqlRequest,
-} = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
 
 const falseFn = () => false;
 
@@ -32,7 +27,7 @@ function setupKeystone(adapterName) {
           {
             schema: 'triple(x: Int): Int',
             resolver: (_, { x }) => 3 * x,
-            access: { testing: true },
+            access: true,
           },
         ],
       });
@@ -46,11 +41,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'Sets up access control properly',
         runner(setupKeystone, async ({ keystone }) => {
           expect(keystone._customProvider._extendedQueries.map(({ access }) => access)).toEqual([
-            { internal: true, testing: true },
-            { internal: true, testing: falseFn },
+            { internal: true, public: true },
+            { internal: true, public: falseFn },
           ]);
           expect(keystone._customProvider._extendedMutations.map(({ access }) => access)).toEqual([
-            { internal: true, testing: true },
+            { internal: true, public: true },
           ]);
         })
       );
@@ -76,9 +71,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       );
       it(
         'Denies access acording to access control',
-        runner(setupKeystone, async ({ app }) => {
-          const { data, errors } = await networkedGraphqlRequest({
-            app,
+        runner(setupKeystone, async ({ keystone }) => {
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
               query {
                 quads(x: 10)

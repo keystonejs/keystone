@@ -343,7 +343,7 @@ export async function getStaticProps() {
       initialApolloState: apolloClient.cache.extract(),
       now,
     },
-    unstable_revalidate: 1,
+    revalidate: 1,
   };
 }
 

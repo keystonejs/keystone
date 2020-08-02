@@ -7,7 +7,7 @@ order: 3
 # Seeding data
 
 This guide will show you how to create a `User` list and add initial data to it
-using the `createItems` method. This process is also called `seeding`.
+using the `createItems` function. This process is also called `seeding`.
 
 > **Note:** In a previous chapter the code was split up over separate files, while this is preferred in a real code base, in this part everything is put in one file for clarity reasons.
 
@@ -27,6 +27,7 @@ yarn add @keystonejs/app-graphql
 yarn add @keystonejs/fields
 yarn add @keystonejs/app-admin-ui
 yarn add @keystonejs/auth-password
+yarn add @keystonejs/server-side-graphql-client
 ```
 
 ### Preparation
@@ -77,19 +78,25 @@ module.exports = {
 
 ## Creating items
 
-The `createItems` method requires an object where keys are list keys, and values
-are arrays of items to insert. For example:
+The [`createItems`](https://www.keystonejs.com/keystonejs/server-side-graphql-client/#createitems) utility function requires a config object argument. It has the following `required` keys:
+
+- `keystone`: a Keystone instance
+- `listKey`: the Keystone list name
+- `items`: the array of objects to be created.
 
 ```javascript
-keystone.createItems({
-  User: [
-    { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' },
-    { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' },
+createItems({
+  keystone,
+  listKey: 'User',
+  items: [
+    { data: { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' } },
+    { data: { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' } },
   ],
 });
 ```
 
-> **Note:** The format of the data must match the schema setup with calls to `keystone.createList()`. As an example in our schema the `email` field has `isUnique: true`, therefore it would not be possible for the above code to have the same email for each user that should be generated.
+**Note**: The format of the objects in the `items` array must align with the schema setup of the corresponding list name.
+As an example in our schema, the `email` field has `isUnique:true` constraint, therefore it would not be possible for the above code to generate users with exactly same email.
 
 Example on how to `seed` the data upon database connection:
 
@@ -97,10 +104,12 @@ Example on how to `seed` the data upon database connection:
 const keystone = new Keystone({
   adapter: new MongooseAdapter(),
   onConnect: async keystone => {
-    await keystone.createItems({
-      User: [
-        { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' },
-        { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' },
+    await createItems({
+      keystone,
+      listKey: 'User',
+      items: [
+        { data: { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' } },
+        { data: { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' } },
       ],
     });
   },
@@ -109,12 +118,13 @@ const keystone = new Keystone({
 
 Start the application and visit the Admin UI, two users are available on startup.
 
-> **Note:** In this example the same two users would be generated _every_ startup. Since email should be unique this will cause a duplicate error to show up. To avoid this, clear the database before starting Keystone.
+> **Note:** In this example the same two users would be generated _every_ startup. Since email should be unique, this will cause a duplicate error to show up. To avoid this, clear the database before starting Keystone.
 
 ## Relationships
 
-It is possible to create relationships between items while seeding the database
-by using the Keystone query syntax.
+The `items` in the `createItems` config object has the data type of GraphQL `[listKey]sCreateInput`. In our example, it's the `UsersCreateInput` which keystone created for us as part of the schema.
+
+Consequently, while seeding it's possible to create relationships between items using keystone `connect` [nested mutations](https://www.keystonejs.com/keystonejs/fields/src/types/relationship/#nested-mutations).
 
 ### Single relationships
 
@@ -140,15 +150,26 @@ keystone.createList('Post', {
 });
 ```
 
-Example on how to seed an item with a relationship:
+As part of `connect` nested mutation, we need to provide the id of the item for which the single relationship is required. This implies that we need to extract the id of the previously created items.
+
+Example on how to seed an item with a relationship using `connect` nested mutation:
 
 ```javascript
-Post: [
-  {
-    title: 'Hello World',
-    author: { where: { name: 'John Duck' } },
-  },
-],
+ await createItems({
+      keystone,
+      listKey: 'Post',
+      items: [
+         {data: {
+            title: 'Hello World',
+            author: {
+              // Extracting the id from `users` array
+              connect: { id: users.find(user => user.name === 'John Duck').id },
+            },
+           }
+        },
+      ],
+   },
+  })
 ```
 
 The full example:
@@ -157,29 +178,36 @@ The full example:
 const keystone = new Keystone({
   adapter: new MongooseAdapter(),
   onConnect: async keystone => {
-    await keystone.createItems({
-      User: [
-        { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' },
-        { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' },
-      ],
-      Post: [
-        {
-          title: 'Hello World',
-          author: { where: { name: 'John Duck' } },
-        },
+
+  // 1. Insert the user list first as it has no associated relationship.
+    const users = await createItems({
+      keystone,
+      listKey: 'User',
+      items: [
+        {data: { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' } },
+        {data: { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' } },
       ],
     });
-  },
-});
+
+  // 2. Insert `Post` data, with the required relationships, via `connect` nested mutation.
+   await createItems({
+      keystone,
+      listKey: 'Post',
+      items: [
+         {data: {
+            title: 'Hello World',
+            author: {
+              // Extracting the id of the User list item
+              connect: { id: users.find(user => user.name === 'John Duck').id },
+            },
+           }
+        },
+      ],
+   },
+  });
 ```
 
-Upon insertion, Keystone will resolve the `{ where: { name: 'John Duck' } }` query
-against the `User` list, ultimately setting the `author` field to the ID of the
-_first_ `User` that is found.
-
-> **Note:** An error is thrown if no items match the query.
-
-Clear the database, then start Keystone and visit the Admin UI to see that two users are generated and one post is generated. The post has an `author` named `John Duck`. In the database `author` will be the ID of the user with name John Duck.
+Clear the database, then start Keystone and visit the Admin UI to see that two users are generated and one post is generated. The post has an `author` named `John Duck`. In the database `author` will be the ID of the user with name John Duck
 
 ### Many relationships
 
@@ -206,24 +234,11 @@ keystone.createList('User', {
 });
 ```
 
-There are two ways to write the query for `to-many` relationships:
+Following the same pattern as discussed above, we can easily establish a `to-many` relationship via `connect` [nested mutations](https://www.keystonejs.com/keystonejs/fields/src/types/relationship/#nested-mutations) approach. Instead of passing a single item id, we are required to pass an array of item ids.
 
-1. _Single Relation syntax_ uses the same query as a Single Relationship, but
-   instead of picking only the first item found, it will pick _all_ the items
-   found to match the query. This could be 0, 1, or _n_ items.
-2. _Array Relation syntax_ allows to explicitly set multiple queries to match.
+**Note**: We need to create posts first as it has no relationship, and we require the post ids to create `to-many` relationship with user items.
 
-#### Single relation syntax example
-
-To get all posts where the `title` field contains the word `React`:
-
-```javascript
-posts: {
-  where: {
-    title_contains: 'React';
-  }
-}
-```
+To associate all the posts where `title` contains the word `React`:
 
 In action:
 
@@ -231,26 +246,41 @@ In action:
 const keystone = new Keystone({
   adapter: new MongooseAdapter(),
   onConnect: async keystone => {
-    await keystone.createItems({
-      User: [
-        {
-          name: 'John Duck',
-          email: 'john@duck.com',
-          password: 'dolphins',
-          posts: { where: { title_contains: 'React' } },
-        },
-        {
-          name: 'Barry',
-          email: 'bartduisters@bartduisters.com',
-          password: 'dolphins',
-          isAdmin: true,
-        },
+    // 1. Create posts first as we need generated ids to establish relationship with user items.
+    const posts = await createItems({
+      keystone,
+      listKey: 'Post',
+      items: [
+        { data: { title: 'Hello Everyone' } },
+        { data: { title: 'Talking about React' } },
+        { data: { title: 'React is the Best' } },
+        { data: { title: 'Keystone Rocks' } },
       ],
-      Post: [
-        { title: 'Hello Everyone' },
-        { title: 'Talking about React' },
-        { title: 'React is the Best' },
-        { title: 'Keystone Rocks' },
+    });
+
+    // 2. Insert User data with required relationship via nested mutations. `connect` requires an array of post item ids.
+    await createItems({
+      keystone,
+      listKey: 'User',
+      items: [
+        {
+          data: {
+            name: 'John Duck',
+            email: 'john@duck.com',
+            password: 'dolphins',
+            posts: {
+               // Filtering list of items where title contains the word `React`
+               connect: post.filter(p => /\bReact\b/i.test(p.title)).map(i => ({ id: i.id })),
+          },
+        },
+        {
+          data: {
+            name: 'Barry',
+            email: 'bartduisters@bartduisters.com',
+            password: 'dolphins',
+            isAdmin: true,
+          },
+        },
       ],
     });
   },
@@ -259,99 +289,4 @@ const keystone = new Keystone({
 
 Clear the database, start the Keystone application and visit the Admin UI. Take a look at the user `John Duck`, he has two posts associated with him (there were two posts with the word `React` in the `title`).
 
-#### Array relation syntax example
-
-```javascript
-const keystone = new Keystone({
-  adapter: new MongooseAdapter(),
-  onConnect: async keystone => {
-    await keystone.createItems({
-      User: [
-        {
-          name: 'John Duck',
-          email: 'john@duck.com',
-          password: 'dolphins',
-          posts: { where: { title_contains: 'React' } },
-        },
-        {
-          name: 'Barry',
-          email: 'bartduisters@bartduisters.com',
-          password: 'dolphins',
-          isAdmin: true,
-        },
-      ],
-      Post: [
-        { title: 'Hello Everyone' },
-        { title: 'Talking about React' },
-        { title: 'React is the Best' },
-        { title: 'Keystone Rocks' },
-      ],
-    });
-  },
-});
-```
-
-> **Note:** When using the Array Relation syntax, If any of the queries do not match any items, an Error will be thrown.
-
-Clear the database, start Keystone and visit the Admin UI. Take a look at both users, they each now have two posts associated with them. `John Duck` has the posts that contain `React` in the title. `Barry` has the posts that matched any of the queries in the array.
-
-> **Note:** When looking at the posts, there are _no_ associated users! To have both the user associated with the post as well is called `back reference`, this will be handled in a later chapter.
-
-## Keystone query syntax
-
-The entire power of [Keystone Query Syntax](https://www.keystonejs.com/guides/intro-to-graphql#filter-limit-and-sorting) is supported.
-
-If you need the 3rd item that matches the query, you'd use a query like:
-
-```javascript
-keystone.createItems({
-  User: [
-    { name: 'Jed' },
-    { name: 'Lauren' },
-    { name: 'Jess' },
-    { name: 'Lauren' },
-    { name: 'John' },
-  ],
-  Post: [
-    {
-      title: 'Hello World',
-      author: {
-        where: {
-          name_starts_with: 'J',
-          skip: 2,
-        },
-      },
-    },
-  ],
-});
-```
-
-This will match all users whose name starts with `'J'`, skipping the first two matches,
-ultimately matching against `'John'`.
-
-## Error handling
-
-If an error occurs during insertion, data may be left in an inconsistent state.
-We highly encourage you to take regular backups of your data, especially before
-calling `createItems()`.
-
-If an error occurs during the relationship resolution phase (see
-_[Relationships](#relationships)_), any inserted items will be automatically
-deleted for you, leaving the data in a consistent state.
-
-## Limitations
-
-`Keystone::createItems()` does not provide the full functionality that the
-GraphQL endpoint does.
-
-Limitations include:
-
-- You cannot update existing items in the database
-- You cannot delete existing items in the database
-
-<!--
-- You cannot insert items which have a required field of type `Relationship`
--->
-
-When these limitations apply to your task at hand, we recommend using the
-GraphQL API instead. It is more verbose, but much more powerful.
+If you want to explore other utility functions for `CRUD` operations, please refer to [server-side GraphQL client](https://www.keystonejs.com/keystonejs/server-side-graphql-client) API for more details.

@@ -64,6 +64,10 @@ export class Unsplash extends Implementation {
     });
   }
 
+  get _supportsUnique() {
+    return false;
+  }
+
   gqlOutputFields() {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
@@ -281,7 +285,7 @@ export class KnexUnsplashInterface extends CommonUnsplashInterface(KnexFieldAdap
 
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
-    if (this.config.isUnique || this.config.isIndexed) {
+    if (this.config.isIndexed) {
       throw `The Unsplash field type doesn't support indexes on Knex. ` +
         `Check the config for ${this.path} on the ${this.field.listKey} list`;
     }

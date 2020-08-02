@@ -5,6 +5,7 @@ import Checkbox from './';
 export const name = 'Checkbox';
 export { Checkbox as type };
 export const exampleValue = 'true';
+export const supportsUnique = false;
 
 export const getTestFields = () => {
   return {
