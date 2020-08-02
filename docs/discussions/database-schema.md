@@ -69,6 +69,7 @@ One column holds a reference to `Posts` and the other holds a reference to `User
 In PostgreSQL this is implemented as a table where the contents of each column is a [foreign key](https://www.postgresql.org/docs/12/ddl-constraints.html#DDL-CONSTRAINTS-FK) referencing the respective table.
 
 In MongoDB this is implemented as a collection where the contents of each field is an `ObjectID` referencing the respective [document](https://docs.mongodb.com/manual/core/document/). The above many-to-many example would result in a collection named `post_authors_manies` with a joining document of this format:
+
 ```javascript
 {
   "_id": ObjectID,
@@ -76,6 +77,7 @@ In MongoDB this is implemented as a collection where the contents of each field 
   "User_right_id": ObjectID,
 }
 ```
+
 The two-sided cases is handled using the same pattern, however the generated table/collection and column/fields names will be different.
 
 ## One-to-one
