@@ -1,5 +1,4 @@
-const { ApolloServer } = require('apollo-server-express');
-const gql = require('graphql-tag');
+const { ApolloServer, gql } = require('apollo-server-express');
 const flattenDeep = require('lodash.flattendeep');
 const memoize = require('micro-memoize');
 const falsey = require('falsey');
