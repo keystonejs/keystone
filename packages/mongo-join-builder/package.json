@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/mongo-join-builder",
   "description": "Programmatically build JOIN-like Mongo aggregations based on arbitrarily nested relationships.",
-  "version": "7.1.1",
+  "version": "7.1.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {

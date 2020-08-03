@@ -1,5 +1,13 @@
 # @keystonejs/mongo-join-builder
 
+## 7.1.2
+
+### Patch Changes
+
+- [`af5171563`](https://github.com/keystonejs/keystone/commit/af51715637433bcdd2538835c98ac71a8eb86122) [#3283](https://github.com/keystonejs/keystone/pull/3283) Thanks [@timleslie](https://github.com/timleslie)! - Removed `BaseListAdapter.findFieldAdapterForQuerySegment()` and `MongoRelationshipInterface.supportsRelationshipQuery()`.
+
+* [`7da9d67d7`](https://github.com/keystonejs/keystone/commit/7da9d67d7d481c44a81406c6b34540a3f0a8340d) [#3284](https://github.com/keystonejs/keystone/pull/3284) Thanks [@timleslie](https://github.com/timleslie)! - Removed `MongoRelationshipInterface.getRefListAdapter()` and `KnexRelationshipInterface.getRefListAdapter()`.
+
 ## 7.1.1
 
 ### Patch Changes
