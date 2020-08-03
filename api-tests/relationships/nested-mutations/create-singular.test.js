@@ -1,6 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { createItem, getItem } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
@@ -111,8 +111,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item that does the nested create
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
               mutation {
                 createEvent(data: {
@@ -143,8 +142,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { Group },
             errors: errors2,
-          } = await graphqlRequest({
-            keystone,
+          } = await keystone.executeGraphQL({
             query: `
               query {
                 Group(where: { id: "${data.createEvent.group.id}" }) {
@@ -175,8 +173,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Update an item that does the nested create
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
               mutation {
                 updateEvent(
@@ -210,8 +207,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { Group },
             errors: errors2,
-          } = await graphqlRequest({
-            keystone,
+          } = await keystone.executeGraphQL({
             query: `
               query {
                 Group(where: { id: "${data.updateEvent.group.id}" }) {
@@ -364,8 +360,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   expect(error.path[0]).toEqual(`createEventTo${group.name}`);
                 }
                 // Confirm it didn't insert either of the records anyway
-                const result = await graphqlRequest({
-                  keystone,
+                const result = await keystone.executeGraphQL({
                   query: `
                     query {
                       all${group.name}s(where: { name: "${groupName}" }) {
@@ -379,8 +374,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(result.data[`all${group.name}s`]).toMatchObject([]);
 
                 // Confirm it didn't insert either of the records anyway
-                const result2 = await graphqlRequest({
-                  keystone,
+                const result2 = await keystone.executeGraphQL({
                   query: `
                     query {
                       allEventTo${group.name}s(where: { title: "${eventName}" }) {
@@ -441,8 +435,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
 
                 // Confirm it didn't insert the record anyway
-                const result = await graphqlRequest({
-                  keystone,
+                const result = await keystone.executeGraphQL({
                   query: `
                     query {
                       all${group.name}s(where: { name: "${groupName}" }) {

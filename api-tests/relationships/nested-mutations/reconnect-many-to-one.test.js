@@ -1,5 +1,5 @@
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
@@ -42,8 +42,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create some users that does the linking
-          const { data: alice, errors } = await graphqlRequest({
-            keystone,
+          const { data: alice, errors } = await keystone.executeGraphQL({
             query: `
               mutation {
                 createUser(data: {
@@ -57,8 +56,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           `,
           });
           expect(errors).toBe(undefined);
-          const { data: bob, errors: errors2 } = await graphqlRequest({
-            keystone,
+          const { data: bob, errors: errors2 } = await keystone.executeGraphQL({
             query: `
               mutation {
                 createUser(data: {
@@ -80,8 +78,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // Set Bob as the author of note B
           await (async () => {
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
               mutation {
                 updateUser(id: "${bob.createUser.id}" data: {
@@ -100,8 +97,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // B should see Bob as its author
           await (async () => {
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
             {
               Note(where: { id: "${noteB.id}"}) {
@@ -120,8 +116,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // Alice should no longer see `B` in her notes
           await (async () => {
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
             {
               User(where: { id: "${alice.createUser.id}"}) {

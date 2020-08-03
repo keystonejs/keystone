@@ -1,5 +1,5 @@
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { createItem, createItems } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
@@ -52,8 +52,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers {
@@ -104,8 +103,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers {
@@ -147,8 +145,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers {
@@ -195,8 +192,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers {
@@ -233,8 +229,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ keystone }) => {
           await createItem({ keystone, listKey: 'User', item: {} });
 
-          const result = await graphqlRequest({
-            keystone,
+          const result = await keystone.executeGraphQL({
             query: `
               query {
                 allUsers(where: { posts_some: { content_contains: "foo" } }) {
@@ -274,8 +269,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers {
@@ -318,8 +312,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers {
@@ -364,8 +357,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers {
@@ -408,8 +400,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers {
@@ -457,8 +448,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           allUsers {
