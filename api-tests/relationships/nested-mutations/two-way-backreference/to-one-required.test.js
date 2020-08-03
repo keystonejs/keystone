@@ -34,17 +34,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const locationName = sampleOne(alphanumGenerator);
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          createCompany(data: {
-            location: { create: { name: "${locationName}" } }
-          }) {
-            id
-            location {
-              id
-            }
-          }
-        }
-    `,
+              mutation {
+                createCompany(data: {
+                  location: { create: { name: "${locationName}" } }
+                }) {
+                  id
+                  location {
+                    id
+                  }
+                }
+              }`,
           });
 
           expect(errors).toBe(undefined);

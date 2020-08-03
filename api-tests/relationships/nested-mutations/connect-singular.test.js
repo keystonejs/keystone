@@ -120,15 +120,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-          mutation {
-            createEvent(data: {
-              title: "A thing",
-              group: { connect: { id: "${createGroup.id}" } }
-            }) {
-              id
-            }
-          }
-      `,
+              mutation {
+                createEvent(data: {
+                  title: "A thing",
+                  group: { connect: { id: "${createGroup.id}" } }
+                }) {
+                  id
+                }
+              }`,
           });
 
           expect(data).toMatchObject({ createEvent: { id: expect.any(String) } });
@@ -160,31 +159,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Update the item and link the relationship field
           const { data, errors: errors2 } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateEvent(
-            id: "${createEvent.id}"
-            data: {
-              title: "A thing",
-              group: { connect: { id: "${createGroup.id}" } }
-            }
-          ) {
-            id
-            group {
-              id
-              name
-            }
-          }
-        }
-    `,
+              mutation {
+                updateEvent(
+                  id: "${createEvent.id}"
+                  data: {
+                    title: "A thing",
+                    group: { connect: { id: "${createGroup.id}" } }
+                  }
+                ) {
+                  id
+                  group {
+                    id
+                    name
+                  }
+                }
+              }`,
           });
           expect(errors2).toBe(undefined);
           expect(data).toMatchObject({
             updateEvent: {
               id: expect.any(String),
-              group: {
-                id: expect.any(String),
-                name: groupName,
-              },
+              group: { id: expect.any(String), name: groupName },
             },
           });
         })
@@ -200,23 +195,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const { errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          createEvent(data: {
-            group: {
-              connect: { id: "${FAKE_ID}" }
-            }
-          }) {
-            id
-          }
-        }
-    `,
+              mutation {
+                createEvent(data: {
+                  group: {
+                    connect: { id: "${FAKE_ID}" }
+                  }
+                }) {
+                  id
+                }
+              }`,
           });
 
-          expect(errors).toMatchObject([
-            {
-              message: 'Unable to connect a Event.group<Group>',
-            },
-          ]);
+          expect(errors).toMatchObject([{ message: 'Unable to connect a Event.group<Group>' }]);
         })
       );
 
@@ -231,26 +221,21 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const { errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateEvent(
-            id: "${createEvent.id}",
-            data: {
-              group: {
-                connect: { id: "${FAKE_ID}" }
-              }
-            }
-          ) {
-            id
-          }
-        }
-    `,
+              mutation {
+                updateEvent(
+                  id: "${createEvent.id}",
+                  data: {
+                    group: {
+                      connect: { id: "${FAKE_ID}" }
+                    }
+                  }
+                ) {
+                  id
+                }
+              }`,
           });
 
-          expect(errors).toMatchObject([
-            {
-              message: 'Unable to connect a Event.group<Group>',
-            },
-          ]);
+          expect(errors).toMatchObject([{ message: 'Unable to connect a Event.group<Group>' }]);
         })
       );
     });
@@ -284,18 +269,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Create an item that does the linking
                 const { data, errors } = await keystone.executeGraphQL({
                   query: `
-                mutation {
-                  createEventTo${group.name}(data: {
-                    title: "A thing",
-                    group: { connect: { id: "${id}" } }
-                  }) {
-                    id
-                    group {
-                      id
-                    }
-                  }
-                }
-              `,
+                    mutation {
+                      createEventTo${group.name}(data: {
+                        title: "A thing",
+                        group: { connect: { id: "${id}" } }
+                      }) {
+                        id
+                        group {
+                          id
+                        }
+                      }
+                    }`,
                 });
 
                 expect(data).toMatchObject({
@@ -329,31 +313,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Update the item and link the relationship field
                 const { data, errors } = await keystone.executeGraphQL({
                   query: `
-                mutation {
-                  updateEventTo${group.name}(
-                    id: "${eventModel.id}"
-                    data: {
-                      title: "A thing",
-                      group: { connect: { id: "${groupModel.id}" } }
-                    }
-                  ) {
-                    id
-                    group {
-                      id
-                      name
-                    }
-                  }
-                }
-              `,
+                    mutation {
+                      updateEventTo${group.name}(
+                        id: "${eventModel.id}"
+                        data: {
+                          title: "A thing",
+                          group: { connect: { id: "${groupModel.id}" } }
+                        }
+                      ) {
+                        id
+                        group {
+                          id
+                          name
+                        }
+                      }
+                    }`,
                 });
 
                 expect(data).toMatchObject({
                   [`updateEventTo${group.name}`]: {
                     id: expect.any(String),
-                    group: {
-                      id: expect.any(String),
-                      name: groupName,
-                    },
+                    group: { id: expect.any(String), name: groupName },
                   },
                 });
                 expect(errors).toBe(undefined);
@@ -395,18 +375,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Update the item and link the relationship field
                 const { errors } = await keystone.executeGraphQL({
                   query: `
-                mutation {
-                  updateEventTo${group.name}(
-                    id: "${eventModel.id}"
-                    data: {
-                      title: "A thing",
-                      group: { connect: { id: "${groupModel.id}" } }
-                    }
-                  ) {
-                    id
-                  }
-                }
-              `,
+                    mutation {
+                      updateEventTo${group.name}(
+                        id: "${eventModel.id}"
+                        data: {
+                          title: "A thing",
+                          group: { connect: { id: "${groupModel.id}" } }
+                        }
+                      ) {
+                        id
+                      }
+                    }`,
                 });
                 expect(errors).toHaveLength(1);
                 const error = errors[0];
@@ -434,15 +413,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Create an item that does the linking
                 const { errors } = await keystone.executeGraphQL({
                   query: `
-                mutation {
-                  createEventTo${group.name}(data: {
-                    title: "A thing",
-                    group: { connect: { id: "${id}" } }
-                  }) {
-                    id
-                  }
-                }
-              `,
+                    mutation {
+                      createEventTo${group.name}(data: {
+                        title: "A thing",
+                        group: { connect: { id: "${id}" } }
+                      }) {
+                        id
+                      }
+                    }`,
                 });
                 expect(errors).toHaveLength(1);
                 const error = errors[0];

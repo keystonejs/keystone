@@ -30,12 +30,13 @@ function setupKeystone(adapterName) {
 
 const getTeacher = async (keystone, teacherId) => {
   const { data, errors } = await keystone.executeGraphQL({
-    query: `query getTeacher($teacherId: ID!){
-  Teacher(where: { id: $teacherId }) {
-    id
-    students { id }
-  }
-}`,
+    query: `
+      query getTeacher($teacherId: ID!){
+        Teacher(where: { id: $teacherId }) {
+          id
+          students { id }
+        }
+      }`,
     variables: { teacherId },
   });
   expect(errors).toBe(undefined);
@@ -44,12 +45,13 @@ const getTeacher = async (keystone, teacherId) => {
 
 const getStudent = async (keystone, studentId) => {
   const { data } = await keystone.executeGraphQL({
-    query: `query getStudent($studentId: ID!){
-  Student(where: { id: $studentId }) {
-    id
-    teachers { id }
-  }
-}`,
+    query: `
+      query getStudent($studentId: ID!){
+        Student(where: { id: $studentId }) {
+          id
+          teachers { id }
+        }
+      }`,
     variables: { studentId },
   });
   return data.Student;
@@ -88,19 +90,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Run the query to disconnect the teacher from student
             const { data, errors } = await keystone.executeGraphQL({
               query: `
-          mutation {
-            createStudent(
-              data: {
-                teachers: { connect: [{ id: "${teacher1.id}" }, { id: "${teacher2.id}" }] }
-              }
-            ) {
-              id
-              teachers {
-                id
-              }
-            }
-          }
-        `,
+                mutation {
+                  createStudent(
+                    data: {
+                      teachers: { connect: [{ id: "${teacher1.id}" }, { id: "${teacher2.id}" }] }
+                    }
+                  ) {
+                    id
+                    teachers {
+                      id
+                    }
+                  }
+                }`,
             });
 
             expect(errors).toBe(undefined);
@@ -145,20 +146,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Run the query to disconnect the teacher from student
             const { errors } = await keystone.executeGraphQL({
               query: `
-          mutation {
-            updateStudent(
-              id: "${student1.id}",
-              data: {
-                teachers: { connect: [{ id: "${teacher1.id}" }, { id: "${teacher2.id}" }] }
-              }
-            ) {
-              id
-              teachers {
-                id
-              }
-            }
-          }
-      `,
+                mutation {
+                  updateStudent(
+                    id: "${student1.id}",
+                    data: {
+                      teachers: { connect: [{ id: "${teacher1.id}" }, { id: "${teacher2.id}" }] }
+                    }
+                  ) {
+                    id
+                    teachers {
+                      id
+                    }
+                  }
+                }`,
             });
 
             expect(errors).toBe(undefined);
@@ -188,19 +188,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Run the query to disconnect the teacher from student
             const { data, errors } = await keystone.executeGraphQL({
               query: `
-          mutation {
-            createStudent(
-              data: {
-                teachers: { create: [{ name: "${teacherName1}" }, { name: "${teacherName2}" }] }
-              }
-            ) {
-              id
-              teachers(sortBy: id_ASC) {
-                id
-              }
-            }
-          }
-      `,
+                mutation {
+                  createStudent(
+                    data: {
+                      teachers: { create: [{ name: "${teacherName1}" }, { name: "${teacherName2}" }] }
+                    }
+                  ) {
+                    id
+                    teachers(sortBy: id_ASC) {
+                      id
+                    }
+                  }
+                }`,
             });
 
             expect(errors).toBe(undefined);
@@ -229,20 +228,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Run the query to disconnect the teacher from student
             const { data, errors } = await keystone.executeGraphQL({
               query: `
-          mutation {
-            updateStudent(
-              id: "${student.id}"
-              data: {
-                teachers: { create: [{ name: "${teacherName1}" }, { name: "${teacherName2}" }] }
-              }
-            ) {
-              id
-              teachers {
-                id
-              }
-            }
-          }
-      `,
+                mutation {
+                  updateStudent(
+                    id: "${student.id}"
+                    data: {
+                      teachers: { create: [{ name: "${teacherName1}" }, { name: "${teacherName2}" }] }
+                    }
+                  ) {
+                    id
+                    teachers {
+                      id
+                    }
+                  }
+                }`,
             });
 
             expect(errors).toBe(undefined);
@@ -307,20 +305,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Run the query to disconnect the teacher from student
           const { errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateStudent(
-            id: "${student1.id}",
-            data: {
-              teachers: { disconnect: [{ id: "${teacher1.id}" }] }
-            }
-          ) {
-            id
-            teachers {
-              id
-            }
-          }
-        }
-    `,
+              mutation {
+                updateStudent(
+                  id: "${student1.id}",
+                  data: {
+                    teachers: { disconnect: [{ id: "${teacher1.id}" }] }
+                  }
+                ) {
+                  id
+                  teachers {
+                    id
+                  }
+                }
+              }`,
           });
 
           expect(errors).toBe(undefined);
@@ -385,20 +382,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Run the query to disconnect the teacher from student
           const { errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateStudent(
-            id: "${student1.id}",
-            data: {
-              teachers: { disconnectAll: true }
-            }
-          ) {
-            id
-            teachers {
-              id
-            }
-          }
-        }
-    `,
+              mutation {
+                updateStudent(
+                  id: "${student1.id}",
+                  data: {
+                    teachers: { disconnectAll: true }
+                  }
+                ) {
+                  id
+                  teachers {
+                    id
+                  }
+                }
+              }`,
           });
 
           expect(errors).toBe(undefined);
@@ -464,12 +460,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         // Run the query to delete the student
         const { errors } = await keystone.executeGraphQL({
           query: `
-      mutation {
-        deleteStudent(id: "${student1.id}") {
-          id
-        }
-      }
-  `,
+            mutation {
+              deleteStudent(id: "${student1.id}") {
+                id
+              }
+            }`,
         });
         expect(errors).toBe(undefined);
 

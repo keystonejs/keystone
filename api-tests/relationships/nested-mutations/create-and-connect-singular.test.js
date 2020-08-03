@@ -29,12 +29,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const { errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          createEvent(data: { group: {} }) {
-            id
-          }
-        }
-    `,
+              mutation {
+                createEvent(data: { group: {} }) {
+                  id
+                }
+              }`,
           });
 
           expect(errors).toMatchObject([
@@ -49,15 +48,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          createEvent(data: { group: {
-            connect: { id: "abc123"},
-            create: { name: "foo" }
-          } }) {
-            id
-          }
-        }
-    `,
+              mutation {
+                createEvent(data: { group: {
+                  connect: { id: "abc123"},
+                  create: { name: "foo" }
+                } }) {
+                  id
+                }
+              }`,
           });
 
           expect(data.createEvent).toBe(null);
