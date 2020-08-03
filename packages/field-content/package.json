@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/field-content",
   "description": "A block-based content field for KeystoneJS",
-  "version": "7.0.2",
+  "version": "7.0.3",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -17,8 +17,8 @@
     "@arch-ui/typography": "^0.0.17",
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.28",
-    "@keystonejs/build-field-types": "^5.2.10",
-    "@keystonejs/fields": "^14.0.0",
+    "@keystonejs/build-field-types": "^5.2.11",
+    "@keystonejs/fields": "^15.0.0",
     "@keystonejs/utils": "^5.4.1",
     "@popperjs/core": "^2.3.3",
     "@primer/octicons-react": "^10.0.0",

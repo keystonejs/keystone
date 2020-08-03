@@ -1,5 +1,23 @@
 # @keystonejs/app-admin-ui
 
+## 7.2.0
+
+### Minor Changes
+
+- [`5a3849806`](https://github.com/keystonejs/keystone/commit/5a3849806d00e62b722461d02f6e4639bc45c1eb) [#3262](https://github.com/keystonejs/keystone/pull/3262) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a new private internal schema that will allow a better method of bypassing access control on the `executeGraphQL` function.
+
+  The schema name `internal` is now a reserved name and if you have a schema with this name you will need to change it with this update.
+
+  Note: You cannot change access control on the `internal` schema.
+
+### Patch Changes
+
+- [`b53b6fe5a`](https://github.com/keystonejs/keystone/commit/b53b6fe5a8cbefba20008ca54ee3fe4b346e8497) [#3293](https://github.com/keystonejs/keystone/pull/3293) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Fixed a bug where dev features would show in development even if ENABLE_DEV_FEATURES was explicitly set to false.
+
+- Updated dependencies [[`d7e011319`](https://github.com/keystonejs/keystone/commit/d7e011319d18275e7e3ca1ab2209b2042c6775cb), [`af5171563`](https://github.com/keystonejs/keystone/commit/af51715637433bcdd2538835c98ac71a8eb86122), [`086b6baec`](https://github.com/keystonejs/keystone/commit/086b6baecdb8730bd7ae7001a96ae881fb13bac2), [`7da9d67d7`](https://github.com/keystonejs/keystone/commit/7da9d67d7d481c44a81406c6b34540a3f0a8340d), [`086b6baec`](https://github.com/keystonejs/keystone/commit/086b6baecdb8730bd7ae7001a96ae881fb13bac2), [`c3883e01c`](https://github.com/keystonejs/keystone/commit/c3883e01c01b83cf5938de9bebf2dd68f4861364), [`fd2b8d1cf`](https://github.com/keystonejs/keystone/commit/fd2b8d1cf0b23b177951d65006a0d0faf666a5d6)]:
+  - @keystonejs/build-field-types@5.2.11
+  - @keystonejs/fields@15.0.0
+
 ## 7.1.0
 
 ### Minor Changes
