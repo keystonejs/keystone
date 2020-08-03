@@ -1,5 +1,6 @@
 const { setupServer } = require('@keystonejs/test-utils');
 const { Text } = require('@keystonejs/fields');
+const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { objMerge } = require('@keystonejs/utils');
 
 const FAKE_ID = { mongoose: '5b3eabd9e9f2e3e4866742ea', knex: 137 };
@@ -112,6 +113,13 @@ function setupKeystone(adapterName) {
           },
           access,
         });
+        if (access.auth) {
+          keystone.createAuthStrategy({
+            type: PasswordAuthStrategy,
+            list: getStaticListName(access),
+            config: {},
+          });
+        }
         keystone.createList(getImperativeListName(access), {
           fields: {
             name: { type: Text },

@@ -1,7 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
-const { getItem } = require('@keystonejs/server-side-graphql-client');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { createItem, getItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -45,24 +45,32 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('no access control', () => {
       test(
         'removes item from list',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const groupName = `foo${sampleOne(alphanumGenerator)}`;
 
-          const createGroup = await create('Group', { name: groupName });
+          const createGroup = await createItem({
+            keystone,
+            listKey: 'Group',
+            item: { name: groupName },
+          });
 
           // Create an item to update
-          const createEvent = await create('Event', {
-            title: 'A thing',
-            group: createGroup.id,
+          const createEvent = await createItem({
+            keystone,
+            listKey: 'Event',
+            item: {
+              title: 'A thing',
+              group: { connect: { id: createGroup.id } },
+            },
+            returnFields: 'id group { id }',
           });
 
           // Avoid false-positives by checking the database directly
           expect(createEvent).toHaveProperty('group');
-          expect(createEvent.group.toString()).toBe(createGroup.id);
+          expect(createEvent.group.id.toString()).toBe(createGroup.id);
 
           // Update the item and link the relationship field
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           updateEvent(
@@ -104,8 +112,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'silently succeeds if used during create',
         runner(setupKeystone, async ({ keystone }) => {
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           createEvent(data: {
@@ -132,13 +139,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'silently succeeds if no item to disconnect during update',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           // Create an item to link against
-          const createEvent = await create('Event', {});
+          const createEvent = await createItem({ keystone, listKey: 'Event', item: {} });
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           updateEvent(
@@ -171,20 +177,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'has no effect when using disconnectAll',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
             const groupName = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createGroup = await create('GroupNoRead', { name: groupName });
+            const createGroup = await createItem({
+              keystone,
+              listKey: 'GroupNoRead',
+              item: { name: groupName },
+            });
 
             // Create an item to update
-            const createEvent = await create('EventToGroupNoRead', {
-              group: createGroup.id,
+            const createEvent = await createItem({
+              keystone,
+              listKey: 'EventToGroupNoRead',
+              item: { group: { connect: { id: createGroup.id } } },
+              returnFields: 'id group { id }',
             });
 
             // Avoid false-positives by checking the database directly
             expect(createEvent).toHaveProperty('group');
-            expect(createEvent.group.toString()).toBe(createGroup.id);
+            expect(createEvent.group.id.toString()).toBe(createGroup.id);
 
             // Update the item and link the relationship field
             const { errors } = await keystone.executeGraphQL({

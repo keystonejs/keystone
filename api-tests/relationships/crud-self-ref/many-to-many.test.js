@@ -1,12 +1,11 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const createInitialData = async keystone => {
-  const { data, errors } = await graphqlRequest({
-    keystone,
+  const { data, errors } = await keystone.executeGraphQL({
     query: `
       mutation {
         createUsers(data: [
@@ -24,8 +23,7 @@ const createUserAndFriend = async keystone => {
   const {
     data: { createUser },
     errors,
-  } = await graphqlRequest({
-    keystone,
+  } = await keystone.executeGraphQL({
     query: `
       mutation {
         createUser(data: {
@@ -48,8 +46,7 @@ const createUserAndFriend = async keystone => {
 };
 
 const getUserAndFriend = async (keystone, userId, friendId) => {
-  const { data } = await graphqlRequest({
-    keystone,
+  const { data } = await keystone.executeGraphQL({
     query: `
       {
         User(where: { id: "${userId}"} ) { id friends { id } }
@@ -61,8 +58,7 @@ const getUserAndFriend = async (keystone, userId, friendId) => {
 
 const createReadData = async keystone => {
   // create locations [A, A, B, B, C, C];
-  const { data, errors } = await graphqlRequest({
-    keystone,
+  const { data, errors } = await keystone.executeGraphQL({
     query: `mutation create($users: [UsersCreateInput]) { createUsers(data: $users) { id name } }`,
     variables: {
       users: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E'].map(name => ({ data: { name } })),
@@ -83,8 +79,7 @@ const createReadData = async keystone => {
       [], //  -> []
     ].map(async (locationIdxs, j) => {
       const ids = locationIdxs.map(i => ({ id: createUsers[i].id }));
-      const { data, errors } = await graphqlRequest({
-        keystone,
+      const { data, errors } = await keystone.executeGraphQL({
         query: `mutation update($friends: [UserWhereUniqueInput], $user: ID!) { updateUser(id: $user data: {
     friends: { connect: $friends }
   }) { id friends { name }}}`,
@@ -125,8 +120,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 ['C', 3],
                 ['D', 0],
               ].map(async ([name, count]) => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `{ allUsers(where: { friends_some: { name: "${name}"}}) { id }}`,
                 });
                 expect(errors).toBe(undefined);
@@ -146,8 +140,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 ['C', 6],
                 ['D', 9],
               ].map(async ([name, count]) => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `{ allUsers(where: { friends_none: { name: "${name}"}}) { id }}`,
                 });
                 expect(errors).toBe(undefined);
@@ -167,8 +160,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 ['C', 1],
                 ['D', 1],
               ].map(async ([name, count]) => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `{ allUsers(where: { friends_every: { name: "${name}"}}) { id }}`,
                 });
                 expect(errors).toBe(undefined);
@@ -184,8 +176,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'Count',
           runner(setupKeystone, async ({ keystone }) => {
             await createInitialData(keystone);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 {
                   _allUsersMeta { count }
@@ -204,8 +195,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           runner(setupKeystone, async ({ keystone }) => {
             const { users } = await createInitialData(keystone);
             const friend = users[0];
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createUser(data: {
@@ -233,8 +223,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'With create',
           runner(setupKeystone, async ({ keystone }) => {
             const locationName = sampleOne(alphanumGenerator);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createUser(data: {
@@ -264,8 +253,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const user = users[0];
             const friendName = sampleOne(alphanumGenerator);
 
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createUser(data: {
@@ -288,8 +276,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const {
               data: { allUsers },
               errors: errors2,
-            } = await graphqlRequest({
-              keystone,
+            } = await keystone.executeGraphQL({
               query: `{ allUsers { id friends { id friendOf { id } } } }`,
             });
             expect(errors2).toBe(undefined);
@@ -310,8 +297,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           runner(setupKeystone, async ({ keystone }) => {
             const friendName = sampleOne(alphanumGenerator);
             const userName = sampleOne(alphanumGenerator);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createUser(data: {
@@ -336,8 +322,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const {
               data: { allUsers },
               errors: errors2,
-            } = await graphqlRequest({
-              keystone,
+            } = await keystone.executeGraphQL({
               query: `{ allUsers { id friends { id friendOf { id } } } }`,
             });
             expect(errors2).toBe(undefined);
@@ -368,8 +353,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(user.friends).not.toBe(expect.anything());
             expect(friend.friendOf).not.toBe(expect.anything());
 
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUser(
@@ -393,8 +377,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { users } = await createInitialData(keystone);
             let user = users[0];
             const locationName = sampleOne(alphanumGenerator);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUser(
@@ -425,8 +408,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { user, friend } = await createUserAndFriend(keystone);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUser(
@@ -454,8 +436,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { user, friend } = await createUserAndFriend(keystone);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUser(
@@ -485,8 +466,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { user, friend } = await createUserAndFriend(keystone);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `mutation { deleteUser(id: "${user.id}") { id } } `,
             });
             expect(errors).toBe(undefined);

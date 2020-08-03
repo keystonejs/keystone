@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { useState, useEffect } from 'react';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import Router from 'next/router';
 import { jsx } from '@emotion/core';
 

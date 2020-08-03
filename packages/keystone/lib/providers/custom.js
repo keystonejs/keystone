@@ -1,4 +1,4 @@
-const gql = require('graphql-tag');
+const { gql } = require('apollo-server-express');
 const { parseCustomAccess } = require('@keystonejs/access-control');
 const { objMerge } = require('@keystonejs/utils');
 const { logger } = require('@keystonejs/logger');

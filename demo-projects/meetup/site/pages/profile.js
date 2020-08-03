@@ -1,8 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import gql from 'graphql-tag';
 import { useFormState } from 'react-use-form-state';
 import { useToasts } from 'react-toast-notifications';
-import { useMutation } from '@apollo/react-hooks';
+import { gql, useMutation } from '@apollo/client';
 
 import { AvatarUpload } from '../components/AvatarUpload';
 import Meta from '../components/Meta';

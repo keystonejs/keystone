@@ -1,10 +1,9 @@
 /** @jsx jsx */
 
 import { useState, useEffect } from 'react';
-import { useMutation } from '@apollo/react-hooks';
+import { gql, useMutation } from '@apollo/client';
 import Router from 'next/router';
 import { jsx } from '@emotion/core';
-import gql from 'graphql-tag';
 
 import { useAuth } from '../../lib/authentication';
 import { Button, Field, Group, Label, Link, Input } from '../../primitives/forms';

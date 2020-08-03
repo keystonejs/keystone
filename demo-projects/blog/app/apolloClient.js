@@ -1,6 +1,5 @@
 // Derived from https://github.com/zeit/next.js/tree/2789e7e0c25c72fbf6be3ef070e530186af14430/examples/with-apollo
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 import fetch from 'isomorphic-unfetch';
 

@@ -1,7 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
-const { getItem } = require('@keystonejs/server-side-graphql-client');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { createItem, getItem } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -111,8 +111,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item that does the nested create
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
               mutation {
                 createEvent(data: {
@@ -143,8 +142,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { Group },
             errors: errors2,
-          } = await graphqlRequest({
-            keystone,
+          } = await keystone.executeGraphQL({
             query: `
               query {
                 Group(where: { id: "${data.createEvent.group.id}" }) {
@@ -164,15 +162,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'create nested from within update mutation',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item to update
-          const createEvent = await create('Event', { title: 'A thing' });
+          const createEvent = await createItem({
+            keystone,
+            listKey: 'Event',
+            item: { title: 'A thing' },
+          });
 
           // Update an item that does the nested create
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
               mutation {
                 updateEvent(
@@ -206,8 +207,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { Group },
             errors: errors2,
-          } = await graphqlRequest({
-            keystone,
+          } = await keystone.executeGraphQL({
             query: `
               query {
                 Group(where: { id: "${data.updateEvent.group.id}" }) {
@@ -277,11 +277,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             test(
               'does not throw error when creating nested within update mutation',
-              runner(setupKeystone, async ({ keystone, create }) => {
+              runner(setupKeystone, async ({ keystone }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to update
-                const eventModel = await create(`EventTo${group.name}`, { title: 'A thing' });
+                const eventModel = await createItem({
+                  keystone,
+                  listKey: `EventTo${group.name}`,
+                  item: { title: 'A thing' },
+                });
 
                 // Update an item that does the nested create
                 const { data, errors } = await keystone.executeGraphQL({
@@ -356,8 +360,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   expect(error.path[0]).toEqual(`createEventTo${group.name}`);
                 }
                 // Confirm it didn't insert either of the records anyway
-                const result = await graphqlRequest({
-                  keystone,
+                const result = await keystone.executeGraphQL({
                   query: `
                     query {
                       all${group.name}s(where: { name: "${groupName}" }) {
@@ -371,8 +374,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(result.data[`all${group.name}s`]).toMatchObject([]);
 
                 // Confirm it didn't insert either of the records anyway
-                const result2 = await graphqlRequest({
-                  keystone,
+                const result2 = await keystone.executeGraphQL({
                   query: `
                     query {
                       allEventTo${group.name}s(where: { title: "${eventName}" }) {
@@ -389,11 +391,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             test(
               'throws error when creating nested within update mutation',
-              runner(setupKeystone, async ({ keystone, create }) => {
+              runner(setupKeystone, async ({ keystone }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to update
-                const eventModel = await create(`EventTo${group.name}`, { title: 'A thing' });
+                const eventModel = await createItem({
+                  keystone,
+                  listKey: `EventTo${group.name}`,
+                  item: { title: 'A thing' },
+                });
 
                 // Update an item that does the nested create
                 const { data, errors } = await keystone.executeGraphQL({
@@ -429,8 +435,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
 
                 // Confirm it didn't insert the record anyway
-                const result = await graphqlRequest({
-                  keystone,
+                const result = await keystone.executeGraphQL({
                   query: `
                     query {
                       all${group.name}s(where: { name: "${groupName}" }) {
