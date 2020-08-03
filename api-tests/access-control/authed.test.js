@@ -1,5 +1,5 @@
 const { multiAdapterRunners } = require('@keystonejs/test-utils');
-const { createItem, createItems } = require('@keystonejs/server-side-graphql-client');
+const { createItem, createItems, deleteItem } = require('@keystonejs/server-side-graphql-client');
 const {
   FAKE_ID,
   FAKE_ID_2,
@@ -74,8 +74,11 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
                 expect(errors).toBe(undefined);
                 expect(data[createMutationName]).not.toBe(null);
                 expect(data[createMutationName].id).not.toBe(null);
-                const _delete = (list, id) => keystone.getListByKey(list).adapter.delete(id);
-                await _delete(nameFn[mode](access), data[createMutationName].id);
+                await deleteItem({
+                  keystone,
+                  listKey: nameFn[mode](access),
+                  itemId: data[createMutationName].id,
+                });
               });
             });
         });
