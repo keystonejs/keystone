@@ -74,7 +74,11 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
                 expect(errors).toBe(undefined);
                 expect(data[createMutationName]).not.toBe(null);
                 expect(data[createMutationName].id).not.toBe(null);
-                await deleteItem({ keystone, listKey: nameFn[mode](access), itemId: data[createMutationName].id})
+                await deleteItem({
+                  keystone,
+                  listKey: nameFn[mode](access),
+                  itemId: data[createMutationName].id,
+                });
               });
             });
         });
