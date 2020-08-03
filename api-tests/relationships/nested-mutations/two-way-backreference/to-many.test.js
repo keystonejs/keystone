@@ -1,7 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
-const { createItem } = require('@keystonejs/server-side-graphql-client');
+const { createItem, updateItems } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -263,7 +263,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested disconnect during update mutation',
-        runner(setupKeystone, async ({ keystone, update }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           // Manually setup a connected Student <-> Teacher
           let teacher1 = await createItem({ keystone, listKey: 'Teacher', item: {} });
           let teacher2 = await createItem({ keystone, listKey: 'Teacher', item: {} });
@@ -278,8 +278,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           });
 
-          await update('Teacher', teacher1.id, { students: [student1.id, student2.id] });
-          await update('Teacher', teacher2.id, { students: [student1.id, student2.id] });
+          await updateItems({
+            keystone,
+            listKey: 'Teacher',
+            items: [
+              {
+                id: teacher1.id,
+                data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
+              },
+              {
+                id: teacher2.id,
+                data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
+              },
+            ],
+          });
 
           teacher1 = await getTeacher(keystone, teacher1.id);
           teacher2 = await getTeacher(keystone, teacher2.id);
@@ -329,7 +341,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested disconnectAll during update mutation',
-        runner(setupKeystone, async ({ keystone, update }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           // Manually setup a connected Student <-> Teacher
           let teacher1 = await createItem({ keystone, listKey: 'Teacher', item: {} });
           let teacher2 = await createItem({ keystone, listKey: 'Teacher', item: {} });
@@ -344,8 +356,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           });
 
-          await update('Teacher', teacher1.id, { students: [student1.id, student2.id] });
-          await update('Teacher', teacher2.id, { students: [student1.id, student2.id] });
+          await updateItems({
+            keystone,
+            listKey: 'Teacher',
+            items: [
+              {
+                id: teacher1.id,
+                data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
+              },
+              {
+                id: teacher2.id,
+                data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
+              },
+            ],
+          });
 
           teacher1 = await getTeacher(keystone, teacher1.id);
           teacher2 = await getTeacher(keystone, teacher2.id);
@@ -396,7 +420,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
     test(
       'delete mutation updates back references in to-many relationship',
-      runner(setupKeystone, async ({ keystone, update }) => {
+      runner(setupKeystone, async ({ keystone }) => {
         // Manually setup a connected Student <-> Teacher
         let teacher1 = await createItem({ keystone, listKey: 'Teacher', item: {} });
         let teacher2 = await createItem({ keystone, listKey: 'Teacher', item: {} });
@@ -411,8 +435,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
         });
 
-        await update('Teacher', teacher1.id, { students: [student1.id, student2.id] });
-        await update('Teacher', teacher2.id, { students: [student1.id, student2.id] });
+        await updateItems({
+          keystone,
+          listKey: 'Teacher',
+          items: [
+            {
+              id: teacher1.id,
+              data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
+            },
+            {
+              id: teacher2.id,
+              data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
+            },
+          ],
+        });
 
         teacher1 = await getTeacher(keystone, teacher1.id);
         teacher2 = await getTeacher(keystone, teacher2.id);
