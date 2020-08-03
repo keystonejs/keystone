@@ -2,6 +2,7 @@ const { gen, sampleOne } = require('testcheck');
 
 const { Text, Relationship } = require('@keystonejs/fields');
 const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { createItem, createItems } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -31,20 +32,48 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('to-single', () => {
         test(
           'with data',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
             // Create an item to link against
-            const users = await Promise.all([
-              create('User', { name: 'Jess' }),
-              create('User', { name: 'Johanna' }),
-              create('User', { name: 'Sam' }),
-            ]);
-
-            const posts = await Promise.all([
-              create('Post', { author: users[0].id, title: sampleOne(alphanumGenerator) }),
-              create('Post', { author: users[1].id, title: sampleOne(alphanumGenerator) }),
-              create('Post', { author: users[2].id, title: sampleOne(alphanumGenerator) }),
-              create('Post', { author: users[0].id, title: sampleOne(alphanumGenerator) }),
-            ]);
+            const users = await createItems({
+              keystone,
+              listKey: 'User',
+              items: [
+                { data: { name: 'Jess' } },
+                { data: { name: 'Johanna' } },
+                { data: { name: 'Sam' } },
+              ],
+            });
+            const posts = await createItems({
+              keystone,
+              listKey: 'Post',
+              items: [
+                {
+                  data: {
+                    author: { connect: { id: users[0].id } },
+                    title: sampleOne(alphanumGenerator),
+                  },
+                },
+                {
+                  data: {
+                    author: { connect: { id: users[1].id } },
+                    title: sampleOne(alphanumGenerator),
+                  },
+                },
+                {
+                  data: {
+                    author: { connect: { id: users[2].id } },
+                    title: sampleOne(alphanumGenerator),
+                  },
+                },
+                {
+                  data: {
+                    author: { connect: { id: users[0].id } },
+                    title: sampleOne(alphanumGenerator),
+                  },
+                },
+              ],
+              returnFields: 'id title',
+            });
 
             // Create an item that does the linking
             const { data, errors } = await graphqlRequest({
@@ -76,14 +105,23 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'without data',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
             // Create an item to link against
-            const user = await create('User', { name: 'Jess' });
-
-            const posts = await Promise.all([
-              create('Post', { author: user.id, title: sampleOne(alphanumGenerator) }),
-              create('Post', { title: sampleOne(alphanumGenerator) }),
-            ]);
+            const user = await createItem({ keystone, listKey: 'User', item: { name: 'Jess' } });
+            const posts = await createItems({
+              keystone,
+              listKey: 'Post',
+              items: [
+                {
+                  data: {
+                    author: { connect: { id: user.id } },
+                    title: sampleOne(alphanumGenerator),
+                  },
+                },
+                { data: { title: sampleOne(alphanumGenerator) } },
+              ],
+              returnFields: 'id title',
+            });
 
             // Create an item that does the linking
             const { data, errors } = await graphqlRequest({
@@ -123,11 +161,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           const users = await Promise.all([
             create('User', {
-              feed: [posts[0].id, posts[1].id],
+              feed: { connect: [{ id: posts[0].id }, { id: posts[1].id }] },
               name: sampleOne(alphanumGenerator),
             }),
-            create('User', { feed: [posts[2].id], name: sampleOne(alphanumGenerator) }),
-            create('User', { feed: [posts[3].id], name: sampleOne(alphanumGenerator) }),
+            create('User', {
+              feed: { connect: [{ id: posts[2].id }] },
+              name: sampleOne(alphanumGenerator),
+            }),
+            create('User', {
+              feed: { connect: [{ id: posts[3].id }] },
+              name: sampleOne(alphanumGenerator),
+            }),
           ]);
 
           return { posts, users };
@@ -135,7 +179,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_every condition',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
+            const create = async (listKey, item) => createItem({ keystone, listKey, item });
             const { users } = await setup(create);
 
             // EVERY
@@ -166,7 +211,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_some condition',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
+            const create = async (listKey, item) => createItem({ keystone, listKey, item });
             const { users } = await setup(create);
 
             // SOME
@@ -203,7 +249,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_none condition',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
+            const create = async (listKey, item) => createItem({ keystone, listKey, item });
             const { users } = await setup(create);
 
             // NONE
@@ -242,11 +289,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           const users = await Promise.all([
             create('User', {
-              feed: [posts[0].id, posts[1].id],
+              feed: { connect: [{ id: posts[0].id }, { id: posts[1].id }] },
               name: sampleOne(alphanumGenerator),
             }),
-            create('User', { feed: [posts[0].id], name: sampleOne(alphanumGenerator) }),
-            create('User', { feed: [], name: sampleOne(alphanumGenerator) }),
+            create('User', {
+              feed: { connect: [{ id: posts[0].id }] },
+              name: sampleOne(alphanumGenerator),
+            }),
+            create('User', { name: sampleOne(alphanumGenerator) }),
             create('User', { name: sampleOne(alphanumGenerator) }),
           ]);
 
@@ -255,7 +305,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_every condition',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
+            const create = async (listKey, item) => createItem({ keystone, listKey, item });
             const { users } = await setup(create);
 
             // EVERY
@@ -284,7 +335,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_some condition',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
+            const create = async (listKey, item) => createItem({ keystone, listKey, item });
             const { users } = await setup(create);
 
             // SOME
@@ -318,7 +370,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_none condition',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
+            const create = async (listKey, item) => createItem({ keystone, listKey, item });
             const { users } = await setup(create);
 
             // NONE
@@ -356,9 +409,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('to-many with empty related list', () => {
         const setup = async create => {
           const users = await Promise.all([
-            create('User', { feed: [], name: sampleOne(alphanumGenerator) }),
-            create('User', { feed: [], name: sampleOne(alphanumGenerator) }),
-            create('User', { feed: [], name: sampleOne(alphanumGenerator) }),
+            create('User', { name: sampleOne(alphanumGenerator) }),
+            create('User', { name: sampleOne(alphanumGenerator) }),
+            create('User', { name: sampleOne(alphanumGenerator) }),
             create('User', { name: sampleOne(alphanumGenerator) }),
           ]);
 
@@ -367,7 +420,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_every condition',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
+            const create = async (listKey, item) => createItem({ keystone, listKey, item });
             const { users } = await setup(create);
 
             // EVERY
@@ -401,7 +455,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_some condition',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
+            const create = async (listKey, item) => createItem({ keystone, listKey, item });
             const { users } = await setup(create);
 
             // SOME
@@ -430,7 +485,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_none condition',
-          runner(setupKeystone, async ({ keystone, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
+            const create = async (listKey, item) => createItem({ keystone, listKey, item });
             const { users } = await setup(create);
 
             // NONE

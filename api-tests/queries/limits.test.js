@@ -8,6 +8,7 @@ const {
 const {
   validation: { depthLimit, definitionLimit, fieldLimit },
 } = require('@keystonejs/app-graphql');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -49,13 +50,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('Basic querying', () => {
         test(
           'users',
-          runner(setupKeystone, async ({ keystone, create }) => {
-            const users = await Promise.all([
-              create('User', { name: 'Jess', favNumber: 1 }),
-              create('User', { name: 'Johanna', favNumber: 8 }),
-              create('User', { name: 'Sam', favNumber: 5 }),
-              create('User', { name: 'Theo', favNumber: 2 }),
-            ]);
+          runner(setupKeystone, async ({ keystone }) => {
+            const users = await createItems({
+              keystone,
+              listKey: 'User',
+              items: [
+                { data: { name: 'Jess', favNumber: 1 } },
+                { data: { name: 'Johanna', favNumber: 8 } },
+                { data: { name: 'Sam', favNumber: 5 } },
+                { data: { name: 'Theo', favNumber: 2 } },
+              ],
+            });
 
             // 2 results is okay
             let { data, errors } = await graphqlRequest({
@@ -163,33 +168,38 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('Relationship querying', () => {
         test(
           'posts by user',
-          runner(setupKeystone, async ({ keystone, create, update }) => {
-            const users = await Promise.all([
-              create('User', { name: 'Jess', favNumber: 1 }),
-              create('User', { name: 'Johanna', favNumber: 8 }),
-              create('User', { name: 'Sam', favNumber: 5 }),
-            ]);
+          runner(setupKeystone, async ({ keystone }) => {
+            const users = await createItems({
+              keystone,
+              listKey: 'User',
+              items: [
+                { data: { name: 'Jess', favNumber: 1 } },
+                { data: { name: 'Johanna', favNumber: 8 } },
+                { data: { name: 'Sam', favNumber: 5 } },
+              ],
+            });
 
-            const posts = await Promise.all([
-              create('Post', { author: [users[0].id], title: 'One author' }),
-              create('Post', { author: [users[0].id, users[1].id], title: 'Two authors' }),
-              create('Post', {
-                author: [users[0].id, users[1].id, users[2].id],
-                title: 'Three authors',
-              }),
-            ]);
-
-            for (const user of users) {
-              user.posts = [];
-            }
-            for (const post of posts) {
-              for (const authorId of post.author) {
-                users.find(u => String(u.id) === String(authorId)).posts.push(post.id);
-              }
-            }
-            for (const user of users) {
-              update('User', user.id, { posts: user.posts });
-            }
+            await createItems({
+              keystone,
+              listKey: 'Post',
+              items: [
+                { data: { author: { connect: [{ id: users[0].id }] }, title: 'One author' } },
+                {
+                  data: {
+                    author: { connect: [{ id: users[0].id }, { id: users[1].id }] },
+                    title: 'Two authors',
+                  },
+                },
+                {
+                  data: {
+                    author: {
+                      connect: [{ id: users[0].id }, { id: users[1].id }, { id: users[2].id }],
+                    },
+                    title: 'Three authors',
+                  },
+                },
+              ],
+            });
 
             // A basic query that should work
             let { data, errors } = await graphqlRequest({
