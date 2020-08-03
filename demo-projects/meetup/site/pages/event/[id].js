@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import Rsvp from '../../components/Rsvp';
 import { Avatar, Container, Error, Hero, H1, H2, Html, Loading } from '../../primitives';
