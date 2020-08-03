@@ -25,9 +25,12 @@ const _byTracking = ({ created = true, updated = true }) => ({
   }
 
   const newResolveInput = ({ resolvedData, operation, originalInput, context }) => {
+    // if no data received from the mutation, skip the update
+    if (Object.keys(originalInput).length === 0) {
+      return resolvedData;
+    }
+
     if (
-      // if no data received from the mutation, skip the update
-      Object.keys(originalInput).length === 0 &&
       // opted-in to updatedBy tracking
       updated &&
       // this is an update
