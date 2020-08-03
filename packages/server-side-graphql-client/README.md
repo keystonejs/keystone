@@ -134,6 +134,36 @@ const addUser = async userInput => {
 addUser({ name: 'keystone user', email: 'keystone@test.com' });
 ```
 
+For relationship fields, use a `<relatedField>: { connect: { id: <idValue> } }` construct. Example:
+
+```js
+keystone.createList('Phone', {
+  fields: {
+    user: { type: Relationship, ref: 'User', many: false },
+    country: { type: Text },
+    number: { type: Text },
+  },
+});
+
+const addPhone = async (item) => {
+  const phone = await createItem({
+    keystone,
+    listKey: 'Phone',
+    item,
+  });
+};
+
+addPhone({
+  user: {
+    connect: {
+      id: userId    // e.g. 5f27a70bd535840015aeb0b0
+    },
+  },
+  country: "+1",
+  number: "8882112358"
+});
+```
+
 #### Config
 
 [Shared Config Options](#shared-config-options) apply to this function.
