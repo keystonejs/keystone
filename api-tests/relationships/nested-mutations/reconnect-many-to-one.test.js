@@ -52,8 +52,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   id
                   notes(sortBy: title_ASC) { id title }
                 }
-              }
-          `,
+              }`,
           });
           expect(errors).toBe(undefined);
           const { data: bob, errors: errors2 } = await keystone.executeGraphQL({
@@ -66,8 +65,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   id
                   notes(sortBy: title_ASC) { id title }
                 }
-              }
-          `,
+              }`,
           });
           expect(errors2).toBe(undefined);
           // Make sure everyone has the correct notes
@@ -80,15 +78,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await (async () => {
             const { data, errors } = await keystone.executeGraphQL({
               query: `
-              mutation {
-                updateUser(id: "${bob.createUser.id}" data: {
-                  notes: { connect: [{ id: "${noteB.id}" }] }
-                }) {
-                  id
-                  notes(sortBy: title_ASC) { id title }
-                }
-              }
-          `,
+                mutation {
+                  updateUser(id: "${bob.createUser.id}" data: {
+                    notes: { connect: [{ id: "${noteB.id}" }] }
+                  }) {
+                    id
+                    notes(sortBy: title_ASC) { id title }
+                  }
+                }`,
             });
             expect(errors).toBe(undefined);
             expect(data.updateUser).toEqual({ id: bob.createUser.id, notes: expect.any(Array) });
@@ -99,13 +96,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await (async () => {
             const { data, errors } = await keystone.executeGraphQL({
               query: `
-            {
-              Note(where: { id: "${noteB.id}"}) {
-                id
-                author { id username }
-              }
-            }
-            `,
+                query {
+                  Note(where: { id: "${noteB.id}"}) {
+                    id
+                    author { id username }
+                  }
+                }`,
             });
             expect(errors).toBe(undefined);
             expect(data.Note).toEqual({
@@ -118,13 +114,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await (async () => {
             const { data, errors } = await keystone.executeGraphQL({
               query: `
-            {
-              User(where: { id: "${alice.createUser.id}"}) {
-                id
-                notes(sortBy: title_ASC) { id title }
-              }
-            }
-            `,
+                query {
+                  User(where: { id: "${alice.createUser.id}"}) {
+                    id
+                    notes(sortBy: title_ASC) { id title }
+                  }
+                }`,
             });
             expect(errors).toBe(undefined);
             expect(data.User).toEqual({ id: alice.createUser.id, notes: expect.any(Array) });
