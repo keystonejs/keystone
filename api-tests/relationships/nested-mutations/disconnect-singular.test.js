@@ -72,28 +72,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Update the item and link the relationship field
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateEvent(
-            id: "${createEvent.id}"
-            data: {
-              group: { disconnect: { id: "${createGroup.id}" } }
-            }
-          ) {
-            id
-            group {
-              id
-            }
-          }
-        }
-    `,
+              mutation {
+                updateEvent(
+                  id: "${createEvent.id}"
+                  data: {
+                    group: { disconnect: { id: "${createGroup.id}" } }
+                  }
+                ) {
+                  id
+                  group {
+                    id
+                  }
+                }
+              }`,
           });
 
-          expect(data).toMatchObject({
-            updateEvent: {
-              id: expect.any(String),
-              group: null,
-            },
-          });
+          expect(data).toMatchObject({ updateEvent: { id: expect.any(String), group: null } });
           expect(errors).toBe(undefined);
 
           // Avoid false-positives by checking the database directly
@@ -116,26 +110,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          createEvent(data: {
-            group: {
-              disconnect: { id: "${FAKE_ID}" }
-            }
-          }) {
-            id
-            group {
-              id
-            }
-          }
-        }
-    `,
+              mutation {
+                createEvent(data: {
+                  group: {
+                    disconnect: { id: "${FAKE_ID}" }
+                  }
+                }) {
+                  id
+                  group {
+                    id
+                  }
+                }
+              }`,
           });
           expect(errors).toBe(undefined);
 
-          expect(data.createEvent).toMatchObject({
-            id: expect.any(String),
-            group: null,
-          });
+          expect(data.createEvent).toMatchObject({ id: expect.any(String), group: null });
           expect(data.createEvent).not.toHaveProperty('errors');
         })
       );
@@ -151,28 +141,24 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateEvent(
-            id: "${createEvent.id}",
-            data: {
-              group: {
-                disconnect: { id: "${FAKE_ID}" }
-              }
-            }
-          ) {
-            id
-            group {
-             id
-           }
-          }
-        }
-    `,
+              mutation {
+                updateEvent(
+                  id: "${createEvent.id}",
+                  data: {
+                    group: {
+                      disconnect: { id: "${FAKE_ID}" }
+                    }
+                  }
+                ) {
+                  id
+                  group {
+                    id
+                  }
+                }
+              }`,
           });
           expect(errors).toBe(undefined);
-          expect(data.updateEvent).toMatchObject({
-            id: expect.any(String),
-            group: null,
-          });
+          expect(data.updateEvent).toMatchObject({ id: expect.any(String), group: null });
           expect(data.updateEvent).not.toHaveProperty('errors');
         })
       );
@@ -198,22 +184,21 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateEvent(
-            id: "${createEvent.id}",
-            data: {
-              group: {
-                disconnect: { id: "${FAKE_ID}" }
-              }
-            }
-          ) {
-            id
-            group {
-             id
-           }
-          }
-        }
-    `,
+              mutation {
+                updateEvent(
+                  id: "${createEvent.id}",
+                  data: {
+                    group: {
+                      disconnect: { id: "${FAKE_ID}" }
+                    }
+                  }
+                ) {
+                  id
+                  group {
+                    id
+                  }
+                }
+              }`,
           });
           expect(errors).toBe(undefined);
           expect(data.updateEvent).toMatchObject({
@@ -243,9 +228,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const createEvent = await createItem({
               keystone,
               listKey: 'EventToGroupNoRead',
-              item: {
-                group: { connect: { id: createGroup.id } },
-              },
+              item: { group: { connect: { id: createGroup.id } } },
               returnFields: 'id group { id }',
             });
 
@@ -265,8 +248,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ) {
                     id
                   }
-                }
-              `,
+                }`,
             });
             expect(errors).toBe(undefined);
 
