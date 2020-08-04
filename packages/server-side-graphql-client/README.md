@@ -134,7 +134,8 @@ const addUser = async userInput => {
 addUser({ name: 'keystone user', email: 'keystone@test.com' });
 ```
 
-**Note**: The `item` property is a graphQL create input. For Relationship fields it can contain nested mutations with create and connect operations. For examples see the [Relationship API documentation](/packages/fields/src/types/relationship/README.md#create-and-append-a-related-item).
+**Note**: The `item` property is a graphQL create input. For Relationship fields it can contain nested mutations with create and connect operations. For examples see the [Relationship API documentation](/packages/fields/src/types/Relationship/README.md#create-and-append-a-related-item).
+
 #### Config
 
 [Shared Config Options](#shared-config-options) apply to this function.
