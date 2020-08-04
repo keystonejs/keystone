@@ -1,6 +1,8 @@
 <!--[meta]
-section: discussions
+section: blog
 title: Field types
+date: 2020-08-03
+author: Mike Riethmuller
 [meta]-->
 
 # Field types
@@ -13,7 +15,7 @@ Field types also determine the GraphQL types. With the `Text` field, the return 
 
 Finally there are views. Views determine the interface for a field type. Views are React components used by the Admin app. The `Text` field, produces a styled `<input />` or `<textarea />` if the `isMultiline` option is configured.
 
-For a more technical breakdown of the anatomy of field types see the [custom field type guide](../guides/custom-field-types.md).
+For a more technical breakdown of the anatomy of field types see the [custom field type guide](/docs/guides/custom-field-types.md).
 
 ## Core field types
 

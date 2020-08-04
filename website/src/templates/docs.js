@@ -44,7 +44,11 @@ export default function Template({
   const { body, fields, headings } = mdx;
 
   const { siteMetadata } = site;
-  const suffix = fields.navGroup ? ` (${titleCase(fields.navGroup)})` : '';
+  const suffix = fields.navGroup
+    ? fields.navGroup === 'API'
+      ? 'API'
+      : ` (${titleCase(fields.navGroup)})`
+    : '';
   const title = `${
     fields.pageTitle.charAt(0) === '@' ? fields.heading : fields.pageTitle
   }${suffix}`;

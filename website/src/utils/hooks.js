@@ -42,7 +42,8 @@ export function useNavData() {
       }
     }
   `);
-
+  let blogPosts = 0;
+  const POST_LIMIT = 3;
   const navData = data.allSitePage.edges.reduce(
     (
       pageList,
@@ -66,7 +67,12 @@ export function useNavData() {
 
         if (navSubGroup === null) {
           const page = pageList.find(obj => obj.navTitle === navGroup);
-          addPage(page);
+          if (navGroup !== 'blog') {
+            addPage(page);
+          } else if (blogPosts < POST_LIMIT) {
+            blogPosts++;
+            addPage(page);
+          }
         } else {
           const page = pageList.find(obj => obj.navTitle === navGroup);
           if (Boolean(!page.subNavs.find(obj => obj.navTitle === navSubGroup))) {
@@ -80,5 +86,22 @@ export function useNavData() {
     },
     []
   );
+
+  // Add more posts link
+  if (Boolean(navData.find(obj => obj.navTitle === 'blog'))) {
+    navData
+      .find(obj => obj.navTitle === 'blog')
+      .pages.push({
+        context: {
+          navGroup: 'blog',
+          navSubGroup: null,
+          order: 99999999999,
+          isPackageIndex: false,
+          pageTitle: 'More posts...',
+        },
+        path: '/blog/',
+      });
+  }
+
   return navData;
 }
