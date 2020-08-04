@@ -16,6 +16,7 @@ import { useToasts } from 'react-toast-notifications';
 
 import { Button, LoadingButton } from '@arch-ui/button';
 import Drawer from '@arch-ui/drawer';
+import Confirm from '@arch-ui/confirm';
 import {
   arrayToObject,
   captureSuspensePromises,
@@ -50,6 +51,7 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate, viewOnSave }) =>
   const { list, closeCreateItemModal, isCreateItemModalOpen } = useList();
 
   const [item, setItem] = useState(list.getInitialItemData({ prefill: prefillData }));
+  const [isConfirmOpen, setConfirmOpen] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [validationWarnings, setValidationWarnings] = useState({});
 
@@ -129,14 +131,39 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate, viewOnSave }) =>
     }
   });
 
-  const _onClose = () => {
-    if (loading) return;
+  // Identifies if the user has changed the initial data in the form.
+  const hasFormDataChanged = () => {
+    const data = arrayToObject(creatable, 'path');
+    let hasChanged = false;
+    const initialData = list.getInitialItemData({ prefill: prefillData });
+    const initialValues = getValues(data, initialData);
+    const currentValues = getValues(data, item);
+    for (const path of Object.keys(currentValues)) {
+      if (data[path].hasChanged(initialValues, currentValues)) {
+        hasChanged = true;
+        break;
+      }
+    }
+    return hasChanged;
+  };
+
+  const _createItemModalClose = () => {
     closeCreateItemModal();
     setItem(list.getInitialItemData({}));
-    const data = arrayToObject(creatable, 'path', field => field.serialize(item));
     if (onClose) {
+      const data = arrayToObject(creatable, 'path', field => field.serialize(item));
       onClose(data);
     }
+  };
+
+  const _onClose = () => {
+    if (loading) return;
+    if (hasFormDataChanged()) {
+      // Ask for user confirmation before canceling.
+      setConfirmOpen(true);
+      return;
+    }
+    _createItemModalClose();
   };
 
   const _onKeyDown = event => {
@@ -244,9 +271,35 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate, viewOnSave }) =>
               ));
             }}
           </Render>
+          <ConfirmModal
+            isOpen={isConfirmOpen}
+            onConfirm={() => {
+              setConfirmOpen(false);
+              _createItemModalClose();
+            }}
+            onCancel={() => setConfirmOpen(false)}
+          />
         </Suspense>
       </div>
     </Drawer>
+  );
+};
+
+const ConfirmModal = ({ isOpen, onConfirm, onCancel }) => {
+  return (
+    <Confirm isOpen={isOpen}>
+      <p style={{ marginTop: 0 }}>
+        All of your form data will be lost. Are you sure you want to cancel?
+      </p>
+      <footer>
+        <Button appearance="danger" variant="ghost" onClick={onConfirm}>
+          Ok
+        </Button>
+        <Button variant="subtle" onClick={onCancel}>
+          Cancel
+        </Button>
+      </footer>
+    </Confirm>
   );
 };
 
