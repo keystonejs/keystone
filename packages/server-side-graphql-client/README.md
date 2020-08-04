@@ -135,35 +135,6 @@ addUser({ name: 'keystone user', email: 'keystone@test.com' });
 ```
 
 **Note**: The `item` property is a graphQL create input. For Relationship fields it can contain nested mutations with create and connect operations. For examples see the [Relationship API documentation](/packages/fields/src/types/relationship/#create-and-append-a-related-item).
-
-```js
-keystone.createList('Phone', {
-  fields: {
-    user: { type: Relationship, ref: 'User', many: false },
-    country: { type: Text },
-    number: { type: Text },
-  },
-});
-
-const addPhone = async (item) => {
-  const phone = await createItem({
-    keystone,
-    listKey: 'Phone',
-    item,
-  });
-};
-
-addPhone({
-  user: {
-    connect: {
-      id: userId    // e.g. 5f27a70bd535840015aeb0b0
-    },
-  },
-  country: "+1",
-  number: "8882112358"
-});
-```
-
 #### Config
 
 [Shared Config Options](#shared-config-options) apply to this function.
