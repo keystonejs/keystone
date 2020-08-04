@@ -24,7 +24,7 @@ const _byTracking = ({ created = true, updated = true }) => ({
     };
   }
 
-  const newResolveInput = ({ resolvedData, operation, originalInput, context }) => {
+  const newResolveInput = ({ resolvedData, operation, context }) => {
     if (
       // opted-in to updatedBy tracking
       updated &&
