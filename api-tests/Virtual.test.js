@@ -1,4 +1,4 @@
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { Integer, Virtual } = require('@keystonejs/fields');
 
 function makeSetupKeystone(fields) {
@@ -27,8 +27,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             foo: { type: Virtual, resolver: () => 'Hello world!' },
           }),
           async ({ keystone }) => {
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `mutation {
                 createPost(data: { value: 1 }) { value, foo }
               }`,
@@ -47,8 +46,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             foo: { type: Virtual, graphQLReturnType: 'Int', resolver: () => 42 },
           }),
           async ({ keystone }) => {
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `mutation {
                 createPost(data: { value: 1 }) { value, foo }
               }`,
@@ -75,8 +73,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
           }),
           async ({ keystone }) => {
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `mutation {
                 createPost(data: { value: 1 }) { value, foo(x: 10, y: 20) }
               }`,
@@ -103,8 +100,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
           }),
           async ({ keystone }) => {
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `mutation {
                 createPost(data: { value: 1 }) { value, foo }
               }`,
@@ -128,8 +124,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
           }),
           async ({ keystone }) => {
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `mutation {
                 createPost(data: { value: 1 }) { value, foo { title rating } }
               }`,

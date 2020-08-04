@@ -1,6 +1,6 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { getItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -32,20 +32,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'nested create',
         runner(setupKeystone, async ({ keystone }) => {
           const locationName = sampleOne(alphanumGenerator);
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          createCompany(data: {
-            location: { create: { name: "${locationName}" } }
-          }) {
-            id
-            location {
-              id
-            }
-          }
-        }
-    `,
+              mutation {
+                createCompany(data: {
+                  location: { create: { name: "${locationName}" } }
+                }) {
+                  id
+                  location {
+                    id
+                  }
+                }
+              }`,
           });
 
           expect(errors).toBe(undefined);

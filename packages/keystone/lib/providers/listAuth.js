@@ -65,13 +65,20 @@ class ListAuthProvider {
     } = this.gqlNames;
     const { authStrategy } = this;
     const authTypeTitleCase = upcase(authStrategy.authType);
-    return [
+    const ret = [
       `""" Authenticate and generate a token for a ${outputTypeName} with the ${authTypeTitleCase} Authentication Strategy. """
         ${authenticateMutationName}(${authStrategy.getInputFragment()}): ${authenticateOutputName}
       `,
       `${unauthenticateMutationName}: ${unauthenticateOutputName}`,
-      `${updateAuthenticatedMutationName}(data: ${this.list.gqlNames.updateInputName}): ${outputTypeName}`,
     ];
+    const updateFields = this.list.getFieldsWithAccess({ schemaName, access: 'update' });
+    const schemaAccess = this.access[schemaName];
+    if (schemaAccess.update && updateFields.length) {
+      ret.push(
+        `${updateAuthenticatedMutationName}(data: ${this.list.gqlNames.updateInputName}): ${outputTypeName}`
+      );
+    }
+    return ret;
   }
   getSubscriptions({}) {
     return [];
@@ -94,11 +101,17 @@ class ListAuthProvider {
       authenticateMutationName,
       unauthenticateMutationName,
     } = this.gqlNames;
-    return {
+    const ret = {
       [authenticateMutationName]: (_, args, context) => this._authenticateMutation(args, context),
       [unauthenticateMutationName]: (_, __, context) => this._unauthenticateMutation(context),
-      [updateAuthenticatedMutationName]: (_, args, context) => this._updateMutation(args, context),
     };
+    const updateFields = this.list.getFieldsWithAccess({ schemaName, access: 'update' });
+    const schemaAccess = this.access[schemaName];
+    if (schemaAccess.update && updateFields.length) {
+      ret[updateAuthenticatedMutationName] = (_, args, context) =>
+        this._updateMutation(args, context);
+    }
+    return ret;
   }
   getSubscriptionResolvers({}) {
     return {};

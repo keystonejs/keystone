@@ -1,5 +1,5 @@
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -43,8 +43,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         `'access' field returns results`,
         runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
           query {
             _CompaniesMeta {
@@ -75,8 +74,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         `'schema' field returns results`,
         runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
           query {
             _CompaniesMeta {
@@ -122,8 +120,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         `'access' field returns results`,
         runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
           query {
             _ksListsMeta {
@@ -170,8 +167,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'returns results for all visible lists',
         runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
           query {
             _ksListsMeta {

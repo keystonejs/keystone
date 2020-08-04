@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { USER_IMAGE } from './fragments';
 
 export const EVENT_DATA = gql`

@@ -5,7 +5,7 @@ import { AuthProvider } from '../lib/authentication';
 import StylesBase from '../primitives/StylesBase';
 import GoogleAnalytics from '../components/GoogleAnalytics';
 import { useApollo } from '../lib/apolloClient';
-import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloProvider } from '@apollo/client';
 const MyApp = ({ Component, pageProps }) => {
   const apolloClient = useApollo(pageProps.initialApolloState);
   return (

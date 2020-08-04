@@ -1,5 +1,5 @@
 const { Text } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 
 const falseFn = () => false;
 
@@ -53,8 +53,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       it(
         'Executes custom queries correctly',
         runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
               query {
                 double(x: 10)
@@ -87,8 +86,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       it(
         'Executes custom mutations correctly',
         runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
               mutation {
                 triple(x: 10)

@@ -1,5 +1,5 @@
 const { multiAdapterRunners } = require('@keystonejs/test-utils');
-const { createItems } = require('@keystonejs/server-side-graphql-client');
+const { createItem, createItems, deleteItem } = require('@keystonejs/server-side-graphql-client');
 const {
   FAKE_ID,
   FAKE_ID_2,
@@ -74,8 +74,11 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
                 expect(errors).toBe(undefined);
                 expect(data[createMutationName]).not.toBe(null);
                 expect(data[createMutationName].id).not.toBe(null);
-                const _delete = (list, id) => keystone.getListByKey(list).adapter.delete(id);
-                await _delete(nameFn[mode](access), data[createMutationName].id);
+                await deleteItem({
+                  keystone,
+                  listKey: nameFn[mode](access),
+                  itemId: data[createMutationName].id,
+                });
               });
             });
         });
@@ -216,9 +219,15 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
           listAccessVariations
             .filter(access => access.delete)
             .forEach(access => {
+              const create = async item =>
+                createItem({
+                  keystone,
+                  listKey: nameFn[mode](access),
+                  item,
+                  context: keystone.createContext({ schemaName: 'internal' }),
+                });
               test(`single allowed: ${JSON.stringify(access)}`, async () => {
-                const create = (list, item) => keystone.getListByKey(list).adapter.create(item);
-                const { id: validId } = await create(nameFn[mode](access), { name: 'Hello' });
+                const { id: validId } = await create({ name: 'Hello' });
                 const deleteMutationName = `delete${nameFn[mode](access)}`;
                 const query = `mutation { ${deleteMutationName}(id: "${validId}") { id } }`;
                 const { data, errors } = await keystone.executeGraphQL({ query });
@@ -228,8 +237,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
               });
 
               test(`single denies: ${JSON.stringify(access)}`, async () => {
-                const create = (list, item) => keystone.getListByKey(list).adapter.create(item);
-                const { id: invalidId } = await create(nameFn[mode](access), { name: 'hi' });
+                const { id: invalidId } = await create({ name: 'hi' });
                 const deleteMutationName = `delete${nameFn[mode](access)}`;
                 const query = `mutation { ${deleteMutationName}(id: "${invalidId}") { id } }`;
                 const { data, errors } = await keystone.executeGraphQL({ query });
@@ -250,9 +258,8 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
               });
 
               test(`multi allowed: ${JSON.stringify(access)}`, async () => {
-                const create = (list, item) => keystone.getListByKey(list).adapter.create(item);
-                const { id: validId1 } = await create(nameFn[mode](access), { name: 'Hello' });
-                const { id: validId2 } = await create(nameFn[mode](access), { name: 'Hello' });
+                const { id: validId1 } = await create({ name: 'Hello' });
+                const { id: validId2 } = await create({ name: 'Hello' });
                 const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
                 const query = `mutation { ${multiDeleteMutationName}(ids: ["${validId1}", "${validId2}"]) { id } }`;
                 const { data, errors } = await keystone.executeGraphQL({ query });
@@ -260,9 +267,8 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
               });
 
               test(`multi denies: ${JSON.stringify(access)}`, async () => {
-                const create = (list, item) => keystone.getListByKey(list).adapter.create(item);
-                const { id: validId1 } = await create(nameFn[mode](access), { name: 'hi' });
-                const { id: validId2 } = await create(nameFn[mode](access), { name: 'hi' });
+                const { id: validId1 } = await create({ name: 'hi' });
+                const { id: validId2 } = await create({ name: 'hi' });
                 const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
                 const query = `mutation { ${multiDeleteMutationName}(ids: ["${validId1}", "${validId2}"]) { id } }`;
                 const { data, errors } = await keystone.executeGraphQL({ query });
@@ -274,9 +280,8 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
               });
 
               test(`multi mixed allows/denies: ${JSON.stringify(access)}`, async () => {
-                const create = (list, item) => keystone.getListByKey(list).adapter.create(item);
-                const { id: validId1 } = await create(nameFn[mode](access), { name: 'Hello' });
-                const { id: validId2 } = await create(nameFn[mode](access), { name: 'hi' });
+                const { id: validId1 } = await create({ name: 'Hello' });
+                const { id: validId2 } = await create({ name: 'hi' });
                 const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
                 const query = `mutation { ${multiDeleteMutationName}(ids: ["${validId1}", "${validId2}"]) { id } }`;
                 const { data, errors } = await keystone.executeGraphQL({ query });
