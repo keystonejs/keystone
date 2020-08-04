@@ -134,7 +134,7 @@ const addUser = async userInput => {
 addUser({ name: 'keystone user', email: 'keystone@test.com' });
 ```
 
-For relationship fields, use a `<relatedField>: { connect: { id: <idValue> } }` construct. Example:
+**Note**: The `item` property is a graphQL create input. For Relationship fields it can contain nested mutations with create and connect operations. For examples see the [Relationship API documentation](/packages/fields/src/types/relationship/#create-and-append-a-related-item).
 
 ```js
 keystone.createList('Phone', {
