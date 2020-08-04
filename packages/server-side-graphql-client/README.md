@@ -160,10 +160,8 @@ keystone.createList('User', {
 });
 
 const dummyUsers = [
-  {
-    data: { name: 'user1', email: 'user1@test.com' },
-    data: { name: 'user2', email: 'user2@test.com' },
-  },
+  { data: { name: 'user1', email: 'user1@test.com' } },
+  { data: { name: 'user2', email: 'user2@test.com' } },
 ];
 
 const addUsers = async () => {
@@ -326,8 +324,8 @@ const updateUsers = async (updateUsers) => {
 }
 
 updateUsers([
-  {id: '123', data: {name: 'newName1'},
-  {id: '456', data: {name: 'newName2'}
+  { id: '123', data: { name: 'newName1' } },
+  { id: '456', data: { name: 'newName2' } }
 ]);
 ```
 

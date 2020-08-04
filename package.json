@@ -38,7 +38,7 @@
     "heroku-postbuild": "yarn build && yarn workspace @keystonejs/demo-project-blog build"
   },
   "dependencies": {
-    "@apollo/client": "^3.1.1",
+    "@apollo/client": "^3.1.2",
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/helper-module-imports": "^7.8.3",
