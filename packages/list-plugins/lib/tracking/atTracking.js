@@ -29,7 +29,7 @@ const _atTracking = ({ created = true, updated = true }) => ({
     };
   }
 
-  const newResolveInput = ({ resolvedData, operation, originalInput }) => {
+  const newResolveInput = ({ resolvedData, operation }) => {
     const dateNow = new Date().toISOString();
     if (operation === 'create') {
       // create mode
