@@ -20,21 +20,21 @@ x-job-setup: &job-setup
 # Download and cache dependencies
 x-restore-cache: &restore-cache
   keys:
-    - v15-dependencies-{{ checksum "yarn.lock" }}
+    - v16-dependencies-{{ checksum "pnpm-lock.yaml" }}
       # fallback to using the latest cache if no exact match is found
-    - v15-dependencies-
+    - v16-dependencies-
 
 x-save-cache: &save-cache
   paths:
     - node_modules
-  key: v15-dependencies-{{ checksum "yarn.lock" }}
+  key: v16-dependencies-{{ checksum "pnpm-lock.yaml" }}
 
 x-integration-steps: &integration-steps
   steps:
     - checkout
     - run:
         name: Yarn - Install packages
-        command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
+        command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ pnpm i --store-dir=node_modules/.pnpm-store
     - save_cache: *save-cache
     - run:
         name: 'Is test required'
@@ -68,7 +68,7 @@ x-simple-tests: &simple-tests
     # Set Cypress cache dir here, in case this job runs/completes first, and
     # hence clobbers the `node_modules` cache with a non-cypress version,
     # causing the other job to fail with a "Missing Cypress" error.
-    - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
+    - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ pnpm i --store-dir=node_modules/.pnpm-store
     - save_cache: *save-cache
     - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
     - run: yarn lint:prettier
