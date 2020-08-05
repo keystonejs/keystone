@@ -2,4 +2,4 @@
 '@keystonejs/oembed-adapters': patch
 ---
 
-Change build system and expose preview component at `@keystonejs/oembed-adapters/views/preview`
+Expose preview component at `@keystonejs/oembed-adapters/views/preview`
