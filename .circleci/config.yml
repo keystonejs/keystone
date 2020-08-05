@@ -66,7 +66,7 @@ x-integration-steps: &integration-steps
 x-simple-tests: &simple-tests
   steps:
     - checkout
-    - run: curl -L https://raw.githubusercontent.com/pnpm/self-installer/master/install.js | node
+    - run: sudo curl -L https://raw.githubusercontent.com/pnpm/self-installer/master/install.js | node
     # Set Cypress cache dir here, in case this job runs/completes first, and
     # hence clobbers the `node_modules` cache with a non-cypress version,
     # causing the other job to fail with a "Missing Cypress" error.
