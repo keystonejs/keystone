@@ -33,10 +33,10 @@ x-integration-steps: &integration-steps
   steps:
     - checkout
     - run: npm i --prefix=$HOME/.local -g pnpm
+    - restore_cache: *restore-cache
     - run:
         name: Yarn - Install packages
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ pnpm i --store-dir=node_modules/.pnpm-store
-    - save_cache: *save-cache
     - run:
         name: 'Is test required'
         command: node ./.circleci/run-or-bail.js
@@ -67,6 +67,7 @@ x-simple-tests: &simple-tests
   steps:
     - checkout
     - run: npm i --prefix=$HOME/.local -g pnpm
+    - restore_cache: *save-cache
     # Set Cypress cache dir here, in case this job runs/completes first, and
     # hence clobbers the `node_modules` cache with a non-cypress version,
     # causing the other job to fail with a "Missing Cypress" error.
@@ -98,7 +99,6 @@ x-simple-tests: &simple-tests
 jobs:
   simple_tests:
     <<: *job-setup
-    <<: *restore-cache
     <<: *simple-tests
 
   integration_tests_basic:
@@ -109,7 +109,6 @@ jobs:
       CLOUDINARY_SECRET: $CLOUDINARY_SECRET
       PORT: 3000
     <<: *job-setup
-    <<: *restore-cache
     <<: *integration-steps
 
   integration_tests_login:
@@ -117,7 +116,6 @@ jobs:
       PROJECT_DIRECTORY: test-projects/login
       PORT: 3000
     <<: *job-setup
-    <<: *restore-cache
     <<: *integration-steps
 
   integration_tests_accesscontrol:
@@ -126,7 +124,6 @@ jobs:
       PROJECT_NAME: 'Cypress Test Project For Access Control'
       PORT: 3000
     <<: *job-setup
-    <<: *restore-cache
     <<: *integration-steps
 
   integration_tests_clientvalidation:
@@ -135,7 +132,6 @@ jobs:
       PROJECT_NAME: 'Cypress Test Project For Client Validation'
       PORT: 3000
     <<: *job-setup
-    <<: *restore-cache
     <<: *integration-steps
 
   # integration_tests_twitterlogin:
