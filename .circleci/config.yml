@@ -32,6 +32,7 @@ x-save-cache: &save-cache
 x-integration-steps: &integration-steps
   steps:
     - checkout
+    - run: npm i -g pnpm
     - run:
         name: Yarn - Install packages
         command: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ pnpm i --store-dir=node_modules/.pnpm-store
@@ -65,6 +66,7 @@ x-integration-steps: &integration-steps
 x-simple-tests: &simple-tests
   steps:
     - checkout
+    - run: npm i -g pnpm
     # Set Cypress cache dir here, in case this job runs/completes first, and
     # hence clobbers the `node_modules` cache with a non-cypress version,
     # causing the other job to fail with a "Missing Cypress" error.
