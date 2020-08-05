@@ -124,18 +124,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     name
                   }
                 }
-              }
-          `,
+              }`,
           });
 
           expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             createEvent: {
               id: expect.any(String),
-              group: {
-                id: expect.any(String),
-                name: groupName,
-              },
+              group: { id: expect.any(String), name: groupName },
             },
           });
 
@@ -149,14 +145,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   id
                   name
                 }
-              }
-          `,
+              }`,
           });
           expect(errors2).toBe(undefined);
-          expect(Group).toMatchObject({
-            id: data.createEvent.group.id,
-            name: groupName,
-          });
+          expect(Group).toMatchObject({ id: data.createEvent.group.id, name: groupName });
         })
       );
 
@@ -189,18 +181,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     name
                   }
                 }
-              }
-          `,
+              }`,
           });
 
           expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             updateEvent: {
               id: expect.any(String),
-              group: {
-                id: expect.any(String),
-                name: groupName,
-              },
+              group: { id: expect.any(String), name: groupName },
             },
           });
 
@@ -214,14 +202,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   id
                   name
                 }
-              }
-          `,
+              }`,
           });
           expect(errors2).toBe(undefined);
-          expect(Group).toMatchObject({
-            id: data.updateEvent.group.id,
-            name: groupName,
-          });
+          expect(Group).toMatchObject({ id: data.updateEvent.group.id, name: groupName });
         })
       );
     });
@@ -245,15 +229,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Create an item that does the nested create
                 const { data, errors } = await keystone.executeGraphQL({
                   query: `
-                mutation {
-                  createEventTo${group.name}(data: {
-                    title: "A thing",
-                    group: { create: { name: "${groupName}" } }
-                  }) {
-                    id
-                  }
-                }
-              `,
+                    mutation {
+                      createEventTo${group.name}(data: {
+                        title: "A thing",
+                        group: { create: { name: "${groupName}" } }
+                      }) {
+                        id
+                      }
+                    }`,
                 });
 
                 expect(errors).toBe(undefined);
@@ -290,18 +273,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Update an item that does the nested create
                 const { data, errors } = await keystone.executeGraphQL({
                   query: `
-                mutation {
-                  updateEventTo${group.name}(
-                    id: "${eventModel.id}"
-                    data: {
-                      title: "A thing",
-                      group: { create: { name: "${groupName}" } }
-                    }
-                  ) {
-                    id
-                  }
-                }
-              `,
+                    mutation {
+                      updateEventTo${group.name}(
+                        id: "${eventModel.id}"
+                        data: {
+                          title: "A thing",
+                          group: { create: { name: "${groupName}" } }
+                        }
+                      ) {
+                        id
+                      }
+                    }`,
                 });
 
                 expect(errors).toBe(undefined);
@@ -340,8 +322,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       }) {
                         id
                       }
-                    }
-                  `,
+                    }`,
                   expectedStatusCode: group.name === 'GroupNoCreateHard' ? 400 : 200,
                 });
 
@@ -367,8 +348,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                         id
                         name
                       }
-                    }
-                `,
+                    }`,
                 });
                 expect(result.errors).toBe(undefined);
                 expect(result.data[`all${group.name}s`]).toMatchObject([]);
@@ -381,8 +361,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                         id
                         title
                       }
-                    }
-                `,
+                    }`,
                 });
                 expect(result2.errors).toBe(undefined);
                 expect(result2.data[`allEventTo${group.name}s`]).toMatchObject([]);
@@ -414,8 +393,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       ) {
                         id
                       }
-                    }
-                  `,
+                    }`,
                   expectedStatusCode: group.name === 'GroupNoCreateHard' ? 400 : 200,
                 });
 
@@ -442,8 +420,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                         id
                         name
                       }
-                    }
-                `,
+                    }`,
                 });
                 expect(result.errors).toBe(undefined);
                 expect(result.data[`all${group.name}s`]).toMatchObject([]);

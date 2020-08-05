@@ -74,16 +74,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          createUser(data: {
-            username: "A thing",
-            notes: { connect: [{ id: "${createNote.id}" }] }
-          }) {
-            id
-            notes { id }
-          }
-        }
-    `,
+              mutation {
+                createUser(data: {
+                  username: "A thing",
+                  notes: { connect: [{ id: "${createNote.id}" }] }
+                }) {
+                  id
+                  notes { id }
+                }
+              }`,
           });
 
           expect(data).toMatchObject({
@@ -97,42 +96,34 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             errors: errors2,
           } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          createUser(data: {
-            username: "A thing",
-            notes: { connect: [{ id: "${createNote.id}" }, { id: "${createNote.id}" }] }
-          }) {
-            id
-            notes { id }
-          }
-        }
-    `,
+              mutation {
+                createUser(data: {
+                  username: "A thing",
+                  notes: { connect: [{ id: "${createNote.id}" }, { id: "${createNote.id}" }] }
+                }) {
+                  id
+                  notes { id }
+                }
+              }`,
           });
           expect(errors2).toBe(undefined);
-          expect(createUser).toMatchObject({
-            id: expect.any(String),
-            notes: expect.any(Array),
-          });
+          expect(createUser).toMatchObject({ id: expect.any(String), notes: expect.any(Array) });
 
           // Test an empty list of related notes
           const result = await keystone.executeGraphQL({
             query: `
-        mutation {
-          createUser(data: {
-            username: "A thing",
-            notes: { connect: [] }
-          }) {
-            id
-            notes { id }
-          }
-        }
-    `,
+              mutation {
+                createUser(data: {
+                  username: "A thing",
+                  notes: { connect: [] }
+                }) {
+                  id
+                  notes { id }
+                }
+              }`,
           });
           expect(result.errors).toBe(undefined);
-          expect(result.data.createUser).toMatchObject({
-            id: expect.any(String),
-            notes: [],
-          });
+          expect(result.data.createUser).toMatchObject({ id: expect.any(String), notes: [] });
         })
       );
 
@@ -157,15 +148,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          createUsers(data: [
-            { data: { username: "A thing 1", notes: { connect: [{ id: "${createNote.id}" }] } } },
-            { data: { username: "A thing 2", notes: { connect: [{ id: "${createNote2.id}" }] } } }
-          ]) {
-            id
-          }
-        }
-    `,
+              mutation {
+                createUsers(data: [
+                  { data: { username: "A thing 1", notes: { connect: [{ id: "${createNote.id}" }] } } },
+                  { data: { username: "A thing 2", notes: { connect: [{ id: "${createNote2.id}" }] } } }
+                ]) {
+                  id
+                }
+              }`,
           });
 
           expect(data).toMatchObject({
@@ -203,33 +193,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Update the item and link the relationship field
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateUser(
-            id: "${createUser.id}"
-            data: {
-              username: "A thing",
-              notes: { connect: [{ id: "${createNote.id}" }] }
-            }
-          ) {
-            id
-            notes {
-              id
-              content
-            }
-          }
-        }
-    `,
+              mutation {
+                updateUser(
+                  id: "${createUser.id}"
+                  data: {
+                    username: "A thing",
+                    notes: { connect: [{ id: "${createNote.id}" }] }
+                  }
+                ) {
+                  id
+                  notes {
+                    id
+                    content
+                  }
+                }
+              }`,
           });
 
           expect(data).toMatchObject({
             updateUser: {
               id: expect.any(String),
-              notes: [
-                {
-                  id: expect.any(String),
-                  content: noteContent,
-                },
-              ],
+              notes: [{ id: expect.any(String), content: noteContent }],
             },
           });
           expect(errors).toBe(undefined);
@@ -240,37 +224,30 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             errors: errors2,
           } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateUser(
-            id: "${createUser.id}"
-            data: {
-              username: "A thing",
-              notes: {
-                connect: [{ id: "${createNote.id}" }, { id: "${createNote2.id}" }]
-              }
-            }
-          ) {
-            id
-            notes {
-              id
-              content
-            }
-          }
-        }
-    `,
+              mutation {
+                updateUser(
+                  id: "${createUser.id}"
+                  data: {
+                    username: "A thing",
+                    notes: {
+                      connect: [{ id: "${createNote.id}" }, { id: "${createNote2.id}" }]
+                    }
+                  }
+                ) {
+                  id
+                  notes {
+                    id
+                    content
+                  }
+                }
+              }`,
           });
           expect(errors2).toBe(undefined);
           expect(updateUser).toMatchObject({
             id: expect.any(String),
             notes: [
-              {
-                id: createNote.id,
-                content: noteContent,
-              },
-              {
-                id: createNote2.id,
-                content: noteContent2,
-              },
+              { id: createNote.id, content: noteContent },
+              { id: createNote2.id, content: noteContent2 },
             ],
           });
         })
@@ -304,36 +281,29 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Update the item and link the relationship field
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateUser(
-            id: "${createUser.id}"
-            data: {
-              username: "A thing",
-              notes: { connect: [{ id: "${createNote2.id}" }] }
-            }
-          ) {
-            id
-            notes {
-              id
-              content
-            }
-          }
-        }
-    `,
+              mutation {
+                updateUser(
+                  id: "${createUser.id}"
+                  data: {
+                    username: "A thing",
+                    notes: { connect: [{ id: "${createNote2.id}" }] }
+                  }
+                ) {
+                  id
+                  notes {
+                    id
+                    content
+                  }
+                }
+              }`,
           });
 
           expect(data).toMatchObject({
             updateUser: {
               id: expect.any(String),
               notes: [
-                {
-                  id: createNote.id,
-                  content: noteContent,
-                },
-                {
-                  id: createNote2.id,
-                  content: noteContent2,
-                },
+                { id: createNote.id, content: noteContent },
+                { id: createNote2.id, content: noteContent2 },
               ],
             },
           });
@@ -376,39 +346,23 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateUsers(data: [
-          { id: "${createUser.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${createNote.id}" }] } } },
-          { id: "${createUser2.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${createNote2.id}" }] } } },
-        ]) {
-          id
-          notes {
-            id
-            content
-          }
-        }
-      }`,
+              mutation {
+                updateUsers(data: [
+                { id: "${createUser.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${createNote.id}" }] } } },
+                { id: "${createUser2.id}", data: { notes: { disconnectAll: true, connect: [{ id: "${createNote2.id}" }] } } },
+              ]) {
+                id
+                notes {
+                  id
+                  content
+                }
+              }
+            }`,
           });
           expect(data).toMatchObject({
             updateUsers: [
-              {
-                id: expect.any(String),
-                notes: [
-                  {
-                    id: createNote.id,
-                    content: noteContent,
-                  },
-                ],
-              },
-              {
-                id: expect.any(String),
-                notes: [
-                  {
-                    id: createNote2.id,
-                    content: noteContent2,
-                  },
-                ],
-              },
+              { id: expect.any(String), notes: [{ id: createNote.id, content: noteContent }] },
+              { id: expect.any(String), notes: [{ id: createNote2.id, content: noteContent2 }] },
             ],
           });
           expect(errors).toBe(undefined);
@@ -425,22 +379,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const { errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          createUser(data: {
-            notes: {
-              connect: [{ id: "${FAKE_ID}" }]
-            }
-          }) {
-            id
-          }
-        }
-    `,
+              mutation {
+                createUser(data: {
+                  notes: {
+                    connect: [{ id: "${FAKE_ID}" }]
+                  }
+                }) {
+                  id
+                }
+              }`,
           });
 
           expect(errors).toMatchObject([
-            {
-              message: 'Unable to create and/or connect 1 User.notes<Note>',
-            },
+            { message: 'Unable to create and/or connect 1 User.notes<Note>' },
           ]);
         })
       );
@@ -456,25 +407,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create an item that does the linking
           const { errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateUser(
-            id: "${createUser.id}",
-            data: {
-              notes: {
-                connect: [{ id: "${FAKE_ID}" }]
-              }
-            }
-          ) {
-            id
-          }
-        }
-    `,
+              mutation {
+                updateUser(
+                  id: "${createUser.id}",
+                  data: {
+                    notes: {
+                      connect: [{ id: "${FAKE_ID}" }]
+                    }
+                  }
+                ) {
+                  id
+                }
+              }`,
           });
 
           expect(errors).toMatchObject([
-            {
-              message: 'Unable to create and/or connect 1 User.notes<Note>',
-            },
+            { message: 'Unable to create and/or connect 1 User.notes<Note>' },
           ]);
         })
       );
@@ -491,9 +439,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const createNoteNoRead = await createItem({
               keystone,
               listKey: 'NoteNoRead',
-              item: {
-                content: noteContent,
-              },
+              item: { content: noteContent },
             });
 
             const { errors } = await keystone.executeGraphQL({
@@ -505,8 +451,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }) {
                     id
                   }
-                }
-              `,
+                }`,
             });
 
             expect(errors).toHaveLength(1);
@@ -535,9 +480,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const createUser = await createItem({
               keystone,
               listKey: 'UserToNotesNoRead',
-              item: {
-                username: 'A thing',
-              },
+              item: { username: 'A thing' },
             });
 
             // Update the item and link the relationship field
@@ -553,8 +496,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ) {
                     id
                   }
-                }
-              `,
+                }`,
             });
 
             expect(errors).toHaveLength(1);
@@ -591,8 +533,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }) {
                     id
                   }
-                }
-              `,
+                }`,
             });
 
             expect(errors).toBe(undefined);
@@ -634,8 +575,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ) {
                     id
                   }
-                }
-              `,
+                }`,
             });
 
             expect(errors).toBe(undefined);
