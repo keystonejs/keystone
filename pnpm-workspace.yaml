@@ -1,0 +1,12 @@
+packages:
+  - 'packages/*'
+  - '!packages/arch'
+  - 'packages/arch/docs'
+  - 'packages/arch/packages/*'
+  - 'demo-projects/*'
+  - 'test-projects/*'
+  - 'api-tests'
+  - 'benchmarks'
+  - 'website'
+  - 'packages/create-keystone-app/example-projects/*'
+  - 'projects/*'
