@@ -70,6 +70,7 @@ x-simple-tests: &simple-tests
     # causing the other job to fail with a "Missing Cypress" error.
     - run: CYPRESS_CACHE_FOLDER=$CIRCLE_WORKING_DIRECTORY/node_modules/cypress/.cache/ yarn
     - save_cache: *save-cache
+    - run: yarn build
     - run: yarn lint:eslint --format junit -o reports/junit/js-lint-results.xml
     - run: yarn lint:prettier
     - run: yarn lint:markdown
