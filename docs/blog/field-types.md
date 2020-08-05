@@ -1,21 +1,19 @@
 <!--[meta]
 section: blog
-title: Field types
+title: Field types in Keystone
 date: 2020-08-03
 author: Mike Riethmuller
 [meta]-->
 
 # Field types
 
-Field types in Keystone sit at the intersection of the Database, GraphQL API and User Interface.
+Field types in Keystone sit at the intersection of the Database, GraphQL API and User Interface. When you select and configure a field type, you are specifying how data is stored, how types in GraphQL are defined, and the user interface in the Admin UI.
 
-When you select and configure a field type you are specifying how the data should be stored. For example the `Text` field is stored as a `TEXT` column in a postgres database or with a `String` type in a mongoose schema.
+To give an example, the `Text` field creates a `TEXT` column in a Postgres database, and a `String` type in a MongoDb schema. It has a return type of `String` in GraphQL API, and an input type (for mutations) of `String`. The interface in the Admin UI produces a styled `<input />` element or a `<textarea />` if the `isMultiline` option is configured.
 
-Field types also determine the GraphQL types. With the `Text` field, the return type for queries will be `String` and the input type for mutations will also be `String`.
+For a complete technical breakdown of the anatomy of field types and how they are built see the [custom field type guide](/docs/guides/custom-field-types.md).
 
-Finally there are views. Views determine the interface for a field type. Views are React components used by the Admin app. The `Text` field, produces a styled `<input />` or `<textarea />` if the `isMultiline` option is configured.
-
-For a more technical breakdown of the anatomy of field types see the [custom field type guide](/docs/guides/custom-field-types.md).
+Because they sit at this intersection of concerns, it can be sometimes tricky to decide when what a field type is. How many of these concerns need to differ before we create a new field type?
 
 ## Core field types
 
