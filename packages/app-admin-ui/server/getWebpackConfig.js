@@ -94,7 +94,7 @@ module.exports = function({ adminMeta, adminViews, entry, outputPath }) {
         // why isn't that used for react and react-dom?
         // they don't have module builds
         'react-router-dom$': path.dirname(require.resolve('react-router-dom/package.json')),
-        // we also want @apollo/client to always be the same version of @apollo/client
+        // we also want @apollo/client to always resolve to the same version of @apollo/client
         '@apollo/client$': path.dirname(require.resolve('@apollo/client/package.json')),
       },
     },
