@@ -10,7 +10,7 @@ function prepareMiddleware() {
   return app;
 }
 
-const pkgDir = dirname(require.resolve('@keystonejs/fields-markdown/package.json'));
+const pkgDir = dirname(require.resolve('@keystonejs/fields-wysiwyg-tinymce/package.json'));
 
 export let Wysiwyg = {
   type: 'Wysiwyg',
