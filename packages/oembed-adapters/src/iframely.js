@@ -6,7 +6,7 @@ const VALID_URL = /^https?:\/\//i;
 const IS_MD5 = /[a-f0-9]{32}/i;
 
 export class IframelyOEmbedAdapter {
-  constructor({ apiKey, iframe = '1', omit_script = '1' } = {}) {
+  constructor({ apiKey, params } = {}) {
     if (!apiKey) {
       throw new Error('Must provide an apiKey to IFramely OEmbed Adapter');
     }
@@ -22,8 +22,7 @@ export class IframelyOEmbedAdapter {
         .digest('hex');
     }
 
-    this.iframe = iframe;
-    this.omit_script = omit_script;
+    this.requestParams = params || {};
   }
 
   /**
@@ -44,11 +43,10 @@ export class IframelyOEmbedAdapter {
 
     const params = Object.entries({
       // https://iframely.com/docs/iframes
-      iframe: this.iframe,
       // for React apps.
       // https://iframely.com/docs/reactjs
-      omit_script: this.omit_script,
       // Allow overwriting most parameters
+      ...this.requestParams,
       ...parameters,
       // We're using the MD5 hashed key:
       // https://iframely.com/docs/allow-origins
