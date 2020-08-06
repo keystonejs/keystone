@@ -3,9 +3,9 @@ import {
   MongoDateTimeUtcInterface,
   KnexDateTimeUtcInterface,
 } from './Implementation';
-import { DateTime } from '../DateTime';
+import DateTime from '../DateTime';
 
-export const DateTimeUtc = {
+export default {
   type: 'DateTimeUtc',
   implementation: DateTimeUtcImplementation,
   views: {

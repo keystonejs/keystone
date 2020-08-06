@@ -5,6 +5,7 @@ export { default as Checkbox } from './types/Checkbox';
 export { default as CloudinaryImage } from './types/CloudinaryImage';
 export { default as Color } from './types/Color';
 export { default as DateTime } from './types/DateTime';
+export { default as DateTimeUTC } from './types/DateTimeUTC';
 export { default as Decimal } from './types/Decimal';
 export { default as File } from './types/File';
 export { default as Float } from './types/Float';
