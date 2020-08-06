@@ -10,6 +10,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "@apollo/client": "^3.1.2",
     "@apollo/react-hooks": "^3.1.5",
     "@arch-ui/fields": "^3.0.3",
     "@arch-ui/input": "^0.1.10",
