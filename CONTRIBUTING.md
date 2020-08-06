@@ -339,6 +339,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/zamkevich"><img src="https://avatars0.githubusercontent.com/u/13717428?v=4" width="80px;" alt=""/><br /><sub><b>Misha Zamkevich</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=zamkevich" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/matheuschimelli"><img src="https://avatars0.githubusercontent.com/u/10470074?v=4" width="80px;" alt=""/><br /><sub><b>Matheus Chimelli</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=matheuschimelli" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/gpersable"><img src="https://avatars3.githubusercontent.com/u/48637618?v=4" width="80px;" alt=""/><br /><sub><b>Gita Permatasari Sujatmiko</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=gpersable" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://elevated.to"><img src="https://avatars2.githubusercontent.com/u/203895?v=4" width="80px;" alt=""/><br /><sub><b>Andreas Borg</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=borg" title="Documentation">📖</a></td>
   </tr>
 </table>
 
