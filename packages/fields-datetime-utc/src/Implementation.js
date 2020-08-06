@@ -8,6 +8,11 @@ export class DateTimeUtcImplementation extends Implementation {
     super(...arguments);
     this.isOrderable = true;
   }
+
+  get _supportsUnique() {
+    return true;
+  }
+
   gqlOutputFields() {
     return [`${this.path}: String`];
   }

@@ -5,6 +5,8 @@ import Integer from './';
 export const name = 'Integer';
 export { Integer as type };
 export const exampleValue = '37';
+export const exampleValue2 = '38';
+export const supportsUnique = true;
 
 export const getTestFields = () => {
   return {

@@ -1,4 +1,4 @@
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { Text } = require('@keystonejs/fields');
 
 const setupList = (adapterName, fields) =>
@@ -19,15 +19,16 @@ describe('defaultValue field config', () => {
               name: { type: Text },
             }),
           ({ keystone }) =>
-            graphqlRequest({
-              keystone,
-              query: `mutation { createUser(data: {} ) { name } }`,
-            }).then(({ data, errors }) => {
-              expect(errors).toBe(undefined);
-              expect(data.createUser).toMatchObject({
-                name: null,
-              });
-            })
+            keystone
+              .executeGraphQL({
+                query: `mutation { createUser(data: {} ) { name } }`,
+              })
+              .then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(data.createUser).toMatchObject({
+                  name: null,
+                });
+              })
         )();
       });
 
@@ -38,15 +39,16 @@ describe('defaultValue field config', () => {
               name: { type: Text, defaultValue: undefined },
             }),
           ({ keystone }) =>
-            graphqlRequest({
-              keystone,
-              query: `mutation { createUser(data: {} ) { name } }`,
-            }).then(({ data, errors }) => {
-              expect(errors).toBe(undefined);
-              expect(data.createUser).toMatchObject({
-                name: null,
-              });
-            })
+            keystone
+              .executeGraphQL({
+                query: `mutation { createUser(data: {} ) { name } }`,
+              })
+              .then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(data.createUser).toMatchObject({
+                  name: null,
+                });
+              })
         )();
       });
 
@@ -57,15 +59,16 @@ describe('defaultValue field config', () => {
               name: { type: Text, defaultValue: null },
             }),
           ({ keystone }) =>
-            graphqlRequest({
-              keystone,
-              query: `mutation { createUser(data: {} ) { name } }`,
-            }).then(({ data, errors }) => {
-              expect(errors).toBe(undefined);
-              expect(data.createUser).toMatchObject({
-                name: null,
-              });
-            })
+            keystone
+              .executeGraphQL({
+                query: `mutation { createUser(data: {} ) { name } }`,
+              })
+              .then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(data.createUser).toMatchObject({
+                  name: null,
+                });
+              })
         )();
       });
 
@@ -76,15 +79,16 @@ describe('defaultValue field config', () => {
               name: { type: Text, defaultValue: 'hello' },
             }),
           ({ keystone }) =>
-            graphqlRequest({
-              keystone,
-              query: `mutation { createUser(data: {} ) { name } }`,
-            }).then(({ data, errors }) => {
-              expect(errors).toBe(undefined);
-              expect(data.createUser).toMatchObject({
-                name: 'hello',
-              });
-            })
+            keystone
+              .executeGraphQL({
+                query: `mutation { createUser(data: {} ) { name } }`,
+              })
+              .then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(data.createUser).toMatchObject({
+                  name: 'hello',
+                });
+              })
         )();
       });
 
@@ -95,15 +99,16 @@ describe('defaultValue field config', () => {
               name: { type: Text, defaultValue: () => 'foobar' },
             }),
           ({ keystone }) =>
-            graphqlRequest({
-              keystone,
-              query: `mutation { createUser(data: {} ) { name } }`,
-            }).then(({ data, errors }) => {
-              expect(errors).toBe(undefined);
-              expect(data.createUser).toMatchObject({
-                name: 'foobar',
-              });
-            })
+            keystone
+              .executeGraphQL({
+                query: `mutation { createUser(data: {} ) { name } }`,
+              })
+              .then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(data.createUser).toMatchObject({
+                  name: 'foobar',
+                });
+              })
         )();
       });
 
@@ -114,15 +119,16 @@ describe('defaultValue field config', () => {
               name: { type: Text, defaultValue: () => Promise.resolve('zippity') },
             }),
           ({ keystone }) =>
-            graphqlRequest({
-              keystone,
-              query: `mutation { createUser(data: {} ) { name } }`,
-            }).then(({ data, errors }) => {
-              expect(errors).toBe(undefined);
-              expect(data.createUser).toMatchObject({
-                name: 'zippity',
-              });
-            })
+            keystone
+              .executeGraphQL({
+                query: `mutation { createUser(data: {} ) { name } }`,
+              })
+              .then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(data.createUser).toMatchObject({
+                  name: 'zippity',
+                });
+              })
         )();
       });
 
@@ -134,19 +140,20 @@ describe('defaultValue field config', () => {
               name: { type: Text, defaultValue },
             }),
           ({ keystone }) =>
-            graphqlRequest({
-              keystone,
-              query: `mutation { createUser(data: {} ) { name } }`,
-            }).then(({ errors }) => {
-              expect(errors).toBe(undefined);
-              expect(defaultValue).toHaveBeenCalledTimes(1);
-              expect(defaultValue).toHaveBeenCalledWith(
-                expect.objectContaining({
-                  context: expect.any(Object),
-                  originalInput: expect.any(Object),
-                })
-              );
-            })
+            keystone
+              .executeGraphQL({
+                query: `mutation { createUser(data: {} ) { name } }`,
+              })
+              .then(({ errors }) => {
+                expect(errors).toBe(undefined);
+                expect(defaultValue).toHaveBeenCalledTimes(1);
+                expect(defaultValue).toHaveBeenCalledWith(
+                  expect.objectContaining({
+                    context: expect.any(Object),
+                    originalInput: expect.any(Object),
+                  })
+                );
+              })
         )();
       });
 
@@ -159,24 +166,25 @@ describe('defaultValue field config', () => {
               salutation: { type: Text },
             }),
           ({ keystone }) =>
-            graphqlRequest({
-              keystone,
-              query: `mutation { createUser(data: { salutation: "Doctor" } ) { name } }`,
-            }).then(({ data, errors }) => {
-              expect(errors).toBe(undefined);
-              expect(defaultValue).toHaveBeenCalledTimes(1);
-              expect(defaultValue).toHaveBeenCalledWith(
-                expect.objectContaining({
-                  context: expect.any(Object),
-                  originalInput: {
-                    salutation: 'Doctor',
-                  },
-                })
-              );
-              expect(data.createUser).toMatchObject({
-                name: 'Doctor X',
-              });
-            })
+            keystone
+              .executeGraphQL({
+                query: `mutation { createUser(data: { salutation: "Doctor" } ) { name } }`,
+              })
+              .then(({ data, errors }) => {
+                expect(errors).toBe(undefined);
+                expect(defaultValue).toHaveBeenCalledTimes(1);
+                expect(defaultValue).toHaveBeenCalledWith(
+                  expect.objectContaining({
+                    context: expect.any(Object),
+                    originalInput: {
+                      salutation: 'Doctor',
+                    },
+                  })
+                );
+                expect(data.createUser).toMatchObject({
+                  name: 'Doctor X',
+                });
+              })
         )();
       });
     })

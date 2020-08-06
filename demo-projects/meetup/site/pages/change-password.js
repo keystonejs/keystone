@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { useState, useEffect } from 'react';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import Router from 'next/router';
 import { jsx } from '@emotion/core';
 
@@ -12,7 +12,6 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Meta from '../components/Meta';
 import { gridSize, colors } from '../theme';
-import gql from 'graphql-tag';
 
 const CHANGE_PASSWORD = gql`
   mutation ChangePasswordWithToken($token: String!, $password: String!) {

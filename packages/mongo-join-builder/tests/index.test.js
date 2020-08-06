@@ -43,6 +43,7 @@ describe('Test main export', () => {
                         { $match: { $expr: { $eq: [`$_id`, '$$tmpVar'] } } },
                         { $match: { name: { $eq: 'foo' } } },
                         { $addFields: { id: '$_id' } },
+                        { $project: { posts: 0 } },
                       ],
                     },
                   },

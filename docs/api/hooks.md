@@ -20,7 +20,7 @@ Note: For performance reasons relationships fields are not fully resolved by hoo
 
 ## Hook types
 
-Hooks can be categories into three [types](/docs/guides/hooks.md#hook-type)
+Hooks can be categorised into three [types](/docs/guides/hooks.md#hook-type)
 depending on where in the list schema they're attached:
 
 - [List hooks](#list-hooks)
@@ -337,7 +337,7 @@ const beforeDelete = ({
 
 ### `afterDelete`
 
-**Used to cause side effects before the delete operation is executed.**
+**Used to cause side effects after the delete operation is executed.**
 
 - Invoked after the delete operation has been executed
 - Available for `delete` operations

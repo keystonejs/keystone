@@ -87,6 +87,7 @@ x-simple-tests: &simple-tests
         command: yarn jest --ci --reporters=default --reporters=jest-junit --maxWorkers=1
         environment:
           JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
+    - run: yarn build
     - store_test_results:
         path: reports/junit
     - store_artifacts:

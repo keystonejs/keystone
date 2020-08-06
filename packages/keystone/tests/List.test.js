@@ -1,4 +1,4 @@
-const gql = require('graphql-tag');
+const { gql } = require('apollo-server-express');
 const { print } = require('graphql/language/printer');
 const { MockAdapter, MockIdType, MockListAdapter } = require('@keystonejs/test-utils');
 
@@ -143,6 +143,13 @@ describe('new List()', () => {
   test('new List() - access', () => {
     const list = setup();
     expect(list.access).toEqual({
+      internal: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+        auth: true,
+      },
       public: {
         create: true,
         delete: true,
