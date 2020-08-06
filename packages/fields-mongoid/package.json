@@ -20,6 +20,9 @@
     "react": "^16.13.1"
   },
   "preconstruct": {
-    "entrypoints": ["index.js", "views/{Controller,Filter}.js"]
+    "entrypoints": [
+      "index.js",
+      "views/{Controller,Filter}.js"
+    ]
   }
 }

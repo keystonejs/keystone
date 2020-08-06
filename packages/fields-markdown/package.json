@@ -23,7 +23,10 @@
     "react-codemirror2": "^6.0.0"
   },
   "preconstruct": {
-    "entrypoints": ["index.js", "views/Field.js"]
+    "entrypoints": [
+      "index.js",
+      "views/Field.js"
+    ]
   },
   "main": "dist/fields-markdown.cjs.js",
   "module": "dist/fields-markdown.esm.js",
