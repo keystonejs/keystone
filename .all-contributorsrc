@@ -456,6 +456,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "borg",
+      "name": "Andreas Borg",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/203895?v=4",
+      "profile": "http://elevated.to",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
