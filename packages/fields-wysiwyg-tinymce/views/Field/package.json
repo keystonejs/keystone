@@ -1,0 +1,4 @@
+{
+  "main": "dist/fields-wysiwyg-tinymce.cjs.js",
+  "module": "dist/fields-wysiwyg-tinymce.esm.js"
+}
