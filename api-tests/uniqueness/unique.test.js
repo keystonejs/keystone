@@ -1,6 +1,6 @@
 const globby = require('globby');
 const { Text } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 
 describe('Test isUnique flag for all field types', () => {
   const testModules = globby.sync(`packages/**/src/**/test-fixtures.js`, { absolute: true });
@@ -30,8 +30,7 @@ describe('Test isUnique flag for all field types', () => {
             test(
               'uniqueness is enforced over multiple mutations',
               keystoneTestWrapper(async ({ keystone }) => {
-                const { errors } = await graphqlRequest({
-                  keystone,
+                const { errors } = await keystone.executeGraphQL({
                   query: `
                   mutation {
                     createTest(data: { testField: ${mod.exampleValue} }) { id }
@@ -40,8 +39,7 @@ describe('Test isUnique flag for all field types', () => {
                 });
                 expect(errors).toBe(undefined);
 
-                const { errors: errors2 } = await graphqlRequest({
-                  keystone,
+                const { errors: errors2 } = await keystone.executeGraphQL({
                   query: `
                   mutation {
                     createTest(data: { testField: ${mod.exampleValue} }) { id }
@@ -59,8 +57,7 @@ describe('Test isUnique flag for all field types', () => {
             test(
               'uniqueness is enforced over single mutation',
               keystoneTestWrapper(async ({ keystone }) => {
-                const { errors } = await graphqlRequest({
-                  keystone,
+                const { errors } = await keystone.executeGraphQL({
                   query: `
                   mutation {
                     foo: createTest(data: { testField: ${mod.exampleValue} }) { id }
@@ -79,8 +76,7 @@ describe('Test isUnique flag for all field types', () => {
             test(
               'Configuring uniqueness on one field does not affect others',
               keystoneTestWrapper(async ({ keystone }) => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `
                   mutation {
                     foo: createTest(data: { testField: ${mod.exampleValue}, name: "jess" }) { id }

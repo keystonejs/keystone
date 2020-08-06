@@ -134,6 +134,8 @@ const addUser = async userInput => {
 addUser({ name: 'keystone user', email: 'keystone@test.com' });
 ```
 
+**Note**: The `item` property is a graphQL create input. For Relationship fields it can contain nested mutations with create and connect operations. For examples see the [Relationship API documentation](/packages/fields/src/types/Relationship/README.md#create-and-append-a-related-item).
+
 #### Config
 
 [Shared Config Options](#shared-config-options) apply to this function.
@@ -159,10 +161,8 @@ keystone.createList('User', {
 });
 
 const dummyUsers = [
-  {
-    data: { name: 'user1', email: 'user1@test.com' },
-    data: { name: 'user2', email: 'user2@test.com' },
-  },
+  { data: { name: 'user1', email: 'user1@test.com' } },
+  { data: { name: 'user2', email: 'user2@test.com' } },
 ];
 
 const addUsers = async () => {
@@ -325,8 +325,8 @@ const updateUsers = async (updateUsers) => {
 }
 
 updateUsers([
-  {id: '123', data: {name: 'newName1'},
-  {id: '456', data: {name: 'newName2'}
+  { id: '123', data: { name: 'newName1' } },
+  { id: '456', data: { name: 'newName2' } }
 ]);
 ```
 

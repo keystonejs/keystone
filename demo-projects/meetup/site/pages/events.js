@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import { Container, Loading, H2 } from '../primitives';
 import EventItems from '../components/EventItems';
@@ -50,6 +50,6 @@ export async function getStaticProps() {
     props: {
       initialApolloState: apolloClient.cache.extract(),
     },
-    unstable_revalidate: 1,
+    revalidate: 1,
   };
 }
