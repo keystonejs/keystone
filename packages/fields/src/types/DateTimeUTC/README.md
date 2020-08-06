@@ -13,12 +13,10 @@ Produces JS `Date` objects and ISO 8601 strings.
 
 Unlike the core `DateTime` field type only the UTC value is stored.
 
-This package is not part of the core fields, and needs to be installed separately with `npm i @keystonejs/fields-datetime-utc`
-
 ## Usage
 
 ```js
-const { DateTimeUtc } = require('@keystonejs/fields-datetime-utc');
+const { DateTimeUtc } = require('@keystonejs/fields');
 
 keystone.createList('User', {
   fields: {
