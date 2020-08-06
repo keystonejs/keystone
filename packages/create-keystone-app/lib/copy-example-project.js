@@ -27,7 +27,7 @@ const copyExampleProject = async () => {
   createNewProjectFolder(to);
 
   await writeDirectoryFromGitHubToFs(
-    `packages/create-keystone-app/example-projects/examples/${exampleProject.folder}/`,
+    `packages/create-keystone-app/example-projects/${exampleProject.folder}/`,
     to
   );
   tick('Writing project files');

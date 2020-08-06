@@ -21,7 +21,6 @@
     "arg": "^4.1.1",
     "cfonts": "^2.7.0",
     "chalk": "^2.4.2",
-    "create-output-stream": "^0.0.1",
     "execa": "^2.0.4",
     "fs-extra": "^7.0.0",
     "got": "^11.5.1",

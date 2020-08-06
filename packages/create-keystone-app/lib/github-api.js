@@ -1,7 +1,7 @@
 const got = require('got');
-const createOutputStream = require('create-output-stream');
 const stream = require('stream');
 const path = require('path');
+const fs = require('fs-extra');
 const { promisify } = require('util');
 
 const pipeline = promisify(stream.pipeline);
@@ -30,12 +30,14 @@ const writeDirectoryFromGitHubToFs = async (from, to) => {
   ).json();
   await Promise.all(
     tree.map(async (item) => {
-      if (item.path.startsWith(from)) {
+      if (item.type === 'blob' && item.path.startsWith(from)) {
+        let pathToWrite = path.join(to, item.path.replace(from, ''));
+        await fs.ensureDir(path.dirname(pathToWrite));
         await pipeline(
           got.stream(
             `https://raw.githubusercontent.com/keystonejs/keystone/${latestVersionCommit}/${item.path}`
           ),
-          createOutputStream(path.join(to, item.path.replace(from, '')))
+          fs.createWriteStream(pathToWrite)
         );
       }
     })
@@ -45,7 +47,7 @@ const writeDirectoryFromGitHubToFs = async (from, to) => {
 const getExampleProjects = async () => {
   let latestVersionCommit = await getLatestVersionCommit();
   try {
-    let rawConfig = await got.get(
+    let { body: rawConfig } = await got.get(
       `https://raw.githubusercontent.com/keystonejs/keystone/${latestVersionCommit}/packages/create-keystone-app/example-projects/examples.json`
     );
     let parsedConfig;
