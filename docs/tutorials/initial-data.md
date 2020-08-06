@@ -85,6 +85,8 @@ The [`createItems`](https://www.keystonejs.com/keystonejs/server-side-graphql-cl
 - `items`: the array of objects to be created.
 
 ```javascript
+const { createItems } = require('@keystonejs/server-side-graphql-client');
+
 createItems({
   keystone,
   listKey: 'User',
@@ -101,6 +103,8 @@ As an example in our schema, the `email` field has `isUnique:true` constraint, t
 Example on how to `seed` the data upon database connection:
 
 ```javascript
+const { createItems } = require('@keystonejs/server-side-graphql-client');
+
 const keystone = new Keystone({
   adapter: new MongooseAdapter(),
   onConnect: async keystone => {
