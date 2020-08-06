@@ -52,7 +52,7 @@
     "@changesets/changelog-github": "^0.2.1",
     "@changesets/cli": "^2.5.1",
     "@manypkg/cli": "^0.11.0",
-    "@preconstruct/cli": "^1.1.2",
+    "@preconstruct/cli": "1.1.20",
     "@types/jest": "^25.1.2",
     "all-contributors-cli": "^6.2.0",
     "babel-eslint": "^10.0.1",
@@ -163,20 +163,23 @@
     "packages": [
       "packages/arch/packages/*",
       "packages/apollo-helpers",
-      "packages/utils"
-    ]
+      "packages/utils",
+      "packages/fields-authed-relationship",
+      "packages/fields-auto-increment",
+      "packages/fields-markdown",
+      "packages/fields-mongoid",
+      "packages/fields-wysiwyg-tinymce",
+      "packages/oembed-adapters"
+    ],
+    "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
+      "newEntrypoints": true
+    }
   },
   "field-types": {
     "packages": [
       "packages/field-content",
       "packages/fields",
-      "packages/fields-authed-relationship",
-      "packages/fields-auto-increment",
-      "packages/fields-datetime-utc",
-      "packages/fields-markdown",
-      "packages/fields-mongoid",
-      "packages/fields-wysiwyg-tinymce",
-      "packages/oembed-adapters"
+      "packages/fields-datetime-utc"
     ]
   },
   "jest": {
