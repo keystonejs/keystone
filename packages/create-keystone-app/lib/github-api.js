@@ -11,7 +11,9 @@ let cachedLatestVersionCommit;
 const getLatestVersionCommit = async () => {
   if (cachedLatestVersionCommit === undefined) {
     let commits = await got
-      .get('https://api.github.com/repos/keystonejs/keystone/commits?path=.github/release-count')
+      .get(
+        'https://api.github.com/repos/keystonejs/keystone/commits?path=.github/release-count&sha=create-keystone-app-from-github'
+      )
       .json();
     if (!commits.length) {
       throw new Error(
@@ -29,7 +31,7 @@ const writeDirectoryFromGitHubToFs = async (from, to) => {
     `https://api.github.com/repos/keystonejs/keystone/git/trees/${latestVersionCommit}?recursive=1`
   ).json();
   await Promise.all(
-    tree.map(async (item) => {
+    tree.map(async item => {
       if (item.type === 'blob' && item.path.startsWith(from)) {
         let pathToWrite = path.join(to, item.path.replace(from, ''));
         await fs.ensureDir(path.dirname(pathToWrite));

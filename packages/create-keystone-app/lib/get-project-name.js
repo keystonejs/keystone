@@ -22,7 +22,7 @@ const getProjectName = async () => {
       type: 'text',
       name: 'value',
       message: 'What is your project name?',
-      validate: (value) => value.length,
+      validate: value => value.length,
     },
     {
       onCancel: () => {

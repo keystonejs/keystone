@@ -8,7 +8,7 @@ const adapters = {
     file: 'adapter-mongoose.js',
     dependencies: ['@keystonejs/adapter-mongoose'],
     description: 'Connect to a MongoDB database.',
-    defaultConfig: (name) => `mongodb://localhost/${slugify(name)}`,
+    defaultConfig: name => `mongodb://localhost/${slugify(name)}`,
   },
   PostgreSQL: {
     name: 'PostgreSQL',
@@ -16,11 +16,11 @@ const adapters = {
     dependencies: ['@keystonejs/adapter-knex'],
     description: 'Connect to a PostgreSQL database.',
     removeDependencies: ['@keystonejs/adapter-mongoose'],
-    defaultConfig: (name) => `postgres://localhost/${slugify(name, { separator: '_' })}`,
+    defaultConfig: name => `postgres://localhost/${slugify(name, { separator: '_' })}`,
   },
 };
 
-const choices = Object.keys(adapters).map((key) => ({
+const choices = Object.keys(adapters).map(key => ({
   value: adapters[key],
   title: key,
   description: adapters[key].description,
@@ -44,7 +44,7 @@ const getAdapterChoice = async () => {
     }
 
     const foundArg = Object.values(adapters).find(
-      (adapter) => adapter.name.toLowerCase() === argValue.trim().toLowerCase()
+      adapter => adapter.name.toLowerCase() === argValue.trim().toLowerCase()
     );
     if (foundArg) {
       ADAPTER_CHOICE = foundArg.name;

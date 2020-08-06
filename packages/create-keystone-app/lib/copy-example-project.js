@@ -4,7 +4,7 @@ const { getProjectDirectory, tick, error } = require('./util');
 const { writeDirectoryFromGitHubToFs } = require('./github-api');
 const { getArgs } = require('./get-args');
 
-const createNewProjectFolder = (newProjectFolder) => {
+const createNewProjectFolder = newProjectFolder => {
   fs.mkdirpSync(newProjectFolder);
   const readDir = fs.readdirSync(newProjectFolder);
   if (readDir && readDir.length > 0) {
