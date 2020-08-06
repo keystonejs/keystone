@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import RelationshipFieldType from '..';
 
 let Relationship = RelationshipFieldType.implementation;

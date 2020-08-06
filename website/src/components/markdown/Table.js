@@ -92,7 +92,7 @@ export const Table = props => {
                 paddingRight: gridSize,
               },
 
-              '&:last-of-type': {
+              '&:last-of-type, &:nth-last-of-type(2)': {
                 whiteSpace: 'normal',
               },
 

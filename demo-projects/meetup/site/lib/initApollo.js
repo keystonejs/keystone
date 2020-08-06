@@ -1,8 +1,7 @@
 import fetch from 'isomorphic-unfetch';
 import getConfig from 'next/config';
 
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 
 const {

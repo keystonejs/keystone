@@ -1,9 +1,14 @@
+import path from 'path';
 import fetch from 'node-fetch';
 import crypto from 'crypto';
-import { importView } from '@keystonejs/build-field-types';
 
 const VALID_URL = /^https?:\/\//i;
 const IS_MD5 = /[a-f0-9]{32}/i;
+
+const previewComponent = path.join(
+  path.dirname(require.resolve('@keystonejs/oembed-adapters/package.json')),
+  'views/preview'
+);
 
 export class IframelyOEmbedAdapter {
   constructor({ apiKey, params } = {}) {
@@ -57,12 +62,12 @@ export class IframelyOEmbedAdapter {
   }
 
   getAdminViews() {
-    return [importView('./views/preview')];
+    return [previewComponent];
   }
 
   getViewOptions() {
     return {
-      previewComponent: importView('./views/preview'),
+      previewComponent,
       // NOTE: This is the md5'd API key from the constructor, which is ok to
       // put on the client according to the docs
       clientApiKey: this.apiKey,

@@ -15,6 +15,10 @@ class _DateTime extends Implementation {
     this.isOrderable = true;
   }
 
+  get _supportsUnique() {
+    return true;
+  }
+
   gqlOutputFields() {
     return [`${this.path}: DateTime`];
   }
@@ -164,7 +168,7 @@ export class MongoDateTimeInterface extends CommonDateTimeInterface(MongooseFiel
       // attributes to make it through to the pre-hooks.
       [this.path]: { type: String, ...mongooseOptions },
       // These are the actual fields we care about storing in the database.
-      [this.utcPath]: { type: Date, ...mongooseOptions },
+      [this.utcPath]: this.mergeSchemaOptions({ type: Date }, this.config),
       [this.offsetPath]: { type: String, ...mongooseOptions },
     });
   }

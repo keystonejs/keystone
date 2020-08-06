@@ -25,6 +25,10 @@ export class Password extends Implementation {
     }
   }
 
+  get _supportsUnique() {
+    return false;
+  }
+
   gqlOutputFields() {
     return [`${this.path}_is_set: Boolean`];
   }
@@ -136,7 +140,7 @@ export class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdap
     super(...arguments);
 
     // Error rather than ignoring invalid config
-    if (this.config.isUnique || this.config.isIndexed) {
+    if (this.config.isIndexed) {
       throw `The Password field type doesn't support indexes on Knex. ` +
         `Check the config for ${this.path} on the ${this.field.listKey} list`;
     }

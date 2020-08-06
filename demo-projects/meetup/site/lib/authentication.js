@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { gql, useQuery, useMutation, useApolloClient } from '@apollo/client';
 
 /**
  * AuthContext

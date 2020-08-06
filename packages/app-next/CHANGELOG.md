@@ -1,5 +1,11 @@
 # @keystonejs/app-next
 
+## 5.2.1
+
+### Patch Changes
+
+- [`16730291d`](https://github.com/keystonejs/keystone/commit/16730291d6724baeea8cb7a1f25ea3dfe47db6a3) [#3315](https://github.com/keystonejs/keystone/pull/3315) Thanks [@gautamsi](https://github.com/gautamsi)! - Updated Next.js to 9.5.1 which make revalidate prop a stable api.
+
 ## 5.2.0
 
 ### Minor Changes

@@ -2,12 +2,12 @@ const { Integer, Text, Relationship } = require('@keystonejs/fields');
 const {
   multiAdapterRunners,
   setupServer,
-  graphqlRequest,
   networkedGraphqlRequest,
 } = require('@keystonejs/test-utils');
 const {
   validation: { depthLimit, definitionLimit, fieldLimit },
 } = require('@keystonejs/app-graphql');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -49,17 +49,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('Basic querying', () => {
         test(
           'users',
-          runner(setupKeystone, async ({ keystone, create }) => {
-            const users = await Promise.all([
-              create('User', { name: 'Jess', favNumber: 1 }),
-              create('User', { name: 'Johanna', favNumber: 8 }),
-              create('User', { name: 'Sam', favNumber: 5 }),
-              create('User', { name: 'Theo', favNumber: 2 }),
-            ]);
+          runner(setupKeystone, async ({ keystone }) => {
+            const users = await createItems({
+              keystone,
+              listKey: 'User',
+              items: [
+                { data: { name: 'Jess', favNumber: 1 } },
+                { data: { name: 'Johanna', favNumber: 8 } },
+                { data: { name: 'Sam', favNumber: 5 } },
+                { data: { name: 'Theo', favNumber: 2 } },
+              ],
+            });
 
             // 2 results is okay
-            let { data, errors } = await graphqlRequest({
-              keystone,
+            let { data, errors } = await keystone.executeGraphQL({
               query: `
           query {
             allUsers(
@@ -77,8 +80,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data.allUsers).toEqual([{ name: 'Jess' }, { name: 'Johanna' }]);
 
             // No results is okay
-            ({ data, errors } = await graphqlRequest({
-              keystone,
+            ({ data, errors } = await keystone.executeGraphQL({
               query: `
           query {
             allUsers(
@@ -95,8 +97,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data.allUsers.length).toEqual(0);
 
             // Count is still correct
-            ({ data, errors } = await graphqlRequest({
-              keystone,
+            ({ data, errors } = await keystone.executeGraphQL({
               query: `
           query {
             meta: _allUsersMeta {
@@ -111,8 +112,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data.meta.count).toBe(users.length);
 
             // This query is only okay because of the "first" parameter
-            ({ data, errors } = await graphqlRequest({
-              keystone,
+            ({ data, errors } = await keystone.executeGraphQL({
               query: `
           query {
             allUsers(first: 1) {
@@ -127,8 +127,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data.allUsers.length).toEqual(1);
 
             // This query returns too many results
-            ({ errors } = await graphqlRequest({
-              keystone,
+            ({ errors } = await keystone.executeGraphQL({
               query: `
           query {
             allUsers {
@@ -141,8 +140,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
 
             // The query results don't break the limits, but the "first" parameter does
-            ({ errors } = await graphqlRequest({
-              keystone,
+            ({ errors } = await keystone.executeGraphQL({
               query: `
           query {
             allUsers(
@@ -163,37 +161,41 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('Relationship querying', () => {
         test(
           'posts by user',
-          runner(setupKeystone, async ({ keystone, create, update }) => {
-            const users = await Promise.all([
-              create('User', { name: 'Jess', favNumber: 1 }),
-              create('User', { name: 'Johanna', favNumber: 8 }),
-              create('User', { name: 'Sam', favNumber: 5 }),
-            ]);
+          runner(setupKeystone, async ({ keystone }) => {
+            const users = await createItems({
+              keystone,
+              listKey: 'User',
+              items: [
+                { data: { name: 'Jess', favNumber: 1 } },
+                { data: { name: 'Johanna', favNumber: 8 } },
+                { data: { name: 'Sam', favNumber: 5 } },
+              ],
+            });
 
-            const posts = await Promise.all([
-              create('Post', { author: [users[0].id], title: 'One author' }),
-              create('Post', { author: [users[0].id, users[1].id], title: 'Two authors' }),
-              create('Post', {
-                author: [users[0].id, users[1].id, users[2].id],
-                title: 'Three authors',
-              }),
-            ]);
-
-            for (const user of users) {
-              user.posts = [];
-            }
-            for (const post of posts) {
-              for (const authorId of post.author) {
-                users.find(u => String(u.id) === String(authorId)).posts.push(post.id);
-              }
-            }
-            for (const user of users) {
-              update('User', user.id, { posts: user.posts });
-            }
+            await createItems({
+              keystone,
+              listKey: 'Post',
+              items: [
+                { data: { author: { connect: [{ id: users[0].id }] }, title: 'One author' } },
+                {
+                  data: {
+                    author: { connect: [{ id: users[0].id }, { id: users[1].id }] },
+                    title: 'Two authors',
+                  },
+                },
+                {
+                  data: {
+                    author: {
+                      connect: [{ id: users[0].id }, { id: users[1].id }, { id: users[2].id }],
+                    },
+                    title: 'Three authors',
+                  },
+                },
+              ],
+            });
 
             // A basic query that should work
-            let { data, errors } = await graphqlRequest({
-              keystone,
+            let { data, errors } = await keystone.executeGraphQL({
               query: `
           query {
             allPosts(
@@ -218,8 +220,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ]);
 
             // Each subquery is within the limit (even though the total isn't)
-            ({ data, errors } = await graphqlRequest({
-              keystone,
+            ({ data, errors } = await keystone.executeGraphQL({
               query: `
           query {
             allPosts(
@@ -254,8 +255,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ]);
 
             // This post has too many authors
-            ({ errors } = await graphqlRequest({
-              keystone,
+            ({ errors } = await keystone.executeGraphQL({
               query: `
           query {
             allPosts(
@@ -273,8 +273,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
 
             // Requesting the too-many-authors post is okay as long as the authors aren't returned
-            ({ data, errors } = await graphqlRequest({
-              keystone,
+            ({ data, errors } = await keystone.executeGraphQL({
               query: `
           query {
             allPosts(
@@ -291,8 +290,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data.allPosts).toEqual([{ title: 'Three authors' }]);
 
             // Some posts are okay, but one breaks the limit
-            ({ errors } = await graphqlRequest({
-              keystone,
+            ({ errors } = await keystone.executeGraphQL({
               query: `
           query {
             allPosts {
@@ -308,8 +306,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
 
             // All subqueries are within limits, but the total isn't
-            ({ errors } = await graphqlRequest({
-              keystone,
+            ({ errors } = await keystone.executeGraphQL({
               query: `
           query {
             allPosts(where: { title: "Two authors" }) {
