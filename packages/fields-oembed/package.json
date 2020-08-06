@@ -21,7 +21,7 @@
     "@keystonejs/adapter-mongoose": "^9.0.0",
     "@keystonejs/build-field-types": "^5.2.10",
     "@keystonejs/field-content": "^7.0.2",
-    "@keystonejs/fields": "^14.0.0",
+    "@keystonejs/fields": "^15.0.0",
     "node-fetch": "^2.3.0",
     "pluralize": "^7.0.0",
     "query-string": "^6.8.1"
