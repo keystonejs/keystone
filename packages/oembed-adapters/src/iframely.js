@@ -11,7 +11,7 @@ const previewComponent = path.join(
 );
 
 export class IframelyOEmbedAdapter {
-  constructor({ apiKey, params } = {}) {
+  constructor({ apiKey, parameters } = {}) {
     if (!apiKey) {
       throw new Error('Must provide an apiKey to IFramely OEmbed Adapter');
     }
@@ -27,7 +27,7 @@ export class IframelyOEmbedAdapter {
         .digest('hex');
     }
 
-    this.requestParams = params || {};
+    this.requestParams = parameters || {};
   }
 
   /**
@@ -51,6 +51,8 @@ export class IframelyOEmbedAdapter {
       // for React apps.
       // https://iframely.com/docs/reactjs
       // Allow overwriting most parameters
+      iframe: '1',
+      omit_script: '1',
       ...this.requestParams,
       ...parameters,
       // We're using the MD5 hashed key:
