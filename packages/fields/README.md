@@ -35,7 +35,7 @@ In addition to these, some complex types are packaged separately:
 
 | Field type                                                             | Description                                                                                                                                                           |
 | :--------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`Content`](/packages/field-content/README.md)                         | Block-based content for composing rich text such as blog posts, wikis, and even complete pages                                                                        |
+| [`Content`](/packages/fields-content/README.md)                         | Block-based content for composing rich text such as blog posts, wikis, and even complete pages                                                                        |
 | [`AuthedRelationship`](/packages/fields-authed-relationship/README.md) | Extendes the [`Relationship`](/packages/fields/src/types/Relationship/README.md) type; automatically set to the currently authenticated item during a create mutation |
 | [`AutoIncrement`](/packages/fields-auto-increment/README.md)           | An automatically incrementing integer; the default type for `id` fields when using the Knex DB adapter                                                                |
 | [`Markdown`](/packages/fields-markdown/README.md)                      | Markdown content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [CodeMirror](https://codemirror.net/) editor in the Admin UI    |
