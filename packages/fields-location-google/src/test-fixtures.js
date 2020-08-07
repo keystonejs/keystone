@@ -1,5 +1,5 @@
 // We need a valid googleMapsKey to be added to CI to make this test runnable
-import LocationGoogle from './';
+import { LocationGoogle } from './';
 
 export const name = 'Location';
 export { LocationGoogle as type };
