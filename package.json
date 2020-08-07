@@ -168,7 +168,7 @@
       "packages/fields-auto-increment",
       "packages/fields-markdown",
       "packages/fields-mongoid",
-      "packages/fields-location",
+      "packages/fields-location-google",
       "packages/fields-wysiwyg-tinymce",
       "packages/oembed-adapters",
       "packages/fields-color"
