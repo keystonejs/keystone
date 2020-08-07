@@ -1,4 +1,4 @@
-import Color from './src';
+import Color from '.';
 
 export const name = 'Color';
 export { Color as type };
