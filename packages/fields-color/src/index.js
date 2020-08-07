@@ -5,7 +5,7 @@ const pkgDir = path.dirname(require.resolve('@keystonejs/fields-color/package.js
 
 export const Color = {
   type: 'Color',
-  implementation: Text,
+  implementation: Text.implementation,
   views: {
     Controller: Text.views.Controller,
     Field: path.join(pkgDir, 'views/Field'),
