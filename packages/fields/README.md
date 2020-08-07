@@ -19,7 +19,6 @@ Keystone contains a set of primitive fields types that can be imported from the 
 | [`File`](/packages/fields/src/types/File/README.md)                       | Files backed various storage mediums: local filesystem, cloud based hosting, etc.                                                                      |
 | [`Float`](/packages/fields/src/types/Float/README.md)                     | An imprecise numeric value, stored as a floating point                                                                                                 |
 | [`Integer`](/packages/fields/src/types/Integer/README.md)                 | A whole number                                                                                                                                         |
-| [`Location`](/packages/fields/src/types/Location/README.md)               | Data from the [Google Maps API](https://developers.google.com/maps/documentation/javascript/reference)                                                 |
 | [`OEmbed`](/packages/fields/src/types/OEmbed/README.md)                   | Data in the [oEmbed format](https://oembed.com/); allowing an embedded representation of a URL on third party sites                                    |
 | [`Password`](/packages/fields/src/types/Password/README.md)               | A [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt) hash of the value supplied; used by the [Password auth strategy](/packages/auth-password/README.md) |
 | [`Relationship`](/packages/fields/src/types/Relationship/README.md)       | A link between the current list and others, often paired with a field on the other list                                                                |
@@ -41,6 +40,7 @@ In addition to these, some complex types are packaged separately:
 | [`Markdown`](/packages/fields-markdown/README.md)                      | Markdown content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [CodeMirror](https://codemirror.net/) editor in the Admin UI    |
 | [`MongoId`](/packages/fields-mongoid/README.md)                        | Arbitrary [Mongo `ObjectId`](https://docs.mongodb.com/manual/reference/method/ObjectId/) values; the default type for `id` fields when using the Mongoose DB adapter  |
 | [`Wysiwyg`](/packages/fields-wysiwyg-tinymce/README.md)                | Rich text content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [TinyMCE](https://www.tiny.cloud/) editor in the Admin UI      |
+| [`LocationGoogle`](/packages/fields-location-google/README.md)         | Data from the [Google Maps API](https://developers.google.com/maps/documentation/javascript/reference)                                                                |
 | [`Color`](/packages/fields-color/README.md)                            | Hexidecimal RGBA color values; uses a color picker in the Admin UI                                                                                                    |
 
 > **Tip:** Need something else? Keystone lets you create [custom field types](/docs/guides/custom-field-types.md) to support almost any use case.
