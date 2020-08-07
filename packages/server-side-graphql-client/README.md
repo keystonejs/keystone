@@ -107,6 +107,8 @@ The following config options are common to all server-side graphQL functions.
 | `returnFields` | `String`   | `id`       | A graphQL fragment of fields to return. Must match the graphQL return type.                                                                                                                                         |
 | `context`      | `Object`   | N/A        | An Apollo [`context` object](https://www.apollographql.com/docs/apollo-server/data/resolvers/#the-context-argument). See the [server side graphQL docs](/docs/discussions/server-side-graphql.md) for more details. |
 
+> NOTE: If `context` argument is provided then the `keystone` argument is not required.
+
 ### `createItem`
 
 Create a single item.
