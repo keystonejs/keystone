@@ -2,8 +2,7 @@
 import { jsx } from '@emotion/core';
 import Link from 'next/link';
 
-import gql from 'graphql-tag';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { useState } from 'react';
 
 import styled from '@emotion/styled';

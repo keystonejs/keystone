@@ -1,12 +1,11 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const createInitialData = async keystone => {
-  const { data, errors } = await graphqlRequest({
-    keystone,
+  const { data, errors } = await keystone.executeGraphQL({
     query: `
       mutation {
         createUsers(data: [
@@ -24,8 +23,7 @@ const createUserAndFriend = async keystone => {
   const {
     data: { createUser },
     errors,
-  } = await graphqlRequest({
-    keystone,
+  } = await keystone.executeGraphQL({
     query: `
       mutation {
         createUser(data: {
@@ -43,8 +41,7 @@ const createUserAndFriend = async keystone => {
 };
 
 const createComplexData = async keystone => {
-  const { data, errors } = await graphqlRequest({
-    keystone,
+  const { data, errors } = await keystone.executeGraphQL({
     query: `
     mutation {
       createUsers(data: [
@@ -64,8 +61,7 @@ const createComplexData = async keystone => {
   expect(data.createUsers[2].friend.name).toEqual('B1');
   expect(data.createUsers[3].name).toEqual('E');
   expect(data.createUsers[3].friend).toBe(null);
-  const result = await graphqlRequest({
-    keystone,
+  const result = await keystone.executeGraphQL({
     query: `mutation {
       createUsers(data: [
         { data: { name: "D" friend: { connect: { id: "${data.createUsers[2].friend.id}" } } } },
@@ -83,14 +79,13 @@ const createComplexData = async keystone => {
   const {
     data: { allUsers },
     errors: errors2,
-  } = await graphqlRequest({ keystone, query: '{ allUsers { id name friend { id name } } }' });
+  } = await keystone.executeGraphQL({ query: '{ allUsers { id name friend { id name } } }' });
   expect(errors2).toBe(undefined);
   return { users: allUsers };
 };
 
 const getUserAndFriend = async (keystone, userId, friendId) => {
-  const { data } = await graphqlRequest({
-    keystone,
+  const { data } = await keystone.executeGraphQL({
     query: `
   {
     User(where: { id: "${userId}"} ) { id friend { id } }
@@ -129,8 +124,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 ['D', 1],
                 ['E', 0],
               ].map(async ([name, count]) => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `{ allUsers(where: { friend: { name_contains: "${name}"}}) { id }}`,
                 });
                 expect(errors).toBe(undefined);
@@ -143,8 +137,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'is_null: true',
           runner(setupKeystone, async ({ keystone }) => {
             await createComplexData(keystone);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `{ allUsers(where: { friend_is_null: true }) { id }}`,
             });
             expect(errors).toBe(undefined);
@@ -155,8 +148,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'is_null: false',
           runner(setupKeystone, async ({ keystone }) => {
             await createComplexData(keystone);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `{ allUsers(where: { friend_is_null: false }) { id }}`,
             });
             expect(errors).toBe(undefined);
@@ -170,8 +162,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'Count',
           runner(setupKeystone, async ({ keystone }) => {
             await createInitialData(keystone);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 {
                   _allUsersMeta { count }
@@ -190,8 +181,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           runner(setupKeystone, async ({ keystone }) => {
             const { users } = await createInitialData(keystone);
             const user = users[0];
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createUser(data: {
@@ -213,8 +203,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'With create',
           runner(setupKeystone, async ({ keystone }) => {
             const friendName = sampleOne(alphanumGenerator);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createUser(data: {
@@ -248,8 +237,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // `...not.toBe(expect.anything())` allows null and undefined values
             expect(user.friend).not.toBe(expect.anything());
 
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUser(
@@ -272,8 +260,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { users } = await createInitialData(keystone);
             let user = users[0];
             const friendName = sampleOne(alphanumGenerator);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUser(
@@ -303,8 +290,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { friend, user } = await createUserAndFriend(keystone);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUser(
@@ -331,8 +317,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { friend, user } = await createUserAndFriend(keystone);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUser(
@@ -361,8 +346,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { friend, user } = await createUserAndFriend(keystone);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `mutation { deleteUser(id: "${user.id}") { id } } `,
             });
             expect(errors).toBe(undefined);
@@ -383,8 +367,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
               // Delete company {name}
               const id = users.find(company => company.name === name).id;
-              const { data, errors } = await graphqlRequest({
-                keystone,
+              const { data, errors } = await keystone.executeGraphQL({
                 query: `mutation { deleteUser(id: "${id}") { id } }`,
               });
               expect(errors).toBe(undefined);
@@ -392,8 +375,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
               // Check all the companies look how we expect
               await (async () => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: '{ allUsers(sortBy: name_ASC) { id name friend { id name } } }',
                 });
                 expect(errors).toBe(undefined);
@@ -422,8 +404,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
               // Check all the friends look how we expect
               await (async () => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: '{ allUsers(sortBy: name_ASC) { id name } }',
                 });
                 expect(errors).toBe(undefined);
@@ -446,8 +427,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
               // Delete friend {name}
               const id = users.find(user => user.name === name).id;
-              const { data, errors } = await graphqlRequest({
-                keystone,
+              const { data, errors } = await keystone.executeGraphQL({
                 query: `mutation { deleteUser(id: "${id}") { id } }`,
               });
               expect(errors).toBe(undefined);
@@ -455,8 +435,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
               // Check all the companies look how we expect
               await (async () => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: '{ allUsers(sortBy: name_ASC) { id name friend { id name } } }',
                 });
                 expect(errors).toBe(undefined);
@@ -491,8 +470,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
               // Check all the friends look how we expect
               await (async () => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: '{ allUsers(sortBy: name_ASC) { id name } }',
                 });
                 expect(errors).toBe(undefined);

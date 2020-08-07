@@ -26,6 +26,10 @@ export class Relationship extends Implementation {
     this.withMeta = typeof withMeta !== 'undefined' ? withMeta : true;
   }
 
+  get _supportsUnique() {
+    return true;
+  }
+
   tryResolveRefList() {
     const { listKey, path, refListKey, refFieldPath } = this;
     const refList = this.getListByKey(refListKey);

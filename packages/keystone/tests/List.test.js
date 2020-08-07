@@ -1,4 +1,4 @@
-const gql = require('graphql-tag');
+const { gql } = require('apollo-server-express');
 const { print } = require('graphql/language/printer');
 const { MockAdapter, MockIdType, MockListAdapter } = require('@keystonejs/test-utils');
 

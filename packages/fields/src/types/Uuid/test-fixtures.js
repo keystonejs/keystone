@@ -7,6 +7,8 @@ export { fieldType as name };
 
 export { Uuid as type };
 export const exampleValue = '"7b36c9fe-274d-45f1-9f5d-8d4595959734"';
+export const exampleValue2 = '"c0d37cbc-2f01-432c-89e0-405d54fd4cdc"';
+export const supportsUnique = true;
 
 export const getTestFields = () => {
   return {

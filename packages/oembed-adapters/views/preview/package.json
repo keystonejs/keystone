@@ -1,0 +1,4 @@
+{
+  "main": "dist/oembed-adapters.cjs.js",
+  "module": "dist/oembed-adapters.esm.js"
+}

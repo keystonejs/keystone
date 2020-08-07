@@ -1,4 +1,4 @@
-const { multiAdapterRunners, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners } = require('@keystonejs/test-utils');
 const { arrayToObject } = require('@keystonejs/utils');
 const {
   setupKeystone,
@@ -49,8 +49,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
       const _before = await before(setupKeystone);
       keystone = _before.keystone;
 
-      const { data, errors } = await graphqlRequest({
-        keystone,
+      const { data, errors } = await keystone.executeGraphQL({
         query: introspectionQuery,
       });
       expect(errors).toBe(undefined);

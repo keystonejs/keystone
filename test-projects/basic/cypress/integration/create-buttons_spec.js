@@ -75,4 +75,21 @@ describe('Home page', () => {
       cy.contains('div', `Create ${text} Dialog`).should('not.exist');
     });
   });
+
+  it('Ensure Create Modal triggers a confirmation dialog when form data is filled, and user hits cancel button', () => {
+    cy.visit('/admin/users');
+
+    cy.get('#list-page-create-button').click({ force: true });
+    cy.get('#ks-input-name').type('Aman', {
+      force: true,
+    });
+    cy.contains('div', `Create User Dialog`)
+      .contains('button', 'Cancel')
+      .click({ force: true });
+
+    cy.get('div[role="alertdialog"]')
+      .contains('button', 'Cancel')
+      .click({ force: true });
+    cy.contains('div', `Create User Dialog`).should('exist');
+  });
 });

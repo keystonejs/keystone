@@ -1,6 +1,6 @@
 // Derived from https://github.com/zeit/next.js/tree/2789e7e0c25c72fbf6be3ef070e530186af14430/examples/with-apollo
 import React from 'react';
-import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloProvider } from '@apollo/client';
 import createApolloClient from '../apolloClient';
 
 // On the client, we store the Apollo Client in the following variable.
