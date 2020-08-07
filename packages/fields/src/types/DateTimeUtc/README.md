@@ -11,7 +11,7 @@ title: DateTimeUtc
 Accepts only values that include an offset, explicitly or implicitly (as in JS `Date` objects).
 Produces JS `Date` objects and ISO 8601 strings.
 
-Unlike the core `DateTime` field type only the UTC value is stored.
+Unlike the `DateTime` field type only the UTC value is stored.
 
 ## Usage
 
