@@ -85,23 +85,38 @@ const getItems = async ({
   keystone,
   listKey,
   where = {},
+  sortBy,
+  first,
+  skip,
   pageSize = 500,
   returnFields = `id`,
   context,
 }) => {
-  const { listQueryName, whereInputName } = keystone.lists[listKey].gqlNames;
-  const query = `query ($first: Int!, $skip: Int!, $where: ${whereInputName}) { ${listQueryName}(first: $first, skip: $skip, where: $where) { ${returnFields} }  }`;
+  const { listQueryName, whereInputName, listSortName } = keystone.lists[listKey].gqlNames;
 
-  let skip = 0;
+  let query;
+  if (sortBy) {
+    query = `query ($first: Int!, $skip: Int!, $sortBy: [${listSortName}!], $where: ${whereInputName}) { ${listQueryName}(first: $first, skip: $skip, sortBy: $sortBy, where: $where) { ${returnFields} }  }`;
+  } else {
+    query = `query ($first: Int!, $skip: Int!, $where: ${whereInputName}) { ${listQueryName}(first: $first, skip: $skip, where: $where) { ${returnFields} }  }`;
+  }
+
   let latestResult;
+  let _skip = skip || 0;
+
+  let _first = pageSize;
   const allItems = [];
 
   do {
+    // Making sure we are not over fetching
+    if (first && allItems.length + _first > first) {
+      _first = first - allItems.length;
+    }
     const response = await runQuery({
       keystone,
       query,
       context,
-      variables: { first: pageSize, skip, where },
+      variables: { first: _first, skip: _skip, sortBy, where },
     });
 
     latestResult = response[Object.keys(response || {})[0]];
@@ -109,7 +124,7 @@ const getItems = async ({
     allItems.push(...latestResult);
 
     skip += pageSize;
-  } while (latestResult.length);
+  } while (latestResult.length === _first && (first === undefined || allItems.length < first));
 
   return allItems;
 };
