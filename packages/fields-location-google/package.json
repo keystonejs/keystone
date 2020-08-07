@@ -1,10 +1,10 @@
 {
-  "name": "@keystonejs/fields-location",
-  "description": "KeystoneJS Location field type.",
+  "name": "@keystonejs/fields-location-google",
+  "description": "KeystoneJS LocationGoogle field type.",
   "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
-  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-location",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-location-google",
   "homepage": "https://github.com/keystonejs/keystone",
   "engines": {
     "node": ">=10.0.0"
@@ -29,6 +29,6 @@
       "views/*.js"
     ]
   },
-  "main": "dist/fields-location.cjs.js",
-  "module": "dist/fields-location.esm.js"
+  "main": "dist/fields-location-google.cjs.js",
+  "module": "dist/fields-location-google.esm.js"
 }

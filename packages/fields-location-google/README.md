@@ -1,17 +1,17 @@
 <!--[meta]
 section: api
 subSection: field-types
-title: Location
+title: LocationGoogle
 [meta]-->
 
-# Location
+# LocationGoogle
 
-The Location Field Type enables storing data from the Google Maps API.
+The LocationGoogle Field Type enables storing data from the Google Maps API.
 
 ## Usage
 
 ```javascript
-const { Location } = require('@keystonejs/fields-location');
+const { LocationGoogle } = require('@keystonejs/fields-location-google');
 const { Keystone } = require('@keystonejs/keystone');
 
 const keystone = new Keystone({...});
@@ -19,7 +19,7 @@ const keystone = new Keystone({...});
 keystone.createList('Event', {
   fields: {
     venue: {
-      type: Location,
+      type: LocationGoogle,
       googleMapsKey: 'GOOGLE_MAPS_KEY',
     },
   },

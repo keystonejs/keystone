@@ -13,14 +13,14 @@ const {
   Types: { ObjectId },
 } = mongoose;
 
-export class Location extends Implementation {
+export class LocationGoogleImplementation extends Implementation {
   constructor(_, { googleMapsKey }) {
     super(...arguments);
-    this.graphQLOutputType = 'Location';
+    this.graphQLOutputType = 'LocationGoogle';
 
     if (!googleMapsKey) {
       throw new Error(
-        'You must provide a `googleMapsKey` to Location Field. To generate a Google Maps API please visit: https://developers.google.com/maps/documentation/javascript/get-api-key'
+        'You must provide a `googleMapsKey` to LocationGoogle Field. To generate a Google Maps API please visit: https://developers.google.com/maps/documentation/javascript/get-api-key'
       );
     }
 
@@ -134,7 +134,7 @@ const CommonLocationInterface = superclass =>
     }
   };
 
-export class MongoLocationInterface extends CommonLocationInterface(MongooseFieldAdapter) {
+export class MongoLocationGoogleInterface extends CommonLocationInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     const schemaOptions = {
       type: {
@@ -149,7 +149,7 @@ export class MongoLocationInterface extends CommonLocationInterface(MongooseFiel
   }
 }
 
-export class KnexLocationInterface extends CommonLocationInterface(KnexFieldAdapter) {
+export class KnexLocationGoogleInterface extends CommonLocationInterface(KnexFieldAdapter) {
   constructor() {
     super(...arguments);
 
