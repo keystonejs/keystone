@@ -123,10 +123,11 @@ class SessionManager {
   }
 
   endAuthedSession(req) {
+    const { keystoneListKey, keystoneItemId } = req.session || {};
     return new Promise((resolve, reject) =>
       req.session.regenerate(err => {
         if (err) return reject(err);
-        resolve({ success: true });
+        resolve({ success: true, listKey: keystoneListKey, itemId: keystoneItemId });
       })
     );
   }

@@ -27,6 +27,7 @@
     "@keystonejs/field-content": "^7.0.3",
     "@keystonejs/fields": "^15.0.0",
     "@keystonejs/fields-cloudinary-image": "^0.0.0",
+    "@keystonejs/fields-color": "^0.0.0",
     "@keystonejs/fields-markdown": "^5.2.3",
     "@keystonejs/fields-oembed": "^0.0.0",
     "@keystonejs/fields-unsplash": "^0.0.0",

@@ -9,7 +9,6 @@ const {
   Checkbox,
   CalendarDay,
   DateTime,
-  Color,
   Url,
   Decimal,
   Slug,
@@ -19,6 +18,7 @@ const { Content } = require('@keystonejs/field-content');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
 const { Markdown } = require('@keystonejs/fields-markdown');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
+const { Color } = require('@keystonejs/fields-color');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');

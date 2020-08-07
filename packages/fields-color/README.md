@@ -12,7 +12,7 @@ Presents in the Admin UI as an interactive color picker.
 ## Usage
 
 ```js
-const { Color } = require('@keystonejs/fields');
+const { Color } = require('@keystonejs/fields-color');
 
 keystone.createList('Product', {
   fields: {
