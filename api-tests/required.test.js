@@ -10,7 +10,6 @@ describe('Test isRequired flag for all field types', () => {
         .map(require)
         .filter(({ skipRequiredTest }) => !skipRequiredTest)
         .forEach(mod => {
-          console.log(mod.type);
           describe(`Test isRequired flag for module: ${mod.name}`, () => {
             const keystoneTestWrapper = testFn =>
               runner(
