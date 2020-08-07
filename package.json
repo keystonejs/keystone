@@ -180,8 +180,7 @@
   "field-types": {
     "packages": [
       "packages/field-content",
-      "packages/fields",
-      "packages/fields-datetime-utc"
+      "packages/fields"
     ]
   },
   "jest": {
