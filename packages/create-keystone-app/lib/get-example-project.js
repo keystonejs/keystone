@@ -1,6 +1,6 @@
 const prompts = require('prompts');
 const { getArgs } = require('./get-args');
-const { projects } = require('../example-projects/config');
+const { getExampleProjects } = require('./github-api');
 
 let EXAMPLE_PROJECT_CHOICE;
 
@@ -9,6 +9,8 @@ const getExampleProject = async () => {
   if (EXAMPLE_PROJECT_CHOICE) {
     return EXAMPLE_PROJECT_CHOICE;
   }
+
+  const projects = await getExampleProjects();
 
   // If the project template was provided via the CLI arguments
   const args = getArgs();
@@ -47,7 +49,7 @@ const getExampleProject = async () => {
     },
     {
       onCancel: () => {
-        process.exit(0);
+        process.exit();
       },
     }
   );
