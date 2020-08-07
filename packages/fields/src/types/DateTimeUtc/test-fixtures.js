@@ -1,4 +1,4 @@
-import { DateTimeUtc } from './index';
+import DateTimeUtc from './';
 
 export const name = 'DateTimeUtc';
 export { DateTimeUtc as type };
