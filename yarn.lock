@@ -12423,10 +12423,10 @@ good-listener@^1.2.2:
   dependencies:
     delegate "^3.1.2"
 
-google-maps-react@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/google-maps-react/-/google-maps-react-2.0.2.tgz#e03fbba032fe570fb38744bf9cd10b946c591cae"
-  integrity sha512-6cYauGwt22haDUrWxKQ6yoNOqjiuxHo8YYcmb+aBvNICokdXmZOUB6Ah4vD5VexMVlrwP2PFqA/D8sHpEB52KA==
+google-maps-react@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/google-maps-react/-/google-maps-react-2.0.6.tgz#0473356207ab6b47227b393b89e4b83f6eab06da"
+  integrity sha512-M8Eo9WndfQEfxcmm6yRq03qdJgw1x6rQmJ9DN+a+xPQ3K7yNDGkVDbinrf4/8vcox7nELbeopbm4bpefKewWfQ==
 
 got@8.0.0:
   version "8.0.0"
@@ -20760,10 +20760,10 @@ react-codemirror@^1.0.0:
     lodash.isequal "^4.5.0"
     prop-types "^15.5.4"
 
-react-color@^2.17.3:
-  version "2.17.3"
-  resolved "https://registry.yarnpkg.com/react-color/-/react-color-2.17.3.tgz#b8556d744f95193468c7061d2aa19180118d4a48"
-  integrity sha512-1dtO8LqAVotPIChlmo6kLtFS1FP89ll8/OiA8EcFRDR+ntcK+0ukJgByuIQHRtzvigf26dV5HklnxDIvhON9VQ==
+react-color@^2.18.1:
+  version "2.18.1"
+  resolved "https://registry.yarnpkg.com/react-color/-/react-color-2.18.1.tgz#2cda8cc8e06a9e2c52ad391a30ddad31972472f4"
+  integrity sha512-X5XpyJS6ncplZs74ak0JJoqPi+33Nzpv5RYWWxn17bslih+X7OlgmfpmGC1fNvdkK7/SGWYf1JJdn7D2n5gSuQ==
   dependencies:
     "@icons/material" "^0.2.4"
     lodash "^4.17.11"
@@ -21100,10 +21100,10 @@ react-sortable-hoc@^0.8.3:
     invariant "^2.2.1"
     prop-types "^15.5.7"
 
-react-toast-notifications@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-2.3.0.tgz#6c05dc0ffeebb851748440c725d020043f5c5ebe"
-  integrity sha512-qhoc8pgbUQfJNbFdBqbWxH1y9DWDc+opXA3UyoF8D340ZOr7kZsqV2vIOQCBHutZX7YCX+6ClXJ/Dbnwq6W7AQ==
+react-toast-notifications@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-2.4.0.tgz#6213730bd1fe158fc01aeef200687ea94c5c5b24"
+  integrity sha512-8tkrbNh7LxkiFmtqAL/AiI55efIeI+fBk3c6ImsiZ0VObb4yvOq0cqYuJHyUiv9fuD2aBxvXGVH+n4Snt8qoWA==
   dependencies:
     "@emotion/core" "^10.0.14"
     react-transition-group "^4.3.0"

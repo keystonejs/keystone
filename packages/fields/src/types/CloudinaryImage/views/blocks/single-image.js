@@ -5,7 +5,7 @@ import insertImages from 'slate-drop-or-paste-images';
 import imageExtensions from 'image-extensions';
 import { findNode } from 'slate-react';
 import { Data, Block } from 'slate';
-import { BlockMenuItem } from '@keystonejs/field-content/block-components';
+import { BlockMenuItem } from '@keystonejs/fields-content/block-components';
 import pluralize from 'pluralize';
 
 export const type = 'cloudinaryImage';

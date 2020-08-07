@@ -1,0 +1,34 @@
+{
+  "name": "@keystonejs/fields-location-google",
+  "description": "KeystoneJS LocationGoogle field type.",
+  "version": "0.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-location-google",
+  "homepage": "https://github.com/keystonejs/keystone",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "dependencies": {
+    "@arch-ui/fields": "^3.0.3",
+    "@arch-ui/select": "^0.1.8",
+    "@babel/runtime": "^7.8.4",
+    "@emotion/core": "^10.0.28",
+    "@keystonejs/adapter-knex": "^11.0.0",
+    "@keystonejs/adapter-mongoose": "^9.0.0",
+    "@keystonejs/fields": "^15.0.0",
+    "google-maps-react": "^2.0.6",
+    "mongoose": "^5.9.11",
+    "node-fetch": "^2.3.0",
+    "react": "^16.13.1",
+    "react-toast-notifications": "^2.4.0"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "index.js",
+      "views/*.js"
+    ]
+  },
+  "main": "dist/fields-location-google.cjs.js",
+  "module": "dist/fields-location-google.esm.js"
+}

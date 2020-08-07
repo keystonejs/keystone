@@ -14,7 +14,8 @@ const {
 
 const testData = [{ data: { name: 'test', age: 30 } }, { data: { name: 'test2', age: 40 } }];
 
-const seedDb = ({ keystone }) => createItems({ keystone, listKey: 'Test', items: testData });
+const seedDb = ({ keystone, items = testData }) =>
+  createItems({ keystone, listKey: 'Test', items });
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -36,8 +37,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'createItem: Should create and get single item',
         runner(setupKeystone, async ({ keystone }) => {
+          const testContext = keystone.createContext({
+            schemaName: 'public',
+            authentication: {},
+            skipAccessControl: true,
+          });
           // Seed the db
-          const item = await createItem({ keystone, listKey: 'Test', item: testData[0].data });
+          const item = await createItem({
+            keystone,
+            context: testContext,
+            listKey: 'Test',
+            item: testData[0].data,
+          });
           expect(typeof item.id).toBe('string');
 
           // Get single item from db
@@ -143,6 +154,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       );
     });
     describe('getItems', () => {
+      const userItems = Array.from({ length: 10 }, (_, i) => ({
+        data: {
+          name: `User-${i + 1}`,
+          age: i + 1,
+        },
+      }));
       test(
         'Should get all items when no where clause',
         runner(setupKeystone, async ({ keystone }) => {
@@ -166,6 +183,117 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           expect(allItems).toEqual([{ name: 'test' }]);
+        })
+      );
+      test(
+        'sortBy: Should get all sorted items',
+        runner(setupKeystone, async ({ keystone }) => {
+          // Seed the db
+          await seedDb({ keystone });
+
+          const getItemsBySortOrder = sortBy =>
+            getItems({
+              keystone,
+              listKey: 'Test',
+              returnFields: 'name, age',
+              sortBy,
+            });
+
+          const allItemsAscAge = await getItemsBySortOrder('age_ASC');
+          const allItemsDescAge = await getItemsBySortOrder('age_DESC');
+          expect(allItemsAscAge[0]).toEqual(testData.map(x => x.data)[0]);
+          expect(allItemsDescAge[0]).toEqual(testData.map(x => x.data)[1]);
+        })
+      );
+      test(
+        'first: Should get first specfied number of items',
+        runner(setupKeystone, async ({ keystone }) => {
+          await seedDb({ keystone, items: userItems });
+
+          const getFirstItems = (first, pageSize) =>
+            getItems({
+              keystone,
+              listKey: 'Test',
+              returnFields: 'name, age',
+              pageSize,
+              first,
+            });
+          expect((await getFirstItems(9, 5)).length).toEqual(9);
+          expect((await getFirstItems(5, 9)).length).toEqual(5);
+          expect((await getFirstItems(5, 5)).length).toEqual(5);
+          expect((await getFirstItems()).length).toEqual(10);
+
+          const firstTwoItems = await getFirstItems(2);
+          expect(firstTwoItems).toEqual([
+            { name: 'User-1', age: 1 },
+            { name: 'User-2', age: 2 },
+          ]);
+        })
+      );
+      test(
+        'skip: Should skip the specfied number of items, and return the rest',
+        runner(setupKeystone, async ({ keystone }) => {
+          await seedDb({ keystone, items: userItems });
+          const skip = 3;
+          const restItems = await getItems({
+            keystone,
+            listKey: 'Test',
+            returnFields: 'name, age',
+            skip,
+          });
+          expect(restItems.length).toEqual(userItems.length - skip);
+        })
+      );
+      test(
+        'combination of sort and pagination',
+        runner(setupKeystone, async ({ keystone }) => {
+          await seedDb({ keystone, items: userItems });
+          const first = 4;
+          const getSortItems = sortBy =>
+            getItems({
+              keystone,
+              listKey: 'Test',
+              returnFields: 'name, age',
+              skip: 3,
+              first,
+              sortBy,
+            });
+          const itemsDESC = await getSortItems('age_DESC');
+          expect(itemsDESC.length).toEqual(first);
+          expect(itemsDESC[0]).toEqual({ name: 'User-7', age: 7 });
+
+          const itemsASC = await getSortItems('age_ASC');
+          expect(itemsASC.length).toEqual(4);
+          expect(itemsASC[0]).toEqual({ name: 'User-4', age: 4 });
+        })
+      );
+    });
+    describe('context', () => {
+      test(
+        'Should make keystone optional when context is present',
+        runner(setupKeystone, async ({ keystone }) => {
+          const testContext = keystone.createContext({
+            schemaName: 'public',
+            authentication: {},
+            skipAccessControl: true,
+          });
+          // Seed the db
+          const item = await createItem({
+            context: testContext,
+            listKey: 'Test',
+            item: testData[0].data,
+          });
+          expect(typeof item.id).toBe('string');
+
+          // Get single item from db
+          const singleItem = await getItem({
+            context: testContext,
+            listKey: 'Test',
+            returnFields: 'name, age',
+            itemId: item.id,
+          });
+
+          expect(singleItem).toEqual(testData[0].data);
         })
       );
     });
