@@ -13,7 +13,6 @@ Keystone contains a set of primitive fields types that can be imported from the 
 | [`CalendarDay`](/packages/fields/src/types/CalendarDay/README.md)         | An abstract "day" value; useful for Birthdays and other all-day events always celebrated in the local time zone                                        |
 | [`Checkbox`](/packages/fields/src/types/Checkbox/README.md)               | A single Boolean value                                                                                                                                 |
 | [`CloudinaryImage`](/packages/fields/src/types/CloudinaryImage/README.md) | Allows uploading images to the [Cloudinary](https://cloudinary.com/) image hosting service                                                             |
-| [`Color`](/packages/fields/src/types/Color/README.md)                     | Hexidecimal RGBA color values; uses a color picker in the Admin UI                                                                                     |
 | [`DateTime`](/packages/fields/src/types/DateTime/README.md)               | A point in time and a time zone offset                                                                                                                 |
 | [`Decimal`](/packages/fields/src/types/Decimal/README.md)                 | Exact, numeric values in base-10; useful for currency, etc.                                                                                            |
 | [`File`](/packages/fields/src/types/File/README.md)                       | Files backed various storage mediums: local filesystem, cloud based hosting, etc.                                                                      |
@@ -42,6 +41,7 @@ In addition to these, some complex types are packaged separately:
 | [`Markdown`](/packages/fields-markdown/README.md)                      | Markdown content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [CodeMirror](https://codemirror.net/) editor in the Admin UI    |
 | [`MongoId`](/packages/fields-mongoid/README.md)                        | Arbitrary [Mongo `ObjectId`](https://docs.mongodb.com/manual/reference/method/ObjectId/) values; the default type for `id` fields when using the Mongoose DB adapter  |
 | [`Wysiwyg`](/packages/fields-wysiwyg-tinymce/README.md)                | Rich text content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [TinyMCE](https://www.tiny.cloud/) editor in the Admin UI      |
+| [`Color`](/packages/fields-color/README.md)                            | Hexidecimal RGBA color values; uses a color picker in the Admin UI                                                                                                    |
 
 > **Tip:** Need something else? Keystone lets you create [custom field types](/docs/guides/custom-field-types.md) to support almost any use case.
 
