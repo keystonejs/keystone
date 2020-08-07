@@ -171,6 +171,7 @@
       "packages/fields-location-google",
       "packages/fields-wysiwyg-tinymce",
       "packages/oembed-adapters",
+      "packages/fields-content",
       "packages/fields-color"
     ],
     "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
@@ -179,7 +180,6 @@
   },
   "field-types": {
     "packages": [
-      "packages/field-content",
       "packages/fields"
     ]
   },
