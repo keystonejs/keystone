@@ -1,5 +1,57 @@
 # @keystonejs/keystone
 
+## 13.0.0
+
+### Major Changes
+
+- [`af5171563`](https://github.com/keystonejs/keystone/commit/af51715637433bcdd2538835c98ac71a8eb86122) [#3283](https://github.com/keystonejs/keystone/pull/3283) Thanks [@timleslie](https://github.com/timleslie)! - Removed `BaseListAdapter.findFieldAdapterForQuerySegment()` and `MongoRelationshipInterface.supportsRelationshipQuery()`.
+
+* [`271f1a40b`](https://github.com/keystonejs/keystone/commit/271f1a40b97e03aaa00ce920a6515b8f18669428) [#3289](https://github.com/keystonejs/keystone/pull/3289) Thanks [@timleslie](https://github.com/timleslie)! - Removed `keystone.createHTTPContext()`.
+
+- [`22b4a5c1a`](https://github.com/keystonejs/keystone/commit/22b4a5c1a13c3cca47190467be9d56e836f180f1) [#3302](https://github.com/keystonejs/keystone/pull/3302) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Removed the `keystone.createItems` and `keystone.createItem` methods. These have been replaced with the corresponding functions `createItems` and `createItem` in `@keystonejs/server-side-graphql-client`.
+
+  If you have examples like:
+
+  ```
+  keystone.createItems({
+    User: [{ name: 'Ticiana' }, { name: 'Lauren' }],
+  });
+  ```
+
+  You will need to change this to:
+
+  ```
+  const { createItems } = require('@keystonejs/server-side-graphql-client');
+  createItems({
+    keystone,
+    listName: 'User',
+    items: [{ data: { name: 'Ticiana' } }, {data:  { name: 'Lauren' } }]
+  })
+  ```
+
+* [`e07c42d4e`](https://github.com/keystonejs/keystone/commit/e07c42d4ec75d5703bec4a2e419a42d18bed90ca) [#3288](https://github.com/keystonejs/keystone/pull/3288) Thanks [@timleslie](https://github.com/timleslie)! - Removed `keystone.registerSchema()`.
+
+### Minor Changes
+
+- [`afe661e60`](https://github.com/keystonejs/keystone/commit/afe661e607539df13584d460e1016ba0fa883cb8) [#3274](https://github.com/keystonejs/keystone/pull/3274) Thanks [@jordanoverbye](https://github.com/jordanoverbye)! - Added the ability for static cache hints to be added to custom queries generated using `keystone.extendGraphQLSchema()`
+
+* [`5a3849806`](https://github.com/keystonejs/keystone/commit/5a3849806d00e62b722461d02f6e4639bc45c1eb) [#3262](https://github.com/keystonejs/keystone/pull/3262) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a new private internal schema that will allow a better method of bypassing access control on the `executeGraphQL` function.
+
+  The schema name `internal` is now a reserved name and if you have a schema with this name you will need to change it with this update.
+
+  Note: You cannot change access control on the `internal` schema.
+
+### Patch Changes
+
+- [`04f9be03d`](https://github.com/keystonejs/keystone/commit/04f9be03de7fe82035205379208511c6e49890b3) [#3319](https://github.com/keystonejs/keystone/pull/3319) Thanks [@timleslie](https://github.com/timleslie)! - Fixed invalid GraphQL schema when using `access: { update: false, auth: true }` on a list configured with an `AuthStrategy`.
+
+* [`ef7074977`](https://github.com/keystonejs/keystone/commit/ef70749775ce1565eafd7f94c3d7438c8ebd474e) [#3282](https://github.com/keystonejs/keystone/pull/3282) Thanks [@timleslie](https://github.com/timleslie)! - Updated `BaseKeystoneAdapter` to pass `rels` to `._connect()`.
+
+* Updated dependencies [[`af5171563`](https://github.com/keystonejs/keystone/commit/af51715637433bcdd2538835c98ac71a8eb86122), [`086b6baec`](https://github.com/keystonejs/keystone/commit/086b6baecdb8730bd7ae7001a96ae881fb13bac2), [`7da9d67d7`](https://github.com/keystonejs/keystone/commit/7da9d67d7d481c44a81406c6b34540a3f0a8340d), [`5a3849806`](https://github.com/keystonejs/keystone/commit/5a3849806d00e62b722461d02f6e4639bc45c1eb), [`086b6baec`](https://github.com/keystonejs/keystone/commit/086b6baecdb8730bd7ae7001a96ae881fb13bac2), [`5332988e3`](https://github.com/keystonejs/keystone/commit/5332988e3fafe6a3594f7dcecd79a9402df28015), [`c3883e01c`](https://github.com/keystonejs/keystone/commit/c3883e01c01b83cf5938de9bebf2dd68f4861364), [`fd2b8d1cf`](https://github.com/keystonejs/keystone/commit/fd2b8d1cf0b23b177951d65006a0d0faf666a5d6), [`2e10b1083`](https://github.com/keystonejs/keystone/commit/2e10b1083c0ab3925b877f16543c3d302f618313)]:
+  - @keystonejs/fields@15.0.0
+  - @keystonejs/access-control@6.3.0
+  - @keystonejs/test-utils@7.1.1
+
 ## 12.0.0
 
 ### Major Changes

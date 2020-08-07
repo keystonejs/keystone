@@ -1,7 +1,6 @@
 // Derived from https://github.com/vercel/next.js/blob/canary/examples/with-apollo/lib/apolloClient.js
 import { useMemo } from 'react';
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 
 let apolloClient;

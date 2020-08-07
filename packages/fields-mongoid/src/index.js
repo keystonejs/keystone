@@ -1,18 +1,20 @@
+import path from 'path';
 import {
   MongoIdImplementation,
   MongooseMongoIdInterface,
   KnexMongoIdInterface,
 } from './Implementation';
 import { Text } from '@keystonejs/fields';
-import { importView } from '@keystonejs/build-field-types';
+
+const pkgDir = path.dirname(require.resolve('@keystonejs/fields-mongoid/package.json'));
 
 export const MongoId = {
   type: 'MongoId',
   implementation: MongoIdImplementation,
   views: {
-    Controller: importView('./views/Controller'),
+    Controller: path.join(pkgDir, 'views/Controller'),
     Field: Text.views.Field,
-    Filter: importView('./views/Filter'),
+    Filter: path.join(pkgDir, 'views/Filter'),
   },
   adapters: {
     knex: KnexMongoIdInterface,

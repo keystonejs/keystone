@@ -2,18 +2,23 @@ const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Password, DateTime } = require('@keystonejs/fields');
 const { multiAdapterRunners, networkedGraphqlRequest } = require('@keystonejs/test-utils');
 const { setupServer } = require('@keystonejs/test-utils');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 const initialData = {
   User: [
     {
-      name: 'Boris Bozic',
-      email: 'boris@keystone.com',
-      password: 'correctbattery',
+      data: {
+        name: 'Boris Bozic',
+        email: 'boris@keystone.com',
+        password: 'correctbattery',
+      },
     },
     {
-      name: 'Jed Watson',
-      email: 'jed@keystone.com',
-      password: 'horsestaple',
+      data: {
+        name: 'Jed Watson',
+        email: 'jed@keystone.com',
+        password: 'horsestaple',
+      },
     },
   ],
 };
@@ -84,7 +89,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'Gives access denied when not logged in',
         runner(setupKeystone, async ({ keystone, app }) => {
           // seed the db
-          await keystone.createItems(initialData);
+          for (const [listKey, items] of Object.entries(initialData)) {
+            await createItems({ keystone, listKey, items });
+          }
           const { data, errors } = await networkedGraphqlRequest({
             app,
             query: '{ allUsers { id } }',
@@ -98,11 +105,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test(
           'Allows access with bearer token',
           runner(setupKeystone, async ({ keystone, app }) => {
-            await keystone.createItems(initialData);
+            for (const [listKey, items] of Object.entries(initialData)) {
+              await createItems({ keystone, listKey, items });
+            }
             const { token } = await login(
               app,
-              initialData.User[0].email,
-              initialData.User[0].password
+              initialData.User[0].data.email,
+              initialData.User[0].data.password
             );
 
             expect(token).toBeTruthy();
@@ -123,11 +132,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test(
           'Allows access with cookie',
           runner(setupKeystone, async ({ keystone, app }) => {
-            await keystone.createItems(initialData);
+            for (const [listKey, items] of Object.entries(initialData)) {
+              await createItems({ keystone, listKey, items });
+            }
             const { token } = await login(
               app,
-              initialData.User[0].email,
-              initialData.User[0].password
+              initialData.User[0].data.email,
+              initialData.User[0].data.password
             );
 
             expect(token).toBeTruthy();

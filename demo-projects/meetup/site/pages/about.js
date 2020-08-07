@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import getConfig from 'next/config';
 import { jsx } from '@emotion/core';
 
@@ -134,6 +134,6 @@ export async function getStaticProps() {
     props: {
       initialApolloState: apolloClient.cache.extract(),
     },
-    unstable_revalidate: 1,
+    revalidate: 1,
   };
 }

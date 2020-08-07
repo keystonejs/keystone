@@ -5,8 +5,7 @@ import pluralize from 'pluralize';
 import { BlockMenuItem } from '@keystonejs/field-content/block-components';
 import { Input } from '@arch-ui/input';
 
-import { useLazyQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { gql, useLazyQuery } from '@apollo/client';
 
 export let type = 'unsplashImage';
 

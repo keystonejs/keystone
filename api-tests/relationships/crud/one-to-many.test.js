@@ -1,12 +1,11 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const createInitialData = async keystone => {
-  const { data, errors } = await graphqlRequest({
-    keystone,
+  const { data, errors } = await keystone.executeGraphQL({
     query: `
       mutation {
         createCompanies(data: [
@@ -29,8 +28,7 @@ const createCompanyAndLocation = async keystone => {
   const {
     data: { createCompany },
     errors,
-  } = await graphqlRequest({
-    keystone,
+  } = await keystone.executeGraphQL({
     query: `
       mutation {
         createCompany(data: {
@@ -53,8 +51,7 @@ const createCompanyAndLocation = async keystone => {
 };
 
 const getCompanyAndLocation = async (keystone, companyId, locationId) => {
-  const { data } = await graphqlRequest({
-    keystone,
+  const { data } = await keystone.executeGraphQL({
     query: `
       {
         Company(where: { id: "${companyId}"} ) { id locations { id } }
@@ -66,8 +63,7 @@ const getCompanyAndLocation = async (keystone, companyId, locationId) => {
 
 const createReadData = async keystone => {
   // create locations [A, A, B, B, C, C, D];
-  const { data, errors } = await graphqlRequest({
-    keystone,
+  const { data, errors } = await keystone.executeGraphQL({
     query: `mutation create($locations: [LocationsCreateInput]) { createLocations(data: $locations) { id name } }`,
     variables: {
       locations: ['A', 'A', 'B', 'B', 'C', 'C', 'D'].map(name => ({ data: { name } })),
@@ -83,8 +79,7 @@ const createReadData = async keystone => {
       '': [], //  -> []
     }).map(async ([name, locationIdxs]) => {
       const ids = locationIdxs.map(i => ({ id: createLocations[i].id }));
-      const { data, errors } = await graphqlRequest({
-        keystone,
+      const { data, errors } = await keystone.executeGraphQL({
         query: `mutation create($locations: [LocationWhereUniqueInput], $name: String) { createCompany(data: {
           name: $name
     locations: { connect: $locations }
@@ -131,8 +126,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 ['C', 4],
                 ['D', 0],
               ].map(async ([name, count]) => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `{ allLocations(where: { company: { name_contains: "${name}"}}) { id }}`,
                 });
                 expect(errors).toBe(undefined);
@@ -145,8 +139,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'is_null: true',
           runner(setupKeystone, async ({ keystone }) => {
             await createReadData(keystone);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `{ allLocations(where: { company_is_null: true }) { id }}`,
             });
             expect(errors).toBe(undefined);
@@ -157,8 +150,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'is_null: false',
           runner(setupKeystone, async ({ keystone }) => {
             await createReadData(keystone);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `{ allLocations(where: { company_is_null: false }) { id }}`,
             });
             expect(errors).toBe(undefined);
@@ -176,8 +168,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 ['C', 2],
                 ['D', 0],
               ].map(async ([name, count]) => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `{ allCompanies(where: { locations_some: { name: "${name}"}}) { id }}`,
                 });
                 expect(errors).toBe(undefined);
@@ -197,8 +188,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 ['C', 2],
                 ['D', 4],
               ].map(async ([name, count]) => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `{ allCompanies(where: { locations_none: { name: "${name}"}}) { id }}`,
                 });
                 expect(errors).toBe(undefined);
@@ -218,8 +208,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 ['C', 2],
                 ['D', 1],
               ].map(async ([name, count]) => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `{ allCompanies(where: { locations_every: { name: "${name}"}}) { id }}`,
                 });
                 expect(errors).toBe(undefined);
@@ -235,8 +224,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'Count',
           runner(setupKeystone, async ({ keystone }) => {
             await createInitialData(keystone);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 {
                   _allCompaniesMeta { count }
@@ -257,8 +245,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           runner(setupKeystone, async ({ keystone }) => {
             const { locations } = await createInitialData(keystone);
             const location = locations[0];
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createCompany(data: {
@@ -290,8 +277,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           'With create',
           runner(setupKeystone, async ({ keystone }) => {
             const locationName = sampleOne(alphanumGenerator);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createCompany(data: {
@@ -323,8 +309,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const company = companies[0];
             const locationName = sampleOne(alphanumGenerator);
 
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createCompany(data: {
@@ -348,8 +333,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const {
               data: { allCompanies },
               errors: errors2,
-            } = await graphqlRequest({
-              keystone,
+            } = await keystone.executeGraphQL({
               query: `{ allCompanies { id locations { id company { id } } } }`,
             });
             expect(errors2).toBe(undefined);
@@ -371,8 +355,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const locationName = sampleOne(alphanumGenerator);
             const companyName = sampleOne(alphanumGenerator);
 
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   createCompany(data: {
@@ -396,8 +379,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const {
               data: { allCompanies },
               errors: errors2,
-            } = await graphqlRequest({
-              keystone,
+            } = await keystone.executeGraphQL({
               query: `{ allCompanies { id locations { id company { id } } } }`,
             });
             expect(errors2).toBe(undefined);
@@ -425,8 +407,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(company.location).not.toBe(expect.anything());
             expect(location.company).not.toBe(expect.anything());
 
-            const { errors } = await graphqlRequest({
-              keystone,
+            const { errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateCompany(
@@ -456,8 +437,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { companies } = await createInitialData(keystone);
             let company = companies[0];
             const locationName = sampleOne(alphanumGenerator);
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateCompany(
@@ -490,8 +470,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { location, company } = await createCompanyAndLocation(keystone);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateCompany(
@@ -519,8 +498,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { location, company } = await createCompanyAndLocation(keystone);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateCompany(
@@ -550,8 +528,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { location, company } = await createCompanyAndLocation(keystone);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await graphqlRequest({
-              keystone,
+            const { data, errors } = await keystone.executeGraphQL({
               query: `mutation { deleteCompany(id: "${company.id}") { id } } `,
             });
             expect(errors).toBe(undefined);

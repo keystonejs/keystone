@@ -8,6 +8,7 @@ module.exports = async keystone => {
       _allUsersMeta: { count },
     },
   } = await keystone.executeGraphQL({
+    context: keystone.createContext({ skipAccessControl: true }),
     query: `query {
       _allUsersMeta {
         count
@@ -19,7 +20,8 @@ module.exports = async keystone => {
     const password = randomString();
     const email = 'admin@example.com';
 
-    await keystone.executeGraphQL({
+    const { errors } = await keystone.executeGraphQL({
+      context: keystone.createContext({ skipAccessControl: true }),
       query: `mutation initialUser($password: String, $email: String) {
             createUser(data: {name: "Admin", email: $email, isAdmin: true, password: $password}) {
               id
@@ -28,12 +30,17 @@ module.exports = async keystone => {
       variables: { password, email },
     });
 
-    console.log(`
+    if (errors) {
+      console.log('failed to create initial user:');
+      console.log(errors);
+    } else {
+      console.log(`
 
-User created:
-  email: ${email}
-  password: ${password}
-Please change these details after initial login.
-`);
+      User created:
+        email: ${email}
+        password: ${password}
+      Please change these details after initial login.
+      `);
+    }
   }
 };
