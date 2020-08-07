@@ -1,4 +1,4 @@
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from '../resolve-view';
 import { Block } from '../Block';
 import listItem from './list-item';
 
@@ -7,6 +7,6 @@ export default class OrderedListBlock extends Block {
     return 'ordered-list';
   }
   getAdminViews() {
-    return [importView('../views/editor/blocks/ordered-list'), ...new listItem().getAdminViews()];
+    return [resolveView('views/editor/blocks/ordered-list'), ...new listItem().getAdminViews()];
   }
 }

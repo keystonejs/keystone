@@ -1,4 +1,4 @@
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from '../resolve-view';
 import { Block } from '../Block';
 
 export default class ParagraphBlock extends Block {
@@ -6,6 +6,6 @@ export default class ParagraphBlock extends Block {
     return 'paragraph';
   }
   getAdminViews() {
-    return [importView('../views/editor/blocks/paragraph')];
+    return [resolveView('views/editor/blocks/paragraph')];
   }
 }

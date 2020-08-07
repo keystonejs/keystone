@@ -1,4 +1,3 @@
-import { importView } from '@keystonejs/build-field-types';
 import { Text } from '@keystonejs/fields';
 import {
   Content as ContentType,
@@ -13,14 +12,15 @@ import {
   orderedList,
   unorderedList,
 } from './blocks';
+import { resolveView } from './resolve-view';
 
 export const Content = {
   type: 'Content',
   implementation: ContentType,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Cell: importView('./views/Cell'),
+    Controller: resolveView('views/Controller'),
+    Field: resolveView('views/Field'),
+    Cell: resolveView('views/Cell'),
     Filter: Text.views.Filter,
   },
   adapters: {

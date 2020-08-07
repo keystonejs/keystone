@@ -1,4 +1,4 @@
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from '../resolve-view';
 import { Block } from '../Block';
 
 export default class LinkBlock extends Block {
@@ -6,6 +6,6 @@ export default class LinkBlock extends Block {
     return 'link';
   }
   getAdminViews() {
-    return [importView('../views/editor/blocks/link')];
+    return [resolveView('views/editor/blocks/link')];
   }
 }

@@ -169,7 +169,8 @@
       "packages/fields-markdown",
       "packages/fields-mongoid",
       "packages/fields-wysiwyg-tinymce",
-      "packages/oembed-adapters"
+      "packages/oembed-adapters",
+      "packages/fields-content"
     ],
     "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
       "newEntrypoints": true
@@ -177,7 +178,6 @@
   },
   "field-types": {
     "packages": [
-      "packages/field-content",
       "packages/fields"
     ]
   },

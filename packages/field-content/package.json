@@ -1,5 +1,5 @@
 {
-    "name": "@keystonejs/fields-content",
+    "name": "@keystonejs/field-content",
     "description": "A block-based content field for KeystoneJS",
     "version": "7.0.3",
     "author": "The KeystoneJS Development Team",
@@ -7,6 +7,6 @@
     "engines": {
       "node": ">=10.0.0"
     },
-    "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-content"
+    "repository": "https://github.com/keystonejs/keystone/tree/master/packages/field-content"
   }
   
