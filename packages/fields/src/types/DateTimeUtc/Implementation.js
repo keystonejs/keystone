@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { Implementation } from '@keystonejs/fields';
+import { Implementation } from '../../Implementation';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 

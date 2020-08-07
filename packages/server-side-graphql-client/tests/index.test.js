@@ -37,8 +37,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'createItem: Should create and get single item',
         runner(setupKeystone, async ({ keystone }) => {
+          const testContext = keystone.createContext({
+            schemaName: 'public',
+            authentication: {},
+            skipAccessControl: true,
+          });
           // Seed the db
-          const item = await createItem({ keystone, listKey: 'Test', item: testData[0].data });
+          const item = await createItem({
+            keystone,
+            context: testContext,
+            listKey: 'Test',
+            item: testData[0].data,
+          });
           expect(typeof item.id).toBe('string');
 
           // Get single item from db
@@ -255,6 +265,35 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const itemsASC = await getSortItems('age_ASC');
           expect(itemsASC.length).toEqual(4);
           expect(itemsASC[0]).toEqual({ name: 'User-4', age: 4 });
+        })
+      );
+    });
+    describe('context', () => {
+      test(
+        'Should make keystone optional when context is present',
+        runner(setupKeystone, async ({ keystone }) => {
+          const testContext = keystone.createContext({
+            schemaName: 'public',
+            authentication: {},
+            skipAccessControl: true,
+          });
+          // Seed the db
+          const item = await createItem({
+            context: testContext,
+            listKey: 'Test',
+            item: testData[0].data,
+          });
+          expect(typeof item.id).toBe('string');
+
+          // Get single item from db
+          const singleItem = await getItem({
+            context: testContext,
+            listKey: 'Test',
+            returnFields: 'name, age',
+            itemId: item.id,
+          });
+
+          expect(singleItem).toEqual(testData[0].data);
         })
       );
     });

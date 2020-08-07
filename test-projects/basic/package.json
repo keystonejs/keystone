@@ -26,6 +26,7 @@
     "@keystonejs/app-static": "^5.1.2",
     "@keystonejs/field-content": "^7.0.3",
     "@keystonejs/fields": "^15.0.0",
+    "@keystonejs/fields-color": "^0.0.0",
     "@keystonejs/fields-markdown": "^5.2.3",
     "@keystonejs/fields-wysiwyg-tinymce": "^5.3.4",
     "@keystonejs/file-adapters": "^7.0.2",
