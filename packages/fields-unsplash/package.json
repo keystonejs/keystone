@@ -18,7 +18,6 @@
     "@emotion/core": "^10.0.28",
     "@keystonejs/adapter-knex": "^11.0.0",
     "@keystonejs/adapter-mongoose": "^9.0.0",
-    "@keystonejs/build-field-types": "^5.2.10",
     "@keystonejs/field-content": "^7.0.2",
     "@keystonejs/fields": "^15.0.0",
     "graphql-tag": "^2.10.3",
@@ -34,5 +33,12 @@
     "react": "^16.13.1"
   },
   "main": "dist/fields-unsplash.cjs.js",
-  "module": "dist/fields-unsplash.esm.js"
+  "module": "dist/fields-unsplash.esm.js",
+  "preconstruct": {
+    "entrypoints": [
+      "index.js",
+      "views/*.js",
+      "views/blocks/unsplash-image.js"
+    ]
+  }
 }

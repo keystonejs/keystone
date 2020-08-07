@@ -1,5 +1,5 @@
 import pluralize from 'pluralize';
-import { importView } from '@keystonejs/build-field-types';
+import path from 'path';
 
 import { Block } from '@keystonejs/field-content/Block';
 import { Unsplash } from '.';
@@ -17,6 +17,11 @@ const RelationshipWrapper = {
     }
   },
 };
+
+const unsplashBlockView = path.join(
+  path.dirname(require.resolve('@keystonejs/fields-unsplash/package.json')),
+  'views/blocks/unsplash-image'
+);
 
 export class UnsplashBlock extends Block {
   constructor(
@@ -98,7 +103,7 @@ export class UnsplashBlock extends Block {
   }
 
   getAdminViews() {
-    return [importView('./views/blocks/unsplash-image')];
+    return [unsplashBlockView];
   }
 
   getViewOptions() {

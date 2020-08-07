@@ -21,4 +21,6 @@ export default class FileController extends Controller {
     }
     return image.unsplashId;
   };
+
+  getFilterTypes = () => [];
 }
