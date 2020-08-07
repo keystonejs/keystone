@@ -266,7 +266,7 @@ class KnexListAdapter extends BaseListAdapter {
     super(...arguments);
     this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
     this.realKeys = [];
-    this.tableName = this.key;
+    this.tableName = this.config.tableName || this.key;
     this.rels = undefined;
   }
 
