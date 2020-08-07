@@ -1,5 +1,5 @@
 ---
-'@keystonejs/oembed-adapters': minor
+'@keystonejs/fields-oembed': minor
 ---
 
 Added a `parameters` config option that allows setting additional request parameters to the url.

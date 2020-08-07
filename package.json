@@ -172,7 +172,6 @@
       "packages/fields-markdown",
       "packages/fields-mongoid",
       "packages/fields-wysiwyg-tinymce",
-      "packages/oembed-adapters",
       "packages/fields-content",
       "packages/fields-color"
     ],
