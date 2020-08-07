@@ -1,5 +1,6 @@
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { Text, DateTime } = require('@keystonejs/fields');
+const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -24,8 +25,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { __schema },
             errors,
-          } = await graphqlRequest({
-            keystone,
+          } = await keystone.executeGraphQL({
             query: `
         query {
           __schema {
@@ -74,14 +74,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'response is serialized as a String',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const postedAt = '2018-08-31T06:49:07.000Z';
 
-          const createPost = await create('Post', { postedAt });
+          const createPost = await createItem({ keystone, listKey: 'Post', item: { postedAt } });
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         query {
           Post(where: { id: "${createPost.id}" }) {
@@ -101,8 +100,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const postedAt = '2018-08-31T06:49:07.000Z';
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           createPost(data: { postedAt: "${postedAt}" }) {
@@ -119,15 +117,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'correctly overrides with new value',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const postedAt = '2018-08-31T06:49:07.000Z';
           const updatedPostedAt = '2018-12-07T05:54:00.556Z';
 
-          const createPost = await create('Post', { postedAt });
+          const createPost = await createItem({ keystone, listKey: 'Post', item: { postedAt } });
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           updatePost(id: "${createPost.id}", data: { postedAt: "${updatedPostedAt}" }) {
@@ -143,14 +140,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'allows replacing date with null',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const postedAt = '2018-08-31T06:49:07.000Z';
 
-          const createPost = await create('Post', { postedAt });
+          const createPost = await createItem({ keystone, listKey: 'Post', item: { postedAt } });
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           updatePost(id: "${createPost.id}", data: { postedAt: null }) {
@@ -168,8 +164,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'allows initialising to null',
         runner(setupKeystone, async ({ keystone }) => {
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           createPost(data: { postedAt: null }) {
@@ -185,15 +180,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'Does not get clobbered when updating unrelated field',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const postedAt = '2018-08-31T06:49:07.000Z';
           const title = 'Hello world';
 
-          const createPost = await create('Post', { postedAt, title });
+          const createPost = await createItem({
+            keystone,
+            listKey: 'Post',
+            item: { postedAt, title },
+          });
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
         mutation {
           updatePost(id: "${createPost.id}", data: { title: "Something else" }) {

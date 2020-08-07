@@ -1,4 +1,4 @@
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 
 const { CalendarDay } = require('@keystonejs/fields');
 
@@ -21,8 +21,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'Valid date passes validation',
         runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `mutation { createUser(data: { birthday: "2001-01-01" }) { birthday } }`,
           });
           expect(errors).toBe(undefined);
@@ -33,8 +32,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'date === dateTo passes validation',
         runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `mutation { createUser(data: { birthday: "2020-01-01" }) { birthday } }`,
           });
           expect(errors).toBe(undefined);
@@ -45,8 +43,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'date === dateFrom passes validation',
         runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `mutation { createUser(data: { birthday: "2020-01-01" }) { birthday } }`,
           });
           expect(errors).toBe(undefined);
@@ -57,8 +54,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'Invalid date failsvalidation',
         runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `mutation { createUser(data: { birthday: "3000-01-01" }) { birthday } }`,
           });
           expect(errors).toHaveLength(1);

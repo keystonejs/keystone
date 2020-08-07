@@ -1,5 +1,11 @@
 # @keystonejs/build-field-types
 
+## 5.2.11
+
+### Patch Changes
+
+- [`d7e011319`](https://github.com/keystonejs/keystone/commit/d7e011319d18275e7e3ca1ab2209b2042c6775cb) [#3277](https://github.com/keystonejs/keystone/pull/3277) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded Jest to v26.
+
 ## 5.2.10
 
 ### Patch Changes

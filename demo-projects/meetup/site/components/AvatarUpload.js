@@ -2,8 +2,7 @@
 import { jsx } from '@emotion/core';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import gql from 'graphql-tag';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import { useToasts } from 'react-toast-notifications';
 import { Avatar } from './Avatar';
 

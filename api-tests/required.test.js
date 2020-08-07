@@ -1,5 +1,5 @@
 const globby = require('globby');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { Text } = require('@keystonejs/fields');
 
 describe('Test isRequired flag for all field types', () => {
@@ -34,8 +34,7 @@ describe('Test isRequired flag for all field types', () => {
             test(
               'Create an object without the required field',
               keystoneTestWrapper(async ({ keystone }) => {
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `
                   mutation {
                     createTest(data: { name: "test entry" } ) { id }
@@ -52,16 +51,14 @@ describe('Test isRequired flag for all field types', () => {
             test(
               'Update an object with the required field having a null value',
               keystoneTestWrapper(async ({ keystone }) => {
-                const { data: data0, errors: errors0 } = await graphqlRequest({
-                  keystone,
+                const { data: data0, errors: errors0 } = await keystone.executeGraphQL({
                   query: `
                   mutation {
                     createTest(data: { name: "test entry", testField: ${mod.exampleValue} } ) { id }
                   }`,
                 });
                 expect(errors0).toBe(undefined);
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `
                   mutation {
                     updateTest(id: "${data0.createTest.id}" data: { name: "updated test entry", testField: null } ) { id }
@@ -78,16 +75,14 @@ describe('Test isRequired flag for all field types', () => {
             test(
               'Update an object without the required field',
               keystoneTestWrapper(async ({ keystone }) => {
-                const { data: data0, errors: errors0 } = await graphqlRequest({
-                  keystone,
+                const { data: data0, errors: errors0 } = await keystone.executeGraphQL({
                   query: `
                   mutation {
                     createTest(data: { name: "test entry", testField: ${mod.exampleValue} } ) { id }
                   }`,
                 });
                 expect(errors0).toBe(undefined);
-                const { data, errors } = await graphqlRequest({
-                  keystone,
+                const { data, errors } = await keystone.executeGraphQL({
                   query: `
                   mutation {
                     updateTest(id: "${data0.createTest.id}" data: { name: "updated test entry" } ) { id }

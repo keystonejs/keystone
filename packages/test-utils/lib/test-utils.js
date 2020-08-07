@@ -9,8 +9,8 @@ const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 async function setupServer({
   adapterName,
-  schemaName = 'testing',
-  schemaNames = ['testing'],
+  schemaName = 'public',
+  schemaNames = ['public'],
   createLists = () => {},
   keystoneOptions,
   graphqlOptions = {},
@@ -63,7 +63,7 @@ async function setupServer({
 
 function graphqlRequest({ keystone, query, variables }) {
   return keystone.executeGraphQL({
-    context: keystone.createContext({ schemaName: 'testing', skipAccessControl: true }),
+    context: keystone.createContext({ skipAccessControl: true }),
     query,
     variables,
   });
@@ -71,15 +71,7 @@ function graphqlRequest({ keystone, query, variables }) {
 
 // This is much like graphqlRequest except we don't skip access control checks!
 function authedGraphqlRequest({ keystone, query, variables }) {
-  return keystone.executeGraphQL({
-    context: keystone.createContext({
-      schemaName: 'testing',
-      authentication: {},
-      skipAccessControl: false,
-    }),
-    query,
-    variables,
-  });
+  return keystone.executeGraphQL({ query, variables });
 }
 
 function networkedGraphqlRequest({

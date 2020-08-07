@@ -1,5 +1,6 @@
 const { Text, Integer } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -23,7 +24,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     test(
       'users',
-      runner(setupKeystone, async ({ keystone, create }) => {
+      runner(setupKeystone, async ({ keystone }) => {
+        const create = async (listKey, item) => createItem({ keystone, listKey, item });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -31,8 +33,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Number', { name: 12345 }),
         ]);
 
-        const { data, errors } = await graphqlRequest({
-          keystone,
+        const { data, errors } = await keystone.executeGraphQL({
           query: `
           query {
             allTests(
@@ -51,7 +52,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
     test(
       'users - like escapes',
-      runner(setupKeystone, async ({ keystone, create }) => {
+      runner(setupKeystone, async ({ keystone }) => {
+        const create = async (listKey, item) => createItem({ keystone, listKey, item });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -59,8 +61,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Number', { name: 12345 }),
         ]);
 
-        const { data, errors } = await graphqlRequest({
-          keystone,
+        const { data, errors } = await keystone.executeGraphQL({
           query: `
           query {
             allTests(
@@ -79,7 +80,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
     test(
       'users - regex',
-      runner(setupKeystone, async ({ keystone, create }) => {
+      runner(setupKeystone, async ({ keystone }) => {
+        const create = async (listKey, item) => createItem({ keystone, listKey, item });
+
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -87,8 +90,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Number', { name: 12345 }),
         ]);
 
-        const { data, errors } = await graphqlRequest({
-          keystone,
+        const { data, errors } = await keystone.executeGraphQL({
           query: `
           query {
             allTests(
@@ -107,7 +109,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
     test(
       'users - numbers',
-      runner(setupKeystone, async ({ keystone, create }) => {
+      runner(setupKeystone, async ({ keystone }) => {
+        const create = async (listKey, item) => createItem({ keystone, listKey, item });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -115,8 +118,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Number', { name: 12345 }),
         ]);
 
-        const { data, errors } = await graphqlRequest({
-          keystone,
+        const { data, errors } = await keystone.executeGraphQL({
           query: `
           query {
             allNumbers(
