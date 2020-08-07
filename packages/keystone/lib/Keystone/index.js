@@ -213,6 +213,7 @@ module.exports = class Keystone {
     }) => this.createContext({ schemaName, authentication, skipAccessControl });
     context.executeGraphQL = ({ context = defaults.context, query, variables }) =>
       this.executeGraphQL({ context, query, variables });
+    context.gqlNames = listKey => this.lists[listKey].gqlNames;
     return context;
   }
 
