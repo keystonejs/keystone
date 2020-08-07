@@ -15,5 +15,3 @@ const { CloudinaryImage } = require('@keystonejs/fields-cloudinary-image');
 const { Unsplash } = require('@keystonejs/fields-unsplash');
 const { OEmbed } = require('@keystonejs/fields-oembed');
 ```
-
----
