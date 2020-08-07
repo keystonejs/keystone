@@ -170,7 +170,8 @@
       "packages/fields-mongoid",
       "packages/fields-location",
       "packages/fields-wysiwyg-tinymce",
-      "packages/oembed-adapters"
+      "packages/oembed-adapters",
+      "packages/fields-color"
     ],
     "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
       "newEntrypoints": true
