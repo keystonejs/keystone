@@ -1,14 +1,11 @@
-import path from 'path';
+import { resolveView } from '../resolve-view';
 import fetch from 'node-fetch';
 import crypto from 'crypto';
 
 const VALID_URL = /^https?:\/\//i;
 const IS_MD5 = /[a-f0-9]{32}/i;
 
-const previewComponent = path.join(
-  path.dirname(require.resolve('@keystonejs/oembed-adapters/package.json')),
-  'views/preview'
-);
+const previewComponent = resolveView('iframely/views/preview');
 
 export class IframelyOEmbedAdapter {
   constructor({ apiKey } = {}) {

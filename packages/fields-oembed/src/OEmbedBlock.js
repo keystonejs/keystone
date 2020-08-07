@@ -1,9 +1,10 @@
 import pluralize from 'pluralize';
-import { importView } from '@keystonejs/build-field-types';
 
 import { Block } from '@keystonejs/field-content/Block';
 import { OEmbed } from '.';
 import { Relationship as RelationshipType } from '@keystonejs/fields';
+
+import { resolveView } from './resolve-view';
 
 const RelationshipWrapper = {
   ...RelationshipType,
@@ -86,7 +87,7 @@ export class OEmbedBlock extends Block {
 
   getAdminViews() {
     return [
-      importView('./views/blocks/o-embed'),
+      resolveView('views/blocks/oembed'),
       ...(typeof this.adapter.getAdminViews === 'function' ? this.adapter.getAdminViews() : []),
     ];
   }

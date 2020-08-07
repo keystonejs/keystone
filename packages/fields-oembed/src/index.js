@@ -1,4 +1,4 @@
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from './resolve-view';
 
 import {
   OEmbed as Implementation,
@@ -12,9 +12,9 @@ export const OEmbed = {
   type: 'OEmbed',
   implementation: Implementation,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Cell: importView('./views/Cell'),
+    Controller: resolveView('views/Controller'),
+    Field: resolveView('views/Field'),
+    Cell: resolveView('views/Cell'),
   },
   adapters: {
     mongoose: MongoOEmbedInterface,

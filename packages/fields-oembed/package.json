@@ -19,7 +19,6 @@
     "@iframely/embed.js": "^1.1.1",
     "@keystonejs/adapter-knex": "^11.0.0",
     "@keystonejs/adapter-mongoose": "^9.0.0",
-    "@keystonejs/build-field-types": "^5.2.10",
     "@keystonejs/field-content": "^7.0.2",
     "@keystonejs/fields": "^15.0.0",
     "node-fetch": "^2.3.0",
@@ -33,5 +32,13 @@
     "react": "^16.13.1"
   },
   "main": "dist/fields-oembed.cjs.js",
-  "module": "dist/fields-oembed.esm.js"
+  "module": "dist/fields-oembed.esm.js",
+  "preconstruct": {
+    "entrypoints": [
+      "index.js",
+      "iframely/views/preview.js",
+      "views/blocks/oembed.js",
+      "views/*.js"
+    ]
+  }
 }
