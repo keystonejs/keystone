@@ -12,4 +12,13 @@ export default class CloudinaryImageController extends FieldController {
       publicUrlTransformed(transformation: { width: "120" crop: "limit" })
     }
   `;
+  serialize = data => {
+    const { path } = this;
+    if (!data || !data[path]) {
+      // Forcibly return null if empty string
+      return null;
+    }
+    return data[path];
+  };
+  getFilterTypes = () => [];
 }
