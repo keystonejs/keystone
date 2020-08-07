@@ -1,0 +1,12 @@
+{
+  "name": "@keystonejs/fields-datetime-utc",
+  "description": "KeystoneJS DatetimeUtc Field Type",
+  "version": "6.0.4",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-datetime-utc",
+  "homepage": "https://github.com/keystonejs/keystone",
+  "engines": {
+    "node": ">=10.0.0"
+  }
+}
