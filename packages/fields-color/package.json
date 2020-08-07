@@ -14,7 +14,7 @@
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.28",
     "@keystonejs/build-field-types": "^5.2.10",
-    "@keystonejs/fields": "^14.0.0",
+    "@keystonejs/fields": "^15.0.0",
     "react-color": "^2.18.1"
   },
   "peerDependencies": {
