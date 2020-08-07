@@ -1,14 +1,16 @@
 import { Text } from '@keystonejs/fields';
-import { importView } from '@keystonejs/build-field-types';
+import path from 'path';
+
+const pkgDir = path.dirname(require.resolve('@keystonejs/fields-color'));
 
 export default {
   type: 'Color',
   implementation: Text,
   views: {
-    Controller: importView('../Text/views/Controller'),
-    Field: importView('./views/Field'),
-    Cell: importView('./views/Cell'),
-    Filter: importView('../Text/views/Filter'),
+    Controller: Text.views.Controller,
+    Field: path.join(pkgDir, 'views/Field'),
+    Cell: path.join(pkgDir, 'views/Cell'),
+    Filter: Text.views.Filter,
   },
   adapters: Text.adapters,
 };
