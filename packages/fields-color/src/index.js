@@ -3,7 +3,7 @@ import path from 'path';
 
 const pkgDir = path.dirname(require.resolve('@keystonejs/fields-color/package.json'));
 
-export default {
+export const Color = {
   type: 'Color',
   implementation: Text,
   views: {
