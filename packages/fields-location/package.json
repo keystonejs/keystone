@@ -16,18 +16,18 @@
     "@emotion/core": "^10.0.28",
     "@keystonejs/adapter-knex": "^11.0.0",
     "@keystonejs/adapter-mongoose": "^9.0.0",
-    "@keystonejs/build-field-types": "^5.2.10",
-    "@keystonejs/fields": "^14.0.0",
+    "@keystonejs/fields": "^15.0.0",
     "google-maps-react": "^2.0.6",
     "mongoose": "^5.9.11",
     "node-fetch": "^2.3.0",
+    "react": "^16.13.1",
     "react-toast-notifications": "^2.4.0"
   },
-  "peerDependencies": {
-    "react": "^16.13.1"
-  },
-  "devDependencies": {
-    "react": "^16.13.1"
+  "preconstruct": {
+    "entrypoints": [
+      "index.js",
+      "views/*.js"
+    ]
   },
   "main": "dist/fields-location.cjs.js",
   "module": "dist/fields-location.esm.js"
