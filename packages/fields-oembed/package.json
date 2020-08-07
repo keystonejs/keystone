@@ -19,7 +19,7 @@
     "@iframely/embed.js": "^1.1.1",
     "@keystonejs/adapter-knex": "^11.0.0",
     "@keystonejs/adapter-mongoose": "^9.0.0",
-    "@keystonejs/field-content": "^7.0.2",
+    "@keystonejs/fields-content": "^7.0.2",
     "@keystonejs/fields": "^15.0.0",
     "node-fetch": "^2.3.0",
     "pluralize": "^7.0.0",

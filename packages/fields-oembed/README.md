@@ -234,13 +234,13 @@ Will result in something like:
 
 ## OEmbed block
 
-The `OEmbed` field exposes a block that can be used in the [content field](/packages/field-content/README.md).
+The `OEmbed` field exposes a block that can be used in the [content field](/packages/fields-content/README.md).
 
 ### Usage
 
 ```js
 const { Keystone } = require('@keystonejs/keystone');
-const { Content } = require('@keystonejs/field-content');
+const { Content } = require('@keystonejs/fields-content');
 const { Text } = require('@keystonejs/fields');
 const { OEmbed, IframelyOEmbedAdapter } = require('@keystonejs/fields-oembed');
 

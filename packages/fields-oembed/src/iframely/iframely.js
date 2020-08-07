@@ -8,7 +8,7 @@ const IS_MD5 = /[a-f0-9]{32}/i;
 const previewComponent = resolveView('iframely/views/preview');
 
 export class IframelyOEmbedAdapter {
-  constructor({ apiKey } = {}) {
+  constructor({ apiKey, parameters } = {}) {
     if (!apiKey) {
       throw new Error('Must provide an apiKey to IFramely OEmbed Adapter');
     }
@@ -23,6 +23,8 @@ export class IframelyOEmbedAdapter {
         .update(apiKey)
         .digest('hex');
     }
+
+    this.requestParams = parameters || {};
   }
 
   /**
@@ -42,14 +44,13 @@ export class IframelyOEmbedAdapter {
     }
 
     const params = Object.entries({
-      // Force all `html` to be returned as an iFramely iFrame:
       // https://iframely.com/docs/iframes
-      iframe: '1',
-      // Assume the client will load the script themselves. This is important
       // for React apps.
       // https://iframely.com/docs/reactjs
-      omit_script: '1',
       // Allow overwriting most parameters
+      iframe: '1',
+      omit_script: '1',
+      ...this.requestParams,
       ...parameters,
       // We're using the MD5 hashed key:
       // https://iframely.com/docs/allow-origins

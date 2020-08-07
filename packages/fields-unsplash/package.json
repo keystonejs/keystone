@@ -18,7 +18,7 @@
     "@emotion/core": "^10.0.28",
     "@keystonejs/adapter-knex": "^11.0.0",
     "@keystonejs/adapter-mongoose": "^9.0.0",
-    "@keystonejs/field-content": "^7.0.2",
+    "@keystonejs/fields-content": "^7.0.2",
     "@keystonejs/fields": "^15.0.0",
     "graphql-tag": "^2.10.3",
     "node-fetch": "^2.3.0",

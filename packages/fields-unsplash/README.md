@@ -171,13 +171,13 @@ Will result in something like:
 
 ## Unsplash block
 
-The `Unsplash` field exposes a block that can be used in the [content field](/packages/field-content/README.md).
+The `Unsplash` field exposes a block that can be used in the [content field](/packages/fields-content/README.md).
 
 ### Usage
 
 ```js
 const { Keystone } = require('@keystonejs/keystone');
-const { Content } = require('@keystonejs/field-content');
+const { Content } = require('@keystonejs/fields-content');
 const { Unsplash } = require('@keystonejs/fields-unsplash');
 const { Text } = require('@keystonejs/fields');
 

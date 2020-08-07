@@ -1,6 +1,6 @@
 import pluralize from 'pluralize';
 
-import { Block } from '@keystonejs/field-content/Block';
+import { Block } from '@keystonejs/fields-content/Block';
 import { OEmbed } from '.';
 import { Relationship as RelationshipType } from '@keystonejs/fields';
 

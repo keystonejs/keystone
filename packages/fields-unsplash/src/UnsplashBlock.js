@@ -1,7 +1,7 @@
 import pluralize from 'pluralize';
 import path from 'path';
 
-import { Block } from '@keystonejs/field-content/Block';
+import { Block } from '@keystonejs/fields-content/Block';
 import { Unsplash } from '.';
 import { Relationship } from '@keystonejs/fields';
 
