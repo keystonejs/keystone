@@ -1,5 +1,5 @@
 const { Text } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -33,8 +33,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       it(
         'resolves fields first, then passes them to the list',
         runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
               mutation {
                 createUser(data: { name: "jess" }) { name }

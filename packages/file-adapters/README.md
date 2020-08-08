@@ -118,7 +118,7 @@ const fileAdapter = new S3Adapter({
   },
   uploadParams: ({ filename, id, mimetype, encoding }) => ({
     Metadata: {
-      keystone_id: id,
+      keystone_id: `${id}`,
     },
   }),
 });

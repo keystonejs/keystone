@@ -4,6 +4,7 @@ const {
   setupServer,
   networkedGraphqlRequest,
 } = require('@keystonejs/test-utils');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
   return setupServer({
@@ -83,21 +84,36 @@ function setupKeystone(adapterName) {
   });
 }
 
-const addFixtures = async create => {
-  const users = await Promise.all([
-    create('User', { name: 'Jess', favNumber: 1 }),
-    create('User', { name: 'Johanna', favNumber: 8 }),
-    create('User', { name: 'Sam', favNumber: 5 }),
-  ]);
+const addFixtures = async keystone => {
+  const users = await createItems({
+    keystone,
+    listKey: 'User',
+    items: [
+      { data: { name: 'Jess', favNumber: 1 } },
+      { data: { name: 'Johanna', favNumber: 8 } },
+      { data: { name: 'Sam', favNumber: 5 } },
+    ],
+  });
 
-  const posts = await Promise.all([
-    create('Post', { author: [users[0].id], title: 'One author' }),
-    create('Post', { author: [users[0].id, users[1].id], title: 'Two authors' }),
-    create('Post', {
-      author: [users[0].id, users[1].id, users[2].id],
-      title: 'Three authors',
-    }),
-  ]);
+  const posts = await createItems({
+    keystone,
+    listKey: 'Post',
+    items: [
+      { data: { author: { connect: [{ id: users[0].id }] }, title: 'One author' } },
+      {
+        data: {
+          author: { connect: [{ id: users[0].id }, { id: users[1].id }] },
+          title: 'Two authors',
+        },
+      },
+      {
+        data: {
+          author: { connect: [{ id: users[0].id }, { id: users[1].id }, { id: users[2].id }] },
+          title: 'Three authors',
+        },
+      },
+    ],
+  });
 
   return { users, posts };
 };
@@ -107,8 +123,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('cache hints', () => {
       test(
         'users',
-        runner(setupKeystone, async ({ app, create }) => {
-          await addFixtures(create);
+        runner(setupKeystone, async ({ keystone, app }) => {
+          await addFixtures(keystone);
 
           // Basic query
           let { data, errors, res } = await networkedGraphqlRequest({
@@ -213,8 +229,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'posts',
-        runner(setupKeystone, async ({ app, create }) => {
-          await addFixtures(create);
+        runner(setupKeystone, async ({ keystone, app }) => {
+          await addFixtures(keystone);
           // The Post list has a static cache hint
 
           // Basic query
@@ -310,8 +326,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'mutations',
-        runner(setupKeystone, async ({ app, create }) => {
-          const { posts } = await addFixtures(create);
+        runner(setupKeystone, async ({ keystone, app }) => {
+          const { posts } = await addFixtures(keystone);
 
           // Mutation responses shouldn't be cached.
           // Here's a smoke test to make sure they still work.
@@ -335,8 +351,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'extendGraphQLSchemaQueries',
-        runner(setupKeystone, async ({ app, create }) => {
-          await addFixtures(create);
+        runner(setupKeystone, async ({ keystone, app }) => {
+          await addFixtures(keystone);
 
           // Basic query
           let { data, errors, res } = await networkedGraphqlRequest({
@@ -359,8 +375,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'extendGraphQLSchemaMutations',
-        runner(setupKeystone, async ({ app, create }) => {
-          await addFixtures(create);
+        runner(setupKeystone, async ({ keystone, app }) => {
+          await addFixtures(keystone);
 
           // Mutation responses shouldn't be cached.
           // Here's a smoke test to make sure they still work.

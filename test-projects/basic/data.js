@@ -52,41 +52,7 @@ const users = [
   },
 ];
 
-const createPost = (v, i) => {
-  const user = users[i % users.length];
-  return {
-    name: `Why ${i} is better than ${i - 1}`,
-    author: { where: { email: user.email } },
-    categories: { where: { name: 'Number comparison' } },
-    views: i,
-  };
-};
-
 module.exports = {
-  Post: [
-    {
-      name: 'Lets talk React Router',
-      author: { where: { email: 'ben@keystone.com' } },
-      categories: { where: { name_starts_with: 'React' } },
-    },
-    {
-      name: 'Hello Things',
-    },
-    {
-      name: 'How we built Keystone 5',
-      author: { where: { email: 'jared@keystone.com' } },
-      categories: [
-        { where: { name: 'React' } },
-        { where: { name: 'Keystone' } },
-        { where: { name: 'GraphQL' } },
-        { where: { name: 'Node' } },
-      ],
-    },
-  ].concat(
-    Array(120)
-      .fill(true)
-      .map(createPost)
-  ),
   PostCategory: [
     {
       name: 'GraphQL',
@@ -106,16 +72,18 @@ module.exports = {
     {
       name: 'Number comparison',
     },
-  ],
+  ].map(x => ({ data: x })),
   ReadOnlyList: [
     {
-      name: 'ReadOnly',
-      price: '25.25',
-      markdownValue: '# markdown header',
-      wysiwygValue: '<h1>html header</h1>',
-      views: '25',
-      currency: 'AUD',
+      data: {
+        name: 'ReadOnly',
+        price: '25.25',
+        markdownValue: '# markdown header',
+        wysiwygValue: '<h1>html header</h1>',
+        views: 25,
+        currency: 'AUD',
+      },
     },
   ],
-  User: users.map(user => ({ ...user, password: 'password' })),
+  User: users.map(user => ({ data: { ...user, password: 'password' } })),
 };

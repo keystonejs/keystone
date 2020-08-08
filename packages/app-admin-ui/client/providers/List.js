@@ -1,5 +1,5 @@
 import React, { useContext, createContext, useState } from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import { useListUrlState } from '../pages/List/dataHooks';
 import { deconstructErrorsToDataShape, useListSelect } from '../util';

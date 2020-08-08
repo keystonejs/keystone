@@ -72,7 +72,7 @@ const testAdapterConnection = async () => {
       console.log('');
       error('Details:');
       console.log(err);
-      process.exit(0);
+      process.exit(1);
     }
   }
   return TEST_CONNECTION;

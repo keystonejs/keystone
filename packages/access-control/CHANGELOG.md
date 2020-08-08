@@ -1,5 +1,15 @@
 # @keystonejs/access-control
 
+## 6.3.0
+
+### Minor Changes
+
+- [`5a3849806`](https://github.com/keystonejs/keystone/commit/5a3849806d00e62b722461d02f6e4639bc45c1eb) [#3262](https://github.com/keystonejs/keystone/pull/3262) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a new private internal schema that will allow a better method of bypassing access control on the `executeGraphQL` function.
+
+  The schema name `internal` is now a reserved name and if you have a schema with this name you will need to change it with this update.
+
+  Note: You cannot change access control on the `internal` schema.
+
 ## 6.2.0
 
 ### Minor Changes

@@ -15,7 +15,6 @@
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.28",
     "@iframely/embed.js": "^1.1.1",
-    "@keystonejs/build-field-types": "^5.2.5",
     "node-fetch": "^2.3.0"
   },
   "peerDependencies": {
@@ -23,5 +22,8 @@
   },
   "devDependencies": {
     "react": "^16.13.1"
+  },
+  "preconstruct": {
+    "entrypoints": ["index.js", "views/preview.js"]
   }
 }
