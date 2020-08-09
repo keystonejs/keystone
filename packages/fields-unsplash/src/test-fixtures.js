@@ -1,4 +1,4 @@
-import Unsplash from './';
+import { Unsplash } from './';
 
 export const name = 'Unsplash';
 export { Unsplash as type };

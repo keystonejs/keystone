@@ -1,4 +1,4 @@
-import OEmbed from './';
+import { OEmbed } from './';
 
 export const name = 'OEmbed';
 export { OEmbed as type };

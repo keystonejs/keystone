@@ -1,4 +1,4 @@
-import CloudinaryImage from './';
+import { CloudinaryImage } from './';
 
 export const name = 'CloudinaryImage';
 export { CloudinaryImage as type };
