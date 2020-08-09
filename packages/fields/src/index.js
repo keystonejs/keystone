@@ -7,7 +7,6 @@ export { default as Decimal } from './types/Decimal';
 export { default as File } from './types/File';
 export { default as Float } from './types/Float';
 export { default as Integer } from './types/Integer';
-export { default as Location } from './types/Location';
 export { default as Password } from './types/Password';
 export { default as Relationship } from './types/Relationship';
 export { default as Select } from './types/Select';

@@ -29,6 +29,7 @@
     "benchmark": "yarn workspace @keystonejs/benchmarks go",
     "changeset": "changeset",
     "publish-changed": "yarn build && changeset publish --public",
+    "version-packages": "changeset version && node .github/write-release-count.js",
     "build:build-field-types": "rimraf packages/build-field-types/lib && babel packages/build-field-types/src --out-dir packages/build-field-types/dist --ignore '**/__tests__/**/*','**/__mocks__/**/*'",
     "build": "preconstruct build && yarn workspace @keystonejs/build-field-types build && node ./packages/build-field-types/bin.js build",
     "prepare": "manypkg check && yarn build:build-field-types && preconstruct dev && node ./packages/build-field-types/bin.js dev  && yarn run --silent contributing-guide",
@@ -171,6 +172,7 @@
       "packages/fields-cloudinary-image",
       "packages/fields-markdown",
       "packages/fields-mongoid",
+      "packages/fields-location-google",
       "packages/fields-wysiwyg-tinymce",
       "packages/fields-content",
       "packages/fields-color"

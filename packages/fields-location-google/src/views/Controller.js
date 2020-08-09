@@ -1,6 +1,6 @@
-import FieldController from '../../../Controller';
+import FieldController from '@keystonejs/fields/Controller';
 
-export default class LocationController extends FieldController {
+export default class LocationGoogleController extends FieldController {
   getQueryFragment = () => `
     ${this.path} {
        id
