@@ -23,11 +23,10 @@ const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
 const { graphql } = require('graphql');
-const { OEmbed } = require('@keystonejs/fields-oembed');
+const { OEmbed, IframelyOEmbedAdapter } = require('@keystonejs/fields-oembed');
 const { CloudinaryImage } = require('@keystonejs/fields-cloudinary-image');
 const { Unsplash } = require('@keystonejs/fields-unsplash');
 
-const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
 const MockOEmbedAdapter = require('./mocks/oembed-adapter');
 
 const { staticRoute, staticPath, cloudinary, iframely, unsplash } = require('./config');
