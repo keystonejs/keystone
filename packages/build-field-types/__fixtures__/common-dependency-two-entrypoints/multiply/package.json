@@ -1,7 +1,0 @@
-{
-  "main": "dist/common-dependency-two-entrypoints.cjs.js",
-  "module": "dist/common-dependency-two-entrypoints.esm.js",
-  "field-types": {
-    "source": "../src/multiply.js"
-  }
-}

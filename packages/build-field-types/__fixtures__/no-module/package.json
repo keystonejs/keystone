@@ -1,7 +1,0 @@
-{
-  "name": "no-module",
-  "version": "1.0.0",
-  "main": "dist/no-module.cjs.js",
-  "license": "MIT",
-  "private": true
-}

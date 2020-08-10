@@ -1,14 +1,14 @@
 import { Virtual, MongoVirtualInterface, KnexVirtualInterface } from './Implementation';
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Virtual',
   implementation: Virtual,
   views: {
-    Controller: importView('./views/Controller'),
-    Cell: importView('./views/Cell'),
-    Field: importView('./views/Field'),
-    Filter: importView('./views/Filter'),
+    Controller: resolveView('types/Virtual/views/Controller'),
+    Cell: resolveView('types/Virtual/views/Cell'),
+    Field: resolveView('types/Virtual/views/Field'),
+    Filter: resolveView('types/Virtual/views/Filter'),
   },
   adapters: {
     mongoose: MongoVirtualInterface,
