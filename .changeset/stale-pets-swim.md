@@ -1,7 +1,6 @@
 ---
 '@keystonejs/fields-authed-relationship': patch
 '@keystonejs/fields-auto-increment': patch
-'@keystonejs/oembed-adapters': patch
 '@keystonejs/fields-wysiwyg-tinymce': patch
 '@keystonejs/fields-mongoid': patch
 ---
