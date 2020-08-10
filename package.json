@@ -174,7 +174,8 @@
       "packages/fields-location-google",
       "packages/fields-wysiwyg-tinymce",
       "packages/fields-content",
-      "packages/fields-color"
+      "packages/fields-color",
+      "packages/fields"
     ],
     "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
       "newEntrypoints": true
