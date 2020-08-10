@@ -11,9 +11,7 @@ let cachedLatestVersionCommit;
 const getLatestVersionCommit = async () => {
   if (cachedLatestVersionCommit === undefined) {
     let commits = await got
-      .get(
-        'https://api.github.com/repos/keystonejs/keystone/commits?path=.github/release-count&sha=create-keystone-app-from-github'
-      )
+      .get('https://api.github.com/repos/keystonejs/keystone/commits?path=.github/release-count')
       .json();
     if (!commits.length) {
       throw new Error(
