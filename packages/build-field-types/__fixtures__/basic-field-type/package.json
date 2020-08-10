@@ -1,8 +1,0 @@
-{
-  "name": "basic-field-type",
-  "version": "1.0.0",
-  "main": "dist/basic-field-type.cjs.js",
-  "module": "dist/basic-field-type.esm.js",
-  "license": "MIT",
-  "private": true
-}

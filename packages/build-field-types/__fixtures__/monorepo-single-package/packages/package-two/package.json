@@ -1,8 +1,0 @@
-{
-  "name": "@some-scope/package-two-single-package",
-  "version": "1.0.0",
-  "main": "dist/package-two-single-package.cjs.js",
-  "module": "dist/package-two-single-package.esm.js",
-  "license": "MIT",
-  "private": true
-}
