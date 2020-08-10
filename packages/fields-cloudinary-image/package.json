@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/fields-cloudinary-image",
   "description": "KeystoneJS Cloudinary Image Field Type",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-cloudinary-image",
@@ -37,6 +37,10 @@
   "main": "dist/fields-cloudinary-image.cjs.js",
   "module": "dist/fields-cloudinary-image.esm.js",
   "preconstruct": {
-    "entrypoints": ["index.js", "views/*.js", "views/blocks/single-image.js"]
+    "entrypoints": [
+      "index.js",
+      "views/*.js",
+      "views/blocks/single-image.js"
+    ]
   }
 }
