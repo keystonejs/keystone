@@ -1,14 +1,14 @@
 import { DateTime, MongoDateTimeInterface, KnexDateTimeInterface } from './Implementation';
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'DateTime',
   implementation: DateTime,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Filter: importView('./views/Filter'),
-    Cell: importView('./views/Cell'),
+    Controller: resolveView('types/DateTime/views/Controller'),
+    Field: resolveView('types/DateTime/views/Field'),
+    Filter: resolveView('types/DateTime/views/Filter'),
+    Cell: resolveView('types/DateTime/views/Cell'),
   },
   adapters: {
     mongoose: MongoDateTimeInterface,

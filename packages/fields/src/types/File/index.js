@@ -1,13 +1,13 @@
 import { File, MongoFileInterface, KnexFileInterface } from './Implementation';
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'File',
   implementation: File,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Cell: importView('./views/Cell'),
+    Controller: resolveView('types/File/views/Controller'),
+    Field: resolveView('types/File/views/Field'),
+    Cell: resolveView('types/File/views/Cell'),
   },
   adapters: {
     mongoose: MongoFileInterface,

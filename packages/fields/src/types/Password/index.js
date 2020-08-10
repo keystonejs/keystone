@@ -1,14 +1,14 @@
 import { Password, MongoPasswordInterface, KnexPasswordInterface } from './Implementation';
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Password',
   implementation: Password,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Filter: importView('./views/Filter'),
-    Cell: importView('./views/Cell'),
+    Controller: resolveView('types/Password/views/Controller'),
+    Field: resolveView('types/Password/views/Field'),
+    Filter: resolveView('types/Password/views/Filter'),
+    Cell: resolveView('types/Password/views/Cell'),
   },
   adapters: {
     mongoose: MongoPasswordInterface,
