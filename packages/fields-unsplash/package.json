@@ -1,0 +1,44 @@
+{
+  "name": "@keystonejs/fields-unsplash",
+  "description": "KeystoneJS Unsplash Field Type",
+  "version": "1.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-unsplash",
+  "homepage": "https://github.com/keystonejs/keystone",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.1.2",
+    "@apollo/react-hooks": "^3.1.5",
+    "@arch-ui/fields": "^3.0.3",
+    "@arch-ui/input": "^0.1.10",
+    "@babel/runtime": "^7.8.4",
+    "@emotion/core": "^10.0.28",
+    "@keystonejs/adapter-knex": "^11.0.0",
+    "@keystonejs/adapter-mongoose": "^9.0.0",
+    "@keystonejs/fields": "^16.0.0",
+    "@keystonejs/fields-content": "^8.0.0",
+    "graphql-tag": "^2.10.3",
+    "node-fetch": "^2.3.0",
+    "pluralize": "^7.0.0",
+    "query-string": "^6.8.1",
+    "unsplash-js": "^6.0.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1"
+  },
+  "devDependencies": {
+    "react": "^16.13.1"
+  },
+  "main": "dist/fields-unsplash.cjs.js",
+  "module": "dist/fields-unsplash.esm.js",
+  "preconstruct": {
+    "entrypoints": [
+      "index.js",
+      "views/*.js",
+      "views/blocks/unsplash-image.js"
+    ]
+  }
+}

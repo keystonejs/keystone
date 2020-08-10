@@ -1,0 +1,4 @@
+{
+  "main": "dist/fields-oembed.cjs.js",
+  "module": "dist/fields-oembed.esm.js"
+}

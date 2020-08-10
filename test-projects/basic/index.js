@@ -8,28 +8,28 @@ const {
   Password,
   Checkbox,
   CalendarDay,
-  CloudinaryImage,
   DateTime,
-  Color,
   Url,
   Decimal,
-  OEmbed,
   Slug,
-  Unsplash,
   Virtual,
 } = require('@keystonejs/fields');
-const { Content } = require('@keystonejs/field-content');
+const { Content } = require('@keystonejs/fields-content');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
 const { Markdown } = require('@keystonejs/fields-markdown');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
+const { Color } = require('@keystonejs/fields-color');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
 const { graphql } = require('graphql');
+const { OEmbed, IframelyOEmbedAdapter } = require('@keystonejs/fields-oembed');
+const { CloudinaryImage } = require('@keystonejs/fields-cloudinary-image');
+const { Unsplash } = require('@keystonejs/fields-unsplash');
+
+const MockOEmbedAdapter = require('./mocks/oembed-adapter');
 
 const { staticRoute, staticPath, cloudinary, iframely, unsplash } = require('./config');
-const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
-const MockOEmbedAdapter = require('./mocks/oembed-adapter');
 
 const LOCAL_FILE_SRC = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;

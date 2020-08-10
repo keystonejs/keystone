@@ -7,7 +7,33 @@ order: 2
 
 # Mutation lifecycle
 
-The Keystone GraphQL API implements a CRUD API with `create`, `update` and `delete` mutations for each `List`.
+## Table of Contents
+
+- [Introduction](#introduction)
+
+- [Mutation phases](#mutation-phases)
+
+  - [Access control phase](#access-control-phase)
+
+    - [1. Check List Access (create/update/delete/authenticate)](#1-check-list-access-createupdatedeleteauthenticate)
+    - [2. Get Item(s) (update/delete)](#2-get-items-updatedelete)
+    - [3. Check Field Access (create/update)](#3-check-field-access-createupdate)
+
+  - [Operational Phase](#operational-phase)
+
+    - [1. Resolve Defaults (create)](#1-resolve-defaults-create)
+    - [2. Resolve Relationship (create/update)](#2-resolve-relationship-createupdate)
+    - [3. Resolve Input (create/update/authenticate)](#3-resolve-input-createupdateauthenticate)
+    - [4. Validate Data (create/update/delete/authenticate)](#4-validate-data-createupdatedeleteauthenticate)
+    - [5. Before Operation (create/update/delete/authenticate)](#5-before-operation-createupdatedeleteauthenticate)
+    - [6. Database Operation (create/update/delete/authenticate)](#6-database-operation-createupdatedeleteauthenticate)
+    - [8. After Operation (create/update/delete/authenticate)](#8-after-operation-createupdatedeleteauthenticate)
+
+- [Summary](#summary)
+
+## Introduction
+
+The KeystoneJS GraphQL API implements a CRUD API with `create`, `update` and `delete` mutations for each `List`.
 Each of these mutations can be applied to either a single item or many items at once.
 
 For a `List` called `User` the GraphQL mutations would be:
@@ -65,7 +91,7 @@ During the Access Control Phase the target items are retrieved from the database
 
 This phase will throw an `AccessDeniedError` if any of the access control checks fail. This error is returned in the `.errors` field of the GraphQL response. The Access Control Phase consists of three distinct steps.
 
-#### 1. Check List Access (`create/update/delete`)
+#### 1. Check List Access (`create/update/delete/authenticate`)
 
 The first step in all mutations is to check that the user has access to perform the required operation on the `List`.
 
@@ -129,33 +155,34 @@ Any errors thrown by this nested `createMutation` will cause the current mutatio
 
 As well as resolving the IDs and performing any nested create mutations, this step must also track.
 
-#### 3. Resolve Input (`create/update`)
+#### 3. Resolve Input (`create/update/authenticate`)
 
-The `resolveInput` hook allows the developer to modify the incoming item before it is inserted/updated within the database.
+The `resolveInput` and `resolveAuthInput` hooks allows the developer to modify the incoming item before it is inserted/updated within the database.
 
 For full details of how and when to use this hook, please consult the [API docs](/docs/api/hooks.md).
 
-#### 4. Validate Data (`create/update/delete`)
+#### 4. Validate Data (`create/update/delete/authenticate`)
 
-The `validateInput` and `validateDelete` hooks allow the developer to specify validation rules which must be met before the data is inserted into the database.
+The `validateInput`, `validateDelete` and `validateAuthInput` hooks allow the developer to specify validation rules which must be met before the data is inserted into the database.
 
 These hooks can throw a `ValidationFailureError` when they encounter invalid data, which will terminate the operational phase.
 
 For full details of how and when to use these hooks, please consult the [API docs](/docs/api/hooks.md).
 
-#### 5. Before Operation (`create/update/delete`)
+#### 5. Before Operation (`create/update/delete/authenticate`)
 
-The `beforeChange` and `beforeDelete` hooks allows the developer to perform any operations which interact with external systems, such as external data stores, which depend on resolved and validated data.
+The `beforeChange`, `beforeDelete` and `beforeAuth` hooks allows the developer to perform any operations which interact with external systems, such as external data stores, which depend on resolved and validated data.
 
 For full details of how and when to use these hooks, please consult the [API docs](/docs/api/hooks.md).
 
-#### 6. Database Operation (`create/update/delete`)
+#### 6. Database Operation (`create/update/delete/authenticate`)
 
 The database operation is where the keystone database adapter is used to make the requested changes in the database.
+In the case of `authenticate` operations no data is modified; the auth strategy `verify` function in invoked instead.
 
-#### 7. After Operation (`create/update/delete`)
+#### 8. After Operation (`create/update/delete/authenticate`)
 
-The `afterChange` and `afterDelete` hooks are only executed once all database operations for the mutation have been completed and the transaction has been finalised.
+The `afterChange`, `afterDelete` and `afterAuth` hooks are only executed once all database operations for the mutation have been completed and the transaction has been finalised.
 This means that the database is in a consistent state when this hook is executed.
 It also means that if there is a failure of any kind during this hook, the operation will still be considered complete, and no roll back will be performed.
 

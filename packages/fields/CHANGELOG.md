@@ -1,5 +1,42 @@
 # @keystonejs/fields
 
+## 16.0.0
+
+### Major Changes
+
+- [`d38a41f25`](https://github.com/keystonejs/keystone/commit/d38a41f25a1b4c90c05d2fb85116dc385d4ee77a) [#3308](https://github.com/keystonejs/keystone/pull/3308) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Move `@keystonejs/fields-datetime-utc` into `@keystonejs/fields`. Please update your imports from `@keystonejs/fields-datetime-utc` to `@keystonejs/fields`.
+
+* [`5ede731fc`](https://github.com/keystonejs/keystone/commit/5ede731fc58a79e7322b852bdd2d971ece45281e) [#3305](https://github.com/keystonejs/keystone/pull/3305) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved the `Location` field from `@keystonejs/fields` to `@keystonejs/fields-location-google` and renamed to `LocationGoogle`. If you were using the `Location` field from `@keystonejs/fields`, please install `@keystonejs/fields-location-google` and import `LocationGoogle` from it.
+
+- [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25) [#3280](https://github.com/keystonejs/keystone/pull/3280) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved `@keystonejs/fields-cloudinary-image`, `@keystonejs/fields-unsplash` and `@keystonejs/fields-oembed` out of the core fields package `@keystonejs/fields`.
+
+  ```js
+  const { CloudinaryImage, Unsplash, OEmbed } = require('@keystonejs/fields');
+  ```
+
+  Needs to be changed to:
+
+  ```js
+  const { CloudinaryImage } = require('@keystonejs/fields-cloudinary-image');
+  const { Unsplash } = require('@keystonejs/fields-unsplash');
+  const { OEmbed } = require('@keystonejs/fields-oembed');
+  ```
+
+* [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1) [#3307](https://github.com/keystonejs/keystone/pull/3307) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved the `Color` field from `@keystonejs/fields` to `@keystonejs/fields-color`.
+
+  Note: If using the `Color` field you need to update imports to point to `@keystonejs/fields-color`.
+
+### Minor Changes
+
+- [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7) [#3125](https://github.com/keystonejs/keystone/pull/3125) Thanks [@Vultraz](https://github.com/Vultraz)! - Migrated to Apollo Client v3.
+
+### Patch Changes
+
+- [`149d6fd6f`](https://github.com/keystonejs/keystone/commit/149d6fd6ff057c17570346063c173376769dcc79) [#3304](https://github.com/keystonejs/keystone/pull/3304) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Renamed `@keystonejs/field-content` to `@keystonejs/fields-content`. Please install `@keystonejs/fields-content` and update your imports from `@keystonejs/field-content` to `@keystonejs/fields-content`.
+
+- Updated dependencies [[`318e39b74`](https://github.com/keystonejs/keystone/commit/318e39b74b2fa3152d4ff09bccec93238e8345ef), [`b0af7d5ba`](https://github.com/keystonejs/keystone/commit/b0af7d5baa6ceea8d80215afa290fd76240ee823), [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7)]:
+  - @keystonejs/app-admin-ui@7.3.0
+
 ## 15.0.0
 
 ### Major Changes

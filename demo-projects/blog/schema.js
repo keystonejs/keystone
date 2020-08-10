@@ -9,8 +9,8 @@ const {
   Checkbox,
   CalendarDay,
   DateTime,
-  OEmbed,
 } = require('@keystonejs/fields');
+const { OEmbed, IframelyOEmbedAdapter } = require('@keystonejs/fields-oembed');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 const { AuthedRelationship } = require('@keystonejs/fields-authed-relationship');
 const { LocalFileAdapter } = require('@keystonejs/file-adapters');
@@ -22,7 +22,6 @@ const dev = process.env.NODE_ENV !== 'production';
 let iframelyAdapter;
 
 if (process.env.IFRAMELY_API_KEY) {
-  const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
   iframelyAdapter = new IframelyOEmbedAdapter({
     apiKey: process.env.IFRAMELY_API_KEY,
   });

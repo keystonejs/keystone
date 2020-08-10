@@ -1,5 +1,11 @@
 # @keystonejs/field-content
 
+## 8.0.0
+
+### Major Changes
+
+- [`149d6fd6f`](https://github.com/keystonejs/keystone/commit/149d6fd6ff057c17570346063c173376769dcc79) [#3304](https://github.com/keystonejs/keystone/pull/3304) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Renamed `@keystonejs/field-content` to `@keystonejs/fields-content`. Please install `@keystonejs/fields-content` and update your imports from `@keystonejs/field-content` to `@keystonejs/fields-content`.
+
 ## 7.0.3
 
 ### Patch Changes

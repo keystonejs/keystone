@@ -1,0 +1,34 @@
+{
+  "name": "@keystonejs/fields-color",
+  "description": "KeystoneJS Color Field Type",
+  "version": "1.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "dependencies": {
+    "@arch-ui/button": "^0.0.20",
+    "@arch-ui/fields": "^3.0.3",
+    "@arch-ui/popout": "^0.0.19",
+    "@babel/runtime": "^7.8.4",
+    "@emotion/core": "^10.0.28",
+    "@keystonejs/fields": "^16.0.0",
+    "react-color": "^2.18.1"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1"
+  },
+  "devDependencies": {
+    "react": "^16.13.1"
+  },
+  "main": "dist/fields-color.cjs.js",
+  "module": "dist/fields-color.esm.js",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-color",
+  "preconstruct": {
+    "entrypoints": [
+      "index.js",
+      "views/*.js"
+    ]
+  }
+}

@@ -1,5 +1,21 @@
 # @keystonejs/oembed-adapters
 
+## 6.0.0
+
+### Major Changes
+
+- [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25) [#3280](https://github.com/keystonejs/keystone/pull/3280) Thanks [@MadeByMike](https://github.com/MadeByMike)! - The `IframelyOEmbedAdapter` should now be imported from `@keystonejs/fields-oembed`.
+
+  ```js
+  const { IframelyOEmbedAdapter } = require('@keystonejs/oembed-adapters');
+  ```
+
+  Should be changed to:
+
+  ```js
+  const { IframelyOEmbedAdapter } = require('@keystonejs/fields-oembed');
+  ```
+
 ## 5.1.4
 
 ### Patch Changes
