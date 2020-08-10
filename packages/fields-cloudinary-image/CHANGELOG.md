@@ -1,12 +1,16 @@
 # @keystonejs/fields-cloudinary-image
 
+## 1.0.1
+
+### Patch Changes
+
+- [`47c613a3d`](https://github.com/keystonejs/keystone/commit/47c613a3dc6fee4b0100fc9c995319bbaca70eab) [#3361](https://github.com/keystonejs/keystone/pull/3361) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed `fields-cloudinary-image` views not being compiled.
+
 ## 1.0.0
+
 ### Major Changes
 
-
-
 - [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25) [#3280](https://github.com/keystonejs/keystone/pull/3280) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Initial release
-
 
 ### Patch Changes
 
