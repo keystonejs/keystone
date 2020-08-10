@@ -1,5 +1,5 @@
 import pluralize from 'pluralize';
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from './resolve-view';
 
 import { Block } from '@keystonejs/fields-content/Block';
 import { imageContainer, caption } from '@keystonejs/fields-content/blocks';
@@ -72,7 +72,7 @@ export class ImageBlock extends Block {
 
   getAdminViews() {
     return [
-      importView('./views/blocks/single-image'),
+      resolveView('views/blocks/single-image'),
       ...new imageContainer().getAdminViews(),
       ...new caption().getAdminViews(),
     ];
