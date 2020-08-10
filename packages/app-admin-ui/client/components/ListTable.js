@@ -331,7 +331,7 @@ export default function ListTable({
   currentPage,
   filters,
   search,
-  linkField = '_label_',
+  linkField = fields[0].path,
 }) {
   const [sortBy, onSortChange] = useListSort();
 
