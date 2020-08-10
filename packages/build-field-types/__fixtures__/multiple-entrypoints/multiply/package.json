@@ -1,7 +1,0 @@
-{
-  "main": "dist/multiple-entrypoints.cjs.js",
-  "module": "dist/multiple-entrypoints.esm.js",
-  "field-types": {
-    "source": "../src/multiply.js"
-  }
-}

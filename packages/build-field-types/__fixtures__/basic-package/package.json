@@ -1,7 +1,0 @@
-{
-  "name": "basic-package",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "private": true
-}

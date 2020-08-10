@@ -1,7 +1,0 @@
-{
-  "name": "@some-scope/package-one-single-package",
-  "version": "1.0.0",
-  "main": "dist/package-one-single-package.cjs.js",
-  "license": "MIT",
-  "private": true
-}

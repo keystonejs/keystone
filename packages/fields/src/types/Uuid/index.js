@@ -1,13 +1,13 @@
 import { UuidImplementation, MongoUuidInterface, KnexUuidInterface } from './Implementation';
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from '../../resolve-view';
 
 const Uuid = {
   type: 'Uuid',
   implementation: UuidImplementation,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Filter: importView('./views/Filter'),
+    Controller: resolveView('types/Uuid/views/Controller'),
+    Field: resolveView('types/Uuid/views/Field'),
+    Filter: resolveView('types/Uuid/views/Filter'),
   },
   adapters: {
     knex: KnexUuidInterface,
