@@ -7,7 +7,7 @@ import { Location } from '@reach/router';
 import { colors, gridSize } from '@arch-ui/theme';
 
 import { SocialIconsNav } from '../components';
-import { useNavData, useNavDataBlog } from '../utils/hooks';
+import { useNavData } from '../utils/hooks';
 import { media, mediaMax } from '../utils/media';
 import { useClickOutside } from '../utils/useClickOutside';
 
@@ -15,7 +15,7 @@ let scrollOffset = 0;
 
 export const SIDEBAR_WIDTH = 280;
 
-const navStyles = ({ isVisible, mobileOnly }) => ({
+export const navStyles = ({ isVisible, mobileOnly }) => ({
   boxSizing: 'border-box',
   flexShrink: 0,
   height: 'calc(100vh - 60px)',
@@ -41,43 +41,6 @@ const navStyles = ({ isVisible, mobileOnly }) => ({
     display: mobileOnly ? 'none' : 'block',
   },
 });
-
-export const BlogSidebar = ({ isVisible, toggleSidebar, mobileOnly }) => {
-  const asideRef = useRef();
-
-  // handle click outside when sidebar is a drawer on small devices
-  useClickOutside({
-    handler: toggleSidebar,
-    refs: [asideRef],
-    listenWhen: isVisible,
-  });
-
-  // NOTE: maintain the user's scroll whilst navigating between pages.
-  // This is a symptom of Gatsby remounting the entire tree (template) on each
-  // page change via `createPage` in "gatsby-node.js".
-  useLayoutEffect(() => {
-    asideRef.current.scrollTop = scrollOffset; // reset on mount
-    return () => {
-      scrollOffset = asideRef.current.scrollTop; // catch on unmount (this is buggy of some reason)
-    };
-  }, []);
-
-  return (
-    <aside key="sidebar" ref={asideRef} css={navStyles({ isVisible, mobileOnly })}>
-      <SocialIconsNav
-        css={{
-          marginBottom: '2.4em',
-          display: 'none',
-          [mediaMax.sm]: {
-            display: 'block',
-          },
-        }}
-      />
-      <BlogSidebarNav />
-      <Footer />
-    </aside>
-  );
-};
 
 export const Sidebar = ({ isVisible, toggleSidebar, mobileOnly }) => {
   const asideRef = useRef();
@@ -133,21 +96,6 @@ const ClassicDocs = () => (
 
 // Navigation
 
-export const BlogSidebarNav = () => {
-  const navData = useNavDataBlog();
-  return (
-    <Location>
-      {({ location: { pathname } }) => (
-        <nav aria-label="Blog Menu">
-          {navData.map((navGroup, i) => {
-            return <NavGroup key={i} index={i} navGroup={navGroup} pathname={pathname} />;
-          })}
-        </nav>
-      )}
-    </Location>
-  );
-};
-
 export const SidebarNav = () => {
   const navData = useNavData();
   return (
@@ -163,7 +111,7 @@ export const SidebarNav = () => {
   );
 };
 
-const NavGroup = ({ index, navGroup, pathname }) => {
+export const NavGroup = ({ index, navGroup, pathname }) => {
   const sectionId = `docs-menu-${navGroup.navTitle}`;
 
   const isPageInGroupActive = useMemo(() => {

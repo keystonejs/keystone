@@ -14,9 +14,9 @@ import { BlogLayout, Content } from './layout';
 import mdComponents from '../components/markdown';
 import { SiteMeta } from '../components/SiteMeta';
 import { Container } from '../components';
-import { BlogSidebar } from '../components/Sidebar';
+import { SidebarBlog } from '../components/SidebarBlog';
 import { media, mq } from '../utils/media';
-import { useNavDataBlog } from '../utils/hooks';
+import { useNavDataBlog } from '../utils/nav-data-blog';
 import { titleCase } from '../utils/case';
 
 // TODO: headings, with ids, should come from graphQL
@@ -75,7 +75,7 @@ export default function Template({
       <BlogLayout>
         {({ sidebarIsVisible, toggleSidebar }) => (
           <Container hasGutters={false} css={{ display: 'flex' }}>
-            <BlogSidebar isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} />
+            <SidebarBlog isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} />
             <Content css={{ alignItems: 'flex-start', display: 'flex', flex: 1 }}>
               <div
                 ref={setContentRef}

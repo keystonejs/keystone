@@ -6,7 +6,7 @@ import { globalStyles } from '@arch-ui/theme';
 import { BlogLayout, Content } from './layout';
 import { HomepageFooter } from '../components/homepage/HomepageFooter';
 import { Container } from '../components';
-import { BlogSidebar } from '../components/Sidebar';
+import { SidebarBlog } from '../components/SidebarBlog';
 
 const Blog = ({ pageContext }) => {
   const { group, index, first, last, pageCount } = pageContext;
@@ -19,7 +19,7 @@ const Blog = ({ pageContext }) => {
         {({ sidebarIsVisible, toggleSidebar }) => (
           <Fragment>
             <Container hasGutters={false} css={{ display: 'flex' }}>
-              <BlogSidebar isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} />
+              <SidebarBlog isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} />
               <Content css={{ paddingRight: '2rem' }}>
                 <Global styles={globalStyles} />
                 <h1
