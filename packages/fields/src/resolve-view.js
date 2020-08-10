@@ -1,5 +1,5 @@
 import path from 'path';
 
-const pkgDir = path.dirname(require.resolve('@keystonejs/fields/package.json'));
+const pkgDir = path.dirname(__dirname);
 
 export const resolveView = pathname => path.join(pkgDir, pathname);

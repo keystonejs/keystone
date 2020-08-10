@@ -18,10 +18,7 @@ const RelationshipWrapper = {
   },
 };
 
-const unsplashBlockView = path.join(
-  path.dirname(require.resolve('@keystonejs/fields-unsplash/package.json')),
-  'views/blocks/unsplash-image'
-);
+const unsplashBlockView = path.join(path.dirname(__dirname), 'views/blocks/unsplash-image');
 
 export class UnsplashBlock extends Block {
   constructor(

@@ -6,7 +6,7 @@ import {
 } from './Implementation';
 import { Text } from '@keystonejs/fields';
 
-const pkgDir = path.dirname(require.resolve('@keystonejs/fields-mongoid/package.json'));
+const pkgDir = path.dirname(__dirname);
 
 export const MongoId = {
   type: 'MongoId',

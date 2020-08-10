@@ -6,7 +6,7 @@ import {
 } from './Implementation';
 import path from 'path';
 
-const pkgDir = path.dirname(require.resolve('@keystonejs/fields-location-google/package.json'));
+const pkgDir = path.dirname(__dirname);
 
 export const LocationGoogle = {
   type: 'LocationGoogle',

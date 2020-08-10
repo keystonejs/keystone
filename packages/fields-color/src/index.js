@@ -1,7 +1,7 @@
 import { Text } from '@keystonejs/fields';
 import path from 'path';
 
-const pkgDir = path.dirname(require.resolve('@keystonejs/fields-color/package.json'));
+const pkgDir = path.dirname(__dirname);
 
 export const Color = {
   type: 'Color',
