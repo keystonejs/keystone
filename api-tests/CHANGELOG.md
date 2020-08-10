@@ -1,5 +1,44 @@
 # @keystonejs/api-tests
 
+## 7.0.1
+
+### Patch Changes
+
+- [`845b6a21b`](https://github.com/keystonejs/keystone/commit/845b6a21b62e615135eb738ad332fc035b93191b) [#2039](https://github.com/keystonejs/keystone/pull/2039) Thanks [@molomby](https://github.com/molomby)! - Added [authentication hooks](https://www.keystonejs.com/api/hooks).
+
+  You can now customise the behaviour of authentication mutations as follows:
+
+  ```js
+  keystone.creatAuthStrategy({
+    type: PasswordAuthStrategy,
+    list: 'User',
+    hooks: {
+      resolveAuthInput: async (...) => {...},
+      validateAuthInput: async (...) => {...},
+      beforeAuth: async (...) => {...},
+      afterAuth: async (...) => {...},
+
+      beforeUnauth: async (...) => {...},
+      afterUnauth: async (...) => {...},
+    },
+  })
+  ```
+
+* [`d4f28f123`](https://github.com/keystonejs/keystone/commit/d4f28f123ce85f3cb3334f53695aca3db03218f9) [#3326](https://github.com/keystonejs/keystone/pull/3326) Thanks [@timleslie](https://github.com/timleslie)! - Replaced calls to `graphqlRequest` with calls to `keystone.executeGraphQL`.
+
+- [`4cadbb2a9`](https://github.com/keystonejs/keystone/commit/4cadbb2a95ce275c22fe7248fd44a5cbc6df6904) [#3313](https://github.com/keystonejs/keystone/pull/3313) Thanks [@timleslie](https://github.com/timleslie)! - Updated tests to make use of `createItem` and `createItems`.
+
+* [`f69db4fdc`](https://github.com/keystonejs/keystone/commit/f69db4fdcda05328020d876f3987730cbe95a31f) [#3328](https://github.com/keystonejs/keystone/pull/3328) Thanks [@timleslie](https://github.com/timleslie)! - Uses `deleteItem` to delete items in tests.
+
+- [`eb8bd6679`](https://github.com/keystonejs/keystone/commit/eb8bd66799c454bdbd0933ff7a91f592ccf22da9) [#3329](https://github.com/keystonejs/keystone/pull/3329) Thanks [@timleslie](https://github.com/timleslie)! - Uses `updateItems` to update items in tests.
+
+- Updated dependencies [[`d38a41f25`](https://github.com/keystonejs/keystone/commit/d38a41f25a1b4c90c05d2fb85116dc385d4ee77a), [`845b6a21b`](https://github.com/keystonejs/keystone/commit/845b6a21b62e615135eb738ad332fc035b93191b), [`5ede731fc`](https://github.com/keystonejs/keystone/commit/5ede731fc58a79e7322b852bdd2d971ece45281e), [`1a89bbdc6`](https://github.com/keystonejs/keystone/commit/1a89bbdc6b2122a5c8217e6f6c750f7cfb69dc2c), [`f8d4b175b`](https://github.com/keystonejs/keystone/commit/f8d4b175bbc29962569acb24b34c29c44b61791f), [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25), [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7), [`149d6fd6f`](https://github.com/keystonejs/keystone/commit/149d6fd6ff057c17570346063c173376769dcc79), [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1), [`7650ecd3e`](https://github.com/keystonejs/keystone/commit/7650ecd3e60b52983015ac0058b8b0066b074e1e), [`ed2f8c31b`](https://github.com/keystonejs/keystone/commit/ed2f8c31b13eadb39a045cc351777add81621ede)]:
+  - @keystonejs/fields@16.0.0
+  - @keystonejs/keystone@13.1.0
+  - @keystonejs/server-side-graphql-client@1.1.0
+  - @keystonejs/session@8.1.0
+  - @keystonejs/auth-password@5.1.13
+
 ## 7.0.0
 
 ### Major Changes

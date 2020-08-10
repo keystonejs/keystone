@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/fields-mongoid",
   "description": "KeystoneJS MongoId Field Type",
-  "version": "6.0.3",
+  "version": "6.0.4",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "main": "dist/fields-mongoid.cjs.js",
@@ -16,7 +16,7 @@
     "@babel/runtime": "^7.8.4",
     "@keystonejs/adapter-knex": "^11.0.1",
     "@keystonejs/adapter-mongoose": "^9.0.1",
-    "@keystonejs/fields": "^15.0.0",
+    "@keystonejs/fields": "^16.0.0",
     "react": "^16.13.1"
   },
   "preconstruct": {
