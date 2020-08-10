@@ -1,5 +1,23 @@
 # @keystonejs/list-plugins
 
+## 7.0.5
+
+### Patch Changes
+
+- [`7f17cb22f`](https://github.com/keystonejs/keystone/commit/7f17cb22f2ad49d3e5110f68cbb29447a16aa7a7) [#3332](https://github.com/keystonejs/keystone/pull/3332) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added tests to tracking plugin and fixed a bug where the 'update' operation was sometimes not setting the value of the `updatedBy` field.
+
+- Updated dependencies [[`d38a41f25`](https://github.com/keystonejs/keystone/commit/d38a41f25a1b4c90c05d2fb85116dc385d4ee77a), [`5ede731fc`](https://github.com/keystonejs/keystone/commit/5ede731fc58a79e7322b852bdd2d971ece45281e), [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25), [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7), [`149d6fd6f`](https://github.com/keystonejs/keystone/commit/149d6fd6ff057c17570346063c173376769dcc79), [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1), [`356dd27da`](https://github.com/keystonejs/keystone/commit/356dd27dab4ee6c89a9381dc92eef9534db52fc0)]:
+  - @keystonejs/fields@16.0.0
+  - @keystonejs/fields-authed-relationship@1.0.10
+
+## 7.0.4
+
+### Patch Changes
+
+- Updated dependencies [[`af5171563`](https://github.com/keystonejs/keystone/commit/af51715637433bcdd2538835c98ac71a8eb86122), [`086b6baec`](https://github.com/keystonejs/keystone/commit/086b6baecdb8730bd7ae7001a96ae881fb13bac2), [`7da9d67d7`](https://github.com/keystonejs/keystone/commit/7da9d67d7d481c44a81406c6b34540a3f0a8340d), [`086b6baec`](https://github.com/keystonejs/keystone/commit/086b6baecdb8730bd7ae7001a96ae881fb13bac2), [`c3883e01c`](https://github.com/keystonejs/keystone/commit/c3883e01c01b83cf5938de9bebf2dd68f4861364), [`fd2b8d1cf`](https://github.com/keystonejs/keystone/commit/fd2b8d1cf0b23b177951d65006a0d0faf666a5d6)]:
+  - @keystonejs/fields@15.0.0
+  - @keystonejs/fields-authed-relationship@1.0.9
+
 ## 7.0.3
 
 ### Patch Changes

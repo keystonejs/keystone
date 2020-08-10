@@ -1,5 +1,11 @@
 # @keystonejs/session
 
+## 8.1.0
+
+### Minor Changes
+
+- [`f8d4b175b`](https://github.com/keystonejs/keystone/commit/f8d4b175bbc29962569acb24b34c29c44b61791f) [#3356](https://github.com/keystonejs/keystone/pull/3356) Thanks [@timleslie](https://github.com/timleslie)! - Updated `endAuthedSession` to return the `listKey` and `itemId` of the logged out user if there was one. The return object is now `{ success, listKey, itemId }`.
+
 ## 8.0.0
 
 ### Major Changes

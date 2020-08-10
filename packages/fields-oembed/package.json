@@ -1,0 +1,44 @@
+{
+  "name": "@keystonejs/fields-oembed",
+  "description": "KeystoneJS oEmbed Field Type",
+  "version": "1.0.0",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-oembed",
+  "homepage": "https://github.com/keystonejs/keystone",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "dependencies": {
+    "@arch-ui/button": "^0.0.20",
+    "@arch-ui/fields": "^3.0.3",
+    "@arch-ui/input": "^0.1.10",
+    "@arch-ui/theme": "^0.0.10",
+    "@babel/runtime": "^7.8.4",
+    "@emotion/core": "^10.0.28",
+    "@iframely/embed.js": "^1.1.1",
+    "@keystonejs/adapter-knex": "^11.0.0",
+    "@keystonejs/adapter-mongoose": "^9.0.0",
+    "@keystonejs/fields": "^16.0.0",
+    "@keystonejs/fields-content": "^8.0.0",
+    "node-fetch": "^2.3.0",
+    "pluralize": "^7.0.0",
+    "query-string": "^6.8.1"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1"
+  },
+  "devDependencies": {
+    "react": "^16.13.1"
+  },
+  "main": "dist/fields-oembed.cjs.js",
+  "module": "dist/fields-oembed.esm.js",
+  "preconstruct": {
+    "entrypoints": [
+      "index.js",
+      "iframely/views/preview.js",
+      "views/blocks/oembed.js",
+      "views/*.js"
+    ]
+  }
+}

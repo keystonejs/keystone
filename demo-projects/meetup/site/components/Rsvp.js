@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useMutation, useLazyQuery } from '@apollo/react-hooks';
+import { useMutation, useLazyQuery } from '@apollo/client';
 import { jsx } from '@emotion/core';
 
 import { Button as ButtonPrimitive, CheckmarkIcon, Loading } from '../primitives';

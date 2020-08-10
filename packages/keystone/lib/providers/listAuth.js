@@ -1,12 +1,91 @@
 const { mergeWhereClause, upcase } = require('@keystonejs/utils');
 const { logger } = require('@keystonejs/logger');
-
-const { throwAccessDenied } = require('../ListTypes/graphqlErrors');
+const { throwAccessDenied, ValidationFailureError } = require('../ListTypes/graphqlErrors');
 
 const graphqlLogger = logger('graphql');
 
+class HookManager {
+  constructor({ name, hooks = {} }) {
+    this.name = name;
+    this.hooks = hooks;
+  }
+
+  async resolveAuthInput({ context, operation, originalInput }) {
+    let resolvedData = originalInput;
+
+    if (this.hooks.resolveAuthInput) {
+      // And run any list-level hook
+      resolvedData = await this.hooks.resolveAuthInput({ context, originalInput, operation });
+      if (typeof resolvedData !== 'object') {
+        const method = `${this.name}.hooks.resolveAuthInput()`;
+        throw new Error(
+          `Expected ${method} to return an object, but got a ${typeof resolvedData}: ${resolvedData}`
+        );
+      }
+    }
+
+    // Finally returning the amalgamated result of all the hooks.
+    return resolvedData;
+  }
+
+  async validateAuthInput({ resolvedData, context, operation, originalInput }) {
+    const args = { resolvedData, context, originalInput, operation };
+
+    if (this.hooks['validateAuthInput']) {
+      const listValidationErrors = [];
+      await this.hooks['validateAuthInput']({
+        ...args,
+        addValidationError: (msg, _data = {}, internalData = {}) =>
+          listValidationErrors.push({ msg, data: _data, internalData }),
+      });
+      if (listValidationErrors.length) {
+        throw new ValidationFailureError({
+          data: {
+            messages: listValidationErrors.map(e => e.msg),
+            errors: listValidationErrors.map(e => e.data),
+            operation,
+          },
+          internalData: {
+            errors: listValidationErrors.map(e => e.internalData),
+            data: originalInput,
+          },
+        });
+      }
+    }
+  }
+
+  async beforeAuth({ resolvedData, context, operation, originalInput }) {
+    const args = { resolvedData, context, originalInput, operation };
+    if (this.hooks.beforeAuth) await this.hooks.beforeAuth(args);
+  }
+
+  async afterAuth({
+    operation,
+    item,
+    success,
+    message,
+    token,
+    originalInput,
+    resolvedData,
+    context,
+  }) {
+    const args = { resolvedData, context, operation, originalInput, item, success, message, token };
+    if (this.hooks.afterAuth) await this.hooks.afterAuth(args);
+  }
+
+  async beforeUnauth({ operation, context }) {
+    const args = { context, operation };
+    if (this.hooks.beforeUnauth) await this.hooks.beforeUnauth(args);
+  }
+
+  async afterUnauth({ operation, context, listKey, itemId }) {
+    const args = { context, operation, listKey, itemId };
+    if (this.hooks.afterUnauth) await this.hooks.afterUnauth(args);
+  }
+}
+
 class ListAuthProvider {
-  constructor({ authStrategy, list }) {
+  constructor({ authStrategy, list, hooks }) {
     this.authStrategy = authStrategy;
     this.list = list;
     this.access = list.access;
@@ -20,7 +99,7 @@ class ListAuthProvider {
       unauthenticateOutputName: `unauthenticate${itemQueryName}Output`,
       updateAuthenticatedMutationName: `updateAuthenticated${itemQueryName}`,
     };
-
+    this.hookManager = new HookManager({ name: authStrategy.constructor.name, hooks });
     // Record GQL names in the strategy
     authStrategy.gqlNames = this.gqlNames;
   }
@@ -65,13 +144,20 @@ class ListAuthProvider {
     } = this.gqlNames;
     const { authStrategy } = this;
     const authTypeTitleCase = upcase(authStrategy.authType);
-    return [
+    const ret = [
       `""" Authenticate and generate a token for a ${outputTypeName} with the ${authTypeTitleCase} Authentication Strategy. """
         ${authenticateMutationName}(${authStrategy.getInputFragment()}): ${authenticateOutputName}
       `,
       `${unauthenticateMutationName}: ${unauthenticateOutputName}`,
-      `${updateAuthenticatedMutationName}(data: ${this.list.gqlNames.updateInputName}): ${outputTypeName}`,
     ];
+    const updateFields = this.list.getFieldsWithAccess({ schemaName, access: 'update' });
+    const schemaAccess = this.access[schemaName];
+    if (schemaAccess.update && updateFields.length) {
+      ret.push(
+        `${updateAuthenticatedMutationName}(data: ${this.list.gqlNames.updateInputName}): ${outputTypeName}`
+      );
+    }
+    return ret;
   }
   getSubscriptions({}) {
     return [];
@@ -94,11 +180,17 @@ class ListAuthProvider {
       authenticateMutationName,
       unauthenticateMutationName,
     } = this.gqlNames;
-    return {
+    const ret = {
       [authenticateMutationName]: (_, args, context) => this._authenticateMutation(args, context),
       [unauthenticateMutationName]: (_, __, context) => this._unauthenticateMutation(context),
-      [updateAuthenticatedMutationName]: (_, args, context) => this._updateMutation(args, context),
     };
+    const updateFields = this.list.getFieldsWithAccess({ schemaName, access: 'update' });
+    const schemaAccess = this.access[schemaName];
+    if (schemaAccess.update && updateFields.length) {
+      ret[updateAuthenticatedMutationName] = (_, args, context) =>
+        this._updateMutation(args, context);
+    }
+    return ret;
   }
   getSubscriptionResolvers({}) {
     return {};
@@ -122,26 +214,45 @@ class ListAuthProvider {
     );
   }
 
-  async _authenticateMutation(args, context) {
+  async _authenticateMutation(originalInput, context) {
     const gqlName = this.gqlNames.authenticateMutationName;
     await this.checkAccess(context, 'mutation', { gqlName });
-
+    const operation = 'authenticate';
+    const resolvedData = await this.hookManager.resolveAuthInput({
+      operation,
+      originalInput,
+      context,
+    });
+    await this.hookManager.validateAuthInput({ operation, originalInput, resolvedData, context });
+    await this.hookManager.beforeAuth({ operation, originalInput, resolvedData, context });
     // Verify incoming details
-    const { item, success, message } = await this.authStrategy.validate(args, context);
+    const { item, success, message } = await this.authStrategy.validate(resolvedData, context);
     if (!success) {
       throw new Error(message);
     }
 
     const token = await context.startAuthedSession({ item, list: this.list });
+    await this.hookManager.afterAuth({
+      operation,
+      item,
+      success,
+      message,
+      token,
+      originalInput,
+      resolvedData,
+      context,
+    });
     return { token, item };
   }
 
   async _unauthenticateMutation(context) {
     const gqlName = this.gqlNames.unauthenticateMutationName;
     await this.checkAccess(context, 'mutation', { gqlName });
-
-    await context.endAuthedSession();
-    return { success: true };
+    const operation = 'unauthenticate';
+    await this.hookManager.beforeUnauth({ operation, context });
+    const { success, listKey, itemId } = await context.endAuthedSession();
+    await this.hookManager.afterUnauth({ operation, context, success, listKey, itemId });
+    return { success };
   }
 
   async _updateMutation({ data }, context) {

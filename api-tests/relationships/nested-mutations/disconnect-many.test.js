@@ -1,11 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
-const {
-  multiAdapterRunners,
-  setupServer,
-  graphqlRequest,
-  networkedGraphqlRequest,
-} = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -66,51 +62,56 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('no access control', () => {
       test(
         'removes matched items from list',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const noteContent = `foo${sampleOne(alphanumGenerator)}`;
           const noteContent2 = `foo${sampleOne(alphanumGenerator)}`;
 
           // Create two items with content that can be matched
-          const createNote = await create('Note', { content: noteContent });
-          const createNote2 = await create('Note', { content: noteContent2 });
+          const createNote = await createItem({
+            keystone,
+            listKey: 'Note',
+            item: { content: noteContent },
+          });
+          const createNote2 = await createItem({
+            keystone,
+            listKey: 'Note',
+            item: { content: noteContent2 },
+          });
 
           // Create an item to update
-          const createUser = await create('User', {
-            username: 'A thing',
-            notes: [createNote.id, createNote2.id],
+          const createUser = await createItem({
+            keystone,
+            listKey: 'User',
+            item: {
+              username: 'A thing',
+              notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
+            },
           });
 
           // Update the item and link the relationship field
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateUser(
-            id: "${createUser.id}"
-            data: {
-              username: "A thing",
-              notes: { disconnect: [{ id: "${createNote2.id}" }] }
-            }
-          ) {
-            id
-            notes {
-              id
-              content
-            }
-          }
-        }
-    `,
+              mutation {
+                updateUser(
+                  id: "${createUser.id}"
+                  data: {
+                    username: "A thing",
+                    notes: { disconnect: [{ id: "${createNote2.id}" }] }
+                  }
+                ) {
+                  id
+                  notes {
+                    id
+                    content
+                  }
+                }
+              }`,
           });
 
           expect(data).toMatchObject({
             updateUser: {
               id: expect.any(String),
-              notes: [
-                {
-                  id: createNote.id,
-                  content: noteContent,
-                },
-              ],
+              notes: [{ id: createNote.id, content: noteContent }],
             },
           });
           expect(errors).toBe(undefined);
@@ -123,28 +124,23 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          createUser(data: {
-            notes: {
-              disconnect: [{ id: "${FAKE_ID}" }]
-            }
-          }) {
-            id
-            notes {
-              id
-            }
-          }
-        }
-    `,
+              mutation {
+                createUser(data: {
+                  notes: {
+                    disconnect: [{ id: "${FAKE_ID}" }]
+                  }
+                }) {
+                  id
+                  notes {
+                    id
+                  }
+                }
+              }`,
           });
           expect(errors).toBe(undefined);
-          expect(data.createUser).toMatchObject({
-            id: expect.any(String),
-            notes: [],
-          });
+          expect(data.createUser).toMatchObject({ id: expect.any(String), notes: [] });
           expect(data.createUser).not.toHaveProperty('errors');
         })
       );
@@ -153,89 +149,89 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('non-matching filter', () => {
       test(
         'silently succeeds if items to disconnect cannot be found during update',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
           // Create an item to link against
-          const createUser = await create('User', {});
+          const createUser = await createItem({ keystone, listKey: 'User', item: {} });
 
           // Create an item that does the linking
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateUser(
-            id: "${createUser.id}",
-            data: {
-              notes: {
-                disconnect: [{ id: "${FAKE_ID}" }]
-              }
-            }
-          ) {
-            id
-            notes {
-             id
-           }
-          }
-        }
-    `,
+              mutation {
+                updateUser(
+                  id: "${createUser.id}",
+                  data: {
+                    notes: {
+                      disconnect: [{ id: "${FAKE_ID}" }]
+                    }
+                  }
+                ) {
+                  id
+                  notes {
+                  id
+                }
+                }
+              }`,
           });
           expect(errors).toBe(undefined);
-          expect(data.updateUser).toMatchObject({
-            id: expect.any(String),
-            notes: [],
-          });
+          expect(data.updateUser).toMatchObject({ id: expect.any(String), notes: [] });
           expect(data.updateUser).not.toHaveProperty('errors');
         })
       );
 
       test(
         'removes items that match, silently ignores those that do not',
-        runner(setupKeystone, async ({ keystone, create }) => {
+        runner(setupKeystone, async ({ keystone }) => {
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
           const noteContent = sampleOne(alphanumGenerator);
           const noteContent2 = sampleOne(alphanumGenerator);
 
           // Create an item to link against
-          const createNote = await create('Note', { content: noteContent });
-          const createNote2 = await create('Note', { content: noteContent2 });
+          const createNote = await createItem({
+            keystone,
+            listKey: 'Note',
+            item: { content: noteContent },
+          });
+          const createNote2 = await createItem({
+            keystone,
+            listKey: 'Note',
+            item: { content: noteContent2 },
+          });
 
           // Create an item to update
-          const createUser = await create('User', {
-            username: 'A thing',
-            notes: [createNote.id, createNote2.id],
+          const createUser = await createItem({
+            keystone,
+            listKey: 'User',
+            item: {
+              username: 'A thing',
+              notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
+            },
           });
 
           // Update the item and link the relationship field
-          const { data, errors } = await graphqlRequest({
-            keystone,
+          const { data, errors } = await keystone.executeGraphQL({
             query: `
-        mutation {
-          updateUser(
-            id: "${createUser.id}"
-            data: {
-              notes: { disconnect: [{ id: "${createNote.id}" }, { id: "${FAKE_ID}" }] }
-            }
-          ) {
-            id
-            notes {
-              id
-              content
-            }
-          }
-        }
-    `,
+              mutation {
+                updateUser(
+                  id: "${createUser.id}"
+                  data: {
+                    notes: { disconnect: [{ id: "${createNote.id}" }, { id: "${FAKE_ID}" }] }
+                  }
+                ) {
+                  id
+                  notes {
+                    id
+                    content
+                  }
+                }
+              }`,
           });
 
           expect(data).toMatchObject({
             updateUser: {
               id: expect.any(String),
-              notes: [
-                {
-                  id: expect.any(String),
-                  content: noteContent2,
-                },
-              ],
+              notes: [{ id: expect.any(String), content: noteContent2 }],
             },
           });
           expect(errors).toBe(undefined);
@@ -247,21 +243,28 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'has no impact when disconnecting directly with an id',
-          runner(setupKeystone, async ({ keystone, app, create }) => {
+          runner(setupKeystone, async ({ keystone }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createNote = await create('NoteNoRead', { content: noteContent });
+            const createNote = await createItem({
+              keystone,
+              listKey: 'NoteNoRead',
+              item: { content: noteContent },
+            });
 
             // Create an item to update
-            const createUser = await create('UserToNotesNoRead', {
-              username: 'A thing',
-              notes: [createNote.id],
+            const createUser = await createItem({
+              keystone,
+              listKey: 'UserToNotesNoRead',
+              item: {
+                username: 'A thing',
+                notes: { connect: [{ id: createNote.id }] },
+              },
             });
 
             // Update the item and link the relationship field
-            const { errors } = await networkedGraphqlRequest({
-              app,
+            const { errors } = await keystone.executeGraphQL({
               query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -273,23 +276,21 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   ) {
                     id
                   }
-                }
-              `,
+                }`,
             });
 
             expect(errors).toBe(undefined);
 
-            const result = await graphqlRequest({
-              keystone,
+            const result = await keystone.executeGraphQL({
               query: `
                 query getUserNodes($userId: ID!){
                   UserToNotesNoRead(where: { id: $userId }) {
                     id
                     notes { id }
                   }
-                }
-            `,
+                }`,
               variables: { userId: createUser.id },
+              context: keystone.createContext({ skipAccessControl: true }),
             });
             expect(result.errors).toBe(undefined);
             expect(result.data.UserToNotesNoRead.notes).toHaveLength(0);

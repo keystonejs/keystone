@@ -1,6 +1,7 @@
 const globby = require('globby');
 const path = require('path');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 describe('Fields', () => {
   const testModules = globby.sync(`packages/fields/src/types/**/test-fixtures.js`, {
@@ -11,7 +12,7 @@ describe('Fields', () => {
   multiAdapterRunners().map(({ runner, adapterName }) =>
     describe(`${adapterName} adapter`, () => {
       testModules.map(require).forEach(mod => {
-        const listName = 'test';
+        const listKey = 'test';
         const keystoneTestWrapper = (testFn = () => {}) =>
           runner(
             () => {
@@ -19,15 +20,18 @@ describe('Fields', () => {
                 // Create a list with all the fields required for testing
                 const fields = mod.getTestFields();
 
-                keystone.createList(listName, { fields });
+                keystone.createList(listKey, { fields });
               };
               return setupServer({ adapterName, createLists });
             },
             async ({ keystone, ...rest }) => {
               // Populate the database before running the tests
-              await keystone.createItems({ [listName]: mod.initItems() });
-
-              return testFn({ keystone, listName, adapterName, ...rest });
+              await createItems({
+                keystone,
+                listKey,
+                items: mod.initItems().map(x => ({ data: x })),
+              });
+              return testFn({ keystone, listKey, adapterName, ...rest });
             }
           );
 

@@ -1,5 +1,39 @@
 # @keystonejs/app-admin-ui
 
+## 7.3.0
+
+### Minor Changes
+
+- [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7) [#3125](https://github.com/keystonejs/keystone/pull/3125) Thanks [@Vultraz](https://github.com/Vultraz)! - Migrated to Apollo Client v3.
+
+### Patch Changes
+
+- [`318e39b74`](https://github.com/keystonejs/keystone/commit/318e39b74b2fa3152d4ff09bccec93238e8345ef) [#3343](https://github.com/keystonejs/keystone/pull/3343) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Force all imports of `@apollo/client` in the Admin UI to use the copy of `@apollo/client` that is a dependency of `@keystonejs/app-admin-ui`. This resolves issues if `@apollo/client` resolves to a different copy of `@apollo/client` in a field view.
+
+* [`b0af7d5ba`](https://github.com/keystonejs/keystone/commit/b0af7d5baa6ceea8d80215afa290fd76240ee823) [#3317](https://github.com/keystonejs/keystone/pull/3317) Thanks [@singhArmani](https://github.com/singhArmani)! - Alerted the user before canceling the createItemModal form.
+
+* Updated dependencies [[`d38a41f25`](https://github.com/keystonejs/keystone/commit/d38a41f25a1b4c90c05d2fb85116dc385d4ee77a), [`5ede731fc`](https://github.com/keystonejs/keystone/commit/5ede731fc58a79e7322b852bdd2d971ece45281e), [`f8d4b175b`](https://github.com/keystonejs/keystone/commit/f8d4b175bbc29962569acb24b34c29c44b61791f), [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25), [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7), [`149d6fd6f`](https://github.com/keystonejs/keystone/commit/149d6fd6ff057c17570346063c173376769dcc79), [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1)]:
+  - @keystonejs/fields@16.0.0
+  - @keystonejs/session@8.1.0
+
+## 7.2.0
+
+### Minor Changes
+
+- [`5a3849806`](https://github.com/keystonejs/keystone/commit/5a3849806d00e62b722461d02f6e4639bc45c1eb) [#3262](https://github.com/keystonejs/keystone/pull/3262) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a new private internal schema that will allow a better method of bypassing access control on the `executeGraphQL` function.
+
+  The schema name `internal` is now a reserved name and if you have a schema with this name you will need to change it with this update.
+
+  Note: You cannot change access control on the `internal` schema.
+
+### Patch Changes
+
+- [`b53b6fe5a`](https://github.com/keystonejs/keystone/commit/b53b6fe5a8cbefba20008ca54ee3fe4b346e8497) [#3293](https://github.com/keystonejs/keystone/pull/3293) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Fixed a bug where dev features would show in development even if ENABLE_DEV_FEATURES was explicitly set to false.
+
+- Updated dependencies [[`d7e011319`](https://github.com/keystonejs/keystone/commit/d7e011319d18275e7e3ca1ab2209b2042c6775cb), [`af5171563`](https://github.com/keystonejs/keystone/commit/af51715637433bcdd2538835c98ac71a8eb86122), [`086b6baec`](https://github.com/keystonejs/keystone/commit/086b6baecdb8730bd7ae7001a96ae881fb13bac2), [`7da9d67d7`](https://github.com/keystonejs/keystone/commit/7da9d67d7d481c44a81406c6b34540a3f0a8340d), [`086b6baec`](https://github.com/keystonejs/keystone/commit/086b6baecdb8730bd7ae7001a96ae881fb13bac2), [`c3883e01c`](https://github.com/keystonejs/keystone/commit/c3883e01c01b83cf5938de9bebf2dd68f4861364), [`fd2b8d1cf`](https://github.com/keystonejs/keystone/commit/fd2b8d1cf0b23b177951d65006a0d0faf666a5d6)]:
+  - @keystonejs/build-field-types@5.2.11
+  - @keystonejs/fields@15.0.0
+
 ## 7.1.0
 
 ### Minor Changes

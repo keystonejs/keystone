@@ -2,7 +2,7 @@
 import { Children } from 'react';
 import { jsx } from '@emotion/core';
 import PropTypes from 'prop-types';
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 export const Avatar = ({
   alt,

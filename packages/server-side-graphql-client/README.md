@@ -85,6 +85,8 @@ To perform CRUD operations, use the following functions:
 
 - [`createItem`](#createitem)
 - [`createItems`](#createitems)
+- [`getItem`](#getitem)
+- [`getItems`](#getitems)
 - [`updateItem`](#updateitem)
 - [`updateItems`](#updateitems)
 - [`deleteItem`](#deleteitem)
@@ -104,6 +106,8 @@ The following config options are common to all server-side graphQL functions.
 | `listKey`      | `String`   | (required) | Keystone list name.                                                                                                                                                                                                 |
 | `returnFields` | `String`   | `id`       | A graphQL fragment of fields to return. Must match the graphQL return type.                                                                                                                                         |
 | `context`      | `Object`   | N/A        | An Apollo [`context` object](https://www.apollographql.com/docs/apollo-server/data/resolvers/#the-context-argument). See the [server side graphQL docs](/docs/discussions/server-side-graphql.md) for more details. |
+
+> NOTE: If `context` argument is provided then the `keystone` argument is not required.
 
 ### `createItem`
 
@@ -134,6 +138,8 @@ const addUser = async userInput => {
 addUser({ name: 'keystone user', email: 'keystone@test.com' });
 ```
 
+**Note**: The `item` property is a graphQL create input. For Relationship fields it can contain nested mutations with create and connect operations. For examples see the [Relationship API documentation](/packages/fields/src/types/Relationship/README.md#create-and-append-a-related-item).
+
 #### Config
 
 [Shared Config Options](#shared-config-options) apply to this function.
@@ -159,10 +165,8 @@ keystone.createList('User', {
 });
 
 const dummyUsers = [
-  {
-    data: { name: 'user1', email: 'user1@test.com' },
-    data: { name: 'user2', email: 'user2@test.com' },
-  },
+  { data: { name: 'user1', email: 'user1@test.com' } },
+  { data: { name: 'user2', email: 'user2@test.com' } },
 ];
 
 const addUsers = async () => {
@@ -256,10 +260,13 @@ getUsers();
 
 [Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties | Type                          | Default | Description                                                                                                |
-| ---------- | ----------------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
-| `where`    | GraphQL `[listKey]WhereInput` | `{}`    | Limit results to items matching [where clause](https://www.keystonejs.com/guides/intro-to-graphql/#where). |
-| `pageSize` | `Number`                      | 500     | The query batch size. Useful when retrieving a large set of data.                                          |
+| Properties | Type                             | Default | Description                                                                                                                                        |
+| ---------- | -------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `where`    | GraphQL `[listKey]WhereInput`    | `{}`    | Limit results to items matching [where clause](https://www.keystonejs.com/guides/intro-to-graphql/#where).                                         |
+| `sortBy`   | GraphQL enum `Sort[listKey]sBy}` |         | Returned the results based on specified order. Refer [docs](https://www.keystonejs.com/guides/intro-to-graphql#sortby) for available sort options. |
+| `first`    | `Number`                         |         | Limit the number of items returned from the query.                                                                                                 |
+| `skip`     | `Number`                         |         | Skip that many elements in the list before collecting the items to be returned.                                                                    |
+| `pageSize` | `Number`                         | 500     | The query batch size. Useful when retrieving a large set of data.                                                                                  |
 
 ### `updateItem`
 
@@ -304,7 +311,7 @@ Update multiple items.
 #### Usage
 
 ```js
-const { updateItems } =  require('@keystonejs/server-side-graphql-client')
+const { updateItems } = require('@keystonejs/server-side-graphql-client');
 
 keystone.createList('User', {
   fields: {
@@ -313,20 +320,20 @@ keystone.createList('User', {
   },
 });
 
-const updateUsers = async (updateUsers) => {
+const updateUsers = async updateUsers => {
   const users = await updateItems({
     keystone,
     listKey: 'User',
     items: updateUsers,
-    returnFields: 'name'
+    returnFields: 'name',
   });
 
   console.log(users); // [{name: 'newName1'}, {name: 'newName2'}]
-}
+};
 
 updateUsers([
-  {id: '123', data: {name: 'newName1'},
-  {id: '456', data: {name: 'newName2'}
+  { id: '123', data: { name: 'newName1' } },
+  { id: '456', data: { name: 'newName2' } },
 ]);
 ```
 
@@ -334,9 +341,10 @@ updateUsers([
 
 [Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties | Type                            | Default    | Description                   |
-| ---------- | ------------------------------- | ---------- | ----------------------------- |
-| `items`    | GraphQL `[listKey]sUpdateInput` | (required) | Array of items to be updated. |
+| Properties | Type                            | Default    | Description                                                               |
+| ---------- | ------------------------------- | ---------- | ------------------------------------------------------------------------- |
+| `items`    | GraphQL `[listKey]sUpdateInput` | (required) | Array of items to be updated.                                             |
+| `pageSize` | `Number`                        | 500        | The update mutation batch size. Useful when updating a large set of data. |
 
 ### `deleteItem`
 
@@ -396,9 +404,10 @@ deletedUsers(['123', '456']);
 
 [Shared Config Options](#shared-config-options) apply to this function.
 
-| Properties | Type       | Default    | Description                        |
-| ---------- | ---------- | ---------- | ---------------------------------- |
-| `itemId`   | `String[]` | (required) | Array of item `id`s to be deleted. |
+| Properties | Type       | Default    | Description                                                               |
+| ---------- | ---------- | ---------- | ------------------------------------------------------------------------- |
+| `itemId`   | `String[]` | (required) | Array of item `id`s to be deleted.                                        |
+| `pageSize` | `Number`   | 500        | The delete mutation batch size. Useful when deleting a large set of data. |
 
 ### `runCustomQuery`
 

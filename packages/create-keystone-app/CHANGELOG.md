@@ -1,5 +1,15 @@
 # create-keystone-app
 
+## 3.3.0
+
+### Minor Changes
+
+- [`8626e8e26`](https://github.com/keystonejs/keystone/commit/8626e8e2653bf219232451d7cfe9f0d44aba1038) [#3352](https://github.com/keystonejs/keystone/pull/3352) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fetch example projects from GitHub instead of from the package. This resolves issues with incorrect combinations of package versions being used when setting up a project
+
+### Patch Changes
+
+- [`b7f669588`](https://github.com/keystonejs/keystone/commit/b7f669588c739610cd36c17a41a6cecaae6d304d) [#3341](https://github.com/keystonejs/keystone/pull/3341) Thanks [@Noviny](https://github.com/Noviny)! - Fix issue where access controls blocked creating initial user and add better error handling if this fails
+
 ## 3.2.3
 
 ### Patch Changes

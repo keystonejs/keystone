@@ -19,7 +19,7 @@ There are several categorisations that can be applied to hooks and are useful fo
 
 ### Stage
 
-Keystone defines several _stages_ within the [hook execution order](#execution-order).
+Keystone defines several _stages_ within the [hook execution order](#intra-hook-execution-order).
 These stages are intended to be used for different purposes; they help organise your hook functionality.
 
 - Input resolution - modify the values supplied
@@ -34,6 +34,8 @@ Hooks are available for these core operations:
 - `create`
 - `update`
 - `delete`
+- `authenticate`
+- `unauthenticate`
 
 These operations are reused used for both "single" and "many" modes.
 E.g. the `deleteUser` (singular) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
@@ -66,17 +68,18 @@ See the [Hooks API docs](/docs/api/hooks.md) and [Intra-Hook Execution Order sec
 
 ### Putting it together
 
-In total there 7 _hook sets_ available.
+In total there 13 _hook sets_ available.
 This table shows the _hook set_ relevant to each combination of _stage_ and _operation_:
 
-| Stage            | `create`        | `update`        | `delete`         |
-| ---------------- | --------------- | --------------- | ---------------- |
-| Input resolution | `resolveInput`  | `resolveInput`  | n/a              |
-| Data validation  | `validateInput` | `validateInput` | `validateDelete` |
-| Before operation | `beforeChange`  | `beforeChange`  | `beforeDelete`   |
-| After operation  | `afterChange`   | `afterChange`   | `afterDelete`    |
+| Stage            | `create`        | `update`        | `delete`         | `authenticate`      | `unauthenticate` |
+| ---------------- | --------------- | --------------- | ---------------- | ------------------- | ---------------- |
+| Input resolution | `resolveInput`  | `resolveInput`  | n/a              | `resolveAuthInput`  |                  |
+| Data validation  | `validateInput` | `validateInput` | `validateDelete` | `validateAuthInput` |                  |
+| Before operation | `beforeChange`  | `beforeChange`  | `beforeDelete`   | `beforeAuth`        | `beforeUnauth`   |
+| After operation  | `afterChange`   | `afterChange`   | `afterDelete`    | `afterAuth`         | `afterUnauth`    |
 
 The `create`, `update` and `delete` _hook sets_ can be attached as _list_, _field_ or _field type_ hooks.
+The `authenticate` and `unauthenticate` hook sets are unique in that they can only be defined when creating an authentication strategy.
 
 Due to their similarity, the `create` and `update` operations share a single set of hooks.
 To implement different logic for these operations make it conditional on either the `operation` or `existingItem` arguments;
@@ -107,6 +110,22 @@ For full details of the mutation lifecycle, and where hooks fit within this, see
 4. Database operation (after all `beforeDelete` calls have returned)
 5. `afterDelete` called on all fields (after the DB operation has completed)
 
+### Authentication
+
+1. Access control checks
+2. `resolveAuthInput` called for the list
+3. `validateAuthInput` called for the list
+4. `beforeAuth` called for the list
+5. Auth strategy `validate()` is called
+6. `afterAuth` called for the list
+
+### Unauthentication
+
+1. Access control checks
+2. `beforeAuth` called for the list
+3. `context.endAuthedSession()` is called
+4. `afterAuth` called for the list
+
 ### Intra-hook execution order
 
 Within each hook set, the different [hook types](#hook-type) are invoked in a specific order.
@@ -126,7 +145,8 @@ A few of the main stumbling blocks are:
 - As per the table above, the `delete` operations have no hook set for the _input resolution_ stage.
   This operation doesn't accept any input (other than the target IDs).
 - Keystone does not currently implement `read` hooks.
-- Field type hooks and field hooks run in parallel.
+- Field type hooks and field hooks are run in parallel.
+- The `authenticate` and `unauthenticate` hook sets are unique in that they can only be defined when creating an authentication strategy.
 
 These nuances aren't bugs per se -- they generally exist for good reason --
 but they can make understanding the hook system difficult.

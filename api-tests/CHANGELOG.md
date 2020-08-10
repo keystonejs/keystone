@@ -1,5 +1,78 @@
 # @keystonejs/api-tests
 
+## 7.0.1
+
+### Patch Changes
+
+- [`845b6a21b`](https://github.com/keystonejs/keystone/commit/845b6a21b62e615135eb738ad332fc035b93191b) [#2039](https://github.com/keystonejs/keystone/pull/2039) Thanks [@molomby](https://github.com/molomby)! - Added [authentication hooks](https://www.keystonejs.com/api/hooks).
+
+  You can now customise the behaviour of authentication mutations as follows:
+
+  ```js
+  keystone.creatAuthStrategy({
+    type: PasswordAuthStrategy,
+    list: 'User',
+    hooks: {
+      resolveAuthInput: async (...) => {...},
+      validateAuthInput: async (...) => {...},
+      beforeAuth: async (...) => {...},
+      afterAuth: async (...) => {...},
+
+      beforeUnauth: async (...) => {...},
+      afterUnauth: async (...) => {...},
+    },
+  })
+  ```
+
+* [`d4f28f123`](https://github.com/keystonejs/keystone/commit/d4f28f123ce85f3cb3334f53695aca3db03218f9) [#3326](https://github.com/keystonejs/keystone/pull/3326) Thanks [@timleslie](https://github.com/timleslie)! - Replaced calls to `graphqlRequest` with calls to `keystone.executeGraphQL`.
+
+- [`4cadbb2a9`](https://github.com/keystonejs/keystone/commit/4cadbb2a95ce275c22fe7248fd44a5cbc6df6904) [#3313](https://github.com/keystonejs/keystone/pull/3313) Thanks [@timleslie](https://github.com/timleslie)! - Updated tests to make use of `createItem` and `createItems`.
+
+* [`f69db4fdc`](https://github.com/keystonejs/keystone/commit/f69db4fdcda05328020d876f3987730cbe95a31f) [#3328](https://github.com/keystonejs/keystone/pull/3328) Thanks [@timleslie](https://github.com/timleslie)! - Uses `deleteItem` to delete items in tests.
+
+- [`eb8bd6679`](https://github.com/keystonejs/keystone/commit/eb8bd66799c454bdbd0933ff7a91f592ccf22da9) [#3329](https://github.com/keystonejs/keystone/pull/3329) Thanks [@timleslie](https://github.com/timleslie)! - Uses `updateItems` to update items in tests.
+
+- Updated dependencies [[`d38a41f25`](https://github.com/keystonejs/keystone/commit/d38a41f25a1b4c90c05d2fb85116dc385d4ee77a), [`845b6a21b`](https://github.com/keystonejs/keystone/commit/845b6a21b62e615135eb738ad332fc035b93191b), [`5ede731fc`](https://github.com/keystonejs/keystone/commit/5ede731fc58a79e7322b852bdd2d971ece45281e), [`1a89bbdc6`](https://github.com/keystonejs/keystone/commit/1a89bbdc6b2122a5c8217e6f6c750f7cfb69dc2c), [`f8d4b175b`](https://github.com/keystonejs/keystone/commit/f8d4b175bbc29962569acb24b34c29c44b61791f), [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25), [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7), [`149d6fd6f`](https://github.com/keystonejs/keystone/commit/149d6fd6ff057c17570346063c173376769dcc79), [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1), [`7650ecd3e`](https://github.com/keystonejs/keystone/commit/7650ecd3e60b52983015ac0058b8b0066b074e1e), [`ed2f8c31b`](https://github.com/keystonejs/keystone/commit/ed2f8c31b13eadb39a045cc351777add81621ede)]:
+  - @keystonejs/fields@16.0.0
+  - @keystonejs/keystone@13.1.0
+  - @keystonejs/server-side-graphql-client@1.1.0
+  - @keystonejs/session@8.1.0
+  - @keystonejs/auth-password@5.1.13
+
+## 7.0.0
+
+### Major Changes
+
+- [`2e10b1083`](https://github.com/keystonejs/keystone/commit/2e10b1083c0ab3925b877f16543c3d302f618313) [#3309](https://github.com/keystonejs/keystone/pull/3309) Thanks [@timleslie](https://github.com/timleslie)! - Changed the default `schemaName` in `setupServer()` from `"testing"` to `"public"`.
+
+### Patch Changes
+
+- [`acaf19cd9`](https://github.com/keystonejs/keystone/commit/acaf19cd9679861234e67f9e130aea83d052f01e) [#3301](https://github.com/keystonejs/keystone/pull/3301) Thanks [@MadeByMike](https://github.com/MadeByMike)! - No functional changes. Update all internal usages of `keystone.createItems` to the new `createItems` function.
+
+* [`afe661e60`](https://github.com/keystonejs/keystone/commit/afe661e607539df13584d460e1016ba0fa883cb8) [#3274](https://github.com/keystonejs/keystone/pull/3274) Thanks [@jordanoverbye](https://github.com/jordanoverbye)! - Added the ability for static cache hints to be added to custom queries generated using `keystone.extendGraphQLSchema()`
+
+- [`04f9be03d`](https://github.com/keystonejs/keystone/commit/04f9be03de7fe82035205379208511c6e49890b3) [#3319](https://github.com/keystonejs/keystone/pull/3319) Thanks [@timleslie](https://github.com/timleslie)! - Fixed invalid GraphQL schema when using `access: { update: false, auth: true }` on a list configured with an `AuthStrategy`.
+
+* [`50d33ddf9`](https://github.com/keystonejs/keystone/commit/50d33ddf937ae68b4a9ca7f0c0892637c5622b3d) [#3281](https://github.com/keystonejs/keystone/pull/3281) Thanks [@timleslie](https://github.com/timleslie)! - Updated tests to not depend on resolver order.
+
+- [`cefbca4f8`](https://github.com/keystonejs/keystone/commit/cefbca4f899ddd58c7f69180f453d5d9587e2df4) [#3310](https://github.com/keystonejs/keystone/pull/3310) Thanks [@timleslie](https://github.com/timleslie)! - Use `authedGraphqlRequest` rather than `networkedGraphqlRequest` where appropriate.
+
+* [`70fbbac0b`](https://github.com/keystonejs/keystone/commit/70fbbac0b4c20f151fba3030a6958a2c19615daa) [#3312](https://github.com/keystonejs/keystone/pull/3312) Thanks [@timleslie](https://github.com/timleslie)! - Use `keystone.executeGraphQL` in place of `authedGraphqlRequest`, as they are equivalent.
+
+- [`086b6baec`](https://github.com/keystonejs/keystone/commit/086b6baecdb8730bd7ae7001a96ae881fb13bac2) [#3299](https://github.com/keystonejs/keystone/pull/3299) Thanks [@timleslie](https://github.com/timleslie)! - Added more robust checks for support of the `isUnique` flag config. Added tests for this flag.
+
+* [`eb70800f7`](https://github.com/keystonejs/keystone/commit/eb70800f74d7238e4378a00a4fb628fa767ce5e7) [#3311](https://github.com/keystonejs/keystone/pull/3311) Thanks [@timleslie](https://github.com/timleslie)! - Use `server-side-graphql-client` functions rather than `findById` and `findOne`.
+
+* Updated dependencies [[`af5171563`](https://github.com/keystonejs/keystone/commit/af51715637433bcdd2538835c98ac71a8eb86122), [`086b6baec`](https://github.com/keystonejs/keystone/commit/086b6baecdb8730bd7ae7001a96ae881fb13bac2), [`271f1a40b`](https://github.com/keystonejs/keystone/commit/271f1a40b97e03aaa00ce920a6515b8f18669428), [`acaf19cd9`](https://github.com/keystonejs/keystone/commit/acaf19cd9679861234e67f9e130aea83d052f01e), [`22b4a5c1a`](https://github.com/keystonejs/keystone/commit/22b4a5c1a13c3cca47190467be9d56e836f180f1), [`7da9d67d7`](https://github.com/keystonejs/keystone/commit/7da9d67d7d481c44a81406c6b34540a3f0a8340d), [`afe661e60`](https://github.com/keystonejs/keystone/commit/afe661e607539df13584d460e1016ba0fa883cb8), [`04f9be03d`](https://github.com/keystonejs/keystone/commit/04f9be03de7fe82035205379208511c6e49890b3), [`ef7074977`](https://github.com/keystonejs/keystone/commit/ef70749775ce1565eafd7f94c3d7438c8ebd474e), [`e07c42d4e`](https://github.com/keystonejs/keystone/commit/e07c42d4ec75d5703bec4a2e419a42d18bed90ca), [`5a3849806`](https://github.com/keystonejs/keystone/commit/5a3849806d00e62b722461d02f6e4639bc45c1eb), [`086b6baec`](https://github.com/keystonejs/keystone/commit/086b6baecdb8730bd7ae7001a96ae881fb13bac2), [`24af20b38`](https://github.com/keystonejs/keystone/commit/24af20b38ab89a452edc7a060c9bc936cda55a4a), [`5332988e3`](https://github.com/keystonejs/keystone/commit/5332988e3fafe6a3594f7dcecd79a9402df28015), [`c3883e01c`](https://github.com/keystonejs/keystone/commit/c3883e01c01b83cf5938de9bebf2dd68f4861364), [`fd2b8d1cf`](https://github.com/keystonejs/keystone/commit/fd2b8d1cf0b23b177951d65006a0d0faf666a5d6), [`2e10b1083`](https://github.com/keystonejs/keystone/commit/2e10b1083c0ab3925b877f16543c3d302f618313)]:
+  - @keystonejs/fields@15.0.0
+  - @keystonejs/keystone@13.0.0
+  - @keystonejs/server-side-graphql-client@1.0.0
+  - @keystonejs/app-graphql@6.1.0
+  - @keystonejs/test-utils@7.1.1
+  - @keystonejs/auth-password@5.1.12
+  - @keystonejs/adapter-knex@11.0.1
+  - @keystonejs/adapter-mongoose@9.0.1
+
 ## 6.0.1
 
 ### Patch Changes
