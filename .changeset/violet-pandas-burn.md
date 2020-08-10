@@ -2,4 +2,4 @@
 '@keystonejs/fields-cloudinary-image': patch
 ---
 
-Fix field type views not being compiled
+Fixed ` fields-cloudinary-image` views not being compiled.
