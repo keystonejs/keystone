@@ -1,13 +1,13 @@
 import { Float, MongoFloatInterface, KnexFloatInterface } from './Implementation';
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Float',
   implementation: Float,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Filter: importView('./views/Filter'),
+    Controller: resolveView('types/Float/views/Controller'),
+    Field: resolveView('types/Float/views/Field'),
+    Filter: resolveView('types/Float/views/Filter'),
   },
   adapters: {
     mongoose: MongoFloatInterface,

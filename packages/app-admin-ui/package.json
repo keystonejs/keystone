@@ -38,7 +38,6 @@
     "@babel/core": "^7.9.0",
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.28",
-    "@keystonejs/build-field-types": "^5.2.11",
     "@keystonejs/field-views-loader": "^6.0.0",
     "@keystonejs/fields": "^16.0.0",
     "@keystonejs/session": "^8.1.0",
