@@ -1,7 +1,7 @@
 [build]
-  command = "yarn website build"
+  command = "pnpm i && pnpm run website -- build"
   publish = "website/public"
+
 [build.environment]
-  NODE_VERSION = "10"
-  YARN_VERSION = "1.15.2"
-  YARN_FLAGS = "--frozen-lockfile"
+    # This essentially means "don't run pnpm install"
+    NPM_FLAGS="--prefix=/"
