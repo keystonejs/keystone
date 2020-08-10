@@ -1,4 +1,4 @@
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from './resolve-view';
 
 import {
   CloudinaryImage as Implementation,
@@ -11,9 +11,9 @@ export const CloudinaryImage = {
   type: 'CloudinaryImage',
   implementation: Implementation,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Cell: importView('./views/Cell'),
+    Controller: resolveView('views/Controller'),
+    Field: resolveView('views/Field'),
+    Cell: resolveView('views/Cell'),
   },
   adapters: {
     mongoose: MongoCloudinaryImageInterface,
