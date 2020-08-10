@@ -15,7 +15,7 @@ const path = require('path');
 
 let fieldsPackagePath = path.dirname(require.resolve('@keystonejs/fields/package.json'));
 function resolveViewPath(viewPath) {
-  return path.join(fieldsPackagePath, 'src', 'types', viewPath);
+  return path.join(fieldsPackagePath, 'types', viewPath);
 }
 
 Text.adapters['mock'] = {};
