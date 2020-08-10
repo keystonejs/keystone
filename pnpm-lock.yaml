@@ -15,7 +15,7 @@ importers:
       '@changesets/changelog-github': 0.2.6
       '@changesets/cli': 2.9.2
       '@manypkg/cli': 0.11.1
-      '@preconstruct/cli': 1.1.20
+      '@preconstruct/cli': 1.1.21
       '@types/jest': 25.2.3
       all-contributors-cli: 6.17.0
       babel-eslint: 10.1.0_eslint@6.8.0
@@ -95,7 +95,7 @@ importers:
       '@changesets/changelog-github': ^0.2.1
       '@changesets/cli': ^2.5.1
       '@manypkg/cli': ^0.11.0
-      '@preconstruct/cli': 1.1.20
+      '@preconstruct/cli': 1.1.21
       '@types/jest': ^25.1.2
       all-contributors-cli: ^6.2.0
       babel-eslint: ^10.0.1
@@ -7096,12 +7096,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-1oO6+dN5kdIA3sKPZhRGJTfGVP4SWV6KqlMOwry4J3HfyD68sl/3KmG7DeYUzvN+RbhXDnv/D8vNNB8168tAMg==
-  /@preconstruct/cli/1.1.20:
+  /@preconstruct/cli/1.1.21:
     dependencies:
       '@babel/code-frame': 7.10.4
       '@babel/core': 7.11.1
       '@babel/runtime': 7.11.1
-      '@preconstruct/hook': 0.1.0
+      '@preconstruct/hook': 0.2.0
       '@rollup/plugin-alias': 3.1.1_rollup@1.32.1
       '@rollup/plugin-commonjs': 11.1.0_rollup@1.32.1
       '@rollup/plugin-json': 4.1.0_rollup@1.32.1
@@ -7136,8 +7136,8 @@ packages:
     dev: false
     hasBin: true
     resolution:
-      integrity: sha512-KuP3TjFv0awIXCrLDqCTI5X5PhJLgGY+Hc8qdQKuElFpGWMaAWTFGsmyLcKKzc1CQ2lPYr8CH0i6gXItVjisKg==
-  /@preconstruct/hook/0.1.0:
+      integrity: sha512-+WEBAVQdKpMRTkVaRJBoA0XfkxymF+60K/logLNRnU03gl+b00iICAXNNTkdyp1kdsDVgdO5Pr7y3BQcHVrZ/w==
+  /@preconstruct/hook/0.2.0:
     dependencies:
       '@babel/core': 7.11.1
       '@babel/plugin-transform-modules-commonjs': 7.10.4_@babel+core@7.11.1
@@ -7145,7 +7145,7 @@ packages:
       source-map-support: 0.5.19
     dev: false
     resolution:
-      integrity: sha512-d9wGFZmxZF/SH9xFhUy9bYZxcg+JQamc0xQw6IFgbw6BMwqQNoB06mDoY/1o+s+GhDPuWLv+7jRyvWkbsib9fQ==
+      integrity: sha512-UCljUefuEEhGMZ/mnpB0YC4UIP5vGTRy7Xdm7urjIOLiKH4nd0bNkW0J1wT+zFyeeqm6ISChIQFcf/2JN50Yxg==
   /@primer/octicons-react/10.0.0_react@16.13.1:
     dependencies:
       react: 16.13.1
