@@ -1,5 +1,22 @@
 # @keystonejs/demo-project-meetup
 
+## 6.2.0
+
+### Minor Changes
+
+- [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7) [#3125](https://github.com/keystonejs/keystone/pull/3125) Thanks [@Vultraz](https://github.com/Vultraz)! - Migrated to Apollo Client v3.
+
+### Patch Changes
+
+- Updated dependencies [[`d38a41f25`](https://github.com/keystonejs/keystone/commit/d38a41f25a1b4c90c05d2fb85116dc385d4ee77a), [`845b6a21b`](https://github.com/keystonejs/keystone/commit/845b6a21b62e615135eb738ad332fc035b93191b), [`5ede731fc`](https://github.com/keystonejs/keystone/commit/5ede731fc58a79e7322b852bdd2d971ece45281e), [`1a89bbdc6`](https://github.com/keystonejs/keystone/commit/1a89bbdc6b2122a5c8217e6f6c750f7cfb69dc2c), [`f8d4b175b`](https://github.com/keystonejs/keystone/commit/f8d4b175bbc29962569acb24b34c29c44b61791f), [`356dd27da`](https://github.com/keystonejs/keystone/commit/356dd27dab4ee6c89a9381dc92eef9534db52fc0), [`318e39b74`](https://github.com/keystonejs/keystone/commit/318e39b74b2fa3152d4ff09bccec93238e8345ef), [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25), [`b0af7d5ba`](https://github.com/keystonejs/keystone/commit/b0af7d5baa6ceea8d80215afa290fd76240ee823), [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7), [`149d6fd6f`](https://github.com/keystonejs/keystone/commit/149d6fd6ff057c17570346063c173376769dcc79), [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1), [`356dd27da`](https://github.com/keystonejs/keystone/commit/356dd27dab4ee6c89a9381dc92eef9534db52fc0), [`7650ecd3e`](https://github.com/keystonejs/keystone/commit/7650ecd3e60b52983015ac0058b8b0066b074e1e), [`ed2f8c31b`](https://github.com/keystonejs/keystone/commit/ed2f8c31b13eadb39a045cc351777add81621ede)]:
+  - @keystonejs/fields@16.0.0
+  - @keystonejs/keystone@13.1.0
+  - @keystonejs/server-side-graphql-client@1.1.0
+  - @keystonejs/session@8.1.0
+  - @keystonejs/fields-wysiwyg-tinymce@5.3.5
+  - @keystonejs/app-admin-ui@7.3.0
+  - @keystonejs/auth-password@5.1.13
+
 ## 6.1.5
 
 ### Patch Changes

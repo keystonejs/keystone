@@ -1,10 +1,13 @@
-# @keystonejs/fields-location-google
+# @keystonejs/fields-color
 
 ## 1.0.0
-
 ### Major Changes
 
-- [`5ede731fc`](https://github.com/keystonejs/keystone/commit/5ede731fc58a79e7322b852bdd2d971ece45281e) [#3305](https://github.com/keystonejs/keystone/pull/3305) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved the `Location` field from `@keystonejs/fields` to `@keystonejs/fields-location-google` and renamed to `LocationGoogle`. If you were using the `Location` field from `@keystonejs/fields`, please install `@keystonejs/fields-location-google` and import `LocationGoogle` from it.
+
+
+- [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1) [#3307](https://github.com/keystonejs/keystone/pull/3307) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved the `Color` field from `@keystonejs/fields` to `@keystonejs/fields-color`.
+  
+  Note: If using the `Color` field you need to update imports to point to `@keystonejs/fields-color`.
 
 ### Patch Changes
 

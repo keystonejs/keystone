@@ -2,7 +2,7 @@
   "name": "@keystonejs/api-tests",
   "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
-  "version": "7.0.0",
+  "version": "7.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -25,8 +25,8 @@
     "testcheck": "^1.0.0-rc.2"
   },
   "dependencies": {
-    "@keystonejs/auth-password": "^5.1.12",
-    "@keystonejs/fields": "^15.0.0",
+    "@keystonejs/auth-password": "^5.1.13",
+    "@keystonejs/fields": "^16.0.0",
     "@keystonejs/test-utils": "^7.1.1",
     "@keystonejs/utils": "^5.4.2",
     "date-fns": "^2.14.0",
