@@ -31,7 +31,7 @@ These usually map fairly well to primitive data types common to many programming
 
 For these reasons we also consider more complex fields such as: `Select`, and `Relationship` as core field types.
 
-# Non-core field types
+## Non-core field types
 
 If a core field represents a primitive value or common type of structured data use in applications, non-core types could be considered flavours on top of these.
 
@@ -58,7 +58,7 @@ This forms the final part of the decision making to help determine when a field 
 
 It may be open to some interpretation, but the above guidelines help when deciding which fields belong with `@keystonejs/fields` package, and which don't.
 
-# The future of field types
+## The future of field types
 
 After reviewing existing fields and applying the above decision making process retrospectively, it highlights a few places we got this wrong in the past.
 

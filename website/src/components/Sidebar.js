@@ -7,13 +7,77 @@ import { Location } from '@reach/router';
 import { colors, gridSize } from '@arch-ui/theme';
 
 import { SocialIconsNav } from '../components';
-import { useNavData } from '../utils/hooks';
+import { useNavData, useNavDataBlog } from '../utils/hooks';
 import { media, mediaMax } from '../utils/media';
 import { useClickOutside } from '../utils/useClickOutside';
 
 let scrollOffset = 0;
 
 export const SIDEBAR_WIDTH = 280;
+
+const navStyles = ({ isVisible, mobileOnly }) => ({
+  boxSizing: 'border-box',
+  flexShrink: 0,
+  height: 'calc(100vh - 60px)',
+  overflowY: 'auto',
+  padding: `${gridSize * 4}px ${gridSize * 3}px`,
+  position: 'sticky',
+  top: 60,
+  WebkitOverflowScrolling: 'touch',
+  width: SIDEBAR_WIDTH,
+
+  [mediaMax.md]: {
+    background: 'white',
+    boxShadow: isVisible ? 'rgba(0, 0, 0, 0.25) 0px 0px 48px' : 'none',
+    height: '100vh',
+    opacity: isVisible ? 1 : 0,
+    position: 'fixed',
+    top: 0,
+    transform: isVisible ? 'translateX(0px)' : `translateX(-${SIDEBAR_WIDTH}px)`,
+    transition: 'all 150ms',
+    zIndex: 2,
+  },
+  [media.md]: {
+    display: mobileOnly ? 'none' : 'block',
+  },
+});
+
+export const BlogSidebar = ({ isVisible, toggleSidebar, mobileOnly }) => {
+  const asideRef = useRef();
+
+  // handle click outside when sidebar is a drawer on small devices
+  useClickOutside({
+    handler: toggleSidebar,
+    refs: [asideRef],
+    listenWhen: isVisible,
+  });
+
+  // NOTE: maintain the user's scroll whilst navigating between pages.
+  // This is a symptom of Gatsby remounting the entire tree (template) on each
+  // page change via `createPage` in "gatsby-node.js".
+  useLayoutEffect(() => {
+    asideRef.current.scrollTop = scrollOffset; // reset on mount
+    return () => {
+      scrollOffset = asideRef.current.scrollTop; // catch on unmount (this is buggy of some reason)
+    };
+  }, []);
+
+  return (
+    <aside key="sidebar" ref={asideRef} css={navStyles({ isVisible, mobileOnly })}>
+      <SocialIconsNav
+        css={{
+          marginBottom: '2.4em',
+          display: 'none',
+          [mediaMax.sm]: {
+            display: 'block',
+          },
+        }}
+      />
+      <BlogSidebarNav />
+      <Footer />
+    </aside>
+  );
+};
 
 export const Sidebar = ({ isVisible, toggleSidebar, mobileOnly }) => {
   const asideRef = useRef();
@@ -36,36 +100,7 @@ export const Sidebar = ({ isVisible, toggleSidebar, mobileOnly }) => {
   }, []);
 
   return (
-    <aside
-      key="sidebar"
-      ref={asideRef}
-      css={{
-        boxSizing: 'border-box',
-        flexShrink: 0,
-        height: 'calc(100vh - 60px)',
-        overflowY: 'auto',
-        padding: `${gridSize * 4}px ${gridSize * 3}px`,
-        position: 'sticky',
-        top: 60,
-        WebkitOverflowScrolling: 'touch',
-        width: SIDEBAR_WIDTH,
-
-        [mediaMax.md]: {
-          background: 'white',
-          boxShadow: isVisible ? 'rgba(0, 0, 0, 0.25) 0px 0px 48px' : 'none',
-          height: '100vh',
-          opacity: isVisible ? 1 : 0,
-          position: 'fixed',
-          top: 0,
-          transform: isVisible ? 'translateX(0px)' : `translateX(-${SIDEBAR_WIDTH}px)`,
-          transition: 'all 150ms',
-          zIndex: 2,
-        },
-        [media.md]: {
-          display: mobileOnly ? 'none' : 'block',
-        },
-      }}
-    >
+    <aside key="sidebar" ref={asideRef} css={navStyles({ isVisible, mobileOnly })}>
       <SocialIconsNav
         css={{
           marginBottom: '2.4em',
@@ -97,6 +132,21 @@ const ClassicDocs = () => (
 // ------------------------------
 
 // Navigation
+
+export const BlogSidebarNav = () => {
+  const navData = useNavDataBlog();
+  return (
+    <Location>
+      {({ location: { pathname } }) => (
+        <nav aria-label="Blog Menu">
+          {navData.map((navGroup, i) => {
+            return <NavGroup key={i} index={i} navGroup={navGroup} pathname={pathname} />;
+          })}
+        </nav>
+      )}
+    </Location>
+  );
+};
 
 export const SidebarNav = () => {
   const navData = useNavData();
@@ -257,7 +307,7 @@ export const Footer = () => (
       marginBottom: '2rem',
     }}
   >
-    Made with ❤️ by{' '}
+    Made with ❤️&nbsp; by{' '}
     <FooterAnchor href="https://www.thinkmill.com.au" target="_blank">
       Thinkmill
     </FooterAnchor>{' '}

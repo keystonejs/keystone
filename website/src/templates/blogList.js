@@ -3,8 +3,10 @@
 import { Fragment } from 'react';
 import { jsx, Global } from '@emotion/core';
 import { globalStyles } from '@arch-ui/theme';
-import { Layout } from '../templates/layout';
+import { BlogLayout, Content } from './layout';
 import { HomepageFooter } from '../components/homepage/HomepageFooter';
+import { Container } from '../components';
+import { BlogSidebar } from '../components/Sidebar';
 
 const Blog = ({ pageContext }) => {
   const { group, index, first, last, pageCount } = pageContext;
@@ -13,12 +15,13 @@ const Blog = ({ pageContext }) => {
 
   return (
     <Fragment>
-      <Layout>
-        {() => (
+      <BlogLayout>
+        {({ sidebarIsVisible, toggleSidebar }) => (
           <Fragment>
-            <div css={{ background: 'white' }}>
-              <Global styles={globalStyles} />
-              <div css={{ maxWidth: 1200, margin: '0 auto', padding: '4rem 1rem' }}>
+            <Container hasGutters={false} css={{ display: 'flex' }}>
+              <BlogSidebar isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} />
+              <Content css={{ paddingRight: '2rem' }}>
+                <Global styles={globalStyles} />
                 <h1
                   css={{
                     fontSize: '4rem',
@@ -51,34 +54,36 @@ const Blog = ({ pageContext }) => {
                         }}
                       >
                         <a
-                          href="#"
+                          href={node.fields.slug}
                           css={{
                             fontSize: '2.75rem',
                             fontWeight: 'bold',
                             color: '#222',
                             ':hover': {
-                              color: '#444',
+                              textDecoration: 'none',
                             },
                           }}
                         >
                           {fields.pageTitle}
                         </a>
-                        <p css={{ paddingTop: '1rem', fontSize: '.8rem' }}>
+                        <p css={{ margin: 0, marginTop: '0.75rem', padding: 0, fontSize: '.8rem' }}>
                           By <strong>{fields.author || 'Keystone'}</strong>, Published on{' '}
                           {fields.date}
                         </p>
+
+                        <p css={{ lineHeight: '1.5' }}>
+                          <a
+                            href={node.fields.slug}
+                            css={{
+                              color: '#222',
+                              ':hover': { color: '#222', textDecoration: 'none' },
+                            }}
+                          >
+                            {fields.description}
+                          </a>
+                        </p>
                         <a
                           href={node.fields.slug}
-                          css={{
-                            padding: '1rem 0',
-                            color: '#222',
-                            ':hover': { color: '#222' },
-                          }}
-                        >
-                          {fields.description}
-                        </a>
-                        <a
-                          href="#"
                           css={{
                             textTransform: 'uppercase',
                             display: 'flex',
@@ -115,14 +120,14 @@ const Blog = ({ pageContext }) => {
                 {!first && (
                   <a href={`/blog/${previousUrl === '/' ? '' : previousUrl}`}>Newer posts</a>
                 )}
-                {' / '}
+                {!first && ' / '}
                 {!last && <a href={`/blog/${nextUrl}`}>Older posts</a>}
-              </div>
-            </div>
-            <HomepageFooter />
+                <HomepageFooter />
+              </Content>
+            </Container>
           </Fragment>
         )}
-      </Layout>
+      </BlogLayout>
     </Fragment>
   );
 };

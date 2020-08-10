@@ -136,14 +136,14 @@ const createBlogPages = async ({ createPage, graphql }) =>
     createPaginatedPages({
       edges: pages,
       createPage: createPage,
-      pageTemplate: 'src/templates/blog.js',
+      pageTemplate: 'src/templates/blogList.js',
       pathPrefix: 'blog', // This is optional and defaults to an empty string if not used
     });
 
     pages.forEach(({ node: { id, fields } }) => {
       createPage({
         path: `${fields.slug}`,
-        component: path.resolve(`src/templates/docs.js`),
+        component: path.resolve(`src/templates/blogPost.js`),
         context: {
           mdPageId: id,
           ...fields,
