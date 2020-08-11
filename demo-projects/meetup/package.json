@@ -23,6 +23,7 @@
     "@keystonejs/auth-password": "^5.1.13",
     "@keystonejs/email": "^5.1.5",
     "@keystonejs/fields": "^16.0.0",
+    "@keystonejs/fields-cloudinary-image": "^1.0.1",
     "@keystonejs/fields-wysiwyg-tinymce": "^5.3.5",
     "@keystonejs/file-adapters": "^7.0.2",
     "@keystonejs/keystone": "^13.1.0",
