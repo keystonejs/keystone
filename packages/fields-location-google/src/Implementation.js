@@ -9,10 +9,6 @@ import fetch from 'node-fetch';
 // https://github.com/Automattic/mongoose/blob/master/migrating_to_5.md#checking-if-a-path-is-populated
 mongoose.set('objectIdGetter', false);
 
-const {
-  Types: { ObjectId },
-} = mongoose;
-
 export class LocationGoogleImplementation extends Implementation {
   constructor(_, { googleMapsKey }) {
     super(...arguments);
@@ -103,7 +99,7 @@ export class LocationGoogleImplementation extends Implementation {
       const { place_id, formatted_address } = response.results[0];
       const { lat, lng } = response.results[0].geometry.location;
       return {
-        id: new ObjectId(),
+        id: new mongoose.Types.ObjectId(),
         googlePlaceID: place_id,
         formattedAddress: formatted_address,
         lat: lat,
@@ -138,7 +134,7 @@ export class MongoLocationGoogleInterface extends CommonLocationInterface(Mongoo
   addToMongooseSchema(schema) {
     const schemaOptions = {
       type: {
-        id: ObjectId,
+        id: mongoose.Types.ObjectId,
         googlePlaceID: String,
         formattedAddress: String,
         lat: Number,
