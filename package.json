@@ -113,7 +113,7 @@
     "terminal-link-cli": "^2.0.0",
     "terser": "^3.14.1",
     "testcheck": "^1.0.0-rc.2",
-    "tinymce": "^5.2.2",
+    "tinymce": "^5.4.0",
     "tmp": "^0.2.1",
     "to-pascal-case": "^1.0.0",
     "underscore.string": "^3.3.5",
