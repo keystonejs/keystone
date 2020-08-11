@@ -2,12 +2,6 @@ import mongoose from 'mongoose';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 
-const {
-  Schema: {
-    Types: { ObjectId },
-  },
-} = mongoose;
-
 import { Implementation } from '../../Implementation';
 import { resolveNested } from './nested-mutations';
 
@@ -315,7 +309,7 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
     this.isRelationship = true;
   }
 
-  addToMongooseSchema(schema, mongoose, rels) {
+  addToMongooseSchema(schema, _mongoose, rels) {
     // If we're relating to 'many' things, we don't store ids in this table
     if (!this.field.many) {
       // If we're the right hand side of a 1:1 relationship, do nothing.
@@ -327,13 +321,9 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
       }
 
       // Otherwise, we're are hosting a foreign key
-      const {
-        refListKey: ref,
-        config: { many },
-      } = this;
-      const type = many ? [ObjectId] : ObjectId; // FIXME: redundant?
-      const schemaOptions = { type, ref };
-      schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+      const { refListKey, config } = this;
+      const type = mongoose.Types.ObjectId;
+      schema.add({ [this.path]: this.mergeSchemaOptions({ type, ref: refListKey }, config) });
     }
   }
 

@@ -7,10 +7,6 @@ import mongoose from 'mongoose';
 // https://mongoosejs.com/docs/migrating_to_5.html#id-getter
 mongoose.set('objectIdGetter', false);
 
-const {
-  Types: { ObjectId },
-} = mongoose;
-
 export class File extends Implementation {
   constructor(path, { adapter }) {
     super(...arguments);
@@ -99,7 +95,7 @@ export class File extends Implementation {
       return previousData;
     }
 
-    const newId = new ObjectId();
+    const newId = new mongoose.Types.ObjectId();
 
     const { id, filename, _meta } = await this.fileAdapter.save({
       stream,
@@ -135,7 +131,7 @@ export class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter
   addToMongooseSchema(schema) {
     const schemaOptions = {
       type: {
-        id: ObjectId,
+        id: mongoose.Types.ObjectId,
         path: String,
         filename: String,
         originalFilename: String,
