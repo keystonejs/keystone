@@ -3,7 +3,6 @@ const { v4: uuid } = require('uuid');
 const { sendEmail } = require('./emails');
 
 const {
-  CloudinaryImage,
   Checkbox,
   DateTime,
   Integer,
@@ -13,6 +12,7 @@ const {
   Text,
 } = require('@keystonejs/fields');
 const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
+const { CloudinaryImage } = require('@keystonejs/fields-cloudinary-image');
 const { Wysiwyg } = require('@keystonejs/fields-wysiwyg-tinymce');
 
 const cloudinaryAdapter = new CloudinaryAdapter({
