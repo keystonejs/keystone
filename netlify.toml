@@ -1,5 +1,5 @@
 [build]
-  command = "pnpm i && pnpm run website -- build"
+  command = "npm i -g pnpm && pnpm i -store-dir=node_modules/.pnpm-store && pnpm run website -- build"
   publish = "website/public"
 
 [build.environment]
