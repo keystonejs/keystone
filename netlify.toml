@@ -3,5 +3,6 @@
   publish = "website/public"
 
 [build.environment]
-    # This essentially means "don't run pnpm install"
-    NPM_FLAGS="--prefix=/"
+  # This essentially means "don't run npm install"
+  NPM_FLAGS="--prefix=/"
+  NODE_VERSION="12"
