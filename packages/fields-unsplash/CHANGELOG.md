@@ -1,12 +1,10 @@
 # @keystonejs/fields-unsplash
 
 ## 1.0.0
+
 ### Major Changes
 
-
-
 - [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25) [#3280](https://github.com/keystonejs/keystone/pull/3280) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Initial release
-
 
 ### Patch Changes
 

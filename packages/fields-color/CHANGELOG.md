@@ -1,12 +1,11 @@
 # @keystonejs/fields-color
 
 ## 1.0.0
+
 ### Major Changes
 
-
-
 - [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1) [#3307](https://github.com/keystonejs/keystone/pull/3307) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved the `Color` field from `@keystonejs/fields` to `@keystonejs/fields-color`.
-  
+
   Note: If using the `Color` field you need to update imports to point to `@keystonejs/fields-color`.
 
 ### Patch Changes
