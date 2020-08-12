@@ -217,6 +217,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               returnFields: 'name, age',
               pageSize,
               first,
+              sortBy: 'age_ASC',
             });
           expect((await getFirstItems(9, 5)).length).toEqual(9);
           expect((await getFirstItems(5, 9)).length).toEqual(5);
