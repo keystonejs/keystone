@@ -191,6 +191,7 @@ const keystone = new Keystone({
         {data: { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' } },
         {data: { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' } },
       ],
+      returnFields: 'id, name',
     });
 
   // 2. Insert `Post` data, with the required relationships, via `connect` nested mutation.
