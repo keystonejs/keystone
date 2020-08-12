@@ -52,7 +52,7 @@
     "@changesets/changelog-github": "^0.2.1",
     "@changesets/cli": "^2.5.1",
     "@manypkg/cli": "^0.11.0",
-    "@preconstruct/cli": "1.1.21",
+    "@preconstruct/cli": "1.1.22",
     "@types/jest": "^25.1.2",
     "all-contributors-cli": "^6.2.0",
     "babel-eslint": "^10.0.1",
