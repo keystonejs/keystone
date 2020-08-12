@@ -2034,6 +2034,7 @@ importers:
       '@keystonejs/utils': 'link:../../packages/utils'
       cross-env: 7.0.2
       express: 4.17.1
+      mongoose: 5.9.27_mongoose@5.9.27
     devDependencies:
       cypress: 4.12.0
       cypress-file-upload: 3.5.3_cypress@4.12.0
@@ -2064,6 +2065,7 @@ importers:
       inflection: ^1.12.0
       mocha: ^7.1.2
       mocha-junit-reporter: ^1.23.3
+      mongoose: ^5.9.11
       pino-colada: ^1.6.1
       start-server-and-test: ^1.11.0
   test-projects/basic:
