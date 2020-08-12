@@ -170,17 +170,15 @@ query GetUsers {
   }
 }`;
 
-fetch("/admin/api", {
-  method: "POST",
+const data = await fetch('/admin/api', {
+  method: 'POST',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
   body: JSON.stringify({
     query: GET_ALL_USERS,
   }),
-})
-  .then((result) => result.json())
-  .then((r) => updateData(r));
+}).then(result => result.json());
 ```
 
 The result should contain a `JSON` payload with the results from the query.
