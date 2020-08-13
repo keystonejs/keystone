@@ -62,19 +62,6 @@ async function setupServer({
   return { keystone, app };
 }
 
-function graphqlRequest({ keystone, query, variables }) {
-  return keystone.executeGraphQL({
-    context: keystone.createContext({ skipAccessControl: true }),
-    query,
-    variables,
-  });
-}
-
-// This is much like graphqlRequest except we don't skip access control checks!
-function authedGraphqlRequest({ keystone, query, variables }) {
-  return keystone.executeGraphQL({ query, variables });
-}
-
 function networkedGraphqlRequest({
   app,
   query,
@@ -138,26 +125,6 @@ function teardownMongoMemoryServer() {
   return stopping;
 }
 
-function getCreate(keystone) {
-  return (list, item) => keystone.getListByKey(list).adapter.create(item);
-}
-
-function getFindById(keystone) {
-  return (list, item) => keystone.getListByKey(list).adapter.findById(item);
-}
-
-function getFindOne(keystone) {
-  return (list, item) => keystone.getListByKey(list).adapter.findOne(item);
-}
-
-function getUpdate(keystone) {
-  return (list, id, data) => keystone.getListByKey(list).adapter.update(id, data);
-}
-
-function getDelete(keystone) {
-  return (list, id) => keystone.getListByKey(list).adapter.delete(id);
-}
-
 function _keystoneRunner(adapterName, tearDownFunction) {
   return function(setupKeystoneFn, testFn) {
     return async function() {
@@ -180,11 +147,6 @@ function _keystoneRunner(adapterName, tearDownFunction) {
       try {
         await testFn({
           ...setup,
-          create: getCreate(keystone),
-          findById: getFindById(keystone),
-          findOne: getFindOne(keystone),
-          update: getUpdate(keystone),
-          delete: getDelete(keystone),
         });
       } finally {
         await keystone.disconnect();
@@ -381,8 +343,6 @@ class MockAdapter {
 module.exports = {
   setupServer,
   multiAdapterRunners,
-  graphqlRequest,
-  authedGraphqlRequest,
   networkedGraphqlRequest,
   matchFilter,
   MockAdapter,
