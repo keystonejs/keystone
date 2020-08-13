@@ -6,6 +6,7 @@ const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { KnexAdapter } = require('@keystonejs/adapter-knex');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { runCustomQuery } = require('@keystonejs/server-side-graphql-client');
 
 async function setupServer({
   adapterName,
@@ -241,17 +242,16 @@ const sorted = (arr, keyFn) => {
   return arr;
 };
 
-const matchFilter = ({ keystone, queryArgs, fieldSelection, expected, sortKey }) => {
-  return graphqlRequest({
+const matchFilter = async ({ keystone, queryArgs, fieldSelection, expected, sortKey }) => {
+  const data = await runCustomQuery({
     keystone,
     query: `query {
       allTests${queryArgs ? `(${queryArgs})` : ''} { ${fieldSelection} }
     }`,
-  }).then(({ data, errors }) => {
-    expect(errors).toBe(undefined);
-    const value = sortKey ? sorted(data.allTests || [], i => i[sortKey]) : data.allTests;
-    expect(value).toEqual(expected);
   });
+
+  const value = sortKey ? sorted(data.allTests || [], i => i[sortKey]) : data.allTests;
+  expect(value).toEqual(expected);
 };
 
 class MockFieldImplementation {

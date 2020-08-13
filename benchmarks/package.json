@@ -19,6 +19,7 @@
     "@keystonejs/app-graphql": "^6.1.0",
     "@keystonejs/fields": "^16.0.0",
     "@keystonejs/keystone": "^13.1.0",
+    "@keystonejs/server-side-graphql-client": "^1.1.0",
     "@keystonejs/session": "^8.1.0",
     "@keystonejs/test-utils": "^7.1.1",
     "body-parser": "^1.18.2",

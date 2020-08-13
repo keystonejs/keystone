@@ -1,4 +1,5 @@
-import { matchFilter, graphqlRequest } from '@keystonejs/test-utils';
+import { createItem, getItems, getItem, updateItem } from '@keystonejs/server-side-graphql-client';
+import { matchFilter } from '@keystonejs/test-utils';
 import Text from '../Text';
 import Decimal from './';
 
@@ -118,41 +119,28 @@ export const filterTests = withKeystone => {
 
 export const crudTests = withKeystone => {
   const withHelpers = wrappedFn => {
-    return async ({ keystone, listKey, ...rest }) => {
-      const list = keystone.getListByKey(listKey);
-      const { listQueryName } = list.gqlNames;
-      const {
-        data: { [listQueryName]: items },
-        errors,
-      } = await graphqlRequest({
+    return async ({ keystone, listKey }) => {
+      const items = await getItems({
         keystone,
-        query: `query {
-          ${listQueryName} {
-            id
-            price
-          }
-        }`,
+        listKey,
+        returnFields: 'id price',
       });
-      expect(errors).toBe(undefined);
-      return wrappedFn({ keystone, listKey, ...rest, list, items, ...list.gqlNames });
+      return wrappedFn({ keystone, listKey, items });
     };
   };
 
   test(
     'Create',
     withKeystone(
-      withHelpers(async ({ keystone, createMutationName }) => {
-        const { data, errors } = await graphqlRequest({
+      withHelpers(async ({ keystone, listKey }) => {
+        const data = await createItem({
           keystone,
-          query: `mutation {
-          ${createMutationName}(data: { name: "test entry" price: "17.56" }) {
-            price
-          }
-        }`,
+          listKey,
+          item: { name: 'test entry', price: '17.56' },
+          returnFields: 'price',
         });
-        expect(errors).toBe(undefined);
-        expect(data[createMutationName]).not.toBe(null);
-        expect(data[createMutationName].price).toBe('17.56');
+        expect(data).not.toBe(null);
+        expect(data.price).toBe('17.56');
       })
     )
   );
@@ -160,18 +148,15 @@ export const crudTests = withKeystone => {
   test(
     'Read',
     withKeystone(
-      withHelpers(async ({ keystone, items, itemQueryName }) => {
-        const { data, errors } = await graphqlRequest({
+      withHelpers(async ({ keystone, listKey, items }) => {
+        const data = await getItem({
           keystone,
-          query: `query {
-          ${itemQueryName}(where: { id: "${items[0].id}"}) {
-            price
-          }
-        }`,
+          listKey,
+          itemId: items[0].id,
+          returnFields: 'price',
         });
-        expect(errors).toBe(undefined);
-        expect(data[itemQueryName]).not.toBe(null);
-        expect(data[itemQueryName].price).toBe(items[0].price);
+        expect(data).not.toBe(null);
+        expect(data.price).toBe(items[0].price);
       })
     )
   );
@@ -180,21 +165,18 @@ export const crudTests = withKeystone => {
     test(
       'Updating the value',
       withKeystone(
-        withHelpers(async ({ keystone, items, updateMutationName }) => {
-          const { data, errors } = await graphqlRequest({
+        withHelpers(async ({ keystone, items, listKey }) => {
+          const data = await updateItem({
             keystone,
-            query: `mutation {
-            ${updateMutationName}(
-              id: "${items[0].id}"
-              data: { price: "879.46" }
-            ) {
-              price
-            }
-          }`,
+            listKey,
+            item: {
+              id: items[0].id,
+              data: { price: '879.46' },
+            },
+            returnFields: 'price',
           });
-          expect(errors).toBe(undefined);
-          expect(data[updateMutationName]).not.toBe(null);
-          expect(data[updateMutationName].price).toBe('879.46');
+          expect(data).not.toBe(null);
+          expect(data.price).toBe('879.46');
         })
       )
     );
@@ -202,21 +184,18 @@ export const crudTests = withKeystone => {
     test(
       'Updating the value to null',
       withKeystone(
-        withHelpers(async ({ keystone, items, updateMutationName }) => {
-          const { data, errors } = await graphqlRequest({
+        withHelpers(async ({ keystone, items, listKey }) => {
+          const data = await updateItem({
             keystone,
-            query: `mutation {
-            ${updateMutationName}(
-              id: "${items[0].id}"
-              data: { price: null }
-            ) {
-              price
-            }
-          }`,
+            listKey,
+            item: {
+              id: items[0].id,
+              data: { price: null },
+            },
+            returnFields: 'price',
           });
-          expect(errors).toBe(undefined);
-          expect(data[updateMutationName]).not.toBe(null);
-          expect(data[updateMutationName].price).toBe(null);
+          expect(data).not.toBe(null);
+          expect(data.price).toBe(null);
         })
       )
     );
@@ -224,23 +203,19 @@ export const crudTests = withKeystone => {
     test(
       'Updating without this field',
       withKeystone(
-        withHelpers(async ({ keystone, items, updateMutationName }) => {
-          const { data, errors } = await graphqlRequest({
+        withHelpers(async ({ keystone, items, listKey }) => {
+          const data = await updateItem({
             keystone,
-            query: `mutation {
-            ${updateMutationName}(
-              id: "${items[0].id}"
-              data: { name: "foobarbaz" }
-            ) {
-              name
-              price
-            }
-          }`,
+            listKey,
+            item: {
+              id: items[0].id,
+              data: { name: 'foobarbaz' },
+            },
+            returnFields: 'name price',
           });
-          expect(errors).toBe(undefined);
-          expect(data[updateMutationName]).not.toBe(null);
-          expect(data[updateMutationName].name).toBe('foobarbaz');
-          expect(data[updateMutationName].price).toBe(items[0].price);
+          expect(data).not.toBe(null);
+          expect(data.name).toBe('foobarbaz');
+          expect(data.price).toBe(items[0].price);
         })
       )
     );
