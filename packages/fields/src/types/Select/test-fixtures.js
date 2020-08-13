@@ -1,4 +1,4 @@
-import { matchFilter } from '@keystonejs/test-utils';
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import Select from './';
 import Text from '../Text';
 
@@ -59,14 +59,16 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (keystone, queryArgs, expected, fieldSelection = 'name company') =>
-    matchFilter({
-      keystone,
-      queryArgs,
-      fieldSelection,
-      expected,
-      sortKey: 'name',
-    });
+  const match = async (keystone, where, expected, returnFields = 'name company') =>
+    expect(
+      await getItems({
+        keystone,
+        listKey: 'test',
+        where,
+        returnFields,
+        sortBy: 'name_ASC',
+      })
+    ).toEqual(expected);
 
   test(
     'No filter (dataType: enum)',
@@ -117,7 +119,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: company (dataType: enum)',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { company: thinkmill }', [{ company: 'thinkmill', name: 'a' }])
+      match(keystone, { company: 'thinkmill' }, [{ company: 'thinkmill', name: 'a' }])
     )
   );
 
@@ -126,7 +128,7 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        'where: { selectString: "a string" }',
+        { selectString: 'a string' },
         [
           { selectString: 'a string', name: 'a' },
           { selectString: 'a string', name: 'c' },
@@ -141,7 +143,7 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        'where: { selectNumber: 1 }',
+        { selectNumber: 1 },
         [
           { name: 'a', selectNumber: 1 },
           { name: 'd', selectNumber: 1 },
@@ -154,7 +156,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: company_not (dataType: enum)',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { company_not: thinkmill }', [
+      match(keystone, { company_not: 'thinkmill' }, [
         { company: 'atlassian', name: 'b' },
         { company: 'gelato', name: 'c' },
         { company: 'cete', name: 'd' },
@@ -167,7 +169,7 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        'where: { selectString_not: "a string" }',
+        { selectString_not: 'a string' },
         [
           { name: 'b', selectString: '@¯\\_(ツ)_/¯' },
           { name: 'd', selectString: '1number' },
@@ -182,7 +184,7 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        'where: { selectNumber_not: 1 }',
+        { selectNumber_not: 1 },
         [
           { name: 'b', selectNumber: 2 },
           { name: 'c', selectNumber: 3 },
@@ -195,7 +197,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: company_in (dataType: enum)',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { company_in: [ atlassian, gelato ] }', [
+      match(keystone, { company_in: ['atlassian', 'gelato'] }, [
         { company: 'atlassian', name: 'b' },
         { company: 'gelato', name: 'c' },
       ])
@@ -207,7 +209,7 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        `where: { selectString_in: [ ${JSON.stringify(`@¯\\_(ツ)_/¯`)}, "1number" ] }`,
+        { selectString_in: [`@¯\\_(ツ)_/¯`, '1number'] },
         [
           { name: 'b', selectString: `@¯\\_(ツ)_/¯` },
           { name: 'd', selectString: '1number' },
@@ -222,7 +224,7 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        `where: { selectNumber_in: [ 2, 3] }`,
+        { selectNumber_in: [2, 3] },
         [
           { name: 'b', selectNumber: 2 },
           { name: 'c', selectNumber: 3 },
@@ -235,7 +237,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: company_not_in (dataType: enum)',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { company_not_in: [ atlassian, gelato ] }', [
+      match(keystone, { company_not_in: ['atlassian', 'gelato'] }, [
         { company: 'thinkmill', name: 'a' },
         { company: 'cete', name: 'd' },
       ])
@@ -247,7 +249,7 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        `where: { selectString_not_in: [ ${JSON.stringify(`@¯\\_(ツ)_/¯`)}, "1number" ] }`,
+        { selectString_not_in: [`@¯\\_(ツ)_/¯`, '1number'] },
         [
           { selectString: 'a string', name: 'a' },
           { selectString: 'a string', name: 'c' },
@@ -262,7 +264,7 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        `where: { selectNumber_not_in: [ 2, 3 ] }`,
+        { selectNumber_not_in: [2, 3] },
         [
           { name: 'a', selectNumber: 1 },
           { name: 'd', selectNumber: 1 },

@@ -1,4 +1,4 @@
-import { matchFilter } from '@keystonejs/test-utils';
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import Text from '../Text';
 import Uuid from './';
 
@@ -30,19 +30,21 @@ export const initItems = () => {
 // See https://github.com/keystonejs/keystone/issues/391
 
 export const filterTests = withKeystone => {
-  const match = (keystone, queryArgs, expected) =>
-    matchFilter({
-      keystone,
-      queryArgs,
-      fieldSelection: 'order otherId',
-      expected,
-      sortKey: 'order',
-    });
+  const match = async (keystone, where, expected) =>
+    expect(
+      await getItems({
+        keystone,
+        listKey: 'test',
+        where,
+        returnFields: 'order otherId',
+        sortBy: 'order_ASC',
+      })
+    ).toEqual(expected);
 
   test(
-    `No 'where' argument`,
+    `No argument`,
     withKeystone(({ keystone }) =>
-      match(keystone, '', [
+      match(keystone, undefined, [
         { order: 'a', otherId: 'c0d37cbc-2f01-432c-89e0-405d54fd4cdc' },
         { order: 'b', otherId: '01d20b3c-c0fe-4198-beb6-1a013c041805' },
         { order: 'c', otherId: '8452de22-4dfd-4e2a-a6ac-c20ceef0ade4' },
@@ -51,9 +53,9 @@ export const filterTests = withKeystone => {
     )
   );
   test(
-    `Empty 'where' argument'`,
+    `Empty argument`,
     withKeystone(({ keystone }) =>
-      match(keystone, '', [
+      match(keystone, {}, [
         { order: 'a', otherId: 'c0d37cbc-2f01-432c-89e0-405d54fd4cdc' },
         { order: 'b', otherId: '01d20b3c-c0fe-4198-beb6-1a013c041805' },
         { order: 'c', otherId: '8452de22-4dfd-4e2a-a6ac-c20ceef0ade4' },
@@ -65,7 +67,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { otherId: "c0d37cbc-2f01-432c-89e0-405d54fd4cdc" }', [
+      match(keystone, { otherId: 'c0d37cbc-2f01-432c-89e0-405d54fd4cdc' }, [
         { order: 'a', otherId: 'c0d37cbc-2f01-432c-89e0-405d54fd4cdc' },
       ])
     )
@@ -73,7 +75,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key} (implicit case-insensitivity)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { otherId: "C0D37CBC-2F01-432C-89E0-405D54FD4CDC" }', [
+      match(keystone, { otherId: 'C0D37CBC-2F01-432C-89E0-405D54FD4CDC' }, [
         { order: 'a', otherId: 'c0d37cbc-2f01-432c-89e0-405d54fd4cdc' },
       ])
     )
@@ -82,7 +84,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { otherId_not: "8452de22-4dfd-4e2a-a6ac-c20ceef0ade4" }', [
+      match(keystone, { otherId_not: '8452de22-4dfd-4e2a-a6ac-c20ceef0ade4' }, [
         { order: 'a', otherId: 'c0d37cbc-2f01-432c-89e0-405d54fd4cdc' },
         { order: 'b', otherId: '01d20b3c-c0fe-4198-beb6-1a013c041805' },
         { order: 'd', otherId: null },
@@ -92,7 +94,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not (implicit case-insensitivity)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { otherId_not: "8452DE22-4DFD-4E2A-A6AC-C20CEEF0ADE4" }', [
+      match(keystone, { otherId_not: '8452DE22-4DFD-4E2A-A6AC-C20CEEF0ADE4' }, [
         { order: 'a', otherId: 'c0d37cbc-2f01-432c-89e0-405d54fd4cdc' },
         { order: 'b', otherId: '01d20b3c-c0fe-4198-beb6-1a013c041805' },
         { order: 'd', otherId: null },
@@ -102,14 +104,19 @@ export const filterTests = withKeystone => {
 
   test(
     `Filter: {key}_in (empty list)`,
-    withKeystone(({ keystone }) => match(keystone, 'where: { otherId_in: [] }', []))
+    withKeystone(({ keystone }) => match(keystone, { otherId_in: [] }, []))
   );
   test(
     `Filter: {key}_in`,
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        'where: { otherId_in: ["01d20b3c-c0fe-4198-beb6-1a013c041805", "c0d37cbc-2f01-432c-89e0-405d54fd4cdc"] }',
+        {
+          otherId_in: [
+            '01d20b3c-c0fe-4198-beb6-1a013c041805',
+            'c0d37cbc-2f01-432c-89e0-405d54fd4cdc',
+          ],
+        },
         [
           { order: 'a', otherId: 'c0d37cbc-2f01-432c-89e0-405d54fd4cdc' },
           { order: 'b', otherId: '01d20b3c-c0fe-4198-beb6-1a013c041805' },
@@ -122,7 +129,12 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        'where: { otherId_in: ["01D20B3C-C0FE-4198-BEB6-1A013C041805", "C0D37CBC-2F01-432C-89E0-405D54FD4CDC"] }',
+        {
+          otherId_in: [
+            '01D20B3C-C0FE-4198-BEB6-1A013C041805',
+            'C0D37CBC-2F01-432C-89E0-405D54FD4CDC',
+          ],
+        },
         [
           { order: 'a', otherId: 'c0d37cbc-2f01-432c-89e0-405d54fd4cdc' },
           { order: 'b', otherId: '01d20b3c-c0fe-4198-beb6-1a013c041805' },
@@ -134,7 +146,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_in (empty list)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { otherId_not_in: [] }', [
+      match(keystone, { otherId_not_in: [] }, [
         { order: 'a', otherId: 'c0d37cbc-2f01-432c-89e0-405d54fd4cdc' },
         { order: 'b', otherId: '01d20b3c-c0fe-4198-beb6-1a013c041805' },
         { order: 'c', otherId: '8452de22-4dfd-4e2a-a6ac-c20ceef0ade4' },
@@ -147,7 +159,12 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        'where: { otherId_not_in: ["01d20b3c-c0fe-4198-beb6-1a013c041805", "c0d37cbc-2f01-432c-89e0-405d54fd4cdc"] }',
+        {
+          otherId_not_in: [
+            '01d20b3c-c0fe-4198-beb6-1a013c041805',
+            'c0d37cbc-2f01-432c-89e0-405d54fd4cdc',
+          ],
+        },
         [
           { order: 'c', otherId: '8452de22-4dfd-4e2a-a6ac-c20ceef0ade4' },
           { order: 'd', otherId: null },
@@ -160,7 +177,12 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        'where: { otherId_not_in: ["01D20B3C-C0FE-4198-BEB6-1A013C041805", "C0D37CBC-2F01-432C-89E0-405D54FD4CDC"] }',
+        {
+          otherId_not_in: [
+            '01D20B3C-C0FE-4198-BEB6-1A013C041805',
+            'C0D37CBC-2F01-432C-89E0-405D54FD4CDC',
+          ],
+        },
         [
           { order: 'c', otherId: '8452de22-4dfd-4e2a-a6ac-c20ceef0ade4' },
           { order: 'd', otherId: null },
