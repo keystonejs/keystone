@@ -22,10 +22,10 @@ export class Checkbox extends Implementation {
   gqlQueryInputFields() {
     return this.equalityInputFields('Boolean');
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: Boolean`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: Boolean`];
   }
 }

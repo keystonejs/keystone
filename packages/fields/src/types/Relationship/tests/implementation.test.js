@@ -65,13 +65,13 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.gqlCreateInputFields).toEqual(['foo: ZipRelateToManyInput']);
+    expect(relMany.gqlCreateInputFields()).toEqual(['foo: ZipRelateToManyInput']);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.gqlCreateInputFields).toEqual(['foo: ZipRelateToOneInput']);
+    expect(relSingle.gqlCreateInputFields()).toEqual(['foo: ZipRelateToOneInput']);
   });
 
   test('inputs for relationship fields in update args', () => {
@@ -79,13 +79,13 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.gqlUpdateInputFields).toEqual(['foo: ZipRelateToManyInput']);
+    expect(relMany.gqlUpdateInputFields()).toEqual(['foo: ZipRelateToManyInput']);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.gqlUpdateInputFields).toEqual(['foo: ZipRelateToOneInput']);
+    expect(relSingle.gqlUpdateInputFields()).toEqual(['foo: ZipRelateToOneInput']);
   });
 
   test('to-single relationship nested mutation input', () => {

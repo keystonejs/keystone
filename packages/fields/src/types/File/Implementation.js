@@ -108,10 +108,10 @@ export class File extends Implementation {
     return { id, filename, originalFilename, mimetype, encoding, _meta };
   }
 
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: ${this.getFileUploadType()}`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: ${this.getFileUploadType()}`];
   }
 }
