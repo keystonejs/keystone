@@ -11,7 +11,7 @@ const generateCode = async () => {
     Prisma: `const { PrismaAdapter: Adapter } = require('@keystonejs/adapter-prisma');`,
   }[adapterChoice.key];
 
-  return `${adapterRequire}
+  return `${adapterConfig}
 const PROJECT_NAME = '${projectName}';
 const adapterConfig = ${adapterConfig};
 `;
