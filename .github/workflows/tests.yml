@@ -9,7 +9,6 @@ jobs:
   jest:
     name: Release
     runs-on: ubuntu-latest
-    container: circleci/node:dubnium-browsers
     services:
       postgres:
         image: postgres
