@@ -24,7 +24,7 @@ jobs:
     #   matrix:
     #     node: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9]
     steps:
-      - uses: ./.github/setup-action.yml
+      - uses: ./.github/setup
       - run: psql -d $DATABASE_URL -c "CREATE SCHEMA keystone;"
       - name: Unit tests
         run: yarn jest --ci --maxWorkers=1
