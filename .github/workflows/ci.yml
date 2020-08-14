@@ -15,6 +15,10 @@ jobs:
         image: circleci/postgres:9.6.5-alpine-ram
         ports:
           - 5432:5432
+    env:
+      TEST_DATABASE_URL: postgresql://root@localhost/circle_test
+      DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/circle_test'
+      NODE_OPTIONS: --max_old_space_size=4096
 
     steps:
       - name: Checkout Repo
