@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install Dependencies
-        uses: ./.github/setup
+        uses: ./.github/install-dependencies
       - run: psql -d $DATABASE_URL -c "CREATE SCHEMA keystone;"
       - name: Unit tests
         run: yarn jest --ci --maxWorkers=1
