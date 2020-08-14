@@ -93,7 +93,17 @@ jobs:
   cypress:
     name: Cypress tests
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: keystone5
+          POSTGRES_PASSWORD: k3yst0n3
+          POSTGRES_DB: circle_test
+        ports:
+          - 5432:5432
     env:
+      DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/circle_test'
       CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
       CLOUDINARY_KEY: $CLOUDINARY_KEY
       CLOUDINARY_SECRET: $CLOUDINARY_SECRET
