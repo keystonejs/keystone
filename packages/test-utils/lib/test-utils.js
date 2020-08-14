@@ -6,7 +6,6 @@ const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { KnexAdapter } = require('@keystonejs/adapter-knex');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
-const { runCustomQuery } = require('@keystonejs/server-side-graphql-client');
 
 async function setupServer({
   adapterName,
@@ -60,19 +59,6 @@ async function setupServer({
   app.use(middlewares);
 
   return { keystone, app };
-}
-
-function graphqlRequest({ keystone, query, variables }) {
-  return keystone.executeGraphQL({
-    context: keystone.createContext({ skipAccessControl: true }),
-    query,
-    variables,
-  });
-}
-
-// This is much like graphqlRequest except we don't skip access control checks!
-function authedGraphqlRequest({ keystone, query, variables }) {
-  return keystone.executeGraphQL({ query, variables });
 }
 
 function networkedGraphqlRequest({
@@ -138,26 +124,6 @@ function teardownMongoMemoryServer() {
   return stopping;
 }
 
-function getCreate(keystone) {
-  return (list, item) => keystone.getListByKey(list).adapter.create(item);
-}
-
-function getFindById(keystone) {
-  return (list, item) => keystone.getListByKey(list).adapter.findById(item);
-}
-
-function getFindOne(keystone) {
-  return (list, item) => keystone.getListByKey(list).adapter.findOne(item);
-}
-
-function getUpdate(keystone) {
-  return (list, id, data) => keystone.getListByKey(list).adapter.update(id, data);
-}
-
-function getDelete(keystone) {
-  return (list, id) => keystone.getListByKey(list).adapter.delete(id);
-}
-
 function _keystoneRunner(adapterName, tearDownFunction) {
   return function(setupKeystoneFn, testFn) {
     return async function() {
@@ -178,14 +144,7 @@ function _keystoneRunner(adapterName, tearDownFunction) {
       await keystone.connect();
 
       try {
-        await testFn({
-          ...setup,
-          create: getCreate(keystone),
-          findById: getFindById(keystone),
-          findOne: getFindOne(keystone),
-          update: getUpdate(keystone),
-          delete: getDelete(keystone),
-        });
+        await testFn(setup);
       } finally {
         await keystone.disconnect();
         await tearDownFunction();
@@ -225,34 +184,6 @@ function multiAdapterRunners(only) {
     },
   ].filter(a => typeof only === 'undefined' || a.adapterName === only);
 }
-
-const sorted = (arr, keyFn) => {
-  arr = [...arr];
-  arr.sort((a, b) => {
-    a = keyFn(a);
-    b = keyFn(b);
-    if (a < b) {
-      return -1;
-    }
-    if (a > b) {
-      return 1;
-    }
-    return 0;
-  });
-  return arr;
-};
-
-const matchFilter = async ({ keystone, queryArgs, fieldSelection, expected, sortKey }) => {
-  const data = await runCustomQuery({
-    keystone,
-    query: `query {
-      allTests${queryArgs ? `(${queryArgs})` : ''} { ${fieldSelection} }
-    }`,
-  });
-
-  const value = sortKey ? sorted(data.allTests || [], i => i[sortKey]) : data.allTests;
-  expect(value).toEqual(expected);
-};
 
 class MockFieldImplementation {
   constructor() {
@@ -381,10 +312,7 @@ class MockAdapter {
 module.exports = {
   setupServer,
   multiAdapterRunners,
-  graphqlRequest,
-  authedGraphqlRequest,
   networkedGraphqlRequest,
-  matchFilter,
   MockAdapter,
   MockListAdapter,
   MockIdType,

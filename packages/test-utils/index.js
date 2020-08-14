@@ -1,10 +1,7 @@
 const {
   setupServer,
   multiAdapterRunners,
-  graphqlRequest,
-  authedGraphqlRequest,
   networkedGraphqlRequest,
-  matchFilter,
   MockAdapter,
   MockListAdapter,
   MockIdType,
@@ -13,10 +10,7 @@ const {
 module.exports = {
   setupServer,
   multiAdapterRunners,
-  graphqlRequest,
-  authedGraphqlRequest,
   networkedGraphqlRequest,
-  matchFilter,
   MockAdapter,
   MockListAdapter,
   MockIdType,
