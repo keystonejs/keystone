@@ -1,4 +1,4 @@
-import { matchFilter } from '@keystonejs/test-utils';
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import Text from './';
 import Url from './';
 
@@ -31,19 +31,21 @@ export const initItems = () => {
 // See https://github.com/keystonejs/keystone/issues/391
 
 export const filterTests = withKeystone => {
-  const match = (keystone, queryArgs, expected) =>
-    matchFilter({
-      keystone,
-      queryArgs,
-      fieldSelection: 'order name',
-      expected,
-      sortKey: 'order',
-    });
+  const match = async (keystone, where, expected) =>
+    expect(
+      await getItems({
+        keystone,
+        listKey: 'test',
+        where,
+        returnFields: 'order name',
+        sortBy: 'order_ASC',
+      })
+    ).toEqual(expected);
 
   test(
     `No 'where' argument`,
     withKeystone(({ keystone }) =>
-      match(keystone, '', [
+      match(keystone, undefined, [
         { order: 'a', name: '' },
         { order: 'b', name: 'https://other.com' },
         { order: 'c', name: 'https://FOOBAR.com' },
@@ -57,7 +59,7 @@ export const filterTests = withKeystone => {
   test(
     `Empty 'where' argument'`,
     withKeystone(({ keystone }) =>
-      match(keystone, '', [
+      match(keystone, {}, [
         { order: 'a', name: '' },
         { order: 'b', name: 'https://other.com' },
         { order: 'c', name: 'https://FOOBAR.com' },
@@ -72,15 +74,13 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key} (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name: "https://fooBAR.com" }', [
-        { order: 'd', name: 'https://fooBAR.com' },
-      ])
+      match(keystone, { name: 'https://fooBAR.com' }, [{ order: 'd', name: 'https://fooBAR.com' }])
     )
   );
   test(
     `Filter: {key}_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_i: "https://fooBAR.com" }', [
+      match(keystone, { name_i: 'https://fooBAR.com' }, [
         { order: 'c', name: 'https://FOOBAR.com' },
         { order: 'd', name: 'https://fooBAR.com' },
         { order: 'e', name: 'https://foobar.com' },
@@ -91,7 +91,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_not: "https://fooBAR.com" }', [
+      match(keystone, { name_not: 'https://fooBAR.com' }, [
         { order: 'a', name: '' },
         { order: 'b', name: 'https://other.com' },
         { order: 'c', name: 'https://FOOBAR.com' },
@@ -104,7 +104,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_not_i: "https://fooBAR.com" }', [
+      match(keystone, { name_not_i: 'https://fooBAR.com' }, [
         { order: 'a', name: '' },
         { order: 'b', name: 'https://other.com' },
         { order: 'f', name: null },
@@ -116,7 +116,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_contains (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_contains: "oo" }', [
+      match(keystone, { name_contains: 'oo' }, [
         { order: 'd', name: 'https://fooBAR.com' },
         { order: 'e', name: 'https://foobar.com' },
       ])
@@ -125,7 +125,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_contains_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_contains_i: "oo" }', [
+      match(keystone, { name_contains_i: 'oo' }, [
         { order: 'c', name: 'https://FOOBAR.com' },
         { order: 'd', name: 'https://fooBAR.com' },
         { order: 'e', name: 'https://foobar.com' },
@@ -136,7 +136,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_contains (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_not_contains: "oo" }', [
+      match(keystone, { name_not_contains: 'oo' }, [
         { order: 'a', name: '' },
         { order: 'b', name: 'https://other.com' },
         { order: 'c', name: 'https://FOOBAR.com' },
@@ -148,7 +148,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_contains_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_not_contains_i: "oo" }', [
+      match(keystone, { name_not_contains_i: 'oo' }, [
         { order: 'a', name: '' },
         { order: 'b', name: 'https://other.com' },
         { order: 'f', name: null },
@@ -160,7 +160,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_starts_with (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_starts_with: "https://foo" }', [
+      match(keystone, { name_starts_with: 'https://foo' }, [
         { order: 'd', name: 'https://fooBAR.com' },
         { order: 'e', name: 'https://foobar.com' },
       ])
@@ -169,7 +169,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_starts_with_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_starts_with_i: "https://foo" }', [
+      match(keystone, { name_starts_with_i: 'https://foo' }, [
         { order: 'c', name: 'https://FOOBAR.com' },
         { order: 'd', name: 'https://fooBAR.com' },
         { order: 'e', name: 'https://foobar.com' },
@@ -180,7 +180,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_starts_with (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_not_starts_with: "https://foo" }', [
+      match(keystone, { name_not_starts_with: 'https://foo' }, [
         { order: 'a', name: '' },
         { order: 'b', name: 'https://other.com' },
         { order: 'c', name: 'https://FOOBAR.com' },
@@ -193,7 +193,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_starts_with_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_not_starts_with_i: "https://foo" }', [
+      match(keystone, { name_not_starts_with_i: 'https://foo' }, [
         { order: 'a', name: '' },
         { order: 'b', name: 'https://other.com' },
         { order: 'f', name: null },
@@ -205,7 +205,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_ends_with (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_ends_with: "BAR.com" }', [
+      match(keystone, { name_ends_with: 'BAR.com' }, [
         { order: 'c', name: 'https://FOOBAR.com' },
         { order: 'd', name: 'https://fooBAR.com' },
       ])
@@ -214,7 +214,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_ends_with_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_ends_with_i: "BAR.com" }', [
+      match(keystone, { name_ends_with_i: 'BAR.com' }, [
         { order: 'c', name: 'https://FOOBAR.com' },
         { order: 'd', name: 'https://fooBAR.com' },
         { order: 'e', name: 'https://foobar.com' },
@@ -225,7 +225,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_ends_with (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_not_ends_with: "BAR.com" }', [
+      match(keystone, { name_not_ends_with: 'BAR.com' }, [
         { order: 'a', name: '' },
         { order: 'b', name: 'https://other.com' },
         { order: 'e', name: 'https://foobar.com' },
@@ -237,7 +237,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_ends_with_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_not_ends_with_i: "BAR.com" }', [
+      match(keystone, { name_not_ends_with_i: 'BAR.com' }, [
         { order: 'a', name: '' },
         { order: 'b', name: 'https://other.com' },
         { order: 'f', name: null },
@@ -248,12 +248,12 @@ export const filterTests = withKeystone => {
 
   test(
     `Filter: {key}_in (case-sensitive, empty list)`,
-    withKeystone(({ keystone }) => match(keystone, 'where: { name_in: [] }', []))
+    withKeystone(({ keystone }) => match(keystone, { name_in: [] }, []))
   );
   test(
     `Filter: {key}_in (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_in: ["", "https://FOOBAR.com"] }', [
+      match(keystone, { name_in: ['', 'https://FOOBAR.com'] }, [
         { order: 'a', name: '' },
         { order: 'c', name: 'https://FOOBAR.com' },
       ])
@@ -263,7 +263,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_in (case-sensitive, empty list)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_not_in: [] }', [
+      match(keystone, { name_not_in: [] }, [
         { order: 'a', name: '' },
         { order: 'b', name: 'https://other.com' },
         { order: 'c', name: 'https://FOOBAR.com' },
@@ -277,7 +277,7 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_in (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { name_not_in: ["", "https://FOOBAR.com"] }', [
+      match(keystone, { name_not_in: ['', 'https://FOOBAR.com'] }, [
         { order: 'b', name: 'https://other.com' },
         { order: 'd', name: 'https://fooBAR.com' },
         { order: 'e', name: 'https://foobar.com' },
