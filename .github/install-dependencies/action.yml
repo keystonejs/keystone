@@ -1,10 +1,7 @@
-name: 'Setup Environment'
+name: 'Install dependencies'
 runs:
   using: 'composite'
   steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v2
-
     - name: Setup Node.js 12.x
       uses: actions/setup-node@main
       with:
