@@ -145,9 +145,7 @@ function _keystoneRunner(adapterName, tearDownFunction) {
       await keystone.connect();
 
       try {
-        await testFn({
-          ...setup,
-        });
+        await testFn(setup);
       } finally {
         await keystone.disconnect();
         await tearDownFunction();
