@@ -185,6 +185,7 @@
     "setupFilesAfterEnv": [
       "./jest/setup.js"
     ],
+    "testSequencer": "./jest-sequencer.js",
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/",
