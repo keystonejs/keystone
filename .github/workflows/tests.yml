@@ -12,7 +12,9 @@ jobs:
     container: circleci/node:dubnium-browsers
     services:
       postgres:
-        image: circleci/postgres:9.6.5-alpine-ram
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: k3yst0n3
         ports:
           - 5432:5432
     env:
