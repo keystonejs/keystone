@@ -48,4 +48,4 @@ jobs:
         run: yarn
 
       - name: Unit tests
-        command: yarn jest --ci --maxWorkers=1
+        run: yarn jest --ci --maxWorkers=1
