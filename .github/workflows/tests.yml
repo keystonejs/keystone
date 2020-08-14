@@ -135,5 +135,5 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
-      - run: yarn --cwd ${{ matrix.project }} install
+      - run: yarn --cwd ${{ matrix.project }} cypress install
       - run: yarn --cwd ${{ matrix.project }} cypress:run:ci
