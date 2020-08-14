@@ -22,9 +22,7 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@main
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v2
 
       - name: Setup Node.js 12.x
         uses: actions/setup-node@main
