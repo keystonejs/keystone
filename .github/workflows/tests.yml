@@ -20,8 +20,9 @@ jobs:
           - 5432:5432
     env:
       DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/circle_test'
-    matrix:
-      node: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9]
+    strategy:
+      matrix:
+        node: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
