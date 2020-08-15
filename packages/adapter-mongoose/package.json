@@ -14,7 +14,7 @@
     "@keystonejs/mongo-join-builder": "^7.1.2",
     "@keystonejs/utils": "^5.4.1",
     "@sindresorhus/slugify": "^0.11.0",
-    "mongoose": "^5.9.11",
+    "mongoose": "5.9.11",
     "p-settle": "^3.1.0",
     "pluralize": "^7.0.0"
   },
