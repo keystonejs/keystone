@@ -1,4 +1,4 @@
-import { matchFilter } from '@keystonejs/test-utils';
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import Password from './';
 import Text from '../Text';
 
@@ -23,14 +23,16 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (keystone, queryArgs, expected) =>
-    matchFilter({
-      keystone,
-      queryArgs,
-      fieldSelection: 'name password_is_set',
-      expected,
-      sortKey: 'name',
-    });
+  const match = async (keystone, where, expected) =>
+    expect(
+      await getItems({
+        keystone,
+        listKey: 'test',
+        where,
+        returnFields: 'name password_is_set',
+        sortBy: 'name_ASC',
+      })
+    ).toEqual(expected);
 
   test(
     'No filter',
@@ -46,7 +48,7 @@ export const filterTests = withKeystone => {
   test(
     'Empty filter',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { }', [
+      match(keystone, {}, [
         { name: 'person1', password_is_set: true },
         { name: 'person2', password_is_set: false },
         { name: 'person3', password_is_set: true },
@@ -57,7 +59,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: is_set - true',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { password_is_set: true }', [
+      match(keystone, { password_is_set: true }, [
         { name: 'person1', password_is_set: true },
         { name: 'person3', password_is_set: true },
       ])
@@ -67,9 +69,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: is_set - false',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { password_is_set: false }', [
-        { name: 'person2', password_is_set: false },
-      ])
+      match(keystone, { password_is_set: false }, [{ name: 'person2', password_is_set: false }])
     )
   );
 };

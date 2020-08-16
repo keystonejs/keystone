@@ -1,4 +1,4 @@
-import { matchFilter } from '@keystonejs/test-utils';
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import Text from '../Text';
 import Checkbox from './';
 
@@ -24,14 +24,16 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (keystone, queryArgs, expected) =>
-    matchFilter({
-      keystone,
-      queryArgs,
-      fieldSelection: 'name enabled',
-      expected,
-      sortKey: 'name',
-    });
+  const match = async (keystone, where, expected) =>
+    expect(
+      await getItems({
+        keystone,
+        listKey: 'test',
+        where,
+        returnFields: 'name enabled',
+        sortBy: 'name_ASC',
+      })
+    ).toEqual(expected);
 
   test(
     'No filter',
@@ -48,7 +50,7 @@ export const filterTests = withKeystone => {
   test(
     'Empty filter',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { }', [
+      match(keystone, {}, [
         { name: 'person1', enabled: true },
         { name: 'person2', enabled: false },
         { name: 'person3', enabled: null },
@@ -60,7 +62,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: enabled true',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { enabled: true }', [
+      match(keystone, { enabled: true }, [
         { name: 'person1', enabled: true },
         { name: 'person4', enabled: true },
       ])
@@ -70,14 +72,14 @@ export const filterTests = withKeystone => {
   test(
     'Filter: enabled false',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { enabled: false }', [{ name: 'person2', enabled: false }])
+      match(keystone, { enabled: false }, [{ name: 'person2', enabled: false }])
     )
   );
 
   test(
     'Filter: enabled_not true',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { enabled_not: true }', [
+      match(keystone, { enabled_not: true }, [
         { name: 'person2', enabled: false },
         { name: 'person3', enabled: null },
       ])
@@ -87,7 +89,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: enabled_not false',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { enabled_not: false }', [
+      match(keystone, { enabled_not: false }, [
         { name: 'person1', enabled: true },
         { name: 'person3', enabled: null },
         { name: 'person4', enabled: true },
