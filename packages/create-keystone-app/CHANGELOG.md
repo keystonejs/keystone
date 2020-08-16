@@ -1,5 +1,14 @@
 # create-keystone-app
 
+## 3.3.1
+
+### Patch Changes
+
+- [`59d1eae47`](https://github.com/keystonejs/keystone/commit/59d1eae47a32fea711a1b9a728bc7bb9688aa124) [#3370](https://github.com/keystonejs/keystone/pull/3370) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fetch commits to find the last release from the default branch rather than `create-keystone-app-from-github`
+
+- Updated dependencies [[`7e78ffdaa`](https://github.com/keystonejs/keystone/commit/7e78ffdaa96050e49e8e2678a3c4f1897fedae4f)]:
+  - @keystonejs/adapter-mongoose@9.0.2
+
 ## 3.3.0
 
 ### Minor Changes

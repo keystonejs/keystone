@@ -1,5 +1,37 @@
 # @keystonejs/fields
 
+## 16.1.0
+
+### Minor Changes
+
+- [`9338f3739`](https://github.com/keystonejs/keystone/commit/9338f3739ecff5f626a713a06ce65c1e29888d25) [#3363](https://github.com/keystonejs/keystone/pull/3363) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Expose field type views at `@keystonejs/fields/types/*/views/{Cell,Controller,Filter,Field}`
+
+### Patch Changes
+
+- [`3db2f3956`](https://github.com/keystonejs/keystone/commit/3db2f395688342fe9a1dda14be5ce8308c9c39a6) [#3374](https://github.com/keystonejs/keystone/pull/3374) Thanks [@timleslie](https://github.com/timleslie)! - Cleaned up the implementation of generating unique `Slug` values.
+
+* [`7e78ffdaa`](https://github.com/keystonejs/keystone/commit/7e78ffdaa96050e49e8e2678a3c4f1897fedae4f) [#3400](https://github.com/keystonejs/keystone/pull/3400) Thanks [@timleslie](https://github.com/timleslie)! - Restricted `mongoose` to the version range `~5.9.11` to avoid a [bug](https://github.com/keystonejs/keystone/issues/3397) in `5.10.0`.
+
+- [`7b0875723`](https://github.com/keystonejs/keystone/commit/7b0875723783780988f2dee4e5ee406a3b44ca98) [#3371](https://github.com/keystonejs/keystone/pull/3371) Thanks [@singhArmani](https://github.com/singhArmani)! - Added filter tests for `DateTimeUtc` field
+
+* [`0369985e3`](https://github.com/keystonejs/keystone/commit/0369985e320afd6112f2664f8a8edc1ed7167130) [#3391](https://github.com/keystonejs/keystone/pull/3391) Thanks [@timleslie](https://github.com/timleslie)! - Removed the `MockAdapter`, `MockListAdapter` and `MockIdType` classes from `@keystonejs/test-utils`.
+
+- [`7422922f5`](https://github.com/keystonejs/keystone/commit/7422922f5649a2b52699f67a77645e9c91800688) [#3375](https://github.com/keystonejs/keystone/pull/3375) Thanks [@singhArmani](https://github.com/singhArmani)! - Added `Filter` tests for the `Url` field type
+
+* [`df8f92a37`](https://github.com/keystonejs/keystone/commit/df8f92a378d2d787f5bee774f013767c09ec35cf) [#3392](https://github.com/keystonejs/keystone/pull/3392) Thanks [@timleslie](https://github.com/timleslie)! - Updated `match` function in tests to use `getItems` function from `server-side-graphql-client`.
+
+- [`cc5bb8915`](https://github.com/keystonejs/keystone/commit/cc5bb891579281338ad7fad0873531be81d877d4) [#3387](https://github.com/keystonejs/keystone/pull/3387) Thanks [@singhArmani](https://github.com/singhArmani)! - Refactored internals to use `server-side-graphql-client`.
+
+* [`1b3943e4f`](https://github.com/keystonejs/keystone/commit/1b3943e4f66c61c446085736949c6b83e9087afb) [#3378](https://github.com/keystonejs/keystone/pull/3378) Thanks [@timleslie](https://github.com/timleslie)! - Updated tests for the `Slug` field type.
+
+- [`b300720eb`](https://github.com/keystonejs/keystone/commit/b300720eb4e079bc30efb17ed3b48ab71cadc160) [#3373](https://github.com/keystonejs/keystone/pull/3373) Thanks [@timleslie](https://github.com/timleslie)! - Removed internal global variables.
+
+- Updated dependencies [[`7e78ffdaa`](https://github.com/keystonejs/keystone/commit/7e78ffdaa96050e49e8e2678a3c4f1897fedae4f), [`72cd47b35`](https://github.com/keystonejs/keystone/commit/72cd47b357052b69e1d525758ff8a1a0cf44c5c2), [`0369985e3`](https://github.com/keystonejs/keystone/commit/0369985e320afd6112f2664f8a8edc1ed7167130), [`9338f3739`](https://github.com/keystonejs/keystone/commit/9338f3739ecff5f626a713a06ce65c1e29888d25), [`714316718`](https://github.com/keystonejs/keystone/commit/7143167187e3e3519b0b58e2b04ff0fee8fc75dc), [`cc5bb8915`](https://github.com/keystonejs/keystone/commit/cc5bb891579281338ad7fad0873531be81d877d4)]:
+  - @keystonejs/adapter-mongoose@9.0.2
+  - @keystonejs/server-side-graphql-client@1.1.1
+  - @keystonejs/test-utils@8.0.0
+  - @keystonejs/app-admin-ui@7.3.1
+
 ## 16.0.0
 
 ### Major Changes

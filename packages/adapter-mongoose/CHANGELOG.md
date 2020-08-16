@@ -1,5 +1,14 @@
 # @keystonejs/adapter-mongoose
 
+## 9.0.2
+
+### Patch Changes
+
+- [`7e78ffdaa`](https://github.com/keystonejs/keystone/commit/7e78ffdaa96050e49e8e2678a3c4f1897fedae4f) [#3400](https://github.com/keystonejs/keystone/pull/3400) Thanks [@timleslie](https://github.com/timleslie)! - Restricted `mongoose` to the version range `~5.9.11` to avoid a [bug](https://github.com/keystonejs/keystone/issues/3397) in `5.10.0`.
+
+- Updated dependencies [[`0369985e3`](https://github.com/keystonejs/keystone/commit/0369985e320afd6112f2664f8a8edc1ed7167130)]:
+  - @keystonejs/keystone@13.1.1
+
 ## 9.0.1
 
 ### Patch Changes
