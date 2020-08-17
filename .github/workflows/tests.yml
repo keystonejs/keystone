@@ -3,7 +3,8 @@ name: CI
 on:
   push:
     branches:
-      - github-actions-for-ci
+      - master
+  pull_request:
 
 jobs:
   jest:
