@@ -1013,7 +1013,9 @@ module.exports = class List {
     if (schemaAccess.update && updateFields.length) {
       types.push(`
         input ${this.gqlNames.updateInputName} {
-          ${flatten(updateFields.map(field => field.gqlUpdateInputFields)).join('\n')}
+          ${flatten(updateFields.map(field => field.gqlUpdateInputFields({ schemaName }))).join(
+            '\n'
+          )}
         }
       `);
       types.push(`
@@ -1028,7 +1030,9 @@ module.exports = class List {
     if (schemaAccess.create && createFields.length) {
       types.push(`
         input ${this.gqlNames.createInputName} {
-          ${flatten(createFields.map(field => field.gqlCreateInputFields)).join('\n')}
+          ${flatten(createFields.map(field => field.gqlCreateInputFields({ schemaName }))).join(
+            '\n'
+          )}
         }
       `);
       types.push(`

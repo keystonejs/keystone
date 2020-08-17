@@ -253,10 +253,10 @@ export class Unsplash extends Implementation {
     return transformImageFromApiToKs5(apiResponse, { includeId: true });
   }
 
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
 }

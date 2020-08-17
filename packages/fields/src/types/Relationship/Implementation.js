@@ -285,7 +285,7 @@ export class Relationship extends Implementation {
       ];
     }
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     const { refList } = this.tryResolveRefList();
     if (this.many) {
       return [`${this.path}: ${refList.gqlNames.relateToManyInputName}`];
@@ -293,8 +293,8 @@ export class Relationship extends Implementation {
       return [`${this.path}: ${refList.gqlNames.relateToOneInputName}`];
     }
   }
-  get gqlCreateInputFields() {
-    return this.gqlUpdateInputFields;
+  gqlCreateInputFields() {
+    return this.gqlUpdateInputFields();
   }
 }
 

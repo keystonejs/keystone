@@ -40,10 +40,10 @@ export class AutoIncrementImplementation extends Implementation {
       ...this.inInputFields(this.gqlType),
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: ${this.gqlType}`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: ${this.gqlType}`];
   }
 }
