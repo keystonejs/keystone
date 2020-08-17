@@ -84,7 +84,7 @@ multiAdapterRunners('knex').map(({ runner, adapterName }) =>
       test(
         'nested to-many relationships can be limited',
         runner(setupKeystone, async ({ keystone }) => {
-          const ids = await createItems({
+          const returnedStuff = await createItems({
             keystone,
             listKey: 'Post',
             items: [
@@ -92,7 +92,16 @@ multiAdapterRunners('knex').map(({ runner, adapterName }) =>
               { data: { content: 'hi world' } },
               { data: { content: 'Hello? Or hi?' } },
             ],
+            returnFields: 'id content',
           });
+
+          expect(returnedStuff.map(x => x.content)).toEqual([
+            'Hello world',
+            'hi world',
+            'Hello? Or hi?',
+          ]);
+
+          const ids = returnedStuff.map(({ id }) => ({ id }));
 
           const [user, user2] = await createItems({
             keystone,
