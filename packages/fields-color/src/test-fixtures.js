@@ -20,7 +20,8 @@ export const initItems = () => {
     { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
     { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
     { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
-    { name: 'd', hexColor: null },
+    { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
+    { name: 'e', hexColor: null },
   ];
 };
 
@@ -43,7 +44,8 @@ export const filterTests = withKeystone => {
         { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
         { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
         { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
-        { name: 'd', hexColor: null },
+        { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
+        { name: 'e', hexColor: null },
       ])
     )
   );
@@ -55,31 +57,53 @@ export const filterTests = withKeystone => {
         { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
         { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
         { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
-        { name: 'd', hexColor: null },
+        { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
+        { name: 'e', hexColor: null },
       ])
     )
   );
 
   test(
-    'Filter: hexColor',
+    'Filter: hexColor (case-sensitive)',
     withKeystone(({ keystone }) =>
-      match(keystone, { hexColor: 'rgba(45, 228, 39, 1)' }, [
-        { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
-      ])
-    )
-  );
-
-  test(
-    'Filter: hexColor_not',
-    withKeystone(({ keystone }) =>
-      match(keystone, { hexColor_not: 'rgba(45, 228, 39, 1)' }, [
-        { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
+      match(keystone, { hexColor: 'rgba(50, 121, 206, 1)' }, [
         { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
-        { name: 'd', hexColor: null },
       ])
     )
   );
 
+  test(
+    'Filter: hexColor (case-insensitive)',
+    withKeystone(({ keystone }) =>
+      match(keystone, { hexColor_i: 'rgba(50, 121, 206, 1)' }, [
+        { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
+        { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
+      ])
+    )
+  );
+
+  test(
+    'Filter: hexColor_not (case-sensitive)',
+    withKeystone(({ keystone }) =>
+      match(keystone, { hexColor_not: 'rgba(50, 121, 206, 1)' }, [
+        { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
+        { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
+        { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
+        { name: 'e', hexColor: null },
+      ])
+    )
+  );
+
+  test(
+    'Filter: hexColor_not_i (case-insensitive)',
+    withKeystone(({ keystone }) =>
+      match(keystone, { hexColor_not_i: 'rgba(50, 121, 206, 1)' }, [
+        { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
+        { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
+        { name: 'e', hexColor: null },
+      ])
+    )
+  );
   test(
     'Filter: hexColor_not null',
     withKeystone(({ keystone }) =>
@@ -87,12 +111,13 @@ export const filterTests = withKeystone => {
         { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
         { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
         { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
+        { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
       ])
     )
   );
 
   test(
-    'Filter: hexColor_in (empty list)',
+    'Filter: hexColor_in (case-sensitive, empty list)',
     withKeystone(({ keystone }) => match(keystone, { hexColor_in: [] }, []))
   );
 
@@ -103,7 +128,8 @@ export const filterTests = withKeystone => {
         { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
         { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
         { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
-        { name: 'd', hexColor: null },
+        { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
+        { name: 'e', hexColor: null },
       ])
     )
   );
@@ -132,7 +158,10 @@ export const filterTests = withKeystone => {
         {
           hexColor_not_in: [null, 'rgba(223, 57, 57, 1)', 'rgba(45, 228, 39, 1)'],
         },
-        [{ name: 'c', hexColor: 'rgba(50, 121, 206, 1)' }]
+        [
+          { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
+          { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
+        ]
       )
     )
   );
@@ -140,7 +169,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: hexColor_in null',
     withKeystone(({ keystone }) =>
-      match(keystone, { hexColor_in: [null] }, [{ name: 'd', hexColor: null }])
+      match(keystone, { hexColor_in: [null] }, [{ name: 'e', hexColor: null }])
     )
   );
 
@@ -151,6 +180,7 @@ export const filterTests = withKeystone => {
         { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
         { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
         { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
+        { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
       ])
     )
   );
@@ -165,31 +195,76 @@ export const filterTests = withKeystone => {
   );
 
   test(
-    'Filter: hexColor_not_contains',
+    'Filter: hexColor_contains (case-sensitive)',
     withKeystone(({ keystone }) =>
-      match(keystone, { hexColor_not_contains: '57' }, [
+      match(keystone, { hexColor_contains: 'rgba' }, [
+        { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
         { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
         { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
-        { name: 'd', hexColor: null },
+      ])
+    )
+  );
+  test(
+    'Filter: hexColor_contains_i (case-insensitive)',
+    withKeystone(({ keystone }) =>
+      match(keystone, { hexColor_contains_i: 'rgba' }, [
+        { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
+        { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
+        { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
+        { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
       ])
     )
   );
 
   test(
-    'Filter: hexColor_starts_with',
+    'Filter: hexColor_not_contains',
     withKeystone(({ keystone }) =>
-      match(keystone, { hexColor_starts_with: 'rgba(45' }, [
+      match(keystone, { hexColor_not_contains: '57' }, [
         { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
+        { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
+        { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
+        { name: 'e', hexColor: null },
+      ])
+    )
+  );
+
+  test(
+    'Filter: hexColor_starts_with (case-sensitive)',
+    withKeystone(({ keystone }) =>
+      match(keystone, { hexColor_starts_with: 'rgba(50' }, [
+        { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
+      ])
+    )
+  );
+
+  test(
+    'Filter: hexColor_starts_with_i (case-insensitive)',
+    withKeystone(({ keystone }) =>
+      match(keystone, { hexColor_starts_with_i: 'rgba(50' }, [
+        { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
+        { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
+      ])
+    )
+  );
+
+  test(
+    'Filter: hexColor_not_starts_with (case-sensitive)',
+    withKeystone(({ keystone }) =>
+      match(keystone, { hexColor_not_starts_with: 'rgba(50' }, [
+        { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
+        { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
+        { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
+        { name: 'e', hexColor: null },
       ])
     )
   );
   test(
-    'Filter: hexColor_not_starts_with',
+    'Filter: hexColor_not_starts_with_i (case-insensitive)',
     withKeystone(({ keystone }) =>
-      match(keystone, { hexColor_not_starts_with: 'rgba(45' }, [
+      match(keystone, { hexColor_not_starts_with_i: 'rgba(50' }, [
         { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
-        { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
-        { name: 'd', hexColor: null },
+        { name: 'b', hexColor: 'rgba(45, 228, 39, 1)' },
+        { name: 'e', hexColor: null },
       ])
     )
   );
@@ -209,7 +284,8 @@ export const filterTests = withKeystone => {
       match(keystone, { hexColor_not_ends_with: '39, 1)' }, [
         { name: 'a', hexColor: 'rgba(223, 57, 57, 1)' },
         { name: 'c', hexColor: 'rgba(50, 121, 206, 1)' },
-        { name: 'd', hexColor: null },
+        { name: 'd', hexColor: 'RGBA(50, 121, 206, 1)' },
+        { name: 'e', hexColor: null },
       ])
     )
   );
@@ -253,7 +329,6 @@ export const crudTests = withKeystone => {
           itemId: items[0].id,
           returnFields: 'hexColor',
         });
-        console.log({ data });
         expect(data).not.toBe(null);
         expect(data.hexColor).toBe(items[0].hexColor);
       })
