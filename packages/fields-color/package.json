@@ -20,6 +20,7 @@
     "react": "^16.13.1"
   },
   "devDependencies": {
+    "@keystonejs/server-side-graphql-client": "*",
     "react": "^16.13.1"
   },
   "main": "dist/fields-color.cjs.js",
