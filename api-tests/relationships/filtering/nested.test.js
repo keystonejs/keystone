@@ -27,7 +27,7 @@ function setupKeystone(adapterName) {
     },
   });
 }
-multiAdapterRunners().map(({ runner, adapterName }) =>
+multiAdapterRunners('knex').map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('relationship filtering', () => {
       test(
@@ -118,6 +118,28 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
+          expect(data).toMatchInlineSnapshot(`
+            Object {
+              "allUsers": Array [
+                Object {
+                  "id": "1",
+                  "posts": Array [
+                    Object {
+                      "id": "1",
+                    },
+                  ],
+                },
+                Object {
+                  "id": "2",
+                  "posts": Array [
+                    Object {
+                      "id": "1",
+                    },
+                  ],
+                },
+              ],
+            }
+          `);
           expect(data.allUsers).toContainEqual({ id: user.id, posts: [ids[0]] });
           expect(data.allUsers).toContainEqual({ id: user2.id, posts: [ids[0]] });
         })
