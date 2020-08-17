@@ -21,7 +21,7 @@ module.exports = function({ adminMeta, adminViews, entry, outputPath }) {
 
   const rules = [
     {
-      test: /\.js$/,
+      test: /\.(js|ts|tsx)$/,
       exclude: pathname => {
         return pathname.includes('node_modules') && !pathname.startsWith(clientDirectory);
       },
@@ -80,6 +80,7 @@ module.exports = function({ adminMeta, adminViews, entry, outputPath }) {
       rules,
     },
     resolve: {
+      extensions: ['.ts', '.tsx', '.js', '.json'],
       alias: {
         // we only want to bundle a single version of react
         // but we don't want to assume a consumer has the same version of react
