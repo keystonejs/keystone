@@ -84,7 +84,7 @@ multiAdapterRunners('knex').map(({ runner, adapterName }) =>
       test(
         'nested to-many relationships can be limited',
         runner(setupKeystone, async ({ keystone }) => {
-          const returnedStuff = await createItems({
+          const ids = await createItems({
             keystone,
             listKey: 'Post',
             items: [
@@ -92,16 +92,8 @@ multiAdapterRunners('knex').map(({ runner, adapterName }) =>
               { data: { content: 'hi world' } },
               { data: { content: 'Hello? Or hi?' } },
             ],
-            returnFields: 'id content',
+            returnFields: 'id',
           });
-
-          expect(returnedStuff.map(x => x.content)).toEqual([
-            'Hello world',
-            'hi world',
-            'Hello? Or hi?',
-          ]);
-
-          const ids = returnedStuff.map(({ id }) => ({ id }));
 
           const [user, user2] = await createItems({
             keystone,
@@ -118,7 +110,7 @@ multiAdapterRunners('knex').map(({ runner, adapterName }) =>
           allUsers {
             id
             posts (first: 1, sortBy: content_ASC) {
-              id
+              content
             }
           }
         }
@@ -127,28 +119,14 @@ multiAdapterRunners('knex').map(({ runner, adapterName }) =>
 
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
-          expect(data).toEqual({
-            allUsers: [
-              {
-                id: '1',
-                posts: [
-                  {
-                    id: '1',
-                  },
-                ],
-              },
-              {
-                id: '2',
-                posts: [
-                  {
-                    id: '1',
-                  },
-                ],
-              },
-            ],
+          expect(data.allUsers).toContainEqual({
+            id: user.id,
+            posts: [{ content: 'Hello world' }],
           });
-          expect(data.allUsers).toContainEqual({ id: user.id, posts: [ids[0]] });
-          expect(data.allUsers).toContainEqual({ id: user2.id, posts: [ids[0]] });
+          expect(data.allUsers).toContainEqual({
+            id: user2.id,
+            posts: [{ content: 'Hello world' }],
+          });
         })
       );
 
