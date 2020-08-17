@@ -1,4 +1,3 @@
-const path = require('path');
 const AWS = require('aws-sdk');
 const urlJoin = require('url-join');
 
@@ -37,7 +36,7 @@ module.exports = class S3Adapter {
           Body: stream,
           ContentType: mimetype,
           Bucket: this.bucket,
-          Key: path.join(this.folder, fileData.filename),
+          Key: `${this.folder}/${fileData.filename}`,
           ...uploadParams,
         },
         (error, data) => {
@@ -64,7 +63,7 @@ module.exports = class S3Adapter {
       return this.s3
         .deleteObject({
           Bucket: this.bucket,
-          Key: path.join(this.folder, file.filename),
+          Key: `${this.folder}/${file.filename}`,
           ...options,
         })
         .promise();

@@ -1,5 +1,11 @@
 # @keystonejs/file-adapters
 
+## 7.0.3
+
+### Patch Changes
+
+- [`2f76473ae`](https://github.com/keystonejs/keystone/commit/2f76473ae045b1d8b48688ac6de842c51a2fc345) [#3393](https://github.com/keystonejs/keystone/pull/3393) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed S3 adapter issue on windows where the wrong path character was being used due to `path.join`
+
 ## 7.0.2
 
 ### Patch Changes
