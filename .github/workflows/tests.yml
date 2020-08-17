@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres
+        image: postgres:9.6.5
         env:
           POSTGRES_USER: keystone5
           POSTGRES_PASSWORD: k3yst0n3
@@ -90,6 +90,8 @@ jobs:
         run: yarn lint:prettier
       - name: Remark
         run: yarn lint:markdown
+      - name: Preconstruct
+        run: yarn build
   cypress:
     name: Cypress tests
     runs-on: ubuntu-latest
