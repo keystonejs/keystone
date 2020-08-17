@@ -57,7 +57,7 @@ Add [query limits](/docs/api/create-list.md#querylimits) and [validation](/docs/
 
 ## Using reverse proxies
 
-It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](https://en.wikipedia.org/wiki/Slowloris_(computer_security)). The express application variable [`trust proxy`](https://expressjs.com/en/guide/behind-proxies.html) must be set to support reverse proxying:
+It's recommended to run production Javascript servers behind a reverse proxy such as [Nginx](https://nginx.org/), [HAProxy](https://www.haproxy.org/), a CDN or a cloud-based application (layer 7) load balancer. Doing that can improve performance and protect against [Slowloris Dos attacks](<https://en.wikipedia.org/wiki/Slowloris_(computer_security)>). The express application variable [`trust proxy`](https://expressjs.com/en/guide/behind-proxies.html) must be set to support reverse proxying:
 
 ```javascript title=index.js
 module.exports = {

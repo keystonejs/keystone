@@ -5,8 +5,7 @@ import { Global, css, jsx } from '@emotion/core';
 import { FieldContainer, FieldLabel } from '@arch-ui/fields';
 
 // MUST IMPORT for TinyMCE to work!
-// eslint-disable-next-line no-unused-vars
-import tinymce from 'tinymce/tinymce';
+import 'tinymce/tinymce';
 
 import { Editor } from '@tinymce/tinymce-react';
 
