@@ -4,7 +4,7 @@ const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 describe('Fields', () => {
-  const testModules = globby.sync(`packages/fields/src/types/**/test-fixtures.js`, {
+  const testModules = globby.sync(`packages/**/src/**/test-fixtures.js`, {
     absolute: true,
   });
   testModules.push(path.resolve('packages/fields/tests/test-fixtures.js'));
