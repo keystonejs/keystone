@@ -28,10 +28,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Setup Node.js 12.x
+      - name: Setup Node.js 10.x
         uses: actions/setup-node@main
         with:
-          node-version: 12.x
+          node-version: 10.x
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -63,10 +63,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Setup Node.js 12.x
+      - name: Setup Node.js 10.x
         uses: actions/setup-node@main
         with:
-          node-version: 12.x
+          node-version: 10.x
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -115,10 +115,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Setup Node.js 12.x
+      - name: Setup Node.js 10.x
         uses: actions/setup-node@main
         with:
-          node-version: 12.x
+          node-version: 10.x
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
