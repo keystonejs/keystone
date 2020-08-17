@@ -60,7 +60,6 @@
     "@typescript-eslint/eslint-plugin": "^3.9.0",
     "@typescript-eslint/parser": "^3.9.0",
     "all-contributors-cli": "^6.2.0",
-    "babel-eslint": "^10.0.1",
     "babel-plugin-emotion": "^10.0.27",
     "chalk": "^2.4.2",
     "chalk-cli": "^4.1.0",
