@@ -79,13 +79,17 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.gqlUpdateInputFields()).toEqual(['foo: ZipRelateToManyInput']);
+    expect(relMany.gqlUpdateInputFields({ schemaName: 'public' })).toEqual([
+      'foo: ZipRelateToManyInput',
+    ]);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.gqlUpdateInputFields()).toEqual(['foo: ZipRelateToOneInput']);
+    expect(relSingle.gqlUpdateInputFields({ schemaName: 'public' })).toEqual([
+      'foo: ZipRelateToOneInput',
+    ]);
   });
 
   test('to-single relationship nested mutation input', () => {
