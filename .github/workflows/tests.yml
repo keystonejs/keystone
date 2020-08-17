@@ -15,11 +15,11 @@ jobs:
         env:
           POSTGRES_USER: keystone5
           POSTGRES_PASSWORD: k3yst0n3
-          POSTGRES_DB: circle_test
+          POSTGRES_DB: test_db
         ports:
           - 5432:5432
     env:
-      DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/circle_test'
+      DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/test_db'
     strategy:
       matrix:
         node: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9]
@@ -50,11 +50,10 @@ jobs:
         run: yarn
       - run: psql -d $DATABASE_URL -c "CREATE SCHEMA keystone;"
       - name: Unit tests
-        run:
-          yarn jest --ci --maxWorkers=1
-          env:
-            CI_NODE_TOTAL: 10
-            CI_NODE_INDEX: ${{ matrix.node }}
+        run: yarn jest --ci --maxWorkers=1
+        env:
+          CI_NODE_TOTAL: 10
+          CI_NODE_INDEX: ${{ matrix.node }}
 
   linting:
     name: Linting
