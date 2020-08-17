@@ -51,6 +51,7 @@
     "@babel/preset-react": "^7.8.3",
     "@changesets/changelog-github": "^0.2.1",
     "@changesets/cli": "^2.5.1",
+    "@jest/test-sequencer": "^26.1.0",
     "@manypkg/cli": "^0.11.0",
     "@preconstruct/cli": "1.1.20",
     "@types/jest": "^25.1.2",
@@ -185,6 +186,7 @@
     "setupFilesAfterEnv": [
       "./jest/setup.js"
     ],
+    "testSequencer": "./jest-sequencer.js",
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/",
