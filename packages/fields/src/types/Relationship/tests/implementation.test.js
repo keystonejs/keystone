@@ -65,13 +65,17 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.gqlCreateInputFields()).toEqual(['foo: ZipRelateToManyInput']);
+    expect(relMany.gqlCreateInputFields({ schemaName: 'public' })).toEqual([
+      'foo: ZipRelateToManyInput',
+    ]);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.gqlCreateInputFields()).toEqual(['foo: ZipRelateToOneInput']);
+    expect(relSingle.gqlCreateInputFields({ schemaName: 'public' })).toEqual([
+      'foo: ZipRelateToOneInput',
+    ]);
   });
 
   test('inputs for relationship fields in update args', () => {
