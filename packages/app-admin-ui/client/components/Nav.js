@@ -1,7 +1,7 @@
 /* global ENABLE_DEV_FEATURES */
 /** @jsx jsx */
 
-import React, { useState, useMemo, forwardRef } from 'react'; // eslint-disable-line no-unused-vars
+import React, { useState, useMemo, forwardRef } from 'react'; // eslint-disable-line @typescript-eslint/no-unused-vars
 import { Link, useRouteMatch } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import { uid } from 'react-uid';

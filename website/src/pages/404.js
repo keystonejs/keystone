@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React from 'react'; // eslint-disable-line no-unused-vars
+import React from 'react'; // eslint-disable-line @typescript-eslint/no-unused-vars
 import { jsx, Global } from '@emotion/core';
 import { globalStyles, gridSize } from '@arch-ui/theme';
 import { SkipNavContent } from '@reach/skip-nav';
