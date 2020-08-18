@@ -1,7 +1,7 @@
 const globby = require('globby');
 const path = require('path');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
-import { createItems } from '@keystonejs/server-side-graphql-client';
+import { createItem } from '@keystonejs/server-side-graphql-client';
 
 const testModules = globby.sync(`packages/**/src/**/test-fixtures.js`, {
   absolute: true,
@@ -12,7 +12,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`${adapterName} adapter`, () => {
     testModules
       .map(require)
-      .filter(({ skipCrudTest }) => !skipCrudTest)
+      .filter(
+        ({ skipCrudTest, unSupportedAdapterList = [] }) =>
+          !skipCrudTest && !unSupportedAdapterList.includes(adapterName)
+      )
       .forEach(mod => {
         const listKey = 'Test';
         const keystoneTestWrapper = (testFn = () => {}) =>
@@ -26,11 +29,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
             async ({ keystone, ...rest }) => {
               // Populate the database before running the tests
-              await createItems({
-                keystone,
-                listKey,
-                items: mod.initItems().map(x => ({ data: x })),
-              });
+              // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
+              for (const item of mod.initItems()) {
+                await createItem({
+                  keystone,
+                  listKey,
+                  item,
+                });
+              }
               return testFn({ keystone, listKey, adapterName, ...rest });
             }
           );

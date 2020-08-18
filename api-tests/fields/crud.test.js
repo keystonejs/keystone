@@ -19,7 +19,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`${adapterName} adapter`, () => {
     testModules
       .map(require)
-      .filter(({ skipCrudTest }) => !skipCrudTest)
+      .filter(
+        ({ skipCrudTest, unSupportedAdapterList = [] }) =>
+          !skipCrudTest && !unSupportedAdapterList.includes(adapterName)
+      )
       .forEach(mod => {
         const listKey = 'Test';
         const keystoneTestWrapper = (testFn = () => {}) =>
