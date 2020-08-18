@@ -22,8 +22,9 @@ const expectNoAccess = (data, errors, name) => {
 const expectNamedArray = (data, errors, name, values) => {
   expect(errors).toBe(undefined);
   expect(data[name]).toHaveLength(values.length);
-  values.forEach((value, i) => {
-    expect(data[name][i].id).toEqual(value);
+  const sortedData = data[name].map(({ id }) => id).sort();
+  values.sort().forEach((value, i) => {
+    expect(sortedData[i]).toEqual(value);
   });
 };
 
