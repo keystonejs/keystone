@@ -145,6 +145,9 @@ An alert that is full width; removes border and border radius.
 MIT © [Thinkmill](https://www.thinkmill.com.au/)
 
 [source]: https://github.com/keystonejs/keystone/tree/master/packages/arch
+
 [npm]: https://www.npmjs.com/package/@arch-ui/alert
+
 [install-npm]: https://docs.npmjs.com/getting-started/installing-node
+
 [theme]: http://npmjs.com/package/@arch-ui/theme

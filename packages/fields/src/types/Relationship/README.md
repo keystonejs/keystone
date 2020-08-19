@@ -75,6 +75,7 @@ Use the `create` nested mutation to create and append an item to a to-many
 relationship:
 
 <!-- prettier-ignore -->
+
 ```graphql
 # Replace all posts of a given User
 mutation replaceAllPosts {
@@ -100,6 +101,7 @@ Use the `connect` nested mutation to append an existing item to a to-many
 relationship:
 
 <!-- prettier-ignore -->
+
 ```graphql
 # Replace the company of a given User
 mutation replaceAllPosts {
@@ -126,6 +128,7 @@ the value of a to-single relationship (it's not necessary to use `disconnectAll`
 as is the case for [to-many relationships](#overriding-a-to-many-relationship)):
 
 <!-- prettier-ignore -->
+
 ```graphql
 # Replace the company of a given User
 mutation replaceAllPosts {
@@ -152,6 +155,7 @@ To completely replace the related items in a to-many list, you can perform a
 mutation (thanks to the [order of execution](#order-of-execution)):
 
 <!-- prettier-ignore -->
+
 ```graphql
 # Replace all posts related to a given User
 mutation replaceAllPosts {
