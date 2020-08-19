@@ -20,7 +20,7 @@
     "fresh": "yarn clean && yarn",
     "clean": "rimraf \"**/cypress/{screenshots,videos,reports}\" \"**/node_modules\" \"**/yarn-error.log\" \"**/out.log\" \"**/.DS_Store\" \"**/website/.cache\" \"**/dist\"",
     "lint:eslint": "eslint . --ext ts,tsx,js",
-    "lint:prettier": "prettier --list-different \"**/*.{js,json,ts,tsx,md}\"",
+    "lint:prettier": "prettier --list-different \"**/*.{js,json,ts,tsx}\"",
     "lint:markdown": "remark . --frail --quiet",
     "lint:types": "tsc",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:markdown && yarn lint:types",
