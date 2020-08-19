@@ -104,11 +104,11 @@ export class KnexMongoIdInterface extends KnexFieldAdapter {
       }
 
       if (item[this.path]) {
-        if (typeof item[this.path] === 'string') {
+        if (typeof item[this.path] === 'string' && validator(item[this.path])) {
           item[this.path] = normaliseValue(item[this.path]);
         } else {
           // Should have been caught by the validator??
-          throw `Invalid MongoID value given for '${this.path}'`;
+          throw new Error(`Invalid MongoID value given for '${this.path}'`);
         }
       } else {
         item[this.path] = null;
