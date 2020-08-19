@@ -157,6 +157,7 @@ The result is passed to [the next function in the execution order](/docs/guides/
 | `originalInput` | `Object`                | The data received by the GraphQL mutation                                                                                    |
 | `resolvedData`  | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
 | `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `listKey`       | `String`                | The key for the list being operated on                                                                                       |
 
 #### Usage
 
@@ -169,6 +170,7 @@ const resolveInput = ({
   originalInput,
   resolvedData,
   context,
+  listKey,
 }) => {
   // Input resolution logic. Object returned is used in place of `resolvedData`.
   return resolvedData;
@@ -195,6 +197,7 @@ Return values are ignored.
 | `resolvedData`            | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
 | `context`                 | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
 | `addFieldValidationError` | `Function`              | Used to set a field validation error; accepts a `String`                                                                     |
+| `listKey`                 | `String`                | The key for the list being operated on                                                                                       |
 
 #### Usage
 
@@ -208,6 +211,7 @@ const validateInput = ({
   resolvedData,
   context,
   addFieldValidationError,
+  listKey,
 }) => {
   // Throw error objects or register validation errors with addFieldValidationError(<String>)
   // Return values ignored
@@ -233,6 +237,7 @@ Return values are ignored.
 | `originalInput` | `Object`                | The data received by the GraphQL mutation                                                                                    |
 | `resolvedData`  | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
 | `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `listKey`       | `String`                | The key for the list being operated on                                                                                       |
 
 #### Usage
 
@@ -245,6 +250,7 @@ const beforeChange = ({
   originalInput,
   resolvedData,
   context,
+  listKey,
 }) => {
   // Perform side effects
   // Return values ignored
@@ -274,6 +280,7 @@ Return values are ignored.
 | `originalInput` | `Object`                | The data received by the GraphQL mutation                                                                                    |
 | `updatedItem`   | `Object`                | The new/currently stored item                                                                                                |
 | `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `listKey`       | `String`                | The key for the list being operated on                                                                                       |
 
 #### Usage
 
@@ -286,6 +293,7 @@ const afterChange = ({
   originalInput,
   updatedItem,
   context,
+  listKey,
 }) => {
   // Perform side effects
   // Return values ignored
@@ -309,6 +317,7 @@ Should throw or register errors with `addFieldValidationError(<String>)` if the 
 | `existingItem`            | `Object`         | The current stored item                                                                                                      |
 | `context`                 | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
 | `addFieldValidationError` | `Function`       | Used to set a field validation error; accepts a `String`                                                                     |
+| `listKey`                 | `String`         | The key for the list being operated on                                                                                       |
 
 #### Usage
 
@@ -320,6 +329,7 @@ const validateDelete = ({
   existingItem,
   context,
   addFieldValidationError,
+  listKey,
 }) => {
   // Throw error objects or register validation errors with addFieldValidationError(<String>)
   // Return values ignored
@@ -343,6 +353,7 @@ Return values are ignored.
 | `operation`    | `String`         | The operation being performed (`delete` in this case)                                                                        |
 | `existingItem` | `Object`         | The current stored item                                                                                                      |
 | `context`      | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `listKey`      | `String`         | The key for the list being operated on                                                                                       |
 
 #### Usage
 
@@ -353,6 +364,7 @@ const beforeDelete = ({
   operation,
   existingItem,
   context,
+  listKey,
 }) => {
   // Perform side effects
   // Return values ignored
@@ -378,6 +390,7 @@ Return values are ignored.
 | `operation`    | `String`         | The operation being performed (`delete` in this case)                                                                        |
 | `existingItem` | `Object`         | The previously stored item, now deleted                                                                                      |
 | `context`      | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
+| `listKey`      | `String`         | The key for the list being operated on                                                                                       |
 
 #### Usage
 
@@ -388,6 +401,7 @@ const afterDelete = ({
   operation,
   existingItem,
   context,
+  listKey,
 }) => {
   // Perform side effects
   // Return values ignored
@@ -412,6 +426,7 @@ The result is passed to [the next function in the execution order](/docs/guides/
 | `operation`     | `String`         | The operation being performed (`authenticate` in this case)                                                                   |
 | `originalInput` | `Object`         | The data received by the GraphQL mutation                                                                                     |
 | `context`       | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
+| `listKey`       | `String`         | The key for the list being operated on                                                                                        |
 
 #### Usage
 
@@ -422,6 +437,7 @@ const resolveAuthInput = ({
   operation,
   originalInput,
   context,
+  listKey,
 }) => {
   // Input resolution logic
   // Object returned is used in place of resolvedData
@@ -448,6 +464,7 @@ Return values are ignored.
 | `resolvedData`       | `Object`         | The data received by the GraphQL mutation or returned by `resolveAuthInput`, if defined                                       |
 | `context`            | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
 | `addValidationError` | `Function`       | Used to set a validation error; accepts a message `String`                                                                    |
+| `listKey`            | `String`         | The key for the list being operated on                                                                                        |
 
 #### Usage
 
@@ -460,6 +477,7 @@ const validateAuthInput = ({
   resolvedData,
   context,
   addFieldValidationError,
+  listKey,
 }) => {
   // Throw error objects or register validation errors with addValidationError(<String>)
   // Return values ignored
@@ -484,6 +502,7 @@ Return values are ignored.
 | `originalInput` | `Object`         | The data received by the GraphQL mutation                                                                                     |
 | `resolvedData`  | `Object`         | The data received by the GraphQL mutation or returned by `resolveAuthInput`, if defined                                       |
 | `context`       | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
+| `listKey`       | `String`         | The key for the list being operated on                                                                                        |
 
 #### Usage
 
@@ -495,6 +514,7 @@ const beforeAuth = ({
   originalInput,
   resolvedData,
   context,
+  listKey,
 }) => {
   // Perform side effects
   // Return values ignored
@@ -525,6 +545,7 @@ Return values are ignored.
 | `originalInput` | `Object`         | The data received by the GraphQL mutation                                                                                     |
 | `resolvedData`  | `Object`         | The data received by the GraphQL mutation or returned by `resolveAuthInput`, if defined                                       |
 | `context`       | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
+| `listKey`       | `String`         | The key for the list being operated on                                                                                        |
 
 #### Usage
 
@@ -540,6 +561,7 @@ const afterAuth = ({
   originalInput,
   resolvedData,
   context,
+  listKey,
 }) => {
   // Perform side effects
   // Return values ignored
@@ -562,6 +584,7 @@ Return values are ignored.
 | :---------- | :--------------- | :---------------------------------------------------------------------------------------------------------------------------- |
 | `operation` | `String`         | The operation being performed (`authenticate` in this case)                                                                   |
 | `context`   | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
+| `listKey`   | `String`         | The key for the list being operated on                                                                                        |
 
 #### Usage
 
@@ -571,6 +594,7 @@ Return values are ignored.
 const beforeUnauth = ({
   operation,
   context,
+  listKey,
 }) => {
   // Perform side effects
   // Return values ignored
@@ -598,6 +622,7 @@ Return values are ignored.
 | `listKey`   | `String`         | The list key of the unauthenticated user (if there was one)                                                                   |
 | `itemid`    | `String`         | The item ID of the unauthenticated user (if there was one)                                                                    |
 | `context`   | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/essentials/data.html#context) for this request |
+| `listKey`   | `String`         | The key for the list being operated on                                                                                        |
 
 #### Usage
 
@@ -613,6 +638,7 @@ const afterAuth = ({
   originalInput,
   resolvedData,
   context,
+  listKey,
 }) => {
   // Perform side effects
   // Return values ignored
