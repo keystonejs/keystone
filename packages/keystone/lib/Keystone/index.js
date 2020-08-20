@@ -27,6 +27,9 @@ const { DEFAULT_DIST_DIR } = require('../../constants');
 const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
 const { formatError } = require('./format-error');
 
+// composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
+const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
+
 module.exports = class Keystone {
   constructor({
     defaultAccess,
@@ -194,7 +197,7 @@ module.exports = class Keystone {
     };
   }
 
-  createContext({ schemaName = 'public', authentication = {}, skipAccessControl = false }) {
+  createContext({ schemaName = 'public', authentication = {}, skipAccessControl = false } = {}) {
     const context = {
       schemaName,
       authedItem: authentication.item,
@@ -237,7 +240,9 @@ module.exports = class Keystone {
   }
 
   createAuthStrategy(options) {
-    const { type: StrategyType, list: listKey, config, hooks } = options;
+    const { type: StrategyType, list: listKey, config, hooks } = composePlugins(
+      options.plugins || []
+    )(options, { keystone: this });
     const { authType } = StrategyType;
     if (!this.auth[listKey]) {
       this.auth[listKey] = {};
@@ -262,9 +267,6 @@ module.exports = class Keystone {
     if (isReservedName) {
       throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
     }
-
-    // composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
-    const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
 
     const list = new List(
       key,

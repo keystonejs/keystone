@@ -27,6 +27,7 @@
   "dependencies": {
     "@keystonejs/auth-password": "^5.1.13",
     "@keystonejs/fields": "^16.1.0",
+    "@keystonejs/list-plugins": "^7.0.5",
     "@keystonejs/test-utils": "^8.0.0",
     "@keystonejs/utils": "^5.4.2",
     "date-fns": "^2.14.0",
