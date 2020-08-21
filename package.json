@@ -195,7 +195,7 @@
     ]
   },
   "resolutions": {
-    "graphql-upload": "^10.0.0"
+    "graphql-upload": "^11.0.0"
   },
   "engines": {
     "node": ">=10.0.0"

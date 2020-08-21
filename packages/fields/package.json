@@ -65,7 +65,11 @@
     "react-toast-notifications": "^2.4.0"
   },
   "devDependencies": {
-    "@keystonejs/test-utils": "*"
+    "@keystonejs/app-static": "*",
+    "@keystonejs/file-adapters": "*",
+    "@keystonejs/test-utils": "*",
+    "globby": "^11.0.1",
+    "mime": "^2.4.6"
   },
   "preconstruct": {
     "entrypoints": [

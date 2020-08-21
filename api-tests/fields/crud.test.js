@@ -46,7 +46,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           );
 
         describe(`${mod.name} - CRUD operations`, () => {
-          const { fieldName, exampleValue, exampleValue2, subfieldName } = mod;
+          afterAll(async () => {
+            if (mod.afterAll) {
+              await mod.afterAll();
+            }
+          });
+          const {
+            fieldName,
+            exampleValue,
+            exampleValue2,
+            subfieldName,
+            createReturnedValue,
+            updateReturnedValue,
+          } = mod;
 
           // Some  field types can have subfields
           const returnFields = subfieldName
@@ -80,7 +92,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   });
                   expect(data).not.toBe(null);
                   expect(subfieldName ? data[fieldName][subfieldName] : data[fieldName]).toBe(
-                    exampleValue
+                    createReturnedValue ? createReturnedValue : exampleValue
                   );
                 })
               )
@@ -124,7 +136,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     });
                     expect(data).not.toBe(null);
                     expect(subfieldName ? data[fieldName][subfieldName] : data[fieldName]).toBe(
-                      exampleValue2
+                      updateReturnedValue ? updateReturnedValue : exampleValue2
                     );
                   })
                 )
