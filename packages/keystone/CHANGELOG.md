@@ -69,7 +69,7 @@
   const { createItems } = require('@keystonejs/server-side-graphql-client');
   createItems({
     keystone,
-    listName: 'User',
+    listKey: 'User',
     items: [{ data: { name: 'Ticiana' } }, {data:  { name: 'Lauren' } }]
   })
   ```
