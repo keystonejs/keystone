@@ -1,5 +1,14 @@
 # @keystonejs/app-admin-ui
 
+## 7.3.2
+
+### Patch Changes
+
+- [`fba90ac5d`](https://github.com/keystonejs/keystone/commit/fba90ac5db7328e952c44cb7c0bb8db76dd954b8) [#3408](https://github.com/keystonejs/keystone/pull/3408) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Support resolving and compiling TypeScript files
+
+- Updated dependencies [[`d38c9174f`](https://github.com/keystonejs/keystone/commit/d38c9174f8146ad6e268be87cf5d54d5074bc593), [`e8b2e4772`](https://github.com/keystonejs/keystone/commit/e8b2e477206acffb143f19fb14be1e3b4cd0eb91)]:
+  - @keystonejs/fields@17.0.0
+
 ## 7.3.1
 
 ### Patch Changes

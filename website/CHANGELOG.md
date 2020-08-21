@@ -1,5 +1,11 @@
 # @keystonejs/website
 
+## 5.3.7
+
+### Patch Changes
+
+- [`bed2d2d8a`](https://github.com/keystonejs/keystone/commit/bed2d2d8a1db821afc2581a9faed673a9f442423) [#3424](https://github.com/keystonejs/keystone/pull/3424) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a redirect from v5.keystonejs.com to just keystonejs.com
+
 ## 5.3.6
 
 ### Patch Changes

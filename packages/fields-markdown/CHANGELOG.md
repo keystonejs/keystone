@@ -1,5 +1,14 @@
 # @keystonejs/fields-markdown
 
+## 5.2.5
+
+### Patch Changes
+
+- [`4aad74c53`](https://github.com/keystonejs/keystone/commit/4aad74c531fe7ce0de1c31763e50a47bd06766e9) [#3410](https://github.com/keystonejs/keystone/pull/3410) Thanks [@singhArmani](https://github.com/singhArmani)! - Added filter and CRUD tests for `Markdown` field type.
+
+- Updated dependencies [[`d38c9174f`](https://github.com/keystonejs/keystone/commit/d38c9174f8146ad6e268be87cf5d54d5074bc593), [`e8b2e4772`](https://github.com/keystonejs/keystone/commit/e8b2e477206acffb143f19fb14be1e3b4cd0eb91)]:
+  - @keystonejs/fields@17.0.0
+
 ## 5.2.4
 
 ### Patch Changes

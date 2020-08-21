@@ -1,5 +1,21 @@
 # @keystonejs/fields
 
+## 17.0.0
+
+### Major Changes
+
+- [`d38c9174f`](https://github.com/keystonejs/keystone/commit/d38c9174f8146ad6e268be87cf5d54d5074bc593) [#3394](https://github.com/keystonejs/keystone/pull/3394) Thanks [@timleslie](https://github.com/timleslie)! - Converted `Field` getters `.gqlUpdateInputFields` and `.gqlCreateInputFields` into methods, `.gqlUpdateInputFields({ schemaName })` and `...gqlCreateInputFields({ schemaName })`.
+
+### Patch Changes
+
+- [`e8b2e4772`](https://github.com/keystonejs/keystone/commit/e8b2e477206acffb143f19fb14be1e3b4cd0eb91) [#3409](https://github.com/keystonejs/keystone/pull/3409) Thanks [@timleslie](https://github.com/timleslie)! - Fixed incorrectly generated graphQL for certain access control configurations #3389.
+
+- Updated dependencies [[`fba90ac5d`](https://github.com/keystonejs/keystone/commit/fba90ac5db7328e952c44cb7c0bb8db76dd954b8)]:
+  - @keystonejs/app-admin-ui@7.3.2
+  - @keystonejs/adapter-knex@11.0.2
+  - @keystonejs/adapter-mongoose@9.0.3
+  - @keystonejs/test-utils@8.0.1
+
 ## 16.1.0
 
 ### Minor Changes

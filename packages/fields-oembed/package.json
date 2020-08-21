@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/fields-oembed",
   "description": "KeystoneJS oEmbed Field Type",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-oembed",
@@ -17,10 +17,10 @@
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.28",
     "@iframely/embed.js": "^1.1.1",
-    "@keystonejs/adapter-knex": "^11.0.0",
-    "@keystonejs/adapter-mongoose": "^9.0.0",
-    "@keystonejs/fields": "^16.0.0",
-    "@keystonejs/fields-content": "^8.0.0",
+    "@keystonejs/adapter-knex": "^11.0.2",
+    "@keystonejs/adapter-mongoose": "^9.0.3",
+    "@keystonejs/fields": "^17.0.0",
+    "@keystonejs/fields-content": "^8.0.1",
     "node-fetch": "^2.3.0",
     "pluralize": "^7.0.0",
     "query-string": "^6.8.1"
