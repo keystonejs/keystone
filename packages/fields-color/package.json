@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/fields-color",
   "description": "KeystoneJS Color Field Type",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -13,7 +13,7 @@
     "@arch-ui/popout": "^0.0.19",
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.28",
-    "@keystonejs/fields": "^16.0.0",
+    "@keystonejs/fields": "^17.0.0",
     "react-color": "^2.18.1"
   },
   "peerDependencies": {
