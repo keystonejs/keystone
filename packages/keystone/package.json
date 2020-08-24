@@ -18,7 +18,7 @@
     "@keystonejs/session": "^8.1.0",
     "@keystonejs/utils": "^5.4.2",
     "apollo-errors": "^1.9.0",
-    "apollo-server-express": "^2.16.0",
+    "apollo-server-express": "^2.16.1",
     "arg": "^4.1.1",
     "chalk": "^2.4.2",
     "ci-info": "^2.0.0",
