@@ -14,5 +14,10 @@
     "@babel/runtime": "^7.8.4",
     "@keystonejs/fields": "^17.0.0"
   },
+  "devDependencies": {
+    "@keystonejs/auth-password": "*",
+    "@keystonejs/server-side-graphql-client": "*",
+    "@keystonejs/test-utils": "*"
+  },
   "module": "dist/fields-authed-relationship.esm.js"
 }
