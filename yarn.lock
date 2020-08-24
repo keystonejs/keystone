@@ -323,7 +323,7 @@
     semver "^5.4.1"
     source-map "^0.5.0"
 
-"@babel/core@^7.0.0", "@babel/core@^7.1.0", "@babel/core@^7.6.4", "@babel/core@^7.7.5", "@babel/core@^7.9.0":
+"@babel/core@^7.0.0", "@babel/core@^7.1.0", "@babel/core@^7.7.5", "@babel/core@^7.9.0":
   version "7.9.6"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.9.6.tgz#d9aa1f580abf3b2286ef40b6904d390904c63376"
   integrity sha512-nD3deLvbsApbHAHttzIssYqgb883yU/d9roe4RZymBCDaZryMJDbptVpEpeQuRh4BJ+SYI8le9YGxKvFEvl1Wg==
@@ -672,7 +672,7 @@
   dependencies:
     "@babel/types" "^7.8.3"
 
-"@babel/helper-module-transforms@^7.11.0":
+"@babel/helper-module-transforms@^7.10.4", "@babel/helper-module-transforms@^7.11.0":
   version "7.11.0"
   resolved "https://registry.yarnpkg.com/@babel/helper-module-transforms/-/helper-module-transforms-7.11.0.tgz#b16f250229e47211abdd84b34b64737c2ab2d359"
   integrity sha512-02EVu8COMuTRO1TAzdMtpBPbe6aQ1w/8fePD2YgQmxZU4gpNWaL9gK3Jp7dxlkUlUCJOTaSeA+Hrm1BRQwqIhg==
@@ -1428,6 +1428,16 @@
     "@babel/helper-plugin-utils" "^7.8.3"
     "@babel/helper-simple-access" "^7.8.3"
     babel-plugin-dynamic-import-node "^2.3.0"
+
+"@babel/plugin-transform-modules-commonjs@^7.7.5":
+  version "7.10.4"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-modules-commonjs/-/plugin-transform-modules-commonjs-7.10.4.tgz#66667c3eeda1ebf7896d41f1f16b17105a2fbca0"
+  integrity sha512-Xj7Uq5o80HDLlW64rVfDBhao6OX89HKUmb+9vWYaLXBZOma4gA6tw4Ni1O5qVDoZWUV0fxMYA0aYzOawz0l+1w==
+  dependencies:
+    "@babel/helper-module-transforms" "^7.10.4"
+    "@babel/helper-plugin-utils" "^7.10.4"
+    "@babel/helper-simple-access" "^7.10.4"
+    babel-plugin-dynamic-import-node "^2.3.3"
 
 "@babel/plugin-transform-modules-systemjs@^7.5.0", "@babel/plugin-transform-modules-systemjs@^7.8.3":
   version "7.8.3"
@@ -3512,21 +3522,20 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.3.3.tgz#8731722aeb7330e8fd9eb5d424be6b98dea7d6da"
   integrity sha512-yEvVC8RfhRPkD9TUn7cFcLcgoJePgZRAOR7T21rcRY5I8tpuhzeWfGa7We7tB14fe9R7wENdqUABcMdwD4SQLw==
 
-"@preconstruct/cli@1.1.20":
-  version "1.1.20"
-  resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-1.1.20.tgz#b301419a112a877e6ceb875bc48b8e1f5a5215e5"
-  integrity sha512-KuP3TjFv0awIXCrLDqCTI5X5PhJLgGY+Hc8qdQKuElFpGWMaAWTFGsmyLcKKzc1CQ2lPYr8CH0i6gXItVjisKg==
+"@preconstruct/cli@1.1.25":
+  version "1.1.25"
+  resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-1.1.25.tgz#b41ea7e5d374175af1ec76bb9fa46dcd9fb9a054"
+  integrity sha512-/QrRuFrz1Y0I0sSoemuajuIdxEFv+f+wfTgOEeg7/ZkolGsYX5KGNMV4f+FOt+eU3wwJyKv9TJQVEgitQFwNbA==
   dependencies:
     "@babel/code-frame" "^7.5.5"
     "@babel/core" "^7.7.7"
     "@babel/runtime" "^7.7.7"
-    "@preconstruct/hook" "^0.1.0"
+    "@preconstruct/hook" "^0.3.0"
     "@rollup/plugin-alias" "^3.0.1"
     "@rollup/plugin-commonjs" "^11.0.2"
     "@rollup/plugin-json" "^4.0.2"
     "@rollup/plugin-node-resolve" "^7.1.1"
     "@rollup/plugin-replace" "^2.3.1"
-    "@rollup/pluginutils" "^3.0.8"
     builtin-modules "^3.1.0"
     chalk "^2.4.2"
     dataloader "^1.4.0"
@@ -3553,15 +3562,15 @@
     v8-compile-cache "^2.1.0"
     xxhash-wasm "^0.3.1"
 
-"@preconstruct/hook@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@preconstruct/hook/-/hook-0.1.0.tgz#a65b9bbbd03528f203589124fdf9ffc32841bb0b"
-  integrity sha512-d9wGFZmxZF/SH9xFhUy9bYZxcg+JQamc0xQw6IFgbw6BMwqQNoB06mDoY/1o+s+GhDPuWLv+7jRyvWkbsib9fQ==
+"@preconstruct/hook@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@preconstruct/hook/-/hook-0.3.0.tgz#d8cee47aa99ab3ec86a452724d3dc0f6a52a4551"
+  integrity sha512-IKgThZklIRdkWmU8DBXAG5n04VqD/m/Xhdr+Pz+eOBCTimjtwQlMDrGPmAjKJIr45eAsJdNakabLdz4o/ZBIpg==
   dependencies:
-    "@babel/core" "^7.6.4"
-    "@babel/plugin-transform-modules-commonjs" "^7.6.0"
+    "@babel/core" "^7.7.7"
+    "@babel/plugin-transform-modules-commonjs" "^7.7.5"
     pirates "^4.0.1"
-    source-map-support "^0.5.13"
+    source-map-support "^0.5.16"
 
 "@primer/octicons-react@^10.0.0":
   version "10.0.0"
@@ -23323,7 +23332,7 @@ source-map-resolve@^0.5.0, source-map-resolve@^0.5.2:
     source-map-url "^0.4.0"
     urix "^0.1.0"
 
-source-map-support@^0.5.13, source-map-support@^0.5.16:
+source-map-support@^0.5.16:
   version "0.5.16"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.16.tgz#0ae069e7fe3ba7538c64c98515e35339eac5a042"
   integrity sha512-efyLRJDr68D9hBBNIPWFjhpFzURh+KJykQwvMyW5UiZzYwoF6l4YMMDIJJEyFWxWCqfyxLzz6tSfUFR+kXXsVQ==
