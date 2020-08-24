@@ -5,8 +5,8 @@ import { Wysiwyg } from './';
 
 export const name = 'Wysiwyg';
 export { Wysiwyg as type };
-export const exampleValue = '"foo"';
-export const exampleValue2 = '"<p><strong>This is BOLD</strong></p>"';
+export const exampleValue = 'foo';
+export const exampleValue2 = '<p><strong>This is BOLD</strong></p>';
 export const supportsUnique = true;
 
 export const getTestFields = () => {

@@ -32,19 +32,29 @@ describe('Test isUnique flag for all field types', () => {
               keystoneTestWrapper(async ({ keystone }) => {
                 const { errors } = await keystone.executeGraphQL({
                   query: `
-                  mutation {
-                    createTest(data: { testField: ${mod.exampleValue} }) { id }
+                  mutation($data: TestCreateInput) {
+                    createTest(data: $data) { id }
                   }
                 `,
+                  variables: {
+                    data: {
+                      testField: mod.exampleValue,
+                    },
+                  },
                 });
                 expect(errors).toBe(undefined);
 
                 const { errors: errors2 } = await keystone.executeGraphQL({
                   query: `
-                  mutation {
-                    createTest(data: { testField: ${mod.exampleValue} }) { id }
+                  mutation($data: TestCreateInput) {
+                    createTest(data: $data) { id }
                   }
                 `,
+                  variables: {
+                    data: {
+                      testField: mod.exampleValue,
+                    },
+                  },
                 });
 
                 expect(errors2).toHaveProperty('0.message');
@@ -59,11 +69,19 @@ describe('Test isUnique flag for all field types', () => {
               keystoneTestWrapper(async ({ keystone }) => {
                 const { errors } = await keystone.executeGraphQL({
                   query: `
-                  mutation {
-                    foo: createTest(data: { testField: ${mod.exampleValue} }) { id }
-                    bar: createTest(data: { testField: ${mod.exampleValue} }) { id }
+                  mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
+                    foo: createTest(data: $fooData) { id }
+                    bar: createTest(data: $barData) { id }
                   }
                 `,
+                  variables: {
+                    fooData: {
+                      testField: mod.exampleValue,
+                    },
+                    barData: {
+                      testField: mod.exampleValue,
+                    },
+                  },
                 });
 
                 expect(errors).toHaveProperty('0.message');
@@ -78,11 +96,21 @@ describe('Test isUnique flag for all field types', () => {
               keystoneTestWrapper(async ({ keystone }) => {
                 const { data, errors } = await keystone.executeGraphQL({
                   query: `
-                  mutation {
-                    foo: createTest(data: { testField: ${mod.exampleValue}, name: "jess" }) { id }
-                    bar: createTest(data: { testField: ${mod.exampleValue2}, name: "jess" }) { id }
+                  mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
+                    foo: createTest(data: $fooData) { id }
+                    bar: createTest(data: $barData) { id }
                   }
                 `,
+                  variables: {
+                    fooData: {
+                      testField: mod.exampleValue,
+                      name: 'jess',
+                    },
+                    barData: {
+                      testField: mod.exampleValue2,
+                      name: 'jess',
+                    },
+                  },
                 });
 
                 expect(errors).toBe(undefined);
