@@ -5,8 +5,8 @@ const fieldType = 'Text';
 export { fieldType as name };
 
 export { Text as type };
-export const exampleValue = '"foo"';
-export const exampleValue2 = '"bar"';
+export const exampleValue = 'foo';
+export const exampleValue2 = 'bar';
 export const supportsUnique = true;
 
 export const getTestFields = () => {

@@ -53,9 +53,15 @@ describe('Test isRequired flag for all field types', () => {
               keystoneTestWrapper(async ({ keystone }) => {
                 const { data: data0, errors: errors0 } = await keystone.executeGraphQL({
                   query: `
-                  mutation {
-                    createTest(data: { name: "test entry", testField: ${mod.exampleValue} } ) { id }
+                  mutation($data: TestCreateInput) {
+                    createTest(data: $data ) { id }
                   }`,
+                  variables: {
+                    data: {
+                      name: 'test entry',
+                      testField: mod.exampleValue,
+                    },
+                  },
                 });
                 expect(errors0).toBe(undefined);
                 const { data, errors } = await keystone.executeGraphQL({
@@ -77,9 +83,15 @@ describe('Test isRequired flag for all field types', () => {
               keystoneTestWrapper(async ({ keystone }) => {
                 const { data: data0, errors: errors0 } = await keystone.executeGraphQL({
                   query: `
-                  mutation {
-                    createTest(data: { name: "test entry", testField: ${mod.exampleValue} } ) { id }
+                  mutation($data: TestCreateInput) {
+                    createTest(data: $data ) { id }
                   }`,
+                  variables: {
+                    data: {
+                      name: 'test entry',
+                      testField: mod.exampleValue,
+                    },
+                  },
                 });
                 expect(errors0).toBe(undefined);
                 const { data, errors } = await keystone.executeGraphQL({
