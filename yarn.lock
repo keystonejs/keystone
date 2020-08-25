@@ -2155,13 +2155,13 @@
     "@changesets/types" "^0.4.0"
     semver "^5.4.1"
 
-"@changesets/changelog-github@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@changesets/changelog-github/-/changelog-github-0.2.1.tgz#59b723958c6293618de278f48ed15af740d9ed2a"
-  integrity sha512-9rtct8gcbORJH7fmNhSOCgOyETk8JEoXFIC8PnFrdpQPuweknOORMKrsItfUnuYqRuSf0P13P1HCXgZFqBCPmg==
+"@changesets/changelog-github@^0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@changesets/changelog-github/-/changelog-github-0.2.7.tgz#11ad3e89276cf867fabeb09fd36774a67347ac89"
+  integrity sha512-bWK8IADPYsiSiyORNpVLbmdo7J7A4LktmzUowtIivslP03UW5f/YBDzGub7N0+BVdVmZrqvyWzAIKmpGVkEICg==
   dependencies:
-    "@changesets/get-github-info" "^0.4.1"
-    "@changesets/types" "^0.4.0"
+    "@changesets/get-github-info" "^0.4.4"
+    "@changesets/types" "^3.0.0"
     dotenv "^8.1.0"
 
 "@changesets/cli@^2.5.1":
@@ -2215,10 +2215,10 @@
   dependencies:
     extendable-error "^0.1.5"
 
-"@changesets/get-github-info@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@changesets/get-github-info/-/get-github-info-0.4.1.tgz#359562fb9ad1ba38b90f8d097337c8e36372d96c"
-  integrity sha512-UtBaB7rS2mvEvvsJCpNsR86wLd5dPaupXBCHDdcYY1kDATpLBrvCNj+Qq8HVDQeaYb4BnTOVl7sGjtnzGEMaxQ==
+"@changesets/get-github-info@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@changesets/get-github-info/-/get-github-info-0.4.4.tgz#a2911e93aa0809506cd8806f365180cf8833eb6f"
+  integrity sha512-WoVdRBQXLvJVg3jsMc0+aB8WAFzSGOG45HSo2ep46ixq5lBjM2D51MbgtSYHRGFGvYuAUu6kAfnVmoZYCZFsKQ==
   dependencies:
     dataloader "^1.4.0"
     node-fetch "^2.5.0"
@@ -2297,6 +2297,11 @@
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@changesets/types/-/types-0.4.0.tgz#3413badb2c3904357a36268cb9f8c7e0afc3a804"
   integrity sha512-TclHHKDVYQ8rJGZgVeWiF7c91yWzTTWdPagltgutelGu/Psup5PQlUq6svx7S8suj+jXcaE34yEEsfIvzXXB2Q==
+
+"@changesets/types@^3.0.0":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@changesets/types/-/types-3.1.1.tgz#447481380c42044a8788e46c0dbdf592b338b62f"
+  integrity sha512-XWGEGWXhM92zvBWiQt2sOwhjTt8eCQbrsRbqkv4WYwW3Zsl4qPpvhHsNt845S42dJXrxgjWvId+jxFQocCayNQ==
 
 "@cnakazawa/watch@^1.0.3":
   version "1.0.3"
