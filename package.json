@@ -117,7 +117,7 @@
     "terminal-link-cli": "^2.0.0",
     "terser": "^3.14.1",
     "testcheck": "^1.0.0-rc.2",
-    "tinymce": "^5.2.2",
+    "tinymce": "^5.4.1",
     "tmp": "^0.2.1",
     "to-pascal-case": "^1.0.0",
     "ts-morph": "^7.3.0",
