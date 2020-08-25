@@ -56,6 +56,7 @@ jobs:
         env:
           CI_NODE_TOTAL: 5
           CI_NODE_INDEX: ${{ matrix.index }}
+          IFRAMELY_API_KEY: ${{ secrets.IFRAMELY_API_KEY }}
 
   linting:
     name: Linting

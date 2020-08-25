@@ -43,14 +43,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           );
 
         describe(`${mod.name} - CRUD operations`, () => {
-          const { fieldName, exampleValue, exampleValue2 } = mod;
-          const returnFields = `id name ${fieldName}`;
+          const { fieldName, exampleValue, exampleValue2, subfieldName } = mod;
+
+          // Some  field types can have subfields
+          const returnFields = subfieldName
+            ? `id name ${fieldName} { ${subfieldName} }`
+            : `id name ${fieldName}`;
+
           const withHelpers = wrappedFn => {
             return async ({ keystone, listKey }) => {
               const items = await getItems({
                 keystone,
                 listKey,
                 returnFields,
+                sortBy: 'name_ASC',
               });
               return wrappedFn({ keystone, listKey, items });
             };
@@ -70,7 +76,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     returnFields,
                   });
                   expect(data).not.toBe(null);
-                  expect(data[fieldName]).toBe(exampleValue);
+                  expect(subfieldName ? data[fieldName][subfieldName] : data[fieldName]).toBe(
+                    exampleValue
+                  );
                 })
               )
             );
@@ -88,7 +96,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     returnFields,
                   });
                   expect(data).not.toBe(null);
-                  expect(data[fieldName]).toBe(items[0][fieldName]);
+                  expect(subfieldName ? data[fieldName][subfieldName] : data[fieldName]).toBe(
+                    subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
+                  );
                 })
               )
             );
@@ -110,7 +120,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       returnFields,
                     });
                     expect(data).not.toBe(null);
-                    expect(data[fieldName]).toBe(exampleValue2);
+                    expect(subfieldName ? data[fieldName][subfieldName] : data[fieldName]).toBe(
+                      exampleValue2
+                    );
                   })
                 )
               );
@@ -149,7 +161,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     });
                     expect(data).not.toBe(null);
                     expect(data.name).toBe('Updated value');
-                    expect(data[fieldName]).toBe(items[0][fieldName]);
+                    expect(subfieldName ? data[fieldName][subfieldName] : data[fieldName]).toBe(
+                      subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
+                    );
                   })
                 )
               );
@@ -169,7 +183,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   });
                   expect(data).not.toBe(null);
                   expect(data.name).toBe(items[0].name);
-                  expect(data[fieldName]).toBe(items[0][fieldName]);
+                  expect(subfieldName ? data[fieldName][subfieldName] : data[fieldName]).toBe(
+                    subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
+                  );
 
                   const allItems = await getItems({
                     keystone,
