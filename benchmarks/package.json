@@ -22,7 +22,6 @@
     "@keystonejs/server-side-graphql-client": "^1.1.1",
     "@keystonejs/session": "^8.1.0",
     "@keystonejs/test-utils": "^8.0.1",
-    "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
     "supertest-light": "^1.0.3",
     "testcheck": "^1.0.0-rc.2"

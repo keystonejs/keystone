@@ -17,7 +17,6 @@
     "@keystonejs/keystone": "*",
     "@keystonejs/server-side-graphql-client": "*",
     "@keystonejs/session": "*",
-    "body-parser": "^1.18.2",
     "cookie-signature": "^1.1.0",
     "globby": "^11.0.0",
     "superagent": "^5.3.1",
