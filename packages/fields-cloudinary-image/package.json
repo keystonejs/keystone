@@ -42,5 +42,13 @@
       "views/*.js",
       "views/blocks/single-image.js"
     ]
+  },
+  "devDependencies": {
+    "@keystonejs/file-adapters": "*",
+    "@keystonejs/server-side-graphql-client": "*",
+    "cloudinary": "^1.22.0",
+    "dotenv": "^8.2.0",
+    "globby": "^11.0.1",
+    "mime": "^2.4.6"
   }
 }
