@@ -30,6 +30,8 @@
     "react": "^16.13.1"
   },
   "devDependencies": {
+    "@keystonejs/server-side-graphql-client": "*",
+    "dotenv": "^8.2.0",
     "react": "^16.13.1"
   },
   "main": "dist/fields-unsplash.cjs.js",
