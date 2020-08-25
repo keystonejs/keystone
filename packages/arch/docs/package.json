@@ -26,7 +26,7 @@
     "@arch-ui/typography": "^0.0.17",
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
-    "@reach/router": "^1.3.3",
+    "@reach/router": "^1.3.4",
     "clipboard-copy": "^3.0.0",
     "gatsby": "^2.13.25",
     "react": "^16.13.1",
