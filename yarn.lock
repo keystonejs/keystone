@@ -5764,10 +5764,10 @@ apollo-utilities@^1.3.4:
     ts-invariant "^0.4.0"
     tslib "^1.10.0"
 
-apply-ref@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/apply-ref/-/apply-ref-0.2.0.tgz#774f6294ad8c3d4f92d4c589bc6419246372cdc7"
-  integrity sha512-9TpCACf0l3phP10W03Bd0iXxFsq4AO54HTtXEaedKYBt6KEW073sD7naj52/5a3vAP7CIWUe/gxkDFUiJvkKFQ==
+apply-ref@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/apply-ref/-/apply-ref-0.2.3.tgz#d94516049bb12fb4ed1157e554780737fa239458"
+  integrity sha512-9Wkp1sYO6yT+WD9kZ2L0bb7sAFLcagbwM3qhnOfCic79sR0oGwjlHMmlgRh9I/dxibGeelFpMUu0V6Kg4fkz5A==
 
 aproba@^1.0.3, aproba@^1.1.1:
   version "1.2.0"
