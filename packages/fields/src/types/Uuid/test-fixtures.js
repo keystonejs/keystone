@@ -1,4 +1,10 @@
-import { getItems } from '@keystonejs/server-side-graphql-client';
+import {
+  createItem,
+  deleteItem,
+  getItems,
+  getItem,
+  updateItem,
+} from '@keystonejs/server-side-graphql-client';
 import Text from '../Text';
 import Uuid from './';
 
@@ -188,6 +194,134 @@ export const filterTests = withKeystone => {
           { order: 'd', otherId: null },
         ]
       )
+    )
+  );
+};
+
+export const crudTests = withKeystone => {
+  const withHelpers = wrappedFn => {
+    return async ({ keystone, listKey }) => {
+      const items = await getItems({
+        keystone,
+        listKey,
+        returnFields: 'id otherId ',
+        sortBy: 'order_ASC',
+      });
+      return wrappedFn({ keystone, listKey, items });
+    };
+  };
+
+  test(
+    'Create',
+    withKeystone(
+      withHelpers(async ({ keystone, listKey }) => {
+        const data = await createItem({
+          keystone,
+          listKey,
+          item: { otherId: '8452de22-4dfd-4e2a-a6ac-c20ceef0ade5', order: 'h' },
+          returnFields: 'otherId',
+        });
+        expect(data).not.toBe(null);
+        expect(data.otherId).toBe('8452de22-4dfd-4e2a-a6ac-c20ceef0ade5');
+      })
+    )
+  );
+
+  test(
+    'Read',
+    withKeystone(
+      withHelpers(async ({ keystone, listKey, items }) => {
+        const data = await getItem({
+          keystone,
+          listKey,
+          itemId: items[0].id,
+          returnFields: 'otherId',
+        });
+        expect(data).not.toBe(null);
+        expect(data.otherId).toBe(items[0].otherId);
+      })
+    )
+  );
+
+  describe('Update', () => {
+    test(
+      'Updating the value',
+      withKeystone(
+        withHelpers(async ({ keystone, items, listKey }) => {
+          const data = await updateItem({
+            keystone,
+            listKey,
+            item: {
+              id: items[0].id,
+              data: { otherId: '8452de22-4dfd-4e2a-a6ac-c20ceef0adf5' },
+            },
+            returnFields: 'otherId',
+          });
+          expect(data).not.toBe(null);
+          expect(data.otherId).toBe('8452de22-4dfd-4e2a-a6ac-c20ceef0adf5');
+        })
+      )
+    );
+
+    test(
+      'Updating the value to null',
+      withKeystone(
+        withHelpers(async ({ keystone, items, listKey }) => {
+          const data = await updateItem({
+            keystone,
+            listKey,
+            item: {
+              id: items[0].id,
+              data: { otherId: null },
+            },
+            returnFields: 'otherId',
+          });
+          expect(data).not.toBe(null);
+          expect(data.otherId).toBe(null);
+        })
+      )
+    );
+
+    test(
+      'Updating without this field',
+      withKeystone(
+        withHelpers(async ({ keystone, items, listKey }) => {
+          const data = await updateItem({
+            keystone,
+            listKey,
+            item: {
+              id: items[0].id,
+              data: { order: 'i' },
+            },
+            returnFields: 'otherId order',
+          });
+          expect(data).not.toBe(null);
+          expect(data.order).toBe('i');
+          expect(data.otherId).toBe(items[0].otherId);
+        })
+      )
+    );
+  });
+  test(
+    'Delete',
+    withKeystone(
+      withHelpers(async ({ keystone, items, listKey }) => {
+        const data = await deleteItem({
+          keystone,
+          listKey,
+          itemId: items[0].id,
+          returnFields: 'otherId',
+        });
+        expect(data).not.toBe(null);
+        expect(data.otherId).toBe(items[0].otherId);
+
+        const allItems = await getItems({
+          keystone,
+          listKey,
+          returnFields: 'otherId',
+        });
+        expect(allItems).toEqual(expect.not.arrayContaining([data]));
+      })
     )
   );
 };

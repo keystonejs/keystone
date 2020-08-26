@@ -1,4 +1,10 @@
-import { getItems } from '@keystonejs/server-side-graphql-client';
+import {
+  createItem,
+  deleteItem,
+  getItems,
+  getItem,
+  updateItem,
+} from '@keystonejs/server-side-graphql-client';
 import Text from './';
 import Url from './';
 
@@ -284,6 +290,134 @@ export const filterTests = withKeystone => {
         { order: 'f', name: null },
         { order: 'g', name: null },
       ])
+    )
+  );
+};
+
+export const crudTests = withKeystone => {
+  const withHelpers = wrappedFn => {
+    return async ({ keystone, listKey }) => {
+      const items = await getItems({
+        keystone,
+        listKey,
+        returnFields: 'id name ',
+        sortBy: 'order_ASC',
+      });
+      return wrappedFn({ keystone, listKey, items });
+    };
+  };
+
+  test(
+    'Create',
+    withKeystone(
+      withHelpers(async ({ keystone, listKey }) => {
+        const data = await createItem({
+          keystone,
+          listKey,
+          item: { name: 'https://keystonejs.com', order: 'h' },
+          returnFields: 'name',
+        });
+        expect(data).not.toBe(null);
+        expect(data.name).toBe('https://keystonejs.com');
+      })
+    )
+  );
+
+  test(
+    'Read',
+    withKeystone(
+      withHelpers(async ({ keystone, listKey, items }) => {
+        const data = await getItem({
+          keystone,
+          listKey,
+          itemId: items[0].id,
+          returnFields: 'name',
+        });
+        expect(data).not.toBe(null);
+        expect(data.name).toBe(items[0].name);
+      })
+    )
+  );
+
+  describe('Update', () => {
+    test(
+      'Updating the value',
+      withKeystone(
+        withHelpers(async ({ keystone, items, listKey }) => {
+          const data = await updateItem({
+            keystone,
+            listKey,
+            item: {
+              id: items[0].id,
+              data: { name: 'https://jestjs.io' },
+            },
+            returnFields: 'name',
+          });
+          expect(data).not.toBe(null);
+          expect(data.name).toBe('https://jestjs.io');
+        })
+      )
+    );
+
+    test(
+      'Updating the value to null',
+      withKeystone(
+        withHelpers(async ({ keystone, items, listKey }) => {
+          const data = await updateItem({
+            keystone,
+            listKey,
+            item: {
+              id: items[0].id,
+              data: { name: null },
+            },
+            returnFields: 'name',
+          });
+          expect(data).not.toBe(null);
+          expect(data.name).toBe(null);
+        })
+      )
+    );
+
+    test(
+      'Updating without this field',
+      withKeystone(
+        withHelpers(async ({ keystone, items, listKey }) => {
+          const data = await updateItem({
+            keystone,
+            listKey,
+            item: {
+              id: items[0].id,
+              data: { order: 'i' },
+            },
+            returnFields: 'name order',
+          });
+          expect(data).not.toBe(null);
+          expect(data.order).toBe('i');
+          expect(data.name).toBe(items[0].name);
+        })
+      )
+    );
+  });
+  test(
+    'Delete',
+    withKeystone(
+      withHelpers(async ({ keystone, items, listKey }) => {
+        const data = await deleteItem({
+          keystone,
+          listKey,
+          itemId: items[0].id,
+          returnFields: 'name',
+        });
+        expect(data).not.toBe(null);
+        expect(data.name).toBe(items[0].name);
+
+        const allItems = await getItems({
+          keystone,
+          listKey,
+          returnFields: 'name',
+        });
+        expect(allItems).toEqual(expect.not.arrayContaining([data]));
+      })
     )
   );
 };
