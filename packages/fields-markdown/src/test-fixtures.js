@@ -1,4 +1,10 @@
-import { createItem, getItem, getItems, updateItem } from '@keystonejs/server-side-graphql-client';
+import {
+  createItem,
+  deleteItem,
+  getItem,
+  getItems,
+  updateItem,
+} from '@keystonejs/server-side-graphql-client';
 import { Text } from '@keystonejs/fields';
 
 import { Markdown } from './index';
@@ -310,7 +316,7 @@ export const crudTests = withKeystone => {
       const items = await getItems({
         keystone,
         listKey,
-        returnFields: 'id content',
+        returnFields: 'id name content',
       });
       return wrappedFn({ keystone, listKey, items });
     };
@@ -407,4 +413,28 @@ export const crudTests = withKeystone => {
       )
     );
   });
+
+  test(
+    'Delete',
+    withKeystone(
+      withHelpers(async ({ keystone, items, listKey }) => {
+        const data = await deleteItem({
+          keystone,
+          listKey,
+          itemId: items[0].id,
+          returnFields: 'name content',
+        });
+        expect(data).not.toBe(null);
+        expect(data.name).toBe(items[0].name);
+        expect(data.content).toBe(items[0].content);
+
+        const allItems = await getItems({
+          keystone,
+          listKey,
+          returnFields: 'name content',
+        });
+        expect(allItems).toEqual(expect.not.arrayContaining([data]));
+      })
+    )
+  );
 };

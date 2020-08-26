@@ -1,4 +1,10 @@
-import { createItem, getItem, getItems, updateItem } from '@keystonejs/server-side-graphql-client';
+import {
+  createItem,
+  deleteItem,
+  getItem,
+  getItems,
+  updateItem,
+} from '@keystonejs/server-side-graphql-client';
 import { Color } from '.';
 import { Text } from '@keystonejs/fields';
 
@@ -297,7 +303,7 @@ export const crudTests = withKeystone => {
       const items = await getItems({
         keystone,
         listKey,
-        returnFields: 'id hexColor',
+        returnFields: 'id name hexColor',
       });
       return wrappedFn({ keystone, listKey, items });
     };
@@ -394,4 +400,27 @@ export const crudTests = withKeystone => {
       )
     );
   });
+  test(
+    'Delete',
+    withKeystone(
+      withHelpers(async ({ keystone, items, listKey }) => {
+        const data = await deleteItem({
+          keystone,
+          listKey,
+          itemId: items[0].id,
+          returnFields: 'name hexColor',
+        });
+        expect(data).not.toBe(null);
+        expect(data.name).toBe(items[0].name);
+        expect(data.hexColor).toBe(items[0].hexColor);
+
+        const allItems = await getItems({
+          keystone,
+          listKey,
+          returnFields: 'name hexColor',
+        });
+        expect(allItems).toEqual(expect.not.arrayContaining([data]));
+      })
+    )
+  );
 };
