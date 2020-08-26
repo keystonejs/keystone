@@ -27,7 +27,7 @@
     "@keystonejs/file-adapters": "^7.0.2",
     "@keystonejs/keystone": "^14.0.0",
     "@keystonejs/server-side-graphql-client": "^1.1.0",
-    "cookie-parser": "^1.4.4",
+    "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
     "passport-wordpress": "^0.0.4",
     "react": "^16.13.1"

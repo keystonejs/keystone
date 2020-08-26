@@ -18,7 +18,7 @@
     "@keystonejs/server-side-graphql-client": "*",
     "@keystonejs/session": "*",
     "cookie-signature": "^1.1.0",
-    "globby": "^11.0.0",
+    "globby": "^11.0.1",
     "superagent": "^5.3.1",
     "supertest-light": "^1.0.3",
     "testcheck": "^1.0.0-rc.2"
@@ -29,7 +29,7 @@
     "@keystonejs/list-plugins": "^7.1.0",
     "@keystonejs/test-utils": "^8.0.1",
     "@keystonejs/utils": "^5.4.2",
-    "date-fns": "^2.14.0",
+    "date-fns": "^2.15.0",
     "express": "^4.17.1"
   }
 }
