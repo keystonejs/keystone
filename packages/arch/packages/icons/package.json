@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@primer/octicons": "^9.6.0",
-    "fs-extra": "^7.0.0",
+    "fs-extra": "^7.0.1",
     "react": "^16.13.1",
     "to-pascal-case": "^1.0.0"
   },

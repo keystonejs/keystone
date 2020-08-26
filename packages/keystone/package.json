@@ -30,7 +30,7 @@
     "express": "^4.17.1",
     "express-pino-logger": "^4.0.0",
     "falsey": "^1.0.0",
-    "fs-extra": "^7.0.0",
+    "fs-extra": "^7.0.1",
     "globby": "^11.0.1",
     "graphql": "^14.6.0",
     "graphql-type-json": "^0.3.2",
