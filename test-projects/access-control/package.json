@@ -26,7 +26,7 @@
     "@keystonejs/keystone": "^14.0.0",
     "@keystonejs/server-side-graphql-client": "^1.1.0",
     "@keystonejs/utils": "^5.4.1",
-    "cross-env": "^7.0.0",
+    "cross-env": "^7.0.2",
     "express": "^4.17.1"
   },
   "devDependencies": {
@@ -39,7 +39,7 @@
     "mocha": "^7.1.2",
     "mocha-junit-reporter": "^1.23.3",
     "pino-colada": "^1.6.1",
-    "start-server-and-test": "^1.11.0"
+    "start-server-and-test": "^1.11.3"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/test-projects/access-control"
 }

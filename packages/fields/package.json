@@ -31,7 +31,7 @@
     "@arch-ui/tooltip": "^0.1.12",
     "@arch-ui/typography": "^0.0.17",
     "@babel/runtime": "^7.8.4",
-    "@emotion/core": "^10.0.28",
+    "@emotion/core": "^10.0.35",
     "@keystonejs/access-control": "^6.3.0",
     "@keystonejs/adapter-knex": "^11.0.2",
     "@keystonejs/adapter-mongoose": "^9.0.3",
@@ -60,7 +60,7 @@
     "react": "^16.13.1",
     "react-day-picker": "^8.0.0-alpha.45",
     "react-dom": "^16.13.1",
-    "react-image": "^4.0.0",
+    "react-image": "^4.0.3",
     "react-select": "^3.1.0",
     "react-toast-notifications": "^2.4.0"
   },

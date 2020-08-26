@@ -24,7 +24,7 @@
     "@arch-ui/theme": "^0.0.10",
     "@arch-ui/tooltip": "^0.1.12",
     "@arch-ui/typography": "^0.0.17",
-    "@emotion/core": "^10.0.28",
+    "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
     "@reach/router": "^1.3.4",
     "clipboard-copy": "^3.0.0",

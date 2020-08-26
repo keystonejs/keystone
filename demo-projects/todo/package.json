@@ -20,7 +20,7 @@
     "@keystonejs/app-static": "^5.1.2",
     "@keystonejs/fields": "^17.0.0",
     "@keystonejs/keystone": "^14.0.0",
-    "cross-env": "^7.0.0"
+    "cross-env": "^7.0.2"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/demo-projects/todo"
 }

@@ -18,7 +18,7 @@
     "@arch-ui/fields": "^3.0.3",
     "@arch-ui/lozenge": "^0.0.16",
     "@arch-ui/theme": "^0.0.10",
-    "@emotion/core": "^10.0.28",
+    "@emotion/core": "^10.0.35",
     "@keystonejs/adapter-mongoose": "^9.0.3",
     "@keystonejs/app-admin-ui": "^7.3.2",
     "@keystonejs/app-graphql": "^6.1.0",
@@ -26,7 +26,7 @@
     "@keystonejs/fields": "^17.0.0",
     "@keystonejs/keystone": "^14.0.0",
     "@primer/octicons-react": "^10.0.0",
-    "cross-env": "^7.0.0",
+    "cross-env": "^7.0.2",
     "react": "^16.13.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/demo-projects/custom-fields"
