@@ -3745,10 +3745,10 @@
     core-js "^3.4.1"
     regenerator-runtime "^0.13.3"
 
-"@manypkg/cli@^0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@manypkg/cli/-/cli-0.11.0.tgz#16d64b804d2f39cb52befd06e2cb33ab1ec846b7"
-  integrity sha512-JIw6i9MZTObX7L9lQsSF5ohL2T0jJuT4wU/NX/s1YwKd38A3XUORirsK6a3y2eIEfkIt0DB3AnaZYS+Vnn4QSA==
+"@manypkg/cli@^0.11.1":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@manypkg/cli/-/cli-0.11.1.tgz#1be7f661e0e1b7132809ff485f19694db4f29ce0"
+  integrity sha512-Ya4kKY8+VW4L0UXn0MfX7x6pezT5hgZeIVwwCnDMCjcR0RlRrpIk3NV6kX6A4QkZVe9ifA8ZRX6kCbjeXTY0Mg==
   dependencies:
     "@babel/runtime" "^7.5.5"
     chalk "^2.4.2"
