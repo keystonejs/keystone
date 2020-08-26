@@ -261,8 +261,8 @@ const CommonUnsplashInterface = superclass =>
   class extends superclass {
     getQueryConditions(dbPath) {
       return {
-        ...this.equalityConditions(dbPath, ({ unsplashId }) => unsplashId),
-        ...this.inConditions(dbPath, ({ unsplashId }) => unsplashId),
+        ...this.equalityConditions(dbPath, val => (val ? val.unsplashId : null)),
+        ...this.inConditions(dbPath, val => (val ? val.unsplashId : null)),
       };
     }
   };
