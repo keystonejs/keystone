@@ -19,7 +19,7 @@
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "@popperjs/core": "^2.3.3",
+    "@popperjs/core": "^2.4.4",
     "flushable": "^1.0.0",
     "react-popper": "^2.2.3"
   },

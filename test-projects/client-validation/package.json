@@ -28,7 +28,7 @@
     "@keystonejs/keystone": "^14.0.0",
     "@keystonejs/server-side-graphql-client": "^1.1.0",
     "cross-env": "^7.0.2",
-    "date-fns": "^2.14.0",
+    "date-fns": "^2.15.0",
     "express": "^4.17.1",
     "react": "^16.13.1"
   },

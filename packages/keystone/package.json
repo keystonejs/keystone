@@ -33,7 +33,7 @@
     "fs-extra": "^7.0.0",
     "globby": "^11.0.1",
     "graphql": "^14.6.0",
-    "graphql-type-json": "^0.3.1",
+    "graphql-type-json": "^0.3.2",
     "lodash.flattendeep": "^4.4.0",
     "micro-memoize": "^4.0.9",
     "ora": "^3.4.0",
