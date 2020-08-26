@@ -11,8 +11,8 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.576.0",
-    "cloudinary": "^1.21.0",
+    "aws-sdk": "^2.739.0",
+    "cloudinary": "^1.22.0",
     "mkdirp": "^0.5.1",
     "url-join": "^4.0.1"
   }
