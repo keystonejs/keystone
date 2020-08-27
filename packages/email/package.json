@@ -12,7 +12,7 @@
     "keystone-email": "^1.1.0",
     "memoize-one": "^5.1.1",
     "mjml": "^4.3.1",
-    "pify": "^4.0.1"
+    "pify": "^5.0.0"
   },
   "peerDependencies": {
     "mjml-react": "^1.0.57",

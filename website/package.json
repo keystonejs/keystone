@@ -56,7 +56,6 @@
     "react-dom": "^16.13.1",
     "react-github-btn": "^1.2.0",
     "react-helmet": "^6.1.0",
-    "underscore.string": "^3.3.5",
     "unist-util-visit": "^2.0.3",
     "use-clipboard-copy": "^0.1.2"
   }

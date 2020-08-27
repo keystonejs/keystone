@@ -21,8 +21,8 @@
     "@babel/runtime": "^7.8.4",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "focus-trap-react": "^6.0.0",
-    "react-scrolllock": "^4.0.1"
+    "focus-trap-react": "^7.0.1",
+    "react-scrolllock": "^5.0.1"
   },
   "module": "dist/dialog.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/dialog"
