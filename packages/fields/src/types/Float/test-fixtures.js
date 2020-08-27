@@ -7,6 +7,7 @@ export { Float as type };
 export const exampleValue = 6.28;
 export const exampleValue2 = 6.283;
 export const supportsUnique = true;
+export const fieldName = 'stars';
 
 export const getTestFields = () => {
   return {

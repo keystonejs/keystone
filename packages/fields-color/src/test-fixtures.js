@@ -1,4 +1,4 @@
-import { createItem, getItem, getItems, updateItem } from '@keystonejs/server-side-graphql-client';
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import { Color } from '.';
 import { Text } from '@keystonejs/fields';
 
@@ -7,6 +7,7 @@ export { Color as type };
 export const exampleValue = 'red';
 export const exampleValue2 = 'green';
 export const supportsUnique = true;
+export const fieldName = 'hexColor';
 
 export const getTestFields = () => {
   return {
@@ -289,109 +290,4 @@ export const filterTests = withKeystone => {
       ])
     )
   );
-};
-
-export const crudTests = withKeystone => {
-  const withHelpers = wrappedFn => {
-    return async ({ keystone, listKey }) => {
-      const items = await getItems({
-        keystone,
-        listKey,
-        returnFields: 'id hexColor',
-      });
-      return wrappedFn({ keystone, listKey, items });
-    };
-  };
-
-  test(
-    'Create',
-    withKeystone(
-      withHelpers(async ({ keystone, listKey }) => {
-        const data = await createItem({
-          keystone,
-          listKey,
-          item: { name: 'purple', hexColor: 'rgba(154, 18, 179, 1)' },
-          returnFields: 'hexColor',
-        });
-        expect(data).not.toBe(null);
-        expect(data.hexColor).toBe('rgba(154, 18, 179, 1)');
-      })
-    )
-  );
-
-  test(
-    'Read',
-    withKeystone(
-      withHelpers(async ({ keystone, listKey, items }) => {
-        const data = await getItem({
-          keystone,
-          listKey,
-          itemId: items[0].id,
-          returnFields: 'hexColor',
-        });
-        expect(data).not.toBe(null);
-        expect(data.hexColor).toBe(items[0].hexColor);
-      })
-    )
-  );
-
-  describe('Update', () => {
-    test(
-      'Updating the value',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { hexColor: 'rgba(145, 61, 136, 1)' },
-            },
-            returnFields: 'hexColor',
-          });
-          expect(data).not.toBe(null);
-          expect(data.hexColor).toBe('rgba(145, 61, 136, 1)');
-        })
-      )
-    );
-
-    test(
-      'Updating the value to null',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { hexColor: null },
-            },
-            returnFields: 'hexColor',
-          });
-          expect(data).not.toBe(null);
-          expect(data.hexColor).toBe(null);
-        })
-      )
-    );
-
-    test(
-      'Updating without this field',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { name: 'Plum' },
-            },
-            returnFields: 'name hexColor',
-          });
-          expect(data).not.toBe(null);
-          expect(data.name).toBe('Plum');
-          expect(data.hexColor).toBe(items[0].hexColor);
-        })
-      )
-    );
-  });
 };

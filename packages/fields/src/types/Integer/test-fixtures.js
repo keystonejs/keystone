@@ -7,6 +7,7 @@ export { Integer as type };
 export const exampleValue = 37;
 export const exampleValue2 = 38;
 export const supportsUnique = true;
+export const fieldName = 'count';
 
 export const getTestFields = () => {
   return {

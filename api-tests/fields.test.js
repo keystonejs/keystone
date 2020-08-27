@@ -1,7 +1,14 @@
 const globby = require('globby');
 const path = require('path');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
-const { createItems } = require('@keystonejs/server-side-graphql-client');
+import {
+  createItem,
+  createItems,
+  deleteItem,
+  getItems,
+  getItem,
+  updateItem,
+} from '@keystonejs/server-side-graphql-client';
 
 describe('Fields', () => {
   const testModules = globby.sync(`packages/**/src/**/test-fixtures.js`, {
@@ -11,48 +18,184 @@ describe('Fields', () => {
 
   multiAdapterRunners().map(({ runner, adapterName }) =>
     describe(`${adapterName} adapter`, () => {
-      testModules.map(require).forEach(mod => {
-        const listKey = 'test';
-        const keystoneTestWrapper = (testFn = () => {}) =>
-          runner(
-            () => {
-              const createLists = keystone => {
-                // Create a list with all the fields required for testing
-                const fields = mod.getTestFields();
+      testModules
+        .map(require)
+        .filter(({ skipCrudTest }) => !skipCrudTest)
+        .forEach(mod => {
+          const listKey = 'test';
+          const keystoneTestWrapper = (testFn = () => {}) =>
+            runner(
+              () => {
+                const createLists = keystone => {
+                  // Create a list with all the fields required for testing
+                  const fields = mod.getTestFields();
 
-                keystone.createList(listKey, { fields });
-              };
-              return setupServer({ adapterName, createLists });
-            },
-            async ({ keystone, ...rest }) => {
-              // Populate the database before running the tests
-              await createItems({
-                keystone,
-                listKey,
-                items: mod.initItems().map(x => ({ data: x })),
-              });
-              return testFn({ keystone, listKey, adapterName, ...rest });
-            }
-          );
+                  keystone.createList(listKey, { fields });
+                };
+                return setupServer({ adapterName, createLists });
+              },
+              async ({ keystone, ...rest }) => {
+                // Populate the database before running the tests
+                await createItems({
+                  keystone,
+                  listKey,
+                  items: mod.initItems().map(x => ({ data: x })),
+                });
+                return testFn({ keystone, listKey, adapterName, ...rest });
+              }
+            );
 
-        describe(`${mod.name} field`, () => {
-          if (mod.crudTests) {
+          describe(`${mod.name} field`, () => {
             describe(`CRUD operations`, () => {
-              mod.crudTests(keystoneTestWrapper);
-            });
-          } else {
-            test.todo('CRUD operations - tests missing');
-          }
+              const { fieldName, exampleValue, exampleValue2 } = mod;
+              const returnFields = `id name ${fieldName}`;
+              const withHelpers = wrappedFn => {
+                return async ({ keystone, listKey }) => {
+                  const items = await getItems({
+                    keystone,
+                    listKey,
+                    returnFields,
+                  });
+                  return wrappedFn({ keystone, listKey, items });
+                };
+              };
 
-          if (mod.filterTests) {
-            describe(`Filtering`, () => {
-              mod.filterTests(keystoneTestWrapper);
+              // Individual field types can have CRUD constraints.
+              // For example, password field can only be written but not read.
+              if (!mod.skipCreateTest) {
+                test(
+                  'Create',
+                  keystoneTestWrapper(
+                    withHelpers(async ({ keystone, listKey }) => {
+                      const data = await createItem({
+                        keystone,
+                        listKey,
+                        item: { name: 'Newly created', [fieldName]: exampleValue },
+                        returnFields,
+                      });
+                      expect(data).not.toBe(null);
+                      expect(data[fieldName]).toBe(exampleValue);
+                    })
+                  )
+                );
+              }
+
+              if (!mod.skipReadTest) {
+                test(
+                  'Read',
+                  keystoneTestWrapper(
+                    withHelpers(async ({ keystone, listKey, items }) => {
+                      const data = await getItem({
+                        keystone,
+                        listKey,
+                        itemId: items[0].id,
+                        returnFields,
+                      });
+                      expect(data).not.toBe(null);
+                      expect(data[fieldName]).toBe(items[0][fieldName]);
+                    })
+                  )
+                );
+              }
+
+              if (!mod.skipUpdateTest) {
+                describe('Update', () => {
+                  test(
+                    'Updating the value',
+                    keystoneTestWrapper(
+                      withHelpers(async ({ keystone, items, listKey }) => {
+                        const data = await updateItem({
+                          keystone,
+                          listKey,
+                          item: {
+                            id: items[0].id,
+                            data: { [fieldName]: exampleValue2 },
+                          },
+                          returnFields,
+                        });
+                        expect(data).not.toBe(null);
+                        expect(data[fieldName]).toBe(exampleValue2);
+                      })
+                    )
+                  );
+
+                  test(
+                    'Updating the value to null',
+                    keystoneTestWrapper(
+                      withHelpers(async ({ keystone, items, listKey }) => {
+                        const data = await updateItem({
+                          keystone,
+                          listKey,
+                          item: {
+                            id: items[0].id,
+                            data: { [fieldName]: null },
+                          },
+                          returnFields,
+                        });
+                        expect(data).not.toBe(null);
+                        expect(data[fieldName]).toBe(null);
+                      })
+                    )
+                  );
+
+                  test(
+                    'Updating without this field',
+                    keystoneTestWrapper(
+                      withHelpers(async ({ keystone, items, listKey }) => {
+                        const data = await updateItem({
+                          keystone,
+                          listKey,
+                          item: {
+                            id: items[0].id,
+                            data: { name: 'Updated value' },
+                          },
+                          returnFields,
+                        });
+                        expect(data).not.toBe(null);
+                        expect(data.name).toBe('Updated value');
+                        expect(data[fieldName]).toBe(items[0][fieldName]);
+                      })
+                    )
+                  );
+                });
+              }
+
+              if (!mod.skipDeleteTest) {
+                test(
+                  'Delete',
+                  keystoneTestWrapper(
+                    withHelpers(async ({ keystone, items, listKey }) => {
+                      const data = await deleteItem({
+                        keystone,
+                        listKey,
+                        itemId: items[0].id,
+                        returnFields,
+                      });
+                      expect(data).not.toBe(null);
+                      expect(data.name).toBe(items[0].name);
+                      expect(data[fieldName]).toBe(items[0][fieldName]);
+
+                      const allItems = await getItems({
+                        keystone,
+                        listKey,
+                        returnFields,
+                      });
+                      expect(allItems).toEqual(expect.not.arrayContaining([data]));
+                    })
+                  )
+                );
+              }
             });
-          } else {
-            test.todo('Filtering - tests missing');
-          }
+
+            if (mod.filterTests) {
+              describe(`Filtering`, () => {
+                mod.filterTests(keystoneTestWrapper);
+              });
+            } else {
+              test.todo('Filtering - tests missing');
+            }
+          });
         });
-      });
     })
   );
 });

@@ -8,38 +8,39 @@ export { Text as type };
 export const exampleValue = 'foo';
 export const exampleValue2 = 'bar';
 export const supportsUnique = true;
+export const fieldName = 'text';
 
 export const getTestFields = () => {
   return {
-    order: { type: Text },
     name: { type: Text },
+    text: { type: Text },
   };
 };
 
 export const initItems = () => {
   return [
-    { order: 'a', name: '' },
-    { order: 'b', name: 'other' },
-    { order: 'c', name: 'FOOBAR' },
-    { order: 'd', name: 'fooBAR' },
-    { order: 'e', name: 'foobar' },
-    { order: 'f', name: null },
-    { order: 'g' },
+    { name: 'a', text: '' },
+    { name: 'b', text: 'other' },
+    { name: 'c', text: 'FOOBAR' },
+    { name: 'd', text: 'fooBAR' },
+    { name: 'e', text: 'foobar' },
+    { name: 'f', text: null },
+    { name: 'g' },
   ];
 };
 
-// JM: These tests are Mongo/Mongoose specific due to null handling (filtering and ordering)
+// JM: These tests are Mongo/Mongoose specific due to null handling (filtering and nameing)
 // See https://github.com/keystonejs/keystone/issues/391
 
 export const filterTests = withKeystone => {
-  const match = async (keystone, where, expected) =>
+  const match = async (keystone, where, expected, sortBy = 'name_ASC') =>
     expect(
       await getItems({
         keystone,
         listKey: 'test',
         where,
-        returnFields: 'order name',
-        sortBy: 'order_ASC',
+        returnFields: 'name text',
+        sortBy,
       })
     ).toEqual(expected);
 
@@ -47,13 +48,13 @@ export const filterTests = withKeystone => {
     `No 'where' argument`,
     withKeystone(({ keystone }) =>
       match(keystone, undefined, [
-        { order: 'a', name: '' },
-        { order: 'b', name: 'other' },
-        { order: 'c', name: 'FOOBAR' },
-        { order: 'd', name: 'fooBAR' },
-        { order: 'e', name: 'foobar' },
-        { order: 'f', name: null },
-        { order: 'g', name: null },
+        { name: 'a', text: '' },
+        { name: 'b', text: 'other' },
+        { name: 'c', text: 'FOOBAR' },
+        { name: 'd', text: 'fooBAR' },
+        { name: 'e', text: 'foobar' },
+        { name: 'f', text: null },
+        { name: 'g', text: null },
       ])
     )
   );
@@ -61,13 +62,13 @@ export const filterTests = withKeystone => {
     `Empty 'where' argument'`,
     withKeystone(({ keystone }) =>
       match(keystone, {}, [
-        { order: 'a', name: '' },
-        { order: 'b', name: 'other' },
-        { order: 'c', name: 'FOOBAR' },
-        { order: 'd', name: 'fooBAR' },
-        { order: 'e', name: 'foobar' },
-        { order: 'f', name: null },
-        { order: 'g', name: null },
+        { name: 'a', text: '' },
+        { name: 'b', text: 'other' },
+        { name: 'c', text: 'FOOBAR' },
+        { name: 'd', text: 'fooBAR' },
+        { name: 'e', text: 'foobar' },
+        { name: 'f', text: null },
+        { name: 'g', text: null },
       ])
     )
   );
@@ -75,16 +76,16 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key} (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name: 'fooBAR' }, [{ order: 'd', name: 'fooBAR' }])
+      match(keystone, { text: 'fooBAR' }, [{ name: 'd', text: 'fooBAR' }])
     )
   );
   test(
     `Filter: {key}_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_i: 'fooBAR' }, [
-        { order: 'c', name: 'FOOBAR' },
-        { order: 'd', name: 'fooBAR' },
-        { order: 'e', name: 'foobar' },
+      match(keystone, { text_i: 'fooBAR' }, [
+        { name: 'c', text: 'FOOBAR' },
+        { name: 'd', text: 'fooBAR' },
+        { name: 'e', text: 'foobar' },
       ])
     )
   );
@@ -92,24 +93,24 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_not: 'fooBAR' }, [
-        { order: 'a', name: '' },
-        { order: 'b', name: 'other' },
-        { order: 'c', name: 'FOOBAR' },
-        { order: 'e', name: 'foobar' },
-        { order: 'f', name: null },
-        { order: 'g', name: null },
+      match(keystone, { text_not: 'fooBAR' }, [
+        { name: 'a', text: '' },
+        { name: 'b', text: 'other' },
+        { name: 'c', text: 'FOOBAR' },
+        { name: 'e', text: 'foobar' },
+        { name: 'f', text: null },
+        { name: 'g', text: null },
       ])
     )
   );
   test(
     `Filter: {key}_not_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_not_i: 'fooBAR' }, [
-        { order: 'a', name: '' },
-        { order: 'b', name: 'other' },
-        { order: 'f', name: null },
-        { order: 'g', name: null },
+      match(keystone, { text_not_i: 'fooBAR' }, [
+        { name: 'a', text: '' },
+        { name: 'b', text: 'other' },
+        { name: 'f', text: null },
+        { name: 'g', text: null },
       ])
     )
   );
@@ -117,19 +118,19 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_contains (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_contains: 'oo' }, [
-        { order: 'd', name: 'fooBAR' },
-        { order: 'e', name: 'foobar' },
+      match(keystone, { text_contains: 'oo' }, [
+        { name: 'd', text: 'fooBAR' },
+        { name: 'e', text: 'foobar' },
       ])
     )
   );
   test(
     `Filter: {key}_contains_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_contains_i: 'oo' }, [
-        { order: 'c', name: 'FOOBAR' },
-        { order: 'd', name: 'fooBAR' },
-        { order: 'e', name: 'foobar' },
+      match(keystone, { text_contains_i: 'oo' }, [
+        { name: 'c', text: 'FOOBAR' },
+        { name: 'd', text: 'fooBAR' },
+        { name: 'e', text: 'foobar' },
       ])
     )
   );
@@ -137,23 +138,23 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_contains (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_not_contains: 'oo' }, [
-        { order: 'a', name: '' },
-        { order: 'b', name: 'other' },
-        { order: 'c', name: 'FOOBAR' },
-        { order: 'f', name: null },
-        { order: 'g', name: null },
+      match(keystone, { text_not_contains: 'oo' }, [
+        { name: 'a', text: '' },
+        { name: 'b', text: 'other' },
+        { name: 'c', text: 'FOOBAR' },
+        { name: 'f', text: null },
+        { name: 'g', text: null },
       ])
     )
   );
   test(
     `Filter: {key}_not_contains_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_not_contains_i: 'oo' }, [
-        { order: 'a', name: '' },
-        { order: 'b', name: 'other' },
-        { order: 'f', name: null },
-        { order: 'g', name: null },
+      match(keystone, { text_not_contains_i: 'oo' }, [
+        { name: 'a', text: '' },
+        { name: 'b', text: 'other' },
+        { name: 'f', text: null },
+        { name: 'g', text: null },
       ])
     )
   );
@@ -161,19 +162,19 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_starts_with (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_starts_with: 'foo' }, [
-        { order: 'd', name: 'fooBAR' },
-        { order: 'e', name: 'foobar' },
+      match(keystone, { text_starts_with: 'foo' }, [
+        { name: 'd', text: 'fooBAR' },
+        { name: 'e', text: 'foobar' },
       ])
     )
   );
   test(
     `Filter: {key}_starts_with_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_starts_with_i: 'foo' }, [
-        { order: 'c', name: 'FOOBAR' },
-        { order: 'd', name: 'fooBAR' },
-        { order: 'e', name: 'foobar' },
+      match(keystone, { text_starts_with_i: 'foo' }, [
+        { name: 'c', text: 'FOOBAR' },
+        { name: 'd', text: 'fooBAR' },
+        { name: 'e', text: 'foobar' },
       ])
     )
   );
@@ -181,23 +182,23 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_starts_with (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_not_starts_with: 'foo' }, [
-        { order: 'a', name: '' },
-        { order: 'b', name: 'other' },
-        { order: 'c', name: 'FOOBAR' },
-        { order: 'f', name: null },
-        { order: 'g', name: null },
+      match(keystone, { text_not_starts_with: 'foo' }, [
+        { name: 'a', text: '' },
+        { name: 'b', text: 'other' },
+        { name: 'c', text: 'FOOBAR' },
+        { name: 'f', text: null },
+        { name: 'g', text: null },
       ])
     )
   );
   test(
     `Filter: {key}_not_starts_with_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_not_starts_with_i: 'foo' }, [
-        { order: 'a', name: '' },
-        { order: 'b', name: 'other' },
-        { order: 'f', name: null },
-        { order: 'g', name: null },
+      match(keystone, { text_not_starts_with_i: 'foo' }, [
+        { name: 'a', text: '' },
+        { name: 'b', text: 'other' },
+        { name: 'f', text: null },
+        { name: 'g', text: null },
       ])
     )
   );
@@ -205,19 +206,19 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_ends_with (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_ends_with: 'BAR' }, [
-        { order: 'c', name: 'FOOBAR' },
-        { order: 'd', name: 'fooBAR' },
+      match(keystone, { text_ends_with: 'BAR' }, [
+        { name: 'c', text: 'FOOBAR' },
+        { name: 'd', text: 'fooBAR' },
       ])
     )
   );
   test(
     `Filter: {key}_ends_with_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_ends_with_i: 'BAR' }, [
-        { order: 'c', name: 'FOOBAR' },
-        { order: 'd', name: 'fooBAR' },
-        { order: 'e', name: 'foobar' },
+      match(keystone, { text_ends_with_i: 'BAR' }, [
+        { name: 'c', text: 'FOOBAR' },
+        { name: 'd', text: 'fooBAR' },
+        { name: 'e', text: 'foobar' },
       ])
     )
   );
@@ -225,37 +226,37 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_ends_with (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_not_ends_with: 'BAR' }, [
-        { order: 'a', name: '' },
-        { order: 'b', name: 'other' },
-        { order: 'e', name: 'foobar' },
-        { order: 'f', name: null },
-        { order: 'g', name: null },
+      match(keystone, { text_not_ends_with: 'BAR' }, [
+        { name: 'a', text: '' },
+        { name: 'b', text: 'other' },
+        { name: 'e', text: 'foobar' },
+        { name: 'f', text: null },
+        { name: 'g', text: null },
       ])
     )
   );
   test(
     `Filter: {key}_not_ends_with_i (case-insensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_not_ends_with_i: 'BAR' }, [
-        { order: 'a', name: '' },
-        { order: 'b', name: 'other' },
-        { order: 'f', name: null },
-        { order: 'g', name: null },
+      match(keystone, { text_not_ends_with_i: 'BAR' }, [
+        { name: 'a', text: '' },
+        { name: 'b', text: 'other' },
+        { name: 'f', text: null },
+        { name: 'g', text: null },
       ])
     )
   );
 
   test(
     `Filter: {key}_in (case-sensitive, empty list)`,
-    withKeystone(({ keystone }) => match(keystone, { name_in: [] }, []))
+    withKeystone(({ keystone }) => match(keystone, { text_in: [] }, []))
   );
   test(
     `Filter: {key}_in (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_in: ['', 'FOOBAR'] }, [
-        { order: 'a', name: '' },
-        { order: 'c', name: 'FOOBAR' },
+      match(keystone, { text_in: ['', 'FOOBAR'] }, [
+        { name: 'a', text: '' },
+        { name: 'c', text: 'FOOBAR' },
       ])
     )
   );
@@ -263,26 +264,26 @@ export const filterTests = withKeystone => {
   test(
     `Filter: {key}_not_in (case-sensitive, empty list)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_not_in: [] }, [
-        { order: 'a', name: '' },
-        { order: 'b', name: 'other' },
-        { order: 'c', name: 'FOOBAR' },
-        { order: 'd', name: 'fooBAR' },
-        { order: 'e', name: 'foobar' },
-        { order: 'f', name: null },
-        { order: 'g', name: null },
+      match(keystone, { text_not_in: [] }, [
+        { name: 'a', text: '' },
+        { name: 'b', text: 'other' },
+        { name: 'c', text: 'FOOBAR' },
+        { name: 'd', text: 'fooBAR' },
+        { name: 'e', text: 'foobar' },
+        { name: 'f', text: null },
+        { name: 'g', text: null },
       ])
     )
   );
   test(
     `Filter: {key}_not_in (case-sensitive)`,
     withKeystone(({ keystone }) =>
-      match(keystone, { name_not_in: ['', 'FOOBAR'] }, [
-        { order: 'b', name: 'other' },
-        { order: 'd', name: 'fooBAR' },
-        { order: 'e', name: 'foobar' },
-        { order: 'f', name: null },
-        { order: 'g', name: null },
+      match(keystone, { text_not_in: ['', 'FOOBAR'] }, [
+        { name: 'b', text: 'other' },
+        { name: 'd', text: 'fooBAR' },
+        { name: 'e', text: 'foobar' },
+        { name: 'f', text: null },
+        { name: 'g', text: null },
       ])
     )
   );

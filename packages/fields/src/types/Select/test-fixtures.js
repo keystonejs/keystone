@@ -15,6 +15,8 @@ export const fieldConfig = {
   ],
 };
 
+export const fieldName = 'company';
+
 export const getTestFields = () => {
   return {
     name: { type: Text }, // Provide a field to sort on

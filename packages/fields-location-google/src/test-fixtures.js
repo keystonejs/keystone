@@ -5,5 +5,6 @@ export const name = 'Location';
 export { LocationGoogle as type };
 export const supportsUnique = false;
 export const skipRequiredTest = true;
+export const skipCrudTest = true;
 export const exampleValue = '"ChIJOza7MD-uEmsRrf4t12uji6Y"';
 export const fieldConfig = { googleMapsKey: 'googleMapsKey' };
