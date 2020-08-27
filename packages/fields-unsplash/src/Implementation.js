@@ -74,11 +74,7 @@ export class Unsplash extends Implementation {
 
   // Filter based on Unsplash Image IDs
   gqlQueryInputFields() {
-    return [
-      ...this.equalityInputFields('String'),
-      ...this.stringInputFields('String'),
-      ...this.inInputFields('String'),
-    ];
+    return [...this.equalityInputFields('String'), ...this.inInputFields('String')];
   }
 
   getGqlAuxTypes() {
@@ -266,7 +262,6 @@ const CommonUnsplashInterface = superclass =>
     getQueryConditions(dbPath) {
       return {
         ...this.equalityConditions(dbPath, ({ unsplashId }) => unsplashId),
-        ...this.stringConditions(dbPath, ({ unsplashId }) => unsplashId),
         ...this.inConditions(dbPath, ({ unsplashId }) => unsplashId),
       };
     }

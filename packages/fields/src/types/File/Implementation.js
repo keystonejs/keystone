@@ -25,11 +25,7 @@ export class File extends Implementation {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
   gqlQueryInputFields() {
-    return [
-      ...this.equalityInputFields('String'),
-      ...this.stringInputFields('String'),
-      ...this.inInputFields('String'),
-    ];
+    return [...this.equalityInputFields('String'), ...this.inInputFields('String')];
   }
   getFileUploadType() {
     return 'Upload';
@@ -121,7 +117,6 @@ const CommonFileInterface = superclass =>
     getQueryConditions(dbPath) {
       return {
         ...this.equalityConditions(dbPath),
-        ...this.stringConditions(dbPath),
         ...this.inConditions(dbPath),
       };
     }
