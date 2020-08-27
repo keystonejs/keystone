@@ -12,7 +12,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.8.4",
+    "@babel/runtime": "^7.11.2",
     "p-is-promise": "^3.0.0",
     "p-lazy": "^3.0.0",
     "p-reflect": "^2.1.0",
