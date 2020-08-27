@@ -275,11 +275,11 @@ const keystone = new Keystone({
             email: 'john@duck.com',
             password: 'dolphins',
             posts: {
-               // Filtering list of items where title contains the word `React`
-               connect: post.filter(p => /\bReact\b/i.test(p.title)).map(i => ({ id: i.id })),
-                },
-             },
-         },    
+              // Filtering list of items where title contains the word `React`
+              connect: post.filter(p => /\bReact\b/i.test(p.title)).map(i => ({ id: i.id })),
+            },
+          },
+        },
         {
           data: {
             name: 'Barry',
