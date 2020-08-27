@@ -38,11 +38,7 @@ export class OEmbed extends Implementation {
   }
 
   gqlQueryInputFields() {
-    return [
-      ...this.equalityInputFields('String'),
-      ...this.stringInputFields('String'),
-      ...this.inInputFields('String'),
-    ];
+    return [...this.equalityInputFields('String'), ...this.inInputFields('String')];
   }
 
   getGqlAuxTypes() {
@@ -270,7 +266,6 @@ const CommonOEmbedInterface = superclass =>
     getQueryConditions(dbPath) {
       return {
         ...this.equalityConditions(dbPath),
-        ...this.stringConditions(dbPath),
         ...this.inConditions(dbPath),
       };
     }
