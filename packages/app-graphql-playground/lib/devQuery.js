@@ -8,7 +8,7 @@ const terminalLink = require('terminal-link');
 const querystring = require('querystring');
 const bodyParser = require('body-parser');
 
-const chalkColour = new chalk.constructor({ enabled: true, level: 3 });
+const chalkColour = new chalk.Instance({ enabled: true, level: 3 });
 
 const buildGraphiqlQueryParams = ({ query, variables }) =>
   querystring.stringify({
