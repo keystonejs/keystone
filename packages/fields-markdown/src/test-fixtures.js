@@ -1,4 +1,4 @@
-import { createItem, getItem, getItems, updateItem } from '@keystonejs/server-side-graphql-client';
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import { Text } from '@keystonejs/fields';
 
 import { Markdown } from './index';
@@ -8,6 +8,7 @@ export { Markdown as type };
 export const exampleValue = 'foo';
 export const exampleValue2 = 'bar';
 export const supportsUnique = true;
+export const fieldName = 'content';
 
 export const getTestFields = () => {
   return {
@@ -302,109 +303,4 @@ export const filterTests = withKeystone => {
       ])
     )
   );
-};
-
-export const crudTests = withKeystone => {
-  const withHelpers = wrappedFn => {
-    return async ({ keystone, listKey }) => {
-      const items = await getItems({
-        keystone,
-        listKey,
-        returnFields: 'id content',
-      });
-      return wrappedFn({ keystone, listKey, items });
-    };
-  };
-
-  test(
-    'Create',
-    withKeystone(
-      withHelpers(async ({ keystone, listKey }) => {
-        const data = await createItem({
-          keystone,
-          listKey,
-          item: { name: 'Getting Started', content: '**This is getting started guide**.' },
-          returnFields: 'content',
-        });
-        expect(data).not.toBe(null);
-        expect(data.content).toBe('**This is getting started guide**.');
-      })
-    )
-  );
-
-  test(
-    'Read',
-    withKeystone(
-      withHelpers(async ({ keystone, listKey, items }) => {
-        const data = await getItem({
-          keystone,
-          listKey,
-          itemId: items[0].id,
-          returnFields: 'content',
-        });
-        expect(data).not.toBe(null);
-        expect(data.content).toBe(items[0].content);
-      })
-    )
-  );
-
-  describe('Update', () => {
-    test(
-      'Updating the value',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { content: '~~This is getting started guide~~.' },
-            },
-            returnFields: 'content',
-          });
-          expect(data).not.toBe(null);
-          expect(data.content).toBe('~~This is getting started guide~~.');
-        })
-      )
-    );
-
-    test(
-      'Updating the value to null',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { content: null },
-            },
-            returnFields: 'content',
-          });
-          expect(data).not.toBe(null);
-          expect(data.content).toBe(null);
-        })
-      )
-    );
-
-    test(
-      'Updating without this field',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { name: 'Keystone User Guide' },
-            },
-            returnFields: 'name content',
-          });
-          expect(data).not.toBe(null);
-          expect(data.name).toBe('Keystone User Guide');
-          expect(data.content).toBe(items[0].content);
-        })
-      )
-    );
-  });
 };

@@ -1,10 +1,4 @@
-import {
-  createItem,
-  deleteItem,
-  getItems,
-  getItem,
-  updateItem,
-} from '@keystonejs/server-side-graphql-client';
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import Text from '../Text';
 import Integer from './';
 
@@ -13,6 +7,7 @@ export { Integer as type };
 export const exampleValue = 37;
 export const exampleValue2 = 38;
 export const supportsUnique = true;
+export const fieldName = 'count';
 
 export const getTestFields = () => {
   return {
@@ -191,134 +186,6 @@ export const filterTests = withKeystone => {
         { name: 'person3', count: 2 },
         { name: 'person4', count: 3 },
       ])
-    )
-  );
-};
-
-export const crudTests = withKeystone => {
-  const withHelpers = wrappedFn => {
-    return async ({ keystone, listKey }) => {
-      const items = await getItems({
-        keystone,
-        listKey,
-        returnFields: 'id name count',
-      });
-      return wrappedFn({ keystone, listKey, items });
-    };
-  };
-
-  test(
-    'Create',
-    withKeystone(
-      withHelpers(async ({ keystone, listKey }) => {
-        const data = await createItem({
-          keystone,
-          listKey,
-          item: { name: 'Keystone', count: 4 },
-          returnFields: 'count',
-        });
-        expect(data).not.toBe(null);
-        expect(data.count).toBe(4);
-      })
-    )
-  );
-
-  test(
-    'Read',
-    withKeystone(
-      withHelpers(async ({ keystone, listKey, items }) => {
-        const data = await getItem({
-          keystone,
-          listKey,
-          itemId: items[0].id,
-          returnFields: 'count',
-        });
-        expect(data).not.toBe(null);
-        expect(data.count).toBe(items[0].count);
-      })
-    )
-  );
-
-  describe('Update', () => {
-    test(
-      'Updating the value',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { count: 6 },
-            },
-            returnFields: 'count',
-          });
-          expect(data).not.toBe(null);
-          expect(data.count).toBe(6);
-        })
-      )
-    );
-
-    test(
-      'Updating the value to null',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { count: null },
-            },
-            returnFields: 'count',
-          });
-          expect(data).not.toBe(null);
-          expect(data.count).toBe(null);
-        })
-      )
-    );
-
-    test(
-      'Updating without this field',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { name: 'foobarbaz' },
-            },
-            returnFields: 'name count',
-          });
-          expect(data).not.toBe(null);
-          expect(data.name).toBe('foobarbaz');
-          expect(data.count).toBe(items[0].count);
-        })
-      )
-    );
-  });
-  test(
-    'Delete',
-    withKeystone(
-      withHelpers(async ({ keystone, items, listKey }) => {
-        const data = await deleteItem({
-          keystone,
-          listKey,
-          itemId: items[0].id,
-          returnFields: 'name count',
-        });
-        expect(data).not.toBe(null);
-        expect(data.name).toBe(items[0].name);
-        expect(data.count).toBe(items[0].count);
-
-        const allItems = await getItems({
-          keystone,
-          listKey,
-          returnFields: 'name count',
-        });
-        expect(allItems).toEqual(expect.not.arrayContaining([data]));
-      })
     )
   );
 };

@@ -1,10 +1,4 @@
-import {
-  createItem,
-  deleteItem,
-  getItem,
-  getItems,
-  updateItem,
-} from '@keystonejs/server-side-graphql-client';
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import Text from '../Text';
 import CalendarDay from './';
 
@@ -13,6 +7,7 @@ export { CalendarDay as type };
 export const exampleValue = '1990-12-31';
 export const exampleValue2 = '2000-12-31';
 export const supportsUnique = true;
+export const fieldName = 'birthday';
 
 export const getTestFields = () => {
   return {
@@ -193,134 +188,6 @@ export const filterTests = withKeystone => {
         { name: 'person3', birthday: '1950-10-01' },
         { name: 'person4', birthday: '1666-04-12' },
       ])
-    )
-  );
-};
-
-export const crudTests = withKeystone => {
-  const withHelpers = wrappedFn => {
-    return async ({ keystone, listKey }) => {
-      const items = await getItems({
-        keystone,
-        listKey,
-        returnFields: 'id name birthday',
-      });
-      return wrappedFn({ keystone, listKey, items });
-    };
-  };
-
-  test(
-    'Create',
-    withKeystone(
-      withHelpers(async ({ keystone, listKey }) => {
-        const data = await createItem({
-          keystone,
-          listKey,
-          item: { name: 'person5', birthday: '2000-02-20' },
-          returnFields: 'birthday',
-        });
-        expect(data).not.toBe(null);
-        expect(data.birthday).toBe('2000-02-20');
-      })
-    )
-  );
-
-  test(
-    'Read',
-    withKeystone(
-      withHelpers(async ({ keystone, listKey, items }) => {
-        const data = await getItem({
-          keystone,
-          listKey,
-          itemId: items[0].id,
-          returnFields: 'birthday',
-        });
-        expect(data).not.toBe(null);
-        expect(data.birthday).toBe(items[0].birthday);
-      })
-    )
-  );
-
-  describe('Update', () => {
-    test(
-      'Updating the value',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { birthday: '2018-12-14' },
-            },
-            returnFields: 'birthday',
-          });
-          expect(data).not.toBe(null);
-          expect(data.birthday).toBe('2018-12-14');
-        })
-      )
-    );
-
-    test(
-      'Updating the value to null',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { birthday: null },
-            },
-            returnFields: 'birthday',
-          });
-          expect(data).not.toBe(null);
-          expect(data.birthday).toBe(null);
-        })
-      )
-    );
-
-    test(
-      'Updating without this field',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { name: 'Plum' },
-            },
-            returnFields: 'name birthday',
-          });
-          expect(data).not.toBe(null);
-          expect(data.name).toBe('Plum');
-          expect(data.birthday).toBe(items[0].birthday);
-        })
-      )
-    );
-  });
-  test(
-    'Delete',
-    withKeystone(
-      withHelpers(async ({ keystone, items, listKey }) => {
-        const data = await deleteItem({
-          keystone,
-          listKey,
-          itemId: items[0].id,
-          returnFields: 'name birthday',
-        });
-        expect(data).not.toBe(null);
-        expect(data.name).toBe(items[0].name);
-        expect(data.birthday).toBe(items[0].birthday);
-
-        const allItems = await getItems({
-          keystone,
-          listKey,
-          returnFields: 'name birthday',
-        });
-        expect(allItems).toEqual(expect.not.arrayContaining([data]));
-      })
     )
   );
 };

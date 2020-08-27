@@ -1,10 +1,4 @@
-import {
-  createItem,
-  deleteItem,
-  getItem,
-  getItems,
-  updateItem,
-} from '@keystonejs/server-side-graphql-client';
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import Text from '../Text';
 import DateTimeUtc from './';
 
@@ -13,6 +7,7 @@ export { DateTimeUtc as type };
 export const exampleValue = '1990-12-31T12:34:56.789Z';
 export const exampleValue2 = '2000-01-20T00:08:00.000Z';
 export const supportsUnique = true;
+export const fieldName = 'lastOnline';
 
 export const getTestFields = () => {
   return {
@@ -269,135 +264,6 @@ export const filterTests = withKeystone => {
             ],
         'lastOnline_DESC'
       )
-    )
-  );
-};
-
-export const crudTests = withKeystone => {
-  const withHelpers = wrappedFn => {
-    return async ({ keystone, listKey }) => {
-      const items = await getItems({
-        keystone,
-        listKey,
-        returnFields: 'id name lastOnline',
-        sortBy: 'name_ASC',
-      });
-      return wrappedFn({ keystone, listKey, items });
-    };
-  };
-
-  test(
-    'Create',
-    withKeystone(
-      withHelpers(async ({ keystone, listKey }) => {
-        const data = await createItem({
-          keystone,
-          listKey,
-          item: { name: 'person5', lastOnline: '2019-12-01T23:59:59.999Z' },
-          returnFields: 'lastOnline',
-        });
-        expect(data).not.toBe(null);
-        expect(data.lastOnline).toBe('2019-12-01T23:59:59.999Z');
-      })
-    )
-  );
-
-  test(
-    'Read',
-    withKeystone(
-      withHelpers(async ({ keystone, listKey, items }) => {
-        const data = await getItem({
-          keystone,
-          listKey,
-          itemId: items[0].id,
-          returnFields: 'lastOnline',
-        });
-        expect(data).not.toBe(null);
-        expect(data.lastOnline).toBe(items[0].lastOnline);
-      })
-    )
-  );
-
-  describe('Update', () => {
-    test(
-      'Updating the value',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { lastOnline: '2018-11-01T23:59:59.999Z' },
-            },
-            returnFields: 'lastOnline',
-          });
-          expect(data).not.toBe(null);
-          expect(data.lastOnline).toBe('2018-11-01T23:59:59.999Z');
-        })
-      )
-    );
-
-    test(
-      'Updating the value to null',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { lastOnline: null },
-            },
-            returnFields: 'lastOnline',
-          });
-          expect(data).not.toBe(null);
-          expect(data.lastOnline).toBe(null);
-        })
-      )
-    );
-
-    test(
-      'Updating without this field',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { name: 'Plum' },
-            },
-            returnFields: 'name lastOnline',
-          });
-          expect(data).not.toBe(null);
-          expect(data.name).toBe('Plum');
-          expect(data.lastOnline).toBe(items[0].lastOnline);
-        })
-      )
-    );
-  });
-  test(
-    'Delete',
-    withKeystone(
-      withHelpers(async ({ keystone, items, listKey }) => {
-        const data = await deleteItem({
-          keystone,
-          listKey,
-          itemId: items[0].id,
-          returnFields: 'name lastOnline',
-        });
-        expect(data).not.toBe(null);
-        expect(data.name).toBe(items[0].name);
-        expect(data.lastOnline).toBe(items[0].lastOnline);
-
-        const allItems = await getItems({
-          keystone,
-          listKey,
-          returnFields: 'name lastOnline',
-        });
-        expect(allItems).toEqual(expect.not.arrayContaining([data]));
-      })
     )
   );
 };

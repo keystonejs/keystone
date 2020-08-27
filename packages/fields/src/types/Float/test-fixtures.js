@@ -1,10 +1,4 @@
-import {
-  createItem,
-  deleteItem,
-  getItems,
-  getItem,
-  updateItem,
-} from '@keystonejs/server-side-graphql-client';
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import Text from '../Text';
 import Float from '.';
 
@@ -13,6 +7,7 @@ export { Float as type };
 export const exampleValue = 6.28;
 export const exampleValue2 = 6.283;
 export const supportsUnique = true;
+export const fieldName = 'stars';
 
 export const getTestFields = () => {
   return {
@@ -195,134 +190,6 @@ export const filterTests = withKeystone => {
         { name: 'post3', stars: 2.3 },
         { name: 'post4', stars: 3 },
       ])
-    )
-  );
-};
-
-export const crudTests = withKeystone => {
-  const withHelpers = wrappedFn => {
-    return async ({ keystone, listKey }) => {
-      const items = await getItems({
-        keystone,
-        listKey,
-        returnFields: 'id name stars',
-      });
-      return wrappedFn({ keystone, listKey, items });
-    };
-  };
-
-  test(
-    'Create',
-    withKeystone(
-      withHelpers(async ({ keystone, listKey }) => {
-        const data = await createItem({
-          keystone,
-          listKey,
-          item: { name: 'Keysontejs loves GraphQL', stars: 4.5 },
-          returnFields: 'stars',
-        });
-        expect(data).not.toBe(null);
-        expect(data.stars).toBe(4.5);
-      })
-    )
-  );
-
-  test(
-    'Read',
-    withKeystone(
-      withHelpers(async ({ keystone, listKey, items }) => {
-        const data = await getItem({
-          keystone,
-          listKey,
-          itemId: items[0].id,
-          returnFields: 'stars',
-        });
-        expect(data).not.toBe(null);
-        expect(data.stars).toBe(items[0].stars);
-      })
-    )
-  );
-
-  describe('Update', () => {
-    test(
-      'Updating the value',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { stars: 3.5 },
-            },
-            returnFields: 'stars',
-          });
-          expect(data).not.toBe(null);
-          expect(data.stars).toBe(3.5);
-        })
-      )
-    );
-
-    test(
-      'Updating the value to null',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { stars: null },
-            },
-            returnFields: 'stars',
-          });
-          expect(data).not.toBe(null);
-          expect(data.stars).toBe(null);
-        })
-      )
-    );
-
-    test(
-      'Updating without this field',
-      withKeystone(
-        withHelpers(async ({ keystone, items, listKey }) => {
-          const data = await updateItem({
-            keystone,
-            listKey,
-            item: {
-              id: items[0].id,
-              data: { name: 'foobarbaz' },
-            },
-            returnFields: 'name stars',
-          });
-          expect(data).not.toBe(null);
-          expect(data.name).toBe('foobarbaz');
-          expect(data.stars).toBe(items[0].stars);
-        })
-      )
-    );
-  });
-  test(
-    'Delete',
-    withKeystone(
-      withHelpers(async ({ keystone, items, listKey }) => {
-        const data = await deleteItem({
-          keystone,
-          listKey,
-          itemId: items[0].id,
-          returnFields: 'name stars',
-        });
-        expect(data).not.toBe(null);
-        expect(data.name).toBe(items[0].name);
-        expect(data.stars).toBe(items[0].stars);
-
-        const allItems = await getItems({
-          keystone,
-          listKey,
-          returnFields: 'name stars',
-        });
-        expect(allItems).toEqual(expect.not.arrayContaining([data]));
-      })
     )
   );
 };
