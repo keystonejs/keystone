@@ -25,4 +25,4 @@
 '@keystonejs/website': patch
 ---
 
-Update dependencies through a major version - this shouldn't require change by consumers
+Updated dependencies through a major version - this shouldn't require change by consumers.
