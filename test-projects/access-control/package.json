@@ -30,7 +30,7 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "cypress": "^4.5.0",
+    "cypress": "^5.0.0",
     "cypress-file-upload": "^4.0.7",
     "cypress-multi-reporters": "^1.4.0",
     "dotenv-safe": "^8.2.0",
