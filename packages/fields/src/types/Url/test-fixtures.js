@@ -36,7 +36,7 @@ export const filterTests = withKeystone => {
     expect(
       await getItems({
         keystone,
-        listKey: 'test',
+        listKey: 'Test',
         where,
         returnFields: 'name url',
         sortBy: 'name_ASC',
