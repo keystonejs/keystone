@@ -59,6 +59,7 @@ jobs:
           IFRAMELY_API_KEY: ${{ secrets.IFRAMELY_API_KEY }}
           UNSPLASH_KEY: ${{ secrets.UNSPLASH_KEY}}
           UNSPLASH_SECRET: ${{ secrets.UNSPLASH_SECRET}}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
 
   linting:
     name: Linting
