@@ -79,7 +79,7 @@
     "is-ci": "^2.0.0",
     "jest": "^26.1.0",
     "jest-haste-map": "^26.1.0",
-    "jest-junit": "^11.0.1",
+    "jest-junit": "^11.1.0",
     "jest-resolve": "^26.1.0",
     "knex": "^0.21.1",
     "luxon": "^1.25.0",
