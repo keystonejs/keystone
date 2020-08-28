@@ -22,7 +22,7 @@
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
     "@emotion/weak-memoize": "^0.2.5",
-    "@mapbox/rehype-prism": "^0.4.0",
+    "@mapbox/rehype-prism": "^0.5.0",
     "@mdx-js/mdx": "^1.6.16",
     "@mdx-js/react": "^1.6.16",
     "@primer/octicons-react": "^10.1.0",
