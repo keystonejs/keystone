@@ -14,6 +14,9 @@
     "@keystonejs/adapter-knex": "^11.0.2",
     "@keystonejs/fields": "^17.0.0"
   },
+  "devDependencies": {
+    "@keystonejs/server-side-graphql-client": "*"
+  },
   "main": "dist/fields-auto-increment.cjs.js",
   "module": "dist/fields-auto-increment.esm.js"
 }

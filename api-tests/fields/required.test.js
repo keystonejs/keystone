@@ -2,12 +2,17 @@ const globby = require('globby');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { Text } = require('@keystonejs/fields');
 
-const testModules = globby.sync(`packages/**/src/**/test-fixtures.js`, { absolute: true });
+const testModules = globby.sync(`packages/**/src/**/test-fixtures.js`, {
+  absolute: true,
+});
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     testModules
       .map(require)
-      .filter(({ skipRequiredTest }) => !skipRequiredTest)
+      .filter(
+        ({ skipCrudTest, unSupportedAdapterList = [] }) =>
+          !skipCrudTest && !unSupportedAdapterList.includes(adapterName)
+      )
       .forEach(mod => {
         describe(`${mod.name} - isRequired`, () => {
           const keystoneTestWrapper = testFn =>

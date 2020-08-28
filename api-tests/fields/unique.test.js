@@ -7,7 +7,10 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
   describe(`Adapter: ${adapterName}`, () => {
     testModules
       .map(require)
-      .filter(({ supportsUnique }) => supportsUnique)
+      .filter(
+        ({ supportsUnique, unSupportedAdapterList = [] }) =>
+          supportsUnique && !unSupportedAdapterList.includes(adapterName)
+      )
       .forEach(mod => {
         describe(`${mod.name} - isUnique`, () => {
           const keystoneTestWrapper = testFn =>
