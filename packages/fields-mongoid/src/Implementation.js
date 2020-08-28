@@ -74,7 +74,10 @@ export class MongooseMongoIdInterface extends MongooseFieldAdapter {
     const mongoose = this.listAdapter.parentAdapter.mongoose;
     return {
       ...this.equalityConditions(this.field.isPrimaryKey ? '_id' : dbPath, mongoose.Types.ObjectId),
-      ...this.inConditions(this.field.isPrimaryKey ? '_id' : dbPath, mongoose.Types.ObjectId),
+      //NOTE: ObjectId(null) returns a new ObjectId value
+      ...this.inConditions(this.field.isPrimaryKey ? '_id' : dbPath, val =>
+        val ? mongoose.Types.ObjectId(val) : null
+      ),
     };
   }
 }
@@ -104,11 +107,11 @@ export class KnexMongoIdInterface extends KnexFieldAdapter {
       }
 
       if (item[this.path]) {
-        if (typeof item[this.path] === 'string') {
+        if (typeof item[this.path] === 'string' && validator(item[this.path])) {
           item[this.path] = normaliseValue(item[this.path]);
         } else {
           // Should have been caught by the validator??
-          throw `Invalid MongoID value given for '${this.path}'`;
+          throw new Error(`Invalid MongoID value given for '${this.path}'`);
         }
       } else {
         item[this.path] = null;
