@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/controls",
   "description": "Form Controls as used in @keystonejs Admin UI.",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/controls.cjs.js",
@@ -12,8 +12,8 @@
     "react": "^16.13.1"
   },
   "dependencies": {
-    "@arch-ui/input": "^0.1.9",
-    "@arch-ui/theme": "^0.0.10",
+    "@arch-ui/input": "^0.1.11",
+    "@arch-ui/theme": "^0.0.11",
     "@babel/runtime": "^7.11.2",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",

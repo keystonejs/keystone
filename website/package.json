@@ -2,7 +2,7 @@
   "name": "@keystonejs/website",
   "description": "KeystoneJS documentation. Powered by Gatsby.",
   "private": true,
-  "version": "5.3.7",
+  "version": "5.3.8",
   "author": "The KeystoneJS Development Team",
   "repository": "https://github.com/keystonejs/keystone/tree/master/website",
   "homepage": "https://github.com/keystonejs/keystone",
@@ -16,9 +16,9 @@
     "build": "gatsby build"
   },
   "dependencies": {
-    "@arch-ui/input": "^0.1.9",
-    "@arch-ui/select": "^0.1.8",
-    "@arch-ui/theme": "^0.0.10",
+    "@arch-ui/input": "^0.1.11",
+    "@arch-ui/select": "^0.1.9",
+    "@arch-ui/theme": "^0.0.11",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
     "@emotion/weak-memoize": "^0.2.5",

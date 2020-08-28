@@ -1,5 +1,14 @@
 # @arch-ui/select
 
+## 0.1.9
+
+### Patch Changes
+
+- [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b) [#3439](https://github.com/keystonejs/keystone/pull/3439) Thanks [@renovate](https://github.com/apps/renovate)! - Updated babel dependencies.
+
+- Updated dependencies [[`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b)]:
+  - @arch-ui/theme@0.0.11
+
 ## 0.1.8
 
 ### Patch Changes
