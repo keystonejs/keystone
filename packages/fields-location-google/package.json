@@ -23,6 +23,10 @@
     "react": "^16.13.1",
     "react-toast-notifications": "^2.4.0"
   },
+  "devDependencies":   {
+    "@keystonejs/server-side-graphql-client": "*",
+    "dotenv": "^8.2.0"
+  },
   "preconstruct": {
     "entrypoints": [
       "index.js",
