@@ -51,7 +51,7 @@
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
     "@changesets/changelog-github": "^0.2.7",
-    "@changesets/cli": "^2.10.1",
+    "@changesets/cli": "^2.10.2",
     "@jest/test-sequencer": "^26.1.0",
     "@manypkg/cli": "^0.15.0",
     "@preconstruct/cli": "1.1.26",
