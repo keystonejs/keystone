@@ -74,7 +74,10 @@ export class MongooseMongoIdInterface extends MongooseFieldAdapter {
     const mongoose = this.listAdapter.parentAdapter.mongoose;
     return {
       ...this.equalityConditions(this.field.isPrimaryKey ? '_id' : dbPath, mongoose.Types.ObjectId),
-      ...this.inConditions(this.field.isPrimaryKey ? '_id' : dbPath, mongoose.Types.ObjectId),
+      //NOTE: ObjectId(null) returns a new ObjectId value
+      ...this.inConditions(this.field.isPrimaryKey ? '_id' : dbPath, val =>
+        val ? mongoose.Types.ObjectId(val) : null
+      ),
     };
   }
 }
