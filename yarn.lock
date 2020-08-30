@@ -9660,13 +9660,13 @@ cypress-file-upload@^3.5.3:
   resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-3.5.3.tgz#cd706485de3fb2cbd4a8c2dd90fe96d537bb4311"
   integrity sha512-S/czzqAj1BYz6Xxnfpx2aSc6hXsj76fd8/iuycJ2RxoxCcQMliw8eQV0ugzVlkzr1GD5dKGviNFGYqv3nRJ+Tg==
 
-cypress-multi-reporters@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/cypress-multi-reporters/-/cypress-multi-reporters-1.2.4.tgz#bf6c95f39f9d2ce210d83e096f452a306bcd49fc"
-  integrity sha512-JTsF02I2KH1HM+cUEKeJih8EtjFv6jWVrYlRlJAnomwE5UqRQ3M7cAuw+zqBfNSTIvhOzNHtN3LyxomfhycuAQ==
+cypress-multi-reporters@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/cypress-multi-reporters/-/cypress-multi-reporters-1.4.0.tgz#5f1d0484a20959cfe782f1bf65ad16c6ad804da7"
+  integrity sha512-CjpQduW43KVzY45hhKC/qf8MSebRpx6JyEz6py8F+0GrYS8rE5TZ8wXv9dPUs/PaT6w+dR8KIgLSMr967Om7iA==
   dependencies:
     debug "^4.1.1"
-    lodash "^4.17.11"
+    lodash "^4.17.15"
 
 cypress@^4.12.1:
   version "4.12.1"
