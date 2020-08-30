@@ -63,7 +63,7 @@
     "chalk": "^4.1.0",
     "chalk-cli": "^4.1.0",
     "cross-env": "^7.0.2",
-    "cypress": "^4.5.0",
+    "cypress": "^4.12.1",
     "cypress-multi-reporters": "^1.2.4",
     "dotenv": "^8.2.0",
     "dotenv-safe": "^8.2.0",
