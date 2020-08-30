@@ -1,5 +1,31 @@
 # @keystonejs/fields-oembed
 
+## 2.1.0
+
+### Minor Changes
+
+- [`69d627813`](https://github.com/keystonejs/keystone/commit/69d627813adfc10d29707f5c882ca15621de12a5) [#3501](https://github.com/keystonejs/keystone/pull/3501) Thanks [@singhArmani](https://github.com/singhArmani)! - Removed unsupported filters for `File`, `CloudinaryImage`, `LocationGoogle`, `Unsplash`, and `OEmbed` field types.
+
+### Patch Changes
+
+- [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+* [`483b20ec5`](https://github.com/keystonejs/keystone/commit/483b20ec53ff89f1d026c0495fdae5df60a7cf59) [#3487](https://github.com/keystonejs/keystone/pull/3487) Thanks [@singhArmani](https://github.com/singhArmani)! - Updated CRUD API tests for field types.
+
+- [`43646b6b3`](https://github.com/keystonejs/keystone/commit/43646b6b39da07690422431fb96747a8dba345c2) [#3462](https://github.com/keystonejs/keystone/pull/3462) Thanks [@singhArmani](https://github.com/singhArmani)! - Added filter and CRUD tests for `OEmbed` field type.
+
+- Updated dependencies [[`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6), [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e), [`ac44568f9`](https://github.com/keystonejs/keystone/commit/ac44568f91fd54ccbc39accf83bcfb3276ce1a72), [`877a5a90d`](https://github.com/keystonejs/keystone/commit/877a5a90d608f0a13b6c0ea103cb96e3ac2caacc), [`483b20ec5`](https://github.com/keystonejs/keystone/commit/483b20ec53ff89f1d026c0495fdae5df60a7cf59), [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b), [`ea367f759`](https://github.com/keystonejs/keystone/commit/ea367f7594f47efc3528d9917cce010b3a16bf4d), [`69d627813`](https://github.com/keystonejs/keystone/commit/69d627813adfc10d29707f5c882ca15621de12a5), [`096d13fc2`](https://github.com/keystonejs/keystone/commit/096d13fc25696ed1769cf817b705dfd80da601b2), [`0153168d7`](https://github.com/keystonejs/keystone/commit/0153168d73ce8cd7ede4eb9c8518e5e2bf859709)]:
+  - @keystonejs/adapter-knex@11.0.3
+  - @keystonejs/adapter-mongoose@9.0.4
+  - @keystonejs/fields@17.1.0
+  - @arch-ui/button@0.0.21
+  - @arch-ui/fields@3.0.4
+  - @arch-ui/input@0.1.11
+  - @keystonejs/fields-content@8.0.2
+  - @arch-ui/theme@0.0.11
+
 ## 2.0.0
 
 ### Major Changes

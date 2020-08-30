@@ -1,5 +1,14 @@
 # @keystonejs/fields-authed-relationship
 
+## 1.0.12
+
+### Patch Changes
+
+- [`339299183`](https://github.com/keystonejs/keystone/commit/339299183ff00661d36a1561d8e3de19abc5945c) [#3429](https://github.com/keystonejs/keystone/pull/3429) Thanks [@singhArmani](https://github.com/singhArmani)! - Added `Create` test for `AuthedRelationship` type.
+
+- Updated dependencies [[`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6), [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e), [`ac44568f9`](https://github.com/keystonejs/keystone/commit/ac44568f91fd54ccbc39accf83bcfb3276ce1a72), [`877a5a90d`](https://github.com/keystonejs/keystone/commit/877a5a90d608f0a13b6c0ea103cb96e3ac2caacc), [`483b20ec5`](https://github.com/keystonejs/keystone/commit/483b20ec53ff89f1d026c0495fdae5df60a7cf59), [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b), [`ea367f759`](https://github.com/keystonejs/keystone/commit/ea367f7594f47efc3528d9917cce010b3a16bf4d), [`69d627813`](https://github.com/keystonejs/keystone/commit/69d627813adfc10d29707f5c882ca15621de12a5), [`0153168d7`](https://github.com/keystonejs/keystone/commit/0153168d73ce8cd7ede4eb9c8518e5e2bf859709)]:
+  - @keystonejs/fields@17.1.0
+
 ## 1.0.11
 
 ### Patch Changes

@@ -1,5 +1,37 @@
 # @arch-ui/docs
 
+## 1.1.26
+
+### Patch Changes
+
+- [`890f13834`](https://github.com/keystonejs/keystone/commit/890f1383421f4c3371e240ef1dca2eaaa808cb54) [#3449](https://github.com/keystonejs/keystone/pull/3449) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@reach/router` to `^1.3.4`.
+
+* [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+* Updated dependencies [[`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6), [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e), [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b)]:
+  - @arch-ui/dialog@0.0.22
+  - @arch-ui/dropdown@0.0.19
+  - @arch-ui/icons@0.1.2
+  - @arch-ui/popout@0.0.20
+  - @arch-ui/alert@0.0.18
+  - @arch-ui/badge@0.0.17
+  - @arch-ui/button@0.0.21
+  - @arch-ui/controls@0.1.9
+  - @arch-ui/fields@3.0.4
+  - @arch-ui/input@0.1.11
+  - @arch-ui/layout@0.2.14
+  - @arch-ui/loading@0.0.18
+  - @arch-ui/lozenge@0.0.17
+  - @arch-ui/navbar@0.1.12
+  - @arch-ui/pagination@0.0.25
+  - @arch-ui/pill@0.1.17
+  - @arch-ui/tooltip@0.1.13
+  - @arch-ui/typography@0.0.18
+  - @arch-ui/select@0.1.9
+  - @arch-ui/theme@0.0.11
+
 ## 1.1.25
 
 ### Patch Changes
