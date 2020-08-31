@@ -57,7 +57,7 @@
     "express-history-api-fallback": "^2.2.1",
     "falsey": "^1.0.0",
     "file-loader": "^3.0.1",
-    "graphql": "^14.6.0",
+    "graphql": "^14.7.0",
     "html-webpack-plugin": "^4.3.0",
     "lodash.debounce": "^4.0.8",
     "lodash.set": "^4.3.2",
