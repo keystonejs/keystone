@@ -85,7 +85,7 @@
     "luxon": "^1.25.0",
     "mdast-util-to-string": "^1.1.0",
     "memoize-one": "^5.1.1",
-    "mocha": "^7.1.2",
+    "mocha": "^7.2.0",
     "mocha-junit-reporter": "^1.23.3",
     "mongodb": "^3.5.7",
     "p-is-promise": "^3.0.0",
