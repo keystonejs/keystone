@@ -107,7 +107,6 @@ tags
 # End of https://www.gitignore.io/api/vim
 
 temp/
-/public
-/dist
+dist/
 .cache
 .next
