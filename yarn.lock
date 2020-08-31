@@ -71,10 +71,10 @@
     tslib "^1.10.0"
     zen-observable "^0.8.14"
 
-"@apollo/client@^3.1.3":
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.1.3.tgz#4ea9c3818bd2836a3dbe26088227c3d8cb46ad2b"
-  integrity sha512-zXMiaj+dX0sgXIwEV5d/PI6B8SZT2bqlKNjZWcEXRY7NjESF5J3nd4v8KOsrhHe+A3YhNv63tIl35Sq7uf41Pg==
+"@apollo/client@^3.1.4":
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.1.4.tgz#2848a9f29619275df9af55966c4f5984e31cea6e"
+  integrity sha512-XPZ2eL+0GN25FazEOAVAvEyAzWPVsHeo+DgG/45d4Rb+srzPN+vmRgpQL5TdX2BYJoPd04J/g8OZwYUEKL8laA==
   dependencies:
     "@types/zen-observable" "^0.8.0"
     "@wry/context" "^0.5.2"
@@ -85,6 +85,7 @@
     optimism "^0.12.1"
     prop-types "^15.7.2"
     symbol-observable "^1.2.0"
+    terser "^5.2.0"
     ts-invariant "^0.4.4"
     tslib "^1.10.0"
     zen-observable "^0.8.14"
@@ -6211,10 +6212,10 @@ apollo-server-caching@^0.5.2:
   dependencies:
     lru-cache "^5.0.0"
 
-apollo-server-core@^2.16.1:
-  version "2.16.1"
-  resolved "https://registry.yarnpkg.com/apollo-server-core/-/apollo-server-core-2.16.1.tgz#5b5b8245ab9c0cb6c2367ec19ab855dea6ccea3a"
-  integrity sha512-nuwn5ZBbmzPwDetb3FgiFFJlNK7ZBFg8kis/raymrjd3eBGdNcOyMTJDl6J9673X9Xqp+dXQmFYDW/G3G8S1YA==
+apollo-server-core@^2.17.0:
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/apollo-server-core/-/apollo-server-core-2.17.0.tgz#6af697ffe4968e74add01cd1efd2a8fb33299cf3"
+  integrity sha512-rjAkBbKSrGLDfg/g5bohnPlQahmkAxgEBuMDVsoF3aa+RaEPXPUMYrLbOxntl0LWeLbPiMa/IyFF43dvlGqV7w==
   dependencies:
     "@apollographql/apollo-tools" "^0.4.3"
     "@apollographql/graphql-playground-html" "1.6.26"
@@ -6228,7 +6229,7 @@ apollo-server-core@^2.16.1:
     apollo-server-errors "^2.4.2"
     apollo-server-plugin-base "^0.9.1"
     apollo-server-types "^0.5.1"
-    apollo-tracing "^0.11.1"
+    apollo-tracing "^0.11.2"
     fast-json-stable-stringify "^2.0.0"
     graphql-extensions "^0.12.4"
     graphql-tag "^2.9.2"
@@ -6252,10 +6253,10 @@ apollo-server-errors@^2.4.2:
   resolved "https://registry.yarnpkg.com/apollo-server-errors/-/apollo-server-errors-2.4.2.tgz#1128738a1d14da989f58420896d70524784eabe5"
   integrity sha512-FeGxW3Batn6sUtX3OVVUm7o56EgjxDlmgpTLNyWcLb0j6P8mw9oLNyAm3B+deHA4KNdNHO5BmHS2g1SJYjqPCQ==
 
-apollo-server-express@^2.16.1:
-  version "2.16.1"
-  resolved "https://registry.yarnpkg.com/apollo-server-express/-/apollo-server-express-2.16.1.tgz#7438bca590ef8577d24d20ba0b6d582c120c0146"
-  integrity sha512-Oq5YNcaMYnRk6jDmA9LWf8oSd2KHDVe7jQ4wtooAvG9FVUD+FaFBgSkytXHMvtifQh2wdF07Ri8uDLMz6IQjTw==
+apollo-server-express@^2.17.0:
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/apollo-server-express/-/apollo-server-express-2.17.0.tgz#2014559b75a0bcf7ff8cf0f2d077da6653abbc18"
+  integrity sha512-PonpWOuM1DH3Cz0bu56Tusr3GXOnectC6AD/gy2GXK0v84E7tKTuxEY3SgsgxhvfvvhfwJbXTyIogL/wezqnCw==
   dependencies:
     "@apollographql/graphql-playground-html" "1.6.26"
     "@types/accepts" "^1.3.5"
@@ -6263,7 +6264,7 @@ apollo-server-express@^2.16.1:
     "@types/cors" "^2.8.4"
     "@types/express" "4.17.7"
     accepts "^1.3.5"
-    apollo-server-core "^2.16.1"
+    apollo-server-core "^2.17.0"
     apollo-server-types "^0.5.1"
     body-parser "^1.18.3"
     cors "^2.8.4"
@@ -6290,10 +6291,10 @@ apollo-server-types@^0.5.1:
     apollo-server-caching "^0.5.2"
     apollo-server-env "^2.4.5"
 
-apollo-tracing@^0.11.1:
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/apollo-tracing/-/apollo-tracing-0.11.1.tgz#3e3a4ce4b21e57dcc57b10bbd539db243b752606"
-  integrity sha512-l7g+uILw7v32GA46IRXIx5XXbZhFI96BhSqrGK9yyvfq+NMcvVZrj3kIhRImPGhAjMdV+5biA/jztabElAbDjg==
+apollo-tracing@^0.11.2:
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/apollo-tracing/-/apollo-tracing-0.11.2.tgz#14308b176e021f5e6ec3ee670f8f96e9fbfdb50c"
+  integrity sha512-QjmRd2ozGD+PfmF6U9w/w6jrclYSBNczN6Bzppr8qA5somEGl5pqdprIZYL28H0IapZiutA3x6p6ZVF/cVX8wA==
   dependencies:
     apollo-server-env "^2.4.5"
     apollo-server-plugin-base "^0.9.1"
@@ -25487,7 +25488,7 @@ terser@^4.1.2, terser@^4.6.12, terser@^4.6.3:
     source-map "~0.6.1"
     source-map-support "~0.5.12"
 
-terser@^5.2.1:
+terser@^5.2.0, terser@^5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/terser/-/terser-5.2.1.tgz#40b971b8d28b4fe98c9e8c0d073ab48e7bb96cd8"
   integrity sha512-/AOtjRtAMNGO0fIF6m8HfcvXTw/2AKpsOzDn36tA5RfhRdeXyb4RvHxJ5Pah7iL6dFkLk+gOnCaNHGwJPl6TrQ==
