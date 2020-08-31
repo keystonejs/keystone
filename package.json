@@ -137,9 +137,9 @@
       "packages/arch/docs",
       "packages/arch/packages/*",
       "demo-projects/*",
-      "test-projects/*",
-      "api-tests",
-      "benchmarks",
+      "test/test-projects/*",
+      "test/api-tests",
+      "test/benchmarks",
       "website",
       "packages/create-keystone-app/example-projects/*",
       "projects/*"
@@ -172,9 +172,9 @@
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "./jest/setup.js"
+      "./test/jest/setup.js"
     ],
-    "testSequencer": "./jest-sequencer.js",
+    "testSequencer": "./test/jest-sequencer.js",
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/",

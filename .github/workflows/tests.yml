@@ -116,10 +116,10 @@ jobs:
       fail-fast: false
       matrix:
         project:
-          - test-projects/basic
-          - test-projects/login
-          - test-projects/access-control
-          - test-projects/client-validation
+          - test/test-projects/basic
+          - test/test-projects/login
+          - test/test-projects/access-control
+          - test/test-projects/client-validation
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
