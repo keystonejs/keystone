@@ -89,9 +89,9 @@ export class MongoDecimalInterface extends MongooseFieldAdapter {
 
   getQueryConditions(dbPath) {
     return {
-      ...this.equalityConditions(dbPath, mongoose.Types.Decimal128.fromString),
-      ...this.orderingConditions(dbPath, mongoose.Types.Decimal128.fromString),
-      ...this.inConditions(dbPath, mongoose.Types.Decimal128.fromString),
+      ...this.equalityConditions(dbPath, s => s && mongoose.Types.Decimal128.fromString(s)),
+      ...this.orderingConditions(dbPath, s => s && mongoose.Types.Decimal128.fromString(s)),
+      ...this.inConditions(dbPath, s => s && mongoose.Types.Decimal128.fromString(s)),
     };
   }
 }

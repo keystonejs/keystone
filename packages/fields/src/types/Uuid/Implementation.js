@@ -8,9 +8,9 @@ export class UuidImplementation extends Implementation {
 
     this.normaliseValue = a => a;
     if (caseTo && caseTo.toString().toLowerCase() === 'upper') {
-      this.normaliseValue = a => a.toString().toUpperCase();
+      this.normaliseValue = a => a && a.toString().toUpperCase();
     } else if (caseTo && caseTo.toString().toLowerCase() === 'lower') {
-      this.normaliseValue = a => a.toString().toLowerCase();
+      this.normaliseValue = a => a && a.toString().toLowerCase();
     }
     this.isOrderable = true;
   }

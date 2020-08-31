@@ -1,10 +1,8 @@
-import { getItems } from '@keystonejs/server-side-graphql-client';
 import Select from './';
 import Text from '../Text';
 
 export const name = 'Select';
-
-export { Select as type };
+export const type = Select;
 export const exampleValue = matrixValue =>
   matrixValue === 'enum' ? 'thinkmill' : matrixValue === 'string' ? 'a string' : 1;
 export const exampleValue2 = matrixValue =>
@@ -41,14 +39,14 @@ export const fieldConfig = matrixValue => ({
 
 export const fieldName = 'company';
 
+export const supportedFilters = ['null_equality', 'equality', 'in_empty_null', 'in_equal'];
+
 export const testMatrix = ['enum', 'string', 'integer'];
 
-export const getTestFields = matrixValue => {
-  return {
-    name: { type: Text },
-    company: { type: Select, ...fieldConfig(matrixValue) },
-  };
-};
+export const getTestFields = matrixValue => ({
+  name: { type: Text },
+  company: { type, ...fieldConfig(matrixValue) },
+});
 
 export const initItems = matrixValue => {
   if (matrixValue === 'enum') {
@@ -85,180 +83,36 @@ export const initItems = matrixValue => {
   return [];
 };
 
-export const filterTests = (withKeystone, matrixValue) => {
-  const match = async (keystone, where, expected, returnFields = 'name company') =>
-    expect(
-      await getItems({
-        keystone,
-        listKey: 'Test',
-        where,
-        returnFields,
-        sortBy: 'name_ASC',
-      })
-    ).toEqual(expected);
-
-  test(
-    `No filter (dataType: ${matrixValue})`,
-    withKeystone(({ keystone }) =>
-      match(
-        keystone,
-        undefined,
-        matrixValue === 'enum'
-          ? [
-              { name: 'a', company: 'thinkmill' },
-              { name: 'b', company: 'atlassian' },
-              { name: 'c', company: 'gelato' },
-              { name: 'd', company: 'cete' },
-              { name: 'e', company: 'react' },
-              { name: 'f', company: null },
-              { name: 'g', company: null },
-            ]
-          : matrixValue === 'string'
-          ? [
-              { name: 'a', company: 'a string' },
-              { name: 'b', company: '@¯\\_(ツ)_/¯' },
-              { name: 'c', company: 'a string' },
-              { name: 'd', company: '1number' },
-              { name: 'e', company: 'something else' },
-              { name: 'f', company: null },
-              { name: 'g', company: null },
-            ]
-          : [
-              { name: 'a', company: 1 },
-              { name: 'b', company: 2 },
-              { name: 'c', company: 3 },
-              { name: 'd', company: 4 },
-              { name: 'e', company: 5 },
-              { name: 'f', company: null },
-              { name: 'g', company: null },
-            ]
-      )
-    )
-  );
-
-  test(
-    `Filter: company (dataType: ${matrixValue})`,
-    withKeystone(({ keystone }) =>
-      match(
-        keystone,
-        matrixValue === 'enum'
-          ? { company: 'thinkmill' }
-          : matrixValue === 'string'
-          ? { company: 'a string' }
-          : { company: 1 },
-        matrixValue === 'enum'
-          ? [{ company: 'thinkmill', name: 'a' }]
-          : matrixValue === 'string'
-          ? [
-              { name: 'a', company: 'a string' },
-              { name: 'c', company: 'a string' },
-            ]
-          : [{ name: 'a', company: 1 }]
-      )
-    )
-  );
-
-  test(
-    `Filter: company_not (dataType: ${matrixValue})`,
-    withKeystone(({ keystone }) =>
-      match(
-        keystone,
-        matrixValue === 'enum'
-          ? { company_not: 'thinkmill' }
-          : matrixValue === 'string'
-          ? { company_not: 'a string' }
-          : { company_not: 1 },
-        matrixValue === 'enum'
-          ? [
-              { company: 'atlassian', name: 'b' },
-              { company: 'gelato', name: 'c' },
-              { company: 'cete', name: 'd' },
-              { name: 'e', company: 'react' },
-              { name: 'f', company: null },
-              { name: 'g', company: null },
-            ]
-          : matrixValue === 'string'
-          ? [
-              { name: 'b', company: '@¯\\_(ツ)_/¯' },
-              { name: 'd', company: '1number' },
-              { name: 'e', company: 'something else' },
-              { name: 'f', company: null },
-              { name: 'g', company: null },
-            ]
-          : [
-              { name: 'b', company: 2 },
-              { name: 'c', company: 3 },
-              { name: 'd', company: 4 },
-              { name: 'e', company: 5 },
-              { name: 'f', company: null },
-              { name: 'g', company: null },
-            ]
-      )
-    )
-  );
-
-  test(
-    `Filter: company_in (dataType: ${matrixValue})`,
-    withKeystone(({ keystone }) =>
-      match(
-        keystone,
-        matrixValue === 'enum'
-          ? { company_in: ['atlassian', 'gelato'] }
-          : matrixValue === 'string'
-          ? { company_in: [`@¯\\_(ツ)_/¯`, '1number'] }
-          : { company_in: [2, 3] },
-        matrixValue === 'enum'
-          ? [
-              { company: 'atlassian', name: 'b' },
-              { company: 'gelato', name: 'c' },
-            ]
-          : matrixValue === 'string'
-          ? [
-              { name: 'b', company: `@¯\\_(ツ)_/¯` },
-              { name: 'd', company: '1number' },
-            ]
-          : [
-              { name: 'b', company: 2 },
-              { name: 'c', company: 3 },
-            ]
-      )
-    )
-  );
-
-  test(
-    `Filter: company_not_in (dataType: ${matrixValue})`,
-    withKeystone(({ keystone }) =>
-      match(
-        keystone,
-        matrixValue === 'enum'
-          ? { company_not_in: ['atlassian', 'gelato'] }
-          : matrixValue === 'string'
-          ? { company_not_in: [`@¯\\_(ツ)_/¯`, '1number'] }
-          : { company_not_in: [2, 3] },
-        matrixValue === 'enum'
-          ? [
-              { name: 'a', company: 'thinkmill' },
-              { name: 'd', company: 'cete' },
-              { name: 'e', company: 'react' },
-              { name: 'f', company: null },
-              { name: 'g', company: null },
-            ]
-          : matrixValue === 'string'
-          ? [
-              { name: 'a', company: 'a string' },
-              { name: 'c', company: 'a string' },
-              { name: 'e', company: 'something else' },
-              { name: 'f', company: null },
-              { name: 'g', company: null },
-            ]
-          : [
-              { name: 'a', company: 1 },
-              { name: 'd', company: 4 },
-              { name: 'e', company: 5 },
-              { name: 'f', company: null },
-              { name: 'g', company: null },
-            ]
-      )
-    )
-  );
+export const storedValues = matrixValue => {
+  if (matrixValue === 'enum') {
+    return [
+      { name: 'a', company: 'thinkmill' },
+      { name: 'b', company: 'atlassian' },
+      { name: 'c', company: 'gelato' },
+      { name: 'd', company: 'cete' },
+      { name: 'e', company: 'react' },
+      { name: 'f', company: null },
+      { name: 'g', company: null },
+    ];
+  } else if (matrixValue === 'string') {
+    return [
+      { name: 'a', company: 'a string' },
+      { name: 'b', company: '@¯\\_(ツ)_/¯' },
+      { name: 'c', company: 'a string' },
+      { name: 'd', company: '1number' },
+      { name: 'e', company: 'something else' },
+      { name: 'f', company: null },
+      { name: 'g', company: null },
+    ];
+  } else if (matrixValue === 'integer') {
+    return [
+      { name: 'a', company: 1 },
+      { name: 'b', company: 2 },
+      { name: 'c', company: 3 },
+      { name: 'd', company: 4 },
+      { name: 'e', company: 5 },
+      { name: 'f', company: null },
+      { name: 'g', company: null },
+    ];
+  }
 };
