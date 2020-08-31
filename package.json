@@ -9,7 +9,7 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
     "dev": "yarn demo todo dev",
-    "demo": "yarn --cwd ./demo-projects",
+    "demo": "yarn --cwd ./examples",
     "website": "manypkg run website",
     "arch-docs": "manypkg run arch/docs",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
@@ -109,7 +109,7 @@
     "typescript": "^4.0.2",
     "unist-util-visit": "^2.0.3",
     "unsplash-js": "^6.0.0",
-    "webpack": "4.41.6"
+    "webpack": "4.44.1"
   },
   "prettier": {
     "proseWrap": "preserve",
@@ -136,10 +136,10 @@
       "!packages/arch",
       "packages/arch/docs",
       "packages/arch/packages/*",
-      "demo-projects/*",
       "test/test-projects/*",
       "test/api-tests",
       "test/benchmarks",
+      "examples/*",
       "website",
       "packages/create-keystone-app/example-projects/*",
       "projects/*"
