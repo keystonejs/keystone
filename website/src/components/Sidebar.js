@@ -111,10 +111,40 @@ export const SidebarNav = () => {
   );
 };
 
+const getTruncatedItems = ({ pages, subNavs, navTitle }, isPageInGroupActive) => {
+  if (navTitle === 'guides') {
+    console.log(pages);
+    console.log(subNavs);
+  }
+  if (isPageInGroupActive) return pages;
+
+  let [one, two, three, four] = pages;
+  return [
+    one,
+    two,
+    three,
+    four
+      ? {
+          context: {
+            navGroup: 'blog',
+            navSubGroup: null,
+            order: 99999999999,
+            isPackageIndex: false,
+            pageTitle: 'See more...',
+          },
+          path: `/${navTitle}`,
+        }
+      : null,
+  ].filter(a => a);
+};
+
 export const NavGroup = ({ index, navGroup, pathname }) => {
   const sectionId = `docs-menu-${navGroup.navTitle}`;
 
   const isPageInGroupActive = useMemo(() => {
+    if (pathname === `/${navGroup.navTitle}`) {
+      return true;
+    }
     let paths = [];
 
     navGroup.pages.forEach(i => paths.push(i.path));
@@ -126,6 +156,8 @@ export const NavGroup = ({ index, navGroup, pathname }) => {
     return paths.some(i => i === pathname);
   }, [pathname]);
 
+  const navItems = getTruncatedItems(navGroup, isPageInGroupActive);
+
   return (
     <div key={navGroup.navTitle}>
       <GroupHeading
@@ -133,17 +165,22 @@ export const NavGroup = ({ index, navGroup, pathname }) => {
         index={index}
         className={isPageInGroupActive ? 'docSearch-lvl0' : null}
       >
-        {navGroup.navTitle.replace('-', ' ')}
+        <Link
+          css={{
+            color: colors.N80,
+          }}
+          to={navGroup.navTitle}
+        >
+          {navGroup.navTitle.replace('-', ' ')}
+        </Link>
       </GroupHeading>
       <List aria-labelledby={sectionId}>
-        {navGroup.pages.map(node => {
-          return (
-            <ListItem key={node.path} to={node.path}>
-              {node.context.pageTitle}
-            </ListItem>
-          );
-        })}
-        {navGroup.subNavs.length ? (
+        {navItems.map(node => (
+          <ListItem key={node.path} to={node.path}>
+            {node.context.pageTitle}
+          </ListItem>
+        ))}
+        {isPageInGroupActive && navGroup.subNavs.length ? (
           <li>
             {navGroup.subNavs.map(navGroup => {
               return (

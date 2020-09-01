@@ -29,6 +29,16 @@ const SectionHero = () => (
             Get Started
           </Button>
           <Button
+            appearance="secondary"
+            variant="solid"
+            to="/documentation/"
+            css={{
+              [media.sm]: { marginRight: 4 },
+            }}
+          >
+            Documentation
+          </Button>
+          <Button
             variant="link"
             href="https://github.com/keystonejs/keystone"
             rel="noopener noreferrer"

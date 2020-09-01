@@ -23,8 +23,8 @@ const GROUPS = [
   'blog',
   'tutorials',
   'guides',
+  'API',
   'discussions',
-  'api',
   'list-plugins',
   'road-map',
 ];
@@ -46,8 +46,10 @@ const createDocsPages = async ({ createPage, graphql }) =>
         edges {
           node {
             id
+            excerpt
             fields {
               slug
+              description
               navGroup
               navSubGroup
               workspaceSlug
@@ -78,7 +80,18 @@ const createDocsPages = async ({ createPage, graphql }) =>
       return Boolean(!draft);
     });
 
+    let navGroups = {};
+
     pages.forEach(({ node: { id, fields } }) => {
+      if (fields.navGroup) {
+        if (!navGroups[fields.navGroup]) {
+          navGroups[fields.navGroup] = [{ node: { id, fields } }];
+        } else {
+          navGroups[fields.navGroup].push({ node: { id, fields } });
+        }
+      }
+
+      // navGroups.add(fields.navGroup)
       createPage({
         path: `${fields.slug}`,
         component: path.resolve(`src/templates/docs.js`),
@@ -86,6 +99,16 @@ const createDocsPages = async ({ createPage, graphql }) =>
           mdPageId: id,
           ...fields,
         }, // additional data can be passed via context
+      });
+    });
+
+    Object.entries(navGroups).forEach(([baseSlug, pages]) => {
+      createPaginatedPages({
+        edges: pages,
+        pathPrefix: slugify(baseSlug),
+        createPage: createPage,
+        context: { name: baseSlug },
+        pageTemplate: baseSlug === 'API' ? 'src/templates/apiHome.js' : 'src/templates/pageList.js',
       });
     });
   });
