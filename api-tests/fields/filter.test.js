@@ -43,6 +43,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         if (mod.filterTests) {
           describe(`${mod.name} - Filtering`, () => {
+            beforeAll(() => {
+              if (mod.beforeAll) {
+                mod.beforeAll();
+              }
+            });
+            afterAll(async () => {
+              if (mod.afterAll) {
+                await mod.afterAll();
+              }
+            });
             mod.filterTests(keystoneTestWrapper);
           });
         } else {
