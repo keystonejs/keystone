@@ -7,10 +7,6 @@ import mongoose from 'mongoose';
 // https://mongoosejs.com/docs/migrating_to_5.html#id-getter
 mongoose.set('objectIdGetter', false);
 
-const {
-  Types: { ObjectId },
-} = mongoose;
-
 export class File extends Implementation {
   constructor(path, { adapter }) {
     super(...arguments);
@@ -29,11 +25,7 @@ export class File extends Implementation {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
   gqlQueryInputFields() {
-    return [
-      ...this.equalityInputFields('String'),
-      ...this.stringInputFields('String'),
-      ...this.inInputFields('String'),
-    ];
+    return [...this.equalityInputFields('String'), ...this.inInputFields('String')];
   }
   getFileUploadType() {
     return 'Upload';
@@ -99,7 +91,7 @@ export class File extends Implementation {
       return previousData;
     }
 
-    const newId = new ObjectId();
+    const newId = new mongoose.Types.ObjectId();
 
     const { id, filename, _meta } = await this.fileAdapter.save({
       stream,
@@ -112,10 +104,10 @@ export class File extends Implementation {
     return { id, filename, originalFilename, mimetype, encoding, _meta };
   }
 
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: ${this.getFileUploadType()}`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: ${this.getFileUploadType()}`];
   }
 }
@@ -125,7 +117,6 @@ const CommonFileInterface = superclass =>
     getQueryConditions(dbPath) {
       return {
         ...this.equalityConditions(dbPath),
-        ...this.stringConditions(dbPath),
         ...this.inConditions(dbPath),
       };
     }
@@ -135,7 +126,7 @@ export class MongoFileInterface extends CommonFileInterface(MongooseFieldAdapter
   addToMongooseSchema(schema) {
     const schemaOptions = {
       type: {
-        id: ObjectId,
+        id: mongoose.Types.ObjectId,
         path: String,
         filename: String,
         originalFilename: String,

@@ -1,5 +1,23 @@
 # @arch-ui/day-picker
 
+## 1.0.3
+
+### Patch Changes
+
+- [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+* [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b) [#3439](https://github.com/keystonejs/keystone/pull/3439) Thanks [@renovate](https://github.com/apps/renovate)! - Updated babel dependencies.
+
+- [`fcf632dbb`](https://github.com/keystonejs/keystone/commit/fcf632dbbc610bbf90dc3647f0acdf8c868b2a8d) [#3466](https://github.com/keystonejs/keystone/pull/3466) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `chrono-node` to `^1.4.8`.
+
+- Updated dependencies [[`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e), [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b)]:
+  - @arch-ui/input@0.1.11
+  - @arch-ui/typography@0.0.18
+  - @arch-ui/select@0.1.9
+  - @arch-ui/theme@0.0.11
+
 ## 1.0.2
 
 ### Patch Changes

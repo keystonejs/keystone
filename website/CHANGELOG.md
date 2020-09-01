@@ -1,5 +1,30 @@
 # @keystonejs/website
 
+## 5.3.8
+
+### Patch Changes
+
+- [`890f13834`](https://github.com/keystonejs/keystone/commit/890f1383421f4c3371e240ef1dca2eaaa808cb54) [#3449](https://github.com/keystonejs/keystone/pull/3449) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@reach/router` to `^1.3.4`.
+
+* [`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6) [#3481](https://github.com/keystonejs/keystone/pull/3481) Thanks [@Noviny](https://github.com/Noviny)! - Updated dependencies through a major version - this shouldn't require change by consumers.
+
+- [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+* [`1a5e785a1`](https://github.com/keystonejs/keystone/commit/1a5e785a13b529d6bb32f16b3503fc331a2b700d) [#3446](https://github.com/keystonejs/keystone/pull/3446) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@mapbox/rehype-prism` to `^0.5.0`.
+
+* Updated dependencies [[`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e), [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b)]:
+  - @arch-ui/input@0.1.11
+  - @arch-ui/select@0.1.9
+  - @arch-ui/theme@0.0.11
+
+## 5.3.7
+
+### Patch Changes
+
+- [`bed2d2d8a`](https://github.com/keystonejs/keystone/commit/bed2d2d8a1db821afc2581a9faed673a9f442423) [#3424](https://github.com/keystonejs/keystone/pull/3424) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a redirect from v5.keystonejs.com to just keystonejs.com
+
 ## 5.3.6
 
 ### Patch Changes

@@ -1,5 +1,21 @@
 # @keystonejs/file-adapters
 
+## 7.0.4
+
+### Patch Changes
+
+- [`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6) [#3481](https://github.com/keystonejs/keystone/pull/3481) Thanks [@Noviny](https://github.com/Noviny)! - Updated dependencies through a major version - this shouldn't require change by consumers.
+
+* [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+## 7.0.3
+
+### Patch Changes
+
+- [`2f76473ae`](https://github.com/keystonejs/keystone/commit/2f76473ae045b1d8b48688ac6de842c51a2fc345) [#3393](https://github.com/keystonejs/keystone/pull/3393) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed S3 adapter issue on windows where the wrong path character was being used due to `path.join`
+
 ## 7.0.2
 
 ### Patch Changes

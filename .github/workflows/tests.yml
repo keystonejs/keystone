@@ -1,0 +1,159 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  jest:
+    name: Jest
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:9.6.5
+        env:
+          POSTGRES_USER: keystone5
+          POSTGRES_PASSWORD: k3yst0n3
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+    env:
+      DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/test_db'
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [0, 1, 2, 3, 4]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js 10.x
+        uses: actions/setup-node@main
+        with:
+          node-version: 10.x
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Dependencies
+        run: yarn
+      - run: psql -d $DATABASE_URL -c "CREATE SCHEMA keystone;"
+      - name: Unit tests
+        run: yarn jest --ci --maxWorkers=1
+        env:
+          CI_NODE_TOTAL: 5
+          CI_NODE_INDEX: ${{ matrix.index }}
+          IFRAMELY_API_KEY: ${{ secrets.IFRAMELY_API_KEY }}
+          UNSPLASH_KEY: ${{ secrets.UNSPLASH_KEY}}
+          UNSPLASH_SECRET: ${{ secrets.UNSPLASH_SECRET}}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+
+  linting:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js 10.x
+        uses: actions/setup-node@main
+        with:
+          node-version: 10.x
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Dependencies
+        run: yarn
+      - name: ESLint
+        run: yarn lint:eslint
+      - name: Prettier
+        run: yarn lint:prettier
+      - name: Remark
+        run: yarn lint:markdown
+      - name: Preconstruct
+        run: yarn build
+      - name: TypeScript
+        run: yarn lint:types
+  cypress:
+    name: Cypress tests
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:4.0.0
+        ports:
+          - 27017:27017
+    env:
+      CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
+      CLOUDINARY_KEY: $CLOUDINARY_KEY
+      CLOUDINARY_SECRET: $CLOUDINARY_SECRET
+      PORT: 3000
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - test-projects/basic
+          - test-projects/login
+          - test-projects/access-control
+          - test-projects/client-validation
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js 10.x
+        uses: actions/setup-node@main
+        with:
+          node-version: 10.x
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Dependencies
+        run: yarn
+      - run: yarn --cwd ${{ matrix.project }} cypress install
+      - run: yarn --cwd ${{ matrix.project }} cypress:run:ci
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-videos
+          path: cypress/videos

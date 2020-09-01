@@ -103,7 +103,7 @@ Next, let's define our custom mutation to actually handle the view count increme
 incrementPageViews(id: ID!): IncrementPageViewsOutput
 ```
 
-This defines a mutation called `incrementPageViews` that accepts a single mandatory `id` argument of type `ID` (an internal GraphQL type). This is the id of the specific `Post` whose views you which to increment. Finally, the mutation returns an object of our custom `IncrementPageViewsOutput` type.
+This defines a mutation called `incrementPageViews` that accepts a single mandatory `id` argument of type `ID` (an internal GraphQL type). This is the id of the specific `Post` whose views you wish to increment. Finally, the mutation returns an object of our custom `IncrementPageViewsOutput` type.
 
 Now, to wire it in:
 

@@ -1,5 +1,17 @@
 # @keystonejs/list-plugins
 
+## 7.1.0
+
+### Minor Changes
+
+- [`84116f7c7`](https://github.com/keystonejs/keystone/commit/84116f7c75637a60936a130f104ac748c445acb5) [#3425](https://github.com/keystonejs/keystone/pull/3425) Thanks [@timleslie](https://github.com/timleslie)! - Added a `logging` plugin to log mutations in a Keystone system.
+
+### Patch Changes
+
+- Updated dependencies [[`d38c9174f`](https://github.com/keystonejs/keystone/commit/d38c9174f8146ad6e268be87cf5d54d5074bc593), [`e8b2e4772`](https://github.com/keystonejs/keystone/commit/e8b2e477206acffb143f19fb14be1e3b4cd0eb91)]:
+  - @keystonejs/fields@17.0.0
+  - @keystonejs/fields-authed-relationship@1.0.11
+
 ## 7.0.5
 
 ### Patch Changes

@@ -1,12 +1,13 @@
-import { matchFilter } from '@keystonejs/test-utils';
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import Text from '../Text';
 import DateTime from './';
 
 export const name = 'DateTime';
 export { DateTime as type };
-export const exampleValue = '"1990-12-31T12:34:56.789+01:23"';
-export const exampleValue2 = '"2000-01-20T00:08:00.000+10:00"';
+export const exampleValue = '1990-12-31T12:34:56.789+01:23';
+export const exampleValue2 = '2000-01-20T00:08:00.000+10:00';
 export const supportsUnique = true;
+export const fieldName = 'lastOnline';
 
 export const getTestFields = () => {
   return {
@@ -26,14 +27,16 @@ export const initItems = () => {
 };
 
 export const filterTests = withKeystone => {
-  const match = (keystone, queryArgs, expected, forceSortBy = 'name') =>
-    matchFilter({
-      keystone,
-      queryArgs,
-      fieldSelection: 'name lastOnline',
-      expected,
-      sortKey: forceSortBy,
-    });
+  const match = async (keystone, where, expected, sortBy = 'name_ASC') =>
+    expect(
+      await getItems({
+        keystone,
+        listKey: 'Test',
+        where,
+        returnFields: 'name lastOnline',
+        sortBy,
+      })
+    ).toEqual(expected);
 
   test(
     'No filter',
@@ -51,7 +54,7 @@ export const filterTests = withKeystone => {
   test(
     'Empty filter',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { }', [
+      match(keystone, {}, [
         { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
         { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
         { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
@@ -64,7 +67,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: lastOnline',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { lastOnline: "2000-01-20T00:08:00.000+10:00" }', [
+      match(keystone, { lastOnline: '2000-01-20T00:08:00.000+10:00' }, [
         { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
       ])
     )
@@ -73,7 +76,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: lastOnline_not',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { lastOnline_not: "2000-01-20T00:08:00.000+10:00" }', [
+      match(keystone, { lastOnline_not: '2000-01-20T00:08:00.000+10:00' }, [
         { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
         { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
         { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
@@ -85,7 +88,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: lastOnline_not null',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { lastOnline_not: null }', [
+      match(keystone, { lastOnline_not: null }, [
         { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
         { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
         { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
@@ -97,7 +100,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: lastOnline_lt',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { lastOnline_lt: "1950-10-01T23:59:59.999-10:00" }', [
+      match(keystone, { lastOnline_lt: '1950-10-01T23:59:59.999-10:00' }, [
         { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
       ])
     )
@@ -106,7 +109,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: lastOnline_lte',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { lastOnline_lte: "1950-10-01T23:59:59.999-10:00" }', [
+      match(keystone, { lastOnline_lte: '1950-10-01T23:59:59.999-10:00' }, [
         { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
         { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
       ])
@@ -116,7 +119,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: lastOnline_gt',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { lastOnline_gt: "1950-10-01T23:59:59.999-10:00" }', [
+      match(keystone, { lastOnline_gt: '1950-10-01T23:59:59.999-10:00' }, [
         { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
         { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
       ])
@@ -126,7 +129,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: lastOnline_gte',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { lastOnline_gte: "1950-10-01T23:59:59.999-10:00" }', [
+      match(keystone, { lastOnline_gte: '1950-10-01T23:59:59.999-10:00' }, [
         { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
         { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
         { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
@@ -136,13 +139,13 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: lastOnline_in (empty list)',
-    withKeystone(({ keystone }) => match(keystone, 'where: { lastOnline_in: [] }', []))
+    withKeystone(({ keystone }) => match(keystone, { lastOnline_in: [] }, []))
   );
 
   test(
     'Filter: lastOnline_not_in (empty list)',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { lastOnline_not_in: [] }', [
+      match(keystone, { lastOnline_not_in: [] }, [
         { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
         { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
         { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
@@ -157,7 +160,13 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        'where: { lastOnline_in: ["1990-12-31T12:34:56.789+01:23", "2000-01-20T00:08:00.000+10:00", "1950-10-01T23:59:59.999-10:00"] }',
+        {
+          lastOnline_in: [
+            '1990-12-31T12:34:56.789+01:23',
+            '2000-01-20T00:08:00.000+10:00',
+            '1950-10-01T23:59:59.999-10:00',
+          ],
+        },
         [
           { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
           { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
@@ -172,7 +181,13 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone }) =>
       match(
         keystone,
-        'where: { lastOnline_not_in: ["1990-12-31T12:34:56.789+01:23", "2000-01-20T00:08:00.000+10:00", "1950-10-01T23:59:59.999-10:00"] }',
+        {
+          lastOnline_not_in: [
+            '1990-12-31T12:34:56.789+01:23',
+            '2000-01-20T00:08:00.000+10:00',
+            '1950-10-01T23:59:59.999-10:00',
+          ],
+        },
         [
           { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
           { name: 'person5', lastOnline: null },
@@ -184,14 +199,14 @@ export const filterTests = withKeystone => {
   test(
     'Filter: lastOnline_in null',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { lastOnline_in: [null] }', [{ name: 'person5', lastOnline: null }])
+      match(keystone, { lastOnline_in: [null] }, [{ name: 'person5', lastOnline: null }])
     )
   );
 
   test(
     'Filter: lastOnline_not_in null',
     withKeystone(({ keystone }) =>
-      match(keystone, 'where: { lastOnline_not_in: [null] }', [
+      match(keystone, { lastOnline_not_in: [null] }, [
         { name: 'person1', lastOnline: '1990-12-31T12:34:56.789+01:23' },
         { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
         { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
@@ -205,7 +220,7 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone, adapterName }) =>
       match(
         keystone,
-        'sortBy: lastOnline_ASC',
+        undefined,
         adapterName === 'mongoose'
           ? [
               { name: 'person5', lastOnline: null },
@@ -221,7 +236,7 @@ export const filterTests = withKeystone => {
               { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
               { name: 'person5', lastOnline: null },
             ],
-        null
+        'lastOnline_ASC'
       )
     )
   );
@@ -231,7 +246,7 @@ export const filterTests = withKeystone => {
     withKeystone(({ keystone, adapterName }) =>
       match(
         keystone,
-        'sortBy: lastOnline_DESC',
+        undefined,
         adapterName === 'mongoose'
           ? [
               { name: 'person2', lastOnline: '2000-01-20T00:08:00.000+10:00' },
@@ -247,7 +262,7 @@ export const filterTests = withKeystone => {
               { name: 'person3', lastOnline: '1950-10-01T23:59:59.999-10:00' },
               { name: 'person4', lastOnline: '1666-04-12T00:08:00.000+10:00' },
             ],
-        null
+        'lastOnline_DESC'
       )
     )
   );

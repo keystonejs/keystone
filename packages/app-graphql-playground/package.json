@@ -1,24 +1,24 @@
 {
   "name": "@keystonejs/app-graphql-playground",
   "description": "KeystoneJS GraphQL Playground App.",
-  "version": "5.1.5",
+  "version": "5.1.6",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@apollographql/graphql-playground-html": "^1.6.24",
+    "@apollographql/graphql-playground-html": "^1.6.26",
     "@apollographql/graphql-playground-react": "^1.7.32",
     "@keystonejs/logger": "^5.1.2",
-    "@keystonejs/session": "^8.0.0",
-    "@keystonejs/utils": "^5.4.1",
-    "body-parser": "^1.18.2",
-    "chalk": "^2.4.2",
+    "@keystonejs/session": "^8.1.1",
+    "@keystonejs/utils": "^5.4.3",
+    "body-parser": "^1.19.0",
+    "chalk": "^4.1.0",
     "falsey": "^1.0.0",
-    "graphql-tag": "^2.10.3",
+    "graphql-tag": "^2.11.0",
     "object-hash": "^1.3.1",
-    "terminal-link": "^1.3.0"
+    "terminal-link": "^2.1.1"
   },
   "peerDependencies": {
     "express": "^4.17.1"

@@ -1,11 +1,15 @@
-const { multiAdapterRunners, graphqlRequest } = require('@keystonejs/test-utils');
+const { multiAdapterRunners } = require('@keystonejs/test-utils');
+const { runCustomQuery } = require('@keystonejs/server-side-graphql-client');
 
 const timeQuery = async ({ keystone, query, variables, repeat = 1 }) => {
   const t0_us = process.hrtime.bigint();
   const allErrors = [];
   for (let i = 0; i < repeat; i++) {
-    const { errors } = await graphqlRequest({ keystone, query, variables });
-    if (errors) allErrors.push(errors);
+    try {
+      await runCustomQuery({ keystone, query, variables });
+    } catch (error) {
+      allErrors.push(error);
+    }
   }
   const t1_us = process.hrtime.bigint();
   if (allErrors.length) {

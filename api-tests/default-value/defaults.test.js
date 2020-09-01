@@ -1,7 +1,8 @@
+const { createItem } = require('@keystonejs/server-side-graphql-client');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 const { Text } = require('@keystonejs/fields');
 
-const setupList = (adapterName, fields) =>
+const setupList = (adapterName, fields) => () =>
   setupServer({
     adapterName,
     createLists: keystone => {
@@ -12,179 +13,114 @@ const setupList = (adapterName, fields) =>
 describe('defaultValue field config', () => {
   multiAdapterRunners().map(({ runner, adapterName }) =>
     describe(`Adapter: ${adapterName}`, () => {
-      it('Has no default by default', () => {
-        return runner(
-          () =>
-            setupList(adapterName, {
-              name: { type: Text },
-            }),
-          ({ keystone }) =>
-            keystone
-              .executeGraphQL({
-                query: `mutation { createUser(data: {} ) { name } }`,
-              })
-              .then(({ data, errors }) => {
-                expect(errors).toBe(undefined);
-                expect(data.createUser).toMatchObject({
-                  name: null,
-                });
-              })
-        )();
-      });
+      test(
+        'Has no default by default',
+        runner(setupList(adapterName, { name: { type: Text } }), async ({ keystone }) => {
+          const listKey = 'User';
+          const result = await createItem({ keystone, listKey, item: {}, returnFields: 'name' });
+          expect(result).toMatchObject({ name: null });
+        })
+      );
 
-      it('Sets undefined as a default', () => {
-        return runner(
-          () =>
-            setupList(adapterName, {
-              name: { type: Text, defaultValue: undefined },
-            }),
-          ({ keystone }) =>
-            keystone
-              .executeGraphQL({
-                query: `mutation { createUser(data: {} ) { name } }`,
-              })
-              .then(({ data, errors }) => {
-                expect(errors).toBe(undefined);
-                expect(data.createUser).toMatchObject({
-                  name: null,
-                });
-              })
-        )();
-      });
+      test(
+        'Sets undefined as a default',
+        runner(
+          setupList(adapterName, { name: { type: Text, defaultValue: undefined } }),
+          async ({ keystone }) => {
+            const listKey = 'User';
+            const result = await createItem({ keystone, listKey, item: {}, returnFields: 'name' });
+            expect(result).toMatchObject({ name: null });
+          }
+        )
+      );
 
-      it('Sets null as a default', () => {
-        return runner(
-          () =>
-            setupList(adapterName, {
-              name: { type: Text, defaultValue: null },
-            }),
-          ({ keystone }) =>
-            keystone
-              .executeGraphQL({
-                query: `mutation { createUser(data: {} ) { name } }`,
-              })
-              .then(({ data, errors }) => {
-                expect(errors).toBe(undefined);
-                expect(data.createUser).toMatchObject({
-                  name: null,
-                });
-              })
-        )();
-      });
+      test(
+        'Sets null as a default',
+        runner(
+          setupList(adapterName, { name: { type: Text, defaultValue: null } }),
+          async ({ keystone }) => {
+            const listKey = 'User';
+            const result = await createItem({ keystone, listKey, item: {}, returnFields: 'name' });
+            expect(result).toMatchObject({ name: null });
+          }
+        )
+      );
 
-      it('Sets a scalar as a default', () => {
-        return runner(
-          () =>
-            setupList(adapterName, {
-              name: { type: Text, defaultValue: 'hello' },
-            }),
-          ({ keystone }) =>
-            keystone
-              .executeGraphQL({
-                query: `mutation { createUser(data: {} ) { name } }`,
-              })
-              .then(({ data, errors }) => {
-                expect(errors).toBe(undefined);
-                expect(data.createUser).toMatchObject({
-                  name: 'hello',
-                });
-              })
-        )();
-      });
+      test(
+        'Sets a scalar as a default',
+        runner(
+          setupList(adapterName, { name: { type: Text, defaultValue: 'hello' } }),
+          async ({ keystone }) => {
+            const listKey = 'User';
+            const result = await createItem({ keystone, listKey, item: {}, returnFields: 'name' });
+            expect(result).toMatchObject({ name: 'hello' });
+          }
+        )
+      );
 
-      it('executes a function to get default', () => {
-        return runner(
-          () =>
-            setupList(adapterName, {
-              name: { type: Text, defaultValue: () => 'foobar' },
-            }),
-          ({ keystone }) =>
-            keystone
-              .executeGraphQL({
-                query: `mutation { createUser(data: {} ) { name } }`,
-              })
-              .then(({ data, errors }) => {
-                expect(errors).toBe(undefined);
-                expect(data.createUser).toMatchObject({
-                  name: 'foobar',
-                });
-              })
-        )();
-      });
+      test(
+        'executes a function to get default',
+        runner(
+          setupList(adapterName, { name: { type: Text, defaultValue: () => 'foobar' } }),
+          async ({ keystone }) => {
+            const listKey = 'User';
+            const result = await createItem({ keystone, listKey, item: {}, returnFields: 'name' });
+            expect(result).toMatchObject({ name: 'foobar' });
+          }
+        )
+      );
 
-      it('handles promises returned from function', () => {
-        return runner(
-          () =>
-            setupList(adapterName, {
-              name: { type: Text, defaultValue: () => Promise.resolve('zippity') },
-            }),
-          ({ keystone }) =>
-            keystone
-              .executeGraphQL({
-                query: `mutation { createUser(data: {} ) { name } }`,
-              })
-              .then(({ data, errors }) => {
-                expect(errors).toBe(undefined);
-                expect(data.createUser).toMatchObject({
-                  name: 'zippity',
-                });
-              })
-        )();
-      });
+      test(
+        'handles promises returned from function',
+        runner(
+          setupList(adapterName, {
+            name: { type: Text, defaultValue: () => Promise.resolve('zippity') },
+          }),
+          async ({ keystone }) => {
+            const listKey = 'User';
+            const result = await createItem({ keystone, listKey, item: {}, returnFields: 'name' });
+            expect(result).toMatchObject({ name: 'zippity' });
+          }
+        )
+      );
 
-      it('executes the function with the correct parameters', () => {
+      test('executes the function with the correct parameters', () => {
         const defaultValue = jest.fn();
         return runner(
-          () =>
-            setupList(adapterName, {
-              name: { type: Text, defaultValue },
-            }),
-          ({ keystone }) =>
-            keystone
-              .executeGraphQL({
-                query: `mutation { createUser(data: {} ) { name } }`,
+          setupList(adapterName, { name: { type: Text, defaultValue } }),
+          async ({ keystone }) => {
+            await createItem({ keystone, listKey: 'User', item: {} });
+            expect(defaultValue).toHaveBeenCalledTimes(1);
+            expect(defaultValue).toHaveBeenCalledWith(
+              expect.objectContaining({
+                context: expect.any(Object),
+                originalInput: expect.any(Object),
               })
-              .then(({ errors }) => {
-                expect(errors).toBe(undefined);
-                expect(defaultValue).toHaveBeenCalledTimes(1);
-                expect(defaultValue).toHaveBeenCalledWith(
-                  expect.objectContaining({
-                    context: expect.any(Object),
-                    originalInput: expect.any(Object),
-                  })
-                );
-              })
+            );
+          }
         )();
       });
 
-      it('passes the originalInput', () => {
+      test('passes the originalInput', () => {
         const defaultValue = jest.fn(({ originalInput }) => `${originalInput.salutation} X`);
         return runner(
-          () =>
-            setupList(adapterName, {
-              name: { type: Text, defaultValue },
-              salutation: { type: Text },
-            }),
-          ({ keystone }) =>
-            keystone
-              .executeGraphQL({
-                query: `mutation { createUser(data: { salutation: "Doctor" } ) { name } }`,
+          setupList(adapterName, {
+            name: { type: Text, defaultValue },
+            salutation: { type: Text },
+          }),
+          async ({ keystone }) => {
+            const item = { salutation: 'Doctor' };
+            const listKey = 'User';
+            const result = await createItem({ keystone, listKey, item, returnFields: 'name' });
+            expect(defaultValue).toHaveBeenCalledTimes(1);
+            expect(defaultValue).toHaveBeenCalledWith(
+              expect.objectContaining({
+                context: expect.any(Object),
+                originalInput: { salutation: 'Doctor' },
               })
-              .then(({ data, errors }) => {
-                expect(errors).toBe(undefined);
-                expect(defaultValue).toHaveBeenCalledTimes(1);
-                expect(defaultValue).toHaveBeenCalledWith(
-                  expect.objectContaining({
-                    context: expect.any(Object),
-                    originalInput: {
-                      salutation: 'Doctor',
-                    },
-                  })
-                );
-                expect(data.createUser).toMatchObject({
-                  name: 'Doctor X',
-                });
-              })
+            );
+            expect(result).toMatchObject({ name: 'Doctor X' });
+          }
         )();
       });
     })

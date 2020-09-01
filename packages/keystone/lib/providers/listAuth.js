@@ -5,17 +5,20 @@ const { throwAccessDenied, ValidationFailureError } = require('../ListTypes/grap
 const graphqlLogger = logger('graphql');
 
 class HookManager {
-  constructor({ name, hooks = {} }) {
+  constructor({ name, listKey, hooks = {} }) {
     this.name = name;
     this.hooks = hooks;
+    this.listKey = listKey;
   }
 
   async resolveAuthInput({ context, operation, originalInput }) {
+    const { listKey } = this;
     let resolvedData = originalInput;
 
     if (this.hooks.resolveAuthInput) {
+      const args = { context, originalInput, operation, listKey };
       // And run any list-level hook
-      resolvedData = await this.hooks.resolveAuthInput({ context, originalInput, operation });
+      resolvedData = await this.hooks.resolveAuthInput(args);
       if (typeof resolvedData !== 'object') {
         const method = `${this.name}.hooks.resolveAuthInput()`;
         throw new Error(
@@ -29,7 +32,8 @@ class HookManager {
   }
 
   async validateAuthInput({ resolvedData, context, operation, originalInput }) {
-    const args = { resolvedData, context, originalInput, operation };
+    const { listKey } = this;
+    const args = { resolvedData, context, originalInput, operation, listKey };
 
     if (this.hooks['validateAuthInput']) {
       const listValidationErrors = [];
@@ -55,7 +59,8 @@ class HookManager {
   }
 
   async beforeAuth({ resolvedData, context, operation, originalInput }) {
-    const args = { resolvedData, context, originalInput, operation };
+    const { listKey } = this;
+    const args = { resolvedData, context, originalInput, operation, listKey };
     if (this.hooks.beforeAuth) await this.hooks.beforeAuth(args);
   }
 
@@ -69,12 +74,24 @@ class HookManager {
     resolvedData,
     context,
   }) {
-    const args = { resolvedData, context, operation, originalInput, item, success, message, token };
+    const { listKey } = this;
+    const args = {
+      resolvedData,
+      context,
+      operation,
+      originalInput,
+      item,
+      success,
+      message,
+      token,
+      listKey,
+    };
     if (this.hooks.afterAuth) await this.hooks.afterAuth(args);
   }
 
   async beforeUnauth({ operation, context }) {
-    const args = { context, operation };
+    const { listKey } = this;
+    const args = { context, operation, listKey };
     if (this.hooks.beforeUnauth) await this.hooks.beforeUnauth(args);
   }
 
@@ -99,7 +116,11 @@ class ListAuthProvider {
       unauthenticateOutputName: `unauthenticate${itemQueryName}Output`,
       updateAuthenticatedMutationName: `updateAuthenticated${itemQueryName}`,
     };
-    this.hookManager = new HookManager({ name: authStrategy.constructor.name, hooks });
+    this.hookManager = new HookManager({
+      name: authStrategy.constructor.name,
+      hooks,
+      listKey: list.key,
+    });
     // Record GQL names in the strategy
     authStrategy.gqlNames = this.gqlNames;
   }

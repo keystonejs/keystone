@@ -1,18 +1,18 @@
 {
   "name": "@keystonejs/app-graphql",
   "description": "KeystoneJS GraphQL App.",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystonejs/app-graphql-playground": "^5.1.5",
+    "@keystonejs/app-graphql-playground": "^5.1.6",
     "@keystonejs/logger": "^5.1.2",
-    "@keystonejs/session": "^8.0.0",
-    "@keystonejs/utils": "^5.4.2",
-    "graphql": "^14.6.0",
+    "@keystonejs/session": "^8.1.1",
+    "@keystonejs/utils": "^5.4.3",
+    "graphql": "^14.7.0",
     "nanoassert": "^2.0.0"
   },
   "peerDependencies": {

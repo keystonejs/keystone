@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/fields-location-google",
   "description": "KeystoneJS LocationGoogle field type.",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-location-google",
@@ -10,18 +10,22 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@arch-ui/fields": "^3.0.3",
-    "@arch-ui/select": "^0.1.8",
-    "@babel/runtime": "^7.8.4",
-    "@emotion/core": "^10.0.28",
-    "@keystonejs/adapter-knex": "^11.0.0",
-    "@keystonejs/adapter-mongoose": "^9.0.0",
-    "@keystonejs/fields": "^16.0.0",
+    "@arch-ui/fields": "^3.0.4",
+    "@arch-ui/select": "^0.1.9",
+    "@babel/runtime": "^7.11.2",
+    "@emotion/core": "^10.0.35",
+    "@keystonejs/adapter-knex": "^11.0.3",
+    "@keystonejs/adapter-mongoose": "^9.0.4",
+    "@keystonejs/fields": "^17.1.0",
     "google-maps-react": "^2.0.6",
-    "mongoose": "^5.9.11",
-    "node-fetch": "^2.3.0",
+    "mongoose": "~5.9.11",
+    "node-fetch": "^2.6.0",
     "react": "^16.13.1",
     "react-toast-notifications": "^2.4.0"
+  },
+  "devDependencies": {
+    "@keystonejs/server-side-graphql-client": "*",
+    "dotenv": "^8.2.0"
   },
   "preconstruct": {
     "entrypoints": [

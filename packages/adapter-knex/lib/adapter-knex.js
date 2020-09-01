@@ -819,10 +819,12 @@ class QueryBuilder {
           const otherListAdapter = listAdapter.getListAdapterByKey(otherList);
           const subQuery = listAdapter._query();
           let otherTableAlias;
+          let selectCol;
           if (cardinality === '1:N' || cardinality === 'N:1') {
             otherTableAlias = subBaseTableAlias;
+            selectCol = columnName;
             subQuery
-              .select(`${subBaseTableAlias}.${columnName}`)
+              .select(`${subBaseTableAlias}.${selectCol}`)
               .from(`${tableName} as ${subBaseTableAlias}`);
             // We need to filter out nulls before passing back to the top level query
             // otherwise postgres will give very incorrect answers.
@@ -830,8 +832,9 @@ class QueryBuilder {
           } else {
             const { near, far } = listAdapter._getNearFar(fieldAdapter);
             otherTableAlias = `${subBaseTableAlias}__${p}`;
+            selectCol = near;
             subQuery
-              .select(`${subBaseTableAlias}.${near}`)
+              .select(`${subBaseTableAlias}.${selectCol}`)
               .from(`${tableName} as ${subBaseTableAlias}`);
             subQuery.innerJoin(
               `${otherListAdapter.tableName} as ${otherTableAlias}`,
@@ -869,10 +872,15 @@ class QueryBuilder {
             );
           }
 
+          // Ensure there therwhereIn/whereNotIn query is run against
+          // a table with exactly one column.
+          const subSubQuery = listAdapter.parentAdapter.knex.raw(
+            `SELECT "${selectCol}" FROM (${subQuery}) AS unused_alias`
+          );
           if (constraintType === 'some') {
-            whereJoiner(q => q.whereIn(`${tableAlias}.id`, subQuery));
+            whereJoiner(q => q.whereIn(`${tableAlias}.id`, subSubQuery));
           } else {
-            whereJoiner(q => q.whereNotIn(`${tableAlias}.id`, subQuery));
+            whereJoiner(q => q.whereNotIn(`${tableAlias}.id`, subSubQuery));
           }
         }
       }

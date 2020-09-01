@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/app-nuxt",
   "description": "KeystoneJS Nuxt.js App.",
-  "version": "5.1.3",
+  "version": "5.1.4",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "nuxt": "^2.11.0"
+    "nuxt": "^2.14.3"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/app-nuxt"
 }

@@ -1,5 +1,6 @@
 const { Text, Relationship } = require('@keystonejs/fields');
-const { setupServer, graphqlRequest } = require('@keystonejs/test-utils');
+const { createItem, createItems } = require('@keystonejs/server-side-graphql-client');
+const { setupServer } = require('@keystonejs/test-utils');
 const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
 
 function setupKeystone(adapterName) {
@@ -25,15 +26,10 @@ const group = new FixtureGroup(setupKeystone);
 
 group.add({
   fn: async ({ keystone, adapterName }) => {
-    const { data } = await graphqlRequest({
+    const { id: userId } = await createItem({
       keystone,
-      query: `
-    mutation {
-      createUser(data: { name: "test", posts: { create: [] } }) { id }
-    }`,
+      item: { name: 'test', posts: { create: [] } },
     });
-    const userId = data.createUser.id;
-
     const query = `query getPost($userId: ID!) { User(where: { id: $userId }) { id } }`;
     const { time, success } = await timeQuery({ keystone, query, variables: { userId } });
     console.log({ adapterName, time, success, name: 'Cold read with relationship, N=1' });
@@ -42,15 +38,10 @@ group.add({
 
 group.add({
   fn: async ({ keystone, adapterName }) => {
-    const { data } = await graphqlRequest({
+    const { id: userId } = await createItem({
       keystone,
-      query: `
-    mutation {
-      createUser(data: { name: "test", posts: { create: [] } }) { id }
-    }`,
+      item: { name: 'test', posts: { create: [] } },
     });
-    const userId = data.createUser.id;
-
     const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
     const { time, success } = await timeQuery({
       keystone,
@@ -68,17 +59,11 @@ range(14).forEach(i => {
   group.add({
     fn: async ({ keystone, adapterName }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const variables = { users: populate(N, i => ({ data: { name: `test${i}`, posts } })) };
-      const { data } = await graphqlRequest({
+      const users = await createItems({
         keystone,
-        query: `
-      mutation createMany($users: [UsersCreateInput]){
-        createUsers(data: $users) { id }
-      }`,
-        variables,
+        item: populate(N, i => ({ data: { name: `test${i}`, posts } })),
       });
-
-      const userId = data.createUsers[0].id;
+      const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
       const { time, success } = await timeQuery({
         keystone,
@@ -103,18 +88,11 @@ range(k).forEach(i => {
   group.add({
     fn: async ({ keystone, adapterName }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const variables = { users: populate(N, i => ({ data: { name: `test${i}`, posts } })) };
-
-      const { data } = await graphqlRequest({
+      const users = await createItems({
         keystone,
-        query: `
-      mutation createMany($users: [UsersCreateInput]){
-        createUsers(data: $users) { id }
-      }`,
-        variables,
+        item: populate(N, i => ({ data: { name: `test${i}`, posts } })),
       });
-
-      const userId = data.createUsers[0].id;
+      const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
       const { time, success } = await timeQuery({
         keystone,
@@ -138,17 +116,11 @@ range(14).forEach(i => {
   group.add({
     fn: async ({ keystone, adapterName }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const variables = { users: populate(N, i => ({ data: { name: `test${i}`, posts } })) };
-      const { data } = await graphqlRequest({
+      const users = await createItems({
         keystone,
-        query: `
-      mutation createMany($users: [UsersCreateInput]){
-        createUsers(data: $users) { id }
-      }`,
-        variables,
+        item: populate(N, i => ({ data: { name: `test${i}`, posts } })),
       });
-
-      const userId = data.createUsers[0].id;
+      const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id posts { id } } }`;
       const { time, success } = await timeQuery({
         keystone,
@@ -172,18 +144,11 @@ range(k).forEach(i => {
   group.add({
     fn: async ({ keystone, adapterName }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const variables = { users: populate(N, i => ({ data: { name: `test${i}`, posts } })) };
-
-      const { data } = await graphqlRequest({
+      const users = await createItems({
         keystone,
-        query: `
-      mutation createMany($users: [UsersCreateInput]){
-        createUsers(data: $users) { id }
-      }`,
-        variables,
+        item: populate(N, i => ({ data: { name: `test${i}`, posts } })),
       });
-
-      const userId = data.createUsers[0].id;
+      const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id posts { id } } }`;
       const { time, success } = await timeQuery({
         keystone,

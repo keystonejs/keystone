@@ -1,5 +1,12 @@
 # @arch-ui/common
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies [[`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b)]:
+  - @arch-ui/theme@0.0.11
+
 ## 0.0.11
 
 ### Patch Changes

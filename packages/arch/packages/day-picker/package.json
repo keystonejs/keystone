@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/day-picker",
   "description": "Day Picker UI as used in @keystonejs Admin UI.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/day-picker.cjs.js",
@@ -12,19 +12,19 @@
     "react": "^16.13.1"
   },
   "dependencies": {
-    "@arch-ui/input": "^0.1.9",
-    "@arch-ui/select": "^0.1.8",
-    "@arch-ui/theme": "^0.0.10",
-    "@arch-ui/typography": "^0.0.17",
-    "@babel/runtime": "^7.8.4",
-    "@emotion/core": "^10.0.28",
+    "@arch-ui/input": "^0.1.11",
+    "@arch-ui/select": "^0.1.9",
+    "@arch-ui/theme": "^0.0.11",
+    "@arch-ui/typography": "^0.0.18",
+    "@babel/runtime": "^7.11.2",
+    "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "@primer/octicons-react": "^10.0.0",
-    "chrono-node": "^1.4.6",
-    "date-fns": "^2.14.0",
+    "@primer/octicons-react": "^10.1.0",
+    "chrono-node": "^1.4.8",
+    "date-fns": "^2.15.0",
     "intersection-observer": "^0.10.0",
-    "moment": "^2.24.0",
-    "react-window": "^1.7.0"
+    "moment": "^2.27.0",
+    "react-window": "^1.8.5"
   },
   "module": "dist/day-picker.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/day-picker"

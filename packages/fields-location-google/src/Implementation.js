@@ -9,10 +9,6 @@ import fetch from 'node-fetch';
 // https://github.com/Automattic/mongoose/blob/master/migrating_to_5.md#checking-if-a-path-is-populated
 mongoose.set('objectIdGetter', false);
 
-const {
-  Types: { ObjectId },
-} = mongoose;
-
 export class LocationGoogleImplementation extends Implementation {
   constructor(_, { googleMapsKey }) {
     super(...arguments);
@@ -43,11 +39,7 @@ export class LocationGoogleImplementation extends Implementation {
   }
 
   gqlQueryInputFields() {
-    return [
-      ...this.equalityInputFields('String'),
-      ...this.stringInputFields('String'),
-      ...this.inInputFields('String'),
-    ];
+    return [...this.equalityInputFields('String'), ...this.inInputFields('String')];
   }
 
   getGqlAuxTypes() {
@@ -103,7 +95,7 @@ export class LocationGoogleImplementation extends Implementation {
       const { place_id, formatted_address } = response.results[0];
       const { lat, lng } = response.results[0].geometry.location;
       return {
-        id: new ObjectId(),
+        id: new mongoose.Types.ObjectId(),
         googlePlaceID: place_id,
         formattedAddress: formatted_address,
         lat: lat,
@@ -114,11 +106,11 @@ export class LocationGoogleImplementation extends Implementation {
     return null;
   }
 
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
 
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
 }
@@ -128,7 +120,6 @@ const CommonLocationInterface = superclass =>
     getQueryConditions(dbPath) {
       return {
         ...this.equalityConditions(dbPath),
-        ...this.stringConditions(dbPath),
         ...this.inConditions(dbPath),
       };
     }
@@ -138,7 +129,7 @@ export class MongoLocationGoogleInterface extends CommonLocationInterface(Mongoo
   addToMongooseSchema(schema) {
     const schemaOptions = {
       type: {
-        id: ObjectId,
+        id: mongoose.Types.ObjectId,
         googlePlaceID: String,
         formattedAddress: String,
         lat: Number,

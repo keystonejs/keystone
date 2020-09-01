@@ -74,11 +74,7 @@ export class Unsplash extends Implementation {
 
   // Filter based on Unsplash Image IDs
   gqlQueryInputFields() {
-    return [
-      ...this.equalityInputFields('String'),
-      ...this.stringInputFields('String'),
-      ...this.inInputFields('String'),
-    ];
+    return [...this.equalityInputFields('String'), ...this.inInputFields('String')];
   }
 
   getGqlAuxTypes() {
@@ -253,10 +249,10 @@ export class Unsplash extends Implementation {
     return transformImageFromApiToKs5(apiResponse, { includeId: true });
   }
 
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
 }
@@ -265,9 +261,8 @@ const CommonUnsplashInterface = superclass =>
   class extends superclass {
     getQueryConditions(dbPath) {
       return {
-        ...this.equalityConditions(dbPath, ({ unsplashId }) => unsplashId),
-        ...this.stringConditions(dbPath, ({ unsplashId }) => unsplashId),
-        ...this.inConditions(dbPath, ({ unsplashId }) => unsplashId),
+        ...this.equalityConditions(dbPath, val => (val ? val.unsplashId : null)),
+        ...this.inConditions(dbPath, val => (val ? val.unsplashId : null)),
       };
     }
   };
