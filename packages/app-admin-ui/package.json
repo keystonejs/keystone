@@ -58,7 +58,7 @@
     "falsey": "^1.0.0",
     "file-loader": "^3.0.1",
     "graphql": "^14.7.0",
-    "html-webpack-plugin": "^4.3.0",
+    "html-webpack-plugin": "^4.4.1",
     "lodash.debounce": "^4.0.8",
     "lodash.set": "^4.3.2",
     "lodash.throttle": "^4.1.1",
