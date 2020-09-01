@@ -46,6 +46,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           );
 
         describe(`${mod.name} - CRUD operations`, () => {
+          beforeAll(() => {
+            if (mod.beforeAll) {
+              mod.beforeAll();
+            }
+          });
           afterAll(async () => {
             if (mod.afterAll) {
               await mod.afterAll();
