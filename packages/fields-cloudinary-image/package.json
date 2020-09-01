@@ -25,7 +25,7 @@
     "@keystonejs/fields-content": "^8.0.2",
     "@primer/octicons-react": "^10.1.0",
     "image-extensions": "^1.1.0",
-    "node-fetch": "^2.3.0",
+    "node-fetch": "^2.6.0",
     "pluralize": "^7.0.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.1",

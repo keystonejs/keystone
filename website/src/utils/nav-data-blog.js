@@ -1,19 +1,12 @@
-import { useRef, useState, useLayoutEffect } from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
 
-export function useDimensions() {
-  const ref = useRef();
-  const [dimensions, setDimensions] = useState({});
+// Not in hooks.js - because of how queries currently work in Gatsby, we support only a single instance of useStaticQuery in a file
+// See: https://www.gatsbyjs.org/docs/use-static-query/
 
-  useLayoutEffect(() => {
-    setDimensions(ref.current.getBoundingClientRect().toJSON());
-  }, [ref.current]);
-
-  return [ref, dimensions];
-}
-
+// This also has to be duplicated because: https://github.com/gatsbyjs/gatsby/issues/13764
+// Yay Gatsby \o/
 export const navQuery = graphql`
-  query NavQuery {
+  query BlogNavQuery {
     allSitePage(
       filter: { path: { ne: "/dev-404-page/" }, context: { isIndex: { ne: true } } }
       sort: {
@@ -36,11 +29,11 @@ export const navQuery = graphql`
   }
 `;
 
-export function useNavData() {
+export function useNavDataBlog() {
   // We filter out the index.md pages from the nav list
   let data = useStaticQuery(navQuery);
   let blogPosts = 0;
-  const POST_LIMIT = 3;
+  const POST_LIMIT = 50;
   const navData = data.allSitePage.edges.reduce(
     (
       pageList,
@@ -58,25 +51,16 @@ export function useNavData() {
           page.pages.push(node);
         };
 
-        if (Boolean(!pageList.find(obj => obj.navTitle === navGroup))) {
+        if (navGroup === 'blog' && Boolean(!pageList.find(obj => obj.navTitle === navGroup))) {
           pageList.push({ navTitle: navGroup, pages: [], subNavs: [] });
         }
 
         if (navSubGroup === null) {
           const page = pageList.find(obj => obj.navTitle === navGroup);
-          if (navGroup !== 'blog') {
-            addPage(page);
-          } else if (blogPosts < POST_LIMIT) {
+          if (navGroup === 'blog' && blogPosts < POST_LIMIT) {
             blogPosts++;
             addPage(page);
           }
-        } else {
-          const page = pageList.find(obj => obj.navTitle === navGroup);
-          if (Boolean(!page.subNavs.find(obj => obj.navTitle === navSubGroup))) {
-            page.subNavs.push({ navTitle: navSubGroup, pages: [] });
-          }
-          const subPage = page.subNavs.find(obj => obj.navTitle === navSubGroup);
-          addPage(subPage);
         }
       }
       return pageList;
