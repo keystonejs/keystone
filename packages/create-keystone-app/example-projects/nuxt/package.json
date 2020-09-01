@@ -25,6 +25,6 @@
     "@keystonejs/keystone": "^14.0.1",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
-    "nuxt": "^2.14.3"
+    "nuxt": "^2.14.4"
   }
 }

@@ -58,10 +58,6 @@ Each of these mutations is implemented within Keystone by a corresponding resolv
 | `updateUsers`        | →   | `updateManyMutation`     |
 | `deleteUsers`        | →   | `deleteManyMutation`     |
 
-<!-- Dead links
-Please refer to the [API documentation](LINK_TODO)) for full details on how to call these mutations either from [GraphQL](LINK_TODO)) or directly from [Keystone](LINK_TODO)).
--->
-
 Keystone provides [access control](/docs/guides/access-control.md) mechanisms and a [hook system](/docs/guides/hooks.md) which allows the developer to customise the behaviour of each of these mutations.
 
 This document details the lifecycle of each mutation, and how the different access control mechanisms and hooks interact.

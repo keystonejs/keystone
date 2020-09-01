@@ -10,13 +10,13 @@ import { jsx } from '@emotion/core';
 import { SkipNavContent } from '@reach/skip-nav';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 
-import { Layout, Content } from '../templates/layout';
+import { BlogLayout, Content } from './layout';
 import mdComponents from '../components/markdown';
 import { SiteMeta } from '../components/SiteMeta';
 import { Container } from '../components';
-import { Sidebar } from '../components/Sidebar';
+import { SidebarBlog } from '../components/SidebarBlog';
 import { media, mq } from '../utils/media';
-import { useNavData } from '../utils/hooks';
+import { useNavDataBlog } from '../utils/nav-data-blog';
 import { titleCase } from '../utils/case';
 
 // TODO: headings, with ids, should come from graphQL
@@ -27,7 +27,7 @@ export default function Template({
   pageContext: { slug },
 }) {
   let [contentRef, setContentRef] = useState(null);
-  let navData = useNavData();
+  let navData = useNavDataBlog();
   let flatNavData = navData.reduce((prev, next) => {
     const subNavData = next.subNavs.reduce((prev, next) => [...prev].concat(next.pages), []);
     return [...prev, ...next.pages, ...subNavData];
@@ -72,10 +72,10 @@ export default function Template({
         <meta property="og:type" content="article" />
         <meta name="twitter:description" content={fields.description} />
       </Helmet>
-      <Layout>
+      <BlogLayout>
         {({ sidebarIsVisible, toggleSidebar }) => (
           <Container hasGutters={false} css={{ display: 'flex' }}>
-            <Sidebar isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} />
+            <SidebarBlog isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} />
             <Content css={{ alignItems: 'flex-start', display: 'flex', flex: 1 }}>
               <div
                 ref={setContentRef}
@@ -118,7 +118,7 @@ export default function Template({
             </Content>
           </Container>
         )}
-      </Layout>
+      </BlogLayout>
     </Fragment>
   );
 }
@@ -233,11 +233,6 @@ const TableOfContents = ({ container, headings, editUrl }) => {
         })}
       </ul>
       <EditSection>
-        {/* <p>
-          Have you found a mistake, something that is missing, or could be improved on
-          this page? Please edit the Markdown file on GitHub and submit a PR with your
-          changes.
-        </p> */}
         <EditButton href={editUrl} target="_blank">
           <svg
             fill="currentColor"
