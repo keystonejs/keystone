@@ -6,4 +6,4 @@
 '@keystonejs/cypress-project-social-login': patch
 ---
 
-Moved all test projects and settings into a `test/` folder.
+Moved all test projects and settings into a `tests/` folder.
