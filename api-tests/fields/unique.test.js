@@ -13,6 +13,16 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
       )
       .forEach(mod => {
         describe(`${mod.name} - isUnique`, () => {
+          beforeAll(() => {
+            if (mod.beforeAll) {
+              mod.beforeAll();
+            }
+          });
+          afterAll(async () => {
+            if (mod.afterAll) {
+              await mod.afterAll();
+            }
+          });
           const keystoneTestWrapper = testFn =>
             runner(
               () =>
