@@ -2,24 +2,27 @@
 
 import { Fragment } from 'react';
 import { jsx, Global } from '@emotion/core';
-import { globalStyles } from '@arch-ui/theme';
-import { BlogLayout, Content } from './layout';
+import { Link } from 'gatsby';
+import { globalStyles, colors } from '@arch-ui/theme';
+import { Layout, Content } from './layout';
 import { HomepageFooter } from '../components/homepage/HomepageFooter';
 import { Container } from '../components';
 import { Sidebar } from '../components/Sidebar';
 
-const Blog = ({ pageContext, uri }) => {
-  const { group, index, first, last, pageCount, name } = pageContext;
-  const previousUrl = index - 1 == 1 ? '/' : (index - 1).toString();
-  const nextUrl = (index + 1).toString();
+const List = ({ pageContext }) => {
+  const { group, index, first, last, pageCount, name, pathPrefix, showSearch } = pageContext;
 
   return (
     <Fragment>
-      <BlogLayout>
+      <Layout showSearch={showSearch}>
         {({ sidebarIsVisible, toggleSidebar }) => (
           <Fragment>
             <Container hasGutters={false} css={{ display: 'flex' }}>
-              <Sidebar />
+              <Sidebar
+                isVisible={sidebarIsVisible}
+                toggleSidebar={toggleSidebar}
+                currentGroup={name}
+              />
               <Content css={{ paddingRight: '2rem' }}>
                 <Global styles={globalStyles} />
                 <h1
@@ -67,6 +70,20 @@ const Blog = ({ pageContext, uri }) => {
                         >
                           {fields.pageTitle}
                         </a>
+                        {fields.navSubGroup ? (
+                          <p
+                            css={{
+                              color: colors.N40,
+                              fontSize: '0.8rem',
+                              fontWeight: 700,
+                              margin: '0',
+                              marginTop: '1rem',
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            {fields.navSubGroup}
+                          </p>
+                        ) : null}
                         <p css={{ lineHeight: '1.5' }}>
                           <a
                             href={node.fields.slug}
@@ -115,18 +132,20 @@ const Blog = ({ pageContext, uri }) => {
                   Page {index} of {pageCount}
                 </p>
                 {!first && (
-                  <a href={`${uri}/${previousUrl === '/' ? '' : previousUrl}`}>Newer posts</a>
+                  <Link to={`/${pathPrefix}/${index - 1 == 1 ? '' : index - 1}`}>
+                    Previous page
+                  </Link>
                 )}
-                {!first && ' / '}
-                {!last && <a href={`${uri}/${nextUrl}`}>More {name}</a>}
+                {!first && pageCount > 2 && ' / '}
+                {!last && <Link to={`/${pathPrefix}/${index + 1}`}>Next page</Link>}
                 <HomepageFooter />
               </Content>
             </Container>
           </Fragment>
         )}
-      </BlogLayout>
+      </Layout>
     </Fragment>
   );
 };
 
-export default Blog;
+export default List;

@@ -79,21 +79,7 @@ const globalStyles = {
   },
 };
 
-export const BlogLayout = ({ children }) => {
-  const [sidebarIsVisible, setSidebarVisible] = useState(true);
-  const toggleSidebar = () => setSidebarVisible(bool => !bool);
-
-  return (
-    <Fragment>
-      <Global styles={globalStyles} />
-      <SkipNavLink />
-      <SiteMeta pathname="/" />
-      <Header key="global-header" toggleMenu={toggleSidebar} showSearch={false} />
-      {children({ sidebarIsVisible, toggleSidebar })}
-    </Fragment>
-  );
-};
-export const Layout = ({ children }) => {
+export const Layout = ({ children, showSearch = true }) => {
   const [sidebarIsVisible, setSidebarVisible] = useState(false);
   const toggleSidebar = () => setSidebarVisible(bool => !bool);
 
@@ -102,7 +88,7 @@ export const Layout = ({ children }) => {
       <Global styles={globalStyles} />
       <SkipNavLink />
       <SiteMeta pathname="/" />
-      <Header key="global-header" toggleMenu={toggleSidebar} />
+      <Header key="global-header" toggleMenu={toggleSidebar} showSearch={showSearch} />
       {children({ sidebarIsVisible, toggleSidebar })}
     </Fragment>
   );

@@ -42,7 +42,11 @@ const SUB_GROUPS = [
 const createDocsPages = async ({ createPage, graphql }) =>
   graphql(`
     {
-      allMdx(filter: { fields: { navGroup: { ne: "blog" } } }) {
+      allMdx(
+        sort: {
+          fields: [fields___sortOrder, fields___sortSubOrder, fields___order, fields___pageTitle]
+        }
+      ) {
         edges {
           node {
             id
@@ -103,84 +107,22 @@ const createDocsPages = async ({ createPage, graphql }) =>
     });
 
     Object.entries(navGroups).forEach(([baseSlug, pages]) => {
-      createPaginatedPages({
-        edges: pages,
-        pathPrefix: slugify(baseSlug),
-        createPage: createPage,
-        context: { name: baseSlug },
-        pageTemplate: baseSlug === 'API' ? 'src/templates/apiHome.js' : 'src/templates/pageList.js',
-      });
-    });
-  });
-
-const createBlogPages = async ({ createPage, graphql }) =>
-  graphql(`
-    {
-      allMdx(filter: { fields: { navGroup: { eq: "blog" } } }) {
-        edges {
-          node {
-            id
-            fields {
-              slug
-              pageTitle
-              description
-              draft
-              heading
-              author
-              date
-              navGroup
-              navSubGroup
-              workspaceSlug
-              sortOrder
-              sortSubOrder
-              order
-              isPackageIndex
-              isIndex
-            }
-          }
-        }
+      if (baseSlug !== 'quick-start') {
+        createPaginatedPages({
+          edges: pages,
+          pathPrefix: slugify(baseSlug),
+          createPage: createPage,
+          context: { name: baseSlug, showSearch: true },
+          pageTemplate:
+            baseSlug === 'API' ? 'src/templates/apiHome.js' : 'src/templates/listPage.js',
+        });
       }
-    }
-  `).then(result => {
-    if (result.errors) {
-      return Promise.reject(result.errors);
-    }
-
-    const pages = result.data.allMdx.edges.filter(page => {
-      const {
-        node: {
-          fields: { draft },
-        },
-      } = page;
-
-      return Boolean(!draft);
-    });
-
-    createPaginatedPages({
-      edges: pages,
-      createPage: createPage,
-      pageTemplate: 'src/templates/blogList.js',
-      pathPrefix: 'blog', // This is optional and defaults to an empty string if not used
-    });
-
-    pages.forEach(({ node: { id, fields } }) => {
-      createPage({
-        path: `${fields.slug}`,
-        component: path.resolve(`src/templates/blogPost.js`),
-        context: {
-          mdPageId: id,
-          ...fields,
-        }, // additional data can be passed via context
-      });
     });
   });
 
 exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions;
-  return Promise.all([
-    createDocsPages({ createPage, graphql }),
-    createBlogPages({ createPage, graphql }),
-  ]);
+  return createDocsPages({ createPage, graphql });
 };
 
 const getEditUrl = absPath =>

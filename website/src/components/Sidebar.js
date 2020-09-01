@@ -5,6 +5,7 @@ import { Link } from 'gatsby';
 import { jsx } from '@emotion/core';
 import { Location } from '@reach/router';
 import { colors, gridSize } from '@arch-ui/theme';
+const slugify = require('@sindresorhus/slugify');
 
 import { SocialIconsNav } from '../components';
 import { useNavData } from '../utils/hooks';
@@ -42,7 +43,7 @@ export const navStyles = ({ isVisible, mobileOnly }) => ({
   },
 });
 
-export const Sidebar = ({ isVisible, toggleSidebar, mobileOnly }) => {
+export const Sidebar = ({ isVisible, toggleSidebar, mobileOnly, currentGroup }) => {
   const asideRef = useRef();
 
   // handle click outside when sidebar is a drawer on small devices
@@ -74,7 +75,7 @@ export const Sidebar = ({ isVisible, toggleSidebar, mobileOnly }) => {
         }}
       />
 
-      <SidebarNav />
+      <SidebarNav currentGroup={currentGroup} />
       <Footer />
       <ClassicDocs />
     </aside>
@@ -96,26 +97,26 @@ const ClassicDocs = () => (
 
 // Navigation
 
-export const SidebarNav = () => {
+export const SidebarNav = ({ currentGroup }) => {
   const navData = useNavData();
+
   return (
     <Location>
       {({ location: { pathname } }) => (
         <nav aria-label="Documentation Menu">
-          {navData.map((navGroup, i) => {
-            return <NavGroup key={i} index={i} navGroup={navGroup} pathname={pathname} />;
-          })}
+          {navData
+            // For the blog section, only show the blog pages
+            .filter(navGroup => currentGroup !== 'blog' || navGroup.navTitle === 'blog')
+            .map((navGroup, i) => {
+              return <NavGroup key={i} index={i} navGroup={navGroup} pathname={pathname} />;
+            })}
         </nav>
       )}
     </Location>
   );
 };
 
-const getTruncatedItems = ({ pages, subNavs, navTitle }, isPageInGroupActive) => {
-  if (navTitle === 'guides') {
-    console.log(pages);
-    console.log(subNavs);
-  }
+const getTruncatedItems = ({ pages, navTitle }, isPageInGroupActive) => {
   if (isPageInGroupActive) return pages;
 
   let [one, two, three, four] = pages;
@@ -142,7 +143,7 @@ export const NavGroup = ({ index, navGroup, pathname }) => {
   const sectionId = `docs-menu-${navGroup.navTitle}`;
 
   const isPageInGroupActive = useMemo(() => {
-    if (pathname === `/${navGroup.navTitle}`) {
+    if (pathname.includes(`/${navGroup.navTitle}`)) {
       return true;
     }
     let paths = [];
@@ -169,7 +170,7 @@ export const NavGroup = ({ index, navGroup, pathname }) => {
           css={{
             color: colors.N80,
           }}
-          to={navGroup.navTitle}
+          to={slugify(navGroup.navTitle)}
         >
           {navGroup.navTitle.replace('-', ' ')}
         </Link>
