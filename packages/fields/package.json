@@ -65,7 +65,8 @@
     "react-toast-notifications": "^2.4.0"
   },
   "devDependencies": {
-    "@keystonejs/test-utils": "*"
+    "@keystonejs/test-utils": "*",
+    "graphql-upload": "10.0.0"
   },
   "preconstruct": {
     "entrypoints": [
