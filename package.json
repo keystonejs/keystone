@@ -54,7 +54,7 @@
     "@changesets/cli": "^2.10.2",
     "@jest/test-sequencer": "^26.4.2",
     "@manypkg/cli": "^0.15.0",
-    "@preconstruct/cli": "1.1.26",
+    "@preconstruct/cli": "1.1.27",
     "@types/jest": "^26.0.12",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
