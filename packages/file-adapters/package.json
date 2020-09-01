@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.739.0",
-    "cloudinary": "^1.22.0",
+    "cloudinary": "^1.23.0",
     "mkdirp": "^1.0.4",
     "url-join": "^4.0.1"
   }
