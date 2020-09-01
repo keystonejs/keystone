@@ -12593,10 +12593,10 @@ gatsby-remark-autolink-headers@^2.1.21:
     mdast-util-to-string "^1.0.7"
     unist-util-visit "^1.4.1"
 
-gatsby-remark-check-links@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/gatsby-remark-check-links/-/gatsby-remark-check-links-2.0.4.tgz#28da6d6af2a6a395328ce829850c646a69477241"
-  integrity sha512-jTzAkrRb7zjjUSqc/nBPVyLPiCW5hi7F2ai+GA2kL5c4ojXaK8KRMUaYeRByxbzEkt8Me94wybFyz32T0jiBhA==
+gatsby-remark-check-links@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/gatsby-remark-check-links/-/gatsby-remark-check-links-2.1.0.tgz#8e8a2b1b82ac6c516fcc2074e8f806e2c0d53571"
+  integrity sha512-TbhT8oVlAgJfxe0WUQWDOb0kLkMUYo1N4AfFstejClPWO4OjRlznt3IMW3weQkwuweiovF5cxVpQcFrkCGVFBw==
   dependencies:
     unist-util-visit "^1.4.1"
 
