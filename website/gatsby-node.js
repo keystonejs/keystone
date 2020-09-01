@@ -5,6 +5,7 @@ const visit = require('unist-util-visit');
 const rawMDX = require('@mdx-js/mdx');
 const matter = require('gray-matter');
 const mdastToString = require('mdast-util-to-string');
+const createPaginatedPages = require('gatsby-paginate');
 
 const generateUrl = require('./generateUrl');
 
@@ -19,6 +20,7 @@ const PROJECT_ROOT = path.resolve('..');
 const GROUPS = [
   '',
   'quick-start',
+  'blog',
   'tutorials',
   'guides',
   'discussions',
@@ -37,15 +39,10 @@ const SUB_GROUPS = [
   'utilities',
 ];
 
-exports.createPages = ({ actions, graphql }) => {
-  const { createPage } = actions;
-
-  const template = path.resolve(`src/templates/docs.js`);
-
-  // The 'fields' values are injected during the `onCreateNode` call below
-  return graphql(`
+const createDocsPages = async ({ createPage, graphql }) =>
+  graphql(`
     {
-      allMdx {
+      allMdx(filter: { fields: { navGroup: { ne: "blog" } } }) {
         edges {
           node {
             id
@@ -71,11 +68,6 @@ exports.createPages = ({ actions, graphql }) => {
       return Promise.reject(result.errors);
     }
 
-    /*
-      If you end up with multiple ways to generate a markdown page, you will
-      need to split out to new templates, with their own graphql queries
-    */
-
     const pages = result.data.allMdx.edges.filter(page => {
       const {
         node: {
@@ -89,7 +81,7 @@ exports.createPages = ({ actions, graphql }) => {
     pages.forEach(({ node: { id, fields } }) => {
       createPage({
         path: `${fields.slug}`,
-        component: template,
+        component: path.resolve(`src/templates/docs.js`),
         context: {
           mdPageId: id,
           ...fields,
@@ -97,6 +89,75 @@ exports.createPages = ({ actions, graphql }) => {
       });
     });
   });
+
+const createBlogPages = async ({ createPage, graphql }) =>
+  graphql(`
+    {
+      allMdx(filter: { fields: { navGroup: { eq: "blog" } } }) {
+        edges {
+          node {
+            id
+            fields {
+              slug
+              pageTitle
+              description
+              draft
+              heading
+              author
+              date
+              navGroup
+              navSubGroup
+              workspaceSlug
+              sortOrder
+              sortSubOrder
+              order
+              isPackageIndex
+              isIndex
+            }
+          }
+        }
+      }
+    }
+  `).then(result => {
+    if (result.errors) {
+      return Promise.reject(result.errors);
+    }
+
+    const pages = result.data.allMdx.edges.filter(page => {
+      const {
+        node: {
+          fields: { draft },
+        },
+      } = page;
+
+      return Boolean(!draft);
+    });
+
+    createPaginatedPages({
+      edges: pages,
+      createPage: createPage,
+      pageTemplate: 'src/templates/blogList.js',
+      pathPrefix: 'blog', // This is optional and defaults to an empty string if not used
+    });
+
+    pages.forEach(({ node: { id, fields } }) => {
+      createPage({
+        path: `${fields.slug}`,
+        component: path.resolve(`src/templates/blogPost.js`),
+        context: {
+          mdPageId: id,
+          ...fields,
+        }, // additional data can be passed via context
+      });
+    });
+  });
+
+exports.createPages = ({ actions, graphql }) => {
+  const { createPage } = actions;
+  return Promise.all([
+    createDocsPages({ createPage, graphql }),
+    createBlogPages({ createPage, graphql }),
+  ]);
 };
 
 const getEditUrl = absPath =>
@@ -114,7 +175,7 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
     const isPackage = !GROUPS.includes(sourceInstanceName);
     let { data, content } = matter(node.rawBody, { delimiters: ['<!--[meta]', '[meta]-->'] });
 
-    const navGroup = data.section;
+    const navGroup = data.section === 'api' ? 'API' : data.section;
     const navSubGroup = data.subSection;
     const order = data.order || 99999999999;
     let pageTitle = data.title || '';
@@ -156,6 +217,8 @@ exports.onCreateNode = async ({ node, actions, getNode }) => {
       isPackageIndex: isPackage && relativePath === 'README.md',
       isIndex: !isPackage && relativePath === 'index.md',
       pageTitle: pageTitle,
+      author: data.author,
+      date: new Date(data.date).toDateString(),
       draft: Boolean(data.draft),
       description,
       heading,

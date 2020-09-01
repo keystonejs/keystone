@@ -12,7 +12,7 @@ import { media, mediaMax, mq } from '../utils/media';
 
 export const HEADER_HEIGHT = 60;
 
-export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
+export const Header = forwardRef(({ toggleMenu, showSearch = true, ...props }, ref) => (
   <header
     ref={ref}
     css={{
@@ -78,7 +78,7 @@ export const Header = forwardRef(({ toggleMenu, ...props }, ref) => (
               },
             }}
           >
-            <Search />
+            {showSearch && <Search />}
           </div>
           <div
             css={{
