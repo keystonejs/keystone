@@ -159,7 +159,7 @@ We'd like to start by thanking all our wonderful contributors:
 These projects are designed to show off different aspects of KeystoneJS features
 at a range of complexities (from a simple Todo App to a complex Meetup Site).
 
-See the [`demo-projects/README.md`](/demo-projects/README.md) docs to get
+See the [`examples/README.md`](/examples/README.md) docs to get
 started.
 
 ### Development Practices
@@ -190,7 +190,7 @@ yarn
 yarn dev
 ```
 
-See [`demo-projects/README.md`](/demo-projects/README.md) for more details on
+See [`examples/README.md`](/examples/README.md) for more details on
 the available demo projects.
 
 #### Note For Windows Users

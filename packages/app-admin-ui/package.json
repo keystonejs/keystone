@@ -58,7 +58,7 @@
     "falsey": "^1.0.0",
     "file-loader": "^3.0.1",
     "graphql": "^14.7.0",
-    "html-webpack-plugin": "^4.3.0",
+    "html-webpack-plugin": "^4.4.1",
     "lodash.debounce": "^4.0.8",
     "lodash.set": "^4.3.2",
     "lodash.throttle": "^4.1.1",
@@ -77,7 +77,7 @@
     "resize-observer-polyfill": "^1.5.1",
     "style-loader": "^1.2.1",
     "use-resize-observer": "^6.1.0",
-    "webpack": "4.41.6",
+    "webpack": "4.44.1",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-hot-middleware": "^2.25.0"
   },

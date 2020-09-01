@@ -8,84 +8,98 @@ import { SkipNavLink } from '@reach/skip-nav';
 import { Header, SiteMeta } from '../components';
 import { media, mediaMax } from '../utils/media';
 
+const globalStyles = {
+  body: {
+    backgroundColor: colors.page,
+    color: colors.N80,
+    fontFamily:
+      '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"',
+    letterSpacing: '-0.005em',
+    margin: 0,
+    textDecorationSkip: 'ink',
+    textRendering: 'optimizeLegibility',
+    msOverflowStyle: '-ms-autohiding-scrollbar',
+    MozFontFeatureSettings: "'liga' on",
+    MozOsxFontSmoothing: 'grayscale',
+    WebkitFontSmoothing: 'antialiased',
+  },
+  a: {
+    textDecoration: 'none',
+  },
+
+  // Accessibility
+  // ------------------------------
+
+  '.js-focus-visible :focus:not(.focus-visible)': {
+    outline: 'none',
+  },
+  '.js-focus-visible .focus-visible': {
+    outline: `2px dashed ${colors.B.A60}`,
+    outlineOffset: 2,
+  },
+
+  '[data-reach-skip-link]': {
+    borderColor: 'initial',
+    borderImage: 'initial',
+    borderStyle: 'initial',
+    borderWidth: '0px',
+    clip: 'rect(0px, 0px, 0px, 0px)',
+    color: colors.primary,
+    fontSize: '0.875rem',
+    height: '1px',
+    margin: '-1px',
+    overflow: 'hidden',
+    padding: '0px',
+    position: 'absolute',
+    width: '1px',
+    zIndex: '100',
+  },
+  '[data-reach-skip-link]:focus': {
+    background: 'rgb(255, 255, 255)',
+    clip: 'auto',
+    height: 'auto',
+    left: '1.5rem',
+    padding: '1rem',
+    position: 'fixed',
+    textDecoration: 'none',
+    top: '1.5rem',
+    width: 'auto',
+  },
+
+  // Device Tweaks
+  // ------------------------------
+
+  [mediaMax.sm]: {
+    body: { fontSize: 'inherit' },
+    html: { fontSize: 14 },
+  },
+  [media.sm]: {
+    body: { fontSize: 'inherit' },
+    html: { fontSize: 16 },
+  },
+};
+
+export const BlogLayout = ({ children }) => {
+  const [sidebarIsVisible, setSidebarVisible] = useState(true);
+  const toggleSidebar = () => setSidebarVisible(bool => !bool);
+
+  return (
+    <Fragment>
+      <Global styles={globalStyles} />
+      <SkipNavLink />
+      <SiteMeta pathname="/" />
+      <Header key="global-header" toggleMenu={toggleSidebar} showSearch={false} />
+      {children({ sidebarIsVisible, toggleSidebar })}
+    </Fragment>
+  );
+};
 export const Layout = ({ children }) => {
   const [sidebarIsVisible, setSidebarVisible] = useState(false);
   const toggleSidebar = () => setSidebarVisible(bool => !bool);
 
   return (
     <Fragment>
-      <Global
-        styles={{
-          body: {
-            backgroundColor: colors.page,
-            color: colors.N80,
-            fontFamily:
-              '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"',
-            letterSpacing: '-0.005em',
-            margin: 0,
-            textDecorationSkip: 'ink',
-            textRendering: 'optimizeLegibility',
-            msOverflowStyle: '-ms-autohiding-scrollbar',
-            MozFontFeatureSettings: "'liga' on",
-            MozOsxFontSmoothing: 'grayscale',
-            WebkitFontSmoothing: 'antialiased',
-          },
-          a: {
-            textDecoration: 'none',
-          },
-
-          // Accessibility
-          // ------------------------------
-
-          '.js-focus-visible :focus:not(.focus-visible)': {
-            outline: 'none',
-          },
-          '.js-focus-visible .focus-visible': {
-            outline: `2px dashed ${colors.B.A60}`,
-            outlineOffset: 2,
-          },
-
-          '[data-reach-skip-link]': {
-            borderColor: 'initial',
-            borderImage: 'initial',
-            borderStyle: 'initial',
-            borderWidth: '0px',
-            clip: 'rect(0px, 0px, 0px, 0px)',
-            color: colors.primary,
-            fontSize: '0.875rem',
-            height: '1px',
-            margin: '-1px',
-            overflow: 'hidden',
-            padding: '0px',
-            position: 'absolute',
-            width: '1px',
-            zIndex: '100',
-          },
-          '[data-reach-skip-link]:focus': {
-            background: 'rgb(255, 255, 255)',
-            clip: 'auto',
-            height: 'auto',
-            left: '1.5rem',
-            padding: '1rem',
-            position: 'fixed',
-            textDecoration: 'none',
-            top: '1.5rem',
-            width: 'auto',
-          },
-
-          // Device Tweaks
-          // ------------------------------
-
-          [mediaMax.sm]: {
-            body: { fontSize: 'inherit' },
-            html: { fontSize: 14 },
-          },
-          [media.sm]: {
-            body: { fontSize: 'inherit' },
-            html: { fontSize: 16 },
-          },
-        }}
-      />
+      <Global styles={globalStyles} />
       <SkipNavLink />
       <SiteMeta pathname="/" />
       <Header key="global-header" toggleMenu={toggleSidebar} />

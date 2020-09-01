@@ -15,6 +15,33 @@ let scrollOffset = 0;
 
 export const SIDEBAR_WIDTH = 280;
 
+export const navStyles = ({ isVisible, mobileOnly }) => ({
+  boxSizing: 'border-box',
+  flexShrink: 0,
+  height: 'calc(100vh - 60px)',
+  overflowY: 'auto',
+  padding: `${gridSize * 4}px ${gridSize * 3}px`,
+  position: 'sticky',
+  top: 60,
+  WebkitOverflowScrolling: 'touch',
+  width: SIDEBAR_WIDTH,
+
+  [mediaMax.md]: {
+    background: 'white',
+    boxShadow: isVisible ? 'rgba(0, 0, 0, 0.25) 0px 0px 48px' : 'none',
+    height: '100vh',
+    opacity: isVisible ? 1 : 0,
+    position: 'fixed',
+    top: 0,
+    transform: isVisible ? 'translateX(0px)' : `translateX(-${SIDEBAR_WIDTH}px)`,
+    transition: 'all 150ms',
+    zIndex: 2,
+  },
+  [media.md]: {
+    display: mobileOnly ? 'none' : 'block',
+  },
+});
+
 export const Sidebar = ({ isVisible, toggleSidebar, mobileOnly }) => {
   const asideRef = useRef();
 
@@ -36,36 +63,7 @@ export const Sidebar = ({ isVisible, toggleSidebar, mobileOnly }) => {
   }, []);
 
   return (
-    <aside
-      key="sidebar"
-      ref={asideRef}
-      css={{
-        boxSizing: 'border-box',
-        flexShrink: 0,
-        height: 'calc(100vh - 60px)',
-        overflowY: 'auto',
-        padding: `${gridSize * 4}px ${gridSize * 3}px`,
-        position: 'sticky',
-        top: 60,
-        WebkitOverflowScrolling: 'touch',
-        width: SIDEBAR_WIDTH,
-
-        [mediaMax.md]: {
-          background: 'white',
-          boxShadow: isVisible ? 'rgba(0, 0, 0, 0.25) 0px 0px 48px' : 'none',
-          height: '100vh',
-          opacity: isVisible ? 1 : 0,
-          position: 'fixed',
-          top: 0,
-          transform: isVisible ? 'translateX(0px)' : `translateX(-${SIDEBAR_WIDTH}px)`,
-          transition: 'all 150ms',
-          zIndex: 2,
-        },
-        [media.md]: {
-          display: mobileOnly ? 'none' : 'block',
-        },
-      }}
-    >
+    <aside key="sidebar" ref={asideRef} css={navStyles({ isVisible, mobileOnly })}>
       <SocialIconsNav
         css={{
           marginBottom: '2.4em',
@@ -113,7 +111,7 @@ export const SidebarNav = () => {
   );
 };
 
-const NavGroup = ({ index, navGroup, pathname }) => {
+export const NavGroup = ({ index, navGroup, pathname }) => {
   const sectionId = `docs-menu-${navGroup.navTitle}`;
 
   const isPageInGroupActive = useMemo(() => {
@@ -257,7 +255,7 @@ export const Footer = () => (
       marginBottom: '2rem',
     }}
   >
-    Made with ❤️ by{' '}
+    Made with ❤️&nbsp; by{' '}
     <FooterAnchor href="https://www.thinkmill.com.au" target="_blank">
       Thinkmill
     </FooterAnchor>{' '}

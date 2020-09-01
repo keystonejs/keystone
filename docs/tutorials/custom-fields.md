@@ -103,7 +103,7 @@ The rest of the views relate to React components rendered in the Admin UI. We ca
   <Stars count={5} value={3}>
 ```
 
-You can find an example of this component in the [custom-fields demo project](https://github.com/keystonejs/keystone/tree/master/demo-projects/custom-fields/fields/Stars/views/Stars.js).
+You can find an example of this component in the [custom-fields demo project](https://github.com/keystonejs/keystone/tree/master/examples/custom-fields/fields/Stars/views/Stars.js).
 
 Once we have a component for star ratings we can use this in Keystone.
 
@@ -149,4 +149,4 @@ That's it, we now have a basic custom field.
 
 ## Next Steps
 
-Take a look at this example and others in the [custom-fields demo project](https://github.com/keystonejs/keystone/tree/master/demo-projects/custom-fields/) in the Keystone repository.
+Take a look at this example and others in the [custom-fields demo project](https://github.com/keystonejs/keystone/tree/master/examples/custom-fields/) in the Keystone repository.

@@ -15,6 +15,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       )
       .forEach(mod => {
         describe(`${mod.name} - isRequired`, () => {
+          beforeAll(() => {
+            if (mod.beforeAll) {
+              mod.beforeAll();
+            }
+          });
+          afterAll(async () => {
+            if (mod.afterAll) {
+              await mod.afterAll();
+            }
+          });
           const keystoneTestWrapper = testFn =>
             runner(
               () =>
