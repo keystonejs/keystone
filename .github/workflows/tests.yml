@@ -116,10 +116,10 @@ jobs:
       fail-fast: false
       matrix:
         project:
-          - test/test-projects/basic
-          - test/test-projects/login
-          - test/test-projects/access-control
-          - test/test-projects/client-validation
+          - test-projects/basic
+          - test-projects/login
+          - test-projects/access-control
+          - test-projects/client-validation
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -145,8 +145,8 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
-      - run: yarn --cwd ${{ matrix.project }} cypress install
-      - run: yarn --cwd ${{ matrix.project }} cypress:run:ci
+      - run: yarn --cwd test/${{ matrix.project }} cypress install
+      - run: yarn --cwd test/${{ matrix.project }} cypress:run:ci
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
