@@ -272,7 +272,9 @@ module.exports = class Keystone {
     // types are named after their keys, having a list name 'Upload' will clash and cause a confusing
     // error on start.
     if (key === 'Upload' || key === 'upload') {
-      throw new Error(`"Upload" cannot be used as a list name.`);
+      throw new Error(
+        `Invalid list name "Upload": Built-in GraphQL types cannot be used as a list name.`
+      );
     }
 
     const list = new List(
