@@ -26624,15 +26624,15 @@ unset-value@^1.0.0:
     has-value "^0.3.1"
     isobject "^3.0.0"
 
-unsplash-js@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/unsplash-js/-/unsplash-js-6.0.0.tgz#f13bd12817e115f440f0526bce18e1cb7b0fde16"
-  integrity sha512-R7Zwd6mfjJ2mYGldWZpZ/LfVLh6Zi+iRUS8y3dx0jZNFU0nt6r6q4wtL+Gr/qv3TgMQFg/hRFxYKzXcdhkasyg==
+unsplash-js@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/unsplash-js/-/unsplash-js-6.2.0.tgz#17608661998933553325ee8bdff99c7f37670650"
+  integrity sha512-YUvL9TDggDPOG20iMeVRU/OhSayugyNtVK4cuupRuuwf/ea/Sf/PepsnonsvNAnHvaEgoleikiktZbhgHHXnyg==
   dependencies:
     form-urlencoded "1.2.0"
     lodash.get "4.4.2"
     querystring "0.2.0"
-    url-parse "1.4.4"
+    url-parse "1.4.5"
 
 unstated@^2.0.2:
   version "2.1.1"
@@ -26745,7 +26745,15 @@ url-parse-lax@^3.0.0:
   dependencies:
     prepend-http "^2.0.0"
 
-url-parse@1.4.4, url-parse@^1.1.8, url-parse@^1.4.3:
+url-parse@1.4.5:
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.4.5.tgz#04cbb6ba2be682a18e4417fa2245aa7e3dfdcc50"
+  integrity sha512-4XDvC5vZRjEpjP0L4znrWeoH8P8F0XGBlfLdABi/6oV4o8xUVbTpyrxWHxkK2bT0pSIpcjdIzSoWUhlUfawCAQ==
+  dependencies:
+    querystringify "^2.0.0"
+    requires-port "^1.0.0"
+
+url-parse@^1.1.8, url-parse@^1.4.3:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.4.4.tgz#cac1556e95faa0303691fec5cf9d5a1bc34648f8"
   integrity sha512-/92DTTorg4JjktLNLe6GPS2/RvAd/RGr6LuktmWSMLEOa6rjnlrFXNgSbSmkNvCoL2T028A0a1JaJLzRMlFoHg==
