@@ -5,6 +5,8 @@ date: 2020-09-01
 author: Mike Riethmuller
 [meta]-->
 
+# Introduction to GraphQL
+
 In this tutorial we're going to discuss some of the key differences between REST and GraphQL APIs then create a GraphQL server with Node.js. You will need to know basic HTML and JavaScript, how to run a few commands in a terminal, as well as have Node and NPM installed.
 
 ## What is an API?
@@ -57,9 +59,9 @@ Let's create a GraphQL server that will handle queries and mutations for `Posts`
 Start by creating a directory for the project with the following commands:
 
 ```
-mkdir graphql-server-example
-cd graphql-server-example
-npm init
+mkdir graphql-server-tutorial
+cd graphql-server-tutorial
+npm init --yes
 ```
 
 We're going to use `apollo-server` to generate our API service. Run the following command to install `apollo-server`:
@@ -117,7 +119,7 @@ const pages = [
   {
     id: '1',
     name: 'Hello World',
-    author: users[1],
+    author: users[0],
     content: 'Lorem ipsum...',
   },
 ];
@@ -128,10 +130,10 @@ Now let's write some resolvers that return this data:
 ```js
 const resolvers = {
   Query: {
-    Page: (parent, args, context, info) => {
+    Page: (_, args) => {
       return pages.find(page => page.id === args.id);
     },
-    User: (parent, args, context, info) => {
+    User: (_, args) => {
       return users.find(user => user.id === args.id);
     },
   },
@@ -145,7 +147,7 @@ Understanding `types` and `resolvers` can be one of the biggest stumbling blocks
 To start the server all we need to do is pass `ApolloServer` our complete schema and resolvers. Add the following to the bottom of `index.js`:
 
 ```js
-const server = new ApolloServer({ schema, resolvers });
+const server = new ApolloServer({ typeDefs: schema, resolvers });
 
 server.listen().then(({ url }) => {
   console.log(`🚀 GraphQL server started at: ${url}`);
@@ -173,7 +175,7 @@ Congratulations! You should have a GraphQL server up and running.
 The query we wrote earlier should now work. Before we learn how to execute GraphQL queries in our own application let's test it out using the GraphQL Playground Apollo provides. Visit `http://localhost:4000` and paste the following query:
 
 ```js
-query getPage($id: Int!) {
+query getPage($id: ID!) {
   Page(id: $id) {
     author {
       name
