@@ -44,17 +44,17 @@ Although technically similar to the `Text` field, conceptually, `Markdown` repre
 This completes the basic criteria of how we decide on new field types over config options or project specific customsation:
 
 1. Is data in the Database or GraphQL a different type?
-1. Is it conceptually a different field type for users?
-1. Is the UI incompatible with other values using the same type?
+2. Is it conceptually a different field type for users?
+3. Is the UI incompatible with other values using the same type?
 
 It's also important to note that`Markdown` includes `codemirror` - a sizeable third-party library used to provide a nice editor interface. We don't want to bundle `codemirror` with the core fields package, especially when a `Markdown` field is not an essential to a large majority of Keystone projects.
 
 This forms the final part of the decision making to help determine when a field is a non-core field type. Non-core field types often:
 
 1. share a primitive type, data structure, or use-case with a core field
-1. are not required for many Keystone projects
-1. connect with a third-party service or API
-1. include a third-party library, that will impact the core fields bundle
+2. are not required for many Keystone projects
+3. connect with a third-party service or API
+4. include a third-party library, that will impact the core fields bundle
 
 It may be open to some interpretation, but the above guidelines help when deciding which fields belong with `@keystonejs/fields` package, and which don't.
 
