@@ -93,7 +93,7 @@
     "prettier": "^1.19.1",
     "rehype-highlight": "^4.0.0",
     "remark-cli": "^6.0.1",
-    "remark-frontmatter": "^1.3.1",
+    "remark-frontmatter": "^1.3.3",
     "remark-toc": "^5.1.1",
     "rimraf": "^3.0.2",
     "split": "^1.0.1",
