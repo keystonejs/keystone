@@ -55,7 +55,7 @@
     "@jest/test-sequencer": "^26.4.2",
     "@manypkg/cli": "^0.15.0",
     "@preconstruct/cli": "1.1.27",
-    "@types/jest": "^26.0.12",
+    "@types/jest": "^26.0.13",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
     "all-contributors-cli": "^6.17.2",
