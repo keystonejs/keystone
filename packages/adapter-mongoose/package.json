@@ -10,10 +10,8 @@
   "dependencies": {
     "@keystonejs/fields-mongoid": "^7.0.1",
     "@keystonejs/keystone": "^14.0.1",
-    "@keystonejs/logger": "^5.1.2",
     "@keystonejs/mongo-join-builder": "^7.1.2",
     "@keystonejs/utils": "^5.4.3",
-    "@sindresorhus/slugify": "^0.11.0",
     "mongoose": "~5.9.11",
     "p-settle": "^4.1.1",
     "pluralize": "^7.0.0"

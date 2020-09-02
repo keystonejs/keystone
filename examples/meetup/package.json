@@ -31,7 +31,7 @@
     "@keystonejs/session": "^8.1.1",
     "apollo-upload-client": "^14.1.1",
     "cross-env": "^7.0.2",
-    "date-fns": "^2.15.0",
+    "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
     "eslint-plugin-emotion": "^10.0.27",
     "express": "^4.17.1",

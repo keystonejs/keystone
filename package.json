@@ -54,8 +54,8 @@
     "@changesets/cli": "^2.10.2",
     "@jest/test-sequencer": "^26.4.2",
     "@manypkg/cli": "^0.15.0",
-    "@preconstruct/cli": "1.1.26",
-    "@types/jest": "^25.2.3",
+    "@preconstruct/cli": "1.1.27",
+    "@types/jest": "^26.0.12",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
     "all-contributors-cli": "^6.17.2",
@@ -136,10 +136,10 @@
       "!packages/arch",
       "packages/arch/docs",
       "packages/arch/packages/*",
+      "tests/test-projects/*",
+      "tests/api-tests",
+      "tests/benchmarks",
       "examples/*",
-      "test-projects/*",
-      "api-tests",
-      "benchmarks",
       "website",
       "packages/create-keystone-app/example-projects/*",
       "projects/*"
@@ -172,9 +172,9 @@
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "./jest/setup.js"
+      "./tests/jest/setup.js"
     ],
-    "testSequencer": "./jest-sequencer.js",
+    "testSequencer": "./tests/jest/jest-sequencer.js",
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/",
