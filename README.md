@@ -232,7 +232,7 @@ yarn coverage
 ### End-to-End Tests
 
 Keystone tests end-to-end functionality with the help of [Cypress](https://www.cypress.io).
-Each project (ie; `test-projects/basic`, `test-projects/login`, etc) have their own set of Cypress tests.
+Each project (ie; `tests/test-projects/basic`, `tests/test-projects/login`, etc) have their own set of Cypress tests.
 To run an individual project's tests, `cd` into that directory and run:
 
 ```shell
@@ -243,7 +243,7 @@ Cypress can be run in interactive mode from project directories with its built i
 which is useful when developing and debugging tests:
 
 ```shell
-cd test-projects/basic && yarn cypress:open
+cd tests/test-projects/basic && yarn cypress:open
 ```
 
 End-to-end tests live in `project/**/cypress/integration/*spec.js`.
