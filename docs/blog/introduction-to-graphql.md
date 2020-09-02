@@ -97,7 +97,7 @@ const schema = gql`
 `;
 ```
 
-Both `String` and `ID` are built-in types GraphQL understands. We've created additional types for `User` and `Page`. You can probably see how type can be made up of nested types. This is how GraphQL queries can request deeply nested, related data in a way that REST APIs typically can't.
+Both `String` and `ID` are built-in types GraphQL understands. We've created additional types for `User` and `Page`. You can probably see how types can be made up of nested types. This is how GraphQL queries can request deeply nested, related data in a way that REST APIs typically can't.
 
 **Note:** We're creating a really simple schema here with just a `User` and a `Page`. It's useful to understand how this works but in a larger system, you might not want to define every part of the GraphQL schema by hand. Keystone generates a GraphQL schema and resolvers for you while allowing you to manually extend the generated graphQL schema.
 
