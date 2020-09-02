@@ -64,10 +64,10 @@ cd graphql-server-tutorial
 npm init --yes
 ```
 
-We're going to use `apollo-server` to generate our API service. Run the following command to install `apollo-server`:
+We're going to use `apollo-server` to generate our API service and `http-server` to serve a static front-end. Run the following command to install these packages:
 
 ```
-npm install apollo-server
+npm install apollo-server http-server
 ```
 
 ### Defining a GraphQL schema
@@ -154,18 +154,18 @@ server.listen().then(({ url }) => {
 });
 ```
 
-Open the generated `package.json` file and add a `start` command in the `scripts` section:
+Open the generated `package.json` file and add a `start:server` command in the `scripts` section:
 
-```js
+```json
 "scripts": {
-  "start": "node index.js",
+  "start:server": "node index.js"
 }
 ```
 
 Then run:
 
 ```
-npm run start
+npm run start:server
 ```
 
 Congratulations! You should have a GraphQL server up and running.
@@ -202,6 +202,10 @@ Now run the query and you should get the following result:
 }
 ```
 
+<video style="max-width:100%;" autoplay>
+  <source src="/gql-demo.mp4"  type="video/mp4"/>
+</video>
+
 To send this query in a client application we need to use a `POST` request. The POST request should be sent to our GraphQL server with a content type of `application/json` and a JSON-encoded body similar to:
 
 ```js
@@ -226,7 +230,7 @@ Create a file called `index.html`. In that file place the following:
 </html>
 ```
 
-We'll write code directly in script tag inside this HTML file - just to demonstrate this concept.
+We'll write code directly in script tag inside this HTML file - just to demonstrate the concept.
 
 Add the following script to the page:
 
@@ -235,7 +239,7 @@ fetch('http://localhost:4000', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    query: 'query getPage($id: Int!) { Page(id: $id) { author { name } } }',
+    query: 'query getPage($id: ID!) { Page(id: $id) { author { name } } }',
     variables: '{ "id": "1"}',
   }),
 })
@@ -247,8 +251,23 @@ fetch('http://localhost:4000', {
   });
 ```
 
-With the server running, open the `index.html` in a browser. You should see the result rendered in the console as well as on the page.
+Let's add a start command for the client to our `package.json`:
 
-This is one of the ways you can fetch data in a client application. Tools like `graphql-tag` or `apollo-fetch` can make formatting variables and sending requests easier. Something like `apollo-client` might be useful if you have a larger application.
+```json
+"scripts": {
+  "start:server": "node index.js",
+  "start:client": "npx http-server ."
+}
+```
+
+With the server running, open new terminal window and run:
+
+```
+npm run start:client
+```
+
+Visit `http://localhost:8080` in your browser and you should see the result of the query rendered to the console and on the page.
+
+This is just one of the ways you can fetch data in a client application. Tools like `graphql-tag` or `apollo-fetch` make formatting variables and sending requests easier. For larger applications something like `apollo-client` might be useful.
 
 We hope this introduction has demystified some aspect of GraphQL for you or given you a better understanding of how Keystone generates its GraphQL server.
