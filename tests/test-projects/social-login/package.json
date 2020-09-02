@@ -36,5 +36,5 @@
     "dotenv-safe": "^8.2.0",
     "pino-colada": "^1.6.1"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/test-projects/social-login"
+  "repository": "https://github.com/keystonejs/keystone/tree/master/tests/test-projects/social-login"
 }

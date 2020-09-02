@@ -597,7 +597,7 @@
   - Refactored Twitter and Facebook to extend base `PassportAuthStrategy`.
   - Added Google and GitHub Auth Strategy by extending base `PassportAuthStrategy`.
   - Removed `passport` and related dependencies from `@keystone-alpha/keystone`.
-  - `test-projects/facebook-login` project is renamed into `test-projects/social-login`
+  - `tests/test-projects/facebook-login` project is renamed into `tests/test-projects/social-login`
   - `social-login` project now support for social login with Twitter, Facebook, Google and GitHub inbuilt strategies from `@keystone-alpha/passport-auth` along with an example of how to implement your own PassportJs strategy for WordPress in `WordPressAuthStrategy.js`
 
 ### Patch Changes

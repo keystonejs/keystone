@@ -148,8 +148,8 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
-      - run: yarn --cwd ${{ matrix.project }} cypress install
-      - run: yarn --cwd ${{ matrix.project }} cypress:run:ci
+      - run: yarn --cwd tests/${{ matrix.project }} cypress install
+      - run: yarn --cwd tests/${{ matrix.project }} cypress:run:ci
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
