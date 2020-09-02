@@ -15,14 +15,14 @@ Broadly speaking an API can be defined as a way for programmers to interface wit
 
 The traditional method for interfacing with applications on the web is a REST API. One defining characteristic of REST APIs is they use [HTTP request methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods), such as `GET`, `PUT`, `POST` &amp;`DELETE` to "CRUD" operations. Typically, `PUT` for Create, `GET` for Read, `POST` for Update and `DELETE` for Delete.
 
-This structure makes REST predictable, but also highlights some limitations. Since a request method is limited to a single `CRUD` operation, it encourages API design that has a single end-point for each entity in the system. For example a simple website might have the following end-points:
+This structure makes REST predictable but also highlights some limitations. Since a request method is limited to a single `CRUD` operation, it encourages API design that has a single end-point for each entity in the system. For example, a simple website might have the following end-points:
 
 - http://my-api.com/user
 - http://my-api.com/post
 - http://my-api.com/comment
 - http://my-api.com/page
 
-In large systems this can lead to APIs with many dozen or even hundreds of end-points. This is a common criticism of REST.
+In large systems, this can lead to APIs with many dozen or even hundreds of end-points. This is a common criticism of REST.
 
 Another criticism of REST is that a lot of APIs return a specific predefined shape. This means when you successfully "hit" an end-point, the data returned is determined by that end-point, not the request. This results in either fetching more data than you want, or perhaps more often, considerably less data than is required. Either outcome is not efficient.
 
@@ -95,9 +95,9 @@ const schema = gql`
 `;
 ```
 
-Both `String` and `ID` are built-in types GraphQL understands. We've created additional types for `User` and `Page`. You can probably see how type can be made up of nested types. This is how GraphQL queries are able to request deeply nested, related data in a way that REST APIs typically can't.
+Both `String` and `ID` are built-in types GraphQL understands. We've created additional types for `User` and `Page`. You can probably see how type can be made up of nested types. This is how GraphQL queries can request deeply nested, related data in a way that REST APIs typically can't.
 
-**Note:** We're creating a really simple schema here with just a `User` and a `Page`. It's useful to understand how this works but in a larger system you might not want to define every part of the GraphQL schema by hand. Keystone generates a GraphQL schema and resolvers for you while allowing you to manually extend the generated graphQL schema.
+**Note:** We're creating a really simple schema here with just a `User` and a `Page`. It's useful to understand how this works but in a larger system, you might not want to define every part of the GraphQL schema by hand. Keystone generates a GraphQL schema and resolvers for you while allowing you to manually extend the generated graphQL schema.
 
 ### Defining resolvers
 
@@ -209,7 +209,7 @@ To send this query in a client application we need to use a `POST` request. The 
 }
 ```
 
-There are many client libraries that can make sending and receiving GraphQL queries easier, however you don't need a client library to send a simple GraphQL request. We can send a GraphQL request using the browsers [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
+There are many client libraries that can make sending and receiving GraphQL queries easier, however, you don't need a client library to send a simple GraphQL request. We can send a GraphQL request using the browsers [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
 
 Create a file called `index.html`. In that file place the following:
 
@@ -247,6 +247,6 @@ fetch('http://localhost:4000', {
 
 With the server running, open the `index.html` in a browser. You should see the result rendered in the console as well as on the page.
 
-This is one of the ways you can fetch data in a client application. Tools like `graphql-tag` or `apollo-fetch` can make formatting variables and sending requests easier. Something like `apollo-client` might be useful if you have larger application.
+This is one of the ways you can fetch data in a client application. Tools like `graphql-tag` or `apollo-fetch` can make formatting variables and sending requests easier. Something like `apollo-client` might be useful if you have a larger application.
 
-We hope this introduction has demystified some aspect of GraphQL for you or given you a better understanding of how Keystone generates it's GraphQL server.
+We hope this introduction has demystified some aspect of GraphQL for you or given you a better understanding of how Keystone generates its GraphQL server.
