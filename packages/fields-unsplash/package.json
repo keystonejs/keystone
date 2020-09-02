@@ -24,7 +24,7 @@
     "node-fetch": "^2.6.0",
     "pluralize": "^7.0.0",
     "query-string": "^6.13.1",
-    "unsplash-js": "^6.0.0"
+    "unsplash-js": "^6.2.0"
   },
   "peerDependencies": {
     "react": "^16.13.1"
