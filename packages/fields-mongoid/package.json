@@ -19,9 +19,6 @@
     "@keystonejs/fields": "^17.1.0",
     "react": "^16.13.1"
   },
-  "devDependencies": {
-    "@keystonejs/server-side-graphql-client": "*"
-  },
   "preconstruct": {
     "entrypoints": [
       "index.js",

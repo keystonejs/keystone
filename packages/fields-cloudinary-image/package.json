@@ -45,10 +45,8 @@
   },
   "devDependencies": {
     "@keystonejs/file-adapters": "*",
-    "@keystonejs/server-side-graphql-client": "*",
     "cloudinary": "^1.23.0",
     "dotenv": "^8.2.0",
-    "globby": "^11.0.1",
     "graphql-upload": "10.0.0",
     "mime": "^2.4.6"
   }

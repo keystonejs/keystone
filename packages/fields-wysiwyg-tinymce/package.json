@@ -34,7 +34,6 @@
   "main": "dist/fields-wysiwyg-tinymce.cjs.js",
   "module": "dist/fields-wysiwyg-tinymce.esm.js",
   "devDependencies": {
-    "@keystonejs/server-side-graphql-client": "*",
     "express": "^4.17.1"
   }
 }

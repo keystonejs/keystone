@@ -16,6 +16,8 @@ export const initItems = () => {
   return [{ name: 'person1' }, { name: 'person2' }, { name: 'person3' }, { name: 'person4' }];
 };
 
+export const supportedFilters = ['null_equality', 'equality', 'in_empty_null', 'in_value'];
+
 const getIDs = async keystone => {
   const IDs = {};
   await keystone.lists['test'].adapter.findAll().then(data => {
