@@ -29,14 +29,14 @@ const prepareFile = filePath => {
   return upload;
 };
 
-export const exampleValue = prepareFile(testFiles[0]);
-export const exampleValue2 = prepareFile(testFiles[1]);
-export const createReturnedValue = exampleValue.file.filename;
-export const updateReturnedValue = exampleValue2.file.filename;
+export const exampleValue = () => prepareFile(testFiles[0]);
+export const exampleValue2 = () => prepareFile(testFiles[1]);
+export const createReturnedValue = exampleValue().file.filename;
+export const updateReturnedValue = exampleValue2().file.filename;
 
 const fileAdapter = new LocalFileAdapter({ src: directory, path: '/files' });
 
-export const fieldConfig = { adapter: fileAdapter };
+export const fieldConfig = () => ({ adapter: fileAdapter });
 
 export const getTestFields = () => {
   return {

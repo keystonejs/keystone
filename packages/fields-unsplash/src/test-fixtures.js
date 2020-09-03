@@ -8,14 +8,14 @@ export const name = 'Unsplash';
 export { Unsplash as type };
 export const supportsUnique = false;
 export const skipRequiredTest = false;
-export const exampleValue = 'U0tBTn8UR8I';
-export const exampleValue2 = 'xrVDYZRGdw4';
+export const exampleValue = () => 'U0tBTn8UR8I';
+export const exampleValue2 = () => 'xrVDYZRGdw4';
 export const fieldName = 'heroImage';
 export const subfieldName = 'unsplashId';
-export const fieldConfig = {
+export const fieldConfig = () => ({
   accessKey: process.env.UNSPLASH_KEY,
   secretKey: process.env.UNSPLASH_SECRET,
-};
+});
 
 export const getTestFields = () => {
   return {

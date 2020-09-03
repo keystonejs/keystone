@@ -10,13 +10,11 @@ export const name = 'Location';
 export { LocationGoogle as type };
 export const supportsUnique = false;
 export const skipRequiredTest = false;
-export const exampleValue = 'ChIJOza7MD-uEmsRrf4t12uji6Y';
-export const exampleValue2 = 'ChIJ_9gDOjmuEmsRB7WRXm_Y6o8';
+export const exampleValue = () => 'ChIJOza7MD-uEmsRrf4t12uji6Y';
+export const exampleValue2 = () => 'ChIJ_9gDOjmuEmsRB7WRXm_Y6o8';
 export const fieldName = 'venue';
 export const subfieldName = 'googlePlaceID';
-export const fieldConfig = {
-  googleMapsKey: process.env.GOOGLE_API_KEY,
-};
+export const fieldConfig = () => ({ googleMapsKey: process.env.GOOGLE_API_KEY });
 
 export const getTestFields = () => {
   return {
