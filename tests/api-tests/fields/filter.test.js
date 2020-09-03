@@ -8,7 +8,7 @@ const testModules = globby.sync(`packages/**/src/**/test-fixtures.js`, {
 });
 testModules.push(path.resolve('packages/fields/tests/test-fixtures.js'));
 
-multiAdapterRunners('knex').map(({ runner, adapterName }) =>
+multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`${adapterName} adapter`, () => {
     testModules
       .map(require)
