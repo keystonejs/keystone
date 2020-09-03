@@ -18,7 +18,7 @@
     "@keystonejs/adapter-mongoose": "^9.0.4",
     "@keystonejs/fields": "^17.1.0",
     "google-maps-react": "^2.0.6",
-    "mongoose": "~5.9.11",
+    "mongoose": "~5.9.29",
     "node-fetch": "^2.6.0",
     "react": "^16.13.1",
     "react-toast-notifications": "^2.4.0"
