@@ -4,6 +4,6 @@ import Slug from './';
 
 export const name = 'Slug';
 export { Slug as type };
-export const exampleValue = '"foo"';
-export const exampleValue2 = '"bar"';
+export const exampleValue = () => '"foo"';
+export const exampleValue2 = () => '"bar"';
 export const supportsUnique = true;

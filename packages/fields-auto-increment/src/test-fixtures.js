@@ -4,8 +4,8 @@ import { AutoIncrement } from './index';
 
 export const name = 'AutoIncrement';
 export { AutoIncrement as type };
-export const exampleValue = 35;
-export const exampleValue2 = 36;
+export const exampleValue = () => 35;
+export const exampleValue2 = () => 36;
 export const supportsUnique = true;
 export const fieldName = 'orderNumber';
 export const skipCreateTest = true;
@@ -15,7 +15,7 @@ export const skipUpdateTest = true;
 export const unSupportedAdapterList = ['mongoose'];
 
 // Be default, `AutoIncrement` are read-only. But for `isRequired` test purpose, we need to bypass these restrictions.
-export const fieldConfig = { access: { create: true, update: true } };
+export const fieldConfig = () => ({ access: { create: true, update: true } });
 
 export const getTestFields = () => {
   return {

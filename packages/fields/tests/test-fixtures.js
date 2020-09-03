@@ -3,7 +3,7 @@ import Text from '../src/types/Text';
 
 export const name = 'ID';
 export { Text as type };
-export const exampleValue = '"foo"';
+export const exampleValue = () => '"foo"';
 export const skipCrudTest = true;
 
 export const getTestFields = () => {

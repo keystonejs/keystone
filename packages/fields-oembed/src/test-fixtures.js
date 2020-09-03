@@ -6,17 +6,17 @@ import { OEmbed, IframelyOEmbedAdapter } from './';
 
 export const name = 'OEmbed';
 export { OEmbed as type };
-export const exampleValue = 'https://jestjs.io';
-export const exampleValue2 = 'https://codesandbox.io';
+export const exampleValue = () => 'https://jestjs.io';
+export const exampleValue2 = () => 'https://codesandbox.io';
 export const supportsUnique = false;
 export const fieldName = 'portfolio';
 export const subfieldName = 'originalUrl';
 
 const iframelyAdapter = new IframelyOEmbedAdapter({
-  apiKey: process.env.IFRAMELY_API_KEY,
+  apiKey: process.env.IFRAMELY_API_KEY || 'iframely_api_key',
 });
 
-export const fieldConfig = { adapter: iframelyAdapter };
+export const fieldConfig = () => ({ adapter: iframelyAdapter });
 
 export const getTestFields = () => {
   return {

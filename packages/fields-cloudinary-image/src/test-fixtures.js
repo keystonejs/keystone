@@ -12,9 +12,9 @@ import fs from 'fs';
 import { CloudinaryImage } from './';
 
 cloudinary.v2.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'cloudinary_cloud_name',
+  api_key: process.env.CLOUDINARY_KEY || 'cloudinary_key',
+  api_secret: process.env.CLOUDINARY_SECRET || 'cloudinary_secret',
 });
 
 // Grab all the image files from the directory
@@ -34,9 +34,9 @@ const prepareFile = filePath => {
 };
 
 const cloudinaryAdapter = new CloudinaryAdapter({
-  cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-  apiKey: process.env.CLOUDINARY_KEY,
-  apiSecret: process.env.CLOUDINARY_SECRET,
+  cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'cloudinary_cloud_name',
+  apiKey: process.env.CLOUDINARY_KEY || 'cloudinary_key',
+  apiSecret: process.env.CLOUDINARY_SECRET || 'cloudinary_secret',
   folder: 'cloudinary-test',
 });
 
@@ -53,12 +53,12 @@ export const subfieldName = 'originalFilename';
 // This function will run after all the tests are completed.
 // We use it to cleanup the resources (e.g Cloudinary images) which are no longer required.
 export const afterAll = () => cloudinary.v2.api.delete_resources_by_prefix('cloudinary-test');
-export const exampleValue = prepareFile(testFiles[0]);
-export const exampleValue2 = prepareFile(testFiles[1]);
-export const createReturnedValue = exampleValue.file.filename;
-export const updateReturnedValue = exampleValue2.file.filename;
+export const exampleValue = () => prepareFile(testFiles[0]);
+export const exampleValue2 = () => prepareFile(testFiles[1]);
+export const createReturnedValue = exampleValue().file.filename;
+export const updateReturnedValue = exampleValue2().file.filename;
 
-export const fieldConfig = { adapter: cloudinaryAdapter };
+export const fieldConfig = () => ({ adapter: cloudinaryAdapter });
 export const getTestFields = () => {
   return {
     name: { type: String },
