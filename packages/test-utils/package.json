@@ -13,7 +13,7 @@
     "@keystonejs/app-graphql": "^6.1.0",
     "@keystonejs/keystone": "^14.0.0",
     "express": "^4.17.1",
-    "mongodb-memory-server-core": "^6.5.2",
+    "mongodb-memory-server-core": "^6.6.7",
     "supertest-light": "^1.0.3"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/test-utils"
