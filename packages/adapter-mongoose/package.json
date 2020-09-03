@@ -12,7 +12,7 @@
     "@keystonejs/keystone": "^14.0.1",
     "@keystonejs/mongo-join-builder": "^7.1.2",
     "@keystonejs/utils": "^5.4.3",
-    "mongoose": "~5.9.11",
+    "mongoose": "~5.9.29",
     "p-settle": "^4.1.1",
     "pluralize": "^7.0.0"
   },
