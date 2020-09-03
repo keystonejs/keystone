@@ -17,7 +17,7 @@
   "peerDependencies": {
     "mjml-react": "^1.0.57",
     "react": "^16.13.1",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "mjml-react": "^1.0.57",

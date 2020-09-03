@@ -7,7 +7,7 @@
   "main": "dist/popout.cjs.js",
   "peerDependencies": {
     "react": "^16.13.1",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "react": "^16.13.1",
