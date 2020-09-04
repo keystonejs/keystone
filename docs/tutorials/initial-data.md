@@ -148,7 +148,8 @@ keystone.createList('Post', {
     },
     author: {
       type: Relationship,
-      ref: 'User',
+      ref: 'User.posts',
+      many:false,
     },
   },
 });
@@ -232,7 +233,7 @@ keystone.createList('User', {
     },
     posts: {
       type: Relationship,
-      ref: 'Post',
+      ref: 'Post.author',
       many: true,
     },
   },
