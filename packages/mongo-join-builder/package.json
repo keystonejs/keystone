@@ -12,7 +12,7 @@
     "cuid": "^2.1.8"
   },
   "devDependencies": {
-    "mongodb": "^3.5.7",
+    "mongodb": "^3.6.1",
     "mongodb-memory-server-core": "^6.6.7"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/mongo-join-builder"
