@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/app-nuxt",
   "description": "KeystoneJS Nuxt.js App.",
-  "version": "5.1.4",
+  "version": "5.1.5",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {

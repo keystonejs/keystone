@@ -1,5 +1,25 @@
 # @keystonejs/api-tests
 
+## 7.0.5
+
+### Patch Changes
+
+- [`a363a0f3c`](https://github.com/keystonejs/keystone/commit/a363a0f3c3bb5f95c65e381b08460bb6d1f9b7aa) [#3565](https://github.com/keystonejs/keystone/pull/3565) Thanks [@timleslie](https://github.com/timleslie)! - Added more tests for 1:1 create operations.
+
+* [`2d0099733`](https://github.com/keystonejs/keystone/commit/2d0099733648c056fb64d79d7f07727bfb30762a) [#3509](https://github.com/keystonejs/keystone/pull/3509) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused dependencies.
+
+- [`6c97a5534`](https://github.com/keystonejs/keystone/commit/6c97a5534e8a18d15aeac8b0471810fdd4d04f80) [#3577](https://github.com/keystonejs/keystone/pull/3577) Thanks [@timleslie](https://github.com/timleslie)! - Updated test framework to support more detailed field tests.
+
+* [`2e6a06202`](https://github.com/keystonejs/keystone/commit/2e6a06202299b36c36fd3efd895f2280479eac31) [#3532](https://github.com/keystonejs/keystone/pull/3532) Thanks [@timleslie](https://github.com/timleslie)! - Consolidated filter tests across all field types.
+  Fixed errors with filtering by `null` in the `Decimal`, `MongoId` and `Uuid` field types.
+
+- [`5e5ba0b86`](https://github.com/keystonejs/keystone/commit/5e5ba0b869924826adf640e6b1eb1608101e8a8e) [#3553](https://github.com/keystonejs/keystone/pull/3553) Thanks [@singhArmani](https://github.com/singhArmani)! - Added `filter`, `isRequired` and CRUD tests for `CloudinaryImage` field type.
+
+- Updated dependencies [[`cd15192cd`](https://github.com/keystonejs/keystone/commit/cd15192cdae5e476f64a257c196ca569a9440d5a), [`d500613d8`](https://github.com/keystonejs/keystone/commit/d500613d8917e3cbcea2817501d607eddd3b1a8d), [`6c97a5534`](https://github.com/keystonejs/keystone/commit/6c97a5534e8a18d15aeac8b0471810fdd4d04f80), [`34fcc7052`](https://github.com/keystonejs/keystone/commit/34fcc7052a24db61f1f2f12c46110c060934f4ca), [`c3488c5e8`](https://github.com/keystonejs/keystone/commit/c3488c5e88628b15eb9fe804551c3c5c44c07e0f), [`e62b3308b`](https://github.com/keystonejs/keystone/commit/e62b3308bd841b5f58ac9fa1f84707f9187fda6b), [`7036585f2`](https://github.com/keystonejs/keystone/commit/7036585f25c3b690b7a6fd04c39b5b781ff5bcd9), [`2e6a06202`](https://github.com/keystonejs/keystone/commit/2e6a06202299b36c36fd3efd895f2280479eac31), [`3b619327b`](https://github.com/keystonejs/keystone/commit/3b619327b3801501b96b9af04ec6ca90e9ad9469), [`a42ee3a30`](https://github.com/keystonejs/keystone/commit/a42ee3a306c899a7ae46909fe132522cbeff7812), [`438051442`](https://github.com/keystonejs/keystone/commit/4380514421020f4418a9f966c9fec60e014478b9), [`b3aa85031`](https://github.com/keystonejs/keystone/commit/b3aa850311cbc1622568f69f9cb4b9f46ab9db22), [`518718e19`](https://github.com/keystonejs/keystone/commit/518718e197d0a2d723c8e184552ddd5d8e165f12), [`a34341387`](https://github.com/keystonejs/keystone/commit/a343413874f9611ad17ec39ff6175664f8a14bb6), [`28b88abd3`](https://github.com/keystonejs/keystone/commit/28b88abd369f0df12eae72107db7c24323eda4b5)]:
+  - @keystonejs/fields@17.1.1
+  - @keystonejs/test-utils@8.0.2
+  - @keystonejs/list-plugins@7.1.1
+
 ## 7.0.4
 
 ### Patch Changes
