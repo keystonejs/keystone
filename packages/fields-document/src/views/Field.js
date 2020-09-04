@@ -17,7 +17,15 @@ import {
 } from '../DocumentEditor/access';
 import { Button } from '../DocumentEditor/components';
 import { DocumentFeaturesContext } from '../DocumentEditor/documentFeatures';
+import { HeadingElement, withHeadings } from '../DocumentEditor/headings';
 import { isInsidePanel, insertPanel, PanelElement, withPanel } from '../DocumentEditor/panel';
+import {
+  isInsideColumn,
+  insertColumns,
+  ColumnsElement,
+  withColumns,
+  renderColumnsElement,
+} from '../DocumentEditor/columns';
 import { withParagraphs } from '../DocumentEditor/paragraphs';
 import { renderQuoteElement, isInsideQuote, insertQuote, withQuote } from '../DocumentEditor/quote';
 import {
@@ -133,6 +141,24 @@ const Toolbar = () => {
       >
         + Quote
       </Button>
+      <Button
+        isDisabled={isInsideColumn(editor, 'two') || isInsideQuote(editor)}
+        onMouseDown={event => {
+          event.preventDefault();
+          insertColumns(editor, 'two');
+        }}
+      >
+        + 2 Columns
+      </Button>
+      <Button
+        isDisabled={isInsideColumn(editor, 'three') || isInsideQuote(editor)}
+        onMouseDown={event => {
+          event.preventDefault();
+          insertColumns(editor, 'three');
+        }}
+      >
+        + 3 Columns
+      </Button>
     </div>
   );
 };
@@ -145,11 +171,6 @@ const CodeElement = ({ attributes, children }) => {
       <code>{children}</code>
     </pre>
   );
-};
-
-const HeadingElement = ({ attributes, children, level }) => {
-  const Tag = `h${level}`;
-  return <Tag {...attributes}>{children}</Tag>;
 };
 
 /* Leaf Elements */
@@ -178,7 +199,12 @@ export default function DocumentField({ field, errors, value, onChange, isDisabl
   // TODO: skip withAccess if documentFeatures.access is not defined
   // TODO: define panel somehow as a documentFeatures plugin
   const editor = useMemo(
-    () => withParagraphs(withQuote(withPanel(withAccess(withHistory(withReact(createEditor())))))),
+    () =>
+      withParagraphs(
+        withHeadings(
+          withColumns(withQuote(withPanel(withAccess(withHistory(withReact(createEditor()))))))
+        )
+      ),
     []
   );
 
@@ -187,6 +213,9 @@ export default function DocumentField({ field, errors, value, onChange, isDisabl
     // a good pattern for plugging in custom element renderers?
     const quoteElement = renderQuoteElement(props);
     if (quoteElement) return quoteElement;
+
+    const columnsElement = renderColumnsElement(props);
+    if (columnsElement) return columnsElement;
 
     switch (props.element.type) {
       case 'access-boundary':
