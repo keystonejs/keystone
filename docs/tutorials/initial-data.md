@@ -216,6 +216,22 @@ Clear the database, then start Keystone and visit the Admin UI to see that two u
 
 ### Many relationships
 
+A post can have only one author user, add the `to-many` relationship field `author` to the false:
+```javascript
+keystone.createList('Post', {
+  fields: {
+    title: {
+      type: Text,
+    },
+    author: {
+      type: Relationship,
+     ref: 'User.posts',
+      many: false,
+    },
+  },
+});
+```
+
 A user can have many posts, add the `to-many` relationship field `posts` to the `User`:
 
 ```javascript
@@ -232,7 +248,7 @@ keystone.createList('User', {
     },
     posts: {
       type: Relationship,
-      ref: 'Post',
+      ref: 'Post.author',
       many: true,
     },
   },
