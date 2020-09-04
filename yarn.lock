@@ -18152,7 +18152,7 @@ mjml-wrapper@4.6.3:
     mjml-core "4.6.3"
     mjml-section "4.6.3"
 
-mjml@^4.3.1:
+mjml@^4.6.3:
   version "4.6.3"
   resolved "https://registry.yarnpkg.com/mjml/-/mjml-4.6.3.tgz#c516128edc8987f1d77d3ab6422ee0e624192399"
   integrity sha512-nkkdB5lqDi2qHDOnAWCHXk5RmQ2phK6XB2eokpCW5KzK1A5Cbu61/Zw37VJU5gDvoab/ZD3FHBUj8O6alu4c4g==
