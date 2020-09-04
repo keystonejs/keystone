@@ -8427,6 +8427,11 @@ color-name@^1.0.0, color-name@~1.1.4:
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
+color-scheme@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/color-scheme/-/color-scheme-1.0.1.tgz#d1de417f65e10f73c0eb2c97f7ed6c156bc6e8f5"
+  integrity sha512-4x+ya6+z6g9DaTFSfVzTZc8TSjxHuDT40NB43N3XPUkQlF6uujhwH8aeMeq8HBgoQQog/vrYgJ16mt/eVTRXwQ==
+
 color-string@^1.5.2:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.5.3.tgz#c9bbc5f01b58b5492f3d6857459cb6590ce204cc"

@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { createItems } = require('@keystonejs/server-side-graphql-client');
+const ColorScheme = require('color-scheme');
 
 // Lets not hardcode password, even for test data
 const password = process.env.INITIAL_DATA_PASSWORD;
@@ -60,7 +61,57 @@ async function seedData(intitialData, keystone) {
 
   // Run the GraphQL query to insert all the organisers
   await createItems({ keystone, listKey: 'Organiser', items: organisers });
+  let colors = getColors();
+
+  const chunkSize = 100;
+  const data = [];
+  for (let ev = 1; ev <= 60000; ev++) {
+    let themeColor = colors.pop();
+    if (colors.length === 0) colors = getColors(ev % 360);
+    data.push({
+      data: {
+        name: `Event: ${ev}`,
+        status: 'active',
+        themeColor: `#${themeColor}`,
+        // Default to "1 month from now"
+        startTime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30 + ev).toISOString(),
+        durationMins: 150,
+        maxRsvps: 120,
+        isRsvpAvailable: true,
+        talks: {
+          create: [1, 2, 3, 4, 5].map(i => ({
+            name: `Talk ${i} for Event: ${ev}`,
+            description: 'Talk Description',
+          })),
+        },
+      },
+    });
+
+    if (data.length >= chunkSize) {
+      await keystone.executeGraphQL({
+        context: keystone.createContext({ skipAccessControl: true }),
+        query: `mutation createEvents($data: [EventsCreateInput]) {
+          createEvents(data: $data) {
+            id
+          }
+        }
+      `,
+        variables: { data },
+      });
+      data.splice(0);
+      console.log(` Events created so far: ${ev}`);
+    }
+  }
 }
+const getColors = (hue = 1) =>
+  new ColorScheme()
+    .from_hue(hue)
+    .scheme('analogic')
+    .distance(0.1)
+    .add_complement(true)
+    .variation('pastel')
+    .web_safe(true)
+    .colors();
 
 function createOrganisers(users) {
   return (_, i) => {
