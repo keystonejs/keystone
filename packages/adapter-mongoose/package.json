@@ -12,9 +12,9 @@
     "@keystonejs/keystone": "^14.0.1",
     "@keystonejs/mongo-join-builder": "^7.1.2",
     "@keystonejs/utils": "^5.4.3",
-    "mongoose": "~5.9.29",
+    "mongoose": "~5.10.3",
     "p-settle": "^4.1.1",
-    "pluralize": "^7.0.0"
+    "pluralize": "^8.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-mongoose"
 }

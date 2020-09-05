@@ -28,7 +28,7 @@
     "@emotion/styled": "^10.0.27",
     "@reach/router": "^1.3.4",
     "clipboard-copy": "^3.1.0",
-    "gatsby": "^2.13.25",
+    "gatsby": "^2.24.53",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
