@@ -35,7 +35,7 @@
     "@arch-ui/theme": "^0.0.11",
     "@arch-ui/tooltip": "^0.1.14",
     "@arch-ui/typography": "^0.0.18",
-    "@babel/core": "^7.11.5",
+    "@babel/core": "^7.11.6",
     "@babel/runtime": "^7.11.2",
     "@emotion/core": "^10.0.35",
     "@keystonejs/field-views-loader": "^6.0.0",
