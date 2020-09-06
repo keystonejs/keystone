@@ -97,6 +97,7 @@ const PanelTypeSelect = ({ value, onChange }) => {
       <div
         css={{
           position: 'absolute',
+          display: 'flex',
           marginTop: 8,
           padding: 6,
           background: 'white',
