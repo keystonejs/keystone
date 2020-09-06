@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const endent = require('endent');
+const endent = require('endent').default;
 const pkgInfo = require('../package.json');
 const info = {
   exeName: Object.keys(pkgInfo.bin)[0],
