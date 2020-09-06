@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/file-adapters",
   "description": "Adapters for handling storage of the File type",
-  "version": "7.0.4",
+  "version": "7.0.5",
   "main": "index.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/file-adapters",
   "homepage": "https://github.com/keystonejs/keystone",
