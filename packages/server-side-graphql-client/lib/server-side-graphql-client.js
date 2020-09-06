@@ -35,8 +35,8 @@ const _runChunkedMutation = async ({ query, gqlName, pageSize, items, context })
   );
 
   /*
-   * The result is of the format: [{createUsers: [{id: '123', name: 'aman'}]}, {createUsers: [{id: '456', name: 'mike'}]}].
-   * We need to combine all objects into one array keyed by the `createUsers`, such that, the output is: [{id: '123', name: 'aman'}, {id: '456', name: 'Mike'}]
+   * The result is of the format: [{createUsers: [{id: '123', name: 'name'}]}, {createUsers: [{id: '456', name: 'mike'}]}].
+   * We need to combine all objects into one array keyed by the `createUsers`, such that, the output is: [{id: '123', name: 'name'}, {id: '456', name: 'Mike'}]
    */
 
   return [].concat(...result.map(item => item[gqlName]));
