@@ -1,5 +1,13 @@
 # @keystonejs/email
 
+## 5.1.7
+
+### Patch Changes
+
+- [`3a1f4d1e2`](https://github.com/keystonejs/keystone/commit/3a1f4d1e26bfa6cb553761b42a7f05d09a41a3b4) [#3514](https://github.com/keystonejs/keystone/pull/3514) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mjml` to `^4.6.3`.
+
+* [`16e4d91a2`](https://github.com/keystonejs/keystone/commit/16e4d91a20cc6a079c60ea9801381da55444b1e1) [#3545](https://github.com/keystonejs/keystone/pull/3545) Thanks [@renovate](https://github.com/apps/renovate)! - Updated react monorepo dependencies.
+
 ## 5.1.6
 
 ### Patch Changes
