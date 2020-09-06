@@ -67,7 +67,7 @@
     "cypress-multi-reporters": "^1.4.0",
     "dotenv": "^8.2.0",
     "dotenv-safe": "^8.2.0",
-    "endent": "^1.4.1",
+    "endent": "^2.0.1",
     "eslint": "^7.8.1",
     "eslint-plugin-cypress": "^2.11.1",
     "eslint-plugin-emotion": "^10.0.27",
