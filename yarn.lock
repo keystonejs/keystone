@@ -4435,10 +4435,10 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
-"@tinymce/tinymce-react@^3.6.0":
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-3.6.0.tgz#6e33e89b7bb0240c4ffa892a8e1924688f479b4b"
-  integrity sha512-XSyAx9Md9+Ghl3UK0YtBQxaS2dCepqtOKTjYmBS4xTAzSu1UABd44WT84B8CUCd/bdT0fv1Pd51dSbpgJ8713w==
+"@tinymce/tinymce-react@^3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-3.6.1.tgz#ed4f1047fbaa37018f687887be21b6b6ab4cdb54"
+  integrity sha512-MULQmc48/Wdsqpvoz7siPVXpMvQlClwXKVKDIoTVK61jqsmTtpf1RbO/gM3jhrf9Mh3zvgCWQPdupSJ9giCXtQ==
   dependencies:
     prop-types "^15.6.2"
 
