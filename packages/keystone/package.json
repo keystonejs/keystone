@@ -24,7 +24,6 @@
     "ci-info": "^2.0.0",
     "cors": "^2.8.5",
     "cuid": "^2.1.8",
-    "dev-null": "^0.1.1",
     "endent": "^2.0.1",
     "ensure-error": "^3.0.1",
     "express": "^4.17.1",
