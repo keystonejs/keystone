@@ -478,7 +478,7 @@ describe('getAdminMeta()', () => {
   });
 });
 
-describe(`getGqlTypes() `, () => {
+describe(`getGqlTypes()`, () => {
   const type = `""" A keystone list """
       type Test {
         """
