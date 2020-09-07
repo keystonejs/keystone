@@ -72,7 +72,7 @@
     "eslint-plugin-cypress": "^2.11.1",
     "eslint-plugin-emotion": "^10.0.27",
     "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jest": "^22.21.0",
+    "eslint-plugin-jest": "^24.0.0",
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.1.0",
     "falsey": "^1.0.0",
