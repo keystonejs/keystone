@@ -20,7 +20,7 @@
     "@keystonejs/fields": "^17.1.1",
     "@keystonejs/fields-content": "^8.0.3",
     "graphql-tag": "^2.11.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "pluralize": "^7.0.0",
     "query-string": "^6.13.1",
     "unsplash-js": "^6.3.0"
