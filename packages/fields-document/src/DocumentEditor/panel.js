@@ -5,6 +5,7 @@ import { Editor, Path, Range, Transforms } from 'slate';
 import { ReactEditor, useFocused, useSelected, useSlate } from 'slate-react';
 
 import { Button } from './components';
+import { paragraphElement } from './paragraphs';
 import { isBlockTextEmpty, getBlockAboveSelection, isBlockActive } from './utils';
 
 const PANEL_TYPES = {
@@ -53,6 +54,9 @@ export const insertPanel = editor => {
       { type: 'panel', panelType: DEFAULT_PANEL_TYPE },
       { match: n => Editor.isBlock(editor, n) }
     );
+    // Note: Add an extra pragraph to let user select underneath the panel
+    Transforms.insertNodes(editor, paragraphElement);
+    Transforms.move(editor, { distance: 1, unit: 'line', reverse: true });
   } else {
     Transforms.insertNodes(editor, panelElement, { select: true });
   }

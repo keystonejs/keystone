@@ -52,16 +52,6 @@ const ColumnContainer = ({ attributes, children, element }) => {
   const selected = useSelected();
   const editor = useSlate();
 
-  const remove = useCallback(
-    event => {
-      event.preventDefault();
-      const path = ReactEditor.findPath(editor, element);
-      // TODO: Fix this
-      Transforms.removeNodes(editor, { at: path });
-      Transforms.insertNodes(editor, paragraphElement, { at: path, select: true });
-    },
-    [editor, element]
-  );
   return (
     <div
       css={{

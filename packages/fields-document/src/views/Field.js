@@ -22,7 +22,6 @@ import { isInsidePanel, insertPanel, PanelElement, withPanel } from '../Document
 import {
   isInsideColumn,
   insertColumns,
-  ColumnsElement,
   withColumns,
   renderColumnsElement,
 } from '../DocumentEditor/columns';
