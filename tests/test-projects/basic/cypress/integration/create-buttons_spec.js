@@ -83,13 +83,9 @@ describe('Home page', () => {
     cy.get('#ks-input-name').type('Aman', {
       force: true,
     });
-    cy.contains('div', `Create User Dialog`)
-      .contains('button', 'Cancel')
-      .click({ force: true });
+    cy.contains('div', `Create User Dialog`).contains('button', 'Cancel').click({ force: true });
 
-    cy.get('div[role="alertdialog"]')
-      .contains('button', 'Cancel')
-      .click({ force: true });
+    cy.get('div[role="alertdialog"]').contains('button', 'Cancel').click({ force: true });
     cy.contains('div', `Create User Dialog`).should('exist');
   });
 });

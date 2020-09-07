@@ -173,9 +173,11 @@ module.exports = class List {
     // Add an 'id' field if none supplied
     if (!sanitisedFieldsConfig.id) {
       if (typeof this.adapter.parentAdapter.getDefaultPrimaryKeyConfig !== 'function') {
-        throw `No 'id' field given for the '${this.key}' list and the list adapter ` +
+        throw (
+          `No 'id' field given for the '${this.key}' list and the list adapter ` +
           `in used (${this.adapter.key}) doesn't supply a default primary key config ` +
-          `(no 'getDefaultPrimaryKeyConfig()' function)`;
+          `(no 'getDefaultPrimaryKeyConfig()' function)`
+        );
       }
       // Rebuild the object so id is "first"
       sanitisedFieldsConfig = {
@@ -190,8 +192,10 @@ module.exports = class List {
         throw `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`;
       }
       if (typeof fieldConfig.type === 'undefined') {
-        throw `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
-          `(${this.key}.${fieldKey}.type is undefined)`;
+        throw (
+          `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
+          `(${this.key}.${fieldKey}.type is undefined)`
+        );
       }
       const adapters = fieldConfig.type.adapters;
       if (typeof adapters === 'undefined' || Object.entries(adapters).length === 0) {

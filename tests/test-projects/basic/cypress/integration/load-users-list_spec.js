@@ -1,7 +1,7 @@
-describe('Loading User item', function() {
+describe('Loading User item', function () {
   before(() => cy.visit('/reset-db'));
 
-  it('should show users name', function() {
+  it('should show users name', function () {
     return cy
       .graphql_query(
         `${Cypress.config('baseUrl')}/admin/api`,

@@ -361,12 +361,7 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async _createSingle(realData) {
-    const item = (
-      await this._query()
-        .insert(realData)
-        .into(this.tableName)
-        .returning('*')
-    )[0];
+    const item = (await this._query().insert(realData).into(this.tableName).returning('*'))[0];
     return { item, itemId: item.id };
   }
 
@@ -443,9 +438,7 @@ class KnexListAdapter extends BaseListAdapter {
     await this._unsetForeignOneToOneValues(data, id);
 
     // Update the real data
-    const query = this._query()
-      .table(this.tableName)
-      .where({ id });
+    const query = this._query().table(this.tableName).where({ id });
     if (Object.keys(realData).length) {
       query.update(realData);
     }
@@ -524,10 +517,7 @@ class KnexListAdapter extends BaseListAdapter {
               if (cardinality === 'N:N') {
                 // FIXME: There is a User <-> User case which isn't captured here.
                 const { far } = adapter._getNearFar(fieldAdapter);
-                return this._query()
-                  .table(tableName)
-                  .where(far, id)
-                  .del();
+                return this._query().table(tableName).where(far, id).del();
               } else {
                 return this._setNullByValue({ tableName, columnName, value: id });
               }
@@ -546,10 +536,7 @@ class KnexListAdapter extends BaseListAdapter {
     );
 
     // Delete the actual item
-    return this._query()
-      .table(this.tableName)
-      .where({ id })
-      .del();
+    return this._query().table(this.tableName).where({ id }).del();
   }
 
   ////////// Queries //////////
