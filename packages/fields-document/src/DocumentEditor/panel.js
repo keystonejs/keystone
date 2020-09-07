@@ -94,15 +94,16 @@ const PanelTypeSelect = ({ value, onChange }) => {
       contentEditable={false}
       css={{
         userSelect: 'none',
-        position: 'relative',
-        width: '100%',
-        display: 'flex',
+        position: 'absolute',
+        top: '100%',
+        left: '50%',
         justifyContent: 'center',
+        transform: `translateX(-50%)`,
+        zIndex: 1,
       }}
     >
       <div
         css={{
-          position: 'absolute',
           display: 'flex',
           marginTop: 8,
           padding: 6,
@@ -142,6 +143,9 @@ export const PanelElement = ({ attributes, children, element }) => {
     <div
       css={{
         margin: '8px 0',
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
         borderColor: panelType.border,
         borderStyle: 'solid',
         borderWidth: 1,
