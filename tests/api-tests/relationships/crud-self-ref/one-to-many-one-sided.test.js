@@ -110,7 +110,7 @@ const setupKeystone = adapterName =>
 
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    describe(`One-to-many relationships `, () => {
+    describe(`One-to-many relationships`, () => {
       describe('Read', () => {
         test(
           'one',
