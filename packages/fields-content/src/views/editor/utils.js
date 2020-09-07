@@ -96,7 +96,7 @@ const getRangeClientRectsChrome = range => {
 
 const getRangeClientRects = isChrome
   ? getRangeClientRectsChrome
-  : function(range) {
+  : function (range) {
       return Array.from(range.getClientRects());
     };
 

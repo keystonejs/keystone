@@ -107,8 +107,10 @@ export class KnexDecimalInterface extends KnexFieldAdapter {
     this.precision = precision === null ? null : parseInt(precision) || 18;
     this.scale = scale === null ? null : (this.precision, parseInt(scale) || 4);
     if (this.scale !== null && this.precision !== null && this.scale > this.precision) {
-      throw `The scale configured for Decimal field '${this.path}' (${this.scale}) ` +
-        `must not be larger than the field's precision (${this.precision})`;
+      throw (
+        `The scale configured for Decimal field '${this.path}' (${this.scale}) ` +
+        `must not be larger than the field's precision (${this.precision})`
+      );
     }
   }
 

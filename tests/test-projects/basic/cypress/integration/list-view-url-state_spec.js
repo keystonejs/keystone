@@ -10,17 +10,13 @@ describe('List view URL state', () => {
       .should('contain', '3');
 
     // Navigate to page 2
-    cy.get('[aria-label="Go to page 2"]')
-      .should('contain', '2')
-      .click({ force: true });
+    cy.get('[aria-label="Go to page 2"]').should('contain', '2').click({ force: true });
     cy.location('search').should('eq', '?currentPage=2');
 
     cy.wait(500);
 
     // Navigate to page 1 - this is the default so it should remove the search string
-    cy.get('[aria-label="Go to page 1"]')
-      .should('contain', '1')
-      .click({ force: true });
+    cy.get('[aria-label="Go to page 1"]').should('contain', '1').click({ force: true });
 
     cy.location('search').should('eq', '');
   });
@@ -37,9 +33,7 @@ describe('List view URL state', () => {
 
     // click on a page button - to make sure we do not loose the page size
     cy.get('[aria-label="Go to page 2"]').click({ force: true });
-    cy.location('search')
-      .should('contain', 'currentPage=2')
-      .should('contain', 'pageSize=75');
+    cy.location('search').should('contain', 'currentPage=2').should('contain', 'pageSize=75');
   });
   it('Stores search state in the url', () => {
     cy.visit('/admin/posts');

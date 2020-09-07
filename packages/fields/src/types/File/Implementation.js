@@ -146,8 +146,10 @@ export class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
     if (this.config.isIndexed) {
-      throw `The File field type doesn't support indexes on Knex. ` +
-        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+      throw (
+        `The File field type doesn't support indexes on Knex. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      );
     }
   }
 

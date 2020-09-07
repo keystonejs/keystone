@@ -22,10 +22,7 @@ const imperativeList = getImperativeListName({
 });
 
 function listSlug(name) {
-  return `${name}s`
-    .replace(/[A-Z]/g, '-$&')
-    .replace(/^-/, '')
-    .toLowerCase();
+  return `${name}s`.replace(/[A-Z]/g, '-$&').replace(/^-/, '').toLowerCase();
 }
 
 describe('Access Control Fields > Admin UI', () => {

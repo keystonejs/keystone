@@ -23,16 +23,20 @@ const Uuid = {
             knexOptions: { defaultTo: knex => knex.raw('gen_random_uuid()') },
           };
         }
-        throw `The Uuid field type doesn't provide a default primary key field configuration for the ` +
+        throw (
+          `The Uuid field type doesn't provide a default primary key field configuration for the ` +
           `'${client}' knex client. You'll need to supply your own 'id' field for each list or use a ` +
-          `different field type for your ids (eg '@keystonejs/fields-auto-increment').`;
+          `different field type for your ids (eg '@keystonejs/fields-auto-increment').`
+        );
       },
     },
     mongoose: {
       getConfig: () => {
-        throw `The Uuid field type doesn't provide a default primary key field configuration for mongoose. ` +
+        throw (
+          `The Uuid field type doesn't provide a default primary key field configuration for mongoose. ` +
           `You'll need to supply your own 'id' field for each list or use a different field type for your ` +
-          `ids (eg '@keystonejs/fields-mongoid').`;
+          `ids (eg '@keystonejs/fields-mongoid').`
+        );
       },
     },
   },

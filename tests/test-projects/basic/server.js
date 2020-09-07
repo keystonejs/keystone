@@ -106,11 +106,7 @@ async function seedData(initialData) {
         },
       },
     },
-  ].concat(
-    Array(120)
-      .fill(true)
-      .map(createPost(users, postCategories))
-  );
+  ].concat(Array(120).fill(true).map(createPost(users, postCategories)));
 
   // Run the GraphQL query to insert all the post
   await createItems({ keystone, listKey: 'Post', items: Post });

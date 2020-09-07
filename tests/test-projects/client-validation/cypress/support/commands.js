@@ -65,7 +65,7 @@ Cypress.Commands.add('upload_file', (selector, fileUrl, type = '') =>
 );
 
 function graphqlOperation(type) {
-  return function(uri, operationString) {
+  return function (uri, operationString) {
     // Convert the string to an ast
     const operation = gql(operationString);
 

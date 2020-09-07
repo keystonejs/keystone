@@ -406,7 +406,7 @@ deletedUsers(['123', '456']);
 
 | Properties | Type       | Default    | Description                                                               |
 | ---------- | ---------- | ---------- | ------------------------------------------------------------------------- |
-| `items`   | `String[]` | (required) | Array of item `id`s to be deleted.                                        |
+| `items`    | `String[]` | (required) | Array of item `id`s to be deleted.                                        |
 | `pageSize` | `Number`   | 500        | The delete mutation batch size. Useful when deleting a large set of data. |
 
 ### `runCustomQuery`
