@@ -153,10 +153,13 @@ export const insertColumns = (editor, type) => {
   const isCollapsed = selection && Range.isCollapsed(selection);
   const [block, path] = getBlockAboveSelection(editor);
 
-  // We insert a paragraph after the `columns` node, so that user can make a selection after it.
-  const nodes = [getColumns(type), paragraphElement];
+  // NOTE: We need to capture new object references into arary,
+  // otherwise, slate can create React element with duplicate keys.
+  // Also, we are inserting an extra paragraph element to create a selection area underneath `columns` element.
+  const nodes = [getColumns(type), { type: 'paragraph', children: [{ text: '' }] }];
 
   if (block && isCollapsed && block.type === paragraphElement.type && isBlockTextEmpty(block)) {
+    // Remove the empty block node before inserting a `columns` element node
     Transforms.removeNodes(editor, path);
     Transforms.insertNodes(editor, nodes, { at: path, select: true });
   } else {

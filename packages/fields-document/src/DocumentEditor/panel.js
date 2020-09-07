@@ -37,8 +37,6 @@ const PANEL_TYPES = {
 const PANEL_TYPE_KEYS = Object.keys(PANEL_TYPES);
 const DEFAULT_PANEL_TYPE = PANEL_TYPE_KEYS[0];
 
-const panelElement = { type: 'panel', panelType: DEFAULT_PANEL_TYPE, children: [{ text: '' }] };
-
 export const isInsidePanel = editor => {
   return isBlockActive(editor, 'panel');
 };
@@ -47,18 +45,22 @@ export const insertPanel = editor => {
   if (isInsidePanel(editor)) return;
   const { selection } = editor;
   const isCollapsed = selection && Range.isCollapsed(selection);
-  const [block] = getBlockAboveSelection(editor);
+  const [block, path] = getBlockAboveSelection(editor);
+
+  // NOTE: We need to capture new object references into arary,
+  // otherwise, slate can create React element with duplicate keys.
+  // Also, we are inserting an extra paragraph element to create a selection area underneath `Panel` element.
+  const nodes = [
+    { type: 'panel', panelType: DEFAULT_PANEL_TYPE, children: [{ text: '' }] },
+    { type: 'paragraph', children: [{ text: '' }] },
+  ];
+
   if (!!block && isCollapsed && isBlockTextEmpty(block)) {
-    Transforms.setNodes(
-      editor,
-      { type: 'panel', panelType: DEFAULT_PANEL_TYPE },
-      { match: n => Editor.isBlock(editor, n) }
-    );
-    // Note: Add an extra pragraph to let user select underneath the panel
-    Transforms.insertNodes(editor, paragraphElement);
-    Transforms.move(editor, { distance: 1, unit: 'line', reverse: true });
+    // Remove the empty block node before inserting a `panel` element node
+    Transforms.removeNodes(editor, path);
+    Transforms.insertNodes(editor, nodes, { at: path, select: true });
   } else {
-    Transforms.insertNodes(editor, panelElement, { select: true });
+    Transforms.insertNodes(editor, nodes, { select: true });
   }
 };
 
