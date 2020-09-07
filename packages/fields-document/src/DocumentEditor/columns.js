@@ -2,12 +2,12 @@
 
 import { jsx } from '@emotion/core';
 import { useCallback } from 'react';
-import { Editor, Path, Point, Range, Transforms } from 'slate';
+import { Editor, Node, Point, Range, Transforms } from 'slate';
 import { ReactEditor, useFocused, useSelected, useSlate } from 'slate-react';
 
 import { Button } from './components';
 import { paragraphElement } from './paragraphs';
-import { debugLog, isBlockTextEmpty, getBlockAboveSelection, isBlockActive } from './utils';
+import { isBlockTextEmpty, getBlockAboveSelection, isBlockActive } from './utils';
 
 // Configuration
 const COLUMNS_LAYOUT = {
@@ -197,16 +197,28 @@ export const withColumns = editor => {
     const { selection } = editor;
 
     if (selection && Range.isCollapsed(selection)) {
-      const [col] = Editor.nodes(editor, {
-        match: n => n.type === 'column',
+      const columns = Editor.above(editor, {
+        match: n => n.type === 'columns',
       });
 
-      if (col) {
-        const [, colPath] = col;
-        const start = Editor.start(editor, colPath);
+      if (columns) {
+        const [node, path] = columns;
+        const colContent = Node.string(node);
 
-        if (Point.equals(selection.anchor, start)) {
+        // Remove the `columns` element if there's no content
+        if (!colContent) {
+          Transforms.removeNodes(editor, { at: path });
           return;
+        } else {
+          // If there's content, make sure not to delete the any of the column
+          const col = Editor.above(editor, { match: n => n.type === 'column' });
+          if (col) {
+            const [, colPath] = col;
+            const start = Editor.start(editor, colPath);
+            if (Point.equals(selection.anchor, start) && colContent) {
+              return;
+            }
+          }
         }
       }
     }
