@@ -198,6 +198,67 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data._allLocationsMeta.count).toEqual(3);
           })
         );
+
+        test(
+          '_some',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createReadData(keystone);
+            await Promise.all(
+              [
+                ['A', 6],
+                ['B', 5],
+                ['C', 3],
+                ['D', 0],
+              ].map(async ([name, count]) => {
+                const { data, errors } = await keystone.executeGraphQL({
+                  query: `{ _allCompaniesMeta(where: { locations_some: { name: "${name}"}}) { count }}`,
+                });
+                expect(errors).toBe(undefined);
+                expect(data._allCompaniesMeta.count).toEqual(count);
+              })
+            );
+          })
+        );
+        test(
+          '_none',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createReadData(keystone);
+            await Promise.all(
+              [
+                ['A', 3],
+                ['B', 4],
+                ['C', 6],
+                ['D', 9],
+              ].map(async ([name, count]) => {
+                const { data, errors } = await keystone.executeGraphQL({
+                  query: `{ _allCompaniesMeta(where: { locations_none: { name: "${name}"}}) { count }}`,
+                });
+                expect(errors).toBe(undefined);
+                expect(data._allCompaniesMeta.count).toEqual(count);
+              })
+            );
+          })
+        );
+        test(
+          '_every',
+          runner(setupKeystone, async ({ keystone }) => {
+            await createReadData(keystone);
+            await Promise.all(
+              [
+                ['A', 3],
+                ['B', 3],
+                ['C', 1],
+                ['D', 1],
+              ].map(async ([name, count]) => {
+                const { data, errors } = await keystone.executeGraphQL({
+                  query: `{ _allCompaniesMeta(where: { locations_every: { name: "${name}"}}) { count }}`,
+                });
+                expect(errors).toBe(undefined);
+                expect(data._allCompaniesMeta.count).toEqual(count);
+              })
+            );
+          })
+        );
       });
 
       describe('Create', () => {
