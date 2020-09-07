@@ -56,7 +56,7 @@ if (args['--help']) {
 const spinner = ora({
   text: 'Initialising Keystone CLI',
   // Don't show any loading output on CI
-  isSilent: !ciInfo.isCi,
+  isSilent: !!ciInfo.isCi,
 }).start();
 
 // Everything else is assumed to be a command we want to execute
