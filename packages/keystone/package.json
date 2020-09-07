@@ -36,7 +36,7 @@
     "graphql-type-json": "^0.3.2",
     "lodash.flattendeep": "^4.4.0",
     "micro-memoize": "^4.0.9",
-    "ora": "^5.0.0",
+    "ora": "^5.1.0",
     "p-waterfall": "^2.1.0",
     "pluralize": "^7.0.0",
     "serialize-error": "^7.0.1",
