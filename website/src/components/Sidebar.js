@@ -133,7 +133,7 @@ const getTruncatedItems = ({ pages, navTitle }, isPageInGroupActive) => {
             isPackageIndex: false,
             pageTitle: 'See more...',
           },
-          path: `/${navTitle}`,
+          path: `/${slugify(navTitle)}`,
         }
       : null,
   ].filter(a => a);
@@ -143,7 +143,7 @@ export const NavGroup = ({ index, navGroup, pathname }) => {
   const sectionId = `docs-menu-${navGroup.navTitle}`;
 
   const isPageInGroupActive = useMemo(() => {
-    if (pathname.includes(`/${navGroup.navTitle}`)) {
+    if (pathname.includes(`/${slugify(navGroup.navTitle)}`)) {
       return true;
     }
     let paths = [];

@@ -107,14 +107,13 @@ const createDocsPages = async ({ createPage, graphql }) =>
     });
 
     Object.entries(navGroups).forEach(([baseSlug, pages]) => {
-      if (baseSlug !== 'quick-start') {
+      if (baseSlug !== 'quick-start' && baseSlug !== 'API') {
         createPaginatedPages({
           edges: pages,
           pathPrefix: slugify(baseSlug),
           createPage: createPage,
           context: { name: baseSlug, showSearch: true },
-          pageTemplate:
-            baseSlug === 'API' ? 'src/templates/apiHome.js' : 'src/templates/listPage.js',
+          pageTemplate: 'src/templates/listPage.js',
         });
       }
     });
