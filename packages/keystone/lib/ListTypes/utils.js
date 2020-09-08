@@ -20,11 +20,7 @@ const keyToLabel = str => {
   return label;
 };
 
-const labelToPath = str =>
-  str
-    .split(' ')
-    .join('-')
-    .toLowerCase();
+const labelToPath = str => str.split(' ').join('-').toLowerCase();
 
 const labelToClass = str => str.replace(/\s+/g, '');
 

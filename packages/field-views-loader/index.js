@@ -36,7 +36,7 @@ function findPageComponents(pages, pageComponents = {}) {
   return pageComponents;
 }
 
-module.exports = function() {
+module.exports = function () {
   const { pages, hooks, listViews } = loaderUtils.getOptions(this);
   /* adminMeta gives us a `lists` object in the shape:
     {

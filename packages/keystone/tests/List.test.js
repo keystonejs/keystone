@@ -478,7 +478,7 @@ describe('getAdminMeta()', () => {
   });
 });
 
-describe(`getGqlTypes() `, () => {
+describe(`getGqlTypes()`, () => {
   const type = `""" A keystone list """
       type Test {
         """
@@ -694,11 +694,7 @@ test('getGraphqlFilterFragment', () => {
 describe(`getGqlQueries()`, () => {
   const schemaName = 'public';
   test('access: true', () => {
-    expect(
-      setup({ access: true })
-        .getGqlQueries({ schemaName })
-        .map(normalise)
-    ).toEqual(
+    expect(setup({ access: true }).getGqlQueries({ schemaName }).map(normalise)).toEqual(
       [
         `""" Search for all Test items which match the where clause. """
           allTests(
@@ -728,11 +724,7 @@ describe(`getGqlQueries()`, () => {
     );
   });
   test('access: false', () => {
-    expect(
-      setup({ access: false })
-        .getGqlQueries({ schemaName })
-        .map(normalise)
-    ).toEqual([]);
+    expect(setup({ access: false }).getGqlQueries({ schemaName }).map(normalise)).toEqual([]);
   });
 });
 

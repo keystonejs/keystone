@@ -361,12 +361,7 @@ class KnexListAdapter extends BaseListAdapter {
   }
 
   async _createSingle(realData) {
-    const item = (
-      await this._query()
-        .insert(realData)
-        .into(this.tableName)
-        .returning('*')
-    )[0];
+    const item = (await this._query().insert(realData).into(this.tableName).returning('*'))[0];
     return { item, itemId: item.id };
   }
 
@@ -443,9 +438,7 @@ class KnexListAdapter extends BaseListAdapter {
     await this._unsetForeignOneToOneValues(data, id);
 
     // Update the real data
-    const query = this._query()
-      .table(this.tableName)
-      .where({ id });
+    const query = this._query().table(this.tableName).where({ id });
     if (Object.keys(realData).length) {
       query.update(realData);
     }
@@ -524,10 +517,7 @@ class KnexListAdapter extends BaseListAdapter {
               if (cardinality === 'N:N') {
                 // FIXME: There is a User <-> User case which isn't captured here.
                 const { far } = adapter._getNearFar(fieldAdapter);
-                return this._query()
-                  .table(tableName)
-                  .where(far, id)
-                  .del();
+                return this._query().table(tableName).where(far, id).del();
               } else {
                 return this._setNullByValue({ tableName, columnName, value: id });
               }
@@ -546,10 +536,7 @@ class KnexListAdapter extends BaseListAdapter {
     );
 
     // Delete the actual item
-    return this._query()
-      .table(this.tableName)
-      .where({ id })
-      .del();
+    return this._query().table(this.tableName).where({ id }).del();
   }
 
   ////////// Queries //////////
@@ -593,15 +580,12 @@ class QueryBuilder {
       console.log('Knex adapter does not currently support search!');
     }
 
-    if (meta) {
-      // SELECT count from <tableName> as t0
-      this._query.count();
-    } else {
+    if (!meta) {
       // SELECT t0.* from <tableName> as t0
       this._query.column(`${baseTableAlias}.*`);
     }
 
-    this._addJoins(this._query, listAdapter, where, baseTableAlias, meta);
+    this._addJoins(this._query, listAdapter, where, baseTableAlias);
 
     // Joins/where to effectively translate us onto a different list
     if (Object.keys(from).length) {
@@ -633,7 +617,7 @@ class QueryBuilder {
       this._query.whereRaw('true');
     }
 
-    this._addWheres(w => this._query.andWhere(w), listAdapter, where, baseTableAlias, meta);
+    this._addWheres(w => this._query.andWhere(w), listAdapter, where, baseTableAlias);
 
     // TODO: Implement configurable search fields for lists
     const searchField = listAdapter.fieldAdaptersByPath['name'];
@@ -647,7 +631,9 @@ class QueryBuilder {
     }
 
     // Add query modifiers as required
-    if (!meta) {
+    if (meta) {
+      this._query = listAdapter.parentAdapter.knex.count('*').from(this._query.as('unused_alias'));
+    } else {
       if (first !== undefined) {
         // SELECT ... LIMIT <first>
         this._query.limit(first);
@@ -712,7 +698,7 @@ class QueryBuilder {
   // Recursively traverse the `where` query to identify required joins and add them to the query
   // We perform joins on non-many relationship fields which are mentioned in the where query.
   // Joins are performed as left outer joins on fromTable.fromCol to toTable.id
-  _addJoins(query, listAdapter, where, tableAlias, meta) {
+  _addJoins(query, listAdapter, where, tableAlias) {
     // Insert joins to handle 1:1 relationships where the FK is stored on the other table.
     // We join against the other table and select its ID as the path name, so that it appears
     // as if it existed on the primary table all along!
@@ -727,7 +713,7 @@ class QueryBuilder {
       .forEach(({ path, rel }) => {
         const { tableName, columnName } = rel;
         const otherTableAlias = `${tableAlias}__${path}`;
-        if (!this._tableAliases[otherTableAlias] && (!meta || joinPaths.includes(path))) {
+        if (!this._tableAliases[otherTableAlias]) {
           this._tableAliases[otherTableAlias] = true;
           // LEFT OUTERJOIN on ... table>.<id> = <otherTable>.<columnName> SELECT <othertable>.<id> as <path>
           query.leftOuterJoin(
@@ -735,9 +721,7 @@ class QueryBuilder {
             `${otherTableAlias}.${columnName}`,
             `${tableAlias}.id`
           );
-          if (!meta) {
-            query.select(`${otherTableAlias}.id as ${path}`);
-          }
+          query.select(`${otherTableAlias}.id as ${path}`);
           joinedPaths.push(path);
         }
       });
@@ -745,7 +729,7 @@ class QueryBuilder {
     for (let path of joinPaths) {
       if (path === 'AND' || path === 'OR') {
         // AND/OR we need to traverse their children
-        where[path].forEach(x => this._addJoins(query, listAdapter, x, tableAlias, meta));
+        where[path].forEach(x => this._addJoins(query, listAdapter, x, tableAlias));
       } else {
         const otherAdapter = listAdapter.fieldAdaptersByPath[path];
         // If no adapter is found, it must be a query of the form `foo_some`, `foo_every`, etc.
@@ -767,7 +751,7 @@ class QueryBuilder {
               `${tableAlias}.${path}`
             );
           }
-          this._addJoins(query, otherListAdapter, where[path], otherTableAlias, meta);
+          this._addJoins(query, otherListAdapter, where[path], otherTableAlias);
         }
       }
     }
@@ -775,7 +759,7 @@ class QueryBuilder {
 
   // Recursively traverses the `where` query and pushes knex query functions to whereJoiner,
   // which will normally do something like pass it to q.andWhere() to add to a query
-  _addWheres(whereJoiner, listAdapter, where, tableAlias, meta) {
+  _addWheres(whereJoiner, listAdapter, where, tableAlias) {
     for (let path of Object.keys(where)) {
       const condition = this._getQueryConditionByPath(listAdapter, path, tableAlias);
       if (condition) {
@@ -792,7 +776,7 @@ class QueryBuilder {
             subJoiner = w => q.orWhere(w);
           }
           where[path].forEach(subWhere =>
-            this._addWheres(subJoiner, listAdapter, subWhere, tableAlias, meta)
+            this._addWheres(subJoiner, listAdapter, subWhere, tableAlias)
           );
         });
       } else {
@@ -801,13 +785,7 @@ class QueryBuilder {
         if (fieldAdapter) {
           // Non-many relationship. Traverse the sub-query, using the referenced list as a root.
           const otherListAdapter = listAdapter.getListAdapterByKey(fieldAdapter.refListKey);
-          this._addWheres(
-            whereJoiner,
-            otherListAdapter,
-            where[path],
-            `${tableAlias}__${path}`,
-            meta
-          );
+          this._addWheres(whereJoiner, otherListAdapter, where[path], `${tableAlias}__${path}`);
         } else {
           // Many relationship
           const [p, constraintType] = path.split('_');
@@ -842,7 +820,7 @@ class QueryBuilder {
               `${subBaseTableAlias}.${far}`
             );
           }
-          this._addJoins(subQuery, otherListAdapter, where[path], otherTableAlias, meta);
+          this._addJoins(subQuery, otherListAdapter, where[path], otherTableAlias);
 
           // some: the ID is in the examples found
           // none: the ID is not in the examples found
@@ -853,13 +831,7 @@ class QueryBuilder {
           if (constraintType === 'every') {
             subQuery.whereNot(q => {
               q.whereRaw('true');
-              this._addWheres(
-                w => q.andWhere(w),
-                otherListAdapter,
-                where[path],
-                otherTableAlias,
-                meta
-              );
+              this._addWheres(w => q.andWhere(w), otherListAdapter, where[path], otherTableAlias);
             });
           } else {
             subQuery.whereRaw('true');
@@ -867,16 +839,15 @@ class QueryBuilder {
               w => subQuery.andWhere(w),
               otherListAdapter,
               where[path],
-              otherTableAlias,
-              meta
+              otherTableAlias
             );
           }
 
           // Ensure there therwhereIn/whereNotIn query is run against
           // a table with exactly one column.
-          const subSubQuery = listAdapter.parentAdapter.knex.raw(
-            `SELECT "${selectCol}" FROM (${subQuery}) AS unused_alias`
-          );
+          const subSubQuery = listAdapter.parentAdapter.knex
+            .select(selectCol)
+            .from(subQuery.as('unused_alias'));
           if (constraintType === 'some') {
             whereJoiner(q => q.whereIn(`${tableAlias}.id`, subSubQuery));
           } else {

@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/file-adapters",
   "description": "Adapters for handling storage of the File type",
-  "version": "7.0.4",
+  "version": "7.0.5",
   "main": "index.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/file-adapters",
   "homepage": "https://github.com/keystonejs/keystone",
@@ -11,7 +11,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.739.0",
+    "aws-sdk": "^2.747.0",
     "cloudinary": "^1.23.0",
     "mkdirp": "^1.0.4",
     "url-join": "^4.0.1"

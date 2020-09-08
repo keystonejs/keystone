@@ -141,12 +141,16 @@ export class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdap
 
     // Error rather than ignoring invalid config
     if (this.config.isIndexed) {
-      throw `The Password field type doesn't support indexes on Knex. ` +
-        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+      throw (
+        `The Password field type doesn't support indexes on Knex. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      );
     }
     if (this.config.defaultTo) {
-      throw `The Password field type doesn't support the Knex 'defaultTo' config. ` +
-        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+      throw (
+        `The Password field type doesn't support the Knex 'defaultTo' config. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      );
     }
   }
 

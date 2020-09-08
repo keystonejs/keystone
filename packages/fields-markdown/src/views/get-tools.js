@@ -18,8 +18,8 @@ export let getTools = cm => {
     if (doc.somethingSelected()) {
       let selections = doc.listSelections();
       let remove = null;
-      cm.operation(function() {
-        selections.forEach(function(selection) {
+      cm.operation(function () {
+        selections.forEach(function (selection) {
           let pos = [selection.head.line, selection.anchor.line].sort();
 
           // Remove if the first text starts with it

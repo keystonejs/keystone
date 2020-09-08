@@ -14,7 +14,7 @@ Support files hosted in a range of different contexts, e.g. in the local filesys
 >
 > ```js title=package.json
 > "resolutions": {
->   "graphql-upload": "^10.0.0"
+>   "graphql-upload": "^11.0.0"
 > }
 > ```
 >

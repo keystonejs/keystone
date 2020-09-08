@@ -3,7 +3,7 @@ import Text from '../src/types/Text';
 
 export const name = 'ID';
 export { Text as type };
-export const exampleValue = '"foo"';
+export const exampleValue = () => '"foo"';
 export const skipCrudTest = true;
 
 export const getTestFields = () => {
@@ -15,6 +15,8 @@ export const getTestFields = () => {
 export const initItems = () => {
   return [{ name: 'person1' }, { name: 'person2' }, { name: 'person3' }, { name: 'person4' }];
 };
+
+export const supportedFilters = ['null_equality', 'equality', 'in_empty_null', 'in_value'];
 
 const getIDs = async keystone => {
   const IDs = {};
