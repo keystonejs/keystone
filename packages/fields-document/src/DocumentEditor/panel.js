@@ -36,6 +36,14 @@ const PANEL_TYPES = {
 const PANEL_TYPE_KEYS = Object.keys(PANEL_TYPES);
 const DEFAULT_PANEL_TYPE = PANEL_TYPE_KEYS[0];
 
+const panelElement = {
+  type: 'panel',
+  panelType: DEFAULT_PANEL_TYPE,
+  children: [{ text: '' }],
+};
+
+const getPanelAbove = editor => Editor.above(editor, { match: n => n.type === panelElement.type });
+
 export const isInsidePanel = editor => {
   return isBlockActive(editor, 'panel');
 };
@@ -44,31 +52,25 @@ export const insertPanel = editor => {
   if (isInsidePanel(editor)) return;
   const { selection } = editor;
   const isCollapsed = selection && Range.isCollapsed(selection);
-  const [block, path] = getBlockAboveSelection(editor);
-
-  // NOTE: We need to capture new object references into arary,
-  // otherwise, slate can create React element with duplicate keys.
-  // Also, we are inserting an extra paragraph element to create a selection area underneath `Panel` element.
-  const nodes = [
-    { type: 'panel', panelType: DEFAULT_PANEL_TYPE, children: [{ text: '' }] },
-    { type: 'paragraph', children: [{ text: '' }] },
-  ];
+  const [block] = getBlockAboveSelection(editor);
 
   if (!!block && isCollapsed && isBlockTextEmpty(block)) {
-    // Remove the empty block node before inserting a `panel` element node
-    Transforms.removeNodes(editor, path);
-    Transforms.insertNodes(editor, nodes, { at: path, select: true });
+    Transforms.setNodes(
+      editor,
+      { type: 'panel', panelType: DEFAULT_PANEL_TYPE },
+      { match: n => Editor.isBlock(editor, n) }
+    );
   } else {
-    Transforms.insertNodes(editor, nodes, { select: true });
+    Transforms.insertNodes(editor, panelElement, { select: true });
   }
 };
 
 export const withPanel = editor => {
   const { insertBreak, deleteBackward, deleteForward } = editor;
   editor.insertBreak = () => {
-    const panel = Editor.above(editor, {
-      match: n => n.type === 'panel',
-    });
+    const panel = getPanelAbove(editor);
+
+    //NOTE: Panel can have only one block element; upon break insert, we add paragraph beneath it.
     if (panel) {
       const [, path] = panel;
       Transforms.insertNodes(
@@ -89,17 +91,18 @@ export const withPanel = editor => {
     const { selection } = editor;
 
     if (selection && Range.isCollapsed(selection)) {
-      const panel = Editor.above(editor, {
-        match: n => n.type === 'panel',
-      });
-
+      const panel = getPanelAbove(editor);
       if (panel) {
         const [node, path] = panel;
         const panelContent = Node.string(node);
 
         // Remove the `panel` element if there's no content
         if (!panelContent) {
+          // NOTE: If the node is the last Panel node, removing it throws an exception.
+          // Ref: https://github.com/ianstormtaylor/slate/issues/3834).
+          // To mitigate this problem, we are inserting an empty paragraph element.
           Transforms.removeNodes(editor, { at: path });
+          Transforms.insertNodes(editor, { type: 'paragraph', children: [{ text: '' }] });
           return;
         }
       }
@@ -208,7 +211,7 @@ export const PanelElement = ({ attributes, children, element }) => {
       >
         {panelType.icon}
       </div>
-      <p>{children}</p>
+      {children}
       {focused && selected ? (
         <PanelTypeSelect
           value={panelTypeKey}

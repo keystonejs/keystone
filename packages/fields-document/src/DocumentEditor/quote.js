@@ -16,13 +16,13 @@ export const isInsideQuote = editor => {
   return isBlockActive(editor, 'quote');
 };
 
-const quoteElement = {
+const getQuoteElement = () => ({
   type: 'quote',
   children: [
     { type: 'quote-content', children: [{ text: '' }] },
     { type: 'quote-attribution', children: [{ text: '' }] },
   ],
-};
+});
 
 export const insertQuote = editor => {
   if (isInsideQuote(editor)) return;
@@ -30,14 +30,15 @@ export const insertQuote = editor => {
   const { selection } = editor;
   const isCollapsed = selection && Range.isCollapsed(selection);
   const [block, path] = getBlockAboveSelection(editor);
+  const quote = getQuoteElement();
   if (block && isCollapsed && block.type === paragraphElement.type && isBlockTextEmpty(block)) {
     debugLog('insertQuote: removing empty paragraph at ', path);
     Transforms.removeNodes(editor, path);
     debugLog('insertQuote: inserting quote at path ', path);
-    Transforms.insertNodes(editor, { ...quoteElement, id: Date.now() }, { at: path, select: true });
+    Transforms.insertNodes(editor, quote, { at: path, select: true });
   } else {
     debugLog('insertQuote: inserting quote');
-    Transforms.insertNodes(editor, { ...quoteElement, id: Date.now() }, { select: true });
+    Transforms.insertNodes(editor, quote, { select: true });
   }
   // move the selection back by one line so the cursor starts in the content
   Transforms.move(editor, { distance: 1, reverse: true, unit: 'line' });
@@ -60,6 +61,7 @@ export const withQuote = editor => {
         const quoteContent = Node.string(quoteNode);
         if (!quoteContent && quoteNode.children.length === 2) {
           Transforms.removeNodes(editor, { at: quotePath });
+          Transforms.insertNodes(editor, { type: 'paragraph', children: [{ text: '' }] });
           return;
         }
 
@@ -114,6 +116,7 @@ export const withQuote = editor => {
   };
 
   editor.normalizeNode = ([node, path]) => {
+    const quoteElement = getQuoteElement();
     const contentElement = quoteElement.children[0];
     const attributionElement = quoteElement.children[1];
 

@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { useCallback } from 'react';
 import { Editor, Node, Point, Range, Transforms } from 'slate';
 import { ReactEditor, useFocused, useSelected, useSlate } from 'slate-react';
 
@@ -141,6 +140,10 @@ const ColumnsTypeSelect = ({ colType, value, onChange }) => {
   );
 };
 
+const getElementAbove = (editor, type) => {
+  return Editor.above(editor, { match: n => n.type === type });
+};
+
 export const isInsideColumn = editor => {
   return isBlockActive(editor, 'columns');
 };
@@ -153,7 +156,7 @@ export const insertColumns = (editor, type) => {
   const isCollapsed = selection && Range.isCollapsed(selection);
   const [block, path] = getBlockAboveSelection(editor);
 
-  // NOTE: We need to capture new object references into arary,
+  // NOTE: We need to capture new object (including children) into array,
   // otherwise, slate can create React element with duplicate keys.
   // Also, we are inserting an extra paragraph element to create a selection area underneath `columns` element.
   const nodes = [getColumns(type), { type: 'paragraph', children: [{ text: '' }] }];
@@ -190,10 +193,7 @@ export const withColumns = editor => {
     const { selection } = editor;
 
     if (selection && Range.isCollapsed(selection)) {
-      const columns = Editor.above(editor, {
-        match: n => n.type === 'columns',
-      });
-
+      const columns = getElementAbove(editor, 'columns');
       if (columns) {
         const [node, path] = columns;
         const colContent = Node.string(node);
@@ -201,10 +201,20 @@ export const withColumns = editor => {
         // Remove the `columns` element if there's no content
         if (!colContent) {
           Transforms.removeNodes(editor, { at: path });
+          const block = getElementAbove(editor, 'paragraph');
+          if (!block) {
+            console.log('inserting paragraph');
+            Transforms.insertNodes(
+              editor,
+              { type: 'paragraph', children: [{ text: '' }] }
+              //{ at: path }
+            );
+          }
           return;
+          //}
         } else {
           // If there's content, make sure not to delete the any of the column
-          const col = Editor.above(editor, { match: n => n.type === 'column' });
+          const col = getElementAbove(editor, 'column');
           if (col) {
             const [, colPath] = col;
             const start = Editor.start(editor, colPath);

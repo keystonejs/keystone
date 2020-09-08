@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Editor, Transforms, Path, Range } from 'slate';
+import { Editor, Node, Transforms, Path, Range } from 'slate';
 
 import { Button } from './components';
 import { useDocumentFeatures } from './documentFeatures';
@@ -28,7 +28,7 @@ export const insertAccessBoundary = editor => {
 };
 
 export const withAccess = editor => {
-  const { insertBreak } = editor;
+  const { insertBreak, deleteBackward } = editor;
   editor.insertBreak = () => {
     const [block] = getBlockAboveSelection(editor);
 
@@ -52,6 +52,29 @@ export const withAccess = editor => {
     }
 
     insertBreak();
+  };
+
+  editor.deleteBackward = unit => {
+    const { selection } = editor;
+
+    if (selection && Range.isCollapsed(selection)) {
+      const accessBoundaryNode = Editor.above(editor, { match: n => n.type === 'access-boundary' });
+      if (accessBoundaryNode) {
+        const [node, path] = accessBoundaryNode;
+        const content = Node.string(node);
+
+        // Remove the AccessBoundary Node if there's no content
+        if (!content) {
+          // NOTE: If the node is the last node in the root (editor), removing it throws an exception.
+          // Ref: https://github.com/ianstormtaylor/slate/issues/3834).
+          // To mitigate this problem, we are inserting an empty paragraph element.
+          Transforms.removeNodes(editor, { at: path, hanging: true });
+          //Transforms.insertNodes(editor, { type: 'paragraph', children: [{ text: '' }] });
+          return;
+        }
+      }
+    }
+    deleteBackward(unit);
   };
   return editor;
 };
