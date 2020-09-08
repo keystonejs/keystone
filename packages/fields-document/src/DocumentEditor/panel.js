@@ -1,11 +1,10 @@
 /** @jsx jsx */
 
 import { jsx } from '@emotion/core';
-import { Editor, Path, Range, Transforms } from 'slate';
+import { Editor, Path, Point, Range, Node, Transforms } from 'slate';
 import { ReactEditor, useFocused, useSelected, useSlate } from 'slate-react';
 
 import { Button } from './components';
-import { paragraphElement } from './paragraphs';
 import { isBlockTextEmpty, getBlockAboveSelection, isBlockActive } from './utils';
 
 const PANEL_TYPES = {
@@ -65,7 +64,7 @@ export const insertPanel = editor => {
 };
 
 export const withPanel = editor => {
-  const { insertBreak } = editor;
+  const { insertBreak, deleteBackward, deleteForward } = editor;
   editor.insertBreak = () => {
     const panel = Editor.above(editor, {
       match: n => n.type === 'panel',
@@ -84,6 +83,49 @@ export const withPanel = editor => {
     }
 
     insertBreak();
+  };
+
+  editor.deleteBackward = unit => {
+    const { selection } = editor;
+
+    if (selection && Range.isCollapsed(selection)) {
+      const panel = Editor.above(editor, {
+        match: n => n.type === 'panel',
+      });
+
+      if (panel) {
+        const [node, path] = panel;
+        const panelContent = Node.string(node);
+
+        // Remove the `panel` element if there's no content
+        if (!panelContent) {
+          Transforms.removeNodes(editor, { at: path });
+          return;
+        }
+      }
+    }
+    deleteBackward(unit);
+  };
+
+  editor.deleteForward = unit => {
+    const { selection } = editor;
+
+    if (selection && Range.isCollapsed(selection)) {
+      const [panel] = Editor.nodes(editor, {
+        match: n => n.type === 'panel',
+      });
+
+      if (panel) {
+        const [, panelPath] = panel;
+        const end = Editor.end(editor, panelPath);
+
+        if (Point.equals(selection.anchor, end)) {
+          return;
+        }
+      }
+    }
+
+    deleteForward(unit);
   };
   return editor;
 };
