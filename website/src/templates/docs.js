@@ -72,10 +72,14 @@ export default function Template({
         <meta property="og:type" content="article" />
         <meta name="twitter:description" content={fields.description} />
       </Helmet>
-      <Layout>
+      <Layout showSearch={fields.navGroup !== 'blog'}>
         {({ sidebarIsVisible, toggleSidebar }) => (
           <Container hasGutters={false} css={{ display: 'flex' }}>
-            <Sidebar isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} />
+            <Sidebar
+              isVisible={sidebarIsVisible}
+              toggleSidebar={toggleSidebar}
+              currentGroup={fields.navGroup}
+            />
             <Content css={{ alignItems: 'flex-start', display: 'flex', flex: 1 }}>
               <div
                 ref={setContentRef}
