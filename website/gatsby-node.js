@@ -60,6 +60,7 @@ const createDocsPages = async ({ createPage, graphql }) =>
               sortOrder
               sortSubOrder
               order
+              date
               isPackageIndex
               isIndex
               pageTitle

@@ -11,10 +11,11 @@ import { Sidebar } from '../components/Sidebar';
 
 const List = ({ pageContext }) => {
   const { group, index, first, last, pageCount, name, pathPrefix, showSearch } = pageContext;
+  const isBlog = name === 'blog';
 
   return (
     <Fragment>
-      <Layout showSearch={showSearch}>
+      <Layout showSearch={showSearch} showSearch={!isBlog}>
         {({ sidebarIsVisible, toggleSidebar }) => (
           <Fragment>
             <Container hasGutters={false} css={{ display: 'flex' }}>
@@ -70,6 +71,23 @@ const List = ({ pageContext }) => {
                         >
                           {fields.pageTitle}
                         </a>
+                        {isBlog ? (
+                          <p
+                            css={{
+                              margin: 0,
+                              marginTop: '0.75rem',
+                              padding: 0,
+                              fontSize: '.8rem',
+                            }}
+                          >
+                            <Fragment>
+                              By <strong>{fields.author || 'Keystone'}</strong>
+                              {fields.date ? (
+                                <Fragment>, Published on {fields.date}</Fragment>
+                              ) : null}
+                            </Fragment>
+                          </p>
+                        ) : null}
                         {fields.navSubGroup ? (
                           <p
                             css={{

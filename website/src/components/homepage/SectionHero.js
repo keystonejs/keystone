@@ -41,7 +41,7 @@ const SectionHero = () => (
           <Button
             appearance="secondary"
             variant="solid"
-            to="/quick-start/"
+            to="/blog"
             css={{
               [media.sm]: { marginRight: 4 },
             }}
