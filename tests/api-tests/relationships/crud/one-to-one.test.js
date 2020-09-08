@@ -110,7 +110,7 @@ const setupKeystone = adapterName =>
     },
   });
 
-multiAdapterRunners('knex').map(({ runner, adapterName }) =>
+multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe(`One-to-one relationships`, () => {
       describe('Read', () => {
@@ -267,6 +267,40 @@ multiAdapterRunners('knex').map(({ runner, adapterName }) =>
             expect(data._allLocationsMeta.count).toEqual(1);
           })
         );
+        if (adapterName !== 'mongoose') {
+          test(
+            'Where null with count A',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createCompanyAndLocation(keystone);
+              const { data, errors } = await keystone.executeGraphQL({
+                query: `{
+                  _allLocationsMeta(where: { company_is_null: true }) { count }
+                  _allCompaniesMeta(where: { location_is_null: true }) { count }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data._allCompaniesMeta.count).toEqual(3);
+              expect(data._allLocationsMeta.count).toEqual(4);
+            })
+          );
+          test(
+            'Where null with count B',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createLocationAndCompany(keystone);
+              const { data, errors } = await keystone.executeGraphQL({
+                query: `{
+                  _allLocationsMeta(where: { company_is_null: true }) { count }
+                  _allCompaniesMeta(where: { location_is_null: true }) { count }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data._allCompaniesMeta.count).toEqual(3);
+              expect(data._allLocationsMeta.count).toEqual(4);
+            })
+          );
+        }
       });
 
       describe('Create', () => {

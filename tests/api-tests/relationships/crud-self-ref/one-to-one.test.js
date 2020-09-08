@@ -207,6 +207,35 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               expect(data._allUsersMeta.count).toEqual(1);
             })
           );
+          test(
+            'Where null with count - friend',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createUserAndFriend(keystone);
+              const { data, errors } = await keystone.executeGraphQL({
+                query: `{
+                  _allUsersMeta(where: { friend_is_null: true }) { count }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data._allUsersMeta.count).toEqual(4);
+            })
+          );
+
+          test(
+            'Where null with count - friendOf',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createUserAndFriend(keystone);
+              const { data, errors } = await keystone.executeGraphQL({
+                query: `{
+                  _allUsersMeta(where: { friendOf_is_null: true }) { count }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data._allUsersMeta.count).toEqual(4);
+            })
+          );
         }
       });
 

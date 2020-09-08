@@ -451,20 +451,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           const { data, errors } = await keystone.executeGraphQL({
             query: `
-        query {
-          allUsers {
-            id
-            _postsMeta (where: {
-              OR: [
-                { content_contains: "i w" },
-                { content_contains: "? O" },
-              ]
-            }){
-              count
-            }
-          }
-        }
-      `,
+              query {
+                allUsers {
+                  id
+                  _postsMeta (where: {
+                    OR: [
+                      { content_contains: "i w" },
+                      { content_contains: "? O" },
+                    ]
+                  }){
+                    count
+                  }
+                }
+              }
+            `,
           });
 
           expect(errors).toBe(undefined);
