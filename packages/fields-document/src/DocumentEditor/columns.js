@@ -203,12 +203,7 @@ export const withColumns = editor => {
           Transforms.removeNodes(editor, { at: path });
           const block = getElementAbove(editor, 'paragraph');
           if (!block) {
-            console.log('inserting paragraph');
-            Transforms.insertNodes(
-              editor,
-              { type: 'paragraph', children: [{ text: '' }] }
-              //{ at: path }
-            );
+            Transforms.insertNodes(editor, { type: 'paragraph', children: [{ text: '' }] });
           }
           return;
           //}

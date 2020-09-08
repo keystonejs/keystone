@@ -69,7 +69,7 @@ export const withAccess = editor => {
           // Ref: https://github.com/ianstormtaylor/slate/issues/3834).
           // To mitigate this problem, we are inserting an empty paragraph element.
           Transforms.removeNodes(editor, { at: path, hanging: true });
-          //Transforms.insertNodes(editor, { type: 'paragraph', children: [{ text: '' }] });
+          Transforms.insertNodes(editor, { type: 'paragraph', children: [{ text: '' }] });
           return;
         }
       }
