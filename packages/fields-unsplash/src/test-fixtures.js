@@ -7,7 +7,6 @@ import { Unsplash } from './';
 export const name = 'Unsplash';
 export const type = Unsplash;
 export const supportsUnique = false;
-export const skipRequiredTest = false;
 export const exampleValue = () => 'U0tBTn8UR8I';
 export const exampleValue2 = () => 'xrVDYZRGdw4';
 export const fieldName = 'heroImage';
