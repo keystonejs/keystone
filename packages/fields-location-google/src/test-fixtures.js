@@ -6,7 +6,6 @@ import { LocationGoogle } from './';
 export const name = 'LocationGoogle';
 export const type = LocationGoogle;
 export const supportsUnique = false;
-export const skipRequiredTest = false;
 export const exampleValue = () => 'ChIJOza7MD-uEmsRrf4t12uji6Y';
 export const exampleValue2 = () => 'ChIJ_9gDOjmuEmsRB7WRXm_Y6o8';
 export const fieldName = 'venue';
