@@ -1,10 +1,18 @@
-# Demo Project: Todo List
+# demo project: Content
 
-This is the todo list - the simplest implementation of Keystone. The todo list allows you to see what the minimum requirements are for running Keystone. It has no fancy extras and only one list - easy peasy!
+This demo project showcase the usage of **Document** Field—a rich text editor. It has the following listed functionality: 
+- Heading (h1, h2, and h3)
+- Ordered and Unordered list
+- Code
+- Bold and Italics
+- Access Boundary (allow setting access visibility to text content)
+- Panel
+- Quote
+- Two and three column layout
 
 ## Running the Project.
 
-To run this demo project, all you need to do is run `yarn` within the Keystone project root to install all required packages, then run `yarn start todo` to begin running Keystone.
+To run this demo project, all you need to do is run `yarn` within the Keystone project root to install all required packages, then run `yarn demo content` to begin running Keystone.
 
 Once running, the Keystone Admin UI is reachable from `localhost:3000/admin`. To see an example React app using KeystoneJS' GraphQl APIs, head to `localhost:3000`.
 
@@ -14,6 +22,6 @@ You can change the port that this application runs on by setting the `PORT` envi
 PORT=5000 yarn start todo
 ```
 
-## Demo React App
+## TODO: Permissions and Authorisation
 
-The one 'extra' that this project includes is an example React App that consumes the data from Keystone via GraphQl. The app uses React's UMD build and is housed within the `/public` directory. It allows you to see how easy it is to create an app that can use KeystoneJS' GraphQL APIs.
+Although the "Password" auth strategy is enabled for the Admin UI on this project, we haven't implemented any restrictions on the GraphQL API yet. So you can create users with desired password to get started.
