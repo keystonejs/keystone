@@ -308,7 +308,7 @@ query {
 
 ### `search`
 
-Will search the list to limit results.
+Will search the list to limit results. It can search only by [labelField](/docs/api/create-list.md#labelfield).
 
 ```graphql
 query {
