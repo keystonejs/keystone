@@ -2,7 +2,6 @@
 
 import { jsx } from '@emotion/core';
 import { Editor, Path, Transforms } from 'slate';
-import { paragraphElement } from './paragraphs';
 import { getBlockAboveSelection } from './utils';
 
 export const HeadingElement = ({ attributes, children, level }) => {
@@ -21,10 +20,14 @@ export const withHeadings = editor => {
       const headings = Editor.above(editor, { match: n => /^heading-(1|2|3)$/.test(n.type) });
       if (headings) {
         const [, path] = headings;
-        Transforms.insertNodes(editor, paragraphElement, {
-          at: Path.next(path),
-          select: true,
-        });
+        Transforms.insertNodes(
+          editor,
+          { type: 'paragraph', children: [{ text: '' }] },
+          {
+            at: Path.next(path),
+            select: true,
+          }
+        );
         return;
       }
     }
