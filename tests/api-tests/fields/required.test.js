@@ -10,8 +10,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     testModules
       .map(require)
       .filter(
-        ({ skipCrudTest, unSupportedAdapterList = [] }) =>
-          !skipCrudTest && !unSupportedAdapterList.includes(adapterName)
+        ({ skipRequiredTest, unSupportedAdapterList = [] }) =>
+          !skipRequiredTest && !unSupportedAdapterList.includes(adapterName)
       )
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach(matrixValue => {
