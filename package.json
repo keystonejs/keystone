@@ -193,8 +193,7 @@
       "!packages/core/tests/default-entry/index.js",
       "!packages/fields/**/views/**",
       "!packages/fields/**/test-fixtures.js",
-      "!packages/fields/types.js",
-      "!packages/mongo-join-builder/examples/**"
+      "!packages/fields/types.js"
     ]
   },
   "resolutions": {
