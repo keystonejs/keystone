@@ -20,7 +20,6 @@ const {
   labelToPath,
   labelToClass,
   opToType,
-  mapNativeTypeToKeystoneType,
   getDefaultLabelResolver,
   mapToFields,
 } = require('./utils');
@@ -165,10 +164,7 @@ module.exports = class List {
     if (this.fieldsInitialised) return;
     this.fieldsInitialised = true;
 
-    let sanitisedFieldsConfig = mapKeys(this._fields, (fieldConfig, path) => ({
-      ...fieldConfig,
-      type: mapNativeTypeToKeystoneType(fieldConfig.type, this.key, path),
-    }));
+    let sanitisedFieldsConfig = this._fields;
 
     // Add an 'id' field if none supplied
     if (!sanitisedFieldsConfig.id) {
