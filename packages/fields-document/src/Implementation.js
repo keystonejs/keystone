@@ -19,7 +19,7 @@ function resolveNodeAccess(node, access, auth) {
 }
 
 export class DocumentImplementation extends Text.implementation {
-  constructor(path, { documentFeatures }) {
+  constructor(path, { documentFeatures = {} }) {
     super(...arguments);
 
     this.documentFeatures = documentFeatures;

@@ -26,6 +26,9 @@
     "slate-history": "^0.58.1",
     "slate-react": "npm:slate-react@^0.58.1"
   },
+  "devDependencies": {
+    "@keystonejs/server-side-graphql-client": "*"
+  },
   "main": "dist/fields-document.cjs.js",
   "module": "dist/fields-document.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-document"
