@@ -8,9 +8,7 @@ const { serializeError } = require('serialize-error');
 const StackUtils = require('stack-utils');
 const cuid = require('cuid');
 const { omit } = require('@keystonejs/utils');
-const { logger } = require('@keystonejs/logger');
-
-const graphqlLogger = logger('graphql');
+const { graphqlLogger } = require('./logger');
 
 const stackUtil = new StackUtils({ cwd: process.cwd(), internals: StackUtils.nodeInternals() });
 
