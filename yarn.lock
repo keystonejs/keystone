@@ -13009,6 +13009,16 @@ get-workspaces@^0.6.0:
     globby "^9.2.0"
     read-yaml-file "^1.1.0"
 
+get-workspaces@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/get-workspaces/-/get-workspaces-1.0.2.tgz#7bb01ff0a7ca5795e527f064c9294f8d43bca77b"
+  integrity sha512-7/ob6V9GCpAPySnrOoSp6K3SNzDC4pQ68QwWlp+0UOnDgGgzUzwsTlYzEhSX9+lnuQAvcuZjNmnRiy3Di7xnzw==
+  dependencies:
+    "@changesets/types" "^3.0.0"
+    fs-extra "^7.0.1"
+    globby "^9.2.0"
+    read-yaml-file "^1.1.0"
+
 getopts@2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/getopts/-/getopts-2.2.5.tgz#67a0fe471cacb9c687d817cab6450b96dde8313b"
