@@ -22,9 +22,9 @@
     "lodash.isequal": "^4.5.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "slate": "npm:^0.58.1",
+    "slate": "npm:slate@^0.58.1",
     "slate-history": "^0.58.1",
-    "slate-react": "npm:^0.58.1"
+    "slate-react": "npm:slate-react@^0.58.1"
   },
   "main": "dist/fields-document.cjs.js",
   "module": "dist/fields-document.esm.js",
