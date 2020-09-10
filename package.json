@@ -36,7 +36,9 @@
     "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md\"",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "heroku-postbuild": "yarn build && yarn workspace @keystonejs/demo-project-blog build"
+    "heroku-postbuild": "yarn build && yarn workspace @keystonejs/demo-project-blog build",
+    "npm-tag": "manypkg npm-tag",
+    "update": "manypkg upgrade"
   },
   "dependencies": {
     "@babel/cli": "^7.11.6",
@@ -53,7 +55,7 @@
     "@changesets/changelog-github": "^0.2.7",
     "@changesets/cli": "^2.10.2",
     "@jest/test-sequencer": "^26.4.2",
-    "@manypkg/cli": "^0.15.0",
+    "@manypkg/cli": "^0.16.0",
     "@preconstruct/cli": "1.1.27",
     "@types/jest": "^26.0.13",
     "@typescript-eslint/eslint-plugin": "^3.10.1",

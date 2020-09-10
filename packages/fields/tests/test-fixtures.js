@@ -4,7 +4,6 @@ import Text from '../src/types/Text';
 export const name = 'ID';
 export { Text as type };
 export const exampleValue = () => '"foo"';
-export const skipCrudTest = true;
 
 export const getTestFields = () => {
   return {
@@ -16,11 +15,12 @@ export const initItems = () => {
   return [{ name: 'person1' }, { name: 'person2' }, { name: 'person3' }, { name: 'person4' }];
 };
 
-export const supportedFilters = ['null_equality', 'equality', 'in_empty_null', 'in_value'];
+export const skipCrudTest = true;
+export const skipCommonFilterTest = true;
 
 const getIDs = async keystone => {
   const IDs = {};
-  await keystone.lists['test'].adapter.findAll().then(data => {
+  await keystone.lists['Test'].adapter.findAll().then(data => {
     data.forEach(entry => {
       IDs[entry.name] = entry.id.toString();
     });
