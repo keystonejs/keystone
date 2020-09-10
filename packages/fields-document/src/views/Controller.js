@@ -20,4 +20,9 @@ export default class DocumentController extends TextController {
     } catch (e) {}
     return DEFAULT_VALUE;
   };
+
+  // NOTE: default value of `undefined` when passed to `Slate` Editable component can cause a render issue.
+  getDefaultValue = ({ originalInput = {}, prefill = {} } = {}) => {
+    return this._getDefaultValue({ originalInput, prefill }) || DEFAULT_VALUE;
+  };
 }
