@@ -11,7 +11,7 @@ export const name = 'DocumentField';
 export const type = DocumentField;
 export const exampleValue = () => JSON.stringify(DOC1);
 export const exampleValue2 = () => JSON.stringify(DOC2);
-export const supportsUnique = false;
+export const supportsUnique = true;
 export const fieldName = 'testField';
 
 export const getTestFields = () => ({ name: { type: Text }, testField: { type } });
