@@ -1,6 +1,6 @@
 ---
-'@keystonejs/demo-project-content': patch
-'@keystonejs/fields-document': patch
+'@keystonejs/demo-project-content': major
+'@keystonejs/fields-document': major
 ---
 
 Added a new `DocumentField` field type to allow rich editor text experience.
