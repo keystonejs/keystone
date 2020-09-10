@@ -1,6 +1,6 @@
 {
   "name": "@keystonejs/demo-project-content",
-  "description": "An example KeystoneJS project showcasing a simple Todo List.",
+  "description": "An example KeystoneJS project showcasing Document Field type.",
   "private": true,
   "version": "5.1.8",
   "author": "The KeystoneJS Development Team",

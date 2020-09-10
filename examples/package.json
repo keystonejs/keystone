@@ -2,8 +2,10 @@
   "scripts": {
     "start": "yarn todo dev",
     "blog": "yarn --cwd blog",
+    "content": "yarn --cwd content",
     "meetup": "yarn --cwd meetup",
-    "todo": "yarn --cwd todo"
+    "todo": "yarn --cwd todo",
+    "custom-fields": "yarn --cwd custom-fields"
   },
   "repository": "https://github.com/keystonejs/keystone.git",
   "homepage": "https://github.com/keystonejs/keystone",
