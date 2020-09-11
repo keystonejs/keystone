@@ -35,7 +35,7 @@ function setupKeystone(adapterName) {
   });
 }
 
-multiAdapterRunners('knex').map(({ runner, adapterName }) =>
+multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('create', () => {
       test(
