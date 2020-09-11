@@ -12,10 +12,7 @@ function prettyListName(name) {
 }
 
 function listSlug(name) {
-  return `${name}s`
-    .replace(/[A-Z]/g, '-$&')
-    .replace(/^-/, '')
-    .toLowerCase();
+  return `${name}s`.replace(/[A-Z]/g, '-$&').replace(/^-/, '').toLowerCase();
 }
 
 describe('Access Control Lists > Admin UI', () => {

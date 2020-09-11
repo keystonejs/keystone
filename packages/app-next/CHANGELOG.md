@@ -1,5 +1,11 @@
 # @keystonejs/app-next
 
+## 5.2.3
+
+### Patch Changes
+
+- [`4fc501203`](https://github.com/keystonejs/keystone/commit/4fc501203226a549e41a696985c68b2ba3af74a4) [#3558](https://github.com/keystonejs/keystone/pull/3558) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `next` to `^9.5.3`.
+
 ## 5.2.2
 
 ### Patch Changes

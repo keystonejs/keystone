@@ -1,7 +1,7 @@
-describe('Adding a file', function() {
+describe('Adding a file', function () {
   before(() => cy.visit('/reset-db'));
 
-  it('should upload a file with success', function() {
+  it('should upload a file with success', function () {
     return cy
       .graphql_query(
         `${Cypress.config('baseUrl')}/admin/api`,
@@ -67,9 +67,7 @@ describe('Adding a file', function() {
                 );
 
                 // Assert the file contents are what we uploaded
-                cy.request(attachment.publicUrl)
-                  .its('body')
-                  .should('deep.eq', fileContent);
+                cy.request(attachment.publicUrl).its('body').should('deep.eq', fileContent);
               }
             );
         }

@@ -1,5 +1,13 @@
 # @keystonejs/mongo-join-builder
 
+## 7.1.3
+
+### Patch Changes
+
+- [`2498cf010`](https://github.com/keystonejs/keystone/commit/2498cf010adc4c707b69637cc2f3fa6a29c8ae29) [#3516](https://github.com/keystonejs/keystone/pull/3516) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mongodb` to `^3.6.1`.
+
+* [`3b619327b`](https://github.com/keystonejs/keystone/commit/3b619327b3801501b96b9af04ec6ca90e9ad9469) [#3517](https://github.com/keystonejs/keystone/pull/3517) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency `mongodb-memory-server-core` to `^6.6.7`.
+
 ## 7.1.2
 
 ### Patch Changes

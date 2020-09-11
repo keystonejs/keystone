@@ -9,7 +9,6 @@ jest.doMock('@keystonejs/logger', () => ({
 const { List } = require('../lib/ListTypes');
 const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
 const { Text, Checkbox, Float, Relationship, Integer } = require('@keystonejs/fields');
-const { getType } = require('@keystonejs/utils');
 const path = require('path');
 
 let fieldsPackagePath = path.dirname(require.resolve('@keystonejs/fields/package.json'));
@@ -478,7 +477,7 @@ describe('getAdminMeta()', () => {
   });
 });
 
-describe(`getGqlTypes() `, () => {
+describe(`getGqlTypes()`, () => {
   const type = `""" A keystone list """
       type Test {
         """
@@ -694,11 +693,7 @@ test('getGraphqlFilterFragment', () => {
 describe(`getGqlQueries()`, () => {
   const schemaName = 'public';
   test('access: true', () => {
-    expect(
-      setup({ access: true })
-        .getGqlQueries({ schemaName })
-        .map(normalise)
-    ).toEqual(
+    expect(setup({ access: true }).getGqlQueries({ schemaName }).map(normalise)).toEqual(
       [
         `""" Search for all Test items which match the where clause. """
           allTests(
@@ -728,11 +723,7 @@ describe(`getGqlQueries()`, () => {
     );
   });
   test('access: false', () => {
-    expect(
-      setup({ access: false })
-        .getGqlQueries({ schemaName })
-        .map(normalise)
-    ).toEqual([]);
+    expect(setup({ access: false }).getGqlQueries({ schemaName }).map(normalise)).toEqual([]);
   });
 });
 
@@ -1328,40 +1319,6 @@ describe('List Hooks', () => {
       Object.keys(hooks).forEach(hook => {
         expect(hooks[hook]).toHaveBeenCalledWith(expect.objectContaining({}));
       });
-    });
-  });
-});
-
-describe('Maps from Native JS types to Keystone types', () => {
-  const adapter = new MockAdapter();
-
-  [
-    {
-      nativeType: Boolean,
-      keystoneType: Checkbox,
-    },
-    {
-      nativeType: String,
-      keystoneType: Text,
-    },
-    {
-      nativeType: Number,
-      keystoneType: Float,
-    },
-  ].forEach(({ nativeType, keystoneType }) => {
-    test(`${getType(nativeType.prototype)} -> ${keystoneType.type}`, () => {
-      const list = new List(
-        'Test',
-        { fields: { foo: { type: nativeType } } },
-        {
-          adapter,
-          defaultAccess: { list: true, field: true },
-          registerType: () => {},
-          schemaNames: ['public'],
-        }
-      );
-      list.initFields();
-      expect(list.fieldsByPath.foo).toBeInstanceOf(keystoneType.implementation);
     });
   });
 });

@@ -101,10 +101,7 @@ const runTestInServer = async (app, testFn) => {
       const { port } = server.address();
       const url = `http://localhost:${port}/admin/api`;
       agent = agent || superagent.agent();
-      const { res } = await agent
-        .post(url)
-        .set('Accept', 'application/json')
-        .send({ query });
+      const { res } = await agent.post(url).set('Accept', 'application/json').send({ query });
       // console.log(res);
       const result = JSON.parse(res.text);
       return { agent, data: result.data, errors: result.errors };

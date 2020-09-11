@@ -149,12 +149,12 @@ Allows grouping list pages in the sidebar or defining completely new pages.
 
 Should return an array of objects, which may contain the following properties:
 
-| Name        | Type             | Description                                                                             |
-| ----------- | ---------------- | --------------------------------------------------------------------------------------- |
-| `label`     | `String`         | The page name to display in the sidebar.                                                |
-| `path`      | `String`         | The page path.                                                                          |
-| `component` | `Function|Class` | A React component which will be used to render this page.                               |
-| `children`  | `Array`          | An array of either Keystone list keys or objects with `listKey` and `label` properties. |
+| Name        | Type               | Description                                                                             |
+| ----------- | ------------------ | --------------------------------------------------------------------------------------- |
+| `label`     | `String`           | The page name to display in the sidebar.                                                |
+| `path`      | `String`           | The page path.                                                                          |
+| `component` | `Function | Class` | A React component which will be used to render this page.                               |
+| `children`  | `Array`            | An array of either Keystone list keys or objects with `listKey` and `label` properties. |
 
 ```javascript
 export default {

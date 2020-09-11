@@ -101,9 +101,7 @@ describe('Editing data', () => {
       cy.visit(url);
 
       cy.get(`a:contains("${field.value}"):first`).click({ force: true });
-      cy.get(field.id)
-        .clear()
-        .type(field.newValue, { force: true });
+      cy.get(field.id).clear().type(field.newValue, { force: true });
       cy.get('#item-page-save-button').click({ force: true });
       cy.wait(500);
       cy.get(`nav a:contains("${section}")`).click({ force: true });

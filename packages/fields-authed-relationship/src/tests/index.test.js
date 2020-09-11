@@ -27,7 +27,7 @@ function setupKeystone(adapterName) {
       });
       keystone.createList('Post', {
         fields: {
-          title: { type: String },
+          title: { type: Text },
           // Automatically set to the currently logged in user on create
           author: {
             type: AuthedRelationship,

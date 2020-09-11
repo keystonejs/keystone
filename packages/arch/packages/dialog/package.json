@@ -1,13 +1,13 @@
 {
   "name": "@arch-ui/dialog",
   "description": "Dialog Component as used in @keystonejs Admin UI.",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/dialog.cjs.js",
   "peerDependencies": {
     "react": "^16.13.1",
-    "react-dom": "^16.13.0"
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "react": "^16.13.1",

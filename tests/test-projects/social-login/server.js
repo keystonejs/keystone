@@ -229,10 +229,7 @@ keystone
       }
 
       const escapeHtml = str =>
-        (str || '')
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/"/g, '&quot;');
+        (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
       res.send(`
           <form method="post">

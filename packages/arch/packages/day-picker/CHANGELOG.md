@@ -1,5 +1,13 @@
 # @arch-ui/day-picker
 
+## 1.0.4
+
+### Patch Changes
+
+- [`c3488c5e8`](https://github.com/keystonejs/keystone/commit/c3488c5e88628b15eb9fe804551c3c5c44c07e0f) [#3511](https://github.com/keystonejs/keystone/pull/3511) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `intersection-observer` to `^0.11.0`.
+
+* [`a42ee3a30`](https://github.com/keystonejs/keystone/commit/a42ee3a306c899a7ae46909fe132522cbeff7812) [#3508](https://github.com/keystonejs/keystone/pull/3508) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `date-fns` to `^2.16.1`.
+
 ## 1.0.3
 
 ### Patch Changes

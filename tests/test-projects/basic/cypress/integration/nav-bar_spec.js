@@ -19,17 +19,11 @@ describe('Nav Bar', () => {
     it(`${newTab ? 'Check' : 'Click'} ${text}`, () => {
       cy.visit('/admin');
 
-      cy.get('nav')
-        .contains(text)
-        .should('have.attr', 'href', target);
+      cy.get('nav').contains(text).should('have.attr', 'href', target);
       if (newTab) {
-        cy.get('nav')
-          .contains(text)
-          .should('have.attr', 'target', '_blank');
+        cy.get('nav').contains(text).should('have.attr', 'target', '_blank');
       } else {
-        cy.get('nav')
-          .contains(text)
-          .click({ force: true });
+        cy.get('nav').contains(text).click({ force: true });
         cy.url().should('include', target);
       }
     });

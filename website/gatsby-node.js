@@ -23,8 +23,8 @@ const GROUPS = [
   'blog',
   'tutorials',
   'guides',
+  'API',
   'discussions',
-  'api',
   'list-plugins',
   'road-map',
 ];
@@ -42,18 +42,25 @@ const SUB_GROUPS = [
 const createDocsPages = async ({ createPage, graphql }) =>
   graphql(`
     {
-      allMdx(filter: { fields: { navGroup: { ne: "blog" } } }) {
+      allMdx(
+        sort: {
+          fields: [fields___sortOrder, fields___sortSubOrder, fields___order, fields___pageTitle]
+        }
+      ) {
         edges {
           node {
             id
+            excerpt
             fields {
               slug
+              description
               navGroup
               navSubGroup
               workspaceSlug
               sortOrder
               sortSubOrder
               order
+              date
               isPackageIndex
               isIndex
               pageTitle
@@ -78,7 +85,18 @@ const createDocsPages = async ({ createPage, graphql }) =>
       return Boolean(!draft);
     });
 
+    let navGroups = {};
+
     pages.forEach(({ node: { id, fields } }) => {
+      if (fields.navGroup) {
+        if (!navGroups[fields.navGroup]) {
+          navGroups[fields.navGroup] = [{ node: { id, fields } }];
+        } else {
+          navGroups[fields.navGroup].push({ node: { id, fields } });
+        }
+      }
+
+      // navGroups.add(fields.navGroup)
       createPage({
         path: `${fields.slug}`,
         component: path.resolve(`src/templates/docs.js`),
@@ -88,76 +106,23 @@ const createDocsPages = async ({ createPage, graphql }) =>
         }, // additional data can be passed via context
       });
     });
-  });
 
-const createBlogPages = async ({ createPage, graphql }) =>
-  graphql(`
-    {
-      allMdx(filter: { fields: { navGroup: { eq: "blog" } } }) {
-        edges {
-          node {
-            id
-            fields {
-              slug
-              pageTitle
-              description
-              draft
-              heading
-              author
-              date
-              navGroup
-              navSubGroup
-              workspaceSlug
-              sortOrder
-              sortSubOrder
-              order
-              isPackageIndex
-              isIndex
-            }
-          }
-        }
+    Object.entries(navGroups).forEach(([baseSlug, pages]) => {
+      if (baseSlug !== 'quick-start' && baseSlug !== 'API') {
+        createPaginatedPages({
+          edges: pages,
+          pathPrefix: slugify(baseSlug),
+          createPage: createPage,
+          context: { name: baseSlug, showSearch: true },
+          pageTemplate: 'src/templates/listPage.js',
+        });
       }
-    }
-  `).then(result => {
-    if (result.errors) {
-      return Promise.reject(result.errors);
-    }
-
-    const pages = result.data.allMdx.edges.filter(page => {
-      const {
-        node: {
-          fields: { draft },
-        },
-      } = page;
-
-      return Boolean(!draft);
-    });
-
-    createPaginatedPages({
-      edges: pages,
-      createPage: createPage,
-      pageTemplate: 'src/templates/blogList.js',
-      pathPrefix: 'blog', // This is optional and defaults to an empty string if not used
-    });
-
-    pages.forEach(({ node: { id, fields } }) => {
-      createPage({
-        path: `${fields.slug}`,
-        component: path.resolve(`src/templates/blogPost.js`),
-        context: {
-          mdPageId: id,
-          ...fields,
-        }, // additional data can be passed via context
-      });
     });
   });
 
 exports.createPages = ({ actions, graphql }) => {
   const { createPage } = actions;
-  return Promise.all([
-    createDocsPages({ createPage, graphql }),
-    createBlogPages({ createPage, graphql }),
-  ]);
+  return createDocsPages({ createPage, graphql });
 };
 
 const getEditUrl = absPath =>

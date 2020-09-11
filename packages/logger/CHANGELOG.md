@@ -1,5 +1,11 @@
 # @keystonejs/logger
 
+## 5.1.3
+
+### Patch Changes
+
+- [`766303d46`](https://github.com/keystonejs/keystone/commit/766303d46d14275f49c200444a00ef6283be2322) [#3527](https://github.com/keystonejs/keystone/pull/3527) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `pino` to `v5.17.0`.
+
 ## 5.1.2
 
 ### Patch Changes

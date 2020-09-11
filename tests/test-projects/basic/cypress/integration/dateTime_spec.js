@@ -44,18 +44,14 @@ describe('DateTime Component - Functionality', () => {
   });
 
   it('can accept natural language like tomorrow at 4pm', () => {
-    cy.get(dateTimeInputSelector)
-      .clear()
-      .type('tomorrow at 4pm', { force: true });
+    cy.get(dateTimeInputSelector).clear().type('tomorrow at 4pm', { force: true });
     cy.get('label:contains("Name")').click({ force: true });
 
     cy.get(dateTimeInputSelector).should('have.value', '4:00 PM 4th March 2019 +00:00');
   });
 
   it(`can accept a date time`, () => {
-    cy.get(dateTimeInputSelector)
-      .clear()
-      .type('1:28 am 12 september 2018 +10:00', { force: true });
+    cy.get(dateTimeInputSelector).clear().type('1:28 am 12 september 2018 +10:00', { force: true });
     cy.get('label:contains("Name")').click({ force: true });
     cy.get(dateTimeInputSelector).should('have.value', '1:28 AM 12th September 2018 +10:00');
   });

@@ -6,6 +6,8 @@ title: Logger
 
 # Logger
 
+**Deprecation notice** This module is no longer maintained. Please directly use `pino` or the logging library of your choice.
+
 ## API
 
 ### `require('@keystonejs/logger').logger(name)`

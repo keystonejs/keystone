@@ -1,5 +1,11 @@
 # @keystonejs/app-graphql-playground
 
+## 5.1.7
+
+### Patch Changes
+
+- [`16fba3b98`](https://github.com/keystonejs/keystone/commit/16fba3b98271410e570a370f610da7cd0686f294) [#3550](https://github.com/keystonejs/keystone/pull/3550) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused dependencies.
+
 ## 5.1.6
 
 ### Patch Changes

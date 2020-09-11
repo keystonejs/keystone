@@ -1,5 +1,19 @@
 # @keystonejs/adapter-knex
 
+## 11.0.4
+
+### Patch Changes
+
+- [`e9bc4367a`](https://github.com/keystonejs/keystone/commit/e9bc4367ac31f3fe3a2898198c600c76c42165b2) [#3513](https://github.com/keystonejs/keystone/pull/3513) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `knex` to `^0.21.5`.
+
+* [`003b856e6`](https://github.com/keystonejs/keystone/commit/003b856e686cc1ee0f984c1acf024c1fa0c27837) [#3526](https://github.com/keystonejs/keystone/pull/3526) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `pg` to `^8.3.3`.
+
+- [`16fba3b98`](https://github.com/keystonejs/keystone/commit/16fba3b98271410e570a370f610da7cd0686f294) [#3550](https://github.com/keystonejs/keystone/pull/3550) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused dependencies.
+
+- Updated dependencies [[`cd15192cd`](https://github.com/keystonejs/keystone/commit/cd15192cdae5e476f64a257c196ca569a9440d5a), [`7bfdb79ee`](https://github.com/keystonejs/keystone/commit/7bfdb79ee43235418f098e5fe7412968dcf6c397), [`6c97a5534`](https://github.com/keystonejs/keystone/commit/6c97a5534e8a18d15aeac8b0471810fdd4d04f80), [`2e6a06202`](https://github.com/keystonejs/keystone/commit/2e6a06202299b36c36fd3efd895f2280479eac31), [`d71f98791`](https://github.com/keystonejs/keystone/commit/d71f987917509a206b1e0a994dbc6641a7cf4e06), [`28b88abd3`](https://github.com/keystonejs/keystone/commit/28b88abd369f0df12eae72107db7c24323eda4b5)]:
+  - @keystonejs/keystone@14.0.2
+  - @keystonejs/fields-auto-increment@6.0.2
+
 ## 11.0.3
 
 ### Patch Changes

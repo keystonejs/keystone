@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/fields-unsplash",
   "description": "KeystoneJS Unsplash Field Type",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-unsplash",
@@ -11,26 +11,24 @@
   },
   "dependencies": {
     "@apollo/client": "^3.1.4",
-    "@apollo/react-hooks": "^3.1.5",
     "@arch-ui/fields": "^3.0.4",
     "@arch-ui/input": "^0.1.11",
     "@babel/runtime": "^7.11.2",
     "@emotion/core": "^10.0.35",
-    "@keystonejs/adapter-knex": "^11.0.3",
-    "@keystonejs/adapter-mongoose": "^9.0.4",
-    "@keystonejs/fields": "^17.1.0",
-    "@keystonejs/fields-content": "^8.0.2",
+    "@keystonejs/adapter-knex": "^11.0.4",
+    "@keystonejs/adapter-mongoose": "^9.0.5",
+    "@keystonejs/fields": "^17.1.1",
+    "@keystonejs/fields-content": "^8.0.3",
     "graphql-tag": "^2.11.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "pluralize": "^7.0.0",
     "query-string": "^6.13.1",
-    "unsplash-js": "^6.0.0"
+    "unsplash-js": "^6.3.0"
   },
   "peerDependencies": {
     "react": "^16.13.1"
   },
   "devDependencies": {
-    "@keystonejs/server-side-graphql-client": "*",
     "dotenv": "^8.2.0",
     "react": "^16.13.1"
   },

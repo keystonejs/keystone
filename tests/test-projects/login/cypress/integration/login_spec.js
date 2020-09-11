@@ -16,13 +16,9 @@ describe('Can access Admin UI', () => {
     cy.visit('/admin');
     cy.url().should('match', /admin\/signin/);
 
-    cy.get('input[name="identity"]')
-      .clear({ force: true })
-      .type(IDENTITY, { force: true });
+    cy.get('input[name="identity"]').clear({ force: true }).type(IDENTITY, { force: true });
 
-    cy.get('[name="secret"]')
-      .clear({ force: true })
-      .type(SECRET, { force: true });
+    cy.get('[name="secret"]').clear({ force: true }).type(SECRET, { force: true });
 
     cy.get('button[type="submit"]').click({ force: true });
 
@@ -45,9 +41,7 @@ describe('Can access Admin UI', () => {
       .clear({ force: true })
       .type('sam@keystone.com', { force: true });
 
-    cy.get('[name="secret"]')
-      .clear({ force: true })
-      .type('supersecure', { force: true });
+    cy.get('[name="secret"]').clear({ force: true }).type('supersecure', { force: true });
 
     // initially the new property is there
     cy.window().should('have.prop', '_stillOnSamePage', true);
@@ -60,18 +54,14 @@ describe('Can access Admin UI', () => {
     // The login screen is still shown
     cy.get('[name="identity"]').should('exist');
     cy.get('[name="secret"]').should('exist');
-    cy.get('button[type="submit"]')
-      .should('exist')
-      .should('contain', 'Sign In');
+    cy.get('button[type="submit"]').should('exist').should('contain', 'Sign In');
 
     // Trying to visit a page still shows login screen
     cy.visit('/admin/users');
     cy.url().should('match', /admin\/signin/);
     cy.get('[name="identity"]').should('exist');
     cy.get('[name="secret"]').should('exist');
-    cy.get('button[type="submit"]')
-      .should('exist')
-      .should('contain', 'Sign In');
+    cy.get('button[type="submit"]').should('exist').should('contain', 'Sign In');
   });
 });
 
@@ -80,9 +70,7 @@ describe('Testing Login', () => {
     cy.visit('/admin');
     cy.get('[name="identity"]').should('exist');
     cy.get('[name="secret"]').should('exist');
-    cy.get('button[type="submit"]')
-      .should('exist')
-      .should('contain', 'Sign In');
+    cy.get('button[type="submit"]').should('exist').should('contain', 'Sign In');
   });
 
   it('Shows login screen instead of users page', () => {
@@ -90,9 +78,7 @@ describe('Testing Login', () => {
     cy.get('body').should('not.contain', 'Users');
     cy.get('[name="identity"]').should('exist');
     cy.get('[name="secret"]').should('exist');
-    cy.get('button[type="submit"]')
-      .should('exist')
-      .should('contain', 'Sign In');
+    cy.get('button[type="submit"]').should('exist').should('contain', 'Sign In');
   });
 
   describe('Login failure', () => {
@@ -112,9 +98,7 @@ describe('Testing Login', () => {
         .clear({ force: true })
         .type('fake@example.com', { force: true });
 
-      cy.get('[name="secret"]')
-        .clear({ force: true })
-        .type('gibberish', { force: true });
+      cy.get('[name="secret"]').clear({ force: true }).type('gibberish', { force: true });
 
       cy.get('button[type="submit"]').click({ force: true });
       cy.get('body').should('contain', 'Your username or password were incorrect');
@@ -127,9 +111,7 @@ describe('Testing Login', () => {
         .clear({ force: true })
         .type('fake@example.com', { force: true });
 
-      cy.get('[name="secret"]')
-        .clear({ force: true })
-        .type(SECRET, { force: true });
+      cy.get('[name="secret"]').clear({ force: true }).type(SECRET, { force: true });
 
       cy.get('button[type="submit"]').click({ force: true });
       cy.get('body').should('contain', 'Your username or password were incorrect');
@@ -138,13 +120,9 @@ describe('Testing Login', () => {
     it('Does not log in with invalid secret', () => {
       cy.visit('/admin');
 
-      cy.get('input[name="identity"]')
-        .clear({ force: true })
-        .type(IDENTITY, { force: true });
+      cy.get('input[name="identity"]').clear({ force: true }).type(IDENTITY, { force: true });
 
-      cy.get('[name="secret"]')
-        .clear({ force: true })
-        .type('gibberish', { force: true });
+      cy.get('[name="secret"]').clear({ force: true }).type('gibberish', { force: true });
 
       cy.get('button[type="submit"]').click({ force: true });
       cy.get('body').should('contain', 'Your username or password were incorrect');
@@ -165,13 +143,9 @@ describe('Testing Login', () => {
     it('Logs in with valid credentials', () => {
       cy.visit('/admin');
 
-      cy.get('input[name="identity"]')
-        .clear({ force: true })
-        .type(IDENTITY, { force: true });
+      cy.get('input[name="identity"]').clear({ force: true }).type(IDENTITY, { force: true });
 
-      cy.get('[name="secret"]')
-        .clear({ force: true })
-        .type(SECRET, { force: true });
+      cy.get('[name="secret"]').clear({ force: true }).type(SECRET, { force: true });
 
       cy.get('button[type="submit"]').click({ force: true });
 
@@ -183,13 +157,9 @@ describe('Testing Login', () => {
     it.skip('Redirects to requested page after login', () => {
       cy.visit('/admin/users');
 
-      cy.get('input[name="identity"]')
-        .clear({ force: true })
-        .type(IDENTITY, { force: true });
+      cy.get('input[name="identity"]').clear({ force: true }).type(IDENTITY, { force: true });
 
-      cy.get('[name="secret"]')
-        .clear({ force: true })
-        .type(SECRET, { force: true });
+      cy.get('[name="secret"]').clear({ force: true }).type(SECRET, { force: true });
 
       cy.get('button[type="submit"]').click({ force: true });
 
@@ -218,13 +188,9 @@ describe('authenticated item', () => {
     before(() => {
       cy.visit('/admin');
 
-      cy.get('input[name="identity"]')
-        .clear({ force: true })
-        .type(IDENTITY, { force: true });
+      cy.get('input[name="identity"]').clear({ force: true }).type(IDENTITY, { force: true });
 
-      cy.get('[name="secret"]')
-        .clear({ force: true })
-        .type(SECRET, { force: true });
+      cy.get('[name="secret"]').clear({ force: true }).type(SECRET, { force: true });
 
       cy.get('button[type="submit"]').click({ force: true });
 

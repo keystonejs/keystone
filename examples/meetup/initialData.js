@@ -54,9 +54,7 @@ async function seedData(intitialData, keystone) {
   );
 
   // Preparing the Organiser list with connect nested mutation
-  const organisers = Array(3)
-    .fill(true)
-    .map(createOrganisers(users));
+  const organisers = Array(3).fill(true).map(createOrganisers(users));
 
   // Run the GraphQL query to insert all the organisers
   await createItems({ keystone, listKey: 'Organiser', items: organisers });

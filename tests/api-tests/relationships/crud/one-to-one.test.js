@@ -1,6 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { Text, Relationship } = require('@keystonejs/fields');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { createItem, getItems, getItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -266,6 +267,40 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data._allLocationsMeta.count).toEqual(1);
           })
         );
+        if (adapterName !== 'mongoose') {
+          test(
+            'Where null with count A',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createCompanyAndLocation(keystone);
+              const { data, errors } = await keystone.executeGraphQL({
+                query: `{
+                  _allLocationsMeta(where: { company_is_null: true }) { count }
+                  _allCompaniesMeta(where: { location_is_null: true }) { count }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data._allCompaniesMeta.count).toEqual(3);
+              expect(data._allLocationsMeta.count).toEqual(4);
+            })
+          );
+          test(
+            'Where null with count B',
+            runner(setupKeystone, async ({ keystone }) => {
+              await createInitialData(keystone);
+              await createLocationAndCompany(keystone);
+              const { data, errors } = await keystone.executeGraphQL({
+                query: `{
+                  _allLocationsMeta(where: { company_is_null: true }) { count }
+                  _allCompaniesMeta(where: { location_is_null: true }) { count }
+                }`,
+              });
+              expect(errors).toBe(undefined);
+              expect(data._allCompaniesMeta.count).toEqual(3);
+              expect(data._allLocationsMeta.count).toEqual(4);
+            })
+          );
+        }
       });
 
       describe('Create', () => {
@@ -514,6 +549,120 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               });
           })
         );
+        test(
+          'Dual create A',
+          runner(setupKeystone, async ({ keystone }) => {
+            // Create a Location
+            const location = await createItem({
+              keystone,
+              listKey: 'Location',
+              item: { name: sampleOne(alphanumGenerator) },
+            });
+
+            // Create a Company pointing to Location
+            const company1 = await createItem({
+              keystone,
+              listKey: 'Company',
+              item: {
+                name: sampleOne(alphanumGenerator),
+                location: { connect: { id: location.id } },
+              },
+              returnFields: 'id location { id }',
+            });
+
+            // Create another Company pointing to Location
+            const company2 = await createItem({
+              keystone,
+              listKey: 'Company',
+              item: {
+                name: sampleOne(alphanumGenerator),
+                location: { connect: { id: location.id } },
+              },
+              returnFields: 'id location { id }',
+            });
+
+            // Make sure the original Company does not point to the location
+            const result = await getItems({
+              keystone,
+              listKey: 'Location',
+              returnFields: 'id name company { id }',
+            });
+            expect(result).toHaveLength(1);
+
+            const result1 = await getItem({
+              keystone,
+              listKey: 'Company',
+              itemId: company1.id,
+              returnFields: 'id location { id }',
+            });
+            expect(result1.location).toBe(null);
+
+            const result2 = await getItem({
+              keystone,
+              listKey: 'Company',
+              itemId: company2.id,
+              returnFields: 'id location { id }',
+            });
+            expect(result2.location).toEqual({ id: location.id });
+          })
+        );
+        test(
+          'Dual create B',
+          runner(setupKeystone, async ({ keystone }) => {
+            // Create a Company
+            const company = await createItem({
+              keystone,
+              listKey: 'Company',
+              item: { name: sampleOne(alphanumGenerator) },
+            });
+
+            // Create a Location pointing to Company
+            const location1 = await createItem({
+              keystone,
+              listKey: 'Location',
+              item: {
+                name: sampleOne(alphanumGenerator),
+                company: { connect: { id: company.id } },
+              },
+              returnFields: 'id company { id }',
+            });
+
+            // Create another Location pointing to Company
+            const location2 = await createItem({
+              keystone,
+              listKey: 'Location',
+              item: {
+                name: sampleOne(alphanumGenerator),
+                company: { connect: { id: company.id } },
+              },
+              returnFields: 'id company { id }',
+            });
+
+            // Make sure the original Company does not point to the location
+            const result = await getItems({
+              keystone,
+              listKey: 'Company',
+              returnFields: 'id location { id }',
+            });
+            expect(result).toHaveLength(1);
+
+            const result1 = await getItem({
+              keystone,
+              listKey: 'Location',
+              itemId: location1.id,
+              returnFields: 'id company { id }',
+            });
+            expect(result1.company).toBe(null);
+
+            const result2 = await getItem({
+              keystone,
+              listKey: 'Location',
+              itemId: location2.id,
+              returnFields: 'id company { id }',
+            });
+            expect(result2.company).toEqual({ id: company.id });
+          })
+        );
       });
 
       describe('Update', () => {
@@ -644,8 +793,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         test(
           'With recreate A',
           runner(setupKeystone, async ({ keystone }) => {
+            // To begin with, nothing is linked
             const { companies } = await createInitialData(keystone);
             let company = companies[0];
+
+            // Update company.location to be a new thing.
             const locationName = sampleOne(alphanumGenerator);
             const { data, errors } = await keystone.executeGraphQL({
               query: `
@@ -669,6 +821,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(Company.location.id.toString()).toBe(Location.id.toString());
             expect(Location.company.id.toString()).toBe(Company.id.toString());
 
+            // Keep track of the original location!
             const originalLocationId = Location.id;
             await (async () => {
               const locationName = sampleOne(alphanumGenerator);

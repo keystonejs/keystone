@@ -6,7 +6,7 @@ const { enableDevFeatures, mode } = require('./env');
 
 const clientDirectory = path.resolve(__dirname, '..', 'client');
 
-module.exports = function({ adminMeta, adminViews, entry, outputPath }) {
+module.exports = function ({ adminMeta, adminViews, entry, outputPath }) {
   const templatePlugin = new HtmlWebpackPlugin({
     title: 'KeystoneJS',
     template: 'index.html',

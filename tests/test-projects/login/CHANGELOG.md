@@ -1,5 +1,31 @@
 # @keystonejs/cypress-project-login
 
+## 5.1.18
+
+### Patch Changes
+
+- [`39145cf53`](https://github.com/keystonejs/keystone/commit/39145cf53888e33772323dc6749b6564391b0e0b) [#3515](https://github.com/keystonejs/keystone/pull/3515) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mocha` to `^7.2.0`.
+
+* [`31959b7cd`](https://github.com/keystonejs/keystone/commit/31959b7cd61725b27cfdc5191c3237bead363eaf) [#3483](https://github.com/keystonejs/keystone/pull/3483) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `cypress-multi-reporters` to `^1.4.0`.
+
+- [`b85c5ea42`](https://github.com/keystonejs/keystone/commit/b85c5ea42c45cfe4c30b144aec568fd1ce477c38) [#3589](https://github.com/keystonejs/keystone/pull/3589) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mocha-junit-reporter` to `2.0.0`.
+
+* [`3456d2e4f`](https://github.com/keystonejs/keystone/commit/3456d2e4f28b03b4e1f4dcf4fb734690336da2e3) [#3535](https://github.com/keystonejs/keystone/pull/3535) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved all test projects and settings into a `tests/` folder.
+
+- [`5bed4db02`](https://github.com/keystonejs/keystone/commit/5bed4db0265e79569d60ee34afaa90169a581b58) [#3482](https://github.com/keystonejs/keystone/pull/3482) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `cypress-file-upload` to `^3.5.3`.
+
+* [`01af3d21c`](https://github.com/keystonejs/keystone/commit/01af3d21cfd9db9c1564c783f25ce39d6d429f0a) [#3588](https://github.com/keystonejs/keystone/pull/3588) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mocha` to `8.1.3`.
+
+- [`98c8dbf4e`](https://github.com/keystonejs/keystone/commit/98c8dbf4ef722aad6eb27197722aa9d0ac169a93) [#3480](https://github.com/keystonejs/keystone/pull/3480) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `cypress` to `^4.12.1`.
+
+- Updated dependencies [[`e8e2baa7b`](https://github.com/keystonejs/keystone/commit/e8e2baa7b1a9330cb483c2f30682d64f857d314c), [`cd15192cd`](https://github.com/keystonejs/keystone/commit/cd15192cdae5e476f64a257c196ca569a9440d5a), [`7bfdb79ee`](https://github.com/keystonejs/keystone/commit/7bfdb79ee43235418f098e5fe7412968dcf6c397), [`5fb75bab6`](https://github.com/keystonejs/keystone/commit/5fb75bab638c59ccf690c46d862b9801bf1d28f6), [`d500613d8`](https://github.com/keystonejs/keystone/commit/d500613d8917e3cbcea2817501d607eddd3b1a8d), [`6c97a5534`](https://github.com/keystonejs/keystone/commit/6c97a5534e8a18d15aeac8b0471810fdd4d04f80), [`729e897e6`](https://github.com/keystonejs/keystone/commit/729e897e689f2673f38d6c0caf22e7cee7ee8ff3), [`34fcc7052`](https://github.com/keystonejs/keystone/commit/34fcc7052a24db61f1f2f12c46110c060934f4ca), [`d3a4f9263`](https://github.com/keystonejs/keystone/commit/d3a4f9263de0d11a1613e420f660eccc2a48172d), [`40b751ad6`](https://github.com/keystonejs/keystone/commit/40b751ad6f09aec137ef42df10fdbb1240173afb), [`c3488c5e8`](https://github.com/keystonejs/keystone/commit/c3488c5e88628b15eb9fe804551c3c5c44c07e0f), [`e62b3308b`](https://github.com/keystonejs/keystone/commit/e62b3308bd841b5f58ac9fa1f84707f9187fda6b), [`7036585f2`](https://github.com/keystonejs/keystone/commit/7036585f25c3b690b7a6fd04c39b5b781ff5bcd9), [`2e6a06202`](https://github.com/keystonejs/keystone/commit/2e6a06202299b36c36fd3efd895f2280479eac31), [`a42ee3a30`](https://github.com/keystonejs/keystone/commit/a42ee3a306c899a7ae46909fe132522cbeff7812), [`d71f98791`](https://github.com/keystonejs/keystone/commit/d71f987917509a206b1e0a994dbc6641a7cf4e06), [`438051442`](https://github.com/keystonejs/keystone/commit/4380514421020f4418a9f966c9fec60e014478b9), [`b3aa85031`](https://github.com/keystonejs/keystone/commit/b3aa850311cbc1622568f69f9cb4b9f46ab9db22), [`518718e19`](https://github.com/keystonejs/keystone/commit/518718e197d0a2d723c8e184552ddd5d8e165f12), [`16fba3b98`](https://github.com/keystonejs/keystone/commit/16fba3b98271410e570a370f610da7cd0686f294), [`a34341387`](https://github.com/keystonejs/keystone/commit/a343413874f9611ad17ec39ff6175664f8a14bb6), [`28b88abd3`](https://github.com/keystonejs/keystone/commit/28b88abd369f0df12eae72107db7c24323eda4b5)]:
+  - @keystonejs/app-admin-ui@7.3.4
+  - @keystonejs/app-graphql@6.1.2
+  - @keystonejs/fields@17.1.1
+  - @keystonejs/keystone@14.0.2
+  - @keystonejs/adapter-mongoose@9.0.5
+  - @keystonejs/list-plugins@7.1.1
+
 ## 5.1.17
 
 ### Patch Changes

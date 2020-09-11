@@ -308,7 +308,7 @@ query {
 
 ### `search`
 
-Will search the list to limit results.
+Will search the list to limit results. For now, it can search only by `name` field. The `name` field must be a `Text` type.
 
 ```graphql
 query {

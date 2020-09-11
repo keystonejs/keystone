@@ -46,7 +46,7 @@ export const useLogoDimension = () => {
 // Key handling
 export function useKeydown(key, callback) {
   useEffect(() => {
-    const handler = function(event) {
+    const handler = function (event) {
       if (event.key === key) {
         callback();
       }
