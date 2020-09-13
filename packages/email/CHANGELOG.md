@@ -1,5 +1,11 @@
 # @keystonejs/email
 
+## 5.1.8
+
+### Patch Changes
+
+- [`ddf5f6ae9`](https://github.com/keystonejs/keystone/commit/ddf5f6ae9418ff0c14de2273e329eed5441ce5bb) [#3611](https://github.com/keystonejs/keystone/pull/3611) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dev dependency `pug` to `^3.0.0`.
+
 ## 5.1.7
 
 ### Patch Changes

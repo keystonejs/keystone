@@ -1,5 +1,15 @@
 # @keystonejs/mongo-join-builder
 
+## 8.0.0
+
+### Major Changes
+
+- [`65ecf8c98`](https://github.com/keystonejs/keystone/commit/65ecf8c9821abe42fd3714e182d8a79bb8e129aa) [#3632](https://github.com/keystonejs/keystone/pull/3632) Thanks [@timleslie](https://github.com/timleslie)! - **Deprecation notice** This module is no longer maintained. The source code can be found in the `@keystonejs/adapter-mongoose` package if needed.
+
+### Patch Changes
+
+- [`74ad0cf7a`](https://github.com/keystonejs/keystone/commit/74ad0cf7a1a08d7665575c13da9cfb0e5a692f22) [#3617](https://github.com/keystonejs/keystone/pull/3617) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mongodb-memory-server-core` to `^6.7.0`.
+
 ## 7.1.3
 
 ### Patch Changes

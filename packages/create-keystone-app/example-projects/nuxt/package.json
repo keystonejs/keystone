@@ -2,7 +2,7 @@
   "name": "@keystonejs/example-projects-nuxt",
   "description": "A NuxtJS example project.",
   "private": true,
-  "version": "5.0.17",
+  "version": "5.0.18",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -17,12 +17,12 @@
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/create-keystone-app/example-projects/nuxt",
   "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
-    "@keystonejs/adapter-mongoose": "^9.0.5",
-    "@keystonejs/app-admin-ui": "^7.3.4",
+    "@keystonejs/adapter-mongoose": "^9.0.6",
+    "@keystonejs/app-admin-ui": "^7.3.5",
     "@keystonejs/app-graphql": "^6.1.2",
     "@keystonejs/app-nuxt": "^5.1.5",
-    "@keystonejs/fields": "^17.1.1",
-    "@keystonejs/keystone": "^14.0.2",
+    "@keystonejs/fields": "^17.1.2",
+    "@keystonejs/keystone": "^15.0.0",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "nuxt": "^2.14.4"

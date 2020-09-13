@@ -1,5 +1,23 @@
 # @keystonejs/keystone
 
+## 15.0.0
+
+### Major Changes
+
+- [`77aa2d7d1`](https://github.com/keystonejs/keystone/commit/77aa2d7d156a83759a7f3c26e8c5bd019966b054) [#3629](https://github.com/keystonejs/keystone/pull/3629) Thanks [@timleslie](https://github.com/timleslie)! - Removed the automatic mapping of native types to keystone field types when defining fields. Keystone will no longer convert `{ type: String }` to `{ type: Text }`, `{ type: Number }` to `{ type: Float }`, or `{ type: Boolean }` to `{ type: Checkbox }`.
+
+### Patch Changes
+
+- [`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a) [#3610](https://github.com/keystonejs/keystone/pull/3610) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `prettier` to `^2.1.1`.
+
+* [`d7eac6629`](https://github.com/keystonejs/keystone/commit/d7eac662956fc2dffd9ea5cfedf60e51ecc1b80d) [#3608](https://github.com/keystonejs/keystone/pull/3608) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `ora` to `^5.1.0`.
+
+- [`d07f6bfb6`](https://github.com/keystonejs/keystone/commit/d07f6bfb6b3bd65036c2030d2758abdf4eca1a9e) [#3567](https://github.com/keystonejs/keystone/pull/3567) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `endent` to `^2.0.1`.
+
+- Updated dependencies [[`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a), [`dd49d2c04`](https://github.com/keystonejs/keystone/commit/dd49d2c040ea8fb8dfc36d2e556be88ca1b74b15), [`8bd44758a`](https://github.com/keystonejs/keystone/commit/8bd44758ac742c95f42151c9fbc16700b698e8e4), [`0b400eb8f`](https://github.com/keystonejs/keystone/commit/0b400eb8f4674f37d8ea304130b9e339fad60d48), [`fe054e53e`](https://github.com/keystonejs/keystone/commit/fe054e53e71f13a69af1d6dd2a1cd8c68bb31059)]:
+  - @keystonejs/fields@17.1.2
+  - @keystonejs/logger@6.0.0
+
 ## 14.0.2
 
 ### Patch Changes
