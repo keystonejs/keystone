@@ -1,5 +1,22 @@
 # @keystonejs/fields-location-google
 
+## 2.1.2
+
+### Patch Changes
+
+- [`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a) [#3610](https://github.com/keystonejs/keystone/pull/3610) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `prettier` to `^2.1.1`.
+
+* [`88551cc05`](https://github.com/keystonejs/keystone/commit/88551cc059bf35bc9bb4e5e9ed730ed62406f427) [#3622](https://github.com/keystonejs/keystone/pull/3622) Thanks [@singhArmani](https://github.com/singhArmani)! - Removed unused `skipRequiredTest` flag from fields API tests.
+
+- [`49c21c5bd`](https://github.com/keystonejs/keystone/commit/49c21c5bd98ae571f391bdf542b3ab736a29c0e1) [#3607](https://github.com/keystonejs/keystone/pull/3607) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `node-fetch` to `^2.6.1`.
+
+* [`b37f27220`](https://github.com/keystonejs/keystone/commit/b37f27220b68bccf4f009d41c8fc008e87dde271) [#3623](https://github.com/keystonejs/keystone/pull/3623) Thanks [@singhArmani](https://github.com/singhArmani)! - Disabled regression tests while we address API rate limits on CI.
+
+* Updated dependencies [[`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a), [`dd49d2c04`](https://github.com/keystonejs/keystone/commit/dd49d2c040ea8fb8dfc36d2e556be88ca1b74b15), [`8bd44758a`](https://github.com/keystonejs/keystone/commit/8bd44758ac742c95f42151c9fbc16700b698e8e4), [`9dae7a5d0`](https://github.com/keystonejs/keystone/commit/9dae7a5d00a62cd0b7a4470695adc5e1678db3dc), [`fe054e53e`](https://github.com/keystonejs/keystone/commit/fe054e53e71f13a69af1d6dd2a1cd8c68bb31059)]:
+  - @keystonejs/adapter-knex@11.0.5
+  - @keystonejs/fields@17.1.2
+  - @keystonejs/adapter-mongoose@9.0.6
+
 ## 2.1.1
 
 ### Patch Changes

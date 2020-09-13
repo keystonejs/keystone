@@ -1,5 +1,13 @@
 # @keystonejs/server-side-graphql-client
 
+## 1.1.2
+
+### Patch Changes
+
+- [`8b0fd66bb`](https://github.com/keystonejs/keystone/commit/8b0fd66bbd73a99a4ed321ce737b5dc33e2d11d3) [#3637](https://github.com/keystonejs/keystone/pull/3637) Thanks [@timleslie](https://github.com/timleslie)! - Fixed bug in `getItems`. Queries returning more than `pageSize` items could get stuck in an infinite loop or return incorrectly paginated data.
+
+* [`7c47967d3`](https://github.com/keystonejs/keystone/commit/7c47967d3f8a6e0026f9cd0108ff1dafc8d331b9) [#3638](https://github.com/keystonejs/keystone/pull/3638) Thanks [@singhArmani](https://github.com/singhArmani)! - Updated API tests to cover all available adapters.
+
 ## 1.1.1
 
 ### Patch Changes

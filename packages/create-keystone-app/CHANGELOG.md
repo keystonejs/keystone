@@ -1,5 +1,17 @@
 # create-keystone-app
 
+## 3.3.4
+
+### Patch Changes
+
+- [`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a) [#3610](https://github.com/keystonejs/keystone/pull/3610) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `prettier` to `^2.1.1`.
+
+* [`a905f169b`](https://github.com/keystonejs/keystone/commit/a905f169b618d99dc1acf69a87ebed070c7cec93) [#3621](https://github.com/keystonejs/keystone/pull/3621) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `got` to `^11.6.1`.
+
+* Updated dependencies [[`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a), [`9dae7a5d0`](https://github.com/keystonejs/keystone/commit/9dae7a5d00a62cd0b7a4470695adc5e1678db3dc)]:
+  - @keystonejs/adapter-knex@11.0.5
+  - @keystonejs/adapter-mongoose@9.0.6
+
 ## 3.3.3
 
 ### Patch Changes

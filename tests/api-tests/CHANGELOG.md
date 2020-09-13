@@ -1,5 +1,19 @@
 # @keystonejs/api-tests
 
+## 7.0.6
+
+### Patch Changes
+
+- [`8bd44758a`](https://github.com/keystonejs/keystone/commit/8bd44758ac742c95f42151c9fbc16700b698e8e4) [#3625](https://github.com/keystonejs/keystone/pull/3625) Thanks [@singhArmani](https://github.com/singhArmani)! - Updated ID field tests.
+
+* [`9dae7a5d0`](https://github.com/keystonejs/keystone/commit/9dae7a5d00a62cd0b7a4470695adc5e1678db3dc) [#3616](https://github.com/keystonejs/keystone/pull/3616) Thanks [@timleslie](https://github.com/timleslie)! - Fixed a query generation bug when performing `count` operations on `1:1` relationships with a filter.
+
+- [`bbd6d328f`](https://github.com/keystonejs/keystone/commit/bbd6d328fdc4299acd3f2d2f58b12b4ceca9c8e6) [#3418](https://github.com/keystonejs/keystone/pull/3418) Thanks [@singhArmani](https://github.com/singhArmani)! - - Added filter and CRUD tests for `Content` field type.
+  - Updated Content field to throw error when `isUnique` config is set to true.
+- Updated dependencies [[`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a), [`dd49d2c04`](https://github.com/keystonejs/keystone/commit/dd49d2c040ea8fb8dfc36d2e556be88ca1b74b15), [`8bd44758a`](https://github.com/keystonejs/keystone/commit/8bd44758ac742c95f42151c9fbc16700b698e8e4), [`74ad0cf7a`](https://github.com/keystonejs/keystone/commit/74ad0cf7a1a08d7665575c13da9cfb0e5a692f22), [`fe054e53e`](https://github.com/keystonejs/keystone/commit/fe054e53e71f13a69af1d6dd2a1cd8c68bb31059)]:
+  - @keystonejs/fields@17.1.2
+  - @keystonejs/test-utils@8.0.3
+
 ## 7.0.5
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @keystonejs/logger
 
+## 6.0.0
+
+### Major Changes
+
+- [`0b400eb8f`](https://github.com/keystonejs/keystone/commit/0b400eb8f4674f37d8ea304130b9e339fad60d48) [#3630](https://github.com/keystonejs/keystone/pull/3630) Thanks [@timleslie](https://github.com/timleslie)! - **Deprecation notice** This module is no longer maintained. Please directly use `pino` or the logging library of your choice.
+
 ## 5.1.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @keystonejs/field-views-loader
 
+## 6.0.1
+
+### Patch Changes
+
+- [`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a) [#3610](https://github.com/keystonejs/keystone/pull/3610) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `prettier` to `^2.1.1`.
+
 ## 6.0.0
 
 ### Major Changes
