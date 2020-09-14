@@ -680,11 +680,13 @@ class QueryBuilder {
   }
 
   _getQueryConditionByPath(listAdapter, path, tableAlias) {
-    const dbPath = path
-      .split('_')
-      .filter(a => a)
-      .join('_');
-    const fieldAdapter = listAdapter.fieldAdaptersByPath[dbPath];
+    let fieldAdapter = listAdapter.fieldAdaptersByPath[path];
+
+    if (!fieldAdapter) {
+      let dbPath = path.split('_').slice(0, -1).join('_');
+      fieldAdapter = listAdapter.fieldAdaptersByPath[dbPath];
+    }
+
     // Can't assume dbPath === fieldAdapter.dbPath (sometimes it isn't)
     return (
       fieldAdapter &&
