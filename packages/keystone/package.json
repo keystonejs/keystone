@@ -36,7 +36,7 @@
     "micro-memoize": "^4.0.9",
     "ora": "^5.1.0",
     "p-waterfall": "^2.1.0",
-    "pino": "5.17.0",
+    "pino": "6.6.1",
     "pluralize": "^7.0.0",
     "serialize-error": "^7.0.1",
     "stack-utils": "^2.0.2",
