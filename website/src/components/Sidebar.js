@@ -132,6 +132,7 @@ const getTruncatedItems = ({ pages, navTitle }, isPageInGroupActive) => {
             order: 99999999999,
             isPackageIndex: false,
             pageTitle: 'See more...',
+            _seeMore: true, // Special key to indicate this link's see-more-ness
           },
           path: `/${slugify(navTitle)}`,
         }
@@ -177,7 +178,7 @@ export const NavGroup = ({ index, navGroup, pathname }) => {
       </GroupHeading>
       <List aria-labelledby={sectionId}>
         {navItems.map(node => (
-          <ListItem key={node.path} to={node.path}>
+          <ListItem key={node.path} to={node.path} isExpandLink={node._seeMore}>
             {node.context.pageTitle}
           </ListItem>
         ))}
@@ -240,7 +241,7 @@ const List = props => (
   <ul css={{ listStyle: 'none', fontSize: '0.9rem', padding: 0, margin: 0 }} {...props} />
 );
 
-const ListItem = props => (
+const ListItem = ({ isExpandLink, ...props }) => (
   <li>
     <Link
       css={{
@@ -254,6 +255,7 @@ const ListItem = props => (
         textDecoration: 'none',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
+        fontWeight: isExpandLink ? 'bold' : 'normal',
 
         ':hover, :focus': {
           color: colors.B.base,
