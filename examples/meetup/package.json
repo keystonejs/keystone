@@ -29,7 +29,7 @@
     "@keystonejs/keystone": "^15.0.0",
     "@keystonejs/server-side-graphql-client": "^1.1.2",
     "@keystonejs/session": "^8.1.1",
-    "apollo-upload-client": "^14.1.1",
+    "apollo-upload-client": "^14.1.2",
     "cross-env": "^7.0.2",
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
