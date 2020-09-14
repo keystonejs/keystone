@@ -137,7 +137,7 @@ const getItems = async ({
 
     allItems.push(...latestResult);
 
-    skip += pageSize;
+    _skip += pageSize;
   } while (latestResult.length === _first && (first === undefined || allItems.length < first));
 
   return allItems;

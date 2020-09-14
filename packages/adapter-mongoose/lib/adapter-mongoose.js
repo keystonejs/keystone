@@ -16,7 +16,8 @@ const {
 } = require('@keystonejs/utils');
 
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
-const { queryParser, pipelineBuilder } = require('@keystonejs/mongo-join-builder');
+const { pipelineBuilder } = require('./join-builder');
+const { queryParser } = require('./query-parser');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 

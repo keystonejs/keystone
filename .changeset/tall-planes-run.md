@@ -2,4 +2,4 @@
 "@keystonejs/file-adapters": patch
 ---
 
-Updated dependency `aws-sdk` to `^2.747.0`.
+Updated dependency `aws-sdk` to `^2.751.0`.

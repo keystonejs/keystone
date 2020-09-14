@@ -1,8 +1,6 @@
 const { mergeWhereClause, upcase } = require('@keystonejs/utils');
-const { logger } = require('@keystonejs/logger');
 const { throwAccessDenied, ValidationFailureError } = require('../ListTypes/graphqlErrors');
-
-const graphqlLogger = logger('graphql');
+const { graphqlLogger } = require('../Keystone/logger');
 
 class HookManager {
   constructor({ name, listKey, hooks = {} }) {

@@ -1,11 +1,6 @@
 const { gql } = require('apollo-server-express');
 const { print } = require('graphql/language/printer');
 
-// We don't want to actually log, so we mock it before we require the class
-jest.doMock('@keystonejs/logger', () => ({
-  logger: jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} })),
-}));
-
 const { List } = require('../lib/ListTypes');
 const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
 const { Text, Checkbox, Float, Relationship, Integer } = require('@keystonejs/fields');

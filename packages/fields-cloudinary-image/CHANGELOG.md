@@ -1,5 +1,17 @@
 # @keystonejs/fields-cloudinary-image
 
+## 1.0.5
+
+### Patch Changes
+
+- [`dd49d2c04`](https://github.com/keystonejs/keystone/commit/dd49d2c040ea8fb8dfc36d2e556be88ca1b74b15) [#3606](https://github.com/keystonejs/keystone/pull/3606) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused dependencies.
+
+- Updated dependencies [[`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a), [`dd49d2c04`](https://github.com/keystonejs/keystone/commit/dd49d2c040ea8fb8dfc36d2e556be88ca1b74b15), [`8bd44758a`](https://github.com/keystonejs/keystone/commit/8bd44758ac742c95f42151c9fbc16700b698e8e4), [`9dae7a5d0`](https://github.com/keystonejs/keystone/commit/9dae7a5d00a62cd0b7a4470695adc5e1678db3dc), [`bbd6d328f`](https://github.com/keystonejs/keystone/commit/bbd6d328fdc4299acd3f2d2f58b12b4ceca9c8e6), [`fe054e53e`](https://github.com/keystonejs/keystone/commit/fe054e53e71f13a69af1d6dd2a1cd8c68bb31059)]:
+  - @keystonejs/adapter-knex@11.0.5
+  - @keystonejs/fields-content@8.0.4
+  - @keystonejs/fields@17.1.2
+  - @keystonejs/adapter-mongoose@9.0.6
+
 ## 1.0.4
 
 ### Patch Changes

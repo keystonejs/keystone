@@ -1,5 +1,17 @@
 # @keystonejs/file-adapters
 
+## 7.0.6
+
+### Patch Changes
+
+- [`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a) [#3610](https://github.com/keystonejs/keystone/pull/3610) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `prettier` to `^2.1.1`.
+
+* [`3599776bd`](https://github.com/keystonejs/keystone/commit/3599776bd160e7b46ceca3d81a22ddb6bd7941a2) [#3604](https://github.com/keystonejs/keystone/pull/3604) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `aws-sdk` to `^2.747.0`.
+
+- [`4e9cf67c2`](https://github.com/keystonejs/keystone/commit/4e9cf67c235f58f9158facac1b5ce9830905b9ef) [#3619](https://github.com/keystonejs/keystone/pull/3619) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `aws-sdk` to `^2.748.0`.
+
+* [`f0d91f9f2`](https://github.com/keystonejs/keystone/commit/f0d91f9f285df3379011b6f450a6a70c3fbb3170) [#3639](https://github.com/keystonejs/keystone/pull/3639) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `aws-sdk` to `^2.750.0`.
+
 ## 7.0.5
 
 ### Patch Changes

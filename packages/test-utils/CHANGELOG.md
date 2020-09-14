@@ -1,5 +1,16 @@
 # @keystonejs/test-utils
 
+## 8.0.3
+
+### Patch Changes
+
+- [`74ad0cf7a`](https://github.com/keystonejs/keystone/commit/74ad0cf7a1a08d7665575c13da9cfb0e5a692f22) [#3617](https://github.com/keystonejs/keystone/pull/3617) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mongodb-memory-server-core` to `^6.7.0`.
+
+- Updated dependencies [[`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a), [`d7eac6629`](https://github.com/keystonejs/keystone/commit/d7eac662956fc2dffd9ea5cfedf60e51ecc1b80d), [`77aa2d7d1`](https://github.com/keystonejs/keystone/commit/77aa2d7d156a83759a7f3c26e8c5bd019966b054), [`9dae7a5d0`](https://github.com/keystonejs/keystone/commit/9dae7a5d00a62cd0b7a4470695adc5e1678db3dc), [`d07f6bfb6`](https://github.com/keystonejs/keystone/commit/d07f6bfb6b3bd65036c2030d2758abdf4eca1a9e)]:
+  - @keystonejs/adapter-knex@11.0.5
+  - @keystonejs/keystone@15.0.0
+  - @keystonejs/adapter-mongoose@9.0.6
+
 ## 8.0.2
 
 ### Patch Changes
