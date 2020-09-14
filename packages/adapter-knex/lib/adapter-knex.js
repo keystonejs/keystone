@@ -683,7 +683,7 @@ class QueryBuilder {
     let fieldAdapter = listAdapter.fieldAdaptersByPath[path];
 
     if (!fieldAdapter) {
-      let dbPath = path.split('_').slice(0, -1).join('_');
+      const dbPath = path.split('_').slice(0, -1).join('_');
       fieldAdapter = listAdapter.fieldAdaptersByPath[dbPath];
     }
 
