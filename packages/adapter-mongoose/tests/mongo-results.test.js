@@ -1,4 +1,5 @@
-const { queryParser, pipelineBuilder } = require('../');
+const { pipelineBuilder } = require('../lib/join-builder');
+const { queryParser } = require('../lib/query-parser');
 const { postsAdapter, listAdapter } = require('./utils');
 
 const { MongoClient } = require('mongodb');

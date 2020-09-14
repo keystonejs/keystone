@@ -10,11 +10,15 @@
   "dependencies": {
     "@keystonejs/fields-mongoid": "^7.0.3",
     "@keystonejs/keystone": "^15.0.0",
-    "@keystonejs/mongo-join-builder": "^8.0.0",
     "@keystonejs/utils": "^5.4.3",
+    "cuid": "^2.1.8",
     "mongoose": "~5.9.29",
     "p-settle": "^4.1.1",
     "pluralize": "^7.0.0"
+  },
+  "devDependencies": {
+    "mongodb": "^3.6.1",
+    "mongodb-memory-server-core": "^6.7.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-mongoose"
 }
