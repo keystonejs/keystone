@@ -13,7 +13,6 @@ const {
   arrayToObject,
 } = require('@keystonejs/utils');
 const { parseListAccess } = require('@keystonejs/access-control');
-const { logger } = require('@keystonejs/logger');
 const {
   preventInvalidUnderscorePrefix,
   keyToLabel,
@@ -26,7 +25,7 @@ const {
 const { HookManager } = require('./hooks');
 const { LimitsExceededError, throwAccessDenied } = require('./graphqlErrors');
 
-const graphqlLogger = logger('graphql');
+const { graphqlLogger } = require('../Keystone/logger');
 
 module.exports = class List {
   constructor(
