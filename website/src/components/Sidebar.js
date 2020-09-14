@@ -132,9 +132,9 @@ const getTruncatedItems = ({ pages, navTitle }, isPageInGroupActive) => {
             order: 99999999999,
             isPackageIndex: false,
             pageTitle: 'See more...',
-            _seeMore: true, // Special key to indicate this link's see-more-ness
           },
           path: `/${slugify(navTitle)}`,
+          _seeMore: true, // Special key to indicate this link's see-more-ness
         }
       : null,
   ].filter(a => a);
