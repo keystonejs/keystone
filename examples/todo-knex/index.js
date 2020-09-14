@@ -1,6 +1,6 @@
 const { Keystone } = require('@keystonejs/keystone');
 const { KnexAdapter } = require('@keystonejs/adapter-knex');
-const { Text, Relationship } = require('@keystonejs/fields');
+const { Text } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { StaticApp } = require('@keystonejs/app-static');
