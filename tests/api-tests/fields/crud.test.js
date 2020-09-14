@@ -3,7 +3,6 @@ const path = require('path');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 import {
   createItem,
-  createItems,
   deleteItem,
   getItems,
   getItem,
@@ -37,11 +36,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               },
               async ({ keystone, ...rest }) => {
                 // Populate the database before running the tests
-                await createItems({
-                  keystone,
-                  listKey,
-                  items: mod.initItems(matrixValue).map(x => ({ data: x })),
-                });
+                for (const item of mod.initItems(matrixValue)) {
+                  await createItem({ keystone, listKey, item });
+                }
                 return testFn({ keystone, listKey, adapterName, ...rest });
               }
             );
