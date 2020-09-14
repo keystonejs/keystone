@@ -35,7 +35,7 @@ async function getPackagePlugins() {
 
 async function getGatsbyConfig() {
   const packageFilesPlugins = await getPackagePlugins();
-  return {
+  let config = {
     siteMetadata: {
       title: `KeystoneJS`,
       siteUrl: `https://keystonejs.com`,
@@ -113,6 +113,9 @@ async function getGatsbyConfig() {
       `gatsby-plugin-sitemap`,
     ],
   };
+
+  fs.writeFileSync('./gatsby-config.js', `module.exports = ${JSON.stringify(config)}`);
+  return config;
 }
 
-module.exports = getGatsbyConfig();
+getGatsbyConfig();
