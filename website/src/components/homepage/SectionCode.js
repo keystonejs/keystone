@@ -61,10 +61,10 @@ type User {
 const SectionCode = () => (
   <HomepageSection
     variant="dark"
-    description="A KeystoneJS instance can be summarised as a function of your schema which creates a GraphQL API for querying, and an AdminUI for managing your data"
+    description="A KeystoneJS instance acts as a function of your schema which creates a GraphQL API for querying and an Admin UI for managing your data."
     heading="schema => ({ GraphQL, AdminUI })"
     ctaTo="guides/schema"
-    ctaText="Learn more creating lists and fields"
+    ctaText="Learn more about lists and fields"
   >
     <Grid>
       {CARDS.map((card, i) => (
