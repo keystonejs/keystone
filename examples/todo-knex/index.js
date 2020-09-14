@@ -16,20 +16,6 @@ keystone.createList('Todo', {
   },
 });
 
-keystone.createList('Something', {
-  fields: {
-    name_en: { type: Text },
-    nameEn: { type: Text },
-    // ...
-  },
-});
-
-keystone.createList('SomethingElse', {
-  fields: {
-    something: { type: Relationship, ref: 'Something' },
-  },
-});
-
 module.exports = {
   keystone,
   apps: [
