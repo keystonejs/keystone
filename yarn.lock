@@ -53,24 +53,6 @@
   dependencies:
     cross-fetch "3.0.5"
 
-"@apollo/client@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.0.2.tgz#fadb2b39a0e32950baaef2566442cb3f6de74a52"
-  integrity sha512-4ighan5Anlj4tK/tdUHs4Mi1njqXZ7AxRCVolz/H702DjPphAJfm+FRkIadPTmwz+OLO+d+tX+6V1VBshf02rg==
-  dependencies:
-    "@types/zen-observable" "^0.8.0"
-    "@wry/context" "^0.5.2"
-    "@wry/equality" "^0.1.9"
-    fast-json-stable-stringify "^2.0.0"
-    graphql-tag "^2.10.4"
-    hoist-non-react-statics "^3.3.2"
-    optimism "^0.12.1"
-    prop-types "^15.7.2"
-    symbol-observable "^1.2.0"
-    ts-invariant "^0.4.4"
-    tslib "^1.10.0"
-    zen-observable "^0.8.14"
-
 "@apollo/client@^3.1.5":
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.1.5.tgz#5865f5c32f061cd520459c5809e8debea6f4886c"
@@ -6099,13 +6081,13 @@ apollo-tracing@^0.11.2:
     apollo-server-env "^2.4.5"
     apollo-server-plugin-base "^0.9.1"
 
-apollo-upload-client@^14.1.1:
-  version "14.1.1"
-  resolved "https://registry.yarnpkg.com/apollo-upload-client/-/apollo-upload-client-14.1.1.tgz#2b21bb3424293a56ad9c4b9678395f5898f9b9be"
-  integrity sha512-6H6AW5habDHH/9XCJ8l2qlkaohwIcO+Lt/8P2908/yx0TC0oaiDNVu+0v2YE/5gA6NP0RvztUodzJUZJz27C0g==
+apollo-upload-client@^14.1.2:
+  version "14.1.2"
+  resolved "https://registry.yarnpkg.com/apollo-upload-client/-/apollo-upload-client-14.1.2.tgz#7a72b000f1cd67eaf8f12b4bda2796d0898c0dae"
+  integrity sha512-ozaW+4tnVz1rpfwiQwG3RCdCcZ93RV/37ZQbRnObcQ9mjb+zur58sGDPVg9Ef3fiujLmiE/Fe9kdgvIMA3VOjA==
   dependencies:
-    "@apollo/client" "^3.0.2"
-    "@babel/runtime" "^7.10.5"
+    "@apollo/client" "^3.1.5"
+    "@babel/runtime" "^7.11.2"
     extract-files "^9.0.0"
 
 apollo-utilities@^1.0.1, apollo-utilities@^1.2.1:
@@ -13514,11 +13496,6 @@ graphql-subscriptions@^1.0.0:
   integrity sha512-+ytmryoHF1LVf58NKEaNPRUzYyXplm120ntxfPcgOBC7TnK7Tv/4VRHeh4FAR9iL+O1bqhZs4nkibxQ+OA5cDQ==
   dependencies:
     iterall "^1.2.1"
-
-graphql-tag@^2.10.4:
-  version "2.10.4"
-  resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.10.4.tgz#2f301a98219be8b178a6453bb7e33b79b66d8f83"
-  integrity sha512-O7vG5BT3w6Sotc26ybcvLKNTdfr4GfsIVMD+LdYqXCeJIYPRyp8BIsDOUtxw7S1PYvRw5vH3278J2EDezR6mfA==
 
 graphql-tag@^2.11.0:
   version "2.11.0"
