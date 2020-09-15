@@ -12,17 +12,17 @@ const CARDS = [
   },
   {
     heading: `Highly extensible`,
-    content: `KeystoneJS provides an extensible Admin Interface and a powerful GraphQL API. These tools, and the building blocks Keystone provides, will allow you to create any type of application.`,
+    content: `KeystoneJS provides an extensible admin interface and a powerful GraphQL API. These tools, and the building blocks Keystone provides, will allow you to create any type of application.`,
     to: '/guides/graphql-philosophy',
   },
   {
     heading: `Own your data`,
-    content: `Provide your own PostgreSQL or MongoDB database for Keystone to connect to, and deploy your application anywhere. Have complete freedom of choice when hosting your data, admin application, API and front-end applications.`,
+    content: `Provide your own PostgreSQL or MongoDB database for Keystone to connect to, and deploy your application anywhere. Have complete freedom of choice when hosting your data, API, and front-end and admin applications.`,
     to: '/guides/deployment',
   },
   {
     heading: `Get started in minutes`,
-    content: `Our quick start guide will get you up and running in just a few minutes. Let's build a simple todo app with a fresh install of KeystoneJS`,
+    content: `Our quick start guide will get you up and running in just a few minutes. Let's build a simple todo app with a fresh install of Keystone!`,
     to: '/quick-start',
   },
 ];
@@ -30,7 +30,7 @@ const CARDS = [
 const SectionFeatures = () => (
   <HomepageSection
     heading="Why KeystoneJS"
-    description="We believe it’s the ideal back-end for React, Vue or Angular applications, Gatsby and Next.js websites, static sites, mobile applications and more"
+    description="We believe it’s the ideal back-end for React, Vue or Angular applications, Gatsby and Next.js websites, static sites, mobile applications and more."
   >
     <Grid>
       {CARDS.map((card, i) => (
