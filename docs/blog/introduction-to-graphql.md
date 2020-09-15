@@ -13,14 +13,14 @@ Broadly speaking an API can be defined as a way for programmers to interface wit
 
 ## Rest APIs
 
-The traditional method for interfacing with applications on the web is a REST API. One defining characteristic of REST APIs is they use [HTTP request methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods), such as `GET`, `PUT`, `POST` &amp;`DELETE` to "CRUD" operations. Typically, `PUT` for Create, `GET` for Read, `POST` for Update and `DELETE` for Delete.
+The traditional method for interfacing with applications on the web is a REST API. One defining characteristic of REST APIs is they use [HTTP request methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods), such as `GET`, `PUT`, `POST` &`DELETE` to "CRUD" operations. Typically, `PUT` for Create, `GET` for Read, `POST` for Update and `DELETE` for Delete.
 
 This structure makes REST predictable but also highlights some limitations. Since a request method is limited to a single `CRUD` operation, it encourages API design that has a single end-point for each entity in the system. For example, a simple website might have the following end-points:
 
-- http://my-api.com/user
-- http://my-api.com/post
-- http://my-api.com/comment
-- http://my-api.com/page
+- <http://my-api.com/user>
+- <http://my-api.com/post>
+- <http://my-api.com/comment>
+- <http://my-api.com/page>
 
 In large systems, this can lead to APIs with many dozen or even hundreds of end-points. This is a common criticism of REST.
 

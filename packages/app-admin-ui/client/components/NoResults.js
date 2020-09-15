@@ -22,7 +22,7 @@ const NoResultsWrapper = ({ children, ...props }) => (
     }}
     {...props}
   >
-    <InfoIcon css={{ height: 48, width: 48, marginBottom: '0.5em' }} />
+    <InfoIcon size={48} css={{ marginBottom: '0.5em' }} />
     {children}
   </div>
 );

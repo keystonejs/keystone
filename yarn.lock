@@ -3553,10 +3553,10 @@
     core-js "^3.4.1"
     regenerator-runtime "^0.13.3"
 
-"@manypkg/cli@^0.16.0":
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/@manypkg/cli/-/cli-0.16.0.tgz#ff1a7b3534a00e4807aaa2d6e357011ae16916cf"
-  integrity sha512-m+V7xqe36PahwUVfnOrt1srFzELE0tlwPHfbL53/GGiIx/CAINivG/vI397ZV5HKHA0xRyXmovq/0VGdVucKZw==
+"@manypkg/cli@^0.16.1":
+  version "0.16.1"
+  resolved "https://registry.yarnpkg.com/@manypkg/cli/-/cli-0.16.1.tgz#6b92ba8d2fb2b4fd3310a51bdd2e95adb4f30629"
+  integrity sha512-Au9opeNo23lab7Hu+WHbyNGy3BpcTQec5W/tPC3S4iMAxpbZYxhAQ26A6074MioUyuzFuTaltLF6+XBC11sjNw==
   dependencies:
     "@babel/runtime" "^7.5.5"
     "@manypkg/get-packages" "^1.1.1"

@@ -123,7 +123,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
 
     testModules
       .map(require)
-      .filter(({ supportsUnique }) => !supportsUnique)
+      .filter(({ supportsUnique }) => !supportsUnique && supportsUnique !== null)
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach(matrixValue => {
           describe(`${mod.name} - ${matrixValue} - isUnique`, () => {
