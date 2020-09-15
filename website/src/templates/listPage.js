@@ -8,6 +8,7 @@ import { Layout, Content } from './layout';
 import { HomepageFooter } from '../components/homepage/HomepageFooter';
 import { Container } from '../components';
 import { Sidebar } from '../components/Sidebar';
+import { BlogMeta } from '../components/BlogMeta';
 
 const List = ({ pageContext }) => {
   const { group, index, first, last, pageCount, name, pathPrefix, showSearch } = pageContext;
@@ -71,23 +72,7 @@ const List = ({ pageContext }) => {
                         >
                           {fields.pageTitle}
                         </a>
-                        {isBlog ? (
-                          <p
-                            css={{
-                              margin: 0,
-                              marginTop: '0.75rem',
-                              padding: 0,
-                              fontSize: '.8rem',
-                            }}
-                          >
-                            <Fragment>
-                              By <strong>{fields.author || 'Keystone'}</strong>
-                              {fields.date ? (
-                                <Fragment>, Published on {fields.date}</Fragment>
-                              ) : null}
-                            </Fragment>
-                          </p>
-                        ) : null}
+                        {isBlog ? <BlogMeta {...fields} /> : null}
                         {fields.navSubGroup ? (
                           <p
                             css={{
