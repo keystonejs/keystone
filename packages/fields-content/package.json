@@ -33,7 +33,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-popper": "^2.2.3",
-    "slate": "^0.47.9",
+    "slate": "^0.58.4",
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-plain-serializer": "^0.7.13",
     "slate-react": "^0.22.10"

@@ -29,7 +29,7 @@
     "prop-types": "^15.7.2",
     "query-string": "^6.13.2",
     "react": "^16.13.1",
-    "slate": "^0.47.9",
+    "slate": "^0.58.4",
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-react": "^0.22.10"
   },
