@@ -5,8 +5,6 @@ date: 2020-08-03
 author: Mike Riethmuller
 [meta]-->
 
-# Field types
-
 Field types in Keystone sit at the intersection of the Database, GraphQL API and User Interface. When you select and configure a field type, you are specifying how data is stored, how types in GraphQL are defined, and how the interface looks in the Admin app.
 
 To give an example, the `Text` field creates a `TEXT` column in a Postgres database, and a `String` type in a MongoDb schema. It has a return type of `String` in the GraphQL API, and an input type (for mutations) also of `String`. The interface produces a styled `<input />` element or a `<textarea />` depending on if the `isMultiline` option is configured.
