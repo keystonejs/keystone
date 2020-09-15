@@ -5,15 +5,13 @@ date: 2020-08-03
 author: Mike Riethmuller
 [meta]-->
 
-# Field types
-
 Field types in Keystone sit at the intersection of the Database, GraphQL API and User Interface. When you select and configure a field type, you are specifying how data is stored, how types in GraphQL are defined, and how the interface looks in the Admin app.
 
 To give an example, the `Text` field creates a `TEXT` column in a Postgres database, and a `String` type in a MongoDb schema. It has a return type of `String` in the GraphQL API, and an input type (for mutations) also of `String`. The interface produces a styled `<input />` element or a `<textarea />` depending on if the `isMultiline` option is configured.
 
 For a complete technical breakdown on the anatomy of field types and how they are built, see the [custom field type guide](/docs/guides/custom-field-types.md).
 
-Because they sit at this intersection of concerns, it can be difficult to decide what customisations should become new field types. How many concerns need to differ before creating a new field vs adding config options or project specific customsation such as hooks?
+Because they sit at this intersection of concerns, it can be difficult to decide what customisations should become new field types. How many concerns need to differ before creating a new field vs adding config options or project specific customisation such as hooks?
 
 This post provides insight into how we think about field types. Broadly speaking, field types can be grouped into one of two categories. Core field types and Non-Core field types.
 
