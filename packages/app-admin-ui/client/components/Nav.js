@@ -353,7 +353,7 @@ const UserInfo = ({ authListPath }) => {
   return (
     <UserInfoContainer>
       <UserIcon>
-        <PersonIcon width={20} height={20} />
+        <PersonIcon size={24} />
       </UserIcon>
       <div css={{ overflow: 'hidden' }}>
         <Truncate css={{ fontSize: '0.7em' }}>Logged in as</Truncate>
