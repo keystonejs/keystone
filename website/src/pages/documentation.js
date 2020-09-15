@@ -43,15 +43,15 @@ const DocsPage = () => {
                   Keystone Documentation
                 </h1>
                 <p>
-                  Welcome to the keystone documentation! If you're new, we recommend checking out
+                  Welcome to the Keystone documentation! If you're new, we recommend checking out
                   our <Link to="/quick-start/">getting started guide</Link>.
                 </p>
                 <p>Otherwise, we have divided our documentation into three key sections:</p>
                 <HeadingLink to="/tutorials">Tutorials</HeadingLink>
                 <p>
                   Each of these tutorials will walk you through doing a particular task with
-                  keystone. They are desgined to allow you to follow along, but don't delve into all
-                  the options.
+                  Keystone. They are designed to allow you to follow along, but don't delve into all
+                  available options.
                 </p>
                 <HeadingLink to="/guides">Guides</HeadingLink>
                 <p>
@@ -65,8 +65,8 @@ const DocsPage = () => {
                 </p>
                 <HeadingLink to="/blog">Blog</HeadingLink>
                 <p>
-                  To keep up with what's coming out in keystone, and what we are working on, you can
-                  follow our blog (as well as our changelogs)
+                  To keep up with what's coming out in Keystone, and what we are working on, you can
+                  follow our blog (as well as our changelogs).
                 </p>
                 <p>Happy coding!</p>
                 <HomepageFooter />

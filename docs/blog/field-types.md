@@ -11,7 +11,7 @@ To give an example, the `Text` field creates a `TEXT` column in a Postgres datab
 
 For a complete technical breakdown on the anatomy of field types and how they are built, see the [custom field type guide](/docs/guides/custom-field-types.md).
 
-Because they sit at this intersection of concerns, it can be difficult to decide what customisations should become new field types. How many concerns need to differ before creating a new field vs adding config options or project specific customsation such as hooks?
+Because they sit at this intersection of concerns, it can be difficult to decide what customisations should become new field types. How many concerns need to differ before creating a new field vs adding config options or project specific customisation such as hooks?
 
 This post provides insight into how we think about field types. Broadly speaking, field types can be grouped into one of two categories. Core field types and Non-Core field types.
 
