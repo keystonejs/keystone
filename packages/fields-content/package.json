@@ -36,7 +36,7 @@
     "slate": "^0.47.9",
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-plain-serializer": "^0.7.13",
-    "slate-react": "^0.22.10"
+    "slate-react": "^0.58.4"
   },
   "devDependencies": {
     "@keystonejs/server-side-graphql-client": "*"
