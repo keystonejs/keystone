@@ -52,7 +52,7 @@ module.exports = {
 
 ### `hooks`
 
-Customization hooks allow you to modify various areas of the Admin UI to better suit your development needs. The `index.js` file at the given path should export a single config object containing your chosen hooks. All are optional. See [Customization](#Customization) for available hooks.
+Customization hooks allow you to modify various areas of the Admin UI to better suit your development needs. The `index.js` file at the given path should export a single config object containing your chosen hooks. All are optional. See [Customization](#customization) for available hooks.
 
 If omitted, Keystone will look under `./admin-ui/` for a hooks config export.
 
