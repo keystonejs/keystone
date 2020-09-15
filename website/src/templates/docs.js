@@ -93,8 +93,13 @@ export default function Template({
                 }}
               >
                 <SkipNavContent />
-                <mdComponents.h1>{pageTitle}</mdComponents.h1>
-                <BlogMeta author={author} date={date} />
+                {isBlog ? (
+                  <Fragment>
+                    <mdComponents.h1>{pageTitle}</mdComponents.h1>
+                    <BlogMeta author={author} date={date} />
+                  </Fragment>
+                ) : null}
+
                 <MDXProvider components={mdComponents}>
                   <MDXRenderer>{body}</MDXRenderer>
                 </MDXProvider>
