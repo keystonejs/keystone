@@ -74,6 +74,7 @@ export default {
 // we're following a golden path here that assumes A LOT
 // the pattern we're expecting is `p > a > img` -- React's single child quirk lets us chain
 // i know it's super brittle, but will tidy things up for the moment
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function hasBadge(props) {
   return props?.children?.props?.children?.props?.src?.includes('shields.io');
 }
