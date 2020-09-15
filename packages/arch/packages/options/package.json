@@ -16,7 +16,7 @@
     "@arch-ui/theme": "^0.0.11",
     "@babel/runtime": "^7.11.2",
     "@emotion/core": "^10.0.35",
-    "@primer/octicons-react": "^10.1.0",
+    "@primer/octicons-react": "^11.0.0",
     "react-select": "^3.1.0"
   },
   "module": "dist/options.esm.js",
