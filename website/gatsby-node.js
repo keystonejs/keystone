@@ -60,6 +60,7 @@ const createDocsPages = async ({ createPage, graphql }) =>
               sortOrder
               sortSubOrder
               order
+              author
               date
               isPackageIndex
               isIndex
@@ -103,6 +104,7 @@ const createDocsPages = async ({ createPage, graphql }) =>
         context: {
           mdPageId: id,
           ...fields,
+          isBlog: fields.navGroup === 'blog',
         }, // additional data can be passed via context
       });
     });
