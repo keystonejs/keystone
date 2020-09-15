@@ -4,7 +4,15 @@ This is the todo list - the simplest implementation of Keystone. The todo list a
 
 ## Running the Project.
 
-To run this demo project, all you need to do is run `yarn` within the Keystone project root to install all required packages, then run `yarn start todo` to begin running Keystone.
+To run this demo project, all you need to do is run `yarn` within the Keystone project root to install all required packages, then run `yarn demo start todo-knex` to begin running Keystone.
+
+We assume to run this demo you have postgres set up. [here is the guide for postgres in keystone](https://www.keystonejs.com/quick-start/adapters#postgresql).
+
+After that, run
+
+```
+createdb to-do
+```
 
 Once running, the Keystone Admin UI is reachable from `localhost:3000/admin`. To see an example React app using KeystoneJS' GraphQl APIs, head to `localhost:3000`.
 
