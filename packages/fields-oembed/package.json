@@ -23,7 +23,7 @@
     "@keystonejs/fields-content": "^8.0.4",
     "node-fetch": "^2.6.1",
     "pluralize": "^7.0.0",
-    "query-string": "^6.13.1"
+    "query-string": "^6.13.2"
   },
   "peerDependencies": {
     "react": "^16.13.1"

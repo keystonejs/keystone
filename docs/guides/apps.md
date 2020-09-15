@@ -5,8 +5,8 @@ title: Keystone apps
 
 # Keystone apps
 
-A Keystone instance can be summarised as a function of your schema which
-creates a GraphQL API for querying, and an AdminUI for managing your data:
+A Keystone instance acts as a function of your schema which
+creates a GraphQL API for querying and an Admin UI for managing your data:
 
 ```javascript allowCopy=false showLanguage=false
 schema => ({ GraphQL, AdminUI });
