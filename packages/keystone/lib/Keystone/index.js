@@ -464,9 +464,8 @@ module.exports = class Keystone {
         ...this._sessionManager.getContext(req),
         req,
       }),
-      ...(process.env.ENGINE_API_KEY
+      ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
         ? {
-            engine: { apiKey: process.env.ENGINE_API_KEY },
             tracing: true,
           }
         : {
