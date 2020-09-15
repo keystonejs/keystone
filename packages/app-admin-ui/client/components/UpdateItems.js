@@ -3,7 +3,7 @@
 import React, { Fragment, useState } from 'react';
 
 import { IconButton } from '@arch-ui/button';
-import { SettingsIcon } from '@primer/octicons-react';
+import { GearIcon } from '@primer/octicons-react';
 
 import { useList } from '../providers/List';
 import { UpdateManyItemsModal } from '../../components';
@@ -23,7 +23,7 @@ const UpdateItems = () => {
     <Fragment>
       <IconButton
         appearance="primary"
-        icon={SettingsIcon}
+        icon={GearIcon}
         onClick={() => setUpdateModal(true)}
         variant="nuance"
         data-test-name="update"
