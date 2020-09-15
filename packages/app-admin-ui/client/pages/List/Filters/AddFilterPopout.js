@@ -289,9 +289,8 @@ export default class AddFilterPopout extends Component {
               <div ref={ref} style={style}>
                 <Alert appearance="warning" variant="bold">
                   <AlertIcon
+                    size={24}
                     css={{
-                      height: 24,
-                      width: 24,
                       marginLeft: -8,
                       marginRight: 12,
                     }}
