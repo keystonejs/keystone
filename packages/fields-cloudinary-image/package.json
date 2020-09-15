@@ -27,7 +27,7 @@
     "image-extensions": "^1.1.0",
     "pluralize": "^7.0.0",
     "prop-types": "^15.7.2",
-    "query-string": "^6.13.1",
+    "query-string": "^6.13.2",
     "react": "^16.13.1",
     "slate": "^0.47.9",
     "slate-drop-or-paste-images": "^0.9.1",
