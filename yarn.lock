@@ -5578,10 +5578,10 @@ ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-all-contributors-cli@^6.17.2:
-  version "6.17.2"
-  resolved "https://registry.yarnpkg.com/all-contributors-cli/-/all-contributors-cli-6.17.2.tgz#fb3461de56c378d1846e0b982ca0bd7ce4359c18"
-  integrity sha512-1ip57waUGz92HWbM5VgiGOjBz25fWXOtCRtCFbjCuuiCuiYbygnvcb9iFYiyNz28RlECg1VPXWrXOJABq+h+MQ==
+all-contributors-cli@^6.17.3:
+  version "6.17.3"
+  resolved "https://registry.yarnpkg.com/all-contributors-cli/-/all-contributors-cli-6.17.3.tgz#d8f2e0a81f85322e78caa4ee5ac42237e4e5667d"
+  integrity sha512-kRyGpk+i9LAxOvbCGorJK4fVXphvfS5cABlNGqeKLUbKF5QZEviwhfqb2ZpFXW90OJpjKNEQ3JQ4r9cwesXHqw==
   dependencies:
     "@babel/runtime" "^7.7.6"
     async "^3.0.1"
