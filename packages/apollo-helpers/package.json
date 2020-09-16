@@ -11,7 +11,7 @@
     "build": "echo 'noop - see the Keystone package.json#build script'"
   },
   "dependencies": {
-    "@apollo/react-components": "^3.1.5",
+    "@apollo/react-components": "^4.0.0",
     "@babel/runtime": "^7.11.2",
     "@jesstelford/apollo-cache-invalidation": "^0.0.3-gh3-gh5",
     "@types/react": "^16.9.49",
