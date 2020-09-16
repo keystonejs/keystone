@@ -27,30 +27,6 @@ const gql = require('graphql-tag');
 
 import 'cypress-file-upload';
 
-/**
- * Uploads a file to an input
- * @memberOf Cypress.Chainable#
- * @name upload_file
- * @function
- * @param {String} selector - element to target
- * @param {String} fileUrl - The file url to upload
- * @param {String} type - content type of the uploaded file
- *
- * Adapted from https://github.com/cypress-io/cypress/issues/170#issuecomment-389837191
- *
- * Usage:
- * // Dynamically create a file, or save one into the fixtures folder, your call
- * cy.writeFile('cypress/fixtures/notice.pdf', 'Hi, this content is created by cypress!')
- * cy.upload_file('input[name=file1]', 'notice.pdf', 'application/pdf')
- */
-Cypress.Commands.add('upload_file', (selector, fileUrl, type) =>
-  cy
-    .fixture(fileUrl)
-    .then(fileContent =>
-      cy.get(selector).upload({ fileContent, fileName: fileUrl, mimeType: type })
-    )
-);
-
 function graphqlOperation(type) {
   return function (uri, operationString) {
     // Convert the string to an ast
