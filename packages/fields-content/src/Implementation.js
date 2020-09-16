@@ -177,6 +177,10 @@ export class Content extends Relationship.implementation {
     this.blocks = blockInstances;
   }
 
+  get _supportsUnique() {
+    return false;
+  }
+
   /*
    * Blocks come in 2 halves:
    * 1. The block implementation (eg; ./views/editor/blocks/embed.js)

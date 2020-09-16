@@ -1,12 +1,7 @@
 import { CalendarDay } from './Implementation';
-import { MockAdapter, MockFieldAdapter } from '@keystonejs/test-utils';
 
-const mockAdapter = new MockAdapter();
 const mocks = {
-  getListByKey: () => {},
-  listKey: '',
-  listAdapter: mockAdapter.newListAdapter(),
-  fieldAdapterClass: MockFieldAdapter,
+  listAdapter: { newFieldAdapter: () => {} },
   defaultAccess: true,
   schemaNames: ['public'],
 };

@@ -27,6 +27,9 @@ const { DEFAULT_DIST_DIR } = require('../../constants');
 const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
 const { formatError } = require('./format-error');
 
+// composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
+const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
+
 module.exports = class Keystone {
   constructor({
     defaultAccess,
@@ -194,7 +197,7 @@ module.exports = class Keystone {
     };
   }
 
-  createContext({ schemaName = 'public', authentication = {}, skipAccessControl = false }) {
+  createContext({ schemaName = 'public', authentication = {}, skipAccessControl = false } = {}) {
     const context = {
       schemaName,
       authedItem: authentication.item,
@@ -210,7 +213,7 @@ module.exports = class Keystone {
       schemaName = defaults.schemaName,
       authentication = defaults.authentication,
       skipAccessControl = defaults.skipAccessControl,
-    }) => this.createContext({ schemaName, authentication, skipAccessControl });
+    } = {}) => this.createContext({ schemaName, authentication, skipAccessControl });
     context.executeGraphQL = ({ context = defaults.context, query, variables }) =>
       this.executeGraphQL({ context, query, variables });
     context.gqlNames = listKey => this.lists[listKey].gqlNames;
@@ -237,7 +240,9 @@ module.exports = class Keystone {
   }
 
   createAuthStrategy(options) {
-    const { type: StrategyType, list: listKey, config, hooks } = options;
+    const { type: StrategyType, list: listKey, config, hooks } = composePlugins(
+      options.plugins || []
+    )(options, { keystone: this });
     const { authType } = StrategyType;
     if (!this.auth[listKey]) {
       this.auth[listKey] = {};
@@ -263,8 +268,14 @@ module.exports = class Keystone {
       throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
     }
 
-    // composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
-    const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
+    // Apollo Server automatically adds an 'Upload' scalar type to the GQL schema. Since list output
+    // types are named after their keys, having a list name 'Upload' will clash and cause a confusing
+    // error on start.
+    if (key === 'Upload' || key === 'upload') {
+      throw new Error(
+        `Invalid list name "Upload": Built-in GraphQL types cannot be used as a list name.`
+      );
+    }
 
     const list = new List(
       key,
@@ -453,9 +464,8 @@ module.exports = class Keystone {
         ...this._sessionManager.getContext(req),
         req,
       }),
-      ...(process.env.ENGINE_API_KEY
+      ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
         ? {
-            engine: { apiKey: process.env.ENGINE_API_KEY },
             tracing: true,
           }
         : {

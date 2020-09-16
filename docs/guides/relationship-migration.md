@@ -138,16 +138,16 @@ keystone upgrade-relationships --migration
 #### MongoDB
 
 ```javascript title="Example migration" allowCopy=false showLanguage=false
-db.todos.find({}).forEach(function(doc) {
-  (doc.reviewers || []).forEach(function(itemId) {
+db.todos.find({}).forEach(function (doc) {
+  (doc.reviewers || []).forEach(function (itemId) {
     db.todo_reviewers_manies.insert({ Todo_left_id: doc._id, User_right_id: itemId });
   });
 });
 db.todos.updateMany({}, { $unset: { reviewers: 1 } });
 db.users.updateMany({}, { $unset: { leadPost: 1 } });
 db.users.updateMany({}, { $unset: { published: 1 } });
-db.todos.find({}).forEach(function(doc) {
-  (doc.readers || []).forEach(function(itemId) {
+db.todos.find({}).forEach(function (doc) {
+  (doc.readers || []).forEach(function (itemId) {
     db.todo_readers_user_readposts.insert({ Todo_left_id: doc._id, User_right_id: itemId });
   });
 });

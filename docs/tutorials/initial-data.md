@@ -191,6 +191,7 @@ const keystone = new Keystone({
         {data: { name: 'John Duck', email: 'john@duck.com', password: 'dolphins' } },
         {data: { name: 'Barry', email: 'bartduisters@bartduisters.com', password: 'dolphins' } },
       ],
+      returnFields: 'id, name',
     });
 
   // 2. Insert `Post` data, with the required relationships, via `connect` nested mutation.
@@ -260,6 +261,7 @@ const keystone = new Keystone({
         { data: { title: 'React is the Best' } },
         { data: { title: 'Keystone Rocks' } },
       ],
+      returnFields: 'id, title',
     });
 
     // 2. Insert User data with required relationship via nested mutations. `connect` requires an array of post item ids.
@@ -273,8 +275,9 @@ const keystone = new Keystone({
             email: 'john@duck.com',
             password: 'dolphins',
             posts: {
-               // Filtering list of items where title contains the word `React`
-               connect: post.filter(p => /\bReact\b/i.test(p.title)).map(i => ({ id: i.id })),
+              // Filtering list of items where title contains the word `React`
+              connect: post.filter(p => /\bReact\b/i.test(p.title)).map(i => ({ id: i.id })),
+            },
           },
         },
         {

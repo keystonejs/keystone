@@ -170,14 +170,14 @@ query GetUsers {
   }
 }`;
 
-fetch('/admin/api', {
+const data = await fetch('/admin/api', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
-  body: {
+  body: JSON.stringify({
     query: GET_ALL_USERS,
-  },
+  }),
 }).then(result => result.json());
 ```
 
@@ -194,15 +194,15 @@ mutation AddUser($name: String!) {
   }
 }`;
 
-fetch('/admin/api', {
+const data = await fetch('/admin/api', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
-  body: {
+  body: JSON.stringify({
     query: ADD_USER,
     variables: { name: 'Mike' },
-  },
+  }),
 }).then(result => result.json());
 ```
 
@@ -308,7 +308,7 @@ query {
 
 ### `search`
 
-Will search the list to limit results.
+Will search the list to limit results. For now, it can search only by `name` field. The `name` field must be a `Text` type.
 
 ```graphql
 query {

@@ -29,10 +29,10 @@ class _DateTime extends Implementation {
       ...this.inInputFields('DateTime'),
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: DateTime`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: DateTime`];
   }
   getGqlAuxTypes() {

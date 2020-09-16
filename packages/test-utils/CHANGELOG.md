@@ -1,5 +1,75 @@
 # @keystonejs/test-utils
 
+## 8.0.3
+
+### Patch Changes
+
+- [`74ad0cf7a`](https://github.com/keystonejs/keystone/commit/74ad0cf7a1a08d7665575c13da9cfb0e5a692f22) [#3617](https://github.com/keystonejs/keystone/pull/3617) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mongodb-memory-server-core` to `^6.7.0`.
+
+- Updated dependencies [[`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a), [`d7eac6629`](https://github.com/keystonejs/keystone/commit/d7eac662956fc2dffd9ea5cfedf60e51ecc1b80d), [`77aa2d7d1`](https://github.com/keystonejs/keystone/commit/77aa2d7d156a83759a7f3c26e8c5bd019966b054), [`9dae7a5d0`](https://github.com/keystonejs/keystone/commit/9dae7a5d00a62cd0b7a4470695adc5e1678db3dc), [`d07f6bfb6`](https://github.com/keystonejs/keystone/commit/d07f6bfb6b3bd65036c2030d2758abdf4eca1a9e)]:
+  - @keystonejs/adapter-knex@11.0.5
+  - @keystonejs/keystone@15.0.0
+  - @keystonejs/adapter-mongoose@9.0.6
+
+## 8.0.2
+
+### Patch Changes
+
+- [`3b619327b`](https://github.com/keystonejs/keystone/commit/3b619327b3801501b96b9af04ec6ca90e9ad9469) [#3517](https://github.com/keystonejs/keystone/pull/3517) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency `mongodb-memory-server-core` to `^6.6.7`.
+
+- Updated dependencies [[`cd15192cd`](https://github.com/keystonejs/keystone/commit/cd15192cdae5e476f64a257c196ca569a9440d5a), [`e9bc4367a`](https://github.com/keystonejs/keystone/commit/e9bc4367ac31f3fe3a2898198c600c76c42165b2), [`7bfdb79ee`](https://github.com/keystonejs/keystone/commit/7bfdb79ee43235418f098e5fe7412968dcf6c397), [`003b856e6`](https://github.com/keystonejs/keystone/commit/003b856e686cc1ee0f984c1acf024c1fa0c27837), [`d71f98791`](https://github.com/keystonejs/keystone/commit/d71f987917509a206b1e0a994dbc6641a7cf4e06), [`b3aa85031`](https://github.com/keystonejs/keystone/commit/b3aa850311cbc1622568f69f9cb4b9f46ab9db22), [`16fba3b98`](https://github.com/keystonejs/keystone/commit/16fba3b98271410e570a370f610da7cd0686f294), [`28b88abd3`](https://github.com/keystonejs/keystone/commit/28b88abd369f0df12eae72107db7c24323eda4b5)]:
+  - @keystonejs/app-graphql@6.1.2
+  - @keystonejs/keystone@14.0.2
+  - @keystonejs/adapter-knex@11.0.4
+  - @keystonejs/adapter-mongoose@9.0.5
+
+## 8.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`25f50dadc`](https://github.com/keystonejs/keystone/commit/25f50dadc07d888de18d485244c84d17462dce2e), [`d38c9174f`](https://github.com/keystonejs/keystone/commit/d38c9174f8146ad6e268be87cf5d54d5074bc593), [`f714ac1e2`](https://github.com/keystonejs/keystone/commit/f714ac1e2c49ef44d756e35042bdb7da6db589a7), [`c243839c1`](https://github.com/keystonejs/keystone/commit/c243839c12abc8cffe8ff788fe57dcb880dc3a41)]:
+  - @keystonejs/keystone@14.0.0
+  - @keystonejs/adapter-knex@11.0.2
+  - @keystonejs/adapter-mongoose@9.0.3
+
+## 8.0.0
+
+### Major Changes
+
+- [`0369985e3`](https://github.com/keystonejs/keystone/commit/0369985e320afd6112f2664f8a8edc1ed7167130) [#3391](https://github.com/keystonejs/keystone/pull/3391) Thanks [@timleslie](https://github.com/timleslie)! - Removed the `MockAdapter`, `MockListAdapter` and `MockIdType` classes from `@keystonejs/test-utils`.
+
+* [`714316718`](https://github.com/keystonejs/keystone/commit/7143167187e3e3519b0b58e2b04ff0fee8fc75dc) [#3388](https://github.com/keystonejs/keystone/pull/3388) Thanks [@singhArmani](https://github.com/singhArmani)! - Removed the following redundant functions in tests, and used the equivalent `server-side-graphql-client` functions:
+
+  - `graphqlRequest`:
+    As all the access control checks are disabled by default, you can now use utility functions from `[server-side-graphql-client](https://github.com/keystonejs/keystone/blob/master/packages/server-side-graphql-client/lib/server-side-graphql-client.js)` to perform desired CRUD operations.
+    Additionally, you can use `runCustomQuery` function to suit your requirements.
+
+  `authedGraphqlRequest`
+
+  - Similar to above, but you can also supply a custom `context` object if you don't want to override the access control checks.
+
+  `matchFilter`
+
+  - It has been removed in favour of the `[getItems](https://github.com/keystonejs/keystone/blob/cc5bb891579281338ad7fad0873531be81d877d4/packages/server-side-graphql-client/lib/server-side-graphql-client.js#L99)`.
+
+  If you are using `multiAdapterRunners`, then the `testFn` function you write for your test will no longer be supplied with the following functions:
+
+  - `create`
+  - `findById`,
+  - `findOne`,
+  - `update`
+  - `delete`
+
+  Instead you can use the equivalent functions from `server-side-graphql-client` to achieve your desired results.
+
+### Patch Changes
+
+- [`cc5bb8915`](https://github.com/keystonejs/keystone/commit/cc5bb891579281338ad7fad0873531be81d877d4) [#3387](https://github.com/keystonejs/keystone/pull/3387) Thanks [@singhArmani](https://github.com/singhArmani)! - Refactored internals to use `server-side-graphql-client`.
+
+- Updated dependencies [[`7e78ffdaa`](https://github.com/keystonejs/keystone/commit/7e78ffdaa96050e49e8e2678a3c4f1897fedae4f), [`0369985e3`](https://github.com/keystonejs/keystone/commit/0369985e320afd6112f2664f8a8edc1ed7167130)]:
+  - @keystonejs/adapter-mongoose@9.0.2
+  - @keystonejs/keystone@13.1.1
+
 ## 7.1.1
 
 ### Patch Changes

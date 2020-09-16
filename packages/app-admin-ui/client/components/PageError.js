@@ -17,7 +17,7 @@ export default function PageError({ children, icon: Icon = StopIcon, ...props })
         }}
         {...props}
       >
-        <Icon css={{ height: 48, width: 48 }} />
+        <Icon size={48} />
         {children}
       </div>
     </Container>

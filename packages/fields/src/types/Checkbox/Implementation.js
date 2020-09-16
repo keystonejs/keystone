@@ -22,10 +22,10 @@ export class Checkbox extends Implementation {
   gqlQueryInputFields() {
     return this.equalityInputFields('Boolean');
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: Boolean`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: Boolean`];
   }
 }
@@ -45,8 +45,10 @@ export class KnexCheckboxInterface extends KnexFieldAdapter {
 
     // Error rather than ignoring invalid config
     if (this.config.isIndexed) {
-      throw `The Checkbox field type doesn't support indexes on Knex. ` +
-        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+      throw (
+        `The Checkbox field type doesn't support indexes on Knex. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      );
     }
   }
   addToTableSchema(table) {

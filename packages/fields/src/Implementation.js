@@ -173,10 +173,10 @@ class Field {
       `${this.path}_not_ends_with_i: ${type}`,
     ];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [];
   }
   getAdminMeta({ schemaName }) {

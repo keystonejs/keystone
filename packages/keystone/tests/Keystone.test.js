@@ -25,10 +25,10 @@ class MockFieldImplementation {
   gqlQueryInputFields() {
     return ['zip: Boolean'];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return ['zap: Boolean'];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return ['quux: Boolean'];
   }
   getGqlAuxQueries() {

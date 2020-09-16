@@ -1,5 +1,19 @@
 # @keystonejs/session
 
+## 8.1.1
+
+### Patch Changes
+
+- [`db0797f7f`](https://github.com/keystonejs/keystone/commit/db0797f7f442c2c42cc941633930de527c722f48) [#3465](https://github.com/keystonejs/keystone/pull/3465) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused body-parser dependency.
+
+* [`07e246d15`](https://github.com/keystonejs/keystone/commit/07e246d15586dede7fa9a04bcc13020c8c5c3a25) [#3472](https://github.com/keystonejs/keystone/pull/3472) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `cookie` to `^0.4.1`.
+
+## 8.1.0
+
+### Minor Changes
+
+- [`f8d4b175b`](https://github.com/keystonejs/keystone/commit/f8d4b175bbc29962569acb24b34c29c44b61791f) [#3356](https://github.com/keystonejs/keystone/pull/3356) Thanks [@timleslie](https://github.com/timleslie)! - Updated `endAuthedSession` to return the `listKey` and `itemId` of the logged out user if there was one. The return object is now `{ success, listKey, itemId }`.
+
 ## 8.0.0
 
 ### Major Changes

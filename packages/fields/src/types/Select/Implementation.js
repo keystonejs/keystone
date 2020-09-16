@@ -114,10 +114,10 @@ export class Select extends Implementation {
       ...this.inInputFields(this.getTypeName()),
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: ${this.getTypeName()}`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: ${this.getTypeName()}`];
   }
 }

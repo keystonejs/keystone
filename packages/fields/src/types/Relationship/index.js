@@ -3,17 +3,17 @@ import {
   MongoRelationshipInterface,
   KnexRelationshipInterface,
 } from './Implementation';
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Relationship',
   isRelationship: true, // Used internally for this special case
   implementation: Relationship,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Filter: importView('./views/Filter'),
-    Cell: importView('./views/Cell'),
+    Controller: resolveView('types/Relationship/views/Controller'),
+    Field: resolveView('types/Relationship/views/Field'),
+    Filter: resolveView('types/Relationship/views/Filter'),
+    Cell: resolveView('types/Relationship/views/Cell'),
   },
   adapters: {
     mongoose: MongoRelationshipInterface,

@@ -1,5 +1,11 @@
 # @keystonejs/fields-datetime-utc
 
+## 7.0.0
+
+### Major Changes
+
+- [`d38a41f25`](https://github.com/keystonejs/keystone/commit/d38a41f25a1b4c90c05d2fb85116dc385d4ee77a) [#3308](https://github.com/keystonejs/keystone/pull/3308) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Move `@keystonejs/fields-datetime-utc` into `@keystonejs/fields`. Please update your imports from `@keystonejs/fields-datetime-utc` to `@keystonejs/fields`.
+
 ## 6.0.4
 
 ### Patch Changes

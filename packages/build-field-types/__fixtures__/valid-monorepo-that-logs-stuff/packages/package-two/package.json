@@ -1,8 +1,0 @@
-{
-  "name": "@my-cool-scope/package-two",
-  "version": "1.0.0",
-  "main": "dist/package-two.cjs.js",
-  "module": "dist/package-two.esm.js",
-  "license": "MIT",
-  "private": true
-}

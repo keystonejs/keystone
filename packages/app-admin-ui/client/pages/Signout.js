@@ -74,7 +74,7 @@ const SignedOutPage = () => {
       ) : (
         <Fragment>
           <Animation name="pulse" duration="500ms">
-            <CheckIcon css={{ color: colors.primary, height: '3em', width: '3em' }} />
+            <CheckIcon size={48} css={{ color: colors.primary }} />
           </Animation>
           <Caption>You have been signed out.</Caption>
           <FlexBox>

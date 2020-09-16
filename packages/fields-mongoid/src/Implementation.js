@@ -16,10 +16,10 @@ export class MongoIdImplementation extends Implementation {
   gqlQueryInputFields() {
     return [...this.equalityInputFields('ID'), ...this.inInputFields('ID')];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: ID`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: ID`];
   }
 }
@@ -73,8 +73,15 @@ export class MongooseMongoIdInterface extends MongooseFieldAdapter {
   getQueryConditions(dbPath) {
     const mongoose = this.listAdapter.parentAdapter.mongoose;
     return {
-      ...this.equalityConditions(this.field.isPrimaryKey ? '_id' : dbPath, mongoose.Types.ObjectId),
-      ...this.inConditions(this.field.isPrimaryKey ? '_id' : dbPath, mongoose.Types.ObjectId),
+      ...this.equalityConditions(
+        this.field.isPrimaryKey ? '_id' : dbPath,
+        s => s && mongoose.Types.ObjectId(s)
+      ),
+      //NOTE: ObjectId(null) returns a new ObjectId value
+      ...this.inConditions(
+        this.field.isPrimaryKey ? '_id' : dbPath,
+        s => s && mongoose.Types.ObjectId(s)
+      ),
     };
   }
 }
@@ -104,11 +111,11 @@ export class KnexMongoIdInterface extends KnexFieldAdapter {
       }
 
       if (item[this.path]) {
-        if (typeof item[this.path] === 'string') {
+        if (typeof item[this.path] === 'string' && validator(item[this.path])) {
           item[this.path] = normaliseValue(item[this.path]);
         } else {
           // Should have been caught by the validator??
-          throw `Invalid MongoID value given for '${this.path}'`;
+          throw new Error(`Invalid MongoID value given for '${this.path}'`);
         }
       } else {
         item[this.path] = null;

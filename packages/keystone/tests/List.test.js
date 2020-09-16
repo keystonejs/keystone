@@ -1,21 +1,14 @@
 const { gql } = require('apollo-server-express');
 const { print } = require('graphql/language/printer');
-const { MockAdapter, MockIdType, MockListAdapter } = require('@keystonejs/test-utils');
-
-// We don't want to actually log, so we mock it before we require the class
-jest.doMock('@keystonejs/logger', () => ({
-  logger: jest.fn(() => ({ warn: () => {}, log: () => {}, debug: () => {}, info: () => {} })),
-}));
 
 const { List } = require('../lib/ListTypes');
 const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
 const { Text, Checkbox, Float, Relationship, Integer } = require('@keystonejs/fields');
-const { getType } = require('@keystonejs/utils');
 const path = require('path');
 
 let fieldsPackagePath = path.dirname(require.resolve('@keystonejs/fields/package.json'));
 function resolveViewPath(viewPath) {
-  return path.join(fieldsPackagePath, 'src', 'types', viewPath);
+  return path.join(fieldsPackagePath, 'types', viewPath);
 }
 
 Text.adapters['mock'] = {};
@@ -66,6 +59,130 @@ const getListByKey = listKey => {
     };
   }
 };
+
+class MockFieldImplementation {
+  constructor() {
+    this.access = {
+      public: {
+        create: false,
+        read: true,
+        update: false,
+        delete: false,
+      },
+    };
+    this.config = {};
+    this.hooks = {};
+  }
+  getAdminMeta() {
+    return { path: 'id' };
+  }
+  gqlOutputFields() {
+    return ['id: ID'];
+  }
+  gqlQueryInputFields() {
+    return ['id: ID'];
+  }
+  gqlUpdateInputFields() {
+    return ['id: ID'];
+  }
+  gqlCreateInputFields() {
+    return ['id: ID'];
+  }
+  getGqlAuxTypes() {
+    return [];
+  }
+  getGqlAuxQueries() {
+    return [];
+  }
+  getGqlAuxMutations() {
+    return [];
+  }
+  gqlOutputFieldResolvers() {
+    return {};
+  }
+  gqlAuxQueryResolvers() {
+    return {};
+  }
+  gqlAuxMutationResolvers() {
+    return {};
+  }
+  gqlAuxFieldResolvers() {
+    return {};
+  }
+  extendAdminViews(views) {
+    return views;
+  }
+  getDefaultValue() {
+    return;
+  }
+  async resolveInput({ resolvedData }) {
+    return resolvedData.id;
+  }
+  async validateInput() {}
+  async beforeChange() {}
+  async afterChange() {}
+  async beforeDelete() {}
+  async validateDelete() {}
+  async afterDelete() {}
+}
+class MockFieldAdapter {}
+
+const MockIdType = {
+  implementation: MockFieldImplementation,
+  views: {},
+  adapters: { mock: MockFieldAdapter },
+};
+
+class MockListAdapter {
+  name = 'mock';
+  constructor(parentAdapter) {
+    this.parentAdapter = parentAdapter;
+    this.index = 3;
+    this.items = {
+      0: { name: 'a', email: 'a@example.com', index: 0 },
+      1: { name: 'b', email: 'b@example.com', index: 1 },
+      2: { name: 'c', email: 'c@example.com', index: 2 },
+    };
+  }
+  newFieldAdapter = () => new MockFieldAdapter();
+  create = async item => {
+    this.items[this.index] = {
+      ...item,
+      index: this.index,
+    };
+    this.index += 1;
+    return this.items[this.index - 1];
+  };
+  findById = id => this.items[id];
+  delete = async id => {
+    this.items[id] = undefined;
+  };
+  itemsQuery = async ({ where: { id_in: ids, id, id_not_in } }, { meta = false } = {}) => {
+    if (meta) {
+      return {
+        count: (id !== undefined
+          ? [this.items[id]]
+          : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i])
+        ).length,
+      };
+    } else {
+      return id !== undefined
+        ? [this.items[id]]
+        : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
+    }
+  };
+  itemsQueryMeta = async args => this.itemsQuery(args, { meta: true });
+  update = (id, item) => {
+    this.items[id] = { ...this.items[id], ...item };
+    return this.items[id];
+  };
+}
+
+class MockAdapter {
+  name = 'mock';
+  newListAdapter = () => new MockListAdapter(this);
+  getDefaultPrimaryKeyConfig = () => ({ type: MockIdType });
+}
 
 const listExtras = () => ({
   getListByKey,
@@ -355,7 +472,7 @@ describe('getAdminMeta()', () => {
   });
 });
 
-describe(`getGqlTypes() `, () => {
+describe(`getGqlTypes()`, () => {
   const type = `""" A keystone list """
       type Test {
         """
@@ -571,11 +688,7 @@ test('getGraphqlFilterFragment', () => {
 describe(`getGqlQueries()`, () => {
   const schemaName = 'public';
   test('access: true', () => {
-    expect(
-      setup({ access: true })
-        .getGqlQueries({ schemaName })
-        .map(normalise)
-    ).toEqual(
+    expect(setup({ access: true }).getGqlQueries({ schemaName }).map(normalise)).toEqual(
       [
         `""" Search for all Test items which match the where clause. """
           allTests(
@@ -605,11 +718,7 @@ describe(`getGqlQueries()`, () => {
     );
   });
   test('access: false', () => {
-    expect(
-      setup({ access: false })
-        .getGqlQueries({ schemaName })
-        .map(normalise)
-    ).toEqual([]);
+    expect(setup({ access: false }).getGqlQueries({ schemaName }).map(normalise)).toEqual([]);
   });
 });
 
@@ -1205,40 +1314,6 @@ describe('List Hooks', () => {
       Object.keys(hooks).forEach(hook => {
         expect(hooks[hook]).toHaveBeenCalledWith(expect.objectContaining({}));
       });
-    });
-  });
-});
-
-describe('Maps from Native JS types to Keystone types', () => {
-  const adapter = new MockAdapter();
-
-  [
-    {
-      nativeType: Boolean,
-      keystoneType: Checkbox,
-    },
-    {
-      nativeType: String,
-      keystoneType: Text,
-    },
-    {
-      nativeType: Number,
-      keystoneType: Float,
-    },
-  ].forEach(({ nativeType, keystoneType }) => {
-    test(`${getType(nativeType.prototype)} -> ${keystoneType.type}`, () => {
-      const list = new List(
-        'Test',
-        { fields: { foo: { type: nativeType } } },
-        {
-          adapter,
-          defaultAccess: { list: true, field: true },
-          registerType: () => {},
-          schemaNames: ['public'],
-        }
-      );
-      list.initFields();
-      expect(list.fieldsByPath.foo).toBeInstanceOf(keystoneType.implementation);
     });
   });
 });

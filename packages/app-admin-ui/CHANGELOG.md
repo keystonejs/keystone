@@ -1,5 +1,132 @@
 # @keystonejs/app-admin-ui
 
+## 7.3.5
+
+### Patch Changes
+
+- [`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a) [#3610](https://github.com/keystonejs/keystone/pull/3610) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `prettier` to `^2.1.1`.
+
+* [`8cae7cff5`](https://github.com/keystonejs/keystone/commit/8cae7cff513187ec6e740c4b17afb2b753fe625a) [#3584](https://github.com/keystonejs/keystone/pull/3584) Thanks [@renovate](https://github.com/apps/renovate)! - Updated babel monorepo to `^7.11.6`.
+
+- [`c08200087`](https://github.com/keystonejs/keystone/commit/c082000871947eb0a2415ac7355c89bc7b277383) [#3560](https://github.com/keystonejs/keystone/pull/3560) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `css-loader` to `^4.2.2`.
+
+* [`fe054e53e`](https://github.com/keystonejs/keystone/commit/fe054e53e71f13a69af1d6dd2a1cd8c68bb31059) [#3635](https://github.com/keystonejs/keystone/pull/3635) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@apollo/client` to `^3.1.5`.
+
+- [`379c78240`](https://github.com/keystonejs/keystone/commit/379c78240d788875d97642e1f53120818ad64aff) [#3620](https://github.com/keystonejs/keystone/pull/3620) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `css-loader` to `^4.3.0`.
+
+- Updated dependencies [[`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a), [`dd49d2c04`](https://github.com/keystonejs/keystone/commit/dd49d2c040ea8fb8dfc36d2e556be88ca1b74b15), [`8bd44758a`](https://github.com/keystonejs/keystone/commit/8bd44758ac742c95f42151c9fbc16700b698e8e4), [`fe054e53e`](https://github.com/keystonejs/keystone/commit/fe054e53e71f13a69af1d6dd2a1cd8c68bb31059)]:
+  - @keystonejs/field-views-loader@6.0.1
+  - @keystonejs/fields@17.1.2
+
+## 7.3.4
+
+### Patch Changes
+
+- [`e8e2baa7b`](https://github.com/keystonejs/keystone/commit/e8e2baa7b1a9330cb483c2f30682d64f857d314c) [#3538](https://github.com/keystonejs/keystone/pull/3538) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `babel` monorepo dependencies to `^7.11.5`.
+
+* [`cd15192cd`](https://github.com/keystonejs/keystone/commit/cd15192cdae5e476f64a257c196ca569a9440d5a) [#3510](https://github.com/keystonejs/keystone/pull/3510) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `graphql` to `^14.7.0`.
+
+- [`5fb75bab6`](https://github.com/keystonejs/keystone/commit/5fb75bab638c59ccf690c46d862b9801bf1d28f6) [#3536](https://github.com/keystonejs/keystone/pull/3536) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `webpack` to `v4.44.1`.
+
+* [`729e897e6`](https://github.com/keystonejs/keystone/commit/729e897e689f2673f38d6c0caf22e7cee7ee8ff3) [#3496](https://github.com/keystonejs/keystone/pull/3496) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@types/react` to `^16.9.48`.
+
+- [`d3a4f9263`](https://github.com/keystonejs/keystone/commit/d3a4f9263de0d11a1613e420f660eccc2a48172d) [#3540](https://github.com/keystonejs/keystone/pull/3540) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@types/react` to `^16.9.49`.
+
+* [`40b751ad6`](https://github.com/keystonejs/keystone/commit/40b751ad6f09aec137ef42df10fdbb1240173afb) [#3523](https://github.com/keystonejs/keystone/pull/3523) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `html-webpack-plugin` to `^4.4.1`.
+
+- [`28b88abd3`](https://github.com/keystonejs/keystone/commit/28b88abd369f0df12eae72107db7c24323eda4b5) [#3507](https://github.com/keystonejs/keystone/pull/3507) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Apollo GraphQL packages dependencies.
+
+- Updated dependencies [[`cd15192cd`](https://github.com/keystonejs/keystone/commit/cd15192cdae5e476f64a257c196ca569a9440d5a), [`d500613d8`](https://github.com/keystonejs/keystone/commit/d500613d8917e3cbcea2817501d607eddd3b1a8d), [`6c97a5534`](https://github.com/keystonejs/keystone/commit/6c97a5534e8a18d15aeac8b0471810fdd4d04f80), [`34fcc7052`](https://github.com/keystonejs/keystone/commit/34fcc7052a24db61f1f2f12c46110c060934f4ca), [`c3488c5e8`](https://github.com/keystonejs/keystone/commit/c3488c5e88628b15eb9fe804551c3c5c44c07e0f), [`e62b3308b`](https://github.com/keystonejs/keystone/commit/e62b3308bd841b5f58ac9fa1f84707f9187fda6b), [`7036585f2`](https://github.com/keystonejs/keystone/commit/7036585f25c3b690b7a6fd04c39b5b781ff5bcd9), [`2e6a06202`](https://github.com/keystonejs/keystone/commit/2e6a06202299b36c36fd3efd895f2280479eac31), [`a42ee3a30`](https://github.com/keystonejs/keystone/commit/a42ee3a306c899a7ae46909fe132522cbeff7812), [`438051442`](https://github.com/keystonejs/keystone/commit/4380514421020f4418a9f966c9fec60e014478b9), [`b3aa85031`](https://github.com/keystonejs/keystone/commit/b3aa850311cbc1622568f69f9cb4b9f46ab9db22), [`518718e19`](https://github.com/keystonejs/keystone/commit/518718e197d0a2d723c8e184552ddd5d8e165f12), [`28b88abd3`](https://github.com/keystonejs/keystone/commit/28b88abd369f0df12eae72107db7c24323eda4b5), [`16e4d91a2`](https://github.com/keystonejs/keystone/commit/16e4d91a20cc6a079c60ea9801381da55444b1e1)]:
+  - @keystonejs/fields@17.1.1
+  - @arch-ui/confirm@0.0.21
+  - @arch-ui/dialog@0.0.23
+  - @arch-ui/drawer@0.0.23
+  - @arch-ui/dropdown@0.0.20
+  - @arch-ui/popout@0.0.21
+  - @arch-ui/tooltip@0.1.14
+
+## 7.3.3
+
+### Patch Changes
+
+- [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+* [`64d745013`](https://github.com/keystonejs/keystone/commit/64d745013fd2cccc1fb14c4f02ac84778b5c9abc) [#3460](https://github.com/keystonejs/keystone/pull/3460) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `babel-preset-react-app` to `^9.1.2`.
+
+- [`877a5a90d`](https://github.com/keystonejs/keystone/commit/877a5a90d608f0a13b6c0ea103cb96e3ac2caacc) [#3438](https://github.com/keystonejs/keystone/pull/3438) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Apollo GraphQL package dependencies.
+
+* [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b) [#3439](https://github.com/keystonejs/keystone/pull/3439) Thanks [@renovate](https://github.com/apps/renovate)! - Updated babel dependencies.
+
+- [`dc689f9ac`](https://github.com/keystonejs/keystone/commit/dc689f9ac8e213137dfed9e81992bbe4318b44ae) [#3479](https://github.com/keystonejs/keystone/pull/3479) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `css-loader` to `^3.6.0`.
+
+* [`0153168d7`](https://github.com/keystonejs/keystone/commit/0153168d73ce8cd7ede4eb9c8518e5e2bf859709) [#3456](https://github.com/keystonejs/keystone/pull/3456) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `apply-ref` to `^0.2.3`.
+
+* Updated dependencies [[`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6), [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e), [`db0797f7f`](https://github.com/keystonejs/keystone/commit/db0797f7f442c2c42cc941633930de527c722f48), [`ac44568f9`](https://github.com/keystonejs/keystone/commit/ac44568f91fd54ccbc39accf83bcfb3276ce1a72), [`877a5a90d`](https://github.com/keystonejs/keystone/commit/877a5a90d608f0a13b6c0ea103cb96e3ac2caacc), [`483b20ec5`](https://github.com/keystonejs/keystone/commit/483b20ec53ff89f1d026c0495fdae5df60a7cf59), [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b), [`ea367f759`](https://github.com/keystonejs/keystone/commit/ea367f7594f47efc3528d9917cce010b3a16bf4d), [`69d627813`](https://github.com/keystonejs/keystone/commit/69d627813adfc10d29707f5c882ca15621de12a5), [`07e246d15`](https://github.com/keystonejs/keystone/commit/07e246d15586dede7fa9a04bcc13020c8c5c3a25), [`0153168d7`](https://github.com/keystonejs/keystone/commit/0153168d73ce8cd7ede4eb9c8518e5e2bf859709)]:
+  - @arch-ui/confirm@0.0.20
+  - @arch-ui/dialog@0.0.22
+  - @arch-ui/drawer@0.0.22
+  - @arch-ui/dropdown@0.0.19
+  - @arch-ui/popout@0.0.20
+  - @keystonejs/fields@17.1.0
+  - @keystonejs/utils@5.4.3
+  - @arch-ui/alert@0.0.18
+  - @arch-ui/badge@0.0.17
+  - @arch-ui/button@0.0.21
+  - @arch-ui/card@0.0.15
+  - @arch-ui/controls@0.1.9
+  - @arch-ui/fields@3.0.4
+  - @arch-ui/input@0.1.11
+  - @arch-ui/layout@0.2.14
+  - @arch-ui/loading@0.0.18
+  - @arch-ui/lozenge@0.0.17
+  - @arch-ui/navbar@0.1.12
+  - @arch-ui/options@0.0.23
+  - @arch-ui/pagination@0.0.25
+  - @arch-ui/pill@0.1.17
+  - @arch-ui/tooltip@0.1.13
+  - @arch-ui/typography@0.0.18
+  - @keystonejs/session@8.1.1
+  - @arch-ui/hooks@0.0.11
+  - @arch-ui/select@0.1.9
+  - @arch-ui/theme@0.0.11
+  - @arch-ui/common@0.0.12
+
+## 7.3.2
+
+### Patch Changes
+
+- [`fba90ac5d`](https://github.com/keystonejs/keystone/commit/fba90ac5db7328e952c44cb7c0bb8db76dd954b8) [#3408](https://github.com/keystonejs/keystone/pull/3408) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Support resolving and compiling TypeScript files
+
+- Updated dependencies [[`d38c9174f`](https://github.com/keystonejs/keystone/commit/d38c9174f8146ad6e268be87cf5d54d5074bc593), [`e8b2e4772`](https://github.com/keystonejs/keystone/commit/e8b2e477206acffb143f19fb14be1e3b4cd0eb91)]:
+  - @keystonejs/fields@17.0.0
+
+## 7.3.1
+
+### Patch Changes
+
+- [`9338f3739`](https://github.com/keystonejs/keystone/commit/9338f3739ecff5f626a713a06ce65c1e29888d25) [#3363](https://github.com/keystonejs/keystone/pull/3363) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Remove dependency on `@keystonejs/build-field-types`
+
+- Updated dependencies [[`9338f3739`](https://github.com/keystonejs/keystone/commit/9338f3739ecff5f626a713a06ce65c1e29888d25), [`3db2f3956`](https://github.com/keystonejs/keystone/commit/3db2f395688342fe9a1dda14be5ce8308c9c39a6), [`7e78ffdaa`](https://github.com/keystonejs/keystone/commit/7e78ffdaa96050e49e8e2678a3c4f1897fedae4f), [`7b0875723`](https://github.com/keystonejs/keystone/commit/7b0875723783780988f2dee4e5ee406a3b44ca98), [`0369985e3`](https://github.com/keystonejs/keystone/commit/0369985e320afd6112f2664f8a8edc1ed7167130), [`7422922f5`](https://github.com/keystonejs/keystone/commit/7422922f5649a2b52699f67a77645e9c91800688), [`df8f92a37`](https://github.com/keystonejs/keystone/commit/df8f92a378d2d787f5bee774f013767c09ec35cf), [`cc5bb8915`](https://github.com/keystonejs/keystone/commit/cc5bb891579281338ad7fad0873531be81d877d4), [`1b3943e4f`](https://github.com/keystonejs/keystone/commit/1b3943e4f66c61c446085736949c6b83e9087afb), [`b300720eb`](https://github.com/keystonejs/keystone/commit/b300720eb4e079bc30efb17ed3b48ab71cadc160)]:
+  - @keystonejs/fields@16.1.0
+
+## 7.3.0
+
+### Minor Changes
+
+- [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7) [#3125](https://github.com/keystonejs/keystone/pull/3125) Thanks [@Vultraz](https://github.com/Vultraz)! - Migrated to Apollo Client v3.
+
+### Patch Changes
+
+- [`318e39b74`](https://github.com/keystonejs/keystone/commit/318e39b74b2fa3152d4ff09bccec93238e8345ef) [#3343](https://github.com/keystonejs/keystone/pull/3343) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Force all imports of `@apollo/client` in the Admin UI to use the copy of `@apollo/client` that is a dependency of `@keystonejs/app-admin-ui`. This resolves issues if `@apollo/client` resolves to a different copy of `@apollo/client` in a field view.
+
+* [`b0af7d5ba`](https://github.com/keystonejs/keystone/commit/b0af7d5baa6ceea8d80215afa290fd76240ee823) [#3317](https://github.com/keystonejs/keystone/pull/3317) Thanks [@singhArmani](https://github.com/singhArmani)! - Alerted the user before canceling the createItemModal form.
+
+* Updated dependencies [[`d38a41f25`](https://github.com/keystonejs/keystone/commit/d38a41f25a1b4c90c05d2fb85116dc385d4ee77a), [`5ede731fc`](https://github.com/keystonejs/keystone/commit/5ede731fc58a79e7322b852bdd2d971ece45281e), [`f8d4b175b`](https://github.com/keystonejs/keystone/commit/f8d4b175bbc29962569acb24b34c29c44b61791f), [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25), [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7), [`149d6fd6f`](https://github.com/keystonejs/keystone/commit/149d6fd6ff057c17570346063c173376769dcc79), [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1)]:
+  - @keystonejs/fields@16.0.0
+  - @keystonejs/session@8.1.0
+
 ## 7.2.0
 
 ### Minor Changes

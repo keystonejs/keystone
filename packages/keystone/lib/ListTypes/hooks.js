@@ -29,7 +29,8 @@ class HookManager {
   }
 
   async resolveInput({ resolvedData, existingItem, context, operation, originalInput }) {
-    const args = { resolvedData, existingItem, context, originalInput, operation };
+    const { listKey } = this;
+    const args = { resolvedData, existingItem, context, originalInput, operation, listKey };
 
     // First we run the field type hooks
     // NOTE: resolveInput is run on _every_ field, regardless if it has a value
@@ -70,7 +71,8 @@ class HookManager {
   }
 
   async validateInput({ resolvedData, existingItem, context, operation, originalInput }) {
-    const args = { resolvedData, existingItem, context, originalInput, operation };
+    const { listKey } = this;
+    const args = { resolvedData, existingItem, context, originalInput, operation, listKey };
     // Check for isRequired
     const fieldValidationErrors = this.fields
       .filter(
@@ -97,7 +99,8 @@ class HookManager {
   }
 
   async validateDelete({ existingItem, context, operation }) {
-    const args = { existingItem, context, operation };
+    const { listKey } = this;
+    const args = { existingItem, context, operation, listKey };
     const fields = this.fields;
     await this._validateHook({ args, fields, operation, hookName: 'validateDelete' });
   }
@@ -131,22 +134,26 @@ class HookManager {
   }
 
   async beforeChange({ resolvedData, existingItem, context, operation, originalInput }) {
-    const args = { resolvedData, existingItem, context, originalInput, operation };
+    const { listKey } = this;
+    const args = { resolvedData, existingItem, context, originalInput, operation, listKey };
     await this._runHook({ args, fieldObject: resolvedData, hookName: 'beforeChange' });
   }
 
   async beforeDelete({ existingItem, context, operation }) {
-    const args = { existingItem, context, operation };
+    const { listKey } = this;
+    const args = { existingItem, context, operation, listKey };
     await this._runHook({ args, fieldObject: existingItem, hookName: 'beforeDelete' });
   }
 
   async afterChange({ updatedItem, existingItem, context, operation, originalInput }) {
-    const args = { updatedItem, originalInput, existingItem, context, operation };
+    const { listKey } = this;
+    const args = { updatedItem, originalInput, existingItem, context, operation, listKey };
     await this._runHook({ args, fieldObject: updatedItem, hookName: 'afterChange' });
   }
 
   async afterDelete({ existingItem, context, operation }) {
-    const args = { existingItem, context, operation };
+    const { listKey } = this;
+    const args = { existingItem, context, operation, listKey };
     await this._runHook({ args, fieldObject: existingItem, hookName: 'afterDelete' });
   }
 

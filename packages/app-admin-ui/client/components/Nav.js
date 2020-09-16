@@ -1,7 +1,7 @@
 /* global ENABLE_DEV_FEATURES */
 /** @jsx jsx */
 
-import React, { useState, useMemo, forwardRef } from 'react'; // eslint-disable-line no-unused-vars
+import React, { useState, useMemo, forwardRef } from 'react'; // eslint-disable-line @typescript-eslint/no-unused-vars
 import { Link, useRouteMatch } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import { uid } from 'react-uid';
@@ -353,7 +353,7 @@ const UserInfo = ({ authListPath }) => {
   return (
     <UserInfoContainer>
       <UserIcon>
-        <PersonIcon width={20} height={20} />
+        <PersonIcon size={24} />
       </UserIcon>
       <div css={{ overflow: 'hidden' }}>
         <Truncate css={{ fontSize: '0.7em' }}>Logged in as</Truncate>

@@ -1,23 +1,3 @@
-const {
-  setupServer,
-  multiAdapterRunners,
-  graphqlRequest,
-  authedGraphqlRequest,
-  networkedGraphqlRequest,
-  matchFilter,
-  MockAdapter,
-  MockListAdapter,
-  MockIdType,
-} = require('./lib/test-utils');
+const { setupServer, multiAdapterRunners, networkedGraphqlRequest } = require('./lib/test-utils');
 
-module.exports = {
-  setupServer,
-  multiAdapterRunners,
-  graphqlRequest,
-  authedGraphqlRequest,
-  networkedGraphqlRequest,
-  matchFilter,
-  MockAdapter,
-  MockListAdapter,
-  MockIdType,
-};
+module.exports = { setupServer, multiAdapterRunners, networkedGraphqlRequest };
