@@ -13,21 +13,19 @@ const {
   arrayToObject,
 } = require('@keystonejs/utils');
 const { parseListAccess } = require('@keystonejs/access-control');
-const { logger } = require('@keystonejs/logger');
 const {
   preventInvalidUnderscorePrefix,
   keyToLabel,
   labelToPath,
   labelToClass,
   opToType,
-  mapNativeTypeToKeystoneType,
-  getDefautlLabelResolver,
+  getDefaultLabelResolver,
   mapToFields,
 } = require('./utils');
 const { HookManager } = require('./hooks');
 const { LimitsExceededError, throwAccessDenied } = require('./graphqlErrors');
 
-const graphqlLogger = logger('graphql');
+const { graphqlLogger } = require('../Keystone/logger');
 
 module.exports = class List {
   constructor(
@@ -62,14 +60,12 @@ module.exports = class List {
     // Assuming the id column shouldn't be included in default columns or sort
     const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
     this.adminConfig = {
-      defaultPageSize: 50,
       defaultColumns: nonIdFieldNames ? nonIdFieldNames.slice(0, 2).join(',') : 'id',
       defaultSort: nonIdFieldNames.length ? nonIdFieldNames[0] : '',
-      maximumPageSize: 1000,
       ...adminConfig,
     };
 
-    this.labelResolver = labelResolver || getDefautlLabelResolver(labelField);
+    this.labelResolver = labelResolver || getDefaultLabelResolver(labelField);
     this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
@@ -147,16 +143,18 @@ module.exports = class List {
 
     this.createAuxList = (auxKey, auxConfig) =>
       createAuxList(auxKey, {
-        access: Object.entries(this.access).reduce(
-          (acc, [schemaName, access]) => ({
-            ...acc,
-            [schemaName]: Object.entries(access).reduce(
-              (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
-              {}
-            ),
-          }),
-          {}
-        ),
+        access: Object.entries(this.access)
+          .filter(([key]) => key !== 'internal')
+          .reduce(
+            (acc, [schemaName, access]) => ({
+              ...acc,
+              [schemaName]: Object.entries(access).reduce(
+                (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
+                {}
+              ),
+            }),
+            {}
+          ),
         ...auxConfig,
       });
   }
@@ -165,17 +163,16 @@ module.exports = class List {
     if (this.fieldsInitialised) return;
     this.fieldsInitialised = true;
 
-    let sanitisedFieldsConfig = mapKeys(this._fields, (fieldConfig, path) => ({
-      ...fieldConfig,
-      type: mapNativeTypeToKeystoneType(fieldConfig.type, this.key, path),
-    }));
+    let sanitisedFieldsConfig = this._fields;
 
     // Add an 'id' field if none supplied
     if (!sanitisedFieldsConfig.id) {
       if (typeof this.adapter.parentAdapter.getDefaultPrimaryKeyConfig !== 'function') {
-        throw `No 'id' field given for the '${this.key}' list and the list adapter ` +
+        throw (
+          `No 'id' field given for the '${this.key}' list and the list adapter ` +
           `in used (${this.adapter.key}) doesn't supply a default primary key config ` +
-          `(no 'getDefaultPrimaryKeyConfig()' function)`;
+          `(no 'getDefaultPrimaryKeyConfig()' function)`
+        );
       }
       // Rebuild the object so id is "first"
       sanitisedFieldsConfig = {
@@ -190,8 +187,10 @@ module.exports = class List {
         throw `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`;
       }
       if (typeof fieldConfig.type === 'undefined') {
-        throw `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
-          `(${this.key}.${fieldKey}.type is undefined)`;
+        throw (
+          `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
+          `(${this.key}.${fieldKey}.type is undefined)`
+        );
       }
       const adapters = fieldConfig.type.adapters;
       if (typeof adapters === 'undefined' || Object.entries(adapters).length === 0) {
@@ -231,13 +230,6 @@ module.exports = class List {
 
   getAdminMeta({ schemaName }) {
     const schemaAccess = this.access[schemaName];
-    const {
-      defaultPageSize,
-      defaultColumns,
-      defaultSort,
-      maximumPageSize,
-      ...adminConfig
-    } = this.adminConfig;
     return {
       key: this.key,
       // Reduce to truthy values (functions can't be passed over the webpack
@@ -252,13 +244,7 @@ module.exports = class List {
         .filter(field => field.access[schemaName].read)
         .map(field => field.getAdminMeta({ schemaName })),
       adminDoc: this.adminDoc,
-      adminConfig: {
-        defaultPageSize,
-        defaultColumns: defaultColumns.replace(/\s/g, ''), // remove all whitespace
-        defaultSort: defaultSort,
-        maximumPageSize: Math.max(defaultPageSize, maximumPageSize),
-        ...adminConfig,
-      },
+      adminConfig: this.adminConfig,
     };
   }
 
@@ -1026,7 +1012,9 @@ module.exports = class List {
     if (schemaAccess.update && updateFields.length) {
       types.push(`
         input ${this.gqlNames.updateInputName} {
-          ${flatten(updateFields.map(field => field.gqlUpdateInputFields)).join('\n')}
+          ${flatten(updateFields.map(field => field.gqlUpdateInputFields({ schemaName }))).join(
+            '\n'
+          )}
         }
       `);
       types.push(`
@@ -1041,7 +1029,9 @@ module.exports = class List {
     if (schemaAccess.create && createFields.length) {
       types.push(`
         input ${this.gqlNames.createInputName} {
-          ${flatten(createFields.map(field => field.gqlCreateInputFields)).join('\n')}
+          ${flatten(createFields.map(field => field.gqlCreateInputFields({ schemaName }))).join(
+            '\n'
+          )}
         }
       `);
       types.push(`

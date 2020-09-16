@@ -1,4 +1,4 @@
-const gql = require('graphql-tag');
+const { ApolloServer, gql } = require('apollo-server-express');
 const flattenDeep = require('lodash.flattendeep');
 const memoize = require('micro-memoize');
 const falsey = require('falsey');
@@ -22,14 +22,13 @@ const {
 const { SessionManager } = require('@keystonejs/session');
 const { AppVersionProvider, appVersionMiddleware } = require('@keystonejs/app-version');
 
-const {
-  unmergeRelationships,
-  createRelationships,
-  mergeRelationships,
-} = require('./relationship-utils');
 const { List } = require('../ListTypes');
 const { DEFAULT_DIST_DIR } = require('../../constants');
 const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
+const { formatError } = require('./format-error');
+
+// composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
+const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
 
 module.exports = class Keystone {
   constructor({
@@ -198,7 +197,7 @@ module.exports = class Keystone {
     };
   }
 
-  createContext({ schemaName = 'public', authentication = {}, skipAccessControl = false }) {
+  createContext({ schemaName = 'public', authentication = {}, skipAccessControl = false } = {}) {
     const context = {
       schemaName,
       authedItem: authentication.item,
@@ -214,9 +213,10 @@ module.exports = class Keystone {
       schemaName = defaults.schemaName,
       authentication = defaults.authentication,
       skipAccessControl = defaults.skipAccessControl,
-    }) => this.createContext({ schemaName, authentication, skipAccessControl });
+    } = {}) => this.createContext({ schemaName, authentication, skipAccessControl });
     context.executeGraphQL = ({ context = defaults.context, query, variables }) =>
       this.executeGraphQL({ context, query, variables });
+    context.gqlNames = listKey => this.lists[listKey].gqlNames;
     return context;
   }
 
@@ -239,21 +239,10 @@ module.exports = class Keystone {
     return execute(schema, query, null, context, variables);
   }
 
-  createHTTPContext({ schemaName, req }) {
-    // The GraphQL App uses this method to build up the context required for each incoming query.
-    return {
-      ...this.createContext({
-        schemaName,
-        authentication: { item: req.user, listKey: req.authedListKey },
-        skipAccessControl: false,
-      }),
-      ...this._sessionManager.getContext(req),
-      req,
-    };
-  }
-
   createAuthStrategy(options) {
-    const { type: StrategyType, list: listKey, config } = options;
+    const { type: StrategyType, list: listKey, config, hooks } = composePlugins(
+      options.plugins || []
+    )(options, { keystone: this });
     const { authType } = StrategyType;
     if (!this.auth[listKey]) {
       this.auth[listKey] = {};
@@ -265,7 +254,7 @@ module.exports = class Keystone {
       throw new Error(`List "${listKey}" does not exist.`);
     }
     this._providers.push(
-      new ListAuthProvider({ list: this.lists[listKey], authStrategy: strategy })
+      new ListAuthProvider({ list: this.lists[listKey], authStrategy: strategy, hooks })
     );
     return strategy;
   }
@@ -279,8 +268,14 @@ module.exports = class Keystone {
       throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
     }
 
-    // composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
-    const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
+    // Apollo Server automatically adds an 'Upload' scalar type to the GQL schema. Since list output
+    // types are named after their keys, having a list name 'Upload' will clash and cause a confusing
+    // error on start.
+    if (key === 'Upload' || key === 'upload') {
+      throw new Error(
+        `Invalid list name "Upload": Built-in GraphQL types cannot be used as a list name.`
+      );
+    }
 
     const list = new List(
       key,
@@ -453,6 +448,41 @@ module.exports = class Keystone {
     }
   }
 
+  createApolloServer({ apolloConfig = {}, schemaName, dev }) {
+    // add the Admin GraphQL API
+    const server = new ApolloServer({
+      maxFileSize: 200 * 1024 * 1024,
+      maxFiles: 5,
+      typeDefs: this.getTypeDefs({ schemaName }),
+      resolvers: this.getResolvers({ schemaName }),
+      context: ({ req }) => ({
+        ...this.createContext({
+          schemaName,
+          authentication: { item: req.user, listKey: req.authedListKey },
+          skipAccessControl: false,
+        }),
+        ...this._sessionManager.getContext(req),
+        req,
+      }),
+      ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
+        ? {
+            tracing: true,
+          }
+        : {
+            engine: false,
+            // Only enable tracing in dev mode so we can get local debug info, but
+            // don't bother returning that info on prod when the `engine` is
+            // disabled.
+            tracing: dev,
+          }),
+      formatError,
+      ...apolloConfig,
+    });
+    this._schemas[schemaName] = server.schema;
+
+    return server;
+  }
+
   /**
    * @return Promise<null>
    */
@@ -489,13 +519,6 @@ module.exports = class Keystone {
         list => list.views
       ),
     };
-  }
-
-  // It's not Keystone core's responsibility to create an executable schema, but
-  // once one is, Keystone wants to be able to expose the ability to query that
-  // schema, so this function enables other modules to register that function.
-  registerSchema(schemaName, schema) {
-    this._schemas[schemaName] = schema;
   }
 
   getTypeDefs({ schemaName }) {
@@ -549,40 +572,6 @@ module.exports = class Keystone {
     return ['scalar Upload', ...this.getTypeDefs({ schemaName }).map(t => print(t))].join('\n');
   }
 
-  createItem(listKey, itemData) {
-    return this.lists[listKey].adapter.create(itemData);
-  }
-
-  async createItems(itemsToCreate) {
-    // 1. Split it apart
-    const { relationships, data } = unmergeRelationships(this.lists, itemsToCreate);
-    // 2. Create the items
-    // NOTE: Only works if all relationships fields are non-"required"
-    const createdItems = await resolveAllKeys(
-      mapKeys(data, (items, listKey) =>
-        Promise.all(items.map(itemData => this.createItem(listKey, itemData)))
-      )
-    );
-
-    let createdRelationships;
-    try {
-      // 3. Create the relationships
-      createdRelationships = await createRelationships(this.lists, relationships, createdItems);
-    } catch (error) {
-      // 3.5. If creation of relationships didn't work, unwind the createItems
-      Promise.all(
-        Object.entries(createdItems).map(([listKey, items]) =>
-          Promise.all(items.map(({ id }) => this.lists[listKey].adapter.delete(id)))
-        )
-      );
-      // Re-throw the error now that we've cleaned up
-      throw error;
-    }
-
-    // 4. Merge the data back together again
-    return mergeRelationships(createdItems, createdRelationships);
-  }
-
   async _prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors }) {
     return flattenDeep([
       this.appVersion.addVersionToHttpHeaders && appVersionMiddleware(this.appVersion.version),
@@ -623,6 +612,7 @@ module.exports = class Keystone {
     pinoOptions,
     cors = { origin: true, credentials: true },
   } = {}) {
+    this.createApolloServer({ schemaName: 'internal' });
     const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
     // These function can't be called after prepare(), so make them throw an error from now on.
     ['extendGraphQLSchema', 'createList', 'createAuthStrategy'].forEach(f => {

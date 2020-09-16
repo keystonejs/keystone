@@ -9,8 +9,7 @@ import { Input } from '@arch-ui/input';
 import { colors, gridSize } from '@arch-ui/theme';
 import { PageTitle, Title } from '@arch-ui/typography';
 
-import { useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { gql, useMutation } from '@apollo/client';
 
 import { upcase } from '@keystonejs/utils';
 

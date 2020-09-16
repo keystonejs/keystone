@@ -7,7 +7,7 @@ title: Relationship
 # Relationship
 
 A link between the current list and others, often paired with a field on the other list.
-The relationships cardinality is determined by the `many` and `isRequire` configuring on either side.
+The relationships cardinality is determined by the `many` and `isRequired` configuring on either side.
 
 See the [Configuring Relationships](/docs/guides/relationships.md) guide for more information.
 
@@ -80,7 +80,7 @@ relationship:
 # Replace all posts of a given User
 mutation replaceAllPosts {
   updateUser(
-    where: { id: "abc123" },
+    id: "abc123",
     data: {
       posts: {
         create: { title: "Hello World" },
@@ -106,7 +106,7 @@ relationship:
 # Replace the company of a given User
 mutation replaceAllPosts {
   updateUser(
-    where: { id: "abc123" },
+    id: "abc123",
     data: {
       posts: {
         connect: { id: "def345" },
@@ -133,7 +133,7 @@ as is the case for [to-many relationships](#overriding-a-to-many-relationship)):
 # Replace the company of a given User
 mutation replaceAllPosts {
   updateUser(
-    where: { id: "abc123" },
+    id: "abc123",
     data: {
       company: {
         connect: { id: "def345" },
@@ -160,7 +160,7 @@ mutation (thanks to the [order of execution](#order-of-execution)):
 # Replace all posts related to a given User
 mutation replaceAllPosts {
   updateUser(
-    where: { id: "abc123" },
+    id: "abc123",
     data: {
       posts: {
         disconnectAll: true,

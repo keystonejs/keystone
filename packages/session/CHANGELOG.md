@@ -1,5 +1,31 @@
 # @keystonejs/session
 
+## 8.1.1
+
+### Patch Changes
+
+- [`db0797f7f`](https://github.com/keystonejs/keystone/commit/db0797f7f442c2c42cc941633930de527c722f48) [#3465](https://github.com/keystonejs/keystone/pull/3465) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused body-parser dependency.
+
+* [`07e246d15`](https://github.com/keystonejs/keystone/commit/07e246d15586dede7fa9a04bcc13020c8c5c3a25) [#3472](https://github.com/keystonejs/keystone/pull/3472) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `cookie` to `^0.4.1`.
+
+## 8.1.0
+
+### Minor Changes
+
+- [`f8d4b175b`](https://github.com/keystonejs/keystone/commit/f8d4b175bbc29962569acb24b34c29c44b61791f) [#3356](https://github.com/keystonejs/keystone/pull/3356) Thanks [@timleslie](https://github.com/timleslie)! - Updated `endAuthedSession` to return the `listKey` and `itemId` of the logged out user if there was one. The return object is now `{ success, listKey, itemId }`.
+
+## 8.0.0
+
+### Major Changes
+
+- [`136cb505c`](https://github.com/keystonejs/keystone/commit/136cb505ce11931de7fc470debe438e335588781) [#3175](https://github.com/keystonejs/keystone/pull/3175) Thanks [@timleslie](https://github.com/timleslie)! - `SessionManager.getContext()` no longer returns values for `{ authedItem, authedListKey }` as these values are already provided by the core of Keystone.
+
+### Patch Changes
+
+- [`e710cd445`](https://github.com/keystonejs/keystone/commit/e710cd445bfb71317ca38622cc3795da61d13dff) [#3237](https://github.com/keystonejs/keystone/pull/3237) Thanks [@timleslie](https://github.com/timleslie)! - Updated middleware to directly access the data adapter to find the authorised item.
+
+* [`e63b9f25a`](https://github.com/keystonejs/keystone/commit/e63b9f25adb64cecf0f65c6f97fe30c95e483996) [#3249](https://github.com/keystonejs/keystone/pull/3249) Thanks [@Vultraz](https://github.com/Vultraz)! - Updated `cookieSecret` doc link.
+
 ## 7.0.1
 
 ### Patch Changes

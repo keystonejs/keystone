@@ -23,6 +23,10 @@ export class AutoIncrementImplementation extends Implementation {
     this.gqlType = ['ID', 'Int'].includes(gqlType) ? gqlType : this.isPrimaryKey ? 'ID' : 'Int';
   }
 
+  get _supportsUnique() {
+    return true;
+  }
+
   gqlOutputFields() {
     return [`${this.path}: ${this.gqlType}`];
   }
@@ -36,10 +40,10 @@ export class AutoIncrementImplementation extends Implementation {
       ...this.inInputFields(this.gqlType),
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: ${this.gqlType}`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: ${this.gqlType}`];
   }
 }
@@ -79,8 +83,10 @@ export class KnexAutoIncrementInterface extends KnexFieldAdapter {
 
   addToForeignTableSchema(table, { path, isUnique, isIndexed, isNotNullable }) {
     if (!this.field.isPrimaryKey) {
-      throw `Can't create foreign key '${path}' on table "${table._tableName}"; ` +
-        `'${this.path}' on list '${this.field.listKey}' as is not the primary key.`;
+      throw (
+        `Can't create foreign key '${path}' on table "${table._tableName}"; ` +
+        `'${this.path}' on list '${this.field.listKey}' as is not the primary key.`
+      );
     }
 
     const column = table.integer(path).unsigned();

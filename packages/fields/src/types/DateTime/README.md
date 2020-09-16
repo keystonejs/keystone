@@ -17,7 +17,7 @@ keystone.createList('User', {
   fields: {
     lastOnline: {
       type: DateTime,
-      format: 'MM/DD/YYYY h:mm A',
+      format: 'dd/MM/yyyy HH:mm O',
       yearRangeFrom: 1901,
       yearRangeTo: 2018,
       yearPickerType: 'auto',
@@ -39,7 +39,9 @@ keystone.createList('User', {
 
 #### `format`
 
-Defines the format of the string that the component generates. For example, `MM/DD/YYYY h:mm A`.
+Defines the format of the string using unicode tokens. For example, `dd/MM/yyyy HH:mm O`.
+
+[Documentation of all the available tokens on Unicode website](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)
 
 #### `yearRangeFrom`
 

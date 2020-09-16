@@ -171,3 +171,8 @@ See the [Admin UI app](https://www.keystonejs.com/keystonejs/app-admin-ui/) docs
 Adding Authentication as shown above will only enable login to the Admin UI. It _will not_ restrict API access.
 
 > **Note:** To restrict API access, you must set up [Access controls](/docs/guides/access-control.md)
+
+## Hooks
+
+Keystone provides a collection of hooks to allow you to customise the behaviour of the authentication mutations.
+Please see the [hooks API docs](/docs/api/hooks.md) for details on how to use authentication hooks.

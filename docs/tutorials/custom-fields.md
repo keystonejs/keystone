@@ -81,7 +81,7 @@ module.exports = {
 
 It's convention with existing field types to export the field implementation class, together with the adapter interfaces.
 
-Adapters provide an interface between our field and the database. Here we define how a queries and mutations should be translated into SQL or MongoDB actions. Again, as our implementation for the Starts is going to be the same as the Integer field type, we can just re-export the adapters for the Integer field type.
+Adapters provide an interface between our field and the database. Here we define how a queries and mutations should be translated into SQL or MongoDB actions. Again, as our implementation for the Stars is going to be the same as the Integer field type, we can just re-export the adapters for the Integer field type.
 
 We're not changing anything about how the data is stored, so for now we're just going to going to re-export the adapters for the `Integer` field.
 
@@ -103,7 +103,7 @@ The rest of the views relate to React components rendered in the Admin UI. We ca
   <Stars count={5} value={3}>
 ```
 
-You can find an example of this component in the [custom-fields demo project](https://github.com/keystonejs/keystone/tree/master/demo-projects/custom-fields/fields/Stars/views/Stars.js).
+You can find an example of this component in the [custom-fields demo project](https://github.com/keystonejs/keystone/tree/master/examples/custom-fields/fields/Stars/views/Stars.js).
 
 Once we have a component for star ratings we can use this in Keystone.
 
@@ -149,4 +149,4 @@ That's it, we now have a basic custom field.
 
 ## Next Steps
 
-Take a look at this example and others in the [custom-fields demo project](https://github.com/keystonejs/keystone/tree/master/demo-projects/custom-fields/) in the Keystone repository.
+Take a look at this example and others in the [custom-fields demo project](https://github.com/keystonejs/keystone/tree/master/examples/custom-fields/) in the Keystone repository.

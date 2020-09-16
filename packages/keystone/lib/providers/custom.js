@@ -1,11 +1,8 @@
-const gql = require('graphql-tag');
+const { gql } = require('apollo-server-express');
 const { parseCustomAccess } = require('@keystonejs/access-control');
 const { objMerge } = require('@keystonejs/utils');
-const { logger } = require('@keystonejs/logger');
-
 const { AccessDeniedError } = require('../ListTypes/graphqlErrors');
-
-const graphqlLogger = logger('graphql');
+const { graphqlLogger } = require('../Keystone/logger');
 
 class CustomProvider {
   constructor({ schemaNames, defaultAccess }) {
@@ -80,7 +77,7 @@ class CustomProvider {
   }
 
   _customResolver(type) {
-    return ({ schema, subscribe, resolver, access }) => {
+    return ({ schema, subscribe, resolver, access, cacheHint }) => {
       const gqlName = gql(`type t { ${schema} }`).definitions[0].fields[0].name.value;
 
       // Perform access control check before passing off control to the
@@ -113,6 +110,15 @@ class CustomProvider {
 
       const resolve = async (item, args, context, info) => {
         if (resolver) {
+          // Allow cache hints to be added to custom queries
+          if (type === 'query' && cacheHint) {
+            if (typeof cacheHint !== 'object') {
+              throw new Error(`cacheHint must be an object`);
+            }
+            if (info && info.cacheControl) {
+              info.cacheControl.setCacheHint(cacheHint);
+            }
+          }
           return resolver(item, args, context, info, {
             access: await computeAccess(item, args, context, info),
           });

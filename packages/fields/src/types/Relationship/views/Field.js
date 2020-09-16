@@ -2,8 +2,7 @@
 
 import { jsx } from '@emotion/core';
 import { Fragment } from 'react';
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { gql, useQuery } from '@apollo/client';
 
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import { PlusIcon, PersonIcon, LinkExternalIcon } from '@primer/octicons-react';

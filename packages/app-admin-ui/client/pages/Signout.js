@@ -4,8 +4,7 @@ import { jsx } from '@emotion/core';
 
 import { Fragment } from 'react';
 
-import { useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { gql, useMutation } from '@apollo/client';
 
 import { CheckIcon } from '@primer/octicons-react';
 import { Button } from '@arch-ui/button';
@@ -75,7 +74,7 @@ const SignedOutPage = () => {
       ) : (
         <Fragment>
           <Animation name="pulse" duration="500ms">
-            <CheckIcon css={{ color: colors.primary, height: '3em', width: '3em' }} />
+            <CheckIcon size={48} css={{ color: colors.primary }} />
           </Animation>
           <Caption>You have been signed out.</Caption>
           <FlexBox>

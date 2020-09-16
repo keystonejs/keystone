@@ -1,5 +1,25 @@
 # @keystonejs/app-next
 
+## 5.2.3
+
+### Patch Changes
+
+- [`4fc501203`](https://github.com/keystonejs/keystone/commit/4fc501203226a549e41a696985c68b2ba3af74a4) [#3558](https://github.com/keystonejs/keystone/pull/3558) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `next` to `^9.5.3`.
+
+## 5.2.2
+
+### Patch Changes
+
+- [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+## 5.2.1
+
+### Patch Changes
+
+- [`16730291d`](https://github.com/keystonejs/keystone/commit/16730291d6724baeea8cb7a1f25ea3dfe47db6a3) [#3315](https://github.com/keystonejs/keystone/pull/3315) Thanks [@gautamsi](https://github.com/gautamsi)! - Updated Next.js to 9.5.1 which make revalidate prop a stable api.
+
 ## 5.2.0
 
 ### Minor Changes

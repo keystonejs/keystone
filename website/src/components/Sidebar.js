@@ -5,6 +5,7 @@ import { Link } from 'gatsby';
 import { jsx } from '@emotion/core';
 import { Location } from '@reach/router';
 import { colors, gridSize } from '@arch-ui/theme';
+const slugify = require('@sindresorhus/slugify');
 
 import { SocialIconsNav } from '../components';
 import { useNavData } from '../utils/hooks';
@@ -15,7 +16,34 @@ let scrollOffset = 0;
 
 export const SIDEBAR_WIDTH = 280;
 
-export const Sidebar = ({ isVisible, toggleSidebar, mobileOnly }) => {
+export const navStyles = ({ isVisible, mobileOnly }) => ({
+  boxSizing: 'border-box',
+  flexShrink: 0,
+  height: 'calc(100vh - 60px)',
+  overflowY: 'auto',
+  padding: `${gridSize * 4}px ${gridSize * 3}px`,
+  position: 'sticky',
+  top: 60,
+  WebkitOverflowScrolling: 'touch',
+  width: SIDEBAR_WIDTH,
+
+  [mediaMax.md]: {
+    background: 'white',
+    boxShadow: isVisible ? 'rgba(0, 0, 0, 0.25) 0px 0px 48px' : 'none',
+    height: '100vh',
+    opacity: isVisible ? 1 : 0,
+    position: 'fixed',
+    top: 0,
+    transform: isVisible ? 'translateX(0px)' : `translateX(-${SIDEBAR_WIDTH}px)`,
+    transition: 'all 150ms',
+    zIndex: 2,
+  },
+  [media.md]: {
+    display: mobileOnly ? 'none' : 'block',
+  },
+});
+
+export const Sidebar = ({ isVisible, toggleSidebar, mobileOnly, currentGroup }) => {
   const asideRef = useRef();
 
   // handle click outside when sidebar is a drawer on small devices
@@ -36,36 +64,7 @@ export const Sidebar = ({ isVisible, toggleSidebar, mobileOnly }) => {
   }, []);
 
   return (
-    <aside
-      key="sidebar"
-      ref={asideRef}
-      css={{
-        boxSizing: 'border-box',
-        flexShrink: 0,
-        height: 'calc(100vh - 60px)',
-        overflowY: 'auto',
-        padding: `${gridSize * 4}px ${gridSize * 3}px`,
-        position: 'sticky',
-        top: 60,
-        WebkitOverflowScrolling: 'touch',
-        width: SIDEBAR_WIDTH,
-
-        [mediaMax.md]: {
-          background: 'white',
-          boxShadow: isVisible ? 'rgba(0, 0, 0, 0.25) 0px 0px 48px' : 'none',
-          height: '100vh',
-          opacity: isVisible ? 1 : 0,
-          position: 'fixed',
-          top: 0,
-          transform: isVisible ? 'translateX(0px)' : `translateX(-${SIDEBAR_WIDTH}px)`,
-          transition: 'all 150ms',
-          zIndex: 2,
-        },
-        [media.md]: {
-          display: mobileOnly ? 'none' : 'block',
-        },
-      }}
-    >
+    <aside key="sidebar" ref={asideRef} css={navStyles({ isVisible, mobileOnly })}>
       <SocialIconsNav
         css={{
           marginBottom: '2.4em',
@@ -76,7 +75,7 @@ export const Sidebar = ({ isVisible, toggleSidebar, mobileOnly }) => {
         }}
       />
 
-      <SidebarNav />
+      <SidebarNav currentGroup={currentGroup} />
       <Footer />
       <ClassicDocs />
     </aside>
@@ -98,25 +97,56 @@ const ClassicDocs = () => (
 
 // Navigation
 
-export const SidebarNav = () => {
+export const SidebarNav = ({ currentGroup }) => {
   const navData = useNavData();
+
   return (
     <Location>
       {({ location: { pathname } }) => (
         <nav aria-label="Documentation Menu">
-          {navData.map((navGroup, i) => {
-            return <NavGroup key={i} index={i} navGroup={navGroup} pathname={pathname} />;
-          })}
+          {navData
+            // For the blog section, only show the blog pages
+            .filter(navGroup => currentGroup !== 'blog' || navGroup.navTitle === 'blog')
+            .map((navGroup, i) => {
+              return <NavGroup key={i} index={i} navGroup={navGroup} pathname={pathname} />;
+            })}
         </nav>
       )}
     </Location>
   );
 };
 
-const NavGroup = ({ index, navGroup, pathname }) => {
+const getTruncatedItems = ({ pages, navTitle }, isPageInGroupActive) => {
+  if (isPageInGroupActive) return pages;
+
+  let [one, two, three, four] = pages;
+  return [
+    one,
+    two,
+    three,
+    four
+      ? {
+          context: {
+            navGroup: 'blog',
+            navSubGroup: null,
+            order: 99999999999,
+            isPackageIndex: false,
+            pageTitle: 'See more...',
+          },
+          path: `/${slugify(navTitle)}`,
+          _seeMore: true, // Special key to indicate this link's see-more-ness
+        }
+      : null,
+  ].filter(a => a);
+};
+
+export const NavGroup = ({ index, navGroup, pathname }) => {
   const sectionId = `docs-menu-${navGroup.navTitle}`;
 
   const isPageInGroupActive = useMemo(() => {
+    if (pathname.includes(`/${slugify(navGroup.navTitle)}`)) {
+      return true;
+    }
     let paths = [];
 
     navGroup.pages.forEach(i => paths.push(i.path));
@@ -128,6 +158,8 @@ const NavGroup = ({ index, navGroup, pathname }) => {
     return paths.some(i => i === pathname);
   }, [pathname]);
 
+  const navItems = getTruncatedItems(navGroup, isPageInGroupActive);
+
   return (
     <div key={navGroup.navTitle}>
       <GroupHeading
@@ -135,17 +167,22 @@ const NavGroup = ({ index, navGroup, pathname }) => {
         index={index}
         className={isPageInGroupActive ? 'docSearch-lvl0' : null}
       >
-        {navGroup.navTitle.replace('-', ' ')}
+        <Link
+          css={{
+            color: colors.N80,
+          }}
+          to={slugify(navGroup.navTitle)}
+        >
+          {navGroup.navTitle.replace('-', ' ')}
+        </Link>
       </GroupHeading>
       <List aria-labelledby={sectionId}>
-        {navGroup.pages.map(node => {
-          return (
-            <ListItem key={node.path} to={node.path}>
-              {node.context.pageTitle}
-            </ListItem>
-          );
-        })}
-        {navGroup.subNavs.length ? (
+        {navItems.map(node => (
+          <ListItem key={node.path} to={node.path} isExpandLink={node._seeMore}>
+            {node.context.pageTitle}
+          </ListItem>
+        ))}
+        {isPageInGroupActive && navGroup.subNavs.length ? (
           <li>
             {navGroup.subNavs.map(navGroup => {
               return (
@@ -204,7 +241,7 @@ const List = props => (
   <ul css={{ listStyle: 'none', fontSize: '0.9rem', padding: 0, margin: 0 }} {...props} />
 );
 
-const ListItem = props => (
+const ListItem = ({ isExpandLink, ...props }) => (
   <li>
     <Link
       css={{
@@ -218,6 +255,7 @@ const ListItem = props => (
         textDecoration: 'none',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
+        fontWeight: isExpandLink ? 'bold' : 'normal',
 
         ':hover, :focus': {
           color: colors.B.base,
@@ -257,7 +295,7 @@ export const Footer = () => (
       marginBottom: '2rem',
     }}
   >
-    Made with ❤️ by{' '}
+    Made with ❤️&nbsp; by{' '}
     <FooterAnchor href="https://www.thinkmill.com.au" target="_blank">
       Thinkmill
     </FooterAnchor>{' '}

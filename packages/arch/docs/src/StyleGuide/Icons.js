@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 
 import copyToClipboard from 'clipboard-copy';
 
-import * as icons from '@arch-ui/icons';
+import * as icons from '@primer/octicons-react';
 import { Grid, Cell } from '@arch-ui/layout';
 import { colors } from '@arch-ui/theme';
 import { Kbd } from '@arch-ui/typography';
@@ -93,7 +93,7 @@ const IconsGuide = () => {
       )}
       <Grid gap={16}>
         {Object.keys(icons).map(name => {
-          const importText = altIsDown ? `import { ${name} } from '@arch-ui/icons';` : name;
+          const importText = altIsDown ? `import { ${name} } from '@primer/octicons-react';` : name;
           const isCopied = copyText === importText;
           const Icon = isCopied ? icons.CheckIcon : icons[name];
           return (

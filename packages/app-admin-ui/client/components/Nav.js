@@ -1,7 +1,7 @@
 /* global ENABLE_DEV_FEATURES */
 /** @jsx jsx */
 
-import React, { useState, useMemo, forwardRef } from 'react'; // eslint-disable-line no-unused-vars
+import React, { useState, useMemo, forwardRef } from 'react'; // eslint-disable-line @typescript-eslint/no-unused-vars
 import { Link, useRouteMatch } from 'react-router-dom';
 import PropToggle from 'react-prop-toggle';
 import { uid } from 'react-uid';
@@ -25,8 +25,7 @@ import { useAdminMeta } from '../providers/AdminMeta';
 import { useResizeHandler, KEYBOARD_SHORTCUT } from '../hooks/ResizeHandler';
 import { useScrollQuery } from '../hooks/ScrollQuery';
 
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { gql, useQuery } from '@apollo/client';
 
 const TRANSITION_DURATION = '220ms';
 const TRANSITION_EASING = 'cubic-bezier(0.2, 0, 0, 1)';
@@ -354,7 +353,7 @@ const UserInfo = ({ authListPath }) => {
   return (
     <UserInfoContainer>
       <UserIcon>
-        <PersonIcon width={20} height={20} />
+        <PersonIcon size={24} />
       </UserIcon>
       <div css={{ overflow: 'hidden' }}>
         <Truncate css={{ fontSize: '0.7em' }}>Logged in as</Truncate>

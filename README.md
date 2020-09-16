@@ -142,6 +142,9 @@ We'd like to start by thanking all our wonderful contributors:
     <td align="center"><a href="http://hackweb.altervista.org"><img src="https://avatars0.githubusercontent.com/u/754139?v=4" width="80px;" alt=""/><br /><sub><b>frank10gm</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=frank10gm" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/mbrodt"><img src="https://avatars2.githubusercontent.com/u/21239560?v=4" width="80px;" alt=""/><br /><sub><b>mbrodt</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=mbrodt" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/zamkevich"><img src="https://avatars0.githubusercontent.com/u/13717428?v=4" width="80px;" alt=""/><br /><sub><b>Misha Zamkevich</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=zamkevich" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/matheuschimelli"><img src="https://avatars0.githubusercontent.com/u/10470074?v=4" width="80px;" alt=""/><br /><sub><b>Matheus Chimelli</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=matheuschimelli" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/gpersable"><img src="https://avatars3.githubusercontent.com/u/48637618?v=4" width="80px;" alt=""/><br /><sub><b>Gita Permatasari Sujatmiko</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=gpersable" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://elevated.to"><img src="https://avatars2.githubusercontent.com/u/203895?v=4" width="80px;" alt=""/><br /><sub><b>Andreas Borg</b></sub></a><br /><a href="https://github.com/keystonejs/keystone/commits?author=borg" title="Documentation">📖</a></td>
   </tr>
 </table>
 
@@ -156,7 +159,7 @@ We'd like to start by thanking all our wonderful contributors:
 These projects are designed to show off different aspects of KeystoneJS features
 at a range of complexities (from a simple Todo App to a complex Meetup Site).
 
-See the [`demo-projects/README.md`](/demo-projects/README.md) docs to get
+See the [`examples/README.md`](/examples/README.md) docs to get
 started.
 
 ### Development Practices
@@ -187,7 +190,7 @@ yarn
 yarn dev
 ```
 
-See [`demo-projects/README.md`](/demo-projects/README.md) for more details on
+See [`examples/README.md`](/examples/README.md) for more details on
 the available demo projects.
 
 #### Note For Windows Users
@@ -229,7 +232,7 @@ yarn coverage
 ### End-to-End Tests
 
 Keystone tests end-to-end functionality with the help of [Cypress](https://www.cypress.io).
-Each project (ie; `test-projects/basic`, `test-projects/login`, etc) have their own set of Cypress tests.
+Each project (ie; `tests/test-projects/basic`, `tests/test-projects/login`, etc) have their own set of Cypress tests.
 To run an individual project's tests, `cd` into that directory and run:
 
 ```shell
@@ -240,7 +243,7 @@ Cypress can be run in interactive mode from project directories with its built i
 which is useful when developing and debugging tests:
 
 ```shell
-cd test-projects/basic && yarn cypress:open
+cd tests/test-projects/basic && yarn cypress:open
 ```
 
 End-to-end tests live in `project/**/cypress/integration/*spec.js`.
@@ -252,46 +255,6 @@ yarn cypress:run
 
 _NOTE: The output from this command will mix together the output from each project being tested in parallel._
 _This is only recommended as sanity check before pushing code._
-
-### Running a CI environment locally
-
-#### Setting up CircleCI CLI tool
-
-Install the `circleci` cli tool:
-
-**If you've already got [Docker For Mac](https://docs.docker.com/docker-for-mac/install) installed (recommended)**
-
-```shell
-brew install --ignore-dependencies circleci
-```
-
-**If you do not have Docker installed**
-
-```shell
-brew install circleci
-```
-
-Then make sure docker is [able to share](https://docs.docker.com/docker-for-mac/osxfs/#namespaces) the following directories (in Docker for Mac, go `Preferences` > `File Sharing`):
-
-- The keystone 5 repo
-- `/Users/<your username>/.circleci`
-
-#### Run CI tests locally
-
-Make sure Docker is running.
-
-Execute the tests:
-
-```shell
-# Clean up the node_modules folders so everything is installed fresh
-yarn clean
-
-# Run the circle CI job
-circleci local execute --job simple_tests
-```
-
-Where `simple_tests` can be replaced with any job listed in
-[`.circleci/config.yml`](./.circleci/config.yml) under the `jobs:` section.
 
 ## Code of Conduct
 

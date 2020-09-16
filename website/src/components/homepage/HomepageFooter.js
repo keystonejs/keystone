@@ -25,7 +25,7 @@ const HomepageFooter = () => (
       </GitHubButton>
       <div css={{ marginTop: '2rem' }}>
         <p css={{ color: colors.N40 }}>
-          Keystone 5 is built by{' '}
+          Keystone is built by{' '}
           <a
             css={{ color: colors.N80 }}
             href="https://www.thinkmill.com.au"

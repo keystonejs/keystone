@@ -1,14 +1,14 @@
-import { importView } from '@keystonejs/build-field-types';
+import { resolveView } from '../../resolve-view';
 import { Checkbox, MongoCheckboxInterface, KnexCheckboxInterface } from './Implementation';
 
 export default {
   type: 'Checkbox',
   implementation: Checkbox,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Filter: importView('./views/Filter'),
-    Cell: importView('./views/Cell'),
+    Controller: resolveView('types/Checkbox/views/Controller'),
+    Field: resolveView('types/Checkbox/views/Field'),
+    Filter: resolveView('types/Checkbox/views/Filter'),
+    Cell: resolveView('types/Checkbox/views/Cell'),
   },
   adapters: {
     mongoose: MongoCheckboxInterface,

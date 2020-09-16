@@ -8,6 +8,10 @@ export class Integer extends Implementation {
     this.isOrderable = true;
   }
 
+  get _supportsUnique() {
+    return true;
+  }
+
   gqlOutputFields() {
     return [`${this.path}: Int`];
   }
@@ -22,10 +26,10 @@ export class Integer extends Implementation {
       ...this.inInputFields('Int'),
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: Int`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: Int`];
   }
 }

@@ -22,6 +22,8 @@ class AdminUIApp {
     hooks = path.resolve('./admin-ui/'),
     schemaName = 'public',
     adminMeta = {},
+    defaultPageSize = 50,
+    maximumPageSize = 1000,
   } = {}) {
     if (adminPath === '/') {
       throw new Error("Admin path cannot be the root path. Try; '/admin'");
@@ -29,6 +31,12 @@ class AdminUIApp {
 
     if (authStrategy && authStrategy.authType !== 'password') {
       throw new Error('Keystone 5 Admin currently only supports the `PasswordAuthStrategy`');
+    }
+
+    if (schemaName === 'internal') {
+      throw new Error(
+        "The schemaName 'internal' is a reserved name cannot be used in the AdminUIApp."
+      );
     }
 
     this.name = name;
@@ -39,6 +47,8 @@ class AdminUIApp {
     this.graphiqlPath = graphiqlPath;
     this.enableDefaultRoute = enableDefaultRoute;
     this.hooks = hooks;
+    this.defaultPageSize = defaultPageSize;
+    this.maximumPageSize = Math.max(defaultPageSize, maximumPageSize);
     this._isAccessAllowed = isAccessAllowed;
     this._schemaName = schemaName;
     this._adminMeta = adminMeta;
@@ -105,6 +115,29 @@ class AdminUIApp {
     const { signinPath, signoutPath } = this.routes;
     const { lists } = keystone.getAdminMeta({ schemaName: this._schemaName });
     const authStrategy = this.authStrategy ? this.authStrategy.getAdminMeta() : undefined;
+
+    // Normalize list adminConfig data, falling back to admin-level size defaults if necessary.
+    Object.values(lists || {}).forEach(
+      ({
+        key,
+        adminConfig: {
+          defaultPageSize = this.defaultPageSize,
+          defaultColumns,
+          defaultSort,
+          maximumPageSize = this.maximumPageSize,
+          ...rest
+        },
+      }) => {
+        lists[key].adminConfig = {
+          defaultPageSize,
+          defaultColumns: defaultColumns.replace(/\s/g, ''), // remove all whitespace
+          defaultSort,
+          maximumPageSize: Math.max(defaultPageSize, maximumPageSize),
+          ...rest,
+        };
+      }
+    );
+
     return {
       adminPath,
       apiPath,
@@ -206,8 +239,8 @@ class AdminUIApp {
     }
 
     if (dev) {
-      // eslint-disable-next-line no-unused-vars
-      app.use(function(err, req, res, next) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      app.use(function (err, req, res, next) {
         console.error(err.stack);
         res.status(500).send('Error');
       });

@@ -1,3 +1,4 @@
+import { getItems } from '@keystonejs/server-side-graphql-client';
 import slugify from '@sindresorhus/slugify';
 import cuid from 'cuid';
 import {
@@ -199,72 +200,43 @@ export class SlugImplementation extends Text {
       return slug;
     }
 
-    let uniqueSlug = slug;
-    let slugIsUnique;
-    let makeUniqueAttempts = 0;
     const listAndFieldPath = `${this.listKey}.${this.path}`;
 
-    // The "all<List>s" query
-    const { listQueryMetaName, whereInputName } = this.getListByKey(this.listKey).gqlNames;
-
-    // A query to find any _other_ items with the same slug
-    const queryString = `
-      query findDuplicate($where: ${whereInputName}) {
-        ${listQueryMetaName}(where: $where) {
-          count
-        }
-      }
-    `;
-
-    if (this.alwaysMakeUnique) {
-      // Force a uniquification pass over the slug
-      uniqueSlug = await this.makeUnique({ slug, previousSlug: uniqueSlug });
-    }
-
     // Repeat until we have a unique slug, or we've tried too many times
-    do {
-      if (makeUniqueAttempts >= MAX_UNIQUE_ATTEMPTS) {
-        throw new Error(
-          `Attempted to generate a unique slug for ${listAndFieldPath}, but failed after too many attempts. If you've passed a custom 'makeUnique' function, ensure it is working correctly`
-        );
+    let uniqueSlug = slug;
+    for (let i = 0; i < MAX_UNIQUE_ATTEMPTS; i += 1) {
+      if (this.alwaysMakeUnique || i > 0) {
+        uniqueSlug = await this.makeUnique({ slug, previousSlug: uniqueSlug });
       }
-      makeUniqueAttempts++;
 
-      // Check to see if the slug is unique
-      const { data, errors } = await context.executeGraphQL({
-        // Access Control may filter out some results, so we wouldn't be
-        // retreiving an accurate list of all existing items. Because we add the
-        // unique constraint to the field, the database will throw an error if
-        // we miss a match and try to insert anyway.
-        context: context.createContext({ skipAccessControl: true }),
-        query: queryString,
-        variables: {
+      try {
+        const result = await getItems({
+          // Access Control may filter out some results, so we wouldn't be
+          // retreiving an accurate list of all existing items. Because we add the
+          // unique constraint to the field, the database will throw an error if
+          // we miss a match and try to insert anyway.
+          context: context.createContext({ skipAccessControl: true }),
+          listKey: this.listKey,
           where: {
             [this.path]: uniqueSlug,
             // Ensure we ignore the current item when doing an update
-            ...(existingItem && existingItem.id && { id_not_in: [existingItem.id] }),
+            ...(existingItem && existingItem.id && { id_not: existingItem.id }),
           },
-        },
-      });
-
-      if (errors) {
+        });
+        // If there aren't any matches, this slug can be considered unique
+        if (result.length === 0) {
+          return uniqueSlug;
+        }
+      } catch (error) {
         throw new Error(
-          `Attempted to generate a unique slug for ${listAndFieldPath}, but failed with an error: ${errors[0].toString()}`
+          `Attempted to generate a unique slug for ${listAndFieldPath}, but failed with an error: ${error.toString()}`
         );
       }
+    }
 
-      const duplicates = data[listQueryMetaName].count;
-
-      // If there aren't any matches, this slug can be considered unique
-      slugIsUnique = duplicates === 0;
-
-      if (!slugIsUnique) {
-        // An existinig slug was found, so we try make it unique
-        uniqueSlug = await this.makeUnique({ slug, previousSlug: uniqueSlug });
-      }
-    } while (!slugIsUnique);
-
-    return uniqueSlug;
+    throw new Error(
+      `Attempted to generate a unique slug for ${listAndFieldPath}, but failed after too many attempts. If you've passed a custom 'makeUnique' function, ensure it is working correctly`
+    );
   }
 }
 

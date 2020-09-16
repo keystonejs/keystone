@@ -8,6 +8,10 @@ export class Float extends Implementation {
     this.isOrderable = true;
   }
 
+  get _supportsUnique() {
+    return true;
+  }
+
   gqlOutputFields() {
     return [`${this.path}: Float`];
   }
@@ -22,10 +26,10 @@ export class Float extends Implementation {
       ...this.inInputFields('Float'),
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: Float`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: Float`];
   }
 }

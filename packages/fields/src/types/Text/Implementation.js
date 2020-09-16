@@ -8,6 +8,11 @@ export class Text extends Implementation {
     this.isMultiline = isMultiline;
     this.isOrderable = true;
   }
+
+  get _supportsUnique() {
+    return true;
+  }
+
   gqlOutputFields() {
     return [`${this.path}: String`];
   }
@@ -23,10 +28,10 @@ export class Text extends Implementation {
       ...this.inInputFields('String'),
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
   extendAdminMeta(meta) {

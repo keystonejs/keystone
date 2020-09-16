@@ -22,6 +22,10 @@ export class Virtual extends Implementation {
     this.extendGraphQLTypes = extendGraphQLTypes;
   }
 
+  get _supportsUnique() {
+    return false;
+  }
+
   gqlOutputFields() {
     const argString = this.args.length
       ? `(${this.args.map(({ name, type }) => `${name}: ${type}`).join('\n')})`

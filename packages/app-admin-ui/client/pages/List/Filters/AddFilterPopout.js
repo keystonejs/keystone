@@ -90,18 +90,9 @@ function getInitialState() {
   };
 }
 
-type Props = {
-  existingFilters: Array<Object>,
-};
-type State = {
-  field: Object,
-  filter: Object,
-  value: string,
-};
-
 let Render = ({ children }) => children();
 
-export default class AddFilterPopout extends Component<Props, State> {
+export default class AddFilterPopout extends Component {
   state = getInitialState();
 
   // Refs
@@ -298,9 +289,8 @@ export default class AddFilterPopout extends Component<Props, State> {
               <div ref={ref} style={style}>
                 <Alert appearance="warning" variant="bold">
                   <AlertIcon
+                    size={24}
                     css={{
-                      height: 24,
-                      width: 24,
                       marginLeft: -8,
                       marginRight: 12,
                     }}

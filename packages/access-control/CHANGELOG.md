@@ -1,5 +1,15 @@
 # @keystonejs/access-control
 
+## 6.3.0
+
+### Minor Changes
+
+- [`5a3849806`](https://github.com/keystonejs/keystone/commit/5a3849806d00e62b722461d02f6e4639bc45c1eb) [#3262](https://github.com/keystonejs/keystone/pull/3262) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a new private internal schema that will allow a better method of bypassing access control on the `executeGraphQL` function.
+
+  The schema name `internal` is now a reserved name and if you have a schema with this name you will need to change it with this update.
+
+  Note: You cannot change access control on the `internal` schema.
+
 ## 6.2.0
 
 ### Minor Changes
@@ -119,7 +129,7 @@
   For example,
 
   ```js
-  parseListAccess({ defaultAccess: false, access: { public: true }, schemaNames: ['public', 'internal'] }
+  parseListAccess({ defaultAccess: false, access: { public: true }, schemaNames: ['public', 'private'] }
   ```
 
   will return
@@ -127,7 +137,7 @@
   ```js
   {
     public: { create: true, read: true, update: true, delete: true },
-    internal: { create: false, read: false, update: false, delete: false },
+    private: { create: false, read: false, update: false, delete: false },
   }
   ```
 
@@ -135,7 +145,7 @@
 
   ```js
   const access = { create: true, read: true, update: true, delete: true };
-  parseListAccess({ access, schemaNames: ['public', 'internal'] }
+  parseListAccess({ access, schemaNames: ['public', 'private'] }
   ```
 
   will return
@@ -143,7 +153,7 @@
   ```js
   {
     public: { create: true, read: true, update: true, delete: true },
-    internal: { create: true, read: true, update: true, delete: true },
+    private: { create: true, read: true, update: true, delete: true },
   }
   ```
 

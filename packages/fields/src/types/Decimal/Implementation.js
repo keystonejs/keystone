@@ -10,6 +10,10 @@ export class Decimal extends Implementation {
     this.isOrderable = true;
   }
 
+  get _supportsUnique() {
+    return true;
+  }
+
   gqlOutputFields() {
     return [`${this.path}: String`];
   }
@@ -24,10 +28,10 @@ export class Decimal extends Implementation {
       ...this.inInputFields('String'),
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
   extendAdminMeta(meta) {
@@ -85,9 +89,9 @@ export class MongoDecimalInterface extends MongooseFieldAdapter {
 
   getQueryConditions(dbPath) {
     return {
-      ...this.equalityConditions(dbPath, mongoose.Types.Decimal128.fromString),
-      ...this.orderingConditions(dbPath, mongoose.Types.Decimal128.fromString),
-      ...this.inConditions(dbPath, mongoose.Types.Decimal128.fromString),
+      ...this.equalityConditions(dbPath, s => s && mongoose.Types.Decimal128.fromString(s)),
+      ...this.orderingConditions(dbPath, s => s && mongoose.Types.Decimal128.fromString(s)),
+      ...this.inConditions(dbPath, s => s && mongoose.Types.Decimal128.fromString(s)),
     };
   }
 }
@@ -103,8 +107,10 @@ export class KnexDecimalInterface extends KnexFieldAdapter {
     this.precision = precision === null ? null : parseInt(precision) || 18;
     this.scale = scale === null ? null : (this.precision, parseInt(scale) || 4);
     if (this.scale !== null && this.precision !== null && this.scale > this.precision) {
-      throw `The scale configured for Decimal field '${this.path}' (${this.scale}) ` +
-        `must not be larger than the field's precision (${this.precision})`;
+      throw (
+        `The scale configured for Decimal field '${this.path}' (${this.scale}) ` +
+        `must not be larger than the field's precision (${this.precision})`
+      );
     }
   }
 

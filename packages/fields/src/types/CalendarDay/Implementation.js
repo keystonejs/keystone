@@ -33,6 +33,10 @@ export class CalendarDay extends Implementation {
     this.isOrderable = true;
   }
 
+  get _supportsUnique() {
+    return true;
+  }
+
   gqlOutputFields() {
     return [`${this.path}: String`];
   }
@@ -45,11 +49,11 @@ export class CalendarDay extends Implementation {
     ];
   }
 
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
 
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
 
@@ -64,6 +68,10 @@ export class CalendarDay extends Implementation {
 
   async validateInput({ resolvedData, addValidationError }) {
     const initialValue = resolvedData[this.path];
+
+    // Allow passing in the `null` value to the CalendarDay field type
+    if (initialValue === null) return true;
+
     const parsedValue = parseISO(resolvedData[this.path]);
 
     if (!(initialValue.length === 10 && isValid(parsedValue))) {

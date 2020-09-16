@@ -1,5 +1,52 @@
 # @keystonejs/website
 
+## 5.3.9
+
+### Patch Changes
+
+- [`94aaa1b39`](https://github.com/keystonejs/keystone/commit/94aaa1b3983e3ac55f76b98ef43f29eb12553c5e) [#3471](https://github.com/keystonejs/keystone/pull/3471) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@reach/skip-nav` to `^0.10.5`.
+
+* [`c3488c5e8`](https://github.com/keystonejs/keystone/commit/c3488c5e88628b15eb9fe804551c3c5c44c07e0f) [#3511](https://github.com/keystonejs/keystone/pull/3511) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `intersection-observer` to `^0.11.0`.
+
+- [`8c3f8a9aa`](https://github.com/keystonejs/keystone/commit/8c3f8a9aa48a80906a4972c721e657344e152e8c) [#3502](https://github.com/keystonejs/keystone/pull/3502) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `gatsby-remark-check-links` to `^2.1.0`.
+
+* [`0d37eef67`](https://github.com/keystonejs/keystone/commit/0d37eef679ee084635143a3d92544ad06879d02c) [#3541](https://github.com/keystonejs/keystone/pull/3541) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `get-workspaces` to `^0.6.0`.
+
+- [`b2bd202c5`](https://github.com/keystonejs/keystone/commit/b2bd202c5b9997e62fe212472188ee3eba8e79b5) [#3503](https://github.com/keystonejs/keystone/pull/3503) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `get-workspaces` to `^0.5.2`.
+
+* [`687204864`](https://github.com/keystonejs/keystone/commit/687204864711b51cedfc3cb5af51464123845d80) [#3539](https://github.com/keystonejs/keystone/pull/3539) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@reach/skip-nav` to `^0.11.2`.
+
+## 5.3.8
+
+### Patch Changes
+
+- [`890f13834`](https://github.com/keystonejs/keystone/commit/890f1383421f4c3371e240ef1dca2eaaa808cb54) [#3449](https://github.com/keystonejs/keystone/pull/3449) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@reach/router` to `^1.3.4`.
+
+* [`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6) [#3481](https://github.com/keystonejs/keystone/pull/3481) Thanks [@Noviny](https://github.com/Noviny)! - Updated dependencies through a major version - this shouldn't require change by consumers.
+
+- [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+* [`1a5e785a1`](https://github.com/keystonejs/keystone/commit/1a5e785a13b529d6bb32f16b3503fc331a2b700d) [#3446](https://github.com/keystonejs/keystone/pull/3446) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@mapbox/rehype-prism` to `^0.5.0`.
+
+* Updated dependencies [[`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e), [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b)]:
+  - @arch-ui/input@0.1.11
+  - @arch-ui/select@0.1.9
+  - @arch-ui/theme@0.0.11
+
+## 5.3.7
+
+### Patch Changes
+
+- [`bed2d2d8a`](https://github.com/keystonejs/keystone/commit/bed2d2d8a1db821afc2581a9faed673a9f442423) [#3424](https://github.com/keystonejs/keystone/pull/3424) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added a redirect from v5.keystonejs.com to just keystonejs.com
+
+## 5.3.6
+
+### Patch Changes
+
+- [`51aef1ef0`](https://github.com/keystonejs/keystone/commit/51aef1ef06a89422e89a6118b7820848d5970669) [#3146](https://github.com/keystonejs/keystone/pull/3146) Thanks [@Vultraz](https://github.com/Vultraz)! - Migrated to @primer/octicons-react v10.
+
 ## 5.3.5
 
 ### Patch Changes

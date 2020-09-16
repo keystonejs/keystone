@@ -1,6 +1,6 @@
 const terminalLink = require('terminal-link');
 const express = require('express');
-const endent = require('endent');
+const endent = require('endent').default;
 const ciInfo = require('ci-info');
 const chalk = require('chalk');
 const path = require('path');

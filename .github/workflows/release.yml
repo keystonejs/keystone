@@ -14,6 +14,7 @@ jobs:
         uses: actions/checkout@master
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node.js 10.x
         uses: actions/setup-node@master
@@ -26,5 +27,10 @@ jobs:
 
       - name: Create Release Pull Request
         uses: changesets/action@master
+        with:
+          version: yarn version-packages
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # note that we're not using the GH token provided by Actions here because Actions has a rule that Actions
+          # will not run as the result of another Action so CI wouldn't run on the release PRs then
+          # we can get around it by using a personal access token from a GH account
+          GITHUB_TOKEN: ${{ secrets.KEYSTONE_RELEASE_BOT_GITHUB_TOKEN }}

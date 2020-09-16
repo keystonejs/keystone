@@ -61,7 +61,7 @@ module.exports = class CloudinaryAdapter {
 
     return new Promise((resolve, reject) => {
       if (file) {
-        cloudinary.v2.uploader.destroy(file.id, destroyOptions, (error, result) => {
+        cloudinary.v2.uploader.destroy(file._meta.public_id, destroyOptions, (error, result) => {
           if (error) {
             reject(error);
           } else {

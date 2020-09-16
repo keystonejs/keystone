@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import RelationshipFieldType from '..';
 
 let Relationship = RelationshipFieldType.implementation;
@@ -65,13 +65,17 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.gqlCreateInputFields).toEqual(['foo: ZipRelateToManyInput']);
+    expect(relMany.gqlCreateInputFields({ schemaName: 'public' })).toEqual([
+      'foo: ZipRelateToManyInput',
+    ]);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.gqlCreateInputFields).toEqual(['foo: ZipRelateToOneInput']);
+    expect(relSingle.gqlCreateInputFields({ schemaName: 'public' })).toEqual([
+      'foo: ZipRelateToOneInput',
+    ]);
   });
 
   test('inputs for relationship fields in update args', () => {
@@ -79,13 +83,17 @@ describe('Type Generation', () => {
       path: 'foo',
       config: { many: true, ref: 'Zip' },
     });
-    expect(relMany.gqlUpdateInputFields).toEqual(['foo: ZipRelateToManyInput']);
+    expect(relMany.gqlUpdateInputFields({ schemaName: 'public' })).toEqual([
+      'foo: ZipRelateToManyInput',
+    ]);
 
     const relSingle = createRelationship({
       path: 'foo',
       config: { many: false, ref: 'Zip' },
     });
-    expect(relSingle.gqlUpdateInputFields).toEqual(['foo: ZipRelateToOneInput']);
+    expect(relSingle.gqlUpdateInputFields({ schemaName: 'public' })).toEqual([
+      'foo: ZipRelateToOneInput',
+    ]);
   });
 
   test('to-single relationship nested mutation input', () => {
@@ -296,10 +304,16 @@ describe('Type Generation', () => {
               },
               arguments: mockFilterAST,
               type: {
-                kind: 'ListType',
+                kind: 'NonNullType',
                 type: {
-                  name: {
-                    value: 'Zip',
+                  kind: 'ListType',
+                  type: {
+                    kind: 'NonNullType',
+                    type: {
+                      name: {
+                        value: 'Zip',
+                      },
+                    },
                   },
                 },
               },
@@ -354,10 +368,16 @@ describe('Type Generation', () => {
               },
               arguments: mockFilterAST,
               type: {
-                kind: 'ListType',
+                kind: 'NonNullType',
                 type: {
-                  name: {
-                    value: 'Zip',
+                  kind: 'ListType',
+                  type: {
+                    kind: 'NonNullType',
+                    type: {
+                      name: {
+                        value: 'Zip',
+                      },
+                    },
                   },
                 },
               },
