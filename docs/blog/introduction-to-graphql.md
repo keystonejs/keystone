@@ -3,6 +3,7 @@ section: blog
 title: Introduction to GraphQL
 date: 2020-09-01
 author: Mike Riethmuller
+order: 2
 [meta]-->
 
 In this tutorial we're going to discuss some of the key differences between REST and GraphQL APIs then create a GraphQL server with Node.js. You will need to know basic HTML and JavaScript, how to run a few commands in a terminal, as well as have Node and NPM installed.

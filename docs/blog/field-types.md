@@ -3,6 +3,7 @@ section: blog
 title: Field types in Keystone
 date: 2020-08-03
 author: Mike Riethmuller
+order: 3
 [meta]-->
 
 Field types in Keystone sit at the intersection of the Database, GraphQL API and User Interface. When you select and configure a field type, you are specifying how data is stored, how types in GraphQL are defined, and how the interface looks in the Admin app.
