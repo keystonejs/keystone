@@ -123,6 +123,14 @@ export const Content = props => (
         maxWidth: '100%',
       },
 
+      '.gatsby-resp-image-background-image': {
+        borderRadius,
+      },
+      '.gatsby-resp-image-wrapper img': {
+        marginTop: 0,
+        marginBottom: 0,
+      },
+
       // NOTE: consider removing `gatsby-resp-image-wrapper`
       '.gatsby-resp-image-link, .gatsby-resp-image-link:hover, .gatsby-resp-image-link:focus': {
         background: 0,
