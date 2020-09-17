@@ -39,11 +39,11 @@
     "cross-env": "^7.0.2",
     "date-fns": "^2.16.1",
     "express": "^4.17.1",
-    "graphql": "^14.7.0",
+    "graphql": "^15.3.0",
     "react": "^16.13.1"
   },
   "devDependencies": {
-    "cypress": "^4.12.1",
+    "cypress": "^5.2.0",
     "cypress-file-upload": "^4.1.1",
     "cypress-multi-reporters": "^1.4.0",
     "dotenv-safe": "^8.2.0",
