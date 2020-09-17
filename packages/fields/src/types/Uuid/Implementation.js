@@ -20,7 +20,7 @@ export class UuidImplementation extends Implementation {
   }
 
   gqlOutputFields() {
-    return [`${this.path}: ID`];
+    return [`${this.path}: ID${this.isPrimaryKey ? '!' : ''}`];
   }
   gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
@@ -118,10 +118,8 @@ export class KnexUuidInterface extends KnexFieldAdapter {
 
   addToForeignTableSchema(table, { path, isUnique, isIndexed, isNotNullable }) {
     if (!this.field.isPrimaryKey) {
-      throw (
-        `Can't create foreign key '${path}' on table "${table._tableName}"; ` +
-        `'${this.path}' on list '${this.field.listKey}' as is not the primary key.`
-      );
+      throw `Can't create foreign key '${path}' on table "${table._tableName}"; ` +
+        `'${this.path}' on list '${this.field.listKey}' as is not the primary key.`;
     }
 
     const column = table.uuid(path);
