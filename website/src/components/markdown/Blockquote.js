@@ -18,8 +18,9 @@ export function Blockquote(props) {
   return (
     <blockquote
       css={{
+        fontSize: '1.1rem',
         margin: `1.6rem 0`,
-        padding: '0.6rem 1.2rem',
+        padding: '0.6rem 2rem',
         position: 'relative',
 
         '::before': {

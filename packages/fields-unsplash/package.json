@@ -10,7 +10,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@apollo/client": "^3.1.5",
+    "@apollo/client": "^3.2.0",
     "@arch-ui/fields": "^3.0.4",
     "@arch-ui/input": "^0.1.11",
     "@babel/runtime": "^7.11.2",
@@ -21,7 +21,7 @@
     "@keystonejs/fields-content": "^8.0.4",
     "node-fetch": "^2.6.1",
     "pluralize": "^7.0.0",
-    "query-string": "^6.13.1",
+    "query-string": "^6.13.2",
     "unsplash-js": "^6.3.0"
   },
   "peerDependencies": {

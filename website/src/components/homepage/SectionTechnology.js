@@ -7,7 +7,7 @@ import { HomepageSection } from './HomepageSection';
 const CARDS = [
   {
     heading: `Static Files`,
-    content: `Serve HTML, CSS, JS, images and any other static resources using an express static server. This can be quick and easy way to deploy a simple front-end with a KeystoneJS application.`,
+    content: `Serve HTML, CSS, JS, images and any other static resources using an Express static server. This can be quick and easy way to deploy a simple front-end with a KeystoneJS application.`,
     to: `/keystonejs/app-static/`,
   },
 
@@ -23,7 +23,7 @@ const CARDS = [
   },
   {
     heading: `Headless`,
-    content: `The primary focus of KeystoneJS is the GraphQL API and Admin UI. Because of this KeystoneJS works with all major front-end framework and is headless by default.`,
+    content: `The primary focus of KeystoneJS is the GraphQL API and Admin UI. Because of this KeystoneJS works with all major front-end frameworks and is headless by default.`,
     to: `/keystonejs/app-graphql/`,
   },
 ];
@@ -31,7 +31,7 @@ const CARDS = [
 const SectionTechnology = () => (
   <HomepageSection
     variant="dark"
-    description="KeystoneJS integrates seamlessly with any front-end framework, but can also be run as a headless GraphQL API and optional Admin UI"
+    description="KeystoneJS integrates seamlessly with any front-end framework, but can also be run as a headless GraphQL API with optional Admin UI."
     heading="Use with the technology of your choice"
   >
     <Grid>

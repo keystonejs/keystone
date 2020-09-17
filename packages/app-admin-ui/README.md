@@ -35,24 +35,24 @@ module.exports = {
 
 ## Config
 
-| Option               | Type       | Default       | Required | Description                                                                |
-| -------------------- | ---------- | ------------- | -------- | -------------------------------------------------------------------------- |
-| `name`               | `String`   | `undefined`   | `false`  | The name of the project.                                                   |
-| `adminPath`          | `String`   | `/admin`      | `false`  | The path of the Admin UI.                                                  |
-| `apiPath`            | `String`   | `/admin/api`  | `false`  | The path of the API provided to the Admin UI.                              |
-| `graphiqlPath`       | `String`   | `/admin/api`  | `false`  | The path of the graphiql app, an in-browser IDE for exploring GraphQL.     |
-| `authStrategy`       | `Object`   | `null`        | `false`  | See [Authentication Guides](https://keystonejs.com/guides/authentication)  |
-| `hooks`              | `String`   | `./admin-ui/` | `false`  | Path to customization hooks. See below for more information.               |
-| `enableDefaultRoute` | `Bool`     | `false`       | `false`  | If enabled, the path of the Admin UI app will be set to `/`.               |
-| `schemaName`         | `String`   | `public`      | `false`  |                                                                            |
-| `isAccessAllowed`    | `Function` | `true`        | `false`  | Controls which users have access to the Admin UI.                          |
-| `adminMeta`          | `Object`   | `{}`          | `false`  | Provides additional `adminMeta`. Useful for Hooks and other customizations |
-| `defaultPageSize`    | `Integer`  | 50            | `false`  | The default number of list items to show at once.                          |
-| `maximumPageSize`    | `Integer`  | 1000          | `false`  | The maximum number of list items to show at once.                          |
+| Option               | Type       | Default       | Description                                                                |
+| -------------------- | ---------- | ------------- | -------------------------------------------------------------------------- |
+| `name`               | `String`   | `undefined`   | The name of the project.                                                   |
+| `adminPath`          | `String`   | `/admin`      | The path of the Admin UI.                                                  |
+| `apiPath`            | `String`   | `/admin/api`  | The path of the API provided to the Admin UI.                              |
+| `graphiqlPath`       | `String`   | `/admin/api`  | The path of the GraphQL Playground, an in-browser GraphQL IDE.             |
+| `authStrategy`       | `Object`   | `null`        | See [Authentication Guides](https://keystonejs.com/guides/authentication)  |
+| `hooks`              | `String`   | `./admin-ui/` | Path to customization hooks. See below for more information.               |
+| `enableDefaultRoute` | `Bool`     | `false`       | If enabled, the path of the Admin UI app will be set to `/`.               |
+| `schemaName`         | `String`   | `public`      |                                                                            |
+| `isAccessAllowed`    | `Function` | `true`        | Controls which users have access to the Admin UI.                          |
+| `adminMeta`          | `Object`   | `{}`          | Provides additional `adminMeta`. Useful for Hooks and other customizations |
+| `defaultPageSize`    | `Integer`  | 50            | The default number of list items to show at once.                          |
+| `maximumPageSize`    | `Integer`  | 1000          | The maximum number of list items to show at once.                          |
 
 ### `hooks`
 
-Customization hooks allow you to modify various areas of the Admin UI to better suit your development needs. The `index.js` file at the given path should export a single config object containing your chosen hooks. All are optional.
+Customization hooks allow you to modify various areas of the Admin UI to better suit your development needs. The `index.js` file at the given path should export a single config object containing your chosen hooks. All are optional. See [Customization](#customization) for available hooks.
 
 If omitted, Keystone will look under `./admin-ui/` for a hooks config export.
 
@@ -62,17 +62,37 @@ If omitted, Keystone will look under `./admin-ui/` for a hooks config export.
 new AdminUIApp({ hooks: require.resolve('./custom-hooks-path') });
 ```
 
-The following hooks are available. Each is a function that takes no arguments.
+### `isAccessAllowed`
+
+This function takes the same arguments as a [shorthand imperative boolean](https://www.keystonejs.com/api/access-control#shorthand-imperative-boolean) access control. It must return either true or false.
+
+> **Important:** If omitted, all users _with accounts_ will be able to access the Admin UI. The example below would restrict access to users with the `isAdmin` permission.
+
+#### Usage
+
+```js
+new AdminUIApp({
+  /*...config */
+  isAccessAllowed: ({ authentication: { item: user, listKey: list } }) => !!user && !!user.isAdmin,
+}),
+```
+
+## Customization
+
+The following customization hooks are available. Each is a function that takes no arguments.
 
 ```javascript title=/custom-hooks-path/index.js
 export default {
+  customToast,
+  itemHeaderActions,
+  listHeaderActions,
+  listManageActions,
   logo,
   pages,
-  customToast,
 };
 ```
 
-#### `logo`
+### `logo`
 
 The logo to display on the signin screen.
 
@@ -84,7 +104,7 @@ export default {
 };
 ```
 
-#### `itemHeaderActions`
+### `itemHeaderActions`
 
 Header components on the Item Details page can be replaced using this hook. Ths replaces the components for item Details page for all Lists.
 
@@ -104,7 +124,7 @@ export default {
 };
 ```
 
-#### `listHeaderActions`
+### `listHeaderActions`
 
 Header components on the List page can be replaced using this hook. This replaces components on list page for all Lists.
 
@@ -123,7 +143,7 @@ export default {
 };
 ```
 
-#### `listManageActions`
+### `listManageActions`
 
 Custom Actions component for multiple items in the list can be replaced with this hook. This replaces the list management toolbar Items for all lists.
 
@@ -143,18 +163,18 @@ export default {
 };
 ```
 
-#### `pages`
+### `pages`
 
 Allows grouping list pages in the sidebar or defining completely new pages.
 
 Should return an array of objects, which may contain the following properties:
 
-| Name        | Type               | Description                                                                             |
-| ----------- | ------------------ | --------------------------------------------------------------------------------------- |
-| `label`     | `String`           | The page name to display in the sidebar.                                                |
-| `path`      | `String`           | The page path.                                                                          |
-| `component` | `Function | Class` | A React component which will be used to render this page.                               |
-| `children`  | `Array`            | An array of either Keystone list keys or objects with `listKey` and `label` properties. |
+| Name        | Type                | Description                                                                             |
+| ----------- | ------------------- | --------------------------------------------------------------------------------------- |
+| `label`     | `String`            | The page name to display in the sidebar.                                                |
+| `path`      | `String`            | The page path.                                                                          |
+| `component` | `Function \| Class` | A React component which will be used to render this page.                               |
+| `children`  | `Array`             | An array of either Keystone list keys or objects with `listKey` and `label` properties. |
 
 ```javascript
 export default {
@@ -187,7 +207,7 @@ export default {
 };
 ```
 
-#### `customToast`
+### `customToast`
 
 Allows customising the content of toast notification when an item is updated or deleted.
 
@@ -214,19 +234,4 @@ export default {
     );
   },
 };
-```
-
-### `isAccessAllowed`
-
-This function takes the same arguments as a [shorthand imperative boolean](https://www.keystonejs.com/api/access-control#shorthand-imperative-boolean) access control. It must return either true or false.
-
-> **Important:** If omitted, all users _with accounts_ will be able to access the Admin UI. The example below would restrict access to users with the `isAdmin` permission.
-
-#### Usage
-
-```js
-new AdminUIApp({
-  /*...config */
-  isAccessAllowed: ({ authentication: { item: user, listKey: list } }) => !!user && !!user.isAdmin,
-}),
 ```

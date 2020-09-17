@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 
-import { AlertIcon, DashboardIcon, PencilIcon, PlusIcon, MegaphoneIcon } from '@arch-ui/icons';
+import { AlertIcon, MeterIcon, PencilIcon, PlusIcon, MegaphoneIcon } from '@primer/octicons-react';
 import { Button, IconButton, LoadingButton } from '@arch-ui/button';
 import { FlexGroup } from '@arch-ui/layout';
 
@@ -12,7 +12,7 @@ const loadingTypes = [
 ];
 
 const iconTypes = [
-  { appearance: 'default', icon: DashboardIcon },
+  { appearance: 'default', icon: MeterIcon },
   { appearance: 'primary', icon: PencilIcon },
   { appearance: 'create', icon: PlusIcon },
   { appearance: 'warning', icon: MegaphoneIcon },

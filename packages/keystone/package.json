@@ -13,7 +13,6 @@
   "dependencies": {
     "@keystonejs/access-control": "^6.3.0",
     "@keystonejs/app-version": "^1.0.2",
-    "@keystonejs/fields": "^17.1.2",
     "@keystonejs/session": "^8.1.1",
     "@keystonejs/utils": "^5.4.3",
     "apollo-errors": "^1.9.0",
@@ -26,7 +25,7 @@
     "endent": "^2.0.1",
     "ensure-error": "^3.0.1",
     "express": "^4.17.1",
-    "express-pino-logger": "^4.0.0",
+    "express-pino-logger": "^5.0.0",
     "falsey": "^1.0.0",
     "fs-extra": "^9.0.1",
     "globby": "^11.0.1",
@@ -36,13 +35,14 @@
     "micro-memoize": "^4.0.9",
     "ora": "^5.1.0",
     "p-waterfall": "^2.1.0",
-    "pino": "5.17.0",
+    "pino": "^6.6.1",
     "pluralize": "^7.0.0",
     "serialize-error": "^7.0.1",
     "stack-utils": "^2.0.2",
     "terminal-link": "^2.1.1"
   },
   "devDependencies": {
+    "@keystonejs/fields": "^17.1.2",
     "@keystonejs/test-utils": "*",
     "p-is-promise": "^3.0.0",
     "tmp": "^0.2.1"

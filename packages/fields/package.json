@@ -12,7 +12,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@apollo/client": "^3.1.5",
+    "@apollo/client": "^3.2.0",
     "@arch-ui/alert": "^0.0.18",
     "@arch-ui/button": "^0.0.21",
     "@arch-ui/controls": "^0.1.9",
@@ -38,7 +38,7 @@
     "@keystonejs/app-admin-ui": "^7.3.5",
     "@keystonejs/server-side-graphql-client": "^1.1.2",
     "@keystonejs/utils": "^5.4.3",
-    "@primer/octicons-react": "^10.1.0",
+    "@primer/octicons-react": "^11.0.0",
     "@sindresorhus/slugify": "^0.11.0",
     "apollo-errors": "^1.9.0",
     "bcryptjs": "^2.4.3",
@@ -54,7 +54,6 @@
     "luxon": "^1.25.0",
     "mongoose": "~5.9.29",
     "p-settle": "^4.1.1",
-    "pluralize": "^7.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-day-picker": "^8.0.0-alpha.45",

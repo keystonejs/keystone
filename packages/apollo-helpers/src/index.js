@@ -1,5 +1,5 @@
 import { invalidateFields, ROOT } from '@jesstelford/apollo-cache-invalidation';
-import { Query, Mutation } from '@apollo/react-components';
+import { Query, Mutation } from '@apollo/client/react/components';
 import hoistStatics from 'hoist-non-react-statics';
 import mapValues from 'lodash.mapvalues';
 import React from 'react';

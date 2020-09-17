@@ -8,7 +8,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@apollo/client": "^3.1.5",
+    "@apollo/client": "^3.2.0",
     "@arch-ui/alert": "^0.0.18",
     "@arch-ui/badge": "^0.0.17",
     "@arch-ui/button": "^0.0.21",
@@ -42,7 +42,7 @@
     "@keystonejs/fields": "^17.1.2",
     "@keystonejs/session": "^8.1.1",
     "@keystonejs/utils": "^5.4.3",
-    "@primer/octicons-react": "^10.1.0",
+    "@primer/octicons-react": "^11.0.0",
     "@types/react": "^16.9.49",
     "apollo-upload-client": "^14.1.2",
     "apply-ref": "^0.2.3",
@@ -56,7 +56,7 @@
     "express": "^4.17.1",
     "express-history-api-fallback": "^2.2.1",
     "falsey": "^1.0.0",
-    "file-loader": "^3.0.1",
+    "file-loader": "^6.1.0",
     "graphql": "^14.7.0",
     "html-webpack-plugin": "^4.4.1",
     "lodash.debounce": "^4.0.8",

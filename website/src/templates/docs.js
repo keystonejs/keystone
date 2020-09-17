@@ -13,6 +13,7 @@ import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 import { Layout, Content } from '../templates/layout';
 import mdComponents from '../components/markdown';
 import { SiteMeta } from '../components/SiteMeta';
+import { BlogMeta } from '../components/BlogMeta';
 import { Container } from '../components';
 import { Sidebar } from '../components/Sidebar';
 import { media, mq } from '../utils/media';
@@ -24,7 +25,7 @@ const slugger = new Slugger();
 
 export default function Template({
   data: { mdx, site }, // this prop will be injected by the GraphQL query below.
-  pageContext: { slug },
+  pageContext: { slug, isBlog, author, date, pageTitle },
 }) {
   let [contentRef, setContentRef] = useState(null);
   let navData = useNavData();
@@ -92,6 +93,13 @@ export default function Template({
                 }}
               >
                 <SkipNavContent />
+                {isBlog ? (
+                  <Fragment>
+                    <mdComponents.h1>{pageTitle}</mdComponents.h1>
+                    <BlogMeta author={author} date={date} />
+                  </Fragment>
+                ) : null}
+
                 <MDXProvider components={mdComponents}>
                   <MDXRenderer>{body}</MDXRenderer>
                 </MDXProvider>
