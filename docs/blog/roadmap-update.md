@@ -16,11 +16,11 @@ At Thinkmill, we've been thinking hard about what we want Keystone to become, an
 
 Keystone is in a better place than it's ever been, and we're loving the enthusiastic feedback we've had from the community (as well as our own team who use it). We've also heard the pain points that people experience, and want to tackle these head on.
 
-In particular, while we're happy with Keystone's core architecture and how the back-end has developed; now we want to pour more love into Keystone's Admin UI and focus on the getting started experience.
+In particular, while we're happy with Keystone's core architecture and how the back-end has developed, now we want to pour more love into Keystone's Admin UI and focus on the getting started experience.
 
 ## Making getting started easy
 
-One of the core philosophies of keystone is "Make simple things easy, and complex things possible". Overall, we feel that we have been doing a good job of the second, but falling a bit short on the first.
+One of the core philosophies of Keystone is "Make simple things easy, and complex things possible". Overall, we feel that we have been doing a good job of the second, but falling a bit short on the first.
 
 So we're fixing this. We've been looking at other projects with great starting experiences, including Next.js and Gatsby — two favourites of ours which support really complex use-cases, but still make it ridiculously easy to get started.
 
@@ -30,7 +30,7 @@ We've designed clear stepping stones in terms of different modes of configuratio
 
 For the Admin UI, it looks like this:
 
-![A table showing our four steps of customisation: install keystone, using configuration options in the API, replacing components in the admin UI, replacing pages in the admin UI, adding your own pages, and then not using keystone](./roadmap-update-customising-graph.png)
+![A table showing our four steps of customisation: install Keystone, using configuration options in the API, replacing components in the admin UI, replacing pages in the admin UI, adding your own pages, and then not using Keystone](./roadmap-update-customising-graph.png)
 
 Having this clarity lets us design the best way to solve for different customisation modes, from controlling built-in behaviour with configuration, to replacing specific components in the admin UI, or add hooks into the database interactions, through to making entirely new pages in the Admin UI and having custom GraphQL queries and mutations you have created yourself.
 
@@ -40,7 +40,7 @@ Our goal for Keystone is to flatten that curve, as projects mature from Prototyp
 
 ## Replacing apps with config
 
-We've found that configuring Keystone as a series of "apps" (which are effectively express middleware) introduces a lot of runtime complexity to projects. This has made understanding how to customise things like session management, and how to host keystone projects, harder than it needs to be.
+We've found that configuring Keystone as a series of "apps" (which are effectively express middleware) introduces a lot of runtime complexity to projects. This has made understanding how to customise things like session management, and how to host Keystone projects, harder than it needs to be.
 
 So we're introducing a new CLI + Config system to Keystone, inspired by Next.js. You'll still be able to use Keystone in advanced setups like you currently can, but simpler things will be easier, and having static config (that doesn't have side effects like starting a web server) will let us build some cool things in the future like schema analysis for database migrations, serverless builds, and more.
 
@@ -96,11 +96,11 @@ export const Cell = ({ item, path }: CellProps) => {
 
 This allows you to customise different parts of the Admin UI without needing to create an entire new page to direct people to.
 
-In addition, we are building a new design system for keystone developers, to make extending parts of Keystone's UI without changing the look and feel seamless.
+In addition, we are building a new design system for Keystone developers, to make extending parts of Keystone's UI without changing the look and feel seamless.
 
 ## How are we doing all this?
 
-When looking at all this, we wanted to make sure we could deliver the best solutions possible, in the most effective ways. We spiked out our ideal implementations for these, and we've been happy enough with how that work has gone that we want to bring that back into the main repository. We'll be moving these in as new packages, and then shifting them across to be the canon keystone API once we've hit feature parity on everything.
+When looking at all this, we wanted to make sure we could deliver the best solutions possible, in the most effective ways. We spiked out our ideal implementations for these, and we've been happy enough with how that work has gone that we want to bring that back into the main repository. We'll be moving these in as new packages, and then shifting them across to be the canon Keystone API once we've hit feature parity on everything.
 
 These new packages will remain experimental a little while longer, and we'll be going into more details about all of the new features in future posts, along with a detailed upgrade guide when we are ready for you to jump on board with these changes.
 
