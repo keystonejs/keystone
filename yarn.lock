@@ -12010,20 +12010,19 @@ fn-name@^2.0.1:
   resolved "https://registry.yarnpkg.com/fn-name/-/fn-name-2.0.1.tgz#5214d7537a4d06a4a301c0cc262feb84188002e7"
   integrity sha1-UhTXU3pNBqSjAcDMJi/rhBiAAuc=
 
-focus-trap-react@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/focus-trap-react/-/focus-trap-react-7.0.1.tgz#42b4e548f27afa4c765a47894888eeed9aac8129"
-  integrity sha512-12TxHtVntj/sCsT3bwB3pPK+3rACMFLO7LBfk4nKrw1HERRmO/oc0+woD9vZKffxo5zkxkz9amc9rou9reVnpA==
+focus-trap-react@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/focus-trap-react/-/focus-trap-react-8.0.0.tgz#216ced21dad8814b3208c866602d0bd27d4454f4"
+  integrity sha512-wWIfr2vU92YTS5MssxU93/qSKPQImqxQZiBaU6Vfh0QKczJ1C1+hszCPhhj5Pm3k1Gr+fdDlshDw3IAB7wBZXA==
   dependencies:
-    focus-trap "^5.1.0"
+    focus-trap "^6.0.1"
 
-focus-trap@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-5.1.0.tgz#64a0bfabd95c382103397dbc96bfef3a3cf8e5ad"
-  integrity sha512-CkB/nrO55069QAUjWFBpX6oc+9V90Qhgpe6fBWApzruMq5gnlh90Oo7iSSDK7pKiV5ugG6OY2AXM5mxcmL3lwQ==
+focus-trap@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-6.0.1.tgz#f90725e4bb62ddab16e685b02b43b823858a4c0a"
+  integrity sha512-BOksLMPK/jlXD389jYPlZHAqiDdy9W63EBQfVIouME8s3UZsCEmq3NA53qt30S4i72sRcDjc1FHtast0TmqhRA==
   dependencies:
-    tabbable "^4.0.0"
-    xtend "^4.0.1"
+    tabbable "^5.0.0"
 
 follow-redirects@1.5.10, follow-redirects@^1.0.0:
   version "1.5.10"
@@ -25049,10 +25048,10 @@ symbol-tree@^3.2.4:
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
 
-tabbable@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-4.0.0.tgz#5bff1d1135df1482cf0f0206434f15eadbeb9261"
-  integrity sha512-H1XoH1URcBOa/rZZWxLxHCtOdVUEev+9vo5YdYhC9tCY4wnybX+VQrCYuy9ubkg69fCBxCONJOSLGfw0DWMffQ==
+tabbable@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.0.0.tgz#862b6f33a625da45d7c648cff0262dab453d8b0c"
+  integrity sha512-+TJTMpkHRCWkMGczHHVEfzBYCsVOiBjd3vle55AT4H299BhdJDLFqcYmr7S6kt5EGhT8gAywSC5gPUBDNvtl7w==
 
 table@^5.2.3:
   version "5.2.3"
