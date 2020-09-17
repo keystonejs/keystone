@@ -11,7 +11,7 @@
     "@keystonejs/app-graphql-playground": "^5.1.7",
     "@keystonejs/session": "^8.1.1",
     "@keystonejs/utils": "^5.4.3",
-    "graphql": "^14.7.0",
+    "graphql": "^15.3.0",
     "nanoassert": "^2.0.0"
   },
   "peerDependencies": {
