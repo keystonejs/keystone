@@ -13,7 +13,6 @@
   "dependencies": {
     "@keystonejs/access-control": "^6.3.0",
     "@keystonejs/app-version": "^1.0.2",
-    "@keystonejs/fields": "^17.1.2",
     "@keystonejs/session": "^8.1.1",
     "@keystonejs/utils": "^5.4.3",
     "apollo-errors": "^1.9.0",
@@ -43,6 +42,7 @@
     "terminal-link": "^2.1.1"
   },
   "devDependencies": {
+    "@keystonejs/fields": "^17.1.2",
     "@keystonejs/test-utils": "*",
     "p-is-promise": "^3.0.0",
     "tmp": "^0.2.1"
