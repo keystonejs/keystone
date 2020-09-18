@@ -63,7 +63,7 @@ export const lists = createSchema({
       },
     },
     fields: {
-      name: text({ required: true, hooks: {}, isMultiline: true }),
+      name: text({ required: true, hooks: {} }),
       email: text({
         required: true,
         unique: true,
