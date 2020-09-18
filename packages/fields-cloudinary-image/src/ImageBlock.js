@@ -1,4 +1,3 @@
-import pluralize from 'pluralize';
 import { resolveView } from './resolve-view';
 
 import { Block } from '@keystonejs/fields-content/Block';
@@ -67,7 +66,7 @@ export class ImageBlock extends Block {
   }
 
   get path() {
-    return pluralize.plural(this.type);
+    return 'cloudinaryImages';
   }
 
   getAdminViews() {

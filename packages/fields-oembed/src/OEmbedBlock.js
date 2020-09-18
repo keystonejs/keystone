@@ -1,5 +1,3 @@
-import pluralize from 'pluralize';
-
 import { Block } from '@keystonejs/fields-content/Block';
 import { OEmbed } from '.';
 import { Relationship as RelationshipType } from '@keystonejs/fields';
@@ -62,7 +60,7 @@ export class OEmbedBlock extends Block {
   }
 
   get path() {
-    return pluralize.plural(this.type);
+    return 'oEmbeds';
   }
 
   getFieldDefinitions() {
