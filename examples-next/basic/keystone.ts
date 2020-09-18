@@ -29,7 +29,7 @@ export default auth.withAuth(
     name: 'Keystone 2020 Spike',
     db: {
       adapter: 'mongoose',
-      url: 'mongodb://localhost/test-project-4',
+      url: 'mongodb://localhost/test-project-5',
     },
     graphql: {
       // NOTE -- this is not implemented, the spike always provides a graphql api at /api/graphql
