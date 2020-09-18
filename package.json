@@ -202,13 +202,7 @@
     ]
   },
   "resolutions": {
-    "graphql-upload": "^11.0.0",
-    "**/@babel/parser": "7.11.5",
-    "**/@babel/core": "7.11.6",
-    "**/@types/node":"^12.7.9",
-    "**/@types/express": "^4.17.8",
-    "**/@types/express-serve-static-core": "^4.17.12",
-    "**/@types/react": "^16.9.49"
+    "graphql-upload": "^11.0.0"
   },
   "engines": {
     "node": ">=10.0.0"

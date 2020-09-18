@@ -111,8 +111,7 @@ module.exports = {
     {
       files: ['**/*.{ts,tsx}'],
       rules: {
-        // TypeScript already checks for the following rules
-        // but they conflict for Reasons
+        // TypeScript already checks for the following things and they conflict with TypeScript
         'import/no-unresolved': 'off',
         'no-undef': 'off',
       },
