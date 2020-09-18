@@ -1,5 +1,13 @@
 # @arch-ui/drawer
 
+## 0.0.24
+
+### Patch Changes
+
+- [`ecbe1471f`](https://github.com/keystonejs/keystone/commit/ecbe1471fe22ca029a178a57dc216f6445b4053a) [#3609](https://github.com/keystonejs/keystone/pull/3609) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `focus-trap-react` to `^8.0.0`.
+
+* [`d7fc663c3`](https://github.com/keystonejs/keystone/commit/d7fc663c3799afd2c646cc1ad6670f8e85002093) [#3689](https://github.com/keystonejs/keystone/pull/3689) Thanks [@JedWatson](https://github.com/JedWatson)! - Fixed touch-scrolling behaviour of `Dialog` and `Drawer` components.
+
 ## 0.0.23
 
 ### Patch Changes

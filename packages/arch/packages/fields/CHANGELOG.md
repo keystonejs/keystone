@@ -1,5 +1,11 @@
 # @arch-ui/fields
 
+## 3.0.5
+
+### Patch Changes
+
+- [`b6e160678`](https://github.com/keystonejs/keystone/commit/b6e160678b449707261a54a9d565b91663784831) [#3671](https://github.com/keystonejs/keystone/pull/3671) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@primer/octicons-react` to `^11.0.0`.
+
 ## 3.0.4
 
 ### Patch Changes

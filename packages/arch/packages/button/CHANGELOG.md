@@ -1,5 +1,11 @@
 # @arch-ui/button
 
+## 0.0.22
+
+### Patch Changes
+
+- [`aa5b4aa26`](https://github.com/keystonejs/keystone/commit/aa5b4aa269eebc6931d30f6eddc315805c1f4fef) [#3675](https://github.com/keystonejs/keystone/pull/3675) Thanks [@Vultraz](https://github.com/Vultraz)! - Utilized Octicons size prop.
+
 ## 0.0.21
 
 ### Patch Changes
