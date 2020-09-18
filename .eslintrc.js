@@ -7,7 +7,7 @@ module.exports = {
     jest: true,
     'cypress/globals': true,
   },
-  plugins: ['react', 'react-hooks', 'jest', 'cypress', 'import', 'emotion', '@typescript-eslint'],
+  plugins: ['react', 'react-hooks', 'jest', 'cypress', 'import', '@typescript-eslint'],
   settings: {
     react: {
       version: 'detect',
@@ -66,10 +66,6 @@ module.exports = {
     'react/sort-prop-types': 'warn',
     semi: 'error',
     strict: 'off',
-    'emotion/jsx-import': 'error',
-    'emotion/no-vanilla': 'error',
-    'emotion/import-from-emotion': 'error',
-    'emotion/styled-import': 'error',
     'no-restricted-syntax': [
       'error',
       {
@@ -110,6 +106,14 @@ module.exports = {
       files: ['packages/fields/src/**/*.{js,ts,tsx}'],
       rules: {
         'import/no-commonjs': 'error',
+      },
+    },
+    {
+      files: ['**/*.{ts,tsx}'],
+      rules: {
+        // TypeScript already checks for the following things and they conflict with TypeScript
+        'import/no-unresolved': 'off',
+        'no-undef': 'off',
       },
     },
   ],

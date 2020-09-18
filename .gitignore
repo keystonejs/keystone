@@ -1,5 +1,8 @@
-packages/test-project/public
-examples/test-project
+# Next.js build dir
+.next
+
+# Keystone build dir
+.keystone
 
 # Logs
 logs
