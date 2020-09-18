@@ -1,0 +1,22 @@
+{
+  "name": "@keystone-ui/fields",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/fields.cjs.js",
+  "module": "dist/fields.esm.js",
+  "devDependencies": {
+    "@types/react": "^16.9.49"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "@emotion/core": "^10.0.35",
+    "@keystone-ui/core": "*",
+    "@keystone-ui/icons": "*",
+    "react": "^16.13.1"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/fields"
+}

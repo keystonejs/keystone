@@ -72,7 +72,6 @@
     "endent": "^2.0.1",
     "eslint": "^7.9.0",
     "eslint-plugin-cypress": "^2.11.1",
-    "eslint-plugin-emotion": "^10.0.27",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jest": "^24.0.1",
     "eslint-plugin-react": "^7.20.6",
@@ -145,7 +144,11 @@
       "examples/*",
       "website",
       "packages/create-keystone-app/example-projects/*",
-      "projects/*"
+      "projects/*",
+      "examples-next/*",
+      "packages-next/*",
+      "design-system/packages/*",
+      "design-system/website"
     ],
     "nohoist": [
       "**/cypress-multi-reporters"
@@ -167,7 +170,9 @@
       "packages/fields-wysiwyg-tinymce",
       "packages/fields-content",
       "packages/fields-color",
-      "packages/fields"
+      "packages/fields",
+      "packages-next/*",
+      "design-system/packages/*"
     ],
     "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
       "newEntrypoints": true
@@ -197,7 +202,11 @@
     ]
   },
   "resolutions": {
-    "graphql-upload": "^11.0.0"
+    "graphql-upload": "^11.0.0",
+    "**/@babel/parser": "^7.11.5",
+    "**/@types/node":"^12.7.9",
+    "**/@types/express": "^4.17.8",
+    "**/@types/react": "^16.9.49"
   },
   "engines": {
     "node": ">=10.0.0"

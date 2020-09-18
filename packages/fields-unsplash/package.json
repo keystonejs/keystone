@@ -20,7 +20,7 @@
     "@keystonejs/fields": "^17.1.2",
     "@keystonejs/fields-content": "^8.0.4",
     "node-fetch": "^2.6.1",
-    "pluralize": "^7.0.0",
+    "pluralize": "^8.0.0",
     "query-string": "^6.13.2",
     "unsplash-js": "^6.3.0"
   },
