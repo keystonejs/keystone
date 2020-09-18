@@ -73,7 +73,7 @@ export function statelessSessions({
       throw new Error('The session secret must be at least 32 characters long');
     }
     return sessionStrategy({
-      async get(req) {
+      async getq(req) {
         if (!req.headers.cookie) return;
         let cookies = cookie.parse(req.headers.cookie);
         if (!cookies[TOKEN_NAME]) return;
