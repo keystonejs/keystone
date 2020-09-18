@@ -1,17 +1,13 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import { Fragment, useState, useCallback, createContext, useContext } from 'react';
-import pluralize from 'pluralize';
 import { BlockMenuItem } from '@keystonejs/fields-content/block-components';
 import { Input } from '@arch-ui/input';
 
 import { gql, useLazyQuery } from '@apollo/client';
 
 export let type = 'unsplashImage';
-
-// TODO: Receive this value from the server somehow. 'pluralize' is a fairly
-// large lib.
-export const path = pluralize.plural(type);
+export const path = 'unsplashImages';
 
 let Context = createContext(null);
 
