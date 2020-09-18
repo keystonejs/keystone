@@ -11,6 +11,8 @@ import { sessionStuff } from '../session';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { gql } from '../schema';
+import { GraphQLSchema, GraphQLScalarType } from 'graphql';
+import { mapSchema } from '@graphql-tools/utils';
 
 export function createKeystone(config: KeystoneConfig): Keystone {
   let keystone = new BaseKeystone({
@@ -82,12 +84,31 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     dev: process.env.NODE_ENV === 'development',
   });
   let sessionThing = sessionStrategy ? sessionStuff(sessionStrategy) : undefined;
+  const schemaFromApolloServer: GraphQLSchema = server.schema;
+  const schema = mapSchema(schemaFromApolloServer, {
+    'MapperKind.SCALAR_TYPE'(type) {
+      // because of a bug in mergeSchemas which duplicates directives on scalars,
+      // we're removing specifiedByUrl from the scalar
+      // https://github.com/ardatan/graphql-tools/issues/2031
+      if (type instanceof GraphQLScalarType && type.name === 'JSON') {
+        return new GraphQLScalarType({
+          name: type.name,
+          description: type.description,
+          parseLiteral: type.parseLiteral,
+          parseValue: type.parseValue,
+          serialize: type.serialize,
+        });
+      }
+      return type;
+    },
+  });
+
   let graphQLSchema =
     config.extendGraphqlSchema?.(
-      server.schema,
+      schema,
       // TODO: find a way to not do this
       keystone
-    ) || server.schema;
+    ) || schema;
   if (sessionStrategy?.end) {
     graphQLSchema = mergeSchemas({
       schemas: [graphQLSchema],
