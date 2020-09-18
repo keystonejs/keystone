@@ -7,14 +7,13 @@ import {
 // import redis from 'redis';
 import { lists, extendGraphqlSchema } from './schema';
 import { createAuth } from '@keystone-spike/auth';
-import { UserListTypeInfo } from './.keystone/schema-types';
 
 let sessionSecret =
   'a very very good secreta very very good secreta very very good secreta very very good secret';
 
 const withItemData = (i: any) => i;
 
-const auth = createAuth<UserListTypeInfo>({
+const auth = createAuth({
   listKey: 'User',
   identityField: 'email',
   secretField: 'password',

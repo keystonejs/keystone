@@ -212,7 +212,9 @@ export type Keystone = {
   adminMeta: SerializedAdminMeta;
   graphQLSchema: GraphQLSchema;
   createContext: (req: IncomingMessage, res: ServerResponse) => any;
-  createSessionContext: ((req: IncomingMessage, res: ServerResponse) => SessionContext) | undefined;
+  createSessionContext:
+    | ((req: IncomingMessage, res: ServerResponse) => Promise<SessionContext>)
+    | undefined;
   views: string[];
 };
 
