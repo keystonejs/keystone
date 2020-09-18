@@ -1,0 +1,21 @@
+{
+  "name": "@keystone-ui/loading",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/loading.cjs.js",
+  "module": "dist/loading.esm.js",
+  "devDependencies": {
+    "@types/react": "^16.9.49"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "@emotion/core": "^10.0.35",
+    "@keystone-ui/core": "*",
+    "react": "^16.13.1"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/loading"
+}
