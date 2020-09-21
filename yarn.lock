@@ -6134,7 +6134,7 @@ apollo-server-express@^2.17.0:
     subscriptions-transport-ws "^0.9.16"
     type-is "^1.6.16"
 
-apollo-server-micro@^2.15.0:
+apollo-server-micro@^2.17.0:
   version "2.17.0"
   resolved "https://registry.yarnpkg.com/apollo-server-micro/-/apollo-server-micro-2.17.0.tgz#09985c9e115b8a0bba78e27208d93f11d0795f32"
   integrity sha512-58lXkcyWvpyePYjjrnq7BdzC2MsqaWYkiUEq4oxGVCoKavR4NbCbfFPgE+3Gu/84HUG6udhEpv74DdXKUqjjbQ==
