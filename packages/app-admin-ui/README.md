@@ -35,20 +35,20 @@ module.exports = {
 
 ## Config
 
-| Option               | Type       | Default      | Description                                                                |
-| -------------------- | ---------- | ------------ | -------------------------------------------------------------------------- |
-| `name`               | `String`   | `undefined`  | The name of the project.                                                   |
-| `adminPath`          | `String`   | `/admin`     | The path of the Admin UI.                                                  |
-| `apiPath`            | `String`   | `/admin/api` | The path of the API provided to the Admin UI.                              |
-| `graphiqlPath`       | `String`   | `/admin/api` | The path of the GraphQL Playground, an in-browser GraphQL IDE.             |
-| `authStrategy`       | `Object`   | `null`       | See [Authentication Guides](https://keystonejs.com/guides/authentication)  |
-| `hooks`              | `String`   | `./admin-ui/ | Path to customization hooks. See below for more information.               |
-| `enableDefaultRoute` | `Bool`     | `false`      | If enabled, the path of the Admin UI app will be set to `/`.               |
-| `schemaName`         | `String`   | `public`     |                                                                            |
-| `isAccessAllowed`    | `Function` | `true`       | Controls which users have access to the Admin UI.                          |
-| `adminMeta`          | `Object`   | `{}`         | Provides additional `adminMeta`. Useful for Hooks and other customizations |
-| `defaultPageSize`    | `Integer`  | 50           | The default number of list items to show at once.                          |
-| `maximumPageSize`    | `Integer`  | 1000         | The maximum number of list items to show at once.                          |
+| Option               | Type       | Default       | Description                                                                |
+| -------------------- | ---------- | ------------- | -------------------------------------------------------------------------- |
+| `name`               | `String`   | `undefined`   | The name of the project.                                                   |
+| `adminPath`          | `String`   | `/admin`      | The path of the Admin UI.                                                  |
+| `apiPath`            | `String`   | `/admin/api`  | The path of the API provided to the Admin UI.                              |
+| `graphiqlPath`       | `String`   | `/admin/api`  | The path of the GraphQL Playground, an in-browser GraphQL IDE.             |
+| `authStrategy`       | `Object`   | `null`        | See [Authentication Guides](https://keystonejs.com/guides/authentication)  |
+| `hooks`              | `String`   | `./admin-ui/` | Path to customization hooks. See below for more information.               |
+| `enableDefaultRoute` | `Bool`     | `false`       | If enabled, the path of the Admin UI app will be set to `/`.               |
+| `schemaName`         | `String`   | `public`      |                                                                            |
+| `isAccessAllowed`    | `Function` | `true`        | Controls which users have access to the Admin UI.                          |
+| `adminMeta`          | `Object`   | `{}`          | Provides additional `adminMeta`. Useful for Hooks and other customizations |
+| `defaultPageSize`    | `Integer`  | 50            | The default number of list items to show at once.                          |
+| `maximumPageSize`    | `Integer`  | 1000          | The maximum number of list items to show at once.                          |
 
 ### `hooks`
 

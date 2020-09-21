@@ -1,5 +1,11 @@
 # @arch-ui/icons
 
+## 0.1.3
+
+### Patch Changes
+
+- [`e78b72f35`](https://github.com/keystonejs/keystone/commit/e78b72f35c75207195c31d0109d592260e7b706a) [#3624](https://github.com/keystonejs/keystone/pull/3624) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@primer/octicons` to `^11.0.`.
+
 ## 0.1.2
 
 ### Patch Changes

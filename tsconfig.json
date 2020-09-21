@@ -10,7 +10,9 @@
     "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
-    "types": ["jest"]
+    "noUnusedLocals": true,
+    "types": ["jest"],
+    "typeRoots": []
   },
   "include": ["**/*"],
   "exclude": ["**/node_modules/**/*"]

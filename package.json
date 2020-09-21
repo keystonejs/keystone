@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "yarn demo todo dev",
     "demo": "yarn --cwd ./examples",
-    "website": "manypkg run website",
+    "website": "manypkg run @keystonejs/website",
     "arch-docs": "manypkg run arch/docs",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
     "cypress:run": "status=0; yarn workspace @keystonejs/cypress-project-basic run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-login run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-twitter-login run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-access-control run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-client-validation run cypress:run || status=$?; exit $status",
@@ -57,22 +57,21 @@
     "@jest/test-sequencer": "^26.4.2",
     "@manypkg/cli": "^0.16.1",
     "@preconstruct/cli": "1.1.27",
-    "@types/jest": "^26.0.13",
+    "@types/jest": "^26.0.14",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
     "@typescript-eslint/parser": "^4.1.1",
-    "all-contributors-cli": "^6.17.2",
+    "all-contributors-cli": "^6.17.3",
     "babel-plugin-emotion": "^10.0.33",
     "chalk": "^4.1.0",
     "chalk-cli": "^4.1.0",
     "cross-env": "^7.0.2",
-    "cypress": "^4.12.1",
+    "cypress": "^5.2.0",
     "cypress-multi-reporters": "^1.4.0",
     "dotenv": "^8.2.0",
     "dotenv-safe": "^8.2.0",
     "endent": "^2.0.1",
     "eslint": "^7.9.0",
     "eslint-plugin-cypress": "^2.11.1",
-    "eslint-plugin-emotion": "^10.0.27",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jest": "^24.0.1",
     "eslint-plugin-react": "^7.20.6",
@@ -145,7 +144,11 @@
       "examples/*",
       "website",
       "packages/create-keystone-app/example-projects/*",
-      "projects/*"
+      "projects/*",
+      "examples-next/*",
+      "packages-next/*",
+      "design-system/packages/*",
+      "design-system/website"
     ],
     "nohoist": [
       "**/cypress-multi-reporters"
@@ -167,7 +170,9 @@
       "packages/fields-wysiwyg-tinymce",
       "packages/fields-content",
       "packages/fields-color",
-      "packages/fields"
+      "packages/fields",
+      "packages-next/*",
+      "design-system/packages/*"
     ],
     "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
       "newEntrypoints": true
