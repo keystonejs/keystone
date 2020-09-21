@@ -4361,7 +4361,7 @@
   dependencies:
     "@babel/types" "^7.9.5"
 
-"@svgr/plugin-jsx@^5.3.1", "@svgr/plugin-jsx@^5.4.0":
+"@svgr/plugin-jsx@^5.4.0":
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/@svgr/plugin-jsx/-/plugin-jsx-5.4.0.tgz#ab47504c55615833c6db70fca2d7e489f509787c"
   integrity sha512-SGzO4JZQ2HvGRKDzRga9YFSqOqaNrgLlQVaGvpZ2Iht2gwRp/tq+18Pvv9kS9ZqOMYgyix2LLxZMY1LOe9NPqw==
