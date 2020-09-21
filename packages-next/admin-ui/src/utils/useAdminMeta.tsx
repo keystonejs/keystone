@@ -77,6 +77,8 @@ export function useAdminMeta(
         key,
         fields: {},
         label: list.label,
+        singular: list.singular,
+        plural: list.plural,
         path: list.path,
         description: list.description,
       };
