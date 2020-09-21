@@ -60,7 +60,7 @@
     "@types/jest": "^26.0.14",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
     "@typescript-eslint/parser": "^4.1.1",
-    "all-contributors-cli": "^6.17.3",
+    "all-contributors-cli": "^6.17.4",
     "babel-plugin-emotion": "^10.0.33",
     "chalk": "^4.1.0",
     "chalk-cli": "^4.1.0",
