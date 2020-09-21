@@ -112,6 +112,6 @@ Keystone exposes enough complicated types that this is something we knew we want
 
 ## Follow Along
 
-We're really excited to share our work as we progress, and we'd love to hear from you. Watch for PRs and issues coming in tagged `new-interfaces` , and start discussions in the GitHub repo to share your thoughts with us.
+We're really excited to share our work as we progress, and we'd love to hear from you. Watch for [PRs](https://github.com/keystonejs/keystone/pulls?q=is%3Apr+label%3A%22new+interfaces%22) and [issues](https://github.com/keystonejs/keystone/issues?q=is%3Aissue+label%3A%22new+interfaces%22+) coming in tagged `new interfaces`, and start [discussions](https://github.com/keystonejs/keystone/discussions) in the GitHub repo to share your thoughts with us.
 
 We'll be blogging about these changes in depth as we progress, and as always you should [follow **@KeystoneJS** on Twitter](https://twitter.com/keystonejs) for updates!
