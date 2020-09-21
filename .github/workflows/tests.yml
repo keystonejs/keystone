@@ -7,8 +7,22 @@ on:
   pull_request:
 
 jobs:
+  should-run-tests:
+    name: Should run tests
+    runs-on: ubuntu-latest
+    outputs:
+      shouldRunTests: ${{ steps.filter.outputs.shouldRunTests }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            shouldRunTests:
+              - '!{{website,docs,examples,packages-next,examples-next,design-system}/**,**/*.md}'
+
   jest:
     name: Jest
+    needs: should-run-tests
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -39,7 +53,7 @@ jobs:
 
       - name: Setup Node.js 10.x
         uses: actions/setup-node@main
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should-run-tests.outputs.shouldRunTests == 'true'
         with:
           node-version: 10.x
 
@@ -118,6 +132,7 @@ jobs:
         run: yarn lint:types
   cypress:
     name: Cypress tests
+    needs: should-run-tests
     runs-on: ubuntu-latest
     services:
       mongodb:
@@ -140,15 +155,6 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          # we want to force the action to compare with git rather than GitHub's API
-          token: ''
-          filters: |
-            shouldRunTests:
-              - '!{{website,docs,examples,packages-next,examples-next,design-system}/**,**/*.md}'
-
       - name: Setup Node.js 10.x
         uses: actions/setup-node@main
         if: steps.filter.outputs.shouldRunTests == 'true'
