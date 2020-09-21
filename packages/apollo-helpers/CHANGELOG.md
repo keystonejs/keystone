@@ -1,5 +1,11 @@
 # @keystonejs/apollo-helpers
 
+## 5.1.8
+
+### Patch Changes
+
+- [`ec116796b`](https://github.com/keystonejs/keystone/commit/ec116796b1f85d287172f1588c8c1a769ae46a88) [#3674](https://github.com/keystonejs/keystone/pull/3674) Thanks [@timleslie](https://github.com/timleslie)! - Use `@apollo/client` rather than `@apollo/react-components`, which are now deprecated (https://github.com/apollographql/react-apollo/blob/master/Changelog.md#%E2%80%8B400-2020-07-20).
+
 ## 5.1.7
 
 ### Patch Changes
