@@ -1,13 +1,11 @@
 <!--[meta]
 section: blog
-title: New Release - Cornice (21/9/20)
+title: New Release - Cornice
+author: The Keystone Team
 date: 2020-09-21
-author: Noviny
-order: 2
+order: 0.5
 tags: release
 [meta]-->
-
-> I'm really sorry if this sets the expectation that all these posts will rhyme
 
 > For full release notes see: [Our versioning PR](https://github.com/keystonejs/keystone/pull/3642)
 
@@ -37,16 +35,18 @@ manypkg upgrade @keystonejs
 
 And here is the main attraction! What's up with the Cornice release?
 
-### BREAKING
+### Breaking Changes
 
 - Updated dependency pino to ^6.6.1. See the pino [release notes](https://github.com/pinojs/pino/releases/tag/v6.0.0) for breaking changes to logging output. In particular, the `v` field is no longer logged out, and `null` message values are handled differently. Unless you depend on these finer details of the Keystone error logs you won't need to make any changes to your app.
 
-### Other:
+### Other Changes:
 
-- Enabled schema tracing if APOLLO_KEY is set.
+- Enabled schema tracing if `APOLLO_KEY` is set.
 - Removed some unused dependencies (helping with your install size a little)
-- Updated a bunch of other dependencies (we've been getting comfortable with renovate)
+- Updated a bunch of packages we depend on (we've been getting comfortable with renovate)
 
 ### @arch-ui/drawer
 
 - Fixed touch-scrolling behaviour of Dialog and Drawer components (update the admin UI to consume this fix)
+
+> I'm really sorry if this sets the expectation that all these posts will rhyme
