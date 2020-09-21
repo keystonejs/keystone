@@ -162,6 +162,8 @@ type BaseListMeta = {
   key: string;
   path: string;
   label: string;
+  singular: string;
+  plural: string;
   description?: string;
   gqlNames: GqlNames;
 };
@@ -230,4 +232,37 @@ export type SessionContext = {
   session: any;
   startSession?(data: any): Promise<string>;
   endSession?(data: any): Promise<void>;
+};
+
+// TODO: This needs to be reviewed and expanded
+export type BaseKeystoneList = {
+  key: string;
+  adminUILabels: {
+    label: string;
+    singular: string;
+    plural: string;
+    path: string;
+  };
+  gqlNames: {
+    outputTypeName: string;
+    itemQueryName: string;
+    listQueryName: string;
+    listQueryMetaName: string;
+    listMetaName: string;
+    listSortName: string;
+    deleteMutationName: string;
+    updateMutationName: string;
+    createMutationName: string;
+    deleteManyMutationName: string;
+    updateManyMutationName: string;
+    createManyMutationName: string;
+    whereInputName: string;
+    whereUniqueInputName: string;
+    updateInputName: string;
+    createInputName: string;
+    updateManyInputName: string;
+    createManyInputName: string;
+    relateToManyInputName: string;
+    relateToOneInputName: string;
+  };
 };

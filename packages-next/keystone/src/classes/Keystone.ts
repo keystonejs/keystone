@@ -2,6 +2,7 @@ import { Keystone as BaseKeystone } from '@keystonejs/keystone';
 import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexAdapter } from '@keystonejs/adapter-knex';
 import type {
+  BaseKeystoneList,
   SerializedAdminMeta,
   KeystoneConfig,
   Keystone,
@@ -45,8 +46,8 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     return uniqueViewCount;
   }
   Object.keys(config.lists).forEach(key => {
-    let listConfig = config.lists[key];
-    keystone.createList(key, {
+    const listConfig = config.lists[key];
+    const list: BaseKeystoneList = keystone.createList(key, {
       fields: Object.fromEntries(
         Object.entries(listConfig.fields).map(([key, field]) => [
           key,
@@ -59,18 +60,22 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       listQueryName: listConfig.graphql?.listQueryName,
       itemQueryName: listConfig.graphql?.itemQueryName,
       hooks: listConfig.hooks,
-    } as any);
+    } as any) as any;
     adminMeta.lists[key] = {
       key,
+      // TODO: This should look for the admin description, not the graphQL description...
+      // This really all needs to be reviewed.
       description: listConfig.graphql?.description ?? listConfig.description,
-      label: (keystone as any).lists[key].adminUILabels.label,
+      label: list.adminUILabels.label,
+      singular: list.adminUILabels.singular,
+      plural: list.adminUILabels.plural,
+      path: list.adminUILabels.path,
       fields: {},
-      path: (keystone as any).lists[key].adminUILabels.path,
-      gqlNames: (keystone as any).lists[key].gqlNames,
+      gqlNames: list.gqlNames,
     };
     for (const fieldKey of Object.keys(listConfig.fields)) {
-      let field = listConfig.fields[fieldKey];
-      let view = field.config.admin?.views ?? field.views;
+      const field = listConfig.fields[fieldKey];
+      const view = field.config.admin?.views ?? field.views;
       adminMeta.lists[key].fields[fieldKey] = {
         label: fieldKey,
         views: getViewId(view),
