@@ -39,7 +39,7 @@ And here is the main attraction! What's up with the Cornice release?
 
 ### BREAKING
 
-- Updated dependency pino to ^6.6.1. See the pino release notes for breaking changes to logging output.
+- Updated dependency pino to ^6.6.1. See the pino [release notes](https://github.com/pinojs/pino/releases/tag/v6.0.0) for breaking changes to logging output. In particular, the `v` field is no longer logged out, and `null` message values are handled differently. Unless you depend on these finer details of the Keystone error logs you won't need to make any changes to your app.
 
 ### Other:
 
