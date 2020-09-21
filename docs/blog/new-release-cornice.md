@@ -1,6 +1,6 @@
 <!--[meta]
 section: blog
-title: New Release: Cornice (21/9/20)
+title: New Release - Cornice (21/9/20)
 date: 2020-09-21
 author: Noviny
 order: 2
