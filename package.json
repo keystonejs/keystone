@@ -99,7 +99,7 @@
     "rimraf": "^3.0.2",
     "split": "^1.0.1",
     "stack-utils": "^2.0.2",
-    "start-server-and-test": "^1.11.3",
+    "start-server-and-test": "^1.11.4",
     "supertest-light": "^1.0.3",
     "terminal-link": "^2.1.1",
     "terminal-link-cli": "^2.0.0",
