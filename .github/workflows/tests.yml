@@ -42,6 +42,7 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
 
       - name: Setup Node.js 10.x
         uses: actions/setup-node@main
@@ -145,11 +146,8 @@ jobs:
           - test-projects/access-control
           - test-projects/client-validation
     steps:
-      - name: Dump needs context
-        env:
-          NEEDS_CONTEXT: ${{ toJson(needs.should_run_tests.outputs) }}
-        run: echo "$NEEDS_CONTEXT"
       - name: Checkout Repo
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/checkout@v2
       - name: Setup Node.js 10.x
         uses: actions/setup-node@main
