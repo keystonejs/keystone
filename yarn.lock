@@ -4901,7 +4901,7 @@
     "@types/prop-types" "*"
     csstype "^3.0.2"
 
-"@types/redis@^2.8.26":
+"@types/redis@^2.8.27":
   version "2.8.27"
   resolved "https://registry.yarnpkg.com/@types/redis/-/redis-2.8.27.tgz#9bc89b472f3fc4a57a06c1823f2fc860c6c2fdf3"
   integrity sha512-RRHarqPp3mgqHz+qzLVuQCJAIVaB3JBaczoj24QVVYu08wiCmB8vbOeNeK9lIH+pyT7+R/bbEPghAZZuhbZm0g==
