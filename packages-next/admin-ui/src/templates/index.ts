@@ -1,7 +1,7 @@
-import { AppTemplate } from './App';
-import { HomePageTemplate } from './HomePage';
-import { ListPageTemplate } from './ListPage';
-import { ItemPageTemplate } from './ItemPage';
+import { appTemplate } from './app';
+import { homeTemplate } from './home';
+import { listTemplate } from './list';
+import { itemTemplate } from './item';
 
 import type { Keystone } from '@keystone-spike/types';
 import { AdminFileToWrite } from '@keystone-spike/types';
@@ -29,11 +29,11 @@ export const writeAdminFiles = (keystone: Keystone, configFile: boolean): AdminF
     {
       mode: 'write',
       outputPath: 'pages/_app.js',
-      src: AppTemplate(keystone, { configFile }),
+      src: appTemplate(keystone, { configFile }),
     },
     {
       mode: 'write',
-      src: HomePageTemplate(keystone),
+      src: homeTemplate(keystone),
       outputPath: 'pages/index.js',
     },
     ...Object.values(keystone.adminMeta.lists)
@@ -42,12 +42,12 @@ export const writeAdminFiles = (keystone: Keystone, configFile: boolean): AdminF
         return [
           {
             mode: 'write',
-            src: ListPageTemplate(keystone, { list }),
+            src: listTemplate(keystone, { list }),
             outputPath: `pages/${path}/index.js`,
           },
           {
             mode: 'write',
-            src: ItemPageTemplate(keystone, { list }),
+            src: itemTemplate(keystone, { list }),
             outputPath: `pages/${path}/[id].js`,
           },
         ] as const;
