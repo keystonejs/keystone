@@ -145,6 +145,10 @@ jobs:
           - test-projects/access-control
           - test-projects/client-validation
     steps:
+      - name: Dump needs context
+        env:
+          NEEDS_CONTEXT: ${{ toJson(needs) }}
+        run: echo "$NEEDS_CONTEXT"
       - name: Checkout Repo
         uses: actions/checkout@v2
       - name: Setup Node.js 10.x
