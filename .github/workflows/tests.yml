@@ -33,7 +33,7 @@ jobs:
         with:
           filters: |
             shouldRunTests:
-              - '!{{website,docs,packages-next,}/**,**/*.md}'
+              - '!{{website,docs,examples,packages-next,examples-next,design-system}/**,**/*.md}'
 
       - name: Setup Node.js 10.x
         uses: actions/setup-node@main
