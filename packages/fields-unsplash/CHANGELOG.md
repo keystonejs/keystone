@@ -1,5 +1,24 @@
 # @keystonejs/fields-unsplash
 
+## 2.1.3
+
+### Patch Changes
+
+- [`0e94ac15d`](https://github.com/keystonejs/keystone/commit/0e94ac15d26523681d964567882f846092d7b0ac) [#3661](https://github.com/keystonejs/keystone/pull/3661) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed unused graphql-tag dependency.
+
+* [`b32f006ad`](https://github.com/keystonejs/keystone/commit/b32f006ad283f8aa1911f55bbecac9942f3f9f25) [#3666](https://github.com/keystonejs/keystone/pull/3666) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@apollo/client` to `^3.2.0`.
+
+- [`95d05dd13`](https://github.com/keystonejs/keystone/commit/95d05dd1328e397b45c69723ce037d174595881d) [#3657](https://github.com/keystonejs/keystone/pull/3657) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `query-string` to `^6.13.2`.
+
+* [`16f271f5f`](https://github.com/keystonejs/keystone/commit/16f271f5fdfc697fb8f9760922626e313ce25971) [#3693](https://github.com/keystonejs/keystone/pull/3693) Thanks [@timleslie](https://github.com/timleslie)! - Removed dependency on `pluralize`.
+
+* Updated dependencies [[`b32f006ad`](https://github.com/keystonejs/keystone/commit/b32f006ad283f8aa1911f55bbecac9942f3f9f25), [`6f42b0a9d`](https://github.com/keystonejs/keystone/commit/6f42b0a9d231049f9e7523eb78ec621d9c9d6df9), [`06dffc42b`](https://github.com/keystonejs/keystone/commit/06dffc42b08062e3166880146c8fb606493ead12), [`27783bbca`](https://github.com/keystonejs/keystone/commit/27783bbca3b1c5ff05402738c14ffa8db73e542b), [`7a1f8bbdc`](https://github.com/keystonejs/keystone/commit/7a1f8bbdcdf68c9579e17db77fa826e811abcab4), [`6f42b0a9d`](https://github.com/keystonejs/keystone/commit/6f42b0a9d231049f9e7523eb78ec621d9c9d6df9), [`5c1e55721`](https://github.com/keystonejs/keystone/commit/5c1e5572134fa93c9aefbb537676e30cafd0e7d9), [`304701d7c`](https://github.com/keystonejs/keystone/commit/304701d7c23e98c8dc40c0f3f5512a0370107c06), [`b6e160678`](https://github.com/keystonejs/keystone/commit/b6e160678b449707261a54a9d565b91663784831), [`7956d5da0`](https://github.com/keystonejs/keystone/commit/7956d5da00197dc11f5d54f7870b8fa72c05a3c0)]:
+  - @keystonejs/fields@17.1.3
+  - @keystonejs/adapter-mongoose@9.0.7
+  - @keystonejs/fields-content@8.0.5
+  - @arch-ui/fields@3.0.5
+  - @keystonejs/adapter-knex@11.0.6
+
 ## 2.1.2
 
 ### Patch Changes

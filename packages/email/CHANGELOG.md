@@ -1,5 +1,11 @@
 # @keystonejs/email
 
+## 5.1.9
+
+### Patch Changes
+
+- [`6a7395d58`](https://github.com/keystonejs/keystone/commit/6a7395d5848c6630b8e3943bcd9e3245aa6e2574) [#3649](https://github.com/keystonejs/keystone/pull/3649) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mjml-react` to `^1.0.58`.
+
 ## 5.1.8
 
 ### Patch Changes
