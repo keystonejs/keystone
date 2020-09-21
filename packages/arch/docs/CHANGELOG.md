@@ -1,5 +1,20 @@
 # @arch-ui/docs
 
+## 1.1.28
+
+### Patch Changes
+
+- [`8aede7e1b`](https://github.com/keystonejs/keystone/commit/8aede7e1b9e2b07562b202f05409e29898736aa9) [#3676](https://github.com/keystonejs/keystone/pull/3676) Thanks [@Vultraz](https://github.com/Vultraz)! - Removed last uses of @arch-ui/icons.
+
+- Updated dependencies [[`ecbe1471f`](https://github.com/keystonejs/keystone/commit/ecbe1471fe22ca029a178a57dc216f6445b4053a), [`d7fc663c3`](https://github.com/keystonejs/keystone/commit/d7fc663c3799afd2c646cc1ad6670f8e85002093), [`aa5b4aa26`](https://github.com/keystonejs/keystone/commit/aa5b4aa269eebc6931d30f6eddc315805c1f4fef), [`b6e160678`](https://github.com/keystonejs/keystone/commit/b6e160678b449707261a54a9d565b91663784831)]:
+  - @arch-ui/dialog@0.0.24
+  - @arch-ui/dropdown@0.0.21
+  - @arch-ui/popout@0.0.22
+  - @arch-ui/button@0.0.22
+  - @arch-ui/fields@3.0.5
+  - @arch-ui/pagination@0.0.26
+  - @arch-ui/pill@0.1.18
+
 ## 1.1.27
 
 ### Patch Changes
