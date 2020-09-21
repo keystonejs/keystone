@@ -37,12 +37,16 @@ manypkg upgrade @keystonejs
 
 And here is the main attraction! What's up with the Cornice release?
 
+### BREAKING
+
 - Updated dependency pino to ^6.6.1. See the pino release notes for breaking changes to logging output.
+
+### Other:
 
 - Enabled schema tracing if APOLLO_KEY is set.
 - Removed some unused dependencies (helping with your install size a little)
 - Updated a bunch of other dependencies (we've been getting comfortable with renovate)
 
-@arch-ui/drawer
+### @arch-ui/drawer
 
-- Fixed touch-scrolling behaviour of Dialog and Drawer components.
+- Fixed touch-scrolling behaviour of Dialog and Drawer components (update the admin UI to consume this fix)
