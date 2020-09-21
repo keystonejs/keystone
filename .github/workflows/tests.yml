@@ -7,8 +7,22 @@ on:
   pull_request:
 
 jobs:
+  should_run_tests:
+    name: Should run tests
+    runs-on: ubuntu-latest
+    outputs:
+      shouldRunTests: ${{ steps.filter.outputs.shouldRunTests }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            shouldRunTests:
+              - '!{{website,docs,examples,packages-next,examples-next,design-system}/**,**/*.md}'
+
   jest:
     name: Jest
+    needs: should_run_tests
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -28,29 +42,22 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          # we want to force the action to compare with git rather than GitHub's API
-          token: ''
-          filters: |
-            shouldRunTests:
-              - '!{{website,docs,examples,packages-next,examples-next,design-system}/**,**/*.md}'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
 
       - name: Setup Node.js 10.x
         uses: actions/setup-node@main
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         with:
           node-version: 10.x
 
       - name: Get yarn cache directory path
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - uses: actions/cache@v2
         id: yarn-cache
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         with:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -61,11 +68,11 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - run: psql -d $DATABASE_URL -c "CREATE SCHEMA keystone;"
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - name: Unit tests
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --maxWorkers=1
         env:
           CLOUDINARY_CLOUD_NAME: keystone-cloudinary
@@ -118,6 +125,7 @@ jobs:
         run: yarn lint:types
   cypress:
     name: Cypress tests
+    needs: should_run_tests
     runs-on: ubuntu-latest
     services:
       mongodb:
@@ -139,30 +147,22 @@ jobs:
           - test-projects/client-validation
     steps:
       - name: Checkout Repo
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/checkout@v2
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          # we want to force the action to compare with git rather than GitHub's API
-          token: ''
-          filters: |
-            shouldRunTests:
-              - '!{{website,docs,examples,packages-next,examples-next,design-system}/**,**/*.md}'
-
       - name: Setup Node.js 10.x
         uses: actions/setup-node@main
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         with:
           node-version: 10.x
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - uses: actions/cache@v2
         id: yarn-cache
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         with:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -173,11 +173,11 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - run: yarn --cwd tests/${{ matrix.project }} cypress install
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - run: yarn --cwd tests/${{ matrix.project }} cypress:run:ci
-        if: steps.filter.outputs.shouldRunTests == 'true'
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
