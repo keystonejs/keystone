@@ -11,14 +11,21 @@ jobs:
     name: Should run tests
     runs-on: ubuntu-latest
     outputs:
-      shouldRunTests: ${{ steps.filter.outputs.shouldRunTests }}
+      shouldRunTests: ${{ env.SHOULD_RUN_TESTS }}
     steps:
       - uses: dorny/paths-filter@v2
         id: filter
+        if: github.event_name == 'pull_request'
         with:
           filters: |
             shouldRunTests:
               - '!{{website,docs,examples,packages-next,examples-next,design-system}/**,**/*.md}'
+      - run: echo "::set-env name=SHOULD_RUN_TESTS::$SHOULD_RUN"
+        if: github.event_name == 'pull_request'
+        env:
+          SHOULD_RUN: ${{ steps.filter.outputs.shouldRunTests }}
+      - run: echo "::set-env name=SHOULD_RUN_TESTS::true"
+        if: github.event_name != 'pull_request'
 
   jest:
     name: Jest
