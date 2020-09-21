@@ -11,14 +11,16 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            shouldRequireApprovalFromPerson:
-              - '!{packages-next,examples-next,design-system}/**'
-      - uses: Thinkmill/auto-approve-action@v1
-        with:
-          approve: ${{ steps.filter.outputs.shouldRequireApprovalFromPerson == 'false' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - uses: dorny/paths-filter@v2
+      #   id: filter
+      #   with:
+      #     # we want to force the action to compare with git rather than GitHub's API
+      #     token: ''
+      #     filters: |
+      #       shouldRequireApprovalFromPerson:
+      #         - '!{packages-next,examples-next,design-system}/**'
+      # - uses: Thinkmill/auto-approve-action@v1
+      #   with:
+      #     approve: ${{ steps.filter.outputs.shouldRequireApprovalFromPerson == 'false' }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
