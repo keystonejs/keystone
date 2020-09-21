@@ -4,22 +4,44 @@
   - [x] Make a hook to consume it (unlike the admin meta, I'm thinking we don't block rendering for fetching this)
   - [x] UI for "you're currently logged in as {label}"
 - [ ] Generate Nav, and allow overrides in client-side config
+- [ ] Need config for lists to say whether you should be able to create / edit things
 
 ## Dashboard
 
 - [ ] Render cards on the dashboard based on nav
 - [ ] Need to query (staic/dynamic) permissions before trying to show UI
   - [ ] I think this means we need to add more to the meta queries for lists
-- [ ] Cards on the dashboard should\* show individual errors (but not access control)
-- [ ] Need config for lists to say whether you should be able to create / edit things
+- [ ] Cards on the dashboard should\* show individual errors (but not access control errors)
+- [ ] If you can create items, show the create button
+- [ ] Unless it is switched off, show the current count by default
+- [ ] Add a way for cards to be customised per-list (probably custom `views.DashboardCard` on the list)
 
 ## List View
 
 - [ ] Need popups for columns and filters
 - [ ] Implement Columns
   - [ ] URL State working and actually setting columns
+  - [ ] Show the right columns in the table and query the right fields
+  - [ ] Show "with {x} columns" in UI
+  - [ ] Popup to select columns
+  - [ ] Logic to ensure there's always a label or ID field
+  - [ ] Add `supportsLinkTo` support to Cells
+  - [ ] Pass `linkTo` to the first cell, if supported, otherwise add a link icon as the first column
 - [ ] Implement Filters
   - [ ] URL State working and actually filtering
+  - [ ] Show selected filters in UI
+  - [ ] Popup to add filters
+  - [ ] Popup to edit filters
+- [ ] Implement Pagination
+- [ ] Selecting items
+  - [ ] Selecting specific items in the table, with all/none
+- [ ] Delete selected item(s)
+- [ ] Add dots menu for [copy link / copy id / delete]
+
+### Come back to later
+
+- [ ] Select all items matching a filter (requires resolver support to implement)
+- [ ] Update selected item(s) (this needs some thought around certain fields like relationships)
 
 ## Create Item
 
