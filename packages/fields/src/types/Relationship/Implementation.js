@@ -59,7 +59,7 @@ export class Relationship extends Implementation {
       const filterArgs = refList.getGraphqlFilterFragment().join('\n');
       return [
         `${this.path}(${filterArgs}): [${refList.gqlNames.outputTypeName}!]!`,
-        this.withMeta ? `_${this.path}Meta(${filterArgs}): _QueryMeta` : '',
+        this.withMeta ? `_${this.path}Meta(${filterArgs}): _QueryMeta!` : '',
       ];
     } else {
       return [`${this.path}: ${refList.gqlNames.outputTypeName}`];

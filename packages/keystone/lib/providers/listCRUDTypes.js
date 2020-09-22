@@ -181,7 +181,7 @@ const getListCRUDTypes = ({ listsMetaInput }) => [
   `,
   `
     type _QueryMeta {
-      count: Int
+      count: Int!
     }
   `,
   `

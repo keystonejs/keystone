@@ -1071,7 +1071,7 @@ module.exports = class List {
         } items which match the where clause. """
         ${this.gqlNames.listQueryMetaName}(
           ${this.getGraphqlFilterFragment().join('\n')}
-        ): _QueryMeta`,
+        ): _QueryMeta!`,
 
         `
         """ Retrieve the meta-data for the ${this.gqlNames.itemQueryName} list. """
