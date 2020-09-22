@@ -144,7 +144,7 @@ export function getExtendGraphQLSchema({
             return {
               ...item,
               // TODO: is this okay?
-              // probs yes but ¯\_(ツ)_/¯
+              // probably yes but ¯\_(ツ)_/¯
               __typename: ctx.session.listKey,
             };
           }

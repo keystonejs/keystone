@@ -4,14 +4,41 @@ import {
   KeystoneConfig,
   SerializedFieldMeta,
 } from '@keystone-spike/types';
-import { getExtendGraphQLSchema } from './getExtendGraphQLSchema';
-import { AuthConfig, Auth, ResolvedAuthGqlNames } from './types';
 import url from 'url';
-import { initFirstItemSchemaExtension } from './initFirstItemSchemaExtension';
 
+import { getExtendGraphQLSchema } from './getExtendGraphQLSchema';
+import { initFirstItemSchemaExtension } from './initFirstItemSchemaExtension';
+import { AuthConfig, Auth, ResolvedAuthGqlNames } from './types';
+
+import { signinTemplate } from './templates/signin';
+import { initTemplate } from './templates/init';
+
+/**
+ * createAuth function
+ *
+ * Generates config for Keystone to implement standard auth features.
+ */
 export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
   config: AuthConfig<GeneratedListTypes>
 ): Auth {
+  const gqlNames: ResolvedAuthGqlNames = {
+    authenticateItemWithPassword: `authenticate${config.listKey}WithPassword`,
+    createInitialItem: `createInitial${config.listKey}`,
+    sendItemForgottenPassword: `send${config.listKey}ForgottenPassword`,
+    sendItemMagicAuthenticateLink: `send${config.listKey}MagicAuthenticateLink`,
+    ItemAuthenticationWithPasswordResult: `${config.listKey}AuthenticationWithPasswordResult`,
+  };
+
+  /**
+   * adminPageMiddleware
+   *
+   * Should be added to the admin.pageMiddleware stack.
+   *
+   * Redirects:
+   *  - from the signin or init pages to the index when a valid session is present
+   *  - to the init page when initFirstItem is configured, and there are no user in the database
+   *  - to the signin page when no valid session is present
+   */
   const adminPageMiddleware: Auth['admin']['pageMiddleware'] = async ({
     req,
     isValidSession,
@@ -53,35 +80,21 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
       };
     }
   };
-  const gqlNames: ResolvedAuthGqlNames = {
-    authenticateItemWithPassword: `authenticate${config.listKey}WithPassword`,
-    createInitialItem: `createInitial${config.listKey}`,
-    sendItemForgottenPassword: `send${config.listKey}ForgottenPassword`,
-    sendItemMagicAuthenticateLink: `send${config.listKey}MagicAuthenticateLink`,
-    ItemAuthenticationWithPasswordResult: `${config.listKey}AuthenticationWithPasswordResult`,
-  };
+
+  /**
+   * additionalFiles
+   *
+   * This function adds files to be generated into the Admin UI build. Must be added to the
+   * admin.additionalFiles config.
+   *
+   * The signin page is always included, and the init page is included when initFirstItem is set
+   */
   const additionalFiles: Auth['admin']['getAdditionalFiles'] = keystone => {
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
         outputPath: 'pages/signin.js',
-        src: `
-import React from 'react';
-import { gql } from '@keystone-spike/admin-ui/apollo';
-import { SigninPage } from '@keystone-spike/auth/pages/SigninPage'
-      
-export default function Signin() {
-  return <SigninPage mutation={gql\`
-  mutation($identity: String!, $secret: String!) {
-    ${gqlNames.authenticateItemWithPassword}(email: $identity, password: $secret) {
-      item {
-        id
-      }
-    }
-  }
-  \`} />
-}
-      `,
+        src: signinTemplate({ gqlNames }),
       },
     ];
     if (config.initFirstItem) {
@@ -93,31 +106,24 @@ export default function Signin() {
       filesToWrite.push({
         mode: 'write',
         outputPath: 'pages/init.js',
-        src: `import { InitPage } from '@keystone-spike/auth/pages/InitPage';
-import React from 'react';
-import { gql } from '@keystone-spike/admin-ui/apollo';
-
-const fieldsMeta = ${JSON.stringify(fields)}
-
-const mutation = gql\`mutation($data: CreateInitial${config.listKey}Input!) {
-  createInitial${config.listKey}(data: $data) {
-    item {
-      id
-    }
-  }
-}\`
-
-export default function Init() {
-  return <InitPage fields={fieldsMeta} showKeystoneSignup={${JSON.stringify(
-    !config.initFirstItem.skipKeystoneSignup
-  )}} mutation={mutation} />
-}
-`,
+        src: initTemplate({ config, fields }),
       });
     }
     return filesToWrite;
   };
 
+  /**
+   * adminPublicPages
+   *
+   * Must be added to the admin.publicPages config
+   */
+  const adminPublicPages = ['/signin', '/init'];
+
+  /**
+   * extendGraphqlSchema
+   *
+   * Must be added to the extendGraphqlSchema config. Can be composed.
+   */
   let extendGraphqlSchema = getExtendGraphQLSchema({
     ...config,
     protectIdentities: config.protectIdentities || false,
@@ -134,9 +140,12 @@ export default function Init() {
     extendGraphqlSchema = (schema, keystone) =>
       extension(existingExtendGraphqlSchema(schema, keystone), keystone);
   }
-  const adminPublicPages = ['/signin', '/init'];
 
-  // TODO
+  /**
+   * validateConfig
+   *
+   * Validates the provided auth config; optional step when integrating auth
+   */
   const validateConfig = (keystoneConfig: KeystoneConfig) => {
     const specifiedListConfig = keystoneConfig.lists[config.listKey];
     if (keystoneConfig.lists[config.listKey] === undefined) {
@@ -178,6 +187,16 @@ export default function Init() {
     }
   };
 
+  /**
+   * withAuth
+   *
+   * Automatically extends config with the correct auth functionality. This is the easiest way to
+   * configure auth for keystone; you should probably use it unless you want to extend or replace
+   * the way auth is set up with custom functionality.
+   *
+   * It validates the auth config against the provided keystone config, and preserves existing
+   * config by composing existing extendGraphqlSchema functions and admin config.
+   */
   const withAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
     validateConfig(keystoneConfig);
     let admin = keystoneConfig.admin;
@@ -204,6 +223,11 @@ export default function Init() {
     };
   };
 
+  /**
+   * Alongside withAuth (recommended) all the config is returned so you can extend or replace
+   * the default implementation with your own custom functionality, and integrate the result into
+   * your keystone config by hand.
+   */
   return {
     admin: {
       enableSessionItem: true,

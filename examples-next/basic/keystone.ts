@@ -18,7 +18,7 @@ const auth = createAuth({
   identityField: 'email',
   secretField: 'password',
   initFirstItem: {
-    fields: ['email', 'password'],
+    fields: ['name', 'email', 'password'],
   },
 });
 
@@ -29,7 +29,7 @@ export default auth.withAuth(
     name: 'Keystone 2020 Spike',
     db: {
       adapter: 'mongoose',
-      url: 'mongodb://localhost/test-project-5',
+      url: 'mongodb://localhost/keystone-examples-next-basic',
     },
     graphql: {
       // NOTE -- this is not implemented, the spike always provides a graphql api at /api/graphql

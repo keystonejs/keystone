@@ -13,7 +13,7 @@ type AppTemplateOptions = {
   configFile: boolean;
 };
 
-export const AppTemplate = (keystone: Keystone, { configFile }: AppTemplateOptions) => {
+export const appTemplate = (keystone: Keystone, { configFile }: AppTemplateOptions) => {
   const authenticatedItemQuery = getAuthenticatedItemQuery(keystone.graphQLSchema);
   // -- TEMPLATE START
   return `
