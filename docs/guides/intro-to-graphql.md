@@ -238,7 +238,7 @@ The options available in a where clause depend on the field types.
 
 ```graphql
 query {
-  allUsers (where: { name_starts_with_i: 'A'} ) {
+  allUsers (where: { name_starts_with_i: "A"} ) {
     id
   }
 }
@@ -303,8 +303,8 @@ You can combine multiple where clauses with `AND` or `OR` operators.
 query {
   allUsers (where: {
     OR: [
-      { name_starts_with_i: 'A' },
-      { email_starts_with_i: 'A' },
+      { name_starts_with_i: "A" },
+      { email_starts_with_i: "A" },
     ]
   } ) {
     id
@@ -399,10 +399,10 @@ It is important to provide the same `where` and `search` arguments to both the `
 
 ```graphql
 query {
-  allUsers (search: 'a', skip: 10, first: 10) {
+  allUsers (search: "a", skip: 10, first: 10) {
     id
   }
-  _allUsersMeta(search: 'a') {
+  _allUsersMeta(search: "a") {
     count
   }
 }
