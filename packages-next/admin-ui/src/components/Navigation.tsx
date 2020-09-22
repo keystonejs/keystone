@@ -2,7 +2,9 @@
 
 import { jsx } from '@emotion/core';
 import { Button } from '@keystone-ui/button';
-import { Box, Stack, useTheme } from '@keystone-ui/core';
+import { Box, Stack, Inline, useTheme } from '@keystone-ui/core';
+import { GithubIcon } from '@keystone-ui/icons/icons/GithubIcon';
+import { DatabaseIcon } from '@keystone-ui/icons/icons/DatabaseIcon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { FunctionComponent, ReactNode } from 'react';
@@ -82,7 +84,7 @@ export const Navigation: FunctionComponent = () => {
               }}
             >
               <Box paddingY="medium">
-                You're logged in as <strong>{authenticatedItem.label}</strong>
+                Hello <strong>{authenticatedItem.label}</strong>
               </Box>
               <Button size="small">log out</Button>
             </div>
@@ -101,6 +103,14 @@ export const Navigation: FunctionComponent = () => {
             );
           })}
         </Stack>
+        <Inline gap="medium">
+          <Button as="a" target="_blank" href="/api/graphql">
+            <DatabaseIcon />
+          </Button>
+          <Button as="a" target="_blank" href="https://github.com/keystonejs/keystone">
+            <GithubIcon />
+          </Button>
+        </Inline>
       </Stack>
     </Box>
   );

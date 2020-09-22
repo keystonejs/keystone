@@ -22,38 +22,39 @@ const ListCard = ({ listKey, count }: ListCardProps) => {
   const { colors, palette, shadow, spacing, radii } = useTheme();
   const list = useList(listKey);
   return (
-    <div>
-      <Link href={list.path} passHref>
-        <a
-          css={{
-            backgroundColor: colors.background,
-            borderWidth: 1,
-            borderColor: palette.neutral200,
-            borderRadius: radii.medium,
-            boxShadow: shadow.s100,
-            textDecoration: 'none',
-            display: 'inline-block',
-            padding: spacing.large,
-            marginRight: spacing.large,
-            minWidth: 280,
-            ':hover': {
-              borderColor: palette.blue400,
-            },
-          }}
-        >
-          <h3 css={{ margin: 0 }}>{list.label} </h3>
-          {count.type === 'success' ? (
-            <span css={{ color: colors.foreground, textDecoration: 'none' }}>
-              {count.count} item{count.count !== 1 ? 's' : ''}
-            </span>
-          ) : count.type === 'error' ? (
-            count.message
-          ) : (
-            'No access'
-          )}
-        </a>
-      </Link>
-    </div>
+    <Link href={list.path} passHref>
+      <a
+        css={{
+          backgroundColor: colors.background,
+          borderWidth: 1,
+          borderColor: palette.neutral200,
+          borderRadius: radii.medium,
+          boxShadow: shadow.s100,
+          textDecoration: 'none',
+          display: 'inline-block',
+          padding: spacing.large,
+          marginRight: spacing.large,
+          minWidth: 280,
+          ':hover': {
+            borderColor: palette.blue400,
+          },
+          ':hover h3': {
+            textDecoration: 'underline',
+          },
+        }}
+      >
+        <h3 css={{ margin: `0 0 ${spacing.small}px 0` }}>{list.label} </h3>
+        {count.type === 'success' ? (
+          <span css={{ color: colors.foreground, textDecoration: 'none' }}>
+            {count.count} item{count.count !== 1 ? 's' : ''}
+          </span>
+        ) : count.type === 'error' ? (
+          count.message
+        ) : (
+          'No access'
+        )}
+      </a>
+    </Link>
   );
 };
 
