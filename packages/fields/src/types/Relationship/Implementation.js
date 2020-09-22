@@ -125,10 +125,11 @@ export class Relationship extends Implementation {
       return {
         [this.path]: (item, _, context, info) => {
           // No ID set, so we return null for the value
-          if (!item[this.path]) {
+          const id = item && (item[this.adapter.idPath] || (item[this.path] && item[this.path].id));
+          if (!id) {
             return null;
           }
-          const filteredQueryArgs = { where: { id: item[this.path].toString() } };
+          const filteredQueryArgs = { where: { id: id.toString() } };
           // We do a full query to ensure things like access control are applied
           return refList
             .listQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName, info)
@@ -207,7 +208,7 @@ export class Relationship extends Implementation {
         : [];
       currentValue = currentValue.map(({ id }) => id.toString());
     } else {
-      currentValue = item && item[this.path];
+      currentValue = item && (item[this.adapter.idPath] || (item[this.path] && item[this.path].id));
       currentValue = currentValue && currentValue.toString();
     }
 
@@ -325,6 +326,7 @@ export class Relationship extends Implementation {
 export class MongoRelationshipInterface extends MongooseFieldAdapter {
   constructor(...args) {
     super(...args);
+    this.idPath = this.dbPath;
 
     // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
     const [refListKey, refFieldPath] = this.config.ref.split('.');
@@ -363,6 +365,7 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
 export class KnexRelationshipInterface extends KnexFieldAdapter {
   constructor() {
     super(...arguments);
+    this.idPath = this.dbPath;
     this.isRelationship = true;
 
     // Default isIndexed to true if it's not explicitly provided
