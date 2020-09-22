@@ -136,17 +136,22 @@ Delete a single Entity by ID. Accepts a single parameter where the `id` matches 
 
 ```graphql
 mutation {
-  deleteUser(id: ID)
+  deleteUser(id: ID) {
+    id
+  }
 }
 ```
 
 ### `deleteUsers`
 
 Delete multiple entities by ID. Similar to `deleteUser` where the `id` parameter is an array of ids.
+You can add more IDs like this `[ID1, ID2]` and don't forget to write the IDs in string format `""` like this `["5f67974b476e6e2d58c2bfb0", "5f67974b476e6e2d58c2bfb1"]`
 
 ```graphql
 mutation {
-  deleteUsers(id: [ID])
+  deleteUsers(ids: [ID]) {
+    id
+  }
 }
 ```
 
