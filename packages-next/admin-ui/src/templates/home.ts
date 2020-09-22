@@ -1,12 +1,12 @@
 import type { Keystone } from '@keystone-spike/types';
 
-export const HomePageTemplate = (keystone: Keystone) => {
-  // -- TEMPLATE START
+export const homeTemplate = (keystone: Keystone) => {
   let query = `query {\n`;
   for (const listKey in keystone.adminMeta.lists) {
     query += `${listKey}: ${keystone.adminMeta.lists[listKey].gqlNames.listQueryMetaName} { count }\n`;
   }
   query += '}';
+  // -- TEMPLATE START
   return `
 import React from 'react';
 
