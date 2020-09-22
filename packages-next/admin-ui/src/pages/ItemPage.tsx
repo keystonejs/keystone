@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import { useList } from '../KeystoneContext';
-import { Navigation } from '../components/Navigation';
 import { PageContainer } from '../components/PageContainer';
 import { Button } from '@keystone-ui/button';
 import { JSONValue, ListMeta } from '@keystone-spike/types';
@@ -184,7 +183,6 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
 
   return (
     <PageContainer>
-      <Navigation />
       <h2>
         List:{' '}
         <Link href={`/${list.path}`}>

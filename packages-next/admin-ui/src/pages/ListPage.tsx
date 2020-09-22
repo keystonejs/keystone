@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 
 import { PageContainer } from '../components/PageContainer';
-import { Navigation } from '../components/Navigation';
 import { useList } from '../KeystoneContext';
 
 type ListPageProps = {
@@ -37,7 +36,6 @@ export const ListPage = ({ listKey }: ListPageProps) => {
 
   return (
     <PageContainer>
-      <Navigation />
       <h2>List: {list.label}</h2>
       {error ? (
         'Error...'
