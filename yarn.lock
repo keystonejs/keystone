@@ -18522,10 +18522,10 @@ moment@^2.28.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.28.0.tgz#cdfe73ce01327cee6537b0fafac2e0f21a237d75"
   integrity sha512-Z5KOjYmnHyd/ukynmFd/WwyXHd7L4J9vTI/nn5Ap9AVUgaAE15VvQ9MOGmJJygEUklupqIrFnor/tjTwRU+tQw==
 
-mongodb-memory-server-core@^6.7.6:
-  version "6.7.6"
-  resolved "https://registry.yarnpkg.com/mongodb-memory-server-core/-/mongodb-memory-server-core-6.7.6.tgz#18e7fdeba1e4ffa445ec22308b5ec308c9021241"
-  integrity sha512-q6qLVI8C56wDZ7HAZSZ+GNL7qz2Aj42nd8CNGO7dTGlOsoThPTVnHAJfFR7qMz/xLPLxEyjR618XVuLaGtXxpA==
+mongodb-memory-server-core@^6.8.0:
+  version "6.8.0"
+  resolved "https://registry.yarnpkg.com/mongodb-memory-server-core/-/mongodb-memory-server-core-6.8.0.tgz#6349e265c693a75a88111092e8653f5b89204647"
+  integrity sha512-cw8TX3iKhmXPiPQDcmIftHl1WvuCn970nomeQKgpcJZOYIUI87zD97apNIWfajkEduIe+24yYoqIwbwLbA19gQ==
   dependencies:
     "@types/tmp" "^0.2.0"
     camelcase "^6.0.0"
