@@ -99,12 +99,7 @@ Creates multiple `Users`. Parameters are the same as `createUser` except the dat
 
 ```graphql
 mutation {
-  createUsers(
-    data: [
-      { data: { name: "Mike" } },
-      { data: { name: "Maher" } }
-    ]
-  ) {
+  createUsers(data: [{ data: { name: "Mike" } }, { data: { name: "Maher" } }]) {
     id
     name
   }
