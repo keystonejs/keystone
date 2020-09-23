@@ -65,7 +65,7 @@ const TableHeaderRow = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const TableHeaderCell = ({ children }: { children: ReactNode }) => {
+const TableHeaderCell = ({ children }: { children?: ReactNode }) => {
   const { colors, spacing, typography } = useTheme();
   return (
     <th
