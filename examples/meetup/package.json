@@ -14,7 +14,7 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@apollo/client": "^3.2.0",
+    "@apollo/client": "^3.2.1",
     "@emotion/core": "^10.0.35",
     "@keystonejs/adapter-mongoose": "^9.0.7",
     "@keystonejs/app-admin-ui": "^7.3.6",
