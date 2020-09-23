@@ -50,7 +50,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   await mod.afterAll();
                 }
               });
-              mod.filterTests(withKeystone);
+              mod.filterTests(withKeystone, matrixValue);
             });
           }
 
