@@ -8,8 +8,8 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
   TGeneratedListTypes
 > & {
   defaultValue?: string;
-  required?: boolean;
-  unique?: boolean;
+  isRequired?: boolean;
+  isUnique?: boolean;
   isMultiline?: boolean;
 };
 
@@ -22,7 +22,7 @@ export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
     isMultiline: !!config.isMultiline,
   }),
   views: '@keystone-spike/fields/src/types/text/views',
-  getBackingType(path) {
+  getBackingType(path: string) {
     return {
       [path]: {
         optional: true,
