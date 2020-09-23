@@ -2,7 +2,12 @@
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { FieldContainer, Checkbox } from '@keystone-ui/fields';
-import { CellComponent, FieldProps, makeController } from '@keystone-spike/types';
+import {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
+} from '@keystone-spike/types';
 import { Fragment } from 'react';
 
 export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => {
@@ -27,7 +32,9 @@ export const Cell: CellComponent = ({ item, path }) => {
   return <Fragment>{item[path] + ''}</Fragment>;
 };
 
-export const controller = makeController(config => {
+type CheckboxController = FieldController<boolean>;
+
+export const controller = (config: FieldControllerConfig): CheckboxController => {
   return {
     path: config.path,
     label: config.label,
@@ -46,4 +53,4 @@ export const controller = makeController(config => {
       // Can throw a FieldError
     },
   };
-});
+};

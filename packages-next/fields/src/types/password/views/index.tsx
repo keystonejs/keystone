@@ -3,7 +3,12 @@
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 
-import { CellComponent, FieldProps, makeController } from '@keystone-spike/types';
+import {
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+  FieldProps,
+} from '@keystone-spike/types';
 import { Fragment } from 'react';
 
 export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => (
@@ -23,7 +28,9 @@ export const Cell: CellComponent = ({ item, path }) => {
   return <Fragment>{item[`${path}_is_set`] ? 'Is set' : 'Is not set'}</Fragment>;
 };
 
-export const controller = makeController(config => {
+type PasswordController = FieldController<string>;
+
+export const controller = (config: FieldControllerConfig): PasswordController => {
   return {
     path: config.path,
     label: config.label,
@@ -32,4 +39,4 @@ export const controller = makeController(config => {
     deserialize: () => '',
     serialize: value => ({ [config.path]: value }),
   };
-});
+};
