@@ -5,13 +5,13 @@ import { Button } from '@keystone-ui/button';
 import { Box, Stack, Inline, useTheme } from '@keystone-ui/core';
 import { GithubIcon } from '@keystone-ui/icons/icons/GithubIcon';
 import { DatabaseIcon } from '@keystone-ui/icons/icons/DatabaseIcon';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FunctionComponent, ReactNode, useEffect } from 'react';
 
 import { Logo } from './Logo';
 import { useMutation, gql } from '../apollo';
 import { useKeystone } from '../KeystoneContext';
+import { Link } from '../router';
 
 type NavItemProps = {
   href: string;
@@ -29,45 +29,42 @@ const NavItem: FunctionComponent<NavItemProps> = ({ href, children }) => {
   const router = useRouter();
   const isSelected = router && router.pathname === href;
   return (
-    <div>
-      <Link href={href} passHref>
-        <a
+    <Link
+      href={href}
+      css={{
+        textDecoration: 'none',
+        position: 'relative',
+        borderRadius: radii.medium,
+        color: isSelected ? palette.neutral800 : palette.neutral700,
+        background: isSelected ? 'white' : 'transparent',
+        fontWeight: isSelected ? typography.fontWeight.bold : typography.fontWeight.regular,
+        display: 'block',
+        padding: `${spacing.small}px ${spacing.medium}px`,
+        margin: `0 -${spacing.medium}px`,
+        ':hover': isSelected
+          ? undefined
+          : {
+              color: palette.blue600,
+              background: 'white',
+            },
+      }}
+    >
+      {isSelected && (
+        <span
           css={{
-            textDecoration: 'none',
-            position: 'relative',
-            borderRadius: radii.medium,
-            color: isSelected ? palette.neutral800 : palette.neutral700,
-            background: isSelected ? 'white' : 'transparent',
-            fontWeight: isSelected ? typography.fontWeight.bold : typography.fontWeight.regular,
             display: 'block',
-            padding: `${spacing.small}px ${spacing.medium}px`,
-            margin: `0 -${spacing.medium}px`,
-            ':hover': isSelected
-              ? undefined
-              : {
-                  color: palette.blue600,
-                  background: 'white',
-                },
+            position: 'absolute',
+            width: 5,
+            height: '80%',
+            background: palette.blue400,
+            borderRadius: radii.medium,
+            top: '10%',
+            right: 5,
           }}
-        >
-          {isSelected && (
-            <span
-              css={{
-                display: 'block',
-                position: 'absolute',
-                width: 5,
-                height: '80%',
-                background: palette.blue400,
-                borderRadius: radii.medium,
-                top: '10%',
-                right: 5,
-              }}
-            />
-          )}
-          {children}
-        </a>
-      </Link>
-    </div>
+        />
+      )}
+      {children}
+    </Link>
   );
 };
 
@@ -86,6 +83,26 @@ const SignoutButton: FunctionComponent = () => {
   );
 };
 
+const AuthenticatedItem: FunctionComponent<{
+  item: { id: string; label: string };
+}> = ({ item }) => {
+  return (
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}
+    >
+      <Box paddingY="medium">
+        Hello <strong>{item.label}</strong>
+      </Box>
+      <SignoutButton />
+    </div>
+  );
+};
+
 export const Navigation: FunctionComponent = () => {
   const {
     adminMeta: { lists },
@@ -96,22 +113,8 @@ export const Navigation: FunctionComponent = () => {
       <Stack gap="medium" marginTop="medium">
         <Logo />
         <Box>
-          {authenticatedItem.state === 'authenticated' ? (
-            <div
-              css={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Box paddingY="medium">
-                Hello <strong>{authenticatedItem.label}</strong>
-              </Box>
-              <SignoutButton />
-            </div>
-          ) : (
-            authenticatedItem.state
+          {authenticatedItem.state === 'authenticated' && (
+            <AuthenticatedItem item={authenticatedItem} />
           )}
         </Box>
         <Stack gap="small">
