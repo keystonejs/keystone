@@ -11,8 +11,8 @@
   "dependencies": {
     "@babel/runtime": "^7.11.2",
     "@emotion/core": "^10.0.35",
-    "@keystone-spike/types": "*",
     "@keystone-spike/admin-ui": "*",
+    "@keystone-spike/types": "*",
     "@keystone-ui/core": "*",
     "@keystone-ui/fields": "*",
     "@keystonejs/fields": "^17.1.2",
