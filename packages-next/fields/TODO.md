@@ -41,9 +41,13 @@ As per the current implementation
 
 - [ ] Add a CalendarDay field type
 
-## Time
+## Time (or TimeOfDay?)
 
-New field type for storing times. See https://github.com/keystonejs/keystone/issues/46#issuecomment-413743564
+New field type for storing a time of day.
+
+> It would be nice to capture the intent of "this time of day, every day, regardless of time zone or offset" in a type.
+> I imagine we'd store it as per the time part of an ISO 8601 string (ie. HH:mm:ss.nnn) with millisecond precision.
+> – https://github.com/keystonejs/keystone/issues/46#issuecomment-413743564
 
 - [ ] Write up the spec in an issue
 - [ ] Add a Time field type
