@@ -5,9 +5,9 @@ import { FieldContainer, FieldLabel, TextInput, TextArea } from '@keystone-ui/fi
 
 import {
   CellComponent,
+  FieldController,
   FieldControllerConfig,
   FieldProps,
-  makeController,
 } from '@keystone-spike/types';
 import { Link } from '@keystone-spike/admin-ui/router';
 import { Fragment } from 'react';
@@ -41,14 +41,62 @@ Cell.supportsLinkTo = true;
 
 type Config = FieldControllerConfig<{ isMultiline: boolean }>;
 
-export const controller = makeController((config: Config) => {
+export const controller = (
+  config: Config
+): FieldController<string, string> & { isMultiline: boolean } => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
     defaultValue: '',
     isMultiline: config.fieldMeta.isMultiline,
-    deserialize: data => data[config.path] || '',
+    deserialize: data => {
+      const value = data[config.path];
+      return typeof value === 'string' ? value : '';
+    },
     serialize: value => ({ [config.path]: value }),
+    filter: {
+      graphql: ({ type, value }) => {
+        const key = type === 'is_i' ? `${config.path}_i` : `${config.path}_${type}`;
+        return { [key]: value };
+      },
+      format: ({ label, value }) => {
+        return `${label}: "${value}"`;
+      },
+      types: {
+        contains_i: {
+          label: 'Contains',
+          initialValue: '',
+        },
+        not_contains_i: {
+          label: 'Does not contain',
+          initialValue: '',
+        },
+        is_i: {
+          label: 'Is exactly',
+          initialValue: '',
+        },
+        not_i: {
+          label: 'Is not exactly',
+          initialValue: '',
+        },
+        starts_with_i: {
+          label: 'Starts with',
+          initialValue: '',
+        },
+        not_starts_with_i: {
+          label: 'Does not start with',
+          initialValue: '',
+        },
+        ends_with_i: {
+          label: 'Ends with',
+          initialValue: '',
+        },
+        not_ends_with_i: {
+          label: 'Does not end with',
+          initialValue: '',
+        },
+      },
+    },
   };
-});
+};

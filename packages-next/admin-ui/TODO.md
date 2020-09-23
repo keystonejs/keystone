@@ -5,6 +5,7 @@
   - [x] UI for "you're currently logged in as {label}"
 - [ ] Generate Nav, and allow overrides in client-side config
 - [ ] Need config for lists to say whether you should be able to create / edit things
+- [ ] Add a SignOut page, as an esacape hatch if you need to sign out and don't have a button
 
 ## Dashboard
 
