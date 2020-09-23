@@ -128,19 +128,24 @@ export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   >;
 };
 
-export function makeController<
-  FieldControllerFn extends (config: FieldControllerConfig<any>) => FieldController<any>
->(controller: FieldControllerFn) {
-  return controller;
-}
-
 export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = undefined> = {
   path: string;
   label: string;
   fieldMeta: FieldMeta;
 };
 
-export type FieldController<FormState> = {
+type FilterTypeDeclaration<Value extends JSONValue> = {
+  readonly label: string;
+  readonly initialValue: Value;
+};
+
+export type FilterTypeToFormat<Value extends JSONValue> = {
+  readonly type: string;
+  readonly label: string;
+  readonly value: Value;
+};
+
+export type FieldController<FormState, FilterValue extends JSONValue = never> = {
   path: string;
   label: string;
   graphqlSelection: string;
@@ -148,6 +153,12 @@ export type FieldController<FormState> = {
   deserialize: (item: any) => FormState;
   serialize: (formState: FormState) => any;
   validate?: (formState: FormState) => void;
+  filter?: {
+    // wrote a little codemod for this https://astexplorer.net/#/gist/c45e0f093513dded95114bb77da50b09/b3d01e21c1b425f90ca3cc5bd453d85b11500540
+    types: Record<string, FilterTypeDeclaration<FilterValue>>;
+    graphql(type: { type: string; value: FilterValue }): Record<string, any>;
+    format(type: FilterTypeToFormat<FilterValue>): string;
+  };
 };
 
 export type SerializedFieldMeta = {
@@ -160,7 +171,7 @@ export type FieldMeta = {
   label: string;
   views: FieldViews[string];
   fieldMeta: JSONValue | undefined;
-  controller: FieldController<unknown>;
+  controller: FieldController<unknown, JSONValue>;
 };
 
 type BaseListMeta = {
@@ -208,7 +219,7 @@ export type AdminMeta = {
   };
 };
 
-export type FieldProps<FieldControllerFn extends (...args: any) => FieldController<any>> = {
+export type FieldProps<FieldControllerFn extends (...args: any) => FieldController<any, any>> = {
   field: ReturnType<FieldControllerFn>;
   value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>;
   onChange(value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>): void;
@@ -230,7 +241,7 @@ export type FieldViews = {
   [type: string]: {
     Field: (props: FieldProps<any>) => ReactElement;
     Cell: CellComponent;
-    controller: (args: FieldControllerConfig<any>) => FieldController<unknown>;
+    controller: (args: FieldControllerConfig<any>) => FieldController<unknown, JSONValue>;
   };
 };
 

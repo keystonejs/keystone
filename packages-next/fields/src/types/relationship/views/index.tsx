@@ -3,7 +3,7 @@
 import { jsx, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 
-import { FieldProps, makeController } from '@keystone-spike/types';
+import { FieldController, FieldControllerConfig, FieldProps } from '@keystone-spike/types';
 
 export const Field = ({ field }: FieldProps<typeof controller>) => {
   const { radii, palette } = useTheme();
@@ -31,7 +31,9 @@ export const Cell = () => {
   return null;
 };
 
-export const controller = makeController(config => {
+type RelationshipController = FieldController<void>;
+
+export const controller = (config: FieldControllerConfig): RelationshipController => {
   return {
     path: config.path,
     label: config.label,
@@ -40,4 +42,4 @@ export const controller = makeController(config => {
     deserialize: () => {},
     serialize: () => ({}),
   };
-});
+};

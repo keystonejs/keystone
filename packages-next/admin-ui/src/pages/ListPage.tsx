@@ -7,16 +7,67 @@ import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
 import { PageContainer } from '../components/PageContainer';
 import { useList } from '../KeystoneContext';
 import { useRouter, Link } from '../router';
+import { JSONValue } from '@keystone-spike/types';
 
 type ListPageProps = {
   listKey: string;
 };
+type Filter = { field: string; type: string; value: JSONValue };
 
 export const ListPage = ({ listKey }: ListPageProps) => {
   const list = useList(listKey);
 
   const { query } = useRouter();
-  const selectedFieldsFromUrl = query.fields || '';
+  const selectedFieldsFromUrl = typeof query.fields === 'string' ? query.fields : '';
+  const possibleFilters = useMemo(() => {
+    const possibleFilters: Record<string, { type: string; field: string }> = {};
+    Object.entries(list.fields).forEach(([fieldPath, field]) => {
+      if (field.controller.filter) {
+        Object.keys(field.controller.filter.types).forEach(type => {
+          possibleFilters[`!${fieldPath}_${type}`] = {
+            type,
+            field: fieldPath,
+          };
+        });
+      }
+    });
+    console.log(possibleFilters);
+    return possibleFilters;
+  }, [list]);
+  const filters = useMemo(() => {
+    let filters: Filter[] = [];
+    Object.keys(query).forEach(key => {
+      const filter = possibleFilters[key];
+      const val = query[key];
+      if (filter && typeof val === 'string') {
+        let value;
+        try {
+          value = JSON.parse(val);
+        } catch (err) {}
+        if (val !== undefined) {
+          filters.push({
+            ...filter,
+            value,
+          });
+        }
+      }
+    });
+
+    let where = {};
+
+    filters.forEach(filter => {
+      Object.assign(
+        where,
+        list.fields[filter.field].controller.filter!.graphql({
+          type: filter.type,
+          value: filter.value,
+        })
+      );
+    });
+
+    return { filters, where };
+  }, [query, possibleFilters, list]);
+
   const selectedFields = useMemo(() => {
     if (!query.fields) {
       return {
@@ -25,12 +76,12 @@ export const ListPage = ({ listKey }: ListPageProps) => {
       };
     }
     let includeLabel = false;
-    let fields = (selectedFieldsFromUrl as string).split(',').filter(field => {
+    let fields = selectedFieldsFromUrl.split(',').filter(field => {
       if (field === '_label_') {
         includeLabel = true;
         return false;
       }
-      return true;
+      return list.fields[field] !== undefined;
     });
     return {
       fields,
@@ -46,15 +97,18 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         })
         .join('\n');
       return gql`
-      query {
-        items: ${list.gqlNames.listQueryName} {
+      query($where: ${list.gqlNames.whereInputName}) {
+        items: ${list.gqlNames.listQueryName}(where: $where) {
           id
           ${selectedFields.includeLabel ? '_label_' : ''}
           ${selectedGqlFields}
         }
       }
     `;
-    }, [list, selectedFields])
+    }, [list, selectedFields]),
+    {
+      variables: { where: filters.where },
+    }
   );
 
   const shouldShowNonCellLink =
@@ -79,6 +133,28 @@ export const ListPage = ({ listKey }: ListPageProps) => {
             })()
           : ' '}
       </p>
+      {filters.filters.length ? (
+        <p>
+          Filters:
+          <ul>
+            {filters.filters.map(filter => {
+              const field = list.fields[filter.field];
+              const { [`!${filter.field}_${filter.type}`]: _ignore, ...queryToKeep } = query;
+              return (
+                <li key={`${filter.field}_${filter.type}`}>
+                  {field.label}{' '}
+                  {field.controller.filter!.format({
+                    label: field.controller.filter!.types[filter.type].label,
+                    type: filter.type,
+                    value: filter.value,
+                  })}
+                  <Link href={{ query: queryToKeep }}>Remove</Link>
+                </li>
+              );
+            })}
+          </ul>
+        </p>
+      ) : null}
       {error ? (
         'Error...'
       ) : data ? (
@@ -98,7 +174,10 @@ export const ListPage = ({ listKey }: ListPageProps) => {
                 <tr key={item.id}>
                   {selectedFields.includeLabel && (
                     <td>
-                      <Link href={`/${list.path}/[id]`} as={`/${list.path}/${item.id}`}>
+                      <Link
+                        href={`/${list.path}/[id]`}
+                        as={`/${list.path}/${encodeURIComponent(item.id)}`}
+                      >
                         {item._label_}
                       </Link>
                     </td>
@@ -108,7 +187,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
                       <Link
                         css={{ textDecoration: 'none' }}
                         href={`/${list.path}/[id]`}
-                        as={`/${list.path}/${item.id}`}
+                        as={`/${list.path}/${encodeURIComponent(item.id)}`}
                       >
                         <LinkIcon aria-label="Go to item" />
                       </Link>
@@ -125,7 +204,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
                             i === 0 && !selectedFields.includeLabel && Cell.supportsLinkTo
                               ? {
                                   href: `/${list.path}/[id]`,
-                                  as: `/${list.path}/${item.id}`,
+                                  as: `/${list.path}/${encodeURIComponent(item.id)}`,
                                 }
                               : undefined
                           }
