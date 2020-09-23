@@ -43,6 +43,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
     req,
     isValidSession,
     keystone,
+    session,
   }) => {
     const pathname = url.parse(req.url!).pathname!;
 
@@ -53,6 +54,11 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
           to: '/',
         };
       }
+      return;
+    }
+    // In this case, the person is likely logged in but does not have access to the page
+    // so we want to let them fall through to the no-access page
+    if (!isValidSession && session) {
       return;
     }
     if (config.initFirstItem) {

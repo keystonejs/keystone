@@ -12,8 +12,8 @@
   - [ ] With good HTTP caching headers
   - [ ] Protect it with the `secureFn`
   - [ ] Make it synchronously available on all pages
-- [ ] Write `withItemData` wrapper for sessions @noviny
-  - [ ] Session functions will need enough API to execute a query
+- [x] Write `withItemData` wrapper for sessions @noviny
+  - [x] Session functions will need enough API to execute a query
 - [x] Pass session in context as `session` @mitchell
   - [ ] Remove `authentication` property from context and the usages of it
   - [ ] Pass this as an arg on access control? -- yes

@@ -60,7 +60,7 @@ export type KeystoneConfig = {
       maxTotalResults?: number;
     };
   };
-  session?: () => SessionStrategy<any>;
+  session?: (args: { keystone: KeystoneConfig }) => SessionStrategy<any>;
   admin?: KeystoneAdminConfig;
 } & SchemaConfig;
 
@@ -219,7 +219,8 @@ export type Keystone = {
   config: KeystoneConfig;
   adminMeta: SerializedAdminMeta;
   graphQLSchema: GraphQLSchema;
-  createContext: (req: IncomingMessage, res: ServerResponse) => any;
+  createContext: (args: { sessionContext?: SessionContext; skipAccessControl?: boolean }) => any;
+  createContextFromRequest: (req: IncomingMessage, res: ServerResponse) => any;
   createSessionContext:
     | ((req: IncomingMessage, res: ServerResponse) => Promise<SessionContext>)
     | undefined;

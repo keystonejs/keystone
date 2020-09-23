@@ -7,22 +7,16 @@ import { GithubIcon } from '@keystone-ui/icons/icons/GithubIcon';
 import { DatabaseIcon } from '@keystone-ui/icons/icons/DatabaseIcon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FunctionComponent, ReactNode, useEffect } from 'react';
+import { FunctionComponent, ReactNode } from 'react';
 
 import { Logo } from './Logo';
-import { useMutation, gql } from '../apollo';
+import { SignoutButton } from './SignoutButton';
 import { useKeystone } from '../KeystoneContext';
 
 type NavItemProps = {
   href: string;
   children: ReactNode;
 };
-
-const END_SESSION = gql`
-  mutation EndSession {
-    endSession
-  }
-`;
 
 const NavItem: FunctionComponent<NavItemProps> = ({ href, children }) => {
   const { palette, spacing, radii, typography } = useTheme();
@@ -68,21 +62,6 @@ const NavItem: FunctionComponent<NavItemProps> = ({ href, children }) => {
         </a>
       </Link>
     </div>
-  );
-};
-
-const SignoutButton: FunctionComponent = () => {
-  const [endSession, { loading, data }] = useMutation(END_SESSION);
-  useEffect(() => {
-    if (data?.endSession) {
-      top.location.reload();
-    }
-  }, [data]);
-
-  return (
-    <Button size="small" isLoading={loading} onPress={() => endSession()}>
-      sign out
-    </Button>
   );
 };
 

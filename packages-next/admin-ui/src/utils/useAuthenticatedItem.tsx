@@ -31,7 +31,6 @@ export function useAuthenticatedItem(
       // (yes, undefined is very specific and very intentional, it should not be checking for null)
       data.authenticatedItem.id === undefined
     ) {
-      console.log(data);
       return {
         state: 'unauthenticated',
         refetch,

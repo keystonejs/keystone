@@ -1,8 +1,8 @@
 import {
   config,
-  statelessSessions,
   // storedSessions
 } from '@keystone-spike/keystone/schema';
+import { statelessSessions, withItemData } from '@keystone-spike/keystone/session';
 // import { redisSessionStore } from '@keystone-spike/session-store-redis';
 // import redis from 'redis';
 import { lists, extendGraphqlSchema } from './schema';
@@ -10,8 +10,6 @@ import { createAuth } from '@keystone-spike/auth';
 
 let sessionSecret =
   'a very very good secreta very very good secreta very very good secreta very very good secret';
-
-const withItemData = (i: any) => i;
 
 const auth = createAuth({
   listKey: 'User',
@@ -22,7 +20,7 @@ const auth = createAuth({
   },
 });
 
-const isAccessAllowed = ({ session }: { session: any }) => !!session?.listKey;
+const isAccessAllowed = ({ session }: { session: any }) => !!session?.item?.isAdmin;
 
 export default auth.withAuth(
   config({
@@ -54,8 +52,8 @@ export default auth.withAuth(
     session: withItemData(
       statelessSessions({
         secret: sessionSecret,
-      })
-      // { User: 'name isAdmin' }
+      }),
+      { User: 'name isAdmin' }
     ),
     // session: storedSessions({
     //   store: new Map(),
