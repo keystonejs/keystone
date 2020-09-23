@@ -14,11 +14,11 @@ export const lists = createSchema({
     },
     hooks: {
       resolveInput: ({ resolvedData, originalInput }) => {
-        console.log({ resolvedData, originalInput });
+        console.log('list hooks: resolveInput', { resolvedData, originalInput });
         return resolvedData;
       },
       beforeChange({ resolvedData, originalInput }) {
-        console.log({ resolvedData, originalInput });
+        console.log('list hooks: beforeChange', { resolvedData, originalInput });
       },
     },
     access: {
