@@ -28,7 +28,7 @@ export const Cell: CellComponent = ({ item, path }) => {
   return <Fragment>{item[`${path}_is_set`] ? 'Is set' : 'Is not set'}</Fragment>;
 };
 
-type PasswordController = FieldController<string>;
+type PasswordController = FieldController<string, boolean>;
 
 export const controller = (config: FieldControllerConfig): PasswordController => {
   return {
@@ -38,5 +38,19 @@ export const controller = (config: FieldControllerConfig): PasswordController =>
     defaultValue: '',
     deserialize: () => '',
     serialize: value => ({ [config.path]: value }),
+    filter: {
+      graphql: ({ type, value }) => {
+        return { [`${config.path}_${type}`]: value };
+      },
+      format: ({ value }) => {
+        return value ? 'is set' : 'is not set';
+      },
+      types: {
+        is_set: {
+          label: 'Is Set',
+          initialValue: true,
+        },
+      },
+    },
   };
 };

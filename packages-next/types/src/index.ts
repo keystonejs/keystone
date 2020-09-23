@@ -139,7 +139,7 @@ type FilterTypeDeclaration<Value extends JSONValue> = {
   readonly initialValue: Value;
 };
 
-export type FilterType<Value extends JSONValue> = {
+export type FilterTypeToFormat<Value extends JSONValue> = {
   readonly type: string;
   readonly label: string;
   readonly value: Value;
@@ -157,7 +157,7 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
     // wrote a little codemod for this https://astexplorer.net/#/gist/c45e0f093513dded95114bb77da50b09/b3d01e21c1b425f90ca3cc5bd453d85b11500540
     types: Record<string, FilterTypeDeclaration<FilterValue>>;
     graphql(type: { type: string; value: FilterValue }): Record<string, any>;
-    format(type: FilterType<FilterValue>): string;
+    format(type: FilterTypeToFormat<FilterValue>): string;
   };
 };
 
@@ -241,7 +241,7 @@ export type FieldViews = {
   [type: string]: {
     Field: (props: FieldProps<any>) => ReactElement;
     Cell: CellComponent;
-    controller: (args: FieldControllerConfig<any>) => FieldController<unknown, unknown>;
+    controller: (args: FieldControllerConfig<any>) => FieldController<unknown, JSONValue>;
   };
 };
 

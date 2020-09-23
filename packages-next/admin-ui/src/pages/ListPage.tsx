@@ -19,7 +19,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
 
   const { query } = useRouter();
   const selectedFieldsFromUrl = typeof query.fields === 'string' ? query.fields : '';
-  const filters = useMemo(() => {
+  const possibleFilters = useMemo(() => {
     const possibleFilters: Record<string, { type: string; field: string }> = {};
     Object.entries(list.fields).forEach(([fieldPath, field]) => {
       if (field.controller.filter) {
@@ -31,6 +31,10 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         });
       }
     });
+    console.log(possibleFilters);
+    return possibleFilters;
+  }, [list]);
+  const filters = useMemo(() => {
     let filters: Filter[] = [];
     Object.keys(query).forEach(key => {
       const filter = possibleFilters[key];
@@ -62,7 +66,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
     });
 
     return { filters, where };
-  }, [query, list]);
+  }, [query, possibleFilters, list]);
 
   const selectedFields = useMemo(() => {
     if (!query.fields) {

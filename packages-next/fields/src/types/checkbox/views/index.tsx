@@ -32,7 +32,7 @@ export const Cell: CellComponent = ({ item, path }) => {
   return <Fragment>{item[path] + ''}</Fragment>;
 };
 
-type CheckboxController = FieldController<boolean>;
+type CheckboxController = FieldController<boolean, boolean>;
 
 export const controller = (config: FieldControllerConfig): CheckboxController => {
   return {
@@ -51,6 +51,25 @@ export const controller = (config: FieldControllerConfig): CheckboxController =>
     },
     validate() {
       // Can throw a FieldError
+    },
+    filter: {
+      graphql({ type, value }) {
+        const key = type === 'is' ? `${config.path}` : `${config.path}_${type}`;
+        return { [key]: value };
+      },
+      format({ label }) {
+        return label;
+      },
+      types: {
+        is: {
+          label: 'is',
+          initialValue: true,
+        },
+        not: {
+          label: 'is not',
+          initialValue: true,
+        },
+      },
     },
   };
 };
