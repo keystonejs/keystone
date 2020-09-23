@@ -12,7 +12,6 @@ import { SessionStrategy } from './session';
 import { SchemaConfig } from './schema';
 import { IncomingMessage, ServerResponse } from 'http';
 import { GraphQLSchema } from 'graphql';
-import { UrlObject } from 'url';
 export * from './schema';
 export * from './utils';
 export * from './session';
