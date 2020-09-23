@@ -41,7 +41,7 @@ As per the current implementation
 
 - [ ] Add a CalendarDay field type
 
-## Time (or TimeOfDay?)
+## Time
 
 New field type for storing a time of day.
 
