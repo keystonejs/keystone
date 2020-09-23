@@ -62,21 +62,6 @@ const NavItem: FunctionComponent<NavItemProps> = ({ href, children }) => {
   );
 };
 
-const SignoutButton: FunctionComponent = () => {
-  const [endSession, { loading, data }] = useMutation(END_SESSION);
-  useEffect(() => {
-    if (data?.endSession) {
-      top.location.reload();
-    }
-  }, [data]);
-
-  return (
-    <Button size="small" isLoading={loading} onPress={() => endSession()}>
-      sign out
-    </Button>
-  );
-};
-
 const AuthenticatedItem: FunctionComponent<{
   item: { id: string; label: string };
 }> = ({ item }) => {
