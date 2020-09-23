@@ -1,5 +1,5 @@
 import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-spike/keystone/schema';
-import { text, relationship, checkbox, password } from '@keystone-spike/fields';
+import { text, relationship, checkbox, password, timestamp } from '@keystone-spike/fields';
 
 const randomNumber = () => Math.round(Math.random() * 10);
 
@@ -88,7 +88,7 @@ export const lists = createSchema({
       }),
       content: text({}),
       published: checkbox({ defaultValue: false }),
-      publishDate: text({}),
+      publishDate: timestamp({}),
       author: relationship({ ref: 'User.posts' }),
     },
   }),
