@@ -63,10 +63,10 @@ export const lists = createSchema({
       },
     },
     fields: {
-      name: text({ required: true, hooks: {} }),
+      name: text({ isRequired: true, hooks: {} }),
       email: text({
-        required: true,
-        unique: true,
+        isRequired: true,
+        isUnique: true,
         hooks: {},
         // views: require.resolve('./admin/fieldViews/content'),
       }),
