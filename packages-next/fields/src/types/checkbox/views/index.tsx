@@ -2,7 +2,8 @@
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { FieldContainer, Checkbox } from '@keystone-ui/fields';
-import { CellProps, FieldProps, makeController } from '@keystone-spike/types';
+import { CellComponent, FieldProps, makeController } from '@keystone-spike/types';
+import { Fragment } from 'react';
 
 export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => {
   const { fields, typography } = useTheme();
@@ -22,8 +23,8 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
   );
 };
 
-export const Cell = ({ item, path }: CellProps) => {
-  return item[path] + '';
+export const Cell: CellComponent = ({ item, path }) => {
+  return <Fragment>{item[path] + ''}</Fragment>;
 };
 
 export const controller = makeController(config => {

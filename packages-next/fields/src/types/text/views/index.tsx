@@ -4,11 +4,13 @@ import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput, TextArea } from '@keystone-ui/fields';
 
 import {
-  CellProps,
+  CellComponent,
   FieldControllerConfig,
   FieldProps,
   makeController,
 } from '@keystone-spike/types';
+import { Link } from '@keystone-spike/admin-ui/router';
+import { Fragment } from 'react';
 
 export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => (
   <FieldContainer>
@@ -31,9 +33,11 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
   </FieldContainer>
 );
 
-export const Cell = ({ item, path }: CellProps) => {
-  return item[path] + '';
+export const Cell: CellComponent = ({ item, path, linkTo }) => {
+  let value = item[path] + '';
+  return linkTo ? <Link {...linkTo}>{value}</Link> : <Fragment>{value}</Fragment>;
 };
+Cell.supportsLinkTo = true;
 
 type Config = FieldControllerConfig<{ isMultiline: boolean }>;
 

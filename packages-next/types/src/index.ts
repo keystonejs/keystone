@@ -64,9 +64,14 @@ export type KeystoneConfig = {
   admin?: KeystoneAdminConfig;
 } & SchemaConfig;
 
-export type CellProps = {
-  item: Record<string, any>;
-  path: string;
+export type CellComponent = {
+  (props: {
+    item: Record<string, any>;
+    path: string;
+    linkTo: { href: string; as: string } | undefined;
+  }): ReactElement;
+
+  supportsLinkTo?: boolean;
 };
 
 type AllModes = 'edit' | 'read' | 'hidden';
@@ -166,6 +171,7 @@ type BaseListMeta = {
   plural: string;
   description?: string;
   gqlNames: GqlNames;
+  initialColumns: string[];
 };
 
 export type SerializedListMeta = BaseListMeta & {
@@ -223,7 +229,7 @@ export type Keystone = {
 export type FieldViews = {
   [type: string]: {
     Field: (props: FieldProps<any>) => ReactElement;
-    Cell: (props: CellProps) => ReactElement;
+    Cell: CellComponent;
     controller: (args: FieldControllerConfig<any>) => FieldController<unknown>;
   };
 };

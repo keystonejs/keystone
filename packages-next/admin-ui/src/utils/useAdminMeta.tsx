@@ -73,6 +73,7 @@ export function useAdminMeta(
     Object.keys(adminMeta.lists).forEach(key => {
       const list = adminMeta.lists[key];
       runtimeAdminMeta.lists[key] = {
+        initialColumns: list.initialColumns,
         gqlNames: list.gqlNames,
         key,
         fields: {},

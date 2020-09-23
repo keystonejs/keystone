@@ -63,15 +63,15 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     } as any) as any;
     adminMeta.lists[key] = {
       key,
-      // TODO: This should look for the admin description, not the graphQL description...
-      // This really all needs to be reviewed.
-      description: listConfig.graphql?.description ?? listConfig.description,
+      description: listConfig.admin?.description ?? listConfig.description,
       label: list.adminUILabels.label,
       singular: list.adminUILabels.singular,
       plural: list.adminUILabels.plural,
       path: list.adminUILabels.path,
       fields: {},
       gqlNames: list.gqlNames,
+      initialColumns:
+        listConfig.admin?.listView?.initialColumns ?? Object.keys(listConfig.fields).slice(0, 2),
     };
     for (const fieldKey of Object.keys(listConfig.fields)) {
       const field = listConfig.fields[fieldKey];
