@@ -4,9 +4,9 @@ import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 
 import {
   CellComponent,
+  FieldController,
   FieldControllerConfig,
   FieldProps,
-  makeController,
 } from '@keystone-spike/types';
 import { Link } from '@keystone-spike/admin-ui/router';
 import { Fragment } from 'react';
@@ -33,7 +33,9 @@ Cell.supportsLinkTo = true;
 
 type Config = FieldControllerConfig<{}>;
 
-export const controller = makeController((config: Config) => {
+export const controller = (
+  config: Config
+): FieldController<string, string> => {
   return {
     path: config.path,
     label: config.label,
@@ -42,4 +44,4 @@ export const controller = makeController((config: Config) => {
     deserialize: data => data[config.path],
     serialize: value => ({ [config.path]: value }),
   };
-});
+};
