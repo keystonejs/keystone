@@ -217,7 +217,7 @@ export type FieldProps<FieldControllerFn extends (...args: any) => FieldControll
   field: ReturnType<FieldControllerFn>;
   value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>;
   // TODO: Make this optional; when not provided, it means the field is in "read" mode
-  onChange?(value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>): void;
+  onChange(value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>): void;
 };
 
 export type Keystone = {
