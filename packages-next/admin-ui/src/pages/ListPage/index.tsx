@@ -8,6 +8,7 @@ import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
 import { PageContainer } from '../../components/PageContainer';
 import { useList } from '../../KeystoneContext';
 import { useRouter, Link } from '../../router';
+import { CellLink } from '../../components';
 import { Pagination } from './pagination';
 import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
@@ -85,14 +86,12 @@ const TableHeaderCell = ({ children }: { children?: ReactNode }) => {
 };
 
 const TableBodyCell = ({ children }: { children: ReactNode }) => {
-  const { colors, spacing, typography } = useTheme();
+  const { colors, typography } = useTheme();
   return (
     <td
       css={{
         borderBottom: `1px solid ${colors.border}`,
         fontSize: typography.fontSize.medium,
-        padding: spacing.small,
-        textAlign: 'left',
       }}
     >
       {children}
@@ -203,12 +202,12 @@ export const ListPage = ({ listKey }: ListPageProps) => {
                   <tr key={item.id}>
                     {selectedFields.includeLabel && (
                       <TableBodyCell>
-                        <Link
+                        <CellLink
                           href={`/${list.path}/[id]`}
                           as={`/${list.path}/${encodeURIComponent(item.id)}`}
                         >
                           {item._label_}
-                        </Link>
+                        </CellLink>
                       </TableBodyCell>
                     )}
                     {shouldShowNonCellLink && (
