@@ -164,11 +164,13 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
 export type SerializedFieldMeta = {
   label: string;
   views: number;
+  isOrderable: boolean;
   fieldMeta: JSONValue | undefined;
 };
 
 export type FieldMeta = {
   label: string;
+  isOrderable: boolean;
   views: FieldViews[string];
   fieldMeta: JSONValue | undefined;
   controller: FieldController<unknown, JSONValue>;
@@ -231,7 +233,8 @@ export type Keystone = {
   config: KeystoneConfig;
   adminMeta: SerializedAdminMeta;
   graphQLSchema: GraphQLSchema;
-  createContext: (req: IncomingMessage, res: ServerResponse) => any;
+  createContext: (args: { sessionContext?: SessionContext; skipAccessControl?: boolean }) => any;
+  createContextFromRequest: (req: IncomingMessage, res: ServerResponse) => any;
   createSessionContext:
     | ((req: IncomingMessage, res: ServerResponse) => Promise<SessionContext>)
     | undefined;

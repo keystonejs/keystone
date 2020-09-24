@@ -2,6 +2,7 @@ import { appTemplate } from './app';
 import { homeTemplate } from './home';
 import { listTemplate } from './list';
 import { itemTemplate } from './item';
+import { noAccessTemplate } from './no-access';
 
 import type { Keystone } from '@keystone-spike/types';
 import { AdminFileToWrite } from '@keystone-spike/types';
@@ -22,9 +23,9 @@ export const writeAdminFiles = (keystone: Keystone, configFile: boolean): AdminF
       outputPath: 'tsconfig.json',
     },
     {
-      mode: 'copy',
-      inputPath: Path.join(pkgDir, 'static', 'no-access.js'),
+      mode: 'write',
       outputPath: 'pages/no-access.js',
+      src: noAccessTemplate(keystone),
     },
     {
       mode: 'write',

@@ -111,6 +111,22 @@ export const ListPage = ({ listKey }: ListPageProps) => {
       ? parseInt(query.pageSize)
       : list.pageSize;
 
+  let sortByFromUrl = typeof query.sortBy === 'string' ? query.sortBy : '';
+
+  const sort = useMemo(() => {
+    if (sortByFromUrl === '') return null;
+    let direction: 'ASC' | 'DESC' = 'ASC';
+    let sortByField = sortByFromUrl;
+    if (sortByFromUrl.charAt(0) === '-') {
+      sortByField = sortByFromUrl.substr(1);
+      direction = 'DESC';
+    }
+    if (!list.fields[sortByField].isOrderable) return null;
+    return {
+      field: sortByField,
+      direction,
+    };
+  }, [sortByFromUrl]);
   const filters = useFilters(listKey);
   const selectedFields = useSelectedFields(listKey);
 
@@ -122,8 +138,12 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         })
         .join('\n');
       return gql`
-      query($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip:Int!) {
-        items: ${list.gqlNames.listQueryName}(where: $where,first: $first, skip: $skip) {
+      query($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $sortBy: [${
+        list.gqlNames.listSortName
+      }!]) {
+        items: ${
+          list.gqlNames.listQueryName
+        }(where: $where,first: $first, skip: $skip, sortBy: $sortBy) {
           id
           ${selectedFields.includeLabel ? '_label_' : ''}
           ${selectedGqlFields}
@@ -135,7 +155,12 @@ export const ListPage = ({ listKey }: ListPageProps) => {
     `;
     }, [list, selectedFields]),
     {
-      variables: { where: filters.where, first: pageSize, skip: (currentPage - 1) * pageSize },
+      variables: {
+        where: filters.where,
+        first: pageSize,
+        skip: (currentPage - 1) * pageSize,
+        sortBy: sort ? [`${sort.field}_${sort.direction}`] : undefined,
+      },
     }
   );
 
@@ -193,7 +218,32 @@ export const ListPage = ({ listKey }: ListPageProps) => {
               {selectedFields.includeLabel && <TableHeaderCell>Label</TableHeaderCell>}
               {shouldShowNonCellLink && <TableHeaderCell />}
               {selectedFields.fields.map(path => {
-                return <TableHeaderCell key={path}>{list.fields[path].label}</TableHeaderCell>;
+                const label = list.fields[path].label;
+                if (!list.fields[path].isOrderable) {
+                  return <TableHeaderCell key={path}>{label}</TableHeaderCell>;
+                }
+                return (
+                  <TableHeaderCell>
+                    <Link
+                      css={{
+                        display: 'block',
+                        textDecoration: 'none',
+                        color: 'inherit',
+                        ':hover': { color: 'inherit' },
+                      }}
+                      href={{
+                        query: {
+                          ...query,
+                          sortBy:
+                            sort?.field === path && sort.direction === 'ASC' ? `-${path}` : path,
+                        },
+                      }}
+                    >
+                      {label}
+                      {sort?.field === path && <SortDirectionArrow direction={sort.direction} />}
+                    </Link>
+                  </TableHeaderCell>
+                );
               })}
             </TableHeaderRow>
             <tbody>
@@ -256,5 +306,25 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         'Loading...'
       )}
     </PageContainer>
+  );
+};
+
+const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
+  const size = '0.25em';
+  return (
+    <span
+      css={{
+        borderLeft: `${size} solid transparent`,
+        borderRight: `${size} solid transparent`,
+        borderTop: `${size} solid`,
+        display: 'inline-block',
+        height: 0,
+        marginLeft: '0.33em',
+        marginTop: '-0.125em',
+        verticalAlign: 'middle',
+        width: 0,
+        transform: `rotate(${direction === 'DESC' ? '0deg' : '180deg'})`,
+      }}
+    />
   );
 };

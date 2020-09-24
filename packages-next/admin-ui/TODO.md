@@ -21,23 +21,24 @@
 
 - [ ] Need popups for columns and filters
 - [ ] Implement Columns
-  - [ ] URL State working and actually setting columns
-  - [ ] Show the right columns in the table and query the right fields
-  - [ ] Show "with {x} columns" in UI
+  - [x] URL State working and actually setting columns
+  - [x] Show the right columns in the table and query the right fields
+  - [x] Show "with {x} columns" in UI
   - [ ] Popup to select columns
-  - [ ] Logic to ensure there's always a label or ID field
+  - [ ] ~~Logic to ensure there's always a label or ID field~~
   - [ ] Add `supportsLinkTo` support to Cells
   - [ ] Pass `linkTo` to the first cell, if supported, otherwise add a link icon as the first column
 - [ ] Implement Filters
-  - [ ] URL State working and actually filtering
-  - [ ] Show selected filters in UI
+  - [x] URL State working and actually filtering
+  - [x] Show selected filters in UI
   - [ ] Popup to add filters
   - [ ] Popup to edit filters
-- [ ] Implement Pagination
+- [x] Implement Pagination
 - [ ] Selecting items
   - [ ] Selecting specific items in the table, with all/none
 - [ ] Delete selected item(s)
 - [ ] Add dots menu for [copy link / copy id / delete]
+- [x] Sorting
 
 ### Come back to later
 
@@ -65,6 +66,7 @@
 ## Backlog
 
 - [ ] Figure out how the ApolloClient gets the right URI for the GraphQL API (come back to this if/when we do server rendering)
+- [ ] Implement allowing access to the Admin UI without a valid session (in read only mode? etc -- this is going to be quite involved)
 - [ ] We need to talk about Errors. What is the format?
   - [ ] Figure out all the different sorts of errors we have, will inform constraints
 

@@ -73,16 +73,8 @@ export function useAdminMeta(
     Object.keys(adminMeta.lists).forEach(key => {
       const list = adminMeta.lists[key];
       runtimeAdminMeta.lists[key] = {
-        initialColumns: list.initialColumns,
-        gqlNames: list.gqlNames,
-        key,
+        ...list,
         fields: {},
-        label: list.label,
-        singular: list.singular,
-        plural: list.plural,
-        path: list.path,
-        description: list.description,
-        pageSize: list.pageSize,
       };
       Object.keys(list.fields).forEach(fieldKey => {
         const field = list.fields[fieldKey];
@@ -102,9 +94,8 @@ export function useAdminMeta(
           }
         });
         runtimeAdminMeta.lists[key].fields[fieldKey] = {
-          label: field.label,
+          ...field,
           views: fieldViews[field.views],
-          fieldMeta: field.fieldMeta,
           controller: fieldViews[field.views].controller({
             fieldMeta: field.fieldMeta,
             label: field.label,

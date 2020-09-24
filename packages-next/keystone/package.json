@@ -58,6 +58,7 @@
     "entrypoints": [
       "index.ts",
       "schema/index.ts",
+      "session/index.ts",
       "scripts/index.ts"
     ]
   },
