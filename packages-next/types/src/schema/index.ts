@@ -1,5 +1,5 @@
 import type { GraphQLSchema } from 'graphql';
-import type { FieldType } from '..';
+import type { FieldType, MaybeSessionFunction } from '..';
 import type { BaseGeneratedListTypes } from '../utils';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
@@ -92,7 +92,7 @@ export type ListConfig<
        * Specific field modes on a per-field basis via a field's config.
        * @default 'edit'
        */
-      defaultFieldMode?: 'edit' | 'hidden';
+      defaultFieldMode?: MaybeSessionFunction<'edit' | 'hidden'>;
     };
     /**
      * Configuration specific to the list view in the Admin UI
@@ -103,7 +103,7 @@ export type ListConfig<
        * Specific field modes on a per-field basis via a field's config.
        * @default 'read'
        */
-      defaultFieldMode?: 'read' | 'hidden';
+      defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
       /**
        * The columns(which refer to fields) that should be shown to users of the Admin UI.
        * Users of the Admin UI can select different columns to show in the UI.
@@ -127,7 +127,7 @@ export type ListConfig<
        * Specific field modes on a per-field basis via a field's config.
        * @default 'edit'
        */
-      defaultFieldMode?: 'edit' | 'read' | 'hidden';
+      defaultFieldMode?: MaybeSessionFunction<'edit' | 'read' | 'hidden'>;
     };
   };
 

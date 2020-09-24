@@ -1,12 +1,6 @@
 import type { ComponentType, ReactElement } from 'react';
 import type { FieldAccessControl } from './schema/access-control';
-import type {
-  BaseGeneratedListTypes,
-  JSONValue,
-  GqlNames,
-  GraphQLContext,
-  MaybePromise,
-} from './utils';
+import type { BaseGeneratedListTypes, JSONValue, GqlNames, MaybePromise } from './utils';
 import type { ListHooks } from './schema/hooks';
 import { SessionStrategy } from './session';
 import { SchemaConfig } from './schema';
@@ -74,16 +68,13 @@ export type CellComponent = {
   supportsLinkTo?: boolean;
 };
 
-type AllModes = 'edit' | 'read' | 'hidden';
-
-type FieldModeThing<Modes extends AllModes> =
-  | Modes
-  | {
-      [key in Modes]: boolean | { [path: string]: any };
-    };
-type FieldMode<Modes extends AllModes> =
-  | FieldModeThing<Modes>
-  | ((args: { context: GraphQLContext }) => FieldModeThing<Modes>);
+export type MaybeItemFunction<T> =
+  | T
+  | ((args: {
+      session: any;
+      item: { id: string | number; [path: string]: any };
+    }) => MaybePromise<T>);
+export type MaybeSessionFunction<T> = T | ((args: { session: any }) => MaybePromise<T>);
 
 export type FieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   hooks?: ListHooks<TGeneratedListTypes>;
@@ -92,13 +83,13 @@ export type FieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
     views?: string;
     description?: string;
     createView?: {
-      fieldMode?: FieldMode<'edit' | 'hidden'>;
+      fieldMode?: MaybeSessionFunction<'edit' | 'hidden'>;
     };
     listView?: {
-      fieldMode?: FieldMode<'read' | 'hidden'>;
+      fieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
     };
     itemView?: {
-      fieldMode?: FieldMode<'edit' | 'read' | 'hidden'>;
+      fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'>;
     };
   };
 };
@@ -225,7 +216,8 @@ export type AdminMeta = {
 export type FieldProps<FieldControllerFn extends (...args: any) => FieldController<any, any>> = {
   field: ReturnType<FieldControllerFn>;
   value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>;
-  onChange(value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>): void;
+  // TODO: Make this optional; when not provided, it means the field is in "read" mode
+  onChange?(value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>): void;
 };
 
 export type Keystone = {
