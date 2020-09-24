@@ -68,7 +68,7 @@ export function withItemData(createSession: any, fieldSelections: any) {
     const { get, ...sessionThing } = createSession();
     return {
       ...sessionThing,
-      get: async (req, keystone) => {
+      get: async ({ req, keystone }) => {
         const session = await get(req, { keystone });
         if (!fieldSelections || !session) return session;
         // TODO: Only call this if there's a set of fields to load for the item type in fieldSelections
@@ -103,7 +103,7 @@ export function statelessSessions({
     }
     return sessionStrategy({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      async get(req, keystone) {
+      async get({ req, keystone }) {
         if (!req.headers.cookie) return;
         let cookies = cookie.parse(req.headers.cookie);
         if (!cookies[TOKEN_NAME]) return;
@@ -111,7 +111,7 @@ export function statelessSessions({
           return await Iron.unseal(cookies[TOKEN_NAME], secret, ironOptions);
         } catch (err) {}
       },
-      async end(req, res) {
+      async end({ req, res }) {
         res.setHeader(
           'Set-Cookie',
           cookie.serialize(TOKEN_NAME, '', {
@@ -124,7 +124,7 @@ export function statelessSessions({
           })
         );
       },
-      async start(res, data) {
+      async start({ res, data }) {
         let sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
 
         res.setHeader(
@@ -158,23 +158,23 @@ export function storedSessions({
     return {
       connect: store.connect,
       disconnect: store.disconnect,
-      async get(req, keystone) {
-        let sessionId = await get(req, keystone);
+      async get({ req, keystone }) {
+        let sessionId = await get({ req, keystone });
         if (typeof sessionId === 'string') {
           return store.get(sessionId);
         }
       },
-      async start(res, data) {
+      async start({ res, data, keystone }) {
         let sessionId = generateSessionId();
         await store.set(sessionId, data);
-        return start(res, sessionId);
+        return start({ res, data: { sessionId }, keystone });
       },
-      async end(req, res, keystone) {
-        let sessionId = await get(req, keystone);
+      async end({ req, res, keystone }) {
+        let sessionId = await get({ req, keystone });
         if (typeof sessionId === 'string') {
           await store.delete(sessionId);
         }
-        await end(req, res);
+        await end({ req, res, keystone });
       },
     };
   };
@@ -201,19 +201,19 @@ export function sessionStuff(sessionStrategy: SessionStrategy<unknown>) {
       if (!isConnected) {
         await connect();
       }
-      const session = await sessionStrategy.get(req, keystone);
+      const session = await sessionStrategy.get({ req, keystone });
       const startSession = sessionStrategy.start;
       const endSession = sessionStrategy.end;
       return {
         session,
         startSession: startSession
           ? (data: unknown) => {
-              return startSession(res, data, keystone);
+              return startSession({ res, data, keystone });
             }
           : undefined,
         endSession: endSession
           ? () => {
-              return endSession(req, res, keystone);
+              return endSession({ req, res, keystone });
             }
           : undefined,
       };

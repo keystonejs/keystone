@@ -7,16 +7,19 @@ export type SessionStrategy<StoredSessionData, StartSessionData = never> = {
   disconnect?: () => Promise<void>;
   // -- these two are invoked from mutations
   // creates token from data, sets the cookie with token via res, returns token
-  start?: (
-    res: ServerResponse,
-    data: StoredSessionData | StartSessionData,
-    keystone: Keystone
-  ) => Promise<string>;
+  start?: (args: {
+    res: ServerResponse;
+    data: StoredSessionData | StartSessionData;
+    keystone: Keystone;
+  }) => Promise<string>;
   // resets the cookie via res
-  end?: (req: IncomingMessage, res: ServerResponse, keystone: Keystone) => Promise<void>;
+  end?: (args: { req: IncomingMessage; res: ServerResponse; keystone: Keystone }) => Promise<void>;
   // -- this one is invoked at the start of every request
   // reads the token, gets the data, returns it
-  get: (req: IncomingMessage, keystone: Keystone) => Promise<StoredSessionData | undefined>;
+  get: (args: {
+    req: IncomingMessage;
+    keystone: Keystone;
+  }) => Promise<StoredSessionData | undefined>;
 };
 
 export type SessionStore = {

@@ -60,7 +60,7 @@ export type KeystoneConfig = {
       maxTotalResults?: number;
     };
   };
-  session?: (args: { keystone: KeystoneConfig }) => SessionStrategy<any>;
+  session?: () => SessionStrategy<any>;
   admin?: KeystoneAdminConfig;
 } & SchemaConfig;
 
