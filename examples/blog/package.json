@@ -14,7 +14,7 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@apollo/client": "^3.2.0",
+    "@apollo/client": "^3.2.1",
     "@arch-ui/layout": "^0.2.14",
     "@arch-ui/typography": "^0.0.18",
     "@emotion/core": "^10.0.35",

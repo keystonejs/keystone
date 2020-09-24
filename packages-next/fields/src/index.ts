@@ -6,3 +6,5 @@ export { text } from './types/text';
 export type { TextFieldConfig } from './types/text';
 export { password } from './types/password';
 // export type { PasswordFieldConfig } from './types/password';
+export { timestamp } from './types/timestamp';
+export type { TimestampFieldConfig } from './types/timestamp';
