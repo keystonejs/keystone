@@ -111,7 +111,7 @@ export function statelessSessions({
           return await Iron.unseal(cookies[TOKEN_NAME], secret, ironOptions);
         } catch (err) {}
       },
-      async end({ req, res }) {
+      async end({ res }) {
         res.setHeader(
           'Set-Cookie',
           cookie.serialize(TOKEN_NAME, '', {
