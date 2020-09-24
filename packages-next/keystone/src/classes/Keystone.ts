@@ -69,6 +69,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       plural: list.adminUILabels.plural,
       path: list.adminUILabels.path,
       fields: {},
+      pageSize: listConfig.admin?.listView?.pageSize ?? 50,
       gqlNames: list.gqlNames,
       initialColumns:
         listConfig.admin?.listView?.initialColumns ?? Object.keys(listConfig.fields).slice(0, 2),
@@ -80,6 +81,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
         label: fieldKey,
         views: getViewId(view),
         fieldMeta: field.getAdminMeta?.(),
+        isOrderable: (list as any).fieldsByPath[fieldKey].isOrderable,
       };
     }
   });
@@ -158,7 +160,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       },
     },
   });
-  async function createContext({
+  function createContext({
     sessionContext,
     skipAccessControl = false,
   }: {
