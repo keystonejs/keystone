@@ -2,5 +2,11 @@
   "extends": ["config:base"],
   "ignorePaths": ["packages/build-field-tyes/__fixtures__/**/*"],
   "rangeStrategy": "bump",
-  "lockFileMaintenance": { "enabled": true }
+  "lockFileMaintenance": { "enabled": true },
+  "packageRules": [
+    {
+      "packagePatterns": ["gatsby", "remark"],
+      "enabled": false
+    }
+  ]
 }
