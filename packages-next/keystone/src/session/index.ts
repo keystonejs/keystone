@@ -92,9 +92,11 @@ export function withItemData(createSession: CreateSession, fieldSelections: Fiel
         }`);
         const args = { id: session.itemId };
         const result = await execute(keystone.graphQLSchema, query, null, context, args);
-        if (result.errors?.length) {
-          throw result.errors[0];
-        }
+        // TODO: This causes "not found" errors to throw, which is not what we want
+        // TOOD: Also, why is this coming back as an access denied error instead of "not found" with an invalid session?
+        // if (result.errors?.length) {
+        //   throw result.errors[0];
+        // }
         // If there is no matching item found, return no session
         if (!result?.data?.item) {
           return;
