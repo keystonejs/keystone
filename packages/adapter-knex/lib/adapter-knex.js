@@ -68,12 +68,12 @@ class KnexAdapter extends BaseKeystoneAdapter {
       listAdapter._postConnect({ rels });
     });
 
-    if (!this.config.dropDatabase || process.env.NODE_ENV === 'production') {
+    if (this.config.dropDatabase && process.env.NODE_ENV !== 'production') {
+      await this.dropDatabase();
+      return this._createTables();
+    } else {
       return [];
     }
-
-    await this.dropDatabase();
-    return this._createTables();
   }
 
   async _verifyTables() {
@@ -680,8 +680,14 @@ class QueryBuilder {
   }
 
   _getQueryConditionByPath(listAdapter, path, tableAlias) {
-    const dbPath = path.split('_', 1);
-    const fieldAdapter = listAdapter.fieldAdaptersByPath[dbPath];
+    let dbPath = path;
+    let fieldAdapter = listAdapter.fieldAdaptersByPath[dbPath];
+
+    while (!fieldAdapter && dbPath.includes('_')) {
+      dbPath = dbPath.split('_').slice(0, -1).join('_');
+      fieldAdapter = listAdapter.fieldAdaptersByPath[dbPath];
+    }
+
     // Can't assume dbPath === fieldAdapter.dbPath (sometimes it isn't)
     return (
       fieldAdapter &&

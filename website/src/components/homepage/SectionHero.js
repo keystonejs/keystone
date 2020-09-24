@@ -122,10 +122,12 @@ const ButtonWrapper = props => (
     css={{
       display: 'flex',
       justifyContent: 'center',
+      flexDirection: 'column',
       alignItems: 'center',
 
       [media.sm]: {
         justifyContent: 'flex-start',
+        flexDirection: 'row',
       },
     }}
     {...props}
