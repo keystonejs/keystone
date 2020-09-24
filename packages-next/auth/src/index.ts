@@ -43,6 +43,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
     req,
     isValidSession,
     keystone,
+    session,
   }) => {
     const pathname = url.parse(req.url!).pathname!;
 
@@ -55,7 +56,8 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
       }
       return;
     }
-    if (config.initFirstItem) {
+
+    if (!session && config.initFirstItem) {
       const { count } = await keystone.keystone.lists[config.listKey].adapter.itemsQuery(
         {},
         {
@@ -73,7 +75,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
       }
     }
 
-    if (pathname !== '/signin') {
+    if (!session && pathname !== '/signin') {
       return {
         kind: 'redirect',
         to: '/signin',
@@ -134,7 +136,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
     let extension = initFirstItemSchemaExtension({
       listKey: config.listKey,
       fields: config.initFirstItem.fields,
-      extraCreateInput: config.initFirstItem.extraCreateInput,
+      itemData: config.initFirstItem.itemData,
       gqlNames,
     });
     extendGraphqlSchema = (schema, keystone) =>

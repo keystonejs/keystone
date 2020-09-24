@@ -1,17 +1,25 @@
 import type { JSONValue } from './utils';
 import type { ServerResponse, IncomingMessage } from 'http';
+import { Keystone } from '.';
 
 export type SessionStrategy<StoredSessionData, StartSessionData = never> = {
   connect?: () => Promise<void>;
   disconnect?: () => Promise<void>;
   // -- these two are invoked from mutations
   // creates token from data, sets the cookie with token via res, returns token
-  start?: (res: ServerResponse, data: StoredSessionData | StartSessionData) => Promise<string>;
+  start?: (args: {
+    res: ServerResponse;
+    data: StoredSessionData | StartSessionData;
+    keystone: Keystone;
+  }) => Promise<string>;
   // resets the cookie via res
-  end?: (req: IncomingMessage, res: ServerResponse) => Promise<void>;
+  end?: (args: { req: IncomingMessage; res: ServerResponse; keystone: Keystone }) => Promise<void>;
   // -- this one is invoked at the start of every request
   // reads the token, gets the data, returns it
-  get: (req: IncomingMessage) => Promise<StoredSessionData | undefined>;
+  get: (args: {
+    req: IncomingMessage;
+    keystone: Keystone;
+  }) => Promise<StoredSessionData | undefined>;
 };
 
 export type SessionStore = {

@@ -1,11 +1,13 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
+import { execute, parse } from 'graphql';
 import {
   SessionStrategy,
   JSONValue,
   SessionStoreFunction,
   SessionContext,
+  Keystone,
 } from '@keystone-spike/types';
 
 // uid-safe is what express-session uses so let's just use it
@@ -61,6 +63,48 @@ type StatelessSessionsOptions = {
   path?: string;
 };
 
+type FieldSelections = {
+  [listKey: string]: string;
+};
+
+type CreateSession = ReturnType<typeof statelessSessions>;
+
+/* TODO:
+  - [ ] We could support additional where input to validate item sessions (e.g an isEnabled boolean)
+*/
+
+export function withItemData(createSession: CreateSession, fieldSelections: FieldSelections) {
+  return (): SessionStrategy<any> => {
+    const { get, ...sessionThing } = createSession();
+    return {
+      ...sessionThing,
+      get: async ({ req, keystone }) => {
+        const session = await get({ req, keystone });
+        if (!session) return;
+        // Only load data for lists specified in fieldSelections
+        if (!fieldSelections[session.listKey]) return session;
+        const context = await keystone.createContext({ skipAccessControl: true });
+        const { gqlNames } = keystone.adminMeta.lists[session.listKey];
+        const query = parse(`query($id: ID!) {
+          item: ${gqlNames.itemQueryName}(where: { id: $id }) {
+            ${fieldSelections[session.listKey]}
+          }
+        }`);
+        const args = { id: session.itemId };
+        const result = await execute(keystone.graphQLSchema, query, null, context, args);
+        if (result.errors?.length) {
+          throw result.errors[0];
+        }
+        // If there is no matching item found, return no session
+        if (!result?.data?.item) {
+          return;
+        }
+        return { ...session, item: result.data.item };
+      },
+    };
+  };
+}
+
 export function statelessSessions({
   secret,
   maxAge = MAX_AGE,
@@ -73,7 +117,8 @@ export function statelessSessions({
       throw new Error('The session secret must be at least 32 characters long');
     }
     return sessionStrategy({
-      async get(req) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      async get({ req, keystone }) {
         if (!req.headers.cookie) return;
         let cookies = cookie.parse(req.headers.cookie);
         if (!cookies[TOKEN_NAME]) return;
@@ -81,7 +126,7 @@ export function statelessSessions({
           return await Iron.unseal(cookies[TOKEN_NAME], secret, ironOptions);
         } catch (err) {}
       },
-      async end(req, res) {
+      async end({ res }) {
         res.setHeader(
           'Set-Cookie',
           cookie.serialize(TOKEN_NAME, '', {
@@ -94,7 +139,7 @@ export function statelessSessions({
           })
         );
       },
-      async start(res, data) {
+      async start({ res, data }) {
         let sealedData = await Iron.seal(data, secret, { ...ironOptions, ttl: maxAge * 1000 });
 
         res.setHeader(
@@ -128,23 +173,23 @@ export function storedSessions({
     return {
       connect: store.connect,
       disconnect: store.disconnect,
-      async get(req) {
-        let sessionId = await get(req);
+      async get({ req, keystone }) {
+        let sessionId = await get({ req, keystone });
         if (typeof sessionId === 'string') {
           return store.get(sessionId);
         }
       },
-      async start(res, data) {
+      async start({ res, data, keystone }) {
         let sessionId = generateSessionId();
         await store.set(sessionId, data);
-        return start(res, sessionId);
+        return start({ res, data: { sessionId }, keystone });
       },
-      async end(req, res) {
-        let sessionId = await get(req);
+      async end({ req, res, keystone }) {
+        let sessionId = await get({ req, keystone });
         if (typeof sessionId === 'string') {
           await store.delete(sessionId);
         }
-        await end(req, res);
+        await end({ req, res, keystone });
       },
     };
   };
@@ -163,23 +208,27 @@ export function sessionStuff(sessionStrategy: SessionStrategy<unknown>) {
   return {
     connect,
     disconnect,
-    async createContext(req: IncomingMessage, res: ServerResponse): Promise<SessionContext> {
+    async createContext(
+      req: IncomingMessage,
+      res: ServerResponse,
+      keystone: Keystone
+    ): Promise<SessionContext> {
       if (!isConnected) {
         await connect();
       }
-      const session = await sessionStrategy.get(req);
+      const session = await sessionStrategy.get({ req, keystone });
       const startSession = sessionStrategy.start;
       const endSession = sessionStrategy.end;
       return {
         session,
         startSession: startSession
           ? (data: unknown) => {
-              return startSession(res, data);
+              return startSession({ res, data, keystone });
             }
           : undefined,
         endSession: endSession
           ? () => {
-              return endSession(req, res);
+              return endSession({ req, res, keystone });
             }
           : undefined,
       };

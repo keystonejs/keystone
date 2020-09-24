@@ -5,12 +5,12 @@ import { ResolvedAuthGqlNames } from './types';
 export function initFirstItemSchemaExtension({
   listKey,
   fields,
-  extraCreateInput,
+  itemData,
   gqlNames,
 }: {
   listKey: string;
   fields: string[];
-  extraCreateInput: Record<string, any> | undefined;
+  itemData: Record<string, any> | undefined;
   gqlNames: ResolvedAuthGqlNames;
 }) {
   return (schema: GraphQLSchema, keystoneClassInstance: any) => {
@@ -53,7 +53,7 @@ export function initFirstItemSchemaExtension({
               skipAccessControl: true,
             });
             const item = await list.createMutation(
-              { ...data, ...extraCreateInput },
+              { ...data, ...itemData },
               contextThatSkipsAccessControl
             );
             const token = await context.startSession({ listKey, itemId: item.id });

@@ -66,6 +66,7 @@
 ## Backlog
 
 - [ ] Figure out how the ApolloClient gets the right URI for the GraphQL API (come back to this if/when we do server rendering)
+- [ ] Implement allowing access to the Admin UI without a valid session (in read only mode? etc -- this is going to be quite involved)
 - [ ] We need to talk about Errors. What is the format?
   - [ ] Figure out all the different sorts of errors we have, will inform constraints
 

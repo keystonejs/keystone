@@ -33,7 +33,7 @@ export const startAdminUI = async (options: Options = defaultOptions, keystone: 
     // this needs to be discussed
     formatError,
     context: ({ req, res }) => {
-      return keystone.createContext(req, res);
+      return keystone.createContextFromRequest(req, res);
     },
   });
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql' });
@@ -83,7 +83,6 @@ export const startAdminUI = async (options: Options = defaultOptions, keystone: 
     if (!isValidSession && !publicPages.includes(url.parse(req.url).pathname!)) {
       app.render(req, res, '/no-access');
     } else {
-      // TODO: if the /no-access page has been requested, and the session is valid, redirect to the index
       handle(req, res);
     }
   });

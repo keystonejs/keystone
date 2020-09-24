@@ -173,11 +173,13 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       // authedListKey: authentication.listKey,
       ...(keystone as any)._getAccessControlContext({
         schemaName: 'public',
-        authentication: {
-          ...(sessionContext?.session as any),
-          // TODO: Keystone makes assumptions about the shape of this object
-          item: true,
-        },
+        authentication: sessionContext?.session
+          ? {
+              // TODO: Keystone makes assumptions about the shape of this object
+              item: true,
+              ...(sessionContext?.session as any),
+            }
+          : {},
         skipAccessControl,
       }),
       totalResults: 0,
@@ -187,17 +189,24 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       ...sessionContext,
     };
   }
-  return {
+  const createSessionContext = sessionThing?.createContext;
+  let keystoneThing = {
     keystone,
     adminMeta,
     graphQLSchema,
     views,
-    createSessionContext: sessionThing?.createContext,
-    async createContext(req: IncomingMessage, res: ServerResponse) {
-      let sessionContext = await sessionThing?.createContext(req, res);
+    createSessionContext: createSessionContext
+      ? (req: IncomingMessage, res: ServerResponse) => {
+          return createSessionContext(req, res, keystoneThing);
+        }
+      : undefined,
+    createContext,
+    async createContextFromRequest(req: IncomingMessage, res: ServerResponse) {
+      let sessionContext = await sessionThing?.createContext(req, res, keystoneThing);
 
       return createContext({ sessionContext });
     },
     config,
   };
+  return keystoneThing;
 }
