@@ -81,6 +81,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
         label: fieldKey,
         views: getViewId(view),
         fieldMeta: field.getAdminMeta?.(),
+        isOrderable: (list as any).fieldsByPath[fieldKey].isOrderable,
       };
     }
   });
