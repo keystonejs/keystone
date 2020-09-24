@@ -11,10 +11,6 @@ export const NoAccessPage = ({ sessionsEnabled }: { sessionsEnabled: boolean }) 
       <Stack align="center" gap="medium">
         <AlertTriangleIcon size="large" />
         <div>You don't have access to this page.</div>
-        {/*
-          TODO: This will ALWAYS be shown, even if you ARE logged out, we should check
-          not just sessions are enabled, but also if there is a session\
-        */}
         {sessionsEnabled ? <SignoutButton /> : null}
       </Stack>
     </ErrorContainer>

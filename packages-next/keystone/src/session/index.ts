@@ -63,28 +63,43 @@ type StatelessSessionsOptions = {
   path?: string;
 };
 
-export function withItemData(createSession: any, fieldSelections: any) {
+type FieldSelections = {
+  [listKey: string]: string;
+};
+
+type CreateSession = ReturnType<typeof statelessSessions>;
+
+/* TODO:
+  - [ ] We could support additional where input to validate item sessions (e.g an isEnabled boolean)
+*/
+
+export function withItemData(createSession: CreateSession, fieldSelections: FieldSelections) {
   return (): SessionStrategy<any> => {
     const { get, ...sessionThing } = createSession();
     return {
       ...sessionThing,
       get: async ({ req, keystone }) => {
-        const session = await get(req, { keystone });
-        if (!fieldSelections || !session) return session;
-        // TODO: Only call this if there's a set of fields to load for the item type in fieldSelections
-        let context = await keystone.createContext({ skipAccessControl: true });
+        const session = await get({ req, keystone });
+        if (!session) return;
+        // Only load data for lists specified in fieldSelections
+        if (!fieldSelections[session.listKey]) return session;
+        const context = await keystone.createContext({ skipAccessControl: true });
         const { gqlNames } = keystone.adminMeta.lists[session.listKey];
         const query = parse(`query($id: ID!) {
-          item: ${gqlNames.itemQueryName}(where: {id: $id}) {${fieldSelections[session.listKey]}}
+          item: ${gqlNames.itemQueryName}(where: { id: $id }) {
+            ${fieldSelections[session.listKey]}
+          }
         }`);
-        const result = await execute(keystone.graphQLSchema, query, null, context, {
-          id: session.itemId,
-        });
+        const args = { id: session.itemId };
+        const result = await execute(keystone.graphQLSchema, query, null, context, args);
         if (result.errors?.length) {
           throw result.errors[0];
         }
-        // TODO: If there's no matching item, bail the fuck out with a null because the session isn't valid
-        return { ...session, item: result?.data?.item };
+        // If there is no matching item found, return no session
+        if (!result?.data?.item) {
+          return;
+        }
+        return { ...session, item: result.data.item };
       },
     };
   };

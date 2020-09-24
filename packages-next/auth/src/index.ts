@@ -56,12 +56,8 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
       }
       return;
     }
-    // In this case, the person is likely logged in but does not have access to the page
-    // so we want to let them fall through to the no-access page
-    if (!isValidSession && session) {
-      return;
-    }
-    if (config.initFirstItem) {
+
+    if (!session && config.initFirstItem) {
       const { count } = await keystone.keystone.lists[config.listKey].adapter.itemsQuery(
         {},
         {
@@ -79,7 +75,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
       }
     }
 
-    if (pathname !== '/signin') {
+    if (!session && pathname !== '/signin') {
       return {
         kind: 'redirect',
         to: '/signin',
@@ -140,7 +136,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
     let extension = initFirstItemSchemaExtension({
       listKey: config.listKey,
       fields: config.initFirstItem.fields,
-      extraCreateInput: config.initFirstItem.extraCreateInput,
+      itemData: config.initFirstItem.itemData,
       gqlNames,
     });
     extendGraphqlSchema = (schema, keystone) =>
