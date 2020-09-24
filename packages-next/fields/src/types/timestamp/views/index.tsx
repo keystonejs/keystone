@@ -1,5 +1,6 @@
 /* @jsx jsx */
 import { jsx } from '@keystone-ui/core';
+import { CellLink, CellContainer } from '@keystone-spike/admin-ui/components';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 
 import {
@@ -8,8 +9,6 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-spike/types';
-import { Link } from '@keystone-spike/admin-ui/router';
-import { Fragment } from 'react';
 
 // TODO: Bring across the datetime/datetimeUtc interfaces, date picker, etc.
 
@@ -27,7 +26,7 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
 
 export const Cell: CellComponent = ({ item, path, linkTo }) => {
   let value = item[path];
-  return linkTo ? <Link {...linkTo}>{value}</Link> : <Fragment>{value}</Fragment>;
+  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
 };
 Cell.supportsLinkTo = true;
 

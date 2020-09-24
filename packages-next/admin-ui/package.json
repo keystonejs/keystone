@@ -30,6 +30,7 @@
   "preconstruct": {
     "entrypoints": [
       "index.tsx",
+      "components/index.ts",
       "templates/index.ts",
       "apollo.tsx",
       "router.tsx"
