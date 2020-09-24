@@ -17,6 +17,9 @@ const auth = createAuth({
   secretField: 'password',
   initFirstItem: {
     fields: ['name', 'email', 'password'],
+    extraCreateInput: {
+      isAdmin: true,
+    },
   },
 });
 
