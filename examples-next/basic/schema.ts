@@ -62,6 +62,7 @@ export const lists = createSchema({
         return itemId === context.session?.itemId;
       },
     },
+
     fields: {
       name: text({ isRequired: true, hooks: {} }),
       email: text({

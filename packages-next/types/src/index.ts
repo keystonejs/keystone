@@ -164,11 +164,13 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
 export type SerializedFieldMeta = {
   label: string;
   views: number;
+  isOrderable: boolean;
   fieldMeta: JSONValue | undefined;
 };
 
 export type FieldMeta = {
   label: string;
+  isOrderable: boolean;
   views: FieldViews[string];
   fieldMeta: JSONValue | undefined;
   controller: FieldController<unknown, JSONValue>;
