@@ -74,10 +74,27 @@ export const lists = createSchema({
       password: password({
         hooks: {},
       }),
-      isAdmin: checkbox({}),
+      isAdmin: checkbox({
+        access: { read: true, update: ({ context: { session } }) => session?.item?.isAdmin },
+        admin: {
+          createView: {
+            fieldMode: ({ session }) => (session?.item?.isAdmin ? 'edit' : 'hidden'),
+          },
+          itemView: {
+            fieldMode: ({ session }) => (session?.item?.isAdmin ? 'edit' : 'read'),
+          },
+        },
+      }),
       roles: text({}),
       posts: relationship({ ref: 'Post.author', many: true }),
       something: text({ isMultiline: true }),
+      oneTimeThing: text({
+        access: {
+          create: true,
+          read: true,
+          update: false,
+        },
+      }),
     },
   }),
   Post: list({
