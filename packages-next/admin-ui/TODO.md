@@ -38,7 +38,7 @@
   - [ ] Selecting specific items in the table, with all/none
 - [ ] Delete selected item(s)
 - [ ] Add dots menu for [copy link / copy id / delete]
-- [ ] Sorting
+- [x] Sorting
 
 ### Come back to later
 
