@@ -183,6 +183,7 @@ type BaseListMeta = {
   description?: string;
   gqlNames: GqlNames;
   initialColumns: string[];
+  pageSize: number;
 };
 
 export type SerializedListMeta = BaseListMeta & {

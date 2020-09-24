@@ -82,6 +82,7 @@ export function useAdminMeta(
         plural: list.plural,
         path: list.path,
         description: list.description,
+        pageSize: list.pageSize,
       };
       Object.keys(list.fields).forEach(fieldKey => {
         const field = list.fields[fieldKey];

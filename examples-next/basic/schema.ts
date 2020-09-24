@@ -109,11 +109,23 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       number: Int
       generatedAt: Int
     }
+    type Mutation {
+      createRandomPosts: [Post!]!
+    }
   `,
   resolvers: {
     RandomNumber: {
       number(rootVal: { number: number }) {
         return rootVal.number * 1000;
+      },
+    },
+    Mutation: {
+      createRandomPosts(root: any, args: any, ctx: any) {
+        const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
+        return ctx.keystone.lists.Post.createManyMutation(
+          data,
+          ctx.createContext({ skipAccessControl: true })
+        );
       },
     },
     Query: {
