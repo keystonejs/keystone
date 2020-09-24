@@ -76,13 +76,13 @@ export type ListConfig<
      * Note that this does **not** disable creating items through the GraphQL API, it only hides the button to create an item for this list in the Admin UI.
      * @default false
      */
-    hideCreate?: boolean;
+    hideCreate?: MaybeSessionFunction<boolean>;
     /**
      * Hides the delete button in the Admin UI.
      * Note that this does **not** disable deleting items through the GraphQL API, it only hides the button to delete an item for this list in the Admin UI.
      * @default false
      */
-    hideDelete?: boolean;
+    hideDelete?: MaybeSessionFunction<boolean>;
     /**
      * Configuration specific to the create view in the Admin UI
      */
