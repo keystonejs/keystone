@@ -1,5 +1,5 @@
 import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-spike/keystone/schema';
-import { text, relationship, checkbox, password } from '@keystone-spike/fields';
+import { text, relationship, checkbox, password, timestamp } from '@keystone-spike/fields';
 
 const randomNumber = () => Math.round(Math.random() * 10);
 
@@ -88,7 +88,7 @@ export const lists = createSchema({
       }),
       content: text({}),
       published: checkbox({ defaultValue: false }),
-      publishDate: text({}),
+      publishDate: timestamp({}),
       author: relationship({ ref: 'User.posts' }),
     },
   }),
@@ -109,11 +109,23 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       number: Int
       generatedAt: Int
     }
+    type Mutation {
+      createRandomPosts: [Post!]!
+    }
   `,
   resolvers: {
     RandomNumber: {
       number(rootVal: { number: number }) {
         return rootVal.number * 1000;
+      },
+    },
+    Mutation: {
+      createRandomPosts(root: any, args: any, ctx: any) {
+        const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
+        return ctx.keystone.lists.Post.createManyMutation(
+          data,
+          ctx.createContext({ skipAccessControl: true })
+        );
       },
     },
     Query: {
