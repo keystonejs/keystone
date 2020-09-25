@@ -22,8 +22,6 @@ type ButtonProps = {
   isLoading?: boolean;
   /** Whether the Button should display as a block */
   isBlock?: boolean;
-  onPress?: () => void;
-  type?: 'button' | 'submit';
 };
 
 const loadingContainerStyles = {
@@ -34,18 +32,7 @@ const loadingContainerStyles = {
 
 export const Button = forwardRefWithAs<'button', ButtonProps>(
   (
-    {
-      as: Tag = 'button',
-      children,
-      isDisabled,
-      isLoading,
-      size,
-      tone,
-      weight,
-      onPress,
-      type = 'button',
-      ...otherProps
-    },
+    { as: Tag = 'button', children, isDisabled, isLoading, size, tone, weight, ...otherProps },
     ref
   ) => {
     const { useButtonStyles, useButtonTokens, defaults } = useContext(ButtonContext);
@@ -58,10 +45,9 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
       isDisabled,
       tokens,
     });
-    const typeProp = Tag === 'button' ? type : undefined;
 
     return (
-      <Tag type={typeProp} css={styles} onClick={onPress} ref={ref} {...otherProps}>
+      <Tag type={Tag === 'button' ? 'button' : undefined} css={styles} ref={ref} {...otherProps}>
         <span css={isLoading ? { opacity: 0 } : null}>{children}</span>
         {isLoading && (
           <span css={loadingContainerStyles}>

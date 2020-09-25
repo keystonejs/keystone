@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { useQuery, gql } from '../../apollo';
+import { useQuery, gql, useMutation } from '../../apollo';
 import { Button } from '@keystone-ui/button';
 import { Box, H1, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { Fragment, HTMLAttributes, ReactNode, useMemo, useState } from 'react';
@@ -49,7 +49,21 @@ export const ListPage = ({ listKey }: ListPageProps) => {
   const filters = useFilters(listKey);
   const selectedFields = useSelectedFields(listKey);
 
-  let { data, error } = useQuery(
+  const [deleteItems, deleteItemsState] = useMutation(
+    useMemo(
+      () =>
+        gql`
+  mutation($ids: [ID!]!) {
+    ${list.gqlNames.deleteManyMutationName}(ids: $ids) {
+      id
+    }
+  }
+`,
+      [list, selectedFields]
+    )
+  );
+
+  let { data, error, refetch } = useQuery(
     useMemo(() => {
       let selectedGqlFields = selectedFields.fields
         .map(fieldPath => {
@@ -57,7 +71,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         })
         .join('\n');
       return gql`
-      query($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $sortBy: [${
+      query ($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $sortBy: [${
         list.gqlNames.listSortName
       }!]) {
         items: ${
@@ -83,12 +97,66 @@ export const ListPage = ({ listKey }: ListPageProps) => {
     }
   );
 
+  const [selectedItemsState, setSelectedItems] = useState(() => ({
+    itemsFromServer: undefined as any,
+    selectedItems: {} as Record<string, true>,
+  }));
+  // this removes the selected items which no longer exist when the data changes
+  // because someone goes to another page, changes filters or etc.
+  if (data && selectedItemsState.itemsFromServer !== data.items) {
+    const newSelectedItems: Record<string, true> = {};
+    data.items.forEach((item: any) => {
+      if (selectedItemsState.selectedItems[item.id] !== undefined) {
+        newSelectedItems[item.id] = true;
+      }
+    });
+    setSelectedItems({
+      itemsFromServer: data.items,
+      selectedItems: newSelectedItems,
+    });
+  }
+
+  const { spacing } = useTheme();
+
   return (
     <PageContainer>
       <ListPageHeader listKey={listKey} />
-      <p>
+      <p
+        css={{
+          // TODO: don't do this
+          // (this is to make it so things don't move when a user selects an item)
+          minHeight: 38,
+
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
         {data
           ? (() => {
+              const selectedItems = selectedItemsState.selectedItems;
+              const selectedItemsCount = Object.keys(selectedItems).length;
+              if (selectedItemsCount) {
+                return (
+                  <Fragment>
+                    Selected {selectedItemsCount} of {data.items.length}
+                    <Button
+                      css={{ marginLeft: spacing.small }}
+                      isLoading={deleteItemsState.loading}
+                      tone="negative"
+                      onClick={async () => {
+                        // TODO: confirmation modal
+                        // TODO: handle errors
+                        await deleteItems({
+                          variables: { ids: Object.keys(selectedItemsState.selectedItems) },
+                        });
+                        refetch();
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </Fragment>
+                );
+              }
               const selectedFieldCount =
                 selectedFields.fields.length + Number(selectedFields.includeLabel);
               return (
@@ -135,6 +203,13 @@ export const ListPage = ({ listKey }: ListPageProps) => {
           pageSize={pageSize}
           selectedFields={selectedFields}
           sort={sort}
+          selectedItems={selectedItemsState.selectedItems}
+          onSelectedItemsChange={selectedItems => {
+            setSelectedItems({
+              itemsFromServer: selectedItemsState.itemsFromServer,
+              selectedItems,
+            });
+          }}
         />
       ) : (
         'Loading...'
@@ -171,6 +246,8 @@ function ListTable({
   sort,
   currentPage,
   pageSize,
+  selectedItems,
+  onSelectedItemsChange,
 }: {
   selectedFields: ReturnType<typeof useSelectedFields>;
   listKey: string;
@@ -179,23 +256,16 @@ function ListTable({
   sort: { field: string; direction: 'ASC' | 'DESC' } | null;
   currentPage: number;
   pageSize: number;
+  selectedItems: Record<string, true>;
+  onSelectedItemsChange(selectedItems: Record<string, true>): void;
 }) {
   const list = useList(listKey);
   const { query } = useRouter();
   const shouldShowNonCellLink =
     !selectedFields.includeLabel &&
     !list.fields[selectedFields.fields[0]].views.Cell.supportsLinkTo;
-  let [selectedItemsState, setSelectedItems] = useState(() => ({
-    itemsFromServer: items,
-    selectedItems: {} as Record<string, true>,
-  }));
-  if (selectedItemsState.itemsFromServer !== items) {
-    setSelectedItems({
-      itemsFromServer: items,
-      selectedItems: {},
-    });
-  }
-  const selectedItemsCount = Object.keys(selectedItemsState.selectedItems).length;
+
+  const selectedItemsCount = Object.keys(selectedItems).length;
   return (
     <Fragment>
       <TableContainer>
@@ -211,11 +281,7 @@ function ListTable({
                       selectedItems[item.id] = true;
                     });
                   }
-                  console.log(selectedItems);
-                  setSelectedItems({
-                    itemsFromServer: selectedItemsState.itemsFromServer,
-                    selectedItems,
-                  });
+                  onSelectedItemsChange(selectedItems);
                 }}
               />
             </label>
@@ -257,20 +323,15 @@ function ListTable({
                 <TableBodyCell>
                   <label>
                     <CheckboxControl
-                      checked={selectedItemsState.selectedItems[item.id] !== undefined}
+                      checked={selectedItems[item.id] !== undefined}
                       onChange={() => {
-                        setSelectedItems(state => {
-                          const selectedItems = { ...state.selectedItems };
-                          if (state.selectedItems[item.id] === undefined) {
-                            selectedItems[item.id] = true;
-                          } else {
-                            delete selectedItems[item.id];
-                          }
-                          return {
-                            itemsFromServer: state.itemsFromServer,
-                            selectedItems,
-                          };
-                        });
+                        const newSelectedItems = { ...selectedItems };
+                        if (selectedItems[item.id] === undefined) {
+                          newSelectedItems[item.id] = true;
+                        } else {
+                          delete newSelectedItems[item.id];
+                        }
+                        onSelectedItemsChange(newSelectedItems);
                       }}
                     />
                   </label>

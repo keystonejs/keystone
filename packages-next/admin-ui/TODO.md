@@ -25,18 +25,18 @@
   - [x] Show the right columns in the table and query the right fields
   - [x] Show "with {x} columns" in UI
   - [ ] Popup to select columns
-  - [ ] ~~Logic to ensure there's always a label or ID field~~
-  - [ ] Add `supportsLinkTo` support to Cells
-  - [ ] Pass `linkTo` to the first cell, if supported, otherwise add a link icon as the first column
+  - [ ] Logic to ensure there's always at least ~~label or ID~~ field
+  - [x] Add `supportsLinkTo` support to Cells
+  - [x] Pass `linkTo` to the first cell, if supported, otherwise add a link icon as the first column
 - [ ] Implement Filters
   - [x] URL State working and actually filtering
   - [x] Show selected filters in UI
   - [ ] Popup to add filters
   - [ ] Popup to edit filters
 - [x] Implement Pagination
-- [ ] Selecting items
-  - [ ] Selecting specific items in the table, with all/none
-- [ ] Delete selected item(s)
+- [x] Selecting items
+  - [x] Selecting specific items in the table, with all/none
+- [x] Delete selected item(s)
 - [ ] Add dots menu for [copy link / copy id / delete]
 - [x] Sorting
 
