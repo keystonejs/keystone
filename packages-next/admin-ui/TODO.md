@@ -25,9 +25,9 @@
   - [x] Show the right columns in the table and query the right fields
   - [x] Show "with {x} columns" in UI
   - [ ] Popup to select columns
-  - [ ] ~~Logic to ensure there's always a label or ID field~~
-  - [ ] Add `supportsLinkTo` support to Cells
-  - [ ] Pass `linkTo` to the first cell, if supported, otherwise add a link icon as the first column
+  - [ ] Logic to ensure there's always at least ~~label or ID~~ field
+  - [x] Add `supportsLinkTo` support to Cells
+  - [x] Pass `linkTo` to the first cell, if supported, otherwise add a link icon as the first column
 - [ ] Implement Filters
   - [x] URL State working and actually filtering
   - [x] Show selected filters in UI
