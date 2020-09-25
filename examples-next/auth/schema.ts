@@ -80,7 +80,7 @@ export const lists = createSchema({
     },
     admin: {
       // Since you can't delete users unless you're an admin, we hide the UI for it
-      hideDelete: ({ session }) => session?.data?.isAdmin,
+      hideDelete: ({ session }) => !session?.data?.isAdmin,
       listView: {
         // These are the default columns that will be displayed in the list view
         initialColumns: ['name', 'email', 'isAdmin'],
@@ -100,16 +100,14 @@ export const lists = createSchema({
           // Passwords can always be set when creating items
           // Users can change their own passwords, and Admins can change anyone's password
           update: ({ session, item }) =>
-            session && (session.data.isAdmin || session.itemId === item.itemId),
+            session && (session.data.isAdmin || session.itemId === item.id),
         },
         admin: {
           // Based on the same logic as update access, the password field is editable.
           // The password field is hidden from non-Admin users (except for themselves)
           itemView: {
             fieldMode: ({ session, item }) =>
-              session && (session.data.isAdmin || session.itemId === item.itemId)
-                ? 'edit'
-                : 'hidden',
+              session && (session.data.isAdmin || session.itemId === item.id) ? 'edit' : 'hidden',
           },
         },
       }),
