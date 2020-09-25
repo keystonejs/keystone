@@ -3,7 +3,7 @@
 import { useQuery, gql } from '../../apollo';
 import { Button } from '@keystone-ui/button';
 import { Box, H1, jsx, Stack, useTheme } from '@keystone-ui/core';
-import { Fragment, ReactNode, useMemo } from 'react';
+import { Fragment, HTMLAttributes, ReactNode, useMemo, useState } from 'react';
 import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
 import { PageContainer } from '../../components/PageContainer';
 import { useList } from '../../KeystoneContext';
@@ -12,6 +12,7 @@ import { CellLink } from '../../components';
 import { Pagination } from './pagination';
 import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
+import { CheckboxControl } from '@keystone-ui/fields';
 
 type ListPageProps = {
   listKey: string;
@@ -67,7 +68,7 @@ const TableHeaderRow = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const TableHeaderCell = ({ children }: { children?: ReactNode }) => {
+const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
   const { colors, spacing, typography } = useTheme();
   return (
     <th
@@ -79,9 +80,8 @@ const TableHeaderCell = ({ children }: { children?: ReactNode }) => {
         padding: spacing.small,
         textAlign: 'left',
       }}
-    >
-      {children}
-    </th>
+      {...props}
+    />
   );
 };
 
@@ -164,10 +164,6 @@ export const ListPage = ({ listKey }: ListPageProps) => {
     }
   );
 
-  const shouldShowNonCellLink =
-    !selectedFields.includeLabel &&
-    !list.fields[selectedFields.fields[0]].views.Cell.supportsLinkTo;
-
   return (
     <PageContainer>
       <ListPageHeader listKey={listKey} />
@@ -212,96 +208,15 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         // TODO: Show errors nicely and with information
         'Error...'
       ) : data ? (
-        <Fragment>
-          <TableContainer>
-            <TableHeaderRow>
-              {selectedFields.includeLabel && <TableHeaderCell>Label</TableHeaderCell>}
-              {shouldShowNonCellLink && <TableHeaderCell />}
-              {selectedFields.fields.map(path => {
-                const label = list.fields[path].label;
-                if (!list.fields[path].isOrderable) {
-                  return <TableHeaderCell key={path}>{label}</TableHeaderCell>;
-                }
-                return (
-                  <TableHeaderCell>
-                    <Link
-                      css={{
-                        display: 'block',
-                        textDecoration: 'none',
-                        color: 'inherit',
-                        ':hover': { color: 'inherit' },
-                      }}
-                      href={{
-                        query: {
-                          ...query,
-                          sortBy:
-                            sort?.field === path && sort.direction === 'ASC' ? `-${path}` : path,
-                        },
-                      }}
-                    >
-                      {label}
-                      {sort?.field === path && <SortDirectionArrow direction={sort.direction} />}
-                    </Link>
-                  </TableHeaderCell>
-                );
-              })}
-            </TableHeaderRow>
-            <tbody>
-              {data.items.map((item: any) => {
-                return (
-                  <tr key={item.id}>
-                    {selectedFields.includeLabel && (
-                      <TableBodyCell>
-                        <CellLink
-                          href={`/${list.path}/[id]`}
-                          as={`/${list.path}/${encodeURIComponent(item.id)}`}
-                        >
-                          {item._label_}
-                        </CellLink>
-                      </TableBodyCell>
-                    )}
-                    {shouldShowNonCellLink && (
-                      <TableBodyCell>
-                        <Link
-                          css={{ textDecoration: 'none' }}
-                          href={`/${list.path}/[id]`}
-                          as={`/${list.path}/${encodeURIComponent(item.id)}`}
-                        >
-                          <LinkIcon aria-label="Go to item" />
-                        </Link>
-                      </TableBodyCell>
-                    )}
-                    {selectedFields.fields.map((path, i) => {
-                      let { Cell } = list.fields[path].views;
-                      return (
-                        <TableBodyCell key={path}>
-                          <Cell
-                            item={item}
-                            path={path}
-                            linkTo={
-                              i === 0 && !selectedFields.includeLabel && Cell.supportsLinkTo
-                                ? {
-                                    href: `/${list.path}/[id]`,
-                                    as: `/${list.path}/${encodeURIComponent(item.id)}`,
-                                  }
-                                : undefined
-                            }
-                          />
-                        </TableBodyCell>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </TableContainer>
-          <Pagination
-            listKey={listKey}
-            total={data.meta.count}
-            currentPage={currentPage}
-            pageSize={pageSize}
-          />
-        </Fragment>
+        <ListTable
+          count={data.meta.count}
+          currentPage={currentPage}
+          items={data.items}
+          listKey={listKey}
+          pageSize={pageSize}
+          selectedFields={selectedFields}
+          sort={sort}
+        />
       ) : (
         'Loading...'
       )}
@@ -328,3 +243,165 @@ const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
     />
   );
 };
+
+function ListTable({
+  selectedFields,
+  listKey,
+  items,
+  count,
+  sort,
+  currentPage,
+  pageSize,
+}: {
+  selectedFields: ReturnType<typeof useSelectedFields>;
+  listKey: string;
+  items: Record<string, any>[];
+  count: number;
+  sort: { field: string; direction: 'ASC' | 'DESC' } | null;
+  currentPage: number;
+  pageSize: number;
+}) {
+  const list = useList(listKey);
+  const { query } = useRouter();
+  const shouldShowNonCellLink =
+    !selectedFields.includeLabel &&
+    !list.fields[selectedFields.fields[0]].views.Cell.supportsLinkTo;
+  let [selectedItemsState, setSelectedItems] = useState(() => ({
+    itemsFromServer: items,
+    selectedItems: {} as Record<string, true>,
+  }));
+  if (selectedItemsState.itemsFromServer !== items) {
+    setSelectedItems({
+      itemsFromServer: items,
+      selectedItems: {},
+    });
+  }
+  const selectedItemsCount = Object.keys(selectedItemsState.selectedItems).length;
+  return (
+    <Fragment>
+      <TableContainer>
+        <TableHeaderRow>
+          <TableHeaderCell css={{ paddingLeft: 0 }}>
+            <label>
+              <CheckboxControl
+                checked={selectedItemsCount === items.length}
+                onChange={() => {
+                  const selectedItems: Record<string, true> = {};
+                  if (selectedItemsCount !== items.length) {
+                    items.forEach(item => {
+                      selectedItems[item.id] = true;
+                    });
+                  }
+                  console.log(selectedItems);
+                  setSelectedItems({
+                    itemsFromServer: selectedItemsState.itemsFromServer,
+                    selectedItems,
+                  });
+                }}
+              />
+            </label>
+          </TableHeaderCell>
+          {selectedFields.includeLabel && <TableHeaderCell>Label</TableHeaderCell>}
+          {shouldShowNonCellLink && <TableHeaderCell />}
+          {selectedFields.fields.map(path => {
+            const label = list.fields[path].label;
+            if (!list.fields[path].isOrderable) {
+              return <TableHeaderCell key={path}>{label}</TableHeaderCell>;
+            }
+            return (
+              <TableHeaderCell>
+                <Link
+                  css={{
+                    display: 'block',
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    ':hover': { color: 'inherit' },
+                  }}
+                  href={{
+                    query: {
+                      ...query,
+                      sortBy: sort?.field === path && sort.direction === 'ASC' ? `-${path}` : path,
+                    },
+                  }}
+                >
+                  {label}
+                  {sort?.field === path && <SortDirectionArrow direction={sort.direction} />}
+                </Link>
+              </TableHeaderCell>
+            );
+          })}
+        </TableHeaderRow>
+        <tbody>
+          {items.map(item => {
+            return (
+              <tr key={item.id}>
+                <TableBodyCell>
+                  <label>
+                    <CheckboxControl
+                      checked={selectedItemsState.selectedItems[item.id] !== undefined}
+                      onChange={() => {
+                        setSelectedItems(state => {
+                          const selectedItems = { ...state.selectedItems };
+                          if (state.selectedItems[item.id] === undefined) {
+                            selectedItems[item.id] = true;
+                          } else {
+                            delete selectedItems[item.id];
+                          }
+                          return {
+                            itemsFromServer: state.itemsFromServer,
+                            selectedItems,
+                          };
+                        });
+                      }}
+                    />
+                  </label>
+                </TableBodyCell>
+                {selectedFields.includeLabel && (
+                  <TableBodyCell>
+                    <CellLink
+                      href={`/${list.path}/[id]`}
+                      as={`/${list.path}/${encodeURIComponent(item.id)}`}
+                    >
+                      {item._label_}
+                    </CellLink>
+                  </TableBodyCell>
+                )}
+                {shouldShowNonCellLink && (
+                  <TableBodyCell>
+                    <Link
+                      css={{ textDecoration: 'none' }}
+                      href={`/${list.path}/[id]`}
+                      as={`/${list.path}/${encodeURIComponent(item.id)}`}
+                    >
+                      <LinkIcon aria-label="Go to item" />
+                    </Link>
+                  </TableBodyCell>
+                )}
+                {selectedFields.fields.map((path, i) => {
+                  let { Cell } = list.fields[path].views;
+                  return (
+                    <TableBodyCell key={path}>
+                      <Cell
+                        item={item}
+                        path={path}
+                        linkTo={
+                          i === 0 && !selectedFields.includeLabel && Cell.supportsLinkTo
+                            ? {
+                                href: `/${list.path}/[id]`,
+                                as: `/${list.path}/${encodeURIComponent(item.id)}`,
+                              }
+                            : undefined
+                        }
+                      />
+                    </TableBodyCell>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </TableContainer>
+      <Pagination listKey={listKey} total={count} currentPage={currentPage} pageSize={pageSize} />
+    </Fragment>
+  );
+}
