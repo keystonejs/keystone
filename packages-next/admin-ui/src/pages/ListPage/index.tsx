@@ -18,87 +18,6 @@ type ListPageProps = {
   listKey: string;
 };
 
-const ListPageHeader = ({ listKey }: { listKey: string }) => {
-  const list = useList(listKey);
-  return (
-    <Stack
-      across
-      marginY="large"
-      gap="medium"
-      css={{
-        display: 'flex',
-        flexDirection: 'row',
-        // justifyContent: 'space-between',
-        alignItems: 'center',
-      }}
-    >
-      <H1>{list.label}</H1>
-      <Button tone="positive">Create</Button>
-    </Stack>
-  );
-};
-
-const TableContainer = ({ children }: { children: ReactNode }) => {
-  const { colors, shadow } = useTheme();
-  return (
-    <Box
-      padding="large"
-      rounding="medium"
-      css={{
-        background: colors.background,
-        boxShadow: shadow.s200,
-      }}
-    >
-      <table
-        css={{ minWidth: '100%', 'tr:last-child td': { borderBottomWidth: 0 } }}
-        cellPadding="0"
-        cellSpacing="0"
-      >
-        {children}
-      </table>
-    </Box>
-  );
-};
-
-const TableHeaderRow = ({ children }: { children: ReactNode }) => {
-  return (
-    <thead>
-      <tr>{children}</tr>
-    </thead>
-  );
-};
-
-const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
-  const { colors, spacing, typography } = useTheme();
-  return (
-    <th
-      css={{
-        borderBottom: `2px solid ${colors.border}`,
-        color: colors.foregroundDim,
-        fontSize: typography.fontSize.large,
-        fontWeight: typography.fontWeight.regular,
-        padding: spacing.small,
-        textAlign: 'left',
-      }}
-      {...props}
-    />
-  );
-};
-
-const TableBodyCell = ({ children }: { children: ReactNode }) => {
-  const { colors, typography } = useTheme();
-  return (
-    <td
-      css={{
-        borderBottom: `1px solid ${colors.border}`,
-        fontSize: typography.fontSize.medium,
-      }}
-    >
-      {children}
-    </td>
-  );
-};
-
 export const ListPage = ({ listKey }: ListPageProps) => {
   const list = useList(listKey);
 
@@ -405,3 +324,84 @@ function ListTable({
     </Fragment>
   );
 }
+
+const ListPageHeader = ({ listKey }: { listKey: string }) => {
+  const list = useList(listKey);
+  return (
+    <Stack
+      across
+      marginY="large"
+      gap="medium"
+      css={{
+        display: 'flex',
+        flexDirection: 'row',
+        // justifyContent: 'space-between',
+        alignItems: 'center',
+      }}
+    >
+      <H1>{list.label}</H1>
+      <Button tone="positive">Create</Button>
+    </Stack>
+  );
+};
+
+const TableContainer = ({ children }: { children: ReactNode }) => {
+  const { colors, shadow } = useTheme();
+  return (
+    <Box
+      padding="large"
+      rounding="medium"
+      css={{
+        background: colors.background,
+        boxShadow: shadow.s200,
+      }}
+    >
+      <table
+        css={{ minWidth: '100%', 'tr:last-child td': { borderBottomWidth: 0 } }}
+        cellPadding="0"
+        cellSpacing="0"
+      >
+        {children}
+      </table>
+    </Box>
+  );
+};
+
+const TableHeaderRow = ({ children }: { children: ReactNode }) => {
+  return (
+    <thead>
+      <tr>{children}</tr>
+    </thead>
+  );
+};
+
+const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
+  const { colors, spacing, typography } = useTheme();
+  return (
+    <th
+      css={{
+        borderBottom: `2px solid ${colors.border}`,
+        color: colors.foregroundDim,
+        fontSize: typography.fontSize.large,
+        fontWeight: typography.fontWeight.regular,
+        padding: spacing.small,
+        textAlign: 'left',
+      }}
+      {...props}
+    />
+  );
+};
+
+const TableBodyCell = ({ children }: { children: ReactNode }) => {
+  const { colors, typography } = useTheme();
+  return (
+    <td
+      css={{
+        borderBottom: `1px solid ${colors.border}`,
+        fontSize: typography.fontSize.medium,
+      }}
+    >
+      {children}
+    </td>
+  );
+};
