@@ -38,7 +38,8 @@
     "contributors:generate": "all-contributors generate",
     "heroku-postbuild": "yarn build && yarn workspace @keystonejs/demo-project-blog build",
     "npm-tag": "manypkg npm-tag",
-    "update": "manypkg upgrade"
+    "update": "manypkg upgrade",
+    "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 && yarn"
   },
   "dependencies": {
     "@babel/cli": "^7.11.6",
