@@ -34,9 +34,9 @@
   - [ ] Popup to add filters
   - [ ] Popup to edit filters
 - [x] Implement Pagination
-- [ ] Selecting items
-  - [ ] Selecting specific items in the table, with all/none
-- [ ] Delete selected item(s)
+- [x] Selecting items
+  - [x] Selecting specific items in the table, with all/none
+- [x] Delete selected item(s)
 - [ ] Add dots menu for [copy link / copy id / delete]
 - [x] Sorting
 

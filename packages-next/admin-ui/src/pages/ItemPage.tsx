@@ -123,7 +123,7 @@ function ItemForm({
           isDisabled={!fieldsEquality.someFieldsChanged}
           weight="bold"
           tone="active"
-          onPress={() => {
+          onClick={() => {
             const data: Record<string, any> = {};
             Object.keys(fieldsEquality.fieldsChanged).forEach(fieldKey => {
               if (fieldsEquality.fieldsChanged[fieldKey]) {
@@ -142,7 +142,7 @@ function ItemForm({
         </Button>
         <Button
           isDisabled={!fieldsEquality.someFieldsChanged}
-          onPress={() => {
+          onClick={() => {
             setValue({
               item,
               value: deserializeValue(list, item),
