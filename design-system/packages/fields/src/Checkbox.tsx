@@ -14,9 +14,13 @@ type CheckboxProps = {
 } & CheckboxControlProps;
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ children, className, ...props }, ref) => {
+  ({ children, className, size, ...props }, ref) => {
     return (
-      <ControlLabel className={className} control={<CheckboxControl ref={ref} {...props} />}>
+      <ControlLabel
+        className={className}
+        size={size}
+        control={<CheckboxControl ref={ref} size={size} {...props} />}
+      >
         {children}
       </ControlLabel>
     );

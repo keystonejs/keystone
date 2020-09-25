@@ -14,9 +14,13 @@ type RadioProps = {
 } & RadioControlProps;
 
 export const Radio = forwardRef<HTMLInputElement, RadioProps>(
-  ({ children, className, ...props }, ref) => {
+  ({ children, className, size, ...props }, ref) => {
     return (
-      <ControlLabel className={className} control={<RadioControl ref={ref} {...props} />}>
+      <ControlLabel
+        className={className}
+        size={size}
+        control={<RadioControl ref={ref} size={size} {...props} />}
+      >
         {children}
       </ControlLabel>
     );
