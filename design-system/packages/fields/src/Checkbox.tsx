@@ -36,7 +36,7 @@ type CheckboxControlProps = {
   size?: SizeType;
   /** The value of the Checkbox. */
   value?: string;
-} & InputHTMLAttributes<HTMLInputElement>;
+} & Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>;
 
 export const CheckboxControl = forwardRef<HTMLInputElement, CheckboxControlProps>(
   ({ size, ...props }, ref) => (
