@@ -3,6 +3,7 @@ import {
   LocationGoogleImplementation,
   MongoLocationGoogleInterface,
   KnexLocationGoogleInterface,
+  PrismaLocationGoogleInterface,
 } from './Implementation';
 import path from 'path';
 
@@ -20,5 +21,6 @@ export const LocationGoogle = {
   adapters: {
     mongoose: MongoLocationGoogleInterface,
     knex: KnexLocationGoogleInterface,
+    prisma: PrismaLocationGoogleInterface,
   },
 };

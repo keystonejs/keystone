@@ -3,6 +3,7 @@ import { Kind } from 'graphql/language';
 import { DateTime, FixedOffsetZone } from 'luxon';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 import { Implementation } from '../../Implementation';
 
 class _DateTime extends Implementation {
@@ -216,6 +217,28 @@ export class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdap
     } else if (this.defaultTo) {
       utcColumn.defaultTo(this.defaultTo);
     }
+  }
+}
+
+export class PrismaDateTimeInterface extends CommonDateTimeInterface(PrismaFieldAdapter) {
+  constructor() {
+    super(...arguments);
+
+    this.utcPath = `${this.path}_utc`;
+    this.offsetPath = `${this.path}_offset`;
+    this.realKeys = [this.utcPath, this.offsetPath];
+    this.sortKey = this.utcPath;
+    this.dbPath = this.utcPath;
+
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+  }
+
+  getPrismaSchema() {
+    return [
+      `${this.path}_utc    DateTime? ${this.config.isUnique ? '@unique' : ''}`,
+      `${this.path}_offset String?`,
+    ];
   }
 }
 

@@ -16,6 +16,7 @@
     "@emotion/core": "^10.0.35",
     "@keystonejs/adapter-knex": "^11.0.5",
     "@keystonejs/adapter-mongoose": "^9.0.6",
+    "@keystonejs/adapter-prisma": "^0.0.0",
     "@keystonejs/fields": "^17.1.2",
     "google-maps-react": "^2.0.6",
     "mongoose": "~5.9.29",

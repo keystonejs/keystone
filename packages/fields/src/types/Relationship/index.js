@@ -2,6 +2,7 @@ import {
   Relationship,
   MongoRelationshipInterface,
   KnexRelationshipInterface,
+  PrismaRelationshipInterface,
 } from './Implementation';
 import { resolveView } from '../../resolve-view';
 
@@ -18,5 +19,6 @@ export default {
   adapters: {
     mongoose: MongoRelationshipInterface,
     knex: KnexRelationshipInterface,
+    prisma: PrismaRelationshipInterface,
   },
 };

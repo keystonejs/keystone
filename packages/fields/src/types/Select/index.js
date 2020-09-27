@@ -1,4 +1,9 @@
-import { Select, MongoSelectInterface, KnexSelectInterface } from './Implementation';
+import {
+  Select,
+  MongoSelectInterface,
+  KnexSelectInterface,
+  PrismaSelectInterface,
+} from './Implementation';
 import { resolveView } from '../../resolve-view';
 
 export default {
@@ -13,5 +18,6 @@ export default {
   adapters: {
     mongoose: MongoSelectInterface,
     knex: KnexSelectInterface,
+    prisma: PrismaSelectInterface,
   },
 };

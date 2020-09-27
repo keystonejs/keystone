@@ -26,17 +26,27 @@ const Svg = ({ children, size, stroke = 'none', fill = 'none' }: SvgProps) => (
   </svg>
 );
 
-export const CheckIcon = () => {
+const checkSizeMap = {
+  small: 14,
+  medium: 18,
+  large: 24,
+};
+export const CheckIcon = ({ size = 'medium' }: { size?: keyof typeof checkSizeMap }) => {
   return (
-    <Svg size="18" stroke="currentColor">
+    <Svg size={checkSizeMap[size]} stroke="currentColor">
       <polyline points="20 6 10 18 4 12" />
     </Svg>
   );
 };
 
-export const DotIcon = () => {
+const dotSizeMap = {
+  small: 12,
+  medium: 16,
+  large: 20,
+};
+export const DotIcon = ({ size = 'medium' }: { size?: keyof typeof dotSizeMap }) => {
   return (
-    <Svg size="16" fill="currentColor">
+    <Svg size={dotSizeMap[size]} fill="currentColor">
       <circle cx="12" cy="12" r="8" />
     </Svg>
   );
