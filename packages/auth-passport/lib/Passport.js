@@ -362,6 +362,13 @@ class PassportAuthStrategy {
           valid: { type: Bool, default: false },
           */
         },
+        access: {
+          read: () => false,
+          update: () => false,
+          create: () => false,
+          delete: () => false,
+          auth: true,
+        },
       });
     }
   }
