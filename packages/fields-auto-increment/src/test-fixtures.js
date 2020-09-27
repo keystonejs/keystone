@@ -9,7 +9,7 @@ export const exampleValue = matrixValue => (matrixValue === 'ID' ? '35' : 35);
 export const exampleValue2 = matrixValue => (matrixValue === 'ID' ? '36' : 36);
 export const supportsUnique = true;
 export const fieldName = 'orderNumber';
-export const skipCreateTest = true;
+export const skipCreateTest = false;
 export const skipUpdateTest = true;
 
 // `AutoIncrement` field type is not supported by `mongoose`. So, we need to filter it out while performing `API` tests.
@@ -23,7 +23,7 @@ export const fieldConfig = matrixValue => ({
 
 export const getTestFields = matrixValue => ({
   name: { type: Text },
-  orderNumber: { type, gqlType: matrixValue },
+  orderNumber: { type, gqlType: matrixValue, access: { create: true } },
 });
 
 export const initItems = () => {

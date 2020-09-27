@@ -4,6 +4,7 @@ import {
   CloudinaryImage as Implementation,
   MongoCloudinaryImageInterface,
   KnexCloudinaryImageInterface,
+  PrismaCloudinaryImageInterface,
 } from './Implementation';
 import { ImageBlock } from './ImageBlock';
 
@@ -18,6 +19,7 @@ export const CloudinaryImage = {
   adapters: {
     mongoose: MongoCloudinaryImageInterface,
     knex: KnexCloudinaryImageInterface,
+    prisma: PrismaCloudinaryImageInterface,
   },
   blocks: {
     image: ImageBlock,

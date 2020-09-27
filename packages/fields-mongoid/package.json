@@ -16,6 +16,7 @@
     "@babel/runtime": "^7.11.2",
     "@keystonejs/adapter-knex": "^11.0.5",
     "@keystonejs/adapter-mongoose": "^9.0.6",
+    "@keystonejs/adapter-prisma": "^0.0.0",
     "@keystonejs/fields": "^17.1.2",
     "react": "^16.13.1"
   },

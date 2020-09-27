@@ -1,6 +1,7 @@
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 import mongoose from 'mongoose';
 
 // Disabling the getter of mongoose >= 5.1.0
@@ -157,5 +158,23 @@ export class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
     const column = table.jsonb(this.path);
     if (this.isNotNullable) column.notNullable();
     if (this.defaultTo) column.defaultTo(this.defaultTo);
+  }
+}
+
+export class PrismaFileInterface extends CommonFileInterface(PrismaFieldAdapter) {
+  constructor() {
+    super(...arguments);
+
+    // Error rather than ignoring invalid config
+    // We totally can index these values, it's just not trivial. See issue #1297
+    if (this.config.isIndexed) {
+      throw (
+        `The File field type doesn't support indexes on Prisma. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      );
+    }
+  }
+  getPrismaSchema() {
+    return [this._schemaField({ type: 'Json' })];
   }
 }

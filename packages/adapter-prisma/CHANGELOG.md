@@ -1,0 +1,1 @@
+# @keystonejs/adapter-prisma

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 
 import { Implementation } from '../../Implementation';
 import { resolveNested } from './nested-mutations';
@@ -421,6 +422,33 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
     return {
       [`${this.path}_is_null`]: value => b =>
         value ? b.whereNull(dbPath) : b.whereNotNull(dbPath),
+    };
+  }
+}
+
+export class PrismaRelationshipInterface extends PrismaFieldAdapter {
+  constructor() {
+    super(...arguments);
+    this.idPath = `${this.dbPath}Id`;
+    this.isRelationship = true;
+
+    // Default isIndexed to true if it's not explicitly provided
+    // Mutually exclusive with isUnique
+    this.isUnique = typeof this.config.isUnique === 'undefined' ? false : !!this.config.isUnique;
+    this.isIndexed =
+      typeof this.config.isIndexed === 'undefined'
+        ? !this.config.isUnique
+        : !!this.config.isIndexed;
+
+    // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
+    const [refListKey, refFieldPath] = this.config.ref.split('.');
+    this.refListKey = refListKey;
+    this.refFieldPath = refFieldPath;
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      [`${this.path}_is_null`]: value => (value ? { [dbPath]: null } : { NOT: { [dbPath]: null } }),
     };
   }
 }
