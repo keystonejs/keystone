@@ -1,5 +1,13 @@
 # @keystonejs/website
 
+## 5.3.11
+
+### Patch Changes
+
+- [`48623ae44`](https://github.com/keystonejs/keystone/commit/48623ae44568bae1af2861003fa9922a0118cc57) [#3692](https://github.com/keystonejs/keystone/pull/3692) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `webpack` to `v4.44.2`.
+
+* [`beb12fb37`](https://github.com/keystonejs/keystone/commit/beb12fb3703901565b9746db91441568983f8dda) [#3690](https://github.com/keystonejs/keystone/pull/3690) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `mdx` monorepo to `^1.6.18`.
+
 ## 5.3.10
 
 ### Patch Changes

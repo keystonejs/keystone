@@ -2,7 +2,7 @@
   "name": "@keystonejs/benchmarks",
   "description": "A set of benchmarks for running against the KeystoneJS API.",
   "private": true,
-  "version": "5.1.22",
+  "version": "5.1.23",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -14,14 +14,14 @@
   "repository": "https://github.com/keystonejs/keystone/tree/master/tests/benchmarks",
   "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
-    "@keystonejs/adapter-knex": "^11.0.6",
-    "@keystonejs/adapter-mongoose": "^9.0.7",
+    "@keystonejs/adapter-knex": "^11.0.7",
+    "@keystonejs/adapter-mongoose": "^9.0.8",
     "@keystonejs/app-graphql": "^6.1.3",
-    "@keystonejs/fields": "^17.1.3",
-    "@keystonejs/keystone": "^16.0.0",
+    "@keystonejs/fields": "^18.0.0",
+    "@keystonejs/keystone": "^17.0.0",
     "@keystonejs/server-side-graphql-client": "^1.1.2",
     "@keystonejs/session": "^8.1.1",
-    "@keystonejs/test-utils": "^8.0.4",
+    "@keystonejs/test-utils": "^9.0.0",
     "cookie-signature": "^1.1.0",
     "supertest-light": "^1.0.3",
     "testcheck": "^1.0.0-rc.2"

@@ -1,5 +1,16 @@
 # @keystonejs/app-admin-ui
 
+## 7.3.7
+
+### Patch Changes
+
+- [`01b79349e`](https://github.com/keystonejs/keystone/commit/01b79349e625870193933aa044bdf27f8c75753e) [#3732](https://github.com/keystonejs/keystone/pull/3732) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `html-webpack-plugin` to `^4.5.0`.
+
+* [`48623ae44`](https://github.com/keystonejs/keystone/commit/48623ae44568bae1af2861003fa9922a0118cc57) [#3692](https://github.com/keystonejs/keystone/pull/3692) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `webpack` to `v4.44.2`.
+
+* Updated dependencies [[`a02e69987`](https://github.com/keystonejs/keystone/commit/a02e69987902cfde38d820e68cb24b7a20ca1f6f), [`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4)]:
+  - @keystonejs/fields@18.0.0
+
 ## 7.3.6
 
 ### Patch Changes
