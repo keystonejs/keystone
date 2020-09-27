@@ -36,7 +36,7 @@ type RadioControlProps = {
   size?: SizeType;
   /** The value of the Radio. */
   value?: string;
-} & InputHTMLAttributes<HTMLInputElement>;
+} & Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>;
 
 export const RadioControl = forwardRef<HTMLInputElement, RadioControlProps>(
   ({ size, ...props }, ref) => (
