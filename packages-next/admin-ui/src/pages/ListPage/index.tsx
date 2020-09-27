@@ -273,6 +273,7 @@ function ListTable({
           <TableHeaderCell css={{ paddingLeft: 0 }}>
             <label>
               <CheckboxControl
+                size="small"
                 checked={selectedItemsCount === items.length}
                 onChange={() => {
                   const selectedItems: Record<string, true> = {};
@@ -323,6 +324,7 @@ function ListTable({
                 <TableBodyCell>
                   <label>
                     <CheckboxControl
+                      size="small"
                       checked={selectedItems[item.id] !== undefined}
                       onChange={() => {
                         const newSelectedItems = { ...selectedItems };

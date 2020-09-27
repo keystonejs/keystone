@@ -430,6 +430,16 @@ const radii = {
   full: 9999,
 };
 
+const sizing = {
+  xxsmall: 16,
+  xsmall: 20,
+  small: 24,
+  medium: 32,
+  large: 38,
+  xlarge: 42,
+  xxlarge: 48,
+};
+
 const spacing = {
   none: 0,
   xsmall: 4,
@@ -471,16 +481,6 @@ const opacity = {
   full: 1,
   none: 0,
   disabled: 0.65,
-};
-
-// TODO: Jed's not sure we need this, Dom thinks it should be a function
-const sizing = {
-  xsmall: 24,
-  small: 32,
-  base: 38,
-  medium: 48,
-  large: 56,
-  xlarge: 72,
 };
 
 /**
@@ -542,6 +542,7 @@ type ControlSize = {
   height: number;
   gap: number;
   fontSize: number | string;
+  indicatorBoxSize: number | string;
   indicatorFontSize: number | string;
 };
 
@@ -552,9 +553,10 @@ const controlSizes: { [key: string]: ControlSize } = {
     gutter: spacing.xsmall,
     paddingX: spacing.medium,
     paddingY: spacing.xsmall,
-    height: sizing.small,
+    height: sizing.medium,
     gap: spacing.small,
     fontSize: typography.fontSize.small,
+    indicatorBoxSize: sizing.xsmall,
     indicatorFontSize: typography.fontSize.xxxsmall,
   },
   medium: {
@@ -563,9 +565,10 @@ const controlSizes: { [key: string]: ControlSize } = {
     gutter: spacing.xsmall,
     paddingX: spacing.medium,
     paddingY: spacing.xsmall,
-    height: sizing.base,
+    height: sizing.large,
     gap: spacing.medium,
     fontSize: typography.fontSize.medium,
+    indicatorBoxSize: sizing.small,
     indicatorFontSize: typography.fontSize.xxsmall,
   },
   large: {
@@ -574,9 +577,10 @@ const controlSizes: { [key: string]: ControlSize } = {
     gutter: spacing.small,
     paddingX: spacing.large,
     paddingY: spacing.small,
-    height: sizing.medium,
+    height: sizing.xxlarge,
     gap: spacing.medium,
     fontSize: typography.fontSize.large,
+    indicatorBoxSize: sizing.medium,
     indicatorFontSize: typography.fontSize.small,
   },
 };
@@ -817,8 +821,8 @@ export const theme = {
   breakpoints,
   elevation,
   radii,
-  spacing,
   sizing,
+  spacing,
   shadow,
   animation,
   opacity,
