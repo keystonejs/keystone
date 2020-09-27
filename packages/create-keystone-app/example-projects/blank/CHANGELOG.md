@@ -1,5 +1,14 @@
 # @keystonejs/example-projects-blank
 
+## 5.0.14
+
+### Patch Changes
+
+- Updated dependencies [[`01b79349e`](https://github.com/keystonejs/keystone/commit/01b79349e625870193933aa044bdf27f8c75753e), [`48623ae44`](https://github.com/keystonejs/keystone/commit/48623ae44568bae1af2861003fa9922a0118cc57), [`966b5bc70`](https://github.com/keystonejs/keystone/commit/966b5bc7003e0f580528c4dcd46647cc4124b592), [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc), [`df0687184`](https://github.com/keystonejs/keystone/commit/df068718456d23819a7cae491870be4560b2010d), [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc)]:
+  - @keystonejs/app-admin-ui@7.3.7
+  - @keystonejs/adapter-mongoose@9.0.8
+  - @keystonejs/keystone@17.0.0
+
 ## 5.0.13
 
 ### Patch Changes

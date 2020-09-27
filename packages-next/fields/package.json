@@ -1,6 +1,6 @@
 {
   "name": "@keystone-spike/fields",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "license": "MIT",
   "main": "dist/fields.cjs.js",
@@ -15,7 +15,7 @@
     "@keystone-spike/types": "*",
     "@keystone-ui/core": "*",
     "@keystone-ui/fields": "*",
-    "@keystonejs/fields": "^17.1.2",
+    "@keystonejs/fields": "^18.0.0",
     "@types/keystonejs__fields": "^5.1.0",
     "@types/react": "^16.9.49",
     "react": "^16.13.1"

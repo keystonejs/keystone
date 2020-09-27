@@ -1,5 +1,15 @@
 # @keystonejs/demo-project-todo-knex
 
+## 5.1.19
+
+### Patch Changes
+
+- Updated dependencies [[`8c54a34be`](https://github.com/keystonejs/keystone/commit/8c54a34bec0f5f945447a2475f5500415eb154df), [`01b79349e`](https://github.com/keystonejs/keystone/commit/01b79349e625870193933aa044bdf27f8c75753e), [`48623ae44`](https://github.com/keystonejs/keystone/commit/48623ae44568bae1af2861003fa9922a0118cc57), [`a02e69987`](https://github.com/keystonejs/keystone/commit/a02e69987902cfde38d820e68cb24b7a20ca1f6f), [`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4), [`3e2ca3a2f`](https://github.com/keystonejs/keystone/commit/3e2ca3a2ffa00cb5aababee572902a78e657ec58), [`bf5801070`](https://github.com/keystonejs/keystone/commit/bf5801070568bbcc1ed4f3394a293bfa5bea8b98), [`df0687184`](https://github.com/keystonejs/keystone/commit/df068718456d23819a7cae491870be4560b2010d), [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc)]:
+  - @keystonejs/adapter-knex@11.0.7
+  - @keystonejs/app-admin-ui@7.3.7
+  - @keystonejs/fields@18.0.0
+  - @keystonejs/keystone@17.0.0
+
 ## 5.1.18
 
 ### Patch Changes
