@@ -16866,10 +16866,10 @@ kleur@^3.0.3:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
-kleur@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.1.tgz#80b49dd7d1afeba41b8dcdf4ecfff9252205fc52"
-  integrity sha512-BsNhM6T/yTWFG580CRnYhT3LfUuPK7Hwrm+W2H0G8lK/nogalP5Nsrh/cHjxVVkzl0sFm7z8b8rNcZCfKxeoxA==
+kleur@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.2.tgz#aa58ce5e76b84fbd571307f1d1b77f74db8593f3"
+  integrity sha512-GDy+aV+1kr510OLi3Rkb81+t3orUyX5iHjNFEmHw6WJg6PB71HPhCLHOh2pWNMKLd7L7ywI9rzpSR664E20TQQ==
 
 knex@^0.20.1:
   version "0.20.15"
