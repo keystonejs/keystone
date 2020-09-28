@@ -8,11 +8,13 @@ title: Prisma adapter
 
 [![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/adapter-prisma)
 
-> The Keystone Prisma adapter is not currently production-ready. It depends on the [Prisma Migrate](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate) system which is currently flagged as `EXPERIMENTAL`. Once Prisma Migrate is out of experimental mode, we will release a production-ready version of `@keystonejs/adapter-prisma`.
+The Prisma adapter allows Keystone to connect a database using Prisma Client, a type-safe and auto-generated database client. You can learn more about Prisma Client in the [Prisma docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
 
-The [Prisma](https://www.prisma.io/) adapter allows Keystone to connect a database using a Prisma Client, a type-safe and auto-generated database client. You can learn more about Prisma Client in the [Prisma docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client). 
+> **Tip:** Want to get started with Keystone + Prisma? [Follow the guide](/docs/guides/prisma.md)!
 
-> This adapter currently only supports PostgreSQL databases. Future releases will enable support for all database backends which are [supported by Prisma](https://www.prisma.io/docs/more/supported-databases).
+> **Warning:** The Keystone Prisma adapter is not currently production-ready. It depends on the [Prisma Migrate](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate) system which is currently flagged as `EXPERIMENTAL`. Once Prisma Migrate is out of experimental mode, we will release a production-ready version of this package.
+
+> **Note:** This adapter currently only supports PostgreSQL databases, and has other limitations. For more details, see our [Prisma Adapter - Production Ready Checklist](http://localhost:8000/discussions/prisma)
 
 ## Usage
 

@@ -1,18 +1,18 @@
 <!--[meta]
 section: blog
 title: Keystone + Prisma
-date: 2020-09-28
+date: 2020-09-29
 author: Tim Leslie
 order: 0.4
 [meta]-->
 
-# Announcement: Keystone + Prisma
+Drumroll please 🥁...
 
-Drumroll 🥁... today we're pleased to announce the first release of the [Prisma database](/docs/guides/prisma.md) adapter for Keystone!
+Today we're pleased to announce the first release of the [Prisma database adapter for Keystone](/docs/guides/prisma.md)!
 
 This adapter will let you build your application with Keystone, while having access to [Prisma's powerful database client](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client) for all your server-side data interaction needs.
 
-We're excited about this opportunity for you to experiment with Prisma + Keystone while we work in parallel with Prisma to make the complete system production ready for all your headless CMS needs.
+We're excited to be giving our community the chance to experiment with Prisma + Keystone while we work in parallel with Prisma to make the complete system production-ready for all your headless CMS needs.
 
 ## What is Prisma?
 
@@ -37,7 +37,11 @@ This first release of the Prisma adapter is just the beginning of the Keystone +
 - **Support for MySQL and SQLite**: The current implementation only supports `PostgreSQL`. We plan to include support for all backends supported by Prisma.
 - **Complete support for all field types:** The Prisma adapter currently supports all field types except `Decimal`. There are some minor known issues with `Json` based fields, which we're working with the Prisma team to solve.
 - **Make the out of the box experience seamless:** We want to make getting started with Keystone + Prisma as simple as possible. We'll be working on the DX of the getting started experience so that you can get up and running as quickly as possible.
-- **Have production ready migrations:** When getting started with Keystone the database is the last thing you want to worry about, but when you're running in production you need to have control over how and when your database migrations take place. We'll be establishing guidelines you can follow to make production migrations a breeze.
+- **Have production-ready migrations:** When getting started with Keystone the database is the last thing you want to worry about, but when you're running in production you need to have control over how and when your database migrations take place. We'll be establishing guidelines you can follow to make production migrations a breeze.
+
+You can ready more about the current support in our [Prisma Adapter - Production Ready Checklist](http://localhost:8000/discussions/prisma)
+
+> **Tip:** Want to get started with Keystone + Prisma? [Follow the guide](/docs/guides/prisma.md)!
 
 ## How can I help?
 
