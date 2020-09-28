@@ -134,5 +134,38 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         expect(data.allNumbers).toEqual([]); // No results
       })
     );
+
+    test(
+      'empty string',
+      runner(setupKeystone, async ({ keystone }) => {
+        const create = async (listKey, item) => createItem({ keystone, listKey, item });
+        await Promise.all([
+          create('Test', { name: 'one' }),
+          create('Test', { name: '%islikelike%' }),
+          create('Test', { name: 'three' }),
+          create('Number', { name: 12345 }),
+        ]);
+
+        const { data, errors } = await keystone.executeGraphQL({
+          query: `
+          query {
+            allTests(
+              sortBy: name_ASC,
+              search: "",
+            ) {
+              name
+            }
+          }
+      `,
+        });
+        expect(errors).toBe(undefined);
+        expect(data).toHaveProperty('allTests');
+        expect(data.allTests).toEqual([
+          { name: '%islikelike%' },
+          { name: 'one' },
+          { name: 'three' },
+        ]); // All results
+      })
+    );
   })
 );
