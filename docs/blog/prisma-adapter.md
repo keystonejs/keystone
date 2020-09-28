@@ -8,7 +8,7 @@ order: 0.4
 
 # Announcement: Keystone + Prisma
 
-Drumroll 🥁... today we're pleased to announce the first release of the Prisma database [Prisma database](/docs/guides/prisma.md) adapter for Keystone!
+Drumroll 🥁... today we're pleased to announce the first release of the [Prisma database](/docs/guides/prisma.md) adapter for Keystone!
 
 This adapter will let you build your application with Keystone, while having access to [Prisma's powerful database client](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client) for all your server-side data interaction needs.
 
