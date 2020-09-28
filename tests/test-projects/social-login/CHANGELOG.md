@@ -1,5 +1,18 @@
 # @keystonejs/cypress-project-facebook-login
 
+## 5.1.21
+
+### Patch Changes
+
+- Updated dependencies [[`01b79349e`](https://github.com/keystonejs/keystone/commit/01b79349e625870193933aa044bdf27f8c75753e), [`48623ae44`](https://github.com/keystonejs/keystone/commit/48623ae44568bae1af2861003fa9922a0118cc57), [`a02e69987`](https://github.com/keystonejs/keystone/commit/a02e69987902cfde38d820e68cb24b7a20ca1f6f), [`966b5bc70`](https://github.com/keystonejs/keystone/commit/966b5bc7003e0f580528c4dcd46647cc4124b592), [`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4), [`5799f3e48`](https://github.com/keystonejs/keystone/commit/5799f3e483fdf7db8ab1f868b26628fa85bbbb43), [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc), [`df0687184`](https://github.com/keystonejs/keystone/commit/df068718456d23819a7cae491870be4560b2010d), [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc), [`f3e9b5347`](https://github.com/keystonejs/keystone/commit/f3e9b53474f6bd6485a8c3932894931e438fcc09)]:
+  - @keystonejs/app-admin-ui@7.3.7
+  - @keystonejs/fields@18.0.0
+  - @keystonejs/adapter-mongoose@9.0.8
+  - @keystonejs/file-adapters@7.0.8
+  - @keystonejs/keystone@17.0.0
+  - @keystonejs/auth-passport@5.2.9
+  - @keystonejs/auth-password@5.1.15
+
 ## 5.1.20
 
 ### Patch Changes

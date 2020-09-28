@@ -1,5 +1,18 @@
 # @keystonejs/keystone
 
+## 17.0.0
+
+### Major Changes
+
+- [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc) [#3596](https://github.com/keystonejs/keystone/pull/3596) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `pluralize` to `^8.0.0`.
+  This may cause changes to your GraphQL schema if you have list names which are now treated differently by this library.
+  Check the [`pluralize` release notes](https://github.com/plurals/pluralize/releases/v8.0.0) for details.
+  You can override the behaviour of `pluralize` by passing in `singular` or `plural` config options to `keystone.createList()`.
+
+### Patch Changes
+
+- [`df0687184`](https://github.com/keystonejs/keystone/commit/df068718456d23819a7cae491870be4560b2010d) [#3743](https://github.com/keystonejs/keystone/pull/3743) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `apollo-server-express` to `^2.18.0`. This brings in some [changes related to apollo reporting](https://github.com/apollographql/apollo-server/blob/main/CHANGELOG.md#v2180), which maybe of interested to users who use this feature.
+
 ## 16.0.0
 
 ### Major Changes

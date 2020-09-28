@@ -21,7 +21,7 @@ const SignoutButton: FunctionComponent = ({ children, ...props }) => {
   }, [data]);
 
   return (
-    <Button size="small" isLoading={loading} onPress={() => endSession()} {...props}>
+    <Button size="small" isLoading={loading} onClick={() => endSession()} {...props}>
       {children || 'sign out'}
     </Button>
   );

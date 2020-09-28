@@ -92,7 +92,7 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
             <Button type="submit" weight="bold" tone="active">
               Log reset link
             </Button>
-            <Button weight="none" tone="active" onPress={() => setMode('signin')}>
+            <Button weight="none" tone="active" onClick={() => setMode('signin')}>
               Go back
             </Button>
           </Stack>
@@ -101,7 +101,7 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
             <Button weight="bold" tone="active" isLoading={loading} type="submit">
               Sign In
             </Button>
-            <Button weight="none" tone="active" onPress={() => setMode('forgot password')}>
+            <Button weight="none" tone="active" onClick={() => setMode('forgot password')}>
               Forgot your password?
             </Button>
           </Stack>

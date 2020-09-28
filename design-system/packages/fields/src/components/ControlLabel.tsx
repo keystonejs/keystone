@@ -3,6 +3,8 @@
 import { ReactNode, ReactElement } from 'react';
 import { jsx, useTheme } from '@keystone-ui/core';
 
+import type { SizeType } from '../types';
+
 /**
  * TODO
  *
@@ -13,10 +15,18 @@ type ControlLabelProps = {
   className?: string;
   control: ReactElement;
   children?: ReactNode;
+  size?: SizeType;
 };
 
-export const ControlLabel = ({ children, className, control }: ControlLabelProps) => {
-  const { spacing, typography } = useTheme();
+export const ControlLabel = ({
+  children,
+  className,
+  control,
+  size: sizeKey = 'medium',
+}: ControlLabelProps) => {
+  const { controlSizes, spacing, typography } = useTheme();
+
+  const size = controlSizes[sizeKey];
 
   return (
     <label className={className} css={{ alignItems: 'flex-start', display: 'inline-flex' }}>
@@ -24,7 +34,7 @@ export const ControlLabel = ({ children, className, control }: ControlLabelProps
       {children && (
         <div
           css={{
-            fontSize: typography.fontSize.medium,
+            fontSize: size.fontSize,
             lineHeight: typography.leading.tight,
             marginLeft: spacing.small,
             paddingTop: spacing.xsmall,

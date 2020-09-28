@@ -1,3 +1,5 @@
+const path = require('path');
+const crypto = require('crypto');
 const express = require('express');
 const supertest = require('supertest-light');
 const MongoDBMemoryServer = require('mongodb-memory-server-core').default;
@@ -6,6 +8,7 @@ const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { KnexAdapter } = require('@keystonejs/adapter-knex');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { PrismaAdapter } = require('@keystonejs/adapter-prisma');
 
 async function setupServer({
   adapterName,
@@ -15,7 +18,9 @@ async function setupServer({
   keystoneOptions,
   graphqlOptions = {},
 }) {
-  const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter }[adapterName];
+  const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter, prisma: PrismaAdapter }[
+    adapterName
+  ];
 
   const argGenerator = {
     mongoose: getMongoMemoryServerConfig,
@@ -25,6 +30,21 @@ async function setupServer({
         connection:
           process.env.DATABASE_URL || process.env.KNEX_URI || 'postgres://localhost/keystone',
       },
+    }),
+    prisma: () => ({
+      dropDatabase: true,
+      url: process.env.DATABASE_URL,
+      // Put the generated client at a unique path
+      getPrismaPath: ({ prismaSchema }) =>
+        path.join(
+          '.api-test-prisma-clients',
+          crypto.createHash('sha256').update(prismaSchema).digest('hex')
+        ),
+      // Slice down to the hash make a valid postgres schema name
+      getDbSchemaName: ({ prismaSchema }) =>
+        crypto.createHash('sha256').update(prismaSchema).digest('hex').slice(0, 16),
+      // Turn this on if you need verbose debug info
+      enableLogging: false,
     }),
   }[adapterName];
 
@@ -177,6 +197,12 @@ function multiAdapterRunners(only) {
       runner: _keystoneRunner('knex', () => {}),
       adapterName: 'knex',
       before: _before('knex'),
+      after: _after(() => {}),
+    },
+    {
+      runner: _keystoneRunner('prisma', () => {}),
+      adapterName: 'prisma',
+      before: _before('prisma'),
       after: _after(() => {}),
     },
   ].filter(a => typeof only === 'undefined' || a.adapterName === only);

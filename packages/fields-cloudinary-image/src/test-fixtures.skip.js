@@ -41,6 +41,7 @@ export const type = CloudinaryImage;
 export const supportsUnique = false;
 export const fieldName = 'image';
 export const subfieldName = 'originalFilename';
+export const unSupportedAdapterList = ['prisma'];
 
 // This function will run after all the tests are completed.
 // We use it to cleanup the resources (e.g Cloudinary images) which are no longer required.

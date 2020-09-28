@@ -1,10 +1,12 @@
 import { useTheme } from '@keystone-ui/core';
 
+import type { SizeType } from '../types';
+
 export type IndicatorTokensProps = {
-  // size: SizeType;
+  /** The size of the indicator */
+  size: SizeType;
+  /** Controls whether the indicator looks like a checkbox or radio button */
   type: 'checkbox' | 'radio';
-  /* Causes the indicator to invert background and foreground when selected */
-  invertOnSelect?: boolean;
 };
 
 type IndicatorStateTokens = {
@@ -25,14 +27,20 @@ export type IndicatorTokens = {
   disabled: IndicatorStateTokens;
 } & IndicatorStateTokens;
 
-export const useIndicatorTokens = ({ type }: IndicatorTokensProps): IndicatorTokens => {
-  const { animation, sizing, fields } = useTheme();
+export const useIndicatorTokens = ({
+  size: sizeKey,
+  type,
+}: IndicatorTokensProps): IndicatorTokens => {
+  const { animation, controlSizes, fields } = useTheme();
+
+  const size = controlSizes[sizeKey];
+
   return {
     background: fields.controlBackground,
     borderColor: fields.controlBorderColor,
     borderRadius: type === 'checkbox' ? fields.controlBorderRadius : '50%',
     borderWidth: fields.controlBorderWidth,
-    boxSize: sizing.xsmall,
+    boxSize: size.indicatorBoxSize,
     foreground: fields.controlBackground, // visually hide the icon unless the control is checked
     transition: `
       background-color ${animation.duration100},
@@ -71,8 +79,9 @@ export const useIndicatorTokens = ({ type }: IndicatorTokensProps): IndicatorTok
 
 export type IndicatorStylesProps = { tokens: IndicatorTokens };
 
-export const useIndicatorStyles = ({ tokens }: IndicatorStylesProps) =>
-  ({
+export const useIndicatorStyles = ({ tokens }: IndicatorStylesProps) => {
+  console.log(tokens.boxSize);
+  return {
     alignItems: 'center',
     backgroundColor: tokens.background,
     borderColor: tokens.borderColor,
@@ -117,4 +126,5 @@ export const useIndicatorStyles = ({ tokens }: IndicatorStylesProps) =>
     'input:checked:disabled + &': {
       color: tokens.disabled.foreground,
     },
-  } as const);
+  } as const;
+};

@@ -1,5 +1,16 @@
 # @keystonejs/fields-content
 
+## 9.0.0
+
+### Major Changes
+
+- [`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4) [#3298](https://github.com/keystonejs/keystone/pull/3298) Thanks [@timleslie](https://github.com/timleslie)! - Added support for a Prisma adapter to Keystone.
+
+### Patch Changes
+
+- Updated dependencies [[`a02e69987`](https://github.com/keystonejs/keystone/commit/a02e69987902cfde38d820e68cb24b7a20ca1f6f), [`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4)]:
+  - @keystonejs/fields@18.0.0
+
 ## 8.0.5
 
 ### Patch Changes

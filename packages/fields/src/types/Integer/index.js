@@ -1,4 +1,9 @@
-import { Integer, MongoIntegerInterface, KnexIntegerInterface } from './Implementation';
+import {
+  Integer,
+  MongoIntegerInterface,
+  KnexIntegerInterface,
+  PrismaIntegerInterface,
+} from './Implementation';
 import { resolveView } from '../../resolve-view';
 
 export default {
@@ -12,5 +17,6 @@ export default {
   adapters: {
     mongoose: MongoIntegerInterface,
     knex: KnexIntegerInterface,
+    prisma: PrismaIntegerInterface,
   },
 };
