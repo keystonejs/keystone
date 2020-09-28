@@ -30,7 +30,7 @@
     "react": "^16.13.1",
     "slate": "^0.47.9",
     "slate-drop-or-paste-images": "^0.9.1",
-    "slate-react": "^0.22.10"
+    "slate-react": "^0.59.0"
   },
   "main": "dist/fields-cloudinary-image.cjs.js",
   "module": "dist/fields-cloudinary-image.esm.js",
