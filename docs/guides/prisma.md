@@ -11,11 +11,16 @@ In this guide we'll walk you through the steps to create a new project using Key
 
 ## Create a new app
 
-We'll start by creating a new Keystone application using `yarn create`. Run the following command and select `PostgreSQL` as your database type and the `Todo` application as your starter project.
+We'll start by creating a new Keystone application using `yarn create`. Run the following command:
 
 ```
 yarn create keystone-app my-app
 ```
+
+ * Call your project `my-app`
+ * Select `PostgreSQL` as your database type.
+ * You will need to provide a database location to connect to. Follow the instructions [here](/docs/quick-start/adapters.md) if you need help setting up your database.
+ * Select `Todo` application as your starter project.
 
 This will create a fresh project for you, which uses the `knex` database adapter. We're going to take this project and modify it to use the Prisma adapter.
 
@@ -42,7 +47,7 @@ and
 +const adapterConfig = { url: 'postgres://***:***@localhost:5432/***' } };
 ```
 
-Your project is now ready to run! Run the following command, and Keystone will start your project
+Your project is now ready to run! Run the following command (make sure to use the connection string for your database!), and Keystone will start your project
 
 ```
 DATABASE_URL=postgres://***:***@localhost:5432/*** yarn dev
