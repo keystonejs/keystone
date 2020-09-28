@@ -135,7 +135,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       })
     );
 
-    test.only(
+    test(
       'empty string',
       runner(setupKeystone, async ({ keystone }) => {
         const create = async (listKey, item) => createItem({ keystone, listKey, item });
