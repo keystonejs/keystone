@@ -8,7 +8,7 @@ order: 0.4
 
 # Announcement: Keystone + Prisma
 
-Today we are pleased to announce the first release of the [Prisma database]\(HOWTO GUIDE) adapter for Keystone.
+Today we are pleased to announce the first release of the [Prisma database](/docs/guides/prisma.md) adapter for Keystone.
 
 This adapter will let you build your application with Keystone, while having access to a [Prisma's powerful database client](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client) for all your server-side data interaction needs.
 
@@ -26,9 +26,11 @@ As well as providing basic read and write interfaces, Prisma also provides suppo
 
 Databases are hard 🤷Over the last two years we put in a huge effort making sure that our database interactions are correct and safe, and we're very proud of our `knex` and `mongoose` adapters, which are both production ready.
 
-This effort has given us an appreciation of just how challenging it is to solve all the problems surrounding automatic query generation. The Prisma team have decided that they are going to focus on _exactly this problem_, putting all their energy into build a world class database toolkit.
+This effort has given us an appreciation of just how challenging it is to solve all the problems surrounding automatic query generation.
+The Prisma team have decided that they are going to focus on _exactly this problem_, putting all their energy into build a world class database toolkit.
 
-We believe that the Prisma team are better placed than us to make significant advances in this problem space. Building on top of the great work done by the Prisma team will let us focus on what we're great at, which is powerful, easy to use headless CMS system.
+We believe that the Prisma team are better placed than us to make significant advances in this problem space.
+Building on top of the great work done by the Prisma team will let us focus on what we're great at, which is powerful, easy to use headless CMS system.
 
 ## Where to next?
 
@@ -41,7 +43,7 @@ This first release of the Prisma adapter is just the beginning of the Keystone +
 
 ## How can I help?
 
-We would love to get feedback on the Prisma adapter while we work towards being production ready. [GIve it a try]\(HOWTO GUIDE) and if you have any feedback please open an issue or PR on [Github](<>) 🙏
+We would love to get feedback on the Prisma adapter while we work towards being production ready. [GIve it a try](/docs/guides/prisma.md) and if you have any feedback please open an issue or PR on [Github](https://github.com/keystonejs/keystone) 🙏
 
 ## Q&A
 
