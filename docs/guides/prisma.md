@@ -39,7 +39,7 @@ and
 
 ```diff
 -const adapterConfig = { knexOptions: { connection: 'postgres://***:***@localhost:5432/***' } };
-+const adapterConfig = { url: 'postgres://***:***@localhost:5432/***' } };
++const adapterConfig = { url: 'postgres://***:***@localhost:5432/***' };
 ```
 
 Your project is now ready to run! Run the following command, and Keystone will start your project
