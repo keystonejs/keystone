@@ -3,15 +3,15 @@ section: guides
 title: Using Keystone with Prisma
 [meta]-->
 
-# Prisma
+# Using Keystone with Prisma
 
-> Warning: The Prisma adapter uses Prisma Migration, which is currently [considered experimental](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate). We do not recommend using the Prisma adapter for production systems yet.
+> Warning: The Prisma adapter uses Prisma Migrate, which is currently [considered experimental](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate). We do not recommend using the Prisma adapter for production systems yet.
 
-In this guide we'll walk you through to steps to create a new project using Keystone and Prisma, automatically run a migration when changing your Keystone schema, and use the prisma client in directly in a custom query.
+In this guide we'll walk you through the steps to create a new project using Keystone and Prisma, automatically run a migration when changing your Keystone schema, and use the prisma client directly in a custom query.
 
 ## Create a new app
 
-We'll start by creating a new Keystone application using `yarn create`. Run the following command, and select `PostgreSQL` as your database type, and the `Todo` application as your starter project.
+We'll start by creating a new Keystone application using `yarn create`. Run the following command and select `PostgreSQL` as your database type and the `Todo` application as your starter project.
 
 ```
 yarn create keystone-app my-app
@@ -28,7 +28,7 @@ cd my-app
 yarn add @keystonejs/adapter-prisma
 ```
 
-You can now open up `index.js` and edit to use the `PrismaAdapter` rather than the `KnexAdapter`. Make the following changes:
+You can now open up `index.js` and edit it to use the `PrismaAdapter` rather than the `KnexAdapter`. Make the following changes:
 
 ```diff
 -const { KnexAdapter: Adapter } = require('@keystonejs/adapter-knex');
@@ -88,14 +88,7 @@ keystone.extendGraphQLSchema({
       schema: 'allComplete: Boolean',
       resolver: async () => {
         const { prisma } = keystone.adapters.PrismaAdapter;
-        const unfinished = await prisma.todo.count({
-          where: {
-            OR: [
-              { isComplete: { equals: false } },
-              { isComplete: { equals: null } },
-            ],
-          },
-        });
+        const unfinished = await prisma.todo.count({ where: { isComplete: { equals: false } } });
         return unfinished === 0;
       },
     },
