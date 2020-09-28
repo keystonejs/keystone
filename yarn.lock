@@ -4833,10 +4833,10 @@
     "@types/keystonejs__keystone" "*"
     knex "^0.20.1"
 
-"@types/keystonejs__adapter-mongoose@^5.1.1":
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/@types/keystonejs__adapter-mongoose/-/keystonejs__adapter-mongoose-5.1.1.tgz#f20532b3d9cbe711713759b72b1ecfe3df2d3895"
-  integrity sha512-/iDKkD4yp/+DApu1wUDS4zCDb+Mw5rtgAn7lBvQnB7eGlgQJzT1+YwP6yJqV1T9fDFhttIMVNNvc90PGxJ5+ng==
+"@types/keystonejs__adapter-mongoose@^5.1.2":
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/@types/keystonejs__adapter-mongoose/-/keystonejs__adapter-mongoose-5.1.2.tgz#524c0bedc7365cf180f502e243dfe68557db72f8"
+  integrity sha512-IoK2aNIrCk9WPTTCTaWnoydn5Nfm4OEPaU2lXirYhlGREPG3zED7DblbzNpqHwcr/a1FMLzw9YUUNCjYOfYC1A==
   dependencies:
     "@types/keystonejs__keystone" "*"
 
