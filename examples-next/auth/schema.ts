@@ -20,18 +20,6 @@ import { text, checkbox, password } from '@keystone-spike/fields';
  * control arguments; we need to revisit that in the context of how graphql schema extensions work
  * now. See https://www.keystonejs.com/api/access-control#custom-schema-access-control
  *
- * Also note, I'm not sure the reasoning behind why ListAccess seems to be resolved once per
- * mutation for mutations that operate on multiple items, while FieldAccess seems to be resolved
- * once per item (many times per mutation) for the same. At least, that's what I think is going on.
- *
- * This seems like a real foot-gun, and I'd prefer that they're implemented consistently, in favor
- * of aligning on FieldAccessInput and resolving the function once per item being updated in the
- * case of mutations that operate on multiple items.
- *
- * Or maybe my understanding is wrong? This is what's implied by the documentation (see
- * https://www.keystonejs.com/api/access-control#field-level-access-control) but then if it's not
- * the case I don't see how `existingItem` works in mutations that operate on multiple items.
- *
  * I also have questions about `originalInput` in the case of nested mutations (e.g creating an
  * item as the input to a relationship field). Is it the whole "original" input? Or just the nested
  * input for the relationship? Seems like it would have to be the second, but it's not clear from
@@ -48,7 +36,8 @@ import { text, checkbox, password } from '@keystone-spike/fields';
  * doesn't look like we need it anymore.
  */
 
-type GenericItem = { id: string | number; [path: string]: any };
+type ItemId = string | number;
+type GenericItem = { id: ItemId; [path: string]: any };
 type Session = any; // we have this defined elsewhere
 type Input = Record<string, any>;
 
@@ -57,9 +46,9 @@ type ListAccessInput = {
   listKey: string;
 } & (
   | { operation: 'create'; input: Input }
-  | { operation: 'read'; item: GenericItem }
-  | { operation: 'update'; item: GenericItem; input: Input }
-  | { operation: 'delete'; item: GenericItem }
+  | { operation: 'read' }
+  | { operation: 'update'; itemIds: ItemId[]; input: Input }
+  | { operation: 'delete'; itemIds: ItemId[] }
 );
 
 type FieldAccessInput = {
