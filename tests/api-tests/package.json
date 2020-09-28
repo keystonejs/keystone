@@ -2,7 +2,7 @@
   "name": "@keystonejs/api-tests",
   "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
-  "version": "8.0.0",
+  "version": "8.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
