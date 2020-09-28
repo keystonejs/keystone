@@ -44,7 +44,7 @@ and
 
 ```diff
 -const adapterConfig = { knexOptions: { connection: 'postgres://***:***@localhost:5432/***' } };
-+const adapterConfig = { url: 'postgres://***:***@localhost:5432/***' } };
++const adapterConfig = { url: 'postgres://***:***@localhost:5432/***' };
 ```
 
 Your project is now ready to run! Run the following command (make sure to use the connection string for your database!), and Keystone will start your project
@@ -103,3 +103,5 @@ keystone.extendGraphQLSchema({
 
 This query is using the `PrismaClient` object stored at `keystone.adapters.PrismaAdapter.prisma` to directly run this query against the database.
 For more information on the Prisma client API please consult the [Prisma docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+
+> **Tip:** For full details on how to use up the Prisma Adapter, see the [Prisma Adapter API Docs](/packages/adapter-prisma/README.md)
