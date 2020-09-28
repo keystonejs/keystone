@@ -5,7 +5,7 @@ title: Using Keystone with Prisma
 
 # Using Keystone with Prisma
 
-> Warning: The Prisma adapter uses Prisma Migrate, which is currently [considered experimental](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate). We do not recommend using the Prisma adapter for production systems yet.
+> **Warning:** The Prisma adapter uses Prisma Migrate, which is currently [considered experimental](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate). We do not recommend using the Prisma adapter for production systems yet.
 
 In this guide we'll walk you through the steps to create a new project using Keystone and Prisma, automatically run a migration when changing your Keystone schema, and use the prisma client directly in a custom query.
 
@@ -19,7 +19,7 @@ yarn create keystone-app my-app
 
 This will create a fresh project for you, which uses the `knex` database adapter. We're going to take this project and modify it to use the Prisma adapter.
 
-> Note: In upcoming releases the Prisma adapter will be available as an option in `create-keystone-app`.
+> **Note:** In upcoming releases the Prisma adapter will be available as an option in `create-keystone-app`.
 
 Next, go into your new project directory and install the Prisma adapter package.
 
@@ -48,7 +48,7 @@ Your project is now ready to run! Run the following command, and Keystone will s
 DATABASE_URL=postgres://***:***@localhost:5432/*** yarn dev
 ```
 
-> Note: You currently need to provide `DATABASE_URL` as an environment variable due to an [issue](https://github.com/prisma/prisma/issues/3750) in Prisma.
+> **Note:** You currently need to provide `DATABASE_URL` as an environment variable due to an [issue](https://github.com/prisma/prisma/issues/3750) in Prisma.
 
 When prisma connects to your database it will generate a Prisma schema and then generate and run a migration to set up your database with all the required tables.
 
@@ -73,7 +73,7 @@ Add a new field to your current list:
 
 Now, when you restart your server by running `yarn dev` again, Keystone will generate a new Prisma schema for your system. Prisma will compare this to your current database and will generate and run a migration to update your database to have a column for your new field.
 
-> Note: The current adapter behaviour only support this auto-migration behaviour. Future releases will provide more flexible controls for running migrations.
+> **Note:** The current adapter behaviour only support this auto-migration behaviour. Future releases will provide more flexible controls for running migrations.
 
 ## Using the Prisma client
 
