@@ -77,6 +77,9 @@ class PrismaAdapter extends BaseKeystoneAdapter {
           // Write prisma file
           this._writePrismaSchema({ prismaSchema });
 
+          // Generate prisma client
+          await this._generatePrismaClient();
+
           this._saveMigration({ name: `keystone-${cuid()}` });
           this._executeMigrations();
         }
