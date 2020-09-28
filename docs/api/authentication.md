@@ -68,7 +68,7 @@ const logAuth = ({ hooks, ...options }) => {
   return {
     ...options,
     hooks: {
-      afterAuth: () => console.log('A user logged in!')
+      afterAuth: () => console.log('A user logged in!'),
       ...hooks,
     },
   };
