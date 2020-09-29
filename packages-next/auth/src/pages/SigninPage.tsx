@@ -6,7 +6,6 @@ import { jsx, H1, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { TextInput } from '@keystone-ui/fields';
 import { Notice } from '@keystone-ui/notice';
-import { useRawKeystone } from '@keystone-spike/admin-ui';
 
 import { SigninContainer } from '../components/SigninContainer';
 import { useMutation, DocumentNode } from '@keystone-spike/admin-ui/apollo';
@@ -28,8 +27,6 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
     identityFieldRef.current?.focus();
   }, [mode]);
 
-  const { adminMeta, authenticatedItem } = useRawKeystone();
-
   const [mutate, { error, loading }] = useMutation(mutation);
 
   return (
@@ -49,17 +46,11 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
                   secret: state.secret,
                 },
               });
-              if (adminMeta.state === 'error') {
-                adminMeta.refetch();
-              }
-              if (authenticatedItem.state !== 'loading') {
-                authenticatedItem.refetch();
-              }
             } catch (err) {
               return;
             }
-
-            router.push('/');
+            await router.push('/');
+            window.location.reload();
           }
         }}
       >

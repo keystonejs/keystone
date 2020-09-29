@@ -21,7 +21,7 @@ export const InitPage = ({
   mutation: DocumentNode;
   showKeystoneSignup: boolean;
 }) => {
-  const { fieldViews, adminMeta, authenticatedItem } = useRawKeystone();
+  const { fieldViews } = useRawKeystone();
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {};
     Object.keys(serializedFields).forEach(fieldPath => {
@@ -77,14 +77,8 @@ export const InitPage = ({
               ),
             },
           });
-          if (adminMeta.state === 'error') {
-            adminMeta.refetch();
-          }
-          if (authenticatedItem.state !== 'loading') {
-            authenticatedItem.refetch();
-          }
-
           await router.push('/');
+          window.location.reload();
         }}
       >
         {error && <Notice>{error.message}</Notice>}
