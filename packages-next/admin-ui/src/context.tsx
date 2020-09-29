@@ -13,6 +13,7 @@ type KeystoneContextType = {
     | { state: 'error'; error: ApolloError; refetch: () => void };
   fieldViews: FieldViews;
   authenticatedItem: AuthenticatedItem;
+  reinitContext: () => void;
 };
 
 const KeystoneContext = createContext<KeystoneContextType | undefined>(undefined);
@@ -41,8 +42,13 @@ export const KeystoneProvider = ({
     []
   );
 
-  let adminMeta = useAdminMeta(apolloClient, adminMetaHash, fieldViews);
+  const adminMeta = useAdminMeta(apolloClient, adminMetaHash, fieldViews);
   const authenticatedItem = useAuthenticatedItem(authenticatedItemQuery, apolloClient);
+
+  const reinitContext = () => {
+    adminMeta?.refetch?.();
+    authenticatedItem.refetch();
+  };
 
   if (adminMeta.state === 'loading') {
     return (
@@ -58,6 +64,7 @@ export const KeystoneProvider = ({
         adminMeta,
         fieldViews,
         authenticatedItem,
+        reinitContext,
       }}
     >
       <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
@@ -82,6 +89,14 @@ export const useKeystone = (): {
     adminMeta: value.adminMeta.value,
     authenticatedItem: value.authenticatedItem,
   };
+};
+
+export const useReinitContext = () => {
+  const value = useContext(KeystoneContext);
+  if (!value) {
+    throw new Error('useReinitContext must be called inside a KeystoneProvider component');
+  }
+  return value.reinitContext;
 };
 
 export const useRawKeystone = () => {
