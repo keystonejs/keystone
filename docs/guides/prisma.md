@@ -9,6 +9,8 @@ title: Using Keystone with Prisma
 
 In this guide we'll walk you through the steps to create a new project using Keystone and Prisma, automatically run a migration when changing your Keystone schema, and use the prisma client directly in a custom query.
 
+> **Tip:** Before setting up Keystone you will need to have access to a PostgreSQL database. If you
+
 ## Create a new app
 
 We'll start by creating a new Keystone application using `yarn create`. Run the following command:
