@@ -21,7 +21,7 @@ export const InitPage = ({
   mutation: DocumentNode;
   showKeystoneSignup: boolean;
 }) => {
-  const { fieldViews, adminMeta, authenticatedItem } = useRawKeystone();
+  const { fieldViews } = useRawKeystone();
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {};
     Object.keys(serializedFields).forEach(fieldPath => {

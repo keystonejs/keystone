@@ -28,8 +28,6 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
     identityFieldRef.current?.focus();
   }, [mode]);
 
-  const { adminMeta, authenticatedItem } = useRawKeystone();
-
   const [mutate, { error, loading }] = useMutation(mutation);
 
   return (
