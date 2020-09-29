@@ -14,7 +14,7 @@
     "@babel/runtime": "^7.11.2",
     "@graphql-tools/merge": "^6.2.3",
     "@graphql-tools/utils": "^6.2.3",
-    "@hapi/iron": "^5.1.4",
+    "@hapi/iron": "^6.0.0",
     "@keystone-spike/admin-ui": "*",
     "@keystone-spike/fields": "*",
     "@keystone-spike/types": "*",
