@@ -8,11 +8,13 @@ title: Prisma adapter
 
 [![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/adapter-prisma)
 
-> The Keystone Prisma adapter is not currently production-ready. It depends on the [Prisma Migrate](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate) system which is currently flagged as `EXPERIMENTAL`. Once Prisma Migrate is out of experimental mode, we will release a production-ready version of `@keystonejs/adapter-prisma`.
+The Prisma adapter allows Keystone to connect a database using Prisma Client, a type-safe and auto-generated database client. You can learn more about Prisma Client in the [Prisma docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
 
-The [Prisma](https://www.prisma.io/) adapter allows Keystone to connect a database using a Prisma Client, a type-safe and auto-generated database client. You can learn more about Prisma Client in the [Prisma docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client). 
-
-> This adapter currently only supports PostgreSQL databases. Future releases will enable support for all database backends which are [supported by Prisma](https://www.prisma.io/docs/more/supported-databases).
+> **Tip:** Want to get started with Keystone + Prisma? [Follow the guide](/docs/guides/prisma.md)!
+>
+> **Warning:** The Keystone Prisma adapter is not currently production-ready. It depends on the [Prisma Migrate](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate) system which is currently flagged as `EXPERIMENTAL`. Once Prisma Migrate is out of experimental mode, we will release a production-ready version of this package.
+>
+> **Note:** This adapter currently only supports PostgreSQL databases, and has other limitations. For more details, see our [Prisma Adapter - Production Ready Checklist](/docs/discussions/prisma.md)
 
 ## Usage
 
@@ -31,8 +33,7 @@ const keystone = new Keystone({
 _**Default:**_ `DATABASE_URL`
 
 The connection string for your database, in the form `postgres://<user>:<password>@<host>:<port>/<dbname>`.
-By default it will use the value of the environment variable `DATABASE_URL`. You can learn more about the connection string format used in the [Prisma docs]
-(https://www.prisma.io/docs/reference/database-connectors/connection-urls).
+By default it will use the value of the environment variable `DATABASE_URL`. You can learn more about the connection string format used in the [Prisma docs](https://www.prisma.io/docs/reference/database-connectors/connection-urls).
 
 ### `getPrismaPath`
 
@@ -69,7 +70,7 @@ If you don't have a database already then you can create one locally with the fo
 
 ```shell allowCopy=false showLanguage=false
 createdb -U postgres keystone
-psql keystone -U postgres -c "CREATE USER keystone5 PASSWORD 'k3yst0n3'"
+psql keystone -U postgres -c "CREATE USER keystone5 PASSWORD 'change_me_plz'"
 psql keystone -U postgres -c "GRANT ALL ON DATABASE keystone TO keystone5;"
 ```
 
@@ -77,7 +78,7 @@ If using the above, you will want to set a connection string of:
 
 ```javascript
 const keystone = new Keystone({
-  adapter: new PrismaAdapter({ url: `postgres://keystone5:k3yst0n3@localhost:5432/keystone` }),
+  adapter: new PrismaAdapter({ url: `postgres://keystone5:change_me_plz@localhost:5432/keystone` }),
 });
 ```
 
