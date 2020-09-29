@@ -8,12 +8,12 @@ import fastGlob from 'fast-glob';
 import prettier from 'prettier';
 import resolve from 'resolve';
 
-const prettierOptions = {
-  parser: 'babel',
-  trailingComma: 'es5',
-  singleQuote: true,
-} as const;
-const formatSource = (src: string) => prettier.format(src, prettierOptions);
+export const formatSource = (src: string, parser: 'babel' | 'babel-ts' = 'babel') =>
+  prettier.format(src, {
+    parser,
+    trailingComma: 'es5',
+    singleQuote: true,
+  });
 
 function getDoesAdminConfigExist() {
   try {

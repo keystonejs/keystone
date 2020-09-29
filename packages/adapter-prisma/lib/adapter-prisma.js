@@ -398,7 +398,7 @@ class PrismaListAdapter extends BaseListAdapter {
 
     // TODO: Implement configurable search fields for lists
     const searchField = this.fieldAdaptersByPath['name'];
-    if (search !== undefined && searchField) {
+    if (search !== undefined && search !== '' && searchField) {
       if (searchField.fieldName === 'Text') {
         // FIXME: Think about regex
         if (!ret.where) ret.where = { name: search };
