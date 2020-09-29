@@ -9,7 +9,28 @@ title: Using Keystone with Prisma
 
 In this guide we'll walk you through the steps to create a new project using Keystone and Prisma, automatically run a migration when changing your Keystone schema, and use the prisma client directly in a custom query.
 
-> **Tip:** Before setting up Keystone you will need to have access to a PostgreSQL database. If you
+## Connect to your database
+
+In this guide we will connect to a PostgreSQL database on your computer.
+Make sure that you have [PostgreSQL installed](https://www.prisma.io/docs/guides/database-workflows/setting-up-a-database/postgresql) and know the [connection URL](https://www.prisma.io/docs/reference/database-connectors/connection-urls) for your database.
+
+If you need to create a new database and user you can try the following commands:
+
+```
+createdb -U postgres keystone
+psql keystone -U postgres -c "CREATE USER keystone5 PASSWORD 'k3yst0n3'"
+psql keystone -U postgres -c "GRANT ALL ON DATABASE keystone TO keystone5;"
+```
+
+Check that you can connect to your database with your connection URL, e.g:
+
+```
+psql postgres://keystone5:k3yst0n3@localhost:5432/keystone
+```
+
+Please consult the [PostgreSQL docs](https://www.postgresql.org/docs/) for more details on how to setup a local database.
+
+> **Tip:** Make sure you have a full connection URL including a username and password, e.g. `postgres://keystone5:k3yst0n3@localhost:5432/keystone`
 
 ## Create a new app
 
@@ -21,7 +42,7 @@ yarn create keystone-app my-app
 
 - Call your project `my-app`
 - Select `PostgreSQL` as your database type.
-- You will need to provide a database location to connect to. Follow the instructions [here](/docs/quick-start/adapters.md) if you need help setting up your database.
+- Provide the connection URL, including username and password, e.g. `postgres://keystone5:k3yst0n3@localhost:5432/keystone`
 - Select `Todo` application as your starter project.
 
 This will create a fresh project for you, which uses the `knex` database adapter. We're going to take this project and modify it to use the Prisma adapter.
@@ -45,14 +66,14 @@ You can now open up `index.js` and edit it to use the `PrismaAdapter` rather tha
 and
 
 ```diff
--const adapterConfig = { knexOptions: { connection: 'postgres://***:***@localhost:5432/***' } };
-+const adapterConfig = { url: 'postgres://***:***@localhost:5432/***' };
+-const adapterConfig = { knexOptions: { connection: 'postgres://keystone5:k3yst0n3@localhost:5432/keystone } };
++const adapterConfig = { url: 'postgres://keystone5:k3yst0n3@localhost:5432/keystone' };
 ```
 
 Your project is now ready to run! Run the following command (make sure to use the connection string for your database!), and Keystone will start your project
 
 ```
-DATABASE_URL=postgres://***:***@localhost:5432/*** yarn dev
+DATABASE_URL=postgres://keystone5:k3yst0n3@localhost:5432/keystone yarn dev
 ```
 
 > **Note:** You currently need to provide `DATABASE_URL` as an environment variable due to an [issue](https://github.com/prisma/prisma/issues/3750) in Prisma.
