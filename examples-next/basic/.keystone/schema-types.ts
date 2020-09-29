@@ -295,6 +295,15 @@ export type CreateInitialUserInput = {
   readonly password?: Scalars['String'] | null;
 };
 
+export type KeystoneAdminUIFieldMetaCreateViewFieldMode = 'edit' | 'hidden';
+
+export type KeystoneAdminUIFieldMetaListViewFieldMode = 'read' | 'hidden';
+
+export type KeystoneAdminUIFieldMetaItemViewFieldMode =
+  | 'edit'
+  | 'read'
+  | 'hidden';
+
 export type UserListTypeInfo = {
   key: 'User';
   fields:
