@@ -33,7 +33,8 @@ export const appTemplate = (keystone: Keystone, { configFile }: AppTemplateOptio
   return `
 import React from 'react';
 
-import { KeystoneProvider } from '@keystone-spike/admin-ui';
+import { KeystoneProvider } from '@keystone-spike/admin-ui/context';
+import { ErrorBoundary } from '@keystone-spike/admin-ui/components';
 import { Core } from '@keystone-ui/core';
 
 ${keystone.views.map((view, i) => `import * as view${i} from ${JSON.stringify(view)}`).join('\n')}
@@ -57,7 +58,9 @@ export default function App({ Component, pageProps }) {
         customFieldViews={customFieldViews}
         authenticatedItemQuery={authenticatedItemQuery}
       >
-        <Component {...pageProps} />
+        <ErrorBoundary>
+          <Component {...pageProps} />
+        </ErrorBoundary>
       </KeystoneProvider>
     </Core>
   );
