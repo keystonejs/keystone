@@ -33,7 +33,7 @@ export const appTemplate = (keystone: Keystone, { configFile }: AppTemplateOptio
   return `
 import React from 'react';
 
-import { KeystoneProvider, initAdminMeta } from '@keystone-spike/admin-ui';
+import { KeystoneProvider } from '@keystone-spike/admin-ui';
 import { Core } from '@keystone-ui/core';
 
 ${keystone.views.map((view, i) => `import * as view${i} from ${JSON.stringify(view)}`).join('\n')}
@@ -49,17 +49,17 @@ const authenticatedItemQuery = ${
 
 export default function App({ Component, pageProps }) {
   return (
-    <KeystoneProvider
-      adminConfig={adminConfig}
-      adminMetaHash="${adminMetaQueryResultHash}"
-      fieldViews={fieldViews}
-      customFieldViews={customFieldViews}
-      authenticatedItemQuery={authenticatedItemQuery}
-    >
-      <Core>
+    <Core>
+      <KeystoneProvider
+        adminConfig={adminConfig}
+        adminMetaHash="${adminMetaQueryResultHash}"
+        fieldViews={fieldViews}
+        customFieldViews={customFieldViews}
+        authenticatedItemQuery={authenticatedItemQuery}
+      >
         <Component {...pageProps} />
-      </Core>
-    </KeystoneProvider>
+      </KeystoneProvider>
+    </Core>
   );
 }
   `;

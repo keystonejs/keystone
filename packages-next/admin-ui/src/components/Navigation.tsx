@@ -10,7 +10,7 @@ import { FunctionComponent, ReactNode } from 'react';
 
 import { Logo } from './Logo';
 import { SignoutButton } from './SignoutButton';
-import { useKeystone } from '../KeystoneContext';
+import { useKeystone } from '../context';
 import { Link } from '../router';
 
 type NavItemProps = {
