@@ -1,5 +1,11 @@
 # @keystonejs/api-tests
 
+## 8.0.1
+
+### Patch Changes
+
+- [`4072ee2b2`](https://github.com/keystonejs/keystone/commit/4072ee2b2746938fc7d41dbecedaaaf0e0b3ff68) [#3821](https://github.com/keystonejs/keystone/pull/3821) Thanks [@timleslie](https://github.com/timleslie)! - Fixed queries with `{search: ""}`, which should return all items in the list.
+
 ## 8.0.0
 
 ### Major Changes
