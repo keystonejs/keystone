@@ -14,6 +14,7 @@ import { mergeSchemas } from '@graphql-tools/merge';
 import { gql } from '../schema';
 import { GraphQLSchema, GraphQLScalarType } from 'graphql';
 import { mapSchema } from '@graphql-tools/utils';
+import { crudForList } from '../lib/crud-api';
 
 export function createKeystone(config: KeystoneConfig): Keystone {
   let keystone = new BaseKeystone({
@@ -182,6 +183,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
           : {},
         skipAccessControl,
       }),
+      crud,
       totalResults: 0,
       keystone,
       maxTotalResults: (keystone as any).queryLimits.maxTotalResults,
@@ -189,6 +191,11 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       ...sessionContext,
     };
   }
+  let crud: Record<string, ReturnType<typeof crudForList>> = {};
+  for (const listKey of Object.keys(adminMeta.lists)) {
+    crud[listKey] = crudForList((keystone as any).lists[listKey], graphQLSchema, createContext);
+  }
+
   const createSessionContext = sessionThing?.createContext;
   let keystoneThing = {
     keystone,

@@ -278,4 +278,87 @@ export type BaseKeystoneList = {
     relateToManyInputName: string;
     relateToOneInputName: string;
   };
+  listQuery(
+    args: Record<string, any>,
+    context: any,
+    gqlName?: string,
+    info?: any,
+    from?: any
+  ): Promise<Record<string, any>[]>;
+  listQueryMeta(
+    args: Record<string, any>,
+    context: any,
+    gqlName?: string,
+    info?: any,
+    from?: any
+  ): {
+    getCount: () => Promise<number>;
+  };
+  itemQuery(
+    args: { where: { id: string } },
+    context: any,
+    gqlName?: string,
+    info?: any
+  ): Promise<Record<string, any>>;
+  createMutation(
+    data: Record<string, any>,
+    context: any,
+    mutationState?: any
+  ): Promise<Record<string, any>>;
+  createManyMutation(
+    data: Record<string, any>[],
+    context: any,
+    mutationState?: any
+  ): Promise<Record<string, any>[]>;
+  updateMutation(
+    id: string,
+    data: Record<string, any>,
+    context: any,
+    mutationState?: any
+  ): Promise<Record<string, any>>;
+  updateManyMutation(
+    data: Record<string, any>,
+    context: any,
+    mutationState?: any
+  ): Promise<Record<string, any>[]>;
+  deleteMutation(id: string, context: any, mutationState?: any): Promise<Record<string, any>>;
+  deleteManyMutation(
+    ids: string[],
+    context: any,
+    mutationState?: any
+  ): Promise<Record<string, any>[]>;
+};
+
+export type KeystoneCrudAPI<
+  KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
+> = {
+  [Key in keyof KeystoneListsTypeInfo]: {
+    findMany(
+      args: KeystoneListsTypeInfo[Key]['args']['listQuery']
+    ): Promise<readonly KeystoneListsTypeInfo[Key]['backing'][]>;
+    findOne(args: {
+      readonly where: { readonly id: string };
+    }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    count(args: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
+    updateOne(args: {
+      readonly id: string;
+      readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
+    }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    updateMany(args: {
+      readonly data: readonly {
+        readonly id: string;
+        readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
+      }[];
+    }): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
+    createOne(args: {
+      readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'];
+    }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    createMany(args: {
+      readonly data: readonly { readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'] }[];
+    }): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
+    deleteOne(args: { readonly id: string }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    deleteMany(args: {
+      readonly ids: readonly string[];
+    }): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
+  };
 };
