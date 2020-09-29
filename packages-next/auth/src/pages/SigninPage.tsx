@@ -49,17 +49,11 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
                   secret: state.secret,
                 },
               });
-              if (adminMeta.state === 'error') {
-                adminMeta.refetch();
-              }
-              if (authenticatedItem.state !== 'loading') {
-                authenticatedItem.refetch();
-              }
             } catch (err) {
               return;
             }
-
-            router.push('/');
+            await router.push('/');
+            window.location.reload();
           }
         }}
       >

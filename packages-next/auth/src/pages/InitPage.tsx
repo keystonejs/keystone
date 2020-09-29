@@ -77,14 +77,8 @@ export const InitPage = ({
               ),
             },
           });
-          if (adminMeta.state === 'error') {
-            adminMeta.refetch();
-          }
-          if (authenticatedItem.state !== 'loading') {
-            authenticatedItem.refetch();
-          }
-
           await router.push('/');
+          window.location.reload();
         }}
       >
         {error && <Notice>{error.message}</Notice>}
