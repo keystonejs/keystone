@@ -10,6 +10,8 @@ import * as Path from 'path';
 
 const pkgDir = Path.dirname(require.resolve('@keystone-spike/admin-ui/package.json'));
 
+export { adminMetaSchemaExtension } from './adminMetaSchemaExtension';
+
 export const writeAdminFiles = (keystone: Keystone, configFile: boolean): AdminFileToWrite[] => {
   return [
     {

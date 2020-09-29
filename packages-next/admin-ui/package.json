@@ -10,6 +10,7 @@
     "@babel/runtime": "^7.11.2",
     "@emotion/core": "^10.0.35",
     "@emotion/hash": "^0.8.0",
+    "@graphql-tools/merge": "^6.2.3",
     "@keystone-spike/keystone": "*",
     "@keystone-spike/types": "*",
     "@keystone-ui/button": "*",

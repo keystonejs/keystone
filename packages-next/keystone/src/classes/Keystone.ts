@@ -15,6 +15,7 @@ import { gql } from '../schema';
 import { GraphQLSchema, GraphQLScalarType } from 'graphql';
 import { mapSchema } from '@graphql-tools/utils';
 import { crudForList } from '../lib/crud-api';
+import { adminMetaSchemaExtension } from '@keystone-spike/admin-ui/templates';
 
 export function createKeystone(config: KeystoneConfig): Keystone {
   let keystone = new BaseKeystone({
@@ -64,7 +65,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     } as any) as any;
     adminMeta.lists[key] = {
       key,
-      description: listConfig.admin?.description ?? listConfig.description,
+      description: listConfig.admin?.description ?? listConfig.description ?? null,
       label: list.adminUILabels.label,
       singular: list.adminUILabels.singular,
       plural: list.adminUILabels.plural,
@@ -81,7 +82,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       adminMeta.lists[key].fields[fieldKey] = {
         label: fieldKey,
         views: getViewId(view),
-        fieldMeta: field.getAdminMeta?.(),
+        fieldMeta: field.getAdminMeta?.() ?? null,
         isOrderable: (list as any).fieldsByPath[fieldKey].isOrderable,
       };
     }
@@ -135,32 +136,15 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       },
     });
   }
-  graphQLSchema = mergeSchemas({
-    schemas: [graphQLSchema],
-    typeDefs: gql`
-      type Query {
-        _adminMeta: JSON!
-      }
-    `,
-    resolvers: {
-      Query: {
-        async _adminMeta(rootVal, args, ctx) {
-          if (sessionThing === undefined) {
-            return adminMeta;
-          }
-          if (
-            (await config.admin?.isAccessAllowed?.({ session: ctx.session })) ??
-            ctx.session !== undefined
-          ) {
-            return adminMeta;
-          }
-          // TODO: ughhhhhh, we really need to talk about errors.
-          // mostly unrelated to above: error or return null here(+ make field nullable)?s
-          throw new Error('Access denied');
-        },
-      },
-    },
+  graphQLSchema = adminMetaSchemaExtension({
+    adminMeta,
+    graphQLSchema,
+    isAccessAllowed:
+      sessionThing === undefined
+        ? undefined
+        : config.admin?.isAccessAllowed ?? (({ session }) => session !== undefined),
   });
+
   function createContext({
     sessionContext,
     skipAccessControl = false,
