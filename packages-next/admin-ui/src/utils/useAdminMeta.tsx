@@ -37,7 +37,7 @@ export function useAdminMeta(
     if (typeof window === 'undefined') {
       return;
     }
-    let item = localStorage.getItem(adminMetaLocalStorageKey);
+    const item = localStorage.getItem(adminMetaLocalStorageKey);
     if (item === null) {
       return;
     }
@@ -50,6 +50,7 @@ export function useAdminMeta(
       return;
     }
   }, []);
+
   const { data, error, refetch } = useQuery(staticAdminMetaQuery, {
     client,
     skip: adminMetaFromLocalStorage !== undefined,
@@ -114,7 +115,9 @@ export function useAdminMeta(
     }
     return runtimeAdminMeta;
   }, [data, error, adminMetaFromLocalStorage]);
-  let mustRenderServerResult = useMustRenderServerResult();
+
+  const mustRenderServerResult = useMustRenderServerResult();
+
   if (mustRenderServerResult) {
     return {
       state: 'loading' as const,

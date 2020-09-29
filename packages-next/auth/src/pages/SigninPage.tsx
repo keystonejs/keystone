@@ -9,6 +9,7 @@ import { Notice } from '@keystone-ui/notice';
 
 import { SigninContainer } from '../components/SigninContainer';
 import { useMutation, DocumentNode } from '@keystone-spike/admin-ui/apollo';
+import { useReinitContext } from '@keystone-spike/admin-ui/context';
 import { useRouter } from '@keystone-spike/admin-ui/router';
 
 export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
@@ -21,13 +22,15 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
 
   const [mode, setMode] = useState<'signin' | 'forgot password'>('signin');
   const [state, setState] = useState({ identity: '', secret: '' });
-  const router = useRouter();
+
   const identityFieldRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     identityFieldRef.current?.focus();
   }, [mode]);
 
   const [mutate, { error, loading }] = useMutation(mutation);
+  const reinitContext = useReinitContext();
+  const router = useRouter();
 
   return (
     <SigninContainer>
@@ -49,8 +52,8 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
             } catch (err) {
               return;
             }
+            reinitContext();
             await router.push('/');
-            window.location.reload();
           }
         }}
       >

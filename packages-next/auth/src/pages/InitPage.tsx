@@ -11,6 +11,7 @@ import { SigninContainer } from '../components/SigninContainer';
 import { DocumentNode } from 'graphql';
 import { Notice } from '@keystone-ui/notice';
 import { useMutation } from '@keystone-spike/admin-ui/apollo';
+import { useReinitContext } from '@keystone-spike/admin-ui/context';
 import { useRouter } from '@keystone-spike/admin-ui/router';
 
 export const InitPage = ({
@@ -50,15 +51,13 @@ export const InitPage = ({
   });
 
   const [createFirstItem, { loading, error }] = useMutation(mutation);
-
+  const reinitContext = useReinitContext();
   const router = useRouter();
 
   const nameInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
-
-  console.log({ fields, serializedFields });
 
   return (
     <SigninContainer>
@@ -77,8 +76,8 @@ export const InitPage = ({
               ),
             },
           });
+          reinitContext();
           await router.push('/');
-          window.location.reload();
         }}
       >
         {error && <Notice>{error.message}</Notice>}
