@@ -17,10 +17,10 @@ We'll start by creating a new Keystone application using `yarn create`. Run the 
 yarn create keystone-app my-app
 ```
 
- * Call your project `my-app`
- * Select `PostgreSQL` as your database type.
- * You will need to provide a database location to connect to. Follow the instructions [here](/docs/quick-start/adapters.md) if you need help setting up your database.
- * Select `Todo` application as your starter project.
+- Call your project `my-app`
+- Select `PostgreSQL` as your database type.
+- You will need to provide a database location to connect to. Follow the instructions [here](/docs/quick-start/adapters.md) if you need help setting up your database.
+- Select `Todo` application as your starter project.
 
 This will create a fresh project for you, which uses the `knex` database adapter. We're going to take this project and modify it to use the Prisma adapter.
 

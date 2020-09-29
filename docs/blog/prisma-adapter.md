@@ -39,7 +39,7 @@ This first release of the Prisma adapter is just the beginning of the Keystone +
 - **Make the out of the box experience seamless:** We want to make getting started with Keystone + Prisma as simple as possible. We'll be working on the DX of the getting started experience so that you can get up and running as quickly as possible.
 - **Have production-ready migrations:** When getting started with Keystone the database is the last thing you want to worry about, but when you're running in production you need to have control over how and when your database migrations take place. We'll be establishing guidelines you can follow to make production migrations a breeze.
 
-You can ready more about the current support in our [Prisma Adapter - Production Ready Checklist](http://localhost:8000/discussions/prisma)
+You can read more about the current support in our [Prisma Adapter - Production Ready Checklist](/docs/discussions/prisma.md)
 
 > **Tip:** Want to get started with Keystone + Prisma? [Follow the guide](/docs/guides/prisma.md)!
 
