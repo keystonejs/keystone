@@ -6,7 +6,7 @@ import { jsx, Stack } from '@keystone-ui/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import { useList } from '../KeystoneContext';
+import { useList } from '../context';
 import { PageContainer } from '../components/PageContainer';
 import { Button } from '@keystone-ui/button';
 import { JSONValue, ListMeta } from '@keystone-spike/types';

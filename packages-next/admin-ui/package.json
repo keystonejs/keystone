@@ -35,6 +35,7 @@
       "components/index.ts",
       "templates/index.ts",
       "apollo.tsx",
+      "context.tsx",
       "router.tsx"
     ]
   },

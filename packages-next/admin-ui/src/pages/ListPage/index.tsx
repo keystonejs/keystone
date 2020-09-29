@@ -6,7 +6,7 @@ import { Box, H1, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { Fragment, HTMLAttributes, ReactNode, useMemo, useState } from 'react';
 import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
 import { PageContainer } from '../../components/PageContainer';
-import { useList } from '../../KeystoneContext';
+import { useList } from '../../context';
 import { useRouter, Link } from '../../router';
 import { CellLink } from '../../components';
 import { Pagination } from './pagination';

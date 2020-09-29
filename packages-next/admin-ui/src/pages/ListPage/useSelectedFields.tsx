@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useList } from '../../KeystoneContext';
+import { useList } from '../../context';
 import { useRouter } from '../../router';
 
 export function useSelectedFields(listKey: string) {
