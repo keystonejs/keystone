@@ -28,12 +28,9 @@ import { text, checkbox, password } from '@keystone-spike/fields';
  * tbh I'm inclined to remove the gqlName argument unless there's a compelling reason to have it;
  * esp. given it's marked as optional.
  *
- * Finally, what's the point of the `auth` operation? It seems to be related to the listAuth
- * functionality that we've just replaced with the new auth & session funcationality, if so we can
- * remove it from access control in the new interfaces.
+ * Decisions:
  *
- * Based on the docs (see https://www.keystonejs.com/api/access-control#the-auth-operation) it
- * doesn't look like we need it anymore.
+ * - We are not exposing the `auth` operation in access control config in the new interfaces
  */
 
 type ItemId = string | number;

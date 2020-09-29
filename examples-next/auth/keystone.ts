@@ -18,8 +18,10 @@ const { withAuth } = createAuth({
   identityField: 'email',
   // The secret field must be a password type field
   secretField: 'password',
+  /* TODO -- review this later
   // This ensures than an item is actually able to sign in
   validateItem: ({ item }) => item.isEnabled,
+  */
   // initFirstItem turns on the "First User" experience, which prompts you to create a new user
   // when there are no items in the list yet
   initFirstItem: {
