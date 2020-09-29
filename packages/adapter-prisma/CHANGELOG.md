@@ -1,5 +1,17 @@
 # @keystonejs/adapter-prisma
 
+## 1.0.2
+
+### Patch Changes
+
+- [`4072ee2b2`](https://github.com/keystonejs/keystone/commit/4072ee2b2746938fc7d41dbecedaaaf0e0b3ff68) [#3821](https://github.com/keystonejs/keystone/pull/3821) Thanks [@timleslie](https://github.com/timleslie)! - Fixed queries with `{search: ""}`, which should return all items in the list.
+
+## 1.0.1
+
+### Patch Changes
+
+- [`eb8180bb8`](https://github.com/keystonejs/keystone/commit/eb8180bb87b62dc3ac317c4f04f988a122c57358) [#3806](https://github.com/keystonejs/keystone/pull/3806) Thanks [@timleslie](https://github.com/timleslie)! - Fixed an issue with the prisma client not being regenerated when the schema changed.
+
 ## 1.0.0
 
 ### Major Changes
