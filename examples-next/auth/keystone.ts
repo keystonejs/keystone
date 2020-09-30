@@ -46,16 +46,13 @@ export default withAuth(
       adapter: 'mongoose',
       url: 'mongodb://localhost/keystone-examples-next-auth',
     },
-    admin: {
-      // Only allow users with the isAdmin checkbox set to access the Admin UI
-      isAccessAllowed: ({ session }: { session: any }) => !!session?.item?.isAdmin,
-    },
     lists,
     session: withItemData(
       // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie
       statelessSessions({
         // The session secret is used to encrypt cookie data (should be an environment variable)
-        secret: 'super secret session key',
+        secret:
+          'super secret session keysuper secret session keysuper secret session keysuper secret session keysuper secret session keysuper secret session key',
       }),
       // withItemData will fetch these fields for signed-in User items to populate session.data
       { User: 'name isAdmin' }

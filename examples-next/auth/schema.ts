@@ -62,11 +62,11 @@ export const lists = createSchema({
   User: list({
     access: {
       // Only allow admins to delete users
-      delete: ({ session }) => session?.data?.isAdmin,
+      delete: ({ session }) => session?.item?.isAdmin,
     },
     admin: {
       // Since you can't delete users unless you're an admin, we hide the UI for it
-      hideDelete: ({ session }) => !session?.data?.isAdmin,
+      hideDelete: ({ session }) => !session?.item?.isAdmin,
       listView: {
         // These are the default columns that will be displayed in the list view
         initialColumns: ['name', 'email', 'isAdmin'],
@@ -86,14 +86,14 @@ export const lists = createSchema({
           // Passwords can always be set when creating items
           // Users can change their own passwords, and Admins can change anyone's password
           update: ({ session, item }) =>
-            session && (session.data.isAdmin || session.itemId === item.id),
+            session && (session.item.isAdmin || session.itemId === item.id),
         },
         admin: {
           // Based on the same logic as update access, the password field is editable.
           // The password field is hidden from non-Admin users (except for themselves)
           itemView: {
             fieldMode: ({ session, item }) =>
-              session && (session.data.isAdmin || session.itemId === item.id) ? 'edit' : 'hidden',
+              session && (session.item.isAdmin || session.itemId === item.id) ? 'edit' : 'hidden',
           },
         },
       }),
@@ -101,12 +101,12 @@ export const lists = createSchema({
       isAdmin: checkbox({
         access: {
           // Only Admins can change the isAdmin flag for any users
-          update: ({ session }) => session?.data.isAdmin,
+          update: ({ session }) => session?.item.isAdmin,
         },
         admin: {
           // All users can see the isAdmin status, only admins can change it
           itemView: {
-            fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'read'),
+            fieldMode: ({ session }) => (session?.item.isAdmin ? 'edit' : 'read'),
           },
         },
       }),
@@ -114,12 +114,12 @@ export const lists = createSchema({
       isEnabled: checkbox({
         access: {
           // Only Admins can change the isEnabled flag for any users
-          update: ({ session }) => session?.data.isAdmin,
+          update: ({ session }) => session?.item.isAdmin,
         },
         admin: {
           // All users can see the isEnabled status, only admins can change it
           itemView: {
-            fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'read'),
+            fieldMode: ({ session }) => (session?.item.isAdmin ? 'edit' : 'read'),
           },
         },
       }),
