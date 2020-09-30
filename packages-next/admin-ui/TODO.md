@@ -25,21 +25,30 @@
   - [x] URL State working and actually setting columns
   - [x] Show the right columns in the table and query the right fields
   - [x] Show "with {x} columns" in UI
-  - [ ] Popup to select columns
-  - [ ] Logic to ensure there's always at least ~~label or ID~~ field
+  - [ ] Popup to select columns (w/ search)
+  - [ ] Hide hidden fields from the popup
+  - [ ] Don't show the popup when there are no columns to select from
   - [x] Add `supportsLinkTo` support to Cells
   - [x] Pass `linkTo` to the first cell, if supported, otherwise add a link icon as the first column
 - [ ] Implement Filters
   - [x] URL State working and actually filtering
   - [x] Show selected filters in UI
-  - [ ] Popup to add filters
+  - [ ] Popup to add filters (w/ search, exclude set filters)
   - [ ] Popup to edit filters
+  - [ ] All the filter UI
 - [x] Implement Pagination
 - [x] Selecting items
   - [x] Selecting specific items in the table, with all/none
 - [x] Delete selected item(s)
 - [ ] Add dots menu for [copy link / copy id / delete]
 - [x] Sorting
+- [ ] Show access control errors in columns
+- [ ] Handle the case where there are no fields to display
+  - If you select no fields in the URL, we use the initialColumns, defaults to `_label_`
+  - Whichever fields are selected, we filter out ones that are hidden
+  - If you have no fields display at all, we show `_label_`
+- [ ] Work out whether the label has been defaulted to `Id` and if so, show it in fixed-width font
+  - When there is no `labelResolver` on the list, and no `name` field
 
 ### Come back to later
 
@@ -59,10 +68,16 @@
 - [x] Add reset changes
 - [x] Disable save & reset changes when there are no changes
 - [x] Only send changed fields to API
+- [ ] Show access control errors for fields
+- [ ] Handle the case where there are no editable fields (disable button, w/ tooltip)
+- [ ] Handle the case where there are no visible fields (show a message)
 
 ## Fields
 
 - [ ] Relationship views
+- [ ] Password views
+
+- [ ] Client-side validation API for fields
 
 ## Backlog
 
