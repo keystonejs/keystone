@@ -39,7 +39,7 @@ export default auth.withAuth(
     admin: {
       // NOTE -- this is not implemented, the spike always provides an admin ui at /
       path: '/admin',
-      // isAccessAllowed,
+      isAccessAllowed,
       getAdditionalFiles: [
         () => [
           {
