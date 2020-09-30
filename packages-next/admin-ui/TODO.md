@@ -44,8 +44,10 @@
 - [ ] Add dots menu for [copy link / copy id / delete]
 - [x] Sorting
 - [ ] Show access control errors in columns
-- [ ] Fix style of link icon (when the first column is not linkable)
-- [ ] Fix columns widths for select / navigate
+- [x] Fix style of link icon (when the first column is not linkable)
+- [x] Fix columns widths for select / navigate
+- [ ] Fix style of pagination at the bottom of the list
+- [ ] Add "Showing x of {total}" count to header when there is more than one page of items
 - [ ] Add support for field types determining column width (needs discussion)
 - [ ] Handle the case where there are no fields to display
   - If you select no fields in the URL, we use the initialColumns, defaults to `_label_`
