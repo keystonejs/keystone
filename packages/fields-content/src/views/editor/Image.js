@@ -8,7 +8,7 @@ const PopperRender = forwardRef(
   ({ update, alignment, isFocused, style, onAlignmentChange }, ref) => {
     useLayoutEffect(() => {
       // The update function is `null` on first render - we want to update this after the below component is mounted to have the correct handler
-      return update || undefined;
+      if (update) update();
     }, [alignment, update]);
 
     return (
