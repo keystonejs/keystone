@@ -3,7 +3,6 @@
 import { jsx, Box } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Popover } from '@keystone-ui/popover';
-import { Fragment } from 'react';
 import { Page } from '../../components/Page';
 
 export default function PopoverPage() {
