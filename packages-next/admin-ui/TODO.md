@@ -7,6 +7,7 @@
 - [ ] Need config for lists to say whether you should be able to create / edit things
 - [ ] Add a SignOut page, as an esacape hatch if you need to sign out and don't have a button
 - [ ] Validate the user can access the admin when you sign in, for a smoother error experience
+- [ ] Add a 'hidden' option for fields that hides them in the Admin UI
 
 ## Dashboard
 
@@ -43,6 +44,9 @@
 - [ ] Add dots menu for [copy link / copy id / delete]
 - [x] Sorting
 - [ ] Show access control errors in columns
+- [ ] Fix style of link icon (when the first column is not linkable)
+- [ ] Fix columns widths for select / navigate
+- [ ] Add support for field types determining column width (needs discussion)
 - [ ] Handle the case where there are no fields to display
   - If you select no fields in the URL, we use the initialColumns, defaults to `_label_`
   - Whichever fields are selected, we filter out ones that are hidden
@@ -62,12 +66,19 @@
 - [ ] Call the mutation to create items then navigate
 - [ ] Handle client-side validation (see posts form extensions and checkbox controller)
 - [ ] Handle errors (show the error message up the top for now)
+- [ ] Handle the case where there are no editable fields in the create screen (needs discussion)
+- [ ] Implement autoCreate feature (where you can create a new item without user input)
 
 ## Edit Item
 
 - [x] Add reset changes
 - [x] Disable save & reset changes when there are no changes
 - [x] Only send changed fields to API
+- [ ] Fix page styles & navigation
+- [ ] Render the item title as the header
+- [ ] Implement sticky toolbar
+- [ ] Implement Delete Item
+- [ ] Copy ItemID to Clipboard
 - [ ] Show access control errors for fields
 - [ ] Handle the case where there are no editable fields (disable button, w/ tooltip)
 - [ ] Handle the case where there are no visible fields (show a message)
@@ -78,6 +89,11 @@
 - [ ] Password views
 
 - [ ] Client-side validation API for fields
+- [ ] DependsOn field dependencies
+- [ ] Show proper field label (currently path)
+- [ ] Show required status for fields
+- [ ] Show descriptions under fields
+- [ ] Standardise the components for rendering common field UI (label, description, etc)
 
 ## Backlog
 
@@ -85,6 +101,7 @@
 - [ ] Implement allowing access to the Admin UI without a valid session (in read only mode? etc -- this is going to be quite involved)
 - [ ] We need to talk about Errors. What is the format?
   - [ ] Figure out all the different sorts of errors we have, will inform constraints
+  - [ ] Show errors related to fields after server-side validation
 
 ## Nav
 
@@ -107,53 +124,4 @@ const nav = [
     ],
   },
 ];
-```
-
----
-
-```js
-const userIsAdmin = ({ session: { item: user } }) => user?.isAdmin;
-const userIsItem = ({ existingItem, session: { item: user } } = {}) =>
-  existingItem && existingItem.id === user?.id;
-const userIdItemOrAdmin = ({ existingItem, session: { item: user } = {} }) =>
-  user?.isAdmin || existingItem?.id === user?.id;
-
-const User = list({
-  access: {
-    update: userIsItemOrAdmin,
-    delete: userIsAdmin,
-  },
-  availableThings: {
-    defaultColumns: [],
-    availableColumns: [],
-    update: session => session?.item?.isAdmin,
-  },
-  fields: {
-    name: text({}),
-    email: text({}),
-    password: password({ access: { update: userIdItemOrAdmin } }),
-    isAdmin: checkbox({ access: { update: ({ session: { item: user } }) => user?.isAdmin } }),
-  },
-});
-```
-
-```graphql
-query {
-  UserListMeta(id: 1) {
-    access {
-      create
-      read
-      update
-      delete
-    }
-    fields {
-      path
-      access {
-        create
-        read
-        update
-      }
-    }
-  }
-}
 ```
