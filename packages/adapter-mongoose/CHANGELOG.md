@@ -1,5 +1,17 @@
 # @keystonejs/adapter-mongoose
 
+## 9.0.8
+
+### Patch Changes
+
+- [`966b5bc70`](https://github.com/keystonejs/keystone/commit/966b5bc7003e0f580528c4dcd46647cc4124b592) [#3737](https://github.com/keystonejs/keystone/pull/3737) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mongodb-memory-server-core` to `^6.8.0`.
+
+* [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc) [#3596](https://github.com/keystonejs/keystone/pull/3596) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dev dependency `pluralize` to `^8.0.0`.
+
+* Updated dependencies [[`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4), [`df0687184`](https://github.com/keystonejs/keystone/commit/df068718456d23819a7cae491870be4560b2010d), [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc)]:
+  - @keystonejs/fields-mongoid@8.0.0
+  - @keystonejs/keystone@17.0.0
+
 ## 9.0.7
 
 ### Patch Changes

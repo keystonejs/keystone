@@ -3,6 +3,7 @@ import { Relationship } from '@keystonejs/fields';
 import type { FieldConfig } from '../../interfaces';
 import type { FieldType } from '@keystone-spike/types';
 import type { BaseGeneratedListTypes } from '@keystone-spike/types';
+import { resolveView } from '../../resolve-view';
 
 export type RelationshipFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
@@ -11,12 +12,14 @@ export type RelationshipFieldConfig<
   ref: string;
 };
 
+const views = resolveView('relationship/views');
+
 export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: RelationshipFieldConfig<TGeneratedListTypes>
 ): FieldType<TGeneratedListTypes> => ({
   type: Relationship,
   config,
-  views: '@keystone-spike/fields/src/types/relationship/views',
+  views,
   getBackingType(path) {
     return {
       [path]: {

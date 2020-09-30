@@ -1,4 +1,9 @@
-import { Float, MongoFloatInterface, KnexFloatInterface } from './Implementation';
+import {
+  Float,
+  MongoFloatInterface,
+  KnexFloatInterface,
+  PrismaFloatInterface,
+} from './Implementation';
 import { resolveView } from '../../resolve-view';
 
 export default {
@@ -12,5 +17,6 @@ export default {
   adapters: {
     mongoose: MongoFloatInterface,
     knex: KnexFloatInterface,
+    prisma: PrismaFloatInterface,
   },
 };

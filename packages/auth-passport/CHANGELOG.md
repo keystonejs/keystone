@@ -1,5 +1,14 @@
 # @keystonejs/auth-passport
 
+## 5.2.9
+
+### Patch Changes
+
+- [`f3e9b5347`](https://github.com/keystonejs/keystone/commit/f3e9b53474f6bd6485a8c3932894931e438fcc09) [#3796](https://github.com/keystonejs/keystone/pull/3796) Thanks [@xakdog](https://github.com/xakdog)! - Restricting access to passportSession which was exposed publicly
+
+- Updated dependencies [[`a02e69987`](https://github.com/keystonejs/keystone/commit/a02e69987902cfde38d820e68cb24b7a20ca1f6f), [`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4)]:
+  - @keystonejs/fields@18.0.0
+
 ## 5.2.8
 
 ### Patch Changes

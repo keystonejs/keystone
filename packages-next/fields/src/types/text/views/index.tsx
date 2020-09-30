@@ -2,6 +2,7 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput, TextArea } from '@keystone-ui/fields';
+import { CellLink, CellContainer } from '@keystone-spike/admin-ui/components';
 
 import {
   CellComponent,
@@ -9,23 +10,23 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-spike/types';
-import { Link } from '@keystone-spike/admin-ui/router';
-import { Fragment } from 'react';
 
 export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => (
   <FieldContainer>
     <FieldLabel>{field.label}</FieldLabel>
     {field.isMultiline ? (
       <TextArea
+        readOnly={onChange === undefined}
         onChange={event => {
-          onChange(event.target.value);
+          onChange?.(event.target.value);
         }}
         value={value}
       />
     ) : (
       <TextInput
+        readOnly={onChange === undefined}
         onChange={event => {
-          onChange(event.target.value);
+          onChange?.(event.target.value);
         }}
         value={value}
       />
@@ -35,7 +36,7 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
 
 export const Cell: CellComponent = ({ item, path, linkTo }) => {
   let value = item[path] + '';
-  return linkTo ? <Link {...linkTo}>{value}</Link> : <Fragment>{value}</Fragment>;
+  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
 };
 Cell.supportsLinkTo = true;
 

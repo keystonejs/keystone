@@ -1,6 +1,6 @@
 import { useRouter } from '../../router';
 import { useMemo } from 'react';
-import { useList } from '../../KeystoneContext';
+import { useList } from '../../context';
 import { JSONValue } from '@keystone-spike/types';
 
 type Filter = { field: string; type: string; value: JSONValue };

@@ -2,12 +2,15 @@ import { appTemplate } from './app';
 import { homeTemplate } from './home';
 import { listTemplate } from './list';
 import { itemTemplate } from './item';
+import { noAccessTemplate } from './no-access';
 
 import type { Keystone } from '@keystone-spike/types';
 import { AdminFileToWrite } from '@keystone-spike/types';
 import * as Path from 'path';
 
 const pkgDir = Path.dirname(require.resolve('@keystone-spike/admin-ui/package.json'));
+
+export { adminMetaSchemaExtension } from './adminMetaSchemaExtension';
 
 export const writeAdminFiles = (keystone: Keystone, configFile: boolean): AdminFileToWrite[] => {
   return [
@@ -22,9 +25,9 @@ export const writeAdminFiles = (keystone: Keystone, configFile: boolean): AdminF
       outputPath: 'tsconfig.json',
     },
     {
-      mode: 'copy',
-      inputPath: Path.join(pkgDir, 'static', 'no-access.js'),
+      mode: 'write',
       outputPath: 'pages/no-access.js',
+      src: noAccessTemplate(keystone),
     },
     {
       mode: 'write',

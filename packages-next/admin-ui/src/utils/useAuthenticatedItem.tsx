@@ -3,7 +3,7 @@ import { ApolloError, DocumentNode, useQuery, ApolloClient } from '../apollo';
 export type AuthenticatedItem =
   | { state: 'unauthenticated'; refetch: () => void }
   | { state: 'authenticated'; label: string; id: string; listKey: string; refetch: () => void }
-  | { state: 'loading' }
+  | { state: 'loading'; refetch: () => void }
   | { state: 'error'; error: ApolloError; refetch: () => void };
 
 export function useAuthenticatedItem(
@@ -31,7 +31,6 @@ export function useAuthenticatedItem(
       // (yes, undefined is very specific and very intentional, it should not be checking for null)
       data.authenticatedItem.id === undefined
     ) {
-      console.log(data);
       return {
         state: 'unauthenticated',
         refetch,
@@ -48,5 +47,6 @@ export function useAuthenticatedItem(
 
   return {
     state: 'loading',
+    refetch,
   };
 }

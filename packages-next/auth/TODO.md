@@ -8,20 +8,20 @@
   - [x] Implement no access UI
   - [x] Make no access UI look nice @jed
 - [x] Put generating Auth Admin UI Pages in the package, add them with `getAdditionalFiles` @mitchell
-- [ ] Load Admin Meta from an API route @mitchell
+- [x] Load Admin Meta from an API route @mitchell
   - [ ] With good HTTP caching headers
-  - [ ] Protect it with the `secureFn`
-  - [ ] Make it synchronously available on all pages
-- [ ] Write `withItemData` wrapper for sessions @noviny
-  - [ ] Session functions will need enough API to execute a query
+  - [x] Protect it with the `secureFn`
+  - [x] Make it synchronously available on all pages
+- [x] Write `withItemData` wrapper for sessions @noviny
+  - [x] Session functions will need enough API to execute a query
 - [x] Pass session in context as `session` @mitchell
   - [ ] Remove `authentication` property from context and the usages of it
   - [ ] Pass this as an arg on access control? -- yes
-- [ ] Implement signout @jed
+- [x] Implement signout @jed
   - [x] Only generate the endSession mutation if session.end exists
   - [ ] Create UI for the signout page
   - [ ] Only generate the signout page if the config is enabled
-  - [ ] Add a signout button to the Admin UI when the config is enabled
+  - [x] Add a signout button to the Admin UI when the config is enabled
 - [ ] Implement forgotten password & magic links @molomby
   - [ ] Define the list
   - [ ] Add the mutations

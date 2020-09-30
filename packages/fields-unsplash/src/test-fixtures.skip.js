@@ -11,6 +11,7 @@ export const exampleValue = () => 'U0tBTn8UR8I';
 export const exampleValue2 = () => 'xrVDYZRGdw4';
 export const fieldName = 'heroImage';
 export const subfieldName = 'unsplashId';
+export const unSupportedAdapterList = ['prisma'];
 export const fieldConfig = () => ({
   accessKey: process.env.UNSPLASH_KEY || 'unsplash_key',
   secretKey: process.env.UNSPLASH_SECRET || 'unplash_secret',

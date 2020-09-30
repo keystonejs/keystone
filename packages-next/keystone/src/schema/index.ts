@@ -5,4 +5,3 @@ export type {
   ExtendGraphqlSchema,
   BaseFields,
 } from '@keystone-spike/types';
-export { statelessSessions, storedSessions } from '../session';

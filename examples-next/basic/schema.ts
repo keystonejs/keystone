@@ -1,26 +1,9 @@
 import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-spike/keystone/schema';
 import { text, relationship, checkbox, password, timestamp } from '@keystone-spike/fields';
+import { KeystoneCrudAPI } from '@keystone-spike/types';
+import { KeystoneListsTypeInfo } from './.keystone/schema-types';
 
 const randomNumber = () => Math.round(Math.random() * 10);
-
-/*
-type KeystoneQueryFns = {
-  [Key in keyof KeystoneListsTypeInfo]: {
-    findMany(
-      args: KeystoneListsTypeInfo[Key]['args']['listQuery']
-    ): Promise<readonly KeystoneListsTypeInfo[Key]['backing'][]>;
-    findOne(args: {
-      readonly where: { readonly id: string };
-    }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
-  };
-};
-
-() => {
-  let keystoneQueryStuff: KeystoneQueryFns = undefined as any;
-
-  keystoneQueryStuff.Post.findMany({ where: {} });
-};
-*/
 
 export const lists = createSchema({
   User: list({
@@ -62,6 +45,7 @@ export const lists = createSchema({
         return itemId === context.session?.itemId;
       },
     },
+
     fields: {
       name: text({ isRequired: true, hooks: {} }),
       email: text({
@@ -73,10 +57,30 @@ export const lists = createSchema({
       password: password({
         hooks: {},
       }),
-      isAdmin: checkbox({}),
+      isAdmin: checkbox({
+        access: { read: true, update: ({ context: { session } }) => session?.item?.isAdmin },
+        admin: {
+          createView: {
+            fieldMode: ({ session }) => (session?.item?.isAdmin ? 'edit' : 'hidden'),
+          },
+          listView: {
+            fieldMode: ({ session }) => (session?.item?.isAdmin ? 'read' : 'hidden'),
+          },
+          itemView: {
+            fieldMode: ({ session }) => (session?.item?.isAdmin ? 'edit' : 'read'),
+          },
+        },
+      }),
       roles: text({}),
       posts: relationship({ ref: 'Post.author', many: true }),
       something: text({ isMultiline: true }),
+      oneTimeThing: text({
+        access: {
+          create: true,
+          read: true,
+          update: false,
+        },
+      }),
     },
   }),
   Post: list({
@@ -121,11 +125,10 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
     },
     Mutation: {
       createRandomPosts(root: any, args: any, ctx: any) {
+        let crud: KeystoneCrudAPI<KeystoneListsTypeInfo> = ctx.crud;
+
         const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
-        return ctx.keystone.lists.Post.createManyMutation(
-          data,
-          ctx.createContext({ skipAccessControl: true })
-        );
+        return crud.Post.createMany({ data });
       },
     },
     Query: {

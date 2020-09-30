@@ -49,7 +49,7 @@ export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
     /** Suppresses the second screen where we ask people to subscribe and follow Keystone */
     skipKeystoneSignup?: boolean;
     /** Extra input to add for the create mutation */
-    extraCreateInput?: Partial<GeneratedListTypes['inputs']['create']>;
+    itemData?: Partial<GeneratedListTypes['inputs']['create']>;
   };
 };
 

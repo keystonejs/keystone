@@ -7,7 +7,7 @@
  * - Need a Field Layout component
  */
 
-export { Checkbox } from './Checkbox';
+export { Checkbox, CheckboxControl } from './Checkbox';
 export { FieldContainer } from './FieldContainer';
 export { FieldLabel } from './FieldLabel';
 export { Radio } from './Radio';

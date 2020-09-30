@@ -1,4 +1,9 @@
-import { UuidImplementation, MongoUuidInterface, KnexUuidInterface } from './Implementation';
+import {
+  UuidImplementation,
+  MongoUuidInterface,
+  KnexUuidInterface,
+  PrismaUuidInterface,
+} from './Implementation';
 import { resolveView } from '../../resolve-view';
 
 const Uuid = {
@@ -12,6 +17,7 @@ const Uuid = {
   adapters: {
     knex: KnexUuidInterface,
     mongoose: MongoUuidInterface,
+    prisma: PrismaUuidInterface,
   },
 
   primaryKeyDefaults: {
@@ -26,6 +32,15 @@ const Uuid = {
         throw (
           `The Uuid field type doesn't provide a default primary key field configuration for the ` +
           `'${client}' knex client. You'll need to supply your own 'id' field for each list or use a ` +
+          `different field type for your ids (eg '@keystonejs/fields-auto-increment').`
+        );
+      },
+    },
+    prisma: {
+      getConfig: client => {
+        throw (
+          `The Uuid field type doesn't provide a default primary key field configuration for the ` +
+          `'${client}' prisma client. You'll need to supply your own 'id' field for each list or use a ` +
           `different field type for your ids (eg '@keystonejs/fields-auto-increment').`
         );
       },

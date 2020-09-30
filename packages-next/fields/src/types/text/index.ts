@@ -3,6 +3,7 @@ import { Text } from '@keystonejs/fields';
 import type { FieldConfig } from '../../interfaces';
 import type { FieldType } from '@keystone-spike/types';
 import type { BaseGeneratedListTypes } from '@keystone-spike/types';
+import { resolveView } from '../../resolve-view';
 
 export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
   TGeneratedListTypes
@@ -13,6 +14,8 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
   isMultiline?: boolean;
 };
 
+const views = resolveView('text/views');
+
 export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: TextFieldConfig<TGeneratedListTypes>
 ): FieldType<TGeneratedListTypes> => ({
@@ -21,7 +24,7 @@ export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   getAdminMeta: () => ({
     isMultiline: !!config.isMultiline,
   }),
-  views: '@keystone-spike/fields/src/types/text/views',
+  views,
   getBackingType(path: string) {
     return {
       [path]: {

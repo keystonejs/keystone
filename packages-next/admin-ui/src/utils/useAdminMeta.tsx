@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ApolloClient, useQuery, gql } from '../apollo';
+import { ApolloClient, useQuery } from '../apollo';
 import hashString from '@emotion/hash';
-import { SerializedAdminMeta, AdminMeta, FieldViews } from '@keystone-spike/types';
+import { SerializedAdminMeta, AdminMeta, FieldViews, getGqlNames } from '@keystone-spike/types';
+import { StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql';
 
 let expectedExports: Record<string, boolean> = {
   Cell: true,
@@ -36,7 +37,7 @@ export function useAdminMeta(
     if (typeof window === 'undefined') {
       return;
     }
-    let item = localStorage.getItem(adminMetaLocalStorageKey);
+    const item = localStorage.getItem(adminMetaLocalStorageKey);
     if (item === null) {
       return;
     }
@@ -49,66 +50,56 @@ export function useAdminMeta(
       return;
     }
   }, []);
-  const { data, error, refetch } = useQuery(
-    gql`
-      query {
-        _adminMeta
-      }
-    `,
-    { client, skip: adminMetaFromLocalStorage !== undefined }
-  );
+
+  const { data, error, refetch } = useQuery(staticAdminMetaQuery, {
+    client,
+    skip: adminMetaFromLocalStorage !== undefined,
+  });
 
   const runtimeAdminMeta = useMemo(() => {
     if ((!data || error) && !adminMetaFromLocalStorage) {
       return undefined;
     }
-    const adminMeta: SerializedAdminMeta = adminMetaFromLocalStorage
+    const adminMeta: StaticAdminMetaQuery['keystone']['adminMeta'] = adminMetaFromLocalStorage
       ? adminMetaFromLocalStorage
-      : data._adminMeta;
+      : data.keystone.adminMeta;
     const runtimeAdminMeta: AdminMeta = {
       enableSessionItem: adminMeta.enableSessionItem,
       enableSignout: adminMeta.enableSignout,
       lists: {},
     };
-    Object.keys(adminMeta.lists).forEach(key => {
-      const list = adminMeta.lists[key];
-      runtimeAdminMeta.lists[key] = {
-        initialColumns: list.initialColumns,
-        gqlNames: list.gqlNames,
-        key,
+    adminMeta.lists.forEach(list => {
+      runtimeAdminMeta.lists[list.key] = {
+        ...list,
+        gqlNames: getGqlNames({
+          listKey: list.key,
+          itemQueryName: list.itemQueryName,
+          listQueryName: list.listQueryName,
+        }),
         fields: {},
-        label: list.label,
-        singular: list.singular,
-        plural: list.plural,
-        path: list.path,
-        description: list.description,
-        pageSize: list.pageSize,
       };
-      Object.keys(list.fields).forEach(fieldKey => {
-        const field = list.fields[fieldKey];
-
+      list.fields.forEach(field => {
         Object.keys(expectedExports).forEach(exportName => {
           if ((fieldViews[field.views] as any)[exportName] === undefined) {
             throw new Error(
-              `View for field at path ${key}.${fieldKey} is missing ${exportName} export`
+              `View for field at path ${list.key}.${field.path} is missing ${exportName} export`
             );
           }
         });
         Object.keys(fieldViews[field.views]).forEach(exportName => {
           if (expectedExports[exportName] === undefined) {
             throw new Error(
-              `Unexpected export named ${exportName} from view from field at ${key}.${fieldKey}`
+              `Unexpected export named ${exportName} from view from field at ${list.key}.${field.path}`
             );
           }
         });
-        runtimeAdminMeta.lists[key].fields[fieldKey] = {
-          label: field.label,
+        runtimeAdminMeta.lists[list.key].fields[field.path] = {
+          ...field,
           views: fieldViews[field.views],
-          fieldMeta: field.fieldMeta,
           controller: fieldViews[field.views].controller({
             fieldMeta: field.fieldMeta,
             label: field.label,
-            path: fieldKey,
+            path: field.path,
           }),
         };
       });
@@ -124,7 +115,9 @@ export function useAdminMeta(
     }
     return runtimeAdminMeta;
   }, [data, error, adminMetaFromLocalStorage]);
-  let mustRenderServerResult = useMustRenderServerResult();
+
+  const mustRenderServerResult = useMustRenderServerResult();
+
   if (mustRenderServerResult) {
     return {
       state: 'loading' as const,
