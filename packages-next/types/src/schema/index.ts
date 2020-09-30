@@ -1,5 +1,5 @@
 import type { GraphQLSchema } from 'graphql';
-import type { FieldType } from '..';
+import type { FieldType, MaybeSessionFunction } from '..';
 import type { BaseGeneratedListTypes } from '../utils';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
@@ -76,13 +76,13 @@ export type ListConfig<
      * Note that this does **not** disable creating items through the GraphQL API, it only hides the button to create an item for this list in the Admin UI.
      * @default false
      */
-    hideCreate?: boolean;
+    hideCreate?: MaybeSessionFunction<boolean>;
     /**
      * Hides the delete button in the Admin UI.
      * Note that this does **not** disable deleting items through the GraphQL API, it only hides the button to delete an item for this list in the Admin UI.
      * @default false
      */
-    hideDelete?: boolean;
+    hideDelete?: MaybeSessionFunction<boolean>;
     /**
      * Configuration specific to the create view in the Admin UI
      */
@@ -92,7 +92,7 @@ export type ListConfig<
        * Specific field modes on a per-field basis via a field's config.
        * @default 'edit'
        */
-      defaultFieldMode?: 'edit' | 'hidden';
+      defaultFieldMode?: MaybeSessionFunction<'edit' | 'hidden'>;
     };
     /**
      * Configuration specific to the list view in the Admin UI
@@ -103,7 +103,7 @@ export type ListConfig<
        * Specific field modes on a per-field basis via a field's config.
        * @default 'read'
        */
-      defaultFieldMode?: 'read' | 'hidden';
+      defaultFieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
       /**
        * The columns(which refer to fields) that should be shown to users of the Admin UI.
        * Users of the Admin UI can select different columns to show in the UI.
@@ -127,7 +127,7 @@ export type ListConfig<
        * Specific field modes on a per-field basis via a field's config.
        * @default 'edit'
        */
-      defaultFieldMode?: 'edit' | 'read' | 'hidden';
+      defaultFieldMode?: MaybeSessionFunction<'edit' | 'read' | 'hidden'>;
     };
   };
 

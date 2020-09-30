@@ -71,6 +71,18 @@ export default function FieldsPage() {
           Checked + Disabled
         </Checkbox>
       </FieldWrapper>
+      <h3>Sizes</h3>
+      <FieldWrapper>
+        <Checkbox css={{ marginRight: spacing.medium }} size="small">
+          Small
+        </Checkbox>
+        <Checkbox css={{ marginRight: spacing.medium }} size="medium">
+          Medium
+        </Checkbox>
+        <Checkbox css={{ marginRight: spacing.medium }} size="large">
+          Large
+        </Checkbox>
+      </FieldWrapper>
       <h2>Radio Buttons</h2>
       <FieldWrapper>
         <Radio name="radio-set" css={{ marginRight: spacing.medium }}>
@@ -87,6 +99,18 @@ export default function FieldsPage() {
         </Radio>
         <Radio css={{ marginRight: spacing.medium }} disabled checked readOnly>
           Checked + Disabled
+        </Radio>
+      </FieldWrapper>
+      <h3>Sizes</h3>
+      <FieldWrapper>
+        <Radio name="radio-size-set" css={{ marginRight: spacing.medium }} size="small">
+          Small
+        </Radio>
+        <Radio name="radio-size-set" css={{ marginRight: spacing.medium }} size="medium">
+          Medium
+        </Radio>
+        <Radio name="radio-size-set" css={{ marginRight: spacing.medium }} size="large">
+          Large
         </Radio>
       </FieldWrapper>
       <h2>Switches</h2>

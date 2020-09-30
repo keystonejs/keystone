@@ -4,7 +4,7 @@ import { jsx } from '@emotion/core';
 import { useTheme, H2 } from '@keystone-ui/core';
 import Link from 'next/link';
 
-import { useKeystone } from '../KeystoneContext';
+import { useKeystone } from '../context';
 
 export const Logo = () => {
   const { colors } = useTheme();

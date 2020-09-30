@@ -1,4 +1,9 @@
-import { DateTime, MongoDateTimeInterface, KnexDateTimeInterface } from './Implementation';
+import {
+  DateTime,
+  MongoDateTimeInterface,
+  KnexDateTimeInterface,
+  PrismaDateTimeInterface,
+} from './Implementation';
 import { resolveView } from '../../resolve-view';
 
 export default {
@@ -13,5 +18,6 @@ export default {
   adapters: {
     mongoose: MongoDateTimeInterface,
     knex: KnexDateTimeInterface,
+    prisma: PrismaDateTimeInterface,
   },
 };

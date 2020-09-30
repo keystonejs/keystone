@@ -1,5 +1,6 @@
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 import UnsplashAPI, { toJson } from 'unsplash-js';
 import queryString from 'query-string';
 
@@ -292,5 +293,23 @@ export class KnexUnsplashInterface extends CommonUnsplashInterface(KnexFieldAdap
     const column = table.jsonb(this.path);
     if (this.isNotNullable) column.notNullable();
     if (this.defaultTo) column.defaultTo(this.defaultTo);
+  }
+}
+
+export class PrismaUnsplashInterface extends CommonUnsplashInterface(PrismaFieldAdapter) {
+  constructor() {
+    super(...arguments);
+
+    // Error rather than ignoring invalid config
+    // We totally can index these values, it's just not trivial. See issue #1297
+    if (this.config.isIndexed) {
+      throw (
+        `The Unsplash field type doesn't support indexes on Prisma. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      );
+    }
+  }
+  getPrismaSchema() {
+    return [this._schemaField({ type: 'Json' })];
   }
 }

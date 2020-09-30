@@ -632,7 +632,9 @@ class QueryBuilder {
 
     // Add query modifiers as required
     if (meta) {
-      this._query = listAdapter.parentAdapter.knex.count('*').from(this._query.as('unused_alias'));
+      this._query = listAdapter.parentAdapter.knex
+        .count('* as count')
+        .from(this._query.as('unused_alias'));
     } else {
       if (first !== undefined) {
         // SELECT ... LIMIT <first>

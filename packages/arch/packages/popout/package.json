@@ -20,8 +20,8 @@
     "@babel/runtime": "^7.11.2",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "@popperjs/core": "^2.5.1",
-    "focus-trap-react": "^8.0.0",
+    "@popperjs/core": "^2.5.3",
+    "focus-trap-react": "^8.1.0",
     "react-popper": "^2.2.3"
   },
   "module": "dist/popout.esm.js",

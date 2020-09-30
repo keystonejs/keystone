@@ -3,6 +3,7 @@ import {
   Unsplash as Implementation,
   MongoUnsplashInterface,
   KnexUnsplashInterface,
+  PrismaUnsplashInterface,
 } from './Implementation';
 import { UnsplashBlock } from './UnsplashBlock';
 
@@ -19,6 +20,7 @@ export const Unsplash = {
   adapters: {
     mongoose: MongoUnsplashInterface,
     knex: KnexUnsplashInterface,
+    prisma: PrismaUnsplashInterface,
   },
   blocks: {
     unsplashImage: UnsplashBlock,

@@ -1,5 +1,11 @@
 # @keystonejs/file-adapters
 
+## 7.0.8
+
+### Patch Changes
+
+- [`5799f3e48`](https://github.com/keystonejs/keystone/commit/5799f3e483fdf7db8ab1f868b26628fa85bbbb43) [#3681](https://github.com/keystonejs/keystone/pull/3681) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `aws-sdk` to `^2.757.0`.
+
 ## 7.0.7
 
 ### Patch Changes

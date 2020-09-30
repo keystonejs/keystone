@@ -158,6 +158,7 @@ const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, ...props }, re
         paddingRight: tokens.paddingX,
         paddingTop: tokens.paddingY,
         paddingBottom: tokens.paddingY,
+        userSelect: 'none',
         // -- TODO
         background: colors.backgroundMuted,
         display: fill ? 'flex' : 'inline-flex',

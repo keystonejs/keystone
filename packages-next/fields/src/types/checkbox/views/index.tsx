@@ -15,8 +15,9 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
   return (
     <FieldContainer>
       <Checkbox
+        disabled={onChange === undefined}
         onChange={event => {
-          onChange(event.target.checked);
+          onChange?.(event.target.checked);
         }}
         checked={value}
       >

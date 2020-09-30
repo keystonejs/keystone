@@ -11,6 +11,7 @@ import { SigninContainer } from '../components/SigninContainer';
 import { DocumentNode } from 'graphql';
 import { Notice } from '@keystone-ui/notice';
 import { useMutation } from '@keystone-spike/admin-ui/apollo';
+import { useReinitContext } from '@keystone-spike/admin-ui/context';
 import { useRouter } from '@keystone-spike/admin-ui/router';
 
 export const InitPage = ({
@@ -21,7 +22,7 @@ export const InitPage = ({
   mutation: DocumentNode;
   showKeystoneSignup: boolean;
 }) => {
-  const { fieldViews, adminMeta, authenticatedItem } = useRawKeystone();
+  const { fieldViews } = useRawKeystone();
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {};
     Object.keys(serializedFields).forEach(fieldPath => {
@@ -50,15 +51,13 @@ export const InitPage = ({
   });
 
   const [createFirstItem, { loading, error }] = useMutation(mutation);
-
+  const reinitContext = useReinitContext();
   const router = useRouter();
 
   const nameInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
-
-  console.log({ fields, serializedFields });
 
   return (
     <SigninContainer>
@@ -77,13 +76,7 @@ export const InitPage = ({
               ),
             },
           });
-          if (adminMeta.state === 'error') {
-            adminMeta.refetch();
-          }
-          if (authenticatedItem.state !== 'loading') {
-            authenticatedItem.refetch();
-          }
-
+          reinitContext();
           await router.push('/');
         }}
       >

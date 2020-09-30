@@ -16,8 +16,9 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
     <FieldLabel>{field.label}</FieldLabel>
     <TextInput
       value={value}
+      readOnly={onChange === undefined}
       onChange={event => {
-        onChange(event.target.value);
+        onChange?.(event.target.value);
       }}
     />
     {/* {item[`${field.path}_is_set`] === true ? 'Is set' : 'Is not set'} */}

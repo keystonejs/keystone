@@ -10,10 +10,12 @@
     "@babel/runtime": "^7.11.2",
     "@emotion/core": "^10.0.35",
     "@emotion/hash": "^0.8.0",
+    "@graphql-tools/merge": "^6.2.3",
     "@keystone-spike/keystone": "*",
     "@keystone-spike/types": "*",
     "@keystone-ui/button": "*",
     "@keystone-ui/core": "*",
+    "@keystone-ui/fields": "*",
     "@keystone-ui/icons": "*",
     "@keystone-ui/loading": "*",
     "@keystone-ui/notice": "*",
@@ -30,8 +32,10 @@
   "preconstruct": {
     "entrypoints": [
       "index.tsx",
+      "components/index.ts",
       "templates/index.ts",
       "apollo.tsx",
+      "context.tsx",
       "router.tsx"
     ]
   },
