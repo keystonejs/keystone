@@ -38,7 +38,7 @@
     "facepaint": "^1.2.1",
     "get-contrast": "^2.0.0",
     "graphql": "^15.3.0",
-    "isomorphic-unfetch": "^3.0.0",
+    "isomorphic-unfetch": "^3.1.0",
     "lodash.uniqby": "^4.7.0",
     "next": "^9.5.3",
     "prop-types": "^15.7.2",

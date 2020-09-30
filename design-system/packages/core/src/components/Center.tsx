@@ -5,16 +5,24 @@ import { jsx } from '@emotion/core';
 import { Box, BoxProps } from './Box';
 import { forwardRefWithAs } from '../utils';
 
-export const Center = forwardRefWithAs<'div', BoxProps>((props, ref) => {
-  return (
-    <Box
-      ref={ref}
-      css={{
-        alignItems: 'center',
-        display: 'flex',
-        justifyContent: 'center',
-      }}
-      {...props}
-    />
-  );
-});
+type CenterProps = {
+  fillView?: boolean;
+} & BoxProps;
+
+export const Center = forwardRefWithAs<'div', CenterProps>(
+  ({ fillView = false, ...props }, ref) => {
+    return (
+      <Box
+        ref={ref}
+        css={{
+          alignItems: 'center',
+          display: 'flex',
+          justifyContent: 'center',
+          height: fillView ? '100vh' : undefined,
+          width: fillView ? '100vw' : undefined,
+        }}
+        {...props}
+      />
+    );
+  }
+);

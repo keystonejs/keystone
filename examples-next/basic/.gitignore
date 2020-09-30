@@ -1,0 +1,3 @@
+!.keystone
+.keystone/admin
+.keystone/schema.graphql

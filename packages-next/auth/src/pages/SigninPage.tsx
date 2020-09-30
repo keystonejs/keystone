@@ -6,10 +6,10 @@ import { jsx, H1, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { TextInput } from '@keystone-ui/fields';
 import { Notice } from '@keystone-ui/notice';
-import { useRawKeystone } from '@keystone-spike/admin-ui';
 
 import { SigninContainer } from '../components/SigninContainer';
 import { useMutation, DocumentNode } from '@keystone-spike/admin-ui/apollo';
+import { useReinitContext } from '@keystone-spike/admin-ui/context';
 import { useRouter } from '@keystone-spike/admin-ui/router';
 
 export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
@@ -22,15 +22,15 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
 
   const [mode, setMode] = useState<'signin' | 'forgot password'>('signin');
   const [state, setState] = useState({ identity: '', secret: '' });
-  const router = useRouter();
+
   const identityFieldRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     identityFieldRef.current?.focus();
   }, [mode]);
 
-  const { adminMeta, authenticatedItem } = useRawKeystone();
-
   const [mutate, { error, loading }] = useMutation(mutation);
+  const reinitContext = useReinitContext();
+  const router = useRouter();
 
   return (
     <SigninContainer>
@@ -49,17 +49,11 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
                   secret: state.secret,
                 },
               });
-              if (adminMeta.state === 'error') {
-                adminMeta.refetch();
-              }
-              if (authenticatedItem.state !== 'loading') {
-                authenticatedItem.refetch();
-              }
             } catch (err) {
               return;
             }
-
-            router.push('/');
+            reinitContext();
+            await router.push('/');
           }
         }}
       >

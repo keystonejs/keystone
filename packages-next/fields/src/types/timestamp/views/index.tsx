@@ -16,8 +16,9 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
   <FieldContainer>
     <FieldLabel>{field.label}</FieldLabel>
     <TextInput
+      readOnly={onChange === undefined}
       onChange={event => {
-        onChange(event.target.value);
+        onChange?.(event.target.value);
       }}
       value={value}
     />

@@ -4,7 +4,7 @@ import { jsx, useTheme, Inline } from '@keystone-ui/core';
 import Link from 'next/link';
 import { DocumentNode, useQuery } from '../apollo';
 
-import { useKeystone, useList } from '../KeystoneContext';
+import { useKeystone, useList } from '../context';
 import { PageContainer } from '../components/PageContainer';
 
 type ListCardProps = {

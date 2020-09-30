@@ -16,15 +16,17 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
     <FieldLabel>{field.label}</FieldLabel>
     {field.isMultiline ? (
       <TextArea
+        readOnly={onChange === undefined}
         onChange={event => {
-          onChange(event.target.value);
+          onChange?.(event.target.value);
         }}
         value={value}
       />
     ) : (
       <TextInput
+        readOnly={onChange === undefined}
         onChange={event => {
-          onChange(event.target.value);
+          onChange?.(event.target.value);
         }}
         value={value}
       />

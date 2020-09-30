@@ -1,12 +1,12 @@
 /* @jsx jsx */
 
-import { useQuery, gql, useMutation } from '../../apollo';
+import { useQuery, gql, useMutation, TypedDocumentNode } from '../../apollo';
 import { Button } from '@keystone-ui/button';
 import { Box, H1, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { Fragment, HTMLAttributes, ReactNode, useMemo, useState } from 'react';
 import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
 import { PageContainer } from '../../components/PageContainer';
-import { useList } from '../../KeystoneContext';
+import { useList } from '../../context';
 import { useRouter, Link } from '../../router';
 import { CellLink } from '../../components';
 import { Pagination } from './pagination';
@@ -17,6 +17,50 @@ import { CheckboxControl } from '@keystone-ui/fields';
 type ListPageProps = {
   listKey: string;
 };
+
+let listMetaGraphqlQuery: TypedDocumentNode<
+  {
+    keystone: {
+      adminMeta: {
+        list: {
+          hideCreate: boolean;
+          hideDelete: boolean;
+
+          fields: {
+            path: string;
+            listView: {
+              fieldMode: 'read' | 'hidden';
+            };
+            createView: {
+              fieldMode: 'read' | 'hidden';
+            };
+          }[];
+        } | null;
+      };
+    };
+  },
+  { listKey: string }
+> = gql`
+  query($listKey: String!) {
+    keystone {
+      adminMeta {
+        list(key: $listKey) {
+          hideDelete
+          hideCreate
+          fields {
+            path
+            listView {
+              fieldMode
+            }
+            createView {
+              fieldMode
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 export const ListPage = ({ listKey }: ListPageProps) => {
   const list = useList(listKey);
@@ -47,7 +91,18 @@ export const ListPage = ({ listKey }: ListPageProps) => {
     };
   }, [sortByFromUrl]);
   const filters = useFilters(listKey);
-  const selectedFields = useSelectedFields(listKey);
+
+  let metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } });
+
+  let listViewFieldModesByField = useMemo(() => {
+    let listViewFieldModesByField: Record<string, 'read' | 'hidden'> = {};
+    metaQuery.data?.keystone.adminMeta.list?.fields.forEach(field => {
+      listViewFieldModesByField[field.path] = field.listView.fieldMode;
+    });
+    return listViewFieldModesByField;
+  }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
+
+  let selectedFields = useSelectedFields(listKey, listViewFieldModesByField);
 
   const [deleteItems, deleteItemsState] = useMutation(
     useMemo(
@@ -120,7 +175,10 @@ export const ListPage = ({ listKey }: ListPageProps) => {
 
   return (
     <PageContainer>
-      <ListPageHeader listKey={listKey} />
+      <ListPageHeader
+        listKey={listKey}
+        showCreate={!(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)}
+      />
       <p
         css={{
           // TODO: don't do this
@@ -139,21 +197,23 @@ export const ListPage = ({ listKey }: ListPageProps) => {
                 return (
                   <Fragment>
                     Selected {selectedItemsCount} of {data.items.length}
-                    <Button
-                      css={{ marginLeft: spacing.small }}
-                      isLoading={deleteItemsState.loading}
-                      tone="negative"
-                      onClick={async () => {
-                        // TODO: confirmation modal
-                        // TODO: handle errors
-                        await deleteItems({
-                          variables: { ids: Object.keys(selectedItemsState.selectedItems) },
-                        });
-                        refetch();
-                      }}
-                    >
-                      Delete
-                    </Button>
+                    {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
+                      <Button
+                        css={{ marginLeft: spacing.small }}
+                        isLoading={deleteItemsState.loading}
+                        tone="negative"
+                        onClick={async () => {
+                          // TODO: confirmation modal
+                          // TODO: handle errors
+                          await deleteItems({
+                            variables: { ids: Object.keys(selectedItemsState.selectedItems) },
+                          });
+                          refetch();
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    )}
                   </Fragment>
                 );
               }
@@ -191,10 +251,10 @@ export const ListPage = ({ listKey }: ListPageProps) => {
           </ul>
         </p>
       ) : null}
-      {error ? (
+      {error || metaQuery.error ? (
         // TODO: Show errors nicely and with information
         'Error...'
-      ) : data ? (
+      ) : data && metaQuery.data ? (
         <ListTable
           count={data.meta.count}
           currentPage={currentPage}
@@ -388,7 +448,7 @@ function ListTable({
   );
 }
 
-const ListPageHeader = ({ listKey }: { listKey: string }) => {
+const ListPageHeader = ({ listKey, showCreate }: { listKey: string; showCreate: boolean }) => {
   const list = useList(listKey);
   return (
     <Stack
@@ -403,7 +463,7 @@ const ListPageHeader = ({ listKey }: { listKey: string }) => {
       }}
     >
       <H1>{list.label}</H1>
-      <Button tone="positive">Create</Button>
+      {showCreate && <Button tone="positive">Create</Button>}
     </Stack>
   );
 };

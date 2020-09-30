@@ -83,7 +83,7 @@ export function withItemData(createSession: CreateSession, fieldSelections: Fiel
         if (!session) return;
         // Only load data for lists specified in fieldSelections
         if (!fieldSelections[session.listKey]) return session;
-        const context = await keystone.createContext({ skipAccessControl: true });
+        const context = keystone.createContext({ skipAccessControl: true });
         const { gqlNames } = keystone.adminMeta.lists[session.listKey];
         const query = parse(`query($id: ID!) {
           item: ${gqlNames.itemQueryName}(where: { id: $id }) {

@@ -1,9 +1,9 @@
 /* @jsx jsx */
 
-import { ReactNode } from 'react';
-import { jsx, Box, Center, Stack, useTheme } from '@keystone-ui/core';
+import { jsx, Stack } from '@keystone-ui/core';
 import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon';
 import { SignoutButton } from '../components/SignoutButton';
+import { ErrorContainer } from '../components/Errors';
 
 export const NoAccessPage = ({ sessionsEnabled }: { sessionsEnabled: boolean }) => {
   return (
@@ -14,35 +14,5 @@ export const NoAccessPage = ({ sessionsEnabled }: { sessionsEnabled: boolean }) 
         {sessionsEnabled ? <SignoutButton /> : null}
       </Stack>
     </ErrorContainer>
-  );
-};
-
-type ErrorContainerProps = {
-  children: ReactNode;
-};
-
-export const ErrorContainer = ({ children }: ErrorContainerProps) => {
-  const { colors, shadow } = useTheme();
-  return (
-    <Center
-      css={{
-        minWidth: '100vw',
-        minHeight: '100vh',
-        backgroundColor: colors.backgroundMuted,
-      }}
-      rounding="medium"
-    >
-      <Box
-        css={{
-          background: colors.background,
-          boxShadow: shadow.s100,
-        }}
-        margin="medium"
-        padding="xlarge"
-        rounding="medium"
-      >
-        {children}
-      </Box>
-    </Center>
   );
 };

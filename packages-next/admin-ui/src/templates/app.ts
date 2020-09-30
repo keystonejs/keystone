@@ -1,6 +1,7 @@
 import type { Keystone } from '@keystone-spike/types';
 import hashString from '@emotion/hash';
 import {
+  executeSync,
   DocumentNode,
   GraphQLNonNull,
   GraphQLScalarType,
@@ -8,6 +9,7 @@ import {
   GraphQLUnionType,
   InlineFragmentNode,
 } from 'graphql';
+import { staticAdminMetaQuery } from '../admin-meta-graphql';
 
 type AppTemplateOptions = {
   configFile: boolean;
@@ -15,11 +17,24 @@ type AppTemplateOptions = {
 
 export const appTemplate = (keystone: Keystone, { configFile }: AppTemplateOptions) => {
   const authenticatedItemQuery = getAuthenticatedItemQuery(keystone.graphQLSchema);
+
+  const result = executeSync({
+    document: staticAdminMetaQuery,
+    schema: keystone.graphQLSchema,
+    contextValue: {
+      isAdminUIBuildProcess: true,
+    },
+  });
+  if (result.errors) {
+    throw result.errors[0];
+  }
+  const adminMetaQueryResultHash = hashString(JSON.stringify(result.data!.keystone.adminMeta));
   // -- TEMPLATE START
   return `
 import React from 'react';
 
-import { KeystoneProvider, initAdminMeta } from '@keystone-spike/admin-ui';
+import { KeystoneProvider } from '@keystone-spike/admin-ui/context';
+import { ErrorBoundary } from '@keystone-spike/admin-ui/components';
 import { Core } from '@keystone-ui/core';
 
 ${keystone.views.map((view, i) => `import * as view${i} from ${JSON.stringify(view)}`).join('\n')}
@@ -35,17 +50,19 @@ const authenticatedItemQuery = ${
 
 export default function App({ Component, pageProps }) {
   return (
-    <KeystoneProvider
-      adminConfig={adminConfig}
-      adminMetaHash="${hashString(JSON.stringify(keystone.adminMeta))}"
-      fieldViews={fieldViews}
-      customFieldViews={customFieldViews}
-      authenticatedItemQuery={authenticatedItemQuery}
-    >
-      <Core>
-        <Component {...pageProps} />
-      </Core>
-    </KeystoneProvider>
+    <Core>
+      <KeystoneProvider
+        adminConfig={adminConfig}
+        adminMetaHash="${adminMetaQueryResultHash}"
+        fieldViews={fieldViews}
+        customFieldViews={customFieldViews}
+        authenticatedItemQuery={authenticatedItemQuery}
+      >
+        <ErrorBoundary>
+          <Component {...pageProps} />
+        </ErrorBoundary>
+      </KeystoneProvider>
+    </Core>
   );
 }
   `;
