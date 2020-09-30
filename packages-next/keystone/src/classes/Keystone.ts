@@ -143,6 +143,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       sessionThing === undefined
         ? undefined
         : config.admin?.isAccessAllowed ?? (({ session }) => session !== undefined),
+    config,
   });
 
   function createContext({

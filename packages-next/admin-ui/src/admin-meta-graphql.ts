@@ -162,7 +162,7 @@ type KeystoneAdminUIFieldMetaListViewFieldMode = 'read' | 'hidden';
 
 type KeystoneAdminUIFieldMetaItemViewFieldMode = 'edit' | 'read' | 'hidden';
 
-// a copy of StaticAdminMetaQuery but without the typenames written manually
+// a copy of StaticAdminMetaQuery but without the typenames written manually + & { listKey: string } on fields
 export type StaticAdminMetaQueryWithoutTypeNames = {
   keystone: {
     adminMeta: Pick<KeystoneAdminMeta, 'enableSignout' | 'enableSessionItem'> & {
@@ -181,7 +181,10 @@ export type StaticAdminMetaQueryWithoutTypeNames = {
           | 'pageSize'
         > & {
           fields: Array<
-            Pick<KeystoneAdminUIFieldMeta, 'path' | 'label' | 'isOrderable' | 'fieldMeta' | 'views'>
+            Pick<
+              KeystoneAdminUIFieldMeta,
+              'path' | 'label' | 'isOrderable' | 'fieldMeta' | 'views'
+            > & { listKey: string }
           >;
         }
       >;
