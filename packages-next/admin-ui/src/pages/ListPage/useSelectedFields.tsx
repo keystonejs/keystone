@@ -2,7 +2,10 @@ import { useMemo } from 'react';
 import { useList } from '../../context';
 import { useRouter } from '../../router';
 
-export function useSelectedFields(listKey: string) {
+export function useSelectedFields(
+  listKey: string,
+  fieldModesByFieldPath: Record<string, 'hidden' | 'read'>
+) {
   const list = useList(listKey);
   const { query } = useRouter();
   const selectedFieldsFromUrl = typeof query.fields === 'string' ? query.fields : '';
@@ -11,7 +14,9 @@ export function useSelectedFields(listKey: string) {
     if (!query.fields) {
       return {
         includeLabel: true,
-        fields: list.initialColumns,
+        fields: list.initialColumns.filter(
+          fieldPath => fieldModesByFieldPath[fieldPath] === 'read'
+        ),
       };
     }
     let includeLabel = false;
@@ -20,11 +25,11 @@ export function useSelectedFields(listKey: string) {
         includeLabel = true;
         return false;
       }
-      return list.fields[field] !== undefined;
+      return fieldModesByFieldPath[field] === 'read';
     });
     return {
       fields,
       includeLabel,
     };
-  }, [list.initialColumns, selectedFieldsFromUrl]);
+  }, [list.initialColumns, selectedFieldsFromUrl, fieldModesByFieldPath]);
 }

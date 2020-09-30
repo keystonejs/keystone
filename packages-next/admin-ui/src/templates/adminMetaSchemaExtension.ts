@@ -75,8 +75,10 @@ export function adminMetaSchemaExtension({
   adminMeta,
   isAccessAllowed,
   graphQLSchema,
+  config,
 }: {
   adminMeta: Keystone['adminMeta'];
+  config: Keystone['config'];
   graphQLSchema: GraphQLSchema;
   isAccessAllowed: undefined | ((args: { session: any }) => boolean | Promise<boolean>);
 }) {
@@ -90,6 +92,7 @@ export function adminMetaSchemaExtension({
       fields: Object.keys(fields).map(fieldPath => {
         return {
           path: fieldPath,
+          listKey: list.key,
           ...fields[fieldPath],
         };
       }),
@@ -109,6 +112,9 @@ export function adminMetaSchemaExtension({
     lists,
     listsByKey,
   };
+
+  type ListMetaRootVal = typeof staticAdminMeta['lists'][number];
+  type FieldMetaRootVal = ListMetaRootVal['fields'][number];
 
   return mergeSchemas({
     schemas: [graphQLSchema],
@@ -139,6 +145,96 @@ export function adminMetaSchemaExtension({
           return rootVal.listsByKey[args.key];
         },
       },
+      KeystoneAdminUIListMeta: {
+        hideDelete(rootVal: ListMetaRootVal, args: any, { session }: any) {
+          return runMaybeFunction(config.lists[rootVal.key].admin?.hideDelete, false, {
+            session,
+          });
+        },
+        hideCreate(rootVal: ListMetaRootVal, args: any, { session }: any) {
+          return runMaybeFunction(config.lists[rootVal.key].admin?.hideCreate, false, {
+            session,
+          });
+        },
+      },
+      KeystoneAdminUIFieldMeta: {
+        createView(rootVal: FieldMetaRootVal): FieldIdentifier {
+          return {
+            fieldPath: rootVal.path,
+            listKey: rootVal.listKey,
+          };
+        },
+        listView(rootVal: FieldMetaRootVal): FieldIdentifier {
+          return {
+            fieldPath: rootVal.path,
+            listKey: rootVal.listKey,
+          };
+        },
+        itemView(
+          rootVal: FieldMetaRootVal,
+          args: { id: string }
+        ): FieldIdentifier & { itemId: string } {
+          return {
+            listKey: rootVal.listKey,
+            fieldPath: rootVal.path,
+            itemId: args.id,
+          };
+        },
+      },
+      KeystoneAdminUIFieldMetaCreateView: {
+        fieldMode(rootVal: FieldIdentifier, args: any, { session }: any) {
+          return runMaybeFunction(
+            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.admin?.createView
+              ?.fieldMode ?? config.lists[rootVal.listKey].admin?.createView?.defaultFieldMode,
+            'edit',
+            { session }
+          );
+        },
+      },
+      KeystoneAdminUIFieldMetaListView: {
+        fieldMode(rootVal: FieldIdentifier, args: any, { session }: any) {
+          return runMaybeFunction(
+            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.admin?.listView
+              ?.fieldMode ?? config.lists[rootVal.listKey].admin?.listView?.defaultFieldMode,
+            'read',
+            { session }
+          );
+        },
+      },
+      KeystoneAdminUIFieldMetaItemView: {
+        async fieldMode(
+          rootVal: FieldIdentifier & { itemId: string },
+          args: any,
+          { crud, session }: any
+        ) {
+          const item = await crud[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
+
+          return runMaybeFunction(
+            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.admin?.itemView
+              ?.fieldMode ?? config.lists[rootVal.listKey].admin?.itemView?.defaultFieldMode,
+            'edit',
+            { session, item }
+          );
+        },
+      },
     },
   });
+}
+
+type FieldIdentifier = { listKey: string; fieldPath: string };
+
+type NoInfer<T> = T & { [K in keyof T]: T[K] };
+
+function runMaybeFunction<Return extends string | boolean>(
+  sessionFunction: Return | ((args: any) => Return | Promise<Return>) | undefined,
+  defaultValue: NoInfer<Return>,
+  args: any
+): Return | Promise<Return> {
+  if (typeof sessionFunction === 'function') {
+    return sessionFunction(args);
+  }
+  if (typeof sessionFunction === 'undefined') {
+    return defaultValue;
+  }
+  return sessionFunction;
 }

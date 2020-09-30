@@ -65,7 +65,9 @@ export type MaybeItemFunction<T> =
       session: any;
       item: { id: string | number; [path: string]: any };
     }) => MaybePromise<T>);
-export type MaybeSessionFunction<T> = T | ((args: { session: any }) => MaybePromise<T>);
+export type MaybeSessionFunction<T extends string | boolean> =
+  | T
+  | ((args: { session: any }) => MaybePromise<T>);
 
 export type FieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   hooks?: ListHooks<TGeneratedListTypes>;

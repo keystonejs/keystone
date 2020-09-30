@@ -38,10 +38,12 @@ function ItemForm({
   listKey,
   item,
   selectedFields,
+  fieldModes,
 }: {
   listKey: string;
   item: Record<string, any>;
   selectedFields: string;
+  fieldModes: Record<string, 'edit' | 'read' | 'hidden'>;
 }) {
   const list = useList(listKey);
 
@@ -101,6 +103,8 @@ function ItemForm({
     <Fragment>
       {error && <Notice tone="negative">{error.message}</Notice>}
       {Object.keys(list.fields).map(fieldKey => {
+        const fieldMode = fieldModes[fieldKey];
+        if (fieldMode === 'hidden') return null;
         const field = list.fields[fieldKey];
         const Field = list.fields[fieldKey].views.Field;
         return (
@@ -108,12 +112,16 @@ function ItemForm({
             key={fieldKey}
             field={field.controller}
             value={state.value[fieldKey]}
-            onChange={fieldValue => {
-              setValue({
-                value: { ...state.value, [fieldKey]: fieldValue },
-                item: state.item,
-              });
-            }}
+            onChange={
+              fieldMode === 'edit'
+                ? fieldValue => {
+                    setValue({
+                      value: { ...state.value, [fieldKey]: fieldValue },
+                      item: state.item,
+                    });
+                  }
+                : undefined
+            }
           />
         );
       })}
@@ -169,18 +177,39 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
     return {
       selectedFields,
       query: gql`
-  query ItemPage($id: ID!) {
+  query ItemPage($id: ID!, $listKey: String!) {
     item: ${list.gqlNames.itemQueryName}(where: {id: $id}) {
       id
       _label_
       ${selectedFields}
     }
+    keystone {
+      adminMeta {
+        list(key: $listKey) {
+          fields {
+            path
+            itemView(id: $id) {
+              fieldMode
+            }
+          }
+        }
+      }
+    }
   }
 `,
     };
   }, [list]);
-  let { data, error } = useQuery(query, { variables: { id } });
+  let { data, error } = useQuery(query, { variables: { id, listKey } });
 
+  let itemViewFieldModesByField = useMemo(() => {
+    let itemViewFieldModesByField: Record<string, 'edit' | 'read' | 'hidden'> = {};
+    data?.keystone.adminMeta.list?.fields.forEach(
+      (field: { path: string; itemView: { fieldMode: 'edit' | 'read' | 'hidden' } }) => {
+        itemViewFieldModesByField[field.path] = field.itemView.fieldMode;
+      }
+    );
+    return itemViewFieldModesByField;
+  }, [data?.keystone.adminMeta.list?.fields]);
   return (
     <PageContainer>
       <h2>
@@ -193,7 +222,12 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
       {error ? (
         error.message
       ) : data ? (
-        <ItemForm selectedFields={selectedFields} listKey={listKey} item={data.item} />
+        <ItemForm
+          fieldModes={itemViewFieldModesByField}
+          selectedFields={selectedFields}
+          listKey={listKey}
+          item={data.item}
+        />
       ) : (
         'Loading...'
       )}

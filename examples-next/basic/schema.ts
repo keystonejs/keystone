@@ -63,6 +63,9 @@ export const lists = createSchema({
           createView: {
             fieldMode: ({ session }) => (session?.item?.isAdmin ? 'edit' : 'hidden'),
           },
+          listView: {
+            fieldMode: ({ session }) => (session?.item?.isAdmin ? 'read' : 'hidden'),
+          },
           itemView: {
             fieldMode: ({ session }) => (session?.item?.isAdmin ? 'edit' : 'read'),
           },
