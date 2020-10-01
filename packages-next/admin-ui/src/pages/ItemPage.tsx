@@ -133,32 +133,35 @@ function ItemForm({
     },
     children: 'Save Changes',
   } as const;
+  const fields = Object.keys(list.fields)
+    .filter(fieldKey => fieldModes[fieldKey] !== 'hidden')
+    .map(fieldKey => {
+      const fieldMode = fieldModes[fieldKey];
+      const field = list.fields[fieldKey];
+      const Field = list.fields[fieldKey].views.Field;
+      return (
+        <Field
+          key={fieldKey}
+          field={field.controller}
+          value={state.value[fieldKey]}
+          onChange={
+            fieldMode === 'edit'
+              ? fieldValue => {
+                  setValue({
+                    value: { ...state.value, [fieldKey]: fieldValue },
+                    item: state.item,
+                  });
+                }
+              : undefined
+          }
+        />
+      );
+    });
   return (
     <Fragment>
       {error && <Notice tone="negative">{error.message}</Notice>}
-      {Object.keys(list.fields).map(fieldKey => {
-        const fieldMode = fieldModes[fieldKey];
-        if (fieldMode === 'hidden') return null;
-        const field = list.fields[fieldKey];
-        const Field = list.fields[fieldKey].views.Field;
-        return (
-          <Field
-            key={fieldKey}
-            field={field.controller}
-            value={state.value[fieldKey]}
-            onChange={
-              fieldMode === 'edit'
-                ? fieldValue => {
-                    setValue({
-                      value: { ...state.value, [fieldKey]: fieldValue },
-                      item: state.item,
-                    });
-                  }
-                : undefined
-            }
-          />
-        );
-      })}
+      {fields}
+      {fields.length === 0 && 'There are no fields that you can read or edit'}
       <div css={{ display: 'flex', justifyContent: 'space-between' }}>
         <Stack across gap="small">
           {fieldsEquality.someFieldsChanged ? (
