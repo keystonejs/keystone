@@ -49,11 +49,11 @@
 - [ ] Fix style of pagination at the bottom of the list
 - [x] Add "Showing x of {total}" count to header when there is more than one page of items
 - [ ] Add support for field types determining column width (needs discussion)
-- [ ] Handle the case where there are no fields to display
+- [x] Handle the case where there are no fields to display
   - If you select no fields in the URL, we use the initialColumns, defaults to `_label_`
   - Whichever fields are selected, we filter out ones that are hidden
-  - If you have no fields display at all, we show `_label_`
-- [ ] Work out whether the label has been defaulted to `Id` and if so, show it in fixed-width font
+  - If you have no fields to display at all, we show `_label_`
+- [x] Work out whether the label has been defaulted to `Id` and if so, show it in fixed-width font
   - When there is no `labelResolver` on the list, and no `name` field
 
 ### Come back to later
@@ -83,7 +83,7 @@
 - [x] Copy ItemID to Clipboard
 - [ ] Show access control errors for fields
 - [x] ~~Handle the case where there are no editable fields (disable button, w/ tooltip)~~ (users won't be able to edit anything and then the button will have a tooltip saying something like "nothing has changed so you can't save")
-- [ ] Handle the case where there are no visible fields (show a message)
+- [x] Handle the case where there are no visible fields (show a message)
 
 ## Fields
 

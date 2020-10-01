@@ -32,6 +32,7 @@ let typeDefs = gql`
     description: String
     initialColumns: [String!]!
     pageSize: Int!
+    labelIsId: Boolean!
     fields: [KeystoneAdminUIFieldMeta!]!
   }
 

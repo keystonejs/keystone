@@ -430,6 +430,7 @@ function ListTable({
                 {selectedFields.includeLabel && (
                   <TableBodyCell>
                     <CellLink
+                      css={{ fontFamily: list.labelIsId ? 'monospace' : undefined }}
                       href={`/${list.path}/[id]`}
                       as={`/${list.path}/${encodeURIComponent(item.id)}`}
                     >

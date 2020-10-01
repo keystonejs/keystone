@@ -50,6 +50,7 @@ export type FieldMeta = {
 };
 
 type BaseListMeta = {
+  labelIsId: boolean;
   key: string;
   path: string;
   label: string;
