@@ -9,7 +9,7 @@ export class MongoIdImplementation extends Implementation {
   }
 
   gqlOutputFields() {
-    return [`${this.path}: ID`];
+    return [`${this.path}: ID${this.isPrimaryKey ? '!' : ''}`];
   }
   gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
