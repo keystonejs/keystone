@@ -47,7 +47,7 @@
 - [x] Fix style of link icon (when the first column is not linkable)
 - [x] Fix columns widths for select / navigate
 - [ ] Fix style of pagination at the bottom of the list
-- [ ] Add "Showing x of {total}" count to header when there is more than one page of items
+- [x] Add "Showing x of {total}" count to header when there is more than one page of items
 - [ ] Add support for field types determining column width (needs discussion)
 - [ ] Handle the case where there are no fields to display
   - If you select no fields in the URL, we use the initialColumns, defaults to `_label_`
@@ -77,10 +77,10 @@
 - [x] Disable save & reset changes when there are no changes
 - [x] Only send changed fields to API
 - [ ] Fix page styles & navigation
-- [ ] Render the item title as the header
+- [x] Render the item title as the header
 - [ ] Implement sticky toolbar
-- [ ] Implement Delete Item
-- [ ] Copy ItemID to Clipboard
+- [x] Implement Delete Item
+- [x] Copy ItemID to Clipboard
 - [ ] Show access control errors for fields
 - [x] ~~Handle the case where there are no editable fields (disable button, w/ tooltip)~~ (users won't be able to edit anything and then the button will have a tooltip saying something like "nothing has changed so you can't save")
 - [ ] Handle the case where there are no visible fields (show a message)
@@ -92,7 +92,7 @@
 
 - [ ] Client-side validation API for fields
 - [ ] DependsOn field dependencies
-- [ ] Show proper field label (currently path)
+- [x] Show proper field label (currently path)
 - [ ] Show required status for fields
 - [ ] Show descriptions under fields
 - [ ] Standardise the components for rendering common field UI (label, description, etc)
