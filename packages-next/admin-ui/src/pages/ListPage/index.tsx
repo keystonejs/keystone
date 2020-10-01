@@ -9,7 +9,7 @@ import { PageContainer } from '../../components/PageContainer';
 import { useList } from '../../context';
 import { useRouter, Link } from '../../router';
 import { CellLink } from '../../components';
-import { Pagination } from './pagination';
+import { getPaginationLabel, Pagination } from './pagination';
 import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
 import { CheckboxControl } from '@keystone-ui/fields';
@@ -143,6 +143,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
     `;
     }, [list, selectedFields]),
     {
+      fetchPolicy: 'cache-and-network',
       variables: {
         where: filters.where,
         first: pageSize,
@@ -221,9 +222,14 @@ export const ListPage = ({ listKey }: ListPageProps) => {
                 selectedFields.fields.length + Number(selectedFields.includeLabel);
               return (
                 <Fragment>
-                  Showing {data.items.length}{' '}
-                  {data.items.length === 1 ? list.singular : list.plural} with {selectedFieldCount}{' '}
-                  column{selectedFieldCount === 1 ? '' : 's'}
+                  {getPaginationLabel({
+                    currentPage,
+                    pageSize,
+                    plural: list.plural,
+                    singular: list.singular,
+                    total: data.meta.count,
+                  })}{' '}
+                  with {selectedFieldCount} column{selectedFieldCount === 1 ? '' : 's'}
                 </Fragment>
               );
             })()

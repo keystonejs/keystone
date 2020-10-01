@@ -2,7 +2,7 @@
 
 import { Fragment, useMemo, useState } from 'react';
 import { gql, useMutation, useQuery } from '../apollo';
-import { jsx, Stack } from '@keystone-ui/core';
+import { jsx, Stack, useTheme } from '@keystone-ui/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -13,6 +13,7 @@ import { JSONValue, ListMeta } from '@keystone-spike/types';
 import isDeepEqual from 'fast-deep-equal';
 import { Notice } from '@keystone-ui/notice';
 import { Tooltip } from '@keystone-ui/tooltip';
+import copyToClipboard from 'clipboard-copy';
 
 type ItemPageProps = {
   listKey: string;
@@ -40,13 +41,16 @@ function ItemForm({
   item,
   selectedFields,
   fieldModes,
+  showDelete,
 }: {
   listKey: string;
   item: Record<string, any>;
   selectedFields: string;
   fieldModes: Record<string, 'edit' | 'read' | 'hidden'>;
+  showDelete: boolean;
 }) {
   const list = useList(listKey);
+  const router = useRouter();
 
   const [update, { loading, error }] = useMutation(
     gql`mutation ($data: ${list.gqlNames.updateInputName}!, $id: ID!) {
@@ -56,6 +60,15 @@ function ItemForm({
         ${selectedFields}
       }
     }`
+  );
+
+  const [deleteItem, { loading: isDeletePending }] = useMutation(
+    gql`mutation ($id: ID!) {
+      ${list.gqlNames.deleteMutationName}(id: $id) {
+        id
+      }
+    }`,
+    { variables: { id: item.id } }
   );
 
   const [state, setValue] = useState(() => {
@@ -146,32 +159,47 @@ function ItemForm({
           />
         );
       })}
-      <Stack across gap="small">
-        {fieldsEquality.someFieldsChanged ? (
-          <Button {...saveButtonProps} />
-        ) : (
-          <Tooltip content="No fields have been modified so you cannot save changes">
-            {props => (
-              <Button
-                {...props}
-                {...saveButtonProps}
-                // making onClick undefined instead of making the button disabled so the button can be focussed so keyboard users can see the tooltip
-                onClick={undefined}
-              />
-            )}
-          </Tooltip>
+      <div css={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Stack across gap="small">
+          {fieldsEquality.someFieldsChanged ? (
+            <Button {...saveButtonProps} />
+          ) : (
+            <Tooltip content="No fields have been modified so you cannot save changes">
+              {props => (
+                <Button
+                  {...props}
+                  {...saveButtonProps}
+                  // making onClick undefined instead of making the button disabled so the button can be focussed so keyboard users can see the tooltip
+                  onClick={undefined}
+                />
+              )}
+            </Tooltip>
+          )}
+          <Button
+            onClick={() => {
+              setValue({
+                item,
+                value: deserializeValue(list, item),
+              });
+            }}
+          >
+            Reset changes
+          </Button>
+        </Stack>
+        {showDelete && (
+          <Button
+            tone="negative"
+            weight="outline"
+            isLoading={isDeletePending}
+            onClick={async () => {
+              await deleteItem();
+              router.push(`/${list.path}`);
+            }}
+          >
+            Delete
+          </Button>
         )}
-        <Button
-          onClick={() => {
-            setValue({
-              item,
-              value: deserializeValue(list, item),
-            });
-          }}
-        >
-          Reset changes
-        </Button>
-      </Stack>
+      </div>
     </Fragment>
   );
 }
@@ -180,6 +208,8 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
   const router = useRouter();
   const { id } = router.query;
   const list = useList(listKey);
+  const { spacing } = useTheme();
+
   const { query, selectedFields } = useMemo(() => {
     let selectedFields = Object.keys(list.fields)
       .map(fieldPath => {
@@ -198,6 +228,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
     keystone {
       adminMeta {
         list(key: $listKey) {
+          hideDelete
           fields {
             path
             itemView(id: $id) {
@@ -230,16 +261,38 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
           <a>{list.label}</a>
         </Link>
       </h2>
-      <h3>Item: {id}</h3>
       {error ? (
         error.message
       ) : data ? (
-        <ItemForm
-          fieldModes={itemViewFieldModesByField}
-          selectedFields={selectedFields}
-          listKey={listKey}
-          item={data.item}
-        />
+        <Fragment>
+          <div
+            css={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            {' '}
+            <h3>Item: {data.item._label_}</h3>
+            <div css={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <span css={{ marginRight: spacing.small }}>ID: {data.item.id}</span>
+              <Button
+                // TODO: this should be an IconButton
+                onClick={() => {
+                  copyToClipboard(data.item.id);
+                }}
+              >
+                Copy
+              </Button>
+            </div>
+          </div>
+          <ItemForm
+            fieldModes={itemViewFieldModesByField}
+            selectedFields={selectedFields}
+            showDelete={!data.keystone.adminMeta.list!.hideDelete}
+            listKey={listKey}
+            item={data.item}
+          />
+        </Fragment>
       ) : (
         'Loading...'
       )}

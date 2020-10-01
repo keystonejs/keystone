@@ -80,7 +80,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       const field = listConfig.fields[fieldKey];
       const view = field.config.admin?.views ?? field.views;
       adminMeta.lists[key].fields[fieldKey] = {
-        label: fieldKey,
+        label: (list as any).fieldsByPath[fieldKey].label,
         views: getViewId(view),
         fieldMeta: field.getAdminMeta?.() ?? null,
         isOrderable: (list as any).fieldsByPath[fieldKey].isOrderable,
