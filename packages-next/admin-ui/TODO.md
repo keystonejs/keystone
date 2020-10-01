@@ -82,7 +82,7 @@
 - [ ] Implement Delete Item
 - [ ] Copy ItemID to Clipboard
 - [ ] Show access control errors for fields
-- [ ] Handle the case where there are no editable fields (disable button, w/ tooltip)
+- [x] ~~Handle the case where there are no editable fields (disable button, w/ tooltip)~~ (users won't be able to edit anything and then the button will have a tooltip saying something like "nothing has changed so you can't save")
 - [ ] Handle the case where there are no visible fields (show a message)
 
 ## Fields
