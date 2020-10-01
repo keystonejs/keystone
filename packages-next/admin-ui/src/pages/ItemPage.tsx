@@ -12,7 +12,7 @@ import { Button } from '@keystone-ui/button';
 import { JSONValue, ListMeta } from '@keystone-spike/types';
 import isDeepEqual from 'fast-deep-equal';
 import { Notice } from '@keystone-ui/notice';
-import { Tooltip } from '../../../../design-system/packages/tooltip/src';
+import { Tooltip } from '@keystone-ui/tooltip';
 
 type ItemPageProps = {
   listKey: string;
