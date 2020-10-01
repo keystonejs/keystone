@@ -4,7 +4,7 @@ import { useQuery, gql, useMutation, TypedDocumentNode } from '../../apollo';
 import { Button } from '@keystone-ui/button';
 import { Box, H1, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { Fragment, HTMLAttributes, ReactNode, useMemo, useState } from 'react';
-import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
+import { ArrowRightCircleIcon } from '@keystone-ui/icons/icons/ArrowRightCircleIcon';
 import { PageContainer } from '../../components/PageContainer';
 import { useList } from '../../context';
 import { useRouter, Link } from '../../router';
@@ -321,7 +321,7 @@ function ListTable({
 }) {
   const list = useList(listKey);
   const { query } = useRouter();
-  const shouldShowNonCellLink =
+  const shouldShowLinkIcon =
     !selectedFields.includeLabel &&
     !list.fields[selectedFields.fields[0]].views.Cell.supportsLinkTo;
 
@@ -329,12 +329,26 @@ function ListTable({
   return (
     <Fragment>
       <TableContainer>
+        <col width="30" />
+        {shouldShowLinkIcon && <col width="30" />}
+        {selectedFields.includeLabel && <col />}
+        {selectedFields.fields.map(path => (
+          <col key={path} />
+        ))}
         <TableHeaderRow>
           <TableHeaderCell css={{ paddingLeft: 0 }}>
-            <label>
+            <label
+              css={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'start',
+                cursor: 'pointer',
+              }}
+            >
               <CheckboxControl
                 size="small"
                 checked={selectedItemsCount === items.length}
+                css={{ cursor: 'default' }}
                 onChange={() => {
                   const selectedItems: Record<string, true> = {};
                   if (selectedItemsCount !== items.length) {
@@ -347,8 +361,8 @@ function ListTable({
               />
             </label>
           </TableHeaderCell>
+          {shouldShowLinkIcon && <TableHeaderCell />}
           {selectedFields.includeLabel && <TableHeaderCell>Label</TableHeaderCell>}
-          {shouldShowNonCellLink && <TableHeaderCell />}
           {selectedFields.fields.map(path => {
             const label = list.fields[path].label;
             if (!list.fields[path].isOrderable) {
@@ -382,10 +396,19 @@ function ListTable({
             return (
               <tr key={item.id}>
                 <TableBodyCell>
-                  <label>
+                  <label
+                    css={{
+                      display: 'flex',
+                      minHeight: 38,
+                      alignItems: 'center',
+                      justifyContent: 'start',
+                      // cursor: 'pointer',
+                    }}
+                  >
                     <CheckboxControl
                       size="small"
                       checked={selectedItems[item.id] !== undefined}
+                      css={{ cursor: 'default' }}
                       onChange={() => {
                         const newSelectedItems = { ...selectedItems };
                         if (selectedItems[item.id] === undefined) {
@@ -408,14 +431,20 @@ function ListTable({
                     </CellLink>
                   </TableBodyCell>
                 )}
-                {shouldShowNonCellLink && (
+                {shouldShowLinkIcon && (
                   <TableBodyCell>
                     <Link
-                      css={{ textDecoration: 'none' }}
+                      css={{
+                        textDecoration: 'none',
+                        minHeight: 38,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
                       href={`/${list.path}/[id]`}
                       as={`/${list.path}/${encodeURIComponent(item.id)}`}
                     >
-                      <LinkIcon aria-label="Go to item" />
+                      <ArrowRightCircleIcon size="smallish" aria-label="Go to item" />
                     </Link>
                   </TableBodyCell>
                 )}
@@ -480,7 +509,11 @@ const TableContainer = ({ children }: { children: ReactNode }) => {
       }}
     >
       <table
-        css={{ minWidth: '100%', 'tr:last-child td': { borderBottomWidth: 0 } }}
+        css={{
+          minWidth: '100%',
+          tableLayout: 'fixed',
+          'tr:last-child td': { borderBottomWidth: 0 },
+        }}
         cellPadding="0"
         cellSpacing="0"
       >

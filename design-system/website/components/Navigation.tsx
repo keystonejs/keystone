@@ -89,6 +89,7 @@ export const Navigation = () => {
         <NavItem href="/components/fields">Fields</NavItem>
         <NavItem href="/components/notice">Notice</NavItem>
         <NavItem href="/components/loading">Loading</NavItem>
+        <NavItem href="/components/popover">Popover</NavItem>
       </Section>
     </Fragment>
   );

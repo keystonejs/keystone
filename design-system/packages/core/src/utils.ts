@@ -9,6 +9,7 @@ import {
   useLayoutEffect,
   useState,
 } from 'react';
+import { createPortal } from 'react-dom';
 
 /*
   @johannes' one weird trick for fixing TypeScript autocomplete
@@ -126,9 +127,16 @@ export const useId = (idFromProps?: string | null) => {
 };
 
 // Works around useLayoutEffect throwing a warning when used in SSR
-export const useSafeLayoutEffect = canUseDOM() ? useLayoutEffect : useEffect;
+export const useSafeLayoutEffect = typeof window === 'undefined' ? () => {} : useLayoutEffect;
 
-// Validates that we can use the DOM (i.e not in SSR)
-export function canUseDOM() {
-  return !!(typeof window !== 'undefined' && window.document && window.document.createElement);
-}
+type Props = {
+  children: ReactElement;
+};
+
+export const Portal = ({ children }: Props) => {
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  return createPortal(children, document.body);
+};
