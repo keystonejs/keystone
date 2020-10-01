@@ -1,0 +1,36 @@
+{
+  "name": "@keystone-ui/website",
+  "version": "1.0.1",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "next -p 8080"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "@emotion/core": "^10.0.35",
+    "@keystone-ui/button": "*",
+    "@keystone-ui/core": "*",
+    "@keystone-ui/fields": "*",
+    "@keystone-ui/loading": "*",
+    "@keystone-ui/notice": "*",
+    "@keystone-ui/popover": "*",
+    "@keystone-ui/segmented-control": "*",
+    "@preconstruct/next": "^1.0.1",
+    "@types/react": "^16.9.49",
+    "@types/react-dom": "^16.9.8",
+    "@types/tinycolor2": "^1.4.2",
+    "@types/webpack": "^4.41.22",
+    "next": "^9.5.3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "tinycolor2": "^1.4.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/website"
+}

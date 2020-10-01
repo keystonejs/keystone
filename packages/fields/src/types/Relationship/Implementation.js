@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 
 import { Implementation } from '../../Implementation';
 import { resolveNested } from './nested-mutations';
@@ -125,10 +126,11 @@ export class Relationship extends Implementation {
       return {
         [this.path]: (item, _, context, info) => {
           // No ID set, so we return null for the value
-          if (!item[this.path]) {
+          const id = item && (item[this.adapter.idPath] || (item[this.path] && item[this.path].id));
+          if (!id) {
             return null;
           }
-          const filteredQueryArgs = { where: { id: item[this.path].toString() } };
+          const filteredQueryArgs = { where: { id: id.toString() } };
           // We do a full query to ensure things like access control are applied
           return refList
             .listQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName, info)
@@ -207,7 +209,7 @@ export class Relationship extends Implementation {
         : [];
       currentValue = currentValue.map(({ id }) => id.toString());
     } else {
-      currentValue = item && item[this.path];
+      currentValue = item && (item[this.adapter.idPath] || (item[this.path] && item[this.path].id));
       currentValue = currentValue && currentValue.toString();
     }
 
@@ -325,6 +327,7 @@ export class Relationship extends Implementation {
 export class MongoRelationshipInterface extends MongooseFieldAdapter {
   constructor(...args) {
     super(...args);
+    this.idPath = this.dbPath;
 
     // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
     const [refListKey, refFieldPath] = this.config.ref.split('.');
@@ -363,6 +366,7 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
 export class KnexRelationshipInterface extends KnexFieldAdapter {
   constructor() {
     super(...arguments);
+    this.idPath = this.dbPath;
     this.isRelationship = true;
 
     // Default isIndexed to true if it's not explicitly provided
@@ -418,6 +422,33 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
     return {
       [`${this.path}_is_null`]: value => b =>
         value ? b.whereNull(dbPath) : b.whereNotNull(dbPath),
+    };
+  }
+}
+
+export class PrismaRelationshipInterface extends PrismaFieldAdapter {
+  constructor() {
+    super(...arguments);
+    this.idPath = `${this.dbPath}Id`;
+    this.isRelationship = true;
+
+    // Default isIndexed to true if it's not explicitly provided
+    // Mutually exclusive with isUnique
+    this.isUnique = typeof this.config.isUnique === 'undefined' ? false : !!this.config.isUnique;
+    this.isIndexed =
+      typeof this.config.isIndexed === 'undefined'
+        ? !this.config.isUnique
+        : !!this.config.isIndexed;
+
+    // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
+    const [refListKey, refFieldPath] = this.config.ref.split('.');
+    this.refListKey = refListKey;
+    this.refFieldPath = refFieldPath;
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      [`${this.path}_is_null`]: value => (value ? { [dbPath]: null } : { NOT: { [dbPath]: null } }),
     };
   }
 }

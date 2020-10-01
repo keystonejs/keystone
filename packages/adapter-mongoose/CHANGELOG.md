@@ -1,5 +1,34 @@
 # @keystonejs/adapter-mongoose
 
+## 9.0.8
+
+### Patch Changes
+
+- [`966b5bc70`](https://github.com/keystonejs/keystone/commit/966b5bc7003e0f580528c4dcd46647cc4124b592) [#3737](https://github.com/keystonejs/keystone/pull/3737) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mongodb-memory-server-core` to `^6.8.0`.
+
+* [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc) [#3596](https://github.com/keystonejs/keystone/pull/3596) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dev dependency `pluralize` to `^8.0.0`.
+
+* Updated dependencies [[`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4), [`df0687184`](https://github.com/keystonejs/keystone/commit/df068718456d23819a7cae491870be4560b2010d), [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc)]:
+  - @keystonejs/fields-mongoid@8.0.0
+  - @keystonejs/keystone@17.0.0
+
+## 9.0.7
+
+### Patch Changes
+
+- [`06dffc42b`](https://github.com/keystonejs/keystone/commit/06dffc42b08062e3166880146c8fb606493ead12) [#3682](https://github.com/keystonejs/keystone/pull/3682) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mongodb-memory-server-core` to `^6.7.6`.
+
+* [`7a1f8bbdc`](https://github.com/keystonejs/keystone/commit/7a1f8bbdcdf68c9579e17db77fa826e811abcab4) [#3645](https://github.com/keystonejs/keystone/pull/3645) Thanks [@timleslie](https://github.com/timleslie)! - Removed dependency on `@keystonejs/mongo-join-builder`, which is no longer maintained.
+
+- [`6f42b0a9d`](https://github.com/keystonejs/keystone/commit/6f42b0a9d231049f9e7523eb78ec621d9c9d6df9) [#3678](https://github.com/keystonejs/keystone/pull/3678) Thanks [@timleslie](https://github.com/timleslie)! - Converted `pluralize` into a `devDependency` as it's only used for testing.
+
+* [`5c1e55721`](https://github.com/keystonejs/keystone/commit/5c1e5572134fa93c9aefbb537676e30cafd0e7d9) [#3651](https://github.com/keystonejs/keystone/pull/3651) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mongodb` to `^3.6.2`.
+
+- [`7956d5da0`](https://github.com/keystonejs/keystone/commit/7956d5da00197dc11f5d54f7870b8fa72c05a3c0) [#3653](https://github.com/keystonejs/keystone/pull/3653) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mongodb-memory-server-core` to `^6.7.5`.
+
+- Updated dependencies [[`83007be79`](https://github.com/keystonejs/keystone/commit/83007be798ebd751d7eb708cde366dc35999af72), [`38e3ad9c3`](https://github.com/keystonejs/keystone/commit/38e3ad9c3e7124d06f11c7046821c857cf7f9ad2), [`304701d7c`](https://github.com/keystonejs/keystone/commit/304701d7c23e98c8dc40c0f3f5512a0370107c06), [`7a1f8bbdc`](https://github.com/keystonejs/keystone/commit/7a1f8bbdcdf68c9579e17db77fa826e811abcab4), [`d95010eea`](https://github.com/keystonejs/keystone/commit/d95010eea35f40274f412dad5c2fed6b16ae6c60), [`104232785`](https://github.com/keystonejs/keystone/commit/104232785aac856be6a3ba55f8fa0fd8357237ed)]:
+  - @keystonejs/keystone@16.0.0
+
 ## 9.0.6
 
 ### Patch Changes

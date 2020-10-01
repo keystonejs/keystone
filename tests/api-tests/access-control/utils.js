@@ -3,8 +3,8 @@ const { Text } = require('@keystonejs/fields');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { objMerge } = require('@keystonejs/utils');
 
-const FAKE_ID = { mongoose: '5b3eabd9e9f2e3e4866742ea', knex: 137 };
-const FAKE_ID_2 = { mongoose: '5b3eabd9e9f2e3e4866742eb', knex: 138 };
+const FAKE_ID = { mongoose: '5b3eabd9e9f2e3e4866742ea', knex: 137, prisma: 137 };
+const FAKE_ID_2 = { mongoose: '5b3eabd9e9f2e3e4866742eb', knex: 138, prisma: 138 };
 
 const yesNo = truthy => (truthy ? 'Yes' : 'No');
 

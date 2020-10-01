@@ -1,0 +1,4 @@
+{
+  "main": "dist/icons.cjs.js",
+  "module": "dist/icons.esm.js"
+}

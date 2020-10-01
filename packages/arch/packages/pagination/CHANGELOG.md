@@ -1,5 +1,14 @@
 # @arch-ui/pagination
 
+## 0.0.26
+
+### Patch Changes
+
+- [`b6e160678`](https://github.com/keystonejs/keystone/commit/b6e160678b449707261a54a9d565b91663784831) [#3671](https://github.com/keystonejs/keystone/pull/3671) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@primer/octicons-react` to `^11.0.0`.
+
+- Updated dependencies [[`aa5b4aa26`](https://github.com/keystonejs/keystone/commit/aa5b4aa269eebc6931d30f6eddc315805c1f4fef)]:
+  - @arch-ui/button@0.0.22
+
 ## 0.0.25
 
 ### Patch Changes

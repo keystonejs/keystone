@@ -1,5 +1,26 @@
 # @keystonejs/adapter-knex
 
+## 11.0.7
+
+### Patch Changes
+
+- [`8c54a34be`](https://github.com/keystonejs/keystone/commit/8c54a34bec0f5f945447a2475f5500415eb154df) [#3740](https://github.com/keystonejs/keystone/pull/3740) Thanks [@timleslie](https://github.com/timleslie)! - Cleaned up internal logic, no functional changes.
+
+* [`3e2ca3a2f`](https://github.com/keystonejs/keystone/commit/3e2ca3a2ffa00cb5aababee572902a78e657ec58) [#3652](https://github.com/keystonejs/keystone/pull/3652) Thanks [@Noviny](https://github.com/Noviny)! - Fixed issue #3341, allowing fieldnames to include `_`, so that field names with an underscore in them can be filtered on.
+
+- [`bf5801070`](https://github.com/keystonejs/keystone/commit/bf5801070568bbcc1ed4f3394a293bfa5bea8b98) [#3768](https://github.com/keystonejs/keystone/pull/3768) Thanks [@tjbp](https://github.com/tjbp)! - Fixed regression in #3616 that caused a failure to fetch the result from a meta count in MariaDB/MySQL.
+
+- Updated dependencies [[`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4), [`df0687184`](https://github.com/keystonejs/keystone/commit/df068718456d23819a7cae491870be4560b2010d), [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc)]:
+  - @keystonejs/fields-auto-increment@7.0.0
+  - @keystonejs/keystone@17.0.0
+
+## 11.0.6
+
+### Patch Changes
+
+- Updated dependencies [[`83007be79`](https://github.com/keystonejs/keystone/commit/83007be798ebd751d7eb708cde366dc35999af72), [`38e3ad9c3`](https://github.com/keystonejs/keystone/commit/38e3ad9c3e7124d06f11c7046821c857cf7f9ad2), [`304701d7c`](https://github.com/keystonejs/keystone/commit/304701d7c23e98c8dc40c0f3f5512a0370107c06), [`7a1f8bbdc`](https://github.com/keystonejs/keystone/commit/7a1f8bbdcdf68c9579e17db77fa826e811abcab4), [`d95010eea`](https://github.com/keystonejs/keystone/commit/d95010eea35f40274f412dad5c2fed6b16ae6c60), [`104232785`](https://github.com/keystonejs/keystone/commit/104232785aac856be6a3ba55f8fa0fd8357237ed)]:
+  - @keystonejs/keystone@16.0.0
+
 ## 11.0.5
 
 ### Patch Changes

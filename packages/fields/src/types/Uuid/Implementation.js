@@ -1,6 +1,7 @@
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 
 export class UuidImplementation extends Implementation {
   constructor(path, { caseTo = 'lower' }) {
@@ -20,7 +21,7 @@ export class UuidImplementation extends Implementation {
   }
 
   gqlOutputFields() {
-    return [`${this.path}: ID`];
+    return [`${this.path}: ID${this.isPrimaryKey ? '!' : ''}`];
   }
   gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
@@ -128,6 +129,29 @@ export class KnexUuidInterface extends KnexFieldAdapter {
     if (isUnique) column.unique();
     else if (isIndexed) column.index();
     if (isNotNullable) column.notNullable();
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      ...this.equalityConditions(dbPath, this.field.normaliseValue),
+      ...this.inConditions(dbPath, this.field.normaliseValue),
+    };
+  }
+}
+
+export class PrismaUuidInterface extends PrismaFieldAdapter {
+  constructor() {
+    super(...arguments);
+
+    // TODO: Warning on invalid config for primary keys?
+    if (!this.field.isPrimaryKey) {
+      this.isUnique = !!this.config.isUnique;
+      this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+    }
+  }
+
+  getPrismaSchema() {
+    return [this._schemaField({ type: 'String' })];
   }
 
   getQueryConditions(dbPath) {

@@ -1,4 +1,9 @@
-import { Password, MongoPasswordInterface, KnexPasswordInterface } from './Implementation';
+import {
+  Password,
+  MongoPasswordInterface,
+  KnexPasswordInterface,
+  PrismaPasswordInterface,
+} from './Implementation';
 import { resolveView } from '../../resolve-view';
 
 export default {
@@ -13,5 +18,6 @@ export default {
   adapters: {
     mongoose: MongoPasswordInterface,
     knex: KnexPasswordInterface,
+    prisma: PrismaPasswordInterface,
   },
 };

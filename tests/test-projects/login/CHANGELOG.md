@@ -1,5 +1,32 @@
 # @keystonejs/cypress-project-login
 
+## 5.1.21
+
+### Patch Changes
+
+- Updated dependencies [[`01b79349e`](https://github.com/keystonejs/keystone/commit/01b79349e625870193933aa044bdf27f8c75753e), [`48623ae44`](https://github.com/keystonejs/keystone/commit/48623ae44568bae1af2861003fa9922a0118cc57), [`a02e69987`](https://github.com/keystonejs/keystone/commit/a02e69987902cfde38d820e68cb24b7a20ca1f6f), [`966b5bc70`](https://github.com/keystonejs/keystone/commit/966b5bc7003e0f580528c4dcd46647cc4124b592), [`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4), [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc), [`df0687184`](https://github.com/keystonejs/keystone/commit/df068718456d23819a7cae491870be4560b2010d), [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc)]:
+  - @keystonejs/app-admin-ui@7.3.7
+  - @keystonejs/fields@18.0.0
+  - @keystonejs/adapter-mongoose@9.0.8
+  - @keystonejs/keystone@17.0.0
+  - @keystonejs/auth-password@5.1.15
+  - @keystonejs/list-plugins@7.1.2
+
+## 5.1.20
+
+### Patch Changes
+
+- [`f228644f2`](https://github.com/keystonejs/keystone/commit/f228644f2d39875f45daa93dabfb992f081eaa4a) [#3679](https://github.com/keystonejs/keystone/pull/3679) Thanks [@timleslie](https://github.com/timleslie)! - Updated dependency `cypress-file-upload` to `^4.1.1`.
+
+* [`b715776e2`](https://github.com/keystonejs/keystone/commit/b715776e245b18fdbf06bb576704ad619c6e3612) [#3561](https://github.com/keystonejs/keystone/pull/3561) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `cypress` to `^5.3.0`.
+
+* Updated dependencies [[`92b34a74e`](https://github.com/keystonejs/keystone/commit/92b34a74e699e3a101f53064e52932b7daeccbfc), [`b32f006ad`](https://github.com/keystonejs/keystone/commit/b32f006ad283f8aa1911f55bbecac9942f3f9f25), [`6f42b0a9d`](https://github.com/keystonejs/keystone/commit/6f42b0a9d231049f9e7523eb78ec621d9c9d6df9), [`06dffc42b`](https://github.com/keystonejs/keystone/commit/06dffc42b08062e3166880146c8fb606493ead12), [`27783bbca`](https://github.com/keystonejs/keystone/commit/27783bbca3b1c5ff05402738c14ffa8db73e542b), [`7a1f8bbdc`](https://github.com/keystonejs/keystone/commit/7a1f8bbdcdf68c9579e17db77fa826e811abcab4), [`83007be79`](https://github.com/keystonejs/keystone/commit/83007be798ebd751d7eb708cde366dc35999af72), [`a14283b9c`](https://github.com/keystonejs/keystone/commit/a14283b9c9d80e8a38adede567695bf7e89cbcb9), [`38e3ad9c3`](https://github.com/keystonejs/keystone/commit/38e3ad9c3e7124d06f11c7046821c857cf7f9ad2), [`6f42b0a9d`](https://github.com/keystonejs/keystone/commit/6f42b0a9d231049f9e7523eb78ec621d9c9d6df9), [`5c1e55721`](https://github.com/keystonejs/keystone/commit/5c1e5572134fa93c9aefbb537676e30cafd0e7d9), [`304701d7c`](https://github.com/keystonejs/keystone/commit/304701d7c23e98c8dc40c0f3f5512a0370107c06), [`7a1f8bbdc`](https://github.com/keystonejs/keystone/commit/7a1f8bbdcdf68c9579e17db77fa826e811abcab4), [`d95010eea`](https://github.com/keystonejs/keystone/commit/d95010eea35f40274f412dad5c2fed6b16ae6c60), [`aa5b4aa26`](https://github.com/keystonejs/keystone/commit/aa5b4aa269eebc6931d30f6eddc315805c1f4fef), [`b6e160678`](https://github.com/keystonejs/keystone/commit/b6e160678b449707261a54a9d565b91663784831), [`104232785`](https://github.com/keystonejs/keystone/commit/104232785aac856be6a3ba55f8fa0fd8357237ed), [`287e031fa`](https://github.com/keystonejs/keystone/commit/287e031facafe66ef71b0f6d6ee558904251589f), [`7956d5da0`](https://github.com/keystonejs/keystone/commit/7956d5da00197dc11f5d54f7870b8fa72c05a3c0)]:
+  - @keystonejs/app-admin-ui@7.3.6
+  - @keystonejs/fields@17.1.3
+  - @keystonejs/adapter-mongoose@9.0.7
+  - @keystonejs/keystone@16.0.0
+  - @keystonejs/app-graphql@6.1.3
+
 ## 5.1.19
 
 ### Patch Changes

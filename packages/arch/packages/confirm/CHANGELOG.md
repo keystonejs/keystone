@@ -1,5 +1,11 @@
 # @arch-ui/confirm
 
+## 0.0.22
+
+### Patch Changes
+
+- [`ecbe1471f`](https://github.com/keystonejs/keystone/commit/ecbe1471fe22ca029a178a57dc216f6445b4053a) [#3609](https://github.com/keystonejs/keystone/pull/3609) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `focus-trap-react` to `^8.0.0`.
+
 ## 0.0.21
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
   "name": "@arch-ui/dropdown",
   "description": "Dropdown UI as used in @keystonejs Admin UI.",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/dropdown.cjs.js",
@@ -19,7 +19,7 @@
     "@babel/runtime": "^7.11.2",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "focus-trap-react": "^7.0.1",
+    "focus-trap-react": "^8.1.0",
     "react-router-dom": "5.2.0"
   },
   "module": "dist/dropdown.esm.js",

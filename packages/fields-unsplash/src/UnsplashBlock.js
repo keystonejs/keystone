@@ -1,4 +1,3 @@
-import pluralize from 'pluralize';
 import path from 'path';
 
 import { Block } from '@keystonejs/fields-content/Block';
@@ -79,7 +78,7 @@ export class UnsplashBlock extends Block {
   }
 
   get path() {
-    return pluralize.plural(this.type);
+    return 'unsplashImages';
   }
 
   getFieldDefinitions() {

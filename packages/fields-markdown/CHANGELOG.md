@@ -1,5 +1,26 @@
 # @keystonejs/fields-markdown
 
+## 5.2.10
+
+### Patch Changes
+
+- [`65baf5070`](https://github.com/keystonejs/keystone/commit/65baf507067219a0487cc7d54a50476e02645e2a) [#3728](https://github.com/keystonejs/keystone/pull/3728) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `codemirror` to `^5.58.0`.
+
+* [`65d81dfc1`](https://github.com/keystonejs/keystone/commit/65d81dfc10c27e344b2d7aa5b799de29fb617b51) [#3613](https://github.com/keystonejs/keystone/pull/3613) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `react-codemirror2` to `^7.2.1`.
+
+* Updated dependencies [[`a02e69987`](https://github.com/keystonejs/keystone/commit/a02e69987902cfde38d820e68cb24b7a20ca1f6f), [`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4)]:
+  - @keystonejs/fields@18.0.0
+
+## 5.2.9
+
+### Patch Changes
+
+- [`b6e160678`](https://github.com/keystonejs/keystone/commit/b6e160678b449707261a54a9d565b91663784831) [#3671](https://github.com/keystonejs/keystone/pull/3671) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@primer/octicons-react` to `^11.0.0`.
+
+- Updated dependencies [[`b32f006ad`](https://github.com/keystonejs/keystone/commit/b32f006ad283f8aa1911f55bbecac9942f3f9f25), [`6f42b0a9d`](https://github.com/keystonejs/keystone/commit/6f42b0a9d231049f9e7523eb78ec621d9c9d6df9), [`27783bbca`](https://github.com/keystonejs/keystone/commit/27783bbca3b1c5ff05402738c14ffa8db73e542b), [`304701d7c`](https://github.com/keystonejs/keystone/commit/304701d7c23e98c8dc40c0f3f5512a0370107c06), [`b6e160678`](https://github.com/keystonejs/keystone/commit/b6e160678b449707261a54a9d565b91663784831)]:
+  - @keystonejs/fields@17.1.3
+  - @arch-ui/fields@3.0.5
+
 ## 5.2.8
 
 ### Patch Changes

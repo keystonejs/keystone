@@ -1,5 +1,17 @@
 # @keystonejs/email
 
+## 5.2.0
+
+### Minor Changes
+
+- [`481329c2b`](https://github.com/keystonejs/keystone/commit/481329c2bd404419efddfd0ed6f3db9a86a30f91) [#3721](https://github.com/keystonejs/keystone/pull/3721) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency mjml to ^4.7.0 (see [changelog](https://github.com/mjmlio/mjml/releases/tag/v4.7.0))
+
+## 5.1.9
+
+### Patch Changes
+
+- [`6a7395d58`](https://github.com/keystonejs/keystone/commit/6a7395d5848c6630b8e3943bcd9e3245aa6e2574) [#3649](https://github.com/keystonejs/keystone/pull/3649) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mjml-react` to `^1.0.58`.
+
 ## 5.1.8
 
 ### Patch Changes

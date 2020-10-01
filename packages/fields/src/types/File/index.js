@@ -1,4 +1,4 @@
-import { File, MongoFileInterface, KnexFileInterface } from './Implementation';
+import { File, MongoFileInterface, KnexFileInterface, PrismaFileInterface } from './Implementation';
 import { resolveView } from '../../resolve-view';
 
 export default {
@@ -12,5 +12,6 @@ export default {
   adapters: {
     mongoose: MongoFileInterface,
     knex: KnexFileInterface,
+    prisma: PrismaFileInterface,
   },
 };

@@ -1,5 +1,23 @@
 # @keystonejs/website
 
+## 5.3.11
+
+### Patch Changes
+
+- [`48623ae44`](https://github.com/keystonejs/keystone/commit/48623ae44568bae1af2861003fa9922a0118cc57) [#3692](https://github.com/keystonejs/keystone/pull/3692) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `webpack` to `v4.44.2`.
+
+* [`beb12fb37`](https://github.com/keystonejs/keystone/commit/beb12fb3703901565b9746db91441568983f8dda) [#3690](https://github.com/keystonejs/keystone/pull/3690) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `mdx` monorepo to `^1.6.18`.
+
+## 5.3.10
+
+### Patch Changes
+
+- [`f23a8cd1a`](https://github.com/keystonejs/keystone/commit/f23a8cd1a00257015bb622cded08b17a67992f2b) [#3670](https://github.com/keystonejs/keystone/pull/3670) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `mdx` monorepo to `^1.6.17`.
+
+* [`c28c08881`](https://github.com/keystonejs/keystone/commit/c28c0888117b32269dcae3fdb2013b601c57bfae) [#3664](https://github.com/keystonejs/keystone/pull/3664) Thanks [@Vultraz](https://github.com/Vultraz)! - Made Show More links stand out a bit.
+
+- [`b6e160678`](https://github.com/keystonejs/keystone/commit/b6e160678b449707261a54a9d565b91663784831) [#3671](https://github.com/keystonejs/keystone/pull/3671) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@primer/octicons-react` to `^11.0.0`.
+
 ## 5.3.9
 
 ### Patch Changes

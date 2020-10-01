@@ -6,13 +6,9 @@ import imageExtensions from 'image-extensions';
 import { findNode } from 'slate-react';
 import { Data, Block } from 'slate';
 import { BlockMenuItem } from '@keystonejs/fields-content/block-components';
-import pluralize from 'pluralize';
 
 export const type = 'cloudinaryImage';
-
-// TODO: Receive this value from the server somehow. 'pluralize' is a fairly
-// large lib.
-export const path = pluralize.plural(type);
+export const path = 'cloudinaryImages';
 
 let getFiles = () =>
   new Promise(resolve => {

@@ -1,0 +1,33 @@
+{
+  "name": "@keystone-spike/fields",
+  "version": "1.0.1",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/fields.cjs.js",
+  "module": "dist/fields.esm.js",
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "@emotion/core": "^10.0.35",
+    "@keystone-spike/admin-ui": "*",
+    "@keystone-spike/types": "*",
+    "@keystone-ui/core": "*",
+    "@keystone-ui/fields": "*",
+    "@keystonejs/fields": "^18.0.0",
+    "@types/keystonejs__fields": "^5.1.0",
+    "@types/react": "^16.9.49",
+    "react": "^16.13.1"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts",
+      "types/*/views/index.tsx"
+    ]
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/fields"
+}

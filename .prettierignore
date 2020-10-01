@@ -11,3 +11,5 @@ packages/arch/www/public/**/*
 .changeset/**/*
 **/dist
 **/.next
+**/.keystone
+.api-test-prisma-clients

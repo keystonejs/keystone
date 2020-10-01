@@ -1,5 +1,36 @@
 # @keystonejs/keystone
 
+## 17.0.0
+
+### Major Changes
+
+- [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc) [#3596](https://github.com/keystonejs/keystone/pull/3596) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `pluralize` to `^8.0.0`.
+  This may cause changes to your GraphQL schema if you have list names which are now treated differently by this library.
+  Check the [`pluralize` release notes](https://github.com/plurals/pluralize/releases/v8.0.0) for details.
+  You can override the behaviour of `pluralize` by passing in `singular` or `plural` config options to `keystone.createList()`.
+
+### Patch Changes
+
+- [`df0687184`](https://github.com/keystonejs/keystone/commit/df068718456d23819a7cae491870be4560b2010d) [#3743](https://github.com/keystonejs/keystone/pull/3743) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `apollo-server-express` to `^2.18.0`. This brings in some [changes related to apollo reporting](https://github.com/apollographql/apollo-server/blob/main/CHANGELOG.md#v2180), which maybe of interested to users who use this feature.
+
+## 16.0.0
+
+### Major Changes
+
+- [`83007be79`](https://github.com/keystonejs/keystone/commit/83007be798ebd751d7eb708cde366dc35999af72) [#3593](https://github.com/keystonejs/keystone/pull/3593) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `pino` to `^6.6.1`. See the pino [release notes](https://github.com/pinojs/pino/releases/v6.0.0) for breaking changes to logging output.
+
+### Patch Changes
+
+- [`38e3ad9c3`](https://github.com/keystonejs/keystone/commit/38e3ad9c3e7124d06f11c7046821c857cf7f9ad2) [#3685](https://github.com/keystonejs/keystone/pull/3685) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Remove unused dependency on `@keystonejs/fields`
+
+* [`304701d7c`](https://github.com/keystonejs/keystone/commit/304701d7c23e98c8dc40c0f3f5512a0370107c06) [#3585](https://github.com/keystonejs/keystone/pull/3585) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `graphql` to `^15.3.0`.
+
+- [`7a1f8bbdc`](https://github.com/keystonejs/keystone/commit/7a1f8bbdcdf68c9579e17db77fa826e811abcab4) [#3645](https://github.com/keystonejs/keystone/pull/3645) Thanks [@timleslie](https://github.com/timleslie)! - Removed dependency on `@keystonejs/logger`, which is no longer maintained.
+
+* [`d95010eea`](https://github.com/keystonejs/keystone/commit/d95010eea35f40274f412dad5c2fed6b16ae6c60) [#3663](https://github.com/keystonejs/keystone/pull/3663) Thanks [@Vultraz](https://github.com/Vultraz)! - Enabled schema tracing if APOLLO_KEY is set.
+
+- [`104232785`](https://github.com/keystonejs/keystone/commit/104232785aac856be6a3ba55f8fa0fd8357237ed) [#3576](https://github.com/keystonejs/keystone/pull/3576) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `express-pino-logger` to `^5.0.0`.
+
 ## 15.0.0
 
 ### Major Changes
