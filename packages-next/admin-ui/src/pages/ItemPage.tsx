@@ -12,6 +12,7 @@ import { Button } from '@keystone-ui/button';
 import { JSONValue, ListMeta } from '@keystone-spike/types';
 import isDeepEqual from 'fast-deep-equal';
 import { Notice } from '@keystone-ui/notice';
+import { Tooltip } from '../../../../design-system/packages/tooltip/src';
 
 type ItemPageProps = {
   listKey: string;
@@ -99,6 +100,26 @@ function ItemForm({
       fieldsChanged,
     };
   }, [serializedFieldValues, serializedValuesFromItem, list]);
+  const saveButtonProps = {
+    isLoading: loading,
+    weight: 'bold',
+    tone: 'active',
+    onClick: () => {
+      const data: Record<string, any> = {};
+      Object.keys(fieldsEquality.fieldsChanged).forEach(fieldKey => {
+        if (fieldsEquality.fieldsChanged[fieldKey]) {
+          Object.assign(data, serializedFieldValues[fieldKey]);
+        }
+      });
+      update({
+        variables: {
+          data,
+          id: item.id,
+        },
+      });
+    },
+    children: 'Save Changes',
+  } as const;
   return (
     <Fragment>
       {error && <Notice tone="negative">{error.message}</Notice>}
@@ -126,30 +147,21 @@ function ItemForm({
         );
       })}
       <Stack across gap="small">
+        {fieldsEquality.someFieldsChanged ? (
+          <Button {...saveButtonProps} />
+        ) : (
+          <Tooltip content="No fields have been modified so you cannot save changes">
+            {props => (
+              <Button
+                {...props}
+                {...saveButtonProps}
+                // making onClick undefined instead of making the button disabled so the button can be focussed so keyboard users can see the tooltip
+                onClick={undefined}
+              />
+            )}
+          </Tooltip>
+        )}
         <Button
-          isLoading={loading}
-          isDisabled={!fieldsEquality.someFieldsChanged}
-          weight="bold"
-          tone="active"
-          onClick={() => {
-            const data: Record<string, any> = {};
-            Object.keys(fieldsEquality.fieldsChanged).forEach(fieldKey => {
-              if (fieldsEquality.fieldsChanged[fieldKey]) {
-                Object.assign(data, serializedFieldValues[fieldKey]);
-              }
-            });
-            update({
-              variables: {
-                data,
-                id: item.id,
-              },
-            });
-          }}
-        >
-          Save
-        </Button>
-        <Button
-          isDisabled={!fieldsEquality.someFieldsChanged}
           onClick={() => {
             setValue({
               item,

@@ -16,6 +16,7 @@
     "@keystone-ui/notice": "*",
     "@keystone-ui/popover": "*",
     "@keystone-ui/segmented-control": "*",
+    "@keystone-ui/tooltip": "*",
     "@preconstruct/next": "^1.0.1",
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
