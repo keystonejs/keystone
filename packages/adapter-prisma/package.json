@@ -11,9 +11,9 @@
     "@keystonejs/fields-auto-increment": "^7.0.0",
     "@keystonejs/keystone": "^17.0.0",
     "@keystonejs/utils": "^5.4.3",
-    "@prisma/cli": "2.7.1",
-    "@prisma/client": "2.7.1",
-    "@prisma/sdk": "2.7.1",
+    "@prisma/cli": "2.8.0",
+    "@prisma/client": "2.8.0",
+    "@prisma/sdk": "2.8.0",
     "cuid": "^2.1.8"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-prisma"
