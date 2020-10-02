@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "mongodb": "^3.6.2",
-    "mongodb-memory-server-core": "^6.8.1",
+    "mongodb-memory-server-core": "^6.9.0",
     "pluralize": "^8.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-mongoose"
