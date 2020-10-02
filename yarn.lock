@@ -26265,10 +26265,10 @@ tinycolor2@^1.4.2:
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.2.tgz#3f6a4d1071ad07676d7fa472e1fac40a719d8803"
   integrity sha512-vJhccZPs965sV/L2sU4oRQVAos0pQXwsvTLkWYdqJ+a8Q5kPFzJTuOFwy7UniPli44NKQGAglksjvOcpo95aZA==
 
-tinymce@^5.5.0:
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.5.0.tgz#19dda805f9891393fe3bf64bc08e472cfceef2b4"
-  integrity sha512-uT0c4DLJiPgj2yhpB3lYMHe+Y+YsIyEoy6GXfazqVbgANtZsm+TLqBCdYH9iO152b75OXdYQXJJ04/ERbBSQ/A==
+tinymce@^5.5.1:
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.5.1.tgz#4f24ca6e7b698a3c7418a39ef0f3d613f4a703a4"
+  integrity sha512-z03C8/0TBby68Kp7YUTSCZ0QJINsFCv9U+Cv3TNHg+T1spZ4V6vOIgD0zeTd/xKqkru0P7IOHoeAnOjfpTLq7g==
 
 title-case@^2.1.0:
   version "2.1.1"
