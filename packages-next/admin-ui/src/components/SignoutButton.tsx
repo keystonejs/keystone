@@ -2,7 +2,7 @@
 
 import { jsx } from '@emotion/core';
 import { Button } from '@keystone-ui/button';
-import { FunctionComponent, useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 
 import { useMutation, gql } from '../apollo';
 
@@ -12,7 +12,7 @@ const END_SESSION = gql`
   }
 `;
 
-const SignoutButton: FunctionComponent = ({ children, ...props }) => {
+const SignoutButton = ({ children }: { children?: ReactNode }) => {
   const [endSession, { loading, data }] = useMutation(END_SESSION);
   useEffect(() => {
     if (data?.endSession) {
@@ -21,7 +21,7 @@ const SignoutButton: FunctionComponent = ({ children, ...props }) => {
   }, [data]);
 
   return (
-    <Button size="small" isLoading={loading} onClick={() => endSession()} {...props}>
+    <Button size="small" isLoading={loading} onClick={() => endSession()}>
       {children || 'sign out'}
     </Button>
   );

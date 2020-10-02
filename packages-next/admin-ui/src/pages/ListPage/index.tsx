@@ -13,6 +13,8 @@ import { getPaginationLabel, Pagination } from './pagination';
 import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
 import { CheckboxControl } from '@keystone-ui/fields';
+import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter';
+import { getRootFieldsFromSelection } from '../../utils/getRootFieldsFromSelection';
 
 type ListPageProps = {
   listKey: string;
@@ -144,6 +146,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
     }, [list, selectedFields]),
     {
       fetchPolicy: 'cache-and-network',
+      errorPolicy: 'all',
       variables: {
         where: filters.where,
         first: pageSize,
@@ -152,6 +155,13 @@ export const ListPage = ({ listKey }: ListPageProps) => {
       },
     }
   );
+
+  const dataGetter = makeDataGetter<
+    DeepNullable<{
+      meta: { count: number };
+      items: { id: string; _label_: string; [key: string]: any }[];
+    }>
+  >(data, error?.graphQLErrors);
 
   const [selectedItemsState, setSelectedItems] = useState(() => ({
     itemsFromServer: undefined as any,
@@ -190,7 +200,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
           alignItems: 'center',
         }}
       >
-        {data
+        {data && metaQuery.data
           ? (() => {
               const selectedItems = selectedItemsState.selectedItems;
               const selectedItemsCount = Object.keys(selectedItems).length;
@@ -257,14 +267,14 @@ export const ListPage = ({ listKey }: ListPageProps) => {
           </ul>
         </p>
       ) : null}
-      {error || metaQuery.error ? (
+      {metaQuery.error ? (
         // TODO: Show errors nicely and with information
         'Error...'
       ) : data && metaQuery.data ? (
         <ListTable
           count={data.meta.count}
           currentPage={currentPage}
-          items={data.items}
+          itemsGetter={dataGetter.get('items')}
           listKey={listKey}
           pageSize={pageSize}
           selectedFields={selectedFields}
@@ -307,7 +317,7 @@ const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
 function ListTable({
   selectedFields,
   listKey,
-  items,
+  itemsGetter,
   count,
   sort,
   currentPage,
@@ -317,7 +327,7 @@ function ListTable({
 }: {
   selectedFields: ReturnType<typeof useSelectedFields>;
   listKey: string;
-  items: Record<string, any>[];
+  itemsGetter: DataGetter<DeepNullable<{ id: string; _label_: string; [key: string]: any }[]>>;
   count: number;
   sort: { field: string; direction: 'ASC' | 'DESC' } | null;
   currentPage: number;
@@ -353,13 +363,15 @@ function ListTable({
             >
               <CheckboxControl
                 size="small"
-                checked={selectedItemsCount === items.length}
+                checked={selectedItemsCount === itemsGetter.data?.length}
                 css={{ cursor: 'default' }}
                 onChange={() => {
                   const selectedItems: Record<string, true> = {};
-                  if (selectedItemsCount !== items.length) {
-                    items.forEach(item => {
-                      selectedItems[item.id] = true;
+                  if (selectedItemsCount !== itemsGetter.data?.length) {
+                    itemsGetter.data?.forEach(item => {
+                      if (item !== null && item.id !== null) {
+                        selectedItems[item.id] = true;
+                      }
                     });
                   }
                   onSelectedItemsChange(selectedItems);
@@ -398,9 +410,22 @@ function ListTable({
           })}
         </TableHeaderRow>
         <tbody>
-          {items.map(item => {
+          {(itemsGetter.data ?? []).map((_, index) => {
+            const itemGetter = itemsGetter.get(index);
+            if (itemGetter.data === null || itemGetter.data.id === null) {
+              if (itemGetter.errors) {
+                return (
+                  <tr css={{ color: 'red' }} key={`index:${index}`}>
+                    {itemGetter.errors[0].message}
+                  </tr>
+                );
+              }
+              return null;
+            }
+            const item = itemGetter.data;
+            const itemId = itemGetter.data.id;
             return (
-              <tr key={item.id}>
+              <tr key={itemId || `index:${index}`}>
                 <TableBodyCell>
                   <label
                     css={{
@@ -413,14 +438,14 @@ function ListTable({
                   >
                     <CheckboxControl
                       size="small"
-                      checked={selectedItems[item.id] !== undefined}
+                      checked={selectedItems[itemId] !== undefined}
                       css={{ cursor: 'default' }}
                       onChange={() => {
                         const newSelectedItems = { ...selectedItems };
-                        if (selectedItems[item.id] === undefined) {
-                          newSelectedItems[item.id] = true;
+                        if (selectedItems[itemId] === undefined) {
+                          newSelectedItems[itemId] = true;
                         } else {
-                          delete newSelectedItems[item.id];
+                          delete newSelectedItems[itemId];
                         }
                         onSelectedItemsChange(newSelectedItems);
                       }}
@@ -430,11 +455,14 @@ function ListTable({
                 {selectedFields.includeLabel && (
                   <TableBodyCell>
                     <CellLink
-                      css={{ fontFamily: list.labelIsId ? 'monospace' : undefined }}
+                      css={{
+                        fontFamily:
+                          list.labelIsId || item._label_ === null ? 'monospace' : undefined,
+                      }}
                       href={`/${list.path}/[id]`}
-                      as={`/${list.path}/${encodeURIComponent(item.id)}`}
+                      as={`/${list.path}/${encodeURIComponent(itemId)}`}
                     >
-                      {item._label_}
+                      {item._label_ ?? itemId}
                     </CellLink>
                   </TableBodyCell>
                 )}
@@ -449,24 +477,40 @@ function ListTable({
                         justifyContent: 'center',
                       }}
                       href={`/${list.path}/[id]`}
-                      as={`/${list.path}/${encodeURIComponent(item.id)}`}
+                      as={`/${list.path}/${encodeURIComponent(itemId)}`}
                     >
                       <ArrowRightCircleIcon size="smallish" aria-label="Go to item" />
                     </Link>
                   </TableBodyCell>
                 )}
                 {selectedFields.fields.map((path, i) => {
+                  const field = list.fields[path];
                   let { Cell } = list.fields[path].views;
+                  const itemForField: Record<string, any> = {};
+                  for (const graphqlField of getRootFieldsFromSelection(
+                    field.controller.graphqlSelection
+                  )) {
+                    const fieldGetter = itemGetter.get(graphqlField);
+                    if (fieldGetter.errors) {
+                      return (
+                        <TableBodyCell css={{ color: 'red' }} key={path}>
+                          {fieldGetter.errors[0].message}
+                        </TableBodyCell>
+                      );
+                    }
+                    itemForField[graphqlField] = fieldGetter.data;
+                  }
+
                   return (
                     <TableBodyCell key={path}>
                       <Cell
-                        item={item}
+                        item={itemForField}
                         path={path}
                         linkTo={
                           i === 0 && !selectedFields.includeLabel && Cell.supportsLinkTo
                             ? {
                                 href: `/${list.path}/[id]`,
-                                as: `/${list.path}/${encodeURIComponent(item.id)}`,
+                                as: `/${list.path}/${encodeURIComponent(itemId)}`,
                               }
                             : undefined
                         }
@@ -555,7 +599,7 @@ const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
   );
 };
 
-const TableBodyCell = ({ children }: { children: ReactNode }) => {
+const TableBodyCell = (props: HTMLAttributes<HTMLElement>) => {
   const { colors, typography } = useTheme();
   return (
     <td
@@ -563,8 +607,7 @@ const TableBodyCell = ({ children }: { children: ReactNode }) => {
         borderBottom: `1px solid ${colors.border}`,
         fontSize: typography.fontSize.medium,
       }}
-    >
-      {children}
-    </td>
+      {...props}
+    />
   );
 };
