@@ -18838,15 +18838,15 @@ moment@^2.29.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.0.tgz#fcbef955844d91deb55438613ddcec56e86a3425"
   integrity sha512-z6IJ5HXYiuxvFTI6eiQ9dm77uE0gyy1yXNApVHqTcnIKfY9tIwEjlzsZ6u1LQXvVgKeTnv9Xm7NDvJ7lso3MtA==
 
-mongodb-memory-server-core@^6.8.1:
-  version "6.8.1"
-  resolved "https://registry.yarnpkg.com/mongodb-memory-server-core/-/mongodb-memory-server-core-6.8.1.tgz#3ec2f1f2de6dd5dc9a4789163d77d5d8b6e14dd2"
-  integrity sha512-7vOkJTmxkrMaVgM1UjMVfDJJ0xPyLvvA060Yj/yo8HIjYslWinH1PB9FE3NpmU5aisfRHWWRn8kwv6VNDY6csg==
+mongodb-memory-server-core@^6.9.0:
+  version "6.9.0"
+  resolved "https://registry.yarnpkg.com/mongodb-memory-server-core/-/mongodb-memory-server-core-6.9.0.tgz#309d81bff7e67b4c2c2ac1ce788064dc6d172f67"
+  integrity sha512-MVA5lQ6ZULGrkbLJN2NddDaBhnVjb5QkxqsZ6cTj9vdIAACf+MuH/ZWPuBRD/9M6JqcmNc+/JgKW98l08cpd/Q==
   dependencies:
     "@types/tmp" "^0.2.0"
     camelcase "^6.0.0"
     cross-spawn "^7.0.3"
-    debug "^4.1.1"
+    debug "^4.2.0"
     find-cache-dir "^3.3.1"
     find-package-json "^1.2.0"
     get-port "^5.1.1"
