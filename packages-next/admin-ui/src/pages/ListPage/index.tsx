@@ -498,7 +498,6 @@ function ListTable({
                         </TableBodyCell>
                       );
                     }
-                    console.log({ itemGetter, fieldGetter });
                     itemForField[graphqlField] = fieldGetter.data;
                   }
 
