@@ -84,7 +84,7 @@
     "jest-haste-map": "^26.3.0",
     "jest-junit": "^11.1.0",
     "jest-resolve": "^26.4.0",
-    "knex": "^0.21.5",
+    "knex": "^0.21.6",
     "luxon": "^1.25.0",
     "mdast-util-to-string": "^1.1.0",
     "memoize-one": "^5.1.1",
