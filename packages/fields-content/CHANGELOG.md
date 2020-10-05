@@ -1,5 +1,16 @@
 # @keystonejs/fields-content
 
+## 9.0.1
+
+### Patch Changes
+
+- [`5dfa1b8c5`](https://github.com/keystonejs/keystone/commit/5dfa1b8c50b6eb5cc77eb9e28b637db45580e99f) [#3838](https://github.com/keystonejs/keystone/pull/3838) Thanks [@Noviny](https://github.com/Noviny)! - Check the length of the block keys, not the length of the block, fixing an error in rendering.
+
+* [`5dfa1b8c5`](https://github.com/keystonejs/keystone/commit/5dfa1b8c50b6eb5cc77eb9e28b637db45580e99f) [#3838](https://github.com/keystonejs/keystone/pull/3838) Thanks [@Noviny](https://github.com/Noviny)! - Fixed an error where adding an image caused the block to not be rendered, due to incorrect use of usePopper.
+
+* Updated dependencies [[`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74)]:
+  - @keystonejs/fields@19.0.0
+
 ## 9.0.0
 
 ### Major Changes

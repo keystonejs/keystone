@@ -1,5 +1,18 @@
 # @keystonejs/adapter-knex
 
+## 12.0.0
+
+### Major Changes
+
+- [`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74) [#3684](https://github.com/keystonejs/keystone/pull/3684) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Make `id` field on GraphQL output type non-nullable when using the default id field type
+
+### Patch Changes
+
+- [`85fa68456`](https://github.com/keystonejs/keystone/commit/85fa684565d8c9c40036d4544b3c0235dbbd327b) [#3802](https://github.com/keystonejs/keystone/pull/3802) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `knex` to `^0.21.6`.
+
+- Updated dependencies [[`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74)]:
+  - @keystonejs/fields-auto-increment@8.0.0
+
 ## 11.0.7
 
 ### Patch Changes

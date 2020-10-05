@@ -1,5 +1,16 @@
 # @keystonejs/fields-unsplash
 
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`5dfa1b8c5`](https://github.com/keystonejs/keystone/commit/5dfa1b8c50b6eb5cc77eb9e28b637db45580e99f), [`f30928db3`](https://github.com/keystonejs/keystone/commit/f30928db31b0c0a10a27b827b44afc1896dfbafe), [`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74), [`bf06edbf4`](https://github.com/keystonejs/keystone/commit/bf06edbf47e69280c3a9e270daa578528d68c447), [`5dfa1b8c5`](https://github.com/keystonejs/keystone/commit/5dfa1b8c50b6eb5cc77eb9e28b637db45580e99f), [`85fa68456`](https://github.com/keystonejs/keystone/commit/85fa684565d8c9c40036d4544b3c0235dbbd327b), [`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74)]:
+  - @keystonejs/fields-content@9.0.1
+  - @keystonejs/adapter-prisma@1.0.3
+  - @keystonejs/adapter-knex@12.0.0
+  - @keystonejs/adapter-mongoose@10.0.0
+  - @keystonejs/fields@19.0.0
+
 ## 3.0.0
 
 ### Major Changes

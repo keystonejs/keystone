@@ -1,5 +1,16 @@
 # @keystonejs/adapter-mongoose
 
+## 10.0.0
+
+### Major Changes
+
+- [`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74) [#3684](https://github.com/keystonejs/keystone/pull/3684) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Make `id` field on GraphQL output type non-nullable when using the default id field type
+
+### Patch Changes
+
+- Updated dependencies [[`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74)]:
+  - @keystonejs/fields-mongoid@9.0.0
+
 ## 9.0.8
 
 ### Patch Changes
