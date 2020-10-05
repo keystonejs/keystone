@@ -1,5 +1,14 @@
 # @keystonejs/demo-project-todo-knex
 
+## 5.1.20
+
+### Patch Changes
+
+- Updated dependencies [[`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74), [`85fa68456`](https://github.com/keystonejs/keystone/commit/85fa684565d8c9c40036d4544b3c0235dbbd327b), [`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74)]:
+  - @keystonejs/adapter-knex@12.0.0
+  - @keystonejs/fields@19.0.0
+  - @keystonejs/app-admin-ui@7.3.8
+
 ## 5.1.19
 
 ### Patch Changes
