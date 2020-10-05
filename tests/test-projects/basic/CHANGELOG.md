@@ -1,5 +1,21 @@
 # @keystonejs/cypress-project-basic
 
+## 6.0.13
+
+### Patch Changes
+
+- Updated dependencies [[`5dfa1b8c5`](https://github.com/keystonejs/keystone/commit/5dfa1b8c50b6eb5cc77eb9e28b637db45580e99f), [`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74), [`5dfa1b8c5`](https://github.com/keystonejs/keystone/commit/5dfa1b8c50b6eb5cc77eb9e28b637db45580e99f), [`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74)]:
+  - @keystonejs/fields-content@9.0.1
+  - @keystonejs/adapter-mongoose@10.0.0
+  - @keystonejs/fields@19.0.0
+  - @keystonejs/fields-cloudinary-image@2.0.1
+  - @keystonejs/fields-oembed@3.0.1
+  - @keystonejs/fields-unsplash@3.0.1
+  - @keystonejs/app-admin-ui@7.3.8
+  - @keystonejs/fields-color@1.0.6
+  - @keystonejs/fields-markdown@5.2.11
+  - @keystonejs/fields-wysiwyg-tinymce@5.3.12
+
 ## 6.0.12
 
 ### Patch Changes
