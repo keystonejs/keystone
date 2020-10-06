@@ -59,8 +59,8 @@ export const lists = createSchema({
       }),
       isAdmin: checkbox({
         access: {
-          read: ({ context: { session } }) => !!session?.item?.isAdmin,
-          update: ({ context: { session } }) => !!session?.item?.isAdmin,
+          read: ({ session }) => !!session?.item?.isAdmin,
+          update: ({ session }) => !!session?.item?.isAdmin,
         },
         admin: {
           createView: {
