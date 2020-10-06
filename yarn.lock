@@ -4885,14 +4885,14 @@
     "@types/keystonejs__keystone" "*"
 
 "@types/keystonejs__fields@*", "@types/keystonejs__fields@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@types/keystonejs__fields/-/keystonejs__fields-5.1.0.tgz#e8c335ee85a924db3284a192e50fe16740aa09fc"
-  integrity sha512-Xs10ZYuMOQx3VHrq/0+1t340i2PVK+MTh5ivsnOU6Wd075IMa2/LU8yVkvLj6vi3m0Ns8mkzHOTlePNSBvWxJQ==
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@types/keystonejs__fields/-/keystonejs__fields-5.1.1.tgz#1c91718eeee0b2e58a2b3f57ad234967bad202df"
+  integrity sha512-m8Ny/rTXzzoKO33UDkcspmHK0Q/qP4teo2510+HG1NMxM7pF/jPPL/viGtAJF/eIYEsSZxzwNSTFWMw/DlPIwQ==
 
 "@types/keystonejs__keystone@*", "@types/keystonejs__keystone@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@types/keystonejs__keystone/-/keystonejs__keystone-6.0.0.tgz#32935439a5b37e68a8d275462c492b0e0bc651ff"
-  integrity sha512-29vfeYTIVV2DgkdFGvLm6oHJ/TKC0tZa87EH+AdrU0KZ3/LGWP1BbtX3HG55eldsfH8HwUyCzF/XTLRq0Lehrw==
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@types/keystonejs__keystone/-/keystonejs__keystone-6.0.1.tgz#4f11248c3aaac76ca92e452c78fd733bc1ba74db"
+  integrity sha512-Viu3zQGrNiGfCIPgdUrGtlMuSwFwDbH50YGej6CBJ2lXfY56/YHmNS8gRq3yADxwJqVbaBBc+GHzhdGZmknMvQ==
   dependencies:
     "@types/express" "*"
     "@types/keystonejs__fields" "*"
@@ -5047,9 +5047,9 @@
   integrity sha512-HtKGu+qG1NPvYe1z7ezLsyIaXYyi8SoAVqWDZgDQ8dLrsZvSzUNCwZyfX33uhWxL/SU0ZDQZ3nwZ0nimt507Kw==
 
 "@types/reach__router@^1.0.0":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@types/reach__router/-/reach__router-1.2.2.tgz#1bd96626c2866a61937758ef6be2f06309124805"
-  integrity sha512-ktF+0xWesuojMlU8UR+7O9qU9Ff76gO/0Lc+QXQYpTDK0qz4a0l/fJYOLmMJKVY7LKGLBmB3TBs7Fvg4nibQsA==
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/@types/reach__router/-/reach__router-1.3.6.tgz#413417ce74caab331c70ce6a03a4c825188e4709"
+  integrity sha512-RHYataCUPQnt+GHoASyRLq6wmZ0n8jWlBW8Lxcwd30NN6vQfbmTeoSDfkgxO0S1lEzArp8OFDsq5KIs7FygjtA==
   dependencies:
     "@types/history" "*"
     "@types/react" "*"
@@ -5062,9 +5062,9 @@
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^16.8.12", "@types/react@^16.8.6", "@types/react@^16.9.49":
-  version "16.9.49"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.49.tgz#09db021cf8089aba0cdb12a49f8021a69cce4872"
-  integrity sha512-DtLFjSj0OYAdVLBbyjhuV9CdGVHCkHn2R+xr3XkBvK2rS1Y1tkc14XSGjYgm5Fjjr90AxH9tiSzc1pCFMGO06g==
+  version "16.9.51"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.51.tgz#f8aa51ffa9996f1387f63686696d9b59713d2b60"
+  integrity sha512-lQa12IyO+DMlnSZ3+AGHRUiUcpK47aakMMoBG8f7HGxJT8Yfe+WE128HIXaHOHVPReAW0oDS3KAI0JI2DDe1PQ==
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
