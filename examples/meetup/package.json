@@ -46,7 +46,7 @@
     "react-dom": "^16.13.1",
     "react-toast-notifications": "^2.4.0",
     "react-use-form-state": "^0.13.2",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples/meetup"
 }
