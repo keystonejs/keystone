@@ -16,6 +16,7 @@ import { CheckboxControl } from '@keystone-ui/fields';
 import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter';
 import { getRootGraphQLFieldsFromFieldController } from '../../utils/getRootGraphQLFieldsFromFieldController';
 import { CreateForm } from '../../components/CreateForm';
+import { FieldSelection } from './FieldSelection';
 
 type ListPageProps = {
   listKey: string;
@@ -200,6 +201,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         listKey={listKey}
         showCreate={!(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)}
       />
+      <FieldSelection listKey={listKey} fieldModesByFieldPath={listViewFieldModesByField} />
       <p
         css={{
           // TODO: don't do this
