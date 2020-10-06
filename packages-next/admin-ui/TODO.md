@@ -46,7 +46,7 @@
 - [x] Delete selected item(s)
 - [ ] Add dots menu for [copy link / copy id / delete]
 - [x] Sorting
-- [ ] Show access control errors in columns
+- [x] Show ~~access control~~ errors in columns
 - [x] Fix style of link icon (when the first column is not linkable)
 - [x] Fix columns widths for select / navigate
 - [ ] Fix style of pagination at the bottom of the list
@@ -67,10 +67,10 @@
 ## Create Item
 
 - [ ] Need Modals
-- [ ] Render the form with default values from controllers
-- [ ] Call the mutation to create items then navigate
+- [x] Render the form with default values from controllers
+- [x] Call the mutation to create items then navigate
 - [ ] Handle client-side validation (see posts form extensions and checkbox controller)
-- [ ] Handle errors (show the error message up the top for now)
+- [x] Handle errors (show the error message up the top for now)
 - [ ] Handle the case where there are no editable fields in the create screen (needs discussion)
 - [ ] Implement autoCreate feature (where you can create a new item without user input)
 
