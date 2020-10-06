@@ -14,37 +14,66 @@ import isDeepEqual from 'fast-deep-equal';
 import { Notice } from '@keystone-ui/notice';
 import { Tooltip } from '@keystone-ui/tooltip';
 import copyToClipboard from 'clipboard-copy';
+import { DataGetter, DeepNullable, makeDataGetter } from '../utils/dataGetter';
+import { getRootFieldsFromSelection } from '../utils/getRootFieldsFromSelection';
+import { GraphQLError } from 'graphql';
 
 type ItemPageProps = {
   listKey: string;
 };
 
-function deserializeValue(list: ListMeta, item: Record<string, any>) {
-  const value: Record<string, any> = {};
+type DeserializedValue = Record<
+  string,
+  | { kind: 'error'; errors: readonly [GraphQLError, ...GraphQLError[]] }
+  | { kind: 'value'; value: any }
+>;
+
+function deserializeValue(list: ListMeta, itemGetter: DataGetter<ItemData>) {
+  const value: DeserializedValue = {};
   Object.keys(list.fields).forEach(fieldKey => {
     const field = list.fields[fieldKey];
-    value[fieldKey] = field.controller.deserialize(item);
+    const itemForField: Record<string, any> = {};
+    const errors = new Set<GraphQLError>();
+    for (const graphqlField of getRootFieldsFromSelection(field.controller.graphqlSelection)) {
+      const fieldGetter = itemGetter.get(graphqlField);
+      if (fieldGetter.errors) {
+        fieldGetter.errors.forEach(error => {
+          errors.add(error);
+        });
+      }
+      itemForField[graphqlField] = fieldGetter.data;
+    }
+    if (errors.size) {
+      value[fieldKey] = { kind: 'error', errors: [...errors] as any };
+    } else {
+      value[fieldKey] = { kind: 'value', value: field.controller.deserialize(itemForField) };
+    }
   });
   return value;
 }
 
-function serializeValueToObjByFieldKey(list: ListMeta, value: Record<string, unknown>) {
-  let obj: Record<string, Record<string, JSONValue>> = {};
+function serializeValueToObjByFieldKey(list: ListMeta, value: DeserializedValue) {
+  const obj: Record<string, Record<string, JSONValue>> = {};
   Object.keys(list.fields).map(fieldKey => {
-    obj[fieldKey] = list.fields[fieldKey].controller.serialize(value[fieldKey]);
+    const val = value[fieldKey];
+    if (val.kind === 'value') {
+      obj[fieldKey] = list.fields[fieldKey].controller.serialize(val.value);
+    }
   });
   return obj;
 }
 
+type ItemData = DeepNullable<{ id: string; _label_: string; [key: string]: any }>;
+
 function ItemForm({
   listKey,
-  item,
+  itemGetter,
   selectedFields,
   fieldModes,
   showDelete,
 }: {
   listKey: string;
-  item: Record<string, any>;
+  itemGetter: DataGetter<ItemData>;
   selectedFields: string;
   fieldModes: Record<string, 'edit' | 'read' | 'hidden'>;
   showDelete: boolean;
@@ -68,29 +97,29 @@ function ItemForm({
         id
       }
     }`,
-    { variables: { id: item.id } }
+    { variables: { id: itemGetter.get('id').data } }
   );
 
   const [state, setValue] = useState(() => {
-    const value = deserializeValue(list, item);
+    const value = deserializeValue(list, itemGetter);
     return {
       value,
-      item,
+      item: itemGetter.data,
     };
   });
 
-  if (state.item !== item) {
-    const value = deserializeValue(list, item);
+  if (state.item !== itemGetter.data) {
+    const value = deserializeValue(list, itemGetter);
     setValue({
       value,
-      item,
+      item: itemGetter.data,
     });
   }
 
   const serializedValuesFromItem = useMemo(() => {
-    const value = deserializeValue(list, item);
+    const value = deserializeValue(list, itemGetter);
     return serializeValueToObjByFieldKey(list, value);
-  }, [list, item]);
+  }, [list, itemGetter]);
   const serializedFieldValues = useMemo(() => {
     return serializeValueToObjByFieldKey(list, state.value);
   }, [state.value, list]);
@@ -127,7 +156,7 @@ function ItemForm({
       update({
         variables: {
           data,
-          id: item.id,
+          id: itemGetter.get('id').data,
         },
       });
     },
@@ -136,19 +165,28 @@ function ItemForm({
   const fields = Object.keys(list.fields)
     .filter(fieldKey => fieldModes[fieldKey] !== 'hidden')
     .map(fieldKey => {
-      const fieldMode = fieldModes[fieldKey];
       const field = list.fields[fieldKey];
+      const value = state.value[fieldKey];
+      const fieldMode = fieldModes[fieldKey];
       const Field = list.fields[fieldKey].views.Field;
+
+      if (value.kind === 'error') {
+        return (
+          <div>
+            {field.label}: <span css={{ color: 'red' }}>{value.errors[0].message}</span>
+          </div>
+        );
+      }
       return (
         <Field
           key={fieldKey}
           field={field.controller}
-          value={state.value[fieldKey]}
+          value={value.value}
           onChange={
             fieldMode === 'edit'
               ? fieldValue => {
                   setValue({
-                    value: { ...state.value, [fieldKey]: fieldValue },
+                    value: { ...state.value, [fieldKey]: { kind: 'value', value: fieldValue } },
                     item: state.item,
                   });
                 }
@@ -181,8 +219,8 @@ function ItemForm({
           <Button
             onClick={() => {
               setValue({
-                item,
-                value: deserializeValue(list, item),
+                item: itemGetter.data,
+                value: deserializeValue(list, itemGetter),
               });
             }}
           >
@@ -245,17 +283,39 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
 `,
     };
   }, [list]);
-  let { data, error } = useQuery(query, { variables: { id, listKey } });
+  let { data, error, loading } = useQuery(query, {
+    variables: { id, listKey },
+    errorPolicy: 'all',
+  });
+
+  const dataGetter = makeDataGetter<
+    DeepNullable<{
+      item: ItemData;
+      keystone: {
+        adminMeta: {
+          list: {
+            fields: {
+              path: string;
+              itemView: {
+                fieldMode: 'edit' | 'read' | 'hidden';
+              };
+            }[];
+          };
+        };
+      };
+    }>
+  >(data, error?.graphQLErrors);
 
   let itemViewFieldModesByField = useMemo(() => {
     let itemViewFieldModesByField: Record<string, 'edit' | 'read' | 'hidden'> = {};
-    data?.keystone.adminMeta.list?.fields.forEach(
-      (field: { path: string; itemView: { fieldMode: 'edit' | 'read' | 'hidden' } }) => {
+    dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
+      if (field !== null && field.path !== null && field?.itemView?.fieldMode != null) {
         itemViewFieldModesByField[field.path] = field.itemView.fieldMode;
       }
-    );
+    });
     return itemViewFieldModesByField;
-  }, [data?.keystone.adminMeta.list?.fields]);
+  }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
+  const errorsFromMetaQuery = dataGetter.get('keystone').errors;
   return (
     <PageContainer>
       <h2>
@@ -264,9 +324,11 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
           <a>{list.label}</a>
         </Link>
       </h2>
-      {error ? (
-        error.message
-      ) : data ? (
+      {loading ? (
+        'Loading...'
+      ) : errorsFromMetaQuery ? (
+        <div css={{ color: 'red' }}>{errorsFromMetaQuery[0].message}</div>
+      ) : (
         <Fragment>
           <div
             css={{
@@ -274,7 +336,6 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               justifyContent: 'space-between',
             }}
           >
-            {' '}
             <h3>Item: {data.item._label_}</h3>
             <div css={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <span css={{ marginRight: spacing.small }}>ID: {data.item.id}</span>
@@ -293,11 +354,9 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
             selectedFields={selectedFields}
             showDelete={!data.keystone.adminMeta.list!.hideDelete}
             listKey={listKey}
-            item={data.item}
+            itemGetter={dataGetter.get('item')}
           />
         </Fragment>
-      ) : (
-        'Loading...'
       )}
     </PageContainer>
   );
