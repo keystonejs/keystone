@@ -26,14 +26,17 @@
   - [x] URL State working and actually setting columns
   - [x] Show the right columns in the table and query the right fields
   - [x] Show "with {x} columns" in UI
+  - [x] Selection UI without popup
+  - [x] Hide hidden fields from the selection ui
   - [ ] Popup to select columns (w/ search)
-  - [ ] Hide hidden fields from the popup
   - [ ] Don't show the popup when there are no columns to select from
   - [x] Add `supportsLinkTo` support to Cells
   - [x] Pass `linkTo` to the first cell, if supported, otherwise add a link icon as the first column
 - [ ] Implement Filters
   - [x] URL State working and actually filtering
   - [x] Show selected filters in UI
+  - [ ] Add filter UI outside of popup
+  - [ ] Edit filter UI outside of popup
   - [ ] Popup to add filters (w/ search, exclude set filters)
   - [ ] Popup to edit filters
   - [ ] All the filter UI
@@ -43,7 +46,7 @@
 - [x] Delete selected item(s)
 - [ ] Add dots menu for [copy link / copy id / delete]
 - [x] Sorting
-- [ ] Show access control errors in columns
+- [x] Show ~~access control~~ errors in columns
 - [x] Fix style of link icon (when the first column is not linkable)
 - [x] Fix columns widths for select / navigate
 - [ ] Fix style of pagination at the bottom of the list
@@ -64,10 +67,10 @@
 ## Create Item
 
 - [ ] Need Modals
-- [ ] Render the form with default values from controllers
-- [ ] Call the mutation to create items then navigate
+- [x] Render the form with default values from controllers
+- [x] Call the mutation to create items then navigate
 - [ ] Handle client-side validation (see posts form extensions and checkbox controller)
-- [ ] Handle errors (show the error message up the top for now)
+- [x] Handle errors (show the error message up the top for now)
 - [ ] Handle the case where there are no editable fields in the create screen (needs discussion)
 - [ ] Implement autoCreate feature (where you can create a new item without user input)
 

@@ -14,7 +14,9 @@ import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
 import { CheckboxControl } from '@keystone-ui/fields';
 import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter';
-import { getRootFieldsFromSelection } from '../../utils/getRootFieldsFromSelection';
+import { getRootGraphQLFieldsFromFieldController } from '../../utils/getRootGraphQLFieldsFromFieldController';
+import { CreateForm } from '../../components/CreateForm';
+import { FieldSelection } from './FieldSelection';
 
 type ListPageProps = {
   listKey: string;
@@ -34,7 +36,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
               fieldMode: 'read' | 'hidden';
             };
             createView: {
-              fieldMode: 'read' | 'hidden';
+              fieldMode: 'edit' | 'hidden';
             };
           }[];
         } | null;
@@ -102,6 +104,14 @@ export const ListPage = ({ listKey }: ListPageProps) => {
       listViewFieldModesByField[field.path] = field.listView.fieldMode;
     });
     return listViewFieldModesByField;
+  }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
+
+  let createViewFieldModesByField = useMemo(() => {
+    let createViewFieldModesByField: Record<string, 'edit' | 'hidden'> = {};
+    metaQuery.data?.keystone.adminMeta.list?.fields.forEach(field => {
+      createViewFieldModesByField[field.path] = field.createView.fieldMode;
+    });
+    return createViewFieldModesByField;
   }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
 
   let selectedFields = useSelectedFields(listKey, listViewFieldModesByField);
@@ -187,9 +197,11 @@ export const ListPage = ({ listKey }: ListPageProps) => {
   return (
     <PageContainer>
       <ListPageHeader
+        createViewFieldModes={createViewFieldModesByField}
         listKey={listKey}
         showCreate={!(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)}
       />
+      <FieldSelection listKey={listKey} fieldModesByFieldPath={listViewFieldModesByField} />
       <p
         css={{
           // TODO: don't do this
@@ -487,8 +499,8 @@ function ListTable({
                   const field = list.fields[path];
                   let { Cell } = list.fields[path].views;
                   const itemForField: Record<string, any> = {};
-                  for (const graphqlField of getRootFieldsFromSelection(
-                    field.controller.graphqlSelection
+                  for (const graphqlField of getRootGraphQLFieldsFromFieldController(
+                    field.controller
                   )) {
                     const fieldGetter = itemGetter.get(graphqlField);
                     if (fieldGetter.errors) {
@@ -528,23 +540,55 @@ function ListTable({
   );
 }
 
-const ListPageHeader = ({ listKey, showCreate }: { listKey: string; showCreate: boolean }) => {
+const ListPageHeader = ({
+  listKey,
+  showCreate,
+  createViewFieldModes,
+}: {
+  listKey: string;
+  showCreate: boolean;
+  createViewFieldModes: Record<string, 'edit' | 'hidden'>;
+}) => {
   const list = useList(listKey);
+  const router = useRouter();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   return (
-    <Stack
-      across
-      marginY="large"
-      gap="medium"
-      css={{
-        display: 'flex',
-        flexDirection: 'row',
-        // justifyContent: 'space-between',
-        alignItems: 'center',
-      }}
-    >
-      <H1>{list.label}</H1>
-      {showCreate && <Button tone="positive">Create</Button>}
-    </Stack>
+    <Fragment>
+      <Stack
+        across
+        marginY="large"
+        gap="medium"
+        css={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        <H1>{list.label}</H1>
+        {showCreate && (
+          <Button
+            onClick={() => {
+              setIsCreateModalOpen(true);
+            }}
+            tone="positive"
+          >
+            Create
+          </Button>
+        )}
+      </Stack>
+      {isCreateModalOpen && (
+        <CreateForm
+          listKey={listKey}
+          fieldModes={createViewFieldModes}
+          onCreate={id => {
+            router.push(`/${list.path}/[id]`, `/${list.path}/${id}`);
+          }}
+          onClose={() => {
+            setIsCreateModalOpen(false);
+          }}
+        />
+      )}
+    </Fragment>
   );
 };
 

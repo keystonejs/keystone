@@ -9,61 +9,16 @@ import { useRouter } from 'next/router';
 import { useList } from '../context';
 import { PageContainer } from '../components/PageContainer';
 import { Button } from '@keystone-ui/button';
-import { JSONValue, ListMeta } from '@keystone-spike/types';
 import isDeepEqual from 'fast-deep-equal';
 import { Notice } from '@keystone-ui/notice';
 import { Tooltip } from '@keystone-ui/tooltip';
 import copyToClipboard from 'clipboard-copy';
 import { DataGetter, DeepNullable, makeDataGetter } from '../utils/dataGetter';
-import { getRootFieldsFromSelection } from '../utils/getRootFieldsFromSelection';
-import { GraphQLError } from 'graphql';
+import { deserializeValue, ItemData, serializeValueToObjByFieldKey } from '../utils/serialization';
 
 type ItemPageProps = {
   listKey: string;
 };
-
-type DeserializedValue = Record<
-  string,
-  | { kind: 'error'; errors: readonly [GraphQLError, ...GraphQLError[]] }
-  | { kind: 'value'; value: any }
->;
-
-function deserializeValue(list: ListMeta, itemGetter: DataGetter<ItemData>) {
-  const value: DeserializedValue = {};
-  Object.keys(list.fields).forEach(fieldKey => {
-    const field = list.fields[fieldKey];
-    const itemForField: Record<string, any> = {};
-    const errors = new Set<GraphQLError>();
-    for (const graphqlField of getRootFieldsFromSelection(field.controller.graphqlSelection)) {
-      const fieldGetter = itemGetter.get(graphqlField);
-      if (fieldGetter.errors) {
-        fieldGetter.errors.forEach(error => {
-          errors.add(error);
-        });
-      }
-      itemForField[graphqlField] = fieldGetter.data;
-    }
-    if (errors.size) {
-      value[fieldKey] = { kind: 'error', errors: [...errors] as any };
-    } else {
-      value[fieldKey] = { kind: 'value', value: field.controller.deserialize(itemForField) };
-    }
-  });
-  return value;
-}
-
-function serializeValueToObjByFieldKey(list: ListMeta, value: DeserializedValue) {
-  const obj: Record<string, Record<string, JSONValue>> = {};
-  Object.keys(list.fields).map(fieldKey => {
-    const val = value[fieldKey];
-    if (val.kind === 'value') {
-      obj[fieldKey] = list.fields[fieldKey].controller.serialize(val.value);
-    }
-  });
-  return obj;
-}
-
-type ItemData = DeepNullable<{ id: string; _label_: string; [key: string]: any }>;
 
 function ItemForm({
   listKey,
