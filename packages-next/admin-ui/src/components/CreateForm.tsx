@@ -15,7 +15,7 @@ export function CreateForm({
   onCreate,
 }: {
   listKey: string;
-  fieldModes: Record<string, 'edit' | 'read' | 'hidden'>;
+  fieldModes: Record<string, 'edit' | 'hidden'>;
   onClose: () => void;
   onCreate: (id: string) => void;
 }) {
