@@ -28,7 +28,7 @@
     "@types/fs-extra": "^9.0.1",
     "@types/keystonejs__adapter-knex": "^6.3.1",
     "@types/keystonejs__adapter-mongoose": "^5.1.2",
-    "@types/keystonejs__keystone": "^6.0.0",
+    "@types/keystonejs__keystone": "^6.0.1",
     "@types/pluralize": "^0.0.29",
     "@types/prettier": "^2.1.1",
     "@types/source-map-support": "^0.5.3",
