@@ -16,6 +16,7 @@ import { GraphQLSchema, GraphQLScalarType } from 'graphql';
 import { mapSchema } from '@graphql-tools/utils';
 import { crudForList } from '../lib/crud-api';
 import { adminMetaSchemaExtension } from '@keystone-spike/admin-ui/templates';
+import { accessControlContext, skipAccessControlContext } from '../lib/createAccessControlContext';
 
 export function createKeystone(config: KeystoneConfig): Keystone {
   let keystone = new BaseKeystone({
@@ -158,19 +159,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
   }) {
     return {
       schemaName: 'public',
-      // authedItem: authentication.item,
-      // authedListKey: authentication.listKey,
-      ...(keystone as any)._getAccessControlContext({
-        schemaName: 'public',
-        authentication: sessionContext?.session
-          ? {
-              // TODO: Keystone makes assumptions about the shape of this object
-              item: true,
-              ...(sessionContext?.session as any),
-            }
-          : {},
-        skipAccessControl,
-      }),
+      ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
       crud,
       totalResults: 0,
       keystone,
