@@ -2,7 +2,10 @@ import { FragmentDefinitionNode, parse, SelectionSetNode } from 'graphql';
 
 function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionSetNode) {
   selectionSet.selections.forEach(selection => {
-    if (selection.kind === 'Field') {
+    if (
+      selection.kind === 'Field' &&
+      selection.name.value !== 'someFieldBecauseGraphQLRequiresAtLeastOneSelection'
+    ) {
       selectedFields.add(selection.name.value);
     }
     if (selection.kind === 'InlineFragment') {
@@ -20,6 +23,5 @@ export function getRootFieldsFromSelection(selection: string) {
   const selectedFields = new Set<string>();
   const fragmentNode = ast.definitions[0] as FragmentDefinitionNode;
   extractRootFields(selectedFields, fragmentNode.selectionSet);
-  selectedFields.delete('someFieldBecauseGraphQLRequiresAtLeastOneSelection');
   return [...selectedFields];
 }
