@@ -128,7 +128,7 @@ export const accessControlContext = {
     { gqlName, itemId, itemIds, context }: any = {}
   ) {
     return validateListAccessControl({
-      access: access.public,
+      access: access[context.schemaName],
       originalInput,
       operation,
       session: context.session,
@@ -149,7 +149,7 @@ export const accessControlContext = {
     { gqlName, itemId, itemIds, context }: any = {}
   ) {
     return validateFieldAccessControl({
-      access: access.public,
+      access: access[context.schemaName],
       originalInput,
       existingItem,
       operation,
