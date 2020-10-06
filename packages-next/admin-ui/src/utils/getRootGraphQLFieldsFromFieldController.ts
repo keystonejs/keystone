@@ -1,3 +1,5 @@
+import { FieldController } from '@keystone-spike/types';
+import weakMemoize from '@emotion/weak-memoize';
 import { FragmentDefinitionNode, parse, SelectionSetNode } from 'graphql';
 
 function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionSetNode) {
@@ -15,13 +17,15 @@ function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionS
   });
 }
 
-export function getRootFieldsFromSelection(selection: string) {
-  const ast = parse(`fragment X on Y {
+export const getRootGraphQLFieldsFromFieldController = weakMemoize(
+  (controller: FieldController<any, any>) => {
+    const ast = parse(`fragment X on Y {
   someFieldBecauseGraphQLRequiresAtLeastOneSelection
-  ${selection}
+  ${controller.graphqlSelection}
   }`);
-  const selectedFields = new Set<string>();
-  const fragmentNode = ast.definitions[0] as FragmentDefinitionNode;
-  extractRootFields(selectedFields, fragmentNode.selectionSet);
-  return [...selectedFields];
-}
+    const selectedFields = new Set<string>();
+    const fragmentNode = ast.definitions[0] as FragmentDefinitionNode;
+    extractRootFields(selectedFields, fragmentNode.selectionSet);
+    return [...selectedFields];
+  }
+);

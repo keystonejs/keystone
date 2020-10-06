@@ -14,7 +14,7 @@ import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
 import { CheckboxControl } from '@keystone-ui/fields';
 import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter';
-import { getRootFieldsFromSelection } from '../../utils/getRootFieldsFromSelection';
+import { getRootGraphQLFieldsFromFieldController } from '../../utils/getRootGraphQLFieldsFromFieldController';
 
 type ListPageProps = {
   listKey: string;
@@ -487,8 +487,8 @@ function ListTable({
                   const field = list.fields[path];
                   let { Cell } = list.fields[path].views;
                   const itemForField: Record<string, any> = {};
-                  for (const graphqlField of getRootFieldsFromSelection(
-                    field.controller.graphqlSelection
+                  for (const graphqlField of getRootGraphQLFieldsFromFieldController(
+                    field.controller
                   )) {
                     const fieldGetter = itemGetter.get(graphqlField);
                     if (fieldGetter.errors) {

@@ -15,7 +15,7 @@ import { Notice } from '@keystone-ui/notice';
 import { Tooltip } from '@keystone-ui/tooltip';
 import copyToClipboard from 'clipboard-copy';
 import { DataGetter, DeepNullable, makeDataGetter } from '../utils/dataGetter';
-import { getRootFieldsFromSelection } from '../utils/getRootFieldsFromSelection';
+import { getRootGraphQLFieldsFromFieldController } from '../utils/getRootGraphQLFieldsFromFieldController';
 import { GraphQLError } from 'graphql';
 
 type ItemPageProps = {
@@ -34,7 +34,7 @@ function deserializeValue(list: ListMeta, itemGetter: DataGetter<ItemData>) {
     const field = list.fields[fieldKey];
     const itemForField: Record<string, any> = {};
     const errors = new Set<GraphQLError>();
-    for (const graphqlField of getRootFieldsFromSelection(field.controller.graphqlSelection)) {
+    for (const graphqlField of getRootGraphQLFieldsFromFieldController(field.controller)) {
       const fieldGetter = itemGetter.get(graphqlField);
       if (fieldGetter.errors) {
         fieldGetter.errors.forEach(error => {
