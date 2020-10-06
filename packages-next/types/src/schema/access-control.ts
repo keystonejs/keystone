@@ -2,13 +2,7 @@ import type { GraphQLContext, MaybePromise } from '../utils';
 import type { BaseGeneratedListTypes } from '..';
 
 type BaseAccessArgs = {
-  // need to figure out what to do here
-  // item and listKey shouldn't be things here
-  // (this is not a comment about the types, it's a comment about Keystone implementation things having opinions about this)
-  authentication: {
-    item?: Record<string, any>;
-    listKey?: string;
-  };
+  session: any;
   listKey: string;
   context: GraphQLContext;
   // idk if this is optional or not
