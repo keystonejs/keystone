@@ -39,7 +39,6 @@
     "fast-glob": "^3.2.4",
     "fs-extra": "^9.0.1",
     "graphql": "^15.3.0",
-    "micro-memoize": "^4.0.9",
     "next": "^9.5.3",
     "object-hash": "^2.0.3",
     "pirates": "^4.0.1",
