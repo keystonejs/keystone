@@ -26,14 +26,17 @@
   - [x] URL State working and actually setting columns
   - [x] Show the right columns in the table and query the right fields
   - [x] Show "with {x} columns" in UI
+  - [x] Selection UI without popup
+  - [x] Hide hidden fields from the selection ui
   - [ ] Popup to select columns (w/ search)
-  - [ ] Hide hidden fields from the popup
   - [ ] Don't show the popup when there are no columns to select from
   - [x] Add `supportsLinkTo` support to Cells
   - [x] Pass `linkTo` to the first cell, if supported, otherwise add a link icon as the first column
 - [ ] Implement Filters
   - [x] URL State working and actually filtering
   - [x] Show selected filters in UI
+  - [ ] Add filter UI outside of popup
+  - [ ] Edit filter UI outside of popup
   - [ ] Popup to add filters (w/ search, exclude set filters)
   - [ ] Popup to edit filters
   - [ ] All the filter UI
