@@ -31,7 +31,7 @@ export const useIndicatorTokens = ({
   size: sizeKey,
   type,
 }: IndicatorTokensProps): IndicatorTokens => {
-  const { animation, controlSizes, fields } = useTheme();
+  const { controlSizes, fields } = useTheme();
 
   const size = controlSizes[sizeKey];
 

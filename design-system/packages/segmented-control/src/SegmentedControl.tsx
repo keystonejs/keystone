@@ -25,7 +25,6 @@ import {
 import {
   Box,
   BoxProps,
-  forwardRefWithAs,
   jsx,
   ManagedChangeHandler,
   useId,
