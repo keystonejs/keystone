@@ -61,6 +61,11 @@ export type ListConfig<
   access?: ListAccessControl<TGeneratedListTypes> | boolean;
   /** Config for how this list should act in the Admin UI */
   admin?: {
+    /**
+     * Excludes this list from the Admin UI
+     * @default false
+     */
+    isHidden?: MaybeSessionFunction<boolean>;
     /** The path that the list should be at in the Admin UI */
     path?: string;
     /**
@@ -108,8 +113,7 @@ export type ListConfig<
        */
       initialColumns?: (keyof Fields | '_label_')[];
       // was previously top-level defaultSort
-      // TODO: cross-reference this against how lists can be sorted, and check implementation
-      initialSort?: (keyof Fields)[];
+      initialSort?: { field: keyof Fields; direction: 'ASC' | 'DESC' };
       // was previously defaultPageSize
       pageSize?: number; // default number of items to display per page on the list screen
       // note: we are removing maximumPageSize
