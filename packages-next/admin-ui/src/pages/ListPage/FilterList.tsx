@@ -2,7 +2,7 @@
 import { Inline, jsx, Stack } from '@keystone-ui/core';
 import { FieldMeta, ListMeta } from '@keystone-spike/types';
 import { Filter } from './useFilters';
-import { Link, useRouter } from '../../router';
+import { useRouter } from '../../router';
 import { Button } from '@keystone-ui/button';
 import { usePopover, PopoverDialog } from '@keystone-ui/popover';
 import { tabbable } from 'tabbable';
