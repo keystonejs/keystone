@@ -25945,10 +25945,10 @@ tabbable@^5.1.0:
   resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.1.0.tgz#b81115168d0a8359ba69003b6a99d05f8480a664"
   integrity sha512-Y3nSukchqM5UchuZjhj/WyE79Qb4RM/Vx3x3oHO3UYKKpf70Hy3iVRxb61MzCavN74aZsKzvPl4KNG8tQUAjFQ==
 
-tabbable@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.1.1.tgz#33d6950a615bc78c6eb6828f3953e66544817dc4"
-  integrity sha512-qjkrV7I29Lkg///jPQnq26+26q9wQOKTEcckrwPejTsxxl2zdK60x0XmiEELCEParLhgbVQRflyKkpr+K/SmCQ==
+tabbable@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.1.2.tgz#3c4eac2901d0000913d13ce147229eb1405b59ca"
+  integrity sha512-DNmnX4XgkjK7kxDnQ5IbyYoNke2izMk5b62All0qxzoCF3wE7H9CuZ2IPdfAN8v79E0rpjv2k78uWuIXupGa9g==
 
 table@^5.2.3:
   version "5.2.3"
