@@ -15,10 +15,7 @@ const PillButton = ({
   tone: Tone;
   weight: Weight;
 } & ButtonHTMLAttributes<HTMLButtonElement>) => {
-  const fontSizeNumeric = 0.85;
-  const fontSize = `${fontSizeNumeric}rem`;
-  const borderRadius = `${fontSizeNumeric * 2}rem`;
-  const { tones, spacing } = useTheme();
+  const { radii, spacing, tones, typography } = useTheme();
   const tone = tones[toneKey];
   const tokens = {
     bold: {
@@ -55,14 +52,14 @@ const PillButton = ({
       css={{
         appearance: 'none',
         background: 'none',
-        padding: `${spacing.small}px ${spacing.xsmall}px`,
+        padding: `${spacing.small}px ${spacing.medium}px`,
         backgroundColor: tokens.background,
         color: tokens.foreground,
         alignItems: 'center',
         border: 0,
         cursor: 'pointer',
         display: 'flex',
-        fontSize,
+        fontSize: typography.fontSize.small,
         justifyContent: 'center',
         maxWidth: '100%',
         minWidth: 1,
@@ -81,18 +78,19 @@ const PillButton = ({
         },
 
         ':first-of-type': {
-          paddingLeft: '0.9em',
-          paddingRight: '0.75em',
-          borderTopLeftRadius: borderRadius,
-          borderBottomLeftRadius: borderRadius,
+          paddingRight: spacing.small,
+          borderTopLeftRadius: radii.full,
+          borderBottomLeftRadius: radii.full,
           marginRight: 1,
         },
         ':last-of-type': {
-          paddingLeft: '0.75em',
-          paddingRight: '0.9em',
-          borderTopRightRadius: borderRadius,
-          borderBottomRightRadius: borderRadius,
-          marginLeft: 1,
+          paddingLeft: spacing.small,
+          borderTopRightRadius: radii.full,
+          borderBottomRightRadius: radii.full,
+        },
+        ':only-of-type': {
+          paddingLeft: spacing.medium,
+          paddingRight: spacing.medium,
         },
       }}
       {...props}
@@ -117,7 +115,7 @@ export const Pill = forwardRef<HTMLDivElement, PillProps>(
         </PillButton>
         {onRemove ? (
           <PillButton weight={weight} tone={tone} onClick={onRemove}>
-            <XIcon css={{ height: 12 }} />
+            <XIcon css={{ height: 14, width: 14 }} />
           </PillButton>
         ) : null}
       </div>
