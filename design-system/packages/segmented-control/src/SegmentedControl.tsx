@@ -25,7 +25,6 @@ import {
 import {
   Box,
   BoxProps,
-  forwardRefWithAs,
   jsx,
   ManagedChangeHandler,
   useId,
@@ -58,84 +57,78 @@ type SegmentedControlProps = {
   size?: SizeKey;
 } & BoxProps;
 
-export const SegmentedControl = forwardRefWithAs<'div', SegmentedControlProps>(
-  (
-    {
-      animate = false,
-      fill = false,
-      initialIndex: initialIndexProp = 0,
-      onChange,
-      onChange: onChangeProp,
-      segments,
-      size = 'medium',
-      selectedIndex: selectedIndexProp,
-      ...props
-    },
-    ref
-  ) => {
-    const rootRef = useRef<HTMLDivElement>(null);
-    const [selectedRect, setSelectedRect] = useState({});
-    const [selectedIndex, setIndex] = useManagedState<Index>(
-      selectedIndexProp,
-      initialIndexProp,
-      onChangeProp
-    );
+export const SegmentedControl = ({
+  animate = false,
+  fill = false,
+  initialIndex: initialIndexProp = 0,
+  onChange: onChangeProp,
+  segments,
+  size = 'medium',
+  selectedIndex: selectedIndexProp,
+  ...props
+}: SegmentedControlProps) => {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [selectedRect, setSelectedRect] = useState({});
+  const [selectedIndex, setIndex] = useManagedState<Index>(
+    selectedIndexProp,
+    initialIndexProp,
+    onChangeProp
+  );
 
-    const handleChange = (index: Index) => (event: ChangeEvent<HTMLInputElement>) => {
-      setIndex(index, event);
-    };
+  const handleChange = (index: Index) => (event: ChangeEvent<HTMLInputElement>) => {
+    setIndex(index, event);
+  };
 
-    // Because we use radio buttons for the segments, they should share a unique `name`
-    const name = String(useId());
+  // Because we use radio buttons for the segments, they should share a unique `name`
+  const name = String(useId());
 
-    // Animate the selected segment indicator
-    useEffect(() => {
-      if (animate && rootRef.current instanceof HTMLElement) {
-        let nodes = Array.from(rootRef.current.children);
-        let selected = nodes[selectedIndex];
+  // Animate the selected segment indicator
+  useEffect(() => {
+    if (animate && rootRef.current instanceof HTMLElement) {
+      let nodes = Array.from(rootRef.current.children);
+      let selected = nodes[selectedIndex];
 
-        let rootRect = rootRef.current.getBoundingClientRect();
-        let nodeRect = selected.getBoundingClientRect();
-        let offsetLeft = nodeRect.left - rootRect.left;
-        let offsetTop = nodeRect.top - rootRect.top;
+      let rootRect = rootRef.current.getBoundingClientRect();
+      let nodeRect = selected.getBoundingClientRect();
+      let offsetLeft = nodeRect.left - rootRect.left;
+      let offsetTop = nodeRect.top - rootRect.top;
 
-        setSelectedRect({
-          height: nodeRect.height,
-          width: nodeRect.width,
-          left: 0,
-          top: 0,
-          transform: `translateX(${offsetLeft}px) translateY(${offsetTop}px)`,
-        });
-      }
-    }, [animate, selectedIndex]);
+      setSelectedRect({
+        height: nodeRect.height,
+        width: nodeRect.width,
+        left: 0,
+        top: 0,
+        transform: `translateX(${offsetLeft}px) translateY(${offsetTop}px)`,
+      });
+    }
+  }, [animate, selectedIndex]);
 
-    return (
-      <Box ref={ref} {...props}>
-        <Root fill={fill} size={size} ref={rootRef}>
-          {segments.map((label, idx) => {
-            const isSelected = selectedIndex === idx;
+  return (
+    <Box {...props}>
+      <Root fill={fill} size={size} ref={rootRef}>
+        {segments.map((label, idx) => {
+          const isSelected = selectedIndex === idx;
 
-            return (
-              <Item
-                fill={fill}
-                isAnimated={animate}
-                isSelected={isSelected}
-                key={label}
-                name={name}
-                onChange={handleChange(idx)}
-                size={size}
-                value={idx}
-              >
-                {label}
-              </Item>
-            );
-          })}
-          {animate && <SelectedIndicator size={size} style={selectedRect} />}
-        </Root>
-      </Box>
-    );
-  }
-);
+          return (
+            <Item
+              fill={fill}
+              isAnimated={animate}
+              isSelected={isSelected}
+              key={label}
+              name={name}
+              onChange={handleChange(idx)}
+              size={size}
+              value={idx}
+            >
+              {label}
+            </Item>
+          );
+        })}
+        {animate && <SelectedIndicator size={size} style={selectedRect} />}
+      </Root>
+    </Box>
+  );
+};
 
 // Styled Components
 // ------------------------------

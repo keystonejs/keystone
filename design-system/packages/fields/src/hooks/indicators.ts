@@ -31,7 +31,7 @@ export const useIndicatorTokens = ({
   size: sizeKey,
   type,
 }: IndicatorTokensProps): IndicatorTokens => {
-  const { animation, controlSizes, fields } = useTheme();
+  const { controlSizes, fields } = useTheme();
 
   const size = controlSizes[sizeKey];
 
@@ -42,12 +42,6 @@ export const useIndicatorTokens = ({
     borderWidth: fields.controlBorderWidth,
     boxSize: size.indicatorBoxSize,
     foreground: fields.controlBackground, // visually hide the icon unless the control is checked
-    transition: `
-      background-color ${animation.duration100},
-      box-shadow ${animation.duration100},
-      border-color ${animation.duration100},
-      color ${animation.duration100}
-    `,
     hover: {
       background: fields.hover.controlBackground,
       borderColor: fields.hover.controlBorderColor,

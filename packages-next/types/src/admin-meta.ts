@@ -31,6 +31,11 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
     types: Record<string, FilterTypeDeclaration<FilterValue>>;
     graphql(type: { type: string; value: FilterValue }): Record<string, any>;
     format(type: FilterTypeToFormat<FilterValue>): string;
+    Filter(props: {
+      type: string;
+      value: FilterValue;
+      onChange(value: FilterValue): void;
+    }): ReactElement | null;
   };
 };
 
