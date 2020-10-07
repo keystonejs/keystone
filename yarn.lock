@@ -4889,7 +4889,7 @@
   resolved "https://registry.yarnpkg.com/@types/keystonejs__fields/-/keystonejs__fields-5.1.1.tgz#1c91718eeee0b2e58a2b3f57ad234967bad202df"
   integrity sha512-m8Ny/rTXzzoKO33UDkcspmHK0Q/qP4teo2510+HG1NMxM7pF/jPPL/viGtAJF/eIYEsSZxzwNSTFWMw/DlPIwQ==
 
-"@types/keystonejs__keystone@*", "@types/keystonejs__keystone@^6.0.0":
+"@types/keystonejs__keystone@*", "@types/keystonejs__keystone@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@types/keystonejs__keystone/-/keystonejs__keystone-6.0.1.tgz#4f11248c3aaac76ca92e452c78fd733bc1ba74db"
   integrity sha512-Viu3zQGrNiGfCIPgdUrGtlMuSwFwDbH50YGej6CBJ2lXfY56/YHmNS8gRq3yADxwJqVbaBBc+GHzhdGZmknMvQ==
@@ -5061,7 +5061,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.8.12", "@types/react@^16.8.6", "@types/react@^16.9.49":
+"@types/react@*", "@types/react@^16.8.12", "@types/react@^16.8.6", "@types/react@^16.9.51":
   version "16.9.51"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.51.tgz#f8aa51ffa9996f1387f63686696d9b59713d2b60"
   integrity sha512-lQa12IyO+DMlnSZ3+AGHRUiUcpK47aakMMoBG8f7HGxJT8Yfe+WE128HIXaHOHVPReAW0oDS3KAI0JI2DDe1PQ==
