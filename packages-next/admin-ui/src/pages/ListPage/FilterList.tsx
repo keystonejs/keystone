@@ -10,19 +10,13 @@ import { FormEvent, Fragment, useState } from 'react';
 import { Pill } from '@keystone-ui/pill';
 
 export function FilterList({ filters, list }: { filters: Filter[]; list: ListMeta }) {
-  const { query } = useRouter();
   return (
-    <p>
-      Filters:
-      <Inline gap="small">
-        {filters.map(filter => {
-          const field = list.fields[filter.field];
-          return (
-            <FilterPill key={`${filter.field}_${filter.type}`} field={field} filter={filter} />
-          );
-        })}
-      </Inline>
-    </p>
+    <Inline gap="small">
+      {filters.map(filter => {
+        const field = list.fields[filter.field];
+        return <FilterPill key={`${filter.field}_${filter.type}`} field={field} filter={filter} />;
+      })}
+    </Inline>
   );
 }
 
