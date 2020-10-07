@@ -14,6 +14,8 @@
 
 # Date / Time Types Reboot
 
+- [ ] Talk about aligning the naming of these with temporal
+
 ## Timestamp
 
 The current `DateTimeUtc` type; a point in time; effectively a datetime at UTC and/or epoch
