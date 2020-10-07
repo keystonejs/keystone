@@ -460,6 +460,7 @@ const shadow = {
 
 const animation = {
   duration0: '0ms',
+  duration50: '40ms',
   duration100: '130ms',
   duration200: '160ms',
   duration300: '190ms',

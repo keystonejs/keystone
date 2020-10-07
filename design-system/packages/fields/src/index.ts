@@ -14,3 +14,4 @@ export { Radio } from './Radio';
 export { Switch } from './Switch';
 export { TextArea } from './TextArea';
 export { TextInput } from './TextInput';
+export { SelectInput } from './SelectInput';

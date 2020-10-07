@@ -1,0 +1,23 @@
+{
+  "name": "@keystone-ui/pill",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/pill.cjs.js",
+  "module": "dist/pill.esm.js",
+  "peerDependencies": {
+    "react": "^16.13.1"
+  },
+  "devDependencies": {
+    "react": "^16.13.1"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "@keystone-ui/core": "*",
+    "@keystone-ui/icons": "*"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/pill"
+}
