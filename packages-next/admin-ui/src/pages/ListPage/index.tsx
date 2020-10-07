@@ -17,6 +17,8 @@ import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter
 import { getRootGraphQLFieldsFromFieldController } from '../../utils/getRootGraphQLFieldsFromFieldController';
 import { CreateForm } from '../../components/CreateForm';
 import { FieldSelection } from './FieldSelection';
+import { FilterAdd } from './FilterAdd';
+import { FilterList } from './FilterList';
 
 type ListPageProps = {
   listKey: string;
@@ -201,7 +203,11 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         listKey={listKey}
         showCreate={!(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)}
       />
-      <FieldSelection listKey={listKey} fieldModesByFieldPath={listViewFieldModesByField} />
+      <Stack gap="xxlarge" across>
+        <FieldSelection listKey={listKey} fieldModesByFieldPath={listViewFieldModesByField} />{' '}
+        <FilterAdd listKey={listKey} />
+      </Stack>
+
       <p
         css={{
           // TODO: don't do this
@@ -257,28 +263,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
             })()
           : ' '}
       </p>
-      {filters.filters.length ? (
-        <p>
-          Filters:
-          <ul>
-            {filters.filters.map(filter => {
-              const field = list.fields[filter.field];
-              const { [`!${filter.field}_${filter.type}`]: _ignore, ...queryToKeep } = query;
-              return (
-                <li key={`${filter.field}_${filter.type}`}>
-                  {field.label}{' '}
-                  {field.controller.filter!.format({
-                    label: field.controller.filter!.types[filter.type].label,
-                    type: filter.type,
-                    value: filter.value,
-                  })}
-                  <Link href={{ query: queryToKeep }}>Remove</Link>
-                </li>
-              );
-            })}
-          </ul>
-        </p>
-      ) : null}
+      {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
       {metaQuery.error ? (
         // TODO: Show errors nicely and with information
         'Error...'

@@ -20,6 +20,7 @@
     "@keystone-ui/icons": "*",
     "@keystone-ui/loading": "*",
     "@keystone-ui/notice": "*",
+    "@keystone-ui/popover": "*",
     "@keystone-ui/tooltip": "*",
     "@types/react": "^16.9.51",
     "clipboard-copy": "^3.1.0",
@@ -27,7 +28,8 @@
     "graphql": "^15.3.0",
     "next": "^9.5.3",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "tabbable": "^5.1.0"
   },
   "engines": {
     "node": ">=10.0.0"

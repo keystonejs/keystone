@@ -3,7 +3,7 @@
 import { ReactNode, useState } from 'react';
 import { jsx } from '@emotion/core';
 import { useTheme } from '@keystone-ui/core';
-import { Checkbox, Radio, TextArea, TextInput, Switch } from '@keystone-ui/fields';
+import { Checkbox, Radio, TextArea, TextInput, Switch, SelectInput } from '@keystone-ui/fields';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
 
 import { Page } from '../../components/Page';
@@ -33,6 +33,7 @@ const StatefulSwitch = ({ children, ...props }: { children: ReactNode }) => {
 
 export default function FieldsPage() {
   const { spacing } = useTheme();
+  const [selectVal, setSelectVal] = useState(undefined);
   return (
     <Page>
       <h1>Form Fields</h1>
@@ -53,6 +54,39 @@ export default function FieldsPage() {
       <h2>TextAreas</h2>
       <FieldWrapper>
         <TextArea />
+      </FieldWrapper>
+      <h2>Select Input</h2>
+      <FieldWrapper>
+        <SelectInput
+          value={selectVal}
+          options={[
+            {
+              label: 'Option A',
+              value: 'a',
+            },
+            {
+              label: 'Option B',
+              value: 'b',
+            },
+            {
+              label: 'Option C',
+              value: 'c',
+            },
+            {
+              label: 'Option D',
+              value: 'd',
+            },
+            {
+              label: 'Option E',
+              value: 'e',
+            },
+            {
+              label: 'Option F',
+              value: 'f',
+            },
+          ]}
+          onChange={setSelectVal}
+        />
       </FieldWrapper>
       <h2>Segmented Controls</h2>
       <FieldWrapper>

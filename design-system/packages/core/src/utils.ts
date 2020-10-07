@@ -40,7 +40,7 @@ export const devWarning = (condition: boolean, message: string) => {
 type ElementTagNameMap = HTMLElementTagNameMap &
   Pick<SVGElementTagNameMap, Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>>;
 
-type AsProp<Comp extends ElementType> = {
+type AsProp<Comp extends ElementType, Props> = {
   as?: Comp;
   ref?: Ref<
     Comp extends keyof ElementTagNameMap
@@ -49,12 +49,12 @@ type AsProp<Comp extends ElementType> = {
       ? InstanceType<Comp>
       : undefined
   >;
-} & Omit<ComponentPropsWithoutRef<Comp>, 'as'>;
+} & Omit<ComponentPropsWithoutRef<Comp>, 'as' | keyof Props>;
 
 type CompWithAsProp<Props, DefaultElementType extends ElementType> = <
   Comp extends ElementType = DefaultElementType
 >(
-  props: AsProp<Comp> & Props
+  props: AsProp<Comp, Props> & Props
 ) => ReactElement;
 
 export const forwardRefWithAs = <DefaultElementType extends ElementType, BaseProps>(
