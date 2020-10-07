@@ -14,6 +14,7 @@
     "@keystone-ui/fields": "*",
     "@keystone-ui/loading": "*",
     "@keystone-ui/notice": "*",
+    "@keystone-ui/pill": "*",
     "@keystone-ui/popover": "*",
     "@keystone-ui/segmented-control": "*",
     "@keystone-ui/tooltip": "*",

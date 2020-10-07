@@ -20,6 +20,7 @@
     "@keystone-ui/icons": "*",
     "@keystone-ui/loading": "*",
     "@keystone-ui/notice": "*",
+    "@keystone-ui/pill": "*",
     "@keystone-ui/popover": "*",
     "@keystone-ui/tooltip": "*",
     "@types/react": "^16.9.51",
