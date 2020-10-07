@@ -14,7 +14,7 @@ export function FilterList({ filters, list }: { filters: Filter[]; list: ListMet
   return (
     <p>
       Filters:
-      <Inline>
+      <Inline gap="small">
         {filters.map(filter => {
           const field = list.fields[filter.field];
           return (
