@@ -33,7 +33,7 @@ const StatefulSwitch = ({ children, ...props }: { children: ReactNode }) => {
 
 export default function FieldsPage() {
   const { spacing } = useTheme();
-  const [selectVal, setSelectVal] = useState(undefined);
+  const [selectVal, setSelectVal] = useState<string | undefined>(undefined);
   return (
     <Page>
       <h1>Form Fields</h1>
