@@ -1,41 +1,27 @@
 /** @jsx jsx */
-import { jsx, Stack } from '@keystone-ui/core';
+import { Inline, jsx, Stack } from '@keystone-ui/core';
 import { FieldMeta, ListMeta } from '@keystone-spike/types';
 import { Filter } from './useFilters';
-import { Link, useRouter } from '../../router';
+import { useRouter } from '../../router';
 import { Button } from '@keystone-ui/button';
 import { usePopover, PopoverDialog } from '@keystone-ui/popover';
 import { tabbable } from 'tabbable';
 import { FormEvent, Fragment, useState } from 'react';
+import { Pill } from '@keystone-ui/pill';
 
 export function FilterList({ filters, list }: { filters: Filter[]; list: ListMeta }) {
-  const { query } = useRouter();
   return (
-    <p>
-      Filters:
-      <ul>
-        {filters.map(filter => {
-          const field = list.fields[filter.field];
-          const { [`!${filter.field}_${filter.type}`]: _ignore, ...queryToKeep } = query;
-          return (
-            <li key={`${filter.field}_${filter.type}`}>
-              {field.label}{' '}
-              {field.controller.filter!.format({
-                label: field.controller.filter!.types[filter.type].label,
-                type: filter.type,
-                value: filter.value,
-              })}
-              <EditPopover field={field} filter={filter} />
-              <Link href={{ query: queryToKeep }}>Remove</Link>
-            </li>
-          );
-        })}
-      </ul>
-    </p>
+    <Inline gap="small">
+      {filters.map(filter => {
+        const field = list.fields[filter.field];
+        return <FilterPill key={`${filter.field}_${filter.type}`} field={field} filter={filter} />;
+      })}
+    </Inline>
   );
 }
 
-function EditPopover({ filter, field }: { filter: Filter; field: FieldMeta }) {
+function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
+  const router = useRouter();
   const { isOpen, setOpen, trigger, dialog } = usePopover({
     placement: 'bottom',
     modifiers: [
@@ -49,15 +35,25 @@ function EditPopover({ filter, field }: { filter: Filter; field: FieldMeta }) {
   });
   return (
     <Fragment>
-      <Button
+      <Pill
         onClick={() => {
           setOpen(true);
         }}
         {...trigger.props}
         ref={trigger.ref}
+        onRemove={() => {
+          const { [`!${filter.field}_${filter.type}`]: _ignore, ...queryToKeep } = router.query;
+
+          router.push({ query: queryToKeep });
+        }}
       >
-        Edit
-      </Button>
+        {field.label}{' '}
+        {field.controller.filter!.format({
+          label: field.controller.filter!.types[filter.type].label,
+          type: filter.type,
+          value: filter.value,
+        })}
+      </Pill>
       <PopoverDialog {...dialog.props} ref={dialog.ref} isVisible={isOpen}>
         <EditDialog
           onClose={() => {
