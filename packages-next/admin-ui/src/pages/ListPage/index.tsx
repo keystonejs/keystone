@@ -19,6 +19,8 @@ import { CreateForm } from '../../components/CreateForm';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
+import { ListMeta } from '@keystone-spike/types';
+import { AlertDialog } from '@keystone-ui/modals';
 
 type ListPageProps = {
   listKey: string;
@@ -118,20 +120,6 @@ export const ListPage = ({ listKey }: ListPageProps) => {
 
   let selectedFields = useSelectedFields(listKey, listViewFieldModesByField);
 
-  const [deleteItems, deleteItemsState] = useMutation(
-    useMemo(
-      () =>
-        gql`
-  mutation($ids: [ID!]!) {
-    ${list.gqlNames.deleteManyMutationName}(ids: $ids) {
-      id
-    }
-  }
-`,
-      [list, selectedFields]
-    )
-  );
-
   let { data, error, refetch } = useQuery(
     useMemo(() => {
       let selectedGqlFields = selectedFields.fields
@@ -177,15 +165,15 @@ export const ListPage = ({ listKey }: ListPageProps) => {
 
   const [selectedItemsState, setSelectedItems] = useState(() => ({
     itemsFromServer: undefined as any,
-    selectedItems: {} as Record<string, true>,
+    selectedItems: new Set() as ReadonlySet<string>,
   }));
   // this removes the selected items which no longer exist when the data changes
   // because someone goes to another page, changes filters or etc.
   if (data && selectedItemsState.itemsFromServer !== data.items) {
-    const newSelectedItems: Record<string, true> = {};
+    const newSelectedItems = new Set<string>();
     data.items.forEach((item: any) => {
-      if (selectedItemsState.selectedItems[item.id] !== undefined) {
-        newSelectedItems[item.id] = true;
+      if (selectedItemsState.selectedItems.has(item.id)) {
+        newSelectedItems.add(item.id);
       }
     });
     setSelectedItems({
@@ -193,8 +181,6 @@ export const ListPage = ({ listKey }: ListPageProps) => {
       selectedItems: newSelectedItems,
     });
   }
-
-  const { spacing } = useTheme();
 
   return (
     <PageContainer>
@@ -221,27 +207,17 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         {data && metaQuery.data
           ? (() => {
               const selectedItems = selectedItemsState.selectedItems;
-              const selectedItemsCount = Object.keys(selectedItems).length;
+              const selectedItemsCount = selectedItems.size;
               if (selectedItemsCount) {
                 return (
                   <Fragment>
                     Selected {selectedItemsCount} of {data.items.length}
                     {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
-                      <Button
-                        css={{ marginLeft: spacing.small }}
-                        isLoading={deleteItemsState.loading}
-                        tone="negative"
-                        onClick={async () => {
-                          // TODO: confirmation modal
-                          // TODO: handle errors
-                          await deleteItems({
-                            variables: { ids: Object.keys(selectedItemsState.selectedItems) },
-                          });
-                          refetch();
-                        }}
-                      >
-                        Delete
-                      </Button>
+                      <DeleteManyButton
+                        list={list}
+                        selectedItems={selectedItems}
+                        refetch={refetch}
+                      />
                     )}
                   </Fragment>
                 );
@@ -311,6 +287,73 @@ const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
   );
 };
 
+function DeleteManyButton({
+  selectedItems,
+  list,
+  refetch,
+}: {
+  selectedItems: ReadonlySet<string>;
+  list: ListMeta;
+  refetch: () => void;
+}) {
+  const [deleteItems, deleteItemsState] = useMutation(
+    useMemo(
+      () =>
+        gql`
+  mutation($ids: [ID!]!) {
+    ${list.gqlNames.deleteManyMutationName}(ids: $ids) {
+      id
+    }
+  }
+`,
+      [list, selectedItems]
+    )
+  );
+  const [isOpen, setIsOpen] = useState(false);
+
+  const theme = useTheme();
+  return (
+    <Fragment>
+      <Button
+        css={{ marginLeft: theme.spacing.small }}
+        isLoading={deleteItemsState.loading}
+        tone="negative"
+        onClick={async () => {
+          setIsOpen(true);
+        }}
+      >
+        Delete
+      </Button>
+      <AlertDialog
+        // TODO: change the copy in the title and body of the modal
+        isOpen={isOpen}
+        title="Delete Confirmation"
+        tone="negative"
+        actions={{
+          confirm: {
+            label: 'Delete',
+            action: async () => {
+              await deleteItems({
+                variables: { ids: [...selectedItems] },
+              });
+              refetch();
+            },
+          },
+          cancel: {
+            label: 'Cancel',
+            action: () => {
+              setIsOpen(false);
+            },
+          },
+        }}
+      >
+        Are you sure you want to delete {selectedItems.size}{' '}
+        {selectedItems.size === 1 ? list.singular : list.plural}?
+      </AlertDialog>
+    </Fragment>
+  );
+}
+
 function ListTable({
   selectedFields,
   listKey,
@@ -329,8 +372,8 @@ function ListTable({
   sort: { field: string; direction: 'ASC' | 'DESC' } | null;
   currentPage: number;
   pageSize: number;
-  selectedItems: Record<string, true>;
-  onSelectedItemsChange(selectedItems: Record<string, true>): void;
+  selectedItems: ReadonlySet<string>;
+  onSelectedItemsChange(selectedItems: ReadonlySet<string>): void;
 }) {
   const list = useList(listKey);
   const { query } = useRouter();
@@ -338,7 +381,6 @@ function ListTable({
     !selectedFields.includeLabel &&
     !list.fields[selectedFields.fields[0]].views.Cell.supportsLinkTo;
 
-  const selectedItemsCount = Object.keys(selectedItems).length;
   return (
     <Fragment>
       <TableContainer>
@@ -360,14 +402,14 @@ function ListTable({
             >
               <CheckboxControl
                 size="small"
-                checked={selectedItemsCount === itemsGetter.data?.length}
+                checked={selectedItems.size === itemsGetter.data?.length}
                 css={{ cursor: 'default' }}
                 onChange={() => {
-                  const selectedItems: Record<string, true> = {};
-                  if (selectedItemsCount !== itemsGetter.data?.length) {
+                  const selectedItems = new Set<string>();
+                  if (selectedItems.size !== itemsGetter.data?.length) {
                     itemsGetter.data?.forEach(item => {
                       if (item !== null && item.id !== null) {
-                        selectedItems[item.id] = true;
+                        selectedItems.add(item.id);
                       }
                     });
                   }
@@ -435,14 +477,14 @@ function ListTable({
                   >
                     <CheckboxControl
                       size="small"
-                      checked={selectedItems[itemId] !== undefined}
+                      checked={selectedItems.has(itemId)}
                       css={{ cursor: 'default' }}
                       onChange={() => {
-                        const newSelectedItems = { ...selectedItems };
-                        if (selectedItems[itemId] === undefined) {
-                          newSelectedItems[itemId] = true;
+                        const newSelectedItems = new Set(selectedItems);
+                        if (selectedItems.has(itemId)) {
+                          newSelectedItems.delete(itemId);
                         } else {
-                          delete newSelectedItems[itemId];
+                          newSelectedItems.add(itemId);
                         }
                         onSelectedItemsChange(newSelectedItems);
                       }}
