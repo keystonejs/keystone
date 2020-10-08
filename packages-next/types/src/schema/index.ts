@@ -9,20 +9,17 @@ export type SchemaConfig = {
   extendGraphqlSchema?: ExtendGraphqlSchema;
 };
 
-export type ListSchemaConfig = Record<string, ListConfig<BaseGeneratedListTypes, string>>;
+export type ListSchemaConfig = Record<string, ListConfig<BaseGeneratedListTypes, any>>;
 
-export type BaseFields<
-  TGeneratedListTypes extends BaseGeneratedListTypes,
-  Fields extends string
-> = {
-  [Key in Fields]: FieldType<TGeneratedListTypes>;
+export type BaseFields<TGeneratedListTypes extends BaseGeneratedListTypes> = {
+  [key: string]: FieldType<TGeneratedListTypes>;
 };
 
 export type CacheHint = { scope: 'PRIVATE' | 'PUBLIC'; maxAge: number };
 
 export type ListConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes,
-  Fields extends string
+  Fields extends BaseFields<TGeneratedListTypes>
 > = {
   /*
       A note on defaults: several options default based on the listKey, including label, path,
@@ -50,12 +47,12 @@ export type ListConfig<
    */
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
 
-  fields: BaseFields<TGeneratedListTypes, Fields>;
+  fields: Fields;
   /**
    * The field to use as a `_label_` field on the GraphQL type and in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
    * @default 'name' if it exists, otherwise 'id'
    */
-  labelField?: Fields; // path of the field to use as the label for items in the list, defaults to 'name' or 'id'
+  labelField?: keyof Fields; // path of the field to use as the label for items in the list, defaults to 'name' or 'id'
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change
    * @default true
@@ -64,6 +61,11 @@ export type ListConfig<
   access?: ListAccessControl<TGeneratedListTypes> | boolean;
   /** Config for how this list should act in the Admin UI */
   admin?: {
+    /**
+     * Excludes this list from the Admin UI
+     * @default false
+     */
+    isHidden?: MaybeSessionFunction<boolean>;
     /** The path that the list should be at in the Admin UI */
     path?: string;
     /**
@@ -109,10 +111,9 @@ export type ListConfig<
        * Users of the Admin UI can select different columns to show in the UI.
        * @default the first three fields in the list
        */
-      initialColumns?: Fields[];
+      initialColumns?: (keyof Fields | '_label_')[];
       // was previously top-level defaultSort
-      // TODO: cross-reference this against how lists can be sorted, and check implementation
-      initialSort?: Fields[];
+      initialSort?: { field: keyof Fields; direction: 'ASC' | 'DESC' };
       // was previously defaultPageSize
       pageSize?: number; // default number of items to display per page on the list screen
       // note: we are removing maximumPageSize

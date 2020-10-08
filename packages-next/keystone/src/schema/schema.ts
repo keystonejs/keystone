@@ -7,6 +7,7 @@ import type {
   BaseGeneratedListTypes,
   KeystoneConfig,
   ExtendGraphqlSchema,
+  BaseFields,
 } from '@keystone-spike/types';
 
 export function createSchema(config: ListSchemaConfig) {
@@ -17,11 +18,13 @@ export function config(config: KeystoneConfig) {
   return config;
 }
 
-export function list<Fields extends string>(config: ListConfig<BaseGeneratedListTypes, Fields>) {
+export function list<Fields extends BaseFields<BaseGeneratedListTypes>>(
+  config: ListConfig<BaseGeneratedListTypes, Fields>
+) {
   return config;
 }
 
-export function singleton<Fields extends string>(
+export function singleton<Fields extends BaseFields<BaseGeneratedListTypes>>(
   config: ListConfig<BaseGeneratedListTypes, Fields>
 ) {
   return config;

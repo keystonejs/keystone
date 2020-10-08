@@ -9,10 +9,16 @@ import { PageContainer } from '../../components/PageContainer';
 import { useList } from '../../context';
 import { useRouter, Link } from '../../router';
 import { CellLink } from '../../components';
-import { Pagination } from './pagination';
+import { getPaginationLabel, Pagination } from './pagination';
 import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
 import { CheckboxControl } from '@keystone-ui/fields';
+import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter';
+import { getRootGraphQLFieldsFromFieldController } from '../../utils/getRootGraphQLFieldsFromFieldController';
+import { CreateForm } from '../../components/CreateForm';
+import { FieldSelection } from './FieldSelection';
+import { FilterAdd } from './FilterAdd';
+import { FilterList } from './FilterList';
 
 type ListPageProps = {
   listKey: string;
@@ -32,7 +38,7 @@ let listMetaGraphqlQuery: TypedDocumentNode<
               fieldMode: 'read' | 'hidden';
             };
             createView: {
-              fieldMode: 'read' | 'hidden';
+              fieldMode: 'edit' | 'hidden';
             };
           }[];
         } | null;
@@ -102,6 +108,14 @@ export const ListPage = ({ listKey }: ListPageProps) => {
     return listViewFieldModesByField;
   }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
 
+  let createViewFieldModesByField = useMemo(() => {
+    let createViewFieldModesByField: Record<string, 'edit' | 'hidden'> = {};
+    metaQuery.data?.keystone.adminMeta.list?.fields.forEach(field => {
+      createViewFieldModesByField[field.path] = field.createView.fieldMode;
+    });
+    return createViewFieldModesByField;
+  }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
+
   let selectedFields = useSelectedFields(listKey, listViewFieldModesByField);
 
   const [deleteItems, deleteItemsState] = useMutation(
@@ -143,6 +157,8 @@ export const ListPage = ({ listKey }: ListPageProps) => {
     `;
     }, [list, selectedFields]),
     {
+      fetchPolicy: 'cache-and-network',
+      errorPolicy: 'all',
       variables: {
         where: filters.where,
         first: pageSize,
@@ -151,6 +167,13 @@ export const ListPage = ({ listKey }: ListPageProps) => {
       },
     }
   );
+
+  const dataGetter = makeDataGetter<
+    DeepNullable<{
+      meta: { count: number };
+      items: { id: string; _label_: string; [key: string]: any }[];
+    }>
+  >(data, error?.graphQLErrors);
 
   const [selectedItemsState, setSelectedItems] = useState(() => ({
     itemsFromServer: undefined as any,
@@ -176,9 +199,15 @@ export const ListPage = ({ listKey }: ListPageProps) => {
   return (
     <PageContainer>
       <ListPageHeader
+        createViewFieldModes={createViewFieldModesByField}
         listKey={listKey}
         showCreate={!(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)}
       />
+      <Stack gap="xxlarge" across>
+        <FieldSelection listKey={listKey} fieldModesByFieldPath={listViewFieldModesByField} />{' '}
+        <FilterAdd listKey={listKey} />
+      </Stack>
+
       <p
         css={{
           // TODO: don't do this
@@ -189,7 +218,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
           alignItems: 'center',
         }}
       >
-        {data
+        {data && metaQuery.data
           ? (() => {
               const selectedItems = selectedItemsState.selectedItems;
               const selectedItemsCount = Object.keys(selectedItems).length;
@@ -221,44 +250,28 @@ export const ListPage = ({ listKey }: ListPageProps) => {
                 selectedFields.fields.length + Number(selectedFields.includeLabel);
               return (
                 <Fragment>
-                  Showing {data.items.length}{' '}
-                  {data.items.length === 1 ? list.singular : list.plural} with {selectedFieldCount}{' '}
-                  column{selectedFieldCount === 1 ? '' : 's'}
+                  {getPaginationLabel({
+                    currentPage,
+                    pageSize,
+                    plural: list.plural,
+                    singular: list.singular,
+                    total: data.meta.count,
+                  })}{' '}
+                  with {selectedFieldCount} column{selectedFieldCount === 1 ? '' : 's'}
                 </Fragment>
               );
             })()
           : ' '}
       </p>
-      {filters.filters.length ? (
-        <p>
-          Filters:
-          <ul>
-            {filters.filters.map(filter => {
-              const field = list.fields[filter.field];
-              const { [`!${filter.field}_${filter.type}`]: _ignore, ...queryToKeep } = query;
-              return (
-                <li key={`${filter.field}_${filter.type}`}>
-                  {field.label}{' '}
-                  {field.controller.filter!.format({
-                    label: field.controller.filter!.types[filter.type].label,
-                    type: filter.type,
-                    value: filter.value,
-                  })}
-                  <Link href={{ query: queryToKeep }}>Remove</Link>
-                </li>
-              );
-            })}
-          </ul>
-        </p>
-      ) : null}
-      {error || metaQuery.error ? (
+      {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
+      {metaQuery.error ? (
         // TODO: Show errors nicely and with information
         'Error...'
       ) : data && metaQuery.data ? (
         <ListTable
           count={data.meta.count}
           currentPage={currentPage}
-          items={data.items}
+          itemsGetter={dataGetter.get('items')}
           listKey={listKey}
           pageSize={pageSize}
           selectedFields={selectedFields}
@@ -301,7 +314,7 @@ const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
 function ListTable({
   selectedFields,
   listKey,
-  items,
+  itemsGetter,
   count,
   sort,
   currentPage,
@@ -311,7 +324,7 @@ function ListTable({
 }: {
   selectedFields: ReturnType<typeof useSelectedFields>;
   listKey: string;
-  items: Record<string, any>[];
+  itemsGetter: DataGetter<DeepNullable<{ id: string; _label_: string; [key: string]: any }[]>>;
   count: number;
   sort: { field: string; direction: 'ASC' | 'DESC' } | null;
   currentPage: number;
@@ -347,13 +360,15 @@ function ListTable({
             >
               <CheckboxControl
                 size="small"
-                checked={selectedItemsCount === items.length}
+                checked={selectedItemsCount === itemsGetter.data?.length}
                 css={{ cursor: 'default' }}
                 onChange={() => {
                   const selectedItems: Record<string, true> = {};
-                  if (selectedItemsCount !== items.length) {
-                    items.forEach(item => {
-                      selectedItems[item.id] = true;
+                  if (selectedItemsCount !== itemsGetter.data?.length) {
+                    itemsGetter.data?.forEach(item => {
+                      if (item !== null && item.id !== null) {
+                        selectedItems[item.id] = true;
+                      }
                     });
                   }
                   onSelectedItemsChange(selectedItems);
@@ -392,9 +407,22 @@ function ListTable({
           })}
         </TableHeaderRow>
         <tbody>
-          {items.map(item => {
+          {(itemsGetter.data ?? []).map((_, index) => {
+            const itemGetter = itemsGetter.get(index);
+            if (itemGetter.data === null || itemGetter.data.id === null) {
+              if (itemGetter.errors) {
+                return (
+                  <tr css={{ color: 'red' }} key={`index:${index}`}>
+                    {itemGetter.errors[0].message}
+                  </tr>
+                );
+              }
+              return null;
+            }
+            const item = itemGetter.data;
+            const itemId = itemGetter.data.id;
             return (
-              <tr key={item.id}>
+              <tr key={itemId || `index:${index}`}>
                 <TableBodyCell>
                   <label
                     css={{
@@ -407,14 +435,14 @@ function ListTable({
                   >
                     <CheckboxControl
                       size="small"
-                      checked={selectedItems[item.id] !== undefined}
+                      checked={selectedItems[itemId] !== undefined}
                       css={{ cursor: 'default' }}
                       onChange={() => {
                         const newSelectedItems = { ...selectedItems };
-                        if (selectedItems[item.id] === undefined) {
-                          newSelectedItems[item.id] = true;
+                        if (selectedItems[itemId] === undefined) {
+                          newSelectedItems[itemId] = true;
                         } else {
-                          delete newSelectedItems[item.id];
+                          delete newSelectedItems[itemId];
                         }
                         onSelectedItemsChange(newSelectedItems);
                       }}
@@ -424,10 +452,14 @@ function ListTable({
                 {selectedFields.includeLabel && (
                   <TableBodyCell>
                     <CellLink
+                      css={{
+                        fontFamily:
+                          list.labelIsId || item._label_ === null ? 'monospace' : undefined,
+                      }}
                       href={`/${list.path}/[id]`}
-                      as={`/${list.path}/${encodeURIComponent(item.id)}`}
+                      as={`/${list.path}/${encodeURIComponent(itemId)}`}
                     >
-                      {item._label_}
+                      {item._label_ ?? itemId}
                     </CellLink>
                   </TableBodyCell>
                 )}
@@ -442,24 +474,40 @@ function ListTable({
                         justifyContent: 'center',
                       }}
                       href={`/${list.path}/[id]`}
-                      as={`/${list.path}/${encodeURIComponent(item.id)}`}
+                      as={`/${list.path}/${encodeURIComponent(itemId)}`}
                     >
                       <ArrowRightCircleIcon size="smallish" aria-label="Go to item" />
                     </Link>
                   </TableBodyCell>
                 )}
                 {selectedFields.fields.map((path, i) => {
+                  const field = list.fields[path];
                   let { Cell } = list.fields[path].views;
+                  const itemForField: Record<string, any> = {};
+                  for (const graphqlField of getRootGraphQLFieldsFromFieldController(
+                    field.controller
+                  )) {
+                    const fieldGetter = itemGetter.get(graphqlField);
+                    if (fieldGetter.errors) {
+                      return (
+                        <TableBodyCell css={{ color: 'red' }} key={path}>
+                          {fieldGetter.errors[0].message}
+                        </TableBodyCell>
+                      );
+                    }
+                    itemForField[graphqlField] = fieldGetter.data;
+                  }
+
                   return (
                     <TableBodyCell key={path}>
                       <Cell
-                        item={item}
+                        item={itemForField}
                         path={path}
                         linkTo={
                           i === 0 && !selectedFields.includeLabel && Cell.supportsLinkTo
                             ? {
                                 href: `/${list.path}/[id]`,
-                                as: `/${list.path}/${encodeURIComponent(item.id)}`,
+                                as: `/${list.path}/${encodeURIComponent(itemId)}`,
                               }
                             : undefined
                         }
@@ -477,23 +525,55 @@ function ListTable({
   );
 }
 
-const ListPageHeader = ({ listKey, showCreate }: { listKey: string; showCreate: boolean }) => {
+const ListPageHeader = ({
+  listKey,
+  showCreate,
+  createViewFieldModes,
+}: {
+  listKey: string;
+  showCreate: boolean;
+  createViewFieldModes: Record<string, 'edit' | 'hidden'>;
+}) => {
   const list = useList(listKey);
+  const router = useRouter();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   return (
-    <Stack
-      across
-      marginY="large"
-      gap="medium"
-      css={{
-        display: 'flex',
-        flexDirection: 'row',
-        // justifyContent: 'space-between',
-        alignItems: 'center',
-      }}
-    >
-      <H1>{list.label}</H1>
-      {showCreate && <Button tone="positive">Create</Button>}
-    </Stack>
+    <Fragment>
+      <Stack
+        across
+        marginY="large"
+        gap="medium"
+        css={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        <H1>{list.label}</H1>
+        {showCreate && (
+          <Button
+            onClick={() => {
+              setIsCreateModalOpen(true);
+            }}
+            tone="positive"
+          >
+            Create
+          </Button>
+        )}
+      </Stack>
+      {isCreateModalOpen && (
+        <CreateForm
+          listKey={listKey}
+          fieldModes={createViewFieldModes}
+          onCreate={id => {
+            router.push(`/${list.path}/[id]`, `/${list.path}/${id}`);
+          }}
+          onClose={() => {
+            setIsCreateModalOpen(false);
+          }}
+        />
+      )}
+    </Fragment>
   );
 };
 
@@ -548,7 +628,7 @@ const TableHeaderCell = (props: HTMLAttributes<HTMLElement>) => {
   );
 };
 
-const TableBodyCell = ({ children }: { children: ReactNode }) => {
+const TableBodyCell = (props: HTMLAttributes<HTMLElement>) => {
   const { colors, typography } = useTheme();
   return (
     <td
@@ -556,8 +636,7 @@ const TableBodyCell = ({ children }: { children: ReactNode }) => {
         borderBottom: `1px solid ${colors.border}`,
         fontSize: typography.fontSize.medium,
       }}
-    >
-      {children}
-    </td>
+      {...props}
+    />
   );
 };

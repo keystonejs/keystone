@@ -14,7 +14,6 @@ export default function PopoverPage() {
         cluttering the page.
       </p>
       <p>
-        {' '}
         The popover dialog has no dimensions of its own so it will expand or contract to contain the
         children provided. Consider this when using the popover, and be sure to provide appropriate
         styles for height and width.
@@ -22,7 +21,6 @@ export default function PopoverPage() {
       <Popover triggerRenderer={({ triggerProps }) => <Button {...triggerProps}>Click me</Button>}>
         <Box width={180} height={80} padding="medium">
           I'm in a popover!
-          <button>lol</button>
         </Box>
       </Popover>
     </Page>

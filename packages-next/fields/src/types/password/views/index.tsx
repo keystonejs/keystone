@@ -10,6 +10,7 @@ import {
   FieldProps,
 } from '@keystone-spike/types';
 import { Fragment } from 'react';
+import { SegmentedControl } from '@keystone-ui/segmented-control';
 
 export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => (
   <FieldContainer>
@@ -40,6 +41,17 @@ export const controller = (config: FieldControllerConfig): PasswordController =>
     deserialize: () => '',
     serialize: value => ({ [config.path]: value }),
     filter: {
+      Filter(props) {
+        return (
+          <SegmentedControl
+            selectedIndex={Number(props.value)}
+            onChange={value => {
+              props.onChange(!!value);
+            }}
+            segments={['Is Not Set', 'Is Set']}
+          />
+        );
+      },
       graphql: ({ type, value }) => {
         return { [`${config.path}_${type}`]: value };
       },

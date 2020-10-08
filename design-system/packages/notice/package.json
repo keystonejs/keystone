@@ -6,7 +6,7 @@
   "main": "dist/notice.cjs.js",
   "module": "dist/notice.esm.js",
   "devDependencies": {
-    "@types/react": "^16.9.49"
+    "@types/react": "^16.9.51"
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",

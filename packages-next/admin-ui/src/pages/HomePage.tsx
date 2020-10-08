@@ -6,6 +6,7 @@ import { DocumentNode, useQuery } from '../apollo';
 
 import { useKeystone, useList } from '../context';
 import { PageContainer } from '../components/PageContainer';
+import { makeDataGetter } from '../utils/dataGetter';
 
 type ListCardProps = {
   listKey: string;
@@ -72,23 +73,24 @@ export const HomePage = ({ query }: { query: DocumentNode }) => {
     return 'Loading...';
   }
 
+  const dataGetter = makeDataGetter(data, error?.graphQLErrors);
+
   return (
     <PageContainer>
       <h1>Dashboard</h1>
       <Inline>
         {Object.keys(lists).map(key => {
-          let err = error?.graphQLErrors.find(err => err.path?.[0] === key);
+          const result = dataGetter.get(key);
           // TODO: Checking based on the message is bad, but we need to revisit GraphQL errors in
           // Keystone to fix it and that's a whole other can of worms...
-          if (err?.message === 'You do not have access to this resource') {
-            console.log(err);
+          if (result.errors?.[0].message === 'You do not have access to this resource') {
             return <ListCard count={{ type: 'no-access' }} key={key} listKey={key} />;
           }
           return (
             <ListCard
               count={
-                err?.message
-                  ? { type: 'error', message: err.message }
+                result.errors
+                  ? { type: 'error', message: result.errors[0].message }
                   : { type: 'success', count: data[key].count }
               }
               key={key}

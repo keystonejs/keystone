@@ -54,6 +54,9 @@ export const controller = (config: FieldControllerConfig): CheckboxController =>
       // Can throw a FieldError
     },
     filter: {
+      Filter() {
+        return null;
+      },
       graphql({ type, value }) {
         const key = type === 'is' ? `${config.path}` : `${config.path}_${type}`;
         return { [key]: value };

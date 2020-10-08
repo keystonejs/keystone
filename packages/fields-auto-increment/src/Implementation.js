@@ -29,7 +29,7 @@ export class AutoIncrementImplementation extends Implementation {
   }
 
   gqlOutputFields() {
-    return [`${this.path}: ${this.gqlType}`];
+    return [`${this.path}: ${this.gqlType}${this.isPrimaryKey ? '!' : ''}`];
   }
   gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };

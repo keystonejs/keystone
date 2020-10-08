@@ -45,7 +45,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        index: [0, 1, 2, 3, 4]
+        index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -85,7 +85,7 @@ jobs:
           CLOUDINARY_CLOUD_NAME: keystone-cloudinary
           CLOUDINARY_KEY: 758252673115372
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
-          CI_NODE_TOTAL: 5
+          CI_NODE_TOTAL: 9
           CI_NODE_INDEX: ${{ matrix.index }}
           IFRAMELY_API_KEY: ${{ secrets.IFRAMELY_API_KEY }}
           UNSPLASH_KEY: ${{ secrets.UNSPLASH_KEY}}

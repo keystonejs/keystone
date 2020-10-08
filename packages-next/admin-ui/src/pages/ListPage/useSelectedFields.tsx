@@ -11,25 +11,21 @@ export function useSelectedFields(
   const selectedFieldsFromUrl = typeof query.fields === 'string' ? query.fields : '';
 
   return useMemo(() => {
-    if (!query.fields) {
-      return {
-        includeLabel: true,
-        fields: list.initialColumns.filter(
-          fieldPath => fieldModesByFieldPath[fieldPath] === 'read'
-        ),
-      };
-    }
+    let selectedFieldsArray = selectedFieldsFromUrl
+      ? selectedFieldsFromUrl.split(',')
+      : list.initialColumns;
     let includeLabel = false;
-    let fields = selectedFieldsFromUrl.split(',').filter(field => {
+    let fields = selectedFieldsArray.filter(field => {
       if (field === '_label_') {
         includeLabel = true;
         return false;
       }
       return fieldModesByFieldPath[field] === 'read';
     });
+
     return {
       fields,
-      includeLabel,
+      includeLabel: includeLabel || fields.length === 0,
     };
   }, [list.initialColumns, selectedFieldsFromUrl, fieldModesByFieldPath]);
 }

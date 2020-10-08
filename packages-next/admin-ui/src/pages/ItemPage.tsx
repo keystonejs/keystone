@@ -2,50 +2,39 @@
 
 import { Fragment, useMemo, useState } from 'react';
 import { gql, useMutation, useQuery } from '../apollo';
-import { jsx, Stack } from '@keystone-ui/core';
+import { jsx, Stack, useTheme } from '@keystone-ui/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import { useList } from '../context';
 import { PageContainer } from '../components/PageContainer';
 import { Button } from '@keystone-ui/button';
-import { JSONValue, ListMeta } from '@keystone-spike/types';
 import isDeepEqual from 'fast-deep-equal';
 import { Notice } from '@keystone-ui/notice';
+import { Tooltip } from '@keystone-ui/tooltip';
+import copyToClipboard from 'clipboard-copy';
+import { DataGetter, DeepNullable, makeDataGetter } from '../utils/dataGetter';
+import { deserializeValue, ItemData, serializeValueToObjByFieldKey } from '../utils/serialization';
 
 type ItemPageProps = {
   listKey: string;
 };
 
-function deserializeValue(list: ListMeta, item: Record<string, any>) {
-  const value: Record<string, any> = {};
-  Object.keys(list.fields).forEach(fieldKey => {
-    const field = list.fields[fieldKey];
-    value[fieldKey] = field.controller.deserialize(item);
-  });
-  return value;
-}
-
-function serializeValueToObjByFieldKey(list: ListMeta, value: Record<string, unknown>) {
-  let obj: Record<string, Record<string, JSONValue>> = {};
-  Object.keys(list.fields).map(fieldKey => {
-    obj[fieldKey] = list.fields[fieldKey].controller.serialize(value[fieldKey]);
-  });
-  return obj;
-}
-
 function ItemForm({
   listKey,
-  item,
+  itemGetter,
   selectedFields,
   fieldModes,
+  showDelete,
 }: {
   listKey: string;
-  item: Record<string, any>;
+  itemGetter: DataGetter<ItemData>;
   selectedFields: string;
   fieldModes: Record<string, 'edit' | 'read' | 'hidden'>;
+  showDelete: boolean;
 }) {
   const list = useList(listKey);
+  const router = useRouter();
 
   const [update, { loading, error }] = useMutation(
     gql`mutation ($data: ${list.gqlNames.updateInputName}!, $id: ID!) {
@@ -57,26 +46,35 @@ function ItemForm({
     }`
   );
 
+  const [deleteItem, { loading: isDeletePending }] = useMutation(
+    gql`mutation ($id: ID!) {
+      ${list.gqlNames.deleteMutationName}(id: $id) {
+        id
+      }
+    }`,
+    { variables: { id: itemGetter.get('id').data } }
+  );
+
   const [state, setValue] = useState(() => {
-    const value = deserializeValue(list, item);
+    const value = deserializeValue(list, itemGetter);
     return {
       value,
-      item,
+      item: itemGetter.data,
     };
   });
 
-  if (state.item !== item) {
-    const value = deserializeValue(list, item);
+  if (state.item !== itemGetter.data) {
+    const value = deserializeValue(list, itemGetter);
     setValue({
       value,
-      item,
+      item: itemGetter.data,
     });
   }
 
   const serializedValuesFromItem = useMemo(() => {
-    const value = deserializeValue(list, item);
+    const value = deserializeValue(list, itemGetter);
     return serializeValueToObjByFieldKey(list, value);
-  }, [list, item]);
+  }, [list, itemGetter]);
   const serializedFieldValues = useMemo(() => {
     return serializeValueToObjByFieldKey(list, state.value);
   }, [state.value, list]);
@@ -99,67 +97,105 @@ function ItemForm({
       fieldsChanged,
     };
   }, [serializedFieldValues, serializedValuesFromItem, list]);
+  const saveButtonProps = {
+    isLoading: loading,
+    weight: 'bold',
+    tone: 'active',
+    onClick: () => {
+      const data: Record<string, any> = {};
+      Object.keys(fieldsEquality.fieldsChanged).forEach(fieldKey => {
+        if (fieldsEquality.fieldsChanged[fieldKey]) {
+          Object.assign(data, serializedFieldValues[fieldKey]);
+        }
+      });
+      update({
+        variables: {
+          data,
+          id: itemGetter.get('id').data,
+        },
+      });
+    },
+    children: 'Save Changes',
+  } as const;
+  const fields = Object.keys(list.fields)
+    .filter(fieldKey => fieldModes[fieldKey] !== 'hidden')
+    .map(fieldKey => {
+      const field = list.fields[fieldKey];
+      const value = state.value[fieldKey];
+      const fieldMode = fieldModes[fieldKey];
+      const Field = list.fields[fieldKey].views.Field;
+
+      if (value.kind === 'error') {
+        return (
+          <div>
+            {field.label}: <span css={{ color: 'red' }}>{value.errors[0].message}</span>
+          </div>
+        );
+      }
+      return (
+        <Field
+          key={fieldKey}
+          field={field.controller}
+          value={value.value}
+          onChange={
+            fieldMode === 'edit'
+              ? fieldValue => {
+                  setValue({
+                    value: { ...state.value, [fieldKey]: { kind: 'value', value: fieldValue } },
+                    item: state.item,
+                  });
+                }
+              : undefined
+          }
+        />
+      );
+    });
   return (
     <Fragment>
       {error && <Notice tone="negative">{error.message}</Notice>}
-      {Object.keys(list.fields).map(fieldKey => {
-        const fieldMode = fieldModes[fieldKey];
-        if (fieldMode === 'hidden') return null;
-        const field = list.fields[fieldKey];
-        const Field = list.fields[fieldKey].views.Field;
-        return (
-          <Field
-            key={fieldKey}
-            field={field.controller}
-            value={state.value[fieldKey]}
-            onChange={
-              fieldMode === 'edit'
-                ? fieldValue => {
-                    setValue({
-                      value: { ...state.value, [fieldKey]: fieldValue },
-                      item: state.item,
-                    });
-                  }
-                : undefined
-            }
-          />
-        );
-      })}
-      <Stack across gap="small">
-        <Button
-          isLoading={loading}
-          isDisabled={!fieldsEquality.someFieldsChanged}
-          weight="bold"
-          tone="active"
-          onClick={() => {
-            const data: Record<string, any> = {};
-            Object.keys(fieldsEquality.fieldsChanged).forEach(fieldKey => {
-              if (fieldsEquality.fieldsChanged[fieldKey]) {
-                Object.assign(data, serializedFieldValues[fieldKey]);
-              }
-            });
-            update({
-              variables: {
-                data,
-                id: item.id,
-              },
-            });
-          }}
-        >
-          Save
-        </Button>
-        <Button
-          isDisabled={!fieldsEquality.someFieldsChanged}
-          onClick={() => {
-            setValue({
-              item,
-              value: deserializeValue(list, item),
-            });
-          }}
-        >
-          Reset changes
-        </Button>
-      </Stack>
+      {fields}
+      {fields.length === 0 && 'There are no fields that you can read or edit'}
+      <div css={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Stack across gap="small">
+          {fieldsEquality.someFieldsChanged ? (
+            <Button {...saveButtonProps} />
+          ) : (
+            <Tooltip content="No fields have been modified so you cannot save changes">
+              {props => (
+                <Button
+                  {...props}
+                  {...saveButtonProps}
+                  // making onClick undefined instead of making the button disabled so the button can be focussed so keyboard users can see the tooltip
+                  onClick={undefined}
+                />
+              )}
+            </Tooltip>
+          )}
+          <Button
+            onClick={() => {
+              setValue({
+                item: itemGetter.data,
+                value: deserializeValue(list, itemGetter),
+              });
+            }}
+          >
+            Reset changes
+          </Button>
+        </Stack>
+        {showDelete && (
+          <Button
+            tone="negative"
+            weight="outline"
+            isLoading={isDeletePending}
+            onClick={async () => {
+              await deleteItem();
+              router.push(`/${list.path}`);
+            }}
+          >
+            Delete
+          </Button>
+        )}
+      </div>
     </Fragment>
   );
 }
@@ -168,6 +204,8 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
   const router = useRouter();
   const { id } = router.query;
   const list = useList(listKey);
+  const { spacing } = useTheme();
+
   const { query, selectedFields } = useMemo(() => {
     let selectedFields = Object.keys(list.fields)
       .map(fieldPath => {
@@ -186,6 +224,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
     keystone {
       adminMeta {
         list(key: $listKey) {
+          hideDelete
           fields {
             path
             itemView(id: $id) {
@@ -199,17 +238,39 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
 `,
     };
   }, [list]);
-  let { data, error } = useQuery(query, { variables: { id, listKey } });
+  let { data, error, loading } = useQuery(query, {
+    variables: { id, listKey },
+    errorPolicy: 'all',
+  });
+
+  const dataGetter = makeDataGetter<
+    DeepNullable<{
+      item: ItemData;
+      keystone: {
+        adminMeta: {
+          list: {
+            fields: {
+              path: string;
+              itemView: {
+                fieldMode: 'edit' | 'read' | 'hidden';
+              };
+            }[];
+          };
+        };
+      };
+    }>
+  >(data, error?.graphQLErrors);
 
   let itemViewFieldModesByField = useMemo(() => {
     let itemViewFieldModesByField: Record<string, 'edit' | 'read' | 'hidden'> = {};
-    data?.keystone.adminMeta.list?.fields.forEach(
-      (field: { path: string; itemView: { fieldMode: 'edit' | 'read' | 'hidden' } }) => {
+    dataGetter.data?.keystone?.adminMeta?.list?.fields?.forEach(field => {
+      if (field !== null && field.path !== null && field?.itemView?.fieldMode != null) {
         itemViewFieldModesByField[field.path] = field.itemView.fieldMode;
       }
-    );
+    });
     return itemViewFieldModesByField;
-  }, [data?.keystone.adminMeta.list?.fields]);
+  }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
+  const errorsFromMetaQuery = dataGetter.get('keystone').errors;
   return (
     <PageContainer>
       <h2>
@@ -218,18 +279,39 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
           <a>{list.label}</a>
         </Link>
       </h2>
-      <h3>Item: {id}</h3>
-      {error ? (
-        error.message
-      ) : data ? (
-        <ItemForm
-          fieldModes={itemViewFieldModesByField}
-          selectedFields={selectedFields}
-          listKey={listKey}
-          item={data.item}
-        />
-      ) : (
+      {loading ? (
         'Loading...'
+      ) : errorsFromMetaQuery ? (
+        <div css={{ color: 'red' }}>{errorsFromMetaQuery[0].message}</div>
+      ) : (
+        <Fragment>
+          <div
+            css={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <h3>Item: {data.item._label_}</h3>
+            <div css={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <span css={{ marginRight: spacing.small }}>ID: {data.item.id}</span>
+              <Button
+                // TODO: this should be an IconButton
+                onClick={() => {
+                  copyToClipboard(data.item.id);
+                }}
+              >
+                Copy
+              </Button>
+            </div>
+          </div>
+          <ItemForm
+            fieldModes={itemViewFieldModesByField}
+            selectedFields={selectedFields}
+            showDelete={!data.keystone.adminMeta.list!.hideDelete}
+            listKey={listKey}
+            itemGetter={dataGetter.get('item')}
+          />
+        </Fragment>
       )}
     </PageContainer>
   );

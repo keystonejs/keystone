@@ -89,7 +89,7 @@ export function Pagination({
   );
 }
 
-function getPaginationLabel({
+export function getPaginationLabel({
   currentPage,
   pageSize,
   plural,
@@ -111,7 +111,7 @@ function getPaginationLabel({
   const end = Math.min(start + pageSize - 1, total);
 
   if (total > pageSize) {
-    count = `Showing ${start} to ${end} of ${total}`;
+    count = `Showing ${start} to ${end} of ${total} ${plural}`;
   } else {
     count = `Showing ${total} `;
     if (total > 1 && plural) {
