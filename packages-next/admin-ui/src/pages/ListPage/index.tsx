@@ -406,15 +406,15 @@ function ListTable({
                 checked={selectedItems.size === itemsGetter.data?.length}
                 css={{ cursor: 'default' }}
                 onChange={() => {
-                  const selectedItems = new Set<string>();
+                  const newSelectedItems = new Set<string>();
                   if (selectedItems.size !== itemsGetter.data?.length) {
                     itemsGetter.data?.forEach(item => {
                       if (item !== null && item.id !== null) {
-                        selectedItems.add(item.id);
+                        newSelectedItems.add(item.id);
                       }
                     });
                   }
-                  onSelectedItemsChange(selectedItems);
+                  onSelectedItemsChange(newSelectedItems);
                 }}
               />
             </label>
