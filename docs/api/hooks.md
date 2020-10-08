@@ -158,6 +158,7 @@ The result is passed to [the next function in the execution order](/docs/guides/
 | `resolvedData`  | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
 | `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
 | `listKey`       | `String`                | The key for the list being operated on                                                                                       |
+| `fieldPath`     | `String`                | The path for the field being operated on (applicable to field hooks only)                                                    |
 
 #### Usage
 
@@ -171,6 +172,7 @@ const resolveInput = ({
   resolvedData,
   context,
   listKey,
+  fieldPath, // exists only for field hooks
 }) => {
   // Input resolution logic. Object returned is used in place of `resolvedData`.
   return resolvedData;
@@ -198,6 +200,7 @@ Return values are ignored.
 | `context`                 | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
 | `addFieldValidationError` | `Function`              | Used to set a field validation error; accepts a `String`                                                                     |
 | `listKey`                 | `String`                | The key for the list being operated on                                                                                       |
+| `fieldPath`               | `String`                | The path for the field being operated on (applicable to field hooks only)                                                    |
 
 #### Usage
 
@@ -212,6 +215,7 @@ const validateInput = ({
   context,
   addFieldValidationError,
   listKey,
+  fieldPath, // exists only for field hooks
 }) => {
   // Throw error objects or register validation errors with addFieldValidationError(<String>)
   // Return values ignored
@@ -238,6 +242,7 @@ Return values are ignored.
 | `resolvedData`  | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
 | `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
 | `listKey`       | `String`                | The key for the list being operated on                                                                                       |
+| `fieldPath`     | `String`                | The path for the field being operated on (applicable to field hooks only)                                                    |
 
 #### Usage
 
@@ -251,6 +256,7 @@ const beforeChange = ({
   resolvedData,
   context,
   listKey,
+  fieldPath, // exists only for field hooks
 }) => {
   // Perform side effects
   // Return values ignored
@@ -281,6 +287,7 @@ Return values are ignored.
 | `updatedItem`   | `Object`                | The new/currently stored item                                                                                                |
 | `context`       | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
 | `listKey`       | `String`                | The key for the list being operated on                                                                                       |
+| `fieldPath`     | `String`                | The path for the field being operated on (applicable to field hooks only)                                                    |
 
 #### Usage
 
@@ -294,6 +301,7 @@ const afterChange = ({
   updatedItem,
   context,
   listKey,
+  fieldPath, // exists only for field hooks
 }) => {
   // Perform side effects
   // Return values ignored
@@ -318,6 +326,7 @@ Should throw or register errors with `addFieldValidationError(<String>)` if the 
 | `context`                 | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
 | `addFieldValidationError` | `Function`       | Used to set a field validation error; accepts a `String`                                                                     |
 | `listKey`                 | `String`         | The key for the list being operated on                                                                                       |
+| `fieldPath`               | `String`         | The path for the field being operated on (applicable to field hooks only)                                                    |
 
 #### Usage
 
@@ -330,6 +339,7 @@ const validateDelete = ({
   context,
   addFieldValidationError,
   listKey,
+  fieldPath, // exists only for field hooks
 }) => {
   // Throw error objects or register validation errors with addFieldValidationError(<String>)
   // Return values ignored
@@ -354,6 +364,7 @@ Return values are ignored.
 | `existingItem` | `Object`         | The current stored item                                                                                                      |
 | `context`      | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
 | `listKey`      | `String`         | The key for the list being operated on                                                                                       |
+| `fieldPath`    | `String`         | The path for the field being operated on (applicable to field hooks only)                                                    |
 
 #### Usage
 
@@ -365,6 +376,7 @@ const beforeDelete = ({
   existingItem,
   context,
   listKey,
+  fieldPath, // exists only for field hooks
 }) => {
   // Perform side effects
   // Return values ignored
@@ -391,6 +403,7 @@ Return values are ignored.
 | `existingItem` | `Object`         | The previously stored item, now deleted                                                                                      |
 | `context`      | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
 | `listKey`      | `String`         | The key for the list being operated on                                                                                       |
+| `fieldPath`    | `String`         | The path for the field being operated on (applicable to field hooks only)                                                    |
 
 #### Usage
 
@@ -402,6 +415,7 @@ const afterDelete = ({
   existingItem,
   context,
   listKey,
+  fieldPath, // exists only for field hooks
 }) => {
   // Perform side effects
   // Return values ignored
