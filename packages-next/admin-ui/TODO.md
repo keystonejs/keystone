@@ -22,7 +22,7 @@
 - [x] Drawer Package
 - [x] Modals (specifically, confirm)
 - [ ] Calendar / DateTime Picker
-- [ ] Toasts
+- [x] Toasts
 
 ## Dashboard
 

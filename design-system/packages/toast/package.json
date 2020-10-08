@@ -1,0 +1,24 @@
+{
+  "name": "@keystone-ui/toast",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/toast.cjs.js",
+  "module": "dist/toast.esm.js",
+  "devDependencies": {
+    "@types/react": "^16.9.51",
+    "react": "^16.13.1"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "@keystone-ui/core": "*",
+    "@keystone-ui/icons": "*"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/toast"
+}
