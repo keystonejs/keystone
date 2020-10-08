@@ -14,6 +14,7 @@ import { useRouter } from '@keystone-spike/admin-ui/router';
 
 export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
   /* TODO:
+    - [x] Move this into the new keystone auth plugin package
     - [ ] Initialise with the current session, and bounce if the user is signed in
     - [x] Call mutation to actually sign in, then redirect
     - [ ] Show error messages when the user doesn't sign in successfully (inc. full & limited messages)

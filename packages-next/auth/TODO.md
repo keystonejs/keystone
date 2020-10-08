@@ -22,9 +22,21 @@
   - [ ] Create UI for the signout page
   - [ ] Only generate the signout page if the config is enabled
   - [x] Add a signout button to the Admin UI when the config is enabled
-- [ ] Implement forgotten password & magic links @molomby
-  - [ ] Define the list
-  - [ ] Add the mutations
+- [.] Implement forgotten password & magic links @molomby
+  - [x] Define the list/fields
+  - [x] Add the mutations (auth, get reset token, get magic link)
+  - [x] Don't error on failure; create types/union type; `UserPasswordAuthSuccess { item token } UserPasswordAuthFailure { code message }`
+  - [x] Refactor the list and field validation into `validateConfig()`
+  - [x] Build out redemption mutations
+  - [x] `Auth` to return set of fields (to be added to the list); move fields def from example app
+  - [x] `withAuth()` to configure the list config directly
+  - [x] Add suffix to config; use for types, mutations, field names, etc.
+  - [ ] Add config for `validUserConditions` as an optional set of GraphQL filters; slightly refactor loading of item(s)
+  - [ ] Fix the `withAuth` destructuring around fields
+  - [ ] Hooks – See notes in HOOKS.md
+    - [ ] Review/revise the [existing hooks](https://www.keystonejs.com/api/hooks#authentication-hooks)
+    - [ ] Implement hooks for the auth, reset pass and magic link
+    - [ ] Support rate limiting use case
   - [ ] Generate the UI if it is enabled
   - [ ] Wire up the UI
 - [ ] Implement init first user @mitchell
@@ -39,6 +51,7 @@
 
 # Backlog
 
+- [ ] Handle session token authorisation header use case
 - [ ] Review the API that session functions get, try not to provide the keystone instance
 - [ ] 2FA
 - [ ] Social Auth

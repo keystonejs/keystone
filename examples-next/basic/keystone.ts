@@ -22,6 +22,16 @@ const auth = createAuth({
       isAdmin: true,
     },
   },
+  passwordResetLink: {
+    sendToken(args) {
+      console.log(`Password reset info:`, args);
+    },
+  },
+  magicAuthLink: {
+    sendToken(args) {
+      console.log(`Magic auth info:`, args);
+    },
+  },
 });
 
 // const isAccessAllowed = ({ session }: { session: any }) => !!session?.item?.isAdmin;
