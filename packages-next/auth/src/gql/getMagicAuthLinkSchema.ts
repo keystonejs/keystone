@@ -18,7 +18,7 @@ export function getMagicAuthLinkSchema({
   secretField: string;
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
-  magicAuthLink?: AuthTokenTypeConfig;
+  magicAuthLink: AuthTokenTypeConfig;
 }) {
   return graphQLSchemaExtension({
     typeDefs: `
@@ -27,11 +27,11 @@ export function getMagicAuthLinkSchema({
         ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): ${gqlNames.SendItemMagicAuthLinkResult}!
       }
       type ${gqlNames.SendItemMagicAuthLinkResult} {
-        code: AuthErrorCode
-        message: String
+        code: AuthErrorCode!
+        message: String!
       }
       type Mutation {
-        ${gqlNames.redeemItemMagicAuthToken}(${identityField}: String!, token: String!): ${gqlNames.RedeemItemMagicAuthTokenResult}!
+        ${gqlNames.redeemItemMagicAuthToken}(${identityField}: String!, token: String!): ${gqlNames.RedeemItemMagicAuthTokenResult}
       }
       union ${gqlNames.RedeemItemMagicAuthTokenResult} = ${gqlNames.RedeemItemMagicAuthTokenSuccess} | ${gqlNames.RedeemItemMagicAuthTokenFailure}
       type ${gqlNames.RedeemItemMagicAuthTokenSuccess} {
@@ -69,7 +69,7 @@ export function getMagicAuthLinkSchema({
             return { code: result.code, message };
           }
           if (result.success) {
-            await magicAuthLink?.sendToken({
+            await magicAuthLink.sendToken({
               itemId: result.itemId,
               identity,
               token: result.token,
@@ -84,7 +84,7 @@ export function getMagicAuthLinkSchema({
             list,
             identityField,
             protectIdentities,
-            magicAuthLink?.tokensValidForMins,
+            magicAuthLink.tokensValidForMins,
             args,
             ctx
           );

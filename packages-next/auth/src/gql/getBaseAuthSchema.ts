@@ -39,8 +39,6 @@ export function getBaseAuthSchema({
         AUTH_TOKEN_REDEMPTION_TOKEN_MISMATCH
         AUTH_TOKEN_REDEMPTION_TOKEN_EXPIRED
         AUTH_TOKEN_REDEMPTION_TOKEN_REDEEMED
-        INTERNAL_ERROR
-        CUSTOM_ERROR
       }
 
       # Password auth
@@ -50,7 +48,7 @@ export function getBaseAuthSchema({
       }
       union ${gqlNames.ItemAuthenticationWithPasswordResult} = ${gqlNames.ItemAuthenticationWithPasswordSuccess} | ${gqlNames.ItemAuthenticationWithPasswordFailure}
       type ${gqlNames.ItemAuthenticationWithPasswordSuccess} {
-        token: String!
+        sessionToken: String!
         item: ${listKey}!
       }
       type ${gqlNames.ItemAuthenticationWithPasswordFailure} {

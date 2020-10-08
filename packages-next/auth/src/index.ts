@@ -23,39 +23,42 @@ import { initTemplate } from './templates/init';
  *
  * Generates config for Keystone to implement standard auth features.
  */
-export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
-  config: AuthConfig<GeneratedListTypes>
-): Auth {
-  // Default some config for simplicity
-  config.protectIdentities = config.protectIdentities || false;
-  config.gqlSuffix = config.gqlSuffix || '';
-
+export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
+  listKey,
+  secretField,
+  protectIdentities = false,
+  gqlSuffix = '',
+  initFirstItem,
+  identityField,
+  magicAuthLink,
+  passwordResetLink,
+}: AuthConfig<GeneratedListTypes>): Auth {
   const gqlNames: AuthGqlNames = {
-    CreateInitialInput: `CreateInitial${config.listKey}Input${config.gqlSuffix}`,
-    createInitialItem: `createInitial${config.listKey}${config.gqlSuffix}`,
-    authenticateItemWithPassword: `authenticate${config.listKey}WithPassword${config.gqlSuffix}`,
-    ItemAuthenticationWithPasswordResult: `${config.listKey}AuthenticationWithPasswordResult${config.gqlSuffix}`,
-    ItemAuthenticationWithPasswordSuccess: `${config.listKey}AuthenticationWithPasswordSuccess${config.gqlSuffix}`,
-    ItemAuthenticationWithPasswordFailure: `${config.listKey}AuthenticationWithPasswordFailure${config.gqlSuffix}`,
-    sendItemPasswordResetLink: `send${config.listKey}PasswordResetLink${config.gqlSuffix}`,
-    SendItemPasswordResetLinkResult: `Send${config.listKey}PasswordResetLinkResult${config.gqlSuffix}`,
-    validateItemPasswordResetToken: `validate${config.listKey}PasswordResetToken${config.gqlSuffix}`,
-    ValidateItemPasswordResetTokenResult: `Validate${config.listKey}PasswordResetTokenResult${config.gqlSuffix}`,
-    redeemItemPasswordResetToken: `redeem${config.listKey}PasswordResetToken${config.gqlSuffix}`,
-    RedeemItemPasswordResetTokenResult: `Redeem${config.listKey}PasswordResetTokenResult${config.gqlSuffix}`,
-    sendItemMagicAuthLink: `send${config.listKey}MagicAuthLink${config.gqlSuffix}`,
-    SendItemMagicAuthLinkResult: `Send${config.listKey}MagicAuthLinkResult${config.gqlSuffix}`,
-    redeemItemMagicAuthToken: `redeem${config.listKey}MagicAuthToken${config.gqlSuffix}`,
-    RedeemItemMagicAuthTokenResult: `Redeem${config.listKey}MagicAuthTokenResult${config.gqlSuffix}`,
-    RedeemItemMagicAuthTokenSuccess: `Redeem${config.listKey}MagicAuthTokenSuccess${config.gqlSuffix}`,
-    RedeemItemMagicAuthTokenFailure: `Redeem${config.listKey}MagicAuthTokenFailure${config.gqlSuffix}`,
+    CreateInitialInput: `CreateInitial${listKey}Input${gqlSuffix}`,
+    createInitialItem: `createInitial${listKey}${gqlSuffix}`,
+    authenticateItemWithPassword: `authenticate${listKey}WithPassword${gqlSuffix}`,
+    ItemAuthenticationWithPasswordResult: `${listKey}AuthenticationWithPasswordResult${gqlSuffix}`,
+    ItemAuthenticationWithPasswordSuccess: `${listKey}AuthenticationWithPasswordSuccess${gqlSuffix}`,
+    ItemAuthenticationWithPasswordFailure: `${listKey}AuthenticationWithPasswordFailure${gqlSuffix}`,
+    sendItemPasswordResetLink: `send${listKey}PasswordResetLink${gqlSuffix}`,
+    SendItemPasswordResetLinkResult: `Send${listKey}PasswordResetLinkResult${gqlSuffix}`,
+    validateItemPasswordResetToken: `validate${listKey}PasswordResetToken${gqlSuffix}`,
+    ValidateItemPasswordResetTokenResult: `Validate${listKey}PasswordResetTokenResult${gqlSuffix}`,
+    redeemItemPasswordResetToken: `redeem${listKey}PasswordResetToken${gqlSuffix}`,
+    RedeemItemPasswordResetTokenResult: `Redeem${listKey}PasswordResetTokenResult${gqlSuffix}`,
+    sendItemMagicAuthLink: `send${listKey}MagicAuthLink${gqlSuffix}`,
+    SendItemMagicAuthLinkResult: `Send${listKey}MagicAuthLinkResult${gqlSuffix}`,
+    redeemItemMagicAuthToken: `redeem${listKey}MagicAuthToken${gqlSuffix}`,
+    RedeemItemMagicAuthTokenResult: `Redeem${listKey}MagicAuthTokenResult${gqlSuffix}`,
+    RedeemItemMagicAuthTokenSuccess: `Redeem${listKey}MagicAuthTokenSuccess${gqlSuffix}`,
+    RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure${gqlSuffix}`,
   };
 
   // Fields added to the auth list
   const additionalListFields = {
-    [`${config.secretField}ResetToken`]: password({ access: () => false }), // isRequired: false
-    [`${config.secretField}ResetIssuedAt`]: timestamp({ access: () => false, isRequired: false }),
-    [`${config.secretField}ResetRedeemedAt`]: timestamp({ access: () => false, isRequired: false }),
+    [`${secretField}ResetToken`]: password({ access: () => false }), // isRequired: false
+    [`${secretField}ResetIssuedAt`]: timestamp({ access: () => false, isRequired: false }),
+    [`${secretField}ResetRedeemedAt`]: timestamp({ access: () => false, isRequired: false }),
     [`magicAuthToken`]: password({ access: () => false }), // isRequired: false
     [`magicAuthIssuedAt`]: timestamp({ access: () => false, isRequired: false }),
     [`magicAuthRedeemedAt`]: timestamp({ access: () => false, isRequired: false }),
@@ -80,7 +83,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
     const pathname = url.parse(req.url!).pathname!;
 
     if (isValidSession) {
-      if (pathname === '/signin' || (config.initFirstItem && pathname === '/init')) {
+      if (pathname === '/signin' || (initFirstItem && pathname === '/init')) {
         return {
           kind: 'redirect',
           to: '/',
@@ -89,8 +92,8 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
       return;
     }
 
-    if (!session && config.initFirstItem) {
-      const { count } = await keystone.keystone.lists[config.listKey].adapter.itemsQuery(
+    if (!session && initFirstItem) {
+      const { count } = await keystone.keystone.lists[listKey].adapter.itemsQuery(
         {},
         {
           meta: true,
@@ -131,16 +134,17 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
         src: signinTemplate({ gqlNames }),
       },
     ];
-    if (config.initFirstItem) {
+    if (initFirstItem) {
       const fields: Record<string, SerializedFieldMeta> = {};
-      for (const fieldPath of config.initFirstItem.fields) {
-        fields[fieldPath] = keystone.adminMeta.lists[config.listKey].fields[fieldPath];
+      for (const fieldPath of initFirstItem.fields) {
+        fields[fieldPath] = keystone.adminMeta.lists[listKey].fields[fieldPath];
       }
 
       filesToWrite.push({
         mode: 'write',
         outputPath: 'pages/init.js',
-        src: initTemplate({ config, fields }),
+        // wonder what this template expects from config...
+        src: initTemplate({ listKey, initFirstItem, fields }),
       });
     }
     return filesToWrite;
@@ -158,29 +162,49 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
    *
    * Must be added to the extendGraphqlSchema config. Can be composed.
    */
-  let extendGraphqlSchema = getBaseAuthSchema({ ...config, gqlNames });
+  let extendGraphqlSchema = getBaseAuthSchema({
+    identityField,
+    listKey,
+    protectIdentities,
+    secretField,
+    gqlNames,
+  });
 
   // Wrap extendGraphqlSchema to add optional functionality
-  if (config.initFirstItem) {
+  if (initFirstItem) {
     const existingExtendGraphqlSchema = extendGraphqlSchema;
     const extension = getInitFirstItemSchema({
-      listKey: config.listKey,
-      fields: config.initFirstItem.fields,
-      itemData: config.initFirstItem.itemData,
+      listKey: listKey,
+      fields: initFirstItem.fields,
+      itemData: initFirstItem.itemData,
       gqlNames,
     });
     extendGraphqlSchema = (schema, keystone) =>
       extension(existingExtendGraphqlSchema(schema, keystone), keystone);
   }
-  if (config.passwordResetLink) {
+  if (passwordResetLink) {
     const existingExtendGraphqlSchema = extendGraphqlSchema;
-    const extension = getPasswordResetSchema({ ...config, gqlNames });
+    const extension = getPasswordResetSchema({
+      identityField,
+      listKey,
+      protectIdentities,
+      secretField,
+      passwordResetLink,
+      gqlNames,
+    });
     extendGraphqlSchema = (schema, keystone) =>
       extension(existingExtendGraphqlSchema(schema, keystone), keystone);
   }
-  if (config.magicAuthLink) {
+  if (magicAuthLink) {
     const existingExtendGraphqlSchema = extendGraphqlSchema;
-    const extension = getMagicAuthLinkSchema({ ...config, gqlNames });
+    const extension = getMagicAuthLinkSchema({
+      identityField,
+      listKey,
+      protectIdentities,
+      secretField,
+      magicAuthLink,
+      gqlNames,
+    });
     extendGraphqlSchema = (schema, keystone) =>
       extension(existingExtendGraphqlSchema(schema, keystone), keystone);
   }
@@ -191,49 +215,49 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
    * Validates the provided auth config; optional step when integrating auth
    */
   const validateConfig = (keystoneConfig: KeystoneConfig) => {
-    const specifiedListConfig = keystoneConfig.lists[config.listKey];
-    if (keystoneConfig.lists[config.listKey] === undefined) {
+    const specifiedListConfig = keystoneConfig.lists[listKey];
+    if (keystoneConfig.lists[listKey] === undefined) {
       throw new Error(
         `A createAuth() invocation specifies the list ${JSON.stringify(
-          config.listKey
+          listKey
         )} but no list with that key has been defined.`
       );
     }
 
     // TODO: Check for String-like typing for identityField? How?
-    const identityField = specifiedListConfig.fields[config.identityField];
-    if (identityField === undefined) {
+    const identityFieldConfig = specifiedListConfig.fields[identityField];
+    if (identityFieldConfig === undefined) {
       throw new Error(
         `A createAuth() invocation for the ${JSON.stringify(
-          config.listKey
+          listKey
         )} list specifies ${JSON.stringify(
-          config.identityField
+          identityField
         )} as its identityField but no field with that key exists on the list.`
       );
     }
 
     // TODO: We could make the secret field optional to disable the standard id/secret auth and password resets (ie. magic links only)
-    const secretField = specifiedListConfig.fields[config.secretField];
-    if (secretField === undefined) {
+    const secretFieldConfig = specifiedListConfig.fields[secretField];
+    if (secretFieldConfig === undefined) {
       throw new Error(
         `A createAuth() invocation for the ${JSON.stringify(
-          config.listKey
+          listKey
         )} list specifies ${JSON.stringify(
-          config.secretField
+          secretField
         )} as its secretField but no field with that key exists on the list.`
       );
     }
     const secretPrototype =
-      secretField.type &&
-      secretField.type.implementation &&
-      secretField.type.implementation.prototype;
-    const secretTypename = secretField.type && secretField.type.type;
+      secretFieldConfig.type &&
+      secretFieldConfig.type.implementation &&
+      secretFieldConfig.type.implementation.prototype;
+    const secretTypename = secretFieldConfig.type && secretFieldConfig.type.type;
     if (typeof secretPrototype.compare !== 'function' || secretPrototype.compare.length < 2) {
       throw new Error(
         `A createAuth() invocation for the ${JSON.stringify(
-          config.listKey
+          listKey
         )} list specifies ${JSON.stringify(
-          config.secretField
+          secretField
         )} as its secretField, which uses the field type ${JSON.stringify(
           secretTypename
         )}. But the ${JSON.stringify(
@@ -247,9 +271,9 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
     if (typeof secretPrototype.generateHash !== 'function') {
       throw new Error(
         `A createAuth() invocation for the ${JSON.stringify(
-          config.listKey
+          listKey
         )} list specifies ${JSON.stringify(
-          config.secretField
+          secretField
         )} as its secretField, which uses the field type ${JSON.stringify(
           secretTypename
         )}. But the ${JSON.stringify(
@@ -261,12 +285,12 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
       );
     }
 
-    // TODO: Could also validate config.initFirstItem.itemData keys?
-    for (const field of config.initFirstItem?.fields || []) {
+    // TODO: Could also validate initFirstItem.itemData keys?
+    for (const field of initFirstItem?.fields || []) {
       if (specifiedListConfig.fields[field] === undefined) {
         throw new Error(
           `A createAuth() invocation for the ${JSON.stringify(
-            config.listKey
+            listKey
           )} list specifies the field ${JSON.stringify(
             field
           )} in initFirstItem.fields array but no field with that key exist on the list.`
@@ -301,18 +325,23 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>(
     }
     const existingExtendGraphQLSchema = keystoneConfig.extendGraphqlSchema;
 
-    // Add the additional fields to the references lists fields object
-    // TODO: The additionalListFields we're adding here shouldn't naively replace existing fields with the same key
-    // Leaving existing fields in place would allow solution devs to customise these field defs (eg. access control,
-    // work factor for the tokens, etc.) without abandoning the withAuth() interface
-    keystoneConfig.lists[config.listKey].fields = {
-      ...keystoneConfig.lists[config.listKey].fields,
-      ...additionalListFields,
-    };
-
     return {
       ...keystoneConfig,
       admin,
+      // Add the additional fields to the references lists fields object
+      // TODO: The additionalListFields we're adding here shouldn't naively replace existing fields with the same key
+      // Leaving existing fields in place would allow solution devs to customise these field defs (eg. access control,
+      // work factor for the tokens, etc.) without abandoning the withAuth() interface
+      lists: {
+        ...keystoneConfig.lists,
+        [listKey]: {
+          ...keystoneConfig.lists[listKey],
+          fields: {
+            ...keystoneConfig.lists[listKey].fields,
+            ...additionalListFields,
+          },
+        },
+      },
       extendGraphqlSchema: existingExtendGraphQLSchema
         ? (schema, keystone) =>
             existingExtendGraphQLSchema(extendGraphqlSchema(schema, keystone), keystone)

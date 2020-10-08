@@ -20,7 +20,7 @@ export function getPasswordResetSchema({
   secretField: string;
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
-  passwordResetLink?: AuthTokenTypeConfig;
+  passwordResetLink: AuthTokenTypeConfig;
 }) {
   return graphQLSchemaExtension({
     typeDefs: `
@@ -73,7 +73,7 @@ export function getPasswordResetSchema({
             return { code: result.code, message };
           }
           if (result.success) {
-            await passwordResetLink?.sendToken({
+            await passwordResetLink.sendToken({
               itemId: result.itemId,
               identity,
               token: result.token,
@@ -88,7 +88,7 @@ export function getPasswordResetSchema({
             list,
             identityField,
             protectIdentities,
-            passwordResetLink?.tokensValidForMins,
+            passwordResetLink.tokensValidForMins,
             args,
             ctx
           );
@@ -133,7 +133,7 @@ export function getPasswordResetSchema({
             list,
             identityField,
             protectIdentities,
-            passwordResetLink?.tokensValidForMins,
+            passwordResetLink.tokensValidForMins,
             args
           );
 

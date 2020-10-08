@@ -51,6 +51,7 @@
 
 # Backlog
 
+- [ ] Handle session token authorisation header use case
 - [ ] Review the API that session functions get, try not to provide the keystone instance
 - [ ] 2FA
 - [ ] Social Auth

@@ -23,12 +23,12 @@ const auth = createAuth({
     },
   },
   passwordResetLink: {
-    sendToken: function (args): void {
+    sendToken(args) {
       console.log(`Password reset info:`, args);
     },
   },
   magicAuthLink: {
-    sendToken: function (args): void {
+    sendToken(args) {
       console.log(`Magic auth info:`, args);
     },
   },
