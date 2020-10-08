@@ -1,0 +1,25 @@
+{
+  "name": "@keystone-ui/options",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/options.cjs.js",
+  "module": "dist/options.esm.js",
+  "peerDependencies": {
+    "react": "^16.13.1"
+  },
+  "devDependencies": {
+    "react": "^16.13.1"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "@keystone-ui/core": "*",
+    "@keystone-ui/icons": "*",
+    "@types/react-select": "^3.0.21",
+    "react-select": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/options"
+}
