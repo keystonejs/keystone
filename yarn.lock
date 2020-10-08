@@ -20910,10 +20910,10 @@ pg-types@^2.1.0:
     postgres-date "~1.0.4"
     postgres-interval "^1.1.0"
 
-pg@^8.4.0:
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/pg/-/pg-8.4.0.tgz#7c754e0b907e8dae3af6fff0a0014c77f1418842"
-  integrity sha512-01LcNrAf+mBI46c78mE86I5o5KkOM942lLiSBdiCfgHTR+oUNIjh1fKClWeoPNHJz2oXe/VUSqtk1vwAQYwWEg==
+pg@^8.4.1:
+  version "8.4.1"
+  resolved "https://registry.yarnpkg.com/pg/-/pg-8.4.1.tgz#06cfb6208ae787a869b2f0022da11b90d13d933e"
+  integrity sha512-NRsH0aGMXmX1z8Dd0iaPCxWUw4ffu+lIAmGm+sTCwuDDWkpEgRCAHZYDwqaNhC5hG5DRMOjSUFasMWhvcmLN1A==
   dependencies:
     buffer-writer "2.0.0"
     packet-reader "1.0.0"
