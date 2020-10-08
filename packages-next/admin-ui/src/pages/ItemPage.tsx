@@ -15,6 +15,8 @@ import { Tooltip } from '@keystone-ui/tooltip';
 import copyToClipboard from 'clipboard-copy';
 import { DataGetter, DeepNullable, makeDataGetter } from '../utils/dataGetter';
 import { deserializeValue, ItemData, serializeValueToObjByFieldKey } from '../utils/serialization';
+import { ListMeta } from '@keystone-spike/types';
+import { AlertDialog } from '@keystone-ui/modals';
 
 type ItemPageProps = {
   listKey: string;
@@ -34,7 +36,6 @@ function ItemForm({
   showDelete: boolean;
 }) {
   const list = useList(listKey);
-  const router = useRouter();
 
   const [update, { loading, error }] = useMutation(
     gql`mutation ($data: ${list.gqlNames.updateInputName}!, $id: ID!) {
@@ -44,15 +45,6 @@ function ItemForm({
         ${selectedFields}
       }
     }`
-  );
-
-  const [deleteItem, { loading: isDeletePending }] = useMutation(
-    gql`mutation ($id: ID!) {
-      ${list.gqlNames.deleteMutationName}(id: $id) {
-        id
-      }
-    }`,
-    { variables: { id: itemGetter.get('id').data } }
   );
 
   const [state, setValue] = useState(() => {
@@ -183,19 +175,72 @@ function ItemForm({
           </Button>
         </Stack>
         {showDelete && (
-          <Button
-            tone="negative"
-            weight="outline"
-            isLoading={isDeletePending}
-            onClick={async () => {
-              await deleteItem();
-              router.push(`/${list.path}`);
-            }}
-          >
-            Delete
-          </Button>
+          <DeleteButton
+            list={list}
+            itemLabel={itemGetter.data?._label_ ?? null}
+            itemId={itemGetter.data?.id!}
+          />
         )}
       </div>
+    </Fragment>
+  );
+}
+
+function DeleteButton({
+  itemLabel,
+  itemId,
+  list,
+}: {
+  itemLabel: string | null;
+  itemId: string;
+  list: ListMeta;
+}) {
+  const [deleteItem, { loading }] = useMutation(
+    gql`mutation ($id: ID!) {
+      ${list.gqlNames.deleteMutationName}(id: $id) {
+        id
+      }
+    }`,
+    { variables: { id: itemId } }
+  );
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+
+  return (
+    <Fragment>
+      <Button
+        tone="negative"
+        weight="outline"
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        Delete
+      </Button>
+      <AlertDialog
+        // TODO: change the copy in the title and body of the modal
+        title="Delete Confirmation"
+        isOpen={isOpen}
+        tone="negative"
+        actions={{
+          confirm: {
+            label: 'Delete',
+            action: async () => {
+              await deleteItem();
+              router.push(`/${list.path}`);
+            },
+            loading,
+          },
+          cancel: {
+            label: 'Cancel',
+            action: () => {
+              setIsOpen(false);
+            },
+          },
+        }}
+      >
+        Are you sure you want to delete <strong>{itemLabel}</strong>?
+      </AlertDialog>
     </Fragment>
   );
 }

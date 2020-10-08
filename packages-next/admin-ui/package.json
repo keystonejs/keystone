@@ -19,6 +19,7 @@
     "@keystone-ui/fields": "*",
     "@keystone-ui/icons": "*",
     "@keystone-ui/loading": "*",
+    "@keystone-ui/modals": "*",
     "@keystone-ui/notice": "*",
     "@keystone-ui/pill": "*",
     "@keystone-ui/popover": "*",

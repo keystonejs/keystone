@@ -4,11 +4,12 @@ import { useState } from 'react';
 import { jsx, Stack } from '@keystone-ui/core';
 import { Page } from '../../components/Page';
 import { Button } from '@keystone-ui/button';
-import { Drawer, DrawerController } from '@keystone-ui/modals';
+import { Drawer, DrawerController, AlertDialog } from '@keystone-ui/modals';
 
 export default function ModalsPage() {
   let [isNarrowOpen, setIsNarrowOpen] = useState(false);
   let [isWideOpen, setIsWideOpen] = useState(false);
+  let [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
   return (
     <Page>
@@ -29,6 +30,14 @@ export default function ModalsPage() {
           }}
         >
           Open Wide Drawer
+        </Button>
+        <Button
+          tone="active"
+          onClick={() => {
+            setIsAlertDialogOpen(true);
+          }}
+        >
+          Open Alert Dialog
         </Button>
       </Stack>
       <DrawerController isOpen={isNarrowOpen}>
@@ -66,6 +75,22 @@ export default function ModalsPage() {
           content
         </Drawer>
       </DrawerController>
+      <AlertDialog
+        isOpen={isAlertDialogOpen}
+        title="Something"
+        actions={{
+          cancel: {
+            action: () => setIsAlertDialogOpen(false),
+            label: 'Cancel',
+          },
+          confirm: {
+            action: () => setIsAlertDialogOpen(false),
+            label: 'Confirm',
+          },
+        }}
+      >
+        content
+      </AlertDialog>
     </Page>
   );
 }
