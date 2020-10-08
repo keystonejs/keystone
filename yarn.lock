@@ -5078,10 +5078,26 @@
     "@types/history" "*"
     "@types/react" "*"
 
-"@types/react-dom@^16.9.8":
+"@types/react-dom@*", "@types/react-dom@^16.9.8":
   version "16.9.8"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.8.tgz#fe4c1e11dfc67155733dfa6aa65108b4971cb423"
   integrity sha512-ykkPQ+5nFknnlU6lDd947WbQ6TE3NNzbQAkInC2EKY1qeYdTKp7onFusmYZb+ityzx2YviqT6BXSu+LyWWJwcA==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-select@^3.0.21":
+  version "3.0.21"
+  resolved "https://registry.yarnpkg.com/@types/react-select/-/react-select-3.0.21.tgz#089e1caa98dd653347cf4057b087957d26580d67"
+  integrity sha512-jVtukxaARMQCJC74ikGzpxrzxDFPkcGEwLsFIsc/bAn2rcBUlJ0WgP71ShUc/Q0nnk4ClZn2jBm2tbh6HtxB3A==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-dom" "*"
+    "@types/react-transition-group" "*"
+
+"@types/react-transition-group@*":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@types/react-transition-group/-/react-transition-group-4.4.0.tgz#882839db465df1320e4753e6e9f70ca7e9b4d46d"
+  integrity sha512-/QfLHGpu+2fQOqQaXh8MG9q03bFENooTb/it4jr5kKaZlDQfWvjqWZg48AwzPVMBHlRuTRAY7hRHCEOXz5kV6w==
   dependencies:
     "@types/react" "*"
 
