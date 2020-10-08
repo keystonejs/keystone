@@ -19,6 +19,7 @@
     "@keystone-ui/pill": "*",
     "@keystone-ui/popover": "*",
     "@keystone-ui/segmented-control": "*",
+    "@keystone-ui/toast": "*",
     "@keystone-ui/tooltip": "*",
     "@preconstruct/next": "^1.0.1",
     "@types/react": "^16.9.51",
