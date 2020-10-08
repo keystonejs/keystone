@@ -1,0 +1,24 @@
+{
+  "name": "@keystone-ui/modals",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/modals.cjs.js",
+  "module": "dist/modals.esm.js",
+  "devDependencies": {
+    "@types/react": "^16.9.51"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "@keystone-ui/button": "*",
+    "@keystone-ui/core": "*",
+    "react": "^16.13.1",
+    "react-focus-lock": "^2.4.1",
+    "react-remove-scroll": "^2.4.0",
+    "react-transition-group": "^4.4.1"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/modals"
+}
