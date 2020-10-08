@@ -19,14 +19,15 @@
 
 ## Design System Components
 
-- [ ] Drawer Package
-- [ ] Modals (specifically, confirm)
+- [x] Drawer Package
+- [x] Modals (specifically, confirm)
 - [ ] Calendar / DateTime Picker
-- [ ] Toasts
+- [x] Toasts
 
 ## Dashboard
 
-- [ ] Cards on the dashboard should show individual errors
+- [x] Cards on the dashboard should show individual errors
+- [ ] Cards on the dashboard should show individual loading states
 - [ ] If you can create items (!hideCreate) show the create button
 
 - [ ] Add an option to override the fetching the item count for dashboard cards with a custom description (or hide it)
@@ -83,7 +84,7 @@
   - If you have no fields to display at all, we show `_label_`
 - [x] Work out whether the label has been defaulted to `Id` and if so, show it in fixed-width font
   - When there is no `labelResolver` on the list, and no `name` field
-- [ ] Confirm before delete
+- [x] Confirm before delete
 
 - [ ] Add dots menu for [copy link / copy id / delete]
 
@@ -109,10 +110,10 @@
 - [ ] Implement sticky toolbar
 - [x] Implement Delete Item
 - [x] Copy ItemID to Clipboard
-- [ ] Show access control errors for fields
+- [x] Show access control errors for fields
 - [x] ~~Handle the case where there are no editable fields (disable button, w/ tooltip)~~ (users won't be able to edit anything and then the button will have a tooltip saying something like "nothing has changed so you can't save")
 - [x] Handle the case where there are no visible fields (show a message)
-- [ ] Confirm before delete
+- [x] Confirm before delete
 - [ ] Notification when you've updated an item
 
 ## Fields

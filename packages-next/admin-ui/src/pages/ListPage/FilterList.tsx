@@ -48,11 +48,13 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
         }}
       >
         {field.label}{' '}
-        {field.controller.filter!.format({
-          label: field.controller.filter!.types[filter.type].label,
-          type: filter.type,
-          value: filter.value,
-        })}
+        {field.controller
+          .filter!.format({
+            label: field.controller.filter!.types[filter.type].label,
+            type: filter.type,
+            value: filter.value,
+          })
+          .toLowerCase()}
       </Pill>
       <PopoverDialog {...dialog.props} ref={dialog.ref} isVisible={isOpen}>
         <EditDialog
