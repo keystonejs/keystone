@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
-import { Fragment, useState } from 'react';
-import { jsx, Box, Stack } from '@keystone-ui/core';
+import { useState } from 'react';
+import { jsx, Stack } from '@keystone-ui/core';
 import { Page } from '../../components/Page';
 import { Button } from '@keystone-ui/button';
 import { Drawer, DrawerController } from '@keystone-ui/modals';
