@@ -181,6 +181,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
       selectedItems: newSelectedItems,
     });
   }
+  const theme = useTheme();
 
   return (
     <PageContainer>
@@ -211,7 +212,9 @@ export const ListPage = ({ listKey }: ListPageProps) => {
               if (selectedItemsCount) {
                 return (
                   <Fragment>
-                    Selected {selectedItemsCount} of {data.items.length}
+                    <span css={{ marginRight: theme.spacing.small }}>
+                      Selected {selectedItemsCount} of {data.items.length}
+                    </span>
                     {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
                       <DeleteManyButton
                         list={list}
@@ -311,11 +314,9 @@ function DeleteManyButton({
   );
   const [isOpen, setIsOpen] = useState(false);
 
-  const theme = useTheme();
   return (
     <Fragment>
       <Button
-        css={{ marginLeft: theme.spacing.small }}
         isLoading={deleteItemsState.loading}
         tone="negative"
         onClick={async () => {
