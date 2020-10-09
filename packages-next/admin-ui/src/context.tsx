@@ -3,6 +3,7 @@ import { ApolloProvider, ApolloClient, InMemoryCache, ApolloError, DocumentNode 
 import type { AdminConfig, AdminMeta, FieldViews } from '@keystone-spike/types';
 import { Center } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';
+import { DrawerProvider } from '@keystone-ui/modals';
 import { useAdminMeta } from './utils/useAdminMeta';
 import { AuthenticatedItem, useAuthenticatedItem } from './utils/useAuthenticatedItem';
 
@@ -58,17 +59,19 @@ export const KeystoneProvider = ({
     );
   }
   return (
-    <KeystoneContext.Provider
-      value={{
-        adminConfig,
-        adminMeta,
-        fieldViews,
-        authenticatedItem,
-        reinitContext,
-      }}
-    >
-      <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
-    </KeystoneContext.Provider>
+    <DrawerProvider>
+      <KeystoneContext.Provider
+        value={{
+          adminConfig,
+          adminMeta,
+          fieldViews,
+          authenticatedItem,
+          reinitContext,
+        }}
+      >
+        <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
+      </KeystoneContext.Provider>
+    </DrawerProvider>
   );
 };
 

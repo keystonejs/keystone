@@ -15,12 +15,12 @@ import { useSelectedFields } from './useSelectedFields';
 import { CheckboxControl } from '@keystone-ui/fields';
 import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter';
 import { getRootGraphQLFieldsFromFieldController } from '../../utils/getRootGraphQLFieldsFromFieldController';
-import { CreateForm } from '../../components/CreateForm';
+import { CreateItemModal } from '../../components/CreateItemDrawer';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
 import { ListMeta } from '@keystone-spike/types';
-import { AlertDialog } from '@keystone-ui/modals';
+import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 
 type ListPageProps = {
   listKey: string;
@@ -604,8 +604,8 @@ const ListPageHeader = ({
           </Button>
         )}
       </Stack>
-      {isCreateModalOpen && (
-        <CreateForm
+      <DrawerController isOpen={isCreateModalOpen}>
+        <CreateItemModal
           listKey={listKey}
           fieldModes={createViewFieldModes}
           onCreate={id => {
@@ -615,7 +615,7 @@ const ListPageHeader = ({
             setIsCreateModalOpen(false);
           }}
         />
-      )}
+      </DrawerController>
     </Fragment>
   );
 };

@@ -373,9 +373,7 @@ export type AuthErrorCode =
   | 'AUTH_TOKEN_REDEMPTION_TOKEN_NOT_SET'
   | 'AUTH_TOKEN_REDEMPTION_TOKEN_MISMATCH'
   | 'AUTH_TOKEN_REDEMPTION_TOKEN_EXPIRED'
-  | 'AUTH_TOKEN_REDEMPTION_TOKEN_REDEEMED'
-  | 'INTERNAL_ERROR'
-  | 'CUSTOM_ERROR';
+  | 'AUTH_TOKEN_REDEMPTION_TOKEN_REDEEMED';
 
 export type CreateInitialUserInput = {
   readonly name?: Scalars['String'] | null;
