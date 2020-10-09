@@ -1,14 +1,14 @@
 /* @jsx jsx */
 
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { gql, useMutation } from '../apollo';
-import { jsx, Stack } from '@keystone-ui/core';
+import { jsx } from '@keystone-ui/core';
 import isDeepEqual from 'fast-deep-equal';
 import { useList } from '../context';
-import { Button } from '@keystone-ui/button';
 import { Notice } from '@keystone-ui/notice';
+import { Drawer } from '@keystone-ui/modals';
 
-export function CreateForm({
+export function CreateItemDrawer({
   listKey,
   fieldModes,
   onClose,
@@ -57,48 +57,43 @@ export function CreateForm({
     });
 
   return (
-    <Fragment>
+    <Drawer
+      width="wide"
+      title={`Create ${list.singular}`}
+      actions={{
+        confirm: {
+          label: `Create ${list.singular}`,
+          loading,
+          action: () => {
+            const data: Record<string, any> = {};
+            Object.keys(list.fields).forEach(fieldPath => {
+              const { controller } = list.fields[fieldPath];
+              const serialized = controller.serialize(valuesByFieldPath[fieldPath]);
+              if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
+                Object.assign(data, serialized);
+              }
+            });
+
+            createItem({
+              variables: {
+                data,
+              },
+            })
+              .then(({ data }) => {
+                onCreate(data.item.id);
+              })
+              .catch(() => {});
+          },
+        },
+        cancel: {
+          label: 'Cancel',
+          action: onClose,
+        },
+      }}
+    >
       {error && <Notice tone="negative">{error.message}</Notice>}
       {fields}
       {fields.length === 0 && 'There are no fields that you can read or edit'}
-      <div css={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Stack across gap="small">
-          <Button
-            isLoading={loading}
-            weight="bold"
-            tone="active"
-            onClick={() => {
-              const data: Record<string, any> = {};
-              Object.keys(list.fields).forEach(fieldPath => {
-                const { controller } = list.fields[fieldPath];
-                const serialized = controller.serialize(valuesByFieldPath[fieldPath]);
-                if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
-                  Object.assign(data, serialized);
-                }
-              });
-
-              createItem({
-                variables: {
-                  data,
-                },
-              })
-                .then(({ data }) => {
-                  onCreate(data.item.id);
-                })
-                .catch(() => {});
-            }}
-          >
-            Create
-          </Button>
-        </Stack>
-        <Button
-          onClick={() => {
-            onClose();
-          }}
-        >
-          Cancel
-        </Button>
-      </div>
-    </Fragment>
+    </Drawer>
   );
 }

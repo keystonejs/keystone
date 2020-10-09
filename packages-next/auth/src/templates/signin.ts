@@ -11,8 +11,10 @@ export default function Signin() {
   return <SigninPage mutation={gql\`
   mutation($identity: String!, $secret: String!) {
     ${gqlNames.authenticateItemWithPassword}(email: $identity, password: $secret) {
-      item {
-        id
+      ... on UserAuthenticationWithPasswordSuccess {
+        item {
+          id
+        }  
       }
     }
   }

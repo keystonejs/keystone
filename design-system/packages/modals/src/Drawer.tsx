@@ -1,8 +1,8 @@
 /** @jsx jsx */
 
-import { MutableRefObject, ReactNode } from 'react';
+import { Fragment, MutableRefObject, ReactNode } from 'react';
 import { Button } from '@keystone-ui/button';
-import { jsx, makeId, useId, useTheme, Heading } from '@keystone-ui/core';
+import { jsx, makeId, useId, useTheme, Heading, Stack, Divider } from '@keystone-ui/core';
 
 import { DrawerBase } from './DrawerBase';
 import { useDrawerControllerContext } from './DrawerController';
@@ -51,25 +51,39 @@ export const Drawer = ({
 
       <div css={{ overflowY: 'auto', padding: `0 ${spacing.xlarge}px` }}>{children}</div>
 
-      <div
-        css={{
-          display: 'flex',
-          flexShrink: 0,
-          flexDirection: 'column',
-          padding: `${spacing.large}px ${spacing.xlarge}px`,
+      {width === 'narrow' ? (
+        <div
+          css={{
+            display: 'flex',
+            flexShrink: 0,
+            flexDirection: 'column',
+            padding: `${spacing.large}px ${spacing.xlarge}px`,
 
-          '> button + button': {
-            marginTop: spacing.small,
-          },
-        }}
-      >
-        <Button tone="active" weight="bold" type="submit" isLoading={confirm.loading}>
-          {confirm.label}
-        </Button>
-        <Button onClick={safeClose} disabled={confirm.loading} weight="none" tone="passive">
-          {cancel.label}
-        </Button>
-      </div>
+            '> button + button': {
+              marginTop: spacing.small,
+            },
+          }}
+        >
+          <Button tone="active" weight="bold" type="submit" isLoading={confirm.loading}>
+            {confirm.label}
+          </Button>
+          <Button onClick={safeClose} disabled={confirm.loading} weight="none" tone="passive">
+            {cancel.label}
+          </Button>
+        </div>
+      ) : (
+        <Fragment>
+          <Divider marginX="large" marginTop="medium" />
+          <Stack padding="large" across gap="small">
+            <Button tone="active" weight="bold" type="submit" isLoading={confirm.loading}>
+              {confirm.label}
+            </Button>
+            <Button onClick={safeClose} disabled={confirm.loading} weight="none" tone="passive">
+              {cancel.label}
+            </Button>
+          </Stack>
+        </Fragment>
+      )}
     </DrawerBase>
   );
 };

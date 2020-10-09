@@ -1,7 +1,21 @@
 import type { Keystone } from '@keystone-spike/types';
 
 export const homeTemplate = (keystone: Keystone) => {
-  let query = `query {\n`;
+  let query = `query {
+    keystone {
+      adminMeta {
+        lists {
+          key
+          fields {
+            path
+            createView {
+              fieldMode
+            }
+          }
+        }
+      }
+    }
+`;
   for (const listKey in keystone.adminMeta.lists) {
     query += `${listKey}: ${keystone.adminMeta.lists[listKey].gqlNames.listQueryMetaName} { count }\n`;
   }
