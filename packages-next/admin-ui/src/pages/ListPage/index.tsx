@@ -15,7 +15,7 @@ import { useSelectedFields } from './useSelectedFields';
 import { CheckboxControl } from '@keystone-ui/fields';
 import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter';
 import { getRootGraphQLFieldsFromFieldController } from '../../utils/getRootGraphQLFieldsFromFieldController';
-import { CreateItemModal } from '../../components/CreateItemDrawer';
+import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
@@ -605,7 +605,7 @@ const ListPageHeader = ({
         )}
       </Stack>
       <DrawerController isOpen={isCreateModalOpen}>
-        <CreateItemModal
+        <CreateItemDrawer
           listKey={listKey}
           fieldModes={createViewFieldModes}
           onCreate={id => {

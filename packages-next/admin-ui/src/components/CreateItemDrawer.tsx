@@ -8,7 +8,7 @@ import { useList } from '../context';
 import { Notice } from '@keystone-ui/notice';
 import { Drawer } from '@keystone-ui/modals';
 
-export function CreateItemModal({
+export function CreateItemDrawer({
   listKey,
   fieldModes,
   onClose,
