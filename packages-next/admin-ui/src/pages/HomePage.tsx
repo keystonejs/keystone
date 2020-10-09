@@ -1,13 +1,13 @@
 /* @jsx jsx */
 
-import { jsx, useTheme, Inline, VisuallyHidden, Stack } from '@keystone-ui/core';
+import { jsx, useTheme, Inline, VisuallyHidden } from '@keystone-ui/core';
 import { DocumentNode, useQuery } from '../apollo';
 
 import { useKeystone, useList } from '../context';
 import { PageContainer } from '../components/PageContainer';
 import { DeepNullable, makeDataGetter } from '../utils/dataGetter';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
-import { ButtonHTMLAttributes, Fragment, useMemo, useState } from 'react';
+import { ButtonHTMLAttributes, useMemo, useState } from 'react';
 import { DrawerController } from '@keystone-ui/modals';
 import { CreateItemDrawer } from '../components/CreateItemDrawer';
 import { useRouter, Link } from '../router';
