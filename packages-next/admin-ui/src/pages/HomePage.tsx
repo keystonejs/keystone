@@ -29,7 +29,6 @@ const ListCard = ({ listKey, count, createViewFieldModes }: ListCardProps) => {
   const list = useList(listKey);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const router = useRouter();
-  console.log({ createViewFieldModes });
   return (
     <div css={{ position: 'relative' }}>
       <Link
