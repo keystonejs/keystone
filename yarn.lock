@@ -72,10 +72,10 @@
     tslib "^1.10.0"
     zen-observable "^0.8.14"
 
-"@apollo/client@^3.2.2":
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.2.2.tgz#fe5cad4d53373979f13a925e9da02d8743e798a5"
-  integrity sha512-lw80L0i8PHhv863iLEwf5AvNak9STPNC6/0MWQYGZHV4yEryj7muLAueRzXkZHpoddGAou80xL8KqLAODNy0/A==
+"@apollo/client@^3.2.3":
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.2.3.tgz#d13e4efa501a1fadefa3cd93e2de99cba2b53999"
+  integrity sha512-AraRQRG4HinqcsuDtRzuavMuSxkK46TO4zh4zfLLCazMYSYP1xY9E5cQEeUHZ993HQMs4A7tyATPaEMfn8UZfA==
   dependencies:
     "@graphql-typed-document-node/core" "^3.0.0"
     "@types/zen-observable" "^0.8.0"
