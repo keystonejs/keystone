@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/adapter-prisma",
   "description": "KeystoneJS Prisma Database Adapter",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@keystonejs/fields-auto-increment": "^8.0.0",
-    "@keystonejs/keystone": "^17.0.0",
+    "@keystonejs/keystone": "^17.1.0",
     "@keystonejs/utils": "^5.4.3",
     "@prisma/cli": "2.8.1",
     "@prisma/client": "2.8.1",
