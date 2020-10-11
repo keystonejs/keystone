@@ -5,9 +5,10 @@ import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 
 export class DateTimeUtcImplementation extends Implementation {
-  constructor() {
+  constructor(path, { format = 'yyyy-MM-dd[T]HH:mm:ss.SSSxx' }) {
     super(...arguments);
     this.isOrderable = true;
+    this.format = format;
   }
 
   get _supportsUnique() {
@@ -38,7 +39,7 @@ export class DateTimeUtcImplementation extends Implementation {
   }
 
   extendAdminMeta(meta) {
-    return { ...meta, format: 'yyyy-MM-dd[T]HH:mm:ss.SSSxx' };
+    return { ...meta, format: this.format };
   }
 }
 
