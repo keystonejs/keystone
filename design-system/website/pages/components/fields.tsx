@@ -1,8 +1,7 @@
 /* @jsx jsx */
 
 import { ReactNode, useState } from 'react';
-import { jsx } from '@emotion/core';
-import { useTheme } from '@keystone-ui/core';
+import { jsx, useTheme } from '@keystone-ui/core';
 import { Checkbox, Radio, TextArea, TextInput, Switch, SelectInput } from '@keystone-ui/fields';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
 

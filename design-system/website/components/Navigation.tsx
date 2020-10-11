@@ -1,8 +1,7 @@
 /* @jsx jsx */
 
 import { Fragment, ReactNode } from 'react';
-import { jsx } from '@emotion/core';
-import { useTheme } from '@keystone-ui/core';
+import { jsx, useTheme } from '@keystone-ui/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 

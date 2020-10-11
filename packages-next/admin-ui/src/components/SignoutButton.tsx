@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { jsx } from '@emotion/core';
+import { jsx } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { ReactNode, useEffect } from 'react';
 
