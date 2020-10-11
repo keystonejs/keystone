@@ -6828,10 +6828,10 @@ autoprefixer@^9.6.0, autoprefixer@^9.6.1:
     postcss "^7.0.17"
     postcss-value-parser "^4.0.0"
 
-aws-sdk@^2.770.0:
-  version "2.770.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.770.0.tgz#eb0567cbed215db31d43d846843f52359bab0e16"
-  integrity sha512-CUkyXwFxEJ32AxH2tjBFfG4grjFdyDjyBaltYzaLa0U2KvGgDIj28q8psdxhALTm3c9zPEoMYpRXiTyRNmkROQ==
+aws-sdk@^2.771.0:
+  version "2.771.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.771.0.tgz#ff4beb0a04d6ab1ae962c85dfb42e3e9bfe2b93b"
+  integrity sha512-fqNGusCwkdemx3yFqvQbU1+xq/PB2wGq7EQIrrTZx/zxfXUp+7+PnrHzXtViCRghN0tylLghBfWYD4VcVcqi7g==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
