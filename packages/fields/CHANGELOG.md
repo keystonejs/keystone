@@ -1,5 +1,17 @@
 # @keystonejs/fields
 
+## 19.1.0
+
+### Minor Changes
+
+- [`f13d7eaab`](https://github.com/keystonejs/keystone/commit/f13d7eaab8e6d53fa9766e419267305886900a28) [#3928](https://github.com/keystonejs/keystone/pull/3928) Thanks [@gautamsi](https://github.com/gautamsi)! - Added format option to DateTimeUtc field similar to DateTime field. This affects only the admn-ui display
+
+### Patch Changes
+
+- Updated dependencies [[`767a02a76`](https://github.com/keystonejs/keystone/commit/767a02a76d787a871832075402722c0df5213549), [`d157e7666`](https://github.com/keystonejs/keystone/commit/d157e7666d1057cbeab7dc274244d0e130171ec9)]:
+  - @keystonejs/adapter-knex@12.0.1
+  - @keystonejs/adapter-prisma@1.0.4
+
 ## 19.0.0
 
 ### Major Changes

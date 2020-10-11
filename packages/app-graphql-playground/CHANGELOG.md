@@ -1,5 +1,11 @@
 # @keystonejs/app-graphql-playground
 
+## 5.1.8
+
+### Patch Changes
+
+- [`8023dabf0`](https://github.com/keystonejs/keystone/commit/8023dabf06cd08ab6541b2cc8d96f37b498e2774) [#3873](https://github.com/keystonejs/keystone/pull/3873) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@apollographql/graphql-playground-react` to `^1.7.34`.
+
 ## 5.1.7
 
 ### Patch Changes
