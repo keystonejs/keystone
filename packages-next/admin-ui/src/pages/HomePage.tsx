@@ -1,14 +1,20 @@
 /* @jsx jsx */
 
-import { jsx, useTheme, Inline } from '@keystone-ui/core';
-import Link from 'next/link';
+import { jsx, useTheme, Inline, VisuallyHidden } from '@keystone-ui/core';
 import { DocumentNode, useQuery } from '../apollo';
 
 import { useKeystone, useList } from '../context';
 import { PageContainer } from '../components/PageContainer';
+import { DeepNullable, makeDataGetter } from '../utils/dataGetter';
+import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
+import { ButtonHTMLAttributes, useMemo, useState } from 'react';
+import { DrawerController } from '@keystone-ui/modals';
+import { CreateItemDrawer } from '../components/CreateItemDrawer';
+import { useRouter, Link } from '../router';
 
 type ListCardProps = {
   listKey: string;
+  createViewFieldModes: Record<string, 'edit' | 'hidden'>;
   count:
     | {
         type: 'success';
@@ -18,12 +24,15 @@ type ListCardProps = {
     | { type: 'error'; message: string };
 };
 
-const ListCard = ({ listKey, count }: ListCardProps) => {
+const ListCard = ({ listKey, count, createViewFieldModes }: ListCardProps) => {
   const { colors, palette, shadow, spacing, radii } = useTheme();
   const list = useList(listKey);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const router = useRouter();
   return (
-    <Link href={list.path} passHref>
-      <a
+    <div css={{ position: 'relative' }}>
+      <Link
+        href={list.path}
         css={{
           backgroundColor: colors.background,
           borderWidth: 1,
@@ -33,7 +42,6 @@ const ListCard = ({ listKey, count }: ListCardProps) => {
           textDecoration: 'none',
           display: 'inline-block',
           padding: spacing.large,
-          marginRight: spacing.large,
           minWidth: 280,
           ':hover': {
             borderColor: palette.blue400,
@@ -53,8 +61,57 @@ const ListCard = ({ listKey, count }: ListCardProps) => {
         ) : (
           'No access'
         )}
-      </a>
-    </Link>
+      </Link>
+      <CreateButton
+        onClick={() => {
+          setIsCreateModalOpen(true);
+        }}
+      >
+        <PlusIcon size="large" />
+        <VisuallyHidden>Create {list.singular}</VisuallyHidden>
+      </CreateButton>
+      <DrawerController isOpen={isCreateModalOpen}>
+        <CreateItemDrawer
+          fieldModes={createViewFieldModes}
+          listKey={list.key}
+          onCreate={id => {
+            router.push(`/${list.path}/${id}`);
+          }}
+          onClose={() => {
+            setIsCreateModalOpen(false);
+          }}
+        />
+      </DrawerController>
+    </div>
+  );
+};
+
+const CreateButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+  const theme = useTheme();
+  return (
+    <button
+      css={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: '2px',
+        border: 0,
+        color: 'white',
+        cursor: 'pointer',
+        height: 32,
+        outline: 0,
+        position: 'absolute',
+        right: theme.spacing.large,
+        top: theme.spacing.large,
+        transition: 'background-color 80ms linear',
+        width: 32,
+
+        '&:hover, &:focus': {
+          backgroundColor: theme.tones.positive.fill[0],
+        },
+      }}
+      {...props}
+    />
   );
 };
 
@@ -64,31 +121,70 @@ export const HomePage = ({ query }: { query: DocumentNode }) => {
   } = useKeystone();
 
   let { data, error } = useQuery(query, { errorPolicy: 'all' });
-  if (error?.networkError) {
-    return error.message;
-  }
+
+  const dataGetter = makeDataGetter<
+    DeepNullable<{
+      [key: string]: any;
+      keystone: {
+        adminMeta: {
+          lists: {
+            key: string;
+            fields: {
+              path: string;
+              createView: {
+                fieldMode: 'edit' | 'hidden';
+              };
+            }[];
+          }[];
+        };
+      };
+    }>
+  >(data, error?.graphQLErrors);
+  const keystoneMetaGetter = dataGetter.get('keystone');
+  const createViewFieldModes = useMemo(() => {
+    const createViewFieldModes: Record<string, Record<string, 'edit' | 'hidden'>> = {};
+    keystoneMetaGetter.data?.adminMeta?.lists?.forEach(list => {
+      const key = list?.key!;
+      createViewFieldModes[key] = {};
+      list?.fields?.forEach(field => {
+        createViewFieldModes[key][field?.path!] = field?.createView?.fieldMode!;
+      });
+    });
+    return createViewFieldModes;
+  }, [keystoneMetaGetter.data]);
 
   if (!data) {
     return 'Loading...';
   }
 
+  if (keystoneMetaGetter.errors) {
+    return keystoneMetaGetter.errors[0].message;
+  }
+
   return (
     <PageContainer>
       <h1>Dashboard</h1>
-      <Inline>
+      <Inline gap="large">
         {Object.keys(lists).map(key => {
-          let err = error?.graphQLErrors.find(err => err.path?.[0] === key);
+          const result = dataGetter.get(key);
           // TODO: Checking based on the message is bad, but we need to revisit GraphQL errors in
           // Keystone to fix it and that's a whole other can of worms...
-          if (err?.message === 'You do not have access to this resource') {
-            console.log(err);
-            return <ListCard count={{ type: 'no-access' }} key={key} listKey={key} />;
+          if (result.errors?.[0].message === 'You do not have access to this resource') {
+            return (
+              <ListCard
+                createViewFieldModes={createViewFieldModes[key]}
+                count={{ type: 'no-access' }}
+                key={key}
+                listKey={key}
+              />
+            );
           }
           return (
             <ListCard
+              createViewFieldModes={createViewFieldModes[key]}
               count={
-                err?.message
-                  ? { type: 'error', message: err.message }
+                result.errors
+                  ? { type: 'error', message: result.errors[0].message }
                   : { type: 'success', count: data[key].count }
               }
               key={key}

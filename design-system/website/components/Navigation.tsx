@@ -90,6 +90,11 @@ export const Navigation = () => {
         <NavItem href="/components/notice">Notice</NavItem>
         <NavItem href="/components/loading">Loading</NavItem>
         <NavItem href="/components/popover">Popover</NavItem>
+        <NavItem href="/components/tooltip">Tooltip</NavItem>
+        <NavItem href="/components/pill">Pill</NavItem>
+        <NavItem href="/components/options">Options</NavItem>
+        <NavItem href="/components/modals">Modals</NavItem>
+        <NavItem href="/components/toast">Toast</NavItem>
       </Section>
     </Fragment>
   );

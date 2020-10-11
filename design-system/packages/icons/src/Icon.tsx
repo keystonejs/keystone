@@ -13,7 +13,9 @@ export type IconProps = SVGAttributes<SVGSVGElement> & {
 // TODO: Move to theme?
 const sizeMap = {
   small: 16,
+  smallish: 20,
   medium: 24,
+  largish: 28,
   large: 32,
 };
 

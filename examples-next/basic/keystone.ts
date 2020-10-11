@@ -10,6 +10,7 @@ import { createAuth } from '@keystone-spike/auth';
 
 let sessionSecret =
   'a very very good secreta very very good secreta very very good secreta very very good secret';
+let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 
 const auth = createAuth({
   listKey: 'User',
@@ -21,9 +22,19 @@ const auth = createAuth({
       isAdmin: true,
     },
   },
+  passwordResetLink: {
+    sendToken(args) {
+      console.log(`Password reset info:`, args);
+    },
+  },
+  magicAuthLink: {
+    sendToken(args) {
+      console.log(`Magic auth info:`, args);
+    },
+  },
 });
 
-const isAccessAllowed = ({ session }: { session: any }) => !!session?.item?.isAdmin;
+// const isAccessAllowed = ({ session }: { session: any }) => !!session?.item?.isAdmin;
 
 export default auth.withAuth(
   config({
@@ -39,7 +50,7 @@ export default auth.withAuth(
     admin: {
       // NOTE -- this is not implemented, the spike always provides an admin ui at /
       path: '/admin',
-      isAccessAllowed,
+      // isAccessAllowed,
       getAdditionalFiles: [
         () => [
           {
@@ -54,6 +65,7 @@ export default auth.withAuth(
     extendGraphqlSchema,
     session: withItemData(
       statelessSessions({
+        maxAge: sessionMaxAge,
         secret: sessionSecret,
       }),
       { User: 'name isAdmin' }

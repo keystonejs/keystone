@@ -47,7 +47,7 @@ class HookManager {
       ...resolvedData,
       ...(await mapToFields(
         this.fields.filter(field => field.hooks.resolveInput),
-        field => field.hooks.resolveInput({ ...args, resolvedData })
+        field => field.hooks.resolveInput({ ...args, fieldPath: field.path, resolvedData })
       )),
     };
 
@@ -114,7 +114,7 @@ class HookManager {
     await mapToFields(fields, field => field[hookName](args));
     await mapToFields(
       fields.filter(field => field.hooks[hookName]),
-      field => field.hooks[hookName](args)
+      field => field.hooks[hookName]({ fieldPath: field.path, ...args })
     );
     if (fieldValidationErrors.length) {
       this._throwValidationFailure({ errors: fieldValidationErrors, operation, originalInput });
@@ -163,7 +163,7 @@ class HookManager {
     await mapToFields(fields, field => field[hookName](args));
     await mapToFields(
       fields.filter(field => field.hooks[hookName]),
-      field => field.hooks[hookName](args)
+      field => field.hooks[hookName]({ fieldPath: field.path, ...args })
     );
 
     if (this.hooks[hookName]) await this.hooks[hookName](args);

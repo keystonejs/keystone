@@ -39,18 +39,26 @@ type CheckboxControlProps = {
 } & Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>;
 
 export const CheckboxControl = forwardRef<HTMLInputElement, CheckboxControlProps>(
-  ({ size, ...props }, ref) => (
+  ({ className, size, ...props }, ref) => (
     <Fragment>
       <VisuallyHidden ref={ref} as="input" type="checkbox" {...props} />
-      <Indicator size={size}>
+      <Indicator className={className} size={size}>
         <CheckIcon size={size} />
       </Indicator>
     </Fragment>
   )
 );
 
-const Indicator = ({ size, ...props }: { size?: SizeType; children?: ReactNode }) => {
+const Indicator = ({
+  className,
+  size,
+  ...props
+}: {
+  size?: SizeType;
+  children?: ReactNode;
+  className?: string;
+}) => {
   const tokens = useIndicatorTokens({ type: 'checkbox', size: size || 'medium' });
   const styles = useIndicatorStyles({ tokens });
-  return <div css={styles} {...props} />;
+  return <div className={className} css={styles} {...props} />;
 };

@@ -16,6 +16,7 @@ import { GraphQLSchema, GraphQLScalarType } from 'graphql';
 import { mapSchema } from '@graphql-tools/utils';
 import { crudForList } from '../lib/crud-api';
 import { adminMetaSchemaExtension } from '@keystone-spike/admin-ui/templates';
+import { accessControlContext, skipAccessControlContext } from '../lib/createAccessControlContext';
 
 export function createKeystone(config: KeystoneConfig): Keystone {
   let keystone = new BaseKeystone({
@@ -50,6 +51,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
   Object.keys(config.lists).forEach(key => {
     const listConfig = config.lists[key];
     const list: BaseKeystoneList = keystone.createList(key, {
+      labelField: listConfig.labelField,
       fields: Object.fromEntries(
         Object.entries(listConfig.fields).map(([key, field]) => [
           key,
@@ -65,6 +67,9 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     } as any) as any;
     adminMeta.lists[key] = {
       key,
+      labelIsId:
+        listConfig.labelField === 'id' ||
+        (listConfig.labelField === undefined && listConfig.fields.name === undefined),
       description: listConfig.admin?.description ?? listConfig.description ?? null,
       label: list.adminUILabels.label,
       singular: list.adminUILabels.singular,
@@ -73,14 +78,13 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       fields: {},
       pageSize: listConfig.admin?.listView?.pageSize ?? 50,
       gqlNames: list.gqlNames,
-      initialColumns:
-        listConfig.admin?.listView?.initialColumns ?? Object.keys(listConfig.fields).slice(0, 2),
+      initialColumns: (listConfig.admin?.listView?.initialColumns as string[]) ?? ['_label_'],
     };
     for (const fieldKey of Object.keys(listConfig.fields)) {
       const field = listConfig.fields[fieldKey];
       const view = field.config.admin?.views ?? field.views;
       adminMeta.lists[key].fields[fieldKey] = {
-        label: fieldKey,
+        label: (list as any).fieldsByPath[fieldKey].label,
         views: getViewId(view),
         fieldMeta: field.getAdminMeta?.() ?? null,
         isOrderable: (list as any).fieldsByPath[fieldKey].isOrderable,
@@ -155,19 +159,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
   }) {
     return {
       schemaName: 'public',
-      // authedItem: authentication.item,
-      // authedListKey: authentication.listKey,
-      ...(keystone as any)._getAccessControlContext({
-        schemaName: 'public',
-        authentication: sessionContext?.session
-          ? {
-              // TODO: Keystone makes assumptions about the shape of this object
-              item: true,
-              ...(sessionContext?.session as any),
-            }
-          : {},
-        skipAccessControl,
-      }),
+      ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
       crud,
       totalResults: 0,
       keystone,

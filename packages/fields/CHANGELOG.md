@@ -1,5 +1,31 @@
 # @keystonejs/fields
 
+## 19.1.0
+
+### Minor Changes
+
+- [`f13d7eaab`](https://github.com/keystonejs/keystone/commit/f13d7eaab8e6d53fa9766e419267305886900a28) [#3928](https://github.com/keystonejs/keystone/pull/3928) Thanks [@gautamsi](https://github.com/gautamsi)! - Added format option to DateTimeUtc field similar to DateTime field. This affects only the admn-ui display
+
+### Patch Changes
+
+- Updated dependencies [[`767a02a76`](https://github.com/keystonejs/keystone/commit/767a02a76d787a871832075402722c0df5213549), [`d157e7666`](https://github.com/keystonejs/keystone/commit/d157e7666d1057cbeab7dc274244d0e130171ec9)]:
+  - @keystonejs/adapter-knex@12.0.1
+  - @keystonejs/adapter-prisma@1.0.4
+
+## 19.0.0
+
+### Major Changes
+
+- [`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74) [#3684](https://github.com/keystonejs/keystone/pull/3684) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Make GraphQL output type field non-nullable when it is the primary key on a list
+
+### Patch Changes
+
+- Updated dependencies [[`f30928db3`](https://github.com/keystonejs/keystone/commit/f30928db31b0c0a10a27b827b44afc1896dfbafe), [`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74), [`bf06edbf4`](https://github.com/keystonejs/keystone/commit/bf06edbf47e69280c3a9e270daa578528d68c447), [`85fa68456`](https://github.com/keystonejs/keystone/commit/85fa684565d8c9c40036d4544b3c0235dbbd327b)]:
+  - @keystonejs/adapter-prisma@1.0.3
+  - @keystonejs/adapter-knex@12.0.0
+  - @keystonejs/adapter-mongoose@10.0.0
+  - @keystonejs/app-admin-ui@7.3.8
+
 ## 18.0.0
 
 ### Major Changes

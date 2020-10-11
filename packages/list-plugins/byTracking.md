@@ -26,7 +26,7 @@ keystone.createList('ListWithPlugin', {
 | Option           | Type     | Default     | Description                                          |
 | ---------------- | -------- | ----------- | ---------------------------------------------------- |
 | `createdByField` | `String` | `createdBy` | Name of the `createdBy` field.                       |
-| `updatedByField` | `String` | `updatedBy` | Name of the `createdBy` field.                       |
+| `updatedByField` | `String` | `updatedBy` | Name of the `updatedBy` field.                       |
 | `ref`            | `String` | `User`      | A reference to the list authenticated items (users). |
 | `access`         | `Object` | See: access | Change default access controls.                      |
 

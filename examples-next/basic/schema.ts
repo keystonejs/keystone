@@ -14,11 +14,11 @@ export const lists = createSchema({
     },
     hooks: {
       resolveInput: ({ resolvedData, originalInput }) => {
-        console.log({ resolvedData, originalInput });
+        console.log('list hooks: resolveInput', { resolvedData, originalInput });
         return resolvedData;
       },
       beforeChange({ resolvedData, originalInput }) {
-        console.log({ resolvedData, originalInput });
+        console.log('list hooks: beforeChange', { resolvedData, originalInput });
       },
     },
     access: {
@@ -58,14 +58,17 @@ export const lists = createSchema({
         hooks: {},
       }),
       isAdmin: checkbox({
-        access: { read: true, update: ({ context: { session } }) => session?.item?.isAdmin },
+        access: {
+          read: ({ session }) => !!session?.item?.isAdmin,
+          update: ({ session }) => !!session?.item?.isAdmin,
+        },
         admin: {
           createView: {
             fieldMode: ({ session }) => (session?.item?.isAdmin ? 'edit' : 'hidden'),
           },
-          listView: {
-            fieldMode: ({ session }) => (session?.item?.isAdmin ? 'read' : 'hidden'),
-          },
+          // listView: {
+          //   fieldMode: ({ session }) => (session?.item?.isAdmin ? 'read' : 'hidden'),
+          // },
           itemView: {
             fieldMode: ({ session }) => (session?.item?.isAdmin ? 'edit' : 'read'),
           },

@@ -1,5 +1,12 @@
 # @keystonejs/fields-markdown
 
+## 5.2.11
+
+### Patch Changes
+
+- Updated dependencies [[`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74)]:
+  - @keystonejs/fields@19.0.0
+
 ## 5.2.10
 
 ### Patch Changes

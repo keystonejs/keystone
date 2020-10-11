@@ -6,7 +6,7 @@ import { Box, Stack, Inline, useTheme } from '@keystone-ui/core';
 import { GithubIcon } from '@keystone-ui/icons/icons/GithubIcon';
 import { DatabaseIcon } from '@keystone-ui/icons/icons/DatabaseIcon';
 import { useRouter } from 'next/router';
-import { FunctionComponent, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { Logo } from './Logo';
 import { SignoutButton } from './SignoutButton';
@@ -18,7 +18,7 @@ type NavItemProps = {
   children: ReactNode;
 };
 
-const NavItem: FunctionComponent<NavItemProps> = ({ href, children }) => {
+const NavItem = ({ href, children }: NavItemProps) => {
   const { palette, spacing, radii, typography } = useTheme();
   const router = useRouter();
   const isSelected = router && router.pathname === href;
@@ -62,9 +62,7 @@ const NavItem: FunctionComponent<NavItemProps> = ({ href, children }) => {
   );
 };
 
-const AuthenticatedItem: FunctionComponent<{
-  item: { id: string; label: string };
-}> = ({ item }) => {
+const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) => {
   return (
     <div
       css={{
@@ -82,7 +80,7 @@ const AuthenticatedItem: FunctionComponent<{
   );
 };
 
-export const Navigation: FunctionComponent = () => {
+export const Navigation = () => {
   const {
     adminMeta: { lists },
     authenticatedItem,

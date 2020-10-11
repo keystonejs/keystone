@@ -1,5 +1,11 @@
 # @keystonejs/keystone
 
+## 17.1.0
+
+### Minor Changes
+
+- [`20c921c80`](https://github.com/keystonejs/keystone/commit/20c921c805f9ba8e779d0af584e6ff036c264bd4) [#3849](https://github.com/keystonejs/keystone/pull/3849) Thanks [@gautamsi](https://github.com/gautamsi)! - Added `fieldPath` as an argument to all field hooks.
+
 ## 17.0.0
 
 ### Major Changes

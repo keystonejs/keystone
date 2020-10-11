@@ -1,5 +1,25 @@
 # @keystonejs/adapter-prisma
 
+## 1.0.4
+
+### Patch Changes
+
+- [`d157e7666`](https://github.com/keystonejs/keystone/commit/d157e7666d1057cbeab7dc274244d0e130171ec9) [#3893](https://github.com/keystonejs/keystone/pull/3893) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `prisma` monorepo dependency to `v2.8.1`.
+
+- Updated dependencies [[`20c921c80`](https://github.com/keystonejs/keystone/commit/20c921c805f9ba8e779d0af584e6ff036c264bd4)]:
+  - @keystonejs/keystone@17.1.0
+
+## 1.0.3
+
+### Patch Changes
+
+- [`f30928db3`](https://github.com/keystonejs/keystone/commit/f30928db31b0c0a10a27b827b44afc1896dfbafe) [#3788](https://github.com/keystonejs/keystone/pull/3788) Thanks [@timleslie](https://github.com/timleslie)! - Added improved documentation.
+
+* [`bf06edbf4`](https://github.com/keystonejs/keystone/commit/bf06edbf47e69280c3a9e270daa578528d68c447) [#3856](https://github.com/keystonejs/keystone/pull/3856) Thanks [@timleslie](https://github.com/timleslie)! - Updated `prisma` dependency to `2.8.0`. Removed `insensitiveFilters` from `previewFeatures` in `prisma.schema`..
+
+* Updated dependencies [[`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74)]:
+  - @keystonejs/fields-auto-increment@8.0.0
+
 ## 1.0.2
 
 ### Patch Changes

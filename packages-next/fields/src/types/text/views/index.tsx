@@ -57,6 +57,17 @@ export const controller = (
     },
     serialize: value => ({ [config.path]: value }),
     filter: {
+      Filter(props) {
+        return (
+          <TextInput
+            onChange={event => {
+              props.onChange(event.target.value);
+            }}
+            value={props.value}
+          />
+        );
+      },
+
       graphql: ({ type, value }) => {
         const key = type === 'is_i' ? `${config.path}_i` : `${config.path}_${type}`;
         return { [key]: value };
