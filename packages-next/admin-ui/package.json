@@ -22,6 +22,7 @@
     "@keystone-ui/notice": "*",
     "@keystone-ui/pill": "*",
     "@keystone-ui/popover": "*",
+    "@keystone-ui/toast": "*",
     "@keystone-ui/tooltip": "*",
     "@types/react": "^16.9.51",
     "clipboard-copy": "^3.1.0",

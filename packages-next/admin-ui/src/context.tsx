@@ -2,6 +2,7 @@ import React, { ReactNode, createContext, useContext, useMemo } from 'react';
 import { ApolloProvider, ApolloClient, InMemoryCache, ApolloError, DocumentNode } from './apollo';
 import type { AdminConfig, AdminMeta, FieldViews } from '@keystone-spike/types';
 import { Center } from '@keystone-ui/core';
+import { ToastProvider } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
 import { DrawerProvider } from '@keystone-ui/modals';
 import { useAdminMeta } from './utils/useAdminMeta';
@@ -59,19 +60,21 @@ export const KeystoneProvider = ({
     );
   }
   return (
-    <DrawerProvider>
-      <KeystoneContext.Provider
-        value={{
-          adminConfig,
-          adminMeta,
-          fieldViews,
-          authenticatedItem,
-          reinitContext,
-        }}
-      >
-        <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
-      </KeystoneContext.Provider>
-    </DrawerProvider>
+    <ToastProvider>
+      <DrawerProvider>
+        <KeystoneContext.Provider
+          value={{
+            adminConfig,
+            adminMeta,
+            fieldViews,
+            authenticatedItem,
+            reinitContext,
+          }}
+        >
+          <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
+        </KeystoneContext.Provider>
+      </DrawerProvider>
+    </ToastProvider>
   );
 };
 
