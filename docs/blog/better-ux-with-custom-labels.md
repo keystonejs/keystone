@@ -1,22 +1,26 @@
 <!--[meta]
 section: blog
-title: Using keystone's labelResolver
+title: Using custom labels to improve Author Experience
 date: 2020-10-12
 author: Noviny
 order: 0.3
 [meta]-->
 
-In keystone's admin UI, we want to make it easy to display items and get a feel for your content at a glance. One of the important things here is being able to have meaningful labels for each item in your database when you're viewing a bunch of those items as a list. To do this, we have the `labelResolver`.
+In Keystone's Admin UI, we want to make it easy to display items and get a feel for your content at a glance. One of the important things here is being able to have meaningful labels for each item in your database when you're viewing a bunch of those items as a list. To do this, we have a feature called `labelResolver`.
 
-In this blog, we'll walk you through the default behaviours for labels, how to customise the label, and even how to use information from a relationship in the label.
+In this post, we'll walk you through the default behaviour for labels, how to customise the label, and even how to use information from a relationship in the label.
 
 ## What is the Label?
 
-The label is the way an item is represented by keystone's admin UI. It is both how items are primarily identified in the list view, as well as how they are displayed as a relationship to another item. The label is the human-readable reference for what an item 'is' in keystone, and can often be used instead of an item's database `id` as a way to identify it.
+Although Keystone has no strong opinions about what fields might be in any given list, it needs a consistent way to identify items to users of the Admin UI. Two examples of this are in the list view, and how items are displayed in relationship fields.
+
+This is where the label comes in. It's a built-in, read-only string field that Keystone adds to the schema for each list called `_label_`, and it gives us a predictable way of querying a human-readable reference for what an item 'is' in Keystone.
+
+Labels have default behaviour, but importantly you can customise them to create a better user experience for content authors and data managers using the Keystone Admin UI.
 
 ## Using the Name Field
 
-By default, the label uses the `name` field of an item. From a very simple user list such as:
+By default, the label uses the `name` field of an item. For example, with the following user list schema:
 
 ```js
 const User = {
@@ -34,13 +38,13 @@ const User = {
 };
 ```
 
-Which gives us:
+The Admin UI will look like this:
 
 ![Alt Text](https://raw.githubusercontent.com/Noviny/images/master/blog1.png)
 
 ## Using Another Field
 
-In some circumstances, this may not be the correct field to use. Say we have a new list `Post`, which we have set up like this:
+In some circumstances, `name` may not be the best field to use, or it may not even exist. Say we have a new list `Post`, which we have set up like this:
 
 ```js
 const Post = {
@@ -65,11 +69,11 @@ const Post = {
 };
 ```
 
-In our posts, we don't have a `name` field, instead preferring to call the primary identifying field `title`. As there's no `name` field, label will use the ID, which will give us something like:
+In our posts, we don't have a `name` field - the primary identifying field `title`. As there's no `name` field, label will use the ID, which will give us something like:
 
 ![Alt Text](https://raw.githubusercontent.com/Noviny/images/master/blog2-2.png)
 
-Not very human friendly.
+Not super human friendly.
 
 We could rename title to name, but that's not what we want. What we _do_ want is to make the label use the title for display. For this, we can add a `labelResolver` to our post field
 
@@ -83,13 +87,13 @@ const Post = {
 };
 ```
 
-Now we get the much more useful:
+Now we get the much more friendly:
 
 ![Alt Text](https://raw.githubusercontent.com/Noviny/images/master/blog3-3.png)
 
 ## Providing extra information in the label
 
-While sometimes you may just want to use another field, at other times though there may be other bits of information that are always pertinent. Say for our post above, we have a status field, and we want to display in the label whether something is in `draft` mode or not.
+While sometimes you may just want to use another field, other times though there may be other bits of information that are always pertinent. Say for our post above, we have a status field, and we want to display in the label whether something is in `draft` mode or not.
 
 Here we can modify our `labelResolver` to add in this extra detail.
 
@@ -134,7 +138,7 @@ const Post = {
     // and the rest of the fields too
   },
   labelResolver: async item => {
-    const { data } = await keystone.executeGraphQL({
+    const { data } = await Keystone.executeGraphQL({
       query: `query {
           User(where: {id: "${item.author}" }) {
             name
@@ -191,4 +195,4 @@ And now we can see that it's Luke's birthday! Happy birthday Luke!
 
 ## Enough Labeling for one day
 
-Hopefully this gives you a good idea of what labels are for in keystone (and the ways you can adapt them to your needs when the defaults aren't what you want), as well as good guidance on responsible labeling within the flexibility that keystone offers.
+Hopefully this gives you a good idea of what labels are for in Keystone (and the ways you can adapt them to your needs when the defaults aren't what you want), as well as good guidance on responsible labeling within the flexibility that Keystone offers.
