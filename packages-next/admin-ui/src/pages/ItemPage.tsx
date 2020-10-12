@@ -17,6 +17,7 @@ import { DataGetter, DeepNullable, makeDataGetter } from '../utils/dataGetter';
 import { deserializeValue, ItemData, serializeValueToObjByFieldKey } from '../utils/serialization';
 import { ListMeta } from '@keystone-spike/types';
 import { AlertDialog } from '@keystone-ui/modals';
+import { useToasts } from '@keystone-ui/toast';
 
 type ItemPageProps = {
   listKey: string;
@@ -39,7 +40,7 @@ function ItemForm({
 
   const [update, { loading, error }] = useMutation(
     gql`mutation ($data: ${list.gqlNames.updateInputName}!, $id: ID!) {
-      ${list.gqlNames.updateMutationName}(id: $id, data: $data) {
+      item: ${list.gqlNames.updateMutationName}(id: $id, data: $data) {
         id
         _label_
         ${selectedFields}
@@ -89,6 +90,7 @@ function ItemForm({
       fieldsChanged,
     };
   }, [serializedFieldValues, serializedValuesFromItem, list]);
+  const toasts = useToasts();
   const saveButtonProps = {
     isLoading: loading,
     weight: 'bold',
@@ -105,7 +107,15 @@ function ItemForm({
           data,
           id: itemGetter.get('id').data,
         },
-      });
+      })
+        .then(({ data }) => {
+          toasts.addToast({
+            title: data.item._label_,
+            tone: 'positive',
+            message: 'Saved successfully',
+          });
+        })
+        .catch(() => {});
     },
     children: 'Save Changes',
   } as const;
@@ -195,6 +205,7 @@ function DeleteButton({
   itemId: string;
   list: ListMeta;
 }) {
+  const toasts = useToasts();
   const [deleteItem, { loading }] = useMutation(
     gql`mutation ($id: ID!) {
       ${list.gqlNames.deleteMutationName}(id: $id) {
@@ -226,8 +237,19 @@ function DeleteButton({
           confirm: {
             label: 'Delete',
             action: async () => {
-              await deleteItem();
+              await deleteItem().catch(err => {
+                toasts.addToast({
+                  title: 'Failed to delete item',
+                  message: err.message,
+                  tone: 'negative',
+                });
+              });
               router.push(`/${list.path}`);
+              toasts.addToast({
+                title: itemLabel ?? itemId,
+                message: 'Deleted successfully',
+                tone: 'positive',
+              });
             },
             loading,
           },

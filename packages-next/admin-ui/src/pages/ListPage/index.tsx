@@ -21,6 +21,7 @@ import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
 import { ListMeta } from '@keystone-spike/types';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
+import { useToasts } from '@keystone-ui/toast';
 
 type ListPageProps = {
   listKey: string;
@@ -313,7 +314,7 @@ function DeleteManyButton({
     )
   );
   const [isOpen, setIsOpen] = useState(false);
-
+  const toasts = useToasts();
   return (
     <Fragment>
       <Button
@@ -336,6 +337,16 @@ function DeleteManyButton({
             action: async () => {
               await deleteItems({
                 variables: { ids: [...selectedItems] },
+              }).catch(err => {
+                toasts.addToast({
+                  title: 'Failed to delete items',
+                  message: err.message,
+                  tone: 'negative',
+                });
+              });
+              toasts.addToast({
+                title: 'Deleted items successfully',
+                tone: 'positive',
               });
               refetch();
             },
