@@ -1,5 +1,4 @@
-export { css, jsx, keyframes, Global, ClassNames } from '@emotion/core'; // ensure the same version of emotion
-
+export * from './emotion';
 export { VisuallyHidden } from './a11y/VisuallyHidden';
 export { Box } from './components/Box';
 export type { BoxProps, ColorProps, RadiiProps, MarginProps, PaddingProps } from './components/Box';

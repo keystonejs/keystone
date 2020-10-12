@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "@emotion/core": "^10.0.35",
     "@keystone-spike/fields": "*",
     "@keystone-spike/types": "*",
     "@keystone-ui/button": "*",
