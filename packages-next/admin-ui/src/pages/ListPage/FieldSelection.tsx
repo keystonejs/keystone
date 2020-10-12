@@ -1,6 +1,9 @@
 /** @jsx jsx */
-import { jsx, Stack } from '@keystone-ui/core';
-import { Checkbox } from '@keystone-ui/fields';
+import { Button } from '@keystone-ui/button';
+import { Box, jsx, useTheme } from '@keystone-ui/core';
+import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
+import { Options, OptionPrimitive, CheckMark } from '@keystone-ui/options';
+import { Popover } from '@keystone-ui/popover';
 import { useRouter } from 'next/router';
 import { useList } from '../../context';
 import { useSelectedFields } from './useSelectedFields';
@@ -15,6 +18,21 @@ function isArrayEqual(arrA: string[], arrB: string[]) {
   return true;
 }
 
+const Option: typeof OptionPrimitive = props => {
+  return (
+    <OptionPrimitive {...props}>
+      {props.children}
+      <CheckMark
+        isDisabled={props.isDisabled}
+        isFocused={props.isFocused}
+        isSelected={props.isSelected}
+      />
+    </OptionPrimitive>
+  );
+};
+
+let fieldSelectionOptionsComponents = { Option };
+
 export function FieldSelection({
   listKey,
   fieldModesByFieldPath,
@@ -25,8 +43,8 @@ export function FieldSelection({
   const list = useList(listKey);
   const router = useRouter();
   const selectedFields = useSelectedFields(listKey, fieldModesByFieldPath);
-  const onlySingleFieldIsSelected =
-    selectedFields.fields.length + Number(selectedFields.includeLabel) === 1;
+  const columnCount = selectedFields.fields.length + Number(selectedFields.includeLabel);
+  const onlySingleFieldIsSelected = columnCount === 1;
   const selectedFieldsSet = new Set(selectedFields.fields);
 
   const setNewSelectedFields = (selectedFields: string[]) => {
@@ -44,51 +62,56 @@ export function FieldSelection({
       });
     }
   };
-  return (
-    <fieldset>
-      <Stack gap="small">
-        <legend>Fields</legend>
-        <Checkbox
-          onChange={() => {
-            const newSelectedFields = selectedFields.includeLabel
-              ? selectedFields.fields
-              : ['_label_'].concat(selectedFields.fields);
+  const fields = [
+    {
+      value: '_label_',
+      label: 'Label',
+      isDisabled: onlySingleFieldIsSelected && selectedFields.includeLabel,
+    },
+  ];
+  Object.keys(fieldModesByFieldPath).forEach(fieldPath => {
+    if (fieldModesByFieldPath[fieldPath] === 'read') {
+      fields.push({
+        value: fieldPath,
+        label: list.fields[fieldPath].label,
+        isDisabled: onlySingleFieldIsSelected && selectedFieldsSet.has(fieldPath),
+      });
+    }
+  });
 
-            setNewSelectedFields(newSelectedFields);
-          }}
-          disabled={onlySingleFieldIsSelected && selectedFields.includeLabel}
-          checked={selectedFields.includeLabel}
-        >
-          Label
-        </Checkbox>
-        {Object.keys(fieldModesByFieldPath).map(fieldPath => {
-          if (fieldModesByFieldPath[fieldPath] === 'hidden') {
-            return null;
-          }
-          const checked = selectedFieldsSet.has(fieldPath);
-          return (
-            <Checkbox
-              onChange={() => {
-                const newSelectedFields = selectedFields.includeLabel ? ['_label_'] : [];
-                Object.keys(list.fields).forEach(path => {
-                  if (fieldPath === path) {
-                    if (!checked) {
-                      newSelectedFields.push(path);
-                    }
-                  } else if (selectedFieldsSet.has(path)) {
-                    newSelectedFields.push(path);
-                  }
-                });
-                setNewSelectedFields(newSelectedFields);
-              }}
-              disabled={onlySingleFieldIsSelected && checked}
-              checked={checked}
-            >
-              {list.fields[fieldPath].label}
-            </Checkbox>
-          );
-        })}
-      </Stack>
-    </fieldset>
+  const theme = useTheme();
+
+  return (
+    <Popover
+      triggerRenderer={({ triggerProps }) => {
+        return (
+          <Button weight="link" {...triggerProps}>
+            <span css={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
+              {columnCount} column{columnCount === 1 ? '' : 's'}{' '}
+              <ChevronDownIcon css={{ marginLeft: theme.spacing.xsmall }} size="smallish" />
+            </span>
+          </Button>
+        );
+      }}
+    >
+      <div css={{ width: 320 }}>
+        <Box padding="medium">
+          <Options
+            onChange={options => {
+              if (!Array.isArray(options)) return;
+              setNewSelectedFields(options.map(x => x.value));
+            }}
+            isMulti
+            value={fields.filter(option => {
+              return option.value === '_label_'
+                ? selectedFields.includeLabel
+                : selectedFieldsSet.has(option.value);
+            })}
+            options={fields}
+            components={fieldSelectionOptionsComponents}
+          />
+        </Box>
+      </div>
+    </Popover>
   );
 }

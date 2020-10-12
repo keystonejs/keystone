@@ -20,6 +20,7 @@
     "@keystone-ui/loading": "*",
     "@keystone-ui/modals": "*",
     "@keystone-ui/notice": "*",
+    "@keystone-ui/options": "*",
     "@keystone-ui/pill": "*",
     "@keystone-ui/popover": "*",
     "@keystone-ui/toast": "*",
