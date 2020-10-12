@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { ReactNode, useState } from 'react';
+import { ComponentProps, ReactNode, useState } from 'react';
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Checkbox, Radio, TextArea, TextInput, Switch, SelectInput } from '@keystone-ui/fields';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
@@ -21,7 +21,7 @@ const FieldWrapper = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const StatefulSwitch = ({ children, ...props }: { children: ReactNode }) => {
+const StatefulSwitch = ({ children, ...props }: ComponentProps<typeof Switch>) => {
   const [checked, setChecked] = useState(false);
   return (
     <Switch checked={checked} onClick={() => setChecked(!checked)} {...props}>
