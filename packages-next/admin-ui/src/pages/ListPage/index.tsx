@@ -439,7 +439,7 @@ function ListTable({
               return <TableHeaderCell key={path}>{label}</TableHeaderCell>;
             }
             return (
-              <TableHeaderCell>
+              <TableHeaderCell key={path}>
                 <Link
                   css={{
                     display: 'block',
