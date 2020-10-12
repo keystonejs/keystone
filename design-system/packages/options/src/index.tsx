@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
 import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon';
-import { ReactNode, Ref, useMemo } from 'react';
+import { ComponentProps, useMemo } from 'react';
 import ReactSelect, { components as reactSelectComponents, Props } from 'react-select';
 
 export const CheckMark = ({
@@ -60,13 +60,7 @@ export const OptionPrimitive = ({
   innerProps,
   innerRef,
   className,
-}: {
-  children: ReactNode;
-  isDisabled: boolean;
-  innerProps: any;
-  innerRef: Ref<any>;
-  className: string;
-}) => {
+}: ComponentProps<typeof reactSelectComponents['Option']>) => {
   const theme = useTheme();
   return (
     <div
@@ -74,7 +68,7 @@ export const OptionPrimitive = ({
       className={className}
       css={{
         alignItems: 'center',
-        color: isDisabled ? theme.colors.foregroundDim : null,
+        color: isDisabled ? theme.colors.foregroundDim : undefined,
         cursor: 'pointer',
         display: 'flex',
         fontSize: '0.9em',
@@ -82,7 +76,7 @@ export const OptionPrimitive = ({
         justifyContent: 'space-between',
         outline: 0,
         padding: `${theme.spacing.small}px 0`,
-        pointerEvents: isDisabled ? 'none' : null,
+        pointerEvents: isDisabled ? 'none' : undefined,
 
         '&:not(:first-of-type)': {
           borderTop: `1px solid ${theme.colors.backgroundDim}`,
@@ -130,7 +124,10 @@ type KnownKeys<T> = {
   : never;
 
 // this removes [key: string]: any from Props
-type OptionsProps = Pick<Props, KnownKeys<Props>>;
+type OptionsProps = Pick<
+  Props<{ label: string; value: string; isDisabled?: boolean }>,
+  KnownKeys<Props>
+>;
 
 export const Options = ({ components: propComponents, ...props }: OptionsProps) => {
   const components = useMemo(

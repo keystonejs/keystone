@@ -74,7 +74,6 @@ export const useIndicatorTokens = ({
 export type IndicatorStylesProps = { tokens: IndicatorTokens };
 
 export const useIndicatorStyles = ({ tokens }: IndicatorStylesProps) => {
-  console.log(tokens.boxSize);
   return {
     alignItems: 'center',
     backgroundColor: tokens.background,

@@ -60,7 +60,6 @@ export const usePopover = (
   // close on esc press
   useKeyPress({
     targetKey: 'Escape',
-    targetElement: popoverElement,
     downHandler: useCallback((event: KeyboardEvent) => {
       event.preventDefault(); // Avoid potential close of modal
       setOpen(false);
