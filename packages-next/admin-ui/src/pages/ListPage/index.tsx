@@ -191,9 +191,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         listKey={listKey}
         showCreate={!(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)}
       />
-      <Stack gap="xxlarge" across>
-        <FilterAdd listKey={listKey} />
-      </Stack>
+      <FilterAdd listKey={listKey} />
 
       <p
         css={{
