@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "@emotion/core": "^10.0.35",
     "@keystone-ui/button": "*",
     "@keystone-ui/core": "*",
     "@keystone-ui/fields": "*",

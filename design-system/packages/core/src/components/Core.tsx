@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { jsx, Global } from '@emotion/core';
+import { jsx, Global } from '../emotion';
 import { Fragment, ReactNode, memo } from 'react';
 
 import { normalize } from '../normalize';

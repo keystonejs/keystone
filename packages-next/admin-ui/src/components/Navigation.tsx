@@ -1,8 +1,7 @@
 /* @jsx jsx */
 
-import { jsx } from '@emotion/core';
 import { Button } from '@keystone-ui/button';
-import { Box, Stack, Inline, useTheme } from '@keystone-ui/core';
+import { jsx, Box, Stack, Inline, useTheme } from '@keystone-ui/core';
 import { GithubIcon } from '@keystone-ui/icons/icons/GithubIcon';
 import { DatabaseIcon } from '@keystone-ui/icons/icons/DatabaseIcon';
 import { useRouter } from 'next/router';

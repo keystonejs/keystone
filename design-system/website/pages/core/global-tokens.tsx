@@ -1,7 +1,6 @@
 /* @jsx jsx */
 
-import { jsx } from '@emotion/core';
-import { useTheme } from '@keystone-ui/core';
+import { jsx, useTheme } from '@keystone-ui/core';
 
 import { Page } from '../../components/Page';
 import { ReadableColor } from '../../components/ReadableColor';
