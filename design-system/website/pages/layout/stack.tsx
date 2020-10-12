@@ -1,7 +1,6 @@
 /* @jsx jsx */
 
-import { jsx } from '@emotion/core';
-import { Text, Stack } from '@keystone-ui/core';
+import { jsx, Text, Stack } from '@keystone-ui/core';
 
 import { Page } from '../../components/Page';
 import { Code } from '../../components/Code';

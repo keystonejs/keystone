@@ -1,7 +1,6 @@
 /* @jsx jsx */
 
-import { jsx } from '@emotion/core';
-import { Stack } from '@keystone-ui/core';
+import { jsx, Stack } from '@keystone-ui/core';
 import { Button, buttonToneValues, ToneKey, buttonWeightValues } from '@keystone-ui/button';
 
 import { Page } from '../../components/Page';
