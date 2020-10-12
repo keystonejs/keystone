@@ -18,6 +18,14 @@ const adapters = {
     removeDependencies: ['@keystonejs/adapter-mongoose'],
     defaultConfig: name => `postgres://localhost/${slugify(name, { separator: '_' })}`,
   },
+  Prisma: {
+    name: 'Prisma (Experimental)',
+    file: 'adapter-prisma.js',
+    dependencies: ['@keystonejs/adapter-prisma'],
+    description: 'Connect to a PostgreSQL database with Prisma (Experimental).',
+    removeDependencies: ['@keystonejs/adapter-mongoose'],
+    defaultConfig: () => `e.g. postgres://user:password@localhost:5432/db_name`,
+  },
 };
 
 const choices = Object.entries(adapters).map(([key, value]) => ({

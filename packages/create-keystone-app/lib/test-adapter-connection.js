@@ -45,10 +45,16 @@ const testAdapterConnection = async () => {
     const adapterChoice = await getAdapterChoice();
     const config = await getAdapterConfig();
 
-    const Adapter = { MongoDB: MongooseAdapter, PostgreSQL: KnexAdapter }[adapterChoice.key];
+    // We currently test the connection of the Prisma adapter via the KnexAdapter
+    // This is fine for now, what we're trying to verify here is that the connection
+    // string passed in is something we can actually connect to.
+    const Adapter = { MongoDB: MongooseAdapter, PostgreSQL: KnexAdapter, Prisma: KnexAdapter }[
+      adapterChoice.key
+    ];
     const adapterConfig = {
       MongoDB: { mongoUri: config },
       PostgreSQL: { knexOptions: { connection: config } },
+      Prisma: { knexOptions: { connection: config } },
     }[adapterChoice.key];
     const adapter = new Adapter(adapterConfig);
     try {
