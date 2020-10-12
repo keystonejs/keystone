@@ -36,7 +36,7 @@ const User = {
 
 Which gives us:
 
-// screenshot 1 - screenshot of `User` with both `label` and `name` visible.
+![Alt Text](https://raw.githubusercontent.com/Noviny/images/master/blog1.png)
 
 ## Using Another Field
 
@@ -67,7 +67,7 @@ const Post = {
 
 In our posts, we don't have a `name` field, instead preferring to call the primary identifying field `title`. As there's no `name` field, label will use the ID, which will give us something like:
 
-// screenshot 2
+![Alt Text](https://raw.githubusercontent.com/Noviny/images/master/blog2-2.png)
 
 Not very human friendly.
 
@@ -85,7 +85,7 @@ const Post = {
 
 Now we get the much more useful:
 
-// screenshot 3
+![Alt Text](https://raw.githubusercontent.com/Noviny/images/master/blog3-3.png)
 
 ## Providing extra information in the label
 
@@ -113,7 +113,7 @@ const Post = {
 
 which means our posts now appear as:
 
-// screenshot 4
+![Alt Text](https://raw.githubusercontent.com/Noviny/images/master/blog4-4.png)
 
 > Note: The `label` for items in a public list is always public! Even if other bits of the item may be private. We recommend when picking what to put in a label, make sure nothing private (like email) is included.
 
@@ -149,7 +149,7 @@ const Post = {
 
 and we will get our display of:
 
-// screenshot 5
+![Alt Text](https://raw.githubusercontent.com/Noviny/images/master/blog5-5.png)
 
 Now we have the status of a post, its title, and the name of the author, all bundled into the label.
 
@@ -185,7 +185,7 @@ const User = {
 
 And now we can see that it's Luke's birthday! Happy birthday Luke!
 
-// screenshot 6
+![Alt Text](https://raw.githubusercontent.com/Noviny/images/master/blog6-6.png)
 
 > Note: this makes the label dynamic, which means it can't be relied upon by other bits of the system as an item's unique identifier. You should be aware of this when making a dynamic label, but if it suits your needs, let the good times roll.
 
