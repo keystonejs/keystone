@@ -24,7 +24,8 @@ const getAdapterConfig = async () => {
         name: 'value',
         message: 'Where is your database located?',
         initial: adapterChoice.defaultConfig(projectName),
-        validate: value => value.length && value !== 'e.g. postgres://user:password@localhost:5432/db_name',
+        validate: value =>
+          value.length && value !== 'e.g. postgres://user:password@localhost:5432/db_name',
         onCancel: () => {
           return true;
         },
