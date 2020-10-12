@@ -45,23 +45,23 @@ const testAdapterConnection = async () => {
     const adapterChoice = await getAdapterChoice();
     const config = await getAdapterConfig();
 
-    const Adapter = adapterChoice.name === 'MongoDB' ? MongooseAdapter : KnexAdapter;
-    const adapterConfig =
-      adapterChoice.name === 'MongoDB'
-        ? { mongoUri: config }
-        : { knexOptions: { connection: config } };
+    const Adapter = { MongoDB: MongooseAdapter, PostgreSQL: KnexAdapter }[adapterChoice.key];
+    const adapterConfig = {
+      MongoDB: { mongoUri: config },
+      PostgreSQL: { knexOptions: { connection: config } },
+    }[adapterChoice.key];
     const adapter = new Adapter(adapterConfig);
     try {
       await adapter._connect();
       adapter.disconnect();
       tick(`Successfully connected to ${config}`);
     } catch (err) {
-      error(`Failed to connect to ${adapterChoice.name} at: ${config}`);
+      error(`Failed to connect to ${adapterChoice.key} at: ${config}`);
       console.log(
         'Please check that you can connect directly to your database with the following command:'
       );
       console.log('');
-      console.log(`$ ${adapterChoice.name === 'MongoDB' ? 'mongo' : 'psql'} ${config}`);
+      console.log(`$ ${adapterChoice.key === 'MongoDB' ? 'mongo' : 'psql'} ${config}`);
       console.log('');
       console.log(
         `Please see the database ${terminalLink(

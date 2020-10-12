@@ -6,9 +6,9 @@ const { getAdapterChoice } = require('./get-adapter-choice');
 
 const showSuccessMessage = async () => {
   const projectDir = await getProjectDirectory();
-  const adapterConfig = await getAdapterChoice();
+  const adapterChoice = await getAdapterChoice();
   let knexMessage = '';
-  if (adapterConfig.name === 'PostgreSQL') {
+  if (adapterChoice.key === 'PostgreSQL') {
     knexMessage = `
 ${c.bold('  Before you run Keystone you will need to initialise the tables in your database:')}
 

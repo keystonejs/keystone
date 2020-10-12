@@ -14,16 +14,16 @@ const adapters = {
     name: 'PostgreSQL',
     file: 'adapter-knex.js',
     dependencies: ['@keystonejs/adapter-knex'],
-    description: 'Connect to a PostgreSQL database.',
+    description: 'Connect to a PostgreSQL database with knex.',
     removeDependencies: ['@keystonejs/adapter-mongoose'],
     defaultConfig: name => `postgres://localhost/${slugify(name, { separator: '_' })}`,
   },
 };
 
-const choices = Object.keys(adapters).map(key => ({
-  value: adapters[key],
-  title: key,
-  description: adapters[key].description,
+const choices = Object.entries(adapters).map(([key, value]) => ({
+  value: { ...value, key },
+  title: value.name,
+  description: value.description,
 }));
 
 let ADAPTER_CHOICE;

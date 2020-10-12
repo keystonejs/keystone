@@ -16,14 +16,14 @@ const getAdapterConfig = async () => {
       return CONNECTION_STRING;
     }
 
-    const adapter = await getAdapterChoice();
+    const adapterChoice = await getAdapterChoice();
     const projectName = await getProjectName();
     const response = await prompts(
       {
         type: 'text',
         name: 'value',
         message: 'Where is your database located?',
-        initial: adapter.defaultConfig(projectName),
+        initial: adapterChoice.defaultConfig(projectName),
         onCancel: () => {
           return true;
         },
