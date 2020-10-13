@@ -1,9 +1,13 @@
 /** @jsx jsx */
 import { FieldMeta, JSONValue } from '@keystone-spike/types';
 import { Button } from '@keystone-ui/button';
-import { jsx, Stack } from '@keystone-ui/core';
+import { Divider, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@keystone-ui/core';
 import { SelectInput } from '@keystone-ui/fields';
-import { FormEvent, useMemo, useState } from 'react';
+import { ChevronLeftIcon } from '@keystone-ui/icons/icons/ChevronLeftIcon';
+import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
+import { OptionPrimitive, Options } from '@keystone-ui/options';
+import { PopoverDialog, usePopover } from '@keystone-ui/popover';
+import { ComponentProps, FormEvent, Fragment, useMemo, useState } from 'react';
 import { useList } from '../../context';
 import { useRouter } from '../../router';
 
@@ -12,20 +16,69 @@ type State =
       kind: 'selecting-field';
     }
   | {
-      kind: 'selecting-filter';
-      fieldPath: string;
-    }
-  | {
       kind: 'filter-value';
       fieldPath: string;
       filterType: string;
       filterValue: JSONValue;
     };
 
+const fieldSelectComponents: ComponentProps<typeof Options>['components'] = {
+  Option: ({ children, ...props }) => {
+    let theme = useTheme();
+    let iconColor = props.isFocused ? theme.colors.foreground : theme.colors.foregroundDim;
+    return (
+      <OptionPrimitive {...props}>
+        <span>{children}</span>
+        <div
+          css={{
+            alignItems: 'center',
+            display: 'flex',
+            height: 24,
+            justifyContent: 'center',
+            width: 24,
+          }}
+        >
+          <ChevronRightIcon css={{ color: iconColor }} />
+        </div>
+      </OptionPrimitive>
+    );
+  },
+};
 export function FilterAdd({ listKey }: { listKey: string }) {
+  const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
+    placement: 'bottom',
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [0, 8],
+        },
+      },
+    ],
+  });
+
+  return (
+    <Fragment>
+      <Button {...trigger.props} ref={trigger.ref} onClick={() => setOpen(true)}>
+        Add Filter
+      </Button>
+      <PopoverDialog arrow={arrow} isVisible={isOpen} {...dialog.props} ref={dialog.ref}>
+        {isOpen && (
+          <FilterAddPopoverContent
+            onClose={() => {
+              setOpen(false);
+            }}
+            listKey={listKey}
+          />
+        )}
+      </PopoverDialog>
+    </Fragment>
+  );
+}
+
+function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; listKey: string }) {
   const list = useList(listKey);
   const router = useRouter();
-  const [state, setState] = useState<State>({ kind: 'selecting-field' });
   const fieldsWithFilters = useMemo(() => {
     const fieldsWithFilters: Record<
       string,
@@ -58,10 +111,13 @@ export function FilterAdd({ listKey }: { listKey: string }) {
     });
     return filtersByFieldThenType;
   }, [router.query, fieldsWithFilters]);
+  const [state, setState] = useState<State>({ kind: 'selecting-field' });
 
   return (
     <Stack
+      padding="medium"
       as="form"
+      css={{ minWidth: 320 }}
       onSubmit={(event: FormEvent) => {
         event.preventDefault();
         if (state.kind === 'filter-value') {
@@ -71,56 +127,83 @@ export function FilterAdd({ listKey }: { listKey: string }) {
               [`!${state.fieldPath}_${state.filterType}`]: JSON.stringify(state.filterValue),
             },
           });
-          setState({
-            kind: 'selecting-field',
-          });
+          onClose();
         }
       }}
       gap="small"
     >
-      <label>
-        Field to add filter for
-        <SelectInput
-          isClearable
-          value={state.kind === 'selecting-field' ? undefined : state.fieldPath}
-          onChange={newVal => {
-            if (newVal === undefined) {
-              setState({ kind: 'selecting-field' });
-            } else {
-              setState({ kind: 'selecting-filter', fieldPath: newVal });
+      <div css={{ position: 'relative' }}>
+        {state.kind !== 'selecting-field' && (
+          <button
+            onClick={() => {
+              setState({
+                kind: 'selecting-field',
+              });
+            }}
+            css={{
+              border: 0,
+              background: 'transparent',
+              cursor: 'pointer',
+              position: 'absolute',
+            }}
+          >
+            <VisuallyHidden>Back</VisuallyHidden>
+            <ChevronLeftIcon size="smallish" />
+          </button>
+        )}
+        <Heading textAlign="center" type="h5">
+          {(() => {
+            switch (state.kind) {
+              case 'selecting-field': {
+                return 'Filter';
+              }
+              case 'filter-value': {
+                return list.fields[state.fieldPath].label;
+              }
             }
+          })()}
+        </Heading>
+      </div>
+      <Divider />
+      {state.kind === 'selecting-field' && (
+        <Options
+          components={fieldSelectComponents}
+          onChange={newVal => {
+            const fieldPath: string = (newVal as any).value;
+            const filterType = Object.keys(filtersByFieldThenType[fieldPath])[0];
+            setState({
+              kind: 'filter-value',
+              fieldPath,
+              filterType,
+              filterValue:
+                fieldsWithFilters[fieldPath].controller.filter.types[filterType].initialValue,
+            });
           }}
           options={Object.keys(filtersByFieldThenType).map(fieldPath => ({
             label: fieldsWithFilters[fieldPath].label,
             value: fieldPath,
           }))}
         />
-      </label>
-      {state.kind !== 'selecting-field' && (
-        <label>
-          Filter
-          <SelectInput
-            isClearable
-            value={state.kind === 'selecting-filter' ? undefined : state.filterType}
-            onChange={newVal => {
-              if (newVal === undefined) {
-                setState({ kind: 'selecting-filter', fieldPath: state.fieldPath });
-              } else {
-                setState({
-                  kind: 'filter-value',
-                  fieldPath: state.fieldPath,
-                  filterValue:
-                    fieldsWithFilters[state.fieldPath].controller.filter.types[newVal].initialValue,
-                  filterType: newVal,
-                });
-              }
-            }}
-            options={Object.keys(filtersByFieldThenType[state.fieldPath]).map(filterType => ({
-              label: filtersByFieldThenType[state.fieldPath][filterType],
-              value: filterType,
-            }))}
-          />
-        </label>
+      )}
+      {state.kind === 'filter-value' && (
+        <SelectInput
+          value={state.filterType}
+          onChange={newVal => {
+            if (newVal !== undefined) {
+              setState({
+                kind: 'filter-value',
+                fieldPath: state.fieldPath,
+                filterValue:
+                  fieldsWithFilters[state.fieldPath].controller.filter.types[newVal].initialValue,
+                filterType: newVal,
+              });
+            }
+          }}
+          options={Object.keys(filtersByFieldThenType[state.fieldPath]).map(filterType => ({
+            label: filtersByFieldThenType[state.fieldPath][filterType],
+            value: filterType,
+          }))}
+        />
       )}
       {state.kind == 'filter-value' &&
         (() => {
@@ -140,16 +223,8 @@ export function FilterAdd({ listKey }: { listKey: string }) {
         })()}
       {state.kind == 'filter-value' && (
         <div css={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button
-            onClick={() => {
-              setState({
-                kind: 'selecting-field',
-              });
-            }}
-          >
-            Cancel
-          </Button>
-          <Button type="submit">Add</Button>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button type="submit">Apply</Button>
         </div>
       )}
     </Stack>
