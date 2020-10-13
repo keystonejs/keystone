@@ -7,7 +7,7 @@ export const exampleValue = () => '6.28';
 export const exampleValue2 = () => '6.45';
 export const supportsUnique = true;
 export const fieldName = 'price';
-export const unSupportedAdapterList = [];
+export const unSupportedAdapterList = ['prisma_sqlite'];
 
 export const getTestFields = () => ({
   name: { type: Text },

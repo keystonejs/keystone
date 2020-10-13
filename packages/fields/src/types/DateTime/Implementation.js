@@ -229,7 +229,11 @@ export class KnexDateTimeInterface extends CommonDateTimeInterface(KnexFieldAdap
 export class PrismaDateTimeInterface extends CommonDateTimeInterface(PrismaFieldAdapter) {
   constructor() {
     super(...arguments);
-
+    if (this.listAdapter.parentAdapter.provider === 'sqlite') {
+      throw new Error(
+        `PrismaAdapter provider "sqlite" does not support field type "${this.field.constructor.name}"`
+      );
+    }
     this.utcPath = `${this.path}_utc`;
     this.offsetPath = `${this.path}_offset`;
     this.realKeys = [this.utcPath, this.offsetPath];

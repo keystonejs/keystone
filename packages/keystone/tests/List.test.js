@@ -119,7 +119,9 @@ class MockFieldImplementation {
   async validateDelete() {}
   async afterDelete() {}
 }
-class MockFieldAdapter {}
+class MockFieldAdapter {
+  listAdapter = { name: 'mock' };
+}
 
 const MockIdType = {
   implementation: MockFieldImplementation,

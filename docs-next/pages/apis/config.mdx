@@ -21,6 +21,7 @@ export default config({
   session: () => { /* ... */ },
   graphql: { /* ... */ },
   extendGraphqlSchema: { /* ... */ },
+  experimental: { /* ... */ },
 });
 ```
 
@@ -56,8 +57,9 @@ import type { DatabaseConfig } from '@keystone-next/types';
 The `db` config option configures the database used to store data in your Keystone system.
 It has a TypeScript type of `DatabaseConfig`.
 Keystone supports three different database types; **Prisma**, **PostgreSQL**, and **MongoDB**.
-These database types are powered by their corresponding Keystone database adapter; `prisma_postgresql`, `knex`, and `mongoose`.
-The `prisma_postgresql` adapter includes support for the **migrate** commands of the Keystone [command line](../guides/cli).
+Prisma in turn support both **PostgreSQL** and **SQLite** databases.
+These database types are powered by their corresponding Keystone database adapter; `prisma_postgresql`, `prisma_sqlite`, `knex`, and `mongoose`.
+The `prisma_postgresql` and `prisma_sqlite` adapters includes support for the **migrate** commands of the Keystone [command line](../guides/cli).
 
 All database adapters require the `url` argument, which defines the connection URL for your database.
 They also all have an optional `onConnect` async function, which takes a [`KeystoneContext`](./context) object, and lets perform any actions you might need at startup, such as data seeding.
@@ -88,6 +90,43 @@ export default config({
   /* ... */
 });
 ```
+
+### prisma_sqlite
+
+Support for SQLite with Prisma is still in preview.
+To use this option you must also set `{ experimental: { prismaSqlite: true } }`.
+
+Advanced configuration:
+
+- `enableLogging` (default: `false`): Enable logging from the Prisma client.
+- `getPrismaPath` (default: `() => '.keystone/prisma'` ): Set the location of the generated Prisma schema and client.
+
+The function for `getPrismaPath` is provided with the generated Prisma schema as a `string` in the `{ prismaSchema }` argument.
+
+```typescript
+export default config({
+  db: {
+    adapter: 'prisma_sqlite',
+    url: 'file:./keystone.db',
+    onConnect: async context => { /* ... */ },
+    // Optional advanced configuration
+    enableLogging: true,
+    getPrismaPath: ({ prismaSchema }) => '.prisma',
+  },
+  /* ... */
+});
+```
+
+#### Limitations
+
+The `prisma_sqlite` is not intended to be used in production systems, and has certain limitations:
+
+- `document`: The `document` field type is not supported.
+- `decimal`: The `decimal` field type is not supported.
+- `timestamp`: The `timestamp` field type only supports times within the range `1970 - 2038`.
+- `text`: The `text` field type does not support the advanced filtering operations `contains`, `starts_with`, `ends_with`, or case insensitive filtering.
+- `autoincrement`: The `autoincrement` field type can only be used as an `id` field.
+- `select`: Using the `dataType: 'enum'` will use a GraphQL `String` type, rather than an `Enum` type.
 
 ### knex
 
@@ -259,5 +298,28 @@ export default config({
 ```
 
 See the [schema extension guide](../guides/schema-extension) for more details on how to use `graphQLSchemaExtension()` to extend your GraphQL API.
+
+## experimental
+
+The following flags allow you to enable features which are still in preview.
+These features are not guaranteed to work, and should be used with caution.
+
+```typescript
+import { config } from '@keystone-next/keystone/schema';
+
+export default config({
+  experimental: {
+    enableNextJsGraphqlApiEndpoint: true,
+    prismaSqlite: true,
+  }
+  /* ... */
+});
+```
+
+Options:
+
+- `enableNextJsGraphqlApiEndpoint`: (coming soon)
+- `prismaSqlite`: Enables the use of SQLite with Prisma.
+  This flag is required when setting `{ db: { adapter: 'prisma_sqlite' } }`.
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
