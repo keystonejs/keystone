@@ -138,7 +138,7 @@ const Post = {
     // and the rest of the fields too
   },
   labelResolver: async item => {
-    const { data } = await Keystone.executeGraphQL({
+    const { data } = await keystone.executeGraphQL({
       query: `query {
           User(where: {id: "${item.author}" }) {
             name
