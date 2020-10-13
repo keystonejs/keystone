@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
+import { useIndicatorTokens } from '@keystone-ui/fields';
 import { CheckIcon } from '@keystone-ui/icons/icons/CheckIcon';
 import { ComponentProps, useMemo } from 'react';
 import ReactSelect, { components as reactSelectComponents, Props } from 'react-select';
@@ -13,40 +14,55 @@ export const CheckMark = ({
   isFocused?: boolean;
   isSelected?: boolean;
 }) => {
-  let bg;
-  let fg;
-  let border;
-  let size = 24;
-
-  const theme = useTheme();
-
-  if (isDisabled) {
-    bg = theme.fields.disabled.controlForeground;
-    fg = isSelected ? 'white' : theme.fields.disabled.controlForeground;
-    border = theme.fields.disabled.controlForeground;
-  } else if (isSelected) {
-    bg = isFocused ? 'white' : theme.fields.selected.controlBorderColor;
-    fg = isFocused ? theme.fields.selected.controlBorderColor : 'white';
-    border = theme.fields.selected.controlBorderColor;
-  } else {
-    border = isFocused ? theme.fields.focus.controlBorderColor : theme.fields.controlBorderColor;
-    bg = 'white';
-    fg = 'white';
-  }
+  const tokens = useIndicatorTokens({
+    size: 'medium',
+    type: 'radio',
+  });
 
   return (
     <div
+      className={`${isDisabled ? 'disabled ' : ''}${isFocused ? 'focus ' : ''}${
+        isSelected ? 'selected' : ''
+      }`}
       css={{
         alignItems: 'center',
-        backgroundColor: bg,
-        border: `2px solid ${border}`,
-        borderRadius: size,
+        backgroundColor: tokens.background,
+        borderColor: tokens.borderColor,
+        borderRadius: tokens.borderRadius,
+        borderStyle: 'solid',
+        borderWidth: tokens.borderWidth,
         boxSizing: 'border-box',
-        color: fg,
+        color: tokens.foreground,
+        cursor: 'pointer',
         display: 'flex',
-        height: size,
+        flexShrink: 0,
+        height: tokens.boxSize,
         justifyContent: 'center',
-        width: size,
+        transition: tokens.transition,
+        width: tokens.boxSize,
+
+        '&.focus': {
+          backgroundColor: tokens.focus.background,
+          borderColor: tokens.focus.borderColor,
+          boxShadow: tokens.focus.shadow,
+          color: tokens.focus.foreground,
+        },
+        '&.selected': {
+          backgroundColor: tokens.selected.background,
+          borderColor: tokens.selected.borderColor,
+          boxShadow: tokens.selected.shadow,
+          color: tokens.selected.foreground,
+        },
+        '&.disabled': {
+          backgroundColor: tokens.disabled.background,
+          borderColor: tokens.disabled.borderColor,
+          boxShadow: tokens.disabled.shadow,
+          color: tokens.disabled.background,
+          cursor: 'default',
+        },
+        '&.selected.disabled': {
+          color: tokens.disabled.foreground,
+        },
       }}
     >
       <CheckIcon size="small" />

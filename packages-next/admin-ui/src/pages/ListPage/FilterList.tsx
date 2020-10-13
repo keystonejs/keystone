@@ -5,7 +5,6 @@ import { Filter } from './useFilters';
 import { useRouter } from '../../router';
 import { Button } from '@keystone-ui/button';
 import { usePopover, PopoverDialog } from '@keystone-ui/popover';
-import { tabbable } from 'tabbable';
 import { FormEvent, Fragment, useState } from 'react';
 import { Pill } from '@keystone-ui/pill';
 
@@ -22,7 +21,7 @@ export function FilterList({ filters, list }: { filters: Filter[]; list: ListMet
 
 function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
   const router = useRouter();
-  const { isOpen, setOpen, trigger, dialog } = usePopover({
+  const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
     modifiers: [
       {
@@ -56,7 +55,7 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
           })
           .toLowerCase()}
       </Pill>
-      <PopoverDialog {...dialog.props} ref={dialog.ref} isVisible={isOpen}>
+      <PopoverDialog arrow={arrow} {...dialog.props} ref={dialog.ref} isVisible={isOpen}>
         <EditDialog
           onClose={() => {
             setOpen(false);
@@ -97,15 +96,7 @@ function EditDialog({
         onClose();
       }}
     >
-      <div
-        ref={node => {
-          if (node) {
-            tabbable(node)[0]?.focus();
-          }
-        }}
-      >
-        <Filter type={filter.type} value={value} onChange={setValue} />
-      </div>
+      <Filter autoFocus type={filter.type} value={value} onChange={setValue} />
       <div css={{ display: 'flex', justifyContent: 'space-between' }}>
         <Button onClick={onClose}>Cancel</Button>
         <Button type="submit">Save</Button>

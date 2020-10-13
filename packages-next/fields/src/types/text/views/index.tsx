@@ -64,6 +64,7 @@ export const controller = (
               props.onChange(event.target.value);
             }}
             value={props.value}
+            autoFocus
           />
         );
       },
