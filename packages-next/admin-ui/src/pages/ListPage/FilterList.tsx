@@ -5,7 +5,6 @@ import { Filter } from './useFilters';
 import { useRouter } from '../../router';
 import { Button } from '@keystone-ui/button';
 import { usePopover, PopoverDialog } from '@keystone-ui/popover';
-import { tabbable } from 'tabbable';
 import { FormEvent, Fragment, useState } from 'react';
 import { Pill } from '@keystone-ui/pill';
 
@@ -97,15 +96,7 @@ function EditDialog({
         onClose();
       }}
     >
-      <div
-        ref={node => {
-          if (node) {
-            tabbable(node)[0]?.focus();
-          }
-        }}
-      >
-        <Filter type={filter.type} value={value} onChange={setValue} />
-      </div>
+      <Filter autoFocus type={filter.type} value={value} onChange={setValue} />
       <div css={{ display: 'flex', justifyContent: 'space-between' }}>
         <Button onClick={onClose}>Cancel</Button>
         <Button type="submit">Save</Button>

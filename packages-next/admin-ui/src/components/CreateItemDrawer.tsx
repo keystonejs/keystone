@@ -7,6 +7,7 @@ import isDeepEqual from 'fast-deep-equal';
 import { useList } from '../context';
 import { Notice } from '@keystone-ui/notice';
 import { Drawer } from '@keystone-ui/modals';
+import { useToasts } from '@keystone-ui/toast';
 
 export function CreateItemDrawer({
   listKey,
@@ -21,10 +22,13 @@ export function CreateItemDrawer({
 }) {
   const list = useList(listKey);
 
+  const toasts = useToasts();
+
   const [createItem, { loading, error }] = useMutation(
     gql`mutation($data: ${list.gqlNames.createInputName}!) {
       item: ${list.gqlNames.createMutationName}(data: $data) {
         id
+        _label_
       }
     }`
   );
@@ -81,6 +85,11 @@ export function CreateItemDrawer({
             })
               .then(({ data }) => {
                 onCreate(data.item.id);
+                toasts.addToast({
+                  title: data.item._label_,
+                  message: 'Created Successfully',
+                  tone: 'positive',
+                });
               })
               .catch(() => {});
           },

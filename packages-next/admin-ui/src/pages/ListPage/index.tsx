@@ -22,6 +22,7 @@ import { FilterList } from './FilterList';
 import { ListMeta } from '@keystone-spike/types';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
+import { LoadingDots } from '@keystone-ui/loading';
 
 type ListPageProps = {
   listKey: string;
@@ -121,7 +122,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
 
   let selectedFields = useSelectedFields(listKey, listViewFieldModesByField);
 
-  let { data, error, refetch } = useQuery(
+  let { data: newData, error: newError, refetch, loading } = useQuery(
     useMemo(() => {
       let selectedGqlFields = selectedFields.fields
         .map(fieldPath => {
@@ -156,6 +157,17 @@ export const ListPage = ({ listKey }: ListPageProps) => {
       },
     }
   );
+
+  let [dataState, setDataState] = useState({ data: newData, error: newError });
+
+  if (newData && dataState.data !== newData) {
+    setDataState({
+      data: newData,
+      error: newError,
+    });
+  }
+
+  const { data, error } = dataState;
 
   const dataGetter = makeDataGetter<
     DeepNullable<{
@@ -237,6 +249,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
                     listKey={listKey}
                     fieldModesByFieldPath={listViewFieldModesByField}
                   />{' '}
+                  {loading && <LoadingDots label="Loading data" tone="active" />}
                 </Fragment>
               );
             })()
