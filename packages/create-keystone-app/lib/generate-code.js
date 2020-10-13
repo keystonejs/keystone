@@ -9,11 +9,13 @@ const generateCode = async () => {
   const adapterConfig = {
     MongoDB: `{ mongoUri: '${await getAdapterConfig()}' }`,
     PostgreSQL: `{ knexOptions: { connection: '${await getAdapterConfig()}' } }`,
+    Prisma: `{ url: '${await getAdapterConfig()}' }`,
   }[adapterChoice.key];
 
   const adapterRequire = {
     MongoDB: `const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');`,
     PostgreSQL: `const { KnexAdapter: Adapter } = require('@keystonejs/adapter-knex');`,
+    Prisma: `const { PrismaAdapter: Adapter } = require('@keystonejs/adapter-prisma');`,
   }[adapterChoice.key];
 
   return `${adapterRequire}

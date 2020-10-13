@@ -35,6 +35,7 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
       type: string;
       value: FilterValue;
       onChange(value: FilterValue): void;
+      autoFocus?: boolean;
     }): ReactElement | null;
   };
 };
@@ -105,6 +106,7 @@ export type FieldProps<FieldControllerFn extends (...args: any) => FieldControll
   field: ReturnType<FieldControllerFn>;
   value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>;
   onChange?(value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>): void;
+  autoFocus?: boolean;
 };
 
 export type FieldViews = {

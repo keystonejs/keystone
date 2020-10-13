@@ -21,6 +21,8 @@ import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
 import { ListMeta } from '@keystone-spike/types';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
+import { useToasts } from '@keystone-ui/toast';
+import { LoadingDots } from '@keystone-ui/loading';
 
 type ListPageProps = {
   listKey: string;
@@ -120,7 +122,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
 
   let selectedFields = useSelectedFields(listKey, listViewFieldModesByField);
 
-  let { data, error, refetch } = useQuery(
+  let { data: newData, error: newError, refetch, loading } = useQuery(
     useMemo(() => {
       let selectedGqlFields = selectedFields.fields
         .map(fieldPath => {
@@ -156,6 +158,17 @@ export const ListPage = ({ listKey }: ListPageProps) => {
     }
   );
 
+  let [dataState, setDataState] = useState({ data: newData, error: newError });
+
+  if (newData && dataState.data !== newData) {
+    setDataState({
+      data: newData,
+      error: newError,
+    });
+  }
+
+  const { data, error } = dataState;
+
   const dataGetter = makeDataGetter<
     DeepNullable<{
       meta: { count: number };
@@ -190,10 +203,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         listKey={listKey}
         showCreate={!(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)}
       />
-      <Stack gap="xxlarge" across>
-        <FieldSelection listKey={listKey} fieldModesByFieldPath={listViewFieldModesByField} />{' '}
-        <FilterAdd listKey={listKey} />
-      </Stack>
+      <FilterAdd listKey={listKey} />
 
       <p
         css={{
@@ -225,8 +235,6 @@ export const ListPage = ({ listKey }: ListPageProps) => {
                   </Fragment>
                 );
               }
-              const selectedFieldCount =
-                selectedFields.fields.length + Number(selectedFields.includeLabel);
               return (
                 <Fragment>
                   {getPaginationLabel({
@@ -236,7 +244,12 @@ export const ListPage = ({ listKey }: ListPageProps) => {
                     singular: list.singular,
                     total: data.meta.count,
                   })}{' '}
-                  with {selectedFieldCount} column{selectedFieldCount === 1 ? '' : 's'}
+                  with{' '}
+                  <FieldSelection
+                    listKey={listKey}
+                    fieldModesByFieldPath={listViewFieldModesByField}
+                  />{' '}
+                  {loading && <LoadingDots label="Loading data" tone="active" />}
                 </Fragment>
               );
             })()
@@ -313,7 +326,7 @@ function DeleteManyButton({
     )
   );
   const [isOpen, setIsOpen] = useState(false);
-
+  const toasts = useToasts();
   return (
     <Fragment>
       <Button
@@ -336,6 +349,16 @@ function DeleteManyButton({
             action: async () => {
               await deleteItems({
                 variables: { ids: [...selectedItems] },
+              }).catch(err => {
+                toasts.addToast({
+                  title: 'Failed to delete items',
+                  message: err.message,
+                  tone: 'negative',
+                });
+              });
+              toasts.addToast({
+                title: 'Deleted items successfully',
+                tone: 'positive',
               });
               refetch();
             },
@@ -427,7 +450,7 @@ function ListTable({
               return <TableHeaderCell key={path}>{label}</TableHeaderCell>;
             }
             return (
-              <TableHeaderCell>
+              <TableHeaderCell key={path}>
                 <Link
                   css={{
                     display: 'block',

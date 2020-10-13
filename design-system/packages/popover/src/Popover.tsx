@@ -9,6 +9,7 @@ import {
   useEffect,
   useState,
   useCallback,
+  CSSProperties,
 } from 'react';
 import { Options, Placement } from '@popperjs/core';
 import { usePopper } from 'react-popper';
@@ -60,7 +61,6 @@ export const usePopover = (
   // close on esc press
   useKeyPress({
     targetKey: 'Escape',
-    targetElement: popoverElement,
     downHandler: useCallback((event: KeyboardEvent) => {
       event.preventDefault(); // Avoid potential close of modal
       setOpen(false);
@@ -114,7 +114,7 @@ type Props = {
 };
 
 export const Popover = ({ placement = 'bottom', triggerRenderer, ...props }: Props) => {
-  const { isOpen, setOpen, trigger, dialog } = usePopover({
+  const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement,
     modifiers: [
       {
@@ -136,7 +136,13 @@ export const Popover = ({ placement = 'bottom', triggerRenderer, ...props }: Pro
           onClick: () => setOpen(true),
         },
       })}
-      <PopoverDialog isVisible={isOpen} ref={dialog.ref} {...dialog.props} {...props} />
+      <PopoverDialog
+        isVisible={isOpen}
+        arrow={arrow}
+        ref={dialog.ref}
+        {...dialog.props}
+        {...props}
+      />
     </Fragment>
   );
 };
@@ -149,10 +155,16 @@ type DialogProps = {
   children: ReactNode;
   /** When true, the popover will be visible. */
   isVisible: boolean;
+  arrow: {
+    ref: (element: HTMLDivElement) => void;
+    props: {
+      style: CSSProperties;
+    };
+  };
 };
 
 export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
-  ({ isVisible, ...props }, consumerRef) => {
+  ({ isVisible, children, arrow, ...props }, consumerRef) => {
     const { elevation, radii, shadow, colors } = useTheme();
 
     return (
@@ -166,9 +178,14 @@ export const PopoverDialog = forwardRef<HTMLDivElement, DialogProps>(
             opacity: isVisible ? 1 : 0,
             pointerEvents: isVisible ? undefined : 'none',
             zIndex: elevation.e500, // on top of drawers
+            ...useArrowStyles(),
           }}
           {...props}
-        />
+        >
+          <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
+
+          {children}
+        </div>
       </Portal>
     );
   }
@@ -258,4 +275,57 @@ const useKeyPress = ({
   }, [listenWhen, targetKey, downHandler, upHandler, targetElement]);
 
   return keyPressed;
+};
+
+const useArrowStyles = () => {
+  const theme = useTheme();
+  const size = 16;
+  return {
+    '& [data-popper-arrow]': {
+      position: 'absolute',
+      overflow: 'hidden',
+      pointerEvents: 'none',
+      height: size * 2,
+      width: size * 2,
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        background: theme.colors.background,
+        width: size,
+        height: size,
+        transform: 'translateX(-50%) translateY(-50%) rotate(45deg)',
+        boxShadow: theme.shadow.s200,
+      },
+    },
+    "&[data-popper-placement^='left'] > [data-popper-arrow]": {
+      left: '100%',
+      '&::after': {
+        top: '50%',
+        left: '0',
+      },
+    },
+    "&[data-popper-placement^='right'] > [data-popper-arrow]": {
+      right: '100%',
+      '&::after': {
+        top: '50%',
+        left: '100%',
+      },
+    },
+    "&[data-popper-placement^='top'] > [data-popper-arrow]": {
+      top: '100%',
+      '&::after': {
+        top: 0,
+        bottom: '-50%',
+        left: '50%',
+      },
+    },
+    "&[data-popper-placement^='bottom'] > [data-popper-arrow]": {
+      bottom: '100%',
+      right: 'unset',
+      '&::after': {
+        bottom: '-50%',
+        left: '50%',
+      },
+    },
+  } as const;
 };

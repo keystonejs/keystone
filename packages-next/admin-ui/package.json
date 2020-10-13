@@ -8,7 +8,6 @@
   "dependencies": {
     "@apollo/client": "^3.2.3",
     "@babel/runtime": "^7.11.2",
-    "@emotion/core": "^10.0.35",
     "@emotion/hash": "^0.8.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@graphql-tools/merge": "^6.2.4",
@@ -21,8 +20,10 @@
     "@keystone-ui/loading": "*",
     "@keystone-ui/modals": "*",
     "@keystone-ui/notice": "*",
+    "@keystone-ui/options": "*",
     "@keystone-ui/pill": "*",
     "@keystone-ui/popover": "*",
+    "@keystone-ui/toast": "*",
     "@keystone-ui/tooltip": "*",
     "@types/react": "^16.9.51",
     "clipboard-copy": "^3.1.0",

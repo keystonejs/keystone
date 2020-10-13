@@ -34,6 +34,7 @@ type NoticeProps = {
   children: ReactNode;
   tone?: ToneKey;
   title?: string;
+  className?: string;
 } /* TODO: & MarginProps */;
 
 export const Notice = ({

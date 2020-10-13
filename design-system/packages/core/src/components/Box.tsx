@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { jsx } from '@emotion/core';
+import { jsx } from '../emotion';
 
 import { useTheme } from '../theme';
 import { useMediaQuery } from '../hooks/useMediaQuery';

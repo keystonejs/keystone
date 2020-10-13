@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { jsx } from '@emotion/core';
+import { jsx } from '../emotion';
 
 import { Box, BoxProps } from './Box';
 import { Theme } from '../types';

@@ -41,38 +41,14 @@ yarn create keystone-app my-app
 ```
 
 - Call your project `my-app`
-- Select `PostgreSQL` as your database type.
+- Select `Prisma (Experimental)` as your database type.
 - Provide the connection URL, including username and password, e.g. `postgres://keystone5:change_me_plz@localhost:5432/keystone`
 - Select `Todo` application as your starter project.
 
-This will create a fresh project for you, which uses the `knex` database adapter. We're going to take this project and modify it to use the Prisma adapter.
-
-> **Note:** In upcoming releases the Prisma adapter will be available as an option in `create-keystone-app`.
-
-Next, go into your new project directory and install the Prisma adapter package.
+Your project is now ready to run! Run the following commands (make sure to use the connection string for your database!), and Keystone will start your project
 
 ```
 cd my-app
-yarn add @keystonejs/adapter-prisma
-```
-
-You can now open up `index.js` and edit it to use the `PrismaAdapter` rather than the `KnexAdapter`. Make the following changes:
-
-```diff
--const { KnexAdapter: Adapter } = require('@keystonejs/adapter-knex');
-+const { PrismaAdapter: Adapter } = require('@keystonejs/adapter-prisma');
-```
-
-and
-
-```diff
--const adapterConfig = { knexOptions: { connection: 'postgres://keystone5:change_me_plz@localhost:5432/keystone } };
-+const adapterConfig = { url: 'postgres://keystone5:change_me_plz@localhost:5432/keystone' };
-```
-
-Your project is now ready to run! Run the following command (make sure to use the connection string for your database!), and Keystone will start your project
-
-```
 DATABASE_URL=postgres://keystone5:change_me_plz@localhost:5432/keystone yarn dev
 ```
 

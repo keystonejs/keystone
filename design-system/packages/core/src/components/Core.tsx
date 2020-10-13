@@ -1,7 +1,7 @@
 /* @jsx jsx */
 
-import { jsx, Global } from '@emotion/core';
-import { Fragment, ReactNode, memo } from 'react';
+import { jsx, Global } from '../emotion';
+import { Fragment, ReactNode } from 'react';
 
 import { normalize } from '../normalize';
 import { useTheme } from '../theme';
@@ -15,9 +15,6 @@ type CoreProps = {
   optimizeLegibility?: boolean;
 };
 
-// only re-render leaf nodes that listen to theme changes
-const App = memo(props => <Fragment {...props} />);
-
 export const Core = ({
   children,
   includeNormalize = true,
@@ -26,7 +23,7 @@ export const Core = ({
   return (
     <Fragment>
       <BaseCSS includeNormalize={includeNormalize} optimizeLegibility={optimizeLegibility} />
-      <App>{children}</App>
+      {children}
     </Fragment>
   );
 };

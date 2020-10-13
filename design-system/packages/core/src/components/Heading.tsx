@@ -1,13 +1,13 @@
 /** @jsx jsx */
 
-import { jsx } from '@emotion/core';
+import { jsx } from '../emotion';
 
 import { Box, BoxProps } from './Box';
 import { forwardRefWithAs } from '../utils';
 import { useTheme } from '../theme';
 
-export const HeadingTypes = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
-type HeadingType = typeof HeadingTypes[0];
+export const HeadingTypes = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
+type HeadingType = typeof HeadingTypes[number];
 
 type HeadingProps = {
   /** The type of heading. */
@@ -25,8 +25,6 @@ export const Heading = forwardRefWithAs<'h1', HeadingProps>(
       textTransform: headingStyle.transform,
       margin: 0,
     } as const;
-    // TODO: how do we tell TS the textTransform property is valid here?
-    // @ts-ignore
     return <Box as={as} css={styles} ref={ref} {...props} />;
   }
 );
