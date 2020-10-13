@@ -21,7 +21,7 @@ export function FilterList({ filters, list }: { filters: Filter[]; list: ListMet
 
 function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
   const router = useRouter();
-  const { isOpen, setOpen, trigger, dialog } = usePopover({
+  const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement: 'bottom',
     modifiers: [
       {
@@ -55,7 +55,7 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
           })
           .toLowerCase()}
       </Pill>
-      <PopoverDialog {...dialog.props} ref={dialog.ref} isVisible={isOpen}>
+      <PopoverDialog arrow={arrow} {...dialog.props} ref={dialog.ref} isVisible={isOpen}>
         <EditDialog
           onClose={() => {
             setOpen(false);
