@@ -18,7 +18,7 @@ const { withAuth } = createAuth({
   identityField: 'email',
   // The secret field must be a password type field
   secretField: 'password',
-  /* TODO -- review this later
+  /* TODO -- review this later, it's not implemented yet and not fully designed (e.g error cases)
   // This ensures than an item is actually able to sign in
   validateItem: ({ item }) => item.isEnabled,
   */
@@ -51,8 +51,7 @@ export default withAuth(
       // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie
       statelessSessions({
         // The session secret is used to encrypt cookie data (should be an environment variable)
-        secret:
-          'super secret session keysuper secret session keysuper secret session keysuper secret session keysuper secret session keysuper secret session key',
+        secret: 'super secret session key',
       }),
       // withItemData will fetch these fields for signed-in User items to populate session.data
       { User: 'name isAdmin' }
