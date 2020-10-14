@@ -118,6 +118,7 @@ const CreateButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
 export const HomePage = ({ query }: { query: DocumentNode }) => {
   const {
     adminMeta: { lists },
+    visibleLists,
   } = useKeystone();
 
   let { data, error } = useQuery(query, { errorPolicy: 'all' });
@@ -153,7 +154,7 @@ export const HomePage = ({ query }: { query: DocumentNode }) => {
     return createViewFieldModes;
   }, [keystoneMetaGetter.data]);
 
-  if (!data) {
+  if (!data || visibleLists.state === 'loading') {
     return 'Loading...';
   }
 
@@ -161,11 +162,20 @@ export const HomePage = ({ query }: { query: DocumentNode }) => {
     return keystoneMetaGetter.errors[0].message;
   }
 
+  if (visibleLists.state === 'error') {
+    return visibleLists.error instanceof Error
+      ? visibleLists.error.message
+      : visibleLists.error[0].message;
+  }
+
   return (
     <PageContainer>
       <h1>Dashboard</h1>
       <Inline gap="large">
         {Object.keys(lists).map(key => {
+          if (!visibleLists.lists.has(key)) {
+            return null;
+          }
           const result = dataGetter.get(key);
           // TODO: Checking based on the message is bad, but we need to revisit GraphQL errors in
           // Keystone to fix it and that's a whole other can of worms...

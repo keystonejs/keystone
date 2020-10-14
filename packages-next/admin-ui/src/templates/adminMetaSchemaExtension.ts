@@ -35,6 +35,7 @@ let typeDefs = gql`
     labelIsId: Boolean!
     fields: [KeystoneAdminUIFieldMeta!]!
     initialSort: KeystoneAdminUISort
+    isHidden: Boolean!
   }
 
   type KeystoneAdminUISort {
@@ -157,6 +158,9 @@ export function adminMetaSchemaExtension({
         },
       },
       KeystoneAdminUIListMeta: {
+        isHidden(rootVal: ListMetaRootVal, args: any, { session }: any) {
+          return runMaybeFunction(config.lists[rootVal.key].admin?.isHidden, false, { session });
+        },
         hideDelete(rootVal: ListMetaRootVal, args: any, { session }: any) {
           return runMaybeFunction(config.lists[rootVal.key].admin?.hideDelete, false, {
             session,

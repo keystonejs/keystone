@@ -6,7 +6,11 @@ import { ToastProvider } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
 import { DrawerProvider } from '@keystone-ui/modals';
 import { useAdminMeta } from './utils/useAdminMeta';
-import { AuthenticatedItem, useAuthenticatedItem } from './utils/useAuthenticatedItem';
+import {
+  AuthenticatedItem,
+  VisibleLists,
+  useAuthenticatedItemAndVisibleLists,
+} from './utils/useAuthenticatedItem';
 
 type KeystoneContextType = {
   adminConfig: AdminConfig;
@@ -15,6 +19,7 @@ type KeystoneContextType = {
     | { state: 'error'; error: ApolloError; refetch: () => void };
   fieldViews: FieldViews;
   authenticatedItem: AuthenticatedItem;
+  visibleLists: VisibleLists;
   reinitContext: () => void;
 };
 
@@ -25,7 +30,7 @@ type KeystoneProviderProps = {
   adminConfig: AdminConfig;
   adminMetaHash: string;
   fieldViews: FieldViews;
-  authenticatedItemQuery: DocumentNode;
+  authenticatedItemAndListIsHiddenQuery: DocumentNode;
 };
 
 export const KeystoneProvider = ({
@@ -33,7 +38,7 @@ export const KeystoneProvider = ({
   fieldViews,
   adminMetaHash,
   children,
-  authenticatedItemQuery,
+  authenticatedItemAndListIsHiddenQuery,
 }: KeystoneProviderProps) => {
   const apolloClient = useMemo(
     () =>
@@ -45,11 +50,14 @@ export const KeystoneProvider = ({
   );
 
   const adminMeta = useAdminMeta(apolloClient, adminMetaHash, fieldViews);
-  const authenticatedItem = useAuthenticatedItem(authenticatedItemQuery, apolloClient);
+  const { authenticatedItem, visibleLists, refetch } = useAuthenticatedItemAndVisibleLists(
+    authenticatedItemAndListIsHiddenQuery,
+    apolloClient
+  );
 
   const reinitContext = () => {
     adminMeta?.refetch?.();
-    authenticatedItem.refetch();
+    refetch();
   };
 
   if (adminMeta.state === 'loading') {
@@ -69,6 +77,7 @@ export const KeystoneProvider = ({
             fieldViews,
             authenticatedItem,
             reinitContext,
+            visibleLists,
           }}
         >
           <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
@@ -82,6 +91,7 @@ export const useKeystone = (): {
   adminConfig: AdminConfig;
   adminMeta: AdminMeta;
   authenticatedItem: AuthenticatedItem;
+  visibleLists: VisibleLists;
 } => {
   const value = useContext(KeystoneContext);
   if (!value) {
@@ -101,6 +111,7 @@ export const useKeystone = (): {
     adminConfig: value.adminConfig,
     adminMeta: value.adminMeta.value,
     authenticatedItem: value.authenticatedItem,
+    visibleLists: value.visibleLists,
   };
 };
 

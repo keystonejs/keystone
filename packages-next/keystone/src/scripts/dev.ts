@@ -10,6 +10,8 @@ import { printGeneratedTypes } from './schema-type-printer';
 // TODO: Read port from config or process args
 const PORT = process.env.PORT || 3000;
 
+// TODO: Don't generate or start an Admin UI if it isn't configured!!
+
 export const dev = async () => {
   console.log('🤞 Starting Keystone');
 
