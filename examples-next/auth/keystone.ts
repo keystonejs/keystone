@@ -8,6 +8,9 @@ import { createAuth } from '@keystone-spike/auth';
  * packages-next/auth/src/getExtendGraphQLSchema.ts
  */
 
+let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
+let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
+
 // createAuth configures signin functionality based on the config below. Note this only implements
 // authentication, i.e signing in as an item using identity and secret fields in a list. Session
 // management and access control are controlled independently in the main keystone config.
@@ -47,11 +50,14 @@ export default withAuth(
       url: 'mongodb://localhost/keystone-examples-next-auth',
     },
     lists,
+    admin: {},
     session: withItemData(
       // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie
       statelessSessions({
+        // The maxAge option controls how long session cookies are valid for before they expire
+        maxAge: sessionMaxAge,
         // The session secret is used to encrypt cookie data (should be an environment variable)
-        secret: 'super secret session key super secret session key',
+        secret: sessionSecret,
       }),
       // withItemData will fetch these fields for signed-in User items to populate session.data
       { User: 'name isAdmin' }

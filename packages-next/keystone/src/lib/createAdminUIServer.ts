@@ -42,26 +42,19 @@ export const createAdminUIServer = async (keystone: Keystone) => {
       return;
     }
     const session = (await keystone.createSessionContext?.(req, res))?.session;
-    console.log(`session:`, session);
     const isValidSession = keystone.config.admin?.isAccessAllowed
       ? await keystone.config.admin.isAccessAllowed({ session })
       : session !== undefined;
-    console.log(`isValidSession: ${isValidSession}`);
-    console.log(`pageMiddleware:`, keystone.config.admin?.pageMiddleware);
     const maybeRedirect = await keystone.config.admin?.pageMiddleware?.({
       req,
       session,
       isValidSession,
       keystone,
     });
-    console.log(`maybeRedirect:`, maybeRedirect);
     if (maybeRedirect) {
       res.redirect(maybeRedirect.to);
       return;
     }
-    console.log(`publicPages:`, publicPages);
-    console.log(`url: ${req.url}`);
-    console.log(`pathname: ${url.parse(req.url).pathname}`);
     if (!isValidSession && !publicPages.includes(url.parse(req.url).pathname!)) {
       app.render(req, res, '/no-access');
     } else {

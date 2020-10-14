@@ -115,6 +115,9 @@ export function statelessSessions({
   ironOptions = Iron.defaults,
 }: StatelessSessionsOptions) {
   return () => {
+    if (!secret) {
+      throw new Error('You must specify a session secret to use sessions');
+    }
     if (secret.length < 32) {
       throw new Error('The session secret must be at least 32 characters long');
     }
