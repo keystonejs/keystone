@@ -83,7 +83,9 @@ export const Navigation = () => {
   const {
     adminMeta: { lists },
     authenticatedItem,
+    visibleLists,
   } = useKeystone();
+
   return (
     <Box padding="large">
       <Stack gap="medium" marginTop="medium">
@@ -95,14 +97,30 @@ export const Navigation = () => {
         </Box>
         <Stack gap="small">
           <NavItem href="/">Home</NavItem>
-          {Object.keys(lists).map(key => {
-            const list = lists[key];
-            return (
-              <NavItem key={key} href={`/${list.path}`}>
-                {lists[key].label}
-              </NavItem>
-            );
-          })}
+          {(() => {
+            if (visibleLists.state === 'loading') return null;
+            if (visibleLists.state === 'error') {
+              return (
+                <span css={{ color: 'red' }}>
+                  {visibleLists.error instanceof Error
+                    ? visibleLists.error.message
+                    : visibleLists.error[0].message}
+                </span>
+              );
+            }
+            return Object.keys(lists).map(key => {
+              if (!visibleLists.lists.has(key)) {
+                return null;
+              }
+
+              const list = lists[key];
+              return (
+                <NavItem key={key} href={`/${list.path}`}>
+                  {lists[key].label}
+                </NavItem>
+              );
+            });
+          })()}
         </Stack>
         <Inline gap="medium">
           <Button as="a" target="_blank" href="/api/graphql">

@@ -8,6 +8,8 @@ import {
   GraphQLSchema,
   GraphQLUnionType,
   InlineFragmentNode,
+  parse,
+  FragmentDefinitionNode,
 } from 'graphql';
 import { staticAdminMetaQuery } from '../admin-meta-graphql';
 
@@ -16,7 +18,9 @@ type AppTemplateOptions = {
 };
 
 export const appTemplate = (keystone: Keystone, { configFile }: AppTemplateOptions) => {
-  const authenticatedItemQuery = getAuthenticatedItemQuery(keystone.graphQLSchema);
+  const authenticatedItemAndListIsHiddenQuery = getAuthenticatedItemAndListIsHiddenQuery(
+    keystone.graphQLSchema
+  );
 
   const result = executeSync({
     document: staticAdminMetaQuery,
@@ -44,8 +48,10 @@ ${configFile ? `import * as adminConfig from "../../../admin/config";` : 'const 
 const fieldViews = [${keystone.views.map((x, i) => `view${i}`)}];
 const customFieldViews = {};
 
-const authenticatedItemQuery = ${
-    authenticatedItemQuery ? JSON.stringify(authenticatedItemQuery) : 'undefined'
+const authenticatedItemAndListIsHiddenQuery = ${
+    authenticatedItemAndListIsHiddenQuery
+      ? JSON.stringify(authenticatedItemAndListIsHiddenQuery)
+      : 'undefined'
   };
 
 export default function App({ Component, pageProps }) {
@@ -56,7 +62,7 @@ export default function App({ Component, pageProps }) {
         adminMetaHash="${adminMetaQueryResultHash}"
         fieldViews={fieldViews}
         customFieldViews={customFieldViews}
-        authenticatedItemQuery={authenticatedItemQuery}
+        authenticatedItemAndListIsHiddenQuery={authenticatedItemAndListIsHiddenQuery}
       >
         <ErrorBoundary>
           <Component {...pageProps} />
@@ -69,7 +75,18 @@ export default function App({ Component, pageProps }) {
   // -- TEMPLATE END
 };
 
-function getAuthenticatedItemQuery(graphqlSchema: GraphQLSchema): DocumentNode | undefined {
+const listIsHiddenSelections = (parse(`fragment x on y {
+  keystone {
+    adminMeta {
+      lists {
+        key
+        isHidden
+      }
+    }
+  }
+}`).definitions[0] as FragmentDefinitionNode).selectionSet.selections;
+
+function getAuthenticatedItemAndListIsHiddenQuery(graphqlSchema: GraphQLSchema): DocumentNode {
   const queryType = graphqlSchema.getQueryType();
   if (queryType) {
     const fields = queryType.getFields();
@@ -138,6 +155,7 @@ function getAuthenticatedItemQuery(graphqlSchema: GraphQLSchema): DocumentNode |
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
+                ...listIsHiddenSelections,
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'authenticatedItem' },
@@ -170,4 +188,17 @@ function getAuthenticatedItemQuery(graphqlSchema: GraphQLSchema): DocumentNode |
       };
     }
   }
+  return {
+    kind: 'Document',
+    definitions: [
+      {
+        kind: 'OperationDefinition',
+        operation: 'query',
+        selectionSet: {
+          kind: 'SelectionSet',
+          selections: listIsHiddenSelections,
+        },
+      },
+    ],
+  };
 }
