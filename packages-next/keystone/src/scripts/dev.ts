@@ -45,6 +45,10 @@ export const dev = async () => {
     console.log(`⭐️ Dev Server Ready on http://localhost:${PORT}`);
     // Don't start initialising Keystone until the dev server is ready,
     // otherwise it slows down the first response significantly
-    initKeystone();
+    initKeystone().catch(err => {
+      console.error(`🚨 There was an error initialising Keystone`);
+      console.error(err);
+      process.exit(1);
+    });
   });
 };

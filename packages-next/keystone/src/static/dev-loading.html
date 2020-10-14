@@ -119,10 +119,12 @@
       const INTERVAL = 250;
       const statusEl = document.querySelector('#status');
       const messageEl = document.querySelector('#message');
+      const loadingEl = document.querySelector('.loading-spinner');
 
       function onError(err) {
         statusEl.innerHTML = 'Error';
         messageEl.innerHTML = 'Please check your console.';
+        loadingEl.remove();
         throw err;
       }
       function onReady() {
