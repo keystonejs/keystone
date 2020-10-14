@@ -4641,12 +4641,13 @@
   resolved "https://registry.yarnpkg.com/@timsuchanek/sleep-promise/-/sleep-promise-8.0.1.tgz#81c0754b345138a519b51c2059771eb5f9b97818"
   integrity sha512-cxHYbrXfnCWsklydIHSw5GCMHUPqpJ/enxWSyVHNOgNe61sit/+aOXTTI+VOdWkvVaJsI2vsB9N4+YDNITawOQ==
 
-"@tinymce/tinymce-react@^3.7.0":
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-3.7.0.tgz#e93fba2e98b48a9c4f65248dd3ac114cb8ae18af"
-  integrity sha512-KDSQVL5ZhOIaHX09lhlzxUICOSP68OIDtwyBpexxpCW1Bu60wkJSLpAZ8whraxpzIdkHsn+ZlDEJr0e893oeXw==
+"@tinymce/tinymce-react@^3.8.0":
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-3.8.0.tgz#d2682c547a40caba90ea9bd9230b7760a8c76e4f"
+  integrity sha512-qprmDuwoP9MbtDCb4DCHpjCpL4Ktrp/Wr4/CYBh/QnDbQ7eDnQ3vTH/t7TdAcCWN0CKEL3iYa0gJNJipPVuElw==
   dependencies:
     prop-types "^15.6.2"
+    tinymce "^5.5.0"
 
 "@tootallnate/once@1":
   version "1.1.2"
@@ -26581,7 +26582,7 @@ tinycolor2@^1.4.2:
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.2.tgz#3f6a4d1071ad07676d7fa472e1fac40a719d8803"
   integrity sha512-vJhccZPs965sV/L2sU4oRQVAos0pQXwsvTLkWYdqJ+a8Q5kPFzJTuOFwy7UniPli44NKQGAglksjvOcpo95aZA==
 
-tinymce@^5.5.1:
+tinymce@^5.5.0, tinymce@^5.5.1:
   version "5.5.1"
   resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.5.1.tgz#4f24ca6e7b698a3c7418a39ef0f3d613f4a703a4"
   integrity sha512-z03C8/0TBby68Kp7YUTSCZ0QJINsFCv9U+Cv3TNHg+T1spZ4V6vOIgD0zeTd/xKqkru0P7IOHoeAnOjfpTLq7g==
