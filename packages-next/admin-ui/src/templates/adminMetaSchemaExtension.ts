@@ -34,6 +34,13 @@ let typeDefs = gql`
     pageSize: Int!
     labelIsId: Boolean!
     fields: [KeystoneAdminUIFieldMeta!]!
+    initialSort: KeystoneAdminUISort
+    isHidden: Boolean!
+  }
+
+  type KeystoneAdminUISort {
+    field: String!
+    direction: KeystoneAdminUISortDirection!
   }
 
   type KeystoneAdminUIFieldMeta {
@@ -69,6 +76,10 @@ let typeDefs = gql`
     edit
     read
     hidden
+  }
+  enum KeystoneAdminUISortDirection {
+    ASC
+    DESC
   }
 `;
 
@@ -147,6 +158,9 @@ export function adminMetaSchemaExtension({
         },
       },
       KeystoneAdminUIListMeta: {
+        isHidden(rootVal: ListMetaRootVal, args: any, { session }: any) {
+          return runMaybeFunction(config.lists[rootVal.key].admin?.isHidden, false, { session });
+        },
         hideDelete(rootVal: ListMetaRootVal, args: any, { session }: any) {
           return runMaybeFunction(config.lists[rootVal.key].admin?.hideDelete, false, {
             session,

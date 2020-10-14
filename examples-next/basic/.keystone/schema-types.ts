@@ -390,6 +390,8 @@ export type KeystoneAdminUIFieldMetaItemViewFieldMode =
   | 'read'
   | 'hidden';
 
+export type KeystoneAdminUISortDirection = 'ASC' | 'DESC';
+
 export type UserListTypeInfo = {
   key: 'User';
   fields:

@@ -66,6 +66,10 @@ type BaseListMeta = {
   gqlNames: GqlNames;
   initialColumns: string[];
   pageSize: number;
+  initialSort: null | {
+    direction: 'ASC' | 'DESC';
+    field: string;
+  };
 };
 
 export type SerializedListMeta = BaseListMeta & {

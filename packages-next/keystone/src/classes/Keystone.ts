@@ -79,6 +79,13 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       pageSize: listConfig.admin?.listView?.pageSize ?? 50,
       gqlNames: list.gqlNames,
       initialColumns: (listConfig.admin?.listView?.initialColumns as string[]) ?? ['_label_'],
+      initialSort:
+        (listConfig.admin?.listView?.initialSort as
+          | {
+              field: string;
+              direction: 'ASC' | 'DESC';
+            }
+          | undefined) ?? null,
     };
     for (const fieldKey of Object.keys(listConfig.fields)) {
       const field = listConfig.fields[fieldKey];

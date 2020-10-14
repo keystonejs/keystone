@@ -200,6 +200,7 @@ export function storedSessions({
   };
 }
 
+// TODO: We gotta find a better name for this...
 export function sessionStuff(sessionStrategy: SessionStrategy<unknown>) {
   let isConnected = false;
   let connect = async () => {
