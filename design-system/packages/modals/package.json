@@ -12,7 +12,7 @@
     "@babel/runtime": "^7.11.2",
     "@keystone-ui/button": "*",
     "@keystone-ui/core": "*",
-    "react": "^16.13.1",
+    "react": "^16.14.0",
     "react-focus-lock": "^2.4.1",
     "react-remove-scroll": "^2.4.0",
     "react-transition-group": "^4.4.1"

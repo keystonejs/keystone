@@ -26,8 +26,8 @@
     "@types/tinycolor2": "^1.4.2",
     "@types/webpack": "^4.41.22",
     "next": "^9.5.5",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "tinycolor2": "^1.4.2"
   },
   "devDependencies": {
