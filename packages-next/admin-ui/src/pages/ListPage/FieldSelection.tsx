@@ -1,11 +1,11 @@
 /** @jsx jsx */
+import { ListMeta } from '@keystone-spike/types';
 import { Button } from '@keystone-ui/button';
-import { Box, jsx, useTheme } from '@keystone-ui/core';
+import { Box, jsx } from '@keystone-ui/core';
 import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
 import { Options, OptionPrimitive, CheckMark } from '@keystone-ui/options';
 import { Popover } from '@keystone-ui/popover';
 import { useRouter } from 'next/router';
-import { useList } from '../../context';
 import { useSelectedFields } from './useSelectedFields';
 
 function isArrayEqual(arrA: string[], arrB: string[]) {
@@ -31,18 +31,17 @@ const Option: typeof OptionPrimitive = props => {
   );
 };
 
-let fieldSelectionOptionsComponents = { Option };
+export const fieldSelectionOptionsComponents = { Option };
 
 export function FieldSelection({
-  listKey,
+  list,
   fieldModesByFieldPath,
 }: {
-  listKey: string;
+  list: ListMeta;
   fieldModesByFieldPath: Record<string, 'hidden' | 'read'>;
 }) {
-  const list = useList(listKey);
   const router = useRouter();
-  const selectedFields = useSelectedFields(listKey, fieldModesByFieldPath);
+  const selectedFields = useSelectedFields(list, fieldModesByFieldPath);
   const columnCount = selectedFields.fields.length + Number(selectedFields.includeLabel);
   const onlySingleFieldIsSelected = columnCount === 1;
   const selectedFieldsSet = new Set(selectedFields.fields);
@@ -79,16 +78,13 @@ export function FieldSelection({
     }
   });
 
-  const theme = useTheme();
-
   return (
     <Popover
       triggerRenderer={({ triggerProps }) => {
         return (
           <Button weight="link" {...triggerProps}>
             <span css={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
-              {columnCount} column{columnCount === 1 ? '' : 's'}{' '}
-              <ChevronDownIcon css={{ marginLeft: theme.spacing.xsmall }} size="smallish" />
+              {columnCount} column{columnCount === 1 ? '' : 's'} <ChevronDownIcon size="smallish" />
             </span>
           </Button>
         );

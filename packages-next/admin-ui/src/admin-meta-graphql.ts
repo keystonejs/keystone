@@ -14,6 +14,11 @@ export const staticAdminMetaQuery = gql`
           key
           itemQueryName
           listQueryName
+          initialSort {
+            __typename
+            field
+            direction
+          }
           path
           label
           singular
@@ -73,6 +78,7 @@ export type StaticAdminMetaQuery = { __typename?: 'Query' } & {
             | 'initialColumns'
             | 'pageSize'
             | 'labelIsId'
+            | 'initialSort'
           > & {
               fields: Array<
                 { __typename: 'KeystoneAdminUIFieldMeta' } & Pick<
@@ -130,6 +136,13 @@ type KeystoneAdminUIListMeta = {
   pageSize: Scalars['Int'];
   labelIsId: Scalars['Boolean'];
   fields: Array<KeystoneAdminUIFieldMeta>;
+  initialSort: Maybe<KeystoneAdminUISort>;
+};
+
+type KeystoneAdminUISort = {
+  __typename: 'KeystoneAdminUISort';
+  field: Scalars['String'];
+  direction: KeystoneAdminUISortDirection;
 };
 
 type KeystoneAdminUIFieldMeta = {
@@ -165,6 +178,8 @@ type KeystoneAdminUIFieldMetaListViewFieldMode = 'read' | 'hidden';
 
 type KeystoneAdminUIFieldMetaItemViewFieldMode = 'edit' | 'read' | 'hidden';
 
+type KeystoneAdminUISortDirection = 'ASC' | 'DESC';
+
 // a copy of StaticAdminMetaQuery but without the typenames written manually + & { listKey: string } on fields
 export type StaticAdminMetaQueryWithoutTypeNames = {
   keystone: {
@@ -190,6 +205,7 @@ export type StaticAdminMetaQueryWithoutTypeNames = {
               'path' | 'label' | 'isOrderable' | 'fieldMeta' | 'views'
             > & { listKey: string }
           >;
+          initialSort: Maybe<{ field: Scalars['String']; direction: KeystoneAdminUISortDirection }>;
         }
       >;
     };
