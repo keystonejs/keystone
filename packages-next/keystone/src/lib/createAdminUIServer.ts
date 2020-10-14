@@ -55,7 +55,6 @@ export const createAdminUIServer = async (keystone: Keystone) => {
       res.redirect(maybeRedirect.to);
       return;
     }
-
     if (!isValidSession && !publicPages.includes(url.parse(req.url).pathname!)) {
       app.render(req, res, '/no-access');
     } else {

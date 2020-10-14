@@ -1,0 +1,2 @@
+- [ ] Add a helper that generates a .env file the first time you run an example
+  - [ ] Clean up insecure cookie secrets

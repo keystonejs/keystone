@@ -1,15 +1,9 @@
-import {
-  config,
-  // storedSessions
-} from '@keystone-spike/keystone/schema';
+import { config } from '@keystone-spike/keystone/schema';
 import { statelessSessions, withItemData } from '@keystone-spike/keystone/session';
-// import { redisSessionStore } from '@keystone-spike/session-store-redis';
-// import redis from 'redis';
 import { lists, extendGraphqlSchema } from './schema';
 import { createAuth } from '@keystone-spike/auth';
 
-let sessionSecret =
-  'a very very good secreta very very good secreta very very good secreta very very good secret';
+let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 
 const auth = createAuth({
