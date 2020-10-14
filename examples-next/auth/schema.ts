@@ -63,6 +63,7 @@ export const lists = createSchema({
           },
         },
       }),
+      /* TODO: Come back to this when we review how to restrict signin to valid users
       // This controls whether users can sign in or not
       isEnabled: checkbox({
         access: {
@@ -77,6 +78,7 @@ export const lists = createSchema({
           },
         },
       }),
+      */
     },
   }),
 });
