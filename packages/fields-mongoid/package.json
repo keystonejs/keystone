@@ -18,7 +18,7 @@
     "@keystonejs/adapter-mongoose": "^10.0.0",
     "@keystonejs/adapter-prisma": "^1.0.3",
     "@keystonejs/fields": "^19.0.0",
-    "react": "^16.13.1"
+    "react": "^16.14.0"
   },
   "preconstruct": {
     "entrypoints": [

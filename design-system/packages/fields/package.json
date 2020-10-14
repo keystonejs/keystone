@@ -12,7 +12,7 @@
     "@babel/runtime": "^7.11.2",
     "@keystone-ui/core": "*",
     "@keystone-ui/icons": "*",
-    "react": "^16.13.1"
+    "react": "^16.14.0"
   },
   "engines": {
     "node": ">=10.0.0"

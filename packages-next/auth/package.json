@@ -21,12 +21,12 @@
   "devDependencies": {
     "@keystone-spike/admin-ui": "*",
     "@keystone-spike/keystone": "*",
-    "react": "^16.13.1"
+    "react": "^16.14.0"
   },
   "peerDependencies": {
     "@keystone-spike/admin-ui": "*",
     "@keystone-spike/keystone": "*",
-    "react": "^16.13.1"
+    "react": "^16.14.0"
   },
   "preconstruct": {
     "entrypoints": [
