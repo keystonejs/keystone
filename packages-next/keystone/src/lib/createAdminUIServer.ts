@@ -9,20 +9,15 @@ import url from 'url';
 
 const dev = process.env.NODE_ENV !== 'production';
 
-type Options = {
-  port?: number;
-};
+export const createAdminUIServer = async (keystone: Keystone) => {
+  const server = express();
 
-const defaultOptions: Options = {
-  port: 3000,
-};
-
-export const startAdminUI = async (options: Options = defaultOptions, keystone: Keystone) => {
-  const { port } = options;
+  console.log('✨ Preparing Next.js app');
   const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
   const handle = app.getRequestHandler();
   await Promise.all([app.prepare(), keystone.keystone.connect()]);
-  const server = express();
+
+  console.log('✨ Preparing GraphQL Server');
   const apolloServer = new ApolloServer({
     schema: keystone.graphQLSchema,
     playground: {
@@ -30,32 +25,13 @@ export const startAdminUI = async (options: Options = defaultOptions, keystone: 
         'request.credentials': 'same-origin',
       },
     },
-    // this needs to be discussed
+    // TODO: this needs to be discussed
     formatError,
     context: ({ req, res }) => {
       return keystone.createContextFromRequest(req, res);
     },
   });
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql' });
-
-  // TODO: actually get the route
-  // const getRouteForPathname = (pathname: string | null) => {
-  // if (pathname?.startsWith('/_next') || pathname === null) {
-  //   return undefined;
-  // }
-  // for (const route of app.router.fsRoutes) {
-  //   if (route.match(pathname)) {
-  //     return { pathname, route };
-  //   }
-  // }
-  // if (app.router.dynamicRoutes) {
-  //   for (const route of app.router.dynamicRoutes) {
-  //     if (route.match(pathname)) {
-  //       return { page: route.page, dynamic: true };
-  //     }
-  //   }
-  // }
-  // };
 
   const publicPages = keystone.config.admin?.publicPages ?? [];
 
@@ -86,8 +62,6 @@ export const startAdminUI = async (options: Options = defaultOptions, keystone: 
       handle(req, res);
     }
   });
-  server.listen(port, (err?: any) => {
-    if (err) throw err;
-    console.log(`👋 Admin UI Ready on http://localhost:${port}`);
-  });
+
+  return server;
 };
