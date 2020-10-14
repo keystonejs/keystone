@@ -55,13 +55,26 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   };
 
   // Fields added to the auth list
+
+  // TODO: These access control settings are not static, because we're still using executGraphQL
+  // internally and stataic false excludes them from the schema. When the implementation is
+  // updated to use our crud API, we can set these to static false values.
+  const fieldConfig = {
+    access: () => false,
+    admin: {
+      createView: { fieldMode: 'hidden' },
+      itemView: { fieldMode: 'hidden' },
+      listView: { fieldMode: 'hidden' },
+    },
+  } as const;
+
   const additionalListFields = {
-    [`${secretField}ResetToken`]: password({ access: () => false }), // isRequired: false
-    [`${secretField}ResetIssuedAt`]: timestamp({ access: () => false, isRequired: false }),
-    [`${secretField}ResetRedeemedAt`]: timestamp({ access: () => false, isRequired: false }),
-    [`magicAuthToken`]: password({ access: () => false }), // isRequired: false
-    [`magicAuthIssuedAt`]: timestamp({ access: () => false, isRequired: false }),
-    [`magicAuthRedeemedAt`]: timestamp({ access: () => false, isRequired: false }),
+    [`${secretField}ResetToken`]: password({ ...fieldConfig }),
+    [`${secretField}ResetIssuedAt`]: timestamp({ ...fieldConfig }),
+    [`${secretField}ResetRedeemedAt`]: timestamp({ ...fieldConfig }),
+    [`magicAuthToken`]: password({ ...fieldConfig }),
+    [`magicAuthIssuedAt`]: timestamp({ ...fieldConfig }),
+    [`magicAuthRedeemedAt`]: timestamp({ ...fieldConfig }),
   };
 
   /**
