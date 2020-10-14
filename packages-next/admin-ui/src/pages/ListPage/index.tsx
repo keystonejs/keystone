@@ -23,6 +23,8 @@ import { ListMeta } from '@keystone-spike/types';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
+import { useSort } from './useSort';
+import { SortSelection } from './SortSelection';
 
 type ListPageProps = {
   listKey: string;
@@ -84,23 +86,9 @@ export const ListPage = ({ listKey }: ListPageProps) => {
       ? parseInt(query.pageSize)
       : list.pageSize;
 
-  let sortByFromUrl = typeof query.sortBy === 'string' ? query.sortBy : '';
+  const sort = useSort(list);
 
-  const sort = useMemo(() => {
-    if (sortByFromUrl === '') return null;
-    let direction: 'ASC' | 'DESC' = 'ASC';
-    let sortByField = sortByFromUrl;
-    if (sortByFromUrl.charAt(0) === '-') {
-      sortByField = sortByFromUrl.substr(1);
-      direction = 'DESC';
-    }
-    if (!list.fields[sortByField].isOrderable) return null;
-    return {
-      field: sortByField,
-      direction,
-    };
-  }, [sortByFromUrl]);
-  const filters = useFilters(listKey);
+  const filters = useFilters(list);
 
   let metaQuery = useQuery(listMetaGraphqlQuery, { variables: { listKey } });
 
@@ -120,7 +108,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
     return createViewFieldModesByField;
   }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
 
-  let selectedFields = useSelectedFields(listKey, listViewFieldModesByField);
+  let selectedFields = useSelectedFields(list, listViewFieldModesByField);
 
   let { data: newData, error: newError, refetch, loading } = useQuery(
     useMemo(() => {
@@ -244,9 +232,10 @@ export const ListPage = ({ listKey }: ListPageProps) => {
                     singular: list.singular,
                     total: data.meta.count,
                   })}{' '}
+                  , sorted by <SortSelection list={list} />
                   with{' '}
                   <FieldSelection
-                    listKey={listKey}
+                    list={list}
                     fieldModesByFieldPath={listViewFieldModesByField}
                   />{' '}
                   {loading && <LoadingDots label="Loading data" tone="active" />}
@@ -408,12 +397,14 @@ function ListTable({
   return (
     <Fragment>
       <TableContainer>
-        <col width="30" />
-        {shouldShowLinkIcon && <col width="30" />}
-        {selectedFields.includeLabel && <col />}
-        {selectedFields.fields.map(path => (
-          <col key={path} />
-        ))}
+        <colgroup>
+          <col width="30" />
+          {shouldShowLinkIcon && <col width="30" />}
+          {selectedFields.includeLabel && <col />}
+          {selectedFields.fields.map(path => (
+            <col key={path} />
+          ))}
+        </colgroup>
         <TableHeaderRow>
           <TableHeaderCell css={{ paddingLeft: 0 }}>
             <label

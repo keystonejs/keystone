@@ -34,6 +34,12 @@ let typeDefs = gql`
     pageSize: Int!
     labelIsId: Boolean!
     fields: [KeystoneAdminUIFieldMeta!]!
+    initialSort: KeystoneAdminUISort
+  }
+
+  type KeystoneAdminUISort {
+    field: String!
+    direction: KeystoneAdminUISortDirection!
   }
 
   type KeystoneAdminUIFieldMeta {
@@ -69,6 +75,10 @@ let typeDefs = gql`
     edit
     read
     hidden
+  }
+  enum KeystoneAdminUISortDirection {
+    ASC
+    DESC
   }
 `;
 

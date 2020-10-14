@@ -1,12 +1,10 @@
 import { useRouter } from '../../router';
 import { useMemo } from 'react';
-import { useList } from '../../context';
-import { JSONValue } from '@keystone-spike/types';
+import { JSONValue, ListMeta } from '@keystone-spike/types';
 
 export type Filter = { field: string; type: string; value: JSONValue };
 
-export function useFilters(listKey: string) {
-  const list = useList(listKey);
+export function useFilters(list: ListMeta) {
   const { query } = useRouter();
   const possibleFilters = useMemo(() => {
     const possibleFilters: Record<string, { type: string; field: string }> = {};
