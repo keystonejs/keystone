@@ -8,3 +8,5 @@ export { password } from './types/password';
 // export type { PasswordFieldConfig } from './types/password';
 export { timestamp } from './types/timestamp';
 export type { TimestampFieldConfig } from './types/timestamp';
+export { integer } from './types/integer';
+export type { IntegerFieldConfig } from './types/integer';
