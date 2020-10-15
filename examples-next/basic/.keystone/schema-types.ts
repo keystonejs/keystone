@@ -273,6 +273,14 @@ export type PostWhereInput = {
   readonly title_not_ends_with_i?: Scalars['String'] | null;
   readonly title_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly title_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly views?: Scalars['Int'] | null;
+  readonly views_not?: Scalars['Int'] | null;
+  readonly views_lt?: Scalars['Int'] | null;
+  readonly views_lte?: Scalars['Int'] | null;
+  readonly views_gt?: Scalars['Int'] | null;
+  readonly views_gte?: Scalars['Int'] | null;
+  readonly views_in?: ReadonlyArray<Scalars['Int'] | null> | null;
+  readonly views_not_in?: ReadonlyArray<Scalars['Int'] | null> | null;
   readonly content?: Scalars['String'] | null;
   readonly content_not?: Scalars['String'] | null;
   readonly content_contains?: Scalars['String'] | null;
@@ -314,6 +322,8 @@ export type SortPostsBy =
   | 'id_DESC'
   | 'title_ASC'
   | 'title_DESC'
+  | 'views_ASC'
+  | 'views_DESC'
   | 'content_ASC'
   | 'content_DESC'
   | 'published_ASC'
@@ -325,6 +335,7 @@ export type SortPostsBy =
 
 export type PostUpdateInput = {
   readonly title?: Scalars['String'] | null;
+  readonly views?: Scalars['Int'] | null;
   readonly content?: Scalars['String'] | null;
   readonly published?: Scalars['Boolean'] | null;
   readonly publishDate?: Scalars['String'] | null;
@@ -338,6 +349,7 @@ export type PostsUpdateInput = {
 
 export type PostCreateInput = {
   readonly title?: Scalars['String'] | null;
+  readonly views?: Scalars['Int'] | null;
   readonly content?: Scalars['String'] | null;
   readonly published?: Scalars['Boolean'] | null;
   readonly publishDate?: Scalars['String'] | null;
@@ -453,10 +465,17 @@ export type UserListFn = (
 
 export type PostListTypeInfo = {
   key: 'Post';
-  fields: 'title' | 'content' | 'published' | 'publishDate' | 'author';
+  fields:
+    | 'title'
+    | 'views'
+    | 'content'
+    | 'published'
+    | 'publishDate'
+    | 'author';
   backing: {
     readonly id: string | number;
     readonly title?: string | null;
+    readonly views?: number | null;
     readonly content?: string | null;
     readonly published?: boolean | null;
     readonly publishDate?: Date | null;
