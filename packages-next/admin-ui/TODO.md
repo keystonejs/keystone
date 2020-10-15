@@ -9,12 +9,12 @@
   - [x] Hides the list in the nav
   - [x] Hides the card in the dashboard
 - [ ] Add an example that implements custom fields
-- [ ] `idField` option
+- [x] `idField` option
   - [x] autoIncrement in fields package
   - [x] mongoId in fields package
-  - [ ] `idField` option
-  - [ ] disallow `id` field in fields object
-  - [ ] default `idField` to `autoIncrement` for Knex(& Prisma but we don't handle Prisma in the new interfaces just yet so not gonna actually do that yet) and `mongoId` for Mongoose with fieldMode: 'hidden' for itemView and createView
+  - [x] `idField` option
+  - [x] disallow `id` field in fields object
+  - [x] default `idField` to `autoIncrement` for Knex(& Prisma but we don't handle Prisma in the new interfaces just yet so not gonna actually do that yet) and `mongoId` for Mongoose with fieldMode: 'hidden' for itemView and createView
 - [ ] Remove usage of label field in Admin UI and remove it from the GraphQL schema(with a feature flag to turn it back on)
 
 - [ ] Figure out what to support for custom list views
