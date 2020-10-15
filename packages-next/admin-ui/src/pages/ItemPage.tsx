@@ -1,8 +1,8 @@
 /* @jsx jsx */
 
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, ReactNode, useMemo, useState } from 'react';
 import { gql, useMutation, useQuery } from '../apollo';
-import { jsx, Stack, useTheme } from '@keystone-ui/core';
+import { Box, jsx, Stack, useTheme } from '@keystone-ui/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -157,7 +157,7 @@ function ItemForm({
       {error && <Notice tone="negative">{error.message}</Notice>}
       {fields}
       {fields.length === 0 && 'There are no fields that you can read or edit'}
-      <div css={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Toolbar>
         <Stack across gap="small">
           {fieldsEquality.someFieldsChanged ? (
             <Button {...saveButtonProps} />
@@ -191,7 +191,7 @@ function ItemForm({
             itemId={itemGetter.data?.id!}
           />
         )}
-      </div>
+      </Toolbar>
     </Fragment>
   );
 }
@@ -371,15 +371,50 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               </Button>
             </div>
           </div>
-          <ItemForm
-            fieldModes={itemViewFieldModesByField}
-            selectedFields={selectedFields}
-            showDelete={!data.keystone.adminMeta.list!.hideDelete}
-            listKey={listKey}
-            itemGetter={dataGetter.get('item')}
-          />
+          <FormContainer>
+            <ItemForm
+              fieldModes={itemViewFieldModesByField}
+              selectedFields={selectedFields}
+              showDelete={!data.keystone.adminMeta.list!.hideDelete}
+              listKey={listKey}
+              itemGetter={dataGetter.get('item')}
+            />
+          </FormContainer>
         </Fragment>
       )}
     </PageContainer>
+  );
+};
+
+const Toolbar = ({ children }: { children: ReactNode }) => {
+  const { colors, shadow } = useTheme();
+  return (
+    <Box
+      paddingTop="large"
+      marginTop="xlarge"
+      css={{
+        borderTop: `1px solid ${colors.border}`,
+        display: 'flex',
+        justifyContent: 'space-between',
+      }}
+    >
+      {children}
+    </Box>
+  );
+};
+
+const FormContainer = ({ children }: { children: ReactNode }) => {
+  const { colors, shadow } = useTheme();
+  return (
+    <Box
+      padding="large"
+      rounding="medium"
+      css={{
+        background: colors.background,
+        boxShadow: shadow.s200,
+      }}
+    >
+      {children}
+    </Box>
   );
 };
