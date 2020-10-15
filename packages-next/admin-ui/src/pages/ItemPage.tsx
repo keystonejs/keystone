@@ -387,7 +387,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
 };
 
 const Toolbar = ({ children }: { children: ReactNode }) => {
-  const { colors, shadow } = useTheme();
+  const { colors } = useTheme();
   return (
     <Box
       paddingTop="large"
