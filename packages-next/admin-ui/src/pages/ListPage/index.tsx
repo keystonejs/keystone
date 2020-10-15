@@ -392,9 +392,8 @@ function ListTable({
 }) {
   const list = useList(listKey);
   const { query } = useRouter();
-  const shouldShowLinkIcon =
-    !selectedFields.includeLabel &&
-    !list.fields[selectedFields.fields[0]].views.Cell.supportsLinkTo;
+  const shouldShowLinkIcon = !list.fields[selectedFields.keys().next().value].views.Cell
+    .supportsLinkTo;
 
   return (
     <Fragment>
@@ -402,8 +401,7 @@ function ListTable({
         <colgroup>
           <col width="30" />
           {shouldShowLinkIcon && <col width="30" />}
-          {selectedFields.includeLabel && <col />}
-          {selectedFields.fields.map(path => (
+          {[...selectedFields].map(path => (
             <col key={path} />
           ))}
         </colgroup>
@@ -436,8 +434,7 @@ function ListTable({
             </label>
           </TableHeaderCell>
           {shouldShowLinkIcon && <TableHeaderCell />}
-          {selectedFields.includeLabel && <TableHeaderCell>Label</TableHeaderCell>}
-          {selectedFields.fields.map(path => {
+          {[...selectedFields].map(path => {
             const label = list.fields[path].label;
             if (!list.fields[path].isOrderable) {
               return <TableHeaderCell key={path}>{label}</TableHeaderCell>;
@@ -478,7 +475,6 @@ function ListTable({
               }
               return null;
             }
-            const item = itemGetter.data;
             const itemId = itemGetter.data.id;
             return (
               <tr key={itemId || `index:${index}`}>
@@ -508,22 +504,6 @@ function ListTable({
                     />
                   </label>
                 </TableBodyCell>
-                {selectedFields.includeLabel && (
-                  <TableBodyCell>
-                    <CellLink
-                      css={{
-                        fontFamily:
-                          list.labelField === 'id' || item[list.labelField] === null
-                            ? 'monospace'
-                            : undefined,
-                      }}
-                      href={`/${list.path}/[id]`}
-                      as={`/${list.path}/${encodeURIComponent(itemId)}`}
-                    >
-                      {item[list.labelField] ?? itemId}
-                    </CellLink>
-                  </TableBodyCell>
-                )}
                 {shouldShowLinkIcon && (
                   <TableBodyCell>
                     <Link
@@ -541,7 +521,7 @@ function ListTable({
                     </Link>
                   </TableBodyCell>
                 )}
-                {selectedFields.fields.map((path, i) => {
+                {[...selectedFields].map((path, i) => {
                   const field = list.fields[path];
                   let { Cell } = list.fields[path].views;
                   const itemForField: Record<string, any> = {};
@@ -550,9 +530,19 @@ function ListTable({
                   )) {
                     const fieldGetter = itemGetter.get(graphqlField);
                     if (fieldGetter.errors) {
+                      const errorMessage = fieldGetter.errors[0].message;
                       return (
                         <TableBodyCell css={{ color: 'red' }} key={path}>
-                          {fieldGetter.errors[0].message}
+                          {i === 0 && Cell.supportsLinkTo ? (
+                            <CellLink
+                              href={`/${list.path}/[id]`}
+                              as={`/${list.path}/${encodeURIComponent(itemId)}`}
+                            >
+                              {errorMessage}
+                            </CellLink>
+                          ) : (
+                            errorMessage
+                          )}
                         </TableBodyCell>
                       );
                     }
@@ -565,7 +555,7 @@ function ListTable({
                         item={itemForField}
                         path={path}
                         linkTo={
-                          i === 0 && !selectedFields.includeLabel && Cell.supportsLinkTo
+                          i === 0 && Cell.supportsLinkTo
                             ? {
                                 href: `/${list.path}/[id]`,
                                 as: `/${list.path}/${encodeURIComponent(itemId)}`,

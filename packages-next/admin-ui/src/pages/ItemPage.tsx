@@ -108,7 +108,7 @@ function ItemForm({
       })
         .then(({ data }) => {
           toasts.addToast({
-            title: data.item.label______,
+            title: data.item[list.labelField] || data.item.id,
             tone: 'positive',
             message: 'Saved successfully',
           });
@@ -354,7 +354,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               justifyContent: 'space-between',
             }}
           >
-            <h3>Item: {data.item[list.labelField] ?? data.item.id}</h3>
+            <h3>Item: {data.item[list.labelField] || data.item.id}</h3>
             <div css={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <span css={{ marginRight: spacing.small }}>ID: {data.item.id}</span>
               <Button
