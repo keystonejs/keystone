@@ -73,8 +73,8 @@ export const controller = (
         const key = type === 'is_i' ? `${config.path}_i` : `${config.path}_${type}`;
         return { [key]: value };
       },
-      format: ({ label, value }) => {
-        return `${label}: "${value}"`;
+      Label({ label, value }) {
+        return `${label.toLowerCase()}: "${value}"`;
       },
       types: {
         contains_i: {

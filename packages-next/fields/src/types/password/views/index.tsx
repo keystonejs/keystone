@@ -55,7 +55,7 @@ export const controller = (config: FieldControllerConfig): PasswordController =>
       graphql: ({ type, value }) => {
         return { [`${config.path}_${type}`]: value };
       },
-      format: ({ value }) => {
+      Label({ value }) {
         return value ? 'is set' : 'is not set';
       },
       types: {

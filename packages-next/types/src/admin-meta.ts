@@ -25,12 +25,12 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
   defaultValue: FormState;
   deserialize: (item: any) => FormState;
   serialize: (formState: FormState) => any;
-  validate?: (formState: FormState) => void;
+  validate?: (formState: FormState) => boolean;
   filter?: {
     // wrote a little codemod for this https://astexplorer.net/#/gist/c45e0f093513dded95114bb77da50b09/b3d01e21c1b425f90ca3cc5bd453d85b11500540
     types: Record<string, FilterTypeDeclaration<FilterValue>>;
     graphql(type: { type: string; value: FilterValue }): Record<string, any>;
-    format(type: FilterTypeToFormat<FilterValue>): string;
+    Label(type: FilterTypeToFormat<FilterValue>): string | ReactElement | null;
     Filter(props: {
       type: string;
       value: FilterValue;
@@ -111,6 +111,11 @@ export type FieldProps<FieldControllerFn extends (...args: any) => FieldControll
   value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>;
   onChange?(value: ReturnType<ReturnType<FieldControllerFn>['deserialize']>): void;
   autoFocus?: boolean;
+  /**
+   * Will be true when the user has clicked submit and
+   * the validate function on the field controller has returned false
+   */
+  forceValidation?: boolean;
 };
 
 export type FieldViews = {

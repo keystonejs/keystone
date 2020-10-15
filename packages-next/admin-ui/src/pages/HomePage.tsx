@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { jsx, useTheme, Inline, VisuallyHidden } from '@keystone-ui/core';
+import { jsx, useTheme, Inline, VisuallyHidden, Center } from '@keystone-ui/core';
 import { DocumentNode, useQuery } from '../apollo';
 
 import { useKeystone, useList } from '../context';
@@ -11,6 +11,7 @@ import { ButtonHTMLAttributes, useMemo, useState } from 'react';
 import { DrawerController } from '@keystone-ui/modals';
 import { CreateItemDrawer } from '../components/CreateItemDrawer';
 import { useRouter, Link } from '../router';
+import { LoadingDots } from '@keystone-ui/loading';
 
 type ListCardProps = {
   listKey: string;
@@ -21,7 +22,8 @@ type ListCardProps = {
         count: number;
       }
     | { type: 'no-access' }
-    | { type: 'error'; message: string };
+    | { type: 'error'; message: string }
+    | { type: 'loading' };
 };
 
 const ListCard = ({ listKey, count, createViewFieldModes }: ListCardProps) => {
@@ -58,6 +60,8 @@ const ListCard = ({ listKey, count, createViewFieldModes }: ListCardProps) => {
           </span>
         ) : count.type === 'error' ? (
           count.message
+        ) : count.type === 'loading' ? (
+          <LoadingDots label={`Loading count of ${list.plural}`} size="small" />
         ) : (
           'No access'
         )}
@@ -154,54 +158,64 @@ export const HomePage = ({ query }: { query: DocumentNode }) => {
     return createViewFieldModes;
   }, [keystoneMetaGetter.data]);
 
-  if (!data || visibleLists.state === 'loading') {
-    return 'Loading...';
-  }
-
   if (keystoneMetaGetter.errors) {
     return keystoneMetaGetter.errors[0].message;
-  }
-
-  if (visibleLists.state === 'error') {
-    return visibleLists.error instanceof Error
-      ? visibleLists.error.message
-      : visibleLists.error[0].message;
   }
 
   return (
     <PageContainer>
       <h1>Dashboard</h1>
       <Inline gap="large">
-        {Object.keys(lists).map(key => {
-          if (!visibleLists.lists.has(key)) {
-            return null;
+        {(() => {
+          if (visibleLists.state === 'loading') {
+            return (
+              <Center>
+                <LoadingDots label="Loading lists" />
+              </Center>
+            );
           }
-          const result = dataGetter.get(key);
-          // TODO: Checking based on the message is bad, but we need to revisit GraphQL errors in
-          // Keystone to fix it and that's a whole other can of worms...
-          if (result.errors?.[0].message === 'You do not have access to this resource') {
+          if (visibleLists.state === 'error') {
+            return (
+              <span css={{ color: 'red' }}>
+                {visibleLists.error instanceof Error
+                  ? visibleLists.error.message
+                  : visibleLists.error[0].message}
+              </span>
+            );
+          }
+          return Object.keys(lists).map(key => {
+            if (!visibleLists.lists.has(key)) {
+              return null;
+            }
+            const result = dataGetter.get(key);
+            // TODO: Checking based on the message is bad, but we need to revisit GraphQL errors in
+            // Keystone to fix it and that's a whole other can of worms...
+            if (result.errors?.[0].message === 'You do not have access to this resource') {
+              return (
+                <ListCard
+                  createViewFieldModes={createViewFieldModes[key]}
+                  count={{ type: 'no-access' }}
+                  key={key}
+                  listKey={key}
+                />
+              );
+            }
             return (
               <ListCard
                 createViewFieldModes={createViewFieldModes[key]}
-                count={{ type: 'no-access' }}
+                count={
+                  data
+                    ? result.errors
+                      ? { type: 'error', message: result.errors[0].message }
+                      : { type: 'success', count: data[key].count }
+                    : { type: 'loading' }
+                }
                 key={key}
                 listKey={key}
               />
             );
-          }
-          return (
-            <ListCard
-              createViewFieldModes={createViewFieldModes[key]}
-              count={
-                result.errors
-                  ? { type: 'error', message: result.errors[0].message }
-                  : { type: 'success', count: data[key].count }
-              }
-              key={key}
-              listKey={key}
-            />
-          );
-        })}
+          });
+        })()}
       </Inline>
     </PageContainer>
   );
