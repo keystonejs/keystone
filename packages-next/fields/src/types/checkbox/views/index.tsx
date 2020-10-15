@@ -50,9 +50,6 @@ export const controller = (config: FieldControllerConfig): CheckboxController =>
         [config.path]: value,
       };
     },
-    validate() {
-      // Can throw a FieldError
-    },
     filter: {
       Filter() {
         return null;
@@ -61,8 +58,8 @@ export const controller = (config: FieldControllerConfig): CheckboxController =>
         const key = type === 'is' ? `${config.path}` : `${config.path}_${type}`;
         return { [key]: value };
       },
-      format({ label }) {
-        return label;
+      Label({ label }) {
+        return label.toLowerCase();
       },
       types: {
         is: {
