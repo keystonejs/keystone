@@ -54,6 +54,7 @@ export type ListConfig<
    * @see https://www.keystonejs.com/guides/access-control
    */
   access?: ListAccessControl<TGeneratedListTypes> | boolean;
+  idField?: FieldType<TGeneratedListTypes>;
   /** Config for how this list should act in the Admin UI */
   admin?: {
     /**

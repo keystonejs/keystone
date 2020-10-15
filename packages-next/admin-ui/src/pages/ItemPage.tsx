@@ -41,8 +41,6 @@ function ItemForm({
   const [update, { loading, error }] = useMutation(
     gql`mutation ($data: ${list.gqlNames.updateInputName}!, $id: ID!) {
       item: ${list.gqlNames.updateMutationName}(id: $id, data: $data) {
-        id
-        label______: ${list.labelField}
         ${selectedFields}
       }
     }`
@@ -187,7 +185,7 @@ function ItemForm({
         {showDelete && (
           <DeleteButton
             list={list}
-            itemLabel={itemGetter.data?.label______ ?? null}
+            itemLabel={(itemGetter.data?.[list.labelField] ?? itemGetter.data?.id!) as string}
             itemId={itemGetter.data?.id!}
           />
         )}
@@ -201,7 +199,7 @@ function DeleteButton({
   itemId,
   list,
 }: {
-  itemLabel: string | null;
+  itemLabel: string;
   itemId: string;
   list: ListMeta;
 }) {
@@ -246,7 +244,7 @@ function DeleteButton({
               });
               router.push(`/${list.path}`);
               toasts.addToast({
-                title: itemLabel ?? itemId,
+                title: itemLabel,
                 message: 'Deleted successfully',
                 tone: 'positive',
               });
@@ -284,8 +282,6 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
       query: gql`
   query ItemPage($id: ID!, $listKey: String!) {
     item: ${list.gqlNames.itemQueryName}(where: {id: $id}) {
-      id
-      label______: ${list.labelField}
       ${selectedFields}
     }
     keystone {
@@ -358,7 +354,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               justifyContent: 'space-between',
             }}
           >
-            <h3>Item: {data.item.label______}</h3>
+            <h3>Item: {data.item[list.labelField] ?? data.item.id}</h3>
             <div css={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <span css={{ marginRight: spacing.small }}>ID: {data.item.id}</span>
               <Button

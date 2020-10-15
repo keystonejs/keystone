@@ -17,8 +17,11 @@ import { mapSchema } from '@graphql-tools/utils';
 import { crudForList } from '../lib/crud-api';
 import { adminMetaSchemaExtension } from '@keystone-spike/admin-ui/templates';
 import { accessControlContext, skipAccessControlContext } from '../lib/createAccessControlContext';
+import { autoIncrement, mongoId } from '@keystone-spike/fields';
 
 export function createKeystone(config: KeystoneConfig): Keystone {
+  config = applyIdFieldDefaults(config);
+
   let keystone = new BaseKeystone({
     name: config.name,
     adapter:
@@ -91,7 +94,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
         label: (list as any).fieldsByPath[fieldKey].label,
         views: getViewId(view),
         fieldMeta: field.getAdminMeta?.() ?? null,
-        isOrderable: (list as any).fieldsByPath[fieldKey].isOrderable,
+        isOrderable: (list as any).fieldsByPath[fieldKey].isOrderable || fieldKey === 'id',
       };
     }
   });
@@ -197,4 +200,49 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     config,
   };
   return keystoneThing;
+}
+
+function applyIdFieldDefaults(config: KeystoneConfig) {
+  const newLists: KeystoneConfig['lists'] = {};
+  Object.keys(config.lists).forEach(key => {
+    const listConfig = config.lists[key];
+    if (listConfig.fields.id) {
+      throw new Error(
+        `A field with the \`id\` path is defined in the fields object on the ${JSON.stringify(
+          key
+        )} list. This is not allowed, use the idField option instead.`
+      );
+    }
+    let idField =
+      config.lists[key].idField ??
+      { mongoose: mongoId({}), knex: autoIncrement({}) }[config.db.adapter];
+    idField = {
+      ...idField,
+      config: {
+        admin: {
+          createView: {
+            fieldMode: 'hidden',
+            ...idField.config.admin?.createView,
+          },
+          itemView: {
+            fieldMode: 'hidden',
+            ...idField.config.admin?.itemView,
+          },
+          ...idField.config.admin,
+        },
+        ...idField.config,
+      },
+    };
+
+    const fields = { id: idField, ...listConfig.fields };
+    newLists[key] = {
+      ...listConfig,
+      fields,
+    };
+  });
+
+  return {
+    ...config,
+    lists: newLists,
+  };
 }

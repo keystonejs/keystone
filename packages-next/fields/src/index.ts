@@ -10,3 +10,7 @@ export { timestamp } from './types/timestamp';
 export type { TimestampFieldConfig } from './types/timestamp';
 export { integer } from './types/integer';
 export type { IntegerFieldConfig } from './types/integer';
+export { mongoId } from './types/mongoId';
+export type { MongoIdFieldConfig } from './types/mongoId';
+export { autoIncrement } from './types/autoIncrement';
+export type { AutoIncrementFieldConfig } from './types/autoIncrement';

@@ -118,9 +118,16 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         })
         .join('\n');
       return gql`
-      query ($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $sortBy: [${list.gqlNames.listSortName}!]) {
-        items: ${list.gqlNames.listQueryName}(where: $where,first: $first, skip: $skip, sortBy: $sortBy) {
-          id
+      query ($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $sortBy: [${
+        list.gqlNames.listSortName
+      }!]) {
+        items: ${
+          list.gqlNames.listQueryName
+        }(where: $where,first: $first, skip: $skip, sortBy: $sortBy) {
+          ${
+            // TODO: maybe namespace all the fields instead of doing this
+            selectedFields.has('id') ? '' : 'id'
+          }
           ${selectedGqlFields}
         }
         meta: ${list.gqlNames.listQueryMetaName}(where: $where) {
