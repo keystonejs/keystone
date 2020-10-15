@@ -407,6 +407,7 @@ export type KeystoneAdminUISortDirection = 'ASC' | 'DESC';
 export type UserListTypeInfo = {
   key: 'User';
   fields:
+    | 'id'
     | 'name'
     | 'email'
     | 'password'
@@ -422,7 +423,7 @@ export type UserListTypeInfo = {
     | 'magicAuthIssuedAt'
     | 'magicAuthRedeemedAt';
   backing: {
-    readonly id: string | number;
+    readonly id: string;
     readonly name?: string | null;
     readonly email?: string | null;
     readonly password?: string | null;
@@ -466,6 +467,7 @@ export type UserListFn = (
 export type PostListTypeInfo = {
   key: 'Post';
   fields:
+    | 'id'
     | 'title'
     | 'views'
     | 'content'
@@ -473,7 +475,7 @@ export type PostListTypeInfo = {
     | 'publishDate'
     | 'author';
   backing: {
-    readonly id: string | number;
+    readonly id: string;
     readonly title?: string | null;
     readonly views?: number | null;
     readonly content?: string | null;

@@ -41,7 +41,6 @@ function ItemForm({
   const [update, { loading, error }] = useMutation(
     gql`mutation ($data: ${list.gqlNames.updateInputName}!, $id: ID!) {
       item: ${list.gqlNames.updateMutationName}(id: $id, data: $data) {
-        id
         _label_
         ${selectedFields}
       }
@@ -284,7 +283,6 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
       query: gql`
   query ItemPage($id: ID!, $listKey: String!) {
     item: ${list.gqlNames.itemQueryName}(where: {id: $id}) {
-      id
       _label_
       ${selectedFields}
     }
