@@ -51,7 +51,6 @@ export function createKeystone(config: KeystoneConfig): Keystone {
   Object.keys(config.lists).forEach(key => {
     const listConfig = config.lists[key];
     const list: BaseKeystoneList = keystone.createList(key, {
-      labelField: listConfig.labelField,
       fields: Object.fromEntries(
         Object.entries(listConfig.fields).map(([key, field]) => [
           key,
@@ -67,9 +66,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     } as any) as any;
     adminMeta.lists[key] = {
       key,
-      labelIsId:
-        listConfig.labelField === 'id' ||
-        (listConfig.labelField === undefined && listConfig.fields.name === undefined),
+      labelField: listConfig.admin?.labelField ?? listConfig.fields.name ? 'name' : 'id',
       description: listConfig.admin?.description ?? listConfig.description ?? null,
       label: list.adminUILabels.label,
       singular: list.adminUILabels.singular,

@@ -90,17 +90,6 @@ function getAuthenticatedItemAndListIsHiddenQuery(graphqlSchema: GraphQLSchema):
   const queryType = graphqlSchema.getQueryType();
   if (queryType) {
     const fields = queryType.getFields();
-    // TODO: there should be a interface (as in GraphQL interface) which has id and _label_ on it
-    // in Keystone... with that, the query below could be simplified to:
-    // query {
-    //   authenticatedItem {
-    //     ... on ListItem {
-    //       id
-    //       _label_
-    //     }
-    //   }
-    // }
-
     if (fields['authenticatedItem'] !== undefined) {
       const authenticatedItemType = fields['authenticatedItem'].type;
       if (

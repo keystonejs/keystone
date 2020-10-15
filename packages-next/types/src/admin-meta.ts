@@ -56,7 +56,6 @@ export type FieldMeta = {
 };
 
 type BaseListMeta = {
-  labelIsId: boolean;
   key: string;
   path: string;
   label: string;
@@ -66,6 +65,7 @@ type BaseListMeta = {
   gqlNames: GqlNames;
   initialColumns: string[];
   pageSize: number;
+  labelField: string;
   initialSort: null | {
     direction: 'ASC' | 'DESC';
     field: string;

@@ -42,9 +42,6 @@ export function FieldSelection({
 }) {
   const router = useRouter();
   const selectedFields = useSelectedFields(list, fieldModesByFieldPath);
-  const columnCount = selectedFields.fields.length + Number(selectedFields.includeLabel);
-  const onlySingleFieldIsSelected = columnCount === 1;
-  const selectedFieldsSet = new Set(selectedFields.fields);
 
   const setNewSelectedFields = (selectedFields: string[]) => {
     if (isArrayEqual(selectedFields, list.initialColumns)) {
@@ -61,19 +58,13 @@ export function FieldSelection({
       });
     }
   };
-  const fields = [
-    {
-      value: '_label_',
-      label: 'Label',
-      isDisabled: onlySingleFieldIsSelected && selectedFields.includeLabel,
-    },
-  ];
+  const fields: { value: string; label: string; isDisabled: boolean }[] = [];
   Object.keys(fieldModesByFieldPath).forEach(fieldPath => {
     if (fieldModesByFieldPath[fieldPath] === 'read') {
       fields.push({
         value: fieldPath,
         label: list.fields[fieldPath].label,
-        isDisabled: onlySingleFieldIsSelected && selectedFieldsSet.has(fieldPath),
+        isDisabled: selectedFields.size === 1 && selectedFields.has(fieldPath),
       });
     }
   });
@@ -84,7 +75,8 @@ export function FieldSelection({
         return (
           <Button weight="link" {...triggerProps}>
             <span css={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
-              {columnCount} column{columnCount === 1 ? '' : 's'} <ChevronDownIcon size="smallish" />
+              {selectedFields.size} column{selectedFields.size === 1 ? '' : 's'}{' '}
+              <ChevronDownIcon size="smallish" />
             </span>
           </Button>
         );
@@ -99,9 +91,7 @@ export function FieldSelection({
             }}
             isMulti
             value={fields.filter(option => {
-              return option.value === '_label_'
-                ? selectedFields.includeLabel
-                : selectedFieldsSet.has(option.value);
+              return selectedFields.has(option.value);
             })}
             options={fields}
             components={fieldSelectionOptionsComponents}

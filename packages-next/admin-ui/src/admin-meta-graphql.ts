@@ -26,7 +26,7 @@ export const staticAdminMetaQuery = gql`
           description
           initialColumns
           pageSize
-          labelIsId
+          labelField
           fields {
             __typename
             path
@@ -77,7 +77,7 @@ export type StaticAdminMetaQuery = { __typename?: 'Query' } & {
             | 'description'
             | 'initialColumns'
             | 'pageSize'
-            | 'labelIsId'
+            | 'labelField'
             | 'initialSort'
           > & {
               fields: Array<
@@ -134,7 +134,7 @@ type KeystoneAdminUIListMeta = {
   description: Maybe<Scalars['String']>;
   initialColumns: Array<Scalars['String']>;
   pageSize: Scalars['Int'];
-  labelIsId: Scalars['Boolean'];
+  labelField: Scalars['String'];
   fields: Array<KeystoneAdminUIFieldMeta>;
   initialSort: Maybe<KeystoneAdminUISort>;
 };
@@ -197,7 +197,7 @@ export type StaticAdminMetaQueryWithoutTypeNames = {
           | 'description'
           | 'initialColumns'
           | 'pageSize'
-          | 'labelIsId'
+          | 'labelField'
         > & {
           fields: Array<
             Pick<

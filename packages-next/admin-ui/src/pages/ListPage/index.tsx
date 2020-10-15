@@ -112,20 +112,15 @@ export const ListPage = ({ listKey }: ListPageProps) => {
 
   let { data: newData, error: newError, refetch, loading } = useQuery(
     useMemo(() => {
-      let selectedGqlFields = selectedFields.fields
+      let selectedGqlFields = [...selectedFields]
         .map(fieldPath => {
           return list.fields[fieldPath].controller.graphqlSelection;
         })
         .join('\n');
       return gql`
-      query ($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $sortBy: [${
-        list.gqlNames.listSortName
-      }!]) {
-        items: ${
-          list.gqlNames.listQueryName
-        }(where: $where,first: $first, skip: $skip, sortBy: $sortBy) {
+      query ($where: ${list.gqlNames.whereInputName}, $first: Int!, $skip: Int!, $sortBy: [${list.gqlNames.listSortName}!]) {
+        items: ${list.gqlNames.listQueryName}(where: $where,first: $first, skip: $skip, sortBy: $sortBy) {
           id
-          ${selectedFields.includeLabel ? '_label_' : ''}
           ${selectedGqlFields}
         }
         meta: ${list.gqlNames.listQueryMetaName}(where: $where) {
@@ -160,7 +155,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
   const dataGetter = makeDataGetter<
     DeepNullable<{
       meta: { count: number };
-      items: { id: string; _label_: string; [key: string]: any }[];
+      items: { id: string; [key: string]: any }[];
     }>
   >(data, error?.graphQLErrors);
 
@@ -380,7 +375,7 @@ function ListTable({
 }: {
   selectedFields: ReturnType<typeof useSelectedFields>;
   listKey: string;
-  itemsGetter: DataGetter<DeepNullable<{ id: string; _label_: string; [key: string]: any }[]>>;
+  itemsGetter: DataGetter<DeepNullable<{ id: string; [key: string]: any }[]>>;
   count: number;
   sort: { field: string; direction: 'ASC' | 'DESC' } | null;
   currentPage: number;
@@ -511,12 +506,14 @@ function ListTable({
                     <CellLink
                       css={{
                         fontFamily:
-                          list.labelIsId || item._label_ === null ? 'monospace' : undefined,
+                          list.labelField === 'id' || item[list.labelField] === null
+                            ? 'monospace'
+                            : undefined,
                       }}
                       href={`/${list.path}/[id]`}
                       as={`/${list.path}/${encodeURIComponent(itemId)}`}
                     >
-                      {item._label_ ?? itemId}
+                      {item[list.labelField] ?? itemId}
                     </CellLink>
                   </TableBodyCell>
                 )}
