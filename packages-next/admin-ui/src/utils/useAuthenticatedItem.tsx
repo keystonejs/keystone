@@ -41,7 +41,7 @@ export function useAuthenticatedItemAndVisibleLists(
           | {
               __typename: string;
               id: string;
-              _label_: string;
+              [key: string]: any;
             }
           | { __typename: string };
         keystone: {
@@ -114,8 +114,7 @@ function getAuthenticatedItem(
       !data.authenticatedItem ||
       // this is for the case where there is a new type
       // in the AuthenticatedItem union and the query
-      // that the admin ui has doesn't get the _label_
-      // yes, this is another reason why there should be a ListItem interface or something like that
+      // that the admin ui has doesn't get the id
       // (yes, undefined is very specific and very intentional, it should not be checking for null)
       data.authenticatedItem.id === undefined
     ) {
@@ -123,10 +122,13 @@ function getAuthenticatedItem(
         state: 'unauthenticated',
       };
     }
+    const labelField = Object.keys(data.authenticatedItem).filter(
+      x => x !== '__typename' && x !== 'id'
+    )[0];
     return {
       state: 'authenticated',
       id: data.authenticatedItem.id,
-      label: data.authenticatedItem._label_ ?? data.authenticatedItem.id,
+      label: data.authenticatedItem[labelField] ?? data.authenticatedItem.id,
       listKey: data.authenticatedItem.__typename,
     };
   }

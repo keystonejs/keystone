@@ -12,7 +12,7 @@ import { sessionStuff } from '../session';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { gql } from '../schema';
-import { GraphQLSchema, GraphQLScalarType } from 'graphql';
+import { GraphQLSchema, GraphQLScalarType, GraphQLObjectType } from 'graphql';
 import { mapSchema } from '@graphql-tools/utils';
 import { crudForList } from '../lib/crud-api';
 import { adminMetaSchemaExtension } from '@keystone-spike/admin-ui/templates';
@@ -54,7 +54,6 @@ export function createKeystone(config: KeystoneConfig): Keystone {
   Object.keys(config.lists).forEach(key => {
     const listConfig = config.lists[key];
     const list: BaseKeystoneList = keystone.createList(key, {
-      labelField: listConfig.labelField,
       fields: Object.fromEntries(
         Object.entries(listConfig.fields).map(([key, field]) => [
           key,
@@ -68,11 +67,10 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       itemQueryName: listConfig.graphql?.itemQueryName,
       hooks: listConfig.hooks,
     } as any) as any;
+    const labelField = listConfig.admin?.labelField ?? listConfig.fields.name ? 'name' : 'id';
     adminMeta.lists[key] = {
       key,
-      labelIsId:
-        listConfig.labelField === 'id' ||
-        (listConfig.labelField === undefined && listConfig.fields.name === undefined),
+      labelField,
       description: listConfig.admin?.description ?? listConfig.description ?? null,
       label: list.adminUILabels.label,
       singular: list.adminUILabels.singular,
@@ -81,7 +79,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       fields: {},
       pageSize: listConfig.admin?.listView?.pageSize ?? 50,
       gqlNames: list.gqlNames,
-      initialColumns: (listConfig.admin?.listView?.initialColumns as string[]) ?? ['_label_'],
+      initialColumns: (listConfig.admin?.listView?.initialColumns as string[]) ?? [labelField],
       initialSort:
         (listConfig.admin?.listView?.initialSort as
           | {
@@ -122,6 +120,20 @@ export function createKeystone(config: KeystoneConfig): Keystone {
           serialize: type.serialize,
         });
       }
+      return type;
+    },
+    'MapperKind.OBJECT_TYPE'(type) {
+      if (
+        config.lists[type.name] !== undefined &&
+        config.lists[type.name].fields._label_ === undefined
+      ) {
+        let {
+          fields: { _label_, ...fields },
+          ...objectTypeConfig
+        } = type.toConfig();
+        return new GraphQLObjectType({ fields, ...objectTypeConfig });
+      }
+
       return type;
     },
   });

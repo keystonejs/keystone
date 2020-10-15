@@ -49,11 +49,6 @@ export type ListConfig<
 
   fields: Fields;
   /**
-   * The field to use as a `_label_` field on the GraphQL type and in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
-   * @default 'name' if it exists, otherwise 'id'
-   */
-  labelField?: keyof Fields; // path of the field to use as the label for items in the list, defaults to 'name' or 'id'
-  /**
    * Controls what data users of the Admin UI and GraphQL can access and change
    * @default true
    * @see https://www.keystonejs.com/guides/access-control
@@ -62,6 +57,12 @@ export type ListConfig<
   idField?: FieldType<TGeneratedListTypes>;
   /** Config for how this list should act in the Admin UI */
   admin?: {
+    /**
+     * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
+     * @default 'name' if it exists, otherwise 'id'
+     */
+    labelField?: keyof Fields; // path of the field to use as the label for items in the list, defaults to 'name' or 'id'
+
     /**
      * Excludes this list from the Admin UI
      * @default false
@@ -112,7 +113,7 @@ export type ListConfig<
        * Users of the Admin UI can select different columns to show in the UI.
        * @default the first three fields in the list
        */
-      initialColumns?: (keyof Fields | '_label_')[];
+      initialColumns?: (keyof Fields)[];
       // was previously top-level defaultSort
       initialSort?: { field: keyof Fields; direction: 'ASC' | 'DESC' };
       // was previously defaultPageSize

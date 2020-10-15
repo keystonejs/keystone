@@ -3,7 +3,7 @@ import { GraphQLError } from 'graphql';
 import { DataGetter, DeepNullable } from './dataGetter';
 import { getRootGraphQLFieldsFromFieldController } from './getRootGraphQLFieldsFromFieldController';
 
-export type ItemData = DeepNullable<{ id: string; _label_: string; [key: string]: any }>;
+export type ItemData = DeepNullable<{ id: string; [key: string]: any }>;
 
 export type DeserializedValue = Record<
   string,

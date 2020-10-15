@@ -41,7 +41,6 @@ function ItemForm({
   const [update, { loading, error }] = useMutation(
     gql`mutation ($data: ${list.gqlNames.updateInputName}!, $id: ID!) {
       item: ${list.gqlNames.updateMutationName}(id: $id, data: $data) {
-        _label_
         ${selectedFields}
       }
     }`
@@ -109,7 +108,7 @@ function ItemForm({
       })
         .then(({ data }) => {
           toasts.addToast({
-            title: data.item._label_,
+            title: data.item[list.labelField] || data.item.id,
             tone: 'positive',
             message: 'Saved successfully',
           });
@@ -186,7 +185,7 @@ function ItemForm({
         {showDelete && (
           <DeleteButton
             list={list}
-            itemLabel={itemGetter.data?._label_ ?? null}
+            itemLabel={(itemGetter.data?.[list.labelField] ?? itemGetter.data?.id!) as string}
             itemId={itemGetter.data?.id!}
           />
         )}
@@ -200,7 +199,7 @@ function DeleteButton({
   itemId,
   list,
 }: {
-  itemLabel: string | null;
+  itemLabel: string;
   itemId: string;
   list: ListMeta;
 }) {
@@ -245,7 +244,7 @@ function DeleteButton({
               });
               router.push(`/${list.path}`);
               toasts.addToast({
-                title: itemLabel ?? itemId,
+                title: itemLabel,
                 message: 'Deleted successfully',
                 tone: 'positive',
               });
@@ -283,7 +282,6 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
       query: gql`
   query ItemPage($id: ID!, $listKey: String!) {
     item: ${list.gqlNames.itemQueryName}(where: {id: $id}) {
-      _label_
       ${selectedFields}
     }
     keystone {
@@ -356,7 +354,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               justifyContent: 'space-between',
             }}
           >
-            <h3>Item: {data.item._label_}</h3>
+            <h3>Item: {data.item[list.labelField] || data.item.id}</h3>
             <div css={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <span css={{ marginRight: spacing.small }}>ID: {data.item.id}</span>
               <Button

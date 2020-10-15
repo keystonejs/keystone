@@ -28,9 +28,9 @@ export function CreateItemDrawer({
     gql`mutation($data: ${list.gqlNames.createInputName}!) {
       item: ${list.gqlNames.createMutationName}(data: $data) {
         id
-        _label_
-      }
-    }`
+        label: ${list.labelField}
+    }
+  }`
   );
 
   const [valuesByFieldPath, setValuesByFieldPath] = useState(() => {
@@ -86,7 +86,7 @@ export function CreateItemDrawer({
               .then(({ data }) => {
                 onCreate(data.item.id);
                 toasts.addToast({
-                  title: data.item._label_,
+                  title: data.item.label,
                   message: 'Created Successfully',
                   tone: 'positive',
                 });
