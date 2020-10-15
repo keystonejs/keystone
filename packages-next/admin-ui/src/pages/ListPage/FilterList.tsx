@@ -5,7 +5,7 @@ import { Filter } from './useFilters';
 import { useRouter } from '../../router';
 import { Button } from '@keystone-ui/button';
 import { usePopover, PopoverDialog } from '@keystone-ui/popover';
-import { FormEvent, Fragment, useState } from 'react';
+import { ComponentType, FormEvent, Fragment, useState } from 'react';
 import { Pill } from '@keystone-ui/pill';
 
 export function FilterList({ filters, list }: { filters: Filter[]; list: ListMeta }) {
@@ -32,6 +32,13 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
       },
     ],
   });
+  // doing this because returning a string from Label will be VERY common
+  // but https://github.com/microsoft/TypeScript/issues/21699 isn't resolved yet
+  const Label = field.controller.filter!.Label as ComponentType<{
+    label: string;
+    type: string;
+    value: any;
+  }>;
   return (
     <Fragment>
       <Pill
@@ -47,13 +54,11 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
         }}
       >
         {field.label}{' '}
-        {field.controller
-          .filter!.format({
-            label: field.controller.filter!.types[filter.type].label,
-            type: filter.type,
-            value: filter.value,
-          })
-          .toLowerCase()}
+        <Label
+          label={field.controller.filter!.types[filter.type].label}
+          type={filter.type}
+          value={filter.value}
+        />
       </Pill>
       <PopoverDialog arrow={arrow} {...dialog.props} ref={dialog.ref} isVisible={isOpen}>
         <EditDialog

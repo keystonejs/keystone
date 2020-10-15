@@ -3,12 +3,13 @@
 - [x] Get the currently authenticated item (if keystone list sessions are used) @mitchell
   - [x] Make a hook to consume it (unlike the admin meta, I'm thinking we don't block rendering for fetching this)
   - [x] UI for "you're currently logged in as {label}"
-- [ ] Need config for lists to say whether you should be able to create / edit things
+- [x] Need config for lists to say whether you should be able to create / edit things
 - [x] Add a 'hidden' fieldMode for fields that hides them in the Admin UI
-- [ ] Add an isHidden option for lists
-  - [ ] Hides the list in the nav
-  - [ ] Hides the card in the dashboard
+- [x] Add an isHidden option for lists
+  - [x] Hides the list in the nav
+  - [x] Hides the card in the dashboard
 - [ ] Add an example that implements custom fields
+- [ ] Remove usage of label field in Admin UI and remove it from the GraphQL schema(with a feature flag to turn it back on)
 
 - [ ] Figure out what to support for custom list views
 - [ ] Check in on custom pages
@@ -23,12 +24,13 @@
 - [x] Modals (specifically, confirm)
 - [ ] Calendar / DateTime Picker
 - [x] Toasts
+- [ ] Select (react-select in fields package, replaces SelectInput, doesn't expose customisation for styles and components)
 
 ## Dashboard
 
 - [x] Cards on the dashboard should show individual errors
-- [ ] Cards on the dashboard should show individual loading states
-- [ ] If you can create items (!hideCreate) show the create button
+- [x] Cards on the dashboard should show individual loading states
+- [x] If you can create items (!hideCreate) show the create button
 
 - [ ] Add an option to override the fetching the item count for dashboard cards with a custom description (or hide it)
 - [ ] Show list description in the card?
@@ -40,44 +42,41 @@
 ## List View
 
 - [ ] Figure out what we're doing about search
-- [ ] Need popups for columns and filters
-  - [ ] Uses a highly customised react-select
-- [ ] Implement Columns
+- [x] Need popups for columns and filters
+  - [x] Uses a highly customised react-select
+- [x] Implement Columns
   - [x] URL State working and actually setting columns
   - [x] Show the right columns in the table and query the right fields
   - [x] Show "with {x} columns" in UI
   - [x] Selection UI without popup
   - [x] Hide hidden fields from the selection ui
-  - [ ] Popup to select columns (w/ search)
-  - [ ] Don't show the popup when there are no columns to select from
+  - [x] Popup to select columns (w/ search)
   - [x] Add `supportsLinkTo` support to Cells
   - [x] Pass `linkTo` to the first cell, if supported, otherwise add a link icon as the first column
 - [ ] Implement Filters
   - [x] URL State working and actually filtering
   - [x] Show selected filters in UI
-  - [ ] Allow async fetching of related item labels in relationship filters
-  - [ ] Add filter UI outside of popup
-  - [ ] Edit filter UI outside of popup
-  - [ ] Popup to add filters (w/ search, exclude set filters)
-  - [ ] Popup to edit filters
-  - [ ] All the filter UI
+  - [x] Allow async fetching of related item labels in relationship filters (make it a component instead of a function returning a string)
+  - [x] Add filter UI outside of popup
+  - [x] Edit filter UI outside of popup
+  - [x] Popup to add filters (w/ search, exclude set filters)
+  - [x] Popup to edit filters
 - [x] Implement Pagination
 - [x] Selecting items
   - [x] Selecting specific items in the table, with all/none
 - [x] Delete selected item(s)
-- [ ] Sorting
+- [x] Sorting
   - [x] Implement sorting state (in url)
   - [x] Sort by clicking column headers
-  - [ ] Show which field the list is sorted by in the "showing x items..." description
-  - [ ] Add dropdown for selecting the field to sort on
-  - [ ] Handle when there are no fields to sort by
-  - [ ] Use `initialSort` config option (defaults to name, or no field)
+  - [x] Show which field the list is sorted by in the "showing x items..." description
+  - [x] Add dropdown for selecting the field to sort on
+  - [x] Handle when there are no fields to sort by
+  - [x] Use `initialSort` config option (defaults to name, or no field)
 - [x] Show ~~access control~~ errors in columns
 - [x] Fix style of link icon (when the first column is not linkable)
 - [x] Fix columns widths for select / navigate
 - [ ] Fix style of pagination at the bottom of the list
 - [x] Add "Showing x of {total}" count to header when there is more than one page of items
-- [ ] Add support for field types determining column width (needs discussion)
 - [x] Handle the case where there are no fields to display
   - If you select no fields in the URL, we use the initialColumns, defaults to `_label_`
   - Whichever fields are selected, we filter out ones that are hidden
@@ -87,18 +86,19 @@
 - [x] Confirm before delete
 
 - [ ] Add dots menu for [copy link / copy id / delete]
+- [ ] Add support for field types determining column width (needs discussion)
 
 ## Create Item
 
-- [ ] Put them in the drawers
-- [ ] Make sure nested create works
+- [x] Put them in the drawers
 - [x] Render the form with default values from controllers
 - [x] Call the mutation to create items then navigate
 - [ ] Handle client-side validation (see posts form extensions and checkbox controller)
 - [x] Handle errors (show the error message up the top for now)
+- [x] Notification when you've created an item
+
 - [ ] Handle the case where there are no editable fields in the create screen (needs discussion)
 - [ ] Implement autoCreate feature (where you can create a new item without user input)
-- [ ] Notification when you've created an item
 
 ## Edit Item
 
@@ -114,16 +114,18 @@
 - [x] ~~Handle the case where there are no editable fields (disable button, w/ tooltip)~~ (users won't be able to edit anything and then the button will have a tooltip saying something like "nothing has changed so you can't save")
 - [x] Handle the case where there are no visible fields (show a message)
 - [x] Confirm before delete
-- [ ] Notification when you've updated an item
+- [x] Notification when you've updated an item
 
 ## Fields
 
 - [ ] Relationship views
+  - [ ] Make sure nested create works
 - [ ] Password views
 - [ ] Virtual field
 - [ ] Timestamp field
 - [ ] Integer field
 - [ ] Select
+- [ ] All the filter UI
 
 - [ ] Client-side validation API for fields
 - [ ] DependsOn field dependencies
