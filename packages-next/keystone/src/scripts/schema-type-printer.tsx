@@ -119,7 +119,7 @@ export function printGeneratedTypes(printedSchema: string, keystone: Keystone) {
 
   for (const listKey in keystone.adminMeta.lists) {
     const list = keystone.adminMeta.lists[listKey];
-    let backingTypes = '{\nreadonly id: string | number;\n';
+    let backingTypes = '{\n';
     for (const fieldKey in keystone.config.lists[list.key].fields) {
       const fieldThing = keystone.config.lists[list.key].fields[fieldKey];
       let backingType = fieldThing.getBackingType(fieldKey);
