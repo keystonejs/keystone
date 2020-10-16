@@ -26,7 +26,7 @@ function LinkToRelatedItems({
   if (value.kind === 'many') {
     return (
       <Button
-        as="as"
+        as="a"
         css={{ textDecoration: 'none' }}
         // What happens when there are 10,000 ids? The URL would be too
         // big, so we arbitrarily limit it to the first 100
