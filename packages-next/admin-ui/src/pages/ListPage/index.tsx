@@ -552,8 +552,8 @@ function ListTable({
                   return (
                     <TableBodyCell key={path}>
                       <Cell
+                        field={field.controller}
                         item={itemForField}
-                        path={path}
                         linkTo={
                           i === 0 && Cell.supportsLinkTo
                             ? {

@@ -14,6 +14,6 @@ export { Radio } from './Radio';
 export { Switch } from './Switch';
 export { TextArea } from './TextArea';
 export { TextInput } from './TextInput';
-export { SelectInput } from './SelectInput';
+export { Select, MultiSelect, selectComponents } from './Select';
 export { useIndicatorTokens, useIndicatorStyles } from './hooks/indicators';
 export { useInputTokens, useInputStyles } from './hooks/inputs';

@@ -25,8 +25,8 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
   </FieldContainer>
 );
 
-export const Cell: CellComponent = ({ item, path, linkTo }) => {
-  let value = item[path];
+export const Cell: CellComponent = ({ item, field, linkTo }) => {
+  let value = item[field.path];
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
 };
 Cell.supportsLinkTo = true;

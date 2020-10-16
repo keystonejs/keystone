@@ -12,7 +12,9 @@
     "@babel/runtime": "^7.11.2",
     "@keystone-ui/core": "*",
     "@keystone-ui/icons": "*",
-    "react": "^16.14.0"
+    "@types/react-select": "^3.0.22",
+    "react": "^16.14.0",
+    "react-select": "^3.1.0"
   },
   "engines": {
     "node": ">=10.0.0"

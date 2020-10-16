@@ -2,7 +2,7 @@
 
 import { ComponentProps, ReactNode, useState } from 'react';
 import { jsx, useTheme } from '@keystone-ui/core';
-import { Checkbox, Radio, TextArea, TextInput, Switch, SelectInput } from '@keystone-ui/fields';
+import { Checkbox, Radio, TextArea, TextInput, Switch, Select } from '@keystone-ui/fields';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
 
 import { Page } from '../../components/Page';
@@ -32,7 +32,7 @@ const StatefulSwitch = ({ children, ...props }: ComponentProps<typeof Switch>) =
 
 export default function FieldsPage() {
   const { spacing } = useTheme();
-  const [selectVal, setSelectVal] = useState<string | undefined>(undefined);
+  const [selectVal, setSelectVal] = useState<{ label: string; value: string } | null>(null);
   return (
     <Page>
       <h1>Form Fields</h1>
@@ -54,9 +54,10 @@ export default function FieldsPage() {
       <FieldWrapper>
         <TextArea />
       </FieldWrapper>
-      <h2>Select Input</h2>
+      <h2>Select</h2>
       <FieldWrapper>
-        <SelectInput
+        <Select
+          width="large"
           value={selectVal}
           options={[
             {
@@ -84,7 +85,7 @@ export default function FieldsPage() {
               value: 'f',
             },
           ]}
-          onChange={setSelectVal}
+          onChange={setSelectVal as any}
         />
       </FieldWrapper>
       <h2>Segmented Controls</h2>
