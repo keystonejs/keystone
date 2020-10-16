@@ -12,6 +12,7 @@
     "@babel/runtime": "^7.11.2",
     "@keystone-spike/admin-ui": "*",
     "@keystone-spike/types": "*",
+    "@keystone-ui/button": "*",
     "@keystone-ui/core": "*",
     "@keystone-ui/fields": "*",
     "@keystone-ui/segmented-control": "*",

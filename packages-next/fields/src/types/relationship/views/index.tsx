@@ -8,13 +8,54 @@ import {
   FieldController,
   FieldControllerConfig,
   FieldProps,
+  ListMeta,
 } from '@keystone-spike/types';
 import { RelationshipSelect } from './RelationshipSelect';
-import { useList } from '@keystone-spike/admin-ui/context';
+import { useKeystone, useList } from '@keystone-spike/admin-ui/context';
 import { Link } from '@keystone-spike/admin-ui/router';
 import { Fragment } from 'react';
+import { Button } from '@keystone-ui/button';
+
+function LinkToRelatedItems({
+  value,
+  list,
+}: {
+  value: FieldProps<typeof controller>['value'];
+  list: ListMeta;
+}) {
+  if (value.kind === 'many') {
+    return (
+      <Button
+        as="as"
+        css={{ textDecoration: 'none' }}
+        // What happens when there are 10,000 ids? The URL would be too
+        // big, so we arbitrarily limit it to the first 100
+        // TODO: we should be able to filter by this, no?
+        href={`/${list.path}?!id_in="${value.value
+          .slice(0, 100)
+          .map(({ id }) => id)
+          .join(',')}"`}
+      >
+        View List of Related Items
+      </Button>
+    );
+  }
+  return (
+    <Button
+      css={{ textDecoration: 'none' }}
+      as="a"
+      href={`/${list.path}/${value.value?.id}`}
+      target="_blank"
+    >
+      View Item Details
+    </Button>
+  );
+}
 
 export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof controller>) => {
+  const keystone = useKeystone();
+  const list = useList(field.refListKey);
+  console.log(!!(value.kind === 'many' ? value.value.length : value.value));
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
@@ -46,6 +87,37 @@ export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof c
               }
         }
       />
+      {keystone.authenticatedItem.state === 'authenticated' &&
+        keystone.authenticatedItem.listKey === field.refListKey && (
+          <Button
+            isDisabled={onChange === undefined}
+            onClick={() => {
+              if (keystone.authenticatedItem.state === 'authenticated') {
+                const val = {
+                  label: keystone.authenticatedItem.label,
+                  id: keystone.authenticatedItem.id,
+                };
+                if (value.kind === 'many') {
+                  onChange?.({
+                    ...value,
+                    value: [...value.value, val],
+                  });
+                } else {
+                  onChange?.({
+                    ...value,
+                    value: val,
+                  });
+                }
+              }
+            }}
+          >
+            {value.kind === 'many' ? 'Add ' : 'Set as '}
+            {keystone.authenticatedItem.label}
+          </Button>
+        )}
+      {!!(value.kind === 'many' ? value.value.length : value.value) && (
+        <LinkToRelatedItems list={list} value={value} />
+      )}
     </FieldContainer>
   );
 };
@@ -120,7 +192,7 @@ export const controller = (
       if (value) {
         value = {
           id: value.id,
-          label: value.value || value.id,
+          label: value.label || value.id,
         };
       }
       return {
@@ -137,7 +209,6 @@ export const controller = (
           .filter(x => !newAllIds.has(x.id))
           .map(x => ({ id: x.id }));
         let connect = state.value.filter(x => !initialIds.has(x.id)).map(x => ({ id: x.id }));
-        console.log({ connect, disconnect });
         if (disconnect.length || connect.length) {
           let output: any = {};
 
@@ -156,11 +227,19 @@ export const controller = (
       } else {
         if (state.initialValue && !state.value) {
           return {
-            [config.path]: { disconnect: { id: state.initialValue.id } },
+            [config.path]: {
+              disconnect: {
+                id: state.initialValue.id,
+              },
+            },
           };
         } else if (state.value && state.value.id !== state.initialValue?.id) {
           return {
-            [config.path]: { connect: { id: state.value.id } },
+            [config.path]: {
+              connect: {
+                id: state.value.id,
+              },
+            },
           };
         }
       }
