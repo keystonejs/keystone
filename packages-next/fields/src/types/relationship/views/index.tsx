@@ -55,7 +55,7 @@ function LinkToRelatedItems({
 export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof controller>) => {
   const keystone = useKeystone();
   const list = useList(field.refListKey);
-  console.log(!!(value.kind === 'many' ? value.value.length : value.value));
+
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
