@@ -20,6 +20,14 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
   type: Relationship,
   config,
   views,
+  getAdminMeta(listKey, path, adminMeta) {
+    const refListKey = config.ref.split('.')[0];
+    return {
+      refListKey,
+      refLabelField: adminMeta.lists[refListKey].labelField,
+      many: config.many || false,
+    };
+  },
   getBackingType(path) {
     return {
       [path]: {

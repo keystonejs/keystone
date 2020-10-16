@@ -38,13 +38,20 @@ function ItemForm({
 }) {
   const list = useList(listKey);
 
-  const [update, { loading, error }] = useMutation(
+  const [update, { loading, error, data }] = useMutation(
     gql`mutation ($data: ${list.gqlNames.updateInputName}!, $id: ID!) {
       item: ${list.gqlNames.updateMutationName}(id: $id, data: $data) {
         ${selectedFields}
       }
-    }`
+    }`,
+    {
+      errorPolicy: 'all',
+    }
   );
+
+  if (data) {
+    itemGetter = makeDataGetter(data, error?.graphQLErrors).get('item');
+  }
 
   const [state, setValue] = useState(() => {
     const value = deserializeValue(list, itemGetter);
@@ -106,14 +113,31 @@ function ItemForm({
           id: itemGetter.get('id').data,
         },
       })
-        .then(({ data }) => {
-          toasts.addToast({
-            title: data.item[list.labelField] || data.item.id,
-            tone: 'positive',
-            message: 'Saved successfully',
-          });
+        .then(({ data, errors }) => {
+          // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
+          // which are handled seperately and do not indicate a failure to update the item
+          const error = errors?.find(x => x.path?.length === 1);
+          if (error) {
+            toasts.addToast({
+              title: 'Failed to update item',
+              tone: 'negative',
+              message: error.message,
+            });
+          } else {
+            toasts.addToast({
+              title: data.item[list.labelField] || data.item.id,
+              tone: 'positive',
+              message: 'Saved successfully',
+            });
+          }
         })
-        .catch(() => {});
+        .catch(err => {
+          toasts.addToast({
+            title: 'Failed to update item',
+            tone: 'negative',
+            message: err.message,
+          });
+        });
     },
     children: 'Save Changes',
   } as const;
@@ -152,7 +176,12 @@ function ItemForm({
     });
   return (
     <Fragment>
-      {error && <Notice tone="negative">{error.message}</Notice>}
+      {error?.networkError ||
+        // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
+        // which are handled seperately and do not indicate a failure to update the item
+        (error?.graphQLErrors.some(x => x.path?.length === 1) && (
+          <Notice tone="negative">{error.message}</Notice>
+        ))}
       {fields}
       {fields.length === 0 && 'There are no fields that you can read or edit'}
       <Toolbar>

@@ -3,7 +3,7 @@ import { useTheme } from '@keystone-ui/core';
 import type { ShapeType, SizeType, WidthType } from '../types';
 
 // TODO: Move to theme.
-const widthMap = {
+export const widthMap = {
   small: 128,
   medium: 256,
   large: 512,

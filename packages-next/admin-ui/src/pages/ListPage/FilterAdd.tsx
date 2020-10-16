@@ -2,7 +2,7 @@
 import { FieldMeta, JSONValue } from '@keystone-spike/types';
 import { Button } from '@keystone-ui/button';
 import { Divider, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@keystone-ui/core';
-import { SelectInput } from '@keystone-ui/fields';
+import { Select } from '@keystone-ui/fields';
 import { ChevronLeftIcon } from '@keystone-ui/icons/icons/ChevronLeftIcon';
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
 import { OptionPrimitive, Options } from '@keystone-ui/options';
@@ -186,16 +186,21 @@ function FilterAddPopoverContent({ onClose, listKey }: { onClose: () => void; li
         />
       )}
       {state.kind === 'filter-value' && (
-        <SelectInput
-          value={state.filterType}
+        <Select
+          width="full"
+          value={{
+            value: state.filterType,
+            label: filtersByFieldThenType[state.fieldPath][state.filterType],
+          }}
           onChange={newVal => {
-            if (newVal !== undefined) {
+            if (newVal) {
               setState({
                 kind: 'filter-value',
                 fieldPath: state.fieldPath,
                 filterValue:
-                  fieldsWithFilters[state.fieldPath].controller.filter.types[newVal].initialValue,
-                filterType: newVal,
+                  fieldsWithFilters[state.fieldPath].controller.filter.types[newVal.value]
+                    .initialValue,
+                filterType: newVal.value,
               });
             }
           }}

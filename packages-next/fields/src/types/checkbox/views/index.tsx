@@ -29,8 +29,8 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
   );
 };
 
-export const Cell: CellComponent = ({ item, path }) => {
-  return <Fragment>{item[path] + ''}</Fragment>;
+export const Cell: CellComponent = ({ item, field }) => {
+  return <Fragment>{item[field.path] + ''}</Fragment>;
 };
 
 type CheckboxController = FieldController<boolean, boolean>;

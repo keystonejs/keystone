@@ -87,6 +87,9 @@ export const lists = createSchema({
     },
   }),
   Post: list({
+    admin: {
+      labelField: 'title',
+    },
     fields: {
       title: text({
         hooks: {

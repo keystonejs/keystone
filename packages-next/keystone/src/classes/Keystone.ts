@@ -7,6 +7,7 @@ import type {
   KeystoneConfig,
   Keystone,
   SessionContext,
+  FieldType,
 } from '@keystone-spike/types';
 import { sessionStuff } from '../session';
 import type { IncomingMessage, ServerResponse } from 'http';
@@ -67,7 +68,9 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       itemQueryName: listConfig.graphql?.itemQueryName,
       hooks: listConfig.hooks,
     } as any) as any;
-    const labelField = listConfig.admin?.labelField ?? listConfig.fields.name ? 'name' : 'id';
+    const labelField =
+      (listConfig.admin?.labelField as string | undefined) ??
+      (listConfig.fields.name ? 'name' : 'id');
     adminMeta.lists[key] = {
       key,
       labelField,
@@ -88,17 +91,23 @@ export function createKeystone(config: KeystoneConfig): Keystone {
             }
           | undefined) ?? null,
     };
+  });
+  Object.keys(adminMeta.lists).forEach(key => {
+    const listConfig = config.lists[key];
+    const list = (keystone as any).lists[key];
+
     for (const fieldKey of Object.keys(listConfig.fields)) {
-      const field = listConfig.fields[fieldKey];
+      const field: FieldType<any> = listConfig.fields[fieldKey];
       const view = field.config.admin?.views ?? field.views;
       adminMeta.lists[key].fields[fieldKey] = {
-        label: (list as any).fieldsByPath[fieldKey].label,
+        label: list.fieldsByPath[fieldKey].label,
         views: getViewId(view),
-        fieldMeta: field.getAdminMeta?.() ?? null,
-        isOrderable: (list as any).fieldsByPath[fieldKey].isOrderable || fieldKey === 'id',
+        fieldMeta: field.getAdminMeta?.(key, fieldKey, adminMeta) ?? null,
+        isOrderable: list.fieldsByPath[fieldKey].isOrderable || fieldKey === 'id',
       };
     }
   });
+
   // @ts-ignore
   const server = keystone.createApolloServer({
     schemaName: 'public',

@@ -26,8 +26,8 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
   </FieldContainer>
 );
 
-export const Cell: CellComponent = ({ item, path }) => {
-  return <Fragment>{item[`${path}_is_set`] ? 'Is set' : 'Is not set'}</Fragment>;
+export const Cell: CellComponent = ({ item, field }) => {
+  return <Fragment>{item[`${field.path}_is_set`] ? 'Is set' : 'Is not set'}</Fragment>;
 };
 
 type PasswordController = FieldController<string, boolean>;

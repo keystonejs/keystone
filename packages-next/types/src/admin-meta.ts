@@ -55,7 +55,7 @@ export type FieldMeta = {
   controller: FieldController<unknown, JSONValue>;
 };
 
-type BaseListMeta = {
+export type BaseListMeta = {
   key: string;
   path: string;
   label: string;
@@ -126,11 +126,16 @@ export type FieldViews = {
   };
 };
 
-export type CellComponent = {
+export type CellComponent<
+  FieldControllerFn extends (...args: any) => FieldController<any, any> = () => FieldController<
+    any,
+    any
+  >
+> = {
   (props: {
     item: Record<string, any>;
-    path: string;
     linkTo: { href: string; as: string } | undefined;
+    field: ReturnType<FieldControllerFn>;
   }): ReactElement;
 
   supportsLinkTo?: boolean;

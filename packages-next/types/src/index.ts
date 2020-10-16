@@ -5,7 +5,7 @@ import { SessionStrategy } from './session';
 import { SchemaConfig } from './schema';
 import { IncomingMessage, ServerResponse } from 'http';
 import { GraphQLSchema } from 'graphql';
-import { SerializedAdminMeta } from './admin-meta';
+import { BaseListMeta, SerializedAdminMeta } from './admin-meta';
 export * from './schema';
 export * from './utils';
 export * from './session';
@@ -100,7 +100,15 @@ export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
    * The resolved path to the views for the field type
    */
   views: string;
-  getAdminMeta?: () => JSONValue;
+  getAdminMeta?: (
+    listKey: string,
+    path: string,
+    adminMeta: {
+      enableSignout: boolean;
+      enableSessionItem: boolean;
+      lists: Record<string, BaseListMeta>;
+    }
+  ) => JSONValue;
   getBackingType: (
     path: string
   ) => Record<
