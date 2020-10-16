@@ -21,8 +21,6 @@ type BaseSelectProps = Pick<
 export { components as selectComponents } from 'react-select';
 
 export function Select({
-  // @ts-ignore
-  isMulti,
   onChange,
   value,
   width: widthKey = 'large',
@@ -45,6 +43,7 @@ export function Select({
         }
       }}
       {...props}
+      isMulti={false}
     />
   );
 }
@@ -73,8 +72,8 @@ export function MultiSelect({
           onChange([value as any]);
         }
       }}
-      isMulti
       {...props}
+      isMulti
     />
   );
 }
