@@ -76,7 +76,7 @@ You can upload files directly through the GraphQL API. For example, with the abo
 ```javascript
 // Query
 mutation uploadImageQuery ($file: Upload){
-  createProduct(data: {
+  createUploadTest(data: {
     file: $file,
   }) {
     id
