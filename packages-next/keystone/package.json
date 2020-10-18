@@ -30,7 +30,7 @@
     "@types/keystonejs__adapter-mongoose": "^5.1.2",
     "@types/keystonejs__keystone": "^6.0.1",
     "@types/pluralize": "^0.0.29",
-    "@types/prettier": "^2.1.2",
+    "@types/prettier": "^2.1.5",
     "@types/source-map-support": "^0.5.3",
     "@types/uid-safe": "^2.1.2",
     "apollo-server-express": "^2.18.2",
