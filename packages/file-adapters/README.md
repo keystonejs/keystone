@@ -75,7 +75,7 @@ If you want to upload via GrahpQL an image to the created list ex. 'UploadTest' 
 ```javascript
 // Query
 mutation uploadImageQuery ($file: Upload){
-  createProduct(data: {
+  createUploadTest(data: {
     file: $file,
   }) {
     id
