@@ -68,6 +68,29 @@ keystone.createList('UploadTest', {
   },
 });
 ```
+### GraphQL Usage
+
+If you want to upload via GrahpQL an image to the created list ex. 'UploadTest' then you can do the following:
+
+```javascript
+// Query
+mutation uploadImageQuery ($file: Upload){
+  createProduct(data: {
+    file: $file,
+  }) {
+    id
+    file {
+      publicUrl
+    }
+  }
+}
+
+// Variables
+variables: {
+  file: // File path
+},
+```
+We recommend to use [Altair Playground](https://altair.sirmuel.design/) and follow this [page](https://altair.sirmuel.design/docs/features/file-upload.html) to pick up the path easily.
 
 ## `CloudinaryFileAdapter`
 
