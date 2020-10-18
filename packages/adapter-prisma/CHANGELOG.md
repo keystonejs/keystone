@@ -1,5 +1,11 @@
 # @keystonejs/adapter-prisma
 
+## 1.0.5
+
+### Patch Changes
+
+- [`29d55659c`](https://github.com/keystonejs/keystone/commit/29d55659ccbb224a5b63e608d1e6bba98d053f71) [#3942](https://github.com/keystonejs/keystone/pull/3942) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `prisma` dependencies to `v2.9.0`.
+
 ## 1.0.4
 
 ### Patch Changes
