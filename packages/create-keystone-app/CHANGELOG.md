@@ -1,5 +1,18 @@
 # create-keystone-app
 
+## 3.4.0
+
+### Minor Changes
+
+- [`002bd5b92`](https://github.com/keystonejs/keystone/commit/002bd5b928298a47c29aef709adbe75db8985128) [#3739](https://github.com/keystonejs/keystone/pull/3739) Thanks [@timleslie](https://github.com/timleslie)! - Added support for creating projects using the Prisma adapter.
+
+### Patch Changes
+
+- [`b6b537977`](https://github.com/keystonejs/keystone/commit/b6b5379777327cbe0e44f13a636b74edc3227bfd) [#3930](https://github.com/keystonejs/keystone/pull/3930) Thanks [@timleslie](https://github.com/timleslie)! - Updated internals to better support more than two database adapter options.
+
+- Updated dependencies [[`29d55659c`](https://github.com/keystonejs/keystone/commit/29d55659ccbb224a5b63e608d1e6bba98d053f71)]:
+  - @keystonejs/adapter-prisma@1.0.5
+
 ## 3.3.6
 
 ### Patch Changes
