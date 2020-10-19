@@ -15,6 +15,7 @@
     "@keystone-ui/button": "*",
     "@keystone-ui/core": "*",
     "@keystone-ui/fields": "*",
+    "@keystone-ui/icons": "*",
     "@keystone-ui/segmented-control": "*",
     "@keystonejs/fields": "^19.0.0",
     "@keystonejs/fields-auto-increment": "^8.0.0",

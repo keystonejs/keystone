@@ -30,7 +30,7 @@
 - [x] Modals (specifically, confirm)
 - [ ] Calendar / DateTime Picker
 - [x] Toasts
-- [ ] Select (react-select in fields package, replaces SelectInput, doesn't expose customisation for styles and components)
+- [x] Select (react-select in fields package, replaces SelectInput, doesn't expose customisation for styles and components)
 
 ## Dashboard
 
@@ -59,7 +59,7 @@
   - [x] Popup to select columns (w/ search)
   - [x] Add `supportsLinkTo` support to Cells
   - [x] Pass `linkTo` to the first cell, if supported, otherwise add a link icon as the first column
-- [ ] Implement Filters
+- [x] Implement Filters
   - [x] URL State working and actually filtering
   - [x] Show selected filters in UI
   - [x] Allow async fetching of related item labels in relationship filters (make it a component instead of a function returning a string)
@@ -99,7 +99,7 @@
 - [x] Put them in the drawers
 - [x] Render the form with default values from controllers
 - [x] Call the mutation to create items then navigate
-- [ ] Handle client-side validation (see posts form extensions and checkbox controller)
+- [x] Handle client-side validation (see posts form extensions and checkbox controller)
 - [x] Handle errors (show the error message up the top for now)
 - [x] Notification when you've created an item
 
@@ -124,16 +124,16 @@
 
 ## Fields
 
-- [ ] Relationship views
+- [x] Relationship views
   - [ ] Make sure nested create works
-- [ ] Password views
+- [x] Password views
 - [ ] Virtual field
 - [ ] Timestamp field
 - [x] Integer field
 - [ ] Select
 - [ ] All the filter UI
 
-- [ ] Client-side validation API for fields
+- [x] Client-side validation API for fields
 - [ ] DependsOn field dependencies
 - [x] Show proper field label (currently path)
 - [ ] Show required status for fields
