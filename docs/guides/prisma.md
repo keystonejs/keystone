@@ -7,7 +7,7 @@ title: Using Keystone with Prisma
 
 > **Warning:** The Prisma adapter uses Prisma Migrate, which is currently [considered experimental](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate). We do not recommend using the Prisma adapter for production systems yet.
 
-In this guide we'll walk you through the steps to create a new project using Keystone and Prisma, automatically run a migration when changing your Keystone schema, and use the prisma client directly in a custom query.
+In this guide we'll walk you through the steps to create a new project using Keystone and [Prisma](https://github.com/prisma/prisma), automatically run a migration when changing your Keystone schema, and use Prisma Client directly in a custom query.
 
 ## Connect to your database
 
@@ -40,10 +40,12 @@ We'll start by creating a new Keystone application using `yarn create`. Run the 
 yarn create keystone-app my-app
 ```
 
-- Call your project `my-app`
-- Select `Prisma (Experimental)` as your database type.
-- Provide the connection URL, including username and password, e.g. `postgres://keystone5:change_me_plz@localhost:5432/keystone`
-- Select `Todo` application as your starter project.
+> **Note:** Alternatively, you can also run `npm create keystone-app my-app` if you prefer using npm or Yarn.
+
+1. Call your project `my-app`
+1. Select `Prisma (Experimental)` as your database type.
+1. Provide the connection URL, including username and password, e.g. `postgres://keystone5:change_me_plz@localhost:5432/keystone`
+1. Select `Todo` application as your starter project.
 
 Your project is now ready to run! Run the following commands (make sure to use the connection string for your database!), and Keystone will start your project
 
@@ -54,11 +56,12 @@ DATABASE_URL=postgres://keystone5:change_me_plz@localhost:5432/keystone yarn dev
 
 > **Note:** You currently need to provide `DATABASE_URL` as an environment variable due to an [issue](https://github.com/prisma/prisma/issues/3750) in Prisma.
 
-When prisma connects to your database it will generate a Prisma schema and then generate and run a migration to set up your database with all the required tables.
+When prisma connects to your database it will generate a [Prisma schema file](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema) and then generate and run a migration to set up your database with all the required tables.
 
 ## Changing your schema
 
 During development you will want to be regularly making changes to your Keystone schema as your data model evolves.
+
 Add a new field to your current list:
 
 ```diff
@@ -79,9 +82,11 @@ Now, when you restart your server by running `yarn dev` again, Keystone will gen
 
 > **Note:** The current adapter behaviour only support this auto-migration behaviour. Future releases will provide more flexible controls for running migrations.
 
-## Using the Prisma client
+## Using Prisma Client
 
-Keystone provides a library called [`server-side-graphql-client`](/docs/discussions/server-side-graphql.md) which allows you to execute graphQL queries from within hooks, access control, and custom mutations. These graphQL queries come with all the benefits of Keystone's access control, hooks, and validation. In some circumstances you might want to bypass all of these features and talk directly to your database. The Prisma adapter makes this easy.
+Keystone provides a library called [`server-side-graphql-client`](/docs/discussions/server-side-graphql.md) which allows you to execute GraphQL queries from within hooks, access control, and custom mutations. These GraphQL queries come with all the benefits of Keystone's access control, hooks, and validation. 
+
+In some circumstances you might want to bypass all of these features and talk directly to your database. The Prisma adapter makes this easy by directly exposing an instance of `PrismaClient` which you can use to send queries to your database.
 
 Add the following code to your `index.js` file to create a custom query which tells you whether all your todo items are complete.
 
@@ -101,6 +106,6 @@ keystone.extendGraphQLSchema({
 ```
 
 This query is using the `PrismaClient` object stored at `keystone.adapters.PrismaAdapter.prisma` to directly run this query against the database.
-For more information on the Prisma client API please consult the [Prisma docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+For more information on the Prisma Client API please consult the [Prisma docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
 
 > **Tip:** For full details on how to use up the Prisma Adapter, see the [Prisma Adapter API Docs](/packages/adapter-prisma/README.md)
