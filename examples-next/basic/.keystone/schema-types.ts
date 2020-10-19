@@ -299,8 +299,24 @@ export type PostWhereInput = {
   readonly content_not_ends_with_i?: Scalars['String'] | null;
   readonly content_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly content_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
-  readonly published?: Scalars['Boolean'] | null;
-  readonly published_not?: Scalars['Boolean'] | null;
+  readonly status?: Scalars['String'] | null;
+  readonly status_not?: Scalars['String'] | null;
+  readonly status_contains?: Scalars['String'] | null;
+  readonly status_not_contains?: Scalars['String'] | null;
+  readonly status_starts_with?: Scalars['String'] | null;
+  readonly status_not_starts_with?: Scalars['String'] | null;
+  readonly status_ends_with?: Scalars['String'] | null;
+  readonly status_not_ends_with?: Scalars['String'] | null;
+  readonly status_i?: Scalars['String'] | null;
+  readonly status_not_i?: Scalars['String'] | null;
+  readonly status_contains_i?: Scalars['String'] | null;
+  readonly status_not_contains_i?: Scalars['String'] | null;
+  readonly status_starts_with_i?: Scalars['String'] | null;
+  readonly status_not_starts_with_i?: Scalars['String'] | null;
+  readonly status_ends_with_i?: Scalars['String'] | null;
+  readonly status_not_ends_with_i?: Scalars['String'] | null;
+  readonly status_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly status_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly publishDate?: Scalars['String'] | null;
   readonly publishDate_not?: Scalars['String'] | null;
   readonly publishDate_lt?: Scalars['String'] | null;
@@ -326,8 +342,8 @@ export type SortPostsBy =
   | 'views_DESC'
   | 'content_ASC'
   | 'content_DESC'
-  | 'published_ASC'
-  | 'published_DESC'
+  | 'status_ASC'
+  | 'status_DESC'
   | 'publishDate_ASC'
   | 'publishDate_DESC'
   | 'author_ASC'
@@ -337,7 +353,7 @@ export type PostUpdateInput = {
   readonly title?: Scalars['String'] | null;
   readonly views?: Scalars['Int'] | null;
   readonly content?: Scalars['String'] | null;
-  readonly published?: Scalars['Boolean'] | null;
+  readonly status?: Scalars['String'] | null;
   readonly publishDate?: Scalars['String'] | null;
   readonly author?: UserRelateToOneInput | null;
 };
@@ -351,7 +367,7 @@ export type PostCreateInput = {
   readonly title?: Scalars['String'] | null;
   readonly views?: Scalars['Int'] | null;
   readonly content?: Scalars['String'] | null;
-  readonly published?: Scalars['Boolean'] | null;
+  readonly status?: Scalars['String'] | null;
   readonly publishDate?: Scalars['String'] | null;
   readonly author?: UserRelateToOneInput | null;
 };
@@ -471,7 +487,7 @@ export type PostListTypeInfo = {
     | 'title'
     | 'views'
     | 'content'
-    | 'published'
+    | 'status'
     | 'publishDate'
     | 'author';
   backing: {
@@ -479,7 +495,7 @@ export type PostListTypeInfo = {
     readonly title?: string | null;
     readonly views?: number | null;
     readonly content?: string | null;
-    readonly published?: boolean | null;
+    readonly status?: string | null;
     readonly publishDate?: Date | null;
     readonly author?: string | null;
   };

@@ -200,12 +200,15 @@ function ItemForm({
     });
   return (
     <Fragment>
-      {error?.networkError ||
+      {error?.networkError?.message ? (
+        <Notice tone="negative">{error?.networkError?.message}</Notice>
+      ) : (
         // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
         // which are handled seperately and do not indicate a failure to update the item
-        (error?.graphQLErrors.some(x => x.path?.length === 1) && (
+        error?.graphQLErrors.some(x => x.path?.length === 1) && (
           <Notice tone="negative">{error.message}</Notice>
-        ))}
+        )
+      )}
       {fields}
       {fields.length === 0 && 'There are no fields that you can read or edit'}
       <Toolbar>
