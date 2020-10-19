@@ -47,6 +47,4 @@ module.exports = {
 
 ## Setting a custom schemaName
 
-To use a custom `schemaName`, please ensure it is also passed in to the [keystone constructor](https://www.keystonejs.com/keystonejs/keystone/#schemanames) at initialization. 
-
-
+To use a custom `schemaName`, please ensure it is also passed in to the [keystone constructor](https://www.keystonejs.com/keystonejs/keystone/#schemanames) at initialization.

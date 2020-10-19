@@ -43,9 +43,9 @@ yarn create keystone-app my-app
 > **Note:** Alternatively, you can also run `npm create keystone-app my-app` if you prefer using npm or Yarn.
 
 1. Call your project `my-app`
-1. Select `Prisma (Experimental)` as your database type.
-1. Provide the connection URL, including username and password, e.g. `postgres://keystone5:change_me_plz@localhost:5432/keystone`
-1. Select `Todo` application as your starter project.
+2. Select `Prisma (Experimental)` as your database type.
+3. Provide the connection URL, including username and password, e.g. `postgres://keystone5:change_me_plz@localhost:5432/keystone`
+4. Select `Todo` application as your starter project.
 
 Your project is now ready to run! Run the following commands (make sure to use the connection string for your database!), and Keystone will start your project
 
@@ -84,7 +84,7 @@ Now, when you restart your server by running `yarn dev` again, Keystone will gen
 
 ## Using Prisma Client
 
-Keystone provides a library called [`server-side-graphql-client`](/docs/discussions/server-side-graphql.md) which allows you to execute GraphQL queries from within hooks, access control, and custom mutations. These GraphQL queries come with all the benefits of Keystone's access control, hooks, and validation. 
+Keystone provides a library called [`server-side-graphql-client`](/docs/discussions/server-side-graphql.md) which allows you to execute GraphQL queries from within hooks, access control, and custom mutations. These GraphQL queries come with all the benefits of Keystone's access control, hooks, and validation.
 
 In some circumstances you might want to bypass all of these features and talk directly to your database. The Prisma adapter makes this easy by directly exposing an instance of `PrismaClient` which you can use to send queries to your database.
 
