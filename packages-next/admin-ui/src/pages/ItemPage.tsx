@@ -95,13 +95,37 @@ function ItemForm({
       fieldsChanged,
     };
   }, [serializedFieldValues, serializedValuesFromItem, list]);
+
+  const invalidFields = useMemo(() => {
+    const invalidFields = new Set<string>();
+
+    Object.keys(state.value).forEach(fieldPath => {
+      const val = state.value[fieldPath];
+
+      if (val.kind === 'value') {
+        const validateFn = list.fields[fieldPath].controller.validate;
+        if (validateFn) {
+          const result = validateFn(val.value);
+          if (result === false) {
+            invalidFields.add(fieldPath);
+          }
+        }
+      }
+    });
+    return invalidFields;
+  }, [list, state.value]);
+  const [forceValidation, setForceValidation] = useState(false);
   const toasts = useToasts();
   const saveButtonProps = {
     isLoading: loading,
     weight: 'bold',
     tone: 'active',
     onClick: () => {
+      const newForceValidation = invalidFields.size !== 0;
+      setForceValidation(newForceValidation);
+      if (newForceValidation) return;
       const data: Record<string, any> = {};
+
       Object.keys(fieldsEquality.fieldsChanged).forEach(fieldKey => {
         if (fieldsEquality.fieldsChanged[fieldKey]) {
           Object.assign(data, serializedFieldValues[fieldKey]);
@@ -142,12 +166,11 @@ function ItemForm({
     children: 'Save Changes',
   } as const;
   const fields = Object.keys(list.fields)
-    .filter(fieldKey => fieldModes[fieldKey] !== 'hidden')
-    .map(fieldKey => {
-      const field = list.fields[fieldKey];
-      const value = state.value[fieldKey];
-      const fieldMode = fieldModes[fieldKey];
-      const Field = list.fields[fieldKey].views.Field;
+    .filter(fieldPath => fieldModes[fieldPath] !== 'hidden')
+    .map(fieldPath => {
+      const field = list.fields[fieldPath];
+      const value = state.value[fieldPath];
+      const fieldMode = fieldModes[fieldPath];
 
       if (value.kind === 'error') {
         return (
@@ -157,15 +180,16 @@ function ItemForm({
         );
       }
       return (
-        <Field
-          key={fieldKey}
+        <field.views.Field
+          key={fieldPath}
           field={field.controller}
           value={value.value}
+          forceValidation={forceValidation && invalidFields.has(fieldPath)}
           onChange={
             fieldMode === 'edit'
               ? fieldValue => {
                   setValue({
-                    value: { ...state.value, [fieldKey]: { kind: 'value', value: fieldValue } },
+                    value: { ...state.value, [fieldPath]: { kind: 'value', value: fieldValue } },
                     item: state.item,
                   });
                 }

@@ -8,12 +8,23 @@ import { resolveView } from '../../resolve-view';
 
 const views = resolveView('password/views');
 
+type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
+  TGeneratedListTypes
+> & {
+  minLength?: number;
+};
+
 export const password = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: FieldConfig<TGeneratedListTypes>
+  config: PasswordFieldConfig<TGeneratedListTypes>
 ): FieldType<TGeneratedListTypes> => ({
   type: Password,
   config,
   views,
+  getAdminMeta() {
+    return {
+      minLength: config.minLength !== undefined ? config.minLength : 8,
+    };
+  },
   getBackingType(path) {
     return {
       [path]: {

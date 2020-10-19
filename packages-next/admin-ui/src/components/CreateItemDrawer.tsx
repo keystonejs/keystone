@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { gql, useMutation } from '../apollo';
 import { jsx } from '@keystone-ui/core';
 import isDeepEqual from 'fast-deep-equal';
@@ -40,20 +40,40 @@ export function CreateItemDrawer({
     });
     return value;
   });
+
+  const invalidFields = useMemo(() => {
+    const invalidFields = new Set<string>();
+
+    Object.keys(valuesByFieldPath).forEach(fieldPath => {
+      const val = valuesByFieldPath[fieldPath];
+
+      const validateFn = list.fields[fieldPath].controller.validate;
+      if (validateFn) {
+        const result = validateFn(val);
+        if (result === false) {
+          invalidFields.add(fieldPath);
+        }
+      }
+    });
+    return invalidFields;
+  }, [list, valuesByFieldPath]);
+
+  const [forceValidation, setForceValidation] = useState(false);
+
   const fields = Object.keys(list.fields)
-    .filter(fieldKey => fieldModes[fieldKey] !== 'hidden')
-    .map(fieldKey => {
-      const field = list.fields[fieldKey];
-      const Field = list.fields[fieldKey].views.Field;
+    .filter(fieldPath => fieldModes[fieldPath] !== 'hidden')
+    .map(fieldPath => {
+      const field = list.fields[fieldPath];
       return (
-        <Field
-          key={fieldKey}
+        <field.views.Field
+          key={fieldPath}
           field={field.controller}
-          value={valuesByFieldPath[fieldKey]}
+          value={valuesByFieldPath[fieldPath]}
+          forceValidation={forceValidation && invalidFields.has(fieldPath)}
           onChange={fieldValue => {
             setValuesByFieldPath({
               ...valuesByFieldPath,
-              [fieldKey]: fieldValue,
+              [fieldPath]: fieldValue,
             });
           }}
         />
@@ -69,6 +89,10 @@ export function CreateItemDrawer({
           label: `Create ${list.singular}`,
           loading,
           action: () => {
+            const newForceValidation = invalidFields.size !== 0;
+            setForceValidation(newForceValidation);
+
+            if (newForceValidation) return;
             const data: Record<string, any> = {};
             Object.keys(list.fields).forEach(fieldPath => {
               const { controller } = list.fields[fieldPath];

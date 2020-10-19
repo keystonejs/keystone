@@ -1,6 +1,6 @@
-/* @jsx jsx */
+/** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
+import { jsx, Stack, VisuallyHidden } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 
 import {
@@ -9,37 +9,156 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-spike/types';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
+import { Button } from '@keystone-ui/button';
+import { LockIcon } from '@keystone-ui/icons/icons/LockIcon';
+import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon';
+import { XIcon } from '@keystone-ui/icons/icons/XIcon';
 
-export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => (
-  <FieldContainer>
-    <FieldLabel>{field.label}</FieldLabel>
-    <TextInput
-      value={value}
-      readOnly={onChange === undefined}
-      onChange={event => {
-        onChange?.(event.target.value);
-      }}
-    />
-    {/* {item[`${field.path}_is_set`] === true ? 'Is set' : 'Is not set'} */}
-  </FieldContainer>
-);
+export const Field = ({
+  field,
+  value,
+  onChange,
+  forceValidation,
+}: FieldProps<typeof controller>) => {
+  const [showInputValue, setShowInputValue] = useState(false);
+  const [touchedFirstInput, setTouchedFirstInput] = useState(false);
+  const [touchedSecondInput, setTouchedSecondInput] = useState(false);
+  const shouldShowValidation = forceValidation || (touchedFirstInput && touchedSecondInput);
+  const validation =
+    shouldShowValidation && value.kind === 'editing'
+      ? value.value === value.confirm
+        ? value.value.length >= field.minLength
+          ? undefined
+          : `The password must be at least ${field.minLength} characters long`
+        : 'The passwords do not match'
+      : undefined;
+  const inputType = showInputValue ? ('text' as const) : ('password' as const);
+  return (
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
+      {onChange === undefined ? (
+        value.isSet ? (
+          'Password is set'
+        ) : (
+          'Password is not set' // TODO: is this necessarily correct? what if it's null?
+        )
+      ) : value.kind === 'initial' ? (
+        <Button
+          onClick={() => {
+            onChange({
+              kind: 'editing',
+              confirm: '',
+              value: '',
+              isSet: value.isSet,
+            });
+          }}
+        >
+          {value.isSet ? 'Change Password' : 'Set Password'}
+        </Button>
+      ) : (
+        <div css={{ display: 'inline-flex', flexDirection: 'column' }}>
+          <Stack gap="medium" across>
+            <TextInput
+              invalid={validation !== undefined}
+              type={inputType}
+              value={value.value}
+              placeholder="New Password"
+              onChange={event => {
+                onChange?.({
+                  ...value,
+                  value: event.target.value,
+                });
+              }}
+              onBlur={() => {
+                setTouchedFirstInput(true);
+              }}
+            />
+            <TextInput
+              invalid={validation !== undefined}
+              type={inputType}
+              value={value.confirm}
+              placeholder="Confirm Password"
+              onChange={event => {
+                onChange?.({
+                  ...value,
+                  confirm: event.target.value,
+                });
+              }}
+              onBlur={() => {
+                setTouchedSecondInput(true);
+              }}
+            />
+            <Button
+              onClick={() => {
+                setShowInputValue(!showInputValue);
+              }}
+            >
+              <VisuallyHidden>{showInputValue ? 'Hide Text' : 'Show Text'}</VisuallyHidden>
+              {showInputValue ? <LockIcon /> : <EyeIcon />}
+            </Button>
+            <Button
+              onClick={() => {
+                onChange({
+                  kind: 'initial',
+                  isSet: value.isSet,
+                });
+              }}
+            >
+              <VisuallyHidden>Cancel</VisuallyHidden>
+              <XIcon />
+            </Button>
+          </Stack>
+          {validation && <div css={{ color: 'red' }}>{validation}</div>}
+        </div>
+      )}
+      {/* {item[`${field.path}_is_set`] === true ? 'Is set' : 'Is not set'} */}
+    </FieldContainer>
+  );
+};
 
 export const Cell: CellComponent = ({ item, field }) => {
   return <Fragment>{item[`${field.path}_is_set`] ? 'Is set' : 'Is not set'}</Fragment>;
 };
 
-type PasswordController = FieldController<string, boolean>;
+type PasswordController = FieldController<
+  | {
+      kind: 'initial';
+      isSet: boolean | null;
+    }
+  | {
+      kind: 'editing';
+      isSet: boolean | null;
+      value: string;
+      confirm: string;
+    },
+  boolean
+> & { minLength: number };
 
-export const controller = (config: FieldControllerConfig): PasswordController => {
+export const controller = (
+  config: FieldControllerConfig<{ minLength: number }>
+): PasswordController => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: `${config.path}_is_set`,
-    defaultValue: '',
-    deserialize: () => '',
-    serialize: value => ({ [config.path]: value }),
+    minLength: config.fieldMeta.minLength,
+    defaultValue: {
+      kind: 'initial',
+      isSet: null,
+    },
+    validate(state) {
+      return (
+        state.kind === 'initial' ||
+        (state.value === state.confirm && state.value.length >= config.fieldMeta.minLength)
+      );
+    },
+    deserialize: data => ({ kind: 'initial', isSet: data[`${config.path}_is_set`] }),
+    serialize: value => {
+      if (value.kind === 'initial') return {};
+      return { [config.path]: value.value };
+    },
     filter: {
       Filter(props) {
         return (
