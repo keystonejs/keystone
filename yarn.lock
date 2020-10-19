@@ -4326,10 +4326,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.5.3.tgz#4982b0b66b7a4cf949b86f5d25a8cf757d3cfd9d"
   integrity sha512-RFwCobxsvZ6j7twS7dHIZQZituMIDJJNHS/qY6iuthVebxS3zhRY+jaC2roEKiAYaVuTcGmX6Luc6YBcf6zJVg==
 
-"@preconstruct/cli@1.1.30":
-  version "1.1.30"
-  resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-1.1.30.tgz#b04dbf059704d5bf4148394c092b2b86d009e6b1"
-  integrity sha512-BpMTvKr/QSKao8uU+rei+OYy8u26dXToNxyM/JRtzDBKdk/dxQ/6feupcQTncPb/S24mVzlL/FoxNHqOW2DCZA==
+"@preconstruct/cli@1.1.31":
+  version "1.1.31"
+  resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-1.1.31.tgz#a40dff7f5a02813e565be00c3a2494759b30b875"
+  integrity sha512-RlT0mssTIPpPpdN0QFZvjkQWr9QQyxsMBnSDLcVglJoOwyfPLNY0WdWIGznt6Sz0okGR58VyewQSjF9tPL9l3A==
   dependencies:
     "@babel/code-frame" "^7.5.5"
     "@babel/core" "^7.7.7"
@@ -4347,8 +4347,8 @@
     detect-indent "^6.0.0"
     enquirer "^2.3.6"
     fast-deep-equal "^2.0.1"
+    fast-glob "^3.2.4"
     fs-extra "^9.0.1"
-    globby "^11.0.1"
     is-ci "^2.0.0"
     jest-worker "^26.3.0"
     meow "^7.1.0"
@@ -4365,7 +4365,6 @@
     rollup "^2.26.5"
     terser "^5.2.1"
     v8-compile-cache "^2.1.1"
-    xxhash-wasm "^0.4.0"
 
 "@preconstruct/hook@^0.4.0":
   version "0.4.0"
@@ -29074,11 +29073,6 @@ xtraverse@0.1.x:
   integrity sha1-t0G60BjveNip0ug63gB7P3lZxzI=
   dependencies:
     xmldom "0.1.x"
-
-xxhash-wasm@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/xxhash-wasm/-/xxhash-wasm-0.4.0.tgz#9b045adebd69226f15214773dbf3c4ed6134ffd2"
-  integrity sha512-jCFDE9zSkItI//25A/Pb27r88s6zjkXsajy/dUMWr1XqiHhlrZIRxG3GxDnBcY5KKjRKi713iaDfAKjXrkboog==
 
 xxhashjs@^0.2.1:
   version "0.2.2"
