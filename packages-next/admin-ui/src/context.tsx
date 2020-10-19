@@ -9,7 +9,8 @@ import { useAdminMeta } from './utils/useAdminMeta';
 import {
   AuthenticatedItem,
   VisibleLists,
-  useAuthenticatedItemAndVisibleLists,
+  useLazyMetadata,
+  CreateViewFieldModes,
 } from './utils/useAuthenticatedItem';
 
 type KeystoneContextType = {
@@ -20,6 +21,7 @@ type KeystoneContextType = {
   fieldViews: FieldViews;
   authenticatedItem: AuthenticatedItem;
   visibleLists: VisibleLists;
+  createViewFieldModes: CreateViewFieldModes;
   reinitContext: () => void;
 };
 
@@ -30,7 +32,7 @@ type KeystoneProviderProps = {
   adminConfig: AdminConfig;
   adminMetaHash: string;
   fieldViews: FieldViews;
-  authenticatedItemAndListIsHiddenQuery: DocumentNode;
+  lazyMetadataQuery: DocumentNode;
 };
 
 export const KeystoneProvider = ({
@@ -38,7 +40,7 @@ export const KeystoneProvider = ({
   fieldViews,
   adminMetaHash,
   children,
-  authenticatedItemAndListIsHiddenQuery,
+  lazyMetadataQuery,
 }: KeystoneProviderProps) => {
   const apolloClient = useMemo(
     () =>
@@ -50,8 +52,8 @@ export const KeystoneProvider = ({
   );
 
   const adminMeta = useAdminMeta(apolloClient, adminMetaHash, fieldViews);
-  const { authenticatedItem, visibleLists, refetch } = useAuthenticatedItemAndVisibleLists(
-    authenticatedItemAndListIsHiddenQuery,
+  const { authenticatedItem, visibleLists, createViewFieldModes, refetch } = useLazyMetadata(
+    lazyMetadataQuery,
     apolloClient
   );
 
@@ -78,6 +80,7 @@ export const KeystoneProvider = ({
             authenticatedItem,
             reinitContext,
             visibleLists,
+            createViewFieldModes,
           }}
         >
           <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
@@ -92,6 +95,7 @@ export const useKeystone = (): {
   adminMeta: AdminMeta;
   authenticatedItem: AuthenticatedItem;
   visibleLists: VisibleLists;
+  createViewFieldModes: CreateViewFieldModes;
 } => {
   const value = useContext(KeystoneContext);
   if (!value) {
@@ -112,6 +116,7 @@ export const useKeystone = (): {
     adminMeta: value.adminMeta.value,
     authenticatedItem: value.authenticatedItem,
     visibleLists: value.visibleLists,
+    createViewFieldModes: value.createViewFieldModes,
   };
 };
 

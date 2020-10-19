@@ -21,13 +21,19 @@ export type VisibleLists =
   | { state: 'loading' }
   | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
 
-export function useAuthenticatedItemAndVisibleLists(
+export type CreateViewFieldModes =
+  | { state: 'loaded'; lists: Record<string, Record<string, 'edit' | 'hidden'>> }
+  | { state: 'loading' }
+  | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
+
+export function useLazyMetadata(
   query: DocumentNode,
   client: ApolloClient<any>
 ): {
   authenticatedItem: AuthenticatedItem;
   refetch: () => void;
   visibleLists: VisibleLists;
+  createViewFieldModes: CreateViewFieldModes;
 } {
   let result = useQuery(query, { client, errorPolicy: 'all' });
 
@@ -49,6 +55,12 @@ export function useAuthenticatedItemAndVisibleLists(
             lists: {
               key: string;
               isHidden: boolean;
+              fields: {
+                path: string;
+                createView: {
+                  fieldMode: 'edit' | 'hidden';
+                };
+              }[];
             }[];
           };
         };
@@ -67,8 +79,41 @@ export function useAuthenticatedItemAndVisibleLists(
         result,
         keystoneMetaGetter.errors || (result.error?.networkError ?? undefined)
       ),
+      createViewFieldModes: getCreateViewFieldModes(
+        result,
+        keystoneMetaGetter.errors || (result.error?.networkError ?? undefined)
+      ),
     };
   }, [result]);
+}
+
+function getCreateViewFieldModes(
+  { data }: QueryResult,
+  error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
+): CreateViewFieldModes {
+  if (error) {
+    return {
+      state: 'error',
+      error,
+    };
+  }
+  if (data) {
+    const lists: Record<string, Record<string, 'edit' | 'hidden'>> = {};
+    data.keystone.adminMeta.lists.forEach((list: any) => {
+      lists[list.key] = {};
+      list.fields.forEach((field: any) => {
+        lists[list.key][field.path] = field.createView.fieldMode;
+      });
+    });
+    return {
+      state: 'loaded',
+      lists,
+    };
+  }
+
+  return {
+    state: 'loading',
+  };
 }
 
 function getVisibleLists(

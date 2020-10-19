@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
+import { jsx, Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 
 import {
@@ -13,8 +13,12 @@ import {
 import { RelationshipSelect } from './RelationshipSelect';
 import { useKeystone, useList } from '@keystone-spike/admin-ui/context';
 import { Link } from '@keystone-spike/admin-ui/router';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Button } from '@keystone-ui/button';
+import { Tooltip } from '@keystone-ui/tooltip';
+import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
+import { CreateItemDrawer } from '@keystone-spike/admin-ui/src/components/CreateItemDrawer';
+import { DrawerController } from '@keystone-ui/modals';
 
 function LinkToRelatedItems({
   value,
@@ -55,69 +59,108 @@ function LinkToRelatedItems({
 export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof controller>) => {
   const keystone = useKeystone();
   const list = useList(field.refListKey);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      <RelationshipSelect
-        autoFocus={autoFocus}
-        isDisabled={onChange === undefined}
-        list={useList(field.refListKey)}
-        state={
-          value.kind === 'many'
-            ? {
-                kind: 'many',
-                value: value.value,
-                onChange(newItems) {
-                  onChange?.({
-                    ...value,
-                    value: newItems,
-                  });
-                },
-              }
-            : {
-                kind: 'one',
-                value: value.value,
-                onChange(newVal) {
-                  onChange?.({
-                    ...value,
-                    value: newVal,
-                  });
-                },
-              }
-        }
-      />
-      {keystone.authenticatedItem.state === 'authenticated' &&
-        keystone.authenticatedItem.listKey === field.refListKey && (
-          <Button
-            isDisabled={onChange === undefined}
-            onClick={() => {
-              if (keystone.authenticatedItem.state === 'authenticated') {
-                const val = {
-                  label: keystone.authenticatedItem.label,
-                  id: keystone.authenticatedItem.id,
-                };
-                if (value.kind === 'many') {
-                  onChange?.({
-                    ...value,
-                    value: [...value.value, val],
-                  });
-                } else {
-                  onChange?.({
-                    ...value,
-                    value: val,
-                  });
+      <Stack across gap="medium" css={{ display: 'inline-flex' }}>
+        <RelationshipSelect
+          autoFocus={autoFocus}
+          isDisabled={onChange === undefined}
+          list={useList(field.refListKey)}
+          state={
+            value.kind === 'many'
+              ? {
+                  kind: 'many',
+                  value: value.value,
+                  onChange(newItems) {
+                    onChange?.({
+                      ...value,
+                      value: newItems,
+                    });
+                  },
                 }
-              }
-            }}
-          >
-            {value.kind === 'many' ? 'Add ' : 'Set as '}
-            {keystone.authenticatedItem.label}
-          </Button>
+              : {
+                  kind: 'one',
+                  value: value.value,
+                  onChange(newVal) {
+                    onChange?.({
+                      ...value,
+                      value: newVal,
+                    });
+                  },
+                }
+          }
+        />
+        <Tooltip content={`Create a ${list.singular} and add it to this relationship`}>
+          {props => {
+            return (
+              <Button
+                {...props}
+                onClick={() => {
+                  setIsDrawerOpen(true);
+                }}
+              >
+                <PlusIcon css={{ marginLeft: -4, marginRight: -4 }} />
+              </Button>
+            );
+          }}
+        </Tooltip>
+        {keystone.authenticatedItem.state === 'authenticated' &&
+          keystone.authenticatedItem.listKey === field.refListKey && (
+            <Button
+              isDisabled={onChange === undefined}
+              onClick={() => {
+                if (keystone.authenticatedItem.state === 'authenticated') {
+                  const val = {
+                    label: keystone.authenticatedItem.label,
+                    id: keystone.authenticatedItem.id,
+                  };
+                  if (value.kind === 'many') {
+                    onChange?.({
+                      ...value,
+                      value: [...value.value, val],
+                    });
+                  } else {
+                    onChange?.({
+                      ...value,
+                      value: val,
+                    });
+                  }
+                }
+              }}
+            >
+              {value.kind === 'many' ? 'Add ' : 'Set as '}
+              {keystone.authenticatedItem.label}
+            </Button>
+          )}
+        {!!(value.kind === 'many' ? value.value.length : value.value) && (
+          <LinkToRelatedItems list={list} value={value} />
         )}
-      {!!(value.kind === 'many' ? value.value.length : value.value) && (
-        <LinkToRelatedItems list={list} value={value} />
-      )}
+      </Stack>
+      <DrawerController isOpen={isDrawerOpen}>
+        <CreateItemDrawer
+          listKey={list.key}
+          onClose={() => {
+            setIsDrawerOpen(false);
+          }}
+          onCreate={val => {
+            setIsDrawerOpen(false);
+            if (value.kind === 'many') {
+              onChange?.({
+                ...value,
+                value: [...value.value, val],
+              });
+            } else {
+              onChange?.({
+                ...value,
+                value: val,
+              });
+            }
+          }}
+        />
+      </DrawerController>
     </FieldContainer>
   );
 };

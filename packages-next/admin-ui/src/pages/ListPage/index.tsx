@@ -43,9 +43,6 @@ let listMetaGraphqlQuery: TypedDocumentNode<
             listView: {
               fieldMode: 'read' | 'hidden';
             };
-            createView: {
-              fieldMode: 'edit' | 'hidden';
-            };
           }[];
         } | null;
       };
@@ -62,9 +59,6 @@ let listMetaGraphqlQuery: TypedDocumentNode<
           fields {
             path
             listView {
-              fieldMode
-            }
-            createView {
               fieldMode
             }
           }
@@ -98,14 +92,6 @@ export const ListPage = ({ listKey }: ListPageProps) => {
       listViewFieldModesByField[field.path] = field.listView.fieldMode;
     });
     return listViewFieldModesByField;
-  }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
-
-  let createViewFieldModesByField = useMemo(() => {
-    let createViewFieldModesByField: Record<string, 'edit' | 'hidden'> = {};
-    metaQuery.data?.keystone.adminMeta.list?.fields.forEach(field => {
-      createViewFieldModesByField[field.path] = field.createView.fieldMode;
-    });
-    return createViewFieldModesByField;
   }, [metaQuery.data?.keystone.adminMeta.list?.fields]);
 
   let selectedFields = useSelectedFields(list, listViewFieldModesByField);
@@ -189,7 +175,6 @@ export const ListPage = ({ listKey }: ListPageProps) => {
   return (
     <PageContainer>
       <ListPageHeader
-        createViewFieldModes={createViewFieldModesByField}
         listKey={listKey}
         showCreate={!(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)}
       />
@@ -576,15 +561,7 @@ function ListTable({
   );
 }
 
-const ListPageHeader = ({
-  listKey,
-  showCreate,
-  createViewFieldModes,
-}: {
-  listKey: string;
-  showCreate: boolean;
-  createViewFieldModes: Record<string, 'edit' | 'hidden'>;
-}) => {
+const ListPageHeader = ({ listKey, showCreate }: { listKey: string; showCreate: boolean }) => {
   const list = useList(listKey);
   const router = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -615,8 +592,7 @@ const ListPageHeader = ({
       <DrawerController isOpen={isCreateModalOpen}>
         <CreateItemDrawer
           listKey={listKey}
-          fieldModes={createViewFieldModes}
-          onCreate={id => {
+          onCreate={({ id }) => {
             router.push(`/${list.path}/[id]`, `/${list.path}/${id}`);
           }}
           onClose={() => {

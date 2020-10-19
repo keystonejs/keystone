@@ -18,10 +18,7 @@ type AppTemplateOptions = {
 };
 
 export const appTemplate = (keystone: Keystone, { configFile }: AppTemplateOptions) => {
-  const authenticatedItemAndListIsHiddenQuery = getAuthenticatedItemAndListIsHiddenQuery(
-    keystone.graphQLSchema,
-    keystone.adminMeta
-  );
+  const lazyMetadataQuery = getLazyMetadataQuery(keystone.graphQLSchema, keystone.adminMeta);
 
   const result = executeSync({
     document: staticAdminMetaQuery,
@@ -49,11 +46,7 @@ ${configFile ? `import * as adminConfig from "../../../admin/config";` : 'const 
 const fieldViews = [${keystone.views.map((x, i) => `view${i}`)}];
 const customFieldViews = {};
 
-const authenticatedItemAndListIsHiddenQuery = ${
-    authenticatedItemAndListIsHiddenQuery
-      ? JSON.stringify(authenticatedItemAndListIsHiddenQuery)
-      : 'undefined'
-  };
+const lazyMetadataQuery = ${JSON.stringify(lazyMetadataQuery)};
 
 export default function App({ Component, pageProps }) {
   return (
@@ -63,7 +56,7 @@ export default function App({ Component, pageProps }) {
         adminMetaHash="${adminMetaQueryResultHash}"
         fieldViews={fieldViews}
         customFieldViews={customFieldViews}
-        authenticatedItemAndListIsHiddenQuery={authenticatedItemAndListIsHiddenQuery}
+        lazyMetadataQuery={lazyMetadataQuery}
       >
         <ErrorBoundary>
           <Component {...pageProps} />
@@ -76,18 +69,24 @@ export default function App({ Component, pageProps }) {
   // -- TEMPLATE END
 };
 
-const listIsHiddenSelections = (parse(`fragment x on y {
+const lazyMetadataSelections = (parse(`fragment x on y {
   keystone {
     adminMeta {
       lists {
         key
         isHidden
+        fields {
+          path
+          createView {
+            fieldMode
+          }
+        }
       }
     }
   }
 }`).definitions[0] as FragmentDefinitionNode).selectionSet.selections;
 
-function getAuthenticatedItemAndListIsHiddenQuery(
+function getLazyMetadataQuery(
   graphqlSchema: GraphQLSchema,
   adminMeta: SerializedAdminMeta
 ): DocumentNode {
@@ -146,7 +145,7 @@ function getAuthenticatedItemAndListIsHiddenQuery(
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                ...listIsHiddenSelections,
+                ...lazyMetadataSelections,
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'authenticatedItem' },
@@ -193,7 +192,7 @@ function getAuthenticatedItemAndListIsHiddenQuery(
         operation: 'query',
         selectionSet: {
           kind: 'SelectionSet',
-          selections: listIsHiddenSelections,
+          selections: lazyMetadataSelections,
         },
       },
     ],
