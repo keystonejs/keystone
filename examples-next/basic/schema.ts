@@ -7,6 +7,7 @@ import {
   timestamp,
   integer,
   select,
+  virtual,
 } from '@keystone-spike/fields';
 import { KeystoneCrudAPI } from '@keystone-spike/types';
 import { KeystoneListsTypeInfo } from './.keystone/schema-types';
@@ -56,6 +57,12 @@ export const lists = createSchema({
 
     fields: {
       name: text({ isRequired: true, hooks: {} }),
+      randomNumber: virtual({
+        resolver() {
+          return randomNumber();
+        },
+        graphQLReturnType: 'Float',
+      }),
       email: text({
         isRequired: true,
         isUnique: true,

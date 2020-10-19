@@ -425,6 +425,7 @@ export type UserListTypeInfo = {
   fields:
     | 'id'
     | 'name'
+    | 'randomNumber'
     | 'email'
     | 'password'
     | 'isAdmin'
