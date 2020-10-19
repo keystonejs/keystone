@@ -1,16 +1,9 @@
 export { checkbox } from './types/checkbox';
-export type { CheckboxFieldConfig } from './types/checkbox';
 export { relationship } from './types/relationship';
-export type { RelationshipFieldConfig } from './types/relationship';
 export { text } from './types/text';
-export type { TextFieldConfig } from './types/text';
 export { password } from './types/password';
-// export type { PasswordFieldConfig } from './types/password';
 export { timestamp } from './types/timestamp';
-export type { TimestampFieldConfig } from './types/timestamp';
 export { integer } from './types/integer';
-export type { IntegerFieldConfig } from './types/integer';
 export { mongoId } from './types/mongoId';
-export type { MongoIdFieldConfig } from './types/mongoId';
 export { autoIncrement } from './types/autoIncrement';
-export type { AutoIncrementFieldConfig } from './types/autoIncrement';
+export { select } from './types/select';

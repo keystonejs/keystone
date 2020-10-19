@@ -1,5 +1,13 @@
 import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-spike/keystone/schema';
-import { text, relationship, checkbox, password, timestamp, integer } from '@keystone-spike/fields';
+import {
+  text,
+  relationship,
+  checkbox,
+  password,
+  timestamp,
+  integer,
+  select,
+} from '@keystone-spike/fields';
 import { KeystoneCrudAPI } from '@keystone-spike/types';
 import { KeystoneListsTypeInfo } from './.keystone/schema-types';
 
@@ -98,7 +106,12 @@ export const lists = createSchema({
       }),
       views: integer({}),
       content: text({}),
-      published: checkbox({ defaultValue: false }),
+      status: select({
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+      }),
       publishDate: timestamp({}),
       author: relationship({ ref: 'User.posts' }),
     },
