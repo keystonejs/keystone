@@ -5,9 +5,9 @@ import { DocumentNode, useQuery } from '../apollo';
 
 import { useKeystone, useList } from '../context';
 import { PageContainer } from '../components/PageContainer';
-import { DeepNullable, makeDataGetter } from '../utils/dataGetter';
+import { makeDataGetter } from '../utils/dataGetter';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
-import { ButtonHTMLAttributes, useMemo, useState } from 'react';
+import { ButtonHTMLAttributes, useState } from 'react';
 import { DrawerController } from '@keystone-ui/modals';
 import { CreateItemDrawer } from '../components/CreateItemDrawer';
 import { useRouter, Link } from '../router';
@@ -15,7 +15,6 @@ import { LoadingDots } from '@keystone-ui/loading';
 
 type ListCardProps = {
   listKey: string;
-  createViewFieldModes: Record<string, 'edit' | 'hidden'>;
   count:
     | {
         type: 'success';
@@ -26,7 +25,7 @@ type ListCardProps = {
     | { type: 'loading' };
 };
 
-const ListCard = ({ listKey, count, createViewFieldModes }: ListCardProps) => {
+const ListCard = ({ listKey, count }: ListCardProps) => {
   const { colors, palette, shadow, spacing, radii } = useTheme();
   const list = useList(listKey);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -76,9 +75,8 @@ const ListCard = ({ listKey, count, createViewFieldModes }: ListCardProps) => {
       </CreateButton>
       <DrawerController isOpen={isCreateModalOpen}>
         <CreateItemDrawer
-          fieldModes={createViewFieldModes}
           listKey={list.key}
-          onCreate={id => {
+          onCreate={({ id }) => {
             router.push(`/${list.path}/${id}`);
           }}
           onClose={() => {
@@ -127,40 +125,7 @@ export const HomePage = ({ query }: { query: DocumentNode }) => {
 
   let { data, error } = useQuery(query, { errorPolicy: 'all' });
 
-  const dataGetter = makeDataGetter<
-    DeepNullable<{
-      [key: string]: any;
-      keystone: {
-        adminMeta: {
-          lists: {
-            key: string;
-            fields: {
-              path: string;
-              createView: {
-                fieldMode: 'edit' | 'hidden';
-              };
-            }[];
-          }[];
-        };
-      };
-    }>
-  >(data, error?.graphQLErrors);
-  const keystoneMetaGetter = dataGetter.get('keystone');
-  const createViewFieldModes = useMemo(() => {
-    const createViewFieldModes: Record<string, Record<string, 'edit' | 'hidden'>> = {};
-    keystoneMetaGetter.data?.adminMeta?.lists?.forEach(list => {
-      const key = list?.key!;
-      createViewFieldModes[key] = {};
-      list?.fields?.forEach(field => {
-        createViewFieldModes[key][field?.path!] = field?.createView?.fieldMode!;
-      });
-    });
-    return createViewFieldModes;
-  }, [keystoneMetaGetter.data]);
-
-  if (keystoneMetaGetter.errors) {
-    return keystoneMetaGetter.errors[0].message;
-  }
+  const dataGetter = makeDataGetter(data, error?.graphQLErrors);
 
   return (
     <PageContainer>
@@ -191,18 +156,10 @@ export const HomePage = ({ query }: { query: DocumentNode }) => {
             // TODO: Checking based on the message is bad, but we need to revisit GraphQL errors in
             // Keystone to fix it and that's a whole other can of worms...
             if (result.errors?.[0].message === 'You do not have access to this resource') {
-              return (
-                <ListCard
-                  createViewFieldModes={createViewFieldModes[key]}
-                  count={{ type: 'no-access' }}
-                  key={key}
-                  listKey={key}
-                />
-              );
+              return <ListCard count={{ type: 'no-access' }} key={key} listKey={key} />;
             }
             return (
               <ListCard
-                createViewFieldModes={createViewFieldModes[key]}
                 count={
                   data
                     ? result.errors

@@ -4,22 +4,22 @@ import { useMemo, useState } from 'react';
 import { gql, useMutation } from '../apollo';
 import { jsx } from '@keystone-ui/core';
 import isDeepEqual from 'fast-deep-equal';
-import { useList } from '../context';
+import { useKeystone, useList } from '../context';
 import { Notice } from '@keystone-ui/notice';
 import { Drawer } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
+import { LoadingDots } from '@keystone-ui/loading';
 
 export function CreateItemDrawer({
   listKey,
-  fieldModes,
   onClose,
   onCreate,
 }: {
   listKey: string;
-  fieldModes: Record<string, 'edit' | 'hidden'>;
   onClose: () => void;
-  onCreate: (id: string) => void;
+  onCreate: (item: { id: string; label: string }) => void;
 }) {
+  const { createViewFieldModes } = useKeystone();
   const list = useList(listKey);
 
   const toasts = useToasts();
@@ -61,7 +61,11 @@ export function CreateItemDrawer({
   const [forceValidation, setForceValidation] = useState(false);
 
   const fields = Object.keys(list.fields)
-    .filter(fieldPath => fieldModes[fieldPath] !== 'hidden')
+    .filter(fieldPath =>
+      createViewFieldModes.state === 'loaded'
+        ? createViewFieldModes.lists[listKey][fieldPath] !== 'hidden'
+        : false
+    )
     .map(fieldPath => {
       const field = list.fields[fieldPath];
       return (
@@ -108,9 +112,10 @@ export function CreateItemDrawer({
               },
             })
               .then(({ data }) => {
-                onCreate(data.item.id);
+                const label = data.item.label || data.item.id;
+                onCreate({ id: data.item.id, label });
                 toasts.addToast({
-                  title: data.item.label,
+                  title: label,
                   message: 'Created Successfully',
                   tone: 'positive',
                 });
@@ -124,6 +129,14 @@ export function CreateItemDrawer({
         },
       }}
     >
+      {createViewFieldModes.state === 'error' && (
+        <Notice tone="negative">
+          {createViewFieldModes.error instanceof Error
+            ? createViewFieldModes.error.message
+            : createViewFieldModes.error[0].message}
+        </Notice>
+      )}
+      {createViewFieldModes.state === 'loading' && <LoadingDots label="Loading create form" />}
       {error && <Notice tone="negative">{error.message}</Notice>}
       {fields}
       {fields.length === 0 && 'There are no fields that you can read or edit'}
