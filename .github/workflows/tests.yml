@@ -27,8 +27,8 @@ jobs:
       - run: echo "::set-env name=SHOULD_RUN_TESTS::true"
         if: github.event_name != 'pull_request'
 
-  jest:
-    name: Jest
+  api-tests:
+    name: API Tests
     needs: should_run_tests
     runs-on: ubuntu-latest
     services:
@@ -46,6 +46,7 @@ jobs:
       fail-fast: false
       matrix:
         index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        adapter: ['mongoose','knex', 'prisma']
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -76,21 +77,71 @@ jobs:
       - name: Install Dependencies
         run: yarn
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-      - run: psql -d $DATABASE_URL -c "CREATE SCHEMA keystone;"
-        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-        run: yarn jest --ci --maxWorkers=1
+        run: yarn jest --ci --maxWorkers=1 api-tests
         env:
           CLOUDINARY_CLOUD_NAME: keystone-cloudinary
           CLOUDINARY_KEY: 758252673115372
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
           CI_NODE_TOTAL: 9
           CI_NODE_INDEX: ${{ matrix.index }}
+          TEST_ADAPTER: ${{ matrix.adapter }}
           IFRAMELY_API_KEY: ${{ secrets.IFRAMELY_API_KEY }}
           UNSPLASH_KEY: ${{ secrets.UNSPLASH_KEY}}
           UNSPLASH_SECRET: ${{ secrets.UNSPLASH_SECRET}}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+
+  non-api-tests:
+    name: Package Unit Tests
+    needs: should_run_tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:9.6.5
+        env:
+          POSTGRES_USER: keystone5
+          POSTGRES_PASSWORD: k3yst0n3
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+    env:
+      DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/test_db'
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+
+      - name: Setup Node.js 10.x
+        uses: actions/setup-node@main
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        with:
+          node-version: 10.x
+
+      - name: Get yarn cache directory path
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            node_modules
+          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-v1-
+
+      - name: Install Dependencies
+        run: yarn
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+      - name: Unit tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --maxWorkers=1 --testPathIgnorePatterns=api-tests
 
   linting:
     name: Linting
@@ -130,6 +181,7 @@ jobs:
         run: yarn build
       - name: TypeScript
         run: yarn lint:types
+
   cypress:
     name: Cypress tests
     needs: should_run_tests
