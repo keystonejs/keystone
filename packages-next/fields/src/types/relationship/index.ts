@@ -28,7 +28,8 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
     return {
       refListKey,
       refLabelField: adminMeta.lists[refListKey].labelField,
-      many: config.many || false,
+      many: config.many ?? false,
+      hideCreate: config.admin?.hideCreate ?? false,
     };
   },
   getBackingType(path) {
