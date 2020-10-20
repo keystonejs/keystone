@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
 import ReactSelect, { Props } from 'react-select';
-import { colors } from 'react-select/src/theme';
 import { useInputTokens } from './hooks/inputs';
 import { WidthType } from './types';
 
@@ -26,8 +25,14 @@ type ControlState = {
   isFocused: boolean;
 };
 
-const useStyles = ({ tokens }: { tokens: ReturnType<typeof useInputTokens> }) => {
-  const { palette, typography } = useTheme();
+const useStyles = ({
+  tokens,
+  multi = false,
+}: {
+  tokens: ReturnType<typeof useInputTokens>;
+  multi?: boolean;
+}) => {
+  const { palette } = useTheme();
   const indicatorStyles = (provided: any, state: ControlState) => ({
     ...provided,
     color: state.isFocused ? palette.neutral600 : palette.neutral500,
@@ -99,7 +104,7 @@ const useStyles = ({ tokens }: { tokens: ReturnType<typeof useInputTokens> }) =>
     }),
     valueContainer: (provided: any) => ({
       ...provided,
-      padding: `0 4px`,
+      padding: multi ? `0 4px` : `0 6px`,
     }),
   };
 };
@@ -144,7 +149,7 @@ export function MultiSelect({
   onChange(value: Option[]): void;
 }) {
   const tokens = useInputTokens({ width: widthKey });
-  const styles = useStyles({ tokens });
+  const styles = useStyles({ tokens, multi: true });
 
   return (
     <ReactSelect
