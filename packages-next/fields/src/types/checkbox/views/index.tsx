@@ -11,9 +11,9 @@ import {
 import { Fragment } from 'react';
 
 export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => {
-  const { fields, typography } = useTheme();
+  const { fields, typography, spacing } = useTheme();
   return (
-    <FieldContainer>
+    <FieldContainer css={{ marginTop: spacing.large, marginBottom: spacing.large }}>
       <Checkbox
         disabled={onChange === undefined}
         onChange={event => {
