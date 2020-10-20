@@ -9,14 +9,8 @@ type FieldContainerProps = {
 };
 
 export const FieldContainer = ({ children, ...props }: FieldContainerProps) => {
-  const { colors } = useTheme();
   return (
-    <Box
-      marginY="medium"
-      // paddingX="medium"
-      // css={{ borderLeft: `4px solid ${colors.backgroundDim}` }}
-      {...props}
-    >
+    <Box marginY="medium" {...props}>
       {children}
     </Box>
   );

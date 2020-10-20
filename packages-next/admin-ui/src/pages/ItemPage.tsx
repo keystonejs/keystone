@@ -8,7 +8,7 @@ import { Fragment, ReactNode, useMemo, useState } from 'react';
 
 import { ListMeta } from '@keystone-spike/types';
 import { Button } from '@keystone-ui/button';
-import { Box, Center, jsx, Stack, useTheme } from '@keystone-ui/core';
+import { Box, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';
 import { AlertDialog } from '@keystone-ui/modals';
 import { Notice } from '@keystone-ui/notice';
