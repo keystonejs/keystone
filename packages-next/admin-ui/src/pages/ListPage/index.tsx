@@ -114,7 +114,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
 
   const { query } = useRouter();
 
-  useQueryParamsFromLocalStorage();
+  useQueryParamsFromLocalStorage(listKey);
 
   let currentPage =
     typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1;
