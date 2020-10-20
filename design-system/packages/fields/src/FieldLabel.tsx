@@ -8,14 +8,15 @@ type FieldLabelProps = {
 };
 
 export const FieldLabel = ({ children, ...props }: FieldLabelProps) => {
-  const { typography, fields } = useTheme();
+  const { typography, fields, spacing } = useTheme();
   return (
     <label
       css={{
         fontWeight: typography.fontWeight.semibold,
         color: fields.labelColor,
-        minWidth: 80,
-        display: 'inline-block',
+        minWidth: 120,
+        marginBottom: spacing.xsmall,
+        display: 'block',
       }}
       {...props}
     >

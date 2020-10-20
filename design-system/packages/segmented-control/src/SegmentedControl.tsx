@@ -139,7 +139,7 @@ type RootProps = {
 } & HTMLAttributes<HTMLDivElement>;
 
 const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, ...props }, ref) => {
-  const { colors } = useTheme();
+  const { fields } = useTheme();
   const tokens = useControlTokens({ size });
 
   return (
@@ -153,7 +153,7 @@ const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, ...props }, re
         paddingBottom: tokens.paddingY,
         userSelect: 'none',
         // -- TODO
-        background: colors.backgroundMuted,
+        background: fields.inputBackground,
         display: fill ? 'flex' : 'inline-flex',
         lineHeight: 1,
         position: 'relative',
@@ -176,7 +176,7 @@ type ItemProps = {
 
 const Item = (props: ItemProps) => {
   const { children, fill, isAnimated, isSelected, onChange, size, value, ...attrs } = props;
-  const { colors, typography } = useTheme();
+  const { colors, fields, typography } = useTheme();
   const sizeStyles = useItemSize();
   const selectedStyles = useSelectedStyles();
 
@@ -197,7 +197,7 @@ const Item = (props: ItemProps) => {
           color: !isSelected ? colors.linkHoverColor : undefined,
         },
         ':active': {
-          backgroundColor: !isSelected ? colors.backgroundDim : undefined,
+          backgroundColor: !isSelected ? fields.hover.inputBackground : undefined,
         },
       }}
     >
