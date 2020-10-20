@@ -48,6 +48,7 @@
 ## List View
 
 - [ ] Figure out what we're doing about search
+- [x] Remember the last set of filters, columns, and sort in the List view in LocalStorage
 - [x] Need popups for columns and filters
   - [x] Uses a highly customised react-select
 - [x] Implement Columns
@@ -102,6 +103,12 @@
 - [x] Handle client-side validation (see posts form extensions and checkbox controller)
 - [x] Handle errors (show the error message up the top for now)
 - [x] Notification when you've created an item
+- [ ] (Nested) Handle the fact that relationships will be auto-linked with a message, preset value, etc.
+
+  - [ ] From editing, set the value of the field and make it "read" mode
+  - [ ] From creating, show a message instead
+  - [ ] Need a config option to turn inline create off (`hideCreate`, defaults to `true`)
+  - [ ] Ensure inline creation respects the list `hideCreate` config option
 
 - [ ] Handle the case where there are no editable fields in the create screen (needs discussion)
 - [ ] Implement autoCreate feature (where you can create a new item without user input)
@@ -121,6 +128,7 @@
 - [x] Handle the case where there are no visible fields (show a message)
 - [x] Confirm before delete
 - [x] Notification when you've updated an item
+- [ ] When a permission failure happens updating an item, don't show `read` permission errors in the item form
 
 ## Fields
 

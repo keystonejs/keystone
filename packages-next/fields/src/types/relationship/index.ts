@@ -10,6 +10,9 @@ export type RelationshipFieldConfig<
 > = FieldConfig<TGeneratedListTypes> & {
   many?: boolean;
   ref: string;
+  admin?: {
+    hideCreate?: boolean;
+  };
 };
 
 const views = resolveView('relationship/views');
