@@ -10,21 +10,32 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-spike/types';
+import { SegmentedControl } from '@keystone-ui/segmented-control';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
     <FieldLabel>{field.label}</FieldLabel>
     <div css={{ display: 'inline-flex' }}>
-      <Select
-        isClearable
-        autoFocus={autoFocus}
-        options={field.options}
-        isDisabled={onChange === undefined}
-        onChange={value => {
-          onChange?.(value);
-        }}
-        value={value}
-      />
+      {field.displayMode === 'select' ? (
+        <Select
+          isClearable
+          autoFocus={autoFocus}
+          options={field.options}
+          isDisabled={onChange === undefined}
+          onChange={value => {
+            onChange?.(value);
+          }}
+          value={value}
+        />
+      ) : (
+        <SegmentedControl
+          segments={field.options.map(x => x.label)}
+          selectedIndex={value ? field.options.findIndex(x => x.value === value.value) : undefined}
+          onChange={index => {
+            onChange?.(field.options[index]);
+          }}
+        />
+      )}
     </div>
   </FieldContainer>
 );
@@ -39,6 +50,7 @@ Cell.supportsLinkTo = true;
 type Config = FieldControllerConfig<{
   options: { label: string; value: string | number }[];
   dataType: 'string' | 'enum' | 'integer';
+  displayMode: 'select' | 'segmented-control';
 }>;
 
 export const controller = (
@@ -46,6 +58,7 @@ export const controller = (
 ): FieldController<{ label: string; value: string } | null, { label: string; value: string }[]> & {
   options: { label: string; value: string }[];
   dataType: 'string' | 'enum' | 'integer';
+  displayMode: 'select' | 'segmented-control';
 } => {
   const optionsWithStringValues = config.fieldMeta.options.map(x => ({
     label: x.label,
@@ -57,6 +70,7 @@ export const controller = (
     graphqlSelection: config.path,
     defaultValue: null,
     dataType: config.fieldMeta.dataType,
+    displayMode: config.fieldMeta.displayMode,
     options: optionsWithStringValues,
     deserialize: data => {
       for (const option of config.fieldMeta.options) {

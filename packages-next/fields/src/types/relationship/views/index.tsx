@@ -93,20 +93,22 @@ export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof c
                 }
           }
         />
-        <Tooltip content={`Create a ${list.singular} and add it to this relationship`}>
-          {props => {
-            return (
-              <Button
-                {...props}
-                onClick={() => {
-                  setIsDrawerOpen(true);
-                }}
-              >
-                <PlusIcon css={{ marginLeft: -4, marginRight: -4 }} />
-              </Button>
-            );
-          }}
-        </Tooltip>
+        {!field.hideCreate && (
+          <Tooltip content={`Create a ${list.singular} and add it to this relationship`}>
+            {props => {
+              return (
+                <Button
+                  {...props}
+                  onClick={() => {
+                    setIsDrawerOpen(true);
+                  }}
+                >
+                  <PlusIcon css={{ marginLeft: -4, marginRight: -4 }} />
+                </Button>
+              );
+            }}
+          </Tooltip>
+        )}
         {keystone.authenticatedItem.state === 'authenticated' &&
           keystone.authenticatedItem.listKey === field.refListKey && (
             <Button
@@ -198,10 +200,16 @@ type RelationshipController = FieldController<
 > & {
   refLabelField: string;
   refListKey: string;
+  hideCreate: boolean;
 };
 
 export const controller = (
-  config: FieldControllerConfig<{ refListKey: string; many: boolean; refLabelField: string }>
+  config: FieldControllerConfig<{
+    refListKey: string;
+    many: boolean;
+    refLabelField: string;
+    hideCreate: boolean;
+  }>
 ): RelationshipController => {
   return {
     path: config.path,
@@ -212,6 +220,7 @@ export const controller = (
       id
       label: ${config.fieldMeta.refLabelField}
     }`,
+    hideCreate: config.fieldMeta.hideCreate,
     defaultValue: config.fieldMeta.many
       ? {
           kind: 'many',

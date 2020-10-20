@@ -17,7 +17,11 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
         options: { label: string; value: number }[];
         dataType: 'integer';
       }
-  );
+  ) & {
+    admin?: {
+      displayMode?: 'select' | 'segmented-control';
+    };
+  };
 
 const views = resolveView('select/views');
 
@@ -29,6 +33,7 @@ export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   getAdminMeta: () => ({
     options: config.options,
     dataType: config.dataType ?? 'string',
+    displayMode: config.admin?.displayMode ?? 'select',
   }),
   views,
   getBackingType(path: string) {
