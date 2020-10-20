@@ -11,7 +11,9 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
   defaultValue?: string;
   isRequired?: boolean;
   isUnique?: boolean;
-  isMultiline?: boolean;
+  admin?: {
+    displayMode?: 'input' | 'textarea';
+  };
 };
 
 const views = resolveView('text/views');
@@ -22,7 +24,7 @@ export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: Text,
   config,
   getAdminMeta: () => ({
-    isMultiline: !!config.isMultiline,
+    displayMode: config.admin?.displayMode ?? 'input',
   }),
   views,
   getBackingType(path: string) {
