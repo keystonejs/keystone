@@ -1,7 +1,7 @@
 /* @jsx jsx */
 
 import { ReactNode } from 'react';
-import { Box, jsx, useTheme } from '@keystone-ui/core';
+import { Box, jsx } from '@keystone-ui/core';
 
 type FieldContainerProps = {
   children: ReactNode;
