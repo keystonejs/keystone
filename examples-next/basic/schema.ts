@@ -100,6 +100,7 @@ export const lists = createSchema({
           inlineEdit: { fields: ['type', 'value'] },
           inlineCreate: { fields: ['type', 'value'] },
           linkToItem: true,
+          removeMode: 'delete',
         },
       }),
       posts: relationship({ ref: 'Post.author', many: true }),
