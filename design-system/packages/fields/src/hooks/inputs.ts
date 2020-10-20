@@ -12,13 +12,13 @@ export const widthMap = {
 
 export type InputTokensProps = {
   /* Fixes the height at a specific value. Uses vertical centering instead of padding */
-  fixHeight: boolean;
+  fixHeight?: boolean;
   /* Changes the shape by controlling the border radius token */
-  shape: ShapeType;
+  shape?: ShapeType;
   /* Sets the size of the input */
-  size: SizeType;
+  size?: SizeType;
   /* Sets the width of the input (distinct from size) */
-  width: WidthType;
+  width?: WidthType;
 };
 
 type InputStateTokens = {
@@ -28,13 +28,10 @@ type InputStateTokens = {
   shadow?: string;
 };
 export type InputTokens = {
-  background?: string;
-  borderColor?: string;
   borderRadius?: number | string;
   borderWidth?: number | string;
   fontSize?: number | string;
   lineHeight?: number | string;
-  foreground?: string;
   width: number | string;
   height?: number | string;
   paddingX: number | string;
@@ -49,10 +46,10 @@ export type InputTokens = {
 } & InputStateTokens;
 
 export const useInputTokens = ({
-  size: sizeKey,
-  width: widthKey,
-  fixHeight,
-  shape,
+  size: sizeKey = 'medium',
+  width: widthKey = 'large',
+  fixHeight = false,
+  shape = 'square',
 }: InputTokensProps): InputTokens => {
   const { animation, radii, spacing, controlSizes, fields } = useTheme();
 
