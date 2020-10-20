@@ -3,7 +3,7 @@
 import { useQuery, gql, useMutation, TypedDocumentNode } from '../../apollo';
 import { Button } from '@keystone-ui/button';
 import { Box, H1, jsx, Stack, useTheme } from '@keystone-ui/core';
-import { Fragment, HTMLAttributes, ReactNode, useMemo, useState } from 'react';
+import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } from 'react';
 import { ArrowRightCircleIcon } from '@keystone-ui/icons/icons/ArrowRightCircleIcon';
 import { PageContainer } from '../../components/PageContainer';
 import { useList } from '../../context';
@@ -68,10 +68,53 @@ let listMetaGraphqlQuery: TypedDocumentNode<
   }
 `;
 
+function useQueryParamsFromLocalStorage(listKey: string) {
+  const router = useRouter();
+  const localStorageKey = `keystone.list.${listKey}.list.page.info`;
+  useEffect(() => {
+    let hasSomeQueryParamsWhichAreAboutListPage = Object.keys(router.query).some(
+      x => x.startsWith('!') || x === 'page' || x === 'pageSize' || x === 'fields'
+    );
+    if (!hasSomeQueryParamsWhichAreAboutListPage) {
+      const queryParamsFromLocalStorage = localStorage.getItem(localStorageKey);
+      let parsed;
+      try {
+        parsed = JSON.parse(queryParamsFromLocalStorage!);
+      } catch (err) {}
+      if (parsed) {
+        router.replace({
+          query: {
+            ...router.query,
+            ...parsed,
+          },
+        });
+      }
+    }
+  }, [localStorageKey]);
+  useEffect(() => {
+    let queryParamsToSerialize: Record<string, string> = {};
+    Object.keys(router.query).forEach(key => {
+      if (key.startsWith('!') || key === 'page' || key === 'pageSize' || key === 'fields') {
+        queryParamsToSerialize[key] = router.query[key] as string;
+      }
+    });
+    if (Object.keys(queryParamsToSerialize).length) {
+      localStorage.setItem(
+        `keystone.list.${listKey}.list.page.info`,
+        JSON.stringify(queryParamsToSerialize)
+      );
+    } else {
+      localStorage.removeItem(`keystone.list.${listKey}.list.page.info`);
+    }
+  }, [localStorageKey, router]);
+}
+
 export const ListPage = ({ listKey }: ListPageProps) => {
   const list = useList(listKey);
 
   const { query } = useRouter();
+
+  useQueryParamsFromLocalStorage(listKey);
 
   let currentPage =
     typeof query.page === 'string' && !Number.isNaN(parseInt(query.page)) ? Number(query.page) : 1;
