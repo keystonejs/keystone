@@ -90,6 +90,18 @@ export const lists = createSchema({
         },
       }),
       roles: text({}),
+      phoneNumbers: relationship({
+        ref: 'PhoneNumber.user',
+        many: true,
+        views: './admin/fields/user/phoneNumber',
+        admin: {
+          displayMode: 'cards',
+          cardFields: ['type', 'value'],
+          inlineEdit: { fields: ['type', 'value'] },
+          inlineCreate: { fields: ['type', 'value'] },
+          linkToItem: true,
+        },
+      }),
       posts: relationship({ ref: 'Post.author', many: true }),
       something: text({ isMultiline: true }),
       oneTimeThing: text({
@@ -99,6 +111,26 @@ export const lists = createSchema({
           update: false,
         },
       }),
+    },
+  }),
+  PhoneNumber: list({
+    admin: {
+      isHidden: true,
+      parentRelationshipPath: 'user',
+    },
+    fields: {
+      user: relationship({ ref: 'User.phoneNumbers' }),
+      type: select({
+        options: [
+          { label: 'Home', value: 'home' },
+          { label: 'Work', value: 'work' },
+          { label: 'Mobile', value: 'mobile' },
+        ],
+        admin: {
+          displayMode: 'segmented-control',
+        },
+      }),
+      value: text({}),
     },
   }),
   Post: list({
