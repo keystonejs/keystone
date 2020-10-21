@@ -2,4 +2,4 @@
 '@keystonejs/adapter-knex': patch
 ---
 
-prepend relation tables with schema in dropDatabase method
+Fixed bug in `.dropDatabase()`, relationship join tables are now correctly dropped when using a non-default `schemaName`.
