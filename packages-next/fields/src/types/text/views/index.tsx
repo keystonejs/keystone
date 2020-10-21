@@ -14,7 +14,7 @@ import {
 export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => (
   <FieldContainer>
     <FieldLabel>{field.label}</FieldLabel>
-    {field.isMultiline ? (
+    {field.displayMode === 'textarea' ? (
       <TextArea
         readOnly={onChange === undefined}
         onChange={event => {
@@ -40,17 +40,17 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
 };
 Cell.supportsLinkTo = true;
 
-type Config = FieldControllerConfig<{ isMultiline: boolean }>;
+type Config = FieldControllerConfig<{ displayMode: 'input' | 'textarea' }>;
 
 export const controller = (
   config: Config
-): FieldController<string, string> & { isMultiline: boolean } => {
+): FieldController<string, string> & { displayMode: 'input' | 'textarea' } => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
     defaultValue: '',
-    isMultiline: config.fieldMeta.isMultiline,
+    displayMode: config.fieldMeta.displayMode,
     deserialize: data => {
       const value = data[config.path];
       return typeof value === 'string' ? value : '';

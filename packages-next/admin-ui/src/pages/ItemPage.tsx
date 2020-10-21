@@ -1,23 +1,25 @@
 /* @jsx jsx */
 
-import { Fragment, ReactNode, useMemo, useState } from 'react';
-import { gql, useMutation, useQuery } from '../apollo';
-import { Box, jsx, Stack, useTheme } from '@keystone-ui/core';
+import copyToClipboard from 'clipboard-copy';
+import isDeepEqual from 'fast-deep-equal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { Fragment, ReactNode, useMemo, useState } from 'react';
 
-import { useList } from '../context';
-import { PageContainer } from '../components/PageContainer';
+import { ListMeta } from '@keystone-spike/types';
 import { Button } from '@keystone-ui/button';
-import isDeepEqual from 'fast-deep-equal';
+import { Box, jsx, Stack, useTheme } from '@keystone-ui/core';
+import { LoadingDots } from '@keystone-ui/loading';
+import { AlertDialog } from '@keystone-ui/modals';
 import { Notice } from '@keystone-ui/notice';
+import { useToasts } from '@keystone-ui/toast';
 import { Tooltip } from '@keystone-ui/tooltip';
-import copyToClipboard from 'clipboard-copy';
+
+import { gql, useMutation, useQuery } from '../apollo';
+import { PageContainer } from '../components/PageContainer';
+import { useList } from '../context';
 import { DataGetter, DeepNullable, makeDataGetter } from '../utils/dataGetter';
 import { deserializeValue, ItemData, serializeValueToObjByFieldKey } from '../utils/serialization';
-import { ListMeta } from '@keystone-spike/types';
-import { AlertDialog } from '@keystone-ui/modals';
-import { useToasts } from '@keystone-ui/toast';
 
 type ItemPageProps = {
   listKey: string;
@@ -275,7 +277,6 @@ function DeleteButton({
     <Fragment>
       <Button
         tone="negative"
-        weight="outline"
         onClick={() => {
           setIsOpen(true);
         }}
@@ -325,7 +326,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
   const router = useRouter();
   const { id } = router.query;
   const list = useList(listKey);
-  const { spacing } = useTheme();
+  const { spacing, typography } = useTheme();
 
   const { query, selectedFields } = useMemo(() => {
     let selectedFields = Object.keys(list.fields)
@@ -389,17 +390,24 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
     });
     return itemViewFieldModesByField;
   }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
+
   const errorsFromMetaQuery = dataGetter.get('keystone').errors;
+
   return (
     <PageContainer>
-      <h2>
-        List:{' '}
+      <h3 css={{ marginBottom: 0 }}>
         <Link href={`/${list.path}`}>
           <a>{list.label}</a>
         </Link>
-      </h2>
+        :
+      </h3>
       {loading ? (
-        'Loading...'
+        <h1 css={{ marginTop: spacing.medium }}>
+          <Stack across gap="large">
+            <div>Loading {list.singular}</div>
+            <LoadingDots label="Loading item data" size="small" />
+          </Stack>
+        </h1>
       ) : errorsFromMetaQuery ? (
         <div css={{ color: 'red' }}>{errorsFromMetaQuery[0].message}</div>
       ) : (
@@ -410,11 +418,20 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               justifyContent: 'space-between',
             }}
           >
-            <h3>Item: {data.item[list.labelField] || data.item.id}</h3>
+            <h1 css={{ marginTop: spacing.medium, marginBottom: spacing.medium }}>
+              {data.item[list.labelField] || data.item.id}
+            </h1>
             <div css={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <span css={{ marginRight: spacing.small }}>ID: {data.item.id}</span>
+              <span
+                css={{
+                  marginRight: spacing.medium,
+                  fontFamily: typography.fontFamily.monospace,
+                  fontSize: typography.fontSize.small,
+                }}
+              >
+                ID: {data.item.id}
+              </span>
               <Button
-                // TODO: this should be an IconButton
                 onClick={() => {
                   copyToClipboard(data.item.id);
                 }}

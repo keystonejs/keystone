@@ -16,7 +16,7 @@
   - [x] disallow `id` field in fields object
   - [x] default `idField` to `autoIncrement` for Knex(& Prisma but we don't handle Prisma in the new interfaces just yet so not gonna actually do that yet) and `mongoId` for Mongoose with fieldMode: 'hidden' for itemView and createView
 - [x] Remove usage of label field in Admin UI and remove it from the GraphQL schema(~~with a feature flag to turn it back on~~ and allow Keystone fields named `_label_` so users can create a virtual field for `_label_`)
-
+- [ ] Ensure support for field descriptions in the create and item views
 - [ ] Figure out what to support for custom list views
 - [ ] Check in on custom pages
 - [ ] Add an option to hide the GitHub and GraphQL links in the nav
@@ -37,7 +37,6 @@
 - [x] Cards on the dashboard should show individual errors
 - [x] Cards on the dashboard should show individual loading states
 - [x] If you can create items (!hideCreate) show the create button
-
 - [ ] Add an option to override the fetching the item count for dashboard cards with a custom description (or hide it)
 - [ ] Show list description in the card?
 - [ ] Add a custom component to replace the dashboard
@@ -48,6 +47,7 @@
 ## List View
 
 - [ ] Figure out what we're doing about search
+- [x] Remember the last set of filters, columns, and sort in the List view in LocalStorage
 - [x] Need popups for columns and filters
   - [x] Uses a highly customised react-select
 - [x] Implement Columns
@@ -90,7 +90,6 @@
 - [x] Work out whether the label has been defaulted to `Id` and if so, show it in fixed-width font
   - When there is no `labelResolver` on the list, and no `name` field
 - [x] Confirm before delete
-
 - [ ] Add dots menu for [copy link / copy id / delete]
 - [ ] Add support for field types determining column width (needs discussion)
 
@@ -102,7 +101,12 @@
 - [x] Handle client-side validation (see posts form extensions and checkbox controller)
 - [x] Handle errors (show the error message up the top for now)
 - [x] Notification when you've created an item
-
+- [ ] Always hide virtual fields in the create form
+- [ ] (Nested) Handle the fact that relationships will be auto-linked with a message, preset value, etc.
+  - [ ] From editing, set the value of the field and make it "read" mode
+  - [ ] From creating, show a message instead
+  - [ ] Need a config option to turn inline create off (`hideCreate`, defaults to `true`)
+  - [ ] Ensure inline creation respects the list `hideCreate` config option
 - [ ] Handle the case where there are no editable fields in the create screen (needs discussion)
 - [ ] Implement autoCreate feature (where you can create a new item without user input)
 
@@ -111,8 +115,10 @@
 - [x] Add reset changes
 - [x] Disable save & reset changes when there are no changes
 - [x] Only send changed fields to API
-- [ ] Fix page styles & navigation
 - [x] Render the item title as the header
+  - [ ] Make sure the item title is refreshed when the item is saved
+- [ ] Add a "create" button to the header
+- [ ] Fix page styles & navigation
 - [ ] Implement sticky toolbar
 - [x] Implement Delete Item
 - [x] Copy ItemID to Clipboard
@@ -121,6 +127,7 @@
 - [x] Handle the case where there are no visible fields (show a message)
 - [x] Confirm before delete
 - [x] Notification when you've updated an item
+- [ ] When a permission failure happens updating an item, don't show `read` permission errors in the item form
 
 ## Fields
 
@@ -132,7 +139,6 @@
 - [x] Integer field
 - [ ] Select
 - [ ] All the filter UI
-
 - [x] Client-side validation API for fields
 - [ ] DependsOn field dependencies
 - [x] Show proper field label (currently path)
@@ -145,7 +151,6 @@
 - [ ] Select all items matching a filter (requires resolver support to implement)
 - [ ] Update selected item(s) (this needs some thought around certain fields like relationships)
 - [ ] Deal with what it means to not be able to read any items (static access control)
-
 - [ ] Figure out how the ApolloClient gets the right URI for the GraphQL API (come back to this if/when we do server rendering)
 - [ ] Implement allowing access to the Admin UI without a valid session (in read only mode? etc -- this is going to be quite involved)
 - [ ] We need to talk about Errors. What is the format?

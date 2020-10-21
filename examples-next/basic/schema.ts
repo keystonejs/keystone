@@ -104,7 +104,11 @@ export const lists = createSchema({
         },
       }),
       posts: relationship({ ref: 'Post.author', many: true }),
-      something: text({ isMultiline: true }),
+      something: text({
+        admin: {
+          displayMode: 'textarea',
+        },
+      }),
       oneTimeThing: text({
         access: {
           create: true,
@@ -151,6 +155,9 @@ export const lists = createSchema({
           { label: 'Published', value: 'published' },
           { label: 'Draft', value: 'draft' },
         ],
+        admin: {
+          displayMode: 'segmented-control',
+        },
       }),
       publishDate: timestamp({}),
       author: relationship({ ref: 'User.posts' }),

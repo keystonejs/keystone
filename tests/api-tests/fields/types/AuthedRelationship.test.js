@@ -2,9 +2,8 @@
 import { Text, Password } from '@keystonejs/fields';
 import { PasswordAuthStrategy } from '@keystonejs/auth-password';
 import { multiAdapterRunners, networkedGraphqlRequest, setupServer } from '@keystonejs/test-utils';
+import { AuthedRelationship } from '@keystonejs/fields-authed-relationship';
 const { createItem } = require('@keystonejs/server-side-graphql-client');
-
-import { AuthedRelationship } from '../index';
 
 function setupKeystone(adapterName) {
   return setupServer({

@@ -10,6 +10,9 @@ export type RelationshipFieldConfig<
 > = FieldConfig<TGeneratedListTypes> & {
   many?: boolean;
   ref: string;
+  admin?: {
+    hideCreate?: boolean;
+  };
 };
 
 const views = resolveView('relationship/views');
@@ -25,7 +28,8 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
     return {
       refListKey,
       refLabelField: adminMeta.lists[refListKey].labelField,
-      many: config.many || false,
+      many: config.many ?? false,
+      hideCreate: config.admin?.hideCreate ?? false,
     };
   },
   getBackingType(path) {
