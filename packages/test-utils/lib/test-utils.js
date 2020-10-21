@@ -34,6 +34,7 @@ async function setupServer({
     prisma: () => ({
       dropDatabase: true,
       url: process.env.DATABASE_URL,
+      provider: 'postgresql',
       // Put the generated client at a unique path
       getPrismaPath: ({ prismaSchema }) =>
         path.join(
