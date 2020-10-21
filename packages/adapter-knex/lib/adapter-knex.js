@@ -222,7 +222,7 @@ class KnexAdapter extends BaseKeystoneAdapter {
       ),
       ...this.rels
         .filter(({ cardinality }) => cardinality === 'N:N')
-        .map(({ tableName }) => tableName),
+        .map(({ tableName }) => `"${this.schemaName}"."${tableName}"`),
     ].join(',');
     return this.knex.raw(`DROP TABLE IF EXISTS ${tables} CASCADE`);
   }
