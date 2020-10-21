@@ -1,13 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { useMemo } from 'react';
-import {
-  DocumentNode,
-  useQuery,
-  ApolloClient,
-  QueryResult,
-  ServerError,
-  ServerParseError,
-} from '../apollo';
+import { DocumentNode, useQuery, QueryResult, ServerError, ServerParseError } from '../apollo';
 import { DeepNullable, makeDataGetter } from './dataGetter';
 
 export type AuthenticatedItem =
@@ -27,16 +20,14 @@ export type CreateViewFieldModes =
   | { state: 'error'; error: Error | readonly [GraphQLError, ...GraphQLError[]] };
 
 export function useLazyMetadata(
-  query: DocumentNode,
-  client: ApolloClient<any>
+  query: DocumentNode
 ): {
   authenticatedItem: AuthenticatedItem;
   refetch: () => void;
   visibleLists: VisibleLists;
   createViewFieldModes: CreateViewFieldModes;
 } {
-  let result = useQuery(query, { client, errorPolicy: 'all' });
-
+  let result = useQuery(query, { errorPolicy: 'all' });
   return useMemo(() => {
     let refetch = () => {
       result.refetch();
