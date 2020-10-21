@@ -237,12 +237,12 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - run: yarn --cwd tests/${{ matrix.project }} cypress:run:ci
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: cypress-videos
