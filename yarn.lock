@@ -3282,10 +3282,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.5.3.tgz#4982b0b66b7a4cf949b86f5d25a8cf757d3cfd9d"
   integrity sha512-RFwCobxsvZ6j7twS7dHIZQZituMIDJJNHS/qY6iuthVebxS3zhRY+jaC2roEKiAYaVuTcGmX6Luc6YBcf6zJVg==
 
-"@preconstruct/cli@1.1.31":
-  version "1.1.31"
-  resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-1.1.31.tgz#a40dff7f5a02813e565be00c3a2494759b30b875"
-  integrity sha512-RlT0mssTIPpPpdN0QFZvjkQWr9QQyxsMBnSDLcVglJoOwyfPLNY0WdWIGznt6Sz0okGR58VyewQSjF9tPL9l3A==
+"@preconstruct/cli@1.1.32":
+  version "1.1.32"
+  resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-1.1.32.tgz#38c4ce0f57773ea1933743de9b9a810e8f18cf45"
+  integrity sha512-pWAshxPKMmgsfdjmWkl6EpxLZaVqVtCTy0Kq1E0YWj4/3nAv9VIH0u+PGdU6g5KA0+d4mDVJZVtXhPoG3h8q2g==
   dependencies:
     "@babel/code-frame" "^7.5.5"
     "@babel/core" "^7.7.7"
@@ -3302,11 +3302,14 @@
     dataloader "^2.0.0"
     detect-indent "^6.0.0"
     enquirer "^2.3.6"
+    estree-walker "^2.0.1"
     fast-deep-equal "^2.0.1"
     fast-glob "^3.2.4"
     fs-extra "^9.0.1"
     is-ci "^2.0.0"
+    is-reference "^1.2.1"
     jest-worker "^26.3.0"
+    magic-string "^0.25.7"
     meow "^7.1.0"
     micromatch "^4.0.2"
     ms "^2.1.2"
@@ -3318,7 +3321,7 @@
     quick-lru "^5.1.1"
     resolve "^1.17.0"
     resolve-from "^5.0.0"
-    rollup "^2.26.5"
+    rollup "^2.32.0"
     terser "^5.2.1"
     v8-compile-cache "^2.1.1"
 
@@ -3854,10 +3857,10 @@
   resolved "https://registry.yarnpkg.com/@timsuchanek/sleep-promise/-/sleep-promise-8.0.1.tgz#81c0754b345138a519b51c2059771eb5f9b97818"
   integrity sha512-cxHYbrXfnCWsklydIHSw5GCMHUPqpJ/enxWSyVHNOgNe61sit/+aOXTTI+VOdWkvVaJsI2vsB9N4+YDNITawOQ==
 
-"@tinymce/tinymce-react@^3.8.0":
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-3.8.0.tgz#d2682c547a40caba90ea9bd9230b7760a8c76e4f"
-  integrity sha512-qprmDuwoP9MbtDCb4DCHpjCpL4Ktrp/Wr4/CYBh/QnDbQ7eDnQ3vTH/t7TdAcCWN0CKEL3iYa0gJNJipPVuElw==
+"@tinymce/tinymce-react@^3.8.1":
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-3.8.1.tgz#7549bf8c06487b0b21b5b8c86c66c376dbbf5270"
+  integrity sha512-mLoA7CJoi4e0NqgNmCLLmK/gAvh9Tjd9WHWHtUJ6msBciLfc3c4Ma3UKlAvlRqNR8Q07ywTeRWvUjTn3zbqxIQ==
   dependencies:
     prop-types "^15.6.2"
     tinymce "^5.5.0"
@@ -23458,10 +23461,10 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rollup@^2.26.5:
-  version "2.26.6"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.26.6.tgz#0b460c1da224c6af12a1e948a28c513aa11f2b93"
-  integrity sha512-iSB7eE3k/VNQHnI7ckS++4yIqTamoUCB1xo7MswhJ/fg22oFYR5+xCrUZVviBj97jvc5A31MPbVMw1Wc3jWxmw==
+rollup@^2.32.0:
+  version "2.32.1"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.32.1.tgz#625a92c54f5b4d28ada12d618641491d4dbb548c"
+  integrity sha512-Op2vWTpvK7t6/Qnm1TTh7VjEZZkN8RWgf0DHbkKzQBwNf748YhXbozHVefqpPp/Fuyk/PQPAnYsBxAEtlMvpUw==
   optionalDependencies:
     fsevents "~2.1.2"
 
