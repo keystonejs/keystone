@@ -9,7 +9,7 @@
     "@types/react": "^16.9.51"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
+    "@babel/runtime": "^7.12.1",
     "@keystone-ui/core": "*",
     "@keystone-ui/icons": "*",
     "@types/react-select": "^3.0.22",

@@ -14,7 +14,7 @@
     "react-dom": "^16.14.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
+    "@babel/runtime": "^7.12.1",
     "@keystone-ui/core": "*",
     "@keystone-ui/popover": "*"
   },
