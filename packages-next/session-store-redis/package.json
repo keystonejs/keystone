@@ -9,7 +9,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
+    "@babel/runtime": "^7.12.1",
     "@types/redis": "^2.8.28"
   },
   "devDependencies": {
