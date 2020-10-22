@@ -3332,10 +3332,12 @@
     pirates "^4.0.1"
     source-map-support "^0.5.16"
 
-"@preconstruct/next@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@preconstruct/next/-/next-1.0.1.tgz#609122ae91e5ee55b20d5b259643f563e56abc63"
-  integrity sha512-eXKu29el5hTMAJp0rLjMM/uMPv7WCKf+CZpCC0vQXEwMtX9zzY+Ke4dLubjm1QzQu9b8NlR8h12ff1oer692RQ==
+"@preconstruct/next@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@preconstruct/next/-/next-2.0.0.tgz#050042c13dde0c671bee0681acb49c31e80ab415"
+  integrity sha512-jpNffjgVKSilBCi3tNs2MEqqGdQBOo5n97B9OCfMDqO9SoiH7MyCmQ+tHCYQvY5gmD6Bf3Fas79N7Rzj6vJBsQ==
+  dependencies:
+    resolve "^1.17.0"
 
 "@primer/octicons-react@^11.0.0":
   version "11.0.0"
@@ -3852,10 +3854,10 @@
   resolved "https://registry.yarnpkg.com/@timsuchanek/sleep-promise/-/sleep-promise-8.0.1.tgz#81c0754b345138a519b51c2059771eb5f9b97818"
   integrity sha512-cxHYbrXfnCWsklydIHSw5GCMHUPqpJ/enxWSyVHNOgNe61sit/+aOXTTI+VOdWkvVaJsI2vsB9N4+YDNITawOQ==
 
-"@tinymce/tinymce-react@^3.8.1":
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-3.8.1.tgz#7549bf8c06487b0b21b5b8c86c66c376dbbf5270"
-  integrity sha512-mLoA7CJoi4e0NqgNmCLLmK/gAvh9Tjd9WHWHtUJ6msBciLfc3c4Ma3UKlAvlRqNR8Q07ywTeRWvUjTn3zbqxIQ==
+"@tinymce/tinymce-react@^3.8.0":
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-3.8.0.tgz#d2682c547a40caba90ea9bd9230b7760a8c76e4f"
+  integrity sha512-qprmDuwoP9MbtDCb4DCHpjCpL4Ktrp/Wr4/CYBh/QnDbQ7eDnQ3vTH/t7TdAcCWN0CKEL3iYa0gJNJipPVuElw==
   dependencies:
     prop-types "^15.6.2"
     tinymce "^5.5.0"
