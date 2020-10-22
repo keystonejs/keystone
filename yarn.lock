@@ -3282,10 +3282,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.5.3.tgz#4982b0b66b7a4cf949b86f5d25a8cf757d3cfd9d"
   integrity sha512-RFwCobxsvZ6j7twS7dHIZQZituMIDJJNHS/qY6iuthVebxS3zhRY+jaC2roEKiAYaVuTcGmX6Luc6YBcf6zJVg==
 
-"@preconstruct/cli@1.1.32":
-  version "1.1.32"
-  resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-1.1.32.tgz#38c4ce0f57773ea1933743de9b9a810e8f18cf45"
-  integrity sha512-pWAshxPKMmgsfdjmWkl6EpxLZaVqVtCTy0Kq1E0YWj4/3nAv9VIH0u+PGdU6g5KA0+d4mDVJZVtXhPoG3h8q2g==
+"@preconstruct/cli@1.1.33":
+  version "1.1.33"
+  resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-1.1.33.tgz#8bae3547cad678658d21591c7b514bceaf298ca9"
+  integrity sha512-ZW5mAFwIDm5EcZzxcgTnd+W0LN8VB8zCVvwTqNG1pDKgol+9Uia+pi3GvP0JYkECl8VBHh391ZrI+SdhqjGK7w==
   dependencies:
     "@babel/code-frame" "^7.5.5"
     "@babel/core" "^7.7.7"
@@ -3304,8 +3304,8 @@
     enquirer "^2.3.6"
     estree-walker "^2.0.1"
     fast-deep-equal "^2.0.1"
-    fast-glob "^3.2.4"
     fs-extra "^9.0.1"
+    globby "^11.0.1"
     is-ci "^2.0.0"
     is-reference "^1.2.1"
     jest-worker "^26.3.0"
