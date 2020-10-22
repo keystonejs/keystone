@@ -1,16 +1,16 @@
 # Password
 
-- [ ] Add Password Field
+- [x] Add Password Field
 
 # Select
 
-- [ ] Add Select Field
-- [ ] Current UI with a Select
-- [ ] New UI Mode with a SegmentedControl
+- [x] Add Select Field
+- [x] Current UI with a Select
+- [x] New UI Mode with a SegmentedControl
 
 # Relationship
 
-- [ ] Make a functional Relationship Field UI as per the current Relationship field (i.e just a select)
+- [x] Make a functional Relationship Field UI as per the current Relationship field (i.e just a select)
 
 # Date / Time Types Reboot
 

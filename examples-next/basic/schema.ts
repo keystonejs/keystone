@@ -21,6 +21,7 @@ export const lists = createSchema({
         initialColumns: ['name', 'posts'],
       },
     },
+    // TODO: discuss how we do nested deletes for phone numbers
     hooks: {
       resolveInput: ({ resolvedData, originalInput }) => {
         console.log('list hooks: resolveInput', { resolvedData, originalInput });
@@ -93,8 +94,9 @@ export const lists = createSchema({
       phoneNumbers: relationship({
         ref: 'PhoneNumber.user',
         many: true,
-        views: './admin/fields/user/phoneNumber',
         admin: {
+          // TODO: Work out how to use custom views to customise the card + edit / create forms
+          // views: './admin/fields/user/phoneNumber',
           displayMode: 'cards',
           cardFields: ['type', 'value'],
           inlineEdit: { fields: ['type', 'value'] },
@@ -121,7 +123,7 @@ export const lists = createSchema({
   PhoneNumber: list({
     admin: {
       isHidden: true,
-      parentRelationshipPath: 'user',
+      parentRelationship: 'user',
     },
     fields: {
       user: relationship({ ref: 'User.phoneNumbers' }),
