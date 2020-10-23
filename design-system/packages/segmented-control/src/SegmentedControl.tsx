@@ -155,6 +155,8 @@ const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, ...props }, re
         // -- TODO
         background: fields.inputBackground,
         display: fill ? 'flex' : 'inline-flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
         lineHeight: 1,
         position: 'relative',
       }}
