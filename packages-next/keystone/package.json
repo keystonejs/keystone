@@ -12,7 +12,7 @@
     "@babel/core": "^7.12.3",
     "@babel/plugin-transform-modules-commonjs": "^7.12.1",
     "@babel/runtime": "^7.12.1",
-    "@graphql-tools/merge": "^6.2.4",
+    "@graphql-tools/merge": "^6.2.5",
     "@graphql-tools/utils": "^6.2.4",
     "@hapi/iron": "^5.1.4",
     "@keystone-spike/admin-ui": "*",
