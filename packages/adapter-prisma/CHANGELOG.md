@@ -1,5 +1,11 @@
 # @keystonejs/adapter-prisma
 
+## 1.0.6
+
+### Patch Changes
+
+- [`874fb3377`](https://github.com/keystonejs/keystone/commit/874fb337786dba2a2513f754bdfb2ab93ac81598) [#4009](https://github.com/keystonejs/keystone/pull/4009) Thanks [@timleslie](https://github.com/timleslie)! - Added a `provider` config option to `PrismaAdapter`. Only `postgresql` is currently supported, and this is the default value.
+
 ## 1.0.5
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @keystonejs/test-utils
 
+## 9.1.0
+
+### Minor Changes
+
+- [`e3455bd20`](https://github.com/keystonejs/keystone/commit/e3455bd2027534db29d1f9a8bca905f8eb33679e) [#3979](https://github.com/keystonejs/keystone/pull/3979) Thanks [@timleslie](https://github.com/timleslie)! - Added support for the `TEST_ADAPTER` environment variable to select a single adapter when running tests.
+
+### Patch Changes
+
+- [`874fb3377`](https://github.com/keystonejs/keystone/commit/874fb337786dba2a2513f754bdfb2ab93ac81598) [#4009](https://github.com/keystonejs/keystone/pull/4009) Thanks [@timleslie](https://github.com/timleslie)! - Added a `provider` config option to `PrismaAdapter`. Only `postgresql` is currently supported, and this is the default value.
+
+- Updated dependencies [[`c4478b1c7`](https://github.com/keystonejs/keystone/commit/c4478b1c74e205232ecb321de91f0eda0e78b819), [`874fb3377`](https://github.com/keystonejs/keystone/commit/874fb337786dba2a2513f754bdfb2ab93ac81598)]:
+  - @keystonejs/adapter-knex@12.0.2
+  - @keystonejs/adapter-prisma@1.0.6
+
 ## 9.0.1
 
 ### Patch Changes
