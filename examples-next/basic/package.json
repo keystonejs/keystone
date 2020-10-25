@@ -9,7 +9,7 @@
   "dependencies": {
     "@babel/runtime": "^7.12.1",
     "@emotion/core": "^10.0.35",
-    "@graphql-tools/merge": "^6.2.4",
+    "@graphql-tools/merge": "^6.2.5",
     "@keystone-spike/admin-ui": "*",
     "@keystone-spike/auth": "*",
     "@keystone-spike/fields": "*",

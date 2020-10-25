@@ -10,7 +10,7 @@
     "@babel/runtime": "^7.12.1",
     "@emotion/hash": "^0.8.0",
     "@emotion/weak-memoize": "^0.2.5",
-    "@graphql-tools/merge": "^6.2.4",
+    "@graphql-tools/merge": "^6.2.5",
     "@keystone-spike/keystone": "*",
     "@keystone-spike/types": "*",
     "@keystone-ui/button": "*",
