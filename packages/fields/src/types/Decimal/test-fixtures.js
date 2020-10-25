@@ -7,7 +7,7 @@ export const exampleValue = () => '6.28';
 export const exampleValue2 = () => '6.45';
 export const supportsUnique = true;
 export const fieldName = 'price';
-export const unSupportedAdapterList = ['prisma'];
+export const unSupportedAdapterList = ['prisma_postgresql'];
 
 export const getTestFields = () => ({
   name: { type: Text },
