@@ -17,7 +17,7 @@
     "@emotion/core": "^10.0.35",
     "@keystonejs/fields": "^19.0.0",
     "@primer/octicons-react": "^11.0.0",
-    "codemirror": "^5.58.1",
+    "codemirror": "^5.58.2",
     "prop-types": "^15.7.2",
     "react": "^16.14.0",
     "react-codemirror2": "^7.2.1"
