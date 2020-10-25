@@ -33,7 +33,7 @@ import {
   VisuallyHidden,
 } from '@keystone-ui/core';
 
-import { SizeKey, useControlTokens } from './hooks/segmentedControl';
+import { SizeKey, WidthKey, useControlTokens } from './hooks/segmentedControl';
 
 type Index = number;
 
@@ -45,7 +45,7 @@ type SegmentedControlProps = {
   animate?: boolean;
   /** Whether the controls should take up the full width of their container. */
   fill?: boolean;
-  /** Provide an inital index for an uncontrolled segmented control. */
+  /** Provide an initial index for an uncontrolled segmented control. */
   initialIndex?: Index;
   /** Function to be called when one of the segments is selected. */
   onChange?: ManagedChangeHandler<Index>;
@@ -55,6 +55,8 @@ type SegmentedControlProps = {
   selectedIndex?: Index;
   /** The size of the controls. */
   size?: SizeKey;
+  /** The width of the controls. */
+  width?: WidthKey;
 } & BoxProps;
 
 export const SegmentedControl = ({
@@ -64,6 +66,7 @@ export const SegmentedControl = ({
   onChange: onChangeProp,
   segments,
   size = 'medium',
+  width = 'large',
   selectedIndex: selectedIndexProp,
   ...props
 }: SegmentedControlProps) => {
@@ -105,7 +108,7 @@ export const SegmentedControl = ({
 
   return (
     <Box {...props}>
-      <Root fill={fill} size={size} ref={rootRef}>
+      <Root fill={fill} size={size} ref={rootRef} width={width}>
         {segments.map((label, idx) => {
           const isSelected = selectedIndex === idx;
 
@@ -136,11 +139,12 @@ export const SegmentedControl = ({
 type RootProps = {
   fill: boolean;
   size: SizeKey;
+  width: WidthKey;
 } & HTMLAttributes<HTMLDivElement>;
 
-const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, ...props }, ref) => {
+const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, width, ...props }, ref) => {
   const { fields } = useTheme();
-  const tokens = useControlTokens({ size });
+  const tokens = useControlTokens({ size, width });
 
   return (
     <div
@@ -155,6 +159,9 @@ const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, ...props }, re
         // -- TODO
         background: fields.inputBackground,
         display: fill ? 'flex' : 'inline-flex',
+        flexWrap: 'wrap',
+        maxWidth: tokens.width,
+        justifyContent: 'space-between',
         lineHeight: 1,
         position: 'relative',
       }}
