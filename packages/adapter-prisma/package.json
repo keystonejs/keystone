@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/adapter-prisma",
   "description": "KeystoneJS Prisma Database Adapter",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {

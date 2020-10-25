@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/adapter-knex",
   "description": "KeystoneJS Knex Database Adapter",
-  "version": "12.0.1",
+  "version": "12.0.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
