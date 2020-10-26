@@ -16,7 +16,7 @@
     "@keystone-ui/core": "*",
     "@keystone-ui/fields": "*",
     "@keystone-ui/notice": "*",
-    "graphql": "^15.3.0"
+    "graphql": "^15.4.0"
   },
   "devDependencies": {
     "@keystone-spike/admin-ui": "*",
