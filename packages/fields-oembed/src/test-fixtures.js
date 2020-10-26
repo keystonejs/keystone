@@ -46,4 +46,4 @@ export const storedValues = () => [
   { name: 'g', portfolio: null },
 ];
 
-export const supportedFilters = ['null_equality', 'in_empty_null'];
+export const supportedFilters = () => ['null_equality', 'in_empty_null'];

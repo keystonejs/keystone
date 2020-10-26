@@ -36,7 +36,7 @@ export const storedValues = () => [
   { name: 'price7', price: null },
 ];
 
-export const supportedFilters = [
+export const supportedFilters = () => [
   'null_equality',
   'equality',
   'ordering',

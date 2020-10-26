@@ -77,4 +77,4 @@ export const storedValues = () => [
   { image: null, name: 'file6' },
 ];
 
-export const supportedFilters = ['null_equality', 'in_empty_null'];
+export const supportedFilters = () => ['null_equality', 'in_empty_null'];
