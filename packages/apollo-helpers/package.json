@@ -14,7 +14,7 @@
     "@apollo/client": "^3.2.5",
     "@babel/runtime": "^7.12.1",
     "@jesstelford/apollo-cache-invalidation": "^0.0.3-gh3-gh5",
-    "@types/react": "^16.9.51",
+    "@types/react": "^16.9.53",
     "apollo-cache": "^1.3.5",
     "apollo-link": "^1.2.14",
     "apollo-utilities": "^1.3.4",
