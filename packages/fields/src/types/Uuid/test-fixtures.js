@@ -33,7 +33,7 @@ export const storedValues = () => [
   { name: 'g', otherId: null },
 ];
 
-export const supportedFilters = ['null_equality', 'equality', 'in_empty_null', 'in_value'];
+export const supportedFilters = () => ['null_equality', 'equality', 'in_empty_null', 'in_value'];
 
 export const filterTests = withKeystone => {
   const match = async (keystone, where, expected) =>

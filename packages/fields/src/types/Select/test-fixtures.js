@@ -39,7 +39,7 @@ export const fieldConfig = matrixValue => ({
 
 export const fieldName = 'company';
 
-export const supportedFilters = ['null_equality', 'equality', 'in_empty_null', 'in_equal'];
+export const supportedFilters = () => ['null_equality', 'equality', 'in_empty_null', 'in_equal'];
 
 export const testMatrix = ['enum', 'string', 'integer'];
 

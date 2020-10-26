@@ -35,4 +35,4 @@ export const storedValues = () => [
   { name: 'person7', password_is_set: false },
 ];
 
-export const supportedFilters = ['is_set'];
+export const supportedFilters = () => ['is_set'];

@@ -33,7 +33,7 @@ export const storedValues = () => [
   { name: 'person7', lastOnline: null },
 ];
 
-export const supportedFilters = [
+export const supportedFilters = () => [
   'null_equality',
   'equality',
   'ordering',

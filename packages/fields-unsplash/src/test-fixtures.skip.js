@@ -48,4 +48,4 @@ export const storedValues = () => [
   { name: 'g', heroImage: null },
 ];
 
-export const supportedFilters = ['null_equality', 'in_empty_null'];
+export const supportedFilters = () => ['null_equality', 'in_empty_null'];

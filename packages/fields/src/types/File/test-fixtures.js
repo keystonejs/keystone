@@ -88,4 +88,4 @@ export const afterAll = () => {
   });
 };
 
-export const supportedFilters = ['null_equality', 'in_empty_null'];
+export const supportedFilters = () => ['null_equality', 'in_empty_null'];

@@ -39,7 +39,7 @@ export const storedValues = () => [
   { name: 'g', content: null },
 ];
 
-export const supportedFilters = [
+export const supportedFilters = () => [
   'null_equality',
   'equality',
   'equality_case_insensitive',
