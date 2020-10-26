@@ -39,7 +39,7 @@
     "cross-env": "^7.0.2",
     "date-fns": "^2.16.1",
     "express": "^4.17.1",
-    "graphql": "^15.3.0",
+    "graphql": "^15.4.0",
     "react": "^16.14.0"
   },
   "devDependencies": {
