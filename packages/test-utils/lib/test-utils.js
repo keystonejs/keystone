@@ -18,9 +18,11 @@ async function setupServer({
   keystoneOptions,
   graphqlOptions = {},
 }) {
-  const Adapter = { mongoose: MongooseAdapter, knex: KnexAdapter, prisma: PrismaAdapter }[
-    adapterName
-  ];
+  const Adapter = {
+    mongoose: MongooseAdapter,
+    knex: KnexAdapter,
+    prisma_postgresql: PrismaAdapter,
+  }[adapterName];
 
   const argGenerator = {
     mongoose: getMongoMemoryServerConfig,
@@ -31,7 +33,7 @@ async function setupServer({
           process.env.DATABASE_URL || process.env.KNEX_URI || 'postgres://localhost/keystone',
       },
     }),
-    prisma: () => ({
+    prisma_postgresql: () => ({
       dropDatabase: true,
       url: process.env.DATABASE_URL,
       provider: 'postgresql',
@@ -201,9 +203,9 @@ function multiAdapterRunners(only = process.env.TEST_ADAPTER) {
       after: _after(() => {}),
     },
     {
-      runner: _keystoneRunner('prisma', () => {}),
-      adapterName: 'prisma',
-      before: _before('prisma'),
+      runner: _keystoneRunner('prisma_postgresql', () => {}),
+      adapterName: 'prisma_postgresql',
+      before: _before('prisma_postgresql'),
       after: _after(() => {}),
     },
   ].filter(a => typeof only === 'undefined' || a.adapterName === only);

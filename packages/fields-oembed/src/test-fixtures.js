@@ -11,7 +11,7 @@ export const exampleValue2 = () => 'https://codesandbox.io';
 export const supportsUnique = false;
 export const fieldName = 'portfolio';
 export const subfieldName = 'originalUrl';
-export const unSupportedAdapterList = ['prisma'];
+export const unSupportedAdapterList = ['prisma_postgresql'];
 
 const iframelyAdapter = new IframelyOEmbedAdapter({
   apiKey: process.env.IFRAMELY_API_KEY || 'iframely_api_key',
