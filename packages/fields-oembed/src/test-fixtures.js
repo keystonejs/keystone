@@ -11,7 +11,6 @@ export const exampleValue2 = () => 'https://codesandbox.io';
 export const supportsUnique = false;
 export const fieldName = 'portfolio';
 export const subfieldName = 'originalUrl';
-export const unSupportedAdapterList = ['prisma_postgresql'];
 
 const iframelyAdapter = new IframelyOEmbedAdapter({
   apiKey: process.env.IFRAMELY_API_KEY || 'iframely_api_key',
@@ -46,4 +45,7 @@ export const storedValues = () => [
   { name: 'g', portfolio: null },
 ];
 
-export const supportedFilters = () => ['null_equality', 'in_empty_null'];
+export const supportedFilters = adapterName => [
+  'null_equality',
+  adapterName !== 'prisma_postgresql' && 'in_empty_null',
+];
