@@ -168,10 +168,10 @@ module.exports = class List {
     // Add an 'id' field if none supplied
     if (!sanitisedFieldsConfig.id) {
       if (typeof this.adapter.parentAdapter.getDefaultPrimaryKeyConfig !== 'function') {
-        throw (
+        throw new Error(
           `No 'id' field given for the '${this.key}' list and the list adapter ` +
-          `in used (${this.adapter.key}) doesn't supply a default primary key config ` +
-          `(no 'getDefaultPrimaryKeyConfig()' function)`
+            `in used (${this.adapter.key}) doesn't supply a default primary key config ` +
+            `(no 'getDefaultPrimaryKeyConfig()' function)`
         );
       }
       // Rebuild the object so id is "first"
@@ -184,23 +184,29 @@ module.exports = class List {
     // Helpful errors for misconfigured lists
     Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
       if (!this.isAuxList && fieldKey[0] === '_') {
-        throw `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`;
+        throw new Error(
+          `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`
+        );
       }
       if (typeof fieldConfig.type === 'undefined') {
-        throw (
+        throw new Error(
           `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
-          `(${this.key}.${fieldKey}.type is undefined)`
+            `(${this.key}.${fieldKey}.type is undefined)`
         );
       }
       const adapters = fieldConfig.type.adapters;
       if (typeof adapters === 'undefined' || Object.entries(adapters).length === 0) {
-        throw `The type given for the '${this.key}.${fieldKey}' field doesn't define any adapters.`;
+        throw new Error(
+          `The type given for the '${this.key}.${fieldKey}' field doesn't define any adapters.`
+        );
       }
     });
 
     Object.values(sanitisedFieldsConfig).forEach(({ type }) => {
       if (!type.adapters[this.adapterName]) {
-        throw `Adapter type "${this.adapterName}" does not support field type "${type.type}"`;
+        throw new Error(
+          `Adapter type "${this.adapterName}" does not support field type "${type.type}"`
+        );
       }
     });
 
