@@ -20858,10 +20858,10 @@ react-codemirror@^1.0.0:
     lodash.isequal "^4.5.0"
     prop-types "^15.5.4"
 
-react-color@^2.19.1:
-  version "2.19.1"
-  resolved "https://registry.yarnpkg.com/react-color/-/react-color-2.19.1.tgz#e2ce792ac29880b30394380901823cfa4bec7f19"
-  integrity sha512-zXU62YOvRNvDFuU9hozsblsgnwnKdiVAAvDCObkCQru4w25aAC/vfREs+5XRUFLCIXdU/akKbdliFItN+vPIjQ==
+react-color@^2.19.3:
+  version "2.19.3"
+  resolved "https://registry.yarnpkg.com/react-color/-/react-color-2.19.3.tgz#ec6c6b4568312a3c6a18420ab0472e146aa5683d"
+  integrity sha512-LEeGE/ZzNLIsFWa1TMe8y5VYqr7bibneWmvJwm1pCn/eNmrabWDh659JSPn9BuaMpEfU83WTOJfnCcjDZwNQTA==
   dependencies:
     "@icons/material" "^0.2.4"
     lodash "^4.17.15"
