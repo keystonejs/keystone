@@ -68,7 +68,7 @@ export const lists = createSchema({
         isRequired: true,
         isUnique: true,
         hooks: {},
-        // views: require.resolve('./admin/fieldViews/content'),
+        // admin: { views: require.resolve('./admin/fieldViews/content') },
       }),
       password: password({
         hooks: {},
@@ -96,7 +96,7 @@ export const lists = createSchema({
         many: true,
         admin: {
           // TODO: Work out how to use custom views to customise the card + edit / create forms
-          // views: './admin/fields/user/phoneNumber',
+          // views: './admin/fieldViews/user/phoneNumber',
           displayMode: 'cards',
           cardFields: ['type', 'value'],
           inlineEdit: { fields: ['type', 'value'] },
