@@ -99,12 +99,16 @@ type FieldCreateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = 
   BaseFieldAccessArgs;
 
 type FieldReadAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = ReadAccessArgs &
-  BaseFieldAccessArgs & { existingItem: GeneratedListTypes['backing'] };
+  BaseFieldAccessArgs & {
+    item: GeneratedListTypes['backing'];
+  };
 
 type FieldUpdateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = UpdateAccessArgs<
   GeneratedListTypes
 > &
-  BaseFieldAccessArgs & { existingItem: GeneratedListTypes['backing'] };
+  BaseFieldAccessArgs & {
+    item: GeneratedListTypes['backing'];
+  };
 
 type FieldDeleteAccessArgs = DeleteAccessArgs & BaseFieldAccessArgs;
 

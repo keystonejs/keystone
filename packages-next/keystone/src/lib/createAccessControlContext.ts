@@ -59,7 +59,7 @@ async function validateFieldAccessControl({
   listKey,
   fieldKey,
   originalInput,
-  existingItem,
+  item,
   operation,
   session,
   gqlName,
@@ -76,7 +76,7 @@ async function validateFieldAccessControl({
   itemId: any;
   itemIds: any;
   context: any;
-  existingItem: any;
+  item: any;
   fieldKey: any;
 }) {
   let result;
@@ -88,7 +88,7 @@ async function validateFieldAccessControl({
       listKey,
       fieldKey,
       originalInput,
-      existingItem,
+      item,
       operation,
       gqlName,
       itemId,
@@ -144,14 +144,14 @@ export const accessControlContext = {
     listKey: any,
     fieldKey: any,
     originalInput: any,
-    existingItem: any,
+    item: any,
     operation: any,
     { gqlName, itemId, itemIds, context }: any = {}
   ) {
     return validateFieldAccessControl({
       access: access[context.schemaName],
       originalInput,
-      existingItem,
+      item,
       operation,
       session: context.session,
       fieldKey,
