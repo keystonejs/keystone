@@ -22,7 +22,7 @@
     "apollo-server-micro": "^2.18.2",
     "graphql": "^15.4.0",
     "graphql-tag": "^2.11.0",
-    "next": "^9.5.5",
+    "next": "^10.0.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },
