@@ -12,6 +12,7 @@ type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = F
   TGeneratedListTypes
 > & {
   minLength?: number;
+  isRequired?: boolean;
 };
 
 export const password = <TGeneratedListTypes extends BaseGeneratedListTypes>(
