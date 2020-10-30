@@ -2,14 +2,14 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, Select, MultiSelect } from '@keystone-ui/fields';
-import { CellLink, CellContainer } from '@keystone-spike/admin-ui/components';
+import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
 
 import {
   CellComponent,
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-spike/types';
+} from '@keystone-next/types';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (

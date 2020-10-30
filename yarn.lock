@@ -5732,10 +5732,10 @@ available-typed-arrays@^1.0.0, available-typed-arrays@^1.0.2:
   dependencies:
     array-filter "^1.0.0"
 
-aws-sdk@^2.781.0:
-  version "2.781.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.781.0.tgz#e9df63e9b69c22ac939ab675c8771592ae89105a"
-  integrity sha512-y+Xd+DJJyNgZdPLZytJA8LRR79spD/zXOt0G9Uk68UC9tRDEB8aQysuxWKYEybYCexRqJtTZLCrR3ikYwU099g==
+aws-sdk@^2.782.0:
+  version "2.782.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.782.0.tgz#84e22bf1bf370f702cb741b95a25356745b0a632"
+  integrity sha512-8aCZBQQoJ5dUWb0Ij8x7MwrKKuoHGF3g3EoDiRDJws/VdYSs995S0OTNX5/TwaR/ltdtBU0t+GGGTPPQFYZ1nA==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -15437,10 +15437,10 @@ knex@^0.20.1:
     uuid "^7.0.1"
     v8flags "^3.1.3"
 
-knex@^0.21.8:
-  version "0.21.8"
-  resolved "https://registry.yarnpkg.com/knex/-/knex-0.21.8.tgz#e5c07af61ee6aa006d3468e10e3a69351deb0c26"
-  integrity sha512-ziUu4vAlIGA8j2l0S4xcD1d3XdpJA4HYGhwHEhgAgefGCmB1OLSjUGCs/ebkJal42fSvAkyZaB0tcOtTXKgS5g==
+knex@^0.21.9:
+  version "0.21.9"
+  resolved "https://registry.yarnpkg.com/knex/-/knex-0.21.9.tgz#f6a140188c902a2df539b7a9429c0ce52e55efa3"
+  integrity sha512-6XhR2IbeB7Hx8uaM2J4W+W85/ZRRuP3zzSsdOVBoJdZMV73/WxZscw/qnB1dEPCYXlIx/fRI9FsrzqGaz/KVpA==
   dependencies:
     colorette "1.2.1"
     commander "^5.1.0"

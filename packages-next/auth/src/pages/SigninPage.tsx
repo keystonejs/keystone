@@ -8,9 +8,9 @@ import { TextInput } from '@keystone-ui/fields';
 import { Notice } from '@keystone-ui/notice';
 
 import { SigninContainer } from '../components/SigninContainer';
-import { useMutation, DocumentNode } from '@keystone-spike/admin-ui/apollo';
-import { useReinitContext } from '@keystone-spike/admin-ui/context';
-import { useRouter } from '@keystone-spike/admin-ui/router';
+import { useMutation, DocumentNode } from '@keystone-next/admin-ui/apollo';
+import { useReinitContext } from '@keystone-next/admin-ui/context';
+import { useRouter } from '@keystone-next/admin-ui/router';
 
 export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
   /* TODO:

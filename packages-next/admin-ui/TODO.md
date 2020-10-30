@@ -8,6 +8,7 @@
 - [x] Add an isHidden option for lists
   - [x] Hides the list in the nav
   - [x] Hides the card in the dashboard
+- [ ] Merge custom field views into the default field views
 - [ ] Add an example that implements custom fields
 - [x] `idField` option
   - [x] autoIncrement in fields package
@@ -127,17 +128,17 @@
 - [x] Handle the case where there are no visible fields (show a message)
 - [x] Confirm before delete
 - [x] Notification when you've updated an item
-- [ ] When a permission failure happens updating an item, don't show `read` permission errors in the item form
+- [x] When a permission failure happens updating an item, don't show `read` permission errors in the item form
 
 ## Fields
 
 - [x] Relationship views
-  - [ ] Make sure nested create works
+  - [x] Make sure nested create works
 - [x] Password views
-- [ ] Virtual field
+- [x] Virtual field
 - [ ] Timestamp field
 - [x] Integer field
-- [ ] Select
+- [x] Select
 - [ ] All the filter UI
 - [x] Client-side validation API for fields
 - [ ] DependsOn field dependencies

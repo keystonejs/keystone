@@ -1,6 +1,6 @@
 import { useRouter } from '../../router';
 import { useMemo } from 'react';
-import { JSONValue, ListMeta } from '@keystone-spike/types';
+import { JSONValue, ListMeta } from '@keystone-next/types';
 
 export type Filter = { field: string; type: string; value: JSONValue };
 

@@ -1,4 +1,4 @@
-import type { Keystone, SerializedAdminMeta } from '@keystone-spike/types';
+import type { Keystone, SerializedAdminMeta } from '@keystone-next/types';
 import hashString from '@emotion/hash';
 import {
   executeSync,
@@ -35,8 +35,8 @@ export const appTemplate = (keystone: Keystone, { configFile }: AppTemplateOptio
   return `
 import React from 'react';
 
-import { KeystoneProvider } from '@keystone-spike/admin-ui/context';
-import { ErrorBoundary } from '@keystone-spike/admin-ui/components';
+import { KeystoneProvider } from '@keystone-next/admin-ui/context';
+import { ErrorBoundary } from '@keystone-next/admin-ui/components';
 import { Core } from '@keystone-ui/core';
 
 ${keystone.views.map((view, i) => `import * as view${i} from ${JSON.stringify(view)}`).join('\n')}

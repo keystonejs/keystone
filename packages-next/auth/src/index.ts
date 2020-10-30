@@ -5,8 +5,8 @@ import {
   BaseGeneratedListTypes,
   KeystoneConfig,
   SerializedFieldMeta,
-} from '@keystone-spike/types';
-import { password, timestamp } from '@keystone-spike/fields';
+} from '@keystone-next/types';
+import { password, timestamp } from '@keystone-next/fields';
 
 import { AuthConfig, Auth, AuthGqlNames } from './types';
 

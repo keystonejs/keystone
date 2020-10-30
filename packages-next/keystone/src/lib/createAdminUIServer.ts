@@ -4,7 +4,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { formatError } from '@keystonejs/keystone/lib/Keystone/format-error';
 import Path from 'path';
 import next from 'next';
-import type { Keystone } from '@keystone-spike/types';
+import type { Keystone } from '@keystone-next/types';
 import url from 'url';
 
 const dev = process.env.NODE_ENV !== 'production';

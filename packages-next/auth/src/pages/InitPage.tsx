@@ -1,18 +1,19 @@
 /* @jsx jsx */
 
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 
 import { jsx, H1 } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
-import { useRawKeystone } from '@keystone-spike/admin-ui';
-import { FieldMeta, SerializedFieldMeta } from '@keystone-spike/types';
+import { useRawKeystone } from '@keystone-next/admin-ui';
+import { FieldMeta, SerializedFieldMeta } from '@keystone-next/types';
+import isDeepEqual from 'fast-deep-equal';
 
 import { SigninContainer } from '../components/SigninContainer';
 import { DocumentNode } from 'graphql';
-import { Notice } from '@keystone-ui/notice';
-import { useMutation } from '@keystone-spike/admin-ui/apollo';
-import { useReinitContext } from '@keystone-spike/admin-ui/context';
-import { useRouter } from '@keystone-spike/admin-ui/router';
+import { useMutation } from '@keystone-next/admin-ui/apollo';
+import { useReinitContext } from '@keystone-next/admin-ui/context';
+import { useRouter } from '@keystone-next/admin-ui/router';
+import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
 
 export const InitPage = ({
   fields: serializedFields,
@@ -50,39 +51,63 @@ export const InitPage = ({
     return state;
   });
 
+  const invalidFields = useMemo(() => {
+    const invalidFields = new Set<string>();
+
+    Object.keys(state).forEach(fieldPath => {
+      const val = state[fieldPath];
+
+      const validateFn = fields[fieldPath].controller.validate;
+      if (validateFn) {
+        const result = validateFn(val);
+        if (result === false) {
+          invalidFields.add(fieldPath);
+        }
+      }
+    });
+    return invalidFields;
+  }, [fields, state]);
+
+  const [forceValidation, setForceValidation] = useState(false);
+
   const [createFirstItem, { loading, error }] = useMutation(mutation);
   const reinitContext = useReinitContext();
   const router = useRouter();
-
-  const nameInputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    nameInputRef.current?.focus();
-  }, []);
 
   return (
     <SigninContainer>
       <H1>Welcome to KeystoneJS</H1>
       <p>Get Started by creating the first user:</p>
       <form
-        onSubmit={async event => {
+        onSubmit={event => {
           event.preventDefault();
-          await createFirstItem({
-            variables: {
-              data: Object.assign(
-                {},
-                ...Object.keys(fields).map(fieldKey =>
-                  fields[fieldKey].controller.serialize(state[fieldKey])
-                )
-              ),
-            },
+          const newForceValidation = invalidFields.size !== 0;
+          setForceValidation(newForceValidation);
+
+          if (newForceValidation) return;
+          const data: Record<string, any> = {};
+          Object.keys(fields).forEach(fieldPath => {
+            const { controller } = fields[fieldPath];
+            const serialized = controller.serialize(state[fieldPath]);
+            if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
+              Object.assign(data, serialized);
+            }
           });
-          reinitContext();
-          await router.push('/');
+          createFirstItem({
+            variables: {
+              data,
+            },
+          })
+            .then(() => {
+              reinitContext();
+              router.push('/');
+            })
+            .catch(() => {});
         }}
       >
-        {error && <Notice>{error.message}</Notice>}
+        <GraphQLErrorNotice errors={error?.graphQLErrors} networkError={error?.networkError} />
         <Fragment>
-          {Object.keys(fields).map(fieldPath => {
+          {Object.keys(fields).map((fieldPath, index) => {
             const Field = fields[fieldPath].views.Field;
             return (
               <Field
@@ -91,6 +116,8 @@ export const InitPage = ({
                 onChange={value => {
                   setState({ ...state, [fieldPath]: value });
                 }}
+                forceValidation={forceValidation && invalidFields.has(fieldPath)}
+                autoFocus={index === 0}
               />
             );
           })}

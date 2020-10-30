@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLazyQuery } from '../apollo';
 import hashString from '@emotion/hash';
-import { SerializedAdminMeta, AdminMeta, FieldViews, getGqlNames } from '@keystone-spike/types';
+import { SerializedAdminMeta, AdminMeta, FieldViews, getGqlNames } from '@keystone-next/types';
 import { StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql';
 
 let expectedExports: Record<string, boolean> = {

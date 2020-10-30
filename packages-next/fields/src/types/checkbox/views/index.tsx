@@ -7,7 +7,7 @@ import {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-spike/types';
+} from '@keystone-next/types';
 import { Fragment } from 'react';
 
 export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => {

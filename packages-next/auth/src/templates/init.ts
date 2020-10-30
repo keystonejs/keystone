@@ -1,4 +1,4 @@
-import { BaseGeneratedListTypes, SerializedFieldMeta } from '@keystone-spike/types';
+import { BaseGeneratedListTypes, SerializedFieldMeta } from '@keystone-next/types';
 import { AuthConfig } from '../types';
 
 type InitTemplateArgs = {
@@ -9,9 +9,9 @@ type InitTemplateArgs = {
 
 export const initTemplate = ({ listKey, initFirstItem, fields }: InitTemplateArgs) => {
   // -- TEMPLATE START
-  return `import { InitPage } from '@keystone-spike/auth/pages/InitPage';
+  return `import { InitPage } from '@keystone-next/auth/pages/InitPage';
   import React from 'react';
-  import { gql } from '@keystone-spike/admin-ui/apollo';
+  import { gql } from '@keystone-next/admin-ui/apollo';
 
   const fieldsMeta = ${JSON.stringify(fields)}
 

@@ -1,4 +1,4 @@
-import type { Keystone } from '@keystone-spike/types';
+import type { Keystone } from '@keystone-next/types';
 
 export const homeTemplate = (keystone: Keystone) => {
   let query = `query {
@@ -24,8 +24,8 @@ export const homeTemplate = (keystone: Keystone) => {
   return `
 import React from 'react';
 
-import { HomePage } from '@keystone-spike/admin-ui';
-import { gql } from '@keystone-spike/admin-ui/apollo';
+import { HomePage } from '@keystone-next/admin-ui';
+import { gql } from '@keystone-next/admin-ui/apollo';
 
 export default function Home() {
   return <HomePage query={gql\`${query}\`} />;

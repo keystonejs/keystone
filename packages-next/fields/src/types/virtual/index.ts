@@ -1,8 +1,8 @@
 // @ts-ignore
 import { Virtual } from '@keystonejs/fields';
 import type { FieldConfig } from '../../interfaces';
-import type { FieldType } from '@keystone-spike/types';
-import type { BaseGeneratedListTypes } from '@keystone-spike/types';
+import type { FieldType } from '@keystone-next/types';
+import type { BaseGeneratedListTypes } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 
 export type VirtualFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
@@ -23,6 +23,11 @@ export const virtual = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: Virtual,
   config: config,
   views,
+  getAdminMeta() {
+    return {
+      graphQLReturnFragment: config.graphQLReturnFragment ?? '',
+    };
+  },
   getBackingType() {
     return {};
   },
