@@ -1,5 +1,5 @@
 import type { KeystoneConfig } from '@keystone-next/types';
-import { createKeystone } from '../classes/Keystone';
+import { createKeystone } from './createKeystone';
 import { requireProjectFile } from './requireSource';
 
 export const initKeystoneFromConfig = () => {
