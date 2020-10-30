@@ -1,1 +1,1 @@
-export { createKeystone } from './classes/Keystone';
+export { createKeystone } from './lib/createKeystone';

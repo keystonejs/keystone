@@ -24,4 +24,6 @@
 
 ## Next steps after alpha release
 
+- [ ] Review how we're returning errors from the GraphQL API
+- [ ] Review how the search field (and query input) works
 - [ ] Revisit design system and theming
