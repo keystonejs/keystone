@@ -17,7 +17,7 @@ import { Fragment, useState } from 'react';
 import { Button } from '@keystone-ui/button';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
-import { CreateItemDrawer } from '@keystone-next/admin-ui/src/components/CreateItemDrawer';
+import { CreateItemDrawer } from '@keystone-next/admin-ui/components';
 import { DrawerController } from '@keystone-ui/modals';
 
 function LinkToRelatedItems({
