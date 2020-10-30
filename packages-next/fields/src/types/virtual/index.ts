@@ -23,6 +23,11 @@ export const virtual = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: Virtual,
   config: config,
   views,
+  getAdminMeta() {
+    return {
+      graphQLReturnFragment: config.graphQLReturnFragment ?? '',
+    };
+  },
   getBackingType() {
     return {};
   },
