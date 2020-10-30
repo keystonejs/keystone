@@ -28,8 +28,8 @@ export const lists = createSchema({
         access: {
           // Passwords can always be set when creating items
           // Users can change their own passwords, and Admins can change anyone's password
-          update: ({ session, existingItem }) =>
-            session && (session.item.isAdmin || session.itemId === existingItem.id),
+          update: ({ session, item }) =>
+            session && (session.item.isAdmin || session.itemId === item.id),
         },
         admin: {
           // Based on the same logic as update access, the password field is editable.
