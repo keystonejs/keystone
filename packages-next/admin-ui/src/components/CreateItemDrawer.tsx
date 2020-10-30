@@ -5,10 +5,10 @@ import { gql, useMutation } from '../apollo';
 import { jsx } from '@keystone-ui/core';
 import isDeepEqual from 'fast-deep-equal';
 import { useKeystone, useList } from '../context';
-import { Notice } from '@keystone-ui/notice';
 import { Drawer } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
+import { GraphQLErrorNotice } from './GraphQLErrorNotice';
 
 export function CreateItemDrawer({
   listKey,
@@ -66,7 +66,7 @@ export function CreateItemDrawer({
         ? createViewFieldModes.lists[listKey][fieldPath] !== 'hidden'
         : false
     )
-    .map(fieldPath => {
+    .map((fieldPath, index) => {
       const field = list.fields[fieldPath];
       return (
         <field.views.Field
@@ -80,6 +80,7 @@ export function CreateItemDrawer({
               [fieldPath]: fieldValue,
             });
           }}
+          autoFocus={index === 0}
         />
       );
     });
@@ -130,14 +131,19 @@ export function CreateItemDrawer({
       }}
     >
       {createViewFieldModes.state === 'error' && (
-        <Notice tone="negative">
-          {createViewFieldModes.error instanceof Error
-            ? createViewFieldModes.error.message
-            : createViewFieldModes.error[0].message}
-        </Notice>
+        <GraphQLErrorNotice
+          networkError={
+            createViewFieldModes.error instanceof Error ? createViewFieldModes.error : undefined
+          }
+          errors={
+            createViewFieldModes.error instanceof Error ? undefined : createViewFieldModes.error
+          }
+        />
       )}
       {createViewFieldModes.state === 'loading' && <LoadingDots label="Loading create form" />}
-      {error && <Notice tone="negative">{error.message}</Notice>}
+      {error && (
+        <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
+      )}
       {fields}
       {fields.length === 0 && 'There are no fields that you can read or edit'}
     </Drawer>

@@ -128,7 +128,7 @@
 - [x] Handle the case where there are no visible fields (show a message)
 - [x] Confirm before delete
 - [x] Notification when you've updated an item
-- [ ] When a permission failure happens updating an item, don't show `read` permission errors in the item form
+- [x] When a permission failure happens updating an item, don't show `read` permission errors in the item form
 
 ## Fields
 
