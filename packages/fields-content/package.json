@@ -19,7 +19,7 @@
     "@emotion/core": "^10.0.35",
     "@keystonejs/fields": "^19.0.0",
     "@keystonejs/utils": "^5.4.3",
-    "@popperjs/core": "^2.5.3",
+    "@popperjs/core": "^2.5.4",
     "@primer/octicons-react": "^11.0.0",
     "apply-ref": "^0.2.3",
     "get-selection-range": "^0.1.0",
