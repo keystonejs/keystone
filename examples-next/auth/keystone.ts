@@ -39,6 +39,18 @@ const { withAuth } = createAuth({
       isEnabled: true,
     },
   },
+  /* TODO -- complete the UI for these features and enable them
+  passwordResetLink: {
+    sendToken(args) {
+      console.log(`Password reset info:`, args);
+    },
+  },
+  magicAuthLink: {
+    sendToken(args) {
+      console.log(`Magic auth info:`, args);
+    },
+  },
+  */
 });
 
 // withAuth applies the signin functionality to the keystone config
