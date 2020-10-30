@@ -12,7 +12,7 @@ export type AutoIncrementFieldConfig<
 const views = resolveView('integer/views');
 
 export const autoIncrement = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: AutoIncrementFieldConfig<TGeneratedListTypes>
+  config: AutoIncrementFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
   type: AutoIncrement,
   config: config,
