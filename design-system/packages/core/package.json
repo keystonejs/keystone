@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/core",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "main": "dist/core.cjs.js",

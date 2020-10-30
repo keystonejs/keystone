@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/loading",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "main": "dist/loading.cjs.js",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "@keystone-ui/core": "*",
+    "@keystone-ui/core": "^0.0.0",
     "react": "^16.14.0"
   },
   "engines": {

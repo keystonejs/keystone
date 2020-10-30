@@ -8,7 +8,7 @@ import {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-spike/types';
+} from '@keystone-next/types';
 import { PrettyData } from './PrettyData';
 
 export const Field = ({ field, value }: FieldProps<typeof controller>) =>

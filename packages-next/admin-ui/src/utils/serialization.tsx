@@ -1,4 +1,4 @@
-import { ListMeta, JSONValue } from '@keystone-spike/types';
+import { ListMeta, JSONValue } from '@keystone-next/types';
 import { GraphQLError } from 'graphql';
 import { DataGetter, DeepNullable } from './dataGetter';
 import { getRootGraphQLFieldsFromFieldController } from './getRootGraphQLFieldsFromFieldController';

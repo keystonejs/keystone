@@ -1,6 +1,6 @@
 {
-  "name": "@keystone-spike/session-store-redis",
-  "version": "1.0.0",
+  "name": "@keystone-next/session-store-redis",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "main": "dist/session-store-redis.cjs.js",

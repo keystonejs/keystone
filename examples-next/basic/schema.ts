@@ -1,4 +1,4 @@
-import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-spike/keystone/schema';
+import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone/schema';
 import {
   text,
   relationship,
@@ -8,8 +8,8 @@ import {
   integer,
   select,
   virtual,
-} from '@keystone-spike/fields';
-import { KeystoneCrudAPI } from '@keystone-spike/types';
+} from '@keystone-next/fields';
+import { KeystoneCrudAPI } from '@keystone-next/types';
 import { KeystoneListsTypeInfo } from './.keystone/schema-types';
 
 const randomNumber = () => Math.round(Math.random() * 10);

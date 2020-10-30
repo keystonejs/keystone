@@ -1,5 +1,5 @@
 import { GraphQLSchema } from 'graphql';
-import { graphQLSchemaExtension } from '@keystone-spike/keystone/schema';
+import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
 import { AuthGqlNames } from '../types';
 
 export function getInitFirstItemSchema({

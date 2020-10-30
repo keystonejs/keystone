@@ -8,7 +8,7 @@ import {
   SessionStoreFunction,
   SessionContext,
   Keystone,
-} from '@keystone-spike/types';
+} from '@keystone-next/types';
 
 // uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';

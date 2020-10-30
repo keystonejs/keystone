@@ -8,7 +8,7 @@ import type {
   Keystone,
   SessionContext,
   FieldType,
-} from '@keystone-spike/types';
+} from '@keystone-next/types';
 import { sessionStuff } from '../session';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { mergeSchemas } from '@graphql-tools/merge';
@@ -16,9 +16,9 @@ import { gql } from '../schema';
 import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { mapSchema } from '@graphql-tools/utils';
 import { crudForList } from '../lib/crud-api';
-import { adminMetaSchemaExtension } from '@keystone-spike/admin-ui/templates';
+import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
 import { accessControlContext, skipAccessControlContext } from '../lib/createAccessControlContext';
-import { autoIncrement, mongoId } from '@keystone-spike/fields';
+import { autoIncrement, mongoId } from '@keystone-next/fields';
 
 export function createKeystone(config: KeystoneConfig): Keystone {
   config = applyIdFieldDefaults(config);

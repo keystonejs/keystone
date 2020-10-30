@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/popover",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "main": "dist/popover.cjs.js",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "@keystone-ui/core": "*",
+    "@keystone-ui/core": "^0.0.0",
     "@popperjs/core": "^2.5.3",
     "react-popper": "^2.2.3"
   },

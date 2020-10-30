@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/button",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "main": "dist/button.cjs.js",
@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "@keystone-ui/core": "*",
-    "@keystone-ui/icons": "*",
-    "@keystone-ui/loading": "*",
+    "@keystone-ui/core": "^0.0.0",
+    "@keystone-ui/icons": "^0.0.0",
+    "@keystone-ui/loading": "^0.0.0",
     "react": "^16.14.0"
   },
   "engines": {

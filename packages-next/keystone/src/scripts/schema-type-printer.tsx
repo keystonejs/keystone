@@ -11,7 +11,7 @@ import {
   FieldDefinitionNode,
   InputValueDefinitionNode,
 } from 'graphql';
-import type { Keystone } from '@keystone-spike/types';
+import type { Keystone } from '@keystone-next/types';
 
 let printEnumTypeDefinition = (node: EnumTypeDefinitionNode) => {
   return `export type ${node.name.value} =\n${node
@@ -77,7 +77,7 @@ export function printGeneratedTypes(printedSchema: string, keystone: Keystone) {
     String: 'string',
     Int: 'number',
     Float: 'number',
-    JSON: 'import("@keystone-spike/types").JSONValue',
+    JSON: 'import("@keystone-next/types").JSONValue',
   };
 
   let { printedTypes, ast, printTypeNode } = printInputTypesFromSchema(
@@ -150,8 +150,8 @@ export type ${listTypeInfoName} = {
 };
 
 export type ${list.key}ListFn = (
-  listConfig: import('@keystone-spike/keystone/schema').ListConfig<${listTypeInfoName}, ${listTypeInfoName}['fields']>
-) => import('@keystone-spike/keystone/schema').ListConfig<${listTypeInfoName}, ${listTypeInfoName}['fields']>;
+  listConfig: import('@keystone-next/keystone/schema').ListConfig<${listTypeInfoName}, ${listTypeInfoName}['fields']>
+) => import('@keystone-next/keystone/schema').ListConfig<${listTypeInfoName}, ${listTypeInfoName}['fields']>;
 `;
     allListsStr += `\n  readonly ${JSON.stringify(list.key)}: ${listTypeInfoName};`;
   }

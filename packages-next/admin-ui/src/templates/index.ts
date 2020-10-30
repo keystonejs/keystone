@@ -4,11 +4,11 @@ import { listTemplate } from './list';
 import { itemTemplate } from './item';
 import { noAccessTemplate } from './no-access';
 
-import type { Keystone } from '@keystone-spike/types';
-import { AdminFileToWrite } from '@keystone-spike/types';
+import type { Keystone } from '@keystone-next/types';
+import { AdminFileToWrite } from '@keystone-next/types';
 import * as Path from 'path';
 
-const pkgDir = Path.dirname(require.resolve('@keystone-spike/admin-ui/package.json'));
+const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.json'));
 
 export { adminMetaSchemaExtension } from './adminMetaSchemaExtension';
 

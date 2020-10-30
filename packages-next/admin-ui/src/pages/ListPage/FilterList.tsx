@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { Inline, jsx, Stack } from '@keystone-ui/core';
-import { FieldMeta, ListMeta } from '@keystone-spike/types';
+import { FieldMeta, ListMeta } from '@keystone-next/types';
 import { Filter } from './useFilters';
 import { useRouter } from '../../router';
 import { Button } from '@keystone-ui/button';

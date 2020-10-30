@@ -1,6 +1,6 @@
 {
-  "name": "@keystone-spike/types",
-  "version": "1.0.0",
+  "name": "@keystone-next/types",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "main": "dist/types.cjs.js",

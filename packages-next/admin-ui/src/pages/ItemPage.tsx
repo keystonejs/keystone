@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Fragment, ReactNode, useMemo, useState } from 'react';
 
-import { ListMeta } from '@keystone-spike/types';
+import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';

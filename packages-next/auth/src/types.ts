@@ -1,4 +1,4 @@
-import { BaseGeneratedListTypes, KeystoneAdminConfig, KeystoneConfig } from '@keystone-spike/types';
+import { BaseGeneratedListTypes, KeystoneAdminConfig, KeystoneConfig } from '@keystone-next/types';
 
 export type AuthGqlNames = {
   CreateInitialInput: string;
