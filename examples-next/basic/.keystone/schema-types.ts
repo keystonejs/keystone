@@ -4,7 +4,7 @@ type Scalars = {
   readonly String: string;
   readonly Int: number;
   readonly Float: number;
-  readonly JSON: import('@keystone-spike/types').JSONValue;
+  readonly JSON: import('@keystone-next/types').JSONValue;
 };
 
 export type PostRelateToManyInput = {
@@ -472,11 +472,11 @@ export type UserListTypeInfo = {
 };
 
 export type UserListFn = (
-  listConfig: import('@keystone-spike/keystone/schema').ListConfig<
+  listConfig: import('@keystone-next/keystone/schema').ListConfig<
     UserListTypeInfo,
     UserListTypeInfo['fields']
   >
-) => import('@keystone-spike/keystone/schema').ListConfig<
+) => import('@keystone-next/keystone/schema').ListConfig<
   UserListTypeInfo,
   UserListTypeInfo['fields']
 >;
@@ -516,11 +516,11 @@ export type PostListTypeInfo = {
 };
 
 export type PostListFn = (
-  listConfig: import('@keystone-spike/keystone/schema').ListConfig<
+  listConfig: import('@keystone-next/keystone/schema').ListConfig<
     PostListTypeInfo,
     PostListTypeInfo['fields']
   >
-) => import('@keystone-spike/keystone/schema').ListConfig<
+) => import('@keystone-next/keystone/schema').ListConfig<
   PostListTypeInfo,
   PostListTypeInfo['fields']
 >;

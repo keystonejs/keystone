@@ -4,16 +4,16 @@ import { Fragment, useMemo, useState } from 'react';
 
 import { jsx, H1 } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
-import { useRawKeystone } from '@keystone-spike/admin-ui';
-import { FieldMeta, SerializedFieldMeta } from '@keystone-spike/types';
+import { useRawKeystone } from '@keystone-next/admin-ui';
+import { FieldMeta, SerializedFieldMeta } from '@keystone-next/types';
 import isDeepEqual from 'fast-deep-equal';
 
 import { SigninContainer } from '../components/SigninContainer';
 import { DocumentNode } from 'graphql';
-import { useMutation } from '@keystone-spike/admin-ui/apollo';
-import { useReinitContext } from '@keystone-spike/admin-ui/context';
-import { useRouter } from '@keystone-spike/admin-ui/router';
-import { GraphQLErrorNotice } from '@keystone-spike/admin-ui/components';
+import { useMutation } from '@keystone-next/admin-ui/apollo';
+import { useReinitContext } from '@keystone-next/admin-ui/context';
+import { useRouter } from '@keystone-next/admin-ui/router';
+import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
 
 export const InitPage = ({
   fields: serializedFields,

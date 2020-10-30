@@ -1,7 +1,7 @@
-import { config } from '@keystone-spike/keystone/schema';
-import { statelessSessions, withItemData } from '@keystone-spike/keystone/session';
+import { config } from '@keystone-next/keystone/schema';
+import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
 import { lists, extendGraphqlSchema } from './schema';
-import { createAuth } from '@keystone-spike/auth';
+import { createAuth } from '@keystone-next/auth';
 
 let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days

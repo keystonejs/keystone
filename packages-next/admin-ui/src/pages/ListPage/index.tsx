@@ -19,7 +19,7 @@ import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
-import { ListMeta } from '@keystone-spike/types';
+import { ListMeta } from '@keystone-next/types';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';

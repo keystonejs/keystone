@@ -8,7 +8,7 @@ import {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-spike/types';
+} from '@keystone-next/types';
 import { Fragment, useState } from 'react';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
 import { Button } from '@keystone-ui/button';

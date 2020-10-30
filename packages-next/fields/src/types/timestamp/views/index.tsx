@@ -1,6 +1,6 @@
 /* @jsx jsx */
 import { jsx } from '@keystone-ui/core';
-import { CellLink, CellContainer } from '@keystone-spike/admin-ui/components';
+import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { parseISO } from 'date-fns';
 
@@ -9,7 +9,7 @@ import {
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-spike/types';
+} from '@keystone-next/types';
 import { useState } from 'react';
 
 // TODO: Bring across the datetime/datetimeUtc interfaces, date picker, etc.

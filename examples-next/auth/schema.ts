@@ -1,5 +1,5 @@
-import { createSchema, list } from '@keystone-spike/keystone/schema';
-import { text, checkbox, password } from '@keystone-spike/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { text, checkbox, password } from '@keystone-next/fields';
 
 export const lists = createSchema({
   User: list({

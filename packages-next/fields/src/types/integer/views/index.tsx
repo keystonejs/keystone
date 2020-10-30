@@ -2,14 +2,14 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { CellLink, CellContainer } from '@keystone-spike/admin-ui/components';
+import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
 
 import {
   CellComponent,
   FieldController,
   FieldControllerConfig,
   FieldProps,
-} from '@keystone-spike/types';
+} from '@keystone-next/types';
 
 export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => (
   <FieldContainer>

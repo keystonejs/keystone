@@ -1,4 +1,4 @@
-export type { FieldConfig } from '@keystone-spike/types';
+export type { FieldConfig } from '@keystone-next/types';
 
 export interface FieldAdminMeta {
   label: string;

@@ -2,7 +2,7 @@
 
 import { jsx } from '@keystone-ui/core';
 import { TextInput } from '@keystone-ui/fields';
-import { FieldController, FieldControllerConfig } from '@keystone-spike/types';
+import { FieldController, FieldControllerConfig } from '@keystone-next/types';
 
 export { Field, Cell } from '../../text/views';
 

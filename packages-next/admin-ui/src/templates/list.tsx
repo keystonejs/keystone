@@ -1,4 +1,4 @@
-import type { Keystone } from '@keystone-spike/types';
+import type { Keystone } from '@keystone-next/types';
 
 type ListPageTemplateOptions = {
   list: Keystone['adminMeta']['lists'][string];
@@ -9,7 +9,7 @@ export const listTemplate = (keystone: Keystone, { list }: ListPageTemplateOptio
   return `
 import React from 'react';
 
-import { ListPage } from '@keystone-spike/admin-ui';
+import { ListPage } from '@keystone-next/admin-ui';
 
 export default function List() {
   return <ListPage listKey="${list.key}" />;

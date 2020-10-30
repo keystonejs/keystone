@@ -1,4 +1,4 @@
-import type { KeystoneConfig } from '@keystone-spike/types';
+import type { KeystoneConfig } from '@keystone-next/types';
 import { createKeystone } from '../classes/Keystone';
 import { requireProjectFile } from './requireSource';
 
