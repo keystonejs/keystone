@@ -9,7 +9,7 @@ import type {
   SessionContext,
   FieldType,
 } from '@keystone-next/types';
-import { sessionStuff } from '../session';
+import { implementSession } from '../session';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { gql } from '../schema';
@@ -113,7 +113,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     schemaName: 'public',
     dev: process.env.NODE_ENV === 'development',
   });
-  let sessionThing = sessionStrategy ? sessionStuff(sessionStrategy) : undefined;
+  let sessionImplementation = sessionStrategy ? implementSession(sessionStrategy) : undefined;
   const schemaFromApolloServer: GraphQLSchema = server.schema;
   const schema = mapSchema(schemaFromApolloServer, {
     'MapperKind.OBJECT_TYPE'(type) {
@@ -160,7 +160,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     adminMeta,
     graphQLSchema,
     isAccessAllowed:
-      sessionThing === undefined
+      sessionImplementation === undefined
         ? undefined
         : config.admin?.isAccessAllowed ?? (({ session }) => session !== undefined),
     config,
@@ -189,7 +189,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     crud[listKey] = crudForList((keystone as any).lists[listKey], graphQLSchema, createContext);
   }
 
-  const createSessionContext = sessionThing?.createContext;
+  const createSessionContext = sessionImplementation?.createContext;
   let keystoneThing = {
     keystone,
     adminMeta,
@@ -202,7 +202,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       : undefined,
     createContext,
     async createContextFromRequest(req: IncomingMessage, res: ServerResponse) {
-      let sessionContext = await sessionThing?.createContext(req, res, keystoneThing);
+      let sessionContext = await sessionImplementation?.createContext(req, res, keystoneThing);
 
       return createContext({ sessionContext });
     },
