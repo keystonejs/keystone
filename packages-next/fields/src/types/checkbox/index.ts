@@ -13,7 +13,7 @@ export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
 const views = resolveView('checkbox/views');
 
 export const checkbox = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: CheckboxFieldConfig<TGeneratedListTypes>
+  config: CheckboxFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
   type: Checkbox,
   config: config,

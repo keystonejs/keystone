@@ -16,7 +16,7 @@ type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = F
 };
 
 export const password = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: PasswordFieldConfig<TGeneratedListTypes>
+  config: PasswordFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
   type: Password,
   config,

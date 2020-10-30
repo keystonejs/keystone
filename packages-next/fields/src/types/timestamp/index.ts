@@ -17,7 +17,7 @@ export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTy
 const views = resolveView('timestamp/views');
 
 export const timestamp = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: TimestampFieldConfig<TGeneratedListTypes>
+  config: TimestampFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
   type: DateTimeUtc,
   config,

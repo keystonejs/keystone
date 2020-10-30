@@ -19,7 +19,7 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
 const views = resolveView('text/views');
 
 export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: TextFieldConfig<TGeneratedListTypes>
+  config: TextFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
   type: Text,
   config,
