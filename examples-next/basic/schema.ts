@@ -11,8 +11,20 @@ import {
 import { KeystoneCrudAPI } from '@keystone-next/types';
 import { KeystoneListsTypeInfo } from './.keystone/schema-types';
 
+// TODO: Can we generate this type based on withItemData in the main config?
+type AccessArgs = {
+  session?: {
+    itemId?: string;
+    listKey?: string;
+    data?: {
+      name?: string;
+      isAdmin: boolean;
+    };
+  };
+  item?: any;
+};
 export const access = {
-  isAdmin: ({ session }) => !!session?.item?.isAdmin,
+  isAdmin: ({ session }: AccessArgs) => !!session?.data?.isAdmin,
 };
 
 const randomNumber = () => Math.round(Math.random() * 10);
