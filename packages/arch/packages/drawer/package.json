@@ -21,7 +21,7 @@
     "@babel/runtime": "^7.12.1",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "focus-trap-react": "^8.1.0",
+    "focus-trap-react": "^8.1.1",
     "react-scrolllock": "^5.0.1"
   },
   "module": "dist/drawer.esm.js",
