@@ -1,7 +1,6 @@
 {
   "name": "@keystone-ui/options",
   "version": "0.0.0",
-  "private": true,
   "license": "MIT",
   "main": "dist/options.cjs.js",
   "module": "dist/options.esm.js",

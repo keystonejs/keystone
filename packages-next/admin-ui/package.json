@@ -1,7 +1,6 @@
 {
   "name": "@keystone-next/admin-ui",
   "version": "0.0.0",
-  "private": true,
   "license": "MIT",
   "main": "dist/admin-ui.cjs.js",
   "module": "dist/admin-ui.esm.js",

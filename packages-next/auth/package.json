@@ -1,7 +1,6 @@
 {
   "name": "@keystone-next/auth",
   "version": "0.0.0",
-  "private": true,
   "license": "MIT",
   "main": "dist/auth.cjs.js",
   "module": "dist/auth.esm.js",
