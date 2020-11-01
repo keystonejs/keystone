@@ -24,7 +24,7 @@
     "date-fns": "^2.16.1",
     "intersection-observer": "^0.11.0",
     "moment": "^2.29.1",
-    "react-window": "^1.8.5"
+    "react-window": "^1.8.6"
   },
   "module": "dist/day-picker.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/day-picker"
