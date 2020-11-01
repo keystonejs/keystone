@@ -3609,10 +3609,21 @@
   resolved "https://registry.yarnpkg.com/@types/anymatch/-/anymatch-1.3.1.tgz#336badc1beecb9dacc38bea2cf32adf627a8421a"
   integrity sha512-/+CRPXpBDpo2RK9C68N3b2cOvO0Cf5B9aPijHsoDQTHivnGSObdOF2BRQOYjojWTDy6nQvMjmqRXIxH55VjxxA==
 
-"@types/babel__core@^7.0.0", "@types/babel__core@^7.1.10", "@types/babel__core@^7.1.7":
+"@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.10"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.10.tgz#ca58fc195dd9734e77e57c6f2df565623636ab40"
   integrity sha512-x8OM8XzITIMyiwl5Vmo2B1cR1S1Ipkyv4mdlbJjMa1lmuKvKY9FrBbEANIaMlnWn5Rf7uO+rC/VgYabNkE17Hw==
+  dependencies:
+    "@babel/parser" "^7.1.0"
+    "@babel/types" "^7.0.0"
+    "@types/babel__generator" "*"
+    "@types/babel__template" "*"
+    "@types/babel__traverse" "*"
+
+"@types/babel__core@^7.1.11":
+  version "7.1.11"
+  resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.11.tgz#7fae4660a009a4031e293f25b213f142d823b3c4"
+  integrity sha512-E5nSOzrjnvhURYnbOR2dClTqcyhPbPvtEwLHf7JJADKedPbcZsoJVfP+I2vBNfBjz4bnZIuhL/tNmRi5nJ7Jlw==
   dependencies:
     "@babel/parser" "^7.1.0"
     "@babel/types" "^7.0.0"
@@ -5732,10 +5743,10 @@ available-typed-arrays@^1.0.0, available-typed-arrays@^1.0.2:
   dependencies:
     array-filter "^1.0.0"
 
-aws-sdk@^2.782.0:
-  version "2.782.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.782.0.tgz#84e22bf1bf370f702cb741b95a25356745b0a632"
-  integrity sha512-8aCZBQQoJ5dUWb0Ij8x7MwrKKuoHGF3g3EoDiRDJws/VdYSs995S0OTNX5/TwaR/ltdtBU0t+GGGTPPQFYZ1nA==
+aws-sdk@^2.783.0:
+  version "2.783.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.783.0.tgz#f6a2fb2d1af2e7c5a6ec2959436499ff5b6c705b"
+  integrity sha512-u3/ZvY/ag1hEkPpgBJxypWRGf8930prIDOWk221pgH0WhlRA9qp3IE8D0j/BKFei0giqlxbN/AB05RITp/XlwQ==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
