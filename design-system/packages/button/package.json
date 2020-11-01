@@ -1,7 +1,6 @@
 {
   "name": "@keystone-ui/button",
   "version": "0.0.0",
-  "private": true,
   "license": "MIT",
   "main": "dist/button.cjs.js",
   "module": "dist/button.esm.js",

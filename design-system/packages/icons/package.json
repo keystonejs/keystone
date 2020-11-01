@@ -1,7 +1,6 @@
 {
   "name": "@keystone-ui/icons",
   "version": "0.0.0",
-  "private": true,
   "license": "MIT",
   "main": "dist/icons.cjs.js",
   "module": "dist/icons.esm.js",
