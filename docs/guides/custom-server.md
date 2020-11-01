@@ -152,41 +152,14 @@ Promise.all(preparations).then(async middlewares => {
 });
 ```
 
-## Custom server as a Lambda
+## Custom server for ServerLess environments
 
-Keystone is powered by Node, so it can run in "Serverless" environments such as
-[AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) which
-support Node >= 10.x.
+The current version of Keystone cannot be run in a ServerLess environment such as
+[AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html).
 
-With a little finesse (and the [`serverless-http`
-library](https://github.com/dougmoscrop/serverless-http)), we can run our
-Keystone instance in AWS Lambda:
+This is because the bundled dependencies cause the uncompressed size to exceed the limit of 250mb 
+and the dependencies do not compact nicely with "serverless-webpack" due to dynamic require statements.
 
-```javascript title=lambda.js
-const express = require('express');
-const serverless = require('serverless-http');
-const { Keystone } = require('@keystonejs/keystone');
-const { GraphQLApp } = require('@keystonejs/app-graphql');
+The KeystoneJS team are working to resolve this in the next major update.
 
-const keystone = new Keystone({...});
-
-// Only setup once per instance
-const setup = keystone
-  .prepare({
-    apps: [new GraphQLApp()],
-    dev: process.env.NODE_ENV !== 'production',
-  })
-  .then(async ({ middlewares }) => {
-    await keystone.connect();
-    const app = express();
-
-    app.use(middlewares);
-
-    return serverless(app);
-  });
-
-module.exports.handler = async (event, context) => {
-  const handler = await setup;
-  return handler(event, context);
-};
-```
+For now it is best to explore other deployment options such as Docker containers, Heroku or just a simple server behind a load balancer.
