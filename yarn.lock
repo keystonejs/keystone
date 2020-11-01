@@ -3907,10 +3907,10 @@
   resolved "https://registry.yarnpkg.com/@types/keygrip/-/keygrip-1.0.2.tgz#513abfd256d7ad0bf1ee1873606317b33b1b2a72"
   integrity sha512-GJhpTepz2udxGexqos8wgaBx4I/zWIDPh/KOGEwAqtuGDkOUJu5eFvwmdBX4AmB8Odsr+9pHCQqiAqDL/yKMKw==
 
-"@types/keystonejs__adapter-knex@^6.3.1":
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/@types/keystonejs__adapter-knex/-/keystonejs__adapter-knex-6.3.1.tgz#f8c391d85ae7540b17a2b015f3fb3e6c53093b95"
-  integrity sha512-yi3Yt0tbkpRCq5LsTdYLe0L/b2tJWdh6GEuc8XxLI4HT1kQXno6qD6m111vmO5kNnC1xNKcYPQ75HmQI4W2zUg==
+"@types/keystonejs__adapter-knex@^6.3.2":
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/@types/keystonejs__adapter-knex/-/keystonejs__adapter-knex-6.3.2.tgz#379541fb5e06182be28e2d1cae383257f56bc3e5"
+  integrity sha512-J4nf8bmvV/K83vmK2oxfuKsPNV05L2fBlI5fIZoZ+lTC4OAzVxWB11uoEgQCl8fcOs+z9Kp3sHWMxjNf409i5Q==
   dependencies:
     "@types/keystonejs__keystone" "*"
     knex "^0.20.1"
