@@ -176,6 +176,11 @@ const resolveInput = ({
 }) => {
   // Input resolution logic. Object returned is used in place of `resolvedData`.
   return resolvedData;
+  // This will not work.
+  return { ...resolvedData, listField: <value> };
+  // Do this instead.
+  resolvedData.listField = <value>
+  return resolvedData;
 };
 ```
 
