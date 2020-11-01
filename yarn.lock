@@ -1449,10 +1449,10 @@
     "@changesets/types" "^3.0.0"
     dotenv "^8.1.0"
 
-"@changesets/cli@^2.11.1":
-  version "2.11.1"
-  resolved "https://registry.yarnpkg.com/@changesets/cli/-/cli-2.11.1.tgz#cefaa656b9d829ec55e08daf986f56c616ce5ea8"
-  integrity sha512-Msjz1Kb1VYf9P0zPvbQ3g/+0BsPpu/9ReZ8o08CFQb3FvYmHaG5KIOcZd2I+kaWF4TWiLeL26fkMQxFn5+KiAA==
+"@changesets/cli@^2.11.2":
+  version "2.11.2"
+  resolved "https://registry.yarnpkg.com/@changesets/cli/-/cli-2.11.2.tgz#6c2d9470a9c89e7389db5ac80069a77072079413"
+  integrity sha512-Lfw4MWj46H7dgPzgYmRJ8QbpDxi02dK+21zuWzBjVtsf3AqJgy7oVdXl4Yga/JhBq8eeoxBS9NoCVw8/JOZBcg==
   dependencies:
     "@babel/runtime" "^7.10.4"
     "@changesets/apply-release-plan" "^4.0.0"
@@ -3907,10 +3907,10 @@
   resolved "https://registry.yarnpkg.com/@types/keygrip/-/keygrip-1.0.2.tgz#513abfd256d7ad0bf1ee1873606317b33b1b2a72"
   integrity sha512-GJhpTepz2udxGexqos8wgaBx4I/zWIDPh/KOGEwAqtuGDkOUJu5eFvwmdBX4AmB8Odsr+9pHCQqiAqDL/yKMKw==
 
-"@types/keystonejs__adapter-knex@^6.3.1":
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/@types/keystonejs__adapter-knex/-/keystonejs__adapter-knex-6.3.1.tgz#f8c391d85ae7540b17a2b015f3fb3e6c53093b95"
-  integrity sha512-yi3Yt0tbkpRCq5LsTdYLe0L/b2tJWdh6GEuc8XxLI4HT1kQXno6qD6m111vmO5kNnC1xNKcYPQ75HmQI4W2zUg==
+"@types/keystonejs__adapter-knex@^6.3.2":
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/@types/keystonejs__adapter-knex/-/keystonejs__adapter-knex-6.3.2.tgz#379541fb5e06182be28e2d1cae383257f56bc3e5"
+  integrity sha512-J4nf8bmvV/K83vmK2oxfuKsPNV05L2fBlI5fIZoZ+lTC4OAzVxWB11uoEgQCl8fcOs+z9Kp3sHWMxjNf409i5Q==
   dependencies:
     "@types/keystonejs__keystone" "*"
     knex "^0.20.1"
@@ -4096,10 +4096,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-select@^3.0.22":
-  version "3.0.22"
-  resolved "https://registry.yarnpkg.com/@types/react-select/-/react-select-3.0.22.tgz#b88306365e99fa86809a5c0ce0f1b4e8d0b626bf"
-  integrity sha512-fqgmC979JPr/6476Pau6QnmI9zVV664R7Q92Ld1rgTn+umtUXT5X3+PO/x6O4imCZnh7XCqZcouabWAlAQJNpQ==
+"@types/react-select@^3.0.23":
+  version "3.0.23"
+  resolved "https://registry.yarnpkg.com/@types/react-select/-/react-select-3.0.23.tgz#67fa25e3305e682d680058542a634964ef44af94"
+  integrity sha512-WrXjixjHlDfG4kSwasQZvZXD+hPamNTvJYWYb5TAt3hwhVg+4imNMPdUTDQhrGrCHIeKUc5h+syGCylnw30Suw==
   dependencies:
     "@types/react" "*"
     "@types/react-dom" "*"
