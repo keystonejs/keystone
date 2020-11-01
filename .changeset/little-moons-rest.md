@@ -1,23 +1,23 @@
 ---
-'@keystone-ui/button': minor
-'@keystone-ui/core': minor
-'@keystone-ui/fields': minor
-'@keystone-ui/icons': minor
-'@keystone-ui/loading': minor
-'@keystone-ui/modals': minor
-'@keystone-ui/notice': minor
-'@keystone-ui/options': minor
-'@keystone-ui/pill': minor
-'@keystone-ui/popover': minor
-'@keystone-ui/segmented-control': minor
-'@keystone-ui/toast': minor
-'@keystone-ui/tooltip': minor
-'@keystone-next/admin-ui': minor
-'@keystone-next/auth': minor
-'@keystone-next/fields': minor
-'@keystone-next/keystone': minor
-'@keystone-next/session-store-redis': minor
-'@keystone-next/types': minor
+'@keystone-ui/button': major
+'@keystone-ui/core': major
+'@keystone-ui/fields': major
+'@keystone-ui/icons': major
+'@keystone-ui/loading': major
+'@keystone-ui/modals': major
+'@keystone-ui/notice': major
+'@keystone-ui/options': major
+'@keystone-ui/pill': major
+'@keystone-ui/popover': major
+'@keystone-ui/segmented-control': major
+'@keystone-ui/toast': major
+'@keystone-ui/tooltip': major
+'@keystone-next/admin-ui': major
+'@keystone-next/auth': major
+'@keystone-next/fields': major
+'@keystone-next/keystone': major
+'@keystone-next/session-store-redis': major
+'@keystone-next/types': major
 ---
 
 Initial release
