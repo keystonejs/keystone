@@ -18,30 +18,16 @@ export const skipRequiredTest = true;
 export const skipCommonFilterTest = true;
 export const skipCommonCrudTest = true;
 
-export const getTestFields = () => {
-  return {
-    name: { type: Text },
-    body: { type: Content },
-  };
-};
+export const getTestFields = () => ({
+  name: { type: Text },
+  body: { type: Content },
+});
 
 export const initItems = () => [
-  {
-    name: 'a',
-    body: { create: { document: DOC1 } },
-  },
-  {
-    name: 'b',
-    body: { create: { document: DOC2 } },
-  },
-  {
-    name: 'c',
-    body: { create: { document: DOC3 } },
-  },
-  {
-    name: 'd',
-    body: { create: { document: null } },
-  },
+  { name: 'a', body: { create: { document: DOC1 } } },
+  { name: 'b', body: { create: { document: DOC2 } } },
+  { name: 'c', body: { create: { document: DOC3 } } },
+  { name: 'd', body: { create: { document: null } } },
 ];
 
 export const filterTests = withKeystone => {
@@ -60,22 +46,10 @@ export const filterTests = withKeystone => {
     'No filter',
     withKeystone(({ keystone }) =>
       match(keystone, undefined, [
-        {
-          name: 'a',
-          body: { document: DOC1 },
-        },
-        {
-          name: 'b',
-          body: { document: DOC2 },
-        },
-        {
-          name: 'c',
-          body: { document: DOC3 },
-        },
-        {
-          name: 'd',
-          body: { document: null },
-        },
+        { name: 'a', body: { document: DOC1 } },
+        { name: 'b', body: { document: DOC2 } },
+        { name: 'c', body: { document: DOC3 } },
+        { name: 'd', body: { document: null } },
       ])
     )
   );
@@ -83,22 +57,10 @@ export const filterTests = withKeystone => {
     'Empty filter',
     withKeystone(({ keystone }) =>
       match(keystone, {}, [
-        {
-          name: 'a',
-          body: { document: DOC1 },
-        },
-        {
-          name: 'b',
-          body: { document: DOC2 },
-        },
-        {
-          name: 'c',
-          body: { document: DOC3 },
-        },
-        {
-          name: 'd',
-          body: { document: null },
-        },
+        { name: 'a', body: { document: DOC1 } },
+        { name: 'b', body: { document: DOC2 } },
+        { name: 'c', body: { document: DOC3 } },
+        { name: 'd', body: { document: null } },
       ])
     )
   );
@@ -113,14 +75,8 @@ export const filterTests = withKeystone => {
     'Filter: document_i (case-insensitive)',
     withKeystone(({ keystone }) =>
       match(keystone, { body: { document_i: DOC1 } }, [
-        {
-          name: 'a',
-          body: { document: DOC1 },
-        },
-        {
-          name: 'b',
-          body: { document: DOC2 },
-        },
+        { name: 'a', body: { document: DOC1 } },
+        { name: 'b', body: { document: DOC2 } },
       ])
     )
   );
@@ -129,18 +85,9 @@ export const filterTests = withKeystone => {
     'Filter: document_not (case-sensitive)',
     withKeystone(({ keystone }) =>
       match(keystone, { body: { document_not: DOC1 } }, [
-        {
-          name: 'b',
-          body: { document: DOC2 },
-        },
-        {
-          name: 'c',
-          body: { document: DOC3 },
-        },
-        {
-          name: 'd',
-          body: { document: null },
-        },
+        { name: 'b', body: { document: DOC2 } },
+        { name: 'c', body: { document: DOC3 } },
+        { name: 'd', body: { document: null } },
       ])
     )
   );
@@ -149,14 +96,8 @@ export const filterTests = withKeystone => {
     'Filter: document_not_i (case-insensitive)',
     withKeystone(({ keystone }) =>
       match(keystone, { body: { document_not_i: DOC1 } }, [
-        {
-          name: 'c',
-          body: { document: DOC3 },
-        },
-        {
-          name: 'd',
-          body: { document: null },
-        },
+        { name: 'c', body: { document: DOC3 } },
+        { name: 'd', body: { document: null } },
       ])
     )
   );
@@ -170,22 +111,10 @@ export const filterTests = withKeystone => {
     'Filter: document_not_in (empty list)',
     withKeystone(({ keystone }) =>
       match(keystone, { body: { document_not_in: [] } }, [
-        {
-          name: 'a',
-          body: { document: DOC1 },
-        },
-        {
-          name: 'b',
-          body: { document: DOC2 },
-        },
-        {
-          name: 'c',
-          body: { document: DOC3 },
-        },
-        {
-          name: 'd',
-          body: { document: null },
-        },
+        { name: 'a', body: { document: DOC1 } },
+        { name: 'b', body: { document: DOC2 } },
+        { name: 'c', body: { document: DOC3 } },
+        { name: 'd', body: { document: null } },
       ])
     )
   );
@@ -194,14 +123,8 @@ export const filterTests = withKeystone => {
     'Filter: document_in',
     withKeystone(({ keystone }) =>
       match(keystone, { body: { document_in: [DOC1, DOC2] } }, [
-        {
-          name: 'a',
-          body: { document: DOC1 },
-        },
-        {
-          name: 'b',
-          body: { document: DOC2 },
-        },
+        { name: 'a', body: { document: DOC1 } },
+        { name: 'b', body: { document: DOC2 } },
       ])
     )
   );
@@ -210,14 +133,8 @@ export const filterTests = withKeystone => {
     'Filter: document_not_in',
     withKeystone(({ keystone }) =>
       match(keystone, { body: { document_not_in: [DOC1, DOC2] } }, [
-        {
-          name: 'c',
-          body: { document: DOC3 },
-        },
-        {
-          name: 'd',
-          body: { document: null },
-        },
+        { name: 'c', body: { document: DOC3 } },
+        { name: 'd', body: { document: null } },
       ])
     )
   );
@@ -225,12 +142,7 @@ export const filterTests = withKeystone => {
   test(
     'Filter: document_in null',
     withKeystone(({ keystone }) =>
-      match(keystone, { body: { document_in: [null] } }, [
-        {
-          name: 'd',
-          body: { document: null },
-        },
-      ])
+      match(keystone, { body: { document_in: [null] } }, [{ name: 'd', body: { document: null } }])
     )
   );
 
@@ -238,18 +150,9 @@ export const filterTests = withKeystone => {
     'Filter: document_not_in null',
     withKeystone(({ keystone }) =>
       match(keystone, { body: { document_not_in: [null] } }, [
-        {
-          name: 'a',
-          body: { document: DOC1 },
-        },
-        {
-          name: 'b',
-          body: { document: DOC2 },
-        },
-        {
-          name: 'c',
-          body: { document: DOC3 },
-        },
+        { name: 'a', body: { document: DOC1 } },
+        { name: 'b', body: { document: DOC2 } },
+        { name: 'c', body: { document: DOC3 } },
       ])
     )
   );
@@ -258,10 +161,7 @@ export const filterTests = withKeystone => {
     'Filter: document_contains (case_sensitive)',
     withKeystone(({ keystone }) =>
       match(keystone, { body: { document_contains: 'This is bold' } }, [
-        {
-          name: 'a',
-          body: { document: DOC1 },
-        },
+        { name: 'a', body: { document: DOC1 } },
       ])
     )
   );
@@ -270,14 +170,8 @@ export const filterTests = withKeystone => {
     'Filter: document_contains_i (case_insensitive)',
     withKeystone(({ keystone }) =>
       match(keystone, { body: { document_contains_i: 'This is bold' } }, [
-        {
-          name: 'a',
-          body: { document: DOC1 },
-        },
-        {
-          name: 'b',
-          body: { document: DOC2 },
-        },
+        { name: 'a', body: { document: DOC1 } },
+        { name: 'b', body: { document: DOC2 } },
       ])
     )
   );
@@ -286,18 +180,9 @@ export const filterTests = withKeystone => {
     'Filter: document_not_contains (case_sensitive)',
     withKeystone(({ keystone }) =>
       match(keystone, { body: { document_not_contains: 'This is bold' } }, [
-        {
-          name: 'b',
-          body: { document: DOC2 },
-        },
-        {
-          name: 'c',
-          body: { document: DOC3 },
-        },
-        {
-          name: 'd',
-          body: { document: null },
-        },
+        { name: 'b', body: { document: DOC2 } },
+        { name: 'c', body: { document: DOC3 } },
+        { name: 'd', body: { document: null } },
       ])
     )
   );
@@ -305,14 +190,8 @@ export const filterTests = withKeystone => {
     'Filter: document_not_contains_i (case_insensitive)',
     withKeystone(({ keystone }) =>
       match(keystone, { body: { document_not_contains_i: 'This is bold' } }, [
-        {
-          name: 'c',
-          body: { document: DOC3 },
-        },
-        {
-          name: 'd',
-          body: { document: null },
-        },
+        { name: 'c', body: { document: DOC3 } },
+        { name: 'd', body: { document: null } },
       ])
     )
   );

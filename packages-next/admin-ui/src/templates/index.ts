@@ -4,15 +4,19 @@ import { listTemplate } from './list';
 import { itemTemplate } from './item';
 import { noAccessTemplate } from './no-access';
 
-import type { Keystone } from '@keystone-spike/types';
-import { AdminFileToWrite } from '@keystone-spike/types';
+import type { Keystone } from '@keystone-next/types';
+import { AdminFileToWrite } from '@keystone-next/types';
 import * as Path from 'path';
 
-const pkgDir = Path.dirname(require.resolve('@keystone-spike/admin-ui/package.json'));
+const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.json'));
 
 export { adminMetaSchemaExtension } from './adminMetaSchemaExtension';
 
-export const writeAdminFiles = (keystone: Keystone, configFile: boolean): AdminFileToWrite[] => {
+export const writeAdminFiles = (
+  keystone: Keystone,
+  configFile: boolean,
+  projectAdminPath: string
+): AdminFileToWrite[] => {
   return [
     {
       mode: 'copy',
@@ -32,7 +36,7 @@ export const writeAdminFiles = (keystone: Keystone, configFile: boolean): AdminF
     {
       mode: 'write',
       outputPath: 'pages/_app.js',
-      src: appTemplate(keystone, { configFile }),
+      src: appTemplate(keystone, { configFile, projectAdminPath }),
     },
     {
       mode: 'write',

@@ -41,7 +41,6 @@ export const type = CloudinaryImage;
 export const supportsUnique = false;
 export const fieldName = 'image';
 export const subfieldName = 'originalFilename';
-export const unSupportedAdapterList = ['prisma'];
 
 // This function will run after all the tests are completed.
 // We use it to cleanup the resources (e.g Cloudinary images) which are no longer required.
@@ -77,4 +76,7 @@ export const storedValues = () => [
   { image: null, name: 'file6' },
 ];
 
-export const supportedFilters = ['null_equality', 'in_empty_null'];
+export const supportedFilters = adapterName => [
+  'null_equality',
+  adapterName !== 'prisma_postgresql' && 'in_empty_null',
+];

@@ -1,5 +1,15 @@
 # @keystonejs/fields
 
+## 19.1.1
+
+### Patch Changes
+
+- [`722f57f64`](https://github.com/keystonejs/keystone/commit/722f57f64c3cebe63041868005966367a0bfa2e3) [#4010](https://github.com/keystonejs/keystone/pull/4010) Thanks [@timleslie](https://github.com/timleslie)! - Updated Prisma data type selection for `Select` fields using the `PrismaAdapter`.
+
+- Updated dependencies [[`c4478b1c7`](https://github.com/keystonejs/keystone/commit/c4478b1c74e205232ecb321de91f0eda0e78b819), [`874fb3377`](https://github.com/keystonejs/keystone/commit/874fb337786dba2a2513f754bdfb2ab93ac81598)]:
+  - @keystonejs/adapter-knex@12.0.2
+  - @keystonejs/adapter-prisma@1.0.6
+
 ## 19.1.0
 
 ### Minor Changes

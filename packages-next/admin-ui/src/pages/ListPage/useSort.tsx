@@ -1,4 +1,4 @@
-import { ListMeta } from '@keystone-spike/types';
+import { ListMeta } from '@keystone-next/types';
 import { useMemo } from 'react';
 import { useRouter } from '../../router';
 

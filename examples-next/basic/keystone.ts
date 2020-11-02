@@ -1,7 +1,8 @@
-import { config } from '@keystone-spike/keystone/schema';
-import { statelessSessions, withItemData } from '@keystone-spike/keystone/session';
+import { config } from '@keystone-next/keystone/schema';
+import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
+import { createAuth } from '@keystone-next/auth';
+
 import { lists, extendGraphqlSchema } from './schema';
-import { createAuth } from '@keystone-spike/auth';
 
 let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
@@ -16,18 +17,9 @@ const auth = createAuth({
       isAdmin: true,
     },
   },
-  passwordResetLink: {
-    sendToken(args) {
-      console.log(`Password reset info:`, args);
-    },
-  },
-  magicAuthLink: {
-    sendToken(args) {
-      console.log(`Magic auth info:`, args);
-    },
-  },
 });
 
+// TODO -- Create a separate example for access control in the Admin UI
 // const isAccessAllowed = ({ session }: { session: any }) => !!session?.item?.isAdmin;
 
 export default auth.withAuth(
@@ -38,19 +30,20 @@ export default auth.withAuth(
       url: 'mongodb://localhost/keystone-examples-next-basic',
     },
     graphql: {
-      // NOTE -- this is not implemented, the spike always provides a graphql api at /api/graphql
+      // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
       path: '/api/graphql',
     },
     admin: {
-      // NOTE -- this is not implemented, the spike always provides an admin ui at /
+      // NOTE -- this is not implemented, keystone currently always provides an admin ui at /
       path: '/admin',
       // isAccessAllowed,
+      /* TODO -- Create a separate example for custom pages in the Admin UI */
       getAdditionalFiles: [
         () => [
           {
             mode: 'write',
-            outputPath: 'pages/something.js',
-            src: 'export default function Something() {return "wowza"}',
+            outputPath: 'pages/custom.js',
+            src: 'export default function Something() { return "This is a custom page." }',
           },
         ],
       ],
@@ -64,6 +57,7 @@ export default auth.withAuth(
       }),
       { User: 'name isAdmin' }
     ),
+    // TODO -- Create a separate example for stored/redis sessions
     // session: storedSessions({
     //   store: new Map(),
     //   // store: redisSessionStore({ client: redis.createClient() }),

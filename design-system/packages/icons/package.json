@@ -1,7 +1,6 @@
 {
   "name": "@keystone-ui/icons",
-  "version": "1.0.0",
-  "private": true,
+  "version": "0.0.0",
   "license": "MIT",
   "main": "dist/icons.cjs.js",
   "module": "dist/icons.esm.js",
@@ -13,7 +12,7 @@
     "@svgr/plugin-jsx": "^5.4.0",
     "@svgr/plugin-prettier": "^5.4.0",
     "@svgr/plugin-svgo": "^5.4.0",
-    "@types/react": "^16.9.51",
+    "@types/react": "^16.9.55",
     "chalk": "^4.1.0",
     "feather-icons": "^4.28.0",
     "fs-extra": "^9.0.1",
@@ -22,8 +21,8 @@
     "to-pascal-case": "^1.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
-    "@keystone-ui/core": "*"
+    "@babel/runtime": "^7.12.1",
+    "@keystone-ui/core": "^0.0.0"
   },
   "peerDependencies": {
     "react": "^16.14.0"

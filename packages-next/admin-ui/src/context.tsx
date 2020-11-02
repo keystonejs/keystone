@@ -1,6 +1,6 @@
 import React, { ReactNode, createContext, useContext, useMemo } from 'react';
 import { ApolloProvider, ApolloClient, InMemoryCache, ApolloError, DocumentNode } from './apollo';
-import type { AdminConfig, AdminMeta, FieldViews } from '@keystone-spike/types';
+import type { AdminConfig, AdminMeta, FieldViews } from '@keystone-next/types';
 import { Center } from '@keystone-ui/core';
 import { ToastProvider } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
@@ -35,28 +35,17 @@ type KeystoneProviderProps = {
   lazyMetadataQuery: DocumentNode;
 };
 
-export const KeystoneProvider = ({
+function InternalKeystoneProvider({
   adminConfig,
   fieldViews,
   adminMetaHash,
   children,
   lazyMetadataQuery,
-}: KeystoneProviderProps) => {
-  const apolloClient = useMemo(
-    () =>
-      new ApolloClient({
-        cache: new InMemoryCache(),
-        uri: '/api/graphql',
-      }),
-    []
-  );
-
-  const adminMeta = useAdminMeta(apolloClient, adminMetaHash, fieldViews);
+}: KeystoneProviderProps) {
+  const adminMeta = useAdminMeta(adminMetaHash, fieldViews);
   const { authenticatedItem, visibleLists, createViewFieldModes, refetch } = useLazyMetadata(
-    lazyMetadataQuery,
-    apolloClient
+    lazyMetadataQuery
   );
-
   const reinitContext = () => {
     adminMeta?.refetch?.();
     refetch();
@@ -83,10 +72,28 @@ export const KeystoneProvider = ({
             createViewFieldModes,
           }}
         >
-          <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
+          {children}
         </KeystoneContext.Provider>
       </DrawerProvider>
     </ToastProvider>
+  );
+}
+
+export const KeystoneProvider = (props: KeystoneProviderProps) => {
+  const apolloClient = useMemo(
+    () =>
+      new ApolloClient({
+        cache: new InMemoryCache(),
+        uri: '/api/graphql',
+      }),
+    []
+  );
+
+  return (
+    <ApolloProvider client={apolloClient}>
+      <script src="http://localhost:8097" />
+      <InternalKeystoneProvider {...props} />
+    </ApolloProvider>
   );
 };
 

@@ -32,4 +32,4 @@ export const storedValues = () => [
   { name: 'person7', enabled: null },
 ];
 
-export const supportedFilters = ['null_equality', 'equality'];
+export const supportedFilters = () => ['null_equality', 'equality'];

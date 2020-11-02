@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
-import { gql, TypedDocumentNode, useQuery } from '@keystone-spike/admin-ui/apollo';
+import { gql, TypedDocumentNode, useQuery } from '@keystone-next/admin-ui/apollo';
 import { Select, selectComponents, MultiSelect } from '@keystone-ui/fields';
 import 'intersection-observer';
 import { useState, useMemo, useRef, useEffect, RefObject } from 'react';
-import { ListMeta } from '@keystone-spike/types';
+import { ListMeta } from '@keystone-next/types';
 
 function useIntersectionObserver(cb: IntersectionObserverCallback, ref: RefObject<any>) {
   useEffect(() => {

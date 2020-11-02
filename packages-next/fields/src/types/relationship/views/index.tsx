@@ -9,15 +9,15 @@ import {
   FieldControllerConfig,
   FieldProps,
   ListMeta,
-} from '@keystone-spike/types';
+} from '@keystone-next/types';
 import { RelationshipSelect } from './RelationshipSelect';
-import { useKeystone, useList } from '@keystone-spike/admin-ui/context';
-import { Link } from '@keystone-spike/admin-ui/router';
+import { useKeystone, useList } from '@keystone-next/admin-ui/context';
+import { Link } from '@keystone-next/admin-ui/router';
 import { Fragment, useState } from 'react';
 import { Button } from '@keystone-ui/button';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
-import { CreateItemDrawer } from '@keystone-spike/admin-ui/src/components/CreateItemDrawer';
+import { CreateItemDrawer } from '@keystone-next/admin-ui/components';
 import { DrawerController } from '@keystone-ui/modals';
 
 function LinkToRelatedItems({

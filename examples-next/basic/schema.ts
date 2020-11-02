@@ -1,16 +1,31 @@
-import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-spike/keystone/schema';
+import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone/schema';
 import {
   text,
   relationship,
   checkbox,
   password,
   timestamp,
-  integer,
   select,
   virtual,
-} from '@keystone-spike/fields';
-import { KeystoneCrudAPI } from '@keystone-spike/types';
+} from '@keystone-next/fields';
+import { KeystoneCrudAPI } from '@keystone-next/types';
 import { KeystoneListsTypeInfo } from './.keystone/schema-types';
+
+// TODO: Can we generate this type based on withItemData in the main config?
+type AccessArgs = {
+  session?: {
+    itemId?: string;
+    listKey?: string;
+    data?: {
+      name?: string;
+      isAdmin: boolean;
+    };
+  };
+  item?: any;
+};
+export const access = {
+  isAdmin: ({ session }: AccessArgs) => !!session?.data?.isAdmin,
+};
 
 const randomNumber = () => Math.round(Math.random() * 10);
 
@@ -21,72 +36,22 @@ export const lists = createSchema({
         initialColumns: ['name', 'posts'],
       },
     },
-    // TODO: discuss how we do nested deletes for phone numbers
-    hooks: {
-      resolveInput: ({ resolvedData, originalInput }) => {
-        console.log('list hooks: resolveInput', { resolvedData, originalInput });
-        return resolvedData;
-      },
-      beforeChange({ resolvedData, originalInput }) {
-        console.log('list hooks: beforeChange', { resolvedData, originalInput });
-      },
-    },
-    access: {
-      //   read: ({ context }) => {
-      //     let postFilter = {
-      //       posts_some: {
-      //         published: true,
-      //       },
-      //     };
-      //     if (context.session?.itemId) {
-      //       return {
-      //         OR: [
-      //           {
-      //             id: context.session.itemId,
-      //           },
-      //           postFilter,
-      //         ],
-      //       };
-      //     }
-      //     return postFilter;
-      //   },
-      update: ({ itemId, context, originalInput }) => {
-        console.log(originalInput);
-        return itemId === context.session?.itemId;
-      },
-    },
-
     fields: {
-      name: text({ isRequired: true, hooks: {} }),
-      randomNumber: virtual({
-        resolver() {
-          return randomNumber();
-        },
-        graphQLReturnType: 'Float',
-      }),
-      email: text({
-        isRequired: true,
-        isUnique: true,
-        hooks: {},
-        // admin: { views: require.resolve('./admin/fieldViews/content') },
-      }),
-      password: password({
-        hooks: {},
-      }),
+      name: text({ isRequired: true }),
+      email: text({ isRequired: true, isUnique: true }),
+      password: password(),
       isAdmin: checkbox({
         access: {
-          read: ({ session }) => !!session?.item?.isAdmin,
-          update: ({ session }) => !!session?.item?.isAdmin,
+          create: access.isAdmin,
+          read: access.isAdmin,
+          update: access.isAdmin,
         },
         admin: {
           createView: {
-            fieldMode: ({ session }) => (session?.item?.isAdmin ? 'edit' : 'hidden'),
+            fieldMode: args => (access.isAdmin(args) ? 'edit' : 'hidden'),
           },
-          // listView: {
-          //   fieldMode: ({ session }) => (session?.item?.isAdmin ? 'read' : 'hidden'),
-          // },
           itemView: {
-            fieldMode: ({ session }) => (session?.item?.isAdmin ? 'edit' : 'read'),
+            fieldMode: args => (access.isAdmin(args) ? 'edit' : 'read'),
           },
         },
       }),
@@ -106,16 +71,10 @@ export const lists = createSchema({
         },
       }),
       posts: relationship({ ref: 'Post.author', many: true }),
-      something: text({
-        admin: {
-          displayMode: 'textarea',
-        },
-      }),
-      oneTimeThing: text({
-        access: {
-          create: true,
-          read: true,
-          update: false,
+      randomNumber: virtual({
+        graphQLReturnType: 'Float',
+        resolver() {
+          return randomNumber();
         },
       }),
     },
@@ -145,13 +104,7 @@ export const lists = createSchema({
       labelField: 'title',
     },
     fields: {
-      title: text({
-        hooks: {
-          afterChange({}) {},
-        },
-      }),
-      views: integer({}),
-      content: text({}),
+      title: text(),
       status: select({
         options: [
           { label: 'Published', value: 'published' },
@@ -161,16 +114,15 @@ export const lists = createSchema({
           displayMode: 'segmented-control',
         },
       }),
-      publishDate: timestamp({}),
+      content: text({
+        admin: {
+          displayMode: 'textarea',
+        },
+      }),
+      publishDate: timestamp(),
       author: relationship({ ref: 'User.posts' }),
     },
   }),
-  // Settings: singleton({
-  //   fields: {
-  //     siteName: text(),
-  //     primaryColor: text(),
-  //   },
-  // }),
 });
 
 export const extendGraphqlSchema = graphQLSchemaExtension({
@@ -194,22 +146,18 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
     },
     Mutation: {
       createRandomPosts(root: any, args: any, ctx: any) {
-        let crud: KeystoneCrudAPI<KeystoneListsTypeInfo> = ctx.crud;
-
+        // TODO: add a way to verify access control here, e.g
+        // await ctx.verifyAccessControl(userIsAdmin);
+        const crud: KeystoneCrudAPI<KeystoneListsTypeInfo> = ctx.crud;
         const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
         return crud.Post.createMany({ data });
       },
     },
     Query: {
-      randomNumber: async (root: any, args: any, ctx: any) => {
-        // await ctx.startSession({ something: true });
-        console.log(ctx.session);
-        // await ctx.verifyAccessControl(userIsAdmin);
-        return {
-          number: randomNumber(),
-          generatedAt: Date.now(),
-        };
-      },
+      randomNumber: () => ({
+        number: randomNumber(),
+        generatedAt: Date.now(),
+      }),
     },
   },
 });

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { FieldMeta, JSONValue } from '@keystone-spike/types';
+import { FieldMeta, JSONValue } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Divider, Heading, jsx, Stack, useTheme, VisuallyHidden } from '@keystone-ui/core';
 import { Select } from '@keystone-ui/fields';

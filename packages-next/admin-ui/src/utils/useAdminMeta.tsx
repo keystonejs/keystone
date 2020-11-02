@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ApolloClient, useQuery } from '../apollo';
+import { useLazyQuery } from '../apollo';
 import hashString from '@emotion/hash';
-import { SerializedAdminMeta, AdminMeta, FieldViews, getGqlNames } from '@keystone-spike/types';
+import { SerializedAdminMeta, AdminMeta, FieldViews, getGqlNames } from '@keystone-next/types';
 import { StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql';
 
 let expectedExports: Record<string, boolean> = {
@@ -28,11 +28,7 @@ function useMustRenderServerResult() {
   return _mustRenderServerResult;
 }
 
-export function useAdminMeta(
-  client: ApolloClient<any>,
-  adminMetaHash: string,
-  fieldViews: FieldViews
-) {
+export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
   const adminMetaFromLocalStorage = useMemo(() => {
     if (typeof window === 'undefined') {
       return;
@@ -51,11 +47,11 @@ export function useAdminMeta(
     }
   }, []);
 
-  const { data, error, refetch } = useQuery(staticAdminMetaQuery, {
-    client,
-    skip: adminMetaFromLocalStorage !== undefined,
-  });
-
+  // it seems like Apollo doesn't skip the first fetch when using skip: true so we're using useLazyQuery instead
+  const [fetchStaticAdminMeta, { data, error, called }] = useLazyQuery(staticAdminMetaQuery);
+  if (typeof window !== 'undefined' && adminMetaFromLocalStorage === undefined && !called) {
+    fetchStaticAdminMeta();
+  }
   const runtimeAdminMeta = useMemo(() => {
     if ((!data || error) && !adminMetaFromLocalStorage) {
       return undefined;
@@ -134,7 +130,7 @@ export function useAdminMeta(
       state: 'error' as const,
       error,
       refetch: () => {
-        refetch();
+        fetchStaticAdminMeta();
       },
     };
   }

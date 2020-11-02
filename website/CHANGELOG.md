@@ -1,5 +1,11 @@
 # @keystonejs/website
 
+## 5.3.12
+
+### Patch Changes
+
+- [`86b6f890b`](https://github.com/keystonejs/keystone/commit/86b6f890ba7f7de23c3e940df11d8cf9cad328aa) [#4018](https://github.com/keystonejs/keystone/pull/4018) Thanks [@timleslie](https://github.com/timleslie)! - Pinned all `gatsby` dependencies and some resolutions to a fixed version to prevent bumps which we know to break the website.
+
 ## 5.3.11
 
 ### Patch Changes

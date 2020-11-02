@@ -6,12 +6,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Fragment, ReactNode, useMemo, useState } from 'react';
 
-import { ListMeta } from '@keystone-spike/types';
+import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';
 import { AlertDialog } from '@keystone-ui/modals';
-import { Notice } from '@keystone-ui/notice';
 import { useToasts } from '@keystone-ui/toast';
 import { Tooltip } from '@keystone-ui/tooltip';
 
@@ -20,6 +19,7 @@ import { PageContainer } from '../components/PageContainer';
 import { useList } from '../context';
 import { DataGetter, DeepNullable, makeDataGetter } from '../utils/dataGetter';
 import { deserializeValue, ItemData, serializeValueToObjByFieldKey } from '../utils/serialization';
+import { GraphQLErrorNotice } from '../components/GraphQLErrorNotice';
 
 type ItemPageProps = {
   listKey: string;
@@ -63,7 +63,7 @@ function ItemForm({
     };
   });
 
-  if (state.item !== itemGetter.data) {
+  if (state.item !== itemGetter.data && itemGetter.errors?.every(x => x.path?.length !== 1)) {
     const value = deserializeValue(list, itemGetter);
     setValue({
       value,
@@ -169,7 +169,7 @@ function ItemForm({
   } as const;
   const fields = Object.keys(list.fields)
     .filter(fieldPath => fieldModes[fieldPath] !== 'hidden')
-    .map(fieldPath => {
+    .map((fieldPath, index) => {
       const field = list.fields[fieldPath];
       const value = state.value[fieldPath];
       const fieldMode = fieldModes[fieldPath];
@@ -197,20 +197,18 @@ function ItemForm({
                 }
               : undefined
           }
+          autoFocus={index === 0}
         />
       );
     });
   return (
     <Fragment>
-      {error?.networkError?.message ? (
-        <Notice tone="negative">{error?.networkError?.message}</Notice>
-      ) : (
+      <GraphQLErrorNotice
+        networkError={error?.networkError}
         // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
         // which are handled seperately and do not indicate a failure to update the item
-        error?.graphQLErrors.some(x => x.path?.length === 1) && (
-          <Notice tone="negative">{error.message}</Notice>
-        )
-      )}
+        errors={error?.graphQLErrors.filter(x => x.path?.length === 1)}
+      />
       {fields}
       {fields.length === 0 && 'There are no fields that you can read or edit'}
       <Toolbar>

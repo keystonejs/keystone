@@ -33,4 +33,4 @@ export const storedValues = () => [
   { name: 'g', oldId: null },
 ];
 
-export const supportedFilters = ['null_equality', 'equality', 'in_empty_null', 'in_equal'];
+export const supportedFilters = () => ['null_equality', 'equality', 'in_empty_null', 'in_equal'];

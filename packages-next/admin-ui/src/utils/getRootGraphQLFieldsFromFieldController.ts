@@ -1,4 +1,4 @@
-import { FieldController } from '@keystone-spike/types';
+import { FieldController } from '@keystone-next/types';
 import weakMemoize from '@emotion/weak-memoize';
 import { FragmentDefinitionNode, parse, SelectionSetNode } from 'graphql';
 

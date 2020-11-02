@@ -14,8 +14,8 @@
   "dependencies": {
     "@arch-ui/common": "0.0.12",
     "@arch-ui/theme": "0.0.11",
-    "@babel/runtime": "^7.11.2",
-    "@emotion/core": "^10.0.35",
+    "@babel/runtime": "^7.12.1",
+    "@emotion/core": "^10.1.0",
     "@emotion/styled": "^10.0.27"
   },
   "module": "dist/layout.esm.js",

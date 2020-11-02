@@ -1,9 +1,9 @@
 import fs from 'fs-extra';
 import Path from 'path';
 
-import type { Keystone } from '@keystone-spike/types';
-import { writeAdminFiles } from '@keystone-spike/admin-ui/templates';
-import { AdminFileToWrite, MaybePromise } from '@keystone-spike/types';
+import type { Keystone } from '@keystone-next/types';
+import { writeAdminFiles } from '@keystone-next/admin-ui/templates';
+import { AdminFileToWrite, MaybePromise } from '@keystone-next/types';
 import fastGlob from 'fast-glob';
 import prettier from 'prettier';
 import resolve from 'resolve';
@@ -80,7 +80,7 @@ export const generateAdminUI = async (keystone: Keystone, cwd: string) => {
       )),
     ].map(x => Path.normalize(x))
   );
-  const baseFiles = writeAdminFiles(keystone, configFile).filter(x => {
+  const baseFiles = writeAdminFiles(keystone, configFile, projectAdminPath).filter(x => {
     if (filesWritten.has(Path.normalize(x.outputPath))) {
       return false;
     }

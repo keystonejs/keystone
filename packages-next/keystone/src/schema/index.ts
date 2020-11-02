@@ -4,4 +4,4 @@ export type {
   ListConfig,
   ExtendGraphqlSchema,
   BaseFields,
-} from '@keystone-spike/types';
+} from '@keystone-next/types';

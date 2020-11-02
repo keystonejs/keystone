@@ -8,7 +8,7 @@ import {
   SessionStoreFunction,
   SessionContext,
   Keystone,
-} from '@keystone-spike/types';
+} from '@keystone-next/types';
 
 // uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
@@ -75,9 +75,9 @@ type CreateSession = ReturnType<typeof statelessSessions>;
 
 export function withItemData(createSession: CreateSession, fieldSelections: FieldSelections) {
   return (): SessionStrategy<any> => {
-    const { get, ...sessionThing } = createSession();
+    const { get, ...sessionStrategy } = createSession();
     return {
-      ...sessionThing,
+      ...sessionStrategy,
       get: async ({ req, keystone }) => {
         const session = await get({ req, keystone });
         if (!session) return;
@@ -101,7 +101,7 @@ export function withItemData(createSession: CreateSession, fieldSelections: Fiel
         if (!result?.data?.item) {
           return;
         }
-        return { ...session, item: result.data.item };
+        return { ...session, data: result.data.item };
       },
     };
   };
@@ -200,8 +200,10 @@ export function storedSessions({
   };
 }
 
-// TODO: We gotta find a better name for this...
-export function sessionStuff(sessionStrategy: SessionStrategy<unknown>) {
+/**
+ * This is the function createKeystone uses to implement the session strategy provided
+ */
+export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
   let isConnected = false;
   let connect = async () => {
     await sessionStrategy.connect?.();

@@ -59,7 +59,7 @@ export const storedValues = matrixValue =>
         { name: 'product7', orderNumber: 7 },
       ];
 
-export const supportedFilters = [];
+export const supportedFilters = () => [];
 
 export const filterTests = (withKeystone, matrixValue) => {
   const _storedValues = storedValues(matrixValue);

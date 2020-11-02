@@ -15,7 +15,7 @@ const { logging } = require('@keystonejs/list-plugins');
 keystone.createList('ListWithPlugin', {
   fields: {...},
   plugins: [
-    logging(args => console.log(args),
+    logging(args => console.log(args)),
   ],
 });
 
@@ -23,7 +23,7 @@ keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
   plugins: [
-    logging(args => console.log(args),
+    logging(args => console.log(args)),
   ]
 })
 ```

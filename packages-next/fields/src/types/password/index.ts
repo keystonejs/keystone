@@ -2,8 +2,8 @@ import { Password } from '@keystonejs/fields';
 
 import type { FieldConfig } from '../../interfaces';
 
-import type { FieldType } from '@keystone-spike/types';
-import type { BaseGeneratedListTypes } from '@keystone-spike/types';
+import type { FieldType } from '@keystone-next/types';
+import type { BaseGeneratedListTypes } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 
 const views = resolveView('password/views');
@@ -12,10 +12,11 @@ type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = F
   TGeneratedListTypes
 > & {
   minLength?: number;
+  isRequired?: boolean;
 };
 
 export const password = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: PasswordFieldConfig<TGeneratedListTypes>
+  config: PasswordFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
   type: Password,
   config,

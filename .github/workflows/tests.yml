@@ -46,7 +46,7 @@ jobs:
       fail-fast: false
       matrix:
         index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        adapter: ['mongoose','knex', 'prisma']
+        adapter: ['mongoose','knex', 'prisma_postgresql']
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -70,9 +70,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v3-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v1-
+            ${{ runner.os }}-yarn-v3-
 
       - name: Install Dependencies
         run: yarn
@@ -132,9 +132,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v3-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v1-
+            ${{ runner.os }}-yarn-v3-
 
       - name: Install Dependencies
         run: yarn
@@ -165,9 +165,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v3-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v1-
+            ${{ runner.os }}-yarn-v3-
 
       - name: Install Dependencies
         run: yarn
@@ -226,9 +226,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v3-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v1-
+            ${{ runner.os }}-yarn-v3-
 
       - name: Install Dependencies
         run: yarn
@@ -237,12 +237,12 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - run: yarn --cwd tests/${{ matrix.project }} cypress:run:ci
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: cypress-videos

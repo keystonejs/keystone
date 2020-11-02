@@ -124,7 +124,7 @@ export function Select({
   return (
     <ReactSelect
       value={value}
-      css={{ zIndex: 3, width: tokens.width }}
+      css={{ width: tokens.width }}
       styles={styles}
       onChange={value => {
         if (!value) {
@@ -153,7 +153,7 @@ export function MultiSelect({
 
   return (
     <ReactSelect
-      css={{ zIndex: 3, width: tokens.width }}
+      css={{ width: tokens.width }}
       styles={styles}
       value={value}
       onChange={value => {

@@ -1,7 +1,7 @@
-import { config } from '@keystone-spike/keystone/schema';
-import { statelessSessions, withItemData } from '@keystone-spike/keystone/session';
+import { config } from '@keystone-next/keystone/schema';
+import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
 import { lists } from './schema';
-import { createAuth } from '@keystone-spike/auth';
+import { createAuth } from '@keystone-next/auth';
 
 /**
  * TODO: Implement validateItem. Would be invoked by the getItem() method in
@@ -39,6 +39,18 @@ const { withAuth } = createAuth({
       isEnabled: true,
     },
   },
+  /* TODO -- complete the UI for these features and enable them
+  passwordResetLink: {
+    sendToken(args) {
+      console.log(`Password reset info:`, args);
+    },
+  },
+  magicAuthLink: {
+    sendToken(args) {
+      console.log(`Magic auth info:`, args);
+    },
+  },
+  */
 });
 
 // withAuth applies the signin functionality to the keystone config

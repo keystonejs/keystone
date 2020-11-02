@@ -2,7 +2,7 @@ import { mergeSchemas } from '@graphql-tools/merge';
 import { GraphQLSchema } from 'graphql';
 import { gql } from '../apollo';
 import { StaticAdminMetaQueryWithoutTypeNames } from '../admin-meta-graphql';
-import { Keystone } from '@keystone-spike/types';
+import { Keystone } from '@keystone-next/types';
 
 let typeDefs = gql`
   type Query {

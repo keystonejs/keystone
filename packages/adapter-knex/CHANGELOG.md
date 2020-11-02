@@ -1,5 +1,11 @@
 # @keystonejs/adapter-knex
 
+## 12.0.2
+
+### Patch Changes
+
+- [`c4478b1c7`](https://github.com/keystonejs/keystone/commit/c4478b1c74e205232ecb321de91f0eda0e78b819) [#4008](https://github.com/keystonejs/keystone/pull/4008) Thanks [@Neonox31](https://github.com/Neonox31)! - Fixed bug in `.dropDatabase()`, relationship join tables are now correctly dropped when using a non-default `schemaName`.
+
 ## 12.0.1
 
 ### Patch Changes

@@ -8,17 +8,17 @@ import type {
   Keystone,
   SessionContext,
   FieldType,
-} from '@keystone-spike/types';
-import { sessionStuff } from '../session';
+} from '@keystone-next/types';
+import { implementSession } from '../session';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { gql } from '../schema';
-import { GraphQLSchema, GraphQLScalarType, GraphQLObjectType } from 'graphql';
+import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { mapSchema } from '@graphql-tools/utils';
-import { crudForList } from '../lib/crud-api';
-import { adminMetaSchemaExtension } from '@keystone-spike/admin-ui/templates';
-import { accessControlContext, skipAccessControlContext } from '../lib/createAccessControlContext';
-import { autoIncrement, mongoId } from '@keystone-spike/fields';
+import { crudForList } from './crud-api';
+import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
+import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
+import { autoIncrement, mongoId } from '@keystone-next/fields';
 
 export function createKeystone(config: KeystoneConfig): Keystone {
   config = applyIdFieldDefaults(config);
@@ -113,24 +113,9 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     schemaName: 'public',
     dev: process.env.NODE_ENV === 'development',
   });
-  let sessionThing = sessionStrategy ? sessionStuff(sessionStrategy) : undefined;
+  let sessionImplementation = sessionStrategy ? implementSession(sessionStrategy) : undefined;
   const schemaFromApolloServer: GraphQLSchema = server.schema;
   const schema = mapSchema(schemaFromApolloServer, {
-    'MapperKind.SCALAR_TYPE'(type) {
-      // because of a bug in mergeSchemas which duplicates directives on scalars,
-      // we're removing specifiedByUrl from the scalar
-      // https://github.com/ardatan/graphql-tools/issues/2031
-      if (type instanceof GraphQLScalarType && type.name === 'JSON') {
-        return new GraphQLScalarType({
-          name: type.name,
-          description: type.description,
-          parseLiteral: type.parseLiteral,
-          parseValue: type.parseValue,
-          serialize: type.serialize,
-        });
-      }
-      return type;
-    },
     'MapperKind.OBJECT_TYPE'(type) {
       if (
         config.lists[type.name] !== undefined &&
@@ -175,7 +160,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     adminMeta,
     graphQLSchema,
     isAccessAllowed:
-      sessionThing === undefined
+      sessionImplementation === undefined
         ? undefined
         : config.admin?.isAccessAllowed ?? (({ session }) => session !== undefined),
     config,
@@ -204,7 +189,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     crud[listKey] = crudForList((keystone as any).lists[listKey], graphQLSchema, createContext);
   }
 
-  const createSessionContext = sessionThing?.createContext;
+  const createSessionContext = sessionImplementation?.createContext;
   let keystoneThing = {
     keystone,
     adminMeta,
@@ -217,7 +202,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       : undefined,
     createContext,
     async createContextFromRequest(req: IncomingMessage, res: ServerResponse) {
-      let sessionContext = await sessionThing?.createContext(req, res, keystoneThing);
+      let sessionContext = await sessionImplementation?.createContext(req, res, keystoneThing);
 
       return createContext({ sessionContext });
     },

@@ -177,15 +177,18 @@ export class PrismaSelectInterface extends CommonSelectInterface(PrismaFieldAdap
     super(...arguments);
     this.isUnique = !!this.config.isUnique;
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
-    const dataType = this.config.dataType || 'enum';
-    this._enumName =
-      dataType === 'enum' && `${this.field.listKey}${inflection.classify(this.path)}Enum`;
+    this._prismaType =
+      this.config.dataType === 'enum'
+        ? `${this.field.listKey}${inflection.classify(this.path)}Enum`
+        : this.config.dataType === 'integer'
+        ? 'Int'
+        : 'String';
   }
 
   getPrismaEnums() {
-    if (this.field.dataType === 'enum') {
+    if (!['Int', 'String'].includes(this._prismaType)) {
       return [
-        `enum ${this._enumName} {
+        `enum ${this._prismaType} {
           ${this.field.options.map(i => i.value).join('\n')}
         }`,
       ];
@@ -193,12 +196,6 @@ export class PrismaSelectInterface extends CommonSelectInterface(PrismaFieldAdap
   }
 
   getPrismaSchema() {
-    if (this.field.dataType === 'enum') {
-      return [this._schemaField({ type: this._enumName })];
-    } else if (this.field.dataType === 'integer') {
-      return [this._schemaField({ type: 'Int' })];
-    } else {
-      return [this._schemaField({ type: 'String' })];
-    }
+    return [this._schemaField({ type: this._prismaType })];
   }
 }

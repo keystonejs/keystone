@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { ListMeta } from '@keystone-spike/types';
+import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, jsx } from '@keystone-ui/core';
 import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';

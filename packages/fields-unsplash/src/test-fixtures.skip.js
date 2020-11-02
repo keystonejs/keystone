@@ -11,7 +11,6 @@ export const exampleValue = () => 'U0tBTn8UR8I';
 export const exampleValue2 = () => 'xrVDYZRGdw4';
 export const fieldName = 'heroImage';
 export const subfieldName = 'unsplashId';
-export const unSupportedAdapterList = ['prisma'];
 export const fieldConfig = () => ({
   accessKey: process.env.UNSPLASH_KEY || 'unsplash_key',
   secretKey: process.env.UNSPLASH_SECRET || 'unplash_secret',
@@ -48,4 +47,7 @@ export const storedValues = () => [
   { name: 'g', heroImage: null },
 ];
 
-export const supportedFilters = ['null_equality', 'in_empty_null'];
+export const supportedFilters = adapterName => [
+  'null_equality',
+  adapterName !== 'prisma_postgresql' && 'in_empty_null',
+];

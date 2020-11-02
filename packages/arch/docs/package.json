@@ -1,6 +1,6 @@
 {
   "name": "@arch-ui/docs",
-  "version": "1.1.28",
+  "version": "1.1.29",
   "private": true,
   "license": "MIT",
   "dependencies": {
@@ -23,12 +23,12 @@
     "@arch-ui/theme": "^0.0.11",
     "@arch-ui/tooltip": "^0.1.14",
     "@arch-ui/typography": "^0.0.18",
-    "@emotion/core": "^10.0.35",
+    "@emotion/core": "^10.1.0",
     "@emotion/styled": "^10.0.27",
     "@primer/octicons-react": "^11.0.0",
     "@reach/router": "^1.3.4",
     "clipboard-copy": "^3.1.0",
-    "gatsby": "^2.13.25",
+    "gatsby": "2.13.25",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },

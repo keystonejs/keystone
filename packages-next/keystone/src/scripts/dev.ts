@@ -12,6 +12,13 @@ const PORT = process.env.PORT || 3000;
 
 // TODO: Don't generate or start an Admin UI if it isn't configured!!
 
+const devLoadingHTMLFilepath = path.join(
+  path.dirname(require.resolve('@keystone-next/keystone/package.json')),
+  'src',
+  'static',
+  'dev-loading.html'
+);
+
 export const dev = async () => {
   console.log('🤞 Starting Keystone');
 
@@ -40,7 +47,7 @@ export const dev = async () => {
   });
   server.use((req, res, next) => {
     if (adminUIServer) return adminUIServer(req, res, next);
-    res.sendFile(path.resolve(__dirname, '../static/dev-loading.html'));
+    res.sendFile(devLoadingHTMLFilepath);
   });
   server.listen(PORT, (err?: any) => {
     if (err) throw err;

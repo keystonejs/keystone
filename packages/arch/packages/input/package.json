@@ -15,8 +15,8 @@
     "@arch-ui/color-utils": "0.0.2",
     "@arch-ui/common": "0.0.12",
     "@arch-ui/theme": "0.0.11",
-    "@babel/runtime": "^7.11.2",
-    "@emotion/core": "^10.0.35"
+    "@babel/runtime": "^7.12.1",
+    "@emotion/core": "^10.1.0"
   },
   "module": "dist/input.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/input"

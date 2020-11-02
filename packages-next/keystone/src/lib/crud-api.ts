@@ -3,7 +3,7 @@ import {
   BaseKeystoneList,
   Keystone,
   KeystoneCrudAPI,
-} from '@keystone-spike/types';
+} from '@keystone-next/types';
 import { GraphQLSchema } from 'graphql';
 import { getCoerceAndValidateArgumentsFnForGraphQLField } from './getCoerceAndValidateArgumentsFnForGraphQLField';
 
