@@ -70,9 +70,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v3-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v1-
+            ${{ runner.os }}-yarn-v3-
 
       - name: Install Dependencies
         run: yarn
@@ -132,9 +132,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v3-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v1-
+            ${{ runner.os }}-yarn-v3-
 
       - name: Install Dependencies
         run: yarn
@@ -165,9 +165,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v3-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v1-
+            ${{ runner.os }}-yarn-v3-
 
       - name: Install Dependencies
         run: yarn
@@ -226,9 +226,9 @@ jobs:
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
             node_modules
-          key: ${{ runner.os }}-yarn-v1-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-yarn-v3-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-v1-
+            ${{ runner.os }}-yarn-v3-
 
       - name: Install Dependencies
         run: yarn

@@ -2,7 +2,7 @@ import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
 import { AuthGqlNames } from '../types';
 
 import { attemptAuthentication } from '../lib/attemptAuthentication';
-import { getErrorMessage } from '../lib/getErrorMessage';
+import { getPasswordAuthError } from '../lib/getErrorMessage';
 
 export function getBaseAuthSchema({
   listKey,
@@ -24,27 +24,9 @@ export function getBaseAuthSchema({
       type Query {
         authenticatedItem: AuthenticatedItem
       }
-      enum AuthErrorCode {
-        PASSWORD_AUTH_FAILURE
-        PASSWORD_AUTH_IDENTITY_NOT_FOUND
-        PASSWORD_AUTH_SECRET_NOT_SET
-        PASSWORD_AUTH_MULTIPLE_IDENTITY_MATCHES
-        PASSWORD_AUTH_SECRET_MISMATCH
-        AUTH_TOKEN_REQUEST_IDENTITY_NOT_FOUND
-        AUTH_TOKEN_REQUEST_MULTIPLE_IDENTITY_MATCHES
-        AUTH_TOKEN_REDEMPTION_FAILURE
-        AUTH_TOKEN_REDEMPTION_IDENTITY_NOT_FOUND
-        AUTH_TOKEN_REDEMPTION_MULTIPLE_IDENTITY_MATCHES
-        AUTH_TOKEN_REDEMPTION_TOKEN_NOT_SET
-        AUTH_TOKEN_REDEMPTION_TOKEN_MISMATCH
-        AUTH_TOKEN_REDEMPTION_TOKEN_EXPIRED
-        AUTH_TOKEN_REDEMPTION_TOKEN_REDEEMED
-      }
-
       # Password auth
       type Mutation {
-        ${gqlNames.authenticateItemWithPassword}(${identityField}: String!, ${secretField}: String!):
-        ${gqlNames.ItemAuthenticationWithPasswordResult}!
+        ${gqlNames.authenticateItemWithPassword}(${identityField}: String!, ${secretField}: String!): ${gqlNames.ItemAuthenticationWithPasswordResult}!
       }
       union ${gqlNames.ItemAuthenticationWithPasswordResult} = ${gqlNames.ItemAuthenticationWithPasswordSuccess} | ${gqlNames.ItemAuthenticationWithPasswordFailure}
       type ${gqlNames.ItemAuthenticationWithPasswordSuccess} {
@@ -52,8 +34,15 @@ export function getBaseAuthSchema({
         item: ${listKey}!
       }
       type ${gqlNames.ItemAuthenticationWithPasswordFailure} {
-        code: AuthErrorCode!
+        code: PasswordAuthErrorCode!
         message: String!
+      }
+      enum PasswordAuthErrorCode {
+        FAILURE
+        IDENTITY_NOT_FOUND
+        SECRET_NOT_SET
+        MULTIPLE_IDENTITY_MATCHES
+        SECRET_MISMATCH
       }
     `,
     resolvers: {
@@ -69,13 +58,13 @@ export function getBaseAuthSchema({
           );
 
           if (!result.success) {
-            const message = getErrorMessage(
+            const message = getPasswordAuthError({
               identityField,
               secretField,
-              list.adminUILabels.singular,
-              list.adminUILabels.plural,
-              result.code
-            );
+              itemSingular: list.adminUILabels.singular,
+              itemPlural: list.adminUILabels.plural,
+              code: result.code,
+            });
             return { code: result.code, message };
           }
 

@@ -12,12 +12,17 @@ import {
   FragmentDefinitionNode,
 } from 'graphql';
 import { staticAdminMetaQuery } from '../admin-meta-graphql';
+import Path from 'path';
 
 type AppTemplateOptions = {
   configFile: boolean;
+  projectAdminPath: string;
 };
 
-export const appTemplate = (keystone: Keystone, { configFile }: AppTemplateOptions) => {
+export const appTemplate = (
+  keystone: Keystone,
+  { configFile, projectAdminPath }: AppTemplateOptions
+) => {
   const lazyMetadataQuery = getLazyMetadataQuery(keystone.graphQLSchema, keystone.adminMeta);
 
   const result = executeSync({
@@ -39,12 +44,18 @@ import { KeystoneProvider } from '@keystone-next/admin-ui/context';
 import { ErrorBoundary } from '@keystone-next/admin-ui/components';
 import { Core } from '@keystone-ui/core';
 
-${keystone.views.map((view, i) => `import * as view${i} from ${JSON.stringify(view)}`).join('\n')}
+${keystone.views
+  .map(
+    (view, i) =>
+      `import * as view${i} from ${JSON.stringify(
+        Path.isAbsolute(view) ? Path.relative(Path.join(projectAdminPath, 'pages'), view) : view
+      )}`
+  )
+  .join('\n')}
 
 ${configFile ? `import * as adminConfig from "../../../admin/config";` : 'const adminConfig = {};'}
 
 const fieldViews = [${keystone.views.map((x, i) => `view${i}`)}];
-const customFieldViews = {};
 
 const lazyMetadataQuery = ${JSON.stringify(lazyMetadataQuery)};
 
@@ -55,7 +66,6 @@ export default function App({ Component, pageProps }) {
         adminConfig={adminConfig}
         adminMetaHash="${adminMetaQueryResultHash}"
         fieldViews={fieldViews}
-        customFieldViews={customFieldViews}
         lazyMetadataQuery={lazyMetadataQuery}
       >
         <ErrorBoundary>

@@ -1,7 +1,6 @@
 {
   "name": "@keystone-next/fields",
   "version": "0.0.0",
-  "private": true,
   "license": "MIT",
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
@@ -23,7 +22,7 @@
     "@keystonejs/fields-auto-increment": "^8.0.0",
     "@keystonejs/fields-mongoid": "^9.0.0",
     "@types/keystonejs__fields": "^5.1.1",
-    "@types/react": "^16.9.53",
+    "@types/react": "^16.9.55",
     "date-fns": "^2.16.1",
     "intersection-observer": "^0.11.0",
     "react": "^16.14.0"

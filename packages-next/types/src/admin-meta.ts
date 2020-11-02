@@ -43,6 +43,7 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
 export type SerializedFieldMeta = {
   label: string;
   views: number;
+  customViews: number | null;
   isOrderable: boolean;
   fieldMeta: JSONValue;
 };
@@ -50,7 +51,7 @@ export type SerializedFieldMeta = {
 export type FieldMeta = {
   label: string;
   isOrderable: boolean;
-  views: FieldViews[string];
+  views: FieldViews[number];
   fieldMeta: JSONValue;
   controller: FieldController<unknown, JSONValue>;
 };
@@ -118,13 +119,11 @@ export type FieldProps<FieldControllerFn extends (...args: any) => FieldControll
   forceValidation?: boolean;
 };
 
-export type FieldViews = {
-  [type: string]: {
-    Field: (props: FieldProps<any>) => ReactElement;
-    Cell: CellComponent;
-    controller: (args: FieldControllerConfig<any>) => FieldController<unknown, JSONValue>;
-  };
-};
+export type FieldViews = readonly {
+  Field: (props: FieldProps<any>) => ReactElement;
+  Cell: CellComponent;
+  controller: (args: FieldControllerConfig<any>) => FieldController<unknown, JSONValue>;
+}[];
 
 export type CellComponent<
   FieldControllerFn extends (...args: any) => FieldController<any, any> = () => FieldController<

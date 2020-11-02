@@ -3,12 +3,12 @@
 - [x] Make it work for JS
 - [ ] Test package installs with local registry (use pnpm first to find missing deps)
 - [ ] Make sure we have the right peerDeps
-- [ ] Rename `admin` to `ui` in config
+- [x] Rename `admin` to `ui` in config
 - [ ] Publish the packages to a preview scope (`@keystone-next`)
 - [ ] Clean up stable set of features
   - [ ] Custom views @mitchell
   - [x] Unbreak the date field @mitchell
-  - [ ] Unbreak showing errors for incorrect password on signin @mitchell
+  - [x] Unbreak showing errors for incorrect password on signin @mitchell
   - [ ] Create mode for Passwords @jed
   - [x] Validate create initial item form @mitchell
   - [ ] No items display on the List screen @jed

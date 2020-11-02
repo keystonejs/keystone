@@ -1,4 +1,4 @@
-import { AuthErrorCode } from '../types';
+import { AuthTokenRedemptionErrorCode } from '../types';
 import { validateAuthToken } from './validateAuthToken';
 
 export async function redeemAuthToken(
@@ -12,7 +12,7 @@ export async function redeemAuthToken(
 ): Promise<
   | {
       success: false;
-      code: AuthErrorCode;
+      code: AuthTokenRedemptionErrorCode;
     }
   | {
       success: true;
@@ -47,8 +47,7 @@ export async function redeemAuthToken(
     variables: { id: validationResult.item.id, now: new Date().toISOString() },
   });
   if (Array.isArray(errors) && errors.length > 0) {
-    console.error(errors[0] && (errors[0].stack || errors[0].message));
-    return { success: false, code: 'INTERNAL_ERROR' };
+    throw errors[0];
   }
 
   // Authenticated!

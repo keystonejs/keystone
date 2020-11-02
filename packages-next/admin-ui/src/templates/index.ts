@@ -12,7 +12,11 @@ const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.jso
 
 export { adminMetaSchemaExtension } from './adminMetaSchemaExtension';
 
-export const writeAdminFiles = (keystone: Keystone, configFile: boolean): AdminFileToWrite[] => {
+export const writeAdminFiles = (
+  keystone: Keystone,
+  configFile: boolean,
+  projectAdminPath: string
+): AdminFileToWrite[] => {
   return [
     {
       mode: 'copy',
@@ -32,7 +36,7 @@ export const writeAdminFiles = (keystone: Keystone, configFile: boolean): AdminF
     {
       mode: 'write',
       outputPath: 'pages/_app.js',
-      src: appTemplate(keystone, { configFile }),
+      src: appTemplate(keystone, { configFile, projectAdminPath }),
     },
     {
       mode: 'write',

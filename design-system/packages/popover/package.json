@@ -1,7 +1,6 @@
 {
   "name": "@keystone-ui/popover",
   "version": "0.0.0",
-  "private": true,
   "license": "MIT",
   "main": "dist/popover.cjs.js",
   "module": "dist/popover.esm.js",

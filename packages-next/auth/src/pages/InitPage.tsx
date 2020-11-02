@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 
 import { jsx, H1 } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
@@ -27,16 +27,23 @@ export const InitPage = ({
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {};
     Object.keys(serializedFields).forEach(fieldPath => {
-      const serializedField = serializedFields[fieldPath];
-      const views = fieldViews[serializedField.views];
-
+      // note that we're skipping the validation since we don't know the list key and
+      // the validation will happen after the user has the created the initial item anyway
+      const field = serializedFields[fieldPath];
+      let views = fieldViews[field.views];
+      if (field.customViews !== null) {
+        views = {
+          ...views,
+          ...fieldViews[field.customViews],
+        };
+      }
       fields[fieldPath] = {
-        ...serializedField,
+        ...field,
         views,
-        controller: views.controller({
+        controller: fieldViews[field.views].controller({
+          fieldMeta: field.fieldMeta,
+          label: field.label,
           path: fieldPath,
-          label: serializedField.label,
-          fieldMeta: serializedField.fieldMeta,
         }),
       };
     });
@@ -73,6 +80,13 @@ export const InitPage = ({
   const [createFirstItem, { loading, error }] = useMutation(mutation);
   const reinitContext = useReinitContext();
   const router = useRouter();
+  const rawKeystone = useRawKeystone();
+
+  useEffect(() => {
+    if (rawKeystone.authenticatedItem.state === 'authenticated') {
+      router.push((router.query.from as string | undefined) || '/');
+    }
+  }, [rawKeystone.authenticatedItem, router.query.from]);
 
   return (
     <SigninContainer>
