@@ -78,18 +78,18 @@ export function Pagination({
       <Stack across gap="small">
         {pages}
       </Stack>
-      {getPaginationLabel({
-        currentPage: currentPage,
-        pageSize,
-        plural: list.plural,
-        singular: list.singular,
-        total,
-      })}
+      <PaginationLabel
+        currentPage={currentPage}
+        pageSize={pageSize}
+        plural={list.plural}
+        singular={list.singular}
+        total={total}
+      />
     </Center>
   );
 }
 
-export function getPaginationLabel({
+export function PaginationLabel({
   currentPage,
   pageSize,
   plural,
@@ -103,7 +103,7 @@ export function getPaginationLabel({
   total: number;
 }) {
   if (!total) {
-    return `No ${plural}`;
+    return <span>No {plural}</span>;
   }
 
   let count = '';
@@ -111,9 +111,9 @@ export function getPaginationLabel({
   const end = Math.min(start + pageSize - 1, total);
 
   if (total > pageSize) {
-    count = `Showing ${start} to ${end} of ${total} ${plural}`;
+    count = `${start} to ${end} of ${total} ${plural}`;
   } else {
-    count = `Showing ${total} `;
+    count = `${total} `;
     if (total > 1 && plural) {
       count += plural;
     } else if (total === 1 && singular) {
@@ -121,5 +121,9 @@ export function getPaginationLabel({
     }
   }
 
-  return count;
+  return (
+    <span>
+      Showing <strong>{count}</strong>
+    </span>
+  );
 }
