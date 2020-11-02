@@ -33,20 +33,10 @@ export default auth.withAuth(
       // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
       path: '/api/graphql',
     },
-    admin: {
+    ui: {
       // NOTE -- this is not implemented, keystone currently always provides an admin ui at /
       path: '/admin',
       // isAccessAllowed,
-      /* TODO -- Create a separate example for custom pages in the Admin UI */
-      getAdditionalFiles: [
-        () => [
-          {
-            mode: 'write',
-            outputPath: 'pages/custom.js',
-            src: 'export default function Something() { return "This is a custom page." }',
-          },
-        ],
-      ],
     },
     lists,
     extendGraphqlSchema,

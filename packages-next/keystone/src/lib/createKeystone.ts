@@ -21,7 +21,7 @@ import { accessControlContext, skipAccessControlContext } from './createAccessCo
 import { autoIncrement, mongoId } from '@keystone-next/fields';
 
 export function createKeystone(config: KeystoneConfig): Keystone {
-  config = applyIdFieldDefaults(config);
+  config = validateConfig(config);
 
   let keystone = new BaseKeystone({
     name: config.name,
@@ -36,7 +36,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
   const sessionStrategy = config.session?.();
 
   const adminMeta: SerializedAdminMeta = {
-    enableSessionItem: config.admin?.enableSessionItem || false,
+    enableSessionItem: config.ui?.enableSessionItem || false,
     enableSignout: sessionStrategy?.end !== undefined,
     lists: {},
   };
@@ -69,22 +69,21 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       hooks: listConfig.hooks,
     } as any) as any;
     const labelField =
-      (listConfig.admin?.labelField as string | undefined) ??
-      (listConfig.fields.name ? 'name' : 'id');
+      (listConfig.ui?.labelField as string | undefined) ?? (listConfig.fields.name ? 'name' : 'id');
     adminMeta.lists[key] = {
       key,
       labelField,
-      description: listConfig.admin?.description ?? listConfig.description ?? null,
+      description: listConfig.ui?.description ?? listConfig.description ?? null,
       label: list.adminUILabels.label,
       singular: list.adminUILabels.singular,
       plural: list.adminUILabels.plural,
       path: list.adminUILabels.path,
       fields: {},
-      pageSize: listConfig.admin?.listView?.pageSize ?? 50,
+      pageSize: listConfig.ui?.listView?.pageSize ?? 50,
       gqlNames: list.gqlNames,
-      initialColumns: (listConfig.admin?.listView?.initialColumns as string[]) ?? [labelField],
+      initialColumns: (listConfig.ui?.listView?.initialColumns as string[]) ?? [labelField],
       initialSort:
-        (listConfig.admin?.listView?.initialSort as
+        (listConfig.ui?.listView?.initialSort as
           | {
               field: string;
               direction: 'ASC' | 'DESC';
@@ -101,8 +100,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       adminMeta.lists[key].fields[fieldKey] = {
         label: list.fieldsByPath[fieldKey].label,
         views: getViewId(field.views),
-        customViews:
-          field.config.admin?.views === undefined ? null : getViewId(field.config.admin.views),
+        customViews: field.config.ui?.views === undefined ? null : getViewId(field.config.ui.views),
         fieldMeta: field.getAdminMeta?.(key, fieldKey, adminMeta) ?? null,
         isOrderable: list.fieldsByPath[fieldKey].isOrderable || fieldKey === 'id',
       };
@@ -163,7 +161,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     isAccessAllowed:
       sessionImplementation === undefined
         ? undefined
-        : config.admin?.isAccessAllowed ?? (({ session }) => session !== undefined),
+        : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined),
     config,
   });
 
@@ -212,8 +210,10 @@ export function createKeystone(config: KeystoneConfig): Keystone {
   return keystoneThing;
 }
 
-function applyIdFieldDefaults(config: KeystoneConfig) {
-  const newLists: KeystoneConfig['lists'] = {};
+/** Validates and defaults the Keystone Config */
+function validateConfig(config: KeystoneConfig): KeystoneConfig {
+  /* Validate lists config and default the id field */
+  const lists: KeystoneConfig['lists'] = {};
   Object.keys(config.lists).forEach(key => {
     const listConfig = config.lists[key];
     if (listConfig.fields.id) {
@@ -229,23 +229,23 @@ function applyIdFieldDefaults(config: KeystoneConfig) {
     idField = {
       ...idField,
       config: {
-        admin: {
+        ui: {
           createView: {
             fieldMode: 'hidden',
-            ...idField.config.admin?.createView,
+            ...idField.config.ui?.createView,
           },
           itemView: {
             fieldMode: 'hidden',
-            ...idField.config.admin?.itemView,
+            ...idField.config.ui?.itemView,
           },
-          ...idField.config.admin,
+          ...idField.config.ui,
         },
         ...idField.config,
       },
     };
 
     const fields = { id: idField, ...listConfig.fields };
-    newLists[key] = {
+    lists[key] = {
       ...listConfig,
       fields,
     };
@@ -253,6 +253,6 @@ function applyIdFieldDefaults(config: KeystoneConfig) {
 
   return {
     ...config,
-    lists: newLists,
+    lists,
   };
 }
