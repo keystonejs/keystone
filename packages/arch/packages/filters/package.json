@@ -16,7 +16,7 @@
     "@arch-ui/layout": "^0.2.14",
     "@arch-ui/theme": "^0.0.11",
     "@babel/runtime": "^7.12.1",
-    "@emotion/core": "^10.1.0",
+    "@emotion/core": "^10.1.1",
     "react-radios": "^1.1.0"
   },
   "module": "dist/filters.esm.js",

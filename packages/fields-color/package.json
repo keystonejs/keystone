@@ -12,7 +12,7 @@
     "@arch-ui/fields": "^3.0.5",
     "@arch-ui/popout": "^0.0.22",
     "@babel/runtime": "^7.12.1",
-    "@emotion/core": "^10.1.0",
+    "@emotion/core": "^10.1.1",
     "@keystonejs/fields": "^19.0.0",
     "react-color": "^2.19.3"
   },

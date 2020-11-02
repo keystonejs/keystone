@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@arch-ui/theme": "^0.0.11",
-    "@emotion/core": "^10.1.0",
+    "@emotion/core": "^10.1.1",
     "@emotion/styled": "^10.0.27"
   },
   "module": "dist/alert.esm.js",

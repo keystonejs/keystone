@@ -37,7 +37,7 @@
     "@arch-ui/typography": "^0.0.18",
     "@babel/core": "^7.12.3",
     "@babel/runtime": "^7.12.1",
-    "@emotion/core": "^10.1.0",
+    "@emotion/core": "^10.1.1",
     "@keystonejs/field-views-loader": "^6.0.1",
     "@keystonejs/fields": "^19.0.0",
     "@keystonejs/session": "^8.1.1",

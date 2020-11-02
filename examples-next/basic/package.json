@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "@emotion/core": "^10.1.0",
+    "@emotion/core": "^10.1.1",
     "@graphql-tools/merge": "^6.2.5",
     "@keystone-next/admin-ui": "^0.0.0",
     "@keystone-next/auth": "^0.0.0",
