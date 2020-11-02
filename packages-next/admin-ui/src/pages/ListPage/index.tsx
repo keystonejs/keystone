@@ -229,83 +229,97 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         <FilterAdd listKey={listKey} />
         {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
       </Stack>
-      <p
-        css={{
-          // TODO: don't do this
-          // (this is to make it so things don't move when a user selects an item)
-          minHeight: 38,
-
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        {data && metaQuery.data
-          ? (() => {
-              const selectedItems = selectedItemsState.selectedItems;
-              const selectedItemsCount = selectedItems.size;
-              if (selectedItemsCount) {
-                return (
-                  <Fragment>
-                    <span css={{ marginRight: theme.spacing.small }}>
-                      Selected {selectedItemsCount} of {data.items.length}
-                    </span>
-                    {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
-                      <DeleteManyButton
-                        list={list}
-                        selectedItems={selectedItems}
-                        refetch={refetch}
-                      />
-                    )}
-                  </Fragment>
-                );
-              }
-              return (
-                <Fragment>
-                  <PaginationLabel
-                    currentPage={currentPage}
-                    pageSize={pageSize}
-                    plural={list.plural}
-                    singular={list.singular}
-                    total={data.meta.count}
-                  />
-                  , sorted by <SortSelection list={list} />
-                  with{' '}
-                  <FieldSelection
-                    list={list}
-                    fieldModesByFieldPath={listViewFieldModesByField}
-                  />{' '}
-                  {loading && <LoadingDots label="Loading data" tone="active" />}
-                </Fragment>
-              );
-            })()
-          : ' '}
-      </p>
       {metaQuery.error ? (
         // TODO: Show errors nicely and with information
         'Error...'
       ) : data && metaQuery.data ? (
-        <ListTable
-          count={data.meta.count}
-          currentPage={currentPage}
-          itemsGetter={dataGetter.get('items')}
-          listKey={listKey}
-          pageSize={pageSize}
-          selectedFields={selectedFields}
-          sort={sort}
-          selectedItems={selectedItemsState.selectedItems}
-          onSelectedItemsChange={selectedItems => {
-            setSelectedItems({
-              itemsFromServer: selectedItemsState.itemsFromServer,
-              selectedItems,
-            });
-          }}
-        />
+        data.meta.count ? (
+          <Fragment>
+            <ResultsSummaryContainer>
+              {(() => {
+                const selectedItems = selectedItemsState.selectedItems;
+                const selectedItemsCount = selectedItems.size;
+                if (selectedItemsCount) {
+                  return (
+                    <Fragment>
+                      <span css={{ marginRight: theme.spacing.small }}>
+                        Selected {selectedItemsCount} of {data.items.length}
+                      </span>
+                      {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
+                        <DeleteManyButton
+                          list={list}
+                          selectedItems={selectedItems}
+                          refetch={refetch}
+                        />
+                      )}
+                    </Fragment>
+                  );
+                }
+                return (
+                  <Fragment>
+                    <PaginationLabel
+                      currentPage={currentPage}
+                      pageSize={pageSize}
+                      plural={list.plural}
+                      singular={list.singular}
+                      total={data.meta.count}
+                    />
+                    , sorted by <SortSelection list={list} />
+                    with{' '}
+                    <FieldSelection
+                      list={list}
+                      fieldModesByFieldPath={listViewFieldModesByField}
+                    />{' '}
+                    {loading && <LoadingDots label="Loading data" tone="active" />}
+                  </Fragment>
+                );
+              })()}
+            </ResultsSummaryContainer>
+            <ListTable
+              count={data.meta.count}
+              currentPage={currentPage}
+              itemsGetter={dataGetter.get('items')}
+              listKey={listKey}
+              pageSize={pageSize}
+              selectedFields={selectedFields}
+              sort={sort}
+              selectedItems={selectedItemsState.selectedItems}
+              onSelectedItemsChange={selectedItems => {
+                setSelectedItems({
+                  itemsFromServer: selectedItemsState.itemsFromServer,
+                  selectedItems,
+                });
+              }}
+            />
+          </Fragment>
+        ) : (
+          <ResultsSummaryContainer>No {list.plural} found.</ResultsSummaryContainer>
+        )
       ) : (
-        'Loading...'
+        <ResultsSummaryContainer>
+          <Box marginLeft="xsmall">
+            <LoadingDots label="Loading data" tone="passive" />
+          </Box>
+        </ResultsSummaryContainer>
       )}
     </PageContainer>
   );
 };
+
+const ResultsSummaryContainer = ({ children }: { children: ReactNode }) => (
+  <p
+    css={{
+      // TODO: don't do this
+      // (this is to make it so things don't move when a user selects an item)
+      minHeight: 38,
+
+      display: 'flex',
+      alignItems: 'center',
+    }}
+  >
+    {children}
+  </p>
+);
 
 const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
   const size = '0.25em';
