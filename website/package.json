@@ -19,7 +19,7 @@
     "@arch-ui/input": "^0.1.11",
     "@arch-ui/select": "^0.1.9",
     "@arch-ui/theme": "^0.0.11",
-    "@emotion/core": "^10.1.0",
+    "@emotion/core": "^10.1.1",
     "@emotion/styled": "^10.0.27",
     "@emotion/weak-memoize": "^0.2.5",
     "@manypkg/get-packages": "^1.1.1",
