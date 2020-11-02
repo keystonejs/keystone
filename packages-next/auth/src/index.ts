@@ -331,7 +331,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
         publicPages: [...(keystoneConfig.ui.publicPages || []), ...publicAuthPages],
         getAdditionalFiles: [...(keystoneConfig.ui.getAdditionalFiles || []), additionalFiles],
         pageMiddleware: async args => {
-          return (await adminPageMiddleware(args)) ?? ui?.pageMiddleware?.(args);
+          return (await adminPageMiddleware(args)) ?? keystoneConfig?.ui?.pageMiddleware?.(args);
         },
         enableSessionItem: true,
       };
