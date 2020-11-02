@@ -23,7 +23,7 @@ export function getMagicAuthLinkSchema({
     typeDefs: `
       # Magic links
       type Mutation {
-        ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): ${gqlNames.SendItemMagicAuthLinkResult}!
+        ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): ${gqlNames.SendItemMagicAuthLinkResult}
       }
       type ${gqlNames.SendItemMagicAuthLinkResult} {
         code: MagicLinkRequestErrorCode!
@@ -86,7 +86,7 @@ export function getMagicAuthLinkSchema({
               token: result.token,
             });
           }
-          return {};
+          return null;
         },
         async [gqlNames.redeemItemMagicAuthToken](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];

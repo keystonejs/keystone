@@ -30,7 +30,7 @@ export async function updateAuthToken(
   } else if (items.length > 1) {
     specificCode = 'MULTIPLE_IDENTITY_MATCHES';
   }
-  if (typeof specificCode !== 'undefined') {
+  if (specificCode !== undefined) {
     // There is no generic `AUTH_TOKEN_REQUEST_FAILURE` code; it's existance would alow values in the identity field to be probed
     return { success: false, code: protectIdentities ? undefined : specificCode };
   }
