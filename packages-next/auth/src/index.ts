@@ -164,11 +164,11 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   };
 
   /**
-   * uiPublicPages
+   * publicAuthPages
    *
    * Must be added to the ui.publicPages config
    */
-  const uiPublicPages = ['/signin', '/init'];
+  const publicAuthPages = ['/signin', '/init'];
 
   /**
    * extendGraphqlSchema
@@ -325,11 +325,11 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   const withAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
     validateConfig(keystoneConfig);
     let ui = keystoneConfig.ui;
-    if (ui) {
+    if (keystoneConfig.ui) {
       ui = {
-        ...ui,
-        publicPages: [...(ui.publicPages || []), ...uiPublicPages],
-        getAdditionalFiles: [...(ui.getAdditionalFiles || []), additionalFiles],
+        ...keystoneConfig.ui,
+        publicPages: [...(keystoneConfig.ui.publicPages || []), ...publicAuthPages],
+        getAdditionalFiles: [...(keystoneConfig.ui.getAdditionalFiles || []), additionalFiles],
         pageMiddleware: async args => {
           return (await adminPageMiddleware(args)) ?? ui?.pageMiddleware?.(args);
         },
@@ -371,7 +371,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     ui: {
       enableSessionItem: true,
       pageMiddleware: adminPageMiddleware,
-      publicPages: uiPublicPages,
+      publicPages: publicAuthPages,
       getAdditionalFiles: additionalFiles,
     },
     fields: additionalListFields,
