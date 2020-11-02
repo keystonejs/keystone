@@ -39,13 +39,6 @@ export const SigninPage = ({
       }
     }
   `;
-  /* TODO:
-    - [x] Move this into the new keystone auth plugin package
-    - [ ] Initialise with the current session, and bounce if the user is signed in
-    - [x] Call mutation to actually sign in, then redirect
-    - [x] Show error messages when the user doesn't sign in successfully (inc. full & limited messages)
-    - [x] Handle a param for which page to redirect to, i.e ?from=/users/1
-  */
 
   const [mode, setMode] = useState<'signin' | 'forgot password'>('signin');
   const [state, setState] = useState({ identity: '', secret: '' });
