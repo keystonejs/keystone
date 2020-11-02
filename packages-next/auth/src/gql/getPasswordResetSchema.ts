@@ -5,7 +5,7 @@ import { updateAuthToken } from '../lib/updateAuthToken';
 import { redeemAuthToken } from '../lib/redeemAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
 import { updateItemSecret } from '../lib/updateItemSecret';
-import { getErrorMessage } from '../lib/getErrorMessage';
+import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
 
 export function getPasswordResetSchema({
   listKey,
@@ -26,25 +26,38 @@ export function getPasswordResetSchema({
     typeDefs: `
       # Reset password
       type Mutation {
-        ${gqlNames.sendItemPasswordResetLink}(${identityField}: String!): ${gqlNames.SendItemPasswordResetLinkResult}!
+        ${gqlNames.sendItemPasswordResetLink}(${identityField}: String!): ${gqlNames.SendItemPasswordResetLinkResult}
       }
       type ${gqlNames.SendItemPasswordResetLinkResult} {
-        code: AuthErrorCode
-        message: String
+        code: PasswordResetRequestErrorCode!
+        message: String!
+      }
+      enum PasswordResetRequestErrorCode {
+        IDENTITY_NOT_FOUND
+        MULTIPLE_IDENTITY_MATCHES
       }
       type Query {
-        ${gqlNames.validateItemPasswordResetToken}(${identityField}: String!, token: String!): ${gqlNames.ValidateItemPasswordResetTokenResult}!
+        ${gqlNames.validateItemPasswordResetToken}(${identityField}: String!, token: String!): ${gqlNames.ValidateItemPasswordResetTokenResult}
       }
       type ${gqlNames.ValidateItemPasswordResetTokenResult} {
-        code: AuthErrorCode
-        message: String
+        code: PasswordResetRedemptionErrorCode!
+        message: String!
       }
       type Mutation {
-        ${gqlNames.redeemItemPasswordResetToken}(${identityField}: String!, token: String!, ${secretField}: String!): ${gqlNames.RedeemItemPasswordResetTokenResult}!
+        ${gqlNames.redeemItemPasswordResetToken}(${identityField}: String!, token: String!, ${secretField}: String!): ${gqlNames.RedeemItemPasswordResetTokenResult}
       }
       type ${gqlNames.RedeemItemPasswordResetTokenResult} {
-        code: AuthErrorCode
-        message: String
+        code: PasswordResetRedemptionErrorCode!
+        message: String!
+      }
+      enum PasswordResetRedemptionErrorCode {
+        FAILURE
+        IDENTITY_NOT_FOUND
+        MULTIPLE_IDENTITY_MATCHES
+        TOKEN_NOT_SET
+        TOKEN_MISMATCH
+        TOKEN_EXPIRED
+        TOKEN_REDEEMED
       }
     `,
     resolvers: {
@@ -63,13 +76,12 @@ export function getPasswordResetSchema({
 
           // Note: `success` can be false with no code
           if (!result.success && result.code) {
-            const message = getErrorMessage(
+            const message = getAuthTokenErrorMessage({
               identityField,
-              secretField,
-              list.adminUILabels.singular,
-              list.adminUILabels.plural,
-              result.code
-            );
+              itemSingular: list.adminUILabels.singular,
+              itemPlural: list.adminUILabels.plural,
+              code: result.code,
+            });
             return { code: result.code, message };
           }
           if (result.success) {
@@ -94,35 +106,18 @@ export function getPasswordResetSchema({
           );
 
           if (!result.success) {
-            const message = getErrorMessage(
+            const message = getAuthTokenErrorMessage({
               identityField,
-              secretField,
-              list.adminUILabels.singular,
-              list.adminUILabels.plural,
-              result.code
-            );
+              itemSingular: list.adminUILabels.singular,
+              itemPlural: list.adminUILabels.plural,
+              code: result.code,
+            });
             return { code: result.code, message };
           }
 
           const secretPlaintext = args[secretField];
-          const updateResult = await updateItemSecret(
-            list,
-            result.item.id,
-            secretPlaintext,
-            secretField,
-            ctx
-          );
-          if (updateResult.code) {
-            const message = getErrorMessage(
-              identityField,
-              secretField,
-              list.adminUILabels.singular,
-              list.adminUILabels.plural,
-              updateResult.code
-            );
-            return { code: updateResult.code, message };
-          }
-          return {};
+          await updateItemSecret(list, result.item.id, secretPlaintext, secretField, ctx);
+          return null;
         },
       },
       Query: {
@@ -138,16 +133,15 @@ export function getPasswordResetSchema({
           );
 
           if (!result.success && result.code) {
-            const message = getErrorMessage(
+            const message = getAuthTokenErrorMessage({
               identityField,
-              secretField,
-              list.adminUILabels.singular,
-              list.adminUILabels.plural,
-              result.code
-            );
+              itemSingular: list.adminUILabels.singular,
+              itemPlural: list.adminUILabels.plural,
+              code: result.code,
+            });
             return { code: result.code, message };
           }
-          return {};
+          return null;
         },
       },
     },

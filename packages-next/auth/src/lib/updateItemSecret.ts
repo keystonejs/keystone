@@ -1,14 +1,10 @@
-import { AuthErrorCode } from '../types';
-
 export async function updateItemSecret(
   list: any,
   itemId: string | number,
   secretPlaintext: string,
   secretField: string,
   ctx: any
-): Promise<{
-  code?: AuthErrorCode;
-}> {
+): Promise<void> {
   // Save the provided secret
   const { errors } = await ctx.keystone.executeGraphQL({
     context: ctx.keystone.createContext({ skipAccessControl: true }),
@@ -20,9 +16,6 @@ export async function updateItemSecret(
 
   // TODO: The underlying Password field will still hard error on validation failures; these should be surfaced better
   if (Array.isArray(errors) && errors.length > 0) {
-    console.error(errors[0] && (errors[0].stack || errors[0].message));
-    return { code: 'INTERNAL_ERROR' };
+    throw errors[0];
   }
-
-  return {};
 }
