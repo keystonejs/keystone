@@ -1,4 +1,4 @@
-import { AuthErrorCode } from '../types';
+import { AuthTokenRedemptionErrorCode } from '../types';
 
 // The tokensValidForMins config is from userland so could be anything; make it sane
 function sanitiseValidForMinsConfig(input: any): number {
@@ -17,7 +17,7 @@ export async function validateAuthToken(
 ): Promise<
   | {
       success: false;
-      code: AuthErrorCode;
+      code: AuthTokenRedemptionErrorCode;
     }
   | {
       success: true;
@@ -38,13 +38,13 @@ export async function validateAuthToken(
   const items = await list.adapter.find({ [identityField]: identity });
 
   // Check the for identity-related failures first
-  let specificCode: AuthErrorCode | undefined;
+  let specificCode: AuthTokenRedemptionErrorCode | undefined;
   if (items.length === 0) {
-    specificCode = 'AUTH_TOKEN_REDEMPTION_IDENTITY_NOT_FOUND';
+    specificCode = 'IDENTITY_NOT_FOUND';
   } else if (items.length === 1 && !items[0][fieldKeys.token]) {
-    specificCode = 'AUTH_TOKEN_REDEMPTION_TOKEN_NOT_SET';
+    specificCode = 'TOKEN_NOT_SET';
   } else if (items.length > 1) {
-    specificCode = 'AUTH_TOKEN_REDEMPTION_MULTIPLE_IDENTITY_MATCHES';
+    specificCode = 'MULTIPLE_IDENTITY_MATCHES';
   }
   if (typeof specificCode !== 'undefined') {
     // See "Identity Protection" in the README as to why this is a thing
@@ -53,7 +53,7 @@ export async function validateAuthToken(
     }
     return {
       success: false,
-      code: protectIdentities ? 'AUTH_TOKEN_REDEMPTION_FAILURE' : specificCode,
+      code: protectIdentities ? 'FAILURE' : specificCode,
     };
   }
 
@@ -63,30 +63,25 @@ export async function validateAuthToken(
   if (!isMatch) {
     return {
       success: false,
-      code: protectIdentities
-        ? 'AUTH_TOKEN_REDEMPTION_FAILURE'
-        : 'AUTH_TOKEN_REDEMPTION_TOKEN_MISMATCH',
+      code: protectIdentities ? 'FAILURE' : 'TOKEN_MISMATCH',
     };
   }
 
   // Now that we know the identity and token are valid, we can always return 'helpful' errors and stop worrying about protectIdentities
   if (item[fieldKeys.redeemedAt]) {
-    return { success: false, code: 'AUTH_TOKEN_REDEMPTION_TOKEN_REDEEMED' };
+    return { success: false, code: 'TOKEN_REDEEMED' };
   }
   if (!item[fieldKeys.issuedAt] || typeof item[fieldKeys.issuedAt].getTime !== 'function') {
-    console.error(
-      new Error(
-        `Error redeeming authToken: field ${JSON.stringify(list.listKey)}.${JSON.stringify(
-          fieldKeys.issuedAt
-        )} isn't a valid Date object.`
-      )
+    throw new Error(
+      `Error redeeming authToken: field ${JSON.stringify(list.listKey)}.${JSON.stringify(
+        fieldKeys.issuedAt
+      )} isn't a valid Date object.`
     );
-    return { success: false, code: 'INTERNAL_ERROR' };
   }
   const elapsedMins = (Date.now() - item[fieldKeys.issuedAt].getTime()) / (1000 * 60);
   const validForMins = sanitiseValidForMinsConfig(tokenValidMins);
   if (elapsedMins > validForMins) {
-    return { success: false, code: 'AUTH_TOKEN_REDEMPTION_TOKEN_EXPIRED' };
+    return { success: false, code: 'TOKEN_EXPIRED' };
   }
 
   // Authenticated!

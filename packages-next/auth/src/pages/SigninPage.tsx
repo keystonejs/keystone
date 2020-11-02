@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { useEffect, useRef, useState, FormEvent } from 'react';
+import { useState, FormEvent, useRef, useEffect } from 'react';
 
 import { jsx, H1, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
@@ -8,17 +8,43 @@ import { TextInput } from '@keystone-ui/fields';
 import { Notice } from '@keystone-ui/notice';
 
 import { SigninContainer } from '../components/SigninContainer';
-import { useMutation, DocumentNode } from '@keystone-next/admin-ui/apollo';
-import { useReinitContext } from '@keystone-next/admin-ui/context';
+import { useMutation, gql } from '@keystone-next/admin-ui/apollo';
+import { useRawKeystone, useReinitContext } from '@keystone-next/admin-ui/context';
 import { useRouter } from '@keystone-next/admin-ui/router';
 
-export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
+export const SigninPage = ({
+  identityField,
+  secretField,
+  mutationName,
+  successTypename,
+  failureTypename,
+}: {
+  identityField: string;
+  secretField: string;
+  mutationName: string;
+  successTypename: string;
+  failureTypename: string;
+}) => {
+  const mutation = gql`
+    mutation($identity: String!, $secret: String!) {
+      authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {
+        ... on ${successTypename} {
+          item {
+            id
+          }  
+        }
+        ... on ${failureTypename} {
+          message
+        }
+      }
+    }
+  `;
   /* TODO:
     - [x] Move this into the new keystone auth plugin package
     - [ ] Initialise with the current session, and bounce if the user is signed in
     - [x] Call mutation to actually sign in, then redirect
-    - [ ] Show error messages when the user doesn't sign in successfully (inc. full & limited messages)
-    - [ ] Handle a param for which page to redirect to, i.e ?from=/users/1
+    - [x] Show error messages when the user doesn't sign in successfully (inc. full & limited messages)
+    - [x] Handle a param for which page to redirect to, i.e ?from=/users/1
   */
 
   const [mode, setMode] = useState<'signin' | 'forgot password'>('signin');
@@ -29,10 +55,16 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
     identityFieldRef.current?.focus();
   }, [mode]);
 
-  const [mutate, { error, loading }] = useMutation(mutation);
+  const [mutate, { error, loading, data }] = useMutation(mutation);
   const reinitContext = useReinitContext();
   const router = useRouter();
+  const rawKeystone = useRawKeystone();
 
+  useEffect(() => {
+    if (rawKeystone.authenticatedItem.state === 'authenticated') {
+      router.push((router.query.from as string | undefined) || '/');
+    }
+  }, [rawKeystone.authenticatedItem, router.query.from]);
   return (
     <SigninContainer>
       <H1>Sign In</H1>
@@ -44,23 +76,31 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
 
           if (mode === 'signin') {
             try {
-              await mutate({
+              let result = await mutate({
                 variables: {
                   identity: state.identity,
                   secret: state.secret,
                 },
               });
+              if (result.data.authenticate?.__typename !== successTypename) {
+                return;
+              }
             } catch (err) {
               return;
             }
             reinitContext();
-            await router.push('/');
+            router.push((router.query.from as string | undefined) || '/');
           }
         }}
       >
         {error && (
           <Notice title="Error" tone="negative">
             {error.message}
+          </Notice>
+        )}
+        {data?.authenticate?.__typename === failureTypename && (
+          <Notice title="Error" tone="negative">
+            {data?.authenticate.message}
           </Notice>
         )}
         <Stack gap="medium">
@@ -93,7 +133,16 @@ export const SigninPage = ({ mutation }: { mutation: DocumentNode }) => {
           </Stack>
         ) : (
           <Stack gap="medium" across>
-            <Button weight="bold" tone="active" isLoading={loading} type="submit">
+            <Button
+              weight="bold"
+              tone="active"
+              isLoading={
+                loading ||
+                // this is for while the page is loading but the mutation has finished successfully
+                data?.authenticate?.__typename === successTypename
+              }
+              type="submit"
+            >
               Sign In
             </Button>
             <Button weight="none" tone="active" onClick={() => setMode('forgot password')}>

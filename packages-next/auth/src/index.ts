@@ -126,7 +126,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     if (!session && pathname !== '/signin') {
       return {
         kind: 'redirect',
-        to: '/signin',
+        to: `/signin?from=${encodeURIComponent(req.url!)}`,
       };
     }
   };
@@ -144,7 +144,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       {
         mode: 'write',
         outputPath: 'pages/signin.js',
-        src: signinTemplate({ gqlNames }),
+        src: signinTemplate({ gqlNames, identityField, secretField }),
       },
     ];
     if (initFirstItem) {

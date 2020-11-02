@@ -3,12 +3,11 @@ import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 
 import { updateAuthToken } from '../lib/updateAuthToken';
 import { redeemAuthToken } from '../lib/redeemAuthToken';
-import { getErrorMessage } from '../lib/getErrorMessage';
+import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
 
 export function getMagicAuthLinkSchema({
   listKey,
   identityField,
-  secretField,
   protectIdentities,
   gqlNames,
   magicAuthLink,
@@ -27,11 +26,15 @@ export function getMagicAuthLinkSchema({
         ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): ${gqlNames.SendItemMagicAuthLinkResult}!
       }
       type ${gqlNames.SendItemMagicAuthLinkResult} {
-        code: AuthErrorCode!
+        code: MagicLinkRequestErrorCode!
         message: String!
       }
+      enum MagicLinkRequestErrorCode {
+        IDENTITY_NOT_FOUND
+        MULTIPLE_IDENTITY_MATCHES
+      }
       type Mutation {
-        ${gqlNames.redeemItemMagicAuthToken}(${identityField}: String!, token: String!): ${gqlNames.RedeemItemMagicAuthTokenResult}
+        ${gqlNames.redeemItemMagicAuthToken}(${identityField}: String!, token: String!): ${gqlNames.RedeemItemMagicAuthTokenResult}!
       }
       union ${gqlNames.RedeemItemMagicAuthTokenResult} = ${gqlNames.RedeemItemMagicAuthTokenSuccess} | ${gqlNames.RedeemItemMagicAuthTokenFailure}
       type ${gqlNames.RedeemItemMagicAuthTokenSuccess} {
@@ -39,8 +42,17 @@ export function getMagicAuthLinkSchema({
         item: ${listKey}!
       }
       type ${gqlNames.RedeemItemMagicAuthTokenFailure} {
-        code: AuthErrorCode!
+        code: MagicLinkRedemptionErrorCode!
         message: String!
+      }
+      enum MagicLinkRedemptionErrorCode {
+        FAILURE
+        IDENTITY_NOT_FOUND
+        MULTIPLE_IDENTITY_MATCHES
+        TOKEN_NOT_SET
+        TOKEN_MISMATCH
+        TOKEN_EXPIRED
+        TOKEN_REDEEMED
       }
     `,
     resolvers: {
@@ -59,13 +71,12 @@ export function getMagicAuthLinkSchema({
 
           // Note: `success` can be false with no code
           if (!result.success && result.code) {
-            const message = getErrorMessage(
+            const message = getAuthTokenErrorMessage({
               identityField,
-              secretField,
-              list.adminUILabels.singular,
-              list.adminUILabels.plural,
-              result.code
-            );
+              itemSingular: list.adminUILabels.singular,
+              itemPlural: list.adminUILabels.plural,
+              code: result.code,
+            });
             return { code: result.code, message };
           }
           if (result.success) {
@@ -90,13 +101,13 @@ export function getMagicAuthLinkSchema({
           );
 
           if (!result.success) {
-            const message = getErrorMessage(
+            const message = getAuthTokenErrorMessage({
               identityField,
-              secretField,
-              list.adminUILabels.singular,
-              list.adminUILabels.plural,
-              result.code
-            );
+              itemSingular: list.adminUILabels.singular,
+              itemPlural: list.adminUILabels.plural,
+              code: result.code,
+            });
+
             return { code: result.code, message };
           }
 
