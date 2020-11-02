@@ -60,63 +60,9 @@ export type UserWhereInput = {
   readonly password_is_set?: Scalars['Boolean'] | null;
   readonly isAdmin?: Scalars['Boolean'] | null;
   readonly isAdmin_not?: Scalars['Boolean'] | null;
-  readonly roles?: Scalars['String'] | null;
-  readonly roles_not?: Scalars['String'] | null;
-  readonly roles_contains?: Scalars['String'] | null;
-  readonly roles_not_contains?: Scalars['String'] | null;
-  readonly roles_starts_with?: Scalars['String'] | null;
-  readonly roles_not_starts_with?: Scalars['String'] | null;
-  readonly roles_ends_with?: Scalars['String'] | null;
-  readonly roles_not_ends_with?: Scalars['String'] | null;
-  readonly roles_i?: Scalars['String'] | null;
-  readonly roles_not_i?: Scalars['String'] | null;
-  readonly roles_contains_i?: Scalars['String'] | null;
-  readonly roles_not_contains_i?: Scalars['String'] | null;
-  readonly roles_starts_with_i?: Scalars['String'] | null;
-  readonly roles_not_starts_with_i?: Scalars['String'] | null;
-  readonly roles_ends_with_i?: Scalars['String'] | null;
-  readonly roles_not_ends_with_i?: Scalars['String'] | null;
-  readonly roles_in?: ReadonlyArray<Scalars['String'] | null> | null;
-  readonly roles_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly posts_every?: PostWhereInput | null;
   readonly posts_some?: PostWhereInput | null;
   readonly posts_none?: PostWhereInput | null;
-  readonly something?: Scalars['String'] | null;
-  readonly something_not?: Scalars['String'] | null;
-  readonly something_contains?: Scalars['String'] | null;
-  readonly something_not_contains?: Scalars['String'] | null;
-  readonly something_starts_with?: Scalars['String'] | null;
-  readonly something_not_starts_with?: Scalars['String'] | null;
-  readonly something_ends_with?: Scalars['String'] | null;
-  readonly something_not_ends_with?: Scalars['String'] | null;
-  readonly something_i?: Scalars['String'] | null;
-  readonly something_not_i?: Scalars['String'] | null;
-  readonly something_contains_i?: Scalars['String'] | null;
-  readonly something_not_contains_i?: Scalars['String'] | null;
-  readonly something_starts_with_i?: Scalars['String'] | null;
-  readonly something_not_starts_with_i?: Scalars['String'] | null;
-  readonly something_ends_with_i?: Scalars['String'] | null;
-  readonly something_not_ends_with_i?: Scalars['String'] | null;
-  readonly something_in?: ReadonlyArray<Scalars['String'] | null> | null;
-  readonly something_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
-  readonly oneTimeThing?: Scalars['String'] | null;
-  readonly oneTimeThing_not?: Scalars['String'] | null;
-  readonly oneTimeThing_contains?: Scalars['String'] | null;
-  readonly oneTimeThing_not_contains?: Scalars['String'] | null;
-  readonly oneTimeThing_starts_with?: Scalars['String'] | null;
-  readonly oneTimeThing_not_starts_with?: Scalars['String'] | null;
-  readonly oneTimeThing_ends_with?: Scalars['String'] | null;
-  readonly oneTimeThing_not_ends_with?: Scalars['String'] | null;
-  readonly oneTimeThing_i?: Scalars['String'] | null;
-  readonly oneTimeThing_not_i?: Scalars['String'] | null;
-  readonly oneTimeThing_contains_i?: Scalars['String'] | null;
-  readonly oneTimeThing_not_contains_i?: Scalars['String'] | null;
-  readonly oneTimeThing_starts_with_i?: Scalars['String'] | null;
-  readonly oneTimeThing_not_starts_with_i?: Scalars['String'] | null;
-  readonly oneTimeThing_ends_with_i?: Scalars['String'] | null;
-  readonly oneTimeThing_not_ends_with_i?: Scalars['String'] | null;
-  readonly oneTimeThing_in?: ReadonlyArray<Scalars['String'] | null> | null;
-  readonly oneTimeThing_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly passwordResetToken_is_set?: Scalars['Boolean'] | null;
   readonly passwordResetIssuedAt?: Scalars['String'] | null;
   readonly passwordResetIssuedAt_not?: Scalars['String'] | null;
@@ -182,14 +128,8 @@ export type SortUsersBy =
   | 'email_DESC'
   | 'isAdmin_ASC'
   | 'isAdmin_DESC'
-  | 'roles_ASC'
-  | 'roles_DESC'
   | 'posts_ASC'
   | 'posts_DESC'
-  | 'something_ASC'
-  | 'something_DESC'
-  | 'oneTimeThing_ASC'
-  | 'oneTimeThing_DESC'
   | 'passwordResetIssuedAt_ASC'
   | 'passwordResetIssuedAt_DESC'
   | 'passwordResetRedeemedAt_ASC'
@@ -204,9 +144,7 @@ export type UserUpdateInput = {
   readonly email?: Scalars['String'] | null;
   readonly password?: Scalars['String'] | null;
   readonly isAdmin?: Scalars['Boolean'] | null;
-  readonly roles?: Scalars['String'] | null;
   readonly posts?: PostRelateToManyInput | null;
-  readonly something?: Scalars['String'] | null;
   readonly passwordResetToken?: Scalars['String'] | null;
   readonly passwordResetIssuedAt?: Scalars['String'] | null;
   readonly passwordResetRedeemedAt?: Scalars['String'] | null;
@@ -225,10 +163,7 @@ export type UserCreateInput = {
   readonly email?: Scalars['String'] | null;
   readonly password?: Scalars['String'] | null;
   readonly isAdmin?: Scalars['Boolean'] | null;
-  readonly roles?: Scalars['String'] | null;
   readonly posts?: PostRelateToManyInput | null;
-  readonly something?: Scalars['String'] | null;
-  readonly oneTimeThing?: Scalars['String'] | null;
   readonly passwordResetToken?: Scalars['String'] | null;
   readonly passwordResetIssuedAt?: Scalars['String'] | null;
   readonly passwordResetRedeemedAt?: Scalars['String'] | null;
@@ -273,32 +208,6 @@ export type PostWhereInput = {
   readonly title_not_ends_with_i?: Scalars['String'] | null;
   readonly title_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly title_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
-  readonly views?: Scalars['Int'] | null;
-  readonly views_not?: Scalars['Int'] | null;
-  readonly views_lt?: Scalars['Int'] | null;
-  readonly views_lte?: Scalars['Int'] | null;
-  readonly views_gt?: Scalars['Int'] | null;
-  readonly views_gte?: Scalars['Int'] | null;
-  readonly views_in?: ReadonlyArray<Scalars['Int'] | null> | null;
-  readonly views_not_in?: ReadonlyArray<Scalars['Int'] | null> | null;
-  readonly content?: Scalars['String'] | null;
-  readonly content_not?: Scalars['String'] | null;
-  readonly content_contains?: Scalars['String'] | null;
-  readonly content_not_contains?: Scalars['String'] | null;
-  readonly content_starts_with?: Scalars['String'] | null;
-  readonly content_not_starts_with?: Scalars['String'] | null;
-  readonly content_ends_with?: Scalars['String'] | null;
-  readonly content_not_ends_with?: Scalars['String'] | null;
-  readonly content_i?: Scalars['String'] | null;
-  readonly content_not_i?: Scalars['String'] | null;
-  readonly content_contains_i?: Scalars['String'] | null;
-  readonly content_not_contains_i?: Scalars['String'] | null;
-  readonly content_starts_with_i?: Scalars['String'] | null;
-  readonly content_not_starts_with_i?: Scalars['String'] | null;
-  readonly content_ends_with_i?: Scalars['String'] | null;
-  readonly content_not_ends_with_i?: Scalars['String'] | null;
-  readonly content_in?: ReadonlyArray<Scalars['String'] | null> | null;
-  readonly content_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly status?: Scalars['String'] | null;
   readonly status_not?: Scalars['String'] | null;
   readonly status_contains?: Scalars['String'] | null;
@@ -317,6 +226,24 @@ export type PostWhereInput = {
   readonly status_not_ends_with_i?: Scalars['String'] | null;
   readonly status_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly status_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly content?: Scalars['String'] | null;
+  readonly content_not?: Scalars['String'] | null;
+  readonly content_contains?: Scalars['String'] | null;
+  readonly content_not_contains?: Scalars['String'] | null;
+  readonly content_starts_with?: Scalars['String'] | null;
+  readonly content_not_starts_with?: Scalars['String'] | null;
+  readonly content_ends_with?: Scalars['String'] | null;
+  readonly content_not_ends_with?: Scalars['String'] | null;
+  readonly content_i?: Scalars['String'] | null;
+  readonly content_not_i?: Scalars['String'] | null;
+  readonly content_contains_i?: Scalars['String'] | null;
+  readonly content_not_contains_i?: Scalars['String'] | null;
+  readonly content_starts_with_i?: Scalars['String'] | null;
+  readonly content_not_starts_with_i?: Scalars['String'] | null;
+  readonly content_ends_with_i?: Scalars['String'] | null;
+  readonly content_not_ends_with_i?: Scalars['String'] | null;
+  readonly content_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly content_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly publishDate?: Scalars['String'] | null;
   readonly publishDate_not?: Scalars['String'] | null;
   readonly publishDate_lt?: Scalars['String'] | null;
@@ -338,12 +265,10 @@ export type SortPostsBy =
   | 'id_DESC'
   | 'title_ASC'
   | 'title_DESC'
-  | 'views_ASC'
-  | 'views_DESC'
-  | 'content_ASC'
-  | 'content_DESC'
   | 'status_ASC'
   | 'status_DESC'
+  | 'content_ASC'
+  | 'content_DESC'
   | 'publishDate_ASC'
   | 'publishDate_DESC'
   | 'author_ASC'
@@ -351,9 +276,8 @@ export type SortPostsBy =
 
 export type PostUpdateInput = {
   readonly title?: Scalars['String'] | null;
-  readonly views?: Scalars['Int'] | null;
-  readonly content?: Scalars['String'] | null;
   readonly status?: Scalars['String'] | null;
+  readonly content?: Scalars['String'] | null;
   readonly publishDate?: Scalars['String'] | null;
   readonly author?: UserRelateToOneInput | null;
 };
@@ -365,9 +289,8 @@ export type PostsUpdateInput = {
 
 export type PostCreateInput = {
   readonly title?: Scalars['String'] | null;
-  readonly views?: Scalars['Int'] | null;
-  readonly content?: Scalars['String'] | null;
   readonly status?: Scalars['String'] | null;
+  readonly content?: Scalars['String'] | null;
   readonly publishDate?: Scalars['String'] | null;
   readonly author?: UserRelateToOneInput | null;
 };
@@ -425,14 +348,11 @@ export type UserListTypeInfo = {
   fields:
     | 'id'
     | 'name'
-    | 'randomNumber'
     | 'email'
     | 'password'
     | 'isAdmin'
-    | 'roles'
     | 'posts'
-    | 'something'
-    | 'oneTimeThing'
+    | 'randomNumber'
     | 'passwordResetToken'
     | 'passwordResetIssuedAt'
     | 'passwordResetRedeemedAt'
@@ -445,10 +365,7 @@ export type UserListTypeInfo = {
     readonly email?: string | null;
     readonly password?: string | null;
     readonly isAdmin?: boolean | null;
-    readonly roles?: string | null;
     readonly posts?: string | null;
-    readonly something?: string | null;
-    readonly oneTimeThing?: string | null;
     readonly passwordResetToken?: string | null;
     readonly passwordResetIssuedAt?: Date | null;
     readonly passwordResetRedeemedAt?: Date | null;
@@ -483,20 +400,12 @@ export type UserListFn = (
 
 export type PostListTypeInfo = {
   key: 'Post';
-  fields:
-    | 'id'
-    | 'title'
-    | 'views'
-    | 'content'
-    | 'status'
-    | 'publishDate'
-    | 'author';
+  fields: 'id' | 'title' | 'status' | 'content' | 'publishDate' | 'author';
   backing: {
     readonly id: string;
     readonly title?: string | null;
-    readonly views?: number | null;
-    readonly content?: string | null;
     readonly status?: string | null;
+    readonly content?: string | null;
     readonly publishDate?: Date | null;
     readonly author?: string | null;
   };

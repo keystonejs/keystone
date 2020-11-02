@@ -78,20 +78,34 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
         Object.keys(expectedExports).forEach(exportName => {
           if ((fieldViews[field.views] as any)[exportName] === undefined) {
             throw new Error(
-              `View for field at path ${list.key}.${field.path} is missing ${exportName} export`
+              `The view for the field at ${list.key}.${field.path} is missing the ${exportName} export`
             );
           }
         });
         Object.keys(fieldViews[field.views]).forEach(exportName => {
           if (expectedExports[exportName] === undefined) {
             throw new Error(
-              `Unexpected export named ${exportName} from view from field at ${list.key}.${field.path}`
+              `Unexpected export named ${exportName} from the view from the field at ${list.key}.${field.path}`
             );
           }
         });
+        let views = fieldViews[field.views];
+        if (field.customViews !== null) {
+          Object.keys(fieldViews[field.customViews]).forEach(exportName => {
+            if (expectedExports[exportName] === undefined) {
+              throw new Error(
+                `Unexpected export named ${exportName} from the custom view from field at ${list.key}.${field.path}`
+              );
+            }
+          });
+          views = {
+            ...views,
+            ...fieldViews[field.customViews],
+          };
+        }
         runtimeAdminMeta.lists[list.key].fields[field.path] = {
           ...field,
-          views: fieldViews[field.views],
+          views,
           controller: fieldViews[field.views].controller({
             fieldMeta: field.fieldMeta,
             label: field.label,
