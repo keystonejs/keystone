@@ -10,12 +10,13 @@ import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';
-import { AlertDialog } from '@keystone-ui/modals';
+import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 import { Tooltip } from '@keystone-ui/tooltip';
 
 import { gql, useMutation, useQuery } from '../apollo';
 import { PageContainer } from '../components/PageContainer';
+import { CreateItemDrawer } from '../components/CreateItemDrawer';
 import { useList } from '../context';
 import { DataGetter, DeepNullable, makeDataGetter } from '../utils/dataGetter';
 import { deserializeValue, ItemData, serializeValueToObjByFieldKey } from '../utils/serialization';
@@ -335,25 +336,26 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
     return {
       selectedFields,
       query: gql`
-  query ItemPage($id: ID!, $listKey: String!) {
-    item: ${list.gqlNames.itemQueryName}(where: {id: $id}) {
-      ${selectedFields}
-    }
-    keystone {
-      adminMeta {
-        list(key: $listKey) {
-          hideDelete
-          fields {
-            path
-            itemView(id: $id) {
-              fieldMode
+        query ItemPage($id: ID!, $listKey: String!) {
+          item: ${list.gqlNames.itemQueryName}(where: {id: $id}) {
+            ${selectedFields}
+          }
+          keystone {
+            adminMeta {
+              list(key: $listKey) {
+                hideCreate
+                hideDelete
+                fields {
+                  path
+                  itemView(id: $id) {
+                    fieldMode
+                  }
+                }
+              }
             }
           }
         }
-      }
-    }
-  }
-`,
+      `,
     };
   }, [list]);
   let { data, error, loading } = useQuery(query, {
@@ -391,14 +393,49 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
 
   const errorsFromMetaQuery = dataGetter.get('keystone').errors;
 
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const hideCreate = data?.keystone.adminMeta.list.hideCreate;
+
   return (
     <PageContainer>
-      <h3 css={{ marginBottom: 0 }}>
-        <Link href={`/${list.path}`}>
-          <a>{list.label}</a>
-        </Link>
-        :
-      </h3>
+      <Stack
+        across
+        marginTop="large"
+        gap="medium"
+        css={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        <h3 css={{ margin: 0 }}>
+          <Link href={`/${list.path}`}>
+            <a>{list.label}</a>
+          </Link>
+        </h3>
+        {!hideCreate && (
+          <Button
+            onClick={() => {
+              setIsCreateModalOpen(true);
+            }}
+            tone="positive"
+          >
+            Create
+          </Button>
+        )}
+      </Stack>
+      <DrawerController isOpen={isCreateModalOpen}>
+        <CreateItemDrawer
+          listKey={listKey}
+          onCreate={({ id }) => {
+            router.push(`/${list.path}/[id]`, `/${list.path}/${id}`);
+          }}
+          onClose={() => {
+            setIsCreateModalOpen(false);
+          }}
+        />
+      </DrawerController>
       {loading ? (
         <h1 css={{ marginTop: spacing.medium }}>
           <Stack across gap="large">
