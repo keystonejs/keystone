@@ -21,7 +21,7 @@ import { accessControlContext, skipAccessControlContext } from './createAccessCo
 import { autoIncrement, mongoId } from '@keystone-next/fields';
 
 export function createKeystone(config: KeystoneConfig): Keystone {
-  config = validateConfig(config);
+  config = applyIdFieldDefaults(config);
 
   let keystone = new BaseKeystone({
     name: config.name,
@@ -210,9 +210,8 @@ export function createKeystone(config: KeystoneConfig): Keystone {
   return keystoneThing;
 }
 
-/** Validates and defaults the Keystone Config */
-function validateConfig(config: KeystoneConfig): KeystoneConfig {
-  /* Validate lists config and default the id field */
+/* Validate lists config and default the id field */
+function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig {
   const lists: KeystoneConfig['lists'] = {};
   Object.keys(config.lists).forEach(key => {
     const listConfig = config.lists[key];
