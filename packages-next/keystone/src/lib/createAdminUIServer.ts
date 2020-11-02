@@ -33,7 +33,7 @@ export const createAdminUIServer = async (keystone: Keystone) => {
   });
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql' });
 
-  const publicPages = keystone.config.admin?.publicPages ?? [];
+  const publicPages = keystone.config.ui?.publicPages ?? [];
 
   server.use(async (req, res) => {
     const { pathname } = url.parse(req.url);
@@ -42,10 +42,10 @@ export const createAdminUIServer = async (keystone: Keystone) => {
       return;
     }
     const session = (await keystone.createSessionContext?.(req, res))?.session;
-    const isValidSession = keystone.config.admin?.isAccessAllowed
-      ? await keystone.config.admin.isAccessAllowed({ session })
+    const isValidSession = keystone.config.ui?.isAccessAllowed
+      ? await keystone.config.ui.isAccessAllowed({ session })
       : session !== undefined;
-    const maybeRedirect = await keystone.config.admin?.pageMiddleware?.({
+    const maybeRedirect = await keystone.config.ui?.pageMiddleware?.({
       req,
       session,
       isValidSession,

@@ -61,7 +61,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   // updated to use our crud API, we can set these to static false values.
   const fieldConfig = {
     access: () => false,
-    admin: {
+    ui: {
       createView: { fieldMode: 'hidden' },
       itemView: { fieldMode: 'hidden' },
       listView: { fieldMode: 'hidden' },
@@ -80,14 +80,14 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   /**
    * adminPageMiddleware
    *
-   * Should be added to the admin.pageMiddleware stack.
+   * Should be added to the ui.pageMiddleware stack.
    *
    * Redirects:
    *  - from the signin or init pages to the index when a valid session is present
    *  - to the init page when initFirstItem is configured, and there are no user in the database
    *  - to the signin page when no valid session is present
    */
-  const adminPageMiddleware: Auth['admin']['pageMiddleware'] = async ({
+  const adminPageMiddleware: Auth['ui']['pageMiddleware'] = async ({
     req,
     isValidSession,
     keystone,
@@ -135,11 +135,11 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    * additionalFiles
    *
    * This function adds files to be generated into the Admin UI build. Must be added to the
-   * admin.additionalFiles config.
+   * ui.additionalFiles config.
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const additionalFiles: Auth['admin']['getAdditionalFiles'] = keystone => {
+  const additionalFiles: Auth['ui']['getAdditionalFiles'] = keystone => {
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
@@ -164,11 +164,11 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   };
 
   /**
-   * adminPublicPages
+   * publicAuthPages
    *
-   * Must be added to the admin.publicPages config
+   * Must be added to the ui.publicPages config
    */
-  const adminPublicPages = ['/signin', '/init'];
+  const publicAuthPages = ['/signin', '/init'];
 
   /**
    * extendGraphqlSchema
@@ -320,18 +320,18 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    * the way auth is set up with custom functionality.
    *
    * It validates the auth config against the provided keystone config, and preserves existing
-   * config by composing existing extendGraphqlSchema functions and admin config.
+   * config by composing existing extendGraphqlSchema functions and ui config.
    */
   const withAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
     validateConfig(keystoneConfig);
-    let admin = keystoneConfig.admin;
-    if (keystoneConfig.admin) {
-      admin = {
-        ...keystoneConfig.admin,
-        publicPages: [...(keystoneConfig.admin.publicPages || []), ...adminPublicPages],
-        getAdditionalFiles: [...(keystoneConfig.admin.getAdditionalFiles || []), additionalFiles],
+    let ui = keystoneConfig.ui;
+    if (keystoneConfig.ui) {
+      ui = {
+        ...keystoneConfig.ui,
+        publicPages: [...(keystoneConfig.ui.publicPages || []), ...publicAuthPages],
+        getAdditionalFiles: [...(keystoneConfig.ui.getAdditionalFiles || []), additionalFiles],
         pageMiddleware: async args => {
-          return (await adminPageMiddleware(args)) ?? keystoneConfig.admin?.pageMiddleware?.(args);
+          return (await adminPageMiddleware(args)) ?? keystoneConfig?.ui?.pageMiddleware?.(args);
         },
         enableSessionItem: true,
       };
@@ -340,7 +340,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
 
     return {
       ...keystoneConfig,
-      admin,
+      ui,
       // Add the additional fields to the references lists fields object
       // TODO: The additionalListFields we're adding here shouldn't naively replace existing fields with the same key
       // Leaving existing fields in place would allow solution devs to customise these field defs (eg. access control,
@@ -368,10 +368,10 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    * your keystone config by hand.
    */
   return {
-    admin: {
+    ui: {
       enableSessionItem: true,
       pageMiddleware: adminPageMiddleware,
-      publicPages: adminPublicPages,
+      publicPages: publicAuthPages,
       getAdditionalFiles: additionalFiles,
     },
     fields: additionalListFields,

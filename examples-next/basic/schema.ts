@@ -31,7 +31,7 @@ const randomNumber = () => Math.round(Math.random() * 10);
 
 export const lists = createSchema({
   User: list({
-    admin: {
+    ui: {
       listView: {
         initialColumns: ['name', 'posts'],
       },
@@ -46,7 +46,7 @@ export const lists = createSchema({
           read: access.isAdmin,
           update: access.isAdmin,
         },
-        admin: {
+        ui: {
           createView: {
             fieldMode: args => (access.isAdmin(args) ? 'edit' : 'hidden'),
           },
@@ -65,7 +65,7 @@ export const lists = createSchema({
     },
   }),
   Post: list({
-    admin: {
+    ui: {
       labelField: 'title',
     },
     fields: {
@@ -75,12 +75,12 @@ export const lists = createSchema({
           { label: 'Published', value: 'published' },
           { label: 'Draft', value: 'draft' },
         ],
-        admin: {
+        ui: {
           displayMode: 'segmented-control',
         },
       }),
       content: text({
-        admin: {
+        ui: {
           views: require.resolve('./admin/fieldViews/Content.tsx'),
         },
       }),
