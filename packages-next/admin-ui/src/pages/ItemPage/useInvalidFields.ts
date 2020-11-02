@@ -1,21 +1,8 @@
 import { ListMeta } from '@keystone-next/types';
-import { GraphQLError } from 'graphql';
 import { useMemo } from 'react';
+import { Value } from '.';
 
-export function useInvalidFields(
-  list: ListMeta,
-  value: Record<
-    string,
-    | {
-        kind: 'error';
-        errors: readonly [GraphQLError, ...GraphQLError[]];
-      }
-    | {
-        kind: 'value';
-        value: any;
-      }
-  >
-): ReadonlySet<string> {
+export function useInvalidFields(list: ListMeta, value: Value): ReadonlySet<string> {
   return useMemo(() => {
     const invalidFields = new Set<string>();
 

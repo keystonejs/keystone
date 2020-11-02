@@ -1,20 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
 import { FieldMeta } from '@keystone-next/types';
-import { GraphQLError } from 'graphql';
 import { Fragment } from 'react';
-
-type Value = Record<
-  string,
-  | {
-      kind: 'error';
-      errors: readonly [GraphQLError, ...GraphQLError[]];
-    }
-  | {
-      kind: 'value';
-      value: any;
-    }
->;
+import { Value } from '.';
 
 type FieldsProps = {
   fields: Record<string, FieldMeta>;

@@ -26,10 +26,56 @@ import {
 import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice';
 import { useInvalidFields } from './useInvalidFields';
 import { Fields } from './Fields';
+import { GraphQLError } from 'graphql';
 
 type ItemPageProps = {
   listKey: string;
 };
+
+export type Value = Record<
+  string,
+  | {
+      kind: 'error';
+      errors: readonly [GraphQLError, ...GraphQLError[]];
+    }
+  | {
+      kind: 'value';
+      value: any;
+    }
+>;
+
+function useChangedFieldsAndDataForUpdate(
+  list: ListMeta,
+  itemGetter: DataGetter<ItemData>,
+  value: Value
+) {
+  const serializedValuesFromItem = useMemo(() => {
+    const value = deserializeValue(list, itemGetter);
+    return serializeValueToObjByFieldKey(list, value);
+  }, [list, itemGetter]);
+  const serializedFieldValues = useMemo(() => {
+    return serializeValueToObjByFieldKey(list, value);
+  }, [value, list]);
+
+  return useMemo(() => {
+    let changedFields = new Set<string>();
+    Object.keys(serializedFieldValues).forEach(fieldKey => {
+      let isEqual = isDeepEqual(
+        serializedFieldValues[fieldKey],
+        serializedValuesFromItem[fieldKey]
+      );
+      if (!isEqual) {
+        changedFields.add(fieldKey);
+      }
+    });
+    const dataForUpdate: Record<string, any> = {};
+
+    changedFields.forEach(fieldKey => {
+      Object.assign(dataForUpdate, serializedFieldValues[fieldKey]);
+    });
+    return { changedFields: changedFields as ReadonlySet<string>, dataForUpdate };
+  }, [serializedFieldValues, serializedValuesFromItem]);
+}
 
 function ItemForm({
   listKey,
@@ -77,27 +123,11 @@ function ItemForm({
     });
   }
 
-  const serializedValuesFromItem = useMemo(() => {
-    const value = deserializeValue(list, itemGetter);
-    return serializeValueToObjByFieldKey(list, value);
-  }, [list, itemGetter]);
-  const serializedFieldValues = useMemo(() => {
-    return serializeValueToObjByFieldKey(list, state.value);
-  }, [state.value, list]);
-
-  const changedFields = useMemo(() => {
-    let fieldsChanged = new Set<string>();
-    Object.keys(serializedFieldValues).forEach(fieldKey => {
-      let isEqual = isDeepEqual(
-        serializedFieldValues[fieldKey],
-        serializedValuesFromItem[fieldKey]
-      );
-      if (!isEqual) {
-        fieldsChanged.add(fieldKey);
-      }
-    });
-    return fieldsChanged;
-  }, [serializedFieldValues, serializedValuesFromItem, list]);
+  const { changedFields, dataForUpdate } = useChangedFieldsAndDataForUpdate(
+    list,
+    itemGetter,
+    state.value
+  );
 
   const invalidFields = useInvalidFields(list, state.value);
 
@@ -111,14 +141,10 @@ function ItemForm({
       const newForceValidation = invalidFields.size !== 0;
       setForceValidation(newForceValidation);
       if (newForceValidation) return;
-      const data: Record<string, any> = {};
 
-      changedFields.forEach(fieldKey => {
-        Object.assign(data, serializedFieldValues[fieldKey]);
-      });
       update({
         variables: {
-          data,
+          data: dataForUpdate,
           id: itemGetter.get('id').data,
         },
       })
