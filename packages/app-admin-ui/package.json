@@ -52,7 +52,7 @@
     "clipboard-copy": "^3.1.0",
     "compression": "^1.7.4",
     "cross-fetch": "^3.0.6",
-    "css-loader": "^4.3.0",
+    "css-loader": "^5.0.0",
     "express": "^4.17.1",
     "express-history-api-fallback": "^2.2.1",
     "falsey": "^1.0.0",
