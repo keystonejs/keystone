@@ -56,7 +56,6 @@ ${keystone.views
 ${configFile ? `import * as adminConfig from "../../../admin/config";` : 'const adminConfig = {};'}
 
 const fieldViews = [${keystone.views.map((x, i) => `view${i}`)}];
-const customFieldViews = {};
 
 const lazyMetadataQuery = ${JSON.stringify(lazyMetadataQuery)};
 
@@ -67,7 +66,6 @@ export default function App({ Component, pageProps }) {
         adminConfig={adminConfig}
         adminMetaHash="${adminMetaQueryResultHash}"
         fieldViews={fieldViews}
-        customFieldViews={customFieldViews}
         lazyMetadataQuery={lazyMetadataQuery}
       >
         <ErrorBoundary>

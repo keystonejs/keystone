@@ -1,30 +1,32 @@
 /* @jsx jsx */
 
-import { useQuery, gql, useMutation, TypedDocumentNode } from '../../apollo';
+import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } from 'react';
+
+import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, H1, jsx, Stack, useTheme } from '@keystone-ui/core';
-import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } from 'react';
+import { CheckboxControl } from '@keystone-ui/fields';
 import { ArrowRightCircleIcon } from '@keystone-ui/icons/icons/ArrowRightCircleIcon';
+import { LoadingDots } from '@keystone-ui/loading';
+import { AlertDialog, DrawerController } from '@keystone-ui/modals';
+import { useToasts } from '@keystone-ui/toast';
+
+import { gql, TypedDocumentNode, useMutation, useQuery } from '../../apollo';
+import { CellLink } from '../../components';
+import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 import { PageContainer } from '../../components/PageContainer';
 import { useList } from '../../context';
-import { useRouter, Link } from '../../router';
-import { CellLink } from '../../components';
-import { getPaginationLabel, Pagination } from './pagination';
-import { useFilters } from './useFilters';
-import { useSelectedFields } from './useSelectedFields';
-import { CheckboxControl } from '@keystone-ui/fields';
+import { Link, useRouter } from '../../router';
 import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter';
 import { getRootGraphQLFieldsFromFieldController } from '../../utils/getRootGraphQLFieldsFromFieldController';
-import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
-import { ListMeta } from '@keystone-next/types';
-import { AlertDialog, DrawerController } from '@keystone-ui/modals';
-import { useToasts } from '@keystone-ui/toast';
-import { LoadingDots } from '@keystone-ui/loading';
-import { useSort } from './useSort';
+import { PaginationLabel, Pagination } from './pagination';
 import { SortSelection } from './SortSelection';
+import { useFilters } from './useFilters';
+import { useSelectedFields } from './useSelectedFields';
+import { useSort } from './useSort';
 
 type ListPageProps = {
   listKey: string;
@@ -199,6 +201,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
     itemsFromServer: undefined as any,
     selectedItems: new Set() as ReadonlySet<string>,
   }));
+
   // this removes the selected items which no longer exist when the data changes
   // because someone goes to another page, changes filters or etc.
   if (data && selectedItemsState.itemsFromServer !== data.items) {
@@ -213,6 +216,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
       selectedItems: newSelectedItems,
     });
   }
+
   const theme = useTheme();
 
   return (
@@ -221,86 +225,101 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         listKey={listKey}
         showCreate={!(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)}
       />
-      <FilterAdd listKey={listKey} />
-
-      <p
-        css={{
-          // TODO: don't do this
-          // (this is to make it so things don't move when a user selects an item)
-          minHeight: 38,
-
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        {data && metaQuery.data
-          ? (() => {
-              const selectedItems = selectedItemsState.selectedItems;
-              const selectedItemsCount = selectedItems.size;
-              if (selectedItemsCount) {
-                return (
-                  <Fragment>
-                    <span css={{ marginRight: theme.spacing.small }}>
-                      Selected {selectedItemsCount} of {data.items.length}
-                    </span>
-                    {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
-                      <DeleteManyButton
-                        list={list}
-                        selectedItems={selectedItems}
-                        refetch={refetch}
-                      />
-                    )}
-                  </Fragment>
-                );
-              }
-              return (
-                <Fragment>
-                  {getPaginationLabel({
-                    currentPage,
-                    pageSize,
-                    plural: list.plural,
-                    singular: list.singular,
-                    total: data.meta.count,
-                  })}{' '}
-                  , sorted by <SortSelection list={list} />
-                  with{' '}
-                  <FieldSelection
-                    list={list}
-                    fieldModesByFieldPath={listViewFieldModesByField}
-                  />{' '}
-                  {loading && <LoadingDots label="Loading data" tone="active" />}
-                </Fragment>
-              );
-            })()
-          : ' '}
-      </p>
-      {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
+      <Stack across gap="medium" align="center">
+        <FilterAdd listKey={listKey} />
+        {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
+      </Stack>
       {metaQuery.error ? (
         // TODO: Show errors nicely and with information
         'Error...'
       ) : data && metaQuery.data ? (
-        <ListTable
-          count={data.meta.count}
-          currentPage={currentPage}
-          itemsGetter={dataGetter.get('items')}
-          listKey={listKey}
-          pageSize={pageSize}
-          selectedFields={selectedFields}
-          sort={sort}
-          selectedItems={selectedItemsState.selectedItems}
-          onSelectedItemsChange={selectedItems => {
-            setSelectedItems({
-              itemsFromServer: selectedItemsState.itemsFromServer,
-              selectedItems,
-            });
-          }}
-        />
+        data.meta.count ? (
+          <Fragment>
+            <ResultsSummaryContainer>
+              {(() => {
+                const selectedItems = selectedItemsState.selectedItems;
+                const selectedItemsCount = selectedItems.size;
+                if (selectedItemsCount) {
+                  return (
+                    <Fragment>
+                      <span css={{ marginRight: theme.spacing.small }}>
+                        Selected {selectedItemsCount} of {data.items.length}
+                      </span>
+                      {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
+                        <DeleteManyButton
+                          list={list}
+                          selectedItems={selectedItems}
+                          refetch={refetch}
+                        />
+                      )}
+                    </Fragment>
+                  );
+                }
+                return (
+                  <Fragment>
+                    <PaginationLabel
+                      currentPage={currentPage}
+                      pageSize={pageSize}
+                      plural={list.plural}
+                      singular={list.singular}
+                      total={data.meta.count}
+                    />
+                    , sorted by <SortSelection list={list} />
+                    with{' '}
+                    <FieldSelection
+                      list={list}
+                      fieldModesByFieldPath={listViewFieldModesByField}
+                    />{' '}
+                    {loading && <LoadingDots label="Loading data" tone="active" />}
+                  </Fragment>
+                );
+              })()}
+            </ResultsSummaryContainer>
+            <ListTable
+              count={data.meta.count}
+              currentPage={currentPage}
+              itemsGetter={dataGetter.get('items')}
+              listKey={listKey}
+              pageSize={pageSize}
+              selectedFields={selectedFields}
+              sort={sort}
+              selectedItems={selectedItemsState.selectedItems}
+              onSelectedItemsChange={selectedItems => {
+                setSelectedItems({
+                  itemsFromServer: selectedItemsState.itemsFromServer,
+                  selectedItems,
+                });
+              }}
+            />
+          </Fragment>
+        ) : (
+          <ResultsSummaryContainer>No {list.plural} found.</ResultsSummaryContainer>
+        )
       ) : (
-        'Loading...'
+        <ResultsSummaryContainer>
+          <Box marginLeft="xsmall">
+            <LoadingDots label="Loading data" tone="passive" />
+          </Box>
+        </ResultsSummaryContainer>
       )}
     </PageContainer>
   );
 };
+
+const ResultsSummaryContainer = ({ children }: { children: ReactNode }) => (
+  <p
+    css={{
+      // TODO: don't do this
+      // (this is to make it so things don't move when a user selects an item)
+      minHeight: 38,
+
+      display: 'flex',
+      alignItems: 'center',
+    }}
+  >
+    {children}
+  </p>
+);
 
 const SortDirectionArrow = ({ direction }: { direction: 'ASC' | 'DESC' }) => {
   const size = '0.25em';

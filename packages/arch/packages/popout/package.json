@@ -18,7 +18,7 @@
     "@arch-ui/modal-utils": "^1.0.13",
     "@arch-ui/theme": "^0.0.11",
     "@babel/runtime": "^7.12.1",
-    "@emotion/core": "^10.1.0",
+    "@emotion/core": "^10.1.1",
     "@emotion/styled": "^10.0.27",
     "@popperjs/core": "^2.5.4",
     "focus-trap-react": "^8.1.1",

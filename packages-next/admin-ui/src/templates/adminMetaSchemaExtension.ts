@@ -49,6 +49,7 @@ let typeDefs = gql`
     isOrderable: Boolean!
     fieldMeta: JSON
     views: Int!
+    customViews: Int
     createView: KeystoneAdminUIFieldMetaCreateView!
     listView: KeystoneAdminUIFieldMetaListView!
     itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
@@ -159,15 +160,15 @@ export function adminMetaSchemaExtension({
       },
       KeystoneAdminUIListMeta: {
         isHidden(rootVal: ListMetaRootVal, args: any, { session }: any) {
-          return runMaybeFunction(config.lists[rootVal.key].admin?.isHidden, false, { session });
+          return runMaybeFunction(config.lists[rootVal.key].ui?.isHidden, false, { session });
         },
         hideDelete(rootVal: ListMetaRootVal, args: any, { session }: any) {
-          return runMaybeFunction(config.lists[rootVal.key].admin?.hideDelete, false, {
+          return runMaybeFunction(config.lists[rootVal.key].ui?.hideDelete, false, {
             session,
           });
         },
         hideCreate(rootVal: ListMetaRootVal, args: any, { session }: any) {
-          return runMaybeFunction(config.lists[rootVal.key].admin?.hideCreate, false, {
+          return runMaybeFunction(config.lists[rootVal.key].ui?.hideCreate, false, {
             session,
           });
         },
@@ -199,8 +200,8 @@ export function adminMetaSchemaExtension({
       KeystoneAdminUIFieldMetaCreateView: {
         fieldMode(rootVal: FieldIdentifier, args: any, { session }: any) {
           return runMaybeFunction(
-            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.admin?.createView
-              ?.fieldMode ?? config.lists[rootVal.listKey].admin?.createView?.defaultFieldMode,
+            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.createView
+              ?.fieldMode ?? config.lists[rootVal.listKey].ui?.createView?.defaultFieldMode,
             'edit',
             { session }
           );
@@ -209,8 +210,8 @@ export function adminMetaSchemaExtension({
       KeystoneAdminUIFieldMetaListView: {
         fieldMode(rootVal: FieldIdentifier, args: any, { session }: any) {
           return runMaybeFunction(
-            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.admin?.listView
-              ?.fieldMode ?? config.lists[rootVal.listKey].admin?.listView?.defaultFieldMode,
+            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.listView
+              ?.fieldMode ?? config.lists[rootVal.listKey].ui?.listView?.defaultFieldMode,
             'read',
             { session }
           );
@@ -225,8 +226,8 @@ export function adminMetaSchemaExtension({
           const item = await crud[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
 
           return runMaybeFunction(
-            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.admin?.itemView
-              ?.fieldMode ?? config.lists[rootVal.listKey].admin?.itemView?.defaultFieldMode,
+            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.itemView
+              ?.fieldMode ?? config.lists[rootVal.listKey].ui?.itemView?.defaultFieldMode,
             'edit',
             { session, item }
           );

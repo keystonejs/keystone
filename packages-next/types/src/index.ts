@@ -25,7 +25,7 @@ export type AdminFileToWrite =
       outputPath: string;
     };
 
-export type KeystoneAdminConfig = {
+export type KeystoneAdminUIConfig = {
   /** Enables certain functionality in the Admin UI that expects the session to be an item */
   enableSessionItem?: boolean;
   /** A function that can be run to validate that the current session should have access to the Admin UI */
@@ -56,7 +56,7 @@ export type KeystoneConfig = {
     };
   };
   session?: () => SessionStrategy<any>;
-  admin?: KeystoneAdminConfig;
+  ui?: KeystoneAdminUIConfig;
 } & SchemaConfig;
 
 export type MaybeItemFunction<T> =
@@ -72,7 +72,7 @@ export type MaybeSessionFunction<T extends string | boolean> =
 export type FieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   hooks?: ListHooks<TGeneratedListTypes>;
   access?: FieldAccessControl<TGeneratedListTypes>;
-  admin?: {
+  ui?: {
     views?: string;
     description?: string;
     createView?: {
