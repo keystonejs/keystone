@@ -12,7 +12,6 @@ import {
   useLazyMetadata,
   CreateViewFieldModes,
 } from './utils/useAuthenticatedItem';
-import { useRouter } from './router';
 
 type KeystoneContextType = {
   adminConfig: AdminConfig;
