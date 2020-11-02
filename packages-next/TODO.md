@@ -8,7 +8,7 @@
 - [ ] Clean up stable set of features
   - [ ] Custom views @mitchell
   - [x] Unbreak the date field @mitchell
-  - [ ] Unbreak showing errors for incorrect password on signin @mitchell
+  - [x] Unbreak showing errors for incorrect password on signin @mitchell
   - [ ] Create mode for Passwords @jed
   - [x] Validate create initial item form @mitchell
   - [ ] No items display on the List screen @jed
