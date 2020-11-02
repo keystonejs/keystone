@@ -455,6 +455,7 @@ const resolveAuthInput = ({
 }) => {
   // Input resolution logic
   // Object returned is used in place of resolvedData
+  const resolvedData = originalInput;
   return resolvedData;
 };
 ```
