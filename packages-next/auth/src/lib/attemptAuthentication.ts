@@ -1,4 +1,4 @@
-import { AuthErrorCode } from '../types';
+import { PasswordAuthErrorCode } from '../types';
 
 export async function attemptAuthentication(
   list: any,
@@ -9,7 +9,7 @@ export async function attemptAuthentication(
 ): Promise<
   | {
       success: false;
-      code: AuthErrorCode;
+      code: PasswordAuthErrorCode;
     }
   | {
       success: true;
@@ -25,20 +25,20 @@ export async function attemptAuthentication(
   const items = await list.adapter.find({ [identityField]: identity });
 
   // Identity failures with helpful errors
-  let specificCode: AuthErrorCode | undefined;
+  let specificCode: PasswordAuthErrorCode | undefined;
   if (items.length === 0) {
-    specificCode = 'PASSWORD_AUTH_IDENTITY_NOT_FOUND';
+    specificCode = 'IDENTITY_NOT_FOUND';
   } else if (items.length === 1 && !items[0][secretField]) {
-    specificCode = 'PASSWORD_AUTH_SECRET_NOT_SET';
+    specificCode = 'SECRET_NOT_SET';
   } else if (items.length > 1) {
-    specificCode = 'PASSWORD_AUTH_MULTIPLE_IDENTITY_MATCHES';
+    specificCode = 'MULTIPLE_IDENTITY_MATCHES';
   }
   if (typeof specificCode !== 'undefined') {
     // See "Identity Protection" in the README as to why this is a thing
     if (protectIdentities) {
       await secretFieldInstance.generateHash('simulated-password-to-counter-timing-attack');
     }
-    return { success: false, code: protectIdentities ? 'PASSWORD_AUTH_FAILURE' : specificCode };
+    return { success: false, code: protectIdentities ? 'FAILURE' : specificCode };
   }
 
   const item = items[0];
@@ -46,7 +46,7 @@ export async function attemptAuthentication(
   if (!isMatch) {
     return {
       success: false,
-      code: protectIdentities ? 'PASSWORD_AUTH_FAILURE' : 'PASSWORD_AUTH_SECRET_MISMATCH',
+      code: protectIdentities ? 'FAILURE' : 'SECRET_MISMATCH',
     };
   }
 
