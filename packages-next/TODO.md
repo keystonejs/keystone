@@ -3,7 +3,7 @@
 - [x] Make it work for JS
 - [ ] Test package installs with local registry (use pnpm first to find missing deps)
 - [ ] Make sure we have the right peerDeps
-- [ ] Rename `admin` to `ui` in config
+- [x] Rename `admin` to `ui` in config
 - [ ] Publish the packages to a preview scope (`@keystone-next`)
 - [ ] Clean up stable set of features
   - [ ] Custom views @mitchell

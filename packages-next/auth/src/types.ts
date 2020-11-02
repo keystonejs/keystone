@@ -1,4 +1,8 @@
-import { BaseGeneratedListTypes, KeystoneAdminConfig, KeystoneConfig } from '@keystone-next/types';
+import {
+  BaseGeneratedListTypes,
+  KeystoneAdminUIConfig,
+  KeystoneConfig,
+} from '@keystone-next/types';
 
 export type AuthGqlNames = {
   CreateInitialInput: string;
@@ -61,11 +65,11 @@ export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
 };
 
 export type Auth = {
-  admin: {
-    enableSessionItem: NonNullable<KeystoneAdminConfig['enableSessionItem']>;
-    publicPages: NonNullable<KeystoneAdminConfig['publicPages']>;
-    pageMiddleware: NonNullable<KeystoneAdminConfig['pageMiddleware']>;
-    getAdditionalFiles: NonNullable<KeystoneAdminConfig['getAdditionalFiles']>[number];
+  ui: {
+    enableSessionItem: NonNullable<KeystoneAdminUIConfig['enableSessionItem']>;
+    publicPages: NonNullable<KeystoneAdminUIConfig['publicPages']>;
+    pageMiddleware: NonNullable<KeystoneAdminUIConfig['pageMiddleware']>;
+    getAdditionalFiles: NonNullable<KeystoneAdminUIConfig['getAdditionalFiles']>[number];
   };
   extendGraphqlSchema: NonNullable<KeystoneConfig['extendGraphqlSchema']>;
   fields: { [prop: string]: any };
