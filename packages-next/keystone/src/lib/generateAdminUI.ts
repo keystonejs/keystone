@@ -80,7 +80,7 @@ export const generateAdminUI = async (keystone: Keystone, cwd: string) => {
       )),
     ].map(x => Path.normalize(x))
   );
-  const baseFiles = writeAdminFiles(keystone, configFile).filter(x => {
+  const baseFiles = writeAdminFiles(keystone, configFile, projectAdminPath).filter(x => {
     if (filesWritten.has(Path.normalize(x.outputPath))) {
       return false;
     }
