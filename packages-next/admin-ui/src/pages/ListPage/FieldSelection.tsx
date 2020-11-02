@@ -73,7 +73,7 @@ export function FieldSelection({
     <Popover
       triggerRenderer={({ triggerProps }) => {
         return (
-          <Button weight="link" {...triggerProps}>
+          <Button weight="link" css={{ padding: 4 }} {...triggerProps}>
             <span css={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
               {selectedFields.size} column{selectedFields.size === 1 ? '' : 's'}{' '}
               <ChevronDownIcon size="smallish" />
