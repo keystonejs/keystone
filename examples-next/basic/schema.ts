@@ -81,7 +81,7 @@ export const lists = createSchema({
       }),
       content: text({
         admin: {
-          displayMode: 'textarea',
+          views: require.resolve('./admin/fieldViews/Content.tsx'),
         },
       }),
       publishDate: timestamp(),
