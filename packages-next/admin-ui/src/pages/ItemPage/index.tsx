@@ -14,17 +14,69 @@ import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 import { Tooltip } from '@keystone-ui/tooltip';
 
-import { gql, useMutation, useQuery } from '../apollo';
-import { PageContainer } from '../components/PageContainer';
-import { CreateItemDrawer } from '../components/CreateItemDrawer';
-import { useList } from '../context';
-import { DataGetter, DeepNullable, makeDataGetter } from '../utils/dataGetter';
-import { deserializeValue, ItemData, serializeValueToObjByFieldKey } from '../utils/serialization';
-import { GraphQLErrorNotice } from '../components/GraphQLErrorNotice';
+import { gql, useMutation, useQuery } from '../../apollo';
+import { PageContainer } from '../../components/PageContainer';
+import { useList } from '../../context';
+import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter';
+import {
+  deserializeValue,
+  ItemData,
+  serializeValueToObjByFieldKey,
+} from '../../utils/serialization';
+import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice';
+import { useInvalidFields } from './useInvalidFields';
+import { Fields } from './Fields';
+import { GraphQLError } from 'graphql';
+import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 
 type ItemPageProps = {
   listKey: string;
 };
+
+export type Value = Record<
+  string,
+  | {
+      kind: 'error';
+      errors: readonly [GraphQLError, ...GraphQLError[]];
+    }
+  | {
+      kind: 'value';
+      value: any;
+    }
+>;
+
+function useChangedFieldsAndDataForUpdate(
+  list: ListMeta,
+  itemGetter: DataGetter<ItemData>,
+  value: Value
+) {
+  const serializedValuesFromItem = useMemo(() => {
+    const value = deserializeValue(list, itemGetter);
+    return serializeValueToObjByFieldKey(list, value);
+  }, [list, itemGetter]);
+  const serializedFieldValues = useMemo(() => {
+    return serializeValueToObjByFieldKey(list, value);
+  }, [value, list]);
+
+  return useMemo(() => {
+    let changedFields = new Set<string>();
+    Object.keys(serializedFieldValues).forEach(fieldKey => {
+      let isEqual = isDeepEqual(
+        serializedFieldValues[fieldKey],
+        serializedValuesFromItem[fieldKey]
+      );
+      if (!isEqual) {
+        changedFields.add(fieldKey);
+      }
+    });
+    const dataForUpdate: Record<string, any> = {};
+
+    changedFields.forEach(fieldKey => {
+      Object.assign(dataForUpdate, serializedFieldValues[fieldKey]);
+    });
+    return { changedFields: changedFields as ReadonlySet<string>, dataForUpdate };
+  }, [serializedFieldValues, serializedValuesFromItem]);
+}
 
 function ItemForm({
   listKey,
@@ -72,51 +124,14 @@ function ItemForm({
     });
   }
 
-  const serializedValuesFromItem = useMemo(() => {
-    const value = deserializeValue(list, itemGetter);
-    return serializeValueToObjByFieldKey(list, value);
-  }, [list, itemGetter]);
-  const serializedFieldValues = useMemo(() => {
-    return serializeValueToObjByFieldKey(list, state.value);
-  }, [state.value, list]);
+  const { changedFields, dataForUpdate } = useChangedFieldsAndDataForUpdate(
+    list,
+    itemGetter,
+    state.value
+  );
 
-  const fieldsEquality = useMemo(() => {
-    let someFieldsChanged = false;
-    let fieldsChanged: Record<string, boolean> = {};
-    Object.keys(serializedFieldValues).forEach(fieldKey => {
-      let isEqual = isDeepEqual(
-        serializedFieldValues[fieldKey],
-        serializedValuesFromItem[fieldKey]
-      );
-      if (!isEqual && someFieldsChanged === false) {
-        someFieldsChanged = true;
-      }
-      fieldsChanged[fieldKey] = !isEqual;
-    });
-    return {
-      someFieldsChanged,
-      fieldsChanged,
-    };
-  }, [serializedFieldValues, serializedValuesFromItem, list]);
+  const invalidFields = useInvalidFields(list, state.value);
 
-  const invalidFields = useMemo(() => {
-    const invalidFields = new Set<string>();
-
-    Object.keys(state.value).forEach(fieldPath => {
-      const val = state.value[fieldPath];
-
-      if (val.kind === 'value') {
-        const validateFn = list.fields[fieldPath].controller.validate;
-        if (validateFn) {
-          const result = validateFn(val.value);
-          if (result === false) {
-            invalidFields.add(fieldPath);
-          }
-        }
-      }
-    });
-    return invalidFields;
-  }, [list, state.value]);
   const [forceValidation, setForceValidation] = useState(false);
   const toasts = useToasts();
   const saveButtonProps = {
@@ -127,16 +142,10 @@ function ItemForm({
       const newForceValidation = invalidFields.size !== 0;
       setForceValidation(newForceValidation);
       if (newForceValidation) return;
-      const data: Record<string, any> = {};
 
-      Object.keys(fieldsEquality.fieldsChanged).forEach(fieldKey => {
-        if (fieldsEquality.fieldsChanged[fieldKey]) {
-          Object.assign(data, serializedFieldValues[fieldKey]);
-        }
-      });
       update({
         variables: {
-          data,
+          data: dataForUpdate,
           id: itemGetter.get('id').data,
         },
       })
@@ -168,40 +177,7 @@ function ItemForm({
     },
     children: 'Save Changes',
   } as const;
-  const fields = Object.keys(list.fields)
-    .filter(fieldPath => fieldModes[fieldPath] !== 'hidden')
-    .map((fieldPath, index) => {
-      const field = list.fields[fieldPath];
-      const value = state.value[fieldPath];
-      const fieldMode = fieldModes[fieldPath];
 
-      if (value.kind === 'error') {
-        return (
-          <div>
-            {field.label}: <span css={{ color: 'red' }}>{value.errors[0].message}</span>
-          </div>
-        );
-      }
-      return (
-        <field.views.Field
-          key={fieldPath}
-          field={field.controller}
-          value={value.value}
-          forceValidation={forceValidation && invalidFields.has(fieldPath)}
-          onChange={
-            fieldMode === 'edit'
-              ? fieldValue => {
-                  setValue({
-                    value: { ...state.value, [fieldPath]: { kind: 'value', value: fieldValue } },
-                    item: state.item,
-                  });
-                }
-              : undefined
-          }
-          autoFocus={index === 0}
-        />
-      );
-    });
   return (
     <Fragment>
       <GraphQLErrorNotice
@@ -210,11 +186,22 @@ function ItemForm({
         // which are handled seperately and do not indicate a failure to update the item
         errors={error?.graphQLErrors.filter(x => x.path?.length === 1)}
       />
-      {fields}
-      {fields.length === 0 && 'There are no fields that you can read or edit'}
+      <Fields
+        fieldModes={fieldModes}
+        fields={list.fields}
+        forceValidation={forceValidation}
+        invalidFields={invalidFields}
+        onChange={value => {
+          setValue({
+            item: state.item,
+            value,
+          });
+        }}
+        value={state.value}
+      />
       <Toolbar>
         <Stack across gap="small">
-          {fieldsEquality.someFieldsChanged ? (
+          {changedFields.size ? (
             <Button {...saveButtonProps} />
           ) : (
             <Tooltip content="No fields have been modified so you cannot save changes">
