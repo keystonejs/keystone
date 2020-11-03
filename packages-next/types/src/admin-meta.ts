@@ -2,6 +2,7 @@ import type { ComponentType, ReactElement } from 'react';
 import { GqlNames, JSONValue } from './utils';
 
 export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = undefined> = {
+  listKey: string;
   path: string;
   label: string;
   fieldMeta: FieldMeta;

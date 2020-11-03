@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { jsx, Stack } from '@keystone-ui/core';
+import { Box, jsx, Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 
 import {
@@ -19,6 +19,8 @@ import { Tooltip } from '@keystone-ui/tooltip';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
 import { CreateItemDrawer } from '@keystone-next/admin-ui/components';
 import { DrawerController } from '@keystone-ui/modals';
+import { gql, useQuery } from '@keystone-next/admin-ui/apollo';
+import { LoadingDots } from '@keystone-ui/loading';
 
 function LinkToRelatedItems({
   value,
@@ -55,6 +57,68 @@ function LinkToRelatedItems({
     </Button>
   );
 }
+
+const Cards = ({
+  localList,
+  field,
+  foreignList,
+  id,
+}: {
+  foreignList: ListMeta;
+  localList: ListMeta;
+  field: ReturnType<typeof controller> & { display: { mode: 'cards' } };
+  id: string;
+}) => {
+  let selectedFields = Object.keys(field.display)
+    .map(fieldPath => {
+      return foreignList.fields[fieldPath].controller.graphqlSelection;
+    })
+    .join('\n');
+  const { data, error } = useQuery(
+    gql`query($id: ID!) {
+  item: ${localList.key}(where: {id: $id}) {
+    relationship: ${field.path} {
+      id
+      ${selectedFields}
+    }
+  }
+}`,
+    { variables: { id } }
+  );
+  if (error) {
+    return (
+      <div>
+        {field.label}: Error loading items - {error.message}
+      </div>
+    );
+  }
+  if (!data) {
+    return (
+      <div>
+        <LoadingDots label={`Loading items for ${field.label} field`} />
+      </div>
+    );
+  }
+  let items = data.item.relationship;
+  if (!Array.isArray(items)) {
+    items = [items];
+  }
+  return (
+    <Stack gap="medium">
+      {items.map((item: any) => {
+        return (
+          <div key={item.id}>
+            {field.display.cardFields.map(fieldPath => {
+              const field = foreignList.fields[fieldPath];
+
+              return <field.views.Field />;
+            })}
+          </div>
+        );
+      })}
+    </Stack>
+  );
+};
 
 export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof controller>) => {
   const keystone = useKeystone();
@@ -198,25 +262,69 @@ type RelationshipController = FieldController<
       value: { label: string; id: string } | null;
     }
 > & {
-  refLabelField: string;
+  display:
+    | {
+        mode: 'select';
+        refLabelField: string;
+      }
+    | {
+        mode: 'cards';
+        cardFields: string[];
+        linkToItem: boolean;
+        removeMode: 'disconnect';
+        inlineCreate: { fields: string[] } | null;
+        inlineEdit: { fields: string[] } | null;
+      };
+  listKey: string;
   refListKey: string;
   hideCreate: boolean;
 };
 
 export const controller = (
-  config: FieldControllerConfig<{
-    refListKey: string;
-    many: boolean;
-    refLabelField: string;
-    hideCreate: boolean;
-  }>
+  config: FieldControllerConfig<
+    {
+      refListKey: string;
+      many: boolean;
+      hideCreate: boolean;
+    } & (
+      | {
+          displayMode: 'select';
+          refLabelField: string;
+        }
+      | {
+          displayMode: 'cards';
+          cardFields: string[];
+          linkToItem: boolean;
+          removeMode: 'disconnect';
+          inlineCreate: { fields: string[] } | null;
+          inlineEdit: { fields: string[] } | null;
+        }
+    )
+  >
 ): RelationshipController => {
   return {
+    listKey: config.listKey,
     path: config.path,
     label: config.label,
-    refLabelField: config.fieldMeta.refLabelField,
+    display:
+      config.fieldMeta.displayMode === 'cards'
+        ? {
+            mode: 'cards',
+            cardFields: config.fieldMeta.cardFields,
+            inlineCreate: config.fieldMeta.inlineCreate,
+            inlineEdit: config.fieldMeta.inlineCreate,
+            linkToItem: config.fieldMeta.linkToItem,
+            removeMode: config.fieldMeta.removeMode,
+          }
+        : {
+            mode: 'select',
+            refLabelField: config.fieldMeta.refLabelField,
+          },
     refListKey: config.fieldMeta.refListKey,
-    graphqlSelection: `${config.path} {
+    graphqlSelection:
+      config.fieldMeta.displayMode === 'cards'
+        ? ''
+        : `${config.path} {
       id
       label: ${config.fieldMeta.refLabelField}
     }`,

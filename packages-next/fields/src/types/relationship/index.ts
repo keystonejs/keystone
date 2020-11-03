@@ -21,13 +21,13 @@ type SelectDisplayConfig = {
 type CardsDisplayConfig = {
   ui?: {
     // Sets the relationship to display as a list of Cards
-    displayMode?: 'cards';
+    displayMode: 'cards';
     /* The set of fields to render in the default Card component **/
     cardFields: string[];
     /** Causes the default Card component to render as a link to navigate to the related item */
     linkToItem?: boolean;
     /** Determines whether removing a related item in the UI will delete or unlink it */
-    removeMode?: 'disconnect' | 'delete';
+    removeMode?: 'disconnect'; // | 'delete';
     /** Configures inline create mode for cards (alternative to opening the create modal) */
     inlineCreate?: { fields: string[] };
     /** Configures inline edit mode for cards */
@@ -53,13 +53,31 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
   type: Relationship,
   config,
   views,
-  getAdminMeta(listKey, path, adminMeta) {
+  getAdminMeta(
+    listKey,
+    path,
+    adminMeta
+  ): Parameters<
+    typeof import('@keystone-next/fields/types/relationship/views').controller
+  >[0]['fieldMeta'] {
     const refListKey = config.ref.split('.')[0];
     return {
       refListKey,
-      refLabelField: adminMeta.lists[refListKey].labelField,
       many: config.many ?? false,
       hideCreate: config.ui?.hideCreate ?? false,
+      ...(config.ui?.displayMode === 'cards'
+        ? {
+            displayMode: 'cards',
+            cardFields: config.ui.cardFields,
+            linkToItem: config.ui.linkToItem ?? false,
+            removeMode: config.ui.removeMode ?? 'disconnect',
+            inlineCreate: config.ui.inlineCreate ?? null,
+            inlineEdit: config.ui.inlineEdit ?? null,
+          }
+        : {
+            displayMode: 'select',
+            refLabelField: adminMeta.lists[refListKey].labelField,
+          }),
     };
   },
   getBackingType(path) {
