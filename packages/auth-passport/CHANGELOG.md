@@ -1,5 +1,12 @@
 # @keystonejs/auth-passport
 
+## 5.2.11
+
+### Patch Changes
+
+- Updated dependencies [[`a5e40e6c4`](https://github.com/keystonejs/keystone/commit/a5e40e6c4af1ab38cc2079a0f6e27d39d6b7d546), [`2d660b2a1`](https://github.com/keystonejs/keystone/commit/2d660b2a1dd013787e022cad3a0c70dbe08c60da)]:
+  - @keystonejs/fields@20.0.0
+
 ## 5.2.10
 
 ### Patch Changes

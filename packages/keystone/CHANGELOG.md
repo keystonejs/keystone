@@ -1,5 +1,11 @@
 # @keystonejs/keystone
 
+## 17.1.1
+
+### Patch Changes
+
+- [`3dd5c570a`](https://github.com/keystonejs/keystone/commit/3dd5c570a27d0795a689407d96fc9623c90a66df) [#4061](https://github.com/keystonejs/keystone/pull/4061) Thanks [@timleslie](https://github.com/timleslie)! - Updated error handling to throw Error objects rather than Strings for invalid field configurations.
+
 ## 17.1.0
 
 ### Minor Changes
