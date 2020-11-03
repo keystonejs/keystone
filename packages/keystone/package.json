@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/keystone",
   "description": "The main @keystonejs class & CLI. This is where the magic happens.",
-  "version": "17.1.0",
+  "version": "17.1.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -42,7 +42,7 @@
     "terminal-link": "^2.1.1"
   },
   "devDependencies": {
-    "@keystonejs/fields": "^19.1.0",
+    "@keystonejs/fields": "^20.0.0",
     "@keystonejs/test-utils": "*",
     "p-is-promise": "^3.0.0",
     "tmp": "^0.2.1"

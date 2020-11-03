@@ -1,14 +1,14 @@
 {
   "name": "@keystonejs/auth-password",
   "description": "Provides a basic password authentication strategy.",
-  "version": "5.1.16",
+  "version": "5.1.17",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystonejs/fields": "^19.0.0",
+    "@keystonejs/fields": "^20.0.0",
     "@keystonejs/session": "^8.1.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/auth-password"

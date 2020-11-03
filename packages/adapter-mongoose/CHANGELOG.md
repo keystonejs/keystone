@@ -1,5 +1,15 @@
 # @keystonejs/adapter-mongoose
 
+## 10.0.1
+
+### Patch Changes
+
+- [`2d660b2a1`](https://github.com/keystonejs/keystone/commit/2d660b2a1dd013787e022cad3a0c70dbe08c60da) [#3580](https://github.com/keystonejs/keystone/pull/3580) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mongoose` to `^5.10.11`.
+
+- Updated dependencies [[`3dd5c570a`](https://github.com/keystonejs/keystone/commit/3dd5c570a27d0795a689407d96fc9623c90a66df)]:
+  - @keystonejs/keystone@17.1.1
+  - @keystonejs/fields-mongoid@9.0.1
+
 ## 10.0.0
 
 ### Major Changes
