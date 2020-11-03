@@ -1,4 +1,8 @@
-import { BaseGeneratedListTypes, KeystoneAdminConfig, KeystoneConfig } from '@keystone-next/types';
+import {
+  BaseGeneratedListTypes,
+  KeystoneAdminUIConfig,
+  KeystoneConfig,
+} from '@keystone-next/types';
 
 export type AuthGqlNames = {
   CreateInitialInput: string;
@@ -61,11 +65,11 @@ export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
 };
 
 export type Auth = {
-  admin: {
-    enableSessionItem: NonNullable<KeystoneAdminConfig['enableSessionItem']>;
-    publicPages: NonNullable<KeystoneAdminConfig['publicPages']>;
-    pageMiddleware: NonNullable<KeystoneAdminConfig['pageMiddleware']>;
-    getAdditionalFiles: NonNullable<KeystoneAdminConfig['getAdditionalFiles']>[number];
+  ui: {
+    enableSessionItem: NonNullable<KeystoneAdminUIConfig['enableSessionItem']>;
+    publicPages: NonNullable<KeystoneAdminUIConfig['publicPages']>;
+    pageMiddleware: NonNullable<KeystoneAdminUIConfig['pageMiddleware']>;
+    getAdditionalFiles: NonNullable<KeystoneAdminUIConfig['getAdditionalFiles']>[number];
   };
   extendGraphqlSchema: NonNullable<KeystoneConfig['extendGraphqlSchema']>;
   fields: { [prop: string]: any };
@@ -73,25 +77,20 @@ export type Auth = {
   withAuth: (config: KeystoneConfig) => KeystoneConfig;
 };
 
-export type AuthErrorCode =
-  // Password authentication
-  | 'PASSWORD_AUTH_FAILURE' // Generic
-  | 'PASSWORD_AUTH_IDENTITY_NOT_FOUND'
-  | 'PASSWORD_AUTH_SECRET_NOT_SET'
-  | 'PASSWORD_AUTH_MULTIPLE_IDENTITY_MATCHES'
-  | 'PASSWORD_AUTH_SECRET_MISMATCH'
-  // Password resets and magic links
-  | 'AUTH_TOKEN_REQUEST_IDENTITY_NOT_FOUND'
-  | 'AUTH_TOKEN_REQUEST_MULTIPLE_IDENTITY_MATCHES'
-  | 'AUTH_TOKEN_REDEMPTION_FAILURE' // Generic
-  | 'AUTH_TOKEN_REDEMPTION_IDENTITY_NOT_FOUND'
-  | 'AUTH_TOKEN_REDEMPTION_MULTIPLE_IDENTITY_MATCHES'
-  | 'AUTH_TOKEN_REDEMPTION_TOKEN_NOT_SET'
-  | 'AUTH_TOKEN_REDEMPTION_TOKEN_MISMATCH'
-  | 'AUTH_TOKEN_REDEMPTION_TOKEN_EXPIRED'
-  | 'AUTH_TOKEN_REDEMPTION_TOKEN_REDEEMED'
-  // Bad times
-  | 'INTERNAL_ERROR'
-  // Not used by the auth package itself
-  // Allows custom logic/errors to be generated without replacing the gql output types
-  | 'CUSTOM_ERROR';
+export type PasswordAuthErrorCode =
+  | 'FAILURE' // Generic
+  | 'IDENTITY_NOT_FOUND'
+  | 'SECRET_NOT_SET'
+  | 'MULTIPLE_IDENTITY_MATCHES'
+  | 'SECRET_MISMATCH';
+
+export type AuthTokenRequestErrorCode = 'IDENTITY_NOT_FOUND' | 'MULTIPLE_IDENTITY_MATCHES';
+
+export type AuthTokenRedemptionErrorCode =
+  | 'FAILURE' // Generic
+  | 'IDENTITY_NOT_FOUND'
+  | 'MULTIPLE_IDENTITY_MATCHES'
+  | 'TOKEN_NOT_SET'
+  | 'TOKEN_MISMATCH'
+  | 'TOKEN_EXPIRED'
+  | 'TOKEN_REDEEMED';

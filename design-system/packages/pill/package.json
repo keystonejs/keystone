@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/pill",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "license": "MIT",
   "main": "dist/pill.cjs.js",
   "module": "dist/pill.esm.js",
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "@keystone-ui/core": "^0.0.0",
-    "@keystone-ui/icons": "^0.0.0"
+    "@keystone-ui/core": "^1.0.0",
+    "@keystone-ui/icons": "^1.0.0"
   },
   "engines": {
     "node": ">=10.0.0"

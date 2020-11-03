@@ -1,5 +1,18 @@
 # @keystonejs/test-utils
 
+## 10.0.0
+
+### Major Changes
+
+- [`31ad142ea`](https://github.com/keystonejs/keystone/commit/31ad142ea058b178e2eda34e7ca4a29d1e99299c) [#4014](https://github.com/keystonejs/keystone/pull/4014) Thanks [@timleslie](https://github.com/timleslie)! - Renamed the `multiAdapterRunners` option `prisma` to `prisma_postgresql` to allow room for other Prisma variants in the future.
+
+### Patch Changes
+
+- Updated dependencies [[`2d660b2a1`](https://github.com/keystonejs/keystone/commit/2d660b2a1dd013787e022cad3a0c70dbe08c60da), [`3dd5c570a`](https://github.com/keystonejs/keystone/commit/3dd5c570a27d0795a689407d96fc9623c90a66df), [`f2b841b90`](https://github.com/keystonejs/keystone/commit/f2b841b90d5ac8adece645df45b8a17832391b50)]:
+  - @keystonejs/adapter-mongoose@10.0.1
+  - @keystonejs/keystone@17.1.1
+  - @keystonejs/adapter-prisma@1.0.7
+
 ## 9.1.0
 
 ### Minor Changes

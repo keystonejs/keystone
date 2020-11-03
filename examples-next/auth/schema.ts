@@ -7,7 +7,7 @@ export const lists = createSchema({
       // Only allow admins to delete users
       delete: ({ session }) => session?.data?.isAdmin,
     },
-    admin: {
+    ui: {
       // Since you can't delete users unless you're an admin, we hide the UI for it
       hideDelete: ({ session }) => !session?.data?.isAdmin,
       listView: {
@@ -31,7 +31,7 @@ export const lists = createSchema({
           update: ({ session, item }) =>
             session && (session.data.isAdmin || session.itemId === item.id),
         },
-        admin: {
+        ui: {
           // Based on the same logic as update access, the password field is editable.
           // The password field is hidden from non-Admin users (except for themselves)
           // createView: {
@@ -53,7 +53,7 @@ export const lists = createSchema({
           // create: ({ session }) => session?.data.isAdmin,
           update: ({ session }) => session?.data.isAdmin,
         },
-        admin: {
+        ui: {
           // All users can see the isAdmin status, only admins can change it
           // createView: {
           //   fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'hidden'),
@@ -71,7 +71,7 @@ export const lists = createSchema({
           // create: ({ session }) => session?.data.isAdmin,
           update: ({ session }) => session?.data.isAdmin,
         },
-        admin: {
+        ui: {
           // All users can see the isEnabled status, only admins can change it
           itemView: {
             fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'read'),

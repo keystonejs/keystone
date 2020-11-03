@@ -62,7 +62,7 @@ export default withAuth(
       url: 'mongodb://localhost/keystone-examples-next-auth',
     },
     lists,
-    admin: {},
+    ui: {},
     session: withItemData(
       // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie
       statelessSessions({

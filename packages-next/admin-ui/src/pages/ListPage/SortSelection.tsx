@@ -26,7 +26,13 @@ export function SortSelection({ list }: { list: ListMeta }) {
 
   return (
     <Fragment>
-      <Button {...trigger.props} weight="link" ref={trigger.ref} onClick={() => setOpen(true)}>
+      <Button
+        {...trigger.props}
+        weight="link"
+        css={{ padding: 4 }}
+        ref={trigger.ref}
+        onClick={() => setOpen(true)}
+      >
         <span css={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
           {sort
             ? `${list.fields[sort.field].label} ${

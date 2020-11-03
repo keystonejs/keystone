@@ -75,7 +75,7 @@ export const generateAdminUI = async (keystone: Keystone, cwd: string) => {
   const filesWritten = new Set(
     [
       ...(await writeAdminFilesToDisk(
-        keystone.config.admin?.getAdditionalFiles?.map(x => x(keystone)) ?? [],
+        keystone.config.ui?.getAdditionalFiles?.map(x => x(keystone)) ?? [],
         projectAdminPath
       )),
     ].map(x => Path.normalize(x))

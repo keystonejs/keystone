@@ -1,5 +1,15 @@
 # create-keystone-app
 
+## 3.4.1
+
+### Patch Changes
+
+- [`a5e40e6c4`](https://github.com/keystonejs/keystone/commit/a5e40e6c4af1ab38cc2079a0f6e27d39d6b7d546) [#3549](https://github.com/keystonejs/keystone/pull/3549) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@sindresorhus/slugify` to `^1.1.0`. Includes a slight breaking change in how some slugs are computed in the `Slug` field type. See https://github.com/sindresorhus/slugify/releases/tag/v1.0.0.
+
+- Updated dependencies [[`2d660b2a1`](https://github.com/keystonejs/keystone/commit/2d660b2a1dd013787e022cad3a0c70dbe08c60da), [`f2b841b90`](https://github.com/keystonejs/keystone/commit/f2b841b90d5ac8adece645df45b8a17832391b50)]:
+  - @keystonejs/adapter-mongoose@10.0.1
+  - @keystonejs/adapter-prisma@1.0.7
+
 ## 3.4.0
 
 ### Minor Changes

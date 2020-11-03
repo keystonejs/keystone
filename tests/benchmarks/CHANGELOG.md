@@ -1,5 +1,15 @@
 # @keystonejs/benchmarks
 
+## 5.1.25
+
+### Patch Changes
+
+- Updated dependencies [[`a5e40e6c4`](https://github.com/keystonejs/keystone/commit/a5e40e6c4af1ab38cc2079a0f6e27d39d6b7d546), [`2d660b2a1`](https://github.com/keystonejs/keystone/commit/2d660b2a1dd013787e022cad3a0c70dbe08c60da), [`3dd5c570a`](https://github.com/keystonejs/keystone/commit/3dd5c570a27d0795a689407d96fc9623c90a66df), [`31ad142ea`](https://github.com/keystonejs/keystone/commit/31ad142ea058b178e2eda34e7ca4a29d1e99299c)]:
+  - @keystonejs/fields@20.0.0
+  - @keystonejs/adapter-mongoose@10.0.1
+  - @keystonejs/keystone@17.1.1
+  - @keystonejs/test-utils@10.0.0
+
 ## 5.1.24
 
 ### Patch Changes

@@ -56,7 +56,7 @@ export type ListConfig<
   access?: ListAccessControl<TGeneratedListTypes> | boolean;
   idField?: FieldType<TGeneratedListTypes>;
   /** Config for how this list should act in the Admin UI */
-  admin?: {
+  ui?: {
     /**
      * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
      * @default 'name' if it exists, otherwise 'id'

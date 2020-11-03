@@ -15,7 +15,7 @@
     "@arch-ui/color-utils": "^0.0.2",
     "@arch-ui/theme": "^0.0.11",
     "@babel/runtime": "^7.12.1",
-    "@emotion/core": "^10.1.0",
+    "@emotion/core": "^10.1.1",
     "@emotion/styled": "^10.0.27",
     "react-router-dom": "5.2.0"
   },

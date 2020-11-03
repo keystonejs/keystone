@@ -1,5 +1,14 @@
 # @keystonejs/app-admin-ui
 
+## 7.3.9
+
+### Patch Changes
+
+- [`2b682d2c1`](https://github.com/keystonejs/keystone/commit/2b682d2c1b6dc798a8913e4d2e09767c7a2980ac) [#4023](https://github.com/keystonejs/keystone/pull/4023) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `babel-preset-react-app` to `^10.0.0`.
+
+- Updated dependencies [[`a5e40e6c4`](https://github.com/keystonejs/keystone/commit/a5e40e6c4af1ab38cc2079a0f6e27d39d6b7d546), [`2d660b2a1`](https://github.com/keystonejs/keystone/commit/2d660b2a1dd013787e022cad3a0c70dbe08c60da)]:
+  - @keystonejs/fields@20.0.0
+
 ## 7.3.8
 
 ### Patch Changes
