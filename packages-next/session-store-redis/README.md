@@ -1,4 +1,4 @@
-# @keystone-next/auth
+# @keystone-next/session-store-redis
 
 Part of Keystone's [new interfaces project](https://www.keystonejs.com/blog/roadmap-update). This is a preview release, and not yet documented.
 
