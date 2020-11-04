@@ -20,11 +20,13 @@ export function Cards({
   id,
   value,
   onChange,
+  forceValidation,
 }: {
   foreignList: ListMeta;
   localList: ListMeta;
   field: ReturnType<typeof controller> & { display: { mode: 'cards' } };
   id: string;
+  forceValidation: boolean | undefined;
   value: { kind: 'cards-view' };
 } & Pick<FieldProps<typeof controller>, 'value' | 'onChange'>) {
   let selectedFields = [
@@ -213,6 +215,12 @@ export function Cards({
         >
           Create {foreignList.singular}
         </Button>
+      )}
+      {forceValidation && (
+        <span css={{ color: 'red' }}>
+          You must finish creating and editing any related {foreignList.label.toLowerCase()} before
+          saving the {localList.singular.toLowerCase()}
+        </span>
       )}
     </Stack>
   );

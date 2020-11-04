@@ -58,7 +58,13 @@ function LinkToRelatedItems({
   );
 }
 
-export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof controller>) => {
+export const Field = ({
+  field,
+  autoFocus,
+  value,
+  onChange,
+  forceValidation,
+}: FieldProps<typeof controller>) => {
   const keystone = useKeystone();
   const foreignList = useList(field.refListKey);
   const localList = useList(field.listKey);
@@ -69,6 +75,7 @@ export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof c
       <FieldLabel>{field.label}</FieldLabel>
       {value.kind === 'cards-view' ? (
         <Cards
+          forceValidation={forceValidation}
           field={field as any}
           id={value.id!}
           value={value}
