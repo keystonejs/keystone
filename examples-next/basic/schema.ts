@@ -59,7 +59,7 @@ export const lists = createSchema({
       phoneNumbers: relationship({
         ref: 'PhoneNumber.user',
         many: true,
-        admin: {
+        ui: {
           // TODO: Work out how to use custom views to customise the card + edit / create forms
           // views: './admin/fieldViews/user/phoneNumber',
           displayMode: 'cards',
@@ -67,7 +67,7 @@ export const lists = createSchema({
           inlineEdit: { fields: ['type', 'value'] },
           inlineCreate: { fields: ['type', 'value'] },
           linkToItem: true,
-          removeMode: 'delete',
+          // removeMode: 'delete',
         },
       }),
       posts: relationship({ ref: 'Post.author', many: true }),
@@ -80,9 +80,9 @@ export const lists = createSchema({
     },
   }),
   PhoneNumber: list({
-    admin: {
+    ui: {
       isHidden: true,
-      parentRelationship: 'user',
+      // parentRelationship: 'user',
     },
     fields: {
       user: relationship({ ref: 'User.phoneNumbers' }),
@@ -92,7 +92,7 @@ export const lists = createSchema({
           { label: 'Work', value: 'work' },
           { label: 'Mobile', value: 'mobile' },
         ],
-        admin: {
+        ui: {
           displayMode: 'segmented-control',
         },
       }),

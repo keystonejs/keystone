@@ -7,6 +7,13 @@ type Scalars = {
   readonly JSON: import('@keystone-next/types').JSONValue;
 };
 
+export type PhoneNumberRelateToManyInput = {
+  readonly create?: ReadonlyArray<PhoneNumberCreateInput | null> | null;
+  readonly connect?: ReadonlyArray<PhoneNumberWhereUniqueInput | null> | null;
+  readonly disconnect?: ReadonlyArray<PhoneNumberWhereUniqueInput | null> | null;
+  readonly disconnectAll?: Scalars['Boolean'] | null;
+};
+
 export type PostRelateToManyInput = {
   readonly create?: ReadonlyArray<PostCreateInput | null> | null;
   readonly connect?: ReadonlyArray<PostWhereUniqueInput | null> | null;
@@ -60,6 +67,27 @@ export type UserWhereInput = {
   readonly password_is_set?: Scalars['Boolean'] | null;
   readonly isAdmin?: Scalars['Boolean'] | null;
   readonly isAdmin_not?: Scalars['Boolean'] | null;
+  readonly roles?: Scalars['String'] | null;
+  readonly roles_not?: Scalars['String'] | null;
+  readonly roles_contains?: Scalars['String'] | null;
+  readonly roles_not_contains?: Scalars['String'] | null;
+  readonly roles_starts_with?: Scalars['String'] | null;
+  readonly roles_not_starts_with?: Scalars['String'] | null;
+  readonly roles_ends_with?: Scalars['String'] | null;
+  readonly roles_not_ends_with?: Scalars['String'] | null;
+  readonly roles_i?: Scalars['String'] | null;
+  readonly roles_not_i?: Scalars['String'] | null;
+  readonly roles_contains_i?: Scalars['String'] | null;
+  readonly roles_not_contains_i?: Scalars['String'] | null;
+  readonly roles_starts_with_i?: Scalars['String'] | null;
+  readonly roles_not_starts_with_i?: Scalars['String'] | null;
+  readonly roles_ends_with_i?: Scalars['String'] | null;
+  readonly roles_not_ends_with_i?: Scalars['String'] | null;
+  readonly roles_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly roles_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly phoneNumbers_every?: PhoneNumberWhereInput | null;
+  readonly phoneNumbers_some?: PhoneNumberWhereInput | null;
+  readonly phoneNumbers_none?: PhoneNumberWhereInput | null;
   readonly posts_every?: PostWhereInput | null;
   readonly posts_some?: PostWhereInput | null;
   readonly posts_none?: PostWhereInput | null;
@@ -128,6 +156,10 @@ export type SortUsersBy =
   | 'email_DESC'
   | 'isAdmin_ASC'
   | 'isAdmin_DESC'
+  | 'roles_ASC'
+  | 'roles_DESC'
+  | 'phoneNumbers_ASC'
+  | 'phoneNumbers_DESC'
   | 'posts_ASC'
   | 'posts_DESC'
   | 'passwordResetIssuedAt_ASC'
@@ -144,6 +176,8 @@ export type UserUpdateInput = {
   readonly email?: Scalars['String'] | null;
   readonly password?: Scalars['String'] | null;
   readonly isAdmin?: Scalars['Boolean'] | null;
+  readonly roles?: Scalars['String'] | null;
+  readonly phoneNumbers?: PhoneNumberRelateToManyInput | null;
   readonly posts?: PostRelateToManyInput | null;
   readonly passwordResetToken?: Scalars['String'] | null;
   readonly passwordResetIssuedAt?: Scalars['String'] | null;
@@ -163,6 +197,8 @@ export type UserCreateInput = {
   readonly email?: Scalars['String'] | null;
   readonly password?: Scalars['String'] | null;
   readonly isAdmin?: Scalars['Boolean'] | null;
+  readonly roles?: Scalars['String'] | null;
+  readonly phoneNumbers?: PhoneNumberRelateToManyInput | null;
   readonly posts?: PostRelateToManyInput | null;
   readonly passwordResetToken?: Scalars['String'] | null;
   readonly passwordResetIssuedAt?: Scalars['String'] | null;
@@ -181,6 +217,88 @@ export type UserRelateToOneInput = {
   readonly connect?: UserWhereUniqueInput | null;
   readonly disconnect?: UserWhereUniqueInput | null;
   readonly disconnectAll?: Scalars['Boolean'] | null;
+};
+
+export type PhoneNumberWhereInput = {
+  readonly AND?: ReadonlyArray<PhoneNumberWhereInput | null> | null;
+  readonly OR?: ReadonlyArray<PhoneNumberWhereInput | null> | null;
+  readonly id?: Scalars['ID'] | null;
+  readonly id_not?: Scalars['ID'] | null;
+  readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
+  readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
+  readonly user?: UserWhereInput | null;
+  readonly user_is_null?: Scalars['Boolean'] | null;
+  readonly type?: Scalars['String'] | null;
+  readonly type_not?: Scalars['String'] | null;
+  readonly type_contains?: Scalars['String'] | null;
+  readonly type_not_contains?: Scalars['String'] | null;
+  readonly type_starts_with?: Scalars['String'] | null;
+  readonly type_not_starts_with?: Scalars['String'] | null;
+  readonly type_ends_with?: Scalars['String'] | null;
+  readonly type_not_ends_with?: Scalars['String'] | null;
+  readonly type_i?: Scalars['String'] | null;
+  readonly type_not_i?: Scalars['String'] | null;
+  readonly type_contains_i?: Scalars['String'] | null;
+  readonly type_not_contains_i?: Scalars['String'] | null;
+  readonly type_starts_with_i?: Scalars['String'] | null;
+  readonly type_not_starts_with_i?: Scalars['String'] | null;
+  readonly type_ends_with_i?: Scalars['String'] | null;
+  readonly type_not_ends_with_i?: Scalars['String'] | null;
+  readonly type_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly type_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly value?: Scalars['String'] | null;
+  readonly value_not?: Scalars['String'] | null;
+  readonly value_contains?: Scalars['String'] | null;
+  readonly value_not_contains?: Scalars['String'] | null;
+  readonly value_starts_with?: Scalars['String'] | null;
+  readonly value_not_starts_with?: Scalars['String'] | null;
+  readonly value_ends_with?: Scalars['String'] | null;
+  readonly value_not_ends_with?: Scalars['String'] | null;
+  readonly value_i?: Scalars['String'] | null;
+  readonly value_not_i?: Scalars['String'] | null;
+  readonly value_contains_i?: Scalars['String'] | null;
+  readonly value_not_contains_i?: Scalars['String'] | null;
+  readonly value_starts_with_i?: Scalars['String'] | null;
+  readonly value_not_starts_with_i?: Scalars['String'] | null;
+  readonly value_ends_with_i?: Scalars['String'] | null;
+  readonly value_not_ends_with_i?: Scalars['String'] | null;
+  readonly value_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly value_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
+};
+
+export type PhoneNumberWhereUniqueInput = {
+  readonly id: Scalars['ID'];
+};
+
+export type SortPhoneNumbersBy =
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'user_ASC'
+  | 'user_DESC'
+  | 'type_ASC'
+  | 'type_DESC'
+  | 'value_ASC'
+  | 'value_DESC';
+
+export type PhoneNumberUpdateInput = {
+  readonly user?: UserRelateToOneInput | null;
+  readonly type?: Scalars['String'] | null;
+  readonly value?: Scalars['String'] | null;
+};
+
+export type PhoneNumbersUpdateInput = {
+  readonly id: Scalars['ID'];
+  readonly data?: PhoneNumberUpdateInput | null;
+};
+
+export type PhoneNumberCreateInput = {
+  readonly user?: UserRelateToOneInput | null;
+  readonly type?: Scalars['String'] | null;
+  readonly value?: Scalars['String'] | null;
+};
+
+export type PhoneNumbersCreateInput = {
+  readonly data?: PhoneNumberCreateInput | null;
 };
 
 export type PostWhereInput = {
@@ -342,6 +460,8 @@ export type UserListTypeInfo = {
     | 'email'
     | 'password'
     | 'isAdmin'
+    | 'roles'
+    | 'phoneNumbers'
     | 'posts'
     | 'randomNumber'
     | 'passwordResetToken'
@@ -356,6 +476,8 @@ export type UserListTypeInfo = {
     readonly email?: string | null;
     readonly password?: string | null;
     readonly isAdmin?: boolean | null;
+    readonly roles?: string | null;
+    readonly phoneNumbers?: string | null;
     readonly posts?: string | null;
     readonly passwordResetToken?: string | null;
     readonly passwordResetIssuedAt?: Date | null;
@@ -387,6 +509,40 @@ export type UserListFn = (
 ) => import('@keystone-next/keystone/schema').ListConfig<
   UserListTypeInfo,
   UserListTypeInfo['fields']
+>;
+
+export type PhoneNumberListTypeInfo = {
+  key: 'PhoneNumber';
+  fields: 'id' | 'user' | 'type' | 'value';
+  backing: {
+    readonly id: string;
+    readonly user?: string | null;
+    readonly type?: string | null;
+    readonly value?: string | null;
+  };
+  inputs: {
+    where: PhoneNumberWhereInput;
+    create: PhoneNumberCreateInput;
+    update: PhoneNumberUpdateInput;
+  };
+  args: {
+    listQuery: {
+      readonly where?: PhoneNumberWhereInput | null;
+      readonly sortBy?: ReadonlyArray<SortPhoneNumbersBy> | null;
+      readonly first?: Scalars['Int'] | null;
+      readonly skip?: Scalars['Int'] | null;
+    };
+  };
+};
+
+export type PhoneNumberListFn = (
+  listConfig: import('@keystone-next/keystone/schema').ListConfig<
+    PhoneNumberListTypeInfo,
+    PhoneNumberListTypeInfo['fields']
+  >
+) => import('@keystone-next/keystone/schema').ListConfig<
+  PhoneNumberListTypeInfo,
+  PhoneNumberListTypeInfo['fields']
 >;
 
 export type PostListTypeInfo = {
@@ -427,5 +583,6 @@ export type PostListFn = (
 
 export type KeystoneListsTypeInfo = {
   readonly User: UserListTypeInfo;
+  readonly PhoneNumber: PhoneNumberListTypeInfo;
   readonly Post: PostListTypeInfo;
 };

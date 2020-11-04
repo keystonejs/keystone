@@ -27,7 +27,7 @@ type CardsDisplayConfig = {
     /** Causes the default Card component to render as a link to navigate to the related item */
     linkToItem?: boolean;
     /** Determines whether removing a related item in the UI will delete or unlink it */
-    removeMode?: 'disconnect'; // | 'delete';
+    removeMode?: 'disconnect' | 'none'; // | 'delete';
     /** Configures inline create mode for cards (alternative to opening the create modal) */
     inlineCreate?: { fields: string[] };
     /** Configures inline edit mode for cards */

@@ -1,9 +1,10 @@
 /* @jsx jsx */
 
-import { Box, jsx, Stack } from '@keystone-ui/core';
+import { jsx, Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 
 import {
+  CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
@@ -19,14 +20,13 @@ import { Tooltip } from '@keystone-ui/tooltip';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
 import { CreateItemDrawer } from '@keystone-next/admin-ui/components';
 import { DrawerController } from '@keystone-ui/modals';
-import { gql, useQuery } from '@keystone-next/admin-ui/apollo';
-import { LoadingDots } from '@keystone-ui/loading';
+import { Cards } from './cards';
 
 function LinkToRelatedItems({
   value,
   list,
 }: {
-  value: FieldProps<typeof controller>['value'];
+  value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
   list: ListMeta;
 }) {
   if (value.kind === 'many') {
@@ -58,156 +58,108 @@ function LinkToRelatedItems({
   );
 }
 
-const Cards = ({
-  localList,
-  field,
-  foreignList,
-  id,
-}: {
-  foreignList: ListMeta;
-  localList: ListMeta;
-  field: ReturnType<typeof controller> & { display: { mode: 'cards' } };
-  id: string;
-}) => {
-  let selectedFields = Object.keys(field.display)
-    .map(fieldPath => {
-      return foreignList.fields[fieldPath].controller.graphqlSelection;
-    })
-    .join('\n');
-  const { data, error } = useQuery(
-    gql`query($id: ID!) {
-  item: ${localList.key}(where: {id: $id}) {
-    relationship: ${field.path} {
-      id
-      ${selectedFields}
-    }
-  }
-}`,
-    { variables: { id } }
-  );
-  if (error) {
-    return (
-      <div>
-        {field.label}: Error loading items - {error.message}
-      </div>
-    );
-  }
-  if (!data) {
-    return (
-      <div>
-        <LoadingDots label={`Loading items for ${field.label} field`} />
-      </div>
-    );
-  }
-  let items = data.item.relationship;
-  if (!Array.isArray(items)) {
-    items = [items];
-  }
-  return (
-    <Stack gap="medium">
-      {items.map((item: any) => {
-        return (
-          <div key={item.id}>
-            {field.display.cardFields.map(fieldPath => {
-              const field = foreignList.fields[fieldPath];
-
-              return <field.views.Field />;
-            })}
-          </div>
-        );
-      })}
-    </Stack>
-  );
-};
-
 export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof controller>) => {
   const keystone = useKeystone();
-  const list = useList(field.refListKey);
+  const foreignList = useList(field.refListKey);
+  const localList = useList(field.listKey);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      <Stack across gap="medium" css={{ display: 'inline-flex' }}>
-        <RelationshipSelect
-          autoFocus={autoFocus}
-          isDisabled={onChange === undefined}
-          list={useList(field.refListKey)}
-          state={
-            value.kind === 'many'
-              ? {
-                  kind: 'many',
-                  value: value.value,
-                  onChange(newItems) {
-                    onChange?.({
-                      ...value,
-                      value: newItems,
-                    });
-                  },
-                }
-              : {
-                  kind: 'one',
-                  value: value.value,
-                  onChange(newVal) {
-                    onChange?.({
-                      ...value,
-                      value: newVal,
-                    });
-                  },
-                }
-          }
+      {value.kind === 'cards-view' ? (
+        <Cards
+          field={field as any}
+          id={value.id!}
+          value={value}
+          onChange={onChange}
+          foreignList={foreignList}
+          localList={localList}
         />
-        {!field.hideCreate && (
-          <Tooltip content={`Create a ${list.singular} and add it to this relationship`}>
-            {props => {
-              return (
-                <Button
-                  {...props}
-                  onClick={() => {
-                    setIsDrawerOpen(true);
-                  }}
-                >
-                  <PlusIcon css={{ marginLeft: -4, marginRight: -4 }} />
-                </Button>
-              );
-            }}
-          </Tooltip>
-        )}
-        {keystone.authenticatedItem.state === 'authenticated' &&
-          keystone.authenticatedItem.listKey === field.refListKey && (
-            <Button
-              isDisabled={onChange === undefined}
-              onClick={() => {
-                if (keystone.authenticatedItem.state === 'authenticated') {
-                  const val = {
-                    label: keystone.authenticatedItem.label,
-                    id: keystone.authenticatedItem.id,
-                  };
-                  if (value.kind === 'many') {
-                    onChange?.({
-                      ...value,
-                      value: [...value.value, val],
-                    });
-                  } else {
-                    onChange?.({
-                      ...value,
-                      value: val,
-                    });
+      ) : (
+        <Stack across gap="medium" css={{ display: 'inline-flex' }}>
+          <RelationshipSelect
+            autoFocus={autoFocus}
+            isDisabled={onChange === undefined}
+            list={foreignList}
+            state={
+              value.kind === 'many'
+                ? {
+                    kind: 'many',
+                    value: value.value,
+                    onChange(newItems) {
+                      onChange?.({
+                        ...value,
+                        value: newItems,
+                      });
+                    },
                   }
-                }
+                : {
+                    kind: 'one',
+                    value: value.value,
+                    onChange(newVal) {
+                      if (value.kind === 'one') {
+                        onChange?.({
+                          ...value,
+                          value: newVal,
+                        });
+                      }
+                    },
+                  }
+            }
+          />
+          {!field.hideCreate && (
+            <Tooltip content={`Create a ${foreignList.singular} and add it to this relationship`}>
+              {props => {
+                return (
+                  <Button
+                    {...props}
+                    onClick={() => {
+                      setIsDrawerOpen(true);
+                    }}
+                  >
+                    <PlusIcon css={{ marginLeft: -4, marginRight: -4 }} />
+                  </Button>
+                );
               }}
-            >
-              {value.kind === 'many' ? 'Add ' : 'Set as '}
-              {keystone.authenticatedItem.label}
-            </Button>
+            </Tooltip>
           )}
-        {!!(value.kind === 'many' ? value.value.length : value.value) && (
-          <LinkToRelatedItems list={list} value={value} />
-        )}
-      </Stack>
+          {keystone.authenticatedItem.state === 'authenticated' &&
+            keystone.authenticatedItem.listKey === field.refListKey && (
+              <Button
+                isDisabled={onChange === undefined}
+                onClick={() => {
+                  if (keystone.authenticatedItem.state === 'authenticated') {
+                    const val = {
+                      label: keystone.authenticatedItem.label,
+                      id: keystone.authenticatedItem.id,
+                    };
+                    if (value.kind === 'many') {
+                      onChange?.({
+                        ...value,
+                        value: [...value.value, val],
+                      });
+                    } else {
+                      onChange?.({
+                        ...value,
+                        value: val,
+                      });
+                    }
+                  }
+                }}
+              >
+                {value.kind === 'many' ? 'Add ' : 'Set as '}
+                {keystone.authenticatedItem.label}
+              </Button>
+            )}
+          {!!(value.kind === 'many' ? value.value.length : value.kind === 'one' && value.value) && (
+            <LinkToRelatedItems list={foreignList} value={value} />
+          )}
+        </Stack>
+      )}
       <DrawerController isOpen={isDrawerOpen}>
         <CreateItemDrawer
-          listKey={list.key}
+          listKey={foreignList.key}
           onClose={() => {
             setIsDrawerOpen(false);
           }}
@@ -218,7 +170,7 @@ export const Field = ({ field, autoFocus, value, onChange }: FieldProps<typeof c
                 ...value,
                 value: [...value.value, val],
               });
-            } else {
+            } else if (value.kind === 'one') {
               onChange?.({
                 ...value,
                 value: val,
@@ -250,6 +202,26 @@ export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   );
 };
 
+export const CardValue: CardValueComponent<typeof controller> = ({ field, item }) => {
+  const list = useList(field.refListKey);
+  const data = item[field.path];
+  return (
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
+      {(Array.isArray(data) ? data : [data])
+        .filter(item => item)
+        .map((item, index) => (
+          <Fragment key={item.id}>
+            {!!index ? ', ' : ''}
+            <Link href={`/${list.path}/[id]`} as={`/${list.path}/${item.id}`}>
+              {item.label || item.id}
+            </Link>
+          </Fragment>
+        ))}
+    </FieldContainer>
+  );
+};
+
 type RelationshipController = FieldController<
   | {
       kind: 'many';
@@ -261,6 +233,14 @@ type RelationshipController = FieldController<
       initialValue: { label: string; id: string } | null;
       value: { label: string; id: string } | null;
     }
+  | {
+      kind: 'cards-view';
+      id: null | string;
+      itemsBeingEdited: ReadonlySet<string>;
+      itemBeingCreated: boolean;
+      connect: ReadonlySet<string>;
+      disconnect: ReadonlySet<string>;
+    }
 > & {
   display:
     | {
@@ -271,7 +251,7 @@ type RelationshipController = FieldController<
         mode: 'cards';
         cardFields: string[];
         linkToItem: boolean;
-        removeMode: 'disconnect';
+        removeMode: 'disconnect' | 'none';
         inlineCreate: { fields: string[] } | null;
         inlineEdit: { fields: string[] } | null;
       };
@@ -295,7 +275,7 @@ export const controller = (
           displayMode: 'cards';
           cardFields: string[];
           linkToItem: boolean;
-          removeMode: 'disconnect';
+          removeMode: 'disconnect' | 'none';
           inlineCreate: { fields: string[] } | null;
           inlineEdit: { fields: string[] } | null;
         }
@@ -323,11 +303,12 @@ export const controller = (
     refListKey: config.fieldMeta.refListKey,
     graphqlSelection:
       config.fieldMeta.displayMode === 'cards'
-        ? ''
+        ? // TODO: namespace this stuff at the Keystone level
+          `${config.path}__id: id`
         : `${config.path} {
-      id
-      label: ${config.fieldMeta.refLabelField}
-    }`,
+             id
+             label: ${config.fieldMeta.refLabelField}
+           }`,
     hideCreate: config.fieldMeta.hideCreate,
     defaultValue: config.fieldMeta.many
       ? {
@@ -337,6 +318,16 @@ export const controller = (
         }
       : { kind: 'one', value: null, initialValue: null },
     deserialize: data => {
+      if (config.fieldMeta.displayMode === 'cards') {
+        return {
+          kind: 'cards-view',
+          id: data[`${config.path}__id`],
+          itemsBeingEdited: new Set(),
+          itemBeingCreated: false,
+          connect: new Set(),
+          disconnect: new Set(),
+        };
+      }
       if (config.fieldMeta.many) {
         let value = (data[config.path] || []).map((x: any) => ({
           id: x.id,
@@ -361,6 +352,9 @@ export const controller = (
         initialValue: value,
       };
     },
+    validate(value) {
+      return value.kind !== 'cards-view' || value.itemsBeingEdited.size === 0;
+    },
     serialize: state => {
       if (state.kind === 'many') {
         const newAllIds = new Set(state.value.map(x => x.id));
@@ -384,7 +378,7 @@ export const controller = (
             [config.path]: output,
           };
         }
-      } else {
+      } else if (state.kind === 'one') {
         if (state.initialValue && !state.value) {
           return {
             [config.path]: {
@@ -399,6 +393,31 @@ export const controller = (
               connect: {
                 id: state.value.id,
               },
+            },
+          };
+        }
+      } else if (state.kind === 'cards-view') {
+        if (config.fieldMeta.many) {
+          if (state.connect.size || state.disconnect.size) {
+            return {
+              [config.path]: {
+                connect: state.connect.size ? [...state.connect].map(id => ({ id })) : undefined,
+                disconnect: state.disconnect.size
+                  ? [...state.disconnect].map(id => ({ id }))
+                  : undefined,
+              },
+            };
+          }
+        } else if (state.connect.size) {
+          return {
+            [config.path]: {
+              connect: { id: state.connect.values().next().value },
+            },
+          };
+        } else if (state.disconnect.size) {
+          return {
+            [config.path]: {
+              disconnect: { id: state.disconnect.values().next().value },
             },
           };
         }

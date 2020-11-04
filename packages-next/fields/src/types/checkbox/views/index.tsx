@@ -1,8 +1,9 @@
 /* @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { FieldContainer, Checkbox } from '@keystone-ui/fields';
+import { FieldContainer, Checkbox, FieldLabel } from '@keystone-ui/fields';
 import {
+  CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
@@ -31,6 +32,15 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
 
 export const Cell: CellComponent = ({ item, field }) => {
   return <Fragment>{item[field.path] + ''}</Fragment>;
+};
+
+export const CardValue: CardValueComponent = ({ item, field }) => {
+  return (
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
+      {item[field.path] + ''}
+    </FieldContainer>
+  );
 };
 
 type CheckboxController = FieldController<boolean, boolean>;

@@ -1,9 +1,9 @@
-import { ListMeta, JSONValue } from '@keystone-next/types';
+import { JSONValue, FieldMeta } from '@keystone-next/types';
 import { GraphQLError } from 'graphql';
-import { DataGetter, DeepNullable } from './dataGetter';
+import { DataGetter } from './dataGetter';
 import { getRootGraphQLFieldsFromFieldController } from './getRootGraphQLFieldsFromFieldController';
 
-export type ItemData = DeepNullable<{ id: string; [key: string]: any }>;
+export type ItemData = { id: string; [key: string]: any };
 
 export type DeserializedValue = Record<
   string,
@@ -11,10 +11,13 @@ export type DeserializedValue = Record<
   | { kind: 'value'; value: any }
 >;
 
-export function deserializeValue(list: ListMeta, itemGetter: DataGetter<ItemData>) {
+export function deserializeValue(
+  fields: Record<string, FieldMeta>,
+  itemGetter: DataGetter<ItemData>
+) {
   const value: DeserializedValue = {};
-  Object.keys(list.fields).forEach(fieldKey => {
-    const field = list.fields[fieldKey];
+  Object.keys(fields).forEach(fieldKey => {
+    const field = fields[fieldKey];
     const itemForField: Record<string, any> = {};
     const errors = new Set<GraphQLError>();
     for (const graphqlField of getRootGraphQLFieldsFromFieldController(field.controller)) {
@@ -35,12 +38,15 @@ export function deserializeValue(list: ListMeta, itemGetter: DataGetter<ItemData
   return value;
 }
 
-export function serializeValueToObjByFieldKey(list: ListMeta, value: DeserializedValue) {
+export function serializeValueToObjByFieldKey(
+  fields: Record<string, FieldMeta>,
+  value: DeserializedValue
+) {
   const obj: Record<string, Record<string, JSONValue>> = {};
-  Object.keys(list.fields).map(fieldKey => {
+  Object.keys(fields).map(fieldKey => {
     const val = value[fieldKey];
     if (val.kind === 'value') {
-      obj[fieldKey] = list.fields[fieldKey].controller.serialize(val.value);
+      obj[fieldKey] = fields[fieldKey].controller.serialize(val.value);
     }
   });
   return obj;

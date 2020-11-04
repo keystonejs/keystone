@@ -5,6 +5,7 @@ import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { parseISO } from 'date-fns';
 
 import {
+  CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
@@ -47,6 +48,15 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
 };
 Cell.supportsLinkTo = true;
+
+export const CardValue: CardValueComponent = ({ item, field }) => {
+  return (
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
+      {item[field.path]}
+    </FieldContainer>
+  );
+};
 
 function isValid(value: string) {
   if (value === '') return true;

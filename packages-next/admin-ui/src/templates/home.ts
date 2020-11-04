@@ -24,7 +24,7 @@ export const homeTemplate = (keystone: Keystone) => {
   return `
 import React from 'react';
 
-import { HomePage } from '@keystone-next/admin-ui';
+import { HomePage } from '@keystone-next/admin-ui/pages/HomePage';
 import { gql } from '@keystone-next/admin-ui/apollo';
 
 export default function Home() {

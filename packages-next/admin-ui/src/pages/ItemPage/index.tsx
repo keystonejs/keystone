@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Fragment, ReactNode, useMemo, useState } from 'react';
 
-import { ListMeta } from '@keystone-next/types';
+import { FieldMeta, ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';
@@ -29,6 +29,11 @@ import { Fields } from './Fields';
 import { GraphQLError } from 'graphql';
 import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 
+export { useInvalidFields, Fields };
+export * from '../../utils/getRootGraphQLFieldsFromFieldController';
+export * from '../../utils/serialization';
+export * from '../../utils/dataGetter';
+
 type ItemPageProps = {
   listKey: string;
 };
@@ -45,18 +50,18 @@ export type Value = Record<
     }
 >;
 
-function useChangedFieldsAndDataForUpdate(
-  list: ListMeta,
+export function useChangedFieldsAndDataForUpdate(
+  fields: Record<string, FieldMeta>,
   itemGetter: DataGetter<ItemData>,
   value: Value
 ) {
   const serializedValuesFromItem = useMemo(() => {
-    const value = deserializeValue(list, itemGetter);
-    return serializeValueToObjByFieldKey(list, value);
-  }, [list, itemGetter]);
+    const value = deserializeValue(fields, itemGetter);
+    return serializeValueToObjByFieldKey(fields, value);
+  }, [fields, itemGetter]);
   const serializedFieldValues = useMemo(() => {
-    return serializeValueToObjByFieldKey(list, value);
-  }, [value, list]);
+    return serializeValueToObjByFieldKey(fields, value);
+  }, [value, fields]);
 
   return useMemo(() => {
     let changedFields = new Set<string>();
@@ -109,7 +114,7 @@ function ItemForm({
   }
 
   const [state, setValue] = useState(() => {
-    const value = deserializeValue(list, itemGetter);
+    const value = deserializeValue(list.fields, itemGetter);
     return {
       value,
       item: itemGetter.data,
@@ -117,7 +122,7 @@ function ItemForm({
   });
 
   if (state.item !== itemGetter.data && itemGetter.errors?.every(x => x.path?.length !== 1)) {
-    const value = deserializeValue(list, itemGetter);
+    const value = deserializeValue(list.fields, itemGetter);
     setValue({
       value,
       item: itemGetter.data,
@@ -125,12 +130,12 @@ function ItemForm({
   }
 
   const { changedFields, dataForUpdate } = useChangedFieldsAndDataForUpdate(
-    list,
+    list.fields,
     itemGetter,
     state.value
   );
 
-  const invalidFields = useInvalidFields(list, state.value);
+  const invalidFields = useInvalidFields(list.fields, state.value);
 
   const [forceValidation, setForceValidation] = useState(false);
   const toasts = useToasts();
@@ -219,7 +224,7 @@ function ItemForm({
             onClick={() => {
               setValue({
                 item: itemGetter.data,
-                value: deserializeValue(list, itemGetter),
+                value: deserializeValue(list.fields, itemGetter),
               });
             }}
           >
@@ -468,7 +473,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               selectedFields={selectedFields}
               showDelete={!data.keystone.adminMeta.list!.hideDelete}
               listKey={listKey}
-              itemGetter={dataGetter.get('item')}
+              itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
             />
           </FormContainer>
         </Fragment>

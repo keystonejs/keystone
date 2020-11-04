@@ -5,6 +5,7 @@ import { FieldContainer, FieldLabel, TextInput, TextArea } from '@keystone-ui/fi
 import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
 
 import {
+  CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
@@ -39,6 +40,15 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
 };
 Cell.supportsLinkTo = true;
+
+export const CardValue: CardValueComponent = ({ item, field }) => {
+  return (
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
+      {item[field.path]}
+    </FieldContainer>
+  );
+};
 
 type Config = FieldControllerConfig<{ displayMode: 'input' | 'textarea' }>;
 

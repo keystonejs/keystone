@@ -2,8 +2,6 @@
   "name": "@keystone-next/admin-ui",
   "version": "1.0.0",
   "license": "MIT",
-  "main": "dist/admin-ui.cjs.js",
-  "module": "dist/admin-ui.esm.js",
   "dependencies": {
     "@apollo/client": "^3.2.5",
     "@babel/runtime": "^7.12.1",
@@ -39,9 +37,9 @@
   },
   "preconstruct": {
     "entrypoints": [
-      "index.tsx",
       "components/index.ts",
       "templates/index.ts",
+      "pages/*/index.tsx",
       "apollo.tsx",
       "context.tsx",
       "router.tsx"
