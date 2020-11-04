@@ -12,15 +12,18 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
     | {
         options: { label: string; value: string }[];
         dataType?: 'string' | 'enum';
+        defaultValue?: string;
       }
     | {
         options: { label: string; value: number }[];
         dataType: 'integer';
+        defaultValue?: number;
       }
   ) & {
     ui?: {
       displayMode?: 'select' | 'segmented-control';
     };
+    isRequired?: boolean;
   };
 
 const views = resolveView('select/views');
