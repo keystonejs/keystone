@@ -360,7 +360,10 @@ export const controller = (
       };
     },
     validate(value) {
-      return value.kind !== 'cards-view' || value.itemsBeingEdited.size === 0;
+      return (
+        value.kind !== 'cards-view' ||
+        (value.itemsBeingEdited.size === 0 && !value.itemBeingCreated)
+      );
     },
     serialize: state => {
       if (state.kind === 'many') {
