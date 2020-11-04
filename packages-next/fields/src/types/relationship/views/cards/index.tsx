@@ -169,7 +169,7 @@ export function Cards({
                           onClick={() => {
                             onChange?.({
                               ...value,
-                              disconnect: new Set([...(value.disconnect || []), id]),
+                              disconnect: new Set([id, ...(value.disconnect || [])]),
                             });
                           }}
                           {...props}
@@ -199,7 +199,7 @@ export function Cards({
             onChange?.({
               ...value,
               itemBeingCreated: false,
-              connect: new Set([...value.connect, id]),
+              connect: new Set([id, ...value.connect]),
             });
             setItems({ ...items, [id]: itemGetter });
           }}
