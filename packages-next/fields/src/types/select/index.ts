@@ -24,6 +24,8 @@ export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes
       displayMode?: 'select' | 'segmented-control';
     };
     isRequired?: boolean;
+    isIndexed?: boolean;
+    isUnique?: boolean;
   };
 
 const views = resolveView('select/views');

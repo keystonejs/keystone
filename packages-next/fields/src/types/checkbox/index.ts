@@ -8,6 +8,7 @@ export type CheckboxFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
   TGeneratedListTypes
 > & {
   defaultValue?: boolean;
+  isRequired?: boolean;
 };
 
 const views = resolveView('checkbox/views');
