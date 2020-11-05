@@ -11,6 +11,7 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
   defaultValue?: string;
   isRequired?: boolean;
   isUnique?: boolean;
+  isIndexed?: boolean;
   ui?: {
     displayMode?: 'input' | 'textarea';
   };
