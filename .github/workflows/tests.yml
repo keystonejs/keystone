@@ -26,6 +26,8 @@ jobs:
           SHOULD_RUN: ${{ steps.filter.outputs.shouldRunTests }}
       - run: echo "SHOULD_RUN_TESTS=true" >> $GITHUB_ENV
         if: github.event_name != 'pull_request'
+      - name: Checkout Repo
+        uses: actions/checkout@v2
       - run: node test.js
 
   api-tests:
