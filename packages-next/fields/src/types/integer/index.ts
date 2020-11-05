@@ -6,7 +6,12 @@ import { resolveView } from '../../resolve-view';
 
 export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
   TGeneratedListTypes
->;
+> & {
+  isRequired?: boolean;
+  isIndexed?: boolean;
+  isUnique?: boolean;
+  defaultValue?: string;
+};
 
 const views = resolveView('integer/views');
 

@@ -43,6 +43,8 @@ export type RelationshipFieldConfig<
   ui?: {
     hideCreate?: boolean;
   };
+  isIndexed?: boolean;
+  isUnique?: boolean;
 } & (SelectDisplayConfig | CardsDisplayConfig);
 
 const views = resolveView('relationship/views');

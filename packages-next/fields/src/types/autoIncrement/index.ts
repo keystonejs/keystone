@@ -7,7 +7,12 @@ import { resolveView } from '../../resolve-view';
 
 export type AutoIncrementFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes>;
+> = FieldConfig<TGeneratedListTypes> & {
+  isRequired?: boolean;
+  isIndexed?: boolean;
+  isUnique?: boolean;
+  defaultValue?: string;
+};
 
 const views = resolveView('integer/views');
 
