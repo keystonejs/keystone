@@ -20,9 +20,7 @@ jobs:
           filters: |
             shouldRunTests:
               - '!{{website,docs,examples,packages-next,examples-next,design-system}/**,**/*.md}'
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-      - run: echo "SHOULD_RUN_TESTS=$SHOULD_RUN" >> $GITHUB_ENV && node test.js
+      - run: echo "SHOULD_RUN_TESTS=$SHOULD_RUN" >> $GITHUB_ENV
         if: github.event_name == 'pull_request'
         env:
           SHOULD_RUN: ${{ steps.filter.outputs.shouldRunTests }}
