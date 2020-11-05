@@ -120,7 +120,7 @@ export type FieldProps<FieldControllerFn extends (...args: any) => FieldControll
 };
 
 export type FieldViews = readonly {
-  Field: (props: FieldProps<any>) => ReactElement;
+  Field: (props: FieldProps<any>) => ReactElement | null;
   Cell: CellComponent;
   controller: (args: FieldControllerConfig<any>) => FieldController<unknown, JSONValue>;
 }[];
@@ -135,7 +135,7 @@ export type CellComponent<
     item: Record<string, any>;
     linkTo: { href: string; as: string } | undefined;
     field: ReturnType<FieldControllerFn>;
-  }): ReactElement;
+  }): ReactElement | null;
 
   supportsLinkTo?: boolean;
 };

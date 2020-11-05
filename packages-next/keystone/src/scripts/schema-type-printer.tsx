@@ -32,7 +32,7 @@ function printInputTypesFromSchema(
     let name = node.name.value;
     if (schemaObj.getType(name) instanceof GraphQLScalarType) {
       if (scalars[name] === undefined) {
-        throw new Error(`TypeScript type for GraphQL scalar ${name} was not provided`);
+        return 'any';
       }
       return `Scalars[${JSON.stringify(name)}]`;
     }

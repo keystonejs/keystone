@@ -39,6 +39,9 @@ export const lists = createSchema({
     fields: {
       name: text({ isRequired: true }),
       email: text({ isRequired: true, isUnique: true }),
+      // avatar: cloudinaryImage({
+      //   adapter: new CloudinaryAdapter({}),
+      // }),
       password: password(),
       isAdmin: checkbox({
         access: {
