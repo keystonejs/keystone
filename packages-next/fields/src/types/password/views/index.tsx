@@ -22,6 +22,7 @@ export const Field = ({
   value,
   onChange,
   forceValidation,
+  autoFocus,
 }: FieldProps<typeof controller>) => {
   const [showInputValue, setShowInputValue] = useState(false);
   const [touchedFirstInput, setTouchedFirstInput] = useState(false);
@@ -47,6 +48,7 @@ export const Field = ({
         )
       ) : value.kind === 'initial' ? (
         <Button
+          autoFocus={autoFocus}
           onClick={() => {
             onChange({
               kind: 'editing',
@@ -62,6 +64,7 @@ export const Field = ({
         <div css={{ display: 'inline-flex', flexDirection: 'column' }}>
           <Stack gap="medium" across>
             <TextInput
+              autoFocus
               invalid={validation !== undefined}
               type={inputType}
               value={value.value}

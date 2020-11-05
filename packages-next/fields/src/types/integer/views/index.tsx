@@ -12,10 +12,11 @@ import {
   FieldProps,
 } from '@keystone-next/types';
 
-export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => (
+export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
     <FieldLabel>{field.label}</FieldLabel>
     <TextInput
+      autoFocus={autoFocus}
       type="number"
       readOnly={onChange === undefined}
       onChange={event => {

@@ -11,11 +11,12 @@ import {
 } from '@keystone-next/types';
 import { Fragment } from 'react';
 
-export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => {
+export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
   const { fields, typography, spacing } = useTheme();
   return (
     <FieldContainer css={{ marginTop: spacing.large, marginBottom: spacing.large }}>
       <Checkbox
+        autoFocus={autoFocus}
         disabled={onChange === undefined}
         onChange={event => {
           onChange?.(event.target.checked);

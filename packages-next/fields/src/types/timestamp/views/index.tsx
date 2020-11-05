@@ -20,12 +20,14 @@ export const Field = ({
   value,
   onChange,
   forceValidation,
+  autoFocus,
 }: FieldProps<typeof controller>) => {
   const [touched, setTouched] = useState(false);
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
       <TextInput
+        autoFocus={autoFocus}
         readOnly={onChange === undefined}
         onChange={event => {
           onChange?.(event.target.value);
