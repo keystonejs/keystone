@@ -17,7 +17,7 @@ const views = path.join(
 );
 
 export const cloudinaryImage = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: CloudinaryImageFieldConfig<TGeneratedListTypes> = {}
+  config: CloudinaryImageFieldConfig<TGeneratedListTypes>
 ): FieldType<TGeneratedListTypes> => ({
   type: CloudinaryImage,
   config: config,

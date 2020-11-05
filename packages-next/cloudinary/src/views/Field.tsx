@@ -30,14 +30,11 @@ export function Field({
 }: FieldProps<typeof import('.').controller>) {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  console.log(value);
-
   const errorMessage = value.kind === 'upload' ? validateImage(value.data) : undefined;
 
   const imagePathFromUpload = useObjectURL(
     errorMessage === undefined && value.kind === 'upload' ? value.data.file : undefined
   );
-  console.log(errorMessage);
   const imagePath =
     value.kind === 'from-server' ? value.data.publicUrlTransformed : imagePathFromUpload;
 
