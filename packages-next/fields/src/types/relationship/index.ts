@@ -33,7 +33,7 @@ type CardsDisplayConfig = {
     /** Configures inline edit mode for cards */
     inlineEdit?: { fields: string[] };
     /** Configures whether a select to add existing items should be shown or not */
-    inlineLink?: boolean;
+    inlineConnect?: boolean;
   };
 };
 
@@ -77,7 +77,7 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
             removeMode: config.ui.removeMode ?? 'disconnect',
             inlineCreate: config.ui.inlineCreate ?? null,
             inlineEdit: config.ui.inlineEdit ?? null,
-            inlineLink: config.ui.inlineLink ?? false,
+            inlineConnect: config.ui.inlineConnect ?? false,
           }
         : {
             displayMode: 'select',

@@ -262,7 +262,7 @@ type RelationshipController = FieldController<
         removeMode: 'disconnect' | 'none';
         inlineCreate: { fields: string[] } | null;
         inlineEdit: { fields: string[] } | null;
-        inlineLink: boolean;
+        inlineConnect: boolean;
       };
   listKey: string;
   refListKey: string;
@@ -288,7 +288,7 @@ export const controller = (
           removeMode: 'disconnect' | 'none';
           inlineCreate: { fields: string[] } | null;
           inlineEdit: { fields: string[] } | null;
-          inlineLink: boolean;
+          inlineConnect: boolean;
         }
     )
   >
@@ -307,7 +307,7 @@ export const controller = (
             inlineEdit: config.fieldMeta.inlineCreate,
             linkToItem: config.fieldMeta.linkToItem,
             removeMode: config.fieldMeta.removeMode,
-            inlineLink: config.fieldMeta.inlineLink,
+            inlineConnect: config.fieldMeta.inlineConnect,
           }
         : {
             mode: 'select',
