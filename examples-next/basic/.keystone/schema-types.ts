@@ -5,39 +5,6 @@ type Scalars = {
   readonly Int: number;
   readonly Float: number;
   readonly JSON: import('@keystone-next/types').JSONValue;
-  readonly Upload: any;
-};
-
-export type CloudinaryImageFormat = {
-  readonly prettyName?: Scalars['String'] | null;
-  readonly width?: Scalars['String'] | null;
-  readonly height?: Scalars['String'] | null;
-  readonly crop?: Scalars['String'] | null;
-  readonly aspect_ratio?: Scalars['String'] | null;
-  readonly gravity?: Scalars['String'] | null;
-  readonly zoom?: Scalars['String'] | null;
-  readonly x?: Scalars['String'] | null;
-  readonly y?: Scalars['String'] | null;
-  readonly format?: Scalars['String'] | null;
-  readonly fetch_format?: Scalars['String'] | null;
-  readonly quality?: Scalars['String'] | null;
-  readonly radius?: Scalars['String'] | null;
-  readonly angle?: Scalars['String'] | null;
-  readonly effect?: Scalars['String'] | null;
-  readonly opacity?: Scalars['String'] | null;
-  readonly border?: Scalars['String'] | null;
-  readonly background?: Scalars['String'] | null;
-  readonly overlay?: Scalars['String'] | null;
-  readonly underlay?: Scalars['String'] | null;
-  readonly default_image?: Scalars['String'] | null;
-  readonly delay?: Scalars['String'] | null;
-  readonly color?: Scalars['String'] | null;
-  readonly color_space?: Scalars['String'] | null;
-  readonly dpr?: Scalars['String'] | null;
-  readonly page?: Scalars['String'] | null;
-  readonly density?: Scalars['String'] | null;
-  readonly flags?: Scalars['String'] | null;
-  readonly transformation?: Scalars['String'] | null;
 };
 
 export type PhoneNumberRelateToManyInput = {
@@ -97,10 +64,6 @@ export type UserWhereInput = {
   readonly email_not_ends_with_i?: Scalars['String'] | null;
   readonly email_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly email_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
-  readonly avatar?: Scalars['String'] | null;
-  readonly avatar_not?: Scalars['String'] | null;
-  readonly avatar_in?: ReadonlyArray<Scalars['String'] | null> | null;
-  readonly avatar_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly password_is_set?: Scalars['Boolean'] | null;
   readonly isAdmin?: Scalars['Boolean'] | null;
   readonly isAdmin_not?: Scalars['Boolean'] | null;
@@ -211,7 +174,6 @@ export type SortUsersBy =
 export type UserUpdateInput = {
   readonly name?: Scalars['String'] | null;
   readonly email?: Scalars['String'] | null;
-  readonly avatar?: Scalars['Upload'] | null;
   readonly password?: Scalars['String'] | null;
   readonly isAdmin?: Scalars['Boolean'] | null;
   readonly roles?: Scalars['String'] | null;
@@ -233,7 +195,6 @@ export type UsersUpdateInput = {
 export type UserCreateInput = {
   readonly name?: Scalars['String'] | null;
   readonly email?: Scalars['String'] | null;
-  readonly avatar?: Scalars['Upload'] | null;
   readonly password?: Scalars['String'] | null;
   readonly isAdmin?: Scalars['Boolean'] | null;
   readonly roles?: Scalars['String'] | null;
@@ -497,7 +458,6 @@ export type UserListTypeInfo = {
     | 'id'
     | 'name'
     | 'email'
-    | 'avatar'
     | 'password'
     | 'isAdmin'
     | 'roles'
@@ -514,7 +474,6 @@ export type UserListTypeInfo = {
     readonly id: string;
     readonly name?: string | null;
     readonly email?: string | null;
-    readonly avatar?: any;
     readonly password?: string | null;
     readonly isAdmin?: boolean | null;
     readonly roles?: string | null;

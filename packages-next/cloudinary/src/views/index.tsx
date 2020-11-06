@@ -1,8 +1,14 @@
 /* @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
-import { CellComponent, FieldController, FieldControllerConfig } from '@keystone-next/types';
+import {
+  CardValueComponent,
+  CellComponent,
+  FieldController,
+  FieldControllerConfig,
+} from '@keystone-next/types';
 import { validateImage } from './Field';
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 
 export { Field } from './Field';
 
@@ -25,6 +31,16 @@ export const Cell: CellComponent = ({ item, field }) => {
         src={data.publicUrlTransformed}
       />
     </div>
+  );
+};
+
+export const CardValue: CardValueComponent = ({ item, field }) => {
+  const data = item[field.path];
+  return (
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
+      {data && <img alt={data.filename} src={data.publicUrlTransformed} />}
+    </FieldContainer>
   );
 };
 

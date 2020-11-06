@@ -10,7 +10,7 @@ import {
 } from '@keystone-next/fields';
 import { KeystoneCrudAPI } from '@keystone-next/types';
 import { KeystoneListsTypeInfo } from './.keystone/schema-types';
-
+// import { cloudinaryImage } from '@keystone-next/cloudinary';
 // TODO: Can we generate this type based on withItemData in the main config?
 type AccessArgs = {
   session?: {
@@ -40,7 +40,8 @@ export const lists = createSchema({
       name: text({ isRequired: true }),
       email: text({ isRequired: true, isUnique: true }),
       // avatar: cloudinaryImage({
-      //   adapter: new CloudinaryAdapter({}),
+      //   cloudinary: {
+      //   },
       // }),
       password: password(),
       isAdmin: checkbox({
@@ -141,7 +142,7 @@ export const lists = createSchema({
         ref: 'User.posts',
         ui: {
           displayMode: 'cards',
-          cardFields: ['name', 'email'],
+          cardFields: ['name', 'email', 'avatar'],
           inlineEdit: { fields: ['name', 'email'] },
           linkToItem: true,
           inlineCreate: { fields: ['name', 'email'] },
