@@ -6,6 +6,7 @@ import { ToastProvider } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
 import { DrawerProvider } from '@keystone-ui/modals';
 import { useAdminMeta } from './utils/useAdminMeta';
+import { createUploadLink } from 'apollo-upload-client';
 import {
   AuthenticatedItem,
   VisibleLists,
@@ -84,7 +85,7 @@ export const KeystoneProvider = (props: KeystoneProviderProps) => {
     () =>
       new ApolloClient({
         cache: new InMemoryCache(),
-        uri: '/api/graphql',
+        link: createUploadLink({ uri: '/api/graphql' }),
       }),
     []
   );
