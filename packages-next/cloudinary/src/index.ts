@@ -1,5 +1,6 @@
 // @ts-ignore
 import { CloudinaryImage } from '@keystonejs/fields-cloudinary-image';
+// @ts-ignore
 import { CloudinaryAdapter } from '@keystonejs/file-adapters';
 import type { FieldType, FieldConfig } from '@keystone-next/types';
 import type { BaseGeneratedListTypes } from '@keystone-next/types';
