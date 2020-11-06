@@ -142,7 +142,7 @@ export const lists = createSchema({
         ref: 'User.posts',
         ui: {
           displayMode: 'cards',
-          cardFields: ['name', 'email', 'avatar'],
+          cardFields: ['name', 'email'],
           inlineEdit: { fields: ['name', 'email'] },
           linkToItem: true,
           inlineCreate: { fields: ['name', 'email'] },
