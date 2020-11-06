@@ -121,6 +121,7 @@ export const Field = ({
               {props => {
                 return (
                   <Button
+                    disabled={isDrawerOpen}
                     {...props}
                     onClick={() => {
                       setIsDrawerOpen(true);
