@@ -8,6 +8,7 @@ import {
   select,
   virtual,
 } from '@keystone-next/fields';
+// import { cloudinaryImage } from '@keystone-next/cloudinary';
 import { KeystoneCrudAPI } from '@keystone-next/types';
 import { KeystoneListsTypeInfo } from './.keystone/schema-types';
 
@@ -39,6 +40,13 @@ export const lists = createSchema({
     fields: {
       name: text({ isRequired: true }),
       email: text({ isRequired: true, isUnique: true }),
+      // avatar: cloudinaryImage({
+      //   cloudinary: {
+      //     cloudName: '/* TODO */',
+      //     apiKey: '/* TODO */',
+      //     apiSecret: '/* TODO */',
+      //   },
+      // }),
       password: password(),
       isAdmin: checkbox({
         access: {
