@@ -66,6 +66,7 @@ const ListCard = ({ listKey, count }: ListCardProps) => {
         )}
       </Link>
       <CreateButton
+        disabled={isCreateModalOpen}
         onClick={() => {
           setIsCreateModalOpen(true);
         }}

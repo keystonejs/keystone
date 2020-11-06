@@ -15,22 +15,12 @@ export const initTemplate = ({ listKey, initFirstItem, fields }: InitTemplateArg
 
   const fieldsMeta = ${JSON.stringify(fields)}
 
-  const mutation = gql\`mutation($data: CreateInitial${listKey}Input!) {
-    createInitial${listKey}(data: $data) {
-      ... on UserAuthenticationWithPasswordSuccess {
-        item {
-          id
-        }
-      }
-    }
-  }\`
-
   export default function Init() {
     return <InitPage listKey=${JSON.stringify(
       listKey
     )} fields={fieldsMeta} showKeystoneSignup={${JSON.stringify(
     !initFirstItem.skipKeystoneSignup
-  )}} mutation={mutation} />
+  )}} />
   }
   `;
   // -- TEMPLATE END

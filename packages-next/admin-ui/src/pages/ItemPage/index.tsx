@@ -358,6 +358,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
         </h3>
         {!hideCreate && (
           <Button
+            disabled={isCreateModalOpen}
             onClick={() => {
               setIsCreateModalOpen(true);
             }}
