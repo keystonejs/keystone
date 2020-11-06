@@ -85,8 +85,7 @@ export function Cards({
 
   return (
     <Stack gap="medium">
-      {Object.keys(items).map(id => {
-        if (!value.currentIds.has(id)) return null;
+      {[...value.currentIds].map(id => {
         const itemGetter = items[id];
         return (
           <div
@@ -213,26 +212,28 @@ export function Cards({
           }}
           onCreate={itemGetter => {
             const id = itemGetter.data.id;
+            setItems({ ...items, [id]: itemGetter });
             onChange?.({
               ...value,
               itemBeingCreated: false,
-              currentIds: new Set([...value.currentIds, id]),
+              currentIds: field.many ? new Set([...value.currentIds, id]) : new Set([id]),
             });
-            setItems({ ...items, [id]: itemGetter });
           }}
         />
       ) : (
-        <Button
-          disabled={onChange === undefined}
-          onClick={() => {
-            onChange?.({
-              ...value,
-              itemBeingCreated: true,
-            });
-          }}
-        >
-          Create {foreignList.singular}
-        </Button>
+        field.display.inlineCreate && (
+          <Button
+            disabled={onChange === undefined}
+            onClick={() => {
+              onChange?.({
+                ...value,
+                itemBeingCreated: true,
+              });
+            }}
+          >
+            Create {foreignList.singular}
+          </Button>
+        )
       )}
       {field.display.linkToItem && (
         <RelationshipSelect
@@ -245,7 +246,7 @@ export function Cards({
             async onChange(options) {
               const itemsToFetchAndConnect: string[] = [];
               options.forEach(item => {
-                if (items[item.id] === undefined) {
+                if (!value.currentIds.has(item.id)) {
                   itemsToFetchAndConnect.push(item.id);
                 }
               });
@@ -263,7 +264,7 @@ export function Cards({
                     const dataGetters = makeDataGetter(data, errors);
                     const itemsDataGetter = dataGetters.get('items');
                     let newItems = { ...items };
-                    let newCurrentIds = new Set(value.currentIds);
+                    let newCurrentIds = field.many ? new Set(value.currentIds) : new Set<string>();
                     if (Array.isArray(itemsDataGetter.data)) {
                       itemsDataGetter.data.forEach((item, i) => {
                         if (item?.id != null) {
@@ -272,11 +273,13 @@ export function Cards({
                         }
                       });
                     }
-                    setItems(newItems);
-                    onChange?.({
-                      ...value,
-                      currentIds: newCurrentIds,
-                    });
+                    if (newCurrentIds.size) {
+                      setItems(newItems);
+                      onChange?.({
+                        ...value,
+                        currentIds: newCurrentIds,
+                      });
+                    }
                   }
                 } finally {
                   if (isMountedRef.current) {
@@ -292,6 +295,7 @@ export function Cards({
                   options.push({ id, label: id });
                 }
               });
+              console.log({ options });
               return options;
             })(),
           }}

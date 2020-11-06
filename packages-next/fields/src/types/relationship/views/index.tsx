@@ -267,6 +267,7 @@ type RelationshipController = FieldController<
   listKey: string;
   refListKey: string;
   hideCreate: boolean;
+  many: boolean;
 };
 
 export const controller = (
@@ -293,6 +294,7 @@ export const controller = (
   >
 ): RelationshipController => {
   return {
+    many: config.fieldMeta.many,
     listKey: config.listKey,
     path: config.path,
     label: config.label,
@@ -334,9 +336,12 @@ export const controller = (
     deserialize: data => {
       if (config.fieldMeta.displayMode === 'cards') {
         const initialIds = new Set<string>(
-          (Array.isArray(data[config.path]) ? data[config.path] : [data[config.path]]).map(
-            (x: any) => x.id
-          )
+          (Array.isArray(data[config.path])
+            ? data[config.path]
+            : data[config.path]
+            ? [data[config.path]]
+            : []
+          ).map((x: any) => x.id)
         );
         return {
           kind: 'cards-view',

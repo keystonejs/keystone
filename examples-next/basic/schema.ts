@@ -134,7 +134,16 @@ export const lists = createSchema({
         },
       }),
       publishDate: timestamp(),
-      author: relationship({ ref: 'User.posts' }),
+      author: relationship({
+        ref: 'User.posts',
+        ui: {
+          displayMode: 'cards',
+          cardFields: ['name', 'email'],
+          inlineEdit: { fields: ['name', 'email'] },
+          linkToItem: true,
+          inlineCreate: { fields: ['name', 'email'] },
+        },
+      }),
     },
   }),
 });
