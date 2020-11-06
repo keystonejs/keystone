@@ -9,7 +9,6 @@ import { FieldMeta, SerializedFieldMeta } from '@keystone-next/types';
 import isDeepEqual from 'fast-deep-equal';
 
 import { SigninContainer } from '../components/SigninContainer';
-import { DocumentNode } from 'graphql';
 import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
 import { useReinitContext } from '@keystone-next/admin-ui/context';
 import { useRouter } from '@keystone-next/admin-ui/router';
