@@ -51,6 +51,7 @@ export function Field({
           {imagePath && errorMessage === undefined && <Image src={imagePath} alt={field.path} />}
           <Stack across gap="small" align="center">
             <Button
+              disabled={onChange === undefined}
               onClick={() => {
                 inputRef.current?.click();
               }}
@@ -59,6 +60,7 @@ export function Field({
             </Button>
             {value.kind === 'from-server' && (
               <Button
+                disabled={onChange === undefined}
                 tone="negative"
                 onClick={() => {
                   onChange?.({ kind: 'remove', previous: value });
@@ -69,6 +71,7 @@ export function Field({
             )}
             {value.kind === 'upload' && (
               <Button
+                disabled={onChange === undefined}
                 tone="negative"
                 onClick={() => {
                   onChange?.(value.previous);
@@ -93,6 +96,7 @@ export function Field({
       ) : (
         <Stack css={{ alignItems: 'center' }} gap="small" across>
           <Button
+            disabled={onChange === undefined}
             onClick={() => {
               inputRef.current?.click();
             }}
