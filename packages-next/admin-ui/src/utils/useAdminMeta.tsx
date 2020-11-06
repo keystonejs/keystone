@@ -8,6 +8,7 @@ let expectedExports: Record<string, boolean> = {
   Cell: true,
   Field: true,
   controller: true,
+  CardValue: true,
 };
 
 const adminMetaLocalStorageKey = 'keystone.adminMeta';
@@ -107,6 +108,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
           ...field,
           views,
           controller: fieldViews[field.views].controller({
+            listKey: list.key,
             fieldMeta: field.fieldMeta,
             label: field.label,
             path: field.path,

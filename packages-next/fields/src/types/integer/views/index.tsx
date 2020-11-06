@@ -5,16 +5,18 @@ import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
 
 import {
+  CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-next/types';
 
-export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => (
+export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
     <FieldLabel>{field.label}</FieldLabel>
     <TextInput
+      autoFocus={autoFocus}
       type="number"
       readOnly={onChange === undefined}
       onChange={event => {
@@ -30,6 +32,15 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
 };
 Cell.supportsLinkTo = true;
+
+export const CardValue: CardValueComponent = ({ item, field }) => {
+  return (
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
+      {item[field.path]}
+    </FieldContainer>
+  );
+};
 
 export const controller = (config: FieldControllerConfig): FieldController<string, string> => {
   return {

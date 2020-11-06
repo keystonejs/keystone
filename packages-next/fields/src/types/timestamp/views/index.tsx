@@ -5,6 +5,7 @@ import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { parseISO } from 'date-fns';
 
 import {
+  CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
@@ -19,12 +20,14 @@ export const Field = ({
   value,
   onChange,
   forceValidation,
+  autoFocus,
 }: FieldProps<typeof controller>) => {
   const [touched, setTouched] = useState(false);
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
       <TextInput
+        autoFocus={autoFocus}
         readOnly={onChange === undefined}
         onChange={event => {
           onChange?.(event.target.value);
@@ -47,6 +50,15 @@ export const Cell: CellComponent = ({ item, field, linkTo }) => {
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
 };
 Cell.supportsLinkTo = true;
+
+export const CardValue: CardValueComponent = ({ item, field }) => {
+  return (
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
+      {item[field.path]}
+    </FieldContainer>
+  );
+};
 
 function isValid(value: string) {
   if (value === '') return true;

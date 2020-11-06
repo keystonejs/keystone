@@ -4,7 +4,7 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 
 import { jsx, H1 } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
-import { useRawKeystone } from '@keystone-next/admin-ui';
+import { useRawKeystone } from '@keystone-next/admin-ui/context';
 import { FieldMeta, SerializedFieldMeta } from '@keystone-next/types';
 import isDeepEqual from 'fast-deep-equal';
 
@@ -18,7 +18,9 @@ import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
 export const InitPage = ({
   fields: serializedFields,
   mutation,
+  listKey,
 }: {
+  listKey: string;
   fields: Record<string, SerializedFieldMeta>;
   mutation: DocumentNode;
   showKeystoneSignup: boolean;
@@ -41,6 +43,7 @@ export const InitPage = ({
         ...field,
         views,
         controller: fieldViews[field.views].controller({
+          listKey,
           fieldMeta: field.fieldMeta,
           label: field.label,
           path: fieldPath,

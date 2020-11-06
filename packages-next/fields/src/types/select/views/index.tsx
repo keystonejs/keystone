@@ -5,6 +5,7 @@ import { FieldContainer, FieldLabel, Select, MultiSelect } from '@keystone-ui/fi
 import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
 
 import {
+  CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
@@ -46,6 +47,17 @@ export const Cell: CellComponent<typeof controller> = ({ item, field, linkTo }) 
   return linkTo ? <CellLink {...linkTo}>{label}</CellLink> : <CellContainer>{label}</CellContainer>;
 };
 Cell.supportsLinkTo = true;
+
+export const CardValue: CardValueComponent<typeof controller> = ({ item, field }) => {
+  const label = field.options.find(x => x.value === item[field.path])?.label;
+
+  return (
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
+      {label}
+    </FieldContainer>
+  );
+};
 
 type Config = FieldControllerConfig<{
   options: { label: string; value: string | number }[];

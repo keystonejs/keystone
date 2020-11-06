@@ -2,8 +2,8 @@
 
 import { jsx, Stack } from '@keystone-ui/core';
 import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon';
-import { SignoutButton } from '../components/SignoutButton';
-import { ErrorContainer } from '../components/Errors';
+import { SignoutButton } from '../../components/SignoutButton';
+import { ErrorContainer } from '../../components/Errors';
 
 export const NoAccessPage = ({ sessionsEnabled }: { sessionsEnabled: boolean }) => {
   return (

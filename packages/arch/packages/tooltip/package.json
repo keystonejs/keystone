@@ -21,7 +21,7 @@
     "@emotion/styled": "^10.0.27",
     "@popperjs/core": "^2.5.4",
     "flushable": "^1.0.0",
-    "react-popper": "^2.2.3"
+    "react-popper": "^2.2.4"
   },
   "module": "dist/tooltip.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/tooltip"

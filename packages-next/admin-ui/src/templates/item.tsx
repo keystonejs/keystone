@@ -9,7 +9,7 @@ export const itemTemplate = (keystone: Keystone, { list }: ItemPageTemplateOptio
   return `
 import React from 'react';
 
-import { ItemPage } from '@keystone-next/admin-ui';
+import { ItemPage } from '@keystone-next/admin-ui/pages/ItemPage';
 
 export default function Item() {
   return <ItemPage listKey="${list.key}" />;

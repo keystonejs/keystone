@@ -1,8 +1,9 @@
 /* @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { FieldContainer, Checkbox } from '@keystone-ui/fields';
+import { FieldContainer, Checkbox, FieldLabel } from '@keystone-ui/fields';
 import {
+  CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
@@ -10,11 +11,12 @@ import {
 } from '@keystone-next/types';
 import { Fragment } from 'react';
 
-export const Field = ({ field, value, onChange }: FieldProps<typeof controller>) => {
+export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
   const { fields, typography, spacing } = useTheme();
   return (
     <FieldContainer css={{ marginTop: spacing.large, marginBottom: spacing.large }}>
       <Checkbox
+        autoFocus={autoFocus}
         disabled={onChange === undefined}
         onChange={event => {
           onChange?.(event.target.checked);
@@ -31,6 +33,15 @@ export const Field = ({ field, value, onChange }: FieldProps<typeof controller>)
 
 export const Cell: CellComponent = ({ item, field }) => {
   return <Fragment>{item[field.path] + ''}</Fragment>;
+};
+
+export const CardValue: CardValueComponent = ({ item, field }) => {
+  return (
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
+      {item[field.path] + ''}
+    </FieldContainer>
+  );
 };
 
 type CheckboxController = FieldController<boolean, boolean>;

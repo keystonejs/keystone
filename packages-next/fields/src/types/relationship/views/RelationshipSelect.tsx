@@ -25,10 +25,14 @@ export const RelationshipSelect = ({
   list,
   isDisabled,
   state,
+  controlShouldRenderValue,
+  isLoading,
 }: {
   list: ListMeta;
   autoFocus?: boolean;
   isDisabled: boolean;
+  controlShouldRenderValue: boolean;
+  isLoading?: boolean;
   state:
     | {
         kind: 'many';
@@ -135,7 +139,7 @@ export const RelationshipSelect = ({
         // this is necessary because react-select passes a second argument to onInputChange
         // and useState setters log a warning if a second argument is passed
         onInputChange={val => setSearch(val)}
-        isLoading={loading}
+        isLoading={loading || isLoading}
         autoFocus={autoFocus}
         components={relationshipSelectComponents}
         value={state.value ? { value: state.value.id, label: state.value.label } : null}
@@ -150,7 +154,8 @@ export const RelationshipSelect = ({
               : null
           );
         }}
-        isClearable
+        controlShouldRenderValue={controlShouldRenderValue}
+        isClearable={controlShouldRenderValue}
         isDisabled={isDisabled}
       />
     );
@@ -160,7 +165,7 @@ export const RelationshipSelect = ({
     <MultiSelect // this is necessary because react-select passes a second argument to onInputChange
       // and useState setters log a warning if a second argument is passed
       onInputChange={val => setSearch(val)}
-      isLoading={loading}
+      isLoading={loading || isLoading}
       autoFocus={autoFocus}
       components={relationshipSelectComponents}
       value={state.value.map(value => ({ value: value.id, label: value.label })) || null}
@@ -168,7 +173,8 @@ export const RelationshipSelect = ({
       onChange={value => {
         state.onChange(value.map(x => ({ id: x.value, label: x.label })));
       }}
-      isClearable
+      controlShouldRenderValue={controlShouldRenderValue}
+      isClearable={controlShouldRenderValue}
       isDisabled={isDisabled}
     />
   );

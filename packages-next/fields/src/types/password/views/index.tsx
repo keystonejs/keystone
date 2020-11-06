@@ -4,6 +4,7 @@ import { jsx, Stack, VisuallyHidden } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 
 import {
+  CardValueComponent,
   CellComponent,
   FieldController,
   FieldControllerConfig,
@@ -21,6 +22,7 @@ export const Field = ({
   value,
   onChange,
   forceValidation,
+  autoFocus,
 }: FieldProps<typeof controller>) => {
   const [showInputValue, setShowInputValue] = useState(false);
   const [touchedFirstInput, setTouchedFirstInput] = useState(false);
@@ -46,6 +48,7 @@ export const Field = ({
         )
       ) : value.kind === 'initial' ? (
         <Button
+          autoFocus={autoFocus}
           onClick={() => {
             onChange({
               kind: 'editing',
@@ -61,6 +64,7 @@ export const Field = ({
         <div css={{ display: 'inline-flex', flexDirection: 'column' }}>
           <Stack gap="medium" across>
             <TextInput
+              autoFocus
               invalid={validation !== undefined}
               type={inputType}
               value={value.value}
@@ -120,6 +124,15 @@ export const Field = ({
 
 export const Cell: CellComponent = ({ item, field }) => {
   return <Fragment>{item[`${field.path}_is_set`] ? 'Is set' : 'Is not set'}</Fragment>;
+};
+
+export const CardValue: CardValueComponent = ({ item, field }) => {
+  return (
+    <FieldContainer>
+      <FieldLabel>{field.label}</FieldLabel>
+      {item[`${field.path}_is_set`] ? 'Is set' : 'Is not set'}
+    </FieldContainer>
+  );
 };
 
 type PasswordController = FieldController<

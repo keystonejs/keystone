@@ -1,7 +1,6 @@
 /* @jsx jsx */
 
 import copyToClipboard from 'clipboard-copy';
-import isDeepEqual from 'fast-deep-equal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Fragment, ReactNode, useMemo, useState } from 'react';
@@ -17,66 +16,22 @@ import { Tooltip } from '@keystone-ui/tooltip';
 import { gql, useMutation, useQuery } from '../../apollo';
 import { PageContainer } from '../../components/PageContainer';
 import { useList } from '../../context';
-import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter';
 import {
+  DataGetter,
+  DeepNullable,
+  makeDataGetter,
   deserializeValue,
   ItemData,
-  serializeValueToObjByFieldKey,
-} from '../../utils/serialization';
+  useInvalidFields,
+  Fields,
+  useChangedFieldsAndDataForUpdate,
+} from '@keystone-next/admin-ui-utils';
 import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice';
-import { useInvalidFields } from './useInvalidFields';
-import { Fields } from './Fields';
-import { GraphQLError } from 'graphql';
 import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 
 type ItemPageProps = {
   listKey: string;
 };
-
-export type Value = Record<
-  string,
-  | {
-      kind: 'error';
-      errors: readonly [GraphQLError, ...GraphQLError[]];
-    }
-  | {
-      kind: 'value';
-      value: any;
-    }
->;
-
-function useChangedFieldsAndDataForUpdate(
-  list: ListMeta,
-  itemGetter: DataGetter<ItemData>,
-  value: Value
-) {
-  const serializedValuesFromItem = useMemo(() => {
-    const value = deserializeValue(list, itemGetter);
-    return serializeValueToObjByFieldKey(list, value);
-  }, [list, itemGetter]);
-  const serializedFieldValues = useMemo(() => {
-    return serializeValueToObjByFieldKey(list, value);
-  }, [value, list]);
-
-  return useMemo(() => {
-    let changedFields = new Set<string>();
-    Object.keys(serializedFieldValues).forEach(fieldKey => {
-      let isEqual = isDeepEqual(
-        serializedFieldValues[fieldKey],
-        serializedValuesFromItem[fieldKey]
-      );
-      if (!isEqual) {
-        changedFields.add(fieldKey);
-      }
-    });
-    const dataForUpdate: Record<string, any> = {};
-
-    changedFields.forEach(fieldKey => {
-      Object.assign(dataForUpdate, serializedFieldValues[fieldKey]);
-    });
-    return { changedFields: changedFields as ReadonlySet<string>, dataForUpdate };
-  }, [serializedFieldValues, serializedValuesFromItem]);
-}
 
 function ItemForm({
   listKey,
@@ -109,7 +64,7 @@ function ItemForm({
   }
 
   const [state, setValue] = useState(() => {
-    const value = deserializeValue(list, itemGetter);
+    const value = deserializeValue(list.fields, itemGetter);
     return {
       value,
       item: itemGetter.data,
@@ -117,7 +72,7 @@ function ItemForm({
   });
 
   if (state.item !== itemGetter.data && itemGetter.errors?.every(x => x.path?.length !== 1)) {
-    const value = deserializeValue(list, itemGetter);
+    const value = deserializeValue(list.fields, itemGetter);
     setValue({
       value,
       item: itemGetter.data,
@@ -125,12 +80,12 @@ function ItemForm({
   }
 
   const { changedFields, dataForUpdate } = useChangedFieldsAndDataForUpdate(
-    list,
+    list.fields,
     itemGetter,
     state.value
   );
 
-  const invalidFields = useInvalidFields(list, state.value);
+  const invalidFields = useInvalidFields(list.fields, state.value);
 
   const [forceValidation, setForceValidation] = useState(false);
   const toasts = useToasts();
@@ -219,7 +174,7 @@ function ItemForm({
             onClick={() => {
               setValue({
                 item: itemGetter.data,
-                value: deserializeValue(list, itemGetter),
+                value: deserializeValue(list.fields, itemGetter),
               });
             }}
           >
@@ -468,7 +423,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               selectedFields={selectedFields}
               showDelete={!data.keystone.adminMeta.list!.hideDelete}
               listKey={listKey}
-              itemGetter={dataGetter.get('item')}
+              itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
             />
           </FormContainer>
         </Fragment>

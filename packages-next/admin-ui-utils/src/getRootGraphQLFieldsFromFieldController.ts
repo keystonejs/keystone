@@ -8,7 +8,7 @@ function extractRootFields(selectedFields: Set<string>, selectionSet: SelectionS
       selection.kind === 'Field' &&
       selection.name.value !== 'someFieldBecauseGraphQLRequiresAtLeastOneSelection'
     ) {
-      selectedFields.add(selection.name.value);
+      selectedFields.add(selection.alias ? selection.alias.value : selection.name.value);
     }
     if (selection.kind === 'InlineFragment') {
       extractRootFields(selectedFields, selection.selectionSet);
