@@ -5,7 +5,7 @@ import { DocumentNode, useQuery } from '../../apollo';
 
 import { useKeystone, useList } from '../../context';
 import { PageContainer } from '../../components/PageContainer';
-import { makeDataGetter } from '../../utils/dataGetter';
+import { makeDataGetter } from '@keystone-next/admin-ui-utils';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
 import { ButtonHTMLAttributes, useState } from 'react';
 import { DrawerController } from '@keystone-ui/modals';

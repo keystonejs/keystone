@@ -1,12 +1,11 @@
 /* @jsx jsx */
 
 import copyToClipboard from 'clipboard-copy';
-import isDeepEqual from 'fast-deep-equal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Fragment, ReactNode, useMemo, useState } from 'react';
 
-import { FieldMeta, ListMeta } from '@keystone-next/types';
+import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Box, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';
@@ -17,71 +16,22 @@ import { Tooltip } from '@keystone-ui/tooltip';
 import { gql, useMutation, useQuery } from '../../apollo';
 import { PageContainer } from '../../components/PageContainer';
 import { useList } from '../../context';
-import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter';
 import {
+  DataGetter,
+  DeepNullable,
+  makeDataGetter,
   deserializeValue,
   ItemData,
-  serializeValueToObjByFieldKey,
-} from '../../utils/serialization';
+  useInvalidFields,
+  Fields,
+  useChangedFieldsAndDataForUpdate,
+} from '@keystone-next/admin-ui-utils';
 import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice';
-import { useInvalidFields } from './useInvalidFields';
-import { Fields } from './Fields';
-import { GraphQLError } from 'graphql';
 import { CreateItemDrawer } from '../../components/CreateItemDrawer';
-
-export { useInvalidFields, Fields };
-export * from '../../utils/getRootGraphQLFieldsFromFieldController';
-export * from '../../utils/serialization';
-export * from '../../utils/dataGetter';
 
 type ItemPageProps = {
   listKey: string;
 };
-
-export type Value = Record<
-  string,
-  | {
-      kind: 'error';
-      errors: readonly [GraphQLError, ...GraphQLError[]];
-    }
-  | {
-      kind: 'value';
-      value: any;
-    }
->;
-
-export function useChangedFieldsAndDataForUpdate(
-  fields: Record<string, FieldMeta>,
-  itemGetter: DataGetter<ItemData>,
-  value: Value
-) {
-  const serializedValuesFromItem = useMemo(() => {
-    const value = deserializeValue(fields, itemGetter);
-    return serializeValueToObjByFieldKey(fields, value);
-  }, [fields, itemGetter]);
-  const serializedFieldValues = useMemo(() => {
-    return serializeValueToObjByFieldKey(fields, value);
-  }, [value, fields]);
-
-  return useMemo(() => {
-    let changedFields = new Set<string>();
-    Object.keys(serializedFieldValues).forEach(fieldKey => {
-      let isEqual = isDeepEqual(
-        serializedFieldValues[fieldKey],
-        serializedValuesFromItem[fieldKey]
-      );
-      if (!isEqual) {
-        changedFields.add(fieldKey);
-      }
-    });
-    const dataForUpdate: Record<string, any> = {};
-
-    changedFields.forEach(fieldKey => {
-      Object.assign(dataForUpdate, serializedFieldValues[fieldKey]);
-    });
-    return { changedFields: changedFields as ReadonlySet<string>, dataForUpdate };
-  }, [serializedFieldValues, serializedValuesFromItem]);
-}
 
 function ItemForm({
   listKey,

@@ -8,6 +8,7 @@
     "@emotion/hash": "^0.8.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@graphql-tools/merge": "^6.2.5",
+    "@keystone-next/admin-ui-utils": "^0.0.0",
     "@keystone-next/keystone": "^1.0.0",
     "@keystone-next/types": "^1.0.0",
     "@keystone-ui/button": "^1.0.0",

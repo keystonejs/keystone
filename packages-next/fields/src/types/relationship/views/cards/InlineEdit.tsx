@@ -10,7 +10,7 @@ import {
   useChangedFieldsAndDataForUpdate,
   makeDataGetter,
   DataGetter,
-} from '@keystone-next/admin-ui/pages/ItemPage';
+} from '@keystone-next/admin-ui-utils';
 import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { jsx, Stack } from '@keystone-ui/core';

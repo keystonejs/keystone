@@ -10,6 +10,7 @@
   "dependencies": {
     "@babel/runtime": "^7.12.5",
     "@keystone-next/admin-ui": "^1.0.0",
+    "@keystone-next/admin-ui-utils": "^0.0.0",
     "@keystone-next/types": "^1.0.0",
     "@keystone-ui/button": "^1.0.0",
     "@keystone-ui/core": "^1.0.0",

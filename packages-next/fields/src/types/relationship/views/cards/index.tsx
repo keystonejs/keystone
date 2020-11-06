@@ -9,7 +9,7 @@ import { LoadingDots } from '@keystone-ui/loading';
 import {
   getRootGraphQLFieldsFromFieldController,
   makeDataGetter,
-} from '@keystone-next/admin-ui/pages/ItemPage';
+} from '@keystone-next/admin-ui-utils';
 import { controller } from '../index';
 import { useItemState } from './useItemState';
 import { InlineEdit } from './InlineEdit';
