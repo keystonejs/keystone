@@ -32,7 +32,7 @@
     "p-is-promise": "^3.0.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "react-popper": "^2.2.3",
+    "react-popper": "^2.2.4",
     "slate": "^0.47.9",
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-plain-serializer": "^0.7.13",
