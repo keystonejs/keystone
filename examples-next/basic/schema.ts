@@ -8,9 +8,10 @@ import {
   select,
   virtual,
 } from '@keystone-next/fields';
+// import { cloudinaryImage } from '@keystone-next/cloudinary';
 import { KeystoneCrudAPI } from '@keystone-next/types';
 import { KeystoneListsTypeInfo } from './.keystone/schema-types';
-// import { cloudinaryImage } from '@keystone-next/cloudinary';
+
 // TODO: Can we generate this type based on withItemData in the main config?
 type AccessArgs = {
   session?: {
@@ -41,6 +42,9 @@ export const lists = createSchema({
       email: text({ isRequired: true, isUnique: true }),
       // avatar: cloudinaryImage({
       //   cloudinary: {
+      //     cloudName: '/* TODO */',
+      //     apiKey: '/* TODO */',
+      //     apiSecret: '/* TODO */',
       //   },
       // }),
       password: password(),

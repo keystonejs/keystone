@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx, Stack, useTheme } from '@keystone-ui/core';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { Pill } from '@keystone-ui/pill';
@@ -38,13 +38,18 @@ export function Field({
   const imagePath =
     value.kind === 'from-server' ? value.data.publicUrlTransformed : imagePathFromUpload;
 
+  // Generate a random input key when the value changes, to ensure the file input is unmounted and
+  // remounted (this is the only way to reset its value and ensure onChange will fire again if
+  // the user selects the same file again)
+  const inputKey = useMemo(() => Math.random(), [value]);
+
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
       {value.kind === 'from-server' || value.kind === 'upload' ? (
         <Stack gap="small">
           {imagePath && errorMessage === undefined && <Image src={imagePath} alt={field.path} />}
-          <Stack across gap="small">
+          <Stack across gap="small" align="center">
             <Button
               onClick={() => {
                 inputRef.current?.click();
@@ -72,14 +77,18 @@ export function Field({
                 Cancel
               </Button>
             )}
+            {errorMessage ? (
+              <Pill tone="negative" weight="light">
+                {errorMessage}
+              </Pill>
+            ) : (
+              value.kind === 'upload' && (
+                <Pill weight="light" tone="positive">
+                  Save to upload this image
+                </Pill>
+              )
+            )}
           </Stack>
-          {errorMessage ? (
-            <Pill tone="negative" weight="bold">
-              {errorMessage}
-            </Pill>
-          ) : (
-            value.kind === 'upload' && <Pill>Save to upload this image</Pill>
-          )}
         </Stack>
       ) : (
         <Stack css={{ alignItems: 'center' }} gap="small" across>
@@ -100,7 +109,13 @@ export function Field({
               Undo removal
             </Button>
           )}
-          {value.kind === 'remove' && <Pill>Save to remove this image</Pill>}
+          {value.kind === 'remove' &&
+            // NOTE -- UX decision is to not display this, I think it would only be relevant
+            // for deleting uploaded images (and we don't support that yet)
+            // <Pill weight="light" tone="warning">
+            //   Save to remove this image
+            // </Pill>
+            null}
         </Stack>
       )}
 
@@ -109,6 +124,7 @@ export function Field({
         autoComplete="off"
         autoFocus={autoFocus}
         ref={inputRef}
+        key={inputKey}
         name={field.path}
         onChange={({ target: { validity, files } }) => {
           const file = files?.[0];
