@@ -295,7 +295,6 @@ export function Cards({
                   options.push({ id, label: id });
                 }
               });
-              console.log({ options });
               return options;
             })(),
           }}
