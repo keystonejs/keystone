@@ -6,12 +6,18 @@ import { FieldProps, ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { LoadingDots } from '@keystone-ui/loading';
-import { getRootGraphQLFieldsFromFieldController } from '@keystone-next/admin-ui/pages/ItemPage';
+import {
+  getRootGraphQLFieldsFromFieldController,
+  makeDataGetter,
+} from '@keystone-next/admin-ui/pages/ItemPage';
 import { controller } from '../index';
 import { useItemState } from './useItemState';
 import { InlineEdit } from './InlineEdit';
 import { InlineCreate } from './InlineCreate';
-import { useState } from 'react';
+import { RelationshipSelect } from '../RelationshipSelect';
+import { gql, useApolloClient } from '@keystone-next/admin-ui/apollo';
+import { useEffect, useRef, useState } from 'react';
+import { Link } from '@keystone-next/admin-ui/router';
 
 export function Cards({
   localList,
@@ -46,17 +52,6 @@ export function Cards({
     selectedFields += `\n${foreignList.labelField}`;
   }
 
-  // we have to store the disconnectedItems here because when the user saves the outer item, the field value(which is where the disconnected)
-  let [disconnectedItems, setDisconnectedItems] = useState(() => new Set<string>());
-
-  if ([...value.disconnect].some(id => !disconnectedItems.has(id))) {
-    disconnectedItems = new Set(disconnectedItems);
-    value.disconnect.forEach(id => {
-      disconnectedItems.add(id);
-    });
-    setDisconnectedItems(disconnectedItems);
-  }
-
   const { items, setItems, state: itemsState } = useItemState({
     selectedFields,
     localList,
@@ -65,6 +60,17 @@ export function Cards({
   });
 
   const theme = useTheme();
+
+  const client = useApolloClient();
+
+  const [isLoadingLazyItems, setIsLoadingLazyItems] = useState(false);
+  const isMountedRef = useRef(false);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  });
 
   if (itemsState.kind === 'loading') {
     return (
@@ -80,7 +86,7 @@ export function Cards({
   return (
     <Stack gap="medium">
       {Object.keys(items).map(id => {
-        if (disconnectedItems.has(id)) return null;
+        if (!value.currentIds.has(id)) return null;
         const itemGetter = items[id];
         return (
           <div
@@ -150,6 +156,7 @@ export function Cards({
                 <Stack across gap="medium">
                   {field.display.inlineEdit && (
                     <Button
+                      disabled={onChange === undefined}
                       onClick={() => {
                         onChange?.({
                           ...value,
@@ -166,10 +173,13 @@ export function Cards({
                     <Tooltip content="This item will not be deleted. It will only be removed from this field.">
                       {props => (
                         <Button
+                          disabled={onChange === undefined}
                           onClick={() => {
+                            const currentIds = new Set(value.currentIds);
+                            currentIds.delete(id);
                             onChange?.({
                               ...value,
-                              disconnect: new Set([id, ...(value.disconnect || [])]),
+                              currentIds,
                             });
                           }}
                           {...props}
@@ -180,6 +190,13 @@ export function Cards({
                       )}
                     </Tooltip>
                   )}
+                  <Button
+                    css={{ textDecoration: 'none' }}
+                    as={Link}
+                    href={`/${foreignList.path}/${id}`}
+                  >
+                    Go to item details
+                  </Button>
                 </Stack>
               </div>
             )}
@@ -199,13 +216,14 @@ export function Cards({
             onChange?.({
               ...value,
               itemBeingCreated: false,
-              connect: new Set([id, ...value.connect]),
+              currentIds: new Set([...value.currentIds, id]),
             });
             setItems({ ...items, [id]: itemGetter });
           }}
         />
       ) : (
         <Button
+          disabled={onChange === undefined}
           onClick={() => {
             onChange?.({
               ...value,
@@ -215,6 +233,69 @@ export function Cards({
         >
           Create {foreignList.singular}
         </Button>
+      )}
+      {field.display.linkToItem && (
+        <RelationshipSelect
+          controlShouldRenderValue={isLoadingLazyItems}
+          isDisabled={onChange === undefined}
+          list={foreignList}
+          isLoading={isLoadingLazyItems}
+          state={{
+            kind: 'many',
+            async onChange(options) {
+              const itemsToFetchAndConnect: string[] = [];
+              options.forEach(item => {
+                if (items[item.id] === undefined) {
+                  itemsToFetchAndConnect.push(item.id);
+                }
+              });
+              if (itemsToFetchAndConnect.length) {
+                try {
+                  const { data, errors } = await client.query({
+                    query: gql`query ($ids: [ID!]!) {
+                items: ${foreignList.gqlNames.listQueryName}(where: {id_in:$ids}) {
+                  ${selectedFields}
+                }
+              }`,
+                    variables: { ids: itemsToFetchAndConnect },
+                  });
+                  if (isMountedRef.current) {
+                    const dataGetters = makeDataGetter(data, errors);
+                    const itemsDataGetter = dataGetters.get('items');
+                    let newItems = { ...items };
+                    let newCurrentIds = new Set(value.currentIds);
+                    if (Array.isArray(itemsDataGetter.data)) {
+                      itemsDataGetter.data.forEach((item, i) => {
+                        if (item?.id != null) {
+                          newCurrentIds.add(item.id);
+                          newItems[item.id] = itemsDataGetter.get(i);
+                        }
+                      });
+                    }
+                    setItems(newItems);
+                    onChange?.({
+                      ...value,
+                      currentIds: newCurrentIds,
+                    });
+                  }
+                } finally {
+                  if (isMountedRef.current) {
+                    setIsLoadingLazyItems(false);
+                  }
+                }
+              }
+            },
+            value: (() => {
+              let options: { label: string; id: string }[] = [];
+              Object.keys(items).forEach(id => {
+                if (value.currentIds.has(id)) {
+                  options.push({ id, label: id });
+                }
+              });
+              return options;
+            })(),
+          }}
+        />
       )}
       {forceValidation && (
         <span css={{ color: 'red' }}>

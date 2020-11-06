@@ -513,7 +513,7 @@ export type UserListFn = (
 
 export type PhoneNumberListTypeInfo = {
   key: 'PhoneNumber';
-  fields: 'id' | 'user' | 'type' | 'value';
+  fields: 'id' | 'label' | 'user' | 'type' | 'value';
   backing: {
     readonly id: string;
     readonly user?: string | null;

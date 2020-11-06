@@ -82,9 +82,23 @@ export const lists = createSchema({
   PhoneNumber: list({
     ui: {
       isHidden: true,
+      labelField: 'label',
       // parentRelationship: 'user',
     },
     fields: {
+      label: virtual({
+        resolver(item) {
+          return `${item.type} - ${item.value}`;
+        },
+        ui: {
+          listView: {
+            fieldMode: 'hidden',
+          },
+          itemView: {
+            fieldMode: 'hidden',
+          },
+        },
+      }),
       user: relationship({ ref: 'User.phoneNumbers' }),
       type: select({
         options: [

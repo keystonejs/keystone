@@ -86,6 +86,7 @@ export const Field = ({
       ) : (
         <Stack across gap="medium" css={{ display: 'inline-flex' }}>
           <RelationshipSelect
+            controlShouldRenderValue
             autoFocus={autoFocus}
             isDisabled={onChange === undefined}
             list={foreignList}
@@ -245,8 +246,8 @@ type RelationshipController = FieldController<
       id: null | string;
       itemsBeingEdited: ReadonlySet<string>;
       itemBeingCreated: boolean;
-      connect: ReadonlySet<string>;
-      disconnect: ReadonlySet<string>;
+      initialIds: ReadonlySet<string>;
+      currentIds: ReadonlySet<string>;
     }
 > & {
   display:
@@ -261,6 +262,7 @@ type RelationshipController = FieldController<
         removeMode: 'disconnect' | 'none';
         inlineCreate: { fields: string[] } | null;
         inlineEdit: { fields: string[] } | null;
+        inlineLink: boolean;
       };
   listKey: string;
   refListKey: string;
@@ -285,6 +287,7 @@ export const controller = (
           removeMode: 'disconnect' | 'none';
           inlineCreate: { fields: string[] } | null;
           inlineEdit: { fields: string[] } | null;
+          inlineLink: boolean;
         }
     )
   >
@@ -302,6 +305,7 @@ export const controller = (
             inlineEdit: config.fieldMeta.inlineCreate,
             linkToItem: config.fieldMeta.linkToItem,
             removeMode: config.fieldMeta.removeMode,
+            inlineLink: config.fieldMeta.inlineLink,
           }
         : {
             mode: 'select',
@@ -311,7 +315,10 @@ export const controller = (
     graphqlSelection:
       config.fieldMeta.displayMode === 'cards'
         ? // TODO: namespace this stuff at the Keystone level
-          `${config.path}__id: id`
+          `${config.path}__id: id
+           ${config.path} {
+            id
+           }`
         : `${config.path} {
              id
              label: ${config.fieldMeta.refLabelField}
@@ -326,13 +333,18 @@ export const controller = (
       : { kind: 'one', value: null, initialValue: null },
     deserialize: data => {
       if (config.fieldMeta.displayMode === 'cards') {
+        const initialIds = new Set<string>(
+          (Array.isArray(data[config.path]) ? data[config.path] : [data[config.path]]).map(
+            (x: any) => x.id
+          )
+        );
         return {
           kind: 'cards-view',
           id: data[`${config.path}__id`],
           itemsBeingEdited: new Set(),
           itemBeingCreated: false,
-          connect: new Set(),
-          disconnect: new Set(),
+          initialIds,
+          currentIds: initialIds,
         };
       }
       if (config.fieldMeta.many) {
@@ -407,27 +419,32 @@ export const controller = (
           };
         }
       } else if (state.kind === 'cards-view') {
+        let disconnect = [...state.initialIds]
+          .filter(id => !state.currentIds.has(id))
+          .map(id => ({ id }));
+        let connect = [...state.currentIds]
+          .filter(id => !state.initialIds.has(id))
+          .map(id => ({ id }));
+
         if (config.fieldMeta.many) {
-          if (state.connect.size || state.disconnect.size) {
+          if (disconnect.length || connect.length) {
             return {
               [config.path]: {
-                connect: state.connect.size ? [...state.connect].map(id => ({ id })) : undefined,
-                disconnect: state.disconnect.size
-                  ? [...state.disconnect].map(id => ({ id }))
-                  : undefined,
+                connect: connect.length ? connect : undefined,
+                disconnect: disconnect.length ? disconnect : undefined,
               },
             };
           }
-        } else if (state.connect.size) {
+        } else if (connect.length) {
           return {
             [config.path]: {
-              connect: { id: state.connect.values().next().value },
+              connect: connect[0],
             },
           };
-        } else if (state.disconnect.size) {
+        } else if (disconnect.length) {
           return {
             [config.path]: {
-              disconnect: { id: state.disconnect.values().next().value },
+              disconnect: disconnect[0],
             },
           };
         }
