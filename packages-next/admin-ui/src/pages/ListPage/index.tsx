@@ -646,6 +646,7 @@ const ListPageHeader = ({ listKey, showCreate }: { listKey: string; showCreate: 
         <H1>{list.label}</H1>
         {showCreate && (
           <Button
+            disabled={isCreateModalOpen}
             onClick={() => {
               setIsCreateModalOpen(true);
             }}

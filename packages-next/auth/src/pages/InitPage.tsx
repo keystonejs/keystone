@@ -10,19 +10,17 @@ import isDeepEqual from 'fast-deep-equal';
 
 import { SigninContainer } from '../components/SigninContainer';
 import { DocumentNode } from 'graphql';
-import { useMutation } from '@keystone-next/admin-ui/apollo';
+import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
 import { useReinitContext } from '@keystone-next/admin-ui/context';
 import { useRouter } from '@keystone-next/admin-ui/router';
 import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
 
 export const InitPage = ({
   fields: serializedFields,
-  mutation,
   listKey,
 }: {
   listKey: string;
   fields: Record<string, SerializedFieldMeta>;
-  mutation: DocumentNode;
   showKeystoneSignup: boolean;
 }) => {
   const { fieldViews } = useRawKeystone();
@@ -80,7 +78,18 @@ export const InitPage = ({
 
   const [forceValidation, setForceValidation] = useState(false);
 
-  const [createFirstItem, { loading, error }] = useMutation(mutation);
+  const [
+    createFirstItem,
+    { loading, error, data },
+  ] = useMutation(gql`mutation($data: CreateInitial${listKey}Input!) {
+    authenticate: createInitial${listKey}(data: $data) {
+      ... on ${listKey}AuthenticationWithPasswordSuccess {
+        item {
+          id
+        }
+      }
+    }
+  }`);
   const reinitContext = useReinitContext();
   const router = useRouter();
   const rawKeystone = useRawKeystone();
@@ -140,7 +149,15 @@ export const InitPage = ({
           })}
         </Fragment>
 
-        <Button isLoading={loading} type="submit" weight="bold" tone="active">
+        <Button
+          isLoading={
+            loading ||
+            data?.authenticate?.__typename === `${listKey}AuthenticationWithPasswordSuccess`
+          }
+          type="submit"
+          weight="bold"
+          tone="active"
+        >
           Get started
         </Button>
       </form>
