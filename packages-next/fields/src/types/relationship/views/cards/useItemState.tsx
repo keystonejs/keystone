@@ -123,7 +123,7 @@ export function useItemState({
       if (error?.networkError) {
         return { kind: 'error', message: error.networkError.message };
       }
-      if (!relationshipGetter.data) {
+      if (field.many && !relationshipGetter.data) {
         return { kind: 'error', message: relationshipGetter.errors?.[0].message || '' };
       }
       return { kind: 'loaded' };
