@@ -2,6 +2,7 @@ import type { ComponentType, ReactElement } from 'react';
 import { GqlNames, JSONValue } from './utils';
 
 export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = undefined> = {
+  listKey: string;
   path: string;
   label: string;
   fieldMeta: FieldMeta;
@@ -122,6 +123,7 @@ export type FieldProps<FieldControllerFn extends (...args: any) => FieldControll
 export type FieldViews = readonly {
   Field: (props: FieldProps<any>) => ReactElement;
   Cell: CellComponent;
+  CardValue: CardValueComponent;
   controller: (args: FieldControllerConfig<any>) => FieldController<unknown, JSONValue>;
 }[];
 
@@ -139,3 +141,10 @@ export type CellComponent<
 
   supportsLinkTo?: boolean;
 };
+
+export type CardValueComponent<
+  FieldControllerFn extends (...args: any) => FieldController<any, any> = () => FieldController<
+    any,
+    any
+  >
+> = (props: { item: Record<string, any>; field: ReturnType<FieldControllerFn> }) => ReactElement;

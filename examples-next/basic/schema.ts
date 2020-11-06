@@ -55,6 +55,21 @@ export const lists = createSchema({
           },
         },
       }),
+      roles: text({}),
+      phoneNumbers: relationship({
+        ref: 'PhoneNumber.user',
+        many: true,
+        ui: {
+          // TODO: Work out how to use custom views to customise the card + edit / create forms
+          // views: './admin/fieldViews/user/phoneNumber',
+          displayMode: 'cards',
+          cardFields: ['type', 'value'],
+          inlineEdit: { fields: ['type', 'value'] },
+          inlineCreate: { fields: ['type', 'value'] },
+          linkToItem: true,
+          // removeMode: 'delete',
+        },
+      }),
       posts: relationship({ ref: 'Post.author', many: true }),
       randomNumber: virtual({
         graphQLReturnType: 'Float',
@@ -62,6 +77,40 @@ export const lists = createSchema({
           return randomNumber();
         },
       }),
+    },
+  }),
+  PhoneNumber: list({
+    ui: {
+      isHidden: true,
+      labelField: 'label',
+      // parentRelationship: 'user',
+    },
+    fields: {
+      label: virtual({
+        resolver(item) {
+          return `${item.type} - ${item.value}`;
+        },
+        ui: {
+          listView: {
+            fieldMode: 'hidden',
+          },
+          itemView: {
+            fieldMode: 'hidden',
+          },
+        },
+      }),
+      user: relationship({ ref: 'User.phoneNumbers' }),
+      type: select({
+        options: [
+          { label: 'Home', value: 'home' },
+          { label: 'Work', value: 'work' },
+          { label: 'Mobile', value: 'mobile' },
+        ],
+        ui: {
+          displayMode: 'segmented-control',
+        },
+      }),
+      value: text({}),
     },
   }),
   Post: list({

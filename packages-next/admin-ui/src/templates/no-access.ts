@@ -5,7 +5,7 @@ export const noAccessTemplate = (keystone: Keystone) => {
   return `
 import React from 'react';
 
-import { NoAccessPage } from '@keystone-next/admin-ui';
+import { NoAccessPage } from '@keystone-next/admin-ui/pages/NoAccessPage';
 
 export default function Home() {
   return <NoAccessPage sessionsEnabled={${!!keystone.config.session}} />;

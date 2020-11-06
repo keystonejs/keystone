@@ -26,9 +26,11 @@ export const initTemplate = ({ listKey, initFirstItem, fields }: InitTemplateArg
   }\`
 
   export default function Init() {
-    return <InitPage fields={fieldsMeta} showKeystoneSignup={${JSON.stringify(
-      !initFirstItem.skipKeystoneSignup
-    )}} mutation={mutation} />
+    return <InitPage listKey=${JSON.stringify(
+      listKey
+    )} fields={fieldsMeta} showKeystoneSignup={${JSON.stringify(
+    !initFirstItem.skipKeystoneSignup
+  )}} mutation={mutation} />
   }
   `;
   // -- TEMPLATE END

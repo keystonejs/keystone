@@ -17,8 +17,12 @@ import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 import { PageContainer } from '../../components/PageContainer';
 import { useList } from '../../context';
 import { Link, useRouter } from '../../router';
-import { DataGetter, DeepNullable, makeDataGetter } from '../../utils/dataGetter';
-import { getRootGraphQLFieldsFromFieldController } from '../../utils/getRootGraphQLFieldsFromFieldController';
+import {
+  getRootGraphQLFieldsFromFieldController,
+  DataGetter,
+  DeepNullable,
+  makeDataGetter,
+} from '@keystone-next/admin-ui-utils';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';

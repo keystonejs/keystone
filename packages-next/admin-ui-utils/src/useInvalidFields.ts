@@ -1,8 +1,11 @@
-import { ListMeta } from '@keystone-next/types';
+import { FieldMeta } from '@keystone-next/types';
 import { useMemo } from 'react';
-import { Value } from '.';
+import { Value } from './item-form';
 
-export function useInvalidFields(list: ListMeta, value: Value): ReadonlySet<string> {
+export function useInvalidFields(
+  fields: Record<string, FieldMeta>,
+  value: Value
+): ReadonlySet<string> {
   return useMemo(() => {
     const invalidFields = new Set<string>();
 
@@ -10,7 +13,7 @@ export function useInvalidFields(list: ListMeta, value: Value): ReadonlySet<stri
       const val = value[fieldPath];
 
       if (val.kind === 'value') {
-        const validateFn = list.fields[fieldPath].controller.validate;
+        const validateFn = fields[fieldPath].controller.validate;
         if (validateFn) {
           const result = validateFn(val.value);
           if (result === false) {
@@ -20,5 +23,5 @@ export function useInvalidFields(list: ListMeta, value: Value): ReadonlySet<stri
       }
     });
     return invalidFields;
-  }, [list, value]);
+  }, [fields, value]);
 }
