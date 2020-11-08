@@ -83,7 +83,7 @@ const PillButton = ({
       paddingLeft: spacing.medium,
       paddingRight: spacing.medium,
     },
-  };
+  } as const;
 
   const interactiveStyles = isInteractive
     ? {
