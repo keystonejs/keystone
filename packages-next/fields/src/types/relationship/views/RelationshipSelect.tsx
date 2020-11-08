@@ -22,17 +22,19 @@ const subsequentItemsToLoad = 50;
 
 export const RelationshipSelect = ({
   autoFocus,
-  list,
-  isDisabled,
-  state,
   controlShouldRenderValue,
+  isDisabled,
   isLoading,
+  list,
+  placeholder,
+  state,
 }: {
-  list: ListMeta;
   autoFocus?: boolean;
-  isDisabled: boolean;
   controlShouldRenderValue: boolean;
+  isDisabled: boolean;
   isLoading?: boolean;
+  list: ListMeta;
+  placeholder?: string;
   state:
     | {
         kind: 'many';
@@ -154,6 +156,7 @@ export const RelationshipSelect = ({
               : null
           );
         }}
+        placeholder={placeholder}
         controlShouldRenderValue={controlShouldRenderValue}
         isClearable={controlShouldRenderValue}
         isDisabled={isDisabled}
@@ -173,6 +176,7 @@ export const RelationshipSelect = ({
       onChange={value => {
         state.onChange(value.map(x => ({ id: x.value, label: x.label })));
       }}
+      placeholder={placeholder}
       controlShouldRenderValue={controlShouldRenderValue}
       isClearable={controlShouldRenderValue}
       isDisabled={isDisabled}
