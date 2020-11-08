@@ -1,12 +1,10 @@
 # @keystone-next/cloudinary
 
 ## 1.0.0
+
 ### Major Changes
 
-
-
 - [`166acb9bf`](https://github.com/keystonejs/keystone/commit/166acb9bf211e0ee8a90d4740f6ebc54ffe72dec) [#4138](https://github.com/keystonejs/keystone/pull/4138) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Initial release
-
 
 ### Patch Changes
 
