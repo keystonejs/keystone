@@ -164,7 +164,9 @@ function ItemForm({
                 <Button
                   {...props}
                   {...saveButtonProps}
-                  // making onClick undefined instead of making the button disabled so the button can be focussed so keyboard users can see the tooltip
+                  tone="passive"
+                  // making onClick undefined instead of making the button disabled so the butto
+                  // can be focused, meaning keyboard users can see the tooltip
                   onClick={undefined}
                 />
               )}
