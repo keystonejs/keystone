@@ -21,11 +21,10 @@ const { Color } = require('@keystone-next/fields-color-legacy');
 const { GraphQLApp } = require('@keystone-next/app-graphql-legacy');
 const { AdminUIApp } = require('@keystone-next/app-admin-ui-legacy');
 const { StaticApp } = require('@keystone-next/app-static-legacy');
-const { graphql } = require('graphql');
-const { OEmbed, IframelyOEmbedAdapter } = require('@keystone-next/fields-oembed-legacy');
 const { CloudinaryImage } = require('@keystone-next/fields-cloudinary-image-legacy');
 const { Unsplash } = require('@keystone-next/fields-unsplash-legacy');
 const { PrismaAdapter } = require('@keystone-next/adapter-prisma-legacy');
+const { graphql } = require('graphql');
 const { formatISO } = require('date-fns');
 
 const MockOEmbedAdapter = require('./mocks/oembed-adapter');
