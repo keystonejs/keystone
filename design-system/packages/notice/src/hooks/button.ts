@@ -62,23 +62,6 @@ export function useButtonTokens({
         background: tone.tint[2],
       },
     },
-    outline: {
-      borderColor: tone.border[0],
-      foreground: colors.foreground,
-      focus: {
-        shadow: `0 0 0 2px ${tone.focusRing}`,
-      },
-      hover: {
-        borderColor: tone.border[1],
-        foreground: tone.foreground[1],
-        background: tone.tint[1],
-      },
-      pressed: {
-        borderColor: tone.border[2],
-        foreground: tone.foreground[2],
-        background: tone.tint[2],
-      },
-    },
     none: {
       foreground: colors.foreground,
       focus: {
