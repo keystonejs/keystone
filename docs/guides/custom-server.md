@@ -157,7 +157,7 @@ Promise.all(preparations).then(async middlewares => {
 The current version of Keystone cannot be run in a ServerLess environment such as
 [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html).
 
-This is because the bundled dependencies cause the uncompressed size to exceed the limit of 250mb 
+This is because the bundled dependencies cause the uncompressed size to exceed the limit of 250mb
 and the dependencies do not compact nicely with "serverless-webpack" due to dynamic require statements.
 
 The KeystoneJS team are working to resolve this in the next major update.

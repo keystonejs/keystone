@@ -1,12 +1,10 @@
 # @keystone-next/admin-ui-utils
 
 ## 1.0.0
+
 ### Major Changes
 
-
-
 - [`ae0fc4d78`](https://github.com/keystonejs/keystone/commit/ae0fc4d787ba47eb9e5258a20a57f76124aee797) [#4132](https://github.com/keystonejs/keystone/pull/4132) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Initial release
-
 
 ### Patch Changes
 
