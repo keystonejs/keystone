@@ -16,7 +16,7 @@
     "p-settle": "^4.1.1"
   },
   "devDependencies": {
-    "mongodb": "^3.6.2",
+    "mongodb": "^3.6.3",
     "mongodb-memory-server-core": "^6.9.2",
     "pluralize": "^8.0.0"
   },
