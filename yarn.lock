@@ -17497,7 +17497,7 @@ mongodb-memory-server-core@^6.9.2:
   optionalDependencies:
     mongodb "3.6.2"
 
-mongodb@3.6.2, mongodb@^3.6.2:
+mongodb@3.6.2:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.6.2.tgz#1154a4ac107bf1375112d83a29c5cf97704e96b6"
   integrity sha512-sSZOb04w3HcnrrXC82NEh/YGCmBuRgR+C1hZgmmv4L6dBz4BkRse6Y8/q/neXer9i95fKUBbFi4KgeceXmbsOA==
@@ -17510,7 +17510,7 @@ mongodb@3.6.2, mongodb@^3.6.2:
   optionalDependencies:
     saslprep "^1.0.0"
 
-mongodb@3.6.3:
+mongodb@3.6.3, mongodb@^3.6.3:
   version "3.6.3"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.6.3.tgz#eddaed0cc3598474d7a15f0f2a5b04848489fd05"
   integrity sha512-rOZuR0QkodZiM+UbQE5kDsJykBqWi0CL4Ec2i1nrGrUI3KO11r6Fbxskqmq3JK2NH7aW4dcccBuUujAP0ERl5w==
