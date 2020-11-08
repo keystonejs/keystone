@@ -32,10 +32,16 @@ export default function PillPage() {
             ))}
           </Stack>
         </div>
-        <div>
+
+        <Stack gap="small">
           <h2>Without remove</h2>
           <Pill>No remove</Pill>
-        </div>
+          <h2>With interaction</h2>
+          <Pill onClick={() => alert('Clicked')}>Alert</Pill>
+          <Pill onClick={() => alert('Clicked')} weight="light">
+            Alert
+          </Pill>
+        </Stack>
       </Stack>
     </Page>
   );

@@ -10,12 +10,17 @@ type Weight = 'bold' | 'light';
 const PillButton = ({
   tone: toneKey,
   weight,
+  onClick,
+  tabIndex,
   ...props
 }: {
   tone: Tone;
   weight: Weight;
 } & ButtonHTMLAttributes<HTMLButtonElement>) => {
   const { radii, spacing, tones, typography } = useTheme();
+
+  const isInteractive = !!onClick;
+
   const tone = tones[toneKey];
   const tokens = {
     bold: {
@@ -47,24 +52,42 @@ const PillButton = ({
       },
     },
   }[weight];
-  return (
-    <button
-      css={{
-        appearance: 'none',
-        background: 'none',
-        padding: `${spacing.small}px ${spacing.medium}px`,
-        backgroundColor: tokens.background,
-        color: tokens.foreground,
-        alignItems: 'center',
-        border: 0,
-        cursor: 'pointer',
-        display: 'flex',
-        fontSize: typography.fontSize.small,
-        justifyContent: 'center',
-        maxWidth: '100%',
-        minWidth: 1,
-        outline: 0,
 
+  const baseStyles = {
+    appearance: 'none',
+    background: 'none',
+    padding: `${spacing.small}px ${spacing.medium}px`,
+    backgroundColor: tokens.background,
+    color: tokens.foreground,
+    alignItems: 'center',
+    border: 0,
+    display: 'flex',
+    fontSize: typography.fontSize.small,
+    justifyContent: 'center',
+    maxWidth: '100%',
+    minWidth: 1,
+    outline: 0,
+
+    ':first-of-type': {
+      paddingRight: spacing.small,
+      borderTopLeftRadius: radii.full,
+      borderBottomLeftRadius: radii.full,
+      marginRight: 1,
+    },
+    ':last-of-type': {
+      paddingLeft: spacing.small,
+      borderTopRightRadius: radii.full,
+      borderBottomRightRadius: radii.full,
+    },
+    ':only-of-type': {
+      paddingLeft: spacing.medium,
+      paddingRight: spacing.medium,
+    },
+  };
+
+  const interactiveStyles = isInteractive
+    ? {
+        cursor: 'pointer',
         ':focus': {
           boxShadow: tokens.focus.shadow,
         },
@@ -76,23 +99,14 @@ const PillButton = ({
           backgroundColor: tokens.active.background,
           color: tokens.active.foreground,
         },
+      }
+    : {};
 
-        ':first-of-type': {
-          paddingRight: spacing.small,
-          borderTopLeftRadius: radii.full,
-          borderBottomLeftRadius: radii.full,
-          marginRight: 1,
-        },
-        ':last-of-type': {
-          paddingLeft: spacing.small,
-          borderTopRightRadius: radii.full,
-          borderBottomRightRadius: radii.full,
-        },
-        ':only-of-type': {
-          paddingLeft: spacing.medium,
-          paddingRight: spacing.medium,
-        },
-      }}
+  return (
+    <button
+      css={{ ...baseStyles, ...interactiveStyles }}
+      onClick={onClick}
+      tabIndex={!isInteractive ? -1 : tabIndex}
       {...props}
     />
   );
@@ -108,6 +122,7 @@ type PillProps = {
 
 export const Pill = forwardRef<HTMLDivElement, PillProps>(
   ({ weight = 'bold', tone = 'active', children, onClick, onRemove, ...props }, ref) => {
+    console.log(onClick);
     return (
       <div css={{ display: 'flex' }} {...props} ref={ref}>
         <PillButton weight={weight} tone={tone} onClick={onClick}>
