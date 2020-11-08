@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
-import { jsx, Stack, useTheme } from '@keystone-ui/core';
+import type { ReactNode } from 'react';
+import { Box, BoxProps, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { FieldProps, ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
@@ -18,6 +19,27 @@ import { RelationshipSelect } from '../RelationshipSelect';
 import { gql, useApolloClient } from '@keystone-next/admin-ui/apollo';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from '@keystone-next/admin-ui/router';
+
+type CardContainerProps = {
+  children: ReactNode;
+  mode: 'view' | 'create' | 'edit';
+} & BoxProps;
+const CardContainer = ({ mode = 'view', ...props }: CardContainerProps) => {
+  const { tones } = useTheme();
+
+  const tone = tones[mode === 'edit' ? 'active' : mode === 'create' ? 'positive' : 'passive'];
+
+  return (
+    <Box
+      paddingLeft="medium"
+      css={{
+        borderLeftColor: tone.border,
+        borderLeftWidth: 3,
+      }}
+      {...props}
+    />
+  );
+};
 
 export function Cards({
   localList,
@@ -59,11 +81,12 @@ export function Cards({
     field,
   });
 
-  const theme = useTheme();
-
   const client = useApolloClient();
 
   const [isLoadingLazyItems, setIsLoadingLazyItems] = useState(false);
+  const [showConnectItems, setShowConnectItems] = useState(false);
+  const [hideConnectItemsLabel, setHideConnectItemsLabel] = useState<'Cancel' | 'Done'>('Cancel');
+
   const isMountedRef = useRef(false);
   useEffect(() => {
     isMountedRef.current = true;
@@ -87,218 +110,233 @@ export function Cards({
     <Stack gap="medium">
       {[...value.currentIds].map(id => {
         const itemGetter = items[id];
-        return (
-          <div
-            css={{
-              boxShadow: theme.shadow.s300,
-              padding: theme.spacing.small,
-              borderRadius: theme.radii.medium,
-            }}
-            key={id}
-          >
-            {value.itemsBeingEdited.has(id) ? (
-              <InlineEdit
-                list={foreignList}
-                fields={field.display.inlineEdit!.fields}
-                onSave={newItemGetter => {
-                  setItems({
-                    ...items,
-                    [id]: newItemGetter,
-                  });
-                  const itemsBeingEdited = new Set(value.itemsBeingEdited);
-                  itemsBeingEdited.delete(id);
-                  onChange?.({
-                    ...value,
-                    itemsBeingEdited,
-                  });
-                }}
-                selectedFields={selectedFields}
-                itemGetter={itemGetter}
-                onCancel={() => {
-                  const itemsBeingEdited = new Set(value.itemsBeingEdited);
-                  itemsBeingEdited.delete(id);
-                  onChange?.({
-                    ...value,
-                    itemsBeingEdited,
-                  });
-                }}
-              />
-            ) : (
-              <div>
-                {field.display.cardFields.map(fieldPath => {
-                  const field = foreignList.fields[fieldPath];
-                  const itemForField: Record<string, any> = {};
-                  for (const graphqlField of getRootGraphQLFieldsFromFieldController(
-                    field.controller
-                  )) {
-                    const fieldGetter = itemGetter.get(graphqlField);
-                    if (fieldGetter.errors) {
-                      const errorMessage = fieldGetter.errors[0].message;
-                      return (
-                        <FieldContainer>
-                          <FieldLabel>{field.label}</FieldLabel>
-                          {errorMessage}
-                        </FieldContainer>
-                      );
-                    }
-                    itemForField[graphqlField] = fieldGetter.data;
-                  }
-
+        return value.itemsBeingEdited.has(id) ? (
+          <CardContainer mode="edit">
+            <InlineEdit
+              list={foreignList}
+              fields={field.display.inlineEdit!.fields}
+              onSave={newItemGetter => {
+                setItems({
+                  ...items,
+                  [id]: newItemGetter,
+                });
+                const itemsBeingEdited = new Set(value.itemsBeingEdited);
+                itemsBeingEdited.delete(id);
+                onChange?.({
+                  ...value,
+                  itemsBeingEdited,
+                });
+              }}
+              selectedFields={selectedFields}
+              itemGetter={itemGetter}
+              onCancel={() => {
+                const itemsBeingEdited = new Set(value.itemsBeingEdited);
+                itemsBeingEdited.delete(id);
+                onChange?.({
+                  ...value,
+                  itemsBeingEdited,
+                });
+              }}
+            />
+          </CardContainer>
+        ) : (
+          <CardContainer mode="view" key={id}>
+            {field.display.cardFields.map(fieldPath => {
+              const field = foreignList.fields[fieldPath];
+              const itemForField: Record<string, any> = {};
+              for (const graphqlField of getRootGraphQLFieldsFromFieldController(
+                field.controller
+              )) {
+                const fieldGetter = itemGetter.get(graphqlField);
+                if (fieldGetter.errors) {
+                  const errorMessage = fieldGetter.errors[0].message;
                   return (
-                    <field.views.CardValue
-                      key={fieldPath}
-                      field={field.controller}
-                      item={itemForField}
-                    />
+                    <FieldContainer>
+                      <FieldLabel>{field.label}</FieldLabel>
+                      {errorMessage}
+                    </FieldContainer>
                   );
-                })}
-                <Stack across gap="medium">
-                  {field.display.inlineEdit && (
+                }
+                itemForField[graphqlField] = fieldGetter.data;
+              }
+
+              return (
+                <field.views.CardValue
+                  key={fieldPath}
+                  field={field.controller}
+                  item={itemForField}
+                />
+              );
+            })}
+            <Stack across gap="medium">
+              {field.display.inlineEdit && (
+                <Button
+                  disabled={onChange === undefined}
+                  onClick={() => {
+                    onChange?.({
+                      ...value,
+                      itemsBeingEdited: new Set([...value.itemsBeingEdited, id]),
+                    });
+                  }}
+                  tone="active"
+                >
+                  Edit
+                </Button>
+              )}
+              {field.display.removeMode === 'disconnect' && (
+                <Tooltip content="This item will not be deleted. It will only be removed from this field.">
+                  {props => (
                     <Button
                       disabled={onChange === undefined}
                       onClick={() => {
+                        const currentIds = new Set(value.currentIds);
+                        currentIds.delete(id);
                         onChange?.({
                           ...value,
-                          itemsBeingEdited: new Set([...value.itemsBeingEdited, id]),
+                          currentIds,
                         });
                       }}
-                      weight="bold"
-                      tone="active"
+                      {...props}
+                      tone="negative"
                     >
-                      Edit
+                      Remove
                     </Button>
                   )}
-                  {field.display.removeMode === 'disconnect' && (
-                    <Tooltip content="This item will not be deleted. It will only be removed from this field.">
-                      {props => (
-                        <Button
-                          disabled={onChange === undefined}
-                          onClick={() => {
-                            const currentIds = new Set(value.currentIds);
-                            currentIds.delete(id);
-                            onChange?.({
-                              ...value,
-                              currentIds,
-                            });
-                          }}
-                          {...props}
-                          tone="negative"
-                        >
-                          Remove
-                        </Button>
-                      )}
-                    </Tooltip>
-                  )}
-                  <Button
-                    css={{ textDecoration: 'none' }}
-                    as={Link}
-                    href={`/${foreignList.path}/${id}`}
-                  >
-                    Go to item details
-                  </Button>
-                </Stack>
-              </div>
-            )}
-          </div>
+                </Tooltip>
+              )}
+              <Button
+                css={{ textDecoration: 'none' }}
+                as={Link}
+                href={`/${foreignList.path}/${id}`}
+              >
+                View Item Details
+              </Button>
+            </Stack>
+          </CardContainer>
         );
       })}
-      {value.itemBeingCreated ? (
-        <InlineCreate
-          selectedFields={selectedFields}
-          fields={field.display.inlineCreate!.fields}
-          list={foreignList}
-          onCancel={() => {
-            onChange?.({ ...value, itemBeingCreated: false });
-          }}
-          onCreate={itemGetter => {
-            const id = itemGetter.data.id;
-            setItems({ ...items, [id]: itemGetter });
-            onChange?.({
-              ...value,
-              itemBeingCreated: false,
-              currentIds: field.many ? new Set([...value.currentIds, id]) : new Set([id]),
-            });
-          }}
-        />
-      ) : (
-        field.display.inlineCreate && (
-          <Button
-            disabled={onChange === undefined}
-            onClick={() => {
+
+      {field.display.linkToItem && showConnectItems ? (
+        <CardContainer mode="edit">
+          <Stack gap="small" marginY="medium" across>
+            <RelationshipSelect
+              autoFocus
+              controlShouldRenderValue={isLoadingLazyItems}
+              isDisabled={onChange === undefined}
+              list={foreignList}
+              isLoading={isLoadingLazyItems}
+              placeholder={`Select a ${foreignList.singular}`}
+              state={{
+                kind: 'many',
+                async onChange(options) {
+                  const itemsToFetchAndConnect: string[] = [];
+                  options.forEach(item => {
+                    if (!value.currentIds.has(item.id)) {
+                      itemsToFetchAndConnect.push(item.id);
+                    }
+                  });
+                  if (itemsToFetchAndConnect.length) {
+                    try {
+                      const { data, errors } = await client.query({
+                        query: gql`query ($ids: [ID!]!) {
+                      items: ${foreignList.gqlNames.listQueryName}(where: {id_in:$ids}) {
+                        ${selectedFields}
+                      }
+                    }`,
+                        variables: { ids: itemsToFetchAndConnect },
+                      });
+                      if (isMountedRef.current) {
+                        const dataGetters = makeDataGetter(data, errors);
+                        const itemsDataGetter = dataGetters.get('items');
+                        let newItems = { ...items };
+                        let newCurrentIds = field.many
+                          ? new Set(value.currentIds)
+                          : new Set<string>();
+                        if (Array.isArray(itemsDataGetter.data)) {
+                          itemsDataGetter.data.forEach((item, i) => {
+                            if (item?.id != null) {
+                              newCurrentIds.add(item.id);
+                              newItems[item.id] = itemsDataGetter.get(i);
+                            }
+                          });
+                        }
+                        if (newCurrentIds.size) {
+                          setItems(newItems);
+                          onChange?.({
+                            ...value,
+                            currentIds: newCurrentIds,
+                          });
+                          setHideConnectItemsLabel('Done');
+                        }
+                      }
+                    } finally {
+                      if (isMountedRef.current) {
+                        setIsLoadingLazyItems(false);
+                      }
+                    }
+                  }
+                },
+                value: (() => {
+                  let options: { label: string; id: string }[] = [];
+                  Object.keys(items).forEach(id => {
+                    if (value.currentIds.has(id)) {
+                      options.push({ id, label: id });
+                    }
+                  });
+                  return options;
+                })(),
+              }}
+            />
+            <Button onClick={() => setShowConnectItems(false)}>{hideConnectItemsLabel}</Button>
+          </Stack>
+        </CardContainer>
+      ) : value.itemBeingCreated ? (
+        <CardContainer mode="create">
+          <InlineCreate
+            selectedFields={selectedFields}
+            fields={field.display.inlineCreate!.fields}
+            list={foreignList}
+            onCancel={() => {
+              onChange?.({ ...value, itemBeingCreated: false });
+            }}
+            onCreate={itemGetter => {
+              const id = itemGetter.data.id;
+              setItems({ ...items, [id]: itemGetter });
               onChange?.({
                 ...value,
-                itemBeingCreated: true,
+                itemBeingCreated: false,
+                currentIds: field.many ? new Set([...value.currentIds, id]) : new Set([id]),
               });
             }}
-          >
-            Create {foreignList.singular}
-          </Button>
-        )
-      )}
-      {field.display.linkToItem && (
-        <RelationshipSelect
-          controlShouldRenderValue={isLoadingLazyItems}
-          isDisabled={onChange === undefined}
-          list={foreignList}
-          isLoading={isLoadingLazyItems}
-          state={{
-            kind: 'many',
-            async onChange(options) {
-              const itemsToFetchAndConnect: string[] = [];
-              options.forEach(item => {
-                if (!value.currentIds.has(item.id)) {
-                  itemsToFetchAndConnect.push(item.id);
-                }
-              });
-              if (itemsToFetchAndConnect.length) {
-                try {
-                  const { data, errors } = await client.query({
-                    query: gql`query ($ids: [ID!]!) {
-                items: ${foreignList.gqlNames.listQueryName}(where: {id_in:$ids}) {
-                  ${selectedFields}
-                }
-              }`,
-                    variables: { ids: itemsToFetchAndConnect },
+          />
+        </CardContainer>
+      ) : (
+        <CardContainer mode="create">
+          <Stack gap="small" marginY="medium" across>
+            {field.display.inlineCreate && (
+              <Button
+                disabled={onChange === undefined}
+                tone="positive"
+                onClick={() => {
+                  onChange?.({
+                    ...value,
+                    itemBeingCreated: true,
                   });
-                  if (isMountedRef.current) {
-                    const dataGetters = makeDataGetter(data, errors);
-                    const itemsDataGetter = dataGetters.get('items');
-                    let newItems = { ...items };
-                    let newCurrentIds = field.many ? new Set(value.currentIds) : new Set<string>();
-                    if (Array.isArray(itemsDataGetter.data)) {
-                      itemsDataGetter.data.forEach((item, i) => {
-                        if (item?.id != null) {
-                          newCurrentIds.add(item.id);
-                          newItems[item.id] = itemsDataGetter.get(i);
-                        }
-                      });
-                    }
-                    if (newCurrentIds.size) {
-                      setItems(newItems);
-                      onChange?.({
-                        ...value,
-                        currentIds: newCurrentIds,
-                      });
-                    }
-                  }
-                } finally {
-                  if (isMountedRef.current) {
-                    setIsLoadingLazyItems(false);
-                  }
-                }
-              }
-            },
-            value: (() => {
-              let options: { label: string; id: string }[] = [];
-              Object.keys(items).forEach(id => {
-                if (value.currentIds.has(id)) {
-                  options.push({ id, label: id });
-                }
-              });
-              return options;
-            })(),
-          }}
-        />
+                }}
+              >
+                Create {foreignList.singular}
+              </Button>
+            )}
+            <Button
+              onClick={() => {
+                setShowConnectItems(true);
+                setHideConnectItemsLabel('Cancel');
+              }}
+            >
+              Link existing {foreignList.singular}
+            </Button>
+          </Stack>
+        </CardContainer>
       )}
       {forceValidation && (
         <span css={{ color: 'red' }}>
