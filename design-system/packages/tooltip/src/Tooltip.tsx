@@ -80,9 +80,6 @@ type ElementProps = {
   };
 };
 
-// TODO: don't do this
-const backgroundColor = '#253858';
-
 export const TooltipElement = forwardRef<HTMLDivElement, ElementProps>(
   ({ isVisible, children, arrow, ...props }, consumerRef) => {
     const { elevation, radii, colors, shadow, spacing, typography } = useTheme();
@@ -96,14 +93,13 @@ export const TooltipElement = forwardRef<HTMLDivElement, ElementProps>(
           aria-hidden={!isVisible}
           ref={consumerRef}
           css={{
-            backgroundColor,
-            borderRadius: radii.xsmall,
+            backgroundColor: colors.foregroundDim,
+            borderRadius: radii.small,
             boxShadow: shadow.s200,
             color: colors.background,
-            fontSize: typography.fontSize.small,
             fontWeight: typography.fontWeight.medium,
             lineHeight: typography.leading.base,
-            maxWidth: 256, // less than desirable magic number, but not sure if this needs to be in theme...
+            maxWidth: 320, // less than desirable magic number, but not sure if this needs to be in theme...
             opacity: isVisible ? 1 : 0,
             padding: `${spacing.small}px ${spacing.medium}px`,
             pointerEvents: isVisible ? undefined : 'none',
@@ -121,7 +117,7 @@ export const TooltipElement = forwardRef<HTMLDivElement, ElementProps>(
 );
 
 const useArrowStyles = () => {
-  const theme = useTheme();
+  const { colors, shadow } = useTheme();
   return {
     '.tooltipArrow': {
       position: 'absolute',
@@ -134,9 +130,9 @@ const useArrowStyles = () => {
         position: 'absolute',
         width: '10px',
         height: '10px',
-        backgroundColor,
+        backgroundColor: colors.foregroundDim,
         transform: 'translateX(-50%) translateY(-50%) rotate(45deg)',
-        boxShadow: theme.shadow.s200,
+        boxShadow: shadow.s200,
       },
     },
     "&[data-popper-placement^='left'] > .tooltipArrow": {
