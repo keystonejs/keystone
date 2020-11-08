@@ -62,6 +62,53 @@ export function InlineCreate({
 
   const [forceValidation, setForceValidation] = useState(false);
 
+  const onCreateClick = () => {
+    const newForceValidation = invalidFields.size !== 0;
+    setForceValidation(newForceValidation);
+
+    if (newForceValidation) return;
+    const data: Record<string, any> = {};
+    Object.keys(fields).forEach(fieldPath => {
+      const { controller } = fields[fieldPath];
+      const serialized = controller.serialize(valuesByFieldPath[fieldPath]);
+      if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
+        Object.assign(data, serialized);
+      }
+    });
+
+    createItem({
+      variables: {
+        data,
+      },
+    })
+      .then(({ data, errors }) => {
+        // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
+        // which are handled seperately and do not indicate a failure to update the item
+        const error = errors?.find(x => x.path?.length === 1);
+        if (error) {
+          toasts.addToast({
+            title: 'Failed to create item',
+            tone: 'negative',
+            message: error.message,
+          });
+        } else {
+          toasts.addToast({
+            title: data.item[list.labelField] || data.item.id,
+            tone: 'positive',
+            message: 'Saved successfully',
+          });
+          onCreate(makeDataGetter(data, errors).get('item'));
+        }
+      })
+      .catch(err => {
+        toasts.addToast({
+          title: 'Failed to update item',
+          tone: 'negative',
+          message: err.message,
+        });
+      });
+  };
+
   return (
     <div>
       {error && (
@@ -86,57 +133,7 @@ export function InlineCreate({
         );
       })}
       <Stack gap="medium" across>
-        <Button
-          isLoading={loading}
-          tone="active"
-          weight="bold"
-          onClick={() => {
-            const newForceValidation = invalidFields.size !== 0;
-            setForceValidation(newForceValidation);
-
-            if (newForceValidation) return;
-            const data: Record<string, any> = {};
-            Object.keys(fields).forEach(fieldPath => {
-              const { controller } = fields[fieldPath];
-              const serialized = controller.serialize(valuesByFieldPath[fieldPath]);
-              if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
-                Object.assign(data, serialized);
-              }
-            });
-
-            createItem({
-              variables: {
-                data,
-              },
-            })
-              .then(({ data, errors }) => {
-                // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
-                // which are handled seperately and do not indicate a failure to update the item
-                const error = errors?.find(x => x.path?.length === 1);
-                if (error) {
-                  toasts.addToast({
-                    title: 'Failed to create item',
-                    tone: 'negative',
-                    message: error.message,
-                  });
-                } else {
-                  toasts.addToast({
-                    title: data.item[list.labelField] || data.item.id,
-                    tone: 'positive',
-                    message: 'Saved successfully',
-                  });
-                  onCreate(makeDataGetter(data, errors).get('item'));
-                }
-              })
-              .catch(err => {
-                toasts.addToast({
-                  title: 'Failed to update item',
-                  tone: 'negative',
-                  message: err.message,
-                });
-              });
-          }}
-        >
+        <Button isLoading={loading} tone="positive" weight="bold" onClick={onCreateClick}>
           Create {list.singular}
         </Button>
         <Button onClick={onCancel}>Cancel</Button>
