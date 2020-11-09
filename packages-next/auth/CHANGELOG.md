@@ -1,5 +1,16 @@
 # @keystone-next/auth
 
+## 2.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`6c3b566a1`](https://github.com/keystonejs/keystone/commit/6c3b566a130fa4eb5ae57e638b4cff7a16299998), [`c3e4c1e3f`](https://github.com/keystonejs/keystone/commit/c3e4c1e3fdf8ffdbfd785860c26d15e665c5e25e), [`d6139dcf9`](https://github.com/keystonejs/keystone/commit/d6139dcf99f87d78c5e1bb0393349bb52bcb28bd), [`39a5890de`](https://github.com/keystonejs/keystone/commit/39a5890de2021b9e32569ce4011c3e2948d4ede6)]:
+  - @keystone-ui/button@2.0.0
+  - @keystone-ui/notice@1.0.1
+  - @keystone-ui/core@1.0.1
+  - @keystone-next/fields@2.0.1
+  - @keystone-next/admin-ui@2.0.1
+
 ## 2.0.0
 
 ### Patch Changes
