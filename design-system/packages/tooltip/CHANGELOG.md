@@ -1,5 +1,14 @@
 # @keystone-ui/tooltip
 
+## 1.0.1
+
+### Patch Changes
+
+- [`ce6b8ebee`](https://github.com/keystonejs/keystone/commit/ce6b8ebeef39f2d22bfc62500a408739a7f1f419) [#4161](https://github.com/keystonejs/keystone/pull/4161) Thanks [@JedWatson](https://github.com/JedWatson)! - Use theme variables in the Tooltip component
+
+- Updated dependencies [[`c3e4c1e3f`](https://github.com/keystonejs/keystone/commit/c3e4c1e3fdf8ffdbfd785860c26d15e665c5e25e)]:
+  - @keystone-ui/core@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
