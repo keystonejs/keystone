@@ -8676,10 +8676,10 @@ cypress-multi-reporters@^1.4.0:
     debug "^4.1.1"
     lodash "^4.17.15"
 
-cypress@^5.5.0:
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-5.5.0.tgz#1da0355794a43247f8a80cb7f505e83e1cf847cb"
-  integrity sha512-UHEiTca8AUTevbT2pWkHQlxoHtXmbq+h6Eiu/Mz8DqpNkF98zjTBLv/HFiKJUU5rQzp9EwSWtms33p5TWCJ8tQ==
+cypress@^5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-5.6.0.tgz#6781755c3ddfd644ce3179fcd7389176c0c82280"
+  integrity sha512-cs5vG3E2JLldAc16+5yQxaVRLLqMVya5RlrfPWkC72S5xrlHFdw7ovxPb61s4wYweROKTyH01WQc2PFzwwVvyQ==
   dependencies:
     "@cypress/listr-verbose-renderer" "^0.4.1"
     "@cypress/request" "^2.88.5"
@@ -8693,7 +8693,7 @@ cypress@^5.5.0:
     chalk "^4.1.0"
     check-more-types "^2.24.0"
     cli-table3 "~0.6.0"
-    commander "^4.1.1"
+    commander "^5.1.0"
     common-tags "^1.8.0"
     debug "^4.1.1"
     eventemitter2 "^6.4.2"
