@@ -4102,10 +4102,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-select@^3.0.23":
-  version "3.0.23"
-  resolved "https://registry.yarnpkg.com/@types/react-select/-/react-select-3.0.23.tgz#67fa25e3305e682d680058542a634964ef44af94"
-  integrity sha512-WrXjixjHlDfG4kSwasQZvZXD+hPamNTvJYWYb5TAt3hwhVg+4imNMPdUTDQhrGrCHIeKUc5h+syGCylnw30Suw==
+"@types/react-select@^3.0.24":
+  version "3.0.24"
+  resolved "https://registry.yarnpkg.com/@types/react-select/-/react-select-3.0.24.tgz#429d65d363cb15b0c4e5e28ec149bfc3581bf3f9"
+  integrity sha512-H8FYLKRkCIVLv6KGylUttJWIaMH+qpF42jsKBMLlqEsHhgZl/0EeXU1YBn22g0fLI8++g0+IXBPsqIMmQNG8Lw==
   dependencies:
     "@types/react" "*"
     "@types/react-dom" "*"
