@@ -5,7 +5,7 @@
   "main": "dist/toast.cjs.js",
   "module": "dist/toast.esm.js",
   "devDependencies": {
-    "@types/react": "^16.9.55",
+    "@types/react": "^16.9.56",
     "react": "^16.14.0"
   },
   "dependencies": {
