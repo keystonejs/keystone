@@ -14,7 +14,7 @@
     "@keystone-ui/pill": "^1.0.0",
     "@keystonejs/fields-cloudinary-image": "^2.0.2",
     "@keystonejs/file-adapters": "^7.0.8",
-    "@types/react": "^16.9.55",
+    "@types/react": "^16.9.56",
     "react": "^16.14.0"
   },
   "engines": {
