@@ -102,13 +102,15 @@ export function adminMetaSchemaExtension({
       ...list,
       itemQueryName: gqlNames.itemQueryName,
       listQueryName: gqlNames.listQueryName.replace('all', ''),
-      fields: Object.keys(fields).map(fieldPath => {
-        return {
-          path: fieldPath,
-          listKey: list.key,
-          ...fields[fieldPath],
-        };
-      }),
+      fields: Object.keys(fields)
+        .filter(fieldPath => config.lists[list.key].fields[fieldPath].config.access?.read !== false)
+        .map(fieldPath => {
+          return {
+            path: fieldPath,
+            listKey: list.key,
+            ...fields[fieldPath],
+          };
+        }),
     };
   });
   const listsByKey: Record<
