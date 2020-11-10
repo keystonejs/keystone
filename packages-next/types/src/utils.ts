@@ -14,7 +14,7 @@ export type BaseGeneratedListTypes = {
 
 type BackingTypeForItem = any;
 
-type GraphQLInput = Record<string, any> | string | number | boolean | null;
+type GraphQLInput = Record<string, any>;
 
 export type GraphQLContext = Record<string, any>;
 
