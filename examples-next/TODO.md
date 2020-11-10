@@ -5,8 +5,8 @@
 
 # New example projects
 
-- [ ] Simple TODO list (JavaScript)
-- [ ] Simple TODO list (TypeScript)
+- [x] Simple TODO list
+- [ ] Tracking fields (created / updated at / by)
 - [ ] Content example (blog-like)
 - [ ] Relationships
 - [ ] All field types
