@@ -70,8 +70,10 @@ function ItemForm({
       item: itemGetter.data,
     };
   });
-
-  if (state.item !== itemGetter.data && itemGetter.errors?.every(x => x.path?.length !== 1)) {
+  if (
+    state.item !== itemGetter.data &&
+    (itemGetter.errors || []).every(x => x.path?.length !== 1)
+  ) {
     const value = deserializeValue(list.fields, itemGetter);
     setValue({
       value,
