@@ -15,24 +15,22 @@ import {
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
     <FieldLabel>{field.label}</FieldLabel>
-    {field.displayMode === 'textarea' ? (
-      <TextArea
-        autoFocus={autoFocus}
-        readOnly={onChange === undefined}
-        onChange={event => {
-          onChange?.(event.target.value);
-        }}
-        value={value}
-      />
+    {onChange ? (
+      field.displayMode === 'textarea' ? (
+        <TextArea
+          autoFocus={autoFocus}
+          onChange={event => onChange(event.target.value)}
+          value={value}
+        />
+      ) : (
+        <TextInput
+          autoFocus={autoFocus}
+          onChange={event => onChange(event.target.value)}
+          value={value}
+        />
+      )
     ) : (
-      <TextInput
-        autoFocus={autoFocus}
-        readOnly={onChange === undefined}
-        onChange={event => {
-          onChange?.(event.target.value);
-        }}
-        value={value}
-      />
+      value
     )}
   </FieldContainer>
 );

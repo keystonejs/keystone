@@ -456,8 +456,9 @@ const fields: FieldTokens = {
     shadow: `0 0 0 2px ${colors.focusRing}`,
   },
   disabled: {
-    inputBackground: palette.neutral300,
-    inputForeground: palette.neutral600,
+    inputBackground: palette.neutral100,
+    inputForeground: palette.neutral800,
+    inputBorderColor: palette.transparent,
     controlBackground: palette.neutral100,
     controlBorderColor: palette.neutral200,
     controlForeground: palette.neutral500,
