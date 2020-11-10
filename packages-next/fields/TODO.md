@@ -1,14 +1,21 @@
-# Password
+# General
+
+- [ ] Review types for defaultValue across all fields
+- [ ] Review types for hooks, specifically including GraphQLInput
+
+# Field Types
+
+## Password
 
 - [x] Add Password Field
 
-# Select
+## Select
 
 - [x] Add Select Field
 - [x] Current UI with a Select
 - [x] New UI Mode with a SegmentedControl
 
-# Relationship
+## Relationship
 
 - [x] Make a functional Relationship Field UI as per the current Relationship field (i.e just a select)
 

@@ -2,7 +2,7 @@
 import { MongoId } from '@keystonejs/fields-mongoid';
 import type { FieldConfig } from '../../interfaces';
 import type { FieldType } from '@keystone-next/types';
-import type { BaseGeneratedListTypes } from '@keystone-next/types';
+import type { BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 
 export type MongoIdFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
@@ -11,7 +11,7 @@ export type MongoIdFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
   isRequired?: boolean;
   isIndexed?: boolean;
   isUnique?: boolean;
-  defaultValue?: string;
+  defaultValue?: FieldDefaultValue<string>;
 };
 
 const views = resolveView('mongoId/views');

@@ -1,5 +1,11 @@
 import type { FieldAccessControl } from './schema/access-control';
-import type { BaseGeneratedListTypes, JSONValue, GqlNames, MaybePromise } from './utils';
+import type {
+  BaseGeneratedListTypes,
+  JSONValue,
+  GqlNames,
+  GraphQLContext,
+  MaybePromise,
+} from './utils';
 import type { ListHooks } from './schema/hooks';
 import { SessionStrategy } from './session';
 import { SchemaConfig } from './schema';
@@ -119,6 +125,13 @@ export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
     }
   >;
 };
+
+/* TODO: Review these types */
+type FieldDefaultValueArgs<T> = { context: GraphQLContext; originalInput?: T };
+export type FieldDefaultValue<T> =
+  | T
+  | null
+  | MaybePromise<(args: FieldDefaultValueArgs<T>) => T | null | undefined>;
 
 export type Keystone = {
   keystone: any;

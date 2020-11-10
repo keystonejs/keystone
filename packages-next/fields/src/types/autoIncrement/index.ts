@@ -2,7 +2,7 @@
 import { AutoIncrement } from '@keystonejs/fields-auto-increment';
 import type { FieldConfig } from '../../interfaces';
 import type { FieldType } from '@keystone-next/types';
-import type { BaseGeneratedListTypes } from '@keystone-next/types';
+import type { BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 
 export type AutoIncrementFieldConfig<
@@ -11,7 +11,7 @@ export type AutoIncrementFieldConfig<
   isRequired?: boolean;
   isIndexed?: boolean;
   isUnique?: boolean;
-  defaultValue?: number;
+  defaultValue?: FieldDefaultValue<number>;
 };
 
 const views = resolveView('integer/views');
