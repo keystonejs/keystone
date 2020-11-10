@@ -1,17 +1,18 @@
 /* @jsx jsx */
 
-import { jsx, useTheme, Inline, VisuallyHidden, Center } from '@keystone-ui/core';
-import { DocumentNode, useQuery } from '../../apollo';
+import { ButtonHTMLAttributes, useState } from 'react';
 
-import { useKeystone, useList } from '../../context';
-import { PageContainer } from '../../components/PageContainer';
+import { Center, Inline, Heading, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
 import { makeDataGetter } from '@keystone-next/admin-ui-utils';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
-import { ButtonHTMLAttributes, useState } from 'react';
 import { DrawerController } from '@keystone-ui/modals';
-import { CreateItemDrawer } from '../../components/CreateItemDrawer';
-import { useRouter, Link } from '../../router';
 import { LoadingDots } from '@keystone-ui/loading';
+
+import { CreateItemDrawer } from '../../components/CreateItemDrawer';
+import { PageContainer } from '../../components/PageContainer';
+import { DocumentNode, useQuery } from '../../apollo';
+import { useKeystone, useList } from '../../context';
+import { useRouter, Link } from '../../router';
 
 type ListCardProps = {
   listKey: string;
@@ -129,9 +130,8 @@ export const HomePage = ({ query }: { query: DocumentNode }) => {
   const dataGetter = makeDataGetter(data, error?.graphQLErrors);
 
   return (
-    <PageContainer>
-      <h1>Dashboard</h1>
-      <Inline gap="large">
+    <PageContainer header={<Heading type="h3">Dashboard</Heading>}>
+      <Inline gap="large" paddingY="xlarge">
         {(() => {
           if (visibleLists.state === 'loading') {
             return (

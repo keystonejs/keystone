@@ -413,6 +413,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
             css={{
               display: 'flex',
               justifyContent: 'space-between',
+              marginTop: spacing.xlarge,
             }}
           >
             <Heading>{data.item[list.labelField] || data.item.id}</Heading>

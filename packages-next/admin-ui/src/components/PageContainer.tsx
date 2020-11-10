@@ -67,7 +67,6 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
         minWidth: 1, // resolves collapsing issues in children
         paddingLeft: spacing.xlarge,
         paddingRight: spacing.xlarge,
-        paddingTop: spacing.xlarge,
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
       }}

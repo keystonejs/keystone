@@ -6,15 +6,17 @@ import Link from 'next/link';
 import { useKeystone } from '../context';
 
 export const Logo = () => {
-  const { colors } = useTheme();
+  const { headingStyles } = useTheme();
   const { adminConfig } = useKeystone();
+
   if (adminConfig.components?.Logo) {
     return <adminConfig.components.Logo />;
   }
+
   return (
     <H3>
       <Link href="/" passHref>
-        <a css={{ color: colors.foreground, textDecoration: 'none' }}>KeystoneJS</a>
+        <a css={{ color: headingStyles.h3.color, textDecoration: 'none' }}>KeystoneJS</a>
       </Link>
     </H3>
   );

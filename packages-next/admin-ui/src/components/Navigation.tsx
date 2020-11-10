@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { jsx, Box, Stack, Inline, useTheme } from '@keystone-ui/core';
+import { Box, Stack, jsx, useTheme } from '@keystone-ui/core';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
 
@@ -54,10 +54,10 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
   return (
     <div
       css={{
+        alignItems: 'center',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
       }}
     >
       <Box paddingY="medium">
