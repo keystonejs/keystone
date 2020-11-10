@@ -16,7 +16,7 @@ import { useState } from 'react';
 
 // TODO: Bring across the datetime/datetimeUtc interfaces, date picker, etc.
 
-function formatOutput(value) {
+function formatOutput(value: string) {
   if (!value) return '';
   const date = new Date(value);
   return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
