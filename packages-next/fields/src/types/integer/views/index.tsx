@@ -15,15 +15,18 @@ import {
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
     <FieldLabel>{field.label}</FieldLabel>
-    <TextInput
-      autoFocus={autoFocus}
-      type="number"
-      readOnly={onChange === undefined}
-      onChange={event => {
-        onChange?.(event.target.value.replace(/\D/g, ''));
-      }}
-      value={value}
-    />
+    {onChange ? (
+      <TextInput
+        autoFocus={autoFocus}
+        type="number"
+        onChange={event => {
+          onChange(event.target.value.replace(/\D/g, ''));
+        }}
+        value={value}
+      />
+    ) : (
+      value
+    )}
   </FieldContainer>
 );
 
