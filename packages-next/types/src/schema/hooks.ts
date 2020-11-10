@@ -77,7 +77,14 @@ type ResolveInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
 ) =>
   | Promise<TGeneratedListTypes['inputs']['create'] | TGeneratedListTypes['inputs']['update']>
   | TGeneratedListTypes['inputs']['create']
-  | TGeneratedListTypes['inputs']['update'];
+  | TGeneratedListTypes['inputs']['update']
+  // TODO: I'm pretty sure this is wrong, but without these additional types you can't define a
+  // resolveInput hook for a field that returns a simple value (e.g timestamp)
+  | Record<string, any>
+  | string
+  | number
+  | boolean
+  | null;
 
 type ValidateInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
   args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & ValidationArgs
