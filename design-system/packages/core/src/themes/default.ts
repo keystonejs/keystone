@@ -228,7 +228,7 @@ const controlSizes: { [key: string]: ControlSize } = {
     borderRadius: radii.medium,
     borderWidth: 1,
     gutter: spacing.xsmall,
-    paddingX: spacing.medium,
+    paddingX: spacing.large,
     paddingY: spacing.xsmall,
     height: sizing.large,
     gap: spacing.medium,
