@@ -73,7 +73,7 @@ type CreateSession = ReturnType<typeof statelessSessions>;
   - [ ] We could support additional where input to validate item sessions (e.g an isEnabled boolean)
 */
 
-export function withItemData(createSession: CreateSession, fieldSelections: FieldSelections) {
+export function withItemData(createSession: CreateSession, fieldSelections: FieldSelections = {}) {
   return (): SessionStrategy<any> => {
     const { get, ...sessionStrategy } = createSession();
     return {
@@ -81,19 +81,20 @@ export function withItemData(createSession: CreateSession, fieldSelections: Fiel
       get: async ({ req, keystone }) => {
         const session = await get({ req, keystone });
         if (!session) return;
-        // Only load data for lists specified in fieldSelections
-        if (!fieldSelections[session.listKey]) return session;
         const context = keystone.createContext({ skipAccessControl: true });
         const { gqlNames } = keystone.adminMeta.lists[session.listKey];
+        // If no field selection is specified, just load the id. We still load the item,
+        // because doing so validates that it exists in the database
+        const fields = fieldSelections[session.listKey] || 'id';
         const query = parse(`query($id: ID!) {
           item: ${gqlNames.itemQueryName}(where: { id: $id }) {
-            ${fieldSelections[session.listKey]}
+            ${fields}
           }
         }`);
         const args = { id: session.itemId };
         const result = await execute(keystone.graphQLSchema, query, null, context, args);
         // TODO: This causes "not found" errors to throw, which is not what we want
-        // TOOD: Also, why is this coming back as an access denied error instead of "not found" with an invalid session?
+        // TODO: Also, why is this coming back as an access denied error instead of "not found" with an invalid session?
         // if (result.errors?.length) {
         //   throw result.errors[0];
         // }
