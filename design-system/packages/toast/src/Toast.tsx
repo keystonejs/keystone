@@ -91,8 +91,9 @@ const ToastContainer = (props: HTMLAttributes<HTMLDivElement>) => {
       <div
         css={{
           position: 'fixed',
-          right: 0,
-          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          bottom: 0,
           zIndex: elevation.e500,
         }}
         {...props}
@@ -105,8 +106,8 @@ const ToastContainer = (props: HTMLAttributes<HTMLDivElement>) => {
 
 const AUTO_DISMISS_DURATION = 6000;
 const slideInFrames = keyframes({
-  from: { transform: 'translateX(100%)' },
-  to: { transform: 'translateX(0)' },
+  from: { transform: 'translateY(100%)' },
+  to: { transform: 'translateY(0)' },
 });
 
 type ToastElementProps = {
