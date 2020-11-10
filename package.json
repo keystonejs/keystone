@@ -189,6 +189,11 @@
       "/node_modules/",
       "<rootDir>/website/.cache"
     ],
+    "transformIgnorePatterns": [
+      "/node_modules/",
+      "\\.pnp\\.[^\\\/]+$",
+      ".api-test-prisma-clients/"
+    ],
     "collectCoverageFrom": [
       "packages/**/*.js",
       "!packages/**/dist/**",
