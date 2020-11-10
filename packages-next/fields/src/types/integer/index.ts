@@ -10,7 +10,7 @@ export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
   isRequired?: boolean;
   isIndexed?: boolean;
   isUnique?: boolean;
-  defaultValue?: string;
+  defaultValue?: number;
 };
 
 const views = resolveView('integer/views');
