@@ -1,4 +1,5 @@
 /* @jsx jsx */
+import { Fragment } from 'react';
 import { jsx } from '@keystone-ui/core';
 import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
@@ -15,6 +16,12 @@ import { useState } from 'react';
 
 // TODO: Bring across the datetime/datetimeUtc interfaces, date picker, etc.
 
+function formatOutput(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+}
+
 export const Field = ({
   field,
   value,
@@ -26,20 +33,28 @@ export const Field = ({
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      <TextInput
-        autoFocus={autoFocus}
-        readOnly={onChange === undefined}
-        onChange={event => {
-          onChange?.(event.target.value);
-        }}
-        onBlur={() => {
-          setTouched(true);
-        }}
-        placeholder="0000-00-00T00:00:00.000Z"
-        value={value}
-      />
-      {(touched || forceValidation) && !isValid(value) && (
-        <div css={{ color: 'red' }}>Timestamps must be in the form 0000-00-00T00:00:00.000Z</div>
+      {onChange ? (
+        <Fragment>
+          <TextInput
+            autoFocus={autoFocus}
+            disabled={onChange === undefined}
+            onChange={event => {
+              onChange?.(event.target.value);
+            }}
+            onBlur={() => {
+              setTouched(true);
+            }}
+            placeholder="0000-00-00T00:00:00.000Z"
+            value={value}
+          />
+          {(touched || forceValidation) && !isValid(value) && (
+            <div css={{ color: 'red' }}>
+              Timestamps must be in the form 0000-00-00T00:00:00.000Z
+            </div>
+          )}
+        </Fragment>
+      ) : (
+        formatOutput(value)
       )}
     </FieldContainer>
   );
