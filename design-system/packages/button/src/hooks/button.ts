@@ -131,7 +131,7 @@ export function useButtonTokens({
     borderWidth: size.borderWidth,
     disabledOpacity: opacity.disabled,
     fontSize: size.fontSize,
-    fontWeight: typography.fontWeight.semibold,
+    fontWeight: typography.fontWeight.medium,
     height: size.height,
     paddingX: size.paddingX,
     transition: `

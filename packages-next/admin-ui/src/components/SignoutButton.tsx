@@ -22,7 +22,7 @@ const SignoutButton = ({ children }: { children?: ReactNode }) => {
 
   return (
     <Button size="small" isLoading={loading} onClick={() => endSession()}>
-      {children || 'sign out'}
+      {children || 'Sign out'}
     </Button>
   );
 };

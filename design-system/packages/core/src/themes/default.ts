@@ -161,37 +161,37 @@ type HeadingStyle = {
 
 const headingStyles: { [key: string]: HeadingStyle } = {
   h1: {
-    color: palette.neutral800,
+    color: palette.neutral900,
     size: typography.fontSize.xxxlarge,
     weight: typography.fontWeight.heavy,
     transform: 'none',
   },
   h2: {
-    color: palette.neutral800,
+    color: palette.neutral900,
     size: typography.fontSize.xxlarge,
     weight: typography.fontWeight.bold,
     transform: 'none',
   },
   h3: {
-    color: palette.neutral800,
+    color: palette.neutral900,
     size: typography.fontSize.xlarge,
     weight: typography.fontWeight.bold,
     transform: 'none',
   },
   h4: {
-    color: palette.neutral800,
+    color: palette.neutral900,
     size: typography.fontSize.large,
     weight: typography.fontWeight.bold,
     transform: 'none',
   },
   h5: {
-    color: palette.neutral800,
+    color: palette.neutral900,
     size: typography.fontSize.medium,
     weight: typography.fontWeight.bold,
     transform: 'none',
   },
   h6: {
-    color: palette.neutral800,
+    color: palette.neutral900,
     size: typography.fontSize.small,
     weight: typography.fontWeight.bold,
     transform: 'uppercase',
@@ -437,7 +437,7 @@ const fields: FieldTokens = {
   controlForeground: palette.blue500,
   // iconColor: palette.neutral500, // TODO
   inputBackground: palette.neutral200,
-  inputBorderColor: 'transparent',
+  inputBorderColor: palette.neutral300,
   inputBorderRadius: radii.small,
   inputBorderWidth: 1,
   inputForeground: palette.neutral800,
@@ -447,7 +447,7 @@ const fields: FieldTokens = {
   switchForeground: 'white',
 
   hover: {
-    inputBorderColor: palette.neutral300,
+    inputBorderColor: palette.neutral400,
     controlBorderColor: palette.blue500,
   },
   focus: {

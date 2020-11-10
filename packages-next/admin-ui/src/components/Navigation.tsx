@@ -1,13 +1,9 @@
 /* @jsx jsx */
 
-import { Button } from '@keystone-ui/button';
 import { jsx, Box, Stack, Inline, useTheme } from '@keystone-ui/core';
-import { GithubIcon } from '@keystone-ui/icons/icons/GithubIcon';
-import { DatabaseIcon } from '@keystone-ui/icons/icons/DatabaseIcon';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
 
-import { Logo } from './Logo';
 import { SignoutButton } from './SignoutButton';
 import { useKeystone } from '../context';
 import { Link } from '../router';
@@ -20,42 +16,35 @@ type NavItemProps = {
 const NavItem = ({ href, children }: NavItemProps) => {
   const { palette, spacing, radii, typography } = useTheme();
   const router = useRouter();
-  const isSelected = router && router.pathname === href;
+  const isSelected =
+    router.pathname === href || router.pathname.split('/')[1] === href.split('/')[1];
+
   return (
     <Link
+      data-selected={isSelected}
       href={href}
       css={{
-        textDecoration: 'none',
-        position: 'relative',
-        borderRadius: radii.medium,
-        color: isSelected ? palette.neutral800 : palette.neutral700,
-        background: isSelected ? 'white' : 'transparent',
-        fontWeight: isSelected ? typography.fontWeight.bold : typography.fontWeight.regular,
+        background: 'transparent',
+        borderRadius: radii.small,
+        color: palette.neutral700,
         display: 'block',
+        fontWeight: typography.fontWeight.medium,
+        marginBottom: 1,
         padding: `${spacing.small}px ${spacing.medium}px`,
-        margin: `0 -${spacing.medium}px`,
-        ':hover': isSelected
-          ? undefined
-          : {
-              color: palette.blue600,
-              background: 'white',
-            },
+        position: 'relative',
+        textDecoration: 'none',
+
+        ':hover': {
+          background: palette.neutral200,
+          color: palette.blue600,
+        },
+
+        '&[data-selected=true]': {
+          background: palette.neutral300,
+          color: palette.neutral800,
+        },
       }}
     >
-      {isSelected && (
-        <span
-          css={{
-            display: 'block',
-            position: 'absolute',
-            width: 5,
-            height: '80%',
-            background: palette.blue400,
-            borderRadius: radii.medium,
-            top: '10%',
-            right: 5,
-          }}
-        />
-      )}
       {children}
     </Link>
   );
@@ -85,17 +74,22 @@ export const Navigation = () => {
     authenticatedItem,
     visibleLists,
   } = useKeystone();
+  const { spacing } = useTheme();
 
   return (
-    <Box padding="large">
-      <Stack gap="medium" marginTop="medium">
-        <Logo />
-        <Box>
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        padding: spacing.large,
+      }}
+    >
+      <Stack gap="medium">
+        <div>
           {authenticatedItem.state === 'authenticated' && (
             <AuthenticatedItem item={authenticatedItem} />
           )}
-        </Box>
-        <Stack gap="small">
           <NavItem href="/">Home</NavItem>
           {(() => {
             if (visibleLists.state === 'loading') return null;
@@ -121,16 +115,8 @@ export const Navigation = () => {
               );
             });
           })()}
-        </Stack>
-        <Inline gap="medium">
-          <Button as="a" target="_blank" href="/api/graphql">
-            <DatabaseIcon />
-          </Button>
-          <Button as="a" target="_blank" href="https://github.com/keystonejs/keystone">
-            <GithubIcon />
-          </Button>
-        </Inline>
+        </div>
       </Stack>
-    </Box>
+    </div>
   );
 };

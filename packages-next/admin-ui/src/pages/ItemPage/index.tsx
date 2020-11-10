@@ -3,11 +3,11 @@
 import copyToClipboard from 'clipboard-copy';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment, ReactNode, useMemo, useState } from 'react';
+import { Fragment, HTMLAttributes, useMemo, useState } from 'react';
 
 import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
-import { Box, jsx, Stack, useTheme } from '@keystone-ui/core';
+import { Heading, Stack, jsx, useTheme } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
@@ -178,6 +178,7 @@ function ItemForm({
             </Tooltip>
           )}
           <Button
+            weight="none"
             onClick={() => {
               setValue({
                 item: itemGetter.data,
@@ -355,34 +356,36 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
   const hideCreate = data?.keystone.adminMeta.list.hideCreate;
 
   return (
-    <PageContainer>
-      <Stack
-        across
-        marginTop="large"
-        gap="medium"
-        css={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        <h3 css={{ margin: 0 }}>
-          <Link href={`/${list.path}`}>
-            <a>{list.label}</a>
-          </Link>
-        </h3>
-        {!hideCreate && (
-          <Button
-            disabled={createModalState.state === 'open'}
-            onClick={() => {
-              setModalState({ state: 'open', id: id as string });
-            }}
-            tone="positive"
-          >
-            Create
-          </Button>
-        )}
-      </Stack>
+    <PageContainer
+      header={
+        <div
+          css={{
+            alignItems: 'center',
+            display: 'flex',
+            flex: 1,
+            justifyContent: 'space-between',
+          }}
+        >
+          <Heading type="h3">
+            <Link href={`/${list.path}`} passHref>
+              <a css={{ textDecoration: 'none' }}>{list.label}</a>
+            </Link>
+          </Heading>
+          {!hideCreate && (
+            <Button
+              disabled={createModalState.state === 'open'}
+              onClick={() => {
+                setModalState({ state: 'open', id: id as string });
+              }}
+              tone="positive"
+              weight="bold"
+            >
+              Create
+            </Button>
+          )}
+        </div>
+      }
+    >
       <DrawerController isOpen={createModalState.state === 'open'}>
         <CreateItemDrawer
           listKey={listKey}
@@ -412,9 +415,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               justifyContent: 'space-between',
             }}
           >
-            <h1 css={{ marginTop: spacing.medium, marginBottom: spacing.medium }}>
-              {data.item[list.labelField] || data.item.id}
-            </h1>
+            <Heading>{data.item[list.labelField] || data.item.id}</Heading>
             <div css={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <span
                 css={{
@@ -434,50 +435,35 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               </Button>
             </div>
           </div>
-          <FormContainer>
-            <ItemForm
-              fieldModes={itemViewFieldModesByField}
-              selectedFields={selectedFields}
-              showDelete={!data.keystone.adminMeta.list!.hideDelete}
-              listKey={listKey}
-              itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
-            />
-          </FormContainer>
+          <ItemForm
+            fieldModes={itemViewFieldModesByField}
+            selectedFields={selectedFields}
+            showDelete={!data.keystone.adminMeta.list!.hideDelete}
+            listKey={listKey}
+            itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
+          />
         </Fragment>
       )}
     </PageContainer>
   );
 };
 
-const Toolbar = ({ children }: { children: ReactNode }) => {
-  const { colors } = useTheme();
+const Toolbar = (props: HTMLAttributes<HTMLDivElement>) => {
+  const { colors, spacing } = useTheme();
   return (
-    <Box
-      paddingTop="large"
-      marginTop="xlarge"
-      css={{
-        borderTop: `1px solid ${colors.border}`,
-        display: 'flex',
-        justifyContent: 'space-between',
-      }}
-    >
-      {children}
-    </Box>
-  );
-};
-
-const FormContainer = ({ children }: { children: ReactNode }) => {
-  const { colors, shadow } = useTheme();
-  return (
-    <Box
-      padding="large"
-      rounding="medium"
+    <div
       css={{
         background: colors.background,
-        boxShadow: shadow.s200,
+        borderTop: `1px solid ${colors.border}`,
+        bottom: 0,
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginTop: spacing.xlarge,
+        paddingBottom: spacing.xlarge,
+        paddingTop: spacing.xlarge,
+        position: 'sticky',
       }}
-    >
-      {children}
-    </Box>
+      {...props}
+    />
   );
 };

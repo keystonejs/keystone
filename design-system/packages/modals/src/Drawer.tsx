@@ -27,7 +27,7 @@ export const Drawer = ({
 }: DrawerProps) => {
   const transitionState = useDrawerControllerContext();
   const { cancel, confirm } = actions;
-  const { spacing } = useTheme();
+  const { colors, spacing } = useTheme();
 
   const safeClose = actions.confirm.loading ? () => {} : actions.cancel.action;
 
@@ -43,7 +43,16 @@ export const Drawer = ({
       onClose={safeClose}
       width={width}
     >
-      <div css={{ padding: `${spacing.large}px ${spacing.xlarge}px` }}>
+      <div
+        css={{
+          alignItems: 'center',
+          borderBottom: `1px solid ${colors.border}`,
+          boxSizing: 'border-box',
+          display: 'flex',
+          height: 80,
+          padding: `${spacing.large}px ${spacing.xlarge}px`,
+        }}
+      >
         <Heading id={headingId} type="h3">
           {title}
         </Heading>
@@ -73,8 +82,8 @@ export const Drawer = ({
         </div>
       ) : (
         <Fragment>
-          <Divider marginX="large" marginTop="medium" />
-          <Stack padding="large" across gap="small">
+          <Divider marginX="xlarge" marginTop="medium" />
+          <Stack padding="xlarge" across gap="small">
             <Button tone="active" weight="bold" type="submit" isLoading={confirm.loading}>
               {confirm.label}
             </Button>

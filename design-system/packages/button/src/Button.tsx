@@ -10,18 +10,18 @@ import type { WeightKey, ToneKey, SizeKey } from './hooks/button';
 type ButtonProps = {
   /** The Button label content. */
   children: ReactNode;
-  /** The tone of the Button. */
-  tone?: ToneKey;
-  /** The size of the Button. */
-  size?: SizeKey;
-  /** The weight of the Button. */
-  weight?: WeightKey;
+  /** Whether the Button should display as a block */
+  isBlock?: boolean;
   /** Whether the Button should be disabled */
   isDisabled?: boolean;
   /** Whether the Button should be in a loading state */
   isLoading?: boolean;
-  /** Whether the Button should display as a block */
-  isBlock?: boolean;
+  /** The size of the Button. */
+  size?: SizeKey;
+  /** The tone of the Button. */
+  tone?: ToneKey;
+  /** The weight of the Button. */
+  weight?: WeightKey;
 };
 
 const loadingContainerStyles = {
@@ -37,8 +37,8 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
   ) => {
     const { useButtonStyles, useButtonTokens, defaults } = useContext(ButtonContext);
     const tokens = useButtonTokens({
-      tone: tone || defaults.tone,
       size: size || defaults.size,
+      tone: tone || defaults.tone,
       weight: weight || defaults.weight,
     });
     const styles = useButtonStyles({

@@ -4,7 +4,7 @@ import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } fro
 
 import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
-import { Box, H1, jsx, Stack, useTheme } from '@keystone-ui/core';
+import { Box, Heading, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { CheckboxControl } from '@keystone-ui/fields';
 import { ArrowRightCircleIcon } from '@keystone-ui/icons/icons/ArrowRightCircleIcon';
 import { LoadingDots } from '@keystone-ui/loading';
@@ -208,7 +208,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
 
   // this removes the selected items which no longer exist when the data changes
   // because someone goes to another page, changes filters or etc.
-  if (data && selectedItemsState.itemsFromServer !== data.items) {
+  if (data && data.items && selectedItemsState.itemsFromServer !== data.items) {
     const newSelectedItems = new Set<string>();
     data.items.forEach((item: any) => {
       if (selectedItemsState.selectedItems.has(item.id)) {
@@ -224,11 +224,14 @@ export const ListPage = ({ listKey }: ListPageProps) => {
   const theme = useTheme();
 
   return (
-    <PageContainer>
-      <ListPageHeader
-        listKey={listKey}
-        showCreate={!(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)}
-      />
+    <PageContainer
+      header={
+        <ListPageHeader
+          listKey={listKey}
+          showCreate={!(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)}
+        />
+      }
+    >
       <Stack across gap="medium" align="center">
         <FilterAdd listKey={listKey} />
         {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
@@ -633,17 +636,15 @@ const ListPageHeader = ({ listKey, showCreate }: { listKey: string; showCreate: 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   return (
     <Fragment>
-      <Stack
-        across
-        marginY="large"
-        gap="medium"
+      <div
         css={{
-          display: 'flex',
-          flexDirection: 'row',
           alignItems: 'center',
+          display: 'flex',
+          flex: 1,
+          justifyContent: 'space-between',
         }}
       >
-        <H1>{list.label}</H1>
+        <Heading type="h3">{list.label}</Heading>
         {showCreate && (
           <Button
             disabled={isCreateModalOpen}
@@ -651,11 +652,12 @@ const ListPageHeader = ({ listKey, showCreate }: { listKey: string; showCreate: 
               setIsCreateModalOpen(true);
             }}
             tone="positive"
+            weight="bold"
           >
             Create
           </Button>
         )}
-      </Stack>
+      </div>
       <DrawerController isOpen={isCreateModalOpen}>
         <CreateItemDrawer
           listKey={listKey}
@@ -672,28 +674,18 @@ const ListPageHeader = ({ listKey, showCreate }: { listKey: string; showCreate: 
 };
 
 const TableContainer = ({ children }: { children: ReactNode }) => {
-  const { colors, shadow } = useTheme();
   return (
-    <Box
-      padding="large"
-      rounding="medium"
+    <table
       css={{
-        background: colors.background,
-        boxShadow: shadow.s200,
+        minWidth: '100%',
+        tableLayout: 'fixed',
+        'tr:last-child td': { borderBottomWidth: 0 },
       }}
+      cellPadding="0"
+      cellSpacing="0"
     >
-      <table
-        css={{
-          minWidth: '100%',
-          tableLayout: 'fixed',
-          'tr:last-child td': { borderBottomWidth: 0 },
-        }}
-        cellPadding="0"
-        cellSpacing="0"
-      >
-        {children}
-      </table>
-    </Box>
+      {children}
+    </table>
   );
 };
 

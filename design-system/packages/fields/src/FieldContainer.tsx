@@ -1,7 +1,7 @@
 /* @jsx jsx */
 
 import { ReactNode } from 'react';
-import { Box, jsx } from '@keystone-ui/core';
+import { jsx } from '@keystone-ui/core';
 
 type FieldContainerProps = {
   children: ReactNode;
@@ -9,9 +9,5 @@ type FieldContainerProps = {
 };
 
 export const FieldContainer = ({ children, ...props }: FieldContainerProps) => {
-  return (
-    <Box marginY="medium" {...props}>
-      {children}
-    </Box>
-  );
+  return <div {...props}>{children}</div>;
 };

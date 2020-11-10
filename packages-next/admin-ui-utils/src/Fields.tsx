@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import { jsx } from '@keystone-ui/core';
+import { jsx, Stack } from '@keystone-ui/core';
 import { FieldMeta } from '@keystone-next/types';
-import { Fragment } from 'react';
 import { Value } from '.';
 
 type FieldsProps = {
@@ -56,9 +55,9 @@ export function Fields({
       );
     });
   return (
-    <Fragment>
+    <Stack gap="xlarge" marginTop="large">
       {renderedFields}
       {renderedFields.length === 0 && 'There are no fields that you can read or edit'}
-    </Fragment>
+    </Stack>
   );
 }

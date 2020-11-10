@@ -12,11 +12,11 @@ export const FieldLabel = ({ children, ...props }: FieldLabelProps) => {
   return (
     <label
       css={{
-        fontWeight: typography.fontWeight.semibold,
         color: fields.labelColor,
-        minWidth: 120,
-        marginBottom: spacing.xsmall,
         display: 'block',
+        fontWeight: typography.fontWeight.semibold,
+        marginBottom: spacing.xsmall,
+        minWidth: 120,
       }}
       {...props}
     >

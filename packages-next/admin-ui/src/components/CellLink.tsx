@@ -15,9 +15,9 @@ export const CellLink = (props: LinkProps) => {
     <Link
       css={{
         color: colors.foreground,
-        textDecoration: 'none',
         display: 'block',
         padding: spacing.small,
+        textDecoration: 'none',
 
         ':hover': {
           textDecoration: 'underline',
