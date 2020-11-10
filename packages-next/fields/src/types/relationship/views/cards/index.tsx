@@ -171,6 +171,7 @@ export function Cards({
             <Stack across gap="medium">
               {field.display.inlineEdit && onChange !== undefined && (
                 <Button
+                  size="small"
                   disabled={onChange === undefined}
                   onClick={() => {
                     onChange({
@@ -187,6 +188,7 @@ export function Cards({
                 <Tooltip content="This item will not be deleted. It will only be removed from this field.">
                   {props => (
                     <Button
+                      size="small"
                       disabled={onChange === undefined}
                       onClick={() => {
                         const currentIds = new Set(value.currentIds);
@@ -206,6 +208,9 @@ export function Cards({
               )}
               {field.display.linkToItem && (
                 <Button
+                  size="small"
+                  weight="link"
+                  tone="active"
                   css={{ textDecoration: 'none' }}
                   as={Link}
                   href={`/${foreignList.path}/${id}`}
@@ -316,6 +321,7 @@ export function Cards({
           <Stack gap="small" marginY="medium" across>
             {field.display.inlineCreate && (
               <Button
+                size="small"
                 disabled={onChange === undefined}
                 tone="positive"
                 onClick={() => {
@@ -330,6 +336,9 @@ export function Cards({
             )}
             {field.display.inlineConnect && (
               <Button
+                size="small"
+                weight="none"
+                tone="passive"
                 onClick={() => {
                   setShowConnectItems(true);
                   setHideConnectItemsLabel('Cancel');
