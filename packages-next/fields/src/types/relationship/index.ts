@@ -2,7 +2,7 @@ import { Relationship } from '@keystonejs/fields';
 
 import type { FieldConfig } from '../../interfaces';
 import type { FieldType } from '@keystone-next/types';
-import type { BaseGeneratedListTypes } from '@keystone-next/types';
+import type { BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 
 // This is the default display mode for Relationships
@@ -45,6 +45,7 @@ export type RelationshipFieldConfig<
   ui?: {
     hideCreate?: boolean;
   };
+  defaultValue?: FieldDefaultValue<Record<string, unknown>>;
   isIndexed?: boolean;
   isUnique?: boolean;
 } & (SelectDisplayConfig | CardsDisplayConfig);

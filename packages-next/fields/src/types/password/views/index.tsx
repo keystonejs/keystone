@@ -44,7 +44,7 @@ export const Field = ({
         value.isSet ? (
           'Password is set'
         ) : (
-          'Password is not set' // TODO: is this necessarily correct? what if it's null?
+          'Password is not set'
         )
       ) : value.kind === 'initial' ? (
         <Button

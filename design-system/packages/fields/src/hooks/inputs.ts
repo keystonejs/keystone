@@ -147,7 +147,6 @@ export function useInputStyles({ invalid, tokens }: InputStylesProps) {
       borderColor: tokens.disabled.borderColor,
       boxShadow: tokens.disabled.shadow,
       color: tokens.disabled.foreground,
-      cursor: 'not-allowed',
     },
     '&::placeholder': {
       color: tokens.placeholder,
