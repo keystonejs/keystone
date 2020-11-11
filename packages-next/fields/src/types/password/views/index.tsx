@@ -70,7 +70,7 @@ export const Field = ({
               value={value.value}
               placeholder="New Password"
               onChange={event => {
-                onChange?.({
+                onChange({
                   ...value,
                   value: event.target.value,
                 });
@@ -85,7 +85,7 @@ export const Field = ({
               value={value.confirm}
               placeholder="Confirm Password"
               onChange={event => {
-                onChange?.({
+                onChange({
                   ...value,
                   confirm: event.target.value,
                 });

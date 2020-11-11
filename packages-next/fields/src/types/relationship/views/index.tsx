@@ -144,7 +144,7 @@ export const Field = ({
                       kind: 'many',
                       value: value.value,
                       onChange(newItems) {
-                        onChange?.({
+                        onChange({
                           ...value,
                           value: newItems,
                         });
@@ -155,7 +155,7 @@ export const Field = ({
                       value: value.value,
                       onChange(newVal) {
                         if (value.kind === 'one') {
-                          onChange?.({
+                          onChange({
                             ...value,
                             value: newVal,
                           });
@@ -192,12 +192,12 @@ export const Field = ({
                         id: keystone.authenticatedItem.id,
                       };
                       if (value.kind === 'many') {
-                        onChange?.({
+                        onChange({
                           ...value,
                           value: [...value.value, val],
                         });
                       } else {
-                        onChange?.({
+                        onChange({
                           ...value,
                           value: val,
                         });
@@ -224,12 +224,12 @@ export const Field = ({
               onCreate={val => {
                 setIsDrawerOpen(false);
                 if (value.kind === 'many') {
-                  onChange?.({
+                  onChange({
                     ...value,
                     value: [...value.value, val],
                   });
                 } else if (value.kind === 'one') {
-                  onChange?.({
+                  onChange({
                     ...value,
                     value: val,
                   });
