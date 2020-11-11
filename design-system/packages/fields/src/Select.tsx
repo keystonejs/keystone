@@ -110,6 +110,8 @@ const useStyles = ({
   };
 };
 
+const portalTarget = typeof document !== 'undefined' ? document.body : undefined;
+
 export function Select({
   onChange,
   value,
@@ -121,8 +123,6 @@ export function Select({
 }) {
   const tokens = useInputTokens({ width: widthKey });
   const styles = useStyles({ tokens });
-
-  const portalTarget = typeof document !== 'undefined' ? document.body : undefined;
 
   return (
     <ReactSelect
@@ -171,6 +171,7 @@ export function MultiSelect({
       }}
       {...props}
       isMulti
+      menuPortalTarget={portalTarget}
     />
   );
 }
