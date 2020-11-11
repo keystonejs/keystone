@@ -1,8 +1,8 @@
 /** @jsx jsx */
 
-import { jsx, Stack, VisuallyHidden } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
+import { useState } from 'react';
 
+import { CellContainer } from '@keystone-next/admin-ui/components';
 import {
   CardValueComponent,
   CellComponent,
@@ -10,12 +10,13 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-next/types';
-import { Fragment, useState } from 'react';
-import { SegmentedControl } from '@keystone-ui/segmented-control';
 import { Button } from '@keystone-ui/button';
-import { LockIcon } from '@keystone-ui/icons/icons/LockIcon';
+import { jsx, Stack, VisuallyHidden } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon';
+import { LockIcon } from '@keystone-ui/icons/icons/LockIcon';
 import { XIcon } from '@keystone-ui/icons/icons/XIcon';
+import { SegmentedControl } from '@keystone-ui/segmented-control';
 
 export const Field = ({
   field,
@@ -123,7 +124,7 @@ export const Field = ({
 };
 
 export const Cell: CellComponent = ({ item, field }) => {
-  return <Fragment>{item[`${field.path}_is_set`] ? 'Is set' : 'Is not set'}</Fragment>;
+  return <CellContainer>{item[`${field.path}_is_set`] ? 'Is set' : 'Is not set'}</CellContainer>;
 };
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
