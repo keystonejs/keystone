@@ -63,33 +63,31 @@ export const Stack = forwardRefWithAs<'div', StackProps>(
         {...props}
       >
         {['around', 'start'].includes(dividers) && <Divider orientation={orientation} />}
-        {Children.map(children, (child, index) => {
-          if (!isValidElement(child)) {
-            return null;
-          }
-
-          return (
-            <Fragment>
-              {dividers !== 'none' && index ? (
-                <Divider
-                  orientation={orientation}
+        {Children.toArray(children)
+          .filter(child => isValidElement(child))
+          .map((child, index) => {
+            return (
+              <Fragment>
+                {dividers !== 'none' && index ? (
+                  <Divider
+                    orientation={orientation}
+                    css={mq({
+                      [marginProperty]: index && mapResponsiveProp(gap, spacing),
+                    })}
+                  />
+                ) : null}
+                <Div
                   css={mq({
-                    [marginProperty]: index && mapResponsiveProp(gap, spacing),
+                    [marginProperty]:
+                      (['around', 'start'].includes(dividers) || index) &&
+                      mapResponsiveProp(gap, spacing),
                   })}
-                />
-              ) : null}
-              <Div
-                css={mq({
-                  [marginProperty]:
-                    (['around', 'start'].includes(dividers) || index) &&
-                    mapResponsiveProp(gap, spacing),
-                })}
-              >
-                {child}
-              </Div>
-            </Fragment>
-          );
-        })}
+                >
+                  {child}
+                </Div>
+              </Fragment>
+            );
+          })}
         {['around', 'end'].includes(dividers) && (
           <Divider
             orientation={orientation}
