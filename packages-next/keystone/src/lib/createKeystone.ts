@@ -15,7 +15,7 @@ import { mergeSchemas } from '@graphql-tools/merge';
 import { gql } from '../schema';
 import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { mapSchema } from '@graphql-tools/utils';
-import { itemAPIForList } from './crud-api';
+import { itemAPIForList } from './itemAPI';
 import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 import { autoIncrement, mongoId } from '@keystone-next/fields';
