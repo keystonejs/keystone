@@ -1,9 +1,6 @@
 /* @jsx jsx */
 
-import { Button } from '@keystone-ui/button';
-import { jsx, Inline, useTheme } from '@keystone-ui/core';
-import { GithubIcon } from '@keystone-ui/icons/icons/GithubIcon';
-import { DatabaseIcon } from '@keystone-ui/icons/icons/DatabaseIcon';
+import { jsx, useTheme } from '@keystone-ui/core';
 import type { HTMLAttributes, ReactNode } from 'react';
 
 import { Navigation } from './Navigation';
@@ -106,14 +103,6 @@ export const PageContainer = ({ children, header }: PageContainerProps) => {
       </header>
       <Sidebar>
         <Navigation />
-        <Inline gap="medium" padding="xlarge">
-          <Button as="a" target="_blank" href="/api/graphql">
-            <DatabaseIcon />
-          </Button>
-          <Button as="a" target="_blank" href="https://github.com/keystonejs/keystone">
-            <GithubIcon />
-          </Button>
-        </Inline>
       </Sidebar>
       <Content>{children}</Content>
     </PageWrapper>

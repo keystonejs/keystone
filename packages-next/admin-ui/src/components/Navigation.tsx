@@ -1,8 +1,12 @@
 /* @jsx jsx */
 
-import { Box, Stack, jsx, useTheme } from '@keystone-ui/core';
+import { AllHTMLAttributes, ReactNode } from 'react';
 import { useRouter } from 'next/router';
-import { ReactNode } from 'react';
+import { Stack, jsx, useTheme } from '@keystone-ui/core';
+import { Button } from '@keystone-ui/button';
+import { Popover } from '@keystone-ui/popover';
+import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
+import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
 
 import { SignoutButton } from './SignoutButton';
 import { useKeystone } from '../context';
@@ -21,7 +25,7 @@ const NavItem = ({ href, children }: NavItemProps) => {
 
   return (
     <Link
-      data-selected={isSelected}
+      aria-current={isSelected ? 'location' : false}
       href={href}
       css={{
         background: 'transparent',
@@ -30,7 +34,8 @@ const NavItem = ({ href, children }: NavItemProps) => {
         display: 'block',
         fontWeight: typography.fontWeight.medium,
         marginBottom: spacing.xsmall,
-        padding: `${spacing.small}px ${spacing.medium}px`,
+        marginRight: spacing.xlarge,
+        padding: `${spacing.small}px ${spacing.xlarge}px`,
         position: 'relative',
         textDecoration: 'none',
 
@@ -39,7 +44,7 @@ const NavItem = ({ href, children }: NavItemProps) => {
           color: palette.blue500,
         },
 
-        '&[data-selected=true]': {
+        '&[aria-current=location]': {
           background: palette.neutral200,
           color: palette.neutral900,
         },
@@ -51,6 +56,7 @@ const NavItem = ({ href, children }: NavItemProps) => {
 };
 
 const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) => {
+  const { spacing } = useTheme();
   return (
     <div
       css={{
@@ -58,13 +64,53 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        padding: spacing.xlarge,
       }}
     >
-      <Box paddingY="medium">
-        Hello <strong>{item.label}</strong>
-      </Box>
-      <SignoutButton />
+      <div>
+        Signed in as <strong>{item.label}</strong>
+      </div>
+      <Popover
+        placement="bottom"
+        triggerRenderer={({ triggerProps }) => (
+          <Button style={{ padding: 0, width: 40 }} {...triggerProps}>
+            <MoreHorizontalIcon />
+          </Button>
+        )}
+      >
+        <Stack width={220} height={80} gap="medium" padding="large" dividers="between">
+          <PopoverLink target="_blank" href="/api/graphql">
+            API Explorer
+          </PopoverLink>
+          <PopoverLink target="_blank" href="https://github.com/keystonejs/keystone">
+            GitHub Repository
+          </PopoverLink>
+          <PopoverLink target="_blank" href="https://www.keystonejs.com/documentation">
+            Keystone Documentation
+          </PopoverLink>
+          <SignoutButton />
+        </Stack>
+      </Popover>
     </div>
+  );
+};
+
+const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement>) => {
+  const { typography } = useTheme();
+
+  return (
+    <a
+      css={{
+        alignItems: 'center',
+        display: 'flex',
+        fontSize: typography.fontSize.small,
+        textDecoration: 'none',
+      }}
+      {...props}
+    >
+      {children}
+      <ChevronRightIcon size="small" />
+    </a>
   );
 };
 
@@ -74,7 +120,6 @@ export const Navigation = () => {
     authenticatedItem,
     visibleLists,
   } = useKeystone();
-  const { spacing } = useTheme();
 
   return (
     <div
@@ -82,7 +127,6 @@ export const Navigation = () => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: spacing.large,
       }}
     >
       <Stack gap="medium">
