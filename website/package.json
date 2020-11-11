@@ -52,7 +52,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.get": "^4.4.2",
     "lodash.throttle": "^4.1.1",
-    "mdast-util-to-string": "^1.1.0",
+    "mdast-util-to-string": "^2.0.0",
     "prism-react-renderer": "^1.1.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
