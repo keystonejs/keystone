@@ -14,13 +14,9 @@ import {
   ListMeta,
 } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
-<<<<<<< HEAD
 import { Inline, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
-=======
-import { CreateItemDrawer } from '@keystone-next/admin-ui/components';
->>>>>>> little fixes
 import { DrawerController } from '@keystone-ui/modals';
 import { Tooltip } from '@keystone-ui/tooltip';
 
@@ -140,10 +136,9 @@ export const Field = ({
           foreignList={foreignList}
           localList={localList}
         />
-<<<<<<< HEAD
       ) : onChange ? (
         <Fragment>
-          <Stack across gap="medium" css={{ display: 'inline-flex' }}>
+          <Stack gap="medium">
             <RelationshipSelect
               controlShouldRenderValue
               autoFocus={autoFocus}
@@ -156,37 +151,9 @@ export const Field = ({
                       value: value.value,
                       onChange(newItems) {
                         onChange({
-=======
-      ) : (
-        <Stack gap="medium">
-          <RelationshipSelect
-            controlShouldRenderValue
-            autoFocus={autoFocus}
-            isDisabled={onChange === undefined}
-            list={foreignList}
-            state={
-              value.kind === 'many'
-                ? {
-                    kind: 'many',
-                    value: value.value,
-                    onChange(newItems) {
-                      onChange?.({
-                        ...value,
-                        value: newItems,
-                      });
-                    },
-                  }
-                : {
-                    kind: 'one',
-                    value: value.value,
-                    onChange(newVal) {
-                      if (value.kind === 'one') {
-                        onChange?.({
->>>>>>> little fixes
                           ...value,
                           value: newItems,
                         });
-<<<<<<< HEAD
                       },
                     }
                   : {
@@ -203,88 +170,54 @@ export const Field = ({
                     }
               }
             />
-            {!field.hideCreate && (
-              <Tooltip content={`Create a ${foreignList.singular} and add it to this relationship`}>
-                {props => {
-                  return (
-                    <Button
-                      disabled={isDrawerOpen}
-                      {...props}
-                      onClick={() => {
-                        setIsDrawerOpen(true);
-                      }}
-                    >
-                      <PlusIcon css={{ marginLeft: -4, marginRight: -4 }} />
-                    </Button>
-                  );
-                }}
-              </Tooltip>
-=======
-                      }
-                    },
-                  }
-            }
-          />
-          <Stack across gap="medium">
-            {!field.hideCreate && (
-              <Button
-                size="small"
-                disabled={isDrawerOpen}
-                onClick={() => {
-                  setIsDrawerOpen(true);
-                }}
-              >
-                Create related {foreignList.singular}
-              </Button>
->>>>>>> little fixes
-            )}
-            {keystone.authenticatedItem.state === 'authenticated' &&
-              keystone.authenticatedItem.listKey === field.refListKey && (
+            <Stack across gap="medium">
+              {!field.hideCreate && (
                 <Button
-<<<<<<< HEAD
-=======
                   size="small"
->>>>>>> little fixes
-                  isDisabled={onChange === undefined}
+                  disabled={isDrawerOpen}
                   onClick={() => {
-                    if (keystone.authenticatedItem.state === 'authenticated') {
-                      const val = {
-                        label: keystone.authenticatedItem.label,
-                        id: keystone.authenticatedItem.id,
-                      };
-                      if (value.kind === 'many') {
-<<<<<<< HEAD
-                        onChange({
-=======
-                        onChange?.({
->>>>>>> little fixes
-                          ...value,
-                          value: [...value.value, val],
-                        });
-                      } else {
-<<<<<<< HEAD
-                        onChange({
-=======
-                        onChange?.({
->>>>>>> little fixes
-                          ...value,
-                          value: val,
-                        });
-                      }
-                    }
+                    setIsDrawerOpen(true);
                   }}
                 >
-                  {value.kind === 'many' ? 'Add ' : 'Set as '}
-                  {keystone.authenticatedItem.label}
+                  Create related {foreignList.singular}
                 </Button>
               )}
-            {!!(value.kind === 'many'
-              ? value.value.length
-              : value.kind === 'one' && value.value) && (
-              <LinkToRelatedItems list={foreignList} value={value} />
-            )}
+              {keystone.authenticatedItem.state === 'authenticated' &&
+                keystone.authenticatedItem.listKey === field.refListKey && (
+                  <Button
+                    size="small"
+                    isDisabled={onChange === undefined}
+                    onClick={() => {
+                      if (keystone.authenticatedItem.state === 'authenticated') {
+                        const val = {
+                          label: keystone.authenticatedItem.label,
+                          id: keystone.authenticatedItem.id,
+                        };
+                        if (value.kind === 'many') {
+                          onChange({
+                            ...value,
+                            value: [...value.value, val],
+                          });
+                        } else {
+                          onChange({
+                            ...value,
+                            value: val,
+                          });
+                        }
+                      }
+                    }}
+                  >
+                    {value.kind === 'many' ? 'Add ' : 'Set as '}
+                    {keystone.authenticatedItem.label}
+                  </Button>
+                )}
+              {!!(value.kind === 'many'
+                ? value.value.length
+                : value.kind === 'one' && value.value) && (
+                <LinkToRelatedItems list={foreignList} value={value} />
+              )}
+            </Stack>
           </Stack>
-<<<<<<< HEAD
           <DrawerController isOpen={isDrawerOpen}>
             <CreateItemDrawer
               listKey={foreignList.key}
@@ -310,9 +243,6 @@ export const Field = ({
         </Fragment>
       ) : (
         <RelationshipDisplay value={value} list={foreignList} />
-=======
-        </Stack>
->>>>>>> little fixes
       )}
     </FieldContainer>
   );

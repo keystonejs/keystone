@@ -4028,6 +4028,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.6.tgz#146d3da57b3c636cc0d1769396ce1cfa8991147f"
   integrity sha512-6QlRuqsQ/Ox/aJEQWBEJG7A9+u7oSYl3mem/K8IzxXG/kAGbV1YPD9Bg9Zw3vyxC/YP+zONKwy8hGkSt1jxFMw==
 
+"@types/node@>=8.1.0":
+  version "14.14.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.7.tgz#8ea1e8f8eae2430cf440564b98c6dfce1ec5945d"
+  integrity sha512-Zw1vhUSQZYw+7u5dAwNbIA9TuTotpzY/OF7sJM9FqPOF3SPjKnxrjoTktXDZgUjybf4cWVBP7O8wvKdSaGHweg==
+
 "@types/node@^10.1.0":
   version "10.17.44"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.44.tgz#3945e6b702cb6403f22b779c8ea9e5c3f44ead40"
@@ -17878,6 +17883,11 @@ node-res@^5.0.1:
     on-finished "^2.3.0"
     vary "^1.1.2"
 
+nodemailer@^6.4.15:
+  version "6.4.15"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.4.15.tgz#da5dbb78b8376e34c232c6aa3d2d65cfe17440e9"
+  integrity sha512-2/z13dBTWdgTRlxVMAK6C13dCI22GEShET4+jFLlQsxpblxYhojnucfcTZO1QBu5CsHvABsBj2JCGO3vl0HSQA==
+
 noms@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/noms/-/noms-0.0.0.tgz#da8ebd9f3af9d6760919b27d9cdc8092a7332859"
@@ -20737,7 +20747,7 @@ qs@6.7.0:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
   integrity sha512-VCdBRNFTX1fyE7Nb6FYoURo/SPe62QCaAyzJvUjwRaIsc+NePBEniHlvxFmmX56+HZphIGtV0XeCirBtpDrTyQ==
 
-qs@^6.9.4:
+qs@^6.6.0, qs@^6.9.4:
   version "6.9.4"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.9.4.tgz#9090b290d1f91728d3c22e54843ca44aea5ab687"
   integrity sha512-A1kFqHekCTM7cz0udomYUoYNWjBebHm/5wzU/XqrBRBNWectVH0QIiN+NEcZ0Dte5hvzHwbr8+XQmguPhJ6WdQ==
@@ -23845,6 +23855,14 @@ strip-outer@^1.0.0:
   integrity sha512-k55yxKHwaXnpYGsOzg4Vl8+tDrWylxDEpknGjhTiZB8dFRU5rTo9CAzeycivxV3s+zlTKwrs6WxMxR95n26kwg==
   dependencies:
     escape-string-regexp "^1.0.2"
+
+stripe@^8.121.0:
+  version "8.121.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.121.0.tgz#45f073998e3d987647d48a2ec575b78e3ab374c9"
+  integrity sha512-Uswmut57hVdyPrb+EJUTWbrLcTIEL4LS5T6UQZPO5AJNYT0PGHajgY1esQwmV7yVBL+Kgt3y/16zIAY/gAwifg==
+  dependencies:
+    "@types/node" ">=8.1.0"
+    qs "^6.6.0"
 
 style-loader@1.2.1:
   version "1.2.1"
