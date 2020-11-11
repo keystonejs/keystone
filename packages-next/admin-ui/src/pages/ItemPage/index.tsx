@@ -58,10 +58,12 @@ function ItemForm({
       errorPolicy: 'all',
     }
   );
-
-  if (data) {
-    itemGetter = makeDataGetter(data, error?.graphQLErrors).get('item');
-  }
+  itemGetter =
+    useMemo(() => {
+      if (data) {
+        return makeDataGetter(data, error?.graphQLErrors).get('item');
+      }
+    }, [data, error]) ?? itemGetter;
 
   const [state, setValue] = useState(() => {
     const value = deserializeValue(list.fields, itemGetter);
@@ -71,6 +73,7 @@ function ItemForm({
     };
   });
   if (
+    !loading &&
     state.item !== itemGetter.data &&
     (itemGetter.errors || []).every(x => x.path?.length !== 1)
   ) {
