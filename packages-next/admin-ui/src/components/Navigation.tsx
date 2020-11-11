@@ -73,7 +73,11 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
       <Popover
         placement="bottom"
         triggerRenderer={({ triggerProps }) => (
-          <Button style={{ padding: 0, width: 40 }} {...triggerProps}>
+          <Button
+            style={{ padding: 0, width: 40 }}
+            aria-label="Links and signout"
+            {...triggerProps}
+          >
             <MoreHorizontalIcon />
           </Button>
         )}
@@ -129,38 +133,36 @@ export const Navigation = () => {
         justifyContent: 'center',
       }}
     >
-      <Stack gap="medium">
-        <div>
-          {authenticatedItem.state === 'authenticated' && (
-            <AuthenticatedItem item={authenticatedItem} />
-          )}
-          <NavItem href="/">Dashboard</NavItem>
-          {(() => {
-            if (visibleLists.state === 'loading') return null;
-            if (visibleLists.state === 'error') {
-              return (
-                <span css={{ color: 'red' }}>
-                  {visibleLists.error instanceof Error
-                    ? visibleLists.error.message
-                    : visibleLists.error[0].message}
-                </span>
-              );
+      {authenticatedItem.state === 'authenticated' && (
+        <AuthenticatedItem item={authenticatedItem} />
+      )}
+      <nav>
+        <NavItem href="/">Dashboard</NavItem>
+        {(() => {
+          if (visibleLists.state === 'loading') return null;
+          if (visibleLists.state === 'error') {
+            return (
+              <span css={{ color: 'red' }}>
+                {visibleLists.error instanceof Error
+                  ? visibleLists.error.message
+                  : visibleLists.error[0].message}
+              </span>
+            );
+          }
+          return Object.keys(lists).map(key => {
+            if (!visibleLists.lists.has(key)) {
+              return null;
             }
-            return Object.keys(lists).map(key => {
-              if (!visibleLists.lists.has(key)) {
-                return null;
-              }
 
-              const list = lists[key];
-              return (
-                <NavItem key={key} href={`/${list.path}`}>
-                  {lists[key].label}
-                </NavItem>
-              );
-            });
-          })()}
-        </div>
-      </Stack>
+            const list = lists[key];
+            return (
+              <NavItem key={key} href={`/${list.path}`}>
+                {lists[key].label}
+              </NavItem>
+            );
+          });
+        })()}
+      </nav>
     </div>
   );
 };

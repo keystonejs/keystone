@@ -54,7 +54,7 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
   const { colors, spacing } = useTheme();
 
   return (
-    <div
+    <main
       css={{
         backgroundColor: colors.background,
         boxSizing: 'border-box',
