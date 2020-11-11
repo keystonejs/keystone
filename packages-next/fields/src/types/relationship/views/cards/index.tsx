@@ -110,7 +110,7 @@ export function Cards({
     <Stack gap="medium">
       {[...value.currentIds].map(id => {
         const itemGetter = items[id];
-        return value.itemsBeingEdited.has(id) ? (
+        return value.itemsBeingEdited.has(id) && onChange !== undefined ? (
           <CardContainer mode="edit">
             <InlineEdit
               list={foreignList}
