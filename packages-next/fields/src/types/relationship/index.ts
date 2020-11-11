@@ -66,6 +66,9 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
     typeof import('@keystone-next/fields/types/relationship/views').controller
   >[0]['fieldMeta'] {
     const refListKey = config.ref.split('.')[0];
+    if (!adminMeta.lists[refListKey]) {
+      throw new Error(`The ref [${config.ref}] on relationship [${listKey}.${path}] is invalid`);
+    }
     return {
       refListKey,
       many: config.many ?? false,
