@@ -29,19 +29,19 @@ const NavItem = ({ href, children }: NavItemProps) => {
         color: palette.neutral700,
         display: 'block',
         fontWeight: typography.fontWeight.medium,
-        marginBottom: 1,
+        marginBottom: spacing.xsmall,
         padding: `${spacing.small}px ${spacing.medium}px`,
         position: 'relative',
         textDecoration: 'none',
 
         ':hover': {
-          background: palette.neutral200,
-          color: palette.blue600,
+          background: palette.blue50,
+          color: palette.blue500,
         },
 
         '&[data-selected=true]': {
-          background: palette.neutral300,
-          color: palette.neutral800,
+          background: palette.neutral200,
+          color: palette.neutral900,
         },
       }}
     >

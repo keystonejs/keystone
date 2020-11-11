@@ -436,7 +436,7 @@ const fields: FieldTokens = {
   controlBorderWidth: 2,
   controlForeground: palette.blue500,
   // iconColor: palette.neutral500, // TODO
-  inputBackground: palette.neutral200,
+  inputBackground: 'white',
   inputBorderColor: palette.neutral300,
   inputBorderRadius: radii.small,
   inputBorderWidth: 1,

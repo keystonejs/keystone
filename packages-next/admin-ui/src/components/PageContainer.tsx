@@ -21,7 +21,7 @@ const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
   return (
     <div
       css={{
-        backgroundColor: colors.backgroundMuted,
+        // backgroundColor: colors.backgroundMuted,
         display: 'grid',
         gridTemplateColumns: `minmax(280px, 320px) auto`,
         gridTemplateRows: `${HEADER_HEIGHT}px auto`,
@@ -82,7 +82,7 @@ export const PageContainer = ({ children, header }: PageContainerProps) => {
       <div
         css={{
           alignItems: 'center',
-          backgroundColor: colors.backgroundMuted,
+          // backgroundColor: colors.backgroundMuted,
           borderRight: `1px solid ${colors.border}`,
           borderBottom: `1px solid ${colors.border}`,
           display: 'flex',
