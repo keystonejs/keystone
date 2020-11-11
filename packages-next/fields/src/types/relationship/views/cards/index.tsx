@@ -204,18 +204,20 @@ export function Cards({
                   )}
                 </Tooltip>
               )}
-              <Button
-                css={{ textDecoration: 'none' }}
-                as={Link}
-                href={`/${foreignList.path}/${id}`}
-              >
-                View Item Details
-              </Button>
+              {field.display.linkToItem && (
+                <Button
+                  css={{ textDecoration: 'none' }}
+                  as={Link}
+                  href={`/${foreignList.path}/${id}`}
+                >
+                  View Item Details
+                </Button>
+              )}
             </Stack>
           </CardContainer>
         );
       })}
-      {onChange === undefined ? null : field.display.linkToItem && showConnectItems ? (
+      {onChange === undefined ? null : field.display.inlineConnect && showConnectItems ? (
         <CardContainer mode="edit">
           <Stack gap="small" marginY="medium" across>
             <RelationshipSelect
@@ -309,7 +311,7 @@ export function Cards({
             }}
           />
         </CardContainer>
-      ) : (
+      ) : field.display.inlineCreate || field.display.inlineConnect ? (
         <CardContainer mode="create">
           <Stack gap="small" marginY="medium" across>
             {field.display.inlineCreate && (
@@ -326,17 +328,19 @@ export function Cards({
                 Create {foreignList.singular}
               </Button>
             )}
-            <Button
-              onClick={() => {
-                setShowConnectItems(true);
-                setHideConnectItemsLabel('Cancel');
-              }}
-            >
-              Link existing {foreignList.singular}
-            </Button>
+            {field.display.inlineConnect && (
+              <Button
+                onClick={() => {
+                  setShowConnectItems(true);
+                  setHideConnectItemsLabel('Cancel');
+                }}
+              >
+                Link existing {foreignList.singular}
+              </Button>
+            )}
           </Stack>
         </CardContainer>
-      )}
+      ) : null}
       {forceValidation && (
         <span css={{ color: 'red' }}>
           You must finish creating and editing any related {foreignList.label.toLowerCase()} before
