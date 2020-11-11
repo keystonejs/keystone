@@ -1,7 +1,5 @@
 /* @jsx jsx */
 
-import { Fragment } from 'react';
-
 import { CellContainer } from '@keystone-next/admin-ui/components';
 import {
   CardValueComponent,
