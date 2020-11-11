@@ -111,7 +111,7 @@ export function Cards({
       {[...value.currentIds].map(id => {
         const itemGetter = items[id];
         return value.itemsBeingEdited.has(id) && onChange !== undefined ? (
-          <CardContainer mode="edit">
+          <CardContainer mode="edit" key={id}>
             <InlineEdit
               list={foreignList}
               fields={field.display.inlineEdit!.fields}

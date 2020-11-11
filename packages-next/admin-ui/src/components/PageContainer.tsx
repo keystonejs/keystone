@@ -17,7 +17,6 @@ type PageContainerProps = {
 export const HEADER_HEIGHT = 80;
 
 const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
-  const { colors } = useTheme();
   return (
     <div
       css={{
@@ -82,7 +81,6 @@ export const PageContainer = ({ children, header }: PageContainerProps) => {
       <div
         css={{
           alignItems: 'center',
-          // backgroundColor: colors.backgroundMuted,
           borderRight: `1px solid ${colors.border}`,
           borderBottom: `1px solid ${colors.border}`,
           display: 'flex',

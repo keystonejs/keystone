@@ -16,9 +16,7 @@ import {
 import { Button } from '@keystone-ui/button';
 import { Inline, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
 import { DrawerController } from '@keystone-ui/modals';
-import { Tooltip } from '@keystone-ui/tooltip';
 
 import { Cards } from './cards';
 import { RelationshipSelect } from './RelationshipSelect';
