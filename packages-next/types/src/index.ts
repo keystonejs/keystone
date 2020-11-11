@@ -10,7 +10,7 @@ import type { ListHooks } from './schema/hooks';
 import { SessionStrategy } from './session';
 import { SchemaConfig } from './schema';
 import { IncomingMessage, ServerResponse } from 'http';
-import { GraphQLSchema } from 'graphql';
+import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import { BaseListMeta, SerializedAdminMeta } from './admin-meta';
 export * from './schema';
 export * from './utils';
@@ -232,6 +232,23 @@ export type BaseKeystoneList = {
     context: any,
     mutationState?: any
   ): Promise<Record<string, any>[]>;
+};
+
+type GraphQLExecutionArguments = {
+  context?: any;
+  query: string | DocumentNode;
+  variables: Record<string, any>;
+};
+export type KeystoneGraphQLAPI<
+  // this is here because it will be used soon
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
+> = {
+  createContext: (args: { sessionContext?: SessionContext; skipAccessControl?: boolean }) => any;
+  schema: GraphQLSchema;
+
+  run: (args: GraphQLExecutionArguments) => Promise<Record<string, any>>;
+  raw: (args: GraphQLExecutionArguments) => Promise<ExecutionResult>;
 };
 
 export type KeystoneItemAPI<
