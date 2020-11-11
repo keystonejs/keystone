@@ -76,8 +76,9 @@ export type MaybeSessionFunction<T extends string | boolean> =
   | ((args: { session: any }) => MaybePromise<T>);
 
 export type FieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
-  hooks?: ListHooks<TGeneratedListTypes>;
   access?: FieldAccessControl<TGeneratedListTypes>;
+  hooks?: ListHooks<TGeneratedListTypes>;
+  label?: string;
   ui?: {
     views?: string;
     description?: string;
