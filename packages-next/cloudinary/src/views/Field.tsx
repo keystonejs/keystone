@@ -49,49 +49,48 @@ export function Field({
       {value.kind === 'from-server' || value.kind === 'upload' ? (
         <Stack gap="small">
           {imagePath && errorMessage === undefined && <Image src={imagePath} alt={field.path} />}
-          <Stack across gap="small" align="center">
-            <Button
-              disabled={onChange === undefined}
-              onClick={() => {
-                inputRef.current?.click();
-              }}
-            >
-              Change Image
-            </Button>
-            {value.kind === 'from-server' && (
+          {onChange && (
+            <Stack across gap="small" align="center">
               <Button
-                disabled={onChange === undefined}
-                tone="negative"
                 onClick={() => {
-                  onChange?.({ kind: 'remove', previous: value });
+                  inputRef.current?.click();
                 }}
               >
-                Remove
+                Change Image
               </Button>
-            )}
-            {value.kind === 'upload' && (
-              <Button
-                disabled={onChange === undefined}
-                tone="negative"
-                onClick={() => {
-                  onChange?.(value.previous);
-                }}
-              >
-                Cancel
-              </Button>
-            )}
-            {errorMessage ? (
-              <Pill tone="negative" weight="light">
-                {errorMessage}
-              </Pill>
-            ) : (
-              value.kind === 'upload' && (
-                <Pill weight="light" tone="positive">
-                  Save to upload this image
+              {value.kind === 'from-server' && (
+                <Button
+                  tone="negative"
+                  onClick={() => {
+                    onChange({ kind: 'remove', previous: value });
+                  }}
+                >
+                  Remove
+                </Button>
+              )}
+              {value.kind === 'upload' && (
+                <Button
+                  tone="negative"
+                  onClick={() => {
+                    onChange(value.previous);
+                  }}
+                >
+                  Cancel
+                </Button>
+              )}
+              {errorMessage ? (
+                <Pill tone="negative" weight="light">
+                  {errorMessage}
                 </Pill>
-              )
-            )}
-          </Stack>
+              ) : (
+                value.kind === 'upload' && (
+                  <Pill weight="light" tone="positive">
+                    Save to upload this image
+                  </Pill>
+                )
+              )}
+            </Stack>
+          )}
         </Stack>
       ) : (
         <Stack css={{ alignItems: 'center' }} gap="small" across>

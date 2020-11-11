@@ -39,7 +39,7 @@ export const Field = ({
             autoFocus={autoFocus}
             disabled={onChange === undefined}
             onChange={event => {
-              onChange?.(event.target.value);
+              onChange(event.target.value);
             }}
             onBlur={() => {
               setTouched(true);

@@ -122,7 +122,7 @@ export function Cards({
                 });
                 const itemsBeingEdited = new Set(value.itemsBeingEdited);
                 itemsBeingEdited.delete(id);
-                onChange?.({
+                onChange({
                   ...value,
                   itemsBeingEdited,
                 });
@@ -132,7 +132,7 @@ export function Cards({
               onCancel={() => {
                 const itemsBeingEdited = new Set(value.itemsBeingEdited);
                 itemsBeingEdited.delete(id);
-                onChange?.({
+                onChange({
                   ...value,
                   itemsBeingEdited,
                 });
@@ -169,11 +169,11 @@ export function Cards({
               );
             })}
             <Stack across gap="medium">
-              {field.display.inlineEdit && (
+              {field.display.inlineEdit && onChange !== undefined && (
                 <Button
                   disabled={onChange === undefined}
                   onClick={() => {
-                    onChange?.({
+                    onChange({
                       ...value,
                       itemsBeingEdited: new Set([...value.itemsBeingEdited, id]),
                     });
@@ -183,7 +183,7 @@ export function Cards({
                   Edit
                 </Button>
               )}
-              {field.display.removeMode === 'disconnect' && (
+              {field.display.removeMode === 'disconnect' && onChange !== undefined && (
                 <Tooltip content="This item will not be deleted. It will only be removed from this field.">
                   {props => (
                     <Button
@@ -191,7 +191,7 @@ export function Cards({
                       onClick={() => {
                         const currentIds = new Set(value.currentIds);
                         currentIds.delete(id);
-                        onChange?.({
+                        onChange({
                           ...value,
                           currentIds,
                         });
@@ -215,8 +215,7 @@ export function Cards({
           </CardContainer>
         );
       })}
-
-      {field.display.linkToItem && showConnectItems ? (
+      {onChange === undefined ? null : field.display.linkToItem && showConnectItems ? (
         <CardContainer mode="edit">
           <Stack gap="small" marginY="medium" across>
             <RelationshipSelect
@@ -262,7 +261,7 @@ export function Cards({
                         }
                         if (newCurrentIds.size) {
                           setItems(newItems);
-                          onChange?.({
+                          onChange({
                             ...value,
                             currentIds: newCurrentIds,
                           });
@@ -297,12 +296,12 @@ export function Cards({
             fields={field.display.inlineCreate!.fields}
             list={foreignList}
             onCancel={() => {
-              onChange?.({ ...value, itemBeingCreated: false });
+              onChange({ ...value, itemBeingCreated: false });
             }}
             onCreate={itemGetter => {
               const id = itemGetter.data.id;
               setItems({ ...items, [id]: itemGetter });
-              onChange?.({
+              onChange({
                 ...value,
                 itemBeingCreated: false,
                 currentIds: field.many ? new Set([...value.currentIds, id]) : new Set([id]),
@@ -318,7 +317,7 @@ export function Cards({
                 disabled={onChange === undefined}
                 tone="positive"
                 onClick={() => {
-                  onChange?.({
+                  onChange({
                     ...value,
                     itemBeingCreated: true,
                   });
