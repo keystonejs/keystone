@@ -360,7 +360,7 @@ export const controller = (
             mode: 'cards',
             cardFields: config.fieldMeta.cardFields,
             inlineCreate: config.fieldMeta.inlineCreate,
-            inlineEdit: config.fieldMeta.inlineCreate,
+            inlineEdit: config.fieldMeta.inlineEdit,
             linkToItem: config.fieldMeta.linkToItem,
             removeMode: config.fieldMeta.removeMode,
             inlineConnect: config.fieldMeta.inlineConnect,
