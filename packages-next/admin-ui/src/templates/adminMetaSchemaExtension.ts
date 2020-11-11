@@ -223,9 +223,9 @@ export function adminMetaSchemaExtension({
         async fieldMode(
           rootVal: FieldIdentifier & { itemId: string },
           args: any,
-          { crud, session }: any
+          { lists, session }: any
         ) {
-          const item = await crud[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
+          const item = await lists[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
 
           return runMaybeFunction(
             config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.itemView
