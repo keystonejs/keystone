@@ -1,0 +1,47 @@
+import 'dotenv/config';
+
+import { config } from '@keystone-next/keystone/schema';
+import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
+import { lists } from './schema';
+import { createAuth } from '@keystone-next/auth';
+
+/*
+  TODO
+    - [ ] Configure send forgotten password
+    - [ ] Work out a good approach to seeding data
+*/
+
+const databaseUrl = process.env.DATABASE_URL || 'mongodb://localhost/keystone-examples-ecommerce';
+const sessionConfig = {
+  maxAge: 60 * 60 * 24 * 30, // 30 days
+  secret: process.env.COOKIE_SECRET || '',
+};
+
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+  initFirstItem: {
+    fields: ['name', 'email', 'password'],
+    itemData: {
+      permissions: 'ADMIN',
+    },
+  },
+});
+
+export default withAuth(
+  config({
+    name: 'KeystoneJS eCommerce Example',
+    db: {
+      adapter: 'mongoose',
+      url: databaseUrl,
+    },
+    lists,
+    ui: {
+      isAccessAllowed: ({ session }) => !!session,
+    },
+    session: withItemData(statelessSessions(sessionConfig), {
+      User: 'name roles { canCreateProducts canCreateUsers }',
+    }),
+  })
+);
