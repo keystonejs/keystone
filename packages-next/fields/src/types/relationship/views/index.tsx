@@ -14,9 +14,13 @@ import {
   ListMeta,
 } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
+<<<<<<< HEAD
 import { Inline, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
+=======
+import { CreateItemDrawer } from '@keystone-next/admin-ui/components';
+>>>>>>> little fixes
 import { DrawerController } from '@keystone-ui/modals';
 import { Tooltip } from '@keystone-ui/tooltip';
 
@@ -30,11 +34,19 @@ function LinkToRelatedItems({
   value: FieldProps<typeof controller>['value'] & { kind: 'many' | 'one' };
   list: ListMeta;
 }) {
+  const commonProps = {
+    size: 'small',
+    tone: 'active',
+    weight: 'link',
+  } as const;
+
+  // QUESTION: should these use router `Link`?
+
   if (value.kind === 'many') {
     return (
       <Button
+        {...commonProps}
         as="a"
-        css={{ textDecoration: 'none' }}
         // What happens when there are 10,000 ids? The URL would be too
         // big, so we arbitrarily limit it to the first 100
         // TODO: we should be able to filter by this, no?
@@ -43,18 +55,15 @@ function LinkToRelatedItems({
           .map(({ id }) => id)
           .join(',')}"`}
       >
-        View List of Related Items
+        View related items
       </Button>
     );
   }
+
+  // QUESTION: why is the target `_blank` here?
   return (
-    <Button
-      css={{ textDecoration: 'none' }}
-      as="a"
-      href={`/${list.path}/${value.value?.id}`}
-      target="_blank"
-    >
-      View Item Details
+    <Button {...commonProps} as="a" href={`/${list.path}/${value.value?.id}`} target="_blank">
+      View item details
     </Button>
   );
 }
@@ -131,6 +140,7 @@ export const Field = ({
           foreignList={foreignList}
           localList={localList}
         />
+<<<<<<< HEAD
       ) : onChange ? (
         <Fragment>
           <Stack across gap="medium" css={{ display: 'inline-flex' }}>
@@ -146,9 +156,37 @@ export const Field = ({
                       value: value.value,
                       onChange(newItems) {
                         onChange({
+=======
+      ) : (
+        <Stack gap="medium">
+          <RelationshipSelect
+            controlShouldRenderValue
+            autoFocus={autoFocus}
+            isDisabled={onChange === undefined}
+            list={foreignList}
+            state={
+              value.kind === 'many'
+                ? {
+                    kind: 'many',
+                    value: value.value,
+                    onChange(newItems) {
+                      onChange?.({
+                        ...value,
+                        value: newItems,
+                      });
+                    },
+                  }
+                : {
+                    kind: 'one',
+                    value: value.value,
+                    onChange(newVal) {
+                      if (value.kind === 'one') {
+                        onChange?.({
+>>>>>>> little fixes
                           ...value,
                           value: newItems,
                         });
+<<<<<<< HEAD
                       },
                     }
                   : {
@@ -181,10 +219,32 @@ export const Field = ({
                   );
                 }}
               </Tooltip>
+=======
+                      }
+                    },
+                  }
+            }
+          />
+          <Stack across gap="medium">
+            {!field.hideCreate && (
+              <Button
+                size="small"
+                disabled={isDrawerOpen}
+                onClick={() => {
+                  setIsDrawerOpen(true);
+                }}
+              >
+                Create related {foreignList.singular}
+              </Button>
+>>>>>>> little fixes
             )}
             {keystone.authenticatedItem.state === 'authenticated' &&
               keystone.authenticatedItem.listKey === field.refListKey && (
                 <Button
+<<<<<<< HEAD
+=======
+                  size="small"
+>>>>>>> little fixes
                   isDisabled={onChange === undefined}
                   onClick={() => {
                     if (keystone.authenticatedItem.state === 'authenticated') {
@@ -193,12 +253,20 @@ export const Field = ({
                         id: keystone.authenticatedItem.id,
                       };
                       if (value.kind === 'many') {
+<<<<<<< HEAD
                         onChange({
+=======
+                        onChange?.({
+>>>>>>> little fixes
                           ...value,
                           value: [...value.value, val],
                         });
                       } else {
+<<<<<<< HEAD
                         onChange({
+=======
+                        onChange?.({
+>>>>>>> little fixes
                           ...value,
                           value: val,
                         });
@@ -216,6 +284,7 @@ export const Field = ({
               <LinkToRelatedItems list={foreignList} value={value} />
             )}
           </Stack>
+<<<<<<< HEAD
           <DrawerController isOpen={isDrawerOpen}>
             <CreateItemDrawer
               listKey={foreignList.key}
@@ -241,6 +310,9 @@ export const Field = ({
         </Fragment>
       ) : (
         <RelationshipDisplay value={value} list={foreignList} />
+=======
+        </Stack>
+>>>>>>> little fixes
       )}
     </FieldContainer>
   );

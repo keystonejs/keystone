@@ -27,7 +27,7 @@ type ListCardProps = {
 };
 
 const ListCard = ({ listKey, count }: ListCardProps) => {
-  const { colors, palette, shadow, spacing, radii } = useTheme();
+  const { colors, palette, radii, spacing } = useTheme();
   const list = useList(listKey);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const router = useRouter();
@@ -37,14 +37,15 @@ const ListCard = ({ listKey, count }: ListCardProps) => {
         href={list.path}
         css={{
           backgroundColor: colors.background,
-          borderWidth: 1,
-          borderColor: palette.neutral200,
+          borderColor: colors.border,
           borderRadius: radii.medium,
-          boxShadow: shadow.s100,
-          textDecoration: 'none',
+          borderWidth: 1,
+          // boxShadow: shadow.s100,
           display: 'inline-block',
-          padding: spacing.large,
           minWidth: 280,
+          padding: spacing.large,
+          textDecoration: 'none',
+
           ':hover': {
             borderColor: palette.blue400,
           },
@@ -95,14 +96,14 @@ const CreateButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <button
       css={{
-        display: 'flex',
-        justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: '2px',
         border: 0,
+        borderRadius: '2px',
         color: 'white',
         cursor: 'pointer',
+        display: 'flex',
         height: 32,
+        justifyContent: 'center',
         outline: 0,
         position: 'absolute',
         right: theme.spacing.large,

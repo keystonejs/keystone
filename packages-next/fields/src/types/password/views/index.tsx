@@ -11,8 +11,12 @@ import {
   FieldProps,
 } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
+<<<<<<< HEAD
 import { jsx, Stack, VisuallyHidden } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
+=======
+import { EyeOffIcon } from '@keystone-ui/icons/icons/EyeOffIcon';
+>>>>>>> little fixes
 import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon';
 import { LockIcon } from '@keystone-ui/icons/icons/LockIcon';
 import { XIcon } from '@keystone-ui/icons/icons/XIcon';
@@ -101,7 +105,7 @@ export const Field = ({
               }}
             >
               <VisuallyHidden>{showInputValue ? 'Hide Text' : 'Show Text'}</VisuallyHidden>
-              {showInputValue ? <LockIcon /> : <EyeIcon />}
+              {showInputValue ? <EyeOffIcon /> : <EyeIcon />}
             </Button>
             <Button
               onClick={() => {

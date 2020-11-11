@@ -90,7 +90,7 @@ export const Navigation = () => {
           {authenticatedItem.state === 'authenticated' && (
             <AuthenticatedItem item={authenticatedItem} />
           )}
-          <NavItem href="/">Home</NavItem>
+          <NavItem href="/">Dashboard</NavItem>
           {(() => {
             if (visibleLists.state === 'loading') return null;
             if (visibleLists.state === 'error') {

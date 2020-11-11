@@ -215,7 +215,7 @@ export function Cards({
                   as={Link}
                   href={`/${foreignList.path}/${id}`}
                 >
-                  View Item Details
+                  View item details
                 </Button>
               )}
             </Stack>

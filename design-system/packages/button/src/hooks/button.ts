@@ -110,6 +110,8 @@ export function useButtonTokens({
     },
     link: {
       foreground: colors.foreground,
+      textDecoration: 'none',
+
       focus: {
         textDecoration: 'underline',
       },

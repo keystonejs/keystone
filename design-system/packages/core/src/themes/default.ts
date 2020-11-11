@@ -213,7 +213,7 @@ type ControlSize = {
 
 const controlSizes: { [key: string]: ControlSize } = {
   small: {
-    borderRadius: radii.small,
+    borderRadius: radii.xsmall,
     borderWidth: 1,
     gutter: spacing.xsmall,
     paddingX: spacing.medium,
@@ -225,7 +225,7 @@ const controlSizes: { [key: string]: ControlSize } = {
     indicatorFontSize: typography.fontSize.xxxsmall,
   },
   medium: {
-    borderRadius: radii.medium,
+    borderRadius: radii.small,
     borderWidth: 1,
     gutter: spacing.xsmall,
     paddingX: spacing.large,

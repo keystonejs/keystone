@@ -49,6 +49,7 @@ export const Drawer = ({
           borderBottom: `1px solid ${colors.border}`,
           boxSizing: 'border-box',
           display: 'flex',
+          flexShrink: 0,
           height: 80,
           padding: `${spacing.large}px ${spacing.xlarge}px`,
         }}
@@ -82,7 +83,7 @@ export const Drawer = ({
         </div>
       ) : (
         <Fragment>
-          <Divider marginX="xlarge" marginTop="medium" />
+          <Divider marginX="xlarge" />
           <Stack padding="xlarge" across gap="small">
             <Button tone="active" weight="bold" type="submit" isLoading={confirm.loading}>
               {confirm.label}
