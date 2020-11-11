@@ -339,7 +339,15 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
 
   const errorsFromMetaQuery = dataGetter.get('keystone').errors;
 
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createModalState, setModalState] = useState<
+    { state: 'closed' } | { state: 'open'; id: string }
+  >({
+    state: 'closed',
+  });
+
+  if (createModalState.state === 'open' && createModalState.id !== id) {
+    setModalState({ state: 'closed' });
+  }
 
   const hideCreate = data?.keystone.adminMeta.list.hideCreate;
 
@@ -362,9 +370,9 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
         </h3>
         {!hideCreate && (
           <Button
-            disabled={isCreateModalOpen}
+            disabled={createModalState.state === 'open'}
             onClick={() => {
-              setIsCreateModalOpen(true);
+              setModalState({ state: 'open', id: id as string });
             }}
             tone="positive"
           >
@@ -372,14 +380,15 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
           </Button>
         )}
       </Stack>
-      <DrawerController isOpen={isCreateModalOpen}>
+      <DrawerController isOpen={createModalState.state === 'open'}>
         <CreateItemDrawer
           listKey={listKey}
           onCreate={({ id }) => {
             router.push(`/${list.path}/[id]`, `/${list.path}/${id}`);
+            setModalState({ state: 'closed' });
           }}
           onClose={() => {
-            setIsCreateModalOpen(false);
+            setModalState({ state: 'closed' });
           }}
         />
       </DrawerController>
