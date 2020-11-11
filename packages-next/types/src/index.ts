@@ -252,7 +252,7 @@ export type KeystoneGraphQLAPI<
   raw: (args: GraphQLExecutionArguments) => Promise<ExecutionResult>;
 };
 
-export type KeystoneItemAPI<
+export type KeystoneListsAPI<
   KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
 > = {
   [Key in keyof KeystoneListsTypeInfo]: {
