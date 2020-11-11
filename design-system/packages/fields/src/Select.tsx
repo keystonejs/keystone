@@ -84,6 +84,7 @@ const useStyles = ({
       boxShadow: '0 4px 11px hsla(0, 0%, 0%, 0.1)',
       borderRadius: tokens.borderRadius,
     }),
+    menuPortal: (provided: any) => ({ ...provided, zIndex: 9999 }),
     multiValue: (provided: any) => ({
       ...provided,
       backgroundColor: palette.neutral300,
@@ -121,6 +122,8 @@ export function Select({
   const tokens = useInputTokens({ width: widthKey });
   const styles = useStyles({ tokens });
 
+  const portalTarget = typeof document !== 'undefined' ? document.body : undefined;
+
   return (
     <ReactSelect
       value={value}
@@ -135,6 +138,7 @@ export function Select({
       }}
       {...props}
       isMulti={false}
+      menuPortalTarget={portalTarget}
     />
   );
 }
