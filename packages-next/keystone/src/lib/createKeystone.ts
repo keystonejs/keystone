@@ -8,12 +8,13 @@ import type {
   Keystone,
   SessionContext,
   FieldType,
+  KeystoneGraphQLAPI,
 } from '@keystone-next/types';
 import { implementSession } from '../session';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { gql } from '../schema';
-import { GraphQLSchema, GraphQLObjectType } from 'graphql';
+import { GraphQLSchema, GraphQLObjectType, execute, parse } from 'graphql';
 import { mapSchema } from '@graphql-tools/utils';
 import { crudForList } from './crud-api';
 import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
@@ -172,16 +173,42 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     sessionContext?: SessionContext;
     skipAccessControl?: boolean;
   }) {
-    return {
+    const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, context, variables }) => {
+      if (typeof query === 'string') {
+        query = parse(query);
+      }
+      return Promise.resolve(
+        execute({
+          schema: graphQLSchema,
+          document: query,
+          contextValue: context ?? contextToReturn,
+          variableValues: variables,
+        })
+      );
+    };
+    const contextToReturn: any = {
       schemaName: 'public',
       ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
       crud,
       totalResults: 0,
       keystone,
+      graphql: {
+        createContext,
+        raw: rawGraphQL,
+        run: async args => {
+          let result = await rawGraphQL(args);
+          if (result.errors?.length) {
+            throw result.errors[0];
+          }
+          return result.data;
+        },
+        schema: graphQLSchema,
+      } as KeystoneGraphQLAPI<any>,
       maxTotalResults: (keystone as any).queryLimits.maxTotalResults,
       createContext,
       ...sessionContext,
     };
+    return contextToReturn;
   }
   let crud: Record<string, ReturnType<typeof crudForList>> = {};
   for (const listKey of Object.keys(adminMeta.lists)) {
