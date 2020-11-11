@@ -1,8 +1,5 @@
 /* @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-
 import {
   CardValueComponent,
   CellComponent,
@@ -10,6 +7,9 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-next/types';
+import { jsx } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+
 import { PrettyData } from './PrettyData';
 
 export const Field = ({ field, value }: FieldProps<typeof controller>) =>

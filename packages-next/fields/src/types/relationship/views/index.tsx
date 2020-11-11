@@ -1,8 +1,10 @@
 /* @jsx jsx */
 
-import { jsx, Stack, Inline } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+import { Fragment, ReactNode, useState } from 'react';
 
+import { CellContainer, CreateItemDrawer } from '@keystone-next/admin-ui/components';
+import { useKeystone, useList } from '@keystone-next/admin-ui/context';
+import { Link } from '@keystone-next/admin-ui/router';
 import {
   CardValueComponent,
   CellComponent,
@@ -11,16 +13,15 @@ import {
   FieldProps,
   ListMeta,
 } from '@keystone-next/types';
-import { RelationshipSelect } from './RelationshipSelect';
-import { useKeystone, useList } from '@keystone-next/admin-ui/context';
-import { Link } from '@keystone-next/admin-ui/router';
-import { Fragment, ReactNode, useState } from 'react';
 import { Button } from '@keystone-ui/button';
-import { Tooltip } from '@keystone-ui/tooltip';
+import { Inline, jsx, Stack, useTheme } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
-import { CreateItemDrawer } from '@keystone-next/admin-ui/components';
 import { DrawerController } from '@keystone-ui/modals';
+import { Tooltip } from '@keystone-ui/tooltip';
+
 import { Cards } from './cards';
+import { RelationshipSelect } from './RelationshipSelect';
 
 function LinkToRelatedItems({
   value,
@@ -248,19 +249,31 @@ export const Field = ({
 export const Cell: CellComponent<typeof controller> = ({ field, item }) => {
   const list = useList(field.refListKey);
   const data = item[field.path];
+  const items = (Array.isArray(data) ? data : [data]).filter(item => item);
+  const displayItems = items.length < 5 ? items : items.slice(0, 3);
+  const overflow = items.length < 5 ? 0 : items.length - 3;
+  const { colors } = useTheme();
+  const styles = {
+    color: colors.foreground,
+    textDecoration: 'none',
+
+    ':hover': {
+      textDecoration: 'underline',
+    },
+  } as const;
+
   return (
-    <Fragment>
-      {(Array.isArray(data) ? data : [data])
-        .filter(item => item)
-        .map((item, index) => (
-          <Fragment key={item.id}>
-            {!!index ? ', ' : ''}
-            <Link href={`/${list.path}/[id]`} as={`/${list.path}/${item.id}`}>
-              {item.label || item.id}
-            </Link>
-          </Fragment>
-        ))}
-    </Fragment>
+    <CellContainer>
+      {displayItems.map((item, index) => (
+        <Fragment key={item.id}>
+          {!!index ? ', ' : ''}
+          <Link href={`/${list.path}/[id]`} as={`/${list.path}/${item.id}`} css={styles}>
+            {item.label || item.id}
+          </Link>
+        </Fragment>
+      ))}
+      {overflow ? `, and ${overflow} more` : null}
+    </CellContainer>
   );
 };
 

@@ -1,8 +1,8 @@
 /* @jsx jsx */
 
+import { FieldController, FieldControllerConfig } from '@keystone-next/types';
 import { jsx } from '@keystone-ui/core';
 import { TextInput } from '@keystone-ui/fields';
-import { FieldController, FieldControllerConfig } from '@keystone-next/types';
 
 export { Field, Cell, CardValue } from '../../text/views';
 

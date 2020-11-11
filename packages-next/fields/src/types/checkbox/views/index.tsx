@@ -1,7 +1,6 @@
 /* @jsx jsx */
 
-import { jsx, useTheme } from '@keystone-ui/core';
-import { FieldContainer, Checkbox, FieldLabel } from '@keystone-ui/fields';
+import { CellContainer } from '@keystone-next/admin-ui/components';
 import {
   CardValueComponent,
   CellComponent,
@@ -9,7 +8,8 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-next/types';
-import { Fragment } from 'react';
+import { jsx, useTheme } from '@keystone-ui/core';
+import { Checkbox, FieldContainer, FieldLabel } from '@keystone-ui/fields';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
   const { fields, typography, spacing } = useTheme();
@@ -32,7 +32,14 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
 };
 
 export const Cell: CellComponent = ({ item, field }) => {
-  return <Fragment>{item[field.path] + ''}</Fragment>;
+  const value = !!item[field.path];
+  return (
+    <CellContainer>
+      <Checkbox disabled checked={value} size="small">
+        <span css={{}}>{value ? 'True' : 'False'}</span>
+      </Checkbox>
+    </CellContainer>
+  );
 };
 
 export const CardValue: CardValueComponent = ({ item, field }) => {

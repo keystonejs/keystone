@@ -1,10 +1,9 @@
 /* @jsx jsx */
-import { Fragment } from 'react';
-import { jsx } from '@keystone-ui/core';
-import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
-import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
-import { parseISO } from 'date-fns';
 
+import { parseISO } from 'date-fns';
+import { Fragment, useState } from 'react';
+
+import { CellContainer, CellLink } from '@keystone-next/admin-ui/components';
 import {
   CardValueComponent,
   CellComponent,
@@ -12,7 +11,8 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-next/types';
-import { useState } from 'react';
+import { jsx } from '@keystone-ui/core';
+import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 
 // TODO: Bring across the datetime/datetimeUtc interfaces, date picker, etc.
 
@@ -62,7 +62,11 @@ export const Field = ({
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
   let value = item[field.path];
-  return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
+  return linkTo ? (
+    <CellLink {...linkTo}>{formatOutput(value)}</CellLink>
+  ) : (
+    <CellContainer>{formatOutput(value)}</CellContainer>
+  );
 };
 Cell.supportsLinkTo = true;
 
