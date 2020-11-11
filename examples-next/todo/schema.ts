@@ -48,7 +48,7 @@ export const lists = createSchema({
     ui: {
       labelField: 'label',
       listView: {
-        initialColumns: ['label', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy'],
+        initialColumns: ['label', 'isComplete', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy'],
       },
     },
     fields: {
@@ -61,7 +61,7 @@ export const lists = createSchema({
   User: list({
     ui: {
       listView: {
-        initialColumns: ['name' /* , 'createdAt', 'createdBy', 'updatedAt', 'updatedBy' */],
+        initialColumns: ['name', 'tasks', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy'],
       },
     },
     fields: {
