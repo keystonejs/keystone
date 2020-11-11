@@ -234,7 +234,7 @@ export type BaseKeystoneList = {
   ): Promise<Record<string, any>[]>;
 };
 
-export type KeystoneCrudAPI<
+export type KeystoneItemAPI<
   KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
 > = {
   [Key in keyof KeystoneListsTypeInfo]: {

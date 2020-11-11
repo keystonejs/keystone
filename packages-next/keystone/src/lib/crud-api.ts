@@ -2,16 +2,16 @@ import {
   BaseGeneratedListTypes,
   BaseKeystoneList,
   Keystone,
-  KeystoneCrudAPI,
+  KeystoneItemAPI,
 } from '@keystone-next/types';
 import { GraphQLSchema } from 'graphql';
 import { getCoerceAndValidateArgumentsFnForGraphQLField } from './getCoerceAndValidateArgumentsFnForGraphQLField';
 
-export function crudForList(
+export function itemAPIForList(
   list: BaseKeystoneList,
   schema: GraphQLSchema,
   createContext: Keystone['createContext']
-): KeystoneCrudAPI<Record<string, BaseGeneratedListTypes>>[string] {
+): KeystoneItemAPI<Record<string, BaseGeneratedListTypes>>[string] {
   const queryFields = schema.getQueryType()!.getFields();
   const mutationFields = schema.getMutationType()!.getFields();
 

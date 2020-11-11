@@ -9,7 +9,7 @@ import {
   virtual,
 } from '@keystone-next/fields';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
-import { KeystoneCrudAPI } from '@keystone-next/types';
+import { KeystoneItemAPI } from '@keystone-next/types';
 import { KeystoneListsTypeInfo } from './.keystone/schema-types';
 
 // TODO: Can we generate this type based on withItemData in the main config?
@@ -179,9 +179,9 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       createRandomPosts(root: any, args: any, ctx: any) {
         // TODO: add a way to verify access control here, e.g
         // await ctx.verifyAccessControl(userIsAdmin);
-        const crud: KeystoneCrudAPI<KeystoneListsTypeInfo> = ctx.crud;
+        const lists: KeystoneItemAPI<KeystoneListsTypeInfo> = ctx.lists;
         const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
-        return crud.Post.createMany({ data });
+        return lists.Post.createMany({ data });
       },
     },
     Query: {
