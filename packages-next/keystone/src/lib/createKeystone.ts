@@ -16,7 +16,7 @@ import { mergeSchemas } from '@graphql-tools/merge';
 import { gql } from '../schema';
 import { GraphQLSchema, GraphQLObjectType, execute, parse } from 'graphql';
 import { mapSchema } from '@graphql-tools/utils';
-import { crudForList } from './crud-api';
+import { itemAPIForList } from './itemAPI';
 import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 import { autoIncrement, mongoId } from '@keystone-next/fields';
@@ -189,7 +189,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     const contextToReturn: any = {
       schemaName: 'public',
       ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
-      crud,
+      lists: itemAPI,
       totalResults: 0,
       keystone,
       graphql: {
@@ -210,9 +210,13 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     };
     return contextToReturn;
   }
-  let crud: Record<string, ReturnType<typeof crudForList>> = {};
+  let itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
   for (const listKey of Object.keys(adminMeta.lists)) {
-    crud[listKey] = crudForList((keystone as any).lists[listKey], graphQLSchema, createContext);
+    itemAPI[listKey] = itemAPIForList(
+      (keystone as any).lists[listKey],
+      graphQLSchema,
+      createContext
+    );
   }
 
   const createSessionContext = sessionImplementation?.createContext;
