@@ -50,14 +50,14 @@ export const lists = createSchema({
       isAdmin: checkbox({
         access: {
           // Only Admins can set the isAdmin flag for any users
-          // create: ({ session }) => session?.data.isAdmin,
+          create: ({ session }) => session?.data.isAdmin,
           update: ({ session }) => session?.data.isAdmin,
         },
         ui: {
           // All users can see the isAdmin status, only admins can change it
-          // createView: {
-          //   fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'hidden'),
-          // },
+          createView: {
+            fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'hidden'),
+          },
           itemView: {
             fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'read'),
           },
