@@ -16,7 +16,7 @@ export type TextAreaProps = {
 } & Omit<InputProps, 'onChange' | 'size' | 'value'>;
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ invalid = false, size = 'medium' as const, width = 'medium' as const, ...props }, ref) => {
+  ({ invalid = false, size = 'medium' as const, width = 'large' as const, ...props }, ref) => {
     const tokens = useInputTokens({ size, width, shape: 'square', fixHeight: false });
     const styles = useInputStyles({ invalid, tokens });
 
