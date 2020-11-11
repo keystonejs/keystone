@@ -1,6 +1,6 @@
 ---
 "@keystone-next/keystone": minor
-"@keystone-next/types": major
+"@keystone-next/types": minor
 ---
 
 New internal graphql api
