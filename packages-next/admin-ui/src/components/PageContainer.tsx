@@ -35,12 +35,6 @@ const Sidebar = (props: HTMLAttributes<HTMLElement>) => {
     <aside
       css={{
         borderRight: `1px solid ${colors.border}`,
-        boxSizing: 'border-box',
-        display: 'flex',
-        flexDirection: 'column',
-        flexShrink: 0,
-        height: `calc(100vh - ${HEADER_HEIGHT}px)`,
-        justifyContent: 'space-between',
         minWidth: 1, // resolves collapsing issues in children
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
@@ -58,8 +52,6 @@ const Content = (props: HTMLAttributes<HTMLElement>) => {
       css={{
         backgroundColor: colors.background,
         boxSizing: 'border-box',
-        flex: 1,
-        height: `calc(100vh - ${HEADER_HEIGHT}px)`,
         minWidth: 1, // resolves collapsing issues in children
         paddingLeft: spacing.xlarge,
         paddingRight: spacing.xlarge,
@@ -95,6 +87,7 @@ export const PageContainer = ({ children, header }: PageContainerProps) => {
           borderBottom: `1px solid ${colors.border}`,
           display: 'flex',
           justifyContent: 'space-between',
+          minWidth: 0, // fix flex text truncation
           paddingLeft: spacing.xlarge,
           paddingRight: spacing.xlarge,
         }}
