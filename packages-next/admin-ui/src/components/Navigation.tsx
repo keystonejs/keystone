@@ -82,7 +82,7 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
           </Button>
         )}
       >
-        <Stack width={220} height={80} gap="medium" padding="large" dividers="between">
+        <Stack gap="medium" padding="large" dividers="between">
           <PopoverLink target="_blank" href="/api/graphql">
             API Explorer
           </PopoverLink>
