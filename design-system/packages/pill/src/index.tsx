@@ -54,19 +54,20 @@ const PillButton = ({
   }[weight];
 
   const baseStyles = {
+    alignItems: 'center',
     appearance: 'none',
     background: 'none',
-    padding: `${spacing.small}px ${spacing.medium}px`,
     backgroundColor: tokens.background,
-    color: tokens.foreground,
-    alignItems: 'center',
     border: 0,
+    color: tokens.foreground,
     display: 'flex',
     fontSize: typography.fontSize.small,
+    fontWeight: typography.fontWeight.medium,
     justifyContent: 'center',
     maxWidth: '100%',
     minWidth: 1,
     outline: 0,
+    padding: `${spacing.small}px ${spacing.medium}px`,
 
     ':first-of-type': {
       paddingRight: spacing.small,

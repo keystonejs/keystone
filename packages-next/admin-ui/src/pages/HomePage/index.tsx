@@ -9,7 +9,7 @@ import { DrawerController } from '@keystone-ui/modals';
 import { LoadingDots } from '@keystone-ui/loading';
 
 import { CreateItemDrawer } from '../../components/CreateItemDrawer';
-import { PageContainer } from '../../components/PageContainer';
+import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
 import { DocumentNode, useQuery } from '../../apollo';
 import { useKeystone, useList } from '../../context';
 import { useRouter, Link } from '../../router';
@@ -62,7 +62,7 @@ const ListCard = ({ listKey, count }: ListCardProps) => {
         ) : count.type === 'error' ? (
           count.message
         ) : count.type === 'loading' ? (
-          <LoadingDots label={`Loading count of ${list.plural}`} size="small" />
+          <LoadingDots label={`Loading count of ${list.plural}`} size="small" tone="passive" />
         ) : (
           'No access'
         )}
@@ -97,8 +97,9 @@ const CreateButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
     <button
       css={{
         alignItems: 'center',
+        backgroundColor: theme.palette.neutral400,
         border: 0,
-        borderRadius: '2px',
+        borderRadius: theme.radii.xsmall,
         color: 'white',
         cursor: 'pointer',
         display: 'flex',
@@ -132,50 +133,49 @@ export const HomePage = ({ query }: { query: DocumentNode }) => {
 
   return (
     <PageContainer header={<Heading type="h3">Dashboard</Heading>}>
-      <Inline gap="large" paddingY="xlarge">
-        {(() => {
-          if (visibleLists.state === 'loading') {
-            return (
-              <Center>
-                <LoadingDots label="Loading lists" />
-              </Center>
-            );
-          }
-          if (visibleLists.state === 'error') {
-            return (
-              <span css={{ color: 'red' }}>
-                {visibleLists.error instanceof Error
-                  ? visibleLists.error.message
-                  : visibleLists.error[0].message}
-              </span>
-            );
-          }
-          return Object.keys(lists).map(key => {
-            if (!visibleLists.lists.has(key)) {
-              return null;
+      {visibleLists.state === 'loading' ? (
+        <Center css={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
+          <LoadingDots label="Loading lists" size="large" tone="passive" />
+        </Center>
+      ) : (
+        <Inline gap="large" paddingY="xlarge">
+          {(() => {
+            if (visibleLists.state === 'error') {
+              return (
+                <span css={{ color: 'red' }}>
+                  {visibleLists.error instanceof Error
+                    ? visibleLists.error.message
+                    : visibleLists.error[0].message}
+                </span>
+              );
             }
-            const result = dataGetter.get(key);
-            // TODO: Checking based on the message is bad, but we need to revisit GraphQL errors in
-            // Keystone to fix it and that's a whole other can of worms...
-            if (result.errors?.[0].message === 'You do not have access to this resource') {
-              return <ListCard count={{ type: 'no-access' }} key={key} listKey={key} />;
-            }
-            return (
-              <ListCard
-                count={
-                  data
-                    ? result.errors
-                      ? { type: 'error', message: result.errors[0].message }
-                      : { type: 'success', count: data[key].count }
-                    : { type: 'loading' }
-                }
-                key={key}
-                listKey={key}
-              />
-            );
-          });
-        })()}
-      </Inline>
+            return Object.keys(lists).map(key => {
+              if (!visibleLists.lists.has(key)) {
+                return null;
+              }
+              const result = dataGetter.get(key);
+              // TODO: Checking based on the message is bad, but we need to revisit GraphQL errors in
+              // Keystone to fix it and that's a whole other can of worms...
+              if (result.errors?.[0].message === 'You do not have access to this resource') {
+                return <ListCard count={{ type: 'no-access' }} key={key} listKey={key} />;
+              }
+              return (
+                <ListCard
+                  count={
+                    data
+                      ? result.errors
+                        ? { type: 'error', message: result.errors[0].message }
+                        : { type: 'success', count: data[key].count }
+                      : { type: 'loading' }
+                  }
+                  key={key}
+                  listKey={key}
+                />
+              );
+            });
+          })()}
+        </Inline>
+      )}
     </PageContainer>
   );
 };

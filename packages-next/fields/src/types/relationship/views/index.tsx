@@ -34,13 +34,11 @@ function LinkToRelatedItems({
     weight: 'link',
   } as const;
 
-  // QUESTION: should these use router `Link`?
-
   if (value.kind === 'many') {
     return (
       <Button
         {...commonProps}
-        as="a"
+        as={Link}
         // What happens when there are 10,000 ids? The URL would be too
         // big, so we arbitrarily limit it to the first 100
         // TODO: we should be able to filter by this, no?
@@ -54,23 +52,15 @@ function LinkToRelatedItems({
     );
   }
 
-  // QUESTION: why is the target `_blank` here?
   return (
-    <Button {...commonProps} as="a" href={`/${list.path}/${value.value?.id}`} target="_blank">
+    <Button {...commonProps} as={Link} href={`/${list.path}/${value.value?.id}`}>
       View item details
     </Button>
   );
 }
 
 const RelationshipLinkButton = ({ href, children }: { href: string; children: ReactNode }) => (
-  <Button
-    css={{ padding: 0, height: 'auto' }}
-    weight="link"
-    tone="active"
-    as="a"
-    href={href}
-    target="_blank"
-  >
+  <Button css={{ padding: 0, height: 'auto' }} weight="link" tone="active" as={Link} href={href}>
     {children}
   </Button>
 );

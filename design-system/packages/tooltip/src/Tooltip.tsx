@@ -94,14 +94,15 @@ export const TooltipElement = forwardRef<HTMLDivElement, ElementProps>(
           ref={consumerRef}
           css={{
             backgroundColor: colors.foregroundDim,
-            borderRadius: radii.small,
+            borderRadius: radii.xsmall,
             boxShadow: shadow.s200,
             color: colors.background,
+            fontSize: typography.fontSize.small,
             fontWeight: typography.fontWeight.medium,
-            lineHeight: typography.leading.base,
+            lineHeight: typography.leading.tight,
             maxWidth: 320, // less than desirable magic number, but not sure if this needs to be in theme...
             opacity: isVisible ? 1 : 0,
-            padding: `${spacing.small}px ${spacing.medium}px`,
+            padding: `${spacing.xsmall}px ${spacing.small}px`,
             pointerEvents: isVisible ? undefined : 'none',
             zIndex: elevation.e500,
             ...arrowStyles,
