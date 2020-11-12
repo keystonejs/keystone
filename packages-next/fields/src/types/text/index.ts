@@ -28,12 +28,4 @@ export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
     displayMode: config.ui?.displayMode ?? 'input',
   }),
   views,
-  getBackingType(path: string) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'string | null',
-      },
-    };
-  },
 });

@@ -34,12 +34,4 @@ export const cloudinaryImage = <TGeneratedListTypes extends BaseGeneratedListTyp
     adapter: new CloudinaryAdapter(cloudinary),
   },
   views,
-  getBackingType(path) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'any',
-      },
-    };
-  },
 });
