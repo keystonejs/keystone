@@ -29,7 +29,8 @@ const NavItem = ({ href, children }: NavItemProps) => {
       href={href}
       css={{
         background: 'transparent',
-        borderRadius: radii.small,
+        borderBottomRightRadius: radii.xsmall,
+        borderTopRightRadius: radii.xsmall,
         color: palette.neutral700,
         display: 'block',
         fontWeight: typography.fontWeight.medium,
@@ -74,7 +75,8 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
         placement="bottom"
         triggerRenderer={({ triggerProps }) => (
           <Button
-            style={{ padding: 0, width: 40 }}
+            size="small"
+            style={{ padding: 0, width: 36 }}
             aria-label="Links and signout"
             {...triggerProps}
           >
