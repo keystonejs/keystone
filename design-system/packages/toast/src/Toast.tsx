@@ -84,16 +84,15 @@ function populateDefaults(props: ToastProps): ToastPropsExact {
 // Container
 
 const ToastContainer = (props: HTMLAttributes<HTMLDivElement>) => {
-  const { elevation } = useTheme();
+  const { elevation, spacing } = useTheme();
 
   return (
     <Portal>
       <div
         css={{
           position: 'fixed',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          bottom: 0,
+          right: spacing.medium,
+          bottom: spacing.medium,
           zIndex: elevation.e500,
         }}
         {...props}

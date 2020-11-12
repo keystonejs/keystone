@@ -7,17 +7,14 @@ import { Fragment, HTMLAttributes, useMemo, useState } from 'react';
 
 import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
-import { Center, Heading, Stack, jsx, useTheme } from '@keystone-ui/core';
+import { Box, Center, Heading, Stack, Text, jsx, useTheme } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';
 import { ClipboardIcon } from '@keystone-ui/icons/icons/ClipboardIcon';
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 import { Tooltip } from '@keystone-ui/tooltip';
-
-import { gql, useMutation, useQuery } from '../../apollo';
-import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
-import { useList } from '../../context';
+import { FieldLabel, TextInput } from '@keystone-ui/fields';
 import {
   DataGetter,
   DeepNullable,
@@ -28,9 +25,14 @@ import {
   Fields,
   useChangedFieldsAndDataForUpdate,
 } from '@keystone-next/admin-ui-utils';
+
+import { gql, useMutation, useQuery } from '../../apollo';
+import { useList } from '../../context';
+import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
 import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice';
 import { CreateItemDrawer } from '../../components/CreateItemDrawer';
-import { TextInput } from '@keystone-ui/fields';
+import { Container } from '../../components/Container';
+import { palette } from '@keystone-ui/core/src/themes/colors';
 
 type ItemPageProps = {
   listKey: string;
@@ -138,11 +140,11 @@ function ItemForm({
           });
         });
     },
-    children: 'Save Changes',
+    children: 'Save changes',
   } as const;
 
   return (
-    <Fragment>
+    <Box marginTop="xlarge">
       <GraphQLErrorNotice
         networkError={error?.networkError}
         // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
@@ -163,34 +165,25 @@ function ItemForm({
         value={state.value}
       />
       <Toolbar>
-        <Stack across gap="small">
+        <Stack align="center" across gap="small">
+          <Button isDisabled={!changedFields.size} {...saveButtonProps} />
           {changedFields.size ? (
-            <Button {...saveButtonProps} />
+            <Button
+              weight="none"
+              onClick={() => {
+                setValue({
+                  item: itemGetter.data,
+                  value: deserializeValue(list.fields, itemGetter),
+                });
+              }}
+            >
+              Reset
+            </Button>
           ) : (
-            <Tooltip content="No fields have been modified so you cannot save changes">
-              {props => (
-                <Button
-                  {...props}
-                  {...saveButtonProps}
-                  tone="passive"
-                  // making onClick undefined instead of making the button disabled so the butto
-                  // can be focused, meaning keyboard users can see the tooltip
-                  onClick={undefined}
-                />
-              )}
-            </Tooltip>
+            <Text weight="medium" paddingX="large" color="neutral600">
+              No changes...
+            </Text>
           )}
-          <Button
-            weight="none"
-            onClick={() => {
-              setValue({
-                item: itemGetter.data,
-                value: deserializeValue(list.fields, itemGetter),
-              });
-            }}
-          >
-            Reset changes
-          </Button>
         </Stack>
         {showDelete && (
           <DeleteButton
@@ -200,7 +193,7 @@ function ItemForm({
           />
         )}
       </Toolbar>
-    </Fragment>
+    </Box>
   );
 }
 
@@ -278,7 +271,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
   const router = useRouter();
   const { id } = router.query;
   const list = useList(listKey);
-  const { colors, spacing, typography } = useTheme();
+  const { palette, spacing, typography } = useTheme();
 
   const { query, selectedFields } = useMemo(() => {
     let selectedFields = Object.keys(list.fields)
@@ -363,13 +356,12 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
   return (
     <PageContainer
       header={
-        <div
+        <Container
           css={{
             alignItems: 'center',
             display: 'flex',
             flex: 1,
             justifyContent: 'space-between',
-            minWidth: 0, // fix flex text truncation
           }}
         >
           <div
@@ -385,7 +377,13 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
                 <a css={{ textDecoration: 'none' }}>{list.label}</a>
               </Link>
             </Heading>
-            <div css={{ color: colors.foregroundDim }}>
+            <div
+              css={{
+                color: palette.neutral500,
+                marginLeft: spacing.xsmall,
+                marginRight: spacing.xsmall,
+              }}
+            >
               <ChevronRightIcon />
             </div>
             <Heading
@@ -416,7 +414,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               Create
             </Button>
           )}
-        </div>
+        </Container>
       }
     >
       <DrawerController isOpen={createModalState.state === 'open'}>
@@ -439,46 +437,62 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
         <div css={{ color: 'red' }}>{errorsFromMetaQuery[0].message}</div>
       ) : (
         <Fragment>
-          <div
+          <Container
             css={{
-              display: 'flex',
-              alignItems: 'center',
-              marginTop: spacing.xlarge,
-              marginBottom: spacing.xxlarge,
+              display: 'grid',
+              gridTemplateColumns: `2fr 1fr`,
+              alignItems: 'start',
+              gap: spacing.xlarge,
             }}
           >
-            <TextInput
-              css={{
-                marginRight: spacing.medium,
-                fontFamily: typography.fontFamily.monospace,
-                fontSize: typography.fontSize.small,
-              }}
-              readOnly
-              value={data.item.id}
-              size="small"
+            <ItemForm
+              fieldModes={itemViewFieldModesByField}
+              selectedFields={selectedFields}
+              showDelete={!data.keystone.adminMeta.list!.hideDelete}
+              listKey={listKey}
+              itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
             />
-            <Tooltip content="Copy ID">
-              {props => (
-                <Button
-                  {...props}
-                  aria-label="Copy ID"
-                  size="small"
-                  onClick={() => {
-                    copyToClipboard(data.item.id);
+
+            <div
+              css={{
+                marginTop: spacing.xlarge,
+                marginBottom: spacing.xxlarge,
+                position: 'sticky',
+                top: spacing.xlarge,
+              }}
+            >
+              <FieldLabel>Item ID</FieldLabel>
+              <div
+                css={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <TextInput
+                  css={{
+                    marginRight: spacing.medium,
+                    fontFamily: typography.fontFamily.monospace,
+                    fontSize: typography.fontSize.small,
                   }}
-                >
-                  <ClipboardIcon size="small" />
-                </Button>
-              )}
-            </Tooltip>
-          </div>
-          <ItemForm
-            fieldModes={itemViewFieldModesByField}
-            selectedFields={selectedFields}
-            showDelete={!data.keystone.adminMeta.list!.hideDelete}
-            listKey={listKey}
-            itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
-          />
+                  readOnly
+                  value={data.item.id}
+                />
+                <Tooltip content="Copy ID">
+                  {props => (
+                    <Button
+                      {...props}
+                      aria-label="Copy ID"
+                      onClick={() => {
+                        copyToClipboard(data.item.id);
+                      }}
+                    >
+                      <ClipboardIcon size="small" />
+                    </Button>
+                  )}
+                </Tooltip>
+              </div>
+            </div>
+          </Container>
         </Fragment>
       )}
     </PageContainer>

@@ -18,7 +18,7 @@ const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
     <div
       css={{
         display: 'grid',
-        gridTemplateColumns: `minmax(280px, 320px) auto`,
+        gridTemplateColumns: `minmax(320px, 1fr) 4fr`,
         gridTemplateRows: `${HEADER_HEIGHT}px auto`,
         height: '100vh',
       }}
@@ -33,7 +33,7 @@ const Sidebar = (props: HTMLAttributes<HTMLElement>) => {
   return (
     <aside
       css={{
-        borderRight: `1px solid ${colors.border}`,
+        // borderRight: `1px solid ${colors.border}`,
         minWidth: 0, // resolves collapsing issues in children
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
@@ -69,7 +69,7 @@ export const PageContainer = ({ children, header }: PageContainerProps) => {
       <div
         css={{
           alignItems: 'center',
-          borderRight: `1px solid ${colors.border}`,
+          // borderRight: `1px solid ${colors.border}`,
           borderBottom: `1px solid ${colors.border}`,
           display: 'flex',
           justifyContent: 'space-between',

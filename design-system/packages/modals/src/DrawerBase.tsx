@@ -10,10 +10,11 @@ import { useDrawerManager } from './drawer-context';
 import { TransitionState } from './types';
 import { DrawerControllerContextProvider } from './DrawerController';
 
-const widths = {
-  narrow: 448,
-  wide: 720,
+export const DRAWER_WIDTHS = {
+  narrow: 520,
+  wide: 740,
 };
+export type WidthType = keyof typeof DRAWER_WIDTHS;
 const easing = 'cubic-bezier(0.2, 0, 0, 1)';
 
 export type DrawerBaseProps = {
@@ -22,7 +23,7 @@ export type DrawerBaseProps = {
   onClose: () => void;
   transitionState: TransitionState;
   onSubmit?: () => void;
-  width?: keyof typeof widths;
+  width?: WidthType;
 };
 
 const blanketTransition = {
@@ -108,7 +109,7 @@ export const DrawerBase = ({
                 right: 0,
                 top: 0,
                 transition: `transform 150ms ${easing}`,
-                width: widths[width],
+                width: DRAWER_WIDTHS[width],
                 zIndex: theme.elevation.e400,
 
                 // flex layout must be applied here so content will grow/shrink properly

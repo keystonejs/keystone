@@ -32,7 +32,7 @@ export type InputTokens = {
   borderWidth?: number | string;
   fontSize?: number | string;
   lineHeight?: number | string;
-  width: number | string;
+  // width: number | string;
   height?: number | string;
   paddingX: number | string;
   paddingY: number | string;
@@ -47,13 +47,13 @@ export type InputTokens = {
 
 export const useInputTokens = ({
   size: sizeKey = 'medium',
-  width: widthKey = 'large',
+  // width: widthKey = 'large',
   fixHeight = false,
   shape = 'square',
 }: InputTokensProps): InputTokens => {
   const { animation, radii, spacing, controlSizes, fields } = useTheme();
 
-  const width = widthMap[widthKey];
+  // const width = widthMap[widthKey];
   const size = controlSizes[sizeKey];
 
   return {
@@ -74,7 +74,7 @@ export const useInputTokens = ({
       box-shadow ${animation.duration100},
       border-color ${animation.duration100}
     `,
-    width,
+    // width,
     hover: {
       background: fields.hover.inputBackground,
       borderColor: fields.hover.inputBorderColor,
@@ -121,7 +121,7 @@ export function useInputStyles({ invalid, tokens }: InputStylesProps) {
     fontSize: tokens.fontSize,
     height: tokens.height,
     lineHeight: tokens.lineHeight,
-    maxWidth: tokens.width,
+    // maxWidth: tokens.width,
     outline: 0,
     paddingBottom: tokens.paddingY,
     paddingLeft: tokens.paddingX,

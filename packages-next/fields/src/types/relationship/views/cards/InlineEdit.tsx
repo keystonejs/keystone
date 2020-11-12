@@ -116,7 +116,7 @@ export function InlineEdit({
           });
         });
     },
-    children: 'Save Changes',
+    children: 'Save',
   } as const;
 
   const fieldModes = useMemo(() => {

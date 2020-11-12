@@ -89,7 +89,6 @@ export function CreateItemDrawer({
 
   return (
     <Drawer
-      width="wide"
       title={`Create ${list.singular}`}
       actions={{
         confirm: {

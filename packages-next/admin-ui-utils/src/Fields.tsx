@@ -55,7 +55,7 @@ export function Fields({
       );
     });
   return (
-    <Stack gap="xlarge" marginTop="large">
+    <Stack gap="xlarge">
       {renderedFields}
       {renderedFields.length === 0 && 'There are no fields that you can read or edit'}
     </Stack>
