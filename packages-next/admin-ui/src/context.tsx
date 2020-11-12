@@ -12,7 +12,7 @@ import {
   VisibleLists,
   useLazyMetadata,
   CreateViewFieldModes,
-} from './utils/useAuthenticatedItem';
+} from './utils/useLazyMetadata';
 
 type KeystoneContextType = {
   adminConfig: AdminConfig;
