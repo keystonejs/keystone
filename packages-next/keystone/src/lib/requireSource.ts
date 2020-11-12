@@ -61,8 +61,3 @@ export const requireSource = (filePath: string) => {
   unregister();
   return result;
 };
-
-export const requireProjectFile = (name: string) => {
-  const filePath = path.join(process.cwd(), name);
-  return requireSource(filePath);
-};
