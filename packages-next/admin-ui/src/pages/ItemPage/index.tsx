@@ -7,14 +7,16 @@ import { Fragment, HTMLAttributes, useMemo, useState } from 'react';
 
 import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
-import { Heading, Stack, jsx, useTheme } from '@keystone-ui/core';
+import { Center, Heading, Stack, jsx, useTheme } from '@keystone-ui/core';
 import { LoadingDots } from '@keystone-ui/loading';
+import { ClipboardIcon } from '@keystone-ui/icons/icons/ClipboardIcon';
+import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 import { Tooltip } from '@keystone-ui/tooltip';
 
 import { gql, useMutation, useQuery } from '../../apollo';
-import { PageContainer } from '../../components/PageContainer';
+import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
 import { useList } from '../../context';
 import {
   DataGetter,
@@ -28,6 +30,7 @@ import {
 } from '@keystone-next/admin-ui-utils';
 import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice';
 import { CreateItemDrawer } from '../../components/CreateItemDrawer';
+import { TextInput } from '@keystone-ui/fields';
 
 type ItemPageProps = {
   listKey: string;
@@ -275,7 +278,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
   const router = useRouter();
   const { id } = router.query;
   const list = useList(listKey);
-  const { spacing, typography } = useTheme();
+  const { colors, spacing, typography } = useTheme();
 
   const { query, selectedFields } = useMemo(() => {
     let selectedFields = Object.keys(list.fields)
@@ -366,13 +369,40 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
             display: 'flex',
             flex: 1,
             justifyContent: 'space-between',
+            minWidth: 0, // fix flex text truncation
           }}
         >
-          <Heading type="h3">
-            <Link href={`/${list.path}`} passHref>
-              <a css={{ textDecoration: 'none' }}>{list.label}</a>
-            </Link>
-          </Heading>
+          <div
+            css={{
+              alignItems: 'center',
+              display: 'flex',
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
+            <Heading type="h3">
+              <Link href={`/${list.path}`} passHref>
+                <a css={{ textDecoration: 'none' }}>{list.label}</a>
+              </Link>
+            </Heading>
+            <div css={{ color: colors.foregroundDim }}>
+              <ChevronRightIcon />
+            </div>
+            <Heading
+              as="h1"
+              type="h3"
+              css={{
+                minWidth: 0,
+                maxWidth: '100%',
+                overflow: 'hidden',
+                flex: 1,
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {data && (data.item[list.labelField] || data.item.id)}
+            </Heading>
+          </div>
           {!hideCreate && (
             <Button
               disabled={createModalState.state === 'open'}
@@ -381,6 +411,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               }}
               tone="positive"
               weight="bold"
+              css={{ marginLeft: spacing.medium }}
             >
               Create
             </Button>
@@ -401,12 +432,9 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
         />
       </DrawerController>
       {loading ? (
-        <h1 css={{ marginTop: spacing.medium }}>
-          <Stack across gap="large">
-            <div>Loading {list.singular}</div>
-            <LoadingDots label="Loading item data" size="small" />
-          </Stack>
-        </h1>
+        <Center css={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
+          <LoadingDots label="Loading item data" size="large" tone="passive" />
+        </Center>
       ) : errorsFromMetaQuery ? (
         <div css={{ color: 'red' }}>{errorsFromMetaQuery[0].message}</div>
       ) : (
@@ -414,29 +442,35 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
           <div
             css={{
               display: 'flex',
-              justifyContent: 'space-between',
+              alignItems: 'center',
               marginTop: spacing.xlarge,
+              marginBottom: spacing.xxlarge,
             }}
           >
-            <Heading>{data.item[list.labelField] || data.item.id}</Heading>
-            <div css={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <span
-                css={{
-                  marginRight: spacing.medium,
-                  fontFamily: typography.fontFamily.monospace,
-                  fontSize: typography.fontSize.small,
-                }}
-              >
-                ID: {data.item.id}
-              </span>
-              <Button
-                onClick={() => {
-                  copyToClipboard(data.item.id);
-                }}
-              >
-                Copy
-              </Button>
-            </div>
+            <TextInput
+              css={{
+                marginRight: spacing.medium,
+                fontFamily: typography.fontFamily.monospace,
+                fontSize: typography.fontSize.small,
+              }}
+              readOnly
+              value={data.item.id}
+              size="small"
+            />
+            <Tooltip content="Copy ID">
+              {props => (
+                <Button
+                  {...props}
+                  aria-label="Copy ID"
+                  size="small"
+                  onClick={() => {
+                    copyToClipboard(data.item.id);
+                  }}
+                >
+                  <ClipboardIcon size="small" />
+                </Button>
+              )}
+            </Tooltip>
           </div>
           <ItemForm
             fieldModes={itemViewFieldModesByField}

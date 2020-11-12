@@ -4,7 +4,7 @@ import { Fragment, HTMLAttributes, ReactNode, useEffect, useMemo, useState } fro
 
 import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
-import { Box, Heading, jsx, Stack, useTheme } from '@keystone-ui/core';
+import { Box, Center, Heading, jsx, Stack, useTheme } from '@keystone-ui/core';
 import { CheckboxControl } from '@keystone-ui/fields';
 import { ArrowRightCircleIcon } from '@keystone-ui/icons/icons/ArrowRightCircleIcon';
 import { LoadingDots } from '@keystone-ui/loading';
@@ -14,7 +14,7 @@ import { useToasts } from '@keystone-ui/toast';
 import { gql, TypedDocumentNode, useMutation, useQuery } from '../../apollo';
 import { CellLink } from '../../components';
 import { CreateItemDrawer } from '../../components/CreateItemDrawer';
-import { PageContainer } from '../../components/PageContainer';
+import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
 import { useList } from '../../context';
 import { Link, useRouter } from '../../router';
 import {
@@ -232,7 +232,7 @@ export const ListPage = ({ listKey }: ListPageProps) => {
         />
       }
     >
-      <Stack across gap="medium" align="center">
+      <Stack across gap="medium" align="center" marginTop="xlarge">
         <FilterAdd listKey={listKey} />
         {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
       </Stack>
@@ -277,7 +277,9 @@ export const ListPage = ({ listKey }: ListPageProps) => {
                       list={list}
                       fieldModesByFieldPath={listViewFieldModesByField}
                     />{' '}
-                    {loading && <LoadingDots label="Loading data" tone="active" />}
+                    {loading && (
+                      <LoadingDots label="Loading item data" size="small" tone="active" />
+                    )}
                   </Fragment>
                 );
               })()}
@@ -303,11 +305,9 @@ export const ListPage = ({ listKey }: ListPageProps) => {
           <ResultsSummaryContainer>No {list.plural} found.</ResultsSummaryContainer>
         )
       ) : (
-        <ResultsSummaryContainer>
-          <Box marginLeft="xsmall">
-            <LoadingDots label="Loading data" tone="passive" />
-          </Box>
-        </ResultsSummaryContainer>
+        <Center css={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
+          <LoadingDots label="Loading item data" size="large" tone="passive" />
+        </Center>
       )}
     </PageContainer>
   );
@@ -450,7 +450,7 @@ function ListTable({
     .supportsLinkTo;
 
   return (
-    <Fragment>
+    <Box paddingBottom="xlarge">
       <TableContainer>
         <colgroup>
           <col width="30" />
@@ -626,7 +626,7 @@ function ListTable({
         </tbody>
       </TableContainer>
       <Pagination listKey={listKey} total={count} currentPage={currentPage} pageSize={pageSize} />
-    </Fragment>
+    </Box>
   );
 }
 
