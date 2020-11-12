@@ -83,7 +83,7 @@ export const Drawer = ({
         </div>
       ) : (
         <Fragment>
-          <Divider marginX="xlarge" />
+          <Divider marginX="xlarge" marginTop="xlarge" />
           <Stack padding="xlarge" across gap="small">
             <Button tone="active" weight="bold" type="submit" isLoading={confirm.loading}>
               {confirm.label}
