@@ -76,6 +76,7 @@ export function InlineEdit({
   const saveButtonProps = {
     isLoading: loading,
     weight: 'bold',
+    size: 'small',
     tone: 'active',
     onClick: () => {
       const newForceValidation = invalidFields.size !== 0;
@@ -127,13 +128,15 @@ export function InlineEdit({
   }, [fields]);
 
   return (
-    <div>
-      <GraphQLErrorNotice
-        networkError={error?.networkError}
-        // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
-        // which are handled seperately and do not indicate a failure to update the item
-        errors={error?.graphQLErrors.filter(x => x.path?.length === 1)}
-      />
+    <Stack gap="medium">
+      {error && (
+        <GraphQLErrorNotice
+          networkError={error?.networkError}
+          // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
+          // which are handled seperately and do not indicate a failure to update the item
+          errors={error?.graphQLErrors.filter(x => x.path?.length === 1)}
+        />
+      )}
       <Fields
         fieldModes={fieldModes}
         fields={fieldsObj}
@@ -147,7 +150,7 @@ export function InlineEdit({
         }}
         value={state.value}
       />
-      <Stack across gap="medium">
+      <Stack across gap="xsmall">
         {changedFields.size ? (
           <Button {...saveButtonProps} />
         ) : (
@@ -162,8 +165,10 @@ export function InlineEdit({
             )}
           </Tooltip>
         )}
-        <Button onClick={onCancel}>Cancel</Button>
+        <Button size="small" weight="none" onClick={onCancel}>
+          Cancel
+        </Button>
       </Stack>
-    </div>
+    </Stack>
   );
 }

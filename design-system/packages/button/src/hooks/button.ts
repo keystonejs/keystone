@@ -110,6 +110,8 @@ export function useButtonTokens({
     },
     link: {
       foreground: colors.foreground,
+      textDecoration: 'none',
+
       focus: {
         textDecoration: 'underline',
       },
@@ -131,7 +133,7 @@ export function useButtonTokens({
     borderWidth: size.borderWidth,
     disabledOpacity: opacity.disabled,
     fontSize: size.fontSize,
-    fontWeight: typography.fontWeight.semibold,
+    fontWeight: typography.fontWeight.medium,
     height: size.height,
     paddingX: size.paddingX,
     transition: `

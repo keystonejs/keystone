@@ -1,17 +1,18 @@
 /* @jsx jsx */
 
-import { jsx, useTheme, Inline, VisuallyHidden, Center } from '@keystone-ui/core';
-import { DocumentNode, useQuery } from '../../apollo';
+import { ButtonHTMLAttributes, useState } from 'react';
 
-import { useKeystone, useList } from '../../context';
-import { PageContainer } from '../../components/PageContainer';
+import { Center, Inline, Heading, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
 import { makeDataGetter } from '@keystone-next/admin-ui-utils';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
-import { ButtonHTMLAttributes, useState } from 'react';
 import { DrawerController } from '@keystone-ui/modals';
-import { CreateItemDrawer } from '../../components/CreateItemDrawer';
-import { useRouter, Link } from '../../router';
 import { LoadingDots } from '@keystone-ui/loading';
+
+import { CreateItemDrawer } from '../../components/CreateItemDrawer';
+import { PageContainer } from '../../components/PageContainer';
+import { DocumentNode, useQuery } from '../../apollo';
+import { useKeystone, useList } from '../../context';
+import { useRouter, Link } from '../../router';
 
 type ListCardProps = {
   listKey: string;
@@ -26,7 +27,7 @@ type ListCardProps = {
 };
 
 const ListCard = ({ listKey, count }: ListCardProps) => {
-  const { colors, palette, shadow, spacing, radii } = useTheme();
+  const { colors, palette, radii, spacing } = useTheme();
   const list = useList(listKey);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const router = useRouter();
@@ -36,14 +37,15 @@ const ListCard = ({ listKey, count }: ListCardProps) => {
         href={list.path}
         css={{
           backgroundColor: colors.background,
-          borderWidth: 1,
-          borderColor: palette.neutral200,
+          borderColor: colors.border,
           borderRadius: radii.medium,
-          boxShadow: shadow.s100,
-          textDecoration: 'none',
+          borderWidth: 1,
+          // boxShadow: shadow.s100,
           display: 'inline-block',
-          padding: spacing.large,
           minWidth: 280,
+          padding: spacing.large,
+          textDecoration: 'none',
+
           ':hover': {
             borderColor: palette.blue400,
           },
@@ -94,14 +96,14 @@ const CreateButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <button
       css={{
-        display: 'flex',
-        justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: '2px',
         border: 0,
+        borderRadius: '2px',
         color: 'white',
         cursor: 'pointer',
+        display: 'flex',
         height: 32,
+        justifyContent: 'center',
         outline: 0,
         position: 'absolute',
         right: theme.spacing.large,
@@ -129,9 +131,8 @@ export const HomePage = ({ query }: { query: DocumentNode }) => {
   const dataGetter = makeDataGetter(data, error?.graphQLErrors);
 
   return (
-    <PageContainer>
-      <h1>Dashboard</h1>
-      <Inline gap="large">
+    <PageContainer header={<Heading type="h3">Dashboard</Heading>}>
+      <Inline gap="large" paddingY="xlarge">
         {(() => {
           if (visibleLists.state === 'loading') {
             return (

@@ -1,13 +1,15 @@
 /* @jsx jsx */
 
 import { useMemo, useState } from 'react';
-import { gql, useMutation } from '../apollo';
-import { jsx } from '@keystone-ui/core';
 import isDeepEqual from 'fast-deep-equal';
-import { useKeystone, useList } from '../context';
+import { jsx, Stack } from '@keystone-ui/core';
 import { Drawer } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
+
+import { gql, useMutation } from '../apollo';
+import { useKeystone, useList } from '../context';
+
 import { GraphQLErrorNotice } from './GraphQLErrorNotice';
 
 export function CreateItemDrawer({
@@ -144,8 +146,10 @@ export function CreateItemDrawer({
       {error && (
         <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
       )}
-      {fields}
-      {fields.length === 0 && 'There are no fields that you can read or edit'}
+      <Stack gap="xlarge" marginTop="large">
+        {fields}
+        {fields.length === 0 && 'There are no fields that you can read or edit'}
+      </Stack>
     </Drawer>
   );
 }

@@ -1,13 +1,13 @@
 /* @jsx jsx */
 
-import { Button } from '@keystone-ui/button';
-import { jsx, Box, Stack, Inline, useTheme } from '@keystone-ui/core';
-import { GithubIcon } from '@keystone-ui/icons/icons/GithubIcon';
-import { DatabaseIcon } from '@keystone-ui/icons/icons/DatabaseIcon';
+import { AllHTMLAttributes, ReactNode } from 'react';
 import { useRouter } from 'next/router';
-import { ReactNode } from 'react';
+import { Stack, jsx, useTheme } from '@keystone-ui/core';
+import { Button } from '@keystone-ui/button';
+import { Popover } from '@keystone-ui/popover';
+import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
+import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
 
-import { Logo } from './Logo';
 import { SignoutButton } from './SignoutButton';
 import { useKeystone } from '../context';
 import { Link } from '../router';
@@ -20,62 +20,101 @@ type NavItemProps = {
 const NavItem = ({ href, children }: NavItemProps) => {
   const { palette, spacing, radii, typography } = useTheme();
   const router = useRouter();
-  const isSelected = router && router.pathname === href;
+  const isSelected =
+    router.pathname === href || router.pathname.split('/')[1] === href.split('/')[1];
+
   return (
     <Link
+      aria-current={isSelected ? 'location' : false}
       href={href}
       css={{
-        textDecoration: 'none',
-        position: 'relative',
-        borderRadius: radii.medium,
-        color: isSelected ? palette.neutral800 : palette.neutral700,
-        background: isSelected ? 'white' : 'transparent',
-        fontWeight: isSelected ? typography.fontWeight.bold : typography.fontWeight.regular,
+        background: 'transparent',
+        borderRadius: radii.small,
+        color: palette.neutral700,
         display: 'block',
-        padding: `${spacing.small}px ${spacing.medium}px`,
-        margin: `0 -${spacing.medium}px`,
-        ':hover': isSelected
-          ? undefined
-          : {
-              color: palette.blue600,
-              background: 'white',
-            },
+        fontWeight: typography.fontWeight.medium,
+        marginBottom: spacing.xsmall,
+        marginRight: spacing.xlarge,
+        padding: `${spacing.small}px ${spacing.xlarge}px`,
+        position: 'relative',
+        textDecoration: 'none',
+
+        ':hover': {
+          background: palette.blue50,
+          color: palette.blue500,
+        },
+
+        '&[aria-current=location]': {
+          background: palette.neutral200,
+          color: palette.neutral900,
+        },
       }}
     >
-      {isSelected && (
-        <span
-          css={{
-            display: 'block',
-            position: 'absolute',
-            width: 5,
-            height: '80%',
-            background: palette.blue400,
-            borderRadius: radii.medium,
-            top: '10%',
-            right: 5,
-          }}
-        />
-      )}
       {children}
     </Link>
   );
 };
 
 const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) => {
+  const { spacing } = useTheme();
   return (
     <div
       css={{
+        alignItems: 'center',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        padding: spacing.xlarge,
       }}
     >
-      <Box paddingY="medium">
-        Hello <strong>{item.label}</strong>
-      </Box>
-      <SignoutButton />
+      <div>
+        Signed in as <strong>{item.label}</strong>
+      </div>
+      <Popover
+        placement="bottom"
+        triggerRenderer={({ triggerProps }) => (
+          <Button
+            style={{ padding: 0, width: 40 }}
+            aria-label="Links and signout"
+            {...triggerProps}
+          >
+            <MoreHorizontalIcon />
+          </Button>
+        )}
+      >
+        <Stack width={220} height={80} gap="medium" padding="large" dividers="between">
+          <PopoverLink target="_blank" href="/api/graphql">
+            API Explorer
+          </PopoverLink>
+          <PopoverLink target="_blank" href="https://github.com/keystonejs/keystone">
+            GitHub Repository
+          </PopoverLink>
+          <PopoverLink target="_blank" href="https://www.keystonejs.com/documentation">
+            Keystone Documentation
+          </PopoverLink>
+          <SignoutButton />
+        </Stack>
+      </Popover>
     </div>
+  );
+};
+
+const PopoverLink = ({ children, ...props }: AllHTMLAttributes<HTMLAnchorElement>) => {
+  const { typography } = useTheme();
+
+  return (
+    <a
+      css={{
+        alignItems: 'center',
+        display: 'flex',
+        fontSize: typography.fontSize.small,
+        textDecoration: 'none',
+      }}
+      {...props}
+    >
+      {children}
+      <ChevronRightIcon size="small" />
+    </a>
   );
 };
 
@@ -87,50 +126,43 @@ export const Navigation = () => {
   } = useKeystone();
 
   return (
-    <Box padding="large">
-      <Stack gap="medium" marginTop="medium">
-        <Logo />
-        <Box>
-          {authenticatedItem.state === 'authenticated' && (
-            <AuthenticatedItem item={authenticatedItem} />
-          )}
-        </Box>
-        <Stack gap="small">
-          <NavItem href="/">Home</NavItem>
-          {(() => {
-            if (visibleLists.state === 'loading') return null;
-            if (visibleLists.state === 'error') {
-              return (
-                <span css={{ color: 'red' }}>
-                  {visibleLists.error instanceof Error
-                    ? visibleLists.error.message
-                    : visibleLists.error[0].message}
-                </span>
-              );
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}
+    >
+      {authenticatedItem.state === 'authenticated' && (
+        <AuthenticatedItem item={authenticatedItem} />
+      )}
+      <nav>
+        <NavItem href="/">Dashboard</NavItem>
+        {(() => {
+          if (visibleLists.state === 'loading') return null;
+          if (visibleLists.state === 'error') {
+            return (
+              <span css={{ color: 'red' }}>
+                {visibleLists.error instanceof Error
+                  ? visibleLists.error.message
+                  : visibleLists.error[0].message}
+              </span>
+            );
+          }
+          return Object.keys(lists).map(key => {
+            if (!visibleLists.lists.has(key)) {
+              return null;
             }
-            return Object.keys(lists).map(key => {
-              if (!visibleLists.lists.has(key)) {
-                return null;
-              }
 
-              const list = lists[key];
-              return (
-                <NavItem key={key} href={`/${list.path}`}>
-                  {lists[key].label}
-                </NavItem>
-              );
-            });
-          })()}
-        </Stack>
-        <Inline gap="medium">
-          <Button as="a" target="_blank" href="/api/graphql">
-            <DatabaseIcon />
-          </Button>
-          <Button as="a" target="_blank" href="https://github.com/keystonejs/keystone">
-            <GithubIcon />
-          </Button>
-        </Inline>
-      </Stack>
-    </Box>
+            const list = lists[key];
+            return (
+              <NavItem key={key} href={`/${list.path}`}>
+                {lists[key].label}
+              </NavItem>
+            );
+          });
+        })()}
+      </nav>
+    </div>
   );
 };

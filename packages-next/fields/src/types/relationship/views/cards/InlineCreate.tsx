@@ -110,7 +110,7 @@ export function InlineCreate({
   };
 
   return (
-    <div>
+    <Stack gap="medium">
       {error && (
         <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
       )}
@@ -132,12 +132,20 @@ export function InlineCreate({
           />
         );
       })}
-      <Stack gap="medium" across>
-        <Button isLoading={loading} tone="positive" weight="bold" onClick={onCreateClick}>
+      <Stack gap="xsmall" across>
+        <Button
+          isLoading={loading}
+          size="small"
+          tone="positive"
+          weight="bold"
+          onClick={onCreateClick}
+        >
           Create {list.singular}
         </Button>
-        <Button onClick={onCancel}>Cancel</Button>
+        <Button size="small" weight="none" onClick={onCancel}>
+          Cancel
+        </Button>
       </Stack>
-    </div>
+    </Stack>
   );
 }

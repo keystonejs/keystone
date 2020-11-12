@@ -101,12 +101,12 @@ export const DrawerBase = ({
               style={dialogTransition[transitionState]}
               css={{
                 backgroundColor: theme.colors.background,
-                borderRadius: theme.radii.large,
-                bottom: theme.spacing.small,
+                bottom: 0,
                 boxShadow: theme.shadow.s400,
+                outline: 0,
                 position: 'fixed',
-                right: theme.spacing.small,
-                top: theme.spacing.small,
+                right: 0,
+                top: 0,
                 transition: `transform 150ms ${easing}`,
                 width: widths[width],
                 zIndex: theme.elevation.e400,

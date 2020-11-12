@@ -38,7 +38,9 @@ export const lists = createSchema({
       },
     },
     fields: {
+      /** The user's first and last name. */
       name: text({ isRequired: true }),
+      /** Email is used to log into the system. */
       email: text({ isRequired: true, isUnique: true }),
       // avatar: cloudinaryImage({
       //   cloudinary: {
@@ -47,7 +49,9 @@ export const lists = createSchema({
       //     apiSecret: '/* TODO */',
       //   },
       // }),
+      /** Used to log in. */
       password: password(),
+      /** Administrators have more access to various lists and fields. */
       isAdmin: checkbox({
         access: {
           create: access.isAdmin,

@@ -14,7 +14,7 @@ import { Button } from '@keystone-ui/button';
 import { jsx, Stack, VisuallyHidden } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon';
-import { LockIcon } from '@keystone-ui/icons/icons/LockIcon';
+import { EyeOffIcon } from '@keystone-ui/icons/icons/EyeOffIcon';
 import { XIcon } from '@keystone-ui/icons/icons/XIcon';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
 
@@ -101,7 +101,7 @@ export const Field = ({
               }}
             >
               <VisuallyHidden>{showInputValue ? 'Hide Text' : 'Show Text'}</VisuallyHidden>
-              {showInputValue ? <LockIcon /> : <EyeIcon />}
+              {showInputValue ? <EyeOffIcon /> : <EyeIcon />}
             </Button>
             <Button
               onClick={() => {

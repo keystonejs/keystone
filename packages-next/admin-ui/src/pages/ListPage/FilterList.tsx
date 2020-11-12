@@ -47,6 +47,7 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
         }}
         {...trigger.props}
         ref={trigger.ref}
+        weight="light"
         onRemove={() => {
           const { [`!${filter.field}_${filter.type}`]: _ignore, ...queryToKeep } = router.query;
 

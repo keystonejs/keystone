@@ -143,7 +143,7 @@ type RootProps = {
 } & HTMLAttributes<HTMLDivElement>;
 
 const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, width, ...props }, ref) => {
-  const { fields } = useTheme();
+  const { colors } = useTheme();
   const tokens = useControlTokens({ size, width });
 
   return (
@@ -157,7 +157,7 @@ const Root = forwardRef<HTMLDivElement, RootProps>(({ fill, size, width, ...prop
         paddingBottom: tokens.paddingY,
         userSelect: 'none',
         // -- TODO
-        background: fields.inputBackground,
+        background: colors.backgroundDim,
         display: fill ? 'flex' : 'inline-flex',
         flexWrap: 'wrap',
         maxWidth: tokens.width,

@@ -161,37 +161,37 @@ type HeadingStyle = {
 
 const headingStyles: { [key: string]: HeadingStyle } = {
   h1: {
-    color: palette.neutral800,
+    color: palette.neutral900,
     size: typography.fontSize.xxxlarge,
     weight: typography.fontWeight.heavy,
     transform: 'none',
   },
   h2: {
-    color: palette.neutral800,
+    color: palette.neutral900,
     size: typography.fontSize.xxlarge,
     weight: typography.fontWeight.bold,
     transform: 'none',
   },
   h3: {
-    color: palette.neutral800,
+    color: palette.neutral900,
     size: typography.fontSize.xlarge,
     weight: typography.fontWeight.bold,
     transform: 'none',
   },
   h4: {
-    color: palette.neutral800,
+    color: palette.neutral900,
     size: typography.fontSize.large,
     weight: typography.fontWeight.bold,
     transform: 'none',
   },
   h5: {
-    color: palette.neutral800,
+    color: palette.neutral900,
     size: typography.fontSize.medium,
     weight: typography.fontWeight.bold,
     transform: 'none',
   },
   h6: {
-    color: palette.neutral800,
+    color: palette.neutral900,
     size: typography.fontSize.small,
     weight: typography.fontWeight.bold,
     transform: 'uppercase',
@@ -213,7 +213,7 @@ type ControlSize = {
 
 const controlSizes: { [key: string]: ControlSize } = {
   small: {
-    borderRadius: radii.small,
+    borderRadius: radii.xsmall,
     borderWidth: 1,
     gutter: spacing.xsmall,
     paddingX: spacing.medium,
@@ -225,10 +225,10 @@ const controlSizes: { [key: string]: ControlSize } = {
     indicatorFontSize: typography.fontSize.xxxsmall,
   },
   medium: {
-    borderRadius: radii.medium,
+    borderRadius: radii.small,
     borderWidth: 1,
     gutter: spacing.xsmall,
-    paddingX: spacing.medium,
+    paddingX: spacing.large,
     paddingY: spacing.xsmall,
     height: sizing.large,
     gap: spacing.medium,
@@ -436,8 +436,8 @@ const fields: FieldTokens = {
   controlBorderWidth: 2,
   controlForeground: palette.blue500,
   // iconColor: palette.neutral500, // TODO
-  inputBackground: palette.neutral200,
-  inputBorderColor: 'transparent',
+  inputBackground: palette.neutral100,
+  inputBorderColor: palette.neutral300,
   inputBorderRadius: radii.small,
   inputBorderWidth: 1,
   inputForeground: palette.neutral800,
@@ -447,12 +447,13 @@ const fields: FieldTokens = {
   switchForeground: 'white',
 
   hover: {
-    inputBorderColor: palette.neutral300,
+    inputBorderColor: palette.neutral400,
     controlBorderColor: palette.blue500,
   },
   focus: {
     controlBorderColor: palette.blue500,
     inputBorderColor: palette.blue500,
+    inputBackground: 'white',
     shadow: `0 0 0 2px ${colors.focusRing}`,
   },
   disabled: {
