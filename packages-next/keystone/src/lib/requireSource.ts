@@ -4,10 +4,10 @@ keystone project files in the monorepo. Importantly it doesn't accept a cwd and
 sets rootMode: "upward-optional"
 */
 
+import path from 'path';
 import { addHook } from 'pirates';
 import * as babel from '@babel/core';
 import sourceMapSupport from 'source-map-support';
-import path from 'path';
 
 const EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx'];
 const babelPlugins = [require.resolve('@babel/plugin-transform-modules-commonjs')];
@@ -28,10 +28,7 @@ export const hook = () => {
         retrieveSourceMap(source) {
           let map = sourceMaps[source];
           if (map !== undefined) {
-            return {
-              url: source,
-              map,
-            };
+            return { url: source, map };
           } else {
             return null;
           }

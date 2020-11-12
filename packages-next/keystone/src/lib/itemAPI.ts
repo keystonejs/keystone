@@ -1,10 +1,10 @@
+import { GraphQLSchema } from 'graphql';
 import {
   BaseGeneratedListTypes,
   BaseKeystoneList,
   Keystone,
   KeystoneListsAPI,
 } from '@keystone-next/types';
-import { GraphQLSchema } from 'graphql';
 import { getCoerceAndValidateArgumentsFnForGraphQLField } from './getCoerceAndValidateArgumentsFnForGraphQLField';
 
 export function itemAPIForList(

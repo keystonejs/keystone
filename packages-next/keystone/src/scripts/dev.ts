@@ -1,7 +1,7 @@
+import path from 'path';
 import express from 'express';
 import { printSchema } from 'graphql';
 import * as fs from 'fs-extra';
-import path from 'path';
 import { initKeystoneFromConfig } from '../lib/initKeystoneFromConfig';
 import { formatSource, generateAdminUI } from '../lib/generateAdminUI';
 import { createAdminUIServer } from '../lib/createAdminUIServer';
