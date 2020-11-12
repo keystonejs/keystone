@@ -4,7 +4,6 @@ keystone project files in the monorepo. Importantly it doesn't accept a cwd and
 sets rootMode: "upward-optional"
 */
 
-import path from 'path';
 import { addHook } from 'pirates';
 import * as babel from '@babel/core';
 import sourceMapSupport from 'source-map-support';
