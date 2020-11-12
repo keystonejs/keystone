@@ -311,7 +311,9 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
   let { data, error, loading } = useQuery(query, {
     variables: { id, listKey },
     errorPolicy: 'all',
+    skip: id === undefined,
   });
+  loading ||= id === undefined;
 
   const dataGetter = makeDataGetter<
     DeepNullable<{

@@ -27,7 +27,8 @@ export function useLazyMetadata(
   visibleLists: VisibleLists;
   createViewFieldModes: CreateViewFieldModes;
 } {
-  let result = useQuery(query, { errorPolicy: 'all' });
+  let result = useQuery(query, { errorPolicy: 'all', fetchPolicy: 'network-only' });
+  console.log(result);
   return useMemo(() => {
     let refetch = () => {
       result.refetch();
