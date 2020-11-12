@@ -29,26 +29,14 @@ function getNamedOrListTypeNodeForType(
     | GraphQLList<any>
 ): NamedTypeNode | ListTypeNode {
   if (type instanceof GraphQLList) {
-    return {
-      kind: 'ListType',
-      type: getTypeNodeForType(type.ofType),
-    };
+    return { kind: 'ListType', type: getTypeNodeForType(type.ofType) };
   }
-  return {
-    kind: 'NamedType',
-    name: {
-      kind: 'Name',
-      value: type.name,
-    },
-  };
+  return { kind: 'NamedType', name: { kind: 'Name', value: type.name } };
 }
 
 function getTypeNodeForType(type: GraphQLType): TypeNode {
   if (type instanceof GraphQLNonNull) {
-    return {
-      kind: 'NonNullType',
-      type: getNamedOrListTypeNodeForType(type.ofType),
-    };
+    return { kind: 'NonNullType', type: getNamedOrListTypeNodeForType(type.ofType) };
   }
   return getNamedOrListTypeNodeForType(type);
 }
@@ -63,32 +51,18 @@ export function getCoerceAndValidateArgumentsFnForGraphQLField(
     variableDefintions.push({
       kind: 'VariableDefinition',
       type: getTypeNodeForType(arg.type),
-      variable: {
-        kind: 'Variable',
-        name: {
-          kind: 'Name',
-          value: `${arg.name}`,
-        },
-      },
+      variable: { kind: 'Variable', name: { kind: 'Name', value: `${arg.name}` } },
     });
   }
 
   const fieldNode: FieldNode = {
     kind: 'Field',
     name: { kind: 'Name', value: field.name },
-    arguments: field.args.map(arg => {
-      return {
-        kind: 'Argument',
-        name: { kind: 'Name', value: arg.name },
-        value: {
-          kind: 'Variable',
-          name: {
-            kind: 'Name',
-            value: `${arg.name}`,
-          },
-        },
-      };
-    }),
+    arguments: field.args.map(arg => ({
+      kind: 'Argument',
+      name: { kind: 'Name', value: arg.name },
+      value: { kind: 'Variable', name: { kind: 'Name', value: `${arg.name}` } },
+    })),
   };
   return (args: Record<string, any>) => {
     const coercedVariableValues = getVariableValues(schema, variableDefintions, args);

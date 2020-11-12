@@ -1,12 +1,12 @@
+import Path from 'path';
+import url from 'url';
 import cors from 'cors';
+import next from 'next';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 // @ts-ignore
 import { formatError } from '@keystonejs/keystone/lib/Keystone/format-error';
-import Path from 'path';
-import next from 'next';
 import type { Keystone } from '@keystone-next/types';
-import url from 'url';
 
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -24,16 +24,10 @@ export const createAdminUIServer = async (keystone: Keystone) => {
   console.log('✨ Preparing GraphQL Server');
   const apolloServer = new ApolloServer({
     schema: keystone.graphQLSchema,
-    playground: {
-      settings: {
-        'request.credentials': 'same-origin',
-      },
-    },
+    playground: { settings: { 'request.credentials': 'same-origin' } },
     // TODO: this needs to be discussed
     formatError,
-    context: ({ req, res }) => {
-      return keystone.createContextFromRequest(req, res);
-    },
+    context: ({ req, res }) => keystone.createContextFromRequest(req, res),
   });
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql' });
 
