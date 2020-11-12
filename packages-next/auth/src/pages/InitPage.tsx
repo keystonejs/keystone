@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useMemo, useState } from 'react';
 
-import { jsx, H1 } from '@keystone-ui/core';
+import { jsx, H1, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { useRawKeystone } from '@keystone-next/admin-ui/context';
 import { FieldMeta, SerializedFieldMeta } from '@keystone-next/types';
@@ -130,8 +130,10 @@ export const InitPage = ({
             .catch(() => {});
         }}
       >
-        <GraphQLErrorNotice errors={error?.graphQLErrors} networkError={error?.networkError} />
-        <Fragment>
+        <Stack gap="large">
+          {error && (
+            <GraphQLErrorNotice errors={error?.graphQLErrors} networkError={error?.networkError} />
+          )}
           {Object.keys(fields).map((fieldPath, index) => {
             const Field = fields[fieldPath].views.Field;
             return (
@@ -146,19 +148,18 @@ export const InitPage = ({
               />
             );
           })}
-        </Fragment>
-
-        <Button
-          isLoading={
-            loading ||
-            data?.authenticate?.__typename === `${listKey}AuthenticationWithPasswordSuccess`
-          }
-          type="submit"
-          weight="bold"
-          tone="active"
-        >
-          Get started
-        </Button>
+          <Button
+            isLoading={
+              loading ||
+              data?.authenticate?.__typename === `${listKey}AuthenticationWithPasswordSuccess`
+            }
+            type="submit"
+            weight="bold"
+            tone="active"
+          >
+            Get started
+          </Button>
+        </Stack>
       </form>
     </SigninContainer>
   );

@@ -9,6 +9,7 @@
 '@keystone-next/admin-ui': patch
 '@keystone-next/admin-ui-utils': patch
 '@keystone-next/fields': patch
+'@keystone-next/auth': patch
 ---
 
 Admin UI tidy: mostly alignment and spacing consolidation.
