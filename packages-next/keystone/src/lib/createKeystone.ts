@@ -1,3 +1,7 @@
+import type { IncomingMessage, ServerResponse } from 'http';
+import { GraphQLSchema, GraphQLObjectType, execute, parse } from 'graphql';
+import { mergeSchemas } from '@graphql-tools/merge';
+import { mapSchema } from '@graphql-tools/utils';
 import { Keystone as BaseKeystone } from '@keystonejs/keystone';
 import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexAdapter } from '@keystonejs/adapter-knex';
@@ -10,16 +14,12 @@ import type {
   FieldType,
   KeystoneGraphQLAPI,
 } from '@keystone-next/types';
-import { implementSession } from '../session';
-import type { IncomingMessage, ServerResponse } from 'http';
-import { mergeSchemas } from '@graphql-tools/merge';
-import { gql } from '../schema';
-import { GraphQLSchema, GraphQLObjectType, execute, parse } from 'graphql';
-import { mapSchema } from '@graphql-tools/utils';
-import { itemAPIForList } from './itemAPI';
 import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
-import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 import { autoIncrement, mongoId } from '@keystone-next/fields';
+import { implementSession } from '../session';
+import { gql } from '../schema';
+import { itemAPIForList } from './itemAPI';
+import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 
 export function createKeystone(config: KeystoneConfig): Keystone {
   config = applyIdFieldDefaults(config);
@@ -27,6 +27,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
   let keystone = new BaseKeystone({
     name: config.name,
     adapter:
+      // FIXME: prisma support
       config.db.adapter === 'knex'
         ? new KnexAdapter({ knexOptions: { connection: config.db.url } })
         : new MongooseAdapter({ mongoUri: config.db.url }),
@@ -85,10 +86,7 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       initialColumns: (listConfig.ui?.listView?.initialColumns as string[]) ?? [labelField],
       initialSort:
         (listConfig.ui?.listView?.initialSort as
-          | {
-              field: string;
-              direction: 'ASC' | 'DESC';
-            }
+          | { field: string; direction: 'ASC' | 'DESC' }
           | undefined) ?? null,
     };
   });
@@ -132,12 +130,8 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     },
   });
 
-  let graphQLSchema =
-    config.extendGraphqlSchema?.(
-      schema,
-      // TODO: find a way to not do this
-      keystone
-    ) || schema;
+  // TODO: find a way to not do this
+  let graphQLSchema = config.extendGraphqlSchema?.(schema, keystone) || schema;
   if (sessionStrategy?.end) {
     graphQLSchema = mergeSchemas({
       schemas: [graphQLSchema],
@@ -226,15 +220,13 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     graphQLSchema,
     views,
     createSessionContext: createSessionContext
-      ? (req: IncomingMessage, res: ServerResponse) => {
-          return createSessionContext(req, res, keystoneThing);
-        }
+      ? (req: IncomingMessage, res: ServerResponse) => createSessionContext(req, res, keystoneThing)
       : undefined,
     createContext,
     async createContextFromRequest(req: IncomingMessage, res: ServerResponse) {
-      let sessionContext = await sessionImplementation?.createContext(req, res, keystoneThing);
-
-      return createContext({ sessionContext });
+      return createContext({
+        sessionContext: await sessionImplementation?.createContext(req, res, keystoneThing),
+      });
     },
     config,
   };
@@ -260,14 +252,8 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig {
       ...idField,
       config: {
         ui: {
-          createView: {
-            fieldMode: 'hidden',
-            ...idField.config.ui?.createView,
-          },
-          itemView: {
-            fieldMode: 'hidden',
-            ...idField.config.ui?.itemView,
-          },
+          createView: { fieldMode: 'hidden', ...idField.config.ui?.createView },
+          itemView: { fieldMode: 'hidden', ...idField.config.ui?.itemView },
           ...idField.config.ui,
         },
         ...idField.config,
@@ -275,14 +261,8 @@ function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig {
     };
 
     const fields = { id: idField, ...listConfig.fields };
-    lists[key] = {
-      ...listConfig,
-      fields,
-    };
+    lists[key] = { ...listConfig, fields };
   });
 
-  return {
-    ...config,
-    lists,
-  };
+  return { ...config, lists };
 }

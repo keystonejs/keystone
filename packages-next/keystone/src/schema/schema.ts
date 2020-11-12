@@ -41,7 +41,5 @@ export function graphQLSchemaExtension({
   typeDefs: string;
   resolvers: any;
 }): ExtendGraphqlSchema {
-  return (schema: GraphQLSchema) => {
-    return mergeSchemas({ schemas: [schema], typeDefs, resolvers });
-  };
+  return (schema: GraphQLSchema) => mergeSchemas({ schemas: [schema], typeDefs, resolvers });
 }

@@ -231,15 +231,9 @@ export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
       return {
         session,
         startSession: startSession
-          ? (data: unknown) => {
-              return startSession({ res, data, keystone });
-            }
+          ? (data: unknown) => startSession({ res, data, keystone })
           : undefined,
-        endSession: endSession
-          ? () => {
-              return endSession({ req, res, keystone });
-            }
-          : undefined,
+        endSession: endSession ? () => endSession({ req, res, keystone }) : undefined,
       };
     },
   };
