@@ -41,7 +41,7 @@ export default withAuth(
       isAccessAllowed: ({ session }) => !!session,
     },
     session: withItemData(statelessSessions(sessionConfig), {
-      User: 'name roles { canCreateProducts canCreateUsers }',
+      User: 'name permissions',
     }),
   })
 );
