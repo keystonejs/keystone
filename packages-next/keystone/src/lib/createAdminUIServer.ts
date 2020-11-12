@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 // @ts-ignore
@@ -11,6 +12,9 @@ const dev = process.env.NODE_ENV !== 'production';
 
 export const createAdminUIServer = async (keystone: Keystone) => {
   const server = express();
+
+  // TODO: allow cors to be configured
+  server.use(cors({ origin: true, credentials: true }));
 
   console.log('✨ Preparing Next.js app');
   const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });

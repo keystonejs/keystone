@@ -34,6 +34,7 @@
     "@types/uid-safe": "^2.1.2",
     "apollo-server-express": "^2.19.0",
     "cookie": "^0.4.1",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "fast-glob": "^3.2.4",
     "fs-extra": "^9.0.1",
