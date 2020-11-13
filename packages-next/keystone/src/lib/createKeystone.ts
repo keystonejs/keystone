@@ -75,10 +75,10 @@ export function createKeystone(config: KeystoneConfig): Keystone {
     // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
     const labelField =
       (listConfig.ui?.labelField as string | undefined) ??
-      (listConfig.fields.name
-        ? 'name'
-        : listConfig.fields.label
+      (listConfig.fields.label
         ? 'label'
+        : listConfig.fields.name
+        ? 'name'
         : listConfig.fields.title
         ? 'title'
         : 'id');
