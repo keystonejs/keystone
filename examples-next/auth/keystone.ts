@@ -56,7 +56,6 @@ const { withAuth } = createAuth({
 // withAuth applies the signin functionality to the keystone config
 export default withAuth(
   config({
-    name: 'KeystoneJS Auth Example',
     db: {
       adapter: 'mongoose',
       url: 'mongodb://localhost/keystone-examples-next-auth',

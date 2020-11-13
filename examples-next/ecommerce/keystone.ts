@@ -31,7 +31,6 @@ const { withAuth } = createAuth({
 
 export default withAuth(
   config({
-    name: 'KeystoneJS eCommerce Example',
     db: {
       adapter: 'mongoose',
       url: databaseUrl,
