@@ -83,10 +83,7 @@ function getCreateViewFieldModes(
   error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
 ): CreateViewFieldModes {
   if (error) {
-    return {
-      state: 'error',
-      error,
-    };
+    return { state: 'error', error };
   }
   if (data) {
     const lists: Record<string, Record<string, 'edit' | 'hidden'>> = {};
@@ -96,15 +93,10 @@ function getCreateViewFieldModes(
         lists[list.key][field.path] = field.createView.fieldMode;
       });
     });
-    return {
-      state: 'loaded',
-      lists,
-    };
+    return { state: 'loaded', lists };
   }
 
-  return {
-    state: 'loading',
-  };
+  return { state: 'loading' };
 }
 
 function getVisibleLists(
@@ -112,10 +104,7 @@ function getVisibleLists(
   error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
 ): VisibleLists {
   if (error) {
-    return {
-      state: 'error',
-      error,
-    };
+    return { state: 'error', error };
   }
   if (data) {
     const lists = new Set<string>();
@@ -124,15 +113,10 @@ function getVisibleLists(
         lists.add(list.key);
       }
     });
-    return {
-      state: 'loaded',
-      lists,
-    };
+    return { state: 'loaded', lists };
   }
 
-  return {
-    state: 'loading',
-  };
+  return { state: 'loading' };
 }
 
 function getAuthenticatedItem(
@@ -140,10 +124,7 @@ function getAuthenticatedItem(
   error?: Error | ServerParseError | ServerError | readonly [GraphQLError, ...GraphQLError[]]
 ): AuthenticatedItem {
   if (error) {
-    return {
-      state: 'error',
-      error,
-    };
+    return { state: 'error', error };
   }
   if (data) {
     if (
@@ -154,9 +135,7 @@ function getAuthenticatedItem(
       // (yes, undefined is very specific and very intentional, it should not be checking for null)
       data.authenticatedItem.id === undefined
     ) {
-      return {
-        state: 'unauthenticated',
-      };
+      return { state: 'unauthenticated' };
     }
     const labelField = Object.keys(data.authenticatedItem).filter(
       x => x !== '__typename' && x !== 'id'
@@ -169,7 +148,5 @@ function getAuthenticatedItem(
     };
   }
 
-  return {
-    state: 'loading',
-  };
+  return { state: 'loading' };
 }

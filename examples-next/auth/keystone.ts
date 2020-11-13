@@ -55,24 +55,23 @@ const { withAuth } = createAuth({
 });
 
 // withAuth applies the signin functionality to the keystone config
-export default withAuth(
-  config({
-    db: {
-      adapter: 'mongoose',
-      url: 'mongodb://localhost/keystone-examples-next-auth',
-    },
-    lists,
-    ui: {},
-    session: withItemData(
-      // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie
-      statelessSessions({
-        // The maxAge option controls how long session cookies are valid for before they expire
-        maxAge: sessionMaxAge,
-        // The session secret is used to encrypt cookie data (should be an environment variable)
-        secret: sessionSecret,
-      }),
-      // withItemData will fetch these fields for signed-in User items to populate session.data
-      { User: 'name isAdmin' }
-    ),
-  })
-);
+export default config({
+  db: {
+    adapter: 'mongoose',
+    url: 'mongodb://localhost/keystone-examples-next-auth',
+  },
+  lists,
+  ui: {},
+  session: withItemData(
+    // Stateless sessions will store the listKey and itemId of the signed-in user in a cookie
+    statelessSessions({
+      // The maxAge option controls how long session cookies are valid for before they expire
+      maxAge: sessionMaxAge,
+      // The session secret is used to encrypt cookie data (should be an environment variable)
+      secret: sessionSecret,
+    }),
+    // withItemData will fetch these fields for signed-in User items to populate session.data
+    { User: 'name isAdmin' }
+  ),
+  plugins: [withAuth],
+});

@@ -71,6 +71,7 @@ function printInputTypesFromSchema(
 }
 
 export function printGeneratedTypes(printedSchema: string, system: KeystoneSystem) {
+  const { graphQLSchema, adminMeta, keystone } = system;
   let scalars = {
     ID: 'string',
     Boolean: 'boolean',
@@ -82,7 +83,7 @@ export function printGeneratedTypes(printedSchema: string, system: KeystoneSyste
 
   let { printedTypes, ast, printTypeNode } = printInputTypesFromSchema(
     printedSchema,
-    system.graphQLSchema,
+    graphQLSchema,
     scalars
   );
 
@@ -90,7 +91,7 @@ export function printGeneratedTypes(printedSchema: string, system: KeystoneSyste
 
   let allListsStr = '\nexport type KeystoneListsTypeInfo = {';
 
-  let queryTypeName = system.graphQLSchema.getQueryType()!.name;
+  let queryTypeName = graphQLSchema.getQueryType()!.name;
 
   let queryNode = ast.definitions.find((node): node is ObjectTypeDefinitionNode => {
     return node.kind === 'ObjectTypeDefinition' && node.name.value === queryTypeName;
@@ -117,21 +118,21 @@ export function printGeneratedTypes(printedSchema: string, system: KeystoneSyste
     return types + '}';
   };
 
-  for (const listKey in system.adminMeta.lists) {
-    const list = system.adminMeta.lists[listKey];
+  for (const listKey in adminMeta.lists) {
+    const list = adminMeta.lists[listKey];
     let backingTypes = '{\n';
-    for (const field of system.keystone.lists[list.key].fields) {
+    for (const field of keystone.lists[listKey].fields) {
       for (const [key, { optional, type }] of Object.entries(field.getBackingTypes()) as any) {
         backingTypes += `readonly ${JSON.stringify(key)}${optional ? '?' : ''}: ${type};\n`;
       }
     }
     backingTypes += '}';
 
-    let listTypeInfoName = `${list.key}ListTypeInfo`;
+    let listTypeInfoName = `${listKey}ListTypeInfo`;
     printedTypes += `
 export type ${listTypeInfoName} = {
-  key: ${JSON.stringify(listKey)};
-  fields: ${Object.keys(system.adminMeta.lists[list.key].fields)
+  key: ${listKey};
+  fields: ${Object.keys(adminMeta.lists[listKey].fields)
     .map(x => JSON.stringify(x))
     .join('|')}
   backing: ${backingTypes};
@@ -145,11 +146,11 @@ export type ${listTypeInfoName} = {
   };
 };
 
-export type ${list.key}ListFn = (
+export type ${listKey}ListFn = (
   listConfig: import('@keystone-next/keystone/schema').ListConfig<${listTypeInfoName}, ${listTypeInfoName}['fields']>
 ) => import('@keystone-next/keystone/schema').ListConfig<${listTypeInfoName}, ${listTypeInfoName}['fields']>;
 `;
-    allListsStr += `\n  readonly ${JSON.stringify(list.key)}: ${listTypeInfoName};`;
+    allListsStr += `\n  readonly ${listKey}: ${listTypeInfoName};`;
   }
 
   return printedTypes + allListsStr + '\n};\n';

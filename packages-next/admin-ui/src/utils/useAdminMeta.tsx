@@ -104,6 +104,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
               );
             }
           });
+          views = { ...views, ...fieldViews[field.customViews] };
         }
         runtimeAdminMeta.lists[list.key].fields[field.path] = {
           ...field,
@@ -121,10 +122,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     if (typeof window !== 'undefined' && !adminMetaFromLocalStorage) {
       localStorage.setItem(
         adminMetaLocalStorageKey,
-        JSON.stringify({
-          hash: hashString(JSON.stringify(adminMeta)),
-          meta: adminMeta,
-        })
+        JSON.stringify({ hash: hashString(JSON.stringify(adminMeta)), meta: adminMeta })
       );
     }
     return runtimeAdminMeta;
@@ -133,15 +131,10 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
   const mustRenderServerResult = useMustRenderServerResult();
 
   if (mustRenderServerResult) {
-    return {
-      state: 'loading' as const,
-    };
+    return { state: 'loading' as const };
   }
   if (runtimeAdminMeta) {
-    return {
-      state: 'loaded' as const,
-      value: runtimeAdminMeta,
-    };
+    return { state: 'loaded' as const, value: runtimeAdminMeta };
   }
   if (error) {
     return {
@@ -152,7 +145,5 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
       },
     };
   }
-  return {
-    state: 'loading' as const,
-  };
+  return { state: 'loading' as const };
 }

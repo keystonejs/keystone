@@ -1,19 +1,61 @@
+import { GraphQLSchema, GraphQLObjectType, execute, parse } from 'graphql';
+import { mergeSchemas } from '@graphql-tools/merge';
+import { mapSchema } from '@graphql-tools/utils';
 import { Keystone } from '@keystonejs/keystone';
 import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexAdapter } from '@keystonejs/adapter-knex';
-import type { KeystoneConfig, KeystoneSystem, BaseKeystone } from '@keystone-next/types';
+import type {
+  SerializedAdminMeta,
+  KeystoneConfig,
+  KeystoneSystem,
+  SessionContext,
+  FieldType,
+  KeystoneGraphQLAPI,
+  SessionStrategy,
+} from '@keystone-next/types';
+import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
+import { autoIncrement, mongoId } from '@keystone-next/fields';
+import { gql } from '../schema';
+import { itemAPIForList } from './itemAPI';
+import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 
-import { applyIdFieldDefaults } from './applyIdFieldDefaults';
-import { createAdminMeta } from './createAdminMeta';
-import { createGraphQLSchema } from './createGraphQLSchema';
-import { makeCreateContext } from './createContext';
+/* Validate lists config and default the id field */
+function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
+  const { lists, db } = config;
+  const newLists: KeystoneConfig['lists'] = {};
+  Object.keys(lists).forEach(key => {
+    const listConfig = lists[key];
+    if (listConfig.fields.id) {
+      throw new Error(
+        `A field with the \`id\` path is defined in the fields object on the ${JSON.stringify(
+          key
+        )} list. This is not allowed, use the idField option instead.`
+      );
+    }
+    let idField =
+      listConfig.idField ?? { mongoose: mongoId({}), knex: autoIncrement({}) }[db.adapter];
+    idField = {
+      ...idField,
+      config: {
+        ui: {
+          createView: { fieldMode: 'hidden', ...idField.config.ui?.createView },
+          itemView: { fieldMode: 'hidden', ...idField.config.ui?.itemView },
+          ...idField.config.ui,
+        },
+        ...idField.config,
+      },
+    };
 
-import { implementSession } from '../session';
+    const fields = { id: idField, ...listConfig.fields };
+    newLists[key] = { ...listConfig, fields };
+  });
+  return newLists;
+}
 
 export function createKeystone(
   config: KeystoneConfig,
   createContextFactory: () => ReturnType<typeof makeCreateContext>
-) {
+): any {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
@@ -80,7 +122,7 @@ export function createKeystone(
 }
 
 export function createSystem(config: KeystoneConfig): KeystoneSystem {
-  config = applyIdFieldDefaults(config);
+  config.lists = applyIdFieldDefaults(config);
 
   const keystone = createKeystone(config, () => createContext);
 
@@ -88,27 +130,16 @@ export function createSystem(config: KeystoneConfig): KeystoneSystem {
 
   const { adminMeta, views } = createAdminMeta(config, keystone, sessionStrategy);
 
-  let sessionImplementation = sessionStrategy ? implementSession(sessionStrategy) : undefined;
-
-  const graphQLSchema = createGraphQLSchema(
-    config,
-    keystone,
-    adminMeta,
-    sessionStrategy,
-    sessionImplementation
-  );
+  const graphQLSchema = createGraphQLSchema(config, keystone, sessionStrategy, adminMeta);
 
   const createContext = makeCreateContext({ keystone, graphQLSchema });
 
-  let system = {
+  return {
     keystone,
+    sessionStrategy,
     adminMeta,
-    graphQLSchema,
     views,
-    sessionImplementation,
+    graphQLSchema,
     createContext,
-    config,
   };
-
-  return system;
 }

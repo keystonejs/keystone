@@ -19,16 +19,15 @@ const { withAuth } = createAuth({
   },
 });
 
-export default withAuth(
-  config({
-    db: {
-      adapter: 'mongoose',
-      url: 'mongodb://localhost/keystone-examples-todo',
-    },
-    lists,
-    ui: {
-      isAccessAllowed: ({ session }) => !!session,
-    },
-    session: withItemData(statelessSessions(sessionConfig)),
-  })
-);
+export default config({
+  db: {
+    adapter: 'mongoose',
+    url: 'mongodb://localhost/keystone-examples-todo',
+  },
+  lists,
+  ui: {
+    isAccessAllowed: ({ session }) => !!session,
+  },
+  session: withItemData(statelessSessions(sessionConfig)),
+  plugins: [withAuth],
+});

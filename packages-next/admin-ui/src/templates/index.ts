@@ -30,35 +30,19 @@ export const writeAdminFiles = (
       inputPath: Path.join(pkgDir, 'static', 'tsconfig.json'),
       outputPath: 'tsconfig.json',
     },
-    {
-      mode: 'write',
-      outputPath: 'pages/no-access.js',
-      src: noAccessTemplate(session),
-    },
+    { mode: 'write', outputPath: 'pages/no-access.js', src: noAccessTemplate(session) },
     {
       mode: 'write',
       outputPath: 'pages/_app.js',
       src: appTemplate(system, { configFile, projectAdminPath }),
     },
-    {
-      mode: 'write',
-      src: homeTemplate(adminMeta),
-      outputPath: 'pages/index.js',
-    },
+    { mode: 'write', src: homeTemplate(adminMeta), outputPath: 'pages/index.js' },
     ...Object.values(adminMeta.lists)
       .map(list => {
         const { path } = list;
         return [
-          {
-            mode: 'write',
-            src: listTemplate({ list }),
-            outputPath: `pages/${path}/index.js`,
-          },
-          {
-            mode: 'write',
-            src: itemTemplate({ list }),
-            outputPath: `pages/${path}/[id].js`,
-          },
+          { mode: 'write', src: listTemplate({ list }), outputPath: `pages/${path}/index.js` },
+          { mode: 'write', src: itemTemplate({ list }), outputPath: `pages/${path}/[id].js` },
         ] as const;
       })
       .flat(),

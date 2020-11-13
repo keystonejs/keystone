@@ -8,17 +8,11 @@ import { ApolloServer } from 'apollo-server-express';
 // @ts-ignore
 import { formatError } from '@keystonejs/keystone/lib/Keystone/format-error';
 import type { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
+import { implementSession } from '../session';
 
 const dev = process.env.NODE_ENV !== 'production';
 
-const addApolloServer = ({
-  server,
-  system,
-}: {
-  server: express.Express;
-  system: KeystoneSystem;
-}) => {
-  const { graphQLSchema, createContext, sessionImplementation } = system;
+const addApolloServer = ({ server, graphQLSchema, createContext, sessionImplementation }) => {
   const apolloServer = new ApolloServer({
     // FIXME: Support for file handling configuration
     // maxFileSize: 200 * 1024 * 1024,
@@ -27,9 +21,9 @@ const addApolloServer = ({
     // FIXME: allow the dev to control where/when they get a playground
     playground: { settings: { 'request.credentials': 'same-origin' } },
     formatError, // TODO: this needs to be discussed
-    context: async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
+    context: async ({ req, res }) =>
       createContext({
-        sessionContext: await sessionImplementation?.createContext(req, res, system),
+        sessionContext: await sessionImplementation?.getSessionContext(req, res, system),
       }),
     // FIXME: support for apollo studio tracing
     // ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
@@ -49,59 +43,53 @@ const addApolloServer = ({
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql', cors: false });
 };
 
-const createAdminUIServer = async (system: KeystoneSystem) => {
-  const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
-  const handle = app.getRequestHandler();
-  await app.prepare();
-
-  const publicPages = system.config.ui?.publicPages ?? [];
-  return async (req: express.Request, res: express.Response) => {
+const getAdminUIMiddleware = ({ ui, sessionImplementation }) => {
+  const nextApp = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
+  const handle = nextApp.getRequestHandler();
+  await nextApp.prepare();
+  return async (req, res) => {
     const { pathname } = url.parse(req.url);
     if (pathname?.startsWith('/_next')) {
       handle(req, res);
       return;
     }
-    const session = (await system.sessionImplementation?.createContext?.(req, res, system))
-      ?.session;
-    const isValidSession = system.config.ui?.isAccessAllowed
-      ? await system.config.ui.isAccessAllowed({ session })
+
+    // Connect and return a session
+    const session = (await sessionImplementation?.getSessionContext(req, res, system))?.session;
+    const isValidSession = ui?.isAccessAllowed
+      ? await ui.isAccessAllowed({ session })
       : session !== undefined;
-    const maybeRedirect = await system.config.ui?.pageMiddleware?.({
-      req,
-      session,
-      isValidSession,
-      system,
-    });
+    const maybeRedirect = await ui?.pageMiddleware?.({ req, session, isValidSession, system });
     if (maybeRedirect) {
       res.redirect(maybeRedirect.to);
       return;
     }
+    const publicPages = ui?.publicPages ?? [];
     if (!isValidSession && !publicPages.includes(url.parse(req.url).pathname!)) {
-      app.render(req, res, '/no-access');
+      nextApp.render(req, res, '/no-access');
     } else {
       handle(req, res);
     }
   };
 };
 
-export const createExpressServer = async (config: KeystoneConfig, system: KeystoneSystem) => {
+export const createExpressServer = async (ui: KeystoneConfig['ui'], system: KeystoneSystem) => {
+  const { graphQLSchema, sessionStrategy, createContext } = system;
   const server = express();
 
-  if (config.server?.cors) {
-    // Setting config.server.cors = true will provide backwards compatible defaults
-    // Otherwise, the user can provide their own config object to use
-    const corsConfig =
-      typeof config.server.cors === 'boolean'
-        ? { origin: true, credentials: true }
-        : config.server.cors;
-    server.use(cors(corsConfig));
-  }
+  // TODO: allow cors to be configured
+  server.use(cors({ origin: true, credentials: true }));
+
+  const sessionImplementation = sessionStrategy ? implementSession(sessionStrategy) : undefined;
 
   console.log('✨ Preparing GraphQL Server');
-  addApolloServer({ server, system });
+  addApolloServer({ server, graphQLSchema, createContext, sessionImplementation });
 
+  // FIXME: This logic should perhaps live in the admin-ui package?
   console.log('✨ Preparing Next.js app');
-  server.use(await createAdminUIServer(system));
+  const adminUIMiddleware = getAdminUIMiddleware({ ui, sessionImplementation });
+
+  server.use(adminUIMiddleware);
 
   return server;
 };

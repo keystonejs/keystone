@@ -1,4 +1,5 @@
 import url from 'url';
+import type { GraphQLSchema } from 'graphql';
 import { mergeSchemas } from '@graphql-tools/merge';
 import {
   AdminFileToWrite,
@@ -115,7 +116,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   // Fields added to the auth list
 
   // TODO: These access control settings are not static, because we're still using executGraphQL
-  // internally and stataic false excludes them from the schema. When the implementation is
+  // internally and static false excludes them from the schema. When the implementation is
   // updated to use our crud API, we can set these to static false values.
   const fieldConfig = {
     access: () => false,
@@ -148,44 +149,23 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   const adminPageMiddleware: Auth['ui']['pageMiddleware'] = async ({
     req,
     isValidSession,
-    system,
     session,
+    system,
   }) => {
+    const { keystone } = system;
     const pathname = url.parse(req.url!).pathname!;
 
     if (isValidSession) {
       if (pathname === '/signin' || (initFirstItem && pathname === '/init')) {
-        return {
-          kind: 'redirect',
-          to: '/',
-        };
+        return { kind: 'redirect', to: '/' };
       }
-      return;
-    }
-
-    if (!session && initFirstItem) {
-      const { count } = await system.keystone.lists[listKey].adapter.itemsQuery(
-        {},
-        {
-          meta: true,
-        }
-      );
-      if (count === 0) {
-        if (pathname !== '/init') {
-          return {
-            kind: 'redirect',
-            to: '/init',
-          };
-        }
-        return;
+    } else if (!session && initFirstItem) {
+      const { count } = await keystone.lists[listKey].adapter.itemsQuery({}, { meta: true });
+      if (count === 0 && pathname !== '/init') {
+        return { kind: 'redirect', to: '/init' };
       }
-    }
-
-    if (!session && pathname !== '/signin') {
-      return {
-        kind: 'redirect',
-        to: `/signin?from=${encodeURIComponent(req.url!)}`,
-      };
+    } else if (!session && pathname !== '/signin') {
+      return { kind: 'redirect', to: `/signin?from=${encodeURIComponent(req.url!)}` };
     }
   };
 
@@ -249,9 +229,9 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * Validates the provided auth config; optional step when integrating auth
    */
-  const validateConfig = (keystoneConfig: KeystoneConfig) => {
-    const specifiedListConfig = keystoneConfig.lists[listKey];
-    if (keystoneConfig.lists[listKey] === undefined) {
+  const validateConfig = (config: KeystoneConfig) => {
+    const specifiedListConfig = config.lists[listKey];
+    if (specifiedListConfig === undefined) {
       throw new Error(
         `A createAuth() invocation specifies the list "${listKey}" but no list with that key has been defined.`
       );
@@ -332,42 +312,36 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    * It validates the auth config against the provided keystone config, and preserves existing
    * config by composing existing extendGraphqlSchema functions and ui config.
    */
-  const withAuth = (keystoneConfig: KeystoneConfig): KeystoneConfig => {
-    validateConfig(keystoneConfig);
-    let ui = keystoneConfig.ui;
-    if (keystoneConfig.ui) {
+  const withAuth = (config: KeystoneConfig): KeystoneConfig => {
+    validateConfig(config);
+    let ui = config.ui;
+    if (config.ui) {
       ui = {
-        ...keystoneConfig.ui,
-        publicPages: [...(keystoneConfig.ui.publicPages || []), ...publicAuthPages],
-        getAdditionalFiles: [...(keystoneConfig.ui.getAdditionalFiles || []), additionalFiles],
-        pageMiddleware: async args => {
-          return (await adminPageMiddleware(args)) ?? keystoneConfig?.ui?.pageMiddleware?.(args);
-        },
+        ...config.ui,
+        publicPages: [...(config.ui.publicPages || []), ...publicAuthPages],
+        getAdditionalFiles: [...(config.ui.getAdditionalFiles || []), additionalFiles],
+        pageMiddleware: async args =>
+          (await adminPageMiddleware(args)) ?? config?.ui?.pageMiddleware?.(args),
         enableSessionItem: true,
       };
     }
-    const existingExtendGraphQLSchema = keystoneConfig.extendGraphqlSchema;
-
     return {
-      ...keystoneConfig,
+      ...config,
       ui,
       // Add the additional fields to the references lists fields object
       // TODO: The additionalListFields we're adding here shouldn't naively replace existing fields with the same key
       // Leaving existing fields in place would allow solution devs to customise these field defs (eg. access control,
       // work factor for the tokens, etc.) without abandoning the withAuth() interface
       lists: {
-        ...keystoneConfig.lists,
+        ...config.lists,
         [listKey]: {
-          ...keystoneConfig.lists[listKey],
-          fields: {
-            ...keystoneConfig.lists[listKey].fields,
-            ...additionalListFields,
-          },
+          ...config.lists[listKey],
+          fields: { ...config.lists[listKey].fields, ...additionalListFields },
         },
       },
-      extendGraphqlSchema: existingExtendGraphQLSchema
+      extendGraphqlSchema: config.extendGraphqlSchema
         ? (schema, keystone) =>
-            existingExtendGraphQLSchema(extendGraphqlSchema(schema, keystone), keystone)
+            config.extendGraphqlSchema(extendGraphqlSchema(schema, keystone), keystone)
         : extendGraphqlSchema,
     };
   };
@@ -378,14 +352,16 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    * your keystone config by hand.
    */
   return {
+    // Things to inject into a config
     ui: {
-      enableSessionItem: true,
-      pageMiddleware: adminPageMiddleware,
       publicPages: publicAuthPages,
       getAdditionalFiles: additionalFiles,
+      pageMiddleware: adminPageMiddleware,
+      enableSessionItem: true,
     },
     fields: additionalListFields,
     extendGraphqlSchema,
+    // Helper functions
     validateConfig,
     withAuth,
   };

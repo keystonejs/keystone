@@ -4,16 +4,12 @@ import Path from 'path';
 import fastGlob from 'fast-glob';
 import prettier from 'prettier';
 import resolve from 'resolve';
-import type { KeystoneConfig, KeystoneSystem } from '@keystone-next/types';
+import type { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
 import { writeAdminFiles } from '@keystone-next/admin-ui/templates';
 import { AdminFileToWrite, MaybePromise } from '@keystone-next/types';
 
 export const formatSource = (src: string, parser: 'babel' | 'babel-ts' = 'babel') =>
-  prettier.format(src, {
-    parser,
-    trailingComma: 'es5',
-    singleQuote: true,
-  });
+  prettier.format(src, { parser, trailingComma: 'es5', singleQuote: true });
 
 function getDoesAdminConfigExist() {
   try {
@@ -66,11 +62,13 @@ async function writeAdminFilesToDisk(
   ).flat();
 }
 
+// FIXME: Should this be moved into the admin-ui package?
 export const generateAdminUI = async (
   config: KeystoneConfig,
   system: KeystoneSystem,
   cwd: string
 ) => {
+  const { ui, session } = config;
   const projectAdminPath = Path.resolve(cwd, './.keystone/admin');
 
   await fs.remove(projectAdminPath);
@@ -79,32 +77,29 @@ export const generateAdminUI = async (
   const filesWritten = new Set(
     [
       ...(await writeAdminFilesToDisk(
-        config.ui?.getAdditionalFiles?.map(x => x(system)) ?? [],
+        ui?.getAdditionalFiles?.map(x => x(system)) ?? [],
         projectAdminPath
       )),
     ].map(x => Path.normalize(x))
   );
-  const baseFiles = writeAdminFiles(config.session, system, configFile, projectAdminPath).filter(
-    x => {
-      if (filesWritten.has(Path.normalize(x.outputPath))) {
-        return false;
-      }
-      return true;
-    }
+  const baseFiles = writeAdminFiles(session, system, configFile, projectAdminPath).filter(
+    x => !filesWritten.has(Path.normalize(x.outputPath))
   );
 
   await writeAdminFilesToDisk([baseFiles], projectAdminPath);
   const userPagesDir = Path.join(cwd, 'admin', 'pages');
   const files = await fastGlob('**/*.{js,jsx,ts,tsx}', { cwd: userPagesDir });
   await Promise.all(
-    files.map(async filename => {
-      const outputFilename = Path.join(projectAdminPath, 'pages', filename);
-      await fs.writeFile(
+    files.map(filename =>
+      fs.writeFile(
         Path.join(projectAdminPath, 'pages', filename),
-        `export {default} from ${JSON.stringify(
-          Path.relative(Path.dirname(outputFilename), Path.join(userPagesDir, filename))
+        `export { default } from ${JSON.stringify(
+          Path.relative(
+            Path.dirname(Path.join(projectAdminPath, 'pages', filename)),
+            Path.join(userPagesDir, filename)
+          )
         )}`
-      );
-    })
+      )
+    )
   );
 };

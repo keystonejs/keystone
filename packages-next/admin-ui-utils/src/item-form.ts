@@ -7,14 +7,8 @@ import isDeepEqual from 'fast-deep-equal';
 
 export type Value = Record<
   string,
-  | {
-      kind: 'error';
-      errors: readonly [GraphQLError, ...GraphQLError[]];
-    }
-  | {
-      kind: 'value';
-      value: any;
-    }
+  | { kind: 'error'; errors: readonly [GraphQLError, ...GraphQLError[]] }
+  | { kind: 'value'; value: any }
 >;
 
 export function useChangedFieldsAndDataForUpdate(
@@ -22,13 +16,14 @@ export function useChangedFieldsAndDataForUpdate(
   itemGetter: DataGetter<ItemData>,
   value: Value
 ) {
-  const serializedValuesFromItem = useMemo(() => {
-    const value = deserializeValue(fields, itemGetter);
-    return serializeValueToObjByFieldKey(fields, value);
-  }, [fields, itemGetter]);
-  const serializedFieldValues = useMemo(() => {
-    return serializeValueToObjByFieldKey(fields, value);
-  }, [value, fields]);
+  const serializedValuesFromItem = useMemo(
+    () => serializeValueToObjByFieldKey(fields, deserializeValue(fields, itemGetter)),
+    [fields, itemGetter]
+  );
+  const serializedFieldValues = useMemo(() => serializeValueToObjByFieldKey(fields, value), [
+    value,
+    fields,
+  ]);
 
   return useMemo(() => {
     let changedFields = new Set<string>();

@@ -1,8 +1,6 @@
-import { mergeSchemas } from '@graphql-tools/merge';
-import { GraphQLSchema } from 'graphql';
 import { gql } from '../apollo';
 import { StaticAdminMetaQueryWithoutTypeNames } from '../admin-meta-graphql';
-import { KeystoneSystem, KeystoneContext } from '@keystone-next/types';
+import { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
 
 let typeDefs = gql`
   type Query {
@@ -85,14 +83,12 @@ let typeDefs = gql`
 `;
 
 export function adminMetaSchemaExtension({
+  config,
   adminMeta,
   isAccessAllowed,
-  graphQLSchema,
-  config,
 }: {
+  config: KeystoneConfig;
   adminMeta: KeystoneSystem['adminMeta'];
-  config: KeystoneSystem['config'];
-  graphQLSchema: GraphQLSchema;
   isAccessAllowed: undefined | ((args: { session: any }) => boolean | Promise<boolean>);
 }) {
   const lists: StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta']['lists'] = Object.values(
@@ -104,13 +100,7 @@ export function adminMetaSchemaExtension({
       listQueryName: gqlNames.listQueryName.replace('all', ''),
       fields: Object.keys(fields)
         .filter(fieldPath => config.lists[list.key].fields[fieldPath].config.access?.read !== false)
-        .map(fieldPath => {
-          return {
-            path: fieldPath,
-            listKey: list.key,
-            ...fields[fieldPath],
-          };
-        }),
+        .map(fieldPath => ({ path: fieldPath, listKey: list.key, ...fields[fieldPath] })),
     };
   });
   const listsByKey: Record<
@@ -122,17 +112,12 @@ export function adminMetaSchemaExtension({
   }
   const staticAdminMeta: StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta'] & {
     listsByKey: typeof listsByKey;
-  } = {
-    ...adminMeta,
-    lists,
-    listsByKey,
-  };
+  } = { ...adminMeta, lists, listsByKey };
 
   type ListMetaRootVal = typeof staticAdminMeta['lists'][number];
   type FieldMetaRootVal = ListMetaRootVal['fields'][number];
 
-  return mergeSchemas({
-    schemas: [graphQLSchema],
+  return {
     typeDefs,
     resolvers: {
       Query: {
@@ -169,28 +154,18 @@ export function adminMetaSchemaExtension({
           return runMaybeFunction(config.lists[rootVal.key].ui?.isHidden, false, { session });
         },
         hideDelete(rootVal: ListMetaRootVal, args: any, { session }: any) {
-          return runMaybeFunction(config.lists[rootVal.key].ui?.hideDelete, false, {
-            session,
-          });
+          return runMaybeFunction(config.lists[rootVal.key].ui?.hideDelete, false, { session });
         },
         hideCreate(rootVal: ListMetaRootVal, args: any, { session }: any) {
-          return runMaybeFunction(config.lists[rootVal.key].ui?.hideCreate, false, {
-            session,
-          });
+          return runMaybeFunction(config.lists[rootVal.key].ui?.hideCreate, false, { session });
         },
       },
       KeystoneAdminUIFieldMeta: {
         createView(rootVal: FieldMetaRootVal): FieldIdentifier {
-          return {
-            fieldPath: rootVal.path,
-            listKey: rootVal.listKey,
-          };
+          return { fieldPath: rootVal.path, listKey: rootVal.listKey };
         },
         listView(rootVal: FieldMetaRootVal): FieldIdentifier {
-          return {
-            fieldPath: rootVal.path,
-            listKey: rootVal.listKey,
-          };
+          return { fieldPath: rootVal.path, listKey: rootVal.listKey };
         },
         itemView(
           rootVal: FieldMetaRootVal,
@@ -205,9 +180,10 @@ export function adminMetaSchemaExtension({
       },
       KeystoneAdminUIFieldMetaCreateView: {
         fieldMode(rootVal: FieldIdentifier, args: any, { session }: any) {
+          const listConfig = config.lists[rootVal.listKey];
           return runMaybeFunction(
-            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.createView
-              ?.fieldMode ?? config.lists[rootVal.listKey].ui?.createView?.defaultFieldMode,
+            listConfig.fields[rootVal.fieldPath].config.ui?.createView?.fieldMode ??
+              listConfig.ui?.createView?.defaultFieldMode,
             'edit',
             { session }
           );
@@ -215,9 +191,10 @@ export function adminMetaSchemaExtension({
       },
       KeystoneAdminUIFieldMetaListView: {
         fieldMode(rootVal: FieldIdentifier, args: any, { session }: any) {
+          const listConfig = config.lists[rootVal.listKey];
           return runMaybeFunction(
-            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.listView
-              ?.fieldMode ?? config.lists[rootVal.listKey].ui?.listView?.defaultFieldMode,
+            listConfig.fields[rootVal.fieldPath].config.ui?.listView?.fieldMode ??
+              listConfig.ui?.listView?.defaultFieldMode,
             'read',
             { session }
           );
@@ -230,17 +207,17 @@ export function adminMetaSchemaExtension({
           { lists, session }: any
         ) {
           const item = await lists[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
-
+          const listConfig = config.lists[rootVal.listKey];
           return runMaybeFunction(
-            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.itemView
-              ?.fieldMode ?? config.lists[rootVal.listKey].ui?.itemView?.defaultFieldMode,
+            listConfig.fields[rootVal.fieldPath].config.ui?.itemView?.fieldMode ??
+              listConfig.ui?.itemView?.defaultFieldMode,
             'edit',
             { session, item }
           );
         },
       },
     },
-  });
+  };
 }
 
 type FieldIdentifier = { listKey: string; fieldPath: string };
@@ -254,9 +231,9 @@ function runMaybeFunction<Return extends string | boolean>(
 ): Return | Promise<Return> {
   if (typeof sessionFunction === 'function') {
     return sessionFunction(args);
-  }
-  if (typeof sessionFunction === 'undefined') {
+  } else if (typeof sessionFunction === 'undefined') {
     return defaultValue;
+  } else {
+    return sessionFunction;
   }
-  return sessionFunction;
 }

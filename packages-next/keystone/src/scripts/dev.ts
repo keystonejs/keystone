@@ -20,41 +20,58 @@ const devLoadingHTMLFilepath = path.join(
   'dev-loading.html'
 );
 
+const applyPlugins = (config: KeystoneConfig): KeystoneConfig => {
+  const { plugins = [] } = config;
+  for (plugin of plugins) {
+    config = pluging(config);
+  }
+  return config;
+};
+
 export const dev = async () => {
   console.log('🤞 Starting Keystone');
 
-  const server = express();
   let expressServer: null | ReturnType<typeof express> = null;
 
   const initKeystone = async () => {
-    const config = requireSource(path.join(process.cwd(), 'keystone')).default;
+    const config = applyPlugins(requireSource(path.join(process.cwd(), 'keystone')).default);
     const system = createSystem(config);
-    let printedSchema = printSchema(system.graphQLSchema);
+
+    // NOTE: Steps A, B, C and D could are orthogonal and could be combined in a
+    // single Promise.all().
     console.log('✨ Generating Schema');
-    await fs.outputFile('./.keystone/schema.graphql', printedSchema);
+    const printedSchema = printSchema(system.graphQLSchema);
+    await fs.outputFile('./.keystone/schema.graphql', printedSchema); // A
+
     await fs.outputFile(
       './.keystone/schema-types.ts',
       formatSource(printGeneratedTypes(printedSchema, system), 'babel-ts')
-    );
+    ); // B
+
+    console.log('✨ Connecting to DB');
+    await system.keystone.connect(); // C
 
     console.log('✨ Connecting to the Database');
     await system.keystone.connect();
 
     console.log('✨ Generating Admin UI');
-    await generateAdminUI(config, system, process.cwd());
+    await generateAdminUI(config, system, process.cwd()); // D
 
-    expressServer = await createExpressServer(config, system);
+    expressServer = await createExpressServer(config.ui, system);
+
     console.log(`👋 Admin UI Ready`);
   };
 
-  server.use('/__keystone_dev_status', (req, res) => {
+  const coreServer = express();
+  coreServer.use('/__keystone_dev_status', (req, res) => {
     res.json({ ready: expressServer ? true : false });
   });
-  server.use((req, res, next) => {
+  coreServer.use((req, res, next) => {
     if (expressServer) return expressServer(req, res, next);
     res.sendFile(devLoadingHTMLFilepath);
   });
-  server.listen(PORT, (err?: any) => {
+
+  coreServer.listen(PORT, (err?: any) => {
     if (err) throw err;
     console.log(`⭐️ Dev Server Ready on http://localhost:${PORT}`);
     // Don't start initialising Keystone until the dev server is ready,

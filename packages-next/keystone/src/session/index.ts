@@ -79,6 +79,7 @@ export function withItemData(createSession: CreateSession, fieldSelections: Fiel
     return {
       ...sessionStrategy,
       get: async ({ req, system }) => {
+        const { adminMeta, graphQLSchema, createContext } = system;
         const session = await get({ req, system });
         if (
           !session ||
@@ -88,8 +89,8 @@ export function withItemData(createSession: CreateSession, fieldSelections: Fiel
         ) {
           return;
         }
-        const context = system.createContext({ skipAccessControl: true });
-        const { gqlNames } = system.adminMeta.lists[session.listKey];
+        const context = createContext({ skipAccessControl: true });
+        const { gqlNames } = adminMeta.lists[session.listKey];
         // If no field selection is specified, just load the id. We still load the item,
         // because doing so validates that it exists in the database
         const fields = fieldSelections[session.listKey] || 'id';
@@ -99,7 +100,7 @@ export function withItemData(createSession: CreateSession, fieldSelections: Fiel
           }
         }`);
         const args = { id: session.itemId };
-        const result = await execute(system.graphQLSchema, query, null, context, args);
+        const result = await execute(graphQLSchema, query, null, context, args);
         // TODO: This causes "not found" errors to throw, which is not what we want
         // TODO: Also, why is this coming back as an access denied error instead of "not found" with an invalid session?
         // if (result.errors?.length) {
@@ -214,7 +215,7 @@ export function storedSessions({
 export function implementSession<T>(sessionStrategy: SessionStrategy<T>) {
   let isConnected = false;
   return {
-    async createContext(
+    async getSessionContext(
       req: IncomingMessage,
       res: ServerResponse,
       system: KeystoneSystem

@@ -23,10 +23,8 @@ export const redisSessionStore = ({ client }: Options): SessionStoreFunction => 
       await promisifiedSetex(key, maxAge, JSON.stringify(value));
     },
     async delete(key) {
-      await promisifiedDel(
-        // @ts-ignore - the types for promisifiy are confused by the definition of del
-        key
-      );
+      // @ts-ignore - the types for promisifiy are confused by the definition of del
+      await promisifiedDel(key);
     },
     async disconnect() {
       await promisifiedQuit();

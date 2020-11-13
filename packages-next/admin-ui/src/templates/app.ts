@@ -29,9 +29,7 @@ export const appTemplate = (
   const result = executeSync({
     document: staticAdminMetaQuery,
     schema: graphQLSchema,
-    contextValue: {
-      isAdminUIBuildProcess: true,
-    },
+    contextValue: { isAdminUIBuildProcess: true },
   });
   if (result.errors) {
     throw result.errors[0];
