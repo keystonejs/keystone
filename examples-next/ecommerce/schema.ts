@@ -115,6 +115,7 @@ export const lists = createSchema({
         defaultValue: 'DRAFT',
         ui: {
           displayMode: 'segmented-control',
+          createView: { fieldMode: 'hidden' },
         },
       }),
       description: text({ ui: { displayMode: 'textarea' } }),
