@@ -1,9 +1,7 @@
 import { Relationship } from '@keystonejs/fields';
-
-import type { FieldConfig } from '../../interfaces';
-import type { FieldType } from '@keystone-next/types';
-import type { BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
+import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
+import type { FieldConfig } from '../../interfaces';
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
@@ -50,21 +48,19 @@ export type RelationshipFieldConfig<
   isUnique?: boolean;
 } & (SelectDisplayConfig | CardsDisplayConfig);
 
-const views = resolveView('relationship/views');
-
 export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: RelationshipFieldConfig<TGeneratedListTypes>
 ): FieldType<TGeneratedListTypes> => ({
   type: Relationship,
   config,
-  views,
-  getAdminMeta(
+  views: resolveView('relationship/views'),
+  getAdminMeta: (
     listKey,
     path,
     adminMeta
   ): Parameters<
     typeof import('@keystone-next/fields/types/relationship/views').controller
-  >[0]['fieldMeta'] {
+  >[0]['fieldMeta'] => {
     const refListKey = config.ref.split('.')[0];
     if (!adminMeta.lists[refListKey]) {
       throw new Error(`The ref [${config.ref}] on relationship [${listKey}.${path}] is invalid`);
