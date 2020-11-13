@@ -19,12 +19,4 @@ export const checkbox = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: Checkbox,
   config: config,
   views,
-  getBackingType(path) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'boolean | null',
-      },
-    };
-  },
 });

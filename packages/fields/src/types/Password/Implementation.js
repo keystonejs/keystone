@@ -89,6 +89,10 @@ export class Password extends Implementation {
       );
     }
   }
+
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'string | null' } };
+  }
 }
 
 const CommonPasswordInterface = superclass =>

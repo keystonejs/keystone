@@ -41,12 +41,4 @@ export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>(
     displayMode: config.ui?.displayMode ?? 'select',
   }),
   views,
-  getBackingType(path: string) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'string | null',
-      },
-    };
-  },
 });

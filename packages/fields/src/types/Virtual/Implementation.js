@@ -58,6 +58,10 @@ export class Virtual extends Implementation {
       return prev;
     }, {});
   }
+
+  getBackingTypes() {
+    return {};
+  }
 }
 
 const CommonTextInterface = superclass =>

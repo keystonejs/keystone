@@ -29,6 +29,9 @@ export class Checkbox extends Implementation {
   gqlCreateInputFields() {
     return [`${this.path}: Boolean`];
   }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'boolean | null' } };
+  }
 }
 
 export class MongoCheckboxInterface extends MongooseFieldAdapter {

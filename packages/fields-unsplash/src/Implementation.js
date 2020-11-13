@@ -256,6 +256,9 @@ export class Unsplash extends Implementation {
   gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'Record<string, any> | null' } };
+  }
 }
 
 const CommonUnsplashInterface = superclass =>

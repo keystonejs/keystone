@@ -111,6 +111,19 @@ export class File extends Implementation {
   gqlCreateInputFields() {
     return [`${this.path}: ${this.getFileUploadType()}`];
   }
+  getBackingTypes() {
+    const type = `null | {
+      id: string;
+      path: string;
+      filename: string;
+      originalFilename: string;
+      mimetype: string;
+      encoding: string;
+      _meta: Record<string, any>
+     }
+    `;
+    return { [this.path]: { optional: true, type } };
+  }
 }
 
 const CommonFileInterface = superclass =>

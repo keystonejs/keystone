@@ -22,20 +22,4 @@ export const mongoId = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: MongoId,
   config: config,
   views,
-  getBackingType(path) {
-    if (path === 'id') {
-      return {
-        [path]: {
-          optional: false,
-          type: 'string',
-        },
-      };
-    }
-    return {
-      [path]: {
-        optional: true,
-        type: 'string | null',
-      },
-    };
-  },
 });

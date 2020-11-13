@@ -22,20 +22,4 @@ export const autoIncrement = <TGeneratedListTypes extends BaseGeneratedListTypes
   type: AutoIncrement,
   config: config,
   views,
-  getBackingType(path) {
-    if (path === 'id') {
-      return {
-        [path]: {
-          optional: false,
-          type: 'number',
-        },
-      };
-    }
-    return {
-      [path]: {
-        optional: true,
-        type: 'number | null',
-      },
-    };
-  },
 });

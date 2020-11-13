@@ -33,6 +33,9 @@ export class Integer extends Implementation {
   gqlCreateInputFields() {
     return [`${this.path}: Int`];
   }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'number | null' } };
+  }
 }
 
 const CommonIntegerInterface = superclass =>

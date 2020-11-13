@@ -68,6 +68,9 @@ class _DateTime extends Implementation {
       }),
     };
   }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'string | null' } };
+  }
 }
 
 const toDate = s => s && DateTime.fromISO(s, { zone: 'utc' }).toJSDate();
