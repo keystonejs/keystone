@@ -21,7 +21,6 @@ const { withAuth } = createAuth({
 
 export default withAuth(
   config({
-    name: 'KeystoneJS Tracking Fields Example',
     db: {
       adapter: 'mongoose',
       url: 'mongodb://localhost/keystone-examples-todo',
