@@ -53,6 +53,7 @@ export type KeystoneConfig = {
   db: {
     adapter: 'mongoose' | 'knex';
     url: string;
+    onConnect?: (keystone: any) => any;
   };
   graphql?: {
     path?: string;
