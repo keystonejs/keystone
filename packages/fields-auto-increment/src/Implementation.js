@@ -50,7 +50,7 @@ export class AutoIncrementImplementation extends Implementation {
 
   getBackingTypes() {
     if (this.path === 'id') {
-      return { [this.path]: { optional: false, type: 'number' } };
+      return { [this.path]: { optional: false, type: 'string' } };
     }
     return { [this.path]: { optional: true, type: 'number | null' } };
   }
