@@ -31,10 +31,21 @@ const CardContainer = ({ mode = 'view', ...props }: CardContainerProps) => {
 
   return (
     <Box
-      paddingLeft="medium"
+      paddingLeft="xlarge"
       css={{
-        borderLeftColor: tone.border,
-        borderLeftWidth: 3,
+        position: 'relative',
+
+        ':before': {
+          content: '" "',
+          backgroundColor: tone.border,
+          borderRadius: 4,
+          width: 4,
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          bottom: 0,
+          zIndex: 1,
+        },
       }}
       {...props}
     />
@@ -107,7 +118,7 @@ export function Cards({
   }
 
   return (
-    <Stack gap="medium">
+    <Stack gap="xlarge">
       {[...value.currentIds].map(id => {
         const itemGetter = items[id];
         return value.itemsBeingEdited.has(id) && onChange !== undefined ? (
@@ -141,34 +152,36 @@ export function Cards({
           </CardContainer>
         ) : (
           <CardContainer mode="view" key={id}>
-            {field.display.cardFields.map(fieldPath => {
-              const field = foreignList.fields[fieldPath];
-              const itemForField: Record<string, any> = {};
-              for (const graphqlField of getRootGraphQLFieldsFromFieldController(
-                field.controller
-              )) {
-                const fieldGetter = itemGetter.get(graphqlField);
-                if (fieldGetter.errors) {
-                  const errorMessage = fieldGetter.errors[0].message;
-                  return (
-                    <FieldContainer>
-                      <FieldLabel>{field.label}</FieldLabel>
-                      {errorMessage}
-                    </FieldContainer>
-                  );
+            <Stack gap="xlarge">
+              {field.display.cardFields.map(fieldPath => {
+                const field = foreignList.fields[fieldPath];
+                const itemForField: Record<string, any> = {};
+                for (const graphqlField of getRootGraphQLFieldsFromFieldController(
+                  field.controller
+                )) {
+                  const fieldGetter = itemGetter.get(graphqlField);
+                  if (fieldGetter.errors) {
+                    const errorMessage = fieldGetter.errors[0].message;
+                    return (
+                      <FieldContainer>
+                        <FieldLabel>{field.label}</FieldLabel>
+                        {errorMessage}
+                      </FieldContainer>
+                    );
+                  }
+                  itemForField[graphqlField] = fieldGetter.data;
                 }
-                itemForField[graphqlField] = fieldGetter.data;
-              }
 
-              return (
-                <field.views.CardValue
-                  key={fieldPath}
-                  field={field.controller}
-                  item={itemForField}
-                />
-              );
-            })}
-            <Stack across gap="medium">
+                return (
+                  <field.views.CardValue
+                    key={fieldPath}
+                    field={field.controller}
+                    item={itemForField}
+                  />
+                );
+              })}
+            </Stack>
+            <Stack across gap="small" marginTop="xlarge">
               {field.display.inlineEdit && onChange !== undefined && (
                 <Button
                   size="small"
@@ -318,7 +331,7 @@ export function Cards({
         </CardContainer>
       ) : field.display.inlineCreate || field.display.inlineConnect ? (
         <CardContainer mode="create">
-          <Stack gap="small" marginY="medium" across>
+          <Stack gap="small" marginTop="medium" across>
             {field.display.inlineCreate && (
               <Button
                 size="small"

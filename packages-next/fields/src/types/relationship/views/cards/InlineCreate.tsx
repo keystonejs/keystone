@@ -110,7 +110,7 @@ export function InlineCreate({
   };
 
   return (
-    <Stack gap="medium">
+    <Stack gap="xlarge">
       {error && (
         <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
       )}

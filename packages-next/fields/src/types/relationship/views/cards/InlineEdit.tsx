@@ -128,7 +128,7 @@ export function InlineEdit({
   }, [fields]);
 
   return (
-    <Stack gap="medium">
+    <Stack gap="xlarge">
       {error && (
         <GraphQLErrorNotice
           networkError={error?.networkError}
@@ -150,7 +150,7 @@ export function InlineEdit({
         }}
         value={state.value}
       />
-      <Stack across gap="xsmall">
+      <Stack across gap="small">
         {changedFields.size ? (
           <Button {...saveButtonProps} />
         ) : (

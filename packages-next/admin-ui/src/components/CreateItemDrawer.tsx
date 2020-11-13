@@ -145,7 +145,7 @@ export function CreateItemDrawer({
       {error && (
         <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
       )}
-      <Stack gap="xlarge" marginTop="large">
+      <Stack gap="xlarge" paddingY="xlarge">
         {fields}
         {fields.length === 0 && 'There are no fields that you can read or edit'}
       </Stack>

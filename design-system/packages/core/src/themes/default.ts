@@ -404,6 +404,7 @@ const selectableColors = identityType<{ [key: string]: SelectableColor }>()({
 
 type SharedFieldStateTokens = {
   labelColor?: string;
+  legendColor?: string;
   shadow?: string;
 };
 
@@ -451,6 +452,7 @@ const fields: FieldTokens = {
   inputPlaceholder: palette.neutral500,
 
   labelColor: palette.neutral800,
+  legendColor: palette.neutral600,
   switchForeground: 'white',
 
   hover: {

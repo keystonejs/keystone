@@ -12,7 +12,7 @@ export const widthMap = {
 
 export type InputTokensProps = {
   /* Fixes the height at a specific value. Uses vertical centering instead of padding */
-  fixHeight?: boolean;
+  isMultiline?: boolean;
   /* Changes the shape by controlling the border radius token */
   shape?: ShapeType;
   /* Sets the size of the input */
@@ -37,6 +37,7 @@ export type InputTokens = {
   paddingX: number | string;
   paddingY: number | string;
   placeholder?: string;
+  resize?: string;
   transition?: string;
 
   hover: InputStateTokens;
@@ -48,10 +49,10 @@ export type InputTokens = {
 export const useInputTokens = ({
   size: sizeKey = 'medium',
   // width: widthKey = 'large',
-  fixHeight = false,
+  isMultiline = false,
   shape = 'square',
 }: InputTokensProps): InputTokens => {
-  const { animation, radii, spacing, controlSizes, fields } = useTheme();
+  const { animation, controlSizes, fields, radii, spacing, typography } = useTheme();
 
   // const width = widthMap[widthKey];
   const size = controlSizes[sizeKey];
@@ -63,12 +64,13 @@ export const useInputTokens = ({
     borderWidth: fields.inputBorderWidth,
     fontSize: size.fontSize,
     foreground: fields.inputForeground,
-    height: fixHeight ? size.height : undefined,
-    lineHeight: fixHeight ? `${size.height}px` : undefined,
-    paddingX: spacing.small,
-    paddingY: fixHeight ? 0 : spacing.small,
+    height: isMultiline ? undefined : size.height,
+    lineHeight: isMultiline ? typography.leading.base : `${size.height}px`,
+    paddingX: spacing.medium,
+    paddingY: isMultiline ? spacing.small : 0,
     placeholder: fields.inputPlaceholder,
     shadow: fields.shadow,
+    resize: 'vertical', // online applies to textarea
     transition: `
       background-color ${animation.duration100},
       box-shadow ${animation.duration100},
@@ -127,6 +129,7 @@ export function useInputStyles({ invalid, tokens }: InputStylesProps) {
     paddingLeft: tokens.paddingX,
     paddingRight: tokens.paddingX,
     paddingTop: tokens.paddingY,
+    resize: tokens.resize,
     transition: tokens.transition,
     width: '100%',
 

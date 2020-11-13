@@ -15,7 +15,7 @@ import {
 } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { Inline, jsx, Stack, useTheme } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+import { FieldContainer, FieldLabel, FieldLegend } from '@keystone-ui/fields';
 import { DrawerController } from '@keystone-ui/modals';
 
 import { Cards } from './cards';
@@ -111,10 +111,10 @@ export const Field = ({
   const localList = useList(field.listKey);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  return (
-    <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
-      {value.kind === 'cards-view' ? (
+  if (value.kind === 'cards-view') {
+    return (
+      <Stack as="fieldset" gap="medium">
+        <FieldLegend>{field.label}</FieldLegend>
         <Cards
           forceValidation={forceValidation}
           field={field as any}
@@ -124,7 +124,14 @@ export const Field = ({
           foreignList={foreignList}
           localList={localList}
         />
-      ) : onChange ? (
+      </Stack>
+    );
+  }
+
+  return (
+    <FieldContainer>
+      <FieldLabel as="legend">{field.label}</FieldLabel>
+      {onChange ? (
         <Fragment>
           <Stack gap="medium">
             <RelationshipSelect
@@ -158,7 +165,7 @@ export const Field = ({
                     }
               }
             />
-            <Stack across gap="medium">
+            <Stack across gap="small">
               {!field.hideCreate && (
                 <Button
                   size="small"

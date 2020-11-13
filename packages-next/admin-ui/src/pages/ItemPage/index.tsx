@@ -513,6 +513,7 @@ const Toolbar = (props: HTMLAttributes<HTMLDivElement>) => {
         paddingBottom: spacing.xlarge,
         paddingTop: spacing.xlarge,
         position: 'sticky',
+        zIndex: 10,
       }}
       {...props}
     />

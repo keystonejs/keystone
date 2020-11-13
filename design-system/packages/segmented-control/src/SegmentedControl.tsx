@@ -258,8 +258,8 @@ const useItemSize = () => {
       paddingTop: spacing.small,
     },
     medium: {
-      borderRadius: radii.small,
-      fontSize: typography.fontSize.medium,
+      borderRadius: radii.xsmall,
+      fontSize: typography.fontSize.small,
       paddingLeft: spacing.medium,
       paddingRight: spacing.medium,
       paddingBottom: spacing.small,
@@ -267,7 +267,7 @@ const useItemSize = () => {
     },
     large: {
       borderRadius: radii.small,
-      fontSize: typography.fontSize.large,
+      fontSize: typography.fontSize.medium,
       paddingLeft: spacing.large,
       paddingRight: spacing.large,
       paddingBottom: spacing.medium,
