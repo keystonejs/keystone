@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 import { config } from '@keystone-next/keystone/schema';
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
-import { lists } from './schema';
+import { lists, extendGraphqlSchema } from './schema';
 import { createAuth } from '@keystone-next/auth';
 import { insertSeedData } from './seed-data';
 
@@ -42,6 +42,7 @@ export default withAuth(
       },
     },
     lists,
+    extendGraphqlSchema,
     ui: {
       isAccessAllowed: ({ session }) => !!session,
     },
