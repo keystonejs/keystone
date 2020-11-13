@@ -70,8 +70,16 @@ export function createKeystone(config: KeystoneConfig): Keystone {
       itemQueryName: listConfig.graphql?.itemQueryName,
       hooks: listConfig.hooks,
     } as any) as any;
+    // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
     const labelField =
-      (listConfig.ui?.labelField as string | undefined) ?? (listConfig.fields.name ? 'name' : 'id');
+      (listConfig.ui?.labelField as string | undefined) ??
+      (listConfig.fields.name
+        ? 'name'
+        : listConfig.fields.label
+        ? 'label'
+        : listConfig.fields.title
+        ? 'title'
+        : 'id');
     adminMeta.lists[key] = {
       key,
       labelField,

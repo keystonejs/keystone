@@ -46,7 +46,6 @@ const trackingFields = {
 export const lists = createSchema({
   Todo: list({
     ui: {
-      labelField: 'label',
       listView: {
         initialColumns: ['label', 'isComplete', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy'],
       },
