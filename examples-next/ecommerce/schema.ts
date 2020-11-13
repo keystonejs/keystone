@@ -106,6 +106,17 @@ export const lists = createSchema({
     },
     fields: {
       name: text({ isRequired: true }),
+      permissions: select({
+        options: [
+          { label: 'Draft', value: 'DRAFT' },
+          { label: 'Available', value: 'AVAILABLE' },
+          { label: 'Unavailable', value: 'UNAVAILABLE' },
+        ],
+        defaultValue: 'DRAFT',
+        ui: {
+          displayMode: 'segmented-control',
+        },
+      }),
       description: text({ ui: { displayMode: 'textarea' } }),
       price: integer(),
       image: relationship({
