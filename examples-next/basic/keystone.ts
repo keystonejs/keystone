@@ -24,7 +24,6 @@ const auth = createAuth({
 
 export default auth.withAuth(
   config({
-    name: 'Keystone 2020 Spike',
     db: {
       adapter: 'mongoose',
       url: 'mongodb://localhost/keystone-examples-next-basic',

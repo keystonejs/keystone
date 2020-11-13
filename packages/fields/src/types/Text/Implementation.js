@@ -39,6 +39,9 @@ export class Text extends Implementation {
     const { isMultiline } = this;
     return { isMultiline, ...meta };
   }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'string | null' } };
+  }
 }
 
 const CommonTextInterface = superclass =>

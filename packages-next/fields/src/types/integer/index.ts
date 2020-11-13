@@ -1,8 +1,7 @@
 import { Integer } from '@keystonejs/fields';
-import type { FieldConfig } from '../../interfaces';
-import type { FieldType } from '@keystone-next/types';
-import type { BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
+import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
+import type { FieldConfig } from '../../interfaces';
 
 export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
   TGeneratedListTypes
@@ -13,20 +12,10 @@ export type IntegerFieldConfig<TGeneratedListTypes extends BaseGeneratedListType
   defaultValue?: FieldDefaultValue<number>;
 };
 
-const views = resolveView('integer/views');
-
 export const integer = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: IntegerFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
   type: Integer,
-  config: config,
-  views,
-  getBackingType(path) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'number | null',
-      },
-    };
-  },
+  config,
+  views: resolveView('integer/views'),
 });

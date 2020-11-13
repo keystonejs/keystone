@@ -1,10 +1,9 @@
+import path from 'path';
 // @ts-ignore
 import { CloudinaryImage } from '@keystonejs/fields-cloudinary-image';
 // @ts-ignore
 import { CloudinaryAdapter } from '@keystonejs/file-adapters';
-import type { FieldType, FieldConfig } from '@keystone-next/types';
-import type { BaseGeneratedListTypes } from '@keystone-next/types';
-import path from 'path';
+import type { FieldType, FieldConfig, BaseGeneratedListTypes } from '@keystone-next/types';
 
 type CloudinaryImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
   TGeneratedListTypes
@@ -18,11 +17,6 @@ type CloudinaryImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
   };
 };
 
-const views = path.join(
-  path.dirname(require.resolve('@keystone-next/cloudinary/package.json')),
-  'views'
-);
-
 export const cloudinaryImage = <TGeneratedListTypes extends BaseGeneratedListTypes>({
   cloudinary,
   ...config
@@ -33,13 +27,8 @@ export const cloudinaryImage = <TGeneratedListTypes extends BaseGeneratedListTyp
     // @ts-ignore
     adapter: new CloudinaryAdapter(cloudinary),
   },
-  views,
-  getBackingType(path) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'any',
-      },
-    };
-  },
+  views: path.join(
+    path.dirname(require.resolve('@keystone-next/cloudinary/package.json')),
+    'views'
+  ),
 });

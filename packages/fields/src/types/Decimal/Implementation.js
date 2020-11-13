@@ -40,6 +40,9 @@ export class Decimal extends Implementation {
       symbol: this.symbol,
     };
   }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'string | null' } };
+  }
 }
 
 export class MongoDecimalInterface extends MongooseFieldAdapter {

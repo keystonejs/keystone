@@ -41,6 +41,9 @@ export class DateTimeUtcImplementation extends Implementation {
   extendAdminMeta(meta) {
     return { ...meta, format: this.format };
   }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'Date | null' } };
+  }
 }
 
 // All values must have an offset

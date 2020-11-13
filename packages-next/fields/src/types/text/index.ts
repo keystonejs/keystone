@@ -1,9 +1,7 @@
 import { Text } from '@keystonejs/fields';
-
-import type { FieldConfig } from '../../interfaces';
-import type { FieldType } from '@keystone-next/types';
-import type { BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
+import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
+import type { FieldConfig } from '../../interfaces';
 
 export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
   TGeneratedListTypes
@@ -17,23 +15,11 @@ export type TextFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> 
   };
 };
 
-const views = resolveView('text/views');
-
 export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: TextFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
   type: Text,
   config,
-  getAdminMeta: () => ({
-    displayMode: config.ui?.displayMode ?? 'input',
-  }),
-  views,
-  getBackingType(path: string) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'string | null',
-      },
-    };
-  },
+  views: resolveView('text/views'),
+  getAdminMeta: () => ({ displayMode: config.ui?.displayMode ?? 'input' }),
 });

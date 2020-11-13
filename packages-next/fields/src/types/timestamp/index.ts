@@ -1,9 +1,7 @@
 import { DateTimeUtc } from '@keystonejs/fields';
-
-import type { FieldConfig } from '../../interfaces';
-import type { FieldType } from '@keystone-next/types';
-import type { BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
+import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
+import type { FieldConfig } from '../../interfaces';
 
 export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
   TGeneratedListTypes
@@ -14,20 +12,10 @@ export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTy
   isUnique?: boolean;
 };
 
-const views = resolveView('timestamp/views');
-
 export const timestamp = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: TimestampFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
   type: DateTimeUtc,
   config,
-  views,
-  getBackingType(path: string) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'Date | null',
-      },
-    };
-  },
+  views: resolveView('timestamp/views'),
 });

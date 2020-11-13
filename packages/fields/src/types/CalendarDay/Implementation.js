@@ -94,6 +94,10 @@ export class CalendarDay extends Implementation {
       }
     }
   }
+
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'string | null' } };
+  }
 }
 
 const CommonCalendarInterface = superclass =>

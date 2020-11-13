@@ -1,12 +1,7 @@
 import { Password } from '@keystonejs/fields';
-
-import type { FieldConfig } from '../../interfaces';
-
-import type { FieldType } from '@keystone-next/types';
-import type { BaseGeneratedListTypes } from '@keystone-next/types';
+import type { FieldType, BaseGeneratedListTypes } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-
-const views = resolveView('password/views');
+import type { FieldConfig } from '../../interfaces';
 
 type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
   TGeneratedListTypes
@@ -20,18 +15,6 @@ export const password = <TGeneratedListTypes extends BaseGeneratedListTypes>(
 ): FieldType<TGeneratedListTypes> => ({
   type: Password,
   config,
-  views,
-  getAdminMeta() {
-    return {
-      minLength: config.minLength !== undefined ? config.minLength : 8,
-    };
-  },
-  getBackingType(path) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'string | null',
-      },
-    };
-  },
+  views: resolveView('password/views'),
+  getAdminMeta: () => ({ minLength: config.minLength !== undefined ? config.minLength : 8 }),
 });

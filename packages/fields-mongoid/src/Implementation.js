@@ -23,6 +23,12 @@ export class MongoIdImplementation extends Implementation {
   gqlCreateInputFields() {
     return [`${this.path}: ID`];
   }
+  getBackingTypes() {
+    if (this.path === 'id') {
+      return { [this.path]: { optional: false, type: 'string' } };
+    }
+    return { [this.path]: { optional: true, type: 'string | null' } };
+  }
 }
 
 const validator = a => (a ? /^[0-9a-fA-F]{24}$/.test(a.toString()) : true);

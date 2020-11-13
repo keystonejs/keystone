@@ -322,6 +322,9 @@ export class Relationship extends Implementation {
   gqlCreateInputFields({ schemaName }) {
     return this.gqlUpdateInputFields({ schemaName });
   }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'string | null' } };
+  }
 }
 
 export class MongoRelationshipInterface extends MongooseFieldAdapter {

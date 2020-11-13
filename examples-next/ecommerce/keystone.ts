@@ -4,11 +4,12 @@ import { config } from '@keystone-next/keystone/schema';
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
 import { lists } from './schema';
 import { createAuth } from '@keystone-next/auth';
+import { insertSeedData } from './seed-data';
 
 /*
   TODO
     - [ ] Configure send forgotten password
-    - [ ] Work out a good approach to seeding data
+    - [x] Work out a good approach to seeding data
 */
 
 const databaseUrl = process.env.DATABASE_URL || 'mongodb://localhost/keystone-examples-ecommerce';
@@ -31,10 +32,14 @@ const { withAuth } = createAuth({
 
 export default withAuth(
   config({
-    name: 'KeystoneJS eCommerce Example',
     db: {
       adapter: 'mongoose',
       url: databaseUrl,
+      onConnect: async keystone => {
+        if (process.argv.includes('--seed-data')) {
+          insertSeedData(keystone);
+        }
+      },
     },
     lists,
     ui: {

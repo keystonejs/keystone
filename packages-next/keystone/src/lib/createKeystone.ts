@@ -24,8 +24,8 @@ import { accessControlContext, skipAccessControlContext } from './createAccessCo
 export function createKeystone(config: KeystoneConfig): Keystone {
   config = applyIdFieldDefaults(config);
 
+  // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
   let keystone = new BaseKeystone({
-    name: config.name,
     adapter:
       // FIXME: prisma support
       config.db.adapter === 'knex'
@@ -33,6 +33,8 @@ export function createKeystone(config: KeystoneConfig): Keystone {
         : new MongooseAdapter({ mongoUri: config.db.url }),
     cookieSecret: '123456789',
     queryLimits: config.graphql?.queryLimits,
+    // @ts-ignore The @types/keystonejs__keystone package has the wrong type for onConnect
+    onConnect: config.db.onConnect,
   });
 
   const sessionStrategy = config.session?.();

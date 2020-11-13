@@ -50,10 +50,10 @@ export type KeystoneAdminUIConfig = {
 };
 
 export type KeystoneConfig = {
-  name: string;
   db: {
     adapter: 'mongoose' | 'knex';
     url: string;
+    onConnect?: (keystone: any) => any;
   };
   graphql?: {
     path?: string;
@@ -116,15 +116,6 @@ export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
       lists: Record<string, BaseListMeta>;
     }
   ) => JSONValue;
-  getBackingType: (
-    path: string
-  ) => Record<
-    string,
-    {
-      optional: boolean;
-      type: string;
-    }
-  >;
 };
 
 /* TODO: Review these types */
