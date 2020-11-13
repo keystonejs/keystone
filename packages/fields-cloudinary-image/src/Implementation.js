@@ -89,6 +89,10 @@ class CloudinaryImage extends File.implementation {
       },
     };
   }
+
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'any' } };
+  }
 }
 
 const MongoCloudinaryImageInterface = File.adapters.mongoose;

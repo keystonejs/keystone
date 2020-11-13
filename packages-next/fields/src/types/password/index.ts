@@ -26,12 +26,4 @@ export const password = <TGeneratedListTypes extends BaseGeneratedListTypes>(
       minLength: config.minLength !== undefined ? config.minLength : 8,
     };
   },
-  getBackingType(path) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'string | null',
-      },
-    };
-  },
 });

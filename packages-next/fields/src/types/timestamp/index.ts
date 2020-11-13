@@ -22,12 +22,4 @@ export const timestamp = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: DateTimeUtc,
   config,
   views,
-  getBackingType(path: string) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'Date | null',
-      },
-    };
-  },
 });

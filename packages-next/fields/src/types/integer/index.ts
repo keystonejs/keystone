@@ -21,12 +21,4 @@ export const integer = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: Integer,
   config: config,
   views,
-  getBackingType(path) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'number | null',
-      },
-    };
-  },
 });

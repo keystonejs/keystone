@@ -33,6 +33,9 @@ export class Float extends Implementation {
   gqlCreateInputFields() {
     return [`${this.path}: Float`];
   }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'number | null' } };
+  }
 }
 
 const CommonFloatInterface = superclass =>

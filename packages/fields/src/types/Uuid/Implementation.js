@@ -35,6 +35,9 @@ export class UuidImplementation extends Implementation {
   gqlCreateInputFields() {
     return [`${this.path}: ID`];
   }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'string | null' } };
+  }
 }
 
 const validator = a =>

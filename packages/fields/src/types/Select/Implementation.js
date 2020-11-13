@@ -121,6 +121,10 @@ export class Select extends Implementation {
   gqlCreateInputFields() {
     return [`${this.path}: ${this.getTypeName()}`];
   }
+
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'string | null' } };
+  }
 }
 
 const CommonSelectInterface = superclass =>

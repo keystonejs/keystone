@@ -116,15 +116,6 @@ export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
       lists: Record<string, BaseListMeta>;
     }
   ) => JSONValue;
-  getBackingType: (
-    path: string
-  ) => Record<
-    string,
-    {
-      optional: boolean;
-      type: string;
-    }
-  >;
 };
 
 /* TODO: Review these types */

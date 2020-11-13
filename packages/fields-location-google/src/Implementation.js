@@ -114,6 +114,17 @@ export class LocationGoogleImplementation extends Implementation {
   gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
+  getBackingTypes() {
+    const type = `null | {
+      id: string;
+      googlePlaceID: string;
+      formattedAddress: string;
+      lat: number;
+      lng: number;
+      }
+    `;
+    return { [this.path]: { optional: true, type } };
+  }
 }
 
 const CommonLocationInterface = superclass =>

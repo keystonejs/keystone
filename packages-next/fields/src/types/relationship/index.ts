@@ -89,12 +89,4 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
           }),
     };
   },
-  getBackingType(path) {
-    return {
-      [path]: {
-        optional: true,
-        type: 'string | null',
-      },
-    };
-  },
 });

@@ -28,7 +28,4 @@ export const virtual = <TGeneratedListTypes extends BaseGeneratedListTypes>(
       graphQLReturnFragment: config.graphQLReturnFragment ?? '',
     };
   },
-  getBackingType() {
-    return {};
-  },
 });

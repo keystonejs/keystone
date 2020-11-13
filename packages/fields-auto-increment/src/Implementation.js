@@ -47,6 +47,13 @@ export class AutoIncrementImplementation extends Implementation {
   gqlCreateInputFields() {
     return [`${this.path}: ${this.gqlType}`];
   }
+
+  getBackingTypes() {
+    if (this.path === 'id') {
+      return { [this.path]: { optional: false, type: 'string' } };
+    }
+    return { [this.path]: { optional: true, type: 'number | null' } };
+  }
 }
 
 export class KnexAutoIncrementInterface extends KnexFieldAdapter {
