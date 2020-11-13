@@ -146,6 +146,7 @@ export const RelationshipSelect = ({
         isLoading={loading || isLoading}
         autoFocus={autoFocus}
         components={relationshipSelectComponents}
+        portalMenu
         value={state.value ? { value: state.value.id, label: state.value.label } : null}
         options={options}
         onChange={value => {
