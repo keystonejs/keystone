@@ -83,6 +83,7 @@ const useStyles = ({
       border: `1px solid ${palette.neutral400}`,
       boxShadow: '0 4px 11px hsla(0, 0%, 0%, 0.1)',
       borderRadius: tokens.borderRadius,
+      zIndex: 9999,
     }),
     menuPortal: (provided: any) => ({ ...provided, zIndex: 9999 }),
     multiValue: (provided: any) => ({
@@ -116,9 +117,11 @@ export function Select({
   onChange,
   value,
   width: widthKey = 'large',
+  portalMenu,
   ...props
 }: BaseSelectProps & {
   value: Option | null;
+  portalMenu?: true;
   onChange(value: Option | null): void;
 }) {
   const tokens = useInputTokens({ width: widthKey });
@@ -138,7 +141,7 @@ export function Select({
       }}
       {...props}
       isMulti={false}
-      menuPortalTarget={portalTarget}
+      menuPortalTarget={portalMenu && portalTarget}
     />
   );
 }
@@ -147,9 +150,11 @@ export function MultiSelect({
   onChange,
   value,
   width: widthKey = 'large',
+  portalMenu,
   ...props
 }: BaseSelectProps & {
   value: Option[];
+  portalMenu?: true;
   onChange(value: Option[]): void;
 }) {
   const tokens = useInputTokens({ width: widthKey });
@@ -171,7 +176,7 @@ export function MultiSelect({
       }}
       {...props}
       isMulti
-      menuPortalTarget={portalTarget}
+      menuPortalTarget={portalMenu && portalTarget}
     />
   );
 }

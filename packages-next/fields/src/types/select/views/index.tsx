@@ -26,6 +26,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
             onChange?.(value);
           }}
           value={value}
+          portalMenu
         />
       ) : (
         <SegmentedControl
