@@ -398,7 +398,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
                 whiteSpace: 'nowrap',
               }}
             >
-              {data && (data.item[list.labelField] || data.item.id)}
+              {data && data.item && (data.item[list.labelField] || data.item.id)}
             </Heading>
           </div>
           {!hideCreate && (
