@@ -94,7 +94,6 @@ export const lists = createSchema({
   PhoneNumber: list({
     ui: {
       isHidden: true,
-      labelField: 'label',
       // parentRelationship: 'user',
     },
     fields: {
@@ -126,9 +125,6 @@ export const lists = createSchema({
     },
   }),
   Post: list({
-    ui: {
-      labelField: 'title',
-    },
     fields: {
       title: text(),
       status: select({

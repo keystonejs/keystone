@@ -153,9 +153,6 @@ export const lists = createSchema({
     },
   }),
   CartItem: list({
-    ui: {
-      labelField: 'label',
-    },
     fields: {
       label: virtual({
         graphQLReturnType: 'String',
@@ -183,7 +180,6 @@ export const lists = createSchema({
   }),
   Order: list({
     ui: {
-      labelField: 'label',
       listView: { initialColumns: ['label', 'user', 'items'] },
     },
     fields: {
