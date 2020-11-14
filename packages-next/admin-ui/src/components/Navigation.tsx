@@ -57,7 +57,7 @@ const NavItem = ({ href, children }: NavItemProps) => {
 };
 
 const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) => {
-  const { spacing } = useTheme();
+  const { spacing, typography } = useTheme();
   return (
     <div
       css={{
@@ -68,7 +68,7 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
         padding: spacing.xlarge,
       }}
     >
-      <div>
+      <div css={{ fontSize: typography.fontSize.small }}>
         Signed in as <strong>{item.label}</strong>
       </div>
       <Popover

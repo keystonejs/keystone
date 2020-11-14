@@ -59,7 +59,6 @@ export default function ModalsPage() {
       </DrawerController>
       <DrawerController isOpen={isWideOpen}>
         <Drawer
-          width="wide"
           actions={{
             cancel: {
               action: () => setIsWideOpen(false),

@@ -46,7 +46,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     },
     ref
   ) => {
-    const tokens = useInputTokens({ size, width, shape, fixHeight: true });
+    const tokens = useInputTokens({ size, width, shape });
     const styles = useInputStyles({ invalid, tokens });
 
     return <input ref={ref} type={type} css={styles} {...props} />;

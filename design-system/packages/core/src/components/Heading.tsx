@@ -20,6 +20,7 @@ export const Heading = forwardRefWithAs<'h1', HeadingProps>(
     const headingStyle = headingStyles[type];
     const styles = {
       color: headingStyle.color,
+      fontFamily: headingStyle.family,
       fontSize: headingStyle.size,
       fontWeight: headingStyle.weight,
       textTransform: headingStyle.transform,

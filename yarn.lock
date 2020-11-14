@@ -3062,15 +3062,15 @@
   dependencies:
     resolve "^1.17.0"
 
-"@primer/octicons-react@^11.0.0":
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-11.0.0.tgz#8171177a55d944c9e6b491c43f2957e86191cfa5"
-  integrity sha512-lHEoFVhTyyjxIDJJgVQBJGsEU4BywFbpHuBPDM8jpqYszGcYaV3zCLWNCUaQgLfzl3lRBUXc+pMrzT5qRXLftg==
+"@primer/octicons-react@^11.1.0":
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-11.1.0.tgz#1f03bfdc598ea24006cf03a0adcab2812d0fc958"
+  integrity sha512-1d/0HM4eR6+meZh3OR1HaVCg6DLBwrBEwQBN6SblOlA/98HRGaphRHGwUV7YMbSfFUc1029Ggx54ceKYHYwdXA==
 
-"@primer/octicons@^11.0.0":
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/@primer/octicons/-/octicons-11.0.0.tgz#a37c93f08fb669004f89455e5507efd12d93bf2e"
-  integrity sha512-aMM2n7dl4ToEqQH9ZWQ8M8alGCoGsRk2k5hT5h3KXd54YFKte1twhJDvyQjIjjxqggNh5NUfyuqTOv6MPCVSKQ==
+"@primer/octicons@^11.1.0":
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/@primer/octicons/-/octicons-11.1.0.tgz#a95dd14e4956365a09a2d8b80bf2fe655c307fea"
+  integrity sha512-qeW4Hu82V0eTKza54nIqud572lrZicy2R6PBX2SVfWlrfRUotpsRi6m/Dvxz/YKL/8xdwBSWgJl8hJXM4V5woA==
   dependencies:
     object-assign "^4.1.1"
 
@@ -5765,10 +5765,10 @@ available-typed-arrays@^1.0.0, available-typed-arrays@^1.0.2:
   dependencies:
     array-filter "^1.0.0"
 
-aws-sdk@^2.790.0:
-  version "2.790.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.790.0.tgz#0c01634e59ff2a761e889808bee26dfd1ea28a2d"
-  integrity sha512-L278KsE+g/LsXIjLhpdtbvMcEZzZ/5dTBLIh6VIcNF0z63xlnDJQ4IWTDZ3Op5fK9B6vwQxlPT7XD5+egu+qoA==
+aws-sdk@^2.792.0:
+  version "2.792.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.792.0.tgz#d124a6074244a4675e0416887734e8f6934bdd30"
+  integrity sha512-h7oSlrCDtZkW5qNw/idKmMjjNJaaPlXFY+NbqtaTjejpCyVuIonUmFvm8GW16V58Avj/hujJfhpX9q0BMCg+VQ==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -19317,10 +19317,10 @@ pg-types@^2.1.0:
     postgres-date "~1.0.4"
     postgres-interval "^1.1.0"
 
-pg@^8.5.0:
-  version "8.5.0"
-  resolved "https://registry.yarnpkg.com/pg/-/pg-8.5.0.tgz#c29332763ffd51ce52b07dc20dc2337f4d213d08"
-  integrity sha512-h+KHEwce67pAQilZhMCpCx1RC7rR1US7mdjwvKzHRaRxKQxbbFtv5UlwjzqILQ1dwhK+RVGqOVcahE/2KOcaeA==
+pg@^8.5.1:
+  version "8.5.1"
+  resolved "https://registry.yarnpkg.com/pg/-/pg-8.5.1.tgz#34dcb15f6db4a29c702bf5031ef2e1e25a06a120"
+  integrity sha512-9wm3yX9lCfjvA98ybCyw2pADUivyNWT/yIP4ZcDVpMN0og70BUWYEGXPCTAQdGTAqnytfRADb7NERrY1qxhIqw==
   dependencies:
     buffer-writer "2.0.0"
     packet-reader "1.0.0"
@@ -23501,6 +23501,13 @@ stack-utils@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/stack-utils/-/stack-utils-2.0.2.tgz#5cf48b4557becb4638d0bc4f21d23f5d19586593"
   integrity sha512-0H7QK2ECz3fyZMzQ8rH0j2ykpfbnd20BFtfg/SqVC2+sCTtcw0aDTGB7dk+de4U4uUeuz6nOtJcrkFFLG1B0Rg==
+  dependencies:
+    escape-string-regexp "^2.0.0"
+
+stack-utils@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/stack-utils/-/stack-utils-2.0.3.tgz#cd5f030126ff116b78ccb3c027fe302713b61277"
+  integrity sha512-gL//fkxfWUsIlFL2Tl42Cl6+HFALEaB1FU76I/Fy+oZjRreP7OPMXFlGbxM7NQsI0ZpUfw76sHnv0WNYuTb7Iw==
   dependencies:
     escape-string-regexp "^2.0.0"
 

@@ -9,26 +9,31 @@ export const Field = ({
   value,
   onChange,
 }: FieldProps<typeof import('@keystone-next/fields/types/text/views').controller>) => {
-  const { fields } = useTheme();
+  const { fields, spacing } = useTheme();
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
       <textarea
+        rows={4}
         value={value}
         readOnly={onChange === undefined}
         onChange={event => {
           onChange?.(event.target.value);
         }}
+        placeholder="Custom content field"
         css={{
           backgroundColor: fields.inputBackground,
           borderWidth: 1,
           borderRadius: fields.inputBorderRadius,
+          padding: spacing.medium,
+          width: '100%',
+          resize: 'vertical',
+
           ':hover': {
             borderColor: fields.inputBorderColor,
           },
         }}
       />
-      custom
     </FieldContainer>
   );
 };

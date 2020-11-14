@@ -10,6 +10,7 @@
 export { Checkbox, CheckboxControl } from './Checkbox';
 export { FieldContainer } from './FieldContainer';
 export { FieldLabel } from './FieldLabel';
+export { FieldLegend } from './FieldLegend';
 export { Radio } from './Radio';
 export { Switch } from './Switch';
 export { TextArea } from './TextArea';
