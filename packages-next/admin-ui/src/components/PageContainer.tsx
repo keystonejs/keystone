@@ -1,7 +1,7 @@
 /* @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import type { HTMLAttributes, ReactNode } from 'react';
+import { Fragment, HTMLAttributes, ReactNode } from 'react';
 
 import { Navigation } from './Navigation';
 import { Logo } from './Logo';
@@ -14,21 +14,27 @@ type PageContainerProps = {
 export const HEADER_HEIGHT = 80;
 
 const PageWrapper = (props: HTMLAttributes<HTMLElement>) => {
+  // const { colors } = useTheme();
   return (
-    <div
-      css={{
-        display: 'grid',
-        gridTemplateColumns: `minmax(320px, 1fr) 4fr`,
-        gridTemplateRows: `${HEADER_HEIGHT}px auto`,
-        height: '100vh',
-      }}
-      {...props}
-    />
+    <Fragment>
+      {/* TODO: not sure where to put this */}
+      <style>{`body { overflow: hidden; }`}</style>
+      <div
+        css={{
+          // background: colors.background,
+          display: 'grid',
+          gridTemplateColumns: `minmax(300px, 1fr) 4fr`,
+          gridTemplateRows: `${HEADER_HEIGHT}px auto`,
+          height: '100vh',
+        }}
+        {...props}
+      />
+    </Fragment>
   );
 };
 
 const Sidebar = (props: HTMLAttributes<HTMLElement>) => {
-  const { colors } = useTheme();
+  // const { colors } = useTheme();
 
   return (
     <aside

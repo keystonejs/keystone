@@ -126,9 +126,10 @@ function ItemForm({
             });
           } else {
             toasts.addToast({
-              title: data.item[list.labelField] || data.item.id,
+              // title: data.item[list.labelField] || data.item.id,
               tone: 'positive',
-              message: 'Saved successfully',
+              title: 'Saved successfully',
+              // message: 'Saved successfully',
             });
           }
         })
@@ -437,14 +438,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
         <div css={{ color: 'red' }}>{errorsFromMetaQuery[0].message}</div>
       ) : (
         <Fragment>
-          <Container
-            css={{
-              display: 'grid',
-              gridTemplateColumns: `2fr 1fr`,
-              alignItems: 'start',
-              gap: spacing.xlarge,
-            }}
-          >
+          <ColumnLayout>
             <ItemForm
               fieldModes={itemViewFieldModesByField}
               selectedFields={selectedFields}
@@ -453,14 +447,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               itemGetter={dataGetter.get('item') as DataGetter<ItemData>}
             />
 
-            <div
-              css={{
-                marginTop: spacing.xlarge,
-                marginBottom: spacing.xxlarge,
-                position: 'sticky',
-                top: spacing.xlarge,
-              }}
-            >
+            <StickySidebar>
               <FieldLabel>Item ID</FieldLabel>
               <div
                 css={{
@@ -491,13 +478,16 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
                   )}
                 </Tooltip>
               </div>
-            </div>
-          </Container>
+            </StickySidebar>
+          </ColumnLayout>
         </Fragment>
       )}
     </PageContainer>
   );
 };
+
+// Styled Components
+// ------------------------------
 
 const Toolbar = (props: HTMLAttributes<HTMLDivElement>) => {
   const { colors, spacing } = useTheme();
@@ -514,6 +504,37 @@ const Toolbar = (props: HTMLAttributes<HTMLDivElement>) => {
         paddingTop: spacing.xlarge,
         position: 'sticky',
         zIndex: 10,
+      }}
+      {...props}
+    />
+  );
+};
+
+const ColumnLayout = (props: HTMLAttributes<HTMLDivElement>) => {
+  const { spacing } = useTheme();
+
+  return (
+    <Container
+      css={{
+        alignItems: 'start',
+        display: 'grid',
+        gap: spacing.xlarge,
+        gridTemplateColumns: `2fr 1fr`,
+      }}
+      {...props}
+    />
+  );
+};
+
+const StickySidebar = (props: HTMLAttributes<HTMLDivElement>) => {
+  const { spacing } = useTheme();
+  return (
+    <div
+      css={{
+        marginTop: spacing.xlarge,
+        marginBottom: spacing.xxlarge,
+        position: 'sticky',
+        top: spacing.xlarge,
       }}
       {...props}
     />
