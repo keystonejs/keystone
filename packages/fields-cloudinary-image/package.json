@@ -23,7 +23,7 @@
     "@keystonejs/adapter-mongoose": "^10.0.1",
     "@keystonejs/fields": "^20.0.0",
     "@keystonejs/fields-content": "^9.0.2",
-    "@primer/octicons-react": "^11.0.0",
+    "@primer/octicons-react": "^11.1.0",
     "image-extensions": "^1.1.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.7",
