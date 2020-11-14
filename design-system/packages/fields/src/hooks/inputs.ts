@@ -12,7 +12,7 @@ export const widthMap = {
 
 export type InputTokensProps = {
   /* Fixes the height at a specific value. Uses vertical centering instead of padding */
-  fixHeight?: boolean;
+  isMultiline?: boolean;
   /* Changes the shape by controlling the border radius token */
   shape?: ShapeType;
   /* Sets the size of the input */
@@ -32,11 +32,12 @@ export type InputTokens = {
   borderWidth?: number | string;
   fontSize?: number | string;
   lineHeight?: number | string;
-  width: number | string;
+  // width: number | string;
   height?: number | string;
   paddingX: number | string;
   paddingY: number | string;
   placeholder?: string;
+  resize?: string;
   transition?: string;
 
   hover: InputStateTokens;
@@ -47,13 +48,13 @@ export type InputTokens = {
 
 export const useInputTokens = ({
   size: sizeKey = 'medium',
-  width: widthKey = 'large',
-  fixHeight = false,
+  // width: widthKey = 'large',
+  isMultiline = false,
   shape = 'square',
 }: InputTokensProps): InputTokens => {
-  const { animation, radii, spacing, controlSizes, fields } = useTheme();
+  const { animation, controlSizes, fields, radii, spacing, typography } = useTheme();
 
-  const width = widthMap[widthKey];
+  // const width = widthMap[widthKey];
   const size = controlSizes[sizeKey];
 
   return {
@@ -63,10 +64,10 @@ export const useInputTokens = ({
     borderWidth: fields.inputBorderWidth,
     fontSize: size.fontSize,
     foreground: fields.inputForeground,
-    height: fixHeight ? size.height : undefined,
-    lineHeight: fixHeight ? `${size.height}px` : undefined,
-    paddingX: spacing.small,
-    paddingY: fixHeight ? 0 : spacing.small,
+    height: isMultiline ? undefined : size.height,
+    lineHeight: isMultiline ? typography.leading.base : `${size.height}px`,
+    paddingX: spacing.medium,
+    paddingY: isMultiline ? spacing.small : 0,
     placeholder: fields.inputPlaceholder,
     shadow: fields.shadow,
     transition: `
@@ -74,7 +75,7 @@ export const useInputTokens = ({
       box-shadow ${animation.duration100},
       border-color ${animation.duration100}
     `,
-    width,
+    // width,
     hover: {
       background: fields.hover.inputBackground,
       borderColor: fields.hover.inputBorderColor,
@@ -99,7 +100,7 @@ export const useInputTokens = ({
       shadow: fields.disabled.shadow,
       foreground: fields.disabled.inputForeground,
     },
-  };
+  } as const;
 };
 
 export type InputStylesProps = {
@@ -121,12 +122,13 @@ export function useInputStyles({ invalid, tokens }: InputStylesProps) {
     fontSize: tokens.fontSize,
     height: tokens.height,
     lineHeight: tokens.lineHeight,
-    maxWidth: tokens.width,
+    // maxWidth: tokens.width,
     outline: 0,
     paddingBottom: tokens.paddingY,
     paddingLeft: tokens.paddingX,
     paddingRight: tokens.paddingX,
     paddingTop: tokens.paddingY,
+    resize: 'vertical', // applies to textarea
     transition: tokens.transition,
     width: '100%',
 

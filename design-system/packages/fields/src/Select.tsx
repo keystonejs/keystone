@@ -130,7 +130,7 @@ export function Select({
   return (
     <ReactSelect
       value={value}
-      css={{ width: tokens.width }}
+      // css={{ width: tokens.width }}
       styles={styles}
       onChange={value => {
         if (!value) {
@@ -162,7 +162,7 @@ export function MultiSelect({
 
   return (
     <ReactSelect
-      css={{ width: tokens.width }}
+      // css={{ width: tokens.width }}
       styles={styles}
       value={value}
       onChange={value => {

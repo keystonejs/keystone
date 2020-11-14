@@ -11,7 +11,7 @@ import {
   FieldProps,
 } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
-import { jsx, Stack, VisuallyHidden } from '@keystone-ui/core';
+import { Stack, Text, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
 import { EyeIcon } from '@keystone-ui/icons/icons/EyeIcon';
 import { EyeOffIcon } from '@keystone-ui/icons/icons/EyeOffIcon';
@@ -62,8 +62,8 @@ export const Field = ({
           {value.isSet ? 'Change Password' : 'Set Password'}
         </Button>
       ) : (
-        <div css={{ display: 'inline-flex', flexDirection: 'column' }}>
-          <Stack gap="medium" across>
+        <Stack gap="small">
+          <div css={{ display: 'flex' }}>
             <TextInput
               autoFocus
               invalid={validation !== undefined}
@@ -80,6 +80,7 @@ export const Field = ({
                 setTouchedFirstInput(true);
               }}
             />
+            <Spacer />
             <TextInput
               invalid={validation !== undefined}
               type={inputType}
@@ -95,6 +96,7 @@ export const Field = ({
                 setTouchedSecondInput(true);
               }}
             />
+            <Spacer />
             <Button
               onClick={() => {
                 setShowInputValue(!showInputValue);
@@ -103,6 +105,7 @@ export const Field = ({
               <VisuallyHidden>{showInputValue ? 'Hide Text' : 'Show Text'}</VisuallyHidden>
               {showInputValue ? <EyeOffIcon /> : <EyeIcon />}
             </Button>
+            <Spacer />
             <Button
               onClick={() => {
                 onChange({
@@ -114,9 +117,13 @@ export const Field = ({
               <VisuallyHidden>Cancel</VisuallyHidden>
               <XIcon />
             </Button>
-          </Stack>
-          {validation && <div css={{ color: 'red' }}>{validation}</div>}
-        </div>
+          </div>
+          {validation && (
+            <Text color="red600" size="small">
+              {validation}
+            </Text>
+          )}
+        </Stack>
       )}
       {/* {item[`${field.path}_is_set`] === true ? 'Is set' : 'Is not set'} */}
     </FieldContainer>
@@ -199,4 +206,9 @@ export const controller = (
       },
     },
   };
+};
+
+const Spacer = () => {
+  const { spacing } = useTheme();
+  return <div css={{ width: spacing.small, flexShrink: 0 }} />;
 };

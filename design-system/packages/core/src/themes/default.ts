@@ -154,47 +154,54 @@ const opacity = {
 
 type HeadingStyle = {
   color: string;
+  family: string;
   size: string;
-  weight: number;
   transform: string;
+  weight: number;
 };
 
 const headingStyles: { [key: string]: HeadingStyle } = {
   h1: {
     color: palette.neutral900,
+    family: typography.fontFamily.heading,
     size: typography.fontSize.xxxlarge,
-    weight: typography.fontWeight.heavy,
     transform: 'none',
+    weight: typography.fontWeight.heavy,
   },
   h2: {
     color: palette.neutral900,
+    family: typography.fontFamily.heading,
     size: typography.fontSize.xxlarge,
-    weight: typography.fontWeight.bold,
     transform: 'none',
+    weight: typography.fontWeight.bold,
   },
   h3: {
     color: palette.neutral900,
+    family: typography.fontFamily.heading,
     size: typography.fontSize.xlarge,
-    weight: typography.fontWeight.bold,
     transform: 'none',
+    weight: typography.fontWeight.bold,
   },
   h4: {
     color: palette.neutral900,
+    family: typography.fontFamily.heading,
     size: typography.fontSize.large,
-    weight: typography.fontWeight.bold,
     transform: 'none',
+    weight: typography.fontWeight.bold,
   },
   h5: {
     color: palette.neutral900,
+    family: typography.fontFamily.heading,
     size: typography.fontSize.medium,
-    weight: typography.fontWeight.bold,
     transform: 'none',
+    weight: typography.fontWeight.bold,
   },
   h6: {
     color: palette.neutral900,
+    family: typography.fontFamily.heading,
     size: typography.fontSize.small,
-    weight: typography.fontWeight.bold,
     transform: 'uppercase',
+    weight: typography.fontWeight.bold,
   },
 };
 
@@ -397,6 +404,7 @@ const selectableColors = identityType<{ [key: string]: SelectableColor }>()({
 
 type SharedFieldStateTokens = {
   labelColor?: string;
+  legendColor?: string;
   shadow?: string;
 };
 
@@ -444,6 +452,7 @@ const fields: FieldTokens = {
   inputPlaceholder: palette.neutral500,
 
   labelColor: palette.neutral800,
+  legendColor: palette.neutral600,
   switchForeground: 'white',
 
   hover: {

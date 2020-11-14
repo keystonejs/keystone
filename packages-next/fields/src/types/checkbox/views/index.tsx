@@ -12,9 +12,9 @@ import { jsx, useTheme } from '@keystone-ui/core';
 import { Checkbox, FieldContainer, FieldLabel } from '@keystone-ui/fields';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => {
-  const { fields, typography, spacing } = useTheme();
+  const { fields, typography } = useTheme();
   return (
-    <FieldContainer css={{ marginTop: spacing.large, marginBottom: spacing.large }}>
+    <FieldContainer>
       <Checkbox
         autoFocus={autoFocus}
         disabled={onChange === undefined}
