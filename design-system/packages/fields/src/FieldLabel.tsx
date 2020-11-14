@@ -8,7 +8,7 @@ type FieldLabelProps = {
 };
 
 export const FieldLabel = forwardRefWithAs<'label', FieldLabelProps>(
-  ({ as: Tag = 'button', children, ...props }, ref) => {
+  ({ as: Tag = 'label', children, ...props }, ref) => {
     const { typography, fields, spacing } = useTheme();
     return (
       <Tag
