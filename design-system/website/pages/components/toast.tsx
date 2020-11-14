@@ -15,14 +15,30 @@ export default function OptionsPage() {
           return (
             <Button
               onClick={() => {
-                addToast({ title: 'Basic toast', tone });
+                addToast({ title: `${titleCase(tone)} toast`, tone });
               }}
             >
-              Add {tone} Toast
+              Add {tone} toast
             </Button>
           );
         })}
+        <Button
+          onClick={() => {
+            addToast({
+              title: `Title`,
+              message:
+                'Optional long-form message content, to give the user additional information or context',
+              tone: 'help',
+            });
+          }}
+        >
+          Add toast with message
+        </Button>
       </Stack>
     </Page>
   );
+}
+
+function titleCase(str: string) {
+  return str.slice(0, 1).toUpperCase() + str.slice(1);
 }

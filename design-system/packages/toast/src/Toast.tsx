@@ -129,10 +129,22 @@ export const ToastElement = forwardRef<HTMLDivElement, ToastElementProps>((props
   }, []);
 
   const iconElement = {
-    positive: <CheckCircleIcon color={tones.positive.fill[0]} size="large" />,
-    negative: <AlertOctagonIcon color={tones.negative.fill[0]} size="large" />,
-    warning: <AlertTriangleIcon color={tones.warning.fill[0]} size="large" />,
-    help: <InfoIcon color={tones.help.fill[0]} size="large" />,
+    positive: <CheckCircleIcon />,
+    negative: <AlertOctagonIcon />,
+    warning: <AlertTriangleIcon />,
+    help: <InfoIcon />,
+  }[tone];
+  const backgroundColor = {
+    positive: tones.positive.fill[0],
+    negative: tones.negative.fill[0],
+    warning: tones.warning.fill[0],
+    help: tones.help.fill[0],
+  }[tone];
+  const foregroundColor = {
+    positive: tones.positive.fillForeground[0],
+    negative: tones.negative.fillForeground[0],
+    warning: tones.warning.fillForeground[0],
+    help: tones.help.fillForeground[0],
   }[tone];
 
   return (
@@ -141,13 +153,16 @@ export const ToastElement = forwardRef<HTMLDivElement, ToastElementProps>((props
       css={{
         alignItems: 'center',
         animation: `${slideInFrames} 150ms cubic-bezier(0.2, 0, 0, 1)`,
-        background: colors.background,
+        background: backgroundColor,
         borderRadius: radii.medium,
-        boxShadow: shadow.s500,
+        boxShadow: shadow.s300,
+        color: foregroundColor,
         display: 'flex',
         fontSize: typography.fontSize.small,
         lineHeight: 1,
         margin: spacing.medium,
+        width: 380, // less than desirable magic number, but not sure if this needs to be in theme...
+        maxWidth: '100%',
         padding: spacing.large,
       }}
       {...rest}
@@ -156,13 +171,13 @@ export const ToastElement = forwardRef<HTMLDivElement, ToastElementProps>((props
       <div
         css={{
           flex: 1,
-          maxWidth: 256, // less than desirable magic number, but not sure if this needs to be in theme...
           paddingLeft: spacing.large,
           paddingRight: spacing.large,
         }}
       >
         <h3
           css={{
+            color: foregroundColor,
             fontSize: typography.fontSize.medium,
             fontWeight: typography.fontWeight.bold,
             margin: 0,
@@ -173,7 +188,7 @@ export const ToastElement = forwardRef<HTMLDivElement, ToastElementProps>((props
         {message && (
           <div
             css={{
-              color: colors.foreground,
+              color: foregroundColor,
               lineHeight: typography.leading.base,
               marginTop: spacing.small,
             }}
@@ -189,20 +204,20 @@ export const ToastElement = forwardRef<HTMLDivElement, ToastElementProps>((props
           background: 0,
           border: 0,
           borderRadius: '50%',
-          color: colors.foreground,
+          color: foregroundColor,
           cursor: 'pointer',
           display: 'flex',
-          height: sizing.small,
+          height: sizing.medium,
           justifyContent: 'center',
           outline: 0,
           padding: 0,
-          width: sizing.small,
+          width: sizing.medium,
 
           ':hover, &.focus-visible': {
-            backgroundColor: colors.background,
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
           },
           ':active': {
-            backgroundColor: colors.backgroundDim,
+            backgroundColor: 'rgba(0, 0, 0, 0.2)',
           },
         }}
       >
