@@ -11,7 +11,7 @@ import { TransitionState } from './types';
 import { DrawerControllerContextProvider } from './DrawerController';
 
 export const DRAWER_WIDTHS = {
-  narrow: 520,
+  narrow: 580,
   wide: 740,
 };
 export type WidthType = keyof typeof DRAWER_WIDTHS;

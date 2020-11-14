@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import type { ReactNode } from 'react';
-import { Box, BoxProps, jsx, Stack, useTheme } from '@keystone-ui/core';
+import { Box, BoxProps, Stack, Text, jsx, useTheme } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { FieldProps, ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
@@ -363,11 +363,12 @@ export function Cards({
           </Stack>
         </CardContainer>
       ) : null}
+      {/* TODO: this may not be visible to the user when they invoke the save action. Maybe scroll to it? */}
       {forceValidation && (
-        <span css={{ color: 'red' }}>
+        <Text color="red600" size="small">
           You must finish creating and editing any related {foreignList.label.toLowerCase()} before
           saving the {localList.singular.toLowerCase()}
-        </span>
+        </Text>
       )}
     </Stack>
   );

@@ -132,7 +132,7 @@ export function InlineCreate({
           />
         );
       })}
-      <Stack gap="xsmall" across>
+      <Stack gap="small" across>
         <Button
           isLoading={loading}
           size="small"
