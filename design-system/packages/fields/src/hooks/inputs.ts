@@ -70,7 +70,6 @@ export const useInputTokens = ({
     paddingY: isMultiline ? spacing.small : 0,
     placeholder: fields.inputPlaceholder,
     shadow: fields.shadow,
-    resize: 'vertical', // online applies to textarea
     transition: `
       background-color ${animation.duration100},
       box-shadow ${animation.duration100},
@@ -101,7 +100,7 @@ export const useInputTokens = ({
       shadow: fields.disabled.shadow,
       foreground: fields.disabled.inputForeground,
     },
-  };
+  } as const;
 };
 
 export type InputStylesProps = {
@@ -129,7 +128,7 @@ export function useInputStyles({ invalid, tokens }: InputStylesProps) {
     paddingLeft: tokens.paddingX,
     paddingRight: tokens.paddingX,
     paddingTop: tokens.paddingY,
-    resize: tokens.resize,
+    resize: 'vertical', // applies to textarea
     transition: tokens.transition,
     width: '100%',
 

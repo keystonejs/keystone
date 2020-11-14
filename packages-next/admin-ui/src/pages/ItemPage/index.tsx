@@ -32,7 +32,6 @@ import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
 import { GraphQLErrorNotice } from '../../components/GraphQLErrorNotice';
 import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 import { Container } from '../../components/Container';
-import { palette } from '@keystone-ui/core/src/themes/colors';
 
 type ItemPageProps = {
   listKey: string;
@@ -114,9 +113,12 @@ function ItemForm({
           id: itemGetter.get('id').data,
         },
       })
-        .then(({ data, errors }) => {
-          // we're checking for path.length === 1 because errors with a path larger than 1 will be field level errors
-          // which are handled seperately and do not indicate a failure to update the item
+        // TODO -- Experimenting with less detail in the toasts, so the data lines are commented
+        // out below. If we're happy with this, clean up the unused lines.
+        .then(({ /* data, */ errors }) => {
+          // we're checking for path.length === 1 because errors with a path larger than 1 will
+          // be field level errors which are handled seperately and do not indicate a failure to
+          // update the item
           const error = errors?.find(x => x.path?.length === 1);
           if (error) {
             toasts.addToast({

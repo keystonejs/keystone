@@ -115,7 +115,7 @@ type ToastElementProps = {
 
 export const ToastElement = forwardRef<HTMLDivElement, ToastElementProps>((props, ref) => {
   const { message, onDismiss, preserve, title, tone, ...rest } = props;
-  const { radii, shadow, spacing, typography, colors, sizing, tones } = useTheme();
+  const { radii, shadow, spacing, typography, sizing, tones } = useTheme();
 
   // auto-dismiss functionality
   useEffect(() => {

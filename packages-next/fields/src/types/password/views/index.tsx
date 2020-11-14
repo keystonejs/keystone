@@ -25,7 +25,6 @@ export const Field = ({
   forceValidation,
   autoFocus,
 }: FieldProps<typeof controller>) => {
-  const { colors } = useTheme();
   const [showInputValue, setShowInputValue] = useState(false);
   const [touchedFirstInput, setTouchedFirstInput] = useState(false);
   const [touchedSecondInput, setTouchedSecondInput] = useState(false);

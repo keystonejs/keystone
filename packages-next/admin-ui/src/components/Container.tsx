@@ -1,24 +1,22 @@
 /* @jsx jsx */
 
-import { ReactNode } from 'react';
+import { ComponentPropsWithoutRef } from 'react';
 import { jsx } from '@keystone-ui/core';
 
 /**
  * NOTE: should probably come from the DS?
  */
-
-export const Container = ({ children, ...props }: { children: ReactNode }) => {
-  return (
-    <div
-      css={{
-        minWidth: 0, // fix flex text truncation
-        maxWidth: 1080,
-        // marginLeft: 'auto',
-        // marginRight: 'auto',
-      }}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-};
+type ContainerProps = ComponentPropsWithoutRef<'div'>;
+export const Container = ({ children, ...props }: ContainerProps) => (
+  <div
+    css={{
+      minWidth: 0, // fix flex text truncation
+      maxWidth: 1080,
+      // marginLeft: 'auto',
+      // marginRight: 'auto',
+    }}
+    {...props}
+  >
+    {children}
+  </div>
+);

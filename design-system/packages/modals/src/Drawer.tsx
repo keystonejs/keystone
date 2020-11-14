@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Fragment, MutableRefObject, ReactNode } from 'react';
+import { MutableRefObject, ReactNode } from 'react';
 import { Button } from '@keystone-ui/button';
 import { jsx, makeId, useId, useTheme, Heading, Stack, Divider } from '@keystone-ui/core';
 
