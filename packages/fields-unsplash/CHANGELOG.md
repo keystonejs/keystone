@@ -1,5 +1,17 @@
 # @keystonejs/fields-unsplash
 
+## 3.1.0
+
+### Minor Changes
+
+- [`fab97f6b4`](https://github.com/keystonejs/keystone/commit/fab97f6b416d7040cdd159be379e226142fc189c) [#4238](https://github.com/keystonejs/keystone/pull/4238) Thanks [@timleslie](https://github.com/timleslie)! - Added a `.getBackingTypes()` method to all `Field` implementations, which returns `{ path: { optional, type } }`. This method will be used to generate typescript types in our upcoming [new interfaces](https://www.keystonejs.com/blog/roadmap-update).
+
+### Patch Changes
+
+- Updated dependencies [[`7afde2fb5`](https://github.com/keystonejs/keystone/commit/7afde2fb516e1d3824d73a96308abb4a6b022400), [`5216e9dc6`](https://github.com/keystonejs/keystone/commit/5216e9dc6894c1a6e81765c0278dc6f7c4cc617b), [`fab97f6b4`](https://github.com/keystonejs/keystone/commit/fab97f6b416d7040cdd159be379e226142fc189c), [`325910f8d`](https://github.com/keystonejs/keystone/commit/325910f8ddaf2b620ce08d64dc97850d57840115), [`745270261`](https://github.com/keystonejs/keystone/commit/745270261f86337206802bd4e66541c98fd4407f)]:
+  - @keystonejs/fields@20.1.0
+  - @keystonejs/adapter-prisma@1.0.8
+
 ## 3.0.2
 
 ### Patch Changes

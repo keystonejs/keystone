@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/fields",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@keystone-ui/core": "^1.0.0",
+    "@keystone-ui/core": "^1.0.2",
     "@keystone-ui/icons": "^1.0.0",
     "@types/react-select": "^3.0.26",
     "react": "^16.14.0",
