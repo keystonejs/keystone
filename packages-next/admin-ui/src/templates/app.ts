@@ -1,4 +1,4 @@
-import type { Keystone, SerializedAdminMeta } from '@keystone-next/types';
+import type { KeystoneSystem, SerializedAdminMeta } from '@keystone-next/types';
 import hashString from '@emotion/hash';
 import {
   executeSync,
@@ -20,7 +20,7 @@ type AppTemplateOptions = {
 };
 
 export const appTemplate = (
-  keystone: Keystone,
+  keystone: KeystoneSystem,
   { configFile, projectAdminPath }: AppTemplateOptions
 ) => {
   const lazyMetadataQuery = getLazyMetadataQuery(keystone.graphQLSchema, keystone.adminMeta);

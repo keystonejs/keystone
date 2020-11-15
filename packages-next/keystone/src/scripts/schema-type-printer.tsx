@@ -11,7 +11,7 @@ import {
   FieldDefinitionNode,
   InputValueDefinitionNode,
 } from 'graphql';
-import type { Keystone } from '@keystone-next/types';
+import type { KeystoneSystem } from '@keystone-next/types';
 
 let printEnumTypeDefinition = (node: EnumTypeDefinitionNode) => {
   return `export type ${node.name.value} =\n${node
@@ -70,7 +70,7 @@ function printInputTypesFromSchema(
   return { printedTypes: typeString + '\n', ast, printTypeNode };
 }
 
-export function printGeneratedTypes(printedSchema: string, keystone: Keystone) {
+export function printGeneratedTypes(printedSchema: string, keystone: KeystoneSystem) {
   let scalars = {
     ID: 'string',
     Boolean: 'boolean',
