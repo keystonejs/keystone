@@ -2,11 +2,10 @@ import type { IncomingMessage, ServerResponse } from 'http';
 import { GraphQLSchema, GraphQLObjectType, execute, parse } from 'graphql';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { mapSchema } from '@graphql-tools/utils';
-import { Keystone as BaseKeystone } from '@keystonejs/keystone';
+import { Keystone } from '@keystonejs/keystone';
 import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexAdapter } from '@keystonejs/adapter-knex';
 import type {
-  BaseKeystoneList,
   SerializedAdminMeta,
   KeystoneConfig,
   KeystoneSystem,
@@ -21,21 +20,74 @@ import { gql } from '../schema';
 import { itemAPIForList } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 
+export function _createKeystone(config: KeystoneConfig): any {
+  // Note: For backwards compatibility we may want to expose
+  // this as a public API so that users can start their transition process
+  // by using this pattern for creating their Keystone object before using
+  // it in their existing custom servers or original CLI systems.
+  const { db, graphql, lists } = config;
+  // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
+  const keystone = new Keystone({
+    adapter:
+      // FIXME: prisma support
+      db.adapter === 'knex'
+        ? new KnexAdapter({
+            knexOptions: { connection: db.url },
+            // FIXME: Add support for all options
+          })
+        : new MongooseAdapter({
+            mongoUri: db.url,
+            //FIXME: Add support for all options
+          }),
+    cookieSecret: '123456789', // FIXME: Don't provide a default here. See #2882
+    queryLimits: graphql?.queryLimits,
+    // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
+    onConnect: db.onConnect,
+    // FIXME: Unsupported options: Need to work which of these we want to support with backwards
+    // compatibility options.
+    // defaultAccess
+    // adapters
+    // defaultAdapter
+    // sessionStore
+    // cookie
+    // schemaNames
+    // appVersion
+  });
+
+  Object.entries(lists).forEach(([key, { fields, graphql, access, hooks, description }]) => {
+    keystone.createList(key, {
+      fields: Object.fromEntries(
+        Object.entries(fields).map(([key, { type, config }]: any) => [key, { type, ...config }])
+      ),
+      access,
+      queryLimits: graphql?.queryLimits,
+      schemaDoc: graphql?.description ?? description,
+      listQueryName: graphql?.listQueryName,
+      itemQueryName: graphql?.itemQueryName,
+      hooks,
+      // FIXME: Unsupported options: Need to work which of these we want to support with backwards
+      // compatibility options.
+      // adminDoc
+      // labelResolver
+      // labelField
+      // adminConfig
+      // label
+      // singular
+      // plural
+      // path
+      // adapterConfig
+      // cacheHint
+      // plugins
+    } as any) as any;
+  });
+
+  return keystone;
+}
+
 export function createKeystone(config: KeystoneConfig): KeystoneSystem {
   config = applyIdFieldDefaults(config);
 
-  // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
-  let keystone = new BaseKeystone({
-    adapter:
-      // FIXME: prisma support
-      config.db.adapter === 'knex'
-        ? new KnexAdapter({ knexOptions: { connection: config.db.url } })
-        : new MongooseAdapter({ mongoUri: config.db.url }),
-    cookieSecret: '123456789',
-    queryLimits: config.graphql?.queryLimits,
-    // @ts-ignore The @types/keystonejs__keystone package has the wrong type for onConnect
-    onConnect: config.db.onConnect,
-  });
+  const keystone = _createKeystone(config);
 
   const sessionStrategy = config.session?.();
 
@@ -58,20 +110,7 @@ export function createKeystone(config: KeystoneConfig): KeystoneSystem {
   }
   Object.keys(config.lists).forEach(key => {
     const listConfig = config.lists[key];
-    const list: BaseKeystoneList = keystone.createList(key, {
-      fields: Object.fromEntries(
-        Object.entries(listConfig.fields).map(([key, field]) => [
-          key,
-          { type: (field as any).type, ...(field as any).config },
-        ])
-      ),
-      access: listConfig.access,
-      queryLimits: listConfig.graphql?.queryLimits,
-      schemaDoc: listConfig.graphql?.description ?? listConfig.description,
-      listQueryName: listConfig.graphql?.listQueryName,
-      itemQueryName: listConfig.graphql?.itemQueryName,
-      hooks: listConfig.hooks,
-    } as any) as any;
+    const list = keystone.lists[key];
     // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
     const labelField =
       (listConfig.ui?.labelField as string | undefined) ??
