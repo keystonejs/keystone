@@ -67,7 +67,7 @@ export const Stack = forwardRefWithAs<'div', StackProps>(
           .filter(child => isValidElement(child))
           .map((child, index) => {
             return (
-              <Fragment>
+              <Fragment key={index}>
                 {dividers !== 'none' && index ? (
                   <Divider
                     orientation={orientation}
