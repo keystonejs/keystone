@@ -7,7 +7,7 @@
     "dev": "keystone-next"
   },
   "dependencies": {
-    "@keystone-next/admin-ui": "^2.0.0",
+    "@keystone-next/admin-ui": "^2.0.2",
     "@keystone-next/auth": "^3.0.0",
     "@keystone-next/fields": "^3.0.0",
     "@keystone-next/keystone": "^3.0.0",

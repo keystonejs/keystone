@@ -55,11 +55,11 @@ export const lists = createSchema({
       /*
         The email of the user, used to sign in
       */
-      email: text(),
+      email: text({ isRequired: true }),
       /*
         The password of the user
       */
-      password: password(),
+      password: password({ isRequired: true }),
       /*
         The role assigned to the user
       */
