@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-ecommerce",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "author": "Wes Bos & Jed Watson",
   "license": "MIT",
@@ -9,12 +9,12 @@
     "seed-data": "keystone-next --seed-data"
   },
   "dependencies": {
-    "@keystone-next/admin-ui": "^2.0.0",
-    "@keystone-next/auth": "^2.0.0",
-    "@keystone-next/cloudinary": "^1.0.1",
-    "@keystone-next/fields": "^2.0.0",
-    "@keystone-next/keystone": "^2.0.0",
-    "@keystone-next/types": "^2.0.0",
+    "@keystone-next/admin-ui": "^2.0.2",
+    "@keystone-next/auth": "^3.0.0",
+    "@keystone-next/cloudinary": "^2.0.0",
+    "@keystone-next/fields": "^3.0.0",
+    "@keystone-next/keystone": "^3.0.0",
+    "@keystone-next/types": "^3.0.0",
     "dotenv": "^8.2.0",
     "next": "^9.5.5",
     "nodemailer": "^6.4.16",
