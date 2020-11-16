@@ -1,16 +1,12 @@
 # @keystone-next/example-ecommerce
 
 ## 0.1.0
+
 ### Minor Changes
-
-
 
 - [`cb0048040`](https://github.com/keystonejs/keystone/commit/cb004804057817be161f4104eac7e63dc751c881) [#4240](https://github.com/keystonejs/keystone/pull/4240) Thanks [@timleslie](https://github.com/timleslie)! - Added support for seeding product data when the `--dummy` argument is provided.
 
-
 ### Patch Changes
-
-
 
 - [`9928da13e`](https://github.com/keystonejs/keystone/commit/9928da13ecca03fed560a42e1071afc59c0feb3b) [#4242](https://github.com/keystonejs/keystone/pull/4242) Thanks [@timleslie](https://github.com/timleslie)! - Removed `name` field from `KeystoneConfig` type, as it doesn't actually do anything.
 

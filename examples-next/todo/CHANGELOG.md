@@ -1,9 +1,8 @@
 # @keystone-next/example-todo
 
 ## 0.0.1
+
 ### Patch Changes
-
-
 
 - [`9928da13e`](https://github.com/keystonejs/keystone/commit/9928da13ecca03fed560a42e1071afc59c0feb3b) [#4242](https://github.com/keystonejs/keystone/pull/4242) Thanks [@timleslie](https://github.com/timleslie)! - Removed `name` field from `KeystoneConfig` type, as it doesn't actually do anything.
 
