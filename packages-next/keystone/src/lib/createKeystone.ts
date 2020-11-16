@@ -9,7 +9,7 @@ import type {
   BaseKeystoneList,
   SerializedAdminMeta,
   KeystoneConfig,
-  Keystone,
+  KeystoneSystem,
   SessionContext,
   FieldType,
   KeystoneGraphQLAPI,
@@ -21,7 +21,7 @@ import { gql } from '../schema';
 import { itemAPIForList } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 
-export function createKeystone(config: KeystoneConfig): Keystone {
+export function createKeystone(config: KeystoneConfig): KeystoneSystem {
   config = applyIdFieldDefaults(config);
 
   // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions

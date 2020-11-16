@@ -1,6 +1,6 @@
-import type { Keystone } from '@keystone-next/types';
+import type { KeystoneSystem } from '@keystone-next/types';
 
-export const noAccessTemplate = (keystone: Keystone) => {
+export const noAccessTemplate = (keystone: KeystoneSystem) => {
   // -- TEMPLATE START
   return `
 import React from 'react';

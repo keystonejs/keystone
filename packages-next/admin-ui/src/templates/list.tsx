@@ -1,10 +1,10 @@
-import type { Keystone } from '@keystone-next/types';
+import type { KeystoneSystem } from '@keystone-next/types';
 
 type ListPageTemplateOptions = {
-  list: Keystone['adminMeta']['lists'][string];
+  list: KeystoneSystem['adminMeta']['lists'][string];
 };
 
-export const listTemplate = (keystone: Keystone, { list }: ListPageTemplateOptions) => {
+export const listTemplate = (keystone: KeystoneSystem, { list }: ListPageTemplateOptions) => {
   // -- TEMPLATE START
   return `
 import React from 'react';

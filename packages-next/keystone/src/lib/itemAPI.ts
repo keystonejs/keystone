@@ -2,7 +2,7 @@ import { GraphQLSchema } from 'graphql';
 import {
   BaseGeneratedListTypes,
   BaseKeystoneList,
-  Keystone,
+  KeystoneSystem,
   KeystoneListsAPI,
 } from '@keystone-next/types';
 import { getCoerceAndValidateArgumentsFnForGraphQLField } from './getCoerceAndValidateArgumentsFnForGraphQLField';
@@ -10,7 +10,7 @@ import { getCoerceAndValidateArgumentsFnForGraphQLField } from './getCoerceAndVa
 export function itemAPIForList(
   list: BaseKeystoneList,
   schema: GraphQLSchema,
-  createContext: Keystone['createContext']
+  createContext: KeystoneSystem['createContext']
 ): KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>[string] {
   const queryFields = schema.getQueryType()!.getFields();
   const mutationFields = schema.getMutationType()!.getFields();

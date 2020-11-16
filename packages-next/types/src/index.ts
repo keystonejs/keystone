@@ -40,12 +40,12 @@ export type KeystoneAdminUIConfig = {
   publicPages?: string[];
   /** The basePath for the Admin UI App */
   path?: string;
-  getAdditionalFiles?: ((keystone: Keystone) => MaybePromise<AdminFileToWrite[]>)[];
+  getAdditionalFiles?: ((keystone: KeystoneSystem) => MaybePromise<AdminFileToWrite[]>)[];
   pageMiddleware?: (args: {
     req: IncomingMessage;
     session: any;
     isValidSession: boolean;
-    keystone: Keystone;
+    keystone: KeystoneSystem;
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 
@@ -125,7 +125,7 @@ export type FieldDefaultValue<T> =
   | null
   | MaybePromise<(args: FieldDefaultValueArgs<T>) => T | null | undefined>;
 
-export type Keystone = {
+export type KeystoneSystem = {
   keystone: any;
   config: KeystoneConfig;
   adminMeta: SerializedAdminMeta;
