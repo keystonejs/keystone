@@ -13,7 +13,7 @@ const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.jso
 export { adminMetaSchemaExtension } from './adminMetaSchemaExtension';
 
 export const writeAdminFiles = (
-  keystone: KeystoneSystem,
+  system: KeystoneSystem,
   configFile: boolean,
   projectAdminPath: string
 ): AdminFileToWrite[] => {
@@ -31,30 +31,30 @@ export const writeAdminFiles = (
     {
       mode: 'write',
       outputPath: 'pages/no-access.js',
-      src: noAccessTemplate(keystone),
+      src: noAccessTemplate(system),
     },
     {
       mode: 'write',
       outputPath: 'pages/_app.js',
-      src: appTemplate(keystone, { configFile, projectAdminPath }),
+      src: appTemplate(system, { configFile, projectAdminPath }),
     },
     {
       mode: 'write',
-      src: homeTemplate(keystone),
+      src: homeTemplate(system),
       outputPath: 'pages/index.js',
     },
-    ...Object.values(keystone.adminMeta.lists)
+    ...Object.values(system.adminMeta.lists)
       .map(list => {
         const { path } = list;
         return [
           {
             mode: 'write',
-            src: listTemplate(keystone, { list }),
+            src: listTemplate(system, { list }),
             outputPath: `pages/${path}/index.js`,
           },
           {
             mode: 'write',
-            src: itemTemplate(keystone, { list }),
+            src: itemTemplate(system, { list }),
             outputPath: `pages/${path}/[id].js`,
           },
         ] as const;

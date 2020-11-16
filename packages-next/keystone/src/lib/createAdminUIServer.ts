@@ -10,7 +10,7 @@ import type { KeystoneSystem } from '@keystone-next/types';
 
 const dev = process.env.NODE_ENV !== 'production';
 
-export const createAdminUIServer = async (keystone: KeystoneSystem) => {
+export const createAdminUIServer = async (system: KeystoneSystem) => {
   const server = express();
 
   // TODO: allow cors to be configured
@@ -19,19 +19,19 @@ export const createAdminUIServer = async (keystone: KeystoneSystem) => {
   console.log('✨ Preparing Next.js app');
   const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
   const handle = app.getRequestHandler();
-  await Promise.all([app.prepare(), keystone.keystone.connect()]);
+  await Promise.all([app.prepare(), system.keystone.connect()]);
 
   console.log('✨ Preparing GraphQL Server');
   const apolloServer = new ApolloServer({
-    schema: keystone.graphQLSchema,
+    schema: system.graphQLSchema,
     playground: { settings: { 'request.credentials': 'same-origin' } },
     // TODO: this needs to be discussed
     formatError,
-    context: ({ req, res }) => keystone.createContextFromRequest(req, res),
+    context: ({ req, res }) => system.createContextFromRequest(req, res),
   });
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql' });
 
-  const publicPages = keystone.config.ui?.publicPages ?? [];
+  const publicPages = system.config.ui?.publicPages ?? [];
 
   server.use(async (req, res) => {
     const { pathname } = url.parse(req.url);
@@ -39,15 +39,15 @@ export const createAdminUIServer = async (keystone: KeystoneSystem) => {
       handle(req, res);
       return;
     }
-    const session = (await keystone.createSessionContext?.(req, res))?.session;
-    const isValidSession = keystone.config.ui?.isAccessAllowed
-      ? await keystone.config.ui.isAccessAllowed({ session })
+    const session = (await system.createSessionContext?.(req, res))?.session;
+    const isValidSession = system.config.ui?.isAccessAllowed
+      ? await system.config.ui.isAccessAllowed({ session })
       : session !== undefined;
-    const maybeRedirect = await keystone.config.ui?.pageMiddleware?.({
+    const maybeRedirect = await system.config.ui?.pageMiddleware?.({
       req,
       session,
       isValidSession,
-      keystone,
+      system,
     });
     if (maybeRedirect) {
       res.redirect(maybeRedirect.to);
