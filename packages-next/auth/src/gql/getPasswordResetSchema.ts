@@ -1,4 +1,3 @@
-import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
 import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 
 import { updateAuthToken } from '../lib/updateAuthToken';
@@ -22,7 +21,7 @@ export function getPasswordResetSchema({
   gqlNames: AuthGqlNames;
   passwordResetLink: AuthTokenTypeConfig;
 }) {
-  return graphQLSchemaExtension({
+  return {
     typeDefs: `
       # Reset password
       type Mutation {
@@ -145,5 +144,5 @@ export function getPasswordResetSchema({
         },
       },
     },
-  });
+  };
 }

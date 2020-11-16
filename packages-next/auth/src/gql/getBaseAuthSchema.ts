@@ -1,4 +1,3 @@
-import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
 import { AuthGqlNames } from '../types';
 
 import { attemptAuthentication } from '../lib/attemptAuthentication';
@@ -17,7 +16,7 @@ export function getBaseAuthSchema({
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
 }) {
-  return graphQLSchemaExtension({
+  return {
     typeDefs: `
       # Auth
       union AuthenticatedItem = ${listKey}
@@ -104,5 +103,5 @@ export function getBaseAuthSchema({
         },
       },
     },
-  });
+  };
 }
