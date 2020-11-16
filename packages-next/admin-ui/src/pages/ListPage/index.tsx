@@ -222,94 +222,143 @@ export const ListPage = ({ listKey }: ListPageProps) => {
   }
 
   const theme = useTheme();
+  const showCreate = !(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true) || null;
 
   return (
-    <PageContainer
-      header={
-        <ListPageHeader
-          listKey={listKey}
-          showCreate={!(metaQuery.data?.keystone.adminMeta.list?.hideCreate ?? true)}
-        />
-      }
-    >
-      <Stack across gap="medium" align="center" marginTop="xlarge">
-        <FilterAdd listKey={listKey} />
-        {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
-      </Stack>
+    <PageContainer header={<ListPageHeader listKey={listKey} />}>
       {metaQuery.error ? (
         // TODO: Show errors nicely and with information
         'Error...'
       ) : data && metaQuery.data ? (
-        data.meta.count ? (
-          <Fragment>
-            <ResultsSummaryContainer>
-              {(() => {
-                const selectedItems = selectedItemsState.selectedItems;
-                const selectedItemsCount = selectedItems.size;
-                if (selectedItemsCount) {
+        <Fragment>
+          <Stack across gap="medium" align="center" marginTop="xlarge">
+            {showCreate && <CreateButton listKey={listKey} />}
+            {data.meta.count || filters.filters.length ? <FilterAdd listKey={listKey} /> : null}
+            {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
+          </Stack>
+          {data.meta.count ? (
+            <Fragment>
+              <ResultsSummaryContainer>
+                {(() => {
+                  const selectedItems = selectedItemsState.selectedItems;
+                  const selectedItemsCount = selectedItems.size;
+                  if (selectedItemsCount) {
+                    return (
+                      <Fragment>
+                        <span css={{ marginRight: theme.spacing.small }}>
+                          Selected {selectedItemsCount} of {data.items.length}
+                        </span>
+                        {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
+                          <DeleteManyButton
+                            list={list}
+                            selectedItems={selectedItems}
+                            refetch={refetch}
+                          />
+                        )}
+                      </Fragment>
+                    );
+                  }
                   return (
                     <Fragment>
-                      <span css={{ marginRight: theme.spacing.small }}>
-                        Selected {selectedItemsCount} of {data.items.length}
-                      </span>
-                      {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
-                        <DeleteManyButton
-                          list={list}
-                          selectedItems={selectedItems}
-                          refetch={refetch}
-                        />
+                      <PaginationLabel
+                        currentPage={currentPage}
+                        pageSize={pageSize}
+                        plural={list.plural}
+                        singular={list.singular}
+                        total={data.meta.count}
+                      />
+                      , sorted by <SortSelection list={list} />
+                      with{' '}
+                      <FieldSelection
+                        list={list}
+                        fieldModesByFieldPath={listViewFieldModesByField}
+                      />{' '}
+                      {loading && (
+                        <LoadingDots label="Loading item data" size="small" tone="active" />
                       )}
                     </Fragment>
                   );
-                }
-                return (
-                  <Fragment>
-                    <PaginationLabel
-                      currentPage={currentPage}
-                      pageSize={pageSize}
-                      plural={list.plural}
-                      singular={list.singular}
-                      total={data.meta.count}
-                    />
-                    , sorted by <SortSelection list={list} />
-                    with{' '}
-                    <FieldSelection
-                      list={list}
-                      fieldModesByFieldPath={listViewFieldModesByField}
-                    />{' '}
-                    {loading && (
-                      <LoadingDots label="Loading item data" size="small" tone="active" />
-                    )}
-                  </Fragment>
-                );
-              })()}
-            </ResultsSummaryContainer>
-            <ListTable
-              count={data.meta.count}
-              currentPage={currentPage}
-              itemsGetter={dataGetter.get('items')}
-              listKey={listKey}
-              pageSize={pageSize}
-              selectedFields={selectedFields}
-              sort={sort}
-              selectedItems={selectedItemsState.selectedItems}
-              onSelectedItemsChange={selectedItems => {
-                setSelectedItems({
-                  itemsFromServer: selectedItemsState.itemsFromServer,
-                  selectedItems,
-                });
-              }}
-            />
-          </Fragment>
-        ) : (
-          <ResultsSummaryContainer>No {list.plural} found.</ResultsSummaryContainer>
-        )
+                })()}
+              </ResultsSummaryContainer>
+              <ListTable
+                count={data.meta.count}
+                currentPage={currentPage}
+                itemsGetter={dataGetter.get('items')}
+                listKey={listKey}
+                pageSize={pageSize}
+                selectedFields={selectedFields}
+                sort={sort}
+                selectedItems={selectedItemsState.selectedItems}
+                onSelectedItemsChange={selectedItems => {
+                  setSelectedItems({
+                    itemsFromServer: selectedItemsState.itemsFromServer,
+                    selectedItems,
+                  });
+                }}
+              />
+            </Fragment>
+          ) : (
+            <ResultsSummaryContainer>No {list.plural} found.</ResultsSummaryContainer>
+          )}
+        </Fragment>
       ) : (
         <Center css={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
           <LoadingDots label="Loading item data" size="large" tone="passive" />
         </Center>
       )}
     </PageContainer>
+  );
+};
+
+const CreateButton = ({ listKey }: { listKey: string }) => {
+  const list = useList(listKey);
+  const router = useRouter();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  return (
+    <Fragment>
+      <Button
+        disabled={isCreateModalOpen}
+        onClick={() => {
+          setIsCreateModalOpen(true);
+        }}
+        tone="active"
+        size="small"
+        weight="bold"
+      >
+        Create {list.singular}
+      </Button>
+      <DrawerController isOpen={isCreateModalOpen}>
+        <CreateItemDrawer
+          listKey={listKey}
+          onCreate={({ id }) => {
+            router.push(`/${list.path}/[id]`, `/${list.path}/${id}`);
+          }}
+          onClose={() => {
+            setIsCreateModalOpen(false);
+          }}
+        />
+      </DrawerController>
+    </Fragment>
+  );
+};
+
+const ListPageHeader = ({ listKey }: { listKey: string }) => {
+  const list = useList(listKey);
+  return (
+    <Fragment>
+      <div
+        css={{
+          alignItems: 'center',
+          display: 'flex',
+          flex: 1,
+          justifyContent: 'space-between',
+        }}
+      >
+        <Heading type="h3">{list.label}</Heading>
+        {/* <CreateButton listKey={listKey} /> */}
+      </div>
+    </Fragment>
   );
 };
 
@@ -629,49 +678,6 @@ function ListTable({
     </Box>
   );
 }
-
-const ListPageHeader = ({ listKey, showCreate }: { listKey: string; showCreate: boolean }) => {
-  const list = useList(listKey);
-  const router = useRouter();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  return (
-    <Fragment>
-      <div
-        css={{
-          alignItems: 'center',
-          display: 'flex',
-          flex: 1,
-          justifyContent: 'space-between',
-        }}
-      >
-        <Heading type="h3">{list.label}</Heading>
-        {showCreate && (
-          <Button
-            disabled={isCreateModalOpen}
-            onClick={() => {
-              setIsCreateModalOpen(true);
-            }}
-            tone="positive"
-            weight="bold"
-          >
-            Create
-          </Button>
-        )}
-      </div>
-      <DrawerController isOpen={isCreateModalOpen}>
-        <CreateItemDrawer
-          listKey={listKey}
-          onCreate={({ id }) => {
-            router.push(`/${list.path}/[id]`, `/${list.path}/${id}`);
-          }}
-          onClose={() => {
-            setIsCreateModalOpen(false);
-          }}
-        />
-      </DrawerController>
-    </Fragment>
-  );
-};
 
 const TableContainer = ({ children }: { children: ReactNode }) => {
   return (
