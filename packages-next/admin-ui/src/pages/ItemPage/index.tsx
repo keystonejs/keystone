@@ -184,7 +184,7 @@ function ItemForm({
             </Button>
           ) : (
             <Text weight="medium" paddingX="large" color="neutral600">
-              No changes...
+              No changes
             </Text>
           )}
         </Stack>
@@ -344,17 +344,9 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
 
   const errorsFromMetaQuery = dataGetter.get('keystone').errors;
 
-  const [createModalState, setModalState] = useState<
-    { state: 'closed' } | { state: 'open'; id: string }
-  >({
-    state: 'closed',
-  });
-
-  if (createModalState.state === 'open' && createModalState.id !== id) {
-    setModalState({ state: 'closed' });
-  }
-
-  const hideCreate = data?.keystone.adminMeta.list.hideCreate;
+  // NOTE: The create button is always hidden on this page for now, while we work on the
+  // placment of the save and delete buttons.
+  const hideCreate = true; // data?.keystone.adminMeta.list.hideCreate;
 
   return (
     <PageContainer
@@ -404,34 +396,10 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
               {data && data.item && (data.item[list.labelField] || data.item.id)}
             </Heading>
           </div>
-          {!hideCreate && (
-            <Button
-              disabled={createModalState.state === 'open'}
-              onClick={() => {
-                setModalState({ state: 'open', id: id as string });
-              }}
-              tone="positive"
-              weight="bold"
-              css={{ marginLeft: spacing.medium }}
-            >
-              Create
-            </Button>
-          )}
+          {!hideCreate && <CreateButton listKey={listKey} id={data.item.id} />}
         </Container>
       }
     >
-      <DrawerController isOpen={createModalState.state === 'open'}>
-        <CreateItemDrawer
-          listKey={listKey}
-          onCreate={({ id }) => {
-            router.push(`/${list.path}/[id]`, `/${list.path}/${id}`);
-            setModalState({ state: 'closed' });
-          }}
-          onClose={() => {
-            setModalState({ state: 'closed' });
-          }}
-        />
-      </DrawerController>
       {loading ? (
         <Center css={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
           <LoadingDots label="Loading item data" size="large" tone="passive" />
@@ -485,6 +453,49 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
         </Fragment>
       )}
     </PageContainer>
+  );
+};
+
+const CreateButton = ({ id, listKey }: { id: string; listKey: string }) => {
+  const list = useList(listKey);
+  const router = useRouter();
+
+  const [createModalState, setModalState] = useState<
+    { state: 'closed' } | { state: 'open'; id: string }
+  >({
+    state: 'closed',
+  });
+
+  if (createModalState.state === 'open' && createModalState.id !== id) {
+    setModalState({ state: 'closed' });
+  }
+
+  return (
+    <Fragment>
+      <Button
+        disabled={createModalState.state === 'open'}
+        onClick={() => {
+          setModalState({ state: 'open', id: id as string });
+        }}
+        tone="positive"
+        size="small"
+      >
+        Create New {list.singular}
+      </Button>
+
+      <DrawerController isOpen={createModalState.state === 'open'}>
+        <CreateItemDrawer
+          listKey={listKey}
+          onCreate={({ id }) => {
+            router.push(`/${list.path}/[id]`, `/${list.path}/${id}`);
+            setModalState({ state: 'closed' });
+          }}
+          onClose={() => {
+            setModalState({ state: 'closed' });
+          }}
+        />
+      </DrawerController>
+    </Fragment>
   );
 };
 
