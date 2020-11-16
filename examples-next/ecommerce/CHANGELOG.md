@@ -1,6 +1,10 @@
-# @keystone-next/example-auth
+# @keystone-next/example-ecommerce
 
-## 0.0.3
+## 0.1.0
+
+### Minor Changes
+
+- [`cb0048040`](https://github.com/keystonejs/keystone/commit/cb004804057817be161f4104eac7e63dc751c881) [#4240](https://github.com/keystonejs/keystone/pull/4240) Thanks [@timleslie](https://github.com/timleslie)! - Added support for seeding product data when the `--dummy` argument is provided.
 
 ### Patch Changes
 
@@ -10,24 +14,6 @@
   - @keystone-next/fields@3.0.0
   - @keystone-next/keystone@3.0.0
   - @keystone-next/admin-ui@2.0.2
+  - @keystone-next/types@3.0.0
+  - @keystone-next/cloudinary@2.0.0
   - @keystone-next/auth@3.0.0
-
-## 0.0.2
-
-### Patch Changes
-
-- Updated dependencies [[`71b74161d`](https://github.com/keystonejs/keystone/commit/71b74161dfc9d7f0b918a3451cf545935afce94d), [`ae0fc4d78`](https://github.com/keystonejs/keystone/commit/ae0fc4d787ba47eb9e5258a20a57f76124aee797), [`166acb9bf`](https://github.com/keystonejs/keystone/commit/166acb9bf211e0ee8a90d4740f6ebc54ffe72dec), [`ae0fc4d78`](https://github.com/keystonejs/keystone/commit/ae0fc4d787ba47eb9e5258a20a57f76124aee797), [`71b74161d`](https://github.com/keystonejs/keystone/commit/71b74161dfc9d7f0b918a3451cf545935afce94d), [`166acb9bf`](https://github.com/keystonejs/keystone/commit/166acb9bf211e0ee8a90d4740f6ebc54ffe72dec), [`ae0fc4d78`](https://github.com/keystonejs/keystone/commit/ae0fc4d787ba47eb9e5258a20a57f76124aee797), [`f3c0f79e3`](https://github.com/keystonejs/keystone/commit/f3c0f79e3005aa6a8e867efef4431b83bbdf9898), [`ae0fc4d78`](https://github.com/keystonejs/keystone/commit/ae0fc4d787ba47eb9e5258a20a57f76124aee797)]:
-  - @keystone-next/auth@2.0.0
-  - @keystone-next/fields@2.0.0
-  - @keystone-next/keystone@2.0.0
-  - @keystone-next/admin-ui@2.0.0
-
-## 0.0.1
-
-### Patch Changes
-
-- Updated dependencies [[`9d360a67b`](https://github.com/keystonejs/keystone/commit/9d360a67b69ec38e3018fe132b1e34f24956f86c)]:
-  - @keystone-next/admin-ui@1.0.0
-  - @keystone-next/auth@1.0.0
-  - @keystone-next/fields@1.0.0
-  - @keystone-next/keystone@1.0.0

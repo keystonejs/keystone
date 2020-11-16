@@ -1,6 +1,6 @@
-import type { Keystone } from '@keystone-next/types';
+import type { KeystoneSystem } from '@keystone-next/types';
 
-export const homeTemplate = (keystone: Keystone) => {
+export const homeTemplate = (keystone: KeystoneSystem) => {
   let query = `query {
     keystone {
       adminMeta {

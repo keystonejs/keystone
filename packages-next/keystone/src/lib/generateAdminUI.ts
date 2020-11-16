@@ -4,7 +4,7 @@ import Path from 'path';
 import fastGlob from 'fast-glob';
 import prettier from 'prettier';
 import resolve from 'resolve';
-import type { Keystone } from '@keystone-next/types';
+import type { KeystoneSystem } from '@keystone-next/types';
 import { writeAdminFiles } from '@keystone-next/admin-ui/templates';
 import { AdminFileToWrite, MaybePromise } from '@keystone-next/types';
 
@@ -66,7 +66,7 @@ async function writeAdminFilesToDisk(
   ).flat();
 }
 
-export const generateAdminUI = async (keystone: Keystone, cwd: string) => {
+export const generateAdminUI = async (keystone: KeystoneSystem, cwd: string) => {
   const projectAdminPath = Path.resolve(cwd, './.keystone/admin');
 
   await fs.remove(projectAdminPath);

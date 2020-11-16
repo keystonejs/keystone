@@ -6,11 +6,11 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 // @ts-ignore
 import { formatError } from '@keystonejs/keystone/lib/Keystone/format-error';
-import type { Keystone } from '@keystone-next/types';
+import type { KeystoneSystem } from '@keystone-next/types';
 
 const dev = process.env.NODE_ENV !== 'production';
 
-export const createAdminUIServer = async (keystone: Keystone) => {
+export const createAdminUIServer = async (keystone: KeystoneSystem) => {
   const server = express();
 
   // TODO: allow cors to be configured

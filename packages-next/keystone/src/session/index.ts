@@ -7,7 +7,7 @@ import {
   JSONValue,
   SessionStoreFunction,
   SessionContext,
-  Keystone,
+  KeystoneSystem,
 } from '@keystone-next/types';
 
 // uid-safe is what express-session uses so let's just use it
@@ -220,7 +220,7 @@ export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
     async createContext(
       req: IncomingMessage,
       res: ServerResponse,
-      keystone: Keystone
+      keystone: KeystoneSystem
     ): Promise<SessionContext> {
       if (!isConnected) {
         await connect();
