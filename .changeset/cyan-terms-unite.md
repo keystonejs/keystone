@@ -1,6 +1,6 @@
 ---
-'@keystone-next/admin-ui': major
-'@keystone-next/keystone': major
+'@keystone-next/admin-ui': patch
+'@keystone-next/keystone': patch
 '@keystone-next/types': major
 ---
 
