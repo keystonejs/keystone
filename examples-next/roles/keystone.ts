@@ -31,9 +31,9 @@ const { withAuth } = createAuth({
           name: 'Admin Role',
           canCreateTodos: true,
           canManageAllTodos: true,
-          canSeeOtherUsers: true,
-          canEditOtherUsers: true,
-          canManageUsers: true,
+          canSeeOtherPeople: true,
+          canEditOtherPeople: true,
+          canManagePeople: true,
           canManageRoles: true,
         },
       },
@@ -49,19 +49,19 @@ export default withAuth(
     },
     lists,
     ui: {
-      /* All users who are signed in are able to acces the Admin UI */
+      /* Everyone who is signed in can access the Admin UI */
       isAccessAllowed: ({ session }) => !!session,
     },
     session: withItemData(statelessSessions(sessionConfig), {
-      /* This loads the related role for the person, including all permissions */
+      /* This loads the related role for the current user, including all permissions */
       Person: `name role {
         id
         name
         canCreateTodos
         canManageAllTodos
-        canSeeOtherUsers
-        canEditOtherUsers
-        canManageUsers
+        canSeeOtherPeople
+        canEditOtherPeople
+        canManagePeople
         canManageRoles
       }`,
     }),

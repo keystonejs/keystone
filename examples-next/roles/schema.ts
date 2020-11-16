@@ -59,12 +59,12 @@ export const lists = createSchema({
     /*
       TODO
       - [ ] Block all public access
-      - [ ] Restrict list create based on canManageUsers
-      - [ ] Restrict list read based on canSeeOtherUsers
-      - [ ] Restrict list update based on canEditOtherUsers
-      - [ ] Restrict list delete based on canManageUsers
-      - [ ] Restrict role field update based on canManageUsers
-      - [ ] Restrict password field update based on same item or canManageUsers
+      - [ ] Restrict list create based on canManagePeople
+      - [ ] Restrict list read based on canSeeOtherPeople
+      - [ ] Restrict list update based on canEditOtherPeople
+      - [ ] Restrict list delete based on canManagePeople
+      - [ ] Restrict role field update based on canManagePeople
+      - [ ] Restrict password field update based on same item or canManagePeople
     */
     ui: {
       listView: {
@@ -109,8 +109,8 @@ export const lists = createSchema({
       - [ ] Restrict all access based on canManageRoles
       - [ ] Prevent users from deletig their own role
       - [ ] Add a pre-save hook that ensures some permissions are selected when others are:
-          - [ ] when canEditOtherUsers is true, canSeeOtherUsers must be true
-          - [ ] when canManageUsers is true, canEditOtherUsers and canSeeOtherUsers must be true
+          - [ ] when canEditOtherPeople is true, canSeeOtherPeople must be true
+          - [ ] when canManagePeople is true, canEditOtherPeople and canSeeOtherPeople must be true
       - [ ] Extend the Admin UI with client-side validation based on the same set of rules
     */
     fields: {
@@ -133,18 +133,18 @@ export const lists = createSchema({
         See Other Users means:
         - list all users in the database (users can always see themselves)
       */
-      canSeeOtherUsers: checkbox(),
+      canSeeOtherPeople: checkbox(),
       /*
         Edit Other Users means:
         - edit other users in the database (users can always edit their own item)
       */
-      canEditOtherUsers: checkbox(),
+      canEditOtherPeople: checkbox(),
       /*
         Manage Users means:
         - change passwords (users can always change their own password)
         - assign roles to themselves and other users
       */
-      canManageUsers: checkbox(),
+      canManagePeople: checkbox(),
       /*
         Manage Roles means:
         - create, edit, and delete roles
