@@ -10,6 +10,34 @@ import type { KeystoneSystem } from '@keystone-next/types';
 
 const dev = process.env.NODE_ENV !== 'production';
 
+const addApolloServer = ({ server, system }: { server: any; system: KeystoneSystem }) => {
+  const { graphQLSchema, createContextFromRequest } = system;
+  const apolloServer = new ApolloServer({
+    // FIXME: Support for file handling configuration
+    // maxFileSize: 200 * 1024 * 1024,
+    // maxFiles: 5,
+    schema: graphQLSchema,
+    // FIXME: allow the dev to control where/when they get a playground
+    playground: { settings: { 'request.credentials': 'same-origin' } },
+    formatError, // TODO: this needs to be discussed
+    context: ({ req, res }) => createContextFromRequest(req, res),
+    // FIXME: support for apollo studio tracing
+    // ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
+    //   ? { tracing: true }
+    //   : {
+    //       engine: false,
+    //       // Only enable tracing in dev mode so we can get local debug info, but
+    //       // don't bother returning that info on prod when the `engine` is
+    //       // disabled.
+    //       tracing: dev,
+    //     }),
+    // FIXME: Support for generic custom apollo configuration
+    // ...apolloConfig,
+  });
+  // FIXME: Support for custom apiPath (config.graphql.path ?), is '/admin/api' in core keystone
+  apolloServer.applyMiddleware({ app: server, path: '/api/graphql' });
+};
+
 export const createAdminUIServer = async (system: KeystoneSystem) => {
   const server = express();
 
@@ -22,14 +50,7 @@ export const createAdminUIServer = async (system: KeystoneSystem) => {
   await Promise.all([app.prepare(), system.keystone.connect()]);
 
   console.log('✨ Preparing GraphQL Server');
-  const apolloServer = new ApolloServer({
-    schema: system.graphQLSchema,
-    playground: { settings: { 'request.credentials': 'same-origin' } },
-    // TODO: this needs to be discussed
-    formatError,
-    context: ({ req, res }) => system.createContextFromRequest(req, res),
-  });
-  apolloServer.applyMiddleware({ app: server, path: '/api/graphql' });
+  addApolloServer({ server, system });
 
   const publicPages = system.config.ui?.publicPages ?? [];
 
