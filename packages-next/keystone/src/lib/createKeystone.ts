@@ -12,6 +12,7 @@ import type {
   SessionContext,
   FieldType,
   KeystoneGraphQLAPI,
+  SessionStrategy,
 } from '@keystone-next/types';
 import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
 import { autoIncrement, mongoId } from '@keystone-next/fields';
@@ -84,15 +85,14 @@ export function _createKeystone(config: KeystoneConfig): any {
   return keystone;
 }
 
-export function createKeystone(config: KeystoneConfig): KeystoneSystem {
-  config = applyIdFieldDefaults(config);
-
-  const keystone = _createKeystone(config);
-
-  const sessionStrategy = config.session?.();
-
+function createAdminMeta(
+  config: KeystoneConfig,
+  keystone: any,
+  sessionStrategy?: SessionStrategy<unknown>
+) {
+  const { ui, lists } = config;
   const adminMeta: SerializedAdminMeta = {
-    enableSessionItem: config.ui?.enableSessionItem || false,
+    enableSessionItem: ui?.enableSessionItem || false,
     enableSignout: sessionStrategy?.end !== undefined,
     lists: {},
   };
@@ -100,16 +100,15 @@ export function createKeystone(config: KeystoneConfig): KeystoneSystem {
   const stringViewsToIndex: Record<string, number> = {};
   const views: string[] = [];
   function getViewId(view: string) {
-    if (stringViewsToIndex[view] !== undefined) {
-      return stringViewsToIndex[view];
+    if (stringViewsToIndex[view] === undefined) {
+      uniqueViewCount++;
+      stringViewsToIndex[view] = uniqueViewCount;
+      views.push(view);
     }
-    uniqueViewCount++;
-    stringViewsToIndex[view] = uniqueViewCount;
-    views.push(view);
-    return uniqueViewCount;
+    return stringViewsToIndex[view];
   }
-  Object.keys(config.lists).forEach(key => {
-    const listConfig = config.lists[key];
+  Object.keys(lists).forEach(key => {
+    const listConfig = lists[key];
     const list = keystone.lists[key];
     // Default the labelField to `name`, `label`, or `title` if they exist; otherwise fall back to `id`
     const labelField =
@@ -140,9 +139,8 @@ export function createKeystone(config: KeystoneConfig): KeystoneSystem {
     };
   });
   Object.keys(adminMeta.lists).forEach(key => {
-    const listConfig = config.lists[key];
+    const listConfig = lists[key];
     const list = (keystone as any).lists[key];
-
     for (const fieldKey of Object.keys(listConfig.fields)) {
       const field: FieldType<any> = listConfig.fields[fieldKey];
       adminMeta.lists[key].fields[fieldKey] = {
@@ -154,6 +152,18 @@ export function createKeystone(config: KeystoneConfig): KeystoneSystem {
       };
     }
   });
+
+  return { adminMeta, views };
+}
+
+export function createKeystone(config: KeystoneConfig): KeystoneSystem {
+  config = applyIdFieldDefaults(config);
+
+  const keystone = _createKeystone(config);
+
+  const sessionStrategy = config.session?.();
+
+  const { adminMeta, views } = createAdminMeta(config, keystone, sessionStrategy);
 
   // @ts-ignore
   const server = keystone.createApolloServer({
