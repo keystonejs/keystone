@@ -12,11 +12,25 @@ import { checkbox, password, relationship, text } from '@keystone-next/fields';
 
   The intended behaviour of this specific example is:
   - All users can sign into the Admin UI
-  - All users can see todo items assigned to themselves
+  - All users can see and manage todo items assigned to themselves
 */
 
 export const lists = createSchema({
   Todo: list({
+    /*
+      TODO
+      - [ ] Block all public access
+      - [ ] Restrict list create based on canCreateTodos
+      - [ ] Restrict list read based on canManageAllTodos and isPrivate
+        - [ ] Users without canManageAllTodos can only see their own todo items
+        - [ ] Users can never see todo items with isPrivate unless assigned to themselves
+      - [ ] Restrict list update / delete based on canManageAllTodos
+        - [ ] Users can always update / delete their own todo items with canManageAllTodos
+        - [ ] Users can only update / delete todo items assigned to other people with canManageAllTodos
+      - [ ] Validate assignment on create based on canManageAllTodos
+        - [ ] Users without canManageAllTodos can only create Todos assigned to themselves
+        - [ ] Users with canManageAllTodos can create and assign Todos to anyone
+    */
     ui: {
       listView: {
         initialColumns: ['label', 'isComplete', 'assignedTo'],
@@ -42,6 +56,16 @@ export const lists = createSchema({
     },
   }),
   Person: list({
+    /*
+      TODO
+      - [ ] Block all public access
+      - [ ] Restrict list create based on canManageUsers
+      - [ ] Restrict list read based on canSeeOtherUsers
+      - [ ] Restrict list update based on canEditOtherUsers
+      - [ ] Restrict list delete based on canManageUsers
+      - [ ] Restrict role field update based on canManageUsers
+      - [ ] Restrict password field update based on same item or canManageUsers
+    */
     ui: {
       listView: {
         initialColumns: ['name', 'role', 'tasks'],
@@ -79,6 +103,16 @@ export const lists = createSchema({
     },
   }),
   Role: list({
+    /*
+      TODO
+      - [ ] Block all public access
+      - [ ] Restrict all access based on canManageRoles
+      - [ ] Prevent users from deletig their own role
+      - [ ] Add a pre-save hook that ensures some permissions are selected when others are:
+          - [ ] when canEditOtherUsers is true, canSeeOtherUsers must be true
+          - [ ] when canManageUsers is true, canEditOtherUsers and canSeeOtherUsers must be true
+      - [ ] Extend the Admin UI with client-side validation based on the same set of rules
+    */
     fields: {
       /*
         The name of the role
@@ -86,15 +120,9 @@ export const lists = createSchema({
       name: text(),
       /*
         Create Todos means:
-        - create todos (can only assign them with canManageOwnTodos or canManageAllTodos)
+        - create todos (can only assign them to others with canManageAllTodos)
       */
       canCreateTodos: checkbox(),
-      /*
-        Manage Own Todos means:
-        - create new self-assigned Todo items (with canCreateTodos)
-        - update and delete Todo items assigned to the current user
-      */
-      canManageOwnTodos: checkbox(),
       /*
         Manage All Todos means:
         - create new Todo items and assign them to someone else (with canCreateTodos)

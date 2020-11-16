@@ -3,6 +3,11 @@ import { statelessSessions, withItemData } from '@keystone-next/keystone/session
 import { lists } from './schema';
 import { createAuth } from '@keystone-next/auth';
 
+/*
+  TODO
+  - [ ] Create a dashboard extension that summarises the Todo items assigned to the current user
+*/
+
 const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 const sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 const sessionConfig = {
@@ -17,11 +22,14 @@ const { withAuth } = createAuth({
   initFirstItem: {
     fields: ['name', 'email', 'password'],
     itemData: {
+      /*
+        This creates a related role with full permissions, so that when the first user signs in
+        they have complete access to the system (without this, you couldn't do anything)
+      */
       role: {
         create: {
           name: 'Admin Role',
           canCreateTodos: true,
-          canManageOwnTodos: true,
           canManageAllTodos: true,
           canSeeOtherUsers: true,
           canEditOtherUsers: true,
@@ -47,8 +55,9 @@ export default withAuth(
     session: withItemData(statelessSessions(sessionConfig), {
       /* This loads the related role for the person, including all permissions */
       Person: `name role {
+        id
+        name
         canCreateTodos
-        canManageOwnTodos
         canManageAllTodos
         canSeeOtherUsers
         canEditOtherUsers
