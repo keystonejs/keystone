@@ -1,10 +1,14 @@
 # Keystone-Next Roles-based Access Example
 
-👋🏻 This is an example of how to set up roles-based access in KeystoneJS.
+👋🏻 This example demostrates how you can set up a powerful, custom roles-based access control system with Keystone for an otherwise very simple to-do app.
 
-The permissions assigned with roles affect both the Admin UI and GraphQL API.
+Roles are stored in a list, and each user is related to a role. Each role has a granular set of permissions selected from the avialable checkboxes.
 
-Implementation and docs are WIP. See `schema.ts` for the spec of what role permissions do.
+Role permissions are loaded at the start of the request for the current user, and cached in the session object for use in the access control methods and hooks.
+
+The permissions affect both the Admin UI and GraphQL API.
+
+> **NOTE** this example is WIP. See `schema.ts` for the spec and current status.
 
 ## Running the example
 

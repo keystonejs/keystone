@@ -3,11 +3,6 @@ import { statelessSessions, withItemData } from '@keystone-next/keystone/session
 import { lists } from './schema';
 import { createAuth } from '@keystone-next/auth';
 
-/*
-  TODO
-  - [ ] Create a dashboard extension that summarises the Todo items assigned to the current user
-*/
-
 const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 const sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 const sessionConfig = {

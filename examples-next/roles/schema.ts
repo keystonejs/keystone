@@ -2,15 +2,10 @@ import { createSchema, list } from '@keystone-next/keystone/schema';
 import { checkbox, password, relationship, text } from '@keystone-next/fields';
 
 /*
-  This example demostrates how you can set up a powerful, custom roles-based access control system
-  with Keystone for an otherwise very simple to-do app. Roles are stored in a list, and each user
-  is related to a role. Each role has a granular set of permissions selected from the avialable
-  checkboxes.
-
   The set of permissions a role could have would change based on application requirements, so the
   checkboxes in the Role list below are fairly arbitary to demonstrate the idea.
 
-  The intended behaviour of this specific example is:
+  The default permissions (not assigned with roles) in this example are:
   - All users can sign into the Admin UI
   - All users can see and manage todo items assigned to themselves
 */
@@ -18,7 +13,7 @@ import { checkbox, password, relationship, text } from '@keystone-next/fields';
 export const lists = createSchema({
   Todo: list({
     /*
-      TODO
+      SPEC
       - [ ] Block all public access
       - [ ] Restrict list create based on canCreateTodos
       - [ ] Restrict list read based on canManageAllTodos and isPrivate
@@ -57,7 +52,7 @@ export const lists = createSchema({
   }),
   Person: list({
     /*
-      TODO
+      SPEC
       - [ ] Block all public access
       - [ ] Restrict list create based on canManagePeople
       - [ ] Restrict list read based on canSeeOtherPeople
@@ -104,7 +99,7 @@ export const lists = createSchema({
   }),
   Role: list({
     /*
-      TODO
+      SPEC
       - [ ] Block all public access
       - [ ] Restrict all access based on canManageRoles
       - [ ] Prevent users from deletig their own role
