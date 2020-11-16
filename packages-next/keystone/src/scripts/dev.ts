@@ -27,19 +27,19 @@ export const dev = async () => {
   let adminUIServer: null | ReturnType<typeof express> = null;
 
   const initKeystone = async () => {
-    const keystone = createKeystone(requireSource(path.join(process.cwd(), 'keystone')).default);
-    let printedSchema = printSchema(keystone.graphQLSchema);
+    const system = createKeystone(requireSource(path.join(process.cwd(), 'keystone')).default);
+    let printedSchema = printSchema(system.graphQLSchema);
     console.log('✨ Generating Schema');
     await fs.outputFile('./.keystone/schema.graphql', printedSchema);
     await fs.outputFile(
       './.keystone/schema-types.ts',
-      formatSource(printGeneratedTypes(printedSchema, keystone), 'babel-ts')
+      formatSource(printGeneratedTypes(printedSchema, system), 'babel-ts')
     );
 
     console.log('✨ Generating Admin UI');
-    await generateAdminUI(keystone, process.cwd());
+    await generateAdminUI(system, process.cwd());
 
-    adminUIServer = await createAdminUIServer(keystone);
+    adminUIServer = await createAdminUIServer(system);
     console.log(`👋 Admin UI Ready`);
   };
 

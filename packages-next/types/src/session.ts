@@ -10,19 +10,19 @@ export type SessionStrategy<StoredSessionData, StartSessionData = never> = {
   start?: (args: {
     res: ServerResponse;
     data: StoredSessionData | StartSessionData;
-    keystone: KeystoneSystem;
+    system: KeystoneSystem;
   }) => Promise<string>;
   // resets the cookie via res
   end?: (args: {
     req: IncomingMessage;
     res: ServerResponse;
-    keystone: KeystoneSystem;
+    system: KeystoneSystem;
   }) => Promise<void>;
   // -- this one is invoked at the start of every request
   // reads the token, gets the data, returns it
   get: (args: {
     req: IncomingMessage;
-    keystone: KeystoneSystem;
+    system: KeystoneSystem;
   }) => Promise<StoredSessionData | undefined>;
 };
 

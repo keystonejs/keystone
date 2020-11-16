@@ -70,7 +70,7 @@ function printInputTypesFromSchema(
   return { printedTypes: typeString + '\n', ast, printTypeNode };
 }
 
-export function printGeneratedTypes(printedSchema: string, keystone: KeystoneSystem) {
+export function printGeneratedTypes(printedSchema: string, system: KeystoneSystem) {
   let scalars = {
     ID: 'string',
     Boolean: 'boolean',
@@ -82,7 +82,7 @@ export function printGeneratedTypes(printedSchema: string, keystone: KeystoneSys
 
   let { printedTypes, ast, printTypeNode } = printInputTypesFromSchema(
     printedSchema,
-    keystone.graphQLSchema,
+    system.graphQLSchema,
     scalars
   );
 
@@ -90,7 +90,7 @@ export function printGeneratedTypes(printedSchema: string, keystone: KeystoneSys
 
   let allListsStr = '\nexport type KeystoneListsTypeInfo = {';
 
-  let queryTypeName = keystone.graphQLSchema.getQueryType()!.name;
+  let queryTypeName = system.graphQLSchema.getQueryType()!.name;
 
   let queryNode = ast.definitions.find((node): node is ObjectTypeDefinitionNode => {
     return node.kind === 'ObjectTypeDefinition' && node.name.value === queryTypeName;
@@ -117,10 +117,10 @@ export function printGeneratedTypes(printedSchema: string, keystone: KeystoneSys
     return types + '}';
   };
 
-  for (const listKey in keystone.adminMeta.lists) {
-    const list = keystone.adminMeta.lists[listKey];
+  for (const listKey in system.adminMeta.lists) {
+    const list = system.adminMeta.lists[listKey];
     let backingTypes = '{\n';
-    for (const field of keystone.keystone.lists[list.key].fields) {
+    for (const field of system.keystone.lists[list.key].fields) {
       for (const [key, { optional, type }] of Object.entries(field.getBackingTypes()) as any) {
         backingTypes += `readonly ${JSON.stringify(key)}${optional ? '?' : ''}: ${type};\n`;
       }
@@ -131,7 +131,7 @@ export function printGeneratedTypes(printedSchema: string, keystone: KeystoneSys
     printedTypes += `
 export type ${listTypeInfoName} = {
   key: ${JSON.stringify(listKey)};
-  fields: ${Object.keys(keystone.adminMeta.lists[list.key].fields)
+  fields: ${Object.keys(system.adminMeta.lists[list.key].fields)
     .map(x => JSON.stringify(x))
     .join('|')}
   backing: ${backingTypes};

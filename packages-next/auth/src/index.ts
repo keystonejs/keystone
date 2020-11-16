@@ -90,7 +90,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   const adminPageMiddleware: Auth['ui']['pageMiddleware'] = async ({
     req,
     isValidSession,
-    keystone,
+    system,
     session,
   }) => {
     const pathname = url.parse(req.url!).pathname!;
@@ -106,7 +106,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     }
 
     if (!session && initFirstItem) {
-      const { count } = await keystone.keystone.lists[listKey].adapter.itemsQuery(
+      const { count } = await system.keystone.lists[listKey].adapter.itemsQuery(
         {},
         {
           meta: true,
@@ -139,7 +139,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const additionalFiles: Auth['ui']['getAdditionalFiles'] = keystone => {
+  const additionalFiles: Auth['ui']['getAdditionalFiles'] = system => {
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
@@ -150,7 +150,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     if (initFirstItem) {
       const fields: Record<string, SerializedFieldMeta> = {};
       for (const fieldPath of initFirstItem.fields) {
-        fields[fieldPath] = keystone.adminMeta.lists[listKey].fields[fieldPath];
+        fields[fieldPath] = system.adminMeta.lists[listKey].fields[fieldPath];
       }
 
       filesToWrite.push({

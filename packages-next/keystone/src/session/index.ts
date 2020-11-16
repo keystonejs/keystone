@@ -78,11 +78,11 @@ export function withItemData(createSession: CreateSession, fieldSelections: Fiel
     const { get, ...sessionStrategy } = createSession();
     return {
       ...sessionStrategy,
-      get: async ({ req, keystone }) => {
-        const session = await get({ req, keystone });
+      get: async ({ req, system }) => {
+        const session = await get({ req, system });
         if (!session) return;
-        const context = keystone.createContext({ skipAccessControl: true });
-        const { gqlNames } = keystone.adminMeta.lists[session.listKey];
+        const context = system.createContext({ skipAccessControl: true });
+        const { gqlNames } = system.adminMeta.lists[session.listKey];
         // If no field selection is specified, just load the id. We still load the item,
         // because doing so validates that it exists in the database
         const fields = fieldSelections[session.listKey] || 'id';
@@ -92,7 +92,7 @@ export function withItemData(createSession: CreateSession, fieldSelections: Fiel
           }
         }`);
         const args = { id: session.itemId };
-        const result = await execute(keystone.graphQLSchema, query, null, context, args);
+        const result = await execute(system.graphQLSchema, query, null, context, args);
         // TODO: This causes "not found" errors to throw, which is not what we want
         // TODO: Also, why is this coming back as an access denied error instead of "not found" with an invalid session?
         // if (result.errors?.length) {
@@ -124,7 +124,7 @@ export function statelessSessions({
     }
     return sessionStrategy({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      async get({ req, keystone }) {
+      async get({ req, system }) {
         if (!req.headers.cookie) return;
         let cookies = cookie.parse(req.headers.cookie);
         if (!cookies[TOKEN_NAME]) return;
@@ -179,23 +179,23 @@ export function storedSessions({
     return {
       connect: store.connect,
       disconnect: store.disconnect,
-      async get({ req, keystone }) {
-        let sessionId = await get({ req, keystone });
+      async get({ req, system }) {
+        let sessionId = await get({ req, system });
         if (typeof sessionId === 'string') {
           return store.get(sessionId);
         }
       },
-      async start({ res, data, keystone }) {
+      async start({ res, data, system }) {
         let sessionId = generateSessionId();
         await store.set(sessionId, data);
-        return start({ res, data: { sessionId }, keystone });
+        return start({ res, data: { sessionId }, system });
       },
-      async end({ req, res, keystone }) {
-        let sessionId = await get({ req, keystone });
+      async end({ req, res, system }) {
+        let sessionId = await get({ req, system });
         if (typeof sessionId === 'string') {
           await store.delete(sessionId);
         }
-        await end({ req, res, keystone });
+        await end({ req, res, system });
       },
     };
   };
@@ -220,20 +220,20 @@ export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
     async createContext(
       req: IncomingMessage,
       res: ServerResponse,
-      keystone: KeystoneSystem
+      system: KeystoneSystem
     ): Promise<SessionContext> {
       if (!isConnected) {
         await connect();
       }
-      const session = await sessionStrategy.get({ req, keystone });
+      const session = await sessionStrategy.get({ req, system });
       const startSession = sessionStrategy.start;
       const endSession = sessionStrategy.end;
       return {
         session,
         startSession: startSession
-          ? (data: unknown) => startSession({ res, data, keystone })
+          ? (data: unknown) => startSession({ res, data, system })
           : undefined,
-        endSession: endSession ? () => endSession({ req, res, keystone }) : undefined,
+        endSession: endSession ? () => endSession({ req, res, system }) : undefined,
       };
     },
   };
