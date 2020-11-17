@@ -17,6 +17,8 @@ export const writeAdminFiles = (
   configFile: boolean,
   projectAdminPath: string
 ): AdminFileToWrite[] => {
+  const { adminMeta } = system;
+  const { session } = system.config;
   return [
     {
       mode: 'copy',
@@ -31,7 +33,7 @@ export const writeAdminFiles = (
     {
       mode: 'write',
       outputPath: 'pages/no-access.js',
-      src: noAccessTemplate(system),
+      src: noAccessTemplate(session),
     },
     {
       mode: 'write',
@@ -40,21 +42,21 @@ export const writeAdminFiles = (
     },
     {
       mode: 'write',
-      src: homeTemplate(system),
+      src: homeTemplate(adminMeta),
       outputPath: 'pages/index.js',
     },
-    ...Object.values(system.adminMeta.lists)
+    ...Object.values(adminMeta.lists)
       .map(list => {
         const { path } = list;
         return [
           {
             mode: 'write',
-            src: listTemplate(system, { list }),
+            src: listTemplate({ list }),
             outputPath: `pages/${path}/index.js`,
           },
           {
             mode: 'write',
-            src: itemTemplate(system, { list }),
+            src: itemTemplate({ list }),
             outputPath: `pages/${path}/[id].js`,
           },
         ] as const;

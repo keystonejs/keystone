@@ -23,11 +23,12 @@ export const appTemplate = (
   system: KeystoneSystem,
   { configFile, projectAdminPath }: AppTemplateOptions
 ) => {
-  const lazyMetadataQuery = getLazyMetadataQuery(system.graphQLSchema, system.adminMeta);
+  const { graphQLSchema, adminMeta, views } = system;
+  const lazyMetadataQuery = getLazyMetadataQuery(graphQLSchema, adminMeta);
 
   const result = executeSync({
     document: staticAdminMetaQuery,
-    schema: system.graphQLSchema,
+    schema: graphQLSchema,
     contextValue: {
       isAdminUIBuildProcess: true,
     },
@@ -44,7 +45,7 @@ import { KeystoneProvider } from '@keystone-next/admin-ui/context';
 import { ErrorBoundary } from '@keystone-next/admin-ui/components';
 import { Core } from '@keystone-ui/core';
 
-${system.views
+${views
   .map(
     (view, i) =>
       `import * as view${i} from ${JSON.stringify(
@@ -55,7 +56,7 @@ ${system.views
 
 ${configFile ? `import * as adminConfig from "../../../admin/config";` : 'const adminConfig = {};'}
 
-const fieldViews = [${system.views.map((x, i) => `view${i}`)}];
+const fieldViews = [${views.map((x, i) => `view${i}`)}];
 
 const lazyMetadataQuery = ${JSON.stringify(lazyMetadataQuery)};
 

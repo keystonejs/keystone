@@ -4,7 +4,7 @@ type ItemPageTemplateOptions = {
   list: KeystoneSystem['adminMeta']['lists'][string];
 };
 
-export const itemTemplate = (system: KeystoneSystem, { list }: ItemPageTemplateOptions) => {
+export const itemTemplate = ({ list }: ItemPageTemplateOptions) => {
   // -- TEMPLATE START
   return `
 import React from 'react';
