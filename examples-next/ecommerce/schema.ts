@@ -1,37 +1,10 @@
 // @ts-ignore
 import { getItem, getItems, deleteItems } from '@keystonejs/server-side-graphql-client';
 import { createSchema, list, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
-import { text, relationship, password, select, virtual, integer } from '@keystone-next/fields';
+import { text, relationship, password, select, virtual, integer, checkbox } from '@keystone-next/fields';
 import { cloudinaryImage } from '@keystone-next/cloudinary';
 import type { ListsAPI, AccessControl } from './types';
-
-/*
-  TODO
-    - [ ] Access Control (new Roles system)
-    - [ ] Tracking (createdAt, updatedAt, updatedAt, updatedBy)
-    - [x] Port the addToCard mutation
-    - [x] Port the checkout mutation
-    - [x] User: could create an isAdmin user?
-    - [x] CartItem: labelResolver -> virtual field
-    - [x] Item: price integer field missing defaultValue, isRequired
-    - [x] Item: image field (need cloudinaryImage?)
-    - [x] OrderItem: quantity integer field missing isRequired
-    - [x] Item / OrderItem: change image to relationship
-    - [ ] Item: relationship fields don't support isRequired
-*/
-
-export const access: AccessControl = {
-  userIsAdmin: ({ session }) => session?.data && session.data.permissions === 'ADMIN',
-  userIsEditor: ({ session }) => session?.data && session.data.permissions === 'EDITOR',
-  userIsItem: ({ session }) => (session?.itemId ? { id: session.itemId } : false),
-  userAuthorsItem: ({ session }) => (session?.itemId ? { author: { id: session.itemId } } : false),
-  userOwnsItem: ({ session }) => (session?.itemId ? { user: { id: session.itemId } } : false),
-  userIsAdminOrEditor: args => access.userIsAdmin(args) || access.userIsEditor(args),
-  userIsAdminOrOwner: args => access.userIsAdmin(args) || access.userOwnsItem(args),
-  userCanAccessUsers: args => access.userIsAdmin(args) || access.userIsItem(args),
-  userCanUpdateItem: args =>
-    access.userIsAdmin(args) || access.userIsEditor(args) || access.userOwnsItem,
-};
+import { permissions, isSignedIn, rules } from './access';
 
 const cloudinary = {
   cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
@@ -55,14 +28,14 @@ export const lists = createSchema({
       // anyone should be able to create a user (sign up)
       create: true,
       // only admins can see the list of users
-      read: access.userCanAccessUsers,
-      update: access.userCanAccessUsers,
-      delete: access.userIsAdmin,
+      read: true,
+      update: true,
+      delete: permissions.can('AcessUsers'),
     },
     ui: {
       // only admins can create and delete users in the Admin UI
-      hideCreate: args => !access.userIsAdmin(args),
-      hideDelete: args => !access.userIsAdmin(args),
+      hideCreate: args => !permissions.can('UpdateUsers')(args),
+      hideDelete: args => !permissions.can('UpdateUsers')(args),
       listView: {
         initialColumns: ['name', 'email'],
       },
@@ -79,32 +52,27 @@ export const lists = createSchema({
           itemView: { fieldMode: 'read' },
         },
       }),
-      permissions: select({
-        options: [
-          { label: 'User', value: 'USER' },
-          { label: 'Editor', value: 'EDITOR' },
-          { label: 'Admin', value: 'ADMIN' },
-        ],
+      role: relationship({
+        ref: 'Role.assignedTo',
         access: {
-          // only admins can create or change the permissions field
-          create: access.userIsAdmin,
-          update: access.userIsAdmin,
+          create: permissions.can('ManagePeople'),
+          update: permissions.can('ManagePeople'),
         },
         ui: {
           itemView: {
-            // show the fieldMode as read-only if the user is not an admin
-            fieldMode: args => (access.userIsAdmin(args) ? 'edit' : 'read'),
+            fieldMode: args => (permissions.can('ManageUsers')(args) ? 'edit' : 'read'),
           },
         },
       }),
     },
   }),
   Product: list({
+    // TODO: Product Access
     access: {
-      create: access.userIsAdminOrEditor,
+      create: isSignedIn,
       read: true,
-      update: access.userIsAdminOrEditor,
-      delete: access.userIsAdmin,
+      update: rules.canManageProducts,
+      delete: rules.canManageProducts,
     },
     fields: {
       name: text({ isRequired: true }),
@@ -136,12 +104,13 @@ export const lists = createSchema({
     },
   }),
   ProductImage: list({
-    access: {
-      create: access.userIsAdminOrEditor,
-      read: true,
-      update: access.userIsAdminOrEditor,
-      delete: access.userIsAdminOrEditor,
-    },
+    // TODO Access product image
+    // access: {
+    //   create: access.userIsAdminOrEditor,
+    //   read: true,
+    //   update: access.userIsAdminOrEditor,
+    //   delete: access.userIsAdminOrEditor,
+    // },
     ui: {
       isHidden: true,
     },
@@ -207,6 +176,44 @@ export const lists = createSchema({
       }),
     },
   }),
+  Role: list({
+    access: {
+      create: permissions.can('ManageRoles'),
+      read: permissions.can('ManageRoles'),
+      update: permissions.can('ManageRoles'),
+      delete: permissions.can('ManageRoles'),
+    },
+    ui: {
+      hideCreate: args => !permissions.canManageRoles(args),
+      hideDelete: args => !permissions.canManageRoles(args),
+      listView: {
+        initialColumns: ['name', 'assignedTo'],
+      },
+      itemView: {
+        defaultFieldMode: args => (permissions.canManageRoles(args) ? 'edit' : 'read'),
+      },
+    },
+    fields: {
+      /* The name of the role */
+      name: text({ isRequired: true }),
+      canCreateProducts: checkbox({
+        defaultValue: true,
+        label: 'User can create a new product',
+       }),
+      canManageAllProducts: checkbox({ defaultValue: false, label: 'User can Update and delete any product' }),
+      canSeeOtherUsers: checkbox({ defaultValue: false, label: 'User can query other users'
+       }),
+      canEditOtherUsers: checkbox({ defaultValue: false, label: 'User can Edit other users' }),
+      canManageRoles: checkbox({ defaultValue: false, label: 'User can CRUD roles' }),
+      /* This list of People assigned to this role */
+      assignedTo: relationship({
+        ref: 'User.role',
+        many: true,
+        ui: {
+          itemView: { fieldMode: 'read' },
+        },
+      })
+  } }),
 });
 
 export const extendGraphqlSchema = graphQLSchemaExtension({

@@ -5,13 +5,23 @@ import { KeystoneGraphQLAPI, KeystoneListsAPI } from '@keystone-next/types';
 // import type { KeystoneListsTypeInfo } from './.keystone/schema-types';
 
 export type Session = {
-  itemId?: string;
-  listKey?: string;
-  data?: {
-    name?: string;
-    permissions: 'USER' | 'EDITOR' | 'ADMIN';
+  itemId: string;
+  listKey: string;
+  data: {
+    name: string;
+    role?: {
+      id: string;
+      name: string;
+      canCreateTodos: boolean;
+      canManageAllTodos: boolean;
+      canSeeOtherPeople: boolean;
+      canEditOtherPeople: boolean;
+      canManagePeople: boolean;
+      canManageRoles: boolean;
+    };
   };
 };
+
 
 export type ListsAPI = KeystoneListsAPI<any /* KeystoneListsTypeInfo */>;
 export type GraphqlAPI = KeystoneGraphQLAPI<any /* KeystoneListsTypeInfo */>;
@@ -23,4 +33,9 @@ export type AccessArgs = {
 
 export type AccessControl = {
   [key: string]: (args: AccessArgs) => any;
+};
+
+export type ListAccessArgs = {
+  itemId?: string;
+  session?: Session;
 };
