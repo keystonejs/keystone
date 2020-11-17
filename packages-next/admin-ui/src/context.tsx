@@ -85,6 +85,7 @@ export const KeystoneProvider = (props: KeystoneProviderProps) => {
     () =>
       new ApolloClient({
         cache: new InMemoryCache(),
+        // FIXME: Use config.graphql.path
         link: createUploadLink({ uri: '/api/graphql' }),
       }),
     []
