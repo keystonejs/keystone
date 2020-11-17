@@ -3,6 +3,8 @@ import { statelessSessions, withItemData } from '@keystone-next/keystone/session
 import { lists } from './schema';
 import { createAuth } from '@keystone-next/auth';
 
+import { isSignedIn } from './access';
+
 const sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 const sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 const sessionConfig = {
@@ -45,7 +47,7 @@ export default withAuth(
     lists,
     ui: {
       /* Everyone who is signed in can access the Admin UI */
-      isAccessAllowed: ({ session }) => !!session,
+      isAccessAllowed: isSignedIn,
     },
     session: withItemData(statelessSessions(sessionConfig), {
       /* This loads the related role for the current user, including all permissions */
