@@ -34,7 +34,8 @@ const addApolloServer = ({ server, system }: { server: any; system: KeystoneSyst
     // FIXME: Support for generic custom apollo configuration
     // ...apolloConfig,
   });
-  // FIXME: Support for custom apiPath (config.graphql.path ?), is '/admin/api' in core keystone
+  // FIXME: Support custom API path via config.graphql.path.
+  // Note: Core keystone uses '/admin/api' as the default.
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql' });
 };
 

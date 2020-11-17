@@ -67,7 +67,7 @@ export function getBaseAuthSchema({
             return { code: result.code, message };
           }
 
-          const sessionToken = await ctx.startSession({ listKey: 'User', itemId: result.item.id });
+          const sessionToken = await ctx.startSession({ listKey, itemId: result.item.id });
           return { token: sessionToken, item: result.item };
         },
       },

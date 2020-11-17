@@ -1,5 +1,5 @@
 import type { GraphQLSchema } from 'graphql';
-import type { FieldType, MaybeSessionFunction } from '..';
+import type { FieldType, MaybeItemFunction, MaybeSessionFunction } from '..';
 import type { BaseGeneratedListTypes } from '../utils';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
@@ -130,7 +130,7 @@ export type ListConfig<
        * Specific field modes on a per-field basis via a field's config.
        * @default 'edit'
        */
-      defaultFieldMode?: MaybeSessionFunction<'edit' | 'read' | 'hidden'>;
+      defaultFieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'>;
     };
   };
 

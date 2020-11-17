@@ -80,7 +80,14 @@ export function withItemData(createSession: CreateSession, fieldSelections: Fiel
       ...sessionStrategy,
       get: async ({ req, system }) => {
         const session = await get({ req, system });
-        if (!session) return;
+        if (
+          !session ||
+          !session.listKey ||
+          !session.itemId ||
+          !system.adminMeta.lists[session.listKey]
+        ) {
+          return;
+        }
         const context = system.createContext({ skipAccessControl: true });
         const { gqlNames } = system.adminMeta.lists[session.listKey];
         // If no field selection is specified, just load the id. We still load the item,
