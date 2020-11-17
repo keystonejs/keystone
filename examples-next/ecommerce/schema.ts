@@ -9,8 +9,8 @@ import type { ListsAPI, AccessControl } from './types';
   TODO
     - [ ] Access Control (new Roles system)
     - [ ] Tracking (createdAt, updatedAt, updatedAt, updatedBy)
-    - [.] Port the addToCard mutation
-    - [.] Port the checkout mutation
+    - [x] Port the addToCard mutation
+    - [x] Port the checkout mutation
     - [x] User: could create an isAdmin user?
     - [x] CartItem: labelResolver -> virtual field
     - [x] Item: price integer field missing defaultValue, isRequired
