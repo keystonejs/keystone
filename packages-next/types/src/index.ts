@@ -67,6 +67,7 @@ export type KeystoneConfig = {
     /** Configuration options for the cors middleware. Set to true to core Keystone defaults */
     cors?: any;
   };
+  plugins?: [(config: KeystoneConfig) => KeystoneConfig];
 } & SchemaConfig;
 
 export type MaybeItemFunction<T> =

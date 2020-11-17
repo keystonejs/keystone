@@ -10,25 +10,24 @@ const sessionConfig = {
   secret: sessionSecret,
 };
 
-const { withAuth } = createAuth({
-  listKey: 'User',
-  identityField: 'email',
-  secretField: 'password',
-  initFirstItem: {
-    fields: ['name', 'email', 'password'],
+export default config({
+  db: {
+    adapter: 'mongoose',
+    url: 'mongodb://localhost/keystone-examples-todo',
   },
+  lists,
+  ui: {
+    isAccessAllowed: ({ session }) => !!session,
+  },
+  session: withItemData(statelessSessions(sessionConfig)),
+  plugins: [
+    createAuth({
+      listKey: 'User',
+      identityField: 'email',
+      secretField: 'password',
+      initFirstItem: {
+        fields: ['name', 'email', 'password'],
+      },
+    }).withAuth,
+  ],
 });
-
-export default withAuth(
-  config({
-    db: {
-      adapter: 'mongoose',
-      url: 'mongodb://localhost/keystone-examples-todo',
-    },
-    lists,
-    ui: {
-      isAccessAllowed: ({ session }) => !!session,
-    },
-    session: withItemData(statelessSessions(sessionConfig)),
-  })
-);

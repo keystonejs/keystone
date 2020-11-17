@@ -38,20 +38,19 @@ const { withAuth } = createAuth({
   },
 });
 
-export default withAuth(
-  config({
-    db: {
-      adapter: 'mongoose',
-      url: 'mongodb://localhost/keystone-examples-roles',
-    },
-    lists,
-    ui: {
-      /* Everyone who is signed in can access the Admin UI */
-      isAccessAllowed: isSignedIn,
-    },
-    session: withItemData(statelessSessions(sessionConfig), {
-      /* This loads the related role for the current user, including all permissions */
-      Person: `name role {
+export default config({
+  db: {
+    adapter: 'mongoose',
+    url: 'mongodb://localhost/keystone-examples-roles',
+  },
+  lists,
+  ui: {
+    /* Everyone who is signed in can access the Admin UI */
+    isAccessAllowed: isSignedIn,
+  },
+  session: withItemData(statelessSessions(sessionConfig), {
+    /* This loads the related role for the current user, including all permissions */
+    Person: `name role {
         id
         name
         canCreateTodos
@@ -61,6 +60,6 @@ export default withAuth(
         canManagePeople
         canManageRoles
       }`,
-    }),
-  })
-);
+  }),
+  plugins: [withAuth],
+});

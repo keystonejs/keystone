@@ -2,6 +2,7 @@ import path from 'path';
 import express from 'express';
 import { printSchema } from 'graphql';
 import * as fs from 'fs-extra';
+import type { KeystoneConfig } from '@keystone-next/types';
 import { createSystem } from '../lib/createSystem';
 import { requireSource } from '../lib/requireSource';
 import { formatSource, generateAdminUI } from '../lib/generateAdminUI';
@@ -20,6 +21,14 @@ const devLoadingHTMLFilepath = path.join(
   'dev-loading.html'
 );
 
+const applyPlugins = (config: KeystoneConfig): KeystoneConfig => {
+  const { plugins = [] } = config;
+  for (const plugin of plugins) {
+    config = plugin(config);
+  }
+  return config;
+};
+
 export const dev = async () => {
   console.log('🤞 Starting Keystone');
 
@@ -27,7 +36,7 @@ export const dev = async () => {
   let adminUIServer: null | ReturnType<typeof express> = null;
 
   const initKeystone = async () => {
-    const config = requireSource(path.join(process.cwd(), 'keystone')).default;
+    const config = applyPlugins(requireSource(path.join(process.cwd(), 'keystone')).default);
     const system = createSystem(config);
     let printedSchema = printSchema(system.graphQLSchema);
     console.log('✨ Generating Schema');
