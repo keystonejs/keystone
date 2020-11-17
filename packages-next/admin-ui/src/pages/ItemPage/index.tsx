@@ -12,6 +12,7 @@ import { LoadingDots } from '@keystone-ui/loading';
 import { ClipboardIcon } from '@keystone-ui/icons/icons/ClipboardIcon';
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
+import { Notice } from '@keystone-ui/notice';
 import { useToasts } from '@keystone-ui/toast';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { FieldLabel, TextInput } from '@keystone-ui/fields';
@@ -180,7 +181,7 @@ function ItemForm({
                 });
               }}
             >
-              Reset
+              Reset changes
             </Button>
           ) : (
             <Text weight="medium" paddingX="large" color="neutral600">
@@ -342,7 +343,7 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
     return itemViewFieldModesByField;
   }, [dataGetter.data?.keystone?.adminMeta?.list?.fields]);
 
-  const errorsFromMetaQuery = dataGetter.get('keystone').errors;
+  const metaQueryErrors = dataGetter.get('keystone').errors;
 
   // NOTE: The create button is always hidden on this page for now, while we work on the
   // placment of the save and delete buttons.
@@ -393,7 +394,9 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
                 whiteSpace: 'nowrap',
               }}
             >
-              {data && data.item && (data.item[list.labelField] || data.item.id)}
+              {loading
+                ? 'Loading...'
+                : (data && data.item && (data.item[list.labelField] || data.item.id)) || id}
             </Heading>
           </div>
           {!hideCreate && <CreateButton listKey={listKey} id={data.item.id} />}
@@ -404,8 +407,10 @@ export const ItemPage = ({ listKey }: ItemPageProps) => {
         <Center css={{ height: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
           <LoadingDots label="Loading item data" size="large" tone="passive" />
         </Center>
-      ) : errorsFromMetaQuery ? (
-        <div css={{ color: 'red' }}>{errorsFromMetaQuery[0].message}</div>
+      ) : metaQueryErrors ? (
+        <Box marginY="xlarge">
+          <Notice tone="negative">{metaQueryErrors[0].message}</Notice>
+        </Box>
       ) : (
         <Fragment>
           <ColumnLayout>
