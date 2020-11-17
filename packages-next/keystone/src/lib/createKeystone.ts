@@ -257,6 +257,10 @@ export function createKeystone(config: KeystoneConfig): KeystoneSystem {
         },
         schema: graphQLSchema,
       } as KeystoneGraphQLAPI<any>,
+      // Note: These two fields let us use the server-side-graphql-client library.
+      // We may want to remove them once the updated graphQL API is available.
+      executeGraphQL: rawGraphQL,
+      gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
       maxTotalResults: (keystone as any).queryLimits.maxTotalResults,
       createContext,
       ...sessionContext,
