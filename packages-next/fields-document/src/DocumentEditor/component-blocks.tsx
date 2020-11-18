@@ -14,7 +14,8 @@ const ComponentBlockContext = React.createContext<null | Record<string, Componen
 
 export const ComponentBlockProvider = ComponentBlockContext.Provider;
 
-const VOID_BUT_NOT_COMPONENT_INLINE_PROP = '________VOID_BUT_NOT_COMPONENT_INLINE_PROP________';
+const VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP =
+  '________VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP________';
 
 export function ComponentInlineProp(props: RenderElementProps) {
   return (
@@ -67,7 +68,7 @@ function findInlinePropPaths(
 ) {
   let propPaths = _findInlinePropPaths(value, props, []);
   if (!propPaths.length) {
-    return [[VOID_BUT_NOT_COMPONENT_INLINE_PROP]];
+    return [[VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP]];
   }
   return propPaths;
 }
@@ -117,7 +118,7 @@ function getInitialValue(type: string, componentBlock: ComponentBlock) {
   if (!children.length) {
     children.push({
       type: 'component-inline-prop',
-      propPath: JSON.stringify([VOID_BUT_NOT_COMPONENT_INLINE_PROP]),
+      propPath: JSON.stringify([VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP]),
       children: [{ text: '' }],
     });
   }
@@ -210,9 +211,8 @@ export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBloc
           isDisabled={!shouldInsertBlock}
           onMouseDown={event => {
             event.preventDefault();
-            Transforms.insertNodes(editor, getInitialValue(key, (blockComponents as any)[key]), {
-              select: true,
-            });
+            let initialValue = getInitialValue(key, (blockComponents as any)[key]);
+            Transforms.insertNodes(editor, initialValue);
           }}
         >
           + {key.charAt(0).toUpperCase() + key.slice(1)}
@@ -359,7 +359,7 @@ function ComponentBlockRender({
   let maybeChild: ReactElement | undefined;
   children.forEach((child: ReactElement) => {
     let stringified = JSON.stringify(child.props.element.propPath);
-    if (stringified === `["${VOID_BUT_NOT_COMPONENT_INLINE_PROP}"]`) {
+    if (stringified === `["${VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP}"]`) {
       maybeChild = child;
     } else {
       childrenByPath[stringified] = child;
