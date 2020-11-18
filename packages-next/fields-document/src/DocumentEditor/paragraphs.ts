@@ -11,7 +11,7 @@ export const paragraphElement = () => ({
 export const withParagraphs = (editor: ReactEditor) => {
   const { normalizeNode } = editor;
 
-  editor.normalizeNode = (entry) => {
+  editor.normalizeNode = entry => {
     const [node, path] = entry;
 
     // If the element is a paragraph, ensure its children are valid.

@@ -13,12 +13,12 @@ const insertImage = (editor: ReactEditor, url: string) => {
 };
 
 const isImageActive = (editor: ReactEditor) => {
-  const [image] = Editor.nodes(editor, { match: (n) => n.type === 'image' });
+  const [image] = Editor.nodes(editor, { match: n => n.type === 'image' });
   return !!image;
 };
 
 const unwrapImage = (editor: ReactEditor) => {
-  Transforms.unwrapNodes(editor, { match: (n) => n.type === 'image' });
+  Transforms.unwrapNodes(editor, { match: n => n.type === 'image' });
 };
 
 const wrapImage = (editor: ReactEditor, url: string) => {
@@ -42,11 +42,7 @@ const wrapImage = (editor: ReactEditor, url: string) => {
   }
 };
 
-export const ImageElement = ({
-  attributes,
-  children,
-  element,
-}: RenderElementProps) => (
+export const ImageElement = ({ attributes, children, element }: RenderElementProps) => (
   <a {...attributes} href={element.url as string}>
     {children}
   </a>
@@ -57,7 +53,7 @@ export const ImageButton = () => {
   return (
     <Button
       active={isImageActive(editor)}
-      onMouseDown={(event) => {
+      onMouseDown={event => {
         event.preventDefault();
         const url = window.prompt('Enter the URL of the image:');
         if (!url) return;
@@ -72,11 +68,11 @@ export const ImageButton = () => {
 export const withImage = (editor: ReactEditor) => {
   const { insertData, insertText, isInline } = editor;
 
-  editor.isInline = (element) => {
+  editor.isInline = element => {
     return element.type === 'image' ? true : isInline(element);
   };
 
-  editor.insertText = (text) => {
+  editor.insertText = text => {
     if (text && isUrl(text)) {
       wrapImage(editor, text);
     } else {
@@ -84,7 +80,7 @@ export const withImage = (editor: ReactEditor) => {
     }
   };
 
-  editor.insertData = (data) => {
+  editor.insertData = data => {
     const text = data.getData('text/plain');
 
     if (text && isUrl(text)) {
