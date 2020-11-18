@@ -5,6 +5,7 @@ import { text, relationship, password, select, virtual, integer, checkbox } from
 import { cloudinaryImage } from '@keystone-next/cloudinary';
 import type { ListsAPI, AccessControl } from './types';
 import { permissions, isSignedIn, rules } from './access';
+import { roleFields } from './roleFields';
 
 const cloudinary = {
   cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
@@ -27,15 +28,15 @@ export const lists = createSchema({
     access: {
       // anyone should be able to create a user (sign up)
       create: true,
-      // only admins can see the list of users
-      read: true,
-      update: true,
-      delete: permissions.can('AcessUsers'),
+      // only admins can see the list of users, but people should be able to see themselves
+      read: rules.canReadUsers,
+      update: permissions.canSeeOtherUsers,
+      delete: permissions.canSeeOtherUsers,
     },
     ui: {
       // only admins can create and delete users in the Admin UI
-      hideCreate: args => !permissions.can('UpdateUsers')(args),
-      hideDelete: args => !permissions.can('UpdateUsers')(args),
+      hideCreate: args => !permissions.canSeeOtherUsers(args),
+      hideDelete: args => !permissions.canSeeOtherUsers(args),
       listView: {
         initialColumns: ['name', 'email'],
       },
@@ -55,19 +56,18 @@ export const lists = createSchema({
       role: relationship({
         ref: 'Role.assignedTo',
         access: {
-          create: permissions.can('ManagePeople'),
-          update: permissions.can('ManagePeople'),
+          create: permissions.canEditOtherUsers,
+          update: permissions.canEditOtherUsers,
         },
         ui: {
           itemView: {
-            fieldMode: args => (permissions.can('ManageUsers')(args) ? 'edit' : 'read'),
+            fieldMode: args => (permissions.canManageUsers(args) ? 'edit' : 'read'),
           },
         },
       }),
     },
   }),
   Product: list({
-    // TODO: Product Access
     access: {
       create: isSignedIn,
       read: true,
@@ -104,13 +104,12 @@ export const lists = createSchema({
     },
   }),
   ProductImage: list({
-    // TODO Access product image
-    // access: {
-    //   create: access.userIsAdminOrEditor,
-    //   read: true,
-    //   update: access.userIsAdminOrEditor,
-    //   delete: access.userIsAdminOrEditor,
-    // },
+    access: {
+      create: isSignedIn,
+      read: true,
+      update: rules.canManageProducts,
+      delete: rules.canManageProducts,
+    },
     ui: {
       isHidden: true,
     },
@@ -124,6 +123,12 @@ export const lists = createSchema({
     },
   }),
   CartItem: list({
+    access: {
+      create: isSignedIn,
+      read: rules.canOrder,
+      update: rules.canOrder,
+      delete: rules.canOrder,
+    },
     fields: {
       label: virtual({
         graphQLReturnType: 'String',
@@ -150,6 +155,12 @@ export const lists = createSchema({
     },
   }),
   Order: list({
+    access: {
+      create: isSignedIn,
+      read: rules.canOrder,
+      update: rules.canOrder,
+      delete: rules.canOrder,
+    },
     ui: {
       listView: { initialColumns: ['label', 'user', 'items'] },
     },
@@ -165,6 +176,12 @@ export const lists = createSchema({
     },
   }),
   OrderItem: list({
+    access: {
+      create: isSignedIn,
+      read: rules.canOrder,
+      update: rules.canOrder,
+      delete: rules.canOrder,
+    },
     fields: {
       name: text({ isRequired: true }),
       description: text({ ui: { displayMode: 'textarea' } }),
@@ -178,14 +195,15 @@ export const lists = createSchema({
   }),
   Role: list({
     access: {
-      create: permissions.can('ManageRoles'),
-      read: permissions.can('ManageRoles'),
-      update: permissions.can('ManageRoles'),
-      delete: permissions.can('ManageRoles'),
+      create: permissions.canManageRoles,
+      read: permissions.canManageRoles,
+      update: permissions.canManageRoles,
+      delete: permissions.canManageRoles,
     },
     ui: {
       hideCreate: args => !permissions.canManageRoles(args),
       hideDelete: args => !permissions.canManageRoles(args),
+      isHidden: args => !permissions.canManageRoles(args),
       listView: {
         initialColumns: ['name', 'assignedTo'],
       },
@@ -193,27 +211,7 @@ export const lists = createSchema({
         defaultFieldMode: args => (permissions.canManageRoles(args) ? 'edit' : 'read'),
       },
     },
-    fields: {
-      /* The name of the role */
-      name: text({ isRequired: true }),
-      canCreateProducts: checkbox({
-        defaultValue: true,
-        label: 'User can create a new product',
-       }),
-      canManageAllProducts: checkbox({ defaultValue: false, label: 'User can Update and delete any product' }),
-      canSeeOtherUsers: checkbox({ defaultValue: false, label: 'User can query other users'
-       }),
-      canEditOtherUsers: checkbox({ defaultValue: false, label: 'User can Edit other users' }),
-      canManageRoles: checkbox({ defaultValue: false, label: 'User can CRUD roles' }),
-      /* This list of People assigned to this role */
-      assignedTo: relationship({
-        ref: 'User.role',
-        many: true,
-        ui: {
-          itemView: { fieldMode: 'read' },
-        },
-      })
-  } }),
+    fields: roleFields }),
 });
 
 export const extendGraphqlSchema = graphQLSchemaExtension({

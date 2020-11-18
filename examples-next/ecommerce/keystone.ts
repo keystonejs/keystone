@@ -5,6 +5,7 @@ import { statelessSessions, withItemData } from '@keystone-next/keystone/session
 import { lists, extendGraphqlSchema } from './schema';
 import { createAuth } from '@keystone-next/auth';
 import { insertSeedData } from './seed-data';
+import { permissionsList } from './roleFields';
 
 /*
   TODO
@@ -30,6 +31,8 @@ const { withAuth } = createAuth({
   },
 });
 
+// Dynamically query all the "can$" fields from the Role, and query them into the session. This is handy so we don't have to write each permission in several locations
+
 export default withAuth(
   config({
     db: {
@@ -47,7 +50,9 @@ export default withAuth(
       isAccessAllowed: ({ session }) => !!session,
     },
     session: withItemData(statelessSessions(sessionConfig), {
-      User: 'name role',
+      User: `id name role { ${permissionsList.join(' ')} }`,
     }),
   })
 );
+
+
