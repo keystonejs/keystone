@@ -209,7 +209,7 @@ export function storedSessions({
 }
 
 /**
- * This is the function createKeystone uses to implement the session strategy provided
+ * This is the function createSystem uses to implement the session strategy provided
  */
 export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
   let isConnected = false;

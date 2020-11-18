@@ -21,7 +21,7 @@ import { gql } from '../schema';
 import { itemAPIForList } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 
-export function _createKeystone(config: KeystoneConfig): any {
+export function createKeystone(config: KeystoneConfig): any {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
@@ -156,10 +156,10 @@ function createAdminMeta(
   return { adminMeta, views };
 }
 
-export function createKeystone(config: KeystoneConfig): KeystoneSystem {
+export function createSystem(config: KeystoneConfig): KeystoneSystem {
   config = applyIdFieldDefaults(config);
 
-  const keystone = _createKeystone(config);
+  const keystone = createKeystone(config);
 
   const sessionStrategy = config.session?.();
 

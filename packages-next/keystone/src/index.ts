@@ -1,1 +1,1 @@
-export { createKeystone } from './lib/createKeystone';
+export { createSystem } from './lib/createSystem';
