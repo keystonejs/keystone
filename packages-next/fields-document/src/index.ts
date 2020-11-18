@@ -1,4 +1,3 @@
-// @ts-ignore
 import { DocumentFieldType } from './base-field-type';
 import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-next/types';
 import path from 'path';
