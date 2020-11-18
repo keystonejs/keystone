@@ -22,6 +22,20 @@ export const componentBlocks = {
       }),
     },
   }),
+  void: component({
+    component: ({ value }) => <NotEditable>{value}</NotEditable>,
+    props: { value: fields.text({ label: 'Value' }) },
+  }),
+  conditionallyVoid: component({
+    component: ({ something }) =>
+      something.discriminant ? <NotEditable>Is void</NotEditable> : <div>{something.value}</div>,
+    props: {
+      something: fields.conditional(fields.checkbox({ label: 'Is void' }), {
+        false: fields.child(),
+        true: fields.empty(),
+      }),
+    },
+  }),
 };
 
 type HeroPreviewProps = {

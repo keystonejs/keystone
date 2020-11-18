@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx, Stack } from '@keystone-ui/core';
-import { ReactElement, useContext, useState } from 'react';
+import { Fragment, ReactElement, useContext, useState } from 'react';
 import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
 import { Editor, Element, Transforms } from 'slate';
 
@@ -13,6 +13,8 @@ import React from 'react';
 const ComponentBlockContext = React.createContext<null | Record<string, ComponentBlock>>(null);
 
 export const ComponentBlockProvider = ComponentBlockContext.Provider;
+
+const VOID_BUT_NOT_COMPONENT_INLINE_PROP = '________VOID_BUT_NOT_COMPONENT_INLINE_PROP________';
 
 export function ComponentInlineProp(props: RenderElementProps) {
   return (
@@ -31,7 +33,7 @@ function assertNever(arg: never) {
   throw new Error('expected to never be called but recieved: ' + JSON.stringify(arg));
 }
 
-function findInlinePropPaths(
+function _findInlinePropPaths(
   value: Record<string, any>,
   props: Record<string, ComponentPropField>,
   path: (string | number)[]
@@ -43,10 +45,10 @@ function findInlinePropPaths(
     } else if (val.kind === 'inline') {
       paths.push(path.concat(key));
     } else if (val.kind === 'object') {
-      paths.push(...findInlinePropPaths(value[key], val.value, path.concat(key)));
+      paths.push(..._findInlinePropPaths(value[key], val.value, path.concat(key)));
     } else if (val.kind === 'conditional') {
       paths.push(
-        ...findInlinePropPaths(
+        ..._findInlinePropPaths(
           value[key],
           { value: val.values[value[key].discriminant] },
           path.concat(key)
@@ -57,6 +59,17 @@ function findInlinePropPaths(
     }
   });
   return paths;
+}
+
+function findInlinePropPaths(
+  value: Record<string, any>,
+  props: Record<string, ComponentPropField>
+) {
+  let propPaths = _findInlinePropPaths(value, props, []);
+  if (!propPaths.length) {
+    return [[VOID_BUT_NOT_COMPONENT_INLINE_PROP]];
+  }
+  return propPaths;
 }
 
 function insertInitialValues(
@@ -101,6 +114,13 @@ function getInitialValue(type: string, componentBlock: ComponentBlock) {
   let children: Element[] = [];
 
   insertInitialValues(blockProps, componentBlock.props, children, []);
+  if (!children.length) {
+    children.push({
+      type: 'component-inline-prop',
+      propPath: JSON.stringify([VOID_BUT_NOT_COMPONENT_INLINE_PROP]),
+      children: [{ text: '' }],
+    });
+  }
   return {
     type: 'component-block',
     component: type,
@@ -124,8 +144,7 @@ export function withComponentBlocks(
           ? new Set(
               findInlinePropPaths(
                 node.props as any,
-                blockComponents[node.component as string].props,
-                []
+                blockComponents[node.component as string].props
               ).map(x => JSON.stringify(x))
             )
           : undefined;
@@ -133,7 +152,7 @@ export function withComponentBlocks(
       for (const childNode of node.children) {
         const childPath = [...path, index];
         index++;
-        if (node.type === 'component-block') {
+        if (node.type === 'component-block' && stringifiedInlinePropPaths?.size !== 0) {
           if (childNode.type !== 'component-inline-prop') {
             Transforms.removeNodes(editor, { at: childPath });
             return;
@@ -158,7 +177,7 @@ export function withComponentBlocks(
     if (node.type === 'component-block' && Element.isElement(node)) {
       const componentBlock = blockComponents[node.component as string];
       let missingKeys = new Set(
-        findInlinePropPaths(node.props as any, componentBlock.props, []).map(x => JSON.stringify(x))
+        findInlinePropPaths(node.props as any, componentBlock.props).map(x => JSON.stringify(x))
       );
 
       node.children.forEach(node => {
@@ -243,22 +262,11 @@ function buildPreviewProps(
   });
 }
 
-export const ComponentBlocksElement = ({
-  attributes,
-  children: _children,
-  element,
-}: RenderElementProps) => {
+export const ComponentBlocksElement = ({ attributes, children, element }: RenderElementProps) => {
   const editor = useSlate();
   const [editMode, setEditMode] = useState(false);
-  const previewProps: any = {};
-  const childrenByPath: Record<string, ReactElement> = {};
-  const children = _children.type(_children.props).props.children;
-  children.forEach((child: ReactElement) => {
-    childrenByPath[JSON.stringify(child.props.element.propPath)] = child;
-  });
   const blockComponents = useContext(ComponentBlockContext)!;
   const componentBlock = blockComponents[element.component as string];
-  buildPreviewProps(previewProps, componentBlock.props, element.props as any, childrenByPath, []);
 
   return (
     <div
@@ -326,11 +334,47 @@ export const ComponentBlocksElement = ({
         />
       )}
       <div css={{ display: editMode ? 'none' : 'block' }}>
-        <componentBlock.component {...previewProps} />
+        <ComponentBlockRender
+          children={children}
+          componentBlock={componentBlock}
+          elementProps={element.props}
+        />
       </div>
     </div>
   );
 };
+
+function ComponentBlockRender({
+  componentBlock,
+  children: _children,
+  elementProps,
+}: {
+  elementProps: any;
+  componentBlock: ComponentBlock;
+  children: any;
+}) {
+  const previewProps: any = {};
+  const childrenByPath: Record<string, ReactElement> = {};
+  const children = _children.type(_children.props).props.children;
+  let maybeChild: ReactElement | undefined;
+  children.forEach((child: ReactElement) => {
+    let stringified = JSON.stringify(child.props.element.propPath);
+    if (stringified === `["${VOID_BUT_NOT_COMPONENT_INLINE_PROP}"]`) {
+      maybeChild = child;
+    } else {
+      childrenByPath[stringified] = child;
+    }
+  });
+
+  buildPreviewProps(previewProps, componentBlock.props, elementProps, childrenByPath, []);
+
+  return (
+    <Fragment>
+      <componentBlock.component {...previewProps} />
+      <span css={{ display: 'none' }}>{maybeChild}</span>
+    </Fragment>
+  );
+}
 
 function FormValueContent({
   props,
