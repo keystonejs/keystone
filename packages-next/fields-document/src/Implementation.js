@@ -71,9 +71,9 @@ export class KnexDocumentInterface extends CommonDocumentInterface(KnexFieldAdap
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
     if (this.config.isIndexed) {
-      throw (
-        `The OEmbed field type doesn't support indexes on Knex. ` +
-        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      throw new Error(
+        `The Document field type doesn't support indexes on Knex. ` +
+          `Check the config for ${this.path} on the ${this.field.listKey} list`
       );
     }
   }
@@ -92,9 +92,9 @@ export class PrismaDocumentInterface extends CommonDocumentInterface(PrismaField
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
     if (this.config.isIndexed) {
-      throw (
-        `The OEmbed field type doesn't support indexes on Prisma. ` +
-        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      throw new Error(
+        `The Document field type doesn't support indexes on Prisma. ` +
+          `Check the config for ${this.path} on the ${this.field.listKey} list`
       );
     }
   }
