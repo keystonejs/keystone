@@ -13,41 +13,35 @@ export function getInitFirstItemSchema({
   gqlNames: AuthGqlNames;
   keystone: any;
 }) {
-  const list = keystone.lists[listKey];
-
   return {
     typeDefs: `
         input ${gqlNames.CreateInitialInput} {
           ${Array.prototype
             .concat(
               ...fields.map(fieldPath =>
-                list.fieldsByPath[fieldPath].gqlCreateInputFields({ schemaName: 'public' })
+                keystone.lists[listKey].fieldsByPath[fieldPath].gqlCreateInputFields({
+                  schemaName: 'public',
+                })
               )
             )
             .join('\n')}
         }
         type Mutation {
           ${gqlNames.createInitialItem}(data: ${gqlNames.CreateInitialInput}!): ${
-      gqlNames.ItemAuthenticationWithPasswordResult
+      gqlNames.ItemAuthenticationWithPasswordSuccess
     }!
         }
       `,
     resolvers: {
       Mutation: {
-        async [`createInitial${listKey}`](rootVal: any, { data }: any, context: any) {
-          const { count } = await list.adapter.itemsQuery({}, { meta: true });
+        async [gqlNames.createInitialItem](rootVal: any, { data }: any, context: any) {
+          const count = await context.lists[listKey].count({});
           if (count !== 0) {
             throw new Error('Initial items can only be created when no items exist in that list');
           }
-          const contextThatSkipsAccessControl = await context.createContext({
-            skipAccessControl: true,
-          });
-          const item = await list.createMutation(
-            { ...data, ...itemData },
-            contextThatSkipsAccessControl
-          );
-          const token = await context.startSession({ listKey, itemId: item.id });
-          return { item, token };
+          const item = await context.lists[listKey].createOne({ data: { ...data, ...itemData } });
+          const sessionToken = await context.startSession({ listKey, itemId: item.id });
+          return { item, sessionToken };
         },
       },
     },
