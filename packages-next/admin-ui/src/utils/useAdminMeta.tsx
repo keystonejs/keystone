@@ -4,12 +4,7 @@ import hashString from '@emotion/hash';
 import { SerializedAdminMeta, AdminMeta, FieldViews, getGqlNames } from '@keystone-next/types';
 import { StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql';
 
-let expectedExports: Record<string, boolean> = {
-  Cell: true,
-  Field: true,
-  controller: true,
-  CardValue: true,
-};
+const expectedExports = new Set(['Cell', 'Field', 'controller', 'CardValue']);
 
 const adminMetaLocalStorageKey = 'keystone.adminMeta';
 
@@ -78,7 +73,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
         fields: {},
       };
       list.fields.forEach(field => {
-        Object.keys(expectedExports).forEach(exportName => {
+        expectedExports.forEach(exportName => {
           if ((fieldViews[field.views] as any)[exportName] === undefined) {
             throw new Error(
               `The view for the field at ${list.key}.${field.path} is missing the ${exportName} export`
@@ -86,25 +81,29 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
           }
         });
         Object.keys(fieldViews[field.views]).forEach(exportName => {
-          if (expectedExports[exportName] === undefined) {
+          if (!expectedExports.has(exportName) && exportName !== 'allowedExportsOnCustomViews') {
             throw new Error(
               `Unexpected export named ${exportName} from the view from the field at ${list.key}.${field.path}`
             );
           }
         });
-        let views = fieldViews[field.views];
+        const views = fieldViews[field.views];
+        const customViews: Record<string, any> = {};
         if (field.customViews !== null) {
-          Object.keys(fieldViews[field.customViews]).forEach(exportName => {
-            if (expectedExports[exportName] === undefined) {
+          const customViewsSource: FieldViews[number] & Record<string, any> =
+            fieldViews[field.customViews];
+          const allowedExportsOnCustomViews = new Set(views.allowedExportsOnCustomViews);
+          Object.keys(customViewsSource).forEach(exportName => {
+            if (allowedExportsOnCustomViews.has(exportName)) {
+              customViews[exportName] = customViewsSource[exportName];
+            } else if (expectedExports.has(exportName)) {
+              (views as any)[exportName] = customViewsSource[exportName];
+            } else {
               throw new Error(
                 `Unexpected export named ${exportName} from the custom view from field at ${list.key}.${field.path}`
               );
             }
           });
-          views = {
-            ...views,
-            ...fieldViews[field.customViews],
-          };
         }
         runtimeAdminMeta.lists[list.key].fields[field.path] = {
           ...field,
@@ -114,6 +113,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
             fieldMeta: field.fieldMeta,
             label: field.label,
             path: field.path,
+            customViews,
           }),
         };
       });

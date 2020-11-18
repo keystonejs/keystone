@@ -8,6 +8,7 @@ import {
   select,
   virtual,
 } from '@keystone-next/fields';
+import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
 import { KeystoneListsAPI } from '@keystone-next/types';
 import { KeystoneListsTypeInfo } from './.keystone/schema-types';
@@ -136,11 +137,7 @@ export const lists = createSchema({
           displayMode: 'segmented-control',
         },
       }),
-      content: text({
-        ui: {
-          views: require.resolve('./admin/fieldViews/Content.tsx'),
-        },
-      }),
+      content: document({ ui: { views: require.resolve('./admin/fieldViews/Content.tsx') } }),
       publishDate: timestamp(),
       author: relationship({
         ref: 'User.posts',
