@@ -50,10 +50,12 @@ export function getBaseAuthSchema({
           const list = ctx.keystone.lists[listKey];
           const result = await attemptAuthentication(
             list,
+            listKey,
             identityField,
             secretField,
             protectIdentities,
-            args
+            args,
+            ctx
           );
 
           if (!result.success) {
