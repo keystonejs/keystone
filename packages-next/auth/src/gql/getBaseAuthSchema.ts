@@ -68,7 +68,7 @@ export function getBaseAuthSchema({
           }
 
           const sessionToken = await ctx.startSession({ listKey, itemId: result.item.id });
-          return { token: sessionToken, item: result.item };
+          return { sessionToken, item: result.item };
         },
       },
       Query: {
@@ -97,7 +97,7 @@ export function getBaseAuthSchema({
       // TODO: Is this the preferred approach for this?
       [gqlNames.ItemAuthenticationWithPasswordResult]: {
         __resolveType(rootVal: any) {
-          return rootVal.token
+          return rootVal.sessionToken
             ? gqlNames.ItemAuthenticationWithPasswordSuccess
             : gqlNames.ItemAuthenticationWithPasswordFailure;
         },
