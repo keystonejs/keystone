@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
-import { Select } from '@keystone-ui/fields';
+import { FieldContainer, FieldLabel, Select, TextInput, Checkbox } from '@keystone-ui/fields';
 import { ReactElement, ReactNode } from 'react';
 
 export type FormField<Value> = {
@@ -49,15 +49,15 @@ export const fields = {
       kind: 'form',
       Input({ value, onChange }) {
         return (
-          <label>
-            {label}
-            <input
+          <FieldContainer>
+            <FieldLabel>{label}</FieldLabel>
+            <TextInput
               value={value}
               onChange={event => {
                 onChange(event.target.value);
               }}
             />
-          </label>
+          </FieldContainer>
         );
       },
       defaultValue: '',
@@ -76,8 +76,8 @@ export const fields = {
       kind: 'form',
       Input({ value, onChange }) {
         return (
-          <label>
-            {label}
+          <FieldContainer>
+            <FieldLabel>{label}</FieldLabel>
             <Select
               value={options.find(option => option.value === value) || null}
               onChange={option => {
@@ -86,7 +86,7 @@ export const fields = {
                 }
               }}
             />
-          </label>
+          </FieldContainer>
         );
       },
       defaultValue,
@@ -97,16 +97,16 @@ export const fields = {
       kind: 'form',
       Input({ value, onChange }) {
         return (
-          <label>
-            {label}
-            <input
-              type="checkbox"
+          <FieldContainer>
+            <Checkbox
               checked={value}
               onChange={event => {
                 onChange(event.target.checked);
               }}
-            />
-          </label>
+            >
+              {label}
+            </Checkbox>
+          </FieldContainer>
         );
       },
       defaultValue: false,

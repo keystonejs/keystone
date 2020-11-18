@@ -1,12 +1,13 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { Fragment, ReactElement, useContext, useState } from 'react';
+import { jsx, Stack } from '@keystone-ui/core';
+import { ReactElement, useContext, useState } from 'react';
 import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
 import { Editor, Element, Transforms } from 'slate';
 
 import { Button, Spacer } from './components';
 import { ComponentPropField, ComponentBlock, NotEditable } from '../component-blocks';
+import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import React from 'react';
 
 const ComponentBlockContext = React.createContext<null | Record<string, ComponentBlock>>(null);
@@ -343,7 +344,7 @@ function FormValueContent({
   onChange(value: any): void;
 }) {
   return (
-    <Fragment>
+    <Stack gap="medium">
       {Object.keys(props).map(key => {
         const prop = props[key];
         if (prop.kind === 'inline') return null;
@@ -409,7 +410,7 @@ function FormValueContent({
           </div>
         );
       })}
-    </Fragment>
+    </Stack>
   );
 }
 
@@ -425,11 +426,9 @@ function FormValue({
   componentBlock: ComponentBlock;
 }) {
   return (
-    <div contentEditable={false}>
+    <Stack gap="medium" padding="small" contentEditable={false}>
       <FormValueContent onChange={onChange} path={[]} props={componentBlock.props} value={value} />
-      <button type="button" onClick={onClose}>
-        Done
-      </button>
-    </div>
+      <KeystoneUIButton onClick={onClose}>Done</KeystoneUIButton>
+    </Stack>
   );
 }
