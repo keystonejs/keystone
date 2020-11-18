@@ -4,22 +4,19 @@ import { Fragment, useMemo } from 'react';
 import { FieldContainer, FieldLabel, FieldDescription, FieldInput } from '@arch-ui/fields';
 import Popout from '@arch-ui/popout';
 import { Button } from '@arch-ui/button';
-import SketchPicker from 'react-color/lib/Sketch';
+import convert from 'tinycolor2';
+import { RgbaStringColorPicker } from 'react-colorful';
+import 'react-colorful/dist/index.css';
 
-const ColorField = ({ field, value = '', errors, onChange, isDisabled }) => {
+const ColorField = ({ field, value, errors, onChange, isDisabled }) => {
   const htmlID = `ks-input-${field.path}`;
 
   const colorPickerValue = useMemo(() => {
     // keystone previously stored values as a hex string and this should still be supported
     // it is now stored as an rgba string
-    if (value) {
-      if (value.indexOf('rgba', 0) === 0) {
-        const rgbaValues = value.replace(/^rgba\(|\s+|\)$/g, '').split(',');
-        return { r: rgbaValues[0], g: rgbaValues[1], b: rgbaValues[2], a: rgbaValues[3] };
-      }
-      return value;
-    }
-    return '';
+    if (value && value.indexOf('rgba') !== 0) return convert(value).toRgbString();
+    // the color that picker shows if no value passed
+    return 'rgba(0, 0, 0, 1)';
   }, [value]);
 
   const target = props => (
@@ -62,18 +59,13 @@ const ColorField = ({ field, value = '', errors, onChange, isDisabled }) => {
       <FieldLabel htmlFor={htmlID} field={field} errors={errors} />
       <FieldDescription text={field.adminDoc} />
       <FieldInput>
-        <Popout width={220} target={target}>
-          <SketchPicker
+        <Popout width="auto" target={target}>
+          <RgbaStringColorPicker
             css={{
-              // using !important because react-color uses inline styles and applies a box shadow
-              // but Popout already applies a box shadow
-              boxShadow: 'none !important',
+              padding: 12,
             }}
-            presetColors={[]}
             color={colorPickerValue}
-            onChange={({ rgb: { r, g, b, a } }) => {
-              onChange(`rgba(${r}, ${g}, ${b}, ${a})`);
-            }}
+            onChange={onChange}
           />
         </Popout>
       </FieldInput>
