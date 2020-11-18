@@ -23789,10 +23789,10 @@ strip-outer@^1.0.0:
   dependencies:
     escape-string-regexp "^1.0.2"
 
-stripe@^8.121.0:
-  version "8.121.0"
-  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.121.0.tgz#45f073998e3d987647d48a2ec575b78e3ab374c9"
-  integrity sha512-Uswmut57hVdyPrb+EJUTWbrLcTIEL4LS5T6UQZPO5AJNYT0PGHajgY1esQwmV7yVBL+Kgt3y/16zIAY/gAwifg==
+stripe@^8.122.1:
+  version "8.122.1"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.122.1.tgz#1aff52f29b2cd4310028f4bf8e4912ba02b26a1c"
+  integrity sha512-Ab5XkUjLiaiPT6eZaBauf19Gp3Opv3SSfdxWrDFrixcZRb7OmzsGFYyLaHkX8m4/7Og9xTk58JfDa7N61VJgDA==
   dependencies:
     "@types/node" ">=8.1.0"
     qs "^6.6.0"
