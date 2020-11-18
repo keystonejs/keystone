@@ -176,9 +176,7 @@
       "packages-next/*",
       "design-system/packages/*"
     ],
-    "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
-      "newEntrypoints": true
-    }
+    "distFilenameStrategy": "unscoped-package-name"
   },
   "jest": {
     "setupFilesAfterEnv": [
