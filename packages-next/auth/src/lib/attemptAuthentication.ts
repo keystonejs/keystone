@@ -2,27 +2,22 @@ import { PasswordAuthErrorCode } from '../types';
 
 export async function attemptAuthentication(
   list: any,
+  listKey: string,
   identityField: string,
   secretField: string,
   protectIdentities: boolean,
-  args: Record<string, string>
+  args: Record<string, string>,
+  context: any
 ): Promise<
-  | {
-      success: false;
-      code: PasswordAuthErrorCode;
-    }
-  | {
-      success: true;
-      item: { id: any; [prop: string]: any };
-    }
+  | { success: false; code: PasswordAuthErrorCode }
+  | { success: true; item: { id: any; [prop: string]: any } }
 > {
   const identity = args[identityField];
   const canidatePlaintext = args[secretField];
   const secretFieldInstance = list.fieldsByPath[secretField];
 
   // TODO: Allow additional filters to be suppled in config? eg. `validUserConditions: { isEnable: true, isVerified: true, ... }`
-  // TODO: Maybe talk to the list rather than the adapter? (might not validate the filters though)
-  const items = await list.adapter.find({ [identityField]: identity });
+  const items = await context.lists[listKey].findMany({ where: { [identityField]: identity } });
 
   // Identity failures with helpful errors
   let specificCode: PasswordAuthErrorCode | undefined;
@@ -42,14 +37,10 @@ export async function attemptAuthentication(
   }
 
   const item = items[0];
-  const isMatch = await secretFieldInstance.compare(canidatePlaintext, item[secretField]);
-  if (!isMatch) {
-    return {
-      success: false,
-      code: protectIdentities ? 'FAILURE' : 'SECRET_MISMATCH',
-    };
+  if (await secretFieldInstance.compare(canidatePlaintext, item[secretField])) {
+    // Authenticated!
+    return { success: true, item };
+  } else {
+    return { success: false, code: protectIdentities ? 'FAILURE' : 'SECRET_MISMATCH' };
   }
-
-  // Authenticated!
-  return { success: true, item };
 }
