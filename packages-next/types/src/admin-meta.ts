@@ -5,6 +5,7 @@ export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = unde
   listKey: string;
   path: string;
   label: string;
+  customViews: Record<string, any>;
   fieldMeta: FieldMeta;
 };
 
@@ -125,6 +126,7 @@ export type FieldViews = readonly {
   Cell: CellComponent;
   CardValue: CardValueComponent;
   controller: (args: FieldControllerConfig<any>) => FieldController<unknown, JSONValue>;
+  allowedExportsOnCustomViews?: string[];
 }[];
 
 export type CellComponent<
