@@ -200,7 +200,7 @@ export function component<
 }
 
 export const NotEditable = ({ children, ...props }: { children: ReactNode }) => (
-  <span contentEditable={false} {...props}>
+  <span css={{ userSelect: 'none' }} contentEditable={false} {...props}>
     {children}
   </span>
 );
