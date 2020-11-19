@@ -33,8 +33,8 @@ export const useMenuGroupTokens = (): MenuGroupTokens => {
 			lineHeight: typography.leading.looser,
 			color: tones.passive.foreground   // palette.text.muted,
 		}
-	}
-}
+	};
+};
 
 export const useMenuGroupStyles = ({ tokens }: { tokens: MenuGroupTokens }): MenuGroupStyles => {
 	const { containerTokens, titleTokens } = tokens;
@@ -53,5 +53,5 @@ export const useMenuGroupStyles = ({ tokens }: { tokens: MenuGroupTokens }): Men
 			paddingRight: titleTokens.paddingHorizontal,
 			textTransform: 'uppercase',
 		}
-	}
-}
+	};
+};

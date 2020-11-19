@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { useTheme } from '@keystone-ui/core';
-import {SizeKey } from "@keystone-ui/button/src";  // ?? todo - ??import location
+import { SizeKey } from '@keystone-ui/button/src';  // ?? todo - ??import location
 
 type MenuItemTokensProps = {
 	tone: 'passive' | 'active' | 'negative',
@@ -66,8 +66,8 @@ export const useMenuItemTokens = ({ tone, isHighlighted, size, isDisabled }: Men
 		icon: {
 			marginHorizontal: spacing.small,
 		},
-	}
-}
+	};
+};
 
 export const useMenuItemStyles = ({ tokens }: { tokens: MenuItemTokens }): MenuItemStyles => {
 	const { container, containerHover, containerFocus, icon } = tokens;
@@ -116,5 +116,5 @@ export const useMenuItemStyles = ({ tokens }: { tokens: MenuItemTokens }): MenuI
 			textOverflow: 'ellipsis',
 			whiteSpace: 'nowrap',
 		}
-	}
-}
+	};
+};

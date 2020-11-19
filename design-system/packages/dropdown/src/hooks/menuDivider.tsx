@@ -17,8 +17,8 @@ export const useMenuDividerTokens = (): MenuDividerTokens => {
 	return {
 		backgroundColor: 'grey',  // TODO palette.global.border,
 		marginVertical: spacing[VERTICAL_RHYTHM],
-	}
-}
+	};
+};
 
 export const useMenuDividerStyles = ({ tokens }: { tokens: MenuDividerTokens }): MenuDividerStyles => {
 	const { marginVertical, backgroundColor } = tokens;
@@ -27,5 +27,5 @@ export const useMenuDividerStyles = ({ tokens }: { tokens: MenuDividerTokens }):
 		height: 1,
 		marginBottom: marginVertical,
 		marginTop: marginVertical,
-	}
-}
+	};
+};

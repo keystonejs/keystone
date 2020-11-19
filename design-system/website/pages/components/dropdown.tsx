@@ -16,7 +16,7 @@ const Basic = () => (
     <MenuItem label="Second" onClick={() => alert('Second selected')} />
     <MenuItem label="Third" onClick={() => alert('Third selected')} />
   </DropdownMenu>
-)
+);
 
 const Tones = () => (
   <DropdownMenu trigger="Trigger">

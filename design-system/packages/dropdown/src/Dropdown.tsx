@@ -42,7 +42,7 @@ type DropdownMenuProps = {
   trigger: string | TriggerRendererType;
 };
 
-export const DropdownMenu: React.FC<DropdownMenuProps> = ({ children, trigger, align = "left", }) => {
+export const DropdownMenu: React.FC<DropdownMenuProps> = ({ children, trigger, align = 'left', }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const internalTriggerRef = useRef<HTMLElement>();
   const { isOpen, setOpen, dialog, trigger: popoverTrigger, arrow } = usePopover({

@@ -1,9 +1,9 @@
 /** @jsx jsx */
 
-import {ComponentType, Fragment, HTMLAttributes, useContext} from 'react';
+import { ComponentType, Fragment, HTMLAttributes, useContext } from 'react';
 import { jsx, forwardRefWithAs, VisuallyHidden } from '@keystone-ui/core';
 import { IconProps } from '@keystone-ui/icons';
-import { ButtonContext } from "./context";
+import { ButtonContext } from './context';
 import { useIconBeforeStyles, useIconAfterStyles } from './hooks/actionButton';
 
 export type ActionButtonProps = {
@@ -20,7 +20,7 @@ export type ActionButtonProps = {
   /** Provide an alternate type if the button is within a form. */
   type?: 'submit' | 'button' | 'reset';
   /** The weight of the button. */
-  weight?: "bold" | "light";
+  weight?: 'bold' | 'light';
 } & HTMLAttributes<HTMLButtonElement>;
 
 export const ActionButton = forwardRefWithAs<'button', ActionButtonProps>(

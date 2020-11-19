@@ -3,9 +3,9 @@ import { ComponentType, forwardRef, ReactNode, HTMLAttributes } from 'react';
 import { jsx, useId } from '@keystone-ui/core';
 import { IconProps } from '@keystone-ui/icons';
 
-import { useMenuTokens, useMenuStyles} from './hooks/menu';
-import {useMenuGroupStyles, useMenuGroupTokens} from "./hooks/menuGroup";
-import {useMenuItemStyles, useMenuItemTokens} from "./hooks/menuItem";
+import { useMenuTokens, useMenuStyles } from './hooks/menu';
+import { useMenuGroupStyles, useMenuGroupTokens } from './hooks/menuGroup';
+import { useMenuItemStyles, useMenuItemTokens } from './hooks/menuItem';
 
 
 // Menu Provider

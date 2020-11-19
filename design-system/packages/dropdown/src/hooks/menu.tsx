@@ -18,8 +18,8 @@ export const useMenuTokens = (): MenuTokens => {
 	const { spacing } = useTheme();
 	return {
 		paddingVertical: spacing.small,
-	}
-}
+	};
+};
 
 export const useMenuStyles = ({ tokens }: { tokens: MenuTokens}): MenuStyles => {
 	const { paddingVertical } = tokens;
@@ -31,5 +31,5 @@ export const useMenuStyles = ({ tokens }: { tokens: MenuTokens}): MenuStyles => 
 		paddingBottom: paddingVertical,
 		paddingTop: paddingVertical,
 		WebkitOverflowScrolling: 'touch',
-	}
-}
+	};
+};
