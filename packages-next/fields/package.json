@@ -37,7 +37,8 @@
   "preconstruct": {
     "entrypoints": [
       "index.ts",
-      "types/*/views/index.tsx"
+      "types/*/views/index.tsx",
+      "types/relationship/views/RelationshipSelect.tsx"
     ]
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/fields"

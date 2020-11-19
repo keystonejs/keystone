@@ -1,37 +1,9 @@
-// @ts-ignore
-import { getItem, getItems, deleteItems } from '@keystonejs/server-side-graphql-client';
-import { createSchema, list, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
+import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text, relationship, password, select, virtual, integer } from '@keystone-next/fields';
 import { cloudinaryImage } from '@keystone-next/cloudinary';
-import type { ListsAPI, AccessControl } from './types';
-
-/*
-  TODO
-    - [ ] Access Control (new Roles system)
-    - [ ] Tracking (createdAt, updatedAt, updatedAt, updatedBy)
-    - [x] Port the addToCard mutation
-    - [x] Port the checkout mutation
-    - [x] User: could create an isAdmin user?
-    - [x] CartItem: labelResolver -> virtual field
-    - [x] Item: price integer field missing defaultValue, isRequired
-    - [x] Item: image field (need cloudinaryImage?)
-    - [x] OrderItem: quantity integer field missing isRequired
-    - [x] Item / OrderItem: change image to relationship
-    - [ ] Item: relationship fields don't support isRequired
-*/
-
-export const access: AccessControl = {
-  userIsAdmin: ({ session }) => session?.data && session.data.permissions === 'ADMIN',
-  userIsEditor: ({ session }) => session?.data && session.data.permissions === 'EDITOR',
-  userIsItem: ({ session }) => (session?.itemId ? { id: session.itemId } : false),
-  userAuthorsItem: ({ session }) => (session?.itemId ? { author: { id: session.itemId } } : false),
-  userOwnsItem: ({ session }) => (session?.itemId ? { user: { id: session.itemId } } : false),
-  userIsAdminOrEditor: args => access.userIsAdmin(args) || access.userIsEditor(args),
-  userIsAdminOrOwner: args => access.userIsAdmin(args) || access.userOwnsItem(args),
-  userCanAccessUsers: args => access.userIsAdmin(args) || access.userIsItem(args),
-  userCanUpdateItem: args =>
-    access.userIsAdmin(args) || access.userIsEditor(args) || access.userOwnsItem,
-};
+import type { ListsAPI } from './types';
+import { permissions, isSignedIn, rules } from './access';
+import { permissionFields } from './fields';
 
 const cloudinary = {
   cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
@@ -54,15 +26,15 @@ export const lists = createSchema({
     access: {
       // anyone should be able to create a user (sign up)
       create: true,
-      // only admins can see the list of users
-      read: access.userCanAccessUsers,
-      update: access.userCanAccessUsers,
-      delete: access.userIsAdmin,
+      // only admins can see the list of users, but people should be able to see themselves
+      read: rules.canReadUsers,
+      update: rules.canUpdateUsers,
+      delete: permissions.canManageUsers,
     },
     ui: {
       // only admins can create and delete users in the Admin UI
-      hideCreate: args => !access.userIsAdmin(args),
-      hideDelete: args => !access.userIsAdmin(args),
+      hideCreate: args => !permissions.canManageUsers(args),
+      hideDelete: args => !permissions.canManageUsers(args),
       listView: {
         initialColumns: ['name', 'email'],
       },
@@ -71,6 +43,18 @@ export const lists = createSchema({
       name: text({ isRequired: true }),
       email: text({ isRequired: true, isUnique: true }),
       password: password(),
+      role: relationship({
+        ref: 'Role.assignedTo',
+        access: {
+          create: permissions.canManageUsers,
+          update: permissions.canManageUsers,
+        },
+        ui: {
+          itemView: {
+            fieldMode: args => (permissions.canManageUsers(args) ? 'edit' : 'read'),
+          },
+        },
+      }),
       cart: relationship({
         ref: 'CartItem.user',
         many: true,
@@ -79,36 +63,31 @@ export const lists = createSchema({
           itemView: { fieldMode: 'read' },
         },
       }),
-      permissions: select({
-        options: [
-          { label: 'User', value: 'USER' },
-          { label: 'Editor', value: 'EDITOR' },
-          { label: 'Admin', value: 'ADMIN' },
-        ],
+      orders: relationship({
+        ref: 'Order.user',
+        many: true,
         access: {
-          // only admins can create or change the permissions field
-          create: access.userIsAdmin,
-          update: access.userIsAdmin,
+          create: () => false,
+          read: true,
+          update: () => false,
         },
         ui: {
-          itemView: {
-            // show the fieldMode as read-only if the user is not an admin
-            fieldMode: args => (access.userIsAdmin(args) ? 'edit' : 'read'),
-          },
+          createView: { fieldMode: 'hidden' },
+          itemView: { fieldMode: 'read' },
         },
       }),
     },
   }),
   Product: list({
     access: {
-      create: access.userIsAdminOrEditor,
-      read: true,
-      update: access.userIsAdminOrEditor,
-      delete: access.userIsAdmin,
+      create: permissions.canManageProducts,
+      read: rules.canReadProducts,
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts,
     },
     fields: {
       name: text({ isRequired: true }),
-      permissions: select({
+      status: select({
         options: [
           { label: 'Draft', value: 'DRAFT' },
           { label: 'Available', value: 'AVAILABLE' },
@@ -132,15 +111,14 @@ export const lists = createSchema({
           inlineEdit: { fields: ['altText'] },
         },
       }),
-      author: relationship({ ref: 'User' }),
     },
   }),
   ProductImage: list({
     access: {
-      create: access.userIsAdminOrEditor,
+      create: permissions.canManageProducts,
       read: true,
-      update: access.userIsAdminOrEditor,
-      delete: access.userIsAdminOrEditor,
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts,
     },
     ui: {
       isHidden: true,
@@ -155,6 +133,12 @@ export const lists = createSchema({
     },
   }),
   CartItem: list({
+    access: {
+      create: isSignedIn,
+      read: rules.canOrder,
+      update: rules.canOrder,
+      delete: rules.canOrder,
+    },
     fields: {
       label: virtual({
         graphQLReturnType: 'String',
@@ -181,7 +165,15 @@ export const lists = createSchema({
     },
   }),
   Order: list({
+    access: {
+      create: () => false,
+      read: rules.canOrder,
+      update: () => false,
+      delete: () => false,
+    },
     ui: {
+      hideCreate: true,
+      hideDelete: true,
       listView: { initialColumns: ['label', 'user', 'items'] },
     },
     fields: {
@@ -190,14 +182,27 @@ export const lists = createSchema({
         resolver: item => formatMoney(item.total),
       }),
       total: integer(),
-      items: relationship({ ref: 'OrderItem', many: true }),
-      user: relationship({ ref: 'User' }),
+      items: relationship({ ref: 'OrderItem.order', many: true }),
+      user: relationship({ ref: 'User.orders' }),
       charge: text(),
     },
   }),
   OrderItem: list({
+    access: {
+      create: () => false,
+      read: rules.canOrder,
+      update: () => false,
+      delete: () => false,
+    },
+    ui: {
+      hideCreate: true,
+      hideDelete: true,
+      listView: { initialColumns: ['name', 'price', 'quantity'] },
+    },
     fields: {
       name: text({ isRequired: true }),
+      order: relationship({ ref: 'Order.items' }),
+      user: relationship({ ref: 'User' }),
       description: text({ ui: { displayMode: 'textarea' } }),
       price: integer(),
       quantity: integer({ isRequired: true }),
@@ -207,120 +212,34 @@ export const lists = createSchema({
       }),
     },
   }),
-});
-
-export const extendGraphqlSchema = graphQLSchemaExtension({
-  typeDefs: `
-    type Mutation {
-      addToCart(productId: ID): CartItem
-      checkout(token: String!): Order
-    }
-  `,
-  resolvers: {
-    Mutation: {
-      checkout: async (root: any, { token }: { token: string }, context: any) => {
-        const { session } = context;
-        // 1. Query the current user and make sure they are signed in
-        const userId = session.itemId;
-        if (!userId) throw new Error('You must be signed in to complete this order.');
-
-        // FIXME: Use the new graphQL API when it's available
-        const User = await getItem({
-          context,
-          listKey: 'User',
-          itemId: userId,
-          returnFields: `
-            id
-            name
-            email
-            cart {
-              id
-              quantity
-              product { name price id description image { id publicUrlTransformed } }
-            }`,
-        });
-
-        // 2. recalculate the total for the price
-        const amount = User.cart.reduce(
-          (tally: number, cartItem: any) => tally + cartItem.product.price * cartItem.quantity,
-          0
-        );
-        console.log(`Going to charge for a total of ${amount}`);
-
-        // 3. Create the Payment Intent, given the Payment Method ID
-        // by passing confirm: true, We do stripe.paymentIntent.create() and stripe.paymentIntent.confirm() in 1 go.
-        // FIXME: How do we test this? Is this going to charge someone's card?
-        const charge = { id: 'MADE UP', amount, token };
-        // const charge = await stripe.paymentIntents.create({
-        //   amount,
-        //   currency: 'USD',
-        //   confirm: true,
-        //   payment_method: token,
-        // });
-
-        // 4. Convert the CartItems to OrderItems
-        const orderItems = User.cart.map((cartItem: any) => {
-          const orderItem = {
-            name: cartItem.product.name,
-            description: cartItem.product.description,
-            price: cartItem.product.price,
-            quantity: cartItem.quantity,
-            image: { connect: { id: cartItem.product.image.id } },
-          };
-          return orderItem;
-        });
-
-        // 5. create the Order
-        console.log('Creating the order');
-        const order = await context.lists.Order.createOne({
-          data: {
-            total: charge.amount,
-            charge: `${charge.id}`,
-            items: { create: orderItems },
-            user: { connect: { id: userId } },
-          },
-        });
-        // 6. Clean up - clear the users cart, delete cartItems
-        const cartItemIds = User.cart.map((cartItem: any) => cartItem.id);
-        await deleteItems({ context, listKey: 'CartItem', items: cartItemIds });
-
-        // 7. Return the Order to the client
-        return order;
+  Role: list({
+    access: {
+      create: permissions.canManageRoles,
+      read: permissions.canManageRoles,
+      update: permissions.canManageRoles,
+      delete: permissions.canManageRoles,
+    },
+    ui: {
+      hideCreate: args => !permissions.canManageRoles(args),
+      hideDelete: args => !permissions.canManageRoles(args),
+      isHidden: args => !permissions.canManageRoles(args),
+      listView: {
+        initialColumns: ['name', 'assignedTo'],
       },
-      addToCart: async (root: any, { productId }: { productId: string }, context: any) => {
-        const { session } = context;
-        // 1. Make sure they are signed in
-        const userId = session.itemId;
-        if (!userId) {
-          throw new Error('You must be signed in soooon');
-        }
-        // 2. Query the users current cart, to see if they already have that item
-        const allCartItems = await getItems({
-          context,
-          where: { user: { id: userId }, product: { id: productId } },
-          listKey: 'CartItem',
-          returnFields: 'id quantity',
-        });
-
-        // 3. Check if that item is already in their cart and increment by 1 if it is
-        const [existingCartItem] = allCartItems;
-        if (existingCartItem) {
-          const { quantity } = existingCartItem;
-          console.log(`There are already ${quantity} of these items in their cart`);
-          return await context.lists.CartItem.updateOne({
-            id: existingCartItem.id,
-            data: { quantity: quantity + 1 },
-          });
-        } else {
-          // 4. If its not, create a fresh CartItem for that user!
-          return await context.lists.CartItem.createOne({
-            data: {
-              product: { connect: { id: productId } },
-              user: { connect: { id: userId } },
-            },
-          });
-        }
+      itemView: {
+        defaultFieldMode: args => (permissions.canManageRoles(args) ? 'edit' : 'read'),
       },
     },
-  },
+    fields: {
+      name: text({ isRequired: true }),
+      ...permissionFields,
+      assignedTo: relationship({
+        ref: 'User.role',
+        many: true,
+        ui: {
+          itemView: { fieldMode: 'read' },
+        },
+      }),
+    },
+  }),
 });

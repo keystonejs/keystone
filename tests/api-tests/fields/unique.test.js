@@ -2,7 +2,9 @@ const globby = require('globby');
 const { Text } = require('@keystonejs/fields');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
 
-const testModules = globby.sync(`packages/**/src/**/test-fixtures.js`, { absolute: true });
+const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.js`, {
+  absolute: true,
+});
 multiAdapterRunners().map(({ runner, adapterName, after }) =>
   describe(`Adapter: ${adapterName}`, () => {
     testModules
