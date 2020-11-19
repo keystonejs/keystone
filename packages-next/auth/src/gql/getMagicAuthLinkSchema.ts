@@ -61,7 +61,7 @@ export function getMagicAuthLinkSchema({
           const identity = args[identityField];
           const result = await updateAuthToken(
             'magicAuth',
-            list,
+            listKey,
             identityField,
             protectIdentities,
             identity,
