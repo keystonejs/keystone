@@ -69,9 +69,11 @@ export function itemAPIForList(
       const args = getArgsForFindMany(rawArgs);
       return list.listQuery(args, createContext({ skipAccessControl: true }));
     },
-    count(rawArgs) {
+    async count(rawArgs) {
       const args = getArgsForMeta(rawArgs);
-      return list.listQueryMeta(args, createContext({ skipAccessControl: true })).getCount();
+      return (
+        await list.listQueryMeta(args, createContext({ skipAccessControl: true }))
+      ).getCount();
     },
     createOne(rawArgs) {
       const { data } = getArgsForCreateOne(rawArgs);

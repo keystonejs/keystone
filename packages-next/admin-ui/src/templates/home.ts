@@ -1,6 +1,6 @@
 import type { KeystoneSystem } from '@keystone-next/types';
 
-export const homeTemplate = (system: KeystoneSystem) => {
+export const homeTemplate = (adminMeta: KeystoneSystem['adminMeta']) => {
   let query = `query {
     keystone {
       adminMeta {
@@ -16,8 +16,8 @@ export const homeTemplate = (system: KeystoneSystem) => {
       }
     }
 `;
-  for (const listKey in system.adminMeta.lists) {
-    query += `${listKey}: ${system.adminMeta.lists[listKey].gqlNames.listQueryMetaName} { count }\n`;
+  for (const listKey in adminMeta.lists) {
+    query += `${listKey}: ${adminMeta.lists[listKey].gqlNames.listQueryMetaName} { count }\n`;
   }
   query += '}';
   // -- TEMPLATE START

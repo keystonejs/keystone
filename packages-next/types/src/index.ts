@@ -63,6 +63,10 @@ export type KeystoneConfig = {
   };
   session?: () => SessionStrategy<any>;
   ui?: KeystoneAdminUIConfig;
+  server?: {
+    /** Configuration options for the cors middleware. Set to true to core Keystone defaults */
+    cors?: any;
+  };
 } & SchemaConfig;
 
 export type MaybeItemFunction<T> =

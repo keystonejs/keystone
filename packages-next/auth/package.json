@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/auth",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "license": "MIT",
   "main": "dist/auth.cjs.js",
   "module": "dist/auth.esm.js",
@@ -10,8 +10,8 @@
   "dependencies": {
     "@babel/runtime": "^7.12.5",
     "@graphql-tools/merge": "^6.2.5",
-    "@keystone-next/fields": "^3.0.0",
-    "@keystone-next/types": "^3.0.0",
+    "@keystone-next/fields": "^3.0.1",
+    "@keystone-next/types": "^4.0.0",
     "@keystone-ui/button": "^2.0.1",
     "@keystone-ui/core": "^1.0.2",
     "@keystone-ui/fields": "^1.0.1",
@@ -20,13 +20,13 @@
     "graphql": "^15.4.0"
   },
   "devDependencies": {
-    "@keystone-next/admin-ui": "^2.0.2",
-    "@keystone-next/keystone": "^3.0.0",
+    "@keystone-next/admin-ui": "^3.0.0",
+    "@keystone-next/keystone": "^4.0.0",
     "react": "^16.14.0"
   },
   "peerDependencies": {
-    "@keystone-next/admin-ui": "^2.0.2",
-    "@keystone-next/keystone": "^3.0.0",
+    "@keystone-next/admin-ui": "^3.0.0",
+    "@keystone-next/keystone": "^4.0.0",
     "react": "^16.14.0"
   },
   "preconstruct": {

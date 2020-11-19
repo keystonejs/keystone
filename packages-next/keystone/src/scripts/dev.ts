@@ -2,7 +2,7 @@ import path from 'path';
 import express from 'express';
 import { printSchema } from 'graphql';
 import * as fs from 'fs-extra';
-import { createKeystone } from '../lib/createKeystone';
+import { createSystem } from '../lib/createSystem';
 import { requireSource } from '../lib/requireSource';
 import { formatSource, generateAdminUI } from '../lib/generateAdminUI';
 import { createAdminUIServer } from '../lib/createAdminUIServer';
@@ -27,7 +27,8 @@ export const dev = async () => {
   let adminUIServer: null | ReturnType<typeof express> = null;
 
   const initKeystone = async () => {
-    const system = createKeystone(requireSource(path.join(process.cwd(), 'keystone')).default);
+    const config = requireSource(path.join(process.cwd(), 'keystone')).default;
+    const system = createSystem(config);
     let printedSchema = printSchema(system.graphQLSchema);
     console.log('✨ Generating Schema');
     await fs.outputFile('./.keystone/schema.graphql', printedSchema);
@@ -39,7 +40,7 @@ export const dev = async () => {
     console.log('✨ Generating Admin UI');
     await generateAdminUI(system, process.cwd());
 
-    adminUIServer = await createAdminUIServer(system);
+    adminUIServer = await createAdminUIServer(config, system);
     console.log(`👋 Admin UI Ready`);
   };
 

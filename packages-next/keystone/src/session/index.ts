@@ -209,28 +209,19 @@ export function storedSessions({
 }
 
 /**
- * This is the function createKeystone uses to implement the session strategy provided
+ * This is the function createSystem uses to implement the session strategy provided
  */
 export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
   let isConnected = false;
-  let connect = async () => {
-    await sessionStrategy.connect?.();
-    isConnected = true;
-  };
-  let disconnect = async () => {
-    await sessionStrategy.disconnect?.();
-    isConnected = false;
-  };
   return {
-    connect,
-    disconnect,
     async createContext(
       req: IncomingMessage,
       res: ServerResponse,
       system: KeystoneSystem
     ): Promise<SessionContext> {
       if (!isConnected) {
-        await connect();
+        await sessionStrategy.connect?.();
+        isConnected = true;
       }
       const session = await sessionStrategy.get({ req, system });
       const startSession = sessionStrategy.start;
