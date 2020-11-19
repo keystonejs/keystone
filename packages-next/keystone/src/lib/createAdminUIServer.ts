@@ -42,8 +42,15 @@ const addApolloServer = ({ server, system }: { server: any; system: KeystoneSyst
 export const createAdminUIServer = async (config: KeystoneConfig, system: KeystoneSystem) => {
   const server = express();
 
-  // TODO: allow cors to be configured
-  server.use(cors({ origin: true, credentials: true, ...(config.server?.cors || {}) }));
+  if (config.server?.cors) {
+    // Setting config.server.cors = true will provide backwards compatible defaults
+    // Otherwise, the user can provide their own config object to use
+    let corsConfig =
+      typeof config.server.cors === 'boolean'
+        ? { origin: true, credentials: true }
+        : config.server.cors;
+    server.use(cors(corsConfig));
+  }
 
   console.log('✨ Preparing Next.js app');
   const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
