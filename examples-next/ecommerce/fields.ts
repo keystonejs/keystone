@@ -1,6 +1,6 @@
 import { checkbox } from '@keystone-next/fields';
 
-export const rolePermissions = {
+export const permissionFields = {
   canManageProducts: checkbox({
     defaultValue: false,
     label: 'User can Update and delete any product',
@@ -21,6 +21,6 @@ export const rolePermissions = {
   canManageOrders: checkbox({ defaultValue: false, label: 'User can see and manage orders' }),
 };
 
-export type Permission = keyof typeof rolePermissions;
+export type Permission = keyof typeof permissionFields;
 
-export const permissionsList: Permission[] = Object.keys(rolePermissions) as Permission[];
+export const permissionsList: Permission[] = Object.keys(permissionFields) as Permission[];

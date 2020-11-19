@@ -2,10 +2,11 @@ import 'dotenv/config';
 
 import { config } from '@keystone-next/keystone/schema';
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
-import { lists, extendGraphqlSchema } from './schema';
+import { lists } from './schema';
+import { extendGraphqlSchema } from './mutations';
 import { createAuth } from '@keystone-next/auth';
 import { insertSeedData } from './seed-data';
-import { permissionsList } from './roleFields';
+import { permissionsList } from './fields';
 
 /*
   TODO

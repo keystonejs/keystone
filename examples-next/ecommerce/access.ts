@@ -1,5 +1,6 @@
-import { permissionsList } from './roleFields';
+import { permissionsList } from './fields';
 import { ListAccessArgs } from './types';
+
 /*
   The basic level of access to the system is being signed in as a valid user. This gives you access
   to the Admin UI, access to your own User and Todo items, and read access to roles.
