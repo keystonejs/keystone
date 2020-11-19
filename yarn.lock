@@ -22937,7 +22937,7 @@ slate-drop-or-paste-images@^0.9.1:
     is-url "^1.2.2"
     slate-dev-logger "^0.1.0"
 
-slate-history@^0.58.1:
+slate-history@^0.58.4:
   version "0.58.4"
   resolved "https://registry.yarnpkg.com/slate-history/-/slate-history-0.58.4.tgz#f24f4745f192e8eb16975037536bdc22f6d1c03b"
   integrity sha512-QWmVvB02R+Z+I8sC7Hb+27Zqtm1vDt9kulHjmqRk8ixPp7052S04q4WEjNsk0StrgmEOEd+POvzNGfOYELXitw==
@@ -24458,10 +24458,15 @@ tinycolor2@^1.4.1, tinycolor2@^1.4.2:
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.2.tgz#3f6a4d1071ad07676d7fa472e1fac40a719d8803"
   integrity sha512-vJhccZPs965sV/L2sU4oRQVAos0pQXwsvTLkWYdqJ+a8Q5kPFzJTuOFwy7UniPli44NKQGAglksjvOcpo95aZA==
 
-tinymce@^5.5.0, tinymce@^5.5.1:
+tinymce@^5.5.0:
   version "5.5.1"
   resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.5.1.tgz#4f24ca6e7b698a3c7418a39ef0f3d613f4a703a4"
   integrity sha512-z03C8/0TBby68Kp7YUTSCZ0QJINsFCv9U+Cv3TNHg+T1spZ4V6vOIgD0zeTd/xKqkru0P7IOHoeAnOjfpTLq7g==
+
+tinymce@^5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.6.0.tgz#b5eda4888e1a607ddd545619cfaa137d59de14b4"
+  integrity sha512-f8LsyT80j8hD4wrL8Sac0DWDG5k10cDyykL/qkJ6kexn1KMt7w1ByrGlUm53XCYDqtavBA5snTU7odioMwSXSQ==
 
 title-case@^2.1.0:
   version "2.1.1"
