@@ -23862,10 +23862,10 @@ strip-outer@^1.0.0:
   dependencies:
     escape-string-regexp "^1.0.2"
 
-stripe@^8.123.0:
-  version "8.123.0"
-  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.123.0.tgz#f8855e6673df136a429b59bcc2faae912910fac1"
-  integrity sha512-TyCDwH7DsJ2dqmCMQs0oXkE/3cicxSFusxKMNMo7AB0aU/rZghm85iZ+7U3HcotIfZdImIKz0Dlnpfe+i0uV7w==
+stripe@^8.124.0:
+  version "8.124.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.124.0.tgz#c05ec57c15938cb8c747dbc2c573bfb5cff803cc"
+  integrity sha512-dU2m5WxZTWZMCFmhS7xlqyxYKdAkdUe0uK3HmZRci/O8JYewrp4kK5n6XCgd/oU+SXCJ43lKyC9TeF3EeY7j1A==
   dependencies:
     "@types/node" ">=8.1.0"
     qs "^6.6.0"
