@@ -137,7 +137,17 @@ export const lists = createSchema({
           displayMode: 'segmented-control',
         },
       }),
-      content: document({ ui: { views: require.resolve('./admin/fieldViews/Content.tsx') } }),
+      content: document({
+        ui: { views: require.resolve('./admin/fieldViews/Content.tsx') },
+        relationships: {
+          mention: {
+            kind: 'inline',
+            label: 'Mention',
+            labelField: 'name',
+            listKey: 'User',
+          },
+        },
+      }),
       publishDate: timestamp(),
       author: relationship({
         ref: 'User.posts',

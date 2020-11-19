@@ -18,6 +18,7 @@ import { Hoverable } from './components/hoverable';
 import { insertColumns } from './columns';
 import { ListButton } from './lists';
 import { insertBlockquote } from './blockquote';
+import { RelationshipButton } from './relationship';
 
 function getCanDoAlignment(editor: ReactEditor) {
   const [node] = Editor.nodes(editor, {
@@ -75,6 +76,7 @@ export const Toolbar = () => {
       >
         + Quote
       </Button>
+      <RelationshipButton />
       <Button
         isDisabled={!canDoAlignment}
         onMouseDown={event => {

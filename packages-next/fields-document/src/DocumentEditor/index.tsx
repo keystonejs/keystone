@@ -23,6 +23,11 @@ import { isListType, withList } from './lists';
 import { ComponentBlockProvider, withComponentBlocks } from './component-blocks';
 import { withBlockquote } from './blockquote';
 import { ComponentBlock } from '../component-blocks';
+import {
+  DocumentFieldRelationshipsProvider,
+  Relationships,
+  withRelationship,
+} from './relationship';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -86,22 +91,27 @@ export function DocumentEditor({
   onChange,
   value,
   componentBlocks,
+  relationships,
 }: {
   autoFocus?: boolean;
   onChange: undefined | ((value: Node[]) => void);
   value: Node[];
   componentBlocks: Record<string, ComponentBlock>;
+  relationships: Relationships;
 }) {
   const editor = useMemo(
     () =>
       withList(
         withHeading(
-          withComponentBlocks(
-            componentBlocks,
-            withParagraphs(
-              withColumns(
-                withBlockquote(
-                  withLink(withQuote(withPanel(withHistory(withReact(createEditor())))))
+          withRelationship(
+            relationships,
+            withComponentBlocks(
+              componentBlocks,
+              withParagraphs(
+                withColumns(
+                  withBlockquote(
+                    withLink(withQuote(withPanel(withHistory(withReact(createEditor())))))
+                  )
                 )
               )
             )
@@ -122,26 +132,32 @@ export function DocumentEditor({
   }, [value]);
 
   return (
-    <ComponentBlockProvider value={componentBlocks}>
-      <Slate
-        editor={editor}
-        value={value}
-        onChange={value => {
-          onChange?.(value);
-        }}
-      >
-        <Toolbar />
-        <Editable
-          css={styles}
-          autoFocus={autoFocus}
-          onKeyDown={onKeyDown}
-          readOnly={onChange === undefined}
-          renderElement={renderElement}
-          renderLeaf={renderLeaf}
-        />
-      </Slate>
-      <pre>{JSON.stringify(value, null, 2)}</pre>
-    </ComponentBlockProvider>
+    <DocumentFieldRelationshipsProvider value={relationships}>
+      <ComponentBlockProvider value={componentBlocks}>
+        <Slate
+          editor={editor}
+          value={value}
+          onChange={value => {
+            onChange?.(value);
+          }}
+        >
+          <Toolbar />
+          <Editable
+            css={styles}
+            autoFocus={autoFocus}
+            onKeyDown={onKeyDown}
+            readOnly={onChange === undefined}
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+          />
+        </Slate>
+
+        {
+          // for debugging
+          false && <pre>{JSON.stringify(value, null, 2)}</pre>
+        }
+      </ComponentBlockProvider>
+    </DocumentFieldRelationshipsProvider>
   );
 }
 

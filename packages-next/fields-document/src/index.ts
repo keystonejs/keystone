@@ -1,11 +1,13 @@
 import { DocumentFieldType } from './base-field-type';
 import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-next/types';
 import path from 'path';
+import { Relationships } from './DocumentEditor/relationship';
 
 export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
   TGeneratedListTypes
 > & {
   isRequired?: boolean;
+  relationships?: Relationships;
 };
 
 const views = path.join(
@@ -18,5 +20,8 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
 ): FieldType<TGeneratedListTypes> => ({
   type: DocumentFieldType,
   config,
+  getAdminMeta() {
+    return { relationships: config.relationships ? config.relationships : {} };
+  },
   views,
 });

@@ -344,10 +344,6 @@ export type PostWhereInput = {
   readonly status_not_ends_with_i?: Scalars['String'] | null;
   readonly status_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly status_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
-  readonly content?: Scalars['JSON'] | null;
-  readonly content_not?: Scalars['JSON'] | null;
-  readonly content_in?: ReadonlyArray<Scalars['JSON'] | null> | null;
-  readonly content_not_in?: ReadonlyArray<Scalars['JSON'] | null> | null;
   readonly publishDate?: Scalars['String'] | null;
   readonly publishDate_not?: Scalars['String'] | null;
   readonly publishDate_lt?: Scalars['String'] | null;

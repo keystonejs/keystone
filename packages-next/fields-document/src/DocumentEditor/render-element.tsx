@@ -10,6 +10,7 @@ import { PanelElement } from './panel';
 import { LinkElement } from './link';
 import { HeadingElement } from './heading';
 import { BlockquoteElement } from './blockquote';
+import { RelationshipElement } from './relationship';
 
 export const renderElement = (props: RenderElementProps) => {
   // TODO: probably use this method for the access boundary as well, is this
@@ -41,6 +42,8 @@ export const renderElement = (props: RenderElementProps) => {
       return <li {...props.attributes}>{props.children}</li>;
     case 'blockquote':
       return <BlockquoteElement {...props} />;
+    case 'relationship':
+      return <RelationshipElement {...props} />;
     default:
       return (
         <p css={{ textAlign: props.element.textAlign as any }} {...props.attributes}>

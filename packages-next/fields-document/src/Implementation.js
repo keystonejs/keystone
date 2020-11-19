@@ -2,6 +2,8 @@ import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 import { Implementation } from '@keystonejs/fields';
+// eslint-disable-next-line import/no-unresolved
+import { addRelationshipData, removeRelationshipData } from './relationship-data';
 
 const graphQLOutputType = 'DocumentField';
 
@@ -22,16 +24,18 @@ export class DocumentImplementation extends Implementation {
     ];
   }
 
-  gqlQueryInputFields() {
-    return [...this.equalityInputFields('JSON'), ...this.inInputFields('JSON')];
-  }
-
   // Called on `User.avatar` for example
   gqlOutputFieldResolvers() {
     return {
-      [this.path]: item => {
+      [this.path]: (item, _args, ctx) => {
         if (!Array.isArray(item[this.path]?.document)) return null;
-        return { document: item[this.path]?.document };
+        return {
+          document: addRelationshipData(
+            item[this.path].document,
+            ctx.graphql,
+            this.config.relationships
+          ),
+        };
       },
     };
   }
@@ -44,7 +48,7 @@ export class DocumentImplementation extends Implementation {
     if (data === undefined) {
       return undefined;
     }
-    return { document: data };
+    return { document: removeRelationshipData(data) };
   }
 
   gqlUpdateInputFields() {

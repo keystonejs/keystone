@@ -16,6 +16,7 @@
     "@babel/runtime": "^7.12.5",
     "@keystone-next/admin-ui": "^3.0.0",
     "@keystone-next/admin-ui-utils": "^1.0.1",
+    "@keystone-next/fields": "^3.0.1",
     "@keystone-next/types": "^4.0.0",
     "@keystone-ui/button": "^2.0.1",
     "@keystone-ui/core": "^1.0.2",
