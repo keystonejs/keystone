@@ -66,7 +66,7 @@ export function getPasswordResetSchema({
           const identity = args[identityField];
           const result = await updateAuthToken(
             'passwordReset',
-            list,
+            listKey,
             identityField,
             protectIdentities,
             identity,

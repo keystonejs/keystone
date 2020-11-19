@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { jsx, H1, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { useRawKeystone } from '@keystone-next/admin-ui/context';
-import { FieldMeta, SerializedFieldMeta } from '@keystone-next/types';
+import { FieldMeta, FieldViews, SerializedFieldMeta } from '@keystone-next/types';
 import isDeepEqual from 'fast-deep-equal';
 
 import { SigninContainer } from '../components/SigninContainer';
@@ -29,12 +29,19 @@ export const InitPage = ({
       // note that we're skipping the validation since we don't know the list key and
       // the validation will happen after the user has the created the initial item anyway
       const field = serializedFields[fieldPath];
-      let views = fieldViews[field.views];
+      const views = fieldViews[field.views];
+      const customViews: Record<string, any> = {};
       if (field.customViews !== null) {
-        views = {
-          ...views,
-          ...fieldViews[field.customViews],
-        };
+        const customViewsSource: FieldViews[number] & Record<string, any> =
+          fieldViews[field.customViews];
+        const allowedExportsOnCustomViews = new Set(views.allowedExportsOnCustomViews);
+        Object.keys(customViewsSource).forEach(exportName => {
+          if (allowedExportsOnCustomViews.has(exportName)) {
+            customViews[exportName] = customViewsSource[exportName];
+          } else {
+            (views as any)[exportName] = customViewsSource[exportName];
+          }
+        });
       }
       fields[fieldPath] = {
         ...field,
@@ -44,6 +51,7 @@ export const InitPage = ({
           fieldMeta: field.fieldMeta,
           label: field.label,
           path: fieldPath,
+          customViews,
         }),
       };
     });

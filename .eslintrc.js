@@ -79,6 +79,7 @@ module.exports = {
     '@typescript-eslint/ban-types': [
       'error',
       {
+        extendDefaults: false,
         types: {
           Function:
             '`Function` types are unsafe. Use more specific function types instead. e.g. (arg: number) => string',
