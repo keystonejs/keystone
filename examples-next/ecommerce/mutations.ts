@@ -1,6 +1,9 @@
+import { CartItemListTypeInfo } from './.keystone/schema-types';
 // @ts-ignore
 import { getItem, getItems, deleteItems } from '@keystonejs/server-side-graphql-client';
 import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
+import stripe from './lib/stripe';
+const graphql = String.raw;
 
 export const extendGraphqlSchema = graphQLSchemaExtension({
   typeDefs: `
@@ -22,14 +25,18 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
           context,
           listKey: 'User',
           itemId: userId,
-          returnFields: `
+          returnFields: graphql`
             id
             name
             email
             cart {
               id
               quantity
-              product { name price id description image { id publicUrlTransformed } }
+              product { name price id description photo {
+                image {
+                  id publicUrlTransformed
+                }
+              } }
             }`,
         });
 
@@ -42,34 +49,40 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
 
         // 3. Create the Payment Intent, given the Payment Method ID
         // by passing confirm: true, We do stripe.paymentIntent.create() and stripe.paymentIntent.confirm() in 1 go.
-        // FIXME: How do we test this? Is this going to charge someone's card?
-        const charge = { id: 'MADE UP', amount, token };
-        // const charge = await stripe.paymentIntents.create({
-        //   amount,
-        //   currency: 'USD',
-        //   confirm: true,
-        //   payment_method: token,
-        // });
+        // You can bypass stripe by using this:
+        // const charge = { id: `fake-charge-${Date.now()}`, amount, token };
+        const charge = await stripe.paymentIntents.create({
+          amount,
+          currency: 'USD',
+          confirm: true,
+          payment_method: token,
+        }).catch(err => {
+          console.log('shoot!');
+          console.log(err);
+        }) as any; // TODO: Stripe Type?
+        console.log(`Back from stripe!`, charge.id);
 
         // 4. Convert the CartItems to OrderItems
-        const orderItems = User.cart.map((cartItem: any) => {
+        // TODO Type CartItem and OrderItem. Can they be generated?
+        const orderItems = User.cart.map((cartItem) => {
           const orderItem = {
             name: cartItem.product.name,
             description: cartItem.product.description,
             price: cartItem.product.price,
             quantity: cartItem.quantity,
-            image: { connect: { id: cartItem.product.image.id } },
+            image: { connect: { id: cartItem.product.photo.image.id } },
             user: { connect: { id: userId } },
           };
           return orderItem;
         });
-
+        console.dir(orderItems, { depth: null });
         // 5. create the Order
-        console.log('Creating the order');
         const order = await context.lists.Order.createOne({
           data: {
             total: charge.amount,
             charge: `${charge.id}`,
+            // TODO create array of items causes error
+            // message":"Unable to create and/or connect 2 Order.items<OrderItem>
             items: { create: orderItems },
             user: { connect: { id: userId } },
           },
