@@ -4,11 +4,7 @@ import { jsx } from '../emotion';
 import { useTheme } from '../theme';
 import { forwardRefWithAs } from '../utils';
 
-export const Link = forwardRefWithAs<
-  'a',
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  {}
->(({ as: Tag = 'a', ...props }, ref) => {
+export const Link = forwardRefWithAs<'a', {}>(({ as: Tag = 'a', ...props }, ref) => {
   const { typography, colors } = useTheme();
 
   const styles = {

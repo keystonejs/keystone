@@ -1,14 +1,15 @@
 import url from 'url';
-
+import { mergeSchemas } from '@graphql-tools/merge';
 import {
   AdminFileToWrite,
   BaseGeneratedListTypes,
   KeystoneConfig,
   SerializedFieldMeta,
+  ExtendGraphqlSchema,
 } from '@keystone-next/types';
 import { password, timestamp } from '@keystone-next/fields';
 
-import { AuthConfig, Auth, AuthGqlNames } from './types';
+import { AuthConfig, Auth, AuthGqlNames, AuthTokenTypeConfig } from './types';
 
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
@@ -17,6 +18,63 @@ import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema';
 
 import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';
+
+const getSchemaExtension = ({
+  identityField,
+  listKey,
+  protectIdentities,
+  secretField,
+  gqlNames,
+  initFirstItem,
+  passwordResetLink,
+  magicAuthLink,
+}: {
+  identityField: string;
+  listKey: string;
+  protectIdentities: boolean;
+  secretField: string;
+  gqlNames: AuthGqlNames;
+  initFirstItem?: any;
+  passwordResetLink?: any;
+  magicAuthLink?: AuthTokenTypeConfig;
+}): ExtendGraphqlSchema => (schema, keystone) =>
+  [
+    getBaseAuthSchema({
+      identityField,
+      listKey,
+      protectIdentities,
+      secretField,
+      gqlNames,
+    }),
+    initFirstItem &&
+      getInitFirstItemSchema({
+        listKey,
+        fields: initFirstItem.fields,
+        itemData: initFirstItem.itemData,
+        gqlNames,
+        keystone,
+      }),
+    passwordResetLink &&
+      getPasswordResetSchema({
+        identityField,
+        listKey,
+        protectIdentities,
+        secretField,
+        passwordResetLink,
+        gqlNames,
+      }),
+    magicAuthLink &&
+      getMagicAuthLinkSchema({
+        identityField,
+        listKey,
+        protectIdentities,
+        secretField,
+        magicAuthLink,
+        gqlNames,
+      }),
+  ]
+    .filter(x => x)
+    .reduce((s, extension) => mergeSchemas({ schemas: [s], ...extension }), schema);
 
 /**
  * createAuth function
@@ -90,7 +148,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   const adminPageMiddleware: Auth['ui']['pageMiddleware'] = async ({
     req,
     isValidSession,
-    keystone,
+    system,
     session,
   }) => {
     const pathname = url.parse(req.url!).pathname!;
@@ -106,7 +164,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     }
 
     if (!session && initFirstItem) {
-      const { count } = await keystone.keystone.lists[listKey].adapter.itemsQuery(
+      const { count } = await system.keystone.lists[listKey].adapter.itemsQuery(
         {},
         {
           meta: true,
@@ -139,7 +197,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const additionalFiles: Auth['ui']['getAdditionalFiles'] = keystone => {
+  const additionalFiles: Auth['ui']['getAdditionalFiles'] = system => {
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
@@ -150,7 +208,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     if (initFirstItem) {
       const fields: Record<string, SerializedFieldMeta> = {};
       for (const fieldPath of initFirstItem.fields) {
-        fields[fieldPath] = keystone.adminMeta.lists[listKey].fields[fieldPath];
+        fields[fieldPath] = system.adminMeta.lists[listKey].fields[fieldPath];
       }
 
       filesToWrite.push({
@@ -175,52 +233,16 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * Must be added to the extendGraphqlSchema config. Can be composed.
    */
-  let extendGraphqlSchema = getBaseAuthSchema({
+  const extendGraphqlSchema = getSchemaExtension({
     identityField,
     listKey,
     protectIdentities,
     secretField,
     gqlNames,
+    initFirstItem,
+    passwordResetLink,
+    magicAuthLink,
   });
-
-  // Wrap extendGraphqlSchema to add optional functionality
-  if (initFirstItem) {
-    const existingExtendGraphqlSchema = extendGraphqlSchema;
-    const extension = getInitFirstItemSchema({
-      listKey: listKey,
-      fields: initFirstItem.fields,
-      itemData: initFirstItem.itemData,
-      gqlNames,
-    });
-    extendGraphqlSchema = (schema, keystone) =>
-      extension(existingExtendGraphqlSchema(schema, keystone), keystone);
-  }
-  if (passwordResetLink) {
-    const existingExtendGraphqlSchema = extendGraphqlSchema;
-    const extension = getPasswordResetSchema({
-      identityField,
-      listKey,
-      protectIdentities,
-      secretField,
-      passwordResetLink,
-      gqlNames,
-    });
-    extendGraphqlSchema = (schema, keystone) =>
-      extension(existingExtendGraphqlSchema(schema, keystone), keystone);
-  }
-  if (magicAuthLink) {
-    const existingExtendGraphqlSchema = extendGraphqlSchema;
-    const extension = getMagicAuthLinkSchema({
-      identityField,
-      listKey,
-      protectIdentities,
-      secretField,
-      magicAuthLink,
-      gqlNames,
-    });
-    extendGraphqlSchema = (schema, keystone) =>
-      extension(existingExtendGraphqlSchema(schema, keystone), keystone);
-  }
 
   /**
    * validateConfig

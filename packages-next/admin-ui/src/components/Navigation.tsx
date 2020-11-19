@@ -85,6 +85,7 @@ const AuthenticatedItem = ({ item }: { item: { id: string; label: string } }) =>
         )}
       >
         <Stack gap="medium" padding="large" dividers="between">
+          {/* FIXME: Use config.graphql.path */}
           <PopoverLink target="_blank" href="/api/graphql">
             API Explorer
           </PopoverLink>

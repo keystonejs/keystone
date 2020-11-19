@@ -66,7 +66,7 @@ async function writeAdminFilesToDisk(
   ).flat();
 }
 
-export const generateAdminUI = async (keystone: KeystoneSystem, cwd: string) => {
+export const generateAdminUI = async (system: KeystoneSystem, cwd: string) => {
   const projectAdminPath = Path.resolve(cwd, './.keystone/admin');
 
   await fs.remove(projectAdminPath);
@@ -75,12 +75,12 @@ export const generateAdminUI = async (keystone: KeystoneSystem, cwd: string) => 
   const filesWritten = new Set(
     [
       ...(await writeAdminFilesToDisk(
-        keystone.config.ui?.getAdditionalFiles?.map(x => x(keystone)) ?? [],
+        system.config.ui?.getAdditionalFiles?.map(x => x(system)) ?? [],
         projectAdminPath
       )),
     ].map(x => Path.normalize(x))
   );
-  const baseFiles = writeAdminFiles(keystone, configFile, projectAdminPath).filter(x => {
+  const baseFiles = writeAdminFiles(system, configFile, projectAdminPath).filter(x => {
     if (filesWritten.has(Path.normalize(x.outputPath))) {
       return false;
     }

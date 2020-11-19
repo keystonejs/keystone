@@ -1,4 +1,3 @@
-import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
 import { AuthGqlNames } from '../types';
 
 import { attemptAuthentication } from '../lib/attemptAuthentication';
@@ -17,7 +16,7 @@ export function getBaseAuthSchema({
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
 }) {
-  return graphQLSchemaExtension({
+  return {
     typeDefs: `
       # Auth
       union AuthenticatedItem = ${listKey}
@@ -51,10 +50,12 @@ export function getBaseAuthSchema({
           const list = ctx.keystone.lists[listKey];
           const result = await attemptAuthentication(
             list,
+            listKey,
             identityField,
             secretField,
             protectIdentities,
-            args
+            args,
+            ctx
           );
 
           if (!result.success) {
@@ -68,41 +69,32 @@ export function getBaseAuthSchema({
             return { code: result.code, message };
           }
 
-          const sessionToken = await ctx.startSession({ listKey: 'User', itemId: result.item.id });
-          return { token: sessionToken, item: result.item };
+          const sessionToken = await ctx.startSession({ listKey, itemId: result.item.id });
+          return { sessionToken, item: result.item };
         },
       },
       Query: {
-        async authenticatedItem(root: any, args: any, ctx: any) {
-          if (typeof ctx.session?.itemId === 'string' && typeof ctx.session.listKey === 'string') {
-            const item = (
-              await ctx.keystone.lists[ctx.session.listKey].adapter.find({
-                id: ctx.session.itemId,
-              })
-            )[0];
-            if (!item) return null;
-            return {
-              ...item,
-              // TODO: Is there a better way of doing this?
-              __typename: ctx.session.listKey,
-            };
+        async authenticatedItem(root: any, args: any, { session, lists }: any) {
+          if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
+            const item = await lists[session.listKey].findOne({ where: { id: session.itemId } });
+            return item || null;
           }
           return null;
         },
       },
       AuthenticatedItem: {
-        __resolveType(rootVal: any) {
-          return rootVal.__typename;
+        __resolveType(rootVal: any, { session }: any) {
+          return session?.listKey;
         },
       },
       // TODO: Is this the preferred approach for this?
       [gqlNames.ItemAuthenticationWithPasswordResult]: {
         __resolveType(rootVal: any) {
-          return rootVal.token
+          return rootVal.sessionToken
             ? gqlNames.ItemAuthenticationWithPasswordSuccess
             : gqlNames.ItemAuthenticationWithPasswordFailure;
         },
       },
     },
-  });
+  };
 }

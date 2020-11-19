@@ -1,4 +1,3 @@
-import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
 import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 
 import { updateAuthToken } from '../lib/updateAuthToken';
@@ -19,7 +18,7 @@ export function getMagicAuthLinkSchema({
   gqlNames: AuthGqlNames;
   magicAuthLink: AuthTokenTypeConfig;
 }) {
-  return graphQLSchemaExtension({
+  return {
     typeDefs: `
       # Magic links
       type Mutation {
@@ -125,5 +124,5 @@ export function getMagicAuthLinkSchema({
         },
       },
     },
-  });
+  };
 }

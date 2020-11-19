@@ -40,12 +40,12 @@ export type KeystoneAdminUIConfig = {
   publicPages?: string[];
   /** The basePath for the Admin UI App */
   path?: string;
-  getAdditionalFiles?: ((keystone: KeystoneSystem) => MaybePromise<AdminFileToWrite[]>)[];
+  getAdditionalFiles?: ((system: KeystoneSystem) => MaybePromise<AdminFileToWrite[]>)[];
   pageMiddleware?: (args: {
     req: IncomingMessage;
     session: any;
     isValidSession: boolean;
-    keystone: KeystoneSystem;
+    system: KeystoneSystem;
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 
@@ -63,6 +63,10 @@ export type KeystoneConfig = {
   };
   session?: () => SessionStrategy<any>;
   ui?: KeystoneAdminUIConfig;
+  server?: {
+    /** Configuration options for the cors middleware. Set to true to core Keystone defaults */
+    cors?: any;
+  };
 } & SchemaConfig;
 
 export type MaybeItemFunction<T> =

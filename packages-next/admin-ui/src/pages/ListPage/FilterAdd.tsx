@@ -62,9 +62,15 @@ export function FilterAdd({ listKey }: { listKey: string }) {
 
   return (
     <Fragment>
-      <Button size="small" {...trigger.props} ref={trigger.ref} onClick={() => setOpen(true)}>
+      <Button
+        tone="active"
+        size="small"
+        {...trigger.props}
+        ref={trigger.ref}
+        onClick={() => setOpen(true)}
+      >
         <Box as="span" marginRight="xsmall">
-          Filter
+          Filter List
         </Box>
         <ChevronDownIcon size="small" />
       </Button>
