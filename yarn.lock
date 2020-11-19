@@ -3002,10 +3002,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.5.4.tgz#de25b5da9f727985a3757fd59b5d028aba75841a"
   integrity sha512-ZpKr+WTb8zsajqgDkvCEWgp6d5eJT6Q63Ng2neTbzBO76Lbe91vX/iVIW9dikq+Fs3yEo+ls4cxeXABD2LtcbQ==
 
-"@preconstruct/cli@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-1.2.0.tgz#67e0f62ec854cb30531f415cb725f9b909695823"
-  integrity sha512-KSLDdkzUwUcSLPuWceK9VUvrXQUG6grXFRPLzL5WANH/yGzB5yghhKkwFK1JIatgqTqtmJMZOn8w0zvgOV9NAw==
+"@preconstruct/cli@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@preconstruct/cli/-/cli-2.0.0.tgz#bface3fb95da6dabc8da6eae60802b6867f3fb72"
+  integrity sha512-PZQtozf3gv6tN7KJg0Tq3xhHx/NZMka24HPMj/E6NJFhfYropyTB7G6M69hEMnW9E3Adz6qTq85PDA1I1M5CMg==
   dependencies:
     "@babel/code-frame" "^7.5.5"
     "@babel/core" "^7.7.7"
@@ -3024,14 +3024,13 @@
     enquirer "^2.3.6"
     estree-walker "^2.0.1"
     fast-deep-equal "^2.0.1"
+    fast-glob "^3.2.4"
     fs-extra "^9.0.1"
-    globby "^11.0.1"
     is-ci "^2.0.0"
     is-reference "^1.2.1"
     jest-worker "^26.3.0"
     magic-string "^0.25.7"
     meow "^7.1.0"
-    micromatch "^4.0.2"
     ms "^2.1.2"
     normalize-path "^3.0.0"
     npm-packlist "^2.1.2"
@@ -23863,10 +23862,10 @@ strip-outer@^1.0.0:
   dependencies:
     escape-string-regexp "^1.0.2"
 
-stripe@^8.121.0:
-  version "8.121.0"
-  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.121.0.tgz#45f073998e3d987647d48a2ec575b78e3ab374c9"
-  integrity sha512-Uswmut57hVdyPrb+EJUTWbrLcTIEL4LS5T6UQZPO5AJNYT0PGHajgY1esQwmV7yVBL+Kgt3y/16zIAY/gAwifg==
+stripe@^8.122.1:
+  version "8.122.1"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.122.1.tgz#1aff52f29b2cd4310028f4bf8e4912ba02b26a1c"
+  integrity sha512-Ab5XkUjLiaiPT6eZaBauf19Gp3Opv3SSfdxWrDFrixcZRb7OmzsGFYyLaHkX8m4/7Og9xTk58JfDa7N61VJgDA==
   dependencies:
     "@types/node" ">=8.1.0"
     qs "^6.6.0"

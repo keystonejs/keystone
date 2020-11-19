@@ -57,7 +57,7 @@
     "@changesets/cli": "^2.11.2",
     "@jest/test-sequencer": "^26.6.3",
     "@manypkg/cli": "^0.16.1",
-    "@preconstruct/cli": "1.2.0",
+    "@preconstruct/cli": "2.0.0",
     "@types/jest": "^26.0.15",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.0",
@@ -176,9 +176,7 @@
       "packages-next/*",
       "design-system/packages/*"
     ],
-    "___experimentalFlags_WILL_CHANGE_IN_PATCH": {
-      "newEntrypoints": true
-    }
+    "distFilenameStrategy": "unscoped-package-name"
   },
   "jest": {
     "setupFilesAfterEnv": [

@@ -36,7 +36,8 @@ const { withAuth } = createAuth({
       // Admin UI (see isAccessAllowed in the admin config below)
       isAdmin: true,
       // Only enabled users can sign in, so we need to set this as well
-      isEnabled: true,
+      // TODO: Come back to this when we review how to restrict signin to valid users
+      // isEnabled: true,
     },
   },
   /* TODO -- complete the UI for these features and enable them
