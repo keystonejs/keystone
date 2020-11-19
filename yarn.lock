@@ -22937,7 +22937,7 @@ slate-drop-or-paste-images@^0.9.1:
     is-url "^1.2.2"
     slate-dev-logger "^0.1.0"
 
-slate-history@^0.58.1:
+slate-history@^0.58.4:
   version "0.58.4"
   resolved "https://registry.yarnpkg.com/slate-history/-/slate-history-0.58.4.tgz#f24f4745f192e8eb16975037536bdc22f6d1c03b"
   integrity sha512-QWmVvB02R+Z+I8sC7Hb+27Zqtm1vDt9kulHjmqRk8ixPp7052S04q4WEjNsk0StrgmEOEd+POvzNGfOYELXitw==
