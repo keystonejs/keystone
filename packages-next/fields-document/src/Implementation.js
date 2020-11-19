@@ -30,10 +30,21 @@ export class DocumentImplementation extends Implementation {
   gqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
-        if (!Array.isArray(item[this.path])) return null;
-        return { document: item[this.path] };
+        if (!Array.isArray(item[this.path]?.document)) return null;
+        return { document: item[this.path]?.document };
       },
     };
+  }
+
+  resolveInput({ resolvedData }) {
+    const data = resolvedData[this.path];
+    if (data === null) {
+      return null;
+    }
+    if (data === undefined) {
+      return undefined;
+    }
+    return { document: data };
   }
 
   gqlUpdateInputFields() {
