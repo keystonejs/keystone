@@ -150,13 +150,16 @@ export function useButtonTokens({
   return tokens;
 }
 
+const state = (cond: boolean | undefined, a: any, b: any) => (cond && a ? a : b);
+
 type ButtonStylesProps = {
-  isDisabled?: boolean;
   isBlock?: boolean;
+  isDisabled?: boolean;
+  isSelected?: boolean;
   tokens: ButtonTokens;
 };
 
-export function useButtonStyles({ isDisabled, isBlock, tokens }: ButtonStylesProps) {
+export function useButtonStyles({ isBlock, isDisabled, isSelected, tokens }: ButtonStylesProps) {
   const baseStyles = {
     alignItems: 'center',
     borderStyle: 'solid',
@@ -176,17 +179,19 @@ export function useButtonStyles({ isDisabled, isBlock, tokens }: ButtonStylesPro
   } as const;
 
   const tokenStyles = {
-    backgroundColor: tokens.background || 'transparent',
-    borderColor: tokens.borderColor || 'transparent',
+    background: state(isSelected, tokens.pressed?.background, tokens.background) || 'transparent',
+    borderColor:
+      state(isSelected, tokens.pressed?.borderColor, tokens.borderColor) || 'transparent',
     borderRadius: tokens.borderRadius,
     borderWidth: tokens.borderWidth,
-    color: tokens.foreground,
+    boxShadow: state(isSelected, tokens.pressed?.shadow, tokens.shadow),
+    color: state(isSelected, tokens.pressed?.foreground, tokens.foreground),
     fontSize: tokens.fontSize,
     fontWeight: tokens.fontWeight,
     height: tokens.height,
     paddingLeft: tokens.paddingX,
     paddingRight: tokens.paddingX,
-    textDecoration: tokens.textDecoration,
+    textDecoration: state(isSelected, tokens.pressed?.textDecoration, tokens.textDecoration),
     transition: tokens.transition,
 
     ':focus': {
@@ -196,13 +201,15 @@ export function useButtonStyles({ isDisabled, isBlock, tokens }: ButtonStylesPro
       color: tokens.focus?.foreground,
       textDecoration: tokens.focus?.textDecoration,
     },
-    ':hover': {
-      background: tokens.hover?.background,
-      borderColor: tokens.hover?.borderColor,
-      boxShadow: tokens.hover?.shadow,
-      color: tokens.hover?.foreground,
-      textDecoration: tokens.hover?.textDecoration,
-    },
+    ':hover': !isSelected
+      ? {
+          background: tokens.hover?.background,
+          borderColor: tokens.hover?.borderColor,
+          boxShadow: tokens.hover?.shadow,
+          color: tokens.hover?.foreground,
+          textDecoration: tokens.hover?.textDecoration,
+        }
+      : undefined,
     ':active': {
       background: tokens.pressed?.background,
       borderColor: tokens.pressed?.borderColor,

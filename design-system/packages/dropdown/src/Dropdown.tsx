@@ -2,7 +2,7 @@
 import React, { useRef, forwardRef, ButtonHTMLAttributes, ReactElement, useEffect } from 'react';
 import { jsx, useForkedRef } from '@keystone-ui/core';
 import { useCollectionFocus } from './useCollectionFocus';
-import { ActionButton, ActionButtonProps } from '@keystone-ui/button';
+import { Button, ButtonProps } from '@keystone-ui/button';
 import { PopoverDialog, usePopover } from '@keystone-ui/popover';
 import { Menu } from './Menu';
 import { ChevronUpIcon } from '@keystone-ui/icons/icons/ChevronUpIcon';
@@ -11,18 +11,16 @@ import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
 // Button
 // ------------------------------
 
-const DropdownButton = forwardRef<any, ActionButtonProps>(
-  (props, ref) => {
-    return (
-      <ActionButton
-        ref={ref}
-        type="button"
-        {...props}
-        iconAfter={props.isSelected ? ChevronUpIcon : ChevronDownIcon}
-      />
-    );
-  }
-);
+const DropdownButton = forwardRef<any, ButtonProps>((props, ref) => {
+  return (
+    <Button
+      ref={ref}
+      type="button"
+      {...props}
+      iconAfter={props.isSelected ? ChevronUpIcon : ChevronDownIcon}
+    />
+  );
+});
 
 // Menu
 // ------------------------------
@@ -42,7 +40,11 @@ type DropdownMenuProps = {
   trigger: string | TriggerRendererType;
 };
 
-export const DropdownMenu: React.FC<DropdownMenuProps> = ({ children, trigger, align = 'left', }) => {
+export const DropdownMenu: React.FC<DropdownMenuProps> = ({
+  children,
+  trigger,
+  align = 'left',
+}) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const internalTriggerRef = useRef<HTMLElement>();
   const { isOpen, setOpen, dialog, trigger: popoverTrigger, arrow } = usePopover({
@@ -81,14 +83,16 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({ children, trigger, a
   const forkedTriggerRef = useForkedRef(internalTriggerRef, popoverTrigger.ref);
   const triggerProps = {
     ref: forkedTriggerRef,
-    onClick: () => setOpen((s) => !s),
+    onClick: () => setOpen(s => !s),
     ...popoverTrigger.props,
   };
   const triggerElement =
     typeof trigger === 'function' ? (
       trigger({ isOpen, triggerProps })
     ) : (
-      <DropdownButton label={trigger} isSelected={isOpen} {...triggerProps} />
+      <DropdownButton isSelected={isOpen} {...triggerProps}>
+        {trigger}
+      </DropdownButton>
     );
 
   return (
