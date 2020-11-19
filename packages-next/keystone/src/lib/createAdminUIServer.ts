@@ -45,7 +45,7 @@ export const createAdminUIServer = async (config: KeystoneConfig, system: Keysto
   if (config.server?.cors) {
     // Setting config.server.cors = true will provide backwards compatible defaults
     // Otherwise, the user can provide their own config object to use
-    let corsConfig =
+    const corsConfig =
       typeof config.server.cors === 'boolean'
         ? { origin: true, credentials: true }
         : config.server.cors;
