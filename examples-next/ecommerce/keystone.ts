@@ -41,6 +41,12 @@ const { withAuth } = createAuth({
 
 export default withAuth(
   config({
+    server: {
+      cors: {
+        origin: ['http://localhost:2223'],
+        credentials: true
+      }
+    },
     db: {
       adapter: 'mongoose',
       url: databaseUrl,
