@@ -4,9 +4,8 @@ import { KeystoneGraphQLAPI, KeystoneListsAPI } from '@keystone-next/types';
 // To get full List and GraphQL API type support, uncomment them here and use them below
 // import type { KeystoneListsTypeInfo } from './.keystone/schema-types';
 
-import { lists } from './schema';
-
-const permissionsList = lists.Role.fields.filter(field => field.startsWith('can'));
+import type { Permission } from './roleFields';
+export type { Permission } from './roleFields';
 
 export type Session = {
   itemId: string;
@@ -17,14 +16,7 @@ export type Session = {
       id: string;
       name: string;
     } & {
-      // Dynamically create the type:
-      // permissions, is a JS object
-      // const permissions = { create: '...', delete: '...' };
-      // `typeof` creates a TS type from the object
-      // declare const permissions: { create: string; delete: string; };
-      // `keyof` creates a string union (array) from the TS type's
-      // `key in` allows us to loop over each one
-      [key in keyof typeof permissionsList]: boolean;
+      [key in Permission]: boolean;
     };
   };
 };

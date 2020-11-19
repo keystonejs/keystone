@@ -12,21 +12,26 @@ export const isSignedIn = ({ session }: ListAccessArgs) => {
   Permissions are shorthand functions for checking that the current user's role has the specified
   permission boolean set to true
 */
-const generatedPermissions = Object.fromEntries(permissionsList.map(permission => [permission, function ({ session }: ListAccessArgs) {
-  return !!session?.data.role?.[permission];
-}]));
+const generatedPermissions = Object.fromEntries(
+  permissionsList.map(permission => [
+    permission,
+    function ({ session }: ListAccessArgs) {
+      return !!session?.data.role?.[permission];
+    },
+  ])
+);
 
 export const permissions = {
   // We create a permission for each can* field on the Role type
   ...generatedPermissions,
   // we can also add additional permissions as we need them
-  isAwesome({ session }) {
-    if (session.name?.includes('wes') || session.name?.includes('jed')) {
+  isAwesome({ session }: ListAccessArgs) {
+    if (session?.data.name?.includes('wes') || session?.data.name?.includes('jed')) {
       // they are awesome, let them have access
       return true;
     }
     return false; // not awesome, no access
-  }
+  },
 };
 
 /*
@@ -34,26 +39,13 @@ export const permissions = {
   all or no items are available) or a set of filters that limit the available items
 */
 export const rules = {
-  canOrder: ({ session }) => {
-    if(!session) return false; // not signed in
+  canOrder: ({ session }: ListAccessArgs) => {
+    if (!session) return false; // not signed in
     if (permissions.canManageCart(session)) return true; // if they have the permission
     // otherwise we only show them cart items that they own
     return {
-      user: { id: session.itemId }
+      user: { id: session.itemId },
     };
-
-  },
-  canManageProducts: ({ session }: ListAccessArgs) => {
-    if (!session) {
-      // No session? No Products
-      return false;
-    } else if (session.data.role?.canManageAllProducts) {
-      // Can manage products? go for it
-      return true;
-    } else {
-      // Can only manage their own products
-      return { author: { id: session.itemId } };
-    }
   },
   canReadUsers: ({ session }: ListAccessArgs) => {
     if (!session) {
@@ -71,12 +63,19 @@ export const rules = {
     if (!session) {
       // No session? No people.
       return false;
-    } else if (session.data.role?.canEditOtherPeople) {
+    } else if (session.data.role?.canManageUsers) {
       // Can update everyone
       return true;
     } else {
       // Can update yourself
       return { id: session.itemId };
+    }
+  },
+  canReadProducts: ({ session }: ListAccessArgs) => {
+    if (session?.data.role?.canManageProducts) {
+      return true;
+    } else {
+      return { status: 'AVAILABLE' };
     }
   },
 };

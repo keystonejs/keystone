@@ -1,11 +1,11 @@
 // @ts-ignore
 import { getItem, getItems, deleteItems } from '@keystonejs/server-side-graphql-client';
 import { createSchema, list, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
-import { text, relationship, password, select, virtual, integer, checkbox } from '@keystone-next/fields';
+import { text, relationship, password, select, virtual, integer } from '@keystone-next/fields';
 import { cloudinaryImage } from '@keystone-next/cloudinary';
-import type { ListsAPI, AccessControl } from './types';
+import type { ListsAPI } from './types';
 import { permissions, isSignedIn, rules } from './access';
-import { roleFields } from './roleFields';
+import { rolePermissions } from './roleFields';
 
 const cloudinary = {
   cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
@@ -30,13 +30,13 @@ export const lists = createSchema({
       create: true,
       // only admins can see the list of users, but people should be able to see themselves
       read: rules.canReadUsers,
-      update: permissions.canSeeOtherUsers,
-      delete: permissions.canSeeOtherUsers,
+      update: rules.canUpdateUsers,
+      delete: permissions.canManageUsers,
     },
     ui: {
       // only admins can create and delete users in the Admin UI
-      hideCreate: args => !permissions.canSeeOtherUsers(args),
-      hideDelete: args => !permissions.canSeeOtherUsers(args),
+      hideCreate: args => !permissions.canManageUsers(args),
+      hideDelete: args => !permissions.canManageUsers(args),
       listView: {
         initialColumns: ['name', 'email'],
       },
@@ -45,6 +45,18 @@ export const lists = createSchema({
       name: text({ isRequired: true }),
       email: text({ isRequired: true, isUnique: true }),
       password: password(),
+      role: relationship({
+        ref: 'Role.assignedTo',
+        access: {
+          create: permissions.canManageUsers,
+          update: permissions.canManageUsers,
+        },
+        ui: {
+          itemView: {
+            fieldMode: args => (permissions.canManageUsers(args) ? 'edit' : 'read'),
+          },
+        },
+      }),
       cart: relationship({
         ref: 'CartItem.user',
         many: true,
@@ -53,30 +65,31 @@ export const lists = createSchema({
           itemView: { fieldMode: 'read' },
         },
       }),
-      role: relationship({
-        ref: 'Role.assignedTo',
+      orders: relationship({
+        ref: 'Order.user',
+        many: true,
         access: {
-          create: permissions.canEditOtherUsers,
-          update: permissions.canEditOtherUsers,
+          create: () => false,
+          read: true,
+          update: () => false,
         },
         ui: {
-          itemView: {
-            fieldMode: args => (permissions.canManageUsers(args) ? 'edit' : 'read'),
-          },
+          createView: { fieldMode: 'hidden' },
+          itemView: { fieldMode: 'read' },
         },
       }),
     },
   }),
   Product: list({
     access: {
-      create: isSignedIn,
-      read: true,
-      update: rules.canManageProducts,
-      delete: rules.canManageProducts,
+      create: permissions.canManageProducts,
+      read: rules.canReadProducts,
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts,
     },
     fields: {
       name: text({ isRequired: true }),
-      permissions: select({
+      status: select({
         options: [
           { label: 'Draft', value: 'DRAFT' },
           { label: 'Available', value: 'AVAILABLE' },
@@ -100,15 +113,14 @@ export const lists = createSchema({
           inlineEdit: { fields: ['altText'] },
         },
       }),
-      author: relationship({ ref: 'User' }),
     },
   }),
   ProductImage: list({
     access: {
-      create: isSignedIn,
+      create: permissions.canManageProducts,
       read: true,
-      update: rules.canManageProducts,
-      delete: rules.canManageProducts,
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts,
     },
     ui: {
       isHidden: true,
@@ -156,12 +168,14 @@ export const lists = createSchema({
   }),
   Order: list({
     access: {
-      create: isSignedIn,
+      create: () => false,
       read: rules.canOrder,
-      update: rules.canOrder,
-      delete: rules.canOrder,
+      update: () => false,
+      delete: () => false,
     },
     ui: {
+      hideCreate: true,
+      hideDelete: true,
       listView: { initialColumns: ['label', 'user', 'items'] },
     },
     fields: {
@@ -170,20 +184,27 @@ export const lists = createSchema({
         resolver: item => formatMoney(item.total),
       }),
       total: integer(),
-      items: relationship({ ref: 'OrderItem', many: true }),
-      user: relationship({ ref: 'User' }),
+      items: relationship({ ref: 'OrderItem.order', many: true }),
+      user: relationship({ ref: 'User.orders' }),
       charge: text(),
     },
   }),
   OrderItem: list({
     access: {
-      create: isSignedIn,
+      create: () => false,
       read: rules.canOrder,
-      update: rules.canOrder,
-      delete: rules.canOrder,
+      update: () => false,
+      delete: () => false,
+    },
+    ui: {
+      hideCreate: true,
+      hideDelete: true,
+      listView: { initialColumns: ['name', 'price', 'quantity'] },
     },
     fields: {
       name: text({ isRequired: true }),
+      order: relationship({ ref: 'Order.items' }),
+      user: relationship({ ref: 'User' }),
       description: text({ ui: { displayMode: 'textarea' } }),
       price: integer(),
       quantity: integer({ isRequired: true }),
@@ -211,7 +232,20 @@ export const lists = createSchema({
         defaultFieldMode: args => (permissions.canManageRoles(args) ? 'edit' : 'read'),
       },
     },
-    fields: roleFields }),
+    fields: {
+      /* The name of the role */
+      name: text({ isRequired: true }),
+      ...rolePermissions,
+      /* This list of People assigned to this role */
+      assignedTo: relationship({
+        ref: 'User.role',
+        many: true,
+        ui: {
+          itemView: { fieldMode: 'read' },
+        },
+      }),
+    },
+  }),
 });
 
 export const extendGraphqlSchema = graphQLSchemaExtension({
@@ -271,6 +305,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
             price: cartItem.product.price,
             quantity: cartItem.quantity,
             image: { connect: { id: cartItem.product.image.id } },
+            user: { connect: { id: userId } },
           };
           return orderItem;
         });

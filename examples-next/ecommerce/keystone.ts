@@ -26,7 +26,12 @@ const { withAuth } = createAuth({
   initFirstItem: {
     fields: ['name', 'email', 'password'],
     itemData: {
-      permissions: 'ADMIN',
+      role: {
+        create: {
+          name: 'Admin Role',
+          ...Object.fromEntries(permissionsList.map(i => [i, true])),
+        },
+      },
     },
   },
 });
@@ -54,5 +59,3 @@ export default withAuth(
     }),
   })
 );
-
-
