@@ -12,6 +12,7 @@
     "@keystone-ui/core": "^1.0.2",
     "@keystone-ui/dropdown": "^0.0.1",
     "@keystone-ui/fields": "^1.0.1",
+    "@keystone-ui/icons": "^1.0.0",
     "@keystone-ui/loading": "^1.0.0",
     "@keystone-ui/modals": "^1.0.2",
     "@keystone-ui/notice": "^1.0.1",
