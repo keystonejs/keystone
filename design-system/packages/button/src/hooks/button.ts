@@ -47,6 +47,7 @@ export type ButtonTokens = {
   fontSize?: number | string;
   fontWeight?: number;
   height?: number;
+  iconSpacing?: number;
   paddingX?: number;
   transition?: string;
   focus: ButtonStateTokens;
@@ -135,6 +136,7 @@ export function useButtonTokens({
     fontSize: size.fontSize,
     fontWeight: typography.fontWeight.medium,
     height: size.height,
+    iconSpacing: size.gap,
     paddingX: size.paddingX,
     transition: `
       background-color ${animation.duration100},

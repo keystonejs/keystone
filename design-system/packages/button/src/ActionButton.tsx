@@ -4,7 +4,6 @@ import { ComponentType, Fragment, HTMLAttributes, useContext } from 'react';
 import { jsx, forwardRefWithAs, VisuallyHidden } from '@keystone-ui/core';
 import { IconProps } from '@keystone-ui/icons';
 import { ButtonContext } from './context';
-import { useIconBeforeStyles, useIconAfterStyles } from './hooks/actionButton';
 
 export type ActionButtonProps = {
   /** An icon only, where the label is visible exclusively to screen readers. */
@@ -38,6 +37,7 @@ export const ActionButton = forwardRefWithAs<'button', ActionButtonProps>(
     ref
   ) => {
     const { useButtonStyles, useButtonTokens, defaults } = useContext(ButtonContext);
+
     const buttonTokens = useButtonTokens({
       size: defaults.size,
       tone: defaults.tone,
@@ -56,23 +56,14 @@ export const ActionButton = forwardRefWithAs<'button', ActionButtonProps>(
       </Fragment>
     ) : (
       <Fragment>
-        {IconBefore && (
-          <IconBefore css={useIconBeforeStyles()} size="small" />
-        )}
+        {IconBefore && <IconBefore css={{ marginRight: buttonTokens.iconSpacing }} size="small" />}
         <span>{label}</span>
-        {IconAfter && (
-          <IconAfter css={useIconAfterStyles()} size="small" />
-        )}
+        {IconAfter && <IconAfter css={{ marginLeft: buttonTokens.iconSpacing }} size="small" />}
       </Fragment>
     );
 
     return (
-      <Tag
-        aria-pressed={isSelected}
-        ref={ref}
-        css={buttonStyles}
-        {...props}
-      >
+      <Tag aria-pressed={isSelected} ref={ref} css={buttonStyles} {...props}>
         {children}
       </Tag>
     );
