@@ -49,11 +49,8 @@ export class DocumentImplementation extends Implementation {
 
 const CommonDocumentInterface = superclass =>
   class extends superclass {
-    getQueryConditions(dbPath) {
-      return {
-        ...this.equalityConditions(dbPath),
-        ...this.inConditions(dbPath),
-      };
+    getQueryConditions() {
+      return {};
     }
   };
 

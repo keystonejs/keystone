@@ -9,7 +9,7 @@ import {
   updateItem,
 } from '@keystonejs/server-side-graphql-client';
 
-const testModules = globby.sync(`packages/**/src/**/test-fixtures.js`, {
+const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.js`, {
   absolute: true,
 });
 testModules.push(path.resolve('packages/fields/tests/test-fixtures.js'));
@@ -111,7 +111,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                         returnFields,
                       });
                       expect(data).not.toBe(null);
-                      expect(subfieldName ? data[fieldName][subfieldName] : data[fieldName]).toBe(
+                      expect(
+                        subfieldName ? data[fieldName][subfieldName] : data[fieldName]
+                      ).toEqual(
                         createReturnedValue ? createReturnedValue : exampleValue(matrixValue)
                       );
                     })
@@ -131,7 +133,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                         returnFields,
                       });
                       expect(data).not.toBe(null);
-                      expect(subfieldName ? data[fieldName][subfieldName] : data[fieldName]).toBe(
+                      expect(
+                        subfieldName ? data[fieldName][subfieldName] : data[fieldName]
+                      ).toEqual(
                         subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
                       );
                     })
@@ -155,7 +159,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                           returnFields,
                         });
                         expect(data).not.toBe(null);
-                        expect(subfieldName ? data[fieldName][subfieldName] : data[fieldName]).toBe(
+                        expect(
+                          subfieldName ? data[fieldName][subfieldName] : data[fieldName]
+                        ).toEqual(
                           updateReturnedValue ? updateReturnedValue : exampleValue2(matrixValue)
                         );
                       })
@@ -196,7 +202,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                         });
                         expect(data).not.toBe(null);
                         expect(data.name).toBe('Updated value');
-                        expect(subfieldName ? data[fieldName][subfieldName] : data[fieldName]).toBe(
+                        expect(
+                          subfieldName ? data[fieldName][subfieldName] : data[fieldName]
+                        ).toEqual(
                           subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
                         );
                       })
@@ -218,7 +226,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       });
                       expect(data).not.toBe(null);
                       expect(data.name).toBe(items[0].name);
-                      expect(subfieldName ? data[fieldName][subfieldName] : data[fieldName]).toBe(
+                      expect(
+                        subfieldName ? data[fieldName][subfieldName] : data[fieldName]
+                      ).toEqual(
                         subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
                       );
 
