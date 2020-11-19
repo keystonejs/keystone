@@ -55,7 +55,7 @@ function HeroPreview(props: HeroPreviewProps) {
     <div>
       <div
         css={{
-          backgroundColor: '#718096',
+          backgroundColor: 'white',
           backgroundImage: `url(${props.imageSrc})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',

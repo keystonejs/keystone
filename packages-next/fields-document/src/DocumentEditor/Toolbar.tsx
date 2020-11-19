@@ -174,7 +174,7 @@ const Headings = () => {
       </Button>
       {showHeadings ? (
         <Hoverable styles={{ left: '100%' }}>
-          {[1, 2, 3, 4, 5, 6].map(hNum => {
+          {[1, 2, 3, 4].map(hNum => {
             let [node] = Editor.nodes(editor, {
               match: n => n.type === 'heading' && n.level === hNum,
             });
