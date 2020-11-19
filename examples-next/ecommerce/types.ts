@@ -4,8 +4,8 @@ import { KeystoneGraphQLAPI, KeystoneListsAPI } from '@keystone-next/types';
 // To get full List and GraphQL API type support, uncomment them here and use them below
 // import type { KeystoneListsTypeInfo } from './.keystone/schema-types';
 
-import type { Permission } from './roleFields';
-export type { Permission } from './roleFields';
+import type { Permission } from './fields';
+export type { Permission } from './fields';
 
 export type Session = {
   itemId: string;
