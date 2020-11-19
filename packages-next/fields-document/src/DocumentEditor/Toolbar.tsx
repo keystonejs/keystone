@@ -49,20 +49,6 @@ export const Toolbar = () => {
       >
         + Columns
       </Button>
-      {/*
-        <Button
-          isDisabled={
-            isInsideAccessBoundary(editor) ||
-            isInsidePanel(editor) ||
-            isInsideQuote(editor)
-          }
-          onMouseDown={(event) => {
-            event.preventDefault();
-            insertAccessBoundary(editor);
-          }}
-        >
-          + Access Boundary
-        </Button> */}
       <Button
         isDisabled={!shouldInsertBlock}
         onMouseDown={event => {
