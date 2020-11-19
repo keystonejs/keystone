@@ -101,7 +101,7 @@ export const lists = createSchema({
       }),
       description: text({ ui: { displayMode: 'textarea' } }),
       price: integer(),
-      image: relationship({
+      photo: relationship({
         ref: 'ProductImage.product',
         ui: {
           createView: { fieldMode: 'hidden' },
@@ -112,6 +112,9 @@ export const lists = createSchema({
         },
       }),
     },
+    ui: {
+      listView: { initialColumns: ['name', 'status'] },
+    }
   }),
   ProductImage: list({
     access: {
@@ -124,7 +127,7 @@ export const lists = createSchema({
       isHidden: true,
     },
     fields: {
-      product: relationship({ ref: 'Product.image' }),
+      product: relationship({ ref: 'Product.photo' }),
       image: cloudinaryImage({
         cloudinary,
         label: 'Source',

@@ -2,6 +2,7 @@ export const products = [
   {
     name: 'Yeti Hondo',
     description: 'soo nice',
+    status: 'AVAILABLE',
     price: 3423,
     image: {
       id: '5dfbed262849d7961377c2c0',
@@ -17,7 +18,7 @@ export const products = [
         height: 457,
         format: 'jpg',
         resource_type: 'image',
-        created_at: '2019-12-19T21:35:35Z',
+        created_at: '2020-12-19T21:35:35Z',
         tags: [],
         bytes: 27871,
         type: 'upload',
@@ -32,14 +33,15 @@ export const products = [
     },
     // createdBy: null,
     // updatedBy: null,
-    // updatedAt_utc: '2019-12-19T21:35:35.739Z',
+    // updatedAt_utc: '2020-12-19T21:35:35.739Z',
     // updatedAt_offset: '+00:00',
-    // createdAt_utc: '2019-12-19T21:35:35.739Z',
+    // createdAt_utc: '2020-12-19T21:35:35.739Z',
     // createdAt_offset: '+00:00',
   },
   {
     name: 'Airmax 270',
     description: 'Great shoes!',
+    status: 'AVAILABLE',
     price: 5234,
     image: {
       id: '5e2a13f0689b2835ae71d1a5',
@@ -78,6 +80,7 @@ export const products = [
   {
     name: 'KITH Hoodie',
     description: 'Love this hoodie',
+    status: 'AVAILABLE',
     price: 23562,
     image: {
       id: '5e2a13ff689b2835ae71d1a7',
@@ -116,8 +119,9 @@ export const products = [
   {
     name: 'Fanorak',
     description: 'Super hip. Comes in a number of colours',
+    status: 'AVAILABLE',
     price: 252342,
-    image: {
+    photo: {
       id: '5e2a1413689b2835ae71d1a9',
       filename: 'TNF-fanorak.png',
       originalFilename: 'TNF-fanorak.png',
@@ -154,6 +158,7 @@ export const products = [
   {
     name: 'Nike Vapormax',
     description: 'Kind of squeaky on some floors',
+    status: 'AVAILABLE',
     price: 83456,
     image: {
       id: '5e2a142c689b2835ae71d1ab',
@@ -192,6 +197,7 @@ export const products = [
   {
     name: 'Yeti Cooler',
     description: 'Who spends this much on a cooler?!',
+    status: 'AVAILABLE',
     price: 75654,
     image: {
       id: '5e2a143f689b2835ae71d1ad',
@@ -230,6 +236,7 @@ export const products = [
   {
     name: 'Naked and Famous Denim',
     description: 'Japanese Denim, made in Canada',
+    status: 'AVAILABLE',
     price: 10924,
     image: {
       id: '5e2a145d689b2835ae71d1af',
@@ -268,6 +275,7 @@ export const products = [
   {
     name: 'Rimowa Luggage',
     description: 'S T E A L T H',
+    status: 'AVAILABLE',
     price: 47734,
     image: {
       id: '5e2a147b689b2835ae71d1b1',
@@ -306,6 +314,7 @@ export const products = [
   {
     name: 'Black Hole ',
     description: 'Outdoorsy ',
+    status: 'AVAILABLE',
     price: 4534,
     image: {
       id: '5e2a149b689b2835ae71d1b3',
@@ -344,6 +353,7 @@ export const products = [
   {
     name: 'Nudie Belt',
     description: 'Sick design',
+    status: 'AVAILABLE',
     price: 5234,
     image: {
       id: '5e2a14b1689b2835ae71d1b5',
@@ -382,6 +392,7 @@ export const products = [
   {
     name: 'Goose',
     description: 'Keep warm.',
+    status: 'AVAILABLE',
     price: 74544,
     image: {
       id: '5e2a14bf689b2835ae71d1b7',
@@ -420,6 +431,7 @@ export const products = [
   {
     name: 'Ultraboost',
     description: 'blacked out',
+    status: 'AVAILABLE',
     price: 6344,
     image: {
       id: '5e2a14cc689b2835ae71d1b9',
