@@ -6,7 +6,7 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 // @ts-ignore
 import { formatError } from '@keystonejs/keystone/lib/Keystone/format-error';
-import type { KeystoneSystem } from '@keystone-next/types';
+import type { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
 
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -36,14 +36,14 @@ const addApolloServer = ({ server, system }: { server: any; system: KeystoneSyst
   });
   // FIXME: Support custom API path via config.graphql.path.
   // Note: Core keystone uses '/admin/api' as the default.
-  apolloServer.applyMiddleware({ app: server, path: '/api/graphql' });
+  apolloServer.applyMiddleware({ app: server, path: '/api/graphql', cors: false });
 };
 
-export const createAdminUIServer = async (system: KeystoneSystem) => {
+export const createAdminUIServer = async (config: KeystoneConfig, system: KeystoneSystem) => {
   const server = express();
 
   // TODO: allow cors to be configured
-  server.use(cors({ origin: true, credentials: true }));
+  server.use(cors({ origin: true, credentials: true, ...(config.server?.cors || {}) }));
 
   console.log('✨ Preparing Next.js app');
   const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
