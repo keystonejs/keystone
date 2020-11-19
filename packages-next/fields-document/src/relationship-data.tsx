@@ -30,7 +30,7 @@ export function addRelationshipData(
       if (node.type === 'relationship') {
         const relationship = relationships[node.relationship as string];
         const id = (node.data as any)?.id;
-        if (id !== null && relationship) {
+        if (id != null && relationship) {
           let val = await graphQLAPI.run({
             query: `query($id: ID!) {item:${relationship.listKey}(where: {id:$id}) {label:${relationship.labelField}}}`,
             variables: { id },
