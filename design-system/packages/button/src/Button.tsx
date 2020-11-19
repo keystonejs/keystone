@@ -36,18 +36,18 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
     ref
   ) => {
     const { useButtonStyles, useButtonTokens, defaults } = useContext(ButtonContext);
-    const tokens = useButtonTokens({
+    const buttonTokens = useButtonTokens({
       size: size || defaults.size,
       tone: tone || defaults.tone,
       weight: weight || defaults.weight,
     });
-    const styles = useButtonStyles({
+    const buttonStyles = useButtonStyles({
       isDisabled,
-      tokens,
+      tokens: buttonTokens,
     });
 
     return (
-      <Tag type={Tag === 'button' ? 'button' : undefined} css={styles} ref={ref} {...otherProps}>
+      <Tag type={Tag === 'button' ? 'button' : undefined} css={buttonStyles} ref={ref} {...otherProps}>
         <span css={isLoading ? { opacity: 0 } : null}>{children}</span>
         {isLoading && (
           <span css={loadingContainerStyles}>
