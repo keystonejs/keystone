@@ -165,7 +165,8 @@ const Headings = () => {
       }}
     >
       <Button
-        onClick={() => {
+        onMouseDown={event => {
+          event.preventDefault();
           updateShowHeadings(!showHeadings);
         }}
       >
@@ -192,6 +193,7 @@ const Headings = () => {
                         }
                       : { type: 'heading', level: hNum }
                   );
+
                   updateShowHeadings(false);
                 }}
               >
