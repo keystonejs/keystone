@@ -1,0 +1,28 @@
+{
+  "name": "@keystone-ui/date-fields",
+  "description": "Date inputs and pickers allow users to select a single date or a range of dates.",
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "dist/date-fields.cjs.js",
+  "module": "dist/date-fields.esm.js",
+  "peerDependencies": {
+    "react": "^16.14.0"
+  },
+  "devDependencies": {
+    "react": "^16.14.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.12.5",
+    "@keystone-ui/core": "^1.0.2",
+    "@keystone-ui/fields": "^1.0.1",
+    "@keystone-ui/icons": "^1.0.0",
+    "@keystone-ui/popover": "^1.0.0",
+    "date-fns": "^2.16.1",
+    "react-day-picker": "^8.0.0-alpha.45",
+    "react-focus-lock": "^2.5.0"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/date-fields"
+}
