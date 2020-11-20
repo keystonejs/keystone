@@ -265,7 +265,7 @@ export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBloc
             Transforms.insertNodes(editor, initialValue);
           }}
         >
-          + {key.charAt(0).toUpperCase() + key.slice(1)}
+          + {blockComponents[key].label}
         </Button>
       ))}
     </span>
@@ -346,6 +346,7 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
             fontWeight: 600,
           }}
         >
+          <div css={{ padding: 4 }}>{componentBlock.label}</div>
           <Button
             css={{ float: 'right' }}
             onMouseDown={event => {
@@ -369,10 +370,6 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
               <Spacer />
             </div>
           ) : null}
-          <div css={{ padding: 4 }}>
-            {(element.component as string).charAt(0).toUpperCase() +
-              (element.component as string).slice(1)}
-          </div>
         </div>
       </NotEditable>
       {editMode && (

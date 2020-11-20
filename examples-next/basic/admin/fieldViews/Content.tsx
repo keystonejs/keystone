@@ -7,6 +7,7 @@ import { ReactNode } from 'react';
 export const componentBlocks = {
   hero: component({
     component: HeroPreview,
+    label: 'Hero',
     props: {
       title: fields.child(),
       content: fields.child(),
@@ -23,10 +24,12 @@ export const componentBlocks = {
     },
   }),
   void: component({
+    label: 'Void',
     component: ({ value }) => <NotEditable>{value}</NotEditable>,
     props: { value: fields.text({ label: 'Value' }) },
   }),
   conditionallyVoid: component({
+    label: 'Conditionally Void',
     component: ({ something }) =>
       something.discriminant ? <NotEditable>Is void</NotEditable> : <div>{something.value}</div>,
     props: {
@@ -37,6 +40,7 @@ export const componentBlocks = {
     },
   }),
   featuredAuthors: component({
+    label: 'Featured Authors',
     component: props => {
       return (
         <div>
@@ -48,7 +52,7 @@ export const componentBlocks = {
                   <li>
                     {author.label}
                     <ul>
-                      {author.data.posts.map(post => {
+                      {author.data.posts.map((post: { title: string | null }) => {
                         return <li>{post.title}</li>;
                       })}
                     </ul>

@@ -168,6 +168,7 @@ export const fields = {
 export type ComponentBlock = {
   component: (props: any) => ReactElement | null;
   props: Record<string, ComponentPropField>;
+  label: string;
 };
 
 type DiscriminantToString<Discriminant extends string | boolean> = Discriminant extends boolean
@@ -223,9 +224,9 @@ export function component<
     }
   ) => ReactElement | null;
   props: PropsOption;
-  icon?: ReactElement;
-  insertLabel?: string;
-  position?: 'toolbar' | 'insert-menu';
+  label: string;
+  // icon?: ReactElement;
+  // position?: 'toolbar' | 'insert-menu';
 }): ComponentBlock {
   return options;
 }
