@@ -77,7 +77,8 @@ const ClearButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
 				justifyContent: 'center',
 				outline: 0,
 				padding: 0,
-				right: size.indicatorBoxSize, // TODO ? sizes.medium.boxSize,
+				right: '6px', // TODO ? sizes.medium.boxSize,
+				top: '6px', // TODO - magic number
 
 				// No focus styles because this button is not focusable
 				':hover': {

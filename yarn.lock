@@ -21166,6 +21166,13 @@ react-day-picker@^8.0.0-alpha.45:
   resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.0.0-alpha.45.tgz#5933a49a9b305d58d4a74c5f8f6f6366d1be5516"
   integrity sha512-iZFbLMpXzvMSa9xF4WwChimJljs+qsZb7utpMJt3gfxZEMXYXr3SIGxdA31GKhD5rtYwHMEGTVqg2KuovoF6xQ==
 
+"react-day-picker@npm:react-day-picker@^7.4.8":
+  version "7.4.8"
+  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-7.4.8.tgz#675625240d3fae1b41c0a9d5177c968c8517c1d4"
+  integrity sha512-pp0hnxFVoRuBQcRdR1Hofw4CQtOCGVmzCNrscyvS0Q8NEc+UiYLEDqE5dk37bf0leSnBW4lheIt0CKKhuKzDVw==
+  dependencies:
+    prop-types "^15.6.2"
+
 react-dev-utils@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-4.2.3.tgz#5b42d9ea58d5e9e017a2f57a40a8af408a3a46fb"
