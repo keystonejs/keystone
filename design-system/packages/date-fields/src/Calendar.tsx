@@ -1,15 +1,13 @@
 /** @jsx jsx */
 
 import { useMemo } from 'react';
-import { DayPicker } from 'react-day-picker';
-// todo
-type DayPickerProps = any;
+import DayPicker, { DayPickerProps } from 'react-day-picker';
 import { jsx, useTheme } from '@keystone-ui/core';
 import { getContrastText } from './utils/getContrastText';
 import { hexToRgb } from './utils/hexToRgb';
 
 export const Calendar = ({ modifiers, ...props }: DayPickerProps) => {
-  const styles = getCalendarStyles();
+  const styles = useCalendarStyles();
   const indexOfMonday = 1;
   const augmentedModifiers = useMemo(
     () => ({
@@ -33,7 +31,7 @@ export const Calendar = ({ modifiers, ...props }: DayPickerProps) => {
 // Styles
 // ------------------------------
 
-function getCalendarStyles() {
+const useCalendarStyles = () => {
 	const { colors, palette } = useTheme();
   const cellSize = 40; // theme.sizing.base;
   const navButtonSize = 24; // theme.sizing.xsmall;

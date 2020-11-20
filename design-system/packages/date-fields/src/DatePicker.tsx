@@ -63,6 +63,8 @@ export const DatePicker = ({
         ref={trigger.ref}
         {...props}
         {...trigger.props}
+        // todo - style is a magic number
+        style={{ minWidth: 200 }}
       >
         {formattedDate || 'dd/mm/yyyy'}
       </InputButton>
