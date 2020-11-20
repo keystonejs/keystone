@@ -86,6 +86,7 @@ export const Navigation = () => {
       <Section label="Components">
         <NavItem href="/components/button">Button</NavItem>
         <NavItem href="/components/fields">Fields</NavItem>
+        <NavItem href="/components/date-fields">Date Fields</NavItem>
         <NavItem href="/components/notice">Notice</NavItem>
         <NavItem href="/components/loading">Loading</NavItem>
         <NavItem href="/components/popover">Popover</NavItem>
