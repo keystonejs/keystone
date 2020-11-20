@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@arch-ui/theme": "^0.0.11",
-    "@emotion/core": "^10.1.1",
-    "@emotion/styled": "^10.0.27"
+    "@emotion/core": "^11.0.0",
+    "@emotion/styled": "^11.0.0"
   },
   "module": "dist/alert.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/alert"

@@ -17,7 +17,7 @@
     "@arch-ui/lozenge": "^0.0.17",
     "@arch-ui/theme": "^0.0.11",
     "@babel/runtime": "^7.12.5",
-    "@emotion/core": "^10.1.1",
+    "@emotion/core": "^11.0.0",
     "@iframely/embed.js": "^1.3.1",
     "@keystonejs/adapter-knex": "^12.0.0",
     "@keystonejs/adapter-mongoose": "^10.0.1",

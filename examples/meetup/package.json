@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.2.5",
-    "@emotion/core": "^10.1.1",
+    "@emotion/core": "^11.0.0",
     "@keystonejs/adapter-mongoose": "^10.0.1",
     "@keystonejs/app-admin-ui": "^7.3.9",
     "@keystonejs/app-graphql": "^6.1.3",

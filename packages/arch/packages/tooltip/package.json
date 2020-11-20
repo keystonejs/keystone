@@ -17,8 +17,8 @@
     "@arch-ui/modal-utils": "^1.0.13",
     "@arch-ui/theme": "^0.0.11",
     "@babel/runtime": "^7.12.5",
-    "@emotion/core": "^10.1.1",
-    "@emotion/styled": "^10.0.27",
+    "@emotion/core": "^11.0.0",
+    "@emotion/styled": "^11.0.0",
     "@popperjs/core": "^2.5.4",
     "flushable": "^1.0.0",
     "react-popper": "^2.2.4"
