@@ -31,15 +31,3 @@ return (
   />
 );
 ```
-
-## Range Picker
-
-The date range picker functions much like the single date picker but instead of
-choosing just one date the user can choose a `start` and `end` date.
-
-```jsx live
-const [value, setValue] = useState();
-return (
-  <DateRangePickerField label="Pay period" value={value} onChange={setValue} />
-);
-```

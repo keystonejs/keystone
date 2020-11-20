@@ -19,11 +19,7 @@ export const Calendar = ({ modifiers, ...props }: DayPickerProps) => {
 
   return (
     <div css={styles}>
-      <DayPicker
-        firstDayOfWeek={indexOfMonday}
-        modifiers={augmentedModifiers}
-        {...props}
-      />
+      <DayPicker firstDayOfWeek={indexOfMonday} modifiers={augmentedModifiers} {...props} />
     </div>
   );
 };
@@ -32,7 +28,7 @@ export const Calendar = ({ modifiers, ...props }: DayPickerProps) => {
 // ------------------------------
 
 const useCalendarStyles = () => {
-	const { colors, palette } = useTheme();
+  const { colors, palette } = useTheme();
   const cellSize = 40; // theme.sizing.base;
   const navButtonSize = 24; // theme.sizing.xsmall;
   const interactionColor = '#007AFF'; //theme.palette.actions.active;
@@ -152,12 +148,12 @@ const useCalendarStyles = () => {
     },
     '.DayPicker-NavButton--next': {
       backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='${encodeURIComponent(
-	      colors.foreground //theme.palette.listItem.text
+        colors.foreground //theme.palette.listItem.text
       )}' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E")`,
     },
     '.DayPicker-NavButton--prev': {
       backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='${encodeURIComponent(
-	      colors.foreground //theme.palette.listItem.text
+        colors.foreground //theme.palette.listItem.text
       )}' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpolyline points='15 18 9 12 15 6'%3E%3C/polyline%3E%3C/svg%3E")`,
     },
 
@@ -258,4 +254,4 @@ const useCalendarStyles = () => {
       },
     },
   } as const;
-}
+};
