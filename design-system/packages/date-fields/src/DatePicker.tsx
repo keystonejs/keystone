@@ -17,12 +17,7 @@ export type DatePickerProps = {
   value: ISODate | undefined;
 };
 
-export const DatePicker = ({
-  value,
-  onChange,
-  onClear,
-  ...props
-}: DatePickerProps) => {
+export const DatePicker = ({ value, onChange, onClear, ...props }: DatePickerProps) => {
   const { isOpen, setOpen, dialog, trigger, arrow } = usePopover({
     placement: 'bottom-start',
     modifiers: [
@@ -53,10 +48,7 @@ export const DatePicker = ({
   return (
     <Fragment>
       <InputButton
-        aria-label={
-          'Choose date' +
-          (formattedDate ? `, selected date is ${formattedDate}` : '')
-        }
+        aria-label={'Choose date' + (formattedDate ? `, selected date is ${formattedDate}` : '')}
         onClick={() => setOpen(true)}
         onClear={value ? onClear : undefined}
         isSelected={isOpen}
@@ -76,4 +68,3 @@ export const DatePicker = ({
     </Fragment>
   );
 };
-

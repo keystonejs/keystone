@@ -2,11 +2,7 @@
 
 import { jsx, Stack } from '@keystone-ui/core';
 import { useState } from 'react';
-import {
-  DateInput,
-  DatePicker,
-  ISODate,
-} from '@keystone-ui/date-fields';
+import { DateInput, DatePicker, ISODate } from '@keystone-ui/date-fields';
 
 import { Page } from '../../components/Page';
 
@@ -20,11 +16,7 @@ const BasicDatePicker = () => {
   return (
     <Stack gap="small">
       <pre>{value || 'no value'}</pre>
-      <DatePicker
-        onChange={setValue}
-        onClear={() => setValue(undefined)}
-        value={value}
-      />
+      <DatePicker onChange={setValue} onClear={() => setValue(undefined)} value={value} />
     </Stack>
   );
 };

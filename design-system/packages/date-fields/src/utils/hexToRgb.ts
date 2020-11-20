@@ -14,6 +14,7 @@ function parseHex(hex: string) {
   return result;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function hexToTriplet(dirtyHex: string, alpha?: number) {
   const cleanHex = parseHex(dirtyHex);
 

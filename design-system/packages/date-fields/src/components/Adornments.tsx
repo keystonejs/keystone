@@ -29,11 +29,7 @@ export type AdornmentWrapperProps = {
   size: SizeType;
 };
 
-export const AdornmentWrapper = ({
-  children,
-  shape,
-  size,
-}: AdornmentWrapperProps) => {
+export const AdornmentWrapper = ({ children, shape, size }: AdornmentWrapperProps) => {
   return (
     <AdornmentContext.Provider value={{ shape, size }}>
       <div

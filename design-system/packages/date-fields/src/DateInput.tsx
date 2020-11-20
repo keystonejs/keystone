@@ -39,14 +39,7 @@ export type DateInputProps = {
 
 export const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
   (
-    {
-      invalid = false,
-      size = 'medium',
-      value,
-      onChange,
-      onBlur,
-      ...props
-    }: DateInputProps,
+    { invalid = false, size = 'medium', value, onChange, onBlur, ...props }: DateInputProps,
     ref
   ) => {
     let [internalValue, setInternalValue] = useState(formatValue(value));
@@ -64,7 +57,7 @@ export const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
         ref={ref}
         css={styles}
         value={internalValue}
-        onChange={(event) => {
+        onChange={event => {
           setInternalValue(event.target.value);
           let externalValue = getExternalValueForInput(event.target.value);
           if (externalValue !== value) {
