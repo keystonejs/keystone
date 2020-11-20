@@ -33,6 +33,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
               id
               quantity
               product { name price id description photo {
+                id
                 image {
                   id publicUrlTransformed
                 }
@@ -70,7 +71,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
             description: cartItem.product.description,
             price: cartItem.product.price,
             quantity: cartItem.quantity,
-            image: { connect: { id: cartItem.product.photo.image.id } },
+            image: { connect: { id: cartItem.product.photo.id } },
             user: { connect: { id: userId } },
           };
           return orderItem;
@@ -81,8 +82,6 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
           data: {
             total: charge.amount,
             charge: `${charge.id}`,
-            // TODO create array of items causes error
-            // message":"Unable to create and/or connect 2 Order.items<OrderItem>
             items: { create: orderItems },
             user: { connect: { id: userId } },
           },
