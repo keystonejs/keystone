@@ -13,7 +13,7 @@ import { withParagraphs } from './paragraphs';
 import { withQuote } from './quote';
 import { withLink } from './link';
 
-import { withColumns } from './columns';
+import { ColumnOptionsProvider, withColumns } from './columns';
 
 import { Mark, toggleMark } from './utils';
 import { Toolbar } from './Toolbar';
@@ -28,6 +28,7 @@ import {
   Relationships,
   withRelationship,
 } from './relationship';
+import { DocumentFeatures } from '../views';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -68,17 +69,24 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
 /* Leaf Elements */
 
 const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
-  const { underline, strikethrough, bold, italic } = leaf;
-
-  const textDecoration = `${underline ? 'underline' : ''} ${strikethrough ? 'line-through' : ''}`;
-
+  const { underline, strikethrough, bold, italic, code } = leaf;
+  if (code) {
+    children = <code>{children}</code>;
+  }
+  if (bold) {
+    children = <strong>{children}</strong>;
+  }
+  if (strikethrough) {
+    children = <s>{children}</s>;
+  }
+  if (italic) {
+    children = <em>{children}</em>;
+  }
   return (
     <span
       {...attributes}
       style={{
-        fontWeight: bold ? 'bold' : undefined,
-        fontStyle: italic ? 'italic' : undefined,
-        textDecoration,
+        textDecoration: underline ? 'underline' : undefined,
       }}
     >
       {children}
@@ -92,12 +100,14 @@ export function DocumentEditor({
   value,
   componentBlocks,
   relationships,
+  documentFeatures,
 }: {
   autoFocus?: boolean;
   onChange: undefined | ((value: Node[]) => void);
   value: Node[];
   componentBlocks: Record<string, ComponentBlock>;
   relationships: Relationships;
+  documentFeatures: DocumentFeatures;
 }) {
   const editor = useMemo(
     () =>
@@ -133,30 +143,32 @@ export function DocumentEditor({
 
   return (
     <DocumentFieldRelationshipsProvider value={relationships}>
-      <ComponentBlockProvider value={componentBlocks}>
-        <Slate
-          editor={editor}
-          value={value}
-          onChange={value => {
-            onChange?.(value);
-          }}
-        >
-          <Toolbar />
-          <Editable
-            css={styles}
-            autoFocus={autoFocus}
-            onKeyDown={onKeyDown}
-            readOnly={onChange === undefined}
-            renderElement={renderElement}
-            renderLeaf={renderLeaf}
-          />
-        </Slate>
+      <ColumnOptionsProvider value={documentFeatures.columns}>
+        <ComponentBlockProvider value={componentBlocks}>
+          <Slate
+            editor={editor}
+            value={value}
+            onChange={value => {
+              onChange?.(value);
+            }}
+          >
+            <Toolbar documentFeatures={documentFeatures} />
+            <Editable
+              css={styles}
+              autoFocus={autoFocus}
+              onKeyDown={onKeyDown}
+              readOnly={onChange === undefined}
+              renderElement={renderElement}
+              renderLeaf={renderLeaf}
+            />
+          </Slate>
 
-        {
-          // for debugging
-          false && <pre>{JSON.stringify(value, null, 2)}</pre>
-        }
-      </ComponentBlockProvider>
+          {
+            // for debugging
+            false && <pre>{JSON.stringify(value, null, 2)}</pre>
+          }
+        </ComponentBlockProvider>
+      </ColumnOptionsProvider>
     </DocumentFieldRelationshipsProvider>
   );
 }

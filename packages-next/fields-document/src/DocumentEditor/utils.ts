@@ -4,7 +4,7 @@ import { ReactEditor } from 'slate-react';
 export const DEBUG = false;
 export const debugLog = (...args: any[]) => DEBUG && console.log(...args);
 
-export type Mark = 'bold' | 'italic' | 'underline' | 'strikethrough';
+export type Mark = 'bold' | 'italic' | 'underline' | 'strikethrough' | 'code';
 
 export const isBlockActive = (editor: ReactEditor, format: string) => {
   const [match] = Editor.nodes(editor, {

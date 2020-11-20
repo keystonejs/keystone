@@ -34,26 +34,30 @@ export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTyp
 > & {
   isRequired?: boolean;
   relationships?: RelationshipsConfig;
-  // inlineMarks?: {
-  //   bold?: true;
-  //   italic?: true;
-  //   underline?: true;
-  //   strikethrough?: true;
-  //   code?: true;
-  // };
-  // listTypes?: {
-  //   ordered?: true;
-  //   unordered?: true;
-  // };
-  // alignment?: {
-  //   center?: true;
-  //   end?: true;
-  // };
-  // headingLevels?: (1 | 2 | 3 | 4 | 5 | 6)[];
-  // blockTypes?: {
-  //   blockquote?: true;
-  //   code?: true;
-  // };
+  inlineMarks?: {
+    bold?: true;
+    italic?: true;
+    underline?: true;
+    strikethrough?: true;
+    code?: true;
+  };
+  listTypes?: {
+    ordered?: true;
+    unordered?: true;
+  };
+  alignment?: {
+    center?: true;
+    end?: true;
+  };
+  headingLevels?: readonly (1 | 2 | 3 | 4 | 5 | 6)[];
+  blockTypes?: {
+    blockquote?: true;
+    panel?: true;
+    quote?: true;
+    // code?: true;
+  };
+  link?: true;
+  columns?: readonly (readonly [number, ...number[]])[];
 };
 
 const views = path.join(
@@ -82,7 +86,36 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
               };
       });
     }
-    return { relationships };
+    return {
+      relationships,
+      documentFeatures: {
+        alignment: {
+          center: !!config.alignment?.center,
+          end: !!config.alignment?.end,
+        },
+        blockTypes: {
+          blockquote: !!config.blockTypes?.blockquote,
+          panel: !!config.blockTypes?.panel,
+          quote: !!config.blockTypes?.quote,
+        },
+        headingLevels: [...new Set(config.headingLevels)].sort(),
+        inlineMarks: {
+          bold: !!config.inlineMarks?.bold,
+          code: !!config.inlineMarks?.code,
+          italic: !!config.inlineMarks?.italic,
+          strikethrough: !!config.inlineMarks?.strikethrough,
+          underline: !!config.inlineMarks?.underline,
+        },
+        listTypes: {
+          ordered: !!config.listTypes?.ordered,
+          unordered: !!config.listTypes?.unordered,
+        },
+        link: !!config.link,
+        columns: [...new Set((config.columns || []).map(x => JSON.stringify(x)))].map(x =>
+          JSON.parse(x)
+        ),
+      },
+    };
   },
   views,
 });

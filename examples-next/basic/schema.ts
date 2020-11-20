@@ -163,6 +163,36 @@ export const lists = createSchema({
           }`,
           },
         },
+        alignment: {
+          center: true,
+          end: true,
+        },
+        blockTypes: {
+          blockquote: true,
+          panel: true,
+          quote: true,
+        },
+        headingLevels: [1, 2, 3, 4],
+        inlineMarks: {
+          bold: true,
+          code: true,
+          italic: true,
+          strikethrough: true,
+          underline: true,
+        },
+        listTypes: {
+          ordered: true,
+          unordered: true,
+        },
+        columns: [
+          [1, 2],
+          [1, 1],
+          [2, 1],
+          [1, 1, 1],
+          [1, 1, 2],
+          [1, 2, 1],
+          [2, 1, 1],
+        ],
       }),
       publishDate: timestamp(),
       author: relationship({

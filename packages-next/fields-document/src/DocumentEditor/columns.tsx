@@ -8,16 +8,11 @@ import { Hoverable } from './components/hoverable';
 import { Button } from './components';
 import { paragraphElement } from './paragraphs';
 import { isBlockActive, moveChildren } from './utils';
+import { createContext, useContext } from 'react';
 
-const COLUMN_LAYOUTS: [number, ...number[]][] = [
-  [1, 2],
-  [1, 1],
-  [2, 1],
-  [1, 1, 1],
-  [1, 1, 2],
-  [1, 2, 1],
-  [2, 1, 1],
-];
+const ColumnOptionsContext = createContext<[number, ...number[]][]>([]);
+
+export const ColumnOptionsProvider = ColumnOptionsContext.Provider;
 
 // UI Components
 const ColumnContainer = ({ attributes, children, element }: RenderElementProps) => {
@@ -25,6 +20,7 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
   const selected = useSelected();
   const editor = useSlate();
   const layout = element.layout as number[];
+  const columnLayouts = useContext(ColumnOptionsContext);
   return (
     <div
       css={{
@@ -39,7 +35,7 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
       {children}
       {focused && selected && (
         <Hoverable>
-          {COLUMN_LAYOUTS.map((layoutOption, i) => (
+          {columnLayouts.map((layoutOption, i) => (
             <Button
               isSelected={layoutOption.toString() === layout.toString()}
               key={i}
@@ -104,7 +100,7 @@ function firstNonEditorRootNodeEntry(editor: Editor) {
 }
 
 // Helper function
-export const insertColumns = (editor: ReactEditor) => {
+export const insertColumns = (editor: ReactEditor, layout: [number, ...number[]]) => {
   if (isInsideColumn(editor)) {
     Transforms.unwrapNodes(editor, {
       match: node => node.type === 'columns',
@@ -118,7 +114,7 @@ export const insertColumns = (editor: ReactEditor) => {
       [
         {
           type: 'columns',
-          layout: COLUMN_LAYOUTS[0],
+          layout,
           children: [
             {
               type: 'column',
@@ -170,8 +166,8 @@ export const withColumns = (editor: ReactEditor) => {
     if (Element.isElement(node) && node.type === 'columns') {
       let layout = node.layout as number[];
       if (node.layout === undefined) {
-        layout = COLUMN_LAYOUTS[0];
-        Transforms.setNodes(editor, { layout }, { at: path });
+        Transforms.unwrapNodes(editor, { at: path });
+        return;
       }
       if (node.children.length < layout.length) {
         Transforms.insertNodes(
