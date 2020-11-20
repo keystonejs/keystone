@@ -153,7 +153,7 @@ export function MultiSelect({
   portalMenu,
   ...props
 }: BaseSelectProps & {
-  value: Option[];
+  value: Option[] | null;
   portalMenu?: true;
   onChange(value: Option[]): void;
 }) {
@@ -169,7 +169,7 @@ export function MultiSelect({
         if (!value) {
           onChange([]);
         } else if (Array.isArray(value)) {
-          onChange(value);
+          onChange(value as Option[]);
         } else {
           onChange([value as any]);
         }
