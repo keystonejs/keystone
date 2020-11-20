@@ -30,7 +30,7 @@
     "is-url": "^1.2.4",
     "react": "^16.14.0",
     "slate": "npm:slate@^0.58.1",
-    "slate-history": "^0.58.4",
+    "slate-history": "^0.59.0",
     "slate-react": "npm:slate-react@^0.58.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/fields-document"

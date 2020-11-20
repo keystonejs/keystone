@@ -60,7 +60,7 @@
     "@preconstruct/cli": "2.0.0",
     "@types/jest": "^26.0.15",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
-    "@typescript-eslint/parser": "^4.8.0",
+    "@typescript-eslint/parser": "^4.8.1",
     "all-contributors-cli": "^6.19.0",
     "babel-plugin-emotion": "^10.0.33",
     "chalk": "^4.1.0",
@@ -108,7 +108,7 @@
     "tinymce": "^5.6.0",
     "tmp": "^0.2.1",
     "to-pascal-case": "^1.0.0",
-    "typescript": "^4.0.5",
+    "typescript": "^4.1.2",
     "unist-util-visit": "^2.0.3",
     "unsplash-js": "^6.3.0",
     "webpack": "4.44.2"
