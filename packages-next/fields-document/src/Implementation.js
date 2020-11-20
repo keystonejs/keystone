@@ -33,7 +33,10 @@ export class DocumentImplementation extends Implementation {
           document: addRelationshipData(
             item[this.path].document,
             ctx.graphql,
-            this.config.relationships
+            this.config.relationships,
+            listKey => {
+              return ctx.keystone.lists[listKey].gqlNames;
+            }
           ),
         };
       },

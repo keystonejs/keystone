@@ -6,9 +6,18 @@ import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
 import { Editor, Element, Transforms } from 'slate';
 
 import { Button, Spacer } from './components';
-import { ComponentPropField, ComponentBlock, NotEditable } from '../component-blocks';
+import {
+  ComponentPropField,
+  ComponentBlock,
+  NotEditable,
+  RelationshipData,
+} from '../component-blocks';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import React from 'react';
+import { Relationships, useDocumentFieldRelationships } from './relationship';
+import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
+import { useKeystone } from '@keystone-next/admin-ui/context';
+import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 
 const ComponentBlockContext = React.createContext<null | Record<string, ComponentBlock>>(null);
 
@@ -42,7 +51,7 @@ function _findInlinePropPaths(
   let paths: (string | number)[][] = [];
   Object.keys(props).forEach(key => {
     const val = props[key];
-    if (val.kind === 'form') {
+    if (val.kind === 'form' || val.kind === 'relationship') {
     } else if (val.kind === 'inline') {
       paths.push(path.concat(key));
     } else if (val.kind === 'object') {
@@ -73,11 +82,21 @@ function findInlinePropPaths(
   return propPaths;
 }
 
+type RelationshipValues = Record<
+  string,
+  {
+    relationship: string;
+    data: RelationshipData | readonly RelationshipData[] | null;
+  }
+>;
+
 function insertInitialValues(
   blockProps: Record<string, any>,
   props: Record<string, ComponentPropField>,
   children: Element[],
-  path: (string | number)[]
+  path: (string | number)[],
+  relationshipValues: RelationshipValues,
+  relationships: Relationships
 ) {
   Object.keys(props).forEach(key => {
     const val = props[key];
@@ -91,7 +110,14 @@ function insertInitialValues(
       });
     } else if (val.kind === 'object') {
       blockProps[key] = {};
-      insertInitialValues(blockProps[key], val.value, children, path.concat(key));
+      insertInitialValues(
+        blockProps[key],
+        val.value,
+        children,
+        path.concat(key),
+        relationshipValues,
+        relationships
+      );
     } else if (val.kind === 'conditional') {
       blockProps[key] = {
         discriminant: val.discriminant.defaultValue,
@@ -102,19 +128,41 @@ function insertInitialValues(
           value: (val.values as Record<string, ComponentPropField>)[val.discriminant.defaultValue],
         },
         children,
-        path.concat(key)
+        path.concat(key),
+        relationshipValues,
+        relationships
       );
+    } else if (val.kind === 'relationship') {
+      relationshipValues[JSON.stringify(path.concat(key))] = {
+        relationship: val.relationship,
+        data: (relationships[val.relationship] as Extract<Relationships[string], { kind: 'prop' }>)
+          .many
+          ? []
+          : null,
+      };
     } else {
       assertNever(val);
     }
   });
 }
 
-function getInitialValue(type: string, componentBlock: ComponentBlock) {
-  let blockProps: any = {};
+function getInitialValue(
+  type: string,
+  componentBlock: ComponentBlock,
+  relationships: Relationships
+) {
+  let blockProps: Record<string, any> = {};
+  let relationshipsValues: RelationshipValues = {};
   let children: Element[] = [];
 
-  insertInitialValues(blockProps, componentBlock.props, children, []);
+  insertInitialValues(
+    blockProps,
+    componentBlock.props,
+    children,
+    [],
+    relationshipsValues,
+    relationships
+  );
   if (!children.length) {
     children.push({
       type: 'component-inline-prop',
@@ -126,6 +174,7 @@ function getInitialValue(type: string, componentBlock: ComponentBlock) {
     type: 'component-block',
     component: type,
     props: blockProps,
+    relationships: relationshipsValues,
     children,
   };
 }
@@ -203,6 +252,7 @@ export function withComponentBlocks(
 export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBlock: boolean }) => {
   const editor = useSlate();
   const blockComponents = useContext(ComponentBlockContext)!;
+  const relationships = useDocumentFieldRelationships();
   return (
     <span>
       {Object.keys(blockComponents).map(key => (
@@ -211,7 +261,7 @@ export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBloc
           isDisabled={!shouldInsertBlock}
           onMouseDown={event => {
             event.preventDefault();
-            let initialValue = getInitialValue(key, (blockComponents as any)[key]);
+            let initialValue = getInitialValue(key, (blockComponents as any)[key], relationships);
             Transforms.insertNodes(editor, initialValue);
           }}
         >
@@ -227,7 +277,9 @@ function buildPreviewProps(
   props: ComponentBlock['props'],
   formProps: Record<string, any>,
   childrenByPath: Record<string, ReactElement>,
-  path: (string | number)[]
+  path: (string | number)[],
+  relationshipValues: RelationshipValues,
+  relationships: Relationships
 ) {
   Object.keys(props).forEach(key => {
     const val = props[key];
@@ -242,7 +294,9 @@ function buildPreviewProps(
         val.value,
         formProps[key],
         childrenByPath,
-        path.concat(key)
+        path.concat(key),
+        relationshipValues,
+        relationships
       );
     } else if (val.kind === 'conditional') {
       previewProps[key] = {};
@@ -254,8 +308,12 @@ function buildPreviewProps(
         },
         formProps[key],
         childrenByPath,
-        path.concat(key)
+        path.concat(key),
+        relationshipValues,
+        relationships
       );
+    } else if (val.kind === 'relationship') {
+      previewProps[key] = relationshipValues[JSON.stringify(path.concat(key))].data;
     } else {
       assertNever(val);
     }
@@ -319,6 +377,14 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
       </NotEditable>
       {editMode && (
         <FormValue
+          onRelationshipValuesChange={relationships => {
+            Transforms.setNodes(
+              editor,
+              { relationships },
+              { at: ReactEditor.findPath(editor, element) }
+            );
+          }}
+          relationshipValues={element.relationships as any}
           componentBlock={componentBlock}
           onClose={() => {
             setEditMode(false);
@@ -338,6 +404,7 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
           children={children}
           componentBlock={componentBlock}
           elementProps={element.props}
+          relationshipValues={element.relationships as any}
         />
       </div>
     </div>
@@ -348,12 +415,15 @@ function ComponentBlockRender({
   componentBlock,
   children: _children,
   elementProps,
+  relationshipValues,
 }: {
   elementProps: any;
+  relationshipValues: RelationshipValues;
   componentBlock: ComponentBlock;
   children: any;
 }) {
   const previewProps: any = {};
+
   const childrenByPath: Record<string, ReactElement> = {};
   const children = _children.type(_children.props).props.children;
   let maybeChild: ReactElement | undefined;
@@ -366,7 +436,15 @@ function ComponentBlockRender({
     }
   });
 
-  buildPreviewProps(previewProps, componentBlock.props, elementProps, childrenByPath, []);
+  buildPreviewProps(
+    previewProps,
+    componentBlock.props,
+    elementProps,
+    childrenByPath,
+    [],
+    relationshipValues,
+    useDocumentFieldRelationships()
+  );
 
   return (
     <Fragment>
@@ -381,12 +459,18 @@ function FormValueContent({
   path,
   value,
   onChange,
+  relationshipValues,
+  onRelationshipValuesChange,
 }: {
   path: (string | number)[];
   props: Record<string, ComponentPropField>;
   value: any;
+  relationshipValues: RelationshipValues;
+  onRelationshipValuesChange(value: RelationshipValues): void;
   onChange(value: any): void;
 }) {
+  const relationships = useDocumentFieldRelationships();
+  const keystone = useKeystone();
   return (
     <Stack gap="medium">
       {Object.keys(props).map(key => {
@@ -395,6 +479,8 @@ function FormValueContent({
         if (prop.kind === 'object') {
           return (
             <FormValueContent
+              onRelationshipValuesChange={onRelationshipValuesChange}
+              relationshipValues={relationshipValues}
               key={key}
               path={path.concat(key)}
               props={prop.value}
@@ -408,6 +494,8 @@ function FormValueContent({
         if (prop.kind === 'conditional') {
           return (
             <FormValueContent
+              onRelationshipValuesChange={onRelationshipValuesChange}
+              relationshipValues={relationshipValues}
               key={key}
               path={path.concat(key)}
               props={{
@@ -418,6 +506,8 @@ function FormValueContent({
               onChange={val => {
                 if (val.discriminant !== value[key].discriminant) {
                   let blockProps: any = {};
+                  let relationshipValues: RelationshipValues = {};
+
                   // we're not gonna do anything with this, normalizeNode will fix it
                   let children: Element[] = [];
 
@@ -425,7 +515,9 @@ function FormValueContent({
                     blockProps,
                     { value: prop.values[val.discriminant] },
                     children,
-                    path.concat(key)
+                    path.concat(key),
+                    relationshipValues,
+                    relationships
                   );
 
                   onChange({
@@ -440,6 +532,59 @@ function FormValueContent({
                 }
               }}
             />
+          );
+        }
+        if (prop.kind === 'relationship') {
+          const relationship = relationships[prop.relationship] as Extract<
+            Relationships[string],
+            { kind: 'prop' }
+          >;
+          const stringifiedPath = JSON.stringify(path.concat(key));
+          const relationshipValue = relationshipValues[stringifiedPath];
+          return (
+            <FieldContainer key={key}>
+              <FieldLabel>{prop.label}</FieldLabel>
+              <RelationshipSelect
+                controlShouldRenderValue
+                isDisabled={false}
+                list={keystone.adminMeta.lists[relationship.listKey]}
+                extraSelection={relationship.selection || ''}
+                state={
+                  relationship.many
+                    ? {
+                        kind: 'many',
+                        value: (relationshipValue.data as RelationshipData[]).map(x => ({
+                          id: x.id,
+                          label: x.label || x.id,
+                          data: x.data,
+                        })),
+                        onChange(data) {
+                          onRelationshipValuesChange({
+                            ...relationshipValues,
+                            [stringifiedPath]: { data, relationship: prop.relationship },
+                          });
+                        },
+                      }
+                    : {
+                        kind: 'one',
+                        value: relationshipValue.data
+                          ? {
+                              ...(relationshipValue.data as RelationshipData),
+                              label:
+                                (relationshipValue.data as RelationshipData).label ||
+                                (relationshipValue.data as RelationshipData).id,
+                            }
+                          : null,
+                        onChange(data) {
+                          onRelationshipValuesChange({
+                            ...relationshipValues,
+                            [stringifiedPath]: { data, relationship: prop.relationship },
+                          });
+                        },
+                      }
+                }
+              />
+            </FieldContainer>
           );
         }
         return (
@@ -463,15 +608,26 @@ function FormValue({
   onClose,
   onChange,
   componentBlock,
+  onRelationshipValuesChange,
+  relationshipValues,
 }: {
   value: any;
   onChange(value: any): void;
   onClose(): void;
   componentBlock: ComponentBlock;
+  relationshipValues: RelationshipValues;
+  onRelationshipValuesChange(value: RelationshipValues): void;
 }) {
   return (
     <Stack gap="medium" padding="small" contentEditable={false}>
-      <FormValueContent onChange={onChange} path={[]} props={componentBlock.props} value={value} />
+      <FormValueContent
+        onRelationshipValuesChange={onRelationshipValuesChange}
+        relationshipValues={relationshipValues}
+        onChange={onChange}
+        path={[]}
+        props={componentBlock.props}
+        value={value}
+      />
       <KeystoneUIButton onClick={onClose}>Done</KeystoneUIButton>
     </Stack>
   );

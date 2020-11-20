@@ -36,6 +36,35 @@ export const componentBlocks = {
       }),
     },
   }),
+  featuredAuthors: component({
+    component: props => {
+      return (
+        <div>
+          <h1>{props.title}</h1>
+          <NotEditable>
+            <ul>
+              {props.authors.map(author => {
+                return (
+                  <li>
+                    {author.label}
+                    <ul>
+                      {author.data.posts.map(post => {
+                        return <li>{post.title}</li>;
+                      })}
+                    </ul>
+                  </li>
+                );
+              })}
+            </ul>
+          </NotEditable>
+        </div>
+      );
+    },
+    props: {
+      title: fields.child(),
+      authors: fields.relationship<'many'>({ label: 'Authors', relationship: 'featuredAuthors' }),
+    },
+  }),
 };
 
 type HeroPreviewProps = {

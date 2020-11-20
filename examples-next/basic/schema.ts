@@ -139,12 +139,33 @@ export const lists = createSchema({
       }),
       content: document({
         ui: { views: require.resolve('./admin/fieldViews/Content.tsx') },
+        // marks: ['bold', 'italic', 'underline', 'code'],
+        // blocks: ['h1', 'h2', 'blockquote', 'code'],
+        // lists: ['unordered-list', 'ordered-list'],
+        // colors: [{ color: '#336699', value: 'blue' }],
+        // links: true,
         relationships: {
           mention: {
             kind: 'inline',
             label: 'Mention',
             labelField: 'name',
             listKey: 'User',
+          },
+          manyBlockMentions: {
+            kind: 'block',
+            label: 'Many mentions',
+            labelField: 'name',
+            listKey: 'User',
+            many: true,
+          },
+          featuredAuthors: {
+            kind: 'prop',
+            labelField: 'name',
+            listKey: 'User',
+            many: true,
+            selection: `posts(first: 10) {
+            title
+          }`,
           },
         },
       }),

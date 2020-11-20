@@ -17,6 +17,13 @@ export type InlineField = {
   kind: 'inline';
 };
 
+export type RelationshipField<Cardinality extends 'one' | 'many'> = {
+  kind: 'relationship';
+  relationship: string;
+  label: string;
+  cardinality?: Cardinality;
+};
+
 export interface ObjectField<
   Value extends Record<string, ComponentPropField> = Record<string, ComponentPropField>
 > {
@@ -41,7 +48,8 @@ export type ComponentPropField =
   | InlineField
   | FormField<any>
   | ObjectField
-  | ConditionalField<any, any>;
+  | ConditionalField<any, any>
+  | RelationshipField<'one' | 'many'>;
 
 export const fields = {
   text({ label }: { label: string }): FormField<string> {
@@ -146,6 +154,15 @@ export const fields = {
       values: values,
     };
   },
+  relationship<Cardinality extends 'one' | 'many'>({
+    relationship,
+    label,
+  }: {
+    relationship: string;
+    label: string;
+  }): RelationshipField<Cardinality> {
+    return { kind: 'relationship', relationship, label };
+  },
 };
 
 export type ComponentBlock = {
@@ -166,23 +183,34 @@ type ExtractPropFromComponentPropField<Prop extends ComponentPropField> = [Prop]
   : [Prop] extends [FormField<infer Value>]
   ? Value
   : [Prop] extends [ObjectField<infer Value>]
-  ? { [Key in keyof Value]: ExtractPropFromComponentPropField<Value[Key]> }
+  ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropField<Value[Key]> }
   : [Prop] extends [ConditionalField<infer Discriminant, infer Value>]
   ? {
-      [Key in DiscriminantToString<Discriminant>]: {
-        discriminant: Discriminant extends boolean
+      readonly [Key in DiscriminantToString<Discriminant>]: {
+        readonly discriminant: Discriminant extends boolean
           ? 'true' extends Key
             ? true
             : 'false' extends Key
             ? false
             : never
           : Discriminant;
-        value: Key extends keyof Value
+        readonly value: Key extends keyof Value
           ? ExtractPropFromComponentPropField<CastToComponentPropField<Value[Key]>>
           : never;
       };
     }[DiscriminantToString<Discriminant>]
+  : [Prop] extends [RelationshipField<infer Cardinality>]
+  ? {
+      one: RelationshipData | null;
+      many: readonly RelationshipData[];
+    }[Cardinality]
   : 'fields must be one of ComponentPropField, not a union of multiple of them';
+
+export type RelationshipData = {
+  readonly id: string;
+  readonly label: string | null;
+  readonly data: Record<string, any>;
+};
 
 export function component<
   PropsOption extends {
@@ -195,6 +223,9 @@ export function component<
     }
   ) => ReactElement | null;
   props: PropsOption;
+  icon?: ReactElement;
+  insertLabel?: string;
+  position?: 'toolbar' | 'insert-menu';
 }): ComponentBlock {
   return options;
 }
