@@ -1,5 +1,16 @@
 # @keystone-next/example-roles
 
+## 0.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`d2ebd1c39`](https://github.com/keystonejs/keystone/commit/d2ebd1c3922f1090bcc8e89c9c70ae880f6a24d9), [`ad10994d2`](https://github.com/keystonejs/keystone/commit/ad10994d271cff6f95e9e412a7e6830742a6d949), [`ebb8d2cdf`](https://github.com/keystonejs/keystone/commit/ebb8d2cdff48d773a7109eb18e3da4cf3dc8ec8a), [`d2ebd1c39`](https://github.com/keystonejs/keystone/commit/d2ebd1c3922f1090bcc8e89c9c70ae880f6a24d9), [`add3f67e3`](https://github.com/keystonejs/keystone/commit/add3f67e379caebbcf0880b4ce82cf6a1e89020b), [`2d5f78207`](https://github.com/keystonejs/keystone/commit/2d5f78207103caaf8f86a4dd05b7e4b0a4795213), [`2d5f78207`](https://github.com/keystonejs/keystone/commit/2d5f78207103caaf8f86a4dd05b7e4b0a4795213)]:
+  - @keystone-next/auth@5.0.0
+  - @keystone-next/keystone@4.1.0
+  - @keystone-next/types@4.1.0
+  - @keystone-next/fields@3.1.0
+  - @keystone-next/admin-ui@3.1.0
+
 ## 0.0.1
 
 ### Patch Changes
