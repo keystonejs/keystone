@@ -7,6 +7,7 @@ global.console = {
 };
 
 describe('Prisma Adapter', () => {
+  // eslint-disable-next-line jest/no-disabled-tests
   test.skip('throws when database cannot be found using connection string', async () => {
     const testAdapter = new PrismaAdapter({
       knexOptions: { connection: 'postgres://localhost/undefined_database' },
@@ -19,6 +20,7 @@ describe('Prisma Adapter', () => {
     );
   });
 
+  // eslint-disable-next-line jest/no-disabled-tests
   test.skip('throws when database cannot be found using connection object', async () => {
     const testAdapter = new PrismaAdapter({
       knexOptions: {
@@ -39,6 +41,7 @@ describe('Prisma Adapter', () => {
   });
 
   describe('checkDatabaseVersion', () => {
+    // eslint-disable-next-line jest/no-disabled-tests
     test.skip('throws when database version is unsupported', async () => {
       const testAdapter = new PrismaAdapter();
       await testAdapter._connect();
@@ -48,6 +51,7 @@ describe('Prisma Adapter', () => {
       testAdapter.disconnect();
     });
 
+    // eslint-disable-next-line jest/no-disabled-tests
     test.skip('does not throw when database version is supported', async () => {
       const testAdapter = new PrismaAdapter();
       await testAdapter._connect();
