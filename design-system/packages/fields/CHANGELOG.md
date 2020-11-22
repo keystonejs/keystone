@@ -1,5 +1,11 @@
 # @keystone-ui/fields
 
+## 1.0.2
+
+### Patch Changes
+
+- [`80c980452`](https://github.com/keystonejs/keystone/commit/80c9804522d493106321e1832ca07be07437720a) [#4334](https://github.com/keystonejs/keystone/pull/4334) Thanks [@renovate](https://github.com/apps/renovate)! - Fixed types of `MultiSelect`.
+
 ## 1.0.1
 
 ### Patch Changes

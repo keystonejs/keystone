@@ -1,5 +1,24 @@
 # @keystone-next/auth
 
+## 5.0.0
+
+### Minor Changes
+
+- [`2d5f78207`](https://github.com/keystonejs/keystone/commit/2d5f78207103caaf8f86a4dd05b7e4b0a4795213) [#4302](https://github.com/keystonejs/keystone/pull/4302) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Add optional `allowedExportsOnCustomViews` export to field views
+
+### Patch Changes
+
+- [`d2ebd1c39`](https://github.com/keystonejs/keystone/commit/d2ebd1c3922f1090bcc8e89c9c70ae880f6a24d9) [#4308](https://github.com/keystonejs/keystone/pull/4308) Thanks [@timleslie](https://github.com/timleslie)! - Updated `createInitialItem` to use the items API rather than direct adapter access.
+
+* [`ebb8d2cdf`](https://github.com/keystonejs/keystone/commit/ebb8d2cdff48d773a7109eb18e3da4cf3dc8ec8a) [#4318](https://github.com/keystonejs/keystone/pull/4318) Thanks [@timleslie](https://github.com/timleslie)! - Updated `updateAuthToken` to use the items API rather than direct adapter access.
+
+* Updated dependencies [[`ad10994d2`](https://github.com/keystonejs/keystone/commit/ad10994d271cff6f95e9e412a7e6830742a6d949), [`80c980452`](https://github.com/keystonejs/keystone/commit/80c9804522d493106321e1832ca07be07437720a), [`d2ebd1c39`](https://github.com/keystonejs/keystone/commit/d2ebd1c3922f1090bcc8e89c9c70ae880f6a24d9), [`add3f67e3`](https://github.com/keystonejs/keystone/commit/add3f67e379caebbcf0880b4ce82cf6a1e89020b), [`2d5f78207`](https://github.com/keystonejs/keystone/commit/2d5f78207103caaf8f86a4dd05b7e4b0a4795213), [`2d5f78207`](https://github.com/keystonejs/keystone/commit/2d5f78207103caaf8f86a4dd05b7e4b0a4795213)]:
+  - @keystone-next/keystone@4.1.0
+  - @keystone-ui/fields@1.0.2
+  - @keystone-next/types@4.1.0
+  - @keystone-next/fields@3.1.0
+  - @keystone-next/admin-ui@3.1.0
+
 ## 4.0.0
 
 ### Major Changes

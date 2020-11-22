@@ -1,5 +1,17 @@
 # @keystonejs/app-admin-ui
 
+## 7.3.10
+
+### Patch Changes
+
+- Updated dependencies [[`c62a35fe0`](https://github.com/keystonejs/keystone/commit/c62a35fe0834ec60e2472b22feedda539d18a918), [`8d7056c8e`](https://github.com/keystonejs/keystone/commit/8d7056c8ed8d4fccfd61e64fc5fc2caf65899cee)]:
+  - @keystonejs/fields@20.1.1
+  - @arch-ui/confirm@0.0.23
+  - @arch-ui/dialog@0.0.25
+  - @arch-ui/drawer@0.0.25
+  - @arch-ui/dropdown@0.0.22
+  - @arch-ui/popout@0.0.23
+
 ## 7.3.9
 
 ### Patch Changes

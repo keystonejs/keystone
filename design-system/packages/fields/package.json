@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/fields",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",

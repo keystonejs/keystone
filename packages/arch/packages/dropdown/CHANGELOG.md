@@ -1,5 +1,11 @@
 # @arch-ui/dropdown
 
+## 0.0.22
+
+### Patch Changes
+
+- [`8d7056c8e`](https://github.com/keystonejs/keystone/commit/8d7056c8ed8d4fccfd61e64fc5fc2caf65899cee) [#4294](https://github.com/keystonejs/keystone/pull/4294) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency focus-trap-react to ^8.3.0
+
 ## 0.0.21
 
 ### Patch Changes
