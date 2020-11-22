@@ -3,9 +3,9 @@ import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-n
 import path from 'path';
 import { Relationships } from './DocumentEditor/relationship';
 
-export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
-  TGeneratedListTypes
-> & {
+export type DocumentFieldConfig<
+  TGeneratedListTypes extends BaseGeneratedListTypes
+> = FieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
   relationships?: Relationships;
 };

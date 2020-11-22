@@ -3,9 +3,9 @@ import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keys
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
 
-export type SelectFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
-  TGeneratedListTypes
-> &
+export type SelectFieldConfig<
+  TGeneratedListTypes extends BaseGeneratedListTypes
+> = FieldConfig<TGeneratedListTypes> &
   (
     | {
         options: { label: string; value: string }[];

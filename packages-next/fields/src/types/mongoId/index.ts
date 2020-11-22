@@ -4,9 +4,9 @@ import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keys
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
 
-export type MongoIdFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
-  TGeneratedListTypes
-> & {
+export type MongoIdFieldConfig<
+  TGeneratedListTypes extends BaseGeneratedListTypes
+> = FieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
   isIndexed?: boolean;
   isUnique?: boolean;
