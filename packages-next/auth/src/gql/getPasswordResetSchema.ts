@@ -97,6 +97,7 @@ export function getPasswordResetSchema({
           const result = await redeemAuthToken(
             'passwordReset',
             list,
+            listKey,
             identityField,
             protectIdentities,
             passwordResetLink.tokensValidForMins,
@@ -125,10 +126,12 @@ export function getPasswordResetSchema({
           const result = await validateAuthToken(
             'passwordReset',
             list,
+            listKey,
             identityField,
             protectIdentities,
             passwordResetLink.tokensValidForMins,
-            args
+            args,
+            ctx
           );
 
           if (!result.success && result.code) {

@@ -236,13 +236,19 @@ type ComponentChildPropConfig = {
 # UI Improvements
 
 - [ ] Generate icons for layouts :tada:
+
 - [ ] Hilight blocks in red when hovering over the "remove" toolbar button
+
 - [ ] Only show the innermost toolbar when selection is inside multiple blocks with toolbars
+
 - [ ] Selected style for component block elements
 
 - [ ] Can we find a way to support placeholders for child props in component blocks?
+
 - [ ] Caret position at boundary of inline marks
+
 - [ ] Caret position on either side of component block elements
+
 - [ ] New inline-relationship style and selection UI with prefix support (would look more like tags w/ a popup rather than a Select)
 
 ## New marks and blocks
@@ -290,7 +296,7 @@ Note: the goal for these would be to allow content authors more flexibility, but
 - [ ] \_\_ or \*\* on either side of text followed by a word boundary formats **bold**
 - [ ] \_ or \* on either side of text followed by a word boundary formats _italic_
 - [ ] \` on either side of text followed by a word boundary formats `inline code`
-- [ ] ~~ on either side of text followed by a word boundary formats ~~strikethrough~~
+- [ ] \~~ on either side of text followed by a word boundary formats ~~strikethrough~~
 - [ ] [text](url) followed by a word boundary creates a link
 
 ## Blocks
@@ -305,8 +311,8 @@ Note: the goal for these would be to allow content authors more flexibility, but
   - [ ] inside paragraphs
 - [ ] \`\`\` converts to a code block
   - [ ] inside paragraphs
-- [ ] #{1,6} followed by space converts to a H{n} heading
+- [ ] \#{1,6} followed by space converts to a H{n} heading
   - [ ] inside paragraphs
   - [ ] inside headings
-- [ ] --- inserts a divider
+- [ ] \--- inserts a divider
   - [ ] inside paragraphs
