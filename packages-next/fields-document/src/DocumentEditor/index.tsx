@@ -112,7 +112,9 @@ export function DocumentEditor({
   const editor = useMemo(
     () =>
       withList(
+        documentFeatures.listTypes,
         withHeading(
+          documentFeatures.headingLevels,
           withRelationship(
             relationships,
             withComponentBlocks(
@@ -120,6 +122,7 @@ export function DocumentEditor({
               withParagraphs(
                 withColumns(
                   withBlockquote(
+                    documentFeatures.blockTypes.blockquote,
                     withLink(withQuote(withPanel(withHistory(withReact(createEditor())))))
                   )
                 )

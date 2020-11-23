@@ -1,4 +1,4 @@
-import { Editor, Element, Node, NodeEntry, Path, Text, Transforms } from 'slate';
+import { Editor, Element, Node, NodeEntry, Path, Text, Transforms, Range } from 'slate';
 import { ReactEditor } from 'slate-react';
 
 export const DEBUG = false;
@@ -64,3 +64,24 @@ export const toggleMark = (editor: ReactEditor, format: Mark) => {
     Editor.addMark(editor, format, true);
   }
 };
+
+export function getMaybeMarkdownShortcutText(text: string, editor: ReactEditor) {
+  const { selection } = editor;
+  if (text === ' ' && selection && Range.isCollapsed(selection)) {
+    const { anchor } = selection;
+    const block = Editor.above(editor, {
+      match: n => Editor.isBlock(editor, n),
+    });
+    const path = block ? block[1] : [];
+    const start = Editor.start(editor, path);
+    const range = { anchor, focus: start };
+    return [
+      Editor.string(editor, range),
+      () => {
+        Transforms.select(editor, range);
+        Transforms.delete(editor);
+      },
+    ] as const;
+  }
+  return [undefined, () => {}] as const;
+}
