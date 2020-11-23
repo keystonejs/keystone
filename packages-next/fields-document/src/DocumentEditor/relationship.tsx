@@ -117,12 +117,20 @@ export function RelationshipElement({ attributes, children, element }: RenderEle
     { kind: 'prop' }
   >;
   return (
-    <span {...attributes} css={{ display: 'inline-flex', alignItems: 'center' }}>
+    <span
+      {...attributes}
+      css={
+        relationship.kind === 'inline' && {
+          display: 'inline-flex',
+          alignItems: 'center',
+        }
+      }
+    >
       <span
         contentEditable={false}
         css={{
           userSelect: 'none',
-          width: 200,
+          width: relationship.kind === 'inline' ? 200 : '100%',
           display: 'inline-block',
           paddingLeft: 4,
           paddingRight: 4,
