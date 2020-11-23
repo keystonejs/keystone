@@ -481,6 +481,7 @@ function FormValueContent({
   onChange,
   relationshipValues,
   onRelationshipValuesChange,
+  stringifiedPropPathToAutoFocus,
 }: {
   path: (string | number)[];
   props: Record<string, ComponentPropField>;
@@ -488,6 +489,7 @@ function FormValueContent({
   relationshipValues: RelationshipValues;
   onRelationshipValuesChange(value: RelationshipValues): void;
   onChange(value: any): void;
+  stringifiedPropPathToAutoFocus: string;
 }) {
   const relationships = useDocumentFieldRelationships();
   const keystone = useKeystone();
@@ -499,6 +501,7 @@ function FormValueContent({
         if (prop.kind === 'object') {
           return (
             <FormValueContent
+              stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
               onRelationshipValuesChange={onRelationshipValuesChange}
               relationshipValues={relationshipValues}
               key={key}
@@ -514,6 +517,7 @@ function FormValueContent({
         if (prop.kind === 'conditional') {
           return (
             <FormValueContent
+              stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
               onRelationshipValuesChange={onRelationshipValuesChange}
               relationshipValues={relationshipValues}
               key={key}
@@ -565,6 +569,7 @@ function FormValueContent({
             <FieldContainer key={key}>
               <FieldLabel>{prop.label}</FieldLabel>
               <RelationshipSelect
+                autoFocus={stringifiedPath === stringifiedPropPathToAutoFocus}
                 controlShouldRenderValue
                 isDisabled={false}
                 list={keystone.adminMeta.lists[relationship.listKey]}
@@ -607,10 +612,12 @@ function FormValueContent({
             </FieldContainer>
           );
         }
+        const newPath = path.concat(key);
         return (
           <div key={key}>
             <prop.Input
-              path={path.concat(key)}
+              autoFocus={JSON.stringify(newPath) === stringifiedPropPathToAutoFocus}
+              path={newPath}
               value={value[key]}
               onChange={newVal => {
                 onChange({ ...value, [key]: newVal });
@@ -621,6 +628,43 @@ function FormValueContent({
       })}
     </Stack>
   );
+}
+
+// child as in the props are a tree and you want the children of a prop, not as in the kind === 'inline'
+function getChildProps(prop: ComponentPropField, value: any): Record<string, ComponentPropField> {
+  if (prop.kind === 'conditional') {
+    return {
+      discriminant: prop.discriminant,
+      value: prop.values[value.discriminant],
+    };
+  } else if (prop.kind === 'form' || prop.kind === 'inline' || prop.kind === 'relationship') {
+    return {};
+  } else if (prop.kind === 'object') {
+    return prop.value;
+  } else {
+    assertNever(prop);
+    // TypeScript should understand that this will never happen but for some reason it doesn't
+    return {};
+  }
+}
+
+function findFirstFocusablePropPath(
+  props: Record<string, ComponentPropField>,
+  path: (string | number)[],
+  value: Record<string, any>
+): (string | number)[] | undefined {
+  for (const key of Object.keys(props)) {
+    const prop = props[key];
+    const newPath = path.concat(key);
+    if (prop.kind === 'form' || prop.kind === 'relationship') {
+      return newPath;
+    }
+    let children = getChildProps(prop, value[key]);
+    const childFocusable = findFirstFocusablePropPath(children, newPath, value[key]);
+    if (childFocusable) {
+      return childFocusable;
+    }
+  }
 }
 
 function FormValue({
@@ -638,6 +682,7 @@ function FormValue({
   relationshipValues: RelationshipValues;
   onRelationshipValuesChange(value: RelationshipValues): void;
 }) {
+  const focusablePath = JSON.stringify(findFirstFocusablePropPath(componentBlock.props, [], value));
   return (
     <Stack gap="medium" padding="small" contentEditable={false}>
       <FormValueContent
@@ -647,6 +692,7 @@ function FormValue({
         path={[]}
         props={componentBlock.props}
         value={value}
+        stringifiedPropPathToAutoFocus={focusablePath}
       />
       <KeystoneUIButton onClick={onClose}>Done</KeystoneUIButton>
     </Stack>

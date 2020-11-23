@@ -9,6 +9,7 @@ export type FormField<Value> = {
     value: Value;
     onChange(value: Value): void;
     path: (string | number)[];
+    autoFocus: boolean;
   }): ReactElement | null;
   defaultValue: Value;
 };
@@ -55,11 +56,12 @@ export const fields = {
   text({ label, defaultValue = '' }: { label: string; defaultValue?: string }): FormField<string> {
     return {
       kind: 'form',
-      Input({ value, onChange }) {
+      Input({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
             <TextInput
+              autoFocus={autoFocus}
               value={value}
               onChange={event => {
                 onChange(event.target.value);
@@ -82,11 +84,12 @@ export const fields = {
   }): FormField<string> {
     return {
       kind: 'form',
-      Input({ value, onChange }) {
+      Input({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
             <Select
+              autoFocus={autoFocus}
               value={options.find(option => option.value === value) || null}
               onChange={option => {
                 if (option) {
@@ -109,11 +112,12 @@ export const fields = {
   }): FormField<boolean> {
     return {
       kind: 'form',
-      Input({ value, onChange }) {
+      Input({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <Checkbox
               checked={value}
+              autoFocus={autoFocus}
               onChange={event => {
                 onChange(event.target.checked);
               }}
