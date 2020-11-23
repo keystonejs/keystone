@@ -11,13 +11,17 @@ export const componentBlocks = {
     props: {
       title: fields.child(),
       content: fields.child(),
-      imageSrc: fields.text({ label: 'Image URL' }),
+      imageSrc: fields.text({
+        label: 'Image URL',
+        defaultValue: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809',
+      }),
       cta: fields.conditional(fields.checkbox({ label: 'Show CTA' }), {
         false: fields.empty(),
         true: fields.object({
           text: fields.child(),
           href: fields.text({
             label: 'Call to action link',
+            defaultValue: '#',
           }),
         }),
       }),
