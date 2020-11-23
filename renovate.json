@@ -7,7 +7,8 @@
   "packageRules": [
     {
       "packageNames": ["slate", "slate-react"],
-      "paths": ["packages-next/**/package.json"]
+      "paths": ["packages/**/package.json"],
+      "enabled": false
     },
     {
       "packagePatterns": ["gatsby", "remark", "babel-plugin-remove-graphql-queries"],
