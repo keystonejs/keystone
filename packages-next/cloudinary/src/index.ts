@@ -5,9 +5,9 @@ import { CloudinaryImage } from '@keystonejs/fields-cloudinary-image';
 import { CloudinaryAdapter } from '@keystonejs/file-adapters';
 import type { FieldType, FieldConfig, BaseGeneratedListTypes } from '@keystone-next/types';
 
-type CloudinaryImageFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
-  TGeneratedListTypes
-> & {
+type CloudinaryImageFieldConfig<
+  TGeneratedListTypes extends BaseGeneratedListTypes
+> = FieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
   cloudinary: {
     cloudName: string;

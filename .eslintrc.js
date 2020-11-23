@@ -51,6 +51,7 @@ module.exports = {
     'jest/no-export': 'off',
     'jest/valid-title': 'off',
     'jest/no-try-expect': 'off',
+    'jest/no-disabled-tests': 'error',
     'object-curly-spacing': ['error', 'always'],
     quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
     'react/jsx-boolean-value': 'warn',

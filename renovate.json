@@ -1,12 +1,16 @@
 {
   "extends": ["config:base"],
   "ignorePaths": ["packages/build-field-tyes/__fixtures__/**/*"],
-  "rangeStrategy": "bump",
+  "ignoreDeps": ["gatsby", "remark"],
   "lockFileMaintenance": { "enabled": true },
   "packageRules": [
     {
-      "packagePatterns": ["gatsby", "remark"],
-      "enabled": false
+      "updateTypes": ["patch"],
+      "groupName": "Dependencies (patch)"
     }
-  ]
+  ],
+  "rangeStrategy": "bump",
+  "schedule": ["before 7am on Tuesday"],
+  "timezone": "Australia/Sydney",
+  "updateNotScheduled": false
 }

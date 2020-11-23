@@ -29,9 +29,9 @@ type RelationshipsConfig = Record<
   )
 >;
 
-export type DocumentFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
-  TGeneratedListTypes
-> & {
+export type DocumentFieldConfig<
+  TGeneratedListTypes extends BaseGeneratedListTypes
+> = FieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
   relationships?: RelationshipsConfig;
   inlineMarks?: {

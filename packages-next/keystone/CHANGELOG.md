@@ -1,5 +1,22 @@
 # @keystone-next/keystone
 
+## 4.1.0
+
+### Minor Changes
+
+- [`add3f67e3`](https://github.com/keystonejs/keystone/commit/add3f67e379caebbcf0880b4ce82cf6a1e89020b) [#4316](https://github.com/keystonejs/keystone/pull/4316) Thanks [@timleslie](https://github.com/timleslie)! - Added a `config.server.cors` option to allow configuration of the cors middleware. Updated the Apollo server middleware to not override cors options.
+
+### Patch Changes
+
+- [`ad10994d2`](https://github.com/keystonejs/keystone/commit/ad10994d271cff6f95e9e412a7e6830742a6d949) [#4317](https://github.com/keystonejs/keystone/pull/4317) Thanks [@timleslie](https://github.com/timleslie)! - Added a function `createGraphQLSchema` to `createSystem` to isolate schema generation code.
+
+* [`d2ebd1c39`](https://github.com/keystonejs/keystone/commit/d2ebd1c3922f1090bcc8e89c9c70ae880f6a24d9) [#4308](https://github.com/keystonejs/keystone/pull/4308) Thanks [@timleslie](https://github.com/timleslie)! - Fixed `itemAPI` `count()` function.
+
+* Updated dependencies [[`add3f67e3`](https://github.com/keystonejs/keystone/commit/add3f67e379caebbcf0880b4ce82cf6a1e89020b), [`2d5f78207`](https://github.com/keystonejs/keystone/commit/2d5f78207103caaf8f86a4dd05b7e4b0a4795213), [`2d5f78207`](https://github.com/keystonejs/keystone/commit/2d5f78207103caaf8f86a4dd05b7e4b0a4795213)]:
+  - @keystone-next/types@4.1.0
+  - @keystone-next/fields@3.1.0
+  - @keystone-next/admin-ui@3.1.0
+
 ## 4.0.0
 
 ### Major Changes
