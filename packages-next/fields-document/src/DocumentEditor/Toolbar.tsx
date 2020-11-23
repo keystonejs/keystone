@@ -36,6 +36,7 @@ export const Toolbar = ({ documentFeatures }: { documentFeatures: DocumentFeatur
   const canDoAlignment = getCanDoAlignment(editor);
   return (
     <ToolbarContainer>
+      {false && <pre>{JSON.stringify(editor.selection, null, 2)}</pre>}
       {!!documentFeatures.headingLevels.length && (
         <Headings headingLevels={documentFeatures.headingLevels} />
       )}

@@ -151,9 +151,9 @@ function getInitialValue(
   componentBlock: ComponentBlock,
   relationships: Relationships
 ) {
-  let blockProps: Record<string, any> = {};
-  let relationshipsValues: RelationshipValues = {};
-  let children: Element[] = [];
+  const blockProps: Record<string, any> = {};
+  const relationshipsValues: RelationshipValues = {};
+  const children: Element[] = [];
 
   insertInitialValues(
     blockProps,
@@ -163,7 +163,8 @@ function getInitialValue(
     relationshipsValues,
     relationships
   );
-  if (!children.length) {
+  const isFakeVoid = !children.length;
+  if (isFakeVoid) {
     children.push({
       type: 'component-inline-prop',
       propPath: JSON.stringify([VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP]),
@@ -171,11 +172,14 @@ function getInitialValue(
     });
   }
   return {
-    type: 'component-block',
-    component: type,
-    props: blockProps,
-    relationships: relationshipsValues,
-    children,
+    node: {
+      type: 'component-block',
+      component: type,
+      props: blockProps,
+      relationships: relationshipsValues,
+      children,
+    },
+    isFakeVoid,
   };
 }
 
@@ -261,8 +265,27 @@ export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBloc
           isDisabled={!shouldInsertBlock}
           onMouseDown={event => {
             event.preventDefault();
-            let initialValue = getInitialValue(key, (blockComponents as any)[key], relationships);
-            Transforms.insertNodes(editor, initialValue);
+            let { node, isFakeVoid } = getInitialValue(
+              key,
+              (blockComponents as any)[key],
+              relationships
+            );
+            Transforms.insertNodes(editor, node);
+            if (!isFakeVoid && editor.selection) {
+              const point = {
+                offset: 0,
+                path: [
+                  ...editor.selection.anchor.path.slice(0, editor.selection.anchor.path.length - 2),
+                  0,
+                  0,
+                ],
+              };
+
+              Transforms.setSelection(editor, {
+                anchor: point,
+                focus: point,
+              });
+            }
           }}
         >
           + {blockComponents[key].label}
