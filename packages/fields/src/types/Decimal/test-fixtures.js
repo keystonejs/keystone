@@ -7,11 +7,11 @@ export const exampleValue = () => '6.28';
 export const exampleValue2 = () => '6.45';
 export const supportsUnique = true;
 export const fieldName = 'price';
-export const unSupportedAdapterList = ['prisma_postgresql'];
+export const unSupportedAdapterList = [];
 
 export const getTestFields = () => ({
   name: { type: Text },
-  price: { type, knexOptions: { scale: 2 } },
+  price: { type, knexOptions: { scale: 2 }, scale: 2 },
 });
 
 export const initItems = () => {
@@ -36,10 +36,10 @@ export const storedValues = () => [
   { name: 'price7', price: null },
 ];
 
-export const supportedFilters = () => [
+export const supportedFilters = adapterName => [
   'null_equality',
   'equality',
   'ordering',
-  'in_empty_null',
-  'in_equal',
+  adapterName !== 'prisma_postgresql' && 'in_empty_null',
+  adapterName !== 'prisma_postgresql' && 'in_equal',
 ];

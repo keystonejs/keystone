@@ -12,6 +12,7 @@ const {
   Url,
   Slug,
   Virtual,
+  Decimal,
 } = require('@keystonejs/fields');
 const { Content } = require('@keystonejs/fields-content');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
@@ -139,8 +140,7 @@ keystone.createList('Post', {
     },
     stars: { type: Stars, starCount: 5 },
     views: { type: Integer },
-    // FIXME: Prisma doesn't support Decimal yet https://github.com/keystonejs/keystone/issues/4702
-    // price: { type: Decimal, symbol: '$' },
+    price: { type: Decimal, symbol: '$' },
     currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },
     markdownValue: { type: Markdown },
@@ -225,8 +225,7 @@ keystone.createList('ReadOnlyList', {
       adminConfig: { isReadOnly: true },
     },
     views: { type: Integer, adminConfig: { isReadOnly: true } },
-    // FIXME: Prisma doesn't support Decimal yet
-    // price: { type: Decimal, symbol: '$', adminConfig: { isReadOnly: true } },
+    price: { type: Decimal, symbol: '$', adminConfig: { isReadOnly: true } },
     currency: { type: Text, adminConfig: { isReadOnly: true } },
     hero: { type: File, adapter: fileAdapter, adminConfig: { isReadOnly: true } },
     markdownValue: { type: Markdown, adminConfig: { isReadOnly: true } },

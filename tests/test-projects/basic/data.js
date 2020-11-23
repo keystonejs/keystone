@@ -77,8 +77,7 @@ module.exports = {
     {
       data: {
         name: 'ReadOnly',
-        // FIXME: Prisma doesn't support Decimal yet https://github.com/keystonejs/keystone/issues/4702
-        // price: '25.25',
+        price: '25.25',
         markdownValue: '# markdown header',
         wysiwygValue: '<h1>html header</h1>',
         views: 25,
