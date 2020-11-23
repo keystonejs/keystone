@@ -27,17 +27,18 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
     onClose: () => {},
   });
   return (
-    <div
-      css={{
-        display: 'grid',
-        margin: '8px 0',
-        gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
-        position: 'relative',
-        columnGap: 4,
-      }}
-      {...attributes}
-    >
-      <div {...trigger.props} ref={trigger.ref}>
+    <div {...attributes}>
+      <div
+        css={{
+          display: 'grid',
+          margin: '8px 0',
+          gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
+          position: 'relative',
+          columnGap: 4,
+        }}
+        {...trigger.props}
+        ref={trigger.ref}
+      >
         {children}
       </div>
       {focused && selected && (
