@@ -14,12 +14,13 @@ import { insertPanel } from './panel';
 import { insertQuote } from './quote';
 import { BlockComponentsButtons } from './component-blocks';
 import { Mark, isMarkActive, onlyContainerNodeInCurrentSelection, toggleMark } from './utils';
-import { Hoverable } from './components/hoverable';
+import { HoverableElement } from './components/hoverable';
 import { insertColumns } from './columns';
 import { ListButton } from './lists';
 import { insertBlockquote } from './blockquote';
 import { RelationshipButton } from './relationship';
 import { DocumentFeatures } from '../views';
+import { useControlledPopover } from '@keystone-ui/popover';
 
 function getCanDoAlignment(editor: ReactEditor) {
   const [node] = Editor.nodes(editor, {
@@ -179,6 +180,10 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => (
 const Headings = ({ headingLevels }: { headingLevels: DocumentFeatures['headingLevels'] }) => {
   const [showHeadings, updateShowHeadings] = useState(false);
   const editor = useSlate();
+  const { dialog, trigger } = useControlledPopover({
+    isOpen: showHeadings,
+    onClose: () => updateShowHeadings(false),
+  });
   return (
     <div
       css={{
@@ -187,6 +192,8 @@ const Headings = ({ headingLevels }: { headingLevels: DocumentFeatures['headingL
       }}
     >
       <Button
+        {...trigger.props}
+        ref={trigger.ref}
         onMouseDown={event => {
           event.preventDefault();
           updateShowHeadings(!showHeadings);
@@ -195,7 +202,7 @@ const Headings = ({ headingLevels }: { headingLevels: DocumentFeatures['headingL
         Heading
       </Button>
       {showHeadings ? (
-        <Hoverable styles={{ left: '100%' }}>
+        <HoverableElement ref={dialog.ref} {...dialog.props}>
           {headingLevels.map(hNum => {
             let [node] = Editor.nodes(editor, {
               match: n => n.type === 'heading' && n.level === hNum,
@@ -223,7 +230,7 @@ const Headings = ({ headingLevels }: { headingLevels: DocumentFeatures['headingL
               </Button>
             );
           })}
-        </Hoverable>
+        </HoverableElement>
       ) : null}
     </div>
   );

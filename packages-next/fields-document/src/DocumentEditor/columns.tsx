@@ -4,11 +4,12 @@ import { jsx } from '@keystone-ui/core';
 import { Editor, Element, Node, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
 
-import { Hoverable } from './components/hoverable';
+import { HoverableElement } from './components/hoverable';
 import { Button } from './components';
 import { paragraphElement } from './paragraphs';
 import { isBlockActive, moveChildren } from './utils';
 import { createContext, useContext } from 'react';
+import { useControlledPopover } from '@keystone-ui/popover';
 
 const ColumnOptionsContext = createContext<[number, ...number[]][]>([]);
 
@@ -21,6 +22,10 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
   const editor = useSlate();
   const layout = element.layout as number[];
   const columnLayouts = useContext(ColumnOptionsContext);
+  const { dialog, trigger } = useControlledPopover({
+    isOpen: focused && selected,
+    onClose: () => {},
+  });
   return (
     <div
       css={{
@@ -32,9 +37,11 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
       }}
       {...attributes}
     >
-      {children}
+      <div {...trigger.props} ref={trigger.ref}>
+        {children}
+      </div>
       {focused && selected && (
-        <Hoverable>
+        <HoverableElement ref={dialog.ref} {...dialog.props}>
           {columnLayouts.map((layoutOption, i) => (
             <Button
               isSelected={layoutOption.toString() === layout.toString()}
@@ -61,7 +68,7 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
           >
             Remove
           </Button>
-        </Hoverable>
+        </HoverableElement>
       )}
     </div>
   );

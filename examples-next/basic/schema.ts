@@ -172,7 +172,7 @@ export const lists = createSchema({
           panel: true,
           quote: true,
         },
-        headingLevels: [1, 2, 3, 4],
+        headingLevels: [1, 2, 3, 4, 5, 6],
         inlineMarks: {
           bold: true,
           code: true,
@@ -193,6 +193,7 @@ export const lists = createSchema({
           [1, 2, 1],
           [2, 1, 1],
         ],
+        link: true,
       }),
       publishDate: timestamp(),
       author: relationship({

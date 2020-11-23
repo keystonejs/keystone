@@ -9,7 +9,8 @@ import isUrl from 'is-url';
 import { useState } from 'react';
 
 import { Button } from './components';
-import { Hoverable } from './components/hoverable';
+import { HoverableElement } from './components/hoverable';
+import { useControlledPopover } from '@keystone-ui/popover';
 
 const isLinkActive = (editor: ReactEditor) => {
   const [link] = Editor.nodes(editor, { match: n => n.type === 'link' });
@@ -47,12 +48,20 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
   const selected = useSelected();
   const focused = useFocused();
   const [focusedInHoverable, setFocusedInHoverable] = useState(false);
+  const { dialog, trigger } = useControlledPopover({
+    isOpen: (selected && focused) || focusedInHoverable,
+    onClose: () => {},
+  });
 
   return (
     <span {...attributes} css={{ position: 'relative', display: 'inline-block' }}>
-      <a href={url}>{children}</a>
+      <a {...trigger.props} ref={trigger.ref} href={url}>
+        {children}
+      </a>
       {((selected && focused) || focusedInHoverable) && (
-        <Hoverable
+        <HoverableElement
+          {...dialog.props}
+          ref={dialog.ref}
           onFocus={() => {
             setFocusedInHoverable(true);
           }}
@@ -83,8 +92,6 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
           <Button
             onMouseDown={event => {
               event.preventDefault();
-            }}
-            onClick={() => {
               Transforms.unwrapNodes(editor, {
                 at: ReactEditor.findPath(editor, element),
               });
@@ -92,7 +99,7 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
           >
             Unlink
           </Button>
-        </Hoverable>
+        </HoverableElement>
       )}
     </span>
   );
