@@ -248,6 +248,7 @@ export function Cards({
               state={{
                 kind: 'many',
                 async onChange(options) {
+                  // TODO: maybe use the extraSelection prop on RelationshipSelect here
                   const itemsToFetchAndConnect: string[] = [];
                   options.forEach(item => {
                     if (!value.currentIds.has(item.id)) {

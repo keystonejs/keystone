@@ -14,11 +14,13 @@ import { insertPanel } from './panel';
 import { insertQuote } from './quote';
 import { BlockComponentsButtons } from './component-blocks';
 import { Mark, isMarkActive, onlyContainerNodeInCurrentSelection, toggleMark } from './utils';
-import { Hoverable } from './components/hoverable';
+import { HoverableElement } from './components/hoverable';
 import { insertColumns } from './columns';
 import { ListButton } from './lists';
 import { insertBlockquote } from './blockquote';
 import { RelationshipButton } from './relationship';
+import { DocumentFeatures } from '../views';
+import { useControlledPopover } from '@keystone-ui/popover';
 
 function getCanDoAlignment(editor: ReactEditor) {
   const [node] = Editor.nodes(editor, {
@@ -28,99 +30,119 @@ function getCanDoAlignment(editor: ReactEditor) {
 }
 
 // TODO use icons for toolbar buttons, make it sticky, etc
-export const Toolbar = () => {
+export const Toolbar = ({ documentFeatures }: { documentFeatures: DocumentFeatures }) => {
   const editor = useSlate();
   const shouldInsertBlock = onlyContainerNodeInCurrentSelection(editor);
   const canDoAlignment = getCanDoAlignment(editor);
   return (
     <ToolbarContainer>
-      <Headings />
-      <ListButton type="unordered-list">• List</ListButton>
-      <ListButton type="ordered-list"># List</ListButton>
+      {false && <pre>{JSON.stringify(editor.selection, null, 2)}</pre>}
+      {!!documentFeatures.headingLevels.length && (
+        <Headings headingLevels={documentFeatures.headingLevels} />
+      )}
+      {documentFeatures.listTypes.unordered && (
+        <ListButton type="unordered-list">• List</ListButton>
+      )}
+      {documentFeatures.listTypes.ordered && <ListButton type="ordered-list"># List</ListButton>}
+      {Object.values(documentFeatures.inlineMarks).some(x => x) && (
+        <Fragment>
+          <Spacer />
+          <InlineTextThings marks={documentFeatures.inlineMarks} />
+        </Fragment>
+      )}
       <Spacer />
-      <InlineTextThings />
-      <Spacer />
-      <LinkButton />
+      {documentFeatures.link && <LinkButton />}
       <BlockComponentsButtons shouldInsertBlock={shouldInsertBlock} />
-      <Button
-        onMouseDown={event => {
-          event.preventDefault();
-          insertColumns(editor);
-        }}
-      >
-        + Columns
-      </Button>
-      <Button
-        isDisabled={!shouldInsertBlock}
-        onMouseDown={event => {
-          event.preventDefault();
-          insertPanel(editor);
-        }}
-      >
-        + Panel
-      </Button>
-      <Button
-        onMouseDown={event => {
-          event.preventDefault();
-          insertBlockquote(editor);
-        }}
-      >
-        + Blockquote
-      </Button>
-      <Button
-        isDisabled={!shouldInsertBlock}
-        onMouseDown={event => {
-          event.preventDefault();
-          insertQuote(editor);
-        }}
-      >
-        + Quote
-      </Button>
+      {!!documentFeatures.columns.length && (
+        <Button
+          onMouseDown={event => {
+            event.preventDefault();
+            insertColumns(editor, documentFeatures.columns[0]);
+          }}
+        >
+          + Columns
+        </Button>
+      )}
+      {documentFeatures.blockTypes.panel && (
+        <Button
+          isDisabled={!shouldInsertBlock}
+          onMouseDown={event => {
+            event.preventDefault();
+            insertPanel(editor);
+          }}
+        >
+          + Panel
+        </Button>
+      )}
+      {documentFeatures.blockTypes.blockquote && (
+        <Button
+          onMouseDown={event => {
+            event.preventDefault();
+            insertBlockquote(editor);
+          }}
+        >
+          + Blockquote
+        </Button>
+      )}
+      {documentFeatures.blockTypes.quote && (
+        <Button
+          isDisabled={!shouldInsertBlock}
+          onMouseDown={event => {
+            event.preventDefault();
+            insertQuote(editor);
+          }}
+        >
+          + Quote
+        </Button>
+      )}
       <RelationshipButton />
-      <Button
-        isDisabled={!canDoAlignment}
-        onMouseDown={event => {
-          event.preventDefault();
-          Transforms.unsetNodes(editor, 'textAlign', {
-            match: node => node.type === 'paragraph',
-          });
-        }}
-      >
-        Start
-      </Button>
-      <Button
-        isDisabled={!canDoAlignment}
-        onMouseDown={event => {
-          event.preventDefault();
-          Transforms.setNodes(
-            editor,
-            { textAlign: 'center' },
-            {
+      {(documentFeatures.alignment.center || documentFeatures.alignment.end) && (
+        <Button
+          isDisabled={!canDoAlignment}
+          onMouseDown={event => {
+            event.preventDefault();
+            Transforms.unsetNodes(editor, 'textAlign', {
               match: node => node.type === 'paragraph',
-            }
-          );
-        }}
-      >
-        Center
-      </Button>
-      <Button
-        isDisabled={!canDoAlignment}
-        onMouseDown={event => {
-          event.preventDefault();
-          Transforms.setNodes(
-            editor,
-            // should this be end?
-            // didn't do end bc IE11 doesn't support it
-            // but i feel like end would probs be better
-            { textAlign: 'right' },
-            {
-              match: node => node.type === 'paragraph',
-            }
-          );
-        }}
-      >
-        End
-      </Button>
+            });
+          }}
+        >
+          Start
+        </Button>
+      )}
+      {documentFeatures.alignment.center && (
+        <Button
+          isDisabled={!canDoAlignment}
+          onMouseDown={event => {
+            event.preventDefault();
+            Transforms.setNodes(
+              editor,
+              { textAlign: 'center' },
+              {
+                match: node => node.type === 'paragraph',
+              }
+            );
+          }}
+        >
+          Center
+        </Button>
+      )}
+      {documentFeatures.alignment.end && (
+        <Button
+          isDisabled={!canDoAlignment}
+          onMouseDown={event => {
+            event.preventDefault();
+            Transforms.setNodes(
+              editor,
+              { textAlign: 'end' },
+              {
+                match: node => node.type === 'paragraph',
+              }
+            );
+          }}
+        >
+          End
+        </Button>
+      )}
     </ToolbarContainer>
   );
 };
@@ -156,9 +178,13 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => (
   </div>
 );
 
-const Headings = () => {
+const Headings = ({ headingLevels }: { headingLevels: DocumentFeatures['headingLevels'] }) => {
   const [showHeadings, updateShowHeadings] = useState(false);
   const editor = useSlate();
+  const { dialog, trigger } = useControlledPopover({
+    isOpen: showHeadings,
+    onClose: () => updateShowHeadings(false),
+  });
   return (
     <div
       css={{
@@ -167,6 +193,8 @@ const Headings = () => {
       }}
     >
       <Button
+        {...trigger.props}
+        ref={trigger.ref}
         onMouseDown={event => {
           event.preventDefault();
           updateShowHeadings(!showHeadings);
@@ -175,8 +203,8 @@ const Headings = () => {
         Heading
       </Button>
       {showHeadings ? (
-        <Hoverable styles={{ left: '100%' }}>
-          {[1, 2, 3, 4].map(hNum => {
+        <HoverableElement ref={dialog.ref} {...dialog.props}>
+          {headingLevels.map(hNum => {
             let [node] = Editor.nodes(editor, {
               match: n => n.type === 'heading' && n.level === hNum,
             });
@@ -203,25 +231,38 @@ const Headings = () => {
               </Button>
             );
           })}
-        </Hoverable>
+        </HoverableElement>
       ) : null}
     </div>
   );
 };
 
-const InlineTextThings = () => (
+const InlineTextThings = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => (
   <Fragment>
-    <MarkButton type="bold">
-      <span css={{ fontWeight: 'bold' }}>B</span>
-    </MarkButton>
-    <MarkButton type="italic">
-      <span css={{ fontStyle: 'italic' }}>I</span>
-    </MarkButton>
-    <MarkButton type="underline">
-      <span css={{ textDecoration: 'underline' }}>U</span>
-    </MarkButton>
-    <MarkButton type="strikethrough">
-      <span css={{ textDecoration: 'line-through' }}>S</span>
-    </MarkButton>
+    {marks.bold && (
+      <MarkButton type="bold">
+        <span css={{ fontWeight: 'bold' }}>B</span>
+      </MarkButton>
+    )}
+    {marks.italic && (
+      <MarkButton type="italic">
+        <span css={{ fontStyle: 'italic' }}>I</span>
+      </MarkButton>
+    )}
+    {marks.underline && (
+      <MarkButton type="underline">
+        <span css={{ textDecoration: 'underline' }}>U</span>
+      </MarkButton>
+    )}
+    {marks.strikethrough && (
+      <MarkButton type="strikethrough">
+        <span css={{ textDecoration: 'line-through' }}>S</span>
+      </MarkButton>
+    )}
+    {marks.code && (
+      <MarkButton type="code">
+        <span css={{ fontFamily: 'monospace' }}>C</span>
+      </MarkButton>
+    )}
   </Fragment>
 );

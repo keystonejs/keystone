@@ -1,5 +1,6 @@
 /** @jsx jsx */
 
+import { getMaybeMarkdownShortcutText } from './utils';
 import { jsx } from '@keystone-ui/core';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps } from 'slate-react';
@@ -25,8 +26,8 @@ function getDirectBlockquoteParentFromSelection(editor: ReactEditor) {
     : ({ isInside: false } as const);
 }
 
-export const withBlockquote = (editor: ReactEditor) => {
-  const { insertBreak, deleteBackward } = editor;
+export const withBlockquote = (enableBlockquote: boolean, editor: ReactEditor) => {
+  const { insertBreak, deleteBackward, insertText } = editor;
   editor.deleteBackward = unit => {
     if (editor.selection) {
       const parentBlockquote = getDirectBlockquoteParentFromSelection(editor);
@@ -58,6 +59,21 @@ export const withBlockquote = (editor: ReactEditor) => {
     }
     insertBreak();
   };
+  if (enableBlockquote) {
+    editor.insertText = text => {
+      const [shortcutText, deleteShortcutText] = getMaybeMarkdownShortcutText(text, editor);
+      if (shortcutText === '>') {
+        deleteShortcutText();
+        Transforms.wrapNodes(
+          editor,
+          { type: 'blockquote', children: [] },
+          { match: node => node.type === 'paragraph' }
+        );
+        return;
+      }
+      insertText(text);
+    };
+  }
   return editor;
 };
 
