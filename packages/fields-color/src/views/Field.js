@@ -16,7 +16,7 @@ const ColorField = ({ field, value, errors, onChange, isDisabled }) => {
     // it is now stored as an rgba string
     if (value && value.indexOf('rgba') !== 0) return convert(value).toRgbString();
     // the color that picker shows if no value passed
-    return 'rgba(0, 0, 0, 1)';
+    return value || 'rgba(0, 0, 0, 1)';
   }, [value]);
 
   const target = props => (
