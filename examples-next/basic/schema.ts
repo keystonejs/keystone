@@ -146,7 +146,54 @@ export const lists = createSchema({
             labelField: 'name',
             listKey: 'User',
           },
+          manyBlockMentions: {
+            kind: 'block',
+            label: 'Many mentions',
+            labelField: 'name',
+            listKey: 'User',
+            many: true,
+          },
+          featuredAuthors: {
+            kind: 'prop',
+            labelField: 'name',
+            listKey: 'User',
+            many: true,
+            selection: `posts(first: 10) {
+            title
+          }`,
+          },
         },
+        alignment: {
+          center: true,
+          end: true,
+        },
+        blockTypes: {
+          blockquote: true,
+          panel: true,
+          quote: true,
+        },
+        headingLevels: [1, 2, 3, 4, 5, 6],
+        inlineMarks: {
+          bold: true,
+          code: true,
+          italic: true,
+          strikethrough: true,
+          underline: true,
+        },
+        listTypes: {
+          ordered: true,
+          unordered: true,
+        },
+        columns: [
+          [1, 2],
+          [1, 1],
+          [2, 1],
+          [1, 1, 1],
+          [1, 1, 2],
+          [1, 2, 1],
+          [2, 1, 1],
+        ],
+        link: true,
       }),
       publishDate: timestamp(),
       author: relationship({

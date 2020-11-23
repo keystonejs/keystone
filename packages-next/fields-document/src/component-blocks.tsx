@@ -9,12 +9,20 @@ export type FormField<Value> = {
     value: Value;
     onChange(value: Value): void;
     path: (string | number)[];
+    autoFocus: boolean;
   }): ReactElement | null;
   defaultValue: Value;
 };
 
 export type InlineField = {
   kind: 'inline';
+};
+
+export type RelationshipField<Cardinality extends 'one' | 'many'> = {
+  kind: 'relationship';
+  relationship: string;
+  label: string;
+  cardinality?: Cardinality;
 };
 
 export interface ObjectField<
@@ -41,17 +49,19 @@ export type ComponentPropField =
   | InlineField
   | FormField<any>
   | ObjectField
-  | ConditionalField<any, any>;
+  | ConditionalField<any, any>
+  | RelationshipField<'one' | 'many'>;
 
 export const fields = {
-  text({ label }: { label: string }): FormField<string> {
+  text({ label, defaultValue = '' }: { label: string; defaultValue?: string }): FormField<string> {
     return {
       kind: 'form',
-      Input({ value, onChange }) {
+      Input({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
             <TextInput
+              autoFocus={autoFocus}
               value={value}
               onChange={event => {
                 onChange(event.target.value);
@@ -60,7 +70,7 @@ export const fields = {
           </FieldContainer>
         );
       },
-      defaultValue: '',
+      defaultValue,
     };
   },
   select({
@@ -74,11 +84,12 @@ export const fields = {
   }): FormField<string> {
     return {
       kind: 'form',
-      Input({ value, onChange }) {
+      Input({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
             <Select
+              autoFocus={autoFocus}
               value={options.find(option => option.value === value) || null}
               onChange={option => {
                 if (option) {
@@ -92,14 +103,21 @@ export const fields = {
       defaultValue,
     };
   },
-  checkbox({ label }: { label: string }): FormField<boolean> {
+  checkbox({
+    label,
+    defaultValue = false,
+  }: {
+    label: string;
+    defaultValue?: boolean;
+  }): FormField<boolean> {
     return {
       kind: 'form',
-      Input({ value, onChange }) {
+      Input({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <Checkbox
               checked={value}
+              autoFocus={autoFocus}
               onChange={event => {
                 onChange(event.target.checked);
               }}
@@ -109,7 +127,7 @@ export const fields = {
           </FieldContainer>
         );
       },
-      defaultValue: false,
+      defaultValue,
     };
   },
   empty(): FormField<undefined> {
@@ -146,11 +164,21 @@ export const fields = {
       values: values,
     };
   },
+  relationship<Cardinality extends 'one' | 'many'>({
+    relationship,
+    label,
+  }: {
+    relationship: string;
+    label: string;
+  }): RelationshipField<Cardinality> {
+    return { kind: 'relationship', relationship, label };
+  },
 };
 
 export type ComponentBlock = {
   component: (props: any) => ReactElement | null;
   props: Record<string, ComponentPropField>;
+  label: string;
 };
 
 type DiscriminantToString<Discriminant extends string | boolean> = Discriminant extends boolean
@@ -166,23 +194,34 @@ type ExtractPropFromComponentPropField<Prop extends ComponentPropField> = [Prop]
   : [Prop] extends [FormField<infer Value>]
   ? Value
   : [Prop] extends [ObjectField<infer Value>]
-  ? { [Key in keyof Value]: ExtractPropFromComponentPropField<Value[Key]> }
+  ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropField<Value[Key]> }
   : [Prop] extends [ConditionalField<infer Discriminant, infer Value>]
   ? {
-      [Key in DiscriminantToString<Discriminant>]: {
-        discriminant: Discriminant extends boolean
+      readonly [Key in DiscriminantToString<Discriminant>]: {
+        readonly discriminant: Discriminant extends boolean
           ? 'true' extends Key
             ? true
             : 'false' extends Key
             ? false
             : never
           : Discriminant;
-        value: Key extends keyof Value
+        readonly value: Key extends keyof Value
           ? ExtractPropFromComponentPropField<CastToComponentPropField<Value[Key]>>
           : never;
       };
     }[DiscriminantToString<Discriminant>]
+  : [Prop] extends [RelationshipField<infer Cardinality>]
+  ? {
+      one: RelationshipData | null;
+      many: readonly RelationshipData[];
+    }[Cardinality]
   : 'fields must be one of ComponentPropField, not a union of multiple of them';
+
+export type RelationshipData = {
+  readonly id: string;
+  readonly label: string | null;
+  readonly data: Record<string, any>;
+};
 
 export function component<
   PropsOption extends {
@@ -195,6 +234,9 @@ export function component<
     }
   ) => ReactElement | null;
   props: PropsOption;
+  label: string;
+  // icon?: ReactElement;
+  // position?: 'toolbar' | 'insert-menu';
 }): ComponentBlock {
   return options;
 }

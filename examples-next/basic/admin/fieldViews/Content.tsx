@@ -7,26 +7,33 @@ import { ReactNode } from 'react';
 export const componentBlocks = {
   hero: component({
     component: HeroPreview,
+    label: 'Hero',
     props: {
       title: fields.child(),
       content: fields.child(),
-      imageSrc: fields.text({ label: 'Image URL' }),
+      imageSrc: fields.text({
+        label: 'Image URL',
+        defaultValue: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809',
+      }),
       cta: fields.conditional(fields.checkbox({ label: 'Show CTA' }), {
         false: fields.empty(),
         true: fields.object({
           text: fields.child(),
           href: fields.text({
             label: 'Call to action link',
+            defaultValue: '#',
           }),
         }),
       }),
     },
   }),
   void: component({
+    label: 'Void',
     component: ({ value }) => <NotEditable>{value}</NotEditable>,
     props: { value: fields.text({ label: 'Value' }) },
   }),
   conditionallyVoid: component({
+    label: 'Conditionally Void',
     component: ({ something }) =>
       something.discriminant ? <NotEditable>Is void</NotEditable> : <div>{something.value}</div>,
     props: {
@@ -34,6 +41,36 @@ export const componentBlocks = {
         false: fields.child(),
         true: fields.empty(),
       }),
+    },
+  }),
+  featuredAuthors: component({
+    label: 'Featured Authors',
+    component: props => {
+      return (
+        <div>
+          <h1>{props.title}</h1>
+          <NotEditable>
+            <ul>
+              {props.authors.map(author => {
+                return (
+                  <li>
+                    {author.label}
+                    <ul>
+                      {author.data.posts.map((post: { title: string | null }) => {
+                        return <li>{post.title}</li>;
+                      })}
+                    </ul>
+                  </li>
+                );
+              })}
+            </ul>
+          </NotEditable>
+        </div>
+      );
+    },
+    props: {
+      title: fields.child(),
+      authors: fields.relationship<'many'>({ label: 'Authors', relationship: 'featuredAuthors' }),
     },
   }),
 };

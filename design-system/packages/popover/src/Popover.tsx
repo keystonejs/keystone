@@ -26,14 +26,14 @@ type PopoverOptions = {
   handleClose: 'both' | 'mouse' | 'keyboard' | 'none';
 };
 
-export const usePopover = (
+export const useControlledPopover = (
+  { isOpen, onClose }: { isOpen: boolean; onClose: () => void },
   popperOptions: Partial<Options> = {},
   popoverOptions: PopoverOptions = { handleClose: 'both' }
 ) => {
   const [anchorElement, setAnchorElement] = useState<AnchorElementType | null>(null);
   const [popoverElement, setPopoverElement] = useState<HTMLDivElement>();
   const [arrowElement, setArrowElement] = useState<HTMLDivElement>();
-  const [isOpen, setOpen] = useState(false);
 
   const { styles, attributes, update } = usePopper(anchorElement, popoverElement, {
     ...popperOptions,
@@ -53,7 +53,7 @@ export const usePopover = (
 
   // close on click outside
   useClickOutside({
-    handler: () => setOpen(false),
+    handler: () => onClose(),
     elements: [anchorElement, popoverElement],
     listenWhen: ['both', 'mouse'].includes(popoverOptions.handleClose) && isOpen,
   });
@@ -61,16 +61,17 @@ export const usePopover = (
   // close on esc press
   useKeyPress({
     targetKey: 'Escape',
-    downHandler: useCallback((event: KeyboardEvent) => {
-      event.preventDefault(); // Avoid potential close of modal
-      setOpen(false);
-    }, []),
+    downHandler: useCallback(
+      (event: KeyboardEvent) => {
+        event.preventDefault(); // Avoid potential close of modal
+        onClose();
+      },
+      [onClose]
+    ),
     listenWhen: ['both', 'keyboard'].includes(popoverOptions.handleClose) && isOpen,
   });
 
   return {
-    isOpen,
-    setOpen,
     trigger: {
       ref: (element: AnchorElementType | null) => setAnchorElement(element),
       props: {
@@ -91,6 +92,22 @@ export const usePopover = (
         style: styles.arrow,
       },
     },
+  };
+};
+
+export const usePopover = (
+  popperOptions: Partial<Options> = {},
+  popoverOptions: PopoverOptions = { handleClose: 'both' }
+) => {
+  const [isOpen, setOpen] = useState(false);
+  return {
+    isOpen,
+    setOpen,
+    ...useControlledPopover(
+      { isOpen, onClose: useCallback(() => setOpen(false), []) },
+      popperOptions,
+      popoverOptions
+    ),
   };
 };
 
