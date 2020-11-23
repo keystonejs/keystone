@@ -43,7 +43,7 @@
     "object-hash": "^2.0.3",
     "pirates": "^4.0.1",
     "pluralize": "^8.0.0",
-    "prettier": "^2.1.2",
+    "prettier": "^2.2.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "resolve": "^1.19.0",
