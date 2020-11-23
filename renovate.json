@@ -6,6 +6,10 @@
   "prConcurrentLimit": 0,
   "packageRules": [
     {
+      "packageNames": ["slate", "slate-react"],
+      "paths": ["packages-next/**/package.json"]
+    },
+    {
       "packagePatterns": ["gatsby", "remark", "babel-plugin-remove-graphql-queries"],
       "enabled": false
     },
