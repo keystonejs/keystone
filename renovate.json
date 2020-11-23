@@ -3,14 +3,15 @@
   "ignorePaths": ["packages/build-field-tyes/__fixtures__/**/*"],
   "lockFileMaintenance": { "enabled": true },
   "separateMinorPatch": true,
+  "prConcurrentLimit": 0,
   "packageRules": [
     {
-      "packagePatterns": ["gatsby", "remark"],
+      "packagePatterns": ["gatsby", "remark", "babel-plugin-remove-graphql-queries"],
       "enabled": false
     },
     {
       "updateTypes": ["patch"],
-      "groupName": "Dependencies (patch)"
+      "groupName": "patch dependencies"
     }
   ],
   "rangeStrategy": "bump",
