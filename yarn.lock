@@ -14294,6 +14294,11 @@ is-hotkey@^0.1.6:
   resolved "https://registry.yarnpkg.com/is-hotkey/-/is-hotkey-0.1.6.tgz#c214b1ccdcbda46fba4ba93d2de64915db737471"
   integrity sha512-1+hMr0GLPM0M49UDRt9RgE8i+SM29UY4AGRP6sGz6fThOVXqSrEvTMakolhHMcVizJnPNAoMpEmE+Oi1k2NrZQ==
 
+is-hotkey@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/is-hotkey/-/is-hotkey-0.1.7.tgz#15b89a80c71df0a7367bafa8629a187196586522"
+  integrity sha512-fOzQF4+oex9Alhn4vDxzukeO5kwpn825U8CjACFD5MtPs52/0RnkYNYmhSDD6sPfRngCr/c6+VGyF3Wc7Jv+iw==
+
 is-image@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/is-image/-/is-image-1.0.1.tgz#6fd51a752a1a111506d060d952118b0b989b426e"
