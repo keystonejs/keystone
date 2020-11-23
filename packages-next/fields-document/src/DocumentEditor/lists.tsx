@@ -2,11 +2,17 @@
 
 import { jsx } from '@keystone-ui/core';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Editor, Element, Node, Path, Range, Transforms } from 'slate';
+import { Editor, Element, Node, Path, Transforms } from 'slate';
 import { ReactNode } from 'react';
 
-import { isBlockActive, moveChildren, onlyContainerNodeInCurrentSelection } from './utils';
+import {
+  getMaybeMarkdownShortcutText,
+  isBlockActive,
+  moveChildren,
+  onlyContainerNodeInCurrentSelection,
+} from './utils';
 import { Button } from './components';
+import { DocumentFeatures } from '../views';
 
 export const isListType = (type: string) => type === 'ordered-list' || type === 'unordered-list';
 
@@ -31,7 +37,7 @@ const toggleList = (editor: ReactEditor, format: string) => {
   }
 };
 
-export function withList(editor: ReactEditor) {
+export function withList(listTypes: DocumentFeatures['listTypes'], editor: ReactEditor) {
   const { insertBreak, normalizeNode, insertText } = editor;
   editor.insertBreak = () => {
     const [listItem] = Editor.nodes(editor, {
@@ -48,24 +54,18 @@ export function withList(editor: ReactEditor) {
     insertBreak();
   };
 
-  editor.insertText = text => {
-    const { selection } = editor;
-
-    if (text === ' ' && selection && Range.isCollapsed(selection)) {
-      const { anchor } = selection;
-      const block = Editor.above(editor, {
-        match: n => Editor.isBlock(editor, n),
-      });
-      const path = block ? block[1] : [];
-      const start = Editor.start(editor, path);
-      const range = { anchor, focus: start };
-      const beforeText = Editor.string(editor, range);
+  if (listTypes.ordered || listTypes.unordered) {
+    editor.insertText = text => {
+      const [shortcutText, deleteShortcutText] = getMaybeMarkdownShortcutText(text, editor);
       const listType =
-        beforeText === '1.' ? 'ordered-list' : beforeText === '-' ? 'unordered-list' : undefined;
+        shortcutText === '1.' && listTypes.ordered
+          ? 'ordered-list'
+          : shortcutText === '-' && listTypes.unordered
+          ? 'unordered-list'
+          : undefined;
       if (listType) {
         Editor.withoutNormalizing(editor, () => {
-          Transforms.select(editor, range);
-          Transforms.delete(editor);
+          deleteShortcutText();
           Transforms.setNodes(
             editor,
             { type: 'list-item' },
@@ -80,10 +80,10 @@ export function withList(editor: ReactEditor) {
 
         return;
       }
-    }
 
-    insertText(text);
-  };
+      insertText(text);
+    };
+  }
   editor.normalizeNode = entry => {
     const [node, path] = entry;
     if (Element.isElement(node) || Editor.isEditor(node)) {

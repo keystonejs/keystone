@@ -4,20 +4,16 @@ import { jsx } from '@keystone-ui/core';
 import { Editor, Element, Node, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
 
-import { Hoverable } from './components/hoverable';
+import { HoverableElement } from './components/hoverable';
 import { Button } from './components';
 import { paragraphElement } from './paragraphs';
 import { isBlockActive, moveChildren } from './utils';
+import { createContext, useContext } from 'react';
+import { useControlledPopover } from '@keystone-ui/popover';
 
-const COLUMN_LAYOUTS: [number, ...number[]][] = [
-  [1, 2],
-  [1, 1],
-  [2, 1],
-  [1, 1, 1],
-  [1, 1, 2],
-  [1, 2, 1],
-  [2, 1, 1],
-];
+const ColumnOptionsContext = createContext<[number, ...number[]][]>([]);
+
+export const ColumnOptionsProvider = ColumnOptionsContext.Provider;
 
 // UI Components
 const ColumnContainer = ({ attributes, children, element }: RenderElementProps) => {
@@ -25,21 +21,29 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
   const selected = useSelected();
   const editor = useSlate();
   const layout = element.layout as number[];
+  const columnLayouts = useContext(ColumnOptionsContext);
+  const { dialog, trigger } = useControlledPopover({
+    isOpen: focused && selected,
+    onClose: () => {},
+  });
   return (
-    <div
-      css={{
-        display: 'grid',
-        margin: '8px 0',
-        gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
-        position: 'relative',
-        columnGap: 4,
-      }}
-      {...attributes}
-    >
-      {children}
+    <div {...attributes}>
+      <div
+        css={{
+          display: 'grid',
+          margin: '8px 0',
+          gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
+          position: 'relative',
+          columnGap: 4,
+        }}
+        {...trigger.props}
+        ref={trigger.ref}
+      >
+        {children}
+      </div>
       {focused && selected && (
-        <Hoverable>
-          {COLUMN_LAYOUTS.map((layoutOption, i) => (
+        <HoverableElement ref={dialog.ref} {...dialog.props}>
+          {columnLayouts.map((layoutOption, i) => (
             <Button
               isSelected={layoutOption.toString() === layout.toString()}
               key={i}
@@ -65,7 +69,7 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
           >
             Remove
           </Button>
-        </Hoverable>
+        </HoverableElement>
       )}
     </div>
   );
@@ -104,7 +108,7 @@ function firstNonEditorRootNodeEntry(editor: Editor) {
 }
 
 // Helper function
-export const insertColumns = (editor: ReactEditor) => {
+export const insertColumns = (editor: ReactEditor, layout: [number, ...number[]]) => {
   if (isInsideColumn(editor)) {
     Transforms.unwrapNodes(editor, {
       match: node => node.type === 'columns',
@@ -118,7 +122,7 @@ export const insertColumns = (editor: ReactEditor) => {
       [
         {
           type: 'columns',
-          layout: COLUMN_LAYOUTS[0],
+          layout,
           children: [
             {
               type: 'column',
@@ -170,8 +174,8 @@ export const withColumns = (editor: ReactEditor) => {
     if (Element.isElement(node) && node.type === 'columns') {
       let layout = node.layout as number[];
       if (node.layout === undefined) {
-        layout = COLUMN_LAYOUTS[0];
-        Transforms.setNodes(editor, { layout }, { at: path });
+        Transforms.unwrapNodes(editor, { at: path });
+        return;
       }
       if (node.children.length < layout.length) {
         Transforms.insertNodes(

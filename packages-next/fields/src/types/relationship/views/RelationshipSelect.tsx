@@ -22,6 +22,10 @@ function useIntersectionObserver(cb: IntersectionObserverCallback, ref: RefObjec
 const initialItemsToLoad = 10;
 const subsequentItemsToLoad = 50;
 
+const idField = '____id____';
+
+const labelField = '____label____';
+
 export const RelationshipSelect = ({
   autoFocus,
   controlShouldRenderValue,
@@ -30,6 +34,7 @@ export const RelationshipSelect = ({
   list,
   placeholder,
   state,
+  extraSelection = '',
 }: {
   autoFocus?: boolean;
   controlShouldRenderValue: boolean;
@@ -40,25 +45,27 @@ export const RelationshipSelect = ({
   state:
     | {
         kind: 'many';
-        value: { label: string; id: string }[];
-        onChange(value: { label: string; id: string }[]): void;
+        value: { label: string; id: string; data?: Record<string, any> }[];
+        onChange(value: { label: string; id: string; data: Record<string, any> }[]): void;
       }
     | {
         kind: 'one';
-        value: { label: string; id: string } | null;
-        onChange(value: { label: string; id: string } | null): void;
+        value: { label: string; id: string; data?: Record<string, any> } | null;
+        onChange(value: { label: string; id: string; data: Record<string, any> } | null): void;
       };
+  extraSelection?: string;
 }) => {
   const [search, setSearch] = useState('');
 
   const QUERY: TypedDocumentNode<
-    { items: { id: string; label: string | null }[]; meta: { count: number } },
+    { items: { [idField]: string; [labelField]: string | null }[]; meta: { count: number } },
     { search: string; first: number; skip: number }
   > = gql`
     query RelationshipSelect($search: String!, $first: Int!, $skip: Int!) {
       items: ${list.gqlNames.listQueryName}(search: $search, first: $first, skip: $skip) {
-        id
-        label: ${list.labelField}
+        ${idField}: id
+        ${labelField}: ${list.labelField}
+        ${extraSelection}
       }
 
       meta: ${list.gqlNames.listQueryMetaName}(search: $search) {
@@ -79,13 +86,14 @@ export const RelationshipSelect = ({
       MenuList: ({ children, ...props }) => {
         const loadingRef = useRef(null);
         const QUERY: TypedDocumentNode<
-          { items: { id: string; label: string | null }[] },
+          { items: { [idField]: string; [labelField]: string | null }[] },
           { search: string; first: number; skip: number }
         > = gql`
             query RelationshipSelectMore($search: String!, $first: Int!, $skip: Int!) {
               items: ${list.gqlNames.listQueryName}(search: $search, first: $first, skip: $skip) {
-                label: ${list.labelField}
-                id
+                ${labelField}: ${list.labelField}
+                ${idField}: id
+                ${extraSelection}
               }
             }
           `;
@@ -132,9 +140,10 @@ export const RelationshipSelect = ({
   }
 
   const options =
-    data?.items?.map((val: any) => ({
-      value: val.id,
-      label: val.label || val.id,
+    data?.items?.map(({ [idField]: value, [labelField]: label, ...data }) => ({
+      value,
+      label: label || value,
+      data,
     })) || [];
 
   if (state.kind === 'one') {
@@ -147,7 +156,16 @@ export const RelationshipSelect = ({
         autoFocus={autoFocus}
         components={relationshipSelectComponents}
         portalMenu
-        value={state.value ? { value: state.value.id, label: state.value.label } : null}
+        value={
+          state.value
+            ? {
+                value: state.value.id,
+                label: state.value.label,
+                // @ts-ignore
+                data: state.value.data,
+              }
+            : null
+        }
         options={options}
         onChange={value => {
           state.onChange(
@@ -155,6 +173,7 @@ export const RelationshipSelect = ({
               ? {
                   id: value.value,
                   label: value.label,
+                  data: (value as any).data,
                 }
               : null
           );
@@ -175,10 +194,10 @@ export const RelationshipSelect = ({
       autoFocus={autoFocus}
       components={relationshipSelectComponents}
       portalMenu
-      value={state.value.map(value => ({ value: value.id, label: value.label })) || null}
+      value={state.value.map(value => ({ value: value.id, label: value.label, data: value.data }))}
       options={options}
       onChange={value => {
-        state.onChange(value.map(x => ({ id: x.value, label: x.label })));
+        state.onChange(value.map(x => ({ id: x.value, label: x.label, data: (x as any).data })));
       }}
       placeholder={placeholder}
       controlShouldRenderValue={controlShouldRenderValue}
