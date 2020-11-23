@@ -27,12 +27,12 @@
     "@keystonejs/adapter-prisma": "^1.0.8",
     "@keystonejs/fields": "^20.1.0",
     "@types/react": "^16.9.56",
-    "is-hotkey": "^0.1.6",
+    "is-hotkey": "^0.1.7",
     "is-url": "^1.2.4",
     "react": "^16.14.0",
-    "slate": "npm:slate@^0.58.1",
+    "slate": "npm:slate@^0.58.4",
     "slate-history": "^0.59.0",
-    "slate-react": "npm:slate-react@^0.58.1"
+    "slate-react": "npm:slate-react@^0.58.4"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/fields-document"
 }

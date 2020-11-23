@@ -25,7 +25,7 @@
     "get-selection-range": "^0.1.0",
     "image-extensions": "^1.1.0",
     "immutable": "^4.0.0-rc.12",
-    "is-hotkey": "^0.1.6",
+    "is-hotkey": "^0.1.7",
     "lodash.get": "^4.4.2",
     "memoize-one": "^5.1.1",
     "nanoassert": "^2.0.0",
