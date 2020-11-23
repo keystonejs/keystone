@@ -4,7 +4,7 @@ import { jsx } from '@keystone-ui/core';
 import { ReactEditor, RenderElementProps } from 'slate-react';
 
 import { Editor, Transforms } from 'slate';
-import { getMaybeMarkdownShortcutText } from '@keystone-next/fields-document/src/DocumentEditor/utils';
+import { getMaybeMarkdownShortcutText } from './utils';
 
 export const HeadingElement = ({ attributes, children, element }: RenderElementProps) => {
   const Tag = `h${element.level}`;

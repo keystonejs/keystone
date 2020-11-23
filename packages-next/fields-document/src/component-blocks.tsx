@@ -52,7 +52,7 @@ export type ComponentPropField =
   | RelationshipField<'one' | 'many'>;
 
 export const fields = {
-  text({ label }: { label: string }): FormField<string> {
+  text({ label, defaultValue = '' }: { label: string; defaultValue?: string }): FormField<string> {
     return {
       kind: 'form',
       Input({ value, onChange }) {
@@ -68,7 +68,7 @@ export const fields = {
           </FieldContainer>
         );
       },
-      defaultValue: '',
+      defaultValue,
     };
   },
   select({
@@ -100,7 +100,13 @@ export const fields = {
       defaultValue,
     };
   },
-  checkbox({ label }: { label: string }): FormField<boolean> {
+  checkbox({
+    label,
+    defaultValue = false,
+  }: {
+    label: string;
+    defaultValue?: boolean;
+  }): FormField<boolean> {
     return {
       kind: 'form',
       Input({ value, onChange }) {
@@ -117,7 +123,7 @@ export const fields = {
           </FieldContainer>
         );
       },
-      defaultValue: false,
+      defaultValue,
     };
   },
   empty(): FormField<undefined> {
