@@ -1,45 +1,129 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { ButtonHTMLAttributes, forwardRef, Ref } from 'react';
+import { ButtonHTMLAttributes, HTMLAttributes, createContext, useContext } from 'react';
+import { forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
 
-export const Spacer = () => <span css={{ display: 'inline-block', width: 12 }} />;
+export const Spacer = () => {
+  const { spacing } = useTheme();
 
-export const Button = forwardRef(
-  (
-    {
-      isDisabled,
-      isSelected,
-      active,
-      ...props
-    }: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'> & {
-      isDisabled?: boolean;
-      isSelected?: boolean;
-      active?: boolean;
-    },
-    ref: Ref<HTMLButtonElement>
-  ) => (
-    <button
-      ref={ref}
-      type="button"
-      disabled={isDisabled}
+  return <span css={{ display: 'inline-block', width: spacing.large }} />;
+};
+export const Separator = () => {
+  const { colors, spacing } = useTheme();
+
+  return (
+    <span
       css={{
-        background: isSelected ? '#EDF2F7' : 'white',
-        borderColor: isSelected ? '#A0AEC0' : isDisabled ? '#E2E8F0' : '#CBD5E0',
-        borderStyle: 'solid',
-        borderWidth: 1,
-        borderRadius: 5,
-        boxShadow: isSelected ? 'inset 0px 3px 5px -4px rgba(0,0,0,0.50)' : undefined,
-        color: isSelected ? '#4A5568' : isDisabled ? '#CBD5E0' : '#718096',
-        marginRight: 4,
-        padding: '4px 8px',
-        pointerEvents: isDisabled ? 'none' : undefined,
-        ':hover': {
-          color: isSelected ? '#4A5568' : '#718096',
-          borderColor: isSelected ? '#718096' : '#A0AEC0',
-        },
+        alignSelf: 'stretch',
+        background: colors.border,
+        display: 'inline-block',
+        marginLeft: spacing.small,
+        marginRight: spacing.small,
+        width: 1,
       }}
-      {...props}
     />
-  )
+  );
+};
+
+// Buttons may be displayed in a row of icons or in a column of labelled menu items
+
+const ButtonGroupContext = createContext({ direction: 'row' });
+export const useButtonGroupContext = () => useContext(ButtonGroupContext);
+
+export const ButtonGroup = ({
+  direction = 'row',
+  ...props
+}: { direction?: 'column' | 'row' } & HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <ButtonGroupContext.Provider value={{ direction }}>
+      <div css={{ display: 'flex', flexDirection: direction }} {...props} />
+    </ButtonGroupContext.Provider>
+  );
+};
+
+type ButtonProps = {
+  as?: string;
+  isDisabled?: boolean;
+  isSelected?: boolean;
+  variant?: 'default' | 'action' | 'destructive';
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>;
+export const Button = forwardRefWithAs<'button', ButtonProps>(
+  ({ as: Tag = 'button', isDisabled, isSelected, variant = 'default', ...props }, ref) => {
+    const extraProps: any = {};
+    const { direction: groupDirection } = useButtonGroupContext();
+    const { colors, palette, radii, sizing, spacing, typography } = useTheme();
+
+    if (Tag === 'button') {
+      extraProps.type = 'button';
+    }
+
+    const variants = {
+      default: {
+        bgHover: palette.neutral200,
+        bgActive: palette.neutral300,
+        fg: palette.neutral800,
+      },
+      action: { bgHover: palette.blue50, bgActive: palette.blue100, fg: palette.blue600 },
+      destructive: { bgHover: palette.red50, bgActive: palette.red100, fg: palette.red600 },
+    };
+    const style = variants[variant];
+
+    return (
+      <Tag
+        {...extraProps}
+        ref={ref}
+        disabled={isDisabled}
+        data-selected={isSelected}
+        data-display-mode={groupDirection}
+        css={{
+          alignItems: 'center',
+          background: 0,
+          border: 0,
+          borderRadius: radii.xsmall,
+          color: style.fg,
+          cursor: 'pointer',
+          display: 'flex',
+          fontSize: typography.fontSize.small,
+          fontWeight: typography.fontWeight.medium,
+          height: sizing.medium,
+          // justifyContent: 'center',
+          paddingLeft: spacing.small,
+          paddingRight: spacing.small,
+          whiteSpace: 'nowrap',
+
+          ':hover': {
+            background: style.bgHover,
+          },
+          ':active': {
+            background: style.bgActive,
+          },
+
+          '&:disabled': {
+            color: colors.foregroundDisabled,
+            pointerEvents: 'none',
+          },
+
+          '&[data-selected=true]': {
+            background: colors.foregroundMuted,
+            color: colors.background,
+          },
+
+          // alternate styles within button group
+          '&[data-display-mode=row]': {
+            // really want flex-gap...
+            '&:not(:last-of-type)': {
+              marginRight: spacing.xsmall,
+            },
+          },
+          '&[data-display-mode=column]': {
+            // really want flex-gap...
+            '&:not(:last-of-type)': {
+              marginBottom: spacing.xsmall,
+            },
+          },
+        }}
+        {...props}
+      />
+    );
+  }
 );

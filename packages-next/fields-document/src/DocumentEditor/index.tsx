@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { KeyboardEvent } from 'react';
+import { jsx, useTheme } from '@keystone-ui/core';
+import { KeyboardEvent, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
 import { Editor, Node, Range, Transforms, createEditor } from 'slate';
@@ -119,6 +119,8 @@ export function DocumentEditor({
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
 }) {
+  const { colors } = useTheme();
+  const [expanded, setExpanded] = useState(false);
   const editor = useMemo(
     () =>
       withList(
@@ -152,40 +154,63 @@ export function DocumentEditor({
   }, []);
 
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
+  const toggleExpanded = () => {
+    setExpanded(v => !v);
+  };
 
   useMemo(() => {
     findDuplicateNodes(value);
   }, [value]);
 
   return (
-    <DocumentFieldRelationshipsProvider value={relationships}>
-      <ColumnOptionsProvider value={documentFeatures.columns}>
-        <ComponentBlockProvider value={componentBlocks}>
-          <Slate
-            editor={editor}
-            value={value}
-            onChange={value => {
-              onChange?.(value);
-            }}
-          >
-            <Toolbar documentFeatures={documentFeatures} />
-            <Editable
-              css={styles}
-              autoFocus={autoFocus}
-              onKeyDown={onKeyDown}
-              readOnly={onChange === undefined}
-              renderElement={renderElement}
-              renderLeaf={renderLeaf}
-            />
-          </Slate>
+    <div
+      css={
+        expanded && {
+          background: colors.background,
+          bottom: 0,
+          left: 0,
+          position: 'absolute',
+          right: 0,
+          top: -1,
+          zIndex: 100,
+        }
+      }
+    >
+      <DocumentFieldRelationshipsProvider value={relationships}>
+        <ColumnOptionsProvider value={documentFeatures.columns}>
+          <ComponentBlockProvider value={componentBlocks}>
+            <Slate
+              editor={editor}
+              value={value}
+              onChange={value => {
+                onChange?.(value);
+              }}
+            >
+              <Toolbar
+                documentFeatures={documentFeatures}
+                viewState={{
+                  expanded,
+                  toggle: toggleExpanded,
+                }}
+              />
+              <Editable
+                css={styles}
+                autoFocus={autoFocus}
+                onKeyDown={onKeyDown}
+                readOnly={onChange === undefined}
+                renderElement={renderElement}
+                renderLeaf={renderLeaf}
+              />
+            </Slate>
 
-          {
-            // for debugging
-            true && <pre>{JSON.stringify(value, null, 2)}</pre>
-          }
-        </ComponentBlockProvider>
-      </ColumnOptionsProvider>
-    </DocumentFieldRelationshipsProvider>
+            {
+              // for debugging
+              false && <pre>{JSON.stringify(value, null, 2)}</pre>
+            }
+          </ComponentBlockProvider>
+        </ColumnOptionsProvider>
+      </DocumentFieldRelationshipsProvider>
+    </div>
   );
 }
 

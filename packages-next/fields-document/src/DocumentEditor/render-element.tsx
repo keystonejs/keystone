@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
+import { jsx, useTheme } from '@keystone-ui/core';
 import { RenderElementProps } from 'slate-react';
 
 import { renderQuoteElement } from './quote';
@@ -45,12 +45,7 @@ export const renderElement = (props: RenderElementProps) => {
     case 'relationship':
       return <RelationshipElement {...props} />;
     case 'divider':
-      return (
-        <div {...props.attributes}>
-          <hr css={{ height: 4, backgroundColor: 'darkgray' }} />
-          {props.children}
-        </div>
-      );
+      return <DividerElement {...props} />;
     default:
       return (
         <p css={{ textAlign: props.element.textAlign as any }} {...props.attributes}>
@@ -67,5 +62,23 @@ const CodeElement = ({ attributes, children }: RenderElementProps) => {
     <pre css={{ color: '#2C5282' }} {...attributes}>
       <code>{children}</code>
     </pre>
+  );
+};
+
+const DividerElement = ({ attributes, children }: RenderElementProps) => {
+  const { colors, spacing } = useTheme();
+  return (
+    <div {...attributes}>
+      <hr
+        css={{
+          backgroundColor: colors.border,
+          border: 0,
+          height: 2,
+          marginBottom: spacing.xlarge,
+          marginTop: spacing.xlarge,
+        }}
+      />
+      {children}
+    </div>
   );
 };

@@ -62,10 +62,10 @@ const palette = {
   neutral300: '#e1e5e9',
   neutral400: '#ccd1d5',
   neutral500: '#b1b5b9',
-  neutral600: '#929599',
-  neutral700: '#707275',
-  neutral800: '#4d4e51',
-  neutral900: '#2c2c2e',
+  neutral600: '#9ca3af',
+  neutral700: '#6b7280',
+  neutral800: '#374151',
+  neutral900: '#111827',
 
   ...basePalette,
 };
@@ -268,6 +268,7 @@ const colors = {
   foreground: palette.neutral800,
   foregroundMuted: palette.neutral900,
   foregroundDim: palette.neutral700,
+  foregroundDisabled: palette.neutral500,
   linkColor: palette.blue500,
   linkHoverColor: palette.blue600,
   overlayBackground: 'rgba(18,18,18, 0.3)', // blanket behind modal dialogs

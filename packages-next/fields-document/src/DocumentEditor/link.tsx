@@ -1,16 +1,21 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
 import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
 import { Editor, Node, Range, Transforms } from 'slate';
+
+import { jsx, useTheme } from '@keystone-ui/core';
+import { useControlledPopover } from '@keystone-ui/popover';
+import { Tooltip } from '@keystone-ui/tooltip';
+import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
+import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 // @ts-ignore
 import isUrl from 'is-url';
 
 import { useState } from 'react';
 
-import { Button } from './components';
-import { HoverableElement } from './components/hoverable';
-import { useControlledPopover } from '@keystone-ui/popover';
+import { Button, ButtonGroup, Separator } from './components';
+import { InlineDialog } from './components/inline-dialog';
 
 const isLinkActive = (editor: ReactEditor) => {
   const [link] = Editor.nodes(editor, { match: n => n.type === 'link' });
@@ -43,63 +48,93 @@ const wrapLink = (editor: ReactEditor, url: string) => {
 };
 
 export const LinkElement = ({ attributes, children, element }: RenderElementProps) => {
+  const { typography } = useTheme();
   const url = element.url as string;
   const editor = useSlate();
   const selected = useSelected();
   const focused = useFocused();
-  const [focusedInHoverable, setFocusedInHoverable] = useState(false);
-  const { dialog, trigger } = useControlledPopover({
-    isOpen: (selected && focused) || focusedInHoverable,
-    onClose: () => {},
-  });
+  const [focusedInInlineDialog, setFocusedInInlineDialog] = useState(false);
+  const { dialog, trigger } = useControlledPopover(
+    {
+      isOpen: (selected && focused) || focusedInInlineDialog,
+      onClose: () => {},
+    },
+    {
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
+        },
+      ],
+    }
+  );
 
   return (
     <span {...attributes} css={{ position: 'relative', display: 'inline-block' }}>
       <a {...trigger.props} ref={trigger.ref} href={url}>
         {children}
       </a>
-      {((selected && focused) || focusedInHoverable) && (
-        <HoverableElement
+      {((selected && focused) || focusedInInlineDialog) && (
+        <InlineDialog
           {...dialog.props}
           ref={dialog.ref}
           onFocus={() => {
-            setFocusedInHoverable(true);
+            setFocusedInInlineDialog(true);
           }}
           onBlur={() => {
-            setFocusedInHoverable(false);
+            setFocusedInInlineDialog(false);
           }}
         >
-          <input
-            value={url}
-            onChange={event => {
-              Transforms.setNodes(
-                editor,
-                { url: event.target.value },
-                { at: ReactEditor.findPath(editor, element) }
-              );
-            }}
-          />
-          <a
-            onMouseDown={event => {
-              event.preventDefault();
-            }}
-            href={url}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Go
-          </a>
-          <Button
-            onMouseDown={event => {
-              event.preventDefault();
-              Transforms.unwrapNodes(editor, {
-                at: ReactEditor.findPath(editor, element),
-              });
-            }}
-          >
-            Unlink
-          </Button>
-        </HoverableElement>
+          <ButtonGroup>
+            <input
+              css={{ fontSize: typography.fontSize.small, width: 240 }}
+              value={url}
+              onChange={event => {
+                Transforms.setNodes(
+                  editor,
+                  { url: event.target.value },
+                  { at: ReactEditor.findPath(editor, element) }
+                );
+              }}
+            />
+            <Tooltip content="Open link in new tab" weight="subtle">
+              {attrs => (
+                <Button
+                  as="a"
+                  onMouseDown={event => {
+                    event.preventDefault();
+                  }}
+                  href={url}
+                  target="_blank"
+                  rel="noreferrer"
+                  variant="action"
+                  {...attrs}
+                >
+                  <ExternalLinkIcon size="small" />
+                </Button>
+              )}
+            </Tooltip>
+            <Separator />
+            <Tooltip content="Unlink" weight="subtle">
+              {attrs => (
+                <Button
+                  variant="destructive"
+                  onMouseDown={event => {
+                    event.preventDefault();
+                    Transforms.unwrapNodes(editor, {
+                      at: ReactEditor.findPath(editor, element),
+                    });
+                  }}
+                  {...attrs}
+                >
+                  <Trash2Icon size="small" />
+                </Button>
+              )}
+            </Tooltip>
+          </ButtonGroup>
+        </InlineDialog>
       )}
     </span>
   );
@@ -109,16 +144,21 @@ export const LinkButton = () => {
   const editor = useSlate();
   const isActive = isLinkActive(editor);
   return (
-    <Button
-      isDisabled={!isActive && (!editor.selection || Range.isCollapsed(editor.selection))}
-      isSelected={isActive}
-      onMouseDown={event => {
-        event.preventDefault();
-        wrapLink(editor, '');
-      }}
-    >
-      link
-    </Button>
+    <Tooltip content="Link" placement="bottom" weight="subtle">
+      {attrs => (
+        <Button
+          isDisabled={!isActive && (!editor.selection || Range.isCollapsed(editor.selection))}
+          isSelected={isActive}
+          onMouseDown={event => {
+            event.preventDefault();
+            wrapLink(editor, '');
+          }}
+          {...attrs}
+        >
+          <LinkIcon size="small" />
+        </Button>
+      )}
+    </Tooltip>
   );
 };
 
