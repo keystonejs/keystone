@@ -179,6 +179,9 @@ export const lists = createSchema({
           italic: true,
           strikethrough: true,
           underline: true,
+          keyboard: true,
+          subscript: true,
+          superscript: true,
         },
         listTypes: {
           ordered: true,

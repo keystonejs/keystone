@@ -11,57 +11,57 @@
 - `Links` are hyperlinks that can be applied to text (like a mark, with an `href` property)
 - `Block Classes` represent a set of block types that implement consistent behaviour (and are often configured together)
   - `Paragraph` is the default block type at the root of the editor
-    - [ ] you cannot nest paragraphs
-    - [ ] supports alignment
-    - [ ] supports all inline marks
-    - [ ] supports links
+    - [x] you cannot nest paragraphs
+    - [x] supports alignment
+    - [x] supports all inline marks
+    - [x] supports links
     - [ ] supports soft breaks
-    - [ ] supports inline relationships
-    - [ ] enter inserts a new paragraph after the current one (including splitting remaining text)
+    - [x] supports inline relationships
+    - [x] enter inserts a new paragraph after the current one (including splitting remaining text)
   - `Headings` 1-6
-    - [ ] only contains text, no nested blocks
+    - [x] only contains text, no nested blocks
     - [ ] supports alignment
-    - [ ] supports links
+    - [x] supports links
     - [ ] supports soft breaks
     - [ ] toolbar behaves as a toggle
-    - [ ] you can convert existing blocks to headings
+    - [x] you can convert existing blocks to headings
     - [ ] inline marks and relationships are stripped when you convert a block into a heading
-    - [ ] you cannot insert nested headings
-    - [ ] `enter` inserts a new paragraph after the block (including splitting remaining text)
+    - [x] you cannot insert nested headings
+    - [x] `enter` inserts a new paragraph after the block (including splitting remaining text)
     - [ ] `backspace` at the start resets to Paragraph
   - `Lists` (technically, these contain list item blocks)
-    - [ ] contains list items and nested list blocks, no other blocks
-    - [ ] supports links
-    - [ ] supports all inline marks
+    - [x] contains list items and nested list blocks, no other blocks
+    - [x] supports links
+    - [x] supports all inline marks
     - [ ] supports soft breaks
-    - [ ] supports inline relationships
+    - [x] supports inline relationships
     - [ ] toolbar behaves as a toggle
-    - [ ] `enter` inserts a new list item (including splitting remaining text)
-    - [ ] `enter` in an empty+last-child list item resets to Paragraph after the outermost list block
+    - [x] `enter` inserts a new list item (including splitting remaining text)
+    - [x] `enter` in an empty+last-child list item resets to Paragraph after the outermost list block
     - [ ] `backspace` at the start of a list item, or in an empty list item, unwraps the list item to the parent list or converts to a paragraph at the top level (including splitting list blocks if followed by more list items)
-    - [ ] can be nested, including without any items at the parent level (weird, but ok)
-    - [ ] `tab` indents the current list item into a nested list of the same type
+    - [x] can be nested, including without any items at the parent level (weird, but ok)
+    - [x] `tab` indents the current list item into a nested list of the same type
     - [ ] `shift+tab` unwraps the list up to the top level (but does not remove the outer list when you are at the top level).
     - [ ] using the toolbar to switch list types converts the parent list of the selected list item (not all parents)
   - `Formats` are paragraph-like block types that you can insert, like `blockquote` and `code`.
-    - [ ] contains paragraphs
-    - [ ] supports links
-    - [ ] supports all inline marks
+    - [x] contains paragraphs
+    - [x] supports links
+    - [x] supports all inline marks
     - [ ] supports soft breaks
-    - [ ] supports inline relationships
+    - [x] supports inline relationships
     - [ ] toolbar behaves as a toggle
     - [ ] cannot be nested
-    - [ ] `backspace` at the start of the block resets to Paragraph (unwraps all paragraphs in the block)
-    - [ ] `enter` inserts a new paragraph within the format block
-    - [ ] `enter` in an empty+last-child paragraph resets to Paragraph after the format block
+    - [x] `backspace` at the start of the block resets to Paragraph (unwraps all paragraphs in the block)
+    - [x] `enter` inserts a new paragraph within the format block
+    - [x] `enter` in an empty+last-child paragraph resets to Paragraph after the format block
     - [ ] supports links, soft breaks, inline relationships and all inline marks
 - `Divider` is a special block type you can insert that renders a horizontal line
-  - [ ] Supports no children
+  - [x] Supports no children
   - [ ] Can be selected by clicking on it (displays hilighted; `backspace` or `delete` removes it)
 - `Layouts` are a special block type you can insert that contain almost any other block type, laid out horizontally in configurable columns
-  - [ ] contains column blocks, which must contain at least one paragraph (or other block format)
-  - [ ] can contain all built-in block formats
-  - [ ] can contain inline and block relationships
+  - [x] contains column blocks, which must contain at least one paragraph (or other block format)
+  - [x] can contain all built-in block formats
+  - [x] can contain inline and block relationships
   - [ ] can conditionally contain component blocks (based on component config)
   - [ ] cannot be nested
   - [ ] can only be inserted at the top level of the document
@@ -303,16 +303,16 @@ Note: the goal for these would be to allow content authors more flexibility, but
 
 > The cursor must be at the start of the block. It converts existing blocks (including switching between list and non-list block types) except for divider, which inserts a divider and moves the selection to a new block below.
 
-- [ ] \* or - followed by space converts to a bulleted list
-  - [ ] inside paragraphs
-- [ ] 1. or 1) followed by space converts to a numbered list
-  - [ ] inside paragraphs
-- [ ] > followed by space converts to a block quote
-  - [ ] inside paragraphs
+- [x] \* or - followed by space converts to a bulleted list
+  - [x] inside paragraphs
+- [x] 1. or 1) followed by space converts to a numbered list
+  - [x] inside paragraphs
+- [x] > followed by space converts to a block quote
+  - [x] inside paragraphs
 - [ ] \`\`\` converts to a code block
   - [ ] inside paragraphs
 - [ ] \#{1,6} followed by space converts to a H{n} heading
-  - [ ] inside paragraphs
+  - [x] inside paragraphs
   - [ ] inside headings
-- [ ] \--- inserts a divider
-  - [ ] inside paragraphs
+- [x] \--- inserts a divider
+  - [x] inside paragraphs
