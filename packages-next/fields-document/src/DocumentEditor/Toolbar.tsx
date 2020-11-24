@@ -21,6 +21,7 @@ import { ListIcon } from '@keystone-ui/icons/icons/ListIcon';
 import { HashIcon } from '@keystone-ui/icons/icons/HashIcon';
 import { Maximize2Icon } from '@keystone-ui/icons/icons/Maximize2Icon';
 import { Minimize2Icon } from '@keystone-ui/icons/icons/Minimize2Icon';
+import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon';
 import { MessageCircleIcon } from '@keystone-ui/icons/icons/MessageCircleIcon';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 
@@ -121,21 +122,23 @@ export const Toolbar = ({
         </Tooltip>
       )}
       {documentFeatures.dividers && (
-        <Button
-          onMouseDown={event => {
-            event.preventDefault();
-            Transforms.insertNodes(
-              editor,
-              { type: 'divider', children: [{ text: '' }] },
-              { match: node => node.type === '
-               
-               
-paragraph' }
-            );
-          }}
-        >
-          Divider
-        </Button>
+        <Tooltip content="Divider" placement="bottom" weight="subtle">
+          {attrs => (
+            <Button
+              onMouseDown={event => {
+                event.preventDefault();
+                Transforms.insertNodes(
+                  editor,
+                  { type: 'divider', children: [{ text: '' }] },
+                  { match: node => node.type === 'paragraph' }
+                );
+              }}
+              {...attrs}
+            >
+              <MinusIcon size="small" />
+            </Button>
+          )}
+        </Tooltip>
       )}
 
       <InsertBlockMenu blockTypes={documentFeatures.blockTypes} />
@@ -158,11 +161,7 @@ paragraph' }
 
 /* UI Components */
 
-const MarkButton
-          
-          
-          
-= forwardRef<any, { children: ReactNode; type: Mark }>(
+const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(
   ({ type, ...props }, ref) => {
     const editor = useSlate();
     return (
