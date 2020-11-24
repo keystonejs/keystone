@@ -3,7 +3,7 @@
 import { Editor, Element, Node, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
 
-import { jsx } from '@keystone-ui/core';
+import { jsx, useTheme } from '@keystone-ui/core';
 import { useControlledPopover } from '@keystone-ui/popover';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
@@ -19,6 +19,7 @@ export const ColumnOptionsProvider = ColumnOptionsContext.Provider;
 
 // UI Components
 const ColumnContainer = ({ attributes, children, element }: RenderElementProps) => {
+  const { spacing } = useTheme();
   const focused = useFocused();
   const selected = useSelected();
   const editor = useSlate();
@@ -28,15 +29,17 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
     isOpen: focused && selected,
     onClose: () => {},
   });
+
   return (
     <div {...attributes}>
       <div
         css={{
           display: 'grid',
-          margin: '8px 0',
+          marginBottom: spacing.medium,
+          marginTop: spacing.medium,
           gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
           position: 'relative',
-          columnGap: 4,
+          columnGap: spacing.small,
         }}
         {...trigger.props}
         ref={trigger.ref}
@@ -83,18 +86,22 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
 };
 
 // Single Columns
-const Column = ({ attributes, children }: RenderElementProps) => (
-  <div
-    css={{
-      border: '3px dashed #E2E8F0',
-      borderRadius: 4,
-      padding: 4,
-    }}
-    {...attributes}
-  >
-    {children}
-  </div>
-);
+const Column = ({ attributes, children }: RenderElementProps) => {
+  const { colors, radii, spacing } = useTheme();
+  return (
+    <div
+      css={{
+        border: `2px dashed ${colors.border}`,
+        borderRadius: radii.small,
+        paddingLeft: spacing.medium,
+        paddingRight: spacing.medium,
+      }}
+      {...attributes}
+    >
+      {children}
+    </div>
+  );
+};
 
 export const isInsideColumn = (editor: ReactEditor) => {
   return isBlockActive(editor, 'columns');
