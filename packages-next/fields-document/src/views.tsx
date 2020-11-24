@@ -76,6 +76,7 @@ export type DocumentFeatures = {
   };
   link: boolean;
   columns: [number, ...number[]][];
+  dividers: boolean;
 };
 
 export const controller = (
