@@ -8,23 +8,11 @@ export async function redeemAuthToken(
   protectIdentities: boolean,
   tokenValidMins: number | undefined,
   args: Record<string, string>,
-  ctx: any
+  itemAPI: any
 ): Promise<
-  | {
-      success: false;
-      code: AuthTokenRedemptionErrorCode;
-    }
-  | {
-      success: true;
-      item: { id: any; [prop: string]: any };
-    }
+  | { success: false; code: AuthTokenRedemptionErrorCode }
+  | { success: true; item: { id: any; [prop: string]: any } }
 > {
-  const fieldKeys = {
-    token: `${tokenType}Token`,
-    issuedAt: `${tokenType}IssuedAt`,
-    redeemedAt: `${tokenType}RedeemedAt`,
-  };
-
   // Palm off the bulk of the work; validating the identity and token
   const validationResult = await validateAuthToken(
     tokenType,
@@ -32,23 +20,18 @@ export async function redeemAuthToken(
     identityField,
     protectIdentities,
     tokenValidMins,
-    args
+    args,
+    itemAPI
   );
   if (!validationResult.success) {
     return validationResult;
   }
 
   // Save the token and related info back to the item
-  const { errors } = await ctx.keystone.executeGraphQL({
-    context: ctx.keystone.createContext({ skipAccessControl: true }),
-    query: `mutation($id: String, $token: String, $now: String) {
-      ${list.gqlNames.updateMutationName}(id: $id, data: { ${fieldKeys.redeemedAt}: $now }) { id }
-    }`,
-    variables: { id: validationResult.item.id, now: new Date().toISOString() },
+  await itemAPI.updateOne({
+    id: validationResult.item.id,
+    data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
   });
-  if (Array.isArray(errors) && errors.length > 0) {
-    throw errors[0];
-  }
 
   // Authenticated!
   return { success: true, item: validationResult.item };

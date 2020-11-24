@@ -3,7 +3,6 @@ import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 import { updateAuthToken } from '../lib/updateAuthToken';
 import { redeemAuthToken } from '../lib/redeemAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
-import { updateItemSecret } from '../lib/updateItemSecret';
 import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
 
 export function getPasswordResetSchema({
@@ -63,14 +62,14 @@ export function getPasswordResetSchema({
       Mutation: {
         async [gqlNames.sendItemPasswordResetLink](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];
+          const itemAPI = ctx.lists[listKey];
           const identity = args[identityField];
           const result = await updateAuthToken(
             'passwordReset',
-            listKey,
             identityField,
             protectIdentities,
             identity,
-            ctx
+            itemAPI
           );
 
           // Note: `success` can be false with no code
@@ -90,10 +89,11 @@ export function getPasswordResetSchema({
               token: result.token,
             });
           }
-          return {};
+          return null;
         },
         async [gqlNames.redeemItemPasswordResetToken](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];
+          const itemAPI = ctx.lists[listKey];
           const result = await redeemAuthToken(
             'passwordReset',
             list,
@@ -101,7 +101,7 @@ export function getPasswordResetSchema({
             protectIdentities,
             passwordResetLink.tokensValidForMins,
             args,
-            ctx
+            itemAPI
           );
 
           if (!result.success) {
@@ -114,21 +114,27 @@ export function getPasswordResetSchema({
             return { code: result.code, message };
           }
 
-          const secretPlaintext = args[secretField];
-          await updateItemSecret(list, result.item.id, secretPlaintext, secretField, ctx);
+          // Save the provided secret
+          await itemAPI.updateOne({
+            id: result.item.id,
+            data: { [secretField]: args[secretField] },
+          });
+
           return null;
         },
       },
       Query: {
         async [gqlNames.validateItemPasswordResetToken](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];
+          const itemAPI = ctx.lists[listKey];
           const result = await validateAuthToken(
             'passwordReset',
             list,
             identityField,
             protectIdentities,
             passwordResetLink.tokensValidForMins,
-            args
+            args,
+            itemAPI
           );
 
           if (!result.success && result.code) {

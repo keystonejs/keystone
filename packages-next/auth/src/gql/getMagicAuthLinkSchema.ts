@@ -58,14 +58,14 @@ export function getMagicAuthLinkSchema({
       Mutation: {
         async [gqlNames.sendItemMagicAuthLink](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];
+          const itemAPI = ctx.lists[listKey];
           const identity = args[identityField];
           const result = await updateAuthToken(
             'magicAuth',
-            listKey,
             identityField,
             protectIdentities,
             identity,
-            ctx
+            itemAPI
           );
 
           // Note: `success` can be false with no code
@@ -79,16 +79,13 @@ export function getMagicAuthLinkSchema({
             return { code: result.code, message };
           }
           if (result.success) {
-            await magicAuthLink.sendToken({
-              itemId: result.itemId,
-              identity,
-              token: result.token,
-            });
+            await magicAuthLink.sendToken({ itemId: result.itemId, identity, token: result.token });
           }
           return null;
         },
         async [gqlNames.redeemItemMagicAuthToken](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];
+          const itemAPI = ctx.lists[listKey];
           const result = await redeemAuthToken(
             'magicAuth',
             list,
@@ -96,7 +93,7 @@ export function getMagicAuthLinkSchema({
             protectIdentities,
             magicAuthLink.tokensValidForMins,
             args,
-            ctx
+            itemAPI
           );
 
           if (!result.success) {
@@ -110,7 +107,7 @@ export function getMagicAuthLinkSchema({
             return { code: result.code, message };
           }
 
-          const sessionToken = await ctx.startSession({ listKey: 'User', itemId: result.item.id });
+          const sessionToken = await ctx.startSession({ listKey, itemId: result.item.id });
           return { token: sessionToken, item: result.item };
         },
       },

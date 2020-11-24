@@ -4,7 +4,15 @@ import { ReactEditor } from 'slate-react';
 export const DEBUG = false;
 export const debugLog = (...args: any[]) => DEBUG && console.log(...args);
 
-export type Mark = 'bold' | 'italic' | 'underline' | 'strikethrough' | 'code';
+export type Mark =
+  | 'bold'
+  | 'italic'
+  | 'underline'
+  | 'strikethrough'
+  | 'code'
+  | 'superscript'
+  | 'subscript'
+  | 'keyboard';
 
 export const isBlockActive = (editor: ReactEditor, format: string) => {
   const [match] = Editor.nodes(editor, {
@@ -65,12 +73,13 @@ export const toggleMark = (editor: ReactEditor, format: Mark) => {
   }
 };
 
+// TODO: maybe move all the usages of this into one place so we don't have to run this many times per keypress
 export function getMaybeMarkdownShortcutText(text: string, editor: ReactEditor) {
   const { selection } = editor;
   if (text === ' ' && selection && Range.isCollapsed(selection)) {
     const { anchor } = selection;
     const block = Editor.above(editor, {
-      match: n => Editor.isBlock(editor, n),
+      match: n => n.type === 'paragraph',
     });
     const path = block ? block[1] : [];
     const start = Editor.start(editor, path);

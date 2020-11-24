@@ -58,6 +58,9 @@ export type DocumentFeatures = {
     underline: boolean;
     strikethrough: boolean;
     code: boolean;
+    superscript: boolean;
+    subscript: boolean;
+    keyboard: boolean;
   };
   listTypes: {
     ordered: boolean;
@@ -76,6 +79,7 @@ export type DocumentFeatures = {
   };
   link: boolean;
   columns: [number, ...number[]][];
+  dividers: boolean;
 };
 
 export const controller = (

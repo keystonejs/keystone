@@ -13,16 +13,11 @@ export async function validateAuthToken(
   identityField: string,
   protectIdentities: boolean,
   tokenValidMins: number | undefined,
-  args: Record<string, string>
+  args: Record<string, string>,
+  itemAPI: any
 ): Promise<
-  | {
-      success: false;
-      code: AuthTokenRedemptionErrorCode;
-    }
-  | {
-      success: true;
-      item: { id: any; [prop: string]: any };
-    }
+  | { success: false; code: AuthTokenRedemptionErrorCode }
+  | { success: true; item: { id: any; [prop: string]: any } }
 > {
   const fieldKeys = {
     token: `${tokenType}Token`,
@@ -34,8 +29,7 @@ export async function validateAuthToken(
   const canidatePlaintext = args.token;
 
   // TODO: Allow additional filters to be suppled in config? eg. `validUserConditions: { isEnable: true, isVerified: true, ... }`
-  // TODO: Maybe talk to the list rather than the adapter? (Might not validate the filters though)
-  const items = await list.adapter.find({ [identityField]: identity });
+  const items = await itemAPI.findMany({ where: { [identityField]: identity } });
 
   // Check the for identity-related failures first
   let specificCode: AuthTokenRedemptionErrorCode | undefined;
@@ -51,39 +45,30 @@ export async function validateAuthToken(
     if (protectIdentities) {
       await tokenFieldInstance.generateHash('simulated-password-to-counter-timing-attack');
     }
-    return {
-      success: false,
-      code: protectIdentities ? 'FAILURE' : specificCode,
-    };
+    return { success: false, code: protectIdentities ? 'FAILURE' : specificCode };
   }
 
   // Check for non-identity failures
   const item = items[0];
-  const isMatch = await tokenFieldInstance.compare(canidatePlaintext, item[fieldKeys.token]);
-  if (!isMatch) {
-    return {
-      success: false,
-      code: protectIdentities ? 'FAILURE' : 'TOKEN_MISMATCH',
-    };
-  }
+  if (await tokenFieldInstance.compare(canidatePlaintext, item[fieldKeys.token])) {
+    // Now that we know the identity and token are valid, we can always return 'helpful' errors and stop worrying about protectIdentities
+    if (item[fieldKeys.redeemedAt]) {
+      return { success: false, code: 'TOKEN_REDEEMED' };
+    }
+    if (!item[fieldKeys.issuedAt] || typeof item[fieldKeys.issuedAt].getTime !== 'function') {
+      throw new Error(
+        `Error redeeming authToken: field ${list.listKey}.${fieldKeys.issuedAt} isn't a valid Date object.`
+      );
+    }
+    const elapsedMins = (Date.now() - item[fieldKeys.issuedAt].getTime()) / (1000 * 60);
+    const validForMins = sanitiseValidForMinsConfig(tokenValidMins);
+    if (elapsedMins > validForMins) {
+      return { success: false, code: 'TOKEN_EXPIRED' };
+    }
 
-  // Now that we know the identity and token are valid, we can always return 'helpful' errors and stop worrying about protectIdentities
-  if (item[fieldKeys.redeemedAt]) {
-    return { success: false, code: 'TOKEN_REDEEMED' };
+    // Authenticated!
+    return { success: true, item };
+  } else {
+    return { success: false, code: protectIdentities ? 'FAILURE' : 'TOKEN_MISMATCH' };
   }
-  if (!item[fieldKeys.issuedAt] || typeof item[fieldKeys.issuedAt].getTime !== 'function') {
-    throw new Error(
-      `Error redeeming authToken: field ${JSON.stringify(list.listKey)}.${JSON.stringify(
-        fieldKeys.issuedAt
-      )} isn't a valid Date object.`
-    );
-  }
-  const elapsedMins = (Date.now() - item[fieldKeys.issuedAt].getTime()) / (1000 * 60);
-  const validForMins = sanitiseValidForMinsConfig(tokenValidMins);
-  if (elapsedMins > validForMins) {
-    return { success: false, code: 'TOKEN_EXPIRED' };
-  }
-
-  // Authenticated!
-  return { success: true, item };
 }

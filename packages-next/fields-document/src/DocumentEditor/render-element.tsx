@@ -44,6 +44,13 @@ export const renderElement = (props: RenderElementProps) => {
       return <BlockquoteElement {...props} />;
     case 'relationship':
       return <RelationshipElement {...props} />;
+    case 'divider':
+      return (
+        <div {...props.attributes}>
+          <hr css={{ height: 4, backgroundColor: 'darkgray' }} />
+          {props.children}
+        </div>
+      );
     default:
       return (
         <p css={{ textAlign: props.element.textAlign as any }} {...props.attributes}>

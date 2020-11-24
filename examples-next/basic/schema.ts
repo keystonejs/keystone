@@ -179,6 +179,9 @@ export const lists = createSchema({
           italic: true,
           strikethrough: true,
           underline: true,
+          keyboard: true,
+          subscript: true,
+          superscript: true,
         },
         listTypes: {
           ordered: true,
@@ -194,6 +197,7 @@ export const lists = createSchema({
           [2, 1, 1],
         ],
         link: true,
+        dividers: true,
       }),
       publishDate: timestamp(),
       author: relationship({

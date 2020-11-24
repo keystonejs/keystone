@@ -6,62 +6,62 @@
   - [ ] You can switch between most block formats using the toolbar and formatting shortcuts
   - [ ] When you insert a new block format using the insert menu, it inserts a new block of that type after the current one
 - `Alignment` is a property of a limited number of block types
-- `Inline Blocks` are special blocks you can insert that appear inline
+- `Inline Elements` are things you can insert that appear inline and have special properties
 - `Inline Marks` are formatting marks applied to text nodes within a block. Includes things like bold, italic, etc.
 - `Links` are hyperlinks that can be applied to text (like a mark, with an `href` property)
 - `Block Classes` represent a set of block types that implement consistent behaviour (and are often configured together)
   - `Paragraph` is the default block type at the root of the editor
-    - [ ] you cannot nest paragraphs
-    - [ ] supports alignment
-    - [ ] supports all inline marks
-    - [ ] supports links
+    - [x] you cannot nest paragraphs
+    - [x] supports alignment
+    - [x] supports all inline marks
+    - [x] supports links
     - [ ] supports soft breaks
-    - [ ] supports inline relationships
-    - [ ] enter inserts a new paragraph after the current one (including splitting remaining text)
+    - [x] supports inline relationships
+    - [x] enter inserts a new paragraph after the current one (including splitting remaining text)
   - `Headings` 1-6
-    - [ ] only contains text, no nested blocks
+    - [x] only contains text, no nested blocks
     - [ ] supports alignment
-    - [ ] supports links
+    - [x] supports links
     - [ ] supports soft breaks
     - [ ] toolbar behaves as a toggle
-    - [ ] you can convert existing blocks to headings
+    - [x] you can convert existing blocks to headings
     - [ ] inline marks and relationships are stripped when you convert a block into a heading
-    - [ ] you cannot insert nested headings
-    - [ ] `enter` inserts a new paragraph after the block (including splitting remaining text)
+    - [x] you cannot insert nested headings
+    - [x] `enter` inserts a new paragraph after the block (including splitting remaining text)
     - [ ] `backspace` at the start resets to Paragraph
   - `Lists` (technically, these contain list item blocks)
-    - [ ] contains list items and nested list blocks, no other blocks
-    - [ ] supports links
-    - [ ] supports all inline marks
+    - [x] contains list items and nested list blocks, no other blocks
+    - [x] supports links
+    - [x] supports all inline marks
     - [ ] supports soft breaks
-    - [ ] supports inline relationships
+    - [x] supports inline relationships
     - [ ] toolbar behaves as a toggle
-    - [ ] `enter` inserts a new list item (including splitting remaining text)
-    - [ ] `enter` in an empty+last-child list item resets to Paragraph after the outermost list block
+    - [x] `enter` inserts a new list item (including splitting remaining text)
+    - [x] `enter` in an empty+last-child list item resets to Paragraph after the outermost list block
     - [ ] `backspace` at the start of a list item, or in an empty list item, unwraps the list item to the parent list or converts to a paragraph at the top level (including splitting list blocks if followed by more list items)
-    - [ ] can be nested, including without any items at the parent level (weird, but ok)
-    - [ ] `tab` indents the current list item into a nested list of the same type
+    - [x] can be nested, including without any items at the parent level (weird, but ok)
+    - [x] `tab` indents the current list item into a nested list of the same type
     - [ ] `shift+tab` unwraps the list up to the top level (but does not remove the outer list when you are at the top level).
     - [ ] using the toolbar to switch list types converts the parent list of the selected list item (not all parents)
   - `Formats` are paragraph-like block types that you can insert, like `blockquote` and `code`.
-    - [ ] contains paragraphs
-    - [ ] supports links
-    - [ ] supports all inline marks
+    - [x] contains paragraphs
+    - [x] supports links
+    - [x] supports all inline marks
     - [ ] supports soft breaks
-    - [ ] supports inline relationships
+    - [x] supports inline relationships
     - [ ] toolbar behaves as a toggle
     - [ ] cannot be nested
-    - [ ] `backspace` at the start of the block resets to Paragraph (unwraps all paragraphs in the block)
-    - [ ] `enter` inserts a new paragraph within the format block
-    - [ ] `enter` in an empty+last-child paragraph resets to Paragraph after the format block
+    - [x] `backspace` at the start of the block resets to Paragraph (unwraps all paragraphs in the block)
+    - [x] `enter` inserts a new paragraph within the format block
+    - [x] `enter` in an empty+last-child paragraph resets to Paragraph after the format block
     - [ ] supports links, soft breaks, inline relationships and all inline marks
 - `Divider` is a special block type you can insert that renders a horizontal line
-  - [ ] Supports no children
+  - [x] Supports no children
   - [ ] Can be selected by clicking on it (displays hilighted; `backspace` or `delete` removes it)
 - `Layouts` are a special block type you can insert that contain almost any other block type, laid out horizontally in configurable columns
-  - [ ] contains column blocks, which must contain at least one paragraph (or other block format)
-  - [ ] can contain all built-in block formats
-  - [ ] can contain inline and block relationships
+  - [x] contains column blocks, which must contain at least one paragraph (or other block format)
+  - [x] can contain all built-in block formats
+  - [x] can contain inline and block relationships
   - [ ] can conditionally contain component blocks (based on component config)
   - [ ] cannot be nested
   - [ ] can only be inserted at the top level of the document
@@ -69,9 +69,9 @@
   - [ ] `shift+tab` at the start of a column moves the cursor to the end of the previous column, or before the layout block
   - [ ] layouts "trap" the selection - `enter` does not insert outside of the current column, and `backspace` does not remove columns or the layout block
   - [ ] you can select a layout by clicking in its border or margin (displays hilighted; `backspace` or `delete` removes it)
-  - [ ] when a layout is the last node in a document, we ensure a paragraph exists after it
+  - [ ] when a layout is the last node in a document, we ensure a paragraph exists after it (low priority)
 - `Relationships` are a thing you can define, with one of three types which determine where it is available. They store a reference to an itemId and are (optionally) hydrated with additional data when the document field is queried. They are voids and contain no editable text.
-  - `inline` relationships can be inserted into paragraphs and lists, and appear inline (like the "mentions" pattern)
+  - `inline` relationships can be inserted into paragraphs and lists, and appear inline (like the "mentions" pattern -- low priority)
   - `block` relationships can be inserted like other blocks at the top level of the document, and inside layouts
   - `prop` relationships are available to be referenced by component block props
 - `Component Blocks` are configurable block elements that you can insert at the top level, and conditionally inside layouts. They are specified in the views file with `props` (fields) and a `Preview` component that renders them in the editor.
@@ -97,13 +97,16 @@ type FormattingConfig = {
     blockquote?: true,
     code?: true,
   },
-  headingLevels?: [1, 2, 3, 4, 5, 6],
+  headingLevels?: (1 | 2 | 3 | 4 | 5 | 6)[],
   inlineMarks?: {
     bold?: true,
     code?: true,
     italic?: true,
     strikethrough?: true,
     underline?: true,
+    keyboard?: true,
+    superscript?: true,
+    subscript?: true,
   },
   listTypes?: {
     ordered?: true,
@@ -227,17 +230,25 @@ type ComponentChildPropConfig = {
 - [ ] Markdown formatting shortcuts / autoformat (see below)
 - [ ] Indent and outdent list items (inc. with `tab` / `shift+tab` press)
 - [ ] Insert block type / list type / component from inline menu (`/` trigger)
+- [ ] Gracefully handle misconfigured comonent blocks
+- [ ] Handle component blocks that exist in the document but aren't configured in the field (show a built-in "not available" preview, with a remove button)
 
 # UI Improvements
 
+- [ ] Generate icons for layouts :tada:
+
 - [ ] Hilight blocks in red when hovering over the "remove" toolbar button
-- [ ] Show icons for columns (maybe with "more..." dropdown?)
+
 - [ ] Only show the innermost toolbar when selection is inside multiple blocks with toolbars
+
 - [ ] Selected style for component block elements
 
 - [ ] Can we find a way to support placeholders for child props in component blocks?
+
 - [ ] Caret position at boundary of inline marks
+
 - [ ] Caret position on either side of component block elements
+
 - [ ] New inline-relationship style and selection UI with prefix support (would look more like tags w/ a popup rather than a Select)
 
 ## New marks and blocks
@@ -258,6 +269,8 @@ type ComponentChildPropConfig = {
 
 Note: the goal for these would be to allow content authors more flexibility, but without going "fully wysiwyg". We'd need some way to express design system contraints you can choose from as the content author, not complete flexibility.
 
+- [ ] Repeating sets of props in component blocks
+- [ ] How could we use the editor outside the Admin UI?
 - [ ] Text foreground and background color selection
 - [ ] Turn `quote` and `panel` blocks into plugins (maybe just use component blocks?)
 - [ ] Cloudinary Images (including uploads, sizing based on contraints)
@@ -278,26 +291,28 @@ Note: the goal for these would be to allow content authors more flexibility, but
 
 ## Inline
 
-> These should work inside any block that supports the type of mark.
+> These should work inside any block that supports the type of mark, in the same line. Check when the character is typed.
 
-- [ ] \* on either side of text followed by space formats **bold**
-- [ ] \_ on either side of text followed by space formats _italic_
-- [ ] \` on either side of text followed by space formats `inline code`
-- [ ] ~~ on either side of text followed by space formats ~~strikethrough~~
-- [ ] [text](url) followed by a space creates a link
+- [ ] \_\_ or \*\* on either side of text followed by a word boundary formats **bold**
+- [ ] \_ or \* on either side of text followed by a word boundary formats _italic_
+- [ ] \` on either side of text followed by a word boundary formats `inline code`
+- [ ] \~~ on either side of text followed by a word boundary formats ~~strikethrough~~
+- [ ] [text](url) followed by a word boundary creates a link
 
 ## Blocks
 
-> These should work in any standard block: paragraphs, headings, blocks (quote, code, etc) and list elements. The cursor must be at the start of the block. It converts existing blocks (including switching between list and non-list block types) except for divider, which inserts a divider and moves the selection to a new block below.
+> The cursor must be at the start of the block. It converts existing blocks (including switching between list and non-list block types) except for divider, which inserts a divider and moves the selection to a new block below.
 
-- [ ] \* or - followed by space converts to a bulleted list
-- [ ] 1. or 1) followed by space converts to a numbered list
-- [ ] > followed by space converts to a block quote
-- [ ] \`\`\` followed by space converts to a code block
-- [ ] # followed by space converts to an H1 heading
-- [ ] ## followed by space converts to an H2 heading
-- [ ] ### followed by space converts to an H3 heading
-- [ ] #### followed by space converts to an H4 heading
-- [ ] ##### followed by space converts to an H5 heading
-- [ ] ###### followed by space converts to an H6 heading
-- [ ] --- followed by a space to inserts a divider
+- [x] \* or - followed by space converts to a bulleted list
+  - [x] inside paragraphs
+- [x] 1. or 1) followed by space converts to a numbered list
+  - [x] inside paragraphs
+- [x] > followed by space converts to a block quote
+  - [x] inside paragraphs
+- [ ] \`\`\` converts to a code block
+  - [ ] inside paragraphs
+- [ ] \#{1,6} followed by space converts to a H{n} heading
+  - [x] inside paragraphs
+  - [ ] inside headings
+- [x] \--- inserts a divider
+  - [x] inside paragraphs

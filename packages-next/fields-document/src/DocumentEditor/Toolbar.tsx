@@ -120,6 +120,23 @@ export const Toolbar = ({
           )}
         </Tooltip>
       )}
+      {documentFeatures.dividers && (
+        <Button
+          onMouseDown={event => {
+            event.preventDefault();
+            Transforms.insertNodes(
+              editor,
+              { type: 'divider', children: [{ text: '' }] },
+              { match: node => node.type === '
+               
+               
+paragraph' }
+            );
+          }}
+        >
+          Divider
+        </Button>
+      )}
 
       <InsertBlockMenu blockTypes={documentFeatures.blockTypes} />
 
@@ -141,7 +158,11 @@ export const Toolbar = ({
 
 /* UI Components */
 
-const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(
+const MarkButton
+          
+          
+          
+= forwardRef<any, { children: ReactNode; type: Mark }>(
   ({ type, ...props }, ref) => {
     const editor = useSlate();
     return (
@@ -501,9 +522,12 @@ const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
           {showMenu && (
             <Hoverable ref={dialog.ref} {...dialog.props}>
               <ButtonGroup direction="column">
-                {marks.strikethrough && <MarkButton type="strikethrough">Strikethrough</MarkButton>}
                 {marks.underline && <MarkButton type="underline">Underline</MarkButton>}
+                {marks.strikethrough && <MarkButton type="strikethrough">Strikethrough</MarkButton>}
                 {marks.code && <MarkButton type="code">Code</MarkButton>}
+                {marks.keyboard && <MarkButton type="keyboard">Keyboard</MarkButton>}
+                {marks.subscript && <MarkButton type="subscript">Subscript</MarkButton>}
+                {marks.superscript && <MarkButton type="superscript">Superscript</MarkButton>}
               </ButtonGroup>
             </Hoverable>
           )}

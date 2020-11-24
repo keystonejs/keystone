@@ -29,6 +29,7 @@ import {
   withRelationship,
 } from './relationship';
 import { DocumentFeatures } from '../views';
+import { withDivider } from './divider';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -69,7 +70,7 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
 /* Leaf Elements */
 
 const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
-  const { underline, strikethrough, bold, italic, code } = leaf;
+  const { underline, strikethrough, bold, italic, code, keyboard, superscript, subscript } = leaf;
   if (code) {
     children = <code>{children}</code>;
   }
@@ -81,6 +82,15 @@ const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
   }
   if (italic) {
     children = <em>{children}</em>;
+  }
+  if (keyboard) {
+    children = <kbd>{children}</kbd>;
+  }
+  if (superscript) {
+    children = <sup>{children}</sup>;
+  }
+  if (subscript) {
+    children = <sub>{children}</sub>;
   }
   return (
     <span
@@ -122,10 +132,13 @@ export function DocumentEditor({
             withComponentBlocks(
               componentBlocks,
               withParagraphs(
-                withColumns(
-                  withBlockquote(
-                    documentFeatures.blockTypes.blockquote,
-                    withLink(withQuote(withPanel(withHistory(withReact(createEditor())))))
+                withDivider(
+                  documentFeatures.dividers,
+                  withColumns(
+                    withBlockquote(
+                      documentFeatures.blockTypes.blockquote,
+                      withLink(withQuote(withPanel(withHistory(withReact(createEditor())))))
+                    )
                   )
                 )
               )

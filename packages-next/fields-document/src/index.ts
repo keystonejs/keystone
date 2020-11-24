@@ -40,6 +40,9 @@ export type DocumentFieldConfig<
     underline?: true;
     strikethrough?: true;
     code?: true;
+    superscript?: true;
+    subscript?: true;
+    keyboard?: true;
   };
   listTypes?: {
     ordered?: true;
@@ -57,6 +60,7 @@ export type DocumentFieldConfig<
     // code?: true;
   };
   link?: true;
+  dividers?: true;
   columns?: readonly (readonly [number, ...number[]])[];
 };
 
@@ -105,6 +109,9 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
           italic: !!config.inlineMarks?.italic,
           strikethrough: !!config.inlineMarks?.strikethrough,
           underline: !!config.inlineMarks?.underline,
+          keyboard: !!config.inlineMarks?.keyboard,
+          subscript: !!config.inlineMarks?.subscript,
+          superscript: !!config.inlineMarks?.superscript,
         },
         listTypes: {
           ordered: !!config.listTypes?.ordered,
@@ -114,6 +121,7 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
         columns: [...new Set((config.columns || []).map(x => JSON.stringify(x)))].map(x =>
           JSON.parse(x)
         ),
+        dividers: !!config.dividers,
       },
     };
   },
