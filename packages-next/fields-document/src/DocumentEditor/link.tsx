@@ -54,10 +54,22 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
   const selected = useSelected();
   const focused = useFocused();
   const [focusedInHoverable, setFocusedInHoverable] = useState(false);
-  const { dialog, trigger } = useControlledPopover({
-    isOpen: (selected && focused) || focusedInHoverable,
-    onClose: () => {},
-  });
+  const { dialog, trigger } = useControlledPopover(
+    {
+      isOpen: (selected && focused) || focusedInHoverable,
+      onClose: () => {},
+    },
+    {
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
+        },
+      ],
+    }
+  );
 
   return (
     <span {...attributes} css={{ position: 'relative', display: 'inline-block' }}>

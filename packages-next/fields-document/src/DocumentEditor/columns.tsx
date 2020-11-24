@@ -4,6 +4,7 @@ import { Editor, Element, Node, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
+import { Tooltip } from '@keystone-ui/tooltip';
 import { useControlledPopover } from '@keystone-ui/popover';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
@@ -25,21 +26,33 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
   const editor = useSlate();
   const layout = element.layout as number[];
   const columnLayouts = useContext(ColumnOptionsContext);
-  const { dialog, trigger } = useControlledPopover({
-    isOpen: focused && selected,
-    onClose: () => {},
-  });
+  const { dialog, trigger } = useControlledPopover(
+    {
+      isOpen: focused && selected,
+      onClose: () => {},
+    },
+    {
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
+        },
+      ],
+    }
+  );
 
   return (
-    <div {...attributes}>
+    <div css={{ position: 'relative' }} {...attributes}>
       <div
         css={{
+          columnGap: spacing.small,
           display: 'grid',
+          gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
           marginBottom: spacing.medium,
           marginTop: spacing.medium,
-          gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
           position: 'relative',
-          columnGap: spacing.small,
         }}
         {...trigger.props}
         ref={trigger.ref}

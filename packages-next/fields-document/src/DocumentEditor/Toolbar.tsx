@@ -209,7 +209,17 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
       isOpen: showMenu,
       onClose: () => setShowMenu(false),
     },
-    { placement: 'bottom-start' }
+    {
+      placement: 'bottom-start',
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
+        },
+      ],
+    }
   );
 
   // prep button label
@@ -287,7 +297,17 @@ const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment']
       isOpen: showMenu,
       onClose: () => setShowMenu(false),
     },
-    { placement: 'bottom-start' }
+    {
+      placement: 'bottom-start',
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
+        },
+      ],
+    }
   );
 
   const [currentParagraph] = Editor.nodes(editor, {
@@ -405,7 +425,17 @@ const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTy
       isOpen: showMenu,
       onClose: () => setShowMenu(false),
     },
-    { placement: 'bottom-start' }
+    {
+      placement: 'bottom-start',
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
+        },
+      ],
+    }
   );
   const editor = useSlate();
   const shouldInsertBlock = onlyContainerNodeInCurrentSelection(editor);
@@ -476,7 +506,17 @@ const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
       isOpen: showMenu,
       onClose: () => setShowMenu(false),
     },
-    { placement: 'bottom-start' }
+    {
+      placement: 'bottom-start',
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
+        },
+      ],
+    }
   );
   const hasMenu = marks.strikethrough || marks.underline || marks.code;
 
