@@ -6,7 +6,7 @@
   - [ ] You can switch between most block formats using the toolbar and formatting shortcuts
   - [ ] When you insert a new block format using the insert menu, it inserts a new block of that type after the current one
 - `Alignment` is a property of a limited number of block types
-- `Inline Element` are things you can insert that appear inline and have special properties
+- `Inline Elements` are things you can insert that appear inline and have special properties
 - `Inline Marks` are formatting marks applied to text nodes within a block. Includes things like bold, italic, etc.
 - `Links` are hyperlinks that can be applied to text (like a mark, with an `href` property)
 - `Block Classes` represent a set of block types that implement consistent behaviour (and are often configured together)
