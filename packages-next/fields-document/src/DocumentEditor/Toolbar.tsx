@@ -181,14 +181,13 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
     <div
       css={{
         backgroundColor: colors.background,
-        borderBottom: `1px solid ${colors.border}`,
-        borderTop: `1px solid ${colors.border}`,
+        boxShadow: `0 1px ${colors.border}, 0 -1px ${colors.border}`,
         display: 'flex',
         flexWrap: 'wrap',
-        paddingBottom: spacing.medium,
-        paddingTop: spacing.medium,
+        paddingBottom: spacing.small,
+        paddingTop: spacing.small,
         position: 'sticky',
-        top: -1,
+        top: 0,
         zIndex: 2,
       }}
     >

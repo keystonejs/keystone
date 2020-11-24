@@ -172,7 +172,7 @@ export function DocumentEditor({
           overflowY: 'auto', // required to keep the toolbar stuck in place
           position: 'absolute',
           right: 0,
-          top: -1,
+          top: 0,
           zIndex: 100,
         }
       }
