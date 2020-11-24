@@ -7,7 +7,7 @@ export function withDivider(enabled: boolean, editor: ReactEditor) {
     return node.type === 'divider' || isVoid(node);
   };
   if (enabled) {
-    // this is slightly different to the usages of getMaybeMarkdownShortcutText because
+    // this is slightly different to the usages of getMaybeMarkdownShortcutText because the insertion happens on - rather than a space
     editor.insertText = text => {
       const { selection } = editor;
       if (text === '-' && selection && Range.isCollapsed(selection)) {
