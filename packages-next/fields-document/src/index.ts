@@ -40,6 +40,9 @@ export type DocumentFieldConfig<
     underline?: true;
     strikethrough?: true;
     code?: true;
+    superscript?: true;
+    subscript?: true;
+    keyboard?: true;
   };
   listTypes?: {
     ordered?: true;
@@ -106,6 +109,9 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
           italic: !!config.inlineMarks?.italic,
           strikethrough: !!config.inlineMarks?.strikethrough,
           underline: !!config.inlineMarks?.underline,
+          keyboard: !!config.inlineMarks?.keyboard,
+          subscript: !!config.inlineMarks?.subscript,
+          superscript: !!config.inlineMarks?.superscript,
         },
         listTypes: {
           ordered: !!config.listTypes?.ordered,

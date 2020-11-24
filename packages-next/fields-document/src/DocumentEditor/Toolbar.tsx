@@ -278,5 +278,20 @@ const InlineTextThings = ({ marks }: { marks: DocumentFeatures['inlineMarks'] })
         <span css={{ fontFamily: 'monospace' }}>C</span>
       </MarkButton>
     )}
+    {marks.keyboard && (
+      <MarkButton type="keyboard">
+        <kbd>Keyboard</kbd>
+      </MarkButton>
+    )}
+    {marks.subscript && (
+      <MarkButton type="subscript">
+        <sub>Subscript</sub>
+      </MarkButton>
+    )}
+    {marks.superscript && (
+      <MarkButton type="superscript">
+        <sup>Superscript</sup>
+      </MarkButton>
+    )}
   </Fragment>
 );
