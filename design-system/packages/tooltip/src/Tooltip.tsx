@@ -21,7 +21,7 @@ type Props = {
   children: (props: RenderProps) => ReactElement;
   /** The content of the tooltip. */
   content: string;
-  /** Hide the tooltip when the user clicks the trigger element. */
+  /** Turn off, to maintain the tooltip when the user clicks the trigger element. */
   hideOnClick?: boolean;
   /** Where, in relation to the target, to place the tooltip. */
   placement?: 'top' | 'right' | 'bottom' | 'left';
@@ -32,7 +32,7 @@ type Props = {
 export const Tooltip = ({
   children,
   content,
-  hideOnClick,
+  hideOnClick = true,
   placement = 'top',
   weight = 'bold',
 }: Props) => {
@@ -56,6 +56,7 @@ export const Tooltip = ({
   const hideTooltip = () => setOpen(false);
   const internalRef = useRef<HTMLElement>(null);
 
+  // avoid overriding the consumer's `onClick` handler
   useEffect(() => {
     const triggerEl = internalRef.current;
 

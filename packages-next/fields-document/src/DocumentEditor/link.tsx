@@ -132,7 +132,7 @@ export const LinkButton = () => {
   const editor = useSlate();
   const isActive = isLinkActive(editor);
   return (
-    <Tooltip content="Link" placement="bottom" weight="subtle" hideOnClick>
+    <Tooltip content="Link" placement="bottom" weight="subtle">
       {attrs => (
         <Button
           isDisabled={!isActive && (!editor.selection || Range.isCollapsed(editor.selection))}

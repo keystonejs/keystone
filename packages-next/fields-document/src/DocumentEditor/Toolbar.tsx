@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { forwardRef, Fragment, ReactNode, useState } from 'react';
+import { Fragment, ReactNode, forwardRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
 import { useSlate } from 'slate-react';
 import { applyRefs } from 'apply-ref';
@@ -128,7 +128,6 @@ export const Toolbar = ({
         content={viewState.expanded ? 'Collapse' : 'Expand'}
         placement="bottom"
         weight="subtle"
-        hideOnClick
       >
         {attrs => (
           <Button onClick={viewState.toggle} {...attrs}>
@@ -229,7 +228,7 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
                 match: n => n.type === 'heading' && n.level === hNum,
               });
               let isActive = !!node;
-              let Tag = `h${hNum}`;
+              let Tag = `h${hNum}` as any; // maybe? `keyof JSX.IntrinsicElements`
 
               return (
                 <Button
@@ -292,7 +291,7 @@ const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment']
         position: 'relative',
       }}
     >
-      <Tooltip content="Text alignment" placement="bottom" weight="subtle" hideOnClick>
+      <Tooltip content="Text alignment" placement="bottom" weight="subtle">
         {({ ref, ...attrs }) => (
           <Button
             ref={applyRefs(ref, trigger.ref)}
@@ -398,7 +397,7 @@ const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTy
         position: 'relative',
       }}
     >
-      <Tooltip content="Insert" placement="bottom" weight="subtle" hideOnClick>
+      <Tooltip content="Insert" placement="bottom" weight="subtle">
         {({ ref, ...attrs }) => (
           <Button
             ref={applyRefs(ref, trigger.ref)}
@@ -484,7 +483,7 @@ const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
 
       {hasMenu && (
         <Fragment>
-          <Tooltip content="More formatting" placement="bottom" weight="subtle" hideOnClick>
+          <Tooltip content="More formatting" placement="bottom" weight="subtle">
             {({ ref, ...attrs }) => (
               <Button
                 ref={applyRefs(ref, trigger.ref)}

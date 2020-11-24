@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
-import { ButtonHTMLAttributes, HTMLAttributes, createContext, forwardRef, useContext } from 'react';
-import { jsx, useTheme } from '@keystone-ui/core';
+import { ButtonHTMLAttributes, HTMLAttributes, createContext, useContext } from 'react';
+import { forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
 
 export const Spacer = () => {
   const { spacing } = useTheme();
@@ -47,7 +47,7 @@ type ButtonProps = {
   isSelected?: boolean;
   variant?: 'default' | 'action' | 'destructive';
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>;
-export const Button = forwardRef<any, ButtonProps>(
+export const Button = forwardRefWithAs<'button', ButtonProps>(
   ({ as: Tag = 'button', isDisabled, isSelected, variant = 'default', ...props }, ref) => {
     const extraProps: any = {};
     const { direction: groupDirection } = useButtonGroupContext();
