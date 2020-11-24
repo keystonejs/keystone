@@ -194,6 +194,7 @@ export const lists = createSchema({
           [2, 1, 1],
         ],
         link: true,
+        dividers: true,
       }),
       publishDate: timestamp(),
       author: relationship({

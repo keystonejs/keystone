@@ -57,6 +57,7 @@ export type DocumentFieldConfig<
     // code?: true;
   };
   link?: true;
+  dividers?: true;
   columns?: readonly (readonly [number, ...number[]])[];
 };
 
@@ -114,6 +115,7 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
         columns: [...new Set((config.columns || []).map(x => JSON.stringify(x)))].map(x =>
           JSON.parse(x)
         ),
+        dividers: !!config.dividers,
       },
     };
   },
