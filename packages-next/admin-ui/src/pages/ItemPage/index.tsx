@@ -532,15 +532,17 @@ const ColumnLayout = (props: HTMLAttributes<HTMLDivElement>) => {
   const { spacing } = useTheme();
 
   return (
-    <Container
-      css={{
-        alignItems: 'start',
-        display: 'grid',
-        gap: spacing.xlarge,
-        gridTemplateColumns: `2fr 1fr`,
-      }}
-      {...props}
-    />
+    <Container css={{ position: 'relative' }}>
+      <div
+        css={{
+          alignItems: 'start',
+          display: 'grid',
+          gap: spacing.xlarge,
+          gridTemplateColumns: `2fr 1fr`,
+        }}
+        {...props}
+      />
+    </Container>
   );
 };
 

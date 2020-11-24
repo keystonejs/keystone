@@ -58,6 +58,9 @@ export type DocumentFeatures = {
     underline: boolean;
     strikethrough: boolean;
     code: boolean;
+    superscript: boolean;
+    subscript: boolean;
+    keyboard: boolean;
   };
   listTypes: {
     ordered: boolean;

@@ -1,15 +1,18 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
 import { Editor, Element, Node, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
 
-import { HoverableElement } from './components/hoverable';
-import { Button } from './components';
+import { jsx, useTheme } from '@keystone-ui/core';
+import { Tooltip } from '@keystone-ui/tooltip';
+import { useControlledPopover } from '@keystone-ui/popover';
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
+
+import { InlineDialog } from './components/inline-dialog';
+import { Button, ButtonGroup, Separator } from './components';
 import { paragraphElement } from './paragraphs';
 import { isBlockActive, moveChildren } from './utils';
 import { createContext, useContext } from 'react';
-import { useControlledPopover } from '@keystone-ui/popover';
 
 const ColumnOptionsContext = createContext<[number, ...number[]][]>([]);
 
@@ -17,24 +20,39 @@ export const ColumnOptionsProvider = ColumnOptionsContext.Provider;
 
 // UI Components
 const ColumnContainer = ({ attributes, children, element }: RenderElementProps) => {
+  const { spacing } = useTheme();
   const focused = useFocused();
   const selected = useSelected();
   const editor = useSlate();
   const layout = element.layout as number[];
   const columnLayouts = useContext(ColumnOptionsContext);
-  const { dialog, trigger } = useControlledPopover({
-    isOpen: focused && selected,
-    onClose: () => {},
-  });
+  const { dialog, trigger } = useControlledPopover(
+    {
+      isOpen: focused && selected,
+      onClose: () => {},
+    },
+    {
+      modifiers: [
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
+        },
+      ],
+    }
+  );
+
   return (
-    <div {...attributes}>
+    <div css={{ position: 'relative' }} {...attributes}>
       <div
         css={{
+          columnGap: spacing.small,
           display: 'grid',
-          margin: '8px 0',
           gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
+          marginBottom: spacing.medium,
+          marginTop: spacing.medium,
           position: 'relative',
-          columnGap: 4,
         }}
         {...trigger.props}
         ref={trigger.ref}
@@ -42,52 +60,65 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
         {children}
       </div>
       {focused && selected && (
-        <HoverableElement ref={dialog.ref} {...dialog.props}>
-          {columnLayouts.map((layoutOption, i) => (
-            <Button
-              isSelected={layoutOption.toString() === layout.toString()}
-              key={i}
-              onMouseDown={event => {
-                event.preventDefault();
-                const path = ReactEditor.findPath(editor, element);
-                const cols = {
-                  type: 'columns',
-                  layout: layoutOption,
-                };
-                Transforms.setNodes(editor, cols, { at: path });
-              }}
-            >
-              {layoutOption.join(':')}
-            </Button>
-          ))}
-          <Button
-            onMouseDown={event => {
-              event.preventDefault();
-              const path = ReactEditor.findPath(editor, element);
-              Transforms.removeNodes(editor, { at: path });
-            }}
-          >
-            Remove
-          </Button>
-        </HoverableElement>
+        <InlineDialog ref={dialog.ref} {...dialog.props}>
+          <ButtonGroup>
+            {columnLayouts.map((layoutOption, i) => (
+              <Button
+                isSelected={layoutOption.toString() === layout.toString()}
+                key={i}
+                onMouseDown={event => {
+                  event.preventDefault();
+                  const path = ReactEditor.findPath(editor, element);
+                  const cols = {
+                    type: 'columns',
+                    layout: layoutOption,
+                  };
+                  Transforms.setNodes(editor, cols, { at: path });
+                }}
+              >
+                {layoutOption.join(':')}
+              </Button>
+            ))}
+            <Separator />
+            <Tooltip content="Remove" weight="subtle">
+              {attrs => (
+                <Button
+                  variant="destructive"
+                  onMouseDown={event => {
+                    event.preventDefault();
+                    const path = ReactEditor.findPath(editor, element);
+                    Transforms.removeNodes(editor, { at: path });
+                  }}
+                  {...attrs}
+                >
+                  <Trash2Icon size="small" />
+                </Button>
+              )}
+            </Tooltip>
+          </ButtonGroup>
+        </InlineDialog>
       )}
     </div>
   );
 };
 
 // Single Columns
-const Column = ({ attributes, children }: RenderElementProps) => (
-  <div
-    css={{
-      border: '3px dashed #E2E8F0',
-      borderRadius: 4,
-      padding: 4,
-    }}
-    {...attributes}
-  >
-    {children}
-  </div>
-);
+const Column = ({ attributes, children }: RenderElementProps) => {
+  const { colors, radii, spacing } = useTheme();
+  return (
+    <div
+      css={{
+        border: `2px dashed ${colors.border}`,
+        borderRadius: radii.small,
+        paddingLeft: spacing.medium,
+        paddingRight: spacing.medium,
+      }}
+      {...attributes}
+    >
+      {children}
+    </div>
+  );
+};
 
 export const isInsideColumn = (editor: ReactEditor) => {
   return isBlockActive(editor, 'columns');
