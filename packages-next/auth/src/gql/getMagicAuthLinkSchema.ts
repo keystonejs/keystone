@@ -79,11 +79,7 @@ export function getMagicAuthLinkSchema({
             return { code: result.code, message };
           }
           if (result.success) {
-            await magicAuthLink.sendToken({
-              itemId: result.itemId,
-              identity,
-              token: result.token,
-            });
+            await magicAuthLink.sendToken({ itemId: result.itemId, identity, token: result.token });
           }
           return null;
         },
@@ -92,6 +88,7 @@ export function getMagicAuthLinkSchema({
           const result = await redeemAuthToken(
             'magicAuth',
             list,
+            listKey,
             identityField,
             protectIdentities,
             magicAuthLink.tokensValidForMins,
@@ -110,7 +107,7 @@ export function getMagicAuthLinkSchema({
             return { code: result.code, message };
           }
 
-          const sessionToken = await ctx.startSession({ listKey: 'User', itemId: result.item.id });
+          const sessionToken = await ctx.startSession({ listKey, itemId: result.item.id });
           return { token: sessionToken, item: result.item };
         },
       },
