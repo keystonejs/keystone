@@ -3,7 +3,6 @@ import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 import { updateAuthToken } from '../lib/updateAuthToken';
 import { redeemAuthToken } from '../lib/redeemAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
-import { updateItemSecret } from '../lib/updateItemSecret';
 import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
 
 export function getPasswordResetSchema({
@@ -90,7 +89,7 @@ export function getPasswordResetSchema({
               token: result.token,
             });
           }
-          return {};
+          return null;
         },
         async [gqlNames.redeemItemPasswordResetToken](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];
@@ -115,8 +114,12 @@ export function getPasswordResetSchema({
             return { code: result.code, message };
           }
 
-          const secretPlaintext = args[secretField];
-          await updateItemSecret(list, result.item.id, secretPlaintext, secretField, ctx);
+          // Save the provided secret
+          await ctx.lists[listKey].updateOne({
+            id: result.item.id,
+            data: { [secretField]: args[secretField] },
+          });
+
           return null;
         },
       },
