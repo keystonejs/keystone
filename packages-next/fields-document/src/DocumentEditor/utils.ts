@@ -65,12 +65,13 @@ export const toggleMark = (editor: ReactEditor, format: Mark) => {
   }
 };
 
+// TODO: maybe move all the usages of this into one place so we don't have to run this many times per keypress
 export function getMaybeMarkdownShortcutText(text: string, editor: ReactEditor) {
   const { selection } = editor;
   if (text === ' ' && selection && Range.isCollapsed(selection)) {
     const { anchor } = selection;
     const block = Editor.above(editor, {
-      match: n => Editor.isBlock(editor, n),
+      match: n => n.type === 'paragraph',
     });
     const path = block ? block[1] : [];
     const start = Editor.start(editor, path);

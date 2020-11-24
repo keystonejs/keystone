@@ -143,6 +143,20 @@ export const Toolbar = ({ documentFeatures }: { documentFeatures: DocumentFeatur
           End
         </Button>
       )}
+      {documentFeatures.dividers && (
+        <Button
+          onMouseDown={event => {
+            event.preventDefault();
+            Transforms.insertNodes(
+              editor,
+              { type: 'divider', children: [{ text: '' }] },
+              { match: node => node.type === 'paragraph' }
+            );
+          }}
+        >
+          Divider
+        </Button>
+      )}
     </ToolbarContainer>
   );
 };
