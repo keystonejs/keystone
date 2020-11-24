@@ -60,9 +60,9 @@ export function getPasswordResetSchema({
     `,
     resolvers: {
       Mutation: {
-        async [gqlNames.sendItemPasswordResetLink](root: any, args: any, ctx: any) {
-          const list = ctx.keystone.lists[listKey];
-          const itemAPI = ctx.lists[listKey];
+        async [gqlNames.sendItemPasswordResetLink](root: any, args: any, context: any) {
+          const list = context.keystone.lists[listKey];
+          const itemAPI = context.lists[listKey];
           const identity = args[identityField];
           const result = await updateAuthToken(
             'passwordReset',
@@ -91,9 +91,9 @@ export function getPasswordResetSchema({
           }
           return null;
         },
-        async [gqlNames.redeemItemPasswordResetToken](root: any, args: any, ctx: any) {
-          const list = ctx.keystone.lists[listKey];
-          const itemAPI = ctx.lists[listKey];
+        async [gqlNames.redeemItemPasswordResetToken](root: any, args: any, context: any) {
+          const list = context.keystone.lists[listKey];
+          const itemAPI = context.lists[listKey];
           const result = await redeemAuthToken(
             'passwordReset',
             list,
@@ -124,9 +124,9 @@ export function getPasswordResetSchema({
         },
       },
       Query: {
-        async [gqlNames.validateItemPasswordResetToken](root: any, args: any, ctx: any) {
-          const list = ctx.keystone.lists[listKey];
-          const itemAPI = ctx.lists[listKey];
+        async [gqlNames.validateItemPasswordResetToken](root: any, args: any, context: any) {
+          const list = context.keystone.lists[listKey];
+          const itemAPI = context.lists[listKey];
           const result = await validateAuthToken(
             'passwordReset',
             list,

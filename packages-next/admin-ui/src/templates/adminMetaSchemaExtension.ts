@@ -141,11 +141,11 @@ export function adminMetaSchemaExtension({
         },
       },
       KeystoneMeta: {
-        adminMeta(rootVal: any, args: any, ctx: any) {
-          if (ctx.isAdminUIBuildProcess || isAccessAllowed === undefined) {
+        adminMeta(rootVal: any, args: any, context: any) {
+          if (context.isAdminUIBuildProcess || isAccessAllowed === undefined) {
             return staticAdminMeta;
           }
-          return Promise.resolve(isAccessAllowed({ session: ctx.session })).then(isAllowed => {
+          return Promise.resolve(isAccessAllowed({ session: context.session })).then(isAllowed => {
             if (isAllowed) {
               return staticAdminMeta;
             }

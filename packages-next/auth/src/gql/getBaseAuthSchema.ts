@@ -46,9 +46,9 @@ export function getBaseAuthSchema({
     `,
     resolvers: {
       Mutation: {
-        async [gqlNames.authenticateItemWithPassword](root: any, args: any, ctx: any) {
-          const list = ctx.keystone.lists[listKey];
-          const itemAPI = ctx.lists[listKey];
+        async [gqlNames.authenticateItemWithPassword](root: any, args: any, context: any) {
+          const list = context.keystone.lists[listKey];
+          const itemAPI = context.lists[listKey];
           const result = await attemptAuthentication(
             list,
             identityField,
@@ -69,7 +69,7 @@ export function getBaseAuthSchema({
             return { code: result.code, message };
           }
 
-          const sessionToken = await ctx.startSession({ listKey, itemId: result.item.id });
+          const sessionToken = await context.startSession({ listKey, itemId: result.item.id });
           return { sessionToken, item: result.item };
         },
       },

@@ -142,8 +142,8 @@ export const lists = createSchema({
     fields: {
       label: virtual({
         graphQLReturnType: 'String',
-        resolver: async (cartItem, args, ctx) => {
-          const lists: ListsAPI = ctx.lists;
+        resolver: async (cartItem, args, context) => {
+          const lists: ListsAPI = context.lists;
           if (!cartItem.product) {
             return `🛒 ${cartItem.quantity} of (invalid product)`;
           }
