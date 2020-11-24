@@ -268,6 +268,7 @@ const colors = {
   foreground: palette.neutral800,
   foregroundMuted: palette.neutral900,
   foregroundDim: palette.neutral700,
+  foregroundDisabled: palette.neutral500,
   linkColor: palette.blue500,
   linkHoverColor: palette.blue600,
   overlayBackground: 'rgba(18,18,18, 0.3)', // blanket behind modal dialogs

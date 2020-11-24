@@ -1,45 +1,92 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { ButtonHTMLAttributes, forwardRef, Ref } from 'react';
+import { jsx, useTheme } from '@keystone-ui/core';
+import { ButtonHTMLAttributes, forwardRef } from 'react';
 
-export const Spacer = () => <span css={{ display: 'inline-block', width: 12 }} />;
+export const Spacer = () => {
+  const { spacing } = useTheme();
 
-export const Button = forwardRef(
-  (
-    {
-      isDisabled,
-      isSelected,
-      active,
-      ...props
-    }: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'> & {
-      isDisabled?: boolean;
-      isSelected?: boolean;
-      active?: boolean;
-    },
-    ref: Ref<HTMLButtonElement>
-  ) => (
-    <button
-      ref={ref}
-      type="button"
-      disabled={isDisabled}
+  return <span css={{ display: 'inline-block', width: spacing.large }} />;
+};
+export const Separator = () => {
+  const { colors, spacing } = useTheme();
+
+  return (
+    <span
       css={{
-        background: isSelected ? '#EDF2F7' : 'white',
-        borderColor: isSelected ? '#A0AEC0' : isDisabled ? '#E2E8F0' : '#CBD5E0',
-        borderStyle: 'solid',
-        borderWidth: 1,
-        borderRadius: 5,
-        boxShadow: isSelected ? 'inset 0px 3px 5px -4px rgba(0,0,0,0.50)' : undefined,
-        color: isSelected ? '#4A5568' : isDisabled ? '#CBD5E0' : '#718096',
-        marginRight: 4,
-        padding: '4px 8px',
-        pointerEvents: isDisabled ? 'none' : undefined,
-        ':hover': {
-          color: isSelected ? '#4A5568' : '#718096',
-          borderColor: isSelected ? '#718096' : '#A0AEC0',
-        },
+        alignSelf: 'stretch',
+        background: colors.border,
+        display: 'inline-block',
+        marginLeft: spacing.small,
+        marginRight: spacing.small,
+        width: 1,
       }}
-      {...props}
     />
-  )
+  );
+};
+
+type ButtonProps = {
+  as?: string;
+  isDisabled?: boolean;
+  isSelected?: boolean;
+  variant?: 'default' | 'action' | 'destructive';
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>;
+export const Button = forwardRef<any, ButtonProps>(
+  ({ as: Tag = 'button', isDisabled, isSelected, variant = 'default', ...props }, ref) => {
+    const extraProps: any = {};
+    const { colors, palette, radii, sizing, spacing, typography } = useTheme();
+
+    if (Tag === 'button') {
+      extraProps.type = 'button';
+    }
+
+    const variants = {
+      default: [palette.neutral200, palette.neutral800],
+      action: [palette.blue50, palette.blue700],
+      destructive: [palette.red50, palette.red700],
+    };
+    const style = variants[variant];
+
+    return (
+      <Tag
+        {...extraProps}
+        ref={ref}
+        disabled={isDisabled}
+        data-selected={isSelected}
+        css={{
+          alignItems: 'center',
+          background: 0,
+          border: 0,
+          borderRadius: radii.xsmall,
+          color: style[1],
+          cursor: 'pointer',
+          display: 'inline-flex',
+          fontSize: typography.fontSize.small,
+          height: sizing.medium,
+          justifyContent: 'center',
+          paddingLeft: spacing.small,
+          paddingRight: spacing.small,
+
+          ':hover': {
+            background: style[0],
+          },
+
+          '&:disabled': {
+            color: colors.foregroundDisabled,
+            pointerEvents: 'none',
+          },
+
+          '&:not(:last-of-type)': {
+            marginRight: spacing.xsmall,
+          },
+
+          '&[data-selected=true]': {
+            background: colors.foregroundMuted,
+            color: colors.background,
+          },
+        }}
+        {...props}
+      />
+    );
+  }
 );

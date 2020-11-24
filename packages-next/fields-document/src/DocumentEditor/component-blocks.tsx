@@ -258,7 +258,7 @@ export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBloc
   const blockComponents = useContext(ComponentBlockContext)!;
   const relationships = useDocumentFieldRelationships();
   return (
-    <span>
+    <Fragment>
       {Object.keys(blockComponents).map(key => (
         <Button
           key={key}
@@ -291,7 +291,7 @@ export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBloc
           + {blockComponents[key].label}
         </Button>
       ))}
-    </span>
+    </Fragment>
   );
 };
 

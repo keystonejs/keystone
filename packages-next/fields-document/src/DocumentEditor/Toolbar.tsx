@@ -1,20 +1,31 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-
-import { ReactEditor, useSlate } from 'slate-react';
-
-import { Fragment, ReactNode, useState } from 'react';
-
+import { forwardRef, Fragment, ReactNode, useState } from 'react';
 import { Editor, Transforms } from 'slate';
+import { useSlate } from 'slate-react';
 
-import { Button, Spacer } from './components';
+import { jsx, useTheme } from '@keystone-ui/core';
+
+import { AlignLeftIcon } from '@keystone-ui/icons/icons/AlignLeftIcon';
+import { AlignRightIcon } from '@keystone-ui/icons/icons/AlignRightIcon';
+import { AlignCenterIcon } from '@keystone-ui/icons/icons/AlignCenterIcon';
+import { BoldIcon } from '@keystone-ui/icons/icons/BoldIcon';
+import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
+import { ItalicIcon } from '@keystone-ui/icons/icons/ItalicIcon';
+import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
+import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
+import { UnderlineIcon } from '@keystone-ui/icons/icons/UnderlineIcon';
+import { Maximize2Icon } from '@keystone-ui/icons/icons/Maximize2Icon';
+import { Minimize2Icon } from '@keystone-ui/icons/icons/Minimize2Icon';
+import { MessageCircleIcon } from '@keystone-ui/icons/icons/MessageCircleIcon';
+
+import { Button, Separator } from './components';
 import { LinkButton } from './link';
 import { insertPanel } from './panel';
 import { insertQuote } from './quote';
 import { BlockComponentsButtons } from './component-blocks';
 import { Mark, isMarkActive, onlyContainerNodeInCurrentSelection, toggleMark } from './utils';
-import { HoverableElement } from './components/hoverable';
+import { Hoverable } from './components/hoverable';
 import { insertColumns } from './columns';
 import { ListButton } from './lists';
 import { insertBlockquote } from './blockquote';
@@ -22,169 +33,106 @@ import { RelationshipButton } from './relationship';
 import { DocumentFeatures } from '../views';
 import { useControlledPopover } from '@keystone-ui/popover';
 
-function getCanDoAlignment(editor: ReactEditor) {
-  const [node] = Editor.nodes(editor, {
-    match: node => node.type === 'paragraph',
-  });
-  return !!node;
-}
-
 // TODO use icons for toolbar buttons, make it sticky, etc
-export const Toolbar = ({ documentFeatures }: { documentFeatures: DocumentFeatures }) => {
+export const Toolbar = ({
+  documentFeatures,
+  viewState,
+}: {
+  documentFeatures: DocumentFeatures;
+  viewState: { expanded: boolean; toggle: () => void };
+}) => {
+  const ExpandIcon = viewState.expanded ? Minimize2Icon : Maximize2Icon;
   const editor = useSlate();
-  const shouldInsertBlock = onlyContainerNodeInCurrentSelection(editor);
-  const canDoAlignment = getCanDoAlignment(editor);
+
   return (
     <ToolbarContainer>
-      {false && <pre>{JSON.stringify(editor.selection, null, 2)}</pre>}
-      {!!documentFeatures.headingLevels.length && (
-        <Headings headingLevels={documentFeatures.headingLevels} />
-      )}
-      {documentFeatures.listTypes.unordered && (
-        <ListButton type="unordered-list">• List</ListButton>
-      )}
-      {documentFeatures.listTypes.ordered && <ListButton type="ordered-list"># List</ListButton>}
-      {Object.values(documentFeatures.inlineMarks).some(x => x) && (
-        <Fragment>
-          <Spacer />
-          <InlineTextThings marks={documentFeatures.inlineMarks} />
-        </Fragment>
-      )}
-      <Spacer />
-      {documentFeatures.link && <LinkButton />}
-      <BlockComponentsButtons shouldInsertBlock={shouldInsertBlock} />
-      {!!documentFeatures.columns.length && (
-        <Button
-          onMouseDown={event => {
-            event.preventDefault();
-            insertColumns(editor, documentFeatures.columns[0]);
-          }}
-        >
-          + Columns
-        </Button>
-      )}
-      {documentFeatures.blockTypes.panel && (
-        <Button
-          isDisabled={!shouldInsertBlock}
-          onMouseDown={event => {
-            event.preventDefault();
-            insertPanel(editor);
-          }}
-        >
-          + Panel
-        </Button>
-      )}
-      {documentFeatures.blockTypes.blockquote && (
-        <Button
-          onMouseDown={event => {
-            event.preventDefault();
-            insertBlockquote(editor);
-          }}
-        >
-          + Blockquote
-        </Button>
-      )}
-      {documentFeatures.blockTypes.quote && (
-        <Button
-          isDisabled={!shouldInsertBlock}
-          onMouseDown={event => {
-            event.preventDefault();
-            insertQuote(editor);
-          }}
-        >
-          + Quote
-        </Button>
-      )}
-      <RelationshipButton />
-      {(documentFeatures.alignment.center || documentFeatures.alignment.end) && (
-        <Button
-          isDisabled={!canDoAlignment}
-          onMouseDown={event => {
-            event.preventDefault();
-            Transforms.unsetNodes(editor, 'textAlign', {
-              match: node => node.type === 'paragraph',
-            });
-          }}
-        >
-          Start
-        </Button>
-      )}
-      {documentFeatures.alignment.center && (
-        <Button
-          isDisabled={!canDoAlignment}
-          onMouseDown={event => {
-            event.preventDefault();
-            Transforms.setNodes(
-              editor,
-              { textAlign: 'center' },
-              {
-                match: node => node.type === 'paragraph',
-              }
-            );
-          }}
-        >
-          Center
-        </Button>
-      )}
-      {documentFeatures.alignment.end && (
-        <Button
-          isDisabled={!canDoAlignment}
-          onMouseDown={event => {
-            event.preventDefault();
-            Transforms.setNodes(
-              editor,
-              { textAlign: 'end' },
-              {
-                match: node => node.type === 'paragraph',
-              }
-            );
-          }}
-        >
-          End
-        </Button>
-      )}
+      <HeadingMenu />
+      <Separator />
+      <InlineMarkings />
+      <Separator />
+      <TextAlignMenu />
+      <ListButton type="unordered-list">• List</ListButton>
+      <ListButton type="ordered-list"># List</ListButton>
+      <Separator />
+      <LinkButton />
+      <Button
+        onMouseDown={event => {
+          event.preventDefault();
+          insertBlockquote(editor);
+        }}
+      >
+        <MessageCircleIcon size="small" />
+      </Button>
+      <Button
+        onMouseDown={event => {
+          event.preventDefault();
+          insertColumns(editor);
+        }}
+      >
+        <ColumnsIcon size="small" />
+      </Button>
+      <InsertBlockMenu />
+      <Button onClick={viewState.toggle} css={{ justifySelf: 'flex-end' }}>
+        <ExpandIcon size="small" />
+      </Button>
     </ToolbarContainer>
   );
 };
 
 /* UI Components */
 
-const MarkButton = ({ type, children }: { type: Mark; children: ReactNode }) => {
-  const editor = useSlate();
+const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(
+  ({ type, ...props }, ref) => {
+    const editor = useSlate();
+    return (
+      <Button
+        ref={ref}
+        isSelected={isMarkActive(editor, type)}
+        onMouseDown={event => {
+          event.preventDefault();
+          toggleMark(editor, type);
+        }}
+        {...props}
+      />
+    );
+  }
+);
+
+const ToolbarContainer = ({ children }: { children: ReactNode }) => {
+  const { colors, spacing } = useTheme();
+
   return (
-    <Button
-      isSelected={isMarkActive(editor, type)}
-      onMouseDown={event => {
-        event.preventDefault();
-        toggleMark(editor, type);
+    <div
+      css={{
+        backgroundColor: colors.background,
+        borderBottom: `1px solid ${colors.border}`,
+        borderTop: `1px solid ${colors.border}`,
+        display: 'flex',
+        flexWrap: 'wrap',
+        paddingBottom: spacing.medium,
+        paddingTop: spacing.medium,
+        position: 'sticky',
+        top: -1,
+        zIndex: 2,
       }}
     >
       {children}
-    </Button>
+    </div>
   );
 };
 
-const ToolbarContainer = ({ children }: { children: ReactNode }) => (
-  <div
-    css={{
-      backgroundColor: '#F7FAFC',
-      borderBottom: '1px solid #E2E8F0',
-      borderTop: '1px solid #E2E8F0',
-      padding: '8px 16px',
-      margin: '0 -16px',
-    }}
-  >
-    {children}
-  </div>
-);
-
-const Headings = ({ headingLevels }: { headingLevels: DocumentFeatures['headingLevels'] }) => {
-  const [showHeadings, updateShowHeadings] = useState(false);
+const HeadingMenu = () => {
+  const [showMenu, setShowMenu] = useState(false);
   const editor = useSlate();
-  const { dialog, trigger } = useControlledPopover({
-    isOpen: showHeadings,
-    onClose: () => updateShowHeadings(false),
+  let [headingNodes] = Editor.nodes(editor, {
+    match: n => n.type === 'heading',
   });
+  let buttonLabel = 'Normal text';
+
+  if (headingNodes) {
+    buttonLabel = 'Heading ' + headingNodes[0].level;
+  }
+
   return (
     <div
       css={{
@@ -193,18 +141,18 @@ const Headings = ({ headingLevels }: { headingLevels: DocumentFeatures['headingL
       }}
     >
       <Button
-        {...trigger.props}
-        ref={trigger.ref}
+        style={{ width: 110 }}
         onMouseDown={event => {
           event.preventDefault();
-          updateShowHeadings(!showHeadings);
+          setShowMenu(v => !v);
         }}
       >
-        Heading
+        {buttonLabel}
+        <ChevronDownIcon size="small" />
       </Button>
-      {showHeadings ? (
-        <HoverableElement ref={dialog.ref} {...dialog.props}>
-          {headingLevels.map(hNum => {
+      {showMenu ? (
+        <Hoverable direction="column" placement="left" onClickOutside={() => setShowMenu(false)}>
+          {[1, 2, 3, 4].map(hNum => {
             let [node] = Editor.nodes(editor, {
               match: n => n.type === 'heading' && n.level === hNum,
             });
@@ -224,45 +172,172 @@ const Headings = ({ headingLevels }: { headingLevels: DocumentFeatures['headingL
                       : { type: 'heading', level: hNum }
                   );
 
-                  updateShowHeadings(false);
+                  setShowMenu(false);
                 }}
               >
-                H{hNum}
+                Heading {hNum}
               </Button>
             );
           })}
-        </HoverableElement>
+        </Hoverable>
       ) : null}
     </div>
   );
 };
 
-const InlineTextThings = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => (
+const TextAlignMenu = () => {
+  const [showMenu, setShowMenu] = useState(false);
+  const editor = useSlate();
+
+  const [currentParagraph] = Editor.nodes(editor, {
+    match: node => node.type === 'paragraph',
+  });
+  const alignmentAllowed = !!currentParagraph;
+  const icons = {
+    left: AlignLeftIcon,
+    center: AlignCenterIcon,
+    right: AlignRightIcon,
+  };
+  // @ts-ignore
+  const currentTextAlign: keyof typeof icons =
+    (currentParagraph && currentParagraph[0] && currentParagraph[0].textAlign) || 'left';
+  const DisplayIcon = icons[currentTextAlign];
+
+  return (
+    <div
+      css={{
+        display: 'inline-block',
+        position: 'relative',
+      }}
+    >
+      <Button
+        isDisabled={!alignmentAllowed}
+        onMouseDown={event => {
+          event.preventDefault();
+          setShowMenu(v => !v);
+        }}
+      >
+        <DisplayIcon size="small" />
+        <ChevronDownIcon size="small" />
+      </Button>
+      {showMenu ? (
+        <Hoverable placement="left" onClickOutside={() => setShowMenu(false)}>
+          <Button
+            isSelected={currentTextAlign === 'left'}
+            onMouseDown={event => {
+              event.preventDefault();
+              Transforms.unsetNodes(editor, 'textAlign', {
+                match: node => node.type === 'paragraph',
+              });
+            }}
+          >
+            <icons.left size="small" />
+          </Button>
+          <Button
+            isSelected={currentTextAlign === 'center'}
+            onMouseDown={event => {
+              event.preventDefault();
+              Transforms.setNodes(
+                editor,
+                { textAlign: 'center' },
+                {
+                  match: node => node.type === 'paragraph',
+                }
+              );
+            }}
+          >
+            <icons.center size="small" />
+          </Button>
+          <Button
+            isSelected={currentTextAlign === 'right'}
+            onMouseDown={event => {
+              event.preventDefault();
+              Transforms.setNodes(
+                editor,
+                // should this be end?
+                // didn't do end bc IE11 doesn't support it
+                // but i feel like end would probs be better
+                { textAlign: 'right' },
+                {
+                  match: node => node.type === 'paragraph',
+                }
+              );
+            }}
+          >
+            <icons.right size="small" />
+          </Button>
+        </Hoverable>
+      ) : null}
+    </div>
+  );
+};
+
+const InsertBlockMenu = () => {
+  const [showMenu, setShowMenu] = useState(false);
+  const editor = useSlate();
+  const shouldInsertBlock = onlyContainerNodeInCurrentSelection(editor);
+
+  return (
+    <div
+      css={{
+        display: 'inline-block',
+        position: 'relative',
+      }}
+    >
+      <Button
+        onMouseDown={event => {
+          event.preventDefault();
+          setShowMenu(v => !v);
+        }}
+      >
+        <PlusIcon size="small" style={{ strokeWidth: 3 }} />
+        <ChevronDownIcon size="small" />
+      </Button>
+      {showMenu ? (
+        <Hoverable placement="left" direction="column" onClickOutside={() => setShowMenu(false)}>
+          <BlockComponentsButtons shouldInsertBlock={shouldInsertBlock} />
+          <Button
+            isDisabled={!shouldInsertBlock}
+            onMouseDown={event => {
+              event.preventDefault();
+              insertPanel(editor);
+            }}
+          >
+            + Panel
+          </Button>
+          <Button
+            isDisabled={!shouldInsertBlock}
+            onMouseDown={event => {
+              event.preventDefault();
+              insertQuote(editor);
+            }}
+          >
+            + Quote
+          </Button>
+          <RelationshipButton />
+        </Hoverable>
+      ) : null}
+    </div>
+  );
+};
+
+const InlineMarkings = () => (
   <Fragment>
-    {marks.bold && (
-      <MarkButton type="bold">
-        <span css={{ fontWeight: 'bold' }}>B</span>
-      </MarkButton>
-    )}
-    {marks.italic && (
-      <MarkButton type="italic">
-        <span css={{ fontStyle: 'italic' }}>I</span>
-      </MarkButton>
-    )}
-    {marks.underline && (
-      <MarkButton type="underline">
-        <span css={{ textDecoration: 'underline' }}>U</span>
-      </MarkButton>
-    )}
-    {marks.strikethrough && (
+    <MarkButton type="bold">
+      <BoldIcon size="small" style={{ strokeWidth: 3 }} />
+    </MarkButton>
+    <MarkButton type="italic">
+      <ItalicIcon size="small" />
+    </MarkButton>
+    <MarkButton type="underline">
+      <UnderlineIcon size="small" />
+    </MarkButton>
+    {/*
+      Are these useful?
+      ------------------------------
       <MarkButton type="strikethrough">
-        <span css={{ textDecoration: 'line-through' }}>S</span>
+        <span style={{ textDecoration: 'line-through' }}>S</span>
       </MarkButton>
-    )}
-    {marks.code && (
-      <MarkButton type="code">
-        <span css={{ fontFamily: 'monospace' }}>C</span>
-      </MarkButton>
-    )}
+    */}
   </Fragment>
 );

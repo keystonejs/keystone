@@ -1,26 +1,72 @@
 /** @jsx jsx */
-import { jsx } from '@keystone-ui/core';
-import { HTMLAttributes, Ref, forwardRef } from 'react';
 
-export const HoverableElement = forwardRef(
-  (props: HTMLAttributes<HTMLElement>, ref: Ref<HTMLElement>) => {
+import { jsx, useTheme } from '@keystone-ui/core';
+import { HTMLAttributes, forwardRef, useEffect, useRef } from 'react';
+
+type Props = {
+  direction?: 'row' | 'column';
+  onClickOutside?: () => void;
+  placement?: 'center' | 'left' | 'right';
+} & HTMLAttributes<HTMLElement>;
+
+export const Hoverable = forwardRef(
+  ({
+    direction = 'row',
+    onBlur,
+    onFocus,
+    onClickOutside,
+    placement = 'center',
+    ...props
+  }: Props) => {
+    const elementRef = useRef<HTMLDivElement>(null);
+    const { radii, spacing } = useTheme();
+    const placements = {
+      center: {
+        left: '50%',
+        transform: `translateX(-50%)`,
+      },
+      left: {
+        left: 0,
+      },
+      right: {
+        right: 0,
+      },
+    };
+
+    useEffect(() => {
+      const handleClick = (event: MouseEvent) => {
+        if (
+          elementRef.current &&
+          !elementRef?.current.contains(event.target as Node) &&
+          onClickOutside
+        ) {
+          onClickOutside();
+        }
+      };
+      document.addEventListener('mousedown', handleClick);
+
+      return () => {
+        document.removeEventListener('mousedown', handleClick);
+      };
+    }, []);
+
     return (
-      <span
-        ref={ref}
+      <div
+        ref={elementRef}
         contentEditable={false}
         css={{
-          display: 'flex',
-          marginTop: 8,
-          padding: 6,
           background: 'white',
-          borderRadius: 6,
-          paddingLeft: 10,
-          border: '1px solid rgba(0, 0, 0, 0.3)',
-          boxShadow: `
-0 2.4px 10px rgba(0, 0, 0, 0.09),
-0 19px 80px rgba(0, 0, 0, 0.18)`,
-          top: 0,
+          borderRadius: radii.small,
+          boxShadow: `rgba(9, 30, 66, 0.31) 0px 0px 1px, rgba(9, 30, 66, 0.25) 0px 4px 8px -2px`,
+          display: 'flex',
+          flexDirection: direction,
+          marginTop: spacing.xsmall,
+          padding: spacing.small,
+          position: 'absolute',
+          top: '100%',
           userSelect: 'none',
+          zIndex: 1,
+          ...placements[placement],
         }}
         {...props}
       />

@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { Editor, Element, Node, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
 
@@ -61,13 +62,14 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
             </Button>
           ))}
           <Button
+            variant="destructive"
             onMouseDown={event => {
               event.preventDefault();
               const path = ReactEditor.findPath(editor, element);
               Transforms.removeNodes(editor, { at: path });
             }}
           >
-            Remove
+            <Trash2Icon size="small" />
           </Button>
         </HoverableElement>
       )}

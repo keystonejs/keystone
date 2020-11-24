@@ -1,6 +1,9 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
+import { jsx, useTheme } from '@keystone-ui/core';
+import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
+import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
 import { Editor, Node, Range, Transforms } from 'slate';
 // @ts-ignore
@@ -43,6 +46,7 @@ const wrapLink = (editor: ReactEditor, url: string) => {
 };
 
 export const LinkElement = ({ attributes, children, element }: RenderElementProps) => {
+  const { typography } = useTheme();
   const url = element.url as string;
   const editor = useSlate();
   const selected = useSelected();
@@ -70,6 +74,7 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
           }}
         >
           <input
+            css={{ fontSize: typography.fontSize.small }}
             value={url}
             onChange={event => {
               Transforms.setNodes(
@@ -79,17 +84,20 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
               );
             }}
           />
-          <a
+          <Button
+            as="a"
             onMouseDown={event => {
               event.preventDefault();
             }}
             href={url}
             target="_blank"
             rel="noreferrer"
+            variant="action"
           >
-            Go
-          </a>
+            <ExternalLinkIcon size="small" />
+          </Button>
           <Button
+            variant="destructive"
             onMouseDown={event => {
               event.preventDefault();
               Transforms.unwrapNodes(editor, {
@@ -97,7 +105,7 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
               });
             }}
           >
-            Unlink
+            <Trash2Icon size="small" />
           </Button>
         </HoverableElement>
       )}
@@ -117,7 +125,7 @@ export const LinkButton = () => {
         wrapLink(editor, '');
       }}
     >
-      link
+      <LinkIcon size="small" />
     </Button>
   );
 };
