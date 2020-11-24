@@ -58,14 +58,14 @@ export function getMagicAuthLinkSchema({
       Mutation: {
         async [gqlNames.sendItemMagicAuthLink](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];
+          const itemAPI = ctx.lists[listKey];
           const identity = args[identityField];
           const result = await updateAuthToken(
             'magicAuth',
-            listKey,
             identityField,
             protectIdentities,
             identity,
-            ctx
+            itemAPI
           );
 
           // Note: `success` can be false with no code
@@ -85,15 +85,15 @@ export function getMagicAuthLinkSchema({
         },
         async [gqlNames.redeemItemMagicAuthToken](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];
+          const itemAPI = ctx.lists[listKey];
           const result = await redeemAuthToken(
             'magicAuth',
             list,
-            listKey,
             identityField,
             protectIdentities,
             magicAuthLink.tokensValidForMins,
             args,
-            ctx
+            itemAPI
           );
 
           if (!result.success) {
