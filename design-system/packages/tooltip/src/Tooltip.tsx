@@ -4,6 +4,8 @@ import { Fragment, ReactElement, forwardRef, Ref, CSSProperties } from 'react';
 import { jsx, useId, useTheme, Portal } from '@keystone-ui/core';
 import { usePopover } from '@keystone-ui/popover';
 
+type Weights = 'bold' | 'subtle';
+
 type RenderProps = {
   onMouseEnter: () => void;
   onMouseLeave: () => void;
@@ -20,16 +22,21 @@ type Props = {
   content: string;
   /** Where, in relation to the target, to place the tooltip. */
   placement?: 'top' | 'right' | 'bottom' | 'left';
+  /** The visual weight of the tooltip. */
+  weight?: Weights;
 };
 
-export const Tooltip = ({ children, content, placement = 'top' }: Props) => {
+export const Tooltip = ({ children, content, placement = 'top', weight = 'bold' }: Props) => {
+  const { spacing } = useTheme();
+  const isBold = weight === 'bold';
+
   const { isOpen, setOpen, trigger, dialog, arrow } = usePopover({
     placement,
     modifiers: [
       {
         name: 'offset',
         options: {
-          offset: [0, 12],
+          offset: [0, isBold ? spacing.small : spacing.xsmall],
         },
       },
     ],
@@ -52,9 +59,10 @@ export const Tooltip = ({ children, content, placement = 'top' }: Props) => {
       <TooltipElement
         id={tooltipId}
         isVisible={isOpen}
+        weight={weight}
         ref={dialog.ref}
         {...dialog.props}
-        arrow={arrow}
+        arrow={weight === 'bold' ? arrow : undefined}
       >
         {content}
       </TooltipElement>
@@ -72,7 +80,10 @@ type ElementProps = {
   id?: string;
   /** When true, the tooltip will be visible. */
   isVisible: boolean;
-  arrow: {
+  /** The visual weight of the tooltip. */
+  weight: Weights;
+  /** Popper's arrow config. */
+  arrow?: {
     ref: (element: HTMLDivElement) => void;
     props: {
       style: CSSProperties;
@@ -81,9 +92,9 @@ type ElementProps = {
 };
 
 export const TooltipElement = forwardRef<HTMLDivElement, ElementProps>(
-  ({ isVisible, children, arrow, ...props }, consumerRef) => {
+  ({ isVisible, children, arrow, weight, ...props }, consumerRef) => {
+    const isBold = weight === 'bold';
     const { elevation, radii, colors, spacing, typography } = useTheme();
-
     const arrowStyles = useArrowStyles();
 
     return (
@@ -100,8 +111,10 @@ export const TooltipElement = forwardRef<HTMLDivElement, ElementProps>(
             fontWeight: typography.fontWeight.medium,
             lineHeight: typography.leading.tight,
             maxWidth: 320, // less than desirable magic number, but not sure if this needs to be in theme...
-            opacity: isVisible ? 1 : 0,
-            padding: `${spacing.small}px ${spacing.medium}px`,
+            opacity: isVisible ? (isBold ? 1 : 0.9) : 0,
+            padding: isBold
+              ? `${spacing.small}px ${spacing.medium}px`
+              : `${spacing.xsmall}px ${spacing.small}px`,
             pointerEvents: isVisible ? undefined : 'none',
             zIndex: elevation.e500,
             ...arrowStyles,
@@ -109,7 +122,9 @@ export const TooltipElement = forwardRef<HTMLDivElement, ElementProps>(
           {...props}
         >
           {children}
-          <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
+          {arrow && (
+            <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
+          )}
         </div>
       </Portal>
     );
