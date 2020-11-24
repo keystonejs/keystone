@@ -235,6 +235,7 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
     >
       <Button
         ref={trigger.ref}
+        isPressed={showMenu}
         onClick={event => {
           event.preventDefault();
           setShowMenu(v => !v);
@@ -331,6 +332,7 @@ const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment']
           <Button
             ref={applyRefs(ref, trigger.ref)}
             isDisabled={!alignmentAllowed}
+            isPressed={showMenu}
             onClick={event => {
               event.preventDefault();
               setShowMenu(v => !v);
@@ -446,6 +448,7 @@ const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTy
         {({ ref, ...attrs }) => (
           <Button
             ref={applyRefs(ref, trigger.ref)}
+            isPressed={showMenu}
             onMouseDown={event => {
               event.preventDefault();
               setShowMenu(v => !v);
@@ -542,6 +545,7 @@ const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
             {({ ref, ...attrs }) => (
               <Button
                 ref={applyRefs(ref, trigger.ref)}
+                isPressed={showMenu}
                 onClick={event => {
                   event.preventDefault();
                   setShowMenu(v => !v);
