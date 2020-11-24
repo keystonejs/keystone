@@ -48,14 +48,14 @@ export function getBaseAuthSchema({
       Mutation: {
         async [gqlNames.authenticateItemWithPassword](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];
+          const itemAPI = ctx.lists[listKey];
           const result = await attemptAuthentication(
             list,
-            listKey,
             identityField,
             secretField,
             protectIdentities,
             args,
-            ctx
+            itemAPI
           );
 
           if (!result.success) {

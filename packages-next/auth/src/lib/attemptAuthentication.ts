@@ -2,12 +2,11 @@ import { PasswordAuthErrorCode } from '../types';
 
 export async function attemptAuthentication(
   list: any,
-  listKey: string,
   identityField: string,
   secretField: string,
   protectIdentities: boolean,
   args: Record<string, string>,
-  context: any
+  itemAPI: any
 ): Promise<
   | { success: false; code: PasswordAuthErrorCode }
   | { success: true; item: { id: any; [prop: string]: any } }
@@ -17,7 +16,7 @@ export async function attemptAuthentication(
   const secretFieldInstance = list.fieldsByPath[secretField];
 
   // TODO: Allow additional filters to be suppled in config? eg. `validUserConditions: { isEnable: true, isVerified: true, ... }`
-  const items = await context.lists[listKey].findMany({ where: { [identityField]: identity } });
+  const items = await itemAPI.findMany({ where: { [identityField]: identity } });
 
   // Identity failures with helpful errors
   let specificCode: PasswordAuthErrorCode | undefined;

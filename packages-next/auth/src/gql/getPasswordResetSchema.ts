@@ -62,14 +62,14 @@ export function getPasswordResetSchema({
       Mutation: {
         async [gqlNames.sendItemPasswordResetLink](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];
+          const itemAPI = ctx.lists[listKey];
           const identity = args[identityField];
           const result = await updateAuthToken(
             'passwordReset',
-            listKey,
             identityField,
             protectIdentities,
             identity,
-            ctx
+            itemAPI
           );
 
           // Note: `success` can be false with no code
@@ -93,15 +93,15 @@ export function getPasswordResetSchema({
         },
         async [gqlNames.redeemItemPasswordResetToken](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];
+          const itemAPI = ctx.lists[listKey];
           const result = await redeemAuthToken(
             'passwordReset',
             list,
-            listKey,
             identityField,
             protectIdentities,
             passwordResetLink.tokensValidForMins,
             args,
-            ctx
+            itemAPI
           );
 
           if (!result.success) {
@@ -115,7 +115,7 @@ export function getPasswordResetSchema({
           }
 
           // Save the provided secret
-          await ctx.lists[listKey].updateOne({
+          await itemAPI.updateOne({
             id: result.item.id,
             data: { [secretField]: args[secretField] },
           });
@@ -126,15 +126,15 @@ export function getPasswordResetSchema({
       Query: {
         async [gqlNames.validateItemPasswordResetToken](root: any, args: any, ctx: any) {
           const list = ctx.keystone.lists[listKey];
+          const itemAPI = ctx.lists[listKey];
           const result = await validateAuthToken(
             'passwordReset',
             list,
-            listKey,
             identityField,
             protectIdentities,
             passwordResetLink.tokensValidForMins,
             args,
-            ctx
+            itemAPI
           );
 
           if (!result.success && result.code) {

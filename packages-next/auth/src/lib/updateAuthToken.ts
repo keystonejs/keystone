@@ -5,16 +5,15 @@ import { generateToken } from './generateToken';
 // We don't (currently) make any effort to mitigate the time taken to record the new token or sent the email when successful
 export async function updateAuthToken(
   tokenType: 'passwordReset' | 'magicAuth',
-  listKey: string,
   identityField: string,
   protectIdentities: boolean,
   identity: string,
-  context: any
+  itemAPI: any
 ): Promise<
   | { success: false; code?: AuthTokenRequestErrorCode }
   | { success: true; itemId: string | number; token: string }
 > {
-  const items = await context.lists[listKey].findMany({ where: { [identityField]: identity } });
+  const items = await itemAPI.findMany({ where: { [identityField]: identity } });
 
   // Identity failures with helpful errors (unless it would violate our protectIdentities config)
   let specificCode: AuthTokenRequestErrorCode | undefined;
@@ -31,7 +30,7 @@ export async function updateAuthToken(
   const itemId = items[0].id;
   const token = generateToken(20);
   // Save the token and related info back to the item
-  await context.lists[listKey].updateOne({
+  await itemAPI.updateOne({
     id: itemId,
     data: {
       [`${tokenType}Token`]: token,

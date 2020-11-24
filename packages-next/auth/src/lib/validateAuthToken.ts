@@ -10,12 +10,11 @@ function sanitiseValidForMinsConfig(input: any): number {
 export async function validateAuthToken(
   tokenType: 'passwordReset' | 'magicAuth',
   list: any,
-  listKey: string,
   identityField: string,
   protectIdentities: boolean,
   tokenValidMins: number | undefined,
   args: Record<string, string>,
-  context: any
+  itemAPI: any
 ): Promise<
   | { success: false; code: AuthTokenRedemptionErrorCode }
   | { success: true; item: { id: any; [prop: string]: any } }
@@ -30,7 +29,7 @@ export async function validateAuthToken(
   const canidatePlaintext = args.token;
 
   // TODO: Allow additional filters to be suppled in config? eg. `validUserConditions: { isEnable: true, isVerified: true, ... }`
-  const items = await context.lists[listKey].findMany({ where: { [identityField]: identity } });
+  const items = await itemAPI.findMany({ where: { [identityField]: identity } });
 
   // Check the for identity-related failures first
   let specificCode: AuthTokenRedemptionErrorCode | undefined;
