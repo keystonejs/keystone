@@ -198,8 +198,8 @@ function createGraphQLSchema(
       `,
       resolvers: {
         Mutation: {
-          async endSession(rootVal, args, ctx) {
-            await ctx.endSession();
+          async endSession(rootVal, args, context) {
+            await context.endSession();
             return true;
           },
         },

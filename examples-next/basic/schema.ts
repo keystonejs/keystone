@@ -231,10 +231,10 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       },
     },
     Mutation: {
-      createRandomPosts(root: any, args: any, ctx: any) {
+      createRandomPosts(root: any, args: any, context: any) {
         // TODO: add a way to verify access control here, e.g
-        // await ctx.verifyAccessControl(userIsAdmin);
-        const lists: KeystoneListsAPI<KeystoneListsTypeInfo> = ctx.lists;
+        // await context.verifyAccessControl(userIsAdmin);
+        const lists: KeystoneListsAPI<KeystoneListsTypeInfo> = context.lists;
         const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
         return lists.Post.createMany({ data });
       },

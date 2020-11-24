@@ -56,9 +56,9 @@ export function getMagicAuthLinkSchema({
     `,
     resolvers: {
       Mutation: {
-        async [gqlNames.sendItemMagicAuthLink](root: any, args: any, ctx: any) {
-          const list = ctx.keystone.lists[listKey];
-          const itemAPI = ctx.lists[listKey];
+        async [gqlNames.sendItemMagicAuthLink](root: any, args: any, context: any) {
+          const list = context.keystone.lists[listKey];
+          const itemAPI = context.lists[listKey];
           const identity = args[identityField];
           const result = await updateAuthToken(
             'magicAuth',
@@ -83,9 +83,9 @@ export function getMagicAuthLinkSchema({
           }
           return null;
         },
-        async [gqlNames.redeemItemMagicAuthToken](root: any, args: any, ctx: any) {
-          const list = ctx.keystone.lists[listKey];
-          const itemAPI = ctx.lists[listKey];
+        async [gqlNames.redeemItemMagicAuthToken](root: any, args: any, context: any) {
+          const list = context.keystone.lists[listKey];
+          const itemAPI = context.lists[listKey];
           const result = await redeemAuthToken(
             'magicAuth',
             list,
@@ -107,7 +107,7 @@ export function getMagicAuthLinkSchema({
             return { code: result.code, message };
           }
 
-          const sessionToken = await ctx.startSession({ listKey, itemId: result.item.id });
+          const sessionToken = await context.startSession({ listKey, itemId: result.item.id });
           return { token: sessionToken, item: result.item };
         },
       },

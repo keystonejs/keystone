@@ -7,7 +7,7 @@ import type { FieldConfig } from '../../interfaces';
 export type VirtualFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = FieldConfig<TGeneratedListTypes> & {
-  resolver: (rootVal: any, args: any, ctx: any, info: any) => any;
+  resolver: (rootVal: any, args: any, context: any, info: any) => any;
   graphQLReturnType?: string;
   graphQLReturnFragment?: string;
   extendGraphQLTypes?: string[];
