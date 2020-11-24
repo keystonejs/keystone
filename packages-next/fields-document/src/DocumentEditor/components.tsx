@@ -58,9 +58,13 @@ export const Button = forwardRef<any, ButtonProps>(
     }
 
     const variants = {
-      default: [palette.neutral200, palette.neutral800],
-      action: [palette.blue50, palette.blue600],
-      destructive: [palette.red50, palette.red600],
+      default: {
+        bgHover: palette.neutral200,
+        bgActive: palette.neutral300,
+        fg: palette.neutral800,
+      },
+      action: { bgHover: palette.blue50, bgActive: palette.blue100, fg: palette.blue600 },
+      destructive: { bgHover: palette.red50, bgActive: palette.red100, fg: palette.red600 },
     };
     const style = variants[variant];
 
@@ -76,7 +80,7 @@ export const Button = forwardRef<any, ButtonProps>(
           background: 0,
           border: 0,
           borderRadius: radii.xsmall,
-          color: style[1],
+          color: style.fg,
           cursor: 'pointer',
           display: 'flex',
           fontSize: typography.fontSize.small,
@@ -88,7 +92,10 @@ export const Button = forwardRef<any, ButtonProps>(
           whiteSpace: 'nowrap',
 
           ':hover': {
-            background: style[0],
+            background: style.bgHover,
+          },
+          ':active': {
+            background: style.bgActive,
           },
 
           '&:disabled': {
