@@ -19,7 +19,7 @@
     "@keystone-ui/core": "^1.0.2",
     "@keystone-ui/fields": "^1.0.2",
     "@preconstruct/next": "^2.0.0",
-    "@types/react": "^16.9.56",
+    "@types/react": "^16.14.2",
     "apollo-server-micro": "^2.19.0",
     "graphql": "^15.4.0",
     "graphql-tag": "^2.11.0",
