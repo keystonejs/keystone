@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@emotion/react": "11.0.0-rc.0",
+    "@emotion/react": "11.0.0",
     "facepaint": "^1.2.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/core"
