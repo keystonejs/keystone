@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
-import { Fragment, ReactElement, forwardRef, Ref, CSSProperties } from 'react';
+import { CSSProperties, Fragment, ReactElement, Ref, forwardRef, useEffect, useRef } from 'react';
+import { applyRefs } from 'apply-ref';
 import { jsx, useId, useTheme, Portal } from '@keystone-ui/core';
 import { usePopover } from '@keystone-ui/popover';
 
@@ -20,13 +21,21 @@ type Props = {
   children: (props: RenderProps) => ReactElement;
   /** The content of the tooltip. */
   content: string;
+  /** Hide the tooltip when the user clicks the trigger element. */
+  hideOnClick?: boolean;
   /** Where, in relation to the target, to place the tooltip. */
   placement?: 'top' | 'right' | 'bottom' | 'left';
   /** The visual weight of the tooltip. */
   weight?: Weights;
 };
 
-export const Tooltip = ({ children, content, placement = 'top', weight = 'bold' }: Props) => {
+export const Tooltip = ({
+  children,
+  content,
+  hideOnClick,
+  placement = 'top',
+  weight = 'bold',
+}: Props) => {
   const { spacing } = useTheme();
   const isBold = weight === 'bold';
 
@@ -45,6 +54,17 @@ export const Tooltip = ({ children, content, placement = 'top', weight = 'bold' 
   const tooltipId = useId();
   const showTooltip = () => setOpen(true);
   const hideTooltip = () => setOpen(false);
+  const internalRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const triggerEl = internalRef.current;
+
+    if (hideOnClick && triggerEl) {
+      triggerEl.addEventListener('click', hideTooltip);
+
+      return () => triggerEl.removeEventListener('click', hideTooltip);
+    }
+  }, [isOpen]);
 
   return (
     <Fragment>
@@ -54,7 +74,7 @@ export const Tooltip = ({ children, content, placement = 'top', weight = 'bold' 
         onFocus: showTooltip,
         onBlur: hideTooltip,
         'aria-describedby': tooltipId,
-        ref: trigger.ref,
+        ref: applyRefs(trigger.ref, internalRef),
       })}
       <TooltipElement
         id={tooltipId}
@@ -107,7 +127,7 @@ export const TooltipElement = forwardRef<HTMLDivElement, ElementProps>(
             backgroundColor: colors.foregroundMuted,
             borderRadius: radii.xsmall,
             color: colors.background,
-            fontSize: typography.fontSize.small,
+            fontSize: isBold ? typography.fontSize.small : typography.fontSize.xsmall,
             fontWeight: typography.fontWeight.medium,
             lineHeight: typography.leading.tight,
             maxWidth: 320, // less than desirable magic number, but not sure if this needs to be in theme...

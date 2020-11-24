@@ -1,9 +1,9 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { ReactEditor, useSlate } from 'slate-react';
+import { ReactNode, forwardRef } from 'react';
 import { Editor, Element, Node, Path, Transforms } from 'slate';
-import { ReactNode } from 'react';
+import { ReactEditor, useSlate } from 'slate-react';
+import { jsx } from '@keystone-ui/core';
 
 import {
   getMaybeMarkdownShortcutText,
@@ -126,16 +126,17 @@ export function withList(listTypes: DocumentFeatures['listTypes'], editor: React
   return editor;
 }
 
-export const ListButton = ({
-  type,
-  children,
-}: {
-  type: 'ordered-list' | 'unordered-list';
-  children: ReactNode;
-}) => {
+export const ListButton = forwardRef<
+  HTMLButtonElement,
+  {
+    type: 'ordered-list' | 'unordered-list';
+    children: ReactNode;
+  }
+>(({ type, ...props }, ref) => {
   const editor = useSlate();
   return (
     <Button
+      ref={ref}
       isDisabled={
         !onlyContainerNodeInCurrentSelection(editor) &&
         !(isBlockActive(editor, 'ordered-list') || isBlockActive(editor, 'unordered-list'))
@@ -145,8 +146,7 @@ export const ListButton = ({
         event.preventDefault();
         toggleList(editor, type);
       }}
-    >
-      {children}
-    </Button>
+      {...props}
+    />
   );
-};
+});

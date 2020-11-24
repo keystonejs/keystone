@@ -3,8 +3,11 @@
 import { forwardRef, Fragment, ReactNode, useState } from 'react';
 import { Editor, Transforms } from 'slate';
 import { useSlate } from 'slate-react';
+import { applyRefs } from 'apply-ref';
 
 import { jsx, useTheme } from '@keystone-ui/core';
+import { useControlledPopover } from '@keystone-ui/popover';
+import { Tooltip } from '@keystone-ui/tooltip';
 
 import { AlignLeftIcon } from '@keystone-ui/icons/icons/AlignLeftIcon';
 import { AlignRightIcon } from '@keystone-ui/icons/icons/AlignRightIcon';
@@ -14,12 +17,14 @@ import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
 import { ItalicIcon } from '@keystone-ui/icons/icons/ItalicIcon';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
 import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
-import { UnderlineIcon } from '@keystone-ui/icons/icons/UnderlineIcon';
+import { ListIcon } from '@keystone-ui/icons/icons/ListIcon';
+import { HashIcon } from '@keystone-ui/icons/icons/HashIcon';
 import { Maximize2Icon } from '@keystone-ui/icons/icons/Maximize2Icon';
 import { Minimize2Icon } from '@keystone-ui/icons/icons/Minimize2Icon';
 import { MessageCircleIcon } from '@keystone-ui/icons/icons/MessageCircleIcon';
+import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 
-import { Button, Separator } from './components';
+import { Button, ButtonGroup, Separator } from './components';
 import { LinkButton } from './link';
 import { insertPanel } from './panel';
 import { insertQuote } from './quote';
@@ -31,9 +36,9 @@ import { ListButton } from './lists';
 import { insertBlockquote } from './blockquote';
 import { RelationshipButton } from './relationship';
 import { DocumentFeatures } from '../views';
-import { useControlledPopover } from '@keystone-ui/popover';
 
-// TODO use icons for toolbar buttons, make it sticky, etc
+// TODO: how to manage separators with dynamic feature sets...
+
 export const Toolbar = ({
   documentFeatures,
   viewState,
@@ -46,35 +51,91 @@ export const Toolbar = ({
 
   return (
     <ToolbarContainer>
-      <HeadingMenu />
+      {!!documentFeatures.headingLevels.length && (
+        <Fragment>
+          <HeadingMenu headingLevels={documentFeatures.headingLevels} />
+          <Separator />
+        </Fragment>
+      )}
+      {Object.values(documentFeatures.inlineMarks).some(x => x) && (
+        <Fragment>
+          <InlineMarks marks={documentFeatures.inlineMarks} />
+          <Separator />
+        </Fragment>
+      )}
+      {(documentFeatures.alignment.center || documentFeatures.alignment.end) && (
+        <TextAlignMenu alignment={documentFeatures.alignment} />
+      )}
+      {documentFeatures.listTypes.unordered && (
+        <Tooltip content="Bullet list" placement="bottom" weight="subtle">
+          {attrs => (
+            <ListButton type="unordered-list" {...attrs}>
+              <ListIcon size="small" />
+            </ListButton>
+          )}
+        </Tooltip>
+      )}
+      {documentFeatures.listTypes.ordered && (
+        <Tooltip content="Numbered list" placement="bottom" weight="subtle">
+          {attrs => (
+            <ListButton type="ordered-list" {...attrs}>
+              <HashIcon size="small" />
+            </ListButton>
+          )}
+        </Tooltip>
+      )}
+      {documentFeatures.link && (
+        <Fragment>
+          <Separator />
+          <LinkButton />
+        </Fragment>
+      )}
+      {documentFeatures.blockTypes.blockquote && (
+        <Tooltip content="Quote" placement="bottom" weight="subtle">
+          {attrs => (
+            <Button
+              onMouseDown={event => {
+                event.preventDefault();
+                insertBlockquote(editor);
+              }}
+              {...attrs}
+            >
+              <MessageCircleIcon size="small" />
+            </Button>
+          )}
+        </Tooltip>
+      )}
+      {!!documentFeatures.columns.length && (
+        <Tooltip content="Columns" placement="bottom" weight="subtle">
+          {attrs => (
+            <Button
+              onMouseDown={event => {
+                event.preventDefault();
+                insertColumns(editor, documentFeatures.columns[0]);
+              }}
+              {...attrs}
+            >
+              <ColumnsIcon size="small" />
+            </Button>
+          )}
+        </Tooltip>
+      )}
+
+      <InsertBlockMenu blockTypes={documentFeatures.blockTypes} />
+
       <Separator />
-      <InlineMarkings />
-      <Separator />
-      <TextAlignMenu />
-      <ListButton type="unordered-list">• List</ListButton>
-      <ListButton type="ordered-list"># List</ListButton>
-      <Separator />
-      <LinkButton />
-      <Button
-        onMouseDown={event => {
-          event.preventDefault();
-          insertBlockquote(editor);
-        }}
+      <Tooltip
+        content={viewState.expanded ? 'Collapse' : 'Expand'}
+        placement="bottom"
+        weight="subtle"
+        hideOnClick
       >
-        <MessageCircleIcon size="small" />
-      </Button>
-      <Button
-        onMouseDown={event => {
-          event.preventDefault();
-          insertColumns(editor);
-        }}
-      >
-        <ColumnsIcon size="small" />
-      </Button>
-      <InsertBlockMenu />
-      <Button onClick={viewState.toggle} css={{ justifySelf: 'flex-end' }}>
-        <ExpandIcon size="small" />
-      </Button>
+        {attrs => (
+          <Button onClick={viewState.toggle} {...attrs}>
+            <ExpandIcon size="small" />
+          </Button>
+        )}
+      </Tooltip>
     </ToolbarContainer>
   );
 };
@@ -121,14 +182,22 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const HeadingMenu = () => {
+const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headingLevels'] }) => {
   const [showMenu, setShowMenu] = useState(false);
   const editor = useSlate();
+  const { dialog, trigger } = useControlledPopover(
+    {
+      isOpen: showMenu,
+      onClose: () => setShowMenu(false),
+    },
+    { placement: 'bottom-start' }
+  );
+
+  // prep button label
   let [headingNodes] = Editor.nodes(editor, {
     match: n => n.type === 'heading',
   });
   let buttonLabel = 'Normal text';
-
   if (headingNodes) {
     buttonLabel = 'Heading ' + headingNodes[0].level;
   }
@@ -141,66 +210,79 @@ const HeadingMenu = () => {
       }}
     >
       <Button
-        style={{ width: 110 }}
-        onMouseDown={event => {
+        ref={trigger.ref}
+        onClick={event => {
           event.preventDefault();
           setShowMenu(v => !v);
         }}
+        style={{ textAlign: 'left', width: 116 }}
+        {...trigger.props}
       >
-        {buttonLabel}
+        <span css={{ flex: 1 }}>{buttonLabel}</span>
         <ChevronDownIcon size="small" />
       </Button>
       {showMenu ? (
-        <Hoverable direction="column" placement="left" onClickOutside={() => setShowMenu(false)}>
-          {[1, 2, 3, 4].map(hNum => {
-            let [node] = Editor.nodes(editor, {
-              match: n => n.type === 'heading' && n.level === hNum,
-            });
-            let isActive = !!node;
-            return (
-              <Button
-                isSelected={isActive}
-                onMouseDown={event => {
-                  event.preventDefault();
-                  Transforms.setNodes(
-                    editor,
-                    isActive
-                      ? {
-                          type: 'paragraph',
-                          level: undefined,
-                        }
-                      : { type: 'heading', level: hNum }
-                  );
+        <Hoverable ref={dialog.ref} {...dialog.props}>
+          <ButtonGroup direction="column">
+            {headingLevels.map(hNum => {
+              let [node] = Editor.nodes(editor, {
+                match: n => n.type === 'heading' && n.level === hNum,
+              });
+              let isActive = !!node;
+              let Tag = `h${hNum}`;
 
-                  setShowMenu(false);
-                }}
-              >
-                Heading {hNum}
-              </Button>
-            );
-          })}
+              return (
+                <Button
+                  isSelected={isActive}
+                  onMouseDown={event => {
+                    event.preventDefault();
+                    Transforms.setNodes(
+                      editor,
+                      isActive
+                        ? {
+                            type: 'paragraph',
+                            level: undefined,
+                          }
+                        : { type: 'heading', level: hNum }
+                    );
+
+                    setShowMenu(false);
+                  }}
+                >
+                  <Tag>Heading {hNum}</Tag>
+                </Button>
+              );
+            })}
+          </ButtonGroup>
         </Hoverable>
       ) : null}
     </div>
   );
 };
 
-const TextAlignMenu = () => {
+const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment'] }) => {
   const [showMenu, setShowMenu] = useState(false);
   const editor = useSlate();
+  const { dialog, trigger } = useControlledPopover(
+    {
+      isOpen: showMenu,
+      onClose: () => setShowMenu(false),
+    },
+    { placement: 'bottom-start' }
+  );
 
   const [currentParagraph] = Editor.nodes(editor, {
     match: node => node.type === 'paragraph',
   });
   const alignmentAllowed = !!currentParagraph;
   const icons = {
-    left: AlignLeftIcon,
+    start: AlignLeftIcon,
     center: AlignCenterIcon,
-    right: AlignRightIcon,
+    end: AlignRightIcon,
   };
   // @ts-ignore
   const currentTextAlign: keyof typeof icons =
-    (currentParagraph && currentParagraph[0] && currentParagraph[0].textAlign) || 'left';
+    (currentParagraph && currentParagraph[0] && currentParagraph[0].textAlign) || 'start';
   const DisplayIcon = icons[currentTextAlign];
 
   return (
@@ -210,70 +292,102 @@ const TextAlignMenu = () => {
         position: 'relative',
       }}
     >
-      <Button
-        isDisabled={!alignmentAllowed}
-        onMouseDown={event => {
-          event.preventDefault();
-          setShowMenu(v => !v);
-        }}
-      >
-        <DisplayIcon size="small" />
-        <ChevronDownIcon size="small" />
-      </Button>
+      <Tooltip content="Text alignment" placement="bottom" weight="subtle" hideOnClick>
+        {({ ref, ...attrs }) => (
+          <Button
+            ref={applyRefs(ref, trigger.ref)}
+            isDisabled={!alignmentAllowed}
+            onClick={event => {
+              event.preventDefault();
+              setShowMenu(v => !v);
+            }}
+            {...attrs}
+            {...trigger.props}
+          >
+            <DisplayIcon size="small" />
+            <ChevronDownIcon size="small" />
+          </Button>
+        )}
+      </Tooltip>
       {showMenu ? (
-        <Hoverable placement="left" onClickOutside={() => setShowMenu(false)}>
-          <Button
-            isSelected={currentTextAlign === 'left'}
-            onMouseDown={event => {
-              event.preventDefault();
-              Transforms.unsetNodes(editor, 'textAlign', {
-                match: node => node.type === 'paragraph',
-              });
-            }}
-          >
-            <icons.left size="small" />
-          </Button>
-          <Button
-            isSelected={currentTextAlign === 'center'}
-            onMouseDown={event => {
-              event.preventDefault();
-              Transforms.setNodes(
-                editor,
-                { textAlign: 'center' },
-                {
-                  match: node => node.type === 'paragraph',
-                }
-              );
-            }}
-          >
-            <icons.center size="small" />
-          </Button>
-          <Button
-            isSelected={currentTextAlign === 'right'}
-            onMouseDown={event => {
-              event.preventDefault();
-              Transforms.setNodes(
-                editor,
-                // should this be end?
-                // didn't do end bc IE11 doesn't support it
-                // but i feel like end would probs be better
-                { textAlign: 'right' },
-                {
-                  match: node => node.type === 'paragraph',
-                }
-              );
-            }}
-          >
-            <icons.right size="small" />
-          </Button>
+        <Hoverable ref={dialog.ref} {...dialog.props}>
+          <ButtonGroup>
+            <Tooltip content="Align start" placement="bottom" weight="subtle">
+              {attrs => (
+                <Button
+                  isSelected={currentTextAlign === 'start'}
+                  onMouseDown={event => {
+                    event.preventDefault();
+                    Transforms.unsetNodes(editor, 'textAlign', {
+                      match: node => node.type === 'paragraph',
+                    });
+                  }}
+                  {...attrs}
+                >
+                  <icons.start size="small" />
+                </Button>
+              )}
+            </Tooltip>
+            {alignment.center && (
+              <Tooltip content="Align center" placement="bottom" weight="subtle">
+                {attrs => (
+                  <Button
+                    isSelected={currentTextAlign === 'center'}
+                    onMouseDown={event => {
+                      event.preventDefault();
+                      Transforms.setNodes(
+                        editor,
+                        { textAlign: 'center' },
+                        {
+                          match: node => node.type === 'paragraph',
+                        }
+                      );
+                    }}
+                    {...attrs}
+                  >
+                    <icons.center size="small" />
+                  </Button>
+                )}
+              </Tooltip>
+            )}
+            {alignment.end && (
+              <Tooltip content="Align end" placement="bottom" weight="subtle">
+                {attrs => (
+                  <Button
+                    isSelected={currentTextAlign === 'end'}
+                    onMouseDown={event => {
+                      event.preventDefault();
+                      Transforms.setNodes(
+                        editor,
+                        { textAlign: 'end' },
+                        {
+                          match: node => node.type === 'paragraph',
+                        }
+                      );
+                    }}
+                    {...attrs}
+                  >
+                    <icons.end size="small" />
+                  </Button>
+                )}
+              </Tooltip>
+            )}
+          </ButtonGroup>
         </Hoverable>
       ) : null}
     </div>
   );
 };
 
-const InsertBlockMenu = () => {
+const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTypes'] }) => {
   const [showMenu, setShowMenu] = useState(false);
+  const { dialog, trigger } = useControlledPopover(
+    {
+      isOpen: showMenu,
+      onClose: () => setShowMenu(false),
+    },
+    { placement: 'bottom-start' }
+  );
   const editor = useSlate();
   const shouldInsertBlock = onlyContainerNodeInCurrentSelection(editor);
 
@@ -284,60 +398,118 @@ const InsertBlockMenu = () => {
         position: 'relative',
       }}
     >
-      <Button
-        onMouseDown={event => {
-          event.preventDefault();
-          setShowMenu(v => !v);
-        }}
-      >
-        <PlusIcon size="small" style={{ strokeWidth: 3 }} />
-        <ChevronDownIcon size="small" />
-      </Button>
+      <Tooltip content="Insert" placement="bottom" weight="subtle" hideOnClick>
+        {({ ref, ...attrs }) => (
+          <Button
+            ref={applyRefs(ref, trigger.ref)}
+            onMouseDown={event => {
+              event.preventDefault();
+              setShowMenu(v => !v);
+            }}
+            {...trigger.props}
+            {...attrs}
+          >
+            <PlusIcon size="small" style={{ strokeWidth: 3 }} />
+            <ChevronDownIcon size="small" />
+          </Button>
+        )}
+      </Tooltip>
       {showMenu ? (
-        <Hoverable placement="left" direction="column" onClickOutside={() => setShowMenu(false)}>
-          <BlockComponentsButtons shouldInsertBlock={shouldInsertBlock} />
-          <Button
-            isDisabled={!shouldInsertBlock}
-            onMouseDown={event => {
-              event.preventDefault();
-              insertPanel(editor);
-            }}
-          >
-            + Panel
-          </Button>
-          <Button
-            isDisabled={!shouldInsertBlock}
-            onMouseDown={event => {
-              event.preventDefault();
-              insertQuote(editor);
-            }}
-          >
-            + Quote
-          </Button>
-          <RelationshipButton />
+        <Hoverable ref={dialog.ref} {...dialog.props}>
+          <ButtonGroup direction="column">
+            <BlockComponentsButtons shouldInsertBlock={shouldInsertBlock} />
+            {blockTypes.panel && (
+              <Button
+                isDisabled={!shouldInsertBlock}
+                onMouseDown={event => {
+                  event.preventDefault();
+                  insertPanel(editor);
+                  setShowMenu(false);
+                }}
+              >
+                + Panel
+              </Button>
+            )}
+            {blockTypes.quote && (
+              <Button
+                isDisabled={!shouldInsertBlock}
+                onMouseDown={event => {
+                  event.preventDefault();
+                  insertQuote(editor);
+                  setShowMenu(false);
+                }}
+              >
+                + Quote
+              </Button>
+            )}
+            <RelationshipButton />
+          </ButtonGroup>
         </Hoverable>
       ) : null}
     </div>
   );
 };
 
-const InlineMarkings = () => (
-  <Fragment>
-    <MarkButton type="bold">
-      <BoldIcon size="small" style={{ strokeWidth: 3 }} />
-    </MarkButton>
-    <MarkButton type="italic">
-      <ItalicIcon size="small" />
-    </MarkButton>
-    <MarkButton type="underline">
-      <UnderlineIcon size="small" />
-    </MarkButton>
-    {/*
-      Are these useful?
-      ------------------------------
-      <MarkButton type="strikethrough">
-        <span style={{ textDecoration: 'line-through' }}>S</span>
-      </MarkButton>
-    */}
-  </Fragment>
-);
+const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
+  const [showMenu, setShowMenu] = useState(false);
+  const { dialog, trigger } = useControlledPopover(
+    {
+      isOpen: showMenu,
+      onClose: () => setShowMenu(false),
+    },
+    { placement: 'bottom-start' }
+  );
+  const hasMenu = marks.strikethrough || marks.underline || marks.code;
+
+  return (
+    <Fragment>
+      {marks.bold && (
+        <Tooltip content="Bold" placement="bottom" weight="subtle">
+          {attrs => (
+            <MarkButton type="bold" {...attrs}>
+              <BoldIcon size="small" style={{ strokeWidth: 3 }} />
+            </MarkButton>
+          )}
+        </Tooltip>
+      )}
+      {marks.italic && (
+        <Tooltip content="Italic" placement="bottom" weight="subtle">
+          {attrs => (
+            <MarkButton type="italic" {...attrs}>
+              <ItalicIcon size="small" />
+            </MarkButton>
+          )}
+        </Tooltip>
+      )}
+
+      {hasMenu && (
+        <Fragment>
+          <Tooltip content="More formatting" placement="bottom" weight="subtle" hideOnClick>
+            {({ ref, ...attrs }) => (
+              <Button
+                ref={applyRefs(ref, trigger.ref)}
+                onClick={event => {
+                  event.preventDefault();
+                  setShowMenu(v => !v);
+                }}
+                {...trigger.props}
+                {...attrs}
+              >
+                <MoreHorizontalIcon size="small" />
+              </Button>
+            )}
+          </Tooltip>
+          {showMenu && (
+            <Hoverable ref={dialog.ref} {...dialog.props}>
+              <ButtonGroup direction="column">
+                {marks.strikethrough && <MarkButton type="strikethrough">Strikethrough</MarkButton>}
+                {marks.underline && <MarkButton type="underline">Underline</MarkButton>}
+                {marks.code && <MarkButton type="code">Code</MarkButton>}
+              </ButtonGroup>
+            </Hoverable>
+          )}
+        </Fragment>
+      )}
+    </Fragment>
+  );
+};

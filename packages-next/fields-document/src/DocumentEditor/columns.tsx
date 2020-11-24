@@ -1,16 +1,17 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { Editor, Element, Node, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
 
-import { HoverableElement } from './components/hoverable';
-import { Button } from './components';
+import { jsx } from '@keystone-ui/core';
+import { useControlledPopover } from '@keystone-ui/popover';
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
+
+import { Hoverable } from './components/hoverable';
+import { Button, ButtonGroup, Separator } from './components';
 import { paragraphElement } from './paragraphs';
 import { isBlockActive, moveChildren } from './utils';
 import { createContext, useContext } from 'react';
-import { useControlledPopover } from '@keystone-ui/popover';
 
 const ColumnOptionsContext = createContext<[number, ...number[]][]>([]);
 
@@ -43,35 +44,39 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
         {children}
       </div>
       {focused && selected && (
-        <HoverableElement ref={dialog.ref} {...dialog.props}>
-          {columnLayouts.map((layoutOption, i) => (
+        <Hoverable ref={dialog.ref} {...dialog.props}>
+          <ButtonGroup>
+            {columnLayouts.map((layoutOption, i) => (
+              <Button
+                isSelected={layoutOption.toString() === layout.toString()}
+                key={i}
+                onMouseDown={event => {
+                  event.preventDefault();
+                  const path = ReactEditor.findPath(editor, element);
+                  const cols = {
+                    type: 'columns',
+                    layout: layoutOption,
+                  };
+                  Transforms.setNodes(editor, cols, { at: path });
+                }}
+              >
+                {layoutOption.join(':')}
+              </Button>
+            ))}
+            <Separator />
             <Button
-              isSelected={layoutOption.toString() === layout.toString()}
-              key={i}
+              aria-label="Remove"
+              variant="destructive"
               onMouseDown={event => {
                 event.preventDefault();
                 const path = ReactEditor.findPath(editor, element);
-                const cols = {
-                  type: 'columns',
-                  layout: layoutOption,
-                };
-                Transforms.setNodes(editor, cols, { at: path });
+                Transforms.removeNodes(editor, { at: path });
               }}
             >
-              {layoutOption.join(':')}
+              <Trash2Icon size="small" />
             </Button>
-          ))}
-          <Button
-            variant="destructive"
-            onMouseDown={event => {
-              event.preventDefault();
-              const path = ReactEditor.findPath(editor, element);
-              Transforms.removeNodes(editor, { at: path });
-            }}
-          >
-            <Trash2Icon size="small" />
-          </Button>
-        </HoverableElement>
+          </ButtonGroup>
+        </Hoverable>
       )}
     </div>
   );

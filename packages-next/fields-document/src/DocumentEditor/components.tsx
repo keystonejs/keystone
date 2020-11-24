@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
+import { ButtonHTMLAttributes, HTMLAttributes, createContext, forwardRef, useContext } from 'react';
 import { jsx, useTheme } from '@keystone-ui/core';
-import { ButtonHTMLAttributes, forwardRef } from 'react';
 
 export const Spacer = () => {
   const { spacing } = useTheme();
@@ -25,6 +25,22 @@ export const Separator = () => {
   );
 };
 
+// Buttons may be displayed in a row of icons or in a column of labelled menu items
+
+const ButtonGroupContext = createContext({ direction: 'row' });
+export const useButtonGroupContext = () => useContext(ButtonGroupContext);
+
+export const ButtonGroup = ({
+  direction = 'row',
+  ...props
+}: { direction?: 'column' | 'row' } & HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <ButtonGroupContext.Provider value={{ direction }}>
+      <div css={{ display: 'flex', flexDirection: direction }} {...props} />
+    </ButtonGroupContext.Provider>
+  );
+};
+
 type ButtonProps = {
   as?: string;
   isDisabled?: boolean;
@@ -34,6 +50,7 @@ type ButtonProps = {
 export const Button = forwardRef<any, ButtonProps>(
   ({ as: Tag = 'button', isDisabled, isSelected, variant = 'default', ...props }, ref) => {
     const extraProps: any = {};
+    const { direction: groupDirection } = useButtonGroupContext();
     const { colors, palette, radii, sizing, spacing, typography } = useTheme();
 
     if (Tag === 'button') {
@@ -42,8 +59,8 @@ export const Button = forwardRef<any, ButtonProps>(
 
     const variants = {
       default: [palette.neutral200, palette.neutral800],
-      action: [palette.blue50, palette.blue700],
-      destructive: [palette.red50, palette.red700],
+      action: [palette.blue50, palette.blue600],
+      destructive: [palette.red50, palette.red600],
     };
     const style = variants[variant];
 
@@ -53,6 +70,7 @@ export const Button = forwardRef<any, ButtonProps>(
         ref={ref}
         disabled={isDisabled}
         data-selected={isSelected}
+        data-display-mode={groupDirection}
         css={{
           alignItems: 'center',
           background: 0,
@@ -60,12 +78,14 @@ export const Button = forwardRef<any, ButtonProps>(
           borderRadius: radii.xsmall,
           color: style[1],
           cursor: 'pointer',
-          display: 'inline-flex',
+          display: 'flex',
           fontSize: typography.fontSize.small,
+          fontWeight: typography.fontWeight.medium,
           height: sizing.medium,
-          justifyContent: 'center',
+          // justifyContent: 'center',
           paddingLeft: spacing.small,
           paddingRight: spacing.small,
+          whiteSpace: 'nowrap',
 
           ':hover': {
             background: style[0],
@@ -76,13 +96,23 @@ export const Button = forwardRef<any, ButtonProps>(
             pointerEvents: 'none',
           },
 
-          '&:not(:last-of-type)': {
-            marginRight: spacing.xsmall,
-          },
-
           '&[data-selected=true]': {
             background: colors.foregroundMuted,
             color: colors.background,
+          },
+
+          // alternate styles within button group
+          '&[data-display-mode=row]': {
+            // really want flex-gap...
+            '&:not(:last-of-type)': {
+              marginRight: spacing.xsmall,
+            },
+          },
+          '&[data-display-mode=column]': {
+            // really want flex-gap...
+            '&:not(:last-of-type)': {
+              marginBottom: spacing.xsmall,
+            },
           },
         }}
         {...props}

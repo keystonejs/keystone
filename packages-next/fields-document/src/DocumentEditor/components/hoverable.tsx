@@ -1,24 +1,14 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { HTMLAttributes, forwardRef, useEffect, useRef } from 'react';
+import { HTMLAttributes, forwardRef } from 'react';
 
 type Props = {
-  direction?: 'row' | 'column';
-  onClickOutside?: () => void;
   placement?: 'center' | 'left' | 'right';
 } & HTMLAttributes<HTMLElement>;
 
-export const Hoverable = forwardRef(
-  ({
-    direction = 'row',
-    onBlur,
-    onFocus,
-    onClickOutside,
-    placement = 'center',
-    ...props
-  }: Props) => {
-    const elementRef = useRef<HTMLDivElement>(null);
+export const Hoverable = forwardRef<HTMLDivElement, Props>(
+  ({ placement = 'center', ...props }, ref) => {
     const { radii, spacing } = useTheme();
     const placements = {
       center: {
@@ -33,33 +23,14 @@ export const Hoverable = forwardRef(
       },
     };
 
-    useEffect(() => {
-      const handleClick = (event: MouseEvent) => {
-        if (
-          elementRef.current &&
-          !elementRef?.current.contains(event.target as Node) &&
-          onClickOutside
-        ) {
-          onClickOutside();
-        }
-      };
-      document.addEventListener('mousedown', handleClick);
-
-      return () => {
-        document.removeEventListener('mousedown', handleClick);
-      };
-    }, []);
-
     return (
       <div
-        ref={elementRef}
+        ref={ref}
         contentEditable={false}
         css={{
           background: 'white',
           borderRadius: radii.small,
           boxShadow: `rgba(9, 30, 66, 0.31) 0px 0px 1px, rgba(9, 30, 66, 0.25) 0px 4px 8px -2px`,
-          display: 'flex',
-          flexDirection: direction,
           marginTop: spacing.xsmall,
           padding: spacing.small,
           position: 'absolute',
