@@ -1,7 +1,7 @@
 import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 
 import { updateAuthToken } from '../lib/updateAuthToken';
-import { redeemAuthToken } from '../lib/redeemAuthToken';
+import { validateAuthToken } from '../lib/validateAuthToken';
 import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
 
 export function getMagicAuthLinkSchema({
@@ -59,14 +59,10 @@ export function getMagicAuthLinkSchema({
         async [gqlNames.sendItemMagicAuthLink](root: any, args: any, context: any) {
           const list = context.keystone.lists[listKey];
           const itemAPI = context.lists[listKey];
+          const tokenType = 'magicAuth';
           const identity = args[identityField];
-          const result = await updateAuthToken(
-            'magicAuth',
-            identityField,
-            protectIdentities,
-            identity,
-            itemAPI
-          );
+
+          const result = await updateAuthToken(identityField, protectIdentities, identity, itemAPI);
 
           // Note: `success` can be false with no code
           if (!result.success && result.code) {
@@ -78,16 +74,30 @@ export function getMagicAuthLinkSchema({
             });
             return { code: result.code, message };
           }
+
+          // Update system state
           if (result.success) {
-            await magicAuthLink.sendToken({ itemId: result.itemId, identity, token: result.token });
+            // Save the token and related info back to the item
+            const { token, itemId } = result;
+            await itemAPI.updateOne({
+              id: itemId,
+              data: {
+                [`${tokenType}Token`]: token,
+                [`${tokenType}IssuedAt`]: new Date().toISOString(),
+                [`${tokenType}RedeemedAt`]: null,
+              },
+            });
+
+            await magicAuthLink.sendToken({ itemId, identity, token });
           }
           return null;
         },
         async [gqlNames.redeemItemMagicAuthToken](root: any, args: any, context: any) {
           const list = context.keystone.lists[listKey];
           const itemAPI = context.lists[listKey];
-          const result = await redeemAuthToken(
-            'magicAuth',
+          const tokenType = 'magicAuth';
+          const result = await validateAuthToken(
+            tokenType,
             list,
             identityField,
             protectIdentities,
@@ -106,6 +116,12 @@ export function getMagicAuthLinkSchema({
 
             return { code: result.code, message };
           }
+          // Update system state
+          // Save the token and related info back to the item
+          await itemAPI.updateOne({
+            id: result.item.id,
+            data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
+          });
 
           const sessionToken = await context.startSession({ listKey, itemId: result.item.id });
           return { token: sessionToken, item: result.item };

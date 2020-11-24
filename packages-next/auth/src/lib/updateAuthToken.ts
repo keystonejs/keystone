@@ -1,10 +1,16 @@
+import { randomBytes } from 'crypto';
 import { AuthTokenRequestErrorCode } from '../types';
-import { generateToken } from './generateToken';
+
+function generateToken(length: number): string {
+  return randomBytes(length) // Generates N*8 bits of data
+    .toString('base64') // Groups by 6-bits and encodes as ascii chars in [A-Za-z0-9+/] and '=' for padding (~8/6 * N chars)
+    .replace(/[^a-zA-Z0-9]/g, '') // Removes any '+', '/' (62, 63) and '=' chars as often require escaping (eg. in urls)
+    .slice(0, length); // Shortens the string, so we now have ~6*N bits of data (it's actually log2(62)*N = 5.954*N)
+}
 
 // TODO: Auth token mutations may leak user identities due to timing attacks :(
 // We don't (currently) make any effort to mitigate the time taken to record the new token or sent the email when successful
 export async function updateAuthToken(
-  tokenType: 'passwordReset' | 'magicAuth',
   identityField: string,
   protectIdentities: boolean,
   identity: string,
@@ -27,17 +33,5 @@ export async function updateAuthToken(
     return { success: false, code: protectIdentities ? undefined : specificCode };
   }
 
-  const itemId = items[0].id;
-  const token = generateToken(20);
-  // Save the token and related info back to the item
-  await itemAPI.updateOne({
-    id: itemId,
-    data: {
-      [`${tokenType}Token`]: token,
-      [`${tokenType}IssuedAt`]: new Date().toISOString(),
-      [`${tokenType}RedeemedAt`]: null,
-    },
-  });
-
-  return { success: true, itemId, token };
+  return { success: true, itemId: items[0].id, token: generateToken(20) };
 }
