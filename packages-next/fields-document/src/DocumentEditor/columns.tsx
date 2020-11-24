@@ -80,17 +80,21 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
               </Button>
             ))}
             <Separator />
-            <Button
-              aria-label="Remove"
-              variant="destructive"
-              onMouseDown={event => {
-                event.preventDefault();
-                const path = ReactEditor.findPath(editor, element);
-                Transforms.removeNodes(editor, { at: path });
-              }}
-            >
-              <Trash2Icon size="small" />
-            </Button>
+            <Tooltip content="Remove" weight="subtle">
+              {attrs => (
+                <Button
+                  variant="destructive"
+                  onMouseDown={event => {
+                    event.preventDefault();
+                    const path = ReactEditor.findPath(editor, element);
+                    Transforms.removeNodes(editor, { at: path });
+                  }}
+                  {...attrs}
+                >
+                  <Trash2Icon size="small" />
+                </Button>
+              )}
+            </Tooltip>
           </ButtonGroup>
         </InlineDialog>
       )}

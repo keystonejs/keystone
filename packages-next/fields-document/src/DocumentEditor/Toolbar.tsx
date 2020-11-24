@@ -68,7 +68,7 @@ export const Toolbar = ({
         <TextAlignMenu alignment={documentFeatures.alignment} />
       )}
       {documentFeatures.listTypes.unordered && (
-        <Tooltip content="Bullet list" placement="bottom" weight="subtle">
+        <Tooltip content="Bullet list" weight="subtle">
           {attrs => (
             <ListButton type="unordered-list" {...attrs}>
               <ListIcon size="small" />
@@ -77,7 +77,7 @@ export const Toolbar = ({
         </Tooltip>
       )}
       {documentFeatures.listTypes.ordered && (
-        <Tooltip content="Numbered list" placement="bottom" weight="subtle">
+        <Tooltip content="Numbered list" weight="subtle">
           {attrs => (
             <ListButton type="ordered-list" {...attrs}>
               <HashIcon size="small" />
@@ -92,7 +92,7 @@ export const Toolbar = ({
         </Fragment>
       )}
       {documentFeatures.blockTypes.blockquote && (
-        <Tooltip content="Quote" placement="bottom" weight="subtle">
+        <Tooltip content="Quote" weight="subtle">
           {attrs => (
             <Button
               onMouseDown={event => {
@@ -107,7 +107,7 @@ export const Toolbar = ({
         </Tooltip>
       )}
       {!!documentFeatures.columns.length && (
-        <Tooltip content="Columns" placement="bottom" weight="subtle">
+        <Tooltip content="Columns" weight="subtle">
           {attrs => (
             <Button
               onMouseDown={event => {
@@ -122,7 +122,7 @@ export const Toolbar = ({
         </Tooltip>
       )}
       {documentFeatures.dividers && (
-        <Tooltip content="Divider" placement="bottom" weight="subtle">
+        <Tooltip content="Divider" weight="subtle">
           {attrs => (
             <Button
               onMouseDown={event => {
@@ -144,11 +144,7 @@ export const Toolbar = ({
       <InsertBlockMenu blockTypes={documentFeatures.blockTypes} />
 
       <Separator />
-      <Tooltip
-        content={viewState.expanded ? 'Collapse' : 'Expand'}
-        placement="bottom"
-        weight="subtle"
-      >
+      <Tooltip content={viewState.expanded ? 'Collapse' : 'Expand'} weight="subtle">
         {attrs => (
           <Button onClick={viewState.toggle} {...attrs}>
             <ExpandIcon size="small" />
@@ -331,7 +327,7 @@ const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment']
         position: 'relative',
       }}
     >
-      <Tooltip content="Text alignment" placement="bottom" weight="subtle">
+      <Tooltip content="Text alignment" weight="subtle">
         {({ ref, ...attrs }) => (
           <Button
             ref={applyRefs(ref, trigger.ref)}
@@ -351,7 +347,7 @@ const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment']
       {showMenu ? (
         <InlineDialog ref={dialog.ref} {...dialog.props}>
           <ButtonGroup>
-            <Tooltip content="Align start" placement="bottom" weight="subtle">
+            <Tooltip content="Align start" weight="subtle">
               {attrs => (
                 <Button
                   isSelected={currentTextAlign === 'start'}
@@ -368,7 +364,7 @@ const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment']
               )}
             </Tooltip>
             {alignment.center && (
-              <Tooltip content="Align center" placement="bottom" weight="subtle">
+              <Tooltip content="Align center" weight="subtle">
                 {attrs => (
                   <Button
                     isSelected={currentTextAlign === 'center'}
@@ -390,7 +386,7 @@ const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment']
               </Tooltip>
             )}
             {alignment.end && (
-              <Tooltip content="Align end" placement="bottom" weight="subtle">
+              <Tooltip content="Align end" weight="subtle">
                 {attrs => (
                   <Button
                     isSelected={currentTextAlign === 'end'}
@@ -447,7 +443,7 @@ const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTy
         position: 'relative',
       }}
     >
-      <Tooltip content="Insert" placement="bottom" weight="subtle">
+      <Tooltip content="Insert" weight="subtle">
         {({ ref, ...attrs }) => (
           <Button
             ref={applyRefs(ref, trigger.ref)}
@@ -523,7 +519,7 @@ const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
   return (
     <Fragment>
       {marks.bold && (
-        <Tooltip content="Bold" placement="bottom" weight="subtle">
+        <Tooltip content="Bold" weight="subtle">
           {attrs => (
             <MarkButton type="bold" {...attrs}>
               <BoldIcon size="small" style={{ strokeWidth: 3 }} />
@@ -532,7 +528,7 @@ const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
         </Tooltip>
       )}
       {marks.italic && (
-        <Tooltip content="Italic" placement="bottom" weight="subtle">
+        <Tooltip content="Italic" weight="subtle">
           {attrs => (
             <MarkButton type="italic" {...attrs}>
               <ItalicIcon size="small" />
@@ -543,7 +539,7 @@ const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
 
       {hasMenu && (
         <Fragment>
-          <Tooltip content="More formatting" placement="bottom" weight="subtle">
+          <Tooltip content="More formatting" weight="subtle">
             {({ ref, ...attrs }) => (
               <Button
                 ref={applyRefs(ref, trigger.ref)}
