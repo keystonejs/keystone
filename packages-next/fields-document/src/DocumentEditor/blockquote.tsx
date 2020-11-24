@@ -1,9 +1,11 @@
 /** @jsx jsx */
 
-import { getMaybeMarkdownShortcutText } from './utils';
-import { jsx } from '@keystone-ui/core';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps } from 'slate-react';
+
+import { jsx, useTheme } from '@keystone-ui/core';
+
+import { getMaybeMarkdownShortcutText } from './utils';
 
 export const insertBlockquote = (editor: ReactEditor) => {
   Transforms.wrapNodes(
@@ -78,12 +80,14 @@ export const withBlockquote = (enableBlockquote: boolean, editor: ReactEditor) =
 };
 
 export const BlockquoteElement = ({ attributes, children }: RenderElementProps) => {
+  const { colors, spacing } = useTheme();
   return (
     <blockquote
       css={{
-        padding: '2px 8px',
-        borderLeft: '3px solid #CBD5E0',
+        borderLeft: `4px solid ${colors.border}`,
+        color: colors.foregroundDim,
         margin: 0,
+        padding: `1px ${spacing.large}px`, // 1px vertical padding stops child paragraph margins from collapsing
       }}
       {...attributes}
     >
