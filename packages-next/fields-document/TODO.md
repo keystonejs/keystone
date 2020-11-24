@@ -6,7 +6,7 @@
   - [ ] You can switch between most block formats using the toolbar and formatting shortcuts
   - [ ] When you insert a new block format using the insert menu, it inserts a new block of that type after the current one
 - `Alignment` is a property of a limited number of block types
-- `Inline Blocks` are special blocks you can insert that appear inline
+- `Inline Element` are things you can insert that appear inline and have special properties
 - `Inline Marks` are formatting marks applied to text nodes within a block. Includes things like bold, italic, etc.
 - `Links` are hyperlinks that can be applied to text (like a mark, with an `href` property)
 - `Block Classes` represent a set of block types that implement consistent behaviour (and are often configured together)
@@ -69,9 +69,9 @@
   - [ ] `shift+tab` at the start of a column moves the cursor to the end of the previous column, or before the layout block
   - [ ] layouts "trap" the selection - `enter` does not insert outside of the current column, and `backspace` does not remove columns or the layout block
   - [ ] you can select a layout by clicking in its border or margin (displays hilighted; `backspace` or `delete` removes it)
-  - [ ] when a layout is the last node in a document, we ensure a paragraph exists after it
+  - [ ] when a layout is the last node in a document, we ensure a paragraph exists after it (low priority)
 - `Relationships` are a thing you can define, with one of three types which determine where it is available. They store a reference to an itemId and are (optionally) hydrated with additional data when the document field is queried. They are voids and contain no editable text.
-  - `inline` relationships can be inserted into paragraphs and lists, and appear inline (like the "mentions" pattern)
+  - `inline` relationships can be inserted into paragraphs and lists, and appear inline (like the "mentions" pattern -- low priority)
   - `block` relationships can be inserted like other blocks at the top level of the document, and inside layouts
   - `prop` relationships are available to be referenced by component block props
 - `Component Blocks` are configurable block elements that you can insert at the top level, and conditionally inside layouts. They are specified in the views file with `props` (fields) and a `Preview` component that renders them in the editor.
@@ -97,13 +97,16 @@ type FormattingConfig = {
     blockquote?: true,
     code?: true,
   },
-  headingLevels?: [1, 2, 3, 4, 5, 6],
+  headingLevels?: (1 | 2 | 3 | 4 | 5 | 6)[],
   inlineMarks?: {
     bold?: true,
     code?: true,
     italic?: true,
     strikethrough?: true,
     underline?: true,
+    keyboard?: true,
+    superscript?: true,
+    subscript?: true,
   },
   listTypes?: {
     ordered?: true,
@@ -227,11 +230,13 @@ type ComponentChildPropConfig = {
 - [ ] Markdown formatting shortcuts / autoformat (see below)
 - [ ] Indent and outdent list items (inc. with `tab` / `shift+tab` press)
 - [ ] Insert block type / list type / component from inline menu (`/` trigger)
+- [ ] Gracefully handle misconfigured comonent blocks
+- [ ] Handle component blocks that exist in the document but aren't configured in the field (show a built-in "not available" preview, with a remove button)
 
 # UI Improvements
 
+- [ ] Generate icons for layouts :tada:
 - [ ] Hilight blocks in red when hovering over the "remove" toolbar button
-- [ ] Show icons for columns (maybe with "more..." dropdown?)
 - [ ] Only show the innermost toolbar when selection is inside multiple blocks with toolbars
 - [ ] Selected style for component block elements
 
@@ -258,6 +263,8 @@ type ComponentChildPropConfig = {
 
 Note: the goal for these would be to allow content authors more flexibility, but without going "fully wysiwyg". We'd need some way to express design system contraints you can choose from as the content author, not complete flexibility.
 
+- [ ] Repeating sets of props in component blocks
+- [ ] How could we use the editor outside the Admin UI?
 - [ ] Text foreground and background color selection
 - [ ] Turn `quote` and `panel` blocks into plugins (maybe just use component blocks?)
 - [ ] Cloudinary Images (including uploads, sizing based on contraints)
@@ -278,26 +285,28 @@ Note: the goal for these would be to allow content authors more flexibility, but
 
 ## Inline
 
-> These should work inside any block that supports the type of mark.
+> These should work inside any block that supports the type of mark, in the same line. Check when the character is typed.
 
-- [ ] \* on either side of text followed by space formats **bold**
-- [ ] \_ on either side of text followed by space formats _italic_
-- [ ] \` on either side of text followed by space formats `inline code`
-- [ ] ~~ on either side of text followed by space formats ~~strikethrough~~
-- [ ] [text](url) followed by a space creates a link
+- [ ] \_\_ or \*\* on either side of text followed by a word boundary formats **bold**
+- [ ] \_ or \* on either side of text followed by a word boundary formats _italic_
+- [ ] \` on either side of text followed by a word boundary formats `inline code`
+- [ ] ~~ on either side of text followed by a word boundary formats ~~strikethrough~~
+- [ ] [text](url) followed by a word boundary creates a link
 
 ## Blocks
 
-> These should work in any standard block: paragraphs, headings, blocks (quote, code, etc) and list elements. The cursor must be at the start of the block. It converts existing blocks (including switching between list and non-list block types) except for divider, which inserts a divider and moves the selection to a new block below.
+> The cursor must be at the start of the block. It converts existing blocks (including switching between list and non-list block types) except for divider, which inserts a divider and moves the selection to a new block below.
 
 - [ ] \* or - followed by space converts to a bulleted list
+  - [ ] inside paragraphs
 - [ ] 1. or 1) followed by space converts to a numbered list
+  - [ ] inside paragraphs
 - [ ] > followed by space converts to a block quote
-- [ ] \`\`\` followed by space converts to a code block
-- [ ] # followed by space converts to an H1 heading
-- [ ] ## followed by space converts to an H2 heading
-- [ ] ### followed by space converts to an H3 heading
-- [ ] #### followed by space converts to an H4 heading
-- [ ] ##### followed by space converts to an H5 heading
-- [ ] ###### followed by space converts to an H6 heading
-- [ ] --- followed by a space to inserts a divider
+  - [ ] inside paragraphs
+- [ ] \`\`\` converts to a code block
+  - [ ] inside paragraphs
+- [ ] #{1,6} followed by space converts to a H{n} heading
+  - [ ] inside paragraphs
+  - [ ] inside headings
+- [ ] --- inserts a divider
+  - [ ] inside paragraphs
