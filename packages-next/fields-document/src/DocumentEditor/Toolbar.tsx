@@ -31,7 +31,7 @@ import { insertPanel } from './panel';
 import { insertQuote } from './quote';
 import { BlockComponentsButtons } from './component-blocks';
 import { Mark, isMarkActive, onlyContainerNodeInCurrentSelection, toggleMark } from './utils';
-import { Hoverable } from './components/hoverable';
+import { InlineDialog } from './components/inline-dialog';
 import { insertColumns } from './columns';
 import { ListButton } from './lists';
 import { insertBlockquote } from './blockquote';
@@ -251,7 +251,7 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
         <ChevronDownIcon size="small" />
       </Button>
       {showMenu ? (
-        <Hoverable ref={dialog.ref} {...dialog.props}>
+        <InlineDialog ref={dialog.ref} {...dialog.props}>
           <ButtonGroup direction="column">
             {headingLevels.map(hNum => {
               let [node] = Editor.nodes(editor, {
@@ -283,7 +283,7 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
               );
             })}
           </ButtonGroup>
-        </Hoverable>
+        </InlineDialog>
       ) : null}
     </div>
   );
@@ -349,7 +349,7 @@ const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment']
         )}
       </Tooltip>
       {showMenu ? (
-        <Hoverable ref={dialog.ref} {...dialog.props}>
+        <InlineDialog ref={dialog.ref} {...dialog.props}>
           <ButtonGroup>
             <Tooltip content="Align start" placement="bottom" weight="subtle">
               {attrs => (
@@ -412,7 +412,7 @@ const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment']
               </Tooltip>
             )}
           </ButtonGroup>
-        </Hoverable>
+        </InlineDialog>
       ) : null}
     </div>
   );
@@ -464,7 +464,7 @@ const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTy
         )}
       </Tooltip>
       {showMenu ? (
-        <Hoverable ref={dialog.ref} {...dialog.props}>
+        <InlineDialog ref={dialog.ref} {...dialog.props}>
           <ButtonGroup direction="column">
             <BlockComponentsButtons shouldInsertBlock={shouldInsertBlock} />
             {blockTypes.panel && (
@@ -493,7 +493,7 @@ const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTy
             )}
             <RelationshipButton />
           </ButtonGroup>
-        </Hoverable>
+        </InlineDialog>
       ) : null}
     </div>
   );
@@ -559,7 +559,7 @@ const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
             )}
           </Tooltip>
           {showMenu && (
-            <Hoverable ref={dialog.ref} {...dialog.props}>
+            <InlineDialog ref={dialog.ref} {...dialog.props}>
               <ButtonGroup direction="column">
                 {marks.underline && <MarkButton type="underline">Underline</MarkButton>}
                 {marks.strikethrough && <MarkButton type="strikethrough">Strikethrough</MarkButton>}
@@ -568,7 +568,7 @@ const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
                 {marks.subscript && <MarkButton type="subscript">Subscript</MarkButton>}
                 {marks.superscript && <MarkButton type="superscript">Superscript</MarkButton>}
               </ButtonGroup>
-            </Hoverable>
+            </InlineDialog>
           )}
         </Fragment>
       )}

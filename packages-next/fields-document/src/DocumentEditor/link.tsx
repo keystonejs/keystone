@@ -15,7 +15,7 @@ import isUrl from 'is-url';
 import { useState } from 'react';
 
 import { Button, ButtonGroup, Separator } from './components';
-import { Hoverable } from './components/hoverable';
+import { InlineDialog } from './components/inline-dialog';
 
 const isLinkActive = (editor: ReactEditor) => {
   const [link] = Editor.nodes(editor, { match: n => n.type === 'link' });
@@ -53,10 +53,10 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
   const editor = useSlate();
   const selected = useSelected();
   const focused = useFocused();
-  const [focusedInHoverable, setFocusedInHoverable] = useState(false);
+  const [focusedInInlineDialog, setFocusedInInlineDialog] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {
-      isOpen: (selected && focused) || focusedInHoverable,
+      isOpen: (selected && focused) || focusedInInlineDialog,
       onClose: () => {},
     },
     {
@@ -76,15 +76,15 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
       <a {...trigger.props} ref={trigger.ref} href={url}>
         {children}
       </a>
-      {((selected && focused) || focusedInHoverable) && (
-        <Hoverable
+      {((selected && focused) || focusedInInlineDialog) && (
+        <InlineDialog
           {...dialog.props}
           ref={dialog.ref}
           onFocus={() => {
-            setFocusedInHoverable(true);
+            setFocusedInInlineDialog(true);
           }}
           onBlur={() => {
-            setFocusedInHoverable(false);
+            setFocusedInInlineDialog(false);
           }}
         >
           <ButtonGroup>
@@ -134,7 +134,7 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
               )}
             </Tooltip>
           </ButtonGroup>
-        </Hoverable>
+        </InlineDialog>
       )}
     </span>
   );

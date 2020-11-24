@@ -8,7 +8,7 @@ import { Tooltip } from '@keystone-ui/tooltip';
 import { useControlledPopover } from '@keystone-ui/popover';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
-import { Hoverable } from './components/hoverable';
+import { InlineDialog } from './components/inline-dialog';
 import { Button, ButtonGroup, Separator } from './components';
 import { paragraphElement } from './paragraphs';
 import { isBlockActive, moveChildren } from './utils';
@@ -60,7 +60,7 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
         {children}
       </div>
       {focused && selected && (
-        <Hoverable ref={dialog.ref} {...dialog.props}>
+        <InlineDialog ref={dialog.ref} {...dialog.props}>
           <ButtonGroup>
             {columnLayouts.map((layoutOption, i) => (
               <Button
@@ -92,7 +92,7 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
               <Trash2Icon size="small" />
             </Button>
           </ButtonGroup>
-        </Hoverable>
+        </InlineDialog>
       )}
     </div>
   );
