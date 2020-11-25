@@ -1,6 +1,6 @@
 import { PasswordAuthErrorCode } from '../types';
 
-export async function attemptAuthentication(
+export async function validateSecret(
   list: any,
   identityField: string,
   secretField: string,
