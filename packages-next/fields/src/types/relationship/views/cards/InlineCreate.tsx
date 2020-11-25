@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
 import { jsx, Stack } from '@keystone-ui/core';
 import isDeepEqual from 'fast-deep-equal';
