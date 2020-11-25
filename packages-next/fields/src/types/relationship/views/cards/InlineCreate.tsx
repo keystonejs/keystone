@@ -1,15 +1,23 @@
 /* @jsx jsx */
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
 import { jsx, Stack } from '@keystone-ui/core';
 import isDeepEqual from 'fast-deep-equal';
 import { useToasts } from '@keystone-ui/toast';
 import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
-import { ItemData, makeDataGetter, DataGetter } from '@keystone-next/admin-ui-utils';
+import {
+  ItemData,
+  makeDataGetter,
+  DataGetter,
+  Value,
+  useInvalidFields,
+  serializeValueToObjByFieldKey,
+} from '@keystone-next/admin-ui-utils';
 import { Button } from '@keystone-ui/button';
 import { ListMeta } from '@keystone-next/types';
 import { useFieldsObj } from './useItemState';
+import { Fields } from '@keystone-next/admin-ui-utils';
 
 export function InlineCreate({
   list,
@@ -35,30 +43,15 @@ export function InlineCreate({
   }`
   );
 
-  const [valuesByFieldPath, setValuesByFieldPath] = useState(() => {
-    const value: Record<string, unknown> = {};
+  const [value, setValue] = useState(() => {
+    const value: Value = {};
     Object.keys(fields).forEach(fieldPath => {
-      value[fieldPath] = fields[fieldPath].controller.defaultValue;
+      value[fieldPath] = { kind: 'value', value: fields[fieldPath].controller.defaultValue };
     });
     return value;
   });
 
-  const invalidFields = useMemo(() => {
-    const invalidFields = new Set<string>();
-
-    Object.keys(valuesByFieldPath).forEach(fieldPath => {
-      const val = valuesByFieldPath[fieldPath];
-
-      const validateFn = fields[fieldPath].controller.validate;
-      if (validateFn) {
-        const result = validateFn(val);
-        if (result === false) {
-          invalidFields.add(fieldPath);
-        }
-      }
-    });
-    return invalidFields;
-  }, [list, valuesByFieldPath]);
+  const invalidFields = useInvalidFields(fields, value);
 
   const [forceValidation, setForceValidation] = useState(false);
 
@@ -68,9 +61,10 @@ export function InlineCreate({
 
     if (newForceValidation) return;
     const data: Record<string, any> = {};
-    Object.keys(fields).forEach(fieldPath => {
+    const allSerializedValues = serializeValueToObjByFieldKey(fields, value);
+    Object.keys(allSerializedValues).forEach(fieldPath => {
       const { controller } = fields[fieldPath];
-      const serialized = controller.serialize(valuesByFieldPath[fieldPath]);
+      const serialized = allSerializedValues[fieldPath];
       if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
         Object.assign(data, serialized);
       }
@@ -114,24 +108,14 @@ export function InlineCreate({
       {error && (
         <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
       )}
-      {Object.keys(fields).map((fieldPath, index) => {
-        const field = fields[fieldPath];
-        return (
-          <field.views.Field
-            key={fieldPath}
-            field={field.controller}
-            value={valuesByFieldPath[fieldPath]}
-            forceValidation={forceValidation && invalidFields.has(fieldPath)}
-            onChange={fieldValue => {
-              setValuesByFieldPath({
-                ...valuesByFieldPath,
-                [fieldPath]: fieldValue,
-              });
-            }}
-            autoFocus={index === 0}
-          />
-        );
-      })}
+      <Fields
+        fieldModes={null}
+        fields={fields}
+        forceValidation={forceValidation}
+        invalidFields={invalidFields}
+        onChange={setValue}
+        value={value}
+      />
       <Stack gap="small" across>
         <Button
           isLoading={loading}

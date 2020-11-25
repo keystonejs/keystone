@@ -3,7 +3,7 @@
 import copyToClipboard from 'clipboard-copy';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment, HTMLAttributes, useMemo, useState } from 'react';
+import { Fragment, HTMLAttributes, useCallback, useMemo, useState } from 'react';
 
 import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
@@ -160,12 +160,15 @@ function ItemForm({
         fields={list.fields}
         forceValidation={forceValidation}
         invalidFields={invalidFields}
-        onChange={value => {
-          setValue({
-            item: state.item,
-            value,
-          });
-        }}
+        onChange={useCallback(
+          value => {
+            setValue(state => ({
+              item: state.item,
+              value: value(state.value),
+            }));
+          },
+          [setValue]
+        )}
         value={state.value}
       />
       <Toolbar>

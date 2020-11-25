@@ -13,6 +13,11 @@ import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
 import { useReinitContext } from '@keystone-next/admin-ui/context';
 import { useRouter } from '@keystone-next/admin-ui/router';
 import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
+import {
+  Fields,
+  serializeValueToObjByFieldKey,
+  useInvalidFields,
+} from '@keystone-next/admin-ui-utils';
 
 export const InitPage = ({
   fields: serializedFields,
@@ -58,7 +63,7 @@ export const InitPage = ({
     return fields;
   }, [serializedFields]);
 
-  const [state, setState] = useState(() => {
+  const [value, setValue] = useState(() => {
     let state: Record<string, any> = {};
     Object.keys(fields).forEach(fieldPath => {
       state[fieldPath] = fields[fieldPath].controller.defaultValue;
@@ -66,22 +71,7 @@ export const InitPage = ({
     return state;
   });
 
-  const invalidFields = useMemo(() => {
-    const invalidFields = new Set<string>();
-
-    Object.keys(state).forEach(fieldPath => {
-      const val = state[fieldPath];
-
-      const validateFn = fields[fieldPath].controller.validate;
-      if (validateFn) {
-        const result = validateFn(val);
-        if (result === false) {
-          invalidFields.add(fieldPath);
-        }
-      }
-    });
-    return invalidFields;
-  }, [fields, state]);
+  const invalidFields = useInvalidFields(fields, value);
 
   const [forceValidation, setForceValidation] = useState(false);
 
@@ -119,9 +109,10 @@ export const InitPage = ({
 
           if (newForceValidation) return;
           const data: Record<string, any> = {};
-          Object.keys(fields).forEach(fieldPath => {
+          const allSerializedValues = serializeValueToObjByFieldKey(fields, value);
+          Object.keys(allSerializedValues).forEach(fieldPath => {
             const { controller } = fields[fieldPath];
-            const serialized = controller.serialize(state[fieldPath]);
+            const serialized = allSerializedValues[fieldPath];
             if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
               Object.assign(data, serialized);
             }
@@ -142,20 +133,14 @@ export const InitPage = ({
           {error && (
             <GraphQLErrorNotice errors={error?.graphQLErrors} networkError={error?.networkError} />
           )}
-          {Object.keys(fields).map((fieldPath, index) => {
-            const Field = fields[fieldPath].views.Field;
-            return (
-              <Field
-                field={fields[fieldPath].controller}
-                value={state[fieldPath]}
-                onChange={value => {
-                  setState({ ...state, [fieldPath]: value });
-                }}
-                forceValidation={forceValidation && invalidFields.has(fieldPath)}
-                autoFocus={index === 0}
-              />
-            );
-          })}
+          <Fields
+            fields={fields}
+            fieldModes={null}
+            forceValidation={forceValidation}
+            invalidFields={invalidFields}
+            onChange={setValue}
+            value={value}
+          />
           <Button
             isLoading={
               loading ||
