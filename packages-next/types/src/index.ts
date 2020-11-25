@@ -12,6 +12,7 @@ import { SchemaConfig } from './schema';
 import { IncomingMessage, ServerResponse } from 'http';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import { BaseListMeta, SerializedAdminMeta } from './admin-meta';
+import { CorsOptions } from 'cors';
 export * from './schema';
 export * from './utils';
 export * from './session';
@@ -65,7 +66,7 @@ export type KeystoneConfig = {
   ui?: KeystoneAdminUIConfig;
   server?: {
     /** Configuration options for the cors middleware. Set to true to core Keystone defaults */
-    cors?: any;
+    cors?: CorsOptions
   };
 } & SchemaConfig;
 
