@@ -69,6 +69,7 @@ export function getBaseAuthSchema({
             return { code: result.code, message };
           }
 
+          // Update system state
           const sessionToken = await context.startSession({ listKey, itemId: result.item.id });
           return { sessionToken, item: result.item };
         },
