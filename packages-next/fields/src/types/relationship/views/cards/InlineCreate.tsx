@@ -103,21 +103,13 @@ export function InlineCreate({
       });
   };
 
-  const fieldModes = useMemo(() => {
-    const fieldModes: Record<string, 'edit'> = {};
-    Object.keys(fields).forEach(fieldPath => {
-      fieldModes[fieldPath] = 'edit';
-    });
-    return fieldModes;
-  }, [fields]);
-
   return (
     <Stack gap="xlarge">
       {error && (
         <GraphQLErrorNotice networkError={error?.networkError} errors={error?.graphQLErrors} />
       )}
       <Fields
-        fieldModes={fieldModes}
+        fieldModes={null}
         fields={fields}
         forceValidation={forceValidation}
         invalidFields={invalidFields}
