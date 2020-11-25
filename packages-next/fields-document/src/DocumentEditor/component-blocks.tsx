@@ -499,7 +499,7 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
           <ButtonGroup>
             {!editMode ? (
               <Button
-                onMouseDown={event => {
+                onClick={event => {
                   event.preventDefault();
                   setEditMode(true);
                 }}
@@ -512,7 +512,7 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
               {attrs => (
                 <Button
                   variant="destructive"
-                  onMouseDown={event => {
+                  onClick={event => {
                     event.preventDefault();
                     const path = ReactEditor.findPath(editor, element);
                     Transforms.removeNodes(editor, { at: path });
@@ -593,7 +593,7 @@ function FormValueContent({
   const relationships = useDocumentFieldRelationships();
   const keystone = useKeystone();
   return (
-    <Stack gap="medium">
+    <Stack gap="xlarge">
       {Object.keys(props).map(key => {
         const prop = props[key];
         if (prop.kind === 'child') return null;
@@ -713,7 +713,7 @@ function FormValueContent({
         }
         const newPath = path.concat(key);
         return (
-          <div key={key}>
+          <Fragment key={key}>
             <prop.Input
               autoFocus={JSON.stringify(newPath) === stringifiedPropPathToAutoFocus}
               path={newPath}
@@ -722,7 +722,7 @@ function FormValueContent({
                 onChange({ ...value, [key]: newVal });
               }}
             />
-          </div>
+          </Fragment>
         );
       })}
     </Stack>
@@ -783,7 +783,7 @@ function FormValue({
 }) {
   const focusablePath = JSON.stringify(findFirstFocusablePropPath(componentBlock.props, [], value));
   return (
-    <Stack gap="medium" contentEditable={false}>
+    <Stack gap="xlarge" contentEditable={false}>
       <FormValueContent
         onRelationshipValuesChange={onRelationshipValuesChange}
         relationshipValues={relationshipValues}
