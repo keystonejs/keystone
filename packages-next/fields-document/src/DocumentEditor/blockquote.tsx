@@ -88,10 +88,9 @@ export const BlockquoteElement = ({ attributes, children }: RenderElementProps) 
   return (
     <blockquote
       css={{
-        borderLeft: `4px solid ${colors.border}`,
         color: colors.foregroundDim,
         margin: 0,
-        padding: `1px ${spacing.large}px`, // 1px vertical padding stops child paragraph margins from collapsing
+        padding: `0 ${spacing.xxlarge}px`,
       }}
       {...attributes}
     >

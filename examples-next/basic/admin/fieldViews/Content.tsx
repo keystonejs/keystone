@@ -89,63 +89,61 @@ type HeroPreviewProps = {
 
 function HeroPreview(props: HeroPreviewProps) {
   return (
-    <div>
+    <div
+      css={{
+        backgroundColor: 'white',
+        backgroundImage: `url(${props.imageSrc})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        display: 'flex',
+        flexDirection: 'column',
+        fontSize: 28,
+        justifyContent: 'space-between',
+        minHeight: 200,
+        padding: 16,
+        width: '100%',
+      }}
+    >
       <div
         css={{
-          backgroundColor: 'white',
-          backgroundImage: `url(${props.imageSrc})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          fontSize: 28,
-          minHeight: 200,
-          padding: 16,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
+          color: 'white',
+          fontWeight: 'bold',
+          fontSize: 48,
+          textAlign: 'center',
+          margin: 16,
+          textShadow: '0px 1px 3px black',
         }}
       >
-        <NotEditable>hello</NotEditable>
-        <div
-          css={{
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: 48,
-            textAlign: 'center',
-            margin: 16,
-            textShadow: '0px 1px 3px black',
-          }}
-        >
-          {props.title}
-        </div>
-        <div
-          css={{
-            fontWeight: 'bold',
-            color: 'white',
-            textAlign: 'center',
-            fontSize: 24,
-            margin: 16,
-            textShadow: '0px 1px 3px black',
-          }}
-        >
-          {props.content}
-        </div>
-        {props.cta.discriminant ? (
-          <div
-            css={{
-              display: 'inline-block',
-              fontSize: 16,
-              fontWeight: 'bold',
-              color: '#002B55',
-              backgroundColor: '#F9BF12',
-              padding: '12px 16px',
-              borderRadius: 6,
-              margin: '16px auto',
-            }}
-          >
-            {props.cta.value.text}
-          </div>
-        ) : null}
+        {props.title}
       </div>
+      <div
+        css={{
+          color: 'white',
+          fontSize: 24,
+          fontWeight: 'bold',
+          margin: 16,
+          textAlign: 'center',
+          textShadow: '0px 1px 3px black',
+        }}
+      >
+        {props.content}
+      </div>
+      {props.cta.discriminant ? (
+        <div
+          css={{
+            backgroundColor: '#F9BF12',
+            borderRadius: 6,
+            color: '#002B55',
+            display: 'inline-block',
+            fontSize: 16,
+            fontWeight: 'bold',
+            margin: '16px auto',
+            padding: '12px 16px',
+          }}
+        >
+          {props.cta.value.text}
+        </div>
+      ) : null}
     </div>
   );
 }
