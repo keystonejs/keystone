@@ -68,7 +68,6 @@ const getSchemaExtension = ({
         identityField,
         listKey,
         protectIdentities,
-        secretField,
         magicAuthLink,
         gqlNames,
       }),

@@ -6,7 +6,7 @@ import { updateAuthToken } from '../lib/updateAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
 import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
 
-export function getMagicAuthLinkSchema({
+export function getMagicAuthLinkSchema<I extends string>({
   listKey,
   identityField,
   protectIdentities,
@@ -14,8 +14,7 @@ export function getMagicAuthLinkSchema({
   magicAuthLink,
 }: {
   listKey: string;
-  identityField: string;
-  secretField: string;
+  identityField: I;
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   magicAuthLink: AuthTokenTypeConfig;
@@ -58,7 +57,7 @@ export function getMagicAuthLinkSchema({
     `,
     resolvers: {
       Mutation: {
-        async [gqlNames.sendItemMagicAuthLink](root, args, context) {
+        async [gqlNames.sendItemMagicAuthLink](root: any, args: { [P in I]: string }, context) {
           const list = context.keystone.lists[listKey];
           const sudoContext = context.createContext({ skipAccessControl: true });
           const itemAPI = sudoContext.lists[listKey];
@@ -96,7 +95,11 @@ export function getMagicAuthLinkSchema({
           }
           return null;
         },
-        async [gqlNames.redeemItemMagicAuthToken](root, args, context) {
+        async [gqlNames.redeemItemMagicAuthToken](
+          root: any,
+          args: { [P in I]: string } & { token: string },
+          context
+        ) {
           if (!context.startSession) {
             throw new Error('No session implementation available on context');
           }
