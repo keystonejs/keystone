@@ -55,6 +55,7 @@ export function getBaseAuthSchema({
             secretField,
             protectIdentities,
             args,
+            args[secretField],
             itemAPI
           );
 

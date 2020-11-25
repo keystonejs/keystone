@@ -5514,10 +5514,10 @@ apollo-utilities@^1.0.1, apollo-utilities@^1.3.0, apollo-utilities@^1.3.4:
     ts-invariant "^0.4.0"
     tslib "^1.10.0"
 
-apply-ref@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/apply-ref/-/apply-ref-0.2.3.tgz#d94516049bb12fb4ed1157e554780737fa239458"
-  integrity sha512-9Wkp1sYO6yT+WD9kZ2L0bb7sAFLcagbwM3qhnOfCic79sR0oGwjlHMmlgRh9I/dxibGeelFpMUu0V6Kg4fkz5A==
+apply-ref@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/apply-ref/-/apply-ref-1.0.0.tgz#036947786ec24f64c92e905b56d6ffec2fa81951"
+  integrity sha512-InKjUB8TMcIiSVV/9hqmMpIXkpIjCIbRiB3qdPu4/kU9AagF2uRAdAfFgt9+ykw5xQYyqAmcIKNsgy4tqKPquQ==
 
 aproba@^1.0.3, aproba@^1.1.1:
   version "1.2.0"

@@ -6,13 +6,13 @@ export async function validateSecret(
   secretField: string,
   protectIdentities: boolean,
   args: Record<string, string>,
+  secret: string,
   itemAPI: any
 ): Promise<
   | { success: false; code: PasswordAuthErrorCode }
   | { success: true; item: { id: any; [prop: string]: any } }
 > {
   const identity = args[identityField];
-  const canidatePlaintext = args[secretField];
   const secretFieldInstance = list.fieldsByPath[secretField];
 
   // TODO: Allow additional filters to be suppled in config? eg. `validUserConditions: { isEnable: true, isVerified: true, ... }`
@@ -36,7 +36,7 @@ export async function validateSecret(
   }
 
   const item = items[0];
-  if (await secretFieldInstance.compare(canidatePlaintext, item[secretField])) {
+  if (await secretFieldInstance.compare(secret, item[secretField])) {
     // Authenticated!
     return { success: true, item };
   } else {

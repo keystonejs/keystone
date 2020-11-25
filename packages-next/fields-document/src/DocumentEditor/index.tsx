@@ -172,9 +172,10 @@ export function DocumentEditor({
           background: colors.background,
           bottom: 0,
           left: 0,
+          overflowY: 'auto', // required to keep the toolbar stuck in place
           position: 'absolute',
           right: 0,
-          top: -1,
+          top: 0,
           zIndex: 100,
         }
       }
