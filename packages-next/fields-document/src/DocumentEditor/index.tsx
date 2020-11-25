@@ -30,6 +30,7 @@ import {
 } from './relationship';
 import { DocumentFeatures } from '../views';
 import { withDivider } from './divider';
+import { withCodeBlock } from './code-block';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -135,9 +136,12 @@ export function DocumentEditor({
                 withDivider(
                   documentFeatures.dividers,
                   withColumns(
-                    withBlockquote(
-                      documentFeatures.blockTypes.blockquote,
-                      withLink(withQuote(withPanel(withHistory(withReact(createEditor())))))
+                    withCodeBlock(
+                      documentFeatures.blockTypes.code,
+                      withBlockquote(
+                        documentFeatures.blockTypes.blockquote,
+                        withLink(withQuote(withPanel(withHistory(withReact(createEditor())))))
+                      )
                     )
                   )
                 )

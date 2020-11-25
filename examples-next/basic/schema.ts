@@ -171,6 +171,7 @@ export const lists = createSchema({
           blockquote: true,
           panel: true,
           quote: true,
+          code: true,
         },
         headingLevels: [1, 2, 3, 4, 5, 6],
         inlineMarks: {

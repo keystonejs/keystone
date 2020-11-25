@@ -75,7 +75,7 @@ export type DocumentFeatures = {
     blockquote: boolean;
     panel: boolean;
     quote: boolean;
-    // code: boolean;
+    code: boolean;
   };
   link: boolean;
   columns: [number, ...number[]][];

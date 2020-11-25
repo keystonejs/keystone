@@ -57,7 +57,7 @@ export type DocumentFieldConfig<
     blockquote?: true;
     panel?: true;
     quote?: true;
-    // code?: true;
+    code?: true;
   };
   link?: true;
   dividers?: true;
@@ -101,6 +101,7 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
           blockquote: !!config.blockTypes?.blockquote,
           panel: !!config.blockTypes?.panel,
           quote: !!config.blockTypes?.quote,
+          code: !!config.blockTypes?.code,
         },
         headingLevels: [...new Set(config.headingLevels)].sort(),
         inlineMarks: {
