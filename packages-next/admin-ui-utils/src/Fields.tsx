@@ -25,7 +25,7 @@ const RenderField = memo(function RenderField({
       onChange={useMemo(() => {
         if (onChange === undefined) return undefined;
         return value => {
-          onChange(val => ({ ...val, [field.controller.path]: value }));
+          onChange(val => ({ ...val, [field.controller.path]: { kind: 'value', value } }));
         };
       }, [onChange, field.controller.path])}
       value={value}
