@@ -100,9 +100,10 @@ export function getMagicAuthLinkSchema({
             tokenType,
             list,
             identityField,
+            args[identityField],
             protectIdentities,
             magicAuthLink.tokensValidForMins,
-            args,
+            args.token,
             itemAPI
           );
 

@@ -77,19 +77,17 @@ export type Auth = {
   withAuth: (config: KeystoneConfig) => KeystoneConfig;
 };
 
-export type PasswordAuthErrorCode =
-  | 'FAILURE' // Generic
-  | 'IDENTITY_NOT_FOUND'
-  | 'SECRET_NOT_SET'
-  | 'MULTIPLE_IDENTITY_MATCHES'
-  | 'SECRET_MISMATCH';
-
 export type AuthTokenRequestErrorCode = 'IDENTITY_NOT_FOUND' | 'MULTIPLE_IDENTITY_MATCHES';
 
-export type AuthTokenRedemptionErrorCode =
+export type PasswordAuthErrorCode =
+  | AuthTokenRequestErrorCode
   | 'FAILURE' // Generic
-  | 'IDENTITY_NOT_FOUND'
-  | 'MULTIPLE_IDENTITY_MATCHES'
+  | 'SECRET_NOT_SET'
+  | 'SECRET_MISMATCH';
+
+export type AuthTokenRedemptionErrorCode =
+  | AuthTokenRequestErrorCode
+  | 'FAILURE' // Generic
   | 'TOKEN_NOT_SET'
   | 'TOKEN_MISMATCH'
   | 'TOKEN_EXPIRED'

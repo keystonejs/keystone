@@ -101,9 +101,10 @@ export function getPasswordResetSchema({
             tokenType,
             list,
             identityField,
+            args[identityField],
             protectIdentities,
             passwordResetLink.tokensValidForMins,
-            args,
+            args.token,
             itemAPI
           );
 
@@ -142,9 +143,10 @@ export function getPasswordResetSchema({
             tokenType,
             list,
             identityField,
+            args[identityField],
             protectIdentities,
             passwordResetLink.tokensValidForMins,
-            args,
+            args.token,
             itemAPI
           );
 

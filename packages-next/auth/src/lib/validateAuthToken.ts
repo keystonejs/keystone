@@ -12,9 +12,10 @@ export async function validateAuthToken(
   tokenType: 'passwordReset' | 'magicAuth',
   list: any,
   identityField: string,
+  identity: string,
   protectIdentities: boolean,
   tokenValidMins: number | undefined,
-  args: Record<string, string>,
+  token: string,
   itemAPI: any
 ): Promise<
   | { success: false; code: AuthTokenRedemptionErrorCode }
@@ -23,10 +24,10 @@ export async function validateAuthToken(
   const result = await validateSecret(
     list,
     identityField,
+    identity,
     `${tokenType}Token`,
     protectIdentities,
-    args,
-    args.token,
+    token,
     itemAPI
   );
   if (!result.success) {
