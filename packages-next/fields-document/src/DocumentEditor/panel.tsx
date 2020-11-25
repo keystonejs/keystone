@@ -3,6 +3,7 @@
 import { forwardRef } from 'react';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
+import { applyRefs } from 'apply-ref';
 
 import { jsx } from '@keystone-ui/core';
 import { useControlledPopover } from '@keystone-ui/popover';
@@ -157,7 +158,7 @@ const PanelTypeSelect = forwardRef<
 });
 
 export const PanelElement = ({
-  attributes: { ref: _unusedPoorlyTypedRef, ...attributes },
+  attributes: { ref, ...attributes },
   children,
   element,
 }: RenderElementProps) => {
@@ -188,7 +189,7 @@ export const PanelElement = ({
 
   return (
     <div
-      ref={trigger.ref}
+      ref={applyRefs(ref, trigger.ref)}
       css={{
         alignItems: 'center',
         backgroundColor: panelType.background,
