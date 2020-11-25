@@ -17,8 +17,8 @@ export const Separator = () => {
         alignSelf: 'stretch',
         background: colors.border,
         display: 'inline-block',
-        marginLeft: spacing.small,
-        marginRight: spacing.small,
+        marginLeft: spacing.xsmall,
+        marginRight: spacing.xsmall,
         width: 1,
       }}
     />
@@ -30,13 +30,26 @@ export const Separator = () => {
 const ButtonGroupContext = createContext({ direction: 'row' });
 export const useButtonGroupContext = () => useContext(ButtonGroupContext);
 
+const autoFlowDirection = {
+  row: 'column',
+  column: 'row',
+};
 export const ButtonGroup = ({
   direction = 'row',
   ...props
 }: { direction?: 'column' | 'row' } & HTMLAttributes<HTMLDivElement>) => {
+  const { spacing } = useTheme();
+
   return (
     <ButtonGroupContext.Provider value={{ direction }}>
-      <div css={{ display: 'flex', flexDirection: direction }} {...props} />
+      <div
+        css={{
+          display: 'inline-grid',
+          gap: spacing.xxsmall,
+          gridAutoFlow: autoFlowDirection[direction],
+        }}
+        {...props}
+      />
     </ButtonGroupContext.Provider>
   );
 };
@@ -117,20 +130,10 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
           '&[data-display-mode=row]': {
             paddingLeft: spacing.small,
             paddingRight: spacing.small,
-
-            // really want flex-gap...
-            '&:not(:last-of-type)': {
-              marginRight: spacing.xsmall,
-            },
           },
           '&[data-display-mode=column]': {
             paddingLeft: spacing.medium,
             paddingRight: spacing.medium,
-
-            // really want flex-gap...
-            '&:not(:last-of-type)': {
-              marginBottom: spacing.xsmall,
-            },
           },
         }}
         {...props}

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Fragment, ReactNode, forwardRef, useState } from 'react';
+import { Fragment, ReactNode, forwardRef, useState, HTMLAttributes } from 'react';
 import { Editor, Transforms } from 'slate';
 import { useSlate } from 'slate-react';
 import { applyRefs } from 'apply-ref';
@@ -17,12 +17,9 @@ import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
 import { ItalicIcon } from '@keystone-ui/icons/icons/ItalicIcon';
 import { PlusIcon } from '@keystone-ui/icons/icons/PlusIcon';
 import { ChevronDownIcon } from '@keystone-ui/icons/icons/ChevronDownIcon';
-import { ListIcon } from '@keystone-ui/icons/icons/ListIcon';
-import { HashIcon } from '@keystone-ui/icons/icons/HashIcon';
 import { Maximize2Icon } from '@keystone-ui/icons/icons/Maximize2Icon';
 import { Minimize2Icon } from '@keystone-ui/icons/icons/Minimize2Icon';
 import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon';
-import { MessageCircleIcon } from '@keystone-ui/icons/icons/MessageCircleIcon';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 
 import { Button, ButtonGroup, Separator } from './components';
@@ -72,7 +69,7 @@ export const Toolbar = ({
         <Tooltip content="Bullet list" weight="subtle">
           {attrs => (
             <ListButton type="unordered-list" {...attrs}>
-              <ListIcon size="small" />
+              <BulletListIcon />
             </ListButton>
           )}
         </Tooltip>
@@ -81,47 +78,16 @@ export const Toolbar = ({
         <Tooltip content="Numbered list" weight="subtle">
           {attrs => (
             <ListButton type="ordered-list" {...attrs}>
-              <HashIcon size="small" />
+              <NumberedListIcon />
             </ListButton>
           )}
         </Tooltip>
       )}
-      {documentFeatures.link && (
-        <Fragment>
-          <Separator />
-          <LinkButton />
-        </Fragment>
-      )}
-      {documentFeatures.blockTypes.blockquote && (
-        <Tooltip content="Quote" weight="subtle">
-          {attrs => (
-            <Button
-              onMouseDown={event => {
-                event.preventDefault();
-                insertBlockquote(editor);
-              }}
-              {...attrs}
-            >
-              <MessageCircleIcon size="small" />
-            </Button>
-          )}
-        </Tooltip>
-      )}
-      {!!documentFeatures.columns.length && (
-        <Tooltip content="Columns" weight="subtle">
-          {attrs => (
-            <Button
-              onMouseDown={event => {
-                event.preventDefault();
-                insertColumns(editor, documentFeatures.columns[0]);
-              }}
-              {...attrs}
-            >
-              <ColumnsIcon size="small" />
-            </Button>
-          )}
-        </Tooltip>
-      )}
+      {(documentFeatures.alignment.center ||
+        documentFeatures.alignment.end ||
+        documentFeatures.listTypes.unordered ||
+        documentFeatures.listTypes.ordered) && <Separator />}
+
       {documentFeatures.dividers && (
         <Tooltip content="Divider" weight="subtle">
           {attrs => (
@@ -137,6 +103,37 @@ export const Toolbar = ({
               {...attrs}
             >
               <MinusIcon size="small" />
+            </Button>
+          )}
+        </Tooltip>
+      )}
+      {documentFeatures.link && <LinkButton />}
+      {documentFeatures.blockTypes.blockquote && (
+        <Tooltip content="Quote" weight="subtle">
+          {attrs => (
+            <Button
+              onMouseDown={event => {
+                event.preventDefault();
+                insertBlockquote(editor);
+              }}
+              {...attrs}
+            >
+              <QuoteIcon />
+            </Button>
+          )}
+        </Tooltip>
+      )}
+      {!!documentFeatures.columns.length && (
+        <Tooltip content="Columns" weight="subtle">
+          {attrs => (
+            <Button
+              onMouseDown={event => {
+                event.preventDefault();
+                insertColumns(editor, documentFeatures.columns[0]);
+              }}
+              {...attrs}
+            >
+              <ColumnsIcon size="small" />
             </Button>
           )}
         </Tooltip>
@@ -183,8 +180,6 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
       css={{
         backgroundColor: colors.background,
         boxShadow: `0 1px ${colors.border}, 0 -1px ${colors.border}`,
-        display: 'flex',
-        flexWrap: 'wrap',
         paddingBottom: spacing.small,
         paddingTop: spacing.small,
         position: 'sticky',
@@ -192,7 +187,7 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
         zIndex: 2,
       }}
     >
-      {children}
+      <ButtonGroup>{children}</ButtonGroup>
     </div>
   );
 };
@@ -510,6 +505,7 @@ const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTy
   );
 };
 
+// TODO: Clear formatting
 const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
@@ -587,3 +583,35 @@ const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
     </Fragment>
   );
 };
+
+// Custom (non-feather) Icons
+// ------------------------------
+
+const IconBase = (props: HTMLAttributes<HTMLOrSVGElement>) => (
+  <svg
+    aria-hidden="true"
+    fill="currentColor"
+    focusable="false"
+    height="16"
+    role="presentation"
+    viewBox="0 0 16 16"
+    width="16"
+    {...props}
+  />
+);
+
+const QuoteIcon = () => (
+  <IconBase>
+    <path d="M11.3031 2C9.83843 2 8.64879 3.22321 8.64879 4.73171C8.64879 6.23928 9.83843 7.46342 11.3031 7.46342C13.8195 7.46342 12.3613 12.2071 9.18767 12.7012C9.03793 12.7239 8.90127 12.7995 8.80243 12.9143C8.70358 13.029 8.64908 13.1754 8.64879 13.3268C8.64879 13.7147 8.99561 14.0214 9.37973 13.9627C15.148 13.0881 17.1991 2.00093 11.3031 2.00093V2ZM3.65526 2C2.18871 2 1 3.22228 1 4.73171C1 6.23835 2.18871 7.46155 3.65526 7.46155C6.17067 7.46155 4.71252 12.2071 1.53888 12.7012C1.3893 12.7239 1.25277 12.7993 1.15394 12.9139C1.05511 13.0285 1.00051 13.1746 1 13.3259C1 13.7137 1.34682 14.0205 1.73001 13.9617C7.50016 13.0872 9.55128 2 3.65526 2Z" />
+  </IconBase>
+);
+const BulletListIcon = () => (
+  <IconBase>
+    <path d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z" />
+  </IconBase>
+);
+const NumberedListIcon = () => (
+  <IconBase>
+    <path d="M2.003 2.5a.5.5 0 00-.723-.447l-1.003.5a.5.5 0 00.446.895l.28-.14V6H.5a.5.5 0 000 1h2.006a.5.5 0 100-1h-.503V2.5zM5 3.25a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 3.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 8.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5a.75.75 0 01-.75-.75zM.924 10.32l.003-.004a.851.851 0 01.144-.153A.66.66 0 011.5 10c.195 0 .306.068.374.146a.57.57 0 01.128.376c0 .453-.269.682-.8 1.078l-.035.025C.692 11.98 0 12.495 0 13.5a.5.5 0 00.5.5h2.003a.5.5 0 000-1H1.146c.132-.197.351-.372.654-.597l.047-.035c.47-.35 1.156-.858 1.156-1.845 0-.365-.118-.744-.377-1.038-.268-.303-.658-.484-1.126-.484-.48 0-.84.202-1.068.392a1.858 1.858 0 00-.348.384l-.007.011-.002.004-.001.002-.001.001a.5.5 0 00.851.525zM.5 10.055l-.427-.26.427.26z" />
+  </IconBase>
+);
