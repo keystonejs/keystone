@@ -1,15 +1,13 @@
 import { promisify } from 'util';
 import { randomBytes } from 'crypto';
 import { transport, makeANiceEmail } from '../lib/mail';
-import { getItems } from '@keystonejs/server-side-graphql-client';
 
 export default async function requestReset(root: any, { email }: { email: string }, context: any) {
-  const response = await getItems({
-    context,
-    where: { email },
-    listKey: 'User',
-    returnFields: 'id email',
+
+  const response = await context.lists.User.findMany({
+    where: { email }
   });
+  console.log(response);
 
   const [user] = response;
 

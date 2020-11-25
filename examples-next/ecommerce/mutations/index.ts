@@ -21,10 +21,10 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
   `,
   resolvers: {
     Mutation: {
-      checkout: checkout,
-      addtoCart: addToCart,
-      resetPassword: resetPassword,
-      requestReset: requestReset,
+      checkout,
+      addToCart,
+      resetPassword,
+      requestReset,
     },
   },
 });
