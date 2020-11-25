@@ -1,5 +1,6 @@
 import { randomBytes } from 'crypto';
 import { AuthTokenRequestErrorCode } from '../types';
+import { findMatchingIdentity } from './findMatchingIdentity';
 
 function generateToken(length: number): string {
   return randomBytes(length) // Generates N*8 bits of data
@@ -19,19 +20,12 @@ export async function updateAuthToken(
   | { success: false; code?: AuthTokenRequestErrorCode }
   | { success: true; itemId: string | number; token: string }
 > {
-  const items = await itemAPI.findMany({ where: { [identityField]: identity } });
-
+  const match = await findMatchingIdentity(identityField, identity, itemAPI);
   // Identity failures with helpful errors (unless it would violate our protectIdentities config)
-  let specificCode: AuthTokenRequestErrorCode | undefined;
-  if (items.length === 0) {
-    specificCode = 'IDENTITY_NOT_FOUND';
-  } else if (items.length > 1) {
-    specificCode = 'MULTIPLE_IDENTITY_MATCHES';
-  }
-  if (specificCode !== undefined) {
+  if (match.success) {
+    return { success: true, itemId: match.item.id, token: generateToken(20) };
+  } else {
     // There is no generic `AUTH_TOKEN_REQUEST_FAILURE` code; it's existance would alow values in the identity field to be probed
-    return { success: false, code: protectIdentities ? undefined : specificCode };
+    return { success: false, code: protectIdentities ? undefined : match.code };
   }
-
-  return { success: true, itemId: items[0].id, token: generateToken(20) };
 }
