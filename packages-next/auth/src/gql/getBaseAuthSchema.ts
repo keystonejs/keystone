@@ -1,6 +1,6 @@
 import { AuthGqlNames } from '../types';
 
-import { attemptAuthentication } from '../lib/attemptAuthentication';
+import { validateSecret } from '../lib/validateSecret';
 import { getPasswordAuthError } from '../lib/getErrorMessage';
 
 export function getBaseAuthSchema({
@@ -49,7 +49,7 @@ export function getBaseAuthSchema({
         async [gqlNames.authenticateItemWithPassword](root: any, args: any, context: any) {
           const list = context.keystone.lists[listKey];
           const itemAPI = context.lists[listKey];
-          const result = await attemptAuthentication(
+          const result = await validateSecret(
             list,
             identityField,
             secretField,
