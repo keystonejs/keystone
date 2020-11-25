@@ -137,6 +137,7 @@ export function DocumentEditor({
                   documentFeatures.dividers,
                   withColumns(
                     withCodeBlock(
+                      documentFeatures.blockTypes.code,
                       withBlockquote(
                         documentFeatures.blockTypes.blockquote,
                         withLink(withQuote(withPanel(withHistory(withReact(createEditor())))))
