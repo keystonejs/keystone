@@ -1,5 +1,6 @@
 /** @jsx jsx */
 
+import { createContext, useContext } from 'react';
 import { Editor, Element, Node, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
 
@@ -12,7 +13,6 @@ import { InlineDialog } from './components/inline-dialog';
 import { Button, ButtonGroup, Separator } from './components';
 import { paragraphElement } from './paragraphs';
 import { isBlockActive, moveChildren } from './utils';
-import { createContext, useContext } from 'react';
 
 const ColumnOptionsContext = createContext<[number, ...number[]][]>([]);
 
@@ -26,6 +26,11 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
   const editor = useSlate();
   const layout = element.layout as number[];
   const columnLayouts = useContext(ColumnOptionsContext);
+
+  // TODO: to keep the dialog in sync with the trigger (as the user enters
+  // content) we'll likely need a custom popper modifier that implements a
+  // resize observer. Though it may not be worthwile, relative/absolute
+  // positioning is simpler and better for perf...
   const { dialog, trigger } = useControlledPopover(
     {
       isOpen: focused && selected,
@@ -46,6 +51,7 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
   return (
     <div css={{ position: 'relative' }} {...attributes}>
       <div
+        ref={trigger.ref}
         css={{
           columnGap: spacing.small,
           display: 'grid',
@@ -55,7 +61,6 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
           position: 'relative',
         }}
         {...trigger.props}
-        ref={trigger.ref}
       >
         {children}
       </div>
@@ -76,7 +81,7 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
                   Transforms.setNodes(editor, cols, { at: path });
                 }}
               >
-                {layoutOption.join(':')}
+                {makeLayoutIcon(layoutOption)}
               </Button>
             ))}
             <Separator />
@@ -248,3 +253,29 @@ export const withColumns = (editor: ReactEditor) => {
   };
   return editor;
 };
+
+// Utils
+// ------------------------------
+
+function makeLayoutIcon(ratios: number[]) {
+  const size = 16;
+
+  const element = (
+    <div
+      role="img"
+      css={{
+        display: 'grid',
+        gridTemplateColumns: ratios.map(r => `${r}fr`).join(' '),
+        gap: 2,
+        width: size,
+        height: size,
+      }}
+    >
+      {ratios.map((_, i) => {
+        return <div key={i} css={{ backgroundColor: 'currentcolor', borderRadius: 1 }} />;
+      })}
+    </div>
+  );
+
+  return element;
+}
