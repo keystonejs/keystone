@@ -210,7 +210,7 @@ export function DocumentEditor({
 
             {
               // for debugging
-              false && <pre>{JSON.stringify(value, null, 2)}</pre>
+              true && <pre>{JSON.stringify(value, null, 2)}</pre>
             }
           </ComponentBlockProvider>
         </ColumnOptionsProvider>

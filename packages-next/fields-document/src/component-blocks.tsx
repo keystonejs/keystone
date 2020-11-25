@@ -14,8 +14,25 @@ export type FormField<Value> = {
   defaultValue: Value;
 };
 
-export type InlineField = {
-  kind: 'inline';
+export type ChildField = {
+  kind: 'child';
+  options:
+    | {
+        kind: 'block';
+        // dividers: boolean;
+        // formatting: {
+        //   blockTypes: boolean;
+        //   headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[];
+        //   inlineMarks: boolean;
+        //   lists: boolean;
+        // };
+        // links: boolean;
+      }
+    | {
+        kind: 'inline';
+        // formatting: { inlineMarks: boolean };
+        // links: boolean;
+      };
 };
 
 export type RelationshipField<Cardinality extends 'one' | 'many'> = {
@@ -46,7 +63,7 @@ export type ConditionalField<
 };
 
 export type ComponentPropField =
-  | InlineField
+  | ChildField
   | FormField<any>
   | ObjectField
   | ConditionalField<any, any>
@@ -139,9 +156,55 @@ export const fields = {
       defaultValue: undefined,
     };
   },
-  child(): InlineField {
+  child(
+    options:
+      | {
+          kind: 'block';
+          // dividers?: true;
+          // formatting?:
+          //   | {
+          //       blockTypes?: true;
+          //       headingLevels?: (1 | 2 | 3 | 4 | 5 | 6)[];
+          //       inlineMarks?: true;
+          //       lists?: true;
+          //     }
+          //   | true;
+          // links?: true;
+        }
+      | {
+          kind: 'inline';
+          // formatting?: true;
+          // links?: true;
+        }
+  ): ChildField {
     return {
-      kind: 'inline',
+      kind: 'child',
+      options:
+        options.kind === 'block'
+          ? {
+              kind: 'block',
+              // dividers: options.dividers ?? true,
+              // formatting:
+              //   options.formatting === true
+              //     ? {
+              //         blockTypes: true,
+              //         headingLevels: [1, 2, 3, 4, 5, 6],
+              //         inlineMarks: true,
+              //         lists: true,
+              //       }
+              //     : {
+              //         blockTypes: options.formatting?.blockTypes ?? false,
+              //         headingLevels: options.formatting?.headingLevels ?? [],
+              //         inlineMarks: options.formatting?.inlineMarks ?? false,
+              //         lists: options.formatting?.lists ?? false,
+              //       },
+              // links: options.links ?? false,
+            }
+          : {
+              kind: 'inline',
+              // formatting: { inlineMarks: options.formatting ?? false },
+              // links: options.links ?? false,
+            },
     };
   },
   object<Value extends Record<string, ComponentPropField>>(value: Value): ObjectField<Value> {
@@ -188,7 +251,7 @@ type DiscriminantToString<Discriminant extends string | boolean> = Discriminant 
 type CastToComponentPropField<Prop> = Prop extends ComponentPropField ? Prop : never;
 
 type ExtractPropFromComponentPropField<Prop extends ComponentPropField> = [Prop] extends [
-  InlineField
+  ChildField
 ]
   ? ReactNode
   : [Prop] extends [FormField<infer Value>]

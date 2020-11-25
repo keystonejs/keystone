@@ -27,6 +27,7 @@ export const renderElement = (props: RenderElementProps) => {
     case 'component-block':
       return <ComponentBlocksElement {...props} />;
     case 'component-inline-prop':
+    case 'component-block-prop':
       return <ComponentInlineProp {...props} />;
     case 'panel':
       return <PanelElement {...props} />;

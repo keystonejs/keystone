@@ -3,7 +3,7 @@
 import { jsx, Stack } from '@keystone-ui/core';
 import { Fragment, ReactElement, useContext, useState } from 'react';
 import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
-import { Editor, Element, Transforms } from 'slate';
+import { Editor, Element, Transforms, Text } from 'slate';
 
 import { Button, Spacer } from './components';
 import {
@@ -43,22 +43,22 @@ function assertNever(arg: never) {
   throw new Error('expected to never be called but recieved: ' + JSON.stringify(arg));
 }
 
-function _findInlinePropPaths(
+function _findChildPropPaths(
   value: Record<string, any>,
   props: Record<string, ComponentPropField>,
   path: (string | number)[]
 ) {
-  let paths: (string | number)[][] = [];
+  let paths: { path: (string | number)[]; kind: 'block' | 'inline' }[] = [];
   Object.keys(props).forEach(key => {
     const val = props[key];
     if (val.kind === 'form' || val.kind === 'relationship') {
-    } else if (val.kind === 'inline') {
-      paths.push(path.concat(key));
+    } else if (val.kind === 'child') {
+      paths.push({ path: path.concat(key), kind: val.options.kind });
     } else if (val.kind === 'object') {
-      paths.push(..._findInlinePropPaths(value[key], val.value, path.concat(key)));
+      paths.push(..._findChildPropPaths(value[key], val.value, path.concat(key)));
     } else if (val.kind === 'conditional') {
       paths.push(
-        ..._findInlinePropPaths(
+        ..._findChildPropPaths(
           value[key],
           { value: val.values[value[key].discriminant] },
           path.concat(key)
@@ -71,13 +71,13 @@ function _findInlinePropPaths(
   return paths;
 }
 
-function findInlinePropPaths(
+function findChildPropPaths(
   value: Record<string, any>,
   props: Record<string, ComponentPropField>
-) {
-  let propPaths = _findInlinePropPaths(value, props, []);
+): { path: (string | number)[]; kind: 'inline' | 'block' }[] {
+  let propPaths = _findChildPropPaths(value, props, []);
   if (!propPaths.length) {
-    return [[VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP]];
+    return [{ path: [VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP], kind: 'inline' }];
   }
   return propPaths;
 }
@@ -102,12 +102,22 @@ function insertInitialValues(
     const val = props[key];
     if (val.kind === 'form') {
       blockProps[key] = val.defaultValue;
-    } else if (val.kind === 'inline') {
-      children.push({
-        type: 'component-inline-prop',
-        propPath: path.concat(key),
-        children: [{ text: '' }],
-      });
+    } else if (val.kind === 'child') {
+      if (val.options.kind === 'inline') {
+        children.push({
+          type: 'component-inline-prop',
+          propPath: path.concat(key),
+          children: [{ text: '' }],
+        });
+      } else if (val.options.kind === 'block') {
+        children.push({
+          type: 'component-block-prop',
+          propPath: path.concat(key),
+          children: [{ type: 'paragraph', children: [{ text: '' }] }],
+        });
+      } else {
+        assertNever(val.options);
+      }
     } else if (val.kind === 'object') {
       blockProps[key] = {};
       insertInitialValues(
@@ -195,24 +205,26 @@ export function withComponentBlocks(
       let index = 0;
       let stringifiedInlinePropPaths =
         node.type === 'component-block'
-          ? new Set(
-              findInlinePropPaths(
+          ? Object.fromEntries(
+              findChildPropPaths(
                 node.props as any,
                 blockComponents[node.component as string].props
-              ).map(x => JSON.stringify(x))
+              ).map(x => [JSON.stringify(x.path), x.kind as typeof x.kind | undefined])
             )
-          : undefined;
-
+          : {};
       for (const childNode of node.children) {
         const childPath = [...path, index];
         index++;
-        if (node.type === 'component-block' && stringifiedInlinePropPaths?.size !== 0) {
-          if (childNode.type !== 'component-inline-prop') {
+        if (node.type === 'component-block') {
+          if (
+            childNode.type !== 'component-inline-prop' &&
+            childNode.type !== 'component-block-prop'
+          ) {
             Transforms.removeNodes(editor, { at: childPath });
             return;
           }
           const stringifiedPropPath = JSON.stringify(childNode.propPath);
-          if (!stringifiedInlinePropPaths!.has(stringifiedPropPath)) {
+          if (stringifiedInlinePropPaths[stringifiedPropPath] === undefined) {
             Transforms.removeNodes(editor, { at: childPath });
             return;
           } else {
@@ -221,31 +233,68 @@ export function withComponentBlocks(
               return;
             }
             foundProps.add(stringifiedPropPath);
+            const expectedChildNodeType = `component-${stringifiedInlinePropPaths[stringifiedPropPath]}-prop`;
+            if (childNode.type !== expectedChildNodeType) {
+              Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
+              return;
+            }
           }
-        } else if (childNode.type === 'component-inline-prop') {
-          Transforms.removeNodes(editor, { at: childPath });
+        } else if (
+          childNode.type === 'component-inline-prop' ||
+          childNode.type === 'component-block-prop'
+        ) {
+          Transforms.unwrapNodes(editor, { at: childPath });
         }
       }
     }
 
-    if (node.type === 'component-block' && Element.isElement(node)) {
-      const componentBlock = blockComponents[node.component as string];
-      let missingKeys = new Set(
-        findInlinePropPaths(node.props as any, componentBlock.props).map(x => JSON.stringify(x))
-      );
+    if (Element.isElement(node)) {
+      if (node.type === 'component-block') {
+        const componentBlock = blockComponents[node.component as string];
+        let missingKeys = new Map(
+          findChildPropPaths(node.props as any, componentBlock.props).map(x => [
+            JSON.stringify(x.path),
+            x.kind,
+          ])
+        );
 
-      node.children.forEach(node => {
-        missingKeys.delete(JSON.stringify(node.propPath));
-      });
-      Transforms.insertNodes(
-        editor,
-        [...missingKeys].map(prop => ({
-          type: 'component-inline-prop',
-          propPath: JSON.parse(prop),
-          children: [{ text: '' }],
-        })),
-        { at: [...path, node.children.length] }
-      );
+        node.children.forEach(node => {
+          missingKeys.delete(JSON.stringify(node.propPath));
+        });
+        Transforms.insertNodes(
+          editor,
+          [...missingKeys].map(([prop, kind]) => ({
+            type: `component-${kind}-prop`,
+            propPath: JSON.parse(prop),
+            children: [{ text: '' }],
+          })),
+          { at: [...path, node.children.length] }
+        );
+      }
+      if (node.type === 'component-inline-prop') {
+        for (const [index, childNode] of node.children.entries()) {
+          if (!Editor.isInline(editor, childNode) && !Text.isText(childNode)) {
+            if (editor.isVoid(childNode)) {
+              Transforms.removeNodes(editor, { at: [...path, index] });
+            } else {
+              Transforms.unwrapNodes(editor, { at: [...path, index] });
+            }
+            return;
+          }
+        }
+      }
+      if (node.type === 'component-block-prop') {
+        for (const [index, childNode] of node.children.entries()) {
+          if (!Editor.isBlock(editor, childNode)) {
+            Transforms.wrapNodes(
+              editor,
+              { type: 'paragraph', children: [] },
+              { at: [...path, index] }
+            );
+            return;
+          }
+        }
+      }
     }
     normalizeNode(entry);
   };
@@ -308,7 +357,7 @@ function buildPreviewProps(
     const val = props[key];
     if (val.kind === 'form') {
       previewProps[key] = formProps[key];
-    } else if (val.kind === 'inline') {
+    } else if (val.kind === 'child') {
       previewProps[key] = childrenByPath[JSON.stringify(path.concat(key))];
     } else if (val.kind === 'object') {
       previewProps[key] = {};
@@ -497,7 +546,7 @@ function FormValueContent({
     <Stack gap="medium">
       {Object.keys(props).map(key => {
         const prop = props[key];
-        if (prop.kind === 'inline') return null;
+        if (prop.kind === 'child') return null;
         if (prop.kind === 'object') {
           return (
             <FormValueContent
@@ -637,7 +686,7 @@ function getChildProps(prop: ComponentPropField, value: any): Record<string, Com
       discriminant: prop.discriminant,
       value: prop.values[value.discriminant],
     };
-  } else if (prop.kind === 'form' || prop.kind === 'inline' || prop.kind === 'relationship') {
+  } else if (prop.kind === 'form' || prop.kind === 'child' || prop.kind === 'relationship') {
     return {};
   } else if (prop.kind === 'object') {
     return prop.value;

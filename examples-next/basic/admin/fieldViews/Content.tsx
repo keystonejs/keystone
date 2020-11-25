@@ -9,8 +9,8 @@ export const componentBlocks = {
     component: HeroPreview,
     label: 'Hero',
     props: {
-      title: fields.child(),
-      content: fields.child(),
+      title: fields.child({ kind: 'inline' }),
+      content: fields.child({ kind: 'block' }),
       imageSrc: fields.text({
         label: 'Image URL',
         defaultValue: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809',
@@ -18,7 +18,7 @@ export const componentBlocks = {
       cta: fields.conditional(fields.checkbox({ label: 'Show CTA' }), {
         false: fields.empty(),
         true: fields.object({
-          text: fields.child(),
+          text: fields.child({ kind: 'inline' }),
           href: fields.text({
             label: 'Call to action link',
             defaultValue: '#',
@@ -38,7 +38,7 @@ export const componentBlocks = {
       something.discriminant ? <NotEditable>Is void</NotEditable> : <div>{something.value}</div>,
     props: {
       something: fields.conditional(fields.checkbox({ label: 'Is void' }), {
-        false: fields.child(),
+        false: fields.child({ kind: 'inline' }),
         true: fields.empty(),
       }),
     },
@@ -69,7 +69,7 @@ export const componentBlocks = {
       );
     },
     props: {
-      title: fields.child(),
+      title: fields.child({ kind: 'inline' }),
       authors: fields.relationship<'many'>({ label: 'Authors', relationship: 'featuredAuthors' }),
     },
   }),
