@@ -15,8 +15,8 @@ export default async function requestReset(root: any, { email }: { email: string
   }
   // 2. Set a reset token and expiry on that user
   const resetToken = (await promisify(randomBytes)(20)).toString('hex');
-  const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
-  const res = await context.lists.User.updateOne({
+  // const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+  await context.lists.User.updateOne({
       id: user.id,
       // data: { resetToken, resetTokenExpiry }
       // TODO: Expiry?
@@ -24,7 +24,7 @@ export default async function requestReset(root: any, { email }: { email: string
     });
 
   // 3. Email them that reset token
-  const mailRes = await transport.sendMail({
+  await transport.sendMail({
     from: 'wes@wesbos.com',
     to: user.email,
     subject: 'Your Password Reset Token',

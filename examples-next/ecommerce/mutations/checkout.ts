@@ -1,3 +1,4 @@
+// @ts-ignore
 import { getItem, deleteItems } from '@keystonejs/server-side-graphql-client';
 import stripe from '../lib/stripe';
 const graphql = String.raw;
@@ -35,8 +36,6 @@ export default async function checkout(root: any, { token }: { token: string }, 
       }`,
     });
 
-  console.dir(User2, { depth: null });
-  console.dir(User, { depth: null });
   // 2. recalculate the total for the price
   const amount = User.cart.reduce(
     (tally: number, cartItem: any) => tally + cartItem.product.price * cartItem.quantity,

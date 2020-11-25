@@ -1,4 +1,6 @@
-export default async function resetPassword(parent, args, ctx, info, { query }) {
+// @ts-ignore
+// TODO: Type this mutation
+export default async function resetPassword(parent, args: any, ctx, info, { query }: any) {
   console.log(args);
   // 1. check if the passwords match
   console.info('1. Checking is passwords match');
@@ -43,7 +45,7 @@ export default async function resetPassword(parent, args, ctx, info, { query }) 
       }
     }
   `);
-  const { errors, data } = updatedUserResponse;
+  const { errors } = updatedUserResponse;
   if (errors) {
     throw new Error(errors);
   }
