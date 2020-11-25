@@ -52,9 +52,9 @@ export function getBaseAuthSchema({
           const result = await validateSecret(
             list,
             identityField,
+            args[identityField],
             secretField,
             protectIdentities,
-            args,
             args[secretField],
             itemAPI
           );

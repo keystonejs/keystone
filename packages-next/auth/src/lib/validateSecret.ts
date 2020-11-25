@@ -1,41 +1,38 @@
 import { PasswordAuthErrorCode } from '../types';
+import { findMatchingIdentity } from './findMatchingIdentity';
 
 export async function validateSecret(
   list: any,
   identityField: string,
+  identity: string,
   secretField: string,
   protectIdentities: boolean,
-  args: Record<string, string>,
   secret: string,
   itemAPI: any
 ): Promise<
   | { success: false; code: PasswordAuthErrorCode }
   | { success: true; item: { id: any; [prop: string]: any } }
 > {
-  const identity = args[identityField];
-  const secretFieldInstance = list.fieldsByPath[secretField];
-
-  // TODO: Allow additional filters to be suppled in config? eg. `validUserConditions: { isEnable: true, isVerified: true, ... }`
-  const items = await itemAPI.findMany({ where: { [identityField]: identity } });
-
+  const match = await findMatchingIdentity(identityField, identity, itemAPI);
   // Identity failures with helpful errors
-  let specificCode: PasswordAuthErrorCode | undefined;
-  if (items.length === 0) {
-    specificCode = 'IDENTITY_NOT_FOUND';
-  } else if (items.length === 1 && !items[0][secretField]) {
-    specificCode = 'SECRET_NOT_SET';
-  } else if (items.length > 1) {
-    specificCode = 'MULTIPLE_IDENTITY_MATCHES';
+  let code: PasswordAuthErrorCode | undefined;
+  if (!match.success) {
+    code = match.code;
+  } else if (!match.item[secretField]) {
+    code = 'SECRET_NOT_SET';
   }
-  if (typeof specificCode !== 'undefined') {
+
+  const secretFieldInstance = list.fieldsByPath[secretField];
+  if (code) {
     // See "Identity Protection" in the README as to why this is a thing
     if (protectIdentities) {
       await secretFieldInstance.generateHash('simulated-password-to-counter-timing-attack');
+      code = 'FAILURE';
     }
-    return { success: false, code: protectIdentities ? 'FAILURE' : specificCode };
+    return { success: false, code };
   }
 
-  const item = items[0];
+  const { item } = match as { success: true; item: { id: any; [prop: string]: any } };
   if (await secretFieldInstance.compare(secret, item[secretField])) {
     // Authenticated!
     return { success: true, item };
