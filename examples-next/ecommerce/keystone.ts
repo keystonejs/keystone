@@ -1,12 +1,18 @@
+import { Role } from './schemas/Role';
+import { OrderItem } from './schemas/OrderItem';
+import { Order } from './schemas/Order';
+import { CartItem } from './schemas/CartItem';
+import { ProductImage } from './schemas/ProductImage';
+import { Product } from './schemas/Product';
+import { User } from './schemas/User';
 import 'dotenv/config';
 
-import { config } from '@keystone-next/keystone/schema';
+import { config, createSchema } from '@keystone-next/keystone/schema';
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
-import { lists } from './schema';
 import { extendGraphqlSchema } from './mutations';
 import { createAuth } from '@keystone-next/auth';
 import { insertSeedData } from './seed-data';
-import { permissionsList } from './fields';
+import { permissionsList } from './schemas/fields';
 
 /*
   TODO
@@ -36,8 +42,6 @@ const { withAuth } = createAuth({
   },
 });
 
-// Dynamically query all the "can$" fields from the Role, and query them into the session. This is handy so we don't have to write each permission in several locations
-
 export default withAuth(
   config({
     server: {
@@ -55,7 +59,15 @@ export default withAuth(
         }
       },
     },
-    lists,
+    lists: createSchema({
+      User,
+      Product,
+      ProductImage,
+      CartItem,
+      Order,
+      OrderItem,
+      Role,
+    }),
     extendGraphqlSchema,
     ui: {
       isAccessAllowed: ({ session }) => !!session,

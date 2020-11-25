@@ -1,4 +1,4 @@
-import { permissionsList } from './fields';
+import { permissionsList } from './schemas/fields';
 import { ListAccessArgs } from './types';
 
 /*

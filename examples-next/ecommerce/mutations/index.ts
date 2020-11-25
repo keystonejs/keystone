@@ -1,9 +1,8 @@
-// @ts-ignore
 import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
-import addToCart from './mutations/addToCart';
-import checkout from './mutations/checkout';
-import resetPassword from './mutations/resetPassword';
-import requestReset from './mutations/requestReset';
+import addToCart from './addToCart';
+import checkout from './checkout';
+import resetPassword from './resetPassword';
+import requestReset from './requestReset';
 
 // This is a "Fake graphql" hack so we get highlighting of strings in vs code
 const graphql = String.raw;
