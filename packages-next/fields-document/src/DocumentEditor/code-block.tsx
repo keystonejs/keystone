@@ -49,10 +49,10 @@ export function withCodeBlock(enabled: boolean, editor: ReactEditor) {
     normalizeNode([node, path]);
   };
   if (enabled) {
-    // this is slightly different to the usages of getMaybeMarkdownShortcutText because the insertion happens on - rather than a space
+    // this is slightly different to the usages of getMaybeMarkdownShortcutText because the insertion happens on ` rather than a space
     editor.insertText = text => {
       const { selection } = editor;
-      if (text === '``' && selection && Range.isCollapsed(selection)) {
+      if (text === '`' && selection && Range.isCollapsed(selection)) {
         const { anchor } = selection;
         const block = Editor.above(editor, {
           match: n => n.type === 'paragraph',
@@ -61,7 +61,7 @@ export function withCodeBlock(enabled: boolean, editor: ReactEditor) {
         const start = Editor.start(editor, path);
         const range = { anchor, focus: start };
         const content = Editor.string(editor, range);
-        if (content === '`') {
+        if (content === '``') {
           Transforms.select(editor, range);
           Transforms.delete(editor);
           Transforms.wrapNodes(editor, { type: 'code', children: [] }, { at: path });
