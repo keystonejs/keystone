@@ -37,6 +37,7 @@ import { ListButton } from './lists';
 import { insertBlockquote } from './blockquote';
 import { RelationshipButton } from './relationship';
 import { DocumentFeatures } from '../views';
+import { insertCodeBlock } from './code-block';
 
 // TODO: how to manage separators with dynamic feature sets...
 
@@ -487,6 +488,18 @@ const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTy
                 }}
               >
                 + Quote
+              </Button>
+            )}
+            {blockTypes.code && (
+              <Button
+                isDisabled={!shouldInsertBlock}
+                onMouseDown={event => {
+                  event.preventDefault();
+                  insertCodeBlock(editor);
+                  setShowMenu(false);
+                }}
+              >
+                + Code
               </Button>
             )}
             <RelationshipButton />

@@ -59,7 +59,14 @@ export const renderElement = (props: RenderElementProps) => {
 
 const CodeElement = ({ attributes, children }: RenderElementProps) => {
   return (
-    <pre css={{ color: '#2C5282' }} {...attributes}>
+    <pre
+      css={{
+        color: '#2C5282',
+        backgroundColor: 'lightgray',
+        borderRadius: useTheme().radii.xsmall,
+      }}
+      {...attributes}
+    >
       <code>{children}</code>
     </pre>
   );
