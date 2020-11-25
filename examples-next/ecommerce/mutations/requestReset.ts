@@ -3,7 +3,6 @@ import { randomBytes } from 'crypto';
 import { transport, makeANiceEmail } from '../lib/mail';
 
 export default async function requestReset(root: any, { email }: { email: string }, context: any) {
-
   const response = await context.lists.User.findMany({
     where: { email }
   });

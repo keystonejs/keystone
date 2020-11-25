@@ -8,7 +8,13 @@ export default async function checkout(root: any, { token }: { token: string }, 
   const userId = session.itemId;
   if (!userId) throw new Error('You must be signed in to complete this order.');
 
-  // FIXME: Use the new graphQL API when it's available
+  // TODO: How do I use findOne but populate the cart → product → image relation?
+  // const User2 = await context.lists.User.findOne({
+  //   where: { id: userId },
+  // });
+
+  // console.log(User2);
+
   const User = await getItem({
     context,
     listKey: 'User',
@@ -29,6 +35,8 @@ export default async function checkout(root: any, { token }: { token: string }, 
       }`,
     });
 
+  console.dir(User2, { depth: null });
+  console.dir(User, { depth: null });
   // 2. recalculate the total for the price
   const amount = User.cart.reduce(
     (tally: number, cartItem: any) => tally + cartItem.product.price * cartItem.quantity,
