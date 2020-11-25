@@ -1,5 +1,5 @@
 import { createSchema, list } from '@keystone-next/keystone/schema';
-import { text, relationship, password, select, virtual, integer } from '@keystone-next/fields';
+import { text, relationship, password, select, virtual, integer, timestamp } from '@keystone-next/fields';
 import { cloudinaryImage } from '@keystone-next/cloudinary';
 import type { ListsAPI } from './types';
 import { permissions, isSignedIn, rules } from './access';
@@ -76,6 +76,8 @@ export const lists = createSchema({
           itemView: { fieldMode: 'read' },
         },
       }),
+      // resetToken: text(),
+      // resetTokenExpiry: timestamp()
     },
   }),
   Product: list({

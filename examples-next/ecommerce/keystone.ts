@@ -11,7 +11,6 @@ import { permissionsList } from './fields';
 /*
   TODO
     - [ ] Configure send forgotten password
-    - [x] Work out a good approach to seeding data
 */
 
 const databaseUrl = process.env.DATABASE_URL || 'mongodb://localhost/keystone-examples-ecommerce';
