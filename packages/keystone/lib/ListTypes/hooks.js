@@ -120,7 +120,7 @@ class HookManager {
       this._throwValidationFailure({ errors: fieldValidationErrors, operation, originalInput });
     }
     // NOTE: addFieldValidationError should be awailable only for field level hooks
-    args.addFieldValidationError = undefined
+    args.addFieldValidationError = undefined;
 
     if (this.hooks[hookName]) {
       const listValidationErrors = [];
