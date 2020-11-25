@@ -83,12 +83,31 @@ export const Toolbar = ({
           )}
         </Tooltip>
       )}
-      {documentFeatures.link && (
-        <Fragment>
-          <Separator />
-          <LinkButton />
-        </Fragment>
+      {(documentFeatures.alignment.center ||
+        documentFeatures.alignment.end ||
+        documentFeatures.listTypes.unordered ||
+        documentFeatures.listTypes.ordered) && <Separator />}
+
+      {documentFeatures.dividers && (
+        <Tooltip content="Divider" weight="subtle">
+          {attrs => (
+            <Button
+              onMouseDown={event => {
+                event.preventDefault();
+                Transforms.insertNodes(
+                  editor,
+                  { type: 'divider', children: [{ text: '' }] },
+                  { match: node => node.type === 'paragraph' }
+                );
+              }}
+              {...attrs}
+            >
+              <MinusIcon size="small" />
+            </Button>
+          )}
+        </Tooltip>
       )}
+      {documentFeatures.link && <LinkButton />}
       {documentFeatures.blockTypes.blockquote && (
         <Tooltip content="Quote" weight="subtle">
           {attrs => (
@@ -115,25 +134,6 @@ export const Toolbar = ({
               {...attrs}
             >
               <ColumnsIcon size="small" />
-            </Button>
-          )}
-        </Tooltip>
-      )}
-      {documentFeatures.dividers && (
-        <Tooltip content="Divider" weight="subtle">
-          {attrs => (
-            <Button
-              onMouseDown={event => {
-                event.preventDefault();
-                Transforms.insertNodes(
-                  editor,
-                  { type: 'divider', children: [{ text: '' }] },
-                  { match: node => node.type === 'paragraph' }
-                );
-              }}
-              {...attrs}
-            >
-              <MinusIcon size="small" />
             </Button>
           )}
         </Tooltip>
