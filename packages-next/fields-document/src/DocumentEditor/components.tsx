@@ -44,11 +44,15 @@ export const ButtonGroup = ({
 type ButtonProps = {
   as?: string;
   isDisabled?: boolean;
+  isPressed?: boolean;
   isSelected?: boolean;
   variant?: 'default' | 'action' | 'destructive';
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>;
 export const Button = forwardRefWithAs<'button', ButtonProps>(
-  ({ as: Tag = 'button', isDisabled, isSelected, variant = 'default', ...props }, ref) => {
+  (
+    { as: Tag = 'button', isDisabled, isPressed, isSelected, variant = 'default', ...props },
+    ref
+  ) => {
     const extraProps: any = {};
     const { direction: groupDirection } = useButtonGroupContext();
     const { colors, palette, radii, sizing, spacing, typography } = useTheme();
@@ -73,6 +77,7 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
         {...extraProps}
         ref={ref}
         disabled={isDisabled}
+        data-pressed={isPressed}
         data-selected={isSelected}
         data-display-mode={groupDirection}
         css={{
@@ -86,9 +91,6 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
           fontSize: typography.fontSize.small,
           fontWeight: typography.fontWeight.medium,
           height: sizing.medium,
-          // justifyContent: 'center',
-          paddingLeft: spacing.small,
-          paddingRight: spacing.small,
           whiteSpace: 'nowrap',
 
           ':hover': {
@@ -103,6 +105,9 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
             pointerEvents: 'none',
           },
 
+          '&[data-pressed=true]': {
+            background: style.bgActive,
+          },
           '&[data-selected=true]': {
             background: colors.foregroundMuted,
             color: colors.background,
@@ -110,12 +115,18 @@ export const Button = forwardRefWithAs<'button', ButtonProps>(
 
           // alternate styles within button group
           '&[data-display-mode=row]': {
+            paddingLeft: spacing.small,
+            paddingRight: spacing.small,
+
             // really want flex-gap...
             '&:not(:last-of-type)': {
               marginRight: spacing.xsmall,
             },
           },
           '&[data-display-mode=column]': {
+            paddingLeft: spacing.medium,
+            paddingRight: spacing.medium,
+
             // really want flex-gap...
             '&:not(:last-of-type)': {
               marginBottom: spacing.xsmall,

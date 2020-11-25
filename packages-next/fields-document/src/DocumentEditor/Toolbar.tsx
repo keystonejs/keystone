@@ -181,14 +181,13 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
     <div
       css={{
         backgroundColor: colors.background,
-        borderBottom: `1px solid ${colors.border}`,
-        borderTop: `1px solid ${colors.border}`,
+        boxShadow: `0 1px ${colors.border}, 0 -1px ${colors.border}`,
         display: 'flex',
         flexWrap: 'wrap',
-        paddingBottom: spacing.medium,
-        paddingTop: spacing.medium,
+        paddingBottom: spacing.small,
+        paddingTop: spacing.small,
         position: 'sticky',
-        top: -1,
+        top: 0,
         zIndex: 2,
       }}
     >
@@ -236,6 +235,7 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
     >
       <Button
         ref={trigger.ref}
+        isPressed={showMenu}
         onClick={event => {
           event.preventDefault();
           setShowMenu(v => !v);
@@ -332,6 +332,7 @@ const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment']
           <Button
             ref={applyRefs(ref, trigger.ref)}
             isDisabled={!alignmentAllowed}
+            isPressed={showMenu}
             onClick={event => {
               event.preventDefault();
               setShowMenu(v => !v);
@@ -447,6 +448,7 @@ const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTy
         {({ ref, ...attrs }) => (
           <Button
             ref={applyRefs(ref, trigger.ref)}
+            isPressed={showMenu}
             onMouseDown={event => {
               event.preventDefault();
               setShowMenu(v => !v);
@@ -543,6 +545,7 @@ const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
             {({ ref, ...attrs }) => (
               <Button
                 ref={applyRefs(ref, trigger.ref)}
+                isPressed={showMenu}
                 onClick={event => {
                   event.preventDefault();
                   setShowMenu(v => !v);
