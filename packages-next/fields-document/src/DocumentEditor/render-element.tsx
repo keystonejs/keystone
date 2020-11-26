@@ -59,16 +59,21 @@ export const renderElement = (props: RenderElementProps) => {
 /* Block Elements */
 
 const CodeElement = ({ attributes, children }: RenderElementProps) => {
+  const { colors, radii, spacing, typography } = useTheme();
   return (
     <pre
+      spellCheck="false"
       css={{
-        color: '#2C5282',
-        backgroundColor: 'lightgray',
-        borderRadius: useTheme().radii.xsmall,
+        backgroundColor: colors.backgroundDim,
+        border: `1px solid ${colors.border}`,
+        borderRadius: radii.xsmall,
+        fontFamily: typography.fontFamily.monospace,
+        fontSize: typography.fontSize.small,
+        padding: `${spacing.small}px ${spacing.medium}px`,
       }}
       {...attributes}
     >
-      <code>{children}</code>
+      <code css={{ fontFamily: 'inherit' }}>{children}</code>
     </pre>
   );
 };
