@@ -59,8 +59,8 @@ export function makeCreateContext({
         createContext,
         raw: rawGraphQL,
         run: runGraphQL,
+        schema: graphQLSchema,
       } as KeystoneGraphQLAPI<any>,
-      schema: graphQLSchema,
       // Note: These two fields let us use the server-side-graphql-client library.
       // We may want to remove them once the updated itemAPI w/ resolveFields is available.
       executeGraphQL: rawGraphQL,
