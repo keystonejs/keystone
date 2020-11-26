@@ -1,23 +1,33 @@
 /** @jsx jsx */
 
-import { Fragment, useCallback } from 'react';
+import React, { Fragment, useCallback } from 'react';
 import FocusLock from 'react-focus-lock';
-import formatISO from 'date-fns/formatISO';
 import { jsx } from '@keystone-ui/core';
 import { PopoverDialog, usePopover } from '@keystone-ui/popover';
 
 import { Calendar } from './Calendar';
 import { InputButton } from './components/InputButton';
-import { ISODate } from './types';
-import { formatDateObj } from './utils/formatDateObj';
+import { formatDMY, formatDateType } from '../utils/dateFormatters';
+import { DateType } from '../types';
+
+export type DateInputValue = string | undefined;
 
 export type DatePickerProps = {
-  onChange: (value: ISODate | undefined) => void;
+  onUpdate: (value: DateType) => void;
   onClear: () => void;
-  value: ISODate | undefined;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  value: DateType;
 };
 
-export const DatePicker = ({ value, onChange, onClear, ...props }: DatePickerProps) => {
+export const DatePicker = ({
+                             value,
+                             onUpdate,
+                             onChange,
+                             onClear,
+                             onBlur,
+                             ...props
+                           }: DatePickerProps) => {
   const { isOpen, setOpen, dialog, trigger, arrow } = usePopover({
     placement: 'bottom-start',
     modifiers: [
@@ -32,8 +42,7 @@ export const DatePicker = ({ value, onChange, onClear, ...props }: DatePickerPro
 
   const handleDayClick = useCallback(
     (day: Date) => {
-      onChange(formatISO(day, { representation: 'date' }) as ISODate);
-
+      onUpdate(formatDateType(day));
       // wait a moment so the user has time to see the day become selected
       setTimeout(() => {
         setOpen(false);
@@ -43,7 +52,7 @@ export const DatePicker = ({ value, onChange, onClear, ...props }: DatePickerPro
   );
 
   const selectedDay = new Date(value as string);
-  const formattedDate = value ? formatDateObj(new Date(value)) : undefined;
+  const formattedDate: DateInputValue = value ? formatDMY(new Date(value)) : undefined;
 
   return (
     <Fragment>
@@ -55,7 +64,7 @@ export const DatePicker = ({ value, onChange, onClear, ...props }: DatePickerPro
         ref={trigger.ref}
         {...props}
         {...trigger.props}
-        // todo - style is a magic number
+        // todo - magic number - align instead to parent Field ?
         style={{ minWidth: 200 }}
       >
         {formattedDate || 'dd/mm/yyyy'}

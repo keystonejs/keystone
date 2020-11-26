@@ -3,6 +3,7 @@
 import { ElementType, ReactNode, createContext, useContext } from 'react';
 import { jsx, forwardRefWithAs, useTheme } from '@keystone-ui/core';
 
+// todo - these also exist at ../../types
 export type SizeType = 'small' | 'medium';
 export type ShapeType = 'square' | 'round';
 

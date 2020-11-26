@@ -6,6 +6,7 @@ import type { FieldConfig } from '../../interfaces';
 export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
   TGeneratedListTypes
 > & {
+  // todo - string | null
   defaultValue?: FieldDefaultValue<string>;
   isRequired?: boolean;
   isIndexed?: boolean;
