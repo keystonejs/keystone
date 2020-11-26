@@ -11,7 +11,7 @@ import { useState, useCallback, memo } from 'react';
 import { Editor, Transforms } from 'slate';
 import { useSlate } from 'slate-react';
 import { DocumentFeatures } from '../views';
-import { InlineDialog, ToolbarButton, ToolbarGroup } from './blocks';
+import { InlineDialog, ToolbarButton, ToolbarGroup } from './primitives';
 
 export const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment'] }) => {
   const [showMenu, setShowMenu] = useState(false);

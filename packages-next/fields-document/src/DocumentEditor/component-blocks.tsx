@@ -14,7 +14,7 @@ import { RelationshipSelect } from '@keystone-next/fields/types/relationship/vie
 
 import { ConditionalField, NotEditable } from '../component-blocks';
 
-import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './blocks';
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { ComponentPropField, ComponentBlock, RelationshipData } from '../component-blocks';
 import { Relationships, useDocumentFieldRelationships } from './relationship';
 

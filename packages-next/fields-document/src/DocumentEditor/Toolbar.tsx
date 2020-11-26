@@ -17,7 +17,7 @@ import { Maximize2Icon } from '@keystone-ui/icons/icons/Maximize2Icon';
 import { Minimize2Icon } from '@keystone-ui/icons/icons/Minimize2Icon';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 
-import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './blocks';
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { linkButton } from './link';
 import { insertPanel } from './panel';
 import { insertQuote } from './quote';

@@ -8,7 +8,7 @@ import { jsx } from '@keystone-ui/core';
 import { useKeystone } from '@keystone-next/admin-ui/src';
 import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
 
-import { ToolbarButton } from './blocks';
+import { ToolbarButton } from './primitives';
 
 // let pageQuery1 = gql`
 //   query {

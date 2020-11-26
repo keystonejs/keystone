@@ -20,7 +20,7 @@ import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 
-import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './blocks';
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 
 const isLinkActive = (editor: ReactEditor) => {
   const [link] = Editor.nodes(editor, { match: n => n.type === 'link' });

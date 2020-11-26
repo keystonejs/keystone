@@ -5,7 +5,7 @@ import { ReactEditor, useEditor } from 'slate-react';
 import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon';
 import { Tooltip } from '@keystone-ui/tooltip';
 
-import { ToolbarButton } from './blocks';
+import { ToolbarButton } from './primitives';
 
 export const dividerButton = (
   <Tooltip content="Divider" weight="subtle">

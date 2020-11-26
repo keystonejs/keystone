@@ -13,7 +13,7 @@ import {
   moveChildren,
   onlyContainerNodeInCurrentSelection,
 } from './utils';
-import { ToolbarButton } from './blocks';
+import { ToolbarButton } from './primitives';
 
 export const isListType = (type: string) => type === 'ordered-list' || type === 'unordered-list';
 

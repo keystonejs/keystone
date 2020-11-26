@@ -8,7 +8,7 @@ import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
 
 import { IconBase } from './Toolbar';
-import { ToolbarButton } from './blocks';
+import { ToolbarButton } from './primitives';
 import { getMaybeMarkdownShortcutText } from './utils';
 
 export const insertBlockquote = (editor: ReactEditor) => {

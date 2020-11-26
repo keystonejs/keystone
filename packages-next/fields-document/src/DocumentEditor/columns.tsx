@@ -15,7 +15,7 @@ import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
-import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './blocks';
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { paragraphElement } from './paragraphs';
 import { isBlockActive, moveChildren } from './utils';
 import { DocumentFeatures } from '../views';

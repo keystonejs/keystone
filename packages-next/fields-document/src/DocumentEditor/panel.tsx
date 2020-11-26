@@ -14,7 +14,7 @@ import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon';
 import { CheckCircleIcon } from '@keystone-ui/icons/icons/CheckCircleIcon';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
-import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './blocks';
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 
 const PANEL_TYPES = {
   note: {
