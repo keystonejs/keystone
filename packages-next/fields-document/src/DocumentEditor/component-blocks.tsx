@@ -17,6 +17,7 @@ import { NotEditable } from '../component-blocks';
 import { Button, ButtonGroup, Separator } from './components';
 import { ComponentPropField, ComponentBlock, RelationshipData } from '../component-blocks';
 import { Relationships, useDocumentFieldRelationships } from './relationship';
+import { InlineDialog } from './components/inline-dialog';
 
 const ComponentBlockContext = createContext<null | Record<string, ComponentBlock>>(null);
 
@@ -359,7 +360,7 @@ function buildPreviewProps(
   Object.keys(props).forEach(key => {
     const val = props[key];
     if (val.kind === 'form') {
-      previewProps[key] = formProps[key];
+      previewProps[key] = { value: formProps[key], onChange() {} };
     } else if (val.kind === 'child') {
       previewProps[key] = childrenByPath[JSON.stringify(path.concat(key))];
     } else if (val.kind === 'object') {
@@ -374,11 +375,13 @@ function buildPreviewProps(
         relationships
       );
     } else if (val.kind === 'conditional') {
-      previewProps[key] = {};
+      previewProps[key] = {
+        discriminant: formProps[key],
+        onChange() {},
+      };
       buildPreviewProps(
         previewProps[key],
         {
-          discriminant: val.discriminant,
           value: val.values[formProps[key].discriminant],
         },
         formProps[key],
@@ -404,6 +407,7 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
   const { colors, fields, spacing, typography } = useTheme();
   const blockComponents = useContext(ComponentBlockContext)!;
   const componentBlock = blockComponents[element.component as string];
+  const documentFieldRelationships = useDocumentFieldRelationships();
 
   return (
     <div
@@ -464,45 +468,118 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
           }}
         />
       )}
-      <div css={{ display: editMode ? 'none' : 'block' }}>
+      <div css={{ display: editMode ? 'none' : 'block', position: 'relative' }}>
         <ComponentBlockRender
           children={children}
           componentBlock={componentBlock}
           elementProps={element.props}
           relationshipValues={element.relationships as any}
         />
-        <ButtonGroup as={NotEditable} marginTop="small">
-          {!editMode ? (
-            <Button
-              onClick={event => {
-                event.preventDefault();
-                setEditMode(true);
-              }}
-            >
-              Edit
-            </Button>
-          ) : null}
-          <Separator />
-          <Tooltip content="Remove" weight="subtle">
-            {attrs => (
-              <Button
-                variant="destructive"
-                onClick={event => {
-                  event.preventDefault();
+        {!editMode &&
+          (() => {
+            const toolbarProps = {};
+            buildPreviewProps(
+              toolbarProps,
+              componentBlock.props,
+              element.props as any,
+              {},
+              [],
+              element.relationships as any,
+              documentFieldRelationships
+            );
+            const ChromefulToolbar = componentBlock.toolbar
+              ? componentBlock.toolbar
+              : DefaultToolbarWithChrome;
+            const ChromelessToolbar =
+              componentBlock.chromeless && componentBlock.toolbar
+                ? componentBlock.toolbar
+                : DefaultToolbarWithoutChrome;
+            return componentBlock.chromeless ? (
+              <InlineDialog isRelative>
+                <ChromelessToolbar
+                  onRemove={() => {
+                    const path = ReactEditor.findPath(editor, element);
+                    Transforms.removeNodes(editor, { at: path });
+                  }}
+                  props={toolbarProps}
+                />
+              </InlineDialog>
+            ) : (
+              <ChromefulToolbar
+                onRemove={() => {
                   const path = ReactEditor.findPath(editor, element);
                   Transforms.removeNodes(editor, { at: path });
                 }}
-                {...attrs}
-              >
-                <Trash2Icon size="small" />
-              </Button>
-            )}
-          </Tooltip>
-        </ButtonGroup>
+                onShowEditMode={() => {
+                  setEditMode(true);
+                }}
+                props={toolbarProps}
+              />
+            );
+          })()}
       </div>
     </div>
   );
 };
+
+function DefaultToolbarWithChrome({
+  onShowEditMode,
+}: {
+  onShowEditMode(): void;
+  onRemove(): void;
+  props: any;
+}) {
+  return (
+    <ButtonGroup as={NotEditable} marginTop="small">
+      <Button
+        onClick={event => {
+          event.preventDefault();
+          onShowEditMode();
+        }}
+      >
+        Edit
+      </Button>
+      <Separator />
+      <Tooltip content="Remove" weight="subtle">
+        {attrs => (
+          <Button
+            variant="destructive"
+            onClick={event => {
+              event.preventDefault();
+            }}
+            {...attrs}
+          >
+            <Trash2Icon size="small" />
+          </Button>
+        )}
+      </Tooltip>
+    </ButtonGroup>
+  );
+}
+
+function DefaultToolbarWithoutChrome({
+  onRemove,
+}: {
+  onRemove(): void;
+  props: Record<string, any>;
+}) {
+  return (
+    <Tooltip content="Remove" weight="subtle">
+      {attrs => (
+        <Button
+          variant="destructive"
+          onMouseDown={event => {
+            event.preventDefault();
+            onRemove();
+          }}
+          {...attrs}
+        >
+          <Trash2Icon size="small" />
+        </Button>
+      )}
+    </Tooltip>
+  );
+}
 
 function ComponentBlockRender({
   componentBlock,

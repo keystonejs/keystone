@@ -2,11 +2,69 @@
 
 import { jsx } from '@keystone-ui/core';
 import { component, fields, NotEditable } from '@keystone-next/fields-document/component-blocks';
-import { ReactNode } from 'react';
 
 export const componentBlocks = {
   hero: component({
-    component: HeroPreview,
+    component: props => {
+      return (
+        <div
+          css={{
+            backgroundColor: 'white',
+            backgroundImage: `url(${props.imageSrc.value})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            display: 'flex',
+            flexDirection: 'column',
+            fontSize: 28,
+            justifyContent: 'space-between',
+            minHeight: 200,
+            padding: 16,
+            width: '100%',
+          }}
+        >
+          <div
+            css={{
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: 48,
+              textAlign: 'center',
+              margin: 16,
+              textShadow: '0px 1px 3px black',
+            }}
+          >
+            {props.title}
+          </div>
+          <div
+            css={{
+              color: 'white',
+              fontSize: 24,
+              fontWeight: 'bold',
+              margin: 16,
+              textAlign: 'center',
+              textShadow: '0px 1px 3px black',
+            }}
+          >
+            {props.content}
+          </div>
+          {props.cta.discriminant ? (
+            <div
+              css={{
+                backgroundColor: '#F9BF12',
+                borderRadius: 6,
+                color: '#002B55',
+                display: 'inline-block',
+                fontSize: 16,
+                fontWeight: 'bold',
+                margin: '16px auto',
+                padding: '12px 16px',
+              }}
+            >
+              {props.cta.value.text}
+            </div>
+          ) : null}
+        </div>
+      );
+    },
     label: 'Hero',
     props: {
       title: fields.child({ kind: 'inline' }),
@@ -51,7 +109,7 @@ export const componentBlocks = {
           <h1>{props.title}</h1>
           <NotEditable>
             <ul>
-              {props.authors.map(author => {
+              {props.authors.value.map(author => {
                 return (
                   <li>
                     {author.label}
@@ -73,77 +131,33 @@ export const componentBlocks = {
       authors: fields.relationship<'many'>({ label: 'Authors', relationship: 'featuredAuthors' }),
     },
   }),
-};
-
-type HeroPreviewProps = {
-  imageSrc: string;
-  title: ReactNode;
-  content: ReactNode;
-  cta:
-    | {
-        discriminant: true;
-        value: { text: ReactNode; href: string };
-      }
-    | { discriminant: false; value: undefined };
-};
-
-function HeroPreview(props: HeroPreviewProps) {
-  return (
-    <div
-      css={{
-        backgroundColor: 'white',
-        backgroundImage: `url(${props.imageSrc})`,
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-        display: 'flex',
-        flexDirection: 'column',
-        fontSize: 28,
-        justifyContent: 'space-between',
-        minHeight: 200,
-        padding: 16,
-        width: '100%',
-      }}
-    >
-      <div
-        css={{
-          color: 'white',
-          fontWeight: 'bold',
-          fontSize: 48,
-          textAlign: 'center',
-          margin: 16,
-          textShadow: '0px 1px 3px black',
-        }}
-      >
-        {props.title}
-      </div>
-      <div
-        css={{
-          color: 'white',
-          fontSize: 24,
-          fontWeight: 'bold',
-          margin: 16,
-          textAlign: 'center',
-          textShadow: '0px 1px 3px black',
-        }}
-      >
-        {props.content}
-      </div>
-      {props.cta.discriminant ? (
-        <div
-          css={{
-            backgroundColor: '#F9BF12',
-            borderRadius: 6,
-            color: '#002B55',
-            display: 'inline-block',
-            fontSize: 16,
-            fontWeight: 'bold',
-            margin: '16px auto',
-            padding: '12px 16px',
-          }}
-        >
-          {props.cta.value.text}
+  panel: component({
+    component: ({ content }) => {
+      return <div>{content}</div>;
+    },
+    label: 'Component block Panel',
+    props: {
+      intent: fields.select({
+        label: 'Intent',
+        options: [{ value: 'note', label: 'Note' }],
+        defaultValue: 'note',
+      }),
+      content: fields.child({ kind: 'block' }),
+    },
+    chromeless: true,
+    toolbar(props) {
+      return (
+        <div>
+          something
+          <button
+            onClick={() => {
+              props.onRemove();
+            }}
+          >
+            Remove
+          </button>
         </div>
-      ) : null}
-    </div>
-  );
-}
+      );
+    },
+  }),
+};
