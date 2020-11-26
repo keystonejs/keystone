@@ -306,7 +306,7 @@ export function withComponentBlocks(
 }
 
 export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBlock: boolean }) => {
-  const editor = useSlate();
+  const editor = useEditor();
   const blockComponents = useContext(ComponentBlockContext)!;
   const relationships = useDocumentFieldRelationships();
   return (
