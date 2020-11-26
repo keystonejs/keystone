@@ -156,25 +156,26 @@ const LinkButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   const isDisabled = !isActive && (!editor.selection || Range.isCollapsed(editor.selection));
 
   return (
-    <ToolbarButton
-      isDisabled={isDisabled}
-      isSelected={isActive}
-      onMouseDown={event => {
-        event.preventDefault();
-        wrapLink(editor, '');
-      }}
-      {...props}
-    >
-      {linkIcon}
-    </ToolbarButton>
+    <Tooltip content="Link" placement="bottom" weight="subtle">
+      {attrs => (
+        <ToolbarButton
+          isDisabled={isDisabled}
+          isSelected={isActive}
+          onMouseDown={event => {
+            event.preventDefault();
+            wrapLink(editor, '');
+          }}
+          {...attrs}
+          {...props}
+        >
+          {linkIcon}
+        </ToolbarButton>
+      )}
+    </Tooltip>
   );
 };
 
-export const linkButton = (
-  <Tooltip content="Link" placement="bottom" weight="subtle">
-    {attrs => <LinkButton {...attrs} />}
-  </Tooltip>
-);
+export const linkButton = <LinkButton />;
 
 export const withLink = (editor: ReactEditor) => {
   const { insertData, insertText, isInline, normalizeNode } = editor;
