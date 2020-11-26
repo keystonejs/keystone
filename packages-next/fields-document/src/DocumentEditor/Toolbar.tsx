@@ -17,13 +17,12 @@ import { Maximize2Icon } from '@keystone-ui/icons/icons/Maximize2Icon';
 import { Minimize2Icon } from '@keystone-ui/icons/icons/Minimize2Icon';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 
-import { Button, ButtonGroup, Separator } from './components';
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { linkButton } from './link';
 import { insertPanel } from './panel';
 import { insertQuote } from './quote';
 import { BlockComponentsButtons } from './component-blocks';
 import { Mark, isMarkActive, onlyContainerNodeInCurrentSelection, toggleMark } from './utils';
-import { InlineDialog } from './components/inline-dialog';
 import { ColumnsButton } from './columns';
 import { ListButton } from './lists';
 import { blockquoteButton } from './blockquote';
@@ -69,13 +68,13 @@ export const Toolbar = memo(function Toolbar({
       {!!documentFeatures.headingLevels.length && (
         <Fragment>
           <HeadingMenu headingLevels={documentFeatures.headingLevels} />
-          <Separator />
+          <ToolbarSeparator />
         </Fragment>
       )}
       {Object.values(documentFeatures.inlineMarks).some(x => x) && (
         <Fragment>
           <InlineMarks marks={documentFeatures.inlineMarks} />
-          <Separator />
+          <ToolbarSeparator />
         </Fragment>
       )}
       {(documentFeatures.alignment.center || documentFeatures.alignment.end) && (
@@ -86,7 +85,7 @@ export const Toolbar = memo(function Toolbar({
       {(documentFeatures.alignment.center ||
         documentFeatures.alignment.end ||
         documentFeatures.listTypes.unordered ||
-        documentFeatures.listTypes.ordered) && <Separator />}
+        documentFeatures.listTypes.ordered) && <ToolbarSeparator />}
 
       {documentFeatures.dividers && dividerButton}
       {documentFeatures.link && linkButton}
@@ -95,14 +94,14 @@ export const Toolbar = memo(function Toolbar({
 
       <InsertBlockMenu blockTypes={documentFeatures.blockTypes} />
 
-      <Separator />
+      <ToolbarSeparator />
       {useMemo(
         () => (
           <Tooltip content={viewState.expanded ? 'Collapse' : 'Expand'} weight="subtle">
             {attrs => (
-              <Button onClick={viewState.toggle} {...attrs}>
+              <ToolbarButton onClick={viewState.toggle} {...attrs}>
                 <ExpandIcon size="small" />
-              </Button>
+              </ToolbarButton>
             )}
           </Tooltip>
         ),
@@ -118,7 +117,7 @@ const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(
   ({ type, ...props }, ref) => {
     const editor = useSlate();
     return (
-      <Button
+      <ToolbarButton
         ref={ref}
         isSelected={isMarkActive(editor, type)}
         onMouseDown={event => {
@@ -146,7 +145,7 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
         zIndex: 2,
       }}
     >
-      <ButtonGroup>{children}</ButtonGroup>
+      <ToolbarGroup>{children}</ToolbarGroup>
     </div>
   );
 };
@@ -188,7 +187,7 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
         position: 'relative',
       }}
     >
-      <Button
+      <ToolbarButton
         ref={trigger.ref}
         isPressed={showMenu}
         onClick={event => {
@@ -200,10 +199,10 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
       >
         <span css={{ flex: 1 }}>{buttonLabel}</span>
         <ChevronDownIcon size="small" />
-      </Button>
+      </ToolbarButton>
       {showMenu ? (
         <InlineDialog ref={dialog.ref} {...dialog.props}>
-          <ButtonGroup direction="column">
+          <ToolbarGroup direction="column">
             {headingLevels.map(hNum => {
               let [node] = Editor.nodes(editor, {
                 match: n => n.type === 'heading' && n.level === hNum,
@@ -212,7 +211,7 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
               let Tag = `h${hNum}` as any; // maybe? `keyof JSX.IntrinsicElements`
 
               return (
-                <Button
+                <ToolbarButton
                   isSelected={isActive}
                   onMouseDown={event => {
                     event.preventDefault();
@@ -230,10 +229,10 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
                   }}
                 >
                   <Tag>Heading {hNum}</Tag>
-                </Button>
+                </ToolbarButton>
               );
             })}
-          </ButtonGroup>
+          </ToolbarGroup>
         </InlineDialog>
       ) : null}
     </div>
@@ -273,7 +272,7 @@ const InsertBlockMenu = memo(function InsertBlockMenu({
     >
       <Tooltip content="Insert" weight="subtle">
         {({ ref, ...attrs }) => (
-          <Button
+          <ToolbarButton
             ref={applyRefs(ref, trigger.ref)}
             isPressed={showMenu}
             onMouseDown={event => {
@@ -285,7 +284,7 @@ const InsertBlockMenu = memo(function InsertBlockMenu({
           >
             <PlusIcon size="small" style={{ strokeWidth: 3 }} />
             <ChevronDownIcon size="small" />
-          </Button>
+          </ToolbarButton>
         )}
       </Tooltip>
       {showMenu ? (
@@ -308,10 +307,10 @@ function InnerInsertBlockMenu({
   const shouldInsertBlock = onlyContainerNodeInCurrentSelection(editor);
 
   return (
-    <ButtonGroup direction="column">
+    <ToolbarGroup direction="column">
       <BlockComponentsButtons shouldInsertBlock={shouldInsertBlock} />
       {blockTypes.panel && (
-        <Button
+        <ToolbarButton
           isDisabled={!shouldInsertBlock}
           onMouseDown={event => {
             event.preventDefault();
@@ -320,10 +319,10 @@ function InnerInsertBlockMenu({
           }}
         >
           + Panel
-        </Button>
+        </ToolbarButton>
       )}
       {blockTypes.quote && (
-        <Button
+        <ToolbarButton
           isDisabled={!shouldInsertBlock}
           onMouseDown={event => {
             event.preventDefault();
@@ -332,10 +331,10 @@ function InnerInsertBlockMenu({
           }}
         >
           + Quote
-        </Button>
+        </ToolbarButton>
       )}
       {blockTypes.code && (
-        <Button
+        <ToolbarButton
           isDisabled={!shouldInsertBlock}
           onMouseDown={event => {
             event.preventDefault();
@@ -344,10 +343,10 @@ function InnerInsertBlockMenu({
           }}
         >
           + Code
-        </Button>
+        </ToolbarButton>
       )}
       <RelationshipButton />
-    </ButtonGroup>
+    </ToolbarGroup>
   );
 }
 
@@ -402,7 +401,7 @@ const InlineMarks = memo(function InlineMarks({
         <Fragment>
           <Tooltip content="More formatting" weight="subtle">
             {({ ref, ...attrs }) => (
-              <Button
+              <ToolbarButton
                 ref={applyRefs(ref, trigger.ref)}
                 isPressed={showMenu}
                 onClick={event => {
@@ -413,19 +412,19 @@ const InlineMarks = memo(function InlineMarks({
                 {...attrs}
               >
                 <MoreHorizontalIcon size="small" />
-              </Button>
+              </ToolbarButton>
             )}
           </Tooltip>
           {showMenu && (
             <InlineDialog ref={dialog.ref} {...dialog.props}>
-              <ButtonGroup direction="column">
+              <ToolbarGroup direction="column">
                 {marks.underline && <MarkButton type="underline">Underline</MarkButton>}
                 {marks.strikethrough && <MarkButton type="strikethrough">Strikethrough</MarkButton>}
                 {marks.code && <MarkButton type="code">Code</MarkButton>}
                 {marks.keyboard && <MarkButton type="keyboard">Keyboard</MarkButton>}
                 {marks.subscript && <MarkButton type="subscript">Subscript</MarkButton>}
                 {marks.superscript && <MarkButton type="superscript">Superscript</MarkButton>}
-              </ButtonGroup>
+              </ToolbarGroup>
             </InlineDialog>
           )}
         </Fragment>

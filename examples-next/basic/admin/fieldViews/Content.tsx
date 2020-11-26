@@ -1,7 +1,14 @@
 /* @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
+import { Tooltip } from '@keystone-ui/tooltip';
 import { component, fields, NotEditable } from '@keystone-next/fields-document/component-blocks';
+import {
+  ToolbarButton,
+  ToolbarGroup,
+  ToolbarSeparator,
+} from '@keystone-next/fields-document/primitives';
 
 export const componentBlocks = {
   hero: component({
@@ -147,16 +154,23 @@ export const componentBlocks = {
     chromeless: true,
     toolbar(props) {
       return (
-        <div>
-          something
-          <button
-            onClick={() => {
-              props.onRemove();
-            }}
-          >
-            Remove
-          </button>
-        </div>
+        <ToolbarGroup>
+          <ToolbarButton>Action</ToolbarButton>
+          <ToolbarSeparator />
+          <Tooltip content="Remove" weight="subtle">
+            {attrs => (
+              <ToolbarButton
+                variant="destructive"
+                onClick={() => {
+                  props.onRemove();
+                }}
+                {...attrs}
+              >
+                <Trash2Icon size="small" />
+              </ToolbarButton>
+            )}
+          </Tooltip>
+        </ToolbarGroup>
       );
     },
   }),
