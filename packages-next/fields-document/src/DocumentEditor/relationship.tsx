@@ -1,12 +1,14 @@
 /** @jsx jsx */
 
-import { Button } from './components';
-import { jsx } from '@keystone-ui/core';
 import { createContext, Fragment, useContext } from 'react';
 import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
 import { Transforms } from 'slate';
-import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
+
+import { jsx } from '@keystone-ui/core';
 import { useKeystone } from '@keystone-next/admin-ui/src';
+import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
+
+import { ToolbarButton } from './primitives';
 
 // let pageQuery1 = gql`
 //   query {
@@ -81,7 +83,7 @@ export function RelationshipButton() {
       {Object.entries(relationships).map(([key, relationship]) => {
         if (relationship.kind === 'prop') return null;
         return (
-          <Button
+          <ToolbarButton
             key={key}
             onClick={() => {
               Transforms.insertNodes(editor, {
@@ -92,7 +94,7 @@ export function RelationshipButton() {
             }}
           >
             {relationship.label}
-          </Button>
+          </ToolbarButton>
         );
       })}
     </Fragment>
