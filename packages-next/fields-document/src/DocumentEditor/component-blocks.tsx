@@ -391,7 +391,10 @@ function buildPreviewProps(
         relationships
       );
     } else if (val.kind === 'relationship') {
-      previewProps[key] = relationshipValues[JSON.stringify(path.concat(key))].data;
+      previewProps[key] = {
+        value: relationshipValues[JSON.stringify(path.concat(key))].data,
+        onChange() {},
+      };
     } else {
       assertNever(val);
     }
