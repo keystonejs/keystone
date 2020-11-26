@@ -8,13 +8,8 @@ import { createAuth } from '@keystone-next/auth';
 import { insertSeedData } from './seed-data';
 import { permissionsList } from './fields';
 
-/*
-  TODO
-    - [ ] Configure send forgotten password
-    - [x] Work out a good approach to seeding data
-*/
-
 const databaseUrl = process.env.DATABASE_URL || 'mongodb://localhost/keystone-examples-ecommerce';
+const protectIdentities = process.env.NODE_ENV === 'production';
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 30, // 30 days
   secret: process.env.COOKIE_SECRET || '',
@@ -24,6 +19,7 @@ const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
   secretField: 'password',
+  protectIdentities,
   initFirstItem: {
     fields: ['name', 'email', 'password'],
     itemData: {
@@ -35,9 +31,12 @@ const { withAuth } = createAuth({
       },
     },
   },
+  passwordResetLink: {
+    sendToken(args) {
+      console.log(`Password reset info:`, args);
+    },
+  },
 });
-
-// Dynamically query all the "can$" fields from the Role, and query them into the session. This is handy so we don't have to write each permission in several locations
 
 export default withAuth(
   config({
@@ -53,9 +52,11 @@ export default withAuth(
     lists,
     extendGraphqlSchema,
     ui: {
-      isAccessAllowed: ({ session }) => !!session,
+      // Anyone who has been assigned a role can access the Admin UI
+      isAccessAllowed: ({ session }) => !!session?.data.role,
     },
     session: withItemData(statelessSessions(sessionConfig), {
+      // Cache the permission fields from the role in the session so we don't have to look them up again in access checks
       User: `id name role { ${permissionsList.join(' ')} }`,
     }),
   })
