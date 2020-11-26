@@ -1,8 +1,15 @@
 /** @jsx jsx */
 
-import { createContext, useContext } from 'react';
+import { createContext, memo, useContext } from 'react';
 import { Editor, Element, Node, Transforms } from 'slate';
-import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
+import {
+  ReactEditor,
+  RenderElementProps,
+  useEditor,
+  useFocused,
+  useSelected,
+  useSlate,
+} from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
@@ -13,6 +20,8 @@ import { InlineDialog } from './components/inline-dialog';
 import { Button, ButtonGroup, Separator } from './components';
 import { paragraphElement } from './paragraphs';
 import { isBlockActive, moveChildren } from './utils';
+import { DocumentFeatures } from '../views';
+import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
 
 const ColumnOptionsContext = createContext<[number, ...number[]][]>([]);
 
@@ -279,3 +288,25 @@ function makeLayoutIcon(ratios: number[]) {
 
   return element;
 }
+
+export const ColumnsButton = memo(({ columns }: { columns: DocumentFeatures['columns'] }) => {
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
+  return (
+    <Tooltip content="Columns" weight="subtle">
+      {attrs => (
+        <Button
+          onMouseDown={event => {
+            event.preventDefault();
+            insertColumns(editor, columns[0]);
+          }}
+          {...attrs}
+        >
+          <ColumnsIcon size="small" />
+        </Button>
+      )}
+    </Tooltip>
+  );
+});

@@ -1,6 +1,13 @@
 /** @jsx jsx */
 
-import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
+import {
+  ReactEditor,
+  RenderElementProps,
+  useEditor,
+  useFocused,
+  useSelected,
+  useSlate,
+} from 'slate-react';
 import { Editor, Node, Range, Transforms } from 'slate';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -12,7 +19,7 @@ import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 // @ts-ignore
 import isUrl from 'is-url';
 
-import { useMemo, useState } from 'react';
+import { ButtonHTMLAttributes, useState } from 'react';
 
 import { Button, ButtonGroup, Separator } from './components';
 import { InlineDialog } from './components/inline-dialog';
@@ -50,7 +57,10 @@ const wrapLink = (editor: ReactEditor, url: string) => {
 export const LinkElement = ({ attributes, children, element }: RenderElementProps) => {
   const { typography } = useTheme();
   const url = element.url as string;
-  const editor = useSlate();
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
   const selected = useSelected();
   const focused = useFocused();
   const [focusedInInlineDialog, setFocusedInInlineDialog] = useState(false);
@@ -140,31 +150,33 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
   );
 };
 
-export const LinkButton = () => {
+let linkIcon = <LinkIcon size="small" />;
+
+const LinkButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   const editor = useSlate();
   const isActive = isLinkActive(editor);
   const isDisabled = !isActive && (!editor.selection || Range.isCollapsed(editor.selection));
-  return useMemo(
-    () => (
-      <Tooltip content="Link" placement="bottom" weight="subtle">
-        {attrs => (
-          <Button
-            isDisabled={isDisabled}
-            isSelected={isActive}
-            onMouseDown={event => {
-              event.preventDefault();
-              wrapLink(editor, '');
-            }}
-            {...attrs}
-          >
-            <LinkIcon size="small" />
-          </Button>
-        )}
-      </Tooltip>
-    ),
-    [isActive, isDisabled, editor]
+
+  return (
+    <Button
+      isDisabled={isDisabled}
+      isSelected={isActive}
+      onMouseDown={event => {
+        event.preventDefault();
+        wrapLink(editor, '');
+      }}
+      {...props}
+    >
+      {linkIcon}
+    </Button>
   );
 };
+
+export const linkButton = (
+  <Tooltip content="Link" placement="bottom" weight="subtle">
+    {attrs => <LinkButton {...attrs} />}
+  </Tooltip>
+);
 
 export const withLink = (editor: ReactEditor) => {
   const { insertData, insertText, isInline, normalizeNode } = editor;

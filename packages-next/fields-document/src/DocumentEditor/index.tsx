@@ -158,9 +158,6 @@ export function DocumentEditor({
   }, []);
 
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
-  const toggleExpanded = () => {
-    setExpanded(v => !v);
-  };
 
   useMemo(() => {
     findDuplicateNodes(value);
@@ -193,10 +190,15 @@ export function DocumentEditor({
             >
               <Toolbar
                 documentFeatures={documentFeatures}
-                viewState={{
-                  expanded,
-                  toggle: toggleExpanded,
-                }}
+                viewState={useMemo(
+                  () => ({
+                    expanded,
+                    toggle: () => {
+                      setExpanded(v => !v);
+                    },
+                  }),
+                  [expanded]
+                )}
               />
               <Editable
                 css={styles}
