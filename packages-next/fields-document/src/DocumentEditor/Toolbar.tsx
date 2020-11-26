@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Fragment, ReactNode, forwardRef, useState, HTMLAttributes } from 'react';
+import { Fragment, ReactNode, forwardRef, useState, memo, HTMLAttributes } from 'react';
 import { Editor, Transforms } from 'slate';
 import { useSlate } from 'slate-react';
 import { applyRefs } from 'apply-ref';
@@ -38,6 +38,26 @@ import { insertCodeBlock } from './code-block';
 
 // TODO: how to manage separators with dynamic feature sets...
 
+const unorderedListButton = (
+  <Tooltip content="Bullet list" weight="subtle">
+    {attrs => (
+      <ListButton type="unordered-list" {...attrs}>
+        <BulletListIcon />
+      </ListButton>
+    )}
+  </Tooltip>
+);
+
+const orderedListButton = (
+  <Tooltip content="Numbered list" weight="subtle">
+    {attrs => (
+      <ListButton type="ordered-list" {...attrs}>
+        <NumberedListIcon />
+      </ListButton>
+    )}
+  </Tooltip>
+);
+
 export const Toolbar = ({
   documentFeatures,
   viewState,
@@ -65,24 +85,8 @@ export const Toolbar = ({
       {(documentFeatures.alignment.center || documentFeatures.alignment.end) && (
         <TextAlignMenu alignment={documentFeatures.alignment} />
       )}
-      {documentFeatures.listTypes.unordered && (
-        <Tooltip content="Bullet list" weight="subtle">
-          {attrs => (
-            <ListButton type="unordered-list" {...attrs}>
-              <BulletListIcon />
-            </ListButton>
-          )}
-        </Tooltip>
-      )}
-      {documentFeatures.listTypes.ordered && (
-        <Tooltip content="Numbered list" weight="subtle">
-          {attrs => (
-            <ListButton type="ordered-list" {...attrs}>
-              <NumberedListIcon />
-            </ListButton>
-          )}
-        </Tooltip>
-      )}
+      {documentFeatures.listTypes.unordered && unorderedListButton}
+      {documentFeatures.listTypes.ordered && orderedListButton}
       {(documentFeatures.alignment.center ||
         documentFeatures.alignment.end ||
         documentFeatures.listTypes.unordered ||
@@ -411,7 +415,11 @@ const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment']
   );
 };
 
-const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTypes'] }) => {
+const InsertBlockMenu = memo(function InsertBlockMenu({
+  blockTypes,
+}: {
+  blockTypes: DocumentFeatures['blockTypes'];
+}) {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {
@@ -430,8 +438,6 @@ const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTy
       ],
     }
   );
-  const editor = useSlate();
-  const shouldInsertBlock = onlyContainerNodeInCurrentSelection(editor);
 
   return (
     <div
@@ -459,54 +465,73 @@ const InsertBlockMenu = ({ blockTypes }: { blockTypes: DocumentFeatures['blockTy
       </Tooltip>
       {showMenu ? (
         <InlineDialog ref={dialog.ref} {...dialog.props}>
-          <ButtonGroup direction="column">
-            <BlockComponentsButtons shouldInsertBlock={shouldInsertBlock} />
-            {blockTypes.panel && (
-              <Button
-                isDisabled={!shouldInsertBlock}
-                onMouseDown={event => {
-                  event.preventDefault();
-                  insertPanel(editor);
-                  setShowMenu(false);
-                }}
-              >
-                + Panel
-              </Button>
-            )}
-            {blockTypes.quote && (
-              <Button
-                isDisabled={!shouldInsertBlock}
-                onMouseDown={event => {
-                  event.preventDefault();
-                  insertQuote(editor);
-                  setShowMenu(false);
-                }}
-              >
-                + Quote
-              </Button>
-            )}
-            {blockTypes.code && (
-              <Button
-                isDisabled={!shouldInsertBlock}
-                onMouseDown={event => {
-                  event.preventDefault();
-                  insertCodeBlock(editor);
-                  setShowMenu(false);
-                }}
-              >
-                + Code
-              </Button>
-            )}
-            <RelationshipButton />
-          </ButtonGroup>
+          <InnerInsertBlockMenu blockTypes={blockTypes} onClose={() => setShowMenu(false)} />
         </InlineDialog>
       ) : null}
     </div>
   );
-};
+});
+
+function InnerInsertBlockMenu({
+  blockTypes,
+  onClose,
+}: {
+  blockTypes: DocumentFeatures['blockTypes'];
+  onClose: () => void;
+}) {
+  const editor = useSlate();
+  const shouldInsertBlock = onlyContainerNodeInCurrentSelection(editor);
+
+  return (
+    <ButtonGroup direction="column">
+      <BlockComponentsButtons shouldInsertBlock={shouldInsertBlock} />
+      {blockTypes.panel && (
+        <Button
+          isDisabled={!shouldInsertBlock}
+          onMouseDown={event => {
+            event.preventDefault();
+            insertPanel(editor);
+            onClose();
+          }}
+        >
+          + Panel
+        </Button>
+      )}
+      {blockTypes.quote && (
+        <Button
+          isDisabled={!shouldInsertBlock}
+          onMouseDown={event => {
+            event.preventDefault();
+            insertQuote(editor);
+            onClose();
+          }}
+        >
+          + Quote
+        </Button>
+      )}
+      {blockTypes.code && (
+        <Button
+          isDisabled={!shouldInsertBlock}
+          onMouseDown={event => {
+            event.preventDefault();
+            insertCodeBlock(editor);
+            onClose();
+          }}
+        >
+          + Code
+        </Button>
+      )}
+      <RelationshipButton />
+    </ButtonGroup>
+  );
+}
 
 // TODO: Clear formatting
-const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
+const InlineMarks = memo(function InlineMarks({
+  marks,
+}: {
+  marks: DocumentFeatures['inlineMarks'];
+}) {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {
@@ -582,7 +607,7 @@ const InlineMarks = ({ marks }: { marks: DocumentFeatures['inlineMarks'] }) => {
       )}
     </Fragment>
   );
-};
+});
 
 // Custom (non-feather) Icons
 // ------------------------------
