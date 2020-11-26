@@ -156,7 +156,7 @@ const LinkButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   const isDisabled = !isActive && (!editor.selection || Range.isCollapsed(editor.selection));
 
   return (
-    <Tooltip content="Link" placement="bottom" weight="subtle">
+    <Tooltip content="Link" weight="subtle">
       {attrs => (
         <ToolbarButton
           isDisabled={isDisabled}
