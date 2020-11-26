@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { GraphQLSchema, GraphQLObjectType, execute, parse } from 'graphql';
+import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { mapSchema } from '@graphql-tools/utils';
 import { Keystone } from '@keystonejs/keystone';
@@ -9,17 +9,14 @@ import type {
   SerializedAdminMeta,
   KeystoneConfig,
   KeystoneSystem,
-  SessionContext,
   FieldType,
-  KeystoneGraphQLAPI,
   SessionStrategy,
 } from '@keystone-next/types';
 import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
 import { autoIncrement, mongoId } from '@keystone-next/fields';
+import { makeCreateContext } from './createContext';
 import { implementSession } from '../session';
 import { gql } from '../schema';
-import { itemAPIForList } from './itemAPI';
-import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 
 export function createKeystone(config: KeystoneConfig): any {
   // Note: For backwards compatibility we may want to expose
@@ -186,7 +183,8 @@ function createGraphQLSchema(
     },
   });
 
-  // TODO: find a way to not do this
+  // TODO: find a way to not pass keystone in here, if we can - it's too broad and makes
+  // everything in the keystone instance public API
   let graphQLSchema = config.extendGraphqlSchema?.(schema, keystone) || schema;
   if (sessionStrategy?.end) {
     graphQLSchema = mergeSchemas({
@@ -237,81 +235,27 @@ export function createSystem(config: KeystoneConfig): KeystoneSystem {
     sessionImplementation
   );
 
-  function createContext({
-    sessionContext,
-    skipAccessControl = false,
-  }: {
-    sessionContext?: SessionContext;
-    skipAccessControl?: boolean;
-  }) {
-    const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, context, variables }) => {
-      if (typeof query === 'string') {
-        query = parse(query);
-      }
-      return Promise.resolve(
-        execute({
-          schema: graphQLSchema,
-          document: query,
-          contextValue: context ?? contextToReturn,
-          variableValues: variables,
-        })
-      );
-    };
-    const contextToReturn: any = {
-      schemaName: 'public',
-      ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
-      lists: itemAPI,
-      totalResults: 0,
-      keystone,
-      graphql: {
-        createContext,
-        raw: rawGraphQL,
-        run: async args => {
-          let result = await rawGraphQL(args);
-          if (result.errors?.length) {
-            throw result.errors[0];
-          }
-          return result.data;
-        },
-        schema: graphQLSchema,
-      } as KeystoneGraphQLAPI<any>,
-      // Note: These two fields let us use the server-side-graphql-client library.
-      // We may want to remove them once the updated graphQL API is available.
-      executeGraphQL: rawGraphQL,
-      gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
-      maxTotalResults: (keystone as any).queryLimits.maxTotalResults,
-      createContext,
-      ...sessionContext,
-    };
-    return contextToReturn;
-  }
-  let itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
-  for (const listKey of Object.keys(adminMeta.lists)) {
-    itemAPI[listKey] = itemAPIForList(
-      (keystone as any).lists[listKey],
-      graphQLSchema,
-      createContext
-    );
-  }
-
   const createSessionContext = sessionImplementation?.createContext;
-  let keystoneThing = {
+  const createContext = makeCreateContext({ keystone, adminMeta, graphQLSchema });
+
+  let system = {
     keystone,
     adminMeta,
     graphQLSchema,
     views,
     createSessionContext: createSessionContext
-      ? (req: IncomingMessage, res: ServerResponse) => createSessionContext(req, res, keystoneThing)
+      ? (req: IncomingMessage, res: ServerResponse) => createSessionContext(req, res, system)
       : undefined,
     createContext,
     async createContextFromRequest(req: IncomingMessage, res: ServerResponse) {
       return createContext({
-        sessionContext: await sessionImplementation?.createContext(req, res, keystoneThing),
+        sessionContext: await sessionImplementation?.createContext(req, res, system),
       });
     },
     config,
   };
-  return keystoneThing;
+
+  return system;
 }
 
 /* Validate lists config and default the id field */
