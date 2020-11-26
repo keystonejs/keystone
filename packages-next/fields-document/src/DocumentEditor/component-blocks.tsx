@@ -1,14 +1,13 @@
 /** @jsx jsx */
 
 import { Fragment, ReactElement, createContext, useContext, useState } from 'react';
-import { ReactEditor, RenderElementProps, useFocused, useSelected, useEditor } from 'slate-react';
+import { ReactEditor, RenderElementProps, useEditor } from 'slate-react';
 import { Editor, Element, Transforms, Text } from 'slate';
 
 import { Stack, jsx, useTheme } from '@keystone-ui/core';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { Tooltip } from '@keystone-ui/tooltip';
-import { useControlledPopover } from '@keystone-ui/popover';
 import { useKeystone } from '@keystone-next/admin-ui/context';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
@@ -16,7 +15,6 @@ import { RelationshipSelect } from '@keystone-next/fields/types/relationship/vie
 import { NotEditable } from '../component-blocks';
 
 import { Button, ButtonGroup, Separator } from './components';
-import { InlineDialog } from './components/inline-dialog';
 import { ComponentPropField, ComponentBlock, RelationshipData } from '../component-blocks';
 import { Relationships, useDocumentFieldRelationships } from './relationship';
 
@@ -402,37 +400,18 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
   // that's fine for what it's being used for here
   // because we're just inserting things on events, not reading things in render
   const editor = useEditor();
-  const focused = useFocused();
-  const selected = useSelected();
   const [editMode, setEditMode] = useState(false);
   const { colors, fields, spacing, typography } = useTheme();
   const blockComponents = useContext(ComponentBlockContext)!;
   const componentBlock = blockComponents[element.component as string];
-  const { dialog, trigger } = useControlledPopover(
-    {
-      isOpen: focused && selected,
-      onClose: () => {},
-    },
-    {
-      modifiers: [
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 8],
-          },
-        },
-      ],
-    }
-  );
 
   return (
     <div
-      ref={trigger.ref}
       css={{
-        position: 'relative',
-        paddingLeft: spacing.xlarge,
         marginBottom: spacing.xlarge,
         marginTop: spacing.xlarge,
+        paddingLeft: spacing.xlarge,
+        position: 'relative',
 
         ':before': {
           content: '" "',
@@ -446,7 +425,6 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
           zIndex: 1,
         },
       }}
-      {...trigger.props}
       {...attributes}
     >
       <NotEditable
@@ -493,39 +471,35 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
           elementProps={element.props}
           relationshipValues={element.relationships as any}
         />
-      </div>
-      {focused && selected && (
-        <InlineDialog ref={dialog.ref} {...dialog.props}>
-          <ButtonGroup>
-            {!editMode ? (
+        <ButtonGroup as={NotEditable} marginTop="small">
+          {!editMode ? (
+            <Button
+              onClick={event => {
+                event.preventDefault();
+                setEditMode(true);
+              }}
+            >
+              Edit
+            </Button>
+          ) : null}
+          <Separator />
+          <Tooltip content="Remove" weight="subtle">
+            {attrs => (
               <Button
+                variant="destructive"
                 onClick={event => {
                   event.preventDefault();
-                  setEditMode(true);
+                  const path = ReactEditor.findPath(editor, element);
+                  Transforms.removeNodes(editor, { at: path });
                 }}
+                {...attrs}
               >
-                Edit
+                <Trash2Icon size="small" />
               </Button>
-            ) : null}
-            <Separator />
-            <Tooltip content="Remove" weight="subtle">
-              {attrs => (
-                <Button
-                  variant="destructive"
-                  onClick={event => {
-                    event.preventDefault();
-                    const path = ReactEditor.findPath(editor, element);
-                    Transforms.removeNodes(editor, { at: path });
-                  }}
-                  {...attrs}
-                >
-                  <Trash2Icon size="small" />
-                </Button>
-              )}
-            </Tooltip>
-          </ButtonGroup>
-        </InlineDialog>
-      )}
+            )}
+          </Tooltip>
+        </ButtonGroup>
+      </div>
     </div>
   );
 };
