@@ -12,7 +12,7 @@ import { useKeystone } from '@keystone-next/admin-ui/context';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
 
-import { NotEditable } from '../component-blocks';
+import { ConditionalField, NotEditable } from '../component-blocks';
 
 import { Button, ButtonGroup, Separator } from './components';
 import { ComponentPropField, ComponentBlock, RelationshipData } from '../component-blocks';
@@ -355,12 +355,20 @@ function buildPreviewProps(
   childrenByPath: Record<string, ReactElement>,
   path: (string | number)[],
   relationshipValues: RelationshipValues,
-  relationships: Relationships
+  relationships: Relationships,
+  // TODO: maybe replace these with things that do batching so if you set two props in succession, they'll both be applied
+  onRelationshipValuesChange: (relationshipValues: RelationshipValues) => void,
+  onFormPropsChange: (formProps: Record<string, any>) => void
 ) {
   Object.keys(props).forEach(key => {
     const val = props[key];
     if (val.kind === 'form') {
-      previewProps[key] = { value: formProps[key], onChange() {} };
+      previewProps[key] = {
+        value: formProps[key],
+        onChange(value: any) {
+          onFormPropsChange({ ...formProps, [key]: value });
+        },
+      };
     } else if (val.kind === 'child') {
       previewProps[key] = childrenByPath[JSON.stringify(path.concat(key))];
     } else if (val.kind === 'object') {
@@ -372,12 +380,30 @@ function buildPreviewProps(
         childrenByPath,
         path.concat(key),
         relationshipValues,
-        relationships
+        relationships,
+        onRelationshipValuesChange,
+        value => {
+          onFormPropsChange({ ...formProps, [key]: value });
+        }
       );
     } else if (val.kind === 'conditional') {
+      const newPath = path.concat(key);
       previewProps[key] = {
-        discriminant: formProps[key],
-        onChange() {},
+        discriminant: formProps[key].discriminant,
+        onChange(newDiscriminant: any) {
+          onConditionalChange(
+            { ...formProps[key], discriminant: newDiscriminant },
+            formProps[key],
+            newPath,
+            relationshipValues,
+            relationships,
+            onRelationshipValuesChange,
+            value => {
+              onFormPropsChange({ ...formProps, [key]: value });
+            },
+            val
+          );
+        },
       };
       buildPreviewProps(
         previewProps[key],
@@ -386,14 +412,28 @@ function buildPreviewProps(
         },
         formProps[key],
         childrenByPath,
-        path.concat(key),
+        newPath,
         relationshipValues,
-        relationships
+        relationships,
+        onRelationshipValuesChange,
+        value => {
+          onFormPropsChange({ ...formProps, [key]: value });
+        }
       );
     } else if (val.kind === 'relationship') {
+      const relationshipPath = JSON.stringify(path.concat(key));
+      const relationshipValue = relationshipValues[relationshipPath];
       previewProps[key] = {
-        value: relationshipValues[JSON.stringify(path.concat(key))].data,
-        onChange() {},
+        value: relationshipValue.data,
+        onChange(value: RelationshipData | readonly RelationshipData[] | null) {
+          onRelationshipValuesChange({
+            ...relationshipValues,
+            [relationshipPath]: {
+              relationship: relationshipValue.relationship,
+              data: value,
+            },
+          });
+        },
       };
     } else {
       assertNever(val);
@@ -475,8 +515,7 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
         <ComponentBlockRender
           children={children}
           componentBlock={componentBlock}
-          elementProps={element.props}
-          relationshipValues={element.relationships as any}
+          element={element}
         />
         {!editMode &&
           (() => {
@@ -488,7 +527,21 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
               {},
               [],
               element.relationships as any,
-              documentFieldRelationships
+              documentFieldRelationships,
+              relationships => {
+                Transforms.setNodes(
+                  editor,
+                  { relationships },
+                  { at: ReactEditor.findPath(editor, element) }
+                );
+              },
+              props => {
+                Transforms.setNodes(
+                  editor,
+                  { props },
+                  { at: ReactEditor.findPath(editor, element) }
+                );
+              }
             );
             const ChromefulToolbar = componentBlock.toolbar
               ? componentBlock.toolbar
@@ -586,15 +639,17 @@ function DefaultToolbarWithoutChrome({
 
 function ComponentBlockRender({
   componentBlock,
+  element,
   children: _children,
-  elementProps,
-  relationshipValues,
 }: {
-  elementProps: any;
-  relationshipValues: RelationshipValues;
+  element: Element;
   componentBlock: ComponentBlock;
   children: any;
 }) {
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
   const previewProps: any = {};
 
   const childrenByPath: Record<string, ReactElement> = {};
@@ -612,11 +667,17 @@ function ComponentBlockRender({
   buildPreviewProps(
     previewProps,
     componentBlock.props,
-    elementProps,
+    element.props as any,
     childrenByPath,
     [],
-    relationshipValues,
-    useDocumentFieldRelationships()
+    element.relationships as any,
+    useDocumentFieldRelationships(),
+    relationships => {
+      Transforms.setNodes(editor, { relationships }, { at: ReactEditor.findPath(editor, element) });
+    },
+    props => {
+      Transforms.setNodes(editor, { props }, { at: ReactEditor.findPath(editor, element) });
+    }
   );
 
   return (
@@ -668,45 +729,32 @@ function FormValueContent({
           );
         }
         if (prop.kind === 'conditional') {
+          const newPath = path.concat(key);
           return (
             <FormValueContent
               stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
               onRelationshipValuesChange={onRelationshipValuesChange}
               relationshipValues={relationshipValues}
               key={key}
-              path={path.concat(key)}
+              path={newPath}
               props={{
                 discriminant: prop.discriminant,
                 value: prop.values[value[key].discriminant],
               }}
               value={value[key]}
               onChange={val => {
-                if (val.discriminant !== value[key].discriminant) {
-                  let blockProps: any = {};
-                  let relationshipValues: RelationshipValues = {};
-
-                  // we're not gonna do anything with this, normalizeNode will fix it
-                  let children: Element[] = [];
-
-                  insertInitialValues(
-                    blockProps,
-                    { value: prop.values[val.discriminant] },
-                    children,
-                    path.concat(key),
-                    relationshipValues,
-                    relationships
-                  );
-
-                  onChange({
-                    ...value,
-                    [key]: {
-                      discriminant: val.discriminant,
-                      value: blockProps.value,
-                    },
-                  });
-                } else {
-                  onChange({ ...value, [key]: val });
-                }
+                onConditionalChange(
+                  val,
+                  value[key],
+                  newPath,
+                  relationshipValues,
+                  relationships,
+                  onRelationshipValuesChange,
+                  newVal => {
+                    onChange({ ...value, [key]: newVal });
+                  },
+                  prop
+                );
               }}
             />
           );
@@ -781,6 +829,51 @@ function FormValueContent({
       })}
     </Stack>
   );
+}
+
+function onConditionalChange(
+  newValue: Record<string, any>,
+  oldValue: Record<string, any>,
+  path: (number | string)[],
+  relationshipValues: RelationshipValues,
+  relationships: Relationships,
+  onRelationshipValuesChange: (relationshipValues: RelationshipValues) => void,
+  onChange: (formProps: Record<string, any>) => void,
+  prop: ConditionalField<any, any>
+) {
+  if (newValue.discriminant !== oldValue.discriminant) {
+    // we need to remove relationships that existed in the previous discriminant
+    const filteredRelationshipValues: RelationshipValues = {};
+    const pathToMatch = JSON.stringify(path.concat('value')).replace(/\]$/, '');
+    Object.keys(relationshipValues).forEach(relationshipPath => {
+      if (!relationshipPath.startsWith(pathToMatch)) {
+        filteredRelationshipValues[relationshipPath] = relationshipValues[relationshipPath];
+      }
+    });
+
+    let blockProps: any = {};
+
+    // we're not gonna do anything with this, normalizeNode will fix it
+    let children: Element[] = [];
+
+    insertInitialValues(
+      blockProps,
+      { value: prop.values[newValue.discriminant] },
+      children,
+      path,
+      filteredRelationshipValues,
+      relationships
+    );
+
+    onRelationshipValuesChange(filteredRelationshipValues);
+
+    onChange({
+      discriminant: newValue.discriminant,
+      value: blockProps.value,
+    });
+  } else {
+    onChange(newValue);
+  }
 }
 
 // child as in the props are a tree and you want the children of a prop, not as in the kind === 'inline'
