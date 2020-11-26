@@ -12,7 +12,7 @@ import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 // @ts-ignore
 import isUrl from 'is-url';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Button, ButtonGroup, Separator } from './components';
 import { InlineDialog } from './components/inline-dialog';
@@ -143,22 +143,26 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
 export const LinkButton = () => {
   const editor = useSlate();
   const isActive = isLinkActive(editor);
-  return (
-    <Tooltip content="Link" placement="bottom" weight="subtle">
-      {attrs => (
-        <Button
-          isDisabled={!isActive && (!editor.selection || Range.isCollapsed(editor.selection))}
-          isSelected={isActive}
-          onMouseDown={event => {
-            event.preventDefault();
-            wrapLink(editor, '');
-          }}
-          {...attrs}
-        >
-          <LinkIcon size="small" />
-        </Button>
-      )}
-    </Tooltip>
+  const isDisabled = !isActive && (!editor.selection || Range.isCollapsed(editor.selection));
+  return useMemo(
+    () => (
+      <Tooltip content="Link" placement="bottom" weight="subtle">
+        {attrs => (
+          <Button
+            isDisabled={isDisabled}
+            isSelected={isActive}
+            onMouseDown={event => {
+              event.preventDefault();
+              wrapLink(editor, '');
+            }}
+            {...attrs}
+          >
+            <LinkIcon size="small" />
+          </Button>
+        )}
+      </Tooltip>
+    ),
+    [isActive, isDisabled, editor]
   );
 };
 
