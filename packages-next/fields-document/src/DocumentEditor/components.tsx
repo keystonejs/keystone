@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { ButtonHTMLAttributes, HTMLAttributes, createContext, useContext } from 'react';
-import { forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
+import { Box, MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
 
 export const Spacer = () => {
   const { spacing } = useTheme();
@@ -34,15 +34,16 @@ const autoFlowDirection = {
   row: 'column',
   column: 'row',
 };
-export const ButtonGroup = ({
-  direction = 'row',
-  ...props
-}: { direction?: 'column' | 'row' } & HTMLAttributes<HTMLDivElement>) => {
+export const ButtonGroup = forwardRefWithAs<
+  'div',
+  { direction?: 'column' | 'row' } & MarginProps & HTMLAttributes<HTMLDivElement>
+>(({ direction = 'row', ...props }, ref) => {
   const { spacing } = useTheme();
 
   return (
     <ButtonGroupContext.Provider value={{ direction }}>
-      <div
+      <Box
+        ref={ref}
         css={{
           display: 'inline-grid',
           gap: spacing.xxsmall,
@@ -52,7 +53,7 @@ export const ButtonGroup = ({
       />
     </ButtonGroupContext.Provider>
   );
-};
+});
 
 type ButtonProps = {
   as?: string;

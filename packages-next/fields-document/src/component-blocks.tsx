@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, Select, TextInput, Checkbox } from '@keystone-ui/fields';
-import { ReactElement, ReactNode } from 'react';
+import { HTMLAttributes, ReactElement, ReactNode } from 'react';
 
 export type FormField<Value> = {
   kind: 'form';
@@ -304,8 +304,8 @@ export function component<
   return options;
 }
 
-export const NotEditable = ({ children, ...props }: { children: ReactNode }) => (
-  <span css={{ userSelect: 'none' }} contentEditable={false} {...props}>
+export const NotEditable = ({ children, ...props }: HTMLAttributes<HTMLDivElement>) => (
+  <div css={{ userSelect: 'none' }} contentEditable={false} {...props}>
     {children}
-  </span>
+  </div>
 );

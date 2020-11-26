@@ -1,25 +1,24 @@
 /** @jsx jsx */
 
-import { jsx, Stack } from '@keystone-ui/core';
-import { Fragment, ReactElement, useContext, useState } from 'react';
-import { ReactEditor, RenderElementProps, useEditor, useSlate } from 'slate-react';
+import { Fragment, ReactElement, createContext, useContext, useState } from 'react';
+import { ReactEditor, RenderElementProps, useEditor } from 'slate-react';
 import { Editor, Element, Transforms, Text } from 'slate';
 
-import { Button, Spacer } from './components';
-import {
-  ComponentPropField,
-  ComponentBlock,
-  NotEditable,
-  RelationshipData,
-} from '../component-blocks';
+import { Stack, jsx, useTheme } from '@keystone-ui/core';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
-import React from 'react';
-import { Relationships, useDocumentFieldRelationships } from './relationship';
-import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
+import { Tooltip } from '@keystone-ui/tooltip';
 import { useKeystone } from '@keystone-next/admin-ui/context';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
 
-const ComponentBlockContext = React.createContext<null | Record<string, ComponentBlock>>(null);
+import { NotEditable } from '../component-blocks';
+
+import { Button, ButtonGroup, Separator } from './components';
+import { ComponentPropField, ComponentBlock, RelationshipData } from '../component-blocks';
+import { Relationships, useDocumentFieldRelationships } from './relationship';
+
+const ComponentBlockContext = createContext<null | Record<string, ComponentBlock>>(null);
 
 export const ComponentBlockProvider = ComponentBlockContext.Provider;
 
@@ -27,11 +26,15 @@ const VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP =
   '________VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP________';
 
 export function ComponentInlineProp(props: RenderElementProps) {
+  const { radii, spacing } = useTheme();
   return (
     <span
       css={{
-        outline: 'lightblue 4px dashed',
-        padding: 8,
+        border: `2px dashed rgba(9, 30, 66, 0.13)`,
+        borderRadius: radii.xsmall,
+        display: 'inline-block',
+        paddingLeft: spacing.small,
+        paddingRight: spacing.small,
       }}
     >
       <span {...props.attributes}>{props.children}</span>
@@ -303,7 +306,7 @@ export function withComponentBlocks(
 }
 
 export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBlock: boolean }) => {
-  const editor = useSlate();
+  const editor = useEditor();
   const blockComponents = useContext(ComponentBlockContext)!;
   const relationships = useDocumentFieldRelationships();
   return (
@@ -398,54 +401,44 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
   // because we're just inserting things on events, not reading things in render
   const editor = useEditor();
   const [editMode, setEditMode] = useState(false);
+  const { colors, fields, spacing, typography } = useTheme();
   const blockComponents = useContext(ComponentBlockContext)!;
   const componentBlock = blockComponents[element.component as string];
 
   return (
     <div
       css={{
-        margin: '8px 0',
-        border: '1px solid #E2E8F0',
-        borderRadius: 5,
+        marginBottom: spacing.xlarge,
+        marginTop: spacing.xlarge,
+        paddingLeft: spacing.xlarge,
+        position: 'relative',
+
+        ':before': {
+          content: '" "',
+          backgroundColor: editMode ? colors.linkColor : colors.border,
+          borderRadius: 4,
+          width: 4,
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          bottom: 0,
+          zIndex: 1,
+        },
       }}
       {...attributes}
     >
-      <NotEditable>
-        <div
-          style={{
-            backgroundColor: '#F7FAFC',
-            borderBottom: '1px solid #E2E8F0',
-            padding: 8,
-            fontSize: 14,
-            color: '#4299E1',
-            fontWeight: 600,
-          }}
-        >
-          <Button
-            css={{ float: 'right' }}
-            onMouseDown={event => {
-              event.preventDefault();
-              const path = ReactEditor.findPath(editor, element);
-              Transforms.removeNodes(editor, { at: path });
-            }}
-          >
-            Remove
-          </Button>
-          {!editMode ? (
-            <div css={{ float: 'right' }}>
-              <Button
-                onMouseDown={event => {
-                  event.preventDefault();
-                  setEditMode(true);
-                }}
-              >
-                Edit
-              </Button>
-              <Spacer />
-            </div>
-          ) : null}
-          <div css={{ padding: 4 }}>{componentBlock.label}</div>
-        </div>
+      <NotEditable
+        css={{
+          color: fields.legendColor,
+          display: 'block',
+          fontSize: typography.fontSize.small,
+          fontWeight: typography.fontWeight.bold,
+          lineHeight: 1,
+          marginBottom: spacing.small,
+          textTransform: 'uppercase',
+        }}
+      >
+        {componentBlock.label}
       </NotEditable>
       {editMode && (
         <FormValue
@@ -478,6 +471,34 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
           elementProps={element.props}
           relationshipValues={element.relationships as any}
         />
+        <ButtonGroup as={NotEditable} marginTop="small">
+          {!editMode ? (
+            <Button
+              onClick={event => {
+                event.preventDefault();
+                setEditMode(true);
+              }}
+            >
+              Edit
+            </Button>
+          ) : null}
+          <Separator />
+          <Tooltip content="Remove" weight="subtle">
+            {attrs => (
+              <Button
+                variant="destructive"
+                onClick={event => {
+                  event.preventDefault();
+                  const path = ReactEditor.findPath(editor, element);
+                  Transforms.removeNodes(editor, { at: path });
+                }}
+                {...attrs}
+              >
+                <Trash2Icon size="small" />
+              </Button>
+            )}
+          </Tooltip>
+        </ButtonGroup>
       </div>
     </div>
   );
@@ -546,7 +567,7 @@ function FormValueContent({
   const relationships = useDocumentFieldRelationships();
   const keystone = useKeystone();
   return (
-    <Stack gap="medium">
+    <Stack gap="xlarge">
       {Object.keys(props).map(key => {
         const prop = props[key];
         if (prop.kind === 'child') return null;
@@ -666,7 +687,7 @@ function FormValueContent({
         }
         const newPath = path.concat(key);
         return (
-          <div key={key}>
+          <Fragment key={key}>
             <prop.Input
               autoFocus={JSON.stringify(newPath) === stringifiedPropPathToAutoFocus}
               path={newPath}
@@ -675,7 +696,7 @@ function FormValueContent({
                 onChange({ ...value, [key]: newVal });
               }}
             />
-          </div>
+          </Fragment>
         );
       })}
     </Stack>
@@ -736,7 +757,7 @@ function FormValue({
 }) {
   const focusablePath = JSON.stringify(findFirstFocusablePropPath(componentBlock.props, [], value));
   return (
-    <Stack gap="medium" padding="small" contentEditable={false}>
+    <Stack gap="xlarge" contentEditable={false}>
       <FormValueContent
         onRelationshipValuesChange={onRelationshipValuesChange}
         relationshipValues={relationshipValues}
@@ -746,7 +767,9 @@ function FormValue({
         value={value}
         stringifiedPropPathToAutoFocus={focusablePath}
       />
-      <KeystoneUIButton onClick={onClose}>Done</KeystoneUIButton>
+      <KeystoneUIButton size="small" tone="active" weight="bold" onClick={onClose}>
+        Done
+      </KeystoneUIButton>
     </Stack>
   );
 }
