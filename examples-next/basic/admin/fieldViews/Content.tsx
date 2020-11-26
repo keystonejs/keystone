@@ -143,6 +143,7 @@ export const componentBlocks = {
       return <div>{content}</div>;
     },
     label: 'Component block Panel',
+    unwrapOnBackspaceAtStart: true,
     props: {
       intent: fields.select({
         label: 'Intent',

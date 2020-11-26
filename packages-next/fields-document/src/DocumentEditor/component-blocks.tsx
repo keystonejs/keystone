@@ -2,7 +2,7 @@
 
 import { Fragment, ReactElement, createContext, useContext, useState } from 'react';
 import { ReactEditor, RenderElementProps, useEditor, useFocused, useSelected } from 'slate-react';
-import { Editor, Element, Transforms, Text } from 'slate';
+import { Editor, Element, Transforms, Text, Range, NodeEntry } from 'slate';
 
 import { Stack, jsx, useTheme } from '@keystone-ui/core';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
@@ -196,11 +196,51 @@ function getInitialValue(
   };
 }
 
+function getAncestorComponentBlock(
+  editor: ReactEditor
+):
+  | { isInside: false }
+  | { isInside: true; componentBlock: NodeEntry<Element>; prop: NodeEntry<Element> } {
+  if (editor.selection) {
+    const ancestorEntry = Editor.above(editor, {
+      match: node => Editor.isBlock(editor, node) && node.type !== 'paragraph',
+    });
+    if (
+      ancestorEntry &&
+      (ancestorEntry[0].type === 'component-block-prop' ||
+        ancestorEntry[0].type === 'component-inline-prop')
+    ) {
+      return {
+        isInside: true,
+        componentBlock: Editor.parent(editor, ancestorEntry[1]),
+        prop: ancestorEntry,
+      };
+    }
+  }
+  return { isInside: false };
+}
+
 export function withComponentBlocks(
   blockComponents: Record<string, ComponentBlock>,
   editor: ReactEditor
 ) {
-  const { normalizeNode } = editor;
+  const { normalizeNode, deleteBackward } = editor;
+  editor.deleteBackward = unit => {
+    if (editor.selection) {
+      const parentComponentBlock = getAncestorComponentBlock(editor);
+      if (
+        parentComponentBlock.isInside &&
+        blockComponents[parentComponentBlock.componentBlock[0].component as string]
+          .unwrapOnBackspaceAtStart &&
+        Range.isCollapsed(editor.selection) &&
+        Editor.isStart(editor, editor.selection.anchor, parentComponentBlock.prop[1])
+      ) {
+        Transforms.unwrapNodes(editor, { at: parentComponentBlock.componentBlock[1] });
+        return;
+      }
+    }
+    deleteBackward(unit);
+  };
   editor.normalizeNode = entry => {
     const [node, path] = entry;
     if (Element.isElement(node) || Editor.isEditor(node)) {
