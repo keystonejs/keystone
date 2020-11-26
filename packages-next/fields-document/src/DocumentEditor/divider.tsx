@@ -1,9 +1,11 @@
-import { Button } from './components';
-import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon';
-import { Tooltip } from '@keystone-ui/tooltip';
 import React, { ButtonHTMLAttributes } from 'react';
 import { Transforms, Range, Editor } from 'slate';
 import { ReactEditor, useEditor } from 'slate-react';
+
+import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon';
+import { Tooltip } from '@keystone-ui/tooltip';
+
+import { ToolbarButton } from './blocks';
 
 export const dividerButton = (
   <Tooltip content="Divider" weight="subtle">
@@ -17,7 +19,7 @@ const DividerButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   // because we're just inserting things on events, not reading things in render
   const editor = useEditor();
   return (
-    <Button
+    <ToolbarButton
       onMouseDown={event => {
         event.preventDefault();
         Transforms.insertNodes(
@@ -29,7 +31,7 @@ const DividerButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
       {...props}
     >
       <MinusIcon size="small" />
-    </Button>
+    </ToolbarButton>
   );
 };
 

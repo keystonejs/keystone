@@ -1,15 +1,15 @@
 /** @jsx jsx */
 
+import { ButtonHTMLAttributes } from 'react';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps, useEditor } from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
-
-import { getMaybeMarkdownShortcutText } from './utils';
-import { ButtonHTMLAttributes } from 'react';
-import { IconBase } from './Toolbar';
-import { Button } from './components';
 import { Tooltip } from '@keystone-ui/tooltip';
+
+import { IconBase } from './Toolbar';
+import { ToolbarButton } from './blocks';
+import { getMaybeMarkdownShortcutText } from './utils';
 
 export const insertBlockquote = (editor: ReactEditor) => {
   Transforms.wrapNodes(
@@ -112,7 +112,7 @@ const BlockquoteButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   const editor = useEditor();
 
   return (
-    <Button
+    <ToolbarButton
       onMouseDown={event => {
         event.preventDefault();
         insertBlockquote(editor);
@@ -120,7 +120,7 @@ const BlockquoteButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
       {...props}
     >
       <QuoteIcon />
-    </Button>
+    </ToolbarButton>
   );
 };
 

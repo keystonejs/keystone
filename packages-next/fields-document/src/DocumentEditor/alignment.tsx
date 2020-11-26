@@ -11,8 +11,7 @@ import { useState, useCallback, memo } from 'react';
 import { Editor, Transforms } from 'slate';
 import { useSlate } from 'slate-react';
 import { DocumentFeatures } from '../views';
-import { Button, ButtonGroup } from './components';
-import { InlineDialog } from './components/inline-dialog';
+import { InlineDialog, ToolbarButton, ToolbarGroup } from './blocks';
 
 export const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment'] }) => {
   const [showMenu, setShowMenu] = useState(false);
@@ -60,10 +59,10 @@ export const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alig
       />
       {showMenu ? (
         <InlineDialog ref={dialog.ref} {...dialog.props}>
-          <ButtonGroup>
+          <ToolbarGroup>
             <Tooltip content="Align start" weight="subtle">
               {attrs => (
-                <Button
+                <ToolbarButton
                   isSelected={currentTextAlign === 'start'}
                   onMouseDown={event => {
                     event.preventDefault();
@@ -74,13 +73,13 @@ export const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alig
                   {...attrs}
                 >
                   <alignmentIcons.start size="small" />
-                </Button>
+                </ToolbarButton>
               )}
             </Tooltip>
             {alignment.center && (
               <Tooltip content="Align center" weight="subtle">
                 {attrs => (
-                  <Button
+                  <ToolbarButton
                     isSelected={currentTextAlign === 'center'}
                     onMouseDown={event => {
                       event.preventDefault();
@@ -95,14 +94,14 @@ export const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alig
                     {...attrs}
                   >
                     <alignmentIcons.center size="small" />
-                  </Button>
+                  </ToolbarButton>
                 )}
               </Tooltip>
             )}
             {alignment.end && (
               <Tooltip content="Align end" weight="subtle">
                 {attrs => (
-                  <Button
+                  <ToolbarButton
                     isSelected={currentTextAlign === 'end'}
                     onMouseDown={event => {
                       event.preventDefault();
@@ -117,11 +116,11 @@ export const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alig
                     {...attrs}
                   >
                     <alignmentIcons.end size="small" />
-                  </Button>
+                  </ToolbarButton>
                 )}
               </Tooltip>
             )}
-          </ButtonGroup>
+          </ToolbarGroup>
         </InlineDialog>
       ) : null}
     </div>
@@ -152,7 +151,7 @@ const TextAlignButton = memo(function TextAlignButton({
   return (
     <Tooltip content="Text alignment" weight="subtle">
       {({ ref, ...attrs }) => (
-        <Button
+        <ToolbarButton
           ref={applyRefs(ref, trigger.ref)}
           isDisabled={!alignmentAllowed}
           isPressed={showMenu}
@@ -165,7 +164,7 @@ const TextAlignButton = memo(function TextAlignButton({
         >
           <DisplayIcon size="small" />
           <ChevronDownIcon size="small" />
-        </Button>
+        </ToolbarButton>
       )}
     </Tooltip>
   );

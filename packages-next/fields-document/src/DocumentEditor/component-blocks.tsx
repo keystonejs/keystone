@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { Fragment, ReactElement, createContext, useContext, useState } from 'react';
-import { ReactEditor, RenderElementProps, useEditor } from 'slate-react';
+import { ReactEditor, RenderElementProps, useEditor, useFocused, useSelected } from 'slate-react';
 import { Editor, Element, Transforms, Text } from 'slate';
 
 import { Stack, jsx, useTheme } from '@keystone-ui/core';
@@ -14,10 +14,9 @@ import { RelationshipSelect } from '@keystone-next/fields/types/relationship/vie
 
 import { ConditionalField, NotEditable } from '../component-blocks';
 
-import { Button, ButtonGroup, Separator } from './components';
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './blocks';
 import { ComponentPropField, ComponentBlock, RelationshipData } from '../component-blocks';
 import { Relationships, useDocumentFieldRelationships } from './relationship';
-import { InlineDialog } from './components/inline-dialog';
 
 const ComponentBlockContext = createContext<null | Record<string, ComponentBlock>>(null);
 
@@ -313,7 +312,7 @@ export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBloc
   return (
     <Fragment>
       {Object.keys(blockComponents).map(key => (
-        <Button
+        <ToolbarButton
           key={key}
           isDisabled={!shouldInsertBlock}
           onMouseDown={event => {
@@ -342,7 +341,7 @@ export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBloc
           }}
         >
           + {blockComponents[key].label}
-        </Button>
+        </ToolbarButton>
       ))}
     </Fragment>
   );
@@ -446,6 +445,8 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
   // that's fine for what it's being used for here
   // because we're just inserting things on events, not reading things in render
   const editor = useEditor();
+  const focused = useFocused();
+  const selected = useSelected();
   const [editMode, setEditMode] = useState(false);
   const { colors, fields, spacing, typography } = useTheme();
   const blockComponents = useContext(ComponentBlockContext)!;
@@ -454,39 +455,45 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
 
   return (
     <div
+      data-with-chrome={!componentBlock.chromeless}
       css={{
         marginBottom: spacing.xlarge,
         marginTop: spacing.xlarge,
-        paddingLeft: spacing.xlarge,
-        position: 'relative',
 
-        ':before': {
-          content: '" "',
-          backgroundColor: editMode ? colors.linkColor : colors.border,
-          borderRadius: 4,
-          width: 4,
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          zIndex: 1,
+        '&[data-with-chrome=true]': {
+          paddingLeft: spacing.xlarge,
+          position: 'relative',
+
+          ':before': {
+            content: '" "',
+            backgroundColor: editMode ? colors.linkColor : colors.border,
+            borderRadius: 4,
+            width: 4,
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            zIndex: 1,
+          },
         },
       }}
       {...attributes}
     >
-      <NotEditable
-        css={{
-          color: fields.legendColor,
-          display: 'block',
-          fontSize: typography.fontSize.small,
-          fontWeight: typography.fontWeight.bold,
-          lineHeight: 1,
-          marginBottom: spacing.small,
-          textTransform: 'uppercase',
-        }}
-      >
-        {componentBlock.label}
-      </NotEditable>
+      {!componentBlock.chromeless && (
+        <NotEditable
+          css={{
+            color: fields.legendColor,
+            display: 'block',
+            fontSize: typography.fontSize.small,
+            fontWeight: typography.fontWeight.bold,
+            lineHeight: 1,
+            marginBottom: spacing.small,
+            textTransform: 'uppercase',
+          }}
+        >
+          {componentBlock.label}
+        </NotEditable>
+      )}
       {editMode && (
         <FormValue
           onRelationshipValuesChange={relationships => {
@@ -551,15 +558,17 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
                 ? componentBlock.toolbar
                 : DefaultToolbarWithoutChrome;
             return componentBlock.chromeless ? (
-              <InlineDialog isRelative>
-                <ChromelessToolbar
-                  onRemove={() => {
-                    const path = ReactEditor.findPath(editor, element);
-                    Transforms.removeNodes(editor, { at: path });
-                  }}
-                  props={toolbarProps}
-                />
-              </InlineDialog>
+              focused && selected && (
+                <InlineDialog isRelative>
+                  <ChromelessToolbar
+                    onRemove={() => {
+                      const path = ReactEditor.findPath(editor, element);
+                      Transforms.removeNodes(editor, { at: path });
+                    }}
+                    props={toolbarProps}
+                  />
+                </InlineDialog>
+              )
             ) : (
               <ChromefulToolbar
                 onRemove={() => {
@@ -586,19 +595,19 @@ function DefaultToolbarWithChrome({
   props: any;
 }) {
   return (
-    <ButtonGroup as={NotEditable} marginTop="small">
-      <Button
+    <ToolbarGroup as={NotEditable} marginTop="small">
+      <ToolbarButton
         onClick={event => {
           event.preventDefault();
           onShowEditMode();
         }}
       >
         Edit
-      </Button>
-      <Separator />
+      </ToolbarButton>
+      <ToolbarSeparator />
       <Tooltip content="Remove" weight="subtle">
         {attrs => (
-          <Button
+          <ToolbarButton
             variant="destructive"
             onClick={event => {
               event.preventDefault();
@@ -606,10 +615,10 @@ function DefaultToolbarWithChrome({
             {...attrs}
           >
             <Trash2Icon size="small" />
-          </Button>
+          </ToolbarButton>
         )}
       </Tooltip>
-    </ButtonGroup>
+    </ToolbarGroup>
   );
 }
 
@@ -622,7 +631,7 @@ function DefaultToolbarWithoutChrome({
   return (
     <Tooltip content="Remove" weight="subtle">
       {attrs => (
-        <Button
+        <ToolbarButton
           variant="destructive"
           onMouseDown={event => {
             event.preventDefault();
@@ -631,7 +640,7 @@ function DefaultToolbarWithoutChrome({
           {...attrs}
         >
           <Trash2Icon size="small" />
-        </Button>
+        </ToolbarButton>
       )}
     </Tooltip>
   );

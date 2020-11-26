@@ -13,11 +13,9 @@ import {
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
-import { useControlledPopover } from '@keystone-ui/popover';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
-import { InlineDialog } from './components/inline-dialog';
-import { Button, ButtonGroup, Separator } from './components';
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './blocks';
 import { paragraphElement } from './paragraphs';
 import { isBlockActive, moveChildren } from './utils';
 import { DocumentFeatures } from '../views';
@@ -36,48 +34,29 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
   const layout = element.layout as number[];
   const columnLayouts = useContext(ColumnOptionsContext);
 
-  // TODO: to keep the dialog in sync with the trigger (as the user enters
-  // content) we'll likely need a custom popper modifier that implements a
-  // resize observer. Though it may not be worthwile, relative/absolute
-  // positioning is simpler and better for perf...
-  const { dialog, trigger } = useControlledPopover(
-    {
-      isOpen: focused && selected,
-      onClose: () => {},
-    },
-    {
-      modifiers: [
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 8],
-          },
-        },
-      ],
-    }
-  );
-
   return (
-    <div css={{ position: 'relative' }} {...attributes}>
+    <div
+      css={{
+        marginBottom: spacing.medium,
+        marginTop: spacing.medium,
+        position: 'relative',
+      }}
+      {...attributes}
+    >
       <div
-        ref={trigger.ref}
         css={{
           columnGap: spacing.small,
           display: 'grid',
           gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
-          marginBottom: spacing.medium,
-          marginTop: spacing.medium,
-          position: 'relative',
         }}
-        {...trigger.props}
       >
         {children}
       </div>
       {focused && selected && (
-        <InlineDialog ref={dialog.ref} {...dialog.props}>
-          <ButtonGroup>
+        <InlineDialog isRelative>
+          <ToolbarGroup>
             {columnLayouts.map((layoutOption, i) => (
-              <Button
+              <ToolbarButton
                 isSelected={layoutOption.toString() === layout.toString()}
                 key={i}
                 onMouseDown={event => {
@@ -91,12 +70,12 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
                 }}
               >
                 {makeLayoutIcon(layoutOption)}
-              </Button>
+              </ToolbarButton>
             ))}
-            <Separator />
+            <ToolbarSeparator />
             <Tooltip content="Remove" weight="subtle">
               {attrs => (
-                <Button
+                <ToolbarButton
                   variant="destructive"
                   onMouseDown={event => {
                     event.preventDefault();
@@ -106,10 +85,10 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
                   {...attrs}
                 >
                   <Trash2Icon size="small" />
-                </Button>
+                </ToolbarButton>
               )}
             </Tooltip>
-          </ButtonGroup>
+          </ToolbarGroup>
         </InlineDialog>
       )}
     </div>
@@ -297,7 +276,7 @@ export const ColumnsButton = memo(({ columns }: { columns: DocumentFeatures['col
   return (
     <Tooltip content="Columns" weight="subtle">
       {attrs => (
-        <Button
+        <ToolbarButton
           onMouseDown={event => {
             event.preventDefault();
             insertColumns(editor, columns[0]);
@@ -305,7 +284,7 @@ export const ColumnsButton = memo(({ columns }: { columns: DocumentFeatures['col
           {...attrs}
         >
           <ColumnsIcon size="small" />
-        </Button>
+        </ToolbarButton>
       )}
     </Tooltip>
   );
