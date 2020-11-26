@@ -2,7 +2,7 @@
 
 import { jsx, Stack } from '@keystone-ui/core';
 import { Fragment, ReactElement, useContext, useState } from 'react';
-import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
+import { ReactEditor, RenderElementProps, useEditor, useSlate } from 'slate-react';
 import { Editor, Element, Transforms, Text } from 'slate';
 
 import { Button, Spacer } from './components';
@@ -393,7 +393,10 @@ function buildPreviewProps(
 }
 
 export const ComponentBlocksElement = ({ attributes, children, element }: RenderElementProps) => {
-  const editor = useSlate();
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
   const [editMode, setEditMode] = useState(false);
   const blockComponents = useContext(ComponentBlockContext)!;
   const componentBlock = blockComponents[element.component as string];

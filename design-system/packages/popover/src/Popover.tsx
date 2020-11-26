@@ -10,6 +10,7 @@ import {
   useState,
   useCallback,
   CSSProperties,
+  useMemo,
 } from 'react';
 import { Options, Placement } from '@popperjs/core';
 import { usePopper } from 'react-popper';
@@ -72,26 +73,35 @@ export const useControlledPopover = (
   });
 
   return {
-    trigger: {
-      ref: (element: AnchorElementType | null) => setAnchorElement(element),
-      props: {
-        'aria-haspopup': true,
-        'aria-expanded': isOpen,
-      },
-    },
-    dialog: {
-      ref: (element: HTMLDivElement) => setPopoverElement(element),
-      props: {
-        style: styles.popper,
-        ...attributes.popper,
-      },
-    },
-    arrow: {
-      ref: (element: HTMLDivElement) => setArrowElement(element),
-      props: {
-        style: styles.arrow,
-      },
-    },
+    trigger: useMemo(
+      () => ({
+        ref: setAnchorElement as (element: HTMLElement | null) => void,
+        props: {
+          'aria-haspopup': true,
+          'aria-expanded': isOpen,
+        },
+      }),
+      [isOpen]
+    ),
+    dialog: useMemo(
+      () => ({
+        ref: setPopoverElement as (element: HTMLElement | null) => void,
+        props: {
+          style: styles.popper,
+          ...attributes.popper,
+        },
+      }),
+      [styles.popper, attributes.popper]
+    ),
+    arrow: useMemo(
+      () => ({
+        ref: setArrowElement as (element: HTMLElement | null) => void,
+        props: {
+          style: styles.arrow,
+        },
+      }),
+      [styles.arrow]
+    ),
   };
 };
 

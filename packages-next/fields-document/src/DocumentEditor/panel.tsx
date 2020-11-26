@@ -2,7 +2,7 @@
 
 import { forwardRef } from 'react';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
-import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
+import { ReactEditor, RenderElementProps, useEditor, useFocused, useSelected } from 'slate-react';
 import { applyRefs } from 'apply-ref';
 
 import { jsx } from '@keystone-ui/core';
@@ -169,7 +169,10 @@ export const PanelElement = ({
   const Icon = panelType.icon;
   const focused = useFocused();
   const selected = useSelected();
-  const editor = useSlate();
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
   const { dialog, trigger } = useControlledPopover(
     {
       isOpen: focused && selected,
