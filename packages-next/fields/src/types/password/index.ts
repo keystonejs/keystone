@@ -3,9 +3,9 @@ import type { FieldType, BaseGeneratedListTypes } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
 
-type PasswordFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
-  TGeneratedListTypes
-> & {
+type PasswordFieldConfig<
+  TGeneratedListTypes extends BaseGeneratedListTypes
+> = FieldConfig<TGeneratedListTypes> & {
   minLength?: number;
   isRequired?: boolean;
 };

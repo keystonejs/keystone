@@ -1,5 +1,16 @@
 # @keystonejs/fields
 
+## 20.1.1
+
+### Patch Changes
+
+- [`c62a35fe0`](https://github.com/keystonejs/keystone/commit/c62a35fe0834ec60e2472b22feedda539d18a918) [#4309](https://github.com/keystonejs/keystone/pull/4309) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency tinymce to ^5.6.0
+
+- Updated dependencies [[`8d7056c8e`](https://github.com/keystonejs/keystone/commit/8d7056c8ed8d4fccfd61e64fc5fc2caf65899cee)]:
+  - @arch-ui/drawer@0.0.25
+  - @arch-ui/popout@0.0.23
+  - @keystonejs/app-admin-ui@7.3.10
+
 ## 20.1.0
 
 ### Minor Changes

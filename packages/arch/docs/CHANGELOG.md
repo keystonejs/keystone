@@ -1,5 +1,14 @@
 # @arch-ui/docs
 
+## 1.1.30
+
+### Patch Changes
+
+- Updated dependencies [[`8d7056c8e`](https://github.com/keystonejs/keystone/commit/8d7056c8ed8d4fccfd61e64fc5fc2caf65899cee)]:
+  - @arch-ui/dialog@0.0.25
+  - @arch-ui/dropdown@0.0.22
+  - @arch-ui/popout@0.0.23
+
 ## 1.1.29
 
 ### Patch Changes

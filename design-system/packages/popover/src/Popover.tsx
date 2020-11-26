@@ -10,6 +10,7 @@ import {
   useState,
   useCallback,
   CSSProperties,
+  useMemo,
 } from 'react';
 import { Options, Placement } from '@popperjs/core';
 import { usePopper } from 'react-popper';
@@ -26,14 +27,14 @@ type PopoverOptions = {
   handleClose: 'both' | 'mouse' | 'keyboard' | 'none';
 };
 
-export const usePopover = (
+export const useControlledPopover = (
+  { isOpen, onClose }: { isOpen: boolean; onClose: () => void },
   popperOptions: Partial<Options> = {},
   popoverOptions: PopoverOptions = { handleClose: 'both' }
 ) => {
   const [anchorElement, setAnchorElement] = useState<AnchorElementType | null>(null);
   const [popoverElement, setPopoverElement] = useState<HTMLDivElement>();
   const [arrowElement, setArrowElement] = useState<HTMLDivElement>();
-  const [isOpen, setOpen] = useState(false);
 
   const { styles, attributes, update } = usePopper(anchorElement, popoverElement, {
     ...popperOptions,
@@ -53,7 +54,7 @@ export const usePopover = (
 
   // close on click outside
   useClickOutside({
-    handler: () => setOpen(false),
+    handler: () => onClose(),
     elements: [anchorElement, popoverElement],
     listenWhen: ['both', 'mouse'].includes(popoverOptions.handleClose) && isOpen,
   });
@@ -61,36 +62,62 @@ export const usePopover = (
   // close on esc press
   useKeyPress({
     targetKey: 'Escape',
-    downHandler: useCallback((event: KeyboardEvent) => {
-      event.preventDefault(); // Avoid potential close of modal
-      setOpen(false);
-    }, []),
+    downHandler: useCallback(
+      (event: KeyboardEvent) => {
+        event.preventDefault(); // Avoid potential close of modal
+        onClose();
+      },
+      [onClose]
+    ),
     listenWhen: ['both', 'keyboard'].includes(popoverOptions.handleClose) && isOpen,
   });
 
   return {
+    trigger: useMemo(
+      () => ({
+        ref: setAnchorElement as (element: HTMLElement | null) => void,
+        props: {
+          'aria-haspopup': true,
+          'aria-expanded': isOpen,
+        },
+      }),
+      [isOpen]
+    ),
+    dialog: useMemo(
+      () => ({
+        ref: setPopoverElement as (element: HTMLElement | null) => void,
+        props: {
+          style: styles.popper,
+          ...attributes.popper,
+        },
+      }),
+      [styles.popper, attributes.popper]
+    ),
+    arrow: useMemo(
+      () => ({
+        ref: setArrowElement as (element: HTMLElement | null) => void,
+        props: {
+          style: styles.arrow,
+        },
+      }),
+      [styles.arrow]
+    ),
+  };
+};
+
+export const usePopover = (
+  popperOptions: Partial<Options> = {},
+  popoverOptions: PopoverOptions = { handleClose: 'both' }
+) => {
+  const [isOpen, setOpen] = useState(false);
+  return {
     isOpen,
     setOpen,
-    trigger: {
-      ref: (element: AnchorElementType | null) => setAnchorElement(element),
-      props: {
-        'aria-haspopup': true,
-        'aria-expanded': isOpen,
-      },
-    },
-    dialog: {
-      ref: (element: HTMLDivElement) => setPopoverElement(element),
-      props: {
-        style: styles.popper,
-        ...attributes.popper,
-      },
-    },
-    arrow: {
-      ref: (element: HTMLDivElement) => setArrowElement(element),
-      props: {
-        style: styles.arrow,
-      },
-    },
+    ...useControlledPopover(
+      { isOpen, onClose: useCallback(() => setOpen(false), []) },
+      popperOptions,
+      popoverOptions
+    ),
   };
 };
 

@@ -15,7 +15,7 @@ import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
 import { jsx, Stack } from '@keystone-ui/core';
 import { useToasts } from '@keystone-ui/toast';
-import { useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useFieldsObj } from './useItemState';
 import { Tooltip } from '@keystone-ui/tooltip';
 
@@ -119,14 +119,6 @@ export function InlineEdit({
     children: 'Save',
   } as const;
 
-  const fieldModes = useMemo(() => {
-    const fieldModes: Record<string, 'hidden' | 'edit' | 'read'> = {};
-    fields.forEach(fieldPath => {
-      fieldModes[fieldPath] = 'edit';
-    });
-    return fieldModes;
-  }, [fields]);
-
   return (
     <Stack gap="xlarge">
       {error && (
@@ -138,16 +130,19 @@ export function InlineEdit({
         />
       )}
       <Fields
-        fieldModes={fieldModes}
+        fieldModes={null}
         fields={fieldsObj}
         forceValidation={forceValidation}
         invalidFields={invalidFields}
-        onChange={value => {
-          setValue({
-            item: state.item,
-            value,
-          });
-        }}
+        onChange={useCallback(
+          value => {
+            setValue(state => ({
+              item: state.item,
+              value: value(state.value),
+            }));
+          },
+          [setValue]
+        )}
         value={state.value}
       />
       <Stack across gap="small">

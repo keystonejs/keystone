@@ -3,9 +3,9 @@ import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keys
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
 
-export type TimestampFieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = FieldConfig<
-  TGeneratedListTypes
-> & {
+export type TimestampFieldConfig<
+  TGeneratedListTypes extends BaseGeneratedListTypes
+> = FieldConfig<TGeneratedListTypes> & {
   defaultValue?: FieldDefaultValue<string>;
   isRequired?: boolean;
   isIndexed?: boolean;

@@ -1,89 +1,117 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
+import { createContext, memo, useContext } from 'react';
 import { Editor, Element, Node, Transforms } from 'slate';
-import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
+import {
+  ReactEditor,
+  RenderElementProps,
+  useEditor,
+  useFocused,
+  useSelected,
+  useSlate,
+} from 'slate-react';
 
-import { Hoverable } from './components/hoverable';
-import { Button } from './components';
+import { jsx, useTheme } from '@keystone-ui/core';
+import { Tooltip } from '@keystone-ui/tooltip';
+import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
+
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { paragraphElement } from './paragraphs';
 import { isBlockActive, moveChildren } from './utils';
+import { DocumentFeatures } from '../views';
+import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
 
-const COLUMN_LAYOUTS: [number, ...number[]][] = [
-  [1, 2],
-  [1, 1],
-  [2, 1],
-  [1, 1, 1],
-  [1, 1, 2],
-  [1, 2, 1],
-  [2, 1, 1],
-];
+const ColumnOptionsContext = createContext<[number, ...number[]][]>([]);
+
+export const ColumnOptionsProvider = ColumnOptionsContext.Provider;
 
 // UI Components
 const ColumnContainer = ({ attributes, children, element }: RenderElementProps) => {
+  const { spacing } = useTheme();
   const focused = useFocused();
   const selected = useSelected();
   const editor = useSlate();
   const layout = element.layout as number[];
+  const columnLayouts = useContext(ColumnOptionsContext);
+
   return (
     <div
       css={{
-        display: 'grid',
-        margin: '8px 0',
-        gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
+        marginBottom: spacing.medium,
+        marginTop: spacing.medium,
         position: 'relative',
-        columnGap: 4,
       }}
       {...attributes}
     >
-      {children}
+      <div
+        css={{
+          columnGap: spacing.small,
+          display: 'grid',
+          gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
+        }}
+      >
+        {children}
+      </div>
       {focused && selected && (
-        <Hoverable>
-          {COLUMN_LAYOUTS.map((layoutOption, i) => (
-            <Button
-              isSelected={layoutOption.toString() === layout.toString()}
-              key={i}
-              onMouseDown={event => {
-                event.preventDefault();
-                const path = ReactEditor.findPath(editor, element);
-                const cols = {
-                  type: 'columns',
-                  layout: layoutOption,
-                };
-                Transforms.setNodes(editor, cols, { at: path });
-              }}
-            >
-              {layoutOption.join(':')}
-            </Button>
-          ))}
-          <Button
-            onMouseDown={event => {
-              event.preventDefault();
-              const path = ReactEditor.findPath(editor, element);
-              Transforms.removeNodes(editor, { at: path });
-            }}
-          >
-            Remove
-          </Button>
-        </Hoverable>
+        <InlineDialog isRelative>
+          <ToolbarGroup>
+            {columnLayouts.map((layoutOption, i) => (
+              <ToolbarButton
+                isSelected={layoutOption.toString() === layout.toString()}
+                key={i}
+                onMouseDown={event => {
+                  event.preventDefault();
+                  const path = ReactEditor.findPath(editor, element);
+                  const cols = {
+                    type: 'columns',
+                    layout: layoutOption,
+                  };
+                  Transforms.setNodes(editor, cols, { at: path });
+                }}
+              >
+                {makeLayoutIcon(layoutOption)}
+              </ToolbarButton>
+            ))}
+            <ToolbarSeparator />
+            <Tooltip content="Remove" weight="subtle">
+              {attrs => (
+                <ToolbarButton
+                  variant="destructive"
+                  onMouseDown={event => {
+                    event.preventDefault();
+                    const path = ReactEditor.findPath(editor, element);
+                    Transforms.removeNodes(editor, { at: path });
+                  }}
+                  {...attrs}
+                >
+                  <Trash2Icon size="small" />
+                </ToolbarButton>
+              )}
+            </Tooltip>
+          </ToolbarGroup>
+        </InlineDialog>
       )}
     </div>
   );
 };
 
 // Single Columns
-const Column = ({ attributes, children }: RenderElementProps) => (
-  <div
-    css={{
-      border: '3px dashed #E2E8F0',
-      borderRadius: 4,
-      padding: 4,
-    }}
-    {...attributes}
-  >
-    {children}
-  </div>
-);
+const Column = ({ attributes, children }: RenderElementProps) => {
+  const { colors, radii, spacing } = useTheme();
+  return (
+    <div
+      css={{
+        border: `2px dashed ${colors.border}`,
+        borderRadius: radii.small,
+        paddingLeft: spacing.medium,
+        paddingRight: spacing.medium,
+      }}
+      {...attributes}
+    >
+      {children}
+    </div>
+  );
+};
 
 export const isInsideColumn = (editor: ReactEditor) => {
   return isBlockActive(editor, 'columns');
@@ -104,7 +132,7 @@ function firstNonEditorRootNodeEntry(editor: Editor) {
 }
 
 // Helper function
-export const insertColumns = (editor: ReactEditor) => {
+export const insertColumns = (editor: ReactEditor, layout: [number, ...number[]]) => {
   if (isInsideColumn(editor)) {
     Transforms.unwrapNodes(editor, {
       match: node => node.type === 'columns',
@@ -118,7 +146,7 @@ export const insertColumns = (editor: ReactEditor) => {
       [
         {
           type: 'columns',
-          layout: COLUMN_LAYOUTS[0],
+          layout,
           children: [
             {
               type: 'column',
@@ -170,8 +198,8 @@ export const withColumns = (editor: ReactEditor) => {
     if (Element.isElement(node) && node.type === 'columns') {
       let layout = node.layout as number[];
       if (node.layout === undefined) {
-        layout = COLUMN_LAYOUTS[0];
-        Transforms.setNodes(editor, { layout }, { at: path });
+        Transforms.unwrapNodes(editor, { at: path });
+        return;
       }
       if (node.children.length < layout.length) {
         Transforms.insertNodes(
@@ -213,3 +241,51 @@ export const withColumns = (editor: ReactEditor) => {
   };
   return editor;
 };
+
+// Utils
+// ------------------------------
+
+function makeLayoutIcon(ratios: number[]) {
+  const size = 16;
+
+  const element = (
+    <div
+      role="img"
+      css={{
+        display: 'grid',
+        gridTemplateColumns: ratios.map(r => `${r}fr`).join(' '),
+        gap: 2,
+        width: size,
+        height: size,
+      }}
+    >
+      {ratios.map((_, i) => {
+        return <div key={i} css={{ backgroundColor: 'currentcolor', borderRadius: 1 }} />;
+      })}
+    </div>
+  );
+
+  return element;
+}
+
+export const ColumnsButton = memo(({ columns }: { columns: DocumentFeatures['columns'] }) => {
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
+  return (
+    <Tooltip content="Columns" weight="subtle">
+      {attrs => (
+        <ToolbarButton
+          onMouseDown={event => {
+            event.preventDefault();
+            insertColumns(editor, columns[0]);
+          }}
+          {...attrs}
+        >
+          <ColumnsIcon size="small" />
+        </ToolbarButton>
+      )}
+    </Tooltip>
+  );
+});

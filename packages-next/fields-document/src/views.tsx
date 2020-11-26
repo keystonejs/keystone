@@ -25,6 +25,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
       onChange={onChange}
       componentBlocks={field.componentBlocks}
       relationships={field.relationships}
+      documentFeatures={field.documentFeatures}
     />
   </FieldContainer>
 );
@@ -50,17 +51,53 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 
 export const allowedExportsOnCustomViews = ['componentBlocks'];
 
+export type DocumentFeatures = {
+  inlineMarks: {
+    bold: boolean;
+    italic: boolean;
+    underline: boolean;
+    strikethrough: boolean;
+    code: boolean;
+    superscript: boolean;
+    subscript: boolean;
+    keyboard: boolean;
+  };
+  listTypes: {
+    ordered: boolean;
+    unordered: boolean;
+  };
+  alignment: {
+    center: boolean;
+    end: boolean;
+  };
+  headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[];
+  blockTypes: {
+    blockquote: boolean;
+    panel: boolean;
+    quote: boolean;
+    code: boolean;
+  };
+  link: boolean;
+  columns: [number, ...number[]][];
+  dividers: boolean;
+};
+
 export const controller = (
-  config: FieldControllerConfig<{ relationships: Relationships }>
+  config: FieldControllerConfig<{
+    relationships: Relationships;
+    documentFeatures: DocumentFeatures;
+  }>
 ): FieldController<Node[]> & {
   componentBlocks: Record<string, ComponentBlock>;
   relationships: Relationships;
+  documentFeatures: DocumentFeatures;
 } => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: `${config.path} {document}`,
     componentBlocks: config.customViews.componentBlocks || {},
+    documentFeatures: config.fieldMeta.documentFeatures,
     relationships: config.fieldMeta.relationships,
     defaultValue: [{ type: 'paragraph', children: [{ text: '' }] }],
     deserialize: data => {

@@ -35,11 +35,14 @@ export function getInitFirstItemSchema({
     resolvers: {
       Mutation: {
         async [gqlNames.createInitialItem](rootVal: any, { data }: any, context: any) {
-          const count = await context.lists[listKey].count({});
+          const itemAPI = context.lists[listKey];
+          const count = await itemAPI.count({});
           if (count !== 0) {
             throw new Error('Initial items can only be created when no items exist in that list');
           }
-          const item = await context.lists[listKey].createOne({ data: { ...data, ...itemData } });
+
+          // Update system state
+          const item = await itemAPI.createOne({ data: { ...data, ...itemData } });
           const sessionToken = await context.startSession({ listKey, itemId: item.id });
           return { item, sessionToken };
         },

@@ -1,12 +1,26 @@
 {
   "extends": ["config:base"],
   "ignorePaths": ["packages/build-field-tyes/__fixtures__/**/*"],
-  "rangeStrategy": "bump",
   "lockFileMaintenance": { "enabled": true },
+  "separateMinorPatch": true,
+  "prConcurrentLimit": 0,
   "packageRules": [
     {
-      "packagePatterns": ["gatsby", "remark"],
+      "packageNames": ["slate", "slate-react"],
+      "paths": ["packages/**/package.json"],
       "enabled": false
+    },
+    {
+      "packagePatterns": ["gatsby", "remark", "babel-plugin-remove-graphql-queries"],
+      "enabled": false
+    },
+    {
+      "updateTypes": ["patch"],
+      "groupName": "patch dependencies"
     }
-  ]
+  ],
+  "rangeStrategy": "bump",
+  "schedule": ["before 7am on Tuesday"],
+  "timezone": "Australia/Sydney",
+  "updateNotScheduled": false
 }

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
+import { jsx, useTheme } from '@keystone-ui/core';
 import { RenderElementProps } from 'slate-react';
 
 import { renderQuoteElement } from './quote';
@@ -27,6 +27,7 @@ export const renderElement = (props: RenderElementProps) => {
     case 'component-block':
       return <ComponentBlocksElement {...props} />;
     case 'component-inline-prop':
+    case 'component-block-prop':
       return <ComponentInlineProp {...props} />;
     case 'panel':
       return <PanelElement {...props} />;
@@ -44,6 +45,8 @@ export const renderElement = (props: RenderElementProps) => {
       return <BlockquoteElement {...props} />;
     case 'relationship':
       return <RelationshipElement {...props} />;
+    case 'divider':
+      return <DividerElement {...props} />;
     default:
       return (
         <p css={{ textAlign: props.element.textAlign as any }} {...props.attributes}>
@@ -57,8 +60,33 @@ export const renderElement = (props: RenderElementProps) => {
 
 const CodeElement = ({ attributes, children }: RenderElementProps) => {
   return (
-    <pre css={{ color: '#2C5282' }} {...attributes}>
+    <pre
+      css={{
+        color: '#2C5282',
+        backgroundColor: 'lightgray',
+        borderRadius: useTheme().radii.xsmall,
+      }}
+      {...attributes}
+    >
       <code>{children}</code>
     </pre>
+  );
+};
+
+const DividerElement = ({ attributes, children }: RenderElementProps) => {
+  const { colors, spacing } = useTheme();
+  return (
+    <div {...attributes}>
+      <hr
+        css={{
+          backgroundColor: colors.border,
+          border: 0,
+          height: 2,
+          marginBottom: spacing.xlarge,
+          marginTop: spacing.xlarge,
+        }}
+      />
+      {children}
+    </div>
   );
 };

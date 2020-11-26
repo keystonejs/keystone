@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, Select, TextInput, Checkbox } from '@keystone-ui/fields';
-import { ReactElement, ReactNode } from 'react';
+import { HTMLAttributes, ReactElement, ReactNode } from 'react';
 
 export type FormField<Value> = {
   kind: 'form';
@@ -9,12 +9,37 @@ export type FormField<Value> = {
     value: Value;
     onChange(value: Value): void;
     path: (string | number)[];
+    autoFocus: boolean;
   }): ReactElement | null;
   defaultValue: Value;
 };
 
-export type InlineField = {
-  kind: 'inline';
+export type ChildField = {
+  kind: 'child';
+  options:
+    | {
+        kind: 'block';
+        // dividers: boolean;
+        // formatting: {
+        //   blockTypes: boolean;
+        //   headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[];
+        //   inlineMarks: boolean;
+        //   lists: boolean;
+        // };
+        // links: boolean;
+      }
+    | {
+        kind: 'inline';
+        // formatting: { inlineMarks: boolean };
+        // links: boolean;
+      };
+};
+
+export type RelationshipField<Cardinality extends 'one' | 'many'> = {
+  kind: 'relationship';
+  relationship: string;
+  label: string;
+  cardinality?: Cardinality;
 };
 
 export interface ObjectField<
@@ -38,20 +63,22 @@ export type ConditionalField<
 };
 
 export type ComponentPropField =
-  | InlineField
+  | ChildField
   | FormField<any>
   | ObjectField
-  | ConditionalField<any, any>;
+  | ConditionalField<any, any>
+  | RelationshipField<'one' | 'many'>;
 
 export const fields = {
-  text({ label }: { label: string }): FormField<string> {
+  text({ label, defaultValue = '' }: { label: string; defaultValue?: string }): FormField<string> {
     return {
       kind: 'form',
-      Input({ value, onChange }) {
+      Input({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
             <TextInput
+              autoFocus={autoFocus}
               value={value}
               onChange={event => {
                 onChange(event.target.value);
@@ -60,7 +87,7 @@ export const fields = {
           </FieldContainer>
         );
       },
-      defaultValue: '',
+      defaultValue,
     };
   },
   select({
@@ -74,11 +101,12 @@ export const fields = {
   }): FormField<string> {
     return {
       kind: 'form',
-      Input({ value, onChange }) {
+      Input({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <FieldLabel>{label}</FieldLabel>
             <Select
+              autoFocus={autoFocus}
               value={options.find(option => option.value === value) || null}
               onChange={option => {
                 if (option) {
@@ -92,14 +120,21 @@ export const fields = {
       defaultValue,
     };
   },
-  checkbox({ label }: { label: string }): FormField<boolean> {
+  checkbox({
+    label,
+    defaultValue = false,
+  }: {
+    label: string;
+    defaultValue?: boolean;
+  }): FormField<boolean> {
     return {
       kind: 'form',
-      Input({ value, onChange }) {
+      Input({ value, onChange, autoFocus }) {
         return (
           <FieldContainer>
             <Checkbox
               checked={value}
+              autoFocus={autoFocus}
               onChange={event => {
                 onChange(event.target.checked);
               }}
@@ -109,7 +144,7 @@ export const fields = {
           </FieldContainer>
         );
       },
-      defaultValue: false,
+      defaultValue,
     };
   },
   empty(): FormField<undefined> {
@@ -121,9 +156,55 @@ export const fields = {
       defaultValue: undefined,
     };
   },
-  child(): InlineField {
+  child(
+    options:
+      | {
+          kind: 'block';
+          // dividers?: true;
+          // formatting?:
+          //   | {
+          //       blockTypes?: true;
+          //       headingLevels?: (1 | 2 | 3 | 4 | 5 | 6)[];
+          //       inlineMarks?: true;
+          //       lists?: true;
+          //     }
+          //   | true;
+          // links?: true;
+        }
+      | {
+          kind: 'inline';
+          // formatting?: true;
+          // links?: true;
+        }
+  ): ChildField {
     return {
-      kind: 'inline',
+      kind: 'child',
+      options:
+        options.kind === 'block'
+          ? {
+              kind: 'block',
+              // dividers: options.dividers ?? true,
+              // formatting:
+              //   options.formatting === true
+              //     ? {
+              //         blockTypes: true,
+              //         headingLevels: [1, 2, 3, 4, 5, 6],
+              //         inlineMarks: true,
+              //         lists: true,
+              //       }
+              //     : {
+              //         blockTypes: options.formatting?.blockTypes ?? false,
+              //         headingLevels: options.formatting?.headingLevels ?? [],
+              //         inlineMarks: options.formatting?.inlineMarks ?? false,
+              //         lists: options.formatting?.lists ?? false,
+              //       },
+              // links: options.links ?? false,
+            }
+          : {
+              kind: 'inline',
+              // formatting: { inlineMarks: options.formatting ?? false },
+              // links: options.links ?? false,
+            },
     };
   },
   object<Value extends Record<string, ComponentPropField>>(value: Value): ObjectField<Value> {
@@ -146,12 +227,37 @@ export const fields = {
       values: values,
     };
   },
+  relationship<Cardinality extends 'one' | 'many'>({
+    relationship,
+    label,
+  }: {
+    relationship: string;
+    label: string;
+  }): RelationshipField<Cardinality> {
+    return { kind: 'relationship', relationship, label };
+  },
 };
 
 export type ComponentBlock = {
   component: (props: any) => ReactElement | null;
   props: Record<string, ComponentPropField>;
-};
+  label: string;
+  unwrapOnBackspaceAtStart?: true;
+  exitOnEnterInEmptyLineAtEndOfChild?: true;
+} & (
+  | {
+      chromeless: true;
+      toolbar?: (props: { props: Record<string, any>; onRemove(): void }) => ReactElement;
+    }
+  | {
+      chromeless?: false;
+      toolbar?: (props: {
+        props: Record<string, any>;
+        onShowEditMode(): void;
+        onRemove(): void;
+      }) => ReactElement;
+    }
+);
 
 type DiscriminantToString<Discriminant extends string | boolean> = Discriminant extends boolean
   ? 'true' | 'false'
@@ -159,48 +265,134 @@ type DiscriminantToString<Discriminant extends string | boolean> = Discriminant 
 
 type CastToComponentPropField<Prop> = Prop extends ComponentPropField ? Prop : never;
 
-type ExtractPropFromComponentPropField<Prop extends ComponentPropField> = [Prop] extends [
-  InlineField
+type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPropField> = [Prop] extends [
+  ChildField
 ]
   ? ReactNode
   : [Prop] extends [FormField<infer Value>]
-  ? Value
+  ? { readonly value: Value; onChange(value: Value): void }
   : [Prop] extends [ObjectField<infer Value>]
-  ? { [Key in keyof Value]: ExtractPropFromComponentPropField<Value[Key]> }
+  ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForPreview<Value[Key]> }
   : [Prop] extends [ConditionalField<infer Discriminant, infer Value>]
   ? {
-      [Key in DiscriminantToString<Discriminant>]: {
-        discriminant: Discriminant extends boolean
+      readonly [Key in DiscriminantToString<Discriminant>]: {
+        readonly discriminant: Discriminant extends boolean
           ? 'true' extends Key
             ? true
             : 'false' extends Key
             ? false
             : never
           : Discriminant;
-        value: Key extends keyof Value
-          ? ExtractPropFromComponentPropField<CastToComponentPropField<Value[Key]>>
+        onChange(discriminant: Discriminant): void;
+        readonly value: Key extends keyof Value
+          ? ExtractPropFromComponentPropFieldForPreview<CastToComponentPropField<Value[Key]>>
           : never;
       };
     }[DiscriminantToString<Discriminant>]
+  : [Prop] extends [RelationshipField<infer Cardinality>]
+  ? {
+      one: {
+        readonly value: RelationshipData | null;
+        onChange(relationshipData: RelationshipData | null): void;
+      };
+      many: {
+        readonly value: readonly RelationshipData[];
+        onChange(relationshipData: readonly RelationshipData[]): void;
+      };
+    }[Cardinality]
   : 'fields must be one of ComponentPropField, not a union of multiple of them';
+
+type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField> = [Prop] extends [
+  ChildField
+]
+  ? undefined
+  : [Prop] extends [FormField<infer Value>]
+  ? { readonly value: Value; onChange(value: Value): void }
+  : [Prop] extends [ObjectField<infer Value>]
+  ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForToolbar<Value[Key]> }
+  : [Prop] extends [ConditionalField<infer Discriminant, infer Value>]
+  ? {
+      readonly [Key in DiscriminantToString<Discriminant>]: {
+        readonly discriminant: Discriminant extends boolean
+          ? 'true' extends Key
+            ? true
+            : 'false' extends Key
+            ? false
+            : never
+          : Discriminant;
+        onChange(discriminant: Discriminant): void;
+        readonly value: Key extends keyof Value
+          ? ExtractPropFromComponentPropFieldForToolbar<CastToComponentPropField<Value[Key]>>
+          : never;
+      };
+    }[DiscriminantToString<Discriminant>]
+  : [Prop] extends [RelationshipField<infer Cardinality>]
+  ? {
+      one: {
+        readonly value: RelationshipData | null;
+        onChange(relationshipData: RelationshipData | null): void;
+      };
+      many: {
+        readonly value: readonly RelationshipData[];
+        onChange(relationshipData: readonly RelationshipData[]): void;
+      };
+    }[Cardinality]
+  : 'fields must be one of ComponentPropField, not a union of multiple of them';
+
+export type RelationshipData = {
+  readonly id: string;
+  readonly label: string | null;
+  readonly data: Record<string, any>;
+};
 
 export function component<
   PropsOption extends {
     [Key in any]: ComponentPropField;
   }
->(options: {
-  component: (
-    props: {
-      [Key in keyof PropsOption]: ExtractPropFromComponentPropField<PropsOption[Key]>;
-    }
-  ) => ReactElement | null;
-  props: PropsOption;
-}): ComponentBlock {
-  return options;
+>(
+  options: {
+    component: (
+      props: {
+        [Key in keyof PropsOption]: ExtractPropFromComponentPropFieldForPreview<PropsOption[Key]>;
+      }
+    ) => ReactElement | null;
+    props: PropsOption;
+    label: string;
+    unwrapOnBackspaceAtStart?: true;
+    exitOnEnterInEmptyLineAtEndOfChild?: true;
+    // icon?: ReactElement;
+    // position?: 'toolbar' | 'insert-menu';
+  } & (
+    | {
+        chromeless: true;
+        toolbar?: (props: {
+          props: {
+            [Key in keyof PropsOption]: ExtractPropFromComponentPropFieldForToolbar<
+              PropsOption[Key]
+            >;
+          };
+          onRemove(): void;
+        }) => ReactElement;
+      }
+    | {
+        chromeless?: false;
+        toolbar?: (props: {
+          props: {
+            [Key in keyof PropsOption]: ExtractPropFromComponentPropFieldForToolbar<
+              PropsOption[Key]
+            >;
+          };
+          onShowEditMode(): void;
+          onRemove(): void;
+        }) => ReactElement;
+      }
+  )
+): ComponentBlock {
+  return options as any;
 }
 
-export const NotEditable = ({ children, ...props }: { children: ReactNode }) => (
-  <span css={{ userSelect: 'none' }} contentEditable={false} {...props}>
+export const NotEditable = ({ children, ...props }: HTMLAttributes<HTMLDivElement>) => (
+  <div css={{ userSelect: 'none' }} contentEditable={false} {...props}>
     {children}
-  </span>
+  </div>
 );

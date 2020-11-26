@@ -146,7 +146,50 @@ export const lists = createSchema({
             labelField: 'name',
             listKey: 'User',
           },
+          featuredAuthors: {
+            kind: 'prop',
+            labelField: 'name',
+            listKey: 'User',
+            many: true,
+            selection: `posts(first: 10) {
+            title
+          }`,
+          },
         },
+        alignment: {
+          center: true,
+          end: true,
+        },
+        blockTypes: {
+          blockquote: true,
+          panel: true,
+          quote: true,
+          code: true,
+        },
+        headingLevels: [1, 2, 3, 4, 5, 6],
+        inlineMarks: {
+          bold: true,
+          code: true,
+          italic: true,
+          strikethrough: true,
+          underline: true,
+          keyboard: true,
+          subscript: true,
+          superscript: true,
+        },
+        listTypes: {
+          ordered: true,
+          unordered: true,
+        },
+        columns: [
+          [1, 1],
+          [1, 1, 1],
+          [2, 1],
+          [1, 2],
+          [1, 2, 1],
+        ],
+        link: true,
+        dividers: true,
       }),
       publishDate: timestamp(),
       author: relationship({
@@ -183,10 +226,10 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       },
     },
     Mutation: {
-      createRandomPosts(root: any, args: any, ctx: any) {
+      createRandomPosts(root: any, args: any, context: any) {
         // TODO: add a way to verify access control here, e.g
-        // await ctx.verifyAccessControl(userIsAdmin);
-        const lists: KeystoneListsAPI<KeystoneListsTypeInfo> = ctx.lists;
+        // await context.verifyAccessControl(userIsAdmin);
+        const lists: KeystoneListsAPI<KeystoneListsTypeInfo> = context.lists;
         const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
         return lists.Post.createMany({ data });
       },

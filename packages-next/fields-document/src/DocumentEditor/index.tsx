@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
-import { KeyboardEvent } from 'react';
+import { jsx, useTheme } from '@keystone-ui/core';
+import { KeyboardEvent, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
 import { Editor, Node, Range, Transforms, createEditor } from 'slate';
@@ -13,7 +13,7 @@ import { withParagraphs } from './paragraphs';
 import { withQuote } from './quote';
 import { withLink } from './link';
 
-import { withColumns } from './columns';
+import { ColumnOptionsProvider, withColumns } from './columns';
 
 import { Mark, toggleMark } from './utils';
 import { Toolbar } from './Toolbar';
@@ -28,6 +28,9 @@ import {
   Relationships,
   withRelationship,
 } from './relationship';
+import { DocumentFeatures } from '../views';
+import { withDivider } from './divider';
+import { withCodeBlock } from './code-block';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -68,17 +71,33 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
 /* Leaf Elements */
 
 const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
-  const { underline, strikethrough, bold, italic } = leaf;
-
-  const textDecoration = `${underline ? 'underline' : ''} ${strikethrough ? 'line-through' : ''}`;
-
+  const { underline, strikethrough, bold, italic, code, keyboard, superscript, subscript } = leaf;
+  if (code) {
+    children = <code>{children}</code>;
+  }
+  if (bold) {
+    children = <strong>{children}</strong>;
+  }
+  if (strikethrough) {
+    children = <s>{children}</s>;
+  }
+  if (italic) {
+    children = <em>{children}</em>;
+  }
+  if (keyboard) {
+    children = <kbd>{children}</kbd>;
+  }
+  if (superscript) {
+    children = <sup>{children}</sup>;
+  }
+  if (subscript) {
+    children = <sub>{children}</sub>;
+  }
   return (
     <span
       {...attributes}
       style={{
-        fontWeight: bold ? 'bold' : undefined,
-        fontStyle: italic ? 'italic' : undefined,
-        textDecoration,
+        textDecoration: underline ? 'underline' : undefined,
       }}
     >
       {children}
@@ -92,25 +111,38 @@ export function DocumentEditor({
   value,
   componentBlocks,
   relationships,
+  documentFeatures,
 }: {
   autoFocus?: boolean;
   onChange: undefined | ((value: Node[]) => void);
   value: Node[];
   componentBlocks: Record<string, ComponentBlock>;
   relationships: Relationships;
+  documentFeatures: DocumentFeatures;
 }) {
+  const { colors } = useTheme();
+  const [expanded, setExpanded] = useState(false);
   const editor = useMemo(
     () =>
       withList(
+        documentFeatures.listTypes,
         withHeading(
+          documentFeatures.headingLevels,
           withRelationship(
             relationships,
             withComponentBlocks(
               componentBlocks,
               withParagraphs(
-                withColumns(
-                  withBlockquote(
-                    withLink(withQuote(withPanel(withHistory(withReact(createEditor())))))
+                withDivider(
+                  documentFeatures.dividers,
+                  withColumns(
+                    withCodeBlock(
+                      documentFeatures.blockTypes.code,
+                      withBlockquote(
+                        documentFeatures.blockTypes.blockquote,
+                        withLink(withQuote(withPanel(withHistory(withReact(createEditor())))))
+                      )
+                    )
                   )
                 )
               )
@@ -132,32 +164,60 @@ export function DocumentEditor({
   }, [value]);
 
   return (
-    <DocumentFieldRelationshipsProvider value={relationships}>
-      <ComponentBlockProvider value={componentBlocks}>
-        <Slate
-          editor={editor}
-          value={value}
-          onChange={value => {
-            onChange?.(value);
-          }}
-        >
-          <Toolbar />
-          <Editable
-            css={styles}
-            autoFocus={autoFocus}
-            onKeyDown={onKeyDown}
-            readOnly={onChange === undefined}
-            renderElement={renderElement}
-            renderLeaf={renderLeaf}
-          />
-        </Slate>
-
-        {
-          // for debugging
-          false && <pre>{JSON.stringify(value, null, 2)}</pre>
+    <div
+      css={
+        expanded && {
+          background: colors.background,
+          bottom: 0,
+          left: 0,
+          overflowY: 'auto', // required to keep the toolbar stuck in place
+          position: 'absolute',
+          right: 0,
+          top: 0,
+          zIndex: 100,
         }
-      </ComponentBlockProvider>
-    </DocumentFieldRelationshipsProvider>
+      }
+    >
+      <DocumentFieldRelationshipsProvider value={relationships}>
+        <ColumnOptionsProvider value={documentFeatures.columns}>
+          <ComponentBlockProvider value={componentBlocks}>
+            <Slate
+              editor={editor}
+              value={value}
+              onChange={value => {
+                onChange?.(value);
+              }}
+            >
+              <Toolbar
+                documentFeatures={documentFeatures}
+                viewState={useMemo(
+                  () => ({
+                    expanded,
+                    toggle: () => {
+                      setExpanded(v => !v);
+                    },
+                  }),
+                  [expanded]
+                )}
+              />
+              <Editable
+                css={styles}
+                autoFocus={autoFocus}
+                onKeyDown={onKeyDown}
+                readOnly={onChange === undefined}
+                renderElement={renderElement}
+                renderLeaf={renderLeaf}
+              />
+            </Slate>
+
+            {
+              // for debugging
+              false && <pre>{JSON.stringify(value, null, 2)}</pre>
+            }
+          </ComponentBlockProvider>
+        </ColumnOptionsProvider>
+      </DocumentFieldRelationshipsProvider>
+    </div>
   );
 }
 

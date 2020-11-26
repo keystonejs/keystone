@@ -156,21 +156,18 @@ function createAdminMeta(
   return { adminMeta, views };
 }
 
-export function createSystem(config: KeystoneConfig): KeystoneSystem {
-  config = applyIdFieldDefaults(config);
-
-  const keystone = createKeystone(config);
-
-  const sessionStrategy = config.session?.();
-
-  const { adminMeta, views } = createAdminMeta(config, keystone, sessionStrategy);
-
+function createGraphQLSchema(
+  config: KeystoneConfig,
+  keystone: any,
+  adminMeta: any,
+  sessionStrategy?: SessionStrategy<unknown>,
+  sessionImplementation?: any
+) {
   // @ts-ignore
   const server = keystone.createApolloServer({
     schemaName: 'public',
     dev: process.env.NODE_ENV === 'development',
   });
-  let sessionImplementation = sessionStrategy ? implementSession(sessionStrategy) : undefined;
   const schemaFromApolloServer: GraphQLSchema = server.schema;
   const schema = mapSchema(schemaFromApolloServer, {
     'MapperKind.OBJECT_TYPE'(type) {
@@ -201,8 +198,8 @@ export function createSystem(config: KeystoneConfig): KeystoneSystem {
       `,
       resolvers: {
         Mutation: {
-          async endSession(rootVal, args, ctx) {
-            await ctx.endSession();
+          async endSession(rootVal, args, context) {
+            await context.endSession();
             return true;
           },
         },
@@ -218,6 +215,27 @@ export function createSystem(config: KeystoneConfig): KeystoneSystem {
         : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined),
     config,
   });
+  return graphQLSchema;
+}
+
+export function createSystem(config: KeystoneConfig): KeystoneSystem {
+  config = applyIdFieldDefaults(config);
+
+  const keystone = createKeystone(config);
+
+  const sessionStrategy = config.session?.();
+
+  const { adminMeta, views } = createAdminMeta(config, keystone, sessionStrategy);
+
+  let sessionImplementation = sessionStrategy ? implementSession(sessionStrategy) : undefined;
+
+  const graphQLSchema = createGraphQLSchema(
+    config,
+    keystone,
+    adminMeta,
+    sessionStrategy,
+    sessionImplementation
+  );
 
   function createContext({
     sessionContext,

@@ -27,13 +27,16 @@ export class DocumentImplementation extends Implementation {
   // Called on `User.avatar` for example
   gqlOutputFieldResolvers() {
     return {
-      [this.path]: (item, _args, ctx) => {
+      [this.path]: (item, _args, context) => {
         if (!Array.isArray(item[this.path]?.document)) return null;
         return {
           document: addRelationshipData(
             item[this.path].document,
-            ctx.graphql,
-            this.config.relationships
+            context.graphql,
+            this.config.relationships,
+            listKey => {
+              return context.keystone.lists[listKey].gqlNames;
+            }
           ),
         };
       },

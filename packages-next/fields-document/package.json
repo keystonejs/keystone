@@ -7,9 +7,10 @@
   "module": "dist/fields-document.esm.js",
   "preconstruct": {
     "entrypoints": [
+      "component-blocks.tsx",
       "index.ts",
-      "views.tsx",
-      "component-blocks.tsx"
+      "primitives.ts",
+      "views.tsx"
     ]
   },
   "dependencies": {
@@ -21,17 +22,21 @@
     "@keystone-ui/button": "^2.0.1",
     "@keystone-ui/core": "^1.0.2",
     "@keystone-ui/fields": "^1.0.1",
+    "@keystone-ui/icons": "^1.0.0",
+    "@keystone-ui/popover": "^1.0.0",
+    "@keystone-ui/tooltip": "^1.0.1",
     "@keystonejs/adapter-knex": "^12.0.0",
     "@keystonejs/adapter-mongoose": "^10.0.1",
     "@keystonejs/adapter-prisma": "^1.0.8",
     "@keystonejs/fields": "^20.1.0",
-    "@types/react": "^16.9.56",
-    "is-hotkey": "^0.1.6",
+    "@types/react": "^16.14.2",
+    "apply-ref": "^1.0.0",
+    "is-hotkey": "^0.1.7",
     "is-url": "^1.2.4",
     "react": "^16.14.0",
-    "slate": "npm:slate@^0.58.1",
-    "slate-history": "^0.58.4",
-    "slate-react": "npm:slate-react@^0.58.1"
+    "slate": "npm:slate@^0.59.0",
+    "slate-history": "^0.59.0",
+    "slate-react": "npm:slate-react@^0.59.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/fields-document"
 }

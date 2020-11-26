@@ -14,15 +14,15 @@
     "@keystone-ui/notice": "^1.0.1",
     "@keystone-ui/tooltip": "^1.0.2",
     "@preconstruct/next": "^2.0.0",
-    "@types/react": "^16.9.56",
-    "@types/react-dom": "^16.9.9",
+    "@types/react": "^16.14.2",
+    "@types/react-dom": "^16.9.10",
     "@types/webpack": "^4.41.25",
     "next": "^9.5.5",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },
   "devDependencies": {
-    "typescript": "^4.0.5"
+    "typescript": "^4.1.2"
   },
   "engines": {
     "node": ">=10.0.0"
