@@ -14,8 +14,7 @@ import { AlertOctagonIcon } from '@keystone-ui/icons/icons/AlertOctagonIcon';
 import { CheckCircleIcon } from '@keystone-ui/icons/icons/CheckCircleIcon';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
-import { InlineDialog } from './components/inline-dialog';
-import { Button, ButtonGroup, Separator } from './components';
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 
 const PANEL_TYPES = {
   note: {
@@ -116,13 +115,13 @@ const PanelTypeSelect = forwardRef<
 >(({ value, onChange, onRemove, ...props }, ref) => {
   return (
     <InlineDialog ref={ref} {...props}>
-      <ButtonGroup>
+      <ToolbarGroup>
         {PANEL_TYPE_KEYS.map(type => {
           const { icon: Icon } = PANEL_TYPES[type];
           return (
             <Tooltip content={titleCase(type)} weight="subtle">
               {attrs => (
-                <Button
+                <ToolbarButton
                   isSelected={type === value}
                   key={type}
                   onMouseDown={event => {
@@ -132,15 +131,15 @@ const PanelTypeSelect = forwardRef<
                   {...attrs}
                 >
                   <Icon size="small" />
-                </Button>
+                </ToolbarButton>
               )}
             </Tooltip>
           );
         })}
-        <Separator />
+        <ToolbarSeparator />
         <Tooltip content="Remove" weight="subtle">
           {attrs => (
-            <Button
+            <ToolbarButton
               variant="destructive"
               onMouseDown={event => {
                 event.preventDefault();
@@ -149,10 +148,10 @@ const PanelTypeSelect = forwardRef<
               {...attrs}
             >
               <Trash2Icon size="small" />
-            </Button>
+            </ToolbarButton>
           )}
         </Tooltip>
-      </ButtonGroup>
+      </ToolbarGroup>
     </InlineDialog>
   );
 });

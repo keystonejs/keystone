@@ -5,14 +5,15 @@ import { Editor, Element, Node, Path, Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { jsx } from '@keystone-ui/core';
 
+import { DocumentFeatures } from '../views';
+
 import {
   getMaybeMarkdownShortcutText,
   isBlockActive,
   moveChildren,
   onlyContainerNodeInCurrentSelection,
 } from './utils';
-import { Button } from './components';
-import { DocumentFeatures } from '../views';
+import { ToolbarButton } from './primitives';
 
 export const isListType = (type: string) => type === 'ordered-list' || type === 'unordered-list';
 
@@ -135,7 +136,7 @@ export const ListButton = forwardRef<
 >(({ type, ...props }, ref) => {
   const editor = useSlate();
   return (
-    <Button
+    <ToolbarButton
       ref={ref}
       isDisabled={
         !onlyContainerNodeInCurrentSelection(editor) &&
