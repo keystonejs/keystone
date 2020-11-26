@@ -4,7 +4,7 @@
  * - Need a basic Select component
  * - Need an Autocomplete (react-select) component
  * - Need a Slider component
- * - Need a Field Layout component
+ * - Need a Field Layout component - THIS!
  */
 
 export { Checkbox, CheckboxControl } from './Checkbox';
@@ -18,3 +18,5 @@ export { TextInput } from './TextInput';
 export { Select, MultiSelect, selectComponents } from './Select';
 export { useIndicatorTokens, useIndicatorStyles } from './hooks/indicators';
 export { useInputTokens, useInputStyles } from './hooks/inputs';
+export { DatePicker } from './DatePicker';
+export type { DateType } from './types';

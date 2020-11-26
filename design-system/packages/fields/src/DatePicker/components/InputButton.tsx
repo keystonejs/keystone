@@ -5,7 +5,7 @@ import { jsx, useTheme } from '@keystone-ui/core';
 import { XIcon } from '@keystone-ui/icons/icons/XIcon';
 import { CalendarIcon } from '@keystone-ui/icons/icons/CalendarIcon';
 import { Adornment, AdornmentWrapper } from './Adornments';
-import { useInputTokens, useInputStyles } from '@keystone-ui/fields';
+import { useInputTokens, useInputStyles } from '../..';
 
 type ButtonProps = {
   invalid?: boolean;

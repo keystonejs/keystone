@@ -12,7 +12,7 @@ import {
   FieldProps,
 } from '@keystone-next/types';
 import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, TextInput } from '@keystone-ui/fields';
+import { FieldContainer, FieldLabel, TextInput, DatePicker, DateType } from '@keystone-ui/fields';
 
 // TODO: Bring across the datetime/datetimeUtc interfaces, date picker, etc.
 
@@ -30,11 +30,14 @@ export const Field = ({
   autoFocus,
 }: FieldProps<typeof controller>) => {
   const [touched, setTouched] = useState(false);
+  let [dateValue, setDateValue] = useState<DateType>(null);
+
   return (
     <FieldContainer>
-      <FieldLabel>{field.label}</FieldLabel>
+      <FieldLabel>CAT {field.label}</FieldLabel>
       {onChange ? (
         <Fragment>
+          <DatePicker onUpdate={setDateValue} onClear={() => setDateValue(null)} value={dateValue} />
           <TextInput
             autoFocus={autoFocus}
             disabled={onChange === undefined}
