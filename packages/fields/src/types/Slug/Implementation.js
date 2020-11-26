@@ -218,6 +218,7 @@ export class SlugImplementation extends Text {
           // we miss a match and try to insert anyway.
           context: context.createContext({ skipAccessControl: true }),
           listKey: this.listKey,
+          first: 1,
           where: {
             [this.path]: uniqueSlug,
             // Ensure we ignore the current item when doing an update
