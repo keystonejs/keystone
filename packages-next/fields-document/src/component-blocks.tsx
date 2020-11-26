@@ -242,7 +242,22 @@ export type ComponentBlock = {
   component: (props: any) => ReactElement | null;
   props: Record<string, ComponentPropField>;
   label: string;
-};
+  unwrapOnBackspaceAtStart?: true;
+  exitOnEnterInEmptyLineAtEndOfChild?: true;
+} & (
+  | {
+      chromeless: true;
+      toolbar?: (props: { props: Record<string, any>; onRemove(): void }) => ReactElement;
+    }
+  | {
+      chromeless?: false;
+      toolbar?: (props: {
+        props: Record<string, any>;
+        onShowEditMode(): void;
+        onRemove(): void;
+      }) => ReactElement;
+    }
+);
 
 type DiscriminantToString<Discriminant extends string | boolean> = Discriminant extends boolean
   ? 'true' | 'false'
@@ -250,14 +265,14 @@ type DiscriminantToString<Discriminant extends string | boolean> = Discriminant 
 
 type CastToComponentPropField<Prop> = Prop extends ComponentPropField ? Prop : never;
 
-type ExtractPropFromComponentPropField<Prop extends ComponentPropField> = [Prop] extends [
+type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPropField> = [Prop] extends [
   ChildField
 ]
   ? ReactNode
   : [Prop] extends [FormField<infer Value>]
-  ? Value
+  ? { readonly value: Value; onChange(value: Value): void }
   : [Prop] extends [ObjectField<infer Value>]
-  ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropField<Value[Key]> }
+  ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForPreview<Value[Key]> }
   : [Prop] extends [ConditionalField<infer Discriminant, infer Value>]
   ? {
       readonly [Key in DiscriminantToString<Discriminant>]: {
@@ -268,15 +283,59 @@ type ExtractPropFromComponentPropField<Prop extends ComponentPropField> = [Prop]
             ? false
             : never
           : Discriminant;
+        onChange(discriminant: Discriminant): void;
         readonly value: Key extends keyof Value
-          ? ExtractPropFromComponentPropField<CastToComponentPropField<Value[Key]>>
+          ? ExtractPropFromComponentPropFieldForPreview<CastToComponentPropField<Value[Key]>>
           : never;
       };
     }[DiscriminantToString<Discriminant>]
   : [Prop] extends [RelationshipField<infer Cardinality>]
   ? {
-      one: RelationshipData | null;
-      many: readonly RelationshipData[];
+      one: {
+        readonly value: RelationshipData | null;
+        onChange(relationshipData: RelationshipData | null): void;
+      };
+      many: {
+        readonly value: readonly RelationshipData[];
+        onChange(relationshipData: readonly RelationshipData[]): void;
+      };
+    }[Cardinality]
+  : 'fields must be one of ComponentPropField, not a union of multiple of them';
+
+type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField> = [Prop] extends [
+  ChildField
+]
+  ? undefined
+  : [Prop] extends [FormField<infer Value>]
+  ? { readonly value: Value; onChange(value: Value): void }
+  : [Prop] extends [ObjectField<infer Value>]
+  ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForToolbar<Value[Key]> }
+  : [Prop] extends [ConditionalField<infer Discriminant, infer Value>]
+  ? {
+      readonly [Key in DiscriminantToString<Discriminant>]: {
+        readonly discriminant: Discriminant extends boolean
+          ? 'true' extends Key
+            ? true
+            : 'false' extends Key
+            ? false
+            : never
+          : Discriminant;
+        onChange(discriminant: Discriminant): void;
+        readonly value: Key extends keyof Value
+          ? ExtractPropFromComponentPropFieldForToolbar<CastToComponentPropField<Value[Key]>>
+          : never;
+      };
+    }[DiscriminantToString<Discriminant>]
+  : [Prop] extends [RelationshipField<infer Cardinality>]
+  ? {
+      one: {
+        readonly value: RelationshipData | null;
+        onChange(relationshipData: RelationshipData | null): void;
+      };
+      many: {
+        readonly value: readonly RelationshipData[];
+        onChange(relationshipData: readonly RelationshipData[]): void;
+      };
     }[Cardinality]
   : 'fields must be one of ComponentPropField, not a union of multiple of them';
 
@@ -290,18 +349,46 @@ export function component<
   PropsOption extends {
     [Key in any]: ComponentPropField;
   }
->(options: {
-  component: (
-    props: {
-      [Key in keyof PropsOption]: ExtractPropFromComponentPropField<PropsOption[Key]>;
-    }
-  ) => ReactElement | null;
-  props: PropsOption;
-  label: string;
-  // icon?: ReactElement;
-  // position?: 'toolbar' | 'insert-menu';
-}): ComponentBlock {
-  return options;
+>(
+  options: {
+    component: (
+      props: {
+        [Key in keyof PropsOption]: ExtractPropFromComponentPropFieldForPreview<PropsOption[Key]>;
+      }
+    ) => ReactElement | null;
+    props: PropsOption;
+    label: string;
+    unwrapOnBackspaceAtStart?: true;
+    exitOnEnterInEmptyLineAtEndOfChild?: true;
+    // icon?: ReactElement;
+    // position?: 'toolbar' | 'insert-menu';
+  } & (
+    | {
+        chromeless: true;
+        toolbar?: (props: {
+          props: {
+            [Key in keyof PropsOption]: ExtractPropFromComponentPropFieldForToolbar<
+              PropsOption[Key]
+            >;
+          };
+          onRemove(): void;
+        }) => ReactElement;
+      }
+    | {
+        chromeless?: false;
+        toolbar?: (props: {
+          props: {
+            [Key in keyof PropsOption]: ExtractPropFromComponentPropFieldForToolbar<
+              PropsOption[Key]
+            >;
+          };
+          onShowEditMode(): void;
+          onRemove(): void;
+        }) => ReactElement;
+      }
+  )
+): ComponentBlock {
+  return options as any;
 }
 
 export const NotEditable = ({ children, ...props }: HTMLAttributes<HTMLDivElement>) => (
