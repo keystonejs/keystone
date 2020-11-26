@@ -13,6 +13,7 @@ import { extendGraphqlSchema } from './mutations';
 import { createAuth } from '@keystone-next/auth';
 import { insertSeedData } from './seed-data';
 import { permissionsList } from './schemas/fields';
+import sendPasswordResetEmail from './lib/sendPasswordResetEmail';
 
 const databaseUrl = process.env.DATABASE_URL || 'mongodb://localhost/keystone-examples-ecommerce';
 const protectIdentities = process.env.NODE_ENV === 'production';
@@ -38,7 +39,8 @@ const { withAuth } = createAuth({
     },
   },
   passwordResetLink: {
-    sendToken(args) {
+    async sendToken(args) {
+      await sendPasswordResetEmail(args.token, args.identity);
       console.log(`Password reset info:`, args);
     },
   },
