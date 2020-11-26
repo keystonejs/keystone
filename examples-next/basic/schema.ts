@@ -146,13 +146,6 @@ export const lists = createSchema({
             labelField: 'name',
             listKey: 'User',
           },
-          manyBlockMentions: {
-            kind: 'block',
-            label: 'Many mentions',
-            labelField: 'name',
-            listKey: 'User',
-            many: true,
-          },
           featuredAuthors: {
             kind: 'prop',
             labelField: 'name',
