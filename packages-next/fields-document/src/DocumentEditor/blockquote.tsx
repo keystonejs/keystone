@@ -99,12 +99,6 @@ export const BlockquoteElement = ({ attributes, children }: RenderElementProps) 
   );
 };
 
-export const blockquoteButton = (
-  <Tooltip content="Quote" weight="subtle">
-    {attrs => <BlockquoteButton {...attrs} />}
-  </Tooltip>
-);
-
 const BlockquoteButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   // useEditor does not update when the value/selection changes.
   // that's fine for what it's being used for here
@@ -112,17 +106,23 @@ const BlockquoteButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   const editor = useEditor();
 
   return (
-    <ToolbarButton
-      onMouseDown={event => {
-        event.preventDefault();
-        insertBlockquote(editor);
-      }}
-      {...props}
-    >
-      <QuoteIcon />
-    </ToolbarButton>
+    <Tooltip content="Quote" weight="subtle">
+      {attrs => (
+        <ToolbarButton
+          onMouseDown={event => {
+            event.preventDefault();
+            insertBlockquote(editor);
+          }}
+          {...attrs}
+          {...props}
+        >
+          <QuoteIcon />
+        </ToolbarButton>
+      )}
+    </Tooltip>
   );
 };
+export const blockquoteButton = <BlockquoteButton />;
 
 const QuoteIcon = () => (
   <IconBase>

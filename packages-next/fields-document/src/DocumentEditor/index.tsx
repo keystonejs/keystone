@@ -71,9 +71,23 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
 /* Leaf Elements */
 
 const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
+  const { colors, radii, spacing, typography } = useTheme();
   const { underline, strikethrough, bold, italic, code, keyboard, superscript, subscript } = leaf;
   if (code) {
-    children = <code>{children}</code>;
+    children = (
+      <code
+        css={{
+          backgroundColor: colors.backgroundDim,
+          borderRadius: radii.xsmall,
+          display: 'inline-block',
+          fontFamily: typography.fontFamily.monospace,
+          fontSize: typography.fontSize.small,
+          padding: `0 ${spacing.xxsmall}px`,
+        }}
+      >
+        {children}
+      </code>
+    );
   }
   if (bold) {
     children = <strong>{children}</strong>;

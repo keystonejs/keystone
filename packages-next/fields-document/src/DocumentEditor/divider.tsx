@@ -7,33 +7,34 @@ import { Tooltip } from '@keystone-ui/tooltip';
 
 import { ToolbarButton } from './primitives';
 
-export const dividerButton = (
-  <Tooltip content="Divider" weight="subtle">
-    {attrs => <DividerButton {...attrs} />}
-  </Tooltip>
-);
-
 const DividerButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   // useEditor does not update when the value/selection changes.
   // that's fine for what it's being used for here
   // because we're just inserting things on events, not reading things in render
   const editor = useEditor();
   return (
-    <ToolbarButton
-      onMouseDown={event => {
-        event.preventDefault();
-        Transforms.insertNodes(
-          editor,
-          { type: 'divider', children: [{ text: '' }] },
-          { match: node => node.type === 'paragraph' }
-        );
-      }}
-      {...props}
-    >
-      <MinusIcon size="small" />
-    </ToolbarButton>
+    <Tooltip content="Divider" weight="subtle">
+      {attrs => (
+        <ToolbarButton
+          onMouseDown={event => {
+            event.preventDefault();
+            Transforms.insertNodes(
+              editor,
+              { type: 'divider', children: [{ text: '' }] },
+              { match: node => node.type === 'paragraph' }
+            );
+          }}
+          {...attrs}
+          {...props}
+        >
+          <MinusIcon size="small" />
+        </ToolbarButton>
+      )}
+    </Tooltip>
   );
 };
+
+export const dividerButton = <DividerButton />;
 
 export function withDivider(enabled: boolean, editor: ReactEditor) {
   const { isVoid, insertText } = editor;
