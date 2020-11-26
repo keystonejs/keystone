@@ -42,11 +42,6 @@ export type Relationships = Record<
         label: string;
       }
     | {
-        kind: 'block';
-        label: string;
-        many: boolean;
-      }
-    | {
         kind: 'prop';
         many: boolean;
       }
@@ -68,16 +63,12 @@ export function useDocumentFieldRelationships() {
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider;
 
 export function withRelationship(relationships: Relationships, editor: ReactEditor) {
-  const { isVoid, isInline } = editor;
+  const { isVoid } = editor;
   editor.isVoid = element => {
     return element.type === 'relationship' || isVoid(element);
   };
   editor.isInline = element => {
-    return (
-      (element.type === 'relationship' &&
-        relationships[element.relationship as string]?.kind === 'inline') ||
-      isInline(element)
-    );
+    return element.type === 'relationship';
   };
   return editor;
 }
@@ -119,18 +110,16 @@ export function RelationshipElement({ attributes, children, element }: RenderEle
   return (
     <span
       {...attributes}
-      css={
-        relationship.kind === 'inline' && {
-          display: 'inline-flex',
-          alignItems: 'center',
-        }
-      }
+      css={{
+        display: 'inline-flex',
+        alignItems: 'center',
+      }}
     >
       <span
         contentEditable={false}
         css={{
           userSelect: 'none',
-          width: relationship.kind === 'inline' ? 200 : '100%',
+          width: 200,
           display: 'inline-block',
           paddingLeft: 4,
           paddingRight: 4,
@@ -142,31 +131,17 @@ export function RelationshipElement({ attributes, children, element }: RenderEle
             controlShouldRenderValue
             isDisabled={false}
             list={keystone.adminMeta.lists[relationship.listKey]}
-            state={
-              relationship.kind === 'block' && relationship.many
-                ? {
-                    kind: 'many',
-                    value: (element.data as any) || [],
-                    onChange(value) {
-                      Transforms.setNodes(
-                        editor,
-                        { data: value },
-                        { at: ReactEditor.findPath(editor, element) }
-                      );
-                    },
-                  }
-                : {
-                    kind: 'one',
-                    value: (element.data as any) || null,
-                    onChange(value) {
-                      Transforms.setNodes(
-                        editor,
-                        { data: value },
-                        { at: ReactEditor.findPath(editor, element) }
-                      );
-                    },
-                  }
-            }
+            state={{
+              kind: 'one',
+              value: (element.data as any) || null,
+              onChange(value) {
+                Transforms.setNodes(
+                  editor,
+                  { data: value },
+                  { at: ReactEditor.findPath(editor, element) }
+                );
+              },
+            }}
           />
         ) : (
           'Invalid relationship'
