@@ -104,23 +104,34 @@ export const componentBlocks = {
   featuredAuthors: component({
     label: 'Featured Authors',
     component: props => {
+      console.log(props);
       return (
         <div>
           <h1>{props.title}</h1>
+
           <NotEditable>
+            <button
+              onClick={() => {
+                props.authors2.onChange(!props.authors2.discriminant);
+              }}
+            >
+              Toggle Authors
+            </button>
+
             <ul>
-              {props.authors.value.map(author => {
-                return (
-                  <li>
-                    {author.label}
-                    <ul>
-                      {author.data.posts.map((post: { title: string | null }) => {
-                        return <li>{post.title}</li>;
-                      })}
-                    </ul>
-                  </li>
-                );
-              })}
+              {props.authors2.discriminant &&
+                props.authors2.value.value.map(author => {
+                  return (
+                    <li>
+                      {author.label}
+                      <ul>
+                        {author.data.posts.map((post: { title: string | null }) => {
+                          return <li>{post.title}</li>;
+                        })}
+                      </ul>
+                    </li>
+                  );
+                })}
             </ul>
           </NotEditable>
         </div>
@@ -128,7 +139,11 @@ export const componentBlocks = {
     },
     props: {
       title: fields.child({ kind: 'inline' }),
-      authors: fields.relationship<'many'>({ label: 'Authors', relationship: 'featuredAuthors' }),
+      authors2: fields.conditional(fields.checkbox({ label: 'Show authors' }), {
+        true: fields.relationship<'many'>({ label: 'Authors', relationship: 'featuredAuthors' }),
+        false: fields.empty(),
+      }),
+      // authors: fields.relationship<'many'>({ label: 'Authors', relationship: 'featuredAuthors' }),
     },
   }),
   panel: component({
