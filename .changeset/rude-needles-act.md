@@ -1,6 +1,7 @@
 ---
-'@keystone-ui/date-fields': minor
+'@keystone-ui/fields': minor
 '@keystone-ui/website': patch
+'@keystone-next/fields': minor
 ---
 
-Adds DateInput and DatePicker components for design system
+Add DatePicker component to design system.  
