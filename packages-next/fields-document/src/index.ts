@@ -18,11 +18,6 @@ type RelationshipsConfig = Record<
         label: string;
       }
     | {
-        kind: 'block';
-        label: string;
-        many?: true;
-      }
-    | {
         kind: 'prop';
         many?: true;
       }

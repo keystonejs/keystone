@@ -7,11 +7,7 @@ export function removeRelationshipData(nodes: Node[]): Node[] {
     if (node.type === 'relationship') {
       return {
         ...node,
-        data: Array.isArray(node.data)
-          ? node.data.filter(x => x.id != null)
-          : (node.data as any)?.id != null
-          ? { id: (node.data as any).id }
-          : null,
+        data: (node.data as any)?.id != null ? { id: (node.data as any).id } : null,
       };
     }
     if (node.type === 'component-block') {
@@ -50,7 +46,7 @@ export function addRelationshipData(
   gqlNames: (listKey: string) => GqlNames
 ): Promise<Node[]> {
   let fetchData = async (relationship: Relationships[string], data: any) => {
-    if (relationship.kind !== 'inline' && relationship.many) {
+    if (relationship.kind === 'prop' && relationship.many) {
       const ids = Array.isArray(data) ? data.filter(item => item.id != null).map(x => x.id) : [];
 
       if (ids.length) {
