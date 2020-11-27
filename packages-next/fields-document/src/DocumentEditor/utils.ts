@@ -29,7 +29,11 @@ export function isContainerNode(node: Node): node is Element | Editor {
 export function onlyContainerNodeInCurrentSelection(editor: ReactEditor) {
   return (
     !editor.selection ||
-    (Range.isCollapsed(editor.selection) && editor.selection.anchor.path.length === 2)
+    (Range.isCollapsed(editor.selection) &&
+      (editor.selection.anchor.path.length === 2 ||
+        (editor.selection.anchor.path.length === 4 &&
+          Editor.node(editor, Path.parent(Path.parent(editor.selection.anchor.path)))[0].type ===
+            'column')))
   );
   // let editor;
   // return [
