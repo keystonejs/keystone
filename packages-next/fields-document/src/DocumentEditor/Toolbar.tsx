@@ -19,7 +19,6 @@ import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon'
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { linkButton } from './link';
-import { insertPanel } from './panel';
 import { insertQuote } from './quote';
 import { BlockComponentsButtons } from './component-blocks';
 import { Mark, isMarkActive, onlyContainerNodeInCurrentSelection, toggleMark } from './utils';
@@ -308,19 +307,6 @@ function InnerInsertBlockMenu({
 
   return (
     <ToolbarGroup direction="column">
-      <BlockComponentsButtons shouldInsertBlock={shouldInsertBlock} />
-      {blockTypes.panel && (
-        <ToolbarButton
-          isDisabled={!shouldInsertBlock}
-          onMouseDown={event => {
-            event.preventDefault();
-            insertPanel(editor);
-            onClose();
-          }}
-        >
-          + Panel
-        </ToolbarButton>
-      )}
       {blockTypes.quote && (
         <ToolbarButton
           isDisabled={!shouldInsertBlock}
@@ -330,7 +316,7 @@ function InnerInsertBlockMenu({
             onClose();
           }}
         >
-          + Quote
+          Quote
         </ToolbarButton>
       )}
       {blockTypes.code && (
@@ -342,10 +328,11 @@ function InnerInsertBlockMenu({
             onClose();
           }}
         >
-          + Code
+          Code block
         </ToolbarButton>
       )}
       <RelationshipButton />
+      <BlockComponentsButtons shouldInsertBlock={shouldInsertBlock} />
     </ToolbarGroup>
   );
 }
