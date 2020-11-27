@@ -22,8 +22,33 @@ const ComponentBlockContext = createContext<null | Record<string, ComponentBlock
 
 export const ComponentBlockProvider = ComponentBlockContext.Provider;
 
-const VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP =
+export const VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP =
   '________VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP________';
+
+export function getPlaceholderTextForPropPath(
+  propPath: (number | string)[],
+  fields: Record<string, ComponentPropField>,
+  formProps: Record<string, any>
+): string {
+  const prop = propPath[0];
+  const field = fields[prop];
+  if (field.kind === 'relationship' || field.kind === 'form') {
+    throw new Error('unexpected prop field when finding placeholder text for child prop');
+  }
+  if (field.kind === 'object') {
+    return getPlaceholderTextForPropPath(propPath.slice(1), field.value, formProps[prop]);
+  }
+  if (field.kind === 'conditional') {
+    return getPlaceholderTextForPropPath(
+      propPath.slice(1),
+      {
+        value: field.values[formProps[prop].discriminant],
+      },
+      formProps[prop]
+    );
+  }
+  return field.options.placeholder;
+}
 
 export function ComponentInlineProp(props: RenderElementProps) {
   const { radii, spacing } = useTheme();
@@ -233,7 +258,8 @@ export function withComponentBlocks(
         blockComponents[ancestorComponentBlock.componentBlock[0].component as string]
           .unwrapOnBackspaceAtStart &&
         Range.isCollapsed(editor.selection) &&
-        Editor.isStart(editor, editor.selection.anchor, ancestorComponentBlock.prop[1])
+        Editor.isStart(editor, editor.selection.anchor, ancestorComponentBlock.prop[1]) &&
+        ancestorComponentBlock.prop[1][ancestorComponentBlock.prop[1].length - 1] === 0
       ) {
         Transforms.unwrapNodes(editor, { at: ancestorComponentBlock.componentBlock[1] });
         return;
