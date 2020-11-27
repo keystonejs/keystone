@@ -2,12 +2,13 @@ import type { GraphQLSchema } from 'graphql';
 import { mergeSchemas } from '@graphql-tools/merge';
 
 import type {
-  ListSchemaConfig,
-  ListConfig,
-  BaseGeneratedListTypes,
-  KeystoneConfig,
-  ExtendGraphqlSchema,
   BaseFields,
+  BaseGeneratedListTypes,
+  ExtendGraphqlSchema,
+  GraphQLResolver,
+  KeystoneConfig,
+  ListConfig,
+  ListSchemaConfig,
 } from '@keystone-next/types';
 
 export function createSchema(config: ListSchemaConfig) {
@@ -34,12 +35,14 @@ export function gql(strings: TemplateStringsArray) {
   return strings[0];
 }
 
+type Resolvers = Record<string, Record<string, GraphQLResolver>>;
+
 export function graphQLSchemaExtension({
   typeDefs,
   resolvers,
 }: {
   typeDefs: string;
-  resolvers: any;
+  resolvers: Resolvers;
 }): ExtendGraphqlSchema {
   return (schema: GraphQLSchema) => mergeSchemas({ schemas: [schema], typeDefs, resolvers });
 }

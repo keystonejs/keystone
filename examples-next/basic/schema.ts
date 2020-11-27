@@ -226,7 +226,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       },
     },
     Mutation: {
-      createRandomPosts(root: any, args: any, context: any) {
+      createRandomPosts(root, args, context) {
         // TODO: add a way to verify access control here, e.g
         // await context.verifyAccessControl(userIsAdmin);
         const lists: KeystoneListsAPI<KeystoneListsTypeInfo> = context.lists;

@@ -171,6 +171,8 @@ export type KeystoneContext = {
 } & AccessControlContext &
   SessionContext;
 
+export type GraphQLResolver = (root: any, args: any, context: KeystoneContext) => any;
+
 // TODO: This needs to be reviewed and expanded
 export type BaseKeystoneList = {
   key: string;
@@ -204,14 +206,14 @@ export type BaseKeystoneList = {
   };
   listQuery(
     args: Record<string, any>,
-    context: any,
+    context: KeystoneContext,
     gqlName?: string,
     info?: any,
     from?: any
   ): Promise<Record<string, any>[]>;
   listQueryMeta(
     args: Record<string, any>,
-    context: any,
+    context: KeystoneContext,
     gqlName?: string,
     info?: any,
     from?: any
@@ -220,35 +222,39 @@ export type BaseKeystoneList = {
   };
   itemQuery(
     args: { where: { id: string } },
-    context: any,
+    context: KeystoneContext,
     gqlName?: string,
     info?: any
   ): Promise<Record<string, any>>;
   createMutation(
     data: Record<string, any>,
-    context: any,
+    context: KeystoneContext,
     mutationState?: any
   ): Promise<Record<string, any>>;
   createManyMutation(
     data: Record<string, any>[],
-    context: any,
+    context: KeystoneContext,
     mutationState?: any
   ): Promise<Record<string, any>[]>;
   updateMutation(
     id: string,
     data: Record<string, any>,
-    context: any,
+    context: KeystoneContext,
     mutationState?: any
   ): Promise<Record<string, any>>;
   updateManyMutation(
     data: Record<string, any>,
-    context: any,
+    context: KeystoneContext,
     mutationState?: any
   ): Promise<Record<string, any>[]>;
-  deleteMutation(id: string, context: any, mutationState?: any): Promise<Record<string, any>>;
+  deleteMutation(
+    id: string,
+    context: KeystoneContext,
+    mutationState?: any
+  ): Promise<Record<string, any>>;
   deleteManyMutation(
     ids: string[],
-    context: any,
+    context: KeystoneContext,
     mutationState?: any
   ): Promise<Record<string, any>[]>;
 };
