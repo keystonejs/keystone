@@ -194,23 +194,25 @@ export function DocumentEditor({
   const [expanded, setExpanded] = useState(false);
   const editor = useMemo(
     () =>
-      withList(
-        documentFeatures.listTypes,
-        withHeading(
-          documentFeatures.headingLevels,
-          withRelationship(
-            relationships,
-            withComponentBlocks(
-              componentBlocks,
-              withParagraphs(
-                withDivider(
-                  documentFeatures.dividers,
-                  withColumns(
-                    withCodeBlock(
-                      documentFeatures.blockTypes.code,
-                      withBlockquote(
-                        documentFeatures.blockTypes.blockquote,
-                        withLink(withHistory(withReact(createEditor())))
+      withLink(
+        withList(
+          documentFeatures.listTypes,
+          withHeading(
+            documentFeatures.headingLevels,
+            withRelationship(
+              relationships,
+              withComponentBlocks(
+                componentBlocks,
+                withParagraphs(
+                  withDivider(
+                    documentFeatures.dividers,
+                    withColumns(
+                      withCodeBlock(
+                        documentFeatures.blockTypes.code,
+                        withBlockquote(
+                          documentFeatures.blockTypes.blockquote,
+                          withHistory(withReact(createEditor()))
+                        )
                       )
                     )
                   )
