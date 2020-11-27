@@ -17,6 +17,7 @@ import { ConditionalField, NotEditable } from '../component-blocks';
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { ComponentPropField, ComponentBlock, RelationshipData } from '../component-blocks';
 import { Relationships, useDocumentFieldRelationships } from './relationship';
+import { moveChildren } from './utils';
 
 const ComponentBlockContext = createContext<null | Record<string, ComponentBlock>>(null);
 
@@ -51,20 +52,7 @@ export function getPlaceholderTextForPropPath(
 }
 
 export function ComponentInlineProp(props: RenderElementProps) {
-  const { radii, spacing } = useTheme();
-  return (
-    <span
-      css={{
-        border: `2px dashed rgba(9, 30, 66, 0.13)`,
-        borderRadius: radii.xsmall,
-        display: 'inline-block',
-        paddingLeft: spacing.small,
-        paddingRight: spacing.small,
-      }}
-    >
-      <span {...props.attributes}>{props.children}</span>
-    </span>
-  );
+  return <span {...props.attributes}>{props.children}</span>;
 }
 
 function assertNever(arg: never) {
@@ -246,7 +234,7 @@ function getAncestorComponentBlock(
 }
 
 export function withComponentBlocks(
-  blockComponents: Record<string, ComponentBlock>,
+  blockComponents: Record<string, ComponentBlock | undefined>,
   editor: ReactEditor
 ) {
   const { normalizeNode, deleteBackward, insertBreak } = editor;
@@ -256,7 +244,7 @@ export function withComponentBlocks(
       if (
         ancestorComponentBlock.isInside &&
         blockComponents[ancestorComponentBlock.componentBlock[0].component as string]
-          .unwrapOnBackspaceAtStart &&
+          ?.unwrapOnBackspaceAtStart &&
         Range.isCollapsed(editor.selection) &&
         Editor.isStart(editor, editor.selection.anchor, ancestorComponentBlock.prop[1]) &&
         ancestorComponentBlock.prop[1][ancestorComponentBlock.prop[1].length - 1] === 0
@@ -279,7 +267,7 @@ export function withComponentBlocks(
 
       if (
         componentPropNode.type === 'component-block-prop' &&
-        blockComponents[componentBlockNode.component as string].exitOnEnterInEmptyLineAtEndOfChild
+        blockComponents[componentBlockNode.component as string]?.exitOnEnterInEmptyLineAtEndOfChild
       ) {
         const [[paragraphNode, paragraphPath]] = Editor.nodes(editor, {
           match: node => node.type === 'paragraph',
@@ -302,17 +290,20 @@ export function withComponentBlocks(
         }
       }
       if (componentPropNode.type === 'component-inline-prop') {
-        // TODO: make this work for the not-isLastProp case
-        if (isLastProp) {
-          Editor.withoutNormalizing(editor, () => {
-            Transforms.splitNodes(editor, { always: true });
-            const splitNodePath = Path.next(componentPropPath);
+        Editor.withoutNormalizing(editor, () => {
+          Transforms.splitNodes(editor, { always: true });
+          const splitNodePath = Path.next(componentPropPath);
+          if (isLastProp) {
             Transforms.moveNodes(editor, {
               at: splitNodePath,
               to: Path.next(componentBlockPath),
             });
-          });
-        }
+          } else {
+            moveChildren(editor, splitNodePath, [...Path.next(splitNodePath), 0]);
+            Transforms.removeNodes(editor, { at: splitNodePath });
+          }
+        });
+        return;
       }
     }
     insertBreak();
@@ -324,11 +315,11 @@ export function withComponentBlocks(
       let foundProps = new Set<string>();
       let index = 0;
       let stringifiedInlinePropPaths =
-        node.type === 'component-block'
+        node.type === 'component-block' && blockComponents[node.component as string] !== undefined
           ? Object.fromEntries(
               findChildPropPaths(
                 node.props as any,
-                blockComponents[node.component as string].props
+                blockComponents[node.component as string]!.props
               ).map(x => [JSON.stringify(x.path), x.kind as typeof x.kind | undefined])
             )
           : {};
@@ -371,25 +362,27 @@ export function withComponentBlocks(
     if (Element.isElement(node)) {
       if (node.type === 'component-block') {
         const componentBlock = blockComponents[node.component as string];
-        let missingKeys = new Map(
-          findChildPropPaths(node.props as any, componentBlock.props).map(x => [
-            JSON.stringify(x.path),
-            x.kind,
-          ])
-        );
+        if (componentBlock) {
+          let missingKeys = new Map(
+            findChildPropPaths(node.props as any, componentBlock.props).map(x => [
+              JSON.stringify(x.path),
+              x.kind,
+            ])
+          );
 
-        node.children.forEach(node => {
-          missingKeys.delete(JSON.stringify(node.propPath));
-        });
-        Transforms.insertNodes(
-          editor,
-          [...missingKeys].map(([prop, kind]) => ({
-            type: `component-${kind}-prop`,
-            propPath: JSON.parse(prop),
-            children: [{ text: '' }],
-          })),
-          { at: [...path, node.children.length] }
-        );
+          node.children.forEach(node => {
+            missingKeys.delete(JSON.stringify(node.propPath));
+          });
+          Transforms.insertNodes(
+            editor,
+            [...missingKeys].map(([prop, kind]) => ({
+              type: `component-${kind}-prop`,
+              propPath: JSON.parse(prop),
+              children: [{ text: '' }],
+            })),
+            { at: [...path, node.children.length] }
+          );
+        }
       }
       if (node.type === 'component-inline-prop') {
         for (const [index, childNode] of node.children.entries()) {
@@ -406,7 +399,6 @@ export function withComponentBlocks(
       if (node.type === 'component-block-prop') {
         for (const [index, childNode] of node.children.entries()) {
           if (!Editor.isBlock(editor, childNode)) {
-            debugger;
             Transforms.wrapNodes(
               editor,
               { type: 'paragraph', children: [] },
@@ -423,7 +415,13 @@ export function withComponentBlocks(
   return editor;
 }
 
-export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBlock: boolean }) => {
+export const BlockComponentsButtons = ({
+  shouldInsertBlock,
+  onClose,
+}: {
+  shouldInsertBlock: boolean;
+  onClose: () => void;
+}) => {
   const editor = useEditor();
   const blockComponents = useContext(ComponentBlockContext)!;
   const relationships = useDocumentFieldRelationships();
@@ -435,24 +433,16 @@ export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBloc
           isDisabled={!shouldInsertBlock}
           onMouseDown={event => {
             event.preventDefault();
-            let { node } = getInitialValue(key, (blockComponents as any)[key], relationships);
+            let { node, isFakeVoid } = getInitialValue(key, blockComponents[key], relationships);
             Transforms.insertNodes(editor, node);
-            // TODO: fix this, it broke when block props were added
-            // if (!isFakeVoid && editor.selection) {
-            //   const point = {
-            //     offset: 0,
-            //     path: [
-            //       ...editor.selection.anchor.path.slice(0, editor.selection.anchor.path.length - 2),
-            //       0,
-            //       0,
-            //     ],
-            //   };
-
-            //   Transforms.setSelection(editor, {
-            //     anchor: point,
-            //     focus: point,
-            //   });
-            // }
+            if (!isFakeVoid && editor.selection) {
+              const [[, path]] = Editor.nodes(editor, {
+                match: node => node.type === 'component-block',
+              });
+              const point = Editor.start(editor, path);
+              Transforms.select(editor, point);
+            }
+            onClose();
           }}
         >
           + {blockComponents[key].label}
@@ -567,9 +557,29 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
   const [editMode, setEditMode] = useState(false);
   const { colors, fields, spacing, typography } = useTheme();
   const blockComponents = useContext(ComponentBlockContext)!;
-  const componentBlock = blockComponents[element.component as string];
+  const componentBlock = blockComponents[element.component as string] as ComponentBlock | undefined;
   const documentFieldRelationships = useDocumentFieldRelationships();
+  if (!componentBlock) {
+    return (
+      <div css={{ border: 'red 4px solid', padding: spacing.medium }}>
+        <pre contentEditable={false} css={{ userSelect: 'none' }}>
+          {`The block "${element.component}" no longer exists.
 
+Props:
+
+${JSON.stringify(element.props, null, 2)}
+
+Relationships:
+
+${JSON.stringify(element.relationships, null, 2)}
+
+
+Content:`}
+        </pre>
+        {children}
+      </div>
+    );
+  }
   return (
     <div
       data-with-chrome={!componentBlock.chromeless}
