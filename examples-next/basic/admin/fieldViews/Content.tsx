@@ -151,8 +151,7 @@ export const componentBlocks = {
     },
   }),
   notice: component({
-    component: ({ content, intent }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
+    component: function Notice({ content, intent }) {
       const { palette, radii, spacing } = useTheme();
       const intentMap = {
         info: {
