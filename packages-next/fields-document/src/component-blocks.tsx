@@ -20,6 +20,7 @@ export type ChildField = {
   options:
     | {
         kind: 'block';
+        placeholder: string;
         // dividers: boolean;
         // formatting: {
         //   blockTypes: boolean;
@@ -31,6 +32,7 @@ export type ChildField = {
       }
     | {
         kind: 'inline';
+        placeholder: string;
         // formatting: { inlineMarks: boolean };
         // links: boolean;
       };
@@ -99,15 +101,15 @@ export const fields = {
       defaultValue,
     };
   },
-  select({
+  select<Option extends { label: string; value: string }>({
     label,
     options,
     defaultValue,
   }: {
     label: string;
-    options: { label: string; value: string }[];
-    defaultValue: string;
-  }): FormField<string, { label: string; value: string }[]> {
+    options: readonly Option[];
+    defaultValue: Option['value'];
+  }): FormField<string, Option[]> {
     return {
       kind: 'form',
       Input({ value, onChange, autoFocus }) {
@@ -172,6 +174,7 @@ export const fields = {
     options:
       | {
           kind: 'block';
+          placeholder: string;
           // dividers?: true;
           // formatting?:
           //   | {
@@ -185,6 +188,7 @@ export const fields = {
         }
       | {
           kind: 'inline';
+          placeholder: string;
           // formatting?: true;
           // links?: true;
         }
@@ -195,6 +199,7 @@ export const fields = {
         options.kind === 'block'
           ? {
               kind: 'block',
+              placeholder: options.placeholder,
               // dividers: options.dividers ?? true,
               // formatting:
               //   options.formatting === true
@@ -214,6 +219,7 @@ export const fields = {
             }
           : {
               kind: 'inline',
+              placeholder: options.placeholder,
               // formatting: { inlineMarks: options.formatting ?? false },
               // links: options.links ?? false,
             },

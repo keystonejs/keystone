@@ -1,10 +1,10 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { KeyboardEvent, useState } from 'react';
+import { Fragment, KeyboardEvent, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
-import { Editor, Node, Range, Transforms, createEditor } from 'slate';
+import { Editor, Node, Range, Transforms, createEditor, NodeEntry, Element } from 'slate';
 import { Editable, ReactEditor, RenderLeafProps, Slate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 
@@ -20,7 +20,12 @@ import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
 import { withHeading } from './heading';
 import { isListType, withList } from './lists';
-import { ComponentBlockProvider, withComponentBlocks } from './component-blocks';
+import {
+  ComponentBlockProvider,
+  getPlaceholderTextForPropPath,
+  VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP,
+  withComponentBlocks,
+} from './component-blocks';
 import { withBlockquote } from './blockquote';
 import { ComponentBlock } from '../component-blocks';
 import {
@@ -72,7 +77,41 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
 
 const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
   const { colors, radii, spacing, typography } = useTheme();
-  const { underline, strikethrough, bold, italic, code, keyboard, superscript, subscript } = leaf;
+  const {
+    underline,
+    strikethrough,
+    bold,
+    italic,
+    code,
+    keyboard,
+    superscript,
+    subscript,
+    placeholder,
+  } = leaf;
+  if (placeholder !== undefined) {
+    children = (
+      <Fragment>
+        <span
+          contentEditable={false}
+          style={{
+            pointerEvents: 'none',
+            display: 'inline-block',
+            width: '0',
+            maxWidth: '100%',
+            whiteSpace: 'nowrap',
+            opacity: '0.333',
+            userSelect: 'none',
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            textDecoration: 'none',
+          }}
+        >
+          {placeholder as string}
+        </span>
+        {children}
+      </Fragment>
+    );
+  }
   if (code) {
     children = (
       <code
@@ -215,6 +254,40 @@ export function DocumentEditor({
                 )}
               />
               <Editable
+                decorate={useCallback(
+                  ([node, path]: NodeEntry<Node>) => {
+                    let decorations: Range[] = [];
+                    if (node.type === 'component-block' && Element.isElement(node)) {
+                      if (
+                        node.children.length === 1 &&
+                        (node.children[0].propPath as any).length === 1 &&
+                        (node.children[0].propPath as any)[0] ===
+                          VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP
+                      ) {
+                        return decorations;
+                      }
+                      node.children.forEach((child, index) => {
+                        if (Node.string(child) === '') {
+                          const start = Editor.start(editor, [...path, index]);
+                          const placeholder = getPlaceholderTextForPropPath(
+                            child.propPath as any,
+                            componentBlocks[node.component as string].props,
+                            node.props as any
+                          );
+
+                          decorations.push({
+                            placeholder,
+                            anchor: start,
+                            focus: start,
+                          });
+                        }
+                      });
+                    }
+
+                    return decorations;
+                  },
+                  [editor]
+                )}
                 css={styles}
                 autoFocus={autoFocus}
                 onKeyDown={onKeyDown}
