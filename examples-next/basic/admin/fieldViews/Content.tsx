@@ -158,7 +158,7 @@ export const componentBlocks = {
     component: ({ content, intent }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { palette, radii, spacing } = useTheme();
-      const map = {
+      const intentMap = {
         info: {
           background: palette.blue100,
           foreground: palette.blue700,
@@ -180,7 +180,7 @@ export const componentBlocks = {
           icon: noticeIconMap.success,
         },
       };
-      const intentConfig = map[intent.value as keyof typeof map];
+      const intentConfig = intentMap[(intent.value as any) as keyof typeof intentMap];
 
       return (
         <div
@@ -224,7 +224,7 @@ export const componentBlocks = {
       return (
         <ToolbarGroup>
           {props.intent.options.map(opt => {
-            const Icon = noticeIconMap[opt.value];
+            const Icon = noticeIconMap[(opt.value as any) as keyof typeof noticeIconMap];
 
             return (
               <Tooltip key={opt.value} content={opt.label} weight="subtle">
