@@ -244,19 +244,49 @@ export function withComponentBlocks(
   editor.insertBreak = () => {
     const ancestorComponentBlock = getAncestorComponentBlock(editor);
     if (editor.selection && ancestorComponentBlock.isInside) {
-      const [node, nodePath] = Editor.node(editor, editor.selection);
+      const {
+        prop: [componentPropNode, componentPropPath],
+        componentBlock: [componentBlockNode, componentBlockPath],
+      } = ancestorComponentBlock;
+      const isLastProp =
+        componentPropPath[componentPropPath.length - 1] === componentBlockNode.children.length - 1;
+
       if (
-        blockComponents[ancestorComponentBlock.componentBlock[0].component as string]
-          .exitOnEnterInEmptyLineAtEndOfChild &&
-        Path.isDescendant(nodePath, ancestorComponentBlock.componentBlock[1]) &&
-        ancestorComponentBlock.prop[0].type === 'component-block-prop' &&
-        Node.string(node) === ''
+        componentPropNode.type === 'component-block-prop' &&
+        blockComponents[componentBlockNode.component as string].exitOnEnterInEmptyLineAtEndOfChild
       ) {
-        Transforms.moveNodes(editor, {
-          at: Path.parent(nodePath),
-          to: Path.next(ancestorComponentBlock.componentBlock[1]),
+        const [[paragraphNode, paragraphPath]] = Editor.nodes(editor, {
+          match: node => node.type === 'paragraph',
         });
-        return;
+        const isLastParagraph =
+          paragraphPath[paragraphPath.length - 1] === componentPropNode.children.length - 1;
+        if (Node.string(paragraphNode) === '' && isLastParagraph) {
+          if (isLastProp) {
+            Transforms.moveNodes(editor, {
+              at: paragraphPath,
+              to: Path.next(ancestorComponentBlock.componentBlock[1]),
+            });
+          } else {
+            // TODO: this goes to the start of the next block, is that right?
+            // should we just insertBreak always here?
+            Transforms.move(editor, { distance: 1, unit: 'line' });
+            Transforms.removeNodes(editor, { at: paragraphPath });
+          }
+          return;
+        }
+      }
+      if (componentPropNode.type === 'component-inline-prop') {
+        // TODO: make this work for the not-isLastProp case
+        if (isLastProp) {
+          Editor.withoutNormalizing(editor, () => {
+            Transforms.splitNodes(editor, { always: true });
+            const splitNodePath = Path.next(componentPropPath);
+            Transforms.moveNodes(editor, {
+              at: splitNodePath,
+              to: Path.next(componentBlockPath),
+            });
+          });
+        }
       }
     }
     insertBreak();
@@ -293,8 +323,8 @@ export function withComponentBlocks(
             return;
           } else {
             if (foundProps.has(stringifiedPropPath)) {
-              Transforms.removeNodes(editor, { at: childPath });
-              return;
+              // Transforms.removeNodes(editor, { at: childPath });
+              // return;
             }
             foundProps.add(stringifiedPropPath);
             const expectedChildNodeType = `component-${stringifiedInlinePropPaths[stringifiedPropPath]}-prop`;
@@ -350,6 +380,7 @@ export function withComponentBlocks(
       if (node.type === 'component-block-prop') {
         for (const [index, childNode] of node.children.entries()) {
           if (!Editor.isBlock(editor, childNode)) {
+            debugger;
             Transforms.wrapNodes(
               editor,
               { type: 'paragraph', children: [] },
@@ -378,27 +409,24 @@ export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBloc
           isDisabled={!shouldInsertBlock}
           onMouseDown={event => {
             event.preventDefault();
-            let { node, isFakeVoid } = getInitialValue(
-              key,
-              (blockComponents as any)[key],
-              relationships
-            );
+            let { node } = getInitialValue(key, (blockComponents as any)[key], relationships);
             Transforms.insertNodes(editor, node);
-            if (!isFakeVoid && editor.selection) {
-              const point = {
-                offset: 0,
-                path: [
-                  ...editor.selection.anchor.path.slice(0, editor.selection.anchor.path.length - 2),
-                  0,
-                  0,
-                ],
-              };
+            // TODO: fix this, it broke when block props were added
+            // if (!isFakeVoid && editor.selection) {
+            //   const point = {
+            //     offset: 0,
+            //     path: [
+            //       ...editor.selection.anchor.path.slice(0, editor.selection.anchor.path.length - 2),
+            //       0,
+            //       0,
+            //     ],
+            //   };
 
-              Transforms.setSelection(editor, {
-                anchor: point,
-                focus: point,
-              });
-            }
+            //   Transforms.setSelection(editor, {
+            //     anchor: point,
+            //     focus: point,
+            //   });
+            // }
           }}
         >
           + {blockComponents[key].label}
@@ -652,6 +680,7 @@ export const ComponentBlocksElement = ({ attributes, children, element }: Render
 
 function DefaultToolbarWithChrome({
   onShowEditMode,
+  onRemove,
 }: {
   onShowEditMode(): void;
   onRemove(): void;
@@ -674,6 +703,7 @@ function DefaultToolbarWithChrome({
             variant="destructive"
             onClick={event => {
               event.preventDefault();
+              onRemove();
             }}
             {...attrs}
           >
