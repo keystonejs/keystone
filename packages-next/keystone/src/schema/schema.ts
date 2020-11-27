@@ -5,7 +5,7 @@ import type {
   BaseFields,
   BaseGeneratedListTypes,
   ExtendGraphqlSchema,
-  GraphQLResolver,
+  GraphQLSchemaExtension,
   KeystoneConfig,
   ListConfig,
   ListSchemaConfig,
@@ -35,14 +35,9 @@ export function gql(strings: TemplateStringsArray) {
   return strings[0];
 }
 
-type Resolvers = Record<string, Record<string, GraphQLResolver>>;
-
 export function graphQLSchemaExtension({
   typeDefs,
   resolvers,
-}: {
-  typeDefs: string;
-  resolvers: Resolvers;
-}): ExtendGraphqlSchema {
+}: GraphQLSchemaExtension): ExtendGraphqlSchema {
   return (schema: GraphQLSchema) => mergeSchemas({ schemas: [schema], typeDefs, resolvers });
 }

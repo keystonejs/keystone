@@ -1,3 +1,5 @@
+import type { GraphQLSchemaExtension } from '@keystone-next/types';
+
 import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 
 import { updateAuthToken } from '../lib/updateAuthToken';
@@ -18,7 +20,7 @@ export function getPasswordResetSchema({
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   passwordResetLink: AuthTokenTypeConfig;
-}) {
+}): GraphQLSchemaExtension {
   return {
     typeDefs: `
       # Reset password
@@ -59,7 +61,7 @@ export function getPasswordResetSchema({
     `,
     resolvers: {
       Mutation: {
-        async [gqlNames.sendItemPasswordResetLink](root: any, args: any, context: any) {
+        async [gqlNames.sendItemPasswordResetLink](root, args, context) {
           const list = context.keystone.lists[listKey];
           const itemAPI = context.lists[listKey];
           const tokenType = 'passwordReset';
@@ -93,7 +95,7 @@ export function getPasswordResetSchema({
           }
           return null;
         },
-        async [gqlNames.redeemItemPasswordResetToken](root: any, args: any, context: any) {
+        async [gqlNames.redeemItemPasswordResetToken](root, args, context) {
           const list = context.keystone.lists[listKey];
           const itemAPI = context.lists[listKey];
           const tokenType = 'passwordReset';
@@ -135,7 +137,7 @@ export function getPasswordResetSchema({
         },
       },
       Query: {
-        async [gqlNames.validateItemPasswordResetToken](root: any, args: any, context: any) {
+        async [gqlNames.validateItemPasswordResetToken](root, args, context) {
           const list = context.keystone.lists[listKey];
           const itemAPI = context.lists[listKey];
           const tokenType = 'passwordReset';

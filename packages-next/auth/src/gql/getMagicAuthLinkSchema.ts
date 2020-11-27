@@ -1,3 +1,5 @@
+import type { GraphQLSchemaExtension } from '@keystone-next/types';
+
 import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 
 import { updateAuthToken } from '../lib/updateAuthToken';
@@ -17,7 +19,7 @@ export function getMagicAuthLinkSchema({
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   magicAuthLink: AuthTokenTypeConfig;
-}) {
+}): GraphQLSchemaExtension {
   return {
     typeDefs: `
       # Magic links
@@ -56,7 +58,7 @@ export function getMagicAuthLinkSchema({
     `,
     resolvers: {
       Mutation: {
-        async [gqlNames.sendItemMagicAuthLink](root: any, args: any, context: any) {
+        async [gqlNames.sendItemMagicAuthLink](root, args, context) {
           const list = context.keystone.lists[listKey];
           const itemAPI = context.lists[listKey];
           const tokenType = 'magicAuth';
@@ -92,7 +94,11 @@ export function getMagicAuthLinkSchema({
           }
           return null;
         },
-        async [gqlNames.redeemItemMagicAuthToken](root: any, args: any, context: any) {
+        async [gqlNames.redeemItemMagicAuthToken](root, args, context) {
+          if (!context.startSession) {
+            throw new Error('No session implementation available on context');
+          }
+
           const list = context.keystone.lists[listKey];
           const itemAPI = context.lists[listKey];
           const tokenType = 'magicAuth';

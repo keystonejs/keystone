@@ -173,6 +173,11 @@ export type KeystoneContext = {
 
 export type GraphQLResolver = (root: any, args: any, context: KeystoneContext) => any;
 
+export type GraphQLSchemaExtension = {
+  typeDefs: string;
+  resolvers: Record<string, Record<string, GraphQLResolver>>;
+};
+
 // TODO: This needs to be reviewed and expanded
 export type BaseKeystoneList = {
   key: string;
