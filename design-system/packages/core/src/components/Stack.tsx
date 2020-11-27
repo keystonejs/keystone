@@ -1,13 +1,14 @@
 /** @jsx jsx */
 
-import { Children, Fragment, HTMLAttributes, isValidElement, ReactNode } from 'react';
+import { Children, Fragment, ReactNode, isValidElement } from 'react';
+
 import { jsx } from '../emotion';
-import { Box, BoxProps } from './Box';
-import { forwardRefWithAs, mapResponsiveProp } from '../utils';
-import { Theme } from '../types';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { useTheme } from '../theme';
+import { Theme } from '../types';
+import { forwardRefWithAs, mapResponsiveProp } from '../utils';
 
+import { Box, BoxProps } from './Box';
 import { Divider } from './Divider';
 
 const alignment = {
@@ -54,12 +55,16 @@ export const Stack = forwardRefWithAs<'div', StackProps>(
     return (
       <Box
         ref={ref}
-        css={{
+        css={mq({
           alignItems: alignment[align],
           display: 'flex',
           flexDirection,
           [dimension]: 'fit-content',
-        }}
+
+          '& > * + *': {
+            [marginProperty]: mapResponsiveProp(gap, spacing),
+          },
+        })}
         {...props}
       >
         {['around', 'start'].includes(dividers) && <Divider orientation={orientation} />}
@@ -68,41 +73,15 @@ export const Stack = forwardRefWithAs<'div', StackProps>(
           .map((child, index) => {
             return (
               <Fragment key={index}>
-                {dividers !== 'none' && index ? (
-                  <Divider
-                    orientation={orientation}
-                    css={mq({
-                      [marginProperty]: index && mapResponsiveProp(gap, spacing),
-                    })}
-                  />
-                ) : null}
-                <Div
-                  css={mq({
-                    [marginProperty]:
-                      (['around', 'start'].includes(dividers) || index) &&
-                      mapResponsiveProp(gap, spacing),
-                  })}
-                >
-                  {child}
-                </Div>
+                {dividers !== 'none' && index ? <Divider orientation={orientation} /> : null}
+
+                {/* wrap the child to avoid unwanted or unexpected "stretch" on things like buttons */}
+                <div css={{ ':empty': { display: 'none' } }}>{child}</div>
               </Fragment>
             );
           })}
-        {['around', 'end'].includes(dividers) && (
-          <Divider
-            orientation={orientation}
-            css={mq({
-              [marginProperty]: mapResponsiveProp(gap, spacing),
-            })}
-          />
-        )}
+        {['around', 'end'].includes(dividers) && <Divider orientation={orientation} />}
       </Box>
     );
   }
-);
-
-// min-width and min-height declarations prevent overflow issues
-// https://css-tricks.com/preventing-a-grid-blowout/
-const Div = (props: HTMLAttributes<HTMLDivElement>) => (
-  <div css={{ minHeight: 0, minWidth: 0 }} {...props} />
 );

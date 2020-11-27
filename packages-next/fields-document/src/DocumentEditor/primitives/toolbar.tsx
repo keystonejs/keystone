@@ -1,14 +1,17 @@
 /** @jsx jsx */
 
 import { ButtonHTMLAttributes, HTMLAttributes, createContext, useContext } from 'react';
-import { forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
+import { Box, MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
 
-export const Spacer = () => {
+// Spacers and Separators
+// ------------------------------
+
+export const ToolbarSpacer = () => {
   const { spacing } = useTheme();
 
   return <span css={{ display: 'inline-block', width: spacing.large }} />;
 };
-export const Separator = () => {
+export const ToolbarSeparator = () => {
   const { colors, spacing } = useTheme();
 
   return (
@@ -25,49 +28,57 @@ export const Separator = () => {
   );
 };
 
-// Buttons may be displayed in a row of icons or in a column of labelled menu items
-
-const ButtonGroupContext = createContext({ direction: 'row' });
-export const useButtonGroupContext = () => useContext(ButtonGroupContext);
+// Groups
+// ------------------------------
 
 const autoFlowDirection = {
-  row: 'column',
   column: 'row',
+  row: 'column',
 };
-export const ButtonGroup = ({
-  direction = 'row',
-  ...props
-}: { direction?: 'column' | 'row' } & HTMLAttributes<HTMLDivElement>) => {
-  const { spacing } = useTheme();
+type DirectionType = keyof typeof autoFlowDirection;
 
-  return (
-    <ButtonGroupContext.Provider value={{ direction }}>
-      <div
-        css={{
-          display: 'inline-grid',
-          gap: spacing.xxsmall,
-          gridAutoFlow: autoFlowDirection[direction],
-        }}
-        {...props}
-      />
-    </ButtonGroupContext.Provider>
-  );
-};
+const ToolbarGroupContext = createContext<{ direction: DirectionType }>({ direction: 'row' });
+const useToolbarGroupContext = () => useContext(ToolbarGroupContext);
 
-type ButtonProps = {
+type ToolbarGroupProps = { direction?: DirectionType } & MarginProps &
+  HTMLAttributes<HTMLDivElement>;
+export const ToolbarGroup = forwardRefWithAs<'div', ToolbarGroupProps>(
+  ({ direction = 'row', ...props }, ref) => {
+    const { spacing } = useTheme();
+
+    return (
+      <ToolbarGroupContext.Provider value={{ direction }}>
+        <Box
+          ref={ref}
+          css={{
+            display: 'inline-grid',
+            gap: spacing.xxsmall,
+            gridAutoFlow: autoFlowDirection[direction],
+          }}
+          {...props}
+        />
+      </ToolbarGroupContext.Provider>
+    );
+  }
+);
+
+// Buttons
+// ------------------------------
+
+type ToolbarButtonProps = {
   as?: string;
   isDisabled?: boolean;
   isPressed?: boolean;
   isSelected?: boolean;
   variant?: 'default' | 'action' | 'destructive';
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>;
-export const Button = forwardRefWithAs<'button', ButtonProps>(
+export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(
   (
     { as: Tag = 'button', isDisabled, isPressed, isSelected, variant = 'default', ...props },
     ref
   ) => {
     const extraProps: any = {};
-    const { direction: groupDirection } = useButtonGroupContext();
+    const { direction: groupDirection } = useToolbarGroupContext();
     const { colors, palette, radii, sizing, spacing, typography } = useTheme();
 
     if (Tag === 'button') {

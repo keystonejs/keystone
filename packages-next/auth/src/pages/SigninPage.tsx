@@ -60,7 +60,6 @@ export const SigninPage = ({
   }, [rawKeystone.authenticatedItem, router.query.from]);
   return (
     <SigninContainer>
-      <H1>Sign In</H1>
       <Stack
         gap="xlarge"
         as="form"
@@ -86,6 +85,7 @@ export const SigninPage = ({
           }
         }}
       >
+        <H1>Sign In</H1>
         {error && (
           <Notice title="Error" tone="negative">
             {error.message}

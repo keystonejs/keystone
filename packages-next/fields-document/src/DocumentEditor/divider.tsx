@@ -1,5 +1,40 @@
+import React, { ButtonHTMLAttributes } from 'react';
 import { Transforms, Range, Editor } from 'slate';
-import { ReactEditor } from 'slate-react';
+import { ReactEditor, useEditor } from 'slate-react';
+
+import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon';
+import { Tooltip } from '@keystone-ui/tooltip';
+
+import { ToolbarButton } from './primitives';
+
+const DividerButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
+  return (
+    <Tooltip content="Divider" weight="subtle">
+      {attrs => (
+        <ToolbarButton
+          onMouseDown={event => {
+            event.preventDefault();
+            Transforms.insertNodes(
+              editor,
+              { type: 'divider', children: [{ text: '' }] },
+              { match: node => node.type === 'paragraph' }
+            );
+          }}
+          {...attrs}
+          {...props}
+        >
+          <MinusIcon size="small" />
+        </ToolbarButton>
+      )}
+    </Tooltip>
+  );
+};
+
+export const dividerButton = <DividerButton />;
 
 export function withDivider(enabled: boolean, editor: ReactEditor) {
   const { isVoid, insertText } = editor;

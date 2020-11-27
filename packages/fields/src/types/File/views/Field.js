@@ -114,6 +114,8 @@ export default class FileField extends Component {
     const { originalFile } = this.state;
     this.props.onChange(originalFile);
 
+    if (this.inputRef) this.inputRef.value = '';
+
     this.setState({
       changeStatus: originalFile ? 'stored' : 'empty',
       dataURI: null,

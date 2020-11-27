@@ -7,9 +7,10 @@
   "module": "dist/fields-document.esm.js",
   "preconstruct": {
     "entrypoints": [
+      "component-blocks.tsx",
       "index.ts",
-      "views.tsx",
-      "component-blocks.tsx"
+      "primitives.ts",
+      "views.tsx"
     ]
   },
   "dependencies": {
