@@ -2,7 +2,7 @@
 
 import { Fragment, ReactElement, createContext, useContext, useState } from 'react';
 import { ReactEditor, RenderElementProps, useEditor, useFocused, useSelected } from 'slate-react';
-import { Editor, Element, Transforms, Text } from 'slate';
+import { Editor, Element, Transforms, Text, Range, NodeEntry, Path, Node } from 'slate';
 
 import { Stack, jsx, useTheme } from '@keystone-ui/core';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
@@ -196,11 +196,72 @@ function getInitialValue(
   };
 }
 
+function getAncestorComponentBlock(
+  editor: ReactEditor
+):
+  | { isInside: false }
+  | { isInside: true; componentBlock: NodeEntry<Element>; prop: NodeEntry<Element> } {
+  if (editor.selection) {
+    const ancestorEntry = Editor.above(editor, {
+      match: node => Editor.isBlock(editor, node) && node.type !== 'paragraph',
+    });
+    if (
+      ancestorEntry &&
+      (ancestorEntry[0].type === 'component-block-prop' ||
+        ancestorEntry[0].type === 'component-inline-prop')
+    ) {
+      return {
+        isInside: true,
+        componentBlock: Editor.parent(editor, ancestorEntry[1]),
+        prop: ancestorEntry,
+      };
+    }
+  }
+  return { isInside: false };
+}
+
 export function withComponentBlocks(
   blockComponents: Record<string, ComponentBlock>,
   editor: ReactEditor
 ) {
-  const { normalizeNode } = editor;
+  const { normalizeNode, deleteBackward, insertBreak } = editor;
+  editor.deleteBackward = unit => {
+    if (editor.selection) {
+      const ancestorComponentBlock = getAncestorComponentBlock(editor);
+      if (
+        ancestorComponentBlock.isInside &&
+        blockComponents[ancestorComponentBlock.componentBlock[0].component as string]
+          .unwrapOnBackspaceAtStart &&
+        Range.isCollapsed(editor.selection) &&
+        Editor.isStart(editor, editor.selection.anchor, ancestorComponentBlock.prop[1])
+      ) {
+        Transforms.unwrapNodes(editor, { at: ancestorComponentBlock.componentBlock[1] });
+        return;
+      }
+    }
+    deleteBackward(unit);
+  };
+  editor.insertBreak = () => {
+    const ancestorComponentBlock = getAncestorComponentBlock(editor);
+    if (editor.selection && ancestorComponentBlock.isInside) {
+      const [node, nodePath] = Editor.node(editor, editor.selection);
+      if (
+        blockComponents[ancestorComponentBlock.componentBlock[0].component as string]
+          .exitOnEnterInEmptyLineAtEndOfChild &&
+        Path.isDescendant(nodePath, ancestorComponentBlock.componentBlock[1]) &&
+        ancestorComponentBlock.prop[0].type === 'component-block-prop' &&
+        Node.string(node) === ''
+      ) {
+        Transforms.moveNodes(editor, {
+          at: Path.parent(nodePath),
+          to: Path.next(ancestorComponentBlock.componentBlock[1]),
+        });
+        return;
+      }
+    }
+    insertBreak();
+  };
+
   editor.normalizeNode = entry => {
     const [node, path] = entry;
     if (Element.isElement(node) || Editor.isEditor(node)) {
@@ -367,6 +428,7 @@ function buildPreviewProps(
         onChange(value: any) {
           onFormPropsChange({ ...formProps, [key]: value });
         },
+        options: val.options,
       };
     } else if (val.kind === 'child') {
       previewProps[key] = childrenByPath[JSON.stringify(path.concat(key))];
@@ -389,6 +451,7 @@ function buildPreviewProps(
       const newPath = path.concat(key);
       previewProps[key] = {
         discriminant: formProps[key].discriminant,
+        options: val.discriminant.options,
         onChange(newDiscriminant: any) {
           onConditionalChange(
             { ...formProps[key], discriminant: newDiscriminant },
@@ -848,7 +911,7 @@ function onConditionalChange(
   relationships: Relationships,
   onRelationshipValuesChange: (relationshipValues: RelationshipValues) => void,
   onChange: (formProps: Record<string, any>) => void,
-  prop: ConditionalField<any, any>
+  prop: ConditionalField<any, any, any>
 ) {
   if (newValue.discriminant !== oldValue.discriminant) {
     // we need to remove relationships that existed in the previous discriminant

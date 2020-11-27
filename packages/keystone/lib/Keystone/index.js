@@ -267,6 +267,11 @@ module.exports = class Keystone {
     if (isReservedName) {
       throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
     }
+    if (['Query', 'Subscription', 'Mutation'].includes(key)) {
+      throw new Error(
+        `Invalid list name "${key}". List names cannot be reserved GraphQL keywords.`
+      );
+    }
 
     // Apollo Server automatically adds an 'Upload' scalar type to the GQL schema. Since list output
     // types are named after their keys, having a list name 'Upload' will clash and cause a confusing
