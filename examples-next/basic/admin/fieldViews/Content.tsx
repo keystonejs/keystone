@@ -86,8 +86,8 @@ export const componentBlocks = {
     },
     label: 'Hero',
     props: {
-      title: fields.child({ kind: 'inline' }),
-      content: fields.child({ kind: 'block' }),
+      title: fields.child({ kind: 'inline', placeholder: 'Title...' }),
+      content: fields.child({ kind: 'block', placeholder: '...' }),
       imageSrc: fields.text({
         label: 'Image URL',
         defaultValue: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809',
@@ -95,7 +95,7 @@ export const componentBlocks = {
       cta: fields.conditional(fields.checkbox({ label: 'Show CTA' }), {
         false: fields.empty(),
         true: fields.object({
-          text: fields.child({ kind: 'inline' }),
+          text: fields.child({ kind: 'inline', placeholder: 'CTA...' }),
           href: fields.text({
             label: 'Call to action link',
             defaultValue: '#',
@@ -115,7 +115,7 @@ export const componentBlocks = {
       something.discriminant ? <NotEditable>Is void</NotEditable> : <div>{something.value}</div>,
     props: {
       something: fields.conditional(fields.checkbox({ label: 'Is void' }), {
-        false: fields.child({ kind: 'inline' }),
+        false: fields.child({ kind: 'inline', placeholder: '...' }),
         true: fields.empty(),
       }),
     },
@@ -146,7 +146,7 @@ export const componentBlocks = {
       );
     },
     props: {
-      title: fields.child({ kind: 'inline' }),
+      title: fields.child({ kind: 'inline', placeholder: 'Title...' }),
       authors: fields.relationship<'many'>({ label: 'Authors', relationship: 'featuredAuthors' }),
     },
   }),
@@ -175,7 +175,7 @@ export const componentBlocks = {
           icon: noticeIconMap.success,
         },
       };
-      const intentConfig = intentMap[(intent.value as any) as keyof typeof intentMap];
+      const intentConfig = intentMap[intent.value];
 
       return (
         <div
@@ -210,16 +210,16 @@ export const componentBlocks = {
           { value: 'warning', label: 'Warning' },
           { value: 'error', label: 'Error' },
           { value: 'success', label: 'Success' },
-        ],
+        ] as const,
         defaultValue: 'info',
       }),
-      content: fields.child({ kind: 'block' }),
+      content: fields.child({ kind: 'block', placeholder: '...' }),
     },
     toolbar({ props, onRemove }) {
       return (
         <ToolbarGroup>
           {props.intent.options.map(opt => {
-            const Icon = noticeIconMap[(opt.value as any) as keyof typeof noticeIconMap];
+            const Icon = noticeIconMap[opt.value];
 
             return (
               <Tooltip key={opt.value} content={opt.label} weight="subtle">
@@ -279,8 +279,8 @@ export const componentBlocks = {
     unwrapOnBackspaceAtStart: true,
     exitOnEnterInEmptyLineAtEndOfChild: true,
     props: {
-      content: fields.child({ kind: 'block' }),
-      attribution: fields.child({ kind: 'inline' }),
+      content: fields.child({ kind: 'block', placeholder: 'Quote...' }),
+      attribution: fields.child({ kind: 'inline', placeholder: 'Attribution...' }),
     },
     chromeless: true,
   }),
