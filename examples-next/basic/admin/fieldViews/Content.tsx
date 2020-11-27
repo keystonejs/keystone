@@ -106,7 +106,7 @@ export const componentBlocks = {
   }),
   void: component({
     label: 'Void',
-    component: ({ value }) => <NotEditable>{value}</NotEditable>,
+    component: ({ value }) => <NotEditable>{value.value}</NotEditable>,
     props: { value: fields.text({ label: 'Value' }) },
   }),
   conditionallyVoid: component({

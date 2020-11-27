@@ -312,6 +312,7 @@ export function withComponentBlocks(
               to: Path.next(componentBlockPath),
             });
           });
+          return;
         }
       }
     }
@@ -425,7 +426,13 @@ export function withComponentBlocks(
   return editor;
 }
 
-export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBlock: boolean }) => {
+export const BlockComponentsButtons = ({
+  shouldInsertBlock,
+  onClose,
+}: {
+  shouldInsertBlock: boolean;
+  onClose: () => void;
+}) => {
   const editor = useEditor();
   const blockComponents = useContext(ComponentBlockContext)!;
   const relationships = useDocumentFieldRelationships();
@@ -437,24 +444,16 @@ export const BlockComponentsButtons = ({ shouldInsertBlock }: { shouldInsertBloc
           isDisabled={!shouldInsertBlock}
           onMouseDown={event => {
             event.preventDefault();
-            let { node } = getInitialValue(key, blockComponents[key], relationships);
+            let { node, isFakeVoid } = getInitialValue(key, blockComponents[key], relationships);
             Transforms.insertNodes(editor, node);
-            // TODO: fix this, it broke when block props were added
-            // if (!isFakeVoid && editor.selection) {
-            //   const point = {
-            //     offset: 0,
-            //     path: [
-            //       ...editor.selection.anchor.path.slice(0, editor.selection.anchor.path.length - 2),
-            //       0,
-            //       0,
-            //     ],
-            //   };
-
-            //   Transforms.setSelection(editor, {
-            //     anchor: point,
-            //     focus: point,
-            //   });
-            // }
+            if (!isFakeVoid && editor.selection) {
+              const [[, path]] = Editor.nodes(editor, {
+                match: node => node.type === 'component-block',
+              });
+              const point = Editor.start(editor, path);
+              Transforms.select(editor, point);
+            }
+            onClose();
           }}
         >
           + {blockComponents[key].label}

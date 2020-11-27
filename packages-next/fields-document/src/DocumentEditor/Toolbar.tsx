@@ -319,7 +319,7 @@ function InnerInsertBlockMenu({
         </ToolbarButton>
       )}
       <RelationshipButton />
-      <BlockComponentsButtons shouldInsertBlock={shouldInsertBlock} />
+      <BlockComponentsButtons onClose={onClose} shouldInsertBlock={shouldInsertBlock} />
     </ToolbarGroup>
   );
 }
