@@ -275,7 +275,7 @@ export const componentBlocks = {
         </div>
       );
     },
-    label: 'Component block Quote',
+    label: 'Quote',
     unwrapOnBackspaceAtStart: true,
     exitOnEnterInEmptyLineAtEndOfChild: true,
     props: {
