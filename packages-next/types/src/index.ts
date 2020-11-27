@@ -1,11 +1,5 @@
 import type { FieldAccessControl } from './schema/access-control';
-import type {
-  BaseGeneratedListTypes,
-  JSONValue,
-  GqlNames,
-  GraphQLContext,
-  MaybePromise,
-} from './utils';
+import type { BaseGeneratedListTypes, JSONValue, GqlNames, MaybePromise } from './utils';
 import type { ListHooks } from './schema/hooks';
 import { SessionStrategy } from './session';
 import { SchemaConfig } from './schema';
@@ -123,7 +117,7 @@ export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
 };
 
 /* TODO: Review these types */
-type FieldDefaultValueArgs<T> = { context: GraphQLContext; originalInput?: T };
+type FieldDefaultValueArgs<T> = { context: KeystoneContext; originalInput?: T };
 export type FieldDefaultValue<T> =
   | T
   | null
@@ -142,11 +136,40 @@ export type KeystoneSystem = {
   views: string[];
 };
 
+export type AccessControlContext = {
+  getListAccessControlForUser: any; // TODO
+  getFieldAccessControlForUser: any; // TODO
+};
+
 export type SessionContext = {
-  session: any;
+  // Note: session is typed like this to acknowledge the default session shape
+  // if you're using keystone's built-in session implementation, but we don't
+  // actually know what it will look like.
+  session?:
+    | {
+        itemId: string;
+        listKey: string;
+        data?: Record<string, any>;
+      }
+    | any;
   startSession?(data: any): Promise<string>;
   endSession?(data: any): Promise<void>;
 };
+
+export type KeystoneContext = {
+  schemaName: 'public';
+  lists: any; // TODO: type this (itemAPI),
+  totalResults: number;
+  keystone: any;
+  graphql: KeystoneGraphQLAPI<any>;
+  /** @deprecated */
+  executeGraphQL: any; // TODO: type this
+  /** @deprecated */
+  gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
+  maxTotalResults: number;
+  createContext: any; // TODO: type this
+} & AccessControlContext &
+  SessionContext;
 
 // TODO: This needs to be reviewed and expanded
 export type BaseKeystoneList = {

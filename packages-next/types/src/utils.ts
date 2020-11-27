@@ -16,8 +16,6 @@ type BackingTypeForItem = any;
 
 type GraphQLInput = Record<string, any>;
 
-export type GraphQLContext = Record<string, any>;
-
 export type JSONValue =
   | string
   | number
