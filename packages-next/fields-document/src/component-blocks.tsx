@@ -3,7 +3,7 @@ import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, Select, TextInput, Checkbox } from '@keystone-ui/fields';
 import { HTMLAttributes, ReactElement, ReactNode } from 'react';
 
-export type FormField<Value> = {
+export type FormField<Value, Options> = {
   kind: 'form';
   Input(props: {
     value: Value;
@@ -11,6 +11,7 @@ export type FormField<Value> = {
     path: (string | number)[];
     autoFocus: boolean;
   }): ReactElement | null;
+  options: Options;
   defaultValue: Value;
 };
 
@@ -55,22 +56,29 @@ export type ConditionalField<
     ? { true: ComponentPropField; false: ComponentPropField }
     : [Discriminant] extends [string]
     ? { [Key in Discriminant]: ComponentPropField }
-    : never
+    : never,
+  DiscriminantOptions
 > = {
   kind: 'conditional';
-  discriminant: FormField<Discriminant>;
+  discriminant: FormField<Discriminant, DiscriminantOptions>;
   values: ConditionalValue;
 };
 
 export type ComponentPropField =
   | ChildField
-  | FormField<any>
+  | FormField<any, any>
   | ObjectField
-  | ConditionalField<any, any>
+  | ConditionalField<any, any, any>
   | RelationshipField<'one' | 'many'>;
 
 export const fields = {
-  text({ label, defaultValue = '' }: { label: string; defaultValue?: string }): FormField<string> {
+  text({
+    label,
+    defaultValue = '',
+  }: {
+    label: string;
+    defaultValue?: string;
+  }): FormField<string, undefined> {
     return {
       kind: 'form',
       Input({ value, onChange, autoFocus }) {
@@ -87,6 +95,7 @@ export const fields = {
           </FieldContainer>
         );
       },
+      options: undefined,
       defaultValue,
     };
   },
@@ -98,7 +107,7 @@ export const fields = {
     label: string;
     options: { label: string; value: string }[];
     defaultValue: string;
-  }): FormField<string> {
+  }): FormField<string, { label: string; value: string }[]> {
     return {
       kind: 'form',
       Input({ value, onChange, autoFocus }) {
@@ -117,6 +126,7 @@ export const fields = {
           </FieldContainer>
         );
       },
+      options,
       defaultValue,
     };
   },
@@ -126,7 +136,7 @@ export const fields = {
   }: {
     label: string;
     defaultValue?: boolean;
-  }): FormField<boolean> {
+  }): FormField<boolean, undefined> {
     return {
       kind: 'form',
       Input({ value, onChange, autoFocus }) {
@@ -144,15 +154,17 @@ export const fields = {
           </FieldContainer>
         );
       },
+      options: undefined,
       defaultValue,
     };
   },
-  empty(): FormField<undefined> {
+  empty(): FormField<undefined, undefined> {
     return {
       kind: 'form',
       Input() {
         return null;
       },
+      options: undefined,
       defaultValue: undefined,
     };
   },
@@ -216,11 +228,12 @@ export const fields = {
       ? { true: ComponentPropField; false: ComponentPropField }
       : [Discriminant] extends [string]
       ? { [Key in Discriminant]: ComponentPropField }
-      : never
+      : never,
+    DiscriminantOptions
   >(
-    discriminant: FormField<Discriminant>,
+    discriminant: FormField<Discriminant, DiscriminantOptions>,
     values: ConditionalValue
-  ): ConditionalField<Discriminant, ConditionalValue> {
+  ): ConditionalField<Discriminant, ConditionalValue, DiscriminantOptions> {
     return {
       kind: 'conditional',
       discriminant,
@@ -269,11 +282,11 @@ type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPropField
   ChildField
 ]
   ? ReactNode
-  : [Prop] extends [FormField<infer Value>]
-  ? { readonly value: Value; onChange(value: Value): void }
+  : [Prop] extends [FormField<infer Value, infer Options>]
+  ? { readonly value: Value; onChange(value: Value): void; readonly options: Options }
   : [Prop] extends [ObjectField<infer Value>]
   ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForPreview<Value[Key]> }
-  : [Prop] extends [ConditionalField<infer Discriminant, infer Value>]
+  : [Prop] extends [ConditionalField<infer Discriminant, infer Value, infer DiscriminantOptions>]
   ? {
       readonly [Key in DiscriminantToString<Discriminant>]: {
         readonly discriminant: Discriminant extends boolean
@@ -284,6 +297,7 @@ type ExtractPropFromComponentPropFieldForPreview<Prop extends ComponentPropField
             : never
           : Discriminant;
         onChange(discriminant: Discriminant): void;
+        readonly options: DiscriminantOptions;
         readonly value: Key extends keyof Value
           ? ExtractPropFromComponentPropFieldForPreview<CastToComponentPropField<Value[Key]>>
           : never;
@@ -306,11 +320,11 @@ type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField
   ChildField
 ]
   ? undefined
-  : [Prop] extends [FormField<infer Value>]
-  ? { readonly value: Value; onChange(value: Value): void }
+  : [Prop] extends [FormField<infer Value, infer Options>]
+  ? { readonly value: Value; onChange(value: Value): void; readonly options: Options }
   : [Prop] extends [ObjectField<infer Value>]
   ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForToolbar<Value[Key]> }
-  : [Prop] extends [ConditionalField<infer Discriminant, infer Value>]
+  : [Prop] extends [ConditionalField<infer Discriminant, infer Value, infer DiscriminantOptions>]
   ? {
       readonly [Key in DiscriminantToString<Discriminant>]: {
         readonly discriminant: Discriminant extends boolean
@@ -321,6 +335,7 @@ type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField
             : never
           : Discriminant;
         onChange(discriminant: Discriminant): void;
+        readonly options: DiscriminantOptions;
         readonly value: Key extends keyof Value
           ? ExtractPropFromComponentPropFieldForToolbar<CastToComponentPropField<Value[Key]>>
           : never;
