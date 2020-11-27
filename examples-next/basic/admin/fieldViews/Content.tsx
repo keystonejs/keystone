@@ -251,4 +251,37 @@ export const componentBlocks = {
       );
     },
   }),
+  quote: component({
+    component: ({ attribution, content }) => {
+      return (
+        <div
+          css={{
+            borderLeft: '3px solid #CBD5E0',
+            paddingLeft: 16,
+          }}
+        >
+          <div css={{ fontStyle: 'italic', color: '#4A5568' }}>{content}</div>
+          <div css={{ fontWeight: 'bold', color: '#718096' }}>
+            <span
+              contentEditable={false}
+              style={{
+                userSelect: 'none',
+              }}
+            >
+              —{' '}
+            </span>
+            {attribution}
+          </div>
+        </div>
+      );
+    },
+    label: 'Component block Quote',
+    unwrapOnBackspaceAtStart: true,
+    exitOnEnterInEmptyLineAtEndOfChild: true,
+    props: {
+      content: fields.child({ kind: 'block' }),
+      attribution: fields.child({ kind: 'inline' }),
+    },
+    chromeless: true,
+  }),
 };
