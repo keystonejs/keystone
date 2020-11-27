@@ -47,14 +47,14 @@ function LinkToRelatedItems({
           .map(({ id }) => id)
           .join(',')}"`}
       >
-        View related items
+        View related {list.plural}
       </Button>
     );
   }
 
   return (
     <Button {...commonProps} as={Link} href={`/${list.path}/${value.value?.id}`}>
-      View item details
+      View {list.singular} details
     </Button>
   );
 }
