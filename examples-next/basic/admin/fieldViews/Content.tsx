@@ -49,10 +49,6 @@ export const componentBlocks = {
               textAlign: 'center',
               margin: 16,
               textShadow: '0px 1px 3px black',
-
-              ':empty::before': {
-                content: '"Empty"',
-              },
             }}
           >
             {props.title}
