@@ -8,13 +8,9 @@ import { Editor, Node, Range, Transforms, createEditor, NodeEntry, Element } fro
 import { Editable, ReactEditor, RenderLeafProps, Slate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 
-import { withPanel } from './panel';
 import { withParagraphs } from './paragraphs';
-import { withQuote } from './quote';
 import { withLink } from './link';
-
 import { ColumnOptionsProvider, withColumns } from './columns';
-
 import { Mark, toggleMark } from './utils';
 import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
@@ -193,7 +189,7 @@ export function DocumentEditor({
                       documentFeatures.blockTypes.code,
                       withBlockquote(
                         documentFeatures.blockTypes.blockquote,
-                        withLink(withQuote(withPanel(withHistory(withReact(createEditor())))))
+                        withLink(withHistory(withReact(createEditor())))
                       )
                     )
                   )
