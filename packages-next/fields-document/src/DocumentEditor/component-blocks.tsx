@@ -17,6 +17,7 @@ import { ConditionalField, NotEditable } from '../component-blocks';
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { ComponentPropField, ComponentBlock, RelationshipData } from '../component-blocks';
 import { Relationships, useDocumentFieldRelationships } from './relationship';
+import { moveChildren } from './utils';
 
 const ComponentBlockContext = createContext<null | Record<string, ComponentBlock>>(null);
 
@@ -302,18 +303,20 @@ export function withComponentBlocks(
         }
       }
       if (componentPropNode.type === 'component-inline-prop') {
-        // TODO: make this work for the not-isLastProp case
-        if (isLastProp) {
-          Editor.withoutNormalizing(editor, () => {
-            Transforms.splitNodes(editor, { always: true });
-            const splitNodePath = Path.next(componentPropPath);
+        Editor.withoutNormalizing(editor, () => {
+          Transforms.splitNodes(editor, { always: true });
+          const splitNodePath = Path.next(componentPropPath);
+          if (isLastProp) {
             Transforms.moveNodes(editor, {
               at: splitNodePath,
               to: Path.next(componentBlockPath),
             });
-          });
-          return;
-        }
+          } else {
+            moveChildren(editor, splitNodePath, [...Path.next(splitNodePath), 0]);
+            Transforms.removeNodes(editor, { at: splitNodePath });
+          }
+        });
+        return;
       }
     }
     insertBreak();
@@ -409,7 +412,6 @@ export function withComponentBlocks(
       if (node.type === 'component-block-prop') {
         for (const [index, childNode] of node.children.entries()) {
           if (!Editor.isBlock(editor, childNode)) {
-            debugger;
             Transforms.wrapNodes(
               editor,
               { type: 'paragraph', children: [] },
