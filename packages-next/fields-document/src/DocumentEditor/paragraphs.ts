@@ -1,8 +1,6 @@
 import { Editor, Element, Node, Transforms, Text } from 'slate';
 import { ReactEditor } from 'slate-react';
 
-// TODO: Alignment
-
 export const paragraphElement = () => ({
   type: 'paragraph',
   children: [{ text: '' }],

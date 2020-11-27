@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { Fragment, KeyboardEvent, useState } from 'react';
+import { KeyboardEvent, ReactNode, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
 import { Editor, Node, Range, Transforms, createEditor, NodeEntry, Element } from 'slate';
@@ -71,6 +71,46 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
 
 /* Leaf Elements */
 
+function Placeholder({ placeholder, children }: { placeholder: string; children: ReactNode }) {
+  const [width, setWidth] = useState(0);
+  return (
+    <span css={{ position: 'relative', display: 'inline-block', width }}>
+      <span
+        contentEditable={false}
+        style={{
+          position: 'absolute',
+          pointerEvents: 'none',
+          display: 'inline-block',
+          left: 0,
+          top: 0,
+          maxWidth: '100%',
+          whiteSpace: 'nowrap',
+          opacity: '0.5',
+          userSelect: 'none',
+          fontStyle: 'normal',
+          fontWeight: 'normal',
+          textDecoration: 'none',
+          textAlign: 'left',
+        }}
+      >
+        <span
+          ref={node => {
+            if (node) {
+              const offsetWidth = node.offsetWidth;
+              if (offsetWidth !== width) {
+                setWidth(offsetWidth);
+              }
+            }
+          }}
+        >
+          {placeholder as string}
+        </span>
+      </span>
+      {children}
+    </span>
+  );
+}
+
 const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
   const { colors, radii, spacing, typography } = useTheme();
   const {
@@ -84,30 +124,11 @@ const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
     subscript,
     placeholder,
   } = leaf;
+
   if (placeholder !== undefined) {
-    children = (
-      <Fragment>
-        <span
-          contentEditable={false}
-          style={{
-            pointerEvents: 'none',
-            display: 'inline-block',
-            width: '0',
-            maxWidth: '100%',
-            whiteSpace: 'nowrap',
-            opacity: '0.333',
-            userSelect: 'none',
-            fontStyle: 'normal',
-            fontWeight: 'normal',
-            textDecoration: 'none',
-          }}
-        >
-          {placeholder as string}
-        </span>
-        {children}
-      </Fragment>
-    );
+    children = <Placeholder placeholder={placeholder as string}>{children}</Placeholder>;
   }
+
   if (code) {
     children = (
       <code
@@ -173,23 +194,25 @@ export function DocumentEditor({
   const [expanded, setExpanded] = useState(false);
   const editor = useMemo(
     () =>
-      withList(
-        documentFeatures.listTypes,
-        withHeading(
-          documentFeatures.headingLevels,
-          withRelationship(
-            relationships,
-            withComponentBlocks(
-              componentBlocks,
-              withParagraphs(
-                withDivider(
-                  documentFeatures.dividers,
-                  withColumns(
-                    withCodeBlock(
-                      documentFeatures.blockTypes.code,
-                      withBlockquote(
-                        documentFeatures.blockTypes.blockquote,
-                        withLink(withHistory(withReact(createEditor())))
+      withLink(
+        withList(
+          documentFeatures.listTypes,
+          withHeading(
+            documentFeatures.headingLevels,
+            withRelationship(
+              relationships,
+              withComponentBlocks(
+                componentBlocks,
+                withParagraphs(
+                  withDivider(
+                    documentFeatures.dividers,
+                    withColumns(
+                      withCodeBlock(
+                        documentFeatures.blockTypes.code,
+                        withBlockquote(
+                          documentFeatures.blockTypes.blockquote,
+                          withHistory(withReact(createEditor()))
+                        )
                       )
                     )
                   )
@@ -338,3 +361,46 @@ function findDuplicateNodes(nodes: Node[], found: WeakSet<object> = new WeakSet(
     }
   }
 }
+
+// function schema<
+//   Obj extends Record<
+//     string,
+//     | {
+//         kind: 'blocks';
+//         allowedChildren: readonly (keyof Obj)[];
+//       }
+//     | { kind: 'inlines' }
+//   >
+// >(obj: Obj) {
+//   return obj;
+// }
+
+// const blockquoteChildren = [
+//   'paragraph',
+//   'code',
+//   'heading',
+//   'ordered-list',
+//   'unordered-list',
+// ] as const;
+
+// const paragraphLike = [...blockquoteChildren, 'blockquote'] as const;
+
+// const listChildren = ['list-item', 'ordered-list', 'unordered-list'] as const;
+
+// schema({
+//   editor: { kind: 'blocks', allowedChildren: [...paragraphLike, 'columns'] },
+//   columns: { kind: 'blocks', allowedChildren: ['column'] },
+//   column: { kind: 'blocks', allowedChildren: ['paragraph'] },
+//   blockquote: { kind: 'blocks', allowedChildren: blockquoteChildren },
+//   paragraph: { kind: 'inlines' },
+//   code: { kind: 'inlines' },
+//   divider: { kind: 'inlines' },
+//   heading: { kind: 'inlines' },
+//   relationship: { kind: 'inlines' },
+//   'component-block': { kind: 'blocks', allowedChildren: ['component-block-prop'] },
+//   'component-inline-prop': { kind: 'inlines' },
+//   'component-block-prop': { kind: 'blocks', allowedChildren: paragraphLike },
+//   'ordered-list': { kind: 'blocks', allowedChildren: listChildren },
+//   'unordered-list': { kind: 'blocks', allowedChildren: listChildren },
+//   'list-item': { kind: 'inlines' },
+// });

@@ -190,7 +190,13 @@ export const componentBlocks = {
           }}
         >
           <div
-            css={{ color: intentConfig.foreground, marginRight: spacing.small, marginTop: '1em' }}
+            contentEditable={false}
+            css={{
+              color: intentConfig.foreground,
+              marginRight: spacing.small,
+              marginTop: '1em',
+              userSelect: 'none',
+            }}
           >
             <intentConfig.icon />
           </div>
@@ -213,7 +219,7 @@ export const componentBlocks = {
         ] as const,
         defaultValue: 'info',
       }),
-      content: fields.child({ kind: 'block', placeholder: '...' }),
+      content: fields.child({ kind: 'block', placeholder: '' }),
     },
     toolbar({ props, onRemove }) {
       return (
