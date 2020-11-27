@@ -54,19 +54,21 @@ export default class FileField extends Component {
     switch (changeStatus) {
       case 'removed':
         //file was removed and change was saved.
-        if (savedValue === null && value === null)
+        if (savedValue === null && value === null) {
           return {
             originalFile: savedValue,
             changeStatus: 'empty',
           };
+        }
         break;
       case 'updated':
         //file was updated and change was saved
-        if (isEqual(savedValue, value))
+        if (isEqual(savedValue, value)) {
           return {
             originalFile: savedValue,
             changeStatus: 'stored',
           };
+        }
         break;
     }
     return null;
