@@ -52,20 +52,7 @@ export function getPlaceholderTextForPropPath(
 }
 
 export function ComponentInlineProp(props: RenderElementProps) {
-  const { radii, spacing } = useTheme();
-  return (
-    <span
-      css={{
-        border: `2px dashed rgba(9, 30, 66, 0.13)`,
-        borderRadius: radii.xsmall,
-        display: 'inline-block',
-        paddingLeft: spacing.small,
-        paddingRight: spacing.small,
-      }}
-    >
-      <span {...props.attributes}>{props.children}</span>
-    </span>
-  );
+  return <span {...props.attributes}>{props.children}</span>;
 }
 
 function assertNever(arg: never) {
