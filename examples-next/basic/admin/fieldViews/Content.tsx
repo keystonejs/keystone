@@ -144,6 +144,7 @@ export const componentBlocks = {
     },
     label: 'Component block Panel',
     unwrapOnBackspaceAtStart: true,
+    exitOnEnterInEmptyLineAtEndOfChild: true,
     props: {
       intent: fields.select({
         label: 'Intent',
