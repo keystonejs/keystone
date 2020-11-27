@@ -1,13 +1,13 @@
 // @ts-ignore
 import { Virtual } from '@keystonejs/fields';
-import type { FieldType, BaseGeneratedListTypes } from '@keystone-next/types';
+import type { FieldType, BaseGeneratedListTypes, KeystoneContext } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
 
 export type VirtualFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = FieldConfig<TGeneratedListTypes> & {
-  resolver: (rootVal: any, args: any, context: any, info: any) => any;
+  resolver: (rootVal: any, args: any, context: KeystoneContext, info: any) => any;
   graphQLReturnType?: string;
   graphQLReturnFragment?: string;
   extendGraphQLTypes?: string[];
