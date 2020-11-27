@@ -109,7 +109,7 @@ export const fields = {
     label: string;
     options: readonly Option[];
     defaultValue: Option['value'];
-  }): FormField<string, Option[]> {
+  }): FormField<Option['value'], readonly Option[]> {
     return {
       kind: 'form',
       Input({ value, onChange, autoFocus }) {
