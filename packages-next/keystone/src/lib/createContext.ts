@@ -1,7 +1,11 @@
 import { execute, GraphQLSchema, parse } from 'graphql';
-import type { SessionContext, KeystoneContext, KeystoneGraphQLAPI } from '@keystone-next/types';
+import type {
+  CreateKeystoneContextArgs,
+  KeystoneContext,
+  KeystoneGraphQLAPI,
+} from '@keystone-next/types';
 
-import { itemAPIForList } from './itemAPI';
+import { itemAPIConstructorForList } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 
 export function makeCreateContext({
@@ -13,24 +17,26 @@ export function makeCreateContext({
   graphQLSchema: GraphQLSchema;
   keystone: any;
 }) {
-  const itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
+  const listKeys = Object.keys(adminMeta.lists);
+  const itemAPIConstructor: Record<string, ReturnType<typeof itemAPIConstructorForList>> = {};
+
+  for (const listKey of listKeys) {
+    itemAPIConstructor[listKey] = itemAPIConstructorForList(keystone.lists[listKey], graphQLSchema);
+  }
 
   const createContext = ({
     sessionContext,
     skipAccessControl = false,
-  }: {
-    sessionContext?: SessionContext;
-    skipAccessControl?: boolean;
-  }): KeystoneContext => {
-    const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, context, variables }) => {
+  }: CreateKeystoneContextArgs): KeystoneContext => {
+    const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, variables }) => {
       if (typeof query === 'string') {
         query = parse(query);
       }
       return Promise.resolve(
         execute({
-          schema: graphQLSchema,
+          contextValue: context,
           document: query,
-          contextValue: context ?? contextToReturn,
+          schema: graphQLSchema,
           variableValues: variables,
         })
       );
@@ -42,9 +48,9 @@ export function makeCreateContext({
       }
       return result.data as Record<string, any>;
     };
-    const contextToReturn: any = {
+    const itemAPI: Record<string, any> = {}; // TODO
+    const context: any = {
       schemaName: 'public',
-      ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
       lists: itemAPI,
       totalResults: 0,
       keystone,
@@ -53,26 +59,25 @@ export function makeCreateContext({
         raw: rawGraphQL,
         run: runGraphQL,
         schema: graphQLSchema,
-      } as KeystoneGraphQLAPI<any>,
+      },
       maxTotalResults: (keystone as any).queryLimits.maxTotalResults,
       createContext,
+      cloneContext: ({ skipAccessControl }: { skipAccessControl: boolean }) =>
+        createContext({ skipAccessControl, sessionContext }),
+      ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
       ...sessionContext,
       // Note: These two fields let us use the server-side-graphql-client library.
-      // We may want to remove them once the updated itemAPI w/ resolveFields is available.
+      // We should remove them once the updated itemAPI w/ resolveFields is available.
+      // (They are marked as deprecated in the types)
       executeGraphQL: rawGraphQL,
       gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
     };
+    for (const listKey of listKeys) {
+      itemAPI[listKey] = itemAPIConstructor[listKey](context);
+    }
 
-    return contextToReturn;
+    return context;
   };
-
-  for (const listKey of Object.keys(adminMeta.lists)) {
-    itemAPI[listKey] = itemAPIForList(
-      (keystone as any).lists[listKey],
-      graphQLSchema,
-      createContext
-    );
-  }
 
   return createContext;
 }
