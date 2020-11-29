@@ -173,7 +173,7 @@ export type SessionContext = {
 
 export type KeystoneContext = {
   schemaName: 'public';
-  lists: any; // TODO: type this (itemAPI),
+  lists: KeystoneListsAPI<any>;
   totalResults: number;
   keystone: BaseKeystone;
   graphql: KeystoneGraphQLAPI<any>;
@@ -228,14 +228,14 @@ export type BaseKeystoneList = {
   };
   gqlNames: GqlNames;
   listQuery(
-    args: Record<string, any>,
+    args: BaseGeneratedListTypes['args']['listQuery'],
     context: KeystoneContext,
     gqlName?: string,
     info?: any,
     from?: any
   ): Promise<Record<string, any>[]>;
   listQueryMeta(
-    args: Record<string, any>,
+    args: BaseGeneratedListTypes['args']['listQuery'],
     context: KeystoneContext,
     gqlName?: string,
     info?: any,
