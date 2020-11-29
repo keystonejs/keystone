@@ -141,7 +141,12 @@ export function adminMetaSchemaExtension({
         },
       },
       KeystoneMeta: {
-        adminMeta(rootVal: any, args: any, context: any) {
+        adminMeta(
+          rootVal: any,
+          args: any,
+          context: any
+          // context: { isAdminUIBuildProcess: true } | KeystoneContext FIXME: Why doesn't this work?
+        ) {
           if (context.isAdminUIBuildProcess || isAccessAllowed === undefined) {
             return staticAdminMeta;
           }

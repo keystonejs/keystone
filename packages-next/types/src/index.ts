@@ -128,8 +128,11 @@ export type KeystoneSystem = {
   config: KeystoneConfig;
   adminMeta: SerializedAdminMeta;
   graphQLSchema: GraphQLSchema;
-  createContext: (args: { sessionContext?: SessionContext; skipAccessControl?: boolean }) => any;
-  createContextFromRequest: (req: IncomingMessage, res: ServerResponse) => any;
+  createContext: (args: {
+    sessionContext?: SessionContext;
+    skipAccessControl?: boolean;
+  }) => KeystoneContext;
+  createContextFromRequest: (req: IncomingMessage, res: ServerResponse) => Promise<KeystoneContext>;
   createSessionContext:
     | ((req: IncomingMessage, res: ServerResponse) => Promise<SessionContext>)
     | undefined;
@@ -153,7 +156,7 @@ export type SessionContext = {
       }
     | any;
   startSession?(data: any): Promise<string>;
-  endSession?(data: any): Promise<void>;
+  endSession?(): Promise<void>;
 };
 
 export type KeystoneContext = {
@@ -167,7 +170,7 @@ export type KeystoneContext = {
   /** @deprecated */
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   maxTotalResults: number;
-  createContext: any; // TODO: type this
+  createContext: KeystoneSystem['createContext'];
 } & AccessControlContext &
   SessionContext;
 
@@ -274,7 +277,7 @@ export type KeystoneGraphQLAPI<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
 > = {
-  createContext: (args: { sessionContext?: SessionContext; skipAccessControl?: boolean }) => any;
+  createContext: KeystoneSystem['createContext'];
   schema: GraphQLSchema;
 
   run: (args: GraphQLExecutionArguments) => Promise<Record<string, any>>;

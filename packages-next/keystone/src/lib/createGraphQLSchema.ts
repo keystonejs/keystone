@@ -1,7 +1,7 @@
 import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { mapSchema } from '@graphql-tools/utils';
-import type { KeystoneConfig, SessionStrategy } from '@keystone-next/types';
+import type { KeystoneConfig, SessionStrategy, KeystoneContext } from '@keystone-next/types';
 import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
 
 import { gql } from '../schema';
@@ -49,8 +49,10 @@ export function createGraphQLSchema(
       `,
       resolvers: {
         Mutation: {
-          async endSession(rootVal, args, context) {
-            await context.endSession();
+          async endSession(rootVal, args, context: KeystoneContext) {
+            if (context.endSession) {
+              await context.endSession();
+            }
             return true;
           },
         },
