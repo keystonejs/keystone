@@ -51,7 +51,13 @@ export default class FieldController {
    * `Implementation#gqlCreateInputFields()`/`Implementation#gqlUpdateInputFields()`
    * NOTE: This function is run synchronously
    */
-  serialize = data => data[this.path] || null;
+  serialize = data => {
+    if (data[this.path] === undefined) {
+      return null;
+    }
+    
+    return data[this.path];
+  }
 
   /**
    * Tell the AdminUI there has been an error with this field
