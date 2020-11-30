@@ -1,5 +1,11 @@
 # @keystonejs/fields
 
+## 20.1.3
+
+### Patch Changes
+
+- [`abdaeb9c1`](https://github.com/keystonejs/keystone/commit/abdaeb9c17a0f1d8e6eda1178d79107ac8770058) [#4421](https://github.com/keystonejs/keystone/pull/4421) Thanks [@miguelvvs](https://github.com/miguelvvs)! - Fixed a bug where the File field would show old state after an item is saved
+
 ## 20.1.2
 
 ### Patch Changes
