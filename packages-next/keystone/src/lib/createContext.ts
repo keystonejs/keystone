@@ -10,11 +10,9 @@ import { itemAPIForList } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 
 export function makeCreateContext({
-  adminMeta,
   graphQLSchema,
   keystone,
 }: {
-  adminMeta: any;
   graphQLSchema: GraphQLSchema;
   keystone: BaseKeystone;
 }) {
@@ -71,12 +69,8 @@ export function makeCreateContext({
     return contextToReturn;
   };
 
-  for (const listKey of Object.keys(adminMeta.lists)) {
-    itemAPI[listKey] = itemAPIForList(
-      (keystone as any).lists[listKey],
-      graphQLSchema,
-      createContext
-    );
+  for (const [listKey, list] of Object.entries(keystone.lists)) {
+    itemAPI[listKey] = itemAPIForList(list, graphQLSchema, createContext);
   }
 
   return createContext;
