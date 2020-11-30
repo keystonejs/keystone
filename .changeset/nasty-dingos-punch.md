@@ -1,6 +1,6 @@
 ---
-'@keystone-next/auth': major
-'@keystone-next/keystone': major
+'@keystone-next/auth': patch
+'@keystone-next/keystone': patch
 '@keystone-next/types': major
 ---
 
