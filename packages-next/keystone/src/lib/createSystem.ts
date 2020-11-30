@@ -2,7 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'http';
 import { Keystone } from '@keystonejs/keystone';
 import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexAdapter } from '@keystonejs/adapter-knex';
-import type { KeystoneConfig, KeystoneSystem } from '@keystone-next/types';
+import type { KeystoneConfig, KeystoneSystem, BaseKeystone } from '@keystone-next/types';
 
 import { applyIdFieldDefaults } from './applyIdFieldDefaults';
 import { createAdminMeta } from './createAdminMeta';
@@ -11,14 +11,14 @@ import { makeCreateContext } from './createContext';
 
 import { implementSession } from '../session';
 
-export function createKeystone(config: KeystoneConfig): any {
+export function createKeystone(config: KeystoneConfig) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
   // it in their existing custom servers or original CLI systems.
   const { db, graphql, lists } = config;
   // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
-  const keystone = new Keystone({
+  const keystone: BaseKeystone = new Keystone({
     adapter:
       // FIXME: prisma support
       db.adapter === 'knex'
@@ -69,7 +69,7 @@ export function createKeystone(config: KeystoneConfig): any {
       // adapterConfig
       // cacheHint
       // plugins
-    } as any) as any;
+    });
   });
 
   return keystone;

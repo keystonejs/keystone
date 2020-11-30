@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/types",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "license": "MIT",
   "main": "dist/types.cjs.js",
   "module": "dist/types.esm.js",

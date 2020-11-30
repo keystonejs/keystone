@@ -1,4 +1,4 @@
-import type { GraphQLSchemaExtension } from '@keystone-next/types';
+import type { GraphQLSchemaExtension, BaseKeystone } from '@keystone-next/types';
 
 import { AuthGqlNames } from '../types';
 
@@ -13,7 +13,7 @@ export function getInitFirstItemSchema({
   fields: string[];
   itemData: Record<string, any> | undefined;
   gqlNames: AuthGqlNames;
-  keystone: any;
+  keystone: BaseKeystone;
 }): GraphQLSchemaExtension {
   return {
     typeDefs: `

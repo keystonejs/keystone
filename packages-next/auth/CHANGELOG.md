@@ -1,5 +1,41 @@
 # @keystone-next/auth
 
+## 5.0.1
+
+### Patch Changes
+
+- [`8543f732b`](https://github.com/keystonejs/keystone/commit/8543f732bfc33c193675c1db385b8e2c15d3f273) [#4371](https://github.com/keystonejs/keystone/pull/4371) Thanks [@timleslie](https://github.com/timleslie)! - Fixed the `generateToken` algorithm to reduce the chance of generating a short token.
+
+* [`2c5135f17`](https://github.com/keystonejs/keystone/commit/2c5135f17ccf94412f074b1bdd04592ea7c25d31) [#4370](https://github.com/keystonejs/keystone/pull/4370) Thanks [@timleslie](https://github.com/timleslie)! - Updated `getMagicAuthLinkSchema` code to use items API rather than adapter. Fixed hard-coding of `listKey: 'User'` when redeeming tokens.
+
+- [`8baad4a14`](https://github.com/keystonejs/keystone/commit/8baad4a147e224bf99daeb91337d2eedea2f879b) [#4374](https://github.com/keystonejs/keystone/pull/4374) Thanks [@timleslie](https://github.com/timleslie)! - Updated library code to no longer require a full `context` object.
+
+* [`2926369a0`](https://github.com/keystonejs/keystone/commit/2926369a00134f361c70b046aa2b9cf7674740f7) [#4404](https://github.com/keystonejs/keystone/pull/4404) Thanks [@JedWatson](https://github.com/JedWatson)! - Added missing spacing between the signin header and form
+
+- [`1cf445cad`](https://github.com/keystonejs/keystone/commit/1cf445cad1017b2ad8b7337649783e75ba4fe7d4) [#4380](https://github.com/keystonejs/keystone/pull/4380) Thanks [@timleslie](https://github.com/timleslie)! - Renamed `attemptAuthentication` to `validateSecret`.
+
+* [`c9159c956`](https://github.com/keystonejs/keystone/commit/c9159c9560efa7f7ae6ef802302c97b7a23f987b) [#4387](https://github.com/keystonejs/keystone/pull/4387) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated usage of `Fields` component
+
+- [`6cd469e29`](https://github.com/keystonejs/keystone/commit/6cd469e29682ff41a515ed76919efc2bfe0c7567) [#4414](https://github.com/keystonejs/keystone/pull/4414) Thanks [@JedWatson](https://github.com/JedWatson)! - Typed keystone context
+
+* [`0082a3144`](https://github.com/keystonejs/keystone/commit/0082a3144b93850bf4841a8e09f91f43b303088e) [#4383](https://github.com/keystonejs/keystone/pull/4383) Thanks [@timleslie](https://github.com/timleslie)! - Added `findMatchingIdentity` to auth mutations library.
+
+- [`bb747c9cb`](https://github.com/keystonejs/keystone/commit/bb747c9cbe4ebb56eecc70be2e90f77165e5fab6) [#4381](https://github.com/keystonejs/keystone/pull/4381) Thanks [@timleslie](https://github.com/timleslie)! - Refactored `validatedAuthToken` to use `validSecret` internally.
+
+* [`139c74a4a`](https://github.com/keystonejs/keystone/commit/139c74a4aacfd5230fc86471b9cbd2a3c90bac9a) [#4378](https://github.com/keystonejs/keystone/pull/4378) Thanks [@timleslie](https://github.com/timleslie)! - Updated code to consistently use `context` rather than `ctx` for graphQL context variables.
+
+- [`2ab785c79`](https://github.com/keystonejs/keystone/commit/2ab785c793231555ac254b24908ca0e8d1ac7c95) [#4372](https://github.com/keystonejs/keystone/pull/4372) Thanks [@timleslie](https://github.com/timleslie)! - Fixed return value of `sendItemPasswordResetLink`.
+
+* [`2dccc86cf`](https://github.com/keystonejs/keystone/commit/2dccc86cfbdbd1b11f3ad63831e1b08d66a12342) [#4379](https://github.com/keystonejs/keystone/pull/4379) Thanks [@timleslie](https://github.com/timleslie)! - Refactored auth mutation logic to make it more clear where side-effects were taking place.
+
+* Updated dependencies [[`8b12f795d`](https://github.com/keystonejs/keystone/commit/8b12f795d64dc085ca663921aa6826350d234cd0), [`55a04a100`](https://github.com/keystonejs/keystone/commit/55a04a1004b7f15fcd41b4935d74fd1847c9deeb), [`f4a855c71`](https://github.com/keystonejs/keystone/commit/f4a855c71e966ef3ebc894a3b0f1af51e5182394), [`c9159c956`](https://github.com/keystonejs/keystone/commit/c9159c9560efa7f7ae6ef802302c97b7a23f987b), [`c9159c956`](https://github.com/keystonejs/keystone/commit/c9159c9560efa7f7ae6ef802302c97b7a23f987b), [`6cd469e29`](https://github.com/keystonejs/keystone/commit/6cd469e29682ff41a515ed76919efc2bfe0c7567), [`eddd7e795`](https://github.com/keystonejs/keystone/commit/eddd7e79599e20f5bef61f240d874b37d0a084c4), [`139c74a4a`](https://github.com/keystonejs/keystone/commit/139c74a4aacfd5230fc86471b9cbd2a3c90bac9a), [`c9159c956`](https://github.com/keystonejs/keystone/commit/c9159c9560efa7f7ae6ef802302c97b7a23f987b), [`b8c2c48ec`](https://github.com/keystonejs/keystone/commit/b8c2c48ec3746809894af7347c205f6a95329e8d)]:
+  - @keystone-next/fields@3.2.0
+  - @keystone-ui/core@1.0.3
+  - @keystone-next/admin-ui@3.1.1
+  - @keystone-next/admin-ui-utils@2.0.0
+  - @keystone-next/keystone@4.1.1
+  - @keystone-next/types@4.1.1
+
 ## 5.0.0
 
 ### Minor Changes

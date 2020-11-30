@@ -1,5 +1,20 @@
 # @keystone-next/example-ecommerce
 
+## 0.2.2
+
+### Patch Changes
+
+- [`6cd469e29`](https://github.com/keystonejs/keystone/commit/6cd469e29682ff41a515ed76919efc2bfe0c7567) [#4414](https://github.com/keystonejs/keystone/pull/4414) Thanks [@JedWatson](https://github.com/JedWatson)! - Typed keystone context
+
+* [`139c74a4a`](https://github.com/keystonejs/keystone/commit/139c74a4aacfd5230fc86471b9cbd2a3c90bac9a) [#4378](https://github.com/keystonejs/keystone/pull/4378) Thanks [@timleslie](https://github.com/timleslie)! - Updated code to consistently use `context` rather than `ctx` for graphQL context variables.
+
+* Updated dependencies [[`8543f732b`](https://github.com/keystonejs/keystone/commit/8543f732bfc33c193675c1db385b8e2c15d3f273), [`8b12f795d`](https://github.com/keystonejs/keystone/commit/8b12f795d64dc085ca663921aa6826350d234cd0), [`2c5135f17`](https://github.com/keystonejs/keystone/commit/2c5135f17ccf94412f074b1bdd04592ea7c25d31), [`8baad4a14`](https://github.com/keystonejs/keystone/commit/8baad4a147e224bf99daeb91337d2eedea2f879b), [`2926369a0`](https://github.com/keystonejs/keystone/commit/2926369a00134f361c70b046aa2b9cf7674740f7), [`1cf445cad`](https://github.com/keystonejs/keystone/commit/1cf445cad1017b2ad8b7337649783e75ba4fe7d4), [`c9159c956`](https://github.com/keystonejs/keystone/commit/c9159c9560efa7f7ae6ef802302c97b7a23f987b), [`6cd469e29`](https://github.com/keystonejs/keystone/commit/6cd469e29682ff41a515ed76919efc2bfe0c7567), [`0082a3144`](https://github.com/keystonejs/keystone/commit/0082a3144b93850bf4841a8e09f91f43b303088e), [`eddd7e795`](https://github.com/keystonejs/keystone/commit/eddd7e79599e20f5bef61f240d874b37d0a084c4), [`bb747c9cb`](https://github.com/keystonejs/keystone/commit/bb747c9cbe4ebb56eecc70be2e90f77165e5fab6), [`139c74a4a`](https://github.com/keystonejs/keystone/commit/139c74a4aacfd5230fc86471b9cbd2a3c90bac9a), [`2ab785c79`](https://github.com/keystonejs/keystone/commit/2ab785c793231555ac254b24908ca0e8d1ac7c95), [`b8c2c48ec`](https://github.com/keystonejs/keystone/commit/b8c2c48ec3746809894af7347c205f6a95329e8d), [`2dccc86cf`](https://github.com/keystonejs/keystone/commit/2dccc86cfbdbd1b11f3ad63831e1b08d66a12342)]:
+  - @keystone-next/auth@5.0.1
+  - @keystone-next/fields@3.2.0
+  - @keystone-next/admin-ui@3.1.1
+  - @keystone-next/keystone@4.1.1
+  - @keystone-next/types@4.1.1
+
 ## 0.2.1
 
 ### Patch Changes

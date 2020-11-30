@@ -3,11 +3,12 @@ import type {
   KeystoneConfig,
   FieldType,
   SessionStrategy,
+  BaseKeystone,
 } from '@keystone-next/types';
 
 export function createAdminMeta(
   config: KeystoneConfig,
-  keystone: any,
+  keystone: BaseKeystone,
   sessionStrategy?: SessionStrategy<unknown>
 ) {
   const { ui, lists } = config;

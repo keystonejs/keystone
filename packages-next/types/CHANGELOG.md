@@ -1,5 +1,11 @@
 # @keystone-next/types
 
+## 4.1.1
+
+### Patch Changes
+
+- [`6cd469e29`](https://github.com/keystonejs/keystone/commit/6cd469e29682ff41a515ed76919efc2bfe0c7567) [#4414](https://github.com/keystonejs/keystone/pull/4414) Thanks [@JedWatson](https://github.com/JedWatson)! - Typed keystone context
+
 ## 4.1.0
 
 ### Minor Changes
