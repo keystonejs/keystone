@@ -1,7 +1,12 @@
 import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { mapSchema } from '@graphql-tools/utils';
-import type { KeystoneConfig, SessionStrategy, KeystoneContext, BaseKeystone } from '@keystone-next/types';
+import type {
+  KeystoneConfig,
+  SessionStrategy,
+  KeystoneContext,
+  BaseKeystone,
+} from '@keystone-next/types';
 import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
 
 import { gql } from '../schema';
