@@ -176,6 +176,9 @@ export type KeystoneContext = {
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   maxTotalResults: number;
   createContext: KeystoneSystem['createContext'];
+  cloneContext: (args: {
+    skipAccessControl: boolean;
+  }) => ReturnType<KeystoneSystem['createContext']>;
 } & AccessControlContext &
   SessionContext;
 

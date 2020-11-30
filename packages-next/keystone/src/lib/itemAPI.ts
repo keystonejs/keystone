@@ -7,6 +7,7 @@ import {
 } from '@keystone-next/types';
 import {
   getItem,
+  /*
   getItems,
   createItem,
   createItems,
@@ -14,6 +15,7 @@ import {
   updateItems,
   deleteItem,
   deleteItems,
+  */
   // @ts-ignore
 } from '@keystonejs/server-side-graphql-client';
 
