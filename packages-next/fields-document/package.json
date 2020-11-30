@@ -31,7 +31,7 @@
     "@keystonejs/fields": "^20.1.2",
     "@types/react": "^16.14.2",
     "apply-ref": "^1.0.0",
-    "is-hotkey": "^0.1.7",
+    "is-hotkey": "^0.1.8",
     "is-url": "^1.2.4",
     "react": "^16.14.0",
     "slate": "npm:slate@^0.59.0",
