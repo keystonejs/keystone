@@ -1,6 +1,6 @@
 import { products } from './data';
 
-export async function insertSeedData({ mongoose }: { mongoose: any }) {
+export async function insertSeedData({ mongoose }: { mongoose?: any }) {
   console.log('------------ INSERTING DUMMY DATA ------------');
   for (const product of products) {
     const { _id } = await mongoose

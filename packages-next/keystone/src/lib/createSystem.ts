@@ -8,11 +8,13 @@ import { applyIdFieldDefaults } from './applyIdFieldDefaults';
 import { createAdminMeta } from './createAdminMeta';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './createContext';
-import { getDatabaseAPIs } from './getDatabaseAPIs';
 
 import { implementSession } from '../session';
 
-export function createKeystone(config: KeystoneConfig, onConnect: () => void) {
+export function createKeystone(
+  config: KeystoneConfig,
+  createContextFactory: () => ReturnType<typeof makeCreateContext>
+) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
@@ -34,7 +36,9 @@ export function createKeystone(config: KeystoneConfig, onConnect: () => void) {
     cookieSecret: '123456789', // FIXME: Don't provide a default here. See #2882
     queryLimits: graphql?.queryLimits,
     // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
-    onConnect,
+    onConnect: () => {
+      return config.db.onConnect?.(createContextFactory()({ skipAccessControl: true }));
+    },
     // FIXME: Unsupported options: Need to work which of these we want to support with backwards
     // compatibility options.
     // defaultAccess
@@ -79,14 +83,7 @@ export function createKeystone(config: KeystoneConfig, onConnect: () => void) {
 export function createSystem(config: KeystoneConfig): KeystoneSystem {
   config = applyIdFieldDefaults(config);
 
-  const onConnect = () => {
-    config.db.onConnect?.({
-      createContext,
-      ...getDatabaseAPIs(keystone),
-    });
-  };
-
-  const keystone = createKeystone(config, onConnect);
+  const keystone = createKeystone(config, () => createContext);
 
   const sessionStrategy = config.session?.();
 
