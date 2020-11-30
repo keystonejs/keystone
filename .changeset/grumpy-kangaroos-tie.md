@@ -1,5 +1,5 @@
 ---
-'@keystonejs/fields': minor
+'@keystonejs/fields': patch
 ---
 
-the state transitions of the File field were modified to show the actual state after saving the changes
+Fixed a bug where the File field would show old state after an item is saved
