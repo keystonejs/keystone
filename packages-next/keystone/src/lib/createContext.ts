@@ -49,7 +49,7 @@ export function makeCreateContext({
       return result.data as Record<string, any>;
     };
     const itemAPI: Record<string, any> = {}; // TODO
-    const context: any = {
+    const context: KeystoneContext = {
       schemaName: 'public',
       lists: itemAPI,
       totalResults: 0,
@@ -62,8 +62,7 @@ export function makeCreateContext({
       },
       maxTotalResults: (keystone as any).queryLimits.maxTotalResults,
       createContext,
-      cloneContext: ({ skipAccessControl }: { skipAccessControl: boolean }) =>
-        createContext({ skipAccessControl, sessionContext }),
+      cloneContext: ({ skipAccessControl }) => createContext({ skipAccessControl, sessionContext }),
       ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
       ...sessionContext,
       // Note: These two fields let us use the server-side-graphql-client library.
