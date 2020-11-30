@@ -17,7 +17,7 @@
     "@keystone-next/types": "^4.1.1",
     "@keystonejs/server-side-graphql-client": "^1.1.2",
     "dotenv": "^8.2.0",
-    "next": "^9.5.5",
+    "next": "^10.0.3",
     "nodemailer": "^6.4.16",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
