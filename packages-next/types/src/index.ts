@@ -47,7 +47,7 @@ export type KeystoneConfig = {
   db: {
     adapter: 'mongoose' | 'knex';
     url: string;
-    onConnect?: (keystone: any) => any;
+    onConnect?: (keystone: BaseKeystone) => any;
   };
   graphql?: {
     path?: string;
@@ -124,7 +124,7 @@ export type FieldDefaultValue<T> =
   | MaybePromise<(args: FieldDefaultValueArgs<T>) => T | null | undefined>;
 
 export type KeystoneSystem = {
-  keystone: any;
+  keystone: BaseKeystone;
   config: KeystoneConfig;
   adminMeta: SerializedAdminMeta;
   graphQLSchema: GraphQLSchema;
@@ -163,7 +163,7 @@ export type KeystoneContext = {
   schemaName: 'public';
   lists: any; // TODO: type this (itemAPI),
   totalResults: number;
-  keystone: any;
+  keystone: BaseKeystone;
   graphql: KeystoneGraphQLAPI<any>;
   /** @deprecated */
   executeGraphQL: any; // TODO: type this
@@ -181,37 +181,38 @@ export type GraphQLSchemaExtension = {
   resolvers: Record<string, Record<string, GraphQLResolver>>;
 };
 
+// TODO: This is only a partial typing of the core Keystone class.
+// We should definitely invest some time into making this more correct.
+export type BaseKeystone = {
+  createList: (
+    key: string,
+    config: {
+      fields: Record<string, any>;
+      access: any;
+      queryLimits?: { maxResults?: number };
+      schemaDoc?: string;
+      listQueryName?: string;
+      itemQueryName?: string;
+      hooks?: Record<string, any>;
+    }
+  ) => BaseKeystoneList;
+  connect: () => Promise<void>;
+  lists: Record<string, BaseKeystoneList>;
+};
+
 // TODO: This needs to be reviewed and expanded
 export type BaseKeystoneList = {
   key: string;
+  fieldsByPath: Record<string, BaseKeystoneField>;
+  fields: BaseKeystoneField[];
+  adapter: { itemsQuery: (args: Record<string, any>, extra: Record<string, any>) => any };
   adminUILabels: {
     label: string;
     singular: string;
     plural: string;
     path: string;
   };
-  gqlNames: {
-    outputTypeName: string;
-    itemQueryName: string;
-    listQueryName: string;
-    listQueryMetaName: string;
-    listMetaName: string;
-    listSortName: string;
-    deleteMutationName: string;
-    updateMutationName: string;
-    createMutationName: string;
-    deleteManyMutationName: string;
-    updateManyMutationName: string;
-    createManyMutationName: string;
-    whereInputName: string;
-    whereUniqueInputName: string;
-    updateInputName: string;
-    createInputName: string;
-    updateManyInputName: string;
-    createManyInputName: string;
-    relateToManyInputName: string;
-    relateToOneInputName: string;
-  };
+  gqlNames: GqlNames;
   listQuery(
     args: Record<string, any>,
     context: KeystoneContext,
@@ -265,6 +266,11 @@ export type BaseKeystoneList = {
     context: KeystoneContext,
     mutationState?: any
   ): Promise<Record<string, any>[]>;
+};
+
+type BaseKeystoneField = {
+  gqlCreateInputFields: (arg: { schemaName: string }) => void;
+  getBackingTypes: () => Record<string, { optional: true; type: 'string | null' }>;
 };
 
 type GraphQLExecutionArguments = {
