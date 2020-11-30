@@ -43,11 +43,21 @@ export type KeystoneAdminUIConfig = {
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 
+export type DatabaseAPIs = {
+  knex?: any;
+  mongoose?: any;
+  prisma?: any;
+};
+
+type OnConnectArgs = {
+  createContext: KeystoneSystem['createContext'];
+} & DatabaseAPIs;
+
 export type KeystoneConfig = {
   db: {
     adapter: 'mongoose' | 'knex';
     url: string;
-    onConnect?: (keystone: BaseKeystone) => any;
+    onConnect?: (args: OnConnectArgs) => void;
   };
   graphql?: {
     path?: string;
@@ -172,7 +182,8 @@ export type KeystoneContext = {
   maxTotalResults: number;
   createContext: KeystoneSystem['createContext'];
 } & AccessControlContext &
-  SessionContext;
+  SessionContext &
+  DatabaseAPIs;
 
 export type GraphQLResolver = (root: any, args: any, context: KeystoneContext) => any;
 
@@ -184,6 +195,7 @@ export type GraphQLSchemaExtension = {
 // TODO: This is only a partial typing of the core Keystone class.
 // We should definitely invest some time into making this more correct.
 export type BaseKeystone = {
+  adapters: Record<string, any>;
   createList: (
     key: string,
     config: {

@@ -8,6 +8,7 @@ import type {
 
 import { itemAPIForList } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
+import { getDatabaseAPIs } from './getDatabaseAPIs';
 
 export function makeCreateContext({
   adminMeta,
@@ -26,7 +27,7 @@ export function makeCreateContext({
   }: {
     sessionContext?: SessionContext;
     skipAccessControl?: boolean;
-  }): KeystoneContext => {
+  } = {}): KeystoneContext => {
     const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, context, variables }) => {
       if (typeof query === 'string') {
         query = parse(query);
@@ -62,6 +63,7 @@ export function makeCreateContext({
       maxTotalResults: (keystone as any).queryLimits.maxTotalResults,
       createContext,
       ...sessionContext,
+      ...getDatabaseAPIs(keystone),
       // Note: These two fields let us use the server-side-graphql-client library.
       // We may want to remove them once the updated itemAPI w/ resolveFields is available.
       executeGraphQL: rawGraphQL,
