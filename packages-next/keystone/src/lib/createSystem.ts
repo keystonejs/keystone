@@ -100,7 +100,7 @@ export function createSystem(config: KeystoneConfig): KeystoneSystem {
   );
 
   const createSessionContext = sessionImplementation?.createContext;
-  const createContext = makeCreateContext({ keystone, adminMeta, graphQLSchema });
+  const createContext = makeCreateContext({ keystone, graphQLSchema });
 
   let system = {
     keystone,
