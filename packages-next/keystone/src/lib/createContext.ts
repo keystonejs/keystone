@@ -8,7 +8,6 @@ import type {
 
 import { itemAPIForList } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
-import { getDatabaseAPIs } from './getDatabaseAPIs';
 
 export function makeCreateContext({
   adminMeta,
@@ -54,6 +53,11 @@ export function makeCreateContext({
       lists: itemAPI,
       totalResults: 0,
       keystone,
+      // Only one of these will be available on any given context
+      // TODO: Capture that in the type
+      knex: keystone.adapters.KnexAdapter?.knex,
+      mongoose: keystone.adapters.MongooseAdapter?.mongoose,
+      prisma: keystone.adapters.PrismaAdapter?.prisma,
       graphql: {
         createContext,
         raw: rawGraphQL,
@@ -63,7 +67,6 @@ export function makeCreateContext({
       maxTotalResults: (keystone as any).queryLimits.maxTotalResults,
       createContext,
       ...sessionContext,
-      ...getDatabaseAPIs(keystone),
       // Note: These two fields let us use the server-side-graphql-client library.
       // We may want to remove them once the updated itemAPI w/ resolveFields is available.
       executeGraphQL: rawGraphQL,
