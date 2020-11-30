@@ -42,7 +42,7 @@ export function makeCreateContext({
       }
       return result.data as Record<string, any>;
     };
-    const contextToReturn: any = {
+    const contextToReturn: KeystoneContext = {
       schemaName: 'public',
       ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
       lists: itemAPI,
