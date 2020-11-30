@@ -110,7 +110,7 @@
     "to-pascal-case": "^1.0.0",
     "typescript": "^4.1.2",
     "unist-util-visit": "^2.0.3",
-    "unsplash-js": "^6.3.0",
+    "unsplash-js": "^7.0.0",
     "webpack": "4.44.2"
   },
   "prettier": {
