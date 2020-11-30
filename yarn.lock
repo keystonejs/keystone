@@ -2006,10 +2006,19 @@
     "@graphql-tools/utils" "^7.1.0"
     tslib "~2.0.1"
 
-"@graphql-tools/utils@^7.0.0", "@graphql-tools/utils@^7.0.2", "@graphql-tools/utils@^7.1.0":
+"@graphql-tools/utils@^7.0.0", "@graphql-tools/utils@^7.1.0":
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-7.1.0.tgz#0cbcfa7b6e7741650f78e8bde4823780ed9e8c57"
   integrity sha512-lMTgy08BdqQ31zyyCRrxcKZ6gAKQB9amGKJGg0mb3b4I3iJQKeaw9a7T96yGe1frGak1UK9y7OoYqx8RG7KitA==
+  dependencies:
+    "@ardatan/aggregate-error" "0.0.6"
+    camel-case "4.1.1"
+    tslib "~2.0.1"
+
+"@graphql-tools/utils@^7.1.2":
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-7.1.2.tgz#48eafce9d118f73e39710c65426ecce98e374afa"
+  integrity sha512-xFuhDyGMhaXTQpq48vjjCLA1VWc3fEo4n+zBcvQnbBSqhVPwAVa0ANcpb0NHmU9c3ypch26kK85TmC/HoK3YRg==
   dependencies:
     "@ardatan/aggregate-error" "0.0.6"
     camel-case "4.1.1"
