@@ -3,28 +3,34 @@ import pReflect from 'p-reflect';
 import isPromise from 'p-is-promise';
 import semver from 'semver';
 
-export const noop = x => x;
+export const noop = <T>(x: T): T => x;
 export const identity = noop;
-export const getType = thing =>
+export const getType = (thing: any) =>
   Object.prototype.toString.call(thing).replace(/\[object (.*)\]/, '$1');
 
-export const escapeRegExp = str =>
+export const escapeRegExp = (str: string) =>
   (str || '').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
 // { key: value, ... } => { key: mapFn(value, key), ... }
-export const mapKeys = (obj, func) =>
+export const mapKeys = <T, U>(
+  obj: Record<string, T>,
+  func: (value?: T, key?: string, obj?: Record<string, T>) => U
+): Record<string, U> =>
   Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: func(value, key, obj) }), {});
 
 // { key: value, ... } => { mapFn(key, value): value, ... }
-export const mapKeyNames = (obj, func) =>
+export const mapKeyNames = <T>(
+  obj: Record<string, T>,
+  func: (key?: string, value?: T, obj?: Record<string, T>) => string
+): Record<string, T> =>
   Object.entries(obj).reduce(
     (acc, [key, value]) => ({ ...acc, [func(key, value, obj)]: value }),
     {}
   );
 
-export const resolveAllKeys = async obj => {
-  const returnValue = {};
-  const errors = {};
+export const resolveAllKeys = async <T>(obj: Record<string, Promise<T>>) => {
+  const returnValue: Record<string, T> = {};
+  const errors: Record<string, unknown> = {};
 
   const allPromises = Object.keys(obj).map(key =>
     pReflect(obj[key]).then(val => {
@@ -43,9 +49,14 @@ export const resolveAllKeys = async obj => {
   // If there are any errors, we want to surface them in the same shape as the
   // input object
   if (Object.keys(errors).length) {
-    const firstError = results.find(({ isRejected }) => isRejected).reason;
+    const firstReason = results.find(
+      ({ isRejected }) => isRejected
+    ) as pReflect.PromiseRejectedResult;
+    const firstError = firstReason.reason as any;
     // Use the first error as the message so it's at least meaningful
-    const error = new Error(firstError.message || firstError.toString());
+    const error: Error & { errors?: Record<string, unknown> } = new Error(
+      firstError.message || firstError.toString()
+    );
     error.errors = errors;
     throw error;
   }
@@ -53,30 +64,36 @@ export const resolveAllKeys = async obj => {
   return returnValue;
 };
 
-export const unique = arr => [...new Set(arr)];
+export const unique = <T>(arr: T[]): T[] => [...new Set(arr)];
 
-export const intersection = (array1, array2) =>
+export const intersection = <T>(array1: T[], array2: T[]) =>
   unique(array1.filter(value => array2.includes(value)));
 
-export const pick = (obj, keys) =>
+export const pick = <T>(obj: Record<string, T>, keys: string[]): Record<string, T> =>
   keys.reduce((acc, key) => (key in obj ? { ...acc, [key]: obj[key] } : acc), {});
 
-export const omitBy = (obj, func) =>
+export const omitBy = <T>(obj: Record<string, T>, func: (key: string) => boolean) =>
   pick(
     obj,
-    Object.keys(obj).filter(value => !func(value))
+    Object.keys(obj).filter(key => !func(key))
   );
 
-export const omit = (obj, keys) => omitBy(obj, value => keys.includes(value));
+export const omit = <T>(obj: Record<string, T>, keys: string[]) =>
+  omitBy(obj, value => keys.includes(value));
 
 // [{ k1: v1, k2: v2, ...}, { k3: v3, k4: v4, ...}, ...] => { k1: v1, k2: v2, k3: v3, k4, v4, ... }
 // Gives priority to the objects which appear later in the list
-export const objMerge = objs => objs.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+export const objMerge = <T>(objs: Record<string, T>[]) =>
+  objs.reduce((acc, obj) => ({ ...acc, ...obj }), {});
 
 // [x, y, z] => { x: val, y: val, z: val}
-export const defaultObj = (keys, val) => keys.reduce((acc, key) => ({ ...acc, [key]: val }), {});
+export const defaultObj = <T>(keys: string[], val: T): Record<string, T> =>
+  keys.reduce((acc, key) => ({ ...acc, [key]: val }), {});
 
-export const filterValues = (obj, predicate) =>
+export const filterValues = <T>(
+  obj: Record<string, T>,
+  predicate: (value: T) => boolean
+): Record<string, T> =>
   Object.entries(obj).reduce(
     (acc, [key, value]) => (predicate(value) ? { ...acc, [key]: value } : acc),
     {}
@@ -107,8 +124,11 @@ export const filterValues = (obj, predicate) =>
  * @param {String} keyedBy The property on the input objects to key the result.
  * @param {Function} mapFn A function returning the output object values. Takes each full input object.
  */
-export const arrayToObject = (objs, keyedBy, mapFn = i => i) =>
-  objs.reduce((acc, obj) => ({ ...acc, [obj[keyedBy]]: mapFn(obj) }), {});
+export const arrayToObject = (
+  objs: Record<string, string>[],
+  keyedBy: string,
+  mapFn: (a: Record<string, string>) => any = i => i
+) => objs.reduce((acc, obj) => ({ ...acc, [obj[keyedBy]]: mapFn(obj) }), {});
 
 /**
  * Concatenates child arrays one level deep.
@@ -116,21 +136,25 @@ export const arrayToObject = (objs, keyedBy, mapFn = i => i) =>
  * @param {Array} arr An array of one or more arrays
  * @returns The new array.
  */
-export const flatten = arr => Array.prototype.concat(...arr);
+export const flatten = <T>(arr: T[][]) => Array.prototype.concat(...arr);
 
 // flatMap([{ vals: [2, 2] }, { vals: [3] }], x => x.vals) => [2, 2, 3]
-export const flatMap = (arr, fn = identity) => flatten(arr.map(fn));
+export const flatMap = <T, U>(arr: T[], fn: (a: T) => U[]) => flatten(arr.map(fn));
 
 // { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar: 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
-export const zipObj = obj =>
+export const zipObj = <T>(obj: Record<string, T[]>): Record<string, T>[] =>
   Object.values(obj)[0].map((_, i) =>
     Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {})
   );
 
 // compose([f, g, h])(o) = h(g(f(o)))
-export const compose = fns => o => fns.reduce((acc, fn) => fn(acc), o);
+export const compose = <T>(fns: ((a: T) => T)[]) => (o: T): T =>
+  fns.reduce((acc, fn) => fn(acc), o);
 
-export const mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
+export const mergeWhereClause = (
+  queryArgs: Record<string, any>,
+  whereClauseToMergeIn: Record<string, any>
+) => {
   if (
     getType(whereClauseToMergeIn) !== 'Object' ||
     Object.keys(whereClauseToMergeIn).length === 0
@@ -140,9 +164,7 @@ export const mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
 
   const mergedQueryArgs =
     queryArgs.where && Object.keys(queryArgs.where).length > 0
-      ? {
-          AND: [queryArgs.where, whereClauseToMergeIn],
-        }
+      ? { AND: [queryArgs.where, whereClauseToMergeIn] }
       : whereClauseToMergeIn;
 
   return {
@@ -151,12 +173,12 @@ export const mergeWhereClause = (queryArgs, whereClauseToMergeIn) => {
   };
 };
 
-export const createLazyDeferred = () => {
-  let state;
-  let resolvedWith;
-  let rejectedWith;
-  let resolveCallback;
-  let rejectCallback;
+export const createLazyDeferred = <T, S>() => {
+  let state: 'resolved' | 'rejected' | undefined;
+  let resolvedWith: T;
+  let rejectedWith: S;
+  let resolveCallback: (val: T) => void;
+  let rejectCallback: (error: S) => void;
 
   const promise = new pLazy((resolve, reject) => {
     if (state === 'resolved') {
@@ -171,7 +193,7 @@ export const createLazyDeferred = () => {
 
   return {
     promise,
-    resolve: val => {
+    resolve: (val: T) => {
       if (resolveCallback) {
         resolveCallback(val);
       } else {
@@ -179,7 +201,7 @@ export const createLazyDeferred = () => {
         state = 'resolved';
       }
     },
-    reject: error => {
+    reject: (error: S) => {
       if (rejectCallback) {
         rejectCallback(error);
       } else {
@@ -197,8 +219,8 @@ export const createLazyDeferred = () => {
  * If no Promises are thrown, this is the equivalent of a .map
  * @param {Array} executors
  */
-export const captureSuspensePromises = executors => {
-  const values = [];
+export const captureSuspensePromises = <T>(executors: (() => T)[]) => {
+  const values: T[] = [];
   const promises = executors
     .map(executor => {
       try {
@@ -226,7 +248,7 @@ export const captureSuspensePromises = executors => {
  * Returns the length of all arrays in obj
  * @param {*} obj An objects whose property values are arrays.
  */
-export const countArrays = obj =>
+export const countArrays = (obj: Record<string, any[]>) =>
   Object.values(obj).reduce((total, items) => total + (items ? items.length : 0), 0);
 
 /**
@@ -235,16 +257,21 @@ export const countArrays = obj =>
  * @param {Array<Number>|String} base The version against which to compare.
  * @returns True if each element of comp is greater than or equal base.
  */
-export const versionGreaterOrEqualTo = (comp, base) => {
-  const parseVersion = input => {
+export const versionGreaterOrEqualTo = (
+  comp: Parameters<typeof semver.coerce>[0],
+  base: Parameters<typeof semver.coerce>[0]
+) => {
+  const parseVersion = (input: Parameters<typeof semver.coerce>[0]) => {
     if (input instanceof Array) {
-      input = input.join('.');
+      return semver.coerce(input.join('.'));
     }
     return semver.coerce(input);
   };
 
   const v1 = parseVersion(comp);
   const v2 = parseVersion(base);
+  if (v1 === null) return false;
+  if (v2 === null) return true;
   return semver.gte(v1, v2);
 };
 
@@ -253,14 +280,17 @@ export const versionGreaterOrEqualTo = (comp, base) => {
  * @param {String} str The string to convert.
  * @returns The new string
  */
-export const upcase = str => str.substr(0, 1).toUpperCase() + str.substr(1);
+export const upcase = (str: string) => str.substr(0, 1).toUpperCase() + str.substr(1);
 
 /**
  * Iteratively execute a callback against each item in an array.
  * @param {Array} array An array of items.
  * @param {Function} callback A callback function returning a promise.
  */
-export const asyncForEach = async (array, callback) => {
+export const asyncForEach = async <T>(
+  array: T[],
+  callback: (item: T, index: number, array: T[]) => Promise<void>
+) => {
   for (let index = 0; index < array.length; index++) {
     await callback(array[index], index, array);
   }
