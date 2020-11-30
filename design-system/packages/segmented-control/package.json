@@ -6,14 +6,14 @@
   "module": "dist/segmented-control.esm.js",
   "devDependencies": {
     "@types/react": "^16.14.2",
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
     "@keystone-ui/core": "^1.0.2"
   },
   "peerDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "engines": {
     "node": ">=10.0.0"

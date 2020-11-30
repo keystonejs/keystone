@@ -6,10 +6,10 @@
   "license": "MIT",
   "main": "dist/fields.cjs.js",
   "peerDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "devDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "dependencies": {
     "@arch-ui/lozenge": "^0.0.17",

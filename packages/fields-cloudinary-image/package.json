@@ -27,7 +27,7 @@
     "image-extensions": "^1.1.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.7",
-    "react": "^16.14.0",
+    "react": "^17.0.1",
     "slate": "^0.47.9",
     "slate-drop-or-paste-images": "^0.9.1",
     "slate-react": "^0.22.10"

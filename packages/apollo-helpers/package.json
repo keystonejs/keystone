@@ -25,10 +25,10 @@
     "react-adopt": "^0.6.0"
   },
   "peerDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "devDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "main": "dist/apollo-helpers.cjs.js",
   "module": "dist/apollo-helpers.esm.js",

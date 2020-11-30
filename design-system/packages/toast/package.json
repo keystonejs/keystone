@@ -6,7 +6,7 @@
   "module": "dist/toast.esm.js",
   "devDependencies": {
     "@types/react": "^16.14.2",
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
@@ -14,7 +14,7 @@
     "@keystone-ui/icons": "^1.0.0"
   },
   "peerDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "engines": {
     "node": ">=10.0.0"

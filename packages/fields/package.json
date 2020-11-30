@@ -56,9 +56,9 @@
     "mongoose": "^5.10.15",
     "p-settle": "^4.1.1",
     "prop-types": "^15.7.2",
-    "react": "^16.14.0",
+    "react": "^17.0.1",
     "react-day-picker": "^8.0.0-alpha.45",
-    "react-dom": "^16.14.0",
+    "react-dom": "^17.0.1",
     "react-image": "^4.0.3",
     "react-select": "^3.1.1",
     "react-toast-notifications": "^2.4.0"

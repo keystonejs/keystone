@@ -33,7 +33,7 @@
     "apply-ref": "^1.0.0",
     "is-hotkey": "^0.1.7",
     "is-url": "^1.2.4",
-    "react": "^16.14.0",
+    "react": "^17.0.1",
     "slate": "npm:slate@^0.59.0",
     "slate-history": "^0.59.0",
     "slate-react": "npm:slate-react@^0.59.0"

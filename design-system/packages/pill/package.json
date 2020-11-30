@@ -5,10 +5,10 @@
   "main": "dist/pill.cjs.js",
   "module": "dist/pill.esm.js",
   "peerDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "devDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",

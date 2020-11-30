@@ -26,11 +26,11 @@
     "query-string": "^6.13.7"
   },
   "peerDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "main": "dist/fields-oembed.cjs.js",
   "module": "dist/fields-oembed.esm.js",

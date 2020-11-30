@@ -6,12 +6,12 @@
   "license": "MIT",
   "main": "dist/icons.cjs.js",
   "peerDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "devDependencies": {
     "@primer/octicons": "^11.1.0",
     "fs-extra": "^9.0.1",
-    "react": "^16.14.0",
+    "react": "^17.0.1",
     "to-pascal-case": "^1.0.0"
   },
   "module": "dist/icons.esm.js",
