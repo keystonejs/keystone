@@ -1,5 +1,13 @@
 # @keystone-next/cloudinary
 
+## 2.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`b6498d9f1`](https://github.com/keystonejs/keystone/commit/b6498d9f1341648742f2db78fec53b851b36dddd), [`d36e580cc`](https://github.com/keystonejs/keystone/commit/d36e580cc21e4b77a1bd0615c96c0793b9c5dac5), [`803626e88`](https://github.com/keystonejs/keystone/commit/803626e8854f9b7d293bd1829398d25a6692154a)]:
+  - @keystone-next/types@5.0.0
+  - @keystone-next/admin-ui@3.1.2
+
 ## 2.0.1
 
 ### Patch Changes

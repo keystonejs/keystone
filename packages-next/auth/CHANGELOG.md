@@ -1,5 +1,20 @@
 # @keystone-next/auth
 
+## 6.0.0
+
+### Patch Changes
+
+- [`b6498d9f1`](https://github.com/keystonejs/keystone/commit/b6498d9f1341648742f2db78fec53b851b36dddd) [#4427](https://github.com/keystonejs/keystone/pull/4427) Thanks [@timleslie](https://github.com/timleslie)! - Added a `BaseKeystone` type to replace usage of `any` in all instances.
+
+* [`dfed54074`](https://github.com/keystonejs/keystone/commit/dfed5407477ffa387b38bf76685297941f5d8f84) [#4433](https://github.com/keystonejs/keystone/pull/4433) Thanks [@JedWatson](https://github.com/JedWatson)! - Updated InitPage to fix the error with the new field value shape
+
+* Updated dependencies [[`b6498d9f1`](https://github.com/keystonejs/keystone/commit/b6498d9f1341648742f2db78fec53b851b36dddd), [`d36e580cc`](https://github.com/keystonejs/keystone/commit/d36e580cc21e4b77a1bd0615c96c0793b9c5dac5), [`803626e88`](https://github.com/keystonejs/keystone/commit/803626e8854f9b7d293bd1829398d25a6692154a)]:
+  - @keystone-next/keystone@5.0.0
+  - @keystone-next/types@5.0.0
+  - @keystone-next/admin-ui@3.1.2
+  - @keystone-next/admin-ui-utils@2.0.1
+  - @keystone-next/fields@3.2.1
+
 ## 5.0.1
 
 ### Patch Changes
