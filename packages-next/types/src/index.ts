@@ -43,11 +43,23 @@ export type KeystoneAdminUIConfig = {
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 
+// DatabaseAPIs is used to provide access to the underlying database abstraction through
+// context and other developer-facing APIs in Keystone, so they can be used easily.
+
+// The implementation is very basic, and assumes there's a single adapter keyed by the constructor
+// name. Since there's no option _not_ to do that using the new config, we probably don't need
+// anything more sophisticated than this.
+export type DatabaseAPIs = {
+  knex?: any;
+  mongoose?: any;
+  prisma?: any;
+};
+
 export type KeystoneConfig = {
   db: {
     adapter: 'mongoose' | 'knex';
     url: string;
-    onConnect?: (keystone: BaseKeystone) => any;
+    onConnect?: (args: KeystoneContext) => Promise<void>;
   };
   graphql?: {
     path?: string;
@@ -172,7 +184,8 @@ export type KeystoneContext = {
   maxTotalResults: number;
   createContext: KeystoneSystem['createContext'];
 } & AccessControlContext &
-  SessionContext;
+  SessionContext &
+  DatabaseAPIs;
 
 export type GraphQLResolver = (root: any, args: any, context: KeystoneContext) => any;
 
@@ -184,6 +197,7 @@ export type GraphQLSchemaExtension = {
 // TODO: This is only a partial typing of the core Keystone class.
 // We should definitely invest some time into making this more correct.
 export type BaseKeystone = {
+  adapters: Record<string, any>;
   createList: (
     key: string,
     config: {

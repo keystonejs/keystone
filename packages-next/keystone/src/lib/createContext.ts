@@ -24,7 +24,7 @@ export function makeCreateContext({
   }: {
     sessionContext?: SessionContext;
     skipAccessControl?: boolean;
-  }): KeystoneContext => {
+  } = {}): KeystoneContext => {
     const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, context, variables }) => {
       if (typeof query === 'string') {
         query = parse(query);
@@ -51,6 +51,11 @@ export function makeCreateContext({
       lists: itemAPI,
       totalResults: 0,
       keystone,
+      // Only one of these will be available on any given context
+      // TODO: Capture that in the type
+      knex: keystone.adapters.KnexAdapter?.knex,
+      mongoose: keystone.adapters.MongooseAdapter?.mongoose,
+      prisma: keystone.adapters.PrismaAdapter?.prisma,
       graphql: {
         createContext,
         raw: rawGraphQL,
