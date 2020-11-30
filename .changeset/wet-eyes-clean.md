@@ -4,6 +4,6 @@
 "@keystone-next/types": major
 ---
 
-Updated onConnect arguments to provide preconstructed `Context` instead of the `BaseKeystone` instance
+Changed the `config.db.onConnect` argument to accept a `KeystoneContext` instance, created with `{ skipAccessControl: true }`, rather than a `BaseKeystone` instance.
 
 Added database APIs to context: `knex` / `mongoose` / `prisma` (depending on the adapter in use)
