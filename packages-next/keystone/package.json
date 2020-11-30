@@ -8,10 +8,10 @@
     "keystone-next": "bin/cli.js"
   },
   "dependencies": {
-    "@babel/core": "^7.12.8",
+    "@babel/core": "^7.12.9",
     "@babel/plugin-transform-modules-commonjs": "^7.12.1",
     "@babel/runtime": "^7.12.5",
-    "@graphql-tools/merge": "^6.2.5",
+    "@graphql-tools/merge": "^6.2.6",
     "@graphql-tools/utils": "^7.0.2",
     "@hapi/iron": "^5.1.4",
     "@keystone-next/admin-ui": "^3.1.1",
@@ -43,7 +43,7 @@
     "object-hash": "^2.0.3",
     "pirates": "^4.0.1",
     "pluralize": "^8.0.0",
-    "prettier": "^2.2.0",
+    "prettier": "^2.2.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "resolve": "^1.19.0",

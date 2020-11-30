@@ -66,7 +66,7 @@ export const InitPage = ({
   const [value, setValue] = useState(() => {
     let state: Record<string, any> = {};
     Object.keys(fields).forEach(fieldPath => {
-      state[fieldPath] = fields[fieldPath].controller.defaultValue;
+      state[fieldPath] = { kind: 'value', value: fields[fieldPath].controller.defaultValue };
     });
     return state;
   });
