@@ -1,5 +1,10 @@
 import { execute, GraphQLSchema, parse } from 'graphql';
-import type { SessionContext, KeystoneContext, KeystoneGraphQLAPI } from '@keystone-next/types';
+import type {
+  SessionContext,
+  KeystoneContext,
+  KeystoneGraphQLAPI,
+  BaseKeystone,
+} from '@keystone-next/types';
 
 import { itemAPIForList } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
@@ -11,7 +16,7 @@ export function makeCreateContext({
 }: {
   adminMeta: any;
   graphQLSchema: GraphQLSchema;
-  keystone: any;
+  keystone: BaseKeystone;
 }) {
   const itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
 
