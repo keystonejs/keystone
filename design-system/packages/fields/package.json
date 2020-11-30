@@ -5,7 +5,7 @@
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
   "devDependencies": {
-    "@types/react": "^16.14.2"
+    "@types/react": "^17.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
