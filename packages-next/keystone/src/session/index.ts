@@ -121,7 +121,7 @@ export function statelessSessions({
   path = '/',
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
-}: StatelessSessionsOptions) {
+}: StatelessSessionsOptions): () => SessionStrategy<Record<string, any>> {
   return () => {
     if (!secret) {
       throw new Error('You must specify a session secret to use sessions');
@@ -195,14 +195,14 @@ export function storedSessions({
       async start({ res, data, system }) {
         let sessionId = generateSessionId();
         await store.set(sessionId, data);
-        return start({ res, data: { sessionId }, system });
+        return start?.({ res, data: { sessionId }, system }) || '';
       },
       async end({ req, res, system }) {
         let sessionId = await get({ req, system });
         if (typeof sessionId === 'string') {
           await store.delete(sessionId);
         }
-        await end({ req, res, system });
+        await end?.({ req, res, system });
       },
     };
   };
