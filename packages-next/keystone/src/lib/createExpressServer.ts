@@ -64,7 +64,7 @@ export const createExpressServer = async (config: KeystoneConfig, system: Keysto
   console.log('✨ Preparing GraphQL Server');
   addApolloServer({ server, system });
 
-  const publicPages = system.config.ui?.publicPages ?? [];
+  const publicPages = config.ui?.publicPages ?? [];
 
   server.use(async (req, res) => {
     const { pathname } = url.parse(req.url);
@@ -74,10 +74,10 @@ export const createExpressServer = async (config: KeystoneConfig, system: Keysto
     }
     const session = (await system.sessionImplementation?.createContext?.(req, res, system))
       ?.session;
-    const isValidSession = system.config.ui?.isAccessAllowed
-      ? await system.config.ui.isAccessAllowed({ session })
+    const isValidSession = config.ui?.isAccessAllowed
+      ? await config.ui.isAccessAllowed({ session })
       : session !== undefined;
-    const maybeRedirect = await system.config.ui?.pageMiddleware?.({
+    const maybeRedirect = await config.ui?.pageMiddleware?.({
       req,
       session,
       isValidSession,
