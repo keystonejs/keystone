@@ -16,8 +16,6 @@ export function makeCreateContext({
   graphQLSchema: GraphQLSchema;
   keystone: BaseKeystone;
 }) {
-  const itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
-
   const createContext = ({
     sessionContext,
     skipAccessControl = false,
@@ -45,6 +43,7 @@ export function makeCreateContext({
       }
       return result.data as Record<string, any>;
     };
+    const itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
     const contextToReturn: KeystoneContext = {
       schemaName: 'public',
       ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
@@ -70,13 +69,11 @@ export function makeCreateContext({
       executeGraphQL: rawGraphQL,
       gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
     };
-
+    for (const [listKey, list] of Object.entries(keystone.lists)) {
+      itemAPI[listKey] = itemAPIForList(list, contextToReturn, graphQLSchema);
+    }
     return contextToReturn;
   };
-
-  for (const [listKey, list] of Object.entries(keystone.lists)) {
-    itemAPI[listKey] = itemAPIForList(list, graphQLSchema, createContext);
-  }
 
   return createContext;
 }
