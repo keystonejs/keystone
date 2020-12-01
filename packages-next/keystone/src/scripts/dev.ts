@@ -5,7 +5,7 @@ import * as fs from 'fs-extra';
 import { createSystem } from '../lib/createSystem';
 import { requireSource } from '../lib/requireSource';
 import { formatSource, generateAdminUI } from '../lib/generateAdminUI';
-import { createAdminUIServer } from '../lib/createAdminUIServer';
+import { createExpressServer } from '../lib/createExpressServer';
 import { printGeneratedTypes } from './schema-type-printer';
 
 // TODO: Read port from config or process args
@@ -24,7 +24,7 @@ export const dev = async () => {
   console.log('🤞 Starting Keystone');
 
   const server = express();
-  let adminUIServer: null | ReturnType<typeof express> = null;
+  let expressServer: null | ReturnType<typeof express> = null;
 
   const initKeystone = async () => {
     const config = requireSource(path.join(process.cwd(), 'keystone')).default;
@@ -40,15 +40,15 @@ export const dev = async () => {
     console.log('✨ Generating Admin UI');
     await generateAdminUI(system, process.cwd());
 
-    adminUIServer = await createAdminUIServer(config, system);
+    expressServer = await createExpressServer(config, system);
     console.log(`👋 Admin UI Ready`);
   };
 
   server.use('/__keystone_dev_status', (req, res) => {
-    res.json({ ready: adminUIServer ? true : false });
+    res.json({ ready: expressServer ? true : false });
   });
   server.use((req, res, next) => {
-    if (adminUIServer) return adminUIServer(req, res, next);
+    if (expressServer) return expressServer(req, res, next);
     res.sendFile(devLoadingHTMLFilepath);
   });
   server.listen(PORT, (err?: any) => {
