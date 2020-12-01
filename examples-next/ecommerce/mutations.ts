@@ -66,14 +66,16 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
 
         // 5. create the Order
         console.log('Creating the order');
-        const order = await context.lists.Order.createOne({
-          data: {
-            total: charge.amount,
-            charge: `${charge.id}`,
-            items: { create: orderItems },
-            user: { connect: { id: userId } },
-          },
-        });
+        const order = await context
+          .createContext({ skipAccessControl: true })
+          .lists.Order.createOne({
+            data: {
+              total: charge.amount,
+              charge: `${charge.id}`,
+              items: { create: orderItems },
+              user: { connect: { id: userId } },
+            },
+          });
         // 6. Clean up - clear the users cart, delete cartItems
         const cartItemIds = User.cart.map((cartItem: any) => cartItem.id);
         await deleteItems({ context, listKey: 'CartItem', items: cartItemIds });
