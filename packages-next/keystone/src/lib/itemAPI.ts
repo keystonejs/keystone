@@ -41,9 +41,7 @@ export function itemAPIForList(
     },
     async count(rawArgs) {
       const args = getArgs.count(rawArgs);
-      return (
-        await list.listQueryMeta(args, context)
-      ).getCount();
+      return (await list.listQueryMeta(args, context)).getCount();
     },
     createOne(rawArgs) {
       const { data } = getArgs.createOne(rawArgs);
