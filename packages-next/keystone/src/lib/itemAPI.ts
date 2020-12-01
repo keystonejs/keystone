@@ -32,8 +32,8 @@ export function itemAPIForList(
   const getArgs = getArgsFactory(list, schema);
   return {
     findOne(rawArgs) {
-      const args = getArgs.findOne(rawArgs);
-      return list.itemQuery(args as any, context);
+      const args = getArgs.findOne(rawArgs) as { where: { id: string } };
+      return list.itemQuery(args, context);
     },
     findMany(rawArgs) {
       const args = getArgs.findMany(rawArgs);
