@@ -83,7 +83,7 @@ export function getPasswordResetSchema({
             // Save the token and related info back to the item
             const { token, itemId } = result;
             await itemAPI.updateOne({
-              id: itemId,
+              id: `${itemId}`,
               data: {
                 [`${tokenType}Token`]: token,
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
