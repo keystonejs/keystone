@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from 'http';
 import Path from 'path';
 import url from 'url';
 import cors from 'cors';
@@ -11,7 +12,7 @@ import type { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
 const dev = process.env.NODE_ENV !== 'production';
 
 const addApolloServer = ({ server, system }: { server: any; system: KeystoneSystem }) => {
-  const { graphQLSchema, createContextFromRequest } = system;
+  const { graphQLSchema, createContext, sessionImplementation } = system;
   const apolloServer = new ApolloServer({
     // FIXME: Support for file handling configuration
     // maxFileSize: 200 * 1024 * 1024,
@@ -20,7 +21,10 @@ const addApolloServer = ({ server, system }: { server: any; system: KeystoneSyst
     // FIXME: allow the dev to control where/when they get a playground
     playground: { settings: { 'request.credentials': 'same-origin' } },
     formatError, // TODO: this needs to be discussed
-    context: ({ req, res }) => createContextFromRequest(req, res),
+    context: async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
+      createContext({
+        sessionContext: await sessionImplementation?.createContext(req, res, system),
+      }),
     // FIXME: support for apollo studio tracing
     // ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
     //   ? { tracing: true }
@@ -68,7 +72,8 @@ export const createExpressServer = async (config: KeystoneConfig, system: Keysto
       handle(req, res);
       return;
     }
-    const session = (await system.createSessionContext?.(req, res))?.session;
+    const session = (await system.sessionImplementation?.createContext?.(req, res, system))
+      ?.session;
     const isValidSession = system.config.ui?.isAccessAllowed
       ? await system.config.ui.isAccessAllowed({ session })
       : session !== undefined;
