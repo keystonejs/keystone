@@ -17,7 +17,7 @@ function generateSessionId() {
   return uid(24);
 }
 
-function sessionStrategy<TSessionStrategy extends SessionStrategy<any>>(
+function asSessionStrategy<TSessionStrategy extends SessionStrategy<any>>(
   sessionStrategy: TSessionStrategy
 ): TSessionStrategy {
   return sessionStrategy;
@@ -129,7 +129,7 @@ export function statelessSessions({
     if (secret.length < 32) {
       throw new Error('The session secret must be at least 32 characters long');
     }
-    return sessionStrategy({
+    return asSessionStrategy({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async get({ req, system }) {
         if (!req.headers.cookie) return;

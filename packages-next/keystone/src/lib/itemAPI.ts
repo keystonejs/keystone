@@ -2,15 +2,15 @@ import { GraphQLSchema } from 'graphql';
 import {
   BaseGeneratedListTypes,
   BaseKeystoneList,
-  KeystoneSystem,
   KeystoneListsAPI,
+  KeystoneContext,
 } from '@keystone-next/types';
 import { getCoerceAndValidateArgumentsFnForGraphQLField } from './getCoerceAndValidateArgumentsFnForGraphQLField';
 
 export function itemAPIForList(
   list: BaseKeystoneList,
-  schema: GraphQLSchema,
-  createContext: KeystoneSystem['createContext']
+  context: KeystoneContext,
+  schema: GraphQLSchema
 ): KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>[string] {
   const queryFields = schema.getQueryType()!.getFields();
   const mutationFields = schema.getMutationType()!.getFields();
@@ -59,45 +59,42 @@ export function itemAPIForList(
     schema,
     mutationFields[list.gqlNames.deleteManyMutationName]
   );
-
   return {
     findOne(rawArgs) {
       const args = getArgsForFindOne(rawArgs);
-      return list.itemQuery(args as any, createContext({ skipAccessControl: true }));
+      return list.itemQuery(args as any, context);
     },
     findMany(rawArgs) {
       const args = getArgsForFindMany(rawArgs);
-      return list.listQuery(args, createContext({ skipAccessControl: true }));
+      return list.listQuery(args, context);
     },
     async count(rawArgs) {
       const args = getArgsForMeta(rawArgs);
-      return (
-        await list.listQueryMeta(args, createContext({ skipAccessControl: true }))
-      ).getCount();
+      return (await list.listQueryMeta(args, context)).getCount();
     },
     createOne(rawArgs) {
       const { data } = getArgsForCreateOne(rawArgs);
-      return list.createMutation(data, createContext({ skipAccessControl: true }));
+      return list.createMutation(data, context);
     },
     createMany(rawArgs) {
       const { data } = getArgsForCreateMany(rawArgs);
-      return list.createManyMutation(data, createContext({ skipAccessControl: true }));
+      return list.createManyMutation(data, context);
     },
     updateOne(rawArgs) {
       const { id, data } = getArgsForUpdateOne(rawArgs);
-      return list.updateMutation(id, data, createContext({ skipAccessControl: true }));
+      return list.updateMutation(id, data, context);
     },
     updateMany(rawArgs) {
       const { data } = getArgsForUpdateMany(rawArgs);
-      return list.updateManyMutation(data, createContext({ skipAccessControl: true }));
+      return list.updateManyMutation(data, context);
     },
     deleteOne(rawArgs) {
       const { id } = getArgsForDeleteOne(rawArgs);
-      return list.deleteMutation(id, createContext({ skipAccessControl: true }));
+      return list.deleteMutation(id, context);
     },
     deleteMany(rawArgs) {
       const { ids } = getArgsForDeleteMany(rawArgs);
-      return list.deleteManyMutation(ids, createContext({ skipAccessControl: true }));
+      return list.deleteManyMutation(ids, context);
     },
   };
 }
