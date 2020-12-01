@@ -17,7 +17,7 @@ function generateSessionId() {
   return uid(24);
 }
 
-function sessionStrategy<TSessionStrategy extends SessionStrategy<any>>(
+function asSessionStrategy<TSessionStrategy extends SessionStrategy<any>>(
   sessionStrategy: TSessionStrategy
 ): TSessionStrategy {
   return sessionStrategy;
@@ -129,7 +129,7 @@ export function statelessSessions({
     if (secret.length < 32) {
       throw new Error('The session secret must be at least 32 characters long');
     }
-    return sessionStrategy({
+    return asSessionStrategy({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async get({ req, system }) {
         if (!req.headers.cookie) return;
@@ -211,7 +211,7 @@ export function storedSessions({
 /**
  * This is the function createSystem uses to implement the session strategy provided
  */
-export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
+export function implementSession<T>(sessionStrategy: SessionStrategy<T>) {
   let isConnected = false;
   return {
     async createContext(
@@ -228,9 +228,7 @@ export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
       const endSession = sessionStrategy.end;
       return {
         session,
-        startSession: startSession
-          ? (data: unknown) => startSession({ res, data, system })
-          : undefined,
+        startSession: startSession ? (data: T) => startSession({ res, data, system }) : undefined,
         endSession: endSession ? () => endSession({ req, res, system }) : undefined,
       };
     },
