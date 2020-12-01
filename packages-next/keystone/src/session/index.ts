@@ -211,7 +211,7 @@ export function storedSessions({
 /**
  * This is the function createSystem uses to implement the session strategy provided
  */
-export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
+export function implementSession<T>(sessionStrategy: SessionStrategy<T>) {
   let isConnected = false;
   return {
     async createContext(
@@ -228,9 +228,7 @@ export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
       const endSession = sessionStrategy.end;
       return {
         session,
-        startSession: startSession
-          ? (data: unknown) => startSession({ res, data, system })
-          : undefined,
+        startSession: startSession ? (data: T) => startSession({ res, data, system }) : undefined,
         endSession: endSession ? () => endSession({ req, res, system }) : undefined,
       };
     },
