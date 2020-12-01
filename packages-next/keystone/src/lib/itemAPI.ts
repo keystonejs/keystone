@@ -27,9 +27,8 @@ export function getArgsFactory(list: BaseKeystoneList, schema: GraphQLSchema) {
 export function itemAPIForList(
   list: BaseKeystoneList,
   context: KeystoneContext,
-  schema: GraphQLSchema
+  getArgs: ReturnType<typeof getArgsFactory>
 ): KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>[string] {
-  const getArgs = getArgsFactory(list, schema);
   return {
     findOne(rawArgs) {
       const args = getArgs.findOne(rawArgs);
