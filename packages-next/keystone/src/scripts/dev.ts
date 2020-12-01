@@ -2,6 +2,7 @@ import path from 'path';
 import express from 'express';
 import { printSchema } from 'graphql';
 import * as fs from 'fs-extra';
+import { applyIdFieldDefaults } from '../lib/applyIdFieldDefaults';
 import { createSystem } from '../lib/createSystem';
 import { requireSource } from '../lib/requireSource';
 import { formatSource, generateAdminUI } from '../lib/generateAdminUI';
@@ -28,6 +29,8 @@ export const dev = async () => {
 
   const initKeystone = async () => {
     const config = requireSource(path.join(process.cwd(), 'keystone')).default;
+    config.lists = applyIdFieldDefaults(config);
+
     const system = createSystem(config);
     let printedSchema = printSchema(system.graphQLSchema);
     console.log('✨ Generating Schema');
