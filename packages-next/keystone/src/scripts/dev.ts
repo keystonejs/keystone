@@ -38,7 +38,7 @@ export const dev = async () => {
     );
 
     console.log('✨ Generating Admin UI');
-    await generateAdminUI(system, process.cwd());
+    await generateAdminUI(config, system, process.cwd());
 
     expressServer = await createExpressServer(config, system);
     console.log(`👋 Admin UI Ready`);

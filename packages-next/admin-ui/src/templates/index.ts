@@ -4,7 +4,7 @@ import { listTemplate } from './list';
 import { itemTemplate } from './item';
 import { noAccessTemplate } from './no-access';
 
-import type { KeystoneSystem } from '@keystone-next/types';
+import type { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
 import { AdminFileToWrite } from '@keystone-next/types';
 import * as Path from 'path';
 
@@ -13,12 +13,12 @@ const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.jso
 export { adminMetaSchemaExtension } from './adminMetaSchemaExtension';
 
 export const writeAdminFiles = (
+  session: KeystoneConfig['session'],
   system: KeystoneSystem,
   configFile: boolean,
   projectAdminPath: string
 ): AdminFileToWrite[] => {
   const { adminMeta } = system;
-  const { session } = system.config;
   return [
     {
       mode: 'copy',
