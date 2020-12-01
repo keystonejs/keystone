@@ -37,6 +37,9 @@ export const dev = async () => {
       formatSource(printGeneratedTypes(printedSchema, system), 'babel-ts')
     );
 
+    console.log('✨ Connecting to DB');
+    await system.keystone.connect();
+
     console.log('✨ Generating Admin UI');
     await generateAdminUI(config, system, process.cwd());
 
