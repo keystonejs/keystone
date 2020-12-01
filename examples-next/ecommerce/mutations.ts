@@ -13,6 +13,11 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
     Mutation: {
       checkout: async (root, { token }: { token: string }, context) => {
         const { session } = context;
+
+        // Users can't create orders directly because of our access control, so here we create a
+        // new context with full access and use the items API it provides
+        const superContext = context.createContext({ skipAccessControl: true });
+
         // 1. Query the current user and make sure they are signed in
         const userId = session.itemId;
         if (!userId) throw new Error('You must be signed in to complete this order.');
@@ -66,7 +71,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
 
         // 5. create the Order
         console.log('Creating the order');
-        const order = await context.lists.Order.createOne({
+        const order = await superContext.lists.Order.createOne({
           data: {
             total: charge.amount,
             charge: `${charge.id}`,
