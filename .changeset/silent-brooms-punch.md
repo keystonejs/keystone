@@ -2,4 +2,4 @@
 '@keystone-next/keystone': patch
 ---
 
-Replaced `SessionStrategy<unknown>` with `SessionStrategy<unknownT>` in `implementSession`.
+Replaced `SessionStrategy<unknown>` with `SessionStrategy<T>` in `implementSession`.
