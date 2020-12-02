@@ -11,7 +11,13 @@ import type { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
 
 const dev = process.env.NODE_ENV !== 'production';
 
-const addApolloServer = ({ server, system }: { server: any; system: KeystoneSystem }) => {
+const addApolloServer = ({
+  server,
+  system,
+}: {
+  server: express.Express;
+  system: KeystoneSystem;
+}) => {
   const { graphQLSchema, createContext, sessionImplementation } = system;
   const apolloServer = new ApolloServer({
     // FIXME: Support for file handling configuration
