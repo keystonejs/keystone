@@ -215,6 +215,7 @@ export type BaseKeystone = {
   ) => BaseKeystoneList;
   connect: () => Promise<void>;
   lists: Record<string, BaseKeystoneList>;
+  createApolloServer: (args: { schemaName: string; dev: boolean }) => any;
 };
 
 // TODO: This needs to be reviewed and expanded
