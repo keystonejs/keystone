@@ -215,6 +215,7 @@ export type BaseKeystone = {
   ) => BaseKeystoneList;
   connect: () => Promise<void>;
   lists: Record<string, BaseKeystoneList>;
+  createApolloServer: (args: { schemaName: string; dev: boolean }) => any;
 };
 
 // TODO: This needs to be reviewed and expanded
@@ -307,37 +308,47 @@ export type KeystoneGraphQLAPI<
   raw: (args: GraphQLExecutionArguments) => Promise<ExecutionResult>;
 };
 
+type ResolveFields = { readonly resolveFields?: false | string };
+
 export type KeystoneListsAPI<
   KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
 > = {
   [Key in keyof KeystoneListsTypeInfo]: {
     findMany(
-      args: KeystoneListsTypeInfo[Key]['args']['listQuery']
+      args: KeystoneListsTypeInfo[Key]['args']['listQuery'] & ResolveFields
     ): Promise<readonly KeystoneListsTypeInfo[Key]['backing'][]>;
-    findOne(args: {
-      readonly where: { readonly id: string };
-    }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    findOne(
+      args: { readonly where: { readonly id: string } } & ResolveFields
+    ): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
     count(args: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
-    updateOne(args: {
-      readonly id: string;
-      readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
-    }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
-    updateMany(args: {
-      readonly data: readonly {
+    updateOne(
+      args: {
         readonly id: string;
         readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
-      }[];
-    }): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
-    createOne(args: {
-      readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'];
-    }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
-    createMany(args: {
-      readonly data: readonly { readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'] }[];
-    }): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
-    deleteOne(args: { readonly id: string }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
-    deleteMany(args: {
-      readonly ids: readonly string[];
-    }): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
+      } & ResolveFields
+    ): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    updateMany(
+      args: {
+        readonly data: readonly {
+          readonly id: string;
+          readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
+        }[];
+      } & ResolveFields
+    ): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
+    createOne(
+      args: { readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'] } & ResolveFields
+    ): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    createMany(
+      args: {
+        readonly data: readonly { readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'] }[];
+      } & ResolveFields
+    ): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
+    deleteOne(
+      args: { readonly id: string } & ResolveFields
+    ): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    deleteMany(
+      args: { readonly ids: readonly string[] } & ResolveFields
+    ): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
   };
 };
 
