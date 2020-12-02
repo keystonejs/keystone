@@ -16,9 +16,7 @@ export const initTemplate = ({ listKey, initFirstItem, fields }: InitTemplateArg
   const fieldsMeta = ${JSON.stringify(fields)}
 
   export default function Init() {
-    return <InitPage listKey=${JSON.stringify(
-      listKey
-    )} fields={fieldsMeta} showKeystoneSignup={${JSON.stringify(
+    return <InitPage listKey="${listKey}" fields={fieldsMeta} showKeystoneSignup={${JSON.stringify(
     !initFirstItem.skipKeystoneSignup
   )}} />
   }
