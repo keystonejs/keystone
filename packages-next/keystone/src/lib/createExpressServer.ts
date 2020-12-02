@@ -49,30 +49,13 @@ const addApolloServer = ({
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql', cors: false });
 };
 
-export const createExpressServer = async (config: KeystoneConfig, system: KeystoneSystem) => {
-  const server = express();
-
-  if (config.server?.cors) {
-    // Setting config.server.cors = true will provide backwards compatible defaults
-    // Otherwise, the user can provide their own config object to use
-    const corsConfig =
-      typeof config.server.cors === 'boolean'
-        ? { origin: true, credentials: true }
-        : config.server.cors;
-    server.use(cors(corsConfig));
-  }
-
-  console.log('✨ Preparing Next.js app');
+const createAdminUIServer = async (system: KeystoneSystem) => {
   const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
   const handle = app.getRequestHandler();
-  await Promise.all([app.prepare(), system.keystone.connect()]);
+  await app.prepare();
 
-  console.log('✨ Preparing GraphQL Server');
-  addApolloServer({ server, system });
-
-  const publicPages = config.ui?.publicPages ?? [];
-
-  server.use(async (req, res) => {
+  const publicPages = system.config.ui?.publicPages ?? [];
+  return async (req: express.Request, res: express.Response) => {
     const { pathname } = url.parse(req.url);
     if (pathname?.startsWith('/_next')) {
       handle(req, res);
@@ -80,10 +63,10 @@ export const createExpressServer = async (config: KeystoneConfig, system: Keysto
     }
     const session = (await system.sessionImplementation?.createContext?.(req, res, system))
       ?.session;
-    const isValidSession = config.ui?.isAccessAllowed
-      ? await config.ui.isAccessAllowed({ session })
+    const isValidSession = system.config.ui?.isAccessAllowed
+      ? await system.config.ui.isAccessAllowed({ session })
       : session !== undefined;
-    const maybeRedirect = await config.ui?.pageMiddleware?.({
+    const maybeRedirect = await system.config.ui?.pageMiddleware?.({
       req,
       session,
       isValidSession,
@@ -98,7 +81,27 @@ export const createExpressServer = async (config: KeystoneConfig, system: Keysto
     } else {
       handle(req, res);
     }
-  });
+  };
+};
+
+export const createExpressServer = async (config: KeystoneConfig, system: KeystoneSystem) => {
+  const server = express();
+
+  if (config.server?.cors) {
+    // Setting config.server.cors = true will provide backwards compatible defaults
+    // Otherwise, the user can provide their own config object to use
+    const corsConfig =
+      typeof config.server.cors === 'boolean'
+        ? { origin: true, credentials: true }
+        : config.server.cors;
+    server.use(cors(corsConfig));
+  }
+
+  console.log('✨ Preparing GraphQL Server');
+  addApolloServer({ server, system });
+
+  console.log('✨ Preparing Next.js app');
+  server.use(await createAdminUIServer(system));
 
   return server;
 };
