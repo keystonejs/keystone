@@ -133,7 +133,7 @@ export type KeystoneSystem = {
   adminMeta: SerializedAdminMeta;
   graphQLSchema: GraphQLSchema;
   createContext: (args: {
-    sessionContext?: SessionContext;
+    sessionContext?: SessionContext<any>;
     skipAccessControl?: boolean;
   }) => KeystoneContext;
   sessionImplementation?: {
@@ -141,7 +141,7 @@ export type KeystoneSystem = {
       req: IncomingMessage,
       res: ServerResponse,
       system: KeystoneSystem
-    ): Promise<SessionContext>;
+    ): Promise<SessionContext<any>>;
   };
   views: string[];
 };
@@ -151,19 +151,13 @@ export type AccessControlContext = {
   getFieldAccessControlForUser: any; // TODO
 };
 
-export type SessionContext = {
+export type SessionContext<T> = {
   // Note: session is typed like this to acknowledge the default session shape
   // if you're using keystone's built-in session implementation, but we don't
   // actually know what it will look like.
-  session?:
-    | {
-        itemId: string;
-        listKey: string;
-        data?: Record<string, any>;
-      }
-    | any;
-  startSession?(data: any): Promise<string>;
-  endSession?(): Promise<void>;
+  session?: { itemId: string; listKey: string; data?: Record<string, any> } | any;
+  startSession(data: T): Promise<string>;
+  endSession(): Promise<void>;
 };
 
 export type KeystoneContext = {
@@ -179,7 +173,7 @@ export type KeystoneContext = {
   maxTotalResults: number;
   createContext: KeystoneSystem['createContext'];
 } & AccessControlContext &
-  SessionContext &
+  Partial<SessionContext<any>> &
   DatabaseAPIs;
 
 export type GraphQLResolver = (root: any, args: any, context: KeystoneContext) => any;

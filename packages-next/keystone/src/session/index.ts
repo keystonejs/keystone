@@ -218,7 +218,7 @@ export function implementSession<T>(sessionStrategy: SessionStrategy<T>) {
       req: IncomingMessage,
       res: ServerResponse,
       system: KeystoneSystem
-    ): Promise<SessionContext> {
+    ): Promise<SessionContext<T>> {
       if (!isConnected) {
         await sessionStrategy.connect?.();
         isConnected = true;
@@ -228,8 +228,8 @@ export function implementSession<T>(sessionStrategy: SessionStrategy<T>) {
       const endSession = sessionStrategy.end;
       return {
         session,
-        startSession: startSession ? (data: T) => startSession({ res, data, system }) : undefined,
-        endSession: endSession ? () => endSession({ req, res, system }) : undefined,
+        startSession: (data: T) => startSession({ res, data, system }),
+        endSession: () => endSession({ req, res, system }),
       };
     },
   };
