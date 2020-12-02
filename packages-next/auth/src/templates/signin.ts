@@ -17,11 +17,11 @@ import { SigninPage } from '@keystone-next/auth/pages/SigninPage'
 
 export default function Signin() {
   return <SigninPage
-           identityField=${JSON.stringify(identityField)}
-           secretField=${JSON.stringify(secretField)}
-           mutationName=${JSON.stringify(gqlNames.authenticateItemWithPassword)}
-           successTypename=${JSON.stringify(gqlNames.ItemAuthenticationWithPasswordSuccess)}
-           failureTypename=${JSON.stringify(gqlNames.ItemAuthenticationWithPasswordFailure)}
+           identityField="${identityField}"
+           secretField="${secretField}"
+           mutationName="${gqlNames.authenticateItemWithPassword}"
+           successTypename="${gqlNames.ItemAuthenticationWithPasswordSuccess}"
+           failureTypename="${gqlNames.ItemAuthenticationWithPasswordFailure}"
          />
 }
   `;

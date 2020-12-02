@@ -19,7 +19,6 @@ export function createGraphQLSchema(
   sessionStrategy?: SessionStrategy<unknown>,
   sessionImplementation?: any
 ) {
-  // @ts-ignore
   let graphQLSchema = keystone.createApolloServer({
     schemaName: 'public',
     dev: process.env.NODE_ENV === 'development',

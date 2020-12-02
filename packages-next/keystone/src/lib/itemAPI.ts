@@ -1,5 +1,16 @@
 import { GraphQLSchema } from 'graphql';
 import {
+  getItem,
+  getItems,
+  createItem,
+  createItems,
+  updateItem,
+  updateItems,
+  deleteItem,
+  deleteItems,
+  // @ts-ignore
+} from '@keystonejs/server-side-graphql-client';
+import {
   BaseGeneratedListTypes,
   BaseKeystoneList,
   KeystoneListsAPI,
@@ -29,42 +40,75 @@ export function itemAPIForList(
   context: KeystoneContext,
   getArgs: ReturnType<typeof getArgsFactory>
 ): KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>[string] {
+  const listKey = list.key;
   return {
-    findOne(rawArgs) {
+    findOne({ resolveFields = 'id', ...rawArgs }) {
       const args = getArgs.findOne(rawArgs) as { where: { id: string } };
-      return list.itemQuery(args, context);
+      if (resolveFields) {
+        return getItem({ listKey, context, returnFields: resolveFields, itemId: args.where.id });
+      } else {
+        return list.itemQuery(args, context);
+      }
     },
-    findMany(rawArgs) {
+    findMany({ resolveFields = 'id', ...rawArgs }) {
       const args = getArgs.findMany(rawArgs);
-      return list.listQuery(args, context);
+      if (resolveFields) {
+        return getItems({ listKey, context, returnFields: resolveFields, ...args });
+      } else {
+        return list.listQuery(args, context);
+      }
     },
     async count(rawArgs) {
       const args = getArgs.count(rawArgs);
       return (await list.listQueryMeta(args, context)).getCount();
     },
-    createOne(rawArgs) {
+    createOne({ resolveFields = 'id', ...rawArgs }) {
       const { data } = getArgs.createOne(rawArgs);
-      return list.createMutation(data, context);
+      if (resolveFields) {
+        return createItem({ listKey, context, returnFields: resolveFields, item: data });
+      } else {
+        return list.createMutation(data, context);
+      }
     },
-    createMany(rawArgs) {
+    createMany({ resolveFields = 'id', ...rawArgs }) {
       const { data } = getArgs.createMany(rawArgs);
-      return list.createManyMutation(data, context);
+      if (resolveFields) {
+        return createItems({ listKey, context, returnFields: resolveFields, items: data });
+      } else {
+        return list.createManyMutation(data, context);
+      }
     },
-    updateOne(rawArgs) {
+    updateOne({ resolveFields = 'id', ...rawArgs }) {
       const { id, data } = getArgs.updateOne(rawArgs);
-      return list.updateMutation(id, data, context);
+      if (resolveFields) {
+        return updateItem({ listKey, context, returnFields: resolveFields, item: { id, data } });
+      } else {
+        return list.updateMutation(id, data, context);
+      }
     },
-    updateMany(rawArgs) {
+    updateMany({ resolveFields = 'id', ...rawArgs }) {
       const { data } = getArgs.updateMany(rawArgs);
-      return list.updateManyMutation(data, context);
+      if (resolveFields) {
+        return updateItems({ listKey, context, returnFields: resolveFields, items: data });
+      } else {
+        return list.updateManyMutation(data, context);
+      }
     },
-    deleteOne(rawArgs) {
+    deleteOne({ resolveFields = 'id', ...rawArgs }) {
       const { id } = getArgs.deleteOne(rawArgs);
-      return list.deleteMutation(id, context);
+      if (resolveFields) {
+        return deleteItem({ listKey, context, returnFields: resolveFields, itemId: id });
+      } else {
+        return list.deleteMutation(id, context);
+      }
     },
-    deleteMany(rawArgs) {
+    deleteMany({ resolveFields = 'id', ...rawArgs }) {
       const { ids } = getArgs.deleteMany(rawArgs);
-      return list.deleteManyMutation(ids, context);
+      if (resolveFields) {
+        return deleteItems({ listKey, context, returnFields: resolveFields, items: ids });
+      } else {
+        return list.deleteManyMutation(ids, context);
+      }
     },
   };
 }
