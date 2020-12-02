@@ -6,6 +6,7 @@ import type {
   SessionStrategy,
   KeystoneContext,
   BaseKeystone,
+  SerializedAdminMeta,
 } from '@keystone-next/types';
 import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
 
@@ -14,7 +15,7 @@ import { gql } from '../schema';
 export function createGraphQLSchema(
   config: KeystoneConfig,
   keystone: BaseKeystone,
-  adminMeta: any,
+  adminMeta: SerializedAdminMeta,
   sessionStrategy?: SessionStrategy<unknown>,
   sessionImplementation?: any
 ) {
