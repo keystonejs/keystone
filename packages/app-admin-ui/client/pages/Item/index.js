@@ -209,11 +209,12 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
     }
 
     // Workaround for apollo error https://github.com/apollographql/apollo-client/issues/5708
-    if (mutationResult.errors && mutationResult.errors.length > 0)
+    if (mutationResult.errors && mutationResult.errors.length > 0) {
       return handleCreateUpdateMutationError({
         error: { graphQLErrors: mutationResult.errors },
         addToast,
       });
+    }
 
     setValidationErrors({});
     setValidationWarnings({});
