@@ -73,6 +73,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
             items: { create: orderItems },
             user: { connect: { id: userId } },
           },
+          resolveFields: false,
         });
         // 6. Clean up - clear the users cart, delete cartItems
         const cartItemIds = User.cart.map((cartItem: any) => cartItem.id);
@@ -104,6 +105,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
           return await context.lists.CartItem.updateOne({
             id: existingCartItem.id,
             data: { quantity: quantity + 1 },
+            resolveFields: false,
           });
         } else {
           // 4. If its not, create a fresh CartItem for that user!
@@ -112,6 +114,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
               product: { connect: { id: productId } },
               user: { connect: { id: userId } },
             },
+            resolveFields: false,
           });
         }
       },
