@@ -16,7 +16,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
 
         // Users can't create orders directly because of our access control, so here we create a
         // new context with full access and use the items API it provides
-        const superContext = context.createContext({ skipAccessControl: true });
+        const sudoContext = context.createContext({ skipAccessControl: true });
 
         // 1. Query the current user and make sure they are signed in
         const userId = session.itemId;
@@ -71,7 +71,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
 
         // 5. create the Order
         console.log('Creating the order');
-        const order = await superContext.lists.Order.createOne({
+        const order = await sudoContext.lists.Order.createOne({
           data: {
             total: charge.amount,
             charge: `${charge.id}`,
