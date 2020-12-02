@@ -4,7 +4,7 @@ import Path from 'path';
 import fastGlob from 'fast-glob';
 import prettier from 'prettier';
 import resolve from 'resolve';
-import type { KeystoneSystem } from '@keystone-next/types';
+import type { KeystoneConfig, KeystoneSystem } from '@keystone-next/types';
 import { writeAdminFiles } from '@keystone-next/admin-ui/templates';
 import { AdminFileToWrite, MaybePromise } from '@keystone-next/types';
 
@@ -66,7 +66,11 @@ async function writeAdminFilesToDisk(
   ).flat();
 }
 
-export const generateAdminUI = async (system: KeystoneSystem, cwd: string) => {
+export const generateAdminUI = async (
+  config: KeystoneConfig,
+  system: KeystoneSystem,
+  cwd: string
+) => {
   const projectAdminPath = Path.resolve(cwd, './.keystone/admin');
 
   await fs.remove(projectAdminPath);
@@ -75,17 +79,19 @@ export const generateAdminUI = async (system: KeystoneSystem, cwd: string) => {
   const filesWritten = new Set(
     [
       ...(await writeAdminFilesToDisk(
-        system.config.ui?.getAdditionalFiles?.map(x => x(system)) ?? [],
+        config.ui?.getAdditionalFiles?.map(x => x(system)) ?? [],
         projectAdminPath
       )),
     ].map(x => Path.normalize(x))
   );
-  const baseFiles = writeAdminFiles(system, configFile, projectAdminPath).filter(x => {
-    if (filesWritten.has(Path.normalize(x.outputPath))) {
-      return false;
+  const baseFiles = writeAdminFiles(config.session, system, configFile, projectAdminPath).filter(
+    x => {
+      if (filesWritten.has(Path.normalize(x.outputPath))) {
+        return false;
+      }
+      return true;
     }
-    return true;
-  });
+  );
 
   await writeAdminFilesToDisk([baseFiles], projectAdminPath);
   const userPagesDir = Path.join(cwd, 'admin', 'pages');

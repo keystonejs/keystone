@@ -17,7 +17,7 @@ function generateSessionId() {
   return uid(24);
 }
 
-function sessionStrategy<TSessionStrategy extends SessionStrategy<any>>(
+function asSessionStrategy<TSessionStrategy extends SessionStrategy<any>>(
   sessionStrategy: TSessionStrategy
 ): TSessionStrategy {
   return sessionStrategy;
@@ -121,7 +121,7 @@ export function statelessSessions({
   path = '/',
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
-}: StatelessSessionsOptions) {
+}: StatelessSessionsOptions): () => SessionStrategy<Record<string, any>> {
   return () => {
     if (!secret) {
       throw new Error('You must specify a session secret to use sessions');
@@ -129,7 +129,7 @@ export function statelessSessions({
     if (secret.length < 32) {
       throw new Error('The session secret must be at least 32 characters long');
     }
-    return sessionStrategy({
+    return asSessionStrategy({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async get({ req, system }) {
         if (!req.headers.cookie) return;
@@ -195,14 +195,14 @@ export function storedSessions({
       async start({ res, data, system }) {
         let sessionId = generateSessionId();
         await store.set(sessionId, data);
-        return start({ res, data: { sessionId }, system });
+        return start?.({ res, data: { sessionId }, system }) || '';
       },
       async end({ req, res, system }) {
         let sessionId = await get({ req, system });
         if (typeof sessionId === 'string') {
           await store.delete(sessionId);
         }
-        await end({ req, res, system });
+        await end?.({ req, res, system });
       },
     };
   };
@@ -211,7 +211,7 @@ export function storedSessions({
 /**
  * This is the function createSystem uses to implement the session strategy provided
  */
-export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
+export function implementSession<T>(sessionStrategy: SessionStrategy<T>) {
   let isConnected = false;
   return {
     async createContext(
@@ -228,9 +228,7 @@ export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
       const endSession = sessionStrategy.end;
       return {
         session,
-        startSession: startSession
-          ? (data: unknown) => startSession({ res, data, system })
-          : undefined,
+        startSession: startSession ? (data: T) => startSession({ res, data, system }) : undefined,
         endSession: endSession ? () => endSession({ req, res, system }) : undefined,
       };
     },

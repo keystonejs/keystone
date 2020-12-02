@@ -1,4 +1,3 @@
-import type { IncomingMessage, ServerResponse } from 'http';
 import { Keystone } from '@keystonejs/keystone';
 import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexAdapter } from '@keystonejs/adapter-knex';
@@ -99,7 +98,6 @@ export function createSystem(config: KeystoneConfig): KeystoneSystem {
     sessionImplementation
   );
 
-  const createSessionContext = sessionImplementation?.createContext;
   const createContext = makeCreateContext({ keystone, graphQLSchema });
 
   let system = {
@@ -107,15 +105,8 @@ export function createSystem(config: KeystoneConfig): KeystoneSystem {
     adminMeta,
     graphQLSchema,
     views,
-    createSessionContext: createSessionContext
-      ? (req: IncomingMessage, res: ServerResponse) => createSessionContext(req, res, system)
-      : undefined,
+    sessionImplementation,
     createContext,
-    async createContextFromRequest(req: IncomingMessage, res: ServerResponse) {
-      return createContext({
-        sessionContext: await sessionImplementation?.createContext(req, res, system),
-      });
-    },
     config,
   };
 

@@ -6,7 +6,7 @@ import type {
   BaseKeystone,
 } from '@keystone-next/types';
 
-import { itemAPIForList } from './itemAPI';
+import { itemAPIForList, getArgsFactory } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 
 export function makeCreateContext({
@@ -16,7 +16,12 @@ export function makeCreateContext({
   graphQLSchema: GraphQLSchema;
   keystone: BaseKeystone;
 }) {
-  const itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
+  // We precompute these helpers here rather than every time createContext is called
+  // because they require parsing the entire schema, which is potentially expensive.
+  const getArgsByList: Record<string, ReturnType<typeof getArgsFactory>> = {};
+  for (const [listKey, list] of Object.entries(keystone.lists)) {
+    getArgsByList[listKey] = getArgsFactory(list, graphQLSchema);
+  }
 
   const createContext = ({
     sessionContext,
@@ -45,6 +50,9 @@ export function makeCreateContext({
       }
       return result.data as Record<string, any>;
     };
+    const itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
+    const _sessionContext = sessionContext;
+    const _skipAccessControl = skipAccessControl;
     const contextToReturn: KeystoneContext = {
       schemaName: 'public',
       ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
@@ -63,20 +71,21 @@ export function makeCreateContext({
         schema: graphQLSchema,
       } as KeystoneGraphQLAPI<any>,
       maxTotalResults: (keystone as any).queryLimits.maxTotalResults,
-      createContext,
+      createContext: ({
+        sessionContext = _sessionContext,
+        skipAccessControl = _skipAccessControl,
+      } = {}) => createContext({ sessionContext, skipAccessControl }),
       ...sessionContext,
       // Note: These two fields let us use the server-side-graphql-client library.
       // We may want to remove them once the updated itemAPI w/ resolveFields is available.
       executeGraphQL: rawGraphQL,
       gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
     };
-
+    for (const [listKey, list] of Object.entries(keystone.lists)) {
+      itemAPI[listKey] = itemAPIForList(list, contextToReturn, getArgsByList[listKey]);
+    }
     return contextToReturn;
   };
-
-  for (const [listKey, list] of Object.entries(keystone.lists)) {
-    itemAPI[listKey] = itemAPIForList(list, graphQLSchema, createContext);
-  }
 
   return createContext;
 }

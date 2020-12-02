@@ -144,10 +144,13 @@ export type KeystoneSystem = {
     sessionContext?: SessionContext;
     skipAccessControl?: boolean;
   }) => KeystoneContext;
-  createContextFromRequest: (req: IncomingMessage, res: ServerResponse) => Promise<KeystoneContext>;
-  createSessionContext:
-    | ((req: IncomingMessage, res: ServerResponse) => Promise<SessionContext>)
-    | undefined;
+  sessionImplementation?: {
+    createContext(
+      req: IncomingMessage,
+      res: ServerResponse,
+      system: KeystoneSystem
+    ): Promise<SessionContext>;
+  };
   views: string[];
 };
 
