@@ -33,7 +33,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
   `,
   resolvers: {
     Mutation: {
-      topPost: async (root, { userId } : { userId: string }, context) => {
+      topPost: (root, { userId } : { userId: string }, context) => {
         return context.lists.Post.findMany({
             where: { user: { id: userId } },
             first: 1,
