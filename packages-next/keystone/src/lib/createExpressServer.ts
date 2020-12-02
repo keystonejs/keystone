@@ -59,7 +59,7 @@ export const createExpressServer = async (config: KeystoneConfig, system: Keysto
   console.log('✨ Preparing Next.js app');
   const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
   const handle = app.getRequestHandler();
-  await Promise.all([app.prepare(), system.keystone.connect()]);
+  await app.prepare();
 
   console.log('✨ Preparing GraphQL Server');
   addApolloServer({ server, system });
