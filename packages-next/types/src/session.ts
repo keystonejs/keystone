@@ -7,13 +7,13 @@ export type SessionStrategy<StoredSessionData, StartSessionData = never> = {
   disconnect?: () => Promise<void>;
   // -- these two are invoked from mutations
   // creates token from data, sets the cookie with token via res, returns token
-  start?: (args: {
+  start: (args: {
     res: ServerResponse;
     data: StoredSessionData | StartSessionData;
     system: KeystoneSystem;
   }) => Promise<string>;
   // resets the cookie via res
-  end?: (args: {
+  end: (args: {
     req: IncomingMessage;
     res: ServerResponse;
     system: KeystoneSystem;

@@ -6,7 +6,7 @@ import type {
   BaseKeystone,
 } from '@keystone-next/types';
 
-import { itemAPIForList } from './itemAPI';
+import { itemAPIForList, getArgsFactory } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 
 export function makeCreateContext({
@@ -16,6 +16,13 @@ export function makeCreateContext({
   graphQLSchema: GraphQLSchema;
   keystone: BaseKeystone;
 }) {
+  // We precompute these helpers here rather than every time createContext is called
+  // because they require parsing the entire schema, which is potentially expensive.
+  const getArgsByList: Record<string, ReturnType<typeof getArgsFactory>> = {};
+  for (const [listKey, list] of Object.entries(keystone.lists)) {
+    getArgsByList[listKey] = getArgsFactory(list, graphQLSchema);
+  }
+
   const createContext = ({
     sessionContext,
     skipAccessControl = false,
@@ -75,7 +82,7 @@ export function makeCreateContext({
       gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
     };
     for (const [listKey, list] of Object.entries(keystone.lists)) {
-      itemAPI[listKey] = itemAPIForList(list, contextToReturn, graphQLSchema);
+      itemAPI[listKey] = itemAPIForList(list, contextToReturn, getArgsByList[listKey]);
     }
     return contextToReturn;
   };
