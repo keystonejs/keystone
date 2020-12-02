@@ -3,21 +3,14 @@
 import { jsx, useTheme } from '@keystone-ui/core';
 import { RenderElementProps } from 'slate-react';
 
-import { renderQuoteElement } from './quote';
 import { renderColumnsElement } from './columns';
 import { ComponentBlocksElement, ComponentInlineProp } from './component-blocks';
-import { PanelElement } from './panel';
 import { LinkElement } from './link';
 import { HeadingElement } from './heading';
 import { BlockquoteElement } from './blockquote';
 import { RelationshipElement } from './relationship';
 
 export const renderElement = (props: RenderElementProps) => {
-  // TODO: probably use this method for the access boundary as well, is this
-  // a good pattern for plugging in custom element renderers?
-  const quoteElement = renderQuoteElement(props);
-  if (quoteElement) return quoteElement;
-
   const columnsElement = renderColumnsElement(props);
   if (columnsElement) return columnsElement;
 
@@ -29,8 +22,6 @@ export const renderElement = (props: RenderElementProps) => {
     case 'component-inline-prop':
     case 'component-block-prop':
       return <ComponentInlineProp {...props} />;
-    case 'panel':
-      return <PanelElement {...props} />;
     case 'heading':
       return <HeadingElement {...props} />;
     case 'link':
@@ -59,16 +50,21 @@ export const renderElement = (props: RenderElementProps) => {
 /* Block Elements */
 
 const CodeElement = ({ attributes, children }: RenderElementProps) => {
+  const { colors, radii, spacing, typography } = useTheme();
   return (
     <pre
+      spellCheck="false"
       css={{
-        color: '#2C5282',
-        backgroundColor: 'lightgray',
-        borderRadius: useTheme().radii.xsmall,
+        backgroundColor: colors.backgroundDim,
+        border: `1px solid ${colors.border}`,
+        borderRadius: radii.xsmall,
+        fontFamily: typography.fontFamily.monospace,
+        fontSize: typography.fontSize.small,
+        padding: `${spacing.small}px ${spacing.medium}px`,
       }}
       {...attributes}
     >
-      <code>{children}</code>
+      <code css={{ fontFamily: 'inherit' }}>{children}</code>
     </pre>
   );
 };

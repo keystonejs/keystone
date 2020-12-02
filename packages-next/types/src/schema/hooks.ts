@@ -1,4 +1,5 @@
-import type { GraphQLContext, BaseGeneratedListTypes } from '../utils';
+import type { KeystoneContext } from '../';
+import type { BaseGeneratedListTypes } from '../utils';
 
 export type ListHooks<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   /**
@@ -61,7 +62,7 @@ type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedLis
       resolvedData: TGeneratedListTypes['inputs']['update'];
     }
 ) & {
-  context: GraphQLContext;
+  context: KeystoneContext;
   /**
    * The key of the list that the operation is occurring on
    */
@@ -97,7 +98,7 @@ type BeforeOrAfterChangeHook<TGeneratedListTypes extends BaseGeneratedListTypes>
 type ArgsForDeleteOperation<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   operation: 'delete';
   existingItem: TGeneratedListTypes['backing'];
-  context: GraphQLContext;
+  context: KeystoneContext;
   listKey: string;
 };
 

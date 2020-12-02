@@ -11,7 +11,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
   `,
   resolvers: {
     Mutation: {
-      checkout: async (root: any, { token }: { token: string }, context: any) => {
+      checkout: async (root, { token }: { token: string }, context) => {
         const { session } = context;
         // 1. Query the current user and make sure they are signed in
         const userId = session.itemId;
@@ -81,7 +81,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         // 7. Return the Order to the client
         return order;
       },
-      addToCart: async (root: any, { productId }: { productId: string }, context: any) => {
+      addToCart: async (root, { productId }: { productId: string }, context) => {
         const { session } = context;
         // 1. Make sure they are signed in
         const userId = session.itemId;

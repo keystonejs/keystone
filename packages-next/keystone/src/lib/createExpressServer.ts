@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from 'http';
 import Path from 'path';
 import url from 'url';
 import cors from 'cors';
@@ -11,7 +12,7 @@ import type { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
 const dev = process.env.NODE_ENV !== 'production';
 
 const addApolloServer = ({ server, system }: { server: any; system: KeystoneSystem }) => {
-  const { graphQLSchema, createContextFromRequest } = system;
+  const { graphQLSchema, createContext, sessionImplementation } = system;
   const apolloServer = new ApolloServer({
     // FIXME: Support for file handling configuration
     // maxFileSize: 200 * 1024 * 1024,
@@ -20,7 +21,10 @@ const addApolloServer = ({ server, system }: { server: any; system: KeystoneSyst
     // FIXME: allow the dev to control where/when they get a playground
     playground: { settings: { 'request.credentials': 'same-origin' } },
     formatError, // TODO: this needs to be discussed
-    context: ({ req, res }) => createContextFromRequest(req, res),
+    context: async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
+      createContext({
+        sessionContext: await sessionImplementation?.createContext(req, res, system),
+      }),
     // FIXME: support for apollo studio tracing
     // ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
     //   ? { tracing: true }
@@ -39,7 +43,7 @@ const addApolloServer = ({ server, system }: { server: any; system: KeystoneSyst
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql', cors: false });
 };
 
-export const createAdminUIServer = async (config: KeystoneConfig, system: KeystoneSystem) => {
+export const createExpressServer = async (config: KeystoneConfig, system: KeystoneSystem) => {
   const server = express();
 
   if (config.server?.cors) {
@@ -60,7 +64,7 @@ export const createAdminUIServer = async (config: KeystoneConfig, system: Keysto
   console.log('✨ Preparing GraphQL Server');
   addApolloServer({ server, system });
 
-  const publicPages = system.config.ui?.publicPages ?? [];
+  const publicPages = config.ui?.publicPages ?? [];
 
   server.use(async (req, res) => {
     const { pathname } = url.parse(req.url);
@@ -68,11 +72,12 @@ export const createAdminUIServer = async (config: KeystoneConfig, system: Keysto
       handle(req, res);
       return;
     }
-    const session = (await system.createSessionContext?.(req, res))?.session;
-    const isValidSession = system.config.ui?.isAccessAllowed
-      ? await system.config.ui.isAccessAllowed({ session })
+    const session = (await system.sessionImplementation?.createContext?.(req, res, system))
+      ?.session;
+    const isValidSession = config.ui?.isAccessAllowed
+      ? await config.ui.isAccessAllowed({ session })
       : session !== undefined;
-    const maybeRedirect = await system.config.ui?.pageMiddleware?.({
+    const maybeRedirect = await config.ui?.pageMiddleware?.({
       req,
       session,
       isValidSession,

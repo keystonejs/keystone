@@ -2,7 +2,7 @@ import { mergeSchemas } from '@graphql-tools/merge';
 import { GraphQLSchema } from 'graphql';
 import { gql } from '../apollo';
 import { StaticAdminMetaQueryWithoutTypeNames } from '../admin-meta-graphql';
-import { KeystoneSystem } from '@keystone-next/types';
+import { KeystoneSystem, KeystoneContext } from '@keystone-next/types';
 
 let typeDefs = gql`
   type Query {
@@ -141,8 +141,12 @@ export function adminMetaSchemaExtension({
         },
       },
       KeystoneMeta: {
-        adminMeta(rootVal: any, args: any, context: any) {
-          if (context.isAdminUIBuildProcess || isAccessAllowed === undefined) {
+        adminMeta(
+          rootVal: any,
+          args: any,
+          context: { isAdminUIBuildProcess: true } | KeystoneContext
+        ) {
+          if ('isAdminUIBuildProcess' in context || isAccessAllowed === undefined) {
             return staticAdminMeta;
           }
           return Promise.resolve(isAccessAllowed({ session: context.session })).then(isAllowed => {

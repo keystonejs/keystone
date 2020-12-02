@@ -1,5 +1,17 @@
 # @keystone-ui/tooltip
 
+## 1.0.3
+
+### Patch Changes
+
+- [`fa12a18b0`](https://github.com/keystonejs/keystone/commit/fa12a18b077367563b1b69db55274e47a1bd5027) [#4377](https://github.com/keystonejs/keystone/pull/4377) Thanks [@jossmac](https://github.com/jossmac)! - Update apply-ref dependency
+
+* [`eddd7e795`](https://github.com/keystonejs/keystone/commit/eddd7e79599e20f5bef61f240d874b37d0a084c4) [#4376](https://github.com/keystonejs/keystone/pull/4376) Thanks [@jossmac](https://github.com/jossmac)! - tidy the document field; primarily the toolbar
+
+* Updated dependencies [[`8b12f795d`](https://github.com/keystonejs/keystone/commit/8b12f795d64dc085ca663921aa6826350d234cd0), [`55a04a100`](https://github.com/keystonejs/keystone/commit/55a04a1004b7f15fcd41b4935d74fd1847c9deeb), [`f4a855c71`](https://github.com/keystonejs/keystone/commit/f4a855c71e966ef3ebc894a3b0f1af51e5182394), [`eddd7e795`](https://github.com/keystonejs/keystone/commit/eddd7e79599e20f5bef61f240d874b37d0a084c4)]:
+  - @keystone-ui/popover@1.1.0
+  - @keystone-ui/core@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes

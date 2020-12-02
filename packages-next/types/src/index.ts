@@ -1,11 +1,5 @@
 import type { FieldAccessControl } from './schema/access-control';
-import type {
-  BaseGeneratedListTypes,
-  JSONValue,
-  GqlNames,
-  GraphQLContext,
-  MaybePromise,
-} from './utils';
+import type { BaseGeneratedListTypes, JSONValue, GqlNames, MaybePromise } from './utils';
 import type { ListHooks } from './schema/hooks';
 import { SessionStrategy } from './session';
 import { SchemaConfig } from './schema';
@@ -49,11 +43,23 @@ export type KeystoneAdminUIConfig = {
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 
+// DatabaseAPIs is used to provide access to the underlying database abstraction through
+// context and other developer-facing APIs in Keystone, so they can be used easily.
+
+// The implementation is very basic, and assumes there's a single adapter keyed by the constructor
+// name. Since there's no option _not_ to do that using the new config, we probably don't need
+// anything more sophisticated than this.
+export type DatabaseAPIs = {
+  knex?: any;
+  mongoose?: any;
+  prisma?: any;
+};
+
 export type KeystoneConfig = {
   db: {
     adapter: 'mongoose' | 'knex';
     url: string;
-    onConnect?: (keystone: any) => any;
+    onConnect?: (args: KeystoneContext) => Promise<void>;
   };
   graphql?: {
     path?: string;
@@ -123,72 +129,117 @@ export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
 };
 
 /* TODO: Review these types */
-type FieldDefaultValueArgs<T> = { context: GraphQLContext; originalInput?: T };
+type FieldDefaultValueArgs<T> = { context: KeystoneContext; originalInput?: T };
 export type FieldDefaultValue<T> =
   | T
   | null
   | MaybePromise<(args: FieldDefaultValueArgs<T>) => T | null | undefined>;
 
 export type KeystoneSystem = {
-  keystone: any;
+  keystone: BaseKeystone;
   config: KeystoneConfig;
   adminMeta: SerializedAdminMeta;
   graphQLSchema: GraphQLSchema;
-  createContext: (args: { sessionContext?: SessionContext; skipAccessControl?: boolean }) => any;
-  createContextFromRequest: (req: IncomingMessage, res: ServerResponse) => any;
-  createSessionContext:
-    | ((req: IncomingMessage, res: ServerResponse) => Promise<SessionContext>)
-    | undefined;
+  createContext: (args: {
+    sessionContext?: SessionContext;
+    skipAccessControl?: boolean;
+  }) => KeystoneContext;
+  sessionImplementation?: {
+    createContext(
+      req: IncomingMessage,
+      res: ServerResponse,
+      system: KeystoneSystem
+    ): Promise<SessionContext>;
+  };
   views: string[];
 };
 
+export type AccessControlContext = {
+  getListAccessControlForUser: any; // TODO
+  getFieldAccessControlForUser: any; // TODO
+};
+
 export type SessionContext = {
-  session: any;
+  // Note: session is typed like this to acknowledge the default session shape
+  // if you're using keystone's built-in session implementation, but we don't
+  // actually know what it will look like.
+  session?:
+    | {
+        itemId: string;
+        listKey: string;
+        data?: Record<string, any>;
+      }
+    | any;
   startSession?(data: any): Promise<string>;
-  endSession?(data: any): Promise<void>;
+  endSession?(): Promise<void>;
+};
+
+export type KeystoneContext = {
+  schemaName: 'public';
+  lists: KeystoneListsAPI<any>;
+  totalResults: number;
+  keystone: BaseKeystone;
+  graphql: KeystoneGraphQLAPI<any>;
+  /** @deprecated */
+  executeGraphQL: any; // TODO: type this
+  /** @deprecated */
+  gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
+  maxTotalResults: number;
+  createContext: KeystoneSystem['createContext'];
+} & AccessControlContext &
+  SessionContext &
+  DatabaseAPIs;
+
+export type GraphQLResolver = (root: any, args: any, context: KeystoneContext) => any;
+
+export type GraphQLSchemaExtension = {
+  typeDefs: string;
+  resolvers: Record<string, Record<string, GraphQLResolver>>;
+};
+
+// TODO: This is only a partial typing of the core Keystone class.
+// We should definitely invest some time into making this more correct.
+export type BaseKeystone = {
+  adapters: Record<string, any>;
+  createList: (
+    key: string,
+    config: {
+      fields: Record<string, any>;
+      access: any;
+      queryLimits?: { maxResults?: number };
+      schemaDoc?: string;
+      listQueryName?: string;
+      itemQueryName?: string;
+      hooks?: Record<string, any>;
+    }
+  ) => BaseKeystoneList;
+  connect: () => Promise<void>;
+  lists: Record<string, BaseKeystoneList>;
 };
 
 // TODO: This needs to be reviewed and expanded
 export type BaseKeystoneList = {
   key: string;
+  fieldsByPath: Record<string, BaseKeystoneField>;
+  fields: BaseKeystoneField[];
+  adapter: { itemsQuery: (args: Record<string, any>, extra: Record<string, any>) => any };
   adminUILabels: {
     label: string;
     singular: string;
     plural: string;
     path: string;
   };
-  gqlNames: {
-    outputTypeName: string;
-    itemQueryName: string;
-    listQueryName: string;
-    listQueryMetaName: string;
-    listMetaName: string;
-    listSortName: string;
-    deleteMutationName: string;
-    updateMutationName: string;
-    createMutationName: string;
-    deleteManyMutationName: string;
-    updateManyMutationName: string;
-    createManyMutationName: string;
-    whereInputName: string;
-    whereUniqueInputName: string;
-    updateInputName: string;
-    createInputName: string;
-    updateManyInputName: string;
-    createManyInputName: string;
-    relateToManyInputName: string;
-    relateToOneInputName: string;
-  };
+  gqlNames: GqlNames;
   listQuery(
-    args: Record<string, any>,
-    context: any,
+    args: BaseGeneratedListTypes['args']['listQuery'],
+    context: KeystoneContext,
     gqlName?: string,
     info?: any,
     from?: any
   ): Promise<Record<string, any>[]>;
   listQueryMeta(
-    args: Record<string, any>,
-    context: any,
+    args: BaseGeneratedListTypes['args']['listQuery'],
+    context: KeystoneContext,
     gqlName?: string,
     info?: any,
     from?: any
@@ -197,37 +248,46 @@ export type BaseKeystoneList = {
   };
   itemQuery(
     args: { where: { id: string } },
-    context: any,
+    context: KeystoneContext,
     gqlName?: string,
     info?: any
   ): Promise<Record<string, any>>;
   createMutation(
     data: Record<string, any>,
-    context: any,
+    context: KeystoneContext,
     mutationState?: any
   ): Promise<Record<string, any>>;
   createManyMutation(
     data: Record<string, any>[],
-    context: any,
+    context: KeystoneContext,
     mutationState?: any
   ): Promise<Record<string, any>[]>;
   updateMutation(
     id: string,
     data: Record<string, any>,
-    context: any,
+    context: KeystoneContext,
     mutationState?: any
   ): Promise<Record<string, any>>;
   updateManyMutation(
     data: Record<string, any>,
-    context: any,
+    context: KeystoneContext,
     mutationState?: any
   ): Promise<Record<string, any>[]>;
-  deleteMutation(id: string, context: any, mutationState?: any): Promise<Record<string, any>>;
+  deleteMutation(
+    id: string,
+    context: KeystoneContext,
+    mutationState?: any
+  ): Promise<Record<string, any>>;
   deleteManyMutation(
     ids: string[],
-    context: any,
+    context: KeystoneContext,
     mutationState?: any
   ): Promise<Record<string, any>[]>;
+};
+
+type BaseKeystoneField = {
+  gqlCreateInputFields: (arg: { schemaName: string }) => void;
+  getBackingTypes: () => Record<string, { optional: true; type: 'string | null' }>;
 };
 
 type GraphQLExecutionArguments = {
@@ -240,7 +300,7 @@ export type KeystoneGraphQLAPI<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
 > = {
-  createContext: (args: { sessionContext?: SessionContext; skipAccessControl?: boolean }) => any;
+  createContext: KeystoneSystem['createContext'];
   schema: GraphQLSchema;
 
   run: (args: GraphQLExecutionArguments) => Promise<Record<string, any>>;

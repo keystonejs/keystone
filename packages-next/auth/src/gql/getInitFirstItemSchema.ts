@@ -1,3 +1,5 @@
+import type { GraphQLSchemaExtension, BaseKeystone } from '@keystone-next/types';
+
 import { AuthGqlNames } from '../types';
 
 export function getInitFirstItemSchema({
@@ -11,8 +13,8 @@ export function getInitFirstItemSchema({
   fields: string[];
   itemData: Record<string, any> | undefined;
   gqlNames: AuthGqlNames;
-  keystone: any;
-}) {
+  keystone: BaseKeystone;
+}): GraphQLSchemaExtension {
   return {
     typeDefs: `
         input ${gqlNames.CreateInitialInput} {
@@ -34,7 +36,11 @@ export function getInitFirstItemSchema({
       `,
     resolvers: {
       Mutation: {
-        async [gqlNames.createInitialItem](rootVal: any, { data }: any, context: any) {
+        async [gqlNames.createInitialItem](rootVal, { data }, context) {
+          if (!context.startSession) {
+            throw new Error('No session implementation available on context');
+          }
+
           const itemAPI = context.lists[listKey];
           const count = await itemAPI.count({});
           if (count !== 0) {

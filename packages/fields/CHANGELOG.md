@@ -1,5 +1,22 @@
 # @keystonejs/fields
 
+## 20.1.3
+
+### Patch Changes
+
+- [`abdaeb9c1`](https://github.com/keystonejs/keystone/commit/abdaeb9c17a0f1d8e6eda1178d79107ac8770058) [#4421](https://github.com/keystonejs/keystone/pull/4421) Thanks [@miguelvvs](https://github.com/miguelvvs)! - Fixed a bug where the File field would show old state after an item is saved
+
+## 20.1.2
+
+### Patch Changes
+
+- [`038b0ae65`](https://github.com/keystonejs/keystone/commit/038b0ae6586f8673de22046842b2ef993b0e1937) [#4395](https://github.com/keystonejs/keystone/pull/4395) Thanks [@miguelvvs](https://github.com/miguelvvs)! - Cancel method was modified to clear the hidden file input and be able to pick exactly the same file that was selected before the cancel action.
+
+* [`4eef4dc55`](https://github.com/keystonejs/keystone/commit/4eef4dc5587cc06f08ead5d5d05db2e9a786b8bc) [#4409](https://github.com/keystonejs/keystone/pull/4409) Thanks [@timleslie](https://github.com/timleslie)! - Fixed [issue](https://github.com/keystonejs/keystone/issues/4310) with creating `Slug` fields when `{ queryLimits: { maxResults } }` is set.
+
+* Updated dependencies [[`fa12a18b0`](https://github.com/keystonejs/keystone/commit/fa12a18b077367563b1b69db55274e47a1bd5027)]:
+  - @keystonejs/app-admin-ui@7.3.11
+
 ## 20.1.1
 
 ### Patch Changes
