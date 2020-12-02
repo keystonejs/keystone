@@ -1,4 +1,4 @@
-import { GraphQLSchema, GraphQLObjectType } from 'graphql';
+import { GraphQLObjectType } from 'graphql';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { mapSchema } from '@graphql-tools/utils';
 import type {
@@ -19,12 +19,12 @@ export function createGraphQLSchema(
   sessionImplementation?: any
 ) {
   // @ts-ignore
-  const server = keystone.createApolloServer({
+  let graphQLSchema = keystone.createApolloServer({
     schemaName: 'public',
     dev: process.env.NODE_ENV === 'development',
-  });
-  const schemaFromApolloServer: GraphQLSchema = server.schema;
-  const schema = mapSchema(schemaFromApolloServer, {
+  }).schema;
+
+  graphQLSchema = mapSchema(graphQLSchema, {
     'MapperKind.OBJECT_TYPE'(type) {
       if (
         config.lists[type.name] !== undefined &&
@@ -43,7 +43,10 @@ export function createGraphQLSchema(
 
   // TODO: find a way to not pass keystone in here, if we can - it's too broad and makes
   // everything in the keystone instance public API
-  let graphQLSchema = config.extendGraphqlSchema?.(schema, keystone) || schema;
+  if (config.extendGraphqlSchema) {
+    graphQLSchema = config.extendGraphqlSchema(graphQLSchema, keystone);
+  }
+
   if (sessionStrategy?.end) {
     graphQLSchema = mergeSchemas({
       schemas: [graphQLSchema],
@@ -64,6 +67,7 @@ export function createGraphQLSchema(
       },
     });
   }
+
   graphQLSchema = adminMetaSchemaExtension({
     adminMeta,
     graphQLSchema,
