@@ -65,14 +65,7 @@ export function createGraphQLSchema(
     });
   }
 
-  graphQLSchema = adminMetaSchemaExtension({
-    adminMeta,
-    graphQLSchema,
-    isAccessAllowed:
-      config.session === undefined
-        ? undefined
-        : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined),
-    config,
-  });
+  graphQLSchema = adminMetaSchemaExtension({ adminMeta, graphQLSchema, config });
+
   return graphQLSchema;
 }
