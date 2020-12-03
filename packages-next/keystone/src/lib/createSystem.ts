@@ -7,8 +7,6 @@ import { createAdminMeta } from './createAdminMeta';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './createContext';
 
-import { implementSession } from '../session';
-
 export function createKeystone(
   config: KeystoneConfig,
   createContextFactory: () => ReturnType<typeof makeCreateContext>
@@ -87,15 +85,5 @@ export function createSystem(config: KeystoneConfig): KeystoneSystem {
 
   const createContext = makeCreateContext({ keystone, graphQLSchema });
 
-  let system = {
-    keystone,
-    adminMeta,
-    graphQLSchema,
-    allViews,
-    sessionImplementation: config.session ? implementSession(config.session()) : undefined,
-    createContext,
-    config,
-  };
-
-  return system;
+  return { keystone, adminMeta, graphQLSchema, allViews, createContext };
 }
