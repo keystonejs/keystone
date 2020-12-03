@@ -2,10 +2,11 @@ import path from 'path';
 import express from 'express';
 import { printSchema } from 'graphql';
 import * as fs from 'fs-extra';
+import prettier from 'prettier';
+import { generateAdminUI } from '@keystone-next/admin-ui/system';
 import { createSystem } from '../lib/createSystem';
 import { initConfig } from '../lib/initConfig';
 import { requireSource } from '../lib/requireSource';
-import { formatSource, generateAdminUI } from '../lib/generateAdminUI';
 import { createExpressServer } from '../lib/createExpressServer';
 import { printGeneratedTypes } from './schema-type-printer';
 
@@ -22,6 +23,13 @@ const devLoadingHTMLFilepath = path.join(
   'static',
   'dev-loading.html'
 );
+
+export const formatSource = (src: string, parser: 'babel' | 'babel-ts' = 'babel') =>
+  prettier.format(src, {
+    parser,
+    trailingComma: 'es5',
+    singleQuote: true,
+  });
 
 export const dev = async () => {
   console.log('🤞 Starting Keystone');
