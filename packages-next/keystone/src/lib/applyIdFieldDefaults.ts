@@ -2,7 +2,7 @@ import type { KeystoneConfig } from '@keystone-next/types';
 import { autoIncrement, mongoId } from '@keystone-next/fields';
 
 /* Validate lists config and default the id field */
-export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig {
+export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
   const lists: KeystoneConfig['lists'] = {};
   Object.keys(config.lists).forEach(key => {
     const listConfig = config.lists[key];
@@ -31,6 +31,5 @@ export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig {
     const fields = { id: idField, ...listConfig.fields };
     lists[key] = { ...listConfig, fields };
   });
-
-  return { ...config, lists };
+  return lists;
 }

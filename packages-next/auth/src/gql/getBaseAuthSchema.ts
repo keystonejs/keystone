@@ -54,7 +54,8 @@ export function getBaseAuthSchema({
           }
 
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const result = await validateSecret(
             list,
             identityField,

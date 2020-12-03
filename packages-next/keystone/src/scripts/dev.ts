@@ -3,16 +3,19 @@ import express from 'express';
 import { printSchema } from 'graphql';
 import * as fs from 'fs-extra';
 import { createSystem } from '../lib/createSystem';
+import { initConfig } from '../lib/initConfig';
 import { requireSource } from '../lib/requireSource';
 import { formatSource, generateAdminUI } from '../lib/generateAdminUI';
 import { createExpressServer } from '../lib/createExpressServer';
 import { printGeneratedTypes } from './schema-type-printer';
 
+// TODO: Read config path from process args
+const CONFIG_PATH = path.join(process.cwd(), 'keystone');
+
 // TODO: Read port from config or process args
 const PORT = process.env.PORT || 3000;
 
 // TODO: Don't generate or start an Admin UI if it isn't configured!!
-
 const devLoadingHTMLFilepath = path.join(
   path.dirname(require.resolve('@keystone-next/keystone/package.json')),
   'src',
@@ -27,7 +30,8 @@ export const dev = async () => {
   let expressServer: null | ReturnType<typeof express> = null;
 
   const initKeystone = async () => {
-    const config = requireSource(path.join(process.cwd(), 'keystone')).default;
+    const config = initConfig(requireSource(CONFIG_PATH).default);
+
     const system = createSystem(config);
     let printedSchema = printSchema(system.graphQLSchema);
     console.log('✨ Generating Schema');
