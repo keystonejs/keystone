@@ -28,11 +28,16 @@
     "@types/react": "^16.14.2",
     "apollo-upload-client": "^14.1.3",
     "clipboard-copy": "^4.0.1",
+    "express": "^4.17.1",
     "fast-deep-equal": "^3.1.3",
+    "fast-glob": "^3.2.4",
+    "fs-extra": "^9.0.1",
     "graphql": "^15.4.0",
     "next": "^9.5.5",
+    "prettier": "^2.2.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "resolve": "^1.19.0",
     "tabbable": "^5.1.4"
   },
   "engines": {
@@ -41,6 +46,7 @@
   "preconstruct": {
     "entrypoints": [
       "components/index.ts",
+      "system/index.ts",
       "templates/index.ts",
       "pages/*/index.tsx",
       "apollo.tsx",
