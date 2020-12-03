@@ -27,7 +27,7 @@ export function makeCreateContext({
     sessionContext,
     skipAccessControl = false,
   }: {
-    sessionContext?: SessionContext;
+    sessionContext?: SessionContext<any>;
     skipAccessControl?: boolean;
   } = {}): KeystoneContext => {
     const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, context, variables }) => {
