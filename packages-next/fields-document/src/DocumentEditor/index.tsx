@@ -315,10 +315,9 @@ export function DocumentEditor({
                 renderLeaf={renderLeaf}
               />
             </Slate>
-
             {
               // for debugging
-              true && <pre>{JSON.stringify(value, null, 2)}</pre>
+              false && <pre>{JSON.stringify(value, null, 2)}</pre>
             }
           </ComponentBlockProvider>
         </ColumnOptionsProvider>
