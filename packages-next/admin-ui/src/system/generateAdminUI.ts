@@ -4,9 +4,13 @@ import Path from 'path';
 import fastGlob from 'fast-glob';
 import prettier from 'prettier';
 import resolve from 'resolve';
-import type { KeystoneConfig, KeystoneSystem } from '@keystone-next/types';
-import { writeAdminFiles } from '@keystone-next/admin-ui/templates';
-import { AdminFileToWrite, MaybePromise } from '@keystone-next/types';
+import type {
+  KeystoneConfig,
+  KeystoneSystem,
+  AdminFileToWrite,
+  MaybePromise,
+} from '@keystone-next/types';
+import { writeAdminFiles } from '../templates';
 
 export const formatSource = (src: string, parser: 'babel' | 'babel-ts' = 'babel') =>
   prettier.format(src, {
