@@ -2,7 +2,7 @@ import { mergeSchemas } from '@graphql-tools/merge';
 import { GraphQLSchema } from 'graphql';
 import { gql } from '../apollo';
 import { StaticAdminMetaQueryWithoutTypeNames } from '../admin-meta-graphql';
-import { KeystoneSystem, KeystoneContext } from '@keystone-next/types';
+import { KeystoneSystem, KeystoneContext, KeystoneConfig } from '@keystone-next/types';
 
 let typeDefs = gql`
   type Query {
@@ -90,7 +90,7 @@ export function adminMetaSchemaExtension({
   config,
 }: {
   adminMeta: KeystoneSystem['adminMeta'];
-  config: KeystoneSystem['config'];
+  config: KeystoneConfig;
   graphQLSchema: GraphQLSchema;
 }) {
   type AdminMeta = StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta'];

@@ -2,16 +2,16 @@ import Path from 'path';
 import url from 'url';
 import next from 'next';
 import express from 'express';
-import type { KeystoneSystem } from '@keystone-next/types';
+import type { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
 
 const dev = process.env.NODE_ENV !== 'production';
 
-export const createAdminUIServer = async (system: KeystoneSystem) => {
+export const createAdminUIServer = async (ui: KeystoneConfig['ui'], system: KeystoneSystem) => {
   const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
   const handle = app.getRequestHandler();
   await app.prepare();
 
-  const publicPages = system.config.ui?.publicPages ?? [];
+  const publicPages = ui?.publicPages ?? [];
   return async (req: express.Request, res: express.Response) => {
     const { pathname } = url.parse(req.url);
     if (pathname?.startsWith('/_next')) {
@@ -21,15 +21,10 @@ export const createAdminUIServer = async (system: KeystoneSystem) => {
     const session = (
       await system.sessionImplementation?.createContext?.(req, res, system.createContext)
     )?.session;
-    const isValidSession = system.config.ui?.isAccessAllowed
-      ? await system.config.ui.isAccessAllowed({ session })
+    const isValidSession = ui?.isAccessAllowed
+      ? await ui.isAccessAllowed({ session })
       : session !== undefined;
-    const maybeRedirect = await system.config.ui?.pageMiddleware?.({
-      req,
-      session,
-      isValidSession,
-      system,
-    });
+    const maybeRedirect = await ui?.pageMiddleware?.({ req, session, isValidSession, system });
     if (maybeRedirect) {
       res.redirect(maybeRedirect.to);
       return;

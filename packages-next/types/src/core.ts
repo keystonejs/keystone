@@ -31,7 +31,10 @@ export type KeystoneAdminUIConfig = {
   publicPages?: string[];
   /** The basePath for the Admin UI App */
   path?: string;
-  getAdditionalFiles?: ((system: KeystoneSystem) => MaybePromise<AdminFileToWrite[]>)[];
+  getAdditionalFiles?: ((
+    config: KeystoneConfig,
+    system: KeystoneSystem
+  ) => MaybePromise<AdminFileToWrite[]>)[];
   pageMiddleware?: (args: {
     req: IncomingMessage;
     session: any;
@@ -131,7 +134,6 @@ export type CreateContext = (args: {
 
 export type KeystoneSystem = {
   keystone: BaseKeystone;
-  config: KeystoneConfig;
   adminMeta: SerializedAdminMeta;
   graphQLSchema: GraphQLSchema;
   createContext: CreateContext;

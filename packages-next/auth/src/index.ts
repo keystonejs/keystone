@@ -197,7 +197,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const additionalFiles: Auth['ui']['getAdditionalFiles'] = system => {
+  const additionalFiles: Auth['ui']['getAdditionalFiles'] = (config, system) => {
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
