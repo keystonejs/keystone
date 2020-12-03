@@ -63,7 +63,8 @@ export function getPasswordResetSchema({
       Mutation: {
         async [gqlNames.sendItemPasswordResetLink](root, args, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const tokenType = 'passwordReset';
           const identity = args[identityField];
           const result = await updateAuthToken(identityField, protectIdentities, identity, itemAPI);
@@ -89,6 +90,7 @@ export function getPasswordResetSchema({
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
                 [`${tokenType}RedeemedAt`]: null,
               },
+              resolveFields: false,
             });
 
             await passwordResetLink.sendToken({ itemId, identity, token });
@@ -97,7 +99,8 @@ export function getPasswordResetSchema({
         },
         async [gqlNames.redeemItemPasswordResetToken](root, args, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             tokenType,
@@ -126,12 +129,17 @@ export function getPasswordResetSchema({
           await itemAPI.updateOne({
             id: itemId,
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
+            resolveFields: false,
           });
 
           // Save the provided secret. Do this as a separate step as password validation
           // may fail, in which case we still want to mark the token as redeemed
           // (NB: Is this *really* what we want? -TL)
-          await itemAPI.updateOne({ id: itemId, data: { [secretField]: args[secretField] } });
+          await itemAPI.updateOne({
+            id: itemId,
+            data: { [secretField]: args[secretField] },
+            resolveFields: false,
+          });
 
           return null;
         },
@@ -139,7 +147,8 @@ export function getPasswordResetSchema({
       Query: {
         async [gqlNames.validateItemPasswordResetToken](root, args, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             tokenType,
