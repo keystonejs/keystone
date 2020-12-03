@@ -94,25 +94,16 @@ export function getAdminMetaSchema({
   type FieldMetaRootVal = AdminMeta['lists'][number]['fields'][number];
   type ListByKey = Record<string, ListMetaRootVal>;
   const lists: AdminMeta['lists'] = Object.values(adminMeta.lists).map(
-    ({ gqlNames, fields, ...list }) => {
-      return {
-        ...list,
-        itemQueryName: gqlNames.itemQueryName,
-        listQueryName: gqlNames.listQueryName.replace('all', ''),
-        fields: Object.keys(fields)
-          .filter(
-            fieldPath => config.lists[list.key].fields[fieldPath].config.access?.read !== false
-          )
-          .map(fieldPath => {
-            return {
-              path: fieldPath,
-              listKey: list.key,
-              ...fields[fieldPath],
-            };
-          }),
-      };
-    }
+    ({ gqlNames, fields, ...list }) => ({
+      ...list,
+      itemQueryName: gqlNames.itemQueryName,
+      listQueryName: gqlNames.listQueryName.replace('all', ''),
+      fields: Object.keys(fields)
+        .filter(path => config.lists[list.key].fields[path].config.access?.read !== false)
+        .map(path => ({ path, listKey: list.key, ...fields[path] })),
+    })
   );
+
   const listsByKey: ListByKey = {};
   for (const list of lists) {
     listsByKey[list.key] = list;
@@ -159,77 +150,67 @@ export function getAdminMetaSchema({
       },
       KeystoneAdminUIListMeta: {
         isHidden(rootVal: ListMetaRootVal, args: any, { session }: KeystoneContext) {
-          return runMaybeFunction(config.lists[rootVal.key].ui?.isHidden, false, { session });
+          const listConfig = config.lists[rootVal.key];
+          return runMaybeFunction(listConfig.ui?.isHidden, false, { session });
         },
         hideDelete(rootVal: ListMetaRootVal, args: any, { session }: KeystoneContext) {
-          return runMaybeFunction(config.lists[rootVal.key].ui?.hideDelete, false, {
-            session,
-          });
+          const listConfig = config.lists[rootVal.key];
+          return runMaybeFunction(listConfig.ui?.hideDelete, false, { session });
         },
         hideCreate(rootVal: ListMetaRootVal, args: any, { session }: KeystoneContext) {
-          return runMaybeFunction(config.lists[rootVal.key].ui?.hideCreate, false, {
-            session,
-          });
+          const listConfig = config.lists[rootVal.key];
+          return runMaybeFunction(listConfig.ui?.hideCreate, false, { session });
         },
       },
       KeystoneAdminUIFieldMeta: {
         createView(rootVal: FieldMetaRootVal): FieldIdentifier {
-          return {
-            fieldPath: rootVal.path,
-            listKey: rootVal.listKey,
-          };
+          return { fieldPath: rootVal.path, listKey: rootVal.listKey };
         },
         listView(rootVal: FieldMetaRootVal): FieldIdentifier {
-          return {
-            fieldPath: rootVal.path,
-            listKey: rootVal.listKey,
-          };
+          return { fieldPath: rootVal.path, listKey: rootVal.listKey };
         },
         itemView(
           rootVal: FieldMetaRootVal,
           args: { id: string }
         ): FieldIdentifier & { itemId: string } {
-          return {
-            listKey: rootVal.listKey,
-            fieldPath: rootVal.path,
-            itemId: args.id,
-          };
+          return { listKey: rootVal.listKey, fieldPath: rootVal.path, itemId: args.id };
         },
       },
       KeystoneAdminUIFieldMetaCreateView: {
         fieldMode(rootVal: FieldIdentifier, args: any, { session }: KeystoneContext) {
-          return runMaybeFunction(
-            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.createView
-              ?.fieldMode ?? config.lists[rootVal.listKey].ui?.createView?.defaultFieldMode,
-            'edit',
-            { session }
-          );
+          const listConfig = config.lists[rootVal.listKey];
+          const sessionFunction =
+            listConfig.fields[rootVal.fieldPath].config.ui?.createView?.fieldMode ??
+            listConfig.ui?.createView?.defaultFieldMode;
+          return runMaybeFunction(sessionFunction, 'edit', { session });
         },
       },
       KeystoneAdminUIFieldMetaListView: {
         fieldMode(rootVal: FieldIdentifier, args: any, { session }: KeystoneContext) {
-          return runMaybeFunction(
-            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.listView
-              ?.fieldMode ?? config.lists[rootVal.listKey].ui?.listView?.defaultFieldMode,
-            'read',
-            { session }
-          );
+          const listConfig = config.lists[rootVal.listKey];
+          const sessionFunction =
+            listConfig.fields[rootVal.fieldPath].config.ui?.listView?.fieldMode ??
+            listConfig.ui?.listView?.defaultFieldMode;
+          return runMaybeFunction(sessionFunction, 'read', { session });
         },
       },
       KeystoneAdminUIFieldMetaItemView: {
         async fieldMode(
           rootVal: FieldIdentifier & { itemId: string },
           args: any,
-          { lists, session }: KeystoneContext
+          context: KeystoneContext
         ) {
-          const item = await lists[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
-
-          return runMaybeFunction(
-            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.itemView
-              ?.fieldMode ?? config.lists[rootVal.listKey].ui?.itemView?.defaultFieldMode,
-            'edit',
-            { session, item }
-          );
+          const item = await context
+            .createContext({ skipAccessControl: true })
+            .lists[rootVal.listKey].findOne({
+              where: { id: rootVal.itemId },
+              resolveFields: false,
+            });
+          const listConfig = config.lists[rootVal.listKey];
+          const sessionFunction =
+            listConfig.fields[rootVal.fieldPath].config.ui?.itemView?.fieldMode ??
+            listConfig.ui?.itemView?.defaultFieldMode;
+          return runMaybeFunction(sessionFunction, 'edit', { session: context.session, item });
         },
       },
     },
@@ -240,10 +221,10 @@ type FieldIdentifier = { listKey: string; fieldPath: string };
 
 type NoInfer<T> = T & { [K in keyof T]: T[K] };
 
-function runMaybeFunction<Return extends string | boolean>(
-  sessionFunction: Return | ((args: any) => Return | Promise<Return>) | undefined,
+function runMaybeFunction<Return extends string | boolean, T>(
+  sessionFunction: Return | ((args: T) => Return | Promise<Return>) | undefined,
   defaultValue: NoInfer<Return>,
-  args: any
+  args: T
 ): Return | Promise<Return> {
   if (typeof sessionFunction === 'function') {
     return sessionFunction(args);
