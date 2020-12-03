@@ -14,14 +14,14 @@ export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) 
   };
   let uniqueViewCount = -1;
   const stringViewsToIndex: Record<string, number> = {};
-  const views: string[] = [];
-  function getViewId(view: string) {
-    if (stringViewsToIndex[view] === undefined) {
+  const allViews: string[] = [];
+  function getViewsId(views: string) {
+    if (stringViewsToIndex[views] === undefined) {
       uniqueViewCount++;
-      stringViewsToIndex[view] = uniqueViewCount;
-      views.push(view);
+      stringViewsToIndex[views] = uniqueViewCount;
+      allViews.push(views);
     }
-    return stringViewsToIndex[view];
+    return stringViewsToIndex[views];
   }
   Object.keys(lists).forEach(key => {
     const listConfig = lists[key];
@@ -61,13 +61,14 @@ export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) 
       const field: FieldType<any> = listConfig.fields[fieldKey];
       adminMeta.lists[key].fields[fieldKey] = {
         label: list.fieldsByPath[fieldKey].label,
-        views: getViewId(field.views),
-        customViews: field.config.ui?.views === undefined ? null : getViewId(field.config.ui.views),
+        views: getViewsId(field.views),
+        customViews:
+          field.config.ui?.views === undefined ? null : getViewsId(field.config.ui.views),
         fieldMeta: field.getAdminMeta?.(key, fieldKey, adminMeta) ?? null,
         isOrderable: list.fieldsByPath[fieldKey].isOrderable || fieldKey === 'id',
       };
     }
   });
 
-  return { adminMeta, views };
+  return { adminMeta, allViews };
 }
