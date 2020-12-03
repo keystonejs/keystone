@@ -61,7 +61,7 @@ export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) 
       const field: FieldType<any> = listConfig.fields[fieldKey];
       adminMeta.lists[key].fields[fieldKey] = {
         label: list.fieldsByPath[fieldKey].label,
-        views: getViewsId(field.views),
+        viewsIndex: getViewsId(field.views),
         customViews:
           field.config.ui?.views === undefined ? null : getViewsId(field.config.ui.views),
         fieldMeta: field.getAdminMeta?.(key, fieldKey, adminMeta) ?? null,
