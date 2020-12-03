@@ -86,14 +86,12 @@ let typeDefs = gql`
 
 export function adminMetaSchemaExtension({
   adminMeta,
-  isAccessAllowed,
   graphQLSchema,
   config,
 }: {
   adminMeta: KeystoneSystem['adminMeta'];
   config: KeystoneSystem['config'];
   graphQLSchema: GraphQLSchema;
-  isAccessAllowed: undefined | ((args: { session: any }) => boolean | Promise<boolean>);
 }) {
   const lists: StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta']['lists'] = Object.values(
     adminMeta.lists
@@ -130,6 +128,11 @@ export function adminMetaSchemaExtension({
 
   type ListMetaRootVal = typeof staticAdminMeta['lists'][number];
   type FieldMetaRootVal = ListMetaRootVal['fields'][number];
+
+  const isAccessAllowed =
+    config.session === undefined
+      ? undefined
+      : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined);
 
   return mergeSchemas({
     schemas: [graphQLSchema],
