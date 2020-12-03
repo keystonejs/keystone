@@ -63,7 +63,8 @@ export function getPasswordResetSchema({
       Mutation: {
         async [gqlNames.sendItemPasswordResetLink](root, args, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const tokenType = 'passwordReset';
           const identity = args[identityField];
           const result = await updateAuthToken(identityField, protectIdentities, identity, itemAPI);
@@ -97,7 +98,8 @@ export function getPasswordResetSchema({
         },
         async [gqlNames.redeemItemPasswordResetToken](root, args, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             tokenType,
@@ -139,7 +141,8 @@ export function getPasswordResetSchema({
       Query: {
         async [gqlNames.validateItemPasswordResetToken](root, args, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             tokenType,
