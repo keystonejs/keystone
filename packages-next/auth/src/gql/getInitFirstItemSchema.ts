@@ -49,7 +49,10 @@ export function getInitFirstItemSchema({
           }
 
           // Update system state
-          const item = await itemAPI.createOne({ data: { ...data, ...itemData } });
+          const item = await itemAPI.createOne({
+            data: { ...data, ...itemData },
+            resolveFields: false,
+          });
           const sessionToken = await context.startSession({ listKey, itemId: item.id });
           return { item, sessionToken };
         },

@@ -90,6 +90,7 @@ export function getPasswordResetSchema({
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
                 [`${tokenType}RedeemedAt`]: null,
               },
+              resolveFields: false,
             });
 
             await passwordResetLink.sendToken({ itemId, identity, token });
@@ -128,12 +129,17 @@ export function getPasswordResetSchema({
           await itemAPI.updateOne({
             id: itemId,
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
+            resolveFields: false,
           });
 
           // Save the provided secret. Do this as a separate step as password validation
           // may fail, in which case we still want to mark the token as redeemed
           // (NB: Is this *really* what we want? -TL)
-          await itemAPI.updateOne({ id: itemId, data: { [secretField]: args[secretField] } });
+          await itemAPI.updateOne({
+            id: itemId,
+            data: { [secretField]: args[secretField] },
+            resolveFields: false,
+          });
 
           return null;
         },
