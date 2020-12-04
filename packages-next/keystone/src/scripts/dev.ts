@@ -53,7 +53,7 @@ export const dev = async () => {
     await system.keystone.connect();
 
     console.log('✨ Generating Admin UI');
-    await generateAdminUI(config, system, process.cwd());
+    await generateAdminUI(config, system);
 
     expressServer = await createExpressServer(config, system);
     console.log(`👋 Admin UI Ready`);
