@@ -18,8 +18,9 @@ export const createAdminUIServer = async (system: KeystoneSystem) => {
       handle(req, res);
       return;
     }
-    const session = (await system.sessionImplementation?.createContext?.(req, res, system))
-      ?.session;
+    const session = (
+      await system.sessionImplementation?.createContext?.(req, res, system.createContext)
+    )?.session;
     const isValidSession = system.config.ui?.isAccessAllowed
       ? await system.config.ui.isAccessAllowed({ session })
       : session !== undefined;
