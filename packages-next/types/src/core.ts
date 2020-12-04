@@ -124,20 +124,22 @@ export type FieldDefaultValue<T> =
   | null
   | MaybePromise<(args: FieldDefaultValueArgs<T>) => T | null | undefined>;
 
+export type CreateContext = (args: {
+  sessionContext?: SessionContext<any>;
+  skipAccessControl?: boolean;
+}) => KeystoneContext;
+
 export type KeystoneSystem = {
   keystone: BaseKeystone;
   config: KeystoneConfig;
   adminMeta: SerializedAdminMeta;
   graphQLSchema: GraphQLSchema;
-  createContext: (args: {
-    sessionContext?: SessionContext<any>;
-    skipAccessControl?: boolean;
-  }) => KeystoneContext;
+  createContext: CreateContext;
   sessionImplementation?: {
     createContext(
       req: IncomingMessage,
       res: ServerResponse,
-      system: KeystoneSystem
+      createContext: CreateContext
     ): Promise<SessionContext<any>>;
   };
   views: string[];
