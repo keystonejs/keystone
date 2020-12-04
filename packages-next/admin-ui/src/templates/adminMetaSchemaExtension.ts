@@ -1,5 +1,3 @@
-import { mergeSchemas } from '@graphql-tools/merge';
-import { GraphQLSchema } from 'graphql';
 import { gql } from '../apollo';
 import { StaticAdminMetaQueryWithoutTypeNames } from '../admin-meta-graphql';
 import { KeystoneSystem, KeystoneContext, KeystoneConfig } from '@keystone-next/types';
@@ -84,14 +82,12 @@ let typeDefs = gql`
   }
 `;
 
-export function adminMetaSchemaExtension({
+export function getAdminMetaSchema({
   adminMeta,
-  graphQLSchema,
   config,
 }: {
   adminMeta: KeystoneSystem['adminMeta'];
   config: KeystoneConfig;
-  graphQLSchema: GraphQLSchema;
 }) {
   type AdminMeta = StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta'];
   type ListMetaRootVal = AdminMeta['lists'][number];
@@ -129,8 +125,7 @@ export function adminMetaSchemaExtension({
       ? undefined
       : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined);
 
-  return mergeSchemas({
-    schemas: [graphQLSchema],
+  return {
     typeDefs,
     resolvers: {
       Query: {
@@ -238,7 +233,7 @@ export function adminMetaSchemaExtension({
         },
       },
     },
-  });
+  };
 }
 
 type FieldIdentifier = { listKey: string; fieldPath: string };
