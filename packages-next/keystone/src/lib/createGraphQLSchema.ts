@@ -7,7 +7,7 @@ import type {
   BaseKeystone,
   SerializedAdminMeta,
 } from '@keystone-next/types';
-import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
+import { getAdminMetaSchema } from '@keystone-next/admin-ui/templates';
 
 import { gql } from '../schema';
 
@@ -65,7 +65,10 @@ export function createGraphQLSchema(
     });
   }
 
-  graphQLSchema = adminMetaSchemaExtension({ adminMeta, graphQLSchema, config });
+  graphQLSchema = mergeSchemas({
+    schemas: [graphQLSchema],
+    ...getAdminMetaSchema({ adminMeta, config }),
+  });
 
   return graphQLSchema;
 }
