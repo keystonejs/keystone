@@ -81,7 +81,7 @@ export function createKeystone(
 export function createSystem(config: KeystoneConfig): KeystoneSystem {
   const keystone = createKeystone(config, () => createContext);
 
-  const { adminMeta, views } = createAdminMeta(config, keystone);
+  const { adminMeta, allViews } = createAdminMeta(config, keystone);
 
   const graphQLSchema = createGraphQLSchema(config, keystone, adminMeta);
 
@@ -91,7 +91,7 @@ export function createSystem(config: KeystoneConfig): KeystoneSystem {
     keystone,
     adminMeta,
     graphQLSchema,
-    views,
+    allViews,
     sessionImplementation: config.session ? implementSession(config.session()) : undefined,
     createContext,
     config,

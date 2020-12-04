@@ -142,7 +142,7 @@ export type KeystoneSystem = {
       createContext: CreateContext
     ): Promise<SessionContext<any>>;
   };
-  views: string[];
+  allViews: string[];
 };
 
 export type AccessControlContext = {
