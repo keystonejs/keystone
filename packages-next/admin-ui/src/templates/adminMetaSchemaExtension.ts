@@ -168,15 +168,15 @@ export function adminMetaSchemaExtension({
         },
       },
       KeystoneAdminUIListMeta: {
-        isHidden(rootVal: ListMetaRootVal, args: any, { session }: any) {
+        isHidden(rootVal: ListMetaRootVal, args: any, { session }: KeystoneContext) {
           return runMaybeFunction(config.lists[rootVal.key].ui?.isHidden, false, { session });
         },
-        hideDelete(rootVal: ListMetaRootVal, args: any, { session }: any) {
+        hideDelete(rootVal: ListMetaRootVal, args: any, { session }: KeystoneContext) {
           return runMaybeFunction(config.lists[rootVal.key].ui?.hideDelete, false, {
             session,
           });
         },
-        hideCreate(rootVal: ListMetaRootVal, args: any, { session }: any) {
+        hideCreate(rootVal: ListMetaRootVal, args: any, { session }: KeystoneContext) {
           return runMaybeFunction(config.lists[rootVal.key].ui?.hideCreate, false, {
             session,
           });
@@ -207,7 +207,7 @@ export function adminMetaSchemaExtension({
         },
       },
       KeystoneAdminUIFieldMetaCreateView: {
-        fieldMode(rootVal: FieldIdentifier, args: any, { session }: any) {
+        fieldMode(rootVal: FieldIdentifier, args: any, { session }: KeystoneContext) {
           return runMaybeFunction(
             config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.createView
               ?.fieldMode ?? config.lists[rootVal.listKey].ui?.createView?.defaultFieldMode,
@@ -217,7 +217,7 @@ export function adminMetaSchemaExtension({
         },
       },
       KeystoneAdminUIFieldMetaListView: {
-        fieldMode(rootVal: FieldIdentifier, args: any, { session }: any) {
+        fieldMode(rootVal: FieldIdentifier, args: any, { session }: KeystoneContext) {
           return runMaybeFunction(
             config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.listView
               ?.fieldMode ?? config.lists[rootVal.listKey].ui?.listView?.defaultFieldMode,
@@ -230,7 +230,7 @@ export function adminMetaSchemaExtension({
         async fieldMode(
           rootVal: FieldIdentifier & { itemId: string },
           args: any,
-          { lists, session }: any
+          { lists, session }: KeystoneContext
         ) {
           const item = await lists[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
 
