@@ -56,7 +56,7 @@ export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) 
   });
   Object.keys(adminMeta.lists).forEach(key => {
     const listConfig = lists[key];
-    const list = (keystone as any).lists[key];
+    const list = keystone.lists[key];
     for (const fieldKey of Object.keys(listConfig.fields)) {
       const field: FieldType<any> = listConfig.fields[fieldKey];
       adminMeta.lists[key].fields[fieldKey] = {

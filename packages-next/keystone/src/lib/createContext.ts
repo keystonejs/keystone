@@ -70,7 +70,7 @@ export function makeCreateContext({
         run: runGraphQL,
         schema: graphQLSchema,
       } as KeystoneGraphQLAPI<any>,
-      maxTotalResults: (keystone as any).queryLimits.maxTotalResults,
+      maxTotalResults: keystone.queryLimits.maxTotalResults,
       createContext: ({
         sessionContext = _sessionContext,
         skipAccessControl = _skipAccessControl,
