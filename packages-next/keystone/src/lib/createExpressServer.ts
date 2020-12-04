@@ -62,7 +62,7 @@ export const createExpressServer = async (config: KeystoneConfig, system: Keysto
   addApolloServer({ server, system });
 
   console.log('✨ Preparing Next.js app');
-  server.use(await createAdminUIServer(system));
+  server.use(await createAdminUIServer(config.ui, system));
 
   return server;
 };

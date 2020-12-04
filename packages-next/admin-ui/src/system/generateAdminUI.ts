@@ -83,7 +83,7 @@ export const generateAdminUI = async (
   const filesWritten = new Set(
     [
       ...(await writeAdminFilesToDisk(
-        config.ui?.getAdditionalFiles?.map(x => x(system)) ?? [],
+        config.ui?.getAdditionalFiles?.map(x => x(config, system)) ?? [],
         projectAdminPath
       )),
     ].map(x => Path.normalize(x))
