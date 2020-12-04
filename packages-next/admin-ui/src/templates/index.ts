@@ -10,7 +10,7 @@ import * as Path from 'path';
 
 const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.json'));
 
-export { adminMetaSchemaExtension } from './adminMetaSchemaExtension';
+export { getAdminMetaSchema } from './adminMetaSchemaExtension';
 
 export const writeAdminFiles = (
   session: KeystoneConfig['session'],
