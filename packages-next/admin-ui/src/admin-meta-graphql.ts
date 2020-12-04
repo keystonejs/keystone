@@ -33,7 +33,7 @@ export const staticAdminMetaQuery = gql`
             label
             isOrderable
             fieldMeta
-            views
+            viewsIndex
             customViews
           }
         }
