@@ -20,6 +20,7 @@ export type BaseKeystone = {
   connect: () => Promise<void>;
   lists: Record<string, BaseKeystoneList>;
   createApolloServer: (args: { schemaName: string; dev: boolean }) => any;
+  queryLimits: { maxTotalResults: number };
 };
 
 // TODO: This needs to be reviewed and expanded
@@ -93,4 +94,6 @@ export type BaseKeystoneList = {
 type BaseKeystoneField = {
   gqlCreateInputFields: (arg: { schemaName: string }) => void;
   getBackingTypes: () => Record<string, { optional: true; type: 'string | null' }>;
+  label: string;
+  isOrderable: boolean;
 };
