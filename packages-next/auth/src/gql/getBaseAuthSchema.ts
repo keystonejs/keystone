@@ -85,7 +85,10 @@ export function getBaseAuthSchema({
       Query: {
         async authenticatedItem(root, args, { session, lists }) {
           if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
-            const item = await lists[session.listKey].findOne({ where: { id: session.itemId } });
+            const item = await lists[session.listKey].findOne({
+              where: { id: session.itemId },
+              resolveFields: false,
+            });
             return item || null;
           }
           return null;
