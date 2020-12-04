@@ -34,7 +34,7 @@ export const InitPage = ({
       // note that we're skipping the validation since we don't know the list key and
       // the validation will happen after the user has the created the initial item anyway
       const field = serializedFields[fieldPath];
-      const views = fieldViews[field.views];
+      const views = fieldViews[field.viewsIndex];
       const customViews: Record<string, any> = {};
       if (field.customViews !== null) {
         const customViewsSource: FieldViews[number] & Record<string, any> =
@@ -51,7 +51,7 @@ export const InitPage = ({
       fields[fieldPath] = {
         ...field,
         views,
-        controller: fieldViews[field.views].controller({
+        controller: fieldViews[field.viewsIndex].controller({
           listKey,
           fieldMeta: field.fieldMeta,
           label: field.label,

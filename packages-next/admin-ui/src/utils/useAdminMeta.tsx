@@ -74,20 +74,20 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
       };
       list.fields.forEach(field => {
         expectedExports.forEach(exportName => {
-          if ((fieldViews[field.views] as any)[exportName] === undefined) {
+          if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
             throw new Error(
               `The view for the field at ${list.key}.${field.path} is missing the ${exportName} export`
             );
           }
         });
-        Object.keys(fieldViews[field.views]).forEach(exportName => {
+        Object.keys(fieldViews[field.viewsIndex]).forEach(exportName => {
           if (!expectedExports.has(exportName) && exportName !== 'allowedExportsOnCustomViews') {
             throw new Error(
               `Unexpected export named ${exportName} from the view from the field at ${list.key}.${field.path}`
             );
           }
         });
-        const views = fieldViews[field.views];
+        const views = fieldViews[field.viewsIndex];
         const customViews: Record<string, any> = {};
         if (field.customViews !== null) {
           const customViewsSource: FieldViews[number] & Record<string, any> =
@@ -108,7 +108,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
         runtimeAdminMeta.lists[list.key].fields[field.path] = {
           ...field,
           views,
-          controller: fieldViews[field.views].controller({
+          controller: fieldViews[field.viewsIndex].controller({
             listKey: list.key,
             fieldMeta: field.fieldMeta,
             label: field.label,
