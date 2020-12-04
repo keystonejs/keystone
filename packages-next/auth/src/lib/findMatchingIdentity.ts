@@ -10,7 +10,10 @@ export async function findMatchingIdentity(
   | { success: false; code: AuthTokenRequestErrorCode }
   | { success: true; item: { id: any; [prop: string]: any } }
 > {
-  const items = await itemAPI.findMany({ where: { [identityField]: identity } });
+  const items = await itemAPI.findMany({
+    where: { [identityField]: identity },
+    resolveFields: false,
+  });
 
   // Identity failures with helpful errors
   let code: AuthTokenRequestErrorCode | undefined;

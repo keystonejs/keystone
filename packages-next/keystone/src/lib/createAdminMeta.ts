@@ -2,19 +2,14 @@ import type {
   SerializedAdminMeta,
   KeystoneConfig,
   FieldType,
-  SessionStrategy,
   BaseKeystone,
 } from '@keystone-next/types';
 
-export function createAdminMeta(
-  config: KeystoneConfig,
-  keystone: BaseKeystone,
-  sessionStrategy?: SessionStrategy<unknown>
-) {
+export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) {
   const { ui, lists } = config;
   const adminMeta: SerializedAdminMeta = {
     enableSessionItem: ui?.enableSessionItem || false,
-    enableSignout: sessionStrategy?.end !== undefined,
+    enableSignout: config.session !== undefined,
     lists: {},
   };
   let uniqueViewCount = -1;

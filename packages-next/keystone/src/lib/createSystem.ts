@@ -3,7 +3,6 @@ import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexAdapter } from '@keystonejs/adapter-knex';
 import type { KeystoneConfig, KeystoneSystem, BaseKeystone } from '@keystone-next/types';
 
-import { applyIdFieldDefaults } from './applyIdFieldDefaults';
 import { createAdminMeta } from './createAdminMeta';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './createContext';
@@ -80,23 +79,11 @@ export function createKeystone(
 }
 
 export function createSystem(config: KeystoneConfig): KeystoneSystem {
-  config = applyIdFieldDefaults(config);
-
   const keystone = createKeystone(config, () => createContext);
 
-  const sessionStrategy = config.session?.();
+  const { adminMeta, views } = createAdminMeta(config, keystone);
 
-  const { adminMeta, views } = createAdminMeta(config, keystone, sessionStrategy);
-
-  let sessionImplementation = sessionStrategy ? implementSession(sessionStrategy) : undefined;
-
-  const graphQLSchema = createGraphQLSchema(
-    config,
-    keystone,
-    adminMeta,
-    sessionStrategy,
-    sessionImplementation
-  );
+  const graphQLSchema = createGraphQLSchema(config, keystone, adminMeta);
 
   const createContext = makeCreateContext({ keystone, graphQLSchema });
 
@@ -105,7 +92,7 @@ export function createSystem(config: KeystoneConfig): KeystoneSystem {
     adminMeta,
     graphQLSchema,
     views,
-    sessionImplementation,
+    sessionImplementation: config.session ? implementSession(config.session()) : undefined,
     createContext,
     config,
   };

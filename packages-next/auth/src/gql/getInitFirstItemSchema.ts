@@ -41,14 +41,18 @@ export function getInitFirstItemSchema({
             throw new Error('No session implementation available on context');
           }
 
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const count = await itemAPI.count({});
           if (count !== 0) {
             throw new Error('Initial items can only be created when no items exist in that list');
           }
 
           // Update system state
-          const item = await itemAPI.createOne({ data: { ...data, ...itemData } });
+          const item = await itemAPI.createOne({
+            data: { ...data, ...itemData },
+            resolveFields: false,
+          });
           const sessionToken = await context.startSession({ listKey, itemId: item.id });
           return { item, sessionToken };
         },

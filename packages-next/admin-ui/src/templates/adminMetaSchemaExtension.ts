@@ -86,50 +86,48 @@ let typeDefs = gql`
 
 export function adminMetaSchemaExtension({
   adminMeta,
-  isAccessAllowed,
   graphQLSchema,
   config,
 }: {
   adminMeta: KeystoneSystem['adminMeta'];
   config: KeystoneSystem['config'];
   graphQLSchema: GraphQLSchema;
-  isAccessAllowed: undefined | ((args: { session: any }) => boolean | Promise<boolean>);
 }) {
-  const lists: StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta']['lists'] = Object.values(
-    adminMeta.lists
-  ).map(({ gqlNames, fields, ...list }) => {
-    return {
-      ...list,
-      itemQueryName: gqlNames.itemQueryName,
-      listQueryName: gqlNames.listQueryName.replace('all', ''),
-      fields: Object.keys(fields)
-        .filter(fieldPath => config.lists[list.key].fields[fieldPath].config.access?.read !== false)
-        .map(fieldPath => {
-          return {
-            path: fieldPath,
-            listKey: list.key,
-            ...fields[fieldPath],
-          };
-        }),
-    };
-  });
-  const listsByKey: Record<
-    string,
-    StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta']['lists'][number]
-  > = {};
+  type AdminMeta = StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta'];
+  type ListMetaRootVal = AdminMeta['lists'][number];
+  type FieldMetaRootVal = AdminMeta['lists'][number]['fields'][number];
+  type ListByKey = Record<string, ListMetaRootVal>;
+  const lists: AdminMeta['lists'] = Object.values(adminMeta.lists).map(
+    ({ gqlNames, fields, ...list }) => {
+      return {
+        ...list,
+        itemQueryName: gqlNames.itemQueryName,
+        listQueryName: gqlNames.listQueryName.replace('all', ''),
+        fields: Object.keys(fields)
+          .filter(
+            fieldPath => config.lists[list.key].fields[fieldPath].config.access?.read !== false
+          )
+          .map(fieldPath => {
+            return {
+              path: fieldPath,
+              listKey: list.key,
+              ...fields[fieldPath],
+            };
+          }),
+      };
+    }
+  );
+  const listsByKey: ListByKey = {};
   for (const list of lists) {
     listsByKey[list.key] = list;
   }
-  const staticAdminMeta: StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta'] & {
-    listsByKey: typeof listsByKey;
-  } = {
-    ...adminMeta,
-    lists,
-    listsByKey,
-  };
+  type StaticAdminMeta = AdminMeta & { listsByKey: ListByKey };
+  const staticAdminMeta: StaticAdminMeta = { ...adminMeta, lists, listsByKey };
 
-  type ListMetaRootVal = typeof staticAdminMeta['lists'][number];
-  type FieldMetaRootVal = ListMetaRootVal['fields'][number];
+  const isAccessAllowed =
+    config.session === undefined
+      ? undefined
+      : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined);
 
   return mergeSchemas({
     schemas: [graphQLSchema],
