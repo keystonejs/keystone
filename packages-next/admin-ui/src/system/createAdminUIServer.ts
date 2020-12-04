@@ -2,11 +2,15 @@ import Path from 'path';
 import url from 'url';
 import next from 'next';
 import express from 'express';
-import type { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
+import type { KeystoneSystem, KeystoneConfig, SessionImplementation } from '@keystone-next/types';
 
 const dev = process.env.NODE_ENV !== 'production';
 
-export const createAdminUIServer = async (ui: KeystoneConfig['ui'], system: KeystoneSystem) => {
+export const createAdminUIServer = async (
+  ui: KeystoneConfig['ui'],
+  system: KeystoneSystem,
+  sessionImplementation?: SessionImplementation
+) => {
   const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
   const handle = app.getRequestHandler();
   await app.prepare();
@@ -18,9 +22,8 @@ export const createAdminUIServer = async (ui: KeystoneConfig['ui'], system: Keys
       handle(req, res);
       return;
     }
-    const session = (
-      await system.sessionImplementation?.createContext?.(req, res, system.createContext)
-    )?.session;
+    const session = (await sessionImplementation?.createContext?.(req, res, system.createContext))
+      ?.session;
     const isValidSession = ui?.isAccessAllowed
       ? await ui.isAccessAllowed({ session })
       : session !== undefined;

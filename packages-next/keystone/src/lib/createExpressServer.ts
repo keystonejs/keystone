@@ -4,17 +4,20 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 // @ts-ignore
 import { formatError } from '@keystonejs/keystone/lib/Keystone/format-error';
-import type { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
+import type { KeystoneSystem, KeystoneConfig, SessionImplementation } from '@keystone-next/types';
 import { createAdminUIServer } from '@keystone-next/admin-ui/system';
+import { implementSession } from '../session';
 
 const addApolloServer = ({
   server,
   system,
+  sessionImplementation,
 }: {
   server: express.Express;
   system: KeystoneSystem;
+  sessionImplementation?: SessionImplementation;
 }) => {
-  const { graphQLSchema, createContext, sessionImplementation } = system;
+  const { graphQLSchema, createContext } = system;
   const apolloServer = new ApolloServer({
     // FIXME: Support for file handling configuration
     // maxFileSize: 200 * 1024 * 1024,
@@ -58,11 +61,13 @@ export const createExpressServer = async (config: KeystoneConfig, system: Keysto
     server.use(cors(corsConfig));
   }
 
+  const sessionImplementation = config.session ? implementSession(config.session()) : undefined;
+
   console.log('✨ Preparing GraphQL Server');
-  addApolloServer({ server, system });
+  addApolloServer({ server, system, sessionImplementation });
 
   console.log('✨ Preparing Next.js app');
-  server.use(await createAdminUIServer(config.ui, system));
+  server.use(await createAdminUIServer(config.ui, system, sessionImplementation));
 
   return server;
 };

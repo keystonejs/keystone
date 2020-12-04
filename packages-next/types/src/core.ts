@@ -132,18 +132,19 @@ export type CreateContext = (args: {
   skipAccessControl?: boolean;
 }) => KeystoneContext;
 
+export type SessionImplementation = {
+  createContext(
+    req: IncomingMessage,
+    res: ServerResponse,
+    createContext: CreateContext
+  ): Promise<SessionContext<any>>;
+};
+
 export type KeystoneSystem = {
   keystone: BaseKeystone;
   adminMeta: SerializedAdminMeta;
   graphQLSchema: GraphQLSchema;
   createContext: CreateContext;
-  sessionImplementation?: {
-    createContext(
-      req: IncomingMessage,
-      res: ServerResponse,
-      createContext: CreateContext
-    ): Promise<SessionContext<any>>;
-  };
   allViews: string[];
 };
 
