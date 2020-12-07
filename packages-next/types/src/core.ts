@@ -39,7 +39,7 @@ export type KeystoneAdminUIConfig = {
     req: IncomingMessage;
     session: any;
     isValidSession: boolean;
-    system: KeystoneSystem;
+    createContext: CreateContext;
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 
