@@ -1,7 +1,5 @@
-import { Editor, Element, Node, Transforms } from 'slate';
+import { Editor, Element, Node, Transforms, Text } from 'slate';
 import { ReactEditor } from 'slate-react';
-
-// TODO: Alignment
 
 export const paragraphElement = () => ({
   type: 'paragraph',
@@ -36,6 +34,16 @@ export const withParagraphs = (editor: ReactEditor) => {
           at: [...path, node.children.length],
         });
         return;
+      }
+      for (const [index, childNode] of node.children.entries()) {
+        if (Editor.isInline(editor, childNode) || Text.isText(childNode)) {
+          Transforms.wrapNodes(
+            editor,
+            { type: 'paragraph', children: [] },
+            { at: [...path, index] }
+          );
+          return;
+        }
       }
     }
 

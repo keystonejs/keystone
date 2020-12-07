@@ -171,16 +171,16 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
-      - name: ESLint
-        run: yarn lint:eslint
       - name: Prettier
         run: yarn lint:prettier
-      - name: Remark
-        run: yarn lint:markdown
-      - name: Preconstruct
-        run: yarn build
       - name: TypeScript
         run: yarn lint:types
+      - name: ESLint
+        run: yarn lint:eslint
+      - name: Preconstruct
+        run: yarn build
+      - name: Remark
+        run: yarn lint:markdown
 
   cypress:
     name: Cypress tests

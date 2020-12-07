@@ -1,3 +1,5 @@
+import { KeystoneContext } from '@keystone-next/types';
+
 async function validateListAccessControl({
   access,
   listKey,
@@ -17,7 +19,7 @@ async function validateListAccessControl({
   gqlName: string;
   itemId: any;
   itemIds: any;
-  context: any;
+  context: KeystoneContext;
 }) {
   // Either a boolean or an object describing a where clause
   let result;
@@ -75,7 +77,7 @@ async function validateFieldAccessControl({
   gqlName: string;
   itemId: any;
   itemIds: any;
-  context: any;
+  context: KeystoneContext;
   item: any;
   fieldKey: any;
 }) {

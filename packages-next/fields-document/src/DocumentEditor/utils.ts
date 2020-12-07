@@ -27,13 +27,21 @@ export function isContainerNode(node: Node): node is Element | Editor {
 }
 
 export function onlyContainerNodeInCurrentSelection(editor: ReactEditor) {
+  return (
+    !editor.selection ||
+    (Range.isCollapsed(editor.selection) &&
+      (editor.selection.anchor.path.length === 2 ||
+        (editor.selection.anchor.path.length === 4 &&
+          Editor.node(editor, Path.parent(Path.parent(editor.selection.anchor.path)))[0].type ===
+            'column')))
+  );
   // let editor;
-  return [
-    ...Editor.nodes(editor, {
-      match: node => !Text.isText(node),
-      mode: 'lowest',
-    }),
-  ].every(([node]) => isContainerNode(node));
+  // return [
+  //   ...Editor.nodes(editor, {
+  //     match: node => !Text.isText(node),
+  //     mode: 'lowest',
+  //   }),
+  // ].every(([node]) => isContainerNode(node));
 }
 
 export function moveChildren(editor: Editor, parent: NodeEntry | Path, to: Path) {

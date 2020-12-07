@@ -1,3 +1,5 @@
+import type { GraphQLSchemaExtension, BaseKeystone } from '@keystone-next/types';
+
 import { AuthGqlNames } from '../types';
 
 export function getInitFirstItemSchema({
@@ -11,8 +13,8 @@ export function getInitFirstItemSchema({
   fields: string[];
   itemData: Record<string, any> | undefined;
   gqlNames: AuthGqlNames;
-  keystone: any;
-}) {
+  keystone: BaseKeystone;
+}): GraphQLSchemaExtension {
   return {
     typeDefs: `
         input ${gqlNames.CreateInitialInput} {
@@ -34,15 +36,23 @@ export function getInitFirstItemSchema({
       `,
     resolvers: {
       Mutation: {
-        async [gqlNames.createInitialItem](rootVal: any, { data }: any, context: any) {
-          const itemAPI = context.lists[listKey];
+        async [gqlNames.createInitialItem](rootVal, { data }, context) {
+          if (!context.startSession) {
+            throw new Error('No session implementation available on context');
+          }
+
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const count = await itemAPI.count({});
           if (count !== 0) {
             throw new Error('Initial items can only be created when no items exist in that list');
           }
 
           // Update system state
-          const item = await itemAPI.createOne({ data: { ...data, ...itemData } });
+          const item = await itemAPI.createOne({
+            data: { ...data, ...itemData },
+            resolveFields: false,
+          });
           const sessionToken = await context.startSession({ listKey, itemId: item.id });
           return { item, sessionToken };
         },

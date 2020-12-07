@@ -1,13 +1,12 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
-import { execute, parse } from 'graphql';
 import {
   SessionStrategy,
   JSONValue,
   SessionStoreFunction,
   SessionContext,
-  KeystoneSystem,
+  CreateContext,
 } from '@keystone-next/types';
 
 // uid-safe is what express-session uses so let's just use it
@@ -17,7 +16,7 @@ function generateSessionId() {
   return uid(24);
 }
 
-function sessionStrategy<TSessionStrategy extends SessionStrategy<any>>(
+function asSessionStrategy<TSessionStrategy extends SessionStrategy<any>>(
   sessionStrategy: TSessionStrategy
 ): TSessionStrategy {
   return sessionStrategy;
@@ -78,38 +77,28 @@ export function withItemData(createSession: CreateSession, fieldSelections: Fiel
     const { get, ...sessionStrategy } = createSession();
     return {
       ...sessionStrategy,
-      get: async ({ req, system }) => {
-        const session = await get({ req, system });
+      get: async ({ req, createContext }) => {
+        const session = await get({ req, createContext });
+        const sudoContext = createContext({ skipAccessControl: true });
         if (
           !session ||
           !session.listKey ||
           !session.itemId ||
-          !system.adminMeta.lists[session.listKey]
+          !sudoContext.lists[session.listKey]
         ) {
           return;
         }
-        const context = system.createContext({ skipAccessControl: true });
-        const { gqlNames } = system.adminMeta.lists[session.listKey];
         // If no field selection is specified, just load the id. We still load the item,
         // because doing so validates that it exists in the database
-        const fields = fieldSelections[session.listKey] || 'id';
-        const query = parse(`query($id: ID!) {
-          item: ${gqlNames.itemQueryName}(where: { id: $id }) {
-            ${fields}
-          }
-        }`);
-        const args = { id: session.itemId };
-        const result = await execute(system.graphQLSchema, query, null, context, args);
-        // TODO: This causes "not found" errors to throw, which is not what we want
-        // TODO: Also, why is this coming back as an access denied error instead of "not found" with an invalid session?
-        // if (result.errors?.length) {
-        //   throw result.errors[0];
-        // }
+        const item = await sudoContext.lists[session.listKey].findOne({
+          where: { id: session.itemId },
+          resolveFields: fieldSelections[session.listKey] || 'id',
+        });
         // If there is no matching item found, return no session
-        if (!result?.data?.item) {
+        if (!item) {
           return;
         }
-        return { ...session, data: result.data.item };
+        return { ...session, data: item };
       },
     };
   };
@@ -121,7 +110,7 @@ export function statelessSessions({
   path = '/',
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
-}: StatelessSessionsOptions) {
+}: StatelessSessionsOptions): () => SessionStrategy<Record<string, any>> {
   return () => {
     if (!secret) {
       throw new Error('You must specify a session secret to use sessions');
@@ -129,9 +118,9 @@ export function statelessSessions({
     if (secret.length < 32) {
       throw new Error('The session secret must be at least 32 characters long');
     }
-    return sessionStrategy({
+    return asSessionStrategy({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      async get({ req, system }) {
+      async get({ req, createContext }) {
         if (!req.headers.cookie) return;
         let cookies = cookie.parse(req.headers.cookie);
         if (!cookies[TOKEN_NAME]) return;
@@ -186,23 +175,23 @@ export function storedSessions({
     return {
       connect: store.connect,
       disconnect: store.disconnect,
-      async get({ req, system }) {
-        let sessionId = await get({ req, system });
+      async get({ req, createContext }) {
+        let sessionId = await get({ req, createContext });
         if (typeof sessionId === 'string') {
           return store.get(sessionId);
         }
       },
-      async start({ res, data, system }) {
+      async start({ res, data, createContext }) {
         let sessionId = generateSessionId();
         await store.set(sessionId, data);
-        return start({ res, data: { sessionId }, system });
+        return start?.({ res, data: { sessionId }, createContext }) || '';
       },
-      async end({ req, res, system }) {
-        let sessionId = await get({ req, system });
+      async end({ req, res, createContext }) {
+        let sessionId = await get({ req, createContext });
         if (typeof sessionId === 'string') {
           await store.delete(sessionId);
         }
-        await end({ req, res, system });
+        await end?.({ req, res, createContext });
       },
     };
   };
@@ -211,27 +200,22 @@ export function storedSessions({
 /**
  * This is the function createSystem uses to implement the session strategy provided
  */
-export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
+export function implementSession<T>(sessionStrategy: SessionStrategy<T>) {
   let isConnected = false;
   return {
     async createContext(
       req: IncomingMessage,
       res: ServerResponse,
-      system: KeystoneSystem
-    ): Promise<SessionContext> {
+      createContext: CreateContext
+    ): Promise<SessionContext<T>> {
       if (!isConnected) {
         await sessionStrategy.connect?.();
         isConnected = true;
       }
-      const session = await sessionStrategy.get({ req, system });
-      const startSession = sessionStrategy.start;
-      const endSession = sessionStrategy.end;
       return {
-        session,
-        startSession: startSession
-          ? (data: unknown) => startSession({ res, data, system })
-          : undefined,
-        endSession: endSession ? () => endSession({ req, res, system }) : undefined,
+        session: await sessionStrategy.get({ req, createContext }),
+        startSession: (data: T) => sessionStrategy.start({ res, data, createContext }),
+        endSession: () => sessionStrategy.end({ req, res, createContext }),
       };
     },
   };

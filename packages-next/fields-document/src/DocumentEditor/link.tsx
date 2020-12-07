@@ -1,7 +1,17 @@
 /** @jsx jsx */
 
-import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
+import {
+  ReactEditor,
+  RenderElementProps,
+  useEditor,
+  useFocused,
+  useSelected,
+  useSlate,
+} from 'slate-react';
 import { Editor, Node, Range, Transforms } from 'slate';
+import { ButtonHTMLAttributes, useState } from 'react';
+// @ts-ignore
+import isUrl from 'is-url';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { useControlledPopover } from '@keystone-ui/popover';
@@ -9,13 +19,8 @@ import { Tooltip } from '@keystone-ui/tooltip';
 import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
-// @ts-ignore
-import isUrl from 'is-url';
 
-import { useState } from 'react';
-
-import { Button, ButtonGroup, Separator } from './components';
-import { InlineDialog } from './components/inline-dialog';
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 
 const isLinkActive = (editor: ReactEditor) => {
   const [link] = Editor.nodes(editor, { match: n => n.type === 'link' });
@@ -50,7 +55,10 @@ const wrapLink = (editor: ReactEditor, url: string) => {
 export const LinkElement = ({ attributes, children, element }: RenderElementProps) => {
   const { typography } = useTheme();
   const url = element.url as string;
-  const editor = useSlate();
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
   const selected = useSelected();
   const focused = useFocused();
   const [focusedInInlineDialog, setFocusedInInlineDialog] = useState(false);
@@ -87,7 +95,7 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
             setFocusedInInlineDialog(false);
           }}
         >
-          <ButtonGroup>
+          <ToolbarGroup>
             <input
               css={{ fontSize: typography.fontSize.small, width: 240 }}
               value={url}
@@ -101,7 +109,7 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
             />
             <Tooltip content="Open link in new tab" weight="subtle">
               {attrs => (
-                <Button
+                <ToolbarButton
                   as="a"
                   onMouseDown={event => {
                     event.preventDefault();
@@ -113,13 +121,13 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
                   {...attrs}
                 >
                   <ExternalLinkIcon size="small" />
-                </Button>
+                </ToolbarButton>
               )}
             </Tooltip>
-            <Separator />
+            <ToolbarSeparator />
             <Tooltip content="Unlink" weight="subtle">
               {attrs => (
-                <Button
+                <ToolbarButton
                   variant="destructive"
                   onMouseDown={event => {
                     event.preventDefault();
@@ -130,37 +138,44 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
                   {...attrs}
                 >
                   <Trash2Icon size="small" />
-                </Button>
+                </ToolbarButton>
               )}
             </Tooltip>
-          </ButtonGroup>
+          </ToolbarGroup>
         </InlineDialog>
       )}
     </span>
   );
 };
 
-export const LinkButton = () => {
+let linkIcon = <LinkIcon size="small" />;
+
+const LinkButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   const editor = useSlate();
   const isActive = isLinkActive(editor);
+  const isDisabled = !isActive && (!editor.selection || Range.isCollapsed(editor.selection));
+
   return (
-    <Tooltip content="Link" placement="bottom" weight="subtle">
+    <Tooltip content="Link" weight="subtle">
       {attrs => (
-        <Button
-          isDisabled={!isActive && (!editor.selection || Range.isCollapsed(editor.selection))}
+        <ToolbarButton
+          isDisabled={isDisabled}
           isSelected={isActive}
           onMouseDown={event => {
             event.preventDefault();
             wrapLink(editor, '');
           }}
           {...attrs}
+          {...props}
         >
-          <LinkIcon size="small" />
-        </Button>
+          {linkIcon}
+        </ToolbarButton>
       )}
     </Tooltip>
   );
 };
+
+export const linkButton = <LinkButton />;
 
 export const withLink = (editor: ReactEditor) => {
   const { insertData, insertText, isInline, normalizeNode } = editor;

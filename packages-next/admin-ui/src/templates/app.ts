@@ -2,14 +2,13 @@ import type { KeystoneSystem, SerializedAdminMeta } from '@keystone-next/types';
 import hashString from '@emotion/hash';
 import {
   executeSync,
-  DocumentNode,
   GraphQLNonNull,
   GraphQLScalarType,
   GraphQLSchema,
   GraphQLUnionType,
-  InlineFragmentNode,
   parse,
   FragmentDefinitionNode,
+  SelectionNode,
 } from 'graphql';
 import { staticAdminMetaQuery } from '../admin-meta-graphql';
 import Path from 'path';
@@ -23,8 +22,7 @@ export const appTemplate = (
   system: KeystoneSystem,
   { configFile, projectAdminPath }: AppTemplateOptions
 ) => {
-  const { graphQLSchema, adminMeta, views } = system;
-  const lazyMetadataQuery = getLazyMetadataQuery(graphQLSchema, adminMeta);
+  const { graphQLSchema, adminMeta, allViews } = system;
 
   const result = executeSync({
     document: staticAdminMetaQuery,
@@ -45,20 +43,20 @@ import { KeystoneProvider } from '@keystone-next/admin-ui/context';
 import { ErrorBoundary } from '@keystone-next/admin-ui/components';
 import { Core } from '@keystone-ui/core';
 
-${views
+${allViews
   .map(
-    (view, i) =>
+    (views, i) =>
       `import * as view${i} from ${JSON.stringify(
-        Path.isAbsolute(view) ? Path.relative(Path.join(projectAdminPath, 'pages'), view) : view
+        Path.isAbsolute(views) ? Path.relative(Path.join(projectAdminPath, 'pages'), views) : views
       )}`
   )
   .join('\n')}
 
 ${configFile ? `import * as adminConfig from "../../../admin/config";` : 'const adminConfig = {};'}
 
-const fieldViews = [${views.map((x, i) => `view${i}`)}];
+const fieldViews = [${allViews.map((x, i) => `view${i}`)}];
 
-const lazyMetadataQuery = ${JSON.stringify(lazyMetadataQuery)};
+const lazyMetadataQuery = ${JSON.stringify(getLazyMetadataQuery(graphQLSchema, adminMeta))};
 
 export default function App({ Component, pageProps }) {
   return (
@@ -80,27 +78,24 @@ export default function App({ Component, pageProps }) {
   // -- TEMPLATE END
 };
 
-const lazyMetadataSelections = (parse(`fragment x on y {
-  keystone {
-    adminMeta {
-      lists {
-        key
-        isHidden
-        fields {
-          path
-          createView {
-            fieldMode
+function getLazyMetadataQuery(graphqlSchema: GraphQLSchema, adminMeta: SerializedAdminMeta) {
+  const selections = (parse(`fragment x on y {
+    keystone {
+      adminMeta {
+        lists {
+          key
+          isHidden
+          fields {
+            path
+            createView {
+              fieldMode
+            }
           }
         }
       }
     }
-  }
-}`).definitions[0] as FragmentDefinitionNode).selectionSet.selections;
+  }`).definitions[0] as FragmentDefinitionNode).selectionSet.selections as SelectionNode[];
 
-function getLazyMetadataQuery(
-  graphqlSchema: GraphQLSchema,
-  adminMeta: SerializedAdminMeta
-): DocumentNode {
   const queryType = graphqlSchema.getQueryType();
   if (queryType) {
     const fields = queryType.getFields();
@@ -146,65 +141,36 @@ function getLazyMetadataQuery(
           );
         }
       }
-      // We're returning the complete query AST here for explicit-ness
-      return {
-        kind: 'Document',
-        definitions: [
-          {
-            kind: 'OperationDefinition',
-            operation: 'query',
+
+      selections.push({
+        kind: 'Field',
+        name: { kind: 'Name', value: 'authenticatedItem' },
+        selectionSet: {
+          kind: 'SelectionSet',
+          selections: authenticatedItemType.getTypes().map(({ name }) => ({
+            kind: 'InlineFragment',
+            typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: name } },
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                ...lazyMetadataSelections,
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'authenticatedItem' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: authenticatedItemType.getTypes().map(
-                      (type): InlineFragmentNode => {
-                        return {
-                          kind: 'InlineFragment',
-                          typeCondition: {
-                            kind: 'NamedType',
-                            name: { kind: 'Name', value: type.name },
-                          },
-                          selectionSet: {
-                            kind: 'SelectionSet',
-                            selections: [
-                              { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                              {
-                                kind: 'Field',
-                                name: {
-                                  kind: 'Name',
-                                  value: adminMeta.lists[type.name].labelField,
-                                },
-                              },
-                            ],
-                          },
-                        };
-                      }
-                    ),
-                  },
-                },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: adminMeta.lists[name].labelField } },
               ],
             },
-          },
-        ],
-      };
+          })),
+        },
+      });
     }
   }
+
+  // We're returning the complete query AST here for explicit-ness
   return {
     kind: 'Document',
     definitions: [
       {
         kind: 'OperationDefinition',
         operation: 'query',
-        selectionSet: {
-          kind: 'SelectionSet',
-          selections: lazyMetadataSelections,
-        },
+        selectionSet: { kind: 'SelectionSet', selections },
       },
     ],
   };
