@@ -42,7 +42,7 @@ export function itemAPIForList(
 ): KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>[string] {
   const listKey = list.key;
   return {
-    findOne({ resolveFields = 'id', ...rawArgs }) {
+    findOne({ resolveFields = false, ...rawArgs }) {
       const args = getArgs.findOne(rawArgs) as { where: { id: string } };
       if (resolveFields) {
         return getItem({ listKey, context, returnFields: resolveFields, itemId: args.where.id });
@@ -50,7 +50,7 @@ export function itemAPIForList(
         return list.itemQuery(args, context);
       }
     },
-    findMany({ resolveFields = 'id', ...rawArgs }) {
+    findMany({ resolveFields = false, ...rawArgs }) {
       const args = getArgs.findMany(rawArgs);
       if (resolveFields) {
         return getItems({ listKey, context, returnFields: resolveFields, ...args });
@@ -62,7 +62,7 @@ export function itemAPIForList(
       const args = getArgs.count(rawArgs);
       return (await list.listQueryMeta(args, context)).getCount();
     },
-    createOne({ resolveFields = 'id', ...rawArgs }) {
+    createOne({ resolveFields = false, ...rawArgs }) {
       const { data } = getArgs.createOne(rawArgs);
       if (resolveFields) {
         return createItem({ listKey, context, returnFields: resolveFields, item: data });
@@ -70,7 +70,7 @@ export function itemAPIForList(
         return list.createMutation(data, context);
       }
     },
-    createMany({ resolveFields = 'id', ...rawArgs }) {
+    createMany({ resolveFields = false, ...rawArgs }) {
       const { data } = getArgs.createMany(rawArgs);
       if (resolveFields) {
         return createItems({ listKey, context, returnFields: resolveFields, items: data });
@@ -78,7 +78,7 @@ export function itemAPIForList(
         return list.createManyMutation(data, context);
       }
     },
-    updateOne({ resolveFields = 'id', ...rawArgs }) {
+    updateOne({ resolveFields = false, ...rawArgs }) {
       const { id, data } = getArgs.updateOne(rawArgs);
       if (resolveFields) {
         return updateItem({ listKey, context, returnFields: resolveFields, item: { id, data } });
@@ -86,7 +86,7 @@ export function itemAPIForList(
         return list.updateMutation(id, data, context);
       }
     },
-    updateMany({ resolveFields = 'id', ...rawArgs }) {
+    updateMany({ resolveFields = false, ...rawArgs }) {
       const { data } = getArgs.updateMany(rawArgs);
       if (resolveFields) {
         return updateItems({ listKey, context, returnFields: resolveFields, items: data });
@@ -94,7 +94,7 @@ export function itemAPIForList(
         return list.updateManyMutation(data, context);
       }
     },
-    deleteOne({ resolveFields = 'id', ...rawArgs }) {
+    deleteOne({ resolveFields = false, ...rawArgs }) {
       const { id } = getArgs.deleteOne(rawArgs);
       if (resolveFields) {
         return deleteItem({ listKey, context, returnFields: resolveFields, itemId: id });
@@ -102,7 +102,7 @@ export function itemAPIForList(
         return list.deleteMutation(id, context);
       }
     },
-    deleteMany({ resolveFields = 'id', ...rawArgs }) {
+    deleteMany({ resolveFields = false, ...rawArgs }) {
       const { ids } = getArgs.deleteMany(rawArgs);
       if (resolveFields) {
         return deleteItems({ listKey, context, returnFields: resolveFields, items: ids });
