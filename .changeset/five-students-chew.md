@@ -2,4 +2,4 @@
 "@keystone-next/keystone": major
 ---
 
-Changed resolveFields default to false
+Changed `resolveFields` default from `"id"` to `false` in the items API.
