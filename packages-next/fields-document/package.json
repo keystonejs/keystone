@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/fields-document",
   "description": "KeystoneJS Document Field Type",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "main": "dist/fields-document.cjs.js",
   "module": "dist/fields-document.esm.js",
@@ -15,10 +15,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@keystone-next/admin-ui": "^3.1.2",
-    "@keystone-next/admin-ui-utils": "^2.0.1",
-    "@keystone-next/fields": "^3.2.1",
-    "@keystone-next/types": "^5.0.0",
+    "@keystone-next/admin-ui": "^4.0.0",
+    "@keystone-next/admin-ui-utils": "^2.0.2",
+    "@keystone-next/fields": "^3.2.2",
+    "@keystone-next/types": "^6.0.0",
     "@keystone-ui/button": "^2.0.1",
     "@keystone-ui/core": "^1.0.3",
     "@keystone-ui/fields": "^1.0.1",
