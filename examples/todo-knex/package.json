@@ -21,7 +21,7 @@
     "@keystonejs/app-static": "^5.1.3",
     "@keystonejs/fields": "^20.0.0",
     "@keystonejs/keystone": "^17.1.1",
-    "cross-env": "^7.0.2"
+    "cross-env": "^7.0.3"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples/todo-knex"
 }
