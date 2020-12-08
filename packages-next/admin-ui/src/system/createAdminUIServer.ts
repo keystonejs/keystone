@@ -24,7 +24,7 @@ export const createAdminUIServer = async (
       return;
     }
     const context = createContext({
-      sessionContext: await sessionImplementation?.createContext(req, res, createContext),
+      sessionContext: await sessionImplementation?.createSessionContext(req, res, createContext),
     });
     const isValidSession = ui?.isAccessAllowed
       ? await ui.isAccessAllowed(context)
