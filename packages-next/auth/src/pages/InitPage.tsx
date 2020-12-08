@@ -5,12 +5,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { jsx, H1, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { useRawKeystone } from '@keystone-next/admin-ui/context';
-import { FieldMeta, FieldViews, SerializedFieldMeta } from '@keystone-next/types';
+import { FieldMeta, FieldViews } from '@keystone-next/types';
 import isDeepEqual from 'fast-deep-equal';
 
 import { SigninContainer } from '../components/SigninContainer';
 import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
-import { useReinitContext } from '@keystone-next/admin-ui/context';
+import { useReinitContext, useKeystone } from '@keystone-next/admin-ui/context';
 import { useRouter } from '@keystone-next/admin-ui/router';
 import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
 import {
@@ -20,20 +20,21 @@ import {
 } from '@keystone-next/admin-ui-utils';
 
 export const InitPage = ({
-  fields: serializedFields,
+  fieldPaths,
   listKey,
 }: {
   listKey: string;
-  fields: Record<string, SerializedFieldMeta>;
+  fieldPaths: string[];
   showKeystoneSignup: boolean;
 }) => {
   const { fieldViews } = useRawKeystone();
+  const { adminMeta } = useKeystone();
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {};
-    Object.keys(serializedFields).forEach(fieldPath => {
+    fieldPaths.forEach(fieldPath => {
       // note that we're skipping the validation since we don't know the list key and
       // the validation will happen after the user has the created the initial item anyway
-      const field = serializedFields[fieldPath];
+      const field = adminMeta.lists[listKey].fields[fieldPath];
       const views = fieldViews[field.viewsIndex];
       const customViews: Record<string, any> = {};
       if (field.customViews !== null) {
@@ -62,7 +63,7 @@ export const InitPage = ({
       };
     });
     return fields;
-  }, [serializedFields]);
+  }, [fieldPaths]);
 
   const [value, setValue] = useState(() => {
     let state: Record<string, any> = {};

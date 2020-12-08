@@ -4,7 +4,6 @@ import {
   AdminFileToWrite,
   BaseGeneratedListTypes,
   KeystoneConfig,
-  SerializedFieldMeta,
   ExtendGraphqlSchema,
 } from '@keystone-next/types';
 import { password, timestamp } from '@keystone-next/fields';
@@ -18,6 +17,7 @@ import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema';
 
 import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';
+import { KeystoneContext } from '@keystone-next/types/src/core';
 
 const getSchemaExtension = ({
   identityField,
@@ -192,7 +192,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const additionalFiles: Auth['ui']['getAdditionalFiles'] = (config, system) => {
+  const additionalFiles: Auth['ui']['getAdditionalFiles'] = () => {
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
@@ -201,16 +201,11 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       },
     ];
     if (initFirstItem) {
-      const fields: Record<string, SerializedFieldMeta> = {};
-      for (const fieldPath of initFirstItem.fields) {
-        fields[fieldPath] = system.adminMeta.lists[listKey].fields[fieldPath];
-      }
-
       filesToWrite.push({
         mode: 'write',
         outputPath: 'pages/init.js',
         // wonder what this template expects from config...
-        src: initTemplate({ listKey, initFirstItem, fields }),
+        src: initTemplate({ listKey, initFirstItem }),
       });
     }
     return filesToWrite;
@@ -339,6 +334,17 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
           return (await adminPageMiddleware(args)) ?? keystoneConfig?.ui?.pageMiddleware?.(args);
         },
         enableSessionItem: true,
+        isAccessAllowed: async (context: KeystoneContext) => {
+          // Allow access to the adminMeta data from the /init path to correctly render that page
+          // even if the user isn't logged in (which should always be the case if they're seeing /init)
+          const headers = context.req?.headers;
+          const url = headers?.referer ? new URL(headers.referer) : undefined;
+          return (
+            (url?.pathname === '/init' && url?.host === headers?.host) ||
+            keystoneConfig.ui?.isAccessAllowed?.(context) ||
+            false
+          );
+        },
       };
     }
     const existingExtendGraphQLSchema = keystoneConfig.extendGraphqlSchema;
