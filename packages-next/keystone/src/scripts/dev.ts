@@ -46,7 +46,10 @@ export const dev = async () => {
     await fs.outputFile('./.keystone/schema.graphql', printedSchema);
     await fs.outputFile(
       './.keystone/schema-types.ts',
-      formatSource(printGeneratedTypes(printedSchema, system), 'babel-ts')
+      formatSource(
+        printGeneratedTypes(printedSchema, system.keystone, system.graphQLSchema),
+        'babel-ts'
+      )
     );
 
     console.log('✨ Connecting to the Database');
