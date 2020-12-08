@@ -7,7 +7,7 @@ import type {
   BaseKeystone,
   SerializedAdminMeta,
 } from '@keystone-next/types';
-import { getAdminMetaSchema } from '@keystone-next/admin-ui/templates';
+import { getAdminMetaSchema } from '@keystone-next/admin-ui/system';
 
 import { gql } from '../schema';
 
