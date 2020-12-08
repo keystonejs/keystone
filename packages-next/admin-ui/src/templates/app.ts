@@ -13,28 +13,26 @@ import {
 import { staticAdminMetaQuery } from '../admin-meta-graphql';
 import Path from 'path';
 
-type AppTemplateOptions = {
-  configFile: boolean;
-  projectAdminPath: string;
-};
+type AppTemplateOptions = { configFileExists: boolean; projectAdminPath: string };
 
 export const appTemplate = (
   system: KeystoneSystem,
-  { configFile, projectAdminPath }: AppTemplateOptions
+  { configFileExists, projectAdminPath }: AppTemplateOptions
 ) => {
   const { graphQLSchema, adminMeta, allViews } = system;
 
   const result = executeSync({
     document: staticAdminMetaQuery,
     schema: graphQLSchema,
-    contextValue: {
-      isAdminUIBuildProcess: true,
-    },
+    contextValue: { isAdminUIBuildProcess: true },
   });
   if (result.errors) {
     throw result.errors[0];
   }
   const adminMetaQueryResultHash = hashString(JSON.stringify(result.data!.keystone.adminMeta));
+  const viewPaths = allViews.map(views =>
+    Path.isAbsolute(views) ? Path.relative(Path.join(projectAdminPath, 'pages'), views) : views
+  );
   // -- TEMPLATE START
   return `
 import React from 'react';
@@ -43,16 +41,13 @@ import { KeystoneProvider } from '@keystone-next/admin-ui/context';
 import { ErrorBoundary } from '@keystone-next/admin-ui/components';
 import { Core } from '@keystone-ui/core';
 
-${allViews
-  .map(
-    (views, i) =>
-      `import * as view${i} from ${JSON.stringify(
-        Path.isAbsolute(views) ? Path.relative(Path.join(projectAdminPath, 'pages'), views) : views
-      )}`
-  )
-  .join('\n')}
+${viewPaths.map((views, i) => `import * as view${i} from "${views}"`).join('\n')}
 
-${configFile ? `import * as adminConfig from "../../../admin/config";` : 'const adminConfig = {};'}
+${
+  configFileExists
+    ? `import * as adminConfig from "../../../admin/config";`
+    : 'const adminConfig = {};'
+}
 
 const fieldViews = [${allViews.map((x, i) => `view${i}`)}];
 
