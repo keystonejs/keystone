@@ -28,7 +28,7 @@ export type KeystoneAdminUIConfig = {
   /** Enables certain functionality in the Admin UI that expects the session to be an item */
   enableSessionItem?: boolean;
   /** A function that can be run to validate that the current session should have access to the Admin UI */
-  isAccessAllowed?: (args: { session: any }) => MaybePromise<boolean>;
+  isAccessAllowed?: (context: KeystoneContext) => MaybePromise<boolean>;
   /** An array of page routes that can be accessed without passing the isAccessAllowed check */
   publicPages?: string[];
   /** The basePath for the Admin UI App */
