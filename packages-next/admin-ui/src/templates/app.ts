@@ -1,4 +1,4 @@
-import type { KeystoneSystem, SerializedAdminMeta } from '@keystone-next/types';
+import type { KeystoneSystem } from '@keystone-next/types';
 import hashString from '@emotion/hash';
 import {
   executeSync,
@@ -10,7 +10,7 @@ import {
   FragmentDefinitionNode,
   SelectionNode,
 } from 'graphql';
-import { staticAdminMetaQuery } from '../admin-meta-graphql';
+import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
 import Path from 'path';
 
 type AppTemplateOptions = { configFileExists: boolean; projectAdminPath: string };
@@ -19,7 +19,7 @@ export const appTemplate = (
   system: KeystoneSystem,
   { configFileExists, projectAdminPath }: AppTemplateOptions
 ) => {
-  const { graphQLSchema, adminMeta, allViews } = system;
+  const { graphQLSchema, allViews } = system;
 
   const result = executeSync({
     document: staticAdminMetaQuery,
@@ -29,7 +29,8 @@ export const appTemplate = (
   if (result.errors) {
     throw result.errors[0];
   }
-  const adminMetaQueryResultHash = hashString(JSON.stringify(result.data!.keystone.adminMeta));
+  const { adminMeta } = result.data!.keystone;
+  const adminMetaQueryResultHash = hashString(JSON.stringify(adminMeta));
   const viewPaths = allViews.map(views =>
     Path.isAbsolute(views) ? Path.relative(Path.join(projectAdminPath, 'pages'), views) : views
   );
@@ -73,7 +74,10 @@ export default function App({ Component, pageProps }) {
   // -- TEMPLATE END
 };
 
-function getLazyMetadataQuery(graphqlSchema: GraphQLSchema, adminMeta: SerializedAdminMeta) {
+function getLazyMetadataQuery(
+  graphqlSchema: GraphQLSchema,
+  adminMeta: StaticAdminMetaQuery['keystone']['adminMeta']
+) {
   const selections = (parse(`fragment x on y {
     keystone {
       adminMeta {
@@ -93,6 +97,7 @@ function getLazyMetadataQuery(graphqlSchema: GraphQLSchema, adminMeta: Serialize
 
   const queryType = graphqlSchema.getQueryType();
   if (queryType) {
+    const getListByKey = (name: string) => adminMeta.lists.find(({ key }: any) => key === name);
     const fields = queryType.getFields();
     if (fields['authenticatedItem'] !== undefined) {
       const authenticatedItemType = fields['authenticatedItem'].type;
@@ -106,12 +111,12 @@ function getLazyMetadataQuery(graphqlSchema: GraphQLSchema, adminMeta: Serialize
       }
       for (const type of authenticatedItemType.getTypes()) {
         const fields = type.getFields();
-        if (adminMeta.lists[type.name] === undefined) {
+        const list = getListByKey(type.name);
+        if (list === undefined) {
           throw new Error(
             `All members of the AuthenticatedItem union must refer to Keystone lists but "${type.name}" is in the AuthenticatedItem union but is not a Keystone list`
           );
         }
-        const list = adminMeta.lists[type.name];
         let labelGraphQLField = fields[list.labelField];
         if (labelGraphQLField === undefined) {
           throw new Error(
@@ -149,7 +154,7 @@ function getLazyMetadataQuery(graphqlSchema: GraphQLSchema, adminMeta: Serialize
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: adminMeta.lists[name].labelField } },
+                { kind: 'Field', name: { kind: 'Name', value: getListByKey(name)!.labelField } },
               ],
             },
           })),
