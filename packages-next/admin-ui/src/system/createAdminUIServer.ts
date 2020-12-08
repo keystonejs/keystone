@@ -23,14 +23,15 @@ export const createAdminUIServer = async (
       handle(req, res);
       return;
     }
-    const session = (await sessionImplementation?.createContext?.(req, res, createContext))
-      ?.session;
+    const context = createContext({
+      sessionContext: await sessionImplementation?.createContext(req, res, createContext),
+    });
     const isValidSession = ui?.isAccessAllowed
-      ? await ui.isAccessAllowed({ session })
-      : session !== undefined;
+      ? await ui.isAccessAllowed(context)
+      : context.session !== undefined;
     const maybeRedirect = await ui?.pageMiddleware?.({
       req,
-      session,
+      session: context.session,
       isValidSession,
       createContext,
     });
