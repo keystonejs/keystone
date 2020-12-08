@@ -1,3 +1,4 @@
+import type { IncomingMessage } from 'http';
 import { execute, GraphQLSchema, parse } from 'graphql';
 import type {
   SessionContext,
@@ -26,9 +27,11 @@ export function makeCreateContext({
   const createContext = ({
     sessionContext,
     skipAccessControl = false,
+    req,
   }: {
-    sessionContext?: SessionContext;
+    sessionContext?: SessionContext<any>;
     skipAccessControl?: boolean;
+    req?: IncomingMessage;
   } = {}): KeystoneContext => {
     const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, context, variables }) => {
       if (typeof query === 'string') {
@@ -53,6 +56,7 @@ export function makeCreateContext({
     const itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
     const _sessionContext = sessionContext;
     const _skipAccessControl = skipAccessControl;
+    const _req = req;
     const contextToReturn: KeystoneContext = {
       schemaName: 'public',
       ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
@@ -70,11 +74,13 @@ export function makeCreateContext({
         run: runGraphQL,
         schema: graphQLSchema,
       } as KeystoneGraphQLAPI<any>,
-      maxTotalResults: (keystone as any).queryLimits.maxTotalResults,
+      maxTotalResults: keystone.queryLimits.maxTotalResults,
       createContext: ({
         sessionContext = _sessionContext,
         skipAccessControl = _skipAccessControl,
-      } = {}) => createContext({ sessionContext, skipAccessControl }),
+        req = _req,
+      } = {}) => createContext({ sessionContext, skipAccessControl, req }),
+      req,
       ...sessionContext,
       // Note: These two fields let us use the server-side-graphql-client library.
       // We may want to remove them once the updated itemAPI w/ resolveFields is available.

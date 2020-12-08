@@ -60,7 +60,8 @@ export function getMagicAuthLinkSchema({
       Mutation: {
         async [gqlNames.sendItemMagicAuthLink](root, args, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const tokenType = 'magicAuth';
           const identity = args[identityField];
 
@@ -88,6 +89,7 @@ export function getMagicAuthLinkSchema({
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
                 [`${tokenType}RedeemedAt`]: null,
               },
+              resolveFields: false,
             });
 
             await magicAuthLink.sendToken({ itemId, identity, token });
@@ -100,7 +102,8 @@ export function getMagicAuthLinkSchema({
           }
 
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const tokenType = 'magicAuth';
           const result = await validateAuthToken(
             tokenType,
@@ -128,6 +131,7 @@ export function getMagicAuthLinkSchema({
           await itemAPI.updateOne({
             id: result.item.id,
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
+            resolveFields: false,
           });
 
           const sessionToken = await context.startSession({ listKey, itemId: result.item.id });

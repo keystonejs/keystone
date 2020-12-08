@@ -33,7 +33,7 @@ export const staticAdminMetaQuery = gql`
             label
             isOrderable
             fieldMeta
-            views
+            viewsIndex
             customViews
           }
         }
@@ -84,7 +84,7 @@ export type StaticAdminMetaQuery = { __typename?: 'Query' } & {
               fields: Array<
                 { __typename: 'KeystoneAdminUIFieldMeta' } & Pick<
                   KeystoneAdminUIFieldMeta,
-                  'path' | 'label' | 'isOrderable' | 'fieldMeta' | 'views' | 'customViews'
+                  'path' | 'label' | 'isOrderable' | 'fieldMeta' | 'viewsIndex' | 'customViews'
                 >
               >;
             }
@@ -152,7 +152,7 @@ type KeystoneAdminUIFieldMeta = {
   label: Scalars['String'];
   isOrderable: Scalars['Boolean'];
   fieldMeta: Maybe<Scalars['JSON']>;
-  views: Scalars['Int'];
+  viewsIndex: Scalars['Int'];
   customViews: Maybe<Scalars['Int']>;
   createView: KeystoneAdminUIFieldMetaCreateView;
   listView: KeystoneAdminUIFieldMetaListView;
@@ -204,7 +204,7 @@ export type StaticAdminMetaQueryWithoutTypeNames = {
           fields: Array<
             Pick<
               KeystoneAdminUIFieldMeta,
-              'path' | 'label' | 'isOrderable' | 'fieldMeta' | 'views' | 'customViews'
+              'path' | 'label' | 'isOrderable' | 'fieldMeta' | 'viewsIndex' | 'customViews'
             > & { listKey: string }
           >;
           initialSort: Maybe<{ field: Scalars['String']; direction: KeystoneAdminUISortDirection }>;

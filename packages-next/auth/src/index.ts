@@ -148,7 +148,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   const adminPageMiddleware: Auth['ui']['pageMiddleware'] = async ({
     req,
     isValidSession,
-    system,
+    createContext,
     session,
   }) => {
     const pathname = url.parse(req.url!).pathname!;
@@ -164,12 +164,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     }
 
     if (!session && initFirstItem) {
-      const { count } = await system.keystone.lists[listKey].adapter.itemsQuery(
-        {},
-        {
-          meta: true,
-        }
-      );
+      const count = await createContext({ skipAccessControl: true }).lists[listKey].count({});
       if (count === 0) {
         if (pathname !== '/init') {
           return {
@@ -197,7 +192,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const additionalFiles: Auth['ui']['getAdditionalFiles'] = system => {
+  const additionalFiles: Auth['ui']['getAdditionalFiles'] = (config, system) => {
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
@@ -253,9 +248,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     const specifiedListConfig = keystoneConfig.lists[listKey];
     if (keystoneConfig.lists[listKey] === undefined) {
       throw new Error(
-        `A createAuth() invocation specifies the list ${JSON.stringify(
-          listKey
-        )} but no list with that key has been defined.`
+        `A createAuth() invocation specifies the list "${listKey}" but no list with that key has been defined.`
       );
     }
 
@@ -263,9 +256,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     const identityFieldConfig = specifiedListConfig.fields[identityField];
     if (identityFieldConfig === undefined) {
       throw new Error(
-        `A createAuth() invocation for the ${JSON.stringify(
-          listKey
-        )} list specifies ${JSON.stringify(
+        `A createAuth() invocation for the "${listKey}" list specifies ${JSON.stringify(
           identityField
         )} as its identityField but no field with that key exists on the list.`
       );
@@ -275,9 +266,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     const secretFieldConfig = specifiedListConfig.fields[secretField];
     if (secretFieldConfig === undefined) {
       throw new Error(
-        `A createAuth() invocation for the ${JSON.stringify(
-          listKey
-        )} list specifies ${JSON.stringify(
+        `A createAuth() invocation for the "${listKey}" list specifies ${JSON.stringify(
           secretField
         )} as its secretField but no field with that key exists on the list.`
       );
@@ -289,9 +278,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     const secretTypename = secretFieldConfig.type && secretFieldConfig.type.type;
     if (typeof secretPrototype.compare !== 'function' || secretPrototype.compare.length < 2) {
       throw new Error(
-        `A createAuth() invocation for the ${JSON.stringify(
-          listKey
-        )} list specifies ${JSON.stringify(
+        `A createAuth() invocation for the "${listKey}" list specifies ${JSON.stringify(
           secretField
         )} as its secretField, which uses the field type ${JSON.stringify(
           secretTypename
@@ -305,9 +292,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     }
     if (typeof secretPrototype.generateHash !== 'function') {
       throw new Error(
-        `A createAuth() invocation for the ${JSON.stringify(
-          listKey
-        )} list specifies ${JSON.stringify(
+        `A createAuth() invocation for the "${listKey}" list specifies ${JSON.stringify(
           secretField
         )} as its secretField, which uses the field type ${JSON.stringify(
           secretTypename
@@ -324,9 +309,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     for (const field of initFirstItem?.fields || []) {
       if (specifiedListConfig.fields[field] === undefined) {
         throw new Error(
-          `A createAuth() invocation for the ${JSON.stringify(
-            listKey
-          )} list specifies the field ${JSON.stringify(
+          `A createAuth() invocation for the "${listKey}" list specifies the field ${JSON.stringify(
             field
           )} in initFirstItem.fields array but no field with that key exist on the list.`
         );

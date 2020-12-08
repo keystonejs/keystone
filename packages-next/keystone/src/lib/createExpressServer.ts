@@ -1,18 +1,30 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import Path from 'path';
-import url from 'url';
 import cors from 'cors';
-import next from 'next';
 import express from 'express';
+import { GraphQLSchema } from 'graphql';
 import { ApolloServer } from 'apollo-server-express';
 // @ts-ignore
 import { formatError } from '@keystonejs/keystone/lib/Keystone/format-error';
-import type { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
+import type {
+  KeystoneSystem,
+  KeystoneConfig,
+  SessionImplementation,
+  CreateContext,
+} from '@keystone-next/types';
+import { createAdminUIServer } from '@keystone-next/admin-ui/system';
+import { implementSession } from '../session';
 
-const dev = process.env.NODE_ENV !== 'production';
-
-const addApolloServer = ({ server, system }: { server: any; system: KeystoneSystem }) => {
-  const { graphQLSchema, createContext, sessionImplementation } = system;
+const addApolloServer = ({
+  server,
+  graphQLSchema,
+  createContext,
+  sessionImplementation,
+}: {
+  server: express.Express;
+  graphQLSchema: GraphQLSchema;
+  createContext: CreateContext;
+  sessionImplementation?: SessionImplementation;
+}) => {
   const apolloServer = new ApolloServer({
     // FIXME: Support for file handling configuration
     // maxFileSize: 200 * 1024 * 1024,
@@ -23,7 +35,8 @@ const addApolloServer = ({ server, system }: { server: any; system: KeystoneSyst
     formatError, // TODO: this needs to be discussed
     context: async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
       createContext({
-        sessionContext: await sessionImplementation?.createContext(req, res, system),
+        sessionContext: await sessionImplementation?.createSessionContext(req, res, createContext),
+        req,
       }),
     // FIXME: support for apollo studio tracing
     // ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
@@ -56,43 +69,14 @@ export const createExpressServer = async (config: KeystoneConfig, system: Keysto
     server.use(cors(corsConfig));
   }
 
-  console.log('✨ Preparing Next.js app');
-  const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
-  const handle = app.getRequestHandler();
-  await Promise.all([app.prepare(), system.keystone.connect()]);
+  const sessionImplementation = config.session ? implementSession(config.session()) : undefined;
 
   console.log('✨ Preparing GraphQL Server');
-  addApolloServer({ server, system });
+  const { graphQLSchema, createContext } = system;
+  addApolloServer({ server, graphQLSchema, createContext, sessionImplementation });
 
-  const publicPages = config.ui?.publicPages ?? [];
-
-  server.use(async (req, res) => {
-    const { pathname } = url.parse(req.url);
-    if (pathname?.startsWith('/_next')) {
-      handle(req, res);
-      return;
-    }
-    const session = (await system.sessionImplementation?.createContext?.(req, res, system))
-      ?.session;
-    const isValidSession = config.ui?.isAccessAllowed
-      ? await config.ui.isAccessAllowed({ session })
-      : session !== undefined;
-    const maybeRedirect = await config.ui?.pageMiddleware?.({
-      req,
-      session,
-      isValidSession,
-      system,
-    });
-    if (maybeRedirect) {
-      res.redirect(maybeRedirect.to);
-      return;
-    }
-    if (!isValidSession && !publicPages.includes(url.parse(req.url).pathname!)) {
-      app.render(req, res, '/no-access');
-    } else {
-      handle(req, res);
-    }
-  });
+  console.log('✨ Preparing Next.js app');
+  server.use(await createAdminUIServer(config.ui, system, sessionImplementation));
 
   return server;
 };

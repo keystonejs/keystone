@@ -1,5 +1,3 @@
-// @ts-ignore
-import { getItem, getItems, deleteItems } from '@keystonejs/server-side-graphql-client';
 import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
 
 export const extendGraphqlSchema = graphQLSchemaExtension({
@@ -13,16 +11,18 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
     Mutation: {
       checkout: async (root, { token }: { token: string }, context) => {
         const { session } = context;
+
+        // Users can't create orders directly because of our access control, so here we create a
+        // new context with full access and use the items API it provides
+        const sudoContext = context.createContext({ skipAccessControl: true });
+
         // 1. Query the current user and make sure they are signed in
         const userId = session.itemId;
         if (!userId) throw new Error('You must be signed in to complete this order.');
 
-        // FIXME: Use the new graphQL API when it's available
-        const User = await getItem({
-          context,
-          listKey: 'User',
-          itemId: userId,
-          returnFields: `
+        const User = await sudoContext.lists.User.findOne({
+          where: { id: userId },
+          resolveFields: `
             id
             name
             email
@@ -66,17 +66,18 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
 
         // 5. create the Order
         console.log('Creating the order');
-        const order = await context.lists.Order.createOne({
+        const order = await sudoContext.lists.Order.createOne({
           data: {
             total: charge.amount,
             charge: `${charge.id}`,
             items: { create: orderItems },
             user: { connect: { id: userId } },
           },
+          resolveFields: false,
         });
         // 6. Clean up - clear the users cart, delete cartItems
         const cartItemIds = User.cart.map((cartItem: any) => cartItem.id);
-        await deleteItems({ context, listKey: 'CartItem', items: cartItemIds });
+        await sudoContext.lists.CartItem.deleteMany({ ids: cartItemIds });
 
         // 7. Return the Order to the client
         return order;
@@ -89,11 +90,9 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
           throw new Error('You must be signed in soooon');
         }
         // 2. Query the users current cart, to see if they already have that item
-        const allCartItems = await getItems({
-          context,
+        const allCartItems = await context.lists.CartItem.findMany({
           where: { user: { id: userId }, product: { id: productId } },
-          listKey: 'CartItem',
-          returnFields: 'id quantity',
+          resolveFields: 'id quantity',
         });
 
         // 3. Check if that item is already in their cart and increment by 1 if it is
@@ -104,6 +103,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
           return await context.lists.CartItem.updateOne({
             id: existingCartItem.id,
             data: { quantity: quantity + 1 },
+            resolveFields: false,
           });
         } else {
           // 4. If its not, create a fresh CartItem for that user!
@@ -112,6 +112,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
               product: { connect: { id: productId } },
               user: { connect: { id: userId } },
             },
+            resolveFields: false,
           });
         }
       },

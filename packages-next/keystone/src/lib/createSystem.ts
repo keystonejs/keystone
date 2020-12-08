@@ -1,14 +1,13 @@
 import { Keystone } from '@keystonejs/keystone';
 import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexAdapter } from '@keystonejs/adapter-knex';
+// @ts-ignore
+import { PrismaAdapter } from '@keystonejs/adapter-prisma';
 import type { KeystoneConfig, KeystoneSystem, BaseKeystone } from '@keystone-next/types';
 
-import { applyIdFieldDefaults } from './applyIdFieldDefaults';
 import { createAdminMeta } from './createAdminMeta';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './createContext';
-
-import { implementSession } from '../session';
 
 export function createKeystone(
   config: KeystoneConfig,
@@ -19,19 +18,20 @@ export function createKeystone(
   // by using this pattern for creating their Keystone object before using
   // it in their existing custom servers or original CLI systems.
   const { db, graphql, lists } = config;
+  let adapter;
+  if (db.adapter === 'knex') {
+    adapter = new KnexAdapter({
+      knexOptions: { connection: db.url },
+      dropDatabase: db.dropDatabase,
+    });
+  } else if (db.adapter === 'mongoose') {
+    adapter = new MongooseAdapter({ mongoUri: db.url, ...db.mongooseOptions });
+  } else if (db.adapter === 'prisma_postgresql') {
+    adapter = new PrismaAdapter({ ...db });
+  }
   // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
   const keystone: BaseKeystone = new Keystone({
-    adapter:
-      // FIXME: prisma support
-      db.adapter === 'knex'
-        ? new KnexAdapter({
-            knexOptions: { connection: db.url },
-            // FIXME: Add support for all options
-          })
-        : new MongooseAdapter({
-            mongoUri: db.url,
-            //FIXME: Add support for all options
-          }),
+    adapter,
     cookieSecret: '123456789', // FIXME: Don't provide a default here. See #2882
     queryLimits: graphql?.queryLimits,
     // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
@@ -80,35 +80,13 @@ export function createKeystone(
 }
 
 export function createSystem(config: KeystoneConfig): KeystoneSystem {
-  config = applyIdFieldDefaults(config);
-
   const keystone = createKeystone(config, () => createContext);
 
-  const sessionStrategy = config.session?.();
+  const { adminMeta, allViews } = createAdminMeta(config, keystone);
 
-  const { adminMeta, views } = createAdminMeta(config, keystone, sessionStrategy);
-
-  let sessionImplementation = sessionStrategy ? implementSession(sessionStrategy) : undefined;
-
-  const graphQLSchema = createGraphQLSchema(
-    config,
-    keystone,
-    adminMeta,
-    sessionStrategy,
-    sessionImplementation
-  );
+  const graphQLSchema = createGraphQLSchema(config, keystone, adminMeta);
 
   const createContext = makeCreateContext({ keystone, graphQLSchema });
 
-  let system = {
-    keystone,
-    adminMeta,
-    graphQLSchema,
-    views,
-    sessionImplementation,
-    createContext,
-    config,
-  };
-
-  return system;
+  return { keystone, adminMeta, graphQLSchema, allViews, createContext };
 }

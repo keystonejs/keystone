@@ -54,7 +54,8 @@ export function getBaseAuthSchema({
           }
 
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const result = await validateSecret(
             list,
             identityField,
@@ -84,8 +85,14 @@ export function getBaseAuthSchema({
       Query: {
         async authenticatedItem(root, args, { session, lists }) {
           if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
-            const item = await lists[session.listKey].findOne({ where: { id: session.itemId } });
-            return item || null;
+            try {
+              return lists[session.listKey].findOne({
+                where: { id: session.itemId },
+                resolveFields: false,
+              });
+            } catch (e) {
+              return null;
+            }
           }
           return null;
         },

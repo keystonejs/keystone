@@ -2,31 +2,26 @@ import type {
   SerializedAdminMeta,
   KeystoneConfig,
   FieldType,
-  SessionStrategy,
   BaseKeystone,
 } from '@keystone-next/types';
 
-export function createAdminMeta(
-  config: KeystoneConfig,
-  keystone: BaseKeystone,
-  sessionStrategy?: SessionStrategy<unknown>
-) {
+export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) {
   const { ui, lists } = config;
   const adminMeta: SerializedAdminMeta = {
     enableSessionItem: ui?.enableSessionItem || false,
-    enableSignout: sessionStrategy?.end !== undefined,
+    enableSignout: config.session !== undefined,
     lists: {},
   };
   let uniqueViewCount = -1;
   const stringViewsToIndex: Record<string, number> = {};
-  const views: string[] = [];
-  function getViewId(view: string) {
-    if (stringViewsToIndex[view] === undefined) {
+  const allViews: string[] = [];
+  function getViewsId(views: string) {
+    if (stringViewsToIndex[views] === undefined) {
       uniqueViewCount++;
-      stringViewsToIndex[view] = uniqueViewCount;
-      views.push(view);
+      stringViewsToIndex[views] = uniqueViewCount;
+      allViews.push(views);
     }
-    return stringViewsToIndex[view];
+    return stringViewsToIndex[views];
   }
   Object.keys(lists).forEach(key => {
     const listConfig = lists[key];
@@ -61,18 +56,19 @@ export function createAdminMeta(
   });
   Object.keys(adminMeta.lists).forEach(key => {
     const listConfig = lists[key];
-    const list = (keystone as any).lists[key];
+    const list = keystone.lists[key];
     for (const fieldKey of Object.keys(listConfig.fields)) {
       const field: FieldType<any> = listConfig.fields[fieldKey];
       adminMeta.lists[key].fields[fieldKey] = {
         label: list.fieldsByPath[fieldKey].label,
-        views: getViewId(field.views),
-        customViews: field.config.ui?.views === undefined ? null : getViewId(field.config.ui.views),
+        viewsIndex: getViewsId(field.views),
+        customViews:
+          field.config.ui?.views === undefined ? null : getViewsId(field.config.ui.views),
         fieldMeta: field.getAdminMeta?.(key, fieldKey, adminMeta) ?? null,
         isOrderable: list.fieldsByPath[fieldKey].isOrderable || fieldKey === 'id',
       };
     }
   });
 
-  return { adminMeta, views };
+  return { adminMeta, allViews };
 }

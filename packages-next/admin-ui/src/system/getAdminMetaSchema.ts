@@ -1,8 +1,6 @@
-import { mergeSchemas } from '@graphql-tools/merge';
-import { GraphQLSchema } from 'graphql';
 import { gql } from '../apollo';
 import { StaticAdminMetaQueryWithoutTypeNames } from '../admin-meta-graphql';
-import { KeystoneSystem, KeystoneContext } from '@keystone-next/types';
+import { KeystoneSystem, KeystoneContext, KeystoneConfig } from '@keystone-next/types';
 
 let typeDefs = gql`
   type Query {
@@ -48,7 +46,7 @@ let typeDefs = gql`
     label: String!
     isOrderable: Boolean!
     fieldMeta: JSON
-    views: Int!
+    viewsIndex: Int!
     customViews: Int
     createView: KeystoneAdminUIFieldMetaCreateView!
     listView: KeystoneAdminUIFieldMetaListView!
@@ -84,55 +82,41 @@ let typeDefs = gql`
   }
 `;
 
-export function adminMetaSchemaExtension({
+export function getAdminMetaSchema({
   adminMeta,
-  isAccessAllowed,
-  graphQLSchema,
   config,
 }: {
   adminMeta: KeystoneSystem['adminMeta'];
-  config: KeystoneSystem['config'];
-  graphQLSchema: GraphQLSchema;
-  isAccessAllowed: undefined | ((args: { session: any }) => boolean | Promise<boolean>);
+  config: KeystoneConfig;
 }) {
-  const lists: StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta']['lists'] = Object.values(
-    adminMeta.lists
-  ).map(({ gqlNames, fields, ...list }) => {
-    return {
+  type AdminMeta = StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta'];
+  type ListMetaRootVal = AdminMeta['lists'][number];
+  type FieldMetaRootVal = AdminMeta['lists'][number]['fields'][number];
+  type ListByKey = Record<string, ListMetaRootVal>;
+  const lists: AdminMeta['lists'] = Object.values(adminMeta.lists).map(
+    ({ gqlNames, fields, ...list }) => ({
       ...list,
       itemQueryName: gqlNames.itemQueryName,
       listQueryName: gqlNames.listQueryName.replace('all', ''),
       fields: Object.keys(fields)
-        .filter(fieldPath => config.lists[list.key].fields[fieldPath].config.access?.read !== false)
-        .map(fieldPath => {
-          return {
-            path: fieldPath,
-            listKey: list.key,
-            ...fields[fieldPath],
-          };
-        }),
-    };
-  });
-  const listsByKey: Record<
-    string,
-    StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta']['lists'][number]
-  > = {};
+        .filter(path => config.lists[list.key].fields[path].config.access?.read !== false)
+        .map(path => ({ path, listKey: list.key, ...fields[path] })),
+    })
+  );
+
+  const listsByKey: ListByKey = {};
   for (const list of lists) {
     listsByKey[list.key] = list;
   }
-  const staticAdminMeta: StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta'] & {
-    listsByKey: typeof listsByKey;
-  } = {
-    ...adminMeta,
-    lists,
-    listsByKey,
-  };
+  type StaticAdminMeta = AdminMeta & { listsByKey: ListByKey };
+  const staticAdminMeta: StaticAdminMeta = { ...adminMeta, lists, listsByKey };
 
-  type ListMetaRootVal = typeof staticAdminMeta['lists'][number];
-  type FieldMetaRootVal = ListMetaRootVal['fields'][number];
+  const isAccessAllowed =
+    config.session === undefined
+      ? undefined
+      : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined);
 
-  return mergeSchemas({
-    schemas: [graphQLSchema],
+  return {
     typeDefs,
     resolvers: {
       Query: {
@@ -149,7 +133,7 @@ export function adminMetaSchemaExtension({
           if ('isAdminUIBuildProcess' in context || isAccessAllowed === undefined) {
             return staticAdminMeta;
           }
-          return Promise.resolve(isAccessAllowed({ session: context.session })).then(isAllowed => {
+          return Promise.resolve(isAccessAllowed(context)).then(isAllowed => {
             if (isAllowed) {
               return staticAdminMeta;
             }
@@ -165,92 +149,82 @@ export function adminMetaSchemaExtension({
         },
       },
       KeystoneAdminUIListMeta: {
-        isHidden(rootVal: ListMetaRootVal, args: any, { session }: any) {
-          return runMaybeFunction(config.lists[rootVal.key].ui?.isHidden, false, { session });
+        isHidden(rootVal: ListMetaRootVal, args: any, { session }: KeystoneContext) {
+          const listConfig = config.lists[rootVal.key];
+          return runMaybeFunction(listConfig.ui?.isHidden, false, { session });
         },
-        hideDelete(rootVal: ListMetaRootVal, args: any, { session }: any) {
-          return runMaybeFunction(config.lists[rootVal.key].ui?.hideDelete, false, {
-            session,
-          });
+        hideDelete(rootVal: ListMetaRootVal, args: any, { session }: KeystoneContext) {
+          const listConfig = config.lists[rootVal.key];
+          return runMaybeFunction(listConfig.ui?.hideDelete, false, { session });
         },
-        hideCreate(rootVal: ListMetaRootVal, args: any, { session }: any) {
-          return runMaybeFunction(config.lists[rootVal.key].ui?.hideCreate, false, {
-            session,
-          });
+        hideCreate(rootVal: ListMetaRootVal, args: any, { session }: KeystoneContext) {
+          const listConfig = config.lists[rootVal.key];
+          return runMaybeFunction(listConfig.ui?.hideCreate, false, { session });
         },
       },
       KeystoneAdminUIFieldMeta: {
         createView(rootVal: FieldMetaRootVal): FieldIdentifier {
-          return {
-            fieldPath: rootVal.path,
-            listKey: rootVal.listKey,
-          };
+          return { fieldPath: rootVal.path, listKey: rootVal.listKey };
         },
         listView(rootVal: FieldMetaRootVal): FieldIdentifier {
-          return {
-            fieldPath: rootVal.path,
-            listKey: rootVal.listKey,
-          };
+          return { fieldPath: rootVal.path, listKey: rootVal.listKey };
         },
         itemView(
           rootVal: FieldMetaRootVal,
           args: { id: string }
         ): FieldIdentifier & { itemId: string } {
-          return {
-            listKey: rootVal.listKey,
-            fieldPath: rootVal.path,
-            itemId: args.id,
-          };
+          return { listKey: rootVal.listKey, fieldPath: rootVal.path, itemId: args.id };
         },
       },
       KeystoneAdminUIFieldMetaCreateView: {
-        fieldMode(rootVal: FieldIdentifier, args: any, { session }: any) {
-          return runMaybeFunction(
-            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.createView
-              ?.fieldMode ?? config.lists[rootVal.listKey].ui?.createView?.defaultFieldMode,
-            'edit',
-            { session }
-          );
+        fieldMode(rootVal: FieldIdentifier, args: any, { session }: KeystoneContext) {
+          const listConfig = config.lists[rootVal.listKey];
+          const sessionFunction =
+            listConfig.fields[rootVal.fieldPath].config.ui?.createView?.fieldMode ??
+            listConfig.ui?.createView?.defaultFieldMode;
+          return runMaybeFunction(sessionFunction, 'edit', { session });
         },
       },
       KeystoneAdminUIFieldMetaListView: {
-        fieldMode(rootVal: FieldIdentifier, args: any, { session }: any) {
-          return runMaybeFunction(
-            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.listView
-              ?.fieldMode ?? config.lists[rootVal.listKey].ui?.listView?.defaultFieldMode,
-            'read',
-            { session }
-          );
+        fieldMode(rootVal: FieldIdentifier, args: any, { session }: KeystoneContext) {
+          const listConfig = config.lists[rootVal.listKey];
+          const sessionFunction =
+            listConfig.fields[rootVal.fieldPath].config.ui?.listView?.fieldMode ??
+            listConfig.ui?.listView?.defaultFieldMode;
+          return runMaybeFunction(sessionFunction, 'read', { session });
         },
       },
       KeystoneAdminUIFieldMetaItemView: {
         async fieldMode(
           rootVal: FieldIdentifier & { itemId: string },
           args: any,
-          { lists, session }: any
+          context: KeystoneContext
         ) {
-          const item = await lists[rootVal.listKey].findOne({ where: { id: rootVal.itemId } });
-
-          return runMaybeFunction(
-            config.lists[rootVal.listKey].fields[rootVal.fieldPath].config.ui?.itemView
-              ?.fieldMode ?? config.lists[rootVal.listKey].ui?.itemView?.defaultFieldMode,
-            'edit',
-            { session, item }
-          );
+          const item = await context
+            .createContext({ skipAccessControl: true })
+            .lists[rootVal.listKey].findOne({
+              where: { id: rootVal.itemId },
+              resolveFields: false,
+            });
+          const listConfig = config.lists[rootVal.listKey];
+          const sessionFunction =
+            listConfig.fields[rootVal.fieldPath].config.ui?.itemView?.fieldMode ??
+            listConfig.ui?.itemView?.defaultFieldMode;
+          return runMaybeFunction(sessionFunction, 'edit', { session: context.session, item });
         },
       },
     },
-  });
+  };
 }
 
 type FieldIdentifier = { listKey: string; fieldPath: string };
 
 type NoInfer<T> = T & { [K in keyof T]: T[K] };
 
-function runMaybeFunction<Return extends string | boolean>(
-  sessionFunction: Return | ((args: any) => Return | Promise<Return>) | undefined,
+function runMaybeFunction<Return extends string | boolean, T>(
+  sessionFunction: Return | ((args: T) => Return | Promise<Return>) | undefined,
   defaultValue: NoInfer<Return>,
-  args: any
+  args: T
 ): Return | Promise<Return> {
   if (typeof sessionFunction === 'function') {
     return sessionFunction(args);

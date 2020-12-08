@@ -10,6 +10,33 @@ const { KnexAdapter } = require('@keystonejs/adapter-knex');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 const { PrismaAdapter } = require('@keystonejs/adapter-prisma');
 
+const argGenerator = {
+  mongoose: getMongoMemoryServerConfig,
+  knex: () => ({
+    dropDatabase: true,
+    knexOptions: {
+      connection:
+        process.env.DATABASE_URL || process.env.KNEX_URI || 'postgres://localhost/keystone',
+    },
+  }),
+  prisma_postgresql: () => ({
+    dropDatabase: true,
+    url: process.env.DATABASE_URL,
+    provider: 'postgresql',
+    // Put the generated client at a unique path
+    getPrismaPath: ({ prismaSchema }) =>
+      path.join(
+        '.api-test-prisma-clients',
+        crypto.createHash('sha256').update(prismaSchema).digest('hex')
+      ),
+    // Slice down to the hash make a valid postgres schema name
+    getDbSchemaName: ({ prismaSchema }) =>
+      crypto.createHash('sha256').update(prismaSchema).digest('hex').slice(0, 16),
+    // Turn this on if you need verbose debug info
+    enableLogging: false,
+  }),
+};
+
 async function setupServer({
   adapterName,
   schemaName = 'public',
@@ -24,35 +51,8 @@ async function setupServer({
     prisma_postgresql: PrismaAdapter,
   }[adapterName];
 
-  const argGenerator = {
-    mongoose: getMongoMemoryServerConfig,
-    knex: () => ({
-      dropDatabase: true,
-      knexOptions: {
-        connection:
-          process.env.DATABASE_URL || process.env.KNEX_URI || 'postgres://localhost/keystone',
-      },
-    }),
-    prisma_postgresql: () => ({
-      dropDatabase: true,
-      url: process.env.DATABASE_URL,
-      provider: 'postgresql',
-      // Put the generated client at a unique path
-      getPrismaPath: ({ prismaSchema }) =>
-        path.join(
-          '.api-test-prisma-clients',
-          crypto.createHash('sha256').update(prismaSchema).digest('hex')
-        ),
-      // Slice down to the hash make a valid postgres schema name
-      getDbSchemaName: ({ prismaSchema }) =>
-        crypto.createHash('sha256').update(prismaSchema).digest('hex').slice(0, 16),
-      // Turn this on if you need verbose debug info
-      enableLogging: false,
-    }),
-  }[adapterName];
-
   const keystone = new Keystone({
-    adapter: new Adapter(await argGenerator()),
+    adapter: new Adapter(await argGenerator[adapterName]()),
     defaultAccess: { list: true, field: true },
     schemaNames,
     cookieSecret: 'secretForTesting',
