@@ -130,6 +130,7 @@ export type FieldDefaultValue<T> =
 export type CreateContext = (args: {
   sessionContext?: SessionContext<any>;
   skipAccessControl?: boolean;
+  req?: IncomingMessage;
 }) => KeystoneContext;
 
 export type SessionImplementation = {
@@ -174,6 +175,7 @@ export type KeystoneContext = {
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   maxTotalResults: number;
   createContext: KeystoneSystem['createContext'];
+  req?: IncomingMessage;
 } & AccessControlContext &
   Partial<SessionContext<any>> &
   DatabaseAPIs;
