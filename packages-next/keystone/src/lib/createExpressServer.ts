@@ -36,6 +36,7 @@ const addApolloServer = ({
     context: async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
       createContext({
         sessionContext: await sessionImplementation?.createContext(req, res, createContext),
+        req,
       }),
     // FIXME: support for apollo studio tracing
     // ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
