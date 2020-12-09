@@ -3,4 +3,4 @@
 '@keystone-ui/options': patch
 ---
 
-Patch to types based on changes to @types/react-select
+Patched types based on changes to `@types/react-select`.
