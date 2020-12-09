@@ -1,3 +1,5 @@
+import type Knex from 'knex';
+import type { ConnectOptions } from 'mongoose';
 import type { FieldAccessControl } from './schema/access-control';
 import type { BaseGeneratedListTypes, JSONValue, GqlNames, MaybePromise } from './utils';
 import type { ListHooks } from './schema/hooks';
@@ -26,7 +28,7 @@ export type KeystoneAdminUIConfig = {
   /** Enables certain functionality in the Admin UI that expects the session to be an item */
   enableSessionItem?: boolean;
   /** A function that can be run to validate that the current session should have access to the Admin UI */
-  isAccessAllowed?: (args: { session: any }) => MaybePromise<boolean>;
+  isAccessAllowed?: (context: KeystoneContext) => MaybePromise<boolean>;
   /** An array of page routes that can be accessed without passing the isAccessAllowed check */
   publicPages?: string[];
   /** The basePath for the Admin UI App */
@@ -39,7 +41,7 @@ export type KeystoneAdminUIConfig = {
     req: IncomingMessage;
     session: any;
     isValidSession: boolean;
-    system: KeystoneSystem;
+    createContext: CreateContext;
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 
@@ -55,12 +57,33 @@ export type DatabaseAPIs = {
   prisma?: any;
 };
 
+export type DatabaseCommon = {
+  url: string;
+  onConnect?: (args: KeystoneContext) => Promise<void>;
+};
+
 export type KeystoneConfig = {
-  db: {
-    adapter: 'mongoose' | 'knex';
-    url: string;
-    onConnect?: (args: KeystoneContext) => Promise<void>;
-  };
+  db: DatabaseCommon &
+    (
+      | {
+          adapter: 'mongoose';
+          mongooseOptions?: { mongoUri?: string } & ConnectOptions;
+        }
+      | {
+          adapter: 'knex';
+          dropDatabase?: boolean;
+          knexOptions?: { client?: string; connection?: string } & Knex.Config<any>;
+          schemaName?: string;
+        }
+      | {
+          adapter: 'prisma_postgresql';
+          dropDatabase?: boolean;
+          provider?: string;
+          getPrismaPath?: (arg: { prismaSchema: any }) => string;
+          getDbSchemaName?: (arg: { prismaSchema: any }) => string;
+          enableLogging: boolean;
+        }
+    );
   graphql?: {
     path?: string;
     queryLimits?: {
@@ -130,10 +153,11 @@ export type FieldDefaultValue<T> =
 export type CreateContext = (args: {
   sessionContext?: SessionContext<any>;
   skipAccessControl?: boolean;
+  req?: IncomingMessage;
 }) => KeystoneContext;
 
 export type SessionImplementation = {
-  createContext(
+  createSessionContext(
     req: IncomingMessage,
     res: ServerResponse,
     createContext: CreateContext
@@ -174,6 +198,7 @@ export type KeystoneContext = {
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   maxTotalResults: number;
   createContext: KeystoneSystem['createContext'];
+  req?: IncomingMessage;
 } & AccessControlContext &
   Partial<SessionContext<any>> &
   DatabaseAPIs;

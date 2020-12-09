@@ -1,16 +1,16 @@
 {
   "name": "@keystone-next/example-auth",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": true,
   "license": "MIT",
   "scripts": {
     "dev": "keystone-next"
   },
   "dependencies": {
-    "@keystone-next/admin-ui": "^3.1.2",
-    "@keystone-next/auth": "^6.0.0",
-    "@keystone-next/fields": "^3.2.1",
-    "@keystone-next/keystone": "^5.0.0",
+    "@keystone-next/admin-ui": "^4.0.0",
+    "@keystone-next/auth": "^7.0.0",
+    "@keystone-next/fields": "^3.2.2",
+    "@keystone-next/keystone": "^6.0.0",
     "next": "^9.5.5",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"

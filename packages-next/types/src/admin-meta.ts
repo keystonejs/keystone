@@ -51,10 +51,13 @@ export type SerializedFieldMeta = {
 };
 
 export type FieldMeta = {
+  path: string;
   label: string;
   isOrderable: boolean;
   views: FieldViews[number];
   fieldMeta: JSONValue;
+  viewsIndex: number;
+  customViews: number | null;
   controller: FieldController<unknown, JSONValue>;
 };
 

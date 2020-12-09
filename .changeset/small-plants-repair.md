@@ -4,4 +4,4 @@
 '@keystone-next/admin-ui': patch
 ---
 
-Replaced the `system` argument on `SessionStrategy.start`, '.end`, and`.get`with`createContext`.
+Renamed to `SessionImplementation.createContext` to `createSessionContext`.

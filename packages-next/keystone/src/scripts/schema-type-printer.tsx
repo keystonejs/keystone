@@ -11,7 +11,7 @@ import {
   FieldDefinitionNode,
   InputValueDefinitionNode,
 } from 'graphql';
-import type { KeystoneSystem } from '@keystone-next/types';
+import type { BaseKeystone } from '@keystone-next/types';
 
 let printEnumTypeDefinition = (node: EnumTypeDefinitionNode) => {
   return `export type ${node.name.value} =\n${node
@@ -70,7 +70,11 @@ function printInputTypesFromSchema(
   return { printedTypes: typeString + '\n', ast, printTypeNode };
 }
 
-export function printGeneratedTypes(printedSchema: string, system: KeystoneSystem) {
+export function printGeneratedTypes(
+  printedSchema: string,
+  keystone: BaseKeystone,
+  graphQLSchema: GraphQLSchema
+) {
   let scalars = {
     ID: 'string',
     Boolean: 'boolean',
@@ -81,7 +85,7 @@ export function printGeneratedTypes(printedSchema: string, system: KeystoneSyste
   };
   let { printedTypes, ast, printTypeNode } = printInputTypesFromSchema(
     printedSchema,
-    system.graphQLSchema,
+    graphQLSchema,
     scalars
   );
 
@@ -89,7 +93,7 @@ export function printGeneratedTypes(printedSchema: string, system: KeystoneSyste
 
   let allListsStr = '\nexport type KeystoneListsTypeInfo = {';
 
-  let queryTypeName = system.graphQLSchema.getQueryType()!.name;
+  let queryTypeName = graphQLSchema.getQueryType()!.name;
 
   let queryNode = ast.definitions.find((node): node is ObjectTypeDefinitionNode => {
     return node.kind === 'ObjectTypeDefinition' && node.name.value === queryTypeName;
@@ -116,8 +120,8 @@ export function printGeneratedTypes(printedSchema: string, system: KeystoneSyste
     return types + '}';
   };
 
-  for (const listKey in system.keystone.lists) {
-    const list = system.keystone.lists[listKey];
+  for (const listKey in keystone.lists) {
+    const list = keystone.lists[listKey];
     let backingTypes = '{\n';
     for (const field of list.fields) {
       for (const [key, { optional, type }] of Object.entries(field.getBackingTypes()) as any) {

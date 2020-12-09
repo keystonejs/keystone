@@ -3,4 +3,4 @@
 '@keystone-next/types': minor
 ---
 
-Added type for `BaseKeystone.createApolloServer()`.
+Added an optional `req` property to the `KeystoneContext` type.

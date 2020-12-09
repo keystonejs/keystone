@@ -46,14 +46,17 @@ export const dev = async () => {
     await fs.outputFile('./.keystone/schema.graphql', printedSchema);
     await fs.outputFile(
       './.keystone/schema-types.ts',
-      formatSource(printGeneratedTypes(printedSchema, system), 'babel-ts')
+      formatSource(
+        printGeneratedTypes(printedSchema, system.keystone, system.graphQLSchema),
+        'babel-ts'
+      )
     );
 
     console.log('✨ Connecting to the Database');
     await system.keystone.connect();
 
     console.log('✨ Generating Admin UI');
-    await generateAdminUI(config, system, process.cwd());
+    await generateAdminUI(config, system);
 
     expressServer = await createExpressServer(config, system);
     console.log(`👋 Admin UI Ready`);

@@ -50,6 +50,7 @@ export const InitPage = ({
       }
       fields[fieldPath] = {
         ...field,
+        path: fieldPath,
         views,
         controller: fieldViews[field.viewsIndex].controller({
           listKey,

@@ -148,7 +148,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   const adminPageMiddleware: Auth['ui']['pageMiddleware'] = async ({
     req,
     isValidSession,
-    system,
+    createContext,
     session,
   }) => {
     const pathname = url.parse(req.url!).pathname!;
@@ -164,12 +164,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     }
 
     if (!session && initFirstItem) {
-      const { count } = await system.keystone.lists[listKey].adapter.itemsQuery(
-        {},
-        {
-          meta: true,
-        }
-      );
+      const count = await createContext({ skipAccessControl: true }).lists[listKey].count({});
       if (count === 0) {
         if (pathname !== '/init') {
           return {

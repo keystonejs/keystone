@@ -2,4 +2,4 @@
 '@keystone-next/admin-ui': patch
 ---
 
-Simplified `getLazyMetadataQuery`.
+Simplified admin UI generation code.
