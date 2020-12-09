@@ -37,7 +37,7 @@ Hooks are available for these core operations:
 - `authenticate`
 - `unauthenticate`
 
-These operations are reused used for both "single" and "many" modes.
+These operations are used for both "single" and "many" modes.
 E.g. the `deleteUser` (singular) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
 
 Hooks for these operations have different signatures due to the nature of the operations being performed.
