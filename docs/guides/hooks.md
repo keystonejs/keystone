@@ -68,7 +68,7 @@ See the [Hooks API docs](/docs/api/hooks.md) and [Intra-Hook Execution Order sec
 
 ### Putting it together
 
-In total there 13 _hook sets_ available.
+In total there are 13 _hook sets_ available.
 This table shows the _hook set_ relevant to each combination of _stage_ and _operation_:
 
 | Stage            | `create`        | `update`        | `delete`         | `authenticate`      | `unauthenticate` |
