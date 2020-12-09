@@ -3,7 +3,7 @@ import { graphQLSchemaExtension } from '@keystone-next/keystone/schema';
 export const extendGraphqlSchema = graphQLSchemaExtension({
   typeDefs: `
     type Mutation {
-      addToCart(productId: ID): CartItem
+      addToCart(productId: ID!): CartItem
       checkout(token: String!): Order
     }
   `,
@@ -87,7 +87,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
         // 1. Make sure they are signed in
         const userId = session.itemId;
         if (!userId) {
-          throw new Error('You must be signed in soooon');
+          throw new Error('You must be signed in to add cart items.');
         }
         // 2. Query the users current cart, to see if they already have that item
         const allCartItems = await context.lists.CartItem.findMany({

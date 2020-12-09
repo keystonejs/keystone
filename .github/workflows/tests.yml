@@ -142,6 +142,10 @@ jobs:
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --maxWorkers=1 --testPathIgnorePatterns=api-tests
+        env:
+          CLOUDINARY_CLOUD_NAME: keystone-cloudinary
+          CLOUDINARY_KEY: 758252673115372
+          CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
 
   linting:
     name: Linting
