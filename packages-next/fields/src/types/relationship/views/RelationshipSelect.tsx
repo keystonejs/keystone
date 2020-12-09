@@ -185,7 +185,7 @@ export const RelationshipSelect = ({
       />
     );
   }
-  
+
   return (
     <MultiSelect // this is necessary because react-select passes a second argument to onInputChange
       // and useState setters log a warning if a second argument is passed
