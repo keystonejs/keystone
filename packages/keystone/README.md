@@ -301,7 +301,7 @@ const { gql } = require('apollo-server-express');
 const context = keystone.createContext({ skipAccessControl: true })
 
 // Execute a GraphQL operation with no access control
-const { data, errors } = keystone.executeGraphQL({ context, query: gql` ... `, variables: { ... }})
+const { data, errors } = await keystone.executeGraphQL({ context, query: gql` ... `, variables: { ... }})
 ```
 
 #### Config
@@ -325,7 +325,7 @@ const { gql } = require('apollo-server-express');
 const context = keystone.createContext({ skipAccessControl: true })
 
 // Execute a GraphQL operation with no access control
-const { data, errors } = keystone.executeGraphQL({ context, query: gql` ... `, variables: { ... }})
+const { data, errors } = await keystone.executeGraphQL({ context, query: gql` ... `, variables: { ... }})
 ```
 
 #### Config
