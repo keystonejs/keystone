@@ -11,7 +11,7 @@
     "@babel/runtime": "^7.12.5",
     "@keystone-ui/core": "^1.0.2",
     "@keystone-ui/icons": "^1.0.0",
-    "@types/react-select": "^3.0.26",
+    "@types/react-select": "^3.0.27",
     "react": "^16.14.0",
     "react-select": "^3.1.1"
   },

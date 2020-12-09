@@ -1,3 +1,4 @@
+import { CSSObject } from '@emotion/react';
 import { identityType } from '../utils';
 import { palette as basePalette } from './colors';
 
@@ -157,7 +158,7 @@ type HeadingStyle = {
   color: string;
   family: string;
   size: string;
-  transform: string;
+  transform: Extract<CSSObject['textTransform'], string>;
   weight: number;
 };
 

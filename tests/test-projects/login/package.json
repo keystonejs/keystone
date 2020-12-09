@@ -28,7 +28,7 @@
     "@keystonejs/list-plugins": "^7.1.4",
     "@keystonejs/server-side-graphql-client": "^1.1.2",
     "@keystonejs/session": "^8.1.1",
-    "cross-env": "^7.0.2",
+    "cross-env": "^7.0.3",
     "express": "^4.17.1"
   },
   "devDependencies": {
