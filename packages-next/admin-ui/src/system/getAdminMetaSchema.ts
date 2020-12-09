@@ -133,7 +133,7 @@ export function getAdminMetaSchema({
           if ('isAdminUIBuildProcess' in context || isAccessAllowed === undefined) {
             return staticAdminMeta;
           }
-          return Promise.resolve(isAccessAllowed({ session: context.session })).then(isAllowed => {
+          return Promise.resolve(isAccessAllowed(context)).then(isAllowed => {
             if (isAllowed) {
               return staticAdminMeta;
             }
