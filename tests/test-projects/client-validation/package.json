@@ -27,7 +27,7 @@
     "@keystonejs/file-adapters": "^7.0.8",
     "@keystonejs/keystone": "^17.1.1",
     "@keystonejs/server-side-graphql-client": "^1.1.2",
-    "cross-env": "^7.0.2",
+    "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "react": "^16.14.0"
   },
