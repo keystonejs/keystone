@@ -4,7 +4,7 @@ import { jsx, useTheme } from '@keystone-ui/core';
 import { KeyboardEvent, ReactNode, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
-import { Editor, Node, Range, Transforms, createEditor, NodeEntry, Element } from 'slate';
+import { Editor, Node, Range, Transforms, createEditor, NodeEntry, Element, Text } from 'slate';
 import { Editable, ReactEditor, RenderLeafProps, Slate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 
@@ -194,24 +194,26 @@ export function DocumentEditor({
   const [expanded, setExpanded] = useState(false);
   const editor = useMemo(
     () =>
-      withLink(
-        withList(
-          documentFeatures.listTypes,
-          withHeading(
-            documentFeatures.headingLevels,
-            withRelationship(
-              relationships,
-              withComponentBlocks(
-                componentBlocks,
-                withParagraphs(
-                  withDivider(
-                    documentFeatures.dividers,
-                    withColumns(
-                      withCodeBlock(
-                        documentFeatures.blockTypes.code,
-                        withBlockquote(
-                          documentFeatures.blockTypes.blockquote,
-                          withHistory(withReact(createEditor()))
+      withBlocksSchema(
+        withLink(
+          withList(
+            documentFeatures.listTypes,
+            withHeading(
+              documentFeatures.headingLevels,
+              withRelationship(
+                relationships,
+                withComponentBlocks(
+                  componentBlocks,
+                  withParagraphs(
+                    withDivider(
+                      documentFeatures.dividers,
+                      withColumns(
+                        withCodeBlock(
+                          documentFeatures.blockTypes.code,
+                          withBlockquote(
+                            documentFeatures.blockTypes.blockquote,
+                            withHistory(withReact(createEditor()))
+                          )
                         )
                       )
                     )
@@ -361,45 +363,103 @@ function findDuplicateNodes(nodes: Node[], found: WeakSet<object> = new WeakSet(
   }
 }
 
-// function schema<
-//   Obj extends Record<
-//     string,
-//     | {
-//         kind: 'blocks';
-//         allowedChildren: readonly (keyof Obj)[];
-//       }
-//     | { kind: 'inlines' }
-//   >
-// >(obj: Obj) {
-//   return obj;
-// }
+function schema<
+  Obj extends Record<
+    string,
+    | {
+        kind: 'blocks';
+        allowedChildren: readonly [Extract<keyof Obj, string>, ...Extract<keyof Obj, string>[]];
+      }
+    | { kind: 'inlines' }
+  >
+>(obj: Obj) {
+  let ret: Record<
+    string,
+    | {
+        kind: 'blocks';
+        allowedChildren: ReadonlySet<string>;
+        blockToWrapInlinesIn: string;
+      }
+    | { kind: 'inlines' }
+  > = {};
+  Object.keys(obj).forEach(key => {
+    const val = obj[key];
+    if (val.kind === 'blocks') {
+      ret[key] = {
+        kind: 'blocks',
+        allowedChildren: new Set(val.allowedChildren),
+        blockToWrapInlinesIn: val.allowedChildren[0],
+      };
+    } else {
+      ret[key] = val;
+    }
+  });
+  return ret;
+}
 
-// const blockquoteChildren = [
-//   'paragraph',
-//   'code',
-//   'heading',
-//   'ordered-list',
-//   'unordered-list',
-// ] as const;
+const blockquoteChildren = [
+  'paragraph',
+  'code',
+  'heading',
+  'ordered-list',
+  'unordered-list',
+] as const;
 
-// const paragraphLike = [...blockquoteChildren, 'blockquote'] as const;
+const paragraphLike = [...blockquoteChildren, 'blockquote'] as const;
 
-// const listChildren = ['list-item', 'ordered-list', 'unordered-list'] as const;
+const listChildren = ['list-item', 'ordered-list', 'unordered-list'] as const;
 
-// schema({
-//   editor: { kind: 'blocks', allowedChildren: [...paragraphLike, 'columns'] },
-//   columns: { kind: 'blocks', allowedChildren: ['column'] },
-//   column: { kind: 'blocks', allowedChildren: ['paragraph'] },
-//   blockquote: { kind: 'blocks', allowedChildren: blockquoteChildren },
-//   paragraph: { kind: 'inlines' },
-//   code: { kind: 'inlines' },
-//   divider: { kind: 'inlines' },
-//   heading: { kind: 'inlines' },
-//   relationship: { kind: 'inlines' },
-//   'component-block': { kind: 'blocks', allowedChildren: ['component-block-prop'] },
-//   'component-inline-prop': { kind: 'inlines' },
-//   'component-block-prop': { kind: 'blocks', allowedChildren: paragraphLike },
-//   'ordered-list': { kind: 'blocks', allowedChildren: listChildren },
-//   'unordered-list': { kind: 'blocks', allowedChildren: listChildren },
-//   'list-item': { kind: 'inlines' },
-// });
+const blockSchema = schema({
+  editor: { kind: 'blocks', allowedChildren: [...paragraphLike, 'columns'] },
+  columns: { kind: 'blocks', allowedChildren: ['column'] },
+  column: { kind: 'blocks', allowedChildren: ['paragraph'] },
+  blockquote: { kind: 'blocks', allowedChildren: blockquoteChildren },
+  paragraph: { kind: 'inlines' },
+  code: { kind: 'inlines' },
+  divider: { kind: 'inlines' },
+  heading: { kind: 'inlines' },
+  'component-block': { kind: 'blocks', allowedChildren: ['component-block-prop'] },
+  'component-inline-prop': { kind: 'inlines' },
+  'component-block-prop': { kind: 'blocks', allowedChildren: paragraphLike },
+  'ordered-list': { kind: 'blocks', allowedChildren: listChildren },
+  'unordered-list': { kind: 'blocks', allowedChildren: listChildren },
+  'list-item': { kind: 'inlines' },
+});
+
+function withBlocksSchema(editor: ReactEditor) {
+  const { normalizeNode } = editor;
+  editor.normalizeNode = ([node, path]) => {
+    if (Editor.isBlock(editor, node) || Editor.isEditor(node)) {
+      const nodeType = Editor.isEditor(node) ? 'editor' : node.type;
+      if (typeof nodeType !== 'string' || blockSchema[nodeType] === undefined) {
+        Transforms.unwrapNodes(editor, { at: path });
+        return;
+      }
+      const info = blockSchema[nodeType];
+      for (const [index, childNode] of node.children.entries()) {
+        const childPath = [...path, index];
+        if (info.kind === 'inlines') {
+          if (!Text.isText(childNode) && !Editor.isInline(editor, childNode)) {
+            Transforms.unwrapNodes(editor, { at: childPath });
+            return;
+          }
+        } else {
+          if (!Editor.isBlock(editor, childNode)) {
+            Transforms.wrapNodes(
+              editor,
+              { type: info.blockToWrapInlinesIn, children: [] },
+              { at: childPath }
+            );
+            return;
+          }
+          if (!info.allowedChildren.has(childNode.type as string)) {
+            Transforms.unwrapNodes(editor, { at: childPath });
+            return;
+          }
+        }
+      }
+    }
+    normalizeNode([node, path]);
+  };
+  return editor;
+}
