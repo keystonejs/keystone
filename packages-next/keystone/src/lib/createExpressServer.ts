@@ -56,7 +56,11 @@ const addApolloServer = ({
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql', cors: false });
 };
 
-export const createExpressServer = async (config: KeystoneConfig, system: KeystoneSystem) => {
+export const createExpressServer = async (
+  config: KeystoneConfig,
+  system: KeystoneSystem,
+  { dev }: { dev: boolean }
+) => {
   const server = express();
 
   if (config.server?.cors) {
