@@ -4,6 +4,7 @@ import type {
   FieldType,
   BaseKeystone,
 } from '@keystone-next/types';
+import { viewHash } from '../utils/viewHash';
 
 export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) {
   const { ui, lists } = config;
@@ -12,17 +13,7 @@ export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) 
     enableSignout: config.session !== undefined,
     lists: {},
   };
-  let uniqueViewCount = -1;
-  const stringViewsToIndex: Record<string, number> = {};
-  const allViews: string[] = [];
-  function getViewsId(views: string) {
-    if (stringViewsToIndex[views] === undefined) {
-      uniqueViewCount++;
-      stringViewsToIndex[views] = uniqueViewCount;
-      allViews.push(views);
-    }
-    return stringViewsToIndex[views];
-  }
+
   Object.keys(lists).forEach(key => {
     const listConfig = lists[key];
     const list = keystone.lists[key];
@@ -61,14 +52,13 @@ export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) 
       const field: FieldType<any> = listConfig.fields[fieldKey];
       adminMeta.lists[key].fields[fieldKey] = {
         label: list.fieldsByPath[fieldKey].label,
-        viewsIndex: getViewsId(field.views),
-        customViews:
-          field.config.ui?.views === undefined ? null : getViewsId(field.config.ui.views),
+        viewsIndex: viewHash(field.views),
+        customViews: field.config.ui?.views === undefined ? null : viewHash(field.config.ui.views),
         fieldMeta: field.getAdminMeta?.(key, fieldKey, adminMeta) ?? null,
         isOrderable: list.fieldsByPath[fieldKey].isOrderable || fieldKey === 'id',
       };
     }
   });
 
-  return { adminMeta, allViews };
+  return { adminMeta };
 }

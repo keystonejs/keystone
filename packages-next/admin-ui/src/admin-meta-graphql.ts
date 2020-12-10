@@ -152,8 +152,8 @@ type KeystoneAdminUIFieldMeta = {
   label: Scalars['String'];
   isOrderable: Scalars['Boolean'];
   fieldMeta: Maybe<Scalars['JSON']>;
-  viewsIndex: Scalars['Int'];
-  customViews: Maybe<Scalars['Int']>;
+  viewsIndex: Scalars['String'];
+  customViews: Maybe<Scalars['String']>;
   createView: KeystoneAdminUIFieldMetaCreateView;
   listView: KeystoneAdminUIFieldMetaListView;
   itemView: Maybe<KeystoneAdminUIFieldMetaItemView>;

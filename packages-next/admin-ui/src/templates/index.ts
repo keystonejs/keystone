@@ -11,7 +11,7 @@ import * as Path from 'path';
 const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.json'));
 
 export const writeAdminFiles = (
-  session: KeystoneConfig['session'],
+  config: KeystoneConfig,
   system: KeystoneSystem,
   configFileExists: boolean,
   projectAdminPath: string
@@ -20,11 +20,11 @@ export const writeAdminFiles = (
     outputPath =>
       ({ mode: 'copy', inputPath: Path.join(pkgDir, 'static', outputPath), outputPath } as const)
   ),
-  { mode: 'write', outputPath: 'pages/no-access.js', src: noAccessTemplate(session) },
+  { mode: 'write', outputPath: 'pages/no-access.js', src: noAccessTemplate(config.session) },
   {
     mode: 'write',
     outputPath: 'pages/_app.js',
-    src: appTemplate(system, { configFileExists, projectAdminPath }),
+    src: appTemplate(config, system, { configFileExists, projectAdminPath }),
   },
   { mode: 'write', src: homeTemplate(system.adminMeta.lists), outputPath: 'pages/index.js' },
   ...Object.values(system.adminMeta.lists).map(
