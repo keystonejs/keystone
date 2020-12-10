@@ -344,7 +344,10 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
             url?.host === headers?.host &&
             (await context.createContext({ skipAccessControl: true }).lists[listKey].count({})) ===
               0;
-          return accessingInitPage || keystoneConfig.ui?.isAccessAllowed?.(context) || false;
+          return (
+            accessingInitPage ||
+            (ui?.isAccessAllowed ? ui.isAccessAllowed(context) : context.session !== undefined)
+          );
         },
       };
     }
