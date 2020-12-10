@@ -1,6 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { mapSchema } from '@graphql-tools/utils';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import type {
   KeystoneConfig,
   KeystoneContext,
@@ -16,11 +17,13 @@ export function createGraphQLSchema(
   keystone: BaseKeystone,
   adminMeta: SerializedAdminMeta
 ) {
-  let graphQLSchema = keystone.createApolloServer({
-    schemaName: 'public',
-    dev: process.env.NODE_ENV === 'development',
-  }).schema;
+  // Start with the core keystone graphQL schema
+  let graphQLSchema = makeExecutableSchema({
+    typeDefs: ['scalar Upload', ...keystone.getTypeDefs({ schemaName: 'public' })],
+    resolvers: keystone.getResolvers({ schemaName: 'public' }),
+  });
 
+  // Filter out the _label_ field from all lists
   graphQLSchema = mapSchema(graphQLSchema, {
     'MapperKind.OBJECT_TYPE'(type) {
       if (
@@ -40,10 +43,12 @@ export function createGraphQLSchema(
 
   // TODO: find a way to not pass keystone in here, if we can - it's too broad and makes
   // everything in the keystone instance public API
+  // Merge in the user defined graphQL API
   if (config.extendGraphqlSchema) {
     graphQLSchema = config.extendGraphqlSchema(graphQLSchema, keystone);
   }
 
+  // Merge in session graphQL API
   if (config.session) {
     graphQLSchema = mergeSchemas({
       schemas: [graphQLSchema],
@@ -65,6 +70,7 @@ export function createGraphQLSchema(
     });
   }
 
+  // Merge in the admin-meta graphQL API
   graphQLSchema = mergeSchemas({
     schemas: [graphQLSchema],
     ...getAdminMetaSchema({ adminMeta, config }),
