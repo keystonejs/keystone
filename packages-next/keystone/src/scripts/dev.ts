@@ -9,12 +9,7 @@ import { initConfig } from '../lib/initConfig';
 import { requireSource } from '../lib/requireSource';
 import { createExpressServer } from '../lib/createExpressServer';
 import { printGeneratedTypes } from './schema-type-printer';
-
-// TODO: Read config path from process args
-const CONFIG_PATH = path.join(process.cwd(), 'keystone');
-
-// TODO: Read port from config or process args
-const PORT = process.env.PORT || 3000;
+import { CONFIG_PATH, PORT } from './utils';
 
 // TODO: Don't generate or start an Admin UI if it isn't configured!!
 const devLoadingHTMLFilepath = path.join(
@@ -58,7 +53,7 @@ export const dev = async () => {
     console.log('✨ Generating Admin UI');
     await generateAdminUI(config, system);
 
-    expressServer = await createExpressServer(config, system);
+    expressServer = await createExpressServer(config, system, true);
     console.log(`👋 Admin UI Ready`);
   };
 

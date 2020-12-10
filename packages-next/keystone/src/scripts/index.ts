@@ -1,7 +1,7 @@
 import meow from 'meow';
 import { cli } from './cli';
 
-const { input, showHelp } = meow(
+const { input, help } = meow(
   `
   Usage
     $ keystone-next [command]
@@ -12,4 +12,4 @@ const { input, showHelp } = meow(
   `
 );
 
-cli(input, showHelp);
+cli(input, help);

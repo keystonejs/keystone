@@ -4,11 +4,10 @@ import next from 'next';
 import express from 'express';
 import type { KeystoneSystem, KeystoneConfig, SessionImplementation } from '@keystone-next/types';
 
-const dev = process.env.NODE_ENV !== 'production';
-
 export const createAdminUIServer = async (
   ui: KeystoneConfig['ui'],
   system: KeystoneSystem,
+  dev: boolean,
   sessionImplementation?: SessionImplementation
 ) => {
   const { createContext } = system;

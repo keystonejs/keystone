@@ -59,7 +59,7 @@ const addApolloServer = ({
 export const createExpressServer = async (
   config: KeystoneConfig,
   system: KeystoneSystem,
-  { dev }: { dev: boolean }
+  dev: boolean
 ) => {
   const server = express();
 
@@ -80,7 +80,7 @@ export const createExpressServer = async (
   addApolloServer({ server, graphQLSchema, createContext, sessionImplementation });
 
   console.log('✨ Preparing Next.js app');
-  server.use(await createAdminUIServer(config.ui, system, sessionImplementation));
+  server.use(await createAdminUIServer(config.ui, system, dev, sessionImplementation));
 
   return server;
 };

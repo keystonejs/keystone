@@ -1,4 +1,6 @@
 import { dev } from './dev';
+import { build } from './build';
+import { start } from './start';
 
 const commands = {
   dev,
@@ -7,13 +9,8 @@ const commands = {
 };
 
 export function cli(input: string[], helpText: string) {
-  const command = input[0];
+  const command = input[0] || 'dev';
 
-  if (!command) {
-    console.log('You must pass a command to keystone-next');
-    console.log(helpText);
-    process.exit(1);
-  }
   if (!(command in commands)) {
     console.log(`${command} is not a command that keystone-next accepts`);
     console.log(helpText);
