@@ -339,11 +339,12 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
           // even if the user isn't logged in (which should always be the case if they're seeing /init)
           const headers = context.req?.headers;
           const url = headers?.referer ? new URL(headers.referer) : undefined;
-          return (
-            (url?.pathname === '/init' && url?.host === headers?.host) ||
-            keystoneConfig.ui?.isAccessAllowed?.(context) ||
-            false
-          );
+          const accessingInitPage =
+            url?.pathname === '/init' &&
+            url?.host === headers?.host &&
+            (await context.createContext({ skipAccessControl: true }).lists[listKey].count({})) ===
+              0;
+          return accessingInitPage || keystoneConfig.ui?.isAccessAllowed?.(context) || false;
         },
       };
     }

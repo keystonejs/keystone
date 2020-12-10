@@ -2,4 +2,4 @@
 '@keystone-next/auth': patch
 ---
 
-Updated `/item` page to use the `adminMeta` query.
+Updated `/init` page to use the `adminMeta` query.

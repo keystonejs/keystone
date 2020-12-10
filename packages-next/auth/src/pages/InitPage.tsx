@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { jsx, H1, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { useRawKeystone } from '@keystone-next/admin-ui/context';
-import { FieldMeta, FieldViews } from '@keystone-next/types';
+import { FieldMeta } from '@keystone-next/types';
 import isDeepEqual from 'fast-deep-equal';
 
 import { SigninContainer } from '../components/SigninContainer';
@@ -27,40 +27,11 @@ export const InitPage = ({
   fieldPaths: string[];
   showKeystoneSignup: boolean;
 }) => {
-  const { fieldViews } = useRawKeystone();
   const { adminMeta } = useKeystone();
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {};
     fieldPaths.forEach(fieldPath => {
-      // note that we're skipping the validation since we don't know the list key and
-      // the validation will happen after the user has the created the initial item anyway
-      const field = adminMeta.lists[listKey].fields[fieldPath];
-      const views = fieldViews[field.viewsIndex];
-      const customViews: Record<string, any> = {};
-      if (field.customViews !== null) {
-        const customViewsSource: FieldViews[number] & Record<string, any> =
-          fieldViews[field.customViews];
-        const allowedExportsOnCustomViews = new Set(views.allowedExportsOnCustomViews);
-        Object.keys(customViewsSource).forEach(exportName => {
-          if (allowedExportsOnCustomViews.has(exportName)) {
-            customViews[exportName] = customViewsSource[exportName];
-          } else {
-            (views as any)[exportName] = customViewsSource[exportName];
-          }
-        });
-      }
-      fields[fieldPath] = {
-        ...field,
-        path: fieldPath,
-        views,
-        controller: fieldViews[field.viewsIndex].controller({
-          listKey,
-          fieldMeta: field.fieldMeta,
-          label: field.label,
-          path: fieldPath,
-          customViews,
-        }),
-      };
+      fields[fieldPath] = adminMeta.lists[listKey].fields[fieldPath];
     });
     return fields;
   }, [fieldPaths]);
