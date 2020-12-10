@@ -4,8 +4,8 @@ import { KnexAdapter } from '@keystonejs/adapter-knex';
 // @ts-ignore
 import { PrismaAdapter } from '@keystonejs/adapter-prisma';
 import type { KeystoneConfig, KeystoneSystem, BaseKeystone } from '@keystone-next/types';
+import { createAdminMeta } from '@keystone-next/admin-ui/system';
 
-import { createAdminMeta } from './createAdminMeta';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './createContext';
 
