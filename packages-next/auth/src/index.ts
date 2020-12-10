@@ -346,7 +346,9 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
               0;
           return (
             accessingInitPage ||
-            (ui?.isAccessAllowed ? ui.isAccessAllowed(context) : context.session !== undefined)
+            (keystoneConfig.ui?.isAccessAllowed
+              ? keystoneConfig.ui.isAccessAllowed(context)
+              : context.session !== undefined)
           );
         },
       };
