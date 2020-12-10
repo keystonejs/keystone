@@ -79,12 +79,12 @@ Note the `workFactor` supplied is applied by the bcrypt algorithm as an exponent
 As such, a work factor of 11 will cause passwords to take _twice_ as long to hash and validate as a work factor of 10.
 A work factor of 12 will cause passwords to take _four times_ as long as 10. Etc.
 
-### `useCompiledBcrypt`
+### `bcrypt`
 
 By default the [`bcryptjs`](https://www.npmjs.com/package/bcryptjs) package is used for computing and comparing hashes.
 This package provides a javascript implementation of the `bcrypt` algorithm.
 A compiled version of this algorithm is provided by the [`bcrypt`](https://www.npmjs.com/package/bcrypt) package.
-Setting `{ userCompiledBcrypt: true }` will tell Keystone to use the compiled package.
+Setting `{ bcrypt: require('bcrypt') }` will make Keystone to use the compiled package.
 If you use this flag you must include `bcrypt` in your package dependencies.
 
 The compiled package provides a ~20% performance improvement, and avoids the thread blocking of the JavaScript implementation.
