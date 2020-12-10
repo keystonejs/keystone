@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
-import ReactSelect, { Props } from 'react-select';
+import ReactSelect, { Props, OptionsType } from 'react-select';
 import { useInputTokens } from './hooks/inputs';
 import { WidthType } from './types';
 
@@ -14,7 +14,7 @@ type Option = { label: string; value: string; isDisabled?: boolean };
 
 // this removes [key: string]: any from Props
 type BaseSelectProps = Pick<
-  Props<Option>,
+  Props<Option, boolean>,
   Exclude<KnownKeys<Props>, 'value' | 'onChange' | 'isMulti' | 'isOptionDisabled'>
 > & { width?: WidthType };
 
@@ -153,9 +153,9 @@ export function MultiSelect({
   portalMenu,
   ...props
 }: BaseSelectProps & {
-  value: Option[];
+  value: OptionsType<Option>;
   portalMenu?: true;
-  onChange(value: Option[]): void;
+  onChange(value: OptionsType<Option>): void;
 }) {
   const tokens = useInputTokens({ width: widthKey });
   const styles = useStyles({ tokens, multi: true });

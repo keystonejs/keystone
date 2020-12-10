@@ -141,7 +141,7 @@ type KnownKeys<T> = {
 
 // this removes [key: string]: any from Props
 type OptionsProps = Pick<
-  Props<{ label: string; value: string; isDisabled?: boolean }>,
+  Props<{ label: string; value: string; isDisabled?: boolean }, boolean>,
   KnownKeys<Props>
 >;
 
