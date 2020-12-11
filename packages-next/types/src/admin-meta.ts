@@ -5,7 +5,7 @@ export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = unde
   listKey: string;
   path: string;
   label: string;
-  customViews: Record<string, any>;
+  customViewsHash: Record<string, any>;
   fieldMeta: FieldMeta;
 };
 
@@ -44,8 +44,8 @@ export type FieldController<FormState, FilterValue extends JSONValue = never> = 
 
 export type SerializedFieldMeta = {
   label: string;
-  viewsIndex: string;
-  customViews: string | null;
+  viewsHash: string;
+  customViewsHash: string | null;
   isOrderable: boolean;
   fieldMeta: JSONValue;
 };
@@ -56,8 +56,8 @@ export type FieldMeta = {
   isOrderable: boolean;
   views: FieldViews[number];
   fieldMeta: JSONValue;
-  viewsIndex: string;
-  customViews: string | null;
+  viewsHash: string;
+  customViewsHash: string | null;
   controller: FieldController<unknown, JSONValue>;
 };
 

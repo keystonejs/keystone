@@ -74,28 +74,28 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
       };
       list.fields.forEach(field => {
         expectedExports.forEach(exportName => {
-          if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
+          if ((fieldViews[field.viewsHash] as any)[exportName] === undefined) {
             throw new Error(
               `The view for the field at ${list.key}.${field.path} is missing the ${exportName} export`
             );
           }
         });
-        Object.keys(fieldViews[field.viewsIndex]).forEach(exportName => {
+        Object.keys(fieldViews[field.viewsHash]).forEach(exportName => {
           if (!expectedExports.has(exportName) && exportName !== 'allowedExportsOnCustomViews') {
             throw new Error(
               `Unexpected export named ${exportName} from the view from the field at ${list.key}.${field.path}`
             );
           }
         });
-        const views = fieldViews[field.viewsIndex];
-        const customViews: Record<string, any> = {};
-        if (field.customViews !== null) {
+        const views = fieldViews[field.viewsHash];
+        const customViewsHash: Record<string, any> = {};
+        if (field.customViewsHash !== null) {
           const customViewsSource: FieldViews[number] & Record<string, any> =
-            fieldViews[field.customViews];
+            fieldViews[field.customViewsHash];
           const allowedExportsOnCustomViews = new Set(views.allowedExportsOnCustomViews);
           Object.keys(customViewsSource).forEach(exportName => {
             if (allowedExportsOnCustomViews.has(exportName)) {
-              customViews[exportName] = customViewsSource[exportName];
+              customViewsHash[exportName] = customViewsSource[exportName];
             } else if (expectedExports.has(exportName)) {
               (views as any)[exportName] = customViewsSource[exportName];
             } else {
@@ -108,12 +108,12 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
         runtimeAdminMeta.lists[list.key].fields[field.path] = {
           ...field,
           views,
-          controller: fieldViews[field.viewsIndex].controller({
+          controller: fieldViews[field.viewsHash].controller({
             listKey: list.key,
             fieldMeta: field.fieldMeta,
             label: field.label,
             path: field.path,
-            customViews,
+            customViewsHash,
           }),
         };
       });

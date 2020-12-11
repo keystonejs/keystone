@@ -52,8 +52,9 @@ export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) 
       const field: FieldType<any> = listConfig.fields[fieldKey];
       adminMeta.lists[key].fields[fieldKey] = {
         label: list.fieldsByPath[fieldKey].label,
-        viewsIndex: viewHash(field.views),
-        customViews: field.config.ui?.views === undefined ? null : viewHash(field.config.ui.views),
+        viewsHash: viewHash(field.views),
+        customViewsHash:
+          field.config.ui?.views === undefined ? null : viewHash(field.config.ui.views),
         fieldMeta: field.getAdminMeta?.(key, fieldKey, adminMeta) ?? null,
         isOrderable: list.fieldsByPath[fieldKey].isOrderable || fieldKey === 'id',
       };

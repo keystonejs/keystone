@@ -96,7 +96,7 @@ export const controller = (
     path: config.path,
     label: config.label,
     graphqlSelection: `${config.path} {document}`,
-    componentBlocks: config.customViews.componentBlocks || {},
+    componentBlocks: config.customViewsHash.componentBlocks || {},
     documentFeatures: config.fieldMeta.documentFeatures,
     relationships: config.fieldMeta.relationships,
     defaultValue: [{ type: 'paragraph', children: [{ text: '' }] }],
