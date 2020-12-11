@@ -1,3 +1,1 @@
-const withPreconstruct = require('@preconstruct/next');
-
-module.exports = withPreconstruct();
+module.exports = require('@keystone-next/admin-ui/next-config').config;
