@@ -50,7 +50,8 @@
       "pages/*/index.tsx",
       "apollo.tsx",
       "context.tsx",
-      "router.tsx"
+      "router.tsx",
+      "next-config.ts"
     ]
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/admin-ui"
