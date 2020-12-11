@@ -5,7 +5,7 @@ export type FieldControllerConfig<FieldMeta extends JSONValue | undefined = unde
   listKey: string;
   path: string;
   label: string;
-  customViewsHash: Record<string, any>;
+  customViews: Record<string, any>;
   fieldMeta: FieldMeta;
 };
 

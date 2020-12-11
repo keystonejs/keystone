@@ -88,14 +88,14 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
           }
         });
         const views = fieldViews[field.viewsHash];
-        const customViewsHash: Record<string, any> = {};
+        const customViews: Record<string, any> = {};
         if (field.customViewsHash !== null) {
           const customViewsSource: FieldViews[number] & Record<string, any> =
             fieldViews[field.customViewsHash];
           const allowedExportsOnCustomViews = new Set(views.allowedExportsOnCustomViews);
           Object.keys(customViewsSource).forEach(exportName => {
             if (allowedExportsOnCustomViews.has(exportName)) {
-              customViewsHash[exportName] = customViewsSource[exportName];
+              customViews[exportName] = customViewsSource[exportName];
             } else if (expectedExports.has(exportName)) {
               (views as any)[exportName] = customViewsSource[exportName];
             } else {
@@ -113,7 +113,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
             fieldMeta: field.fieldMeta,
             label: field.label,
             path: field.path,
-            customViewsHash,
+            customViews,
           }),
         };
       });
