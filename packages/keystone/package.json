@@ -42,7 +42,7 @@
     "terminal-link": "^2.1.1"
   },
   "devDependencies": {
-    "@keystonejs/fields": "^20.1.2",
+    "@keystonejs/fields": "^21.0.0",
     "@keystonejs/test-utils": "*",
     "p-is-promise": "^3.0.0",
     "tmp": "^0.2.1"

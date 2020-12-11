@@ -1,5 +1,34 @@
 # @keystonejs/fields
 
+## 21.0.0
+
+### Major Changes
+
+- [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0) [#4544](https://github.com/keystonejs/keystone/pull/4544) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Replaced `useCompiledBcrypt` option with `bcrypt` option which accepts an alternative implementation of bcrypt(such as the native `bcrypt` npm package) in the password field type.
+
+  For example, if you had the following field definition:
+
+  ```js
+  password: { type: Password, useCompiledBcrypt: true }
+  ```
+
+  you will need to change it to:
+
+  ```js
+  password: { type: Password, bcrypt: require('bcrypt') }
+  ```
+
+### Minor Changes
+
+- [`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b) [#4516](https://github.com/keystonejs/keystone/pull/4516) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency mongoose to `^5.11.5`.
+
+### Patch Changes
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`f8873064b`](https://github.com/keystonejs/keystone/commit/f8873064b667d62001afe7950e33d019bcff7be3), [`defd05365`](https://github.com/keystonejs/keystone/commit/defd05365f31d0d6d4b6fd9ffe0a0c3928f97e79), [`d329f07a5`](https://github.com/keystonejs/keystone/commit/d329f07a5ce7ebf5d658a7f90334ba4372a2a72d)]:
+  - @keystonejs/adapter-mongoose@10.1.0
+  - @keystonejs/app-admin-ui@7.3.12
+  - @keystonejs/adapter-prisma@1.1.0
+
 ## 20.1.3
 
 ### Patch Changes

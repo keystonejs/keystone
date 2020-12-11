@@ -1,5 +1,17 @@
 # @keystonejs/demo-project-meetup
 
+## 6.2.10
+
+### Patch Changes
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0), [`f8873064b`](https://github.com/keystonejs/keystone/commit/f8873064b667d62001afe7950e33d019bcff7be3), [`d329f07a5`](https://github.com/keystonejs/keystone/commit/d329f07a5ce7ebf5d658a7f90334ba4372a2a72d)]:
+  - @keystonejs/adapter-mongoose@10.1.0
+  - @keystonejs/fields@21.0.0
+  - @keystonejs/app-admin-ui@7.3.12
+  - @keystonejs/auth-password@5.1.18
+  - @keystonejs/fields-cloudinary-image@2.1.1
+  - @keystonejs/fields-wysiwyg-tinymce@5.3.15
+
 ## 6.2.9
 
 ### Patch Changes
