@@ -1,7 +1,13 @@
 import { gql } from '../apollo';
-import { StaticAdminMetaQueryWithoutTypeNames } from '../admin-meta-graphql';
-import { KeystoneContext, KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 import { createAdminMeta } from './createAdminMeta';
+import {
+  KeystoneContext,
+  KeystoneConfig,
+  BaseKeystone,
+  AdminMetaRootVal,
+  ListMetaRootVal,
+  FieldMetaRootVal,
+} from '@keystone-next/types';
 
 let typeDefs = gql`
   type Query {
@@ -90,29 +96,7 @@ export function getAdminMetaSchema({
   keystone: BaseKeystone;
   config: KeystoneConfig;
 }) {
-  const { adminMeta } = createAdminMeta(config, keystone);
-
-  type AdminMeta = StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta'];
-  type ListMetaRootVal = AdminMeta['lists'][number];
-  type FieldMetaRootVal = AdminMeta['lists'][number]['fields'][number];
-  type ListByKey = Record<string, ListMetaRootVal>;
-  const lists: AdminMeta['lists'] = Object.values(adminMeta.lists).map(
-    ({ gqlNames, fields, ...list }) => ({
-      ...list,
-      itemQueryName: gqlNames.itemQueryName,
-      listQueryName: gqlNames.listQueryName.replace('all', ''),
-      fields: Object.keys(fields)
-        .filter(path => config.lists[list.key].fields[path].config.access?.read !== false)
-        .map(path => ({ path, listKey: list.key, ...fields[path] })),
-    })
-  );
-
-  const listsByKey: ListByKey = {};
-  for (const list of lists) {
-    listsByKey[list.key] = list;
-  }
-  type StaticAdminMeta = AdminMeta & { listsByKey: ListByKey };
-  const staticAdminMeta: StaticAdminMeta = { ...adminMeta, lists, listsByKey };
+  const adminMetaRoot = createAdminMeta(config, keystone);
 
   const isAccessAllowed =
     config.session === undefined
@@ -134,11 +118,11 @@ export function getAdminMetaSchema({
           context: { isAdminUIBuildProcess: true } | KeystoneContext
         ) {
           if ('isAdminUIBuildProcess' in context || isAccessAllowed === undefined) {
-            return staticAdminMeta;
+            return adminMetaRoot;
           }
           return Promise.resolve(isAccessAllowed(context)).then(isAllowed => {
             if (isAllowed) {
-              return staticAdminMeta;
+              return adminMetaRoot;
             }
             // TODO: ughhhhhh, we really need to talk about errors.
             // mostly unrelated to above: error or return null here(+ make field nullable)?s
@@ -147,7 +131,7 @@ export function getAdminMetaSchema({
         },
       },
       KeystoneAdminMeta: {
-        list(rootVal: typeof staticAdminMeta, args: { key: string }) {
+        list(rootVal: AdminMetaRootVal, args: { key: string }) {
           return rootVal.listsByKey[args.key];
         },
       },
