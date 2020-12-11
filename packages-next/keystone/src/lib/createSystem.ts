@@ -82,11 +82,11 @@ export function createKeystone(
 export function createSystem(config: KeystoneConfig): KeystoneSystem {
   const keystone = createKeystone(config, () => createContext);
 
-  const { adminMeta, allViews } = createAdminMeta(config, keystone);
+  const { adminMeta } = createAdminMeta(config, keystone);
 
   const graphQLSchema = createGraphQLSchema(config, keystone, adminMeta);
 
   const createContext = makeCreateContext({ keystone, graphQLSchema });
 
-  return { keystone, adminMeta, graphQLSchema, allViews, createContext };
+  return { keystone, adminMeta, graphQLSchema, createContext };
 }
