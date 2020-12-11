@@ -166,7 +166,6 @@ export type SessionImplementation = {
 
 export type KeystoneSystem = {
   keystone: BaseKeystone;
-  adminMeta: SerializedAdminMeta;
   graphQLSchema: GraphQLSchema;
   createContext: CreateContext;
 };

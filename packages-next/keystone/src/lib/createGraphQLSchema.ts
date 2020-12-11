@@ -2,21 +2,12 @@ import { GraphQLObjectType } from 'graphql';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { mapSchema } from '@graphql-tools/utils';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import type {
-  KeystoneConfig,
-  KeystoneContext,
-  BaseKeystone,
-  SerializedAdminMeta,
-} from '@keystone-next/types';
+import type { KeystoneConfig, KeystoneContext, BaseKeystone } from '@keystone-next/types';
 import { getAdminMetaSchema } from '@keystone-next/admin-ui/system';
 
 import { gql } from '../schema';
 
-export function createGraphQLSchema(
-  config: KeystoneConfig,
-  keystone: BaseKeystone,
-  adminMeta: SerializedAdminMeta
-) {
+export function createGraphQLSchema(config: KeystoneConfig, keystone: BaseKeystone) {
   // Start with the core keystone graphQL schema
   let graphQLSchema = makeExecutableSchema({
     typeDefs: ['scalar Upload', ...keystone.getTypeDefs({ schemaName: 'public' })],
@@ -73,7 +64,7 @@ export function createGraphQLSchema(
   // Merge in the admin-meta graphQL API
   graphQLSchema = mergeSchemas({
     schemas: [graphQLSchema],
-    ...getAdminMetaSchema({ adminMeta, config }),
+    ...getAdminMetaSchema({ keystone, config }),
   });
 
   return graphQLSchema;
