@@ -169,7 +169,6 @@ export type KeystoneSystem = {
   adminMeta: SerializedAdminMeta;
   graphQLSchema: GraphQLSchema;
   createContext: CreateContext;
-  allViews: string[];
 };
 
 export type AccessControlContext = {
