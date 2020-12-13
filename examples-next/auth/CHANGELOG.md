@@ -1,5 +1,15 @@
 # @keystone-next/example-auth
 
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies [[`075ef1628`](https://github.com/keystonejs/keystone/commit/075ef16281a89c8291f90275adca98f042cc54da)]:
+  - @keystone-next/admin-ui@6.0.0
+  - @keystone-next/keystone@8.0.0
+  - @keystone-next/auth@9.0.0
+  - @keystone-next/fields@4.0.1
+
 ## 0.0.8
 
 ### Patch Changes
