@@ -1,5 +1,18 @@
 # @keystone-next/admin-ui
 
+## 6.0.0
+
+### Major Changes
+
+- [`075ef1628`](https://github.com/keystonejs/keystone/commit/075ef16281a89c8291f90275adca98f042cc54da) [#4547](https://github.com/keystonejs/keystone/pull/4547) Thanks [@timleslie](https://github.com/timleslie)! - Removed `allViews` from `KeystoneSystem` type. `createAdminMeta` no longer returns `allViews`.
+
+### Patch Changes
+
+- Updated dependencies [[`075ef1628`](https://github.com/keystonejs/keystone/commit/075ef16281a89c8291f90275adca98f042cc54da)]:
+  - @keystone-next/keystone@8.0.0
+  - @keystone-next/types@8.0.0
+  - @keystone-next/admin-ui-utils@2.0.4
+
 ## 5.0.0
 
 ### Major Changes
