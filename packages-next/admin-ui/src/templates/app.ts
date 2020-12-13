@@ -1,4 +1,4 @@
-import type { KeystoneSystem } from '@keystone-next/types';
+import type { KeystoneSystem, KeystoneConfig, FieldType } from '@keystone-next/types';
 import hashString from '@emotion/hash';
 import {
   executeSync,
@@ -11,15 +11,17 @@ import {
   SelectionNode,
 } from 'graphql';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
+import { viewHash } from '../utils/viewHash';
 import Path from 'path';
 
 type AppTemplateOptions = { configFileExists: boolean; projectAdminPath: string };
 
 export const appTemplate = (
+  config: KeystoneConfig,
   system: KeystoneSystem,
   { configFileExists, projectAdminPath }: AppTemplateOptions
 ) => {
-  const { graphQLSchema, allViews } = system;
+  const { graphQLSchema } = system;
 
   const result = executeSync({
     document: staticAdminMetaQuery,
@@ -31,9 +33,24 @@ export const appTemplate = (
   }
   const { adminMeta } = result.data!.keystone;
   const adminMetaQueryResultHash = hashString(JSON.stringify(adminMeta));
-  const viewPaths = allViews.map(views =>
-    Path.isAbsolute(views) ? Path.relative(Path.join(projectAdminPath, 'pages'), views) : views
-  );
+
+  const _allViews = new Set<string>();
+  Object.values(config.lists).forEach(list => {
+    for (const fieldKey of Object.keys(list.fields)) {
+      const field: FieldType<any> = list.fields[fieldKey];
+      _allViews.add(field.views);
+      if (field.config.ui?.views) {
+        _allViews.add(field.config.ui.views);
+      }
+    }
+  });
+  const allViews = [..._allViews];
+  const viewPaths: Record<string, string> = {};
+  for (const views of allViews) {
+    viewPaths[views] = Path.isAbsolute(views)
+      ? Path.relative(Path.join(projectAdminPath, 'pages'), views)
+      : views;
+  }
   // -- TEMPLATE START
   return `
 import React from 'react';
@@ -42,7 +59,7 @@ import { KeystoneProvider } from '@keystone-next/admin-ui/context';
 import { ErrorBoundary } from '@keystone-next/admin-ui/components';
 import { Core } from '@keystone-ui/core';
 
-${viewPaths.map((views, i) => `import * as view${i} from "${views}"`).join('\n')}
+${allViews.map(views => `import * as ${viewHash(views)} from "${viewPaths[views]}"`).join('\n')}
 
 ${
   configFileExists
@@ -50,7 +67,7 @@ ${
     : 'const adminConfig = {};'
 }
 
-const fieldViews = [${allViews.map((x, i) => `view${i}`)}];
+const fieldViews = {${allViews.map(viewHash)}};
 
 const lazyMetadataQuery = ${JSON.stringify(getLazyMetadataQuery(graphQLSchema, adminMeta))};
 

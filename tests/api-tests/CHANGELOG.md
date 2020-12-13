@@ -1,5 +1,18 @@
 # @keystonejs/api-tests
 
+## 8.0.4
+
+### Patch Changes
+
+- [`32aee8503`](https://github.com/keystonejs/keystone/commit/32aee85035b4ff123b0270d142ee0f3cf27a6ac8) [#4510](https://github.com/keystonejs/keystone/pull/4510) Thanks [@timleslie](https://github.com/timleslie)! - Added a function `setupFromConfig` to support running tests against systems defined with the new config API.
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`32aee8503`](https://github.com/keystonejs/keystone/commit/32aee85035b4ff123b0270d142ee0f3cf27a6ac8), [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0), [`efe97de24`](https://github.com/keystonejs/keystone/commit/efe97de24bd1de7a0f50bcbee6b445f4eef7311b)]:
+  - @keystonejs/fields@21.0.0
+  - @keystonejs/test-utils@10.1.0
+  - @keystonejs/auth-password@5.1.18
+  - @keystonejs/fields-authed-relationship@1.0.16
+  - @keystonejs/list-plugins@7.1.5
+
 ## 8.0.3
 
 ### Patch Changes

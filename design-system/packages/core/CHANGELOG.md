@@ -1,5 +1,11 @@
 # @keystone-ui/core
 
+## 1.0.4
+
+### Patch Changes
+
+- [`88b230317`](https://github.com/keystonejs/keystone/commit/88b2303177253aa5d76b50d40d19138af2bc3e41) [#4511](https://github.com/keystonejs/keystone/pull/4511) Thanks [@renovate](https://github.com/apps/renovate)! - Fixed type error with newer version of `@emotion/react`.
+
 ## 1.0.3
 
 ### Patch Changes
