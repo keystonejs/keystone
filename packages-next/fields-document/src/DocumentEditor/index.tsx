@@ -380,8 +380,9 @@ type EditorSchema = Record<
       kind: 'blocks';
       allowedChildren: ReadonlySet<string>;
       blockToWrapInlinesIn: string;
+      invalidPositionHandleMode: 'unwrap' | 'move';
     }
-  | { kind: 'inlines' }
+  | { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' }
 >;
 
 function makeEditorSchema<
@@ -390,8 +391,9 @@ function makeEditorSchema<
     | {
         kind: 'blocks';
         allowedChildren: readonly [Extract<keyof Obj, string>, ...Extract<keyof Obj, string>[]];
+        invalidPositionHandleMode: 'unwrap' | 'move';
       }
-    | { kind: 'inlines' }
+    | { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' }
   >
 >(obj: Obj) {
   let ret: EditorSchema = {};
@@ -402,6 +404,7 @@ function makeEditorSchema<
         kind: 'blocks',
         allowedChildren: new Set(val.allowedChildren),
         blockToWrapInlinesIn: val.allowedChildren[0],
+        invalidPositionHandleMode: val.invalidPositionHandleMode,
       };
     } else {
       ret[key] = val;
@@ -426,23 +429,48 @@ const insideOfLayouts = [...paragraphLike, 'component-block'] as const;
 const listChildren = ['list-item', 'ordered-list', 'unordered-list'] as const;
 
 const editorSchema = makeEditorSchema({
-  editor: { kind: 'blocks', allowedChildren: [...insideOfLayouts, 'columns'] },
-  columns: { kind: 'blocks', allowedChildren: ['column'] },
-  column: { kind: 'blocks', allowedChildren: insideOfLayouts },
-  blockquote: { kind: 'blocks', allowedChildren: blockquoteChildren },
-  paragraph: { kind: 'inlines' },
-  code: { kind: 'inlines' },
-  divider: { kind: 'inlines' },
-  heading: { kind: 'inlines' },
+  editor: {
+    kind: 'blocks',
+    allowedChildren: [...insideOfLayouts, 'columns'],
+    invalidPositionHandleMode: 'move',
+  },
+  columns: { kind: 'blocks', allowedChildren: ['column'], invalidPositionHandleMode: 'move' },
+  column: { kind: 'blocks', allowedChildren: insideOfLayouts, invalidPositionHandleMode: 'unwrap' },
+  blockquote: {
+    kind: 'blocks',
+    allowedChildren: blockquoteChildren,
+    invalidPositionHandleMode: 'move',
+  },
+  paragraph: { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
+  code: { kind: 'inlines', invalidPositionHandleMode: 'move' },
+  divider: { kind: 'inlines', invalidPositionHandleMode: 'move' },
+  heading: {
+    kind: 'inlines',
+    // TODO: not 100% sure that unwrap is right here
+    invalidPositionHandleMode: 'unwrap',
+  },
   'component-block': {
     kind: 'blocks',
     allowedChildren: ['component-block-prop', 'component-inline-prop'],
+    invalidPositionHandleMode: 'move',
   },
-  'component-inline-prop': { kind: 'inlines' },
-  'component-block-prop': { kind: 'blocks', allowedChildren: paragraphLike },
-  'ordered-list': { kind: 'blocks', allowedChildren: listChildren },
-  'unordered-list': { kind: 'blocks', allowedChildren: listChildren },
-  'list-item': { kind: 'inlines' },
+  'component-inline-prop': { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
+  'component-block-prop': {
+    kind: 'blocks',
+    allowedChildren: paragraphLike,
+    invalidPositionHandleMode: 'unwrap',
+  },
+  'ordered-list': {
+    kind: 'blocks',
+    allowedChildren: listChildren,
+    invalidPositionHandleMode: 'move',
+  },
+  'unordered-list': {
+    kind: 'blocks',
+    allowedChildren: listChildren,
+    invalidPositionHandleMode: 'move',
+  },
+  'list-item': { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
 });
 
 function withBlocksSchema(editor: ReactEditor) {
@@ -463,7 +491,7 @@ function withBlocksSchema(editor: ReactEditor) {
         const childPath = [...path, index];
         if (info.kind === 'inlines') {
           if (!Text.isText(childNode) && !Editor.isInline(editor, childNode)) {
-            moveBlockToAllowedPlace(editor, [childNode, childPath], path);
+            handleNodeInInvalidPosition(editor, [childNode, childPath], path);
             return;
           }
         } else {
@@ -476,7 +504,7 @@ function withBlocksSchema(editor: ReactEditor) {
             return;
           }
           if (!info.allowedChildren.has(childNode.type as string)) {
-            moveBlockToAllowedPlace(editor, [childNode, childPath], path);
+            handleNodeInInvalidPosition(editor, [childNode, childPath], path);
             return;
           }
         }
@@ -487,12 +515,18 @@ function withBlocksSchema(editor: ReactEditor) {
   return editor;
 }
 
-function moveBlockToAllowedPlace(
+function handleNodeInInvalidPosition(
   editor: Editor,
   [node, path]: NodeEntry<Descendant>,
   parentPath: Path
 ) {
   const nodeType = node.type as string;
+  const childNodeInfo = editorSchema[nodeType];
+
+  if (childNodeInfo.invalidPositionHandleMode === 'unwrap') {
+    Transforms.unwrapNodes(editor, { at: path });
+    return;
+  }
   const [parentNode] = Editor.node(editor, parentPath);
   const info =
     editorSchema[(parentNode.type as string) || Editor.isEditor(parentNode) ? 'editor' : ''];
@@ -505,7 +539,7 @@ function moveBlockToAllowedPlace(
     Transforms.unwrapNodes(editor, { at: [path[0] + 1] });
     return;
   }
-  moveBlockToAllowedPlace(editor, [node, path], parentPath.slice(0, -1));
+  handleNodeInInvalidPosition(editor, [node, path], parentPath.slice(0, -1));
 }
 
 // to print the editor schema in Graphviz if you want to visualize it
