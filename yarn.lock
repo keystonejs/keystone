@@ -7120,7 +7120,7 @@ ccount@^1.0.0, ccount@^1.0.3:
   resolved "https://registry.yarnpkg.com/ccount/-/ccount-1.1.0.tgz#246687debb6014735131be8abab2d93898f8d043"
   integrity sha512-vlNK021QdI7PNeiUh/lKkC/mNHHfV0m/Ad5JoI0TYtlBnJAslM/JIkm/tGC88bkLIwO6OQ5uV6ztS6kVAtCDlg==
 
-cfonts@^2.8.6:
+cfonts@^2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/cfonts/-/cfonts-2.9.0.tgz#f49fec7b8097590ad84164314354c84a1fdb3e8b"
   integrity sha512-6JmmW3gmePHS1CZj43odbWWyaHpyx3wqZjeajgJjnLBCvXvSLWJT+A6LZ+jOuImX1HjUBhmA6wBWLO12UZbfAg==
