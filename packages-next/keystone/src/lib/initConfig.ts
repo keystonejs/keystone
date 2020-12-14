@@ -8,6 +8,5 @@ import { applyIdFieldDefaults } from '../lib/applyIdFieldDefaults';
 */
 
 export function initConfig(config: KeystoneConfig) {
-  config.lists = applyIdFieldDefaults(config);
-  return config;
+  return { ...config, lists: applyIdFieldDefaults(config) };
 }
