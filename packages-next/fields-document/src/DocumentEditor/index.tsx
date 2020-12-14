@@ -363,7 +363,17 @@ function findDuplicateNodes(nodes: Node[], found: WeakSet<object> = new WeakSet(
   }
 }
 
-function schema<
+type EditorSchema = Record<
+  string,
+  | {
+      kind: 'blocks';
+      allowedChildren: ReadonlySet<string>;
+      blockToWrapInlinesIn: string;
+    }
+  | { kind: 'inlines' }
+>;
+
+function makeEditorSchema<
   Obj extends Record<
     string,
     | {
@@ -373,15 +383,7 @@ function schema<
     | { kind: 'inlines' }
   >
 >(obj: Obj) {
-  let ret: Record<
-    string,
-    | {
-        kind: 'blocks';
-        allowedChildren: ReadonlySet<string>;
-        blockToWrapInlinesIn: string;
-      }
-    | { kind: 'inlines' }
-  > = {};
+  let ret: EditorSchema = {};
   Object.keys(obj).forEach(key => {
     const val = obj[key];
     if (val.kind === 'blocks') {
@@ -403,22 +405,28 @@ const blockquoteChildren = [
   'heading',
   'ordered-list',
   'unordered-list',
+  'divider',
 ] as const;
 
 const paragraphLike = [...blockquoteChildren, 'blockquote'] as const;
 
+const insideOfLayouts = [...paragraphLike, 'component-block'] as const;
+
 const listChildren = ['list-item', 'ordered-list', 'unordered-list'] as const;
 
-const blockSchema = schema({
-  editor: { kind: 'blocks', allowedChildren: [...paragraphLike, 'columns'] },
+const editorSchema = makeEditorSchema({
+  editor: { kind: 'blocks', allowedChildren: [...insideOfLayouts, 'columns'] },
   columns: { kind: 'blocks', allowedChildren: ['column'] },
-  column: { kind: 'blocks', allowedChildren: ['paragraph'] },
+  column: { kind: 'blocks', allowedChildren: insideOfLayouts },
   blockquote: { kind: 'blocks', allowedChildren: blockquoteChildren },
   paragraph: { kind: 'inlines' },
   code: { kind: 'inlines' },
   divider: { kind: 'inlines' },
   heading: { kind: 'inlines' },
-  'component-block': { kind: 'blocks', allowedChildren: ['component-block-prop'] },
+  'component-block': {
+    kind: 'blocks',
+    allowedChildren: ['component-block-prop', 'component-inline-prop'],
+  },
   'component-inline-prop': { kind: 'inlines' },
   'component-block-prop': { kind: 'blocks', allowedChildren: paragraphLike },
   'ordered-list': { kind: 'blocks', allowedChildren: listChildren },
@@ -431,16 +439,21 @@ function withBlocksSchema(editor: ReactEditor) {
   editor.normalizeNode = ([node, path]) => {
     if (Editor.isBlock(editor, node) || Editor.isEditor(node)) {
       const nodeType = Editor.isEditor(node) ? 'editor' : node.type;
-      if (typeof nodeType !== 'string' || blockSchema[nodeType] === undefined) {
+      if (typeof nodeType !== 'string' || editorSchema[nodeType] === undefined) {
         Transforms.unwrapNodes(editor, { at: path });
         return;
       }
-      const info = blockSchema[nodeType];
+      const info = editorSchema[nodeType];
       for (const [index, childNode] of node.children.entries()) {
         const childPath = [...path, index];
         if (info.kind === 'inlines') {
           if (!Text.isText(childNode) && !Editor.isInline(editor, childNode)) {
-            Transforms.unwrapNodes(editor, { at: childPath });
+            if (Editor.isVoid(editor, childNode)) {
+              // TODO: maybe move instead of remove?
+              Transforms.removeNodes(editor, { at: childPath });
+            } else {
+              Transforms.unwrapNodes(editor, { at: childPath });
+            }
             return;
           }
         } else {
@@ -463,3 +476,21 @@ function withBlocksSchema(editor: ReactEditor) {
   };
   return editor;
 }
+
+// to print the editor schema in Graphviz if you want to visualize it
+// function printEditorSchema(editorSchema: EditorSchema) {
+//   return `digraph G {
+//   concentrate=true;
+//   ${Object.keys(editorSchema)
+//     .map(key => {
+//       let val = editorSchema[key];
+//       if (val.kind === 'inlines') {
+//         return `"${key}" -> inlines`;
+//       }
+//       if (val.kind === 'blocks') {
+//         return `"${key}" -> {${[...val.allowedChildren].map(x => JSON.stringify(x)).join(' ')}}`;
+//       }
+//     })
+//     .join('\n  ')}
+// }`;
+// }

@@ -147,16 +147,7 @@ export const insertColumns = (editor: ReactEditor, layout: [number, ...number[]]
         {
           type: 'columns',
           layout,
-          children: [
-            {
-              type: 'column',
-              children: [paragraphElement()],
-            },
-            {
-              type: 'column',
-              children: [paragraphElement()],
-            },
-          ],
+          children: [],
         },
       ],
       { at: [entry[1][0] + 1] }
@@ -179,21 +170,6 @@ export const withColumns = (editor: ReactEditor) => {
   const { normalizeNode } = editor;
   editor.normalizeNode = entry => {
     const [node, path] = entry;
-
-    if (Element.isElement(node) || Editor.isEditor(node)) {
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        const childPath = [...path, i];
-        const childNode = node.children[i];
-        if (childNode.type === 'columns' && Element.isElement(node)) {
-          Transforms.unwrapNodes(editor, { at: childPath });
-          return;
-        }
-        if (childNode.type === 'column' && node.type !== 'columns') {
-          Transforms.unwrapNodes(editor, { at: childPath });
-          return;
-        }
-      }
-    }
 
     if (Element.isElement(node) && node.type === 'columns') {
       let layout = node.layout as number[];

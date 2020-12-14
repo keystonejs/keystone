@@ -88,26 +88,8 @@ export function withList(listTypes: DocumentFeatures['listTypes'], editor: React
   editor.normalizeNode = entry => {
     const [node, path] = entry;
     if (Element.isElement(node) || Editor.isEditor(node)) {
-      const isList = isListType(node.type as string);
       for (const [childNode, childPath] of Node.children(editor, path)) {
-        if (isList) {
-          if (childNode.type !== 'list-item' && !isListType(childNode.type as string)) {
-            Transforms.setNodes(editor, { type: 'list-item' }, { at: childPath });
-            return;
-          }
-        } else if (childNode.type === 'list-item') {
-          Transforms.setNodes(editor, { type: 'paragraph' }, { at: childPath });
-          return;
-        }
-        if (
-          node.type === 'list-item' &&
-          Element.isElement(childNode) &&
-          !editor.isInline(childNode)
-        ) {
-          Transforms.unwrapNodes(editor, { at: childPath });
-          return;
-        }
-
+        // merge sibling lists
         if (
           isListType(childNode.type as string) &&
           node.children[childPath[childPath.length - 1] + 1]?.type === childNode.type

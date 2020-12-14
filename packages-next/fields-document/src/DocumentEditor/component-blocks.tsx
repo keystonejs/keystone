@@ -2,7 +2,7 @@
 
 import { Fragment, ReactElement, createContext, useContext, useState } from 'react';
 import { ReactEditor, RenderElementProps, useEditor, useFocused, useSelected } from 'slate-react';
-import { Editor, Element, Transforms, Text, Range, NodeEntry, Path, Node } from 'slate';
+import { Editor, Element, Transforms, Range, NodeEntry, Path, Node } from 'slate';
 
 import { Stack, jsx, useTheme } from '@keystone-ui/core';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
@@ -334,20 +334,23 @@ export function withComponentBlocks(
             Transforms.removeNodes(editor, { at: childPath });
             return;
           }
-          const stringifiedPropPath = JSON.stringify(childNode.propPath);
-          if (stringifiedInlinePropPaths[stringifiedPropPath] === undefined) {
-            Transforms.removeNodes(editor, { at: childPath });
-            return;
-          } else {
-            if (foundProps.has(stringifiedPropPath)) {
-              // Transforms.removeNodes(editor, { at: childPath });
-              // return;
-            }
-            foundProps.add(stringifiedPropPath);
-            const expectedChildNodeType = `component-${stringifiedInlinePropPaths[stringifiedPropPath]}-prop`;
-            if (childNode.type !== expectedChildNodeType) {
-              Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
+          // we don't want to break a block component if the component doesn't exist for some reason
+          if (blockComponents[node.component as string] !== undefined) {
+            const stringifiedPropPath = JSON.stringify(childNode.propPath);
+            if (stringifiedInlinePropPaths[stringifiedPropPath] === undefined) {
+              Transforms.removeNodes(editor, { at: childPath });
               return;
+            } else {
+              if (foundProps.has(stringifiedPropPath)) {
+                Transforms.removeNodes(editor, { at: childPath });
+                return;
+              }
+              foundProps.add(stringifiedPropPath);
+              const expectedChildNodeType = `component-${stringifiedInlinePropPaths[stringifiedPropPath]}-prop`;
+              if (childNode.type !== expectedChildNodeType) {
+                Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
+                return;
+              }
             }
           }
         } else if (
@@ -359,54 +362,28 @@ export function withComponentBlocks(
       }
     }
 
-    if (Element.isElement(node)) {
-      if (node.type === 'component-block') {
-        const componentBlock = blockComponents[node.component as string];
-        if (componentBlock) {
-          let missingKeys = new Map(
-            findChildPropPaths(node.props as any, componentBlock.props).map(x => [
-              JSON.stringify(x.path),
-              x.kind,
-            ])
-          );
+    if (Element.isElement(node) && node.type === 'component-block') {
+      const componentBlock = blockComponents[node.component as string];
+      if (componentBlock) {
+        let missingKeys = new Map(
+          findChildPropPaths(node.props as any, componentBlock.props).map(x => [
+            JSON.stringify(x.path),
+            x.kind,
+          ])
+        );
 
-          node.children.forEach(node => {
-            missingKeys.delete(JSON.stringify(node.propPath));
-          });
-          Transforms.insertNodes(
-            editor,
-            [...missingKeys].map(([prop, kind]) => ({
-              type: `component-${kind}-prop`,
-              propPath: JSON.parse(prop),
-              children: [{ text: '' }],
-            })),
-            { at: [...path, node.children.length] }
-          );
-        }
-      }
-      if (node.type === 'component-inline-prop') {
-        for (const [index, childNode] of node.children.entries()) {
-          if (!Editor.isInline(editor, childNode) && !Text.isText(childNode)) {
-            if (editor.isVoid(childNode)) {
-              Transforms.removeNodes(editor, { at: [...path, index] });
-            } else {
-              Transforms.unwrapNodes(editor, { at: [...path, index] });
-            }
-            return;
-          }
-        }
-      }
-      if (node.type === 'component-block-prop') {
-        for (const [index, childNode] of node.children.entries()) {
-          if (!Editor.isBlock(editor, childNode)) {
-            Transforms.wrapNodes(
-              editor,
-              { type: 'paragraph', children: [] },
-              { at: [...path, index] }
-            );
-            return;
-          }
-        }
+        node.children.forEach(node => {
+          missingKeys.delete(JSON.stringify(node.propPath));
+        });
+        Transforms.insertNodes(
+          editor,
+          [...missingKeys].map(([prop, kind]) => ({
+            type: `component-${kind}-prop`,
+            propPath: JSON.parse(prop),
+            children: [{ text: '' }],
+          })),
+          { at: [...path, node.children.length] }
+        );
       }
     }
     normalizeNode(entry);
@@ -436,11 +413,13 @@ export const BlockComponentsButtons = ({
             let { node, isFakeVoid } = getInitialValue(key, blockComponents[key], relationships);
             Transforms.insertNodes(editor, node);
             if (!isFakeVoid && editor.selection) {
-              const [[, path]] = Editor.nodes(editor, {
+              const [entry] = Editor.nodes(editor, {
                 match: node => node.type === 'component-block',
               });
-              const point = Editor.start(editor, path);
-              Transforms.select(editor, point);
+              if (entry) {
+                const point = Editor.start(editor, entry[1]);
+                Transforms.select(editor, point);
+              }
             }
             onClose();
           }}
