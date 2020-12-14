@@ -2,7 +2,7 @@
   "name": "@keystonejs/cypress-project-access-control",
   "description": "A KeystoneJS demo project for integration testing. See @keystonejs/keystone for more.",
   "private": true,
-  "version": "5.1.23",
+  "version": "5.1.24",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -18,11 +18,11 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a tests/test-projects/access-control/.env file.\nSee tests/test-projects/access-control/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@keystonejs/adapter-mongoose": "^10.0.1",
-    "@keystonejs/app-admin-ui": "^7.3.9",
+    "@keystonejs/adapter-mongoose": "^10.1.0",
+    "@keystonejs/app-admin-ui": "^7.3.12",
     "@keystonejs/app-graphql": "^6.1.3",
-    "@keystonejs/auth-password": "^5.1.17",
-    "@keystonejs/fields": "^20.0.0",
+    "@keystonejs/auth-password": "^5.1.18",
+    "@keystonejs/fields": "^21.0.0",
     "@keystonejs/keystone": "^17.1.1",
     "@keystonejs/server-side-graphql-client": "^1.1.2",
     "@keystonejs/utils": "^5.4.3",

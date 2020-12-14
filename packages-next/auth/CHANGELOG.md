@@ -1,5 +1,37 @@
 # @keystone-next/auth
 
+## 9.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`075ef1628`](https://github.com/keystonejs/keystone/commit/075ef16281a89c8291f90275adca98f042cc54da)]:
+  - @keystone-next/admin-ui@6.0.0
+  - @keystone-next/keystone@8.0.0
+  - @keystone-next/types@8.0.0
+  - @keystone-next/fields@4.0.1
+  - @keystone-next/admin-ui-utils@2.0.4
+
+## 8.0.0
+
+### Patch Changes
+
+- [`96ece1c61`](https://github.com/keystonejs/keystone/commit/96ece1c610c9125b162ddab07a00a16d2db55127) [#4526](https://github.com/keystonejs/keystone/pull/4526) Thanks [@timleslie](https://github.com/timleslie)! - Fixed error being thrown when no `authenticatedItem` is available.
+
+* [`7ef80b2f2`](https://github.com/keystonejs/keystone/commit/7ef80b2f2acef5ab27a978a9254ea5403a60ed78) [#4525](https://github.com/keystonejs/keystone/pull/4525) Thanks [@timleslie](https://github.com/timleslie)! - Updated `/init` page to use the `adminMeta` query.
+
+- [`39639b203`](https://github.com/keystonejs/keystone/commit/39639b2031bb749067ef537ea47e5d93a8bb89da) [#4529](https://github.com/keystonejs/keystone/pull/4529) Thanks [@timleslie](https://github.com/timleslie)! - Added missing attributes `path`, `viewsIndex`, and `customViews` to `FieldMeta`.
+
+* [`661104764`](https://github.com/keystonejs/keystone/commit/66110476491953af2134cd3cd4e3ef7c361ac5da) [#4509](https://github.com/keystonejs/keystone/pull/4509) Thanks [@timleslie](https://github.com/timleslie)! - Replaced `KeystoneAdminUIConfig.system` with `KeystoneAdminUIConfig.createConfig` to reduce API surface area.
+
+* Updated dependencies [[`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0), [`2d3668c49`](https://github.com/keystonejs/keystone/commit/2d3668c49d1913afecbacf2b5ef164e553210956), [`6912c7b9d`](https://github.com/keystonejs/keystone/commit/6912c7b9dc3d786e61e6f657b0886b258d942c30), [`e33cf0c1e`](https://github.com/keystonejs/keystone/commit/e33cf0c1e78ae69cffaf45009e47ca1198464cf2), [`fd5daefb4`](https://github.com/keystonejs/keystone/commit/fd5daefb4966b10cf8047386d19db14d325ef8c5), [`44c78319e`](https://github.com/keystonejs/keystone/commit/44c78319ed8cfb1000eb4b1aca5eb361376584b4), [`5c75534f6`](https://github.com/keystonejs/keystone/commit/5c75534f6e9e0f10a6556a1f1dc87b5fdd986dd4), [`6d09df338`](https://github.com/keystonejs/keystone/commit/6d09df3381d1682b8002d52ed1696b661fdff035), [`4d3cb8e32`](https://github.com/keystonejs/keystone/commit/4d3cb8e32b22250fdbe04af758b0aad727ba63e4), [`a3908a675`](https://github.com/keystonejs/keystone/commit/a3908a675614fa8690ea641a124cc57c9f963618), [`88b230317`](https://github.com/keystonejs/keystone/commit/88b2303177253aa5d76b50d40d19138af2bc3e41), [`39639b203`](https://github.com/keystonejs/keystone/commit/39639b2031bb749067ef537ea47e5d93a8bb89da), [`c1e8def9a`](https://github.com/keystonejs/keystone/commit/c1e8def9a4204d685a796e267edc50f6ef2e8c51), [`661104764`](https://github.com/keystonejs/keystone/commit/66110476491953af2134cd3cd4e3ef7c361ac5da), [`dab8121a6`](https://github.com/keystonejs/keystone/commit/dab8121a6a8eae4c42a5a9ecbdb72a3e8b1eeda4), [`88b230317`](https://github.com/keystonejs/keystone/commit/88b2303177253aa5d76b50d40d19138af2bc3e41), [`481e456ac`](https://github.com/keystonejs/keystone/commit/481e456ac4158207436ddd9be18fdca0f27b6409), [`08398473b`](https://github.com/keystonejs/keystone/commit/08398473bb81dfd43a3c134ed8de61e45aa770f0), [`2308e5efc`](https://github.com/keystonejs/keystone/commit/2308e5efc7c6893c87652411496b15a8124f6e05), [`4d3cb8e32`](https://github.com/keystonejs/keystone/commit/4d3cb8e32b22250fdbe04af758b0aad727ba63e4), [`f2c7675fb`](https://github.com/keystonejs/keystone/commit/f2c7675fb51ed41e6df8248c76b9322d6de5ee0d)]:
+  - @keystone-next/fields@4.0.0
+  - @keystone-next/admin-ui@5.0.0
+  - @keystone-next/keystone@7.0.0
+  - @keystone-next/types@7.0.0
+  - @keystone-ui/core@1.0.4
+  - @keystone-ui/fields@1.0.3
+  - @keystone-next/admin-ui-utils@2.0.3
+
 ## 7.0.0
 
 ### Patch Changes

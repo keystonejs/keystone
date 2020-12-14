@@ -1,5 +1,13 @@
 # @keystonejs/fields-auto-increment
 
+## 8.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0), [`defd05365`](https://github.com/keystonejs/keystone/commit/defd05365f31d0d6d4b6fd9ffe0a0c3928f97e79)]:
+  - @keystonejs/fields@21.0.0
+  - @keystonejs/adapter-prisma@1.1.0
+
 ## 8.1.0
 
 ### Minor Changes

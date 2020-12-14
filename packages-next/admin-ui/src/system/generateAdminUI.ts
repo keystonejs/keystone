@@ -57,7 +57,7 @@ export const generateAdminUI = async (config: KeystoneConfig, system: KeystoneSy
 
   // Write out the built-in admin UI files. Don't overwrite any user-defined pages.
   const configFileExists = getDoesAdminConfigExist();
-  const adminFiles = writeAdminFiles(config.session, system, configFileExists, projectAdminPath);
+  const adminFiles = writeAdminFiles(config, system, configFileExists, projectAdminPath);
   const baseFiles = adminFiles.filter(x => !uniqueFiles.has(Path.normalize(x.outputPath)));
   // this should always exist, the user should not be able to override it.
   baseFiles.push({
