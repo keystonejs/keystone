@@ -3189,7 +3189,7 @@
   resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-11.2.0.tgz#af60301257cdbc1561c2647678282d3bce5a6c54"
   integrity sha512-pi3DT5fUtATw2atMRQ7xCUUbdauA/hYTKfM2ijf3rtipeyQ7Ou3ij/JLhnc9Ke110ljHJh69j/PiINbbKAYegQ==
 
-"@primer/octicons@^11.1.0":
+"@primer/octicons@^11.2.0":
   version "11.2.0"
   resolved "https://registry.yarnpkg.com/@primer/octicons/-/octicons-11.2.0.tgz#2caaa3a6e56f549be53b4d4004d383fd1120288b"
   integrity sha512-a9ORJaeu7Kt0LCaawQy8S+ZVPDe1qXJvKZraX0b6R0KXkXjL519rpGUDRiGUlskuxEpVf2kmbVYfqGDDlMGLMg==
