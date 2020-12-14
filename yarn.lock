@@ -3184,7 +3184,7 @@
   dependencies:
     resolve "^1.17.0"
 
-"@primer/octicons-react@^11.1.0":
+"@primer/octicons-react@^11.2.0":
   version "11.2.0"
   resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-11.2.0.tgz#af60301257cdbc1561c2647678282d3bce5a6c54"
   integrity sha512-pi3DT5fUtATw2atMRQ7xCUUbdauA/hYTKfM2ijf3rtipeyQ7Ou3ij/JLhnc9Ke110ljHJh69j/PiINbbKAYegQ==
