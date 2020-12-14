@@ -7120,7 +7120,7 @@ ccount@^1.0.0, ccount@^1.0.3:
   resolved "https://registry.yarnpkg.com/ccount/-/ccount-1.1.0.tgz#246687debb6014735131be8abab2d93898f8d043"
   integrity sha512-vlNK021QdI7PNeiUh/lKkC/mNHHfV0m/Ad5JoI0TYtlBnJAslM/JIkm/tGC88bkLIwO6OQ5uV6ztS6kVAtCDlg==
 
-cfonts@^2.8.6:
+cfonts@^2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/cfonts/-/cfonts-2.9.0.tgz#f49fec7b8097590ad84164314354c84a1fdb3e8b"
   integrity sha512-6JmmW3gmePHS1CZj43odbWWyaHpyx3wqZjeajgJjnLBCvXvSLWJT+A6LZ+jOuImX1HjUBhmA6wBWLO12UZbfAg==
@@ -23934,7 +23934,7 @@ strip-outer@^1.0.0:
   dependencies:
     escape-string-regexp "^1.0.2"
 
-stripe@^8.127.0:
+stripe@^8.128.0:
   version "8.128.0"
   resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.128.0.tgz#0074a68a5236e691ae96232363865838af0a3777"
   integrity sha512-H4EiwM/jYm07Foc77Xdb6SbnOpUz/qLpXv69pJBgXHvpxpj7GhdGdxCbR4KJhisfoZATgrdrbqigLA1ao9nTzg==
