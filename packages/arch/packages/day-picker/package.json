@@ -19,7 +19,7 @@
     "@babel/runtime": "^7.12.5",
     "@emotion/core": "^10.1.1",
     "@emotion/styled": "^10.0.27",
-    "@primer/octicons-react": "^11.1.0",
+    "@primer/octicons-react": "^11.2.0",
     "chrono-node": "^1.4.8",
     "date-fns": "^2.16.1",
     "intersection-observer": "^0.11.0",
