@@ -4,7 +4,9 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "keystone-next"
+    "dev": "keystone-next",
+    "start": "keystone-next start",
+    "build": "keystone-next build"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",

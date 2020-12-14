@@ -4,7 +4,9 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "keystone-next"
+    "dev": "keystone-next",
+    "start": "keystone-next start",
+    "build": "keystone-next build"
   },
   "dependencies": {
     "@keystone-next/admin-ui": "^6.0.0",
