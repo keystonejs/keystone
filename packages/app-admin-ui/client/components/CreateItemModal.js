@@ -60,6 +60,7 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate, viewOnSave }) =>
 
   const [createItem, { loading }] = useMutation(list.createMutation, {
     errorPolicy: 'all',
+    // it's not working https://github.com/apollographql/apollo-client/issues/5708
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
     refetchQueries: ['getList', 'RelationshipSelect'],
   });
@@ -117,6 +118,14 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate, viewOnSave }) =>
 
     const savedData = await createItem({ variables: { data } });
     if (!savedData) return;
+
+    // Workaround for apollo error https://github.com/apollographql/apollo-client/issues/5708
+    if (savedData.errors && savedData.errors.length > 0) {
+      return handleCreateUpdateMutationError({
+        error: { graphQLErrors: savedData.errors },
+        addToast,
+      });
+    }
 
     closeCreateItemModal();
     setItem(list.getInitialItemData({}));

@@ -20,6 +20,7 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
   const { addToast } = useToasts();
   const [updateItem, { loading }] = useMutation(list.updateManyMutation, {
     errorPolicy: 'all',
+    // it's not working https://github.com/apollographql/apollo-client/issues/5708
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
     refetchQueries: ['getList'],
   });
@@ -56,6 +57,14 @@ const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
     // Result will be undefined if a GraphQL error occurs (such as failed validation)
     // Leave the modal open in that case
     if (!result) return;
+
+    // Workaround for apollo error https://github.com/apollographql/apollo-client/issues/5708
+    if (result.errors && result.errors.length > 0) {
+      return handleCreateUpdateMutationError({
+        error: { graphQLErrors: result.errors },
+        addToast,
+      });
+    }
 
     resetState();
     onUpdate();
