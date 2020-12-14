@@ -114,7 +114,7 @@ keystone.createList('Example', {
     virtual: {
       type: Virtual,
       resolver: async (item, args, context) => {
-        const { data, errors } = await context.executeGraphQL(`{ ... }`)
+        const { data, errors } = await context.executeGraphQL({ query: `{ ... }` })
         ...
       }
     },
