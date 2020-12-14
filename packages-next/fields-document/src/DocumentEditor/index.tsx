@@ -474,11 +474,7 @@ const editorSchema = makeEditorSchema({
 });
 
 function withBlocksSchema(editor: ReactEditor) {
-  const { normalizeNode, apply } = editor;
-  editor.apply = op => {
-    debugger;
-    apply(op);
-  };
+  const { normalizeNode } = editor;
   editor.normalizeNode = ([node, path]) => {
     if (Editor.isBlock(editor, node) || Editor.isEditor(node)) {
       const nodeType = Editor.isEditor(node) ? 'editor' : node.type;
