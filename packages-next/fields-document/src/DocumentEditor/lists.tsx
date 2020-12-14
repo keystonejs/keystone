@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { ReactNode, forwardRef } from 'react';
-import { Editor, Element, Node, Path, Transforms } from 'slate';
+import { Editor, Element, Node, NodeEntry, Path, Transforms, Range } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { jsx } from '@keystone-ui/core';
 
@@ -33,8 +33,45 @@ const toggleList = (editor: ReactEditor, format: string) => {
   }
 };
 
+function getAncestorList(
+  editor: ReactEditor
+):
+  | { isInside: false }
+  | { isInside: true; list: NodeEntry<Element>; listItem: NodeEntry<Element> } {
+  if (editor.selection) {
+    const listItem = Editor.above(editor, {
+      match: node => node.type === 'list-item',
+    });
+    const list = Editor.above(editor, {
+      match: node => isListType(node.type as string),
+    });
+    if (listItem && list) {
+      return {
+        isInside: true,
+        listItem,
+        list,
+      };
+    }
+  }
+  return { isInside: false };
+}
+
 export function withList(listTypes: DocumentFeatures['listTypes'], editor: ReactEditor) {
-  const { insertBreak, normalizeNode, insertText } = editor;
+  const { insertBreak, normalizeNode, insertText, deleteBackward } = editor;
+  editor.deleteBackward = unit => {
+    if (editor.selection) {
+      const ancestorList = getAncestorList(editor);
+      if (
+        ancestorList.isInside &&
+        Range.isCollapsed(editor.selection) &&
+        Editor.isStart(editor, editor.selection.anchor, ancestorList.list[1])
+      ) {
+        Transforms.unwrapNodes(editor, { at: ancestorList.list[1] });
+        return;
+      }
+    }
+    deleteBackward(unit);
+  };
   editor.insertBreak = () => {
     const [listItem] = Editor.nodes(editor, {
       match: node => node.type === 'list-item',
