@@ -1,5 +1,18 @@
 # @keystonejs/adapter-mongoose
 
+## 10.1.0
+
+### Minor Changes
+
+- [`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b) [#4516](https://github.com/keystonejs/keystone/pull/4516) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency mongoose to `^5.11.5`.
+
+* [`d329f07a5`](https://github.com/keystonejs/keystone/commit/d329f07a5ce7ebf5d658a7f90334ba4372a2a72d) [#4536](https://github.com/keystonejs/keystone/pull/4536) Thanks [@timleslie](https://github.com/timleslie)! - Improved performance of generated queries. Thanks to @enhancers for the code contribution and @gautamsi for leading the discussion.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @keystonejs/fields-mongoid@9.1.1
+
 ## 10.0.1
 
 ### Patch Changes

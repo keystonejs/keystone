@@ -1,3 +1,4 @@
+import type { KeystoneListsAPI } from '@keystone-next/types';
 import { randomBytes } from 'crypto';
 import { AuthTokenRequestErrorCode } from '../types';
 import { findMatchingIdentity } from './findMatchingIdentity';
@@ -15,7 +16,7 @@ export async function updateAuthToken(
   identityField: string,
   protectIdentities: boolean,
   identity: string,
-  itemAPI: any
+  itemAPI: KeystoneListsAPI<any>[string]
 ): Promise<
   | { success: false; code?: AuthTokenRequestErrorCode }
   | { success: true; itemId: string | number; token: string }

@@ -1,5 +1,27 @@
 # @keystonejs/test-utils
 
+## 10.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`075ef1628`](https://github.com/keystonejs/keystone/commit/075ef16281a89c8291f90275adca98f042cc54da)]:
+  - @keystone-next/keystone@8.0.0
+
+## 10.1.0
+
+### Minor Changes
+
+- [`32aee8503`](https://github.com/keystonejs/keystone/commit/32aee85035b4ff123b0270d142ee0f3cf27a6ac8) [#4510](https://github.com/keystonejs/keystone/pull/4510) Thanks [@timleslie](https://github.com/timleslie)! - Added a function `setupFromConfig` to support running tests against systems defined with the new config API.
+
+### Patch Changes
+
+- [`efe97de24`](https://github.com/keystonejs/keystone/commit/efe97de24bd1de7a0f50bcbee6b445f4eef7311b) [#4522](https://github.com/keystonejs/keystone/pull/4522) Thanks [@timleslie](https://github.com/timleslie)! - Internally factored out `argGenerator` to support different system setup functions.
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`2d3668c49`](https://github.com/keystonejs/keystone/commit/2d3668c49d1913afecbacf2b5ef164e553210956), [`e33cf0c1e`](https://github.com/keystonejs/keystone/commit/e33cf0c1e78ae69cffaf45009e47ca1198464cf2), [`fd5daefb4`](https://github.com/keystonejs/keystone/commit/fd5daefb4966b10cf8047386d19db14d325ef8c5), [`44c78319e`](https://github.com/keystonejs/keystone/commit/44c78319ed8cfb1000eb4b1aca5eb361376584b4), [`defd05365`](https://github.com/keystonejs/keystone/commit/defd05365f31d0d6d4b6fd9ffe0a0c3928f97e79), [`6d09df338`](https://github.com/keystonejs/keystone/commit/6d09df3381d1682b8002d52ed1696b661fdff035), [`4d3cb8e32`](https://github.com/keystonejs/keystone/commit/4d3cb8e32b22250fdbe04af758b0aad727ba63e4), [`a3908a675`](https://github.com/keystonejs/keystone/commit/a3908a675614fa8690ea641a124cc57c9f963618), [`d329f07a5`](https://github.com/keystonejs/keystone/commit/d329f07a5ce7ebf5d658a7f90334ba4372a2a72d), [`c1e8def9a`](https://github.com/keystonejs/keystone/commit/c1e8def9a4204d685a796e267edc50f6ef2e8c51), [`481e456ac`](https://github.com/keystonejs/keystone/commit/481e456ac4158207436ddd9be18fdca0f27b6409), [`08398473b`](https://github.com/keystonejs/keystone/commit/08398473bb81dfd43a3c134ed8de61e45aa770f0), [`2308e5efc`](https://github.com/keystonejs/keystone/commit/2308e5efc7c6893c87652411496b15a8124f6e05)]:
+  - @keystonejs/adapter-mongoose@10.1.0
+  - @keystone-next/keystone@7.0.0
+  - @keystonejs/adapter-prisma@1.1.0
+
 ## 10.0.0
 
 ### Major Changes

@@ -1,10 +1,10 @@
-import type { GraphQLContext, MaybePromise } from '../utils';
-import type { BaseGeneratedListTypes } from '..';
+import type { MaybePromise } from '../utils';
+import type { BaseGeneratedListTypes, KeystoneContext } from '..';
 
 type BaseAccessArgs = {
   session: any;
   listKey: string;
-  context: GraphQLContext;
+  context: KeystoneContext;
   // idk if this is optional or not
   gqlName?: string;
 };

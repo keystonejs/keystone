@@ -1,5 +1,23 @@
 # @keystonejs/app-admin-ui
 
+## 7.3.12
+
+### Patch Changes
+
+- [`f8873064b`](https://github.com/keystonejs/keystone/commit/f8873064b667d62001afe7950e33d019bcff7be3) [#4481](https://github.com/keystonejs/keystone/pull/4481) Thanks [@miguelvvs](https://github.com/miguelvvs)! - Implemented a workaround to show error in case of mutations errors, since an error in apollo client is preventing to show those messages with the original implementation.
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0)]:
+  - @keystonejs/fields@21.0.0
+
+## 7.3.11
+
+### Patch Changes
+
+- [`fa12a18b0`](https://github.com/keystonejs/keystone/commit/fa12a18b077367563b1b69db55274e47a1bd5027) [#4377](https://github.com/keystonejs/keystone/pull/4377) Thanks [@jossmac](https://github.com/jossmac)! - Update apply-ref dependency
+
+- Updated dependencies [[`038b0ae65`](https://github.com/keystonejs/keystone/commit/038b0ae6586f8673de22046842b2ef993b0e1937), [`4eef4dc55`](https://github.com/keystonejs/keystone/commit/4eef4dc5587cc06f08ead5d5d05db2e9a786b8bc)]:
+  - @keystonejs/fields@20.1.2
+
 ## 7.3.10
 
 ### Patch Changes

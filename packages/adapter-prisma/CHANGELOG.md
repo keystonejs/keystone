@@ -1,5 +1,16 @@
 # @keystonejs/adapter-prisma
 
+## 1.1.0
+
+### Minor Changes
+
+- [`defd05365`](https://github.com/keystonejs/keystone/commit/defd05365f31d0d6d4b6fd9ffe0a0c3928f97e79) [#4518](https://github.com/keystonejs/keystone/pull/4518) Thanks [@renovate](https://github.com/apps/renovate)! - `Updated prisma monorepo to`v2.12.1`.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @keystonejs/fields-auto-increment@8.1.1
+
 ## 1.0.8
 
 ### Patch Changes

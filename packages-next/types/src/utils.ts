@@ -2,21 +2,22 @@ export type BaseGeneratedListTypes = {
   key: string;
   fields: string;
   backing: BackingTypeForItem;
-  inputs: {
-    create: GraphQLInput;
-    update: GraphQLInput;
-    where: GraphQLInput;
-  };
+  inputs: { create: GraphQLInput; update: GraphQLInput; where: GraphQLInput };
   args: {
-    listQuery: GraphQLInput;
+    listQuery: {
+      readonly where?: GraphQLInput | null;
+      readonly search?: string | null;
+      readonly first?: number | null;
+      readonly skip?: number | null;
+      readonly orderBy?: string;
+      readonly sortBy?: ReadonlyArray<string> | null;
+    };
   };
 };
 
 type BackingTypeForItem = any;
 
 type GraphQLInput = Record<string, any>;
-
-export type GraphQLContext = Record<string, any>;
 
 export type JSONValue =
   | string

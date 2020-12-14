@@ -7,10 +7,18 @@ import dumbPasswords from 'dumb-passwords';
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 
 export class Password extends Implementation {
-  constructor(path, { rejectCommon, minLength, workFactor, useCompiledBcrypt }) {
+  constructor(
+    path,
+    { rejectCommon, minLength, workFactor, useCompiledBcrypt, bcrypt },
+    { listKey }
+  ) {
     super(...arguments);
-
-    this.bcrypt = require(useCompiledBcrypt ? 'bcrypt' : 'bcryptjs');
+    if (useCompiledBcrypt) {
+      throw new Error(
+        `The Password field at ${listKey}.${path} specifies the option "useCompiledBcrypt", this has been replaced with a "bcrypt" option which accepts a different implementation of bcrypt(such as the native npm package, "bcrypt")`
+      );
+    }
+    this.bcrypt = bcrypt || require('bcryptjs');
 
     // Sanitise field specific config
     this.rejectCommon = !!rejectCommon;

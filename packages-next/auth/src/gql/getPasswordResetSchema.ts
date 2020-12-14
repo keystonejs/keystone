@@ -1,3 +1,5 @@
+import type { GraphQLSchemaExtension } from '@keystone-next/types';
+
 import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 
 import { updateAuthToken } from '../lib/updateAuthToken';
@@ -18,7 +20,7 @@ export function getPasswordResetSchema({
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   passwordResetLink: AuthTokenTypeConfig;
-}) {
+}): GraphQLSchemaExtension {
   return {
     typeDefs: `
       # Reset password
@@ -59,9 +61,10 @@ export function getPasswordResetSchema({
     `,
     resolvers: {
       Mutation: {
-        async [gqlNames.sendItemPasswordResetLink](root: any, args: any, context: any) {
+        async [gqlNames.sendItemPasswordResetLink](root, args, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const tokenType = 'passwordReset';
           const identity = args[identityField];
           const result = await updateAuthToken(identityField, protectIdentities, identity, itemAPI);
@@ -81,21 +84,23 @@ export function getPasswordResetSchema({
             // Save the token and related info back to the item
             const { token, itemId } = result;
             await itemAPI.updateOne({
-              id: itemId,
+              id: `${itemId}`,
               data: {
                 [`${tokenType}Token`]: token,
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
                 [`${tokenType}RedeemedAt`]: null,
               },
+              resolveFields: false,
             });
 
             await passwordResetLink.sendToken({ itemId, identity, token });
           }
           return null;
         },
-        async [gqlNames.redeemItemPasswordResetToken](root: any, args: any, context: any) {
+        async [gqlNames.redeemItemPasswordResetToken](root, args, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             tokenType,
@@ -124,20 +129,26 @@ export function getPasswordResetSchema({
           await itemAPI.updateOne({
             id: itemId,
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
+            resolveFields: false,
           });
 
           // Save the provided secret. Do this as a separate step as password validation
           // may fail, in which case we still want to mark the token as redeemed
           // (NB: Is this *really* what we want? -TL)
-          await itemAPI.updateOne({ id: itemId, data: { [secretField]: args[secretField] } });
+          await itemAPI.updateOne({
+            id: itemId,
+            data: { [secretField]: args[secretField] },
+            resolveFields: false,
+          });
 
           return null;
         },
       },
       Query: {
-        async [gqlNames.validateItemPasswordResetToken](root: any, args: any, context: any) {
+        async [gqlNames.validateItemPasswordResetToken](root, args, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             tokenType,

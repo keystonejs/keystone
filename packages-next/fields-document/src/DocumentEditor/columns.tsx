@@ -1,18 +1,25 @@
 /** @jsx jsx */
 
-import { createContext, useContext } from 'react';
+import { createContext, memo, useContext } from 'react';
 import { Editor, Element, Node, Transforms } from 'slate';
-import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
+import {
+  ReactEditor,
+  RenderElementProps,
+  useEditor,
+  useFocused,
+  useSelected,
+  useSlate,
+} from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
-import { useControlledPopover } from '@keystone-ui/popover';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
-import { InlineDialog } from './components/inline-dialog';
-import { Button, ButtonGroup, Separator } from './components';
+import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { paragraphElement } from './paragraphs';
 import { isBlockActive, moveChildren } from './utils';
+import { DocumentFeatures } from '../views';
+import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
 
 const ColumnOptionsContext = createContext<[number, ...number[]][]>([]);
 
@@ -27,48 +34,29 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
   const layout = element.layout as number[];
   const columnLayouts = useContext(ColumnOptionsContext);
 
-  // TODO: to keep the dialog in sync with the trigger (as the user enters
-  // content) we'll likely need a custom popper modifier that implements a
-  // resize observer. Though it may not be worthwile, relative/absolute
-  // positioning is simpler and better for perf...
-  const { dialog, trigger } = useControlledPopover(
-    {
-      isOpen: focused && selected,
-      onClose: () => {},
-    },
-    {
-      modifiers: [
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 8],
-          },
-        },
-      ],
-    }
-  );
-
   return (
-    <div css={{ position: 'relative' }} {...attributes}>
+    <div
+      css={{
+        marginBottom: spacing.medium,
+        marginTop: spacing.medium,
+        position: 'relative',
+      }}
+      {...attributes}
+    >
       <div
-        ref={trigger.ref}
         css={{
           columnGap: spacing.small,
           display: 'grid',
           gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
-          marginBottom: spacing.medium,
-          marginTop: spacing.medium,
-          position: 'relative',
         }}
-        {...trigger.props}
       >
         {children}
       </div>
       {focused && selected && (
-        <InlineDialog ref={dialog.ref} {...dialog.props}>
-          <ButtonGroup>
+        <InlineDialog isRelative>
+          <ToolbarGroup>
             {columnLayouts.map((layoutOption, i) => (
-              <Button
+              <ToolbarButton
                 isSelected={layoutOption.toString() === layout.toString()}
                 key={i}
                 onMouseDown={event => {
@@ -82,12 +70,12 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
                 }}
               >
                 {makeLayoutIcon(layoutOption)}
-              </Button>
+              </ToolbarButton>
             ))}
-            <Separator />
+            <ToolbarSeparator />
             <Tooltip content="Remove" weight="subtle">
               {attrs => (
-                <Button
+                <ToolbarButton
                   variant="destructive"
                   onMouseDown={event => {
                     event.preventDefault();
@@ -97,10 +85,10 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
                   {...attrs}
                 >
                   <Trash2Icon size="small" />
-                </Button>
+                </ToolbarButton>
               )}
             </Tooltip>
-          </ButtonGroup>
+          </ToolbarGroup>
         </InlineDialog>
       )}
     </div>
@@ -279,3 +267,25 @@ function makeLayoutIcon(ratios: number[]) {
 
   return element;
 }
+
+export const ColumnsButton = memo(({ columns }: { columns: DocumentFeatures['columns'] }) => {
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
+  return (
+    <Tooltip content="Columns" weight="subtle">
+      {attrs => (
+        <ToolbarButton
+          onMouseDown={event => {
+            event.preventDefault();
+            insertColumns(editor, columns[0]);
+          }}
+          {...attrs}
+        >
+          <ColumnsIcon size="small" />
+        </ToolbarButton>
+      )}
+    </Tooltip>
+  );
+});

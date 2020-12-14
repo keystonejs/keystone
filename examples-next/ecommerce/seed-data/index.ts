@@ -1,8 +1,7 @@
 import { products } from './data';
 
-export async function insertSeedData(keystone: any) {
+export async function insertSeedData({ mongoose }: { mongoose?: any }) {
   console.log('------------ INSERTING DUMMY DATA ------------');
-  const { mongoose } = keystone.adapters.MongooseAdapter;
   for (const product of products) {
     const { _id } = await mongoose
       .model('ProductImage')

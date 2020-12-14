@@ -9,6 +9,49 @@ const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { KnexAdapter } = require('@keystonejs/adapter-knex');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 const { PrismaAdapter } = require('@keystonejs/adapter-prisma');
+const { initConfig, createSystem } = require('@keystone-next/keystone');
+
+const argGenerator = {
+  mongoose: getMongoMemoryServerConfig,
+  knex: () => ({
+    dropDatabase: true,
+    knexOptions: {
+      connection:
+        process.env.DATABASE_URL || process.env.KNEX_URI || 'postgres://localhost/keystone',
+    },
+  }),
+  prisma_postgresql: () => ({
+    dropDatabase: true,
+    url: process.env.DATABASE_URL,
+    provider: 'postgresql',
+    // Put the generated client at a unique path
+    getPrismaPath: ({ prismaSchema }) =>
+      path.join(
+        '.api-test-prisma-clients',
+        crypto.createHash('sha256').update(prismaSchema).digest('hex')
+      ),
+    // Slice down to the hash make a valid postgres schema name
+    getDbSchemaName: ({ prismaSchema }) =>
+      crypto.createHash('sha256').update(prismaSchema).digest('hex').slice(0, 16),
+    // Turn this on if you need verbose debug info
+    enableLogging: false,
+  }),
+};
+
+async function setupFromConfig({ adapterName, config }) {
+  const adapterArgs = await argGenerator[adapterName]();
+  if (adapterName === 'knex') {
+    config.db = { adapter: adapterName, url: adapterArgs.knexOptions.connection, ...adapterArgs };
+  } else if (adapterName === 'mongoose') {
+    config.db = { adapter: adapterName, url: adapterArgs.mongoUri, mongooseOptions: adapterArgs };
+  } else if (adapterName === 'prisma_postgresql') {
+    config.db = { adapter: adapterName, ...adapterArgs };
+  }
+  config = initConfig(config);
+
+  const { keystone, createContext } = createSystem(config);
+  return { keystone, context: createContext({ skipAccessControl: true }) };
+}
 
 async function setupServer({
   adapterName,
@@ -24,35 +67,8 @@ async function setupServer({
     prisma_postgresql: PrismaAdapter,
   }[adapterName];
 
-  const argGenerator = {
-    mongoose: getMongoMemoryServerConfig,
-    knex: () => ({
-      dropDatabase: true,
-      knexOptions: {
-        connection:
-          process.env.DATABASE_URL || process.env.KNEX_URI || 'postgres://localhost/keystone',
-      },
-    }),
-    prisma_postgresql: () => ({
-      dropDatabase: true,
-      url: process.env.DATABASE_URL,
-      provider: 'postgresql',
-      // Put the generated client at a unique path
-      getPrismaPath: ({ prismaSchema }) =>
-        path.join(
-          '.api-test-prisma-clients',
-          crypto.createHash('sha256').update(prismaSchema).digest('hex')
-        ),
-      // Slice down to the hash make a valid postgres schema name
-      getDbSchemaName: ({ prismaSchema }) =>
-        crypto.createHash('sha256').update(prismaSchema).digest('hex').slice(0, 16),
-      // Turn this on if you need verbose debug info
-      enableLogging: false,
-    }),
-  }[adapterName];
-
   const keystone = new Keystone({
-    adapter: new Adapter(await argGenerator()),
+    adapter: new Adapter(await argGenerator[adapterName]()),
     defaultAccess: { list: true, field: true },
     schemaNames,
     cookieSecret: 'secretForTesting',
@@ -213,6 +229,7 @@ function multiAdapterRunners(only = process.env.TEST_ADAPTER) {
 
 module.exports = {
   setupServer,
+  setupFromConfig,
   multiAdapterRunners,
   networkedGraphqlRequest,
 };

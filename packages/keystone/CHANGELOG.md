@@ -1,5 +1,11 @@
 # @keystonejs/keystone
 
+## 17.1.2
+
+### Patch Changes
+
+- [`a3a58bcca`](https://github.com/keystonejs/keystone/commit/a3a58bcca56943f2240104dae3c816188eead6f1) [#4412](https://github.com/keystonejs/keystone/pull/4412) Thanks [@timleslie](https://github.com/timleslie)! - Added a check to prevent using graphQL keywords `Query`, `Mutation` and `Subscription` as list names.
+
 ## 17.1.1
 
 ### Patch Changes
