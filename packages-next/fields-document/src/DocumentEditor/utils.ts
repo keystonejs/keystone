@@ -22,28 +22,6 @@ export const isBlockActive = (editor: ReactEditor, format: string) => {
   return !!match;
 };
 
-export function isContainerNode(node: Node): node is Element | Editor {
-  return Editor.isEditor(node) || (Element.isElement(node) && node.type === 'paragraph');
-}
-
-export function onlyContainerNodeInCurrentSelection(editor: ReactEditor) {
-  return (
-    !editor.selection ||
-    (Range.isCollapsed(editor.selection) &&
-      (editor.selection.anchor.path.length === 2 ||
-        (editor.selection.anchor.path.length === 4 &&
-          Editor.node(editor, Path.parent(Path.parent(editor.selection.anchor.path)))[0].type ===
-            'column')))
-  );
-  // let editor;
-  // return [
-  //   ...Editor.nodes(editor, {
-  //     match: node => !Text.isText(node),
-  //     mode: 'lowest',
-  //   }),
-  // ].every(([node]) => isContainerNode(node));
-}
-
 export function moveChildren(editor: Editor, parent: NodeEntry | Path, to: Path) {
   const parentPath = Path.isPath(parent) ? parent : parent[1];
   const parentNode = Path.isPath(parent) ? Node.get(editor, parentPath) : parent[0];

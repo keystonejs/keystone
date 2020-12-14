@@ -392,13 +392,7 @@ export function withComponentBlocks(
   return editor;
 }
 
-export const BlockComponentsButtons = ({
-  shouldInsertBlock,
-  onClose,
-}: {
-  shouldInsertBlock: boolean;
-  onClose: () => void;
-}) => {
+export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => {
   const editor = useEditor();
   const blockComponents = useContext(ComponentBlockContext)!;
   const relationships = useDocumentFieldRelationships();
@@ -407,7 +401,6 @@ export const BlockComponentsButtons = ({
       {Object.keys(blockComponents).map(key => (
         <ToolbarButton
           key={key}
-          isDisabled={!shouldInsertBlock}
           onMouseDown={event => {
             event.preventDefault();
             let { node, isFakeVoid } = getInitialValue(key, blockComponents[key], relationships);

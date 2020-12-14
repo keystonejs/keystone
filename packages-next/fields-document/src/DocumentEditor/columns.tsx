@@ -30,7 +30,10 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
   const { spacing } = useTheme();
   const focused = useFocused();
   const selected = useSelected();
-  const editor = useSlate();
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
   const layout = element.layout as number[];
   const columnLayouts = useContext(ColumnOptionsContext);
 
@@ -113,7 +116,7 @@ const Column = ({ attributes, children }: RenderElementProps) => {
   );
 };
 
-export const isInsideColumn = (editor: ReactEditor) => {
+const isInsideColumn = (editor: ReactEditor) => {
   return isBlockActive(editor, 'columns');
 };
 
@@ -132,7 +135,7 @@ function firstNonEditorRootNodeEntry(editor: Editor) {
 }
 
 // Helper function
-export const insertColumns = (editor: ReactEditor, layout: [number, ...number[]]) => {
+const insertColumns = (editor: ReactEditor, layout: [number, ...number[]]) => {
   if (isInsideColumn(editor)) {
     Transforms.unwrapNodes(editor, {
       match: node => node.type === 'columns',
@@ -245,14 +248,12 @@ function makeLayoutIcon(ratios: number[]) {
 }
 
 export const ColumnsButton = memo(({ columns }: { columns: DocumentFeatures['columns'] }) => {
-  // useEditor does not update when the value/selection changes.
-  // that's fine for what it's being used for here
-  // because we're just inserting things on events, not reading things in render
-  const editor = useEditor();
+  const editor = useSlate();
   return (
     <Tooltip content="Columns" weight="subtle">
       {attrs => (
         <ToolbarButton
+          isSelected={isInsideColumn(editor)}
           onMouseDown={event => {
             event.preventDefault();
             insertColumns(editor, columns[0]);

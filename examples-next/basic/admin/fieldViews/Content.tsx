@@ -24,7 +24,6 @@ const noticeIconMap = {
 export const componentBlocks = {
   hero: component({
     component: props => {
-      console.log('title', props.title);
       return (
         <div
           css={{

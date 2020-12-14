@@ -4,7 +4,18 @@ import { jsx, useTheme } from '@keystone-ui/core';
 import { KeyboardEvent, ReactNode, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
-import { Editor, Node, Range, Transforms, createEditor, NodeEntry, Element, Text } from 'slate';
+import {
+  Editor,
+  Node,
+  Range,
+  Transforms,
+  createEditor,
+  NodeEntry,
+  Element,
+  Text,
+  Descendant,
+  Path,
+} from 'slate';
 import { Editable, ReactEditor, RenderLeafProps, Slate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 
@@ -435,7 +446,11 @@ const editorSchema = makeEditorSchema({
 });
 
 function withBlocksSchema(editor: ReactEditor) {
-  const { normalizeNode } = editor;
+  const { normalizeNode, apply } = editor;
+  editor.apply = op => {
+    debugger;
+    apply(op);
+  };
   editor.normalizeNode = ([node, path]) => {
     if (Editor.isBlock(editor, node) || Editor.isEditor(node)) {
       const nodeType = Editor.isEditor(node) ? 'editor' : node.type;
@@ -448,12 +463,7 @@ function withBlocksSchema(editor: ReactEditor) {
         const childPath = [...path, index];
         if (info.kind === 'inlines') {
           if (!Text.isText(childNode) && !Editor.isInline(editor, childNode)) {
-            if (Editor.isVoid(editor, childNode)) {
-              // TODO: maybe move instead of remove?
-              Transforms.removeNodes(editor, { at: childPath });
-            } else {
-              Transforms.unwrapNodes(editor, { at: childPath });
-            }
+            moveBlockToAllowedPlace(editor, [childNode, childPath], path);
             return;
           }
         } else {
@@ -466,7 +476,7 @@ function withBlocksSchema(editor: ReactEditor) {
             return;
           }
           if (!info.allowedChildren.has(childNode.type as string)) {
-            Transforms.unwrapNodes(editor, { at: childPath });
+            moveBlockToAllowedPlace(editor, [childNode, childPath], path);
             return;
           }
         }
@@ -475,6 +485,27 @@ function withBlocksSchema(editor: ReactEditor) {
     normalizeNode([node, path]);
   };
   return editor;
+}
+
+function moveBlockToAllowedPlace(
+  editor: Editor,
+  [node, path]: NodeEntry<Descendant>,
+  parentPath: Path
+) {
+  const nodeType = node.type as string;
+  const [parentNode] = Editor.node(editor, parentPath);
+  const info =
+    editorSchema[(parentNode.type as string) || Editor.isEditor(parentNode) ? 'editor' : ''];
+  if (info?.kind === 'blocks' && info.allowedChildren.has(nodeType)) {
+    Transforms.moveNodes(editor, { at: path, to: Path.next(parentPath) });
+    return;
+  }
+  if (Editor.isEditor(parentNode)) {
+    Transforms.moveNodes(editor, { at: path, to: [path[0] + 1] });
+    Transforms.unwrapNodes(editor, { at: [path[0] + 1] });
+    return;
+  }
+  moveBlockToAllowedPlace(editor, [node, path], parentPath.slice(0, -1));
 }
 
 // to print the editor schema in Graphviz if you want to visualize it

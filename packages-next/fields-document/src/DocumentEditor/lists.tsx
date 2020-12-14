@@ -7,12 +7,7 @@ import { jsx } from '@keystone-ui/core';
 
 import { DocumentFeatures } from '../views';
 
-import {
-  getMaybeMarkdownShortcutText,
-  isBlockActive,
-  moveChildren,
-  onlyContainerNodeInCurrentSelection,
-} from './utils';
+import { getMaybeMarkdownShortcutText, isBlockActive, moveChildren } from './utils';
 import { ToolbarButton } from './primitives';
 
 export const isListType = (type: string) => type === 'ordered-list' || type === 'unordered-list';
@@ -120,10 +115,6 @@ export const ListButton = forwardRef<
   return (
     <ToolbarButton
       ref={ref}
-      isDisabled={
-        !onlyContainerNodeInCurrentSelection(editor) &&
-        !(isBlockActive(editor, 'ordered-list') || isBlockActive(editor, 'unordered-list'))
-      }
       isSelected={isBlockActive(editor, type)}
       onMouseDown={event => {
         event.preventDefault();
