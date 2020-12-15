@@ -353,11 +353,6 @@ export function withComponentBlocks(
               }
             }
           }
-        } else if (
-          childNode.type === 'component-inline-prop' ||
-          childNode.type === 'component-block-prop'
-        ) {
-          Transforms.unwrapNodes(editor, { at: childPath });
         }
       }
     }
