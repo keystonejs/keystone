@@ -1,15 +1,16 @@
 import { Node } from 'slate';
+import { Mark } from '../../utils';
 
 export const __jsx: any;
 
 type Children = Node | string | (Node | string)[];
 
-type OnlyChildren = { children?: Children };
+type OnlyChildren = { children: Children };
 declare namespace __jsx {
   namespace JSX {
     interface IntrinsicElements {
       editor: OnlyChildren;
-      text: OnlyChildren;
+      text: { children?: Children } & { [Key in Mark]?: true };
       element: {};
       cursor: { [key: string]: never };
       anchor: { [key: string]: never };

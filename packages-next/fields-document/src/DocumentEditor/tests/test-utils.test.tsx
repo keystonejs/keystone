@@ -1,4 +1,5 @@
 /** @jsx jsx */
+import { Editor } from 'slate';
 import { jsx, makeEditor } from './utils';
 
 test('basic cursor snapshot', () => {
@@ -194,4 +195,46 @@ test('throws on non-normalized input', () => {
       </editor>
     )
   ).toThrow();
+});
+
+test('allows non-normalized input when passed allowNonNormalizedTree', () => {
+  let editor = makeEditor(
+    <editor>
+      <paragraph>
+        <paragraph>
+          <text>
+            some
+            <cursor />
+            text
+          </text>
+        </paragraph>
+      </paragraph>
+    </editor>,
+    { allowNonNormalizedTree: true }
+  );
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <paragraph>
+        <paragraph>
+          <text>
+            some
+            <cursor />
+            text
+          </text>
+        </paragraph>
+      </paragraph>
+    </editor>
+  `);
+  Editor.normalize(editor, { force: true });
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <paragraph>
+        <text>
+          some
+          <cursor />
+          text
+        </text>
+      </paragraph>
+    </editor>
+  `);
 });
