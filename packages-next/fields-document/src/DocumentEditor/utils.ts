@@ -22,14 +22,21 @@ export const isBlockActive = (editor: ReactEditor, format: string) => {
   return !!match;
 };
 
-export function moveChildren(editor: Editor, parent: NodeEntry | Path, to: Path) {
+export function moveChildren(
+  editor: Editor,
+  parent: NodeEntry | Path,
+  to: Path,
+  shouldMoveNode: (node: Node) => boolean = () => true
+) {
   const parentPath = Path.isPath(parent) ? parent : parent[1];
   const parentNode = Path.isPath(parent) ? Node.get(editor, parentPath) : parent[0];
   if (!Editor.isBlock(editor, parentNode)) return;
 
   for (let i = parentNode.children.length - 1; i >= 0; i--) {
-    const childPath = [...parentPath, i];
-    Transforms.moveNodes(editor, { at: childPath, to });
+    if (shouldMoveNode(parentNode.children[i])) {
+      const childPath = [...parentPath, i];
+      Transforms.moveNodes(editor, { at: childPath, to });
+    }
   }
 }
 

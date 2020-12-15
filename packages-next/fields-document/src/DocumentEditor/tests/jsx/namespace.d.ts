@@ -15,7 +15,7 @@ declare namespace __jsx {
       cursor: { [key: string]: never };
       anchor: { [key: string]: never };
       focus: { [key: string]: never };
-      columns: { kind: 'blocks'; allowedChildren: ['column']; invalidPositionHandleMode: 'move' };
+      columns: { layout: [number, ...number[]]; children: Children };
       column: OnlyChildren;
       blockquote: OnlyChildren;
       paragraph: {

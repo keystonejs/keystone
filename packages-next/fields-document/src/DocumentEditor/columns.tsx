@@ -198,21 +198,27 @@ export const withColumns = (editor: ReactEditor) => {
       if (node.children.length > layout.length) {
         Array.from({
           length: node.children.length - layout.length,
-        }).forEach((_, i) => {
-          const columnToRemovePath = [...path, i + layout.length];
-          const child = node.children[i + layout.length] as Element;
-          if (child.children.some(x => x.type !== 'paragraph') || Node.string(child) !== '') {
-            moveChildren(editor, columnToRemovePath, [
-              ...path,
-              layout.length - 1,
-              (node.children[layout.length - 1] as Element).children.length,
-            ]);
-          }
+        })
+          .map((_, i) => i)
+          .reverse()
+          .forEach(i => {
+            const columnToRemovePath = [...path, i + layout.length];
+            const child = node.children[i + layout.length] as Element;
+            moveChildren(
+              editor,
+              columnToRemovePath,
+              [
+                ...path,
+                layout.length - 1,
+                (node.children[layout.length - 1] as Element).children.length,
+              ],
+              node => node.type !== 'paragraph' || Node.string(child) !== ''
+            );
 
-          Transforms.removeNodes(editor, {
-            at: columnToRemovePath,
+            Transforms.removeNodes(editor, {
+              at: columnToRemovePath,
+            });
           });
-        });
         return;
       }
     }
