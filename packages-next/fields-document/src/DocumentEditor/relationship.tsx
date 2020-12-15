@@ -64,13 +64,13 @@ export function useDocumentFieldRelationships() {
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider;
 
-export function withRelationship(relationships: Relationships, editor: ReactEditor) {
-  const { isVoid } = editor;
+export function withRelationship(editor: ReactEditor) {
+  const { isVoid, isInline } = editor;
   editor.isVoid = element => {
     return element.type === 'relationship' || isVoid(element);
   };
   editor.isInline = element => {
-    return element.type === 'relationship';
+    return element.type === 'relationship' || isInline(element);
   };
   return editor;
 }

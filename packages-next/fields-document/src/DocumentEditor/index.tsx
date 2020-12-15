@@ -186,6 +186,41 @@ const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
   );
 };
 
+export function createDocumentEditor(
+  documentFeatures: DocumentFeatures,
+  componentBlocks: Record<string, ComponentBlock>
+) {
+  return withBlocksSchema(
+    withLink(
+      withList(
+        documentFeatures.listTypes,
+        withHeading(
+          documentFeatures.headingLevels,
+          withRelationship(
+            withComponentBlocks(
+              componentBlocks,
+              withParagraphs(
+                withDivider(
+                  documentFeatures.dividers,
+                  withColumns(
+                    withCodeBlock(
+                      documentFeatures.blockTypes.code,
+                      withBlockquote(
+                        documentFeatures.blockTypes.blockquote,
+                        withHistory(withReact(createEditor()))
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  );
+}
+
 export function DocumentEditor({
   autoFocus,
   onChange,
@@ -203,40 +238,10 @@ export function DocumentEditor({
 }) {
   const { colors } = useTheme();
   const [expanded, setExpanded] = useState(false);
-  const editor = useMemo(
-    () =>
-      withBlocksSchema(
-        withLink(
-          withList(
-            documentFeatures.listTypes,
-            withHeading(
-              documentFeatures.headingLevels,
-              withRelationship(
-                relationships,
-                withComponentBlocks(
-                  componentBlocks,
-                  withParagraphs(
-                    withDivider(
-                      documentFeatures.dividers,
-                      withColumns(
-                        withCodeBlock(
-                          documentFeatures.blockTypes.code,
-                          withBlockquote(
-                            documentFeatures.blockTypes.blockquote,
-                            withHistory(withReact(createEditor()))
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      ),
-    []
-  );
+  const editor = useMemo(() => createDocumentEditor(documentFeatures, componentBlocks), [
+    documentFeatures,
+    componentBlocks,
+  ]);
 
   const renderLeaf = useCallback(props => {
     return <Leaf {...props} />;
@@ -428,7 +433,7 @@ const insideOfLayouts = [...paragraphLike, 'component-block'] as const;
 
 const listChildren = ['list-item', 'ordered-list', 'unordered-list'] as const;
 
-const editorSchema = makeEditorSchema({
+export const editorSchema = makeEditorSchema({
   editor: {
     kind: 'blocks',
     allowedChildren: [...insideOfLayouts, 'columns'],
