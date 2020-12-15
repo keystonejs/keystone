@@ -147,7 +147,7 @@ test('columns with extra columns that are empty are removed', () => {
   `);
 });
 
-test('the content of extra is merged into the last', () => {
+test('the content of extra columns are merged into the last column', () => {
   let editor = makeEditor(
     <editor>
       <columns layout={[1, 1]}>
@@ -158,7 +158,7 @@ test('the content of extra is merged into the last', () => {
         </column>
         <column>
           <paragraph>
-            <text />
+            <text>last column</text>
           </paragraph>
         </column>
         <column>
@@ -209,7 +209,7 @@ test('the content of extra is merged into the last', () => {
         <column>
           <paragraph>
             <text>
-              
+              last column
             </text>
           </paragraph>
           <paragraph>
