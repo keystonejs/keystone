@@ -528,7 +528,7 @@ function handleNodeInInvalidPosition(
     Transforms.unwrapNodes(editor, { at: path });
     return;
   }
-  const [parentNode] = Editor.node(editor, parentPath);
+  const parentNode = Node.get(editor, parentPath);
   const info =
     editorSchema[(parentNode.type as string) || Editor.isEditor(parentNode) ? 'editor' : ''];
   if (info?.kind === 'blocks' && info.allowedChildren.has(nodeType)) {

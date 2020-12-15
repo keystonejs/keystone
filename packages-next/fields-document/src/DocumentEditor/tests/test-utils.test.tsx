@@ -238,3 +238,29 @@ test('allows non-normalized input when passed allowNonNormalizedTree', () => {
     </editor>
   `);
 });
+
+test('delete backward', () => {
+  let editor = makeEditor(
+    <editor>
+      <paragraph>
+        <text>
+          some
+          <cursor />
+          text
+        </text>
+      </paragraph>
+    </editor>
+  );
+  editor.deleteBackward('character');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <paragraph>
+        <text>
+          som
+          <cursor />
+          text
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});

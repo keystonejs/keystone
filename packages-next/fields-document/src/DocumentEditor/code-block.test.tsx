@@ -80,6 +80,12 @@ test('non-text is removed from code blocks', () => {
             {'asdkjnajsndakjndkjnaksdjn\nasdasdasd\n'}
             <cursor />
           </text>
+          <element type="inline-void">
+            <text />
+          </element>
+          <divider>
+            <text />
+          </divider>
           <link url="something">
             <text>some thing</text>
           </link>
@@ -91,6 +97,14 @@ test('non-text is removed from code blocks', () => {
     </editor>,
     { allowNonNormalizedTree: true }
   );
+
+  const { isVoid, isInline } = editor;
+  editor.isVoid = element => {
+    return element.type === 'inline-void' || isVoid(element);
+  };
+  editor.isInline = element => {
+    return element.type === 'inline-void' || isInline(element);
+  };
 
   Editor.normalize(editor, { force: true });
 
@@ -105,6 +119,13 @@ test('non-text is removed from code blocks', () => {
           some thing
         </text>
       </code>
+      <divider
+        @@isVoid={true}
+      >
+        <text>
+          
+        </text>
+      </divider>
       <paragraph>
         <text>
           

@@ -499,3 +499,55 @@ test('toggle unordered-list for all items in multi-item ordered-list', () => {
     </editor>
   `);
 });
+
+test('backspace at start of list', () => {
+  let editor = makeEditor(
+    <editor>
+      <ordered-list>
+        <list-item>
+          <text>
+            <cursor />
+            some text
+          </text>
+        </list-item>
+        <list-item>
+          <text>some more text</text>
+        </list-item>
+        <list-item>
+          <text>even more text</text>
+        </list-item>
+      </ordered-list>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+
+  editor.deleteBackward('character');
+
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <paragraph>
+        <text>
+          <cursor />
+          some text
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          some more text
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          even more text
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});

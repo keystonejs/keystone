@@ -118,7 +118,7 @@ export function withList(listTypes: DocumentFeatures['listTypes'], editor: React
           isListType(childNode.type as string) &&
           node.children[childPath[childPath.length - 1] + 1]?.type === childNode.type
         ) {
-          const [, siblingNodePath] = Editor.node(editor, Path.next(childPath));
+          const siblingNodePath = Path.next(childPath);
           moveChildren(editor, siblingNodePath, [
             ...childPath,
             (childNode.children as Element).length as number,

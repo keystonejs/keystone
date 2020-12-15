@@ -11,7 +11,7 @@ declare namespace __jsx {
     interface IntrinsicElements {
       editor: OnlyChildren;
       text: { children?: Children } & { [Key in Mark]?: true };
-      element: {};
+      element: { [key: string]: any };
       cursor: { [key: string]: never };
       anchor: { [key: string]: never };
       focus: { [key: string]: never };
