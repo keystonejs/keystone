@@ -1,5 +1,4 @@
 /** @jsx jsx */
-import { Editor } from 'slate';
 import { jsx, makeEditor } from './tests/utils';
 
 test('columns with no layout are unwrapped', () => {
@@ -15,10 +14,9 @@ test('columns with no layout are unwrapped', () => {
         </column>
       </columns>
     </editor>,
-    { allowNonNormalizedTree: true }
+    { normalization: 'normalize' }
   );
 
-  Editor.normalize(editor, { force: true });
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>
@@ -43,10 +41,9 @@ test('columns with not enough columns are added', () => {
         </column>
       </columns>
     </editor>,
-    { allowNonNormalizedTree: true }
+    { normalization: 'normalize' }
   );
 
-  Editor.normalize(editor, { force: true });
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <columns
@@ -109,10 +106,9 @@ test('columns with extra columns that are empty are removed', () => {
         </column>
       </columns>
     </editor>,
-    { allowNonNormalizedTree: true }
+    { normalization: 'normalize' }
   );
 
-  Editor.normalize(editor, { force: true });
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <columns
@@ -185,10 +181,9 @@ test('the content of extra columns are merged into the last column', () => {
         </column>
       </columns>
     </editor>,
-    { allowNonNormalizedTree: true }
+    { normalization: 'normalize' }
   );
 
-  Editor.normalize(editor, { force: true });
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <columns

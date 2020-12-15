@@ -197,7 +197,7 @@ test('throws on non-normalized input', () => {
   ).toThrow();
 });
 
-test('allows non-normalized input when passed allowNonNormalizedTree', () => {
+test('allows non-normalized input when passed normalization: "skip"', () => {
   let editor = makeEditor(
     <editor>
       <paragraph>
@@ -210,7 +210,7 @@ test('allows non-normalized input when passed allowNonNormalizedTree', () => {
         </paragraph>
       </paragraph>
     </editor>,
-    { allowNonNormalizedTree: true }
+    { normalization: 'skip' }
   );
   expect(editor).toMatchInlineSnapshot(`
     <editor>

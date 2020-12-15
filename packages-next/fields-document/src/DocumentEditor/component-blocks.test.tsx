@@ -1,5 +1,4 @@
 /** @jsx jsx */
-import { Editor } from 'slate';
 import { jsx, makeEditor } from './tests/utils';
 
 test('component-inline-prop and component-block-prop outside of component-block are unwrapped', () => {
@@ -22,10 +21,8 @@ test('component-inline-prop and component-block-prop outside of component-block 
         </text>
       </paragraph>
     </editor>,
-    { allowNonNormalizedTree: true }
+    { normalization: 'normalize' }
   );
-
-  Editor.normalize(editor, { force: true });
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>

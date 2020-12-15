@@ -7,54 +7,61 @@ import { DocumentFeatures } from '../../views';
 
 export { __jsx as jsx } from './jsx/namespace';
 
+const defaultDocumentFeatures: DocumentFeatures = {
+  alignment: { center: true, end: true },
+  blockTypes: { blockquote: true, code: true, panel: true, quote: true },
+  columns: [
+    [1, 1],
+    [1, 1, 1],
+    [1, 2, 1],
+  ],
+  dividers: true,
+  headingLevels: [1, 2, 3, 4, 5, 6],
+  inlineMarks: {
+    bold: true,
+    code: true,
+    italic: true,
+    keyboard: true,
+    strikethrough: true,
+    subscript: true,
+    superscript: true,
+    underline: true,
+  },
+  link: true,
+  listTypes: { ordered: true, unordered: true },
+};
+
 export const makeEditor = (
   node: Node,
-  opts: {
+  {
+    documentFeatures,
+    componentBlocks,
+    normalization = 'disallow-non-normalized',
+  }: {
     documentFeatures?: DocumentFeatures;
     componentBlocks?: Record<string, ComponentBlock>;
-    allowNonNormalizedTree?: boolean;
+    normalization?: 'disallow-non-normalized' | 'normalize' | 'skip';
   } = {}
 ): ReactEditor => {
   if (!Editor.isEditor(node)) {
     throw new Error('Unexpected non-editor passed to makeEditor');
   }
   let editor = createDocumentEditor(
-    opts.documentFeatures || {
-      alignment: { center: true, end: true },
-      blockTypes: { blockquote: true, code: true, panel: true, quote: true },
-      columns: [
-        [1, 1],
-        [1, 1, 1],
-        [1, 2, 1],
-      ],
-      dividers: true,
-      headingLevels: [1, 2, 3, 4, 5, 6],
-      inlineMarks: {
-        bold: true,
-        code: true,
-        italic: true,
-        keyboard: true,
-        strikethrough: true,
-        subscript: true,
-        superscript: true,
-        underline: true,
-      },
-      link: true,
-      listTypes: { ordered: true, unordered: true },
-    },
-    opts.componentBlocks || {}
+    documentFeatures || defaultDocumentFeatures,
+    componentBlocks || {}
   );
   editor.children = node.children;
   editor.selection = node.selection;
 
-  if (!opts.allowNonNormalizedTree) {
+  if (normalization !== 'skip') {
     const selectionBeforeNormalize = editor.selection;
     const childrenBeforeNormalize = editor.children;
 
     Editor.normalize(editor, { force: true });
-
-    expect(editor.children).toEqual(childrenBeforeNormalize);
-    expect(editor.selection).toEqual(selectionBeforeNormalize);
+    if (normalization === 'disallow-non-normalized') {
+      expect(editor.children).toEqual(childrenBeforeNormalize);
+      expect(editor.selection).toEqual(selectionBeforeNormalize);
+    }
   }
   return editor;
 };

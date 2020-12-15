@@ -1,5 +1,4 @@
 /** @jsx jsx */
-import { Editor } from 'slate';
 import { toggleList } from './lists';
 import { jsx, makeEditor } from './tests/utils';
 
@@ -89,10 +88,8 @@ test('direct sibling lists of the same type are merged', () => {
         </text>
       </paragraph>
     </editor>,
-    { allowNonNormalizedTree: true }
+    { normalization: 'normalize' }
   );
-
-  Editor.normalize(editor, { force: true });
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>

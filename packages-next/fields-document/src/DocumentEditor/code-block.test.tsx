@@ -95,7 +95,7 @@ test('non-text is removed from code blocks', () => {
         <text />
       </paragraph>
     </editor>,
-    { allowNonNormalizedTree: true }
+    { normalization: 'skip' }
   );
 
   const { isVoid, isInline } = editor;
