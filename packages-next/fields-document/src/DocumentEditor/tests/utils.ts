@@ -1,5 +1,6 @@
 import { ReactElement, createElement } from 'react';
 import { Editor, Node, Path, Text, Range } from 'slate';
+import { ReactEditor } from 'slate-react';
 import { createDocumentEditor } from '..';
 import { ComponentBlock } from '../../component-blocks';
 import { DocumentFeatures } from '../../views';
@@ -13,7 +14,7 @@ export const makeEditor = (
     componentBlocks?: Record<string, ComponentBlock>;
     allowNonNormalizedTree?: boolean;
   } = {}
-): Editor => {
+): ReactEditor => {
   if (!Editor.isEditor(node)) {
     throw new Error('Unexpected non-editor passed to makeEditor');
   }

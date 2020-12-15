@@ -12,25 +12,17 @@ import { ToolbarButton } from './primitives';
 
 export const isListType = (type: string) => type === 'ordered-list' || type === 'unordered-list';
 
-const toggleList = (editor: ReactEditor, format: string) => {
+export const toggleList = (editor: ReactEditor, format: 'ordered-list' | 'unordered-list') => {
   const isActive = isBlockActive(editor, format);
-  if (isActive) {
+  Editor.withoutNormalizing(editor, () => {
     Transforms.unwrapNodes(editor, {
       match: n => isListType(n.type as string),
       split: true,
     });
-  } else {
-    const oppositeListType = format === 'ordered-list' ? 'unordered-list' : 'ordered-list';
-    if (isBlockActive(editor, oppositeListType)) {
-      Transforms.setNodes(
-        editor,
-        { type: format },
-        { match: node => isListType(node.type as string), split: true }
-      );
-    } else {
+    if (!isActive) {
       Transforms.wrapNodes(editor, { type: format, children: [] });
     }
-  }
+  });
 };
 
 function getAncestorList(
