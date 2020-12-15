@@ -1,3 +1,5 @@
+// slate-hyperscript depends on Array.prototype.flat
+import 'array.prototype.flat/auto';
 import { createHyperscript } from 'slate-hyperscript';
 
 import { editorSchema } from '../../index';

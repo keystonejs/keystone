@@ -40,6 +40,7 @@
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/fields-document",
   "devDependencies": {
+    "array.prototype.flat": "^1.2.4",
     "slate-hyperscript": "^0.59.0"
   }
 }
