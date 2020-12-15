@@ -60,7 +60,12 @@ export const makeEditor = (
 
 // we're converting the slate tree to react elements because Jest
 // knows how to pretty-print react elements in snapshots
-function nodeToReactElement(node: Node, selection: Range | null, path: Path): ReactElement {
+function nodeToReactElement(
+  editor: Editor,
+  node: Node,
+  selection: Range | null,
+  path: Path
+): ReactElement {
   if (Text.isText(node)) {
     const { text, ...marks } = node;
     if (selection) {
@@ -106,15 +111,24 @@ function nodeToReactElement(node: Node, selection: Range | null, path: Path): Re
     }
     return createElement('text', { children: text, ...marks });
   }
-  let children = node.children.map((x, i) => nodeToReactElement(x, selection, path.concat(i)));
+  let children = node.children.map((x, i) =>
+    nodeToReactElement(editor, x, selection, path.concat(i))
+  );
   if (Editor.isEditor(node)) {
     return createElement('editor', { children });
   }
   let { type, ...restNode } = node;
-  if (type !== undefined) {
-    return createElement(type as string, { ...restNode, children });
+  const computedData: { '@@isVoid'?: true; '@@isInline'?: true } = {};
+  if (editor.isVoid(node)) {
+    computedData['@@isVoid'] = true;
   }
-  return createElement('element', { ...node, children });
+  if (editor.isInline(node)) {
+    computedData['@@isInline'] = true;
+  }
+  if (type !== undefined) {
+    return createElement(type as string, { ...restNode, ...computedData, children });
+  }
+  return createElement('element', { ...node, ...computedData, children });
 }
 
 expect.addSnapshotSerializer({
@@ -122,6 +136,12 @@ expect.addSnapshotSerializer({
     return Editor.isEditor(val);
   },
   serialize(val, config, indentation, depth, refs, printer) {
-    return printer(nodeToReactElement(val, val.selection, []), config, indentation, depth, refs);
+    return printer(
+      nodeToReactElement(val, val, val.selection, []),
+      config,
+      indentation,
+      depth,
+      refs
+    );
   },
 });
