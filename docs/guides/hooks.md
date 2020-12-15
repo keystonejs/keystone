@@ -37,7 +37,7 @@ Hooks are available for these core operations:
 - `authenticate`
 - `unauthenticate`
 
-These operations are reused used for both "single" and "many" modes.
+These operations are used for both "single" and "many" modes.
 E.g. the `deleteUser` (singular) and `deleteUsers` (plural) mutations are both considered to be `delete` operations.
 
 Hooks for these operations have different signatures due to the nature of the operations being performed.
@@ -68,7 +68,7 @@ See the [Hooks API docs](/docs/api/hooks.md) and [Intra-Hook Execution Order sec
 
 ### Putting it together
 
-In total there 13 _hook sets_ available.
+In total there are 13 _hook sets_ available.
 This table shows the _hook set_ relevant to each combination of _stage_ and _operation_:
 
 | Stage            | `create`        | `update`        | `delete`         | `authenticate`      | `unauthenticate` |
