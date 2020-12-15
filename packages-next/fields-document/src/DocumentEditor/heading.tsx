@@ -21,13 +21,9 @@ export function withHeading(headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[], editor: Re
     });
     if (!match) return;
     const [, path] = match;
-    Transforms.setNodes(
-      editor,
-      { type: 'paragraph', children: [{ text: '' }] },
-      {
-        at: path,
-      }
-    );
+    Transforms.unwrapNodes(editor, {
+      at: path,
+    });
   };
   if (headingLevels.length) {
     const shortcuts: Record<string, number> = {};
