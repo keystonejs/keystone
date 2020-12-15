@@ -8,11 +8,12 @@ title: File
 
 Support files hosted in a range of different contexts, e.g. in the local filesystem, or on a cloud based file server.
 
-> **Important:** As of this writing (April 2020), an upstream [issue](https://github.com/apollographql/apollo-server/issues/3508)
-> with `apollo-server`'s dependencies can cause a server crash when using this field (regardless of adapter) with **Node 13 only**.
+> **Important:** As of this writing (December 2020), an upstream [issue](https://github.com/apollographql/apollo-server/issues/3508)
+> with `apollo-server`'s dependencies can cause a server crash when using this field with **Node 13 or above**.
 > To work around this, use Node 12 or below _or_ add the following to your `package.json`:
 >
 > ```js title=package.json
+> "preinstall": "npx npm-force-resolutions",  // NPM users only
 > "resolutions": {
 >   "graphql-upload": "^11.0.0"
 > }

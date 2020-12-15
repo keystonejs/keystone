@@ -8,6 +8,19 @@ title: CloudinaryImage
 
 The `CloudinaryImage` field extends the [`File`](/packages/fields/src/types/File/README.md) field and allows uploading images to Cloudinary. It also exposes additional GraphQL functionality for querying your uploaded images.
 
+> **Important:** As of this writing (December 2020), an upstream [issue](https://github.com/apollographql/apollo-server/issues/3508)
+> with `apollo-server`'s dependencies can cause a server crash when using this field (regardless of adapter) with **Node 13 or above**.
+> To work around this, use Node 12 or below _or_ add the following to your `package.json`:
+>
+> ```js title=package.json
+> "preinstall": "npx npm-force-resolutions",  // NPM users only
+> "resolutions": {
+>   "graphql-upload": "^11.0.0"
+> }
+> ```
+>
+> You can track this issue [here](https://github.com/keystonejs/keystone/issues/2101).
+
 ## Usage
 
 This field must be used with the [`CoundinaryAdapter`](/packages/file-adapters/README.md#cloudinaryfileadapter) file adapter:
