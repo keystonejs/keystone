@@ -1,5 +1,5 @@
 import { Node } from 'slate';
-import { Relationships } from '../../relationship';
+import { RelationshipValues } from '../../component-blocks/utils';
 import { Mark } from '../../utils';
 
 export const __jsx: any;
@@ -33,7 +33,7 @@ declare namespace __jsx {
       };
       'component-block': {
         component: string;
-        relationships: Relationships;
+        relationships: RelationshipValues;
         props: Record<string, any>;
         children: Children;
       };
