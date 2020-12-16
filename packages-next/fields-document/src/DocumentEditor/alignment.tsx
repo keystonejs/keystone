@@ -72,7 +72,7 @@ export const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alig
                   }}
                   {...attrs}
                 >
-                  <alignmentIcons.start size="small" />
+                  {alignmentIcons.start}
                 </ToolbarButton>
               )}
             </Tooltip>
@@ -93,7 +93,7 @@ export const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alig
                     }}
                     {...attrs}
                   >
-                    <alignmentIcons.center size="small" />
+                    {alignmentIcons.center}
                   </ToolbarButton>
                 )}
               </Tooltip>
@@ -115,7 +115,7 @@ export const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alig
                     }}
                     {...attrs}
                   >
-                    <alignmentIcons.end size="small" />
+                    {alignmentIcons.end}
                   </ToolbarButton>
                 )}
               </Tooltip>
@@ -128,9 +128,9 @@ export const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alig
 };
 
 const alignmentIcons = {
-  start: AlignLeftIcon,
-  center: AlignCenterIcon,
-  end: AlignRightIcon,
+  start: <AlignLeftIcon size="small" />,
+  center: <AlignCenterIcon size="small" />,
+  end: <AlignRightIcon size="small" />,
 };
 
 const TextAlignButton = memo(function TextAlignButton({
@@ -146,8 +146,6 @@ const TextAlignButton = memo(function TextAlignButton({
   trigger: ReturnType<typeof useControlledPopover>['trigger'];
   showMenu: boolean;
 }) {
-  const DisplayIcon = alignmentIcons[currentTextAlign];
-
   return (
     <Tooltip content="Text alignment" weight="subtle">
       {({ ref, ...attrs }) => (
@@ -162,7 +160,7 @@ const TextAlignButton = memo(function TextAlignButton({
           {...attrs}
           {...trigger.props}
         >
-          <DisplayIcon size="small" />
+          {alignmentIcons[currentTextAlign]}
           <ChevronDownIcon size="small" />
         </ToolbarButton>
       )}

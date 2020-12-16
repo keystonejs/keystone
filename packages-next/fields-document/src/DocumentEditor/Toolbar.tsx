@@ -111,22 +111,27 @@ export const Toolbar = memo(function Toolbar({
 
 /* UI Components */
 
-const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(
-  ({ type, ...props }, ref) => {
-    const editor = useSlate();
+const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function MarkButton(
+  props,
+  ref
+) {
+  const editor = useSlate();
+  const isActive = isMarkActive(editor, props.type);
+  return useMemo(() => {
+    const { type, ...restProps } = props;
     return (
       <ToolbarButton
         ref={ref}
-        isSelected={isMarkActive(editor, type)}
+        isSelected={isActive}
         onMouseDown={event => {
           event.preventDefault();
           toggleMark(editor, type);
         }}
-        {...props}
+        {...restProps}
       />
     );
-  }
-);
+  }, [editor, isActive, props]);
+});
 
 const ToolbarContainer = ({ children }: { children: ReactNode }) => {
   const { colors, spacing } = useTheme();
@@ -147,6 +152,8 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
     </div>
   );
 };
+
+const downIcon = <ChevronDownIcon size="small" />;
 
 const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headingLevels'] }) => {
   const [showMenu, setShowMenu] = useState(false);
@@ -185,19 +192,24 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
         position: 'relative',
       }}
     >
-      <ToolbarButton
-        ref={trigger.ref}
-        isPressed={showMenu}
-        onClick={event => {
-          event.preventDefault();
-          setShowMenu(v => !v);
-        }}
-        style={{ textAlign: 'left', width: 116 }}
-        {...trigger.props}
-      >
-        <span css={{ flex: 1 }}>{buttonLabel}</span>
-        <ChevronDownIcon size="small" />
-      </ToolbarButton>
+      {useMemo(
+        () => (
+          <ToolbarButton
+            ref={trigger.ref}
+            isPressed={showMenu}
+            onClick={event => {
+              event.preventDefault();
+              setShowMenu(v => !v);
+            }}
+            style={{ textAlign: 'left', width: 116 }}
+            {...trigger.props}
+          >
+            <span css={{ flex: 1 }}>{buttonLabel}</span>
+            {downIcon}
+          </ToolbarButton>
+        ),
+        [trigger, showMenu, buttonLabel]
+      )}
       {showMenu ? (
         <InlineDialog ref={dialog.ref} {...dialog.props}>
           <ToolbarGroup direction="column">
@@ -325,11 +337,7 @@ function InnerInsertBlockMenu({
 }
 
 // TODO: Clear formatting
-const InlineMarks = memo(function InlineMarks({
-  marks,
-}: {
-  marks: DocumentFeatures['inlineMarks'];
-}) {
+function InlineMarks({ marks }: { marks: DocumentFeatures['inlineMarks'] }) {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {
@@ -405,7 +413,7 @@ const InlineMarks = memo(function InlineMarks({
       )}
     </Fragment>
   );
-});
+}
 
 // Custom (non-feather) Icons
 // ------------------------------
