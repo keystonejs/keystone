@@ -261,8 +261,6 @@ export type ComponentBlock = {
   component: (props: any) => ReactElement | null;
   props: Record<string, ComponentPropField>;
   label: string;
-  unwrapOnBackspaceAtStart?: true;
-  exitOnEnterInEmptyLineAtEndOfChild?: true;
 } & (
   | {
       chromeless: true;
@@ -379,8 +377,6 @@ export function component<
     ) => ReactElement | null;
     props: PropsOption;
     label: string;
-    unwrapOnBackspaceAtStart?: true;
-    exitOnEnterInEmptyLineAtEndOfChild?: true;
     // icon?: ReactElement;
     // position?: 'toolbar' | 'insert-menu';
   } & (

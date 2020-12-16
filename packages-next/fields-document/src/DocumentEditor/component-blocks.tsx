@@ -2,7 +2,7 @@
 
 import { Fragment, ReactElement, createContext, useContext, useState } from 'react';
 import { ReactEditor, RenderElementProps, useEditor, useFocused, useSelected } from 'slate-react';
-import { Editor, Element, Transforms, Range, NodeEntry, Path, Node } from 'slate';
+import { Editor, Element, Transforms, Range, NodeEntry, Path, Node, Text } from 'slate';
 
 import { Stack, jsx, useTheme } from '@keystone-ui/core';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
@@ -243,8 +243,6 @@ export function withComponentBlocks(
       const ancestorComponentBlock = getAncestorComponentBlock(editor);
       if (
         ancestorComponentBlock.isInside &&
-        blockComponents[ancestorComponentBlock.componentBlock[0].component as string]
-          ?.unwrapOnBackspaceAtStart &&
         Range.isCollapsed(editor.selection) &&
         Editor.isStart(editor, editor.selection.anchor, ancestorComponentBlock.prop[1]) &&
         ancestorComponentBlock.prop[1][ancestorComponentBlock.prop[1].length - 1] === 0
@@ -265,10 +263,7 @@ export function withComponentBlocks(
       const isLastProp =
         componentPropPath[componentPropPath.length - 1] === componentBlockNode.children.length - 1;
 
-      if (
-        componentPropNode.type === 'component-block-prop' &&
-        blockComponents[componentBlockNode.component as string]?.exitOnEnterInEmptyLineAtEndOfChild
-      ) {
+      if (componentPropNode.type === 'component-block-prop') {
         const [[paragraphNode, paragraphPath]] = Editor.nodes(editor, {
           match: node => node.type === 'paragraph',
         });
@@ -312,30 +307,42 @@ export function withComponentBlocks(
   editor.normalizeNode = entry => {
     const [node, path] = entry;
     if (Element.isElement(node) || Editor.isEditor(node)) {
-      let foundProps = new Set<string>();
-      let index = 0;
-      let stringifiedInlinePropPaths =
-        node.type === 'component-block' && blockComponents[node.component as string] !== undefined
-          ? Object.fromEntries(
-              findChildPropPaths(
-                node.props as any,
-                blockComponents[node.component as string]!.props
-              ).map(x => [JSON.stringify(x.path), x.kind as typeof x.kind | undefined])
-            )
-          : {};
-      for (const childNode of node.children) {
-        const childPath = [...path, index];
-        index++;
-        if (node.type === 'component-block') {
+      if (
+        node.type === 'component-inline-prop' &&
+        node.propPath &&
+        (node.propPath as any).length === 1 &&
+        (node.propPath as any)[0] === VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP &&
+        (node.children.length !== 1 ||
+          !Text.isText(node.children[0]) ||
+          node.children[0].text !== '')
+      ) {
+        Transforms.removeNodes(editor, {
+          at: path,
+        });
+        return;
+      }
+      if (
+        node.type === 'component-block' &&
+        // we don't want to break a block component if the component doesn't exist for some reason
+        blockComponents[node.component as string] !== undefined
+      ) {
+        let foundProps = new Set<string>();
+
+        let stringifiedInlinePropPaths = Object.fromEntries(
+          findChildPropPaths(
+            node.props as any,
+            blockComponents[node.component as string]!.props
+          ).map(x => [JSON.stringify(x.path), x.kind as typeof x.kind | undefined])
+        );
+
+        for (const [index, childNode] of node.children.entries()) {
           if (
-            childNode.type !== 'component-inline-prop' &&
-            childNode.type !== 'component-block-prop'
+            // children that are not these will be handled by
+            // the generic allowedChildren normalization
+            childNode.type === 'component-inline-prop' ||
+            childNode.type === 'component-block-prop'
           ) {
-            Transforms.removeNodes(editor, { at: childPath });
-            return;
-          }
-          // we don't want to break a block component if the component doesn't exist for some reason
-          if (blockComponents[node.component as string] !== undefined) {
+            const childPath = [...path, index];
             const stringifiedPropPath = JSON.stringify(childNode.propPath);
             if (stringifiedInlinePropPaths[stringifiedPropPath] === undefined) {
               Transforms.removeNodes(editor, { at: childPath });
@@ -387,6 +394,29 @@ export function withComponentBlocks(
   return editor;
 }
 
+export function insertComponentBlock<Blocks extends Record<string, ComponentBlock>>(
+  editor: Editor,
+  componentBlocks: Blocks,
+  componentBlock: Extract<keyof Blocks, string>,
+  relationships: Relationships
+) {
+  let { node, isFakeVoid } = getInitialValue(
+    componentBlock,
+    componentBlocks[componentBlock],
+    relationships
+  );
+  Transforms.insertNodes(editor, node);
+  if (!isFakeVoid && editor.selection) {
+    const [entry] = Editor.nodes(editor, {
+      match: node => node.type === 'component-block',
+    });
+    if (entry) {
+      const point = Editor.start(editor, entry[1]);
+      Transforms.select(editor, point);
+    }
+  }
+}
+
 export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => {
   const editor = useEditor();
   const blockComponents = useContext(ComponentBlockContext)!;
@@ -398,17 +428,7 @@ export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => 
           key={key}
           onMouseDown={event => {
             event.preventDefault();
-            let { node, isFakeVoid } = getInitialValue(key, blockComponents[key], relationships);
-            Transforms.insertNodes(editor, node);
-            if (!isFakeVoid && editor.selection) {
-              const [entry] = Editor.nodes(editor, {
-                match: node => node.type === 'component-block',
-              });
-              if (entry) {
-                const point = Editor.start(editor, entry[1]);
-                Transforms.select(editor, point);
-              }
-            }
+            insertComponentBlock(editor, blockComponents, key, relationships);
             onClose();
           }}
         >

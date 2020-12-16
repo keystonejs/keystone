@@ -89,19 +89,12 @@ export function withList(listTypes: DocumentFeatures['listTypes'], editor: React
           ? 'unordered-list'
           : undefined;
       if (listType) {
-        Editor.withoutNormalizing(editor, () => {
-          deleteShortcutText();
-          Transforms.setNodes(
-            editor,
-            { type: 'list-item' },
-            { match: n => Editor.isBlock(editor, n) }
-          );
-          Transforms.wrapNodes(
-            editor,
-            { type: listType, children: [] },
-            { match: n => n.type === 'list-item' }
-          );
-        });
+        deleteShortcutText();
+        Transforms.wrapNodes(
+          editor,
+          { type: listType, children: [] },
+          { match: n => Editor.isBlock(editor, n) }
+        );
 
         return;
       }

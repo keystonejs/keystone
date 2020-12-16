@@ -205,8 +205,6 @@ export const componentBlocks = {
     },
     label: 'Notice',
     chromeless: true,
-    unwrapOnBackspaceAtStart: true,
-    exitOnEnterInEmptyLineAtEndOfChild: true,
     props: {
       intent: fields.select({
         label: 'Intent',
@@ -281,8 +279,6 @@ export const componentBlocks = {
       );
     },
     label: 'Quote',
-    unwrapOnBackspaceAtStart: true,
-    exitOnEnterInEmptyLineAtEndOfChild: true,
     props: {
       content: fields.child({ kind: 'block', placeholder: 'Quote...' }),
       attribution: fields.child({ kind: 'inline', placeholder: 'Attribution...' }),
