@@ -27,6 +27,19 @@ const componentBlocks = {
       block: fields.child({ kind: 'block', placeholder: '' }),
     },
   }),
+  complex: component({
+    component: () => null,
+    label: 'Complex',
+    props: {
+      object: fields.object({
+        prop: fields.text({ label: 'Prop' }),
+        conditional: fields.conditional(fields.checkbox({ label: 'Conditional' }), {
+          true: fields.child({ kind: 'block', placeholder: '' }),
+          false: fields.relationship({ label: 'Relationship', relationship: 'relationship' }),
+        }),
+      }),
+    },
+  }),
 };
 
 test('component-inline-prop and component-block-prop outside of component-block are unwrapped', () => {

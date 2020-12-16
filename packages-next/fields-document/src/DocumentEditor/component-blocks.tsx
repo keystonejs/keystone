@@ -328,12 +328,13 @@ export function withComponentBlocks(
       ) {
         let foundProps = new Set<string>();
 
-        let stringifiedInlinePropPaths = Object.fromEntries(
-          findChildPropPaths(
-            node.props as any,
-            blockComponents[node.component as string]!.props
-          ).map(x => [JSON.stringify(x.path), x.kind as typeof x.kind | undefined])
-        );
+        let stringifiedInlinePropPaths: Record<string, 'inline' | 'block' | undefined> = {};
+        findChildPropPaths(
+          node.props as any,
+          blockComponents[node.component as string]!.props
+        ).forEach(x => {
+          stringifiedInlinePropPaths[JSON.stringify(x.path)] = x.kind;
+        });
 
         for (const [index, childNode] of node.children.entries()) {
           if (
