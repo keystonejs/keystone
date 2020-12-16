@@ -80,7 +80,7 @@ export const generateAdminUI = async (config: KeystoneConfig, system: KeystoneSy
     files.map(async filename => {
       const outputFilename = Path.join(projectAdminPath, 'pages', filename);
       const path = Path.relative(Path.dirname(outputFilename), Path.join(userPagesDir, filename));
-      await fs.writeFile(outputFilename, `export { default } from "${path}"`);
+      await fs.outputFile(outputFilename, `export { default } from "${path}"`);
     })
   );
 };

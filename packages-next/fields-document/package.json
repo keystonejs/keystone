@@ -8,6 +8,7 @@
   "preconstruct": {
     "entrypoints": [
       "component-blocks.tsx",
+      "document-renderer.tsx",
       "index.ts",
       "primitives.ts",
       "views.tsx"
