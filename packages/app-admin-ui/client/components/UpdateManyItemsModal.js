@@ -19,7 +19,8 @@ const Render = ({ children }) => children();
 const UpdateManyModal = ({ list, items, isOpen, onUpdate, onClose }) => {
   const { addToast } = useToasts();
   const [updateItem, { loading }] = useMutation(list.updateManyMutation, {
-    errorPolicy: 'all',
+    // Removed to fire  OnError function  https://www.apollographql.com/docs/react/data/error-handling/
+    // errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
     refetchQueries: ['getList'],
   });

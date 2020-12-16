@@ -59,7 +59,8 @@ const CreateItemModal = ({ prefillData = {}, onClose, onCreate, viewOnSave }) =>
   const { addToast } = useToasts();
 
   const [createItem, { loading }] = useMutation(list.createMutation, {
-    errorPolicy: 'all',
+    // Removed to fire  OnError function  https://www.apollographql.com/docs/react/data/error-handling/
+    // errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
     refetchQueries: ['getList', 'RelationshipSelect'],
   });
