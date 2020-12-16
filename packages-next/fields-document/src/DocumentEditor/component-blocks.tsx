@@ -440,7 +440,7 @@ export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => 
   );
 };
 
-function buildPreviewProps(
+function _buildPreviewProps(
   previewProps: Record<string, any>,
   props: ComponentBlock['props'],
   formProps: Record<string, any>,
@@ -466,7 +466,7 @@ function buildPreviewProps(
       previewProps[key] = childrenByPath[JSON.stringify(path.concat(key))];
     } else if (val.kind === 'object') {
       previewProps[key] = {};
-      buildPreviewProps(
+      _buildPreviewProps(
         previewProps[key],
         val.value,
         formProps[key],
@@ -499,7 +499,7 @@ function buildPreviewProps(
           );
         },
       };
-      buildPreviewProps(
+      _buildPreviewProps(
         previewProps[key],
         {
           value: val.values[formProps[key].discriminant],
@@ -533,6 +533,32 @@ function buildPreviewProps(
       assertNever(val);
     }
   });
+}
+
+function createPreviewProps(
+  element: Element,
+  componentBlock: ComponentBlock,
+  childrenByPath: Record<string, ReactElement>,
+  relationships: Relationships,
+  setNode: (element: Partial<Element>) => void
+) {
+  const previewProps = {};
+  _buildPreviewProps(
+    previewProps,
+    componentBlock.props,
+    element.props as any,
+    childrenByPath,
+    [],
+    element.relationships as any,
+    relationships,
+    relationships => {
+      setNode({ relationships });
+    },
+    props => {
+      setNode({ props });
+    }
+  );
+  return previewProps;
 }
 
 export const ComponentBlocksElement = ({ attributes, children, element }: RenderElementProps) => {
@@ -641,28 +667,13 @@ Content:`}
         />
         {!editMode &&
           (() => {
-            const toolbarProps = {};
-            buildPreviewProps(
-              toolbarProps,
-              componentBlock.props,
-              element.props as any,
+            const toolbarProps = createPreviewProps(
+              element,
+              componentBlock,
               {},
-              [],
-              element.relationships as any,
               documentFieldRelationships,
-              relationships => {
-                Transforms.setNodes(
-                  editor,
-                  { relationships },
-                  { at: ReactEditor.findPath(editor, element) }
-                );
-              },
-              props => {
-                Transforms.setNodes(
-                  editor,
-                  { props },
-                  { at: ReactEditor.findPath(editor, element) }
-                );
+              data => {
+                Transforms.setNodes(editor, data, { at: ReactEditor.findPath(editor, element) });
               }
             );
             const ChromefulToolbar = componentBlock.toolbar
@@ -776,7 +787,6 @@ function ComponentBlockRender({
   // that's fine for what it's being used for here
   // because we're just inserting things on events, not reading things in render
   const editor = useEditor();
-  const previewProps: any = {};
 
   const childrenByPath: Record<string, ReactElement> = {};
   const children = _children.type(_children.props).props.children;
@@ -790,19 +800,13 @@ function ComponentBlockRender({
     }
   });
 
-  buildPreviewProps(
-    previewProps,
-    componentBlock.props,
-    element.props as any,
+  const previewProps = createPreviewProps(
+    element,
+    componentBlock,
     childrenByPath,
-    [],
-    element.relationships as any,
     useDocumentFieldRelationships(),
-    relationships => {
-      Transforms.setNodes(editor, { relationships }, { at: ReactEditor.findPath(editor, element) });
-    },
-    props => {
-      Transforms.setNodes(editor, { props }, { at: ReactEditor.findPath(editor, element) });
+    data => {
+      Transforms.setNodes(editor, data, { at: ReactEditor.findPath(editor, element) });
     }
   );
 
