@@ -32,26 +32,6 @@ import { dividerButton } from './divider';
 
 // TODO: how to manage separators with dynamic feature sets...
 
-const unorderedListButton = (
-  <Tooltip content="Bullet list" weight="subtle">
-    {attrs => (
-      <ListButton type="unordered-list" {...attrs}>
-        <BulletListIcon />
-      </ListButton>
-    )}
-  </Tooltip>
-);
-
-const orderedListButton = (
-  <Tooltip content="Numbered list" weight="subtle">
-    {attrs => (
-      <ListButton type="ordered-list" {...attrs}>
-        <NumberedListIcon />
-      </ListButton>
-    )}
-  </Tooltip>
-);
-
 export const Toolbar = memo(function Toolbar({
   documentFeatures,
   viewState,
@@ -78,8 +58,24 @@ export const Toolbar = memo(function Toolbar({
       {(documentFeatures.alignment.center || documentFeatures.alignment.end) && (
         <TextAlignMenu alignment={documentFeatures.alignment} />
       )}
-      {documentFeatures.listTypes.unordered && unorderedListButton}
-      {documentFeatures.listTypes.ordered && orderedListButton}
+      {documentFeatures.listTypes.unordered && (
+        <Tooltip content="Bullet list" weight="subtle">
+          {attrs => (
+            <ListButton type="unordered-list" {...attrs}>
+              <BulletListIcon />
+            </ListButton>
+          )}
+        </Tooltip>
+      )}
+      {documentFeatures.listTypes.ordered && (
+        <Tooltip content="Numbered list" weight="subtle">
+          {attrs => (
+            <ListButton type="ordered-list" {...attrs}>
+              <NumberedListIcon />
+            </ListButton>
+          )}
+        </Tooltip>
+      )}
       {(documentFeatures.alignment.center ||
         documentFeatures.alignment.end ||
         documentFeatures.listTypes.unordered ||
@@ -111,22 +107,27 @@ export const Toolbar = memo(function Toolbar({
 
 /* UI Components */
 
-const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(
-  ({ type, ...props }, ref) => {
-    const editor = useSlate();
+const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function MarkButton(
+  props,
+  ref
+) {
+  const editor = useSlate();
+  const isActive = isMarkActive(editor, props.type);
+  return useMemo(() => {
+    const { type, ...restProps } = props;
     return (
       <ToolbarButton
         ref={ref}
-        isSelected={isMarkActive(editor, type)}
+        isSelected={isActive}
         onMouseDown={event => {
           event.preventDefault();
           toggleMark(editor, type);
         }}
-        {...props}
+        {...restProps}
       />
     );
-  }
-);
+  }, [editor, isActive, props]);
+});
 
 const ToolbarContainer = ({ children }: { children: ReactNode }) => {
   const { colors, spacing } = useTheme();
@@ -148,9 +149,48 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
   );
 };
 
+const downIcon = <ChevronDownIcon size="small" />;
+
+function HeadingButton({
+  trigger,
+  onToggleShowMenu,
+  showMenu,
+}: {
+  trigger: ReturnType<typeof useControlledPopover>['trigger'];
+  showMenu: boolean;
+  onToggleShowMenu: () => void;
+}) {
+  const editor = useSlate();
+  // prep button label
+  let [headingNodes] = Editor.nodes(editor, {
+    match: n => n.type === 'heading',
+  });
+  let buttonLabel = 'Normal text';
+  if (headingNodes) {
+    buttonLabel = 'Heading ' + headingNodes[0].level;
+  }
+  return useMemo(
+    () => (
+      <ToolbarButton
+        ref={trigger.ref}
+        isPressed={showMenu}
+        onClick={event => {
+          event.preventDefault();
+          onToggleShowMenu();
+        }}
+        style={{ textAlign: 'left', width: 116 }}
+        {...trigger.props}
+      >
+        <span css={{ flex: 1 }}>{buttonLabel}</span>
+        {downIcon}
+      </ToolbarButton>
+    ),
+    [buttonLabel, trigger, showMenu, onToggleShowMenu]
+  );
+}
+
 const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headingLevels'] }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const editor = useSlate();
   const { dialog, trigger } = useControlledPopover(
     {
       isOpen: showMenu,
@@ -169,15 +209,6 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
     }
   );
 
-  // prep button label
-  let [headingNodes] = Editor.nodes(editor, {
-    match: n => n.type === 'heading',
-  });
-  let buttonLabel = 'Normal text';
-  if (headingNodes) {
-    buttonLabel = 'Heading ' + headingNodes[0].level;
-  }
-
   return (
     <div
       css={{
@@ -185,57 +216,70 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
         position: 'relative',
       }}
     >
-      <ToolbarButton
-        ref={trigger.ref}
-        isPressed={showMenu}
-        onClick={event => {
-          event.preventDefault();
-          setShowMenu(v => !v);
+      <HeadingButton
+        showMenu={showMenu}
+        trigger={trigger}
+        onToggleShowMenu={() => {
+          setShowMenu(x => !x);
         }}
-        style={{ textAlign: 'left', width: 116 }}
-        {...trigger.props}
-      >
-        <span css={{ flex: 1 }}>{buttonLabel}</span>
-        <ChevronDownIcon size="small" />
-      </ToolbarButton>
+      />
+
       {showMenu ? (
         <InlineDialog ref={dialog.ref} {...dialog.props}>
-          <ToolbarGroup direction="column">
-            {headingLevels.map(hNum => {
-              let [node] = Editor.nodes(editor, {
-                match: n => n.type === 'heading' && n.level === hNum,
-              });
-              let isActive = !!node;
-              let Tag = `h${hNum}` as any; // maybe? `keyof JSX.IntrinsicElements`
-
-              return (
-                <ToolbarButton
-                  isSelected={isActive}
-                  onMouseDown={event => {
-                    event.preventDefault();
-                    Transforms.setNodes(
-                      editor,
-                      isActive
-                        ? {
-                            type: 'paragraph',
-                            level: undefined,
-                          }
-                        : { type: 'heading', level: hNum }
-                    );
-
-                    setShowMenu(false);
-                  }}
-                >
-                  <Tag>Heading {hNum}</Tag>
-                </ToolbarButton>
-              );
-            })}
-          </ToolbarGroup>
+          <HeadingDialog
+            headingLevels={headingLevels}
+            onCloseMenu={() => {
+              setShowMenu(false);
+            }}
+          />
         </InlineDialog>
       ) : null}
     </div>
   );
 };
+
+function HeadingDialog({
+  headingLevels,
+  onCloseMenu,
+}: {
+  headingLevels: DocumentFeatures['headingLevels'];
+  onCloseMenu: () => void;
+}) {
+  const editor = useSlate();
+  return (
+    <ToolbarGroup direction="column">
+      {headingLevels.map(hNum => {
+        let [node] = Editor.nodes(editor, {
+          match: n => n.type === 'heading' && n.level === hNum,
+        });
+        let isActive = !!node;
+        let Tag = `h${hNum}` as 'h1';
+
+        return (
+          <ToolbarButton
+            isSelected={isActive}
+            onMouseDown={event => {
+              event.preventDefault();
+              Transforms.setNodes(
+                editor,
+                isActive
+                  ? {
+                      type: 'paragraph',
+                      level: undefined,
+                    }
+                  : { type: 'heading', level: hNum }
+              );
+
+              onCloseMenu();
+            }}
+          >
+            <Tag>Heading {hNum}</Tag>
+          </ToolbarButton>
+        );
+      })}
+    </ToolbarGroup>
+  );
+}
 
 const InsertBlockMenu = memo(function InsertBlockMenu({
   blockTypes,
@@ -325,11 +369,7 @@ function InnerInsertBlockMenu({
 }
 
 // TODO: Clear formatting
-const InlineMarks = memo(function InlineMarks({
-  marks,
-}: {
-  marks: DocumentFeatures['inlineMarks'];
-}) {
+function InlineMarks({ marks }: { marks: DocumentFeatures['inlineMarks'] }) {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {
@@ -348,7 +388,13 @@ const InlineMarks = memo(function InlineMarks({
       ],
     }
   );
-  const hasMenu = marks.strikethrough || marks.underline || marks.code;
+  const hasMenu =
+    marks.strikethrough ||
+    marks.underline ||
+    marks.code ||
+    marks.keyboard ||
+    marks.subscript ||
+    marks.superscript;
 
   return (
     <Fragment>
@@ -405,7 +451,7 @@ const InlineMarks = memo(function InlineMarks({
       )}
     </Fragment>
   );
-});
+}
 
 // Custom (non-feather) Icons
 // ------------------------------

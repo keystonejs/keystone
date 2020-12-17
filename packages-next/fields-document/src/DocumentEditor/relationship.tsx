@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { createContext, Fragment, useContext } from 'react';
-import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
+import { ReactEditor, RenderElementProps, useEditor } from 'slate-react';
 import { Transforms } from 'slate';
 
 import { jsx } from '@keystone-ui/core';
@@ -76,7 +76,7 @@ export function withRelationship(relationships: Relationships, editor: ReactEdit
 }
 
 export function RelationshipButton() {
-  const editor = useSlate();
+  const editor = useEditor();
   const relationships = useContext(DocumentFieldRelationshipsContext)!;
   return (
     <Fragment>
@@ -103,7 +103,7 @@ export function RelationshipButton() {
 
 export function RelationshipElement({ attributes, children, element }: RenderElementProps) {
   const keystone = useKeystone();
-  const editor = useSlate();
+  const editor = useEditor();
   const relationships = useContext(DocumentFieldRelationshipsContext)!;
   const relationship = relationships[element.relationship as string] as Exclude<
     Relationships[string],

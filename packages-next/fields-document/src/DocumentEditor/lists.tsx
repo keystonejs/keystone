@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { ReactNode, forwardRef } from 'react';
+import { ReactNode, forwardRef, useMemo } from 'react';
 import { Editor, Element, Node, Path, Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { jsx } from '@keystone-ui/core';
@@ -133,21 +133,26 @@ export const ListButton = forwardRef<
     type: 'ordered-list' | 'unordered-list';
     children: ReactNode;
   }
->(({ type, ...props }, ref) => {
+>(function ListButton(props, ref) {
   const editor = useSlate();
-  return (
-    <ToolbarButton
-      ref={ref}
-      isDisabled={
-        !onlyContainerNodeInCurrentSelection(editor) &&
-        !(isBlockActive(editor, 'ordered-list') || isBlockActive(editor, 'unordered-list'))
-      }
-      isSelected={isBlockActive(editor, type)}
-      onMouseDown={event => {
-        event.preventDefault();
-        toggleList(editor, type);
-      }}
-      {...props}
-    />
-  );
+  const isActive = isBlockActive(editor, props.type);
+  const isDisabled =
+    !onlyContainerNodeInCurrentSelection(editor) &&
+    !(isBlockActive(editor, 'ordered-list') || isBlockActive(editor, 'unordered-list'));
+
+  return useMemo(() => {
+    const { type, ...restProps } = props;
+    return (
+      <ToolbarButton
+        ref={ref}
+        isDisabled={isDisabled}
+        isSelected={isActive}
+        onMouseDown={event => {
+          event.preventDefault();
+          toggleList(editor, type);
+        }}
+        {...restProps}
+      />
+    );
+  }, [props, ref, isActive, isDisabled]);
 });
