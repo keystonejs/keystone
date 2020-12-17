@@ -1,15 +1,8 @@
 /** @jsx jsx */
 
-import { createContext, memo, useContext } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import { Editor, Element, Node, Transforms } from 'slate';
-import {
-  ReactEditor,
-  RenderElementProps,
-  useEditor,
-  useFocused,
-  useSelected,
-  useSlate,
-} from 'slate-react';
+import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
@@ -253,22 +246,28 @@ function makeLayoutIcon(ratios: number[]) {
   return element;
 }
 
-export const ColumnsButton = memo(({ columns }: { columns: DocumentFeatures['columns'] }) => {
+const columnsIcon = <ColumnsIcon size="small" />;
+
+export const ColumnsButton = ({ columns }: { columns: DocumentFeatures['columns'] }) => {
   const editor = useSlate();
-  return (
-    <Tooltip content="Columns" weight="subtle">
-      {attrs => (
-        <ToolbarButton
-          isSelected={isInsideColumn(editor)}
-          onMouseDown={event => {
-            event.preventDefault();
-            insertColumns(editor, columns[0]);
-          }}
-          {...attrs}
-        >
-          <ColumnsIcon size="small" />
-        </ToolbarButton>
-      )}
-    </Tooltip>
+  const isInsideColumns = isInsideColumn(editor);
+  return useMemo(
+    () => (
+      <Tooltip content="Columns" weight="subtle">
+        {attrs => (
+          <ToolbarButton
+            isSelected={isInsideColumns}
+            onMouseDown={event => {
+              event.preventDefault();
+              insertColumns(editor, columns[0]);
+            }}
+            {...attrs}
+          >
+            {columnsIcon}
+          </ToolbarButton>
+        )}
+      </Tooltip>
+    ),
+    [editor, isInsideColumns, columns]
   );
-});
+};

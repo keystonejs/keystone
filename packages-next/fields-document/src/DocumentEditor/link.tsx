@@ -9,7 +9,7 @@ import {
   useSlate,
 } from 'slate-react';
 import { Editor, Node, Range, Transforms } from 'slate';
-import { ButtonHTMLAttributes, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 // @ts-ignore
 import isUrl from 'is-url';
 
@@ -150,32 +150,34 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
 
 let linkIcon = <LinkIcon size="small" />;
 
-const LinkButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+const LinkButton = forwardRef<HTMLButtonElement, {}>(function LinkButton(props, ref) {
   const editor = useSlate();
   const isActive = isLinkActive(editor);
   const isDisabled = !isActive && (!editor.selection || Range.isCollapsed(editor.selection));
-
-  return (
-    <Tooltip content="Link" weight="subtle">
-      {attrs => (
-        <ToolbarButton
-          isDisabled={isDisabled}
-          isSelected={isActive}
-          onMouseDown={event => {
-            event.preventDefault();
-            wrapLink(editor, '');
-          }}
-          {...attrs}
-          {...props}
-        >
-          {linkIcon}
-        </ToolbarButton>
-      )}
-    </Tooltip>
+  return useMemo(
+    () => (
+      <ToolbarButton
+        ref={ref}
+        isDisabled={isDisabled}
+        isSelected={isActive}
+        onMouseDown={event => {
+          event.preventDefault();
+          wrapLink(editor, '');
+        }}
+        {...props}
+      >
+        {linkIcon}
+      </ToolbarButton>
+    ),
+    [isActive, isDisabled, editor, props, ref]
   );
-};
+});
 
-export const linkButton = <LinkButton />;
+export const linkButton = (
+  <Tooltip content="Link" weight="subtle">
+    {attrs => <LinkButton {...attrs} />}
+  </Tooltip>
+);
 
 export const withLink = (editor: ReactEditor) => {
   const { insertData, insertText, isInline, normalizeNode } = editor;
