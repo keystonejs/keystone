@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from '@keystone-next/admin-ui/router';
 import { gql, useQuery } from '@keystone-next/admin-ui/apollo';
-import { DocumentRenderer } from '@keystone-next/fields-document/document-renderer';
+import { DocumentRenderer } from '@keystone-next/document-renderer';
 
 export default function Post() {
   const id = useRouter().query.id;
