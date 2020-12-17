@@ -1,25 +1,28 @@
 /** @jsx jsx */
 
-import { ButtonHTMLAttributes } from 'react';
+import { ComponentProps, useMemo } from 'react';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
-import { ReactEditor, RenderElementProps, useEditor } from 'slate-react';
+import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
 
 import { IconBase } from './Toolbar';
 import { ToolbarButton } from './primitives';
-import { getMaybeMarkdownShortcutText } from './utils';
+import { getMaybeMarkdownShortcutText, isBlockActive } from './utils';
 
 export const insertBlockquote = (editor: ReactEditor) => {
-  Transforms.wrapNodes(
-    editor,
-    {
+  const isActive = isBlockActive(editor, 'blockquote');
+  if (isActive) {
+    Transforms.unwrapNodes(editor, {
+      match: node => node.type === 'blockquote',
+    });
+  } else {
+    Transforms.wrapNodes(editor, {
       type: 'blockquote',
-      children: [{ type: 'paragraph', children: [{ text: '' }] }],
-    },
-    { match: node => node.type === 'paragraph' }
-  );
+      children: [],
+    });
+  }
 };
 
 function getDirectBlockquoteParentFromSelection(editor: ReactEditor) {
@@ -88,9 +91,10 @@ export const BlockquoteElement = ({ attributes, children }: RenderElementProps) 
   return (
     <blockquote
       css={{
+        borderLeft: '3px solid #CBD5E0',
         color: colors.foregroundDim,
         margin: 0,
-        padding: `0 ${spacing.xxlarge}px`,
+        padding: `0 ${spacing.xlarge}px`,
       }}
       {...attributes}
     >
@@ -99,30 +103,34 @@ export const BlockquoteElement = ({ attributes, children }: RenderElementProps) 
   );
 };
 
-const BlockquoteButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
-  // useEditor does not update when the value/selection changes.
-  // that's fine for what it's being used for here
-  // because we're just inserting things on events, not reading things in render
-  const editor = useEditor();
-
-  return (
-    <Tooltip content="Quote" weight="subtle">
-      {attrs => (
-        <ToolbarButton
-          onMouseDown={event => {
-            event.preventDefault();
-            insertBlockquote(editor);
-          }}
-          {...attrs}
-          {...props}
-        >
-          <QuoteIcon />
-        </ToolbarButton>
-      )}
-    </Tooltip>
+const BlockquoteButton = ({
+  attrs,
+}: {
+  attrs: Parameters<ComponentProps<typeof Tooltip>['children']>[0];
+}) => {
+  const editor = useSlate();
+  const isActive = isBlockActive(editor, 'blockquote');
+  return useMemo(
+    () => (
+      <ToolbarButton
+        isSelected={isActive}
+        onMouseDown={event => {
+          event.preventDefault();
+          insertBlockquote(editor);
+        }}
+        {...attrs}
+      >
+        <QuoteIcon />
+      </ToolbarButton>
+    ),
+    [attrs, isActive]
   );
 };
-export const blockquoteButton = <BlockquoteButton />;
+export const blockquoteButton = (
+  <Tooltip content="Quote" weight="subtle">
+    {attrs => <BlockquoteButton attrs={attrs} />}
+  </Tooltip>
+);
 
 const QuoteIcon = () => (
   <IconBase>

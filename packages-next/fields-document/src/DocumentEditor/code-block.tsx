@@ -30,7 +30,6 @@ export function withCodeBlock(enabled: boolean, editor: ReactEditor) {
   editor.normalizeNode = ([node, path]) => {
     if (node.type === 'code' && Element.isElement(node)) {
       for (const [index, childNode] of node.children.entries()) {
-        // debugger;
         if (!Text.isText(childNode)) {
           if (editor.isVoid(childNode)) {
             Transforms.removeNodes(editor, { at: [...path, index] });

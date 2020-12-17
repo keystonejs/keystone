@@ -1,6 +1,15 @@
 /** @jsx jsx */
 
-import { CSSProperties, Fragment, ReactElement, Ref, forwardRef, useEffect, useRef } from 'react';
+import {
+  CSSProperties,
+  Fragment,
+  ReactElement,
+  Ref,
+  forwardRef,
+  useEffect,
+  useRef,
+  memo,
+} from 'react';
 import { applyRefs } from 'apply-ref';
 import { jsx, useId, useTheme, Portal } from '@keystone-ui/core';
 import { usePopover } from '@keystone-ui/popover';
@@ -112,44 +121,46 @@ type ElementProps = {
   };
 };
 
-export const TooltipElement = forwardRef<HTMLDivElement, ElementProps>(
-  ({ isVisible, children, arrow, weight, ...props }, consumerRef) => {
-    const isBold = weight === 'bold';
-    const { elevation, radii, colors, spacing, typography } = useTheme();
-    const arrowStyles = useArrowStyles();
+export const TooltipElement = memo(
+  forwardRef<HTMLDivElement, ElementProps>(
+    ({ isVisible, children, arrow, weight, ...props }, consumerRef) => {
+      const isBold = weight === 'bold';
+      const { elevation, radii, colors, spacing, typography } = useTheme();
+      const arrowStyles = useArrowStyles();
 
-    return (
-      <Portal>
-        <div
-          role="tooltip"
-          aria-hidden={!isVisible}
-          ref={consumerRef}
-          css={{
-            backgroundColor: colors.foregroundMuted,
-            borderRadius: radii.xsmall,
-            color: colors.background,
-            fontSize: isBold ? typography.fontSize.small : typography.fontSize.xsmall,
-            fontWeight: typography.fontWeight.medium,
-            lineHeight: typography.leading.tight,
-            maxWidth: 320, // less than desirable magic number, but not sure if this needs to be in theme...
-            opacity: isVisible ? (isBold ? 1 : 0.9) : 0,
-            padding: isBold
-              ? `${spacing.small}px ${spacing.medium}px`
-              : `${spacing.xsmall}px ${spacing.small}px`,
-            pointerEvents: isVisible ? undefined : 'none',
-            zIndex: elevation.e500,
-            ...arrowStyles,
-          }}
-          {...props}
-        >
-          {children}
-          {arrow && (
-            <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
-          )}
-        </div>
-      </Portal>
-    );
-  }
+      return (
+        <Portal>
+          <div
+            role="tooltip"
+            aria-hidden={!isVisible}
+            ref={consumerRef}
+            css={{
+              backgroundColor: colors.foregroundMuted,
+              borderRadius: radii.xsmall,
+              color: colors.background,
+              fontSize: isBold ? typography.fontSize.small : typography.fontSize.xsmall,
+              fontWeight: typography.fontWeight.medium,
+              lineHeight: typography.leading.tight,
+              maxWidth: 320, // less than desirable magic number, but not sure if this needs to be in theme...
+              opacity: isVisible ? (isBold ? 1 : 0.9) : 0,
+              padding: isBold
+                ? `${spacing.small}px ${spacing.medium}px`
+                : `${spacing.xsmall}px ${spacing.small}px`,
+              pointerEvents: isVisible ? undefined : 'none',
+              zIndex: elevation.e500,
+              ...arrowStyles,
+            }}
+            {...props}
+          >
+            {children}
+            {arrow && (
+              <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
+            )}
+          </div>
+        </Portal>
+      );
+    }
+  )
 );
 
 const useArrowStyles = () => {
