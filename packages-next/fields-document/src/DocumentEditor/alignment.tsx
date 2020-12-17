@@ -74,71 +74,41 @@ function TextAlignDialog({
   onClose: () => void;
 }) {
   const { currentTextAlign, editor } = useTextAlignInfo();
+  const alignments = [
+    'start',
+    ...(Object.keys(alignment) as (keyof typeof alignment)[]).filter(key => alignment[key]),
+  ] as const;
   return (
     <ToolbarGroup>
-      <Tooltip content="Align start" weight="subtle">
-        {attrs => (
-          <ToolbarButton
-            isSelected={currentTextAlign === 'start'}
-            onMouseDown={event => {
-              event.preventDefault();
-              Transforms.unsetNodes(editor, 'textAlign', {
-                match: node => node.type === 'paragraph',
-              });
-              onClose();
-            }}
-            {...attrs}
-          >
-            {alignmentIcons.start}
-          </ToolbarButton>
-        )}
-      </Tooltip>
-      {alignment.center && (
-        <Tooltip content="Align center" weight="subtle">
+      {alignments.map(alignment => {
+        <Tooltip content="Align start" weight="subtle">
           {attrs => (
             <ToolbarButton
-              isSelected={currentTextAlign === 'center'}
+              isSelected={currentTextAlign === 'start'}
               onMouseDown={event => {
                 event.preventDefault();
-                Transforms.setNodes(
-                  editor,
-                  { textAlign: 'center' },
-                  {
+                if (alignment === 'start') {
+                  Transforms.unsetNodes(editor, 'textAlign', {
                     match: node => node.type === 'paragraph',
-                  }
-                );
+                  });
+                } else {
+                  Transforms.setNodes(
+                    editor,
+                    { textAlign: alignment },
+                    {
+                      match: node => node.type === 'paragraph',
+                    }
+                  );
+                }
                 onClose();
               }}
               {...attrs}
             >
-              {alignmentIcons.center}
+              {alignmentIcons[alignment]}
             </ToolbarButton>
           )}
-        </Tooltip>
-      )}
-      {alignment.end && (
-        <Tooltip content="Align end" weight="subtle">
-          {attrs => (
-            <ToolbarButton
-              isSelected={currentTextAlign === 'end'}
-              onMouseDown={event => {
-                event.preventDefault();
-                Transforms.setNodes(
-                  editor,
-                  { textAlign: 'end' },
-                  {
-                    match: node => node.type === 'paragraph',
-                  }
-                );
-                onClose();
-              }}
-              {...attrs}
-            >
-              {alignmentIcons.end}
-            </ToolbarButton>
-          )}
-        </Tooltip>
-      )}
+        </Tooltip>;
+      })}
     </ToolbarGroup>
   );
 }

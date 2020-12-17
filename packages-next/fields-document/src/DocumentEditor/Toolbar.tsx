@@ -32,26 +32,6 @@ import { dividerButton } from './divider';
 
 // TODO: how to manage separators with dynamic feature sets...
 
-const unorderedListButton = (
-  <Tooltip content="Bullet list" weight="subtle">
-    {attrs => (
-      <ListButton type="unordered-list" {...attrs}>
-        <BulletListIcon />
-      </ListButton>
-    )}
-  </Tooltip>
-);
-
-const orderedListButton = (
-  <Tooltip content="Numbered list" weight="subtle">
-    {attrs => (
-      <ListButton type="ordered-list" {...attrs}>
-        <NumberedListIcon />
-      </ListButton>
-    )}
-  </Tooltip>
-);
-
 export const Toolbar = memo(function Toolbar({
   documentFeatures,
   viewState,
@@ -78,8 +58,24 @@ export const Toolbar = memo(function Toolbar({
       {(documentFeatures.alignment.center || documentFeatures.alignment.end) && (
         <TextAlignMenu alignment={documentFeatures.alignment} />
       )}
-      {documentFeatures.listTypes.unordered && unorderedListButton}
-      {documentFeatures.listTypes.ordered && orderedListButton}
+      {documentFeatures.listTypes.unordered && (
+        <Tooltip content="Bullet list" weight="subtle">
+          {attrs => (
+            <ListButton type="unordered-list" {...attrs}>
+              <BulletListIcon />
+            </ListButton>
+          )}
+        </Tooltip>
+      )}
+      {documentFeatures.listTypes.ordered && (
+        <Tooltip content="Numbered list" weight="subtle">
+          {attrs => (
+            <ListButton type="ordered-list" {...attrs}>
+              <NumberedListIcon />
+            </ListButton>
+          )}
+        </Tooltip>
+      )}
       {(documentFeatures.alignment.center ||
         documentFeatures.alignment.end ||
         documentFeatures.listTypes.unordered ||
@@ -392,7 +388,13 @@ function InlineMarks({ marks }: { marks: DocumentFeatures['inlineMarks'] }) {
       ],
     }
   );
-  const hasMenu = marks.strikethrough || marks.underline || marks.code;
+  const hasMenu =
+    marks.strikethrough ||
+    marks.underline ||
+    marks.code ||
+    marks.keyboard ||
+    marks.subscript ||
+    marks.superscript;
 
   return (
     <Fragment>
