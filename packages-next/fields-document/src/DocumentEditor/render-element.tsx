@@ -80,6 +80,7 @@ const DividerElement = ({ attributes, children }: RenderElementProps) => {
         paddingTop: spacing.medium,
         marginBottom: spacing.medium,
         marginTop: spacing.medium,
+        caretColor: 'transparent',
       }}
     >
       <hr
