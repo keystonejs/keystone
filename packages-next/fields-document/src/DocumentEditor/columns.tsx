@@ -2,7 +2,14 @@
 
 import { createContext, useContext, useMemo } from 'react';
 import { Editor, Element, Node, Transforms } from 'slate';
-import { ReactEditor, RenderElementProps, useFocused, useSelected, useSlate } from 'slate-react';
+import {
+  ReactEditor,
+  RenderElementProps,
+  useFocused,
+  useSelected,
+  useSlate,
+  useEditor,
+} from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
