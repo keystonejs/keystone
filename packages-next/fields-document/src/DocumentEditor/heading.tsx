@@ -31,13 +31,17 @@ export function withHeading(headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[], editor: Re
       shortcuts['#'.repeat(value)] = value;
     });
     editor.insertText = text => {
-      const [shortcutText, deleteShortcutText] = getMaybeMarkdownShortcutText(text, editor);
+      const [shortcutText, deleteShortcutText] = getMaybeMarkdownShortcutText(
+        text,
+        editor,
+        node => node.type === 'paragraph' || node.type === 'heading'
+      );
       if (shortcutText && shortcuts[shortcutText] !== undefined) {
         deleteShortcutText();
         Transforms.setNodes(
           editor,
           { type: 'heading', level: shortcuts[shortcutText] },
-          { match: node => node.type === 'paragraph' }
+          { match: node => node.type === 'paragraph' || node.type === 'heading' }
         );
         return;
       }

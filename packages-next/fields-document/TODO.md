@@ -235,7 +235,7 @@ type ComponentChildPropConfig = {
 
 # UI Improvements
 
-- [ ] Generate icons for layouts :tada:
+- [x] Generate icons for layouts :tada:
 
 - [ ] Hilight blocks in red when hovering over the "remove" toolbar button
 
@@ -243,7 +243,7 @@ type ComponentChildPropConfig = {
 
 - [ ] Selected style for component block elements
 
-- [ ] Can we find a way to support placeholders for child props in component blocks?
+- [x] Can we find a way to support placeholders for child props in component blocks?
 
 - [ ] Caret position at boundary of inline marks
 
@@ -309,10 +309,10 @@ Note: the goal for these would be to allow content authors more flexibility, but
   - [x] inside paragraphs
 - [x] > followed by space converts to a block quote
   - [x] inside paragraphs
-- [ ] \`\`\` converts to a code block
-  - [ ] inside paragraphs
-- [ ] \#{1,6} followed by space converts to a H{n} heading
+- [x] \`\`\` converts to a code block
   - [x] inside paragraphs
-  - [ ] inside headings
+- [x] \#{1,6} followed by space converts to a H{n} heading
+  - [x] inside paragraphs
+  - [x] inside headings
 - [x] \--- inserts a divider
   - [x] inside paragraphs
