@@ -1,5 +1,3 @@
-// TODO: this should probably live in a different package
-
 import React, { Fragment, ReactElement, ReactNode } from 'react';
 
 type Node = Element | Text;
