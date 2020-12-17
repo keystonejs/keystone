@@ -155,9 +155,46 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
 
 const downIcon = <ChevronDownIcon size="small" />;
 
+function HeadingButton({
+  trigger,
+  onToggleShowMenu,
+  showMenu,
+}: {
+  trigger: ReturnType<typeof useControlledPopover>['trigger'];
+  showMenu: boolean;
+  onToggleShowMenu: () => void;
+}) {
+  const editor = useSlate();
+  // prep button label
+  let [headingNodes] = Editor.nodes(editor, {
+    match: n => n.type === 'heading',
+  });
+  let buttonLabel = 'Normal text';
+  if (headingNodes) {
+    buttonLabel = 'Heading ' + headingNodes[0].level;
+  }
+  return useMemo(
+    () => (
+      <ToolbarButton
+        ref={trigger.ref}
+        isPressed={showMenu}
+        onClick={event => {
+          event.preventDefault();
+          onToggleShowMenu();
+        }}
+        style={{ textAlign: 'left', width: 116 }}
+        {...trigger.props}
+      >
+        <span css={{ flex: 1 }}>{buttonLabel}</span>
+        {downIcon}
+      </ToolbarButton>
+    ),
+    [buttonLabel, trigger, showMenu, onToggleShowMenu]
+  );
+}
+
 const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headingLevels'] }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const editor = useSlate();
   const { dialog, trigger } = useControlledPopover(
     {
       isOpen: showMenu,
@@ -176,15 +213,6 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
     }
   );
 
-  // prep button label
-  let [headingNodes] = Editor.nodes(editor, {
-    match: n => n.type === 'heading',
-  });
-  let buttonLabel = 'Normal text';
-  if (headingNodes) {
-    buttonLabel = 'Heading ' + headingNodes[0].level;
-  }
-
   return (
     <div
       css={{
@@ -192,62 +220,70 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
         position: 'relative',
       }}
     >
-      {useMemo(
-        () => (
-          <ToolbarButton
-            ref={trigger.ref}
-            isPressed={showMenu}
-            onClick={event => {
-              event.preventDefault();
-              setShowMenu(v => !v);
-            }}
-            style={{ textAlign: 'left', width: 116 }}
-            {...trigger.props}
-          >
-            <span css={{ flex: 1 }}>{buttonLabel}</span>
-            {downIcon}
-          </ToolbarButton>
-        ),
-        [trigger, showMenu, buttonLabel]
-      )}
+      <HeadingButton
+        showMenu={showMenu}
+        trigger={trigger}
+        onToggleShowMenu={() => {
+          setShowMenu(x => !x);
+        }}
+      />
+
       {showMenu ? (
         <InlineDialog ref={dialog.ref} {...dialog.props}>
-          <ToolbarGroup direction="column">
-            {headingLevels.map(hNum => {
-              let [node] = Editor.nodes(editor, {
-                match: n => n.type === 'heading' && n.level === hNum,
-              });
-              let isActive = !!node;
-              let Tag = `h${hNum}` as any; // maybe? `keyof JSX.IntrinsicElements`
-
-              return (
-                <ToolbarButton
-                  isSelected={isActive}
-                  onMouseDown={event => {
-                    event.preventDefault();
-                    Transforms.setNodes(
-                      editor,
-                      isActive
-                        ? {
-                            type: 'paragraph',
-                            level: undefined,
-                          }
-                        : { type: 'heading', level: hNum }
-                    );
-
-                    setShowMenu(false);
-                  }}
-                >
-                  <Tag>Heading {hNum}</Tag>
-                </ToolbarButton>
-              );
-            })}
-          </ToolbarGroup>
+          <HeadingDialog
+            headingLevels={headingLevels}
+            onCloseMenu={() => {
+              setShowMenu(false);
+            }}
+          />
         </InlineDialog>
       ) : null}
     </div>
   );
 };
+
+function HeadingDialog({
+  headingLevels,
+  onCloseMenu,
+}: {
+  headingLevels: DocumentFeatures['headingLevels'];
+  onCloseMenu: () => void;
+}) {
+  const editor = useSlate();
+  return (
+    <ToolbarGroup direction="column">
+      {headingLevels.map(hNum => {
+        let [node] = Editor.nodes(editor, {
+          match: n => n.type === 'heading' && n.level === hNum,
+        });
+        let isActive = !!node;
+        let Tag = `h${hNum}` as 'h1';
+
+        return (
+          <ToolbarButton
+            isSelected={isActive}
+            onMouseDown={event => {
+              event.preventDefault();
+              Transforms.setNodes(
+                editor,
+                isActive
+                  ? {
+                      type: 'paragraph',
+                      level: undefined,
+                    }
+                  : { type: 'heading', level: hNum }
+              );
+
+              onCloseMenu();
+            }}
+          >
+            <Tag>Heading {hNum}</Tag>
+          </ToolbarButton>
+        );
+      })}
+    </ToolbarGroup>
+  );
+}
 
 const InsertBlockMenu = memo(function InsertBlockMenu({
   blockTypes,
