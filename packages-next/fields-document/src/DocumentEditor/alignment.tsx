@@ -81,10 +81,10 @@ function TextAlignDialog({
   return (
     <ToolbarGroup>
       {alignments.map(alignment => {
-        <Tooltip content="Align start" weight="subtle">
+        <Tooltip content={`Align ${alignment}`} weight="subtle">
           {attrs => (
             <ToolbarButton
-              isSelected={currentTextAlign === 'start'}
+              isSelected={currentTextAlign === alignment}
               onMouseDown={event => {
                 event.preventDefault();
                 if (alignment === 'start') {
