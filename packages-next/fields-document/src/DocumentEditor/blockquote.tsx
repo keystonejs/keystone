@@ -1,8 +1,8 @@
 /** @jsx jsx */
 
-import { ButtonHTMLAttributes, Component, ComponentProps, useMemo } from 'react';
+import { ComponentProps, useMemo } from 'react';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
-import { ReactEditor, RenderElementProps, useEditor, useSlate } from 'slate-react';
+import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
