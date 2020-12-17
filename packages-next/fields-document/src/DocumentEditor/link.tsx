@@ -208,7 +208,7 @@ export const withLink = (editor: ReactEditor) => {
     if (text && isUrl(text)) {
       wrapLink(editor, text);
     } else {
-      (insertData as any)(data);
+      insertData(data);
     }
   };
 

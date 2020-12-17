@@ -23,26 +23,26 @@
     - [ ] supports alignment
     - [x] supports links
     - [ ] supports soft breaks
-    - [ ] toolbar behaves as a toggle
+    - [x] toolbar behaves as a toggle
     - [x] you can convert existing blocks to headings
-    - [ ] inline marks and relationships are stripped when you convert a block into a heading
+    - [ ] inline marks and relationships are stripped when you convert a block into a heading - why?
     - [x] you cannot insert nested headings
     - [x] `enter` inserts a new paragraph after the block (including splitting remaining text)
-    - [ ] `backspace` at the start resets to Paragraph
+    - [ ] `backspace` at the start resets to Paragraph - sort of true?
   - `Lists` (technically, these contain list item blocks)
     - [x] contains list items and nested list blocks, no other blocks
     - [x] supports links
     - [x] supports all inline marks
     - [ ] supports soft breaks
     - [x] supports inline relationships
-    - [ ] toolbar behaves as a toggle
+    - [x] toolbar behaves as a toggle
     - [x] `enter` inserts a new list item (including splitting remaining text)
     - [x] `enter` in an empty+last-child list item resets to Paragraph after the outermost list block
-    - [ ] `backspace` at the start of a list item, or in an empty list item, unwraps the list item to the parent list or converts to a paragraph at the top level (including splitting list blocks if followed by more list items)
+    - [ ] `backspace` at the start of a list item, or in an empty list item, unwraps the list item to the parent list or converts to a paragraph at the top level (including splitting list blocks if followed by more list items) - wrong imo, this is the behaviour of enter. backspace goes to the previous list item
     - [x] can be nested, including without any items at the parent level (weird, but ok)
     - [x] `tab` indents the current list item into a nested list of the same type
-    - [ ] `shift+tab` unwraps the list up to the top level (but does not remove the outer list when you are at the top level).
-    - [ ] using the toolbar to switch list types converts the parent list of the selected list item (not all parents)
+    - [ ] `shift+tab` unwraps the list up to the top level (but does not remove the outer list when you are at the top level). - why not remove the outer list when at the top level?
+    - [x] using the toolbar to switch list types converts the parent list of the selected list item (not all parents)
   - `Formats` are paragraph-like block types that you can insert, like `blockquote` and `code`.
     - [x] contains paragraphs
     - [x] supports links
@@ -57,19 +57,19 @@
     - [ ] supports links, soft breaks, inline relationships and all inline marks
 - `Divider` is a special block type you can insert that renders a horizontal line
   - [x] Supports no children
-  - [ ] Can be selected by clicking on it (displays hilighted; `backspace` or `delete` removes it)
+  - [x] Can be selected by clicking on it (displays hilighted; `backspace` or `delete` removes it)
 - `Layouts` are a special block type you can insert that contain almost any other block type, laid out horizontally in configurable columns
   - [x] contains column blocks, which must contain at least one paragraph (or other block format)
   - [x] can contain all built-in block formats
   - [x] can contain inline and block relationships
   - [ ] can conditionally contain component blocks (based on component config)
-  - [ ] cannot be nested
-  - [ ] can only be inserted at the top level of the document
+  - [x] cannot be nested
+  - [x] can only be inserted at the top level of the document
   - [ ] `tab` at the end of a column moves the cursor to the start of the next column, or after the layout block
   - [ ] `shift+tab` at the start of a column moves the cursor to the end of the previous column, or before the layout block
   - [ ] layouts "trap" the selection - `enter` does not insert outside of the current column, and `backspace` does not remove columns or the layout block
   - [ ] you can select a layout by clicking in its border or margin (displays hilighted; `backspace` or `delete` removes it)
-  - [ ] when a layout is the last node in a document, we ensure a paragraph exists after it (low priority)
+  - [x] when a layout is the last node in a document, we ensure a paragraph exists after it (low priority) - a paragraph must always be the last node in a document
 - `Relationships` are a thing you can define, with one of three types which determine where it is available. They store a reference to an itemId and are (optionally) hydrated with additional data when the document field is queried. They are voids and contain no editable text.
   - `inline` relationships can be inserted into paragraphs and lists, and appear inline (like the "mentions" pattern -- low priority)
   - `block` relationships can be inserted like other blocks at the top level of the document, and inside layouts
@@ -159,7 +159,7 @@ type ComponentChildPropConfig = {
 
 # Cleanup
 
-- [ ] rename `columns` to `layouts`
+- [ ] rename `columns` to `layouts` - do we still care about this on a code level?
 - [ ] rename `link` config key to `links`
 - [ ] nest the following in a `formatting` config key:
   - `alignment`
@@ -235,7 +235,7 @@ type ComponentChildPropConfig = {
 
 # UI Improvements
 
-- [ ] Generate icons for layouts :tada:
+- [x] Generate icons for layouts :tada:
 
 - [ ] Hilight blocks in red when hovering over the "remove" toolbar button
 
@@ -243,7 +243,7 @@ type ComponentChildPropConfig = {
 
 - [ ] Selected style for component block elements
 
-- [ ] Can we find a way to support placeholders for child props in component blocks?
+- [x] Can we find a way to support placeholders for child props in component blocks?
 
 - [ ] Caret position at boundary of inline marks
 
@@ -309,10 +309,10 @@ Note: the goal for these would be to allow content authors more flexibility, but
   - [x] inside paragraphs
 - [x] > followed by space converts to a block quote
   - [x] inside paragraphs
-- [ ] \`\`\` converts to a code block
-  - [ ] inside paragraphs
-- [ ] \#{1,6} followed by space converts to a H{n} heading
+- [x] \`\`\` converts to a code block
   - [x] inside paragraphs
-  - [ ] inside headings
+- [x] \#{1,6} followed by space converts to a H{n} heading
+  - [x] inside paragraphs
+  - [x] inside headings
 - [x] \--- inserts a divider
   - [x] inside paragraphs

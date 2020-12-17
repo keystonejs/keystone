@@ -2,7 +2,7 @@
 
 import { Fragment, ReactNode, forwardRef, useState, memo, HTMLAttributes, useMemo } from 'react';
 import { Editor, Transforms } from 'slate';
-import { useSlate } from 'slate-react';
+import { useEditor, useSlate } from 'slate-react';
 import { applyRefs } from 'apply-ref';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -20,7 +20,7 @@ import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon'
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { linkButton } from './link';
 import { BlockComponentsButtons } from './component-blocks';
-import { Mark, isMarkActive, onlyContainerNodeInCurrentSelection, toggleMark } from './utils';
+import { Mark, isMarkActive, toggleMark } from './utils';
 import { ColumnsButton } from './columns';
 import { ListButton } from './lists';
 import { blockquoteButton } from './blockquote';
@@ -345,14 +345,15 @@ function InnerInsertBlockMenu({
   blockTypes: DocumentFeatures['blockTypes'];
   onClose: () => void;
 }) {
-  const editor = useSlate();
-  const shouldInsertBlock = onlyContainerNodeInCurrentSelection(editor);
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
 
   return (
     <ToolbarGroup direction="column">
       {blockTypes.code && (
         <ToolbarButton
-          isDisabled={!shouldInsertBlock}
           onMouseDown={event => {
             event.preventDefault();
             insertCodeBlock(editor);
@@ -363,7 +364,7 @@ function InnerInsertBlockMenu({
         </ToolbarButton>
       )}
       <RelationshipButton />
-      <BlockComponentsButtons onClose={onClose} shouldInsertBlock={shouldInsertBlock} />
+      <BlockComponentsButtons onClose={onClose} />
     </ToolbarGroup>
   );
 }

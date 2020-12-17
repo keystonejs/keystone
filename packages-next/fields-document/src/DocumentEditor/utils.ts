@@ -22,36 +22,21 @@ export const isBlockActive = (editor: ReactEditor, format: string) => {
   return !!match;
 };
 
-export function isContainerNode(node: Node): node is Element | Editor {
-  return Editor.isEditor(node) || (Element.isElement(node) && node.type === 'paragraph');
-}
-
-export function onlyContainerNodeInCurrentSelection(editor: ReactEditor) {
-  return (
-    !editor.selection ||
-    (Range.isCollapsed(editor.selection) &&
-      (editor.selection.anchor.path.length === 2 ||
-        (editor.selection.anchor.path.length === 4 &&
-          Editor.node(editor, Path.parent(Path.parent(editor.selection.anchor.path)))[0].type ===
-            'column')))
-  );
-  // let editor;
-  // return [
-  //   ...Editor.nodes(editor, {
-  //     match: node => !Text.isText(node),
-  //     mode: 'lowest',
-  //   }),
-  // ].every(([node]) => isContainerNode(node));
-}
-
-export function moveChildren(editor: Editor, parent: NodeEntry | Path, to: Path) {
+export function moveChildren(
+  editor: Editor,
+  parent: NodeEntry | Path,
+  to: Path,
+  shouldMoveNode: (node: Node) => boolean = () => true
+) {
   const parentPath = Path.isPath(parent) ? parent : parent[1];
   const parentNode = Path.isPath(parent) ? Node.get(editor, parentPath) : parent[0];
   if (!Editor.isBlock(editor, parentNode)) return;
 
   for (let i = parentNode.children.length - 1; i >= 0; i--) {
-    const childPath = [...parentPath, i];
-    Transforms.moveNodes(editor, { at: childPath, to });
+    if (shouldMoveNode(parentNode.children[i])) {
+      const childPath = [...parentPath, i];
+      Transforms.moveNodes(editor, { at: childPath, to });
+    }
   }
 }
 
@@ -82,12 +67,16 @@ export const toggleMark = (editor: ReactEditor, format: Mark) => {
 };
 
 // TODO: maybe move all the usages of this into one place so we don't have to run this many times per keypress
-export function getMaybeMarkdownShortcutText(text: string, editor: ReactEditor) {
+export function getMaybeMarkdownShortcutText(
+  text: string,
+  editor: ReactEditor,
+  nodeMatch: (node: Node) => boolean = n => n.type === 'paragraph'
+) {
   const { selection } = editor;
   if (text === ' ' && selection && Range.isCollapsed(selection)) {
     const { anchor } = selection;
     const block = Editor.above(editor, {
-      match: n => n.type === 'paragraph',
+      match: nodeMatch,
     });
     const path = block ? block[1] : [];
     const start = Editor.start(editor, path);
