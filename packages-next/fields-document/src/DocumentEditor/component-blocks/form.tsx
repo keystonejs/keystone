@@ -1,4 +1,4 @@
-import { useKeystone } from '@keystone-next/admin-ui/src';
+import { useKeystone } from '@keystone-next/admin-ui';
 import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
 import { Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
