@@ -57,7 +57,7 @@
     - [ ] supports links, soft breaks, inline relationships and all inline marks
 - `Divider` is a special block type you can insert that renders a horizontal line
   - [x] Supports no children
-  - [ ] Can be selected by clicking on it (displays hilighted; `backspace` or `delete` removes it)
+  - [x] Can be selected by clicking on it (displays hilighted; `backspace` or `delete` removes it)
 - `Layouts` are a special block type you can insert that contain almost any other block type, laid out horizontally in configurable columns
   - [x] contains column blocks, which must contain at least one paragraph (or other block format)
   - [x] can contain all built-in block formats
@@ -159,7 +159,7 @@ type ComponentChildPropConfig = {
 
 # Cleanup
 
-- [ ] rename `columns` to `layouts`
+- [ ] rename `columns` to `layouts` - do we still care about this on a code level?
 - [ ] rename `link` config key to `links`
 - [ ] nest the following in a `formatting` config key:
   - `alignment`
