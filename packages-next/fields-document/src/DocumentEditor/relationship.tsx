@@ -5,7 +5,7 @@ import { ReactEditor, RenderElementProps, useEditor } from 'slate-react';
 import { Transforms } from 'slate';
 
 import { jsx } from '@keystone-ui/core';
-import { useKeystone } from '@keystone-next/admin-ui/src';
+import { useKeystone } from '@keystone-next/admin-ui';
 import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
 
 import { ToolbarButton } from './primitives';
