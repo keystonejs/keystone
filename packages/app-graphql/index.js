@@ -1,4 +1,5 @@
 const express = require('express');
+const { graphqlUploadExpress } = require('graphql-upload');
 const { GraphQLPlaygroundApp } = require('@keystonejs/app-graphql-playground');
 const validation = require('./validation');
 
@@ -42,6 +43,9 @@ class GraphQLApp {
       );
     }
 
+    const maxFileSize = (this._apollo && this._apollo.maxFileSize) || 200 * 1024 * 1024;
+    const maxFiles = (this._apollo && this._apollo.maxFileSize) || 5;
+    app.use(graphqlUploadExpress({ maxFileSize, maxFiles }));
     // { cors: false } - prevent ApolloServer from overriding Keystone's CORS configuration.
     // https://www.apollographql.com/docs/apollo-server/api/apollo-server.html#ApolloServer-applyMiddleware
     app.use(server.getMiddleware({ path: apiPath, cors: false }));

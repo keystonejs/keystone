@@ -4,6 +4,7 @@ const memoize = require('micro-memoize');
 const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
 const { execute, print } = require('graphql');
+const { GraphQLUpload } = require('graphql-upload');
 const {
   resolveAllKeys,
   arrayToObject,
@@ -273,7 +274,7 @@ module.exports = class Keystone {
       );
     }
 
-    // Apollo Server automatically adds an 'Upload' scalar type to the GQL schema. Since list output
+    // Keystone automatically adds an 'Upload' scalar type to the GQL schema. Since list output
     // types are named after their keys, having a list name 'Upload' will clash and cause a confusing
     // error on start.
     if (key === 'Upload' || key === 'upload') {
@@ -456,8 +457,6 @@ module.exports = class Keystone {
   createApolloServer({ apolloConfig = {}, schemaName, dev }) {
     // add the Admin GraphQL API
     const server = new ApolloServer({
-      maxFileSize: 200 * 1024 * 1024,
-      maxFiles: 5,
       typeDefs: this.getTypeDefs({ schemaName }),
       resolvers: this.getResolvers({ schemaName }),
       context: ({ req }) => ({
@@ -482,6 +481,7 @@ module.exports = class Keystone {
           }),
       formatError,
       ...apolloConfig,
+      uploads: false, // User cannot override this as it would clash with the upload middleware
     });
     this._schemas[schemaName] = server.schema;
 
@@ -543,6 +543,7 @@ module.exports = class Keystone {
       queries.length > 0 && `type Query { ${queries.join('\n')} }`,
       mutations.length > 0 && `type Mutation { ${mutations.join('\n')} }`,
       subscriptions.length > 0 && `type Subscription { ${subscriptions.join('\n')} }`,
+      'scalar Upload',
     ]
       .filter(s => s)
       .map(s => gql(s));
@@ -565,16 +566,16 @@ module.exports = class Keystone {
         Subscription: objMerge(
           this._providers.map(p => p.getSubscriptionResolvers({ schemaName }))
         ),
+        Upload: GraphQLUpload,
       },
       o => Object.entries(o).length > 0
     );
   }
 
   dumpSchema(schemaName = 'public') {
-    // The 'Upload' scalar is normally automagically added by Apollo Server
-    // See: https://blog.apollographql.com/file-uploads-with-apollo-server-2-0-5db2f3f60675
-    // Since we don't execute apollo server over this schema, we have to reinsert it.
-    return ['scalar Upload', ...this.getTypeDefs({ schemaName }).map(t => print(t))].join('\n');
+    return this.getTypeDefs({ schemaName })
+      .map(t => print(t))
+      .join('\n');
   }
 
   async _prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors }) {

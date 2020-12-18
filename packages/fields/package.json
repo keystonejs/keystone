@@ -68,7 +68,7 @@
     "@keystonejs/file-adapters": "*",
     "@keystonejs/test-utils": "*",
     "globby": "^11.0.1",
-    "graphql-upload": "11.0.0",
+    "graphql-upload": "^11.0.0",
     "mime": "^2.4.6"
   },
   "preconstruct": {
