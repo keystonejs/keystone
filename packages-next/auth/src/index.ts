@@ -84,7 +84,7 @@ const getSchemaExtension = ({
 export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   listKey,
   secretField,
-  protectIdentities = false,
+  protectIdentities = true,
   gqlSuffix = '',
   initFirstItem,
   identityField,
