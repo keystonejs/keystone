@@ -4,7 +4,6 @@ import { KnexAdapter } from '@keystonejs/adapter-knex';
 // @ts-ignore
 import { PrismaAdapter } from '@keystonejs/adapter-prisma';
 import type { KeystoneConfig, KeystoneSystem, BaseKeystone } from '@keystone-next/types';
-import { createAdminMeta } from '@keystone-next/admin-ui/system';
 
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './createContext';
@@ -82,11 +81,9 @@ export function createKeystone(
 export function createSystem(config: KeystoneConfig): KeystoneSystem {
   const keystone = createKeystone(config, () => createContext);
 
-  const { adminMeta } = createAdminMeta(config, keystone);
-
-  const graphQLSchema = createGraphQLSchema(config, keystone, adminMeta);
+  const graphQLSchema = createGraphQLSchema(config, keystone);
 
   const createContext = makeCreateContext({ keystone, graphQLSchema });
 
-  return { keystone, adminMeta, graphQLSchema, createContext };
+  return { keystone, graphQLSchema, createContext };
 }

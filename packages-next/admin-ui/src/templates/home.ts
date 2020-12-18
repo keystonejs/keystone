@@ -1,6 +1,6 @@
-import type { KeystoneSystem } from '@keystone-next/types';
+import type { BaseKeystone } from '@keystone-next/types';
 
-export const homeTemplate = (lists: KeystoneSystem['adminMeta']['lists']) =>
+export const homeTemplate = (lists: BaseKeystone['lists']) =>
   `
 import React from 'react';
 

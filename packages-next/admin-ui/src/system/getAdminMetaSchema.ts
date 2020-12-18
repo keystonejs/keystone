@@ -1,6 +1,7 @@
 import { gql } from '../apollo';
 import { StaticAdminMetaQueryWithoutTypeNames } from '../admin-meta-graphql';
-import { KeystoneSystem, KeystoneContext, KeystoneConfig } from '@keystone-next/types';
+import { KeystoneContext, KeystoneConfig, BaseKeystone } from '@keystone-next/types';
+import { createAdminMeta } from './createAdminMeta';
 
 let typeDefs = gql`
   type Query {
@@ -83,12 +84,14 @@ let typeDefs = gql`
 `;
 
 export function getAdminMetaSchema({
-  adminMeta,
+  keystone,
   config,
 }: {
-  adminMeta: KeystoneSystem['adminMeta'];
+  keystone: BaseKeystone;
   config: KeystoneConfig;
 }) {
+  const { adminMeta } = createAdminMeta(config, keystone);
+
   type AdminMeta = StaticAdminMetaQueryWithoutTypeNames['keystone']['adminMeta'];
   type ListMetaRootVal = AdminMeta['lists'][number];
   type FieldMetaRootVal = AdminMeta['lists'][number]['fields'][number];
