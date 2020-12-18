@@ -1,45 +1,69 @@
 /** @jsx jsx */
 
-import { ReactNode, forwardRef } from 'react';
-import { Editor, Element, Node, Path, Transforms } from 'slate';
+import { ReactNode, forwardRef, useMemo } from 'react';
+import { Editor, Element, Node, NodeEntry, Path, Transforms, Range } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { jsx } from '@keystone-ui/core';
 
 import { DocumentFeatures } from '../views';
 
-import {
-  getMaybeMarkdownShortcutText,
-  isBlockActive,
-  moveChildren,
-  onlyContainerNodeInCurrentSelection,
-} from './utils';
+import { getMaybeMarkdownShortcutText, isBlockActive, moveChildren } from './utils';
 import { ToolbarButton } from './primitives';
 
 export const isListType = (type: string) => type === 'ordered-list' || type === 'unordered-list';
 
-const toggleList = (editor: ReactEditor, format: string) => {
+export const toggleList = (editor: ReactEditor, format: 'ordered-list' | 'unordered-list') => {
   const isActive = isBlockActive(editor, format);
-  if (isActive) {
+  Editor.withoutNormalizing(editor, () => {
     Transforms.unwrapNodes(editor, {
       match: n => isListType(n.type as string),
       split: true,
     });
-  } else {
-    const oppositeListType = format === 'ordered-list' ? 'unordered-list' : 'ordered-list';
-    if (isBlockActive(editor, oppositeListType)) {
-      Transforms.setNodes(
-        editor,
-        { type: format },
-        { match: node => isListType(node.type as string), split: true }
-      );
-    } else {
+    if (!isActive) {
       Transforms.wrapNodes(editor, { type: format, children: [] });
     }
-  }
+  });
 };
 
+function getAncestorList(
+  editor: ReactEditor
+):
+  | { isInside: false }
+  | { isInside: true; list: NodeEntry<Element>; listItem: NodeEntry<Element> } {
+  if (editor.selection) {
+    const listItem = Editor.above(editor, {
+      match: node => node.type === 'list-item',
+    });
+    const list = Editor.above(editor, {
+      match: node => isListType(node.type as string),
+    });
+    if (listItem && list) {
+      return {
+        isInside: true,
+        listItem,
+        list,
+      };
+    }
+  }
+  return { isInside: false };
+}
+
 export function withList(listTypes: DocumentFeatures['listTypes'], editor: ReactEditor) {
-  const { insertBreak, normalizeNode, insertText } = editor;
+  const { insertBreak, normalizeNode, insertText, deleteBackward } = editor;
+  editor.deleteBackward = unit => {
+    if (editor.selection) {
+      const ancestorList = getAncestorList(editor);
+      if (
+        ancestorList.isInside &&
+        Range.isCollapsed(editor.selection) &&
+        Editor.isStart(editor, editor.selection.anchor, ancestorList.list[1])
+      ) {
+        Transforms.unwrapNodes(editor, { at: ancestorList.list[1] });
+        return;
+      }
+    }
+    deleteBackward(unit);
+  };
   editor.insertBreak = () => {
     const [listItem] = Editor.nodes(editor, {
       match: node => node.type === 'list-item',
@@ -65,19 +89,12 @@ export function withList(listTypes: DocumentFeatures['listTypes'], editor: React
           ? 'unordered-list'
           : undefined;
       if (listType) {
-        Editor.withoutNormalizing(editor, () => {
-          deleteShortcutText();
-          Transforms.setNodes(
-            editor,
-            { type: 'list-item' },
-            { match: n => Editor.isBlock(editor, n) }
-          );
-          Transforms.wrapNodes(
-            editor,
-            { type: listType, children: [] },
-            { match: n => n.type === 'list-item' }
-          );
-        });
+        deleteShortcutText();
+        Transforms.wrapNodes(
+          editor,
+          { type: listType, children: [] },
+          { match: n => Editor.isBlock(editor, n) }
+        );
 
         return;
       }
@@ -88,31 +105,13 @@ export function withList(listTypes: DocumentFeatures['listTypes'], editor: React
   editor.normalizeNode = entry => {
     const [node, path] = entry;
     if (Element.isElement(node) || Editor.isEditor(node)) {
-      const isList = isListType(node.type as string);
       for (const [childNode, childPath] of Node.children(editor, path)) {
-        if (isList) {
-          if (childNode.type !== 'list-item' && !isListType(childNode.type as string)) {
-            Transforms.setNodes(editor, { type: 'list-item' }, { at: childPath });
-            return;
-          }
-        } else if (childNode.type === 'list-item') {
-          Transforms.setNodes(editor, { type: 'paragraph' }, { at: childPath });
-          return;
-        }
-        if (
-          node.type === 'list-item' &&
-          Element.isElement(childNode) &&
-          !editor.isInline(childNode)
-        ) {
-          Transforms.unwrapNodes(editor, { at: childPath });
-          return;
-        }
-
+        // merge sibling lists
         if (
           isListType(childNode.type as string) &&
           node.children[childPath[childPath.length - 1] + 1]?.type === childNode.type
         ) {
-          const [, siblingNodePath] = Editor.node(editor, Path.next(childPath));
+          const siblingNodePath = Path.next(childPath);
           moveChildren(editor, siblingNodePath, [
             ...childPath,
             (childNode.children as Element).length as number,
@@ -133,21 +132,22 @@ export const ListButton = forwardRef<
     type: 'ordered-list' | 'unordered-list';
     children: ReactNode;
   }
->(({ type, ...props }, ref) => {
+>(function ListButton(props, ref) {
   const editor = useSlate();
-  return (
-    <ToolbarButton
-      ref={ref}
-      isDisabled={
-        !onlyContainerNodeInCurrentSelection(editor) &&
-        !(isBlockActive(editor, 'ordered-list') || isBlockActive(editor, 'unordered-list'))
-      }
-      isSelected={isBlockActive(editor, type)}
-      onMouseDown={event => {
-        event.preventDefault();
-        toggleList(editor, type);
-      }}
-      {...props}
-    />
-  );
+  const isActive = isBlockActive(editor, props.type);
+
+  return useMemo(() => {
+    const { type, ...restProps } = props;
+    return (
+      <ToolbarButton
+        ref={ref}
+        isSelected={isActive}
+        onMouseDown={event => {
+          event.preventDefault();
+          toggleList(editor, type);
+        }}
+        {...restProps}
+      />
+    );
+  }, [props, ref, isActive]);
 });
