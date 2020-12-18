@@ -1,11 +1,11 @@
 /** @jsx jsx */
 
 import { createContext, Fragment, useContext } from 'react';
-import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
+import { ReactEditor, RenderElementProps, useEditor } from 'slate-react';
 import { Transforms } from 'slate';
 
 import { jsx } from '@keystone-ui/core';
-import { useKeystone } from '@keystone-next/admin-ui/src';
+import { useKeystone } from '@keystone-next/admin-ui/context';
 import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
 
 import { ToolbarButton } from './primitives';
@@ -64,19 +64,22 @@ export function useDocumentFieldRelationships() {
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider;
 
-export function withRelationship(relationships: Relationships, editor: ReactEditor) {
-  const { isVoid } = editor;
+export function withRelationship(editor: ReactEditor) {
+  const { isVoid, isInline } = editor;
   editor.isVoid = element => {
     return element.type === 'relationship' || isVoid(element);
   };
   editor.isInline = element => {
-    return element.type === 'relationship';
+    return element.type === 'relationship' || isInline(element);
   };
   return editor;
 }
 
 export function RelationshipButton() {
-  const editor = useSlate();
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
   const relationships = useContext(DocumentFieldRelationshipsContext)!;
   return (
     <Fragment>
@@ -103,7 +106,10 @@ export function RelationshipButton() {
 
 export function RelationshipElement({ attributes, children, element }: RenderElementProps) {
   const keystone = useKeystone();
-  const editor = useSlate();
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
   const relationships = useContext(DocumentFieldRelationshipsContext)!;
   const relationship = relationships[element.relationship as string] as Exclude<
     Relationships[string],
