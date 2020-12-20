@@ -12,6 +12,7 @@
     "@keystonejs/session": "^8.1.1",
     "@keystonejs/utils": "^5.4.3",
     "graphql": "^15.4.0",
+    "graphql-upload": "^11.0.0",
     "nanoassert": "^2.0.0"
   },
   "peerDependencies": {

@@ -10,7 +10,7 @@ import { gql } from '../schema';
 export function createGraphQLSchema(config: KeystoneConfig, keystone: BaseKeystone) {
   // Start with the core keystone graphQL schema
   let graphQLSchema = makeExecutableSchema({
-    typeDefs: ['scalar Upload', ...keystone.getTypeDefs({ schemaName: 'public' })],
+    typeDefs: keystone.getTypeDefs({ schemaName: 'public' }),
     resolvers: keystone.getResolvers({ schemaName: 'public' }),
   });
 
