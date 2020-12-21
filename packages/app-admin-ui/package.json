@@ -78,7 +78,7 @@
     "style-loader": "^1.3.0",
     "use-resize-observer": "^6.1.0",
     "webpack": "4.44.2",
-    "webpack-dev-middleware": "^3.7.2",
+    "webpack-dev-middleware": "^3.7.3",
     "webpack-hot-middleware": "^2.25.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/app-admin-ui"

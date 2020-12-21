@@ -13,7 +13,7 @@
     "@babel/runtime": "^7.12.5",
     "@graphql-tools/merge": "^6.2.6",
     "@graphql-tools/schema": "^7.1.2",
-    "@graphql-tools/utils": "^7.1.5",
+    "@graphql-tools/utils": "^7.1.6",
     "@hapi/iron": "^5.1.4",
     "@keystone-next/admin-ui": "^7.0.0",
     "@keystone-next/fields": "^4.0.2",
