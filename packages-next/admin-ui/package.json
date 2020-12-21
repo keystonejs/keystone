@@ -37,7 +37,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "resolve": "^1.19.0",
-    "tabbable": "^5.1.4"
+    "tabbable": "^5.1.5"
   },
   "engines": {
     "node": ">=10.0.0"
