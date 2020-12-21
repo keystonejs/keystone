@@ -6,7 +6,68 @@ import { ComponentBlock } from '../../component-blocks';
 import { DocumentFeatures } from '../../views';
 
 export { __jsx as jsx } from './jsx/namespace';
+import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
+import jestDiff from 'jest-diff';
 
+function formatEditor(editor: Node) {
+  return prettyFormat(editor, {
+    plugins: [plugins.ReactElement, editorSerializer],
+  });
+}
+
+declare global {
+  namespace jest {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface Matchers<R> {
+      toEqualEditor(expected: Node): CustomMatcherResult;
+    }
+  }
+}
+
+expect.extend({
+  toEqualEditor(received: Node, expected: Node) {
+    const options = {
+      comment: 'Slate Editor equality',
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+
+    const pass =
+      this.equals(received.children, expected.children) &&
+      this.equals(received.selection, expected.selection);
+
+    const message = pass
+      ? () => {
+          const formattedReceived = formatEditor(received);
+          const formattedExpected = formatEditor(expected);
+
+          return (
+            this.utils.matcherHint('toEqualEditor', undefined, undefined, options) +
+            '\n\n' +
+            `Expected: not ${this.utils.printExpected(formattedExpected)}\n` +
+            `Received: ${this.utils.printReceived(formattedReceived)}`
+          );
+        }
+      : () => {
+          const formattedReceived = formatEditor(received);
+          const formattedExpected = formatEditor(expected);
+
+          const diffString = jestDiff(formattedExpected, formattedReceived, {
+            expand: this.expand,
+          });
+          return (
+            this.utils.matcherHint('toEqualEditor', undefined, undefined, options) +
+            '\n\n' +
+            (diffString && diffString.includes('- Expect')
+              ? `Difference:\n\n${diffString}`
+              : `Expected: ${this.utils.printExpected(formattedExpected)}\n` +
+                `Received: ${this.utils.printReceived(formattedReceived)}`)
+          );
+        };
+
+    return { actual: received, message, pass };
+  },
+});
 const defaultDocumentFeatures: DocumentFeatures = {
   alignment: { center: true, end: true },
   blockTypes: { blockquote: true, code: true, panel: true, quote: true },
@@ -54,13 +115,9 @@ export const makeEditor = (
   editor.selection = node.selection;
 
   if (normalization !== 'skip') {
-    const selectionBeforeNormalize = editor.selection;
-    const childrenBeforeNormalize = editor.children;
-
     Editor.normalize(editor, { force: true });
     if (normalization === 'disallow-non-normalized') {
-      expect(editor.children).toEqual(childrenBeforeNormalize);
-      expect(editor.selection).toEqual(selectionBeforeNormalize);
+      expect(node).toEqualEditor(editor);
     }
   }
   return editor;
@@ -139,7 +196,7 @@ function nodeToReactElement(
   return createElement('element', { ...node, ...computedData, children });
 }
 
-expect.addSnapshotSerializer({
+const editorSerializer: NewPlugin = {
   test(val) {
     return Editor.isEditor(val);
   },
@@ -152,4 +209,6 @@ expect.addSnapshotSerializer({
       refs
     );
   },
-});
+};
+
+expect.addSnapshotSerializer(editorSerializer);

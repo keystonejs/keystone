@@ -23,6 +23,50 @@ test('basic cursor snapshot', () => {
     `);
 });
 
+test('editor equality match', () => {
+  let editor = makeEditor(
+    <editor>
+      <paragraph>
+        <text>
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  );
+  expect(editor).toEqualEditor(
+    <editor>
+      <paragraph>
+        <text>
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  );
+});
+
+test('editor equality mismatch', () => {
+  expect(() =>
+    expect(
+      <editor>
+        <paragraph>
+          <text>
+            some text
+            <cursor />
+          </text>
+        </paragraph>
+      </editor>
+    ).toEqualEditor(
+      <editor>
+        <paragraph>
+          <text>
+            <cursor />
+          </text>
+        </paragraph>
+      </editor>
+    )
+  ).toThrowError();
+});
+
 test('cursor in the middle of text', () => {
   expect(
     makeEditor(
