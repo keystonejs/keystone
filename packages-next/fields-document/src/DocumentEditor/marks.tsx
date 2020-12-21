@@ -16,10 +16,7 @@ function applyMark(
   shortcutText: string,
   startRange: [Point, Point]
 ) {
-  const startRangeRef = Editor.rangeRef(editor, {
-    anchor: startRange[0],
-    focus: startRange[1],
-  });
+  const startPointRef = Editor.pointRef(editor, startRange[0]);
 
   const selectionPointRef = Editor.pointRef(editor, selectionPoint);
 
@@ -32,18 +29,17 @@ function applyMark(
       at: { anchor: startRange[0], focus: selectionPoint },
     }
   );
-  const startRangeAfterMarkSet = startRangeRef.unref();
-  if (startRangeAfterMarkSet) {
-    Transforms.delete(editor, { at: startRangeAfterMarkSet });
+  const startPointAfterMarkSet = startPointRef.unref();
+  if (startPointAfterMarkSet) {
+    Transforms.delete(editor, { at: startPointAfterMarkSet, distance: shortcutText.length });
   }
   const selectionPointAfterMarkSet = selectionPointRef.unref();
   if (selectionPointAfterMarkSet) {
     Transforms.delete(editor, {
       at: {
-        anchor: {
-          path: selectionPointAfterMarkSet.path,
-          offset: selectionPointAfterMarkSet.offset - shortcutText.length,
-        },
+        anchor: Editor.before(editor, selectionPointAfterMarkSet, {
+          distance: shortcutText.length,
+        })!,
         focus: selectionPointAfterMarkSet,
       },
     });
@@ -77,6 +73,8 @@ function isAtStartOfBlockOrThereIsWhitespaceBeforePoint(editor: ReactEditor, poi
     return true;
   }
   const text = (Node.get(editor, pointBeforePoint.path) as Text).text[pointBeforePoint.offset];
+  // yes, this could be simplified to return the result of test
+  // but it's useful to have breakpoints for a particular case
   if (/\s/.test(text)) {
     return true;
   }
@@ -119,31 +117,45 @@ export const withMarks = (enabledMarks: DocumentFeatures['inlineMarks'], editor:
               continue;
             }
 
-            for (const [text, path] of Editor.nodes(editor, {
-              match: Text.isText,
-              at: {
-                anchor: Editor.start(
-                  editor,
-                  Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]
-                ),
-                focus: before,
-              },
-              reverse: true,
-            })) {
-              const index = text.text.indexOf(shortcutText);
-              if (index === -1) continue;
-              const startOfStartOfShortcut = { path, offset: index };
+            const startOfBlock = Editor.start(
+              editor,
+              Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]
+            );
+
+            const strToMatchOn = Editor.string(editor, {
+              anchor: startOfBlock,
+              focus: before,
+            });
+            // TODO: use regex probs
+            for (const [offsetFromStartOfBlock] of [...strToMatchOn].reverse().entries()) {
+              const expectedShortcutText = strToMatchOn.substr(
+                offsetFromStartOfBlock,
+                shortcutText.length
+              );
+              if (expectedShortcutText !== shortcutText) {
+                continue;
+              }
+
+              const startOfStartOfShortcut =
+                offsetFromStartOfBlock === 0
+                  ? startOfBlock
+                  : Editor.after(editor, startOfBlock, {
+                      distance: offsetFromStartOfBlock,
+                    })!;
+
+              const endOfStartOfShortcut = Editor.after(editor, startOfStartOfShortcut, {
+                distance: shortcutText.length,
+              })!;
 
               if (!isAtStartOfBlockOrThereIsWhitespaceBeforePoint(editor, startOfStartOfShortcut)) {
                 continue;
               }
 
-              const endOfStartOfShortcutPoint = { path, offset: index + shortcutText.length };
-
               const contentBetweenShortcuts = Editor.string(editor, {
-                anchor: endOfStartOfShortcutPoint,
+                anchor: endOfStartOfShortcut,
                 focus: Editor.after(editor, before)!,
               });
+
               if (
                 contentBetweenShortcuts === '' ||
                 /\s/.test(contentBetweenShortcuts[0]) ||
@@ -166,7 +178,7 @@ export const withMarks = (enabledMarks: DocumentFeatures['inlineMarks'], editor:
               }
               applyMark(editor, editor.selection.anchor, mark, shortcutText, [
                 startOfStartOfShortcut,
-                endOfStartOfShortcutPoint,
+                endOfStartOfShortcut,
               ]);
               return;
             }

@@ -31,6 +31,7 @@ describe.each(
       </editor>
     );
   });
+
   test('works when selection is not collapsed', () => {
     let editor = makeEditor(
       <editor>
@@ -118,7 +119,7 @@ describe.each(
         </editor>
       );
     });
-    test('does not match when first and second characters in the start shortcut are in different text nodes', () => {
+    test('does match when first and second characters in the start shortcut are in different text nodes', () => {
       let editor = makeEditor(
         <editor>
           <paragraph>
@@ -135,9 +136,8 @@ describe.each(
       expect(editor).toEqualEditor(
         <editor>
           <paragraph>
-            <text keyboard>{shortcut[0]}</text>
-            <text>
-              {shortcut[1]}thing{shortcut}
+            <text {...{ [markName]: true }}>
+              thing
               <cursor />
             </text>
           </paragraph>
@@ -268,6 +268,7 @@ describe.each(
       </editor>
     );
   });
+
   test('does not match when there is whitespace immediately before the start of the end shortcut', () => {
     let editor = makeEditor(
       <editor>
