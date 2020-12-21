@@ -23982,7 +23982,7 @@ strip-outer@^1.0.0:
   dependencies:
     escape-string-regexp "^1.0.2"
 
-stripe@^8.128.0:
+stripe@^8.129.0:
   version "8.129.0"
   resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.129.0.tgz#39faa0d8da6daf96cb8d42ef5932cf9b463c69ae"
   integrity sha512-73b49GQg2+ig6Cet11QhN1WgBab+2xtHy57W4ZLRd9dq146vz+vik+kMQ7UAcTSF5vYyTM5Zo6POMZDPXqzWUg==
