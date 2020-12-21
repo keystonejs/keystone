@@ -1,5 +1,19 @@
 # @keystone-next/fields-document
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [[`1236f5f40`](https://github.com/keystonejs/keystone/commit/1236f5f4024f1698b5a39343b4e5dbfa42c5fc9c), [`ba842d48b`](https://github.com/keystonejs/keystone/commit/ba842d48b5e9499ccd6f59d1610d55e964ffdb93), [`933c78a1e`](https://github.com/keystonejs/keystone/commit/933c78a1edc070b63f7720f64c15421ba28bdde5), [`f559e680b`](https://github.com/keystonejs/keystone/commit/f559e680bad7a7c948a317adfb91a3b024b486c4), [`89f7d4599`](https://github.com/keystonejs/keystone/commit/89f7d459906072940da1355c38815d1b3ef49368), [`cf2819544`](https://github.com/keystonejs/keystone/commit/cf2819544426def260ada5eb18fdc9b8a01e9438), [`17519bf64`](https://github.com/keystonejs/keystone/commit/17519bf64f277ad154fad1b0d5a423048e1336e0)]:
+  - @keystone-next/admin-ui@7.0.0
+  - @keystone-ui/tooltip@1.0.4
+  - @keystone-next/types@9.0.0
+  - @keystonejs/adapter-mongoose@10.1.1
+  - @keystone-next/fields@4.0.2
+  - @keystone-next/admin-ui-utils@2.0.5
+  - @keystonejs/adapter-knex@12.0.3
+  - @keystonejs/adapter-prisma@1.1.1
+
 ## 0.0.5
 
 ### Patch Changes

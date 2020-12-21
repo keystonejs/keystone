@@ -1,5 +1,25 @@
 # @keystone-next/admin-ui
 
+## 7.0.0
+
+### Major Changes
+
+- [`89f7d4599`](https://github.com/keystonejs/keystone/commit/89f7d459906072940da1355c38815d1b3ef49368) [#4586](https://github.com/keystonejs/keystone/pull/4586) Thanks [@timleslie](https://github.com/timleslie)! - Removed `adminMeta` from `KeystoneSystem`. `getAdminMetaSchema` now takes a `BaseKeystone` argument `keystone` rather than `adminMeta`.
+
+### Patch Changes
+
+- [`1236f5f40`](https://github.com/keystonejs/keystone/commit/1236f5f4024f1698b5a39343b4e5dbfa42c5fc9c) [#4584](https://github.com/keystonejs/keystone/pull/4584) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed script element from debugging
+
+* [`f559e680b`](https://github.com/keystonejs/keystone/commit/f559e680bad7a7c948a317adfb91a3b024b486c4) [#4577](https://github.com/keystonejs/keystone/pull/4577) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed custom pages in nested directories causing a file system error
+
+- [`17519bf64`](https://github.com/keystonejs/keystone/commit/17519bf64f277ad154fad1b0d5a423048e1336e0) [#4578](https://github.com/keystonejs/keystone/pull/4578) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Improved performance of item page by memoizing toolbar
+
+- Updated dependencies [[`ba842d48b`](https://github.com/keystonejs/keystone/commit/ba842d48b5e9499ccd6f59d1610d55e964ffdb93), [`933c78a1e`](https://github.com/keystonejs/keystone/commit/933c78a1edc070b63f7720f64c15421ba28bdde5), [`89f7d4599`](https://github.com/keystonejs/keystone/commit/89f7d459906072940da1355c38815d1b3ef49368), [`abc5440dc`](https://github.com/keystonejs/keystone/commit/abc5440dc5ee8d8cdd6ddddb32cf21bd2c3fc324), [`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95)]:
+  - @keystone-ui/tooltip@1.0.4
+  - @keystone-next/keystone@9.0.0
+  - @keystone-next/types@9.0.0
+  - @keystone-next/admin-ui-utils@2.0.5
+
 ## 6.0.0
 
 ### Major Changes
