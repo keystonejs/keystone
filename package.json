@@ -71,7 +71,7 @@
     "dotenv": "^8.2.0",
     "dotenv-safe": "^8.2.0",
     "endent": "^2.0.1",
-    "eslint": "^7.15.0",
+    "eslint": "^7.16.0",
     "eslint-plugin-cypress": "^2.11.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.1.3",
