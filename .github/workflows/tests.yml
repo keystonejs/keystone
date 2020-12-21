@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:9.6.5
+        image: postgres:12
         env:
           POSTGRES_USER: keystone5
           POSTGRES_PASSWORD: k3yst0n3
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:9.6.5
+        image: postgres:12
         env:
           POSTGRES_USER: keystone5
           POSTGRES_PASSWORD: k3yst0n3
