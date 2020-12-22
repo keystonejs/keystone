@@ -18,6 +18,15 @@ const componentBlocks = {
       inline: fields.child({ kind: 'inline', placeholder: '' }),
     },
   }),
+  withLotsOfChildElements: component({
+    component: () => null,
+    label: 'With Lots of Child Elements',
+    props: {
+      block: fields.child({ kind: 'block', placeholder: '' }),
+      inline: fields.child({ kind: 'inline', placeholder: '' }),
+      last: fields.child({ kind: 'block', placeholder: '' }),
+    },
+  }),
 };
 
 test('component-inline-prop and component-block-prop outside of component-block are unwrapped', () => {
@@ -424,6 +433,84 @@ test('prop with wrong type for a given prop path', () => {
             some text
           </text>
         </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('props in wrong order', () => {
+  let editor = makeEditor(
+    <editor>
+      <component-block component="withLotsOfChildElements" props={{}} relationships={{}}>
+        <component-block-prop propPath={['last']}>
+          <paragraph>
+            <text />
+          </paragraph>
+        </component-block-prop>
+        <component-inline-prop propPath={['inline']}>
+          <text />
+        </component-inline-prop>
+        <component-block-prop propPath={['block']}>
+          <paragraph>
+            <text />
+          </paragraph>
+        </component-block-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    { componentBlocks, normalization: 'normalize' }
+  );
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="withLotsOfChildElements"
+        props={Object {}}
+        relationships={Object {}}
+      >
+        <component-block-prop
+          propPath={
+            Array [
+              "block",
+            ]
+          }
+        >
+          <paragraph>
+            <text>
+              
+            </text>
+          </paragraph>
+        </component-block-prop>
+        <component-inline-prop
+          propPath={
+            Array [
+              "inline",
+            ]
+          }
+        >
+          <text>
+            
+          </text>
+        </component-inline-prop>
+        <component-block-prop
+          propPath={
+            Array [
+              "last",
+            ]
+          }
+        >
+          <paragraph>
+            <text>
+              
+            </text>
+          </paragraph>
+        </component-block-prop>
       </component-block>
       <paragraph>
         <text>

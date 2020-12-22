@@ -124,12 +124,15 @@ export function withComponentBlocks(
       ) {
         let foundProps = new Set<string>();
 
-        let stringifiedInlinePropPaths: Record<string, 'inline' | 'block' | undefined> = {};
+        let stringifiedInlinePropPaths: Record<
+          string,
+          { kind: 'inline' | 'block'; index: number } | undefined
+        > = {};
         findChildPropPaths(
           node.props as any,
           blockComponents[node.component as string]!.props
-        ).forEach(x => {
-          stringifiedInlinePropPaths[JSON.stringify(x.path)] = x.kind;
+        ).forEach((x, index) => {
+          stringifiedInlinePropPaths[JSON.stringify(x.path)] = { kind: x.kind, index };
         });
 
         for (const [index, childNode] of node.children.entries()) {
@@ -150,7 +153,14 @@ export function withComponentBlocks(
                 return;
               }
               foundProps.add(stringifiedPropPath);
-              const expectedChildNodeType = `component-${stringifiedInlinePropPaths[stringifiedPropPath]}-prop`;
+              const expectedIndex = stringifiedInlinePropPaths[stringifiedPropPath]!.index;
+              if (index !== expectedIndex) {
+                Transforms.moveNodes(editor, { at: childPath, to: [...path, expectedIndex] });
+                return;
+              }
+              const expectedChildNodeType = `component-${
+                stringifiedInlinePropPaths[stringifiedPropPath]!.kind
+              }-prop`;
               if (childNode.type !== expectedChildNodeType) {
                 Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
                 return;
