@@ -122,7 +122,7 @@ export const makeEditor = (
   // calling Editor.marks will get the _actual_ marks that will be applied
   // so editor.marks should basically never be read
   // but editor.marks will come from the JSX here
-  // and we want to tests to explicitly specify what the marks should be
+  // and we want tests to explicitly specify what the marks should be
   const marks = Editor.marks(editor);
   if (editor.marks || (marks && Object.keys(marks).length)) {
     expect(marks).toEqual(editor.marks);
