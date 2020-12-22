@@ -19,7 +19,7 @@
     "@keystonejs/adapter-prisma": "^1.1.0",
     "@keystonejs/fields": "^21.0.0",
     "google-maps-react": "^2.0.6",
-    "mongoose": "^5.11.7",
+    "mongoose": "^5.11.8",
     "node-fetch": "^2.6.1",
     "react": "^16.14.0",
     "react-toast-notifications": "^2.4.0"

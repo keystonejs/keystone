@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "nuxt": "^2.14.11"
+    "nuxt": "^2.14.12"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/app-nuxt"
 }

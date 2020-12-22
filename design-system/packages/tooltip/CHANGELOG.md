@@ -1,5 +1,11 @@
 # @keystone-ui/tooltip
 
+## 1.0.4
+
+### Patch Changes
+
+- [`ba842d48b`](https://github.com/keystonejs/keystone/commit/ba842d48b5e9499ccd6f59d1610d55e964ffdb93) [#4579](https://github.com/keystonejs/keystone/pull/4579) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Memoized tooltip element to improve performance
+
 ## 1.0.3
 
 ### Patch Changes
