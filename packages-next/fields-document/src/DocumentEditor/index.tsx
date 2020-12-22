@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { KeyboardEvent, ReactNode, useState } from 'react';
+import { KeyboardEvent, MutableRefObject, ReactNode, useEffect, useRef, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
 import {
@@ -186,28 +186,45 @@ const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
   );
 };
 
+function withSoftBreaks(isShiftPressedRef: MutableRefObject<boolean>, editor: ReactEditor) {
+  const { insertBreak } = editor;
+  // TODO: should soft breaks only work in particular places
+  editor.insertBreak = () => {
+    if (isShiftPressedRef.current) {
+      Transforms.insertText(editor, '\n');
+    } else {
+      insertBreak();
+    }
+  };
+  return editor;
+}
+
 export function createDocumentEditor(
   documentFeatures: DocumentFeatures,
-  componentBlocks: Record<string, ComponentBlock>
+  componentBlocks: Record<string, ComponentBlock>,
+  isShiftPressedRef: MutableRefObject<boolean>
 ) {
-  return withBlocksSchema(
-    withLink(
-      withList(
-        documentFeatures.listTypes,
-        withHeading(
-          documentFeatures.headingLevels,
-          withRelationship(
-            withComponentBlocks(
-              componentBlocks,
-              withParagraphs(
-                withDivider(
-                  documentFeatures.dividers,
-                  withColumns(
-                    withCodeBlock(
-                      documentFeatures.blockTypes.code,
-                      withBlockquote(
-                        documentFeatures.blockTypes.blockquote,
-                        withHistory(withReact(createEditor()))
+  return withSoftBreaks(
+    isShiftPressedRef,
+    withBlocksSchema(
+      withLink(
+        withList(
+          documentFeatures.listTypes,
+          withHeading(
+            documentFeatures.headingLevels,
+            withRelationship(
+              withComponentBlocks(
+                componentBlocks,
+                withParagraphs(
+                  withDivider(
+                    documentFeatures.dividers,
+                    withColumns(
+                      withCodeBlock(
+                        documentFeatures.blockTypes.code,
+                        withBlockquote(
+                          documentFeatures.blockTypes.blockquote,
+                          withHistory(withReact(createEditor()))
+                        )
                       )
                     )
                   )
@@ -219,6 +236,32 @@ export function createDocumentEditor(
       )
     )
   );
+}
+
+function useKeyDownRef(targetKey: string) {
+  const ref = useRef(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: globalThis.KeyboardEvent) => {
+      if (e.key !== targetKey) return;
+      ref.current = true;
+    };
+
+    const handleKeyUp = (e: globalThis.KeyboardEvent) => {
+      if (e.key !== targetKey) return;
+      ref.current = false;
+    };
+
+    document.addEventListener('keydown', handleKeyDown, { passive: true });
+    document.addEventListener('keyup', handleKeyUp, { passive: true });
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [targetKey]);
+
+  return ref;
 }
 
 export function DocumentEditor({
@@ -236,12 +279,13 @@ export function DocumentEditor({
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
 }) {
+  const isShiftPressedRef = useKeyDownRef('Shift');
   const { colors } = useTheme();
   const [expanded, setExpanded] = useState(false);
-  const editor = useMemo(() => createDocumentEditor(documentFeatures, componentBlocks), [
-    documentFeatures,
-    componentBlocks,
-  ]);
+  const editor = useMemo(
+    () => createDocumentEditor(documentFeatures, componentBlocks, isShiftPressedRef),
+    [documentFeatures, componentBlocks]
+  );
 
   const renderLeaf = useCallback(props => {
     return <Leaf {...props} />;
