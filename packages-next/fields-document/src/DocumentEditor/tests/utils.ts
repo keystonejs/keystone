@@ -18,14 +18,16 @@ function formatEditor(editor: Node) {
 declare global {
   namespace jest {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    interface Matchers<R> {
-      toEqualEditor(expected: Node): CustomMatcherResult;
+    interface Matchers<R, T> {
+      toEqualEditor(
+        expected: [T] extends [Editor] ? Editor : 'toEqualEditor only accepts an Editor'
+      ): CustomMatcherResult;
     }
   }
 }
 
 expect.extend({
-  toEqualEditor(received: Node, expected: Node) {
+  toEqualEditor(received: Editor, expected: Editor) {
     const options = {
       comment: 'Slate Editor equality',
       isNot: this.isNot,
@@ -34,7 +36,8 @@ expect.extend({
 
     const pass =
       this.equals(received.children, expected.children) &&
-      this.equals(received.selection, expected.selection);
+      this.equals(received.selection, expected.selection) &&
+      this.equals(Editor.marks(received), Editor.marks(expected));
 
     const message = pass
       ? () => {
@@ -113,7 +116,17 @@ export const makeEditor = (
   );
   editor.children = node.children;
   editor.selection = node.selection;
-
+  editor.marks = node.marks;
+  // a note about editor.marks, it's essentially a cache for Editor.marks/
+  // a stateful bit for when calling removeMark/addMark
+  // calling Editor.marks will get the _actual_ marks that will be applied
+  // so editor.marks should basically never be read
+  // but editor.marks will come from the JSX here
+  // and we want to tests to explicitly specify what the marks should be
+  const marks = Editor.marks(editor);
+  if (editor.marks || (marks && Object.keys(marks).length)) {
+    expect(marks).toEqual(editor.marks);
+  }
   if (normalization !== 'skip') {
     Editor.normalize(editor, { force: true });
     if (normalization === 'disallow-non-normalized') {
@@ -180,7 +193,12 @@ function nodeToReactElement(
     nodeToReactElement(editor, x, selection, path.concat(i))
   );
   if (Editor.isEditor(node)) {
-    return createElement('editor', { children });
+    const marks = Editor.marks(node);
+
+    return createElement('editor', {
+      children,
+      ...(marks && Object.keys(marks).length ? { marks } : {}),
+    });
   }
   let { type, ...restNode } = node;
   const computedData: { '@@isVoid'?: true; '@@isInline'?: true } = {};

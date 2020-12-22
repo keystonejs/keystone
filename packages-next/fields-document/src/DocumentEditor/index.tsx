@@ -16,7 +16,7 @@ import {
   Descendant,
   Path,
 } from 'slate';
-import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
+import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 
 import { withParagraphs } from './paragraphs';
@@ -229,15 +229,35 @@ export function DocumentEditor({
                 renderElement={renderElement}
                 renderLeaf={renderLeaf}
               />
+              {
+                // for debugging
+                false && <Debugger />
+              }
             </Slate>
-            {
-              // for debugging
-              false && <pre>{JSON.stringify(value, null, 2)}</pre>
-            }
           </ComponentBlockProvider>
         </ColumnOptionsProvider>
       </DocumentFieldRelationshipsProvider>
     </div>
+  );
+}
+
+function Debugger() {
+  const editor = useSlate();
+  return (
+    <pre>
+      {JSON.stringify(
+        {
+          selection:
+            editor.selection && Range.isCollapsed(editor.selection)
+              ? editor.selection.anchor
+              : editor.selection,
+          marks: Editor.marks(editor),
+          children: editor.children,
+        },
+        null,
+        2
+      )}
+    </pre>
   );
 }
 

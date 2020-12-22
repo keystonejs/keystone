@@ -34,35 +34,41 @@ test('editor equality match', () => {
     </editor>
   );
   expect(editor).toEqualEditor(
-    <editor>
-      <paragraph>
-        <text>
-          <cursor />
-        </text>
-      </paragraph>
-    </editor>
+    makeEditor(
+      <editor>
+        <paragraph>
+          <text>
+            <cursor />
+          </text>
+        </paragraph>
+      </editor>
+    )
   );
 });
 
 test('editor equality mismatch', () => {
   expect(() =>
     expect(
-      <editor>
-        <paragraph>
-          <text>
-            some text
-            <cursor />
-          </text>
-        </paragraph>
-      </editor>
+      makeEditor(
+        <editor>
+          <paragraph>
+            <text>
+              some text
+              <cursor />
+            </text>
+          </paragraph>
+        </editor>
+      )
     ).toEqualEditor(
-      <editor>
-        <paragraph>
-          <text>
-            <cursor />
-          </text>
-        </paragraph>
-      </editor>
+      makeEditor(
+        <editor>
+          <paragraph>
+            <text>
+              <cursor />
+            </text>
+          </paragraph>
+        </editor>
+      )
     )
   ).toThrowError();
 });
@@ -307,4 +313,45 @@ test('delete backward', () => {
       </paragraph>
     </editor>
   `);
+});
+
+test('marks that conflict with .marks', () => {
+  expect(() =>
+    makeEditor(
+      <editor>
+        <paragraph>
+          <text bold>
+            some
+            <cursor />
+            text
+          </text>
+        </paragraph>
+      </editor>
+    )
+  ).toThrowError();
+});
+
+test('differing current marks', () => {
+  let editor = makeEditor(
+    <editor marks={{ bold: true }}>
+      <paragraph>
+        <text bold>
+          some text
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  );
+  expect(editor).not.toEqualEditor(
+    makeEditor(
+      <editor marks={{}}>
+        <paragraph>
+          <text bold>
+            some text
+            <cursor />
+          </text>
+        </paragraph>
+      </editor>
+    )
+  );
 });
