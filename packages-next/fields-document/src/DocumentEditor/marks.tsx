@@ -14,9 +14,9 @@ function applyMark(
   selectionPoint: Point,
   mark: string,
   shortcutText: string,
-  startRange: [Point, Point]
+  startOfStartPoint: Point
 ) {
-  const startPointRef = Editor.pointRef(editor, startRange[0]);
+  const startPointRef = Editor.pointRef(editor, startOfStartPoint);
 
   const selectionPointRef = Editor.pointRef(editor, selectionPoint);
 
@@ -26,7 +26,7 @@ function applyMark(
     {
       match: Text.isText,
       split: true,
-      at: { anchor: startRange[0], focus: selectionPoint },
+      at: { anchor: startOfStartPoint, focus: selectionPoint },
     }
   );
   const startPointAfterMarkSet = startPointRef.unref();
@@ -92,8 +92,8 @@ function isAtStartOfBlockOrThereIsWhitespaceBeforePoint(editor: ReactEditor, poi
 // but you'd be ✨😊✨ wrong ✨😊✨
 // because you can have two points that refer to essentially the same position
 // e.g. these two cursors are essentially in the same place but you could have it in either place
-// <text bold>some text</text><text italic>more text</text>
-// <text bold>some text<cursor/></text><text italic><cursor/>more text</text>
+// <text bold>some text<cursor/></text><text italic>more text</text>
+// <text bold>some text</text><text italic><cursor/>more text</text>
 // you've also got void nodes which don't have text
 
 // you could probably solve this problem more efficiently
@@ -219,10 +219,13 @@ export const withMarks = (enabledMarks: DocumentFeatures['inlineMarks'], editor:
               ) {
                 continue;
               }
-              applyMark(editor, editor.selection.anchor, mark, shortcutText, [
-                startOfStartOfShortcut,
-                endOfStartOfShortcut,
-              ]);
+              applyMark(
+                editor,
+                editor.selection.anchor,
+                mark,
+                shortcutText,
+                startOfStartOfShortcut
+              );
               return;
             }
           }
