@@ -56,7 +56,7 @@
     "@changesets/changelog-github": "^0.2.7",
     "@changesets/cli": "^2.12.0",
     "@jest/test-sequencer": "^26.6.3",
-    "@manypkg/cli": "^0.16.2",
+    "@manypkg/cli": "^0.17.0",
     "@preconstruct/cli": "2.0.1",
     "@types/jest": "^26.0.19",
     "@typescript-eslint/eslint-plugin": "^4.11.0",

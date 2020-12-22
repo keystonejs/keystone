@@ -2632,10 +2632,10 @@
     "@babel/runtime" "^7.7.2"
     regenerator-runtime "^0.13.3"
 
-"@manypkg/cli@^0.16.2":
-  version "0.16.2"
-  resolved "https://registry.yarnpkg.com/@manypkg/cli/-/cli-0.16.2.tgz#e949583d83fd051d0cb732d24657967b1f81c591"
-  integrity sha512-RaQCOJnXWbNwCaFmPr+e2qpHwRgrFD7rf8NRC80z/SifdEYB14zbeyw/Dra5X8lvCopL0V6fy4EBuWkeNSxV5Q==
+"@manypkg/cli@^0.17.0":
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/@manypkg/cli/-/cli-0.17.0.tgz#d5b91a150acca808a53bcc90046712a6efb44f5d"
+  integrity sha512-GTVvO73tAwkHtBqKS5DfIqT54BLCJxE9FMdS3nZTMv48piR8Ykd/gHAJedMiMDENGavZd06C8ySo4HLtyil5jA==
   dependencies:
     "@babel/runtime" "^7.5.5"
     "@manypkg/get-packages" "^1.1.1"
