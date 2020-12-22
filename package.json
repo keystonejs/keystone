@@ -160,6 +160,7 @@
     "packages": [
       "packages/arch/packages/*",
       "packages/apollo-helpers",
+      "packages/session",
       "packages/test-utils",
       "packages/utils",
       "packages/fields-authed-relationship",

@@ -4,10 +4,14 @@
   "version": "8.1.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
+  "main": "dist/session.cjs.js",
+  "module": "dist/session.esm.js",
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "@babel/runtime": "^7.12.5",
+    "@types/express-session": "^1.17.3",
     "cookie": "^0.4.1",
     "cookie-signature": "^1.1.0",
     "express": "^4.17.1",
