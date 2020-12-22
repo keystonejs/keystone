@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { KeyboardEvent, MutableRefObject, ReactNode, useEffect, useRef, useState } from 'react';
+import { KeyboardEvent, MutableRefObject, ReactNode, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
 import {
@@ -43,6 +43,7 @@ import {
 import { DocumentFeatures } from '../views';
 import { withDivider } from './divider';
 import { withCodeBlock } from './code-block';
+import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -186,19 +187,6 @@ const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
   );
 };
 
-function withSoftBreaks(isShiftPressedRef: MutableRefObject<boolean>, editor: ReactEditor) {
-  const { insertBreak } = editor;
-  // TODO: should soft breaks only work in particular places
-  editor.insertBreak = () => {
-    if (isShiftPressedRef.current) {
-      Transforms.insertText(editor, '\n');
-    } else {
-      insertBreak();
-    }
-  };
-  return editor;
-}
-
 export function createDocumentEditor(
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
@@ -236,32 +224,6 @@ export function createDocumentEditor(
       )
     )
   );
-}
-
-function useKeyDownRef(targetKey: string) {
-  const ref = useRef(false);
-
-  useEffect(() => {
-    const handleKeyDown = (e: globalThis.KeyboardEvent) => {
-      if (e.key !== targetKey) return;
-      ref.current = true;
-    };
-
-    const handleKeyUp = (e: globalThis.KeyboardEvent) => {
-      if (e.key !== targetKey) return;
-      ref.current = false;
-    };
-
-    document.addEventListener('keydown', handleKeyDown, { passive: true });
-    document.addEventListener('keyup', handleKeyUp, { passive: true });
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('keyup', handleKeyUp);
-    };
-  }, [targetKey]);
-
-  return ref;
 }
 
 export function DocumentEditor({
