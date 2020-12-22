@@ -1,4 +1,4 @@
-import { ReactElement, createElement } from 'react';
+import { ReactElement, createElement, MutableRefObject } from 'react';
 import { Editor, Node, Path, Text, Range } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { createDocumentEditor } from '..';
@@ -101,10 +101,12 @@ export const makeEditor = (
     documentFeatures,
     componentBlocks,
     normalization = 'disallow-non-normalized',
+    isShiftPressedRef,
   }: {
     documentFeatures?: DocumentFeatures;
     componentBlocks?: Record<string, ComponentBlock>;
     normalization?: 'disallow-non-normalized' | 'normalize' | 'skip';
+    isShiftPressedRef?: MutableRefObject<boolean>;
   } = {}
 ): ReactEditor => {
   if (!Editor.isEditor(node)) {
@@ -112,7 +114,8 @@ export const makeEditor = (
   }
   let editor = createDocumentEditor(
     documentFeatures || defaultDocumentFeatures,
-    componentBlocks || {}
+    componentBlocks || {},
+    isShiftPressedRef || { current: false }
   );
   editor.children = node.children;
   editor.selection = node.selection;

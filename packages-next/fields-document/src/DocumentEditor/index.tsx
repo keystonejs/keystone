@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { KeyboardEvent, useState } from 'react';
+import { KeyboardEvent, MutableRefObject, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
 import {
@@ -45,6 +45,7 @@ import { withDivider } from './divider';
 import { withCodeBlock } from './code-block';
 import { withMarks } from './marks';
 import { renderLeaf } from './leaf';
+import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -86,28 +87,32 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
 
 export function createDocumentEditor(
   documentFeatures: DocumentFeatures,
-  componentBlocks: Record<string, ComponentBlock>
+  componentBlocks: Record<string, ComponentBlock>,
+  isShiftPressedRef: MutableRefObject<boolean>
 ) {
-  return withBlocksSchema(
-    withLink(
-      withList(
-        documentFeatures.listTypes,
-        withHeading(
-          documentFeatures.headingLevels,
-          withRelationship(
-            withComponentBlocks(
-              componentBlocks,
-              withParagraphs(
-                withDivider(
-                  documentFeatures.dividers,
-                  withColumns(
-                    withMarks(
-                      documentFeatures.inlineMarks,
-                      withCodeBlock(
-                        documentFeatures.blockTypes.code,
-                        withBlockquote(
-                          documentFeatures.blockTypes.blockquote,
-                          withHistory(withReact(createEditor()))
+  return withSoftBreaks(
+    isShiftPressedRef,
+    withBlocksSchema(
+      withLink(
+        withList(
+          documentFeatures.listTypes,
+          withHeading(
+            documentFeatures.headingLevels,
+            withRelationship(
+              withComponentBlocks(
+                componentBlocks,
+                withParagraphs(
+                  withDivider(
+                    documentFeatures.dividers,
+                    withColumns(
+                      withMarks(
+                        documentFeatures.inlineMarks,
+                        withCodeBlock(
+                          documentFeatures.blockTypes.code,
+                          withBlockquote(
+                            documentFeatures.blockTypes.blockquote,
+                            withHistory(withReact(createEditor()))
+                          )
                         )
                       )
                     )
@@ -137,12 +142,13 @@ export function DocumentEditor({
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
 }) {
+  const isShiftPressedRef = useKeyDownRef('Shift');
   const { colors } = useTheme();
   const [expanded, setExpanded] = useState(false);
-  const editor = useMemo(() => createDocumentEditor(documentFeatures, componentBlocks), [
-    documentFeatures,
-    componentBlocks,
-  ]);
+  const editor = useMemo(
+    () => createDocumentEditor(documentFeatures, componentBlocks, isShiftPressedRef),
+    [documentFeatures, componentBlocks]
+  );
 
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
 
