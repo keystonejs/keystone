@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:9.6.5
+        image: postgres:12
         env:
           POSTGRES_USER: keystone5
           POSTGRES_PASSWORD: k3yst0n3
@@ -52,11 +52,11 @@ jobs:
         uses: actions/checkout@v2
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
 
-      - name: Setup Node.js 10.x
+      - name: Setup Node.js 14.x
         uses: actions/setup-node@main
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         with:
-          node-version: 10.x
+          node-version: 14.x
 
       - name: Get yarn cache directory path
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:9.6.5
+        image: postgres:12
         env:
           POSTGRES_USER: keystone5
           POSTGRES_PASSWORD: k3yst0n3
@@ -114,11 +114,11 @@ jobs:
         uses: actions/checkout@v2
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
 
-      - name: Setup Node.js 10.x
+      - name: Setup Node.js 14.x
         uses: actions/setup-node@main
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         with:
-          node-version: 10.x
+          node-version: 14.x
 
       - name: Get yarn cache directory path
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -142,6 +142,10 @@ jobs:
       - name: Unit tests
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --maxWorkers=1 --testPathIgnorePatterns=api-tests
+        env:
+          CLOUDINARY_CLOUD_NAME: keystone-cloudinary
+          CLOUDINARY_KEY: 758252673115372
+          CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
 
   linting:
     name: Linting
@@ -150,10 +154,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Setup Node.js 10.x
+      - name: Setup Node.js 14.x
         uses: actions/setup-node@main
         with:
-          node-version: 10.x
+          node-version: 14.x
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -208,11 +212,11 @@ jobs:
       - name: Checkout Repo
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/checkout@v2
-      - name: Setup Node.js 10.x
+      - name: Setup Node.js 14.x
         uses: actions/setup-node@main
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         with:
-          node-version: 10.x
+          node-version: 14.x
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path

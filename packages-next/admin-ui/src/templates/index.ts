@@ -26,13 +26,13 @@ export const writeAdminFiles = (
     outputPath: 'pages/_app.js',
     src: appTemplate(config, system, { configFileExists, projectAdminPath }),
   },
-  { mode: 'write', src: homeTemplate(system.adminMeta.lists), outputPath: 'pages/index.js' },
-  ...Object.values(system.adminMeta.lists).map(
-    ({ path, key }) =>
+  { mode: 'write', src: homeTemplate(system.keystone.lists), outputPath: 'pages/index.js' },
+  ...Object.values(system.keystone.lists).map(
+    ({ adminUILabels: { path }, key }) =>
       ({ mode: 'write', src: listTemplate(key), outputPath: `pages/${path}/index.js` } as const)
   ),
-  ...Object.values(system.adminMeta.lists).map(
-    ({ path, key }) =>
+  ...Object.values(system.keystone.lists).map(
+    ({ adminUILabels: { path }, key }) =>
       ({ mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` } as const)
   ),
 ];
