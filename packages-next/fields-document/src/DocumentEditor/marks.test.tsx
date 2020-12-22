@@ -95,15 +95,13 @@ describe.each(
       )
     );
   });
-  // TODO: fix this
-  // eslint-disable-next-line jest/no-disabled-tests
-  test.skip('matches when the end shortcut is in a different text node', () => {
+  test('does match when start of shortcut is in a different text node', () => {
     let editor = makeEditor(
-      <editor marks={{ keyboard: true }}>
+      <editor>
         <paragraph>
-          <text>{shortcut}thing</text>
-          <text keyboard>
-            {shortcut.slice(0, -1)}
+          <text keyboard>{shortcut}</text>
+          <text>
+            thing{shortcut.slice(0, -1)}
             <cursor />
           </text>
         </paragraph>
@@ -113,7 +111,7 @@ describe.each(
     editor.insertText(shortcut.slice(-1));
     expect(editor).toEqualEditor(
       makeEditor(
-        <editor marks={{ keyboard: true }}>
+        <editor marks={{}}>
           <paragraph>
             <text {...{ [markName]: true }}>
               thing
@@ -125,6 +123,33 @@ describe.each(
     );
   });
   if (shortcut.length === 2) {
+    test('matches when the end shortcut is in a different text node', () => {
+      let editor = makeEditor(
+        <editor marks={{ keyboard: true }}>
+          <paragraph>
+            <text>{shortcut}thing</text>
+            <text keyboard>
+              {shortcut.slice(0, -1)}
+              <cursor />
+            </text>
+          </paragraph>
+        </editor>
+      );
+
+      editor.insertText(shortcut.slice(-1));
+      expect(editor).toEqualEditor(
+        makeEditor(
+          <editor marks={{}}>
+            <paragraph>
+              <text {...{ [markName]: true }}>
+                thing
+                <cursor />
+              </text>
+            </paragraph>
+          </editor>
+        )
+      );
+    });
     test('does match when first and second characters in the start shortcut are in different text nodes', () => {
       let editor = makeEditor(
         <editor>

@@ -138,32 +138,30 @@ export const withMarks = (enabledMarks: DocumentFeatures['inlineMarks'], editor:
       for (const [mark, shortcuts] of Object.entries(selectedMarkdownShortcuts)) {
         for (const shortcutText of shortcuts!) {
           if (text === shortcutText[shortcutText.length - 1]) {
-            const before = Editor.before(editor, editor.selection.anchor, {
-              unit: 'offset',
-              distance: shortcutText.length + 1,
-            });
-            if (!before) continue;
-            const beforeEndOfShortcutString = Editor.string(editor, {
-              anchor: editor.selection.anchor,
-              focus: before,
-            });
-            const hasWhitespaceBeforeEndOfShortcut = /\s/.test(beforeEndOfShortcutString[0]);
-            const endOfShortcutContainsExpectedContent =
-              shortcutText === beforeEndOfShortcutString.slice(1);
-
-            if (hasWhitespaceBeforeEndOfShortcut || !endOfShortcutContainsExpectedContent) {
-              continue;
-            }
-
             const startOfBlock = Editor.start(
               editor,
               Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]
             );
 
-            const strToMatchOn = Editor.string(editor, {
-              anchor: startOfBlock,
-              focus: before,
+            let startOfBlockToEndOfShortcutString = Editor.string(editor, {
+              anchor: editor.selection.anchor,
+              focus: startOfBlock,
             });
+            const hasWhitespaceBeforeEndOfShortcut = /\s/.test(
+              startOfBlockToEndOfShortcutString.substr(-shortcutText.length - 1, 1)
+            );
+
+            const endOfShortcutContainsExpectedContent =
+              shortcutText === startOfBlockToEndOfShortcutString.slice(-shortcutText.length);
+
+            if (hasWhitespaceBeforeEndOfShortcut || !endOfShortcutContainsExpectedContent) {
+              continue;
+            }
+
+            const strToMatchOn = startOfBlockToEndOfShortcutString.slice(
+              0,
+              -shortcutText.length - 1
+            );
             // TODO: use regex probs
             for (const [offsetFromStartOfBlock] of [...strToMatchOn].reverse().entries()) {
               const expectedShortcutText = strToMatchOn.substr(
@@ -196,18 +194,13 @@ export const withMarks = (enabledMarks: DocumentFeatures['inlineMarks'], editor:
 
               const contentBetweenShortcuts = Editor.string(editor, {
                 anchor: endOfStartOfShortcut,
-                focus: Editor.after(editor, before)!,
-              });
+                focus: editor.selection.anchor,
+              }).slice(0, -shortcutText.length);
 
-              if (
-                contentBetweenShortcuts === '' ||
-                /\s/.test(contentBetweenShortcuts[0]) ||
-                /\s/.test(contentBetweenShortcuts.substr(-shortcutText.length, 1))
-              ) {
+              if (contentBetweenShortcuts === '' || /\s/.test(contentBetweenShortcuts[0])) {
                 continue;
               }
 
-              // TODO: is this actually worth handling?
               // this is a bit of a weird one
               // let's say you had <text>__thing _<cursor /></text> and you insert `_`.
               // without the below, that would turn into <text italic>_thing _<cursor /></text>
