@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { KeyboardEvent, MutableRefObject, ReactNode, useState } from 'react';
+import { KeyboardEvent, MutableRefObject, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
 import {
@@ -16,7 +16,7 @@ import {
   Descendant,
   Path,
 } from 'slate';
-import { Editable, ReactEditor, RenderLeafProps, Slate, withReact } from 'slate-react';
+import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 
 import { withParagraphs } from './paragraphs';
@@ -43,6 +43,8 @@ import {
 import { DocumentFeatures } from '../views';
 import { withDivider } from './divider';
 import { withCodeBlock } from './code-block';
+import { withMarks } from './marks';
+import { renderLeaf } from './leaf';
 import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
 
 const HOTKEYS: Record<string, Mark> = {
@@ -83,110 +85,6 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
 
 /* Leaf Elements */
 
-function Placeholder({ placeholder, children }: { placeholder: string; children: ReactNode }) {
-  const [width, setWidth] = useState(0);
-  return (
-    <span css={{ position: 'relative', display: 'inline-block', width }}>
-      <span
-        contentEditable={false}
-        style={{
-          position: 'absolute',
-          pointerEvents: 'none',
-          display: 'inline-block',
-          left: 0,
-          top: 0,
-          maxWidth: '100%',
-          whiteSpace: 'nowrap',
-          opacity: '0.5',
-          userSelect: 'none',
-          fontStyle: 'normal',
-          fontWeight: 'normal',
-          textDecoration: 'none',
-          textAlign: 'left',
-        }}
-      >
-        <span
-          ref={node => {
-            if (node) {
-              const offsetWidth = node.offsetWidth;
-              if (offsetWidth !== width) {
-                setWidth(offsetWidth);
-              }
-            }
-          }}
-        >
-          {placeholder as string}
-        </span>
-      </span>
-      {children}
-    </span>
-  );
-}
-
-const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
-  const { colors, radii, spacing, typography } = useTheme();
-  const {
-    underline,
-    strikethrough,
-    bold,
-    italic,
-    code,
-    keyboard,
-    superscript,
-    subscript,
-    placeholder,
-  } = leaf;
-
-  if (placeholder !== undefined) {
-    children = <Placeholder placeholder={placeholder as string}>{children}</Placeholder>;
-  }
-
-  if (code) {
-    children = (
-      <code
-        css={{
-          backgroundColor: colors.backgroundDim,
-          borderRadius: radii.xsmall,
-          display: 'inline-block',
-          fontFamily: typography.fontFamily.monospace,
-          fontSize: typography.fontSize.small,
-          padding: `0 ${spacing.xxsmall}px`,
-        }}
-      >
-        {children}
-      </code>
-    );
-  }
-  if (bold) {
-    children = <strong>{children}</strong>;
-  }
-  if (strikethrough) {
-    children = <s>{children}</s>;
-  }
-  if (italic) {
-    children = <em>{children}</em>;
-  }
-  if (keyboard) {
-    children = <kbd>{children}</kbd>;
-  }
-  if (superscript) {
-    children = <sup>{children}</sup>;
-  }
-  if (subscript) {
-    children = <sub>{children}</sub>;
-  }
-  return (
-    <span
-      {...attributes}
-      style={{
-        textDecoration: underline ? 'underline' : undefined,
-      }}
-    >
-      {children}
-    </span>
-  );
-};
-
 export function createDocumentEditor(
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
@@ -207,11 +105,14 @@ export function createDocumentEditor(
                   withDivider(
                     documentFeatures.dividers,
                     withColumns(
-                      withCodeBlock(
-                        documentFeatures.blockTypes.code,
-                        withBlockquote(
-                          documentFeatures.blockTypes.blockquote,
-                          withHistory(withReact(createEditor()))
+                      withMarks(
+                        documentFeatures.inlineMarks,
+                        withCodeBlock(
+                          documentFeatures.blockTypes.code,
+                          withBlockquote(
+                            documentFeatures.blockTypes.blockquote,
+                            withHistory(withReact(createEditor()))
+                          )
                         )
                       )
                     )
@@ -248,10 +149,6 @@ export function DocumentEditor({
     () => createDocumentEditor(documentFeatures, componentBlocks, isShiftPressedRef),
     [documentFeatures, componentBlocks]
   );
-
-  const renderLeaf = useCallback(props => {
-    return <Leaf {...props} />;
-  }, []);
 
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
 
@@ -338,15 +235,35 @@ export function DocumentEditor({
                 renderElement={renderElement}
                 renderLeaf={renderLeaf}
               />
+              {
+                // for debugging
+                false && <Debugger />
+              }
             </Slate>
-            {
-              // for debugging
-              false && <pre>{JSON.stringify(value, null, 2)}</pre>
-            }
           </ComponentBlockProvider>
         </ColumnOptionsProvider>
       </DocumentFieldRelationshipsProvider>
     </div>
+  );
+}
+
+function Debugger() {
+  const editor = useSlate();
+  return (
+    <pre>
+      {JSON.stringify(
+        {
+          selection:
+            editor.selection && Range.isCollapsed(editor.selection)
+              ? editor.selection.anchor
+              : editor.selection,
+          marks: Editor.marks(editor),
+          children: editor.children,
+        },
+        null,
+        2
+      )}
+    </pre>
   );
 }
 

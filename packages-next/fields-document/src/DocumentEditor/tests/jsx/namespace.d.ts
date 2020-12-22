@@ -12,7 +12,7 @@ type ComponentProp = { children: Children; propPath: (string | number)[] };
 declare namespace __jsx {
   namespace JSX {
     interface IntrinsicElements {
-      editor: OnlyChildren;
+      editor: { children: Children; marks?: { [Key in Mark]?: true } };
       text: { children?: Children } & { [Key in Mark]?: true };
       element: { [key: string]: any };
       cursor: { [key: string]: never };
