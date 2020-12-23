@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLazyQuery } from '../apollo';
 import hashString from '@emotion/hash';
-import { SerializedAdminMeta, AdminMeta, FieldViews, getGqlNames } from '@keystone-next/types';
+import { AdminMeta, FieldViews, getGqlNames } from '@keystone-next/types';
 import { StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql';
 
 const expectedExports = new Set(['Cell', 'Field', 'controller', 'CardValue']);
@@ -36,7 +36,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     try {
       let parsed = JSON.parse(item);
       if (parsed.hash === adminMetaHash) {
-        return parsed.meta as SerializedAdminMeta;
+        return parsed.meta as StaticAdminMetaQuery['keystone']['adminMeta'];
       }
     } catch (err) {
       return;

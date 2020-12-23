@@ -7,7 +7,7 @@ import { SessionStrategy } from './session';
 import { SchemaConfig } from './schema';
 import { IncomingMessage, ServerResponse } from 'http';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
-import { SerializedAdminMeta } from './admin-meta';
+import { AdminMetaRootVal } from './admin-meta';
 import { BaseKeystone } from './base';
 
 export type { ListHooks };
@@ -140,7 +140,7 @@ export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
    * The resolved path to the views for the field type
    */
   views: string;
-  getAdminMeta?: (listKey: string, path: string, adminMeta: SerializedAdminMeta) => JSONValue;
+  getAdminMeta?: (listKey: string, path: string, adminMeta: AdminMetaRootVal) => JSONValue;
 };
 
 /* TODO: Review these types */
