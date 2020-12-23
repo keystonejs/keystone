@@ -2,6 +2,7 @@ import { DocumentFieldType } from './base-field-type';
 import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-next/types';
 import path from 'path';
 import { Relationships } from './DocumentEditor/relationship';
+import { ComponentBlock } from './component-blocks';
 
 type RelationshipsConfig = Record<
   string,
@@ -27,36 +28,37 @@ type RelationshipsConfig = Record<
 export type DocumentFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = FieldConfig<TGeneratedListTypes> & {
-  isRequired?: boolean;
   relationships?: RelationshipsConfig;
-  inlineMarks?: {
-    bold?: true;
-    italic?: true;
-    underline?: true;
-    strikethrough?: true;
-    code?: true;
-    superscript?: true;
-    subscript?: true;
-    keyboard?: true;
+  componentBlocks?: Record<string, ComponentBlock>;
+  formatting?: {
+    inlineMarks?: {
+      bold?: true;
+      italic?: true;
+      underline?: true;
+      strikethrough?: true;
+      code?: true;
+      superscript?: true;
+      subscript?: true;
+      keyboard?: true;
+    };
+    listTypes?: {
+      ordered?: true;
+      unordered?: true;
+    };
+    alignment?: {
+      center?: true;
+      end?: true;
+    };
+    headingLevels?: readonly (1 | 2 | 3 | 4 | 5 | 6)[];
+    blockTypes?: {
+      blockquote?: true;
+      code?: true;
+    };
+    softBreaks?: true;
   };
-  listTypes?: {
-    ordered?: true;
-    unordered?: true;
-  };
-  alignment?: {
-    center?: true;
-    end?: true;
-  };
-  headingLevels?: readonly (1 | 2 | 3 | 4 | 5 | 6)[];
-  blockTypes?: {
-    blockquote?: true;
-    panel?: true;
-    quote?: true;
-    code?: true;
-  };
-  link?: true;
+  links?: true;
   dividers?: true;
-  columns?: readonly (readonly [number, ...number[]])[];
+  layouts?: readonly (readonly [number, ...number[]])[];
 };
 
 const views = path.join(

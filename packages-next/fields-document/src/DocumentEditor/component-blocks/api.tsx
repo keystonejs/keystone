@@ -13,7 +13,11 @@ export type FormField<Value, Options> = {
   }): ReactElement | null;
   options: Options;
   defaultValue: Value;
+  // throws an error if it's wrong, otherwise return it/normalise it
+  validate?(value: any): Value;
 };
+
+export class ValidationError extends Error {}
 
 export type ChildField = {
   kind: 'child';
@@ -21,14 +25,15 @@ export type ChildField = {
     | {
         kind: 'block';
         placeholder: string;
-        // dividers: boolean;
-        // formatting: {
-        //   blockTypes: boolean;
-        //   headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[];
-        //   inlineMarks: boolean;
-        //   lists: boolean;
+        // dividers?: boolean;
+        // formatting?: {
+        //   blockTypes?: boolean;
+        //   headingLevels?: (1 | 2 | 3 | 4 | 5 | 6)[];
+        //   inlineMarks?: boolean;
+        //   lists?: boolean;
+        //   softBreaks?: boolean;
         // };
-        // links: boolean;
+        // links?: boolean;
       }
     | {
         kind: 'inline';
@@ -175,22 +180,22 @@ export const fields = {
       | {
           kind: 'block';
           placeholder: string;
-          // dividers?: true;
-          // formatting?:
-          //   | {
-          //       blockTypes?: true;
-          //       headingLevels?: (1 | 2 | 3 | 4 | 5 | 6)[];
-          //       inlineMarks?: true;
-          //       lists?: true;
-          //     }
-          //   | true;
-          // links?: true;
+          dividers?: true;
+          formatting?:
+            | {
+                blockTypes?: true;
+                headingLevels?: (1 | 2 | 3 | 4 | 5 | 6)[];
+                inlineMarks?: true;
+                lists?: true;
+              }
+            | true;
+          links?: true;
         }
       | {
           kind: 'inline';
           placeholder: string;
-          // formatting?: true;
-          // links?: true;
+          formatting?: true;
+          links?: true;
         }
   ): ChildField {
     return {

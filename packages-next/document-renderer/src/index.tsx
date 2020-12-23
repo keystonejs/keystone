@@ -28,58 +28,66 @@ type OnlyChildrenComponent = Component<{ children: ReactNode }> | keyof JSX.Intr
 
 type MarkRenderers = { [Key in Mark]: OnlyChildrenComponent };
 
-interface Renderers extends MarkRenderers {
-  paragraph: OnlyChildrenComponent;
-  blockquote: OnlyChildrenComponent;
-  pre: Component<{ children: string }> | keyof JSX.IntrinsicElements;
-  link: Component<{ children: ReactNode; href: string }> | 'a';
-  columns: Component<{ layout: [number, ...number[]]; children: ReactElement[] }>;
-  divider: Component<{}> | keyof JSX.IntrinsicElements;
-  heading: Component<{ level: 1 | 2 | 3 | 4 | 5 | 6; children: ReactNode }>;
-  list: Component<{ type: 'ordered' | 'unordered'; children: ReactElement[] }>;
+interface Renderers {
+  inline: {
+    link: Component<{ children: ReactNode; href: string }> | 'a';
+  } & MarkRenderers;
+  block: {
+    paragraph: OnlyChildrenComponent;
+    blockquote: OnlyChildrenComponent;
+    code: Component<{ children: string }> | keyof JSX.IntrinsicElements;
+    layout: Component<{ layout: [number, ...number[]]; children: ReactElement[] }>;
+    divider: Component<{}> | keyof JSX.IntrinsicElements;
+    heading: Component<{ level: 1 | 2 | 3 | 4 | 5 | 6; children: ReactNode }>;
+    list: Component<{ type: 'ordered' | 'unordered'; children: ReactElement[] }>;
+  };
 }
 
 const defaultRenderers: Renderers = {
-  bold: 'strong',
-  code: 'code',
-  keyboard: 'kbd',
-  strikethrough: 's',
-  italic: 'em',
-  link: 'a',
-  subscript: 'sub',
-  superscript: 'sup',
-  underline: ({ children }) => {
-    return <span style={{ textDecoration: 'underline' }} children={children} />;
+  inline: {
+    bold: 'strong',
+    code: 'code',
+    keyboard: 'kbd',
+    strikethrough: 's',
+    italic: 'em',
+    link: 'a',
+    subscript: 'sub',
+    superscript: 'sup',
+    underline: ({ children }) => {
+      return <span style={{ textDecoration: 'underline' }} children={children} />;
+    },
   },
-  blockquote: 'blockquote',
-  paragraph: 'p',
-  divider: 'hr',
-  heading: ({ level, children }) => {
-    let Heading = `h${level}` as 'h1';
-    return <Heading children={children} />;
-  },
-  pre: 'pre',
-  list: ({ children, type }) => {
-    const List = type === 'ordered' ? 'ol' : 'ul';
-    return (
-      <List>
-        {children.map((x, i) => (
-          <li key={i}>{x}</li>
-        ))}
-      </List>
-    );
-  },
-  columns: ({ children, layout }) => {
-    return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
-        }}
-      >
-        {children}
-      </div>
-    );
+  block: {
+    blockquote: 'blockquote',
+    paragraph: 'p',
+    divider: 'hr',
+    heading: ({ level, children }) => {
+      let Heading = `h${level}` as 'h1';
+      return <Heading children={children} />;
+    },
+    code: 'pre',
+    list: ({ children, type }) => {
+      const List = type === 'ordered' ? 'ol' : 'ul';
+      return (
+        <List>
+          {children.map((x, i) => (
+            <li key={i}>{x}</li>
+          ))}
+        </List>
+      );
+    },
+    layout: ({ children, layout }) => {
+      return (
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
+          }}
+        >
+          {children}
+        </div>
+      );
+    },
   },
 };
 
