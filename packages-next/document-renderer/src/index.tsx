@@ -102,7 +102,15 @@ function DocumentNode({
   componentBlocks: Record<string, Component<any>>;
 }): ReactElement {
   if (typeof _node.text === 'string') {
-    return <Fragment>{_node.text}</Fragment>;
+    let child = <Fragment>{_node.text}</Fragment>;
+    (Object.keys(renderers.inline) as (keyof typeof renderers.inline)[]).forEach(markName => {
+      if (markName !== 'link' && _node[markName]) {
+        const Mark = renderers.inline[markName];
+        child = <Mark>{child}</Mark>;
+      }
+    });
+
+    return child;
   }
   const node = _node as Element;
   const children = node.children.map((x, i) => (
