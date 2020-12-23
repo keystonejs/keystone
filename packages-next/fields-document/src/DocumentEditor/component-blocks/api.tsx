@@ -13,11 +13,7 @@ export type FormField<Value, Options> = {
   }): ReactElement | null;
   options: Options;
   defaultValue: Value;
-  // throws an error if it's wrong, otherwise return it/normalise it
-  validate?(value: any): Value;
 };
-
-export class ValidationError extends Error {}
 
 export type ChildField = {
   kind: 'child';
@@ -25,21 +21,25 @@ export type ChildField = {
     | {
         kind: 'block';
         placeholder: string;
-        // dividers?: boolean;
-        // formatting?: {
-        //   blockTypes?: boolean;
-        //   headingLevels?: (1 | 2 | 3 | 4 | 5 | 6)[];
-        //   inlineMarks?: boolean;
-        //   lists?: boolean;
-        //   softBreaks?: boolean;
+        // dividers: boolean;
+        // formatting: {
+        //   alignment: boolean;
+        //   blockTypes: boolean;
+        //   headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[];
+        //   inlineMarks: boolean;
+        //   lists: boolean;
         // };
-        // links?: boolean;
+        // links: boolean;
+        // relationships: boolean;
+        // softBreaks: boolean;
       }
     | {
         kind: 'inline';
         placeholder: string;
         // formatting: { inlineMarks: boolean };
         // links: boolean;
+        // relationships: boolean;
+        // softBreaks: boolean;
       };
 };
 
@@ -180,22 +180,68 @@ export const fields = {
       | {
           kind: 'block';
           placeholder: string;
-          dividers?: true;
           formatting?:
+            | 'inherit'
             | {
-                blockTypes?: true;
-                headingLevels?: (1 | 2 | 3 | 4 | 5 | 6)[];
-                inlineMarks?: true;
-                lists?: true;
-              }
-            | true;
-          links?: true;
+                alignment?:
+                  | 'inherit'
+                  | {
+                      center?: true;
+                      end?: true;
+                    };
+                blockTypes?:
+                  | 'inherit'
+                  | {
+                      blockquote?: true;
+                      code?: true;
+                    };
+                headingLevels?: 'inherit' | (1 | 2 | 3 | 4 | 5 | 6)[];
+                inlineMarks?:
+                  | 'inherit'
+                  | {
+                      bold?: true;
+                      code?: true;
+                      italic?: true;
+                      strikethrough?: true;
+                      underline?: true;
+                      keyboard?: true;
+                      subscript?: true;
+                      superscript?: true;
+                    };
+                listTypes?:
+                  | 'inherit'
+                  | {
+                      ordered?: true;
+                      unordered?: true;
+                    };
+              };
+          dividers?: 'inherit';
+          links?: 'inherit';
+          relationships?: 'inherit';
+          softBreaks?: 'inherit';
         }
       | {
           kind: 'inline';
           placeholder: string;
-          formatting?: true;
-          links?: true;
+          formatting?:
+            | 'inherit'
+            | {
+                inlineMarks?:
+                  | 'inherit'
+                  | {
+                      bold?: true;
+                      code?: true;
+                      italic?: true;
+                      strikethrough?: true;
+                      underline?: true;
+                      keyboard?: true;
+                      subscript?: true;
+                      superscript?: true;
+                    };
+              };
+          links?: 'inherit';
+          relationships?: 'inherit';
+          softBreaks?: 'inherit';
         }
   ): ChildField {
     return {

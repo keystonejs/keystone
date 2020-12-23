@@ -255,7 +255,7 @@ function makeLayoutIcon(ratios: number[]) {
 
 const columnsIcon = <ColumnsIcon size="small" />;
 
-export const ColumnsButton = ({ columns }: { columns: DocumentFeatures['columns'] }) => {
+export const ColumnsButton = ({ columns }: { columns: DocumentFeatures['layouts'] }) => {
   const editor = useSlate();
   const isInsideColumns = isInsideColumn(editor);
   return useMemo(

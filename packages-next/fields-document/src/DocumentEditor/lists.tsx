@@ -48,7 +48,10 @@ function getAncestorList(
   return { isInside: false };
 }
 
-export function withList(listTypes: DocumentFeatures['listTypes'], editor: ReactEditor) {
+export function withList(
+  listTypes: DocumentFeatures['formatting']['listTypes'],
+  editor: ReactEditor
+) {
   const { insertBreak, normalizeNode, insertText, deleteBackward } = editor;
   editor.deleteBackward = unit => {
     if (editor.selection) {

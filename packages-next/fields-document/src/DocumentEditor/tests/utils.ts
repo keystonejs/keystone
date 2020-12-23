@@ -72,27 +72,30 @@ expect.extend({
   },
 });
 const defaultDocumentFeatures: DocumentFeatures = {
-  alignment: { center: true, end: true },
-  blockTypes: { blockquote: true, code: true, panel: true, quote: true },
-  columns: [
+  formatting: {
+    alignment: { center: true, end: true },
+    blockTypes: { blockquote: true, code: true },
+    headingLevels: [1, 2, 3, 4, 5, 6],
+    inlineMarks: {
+      bold: true,
+      code: true,
+      italic: true,
+      keyboard: true,
+      strikethrough: true,
+      subscript: true,
+      superscript: true,
+      underline: true,
+    },
+    listTypes: { ordered: true, unordered: true },
+    softBreaks: true,
+  },
+  dividers: true,
+  links: true,
+  layouts: [
     [1, 1],
     [1, 1, 1],
     [1, 2, 1],
   ],
-  dividers: true,
-  headingLevels: [1, 2, 3, 4, 5, 6],
-  inlineMarks: {
-    bold: true,
-    code: true,
-    italic: true,
-    keyboard: true,
-    strikethrough: true,
-    subscript: true,
-    superscript: true,
-    underline: true,
-  },
-  link: true,
-  listTypes: { ordered: true, unordered: true },
 };
 
 export const makeEditor = (

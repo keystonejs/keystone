@@ -111,7 +111,7 @@ function DocumentNode({
   switch (node.type as string) {
     case 'blockquote':
     case 'paragraph': {
-      const Comp = renderers[node.type as 'blockquote' | 'paragraph'];
+      const Comp = renderers.block[node.type as 'blockquote' | 'paragraph'];
       return <Comp children={children} />;
     }
     case 'code': {
@@ -120,18 +120,18 @@ function DocumentNode({
         node.children[0] &&
         typeof node.children[0].text === 'string'
       ) {
-        return <renderers.pre>{node.children[0].text}</renderers.pre>;
+        return <renderers.block.code>{node.children[0].text}</renderers.block.code>;
       }
       break;
     }
     case 'columns': {
-      return <renderers.columns layout={node.layout as any} children={children} />;
+      return <renderers.block.layout layout={node.layout as any} children={children} />;
     }
     case 'divider': {
-      return <renderers.divider />;
+      return <renderers.block.divider />;
     }
     case 'heading': {
-      return <renderers.heading level={node.level as any} children={children} />;
+      return <renderers.block.heading level={node.level as any} children={children} />;
     }
     case 'component-block': {
       const Comp = componentBlocks[node.component as string];
@@ -144,7 +144,7 @@ function DocumentNode({
     case 'ordered-list':
     case 'unordered-list': {
       return (
-        <renderers.list
+        <renderers.block.list
           children={children}
           type={node.type === 'ordered-list' ? 'ordered' : 'unordered'}
         />

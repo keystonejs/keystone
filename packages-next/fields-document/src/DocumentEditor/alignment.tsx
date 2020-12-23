@@ -13,7 +13,11 @@ import { useSlate } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { InlineDialog, ToolbarButton, ToolbarGroup } from './primitives';
 
-export const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment'] }) => {
+export const TextAlignMenu = ({
+  alignment,
+}: {
+  alignment: DocumentFeatures['formatting']['alignment'];
+}) => {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {
@@ -70,7 +74,7 @@ function TextAlignDialog({
   alignment,
   onClose,
 }: {
-  alignment: DocumentFeatures['alignment'];
+  alignment: DocumentFeatures['formatting']['alignment'];
   onClose: () => void;
 }) {
   const { currentTextAlign, editor } = useTextAlignInfo();

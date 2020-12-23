@@ -119,7 +119,10 @@ function getPointAtOffsetFromStartOfBlock(
   );
 }
 
-export const withMarks = (enabledMarks: DocumentFeatures['inlineMarks'], editor: ReactEditor) => {
+export const withMarks = (
+  enabledMarks: DocumentFeatures['formatting']['inlineMarks'],
+  editor: ReactEditor
+) => {
   const selectedMarkdownShortcuts: Partial<typeof allMarkdownShortcuts> = {};
 
   (Object.keys(allMarkdownShortcuts) as (keyof typeof allMarkdownShortcuts)[]).forEach(mark => {

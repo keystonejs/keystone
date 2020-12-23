@@ -95,9 +95,9 @@ export function createDocumentEditor(
     withBlocksSchema(
       withLink(
         withList(
-          documentFeatures.listTypes,
+          documentFeatures.formatting.listTypes,
           withHeading(
-            documentFeatures.headingLevels,
+            documentFeatures.formatting.headingLevels,
             withRelationship(
               withComponentBlocks(
                 componentBlocks,
@@ -106,11 +106,11 @@ export function createDocumentEditor(
                     documentFeatures.dividers,
                     withColumns(
                       withMarks(
-                        documentFeatures.inlineMarks,
+                        documentFeatures.formatting.inlineMarks,
                         withCodeBlock(
-                          documentFeatures.blockTypes.code,
+                          documentFeatures.formatting.blockTypes.code,
                           withBlockquote(
-                            documentFeatures.blockTypes.blockquote,
+                            documentFeatures.formatting.blockTypes.blockquote,
                             withHistory(withReact(createEditor()))
                           )
                         )
@@ -172,7 +172,7 @@ export function DocumentEditor({
       }
     >
       <DocumentFieldRelationshipsProvider value={relationships}>
-        <ColumnOptionsProvider value={documentFeatures.columns}>
+        <ColumnOptionsProvider value={documentFeatures.layouts}>
           <ComponentBlockProvider value={componentBlocks}>
             <Slate
               editor={editor}
@@ -237,7 +237,7 @@ export function DocumentEditor({
               />
               {
                 // for debugging
-                false && <Debugger />
+                true && <Debugger />
               }
             </Slate>
           </ComponentBlockProvider>
