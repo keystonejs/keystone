@@ -1,4 +1,4 @@
-import { ReactElement, createElement } from 'react';
+import { ReactElement, createElement, MutableRefObject } from 'react';
 import { Editor, Node, Path, Text, Range } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { createDocumentEditor } from '..';
@@ -6,7 +6,71 @@ import { ComponentBlock } from '../../component-blocks';
 import { DocumentFeatures } from '../../views';
 
 export { __jsx as jsx } from './jsx/namespace';
+import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
+import jestDiff from 'jest-diff';
 
+function formatEditor(editor: Node) {
+  return prettyFormat(editor, {
+    plugins: [plugins.ReactElement, editorSerializer],
+  });
+}
+
+declare global {
+  namespace jest {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface Matchers<R, T> {
+      toEqualEditor(
+        expected: [T] extends [Editor] ? Editor : 'toEqualEditor only accepts an Editor'
+      ): CustomMatcherResult;
+    }
+  }
+}
+
+expect.extend({
+  toEqualEditor(received: Editor, expected: Editor) {
+    const options = {
+      comment: 'Slate Editor equality',
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+
+    const pass =
+      this.equals(received.children, expected.children) &&
+      this.equals(received.selection, expected.selection) &&
+      this.equals(Editor.marks(received), Editor.marks(expected));
+
+    const message = pass
+      ? () => {
+          const formattedReceived = formatEditor(received);
+          const formattedExpected = formatEditor(expected);
+
+          return (
+            this.utils.matcherHint('toEqualEditor', undefined, undefined, options) +
+            '\n\n' +
+            `Expected: not ${this.utils.printExpected(formattedExpected)}\n` +
+            `Received: ${this.utils.printReceived(formattedReceived)}`
+          );
+        }
+      : () => {
+          const formattedReceived = formatEditor(received);
+          const formattedExpected = formatEditor(expected);
+
+          const diffString = jestDiff(formattedExpected, formattedReceived, {
+            expand: this.expand,
+          });
+          return (
+            this.utils.matcherHint('toEqualEditor', undefined, undefined, options) +
+            '\n\n' +
+            (diffString && diffString.includes('- Expect')
+              ? `Difference:\n\n${diffString}`
+              : `Expected: ${this.utils.printExpected(formattedExpected)}\n` +
+                `Received: ${this.utils.printReceived(formattedReceived)}`)
+          );
+        };
+
+    return { actual: received, message, pass };
+  },
+});
 const defaultDocumentFeatures: DocumentFeatures = {
   alignment: { center: true, end: true },
   blockTypes: { blockquote: true, code: true, panel: true, quote: true },
@@ -37,10 +101,12 @@ export const makeEditor = (
     documentFeatures,
     componentBlocks,
     normalization = 'disallow-non-normalized',
+    isShiftPressedRef,
   }: {
     documentFeatures?: DocumentFeatures;
     componentBlocks?: Record<string, ComponentBlock>;
     normalization?: 'disallow-non-normalized' | 'normalize' | 'skip';
+    isShiftPressedRef?: MutableRefObject<boolean>;
   } = {}
 ): ReactEditor => {
   if (!Editor.isEditor(node)) {
@@ -48,19 +114,26 @@ export const makeEditor = (
   }
   let editor = createDocumentEditor(
     documentFeatures || defaultDocumentFeatures,
-    componentBlocks || {}
+    componentBlocks || {},
+    isShiftPressedRef || { current: false }
   );
   editor.children = node.children;
   editor.selection = node.selection;
-
+  editor.marks = node.marks;
+  // a note about editor.marks, it's essentially a cache for Editor.marks/
+  // a stateful bit for when calling removeMark/addMark
+  // calling Editor.marks will get the _actual_ marks that will be applied
+  // so editor.marks should basically never be read
+  // but editor.marks will come from the JSX here
+  // and we want tests to explicitly specify what the marks should be
+  const marks = Editor.marks(editor);
+  if (editor.marks || (marks && Object.keys(marks).length)) {
+    expect(marks).toEqual(editor.marks);
+  }
   if (normalization !== 'skip') {
-    const selectionBeforeNormalize = editor.selection;
-    const childrenBeforeNormalize = editor.children;
-
     Editor.normalize(editor, { force: true });
     if (normalization === 'disallow-non-normalized') {
-      expect(editor.children).toEqual(childrenBeforeNormalize);
-      expect(editor.selection).toEqual(selectionBeforeNormalize);
+      expect(node).toEqualEditor(editor);
     }
   }
   return editor;
@@ -123,7 +196,12 @@ function nodeToReactElement(
     nodeToReactElement(editor, x, selection, path.concat(i))
   );
   if (Editor.isEditor(node)) {
-    return createElement('editor', { children });
+    const marks = Editor.marks(node);
+
+    return createElement('editor', {
+      children,
+      ...(marks && Object.keys(marks).length ? { marks } : {}),
+    });
   }
   let { type, ...restNode } = node;
   const computedData: { '@@isVoid'?: true; '@@isInline'?: true } = {};
@@ -139,7 +217,7 @@ function nodeToReactElement(
   return createElement('element', { ...node, ...computedData, children });
 }
 
-expect.addSnapshotSerializer({
+const editorSerializer: NewPlugin = {
   test(val) {
     return Editor.isEditor(val);
   },
@@ -152,4 +230,6 @@ expect.addSnapshotSerializer({
       refs
     );
   },
-});
+};
+
+expect.addSnapshotSerializer(editorSerializer);

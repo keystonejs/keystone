@@ -23,6 +23,56 @@ test('basic cursor snapshot', () => {
     `);
 });
 
+test('editor equality match', () => {
+  let editor = makeEditor(
+    <editor>
+      <paragraph>
+        <text>
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  );
+  expect(editor).toEqualEditor(
+    makeEditor(
+      <editor>
+        <paragraph>
+          <text>
+            <cursor />
+          </text>
+        </paragraph>
+      </editor>
+    )
+  );
+});
+
+test('editor equality mismatch', () => {
+  expect(() =>
+    expect(
+      makeEditor(
+        <editor>
+          <paragraph>
+            <text>
+              some text
+              <cursor />
+            </text>
+          </paragraph>
+        </editor>
+      )
+    ).toEqualEditor(
+      makeEditor(
+        <editor>
+          <paragraph>
+            <text>
+              <cursor />
+            </text>
+          </paragraph>
+        </editor>
+      )
+    )
+  ).toThrowError();
+});
+
 test('cursor in the middle of text', () => {
   expect(
     makeEditor(
@@ -263,4 +313,45 @@ test('delete backward', () => {
       </paragraph>
     </editor>
   `);
+});
+
+test('marks that conflict with .marks', () => {
+  expect(() =>
+    makeEditor(
+      <editor>
+        <paragraph>
+          <text bold>
+            some
+            <cursor />
+            text
+          </text>
+        </paragraph>
+      </editor>
+    )
+  ).toThrowError();
+});
+
+test('differing current marks', () => {
+  let editor = makeEditor(
+    <editor marks={{ bold: true }}>
+      <paragraph>
+        <text bold>
+          some text
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  );
+  expect(editor).not.toEqualEditor(
+    makeEditor(
+      <editor marks={{}}>
+        <paragraph>
+          <text bold>
+            some text
+            <cursor />
+          </text>
+        </paragraph>
+      </editor>
+    )
+  );
 });

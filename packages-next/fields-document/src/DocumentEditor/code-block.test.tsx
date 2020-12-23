@@ -73,7 +73,7 @@ test('insertBreak inserts a soft break', () => {
 
 test('non-text is removed from code blocks', () => {
   let editor = makeEditor(
-    <editor>
+    <editor marks={{ bold: true }}>
       <code>
         <paragraph>
           <text bold>
@@ -109,7 +109,13 @@ test('non-text is removed from code blocks', () => {
   Editor.normalize(editor, { force: true });
 
   expect(editor).toMatchInlineSnapshot(`
-    <editor>
+    <editor
+      marks={
+        Object {
+          "bold": true,
+        }
+      }
+    >
       <code>
         <text>
           asdkjnajsndakjndkjnaksdjn
