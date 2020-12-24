@@ -96,7 +96,7 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
-    graphqlSelection: `${config.path} {document}`,
+    graphqlSelection: `${config.path} {document(hydrateRelationships: true)}`,
     componentBlocks: config.customViews.componentBlocks || {},
     documentFeatures: config.fieldMeta.documentFeatures,
     relationships: config.fieldMeta.relationships,
