@@ -21,12 +21,12 @@ import { isBlockActive, moveChildren } from './utils';
 import { DocumentFeatures } from '../views';
 import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
 
-const ColumnOptionsContext = createContext<[number, ...number[]][]>([]);
+const LayoutOptionsContext = createContext<[number, ...number[]][]>([]);
 
-export const ColumnOptionsProvider = ColumnOptionsContext.Provider;
+export const LayoutOptionsProvider = LayoutOptionsContext.Provider;
 
 // UI Components
-const ColumnContainer = ({ attributes, children, element }: RenderElementProps) => {
+export const LayoutContainer = ({ attributes, children, element }: RenderElementProps) => {
   const { spacing } = useTheme();
   const focused = useFocused();
   const selected = useSelected();
@@ -35,7 +35,7 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
   // because we're just inserting things on events, not reading things in render
   const editor = useEditor();
   const layout = element.layout as number[];
-  const columnLayouts = useContext(ColumnOptionsContext);
+  const layoutOptions = useContext(LayoutOptionsContext);
 
   return (
     <div
@@ -58,7 +58,7 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
       {focused && selected && (
         <InlineDialog isRelative>
           <ToolbarGroup>
-            {columnLayouts.map((layoutOption, i) => (
+            {layoutOptions.map((layoutOption, i) => (
               <ToolbarButton
                 isSelected={layoutOption.toString() === layout.toString()}
                 key={i}
@@ -66,7 +66,7 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
                   event.preventDefault();
                   const path = ReactEditor.findPath(editor, element);
                   const cols = {
-                    type: 'columns',
+                    type: 'layout',
                     layout: layoutOption,
                   };
                   Transforms.setNodes(editor, cols, { at: path });
@@ -98,8 +98,7 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
   );
 };
 
-// Single Columns
-const Column = ({ attributes, children }: RenderElementProps) => {
+export const LayoutArea = ({ attributes, children }: RenderElementProps) => {
   const { colors, radii, spacing } = useTheme();
   return (
     <div
@@ -116,8 +115,8 @@ const Column = ({ attributes, children }: RenderElementProps) => {
   );
 };
 
-const isInsideColumn = (editor: ReactEditor) => {
-  return isBlockActive(editor, 'columns');
+const isInsideLayout = (editor: ReactEditor) => {
+  return isBlockActive(editor, 'layout');
 };
 
 function firstNonEditorRootNodeEntry(editor: Editor) {
@@ -134,11 +133,10 @@ function firstNonEditorRootNodeEntry(editor: Editor) {
   }
 }
 
-// Helper function
-const insertColumns = (editor: ReactEditor, layout: [number, ...number[]]) => {
-  if (isInsideColumn(editor)) {
+const insertLayout = (editor: ReactEditor, layout: [number, ...number[]]) => {
+  if (isInsideLayout(editor)) {
     Transforms.unwrapNodes(editor, {
-      match: node => node.type === 'columns',
+      match: node => node.type === 'layout',
     });
     return;
   }
@@ -148,7 +146,7 @@ const insertColumns = (editor: ReactEditor, layout: [number, ...number[]]) => {
       editor,
       [
         {
-          type: 'columns',
+          type: 'layout',
           layout,
           children: [],
         },
@@ -159,33 +157,24 @@ const insertColumns = (editor: ReactEditor, layout: [number, ...number[]]) => {
   }
 };
 
-export const renderColumnsElement = (props: RenderElementProps) => {
-  switch (props.element.type) {
-    case 'columns':
-      return <ColumnContainer {...props} />;
-    case 'column':
-      return <Column {...props} />;
-  }
-};
-
 // Plugin
-export const withColumns = (editor: ReactEditor) => {
+export const withLayouts = (editor: ReactEditor) => {
   const { normalizeNode, deleteBackward } = editor;
   editor.deleteBackward = unit => {
     if (
       editor.selection &&
       Range.isCollapsed(editor.selection) &&
       // this is just an little optimisation
-      // we're only doing things if we're at the start of a column
+      // we're only doing things if we're at the start of a layout area
       // and the start of anything will always be offset 0
       // so we'll bailout if we're not at offset 0
       editor.selection.anchor.offset === 0
     ) {
       const [aboveNode, abovePath] = Editor.above(editor, {
-        match: node => node.type === 'column',
+        match: node => node.type === 'layout-area',
       }) || [editor, []];
       if (
-        aboveNode.type === 'column' &&
+        aboveNode.type === 'layout-area' &&
         Point.equals(Editor.start(editor, abovePath), editor.selection.anchor)
       ) {
         return;
@@ -196,7 +185,7 @@ export const withColumns = (editor: ReactEditor) => {
   editor.normalizeNode = entry => {
     const [node, path] = entry;
 
-    if (Element.isElement(node) && node.type === 'columns') {
+    if (Element.isElement(node) && node.type === 'layout') {
       let layout = node.layout as number[];
       if (node.layout === undefined) {
         Transforms.unwrapNodes(editor, { at: path });
@@ -208,7 +197,7 @@ export const withColumns = (editor: ReactEditor) => {
           Array.from({
             length: layout.length - node.children.length,
           }).map(() => ({
-            type: 'column',
+            type: 'layout-area',
             children: [paragraphElement()],
           })),
           {
@@ -224,11 +213,11 @@ export const withColumns = (editor: ReactEditor) => {
           .map((_, i) => i)
           .reverse()
           .forEach(i => {
-            const columnToRemovePath = [...path, i + layout.length];
+            const layoutAreaToRemovePath = [...path, i + layout.length];
             const child = node.children[i + layout.length] as Element;
             moveChildren(
               editor,
-              columnToRemovePath,
+              layoutAreaToRemovePath,
               [
                 ...path,
                 layout.length - 1,
@@ -238,7 +227,7 @@ export const withColumns = (editor: ReactEditor) => {
             );
 
             Transforms.removeNodes(editor, {
-              at: columnToRemovePath,
+              at: layoutAreaToRemovePath,
             });
           });
         return;
@@ -275,28 +264,28 @@ function makeLayoutIcon(ratios: number[]) {
   return element;
 }
 
-const columnsIcon = <ColumnsIcon size="small" />;
+const layoutsIcon = <ColumnsIcon size="small" />;
 
-export const ColumnsButton = ({ columns }: { columns: DocumentFeatures['layouts'] }) => {
+export const LayoutsButton = ({ layouts }: { layouts: DocumentFeatures['layouts'] }) => {
   const editor = useSlate();
-  const isInsideColumns = isInsideColumn(editor);
+  const insideLayout = isInsideLayout(editor);
   return useMemo(
     () => (
-      <Tooltip content="Columns" weight="subtle">
+      <Tooltip content="Layouts" weight="subtle">
         {attrs => (
           <ToolbarButton
-            isSelected={isInsideColumns}
+            isSelected={insideLayout}
             onMouseDown={event => {
               event.preventDefault();
-              insertColumns(editor, columns[0]);
+              insertLayout(editor, layouts[0]);
             }}
             {...attrs}
           >
-            {columnsIcon}
+            {layoutsIcon}
           </ToolbarButton>
         )}
       </Tooltip>
     ),
-    [editor, isInsideColumns, columns]
+    [editor, insideLayout, layouts]
   );
 };

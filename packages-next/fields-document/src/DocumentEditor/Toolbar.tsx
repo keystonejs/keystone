@@ -21,7 +21,7 @@ import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './p
 import { linkButton } from './link';
 import { BlockComponentsButtons } from './component-blocks';
 import { Mark, isMarkActive, toggleMark } from './utils';
-import { ColumnsButton } from './columns';
+import { LayoutsButton } from './layouts';
 import { ListButton } from './lists';
 import { blockquoteButton } from './blockquote';
 import { RelationshipButton } from './relationship';
@@ -85,7 +85,7 @@ export const Toolbar = memo(function Toolbar({
       {documentFeatures.dividers && dividerButton}
       {documentFeatures.links && linkButton}
       {documentFeatures.formatting.blockTypes.blockquote && blockquoteButton}
-      {!!documentFeatures.layouts.length && <ColumnsButton columns={documentFeatures.layouts} />}
+      {!!documentFeatures.layouts.length && <LayoutsButton layouts={documentFeatures.layouts} />}
 
       <InsertBlockMenu blockTypes={documentFeatures.formatting.blockTypes} />
 

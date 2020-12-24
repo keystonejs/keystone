@@ -21,7 +21,7 @@ import { withHistory } from 'slate-history';
 
 import { withParagraphs } from './paragraphs';
 import { withLink } from './link';
-import { ColumnOptionsProvider, withColumns } from './columns';
+import { LayoutOptionsProvider, withLayouts } from './layouts';
 import { Mark, toggleMark } from './utils';
 import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
@@ -84,14 +84,14 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
     }
   }
   if (event.key === 'Tab' && editor.selection) {
-    const column = Editor.above(editor, {
-      match: node => node.type === 'column',
+    const layoutArea = Editor.above(editor, {
+      match: node => node.type === 'layout-area',
     });
-    if (column) {
-      const columnToEnter = event.shiftKey
-        ? Editor.before(editor, column[1], { unit: 'block' })
-        : Editor.after(editor, column[1], { unit: 'block' });
-      Transforms.setSelection(editor, { anchor: columnToEnter, focus: columnToEnter });
+    if (layoutArea) {
+      const layoutAreaToEnter = event.shiftKey
+        ? Editor.before(editor, layoutArea[1], { unit: 'block' })
+        : Editor.after(editor, layoutArea[1], { unit: 'block' });
+      Transforms.setSelection(editor, { anchor: layoutAreaToEnter, focus: layoutAreaToEnter });
       event.preventDefault();
     }
   }
@@ -117,7 +117,7 @@ export function createDocumentEditor(
                   withShortcuts(
                     withDivider(
                       documentFeatures.dividers,
-                      withColumns(
+                      withLayouts(
                         withMarks(
                           documentFeatures.formatting.inlineMarks,
                           withCodeBlock(
@@ -186,7 +186,7 @@ export function DocumentEditor({
       }
     >
       <DocumentFieldRelationshipsProvider value={relationships}>
-        <ColumnOptionsProvider value={documentFeatures.layouts}>
+        <LayoutOptionsProvider value={documentFeatures.layouts}>
           <ComponentBlockProvider value={componentBlocks}>
             <Slate
               editor={editor}
@@ -255,7 +255,7 @@ export function DocumentEditor({
               }
             </Slate>
           </ComponentBlockProvider>
-        </ColumnOptionsProvider>
+        </LayoutOptionsProvider>
       </DocumentFieldRelationshipsProvider>
     </div>
   );
@@ -373,11 +373,15 @@ const listChildren = ['list-item', 'ordered-list', 'unordered-list'] as const;
 export const editorSchema = makeEditorSchema({
   editor: {
     kind: 'blocks',
-    allowedChildren: [...insideOfLayouts, 'columns'],
+    allowedChildren: [...insideOfLayouts, 'layout'],
     invalidPositionHandleMode: 'move',
   },
-  columns: { kind: 'blocks', allowedChildren: ['column'], invalidPositionHandleMode: 'move' },
-  column: { kind: 'blocks', allowedChildren: insideOfLayouts, invalidPositionHandleMode: 'unwrap' },
+  layout: { kind: 'blocks', allowedChildren: ['layout-area'], invalidPositionHandleMode: 'move' },
+  'layout-area': {
+    kind: 'blocks',
+    allowedChildren: insideOfLayouts,
+    invalidPositionHandleMode: 'unwrap',
+  },
   blockquote: {
     kind: 'blocks',
     allowedChildren: blockquoteChildren,

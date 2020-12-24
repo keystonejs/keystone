@@ -18,8 +18,8 @@ declare namespace __jsx {
       cursor: { [key: string]: never };
       anchor: { [key: string]: never };
       focus: { [key: string]: never };
-      columns: { layout: [number, ...number[]]; children: Children };
-      column: OnlyChildren;
+      layout: { layout: [number, ...number[]]; children: Children };
+      'layout-area': OnlyChildren;
       blockquote: OnlyChildren;
       paragraph: {
         align?: 'center' | 'end';

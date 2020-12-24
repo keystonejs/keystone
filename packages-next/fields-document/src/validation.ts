@@ -40,16 +40,16 @@ const inlineChildren = t.array(inline);
 
 type Children = (Element | Inline)[];
 
-const columns: t.Type<Columns> = t.recursion('Columns', () =>
+const layoutArea: t.Type<Layout> = t.recursion('Layout', () =>
   t.type({
-    type: t.literal('columns'),
+    type: t.literal('layout'),
     layout: t.array(t.number),
     children,
   })
 );
 
-type Columns = {
-  type: 'columns';
+type Layout = {
+  type: 'layout';
   layout: number[];
   children: Children;
 };
@@ -58,7 +58,7 @@ const onlyChildrenElements: t.Type<OnlyChildrenElements> = t.recursion('OnlyChil
   t.type({
     type: t.union([
       t.literal('blockquote'),
-      t.literal('column'),
+      t.literal('layout-area'),
       t.literal('code'),
       t.literal('divider'),
       t.literal('list-item'),
@@ -72,7 +72,7 @@ const onlyChildrenElements: t.Type<OnlyChildrenElements> = t.recursion('OnlyChil
 type OnlyChildrenElements = {
   type:
     | 'blockquote'
-    | 'column'
+    | 'layout-area'
     | 'code'
     | 'divider'
     | 'list-item'
@@ -175,16 +175,10 @@ const componentProp: t.Type<ComponentProp> = t.recursion('ComponentProp', () =>
   })
 );
 
-type Element =
-  | Columns
-  | OnlyChildrenElements
-  | Heading
-  | ComponentBlock
-  | ComponentProp
-  | Paragraph;
+type Element = Layout | OnlyChildrenElements | Heading | ComponentBlock | ComponentProp | Paragraph;
 
 const element: t.Type<Element> = t.recursion('Element', () =>
-  t.union([columns, onlyChildrenElements, heading, componentBlock, componentProp, paragraph])
+  t.union([layoutArea, onlyChildrenElements, heading, componentBlock, componentProp, paragraph])
 );
 
 const children: t.Type<Children> = t.recursion('Children', () =>

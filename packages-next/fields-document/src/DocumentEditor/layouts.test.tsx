@@ -1,18 +1,18 @@
 /** @jsx jsx */
 import { jsx, makeEditor } from './tests/utils';
 
-test('columns with no layout are unwrapped', () => {
+test('layout with no layout are unwrapped', () => {
   let editor = makeEditor(
     <editor>
-      <columns layout={undefined as any}>
-        <column>
+      <layout layout={undefined as any}>
+        <layout-area>
           <paragraph>
             <text>
               <cursor />
             </text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
     </editor>,
     { normalization: 'normalize' }
   );
@@ -28,25 +28,25 @@ test('columns with no layout are unwrapped', () => {
   `);
 });
 
-test('columns with not enough columns are added', () => {
+test('layout with not enough layout-area are added', () => {
   let editor = makeEditor(
     <editor>
-      <columns layout={[1, 1]}>
-        <column>
+      <layout layout={[1, 1]}>
+        <layout-area>
           <paragraph>
             <text>
               <cursor />
             </text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
     </editor>,
     { normalization: 'normalize' }
   );
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
-      <columns
+      <layout
         layout={
           Array [
             1,
@@ -54,21 +54,21 @@ test('columns with not enough columns are added', () => {
           ]
         }
       >
-        <column>
+        <layout-area>
           <paragraph>
             <text>
               <cursor />
             </text>
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
             <text>
               
             </text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
       <paragraph>
         <text>
           
@@ -78,40 +78,40 @@ test('columns with not enough columns are added', () => {
   `);
 });
 
-test('columns with extra columns that are empty are removed', () => {
+test('layout with extra layout-areas that are empty are removed', () => {
   let editor = makeEditor(
     <editor>
-      <columns layout={[1, 1]}>
-        <column>
+      <layout layout={[1, 1]}>
+        <layout-area>
           <paragraph>
             <text />
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
             <text />
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
             <text />
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
             <text>
               <cursor />
             </text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
     </editor>,
     { normalization: 'normalize' }
   );
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
-      <columns
+      <layout
         layout={
           Array [
             1,
@@ -119,21 +119,21 @@ test('columns with extra columns that are empty are removed', () => {
           ]
         }
       >
-        <column>
+        <layout-area>
           <paragraph>
             <text>
               
             </text>
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
             <text>
               <cursor />
             </text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
       <paragraph>
         <text>
           
@@ -143,50 +143,50 @@ test('columns with extra columns that are empty are removed', () => {
   `);
 });
 
-test('the content of extra columns are merged into the last column', () => {
+test('the content of extra layout-areas are merged into the last layout-area', () => {
   let editor = makeEditor(
     <editor>
-      <columns layout={[1, 1]}>
-        <column>
+      <layout layout={[1, 1]}>
+        <layout-area>
           <paragraph>
             <text />
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
-            <text>last column</text>
+            <text>last layout area</text>
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
             <text>
               some content <cursor /> more content
             </text>
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
             <text>even more</text>
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
             <text />
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
             <text>even more</text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
     </editor>,
     { normalization: 'normalize' }
   );
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
-      <columns
+      <layout
         layout={
           Array [
             1,
@@ -194,17 +194,17 @@ test('the content of extra columns are merged into the last column', () => {
           ]
         }
       >
-        <column>
+        <layout-area>
           <paragraph>
             <text>
               
             </text>
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
             <text>
-              last column
+              last layout area
             </text>
           </paragraph>
           <paragraph>
@@ -224,8 +224,8 @@ test('the content of extra columns are merged into the last column', () => {
               even more
             </text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
       <paragraph>
         <text>
           
@@ -235,11 +235,11 @@ test('the content of extra columns are merged into the last column', () => {
   `);
 });
 
-test('enter in columns never exit column', () => {
+test('enter in layout area never exits layout area', () => {
   let editor = makeEditor(
     <editor>
-      <columns layout={[1]}>
-        <column>
+      <layout layout={[1]}>
+        <layout-area>
           <paragraph>
             <text />
           </paragraph>
@@ -248,8 +248,8 @@ test('enter in columns never exit column', () => {
               <cursor />
             </text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
       <paragraph>
         <text />
       </paragraph>
@@ -263,14 +263,14 @@ test('enter in columns never exit column', () => {
 
   expect(editor).toMatchInlineSnapshot(`
     <editor>
-      <columns
+      <layout
         layout={
           Array [
             1,
           ]
         }
       >
-        <column>
+        <layout-area>
           <paragraph>
             <text>
               
@@ -296,8 +296,8 @@ test('enter in columns never exit column', () => {
               <cursor />
             </text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
       <paragraph>
         <text>
           
@@ -307,21 +307,21 @@ test('enter in columns never exit column', () => {
   `);
 });
 
-test('delete backward never deletes or exits column in first column', () => {
+test('delete backward never deletes or exits in first layout area', () => {
   let editor = makeEditor(
     <editor>
       <paragraph>
         <text />
       </paragraph>
-      <columns layout={[1]}>
-        <column>
+      <layout layout={[1]}>
+        <layout-area>
           <paragraph>
             <text>
               <cursor />
             </text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
       <paragraph>
         <text />
       </paragraph>
@@ -340,21 +340,21 @@ test('delete backward never deletes or exits column in first column', () => {
           
         </text>
       </paragraph>
-      <columns
+      <layout
         layout={
           Array [
             1,
           ]
         }
       >
-        <column>
+        <layout-area>
           <paragraph>
             <text>
               <cursor />
             </text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
       <paragraph>
         <text>
           
@@ -364,26 +364,26 @@ test('delete backward never deletes or exits column in first column', () => {
   `);
 });
 
-test('delete backward never deletes or exits column in second column', () => {
+test('delete backward never deletes or exits in second layout area', () => {
   let editor = makeEditor(
     <editor>
       <paragraph>
         <text />
       </paragraph>
-      <columns layout={[1, 1]}>
-        <column>
+      <layout layout={[1, 1]}>
+        <layout-area>
           <paragraph>
             <text />
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
             <text>
               <cursor />
             </text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
       <paragraph>
         <text />
       </paragraph>
@@ -402,7 +402,7 @@ test('delete backward never deletes or exits column in second column', () => {
           
         </text>
       </paragraph>
-      <columns
+      <layout
         layout={
           Array [
             1,
@@ -410,21 +410,21 @@ test('delete backward never deletes or exits column in second column', () => {
           ]
         }
       >
-        <column>
+        <layout-area>
           <paragraph>
             <text>
               
             </text>
           </paragraph>
-        </column>
-        <column>
+        </layout-area>
+        <layout-area>
           <paragraph>
             <text>
               <cursor />
             </text>
           </paragraph>
-        </column>
-      </columns>
+        </layout-area>
+      </layout>
       <paragraph>
         <text>
           

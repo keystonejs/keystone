@@ -139,7 +139,7 @@ function DocumentNode({
       }
       break;
     }
-    case 'columns': {
+    case 'layout': {
       return <renderers.block.layout layout={node.layout as any} children={children} />;
     }
     case 'divider': {

@@ -3,7 +3,7 @@
 import { jsx, useTheme } from '@keystone-ui/core';
 import { RenderElementProps, useSelected } from 'slate-react';
 
-import { renderColumnsElement } from './columns';
+import { LayoutArea, LayoutContainer } from './layouts';
 import { ComponentBlocksElement, ComponentInlineProp } from './component-blocks';
 import { LinkElement } from './link';
 import { HeadingElement } from './heading';
@@ -11,10 +11,11 @@ import { BlockquoteElement } from './blockquote';
 import { RelationshipElement } from './relationship';
 
 export const renderElement = (props: RenderElementProps) => {
-  const columnsElement = renderColumnsElement(props);
-  if (columnsElement) return columnsElement;
-
   switch (props.element.type) {
+    case 'layout':
+      return <LayoutContainer {...props} />;
+    case 'layout-area':
+      return <LayoutArea {...props} />;
     case 'code':
       return <CodeElement {...props} />;
     case 'component-block':
