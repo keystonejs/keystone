@@ -7,8 +7,12 @@ import { Editor, Transforms } from 'slate';
 import { getMaybeMarkdownShortcutText } from './utils';
 
 export const HeadingElement = ({ attributes, children, element }: RenderElementProps) => {
-  const Tag = `h${element.level}`;
-  return <Tag {...attributes}>{children}</Tag>;
+  const Tag = `h${element.level}` as 'h1';
+  return (
+    <Tag {...attributes} css={{ textAlign: element.textAlign as any }}>
+      {children}
+    </Tag>
+  );
 };
 
 export function withHeading(headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[], editor: ReactEditor) {
