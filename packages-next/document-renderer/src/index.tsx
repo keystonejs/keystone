@@ -33,12 +33,16 @@ interface Renderers {
     link: Component<{ children: ReactNode; href: string }> | 'a';
   } & MarkRenderers;
   block: {
-    paragraph: OnlyChildrenComponent;
+    paragraph: Component<{ children: ReactNode; textAlign: 'center' | 'end' | undefined }>;
     blockquote: OnlyChildrenComponent;
     code: Component<{ children: string }> | keyof JSX.IntrinsicElements;
     layout: Component<{ layout: [number, ...number[]]; children: ReactElement[] }>;
     divider: Component<{}> | keyof JSX.IntrinsicElements;
-    heading: Component<{ level: 1 | 2 | 3 | 4 | 5 | 6; children: ReactNode }>;
+    heading: Component<{
+      level: 1 | 2 | 3 | 4 | 5 | 6;
+      children: ReactNode;
+      textAlign: 'center' | 'end' | undefined;
+    }>;
     list: Component<{ type: 'ordered' | 'unordered'; children: ReactElement[] }>;
   };
 }
@@ -59,11 +63,13 @@ const defaultRenderers: Renderers = {
   },
   block: {
     blockquote: 'blockquote',
-    paragraph: 'p',
+    paragraph: ({ children, textAlign }) => {
+      return <p style={{ textAlign }}>{children}</p>;
+    },
     divider: 'hr',
-    heading: ({ level, children }) => {
+    heading: ({ level, children, textAlign }) => {
       let Heading = `h${level}` as 'h1';
-      return <Heading children={children} />;
+      return <Heading style={{ textAlign }} children={children} />;
     },
     code: 'pre',
     list: ({ children, type }) => {
@@ -98,7 +104,7 @@ function DocumentNode({
 }: {
   node: Element | Text;
   renderers: Renderers;
-  // TODO allow inferring from the component blocks
+  // TODO: allow inferring from the component blocks
   componentBlocks: Record<string, Component<any>>;
 }): ReactElement {
   if (typeof _node.text === 'string') {
@@ -117,10 +123,11 @@ function DocumentNode({
     <DocumentNode node={x} componentBlocks={componentBlocks} renderers={renderers} key={i} />
   ));
   switch (node.type as string) {
-    case 'blockquote':
+    case 'blockquote': {
+      return <renderers.block.blockquote children={children} />;
+    }
     case 'paragraph': {
-      const Comp = renderers.block[node.type as 'blockquote' | 'paragraph'];
-      return <Comp children={children} />;
+      return <renderers.block.paragraph textAlign={node.textAlign as any} children={children} />;
     }
     case 'code': {
       if (
@@ -139,7 +146,13 @@ function DocumentNode({
       return <renderers.block.divider />;
     }
     case 'heading': {
-      return <renderers.block.heading level={node.level as any} children={children} />;
+      return (
+        <renderers.block.heading
+          textAlign={node.textAlign as any}
+          level={node.level as any}
+          children={children}
+        />
+      );
     }
     case 'component-block': {
       const Comp = componentBlocks[node.component as string];

@@ -83,8 +83,6 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
   }
 };
 
-/* Leaf Elements */
-
 export function createDocumentEditor(
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
