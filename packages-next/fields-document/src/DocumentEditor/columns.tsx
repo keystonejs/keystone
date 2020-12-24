@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { createContext, useContext, useMemo } from 'react';
-import { Editor, Element, Node, Transforms } from 'slate';
+import { Editor, Element, Node, Transforms, Range, Point } from 'slate';
 import {
   ReactEditor,
   RenderElementProps,
@@ -170,7 +170,29 @@ export const renderColumnsElement = (props: RenderElementProps) => {
 
 // Plugin
 export const withColumns = (editor: ReactEditor) => {
-  const { normalizeNode } = editor;
+  const { normalizeNode, deleteBackward } = editor;
+  editor.deleteBackward = unit => {
+    if (
+      editor.selection &&
+      Range.isCollapsed(editor.selection) &&
+      // this is just an little optimisation
+      // we're only doing things if we're at the start of a column
+      // and the start of anything will always be offset 0
+      // so we'll bailout if we're not at offset 0
+      editor.selection.anchor.offset === 0
+    ) {
+      const [aboveNode, abovePath] = Editor.above(editor, {
+        match: node => node.type === 'column',
+      }) || [editor, []];
+      if (
+        aboveNode.type === 'column' &&
+        Point.equals(Editor.start(editor, abovePath), editor.selection.anchor)
+      ) {
+        return;
+      }
+    }
+    deleteBackward(unit);
+  };
   editor.normalizeNode = entry => {
     const [node, path] = entry;
 
