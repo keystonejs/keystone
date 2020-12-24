@@ -80,6 +80,19 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
           children: [],
         });
       }
+      return;
+    }
+  }
+  if (event.key === 'Tab' && editor.selection) {
+    const column = Editor.above(editor, {
+      match: node => node.type === 'column',
+    });
+    if (column) {
+      const columnToEnter = event.shiftKey
+        ? Editor.before(editor, column[1], { unit: 'block' })
+        : Editor.after(editor, column[1], { unit: 'block' });
+      Transforms.setSelection(editor, { anchor: columnToEnter, focus: columnToEnter });
+      event.preventDefault();
     }
   }
 };
