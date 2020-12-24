@@ -361,12 +361,12 @@ export type ExtractPropFromComponentPropFieldForPreview<
   : Prop extends RelationshipField<infer Cardinality>
   ? {
       one: {
-        readonly value: RelationshipData | null;
-        onChange(relationshipData: RelationshipData | null): void;
+        readonly value: HydratedRelationshipData | null;
+        onChange(relationshipData: HydratedRelationshipData | null): void;
       };
       many: {
-        readonly value: readonly RelationshipData[];
-        onChange(relationshipData: readonly RelationshipData[]): void;
+        readonly value: readonly HydratedRelationshipData[];
+        onChange(relationshipData: readonly HydratedRelationshipData[]): void;
       };
     }[Cardinality]
   : never;
@@ -399,20 +399,26 @@ type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField
   : Prop extends RelationshipField<infer Cardinality>
   ? {
       one: {
-        readonly value: RelationshipData | null;
-        onChange(relationshipData: RelationshipData | null): void;
+        readonly value: HydratedRelationshipData | null;
+        onChange(relationshipData: HydratedRelationshipData | null): void;
       };
       many: {
-        readonly value: readonly RelationshipData[];
-        onChange(relationshipData: readonly RelationshipData[]): void;
+        readonly value: readonly HydratedRelationshipData[];
+        onChange(relationshipData: readonly HydratedRelationshipData[]): void;
       };
     }[Cardinality]
   : never;
 
+export type HydratedRelationshipData = {
+  id: string;
+  label: string;
+  data: Record<string, any>;
+};
+
 export type RelationshipData = {
-  readonly id: string;
-  readonly label: string | null;
-  readonly data: Record<string, any>;
+  id: string;
+  label?: string;
+  data?: Record<string, any>;
 };
 
 export function component<

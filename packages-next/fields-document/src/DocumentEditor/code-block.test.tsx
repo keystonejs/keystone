@@ -86,7 +86,7 @@ test('non-text is removed from code blocks', () => {
           <divider>
             <text />
           </divider>
-          <link url="something">
+          <link href="something">
             <text>some thing</text>
           </link>
         </paragraph>

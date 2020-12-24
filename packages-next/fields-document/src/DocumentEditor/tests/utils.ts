@@ -8,6 +8,7 @@ import { DocumentFeatures } from '../../views';
 export { __jsx as jsx } from './jsx/namespace';
 import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
 import jestDiff from 'jest-diff';
+import { validateDocument } from '../../validation';
 
 function formatEditor(editor: Node) {
   return prettyFormat(editor, {
@@ -120,6 +121,7 @@ export const makeEditor = (
     componentBlocks || {},
     isShiftPressedRef || { current: false }
   );
+  validateDocument(editor.children);
   editor.children = node.children;
   editor.selection = node.selection;
   editor.marks = node.marks;
