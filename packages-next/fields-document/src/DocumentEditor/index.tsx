@@ -46,6 +46,7 @@ import { withCodeBlock } from './code-block';
 import { withMarks } from './marks';
 import { renderLeaf } from './leaf';
 import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
+import { withShortcuts } from './shortcuts';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -100,16 +101,18 @@ export function createDocumentEditor(
               withComponentBlocks(
                 componentBlocks,
                 withParagraphs(
-                  withDivider(
-                    documentFeatures.dividers,
-                    withColumns(
-                      withMarks(
-                        documentFeatures.formatting.inlineMarks,
-                        withCodeBlock(
-                          documentFeatures.formatting.blockTypes.code,
-                          withBlockquote(
-                            documentFeatures.formatting.blockTypes.blockquote,
-                            withHistory(withReact(createEditor()))
+                  withShortcuts(
+                    withDivider(
+                      documentFeatures.dividers,
+                      withColumns(
+                        withMarks(
+                          documentFeatures.formatting.inlineMarks,
+                          withCodeBlock(
+                            documentFeatures.formatting.blockTypes.code,
+                            withBlockquote(
+                              documentFeatures.formatting.blockTypes.blockquote,
+                              withHistory(withReact(createEditor()))
+                            )
                           )
                         )
                       )
