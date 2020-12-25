@@ -1,28 +1,15 @@
-import type {
-  SerializedAdminMeta,
-  KeystoneConfig,
-  FieldType,
-  BaseKeystone,
-} from '@keystone-next/types';
+import type { KeystoneConfig, BaseKeystone, AdminMetaRootVal } from '@keystone-next/types';
+import { viewHash } from '../utils/viewHash';
 
 export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) {
-  const { ui, lists } = config;
-  const adminMeta: SerializedAdminMeta = {
+  const { ui, lists, session } = config;
+  const adminMetaRoot: AdminMetaRootVal = {
     enableSessionItem: ui?.enableSessionItem || false,
-    enableSignout: config.session !== undefined,
-    lists: {},
+    enableSignout: session !== undefined,
+    listsByKey: {},
+    lists: [],
   };
-  let uniqueViewCount = -1;
-  const stringViewsToIndex: Record<string, number> = {};
-  const allViews: string[] = [];
-  function getViewsId(views: string) {
-    if (stringViewsToIndex[views] === undefined) {
-      uniqueViewCount++;
-      stringViewsToIndex[views] = uniqueViewCount;
-      allViews.push(views);
-    }
-    return stringViewsToIndex[views];
-  }
+
   Object.keys(lists).forEach(key => {
     const listConfig = lists[key];
     const list = keystone.lists[key];
@@ -36,7 +23,7 @@ export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) 
         : listConfig.fields.title
         ? 'title'
         : 'id');
-    adminMeta.lists[key] = {
+    adminMetaRoot.listsByKey[key] = {
       key,
       labelField,
       description: listConfig.ui?.description ?? listConfig.description ?? null,
@@ -44,31 +31,38 @@ export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) 
       singular: list.adminUILabels.singular,
       plural: list.adminUILabels.plural,
       path: list.adminUILabels.path,
-      fields: {},
+      fields: [],
       pageSize: listConfig.ui?.listView?.pageSize ?? 50,
-      gqlNames: list.gqlNames,
       initialColumns: (listConfig.ui?.listView?.initialColumns as string[]) ?? [labelField],
       initialSort:
         (listConfig.ui?.listView?.initialSort as
           | { field: string; direction: 'ASC' | 'DESC' }
           | undefined) ?? null,
+      itemQueryName: list.gqlNames.itemQueryName,
+      listQueryName: list.gqlNames.listQueryName.replace('all', ''),
     };
+    adminMetaRoot.lists.push(adminMetaRoot.listsByKey[key]);
   });
-  Object.keys(adminMeta.lists).forEach(key => {
+  // Populate .fields array
+  Object.keys(lists).forEach(key => {
     const listConfig = lists[key];
     const list = keystone.lists[key];
-    for (const fieldKey of Object.keys(listConfig.fields)) {
-      const field: FieldType<any> = listConfig.fields[fieldKey];
-      adminMeta.lists[key].fields[fieldKey] = {
+    for (const fieldKey of Object.keys(listConfig.fields).filter(
+      path => listConfig.fields[path].config.access?.read !== false
+    )) {
+      const field = listConfig.fields[fieldKey];
+      adminMetaRoot.listsByKey[key].fields.push({
         label: list.fieldsByPath[fieldKey].label,
-        viewsIndex: getViewsId(field.views),
-        customViews:
-          field.config.ui?.views === undefined ? null : getViewsId(field.config.ui.views),
-        fieldMeta: field.getAdminMeta?.(key, fieldKey, adminMeta) ?? null,
+        viewsHash: viewHash(field.views),
+        customViewsHash:
+          field.config.ui?.views === undefined ? null : viewHash(field.config.ui.views),
+        fieldMeta: field.getAdminMeta?.(key, fieldKey, adminMetaRoot) ?? null,
         isOrderable: list.fieldsByPath[fieldKey].isOrderable || fieldKey === 'id',
-      };
+        path: fieldKey,
+        listKey: key,
+      });
     }
   });
 
-  return { adminMeta, allViews };
+  return adminMetaRoot;
 }

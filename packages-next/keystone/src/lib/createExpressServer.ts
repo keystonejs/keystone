@@ -1,34 +1,41 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import cors from 'cors';
 import express from 'express';
+import { GraphQLSchema } from 'graphql';
 import { ApolloServer } from 'apollo-server-express';
+import { graphqlUploadExpress } from 'graphql-upload';
 // @ts-ignore
 import { formatError } from '@keystonejs/keystone/lib/Keystone/format-error';
-import type { KeystoneSystem, KeystoneConfig, SessionImplementation } from '@keystone-next/types';
+import type {
+  KeystoneSystem,
+  KeystoneConfig,
+  SessionImplementation,
+  CreateContext,
+} from '@keystone-next/types';
 import { createAdminUIServer } from '@keystone-next/admin-ui/system';
 import { implementSession } from '../session';
 
 const addApolloServer = ({
   server,
-  system,
+  graphQLSchema,
+  createContext,
   sessionImplementation,
 }: {
   server: express.Express;
-  system: KeystoneSystem;
+  graphQLSchema: GraphQLSchema;
+  createContext: CreateContext;
   sessionImplementation?: SessionImplementation;
 }) => {
-  const { graphQLSchema, createContext } = system;
   const apolloServer = new ApolloServer({
-    // FIXME: Support for file handling configuration
-    // maxFileSize: 200 * 1024 * 1024,
-    // maxFiles: 5,
+    uploads: false,
     schema: graphQLSchema,
     // FIXME: allow the dev to control where/when they get a playground
     playground: { settings: { 'request.credentials': 'same-origin' } },
     formatError, // TODO: this needs to be discussed
     context: async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
       createContext({
-        sessionContext: await sessionImplementation?.createContext(req, res, createContext),
+        sessionContext: await sessionImplementation?.createSessionContext(req, res, createContext),
+        req,
       }),
     // FIXME: support for apollo studio tracing
     // ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
@@ -45,10 +52,18 @@ const addApolloServer = ({
   });
   // FIXME: Support custom API path via config.graphql.path.
   // Note: Core keystone uses '/admin/api' as the default.
+  // FIXME: Support for file handling configuration
+  // maxFileSize: 200 * 1024 * 1024,
+  // maxFiles: 5,
+  server.use(graphqlUploadExpress());
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql', cors: false });
 };
 
-export const createExpressServer = async (config: KeystoneConfig, system: KeystoneSystem) => {
+export const createExpressServer = async (
+  config: KeystoneConfig,
+  system: KeystoneSystem,
+  dev: boolean
+) => {
   const server = express();
 
   if (config.server?.cors) {
@@ -64,10 +79,11 @@ export const createExpressServer = async (config: KeystoneConfig, system: Keysto
   const sessionImplementation = config.session ? implementSession(config.session()) : undefined;
 
   console.log('✨ Preparing GraphQL Server');
-  addApolloServer({ server, system, sessionImplementation });
+  const { graphQLSchema, createContext } = system;
+  addApolloServer({ server, graphQLSchema, createContext, sessionImplementation });
 
   console.log('✨ Preparing Next.js app');
-  server.use(await createAdminUIServer(config.ui, system, sessionImplementation));
+  server.use(await createAdminUIServer(config.ui, system, dev, sessionImplementation));
 
   return server;
 };

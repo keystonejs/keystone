@@ -20,6 +20,8 @@ export type BaseKeystone = {
   connect: () => Promise<void>;
   lists: Record<string, BaseKeystoneList>;
   createApolloServer: (args: { schemaName: string; dev: boolean }) => any;
+  getTypeDefs: (args: { schemaName: string }) => any;
+  getResolvers: (args: { schemaName: string }) => any;
   queryLimits: { maxTotalResults: number };
 };
 

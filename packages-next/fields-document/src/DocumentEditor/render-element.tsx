@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { RenderElementProps } from 'slate-react';
+import { RenderElementProps, useSelected } from 'slate-react';
 
 import { renderColumnsElement } from './columns';
 import { ComponentBlocksElement, ComponentInlineProp } from './component-blocks';
@@ -71,15 +71,23 @@ const CodeElement = ({ attributes, children }: RenderElementProps) => {
 
 const DividerElement = ({ attributes, children }: RenderElementProps) => {
   const { colors, spacing } = useTheme();
+  const selected = useSelected();
   return (
-    <div {...attributes}>
+    <div
+      {...attributes}
+      css={{
+        paddingBottom: spacing.medium,
+        paddingTop: spacing.medium,
+        marginBottom: spacing.medium,
+        marginTop: spacing.medium,
+        caretColor: 'transparent',
+      }}
+    >
       <hr
         css={{
-          backgroundColor: colors.border,
+          backgroundColor: selected ? colors.linkColor : colors.border,
           border: 0,
           height: 2,
-          marginBottom: spacing.xlarge,
-          marginTop: spacing.xlarge,
         }}
       />
       {children}

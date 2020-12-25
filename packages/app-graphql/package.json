@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/app-graphql",
   "description": "KeystoneJS GraphQL App.",
-  "version": "6.1.3",
+  "version": "6.2.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -12,6 +12,7 @@
     "@keystonejs/session": "^8.1.1",
     "@keystonejs/utils": "^5.4.3",
     "graphql": "^15.4.0",
+    "graphql-upload": "^11.0.0",
     "nanoassert": "^2.0.0"
   },
   "peerDependencies": {

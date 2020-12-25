@@ -1,14 +1,14 @@
 /** @jsx jsx */
 
-import { createContext, memo, useContext } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import { Editor, Element, Node, Transforms } from 'slate';
 import {
   ReactEditor,
   RenderElementProps,
-  useEditor,
   useFocused,
   useSelected,
   useSlate,
+  useEditor,
 } from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -30,7 +30,10 @@ const ColumnContainer = ({ attributes, children, element }: RenderElementProps) 
   const { spacing } = useTheme();
   const focused = useFocused();
   const selected = useSelected();
-  const editor = useSlate();
+  // useEditor does not update when the value/selection changes.
+  // that's fine for what it's being used for here
+  // because we're just inserting things on events, not reading things in render
+  const editor = useEditor();
   const layout = element.layout as number[];
   const columnLayouts = useContext(ColumnOptionsContext);
 
@@ -113,7 +116,7 @@ const Column = ({ attributes, children }: RenderElementProps) => {
   );
 };
 
-export const isInsideColumn = (editor: ReactEditor) => {
+const isInsideColumn = (editor: ReactEditor) => {
   return isBlockActive(editor, 'columns');
 };
 
@@ -132,7 +135,7 @@ function firstNonEditorRootNodeEntry(editor: Editor) {
 }
 
 // Helper function
-export const insertColumns = (editor: ReactEditor, layout: [number, ...number[]]) => {
+const insertColumns = (editor: ReactEditor, layout: [number, ...number[]]) => {
   if (isInsideColumn(editor)) {
     Transforms.unwrapNodes(editor, {
       match: node => node.type === 'columns',
@@ -147,16 +150,7 @@ export const insertColumns = (editor: ReactEditor, layout: [number, ...number[]]
         {
           type: 'columns',
           layout,
-          children: [
-            {
-              type: 'column',
-              children: [paragraphElement()],
-            },
-            {
-              type: 'column',
-              children: [paragraphElement()],
-            },
-          ],
+          children: [],
         },
       ],
       { at: [entry[1][0] + 1] }
@@ -179,21 +173,6 @@ export const withColumns = (editor: ReactEditor) => {
   const { normalizeNode } = editor;
   editor.normalizeNode = entry => {
     const [node, path] = entry;
-
-    if (Element.isElement(node) || Editor.isEditor(node)) {
-      for (let i = node.children.length - 1; i >= 0; i--) {
-        const childPath = [...path, i];
-        const childNode = node.children[i];
-        if (childNode.type === 'columns' && Element.isElement(node)) {
-          Transforms.unwrapNodes(editor, { at: childPath });
-          return;
-        }
-        if (childNode.type === 'column' && node.type !== 'columns') {
-          Transforms.unwrapNodes(editor, { at: childPath });
-          return;
-        }
-      }
-    }
 
     if (Element.isElement(node) && node.type === 'columns') {
       let layout = node.layout as number[];
@@ -219,21 +198,27 @@ export const withColumns = (editor: ReactEditor) => {
       if (node.children.length > layout.length) {
         Array.from({
           length: node.children.length - layout.length,
-        }).forEach((_, i) => {
-          const columnToRemovePath = [...path, i + layout.length];
-          const child = node.children[i + layout.length] as Element;
-          if (child.children.some(x => x.type !== 'paragraph') || Node.string(child) !== '') {
-            moveChildren(editor, columnToRemovePath, [
-              ...path,
-              layout.length - 1,
-              (node.children[layout.length - 1] as Element).children.length,
-            ]);
-          }
+        })
+          .map((_, i) => i)
+          .reverse()
+          .forEach(i => {
+            const columnToRemovePath = [...path, i + layout.length];
+            const child = node.children[i + layout.length] as Element;
+            moveChildren(
+              editor,
+              columnToRemovePath,
+              [
+                ...path,
+                layout.length - 1,
+                (node.children[layout.length - 1] as Element).children.length,
+              ],
+              node => node.type !== 'paragraph' || Node.string(child) !== ''
+            );
 
-          Transforms.removeNodes(editor, {
-            at: columnToRemovePath,
+            Transforms.removeNodes(editor, {
+              at: columnToRemovePath,
+            });
           });
-        });
         return;
       }
     }
@@ -268,24 +253,28 @@ function makeLayoutIcon(ratios: number[]) {
   return element;
 }
 
-export const ColumnsButton = memo(({ columns }: { columns: DocumentFeatures['columns'] }) => {
-  // useEditor does not update when the value/selection changes.
-  // that's fine for what it's being used for here
-  // because we're just inserting things on events, not reading things in render
-  const editor = useEditor();
-  return (
-    <Tooltip content="Columns" weight="subtle">
-      {attrs => (
-        <ToolbarButton
-          onMouseDown={event => {
-            event.preventDefault();
-            insertColumns(editor, columns[0]);
-          }}
-          {...attrs}
-        >
-          <ColumnsIcon size="small" />
-        </ToolbarButton>
-      )}
-    </Tooltip>
+const columnsIcon = <ColumnsIcon size="small" />;
+
+export const ColumnsButton = ({ columns }: { columns: DocumentFeatures['columns'] }) => {
+  const editor = useSlate();
+  const isInsideColumns = isInsideColumn(editor);
+  return useMemo(
+    () => (
+      <Tooltip content="Columns" weight="subtle">
+        {attrs => (
+          <ToolbarButton
+            isSelected={isInsideColumns}
+            onMouseDown={event => {
+              event.preventDefault();
+              insertColumns(editor, columns[0]);
+            }}
+            {...attrs}
+          >
+            {columnsIcon}
+          </ToolbarButton>
+        )}
+      </Tooltip>
+    ),
+    [editor, isInsideColumns, columns]
   );
-});
+};

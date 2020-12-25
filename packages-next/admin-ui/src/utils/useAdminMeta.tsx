@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLazyQuery } from '../apollo';
 import hashString from '@emotion/hash';
-import { SerializedAdminMeta, AdminMeta, FieldViews, getGqlNames } from '@keystone-next/types';
+import { AdminMeta, FieldViews, getGqlNames } from '@keystone-next/types';
 import { StaticAdminMetaQuery, staticAdminMetaQuery } from '../admin-meta-graphql';
 
 const expectedExports = new Set(['Cell', 'Field', 'controller', 'CardValue']);
@@ -36,7 +36,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
     try {
       let parsed = JSON.parse(item);
       if (parsed.hash === adminMetaHash) {
-        return parsed.meta as SerializedAdminMeta;
+        return parsed.meta as StaticAdminMetaQuery['keystone']['adminMeta'];
       }
     } catch (err) {
       return;
@@ -74,24 +74,24 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
       };
       list.fields.forEach(field => {
         expectedExports.forEach(exportName => {
-          if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
+          if ((fieldViews[field.viewsHash] as any)[exportName] === undefined) {
             throw new Error(
               `The view for the field at ${list.key}.${field.path} is missing the ${exportName} export`
             );
           }
         });
-        Object.keys(fieldViews[field.viewsIndex]).forEach(exportName => {
+        Object.keys(fieldViews[field.viewsHash]).forEach(exportName => {
           if (!expectedExports.has(exportName) && exportName !== 'allowedExportsOnCustomViews') {
             throw new Error(
               `Unexpected export named ${exportName} from the view from the field at ${list.key}.${field.path}`
             );
           }
         });
-        const views = fieldViews[field.viewsIndex];
+        const views = fieldViews[field.viewsHash];
         const customViews: Record<string, any> = {};
-        if (field.customViews !== null) {
+        if (field.customViewsHash !== null) {
           const customViewsSource: FieldViews[number] & Record<string, any> =
-            fieldViews[field.customViews];
+            fieldViews[field.customViewsHash];
           const allowedExportsOnCustomViews = new Set(views.allowedExportsOnCustomViews);
           Object.keys(customViewsSource).forEach(exportName => {
             if (allowedExportsOnCustomViews.has(exportName)) {
@@ -108,7 +108,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
         runtimeAdminMeta.lists[list.key].fields[field.path] = {
           ...field,
           views,
-          controller: fieldViews[field.viewsIndex].controller({
+          controller: fieldViews[field.viewsHash].controller({
             listKey: list.key,
             fieldMeta: field.fieldMeta,
             label: field.label,

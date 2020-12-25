@@ -1,11 +1,22 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { KeyboardEvent, ReactNode, useState } from 'react';
+import { KeyboardEvent, MutableRefObject, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
-import { Editor, Node, Range, Transforms, createEditor, NodeEntry, Element } from 'slate';
-import { Editable, ReactEditor, RenderLeafProps, Slate, withReact } from 'slate-react';
+import {
+  Editor,
+  Node,
+  Range,
+  Transforms,
+  createEditor,
+  NodeEntry,
+  Element,
+  Text,
+  Descendant,
+  Path,
+} from 'slate';
+import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 
 import { withParagraphs } from './paragraphs';
@@ -32,6 +43,9 @@ import {
 import { DocumentFeatures } from '../views';
 import { withDivider } from './divider';
 import { withCodeBlock } from './code-block';
+import { withMarks } from './marks';
+import { renderLeaf } from './leaf';
+import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -71,109 +85,47 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
 
 /* Leaf Elements */
 
-function Placeholder({ placeholder, children }: { placeholder: string; children: ReactNode }) {
-  const [width, setWidth] = useState(0);
-  return (
-    <span css={{ position: 'relative', display: 'inline-block', width }}>
-      <span
-        contentEditable={false}
-        style={{
-          position: 'absolute',
-          pointerEvents: 'none',
-          display: 'inline-block',
-          left: 0,
-          top: 0,
-          maxWidth: '100%',
-          whiteSpace: 'nowrap',
-          opacity: '0.5',
-          userSelect: 'none',
-          fontStyle: 'normal',
-          fontWeight: 'normal',
-          textDecoration: 'none',
-          textAlign: 'left',
-        }}
-      >
-        <span
-          ref={node => {
-            if (node) {
-              const offsetWidth = node.offsetWidth;
-              if (offsetWidth !== width) {
-                setWidth(offsetWidth);
-              }
-            }
-          }}
-        >
-          {placeholder as string}
-        </span>
-      </span>
-      {children}
-    </span>
+export function createDocumentEditor(
+  documentFeatures: DocumentFeatures,
+  componentBlocks: Record<string, ComponentBlock>,
+  isShiftPressedRef: MutableRefObject<boolean>
+) {
+  return withSoftBreaks(
+    isShiftPressedRef,
+    withBlocksSchema(
+      withLink(
+        withList(
+          documentFeatures.listTypes,
+          withHeading(
+            documentFeatures.headingLevels,
+            withRelationship(
+              withComponentBlocks(
+                componentBlocks,
+                withParagraphs(
+                  withDivider(
+                    documentFeatures.dividers,
+                    withColumns(
+                      withMarks(
+                        documentFeatures.inlineMarks,
+                        withCodeBlock(
+                          documentFeatures.blockTypes.code,
+                          withBlockquote(
+                            documentFeatures.blockTypes.blockquote,
+                            withHistory(withReact(createEditor()))
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
   );
 }
-
-const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
-  const { colors, radii, spacing, typography } = useTheme();
-  const {
-    underline,
-    strikethrough,
-    bold,
-    italic,
-    code,
-    keyboard,
-    superscript,
-    subscript,
-    placeholder,
-  } = leaf;
-
-  if (placeholder !== undefined) {
-    children = <Placeholder placeholder={placeholder as string}>{children}</Placeholder>;
-  }
-
-  if (code) {
-    children = (
-      <code
-        css={{
-          backgroundColor: colors.backgroundDim,
-          borderRadius: radii.xsmall,
-          display: 'inline-block',
-          fontFamily: typography.fontFamily.monospace,
-          fontSize: typography.fontSize.small,
-          padding: `0 ${spacing.xxsmall}px`,
-        }}
-      >
-        {children}
-      </code>
-    );
-  }
-  if (bold) {
-    children = <strong>{children}</strong>;
-  }
-  if (strikethrough) {
-    children = <s>{children}</s>;
-  }
-  if (italic) {
-    children = <em>{children}</em>;
-  }
-  if (keyboard) {
-    children = <kbd>{children}</kbd>;
-  }
-  if (superscript) {
-    children = <sup>{children}</sup>;
-  }
-  if (subscript) {
-    children = <sub>{children}</sub>;
-  }
-  return (
-    <span
-      {...attributes}
-      style={{
-        textDecoration: underline ? 'underline' : undefined,
-      }}
-    >
-      {children}
-    </span>
-  );
-};
 
 export function DocumentEditor({
   autoFocus,
@@ -190,44 +142,13 @@ export function DocumentEditor({
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
 }) {
+  const isShiftPressedRef = useKeyDownRef('Shift');
   const { colors } = useTheme();
   const [expanded, setExpanded] = useState(false);
   const editor = useMemo(
-    () =>
-      withLink(
-        withList(
-          documentFeatures.listTypes,
-          withHeading(
-            documentFeatures.headingLevels,
-            withRelationship(
-              relationships,
-              withComponentBlocks(
-                componentBlocks,
-                withParagraphs(
-                  withDivider(
-                    documentFeatures.dividers,
-                    withColumns(
-                      withCodeBlock(
-                        documentFeatures.blockTypes.code,
-                        withBlockquote(
-                          documentFeatures.blockTypes.blockquote,
-                          withHistory(withReact(createEditor()))
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      ),
-    []
+    () => createDocumentEditor(documentFeatures, componentBlocks, isShiftPressedRef),
+    [documentFeatures, componentBlocks]
   );
-
-  const renderLeaf = useCallback(props => {
-    return <Leaf {...props} />;
-  }, []);
 
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
 
@@ -314,15 +235,35 @@ export function DocumentEditor({
                 renderElement={renderElement}
                 renderLeaf={renderLeaf}
               />
+              {
+                // for debugging
+                false && <Debugger />
+              }
             </Slate>
-            {
-              // for debugging
-              false && <pre>{JSON.stringify(value, null, 2)}</pre>
-            }
           </ComponentBlockProvider>
         </ColumnOptionsProvider>
       </DocumentFieldRelationshipsProvider>
     </div>
+  );
+}
+
+function Debugger() {
+  const editor = useSlate();
+  return (
+    <pre>
+      {JSON.stringify(
+        {
+          selection:
+            editor.selection && Range.isCollapsed(editor.selection)
+              ? editor.selection.anchor
+              : editor.selection,
+          marks: Editor.marks(editor),
+          children: editor.children,
+        },
+        null,
+        2
+      )}
+    </pre>
   );
 }
 
@@ -361,45 +302,184 @@ function findDuplicateNodes(nodes: Node[], found: WeakSet<object> = new WeakSet(
   }
 }
 
-// function schema<
-//   Obj extends Record<
-//     string,
-//     | {
-//         kind: 'blocks';
-//         allowedChildren: readonly (keyof Obj)[];
+type EditorSchema = Record<
+  string,
+  | {
+      kind: 'blocks';
+      allowedChildren: ReadonlySet<string>;
+      blockToWrapInlinesIn: string;
+      invalidPositionHandleMode: 'unwrap' | 'move';
+    }
+  | { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' }
+>;
+
+function makeEditorSchema<
+  Obj extends Record<
+    string,
+    | {
+        kind: 'blocks';
+        allowedChildren: readonly [Extract<keyof Obj, string>, ...Extract<keyof Obj, string>[]];
+        invalidPositionHandleMode: 'unwrap' | 'move';
+      }
+    | { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' }
+  >
+>(obj: Obj) {
+  let ret: EditorSchema = {};
+  Object.keys(obj).forEach(key => {
+    const val = obj[key];
+    if (val.kind === 'blocks') {
+      ret[key] = {
+        kind: 'blocks',
+        allowedChildren: new Set(val.allowedChildren),
+        blockToWrapInlinesIn: val.allowedChildren[0],
+        invalidPositionHandleMode: val.invalidPositionHandleMode,
+      };
+    } else {
+      ret[key] = val;
+    }
+  });
+  return ret;
+}
+
+const blockquoteChildren = [
+  'paragraph',
+  'code',
+  'heading',
+  'ordered-list',
+  'unordered-list',
+  'divider',
+] as const;
+
+const paragraphLike = [...blockquoteChildren, 'blockquote'] as const;
+
+const insideOfLayouts = [...paragraphLike, 'component-block'] as const;
+
+const listChildren = ['list-item', 'ordered-list', 'unordered-list'] as const;
+
+export const editorSchema = makeEditorSchema({
+  editor: {
+    kind: 'blocks',
+    allowedChildren: [...insideOfLayouts, 'columns'],
+    invalidPositionHandleMode: 'move',
+  },
+  columns: { kind: 'blocks', allowedChildren: ['column'], invalidPositionHandleMode: 'move' },
+  column: { kind: 'blocks', allowedChildren: insideOfLayouts, invalidPositionHandleMode: 'unwrap' },
+  blockquote: {
+    kind: 'blocks',
+    allowedChildren: blockquoteChildren,
+    invalidPositionHandleMode: 'move',
+  },
+  paragraph: { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
+  code: { kind: 'inlines', invalidPositionHandleMode: 'move' },
+  divider: { kind: 'inlines', invalidPositionHandleMode: 'move' },
+  heading: {
+    kind: 'inlines',
+    // TODO: not 100% sure that unwrap is right here
+    invalidPositionHandleMode: 'unwrap',
+  },
+  'component-block': {
+    kind: 'blocks',
+    allowedChildren: ['component-block-prop', 'component-inline-prop'],
+    invalidPositionHandleMode: 'move',
+  },
+  'component-inline-prop': { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
+  'component-block-prop': {
+    kind: 'blocks',
+    allowedChildren: paragraphLike,
+    invalidPositionHandleMode: 'unwrap',
+  },
+  'ordered-list': {
+    kind: 'blocks',
+    allowedChildren: listChildren,
+    invalidPositionHandleMode: 'move',
+  },
+  'unordered-list': {
+    kind: 'blocks',
+    allowedChildren: listChildren,
+    invalidPositionHandleMode: 'move',
+  },
+  'list-item': { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
+});
+
+function withBlocksSchema(editor: ReactEditor) {
+  const { normalizeNode } = editor;
+  editor.normalizeNode = ([node, path]) => {
+    if (Editor.isBlock(editor, node) || Editor.isEditor(node)) {
+      const nodeType = Editor.isEditor(node) ? 'editor' : node.type;
+      if (typeof nodeType !== 'string' || editorSchema[nodeType] === undefined) {
+        Transforms.unwrapNodes(editor, { at: path });
+        return;
+      }
+      const info = editorSchema[nodeType];
+      for (const [index, childNode] of node.children.entries()) {
+        const childPath = [...path, index];
+        if (info.kind === 'inlines') {
+          if (!Text.isText(childNode) && !Editor.isInline(editor, childNode)) {
+            handleNodeInInvalidPosition(editor, [childNode, childPath], path);
+            return;
+          }
+        } else {
+          if (!Editor.isBlock(editor, childNode)) {
+            Transforms.wrapNodes(
+              editor,
+              { type: info.blockToWrapInlinesIn, children: [] },
+              { at: childPath }
+            );
+            return;
+          }
+          if (!info.allowedChildren.has(childNode.type as string)) {
+            handleNodeInInvalidPosition(editor, [childNode, childPath], path);
+            return;
+          }
+        }
+      }
+    }
+    normalizeNode([node, path]);
+  };
+  return editor;
+}
+
+function handleNodeInInvalidPosition(
+  editor: Editor,
+  [node, path]: NodeEntry<Descendant>,
+  parentPath: Path
+) {
+  const nodeType = node.type as string;
+  const childNodeInfo = editorSchema[nodeType];
+
+  if (childNodeInfo.invalidPositionHandleMode === 'unwrap') {
+    Transforms.unwrapNodes(editor, { at: path });
+    return;
+  }
+  const parentNode = Node.get(editor, parentPath);
+  const info =
+    editorSchema[(parentNode.type as string) || Editor.isEditor(parentNode) ? 'editor' : ''];
+  if (info?.kind === 'blocks' && info.allowedChildren.has(nodeType)) {
+    Transforms.moveNodes(editor, { at: path, to: Path.next(parentPath) });
+    return;
+  }
+  if (Editor.isEditor(parentNode)) {
+    Transforms.moveNodes(editor, { at: path, to: [path[0] + 1] });
+    Transforms.unwrapNodes(editor, { at: [path[0] + 1] });
+    return;
+  }
+  handleNodeInInvalidPosition(editor, [node, path], parentPath.slice(0, -1));
+}
+
+// to print the editor schema in Graphviz if you want to visualize it
+// function printEditorSchema(editorSchema: EditorSchema) {
+//   return `digraph G {
+//   concentrate=true;
+//   ${Object.keys(editorSchema)
+//     .map(key => {
+//       let val = editorSchema[key];
+//       if (val.kind === 'inlines') {
+//         return `"${key}" -> inlines`;
 //       }
-//     | { kind: 'inlines' }
-//   >
-// >(obj: Obj) {
-//   return obj;
+//       if (val.kind === 'blocks') {
+//         return `"${key}" -> {${[...val.allowedChildren].map(x => JSON.stringify(x)).join(' ')}}`;
+//       }
+//     })
+//     .join('\n  ')}
+// }`;
 // }
-
-// const blockquoteChildren = [
-//   'paragraph',
-//   'code',
-//   'heading',
-//   'ordered-list',
-//   'unordered-list',
-// ] as const;
-
-// const paragraphLike = [...blockquoteChildren, 'blockquote'] as const;
-
-// const listChildren = ['list-item', 'ordered-list', 'unordered-list'] as const;
-
-// schema({
-//   editor: { kind: 'blocks', allowedChildren: [...paragraphLike, 'columns'] },
-//   columns: { kind: 'blocks', allowedChildren: ['column'] },
-//   column: { kind: 'blocks', allowedChildren: ['paragraph'] },
-//   blockquote: { kind: 'blocks', allowedChildren: blockquoteChildren },
-//   paragraph: { kind: 'inlines' },
-//   code: { kind: 'inlines' },
-//   divider: { kind: 'inlines' },
-//   heading: { kind: 'inlines' },
-//   relationship: { kind: 'inlines' },
-//   'component-block': { kind: 'blocks', allowedChildren: ['component-block-prop'] },
-//   'component-inline-prop': { kind: 'inlines' },
-//   'component-block-prop': { kind: 'blocks', allowedChildren: paragraphLike },
-//   'ordered-list': { kind: 'blocks', allowedChildren: listChildren },
-//   'unordered-list': { kind: 'blocks', allowedChildren: listChildren },
-//   'list-item': { kind: 'inlines' },
-// });

@@ -32,6 +32,7 @@ keystone.createList('Comment', Comment);
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
+  config: { protectIdentities: process.env.NODE_ENV === 'production' },
 });
 
 const adminApp = new AdminUIApp({

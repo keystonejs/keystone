@@ -4,13 +4,13 @@ import next from 'next';
 import express from 'express';
 import type { KeystoneSystem, KeystoneConfig, SessionImplementation } from '@keystone-next/types';
 
-const dev = process.env.NODE_ENV !== 'production';
-
 export const createAdminUIServer = async (
   ui: KeystoneConfig['ui'],
   system: KeystoneSystem,
+  dev: boolean,
   sessionImplementation?: SessionImplementation
 ) => {
+  const { createContext } = system;
   const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
   const handle = app.getRequestHandler();
   await app.prepare();
@@ -22,12 +22,18 @@ export const createAdminUIServer = async (
       handle(req, res);
       return;
     }
-    const session = (await sessionImplementation?.createContext?.(req, res, system.createContext))
-      ?.session;
+    const context = createContext({
+      sessionContext: await sessionImplementation?.createSessionContext(req, res, createContext),
+    });
     const isValidSession = ui?.isAccessAllowed
-      ? await ui.isAccessAllowed({ session })
-      : session !== undefined;
-    const maybeRedirect = await ui?.pageMiddleware?.({ req, session, isValidSession, system });
+      ? await ui.isAccessAllowed(context)
+      : context.session !== undefined;
+    const maybeRedirect = await ui?.pageMiddleware?.({
+      req,
+      session: context.session,
+      isValidSession,
+      createContext,
+    });
     if (maybeRedirect) {
       res.redirect(maybeRedirect.to);
       return;

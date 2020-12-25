@@ -68,6 +68,7 @@ keystone.createList('User', {
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
+  config: { protectIdentities: process.env.NODE_ENV === 'production' },
 });
 
 module.exports = {

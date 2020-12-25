@@ -24,7 +24,6 @@ const noticeIconMap = {
 export const componentBlocks = {
   hero: component({
     component: props => {
-      console.log('title', props.title);
       return (
         <div
           css={{
@@ -206,8 +205,6 @@ export const componentBlocks = {
     },
     label: 'Notice',
     chromeless: true,
-    unwrapOnBackspaceAtStart: true,
-    exitOnEnterInEmptyLineAtEndOfChild: true,
     props: {
       intent: fields.select({
         label: 'Intent',
@@ -282,8 +279,6 @@ export const componentBlocks = {
       );
     },
     label: 'Quote',
-    unwrapOnBackspaceAtStart: true,
-    exitOnEnterInEmptyLineAtEndOfChild: true,
     props: {
       content: fields.child({ kind: 'block', placeholder: 'Quote...' }),
       attribution: fields.child({ kind: 'inline', placeholder: 'Attribution...' }),
