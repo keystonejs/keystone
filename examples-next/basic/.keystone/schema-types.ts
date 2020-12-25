@@ -91,6 +91,22 @@ export type UserWhereInput = {
   readonly posts_every?: PostWhereInput | null;
   readonly posts_some?: PostWhereInput | null;
   readonly posts_none?: PostWhereInput | null;
+  readonly updatedAt?: Scalars['String'] | null;
+  readonly updatedAt_not?: Scalars['String'] | null;
+  readonly updatedAt_lt?: Scalars['String'] | null;
+  readonly updatedAt_lte?: Scalars['String'] | null;
+  readonly updatedAt_gt?: Scalars['String'] | null;
+  readonly updatedAt_gte?: Scalars['String'] | null;
+  readonly updatedAt_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly updatedAt_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly createdAt?: Scalars['String'] | null;
+  readonly createdAt_not?: Scalars['String'] | null;
+  readonly createdAt_lt?: Scalars['String'] | null;
+  readonly createdAt_lte?: Scalars['String'] | null;
+  readonly createdAt_gt?: Scalars['String'] | null;
+  readonly createdAt_gte?: Scalars['String'] | null;
+  readonly createdAt_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly createdAt_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly passwordResetToken_is_set?: Scalars['Boolean'] | null;
   readonly passwordResetIssuedAt?: Scalars['String'] | null;
   readonly passwordResetIssuedAt_not?: Scalars['String'] | null;
@@ -162,6 +178,10 @@ export type SortUsersBy =
   | 'phoneNumbers_DESC'
   | 'posts_ASC'
   | 'posts_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
   | 'passwordResetIssuedAt_ASC'
   | 'passwordResetIssuedAt_DESC'
   | 'passwordResetRedeemedAt_ASC'
@@ -442,6 +462,8 @@ export type UserListTypeInfo = {
     | 'phoneNumbers'
     | 'posts'
     | 'randomNumber'
+    | 'updatedAt'
+    | 'createdAt'
     | 'passwordResetToken'
     | 'passwordResetIssuedAt'
     | 'passwordResetRedeemedAt'
@@ -457,6 +479,8 @@ export type UserListTypeInfo = {
     readonly roles?: string | null;
     readonly phoneNumbers?: string | null;
     readonly posts?: string | null;
+    readonly updatedAt?: Date | null;
+    readonly createdAt?: Date | null;
     readonly passwordResetToken?: string | null;
     readonly passwordResetIssuedAt?: Date | null;
     readonly passwordResetRedeemedAt?: Date | null;
