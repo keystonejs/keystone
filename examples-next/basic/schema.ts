@@ -11,7 +11,7 @@ import {
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
 import { KeystoneListsAPI } from '@keystone-next/types';
-import { withAtTracking } from '@keystone-next/list-plugins';
+import { configureTracking } from '@keystone-next/list-plugins';
 import { KeystoneListsTypeInfo } from './.keystone/schema-types';
 
 // TODO: Can we generate this type based on withItemData in the main config?
@@ -32,8 +32,10 @@ export const access = {
 
 const randomNumber = () => Math.round(Math.random() * 10);
 
+const withTracking = configureTracking({});
+
 export const lists = createSchema({
-  User: list(withAtTracking({
+  User: list(withTracking({
     ui: {
       listView: {
         initialColumns: ['name', 'posts'],
