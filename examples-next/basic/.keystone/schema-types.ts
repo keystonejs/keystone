@@ -21,6 +21,13 @@ export type PostRelateToManyInput = {
   readonly disconnectAll?: Scalars['Boolean'] | null;
 };
 
+export type UserRelateToOneInput = {
+  readonly create?: UserCreateInput | null;
+  readonly connect?: UserWhereUniqueInput | null;
+  readonly disconnect?: UserWhereUniqueInput | null;
+  readonly disconnectAll?: Scalars['Boolean'] | null;
+};
+
 export type UserWhereInput = {
   readonly AND?: ReadonlyArray<UserWhereInput | null> | null;
   readonly OR?: ReadonlyArray<UserWhereInput | null> | null;
@@ -91,6 +98,10 @@ export type UserWhereInput = {
   readonly posts_every?: PostWhereInput | null;
   readonly posts_some?: PostWhereInput | null;
   readonly posts_none?: PostWhereInput | null;
+  readonly updatedBy?: UserWhereInput | null;
+  readonly updatedBy_is_null?: Scalars['Boolean'] | null;
+  readonly createdBy?: UserWhereInput | null;
+  readonly createdBy_is_null?: Scalars['Boolean'] | null;
   readonly updatedAt?: Scalars['String'] | null;
   readonly updatedAt_not?: Scalars['String'] | null;
   readonly updatedAt_lt?: Scalars['String'] | null;
@@ -178,6 +189,10 @@ export type SortUsersBy =
   | 'phoneNumbers_DESC'
   | 'posts_ASC'
   | 'posts_DESC'
+  | 'updatedBy_ASC'
+  | 'updatedBy_DESC'
+  | 'createdBy_ASC'
+  | 'createdBy_DESC'
   | 'updatedAt_ASC'
   | 'updatedAt_DESC'
   | 'createdAt_ASC'
@@ -230,13 +245,6 @@ export type UserCreateInput = {
 
 export type UsersCreateInput = {
   readonly data?: UserCreateInput | null;
-};
-
-export type UserRelateToOneInput = {
-  readonly create?: UserCreateInput | null;
-  readonly connect?: UserWhereUniqueInput | null;
-  readonly disconnect?: UserWhereUniqueInput | null;
-  readonly disconnectAll?: Scalars['Boolean'] | null;
 };
 
 export type PhoneNumberWhereInput = {
@@ -462,6 +470,8 @@ export type UserListTypeInfo = {
     | 'phoneNumbers'
     | 'posts'
     | 'randomNumber'
+    | 'updatedBy'
+    | 'createdBy'
     | 'updatedAt'
     | 'createdAt'
     | 'passwordResetToken'
@@ -479,6 +489,8 @@ export type UserListTypeInfo = {
     readonly roles?: string | null;
     readonly phoneNumbers?: string | null;
     readonly posts?: string | null;
+    readonly updatedBy?: string | null;
+    readonly createdBy?: string | null;
     readonly updatedAt?: Date | null;
     readonly createdAt?: Date | null;
     readonly passwordResetToken?: string | null;

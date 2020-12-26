@@ -1,15 +1,7 @@
 import { timestamp } from '@keystone-next/fields';
-import { ListConfig, FieldConfig, BaseGeneratedListTypes, BaseFields, ListHooks } from '@keystone-next/types';
+import { ListConfig, FieldConfig, BaseGeneratedListTypes, BaseFields } from '@keystone-next/types';
+import { AtTrackingOptions, ResolveInputHook } from '../types';
 import { composeHook } from '../utils';
-
-type AtTrackingOptions = {
-  created?: boolean;
-  createdAtField?: string;
-  updated?: boolean;
-  updatedAtField?: string;
-} & FieldConfig<BaseGeneratedListTypes>;
-
-type ResolveInputHook = ListHooks<BaseGeneratedListTypes>['resolveInput'];
 
 export function withAtTracking<Fields extends BaseFields<BaseGeneratedListTypes>>(listConfig: ListConfig<BaseGeneratedListTypes, Fields>, options: AtTrackingOptions = {}): ListConfig<BaseGeneratedListTypes, Fields> {
   const { created = true, updated = true, createdAtField = 'createdAt', updatedAtField = 'updatedAt', ...atFieldOptions } = options;
@@ -43,7 +35,7 @@ export function withAtTracking<Fields extends BaseFields<BaseGeneratedListTypes>
     };
   };
 
-  const newResolveInput = ({ resolvedData, operation }) => {
+  const newResolveInput: ResolveInputHook = ({ resolvedData, operation }) => {
     const dateNow = new Date().toISOString();
     if (operation === 'create') {
       // create mode

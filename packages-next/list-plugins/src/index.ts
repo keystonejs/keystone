@@ -4,3 +4,4 @@
 // const { logging } = require('./lib/logging');
 
 export * from './lib/tracking/atTracking';
+export * from './lib/tracking/byTracking';
