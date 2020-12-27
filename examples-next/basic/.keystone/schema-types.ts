@@ -344,6 +344,24 @@ export type PostWhereInput = {
   readonly status_not_ends_with_i?: Scalars['String'] | null;
   readonly status_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly status_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly html?: Scalars['String'] | null;
+  readonly html_not?: Scalars['String'] | null;
+  readonly html_contains?: Scalars['String'] | null;
+  readonly html_not_contains?: Scalars['String'] | null;
+  readonly html_starts_with?: Scalars['String'] | null;
+  readonly html_not_starts_with?: Scalars['String'] | null;
+  readonly html_ends_with?: Scalars['String'] | null;
+  readonly html_not_ends_with?: Scalars['String'] | null;
+  readonly html_i?: Scalars['String'] | null;
+  readonly html_not_i?: Scalars['String'] | null;
+  readonly html_contains_i?: Scalars['String'] | null;
+  readonly html_not_contains_i?: Scalars['String'] | null;
+  readonly html_starts_with_i?: Scalars['String'] | null;
+  readonly html_not_starts_with_i?: Scalars['String'] | null;
+  readonly html_ends_with_i?: Scalars['String'] | null;
+  readonly html_not_ends_with_i?: Scalars['String'] | null;
+  readonly html_in?: ReadonlyArray<Scalars['String'] | null> | null;
+  readonly html_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly publishDate?: Scalars['String'] | null;
   readonly publishDate_not?: Scalars['String'] | null;
   readonly publishDate_lt?: Scalars['String'] | null;
@@ -367,6 +385,8 @@ export type SortPostsBy =
   | 'title_DESC'
   | 'status_ASC'
   | 'status_DESC'
+  | 'html_ASC'
+  | 'html_DESC'
   | 'publishDate_ASC'
   | 'publishDate_DESC'
   | 'author_ASC'
@@ -375,6 +395,7 @@ export type SortPostsBy =
 export type PostUpdateInput = {
   readonly title?: Scalars['String'] | null;
   readonly status?: Scalars['String'] | null;
+  readonly html?: Scalars['String'] | null;
   readonly content?: Scalars['JSON'] | null;
   readonly publishDate?: Scalars['String'] | null;
   readonly author?: UserRelateToOneInput | null;
@@ -388,6 +409,7 @@ export type PostsUpdateInput = {
 export type PostCreateInput = {
   readonly title?: Scalars['String'] | null;
   readonly status?: Scalars['String'] | null;
+  readonly html?: Scalars['String'] | null;
   readonly content?: Scalars['JSON'] | null;
   readonly publishDate?: Scalars['String'] | null;
   readonly author?: UserRelateToOneInput | null;
@@ -525,11 +547,19 @@ export type PhoneNumberListFn = (
 
 export type PostListTypeInfo = {
   key: 'Post';
-  fields: 'id' | 'title' | 'status' | 'content' | 'publishDate' | 'author';
+  fields:
+    | 'id'
+    | 'title'
+    | 'status'
+    | 'html'
+    | 'content'
+    | 'publishDate'
+    | 'author';
   backing: {
     readonly id: string;
     readonly title?: string | null;
     readonly status?: string | null;
+    readonly html?: string | null;
     readonly content?: Record<string, any>[] | null;
     readonly publishDate?: Date | null;
     readonly author?: string | null;

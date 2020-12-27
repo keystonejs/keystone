@@ -1,0 +1,4 @@
+{
+  "main": "dist/wysiwyg.cjs.js",
+  "module": "dist/wysiwyg.esm.js"
+}

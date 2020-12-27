@@ -82,6 +82,17 @@ export const createExpressServer = async (
   const { graphQLSchema, createContext } = system;
   addApolloServer({ server, graphQLSchema, createContext, sessionImplementation });
 
+  const apps = ([...system.keystone.registeredTypes])
+  .filter(({ prepareMiddleware } = {}) => !!prepareMiddleware)
+  .map(app =>
+    app.prepareMiddleware({
+      keystone: this,
+      dev,
+      distDir: 'dist',
+    })
+  );
+  server.use(apps);
+
   console.log('✨ Preparing Next.js app');
   server.use(await createAdminUIServer(config.ui, system, dev, sessionImplementation));
 

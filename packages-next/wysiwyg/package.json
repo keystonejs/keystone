@@ -1,0 +1,31 @@
+{
+  "name": "@keystone-next/wysiwyg",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "dist/wysiwyg.cjs.js",
+  "module": "dist/wysiwyg.esm.js",
+  "dependencies": {
+    "@babel/runtime": "^7.12.5",
+    "@keystone-next/admin-ui": "^7.0.0",
+    "@keystone-next/types": "^9.0.0",
+    "@keystone-ui/button": "^2.0.1",
+    "@keystone-ui/core": "^1.0.4",
+    "@keystone-ui/fields": "^1.0.3",
+    "@keystone-ui/pill": "^1.0.2",
+    "@keystonejs/fields-wysiwyg-tinymce": "^5.3.15",
+    "@tinymce/tinymce-react": "^3.8.4",
+    "@types/react": "^16.14.2",
+    "react": "^16.14.0",
+    "tinymce": "^5.6.2"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts",
+      "views/index.tsx"
+    ]
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/wysiwyg"
+}
