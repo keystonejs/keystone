@@ -624,7 +624,7 @@ class QueryBuilder {
     if (search !== undefined && searchField) {
       if (searchField.fieldName === 'Text') {
         const f = escapeRegExp;
-        this._query.andWhere(`${baseTableAlias}.name`, '~*', f(search));
+        this._query.andWhere(`${baseTableAlias}.name`, 'like', `%${f(search)}%`);
       } else {
         this._query.whereRaw('false'); // Return no results
       }
