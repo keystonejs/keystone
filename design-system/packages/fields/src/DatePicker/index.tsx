@@ -21,13 +21,13 @@ export type DatePickerProps = {
 };
 
 export const DatePicker = ({
-                             value,
-                             onUpdate,
-                             onChange,
-                             onClear,
-                             onBlur,
-                             ...props
-                           }: DatePickerProps) => {
+  value,
+  onUpdate,
+  onChange,
+  onClear,
+  onBlur,
+  ...props
+}: DatePickerProps) => {
   const { isOpen, setOpen, dialog, trigger, arrow } = usePopover({
     placement: 'bottom-start',
     modifiers: [
