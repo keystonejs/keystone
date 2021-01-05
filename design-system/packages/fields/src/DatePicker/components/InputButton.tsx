@@ -52,6 +52,7 @@ const ClearButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
     <Adornment
       as="button"
       align="right"
+      type="button"
       tabIndex={-1}
       css={{
         alignItems: 'center',
@@ -67,6 +68,9 @@ const ClearButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
         top: '6px', // TODO - magic number
 
         // No focus styles because this button is not focusable
+        ':focus': {
+          color: 'hotpink',
+        },
         ':hover': {
           color: colors.foregroundMuted,
         },
