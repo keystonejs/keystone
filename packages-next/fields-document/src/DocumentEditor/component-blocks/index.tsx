@@ -198,11 +198,15 @@ Content:`}
         />
       )}
       <div css={{ display: editMode ? 'none' : 'block', position: 'relative' }}>
-        <ComponentBlockRender
-          children={children}
-          componentBlock={componentBlock}
-          element={element}
-        />
+        {editMode ? (
+          children
+        ) : (
+          <ComponentBlockRender
+            children={children}
+            componentBlock={componentBlock}
+            element={element}
+          />
+        )}
         {!editMode &&
           (() => {
             const toolbarProps = createPreviewProps(

@@ -13,7 +13,11 @@ import { useSlate } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { InlineDialog, ToolbarButton, ToolbarGroup } from './primitives';
 
-export const TextAlignMenu = ({ alignment }: { alignment: DocumentFeatures['alignment'] }) => {
+export const TextAlignMenu = ({
+  alignment,
+}: {
+  alignment: DocumentFeatures['formatting']['alignment'];
+}) => {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {
@@ -70,7 +74,7 @@ function TextAlignDialog({
   alignment,
   onClose,
 }: {
-  alignment: DocumentFeatures['alignment'];
+  alignment: DocumentFeatures['formatting']['alignment'];
   onClose: () => void;
 }) {
   const { currentTextAlign, editor } = useTextAlignInfo();
@@ -80,8 +84,8 @@ function TextAlignDialog({
   ] as const;
   return (
     <ToolbarGroup>
-      {alignments.map(alignment => {
-        <Tooltip content={`Align ${alignment}`} weight="subtle">
+      {alignments.map(alignment => (
+        <Tooltip key={alignment} content={`Align ${alignment}`} weight="subtle">
           {attrs => (
             <ToolbarButton
               isSelected={currentTextAlign === alignment}
@@ -89,14 +93,14 @@ function TextAlignDialog({
                 event.preventDefault();
                 if (alignment === 'start') {
                   Transforms.unsetNodes(editor, 'textAlign', {
-                    match: node => node.type === 'paragraph',
+                    match: node => node.type === 'paragraph' || node.type === 'heading',
                   });
                 } else {
                   Transforms.setNodes(
                     editor,
                     { textAlign: alignment },
                     {
-                      match: node => node.type === 'paragraph',
+                      match: node => node.type === 'paragraph' || node.type === 'heading',
                     }
                   );
                 }
@@ -107,8 +111,8 @@ function TextAlignDialog({
               {alignmentIcons[alignment]}
             </ToolbarButton>
           )}
-        </Tooltip>;
-      })}
+        </Tooltip>
+      ))}
     </ToolbarGroup>
   );
 }
@@ -121,12 +125,13 @@ const alignmentIcons = {
 
 function useTextAlignInfo() {
   const editor = useSlate();
-  const [currentParagraph] = Editor.nodes(editor, {
-    match: node => node.type === 'paragraph',
+  const [firstAlignableNode] = Editor.nodes(editor, {
+    match: node => node.type === 'paragraph' || node.type === 'heading',
   });
-  const alignmentAllowed = !!currentParagraph;
+  const alignmentAllowed = !!firstAlignableNode;
   const currentTextAlign: 'start' | 'center' | 'end' =
-    ((currentParagraph && currentParagraph[0] && currentParagraph[0].textAlign) as any) || 'start';
+    ((firstAlignableNode && firstAlignableNode[0] && firstAlignableNode[0].textAlign) as any) ||
+    'start';
 
   return { alignmentAllowed, currentTextAlign, editor };
 }

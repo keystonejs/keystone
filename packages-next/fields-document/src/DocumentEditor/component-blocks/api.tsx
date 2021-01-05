@@ -23,18 +23,23 @@ export type ChildField = {
         placeholder: string;
         // dividers: boolean;
         // formatting: {
+        //   alignment: boolean;
         //   blockTypes: boolean;
         //   headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[];
         //   inlineMarks: boolean;
         //   lists: boolean;
         // };
         // links: boolean;
+        // relationships: boolean;
+        // softBreaks: boolean;
       }
     | {
         kind: 'inline';
         placeholder: string;
         // formatting: { inlineMarks: boolean };
         // links: boolean;
+        // relationships: boolean;
+        // softBreaks: boolean;
       };
 };
 
@@ -175,22 +180,68 @@ export const fields = {
       | {
           kind: 'block';
           placeholder: string;
-          // dividers?: true;
-          // formatting?:
-          //   | {
-          //       blockTypes?: true;
-          //       headingLevels?: (1 | 2 | 3 | 4 | 5 | 6)[];
-          //       inlineMarks?: true;
-          //       lists?: true;
-          //     }
-          //   | true;
-          // links?: true;
+          formatting?:
+            | 'inherit'
+            | {
+                alignment?:
+                  | 'inherit'
+                  | {
+                      center?: true;
+                      end?: true;
+                    };
+                blockTypes?:
+                  | 'inherit'
+                  | {
+                      blockquote?: true;
+                      code?: true;
+                    };
+                headingLevels?: 'inherit' | (1 | 2 | 3 | 4 | 5 | 6)[];
+                inlineMarks?:
+                  | 'inherit'
+                  | {
+                      bold?: true;
+                      code?: true;
+                      italic?: true;
+                      strikethrough?: true;
+                      underline?: true;
+                      keyboard?: true;
+                      subscript?: true;
+                      superscript?: true;
+                    };
+                listTypes?:
+                  | 'inherit'
+                  | {
+                      ordered?: true;
+                      unordered?: true;
+                    };
+              };
+          dividers?: 'inherit';
+          links?: 'inherit';
+          relationships?: 'inherit';
+          softBreaks?: 'inherit';
         }
       | {
           kind: 'inline';
           placeholder: string;
-          // formatting?: true;
-          // links?: true;
+          formatting?:
+            | 'inherit'
+            | {
+                inlineMarks?:
+                  | 'inherit'
+                  | {
+                      bold?: true;
+                      code?: true;
+                      italic?: true;
+                      strikethrough?: true;
+                      underline?: true;
+                      keyboard?: true;
+                      subscript?: true;
+                      superscript?: true;
+                    };
+              };
+          links?: 'inherit';
+          relationships?: 'inherit';
+          softBreaks?: 'inherit';
         }
   ): ChildField {
     return {
@@ -310,12 +361,12 @@ export type ExtractPropFromComponentPropFieldForPreview<
   : Prop extends RelationshipField<infer Cardinality>
   ? {
       one: {
-        readonly value: RelationshipData | null;
-        onChange(relationshipData: RelationshipData | null): void;
+        readonly value: HydratedRelationshipData | null;
+        onChange(relationshipData: HydratedRelationshipData | null): void;
       };
       many: {
-        readonly value: readonly RelationshipData[];
-        onChange(relationshipData: readonly RelationshipData[]): void;
+        readonly value: readonly HydratedRelationshipData[];
+        onChange(relationshipData: readonly HydratedRelationshipData[]): void;
       };
     }[Cardinality]
   : never;
@@ -348,20 +399,26 @@ type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField
   : Prop extends RelationshipField<infer Cardinality>
   ? {
       one: {
-        readonly value: RelationshipData | null;
-        onChange(relationshipData: RelationshipData | null): void;
+        readonly value: HydratedRelationshipData | null;
+        onChange(relationshipData: HydratedRelationshipData | null): void;
       };
       many: {
-        readonly value: readonly RelationshipData[];
-        onChange(relationshipData: readonly RelationshipData[]): void;
+        readonly value: readonly HydratedRelationshipData[];
+        onChange(relationshipData: readonly HydratedRelationshipData[]): void;
       };
     }[Cardinality]
   : never;
 
+export type HydratedRelationshipData = {
+  id: string;
+  label: string;
+  data: Record<string, any>;
+};
+
 export type RelationshipData = {
-  readonly id: string;
-  readonly label: string | null;
-  readonly data: Record<string, any>;
+  id: string;
+  label?: string;
+  data?: Record<string, any>;
 };
 
 export function component<

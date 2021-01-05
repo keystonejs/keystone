@@ -21,7 +21,7 @@ import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './p
 import { linkButton } from './link';
 import { BlockComponentsButtons } from './component-blocks';
 import { Mark, isMarkActive, toggleMark } from './utils';
-import { ColumnsButton } from './columns';
+import { LayoutsButton } from './layouts';
 import { ListButton } from './lists';
 import { blockquoteButton } from './blockquote';
 import { RelationshipButton } from './relationship';
@@ -43,22 +43,23 @@ export const Toolbar = memo(function Toolbar({
 
   return (
     <ToolbarContainer>
-      {!!documentFeatures.headingLevels.length && (
+      {!!documentFeatures.formatting.headingLevels.length && (
         <Fragment>
-          <HeadingMenu headingLevels={documentFeatures.headingLevels} />
+          <HeadingMenu headingLevels={documentFeatures.formatting.headingLevels} />
           <ToolbarSeparator />
         </Fragment>
       )}
-      {Object.values(documentFeatures.inlineMarks).some(x => x) && (
+      {Object.values(documentFeatures.formatting.inlineMarks).some(x => x) && (
         <Fragment>
-          <InlineMarks marks={documentFeatures.inlineMarks} />
+          <InlineMarks marks={documentFeatures.formatting.inlineMarks} />
           <ToolbarSeparator />
         </Fragment>
       )}
-      {(documentFeatures.alignment.center || documentFeatures.alignment.end) && (
-        <TextAlignMenu alignment={documentFeatures.alignment} />
+      {(documentFeatures.formatting.alignment.center ||
+        documentFeatures.formatting.alignment.end) && (
+        <TextAlignMenu alignment={documentFeatures.formatting.alignment} />
       )}
-      {documentFeatures.listTypes.unordered && (
+      {documentFeatures.formatting.listTypes.unordered && (
         <Tooltip content="Bullet list" weight="subtle">
           {attrs => (
             <ListButton type="unordered-list" {...attrs}>
@@ -67,7 +68,7 @@ export const Toolbar = memo(function Toolbar({
           )}
         </Tooltip>
       )}
-      {documentFeatures.listTypes.ordered && (
+      {documentFeatures.formatting.listTypes.ordered && (
         <Tooltip content="Numbered list" weight="subtle">
           {attrs => (
             <ListButton type="ordered-list" {...attrs}>
@@ -76,17 +77,17 @@ export const Toolbar = memo(function Toolbar({
           )}
         </Tooltip>
       )}
-      {(documentFeatures.alignment.center ||
-        documentFeatures.alignment.end ||
-        documentFeatures.listTypes.unordered ||
-        documentFeatures.listTypes.ordered) && <ToolbarSeparator />}
+      {(documentFeatures.formatting.alignment.center ||
+        documentFeatures.formatting.alignment.end ||
+        documentFeatures.formatting.listTypes.unordered ||
+        documentFeatures.formatting.listTypes.ordered) && <ToolbarSeparator />}
 
       {documentFeatures.dividers && dividerButton}
-      {documentFeatures.link && linkButton}
-      {documentFeatures.blockTypes.blockquote && blockquoteButton}
-      {!!documentFeatures.columns.length && <ColumnsButton columns={documentFeatures.columns} />}
+      {documentFeatures.links && linkButton}
+      {documentFeatures.formatting.blockTypes.blockquote && blockquoteButton}
+      {!!documentFeatures.layouts.length && <LayoutsButton layouts={documentFeatures.layouts} />}
 
-      <InsertBlockMenu blockTypes={documentFeatures.blockTypes} />
+      <InsertBlockMenu blockTypes={documentFeatures.formatting.blockTypes} />
 
       <ToolbarSeparator />
       {useMemo(
@@ -189,7 +190,11 @@ function HeadingButton({
   );
 }
 
-const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headingLevels'] }) => {
+const HeadingMenu = ({
+  headingLevels,
+}: {
+  headingLevels: DocumentFeatures['formatting']['headingLevels'];
+}) => {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {
@@ -242,7 +247,7 @@ function HeadingDialog({
   headingLevels,
   onCloseMenu,
 }: {
-  headingLevels: DocumentFeatures['headingLevels'];
+  headingLevels: DocumentFeatures['formatting']['headingLevels'];
   onCloseMenu: () => void;
 }) {
   const editor = useSlate();
@@ -284,7 +289,7 @@ function HeadingDialog({
 const InsertBlockMenu = memo(function InsertBlockMenu({
   blockTypes,
 }: {
-  blockTypes: DocumentFeatures['blockTypes'];
+  blockTypes: DocumentFeatures['formatting']['blockTypes'];
 }) {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
@@ -342,7 +347,7 @@ function InnerInsertBlockMenu({
   blockTypes,
   onClose,
 }: {
-  blockTypes: DocumentFeatures['blockTypes'];
+  blockTypes: DocumentFeatures['formatting']['blockTypes'];
   onClose: () => void;
 }) {
   // useEditor does not update when the value/selection changes.
@@ -370,7 +375,7 @@ function InnerInsertBlockMenu({
 }
 
 // TODO: Clear formatting
-function InlineMarks({ marks }: { marks: DocumentFeatures['inlineMarks'] }) {
+function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineMarks'] }) {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {

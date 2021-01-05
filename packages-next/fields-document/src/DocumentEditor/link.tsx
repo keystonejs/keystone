@@ -41,7 +41,7 @@ const wrapLink = (editor: ReactEditor, url: string) => {
   const isCollapsed = selection && Range.isCollapsed(selection);
   const link = {
     type: 'link',
-    url,
+    href: url,
     children: isCollapsed ? [{ text: url }] : [{ text: '' }],
   };
 
@@ -54,7 +54,7 @@ const wrapLink = (editor: ReactEditor, url: string) => {
 
 export const LinkElement = ({ attributes, children, element }: RenderElementProps) => {
   const { typography } = useTheme();
-  const url = element.url as string;
+  const href = element.href as string;
   // useEditor does not update when the value/selection changes.
   // that's fine for what it's being used for here
   // because we're just inserting things on events, not reading things in render
@@ -81,7 +81,7 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
 
   return (
     <span {...attributes} css={{ position: 'relative', display: 'inline-block' }}>
-      <a {...trigger.props} ref={trigger.ref} href={url}>
+      <a {...trigger.props} ref={trigger.ref} href={href}>
         {children}
       </a>
       {((selected && focused) || focusedInInlineDialog) && (
@@ -98,11 +98,11 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
           <ToolbarGroup>
             <input
               css={{ fontSize: typography.fontSize.small, width: 240 }}
-              value={url}
+              value={href}
               onChange={event => {
                 Transforms.setNodes(
                   editor,
-                  { url: event.target.value },
+                  { href: event.target.value },
                   { at: ReactEditor.findPath(editor, element) }
                 );
               }}
@@ -114,7 +114,7 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
                   onMouseDown={event => {
                     event.preventDefault();
                   }}
-                  href={url}
+                  href={href}
                   target="_blank"
                   rel="noreferrer"
                   variant="action"

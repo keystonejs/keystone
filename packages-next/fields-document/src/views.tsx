@@ -52,34 +52,35 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 export const allowedExportsOnCustomViews = ['componentBlocks'];
 
 export type DocumentFeatures = {
-  inlineMarks: {
-    bold: boolean;
-    italic: boolean;
-    underline: boolean;
-    strikethrough: boolean;
-    code: boolean;
-    superscript: boolean;
-    subscript: boolean;
-    keyboard: boolean;
+  formatting: {
+    inlineMarks: {
+      bold: boolean;
+      italic: boolean;
+      underline: boolean;
+      strikethrough: boolean;
+      code: boolean;
+      superscript: boolean;
+      subscript: boolean;
+      keyboard: boolean;
+    };
+    listTypes: {
+      ordered: boolean;
+      unordered: boolean;
+    };
+    alignment: {
+      center: boolean;
+      end: boolean;
+    };
+    headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[];
+    blockTypes: {
+      blockquote: boolean;
+      code: boolean;
+    };
+    softBreaks: boolean;
   };
-  listTypes: {
-    ordered: boolean;
-    unordered: boolean;
-  };
-  alignment: {
-    center: boolean;
-    end: boolean;
-  };
-  headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[];
-  blockTypes: {
-    blockquote: boolean;
-    panel: boolean;
-    quote: boolean;
-    code: boolean;
-  };
-  link: boolean;
-  columns: [number, ...number[]][];
+  links: boolean;
   dividers: boolean;
+  layouts: [number, ...number[]][];
 };
 
 export const controller = (
@@ -95,7 +96,7 @@ export const controller = (
   return {
     path: config.path,
     label: config.label,
-    graphqlSelection: `${config.path} {document}`,
+    graphqlSelection: `${config.path} {document(hydrateRelationships: true)}`,
     componentBlocks: config.customViews.componentBlocks || {},
     documentFeatures: config.fieldMeta.documentFeatures,
     relationships: config.fieldMeta.relationships,

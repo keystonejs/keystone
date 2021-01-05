@@ -28,58 +28,72 @@ type OnlyChildrenComponent = Component<{ children: ReactNode }> | keyof JSX.Intr
 
 type MarkRenderers = { [Key in Mark]: OnlyChildrenComponent };
 
-interface Renderers extends MarkRenderers {
-  paragraph: OnlyChildrenComponent;
-  blockquote: OnlyChildrenComponent;
-  pre: Component<{ children: string }> | keyof JSX.IntrinsicElements;
-  link: Component<{ children: ReactNode; href: string }> | 'a';
-  columns: Component<{ layout: [number, ...number[]]; children: ReactElement[] }>;
-  divider: Component<{}> | keyof JSX.IntrinsicElements;
-  heading: Component<{ level: 1 | 2 | 3 | 4 | 5 | 6; children: ReactNode }>;
-  list: Component<{ type: 'ordered' | 'unordered'; children: ReactElement[] }>;
+interface Renderers {
+  inline: {
+    link: Component<{ children: ReactNode; href: string }> | 'a';
+  } & MarkRenderers;
+  block: {
+    paragraph: Component<{ children: ReactNode; textAlign: 'center' | 'end' | undefined }>;
+    blockquote: OnlyChildrenComponent;
+    code: Component<{ children: string }> | keyof JSX.IntrinsicElements;
+    layout: Component<{ layout: [number, ...number[]]; children: ReactElement[] }>;
+    divider: Component<{}> | keyof JSX.IntrinsicElements;
+    heading: Component<{
+      level: 1 | 2 | 3 | 4 | 5 | 6;
+      children: ReactNode;
+      textAlign: 'center' | 'end' | undefined;
+    }>;
+    list: Component<{ type: 'ordered' | 'unordered'; children: ReactElement[] }>;
+  };
 }
 
 const defaultRenderers: Renderers = {
-  bold: 'strong',
-  code: 'code',
-  keyboard: 'kbd',
-  strikethrough: 's',
-  italic: 'em',
-  link: 'a',
-  subscript: 'sub',
-  superscript: 'sup',
-  underline: ({ children }) => {
-    return <span style={{ textDecoration: 'underline' }} children={children} />;
+  inline: {
+    bold: 'strong',
+    code: 'code',
+    keyboard: 'kbd',
+    strikethrough: 's',
+    italic: 'em',
+    link: 'a',
+    subscript: 'sub',
+    superscript: 'sup',
+    underline: ({ children }) => {
+      return <span style={{ textDecoration: 'underline' }} children={children} />;
+    },
   },
-  blockquote: 'blockquote',
-  paragraph: 'p',
-  divider: 'hr',
-  heading: ({ level, children }) => {
-    let Heading = `h${level}` as 'h1';
-    return <Heading children={children} />;
-  },
-  pre: 'pre',
-  list: ({ children, type }) => {
-    const List = type === 'ordered' ? 'ol' : 'ul';
-    return (
-      <List>
-        {children.map((x, i) => (
-          <li key={i}>{x}</li>
-        ))}
-      </List>
-    );
-  },
-  columns: ({ children, layout }) => {
-    return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
-        }}
-      >
-        {children}
-      </div>
-    );
+  block: {
+    blockquote: 'blockquote',
+    paragraph: ({ children, textAlign }) => {
+      return <p style={{ textAlign }}>{children}</p>;
+    },
+    divider: 'hr',
+    heading: ({ level, children, textAlign }) => {
+      let Heading = `h${level}` as 'h1';
+      return <Heading style={{ textAlign }} children={children} />;
+    },
+    code: 'pre',
+    list: ({ children, type }) => {
+      const List = type === 'ordered' ? 'ol' : 'ul';
+      return (
+        <List>
+          {children.map((x, i) => (
+            <li key={i}>{x}</li>
+          ))}
+        </List>
+      );
+    },
+    layout: ({ children, layout }) => {
+      return (
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: layout.map(x => `${x}fr`).join(' '),
+          }}
+        >
+          {children}
+        </div>
+      );
+    },
   },
 };
 
@@ -90,21 +104,30 @@ function DocumentNode({
 }: {
   node: Element | Text;
   renderers: Renderers;
-  // TODO allow inferring from the component blocks
+  // TODO: allow inferring from the component blocks
   componentBlocks: Record<string, Component<any>>;
 }): ReactElement {
   if (typeof _node.text === 'string') {
-    return <Fragment>{_node.text}</Fragment>;
+    let child = <Fragment>{_node.text}</Fragment>;
+    (Object.keys(renderers.inline) as (keyof typeof renderers.inline)[]).forEach(markName => {
+      if (markName !== 'link' && _node[markName]) {
+        const Mark = renderers.inline[markName];
+        child = <Mark>{child}</Mark>;
+      }
+    });
+
+    return child;
   }
   const node = _node as Element;
   const children = node.children.map((x, i) => (
     <DocumentNode node={x} componentBlocks={componentBlocks} renderers={renderers} key={i} />
   ));
   switch (node.type as string) {
-    case 'blockquote':
+    case 'blockquote': {
+      return <renderers.block.blockquote children={children} />;
+    }
     case 'paragraph': {
-      const Comp = renderers[node.type as 'blockquote' | 'paragraph'];
-      return <Comp children={children} />;
+      return <renderers.block.paragraph textAlign={node.textAlign as any} children={children} />;
     }
     case 'code': {
       if (
@@ -112,18 +135,24 @@ function DocumentNode({
         node.children[0] &&
         typeof node.children[0].text === 'string'
       ) {
-        return <renderers.pre>{node.children[0].text}</renderers.pre>;
+        return <renderers.block.code>{node.children[0].text}</renderers.block.code>;
       }
       break;
     }
-    case 'columns': {
-      return <renderers.columns layout={node.layout as any} children={children} />;
+    case 'layout': {
+      return <renderers.block.layout layout={node.layout as any} children={children} />;
     }
     case 'divider': {
-      return <renderers.divider />;
+      return <renderers.block.divider />;
     }
     case 'heading': {
-      return <renderers.heading level={node.level as any} children={children} />;
+      return (
+        <renderers.block.heading
+          textAlign={node.textAlign as any}
+          level={node.level as any}
+          children={children}
+        />
+      );
     }
     case 'component-block': {
       const Comp = componentBlocks[node.component as string];
@@ -136,7 +165,7 @@ function DocumentNode({
     case 'ordered-list':
     case 'unordered-list': {
       return (
-        <renderers.list
+        <renderers.block.list
           children={children}
           type={node.type === 'ordered-list' ? 'ordered' : 'unordered'}
         />

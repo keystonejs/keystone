@@ -21,7 +21,7 @@ import { withHistory } from 'slate-history';
 
 import { withParagraphs } from './paragraphs';
 import { withLink } from './link';
-import { ColumnOptionsProvider, withColumns } from './columns';
+import { LayoutOptionsProvider, withLayouts } from './layouts';
 import { Mark, toggleMark } from './utils';
 import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
@@ -46,6 +46,7 @@ import { withCodeBlock } from './code-block';
 import { withMarks } from './marks';
 import { renderLeaf } from './leaf';
 import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
+import { withShortcuts } from './shortcuts';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -79,11 +80,22 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
           children: [],
         });
       }
+      return;
+    }
+  }
+  if (event.key === 'Tab' && editor.selection) {
+    const layoutArea = Editor.above(editor, {
+      match: node => node.type === 'layout-area',
+    });
+    if (layoutArea) {
+      const layoutAreaToEnter = event.shiftKey
+        ? Editor.before(editor, layoutArea[1], { unit: 'block' })
+        : Editor.after(editor, layoutArea[1], { unit: 'block' });
+      Transforms.setSelection(editor, { anchor: layoutAreaToEnter, focus: layoutAreaToEnter });
+      event.preventDefault();
     }
   }
 };
-
-/* Leaf Elements */
 
 export function createDocumentEditor(
   documentFeatures: DocumentFeatures,
@@ -95,23 +107,25 @@ export function createDocumentEditor(
     withBlocksSchema(
       withLink(
         withList(
-          documentFeatures.listTypes,
+          documentFeatures.formatting.listTypes,
           withHeading(
-            documentFeatures.headingLevels,
+            documentFeatures.formatting.headingLevels,
             withRelationship(
               withComponentBlocks(
                 componentBlocks,
                 withParagraphs(
-                  withDivider(
-                    documentFeatures.dividers,
-                    withColumns(
-                      withMarks(
-                        documentFeatures.inlineMarks,
-                        withCodeBlock(
-                          documentFeatures.blockTypes.code,
-                          withBlockquote(
-                            documentFeatures.blockTypes.blockquote,
-                            withHistory(withReact(createEditor()))
+                  withShortcuts(
+                    withDivider(
+                      documentFeatures.dividers,
+                      withLayouts(
+                        withMarks(
+                          documentFeatures.formatting.inlineMarks,
+                          withCodeBlock(
+                            documentFeatures.formatting.blockTypes.code,
+                            withBlockquote(
+                              documentFeatures.formatting.blockTypes.blockquote,
+                              withHistory(withReact(createEditor()))
+                            )
                           )
                         )
                       )
@@ -172,7 +186,7 @@ export function DocumentEditor({
       }
     >
       <DocumentFieldRelationshipsProvider value={relationships}>
-        <ColumnOptionsProvider value={documentFeatures.columns}>
+        <LayoutOptionsProvider value={documentFeatures.layouts}>
           <ComponentBlockProvider value={componentBlocks}>
             <Slate
               editor={editor}
@@ -241,7 +255,7 @@ export function DocumentEditor({
               }
             </Slate>
           </ComponentBlockProvider>
-        </ColumnOptionsProvider>
+        </LayoutOptionsProvider>
       </DocumentFieldRelationshipsProvider>
     </div>
   );
@@ -359,11 +373,15 @@ const listChildren = ['list-item', 'ordered-list', 'unordered-list'] as const;
 export const editorSchema = makeEditorSchema({
   editor: {
     kind: 'blocks',
-    allowedChildren: [...insideOfLayouts, 'columns'],
+    allowedChildren: [...insideOfLayouts, 'layout'],
     invalidPositionHandleMode: 'move',
   },
-  columns: { kind: 'blocks', allowedChildren: ['column'], invalidPositionHandleMode: 'move' },
-  column: { kind: 'blocks', allowedChildren: insideOfLayouts, invalidPositionHandleMode: 'unwrap' },
+  layout: { kind: 'blocks', allowedChildren: ['layout-area'], invalidPositionHandleMode: 'move' },
+  'layout-area': {
+    kind: 'blocks',
+    allowedChildren: insideOfLayouts,
+    invalidPositionHandleMode: 'unwrap',
+  },
   blockquote: {
     kind: 'blocks',
     allowedChildren: blockquoteChildren,
