@@ -19,7 +19,7 @@ import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon'
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { linkButton } from './link';
 import { BlockComponentsButtons } from './component-blocks';
-import { Mark, toggleMark, useStaticEditor } from './utils';
+import { Mark, toggleMark } from './utils';
 import { LayoutsButton } from './layouts';
 import { ListButton } from './lists';
 import { blockquoteButton } from './blockquote';
