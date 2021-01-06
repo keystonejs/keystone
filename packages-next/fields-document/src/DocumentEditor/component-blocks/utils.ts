@@ -115,8 +115,10 @@ export type DocumentFeaturesForChildField =
   | {
       kind: 'inline';
       inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks'];
-      links: boolean;
-      relationships: boolean;
+      documentFeatures: {
+        links: boolean;
+        relationships: boolean;
+      };
       softBreaks: boolean;
     }
   | {
@@ -150,8 +152,10 @@ export function getDocumentFeaturesForChildField(
     return {
       kind: 'inline',
       inlineMarks,
-      links: options.links === 'inherit',
-      relationships: options.relationships === 'inherit',
+      documentFeatures: {
+        links: options.links === 'inherit',
+        relationships: options.relationships === 'inherit',
+      },
       softBreaks: options.formatting?.softBreaks === 'inherit',
     };
   }

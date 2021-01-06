@@ -216,7 +216,14 @@ export const componentBlocks = {
         ] as const,
         defaultValue: 'info',
       }),
-      content: fields.child({ kind: 'block', placeholder: '' }),
+      content: fields.child({
+        kind: 'block',
+        placeholder: '',
+        formatting: 'inherit',
+        dividers: 'inherit',
+        links: 'inherit',
+        relationships: 'inherit',
+      }),
     },
     toolbar({ props, onRemove }) {
       return (
@@ -280,7 +287,12 @@ export const componentBlocks = {
     },
     label: 'Quote',
     props: {
-      content: fields.child({ kind: 'block', placeholder: 'Quote...' }),
+      content: fields.child({
+        kind: 'block',
+        placeholder: 'Quote...',
+        formatting: { inlineMarks: 'inherit', softBreaks: 'inherit' },
+        links: 'inherit',
+      }),
       attribution: fields.child({ kind: 'inline', placeholder: 'Attribution...' }),
     },
     chromeless: true,

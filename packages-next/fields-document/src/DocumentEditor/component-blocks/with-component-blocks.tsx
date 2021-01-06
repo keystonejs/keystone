@@ -18,7 +18,7 @@ import {
 import weakMemoize from '@emotion/weak-memoize';
 import { Relationships } from '../relationship';
 
-export function getAncestorComponentBlock(
+function getAncestorComponentBlock(
   editor: ReactEditor
 ):
   | { isInside: false }
@@ -89,8 +89,8 @@ function normalizeNodeWithinComponentProp(
       didNormalization = normalizeInlineBasedOnLinksAndRelationships(
         [node, path],
         editor,
-        fieldOptions.links,
-        fieldOptions.relationships,
+        fieldOptions.documentFeatures.links,
+        fieldOptions.documentFeatures.relationships,
         relationships
       );
     }

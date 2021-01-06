@@ -30,7 +30,6 @@ import { isListType, withList } from './lists';
 import {
   ComponentBlockProvider,
   getPlaceholderTextForPropPath,
-  VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP,
   withComponentBlocks,
 } from './component-blocks';
 import { withBlockquote } from './blockquote';
@@ -49,6 +48,7 @@ import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
 import { withShortcuts } from './shortcuts';
 import { withDocumentFeaturesNormalization } from './document-features-normalization';
 import { ToolbarStateProvider } from './toolbar-state';
+import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './component-blocks/utils';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -168,8 +168,11 @@ export function DocumentEditor({
   const isShiftPressedRef = useKeyDownRef('Shift');
   const { colors } = useTheme();
   const [expanded, setExpanded] = useState(false);
-  const editor = useMemo(
-    () => createDocumentEditor(documentFeatures, componentBlocks, relationships, isShiftPressedRef),
+  const [editor, identity] = useMemo(
+    () => [
+      createDocumentEditor(documentFeatures, componentBlocks, relationships, isShiftPressedRef),
+      Math.random().toString(36),
+    ],
     [documentFeatures, componentBlocks, relationships]
   );
 
@@ -198,6 +201,8 @@ export function DocumentEditor({
         <LayoutOptionsProvider value={documentFeatures.layouts}>
           <ComponentBlockProvider value={componentBlocks}>
             <Slate
+              // this fixes issues with Slate crashing when a fast refresh occcurs
+              key={identity}
               editor={editor}
               value={value}
               onChange={value => {
@@ -408,7 +413,6 @@ export const editorSchema = makeEditorSchema({
   divider: { kind: 'inlines', invalidPositionHandleMode: 'move' },
   heading: {
     kind: 'inlines',
-    // TODO: not 100% sure that unwrap is right here
     invalidPositionHandleMode: 'unwrap',
   },
   'component-block': {

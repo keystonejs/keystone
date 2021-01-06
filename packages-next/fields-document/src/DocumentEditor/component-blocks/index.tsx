@@ -20,7 +20,6 @@ import { FormValue } from './form';
 import { useStaticEditor } from '../utils';
 
 export { withComponentBlocks } from './with-component-blocks';
-export { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP };
 
 const ComponentBlockContext = createContext<null | Record<string, ComponentBlock>>(null);
 

@@ -1,5 +1,5 @@
 import { Element } from 'slate';
-import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from '.';
+import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './utils';
 import { ComponentPropField, ComponentBlock } from '../../component-blocks';
 import { Relationships } from '../relationship';
 import { RelationshipValues, assertNever } from './utils';

@@ -8,13 +8,13 @@ import {
   findChildPropPaths,
   getDocumentFeaturesForChildField,
 } from './component-blocks/utils';
-import { getAncestorComponentBlock } from './component-blocks/with-component-blocks';
 import { areArraysEqual } from './document-features-normalization';
+import { isListType } from './lists';
 import { allMarks, isBlockActive, Mark } from './utils';
 
 type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean };
 
-// divider and component blocks are not here at all becuase they're inserted and the selected state is not shown in the toolbar
+// component blocks are not in the ToolbarState because they're inserted in the closest available place and the selected state is not shown in the toolbar
 
 // note that isDisabled being false here does not mean the action should be allowed
 // it means that the action should be allowed if isDisabled is false AND the relevant document feature is enabled
@@ -22,7 +22,7 @@ type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean };
 export type ToolbarState = {
   textStyles: {
     selected: 'normal' | 1 | 2 | 3 | 4 | 5 | 6;
-    isDisabled: boolean;
+    allowedHeadingLevels: (1 | 2 | 3 | 4 | 5 | 6)[];
   };
   marks: {
     [key in Mark]: BasicToolbarItem;
@@ -38,6 +38,7 @@ export type ToolbarState = {
   // so they will be inserted to the closest valid location
   // unlike the other things here which wrap elements
   layouts: { isSelected: boolean };
+  dividers: { isDisabled: boolean };
   code: { isDisabled: boolean };
   relationships: { isDisabled: boolean };
   editor: ReactEditor;
@@ -63,12 +64,12 @@ export const ToolbarStateProvider = ({
   editorDocumentFeatures: DocumentFeatures;
 }) => {
   const editor = useSlate();
-  const editorMarks = Editor.marks(editor) || {};
-  const marks: ToolbarState['marks'] = Object.fromEntries(
-    allMarks.map(mark => [mark, { isDisabled: false, isSelected: !!editorMarks[mark] }])
-  );
   let [headingEntry] = Editor.nodes(editor, {
     match: n => n.type === 'heading',
+  });
+
+  let [listEntry] = Editor.nodes(editor, {
+    match: n => isListType(n.type as string),
   });
 
   let [alignableEntry] = Editor.nodes(editor, {
@@ -93,53 +94,112 @@ export const ToolbarStateProvider = ({
         links: true,
         relationships: true,
       },
+      softBreaks: true,
     }),
     [editorDocumentFeatures]
   );
 
-  //   const ancestorComponentBlock = getAncestorComponentBlock(editor);
-  //   if (ancestorComponentBlock.isInside) {
-  //     const propPath = ancestorComponentBlock.prop[0].propPath;
-  //     const component = ancestorComponentBlock.componentBlock[0].component;
-  //     const componentBlock = componentBlocks[component as string];
-  //     if (componentBlock) {
-  //       // TODO: implement this more efficiently
-  //       const options = findChildPropPaths(
-  //         ancestorComponentBlock.componentBlock[0],
-  //         componentBlock.props
-  //       ).find(({ path }) => areArraysEqual(path, propPath as any))?.options;
-  //       if (options) {
-  //         locationDocumentFeatures = getDocumentFeaturesForChildField(
-  //           editorDocumentFeatures,
-  //           options
-  //         );
-  //       }
-  //     }
-  //   }
+  const ancestorComponentProp = Editor.above(editor, {
+    match: n => n.type === 'component-inline-prop' || n.type === 'component-block.prop',
+  });
+
+  if (ancestorComponentProp) {
+    const propPath = ancestorComponentProp[0].propPath;
+    const ancestorComponent = Editor.parent(editor, ancestorComponentProp[1]);
+    const component = ancestorComponent[0].component;
+    const componentBlock = componentBlocks[component as string];
+    if (componentBlock) {
+      // TODO: implement this more efficiently
+      const options = findChildPropPaths(
+        ancestorComponent[0].props as any,
+        componentBlock.props
+      ).find(({ path }) => areArraysEqual(path, propPath as any))?.options;
+      if (options) {
+        locationDocumentFeatures = getDocumentFeaturesForChildField(
+          editorDocumentFeatures,
+          options
+        );
+      }
+    }
+  }
+
+  const editorMarks = Editor.marks(editor) || {};
+  const marks: ToolbarState['marks'] = Object.fromEntries(
+    allMarks.map(mark => [
+      mark,
+      {
+        isDisabled:
+          locationDocumentFeatures.inlineMarks !== 'inherit' &&
+          !locationDocumentFeatures.inlineMarks[mark],
+        isSelected: !!editorMarks[mark],
+      },
+    ])
+  );
 
   const state: ToolbarState = {
     marks,
     textStyles: {
       selected: headingEntry ? (headingEntry[0].level as any) : 'normal',
-      isDisabled: false,
+      allowedHeadingLevels:
+        locationDocumentFeatures.kind === 'block' && !listEntry
+          ? locationDocumentFeatures.documentFeatures.formatting.headingLevels
+          : [],
     },
-    relationships: { isDisabled: false },
-    code: { isDisabled: false },
+    relationships: { isDisabled: !locationDocumentFeatures.documentFeatures.relationships },
+    code: {
+      isDisabled: !(
+        locationDocumentFeatures.kind === 'block' &&
+        locationDocumentFeatures.documentFeatures.formatting.blockTypes.code
+      ),
+    },
     lists: {
-      ordered: { isSelected: isBlockActive(editor, 'ordered-list'), isDisabled: false },
-      unordered: { isSelected: isBlockActive(editor, 'ordered-list'), isDisabled: false },
+      ordered: {
+        isSelected: isBlockActive(editor, 'ordered-list'),
+        isDisabled: !(
+          locationDocumentFeatures.kind === 'block' &&
+          locationDocumentFeatures.documentFeatures.formatting.listTypes.ordered &&
+          !headingEntry
+        ),
+      },
+      unordered: {
+        isSelected: isBlockActive(editor, 'unordered-list'),
+        isDisabled: !(
+          locationDocumentFeatures.kind === 'block' &&
+          locationDocumentFeatures.documentFeatures.formatting.listTypes.unordered &&
+          !headingEntry
+        ),
+      },
     },
     alignment: {
-      isDisabled: !alignableEntry,
+      isDisabled:
+        !alignableEntry &&
+        !(
+          locationDocumentFeatures.kind === 'block' &&
+          locationDocumentFeatures.documentFeatures.formatting.alignment
+        ),
       selected: alignableEntry ? (alignableEntry[0].textAlign as any) || 'start' : 'start',
     },
-    blockquote: { isDisabled: false, isSelected: isBlockActive(editor, 'blockquote') },
+    blockquote: {
+      isDisabled: !(
+        locationDocumentFeatures.kind === 'block' &&
+        locationDocumentFeatures.documentFeatures.formatting.blockTypes.blockquote
+      ),
+      isSelected: isBlockActive(editor, 'blockquote'),
+    },
     layouts: { isSelected: isBlockActive(editor, 'layout') },
     links: {
-      isDisabled: !isLinkActive && (!editor.selection || Range.isCollapsed(editor.selection)),
+      isDisabled:
+        !editor.selection ||
+        Range.isCollapsed(editor.selection) ||
+        !locationDocumentFeatures.documentFeatures.links,
       isSelected: isLinkActive,
     },
     editor,
+    dividers: {
+      isDisabled:
+        locationDocumentFeatures.kind === 'inline' ||
+        !locationDocumentFeatures.documentFeatures.dividers,
+    },
   };
   return <ToolbarStateContext.Provider value={state}>{children}</ToolbarStateContext.Provider>;
 };

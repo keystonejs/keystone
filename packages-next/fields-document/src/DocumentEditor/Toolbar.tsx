@@ -169,12 +169,13 @@ function HeadingButton({
   const { textStyles } = useToolbarState();
   let buttonLabel =
     textStyles.selected === 'normal' ? 'Normal text' : 'Heading ' + textStyles.selected;
-
+  const isDisabled = textStyles.allowedHeadingLevels.length === 0;
   return useMemo(
     () => (
       <ToolbarButton
         ref={trigger.ref}
         isPressed={showMenu}
+        isDisabled={isDisabled}
         onClick={event => {
           event.preventDefault();
           onToggleShowMenu();
@@ -186,7 +187,7 @@ function HeadingButton({
         {downIcon}
       </ToolbarButton>
     ),
-    [buttonLabel, trigger, showMenu, onToggleShowMenu]
+    [buttonLabel, trigger, showMenu, onToggleShowMenu, isDisabled]
   );
 }
 
@@ -262,20 +263,11 @@ function HeadingDialog({
             isSelected={isSelected}
             onMouseDown={event => {
               event.preventDefault();
-              Transforms.setNodes(
-                editor,
-                isSelected
-                  ? {
-                      type: 'paragraph',
-                    }
-                  : { type: 'heading', level: hNum }
-              );
-              if (!isSelected) {
-                Transforms.unsetNodes(editor, 'level', {
-                  match: node => node.type === 'paragraph',
-                });
+              if (isSelected) {
+                Transforms.unwrapNodes(editor, { match: n => n.type === 'heading' });
+              } else {
+                Transforms.wrapNodes(editor, { type: 'heading', level: hNum, children: [] });
               }
-
               onCloseMenu();
             }}
           >
