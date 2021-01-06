@@ -9,6 +9,7 @@ export { __jsx as jsx } from './jsx/namespace';
 import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
 import jestDiff from 'jest-diff';
 import { validateDocument } from '../../validation';
+import { Relationships } from '../relationship';
 
 function formatEditor(editor: Node) {
   return prettyFormat(editor, {
@@ -72,7 +73,7 @@ expect.extend({
     return { actual: received, message, pass };
   },
 });
-const defaultDocumentFeatures: DocumentFeatures = {
+export const defaultDocumentFeatures: DocumentFeatures = {
   formatting: {
     alignment: { center: true, end: true },
     blockTypes: { blockquote: true, code: true },
@@ -92,11 +93,7 @@ const defaultDocumentFeatures: DocumentFeatures = {
   },
   dividers: true,
   links: true,
-  layouts: [
-    [1, 1],
-    [1, 1, 1],
-    [1, 2, 1],
-  ],
+  layouts: [[1], [1, 1], [1, 1, 1], [1, 2, 1]],
 };
 
 export const makeEditor = (
@@ -106,10 +103,12 @@ export const makeEditor = (
     componentBlocks,
     normalization = 'disallow-non-normalized',
     isShiftPressedRef,
+    relationships,
   }: {
     documentFeatures?: DocumentFeatures;
     componentBlocks?: Record<string, ComponentBlock>;
     normalization?: 'disallow-non-normalized' | 'normalize' | 'skip';
+    relationships?: Relationships;
     isShiftPressedRef?: MutableRefObject<boolean>;
   } = {}
 ): ReactEditor => {
@@ -119,6 +118,7 @@ export const makeEditor = (
   let editor = createDocumentEditor(
     documentFeatures || defaultDocumentFeatures,
     componentBlocks || {},
+    relationships || {},
     isShiftPressedRef || { current: false }
   );
   validateDocument(editor.children);

@@ -22,7 +22,7 @@ declare namespace __jsx {
       'layout-area': OnlyChildren;
       blockquote: OnlyChildren;
       paragraph: {
-        align?: 'center' | 'end';
+        textAlign?: 'center' | 'end';
         children: Children;
       };
       code: OnlyChildren;
@@ -44,6 +44,16 @@ declare namespace __jsx {
       'list-item': OnlyChildren;
       link: {
         href: string;
+        children: Children;
+      };
+      relationship: {
+        relationship: string;
+        data: {
+          id: string;
+          label: string;
+          data: {};
+        };
+
         children: Children;
       };
     }

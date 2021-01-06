@@ -13,6 +13,29 @@ export type FormField<Value, Options> = {
   }): ReactElement | null;
   options: Options;
   defaultValue: Value;
+  validate?(value: any): boolean;
+};
+
+type InlineMarksConfig =
+  | 'inherit'
+  | {
+      bold?: 'inherit';
+      code?: 'inherit';
+      italic?: 'inherit';
+      strikethrough?: 'inherit';
+      underline?: 'inherit';
+      keyboard?: 'inherit';
+      subscript?: 'inherit';
+      superscript?: 'inherit';
+    };
+
+type BlockFormattingConfig = {
+  alignment?: 'inherit';
+  blockTypes?: 'inherit';
+  headingLevels?: 'inherit' | (1 | 2 | 3 | 4 | 5 | 6)[]; // numbers have inherit semantics
+  inlineMarks?: InlineMarksConfig;
+  listTypes?: 'inherit';
+  softBreaks?: 'inherit';
 };
 
 export type ChildField = {
@@ -21,25 +44,20 @@ export type ChildField = {
     | {
         kind: 'block';
         placeholder: string;
-        // dividers: boolean;
-        // formatting: {
-        //   alignment: boolean;
-        //   blockTypes: boolean;
-        //   headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[];
-        //   inlineMarks: boolean;
-        //   lists: boolean;
-        // };
-        // links: boolean;
-        // relationships: boolean;
-        // softBreaks: boolean;
+        formatting?: BlockFormattingConfig;
+        dividers?: 'inherit';
+        links?: 'inherit'; // normalize to: text (link)
+        relationships?: 'inherit'; // normalise to: itemLabel (relationshipLabel: itemId)
       }
     | {
         kind: 'inline';
         placeholder: string;
-        // formatting: { inlineMarks: boolean };
-        // links: boolean;
-        // relationships: boolean;
-        // softBreaks: boolean;
+        formatting?: {
+          inlineMarks?: InlineMarksConfig;
+          softBreaks?: 'inherit';
+        };
+        links?: 'inherit';
+        relationships?: 'inherit';
       };
 };
 
@@ -180,45 +198,10 @@ export const fields = {
       | {
           kind: 'block';
           placeholder: string;
-          formatting?:
-            | 'inherit'
-            | {
-                alignment?:
-                  | 'inherit'
-                  | {
-                      center?: true;
-                      end?: true;
-                    };
-                blockTypes?:
-                  | 'inherit'
-                  | {
-                      blockquote?: true;
-                      code?: true;
-                    };
-                headingLevels?: 'inherit' | (1 | 2 | 3 | 4 | 5 | 6)[];
-                inlineMarks?:
-                  | 'inherit'
-                  | {
-                      bold?: true;
-                      code?: true;
-                      italic?: true;
-                      strikethrough?: true;
-                      underline?: true;
-                      keyboard?: true;
-                      subscript?: true;
-                      superscript?: true;
-                    };
-                listTypes?:
-                  | 'inherit'
-                  | {
-                      ordered?: true;
-                      unordered?: true;
-                    };
-              };
+          formatting?: BlockFormattingConfig | 'inherit';
           dividers?: 'inherit';
           links?: 'inherit';
           relationships?: 'inherit';
-          softBreaks?: 'inherit';
         }
       | {
           kind: 'inline';
@@ -226,22 +209,11 @@ export const fields = {
           formatting?:
             | 'inherit'
             | {
-                inlineMarks?:
-                  | 'inherit'
-                  | {
-                      bold?: true;
-                      code?: true;
-                      italic?: true;
-                      strikethrough?: true;
-                      underline?: true;
-                      keyboard?: true;
-                      subscript?: true;
-                      superscript?: true;
-                    };
+                inlineMarks?: InlineMarksConfig;
+                softBreaks?: 'inherit';
               };
           links?: 'inherit';
           relationships?: 'inherit';
-          softBreaks?: 'inherit';
         }
   ): ChildField {
     return {
@@ -251,28 +223,30 @@ export const fields = {
           ? {
               kind: 'block',
               placeholder: options.placeholder,
-              // dividers: options.dividers ?? true,
-              // formatting:
-              //   options.formatting === true
-              //     ? {
-              //         blockTypes: true,
-              //         headingLevels: [1, 2, 3, 4, 5, 6],
-              //         inlineMarks: true,
-              //         lists: true,
-              //       }
-              //     : {
-              //         blockTypes: options.formatting?.blockTypes ?? false,
-              //         headingLevels: options.formatting?.headingLevels ?? [],
-              //         inlineMarks: options.formatting?.inlineMarks ?? false,
-              //         lists: options.formatting?.lists ?? false,
-              //       },
-              // links: options.links ?? false,
+              dividers: options.dividers,
+              formatting:
+                options.formatting === 'inherit'
+                  ? {
+                      blockTypes: 'inherit',
+                      headingLevels: 'inherit',
+                      inlineMarks: 'inherit',
+                      listTypes: 'inherit',
+                      alignment: 'inherit',
+                      softBreaks: 'inherit',
+                    }
+                  : options.formatting,
+              links: options.links,
+              relationships: options.relationships,
             }
           : {
               kind: 'inline',
               placeholder: options.placeholder,
-              // formatting: { inlineMarks: options.formatting ?? false },
-              // links: options.links ?? false,
+              formatting:
+                options.formatting === 'inherit'
+                  ? { inlineMarks: 'inherit', softBreaks: 'inherit' }
+                  : options.formatting,
+              links: options.links,
+              relationships: options.relationships,
             },
     };
   },

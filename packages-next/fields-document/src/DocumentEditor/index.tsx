@@ -47,6 +47,7 @@ import { withMarks } from './marks';
 import { renderLeaf } from './leaf';
 import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
 import { withShortcuts } from './shortcuts';
+import { withDocumentFeaturesNormalization } from './document-features-normalization';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -100,6 +101,7 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
 export function createDocumentEditor(
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
+  relationships: Relationships,
   isShiftPressedRef: MutableRefObject<boolean>
 ) {
   return withSoftBreaks(
@@ -113,6 +115,8 @@ export function createDocumentEditor(
             withRelationship(
               withComponentBlocks(
                 componentBlocks,
+                documentFeatures,
+                relationships,
                 withParagraphs(
                   withShortcuts(
                     withDivider(
@@ -124,7 +128,11 @@ export function createDocumentEditor(
                             documentFeatures.formatting.blockTypes.code,
                             withBlockquote(
                               documentFeatures.formatting.blockTypes.blockquote,
-                              withHistory(withReact(createEditor()))
+                              withDocumentFeaturesNormalization(
+                                documentFeatures,
+                                relationships,
+                                withHistory(withReact(createEditor()))
+                              )
                             )
                           )
                         )
@@ -160,8 +168,8 @@ export function DocumentEditor({
   const { colors } = useTheme();
   const [expanded, setExpanded] = useState(false);
   const editor = useMemo(
-    () => createDocumentEditor(documentFeatures, componentBlocks, isShiftPressedRef),
-    [documentFeatures, componentBlocks]
+    () => createDocumentEditor(documentFeatures, componentBlocks, relationships, isShiftPressedRef),
+    [documentFeatures, componentBlocks, relationships]
   );
 
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
@@ -251,7 +259,7 @@ export function DocumentEditor({
               />
               {
                 // for debugging
-                false && <Debugger />
+                true && <Debugger />
               }
             </Slate>
           </ComponentBlockProvider>

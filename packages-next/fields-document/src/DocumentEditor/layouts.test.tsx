@@ -41,7 +41,9 @@ test('layout with not enough layout-area are added', () => {
         </layout-area>
       </layout>
     </editor>,
-    { normalization: 'normalize' }
+    {
+      normalization: 'normalize',
+    }
   );
 
   expect(editor).toMatchInlineSnapshot(`

@@ -1,9 +1,18 @@
 import { ReactEditor } from 'slate-react';
 import { Editor, Element, Transforms, Range, NodeEntry, Path, Node, Text } from 'slate';
 
-import { ComponentBlock } from '../../component-blocks';
-import { moveChildren } from '../utils';
+import { ChildField, ComponentBlock } from '../../component-blocks';
+import { Mark, moveChildren } from '../utils';
 import { findChildPropPaths, VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './utils';
+import { DocumentFeatures } from '../../views';
+import {
+  DocumentFeaturesForNormalization,
+  normalizeElementBasedOnDocumentFeatures,
+  normalizeInlineBasedOnLinksAndRelationships,
+  normalizeTextBasedOnInlineMarks,
+} from '../document-features-normalization';
+import weakMemoize from '@emotion/weak-memoize';
+import { Relationships } from '../relationship';
 
 function getAncestorComponentBlock(
   editor: ReactEditor
@@ -29,10 +38,149 @@ function getAncestorComponentBlock(
   return { isInside: false };
 }
 
+type DocumentFeaturesForChildField =
+  | {
+      kind: 'inline';
+      inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks'];
+      links: boolean;
+      relationships: boolean;
+    }
+  | {
+      kind: 'block';
+      inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks'];
+      documentFeatures: DocumentFeaturesForNormalization;
+    };
+
+const alreadyNormalizedThings: WeakMap<
+  DocumentFeaturesForChildField,
+  WeakSet<Node>
+> = new WeakMap();
+
+function normalizeNodeWithinComponentProp(
+  [node, path]: NodeEntry,
+  editor: ReactEditor,
+  fieldOptions: DocumentFeaturesForChildField,
+  relationships: Relationships
+): boolean {
+  let alreadyNormalizedNodes = alreadyNormalizedThings.get(fieldOptions);
+  if (!alreadyNormalizedNodes) {
+    alreadyNormalizedNodes = new WeakSet();
+    alreadyNormalizedThings.set(fieldOptions, alreadyNormalizedNodes);
+  }
+  if (alreadyNormalizedNodes.has(node)) {
+    return false;
+  }
+  let didNormalization = false;
+  if (fieldOptions.inlineMarks !== 'inherit' && Text.isText(node)) {
+    didNormalization = normalizeTextBasedOnInlineMarks(
+      [node, path],
+      editor,
+      fieldOptions.inlineMarks
+    );
+  }
+  if (Element.isElement(node)) {
+    let childrenHasChanged = node.children
+      .map((node, i) =>
+        normalizeNodeWithinComponentProp([node, [...path, i]], editor, fieldOptions, relationships)
+      )
+      // .map then .some because we don't want to exit early
+      .some(x => x);
+    if (fieldOptions.kind === 'block') {
+      didNormalization =
+        normalizeElementBasedOnDocumentFeatures(
+          [node, path],
+          editor,
+          fieldOptions.documentFeatures,
+          relationships
+        ) || childrenHasChanged;
+    } else {
+      didNormalization = normalizeInlineBasedOnLinksAndRelationships(
+        [node, path],
+        editor,
+        fieldOptions.links,
+        fieldOptions.relationships,
+        relationships
+      );
+    }
+  }
+
+  if (didNormalization === false) {
+    alreadyNormalizedNodes.add(node);
+  }
+  return didNormalization;
+}
+
 export function withComponentBlocks(
   blockComponents: Record<string, ComponentBlock | undefined>,
+  editorDocumentFeatures: DocumentFeatures,
+  relationships: Relationships,
   editor: ReactEditor
 ) {
+  // note that conflicts between the editor document features
+  // and the child field document features are dealt with elsewhere
+  const getDocumentFeaturesForChildField = weakMemoize(
+    (options: ChildField['options']): DocumentFeaturesForChildField => {
+      // an important note for this: normalization based on document features
+      // is done based on the document features returned here
+      // and the editor document features
+      // so the result for any given child prop will be the things that are
+      // allowed by both these document features
+      // AND the editor document features
+      const inlineMarksFromOptions = options.formatting?.inlineMarks;
+
+      const inlineMarks =
+        inlineMarksFromOptions === 'inherit'
+          ? 'inherit'
+          : Object.fromEntries(
+              Object.keys(editorDocumentFeatures.formatting.inlineMarks).map(mark => {
+                return [mark as Mark, !!(inlineMarksFromOptions || {})[mark as Mark]];
+              })
+            );
+      if (options.kind === 'inline') {
+        return {
+          kind: 'inline',
+          inlineMarks,
+          links: options.links === 'inherit',
+          relationships: options.relationships === 'inherit',
+        };
+      }
+      debugger;
+      return {
+        kind: 'block',
+        inlineMarks,
+        documentFeatures: {
+          layouts: [],
+          dividers: options.dividers === 'inherit' ? editorDocumentFeatures.dividers : false,
+          formatting: {
+            alignment:
+              options.formatting?.alignment === 'inherit'
+                ? editorDocumentFeatures.formatting.alignment
+                : {
+                    center: false,
+                    end: false,
+                  },
+            blockTypes:
+              options.formatting?.blockTypes === 'inherit'
+                ? editorDocumentFeatures.formatting.blockTypes
+                : {
+                    blockquote: false,
+                    code: false,
+                  },
+            headingLevels: [],
+            listTypes:
+              options.formatting?.listTypes === 'inherit'
+                ? editorDocumentFeatures.formatting.listTypes
+                : {
+                    ordered: false,
+                    unordered: false,
+                  },
+          },
+          links: options.links === 'inherit',
+          relationships: options.relationships === 'inherit',
+        },
+      };
+    }
+  );
   const { normalizeNode, deleteBackward, insertBreak } = editor;
   editor.deleteBackward = unit => {
     if (editor.selection) {
@@ -126,13 +274,13 @@ export function withComponentBlocks(
 
         let stringifiedInlinePropPaths: Record<
           string,
-          { kind: 'inline' | 'block'; index: number } | undefined
+          { options: ChildField['options']; index: number } | undefined
         > = {};
         findChildPropPaths(
           node.props as any,
           blockComponents[node.component as string]!.props
         ).forEach((x, index) => {
-          stringifiedInlinePropPaths[JSON.stringify(x.path)] = { kind: x.kind, index };
+          stringifiedInlinePropPaths[JSON.stringify(x.path)] = { options: x.options, index };
         });
 
         for (const [index, childNode] of node.children.entries()) {
@@ -153,16 +301,26 @@ export function withComponentBlocks(
                 return;
               }
               foundProps.add(stringifiedPropPath);
-              const expectedIndex = stringifiedInlinePropPaths[stringifiedPropPath]!.index;
+              const propInfo = stringifiedInlinePropPaths[stringifiedPropPath]!;
+              const expectedIndex = propInfo.index;
               if (index !== expectedIndex) {
                 Transforms.moveNodes(editor, { at: childPath, to: [...path, expectedIndex] });
                 return;
               }
-              const expectedChildNodeType = `component-${
-                stringifiedInlinePropPaths[stringifiedPropPath]!.kind
-              }-prop`;
+              const expectedChildNodeType = `component-${propInfo.options.kind}-prop`;
               if (childNode.type !== expectedChildNodeType) {
                 Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
+                return;
+              }
+              const documentFeatures = getDocumentFeaturesForChildField(propInfo.options);
+              if (
+                normalizeNodeWithinComponentProp(
+                  [childNode, childPath],
+                  editor,
+                  documentFeatures,
+                  relationships
+                )
+              ) {
                 return;
               }
             }
@@ -177,7 +335,7 @@ export function withComponentBlocks(
         let missingKeys = new Map(
           findChildPropPaths(node.props as any, componentBlock.props).map(x => [
             JSON.stringify(x.path),
-            x.kind,
+            x.options.kind,
           ])
         );
 

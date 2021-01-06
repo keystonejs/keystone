@@ -1,6 +1,7 @@
 import { Element } from 'slate';
 import { ComponentPropField, ConditionalField, RelationshipData } from '../../component-blocks';
 import { Relationships } from '../relationship';
+import { ChildField } from './api';
 import { insertInitialValues } from './initial-values';
 
 function _findChildPropPaths(
@@ -8,12 +9,12 @@ function _findChildPropPaths(
   props: Record<string, ComponentPropField>,
   path: (string | number)[]
 ) {
-  let paths: { path: (string | number)[]; kind: 'block' | 'inline' }[] = [];
+  let paths: { path: (string | number)[]; options: ChildField['options'] }[] = [];
   Object.keys(props).forEach(key => {
     const val = props[key];
     if (val.kind === 'form' || val.kind === 'relationship') {
     } else if (val.kind === 'child') {
-      paths.push({ path: path.concat(key), kind: val.options.kind });
+      paths.push({ path: path.concat(key), options: val.options });
     } else if (val.kind === 'object') {
       paths.push(..._findChildPropPaths(value[key], val.value, path.concat(key)));
     } else if (val.kind === 'conditional') {
@@ -34,10 +35,15 @@ function _findChildPropPaths(
 export function findChildPropPaths(
   value: Record<string, any>,
   props: Record<string, ComponentPropField>
-): { path: (string | number)[]; kind: 'inline' | 'block' }[] {
+): { path: (string | number)[]; options: ChildField['options'] }[] {
   let propPaths = _findChildPropPaths(value, props, []);
   if (!propPaths.length) {
-    return [{ path: [VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP], kind: 'inline' }];
+    return [
+      {
+        path: [VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP],
+        options: { kind: 'inline', placeholder: '' },
+      },
+    ];
   }
   return propPaths;
 }
