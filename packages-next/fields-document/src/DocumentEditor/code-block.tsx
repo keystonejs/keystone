@@ -1,4 +1,4 @@
-import { Editor, Transforms, Element, Text, Range } from 'slate';
+import { Editor, Transforms, Element, Text, Range, Point } from 'slate';
 import { ReactEditor } from 'slate-react';
 
 export function insertCodeBlock(editor: ReactEditor) {
@@ -7,13 +7,19 @@ export function insertCodeBlock(editor: ReactEditor) {
 
 export function withCodeBlock(enabled: boolean, editor: ReactEditor) {
   const { insertBreak, normalizeNode, insertText } = editor;
+
   editor.insertBreak = () => {
     const [node, path] = Editor.above(editor, {
       match: n => Editor.isBlock(editor, n),
     }) || [editor, []];
     if (node.type === 'code') {
       const text = node.children[0].text as string;
-      if (text[text.length - 1] === '\n') {
+      if (
+        text[text.length - 1] === '\n' &&
+        editor.selection &&
+        Range.isCollapsed(editor.selection) &&
+        Point.equals(Editor.end(editor, path), editor.selection.anchor)
+      ) {
         insertBreak();
         Transforms.setNodes(editor, { type: 'paragraph', children: [] });
         Transforms.delete(editor, {
