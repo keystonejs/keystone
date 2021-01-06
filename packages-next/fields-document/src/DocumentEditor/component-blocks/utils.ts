@@ -1,6 +1,9 @@
 import { Element } from 'slate';
 import { ComponentPropField, ConditionalField, RelationshipData } from '../../component-blocks';
+import { DocumentFeatures } from '../../views';
+import { DocumentFeaturesForNormalization } from '../document-features-normalization';
 import { Relationships } from '../relationship';
+import { Mark } from '../utils';
 import { ChildField } from './api';
 import { insertInitialValues } from './initial-values';
 
@@ -106,4 +109,85 @@ export function onConditionalChange(
   } else {
     onChange(newValue);
   }
+}
+
+export type DocumentFeaturesForChildField =
+  | {
+      kind: 'inline';
+      inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks'];
+      links: boolean;
+      relationships: boolean;
+      softBreaks: boolean;
+    }
+  | {
+      kind: 'block';
+      inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks'];
+      softBreaks: boolean;
+      documentFeatures: DocumentFeaturesForNormalization;
+    };
+
+export function getDocumentFeaturesForChildField(
+  editorDocumentFeatures: DocumentFeatures,
+  options: ChildField['options']
+): DocumentFeaturesForChildField {
+  // an important note for this: normalization based on document features
+  // is done based on the document features returned here
+  // and the editor document features
+  // so the result for any given child prop will be the things that are
+  // allowed by both these document features
+  // AND the editor document features
+  const inlineMarksFromOptions = options.formatting?.inlineMarks;
+
+  const inlineMarks =
+    inlineMarksFromOptions === 'inherit'
+      ? 'inherit'
+      : Object.fromEntries(
+          Object.keys(editorDocumentFeatures.formatting.inlineMarks).map(mark => {
+            return [mark as Mark, !!(inlineMarksFromOptions || {})[mark as Mark]];
+          })
+        );
+  if (options.kind === 'inline') {
+    return {
+      kind: 'inline',
+      inlineMarks,
+      links: options.links === 'inherit',
+      relationships: options.relationships === 'inherit',
+      softBreaks: options.formatting?.softBreaks === 'inherit',
+    };
+  }
+  return {
+    kind: 'block',
+    inlineMarks,
+    softBreaks: options.formatting?.softBreaks === 'inherit',
+    documentFeatures: {
+      layouts: [],
+      dividers: options.dividers === 'inherit' ? editorDocumentFeatures.dividers : false,
+      formatting: {
+        alignment:
+          options.formatting?.alignment === 'inherit'
+            ? editorDocumentFeatures.formatting.alignment
+            : {
+                center: false,
+                end: false,
+              },
+        blockTypes:
+          options.formatting?.blockTypes === 'inherit'
+            ? editorDocumentFeatures.formatting.blockTypes
+            : {
+                blockquote: false,
+                code: false,
+              },
+        headingLevels: [],
+        listTypes:
+          options.formatting?.listTypes === 'inherit'
+            ? editorDocumentFeatures.formatting.listTypes
+            : {
+                ordered: false,
+                unordered: false,
+              },
+      },
+      links: options.links === 'inherit',
+      relationships: options.relationships === 'inherit',
+    },
+  };
 }

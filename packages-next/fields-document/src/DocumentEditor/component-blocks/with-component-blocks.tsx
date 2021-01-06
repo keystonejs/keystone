@@ -2,11 +2,15 @@ import { ReactEditor } from 'slate-react';
 import { Editor, Element, Transforms, Range, NodeEntry, Path, Node, Text } from 'slate';
 
 import { ChildField, ComponentBlock } from '../../component-blocks';
-import { Mark, moveChildren } from '../utils';
-import { findChildPropPaths, VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './utils';
+import { moveChildren } from '../utils';
+import {
+  DocumentFeaturesForChildField,
+  findChildPropPaths,
+  getDocumentFeaturesForChildField,
+  VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP,
+} from './utils';
 import { DocumentFeatures } from '../../views';
 import {
-  DocumentFeaturesForNormalization,
   normalizeElementBasedOnDocumentFeatures,
   normalizeInlineBasedOnLinksAndRelationships,
   normalizeTextBasedOnInlineMarksAndSoftBreaks,
@@ -14,7 +18,7 @@ import {
 import weakMemoize from '@emotion/weak-memoize';
 import { Relationships } from '../relationship';
 
-function getAncestorComponentBlock(
+export function getAncestorComponentBlock(
   editor: ReactEditor
 ):
   | { isInside: false }
@@ -37,21 +41,6 @@ function getAncestorComponentBlock(
   }
   return { isInside: false };
 }
-
-type DocumentFeaturesForChildField =
-  | {
-      kind: 'inline';
-      inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks'];
-      links: boolean;
-      relationships: boolean;
-      softBreaks: boolean;
-    }
-  | {
-      kind: 'block';
-      inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks'];
-      softBreaks: boolean;
-      documentFeatures: DocumentFeaturesForNormalization;
-    };
 
 const alreadyNormalizedThings: WeakMap<
   DocumentFeaturesForChildField,
@@ -121,68 +110,9 @@ export function withComponentBlocks(
 ) {
   // note that conflicts between the editor document features
   // and the child field document features are dealt with elsewhere
-  const getDocumentFeaturesForChildField = weakMemoize(
+  const memoizedGetDocumentFeaturesForChildField = weakMemoize(
     (options: ChildField['options']): DocumentFeaturesForChildField => {
-      // an important note for this: normalization based on document features
-      // is done based on the document features returned here
-      // and the editor document features
-      // so the result for any given child prop will be the things that are
-      // allowed by both these document features
-      // AND the editor document features
-      const inlineMarksFromOptions = options.formatting?.inlineMarks;
-
-      const inlineMarks =
-        inlineMarksFromOptions === 'inherit'
-          ? 'inherit'
-          : Object.fromEntries(
-              Object.keys(editorDocumentFeatures.formatting.inlineMarks).map(mark => {
-                return [mark as Mark, !!(inlineMarksFromOptions || {})[mark as Mark]];
-              })
-            );
-      if (options.kind === 'inline') {
-        return {
-          kind: 'inline',
-          inlineMarks,
-          links: options.links === 'inherit',
-          relationships: options.relationships === 'inherit',
-          softBreaks: options.formatting?.softBreaks === 'inherit',
-        };
-      }
-      return {
-        kind: 'block',
-        inlineMarks,
-        softBreaks: options.formatting?.softBreaks === 'inherit',
-        documentFeatures: {
-          layouts: [],
-          dividers: options.dividers === 'inherit' ? editorDocumentFeatures.dividers : false,
-          formatting: {
-            alignment:
-              options.formatting?.alignment === 'inherit'
-                ? editorDocumentFeatures.formatting.alignment
-                : {
-                    center: false,
-                    end: false,
-                  },
-            blockTypes:
-              options.formatting?.blockTypes === 'inherit'
-                ? editorDocumentFeatures.formatting.blockTypes
-                : {
-                    blockquote: false,
-                    code: false,
-                  },
-            headingLevels: [],
-            listTypes:
-              options.formatting?.listTypes === 'inherit'
-                ? editorDocumentFeatures.formatting.listTypes
-                : {
-                    ordered: false,
-                    unordered: false,
-                  },
-          },
-          links: options.links === 'inherit',
-          relationships: options.relationships === 'inherit',
-        },
-      };
+      return getDocumentFeaturesForChildField(editorDocumentFeatures, options);
     }
   );
   const { normalizeNode, deleteBackward, insertBreak } = editor;
@@ -338,7 +268,7 @@ export function withComponentBlocks(
                   Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
                   return;
                 }
-                const documentFeatures = getDocumentFeaturesForChildField(propInfo.options);
+                const documentFeatures = memoizedGetDocumentFeaturesForChildField(propInfo.options);
                 if (
                   normalizeNodeWithinComponentProp(
                     [childNode, childPath],

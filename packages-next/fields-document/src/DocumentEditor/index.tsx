@@ -206,7 +206,10 @@ export function DocumentEditor({
             >
               {useMemo(
                 () => (
-                  <ToolbarStateProvider>
+                  <ToolbarStateProvider
+                    componentBlocks={componentBlocks}
+                    editorDocumentFeatures={documentFeatures}
+                  >
                     <Toolbar
                       documentFeatures={documentFeatures}
                       viewState={{
@@ -218,7 +221,7 @@ export function DocumentEditor({
                     />
                   </ToolbarStateProvider>
                 ),
-                [expanded, documentFeatures]
+                [expanded, documentFeatures, componentBlocks]
               )}
               <Editable
                 decorate={useCallback(

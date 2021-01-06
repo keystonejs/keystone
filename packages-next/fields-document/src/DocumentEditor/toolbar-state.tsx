@@ -1,11 +1,24 @@
-import React, { ReactNode, useContext } from 'react';
+import React, { ReactNode, useContext, useMemo } from 'react';
 import { Editor, Range } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
+import { DocumentFeatures } from '../views';
+import { ComponentBlock } from './component-blocks/api';
+import {
+  DocumentFeaturesForChildField,
+  findChildPropPaths,
+  getDocumentFeaturesForChildField,
+} from './component-blocks/utils';
+import { getAncestorComponentBlock } from './component-blocks/with-component-blocks';
+import { areArraysEqual } from './document-features-normalization';
 import { allMarks, isBlockActive, Mark } from './utils';
 
 type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean };
 
 // divider and component blocks are not here at all becuase they're inserted and the selected state is not shown in the toolbar
+
+// note that isDisabled being false here does not mean the action should be allowed
+// it means that the action should be allowed if isDisabled is false AND the relevant document feature is enabled
+// (because things are hidden if they're not enabled in the editor document features)
 export type ToolbarState = {
   textStyles: {
     selected: 'normal' | 1 | 2 | 3 | 4 | 5 | 6;
@@ -40,7 +53,15 @@ export function useToolbarState() {
   return toolbarState;
 }
 
-export const ToolbarStateProvider = ({ children }: { children: ReactNode }) => {
+export const ToolbarStateProvider = ({
+  children,
+  componentBlocks,
+  editorDocumentFeatures,
+}: {
+  children: ReactNode;
+  componentBlocks: Record<string, ComponentBlock>;
+  editorDocumentFeatures: DocumentFeatures;
+}) => {
   const editor = useSlate();
   const editorMarks = Editor.marks(editor) || {};
   const marks: ToolbarState['marks'] = Object.fromEntries(
@@ -55,6 +76,46 @@ export const ToolbarStateProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const isLinkActive = isBlockActive(editor, 'link');
+
+  let locationDocumentFeatures: DocumentFeaturesForChildField = useMemo(
+    () => ({
+      kind: 'block',
+      inlineMarks: 'inherit',
+      documentFeatures: {
+        dividers: true,
+        formatting: {
+          alignment: { center: true, end: true },
+          blockTypes: { blockquote: true, code: true },
+          headingLevels: [1, 2, 3, 4, 5, 6],
+          listTypes: { ordered: true, unordered: true },
+        },
+        layouts: editorDocumentFeatures.layouts,
+        links: true,
+        relationships: true,
+      },
+    }),
+    [editorDocumentFeatures]
+  );
+
+  //   const ancestorComponentBlock = getAncestorComponentBlock(editor);
+  //   if (ancestorComponentBlock.isInside) {
+  //     const propPath = ancestorComponentBlock.prop[0].propPath;
+  //     const component = ancestorComponentBlock.componentBlock[0].component;
+  //     const componentBlock = componentBlocks[component as string];
+  //     if (componentBlock) {
+  //       // TODO: implement this more efficiently
+  //       const options = findChildPropPaths(
+  //         ancestorComponentBlock.componentBlock[0],
+  //         componentBlock.props
+  //       ).find(({ path }) => areArraysEqual(path, propPath as any))?.options;
+  //       if (options) {
+  //         locationDocumentFeatures = getDocumentFeaturesForChildField(
+  //           editorDocumentFeatures,
+  //           options
+  //         );
+  //       }
+  //     }
+  //   }
 
   const state: ToolbarState = {
     marks,
