@@ -127,9 +127,9 @@ export const componentBlocks = {
           <h1>{props.title}</h1>
           <NotEditable>
             <ul>
-              {props.authors.value.map(author => {
+              {props.authors.value.map((author, i) => {
                 return (
-                  <li>
+                  <li key={i}>
                     {author.label}
                     <ul>
                       {author.data.posts.map((post: { title: string | null }) => {

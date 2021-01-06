@@ -262,6 +262,7 @@ function HeadingDialog({
 
         return (
           <ToolbarButton
+            key={hNum}
             isSelected={isActive}
             onMouseDown={event => {
               event.preventDefault();
@@ -270,10 +271,14 @@ function HeadingDialog({
                 isActive
                   ? {
                       type: 'paragraph',
-                      level: undefined,
                     }
                   : { type: 'heading', level: hNum }
               );
+              if (!isActive) {
+                Transforms.unsetNodes(editor, 'level', {
+                  match: node => node.type === 'paragraph',
+                });
+              }
 
               onCloseMenu();
             }}

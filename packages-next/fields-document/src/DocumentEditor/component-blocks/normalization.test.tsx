@@ -2,6 +2,7 @@
 import { component, fields } from '../../component-blocks';
 import { insertComponentBlock } from '.';
 import { jsx, makeEditor } from '../tests/utils';
+import { Transforms } from 'slate';
 
 const componentBlocks = {
   basic: component({
@@ -508,6 +509,83 @@ test('props in wrong order', () => {
           <paragraph>
             <text>
               
+            </text>
+          </paragraph>
+        </component-block-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('toggling to heading when in an inline prop', () => {
+  const editor = makeEditor(
+    <editor>
+      <component-block component="inline" props={{}} relationships={{}}>
+        <component-inline-prop propPath={['child']}>
+          <text>
+            some
+            <cursor />
+            thing
+          </text>
+        </component-inline-prop>
+        <component-block-prop propPath={['other']}>
+          <paragraph>
+            <text>some thing</text>
+          </paragraph>
+        </component-block-prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    {
+      componentBlocks: {
+        inline: component({
+          component: () => null,
+          label: '',
+          props: {
+            child: fields.child({ kind: 'inline', placeholder: '' }),
+            other: fields.child({ kind: 'block', placeholder: '' }),
+          },
+        }),
+      },
+    }
+  );
+  Transforms.setNodes(editor, { type: 'heading', level: 1 });
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="inline"
+        props={Object {}}
+        relationships={Object {}}
+      >
+        <component-inline-prop
+          propPath={
+            Array [
+              "child",
+            ]
+          }
+        >
+          <text>
+            
+          </text>
+        </component-inline-prop>
+        <component-block-prop
+          propPath={
+            Array [
+              "other",
+            ]
+          }
+        >
+          <paragraph>
+            <text>
+              <cursor />
+              some thing
             </text>
           </paragraph>
         </component-block-prop>
