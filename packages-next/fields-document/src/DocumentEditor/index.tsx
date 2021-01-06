@@ -259,7 +259,7 @@ export function DocumentEditor({
               />
               {
                 // for debugging
-                true && <Debugger />
+                false && <Debugger />
               }
             </Slate>
           </ComponentBlockProvider>
