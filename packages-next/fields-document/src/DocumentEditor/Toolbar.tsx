@@ -1,8 +1,7 @@
 /** @jsx jsx */
 
 import { Fragment, ReactNode, forwardRef, useState, memo, HTMLAttributes, useMemo } from 'react';
-import { Editor, Transforms } from 'slate';
-import { useEditor, useSlate } from 'slate-react';
+import { Transforms } from 'slate';
 import { applyRefs } from 'apply-ref';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -20,7 +19,7 @@ import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon'
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { linkButton } from './link';
 import { BlockComponentsButtons } from './component-blocks';
-import { Mark, isMarkActive, toggleMark } from './utils';
+import { Mark, toggleMark, useStaticEditor } from './utils';
 import { LayoutsButton } from './layouts';
 import { ListButton } from './lists';
 import { blockquoteButton } from './blockquote';
@@ -29,10 +28,11 @@ import { DocumentFeatures } from '../views';
 import { insertCodeBlock } from './code-block';
 import { TextAlignMenu } from './alignment';
 import { dividerButton } from './divider';
+import { useToolbarState } from './toolbar-state';
 
 // TODO: how to manage separators with dynamic feature sets...
 
-export const Toolbar = memo(function Toolbar({
+export function Toolbar({
   documentFeatures,
   viewState,
 }: {
@@ -104,7 +104,7 @@ export const Toolbar = memo(function Toolbar({
       )}
     </ToolbarContainer>
   );
-});
+}
 
 /* UI Components */
 
@@ -112,14 +112,19 @@ const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function
   props,
   ref
 ) {
-  const editor = useSlate();
-  const isActive = isMarkActive(editor, props.type);
+  const {
+    editor,
+    marks: {
+      [props.type]: { isDisabled, isSelected },
+    },
+  } = useToolbarState();
   return useMemo(() => {
     const { type, ...restProps } = props;
     return (
       <ToolbarButton
         ref={ref}
-        isSelected={isActive}
+        isDisabled={isDisabled}
+        isSelected={isSelected}
         onMouseDown={event => {
           event.preventDefault();
           toggleMark(editor, type);
@@ -127,7 +132,7 @@ const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function
         {...restProps}
       />
     );
-  }, [editor, isActive, props]);
+  }, [editor, isDisabled, isSelected, props]);
 });
 
 const ToolbarContainer = ({ children }: { children: ReactNode }) => {
@@ -161,15 +166,10 @@ function HeadingButton({
   showMenu: boolean;
   onToggleShowMenu: () => void;
 }) {
-  const editor = useSlate();
-  // prep button label
-  let [headingNodes] = Editor.nodes(editor, {
-    match: n => n.type === 'heading',
-  });
-  let buttonLabel = 'Normal text';
-  if (headingNodes) {
-    buttonLabel = 'Heading ' + headingNodes[0].level;
-  }
+  const { textStyles } = useToolbarState();
+  let buttonLabel =
+    textStyles.selected === 'normal' ? 'Normal text' : 'Heading ' + textStyles.selected;
+
   return useMemo(
     () => (
       <ToolbarButton
@@ -250,31 +250,27 @@ function HeadingDialog({
   headingLevels: DocumentFeatures['formatting']['headingLevels'];
   onCloseMenu: () => void;
 }) {
-  const editor = useSlate();
+  const { editor, textStyles } = useToolbarState();
   return (
     <ToolbarGroup direction="column">
       {headingLevels.map(hNum => {
-        let [node] = Editor.nodes(editor, {
-          match: n => n.type === 'heading' && n.level === hNum,
-        });
-        let isActive = !!node;
         let Tag = `h${hNum}` as 'h1';
-
+        const isSelected = textStyles.selected === hNum;
         return (
           <ToolbarButton
             key={hNum}
-            isSelected={isActive}
+            isSelected={isSelected}
             onMouseDown={event => {
               event.preventDefault();
               Transforms.setNodes(
                 editor,
-                isActive
+                isSelected
                   ? {
                       type: 'paragraph',
                     }
                   : { type: 'heading', level: hNum }
               );
-              if (!isActive) {
+              if (!isSelected) {
                 Transforms.unsetNodes(editor, 'level', {
                   match: node => node.type === 'paragraph',
                 });
@@ -355,15 +351,13 @@ function InnerInsertBlockMenu({
   blockTypes: DocumentFeatures['formatting']['blockTypes'];
   onClose: () => void;
 }) {
-  // useEditor does not update when the value/selection changes.
-  // that's fine for what it's being used for here
-  // because we're just inserting things on events, not reading things in render
-  const editor = useEditor();
+  const { editor, code } = useToolbarState();
 
   return (
     <ToolbarGroup direction="column">
       {blockTypes.code && (
         <ToolbarButton
+          isDisabled={code.isDisabled}
           onMouseDown={event => {
             event.preventDefault();
             insertCodeBlock(editor);

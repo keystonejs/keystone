@@ -9,7 +9,7 @@ import {
   DocumentFeaturesForNormalization,
   normalizeElementBasedOnDocumentFeatures,
   normalizeInlineBasedOnLinksAndRelationships,
-  normalizeTextBasedOnInlineMarks,
+  normalizeTextBasedOnInlineMarksAndSoftBreaks,
 } from '../document-features-normalization';
 import weakMemoize from '@emotion/weak-memoize';
 import { Relationships } from '../relationship';
@@ -44,10 +44,12 @@ type DocumentFeaturesForChildField =
       inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks'];
       links: boolean;
       relationships: boolean;
+      softBreaks: boolean;
     }
   | {
       kind: 'block';
       inlineMarks: 'inherit' | DocumentFeatures['formatting']['inlineMarks'];
+      softBreaks: boolean;
       documentFeatures: DocumentFeaturesForNormalization;
     };
 
@@ -72,10 +74,11 @@ function normalizeNodeWithinComponentProp(
   }
   let didNormalization = false;
   if (fieldOptions.inlineMarks !== 'inherit' && Text.isText(node)) {
-    didNormalization = normalizeTextBasedOnInlineMarks(
+    didNormalization = normalizeTextBasedOnInlineMarksAndSoftBreaks(
       [node, path],
       editor,
-      fieldOptions.inlineMarks
+      fieldOptions.inlineMarks,
+      fieldOptions.softBreaks
     );
   }
   if (Element.isElement(node)) {
@@ -142,11 +145,13 @@ export function withComponentBlocks(
           inlineMarks,
           links: options.links === 'inherit',
           relationships: options.relationships === 'inherit',
+          softBreaks: options.formatting?.softBreaks === 'inherit',
         };
       }
       return {
         kind: 'block',
         inlineMarks,
+        softBreaks: options.formatting?.softBreaks === 'inherit',
         documentFeatures: {
           layouts: [],
           dividers: options.dividers === 'inherit' ? editorDocumentFeatures.dividers : false,

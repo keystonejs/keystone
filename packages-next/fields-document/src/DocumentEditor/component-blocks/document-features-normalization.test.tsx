@@ -211,6 +211,32 @@ const cases: Record<
 
     kind: 'not-allowed',
   },
+  'soft breaks allowed': {
+    prop: fields.child({ kind: 'block', placeholder: '', formatting: { softBreaks: 'inherit' } }),
+    children: (
+      <paragraph>
+        <text>some{'\n'} text </text>
+      </paragraph>
+    ),
+    kind: 'allowed',
+  },
+  'soft breaks not allowed': {
+    prop: fields.child({ kind: 'block', placeholder: '' }),
+    children: (
+      <paragraph>
+        <text>
+          some{'\n'} text {'\n'}
+        </text>
+        <text bold>{'\n'}s</text>
+      </paragraph>
+    ),
+    expectedNormalized: (
+      <paragraph>
+        <text>some text s</text>
+      </paragraph>
+    ),
+    kind: 'not-allowed',
+  },
 };
 
 Object.keys(cases).forEach(key => {

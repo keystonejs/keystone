@@ -1,4 +1,4 @@
-import { Text, Transforms, Element, NodeEntry, Editor } from 'slate';
+import { Text, Transforms, Element, NodeEntry, Editor, Node } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { Relationships } from './relationship';
@@ -16,10 +16,11 @@ function areArraysEqual(arrA: any[], arrB: any[]) {
   return true;
 }
 
-export function normalizeTextBasedOnInlineMarks(
+export function normalizeTextBasedOnInlineMarksAndSoftBreaks(
   [node, path]: NodeEntry<Text>,
   editor: ReactEditor,
-  inlineMarks: DocumentFeatures['formatting']['inlineMarks']
+  inlineMarks: DocumentFeatures['formatting']['inlineMarks'],
+  softBreaks: boolean
 ): boolean {
   const marksToRemove = Object.keys(node).filter(
     x => x !== 'text' && (inlineMarks as any)[x] !== true
@@ -28,6 +29,22 @@ export function normalizeTextBasedOnInlineMarks(
     Transforms.unsetNodes(editor, marksToRemove, { at: path });
     return true;
   }
+  if (!softBreaks) {
+    const hasSoftBreaks = node.text.includes('\n');
+    if (hasSoftBreaks) {
+      const [parentNode] = Editor.parent(editor, path);
+      if (parentNode.type !== 'code') {
+        for (const position of Editor.positions(editor, { at: path })) {
+          const character = (Node.get(editor, position.path) as Text).text[position.offset];
+          if (character === '\n') {
+            Transforms.delete(editor, { at: position });
+            return true;
+          }
+        }
+      }
+    }
+  }
+
   return false;
 }
 
@@ -124,10 +141,11 @@ export function withDocumentFeaturesNormalization(
   const documentFeaturesForNormalization = { ...documentFeatures, relationships: true };
   editor.normalizeNode = ([node, path]) => {
     if (Text.isText(node)) {
-      normalizeTextBasedOnInlineMarks(
+      normalizeTextBasedOnInlineMarksAndSoftBreaks(
         [node, path],
         editor,
-        documentFeatures.formatting.inlineMarks
+        documentFeatures.formatting.inlineMarks,
+        documentFeatures.formatting.softBreaks
       );
     } else if (Element.isElement(node)) {
       normalizeElementBasedOnDocumentFeatures(

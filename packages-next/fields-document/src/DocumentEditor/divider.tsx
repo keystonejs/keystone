@@ -1,17 +1,15 @@
 import React, { ButtonHTMLAttributes } from 'react';
 import { Transforms, Range, Editor } from 'slate';
-import { ReactEditor, useEditor } from 'slate-react';
+import { ReactEditor } from 'slate-react';
 
 import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon';
 import { Tooltip } from '@keystone-ui/tooltip';
 
 import { ToolbarButton } from './primitives';
+import { useStaticEditor } from './utils';
 
 const DividerButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
-  // useEditor does not update when the value/selection changes.
-  // that's fine for what it's being used for here
-  // because we're just inserting things on events, not reading things in render
-  const editor = useEditor();
+  const editor = useStaticEditor();
   return (
     <Tooltip content="Divider" weight="subtle">
       {attrs => (

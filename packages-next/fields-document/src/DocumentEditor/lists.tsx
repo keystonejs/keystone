@@ -2,13 +2,14 @@
 
 import { ReactNode, forwardRef, useMemo } from 'react';
 import { Editor, Element, Node, NodeEntry, Path, Transforms, Range } from 'slate';
-import { ReactEditor, useSlate } from 'slate-react';
+import { ReactEditor } from 'slate-react';
 import { jsx } from '@keystone-ui/core';
 
 import { DocumentFeatures } from '../views';
 
 import { getMaybeMarkdownShortcutText, isBlockActive, moveChildren } from './utils';
 import { ToolbarButton } from './primitives';
+import { useToolbarState } from './toolbar-state';
 
 export const isListType = (type: string) => type === 'ordered-list' || type === 'unordered-list';
 
@@ -136,15 +137,20 @@ export const ListButton = forwardRef<
     children: ReactNode;
   }
 >(function ListButton(props, ref) {
-  const editor = useSlate();
-  const isActive = isBlockActive(editor, props.type);
+  const {
+    editor,
+    lists: {
+      [props.type === 'ordered-list' ? 'ordered' : 'unordered']: { isDisabled, isSelected },
+    },
+  } = useToolbarState();
 
   return useMemo(() => {
     const { type, ...restProps } = props;
     return (
       <ToolbarButton
         ref={ref}
-        isSelected={isActive}
+        isDisabled={isDisabled}
+        isSelected={isSelected}
         onMouseDown={event => {
           event.preventDefault();
           toggleList(editor, type);
@@ -152,5 +158,5 @@ export const ListButton = forwardRef<
         {...restProps}
       />
     );
-  }, [props, ref, isActive]);
+  }, [props, ref, isDisabled, isSelected]);
 });

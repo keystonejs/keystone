@@ -2,7 +2,7 @@
 
 import { ComponentProps, useMemo } from 'react';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
-import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
+import { ReactEditor, RenderElementProps } from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
@@ -10,6 +10,7 @@ import { Tooltip } from '@keystone-ui/tooltip';
 import { IconBase } from './Toolbar';
 import { ToolbarButton } from './primitives';
 import { getMaybeMarkdownShortcutText, isBlockActive } from './utils';
+import { useToolbarState } from './toolbar-state';
 
 export const insertBlockquote = (editor: ReactEditor) => {
   const isActive = isBlockActive(editor, 'blockquote');
@@ -108,12 +109,15 @@ const BlockquoteButton = ({
 }: {
   attrs: Parameters<ComponentProps<typeof Tooltip>['children']>[0];
 }) => {
-  const editor = useSlate();
-  const isActive = isBlockActive(editor, 'blockquote');
+  const {
+    editor,
+    blockquote: { isDisabled, isSelected },
+  } = useToolbarState();
   return useMemo(
     () => (
       <ToolbarButton
-        isSelected={isActive}
+        isSelected={isSelected}
+        isDisabled={isDisabled}
         onMouseDown={event => {
           event.preventDefault();
           insertBlockquote(editor);
@@ -123,7 +127,7 @@ const BlockquoteButton = ({
         <QuoteIcon />
       </ToolbarButton>
     ),
-    [attrs, isActive]
+    [attrs, isDisabled, isSelected]
   );
 };
 export const blockquoteButton = (

@@ -48,6 +48,7 @@ import { renderLeaf } from './leaf';
 import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
 import { withShortcuts } from './shortcuts';
 import { withDocumentFeaturesNormalization } from './document-features-normalization';
+import { ToolbarStateProvider } from './toolbar-state';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -203,18 +204,22 @@ export function DocumentEditor({
                 onChange?.(value);
               }}
             >
-              <Toolbar
-                documentFeatures={documentFeatures}
-                viewState={useMemo(
-                  () => ({
-                    expanded,
-                    toggle: () => {
-                      setExpanded(v => !v);
-                    },
-                  }),
-                  [expanded]
-                )}
-              />
+              {useMemo(
+                () => (
+                  <ToolbarStateProvider>
+                    <Toolbar
+                      documentFeatures={documentFeatures}
+                      viewState={{
+                        expanded,
+                        toggle: () => {
+                          setExpanded(v => !v);
+                        },
+                      }}
+                    />
+                  </ToolbarStateProvider>
+                ),
+                [expanded, documentFeatures]
+              )}
               <Editable
                 decorate={useCallback(
                   ([node, path]: NodeEntry<Node>) => {

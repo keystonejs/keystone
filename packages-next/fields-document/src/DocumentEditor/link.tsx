@@ -1,14 +1,7 @@
 /** @jsx jsx */
 
-import {
-  ReactEditor,
-  RenderElementProps,
-  useEditor,
-  useFocused,
-  useSelected,
-  useSlate,
-} from 'slate-react';
-import { Editor, Node, Range, Transforms } from 'slate';
+import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
+import { Node, Range, Transforms } from 'slate';
 import { forwardRef, useMemo, useState } from 'react';
 // @ts-ignore
 import isUrl from 'is-url';
@@ -21,19 +14,16 @@ import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
+import { isBlockActive, useStaticEditor } from './utils';
+import { useToolbarState } from './toolbar-state';
 
 const isLinkActive = (editor: ReactEditor) => {
-  const [link] = Editor.nodes(editor, { match: n => n.type === 'link' });
-  return !!link;
-};
-
-const unwrapLink = (editor: ReactEditor) => {
-  Transforms.unwrapNodes(editor, { match: n => n.type === 'link' });
+  return isBlockActive(editor, 'link');
 };
 
 const wrapLink = (editor: ReactEditor, url: string) => {
   if (isLinkActive(editor)) {
-    unwrapLink(editor);
+    Transforms.unwrapNodes(editor, { match: n => n.type === 'link' });
     return;
   }
 
@@ -55,10 +45,8 @@ const wrapLink = (editor: ReactEditor, url: string) => {
 export const LinkElement = ({ attributes, children, element }: RenderElementProps) => {
   const { typography } = useTheme();
   const href = element.href as string;
-  // useEditor does not update when the value/selection changes.
-  // that's fine for what it's being used for here
-  // because we're just inserting things on events, not reading things in render
-  const editor = useEditor();
+  const editor = useStaticEditor();
+
   const selected = useSelected();
   const focused = useFocused();
   const [focusedInInlineDialog, setFocusedInInlineDialog] = useState(false);
@@ -151,15 +139,16 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
 let linkIcon = <LinkIcon size="small" />;
 
 const LinkButton = forwardRef<HTMLButtonElement, {}>(function LinkButton(props, ref) {
-  const editor = useSlate();
-  const isActive = isLinkActive(editor);
-  const isDisabled = !isActive && (!editor.selection || Range.isCollapsed(editor.selection));
+  const {
+    editor,
+    links: { isDisabled, isSelected },
+  } = useToolbarState();
   return useMemo(
     () => (
       <ToolbarButton
         ref={ref}
         isDisabled={isDisabled}
-        isSelected={isActive}
+        isSelected={isSelected}
         onMouseDown={event => {
           event.preventDefault();
           wrapLink(editor, '');
@@ -169,7 +158,7 @@ const LinkButton = forwardRef<HTMLButtonElement, {}>(function LinkButton(props, 
         {linkIcon}
       </ToolbarButton>
     ),
-    [isActive, isDisabled, editor, props, ref]
+    [isSelected, isDisabled, editor, props, ref]
   );
 });
 

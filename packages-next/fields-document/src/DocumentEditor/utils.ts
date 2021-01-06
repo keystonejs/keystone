@@ -1,8 +1,10 @@
-import { Editor, Element, Node, NodeEntry, Path, Text, Transforms, Range } from 'slate';
+import { Editor, Node, NodeEntry, Path, Transforms, Range } from 'slate';
 import { ReactEditor } from 'slate-react';
 
 export const DEBUG = false;
 export const debugLog = (...args: any[]) => DEBUG && console.log(...args);
+
+export { useEditor as useStaticEditor } from 'slate-react';
 
 export type Mark =
   | 'bold'
@@ -13,6 +15,17 @@ export type Mark =
   | 'superscript'
   | 'subscript'
   | 'keyboard';
+
+export const allMarks: Mark[] = [
+  'bold',
+  'italic',
+  'underline',
+  'strikethrough',
+  'code',
+  'superscript',
+  'subscript',
+  'keyboard',
+];
 
 export const isBlockActive = (editor: ReactEditor, format: string) => {
   const [match] = Editor.nodes(editor, {
@@ -39,18 +52,6 @@ export function moveChildren(
     }
   }
 }
-
-export const getBlockAboveSelection = (editor: ReactEditor) =>
-  Editor.above(editor, {
-    match: n => Editor.isBlock(editor, n),
-  }) || [editor, []];
-
-export const isLastBlockTextEmpty = (node: Element) => {
-  const lastChild = node.children[node.children.length - 1];
-  return Text.isText(lastChild) && !lastChild.text.length;
-};
-
-export const isFirstChild = (path: readonly number[]) => path[path.length - 1] === 0;
 
 export const isMarkActive = (editor: ReactEditor, format: Mark) => {
   const marks = Editor.marks(editor);
