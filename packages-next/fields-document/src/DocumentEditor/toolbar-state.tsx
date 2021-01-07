@@ -91,7 +91,7 @@ export const createToolbarState = (
   };
 
   const ancestorComponentProp = Editor.above(editor, {
-    match: n => n.type === 'component-inline-prop' || n.type === 'component-block.prop',
+    match: n => n.type === 'component-inline-prop' || n.type === 'component-block-prop',
   });
 
   if (ancestorComponentProp) {
