@@ -1,14 +1,13 @@
-import React, { ReactNode, useContext, useMemo } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import { Editor, Range } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
 import {
   DocumentFeaturesForChildField,
-  findChildPropPaths,
+  getChildFieldAtPropPath,
   getDocumentFeaturesForChildField,
 } from './component-blocks/utils';
-import { areArraysEqual } from './document-features-normalization';
 import { isListType } from './lists';
 import { allMarks, isBlockActive, Mark } from './utils';
 
@@ -54,16 +53,11 @@ export function useToolbarState() {
   return toolbarState;
 }
 
-export const ToolbarStateProvider = ({
-  children,
-  componentBlocks,
-  editorDocumentFeatures,
-}: {
-  children: ReactNode;
-  componentBlocks: Record<string, ComponentBlock>;
-  editorDocumentFeatures: DocumentFeatures;
-}) => {
-  const editor = useSlate();
+export const createToolbarState = (
+  editor: ReactEditor,
+  componentBlocks: Record<string, ComponentBlock>,
+  editorDocumentFeatures: DocumentFeatures
+): ToolbarState => {
   let [headingEntry] = Editor.nodes(editor, {
     match: n => n.type === 'heading',
   });
@@ -78,26 +72,23 @@ export const ToolbarStateProvider = ({
 
   const isLinkActive = isBlockActive(editor, 'link');
 
-  let locationDocumentFeatures: DocumentFeaturesForChildField = useMemo(
-    () => ({
-      kind: 'block',
-      inlineMarks: 'inherit',
-      documentFeatures: {
-        dividers: true,
-        formatting: {
-          alignment: { center: true, end: true },
-          blockTypes: { blockquote: true, code: true },
-          headingLevels: [1, 2, 3, 4, 5, 6],
-          listTypes: { ordered: true, unordered: true },
-        },
-        layouts: editorDocumentFeatures.layouts,
-        links: true,
-        relationships: true,
+  let locationDocumentFeatures: DocumentFeaturesForChildField = {
+    kind: 'block',
+    inlineMarks: 'inherit',
+    documentFeatures: {
+      dividers: true,
+      formatting: {
+        alignment: { center: true, end: true },
+        blockTypes: { blockquote: true, code: true },
+        headingLevels: [1, 2, 3, 4, 5, 6],
+        listTypes: { ordered: true, unordered: true },
       },
-      softBreaks: true,
-    }),
-    [editorDocumentFeatures]
-  );
+      layouts: editorDocumentFeatures.layouts,
+      links: true,
+      relationships: true,
+    },
+    softBreaks: true,
+  };
 
   const ancestorComponentProp = Editor.above(editor, {
     match: n => n.type === 'component-inline-prop' || n.type === 'component-block.prop',
@@ -109,11 +100,11 @@ export const ToolbarStateProvider = ({
     const component = ancestorComponent[0].component;
     const componentBlock = componentBlocks[component as string];
     if (componentBlock) {
-      // TODO: implement this more efficiently
-      const options = findChildPropPaths(
+      const options = getChildFieldAtPropPath(
+        propPath as any,
         ancestorComponent[0].props as any,
         componentBlock.props
-      ).find(({ path }) => areArraysEqual(path, propPath as any))?.options;
+      )?.options;
       if (options) {
         locationDocumentFeatures = getDocumentFeaturesForChildField(
           editorDocumentFeatures,
@@ -136,7 +127,7 @@ export const ToolbarStateProvider = ({
     ])
   );
 
-  const state: ToolbarState = {
+  return {
     marks,
     textStyles: {
       selected: headingEntry ? (headingEntry[0].level as any) : 'normal',
@@ -201,5 +192,24 @@ export const ToolbarStateProvider = ({
         !locationDocumentFeatures.documentFeatures.dividers,
     },
   };
-  return <ToolbarStateContext.Provider value={state}>{children}</ToolbarStateContext.Provider>;
+};
+
+export const ToolbarStateProvider = ({
+  children,
+  componentBlocks,
+  editorDocumentFeatures,
+}: {
+  children: ReactNode;
+  componentBlocks: Record<string, ComponentBlock>;
+  editorDocumentFeatures: DocumentFeatures;
+}) => {
+  const editor = useSlate();
+
+  return (
+    <ToolbarStateContext.Provider
+      value={createToolbarState(editor, componentBlocks, editorDocumentFeatures)}
+    >
+      {children}
+    </ToolbarStateContext.Provider>
+  );
 };

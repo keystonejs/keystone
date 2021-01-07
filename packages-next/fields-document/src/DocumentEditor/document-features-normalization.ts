@@ -3,7 +3,7 @@ import { ReactEditor } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { Relationships } from './relationship';
 
-export function areArraysEqual(arrA: any[], arrB: any[]) {
+function areArraysEqual(arrA: any[], arrB: any[]) {
   if (arrA.length !== arrB.length) {
     return false;
   }

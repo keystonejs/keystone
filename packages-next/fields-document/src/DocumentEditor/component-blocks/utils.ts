@@ -195,3 +195,22 @@ export function getDocumentFeaturesForChildField(
     },
   };
 }
+
+export function getChildFieldAtPropPath(
+  [key, ...restOfPath]: (string | number)[],
+  values: Record<string, any>,
+  props: Record<string, ComponentPropField>
+): undefined | ChildField {
+  let prop = props[key];
+  if (!prop || prop.kind === 'form' || prop.kind === 'relationship') {
+    return;
+  }
+  if (prop.kind === 'conditional') {
+    const propVal = prop.values[values[key].discriminant];
+    return getChildFieldAtPropPath(restOfPath, values, { value: propVal });
+  }
+  if (prop.kind === 'object') {
+    return getChildFieldAtPropPath(restOfPath, values[key], prop.value);
+  }
+  return prop;
+}

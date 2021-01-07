@@ -10,6 +10,7 @@ import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
 import jestDiff from 'jest-diff';
 import { validateDocument } from '../../validation';
 import { Relationships } from '../relationship';
+import { createToolbarState } from '../toolbar-state';
 
 function formatEditor(editor: Node) {
   return prettyFormat(editor, {
@@ -99,11 +100,11 @@ export const defaultDocumentFeatures: DocumentFeatures = {
 export const makeEditor = (
   node: Node,
   {
-    documentFeatures,
-    componentBlocks,
+    documentFeatures = defaultDocumentFeatures,
+    componentBlocks = {},
     normalization = 'disallow-non-normalized',
-    isShiftPressedRef,
-    relationships,
+    isShiftPressedRef = { current: false },
+    relationships = {},
   }: {
     documentFeatures?: DocumentFeatures;
     componentBlocks?: Record<string, ComponentBlock>;
@@ -116,12 +117,21 @@ export const makeEditor = (
     throw new Error('Unexpected non-editor passed to makeEditor');
   }
   let editor = createDocumentEditor(
-    documentFeatures || defaultDocumentFeatures,
-    componentBlocks || {},
-    relationships || {},
-    isShiftPressedRef || { current: false }
+    documentFeatures,
+    componentBlocks,
+    relationships,
+    isShiftPressedRef
   );
   validateDocument(editor.children);
+
+  // just a smoke test for the toolbar state
+  createToolbarState(editor, componentBlocks, documentFeatures);
+  const { onChange } = editor;
+  editor.onChange = () => {
+    createToolbarState(editor, componentBlocks, documentFeatures);
+    onChange();
+  };
+
   editor.children = node.children;
   editor.selection = node.selection;
   editor.marks = node.marks;
