@@ -9,6 +9,8 @@ import {
   useEffect,
   useRef,
   memo,
+  useCallback,
+  useMemo,
 } from 'react';
 import { applyRefs } from 'apply-ref';
 import { jsx, useId, useTheme, Portal } from '@keystone-ui/core';
@@ -61,8 +63,8 @@ export const Tooltip = ({
   });
 
   const tooltipId = useId();
-  const showTooltip = () => setOpen(true);
-  const hideTooltip = () => setOpen(false);
+  const showTooltip = useCallback(() => setOpen(true), []);
+  const hideTooltip = useCallback(() => setOpen(false), []);
   const internalRef = useRef<HTMLElement>(null);
 
   // avoid overriding the consumer's `onClick` handler
@@ -78,14 +80,18 @@ export const Tooltip = ({
 
   return (
     <Fragment>
-      {children({
-        onMouseEnter: showTooltip,
-        onMouseLeave: hideTooltip,
-        onFocus: showTooltip,
-        onBlur: hideTooltip,
-        'aria-describedby': tooltipId,
-        ref: applyRefs(trigger.ref, internalRef),
-      })}
+      {useMemo(
+        () =>
+          children({
+            onMouseEnter: showTooltip,
+            onMouseLeave: hideTooltip,
+            onFocus: showTooltip,
+            onBlur: hideTooltip,
+            'aria-describedby': tooltipId,
+            ref: applyRefs(trigger.ref, internalRef),
+          }),
+        [children, showTooltip, hideTooltip, tooltipId, trigger.ref, internalRef]
+      )}
       <TooltipElement
         id={tooltipId}
         isVisible={isOpen}
