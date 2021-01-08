@@ -274,7 +274,7 @@ export function DocumentEditor({
               </ToolbarStateProvider>
               {
                 // for debugging
-                true && <Debugger />
+                false && <Debugger />
               }
             </Slate>
           </ComponentBlockContext.Provider>
