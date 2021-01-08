@@ -15,6 +15,7 @@ import {
   Text,
   Descendant,
   Path,
+  Point,
 } from 'slate';
 import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
@@ -28,7 +29,7 @@ import { renderElement } from './render-element';
 import { withHeading } from './heading';
 import { isListType, withList } from './lists';
 import {
-  ComponentBlockProvider,
+  ComponentBlockContext,
   getPlaceholderTextForPropPath,
   withComponentBlocks,
 } from './component-blocks';
@@ -199,7 +200,7 @@ export function DocumentEditor({
     >
       <DocumentFieldRelationshipsProvider value={relationships}>
         <LayoutOptionsProvider value={documentFeatures.layouts}>
-          <ComponentBlockProvider value={componentBlocks}>
+          <ComponentBlockContext.Provider value={componentBlocks}>
             <Slate
               // this fixes issues with Slate crashing when a fast refresh occcurs
               key={identity}
@@ -209,12 +210,12 @@ export function DocumentEditor({
                 onChange?.(value);
               }}
             >
-              {useMemo(
-                () => (
-                  <ToolbarStateProvider
-                    componentBlocks={componentBlocks}
-                    editorDocumentFeatures={documentFeatures}
-                  >
+              <ToolbarStateProvider
+                componentBlocks={componentBlocks}
+                editorDocumentFeatures={documentFeatures}
+              >
+                {useMemo(
+                  () => (
                     <Toolbar
                       documentFeatures={documentFeatures}
                       viewState={{
@@ -224,58 +225,94 @@ export function DocumentEditor({
                         },
                       }}
                     />
-                  </ToolbarStateProvider>
-                ),
-                [expanded, documentFeatures, componentBlocks]
-              )}
-              <Editable
-                decorate={useCallback(
-                  ([node, path]: NodeEntry<Node>) => {
-                    let decorations: Range[] = [];
-                    if (node.type === 'component-block' && Element.isElement(node)) {
-                      if (
-                        node.children.length === 1 &&
-                        (node.children[0].propPath as any).length === 1 &&
-                        (node.children[0].propPath as any)[0] ===
-                          VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP
-                      ) {
-                        return decorations;
-                      }
-                      node.children.forEach((child, index) => {
-                        if (Node.string(child) === '') {
-                          const start = Editor.start(editor, [...path, index]);
-                          const placeholder = getPlaceholderTextForPropPath(
-                            child.propPath as any,
-                            componentBlocks[node.component as string].props,
-                            node.props as any
-                          );
+                  ),
+                  [expanded, documentFeatures, componentBlocks]
+                )}
+                <Editable
+                  decorate={useCallback(
+                    ([node, path]: NodeEntry<Node>) => {
+                      let decorations: Range[] = [];
+                      if (node.type === 'component-block' && Element.isElement(node)) {
+                        if (
+                          node.children.length === 1 &&
+                          (node.children[0].propPath as any).length === 1 &&
+                          (node.children[0].propPath as any)[0] ===
+                            VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP
+                        ) {
+                          return decorations;
+                        }
+                        node.children.forEach((child, index) => {
+                          if (Node.string(child) === '') {
+                            const start = Editor.start(editor, [...path, index]);
+                            const placeholder = getPlaceholderTextForPropPath(
+                              child.propPath as any,
+                              componentBlocks[node.component as string].props,
+                              node.props as any
+                            );
 
+                            decorations.push({
+                              placeholder,
+                              anchor: start,
+                              focus: start,
+                            });
+                          }
+                        });
+                      }
+                      if (Text.isText(node)) {
+                        if (
+                          node.text[0] === '/' &&
+                          Point.equals(
+                            Editor.start(
+                              editor,
+                              Editor.above(editor, {
+                                at: path,
+                                match: node => Editor.isBlock(editor, node),
+                              })![1]
+                            ),
+                            { path, offset: 0 }
+                          )
+                        ) {
+                          let match = node.text.match(/^[^\s]+\s/);
+                          const range = {
+                            anchor: { path, offset: 0 },
+                            focus: { path, offset: match ? match[0].length - 1 : node.text.length },
+                          };
                           decorations.push({
-                            placeholder,
-                            anchor: start,
-                            focus: start,
+                            insertMenu: { range, kind: 'start' },
+                            ...range,
                           });
                         }
-                      });
-                    }
-
-                    return decorations;
-                  },
-                  [editor]
-                )}
-                css={styles}
-                autoFocus={autoFocus}
-                onKeyDown={onKeyDown}
-                readOnly={onChange === undefined}
-                renderElement={renderElement}
-                renderLeaf={renderLeaf}
-              />
+                        for (const match of node.text.matchAll(/\s\/[^\s]*/g)) {
+                          if (match.index !== undefined) {
+                            const range = {
+                              anchor: { path, offset: match.index + 1 },
+                              focus: { path, offset: match.index + match[0].length },
+                            };
+                            decorations.push({
+                              insertMenu: { range, kind: 'inline' },
+                              ...range,
+                            });
+                          }
+                        }
+                      }
+                      return decorations;
+                    },
+                    [editor]
+                  )}
+                  css={styles}
+                  autoFocus={autoFocus}
+                  onKeyDown={onKeyDown}
+                  readOnly={onChange === undefined}
+                  renderElement={renderElement}
+                  renderLeaf={renderLeaf}
+                />
+              </ToolbarStateProvider>
               {
                 // for debugging
-                false && <Debugger />
+                true && <Debugger />
               }
             </Slate>
-          </ComponentBlockProvider>
+          </ComponentBlockContext.Provider>
         </LayoutOptionsProvider>
       </DocumentFieldRelationshipsProvider>
     </div>

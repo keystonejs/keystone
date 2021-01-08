@@ -21,9 +21,7 @@ import { useStaticEditor } from '../utils';
 
 export { withComponentBlocks } from './with-component-blocks';
 
-const ComponentBlockContext = createContext<null | Record<string, ComponentBlock>>(null);
-
-export const ComponentBlockProvider = ComponentBlockContext.Provider;
+export const ComponentBlockContext = createContext<Record<string, ComponentBlock>>({});
 
 export function getPlaceholderTextForPropPath(
   propPath: (number | string)[],

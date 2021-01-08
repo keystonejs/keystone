@@ -36,6 +36,7 @@
     "io-ts": "^2.2.13",
     "is-hotkey": "^0.2.0",
     "is-url": "^1.2.4",
+    "match-sorter": "^6.1.0",
     "react": "^16.14.0",
     "slate": "npm:slate@^0.59.0",
     "slate-history": "^0.59.0",
