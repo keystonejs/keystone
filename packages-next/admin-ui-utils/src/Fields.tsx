@@ -59,6 +59,10 @@ export function Fields({
       const val = value[fieldPath];
       const fieldMode = fieldModes === null ? 'edit' : fieldModes[fieldPath];
 
+      if (field.label === 'Finish by') {
+        console.log(`FIELD VALUE: ${field.label}`, val);
+      };
+
       if (val.kind === 'error') {
         return (
           <div>

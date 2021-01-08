@@ -1,7 +1,6 @@
 /* @jsx jsx */
-
-import { parseISO } from 'date-fns';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
+import { isValidDate, isValidISO, isValidTime, constructTimestamp, deconstructTimestamp, formatOutput }  from './utils';
 
 import { CellContainer, CellLink } from '@keystone-next/admin-ui/components';
 import {
@@ -11,53 +10,111 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-next/types';
-import { jsx } from '@keystone-ui/core';
+import { jsx, Inline, Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, TextInput, DatePicker, DateType } from '@keystone-ui/fields';
+import { TextInputProps } from '@keystone-ui/fields/src/TextInput';
 
 // TODO: Bring across the datetime/datetimeUtc interfaces, date picker, etc.
 
-function formatOutput(value: string) {
-  if (!value) return '';
-  const date = new Date(value);
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+
+
+interface TimePickerProps extends TextInputProps {
+  format: '12hr' | '24hr'
 }
+
+const TimePicker = ({ autoFocus, onBlur, disabled, onChange, format = '24hr', value }: TimePickerProps) => {
+  return (
+    <TextInput
+      autoFocus={autoFocus}
+      maxLength={format === '24hr' ? 5 : 7}
+      disabled={disabled}
+      onChange={onChange}
+      onBlur={onBlur}
+      placeholder={ format === '24hr' ? '00:00' : '00:00am' }
+      value={value}
+    />
+  );
+};
+
+
 
 export const Field = ({
   field,
   value,
   onChange,
   forceValidation,
-  autoFocus,
 }: FieldProps<typeof controller>) => {
-  const [touched, setTouched] = useState(false);
-  let [dateValue, setDateValue] = useState<DateType>(null);
+  const [touchedFirstInput, setTouchedFirstInput] = useState(false);
+  const [touchedSecondInput, setTouchedSecondInput] = useState(false);
+
+  const showValidation = touchedFirstInput && touchedSecondInput || forceValidation;
+
+  const showDateError = (dateValue: DateType) => {
+    if (!dateValue) {
+      return (
+        <div css={{ color: 'red' }}>
+          Please select a date value.
+        </div>
+      );
+    };
+    return !isValidDate(dateValue) && (
+      <div css={{ color: 'red' }}>
+        Incorrect date value
+      </div>
+    );
+  };
+
+  const showTimeError = (timeValue: string | null) => {
+    if (!timeValue) {
+      return (
+        <div css={{ color: 'red' }}>
+          Please select a time value.
+        </div>
+      );
+    }
+    return !isValidTime(timeValue) && (
+      <div css={{ color: 'red' }}>
+        Time must be in the form HH:mm
+      </div>
+    );
+  };
+
 
   return (
     <FieldContainer>
-      <FieldLabel>CAT {field.label}</FieldLabel>
+      <FieldLabel>{field.label}</FieldLabel>
       {onChange ? (
-        <Fragment>
-          <DatePicker onUpdate={setDateValue} onClear={() => setDateValue(null)} value={dateValue} />
-          <TextInput
-            autoFocus={autoFocus}
-            disabled={onChange === undefined}
-            onChange={event => {
-              onChange(event.target.value);
-            }}
-            onBlur={() => {
-              setTouched(true);
-            }}
-            placeholder="0000-00-00T00:00:00.000Z"
-            value={value}
-          />
-          {(touched || forceValidation) && !isValid(value) && (
-            <div css={{ color: 'red' }}>
-              Timestamps must be in the form 0000-00-00T00:00:00.000Z
-            </div>
-          )}
-        </Fragment>
+        <Stack>
+          <Inline gap="small">
+            {/* TODO: Add validation for date field*/}
+            <Stack>
+              <DatePicker
+                onUpdate={(date) => {
+                  console.log('NEW DATE IS', date);
+                  onChange({ ...value, dateValue: date });
+                }}
+                onClear={() => onChange({ ...value, dateValue: '' })}
+                onBlur={() => setTouchedFirstInput(true)}
+                value={value.dateValue}
+              />
+              {(showValidation) && showDateError(value.dateValue)}
+            </Stack>
+            {/* TODO: Add validation for time field*/}
+            <Stack>
+              <TimePicker
+                // autoFocus={autoFocus}
+                onBlur={() => setTouchedSecondInput(true)}
+                disabled={onChange === undefined}
+                format="24hr"
+                onChange={(event) => onChange({ ...value, timeValue: event.target.value })}
+                value={value.timeValue || ''}
+              />
+              {(showValidation) && showTimeError(value.timeValue)}
+            </Stack>
+          </Inline>
+        </Stack>
       ) : (
-        formatOutput(value)
+        isValidISO(value) ? formatOutput(constructTimestamp(value)) : ''
       )}
     </FieldContainer>
   );
@@ -82,25 +139,49 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-function isValid(value: string) {
-  if (value === '') return true;
-  try {
-    return parseISO(value).toISOString() === value;
-  } catch (err) {
-    return false;
-  }
-}
 
-export const controller = (config: FieldControllerConfig): FieldController<string, string> => {
+
+
+
+export const controller = (config: FieldControllerConfig): FieldController<{ dateValue: string | null, timeValue: string | null}, string> => {
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
-    defaultValue: '',
-    deserialize: data => data[config.path] || '',
-    serialize: value => ({ [config.path]: value === '' ? null : value }),
-    validate(value) {
-      return isValid(value);
+    defaultValue: { dateValue: '', timeValue: '' },
+    deserialize: data => {
+      if (config.label === "Finish by") {
+        console.log('deserializing data');
+      }
+      const value = data[config.path];
+      if (value) {
+        return deconstructTimestamp(value);
+      }
+      return { dateValue: null, timeValue: null };
+    },
+    serialize: ({ dateValue, timeValue }) => {
+      // TODO add validation for serialization
+      if (config.label === "Finish by") {
+        console.log(`serializing ${config.label}: `, dateValue, timeValue);
+      }
+
+      if (!dateValue && !timeValue) {
+        return { [config.path]: '' };
+      } else if (isValidISO({ dateValue, timeValue }, config.label)) {
+        let formattedDate = constructTimestamp({ dateValue, timeValue }, config.label);
+        if (config.label === 'Finish by') {
+          console.log(formattedDate);
+        };
+        return { [config.path]: formattedDate };
+      };
+    },
+    validate({ dateValue, timeValue }) {
+      if (!dateValue && !timeValue) return true;
+      if (!dateValue) return false;
+      if (!timeValue) return false;
+      console.log(isValidISO({ dateValue, timeValue }));
+      return isValidISO({ dateValue, timeValue });
     },
   };
 };
+

@@ -35,7 +35,11 @@ const BasicDatePicker = () => {
   return (
     <Stack gap="small">
       <pre>{value || 'no value'}</pre>
-      <DatePicker onUpdate={setValue} onClear={() => setValue(null)} value={value} />
+      <DatePicker
+        onUpdate={setValue}
+        onClear={() => setValue(null)}
+        value={value}
+      />
     </Stack>
   );
 };
