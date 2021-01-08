@@ -9,8 +9,8 @@ import { ComponentBlockContext, insertComponentBlock } from './component-blocks'
 import { ComponentBlock } from './component-blocks/api';
 import { InlineDialog, ToolbarButton } from './primitives';
 import { Relationships, useDocumentFieldRelationships } from './relationship';
-import { useStaticEditor } from './utils';
 import { matchSorter } from 'match-sorter';
+import { useToolbarState } from './toolbar-state';
 
 function Placeholder({ placeholder, children }: { placeholder: string; children: ReactNode }) {
   const [width, setWidth] = useState(0);
@@ -88,6 +88,15 @@ function getOptions(
   ];
 }
 
+function insertOption(editor: ReactEditor, range: Range, option: Option) {
+  const pointRef = Editor.pointRef(editor, Range.start(range));
+  Transforms.delete(editor, { at: range });
+  const point = pointRef.unref();
+  if (point) {
+    option.insert(editor, point);
+  }
+}
+
 function SelectedInsertMenu({
   children,
   search,
@@ -98,32 +107,39 @@ function SelectedInsertMenu({
   range: Range;
   kind: 'start' | 'inline';
 }) {
-  const editor = useStaticEditor();
+  const {
+    editor,
+    relationships: { isDisabled: relationshipsDisabled },
+  } = useToolbarState();
   const { dialog, trigger } = useControlledPopover(
     { isOpen: true, onClose: noop },
     { placement: 'bottom-start' }
   );
   const componentBlocks = useContext(ComponentBlockContext);
   const relationships = useDocumentFieldRelationships();
-  const options = matchSorter(getOptions(componentBlocks, relationships), search, {
-    keys: ['label'],
-  });
+  const options = matchSorter(
+    getOptions(componentBlocks, relationshipsDisabled ? {} : relationships),
+    search,
+    {
+      keys: ['label'],
+    }
+  );
 
   const [selectedIndex, setSelectedIndex] = useState(0);
-
   if (options.length && selectedIndex >= options.length) {
     setSelectedIndex(0);
   }
 
-  const stateRef = useRef({ selectedIndex, options });
+  const stateRef = useRef({ selectedIndex, options, range });
 
   useEffect(() => {
-    stateRef.current = { selectedIndex, options };
+    stateRef.current = { selectedIndex, options, range };
   });
 
   useEffect(() => {
     const domNode = ReactEditor.toDOMNode(editor, editor);
     let listener = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return;
       switch (event.key) {
         case 'ArrowDown': {
           event.preventDefault();
@@ -146,12 +162,7 @@ function SelectedInsertMenu({
         case 'Enter': {
           const option = stateRef.current.options[stateRef.current.selectedIndex];
           if (option) {
-            const pointRef = Editor.pointRef(editor, Range.start(range));
-            Transforms.delete(editor, { at: range });
-            const point = pointRef.unref();
-            if (point) {
-              option.insert(editor, point);
-            }
+            insertOption(editor, stateRef.current.range, option);
             event.preventDefault();
           }
           return;
@@ -175,20 +186,18 @@ function SelectedInsertMenu({
           css={{ display: options.length ? undefined : 'none', userSelect: 'none' }}
           ref={dialog.ref}
         >
-          {options.map((x, index) => (
+          {options.map((option, index) => (
             <ToolbarButton
-              key={x.label}
+              key={option.label}
               isPressed={index === selectedIndex}
+              onMouseEnter={() => {
+                setSelectedIndex(index);
+              }}
               onClick={() => {
-                const pointRef = Editor.pointRef(editor, Range.start(range));
-                Transforms.delete(editor, { at: range });
-                const point = pointRef.unref();
-                if (point) {
-                  x.insert(editor, point);
-                }
+                insertOption(editor, range, option);
               }}
             >
-              {x.label}
+              {option.label}
             </ToolbarButton>
           ))}
         </InlineDialog>

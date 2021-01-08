@@ -67,16 +67,18 @@ export function normalizeInlineBasedOnLinksAndRelationships(
   }
   if (node.type === 'relationship' && !relationshipsEnabled) {
     const data: any = node.data;
-    const relationship = relationships[node.relationship as string];
-    Transforms.insertText(
-      editor,
-      `${data.label || data.id || ''} (${
-        relationship?.kind === 'inline' ? relationship.label : node.relationship
-      }:${data.id || ''})`,
-      {
-        at: Editor.before(editor, path),
-      }
-    );
+    if (data) {
+      const relationship = relationships[node.relationship as string];
+      Transforms.insertText(
+        editor,
+        `${data.label || data.id || ''} (${
+          relationship?.kind === 'inline' ? relationship.label : node.relationship
+        }:${data.id || ''})`,
+        {
+          at: Editor.before(editor, path),
+        }
+      );
+    }
     Transforms.removeNodes(editor, { at: path });
     return true;
   }

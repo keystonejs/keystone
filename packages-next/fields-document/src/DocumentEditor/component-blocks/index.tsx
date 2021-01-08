@@ -52,10 +52,10 @@ export function ComponentInlineProp(props: RenderElementProps) {
   return <span {...props.attributes}>{props.children}</span>;
 }
 
-export function insertComponentBlock<Blocks extends Record<string, ComponentBlock>>(
+export function insertComponentBlock(
   editor: Editor,
-  componentBlocks: Blocks,
-  componentBlock: Extract<keyof Blocks, string>,
+  componentBlocks: Record<string, ComponentBlock>,
+  componentBlock: string,
   relationships: Relationships
 ) {
   let { node, isFakeVoid } = getInitialValue(
