@@ -162,7 +162,7 @@ function SelectedInsertMenu({
     return () => {
       domNode.removeEventListener('keydown', listener);
     };
-  }, []);
+  }, [editor]);
   return (
     <Fragment>
       <span {...trigger.props} ref={trigger.ref}>
@@ -170,8 +170,9 @@ function SelectedInsertMenu({
       </span>
       <Portal>
         <InlineDialog
+          contentEditable={false}
           {...dialog.props}
-          css={{ display: options.length ? undefined : 'none' }}
+          css={{ display: options.length ? undefined : 'none', userSelect: 'none' }}
           ref={dialog.ref}
         >
           {options.map((x, index) => (
@@ -223,7 +224,7 @@ function InsertMenu({
       {children}
     </SelectedInsertMenu>
   ) : (
-    <span> {children}</span>
+    <span>{children}</span>
   );
 }
 
