@@ -15,7 +15,6 @@ import {
   Text,
   Descendant,
   Path,
-  Point,
 } from 'slate';
 import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
@@ -50,6 +49,7 @@ import { withShortcuts } from './shortcuts';
 import { withDocumentFeaturesNormalization } from './document-features-normalization';
 import { ToolbarStateProvider } from './toolbar-state';
 import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './component-blocks/utils';
+import { withInsertMenu } from './insert-menu';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -115,25 +115,27 @@ export function createDocumentEditor(
           withHeading(
             documentFeatures.formatting.headingLevels,
             withRelationship(
-              withComponentBlocks(
-                componentBlocks,
-                documentFeatures,
-                relationships,
-                withParagraphs(
-                  withShortcuts(
-                    withDivider(
-                      documentFeatures.dividers,
-                      withLayouts(
-                        withMarks(
-                          documentFeatures.formatting.inlineMarks,
-                          withCodeBlock(
-                            documentFeatures.formatting.blockTypes.code,
-                            withBlockquote(
-                              documentFeatures.formatting.blockTypes.blockquote,
-                              withDocumentFeaturesNormalization(
-                                documentFeatures,
-                                relationships,
-                                withHistory(withReact(createEditor()))
+              withInsertMenu(
+                withComponentBlocks(
+                  componentBlocks,
+                  documentFeatures,
+                  relationships,
+                  withParagraphs(
+                    withShortcuts(
+                      withDivider(
+                        documentFeatures.dividers,
+                        withLayouts(
+                          withMarks(
+                            documentFeatures.formatting.inlineMarks,
+                            withCodeBlock(
+                              documentFeatures.formatting.blockTypes.code,
+                              withBlockquote(
+                                documentFeatures.formatting.blockTypes.blockquote,
+                                withDocumentFeaturesNormalization(
+                                  documentFeatures,
+                                  relationships,
+                                  withHistory(withReact(createEditor()))
+                                )
                               )
                             )
                           )
@@ -257,43 +259,6 @@ export function DocumentEditor({
                             });
                           }
                         });
-                      }
-                      if (Text.isText(node)) {
-                        if (
-                          node.text[0] === '/' &&
-                          Point.equals(
-                            Editor.start(
-                              editor,
-                              Editor.above(editor, {
-                                at: path,
-                                match: node => Editor.isBlock(editor, node),
-                              })![1]
-                            ),
-                            { path, offset: 0 }
-                          )
-                        ) {
-                          let match = node.text.match(/^[^\s]+\s/);
-                          const range = {
-                            anchor: { path, offset: 0 },
-                            focus: { path, offset: match ? match[0].length - 1 : node.text.length },
-                          };
-                          decorations.push({
-                            insertMenu: { range, kind: 'start' },
-                            ...range,
-                          });
-                        }
-                        for (const match of node.text.matchAll(/\s\/[^\s]*/g)) {
-                          if (match.index !== undefined) {
-                            const range = {
-                              anchor: { path, offset: match.index + 1 },
-                              focus: { path, offset: match.index + match[0].length },
-                            };
-                            decorations.push({
-                              insertMenu: { range, kind: 'inline' },
-                              ...range,
-                            });
-                          }
-                        }
                       }
                       return decorations;
                     },

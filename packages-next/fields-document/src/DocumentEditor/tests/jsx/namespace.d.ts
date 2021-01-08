@@ -12,8 +12,8 @@ type ComponentProp = { children: Children; propPath: (string | number)[] };
 declare namespace __jsx {
   namespace JSX {
     interface IntrinsicElements {
-      editor: { children: Children; marks?: { [Key in Mark]?: true } };
-      text: { children?: Children } & { [Key in Mark]?: true };
+      editor: { children: Children; marks?: { [Key in Mark | 'insertMenu']?: true } };
+      text: { children?: Children } & { [Key in Mark | 'insertMenu']?: true };
       element: { [key: string]: any };
       cursor: { [key: string]: never };
       anchor: { [key: string]: never };

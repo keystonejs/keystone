@@ -23,7 +23,7 @@ export function normalizeTextBasedOnInlineMarksAndSoftBreaks(
   softBreaks: boolean
 ): boolean {
   const marksToRemove = Object.keys(node).filter(
-    x => x !== 'text' && (inlineMarks as any)[x] !== true
+    x => x !== 'text' && x !== 'insertMenu' && (inlineMarks as any)[x] !== true
   );
   if (marksToRemove.length) {
     Transforms.unsetNodes(editor, marksToRemove, { at: path });

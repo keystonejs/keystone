@@ -1,16 +1,9 @@
 /** @jsx jsx */
 
-import { jsx, Portal, useTheme } from '@keystone-ui/core';
-import { useControlledPopover } from '@keystone-ui/popover';
-import { Fragment, ReactNode, useContext, useEffect, useRef, useState } from 'react';
-import { Point, Range, Editor, Transforms } from 'slate';
-import { ReactEditor, RenderLeafProps, useSelected, useSlate } from 'slate-react';
-import { ComponentBlockContext, insertComponentBlock } from './component-blocks';
-import { ComponentBlock } from './component-blocks/api';
-import { InlineDialog, ToolbarButton } from './primitives';
-import { Relationships, useDocumentFieldRelationships } from './relationship';
-import { matchSorter } from 'match-sorter';
-import { useToolbarState } from './toolbar-state';
+import { jsx, useTheme } from '@keystone-ui/core';
+import { ReactNode, useState } from 'react';
+import { RenderLeafProps } from 'slate-react';
+import { InsertMenu } from './insert-menu';
 
 function Placeholder({ placeholder, children }: { placeholder: string; children: ReactNode }) {
   const [width, setWidth] = useState(0);
@@ -52,192 +45,7 @@ function Placeholder({ placeholder, children }: { placeholder: string; children:
   );
 }
 
-let noop = () => {};
-
-type Option = {
-  label: string;
-  insert: (editor: ReactEditor, point: Point) => void;
-};
-
-function getOptions(
-  componentBlocks: Record<string, ComponentBlock>,
-  relationships: Relationships
-): Option[] {
-  return [
-    ...Object.entries(relationships)
-      .filter(
-        (x): x is [string, Extract<Relationships[string], { kind: 'inline' }>] =>
-          x[1].kind === 'inline'
-      )
-      .map(([relationship, { label }]) => ({
-        label,
-        insert: (editor: ReactEditor, point: Point) => {
-          Transforms.insertNodes(
-            editor,
-            { type: 'relationship', relationship, children: [] },
-            { at: point }
-          );
-        },
-      })),
-    ...Object.keys(componentBlocks).map(key => ({
-      label: componentBlocks[key].label,
-      insert: (editor: ReactEditor) => {
-        insertComponentBlock(editor, componentBlocks, key, relationships);
-      },
-    })),
-  ];
-}
-
-function insertOption(editor: ReactEditor, range: Range, option: Option) {
-  const pointRef = Editor.pointRef(editor, Range.start(range));
-  Transforms.delete(editor, { at: range });
-  const point = pointRef.unref();
-  if (point) {
-    option.insert(editor, point);
-  }
-}
-
-function SelectedInsertMenu({
-  children,
-  search,
-  range,
-}: {
-  children: ReactNode;
-  search: string;
-  range: Range;
-  kind: 'start' | 'inline';
-}) {
-  const {
-    editor,
-    relationships: { isDisabled: relationshipsDisabled },
-  } = useToolbarState();
-  const { dialog, trigger } = useControlledPopover(
-    { isOpen: true, onClose: noop },
-    { placement: 'bottom-start' }
-  );
-  const componentBlocks = useContext(ComponentBlockContext);
-  const relationships = useDocumentFieldRelationships();
-  const options = matchSorter(
-    getOptions(componentBlocks, relationshipsDisabled ? {} : relationships),
-    search,
-    {
-      keys: ['label'],
-    }
-  );
-
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  if (options.length && selectedIndex >= options.length) {
-    setSelectedIndex(0);
-  }
-
-  const stateRef = useRef({ selectedIndex, options, range });
-
-  useEffect(() => {
-    stateRef.current = { selectedIndex, options, range };
-  });
-
-  useEffect(() => {
-    const domNode = ReactEditor.toDOMNode(editor, editor);
-    let listener = (event: KeyboardEvent) => {
-      if (event.defaultPrevented) return;
-      switch (event.key) {
-        case 'ArrowDown': {
-          event.preventDefault();
-          setSelectedIndex(
-            stateRef.current.selectedIndex === stateRef.current.options.length - 1
-              ? 0
-              : stateRef.current.selectedIndex + 1
-          );
-          return;
-        }
-        case 'ArrowUp': {
-          event.preventDefault();
-          setSelectedIndex(
-            stateRef.current.selectedIndex === 0
-              ? stateRef.current.options.length - 1
-              : stateRef.current.selectedIndex - 1
-          );
-          return;
-        }
-        case 'Enter': {
-          const option = stateRef.current.options[stateRef.current.selectedIndex];
-          if (option) {
-            insertOption(editor, stateRef.current.range, option);
-            event.preventDefault();
-          }
-          return;
-        }
-      }
-    };
-    domNode.addEventListener('keydown', listener);
-    return () => {
-      domNode.removeEventListener('keydown', listener);
-    };
-  }, [editor]);
-  return (
-    <Fragment>
-      <span {...trigger.props} ref={trigger.ref}>
-        {children}
-      </span>
-      <Portal>
-        <InlineDialog
-          contentEditable={false}
-          {...dialog.props}
-          css={{ display: options.length ? undefined : 'none', userSelect: 'none' }}
-          ref={dialog.ref}
-        >
-          {options.map((option, index) => (
-            <ToolbarButton
-              key={option.label}
-              isPressed={index === selectedIndex}
-              onMouseEnter={() => {
-                setSelectedIndex(index);
-              }}
-              onClick={() => {
-                insertOption(editor, range, option);
-              }}
-            >
-              {option.label}
-            </ToolbarButton>
-          ))}
-        </InlineDialog>
-      </Portal>
-    </Fragment>
-  );
-}
-
-function shouldShowInsertMenu(editor: ReactEditor, range: Range) {
-  if (editor.selection) {
-    return Range.includes(range, Range.start(editor.selection));
-  }
-  return false;
-}
-
-function InsertMenu({
-  children,
-  range,
-  kind,
-  search,
-}: {
-  children: ReactNode;
-  range: Range;
-  kind: 'start' | 'inline';
-  search: string;
-}) {
-  const editor = useSlate();
-  const isSelected = useSelected();
-  const showMenu = isSelected ? shouldShowInsertMenu(editor, range) : false;
-
-  return showMenu ? (
-    <SelectedInsertMenu range={range} search={search} kind={kind}>
-      {children}
-    </SelectedInsertMenu>
-  ) : (
-    <span>{children}</span>
-  );
-}
-
-const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
+const Leaf = ({ leaf, text, children, attributes }: RenderLeafProps) => {
   const { colors, radii, spacing, typography } = useTheme();
   const {
     underline,
@@ -257,15 +65,7 @@ const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
   }
 
   if (insertMenu) {
-    children = (
-      <InsertMenu
-        range={(insertMenu as any).range}
-        kind={(insertMenu as any).kind}
-        search={leaf.text.slice(1)}
-      >
-        {children}
-      </InsertMenu>
-    );
+    children = <InsertMenu text={text}>{children}</InsertMenu>;
   }
 
   if (code) {
