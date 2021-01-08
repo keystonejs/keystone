@@ -180,7 +180,7 @@ test('insertMenu mark is removed when whitespace is inserted', () => {
   `);
 });
 
-test('insertMenu mark when the cursor is moved', () => {
+test('insertMenu mark is removed when the cursor is moved outside of the text node', () => {
   let editor = makeEditor(
     <editor marks={{ insertMenu: true }}>
       <paragraph>
@@ -280,8 +280,7 @@ test('insertMenu mark is added when inserting / after whitespace', () => {
   `);
 });
 
-// eslint-disable-next-line jest/no-disabled-tests
-test.skip('insertMenu mark is added when inserting / after whitespace when there is content after the cursor', () => {
+test('insertMenu mark is added when inserting / after whitespace when there is content after the cursor', () => {
   let editor = makeEditor(
     <editor>
       <paragraph>
@@ -294,10 +293,23 @@ test.skip('insertMenu mark is added when inserting / after whitespace when there
 
   editor.insertText('/');
   expect(editor).toMatchInlineSnapshot(`
-    <editor>
+    <editor
+      marks={
+        Object {
+          "insertMenu": true,
+        }
+      }
+    >
       <paragraph>
         <text>
-          content /
+          content 
+        </text>
+        <text
+          insertMenu={true}
+        >
+          /
+        </text>
+        <text>
           <cursor />
            more
         </text>

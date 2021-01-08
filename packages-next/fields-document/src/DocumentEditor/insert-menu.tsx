@@ -180,9 +180,11 @@ function findPathWithInsertMenu(node: Node, path: Path): Path | undefined {
 }
 
 function removeInsertMenuMarkWhenOutsideOfSelection(editor: ReactEditor) {
+  const marks = Editor.marks(editor);
   const path = findPathWithInsertMenu(editor, []);
   if (
     path &&
+    !marks?.insertMenu &&
     (!editor.selection ||
       !Path.equals(editor.selection.anchor.path, path) ||
       !Path.equals(editor.selection.focus.path, path))
@@ -244,6 +246,7 @@ export function withInsertMenu(editor: ReactEditor) {
           (before.offset !== 0 &&
             /\s/.test((Node.get(editor, before.path)!.text as string)[before.offset - 1])))
       ) {
+        const pointRef = Editor.pointRef(editor, editor.selection.anchor);
         Transforms.setNodes(
           editor,
           { insertMenu: true },
@@ -253,6 +256,10 @@ export function withInsertMenu(editor: ReactEditor) {
             split: true,
           }
         );
+        const point = pointRef.unref();
+        if (point) {
+          Transforms.select(editor, point);
+        }
       }
     }
   };
