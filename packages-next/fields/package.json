@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/fields",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "license": "MIT",
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@keystone-next/admin-ui": "^7.0.0",
-    "@keystone-next/admin-ui-utils": "^2.0.5",
-    "@keystone-next/types": "^9.0.0",
+    "@keystone-next/admin-ui": "^7.0.1",
+    "@keystone-next/admin-ui-utils": "^2.0.6",
+    "@keystone-next/types": "^10.0.0",
     "@keystone-ui/button": "^2.0.1",
     "@keystone-ui/core": "^1.0.4",
     "@keystone-ui/fields": "^1.0.3",
