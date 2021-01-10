@@ -1,5 +1,14 @@
 # @keystone-next/keystone
 
+## 9.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`24ecd72e5`](https://github.com/keystonejs/keystone/commit/24ecd72e54eee12442c7c1d0533936a9ad86620a)]:
+  - @keystone-next/admin-ui@7.0.1
+  - @keystone-next/fields@4.0.3
+  - @keystone-next/types@10.0.0
+
 ## 9.0.0
 
 ### Major Changes
