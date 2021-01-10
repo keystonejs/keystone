@@ -35,7 +35,7 @@ export function isValidISO(value: { dateValue: DateType, timeValue: string | nul
 }
 
 
-export function constructTimestamp({ dateValue, timeValue }: { dateValue: string, timeValue: string }, label) {
+export function constructTimestamp({ dateValue, timeValue }: { dateValue: string, timeValue: string }, label?: string) {
   if( label === 'Finish by') {
       console.log('invoking constructTimestamp()');
   }
