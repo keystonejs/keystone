@@ -1,8 +1,5 @@
-import { Editor, Node, NodeEntry, Path, Transforms, Range } from 'slate';
+import { Editor, Node, NodeEntry, Path, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
-
-export const DEBUG = false;
-export const debugLog = (...args: any[]) => DEBUG && console.log(...args);
 
 export { useEditor as useStaticEditor } from 'slate-react';
 
@@ -66,29 +63,3 @@ export const toggleMark = (editor: ReactEditor, format: Mark) => {
     Editor.addMark(editor, format, true);
   }
 };
-
-// TODO: maybe move all the usages of this into one place so we don't have to run this many times per keypress
-export function getMaybeMarkdownShortcutText(
-  text: string,
-  editor: ReactEditor,
-  nodeMatch: (node: Node) => boolean = n => n.type === 'paragraph'
-) {
-  const { selection } = editor;
-  if (text === ' ' && selection && Range.isCollapsed(selection)) {
-    const { anchor } = selection;
-    const block = Editor.above(editor, {
-      match: nodeMatch,
-    });
-    const path = block ? block[1] : [];
-    const start = Editor.start(editor, path);
-    const range = { anchor, focus: start };
-    return [
-      Editor.string(editor, range),
-      () => {
-        Transforms.select(editor, range);
-        Transforms.delete(editor);
-      },
-    ] as const;
-  }
-  return [undefined, () => {}] as const;
-}

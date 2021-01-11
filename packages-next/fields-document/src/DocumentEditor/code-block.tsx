@@ -5,8 +5,8 @@ export function insertCodeBlock(editor: ReactEditor) {
   Transforms.wrapNodes(editor, { type: 'code', children: [{ text: '' }] });
 }
 
-export function withCodeBlock(enabled: boolean, editor: ReactEditor) {
-  const { insertBreak, normalizeNode, insertText } = editor;
+export function withCodeBlock(editor: ReactEditor) {
+  const { insertBreak, normalizeNode } = editor;
 
   editor.insertBreak = () => {
     const [node, path] = Editor.above(editor, {
@@ -53,28 +53,6 @@ export function withCodeBlock(enabled: boolean, editor: ReactEditor) {
     }
     normalizeNode([node, path]);
   };
-  if (enabled) {
-    // this is slightly different to the usages of getMaybeMarkdownShortcutText because the insertion happens on ` rather than a space
-    editor.insertText = text => {
-      const { selection } = editor;
-      if (text === '`' && selection && Range.isCollapsed(selection)) {
-        const { anchor } = selection;
-        const block = Editor.above(editor, {
-          match: n => n.type === 'paragraph',
-        });
-        const path = block ? block[1] : [];
-        const start = Editor.start(editor, path);
-        const range = { anchor, focus: start };
-        const content = Editor.string(editor, range);
-        if (content === '``') {
-          Transforms.select(editor, range);
-          Transforms.delete(editor);
-          Transforms.wrapNodes(editor, { type: 'code', children: [] }, { at: path });
-          return;
-        }
-      }
-      insertText(text);
-    };
-  }
+
   return editor;
 }

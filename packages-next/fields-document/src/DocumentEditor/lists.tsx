@@ -5,9 +5,7 @@ import { Editor, Element, Node, NodeEntry, Path, Transforms, Range } from 'slate
 import { ReactEditor } from 'slate-react';
 import { jsx } from '@keystone-ui/core';
 
-import { DocumentFeatures } from '../views';
-
-import { getMaybeMarkdownShortcutText, isBlockActive, moveChildren } from './utils';
+import { isBlockActive, moveChildren } from './utils';
 import { ToolbarButton } from './primitives';
 import { useToolbarState } from './toolbar-state';
 
@@ -49,11 +47,8 @@ function getAncestorList(
   return { isInside: false };
 }
 
-export function withList(
-  listTypes: DocumentFeatures['formatting']['listTypes'],
-  editor: ReactEditor
-) {
-  const { insertBreak, normalizeNode, insertText, deleteBackward } = editor;
+export function withList(editor: ReactEditor) {
+  const { insertBreak, normalizeNode, deleteBackward } = editor;
   editor.deleteBackward = unit => {
     if (editor.selection) {
       const ancestorList = getAncestorList(editor);
@@ -83,29 +78,6 @@ export function withList(
     insertBreak();
   };
 
-  if (listTypes.ordered || listTypes.unordered) {
-    editor.insertText = text => {
-      const [shortcutText, deleteShortcutText] = getMaybeMarkdownShortcutText(text, editor);
-      const listType =
-        shortcutText === '1.' && listTypes.ordered
-          ? 'ordered-list'
-          : shortcutText === '-' && listTypes.unordered
-          ? 'unordered-list'
-          : undefined;
-      if (listType) {
-        deleteShortcutText();
-        Transforms.wrapNodes(
-          editor,
-          { type: listType, children: [] },
-          { match: n => Editor.isBlock(editor, n) }
-        );
-
-        return;
-      }
-
-      insertText(text);
-    };
-  }
   editor.normalizeNode = entry => {
     const [node, path] = entry;
     if (Element.isElement(node) || Editor.isEditor(node)) {

@@ -50,6 +50,7 @@ import { withDocumentFeaturesNormalization } from './document-features-normaliza
 import { ToolbarStateProvider } from './toolbar-state';
 import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './component-blocks/utils';
 import { withInsertMenu } from './insert-menu';
+import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -111,9 +112,7 @@ export function createDocumentEditor(
     withBlocksSchema(
       withLink(
         withList(
-          documentFeatures.formatting.listTypes,
           withHeading(
-            documentFeatures.formatting.headingLevels,
             withRelationship(
               withInsertMenu(
                 withComponentBlocks(
@@ -123,18 +122,19 @@ export function createDocumentEditor(
                   withParagraphs(
                     withShortcuts(
                       withDivider(
-                        documentFeatures.dividers,
                         withLayouts(
                           withMarks(
                             documentFeatures.formatting.inlineMarks,
                             withCodeBlock(
-                              documentFeatures.formatting.blockTypes.code,
-                              withBlockquote(
-                                documentFeatures.formatting.blockTypes.blockquote,
-                                withDocumentFeaturesNormalization(
-                                  documentFeatures,
-                                  relationships,
-                                  withHistory(withReact(createEditor()))
+                              withBlockMarkdownShortcuts(
+                                documentFeatures,
+                                componentBlocks,
+                                withBlockquote(
+                                  withDocumentFeaturesNormalization(
+                                    documentFeatures,
+                                    relationships,
+                                    withHistory(withReact(createEditor()))
+                                  )
                                 )
                               )
                             )

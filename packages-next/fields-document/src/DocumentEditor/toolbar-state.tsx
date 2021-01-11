@@ -57,7 +57,7 @@ function getAncestorComponentChildFieldDocumentFeatures(
   editor: ReactEditor,
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>
-) {
+): DocumentFeaturesForChildField {
   const ancestorComponentProp = Editor.above(editor, {
     match: n => n.type === 'component-inline-prop' || n.type === 'component-block-prop',
   });
@@ -78,6 +78,23 @@ function getAncestorComponentChildFieldDocumentFeatures(
       }
     }
   }
+  return {
+    kind: 'block',
+    inlineMarks: 'inherit',
+    documentFeatures: {
+      dividers: true,
+      formatting: {
+        alignment: { center: true, end: true },
+        blockTypes: { blockquote: true, code: true },
+        headingLevels: [1, 2, 3, 4, 5, 6],
+        listTypes: { ordered: true, unordered: true },
+      },
+      layouts: editorDocumentFeatures.layouts,
+      links: true,
+      relationships: true,
+    },
+    softBreaks: true,
+  };
 }
 
 export const createToolbarState = (
@@ -103,23 +120,7 @@ export const createToolbarState = (
     editor,
     editorDocumentFeatures,
     componentBlocks
-  ) || {
-    kind: 'block',
-    inlineMarks: 'inherit',
-    documentFeatures: {
-      dividers: true,
-      formatting: {
-        alignment: { center: true, end: true },
-        blockTypes: { blockquote: true, code: true },
-        headingLevels: [1, 2, 3, 4, 5, 6],
-        listTypes: { ordered: true, unordered: true },
-      },
-      layouts: editorDocumentFeatures.layouts,
-      links: true,
-      relationships: true,
-    },
-    softBreaks: true,
-  };
+  );
 
   const editorMarks = Editor.marks(editor) || {};
   const marks: ToolbarState['marks'] = Object.fromEntries(
