@@ -31,7 +31,7 @@ type InlineMarksConfig =
 
 type BlockFormattingConfig = {
   alignment?: 'inherit';
-  blockTypes?: 'inherit';q
+  blockTypes?: 'inherit';
   headingLevels?: 'inherit' | (1 | 2 | 3 | 4 | 5 | 6)[];
   inlineMarks?: InlineMarksConfig;
   listTypes?: 'inherit';
