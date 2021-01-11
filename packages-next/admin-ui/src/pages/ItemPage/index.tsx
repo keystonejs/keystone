@@ -167,7 +167,6 @@ function ItemForm({
     children: 'Save changes',
   } as const;
 
-  console.log(state.value);
 
 >>>>>>> c420f0e4e... DTP wip
   return (
