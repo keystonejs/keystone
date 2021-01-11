@@ -53,6 +53,33 @@ export function useToolbarState() {
   return toolbarState;
 }
 
+function getAncestorComponentChildFieldDocumentFeatures(
+  editor: ReactEditor,
+  editorDocumentFeatures: DocumentFeatures,
+  componentBlocks: Record<string, ComponentBlock>
+) {
+  const ancestorComponentProp = Editor.above(editor, {
+    match: n => n.type === 'component-inline-prop' || n.type === 'component-block-prop',
+  });
+
+  if (ancestorComponentProp) {
+    const propPath = ancestorComponentProp[0].propPath;
+    const ancestorComponent = Editor.parent(editor, ancestorComponentProp[1]);
+    const component = ancestorComponent[0].component;
+    const componentBlock = componentBlocks[component as string];
+    if (componentBlock) {
+      const options = getChildFieldAtPropPath(
+        propPath as any,
+        ancestorComponent[0].props as any,
+        componentBlock.props
+      )?.options;
+      if (options) {
+        return getDocumentFeaturesForChildField(editorDocumentFeatures, options);
+      }
+    }
+  }
+}
+
 export const createToolbarState = (
   editor: ReactEditor,
   componentBlocks: Record<string, ComponentBlock>,
@@ -72,7 +99,11 @@ export const createToolbarState = (
 
   const isLinkActive = isBlockActive(editor, 'link');
 
-  let locationDocumentFeatures: DocumentFeaturesForChildField = {
+  const locationDocumentFeatures: DocumentFeaturesForChildField = getAncestorComponentChildFieldDocumentFeatures(
+    editor,
+    editorDocumentFeatures,
+    componentBlocks
+  ) || {
     kind: 'block',
     inlineMarks: 'inherit',
     documentFeatures: {
@@ -89,30 +120,6 @@ export const createToolbarState = (
     },
     softBreaks: true,
   };
-
-  const ancestorComponentProp = Editor.above(editor, {
-    match: n => n.type === 'component-inline-prop' || n.type === 'component-block-prop',
-  });
-
-  if (ancestorComponentProp) {
-    const propPath = ancestorComponentProp[0].propPath;
-    const ancestorComponent = Editor.parent(editor, ancestorComponentProp[1]);
-    const component = ancestorComponent[0].component;
-    const componentBlock = componentBlocks[component as string];
-    if (componentBlock) {
-      const options = getChildFieldAtPropPath(
-        propPath as any,
-        ancestorComponent[0].props as any,
-        componentBlock.props
-      )?.options;
-      if (options) {
-        locationDocumentFeatures = getDocumentFeaturesForChildField(
-          editorDocumentFeatures,
-          options
-        );
-      }
-    }
-  }
 
   const editorMarks = Editor.marks(editor) || {};
   const marks: ToolbarState['marks'] = Object.fromEntries(

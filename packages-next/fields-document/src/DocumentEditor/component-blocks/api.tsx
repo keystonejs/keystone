@@ -48,6 +48,7 @@ export type ChildField = {
         dividers?: 'inherit';
         links?: 'inherit';
         relationships?: 'inherit';
+      }
     | {
         kind: 'inline';
         placeholder: string;
