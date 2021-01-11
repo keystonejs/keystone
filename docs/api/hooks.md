@@ -172,7 +172,7 @@ const resolveInput = ({
   resolvedData,
   context,
   listKey,
-  fieldPath, // exists only for field hooks
+  fieldPath, // Field hooks only
 }) => {
   // Input resolution logic. Object returned is used in place of `resolvedData`.
   return resolvedData;
@@ -198,7 +198,8 @@ Return values are ignored.
 | `originalInput`           | `Object`                | The data received by the GraphQL mutation                                                                                    |
 | `resolvedData`            | `Object`                | The data received by the GraphQL mutation plus defaults values                                                               |
 | `context`                 | `Apollo Context`        | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `addFieldValidationError` | `Function`              | Used to set a field validation error; accepts a `String`                                                                     |
+| `addFieldValidationError` | `Function`              | Used to set a field validation error (applicable to field hooks only); accepts a `String`                                    |
+| `addValidationError`      | `Function`              | Used to set a validation error (applicable to list hooks only); accepts a `String`                                           |
 | `listKey`                 | `String`                | The key for the list being operated on                                                                                       |
 | `fieldPath`               | `String`                | The path for the field being operated on (applicable to field hooks only)                                                    |
 
@@ -213,9 +214,10 @@ const validateInput = ({
   originalInput,
   resolvedData,
   context,
-  addFieldValidationError,
+  addFieldValidationError, // Field hooks only
+  addValidationError, // List hooks only
   listKey,
-  fieldPath, // exists only for field hooks
+  fieldPath, // Field hooks only
 }) => {
   // Throw error objects or register validation errors with addFieldValidationError(<String>)
   // Return values ignored
@@ -256,7 +258,7 @@ const beforeChange = ({
   resolvedData,
   context,
   listKey,
-  fieldPath, // exists only for field hooks
+  fieldPath, // Field hooks only
 }) => {
   // Perform side effects
   // Return values ignored
@@ -301,7 +303,7 @@ const afterChange = ({
   updatedItem,
   context,
   listKey,
-  fieldPath, // exists only for field hooks
+  fieldPath, // Field hooks only
 }) => {
   // Perform side effects
   // Return values ignored
@@ -324,7 +326,8 @@ Should throw or register errors with `addFieldValidationError(<String>)` if the 
 | `operation`               | `String`         | The operation being performed (`delete` in this case)                                                                        |
 | `existingItem`            | `Object`         | The current stored item                                                                                                      |
 | `context`                 | `Apollo Context` | The [Apollo `context` object](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) for this request |
-| `addFieldValidationError` | `Function`       | Used to set a field validation error; accepts a `String`                                                                     |
+| `addFieldValidationError` | `Function`       | Used to set a field validation error (applicable to field hooks only); accepts a `String`                                    |
+| `addValidationError`      | `Function`       | Used to set a validation error (applicable to list hooks only); accepts a `String`                                           |
 | `listKey`                 | `String`         | The key for the list being operated on                                                                                       |
 | `fieldPath`               | `String`         | The path for the field being operated on (applicable to field hooks only)                                                    |
 
@@ -337,9 +340,10 @@ const validateDelete = ({
   operation,
   existingItem,
   context,
-  addFieldValidationError,
+  addFieldValidationError, // Field hooks only
+  addValidationError, // List hooks only
   listKey,
-  fieldPath, // exists only for field hooks
+  fieldPath, // Field hooks only
 }) => {
   // Throw error objects or register validation errors with addFieldValidationError(<String>)
   // Return values ignored
@@ -376,7 +380,7 @@ const beforeDelete = ({
   existingItem,
   context,
   listKey,
-  fieldPath, // exists only for field hooks
+  fieldPath, // Field hooks only
 }) => {
   // Perform side effects
   // Return values ignored
@@ -415,7 +419,7 @@ const afterDelete = ({
   existingItem,
   context,
   listKey,
-  fieldPath, // exists only for field hooks
+  fieldPath, // Field hooks only
 }) => {
   // Perform side effects
   // Return values ignored
