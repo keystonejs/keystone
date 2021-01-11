@@ -16,6 +16,12 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this.getDbSchemaName = this.config.getDbSchemaName || (() => 'public');
     this.enableLogging = this.config.enableLogging || false;
     this.url = this.config.url || process.env.DATABASE_URL;
+
+    // In prototype mode, the prisma adapter will agressively use
+    // `prisma db push --force` to get the database into a state consistent
+    // with the schema. This may result in data loss. This mode should only
+    // be used in local development and when data loss is acceptable
+    this.prototypeMode = true;
   }
 
   async _connect({ rels }) {
@@ -71,30 +77,32 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       !fs.existsSync(this.schemaPath) ||
       fs.readFileSync(this.schemaPath, { encoding: 'utf-8' }) !== prismaSchema
     ) {
+      let migrationName;
       if (fs.existsSync(this.clientPath)) {
-        const existing = fs.readFileSync(this.schemaPath, { encoding: 'utf-8' });
-        if (existing === prismaSchema) {
+        if (fs.readFileSync(this.schemaPath, { encoding: 'utf-8' }) === prismaSchema) {
           // 2a1. If they're the same, we're golden
         } else {
           // 2a2. If they're different, generate and run a migration
-          // Write prisma file
-          this._writePrismaSchema({ prismaSchema });
-
-          // Generate prisma client
-          await this._generatePrismaClient();
-
-          this._saveMigration({ name: `keystone-${cuid()}` });
-          this._executeMigrations();
+          migrationName = `keystone-${cuid()}`;
         }
       } else {
+        // No schema at all, so create the first one.
+        migrationName = 'init';
+      }
+
+      if (migrationName) {
+        // Write prisma file
         this._writePrismaSchema({ prismaSchema });
 
         // Generate prisma client
         await this._generatePrismaClient();
 
-        // Need to generate and run a migration!!!
-        this._saveMigration({ name: 'init' });
-        this._executeMigrations();
+        if (this.prototypeMode) {
+          this._saveAndRunMigration({});
+        } else {
+          // Need to generate and run a migration!!!
+          this._saveAndRunMigration({ name: 'init' });
+        }
       }
     }
   }
@@ -226,22 +234,21 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     }
 
     if (migrationNeeded) {
-      this._saveMigration({ name: 'init' });
-      this._executeMigrations();
+      this._saveAndRunMigration({ name: 'init' });
     }
   }
 
-  _saveMigration({ name }) {
-    // this._runPrismaCmd(`migrate dev --create-only --name ${name} --preview-feature`);
-    this._runPrismaCmd(`db push --preview-feature`);
-  }
-
-  _executeMigrations() {
-    // this._runPrismaCmd('migrate up --experimental');
+  _saveAndRunMigration({ name }) {
+    if (this.prototypeMode) {
+      this._runPrismaCmd(`db push --force --preview-feature`);
+    } else {
+      this._runPrismaCmd(`migrate dev --name ${name} --preview-feature`);
+    }
   }
 
   _runPrismaCmd(cmd) {
-    return execSync(`DATABASE_URL=${this._url()} yarn prisma ${cmd} --schema ${this.schemaPath}`, {
+    console.log(`yarn prisma ${cmd} --schema ${this.schemaPath}`);
+    return execSync(`yarn prisma ${cmd} --schema ${this.schemaPath}`, {
       env: { ...process.env, DATABASE_URL: this._url() },
       encoding: 'utf-8',
     });

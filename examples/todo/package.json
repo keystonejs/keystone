@@ -14,7 +14,7 @@
     "start": "cross-env NODE_ENV=production keystone start"
   },
   "dependencies": {
-    "@keystonejs/adapter-mongoose": "^10.1.1",
+    "@keystonejs/adapter-prisma": "^1.1.1",
     "@keystonejs/app-admin-ui": "^7.3.12",
     "@keystonejs/app-graphql": "^6.2.0",
     "@keystonejs/app-static": "^5.1.3",
