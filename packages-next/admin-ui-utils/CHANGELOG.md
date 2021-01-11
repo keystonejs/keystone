@@ -1,5 +1,12 @@
 # @keystone-next/admin-ui-utils
 
+## 2.0.6
+
+### Patch Changes
+
+- Updated dependencies [[`24ecd72e5`](https://github.com/keystonejs/keystone/commit/24ecd72e54eee12442c7c1d0533936a9ad86620a)]:
+  - @keystone-next/types@10.0.0
+
 ## 2.0.5
 
 ### Patch Changes

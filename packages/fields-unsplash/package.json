@@ -21,7 +21,7 @@
     "@keystonejs/fields": "^21.0.0",
     "@keystonejs/fields-content": "^9.0.4",
     "node-fetch": "^2.6.1",
-    "query-string": "^6.13.7",
+    "query-string": "^6.13.8",
     "unsplash-js": "^6.3.0"
   },
   "peerDependencies": {

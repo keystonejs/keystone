@@ -1,5 +1,12 @@
 # @keystonejs/test-utils
 
+## 10.1.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @keystone-next/keystone@9.0.1
+
 ## 10.1.2
 
 ### Patch Changes
