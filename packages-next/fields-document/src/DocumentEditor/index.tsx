@@ -228,7 +228,7 @@ export function DocumentEditor({
                       }}
                     />
                   ),
-                  [expanded, documentFeatures, componentBlocks]
+                  [expanded, documentFeatures]
                 )}
                 <Editable
                   decorate={useCallback(
