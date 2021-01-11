@@ -42,7 +42,7 @@
     "fs-extra": "^9.0.1",
     "graphql": "^15.4.0",
     "graphql-upload": "^11.0.0",
-    "meow": "^8.1.2",
+    "meow": "^9.0.0",
     "next": "^9.5.5",
     "object-hash": "^2.1.1",
     "pirates": "^4.0.1",

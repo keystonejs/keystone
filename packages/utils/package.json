@@ -14,7 +14,7 @@
   "dependencies": {
     "@babel/runtime": "^7.12.5",
     "p-is-promise": "^3.0.0",
-    "p-lazy": "^3.0.0",
+    "p-lazy": "^3.1.0",
     "p-reflect": "^2.1.0",
     "semver": "^7.3.4"
   }
