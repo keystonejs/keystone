@@ -42,14 +42,13 @@ export const DatePicker = ({
 
   const handleDayClick = useCallback(
     (day: Date) => {
-      console.log('HANDLEDAYCLICK HERE', day);
       onUpdate(formatDateType(day));
       // wait a moment so the user has time to see the day become selected
       setTimeout(() => {
         setOpen(false);
       }, 300);
     },
-    [onChange, setOpen]
+    [onUpdate, setOpen]
   );
 
   const selectedDay = new Date(value as string);
