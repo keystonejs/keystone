@@ -1,6 +1,13 @@
 /* @jsx jsx */
 import { useState } from 'react';
-import { isValidDate, isValidISO, isValidTime, constructTimestamp, deconstructTimestamp, formatOutput }  from './utils';
+import {
+  isValidDate,
+  isValidISO,
+  isValidTime,
+  constructTimestamp,
+  deconstructTimestamp,
+  formatOutput,
+} from './utils';
 
 import { CellContainer, CellLink } from '@keystone-next/admin-ui/components';
 import {
@@ -16,10 +23,17 @@ import { TextInputProps } from '@keystone-ui/fields/src/TextInput';
 
 // TODO: Bring across the datetime/datetimeUtc interfaces, date picker, etc.
 interface TimePickerProps extends TextInputProps {
-  format: '12hr' | '24hr'
+  format: '12hr' | '24hr';
 }
 
-const TimePicker = ({ autoFocus, onBlur, disabled, onChange, format = '24hr', value }: TimePickerProps) => {
+const TimePicker = ({
+  autoFocus,
+  onBlur,
+  disabled,
+  onChange,
+  format = '24hr',
+  value,
+}: TimePickerProps) => {
   return (
     <TextInput
       autoFocus={autoFocus}
@@ -27,13 +41,11 @@ const TimePicker = ({ autoFocus, onBlur, disabled, onChange, format = '24hr', va
       disabled={disabled}
       onChange={onChange}
       onBlur={onBlur}
-      placeholder={ format === '24hr' ? '00:00' : '00:00am' }
+      placeholder={format === '24hr' ? '00:00' : '00:00am'}
       value={value}
     />
   );
 };
-
-
 
 export const Field = ({
   field,
@@ -43,35 +55,21 @@ export const Field = ({
 }: FieldProps<typeof controller>) => {
   const [touchedFirstInput, setTouchedFirstInput] = useState(false);
   const [touchedSecondInput, setTouchedSecondInput] = useState(false);
-  const showValidation = touchedFirstInput && touchedSecondInput || forceValidation;
+  const showValidation = (touchedFirstInput && touchedSecondInput) || forceValidation;
 
   const showDateError = (dateValue: DateType) => {
     if (!dateValue) {
-      return (
-        <div css={{ color: 'red' }}>
-          Please select a date value.
-        </div>
-      );
-    };
-    return !isValidDate(dateValue) && (
-      <div css={{ color: 'red' }}>
-        Incorrect date value
-      </div>
-    );
+      return <div css={{ color: 'red' }}>Please select a date value.</div>;
+    }
+    return !isValidDate(dateValue) && <div css={{ color: 'red' }}>Incorrect date value</div>;
   };
 
-  const showTimeError = (timeValue: string ) => {
+  const showTimeError = (timeValue: string) => {
     if (!timeValue) {
-      return (
-        <div css={{ color: 'red' }}>
-          Please select a time value.
-        </div>
-      );
+      return <div css={{ color: 'red' }}>Please select a time value.</div>;
     }
-    return !isValidTime(timeValue) && (
-      <div css={{ color: 'red' }}>
-        Time must be in the form HH:mm
-      </div>
+    return (
+      !isValidTime(timeValue) && <div css={{ color: 'red' }}>Time must be in the form HH:mm</div>
     );
   };
 
@@ -84,8 +82,8 @@ export const Field = ({
             {/* TODO: Add validation for date field*/}
             <Stack>
               <DatePicker
-                onUpdate={(date) => {
-                  onChange({ ...value, dateValue: date||'' });
+                onUpdate={date => {
+                  onChange({ ...value, dateValue: date || '' });
                 }}
                 onClear={() => {
                   onChange({ ...value, dateValue: '' });
@@ -93,7 +91,7 @@ export const Field = ({
                 onBlur={() => setTouchedFirstInput(true)}
                 value={value.dateValue}
               />
-              {(showValidation) && showDateError(value.dateValue)}
+              {showValidation && showDateError(value.dateValue)}
             </Stack>
             {/* TODO: Add validation for time field*/}
             <Stack>
@@ -101,15 +99,17 @@ export const Field = ({
                 onBlur={() => setTouchedSecondInput(true)}
                 disabled={onChange === undefined}
                 format="24hr"
-                onChange={(event) => onChange({ ...value, timeValue: event.target.value })}
+                onChange={event => onChange({ ...value, timeValue: event.target.value })}
                 value={value.timeValue || ''}
               />
-              {(showValidation) && showTimeError(value.timeValue)}
+              {showValidation && showTimeError(value.timeValue)}
             </Stack>
           </Inline>
         </Stack>
+      ) : isValidISO(value) ? (
+        formatOutput(constructTimestamp(value))
       ) : (
-        isValidISO(value) ? formatOutput(constructTimestamp(value)) : ''
+        ''
       )}
     </FieldContainer>
   );
@@ -134,11 +134,9 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-
-
-
-
-export const controller = (config: FieldControllerConfig): FieldController<{ dateValue: string , timeValue: string}, string> => {
+export const controller = (
+  config: FieldControllerConfig
+): FieldController<{ dateValue: string; timeValue: string }, string> => {
   return {
     path: config.path,
     label: config.label,
@@ -155,7 +153,7 @@ export const controller = (config: FieldControllerConfig): FieldController<{ dat
       if (isValidISO({ dateValue, timeValue }, config.label)) {
         let formattedDate = constructTimestamp({ dateValue, timeValue }, config.label);
         return { [config.path]: formattedDate };
-      };
+      }
       return { [config.path]: null };
     },
     validate({ dateValue, timeValue }) {
@@ -166,4 +164,3 @@ export const controller = (config: FieldControllerConfig): FieldController<{ dat
     },
   };
 };
-

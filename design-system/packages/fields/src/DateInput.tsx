@@ -35,7 +35,15 @@ export type DateInputProps = {
 
 export const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
   (
-    { invalid = false, size = 'medium', value, onUpdate, onChange, onBlur, ...props }: DateInputProps,
+    {
+      invalid = false,
+      size = 'medium',
+      value,
+      onUpdate,
+      onChange,
+      onBlur,
+      ...props
+    }: DateInputProps,
     ref
   ) => {
     const [controlledValue, setControlledValue] = useState<DateType>(formatValue(value));
@@ -49,7 +57,7 @@ export const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
         ref={ref}
         css={styles}
         value={controlledValue === null ? '' : controlledValue}
-        onChange={(event) => {
+        onChange={event => {
           const newControlledValue = event.target.value;
           console.log({ controlledValue, newControlledValue });
           if (controlledValue !== newControlledValue) {
@@ -59,12 +67,12 @@ export const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
             }
           }
         }}
-        onBlur={(event) => {
+        onBlur={event => {
           onUpdate(formatValue(event.target.value));
           if (!event.defaultPrevented) {
-             if (onBlur) {
-               onBlur(event);
-             }
+            if (onBlur) {
+              onBlur(event);
+            }
           }
         }}
         placeholder="dd/mm/yyyy"

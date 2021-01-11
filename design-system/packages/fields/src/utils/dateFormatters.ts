@@ -5,7 +5,7 @@ import { DateType } from '../../types';
  * Un-formatted date for server side storage (ISO8601), like '2019-09-18'
  */
 export const formatDateType = (date: Date): DateType => {
-  return formatISO(date, { representation:"date" });
+  return formatISO(date, { representation: 'date' });
 };
 
 /**
