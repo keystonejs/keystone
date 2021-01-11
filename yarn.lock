@@ -3712,10 +3712,10 @@
   resolved "https://registry.yarnpkg.com/@timsuchanek/sleep-promise/-/sleep-promise-8.0.1.tgz#81c0754b345138a519b51c2059771eb5f9b97818"
   integrity sha512-cxHYbrXfnCWsklydIHSw5GCMHUPqpJ/enxWSyVHNOgNe61sit/+aOXTTI+VOdWkvVaJsI2vsB9N4+YDNITawOQ==
 
-"@tinymce/tinymce-react@^3.8.4":
-  version "3.8.4"
-  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-3.8.4.tgz#c652f23735bf63812ce2077a06682fe335b24fee"
-  integrity sha512-wk9UTyuopeSs2UPxfMY2t4ZK4094aH7bfbHz+kAoHQ/lAQB01qojM9Khsg9dGwlMg8ZmUcvQdoiAOwYNUztKww==
+"@tinymce/tinymce-react@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-3.9.0.tgz#7c8f2fcd5b7487d9c2882936a7ba2662300810b6"
+  integrity sha512-1DgMahuESQuGMvSpCabw2WrgfRQmPTuCOpThMB/aFJYSpGoLYe7kV4QJwMEWB1HXBfTV9ahG6yMNcP9PTfYk5A==
   dependencies:
     prop-types "^15.6.2"
     tinymce "^5.6.2"

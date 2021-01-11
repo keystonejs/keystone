@@ -73,8 +73,6 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
   const { customToast } = useUIHooks();
 
   const [updateItem, { loading: updateInProgress }] = useMutation(list.updateMutation, {
-    errorPolicy: 'all',
-    // it's not working https://github.com/apollographql/apollo-client/issues/5708
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
   });
 
@@ -206,14 +204,6 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
     const mutationResult = await updateItem({ variables: { id: item.id, data } });
     if (!mutationResult) {
       return;
-    }
-
-    // Workaround for apollo error https://github.com/apollographql/apollo-client/issues/5708
-    if (mutationResult.errors && mutationResult.errors.length > 0) {
-      return handleCreateUpdateMutationError({
-        error: { graphQLErrors: mutationResult.errors },
-        addToast,
-      });
     }
 
     setValidationErrors({});
