@@ -18,11 +18,7 @@ export function isValidTime (time: string) {
   return isValid(parse(time, 'HH:mm', new Date()));
 };
 
-export function isValidISO(value: { dateValue: DateType, timeValue: string | null }, label) {
-    console.log(label);
-    if (label === 'Finish by') {
-        console.log('###### isValidISO, timeValue: ', value.timeValue);
-    }
+export function isValidISO(value: { dateValue: DateType, timeValue: string }, label?:string) {
   try {
     // toISOString converts our string into zulu time
     // instead of checking for the timestamp to be specifically in zulu time
@@ -36,15 +32,9 @@ export function isValidISO(value: { dateValue: DateType, timeValue: string | nul
 
 
 export function constructTimestamp({ dateValue, timeValue }: { dateValue: string, timeValue: string }, label?: string) {
-  if( label === 'Finish by') {
-      console.log('invoking constructTimestamp()');
-  }
   let formattedDate = new Date(dateValue);
 
   const [hours, minutes] = getTime(timeValue);
-  if (label === 'Finish by') {
-    console.log(`constructTimestamp()`, formattedDate, dateValue, hours, minutes);
-  }
   formattedDate.setHours(hours);
   formattedDate.setMinutes(minutes);
   return formatISO(formattedDate);
@@ -61,7 +51,7 @@ export function formatOutput(value: string) {
 }
 
 export function resolveInitialTimeValue(value?: string, defaultValue?: string) {
-  if (!value && !defaultValue) return null;
   const date = value || defaultValue;
-  return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  if (!date) return '';
+  return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',hour12:false });
 }

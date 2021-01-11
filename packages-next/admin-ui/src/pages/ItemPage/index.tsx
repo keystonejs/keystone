@@ -159,16 +159,8 @@ function ItemForm({
           tone: 'negative',
           message: err.message,
         });
-<<<<<<< HEAD
       });
   });
-=======
-    },
-    children: 'Save changes',
-  } as const;
-
-
->>>>>>> c420f0e4e... DTP wip
   return (
     <Box marginTop="xlarge">
       <GraphQLErrorNotice
