@@ -31,8 +31,8 @@ type InlineMarksConfig =
 
 type BlockFormattingConfig = {
   alignment?: 'inherit';
-  blockTypes?: 'inherit';
-  headingLevels?: 'inherit' | (1 | 2 | 3 | 4 | 5 | 6)[]; // numbers have inherit semantics
+  blockTypes?: 'inherit';q
+  headingLevels?: 'inherit' | (1 | 2 | 3 | 4 | 5 | 6)[];
   inlineMarks?: InlineMarksConfig;
   listTypes?: 'inherit';
   softBreaks?: 'inherit';
@@ -46,9 +46,8 @@ export type ChildField = {
         placeholder: string;
         formatting?: BlockFormattingConfig;
         dividers?: 'inherit';
-        links?: 'inherit'; // normalize to: text (link)
-        relationships?: 'inherit'; // normalise to: itemLabel (relationshipLabel: itemId)
-      }
+        links?: 'inherit';
+        relationships?: 'inherit';
     | {
         kind: 'inline';
         placeholder: string;
