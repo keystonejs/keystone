@@ -17430,7 +17430,7 @@ mjml-wrapper@4.8.1:
     mjml-core "4.8.1"
     mjml-section "4.8.1"
 
-mjml@^4.7.1:
+mjml@^4.8.1:
   version "4.8.1"
   resolved "https://registry.yarnpkg.com/mjml/-/mjml-4.8.1.tgz#32b65a98c4bab7a5a1f51b784fae92c768b35b5b"
   integrity sha512-jdKABiLBA1IJ0qTA5QVVsi/NN5GFtdvC1lxwdxrYV6J7dcJW7Z07j3r/GmJyOc2cznCFpJFKzfYV4Z6OZS4iyw==
