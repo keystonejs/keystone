@@ -24091,7 +24091,7 @@ strip-outer@^1.0.0:
   dependencies:
     escape-string-regexp "^1.0.2"
 
-stripe@^8.129.0:
+stripe@^8.130.0:
   version "8.130.0"
   resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.130.0.tgz#e52a5ee6538a70ce76379364bd3839ca7ea925ab"
   integrity sha512-9e283EFhxDz7SUcgNiUFRdTZ/kS2IkoT0KBMOJHdf3vY+mvURq355s2E0Zyy9rtNmt+CEZ0nCMiZ3PqIqpp6Pg==
