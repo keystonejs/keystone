@@ -246,7 +246,6 @@ export function withInsertMenu(editor: ReactEditor) {
           (before.offset !== 0 &&
             /\s/.test((Node.get(editor, before.path)!.text as string)[before.offset - 1])))
       ) {
-        const pointRef = Editor.pointRef(editor, editor.selection.anchor);
         Transforms.setNodes(
           editor,
           { insertMenu: true },
@@ -256,10 +255,6 @@ export function withInsertMenu(editor: ReactEditor) {
             split: true,
           }
         );
-        const point = pointRef.unref();
-        if (point) {
-          Transforms.select(editor, point);
-        }
       }
     }
   };
