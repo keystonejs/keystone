@@ -152,12 +152,11 @@ export const controller = (config: FieldControllerConfig): FieldController<{ dat
       return { dateValue: '', timeValue: '' };
     },
     serialize: ({ dateValue, timeValue }) => {
-      // TODO add validation for serialization
       if (isValidISO({ dateValue, timeValue }, config.label)) {
         let formattedDate = constructTimestamp({ dateValue, timeValue }, config.label);
         return { [config.path]: formattedDate };
       };
-      return { [config.path]:null };
+      return { [config.path]: null };
     },
     validate({ dateValue, timeValue }) {
       if (!dateValue && !timeValue) return true;

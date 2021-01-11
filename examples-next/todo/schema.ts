@@ -55,7 +55,7 @@ export const lists = createSchema({
       isComplete: checkbox(),
       assignedTo: relationship({ ref: 'User.tasks' }),
       finishBy: timestamp({
-        isRequired: true,
+        isRequired: false,
         access: { create: true, read: true, update: true },
       }),
       ...trackingFields,
