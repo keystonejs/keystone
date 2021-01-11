@@ -124,7 +124,8 @@ export function createDocumentEditor(
                       withDivider(
                         withLayouts(
                           withMarks(
-                            documentFeatures.formatting.inlineMarks,
+                            documentFeatures,
+                            componentBlocks,
                             withCodeBlock(
                               withBlockMarkdownShortcuts(
                                 documentFeatures,

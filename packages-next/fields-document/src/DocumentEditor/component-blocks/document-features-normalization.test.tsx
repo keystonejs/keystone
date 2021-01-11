@@ -3,6 +3,7 @@ import { component, fields } from '../../component-blocks';
 import { makeEditor, jsx } from '../tests/utils';
 import { ChildField } from './api';
 import { Node } from 'slate';
+import { Children } from '../tests/jsx/namespace';
 
 const cases: Record<
   string,
@@ -239,36 +240,47 @@ const cases: Record<
   },
 };
 
+function makeEditorWithChildField(
+  childField: ChildField,
+  children: Children,
+  normalization: 'disallow-non-normalized' | 'normalize' | 'skip' = 'disallow-non-normalized'
+) {
+  const Prop = `component-${childField.options.kind}-prop` as const;
+  return makeEditor(
+    <editor>
+      <component-block component={'comp'} relationships={{}} props={{}}>
+        <Prop propPath={['child']}>{children}</Prop>
+      </component-block>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    {
+      normalization,
+      componentBlocks: {
+        comp: component({ component: () => null, label: '', props: { child: childField } }),
+      },
+      relationships: {
+        mention: {
+          kind: 'inline',
+          label: 'Mention',
+          labelField: 'name',
+          listKey: 'User',
+          selection: null,
+        },
+      },
+    }
+  );
+}
+
 Object.keys(cases).forEach(key => {
   const testCase = cases[key];
   test(key, () => {
     const Prop = `component-${testCase.prop.options.kind}-prop` as const;
-    let editor = makeEditor(
-      <editor>
-        <component-block component={'comp'} relationships={{}} props={{}}>
-          <Prop propPath={['child']}>{testCase.children}</Prop>
-        </component-block>
-        <paragraph>
-          <text>
-            <cursor />
-          </text>
-        </paragraph>
-      </editor>,
-      {
-        normalization: testCase.kind === 'allowed' ? 'disallow-non-normalized' : 'normalize',
-        componentBlocks: {
-          comp: component({ component: () => null, label: '', props: { child: testCase.prop } }),
-        },
-        relationships: {
-          mention: {
-            kind: 'inline',
-            label: 'Mention',
-            labelField: 'name',
-            listKey: 'User',
-            selection: null,
-          },
-        },
-      }
+    let editor = makeEditorWithChildField(
+      testCase.prop,
+      testCase.children,
+      testCase.kind === 'allowed' ? 'disallow-non-normalized' : 'normalize'
     );
     if (testCase.kind === 'not-allowed') {
       expect(editor).toEqualEditor(
@@ -278,13 +290,175 @@ Object.keys(cases).forEach(key => {
               <Prop propPath={['child']}>{testCase.expectedNormalized}</Prop>
             </component-block>
             <paragraph>
-              <text>
-                <cursor />
-              </text>
+              <text />
             </paragraph>
           </editor>
         )
       );
     }
   });
+});
+
+test('mark disabled in inline prop', () => {
+  const editor = makeEditorWithChildField(
+    fields.child({ kind: 'inline', placeholder: '' }),
+    <text>
+      **thing*
+      <cursor />
+    </text>
+  );
+  editor.insertText('*');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="comp"
+        props={Object {}}
+        relationships={Object {}}
+      >
+        <component-inline-prop
+          propPath={
+            Array [
+              "child",
+            ]
+          }
+        >
+          <text>
+            **thing**
+            <cursor />
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('mark enabled in inline prop', () => {
+  const editor = makeEditorWithChildField(
+    fields.child({ kind: 'inline', placeholder: '', formatting: { inlineMarks: 'inherit' } }),
+    <text>
+      **thing*
+      <cursor />
+    </text>
+  );
+  editor.insertText('*');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="comp"
+        props={Object {}}
+        relationships={Object {}}
+      >
+        <component-inline-prop
+          propPath={
+            Array [
+              "child",
+            ]
+          }
+        >
+          <text
+            bold={true}
+          >
+            thing
+            <cursor />
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('mark disabled in block prop', () => {
+  const editor = makeEditorWithChildField(
+    fields.child({ kind: 'block', placeholder: '' }),
+    <paragraph>
+      <text>
+        **thing*
+        <cursor />
+      </text>
+    </paragraph>
+  );
+  editor.insertText('*');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="comp"
+        props={Object {}}
+        relationships={Object {}}
+      >
+        <component-block-prop
+          propPath={
+            Array [
+              "child",
+            ]
+          }
+        >
+          <paragraph>
+            <text>
+              **thing**
+              <cursor />
+            </text>
+          </paragraph>
+        </component-block-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('mark enabled in block prop', () => {
+  const editor = makeEditorWithChildField(
+    fields.child({ kind: 'block', placeholder: '', formatting: { inlineMarks: 'inherit' } }),
+    <paragraph>
+      <text>
+        **thing*
+        <cursor />
+      </text>
+    </paragraph>
+  );
+  editor.insertText('*');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="comp"
+        props={Object {}}
+        relationships={Object {}}
+      >
+        <component-block-prop
+          propPath={
+            Array [
+              "child",
+            ]
+          }
+        >
+          <paragraph>
+            <text
+              bold={true}
+            >
+              thing
+              <cursor />
+            </text>
+          </paragraph>
+        </component-block-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
 });
