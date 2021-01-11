@@ -59,50 +59,34 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this.clientPath = path.resolve(`${prismaPath}/${clientDir}`);
     this.dbSchemaName = this.getDbSchemaName({ prismaSchema });
 
-    // // If any of our critical directories are missing, or if the schema has changed, then
-    // // we've got things to do.
-    // const schemaState = 'matching';
-    // if (schemaState !== 'matching') {
-    //   // Write schema
-    // }
-    // if (!fs.existsSync(this.clientPath) || schemaState !== 'matching') {
-    //   // Generate prisma client
-    // }
-    // if (/* something */ false){
-    //   // generate and run a migration
-    // }
-
+    // If any of our critical directories are missing, or if the schema has changed, then
+    // we've got things to do.
     if (
       !fs.existsSync(this.clientPath) ||
       !fs.existsSync(this.schemaPath) ||
       fs.readFileSync(this.schemaPath, { encoding: 'utf-8' }) !== prismaSchema
     ) {
-      let migrationName;
+      let needMigration = false;
       if (fs.existsSync(this.clientPath)) {
         if (fs.readFileSync(this.schemaPath, { encoding: 'utf-8' }) === prismaSchema) {
           // 2a1. If they're the same, we're golden
         } else {
           // 2a2. If they're different, generate and run a migration
-          migrationName = `keystone-${cuid()}`;
+          needMigration = true;
         }
       } else {
         // No schema at all, so create the first one.
-        migrationName = 'init';
+        needMigration = true;
       }
 
-      if (migrationName) {
+      if (needMigration) {
         // Write prisma file
         this._writePrismaSchema({ prismaSchema });
 
         // Generate prisma client
         await this._generatePrismaClient();
 
-        if (this.prototypeMode) {
-          this._saveAndRunMigration({});
-        } else {
-          // Need to generate and run a migration!!!
-          this._saveAndRunMigration({ name: 'init' });
-        }
+        this._saveAndRunMigration();
       }
     }
   }
@@ -234,14 +218,15 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     }
 
     if (migrationNeeded) {
-      this._saveAndRunMigration({ name: 'init' });
+      this._saveAndRunMigration();
     }
   }
 
-  _saveAndRunMigration({ name }) {
+  _saveAndRunMigration() {
     if (this.prototypeMode) {
       this._runPrismaCmd(`db push --force --preview-feature`);
     } else {
+      const name = `keystone-${cuid()}`;
       this._runPrismaCmd(`migrate dev --name ${name} --preview-feature`);
     }
   }
