@@ -175,7 +175,7 @@ function findPathWithInsertMenu(node: Node, path: Path): Path | undefined {
     if (maybePath) {
       return maybePath;
     }
-    nodesWithoutInsertMenu.add(node);
+    nodesWithoutInsertMenu.add(child);
   }
 }
 

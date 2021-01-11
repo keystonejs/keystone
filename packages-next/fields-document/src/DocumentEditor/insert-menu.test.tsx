@@ -358,3 +358,70 @@ test('insertMenu mark is added when inserting / after whitespace when there is c
     </editor>
   `);
 });
+
+test('insertMenu thing typing', () => {
+  let editor = makeEditor(
+    <editor>
+      <paragraph>
+        <text>
+          some content <cursor />
+        </text>
+      </paragraph>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>,
+    { normalization: 'normalize' }
+  );
+  [...'/thing'].forEach(char => {
+    editor.insertText(char);
+  });
+  expect(editor).toMatchInlineSnapshot(`
+    <editor
+      marks={
+        Object {
+          "insertMenu": true,
+        }
+      }
+    >
+      <paragraph>
+        <text>
+          some content 
+        </text>
+        <text
+          insertMenu={true}
+        >
+          /thing
+          <cursor />
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+
+  editor.insertBreak();
+
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <paragraph>
+        <text>
+          some content /thing
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          <cursor />
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
