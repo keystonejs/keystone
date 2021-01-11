@@ -462,3 +462,88 @@ test('mark enabled in block prop', () => {
     </editor>
   `);
 });
+
+test('heading disabled in block prop', () => {
+  const editor = makeEditorWithChildField(
+    fields.child({ kind: 'block', placeholder: '' }),
+    <paragraph>
+      <text>
+        ##
+        <cursor />
+      </text>
+    </paragraph>
+  );
+  editor.insertText(' ');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="comp"
+        props={Object {}}
+        relationships={Object {}}
+      >
+        <component-block-prop
+          propPath={
+            Array [
+              "child",
+            ]
+          }
+        >
+          <paragraph>
+            <text>
+              ## 
+              <cursor />
+            </text>
+          </paragraph>
+        </component-block-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('heading enabled in block prop', () => {
+  const editor = makeEditorWithChildField(
+    fields.child({ kind: 'block', placeholder: '', formatting: { headingLevels: 'inherit' } }),
+    <paragraph>
+      <text>
+        ##
+        <cursor />
+      </text>
+    </paragraph>
+  );
+  editor.insertText(' ');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="comp"
+        props={Object {}}
+        relationships={Object {}}
+      >
+        <component-block-prop
+          propPath={
+            Array [
+              "child",
+            ]
+          }
+        >
+          <heading
+            level={2}
+          >
+            <text>
+              <cursor />
+            </text>
+          </heading>
+        </component-block-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});

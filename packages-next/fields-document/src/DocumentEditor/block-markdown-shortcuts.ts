@@ -2,6 +2,8 @@ import { Editor, Transforms, Range } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
+import { DocumentFeaturesForNormalization } from './document-features-normalization';
+import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
 
 export function withBlockMarkdownShortcuts(
   documentFeatures: DocumentFeatures,
@@ -11,13 +13,30 @@ export function withBlockMarkdownShortcuts(
   const { insertText } = editor;
   const shortcuts: Record<
     string,
-    Record<string, { insert: () => void; type: 'paragraph' | 'heading-or-paragraph' }>
+    Record<
+      string,
+      {
+        insert: () => void;
+        type: 'paragraph' | 'heading-or-paragraph';
+        shouldBeEnabledInComponentBlock: (
+          locationDocumentFeatures: DocumentFeaturesForNormalization
+        ) => boolean;
+      }
+    >
   > = Object.create(null);
+  const editorDocumentFeaturesForNormalizationToCheck: DocumentFeaturesForNormalization = {
+    ...documentFeatures,
+    relationships: true,
+  };
   let addShortcut = (
     text: string,
     insert: () => void,
+    shouldBeEnabledInComponentBlock: (
+      locationDocumentFeatures: DocumentFeaturesForNormalization
+    ) => boolean,
     type: 'paragraph' | 'heading-or-paragraph' = 'paragraph'
   ) => {
+    if (!shouldBeEnabledInComponentBlock(editorDocumentFeaturesForNormalizationToCheck)) return;
     const trigger = text[text.length - 1];
     if (!shortcuts[trigger]) {
       shortcuts[trigger] = Object.create(null);
@@ -25,26 +44,32 @@ export function withBlockMarkdownShortcuts(
     shortcuts[trigger][text] = {
       insert,
       type,
+      shouldBeEnabledInComponentBlock,
     };
   };
-  if (documentFeatures.formatting.listTypes.ordered) {
-    addShortcut('1. ', () => {
+  addShortcut(
+    '1. ',
+    () => {
       Transforms.wrapNodes(
         editor,
         { type: 'ordered-list', children: [] },
         { match: n => Editor.isBlock(editor, n) }
       );
-    });
-  }
-  if (documentFeatures.formatting.listTypes.unordered) {
-    addShortcut('- ', () => {
+    },
+    features => features.formatting.listTypes.ordered
+  );
+
+  addShortcut(
+    '- ',
+    () => {
       Transforms.wrapNodes(
         editor,
         { type: 'unordered-list', children: [] },
         { match: n => Editor.isBlock(editor, n) }
       );
-    });
-  }
+    },
+    features => features.formatting.listTypes.unordered
+  );
 
   documentFeatures.formatting.headingLevels.forEach(level => {
     addShortcut(
@@ -56,39 +81,46 @@ export function withBlockMarkdownShortcuts(
           { match: node => node.type === 'paragraph' || node.type === 'heading' }
         );
       },
+      features => features.formatting.headingLevels.includes(level),
       'heading-or-paragraph'
     );
   });
 
-  if (documentFeatures.formatting.blockTypes.blockquote) {
-    addShortcut('> ', () => {
+  addShortcut(
+    '> ',
+    () => {
       Transforms.wrapNodes(
         editor,
         { type: 'blockquote', children: [] },
         { match: node => node.type === 'paragraph' }
       );
-    });
-  }
+    },
+    features => features.formatting.blockTypes.blockquote
+  );
 
-  if (documentFeatures.formatting.blockTypes.code) {
-    addShortcut('```', () => {
+  addShortcut(
+    '```',
+    () => {
       Transforms.wrapNodes(
         editor,
         { type: 'code', children: [] },
         { match: node => node.type === 'paragraph' }
       );
-    });
-  }
+    },
+    features => features.formatting.blockTypes.code
+  );
 
-  if (documentFeatures.dividers) {
-    addShortcut('---', () => {
+  addShortcut(
+    '---',
+    () => {
       Transforms.insertNodes(
         editor,
         { type: 'divider', children: [{ text: '' }] },
         { match: node => node.type === 'paragraph' }
       );
-    });
-  }
+    },
+    features => features.dividers
+  );
 
   editor.insertText = text => {
     insertText(text);
@@ -106,6 +138,18 @@ export function withBlockMarkdownShortcuts(
       const shortcut = shortcutsForTrigger[shortcutText];
 
       if (!shortcut || (shortcut.type === 'paragraph' && block[0].type !== 'paragraph')) {
+        return;
+      }
+      const locationDocumentFeatures = getAncestorComponentChildFieldDocumentFeatures(
+        editor,
+        documentFeatures,
+        componentBlocks
+      );
+      if (
+        locationDocumentFeatures &&
+        (locationDocumentFeatures.kind === 'inline' ||
+          !shortcut.shouldBeEnabledInComponentBlock(locationDocumentFeatures.documentFeatures))
+      ) {
         return;
       }
       Transforms.select(editor, range);

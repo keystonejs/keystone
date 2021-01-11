@@ -181,7 +181,10 @@ export function getDocumentFeaturesForChildField(
                 blockquote: false,
                 code: false,
               },
-        headingLevels: [],
+        headingLevels:
+          options.formatting?.headingLevels === 'inherit'
+            ? editorDocumentFeatures.formatting.headingLevels
+            : options.formatting?.headingLevels || [],
         listTypes:
           options.formatting?.listTypes === 'inherit'
             ? editorDocumentFeatures.formatting.listTypes
