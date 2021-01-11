@@ -3,6 +3,7 @@
 import { jsx, useTheme } from '@keystone-ui/core';
 import { ReactNode, useState } from 'react';
 import { RenderLeafProps } from 'slate-react';
+import { InsertMenu } from './insert-menu';
 
 function Placeholder({ placeholder, children }: { placeholder: string; children: ReactNode }) {
   const [width, setWidth] = useState(0);
@@ -44,7 +45,7 @@ function Placeholder({ placeholder, children }: { placeholder: string; children:
   );
 }
 
-const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
+const Leaf = ({ leaf, text, children, attributes }: RenderLeafProps) => {
   const { colors, radii, spacing, typography } = useTheme();
   const {
     underline,
@@ -56,10 +57,15 @@ const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
     superscript,
     subscript,
     placeholder,
+    insertMenu,
   } = leaf;
 
   if (placeholder !== undefined) {
     children = <Placeholder placeholder={placeholder as string}>{children}</Placeholder>;
+  }
+
+  if (insertMenu) {
+    children = <InsertMenu text={text}>{children}</InsertMenu>;
   }
 
   if (code) {

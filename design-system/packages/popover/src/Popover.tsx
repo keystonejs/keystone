@@ -41,6 +41,7 @@ export const useControlledPopover = (
     modifiers: [
       ...(popperOptions.modifiers || []),
       { name: 'arrow', options: { element: arrowElement } },
+      { name: 'eventListeners', options: { scroll: isOpen, resize: isOpen } },
     ],
   });
 

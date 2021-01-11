@@ -179,3 +179,27 @@ test('insertBreak when at end with \n as last character exits code block', () =>
       </editor>
     `);
 });
+
+test('insertBreak in the middle of the text when there is a break at the end of the text', () => {
+  let editor = makeEditor(
+    <editor>
+      <code>
+        <text>
+          some text
+          <cursor />
+          {'more text\n'}
+        </text>
+      </code>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+
+  editor.insertBreak();
+  expect((editor as any).children[0].children[0].text).toMatchInlineSnapshot(`
+    "some text
+    more text
+    "
+  `);
+});

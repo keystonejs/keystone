@@ -1,8 +1,7 @@
-import { Editor, Element, Node, NodeEntry, Path, Text, Transforms, Range } from 'slate';
+import { Editor, Node, NodeEntry, Path, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 
-export const DEBUG = false;
-export const debugLog = (...args: any[]) => DEBUG && console.log(...args);
+export { useEditor as useStaticEditor } from 'slate-react';
 
 export type Mark =
   | 'bold'
@@ -13,6 +12,17 @@ export type Mark =
   | 'superscript'
   | 'subscript'
   | 'keyboard';
+
+export const allMarks: Mark[] = [
+  'bold',
+  'italic',
+  'underline',
+  'strikethrough',
+  'code',
+  'superscript',
+  'subscript',
+  'keyboard',
+];
 
 export const isBlockActive = (editor: ReactEditor, format: string) => {
   const [match] = Editor.nodes(editor, {
@@ -40,18 +50,6 @@ export function moveChildren(
   }
 }
 
-export const getBlockAboveSelection = (editor: ReactEditor) =>
-  Editor.above(editor, {
-    match: n => Editor.isBlock(editor, n),
-  }) || [editor, []];
-
-export const isLastBlockTextEmpty = (node: Element) => {
-  const lastChild = node.children[node.children.length - 1];
-  return Text.isText(lastChild) && !lastChild.text.length;
-};
-
-export const isFirstChild = (path: readonly number[]) => path[path.length - 1] === 0;
-
 export const isMarkActive = (editor: ReactEditor, format: Mark) => {
   const marks = Editor.marks(editor);
   return marks ? marks[format] === true : false;
@@ -65,29 +63,3 @@ export const toggleMark = (editor: ReactEditor, format: Mark) => {
     Editor.addMark(editor, format, true);
   }
 };
-
-// TODO: maybe move all the usages of this into one place so we don't have to run this many times per keypress
-export function getMaybeMarkdownShortcutText(
-  text: string,
-  editor: ReactEditor,
-  nodeMatch: (node: Node) => boolean = n => n.type === 'paragraph'
-) {
-  const { selection } = editor;
-  if (text === ' ' && selection && Range.isCollapsed(selection)) {
-    const { anchor } = selection;
-    const block = Editor.above(editor, {
-      match: nodeMatch,
-    });
-    const path = block ? block[1] : [];
-    const start = Editor.start(editor, path);
-    const range = { anchor, focus: start };
-    return [
-      Editor.string(editor, range),
-      () => {
-        Transforms.select(editor, range);
-        Transforms.delete(editor);
-      },
-    ] as const;
-  }
-  return [undefined, () => {}] as const;
-}

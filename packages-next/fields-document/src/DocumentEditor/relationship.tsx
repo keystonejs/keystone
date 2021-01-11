@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { createContext, Fragment, useContext } from 'react';
-import { ReactEditor, RenderElementProps, useEditor } from 'slate-react';
+import { ReactEditor, RenderElementProps } from 'slate-react';
 import { Transforms } from 'slate';
 
 import { jsx } from '@keystone-ui/core';
@@ -9,25 +9,8 @@ import { useKeystone } from '@keystone-next/admin-ui/context';
 import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
 
 import { ToolbarButton } from './primitives';
-
-// let pageQuery1 = gql`
-//   query {
-//     allPages(where: { site: { key: $SITE_KEY } }) {
-//       title
-//       content {
-//         document(hydrateRelationships: true)
-//         relationships {
-//           mention {
-//             id
-//             role {
-//               canReadWhatever
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// `;
+import { useStaticEditor } from './utils';
+import { useToolbarState } from './toolbar-state';
 
 export type Relationships = Record<
   string,
@@ -76,10 +59,10 @@ export function withRelationship(editor: ReactEditor) {
 }
 
 export function RelationshipButton() {
-  // useEditor does not update when the value/selection changes.
-  // that's fine for what it's being used for here
-  // because we're just inserting things on events, not reading things in render
-  const editor = useEditor();
+  const {
+    editor,
+    relationships: { isDisabled },
+  } = useToolbarState();
   const relationships = useContext(DocumentFieldRelationshipsContext)!;
   return (
     <Fragment>
@@ -88,6 +71,7 @@ export function RelationshipButton() {
         return (
           <ToolbarButton
             key={key}
+            isDisabled={isDisabled}
             onClick={() => {
               Transforms.insertNodes(editor, {
                 type: 'relationship',
@@ -106,10 +90,7 @@ export function RelationshipButton() {
 
 export function RelationshipElement({ attributes, children, element }: RenderElementProps) {
   const keystone = useKeystone();
-  // useEditor does not update when the value/selection changes.
-  // that's fine for what it's being used for here
-  // because we're just inserting things on events, not reading things in render
-  const editor = useEditor();
+  const editor = useStaticEditor();
   const relationships = useContext(DocumentFieldRelationshipsContext)!;
   const relationship = relationships[element.relationship as string] as Exclude<
     Relationships[string],

@@ -12,8 +12,8 @@ type ComponentProp = { children: Children; propPath: (string | number)[] };
 declare namespace __jsx {
   namespace JSX {
     interface IntrinsicElements {
-      editor: { children: Children; marks?: { [Key in Mark]?: true } };
-      text: { children?: Children } & { [Key in Mark]?: true };
+      editor: { children: Children; marks?: { [Key in Mark | 'insertMenu']?: true } };
+      text: { children?: Children } & { [Key in Mark | 'insertMenu']?: true };
       element: { [key: string]: any };
       cursor: { [key: string]: never };
       anchor: { [key: string]: never };
@@ -22,7 +22,7 @@ declare namespace __jsx {
       'layout-area': OnlyChildren;
       blockquote: OnlyChildren;
       paragraph: {
-        align?: 'center' | 'end';
+        textAlign?: 'center' | 'end';
         children: Children;
       };
       code: OnlyChildren;
@@ -44,6 +44,16 @@ declare namespace __jsx {
       'list-item': OnlyChildren;
       link: {
         href: string;
+        children: Children;
+      };
+      relationship: {
+        relationship: string;
+        data: {
+          id: string;
+          label: string;
+          data: {};
+        };
+
         children: Children;
       };
     }

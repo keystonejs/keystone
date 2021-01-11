@@ -2,14 +2,7 @@
 
 import { createContext, useContext, useMemo } from 'react';
 import { Editor, Element, Node, Transforms, Range, Point } from 'slate';
-import {
-  ReactEditor,
-  RenderElementProps,
-  useFocused,
-  useSelected,
-  useSlate,
-  useEditor,
-} from 'slate-react';
+import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
@@ -17,9 +10,10 @@ import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { paragraphElement } from './paragraphs';
-import { isBlockActive, moveChildren } from './utils';
+import { isBlockActive, moveChildren, useStaticEditor } from './utils';
 import { DocumentFeatures } from '../views';
 import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
+import { useToolbarState } from './toolbar-state';
 
 const LayoutOptionsContext = createContext<[number, ...number[]][]>([]);
 
@@ -30,10 +24,8 @@ export const LayoutContainer = ({ attributes, children, element }: RenderElement
   const { spacing } = useTheme();
   const focused = useFocused();
   const selected = useSelected();
-  // useEditor does not update when the value/selection changes.
-  // that's fine for what it's being used for here
-  // because we're just inserting things on events, not reading things in render
-  const editor = useEditor();
+  const editor = useStaticEditor();
+
   const layout = element.layout as number[];
   const layoutOptions = useContext(LayoutOptionsContext);
 
@@ -267,14 +259,16 @@ function makeLayoutIcon(ratios: number[]) {
 const layoutsIcon = <ColumnsIcon size="small" />;
 
 export const LayoutsButton = ({ layouts }: { layouts: DocumentFeatures['layouts'] }) => {
-  const editor = useSlate();
-  const insideLayout = isInsideLayout(editor);
+  const {
+    editor,
+    layouts: { isSelected },
+  } = useToolbarState();
   return useMemo(
     () => (
       <Tooltip content="Layouts" weight="subtle">
         {attrs => (
           <ToolbarButton
-            isSelected={insideLayout}
+            isSelected={isSelected}
             onMouseDown={event => {
               event.preventDefault();
               insertLayout(editor, layouts[0]);
@@ -286,6 +280,6 @@ export const LayoutsButton = ({ layouts }: { layouts: DocumentFeatures['layouts'
         )}
       </Tooltip>
     ),
-    [editor, insideLayout, layouts]
+    [editor, isSelected, layouts]
   );
 };

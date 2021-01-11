@@ -28,9 +28,8 @@ import { renderElement } from './render-element';
 import { withHeading } from './heading';
 import { isListType, withList } from './lists';
 import {
-  ComponentBlockProvider,
+  ComponentBlockContext,
   getPlaceholderTextForPropPath,
-  VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP,
   withComponentBlocks,
 } from './component-blocks';
 import { withBlockquote } from './blockquote';
@@ -47,6 +46,11 @@ import { withMarks } from './marks';
 import { renderLeaf } from './leaf';
 import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
 import { withShortcuts } from './shortcuts';
+import { withDocumentFeaturesNormalization } from './document-features-normalization';
+import { ToolbarStateProvider } from './toolbar-state';
+import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './component-blocks/utils';
+import { withInsertMenu } from './insert-menu';
+import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -100,6 +104,7 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
 export function createDocumentEditor(
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
+  relationships: Relationships,
   isShiftPressedRef: MutableRefObject<boolean>
 ) {
   return withSoftBreaks(
@@ -107,24 +112,32 @@ export function createDocumentEditor(
     withBlocksSchema(
       withLink(
         withList(
-          documentFeatures.formatting.listTypes,
           withHeading(
-            documentFeatures.formatting.headingLevels,
             withRelationship(
-              withComponentBlocks(
-                componentBlocks,
-                withParagraphs(
-                  withShortcuts(
-                    withDivider(
-                      documentFeatures.dividers,
-                      withLayouts(
-                        withMarks(
-                          documentFeatures.formatting.inlineMarks,
-                          withCodeBlock(
-                            documentFeatures.formatting.blockTypes.code,
-                            withBlockquote(
-                              documentFeatures.formatting.blockTypes.blockquote,
-                              withHistory(withReact(createEditor()))
+              withInsertMenu(
+                withComponentBlocks(
+                  componentBlocks,
+                  documentFeatures,
+                  relationships,
+                  withParagraphs(
+                    withShortcuts(
+                      withDivider(
+                        withLayouts(
+                          withMarks(
+                            documentFeatures,
+                            componentBlocks,
+                            withCodeBlock(
+                              withBlockMarkdownShortcuts(
+                                documentFeatures,
+                                componentBlocks,
+                                withBlockquote(
+                                  withDocumentFeaturesNormalization(
+                                    documentFeatures,
+                                    relationships,
+                                    withHistory(withReact(createEditor()))
+                                  )
+                                )
+                              )
                             )
                           )
                         )
@@ -159,9 +172,12 @@ export function DocumentEditor({
   const isShiftPressedRef = useKeyDownRef('Shift');
   const { colors } = useTheme();
   const [expanded, setExpanded] = useState(false);
-  const editor = useMemo(
-    () => createDocumentEditor(documentFeatures, componentBlocks, isShiftPressedRef),
-    [documentFeatures, componentBlocks]
+  const [editor, identity] = useMemo(
+    () => [
+      createDocumentEditor(documentFeatures, componentBlocks, relationships, isShiftPressedRef),
+      Math.random().toString(36),
+    ],
+    [documentFeatures, componentBlocks, relationships]
   );
 
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
@@ -187,74 +203,82 @@ export function DocumentEditor({
     >
       <DocumentFieldRelationshipsProvider value={relationships}>
         <LayoutOptionsProvider value={documentFeatures.layouts}>
-          <ComponentBlockProvider value={componentBlocks}>
+          <ComponentBlockContext.Provider value={componentBlocks}>
             <Slate
+              // this fixes issues with Slate crashing when a fast refresh occcurs
+              key={identity}
               editor={editor}
               value={value}
               onChange={value => {
                 onChange?.(value);
               }}
             >
-              <Toolbar
-                documentFeatures={documentFeatures}
-                viewState={useMemo(
-                  () => ({
-                    expanded,
-                    toggle: () => {
-                      setExpanded(v => !v);
-                    },
-                  }),
-                  [expanded]
+              <ToolbarStateProvider
+                componentBlocks={componentBlocks}
+                editorDocumentFeatures={documentFeatures}
+              >
+                {useMemo(
+                  () => (
+                    <Toolbar
+                      documentFeatures={documentFeatures}
+                      viewState={{
+                        expanded,
+                        toggle: () => {
+                          setExpanded(v => !v);
+                        },
+                      }}
+                    />
+                  ),
+                  [expanded, documentFeatures]
                 )}
-              />
-              <Editable
-                decorate={useCallback(
-                  ([node, path]: NodeEntry<Node>) => {
-                    let decorations: Range[] = [];
-                    if (node.type === 'component-block' && Element.isElement(node)) {
-                      if (
-                        node.children.length === 1 &&
-                        (node.children[0].propPath as any).length === 1 &&
-                        (node.children[0].propPath as any)[0] ===
-                          VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP
-                      ) {
-                        return decorations;
-                      }
-                      node.children.forEach((child, index) => {
-                        if (Node.string(child) === '') {
-                          const start = Editor.start(editor, [...path, index]);
-                          const placeholder = getPlaceholderTextForPropPath(
-                            child.propPath as any,
-                            componentBlocks[node.component as string].props,
-                            node.props as any
-                          );
-
-                          decorations.push({
-                            placeholder,
-                            anchor: start,
-                            focus: start,
-                          });
+                <Editable
+                  decorate={useCallback(
+                    ([node, path]: NodeEntry<Node>) => {
+                      let decorations: Range[] = [];
+                      if (node.type === 'component-block' && Element.isElement(node)) {
+                        if (
+                          node.children.length === 1 &&
+                          (node.children[0].propPath as any).length === 1 &&
+                          (node.children[0].propPath as any)[0] ===
+                            VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP
+                        ) {
+                          return decorations;
                         }
-                      });
-                    }
+                        node.children.forEach((child, index) => {
+                          if (Node.string(child) === '') {
+                            const start = Editor.start(editor, [...path, index]);
+                            const placeholder = getPlaceholderTextForPropPath(
+                              child.propPath as any,
+                              componentBlocks[node.component as string].props,
+                              node.props as any
+                            );
 
-                    return decorations;
-                  },
-                  [editor]
-                )}
-                css={styles}
-                autoFocus={autoFocus}
-                onKeyDown={onKeyDown}
-                readOnly={onChange === undefined}
-                renderElement={renderElement}
-                renderLeaf={renderLeaf}
-              />
+                            decorations.push({
+                              placeholder,
+                              anchor: start,
+                              focus: start,
+                            });
+                          }
+                        });
+                      }
+                      return decorations;
+                    },
+                    [editor]
+                  )}
+                  css={styles}
+                  autoFocus={autoFocus}
+                  onKeyDown={onKeyDown}
+                  readOnly={onChange === undefined}
+                  renderElement={renderElement}
+                  renderLeaf={renderLeaf}
+                />
+              </ToolbarStateProvider>
               {
                 // for debugging
                 false && <Debugger />
               }
             </Slate>
-          </ComponentBlockProvider>
+          </ComponentBlockContext.Provider>
         </LayoutOptionsProvider>
       </DocumentFieldRelationshipsProvider>
     </div>
@@ -392,7 +416,6 @@ export const editorSchema = makeEditorSchema({
   divider: { kind: 'inlines', invalidPositionHandleMode: 'move' },
   heading: {
     kind: 'inlines',
-    // TODO: not 100% sure that unwrap is right here
     invalidPositionHandleMode: 'unwrap',
   },
   'component-block': {

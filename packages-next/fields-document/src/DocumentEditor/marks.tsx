@@ -1,6 +1,9 @@
 import { Editor, Transforms, Range, Text, Node, Path, Point } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { DocumentFeatures } from '../views';
+import { ComponentBlock } from './component-blocks/api';
+import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
+import { Mark } from './utils';
 
 export const allMarkdownShortcuts = {
   bold: ['**', '__'],
@@ -120,11 +123,12 @@ function getPointAtOffsetFromStartOfBlock(
 }
 
 export const withMarks = (
-  enabledMarks: DocumentFeatures['formatting']['inlineMarks'],
+  editorDocumentFeatures: DocumentFeatures,
+  componentBlocks: Record<string, ComponentBlock>,
   editor: ReactEditor
 ) => {
   const selectedMarkdownShortcuts: Partial<typeof allMarkdownShortcuts> = {};
-
+  const enabledMarks = editorDocumentFeatures.formatting.inlineMarks;
   (Object.keys(allMarkdownShortcuts) as (keyof typeof allMarkdownShortcuts)[]).forEach(mark => {
     if (enabledMarks[mark]) {
       selectedMarkdownShortcuts[mark] = allMarkdownShortcuts[mark];
@@ -212,6 +216,18 @@ export const withMarks = (
               if (
                 mark === 'italic' &&
                 (contentBetweenShortcuts[0] === '_' || contentBetweenShortcuts[0] === '*')
+              ) {
+                continue;
+              }
+              const ancestorComponentChildFieldDocumentFeatures = getAncestorComponentChildFieldDocumentFeatures(
+                editor,
+                editorDocumentFeatures,
+                componentBlocks
+              );
+              if (
+                ancestorComponentChildFieldDocumentFeatures &&
+                ancestorComponentChildFieldDocumentFeatures.inlineMarks !== 'inherit' &&
+                ancestorComponentChildFieldDocumentFeatures.inlineMarks[mark as Mark] === false
               ) {
                 continue;
               }

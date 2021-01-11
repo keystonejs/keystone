@@ -8,10 +8,10 @@ import { useControlledPopover } from '@keystone-ui/popover';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { applyRefs } from 'apply-ref';
 import { useState, ComponentProps, useMemo } from 'react';
-import { Editor, Transforms } from 'slate';
-import { useSlate } from 'slate-react';
+import { Transforms } from 'slate';
 import { DocumentFeatures } from '../views';
 import { InlineDialog, ToolbarButton, ToolbarGroup } from './primitives';
+import { useToolbarState } from './toolbar-state';
 
 export const TextAlignMenu = ({
   alignment,
@@ -77,7 +77,10 @@ function TextAlignDialog({
   alignment: DocumentFeatures['formatting']['alignment'];
   onClose: () => void;
 }) {
-  const { currentTextAlign, editor } = useTextAlignInfo();
+  const {
+    alignment: { selected },
+    editor,
+  } = useToolbarState();
   const alignments = [
     'start',
     ...(Object.keys(alignment) as (keyof typeof alignment)[]).filter(key => alignment[key]),
@@ -88,7 +91,7 @@ function TextAlignDialog({
         <Tooltip key={alignment} content={`Align ${alignment}`} weight="subtle">
           {attrs => (
             <ToolbarButton
-              isSelected={currentTextAlign === alignment}
+              isSelected={selected === alignment}
               onMouseDown={event => {
                 event.preventDefault();
                 if (alignment === 'start') {
@@ -123,30 +126,19 @@ const alignmentIcons = {
   end: <AlignRightIcon size="small" />,
 };
 
-function useTextAlignInfo() {
-  const editor = useSlate();
-  const [firstAlignableNode] = Editor.nodes(editor, {
-    match: node => node.type === 'paragraph' || node.type === 'heading',
-  });
-  const alignmentAllowed = !!firstAlignableNode;
-  const currentTextAlign: 'start' | 'center' | 'end' =
-    ((firstAlignableNode && firstAlignableNode[0] && firstAlignableNode[0].textAlign) as any) ||
-    'start';
-
-  return { alignmentAllowed, currentTextAlign, editor };
-}
-
 function TextAlignButton(props: {
   onToggle: () => void;
   trigger: ReturnType<typeof useControlledPopover>['trigger'];
   showMenu: boolean;
   attrs: Parameters<ComponentProps<typeof Tooltip>['children']>[0];
 }) {
-  const { alignmentAllowed, currentTextAlign } = useTextAlignInfo();
+  const {
+    alignment: { isDisabled, selected },
+  } = useToolbarState();
   return useMemo(
     () => (
       <ToolbarButton
-        isDisabled={!alignmentAllowed}
+        isDisabled={isDisabled}
         isPressed={props.showMenu}
         onClick={event => {
           event.preventDefault();
@@ -156,11 +148,11 @@ function TextAlignButton(props: {
         {...props.trigger.props}
         ref={applyRefs(props.attrs.ref, props.trigger.ref)}
       >
-        {alignmentIcons[currentTextAlign]}
+        {alignmentIcons[selected]}
         {downIcon}
       </ToolbarButton>
     ),
-    [alignmentAllowed, currentTextAlign, props]
+    [isDisabled, selected, props]
   );
 }
 

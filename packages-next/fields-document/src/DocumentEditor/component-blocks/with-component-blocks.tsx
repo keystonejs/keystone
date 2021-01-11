@@ -1,9 +1,22 @@
 import { ReactEditor } from 'slate-react';
 import { Editor, Element, Transforms, Range, NodeEntry, Path, Node, Text } from 'slate';
 
-import { ComponentBlock } from '../../component-blocks';
+import { ChildField, ComponentBlock } from '../../component-blocks';
 import { moveChildren } from '../utils';
-import { findChildPropPaths, VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './utils';
+import {
+  DocumentFeaturesForChildField,
+  findChildPropPaths,
+  getDocumentFeaturesForChildField,
+  VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP,
+} from './utils';
+import { DocumentFeatures } from '../../views';
+import {
+  normalizeElementBasedOnDocumentFeatures,
+  normalizeInlineBasedOnLinksAndRelationships,
+  normalizeTextBasedOnInlineMarksAndSoftBreaks,
+} from '../document-features-normalization';
+import weakMemoize from '@emotion/weak-memoize';
+import { Relationships } from '../relationship';
 
 function getAncestorComponentBlock(
   editor: ReactEditor
@@ -29,10 +42,79 @@ function getAncestorComponentBlock(
   return { isInside: false };
 }
 
+const alreadyNormalizedThings: WeakMap<
+  DocumentFeaturesForChildField,
+  WeakSet<Node>
+> = new WeakMap();
+
+function normalizeNodeWithinComponentProp(
+  [node, path]: NodeEntry,
+  editor: ReactEditor,
+  fieldOptions: DocumentFeaturesForChildField,
+  relationships: Relationships
+): boolean {
+  let alreadyNormalizedNodes = alreadyNormalizedThings.get(fieldOptions);
+  if (!alreadyNormalizedNodes) {
+    alreadyNormalizedNodes = new WeakSet();
+    alreadyNormalizedThings.set(fieldOptions, alreadyNormalizedNodes);
+  }
+  if (alreadyNormalizedNodes.has(node)) {
+    return false;
+  }
+  let didNormalization = false;
+  if (fieldOptions.inlineMarks !== 'inherit' && Text.isText(node)) {
+    didNormalization = normalizeTextBasedOnInlineMarksAndSoftBreaks(
+      [node, path],
+      editor,
+      fieldOptions.inlineMarks,
+      fieldOptions.softBreaks
+    );
+  }
+  if (Element.isElement(node)) {
+    let childrenHasChanged = node.children
+      .map((node, i) =>
+        normalizeNodeWithinComponentProp([node, [...path, i]], editor, fieldOptions, relationships)
+      )
+      // .map then .some because we don't want to exit early
+      .some(x => x);
+    if (fieldOptions.kind === 'block') {
+      didNormalization =
+        normalizeElementBasedOnDocumentFeatures(
+          [node, path],
+          editor,
+          fieldOptions.documentFeatures,
+          relationships
+        ) || childrenHasChanged;
+    } else {
+      didNormalization = normalizeInlineBasedOnLinksAndRelationships(
+        [node, path],
+        editor,
+        fieldOptions.documentFeatures.links,
+        fieldOptions.documentFeatures.relationships,
+        relationships
+      );
+    }
+  }
+
+  if (didNormalization === false) {
+    alreadyNormalizedNodes.add(node);
+  }
+  return didNormalization;
+}
+
 export function withComponentBlocks(
   blockComponents: Record<string, ComponentBlock | undefined>,
+  editorDocumentFeatures: DocumentFeatures,
+  relationships: Relationships,
   editor: ReactEditor
 ) {
+  // note that conflicts between the editor document features
+  // and the child field document features are dealt with elsewhere
+  const memoizedGetDocumentFeaturesForChildField = weakMemoize(
+    (options: ChildField['options']): DocumentFeaturesForChildField => {
+      return getDocumentFeaturesForChildField(editorDocumentFeatures, options);
+    }
+  );
   const { normalizeNode, deleteBackward, insertBreak } = editor;
   editor.deleteBackward = unit => {
     if (editor.selection) {
@@ -117,53 +199,86 @@ export function withComponentBlocks(
         });
         return;
       }
-      if (
-        node.type === 'component-block' &&
-        // we don't want to break a block component if the component doesn't exist for some reason
-        blockComponents[node.component as string] !== undefined
-      ) {
-        let foundProps = new Set<string>();
 
-        let stringifiedInlinePropPaths: Record<
-          string,
-          { kind: 'inline' | 'block'; index: number } | undefined
-        > = {};
-        findChildPropPaths(
-          node.props as any,
-          blockComponents[node.component as string]!.props
-        ).forEach((x, index) => {
-          stringifiedInlinePropPaths[JSON.stringify(x.path)] = { kind: x.kind, index };
-        });
+      if (Element.isElement(node) && node.type === 'component-block') {
+        const componentBlock = blockComponents[node.component as string];
+        if (componentBlock) {
+          let missingKeys = new Map(
+            findChildPropPaths(node.props as any, componentBlock.props).map(x => [
+              JSON.stringify(x.path),
+              x.options.kind,
+            ])
+          );
 
-        for (const [index, childNode] of node.children.entries()) {
-          if (
-            // children that are not these will be handled by
-            // the generic allowedChildren normalization
-            childNode.type === 'component-inline-prop' ||
-            childNode.type === 'component-block-prop'
-          ) {
-            const childPath = [...path, index];
-            const stringifiedPropPath = JSON.stringify(childNode.propPath);
-            if (stringifiedInlinePropPaths[stringifiedPropPath] === undefined) {
-              Transforms.removeNodes(editor, { at: childPath });
-              return;
-            } else {
-              if (foundProps.has(stringifiedPropPath)) {
+          node.children.forEach(node => {
+            missingKeys.delete(JSON.stringify(node.propPath));
+          });
+          if (missingKeys.size) {
+            Transforms.insertNodes(
+              editor,
+              [...missingKeys].map(([prop, kind]) => ({
+                type: `component-${kind}-prop`,
+                propPath: JSON.parse(prop),
+                children: [{ text: '' }],
+              })),
+              { at: [...path, node.children.length] }
+            );
+            return;
+          }
+
+          let foundProps = new Set<string>();
+
+          let stringifiedInlinePropPaths: Record<
+            string,
+            { options: ChildField['options']; index: number } | undefined
+          > = {};
+          findChildPropPaths(
+            node.props as any,
+            blockComponents[node.component as string]!.props
+          ).forEach((x, index) => {
+            stringifiedInlinePropPaths[JSON.stringify(x.path)] = { options: x.options, index };
+          });
+
+          for (const [index, childNode] of node.children.entries()) {
+            if (
+              // children that are not these will be handled by
+              // the generic allowedChildren normalization
+              childNode.type === 'component-inline-prop' ||
+              childNode.type === 'component-block-prop'
+            ) {
+              const childPath = [...path, index];
+              const stringifiedPropPath = JSON.stringify(childNode.propPath);
+              if (stringifiedInlinePropPaths[stringifiedPropPath] === undefined) {
                 Transforms.removeNodes(editor, { at: childPath });
                 return;
-              }
-              foundProps.add(stringifiedPropPath);
-              const expectedIndex = stringifiedInlinePropPaths[stringifiedPropPath]!.index;
-              if (index !== expectedIndex) {
-                Transforms.moveNodes(editor, { at: childPath, to: [...path, expectedIndex] });
-                return;
-              }
-              const expectedChildNodeType = `component-${
-                stringifiedInlinePropPaths[stringifiedPropPath]!.kind
-              }-prop`;
-              if (childNode.type !== expectedChildNodeType) {
-                Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
-                return;
+              } else {
+                if (foundProps.has(stringifiedPropPath)) {
+                  Transforms.removeNodes(editor, { at: childPath });
+                  return;
+                }
+                foundProps.add(stringifiedPropPath);
+                const propInfo = stringifiedInlinePropPaths[stringifiedPropPath]!;
+                const expectedIndex = propInfo.index;
+                if (index !== expectedIndex) {
+                  Transforms.moveNodes(editor, { at: childPath, to: [...path, expectedIndex] });
+                  return;
+                }
+                const expectedChildNodeType = `component-${propInfo.options.kind}-prop`;
+                if (childNode.type !== expectedChildNodeType) {
+                  Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
+                  return;
+                }
+                const documentFeatures = memoizedGetDocumentFeaturesForChildField(propInfo.options);
+                if (
+                  normalizeNodeWithinComponentProp(
+                    [childNode, childPath],
+                    editor,
+                    documentFeatures,
+                    relationships
+                  )
+                ) {
+                  return;
+                }
               }
             }
           }
@@ -171,30 +286,6 @@ export function withComponentBlocks(
       }
     }
 
-    if (Element.isElement(node) && node.type === 'component-block') {
-      const componentBlock = blockComponents[node.component as string];
-      if (componentBlock) {
-        let missingKeys = new Map(
-          findChildPropPaths(node.props as any, componentBlock.props).map(x => [
-            JSON.stringify(x.path),
-            x.kind,
-          ])
-        );
-
-        node.children.forEach(node => {
-          missingKeys.delete(JSON.stringify(node.propPath));
-        });
-        Transforms.insertNodes(
-          editor,
-          [...missingKeys].map(([prop, kind]) => ({
-            type: `component-${kind}-prop`,
-            propPath: JSON.parse(prop),
-            children: [{ text: '' }],
-          })),
-          { at: [...path, node.children.length] }
-        );
-      }
-    }
     normalizeNode(entry);
   };
 

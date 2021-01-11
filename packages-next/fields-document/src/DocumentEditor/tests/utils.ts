@@ -9,6 +9,8 @@ export { __jsx as jsx } from './jsx/namespace';
 import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
 import jestDiff from 'jest-diff';
 import { validateDocument } from '../../validation';
+import { Relationships } from '../relationship';
+import { createToolbarState } from '../toolbar-state';
 
 function formatEditor(editor: Node) {
   return prettyFormat(editor, {
@@ -72,7 +74,7 @@ expect.extend({
     return { actual: received, message, pass };
   },
 });
-const defaultDocumentFeatures: DocumentFeatures = {
+export const defaultDocumentFeatures: DocumentFeatures = {
   formatting: {
     alignment: { center: true, end: true },
     blockTypes: { blockquote: true, code: true },
@@ -92,24 +94,22 @@ const defaultDocumentFeatures: DocumentFeatures = {
   },
   dividers: true,
   links: true,
-  layouts: [
-    [1, 1],
-    [1, 1, 1],
-    [1, 2, 1],
-  ],
+  layouts: [[1], [1, 1], [1, 1, 1], [1, 2, 1]],
 };
 
 export const makeEditor = (
   node: Node,
   {
-    documentFeatures,
-    componentBlocks,
+    documentFeatures = defaultDocumentFeatures,
+    componentBlocks = {},
     normalization = 'disallow-non-normalized',
-    isShiftPressedRef,
+    isShiftPressedRef = { current: false },
+    relationships = {},
   }: {
     documentFeatures?: DocumentFeatures;
     componentBlocks?: Record<string, ComponentBlock>;
     normalization?: 'disallow-non-normalized' | 'normalize' | 'skip';
+    relationships?: Relationships;
     isShiftPressedRef?: MutableRefObject<boolean>;
   } = {}
 ): ReactEditor => {
@@ -117,11 +117,21 @@ export const makeEditor = (
     throw new Error('Unexpected non-editor passed to makeEditor');
   }
   let editor = createDocumentEditor(
-    documentFeatures || defaultDocumentFeatures,
-    componentBlocks || {},
-    isShiftPressedRef || { current: false }
+    documentFeatures,
+    componentBlocks,
+    relationships,
+    isShiftPressedRef
   );
   validateDocument(editor.children);
+
+  // just a smoke test for the toolbar state
+  createToolbarState(editor, componentBlocks, documentFeatures);
+  const { onChange } = editor;
+  editor.onChange = () => {
+    createToolbarState(editor, componentBlocks, documentFeatures);
+    onChange();
+  };
+
   editor.children = node.children;
   editor.selection = node.selection;
   editor.marks = node.marks;

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { Fragment, ReactElement, createContext, useContext, useState } from 'react';
-import { ReactEditor, RenderElementProps, useEditor, useFocused, useSelected } from 'slate-react';
+import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
 import { Editor, Element, Transforms } from 'slate';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -17,13 +17,11 @@ import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './utils';
 import { createPreviewProps } from './preview-props';
 import { getInitialValue } from './initial-values';
 import { FormValue } from './form';
+import { useStaticEditor } from '../utils';
 
 export { withComponentBlocks } from './with-component-blocks';
-export { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP };
 
-const ComponentBlockContext = createContext<null | Record<string, ComponentBlock>>(null);
-
-export const ComponentBlockProvider = ComponentBlockContext.Provider;
+export const ComponentBlockContext = createContext<Record<string, ComponentBlock>>({});
 
 export function getPlaceholderTextForPropPath(
   propPath: (number | string)[],
@@ -54,10 +52,10 @@ export function ComponentInlineProp(props: RenderElementProps) {
   return <span {...props.attributes}>{props.children}</span>;
 }
 
-export function insertComponentBlock<Blocks extends Record<string, ComponentBlock>>(
+export function insertComponentBlock(
   editor: Editor,
-  componentBlocks: Blocks,
-  componentBlock: Extract<keyof Blocks, string>,
+  componentBlocks: Record<string, ComponentBlock>,
+  componentBlock: string,
   relationships: Relationships
 ) {
   let { node, isFakeVoid } = getInitialValue(
@@ -78,7 +76,7 @@ export function insertComponentBlock<Blocks extends Record<string, ComponentBloc
 }
 
 export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => {
-  const editor = useEditor();
+  const editor = useStaticEditor();
   const blockComponents = useContext(ComponentBlockContext)!;
   const relationships = useDocumentFieldRelationships();
   return (
@@ -100,10 +98,7 @@ export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => 
 };
 
 export const ComponentBlocksElement = ({ attributes, children, element }: RenderElementProps) => {
-  // useEditor does not update when the value/selection changes.
-  // that's fine for what it's being used for here
-  // because we're just inserting things on events, not reading things in render
-  const editor = useEditor();
+  const editor = useStaticEditor();
   const focused = useFocused();
   const selected = useSelected();
   const [editMode, setEditMode] = useState(false);
@@ -325,10 +320,7 @@ function ComponentBlockRender({
   componentBlock: ComponentBlock;
   children: any;
 }) {
-  // useEditor does not update when the value/selection changes.
-  // that's fine for what it's being used for here
-  // because we're just inserting things on events, not reading things in render
-  const editor = useEditor();
+  const editor = useStaticEditor();
 
   const childrenByPath: Record<string, ReactElement> = {};
   const children = _children.type(_children.props).props.children;
