@@ -316,6 +316,7 @@ test('insertMenu mark is added when inserting / after whitespace when there is c
       </paragraph>
     </editor>
   `);
+  // note the cursor should really be in the text with insertMenu but it all works right in the browser so ¯\_(ツ)_/¯
 });
 
 test('insertMenu mark is added when inserting / after whitespace when there is content after the cursor in a different text node', () => {
