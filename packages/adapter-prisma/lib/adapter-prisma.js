@@ -232,15 +232,16 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   }
 
   _saveMigration({ name }) {
-    this._runPrismaCmd(`migrate save --name ${name} --experimental`);
+    // this._runPrismaCmd(`migrate dev --create-only --name ${name} --preview-feature`);
+    this._runPrismaCmd(`db push --preview-feature`);
   }
 
   _executeMigrations() {
-    this._runPrismaCmd('migrate up --experimental');
+    // this._runPrismaCmd('migrate up --experimental');
   }
 
   _runPrismaCmd(cmd) {
-    return execSync(`yarn prisma ${cmd} --schema ${this.schemaPath}`, {
+    return execSync(`DATABASE_URL=${this._url()} yarn prisma ${cmd} --schema ${this.schemaPath}`, {
       env: { ...process.env, DATABASE_URL: this._url() },
       encoding: 'utf-8',
     });

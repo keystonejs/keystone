@@ -72,6 +72,7 @@ If you don't have a database already then you can create one locally with the fo
 createdb -U postgres keystone
 psql keystone -U postgres -c "CREATE USER keystone5 PASSWORD 'change_me_plz'"
 psql keystone -U postgres -c "GRANT ALL ON DATABASE keystone TO keystone5;"
+psql -U postgres -c "ALTER USER keystone5 CREATEDB;"
 ```
 
 If using the above, you will want to set a connection string of:
