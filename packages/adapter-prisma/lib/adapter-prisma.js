@@ -321,7 +321,7 @@ class PrismaListAdapter extends BaseListAdapter {
 
   async _update(id, _data) {
     const include = this._include();
-    const existingItem = await this.model.findOne({ where: { id: Number(id) }, include });
+    const existingItem = await this.model.findUnique({ where: { id: Number(id) }, include });
     return this.model.update({
       where: { id: Number(id) },
       data: mapKeys(_data, (value, path) => {
