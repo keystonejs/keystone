@@ -8,7 +8,7 @@ import { DocumentFeatures } from '../../views';
 export { __jsx as jsx } from './jsx/namespace';
 import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
 import jestDiff from 'jest-diff';
-import { validateDocument } from '../../validation';
+import { validateDocument } from '../../structure-validation';
 import { Relationships } from '../relationship';
 import { createToolbarState } from '../toolbar-state';
 
