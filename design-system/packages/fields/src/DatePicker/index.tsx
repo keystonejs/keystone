@@ -15,19 +15,11 @@ export type DateInputValue = string | undefined;
 export type DatePickerProps = {
   onUpdate: (value: DateType) => void;
   onClear: () => void;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   value: DateType;
 };
 
-export const DatePicker = ({
-  value,
-  onUpdate,
-  onChange,
-  onClear,
-  onBlur,
-  ...props
-}: DatePickerProps) => {
+export const DatePicker = ({ value, onUpdate, onClear, onBlur, ...props }: DatePickerProps) => {
   const { isOpen, setOpen, dialog, trigger, arrow } = usePopover({
     placement: 'bottom-start',
     modifiers: [
