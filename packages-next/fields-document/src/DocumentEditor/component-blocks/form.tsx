@@ -2,11 +2,37 @@ import { useKeystone } from '@keystone-next/admin-ui/context';
 import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
 import { Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { ComponentPropField, RelationshipData, ComponentBlock } from '../../component-blocks';
 import { useDocumentFieldRelationships, Relationships } from '../relationship';
 import { RelationshipValues, onConditionalChange, assertNever } from './utils';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
+
+function clientSideValidateProp(prop: ComponentPropField, value: any): boolean {
+  switch (prop.kind) {
+    case 'child':
+    case 'relationship': {
+      return true;
+    }
+    case 'form': {
+      return prop.validate(value);
+    }
+    case 'conditional': {
+      if (!prop.discriminant.validate(value.discriminant)) {
+        return false;
+      }
+      return clientSideValidateProp(prop.values[value.discriminant], value.value);
+    }
+    case 'object': {
+      for (const [key, childProp] of Object.entries(prop.value)) {
+        if (!clientSideValidateProp(childProp, value[key])) {
+          return false;
+        }
+      }
+      return true;
+    }
+  }
+}
 
 function FormValueContent({
   props,
@@ -16,6 +42,7 @@ function FormValueContent({
   relationshipValues,
   onRelationshipValuesChange,
   stringifiedPropPathToAutoFocus,
+  forceValidation,
 }: {
   path: (string | number)[];
   props: Record<string, ComponentPropField>;
@@ -24,6 +51,7 @@ function FormValueContent({
   onRelationshipValuesChange(value: RelationshipValues): void;
   onChange(value: any): void;
   stringifiedPropPathToAutoFocus: string;
+  forceValidation: boolean;
 }) {
   const relationships = useDocumentFieldRelationships();
   const keystone = useKeystone();
@@ -35,6 +63,7 @@ function FormValueContent({
         if (prop.kind === 'object') {
           return (
             <FormValueContent
+              forceValidation={forceValidation}
               stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
               onRelationshipValuesChange={onRelationshipValuesChange}
               relationshipValues={relationshipValues}
@@ -52,6 +81,7 @@ function FormValueContent({
           const newPath = path.concat(key);
           return (
             <FormValueContent
+              forceValidation={forceValidation}
               stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
               onRelationshipValuesChange={onRelationshipValuesChange}
               relationshipValues={relationshipValues}
@@ -138,11 +168,11 @@ function FormValueContent({
           <Fragment key={key}>
             <prop.Input
               autoFocus={JSON.stringify(newPath) === stringifiedPropPathToAutoFocus}
-              path={newPath}
               value={value[key]}
               onChange={newVal => {
                 onChange({ ...value, [key]: newVal });
               }}
+              forceValidation={forceValidation && !prop.validate(value[key])}
             />
           </Fragment>
         );
@@ -203,10 +233,12 @@ export function FormValue({
   relationshipValues: RelationshipValues;
   onRelationshipValuesChange(value: RelationshipValues): void;
 }) {
+  const [forceValidation, setForceValidation] = useState(false);
   const focusablePath = JSON.stringify(findFirstFocusablePropPath(componentBlock.props, [], value));
   return (
     <Stack gap="xlarge" contentEditable={false}>
       <FormValueContent
+        forceValidation={forceValidation}
         onRelationshipValuesChange={onRelationshipValuesChange}
         relationshipValues={relationshipValues}
         onChange={onChange}
@@ -215,7 +247,18 @@ export function FormValue({
         value={value}
         stringifiedPropPathToAutoFocus={focusablePath}
       />
-      <KeystoneUIButton size="small" tone="active" weight="bold" onClick={onClose}>
+      <KeystoneUIButton
+        size="small"
+        tone="active"
+        weight="bold"
+        onClick={() => {
+          if (clientSideValidateProp({ kind: 'object', value: componentBlock.props }, value)) {
+            onClose();
+          } else {
+            setForceValidation(true);
+          }
+        }}
+      >
         Done
       </KeystoneUIButton>
     </Stack>

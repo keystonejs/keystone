@@ -1,19 +1,35 @@
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, Select, TextInput, Checkbox } from '@keystone-ui/fields';
-import { HTMLAttributes, ReactElement, ReactNode } from 'react';
+import { HTMLAttributes, ReactElement, ReactNode, useState } from 'react';
+import isUrl from 'is-url';
 
 export type FormField<Value, Options> = {
   kind: 'form';
   Input(props: {
     value: Value;
     onChange(value: Value): void;
-    path: (string | number)[];
     autoFocus: boolean;
+    /**
+     * This will be true when validate has returned false and the user has attempted to close the form
+     * or when the form is open and they attempt to save the item
+     */
+    forceValidation: boolean;
   }): ReactElement | null;
   options: Options;
   defaultValue: Value;
-  validate?(value: any): boolean;
+  /**
+   * validate will be called in two cases:
+   * - on the client in the editor when a user is changing the value.
+   *   Returning `false` will block closing the form
+   *   and saving the item.
+   * - on the server when a change is recieved before allowing it to be saved
+   *   if `true` is returned
+   * @param value The value of the form field. You should NOT trust
+   * this value to be of the correct type because it could come from
+   * a potentially malicious client
+   */
+  validate(value: unknown): boolean;
 };
 
 type InlineMarksConfig =
@@ -122,6 +138,46 @@ export const fields = {
       },
       options: undefined,
       defaultValue,
+      validate(value) {
+        return typeof value === 'string';
+      },
+    };
+  },
+  url({
+    label,
+    defaultValue = '',
+  }: {
+    label: string;
+    defaultValue?: string;
+  }): FormField<string, undefined> {
+    const validate = (value: unknown) => {
+      return typeof value === 'string' && (value === '' || isUrl(value));
+    };
+    return {
+      kind: 'form',
+      Input({ value, onChange, autoFocus, forceValidation }) {
+        const [blurred, setBlurred] = useState(false);
+        const showValidation = forceValidation || (blurred && !validate(value));
+        return (
+          <FieldContainer>
+            <FieldLabel>{label}</FieldLabel>
+            <TextInput
+              onBlur={() => {
+                setBlurred(true);
+              }}
+              autoFocus={autoFocus}
+              value={value}
+              onChange={event => {
+                onChange(event.target.value);
+              }}
+            />
+            {showValidation && <span css={{ color: 'red' }}>Please provide a valid URL</span>}
+          </FieldContainer>
+        );
+      },
+      options: undefined,
+      defaultValue,
+      validate,
     };
   },
   select<Option extends { label: string; value: string }>({
@@ -133,6 +189,7 @@ export const fields = {
     options: readonly Option[];
     defaultValue: Option['value'];
   }): FormField<Option['value'], readonly Option[]> {
+    const optionValuesSet = new Set(options.map(x => x.value));
     return {
       kind: 'form',
       Input({ value, onChange, autoFocus }) {
@@ -153,6 +210,9 @@ export const fields = {
       },
       options,
       defaultValue,
+      validate(value) {
+        return typeof value === 'string' && optionValuesSet.has(value);
+      },
     };
   },
   checkbox({
@@ -181,6 +241,9 @@ export const fields = {
       },
       options: undefined,
       defaultValue,
+      validate(value) {
+        return typeof value === 'boolean';
+      },
     };
   },
   empty(): FormField<undefined, undefined> {
@@ -191,6 +254,9 @@ export const fields = {
       },
       options: undefined,
       defaultValue: undefined,
+      validate(value) {
+        return value === undefined;
+      },
     };
   },
   child(
@@ -391,8 +457,8 @@ export type HydratedRelationshipData = {
 
 export type RelationshipData = {
   id: string;
-  label?: string;
-  data?: Record<string, any>;
+  label: string | undefined;
+  data: Record<string, any> | undefined;
 };
 
 export function component<

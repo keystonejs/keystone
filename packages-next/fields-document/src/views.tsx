@@ -107,5 +107,8 @@ export const controller = (
     serialize: value => ({
       [config.path]: value,
     }),
+    validate() {
+      return true;
+    },
   };
 };

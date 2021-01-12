@@ -17,7 +17,7 @@ import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './utils';
 import { createPreviewProps } from './preview-props';
 import { getInitialValue } from './initial-values';
 import { FormValue } from './form';
-import { useStaticEditor } from '../utils';
+import { useElementWithSetNodes, useStaticEditor } from '../utils';
 
 export { withComponentBlocks } from './with-component-blocks';
 
@@ -97,28 +97,35 @@ export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => 
   );
 };
 
-export const ComponentBlocksElement = ({ attributes, children, element }: RenderElementProps) => {
+export const ComponentBlocksElement = ({
+  attributes,
+  children,
+  element: __elementToGetPath,
+}: RenderElementProps) => {
   const editor = useStaticEditor();
   const focused = useFocused();
   const selected = useSelected();
   const [editMode, setEditMode] = useState(false);
+  const [currentElement, setElement] = useElementWithSetNodes(editor, __elementToGetPath);
   const { colors, fields, spacing, typography } = useTheme();
   const blockComponents = useContext(ComponentBlockContext)!;
-  const componentBlock = blockComponents[element.component as string] as ComponentBlock | undefined;
+  const componentBlock = blockComponents[currentElement.component as string] as
+    | ComponentBlock
+    | undefined;
   const documentFieldRelationships = useDocumentFieldRelationships();
   if (!componentBlock) {
     return (
       <div css={{ border: 'red 4px solid', padding: spacing.medium }}>
         <pre contentEditable={false} css={{ userSelect: 'none' }}>
-          {`The block "${element.component}" no longer exists.
+          {`The block "${currentElement.component}" no longer exists.
 
 Props:
 
-${JSON.stringify(element.props, null, 2)}
+${JSON.stringify(currentElement.props, null, 2)}
 
 Relationships:
 
-${JSON.stringify(element.relationships, null, 2)}
+${JSON.stringify(currentElement.relationships, null, 2)}
 
 
 Content:`}
@@ -171,24 +178,16 @@ Content:`}
       {editMode && (
         <FormValue
           onRelationshipValuesChange={relationships => {
-            Transforms.setNodes(
-              editor,
-              { relationships },
-              { at: ReactEditor.findPath(editor, element) }
-            );
+            setElement({ relationships });
           }}
-          relationshipValues={element.relationships as any}
+          relationshipValues={currentElement.relationships as any}
           componentBlock={componentBlock}
           onClose={() => {
             setEditMode(false);
           }}
-          value={element.props as any}
+          value={currentElement.props as any}
           onChange={val => {
-            Transforms.setNodes(
-              editor,
-              { props: val },
-              { at: ReactEditor.findPath(editor, element) }
-            );
+            setElement({ props: val });
           }}
         />
       )}
@@ -199,19 +198,18 @@ Content:`}
           <ComponentBlockRender
             children={children}
             componentBlock={componentBlock}
-            element={element}
+            element={currentElement}
+            onElementChange={setElement}
           />
         )}
         {!editMode &&
           (() => {
             const toolbarProps = createPreviewProps(
-              element,
+              currentElement,
               componentBlock,
               {},
               documentFieldRelationships,
-              data => {
-                Transforms.setNodes(editor, data, { at: ReactEditor.findPath(editor, element) });
-              }
+              setElement
             );
             const ChromefulToolbar = componentBlock.toolbar
               ? componentBlock.toolbar
@@ -225,7 +223,7 @@ Content:`}
                 <InlineDialog isRelative>
                   <ChromelessToolbar
                     onRemove={() => {
-                      const path = ReactEditor.findPath(editor, element);
+                      const path = ReactEditor.findPath(editor, __elementToGetPath);
                       Transforms.removeNodes(editor, { at: path });
                     }}
                     props={toolbarProps}
@@ -235,7 +233,7 @@ Content:`}
             ) : (
               <ChromefulToolbar
                 onRemove={() => {
-                  const path = ReactEditor.findPath(editor, element);
+                  const path = ReactEditor.findPath(editor, __elementToGetPath);
                   Transforms.removeNodes(editor, { at: path });
                 }}
                 onShowEditMode={() => {
@@ -314,14 +312,14 @@ function DefaultToolbarWithoutChrome({
 function ComponentBlockRender({
   componentBlock,
   element,
+  onElementChange,
   children: _children,
 }: {
   element: Element;
+  onElementChange: (element: Partial<Element>) => void;
   componentBlock: ComponentBlock;
   children: any;
 }) {
-  const editor = useStaticEditor();
-
   const childrenByPath: Record<string, ReactElement> = {};
   const children = _children.type(_children.props).props.children;
   let maybeChild: ReactElement | undefined;
@@ -339,9 +337,7 @@ function ComponentBlockRender({
     componentBlock,
     childrenByPath,
     useDocumentFieldRelationships(),
-    data => {
-      Transforms.setNodes(editor, data, { at: ReactEditor.findPath(editor, element) });
-    }
+    onElementChange
   );
 
   return (

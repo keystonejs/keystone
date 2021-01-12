@@ -3,7 +3,6 @@
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
 import { Node, Range, Transforms } from 'slate';
 import { forwardRef, useMemo, useState } from 'react';
-// @ts-ignore
 import isUrl from 'is-url';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -14,7 +13,7 @@ import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
-import { isBlockActive, useStaticEditor } from './utils';
+import { isBlockActive, useElementWithSetNodes, useStaticEditor } from './utils';
 import { useToolbarState } from './toolbar-state';
 
 const isLinkActive = (editor: ReactEditor) => {
@@ -42,10 +41,15 @@ const wrapLink = (editor: ReactEditor, url: string) => {
   }
 };
 
-export const LinkElement = ({ attributes, children, element }: RenderElementProps) => {
+export const LinkElement = ({
+  attributes,
+  children,
+  element: __elementForGettingPath,
+}: RenderElementProps) => {
   const { typography } = useTheme();
-  const href = element.href as string;
   const editor = useStaticEditor();
+  const [currentElement, setNode] = useElementWithSetNodes(editor, __elementForGettingPath);
+  const href = currentElement.href as string;
 
   const selected = useSelected();
   const focused = useFocused();
@@ -88,11 +92,7 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
               css={{ fontSize: typography.fontSize.small, width: 240 }}
               value={href}
               onChange={event => {
-                Transforms.setNodes(
-                  editor,
-                  { href: event.target.value },
-                  { at: ReactEditor.findPath(editor, element) }
-                );
+                setNode({ href: event.target.value });
               }}
             />
             <Tooltip content="Open link in new tab" weight="subtle">
@@ -120,7 +120,7 @@ export const LinkElement = ({ attributes, children, element }: RenderElementProp
                   onMouseDown={event => {
                     event.preventDefault();
                     Transforms.unwrapNodes(editor, {
-                      at: ReactEditor.findPath(editor, element),
+                      at: ReactEditor.findPath(editor, __elementForGettingPath),
                     });
                   }}
                   {...attrs}

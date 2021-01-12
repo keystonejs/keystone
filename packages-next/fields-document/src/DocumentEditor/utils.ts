@@ -1,4 +1,5 @@
-import { Editor, Node, NodeEntry, Path, Transforms } from 'slate';
+import { useState } from 'react';
+import { Editor, Node, NodeEntry, Path, Transforms, Element } from 'slate';
 import { ReactEditor } from 'slate-react';
 
 export { useEditor as useStaticEditor } from 'slate-react';
@@ -63,3 +64,18 @@ export const toggleMark = (editor: ReactEditor, format: Mark) => {
     Editor.addMark(editor, format, true);
   }
 };
+
+// this ensures that when changes happen, they are immediately shown
+// this stops the problem of a cursor resetting to the end when a change is made
+// because the changes are applied asynchronously
+export function useElementWithSetNodes(editor: ReactEditor, element: Element) {
+  const [state, setState] = useState({ element, elementWithChanges: element });
+  if (state.element !== element) {
+    setState({ element, elementWithChanges: element });
+  }
+  const setNodes = (changes: Partial<Element>) => {
+    Transforms.setNodes(editor, changes, { at: ReactEditor.findPath(editor, element) });
+    setState({ element, elementWithChanges: { ...element, ...changes } });
+  };
+  return [state.elementWithChanges, setNodes] as const;
+}

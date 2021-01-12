@@ -36,7 +36,8 @@ expect.extend({
       isNot: this.isNot,
       promise: this.promise,
     };
-
+    validateDocument(received.children);
+    validateDocument(expected.children);
     const pass =
       this.equals(received.children, expected.children) &&
       this.equals(received.selection, expected.selection) &&
@@ -211,6 +212,7 @@ function nodeToReactElement(
     nodeToReactElement(editor, x, selection, path.concat(i))
   );
   if (Editor.isEditor(node)) {
+    validateDocument(node.children);
     const marks = Editor.marks(node);
 
     return createElement('editor', {

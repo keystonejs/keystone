@@ -488,7 +488,7 @@ function handleNodeInInvalidPosition(
   const nodeType = node.type as string;
   const childNodeInfo = editorSchema[nodeType];
 
-  if (childNodeInfo.invalidPositionHandleMode === 'unwrap') {
+  if (!childNodeInfo || childNodeInfo.invalidPositionHandleMode === 'unwrap') {
     Transforms.unwrapNodes(editor, { at: path });
     return;
   }
