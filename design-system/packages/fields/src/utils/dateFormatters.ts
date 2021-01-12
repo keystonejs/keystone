@@ -1,5 +1,5 @@
 import { format, formatISO } from 'date-fns';
-import { DateType } from '../../types';
+import { DateType } from '../types';
 
 /**
  * Un-formatted date for server side storage (ISO8601), like '2019-09-18'

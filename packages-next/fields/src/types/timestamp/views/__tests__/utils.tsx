@@ -1,6 +1,9 @@
 import { parseISO } from 'date-fns';
 import { constructTimestamp, isValidISO } from '../utils';
 
+const STUBVALIDDATE = '2020-10-31';
+const STUBVALIDTIME = '10:00';
+
 describe('./utils.ts', () => {
   describe('constructTimestamp()', () => {
     it('should throw on empty values', () => {
@@ -8,7 +11,7 @@ describe('./utils.ts', () => {
       expect(() => constructTimestamp({ dateValue: '', timeValue: '09:30' })).toThrow();
     });
     it('should take two valid timestamp values and construct them into a valid ISO string', () => {
-      const result = constructTimestamp({ dateValue: new Date(), timeValue: '10:00' });
+      const result = constructTimestamp({ dateValue: STUBVALIDDATE, timeValue: STUBVALIDTIME });
       expect(Boolean(parseISO(result).toISOString())).toBe(true);
     });
   });
@@ -17,16 +20,18 @@ describe('./utils.ts', () => {
       expect(isValidISO({ dateValue: '', timeValue: '' })).toBe(false);
     });
     it('should return false if no date value is provided', () => {
-      expect(isValidISO({ dateValue: '', timeValue: '10:00' })).toBe(false);
+      expect(isValidISO({ dateValue: '', timeValue: STUBVALIDTIME })).toBe(false);
     });
     it('should return true if no date value is provided, but a time value is not provided', () => {
-      expect(isValidISO({ dateValue: new Date(), timeValue: '' })).toBe(true);
+      expect(isValidISO({ dateValue: STUBVALIDDATE, timeValue: '' })).toBe(true);
     });
     it('should return false if a time value is invalid', () => {
-      expect(isValidISO({ dateValue: new Date(), timeValue: 'not a real time' })).toBe(false);
+      expect(isValidISO({ dateValue: STUBVALIDDATE, timeValue: 'not a real time' })).toBe(false);
     });
     it('should return false if a date value is invalid', () => {
-      expect(isValidISO({ dateValue: 'not a valid date value', timeValue: '10:00' })).toBe(false);
+      expect(isValidISO({ dateValue: 'not a valid date value', timeValue: STUBVALIDTIME })).toBe(
+        false
+      );
     });
     it('should return false if both date value and time value is invalid', () => {
       expect(
@@ -34,10 +39,10 @@ describe('./utils.ts', () => {
       ).toBe(false);
     });
     it('should return true if both date value and time value are valid', () => {
-      expect(isValidISO({ dateValue: new Date(), timeValue: '00:00' })).toBe(true);
+      expect(isValidISO({ dateValue: STUBVALIDDATE, timeValue: STUBVALIDTIME })).toBe(true);
     });
     it('should return false on 12 hr time input', () => {
-      expect(isValidISO({ dateValue: new Date(), timeValue: '10:00 am' })).toBe(false);
+      expect(isValidISO({ dateValue: STUBVALIDDATE, timeValue: '10:00 am' })).toBe(false);
     });
   });
 });

@@ -149,12 +149,12 @@ const useCalendarStyles = () => {
     '.DayPicker-NavButton--next': {
       backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='${encodeURIComponent(
         colors.foreground //theme.palette.listItem.text
-      )}' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E")`,
+      )}' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E")` as string,
     },
     '.DayPicker-NavButton--prev': {
       backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='${encodeURIComponent(
         colors.foreground //theme.palette.listItem.text
-      )}' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpolyline points='15 18 9 12 15 6'%3E%3C/polyline%3E%3C/svg%3E")`,
+      )}' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpolyline points='15 18 9 12 15 6'%3E%3C/polyline%3E%3C/svg%3E")` as string,
     },
 
     // "day" or grid cell

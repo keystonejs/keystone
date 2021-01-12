@@ -150,8 +150,8 @@ export const controller = (
       return { dateValue: '', timeValue: '' };
     },
     serialize: ({ dateValue, timeValue }) => {
-      if (isValidISO({ dateValue, timeValue }, config.label)) {
-        let formattedDate = constructTimestamp({ dateValue, timeValue }, config.label);
+      if (isValidISO({ dateValue, timeValue })) {
+        let formattedDate = constructTimestamp({ dateValue, timeValue });
         return { [config.path]: formattedDate };
       }
       return { [config.path]: null };

@@ -1,18 +1,31 @@
 import { controller } from '../index';
+import { formatISO } from 'date-fns';
+const STUBCONFIG = {
+  listKey: 'timestamp',
+  path: './timestamp',
+  label: 'timestmap',
+  customViews: {},
+  fieldMeta: undefined,
+};
+
 describe('./index.tsx', () => {
   describe('controller', () => {
     describe('validate', () => {
       it('should return true if neither date nor time value are specified', () => {
-        const { validate } = controller({});
-        expect(validate({ dateValue: '', timeValue: '' })).toBe(true);
+        const { validate } = controller(STUBCONFIG);
+        expect(validate!({ dateValue: '', timeValue: '' })).toBe(true);
       });
       it('should return true if both date and time values are valid', () => {
-        const { validate } = controller({});
-        expect(validate({ dateValue: new Date(), timeValue: '10:00' })).toBe(true);
+        const { validate } = controller(STUBCONFIG);
+        const value = {
+          dateValue: formatISO(new Date(), { representation: 'date' }),
+          timeValue: '10:00',
+        } as const;
+        expect(validate!(value)).toBe(true);
       });
       it('should return false if only the date value is missing', () => {
-        const { validate } = controller({});
-        expect(validate({ dateValue: '', timeValue: '10:00' })).toBe(false);
+        const { validate } = controller(STUBCONFIG);
+        expect(validate!({ dateValue: '', timeValue: '10:00' })).toBe(false);
       });
     });
   });

@@ -40,11 +40,11 @@ const StatefulSwitch = ({ children, ...props }: ComponentProps<typeof Switch>) =
 };
 
 const BasicDatePicker = () => {
-  let [value, setValue] = useState<DateType>(null);
+  let [value, setValue] = useState<DateType>('');
   return (
     <Stack gap="small">
       <pre>{value || 'no value'}</pre>
-      <DatePicker onUpdate={setValue} onClear={() => setValue(null)} value={value} />
+      <DatePicker onUpdate={setValue} onClear={() => setValue('')} value={value} />
     </Stack>
   );
 };

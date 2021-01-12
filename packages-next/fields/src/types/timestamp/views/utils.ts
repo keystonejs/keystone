@@ -18,7 +18,7 @@ export function isValidTime(time: string) {
   return isValid(parse(time, 'HH:mm', new Date()));
 }
 
-export function isValidISO(value: { dateValue: DateType; timeValue: string }, label?: string) {
+export function isValidISO(value: { dateValue: DateType; timeValue: string }) {
   try {
     // toISOString converts our string into zulu time
     // instead of checking for the timestamp to be specifically in zulu time
@@ -30,10 +30,13 @@ export function isValidISO(value: { dateValue: DateType; timeValue: string }, la
   }
 }
 
-export function constructTimestamp(
-  { dateValue, timeValue }: { dateValue: string; timeValue: string },
-  label?: string
-) {
+export function constructTimestamp({
+  dateValue,
+  timeValue,
+}: {
+  dateValue: string;
+  timeValue: string;
+}) {
   let formattedDate = new Date(dateValue);
 
   const [hours, minutes] = getTime(timeValue);
