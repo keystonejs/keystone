@@ -25,6 +25,8 @@ export function hexToTriplet(dirtyHex: string, alpha?: number) {
   return [r, g, b];
 }
 
+// values taken from contrast algorithms from w3
+// https://www.w3.org/TR/AERT/#color-contrast
 export function hexToRgb(dirtyHex: string, alpha?: number) {
   const [r, g, b] = hexToTriplet(dirtyHex);
   const value = `${r}, ${g}, ${b}`;
