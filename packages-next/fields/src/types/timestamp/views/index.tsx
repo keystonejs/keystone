@@ -79,7 +79,6 @@ export const Field = ({
       {onChange ? (
         <Stack>
           <Inline gap="small">
-            {/* TODO: Add validation for date field*/}
             <Stack>
               <DatePicker
                 onUpdate={date => {
@@ -93,7 +92,6 @@ export const Field = ({
               />
               {showValidation && showDateError(value.dateValue)}
             </Stack>
-            {/* TODO: Add validation for time field*/}
             <Stack>
               <TimePicker
                 onBlur={() => setTouchedSecondInput(true)}

@@ -27,6 +27,15 @@ describe('./index.tsx', () => {
         const { validate } = controller(STUBCONFIG);
         expect(validate!({ dateValue: '', timeValue: '10:00' })).toBe(false);
       });
+      it('should return false if only the time value is missing', () => {
+        const { validate } = controller(STUBCONFIG);
+        expect(
+          validate!({
+            dateValue: formatISO(new Date(), { representation: 'date' }),
+            timeValue: '',
+          })
+        ).toBe(false);
+      });
     });
   });
 });
