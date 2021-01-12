@@ -2,7 +2,7 @@
 
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
 import { Node, Range, Transforms } from 'slate';
-import { forwardRef, useMemo, useState } from 'react';
+import { forwardRef, memo, useMemo, useState } from 'react';
 import isUrl from 'is-url';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -15,6 +15,7 @@ import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { isBlockActive, useElementWithSetNodes, useStaticEditor } from './utils';
 import { useToolbarState } from './toolbar-state';
+import { useEventCallback } from './utils';
 
 const isLinkActive = (editor: ReactEditor) => {
   return isBlockActive(editor, 'link');
@@ -70,6 +71,11 @@ export const LinkElement = ({
       ],
     }
   );
+  const unlink = useEventCallback(() => {
+    Transforms.unwrapNodes(editor, {
+      at: ReactEditor.findPath(editor, __elementForGettingPath),
+    });
+  });
 
   return (
     <span {...attributes} css={{ position: 'relative', display: 'inline-block' }}>
@@ -108,33 +114,40 @@ export const LinkElement = ({
                   variant="action"
                   {...attrs}
                 >
-                  <ExternalLinkIcon size="small" />
+                  {externalLinkIcon}
                 </ToolbarButton>
               )}
             </Tooltip>
-            <ToolbarSeparator />
-            <Tooltip content="Unlink" weight="subtle">
-              {attrs => (
-                <ToolbarButton
-                  variant="destructive"
-                  onMouseDown={event => {
-                    event.preventDefault();
-                    Transforms.unwrapNodes(editor, {
-                      at: ReactEditor.findPath(editor, __elementForGettingPath),
-                    });
-                  }}
-                  {...attrs}
-                >
-                  <Trash2Icon size="small" />
-                </ToolbarButton>
-              )}
-            </Tooltip>
+            {separator}
+            <UnlinkButton onUnlink={unlink} />
           </ToolbarGroup>
         </InlineDialog>
       )}
     </span>
   );
 };
+
+const separator = <ToolbarSeparator />;
+const externalLinkIcon = <ExternalLinkIcon size="small" />;
+
+const UnlinkButton = memo(function UnlinkButton({ onUnlink }: { onUnlink: () => void }) {
+  return (
+    <Tooltip content="Unlink" weight="subtle">
+      {attrs => (
+        <ToolbarButton
+          variant="destructive"
+          onMouseDown={event => {
+            event.preventDefault();
+            onUnlink();
+          }}
+          {...attrs}
+        >
+          <Trash2Icon size="small" />
+        </ToolbarButton>
+      )}
+    </Tooltip>
+  );
+});
 
 let linkIcon = <LinkIcon size="small" />;
 

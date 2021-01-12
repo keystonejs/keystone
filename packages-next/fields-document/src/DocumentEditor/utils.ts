@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Editor, Node, NodeEntry, Path, Transforms, Element } from 'slate';
 import { ReactEditor } from 'slate-react';
 
@@ -78,4 +78,15 @@ export function useElementWithSetNodes(editor: ReactEditor, element: Element) {
     setState({ element, elementWithChanges: { ...element, ...changes } });
   };
   return [state.elementWithChanges, setNodes] as const;
+}
+
+export function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
+  const callbackRef = useRef(callback);
+  const cb = useCallback((...args) => {
+    return callbackRef.current(...args);
+  }, []);
+  useEffect(() => {
+    callbackRef.current = callback;
+  });
+  return cb as any;
 }

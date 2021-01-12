@@ -217,3 +217,29 @@ export function getChildFieldAtPropPath(
   }
   return prop;
 }
+
+export function clientSideValidateProp(prop: ComponentPropField, value: any): boolean {
+  switch (prop.kind) {
+    case 'child':
+    case 'relationship': {
+      return true;
+    }
+    case 'form': {
+      return prop.validate(value);
+    }
+    case 'conditional': {
+      if (!prop.discriminant.validate(value.discriminant)) {
+        return false;
+      }
+      return clientSideValidateProp(prop.values[value.discriminant], value.value);
+    }
+    case 'object': {
+      for (const [key, childProp] of Object.entries(prop.value)) {
+        if (!clientSideValidateProp(childProp, value[key])) {
+          return false;
+        }
+      }
+      return true;
+    }
+  }
+}

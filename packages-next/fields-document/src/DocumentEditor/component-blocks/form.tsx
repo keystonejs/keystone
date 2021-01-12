@@ -5,34 +5,13 @@ import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import React, { Fragment, useState } from 'react';
 import { ComponentPropField, RelationshipData, ComponentBlock } from '../../component-blocks';
 import { useDocumentFieldRelationships, Relationships } from '../relationship';
-import { RelationshipValues, onConditionalChange, assertNever } from './utils';
+import {
+  RelationshipValues,
+  onConditionalChange,
+  assertNever,
+  clientSideValidateProp,
+} from './utils';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
-
-function clientSideValidateProp(prop: ComponentPropField, value: any): boolean {
-  switch (prop.kind) {
-    case 'child':
-    case 'relationship': {
-      return true;
-    }
-    case 'form': {
-      return prop.validate(value);
-    }
-    case 'conditional': {
-      if (!prop.discriminant.validate(value.discriminant)) {
-        return false;
-      }
-      return clientSideValidateProp(prop.values[value.discriminant], value.value);
-    }
-    case 'object': {
-      for (const [key, childProp] of Object.entries(prop.value)) {
-        if (!clientSideValidateProp(childProp, value[key])) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }
-}
 
 function FormValueContent({
   props,

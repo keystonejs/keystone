@@ -2,7 +2,7 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { Node } from 'slate';
+import { Node, Text } from 'slate';
 import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
 
 import {
@@ -15,6 +15,9 @@ import {
 import { DocumentEditor } from './DocumentEditor';
 import { ComponentBlock } from './component-blocks';
 import { Relationships } from './DocumentEditor/relationship';
+import weakMemoize from '@emotion/weak-memoize';
+import isUrl from 'is-url';
+import { clientSideValidateProp } from './DocumentEditor/component-blocks/utils';
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
@@ -93,6 +96,29 @@ export const controller = (
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
 } => {
+  const memoizedIsComponentBlockValid = weakMemoize((componentBlock: ComponentBlock) =>
+    weakMemoize((props: any) =>
+      clientSideValidateProp({ kind: 'object', value: componentBlock.props }, props)
+    )
+  );
+  const componentBlocks: Record<string, ComponentBlock> = config.customViews.componentBlocks || {};
+  const validateNode = weakMemoize((node: Node): boolean => {
+    if (Text.isText(node)) {
+      return true;
+    }
+    if (node.type === 'component-block') {
+      const componentBlock = componentBlocks[node.component as string];
+      if (componentBlock) {
+        if (!memoizedIsComponentBlockValid(componentBlock)(node.props)) {
+          return false;
+        }
+      }
+    }
+    if (node.type === 'link' && (typeof node.href !== 'string' || !isUrl(node.href))) {
+      return false;
+    }
+    return node.children.every(node => validateNode(node));
+  });
   return {
     path: config.path,
     label: config.label,
@@ -107,8 +133,8 @@ export const controller = (
     serialize: value => ({
       [config.path]: value,
     }),
-    validate() {
-      return true;
+    validate(value) {
+      return value.every(node => validateNode(node));
     },
   };
 };
