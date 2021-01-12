@@ -37,7 +37,7 @@ const TimePicker = ({
   return (
     <TextInput
       autoFocus={autoFocus}
-      // maxLength={format === '24hr' ? 5 : 7}
+      maxLength={format === '24hr' ? 5 : 7}
       disabled={disabled}
       onChange={onChange}
       onBlur={onBlur}
