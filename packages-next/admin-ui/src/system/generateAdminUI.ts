@@ -50,7 +50,7 @@ export const generateAdminUI = async (config: KeystoneConfig, system: KeystoneSy
   await fs.remove(projectAdminPath);
 
   // Write out the files configured by the user
-  const userPages = config.ui?.getAdditionalFiles?.map(x => x(config, system)) ?? [];
+  const userPages = config.ui?.getAdditionalFiles?.map(x => x(config)) ?? [];
   const userFilesToWrite = (await Promise.all(userPages)).flat();
   const savedFiles = await Promise.all(userFilesToWrite.map(writeAdminFile));
   const uniqueFiles = new Set(savedFiles);
@@ -65,8 +65,8 @@ export const generateAdminUI = async (config: KeystoneConfig, system: KeystoneSy
     outputPath: 'pages/api/__keystone_api_build.js',
     src: `
     export {default as config} from '../../../../keystone'
-    
-    
+
+
     export default function (req,res) {
     return res.status(500)
   }`,
