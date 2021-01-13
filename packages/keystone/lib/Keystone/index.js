@@ -444,13 +444,13 @@ module.exports = class Keystone {
    * @return Promise<any> the result of executing `onConnect` as passed to the
    * constructor, or `undefined` if no `onConnect` method specified.
    */
-  async connect() {
+  async connect(args) {
     const { adapters } = this;
     const rels = this._consolidateRelationships();
     await resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ rels })));
 
     if (this.eventHandlers.onConnect) {
-      return this.eventHandlers.onConnect(this);
+      return this.eventHandlers.onConnect(this, args);
     }
   }
 
