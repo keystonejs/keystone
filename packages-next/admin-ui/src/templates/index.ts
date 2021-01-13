@@ -24,7 +24,7 @@ export const writeAdminFiles = (
   {
     mode: 'write',
     outputPath: 'pages/_app.js',
-    src: appTemplate(config, system, { configFileExists, projectAdminPath }),
+    src: appTemplate(config, system.graphQLSchema, { configFileExists, projectAdminPath }),
   },
   { mode: 'write', src: homeTemplate(system.keystone.lists), outputPath: 'pages/index.js' },
   ...Object.values(system.keystone.lists).map(
