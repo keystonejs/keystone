@@ -5,7 +5,7 @@ import { Node, Range, Transforms } from 'slate';
 import { forwardRef, memo, useMemo, useState } from 'react';
 import isUrl from 'is-url';
 
-import { jsx, useTheme } from '@keystone-ui/core';
+import { jsx, Portal, useTheme } from '@keystone-ui/core';
 import { useControlledPopover } from '@keystone-ui/popover';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
@@ -61,6 +61,7 @@ export const LinkElement = ({
       onClose: () => {},
     },
     {
+      placement: 'bottom-start',
       modifiers: [
         {
           name: 'offset',
@@ -76,52 +77,62 @@ export const LinkElement = ({
       at: ReactEditor.findPath(editor, __elementForGettingPath),
     });
   });
-
+  const isValidURL = isUrl(href);
   return (
     <span {...attributes} css={{ position: 'relative', display: 'inline-block' }}>
-      <a {...trigger.props} ref={trigger.ref} href={href}>
+      <a
+        {...trigger.props}
+        css={{ color: isValidURL ? undefined : 'red' }}
+        ref={trigger.ref}
+        href={href}
+      >
         {children}
       </a>
       {((selected && focused) || focusedInInlineDialog) && (
-        <InlineDialog
-          {...dialog.props}
-          ref={dialog.ref}
-          onFocus={() => {
-            setFocusedInInlineDialog(true);
-          }}
-          onBlur={() => {
-            setFocusedInInlineDialog(false);
-          }}
-        >
-          <ToolbarGroup>
-            <input
-              css={{ fontSize: typography.fontSize.small, width: 240 }}
-              value={href}
-              onChange={event => {
-                setNode({ href: event.target.value });
-              }}
-            />
-            <Tooltip content="Open link in new tab" weight="subtle">
-              {attrs => (
-                <ToolbarButton
-                  as="a"
-                  onMouseDown={event => {
-                    event.preventDefault();
+        <Portal>
+          <InlineDialog
+            {...dialog.props}
+            ref={dialog.ref}
+            onFocus={() => {
+              setFocusedInInlineDialog(true);
+            }}
+            onBlur={() => {
+              setFocusedInInlineDialog(false);
+            }}
+          >
+            <div css={{ display: 'flex', flexDirection: 'column' }}>
+              <ToolbarGroup>
+                <input
+                  css={{ fontSize: typography.fontSize.small, width: 240 }}
+                  value={href}
+                  onChange={event => {
+                    setNode({ href: event.target.value });
                   }}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  variant="action"
-                  {...attrs}
-                >
-                  {externalLinkIcon}
-                </ToolbarButton>
-              )}
-            </Tooltip>
-            {separator}
-            <UnlinkButton onUnlink={unlink} />
-          </ToolbarGroup>
-        </InlineDialog>
+                />
+                <Tooltip content="Open link in new tab" weight="subtle">
+                  {attrs => (
+                    <ToolbarButton
+                      as="a"
+                      onMouseDown={event => {
+                        event.preventDefault();
+                      }}
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                      variant="action"
+                      {...attrs}
+                    >
+                      {externalLinkIcon}
+                    </ToolbarButton>
+                  )}
+                </Tooltip>
+                {separator}
+                <UnlinkButton onUnlink={unlink} />
+              </ToolbarGroup>
+              {!isValidURL && <span css={{ color: 'red' }}>Please enter a valid URL</span>}
+            </div>
+          </InlineDialog>
+        </Portal>
       )}
     </span>
   );

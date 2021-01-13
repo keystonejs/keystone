@@ -77,7 +77,7 @@ test('component-inline-prop and component-block-prop outside of component-block 
 test('non component block prop in component-block', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component={'basic'} relationships={{}} props={{ basic: '' }}>
+      <component-block component={'basic'} relationships={{}} props={{ prop: '' }}>
         <paragraph>
           <text />
         </paragraph>
@@ -98,7 +98,7 @@ test('non component block prop in component-block', () => {
         component="basic"
         props={
           Object {
-            "basic": "",
+            "prop": "",
           }
         }
         relationships={Object {}}
@@ -130,7 +130,7 @@ test('content inside of VOID_BUT_NOT_REALLY_INLINE_COMPONENT_PROP', () => {
       <component-block
         component="basic"
         props={{
-          basic: '',
+          prop: '',
         }}
         relationships={{}}
       >
@@ -156,7 +156,7 @@ test('content inside of VOID_BUT_NOT_REALLY_INLINE_COMPONENT_PROP', () => {
         component="basic"
         props={
           Object {
-            "basic": "",
+            "prop": "",
           }
         }
         relationships={Object {}}

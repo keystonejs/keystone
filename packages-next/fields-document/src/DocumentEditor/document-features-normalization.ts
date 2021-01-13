@@ -65,7 +65,12 @@ export function normalizeInlineBasedOnLinksAndRelationships(
     Transforms.unwrapNodes(editor, { at: path });
     return true;
   }
-  if (node.type === 'relationship' && !relationshipsEnabled) {
+  if (
+    node.type === 'relationship' &&
+    (!relationshipsEnabled ||
+      relationships[node.relationship as string] === undefined ||
+      relationships[node.relationship as string].kind !== 'inline')
+  ) {
     const data: any = node.data;
     if (data) {
       const relationship = relationships[node.relationship as string];

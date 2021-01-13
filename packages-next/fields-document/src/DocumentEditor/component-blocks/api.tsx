@@ -363,6 +363,7 @@ export type ComponentBlock = {
         props: Record<string, any>;
         onShowEditMode(): void;
         onRemove(): void;
+        isValid: boolean;
       }) => ReactElement;
     }
 );

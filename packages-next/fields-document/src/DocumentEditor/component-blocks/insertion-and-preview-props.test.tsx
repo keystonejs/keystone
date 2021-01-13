@@ -131,7 +131,7 @@ test('inserting a complex component block', () => {
         </text>
       </paragraph>
     </editor>,
-    { componentBlocks }
+    { componentBlocks, relationships }
   );
   insertComponentBlock(editor, componentBlocks, 'complex', relationships);
   expect(editor).toMatchInlineSnapshot(`
@@ -270,7 +270,7 @@ const makeEditorWithComplexComponentBlock = () =>
         <text />
       </paragraph>
     </editor>,
-    { componentBlocks }
+    { componentBlocks, relationships }
   );
 
 test('preview props api', () => {

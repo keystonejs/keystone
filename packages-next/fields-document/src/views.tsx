@@ -90,6 +90,7 @@ export const controller = (
   config: FieldControllerConfig<{
     relationships: Relationships;
     documentFeatures: DocumentFeatures;
+    componentBlocksPassedOnServer: string[];
   }>
 ): FieldController<Node[]> & {
   componentBlocks: Record<string, ComponentBlock>;
@@ -102,6 +103,32 @@ export const controller = (
     )
   );
   const componentBlocks: Record<string, ComponentBlock> = config.customViews.componentBlocks || {};
+  const serverSideComponentBlocksSet = new Set(config.fieldMeta.componentBlocksPassedOnServer);
+  const componentBlocksOnlyBeingPassedOnTheClient = Object.keys(componentBlocks).filter(
+    x => !serverSideComponentBlocksSet.has(x)
+  );
+  if (componentBlocksOnlyBeingPassedOnTheClient.length) {
+    throw new Error(
+      `(${config.listKey}:${
+        config.path
+      }) The following component blocks are being passed in the custom view but not in the server-side field config: ${JSON.stringify(
+        componentBlocksOnlyBeingPassedOnTheClient
+      )}`
+    );
+  }
+  const clientSideComponentBlocksSet = new Set(Object.keys(componentBlocks));
+  const componentBlocksOnlyBeingPassedOnTheServer = config.fieldMeta.componentBlocksPassedOnServer.filter(
+    x => !clientSideComponentBlocksSet.has(x)
+  );
+  if (componentBlocksOnlyBeingPassedOnTheServer.length) {
+    throw new Error(
+      `(${config.listKey}:${
+        config.path
+      }) The following component blocks are being passed in the server-side field config but not in the custom view: ${JSON.stringify(
+        componentBlocksOnlyBeingPassedOnTheServer
+      )}`
+    );
+  }
   const validateNode = weakMemoize((node: Node): boolean => {
     if (Text.isText(node)) {
       return true;

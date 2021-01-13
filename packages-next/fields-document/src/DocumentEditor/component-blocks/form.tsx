@@ -5,12 +5,7 @@ import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import React, { Fragment, useState } from 'react';
 import { ComponentPropField, RelationshipData, ComponentBlock } from '../../component-blocks';
 import { useDocumentFieldRelationships, Relationships } from '../relationship';
-import {
-  RelationshipValues,
-  onConditionalChange,
-  assertNever,
-  clientSideValidateProp,
-} from './utils';
+import { RelationshipValues, onConditionalChange, assertNever } from './utils';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
 
 function FormValueContent({
@@ -204,6 +199,7 @@ export function FormValue({
   componentBlock,
   onRelationshipValuesChange,
   relationshipValues,
+  isValid,
 }: {
   value: any;
   onChange(value: any): void;
@@ -211,6 +207,7 @@ export function FormValue({
   componentBlock: ComponentBlock;
   relationshipValues: RelationshipValues;
   onRelationshipValuesChange(value: RelationshipValues): void;
+  isValid: boolean;
 }) {
   const [forceValidation, setForceValidation] = useState(false);
   const focusablePath = JSON.stringify(findFirstFocusablePropPath(componentBlock.props, [], value));
@@ -231,7 +228,7 @@ export function FormValue({
         tone="active"
         weight="bold"
         onClick={() => {
-          if (clientSideValidateProp({ kind: 'object', value: componentBlock.props }, value)) {
+          if (isValid) {
             onClose();
           } else {
             setForceValidation(true);

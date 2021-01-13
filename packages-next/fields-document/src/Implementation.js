@@ -3,7 +3,7 @@ import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 import { Implementation } from '@keystonejs/fields';
 // eslint-disable-next-line import/no-unresolved
-import { addRelationshipData, removeRelationshipData } from './relationship-data';
+import { addRelationshipData } from './relationship-data';
 
 // this includes the list key and path because in the future
 // there will likely be additional fields specific to a particular field
@@ -65,7 +65,7 @@ export class DocumentImplementation extends Implementation {
     if (data === undefined) {
       return undefined;
     }
-    return { document: removeRelationshipData(data) };
+    return { document: this.config.___validateAndNormalize(data) };
   }
 
   gqlUpdateInputFields() {

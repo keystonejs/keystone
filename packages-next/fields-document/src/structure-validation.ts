@@ -2,7 +2,8 @@ import * as t from 'io-ts';
 import { RelationshipValues } from './DocumentEditor/component-blocks/utils';
 import { RelationshipData } from './DocumentEditor/component-blocks/api';
 import { Mark } from './DocumentEditor/utils';
-import { excess } from 'io-ts-excess';
+import isUrl from 'is-url';
+import excess from 'io-ts-excess';
 // note that this validation isn't about ensuring that a document has nodes in the right positions and things
 // it's just about validating that it's a valid slate structure
 // we'll then run normalize on it which will enforce more things
@@ -30,11 +31,25 @@ type Inline =
 
 type Link = { type: 'link'; href: string; children: Inline[] };
 
+class URLType extends t.Type<string> {
+  readonly _tag: 'URLType' = 'URLType';
+  constructor() {
+    super(
+      'string',
+      (u): u is string => typeof u === 'string' && isUrl(u),
+      (u, c) => (this.is(u) ? t.success(u) : t.failure(u, c)),
+      t.identity
+    );
+  }
+}
+
+const urlType = new URLType();
+
 const link: t.Type<Link> = t.recursion('Link', () =>
   excess(
     t.type({
       type: t.literal('link'),
-      href: t.string,
+      href: urlType,
       children: inlineChildren,
     })
   )
@@ -43,8 +58,8 @@ const link: t.Type<Link> = t.recursion('Link', () =>
 type Relationship = {
   type: 'relationship';
   relationship: string;
-  data: RelationshipData | undefined;
-  children: Inline[];
+  data: RelationshipData | null;
+  children: [{ text: '' }];
 };
 
 const relationship: t.Type<Relationship> = t.recursion('Relationship', () =>
@@ -52,8 +67,8 @@ const relationship: t.Type<Relationship> = t.recursion('Relationship', () =>
     t.type({
       type: t.literal('relationship'),
       relationship: t.string,
-      data: t.union([t.undefined, relationshipData]),
-      children: inlineChildren,
+      data: t.union([t.null, relationshipData]),
+      children: t.tuple([excess(t.type({ text: t.literal('') }))]),
     })
   )
 );
@@ -216,9 +231,9 @@ const children: t.Type<Children> = t.recursion('Children', () => t.array(t.union
 
 export const editorCodec = t.array(block);
 
-export const validateDocument = (val: unknown) => {
+export function validateDocumentStructure(val: unknown): asserts val is ElementFromValidation[] {
   const result = editorCodec.validate(val, []);
   if (result._tag === 'Left') {
-    throw result.left[0];
+    throw new Error('Invalid document structure');
   }
-};
+}

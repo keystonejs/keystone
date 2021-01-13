@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Fragment, ReactElement, createContext, useContext, useState } from 'react';
+import { Fragment, ReactElement, createContext, useContext, useState, useMemo } from 'react';
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
 import { Editor, Element, Transforms } from 'slate';
 
@@ -13,7 +13,7 @@ import { NotEditable } from '../../component-blocks';
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from '../primitives';
 import { ComponentPropField, ComponentBlock } from '../../component-blocks';
 import { Relationships, useDocumentFieldRelationships } from '../relationship';
-import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './utils';
+import { clientSideValidateProp, VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './utils';
 import { createPreviewProps } from './preview-props';
 import { getInitialValue } from './initial-values';
 import { FormValue } from './form';
@@ -112,6 +112,14 @@ export const ComponentBlocksElement = ({
   const componentBlock = blockComponents[currentElement.component as string] as
     | ComponentBlock
     | undefined;
+  const isValid = useMemo(() => {
+    return componentBlock
+      ? clientSideValidateProp(
+          { kind: 'object', value: componentBlock.props },
+          currentElement.props
+        )
+      : true;
+  }, [componentBlock, currentElement.props]);
   const documentFieldRelationships = useDocumentFieldRelationships();
   if (!componentBlock) {
     return (
@@ -177,6 +185,7 @@ Content:`}
       )}
       {editMode && (
         <FormValue
+          isValid={isValid}
           onRelationshipValuesChange={relationships => {
             setElement({ relationships });
           }}
@@ -232,6 +241,7 @@ Content:`}
               )
             ) : (
               <ChromefulToolbar
+                isValid={isValid}
                 onRemove={() => {
                   const path = ReactEditor.findPath(editor, __elementToGetPath);
                   Transforms.removeNodes(editor, { at: path });
@@ -251,11 +261,14 @@ Content:`}
 function DefaultToolbarWithChrome({
   onShowEditMode,
   onRemove,
+  isValid,
 }: {
   onShowEditMode(): void;
   onRemove(): void;
   props: any;
+  isValid: boolean;
 }) {
+  const theme = useTheme();
   return (
     <ToolbarGroup as={NotEditable} marginTop="small">
       <ToolbarButton
@@ -281,6 +294,21 @@ function DefaultToolbarWithChrome({
           </ToolbarButton>
         )}
       </Tooltip>
+      {!isValid && (
+        <Fragment>
+          <ToolbarSeparator />
+          <span
+            css={{
+              color: theme.palette.red500,
+              display: 'flex',
+              alignItems: 'center',
+              paddingLeft: theme.spacing.small,
+            }}
+          >
+            Please edit the form, there are invalid fields.
+          </span>
+        </Fragment>
+      )}
     </ToolbarGroup>
   );
 }

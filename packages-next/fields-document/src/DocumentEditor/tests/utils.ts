@@ -8,9 +8,10 @@ import { DocumentFeatures } from '../../views';
 export { __jsx as jsx } from './jsx/namespace';
 import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
 import jestDiff from 'jest-diff';
-import { validateDocument } from '../../structure-validation';
+import { validateDocumentStructure } from '../../structure-validation';
 import { Relationships } from '../relationship';
 import { createToolbarState } from '../toolbar-state';
+import { validateAndNormalizeDocument } from '../../validation';
 
 function formatEditor(editor: Node) {
   return prettyFormat(editor, {
@@ -36,8 +37,29 @@ expect.extend({
       isNot: this.isNot,
       promise: this.promise,
     };
-    validateDocument(received.children);
-    validateDocument(expected.children);
+    const receivedConfig = received.__config as any;
+    if (receivedConfig) {
+      validateAndNormalizeDocument(
+        received.children,
+        receivedConfig.documentFeatures,
+        receivedConfig.componentBlocks,
+        receivedConfig.relationships
+      );
+    } else {
+      validateDocumentStructure(received.children);
+    }
+    const expectedConfig = expected.__config as any;
+    if (expectedConfig) {
+      validateAndNormalizeDocument(
+        expected.children,
+        expectedConfig.documentFeatures,
+        expectedConfig.componentBlocks,
+        expectedConfig.relationships
+      );
+    } else {
+      validateDocumentStructure(expected.children);
+    }
+
     const pass =
       this.equals(received.children, expected.children) &&
       this.equals(received.selection, expected.selection) &&
@@ -123,7 +145,14 @@ export const makeEditor = (
     relationships,
     isShiftPressedRef
   );
-  validateDocument(editor.children);
+  // for validation
+  editor.__config = {
+    documentFeatures,
+    componentBlocks,
+    relationships,
+  };
+
+  validateDocumentStructure(editor.children);
 
   // just a smoke test for the toolbar state
   createToolbarState(editor, componentBlocks, documentFeatures);
@@ -212,7 +241,13 @@ function nodeToReactElement(
     nodeToReactElement(editor, x, selection, path.concat(i))
   );
   if (Editor.isEditor(node)) {
-    validateDocument(node.children);
+    const config = editor.__config as any;
+    validateAndNormalizeDocument(
+      node.children,
+      config.documentFeatures,
+      config.componentBlocks,
+      config.relationships
+    );
     const marks = Editor.marks(node);
 
     return createElement('editor', {
