@@ -38,7 +38,7 @@ export class DocumentImplementation extends Implementation {
   gqlOutputFieldResolvers() {
     return {
       [this.path]: (item, _args, context) => {
-        const document = item[this.path]?.document;
+        const document = item[this.path];
         if (!Array.isArray(document)) return null;
         return {
           document: hydrateRelationships =>
@@ -65,7 +65,11 @@ export class DocumentImplementation extends Implementation {
     if (data === undefined) {
       return undefined;
     }
-    return { document: this.config.___validateAndNormalize(data) };
+    const nodes = this.config.___validateAndNormalize(data);
+    if (this.adapter.constructor === KnexDocumentInterface) {
+      return JSON.stringify(nodes);
+    }
+    return nodes;
   }
 
   gqlUpdateInputFields() {
