@@ -14,14 +14,14 @@ export const escapeRegExp = (str: string) =>
 // { key: value, ... } => { key: mapFn(value, key), ... }
 export const mapKeys = <T, U>(
   obj: Record<string, T>,
-  func: (value?: T, key?: string, obj?: Record<string, T>) => U
+  func: (value: T, key: string, obj: Record<string, T>) => U
 ): Record<string, U> =>
   Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: func(value, key, obj) }), {});
 
 // { key: value, ... } => { mapFn(key, value): value, ... }
 export const mapKeyNames = <T>(
   obj: Record<string, T>,
-  func: (key?: string, value?: T, obj?: Record<string, T>) => string
+  func: (key: string, value: T, obj: Record<string, T>) => string
 ): Record<string, T> =>
   Object.entries(obj).reduce(
     (acc, [key, value]) => ({ ...acc, [func(key, value, obj)]: value }),
