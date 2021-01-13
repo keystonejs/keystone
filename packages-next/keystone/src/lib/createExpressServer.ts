@@ -83,7 +83,7 @@ export const createExpressServer = async (
   addApolloServer({ server, graphQLSchema, createContext, sessionImplementation });
 
   console.log('✨ Preparing Next.js app');
-  server.use(await createAdminUIServer(config.ui, system, dev, sessionImplementation));
+  server.use(await createAdminUIServer(config.ui, createContext, dev, sessionImplementation));
 
   return server;
 };
