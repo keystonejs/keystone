@@ -67,6 +67,7 @@ export class DocumentImplementation extends Implementation {
     }
     const nodes = this.config.___validateAndNormalize(data);
     if (this.adapter.constructor === KnexDocumentInterface) {
+      // knex expects the json to be stringified
       return JSON.stringify(nodes);
     }
     return nodes;
