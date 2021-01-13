@@ -42,7 +42,9 @@ export class CalendarDay extends Implementation {
   gqlOutputFields() {
     return [`${this.path}: String`];
   }
-
+  gqlOutputFieldResolvers() {
+    return { [`${this.path}`]: item => item[this.path] };
+  }
   gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
