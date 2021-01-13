@@ -35,25 +35,22 @@ export const dev = async () => {
   const initKeystone = async () => {
     const config = initConfig(requireSource(CONFIG_PATH).default);
 
-    const system = createSystem(config);
-    let printedSchema = printSchema(system.graphQLSchema);
+    const { keystone, graphQLSchema, createContext } = createSystem(config);
+    let printedSchema = printSchema(graphQLSchema);
     console.log('✨ Generating Schema');
     await fs.outputFile('./.keystone/schema.graphql', printedSchema);
     await fs.outputFile(
       './.keystone/schema-types.ts',
-      formatSource(
-        printGeneratedTypes(printedSchema, system.keystone, system.graphQLSchema),
-        'babel-ts'
-      )
+      formatSource(printGeneratedTypes(printedSchema, keystone, graphQLSchema), 'babel-ts')
     );
 
     console.log('✨ Connecting to the Database');
-    await system.keystone.connect({ context: system.createContext({ skipAccessControl: true }) });
+    await keystone.connect({ context: createContext({ skipAccessControl: true }) });
 
     console.log('✨ Generating Admin UI');
-    await generateAdminUI(config, system.graphQLSchema, system.keystone);
+    await generateAdminUI(config, graphQLSchema, keystone);
 
-    expressServer = await createExpressServer(config, system, true);
+    expressServer = await createExpressServer(config, graphQLSchema, createContext, true);
     console.log(`👋 Admin UI Ready`);
   };
 

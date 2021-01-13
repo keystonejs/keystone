@@ -161,12 +161,6 @@ export type SessionImplementation = {
   ): Promise<SessionContext<any>>;
 };
 
-export type KeystoneSystem = {
-  keystone: BaseKeystone;
-  graphQLSchema: GraphQLSchema;
-  createContext: CreateContext;
-};
-
 export type AccessControlContext = {
   getListAccessControlForUser: any; // TODO
   getFieldAccessControlForUser: any; // TODO
@@ -192,7 +186,7 @@ export type KeystoneContext = {
   /** @deprecated */
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   maxTotalResults: number;
-  createContext: KeystoneSystem['createContext'];
+  createContext: CreateContext;
   req?: IncomingMessage;
 } & AccessControlContext &
   Partial<SessionContext<any>> &
@@ -215,7 +209,7 @@ export type KeystoneGraphQLAPI<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
 > = {
-  createContext: KeystoneSystem['createContext'];
+  createContext: CreateContext;
   schema: GraphQLSchema;
 
   run: (args: GraphQLExecutionArguments) => Promise<Record<string, any>>;

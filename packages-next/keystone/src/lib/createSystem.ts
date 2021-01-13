@@ -3,7 +3,7 @@ import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexAdapter } from '@keystonejs/adapter-knex';
 // @ts-ignore
 import { PrismaAdapter } from '@keystonejs/adapter-prisma';
-import type { KeystoneConfig, KeystoneSystem, BaseKeystone } from '@keystone-next/types';
+import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './createContext';
@@ -73,7 +73,7 @@ export function createKeystone(config: KeystoneConfig) {
   return keystone;
 }
 
-export function createSystem(config: KeystoneConfig): KeystoneSystem {
+export function createSystem(config: KeystoneConfig) {
   const keystone = createKeystone(config);
 
   const graphQLSchema = createGraphQLSchema(config, keystone);
