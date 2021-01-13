@@ -14,7 +14,7 @@ export const subfieldName = 'document';
 
 export const getTestFields = () => ({
   name: { type: Text },
-  content: { type },
+  content: { type, ___validateAndNormalize: x => x },
 });
 
 export const initItems = () => {
