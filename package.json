@@ -194,8 +194,7 @@
       ".api-test-prisma-clients/"
     ],
     "collectCoverageFrom": [
-      "packages{,-next}/**/*.{js,ts,tsx}",
-      "!**/*.d.ts",
+      "packages/**/*.js",
       "!packages/**/dist/**",
       "!packages/apollo-helpers/**",
       "!packages/app-admin-ui/client/**",
