@@ -51,7 +51,7 @@ export const dev = async () => {
     await system.keystone.connect({ context: system.createContext({ skipAccessControl: true }) });
 
     console.log('✨ Generating Admin UI');
-    await generateAdminUI(config, system);
+    await generateAdminUI(config, system.graphQLSchema, system.keystone);
 
     expressServer = await createExpressServer(config, system, true);
     console.log(`👋 Admin UI Ready`);
