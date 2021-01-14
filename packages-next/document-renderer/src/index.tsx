@@ -57,9 +57,7 @@ const defaultRenderers: Renderers = {
     link: 'a',
     subscript: 'sub',
     superscript: 'sup',
-    underline: ({ children }) => {
-      return <span style={{ textDecoration: 'underline' }} children={children} />;
-    },
+    underline: 'u',
   },
   block: {
     blockquote: 'blockquote',

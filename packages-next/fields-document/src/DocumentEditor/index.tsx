@@ -51,6 +51,7 @@ import { ToolbarStateProvider } from './toolbar-state';
 import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './component-blocks/utils';
 import { withInsertMenu } from './insert-menu';
 import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts';
+import { withHtml } from './paste-html';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -113,34 +114,36 @@ export function createDocumentEditor(
   relationships: Relationships,
   isShiftPressedRef: MutableRefObject<boolean>
 ) {
-  return withSoftBreaks(
-    isShiftPressedRef,
-    withBlocksSchema(
-      withLink(
-        withList(
-          withHeading(
-            withRelationship(
-              withInsertMenu(
-                withComponentBlocks(
-                  componentBlocks,
-                  documentFeatures,
-                  relationships,
-                  withParagraphs(
-                    withShortcuts(
-                      withDivider(
-                        withLayouts(
-                          withMarks(
-                            documentFeatures,
-                            componentBlocks,
-                            withCodeBlock(
-                              withBlockMarkdownShortcuts(
-                                documentFeatures,
-                                componentBlocks,
-                                withBlockquote(
-                                  withDocumentFeaturesNormalization(
-                                    documentFeatures,
-                                    relationships,
-                                    withHistory(withReact(createEditor()))
+  return withHtml(
+    withSoftBreaks(
+      isShiftPressedRef,
+      withBlocksSchema(
+        withLink(
+          withList(
+            withHeading(
+              withRelationship(
+                withInsertMenu(
+                  withComponentBlocks(
+                    componentBlocks,
+                    documentFeatures,
+                    relationships,
+                    withParagraphs(
+                      withShortcuts(
+                        withDivider(
+                          withLayouts(
+                            withMarks(
+                              documentFeatures,
+                              componentBlocks,
+                              withCodeBlock(
+                                withBlockMarkdownShortcuts(
+                                  documentFeatures,
+                                  componentBlocks,
+                                  withBlockquote(
+                                    withDocumentFeaturesNormalization(
+                                      documentFeatures,
+                                      relationships,
+                                      withHistory(withReact(createEditor()))
+                                    )
                                   )
                                 )
                               )
