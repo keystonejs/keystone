@@ -13,12 +13,12 @@ export const start = async () => {
   }
   const config = initConfig(require(apiFile).config);
 
-  const system = createSystem(config);
+  const { keystone, graphQLSchema, createContext } = createSystem(config);
 
   console.log('✨ Connecting to the Database');
-  await system.keystone.connect({ context: system.createContext({ skipAccessControl: true }) });
+  await keystone.connect({ context: createContext({ skipAccessControl: true }) });
 
-  const server = await createExpressServer(config, system, false);
+  const server = await createExpressServer(config, graphQLSchema, createContext, false);
   console.log(`👋 Admin UI Ready`);
 
   server.listen(PORT, (err?: any) => {
