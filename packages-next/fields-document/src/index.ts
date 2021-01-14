@@ -168,7 +168,6 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
     dividers: !!config.dividers,
   };
   const componentBlocks = config.componentBlocks || {};
-  console.log(Object.keys(componentBlocks));
   return {
     type: DocumentFieldType,
     config: {
