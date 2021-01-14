@@ -169,7 +169,7 @@ async function getMongoMemoryServerConfig() {
   return { mongoUri, dbName };
 }
 
-function teardownMongoMemoryServer() {
+async function teardownMongoMemoryServer() {
   mongoServerReferences--;
   if (mongoServerReferences < 0) {
     mongoServerReferences = 0;
@@ -182,9 +182,8 @@ function teardownMongoMemoryServer() {
   if (!mongoServer) {
     return Promise.resolve();
   }
-  const stopping = mongoServer.stop();
+  await mongoServer.stop();
   mongoServer = null;
-  return stopping;
 }
 
 type Setup = { keystone: Keystone<string> | BaseKeystone; context: KeystoneContext };
