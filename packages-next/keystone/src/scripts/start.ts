@@ -7,12 +7,12 @@ import * as fs from 'fs-extra';
 
 export const start = async () => {
   console.log('🤞 Starting Keystone');
+
   const apiFile = Path.resolve('./.keystone/admin/.next/server/pages/api/__keystone_api_build.js');
   if (!fs.existsSync(apiFile)) {
     throw new Error('keystone-next build must be run before running keystone-next start');
   }
   const config = initConfig(require(apiFile).config);
-
   const { keystone, graphQLSchema, createContext } = createSystem(config);
 
   console.log('✨ Connecting to the Database');
