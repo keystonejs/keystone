@@ -189,7 +189,7 @@ function teardownMongoMemoryServer() {
 
 type Setup = { keystone: Keystone<string> | BaseKeystone; context: KeystoneContext };
 
-function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promise<any> | void) {
+function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promise<void> | void) {
   return function (
     setupKeystoneFn: (adaptername: AdapterName) => Promise<Setup>,
     testFn: (setup: Setup) => Promise<void>
@@ -231,7 +231,7 @@ function _before(adapterName: AdapterName) {
   };
 }
 
-function _after(tearDownFunction: () => Promise<any> | void) {
+function _after(tearDownFunction: () => Promise<void> | void) {
   return async function (keystone: Keystone<string>) {
     await keystone.disconnect();
     await tearDownFunction();

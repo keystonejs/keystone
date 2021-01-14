@@ -20,10 +20,5 @@
     "mongodb-memory-server-core": "^6.9.2",
     "supertest-light": "^1.0.3"
   },
-  "preconstruct": {
-    "entrypoints": [
-      "index.ts"
-    ]
-  },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/test-utils"
 }

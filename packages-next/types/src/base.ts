@@ -18,7 +18,7 @@ export type BaseKeystone = {
     }
   ) => BaseKeystoneList;
   connect: (args?: any) => Promise<void>;
-  disconnect: () => {};
+  disconnect: () => Promise<void>;
   lists: Record<string, BaseKeystoneList>;
   createApolloServer: (args: { schemaName: string; dev: boolean }) => any;
   getTypeDefs: (args: { schemaName: string }) => any;
