@@ -2,15 +2,14 @@ import Path from 'path';
 import url from 'url';
 import next from 'next';
 import express from 'express';
-import type { KeystoneSystem, KeystoneConfig, SessionImplementation } from '@keystone-next/types';
+import type { KeystoneConfig, SessionImplementation, CreateContext } from '@keystone-next/types';
 
 export const createAdminUIServer = async (
   ui: KeystoneConfig['ui'],
-  system: KeystoneSystem,
+  createContext: CreateContext,
   dev: boolean,
   sessionImplementation?: SessionImplementation
 ) => {
-  const { createContext } = system;
   const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
   const handle = app.getRequestHandler();
   await app.prepare();
