@@ -18,6 +18,8 @@ const devLoadingHTMLFilepath = path.join(
 
 export const dev = async () => {
   console.log('🤞 Starting Keystone');
+  const dotKeystonePath = path.resolve('.keystone');
+  const projectAdminPath = path.join(dotKeystonePath, 'admin');
 
   const server = express();
   let expressServer: null | ReturnType<typeof express> = null;
@@ -27,15 +29,21 @@ export const dev = async () => {
     const { keystone, graphQLSchema, createContext } = createSystem(config);
 
     console.log('✨ Generating Schema');
-    await saveSchemaAndTypes(graphQLSchema, keystone);
+    await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);
 
     console.log('✨ Connecting to the Database');
     await keystone.connect({ context: createContext({ skipAccessControl: true }) });
 
     console.log('✨ Generating Admin UI');
-    await generateAdminUI(config, graphQLSchema, keystone);
+    await generateAdminUI(config, graphQLSchema, keystone, projectAdminPath);
 
-    expressServer = await createExpressServer(config, graphQLSchema, createContext, true);
+    expressServer = await createExpressServer(
+      config,
+      graphQLSchema,
+      createContext,
+      true,
+      projectAdminPath
+    );
     console.log(`👋 Admin UI Ready`);
   };
 
