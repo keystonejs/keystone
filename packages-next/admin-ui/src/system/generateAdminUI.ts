@@ -70,18 +70,6 @@ export const generateAdminUI = async (
     projectAdminPath
   );
   const baseFiles = adminFiles.filter(x => !uniqueFiles.has(Path.normalize(x.outputPath)));
-  // this should always exist, the user should not be able to override it.
-  baseFiles.push({
-    mode: 'write',
-    outputPath: 'pages/api/__keystone_api_build.js',
-    src: `
-    export {default as config} from '../../../../keystone'
-
-
-    export default function (req,res) {
-    return res.status(500)
-  }`,
-  });
   await Promise.all(baseFiles.map(file => writeAdminFile(file, projectAdminPath)));
 
   // Add files to pages/ which point to any files which exist in admin/pages

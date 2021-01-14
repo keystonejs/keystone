@@ -2,18 +2,20 @@ import path from 'path';
 import { createSystem } from '../lib/createSystem';
 import { initConfig } from '../lib/initConfig';
 import { createExpressServer } from '../lib/createExpressServer';
-import { PORT } from './utils';
+import { requireSource } from '../lib/requireSource';
+import { PORT, CONFIG_PATH } from './utils';
 import * as fs from 'fs-extra';
 
 export const start = async () => {
   console.log('🤞 Starting Keystone');
   const dotKeystonePath = path.resolve('.keystone');
   const projectAdminPath = path.join(dotKeystonePath, 'admin');
-  const apiFile = path.join(projectAdminPath, '.next/server/pages/api/__keystone_api_build.js');
-  if (!fs.existsSync(apiFile)) {
+  const buildArtifact = path.join(dotKeystonePath, 'build.flag');
+  if (!fs.existsSync(buildArtifact)) {
     throw new Error('keystone-next build must be run before running keystone-next start');
   }
-  const config = initConfig(require(apiFile).config);
+
+  const config = initConfig(requireSource(CONFIG_PATH).default);
   const { keystone, graphQLSchema, createContext } = createSystem(config);
 
   console.log('✨ Connecting to the Database');
