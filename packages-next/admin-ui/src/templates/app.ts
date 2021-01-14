@@ -1,4 +1,4 @@
-import type { KeystoneSystem, KeystoneConfig, FieldType } from '@keystone-next/types';
+import type { KeystoneConfig, FieldType } from '@keystone-next/types';
 import hashString from '@emotion/hash';
 import {
   executeSync,
@@ -18,11 +18,9 @@ type AppTemplateOptions = { configFileExists: boolean; projectAdminPath: string 
 
 export const appTemplate = (
   config: KeystoneConfig,
-  system: KeystoneSystem,
+  graphQLSchema: GraphQLSchema,
   { configFileExists, projectAdminPath }: AppTemplateOptions
 ) => {
-  const { graphQLSchema } = system;
-
   const result = executeSync({
     document: staticAdminMetaQuery,
     schema: graphQLSchema,

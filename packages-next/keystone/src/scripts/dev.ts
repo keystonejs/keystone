@@ -48,7 +48,7 @@ export const dev = async () => {
     );
 
     console.log('✨ Connecting to the Database');
-    await system.keystone.connect();
+    await system.keystone.connect({ context: system.createContext({ skipAccessControl: true }) });
 
     console.log('✨ Generating Admin UI');
     await generateAdminUI(config, system);

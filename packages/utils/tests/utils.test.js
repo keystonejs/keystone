@@ -213,19 +213,22 @@ describe('utils', () => {
   });
 
   test('flatMap', () => {
-    expect(flatMap([])).toEqual([]);
-    expect(flatMap([1, 2, 3])).toEqual([1, 2, 3]);
-    expect(flatMap([[1, 2, 3]])).toEqual([1, 2, 3]);
+    expect(flatMap([], x => x)).toEqual([]);
+    expect(flatMap([1, 2, 3], x => x)).toEqual([1, 2, 3]);
+    expect(flatMap([[1, 2, 3]], x => x)).toEqual([1, 2, 3]);
     expect(
-      flatMap([
-        [1, 2, 3],
-        [4, 5],
-        6,
+      flatMap(
         [
-          [7, 8],
-          [9, 10],
+          [1, 2, 3],
+          [4, 5],
+          6,
+          [
+            [7, 8],
+            [9, 10],
+          ],
         ],
-      ])
+        x => x
+      )
     ).toEqual([1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]);
     expect(flatMap([{ vals: [2, 2] }, { vals: [3] }], x => x.vals)).toEqual([2, 2, 3]);
   });

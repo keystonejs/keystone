@@ -16,7 +16,7 @@ export const start = async () => {
   const system = createSystem(config);
 
   console.log('✨ Connecting to the Database');
-  await system.keystone.connect();
+  await system.keystone.connect({ context: system.createContext({ skipAccessControl: true }) });
 
   const server = await createExpressServer(config, system, false);
   console.log(`👋 Admin UI Ready`);
