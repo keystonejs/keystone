@@ -33,10 +33,7 @@ export type KeystoneAdminUIConfig = {
   publicPages?: string[];
   /** The basePath for the Admin UI App */
   path?: string;
-  getAdditionalFiles?: ((
-    config: KeystoneConfig,
-    system: KeystoneSystem
-  ) => MaybePromise<AdminFileToWrite[]>)[];
+  getAdditionalFiles?: ((config: KeystoneConfig) => MaybePromise<AdminFileToWrite[]>)[];
   pageMiddleware?: (args: {
     req: IncomingMessage;
     session: any;
