@@ -33,22 +33,27 @@ const TEXT_TAGS: Record<string, (element: Node) => { [Key in Mark]?: true }> = {
   U: () => ({ underline: true }),
 };
 
-const deserialize = (el: Node): any => {
+export const deserializeHTML = (el: Node): any => {
   if (el.nodeType === 3) {
     return el.textContent;
-  } else if (el.nodeType !== 1) {
+  }
+  if (el.nodeType !== 1) {
     return null;
-  } else if (el.nodeName === 'BR') {
+  }
+  const { nodeName } = el;
+  if (nodeName === 'BR') {
     return '\n';
   }
 
-  const { nodeName } = el;
   let parent = el;
 
   if (nodeName === 'PRE' && el.childNodes[0] && el.childNodes[0].nodeName === 'CODE') {
     parent = el.childNodes[0];
   }
-  let children = Array.from(parent.childNodes).map(deserialize).flat();
+  let children = Array.from(parent.childNodes)
+    .map(deserializeHTML)
+    .flat()
+    .filter(x => x);
 
   if (TEXT_TAGS[nodeName]) {
     const attrs = TEXT_TAGS[nodeName](el);
@@ -65,7 +70,11 @@ const deserialize = (el: Node): any => {
 
   if (ELEMENT_TAGS[nodeName]) {
     const attrs = ELEMENT_TAGS[nodeName](el);
-    return { ...attrs, children: children.length === 0 ? [{ text: '' }] : children };
+    if (attrs.children) {
+      return attrs;
+    }
+    if (!children.length) return;
+    return { ...attrs, children: children };
   }
 
   return children;
@@ -75,11 +84,14 @@ export function withHtml(editor: ReactEditor) {
   const { insertData } = editor;
 
   editor.insertData = data => {
-    const html = data.getData('text/html');
+    let html = data.getData('text/html');
 
     if (html) {
       const parsed = new DOMParser().parseFromString(html, 'text/html');
-      const fragment = deserialize(parsed.body);
+      let fragment = deserializeHTML(parsed.body);
+      if (fragment.length === 1 && fragment.type === 'paragraph') {
+        fragment = fragment.children;
+      }
       Transforms.insertFragment(editor, fragment);
       return;
     }
