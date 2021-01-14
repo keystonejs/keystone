@@ -4,6 +4,8 @@
   "version": "10.1.3",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
+  "main": "dist/test-utils.cjs.js",
+  "module": "dist/test-utils.esm.js",
   "engines": {
     "node": ">=10.0.0"
   },
@@ -17,6 +19,11 @@
     "express": "^4.17.1",
     "mongodb-memory-server-core": "^6.9.2",
     "supertest-light": "^1.0.3"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts"
+    ]
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/test-utils"
 }

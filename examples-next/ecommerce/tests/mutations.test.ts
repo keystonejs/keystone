@@ -1,9 +1,8 @@
 import { KeystoneContext } from '@keystone-next/types';
-// @ts-ignore
-import { multiAdapterRunners, setupFromConfig } from '@keystonejs/test-utils';
+import { multiAdapterRunners, setupFromConfig, AdapterName } from '@keystonejs/test-utils';
 import config from '../keystone';
 
-function setupKeystone(adapterName: string) {
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({ adapterName, config });
 }
 
@@ -17,7 +16,7 @@ const asUser = (context: KeystoneContext, itemId?: string) =>
     },
   });
 
-multiAdapterRunners('mongoose').map(({ runner }: { runner: any }) =>
+multiAdapterRunners('mongoose').map(({ runner }) =>
   describe(`Custom mutations`, () => {
     describe('checkout(token)', () => {
       const token = 'TOKEN'; // This is not currently used by the mutation
@@ -31,7 +30,7 @@ multiAdapterRunners('mongoose').map(({ runner }: { runner: any }) =>
           } }`;
       test(
         'Not logged in should throw',
-        runner(setupKeystone, async ({ context }: { context: KeystoneContext }) => {
+        runner(setupKeystone, async ({ context }) => {
           const _context = asUser(context, undefined);
           const { data, errors } = await _context.graphql.raw({
             query,
@@ -44,7 +43,7 @@ multiAdapterRunners('mongoose').map(({ runner }: { runner: any }) =>
       );
       test(
         'A users cart should correctly convert into an order',
-        runner(setupKeystone, async ({ context }: { context: KeystoneContext }) => {
+        runner(setupKeystone, async ({ context }) => {
           const { Product, User } = context.lists;
 
           // Create some products: FIXME: createMany
@@ -151,7 +150,7 @@ multiAdapterRunners('mongoose').map(({ runner }: { runner: any }) =>
         'mutation m($productId: ID!){ addToCart(productId: $productId) { id label quantity product { id } user { id } } }';
       test(
         'Not logged in should throw',
-        runner(setupKeystone, async ({ context }: { context: KeystoneContext }) => {
+        runner(setupKeystone, async ({ context }) => {
           const { graphql } = asUser(context, undefined);
           const productId = '123456781234567812345678';
           const { data, errors } = await graphql.raw({ query, variables: { productId } });
@@ -163,7 +162,7 @@ multiAdapterRunners('mongoose').map(({ runner }: { runner: any }) =>
 
       test(
         'Adding a non-existant product should throw',
-        runner(setupKeystone, async ({ context }: { context: KeystoneContext }) => {
+        runner(setupKeystone, async ({ context }) => {
           const { graphql } = asUser(context, '123456781234567812345678');
           const productId = '123456781234567812345678';
           const { data, errors } = await graphql.raw({ query, variables: { productId } });
@@ -175,7 +174,7 @@ multiAdapterRunners('mongoose').map(({ runner }: { runner: any }) =>
 
       test(
         'Adding a mis-formed product should throw',
-        runner(setupKeystone, async ({ context }: { context: KeystoneContext }) => {
+        runner(setupKeystone, async ({ context }) => {
           const { graphql } = asUser(context, '123456781234567812345678');
           const productId = '123';
           const { data, errors } = await graphql.raw({ query, variables: { productId } });
@@ -189,7 +188,7 @@ multiAdapterRunners('mongoose').map(({ runner }: { runner: any }) =>
 
       test(
         'Adding a null product should throw',
-        runner(setupKeystone, async ({ context }: { context: KeystoneContext }) => {
+        runner(setupKeystone, async ({ context }) => {
           const { graphql } = asUser(context, '123456781234567812345678');
           const { data, errors } = await graphql.raw({
             // Note: $pid can be null as we need to check the behaviour of addToCart
@@ -206,7 +205,7 @@ multiAdapterRunners('mongoose').map(({ runner }: { runner: any }) =>
 
       test(
         'Adding DRAFT product should throw',
-        runner(setupKeystone, async ({ context }: { context: KeystoneContext }) => {
+        runner(setupKeystone, async ({ context }) => {
           const { User, Product } = context.lists;
           // Setup user
           const user = await User.createOne({
@@ -231,7 +230,7 @@ multiAdapterRunners('mongoose').map(({ runner }: { runner: any }) =>
 
       test(
         'Adding UNAVAILABLE product should throw',
-        runner(setupKeystone, async ({ context }: { context: KeystoneContext }) => {
+        runner(setupKeystone, async ({ context }) => {
           const { User, Product } = context.lists;
           // Setup user
           const user = await User.createOne({
@@ -256,7 +255,7 @@ multiAdapterRunners('mongoose').map(({ runner }: { runner: any }) =>
 
       test(
         'Adding AVAILABLE product should return a cart item with a quantity of 1',
-        runner(setupKeystone, async ({ context }: { context: KeystoneContext }) => {
+        runner(setupKeystone, async ({ context }) => {
           const { User, Product } = context.lists;
           // Setup user
           const user = await User.createOne({
@@ -283,7 +282,7 @@ multiAdapterRunners('mongoose').map(({ runner }: { runner: any }) =>
 
       test(
         'Adding a product multiple times should return a cart item with the correct quantity',
-        runner(setupKeystone, async ({ context }: { context: KeystoneContext }) => {
+        runner(setupKeystone, async ({ context }) => {
           const { User, Product } = context.lists;
           // Setup user
           const user = await User.createOne({
@@ -317,7 +316,7 @@ multiAdapterRunners('mongoose').map(({ runner }: { runner: any }) =>
 
       test(
         'Adding different products multiple times should return cart items with the correct quantity',
-        runner(setupKeystone, async ({ context }: { context: KeystoneContext }) => {
+        runner(setupKeystone, async ({ context }) => {
           const { User, Product } = context.lists;
           // Setup user
           const user = await User.createOne({
