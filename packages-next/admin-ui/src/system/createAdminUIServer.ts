@@ -1,4 +1,3 @@
-import Path from 'path';
 import url from 'url';
 import next from 'next';
 import express from 'express';
@@ -8,9 +7,10 @@ export const createAdminUIServer = async (
   ui: KeystoneConfig['ui'],
   createContext: CreateContext,
   dev: boolean,
+  projectAdminPath: string,
   sessionImplementation?: SessionImplementation
 ) => {
-  const app = next({ dev, dir: Path.join(process.cwd(), '.keystone', 'admin') });
+  const app = next({ dev, dir: projectAdminPath });
   const handle = app.getRequestHandler();
   await app.prepare();
 

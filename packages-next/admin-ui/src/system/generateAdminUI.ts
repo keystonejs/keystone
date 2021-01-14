@@ -25,8 +25,7 @@ function getDoesAdminConfigExist() {
   }
 }
 
-async function writeAdminFile(file: AdminFileToWrite) {
-  const projectAdminPath = Path.resolve(process.cwd(), './.keystone/admin');
+async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
   const outputFilename = Path.join(projectAdminPath, file.outputPath);
   if (file.mode === 'copy') {
     if (!Path.isAbsolute(file.inputPath)) {
@@ -47,17 +46,18 @@ async function writeAdminFile(file: AdminFileToWrite) {
 export const generateAdminUI = async (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
-  keystone: BaseKeystone
+  keystone: BaseKeystone,
+  projectAdminPath: string
 ) => {
-  const projectAdminPath = Path.resolve(process.cwd(), './.keystone/admin');
-
   // Nuke any existing files in our target directory
   await fs.remove(projectAdminPath);
 
   // Write out the files configured by the user
   const userPages = config.ui?.getAdditionalFiles?.map(x => x(config)) ?? [];
   const userFilesToWrite = (await Promise.all(userPages)).flat();
-  const savedFiles = await Promise.all(userFilesToWrite.map(writeAdminFile));
+  const savedFiles = await Promise.all(
+    userFilesToWrite.map(file => writeAdminFile(file, projectAdminPath))
+  );
   const uniqueFiles = new Set(savedFiles);
 
   // Write out the built-in admin UI files. Don't overwrite any user-defined pages.
@@ -82,7 +82,7 @@ export const generateAdminUI = async (
     return res.status(500)
   }`,
   });
-  await Promise.all(baseFiles.map(writeAdminFile));
+  await Promise.all(baseFiles.map(file => writeAdminFile(file, projectAdminPath)));
 
   // Add files to pages/ which point to any files which exist in admin/pages
   const userPagesDir = Path.join(process.cwd(), 'admin', 'pages');

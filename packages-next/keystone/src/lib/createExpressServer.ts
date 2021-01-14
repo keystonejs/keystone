@@ -58,7 +58,8 @@ export const createExpressServer = async (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
   createContext: CreateContext,
-  dev: boolean
+  dev: boolean,
+  projectAdminPath: string
 ) => {
   const server = express();
 
@@ -78,7 +79,15 @@ export const createExpressServer = async (
   addApolloServer({ server, graphQLSchema, createContext, sessionImplementation });
 
   console.log('✨ Preparing Next.js app');
-  server.use(await createAdminUIServer(config.ui, createContext, dev, sessionImplementation));
+  server.use(
+    await createAdminUIServer(
+      config.ui,
+      createContext,
+      dev,
+      projectAdminPath,
+      sessionImplementation
+    )
+  );
 
   return server;
 };
