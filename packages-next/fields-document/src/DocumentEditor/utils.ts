@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import { Editor, Node, NodeEntry, Path, Transforms, Element } from 'slate';
 import { ReactEditor } from 'slate-react';
 
@@ -89,4 +89,17 @@ export function useEventCallback<Func extends (...args: any) => any>(callback: F
     callbackRef.current = callback;
   });
   return cb as any;
+}
+
+const IS_MAC =
+  typeof window != 'undefined' && /Mac|iPod|iPhone|iPad/.test(window.navigator.platform);
+
+export const modifierKeyText = IS_MAC ? '⌘' : 'Ctrl';
+
+const ForceValidationContext = React.createContext(false);
+
+export const ForceValidationProvider = ForceValidationContext.Provider;
+
+export function useForceValidation() {
+  return useContext(ForceValidationContext);
 }

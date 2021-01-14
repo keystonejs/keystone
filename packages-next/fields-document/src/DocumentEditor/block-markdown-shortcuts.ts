@@ -70,6 +70,17 @@ export function withBlockMarkdownShortcuts(
     },
     features => features.formatting.listTypes.unordered
   );
+  addShortcut(
+    '* ',
+    () => {
+      Transforms.wrapNodes(
+        editor,
+        { type: 'unordered-list', children: [] },
+        { match: n => Editor.isBlock(editor, n) }
+      );
+    },
+    features => features.formatting.listTypes.unordered
+  );
 
   documentFeatures.formatting.headingLevels.forEach(level => {
     addShortcut(

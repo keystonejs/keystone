@@ -13,7 +13,12 @@ import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
-import { isBlockActive, useElementWithSetNodes, useStaticEditor } from './utils';
+import {
+  isBlockActive,
+  useElementWithSetNodes,
+  useForceValidation,
+  useStaticEditor,
+} from './utils';
 import { useToolbarState } from './toolbar-state';
 import { useEventCallback } from './utils';
 
@@ -21,7 +26,7 @@ const isLinkActive = (editor: ReactEditor) => {
   return isBlockActive(editor, 'link');
 };
 
-const wrapLink = (editor: ReactEditor, url: string) => {
+export const wrapLink = (editor: ReactEditor, url: string) => {
   if (isLinkActive(editor)) {
     Transforms.unwrapNodes(editor, { match: n => n.type === 'link' });
     return;
@@ -55,6 +60,7 @@ export const LinkElement = ({
   const selected = useSelected();
   const focused = useFocused();
   const [focusedInInlineDialog, setFocusedInInlineDialog] = useState(false);
+  const [localForceValidation, setLocalForceValidation] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {
       isOpen: (selected && focused) || focusedInInlineDialog,
@@ -77,12 +83,13 @@ export const LinkElement = ({
       at: ReactEditor.findPath(editor, __elementForGettingPath),
     });
   });
-  const isValidURL = isUrl(href);
+  const forceValidation = useForceValidation();
+  const showInvalidState = isUrl(href) ? false : forceValidation || localForceValidation;
   return (
     <span {...attributes} css={{ position: 'relative', display: 'inline-block' }}>
       <a
         {...trigger.props}
-        css={{ color: isValidURL ? undefined : 'red' }}
+        css={{ color: showInvalidState ? 'red' : undefined }}
         ref={trigger.ref}
         href={href}
       >
@@ -98,6 +105,7 @@ export const LinkElement = ({
             }}
             onBlur={() => {
               setFocusedInInlineDialog(false);
+              setLocalForceValidation(true);
             }}
           >
             <div css={{ display: 'flex', flexDirection: 'column' }}>
@@ -129,7 +137,7 @@ export const LinkElement = ({
                 {separator}
                 <UnlinkButton onUnlink={unlink} />
               </ToolbarGroup>
-              {!isValidURL && <span css={{ color: 'red' }}>Please enter a valid URL</span>}
+              {showInvalidState && <span css={{ color: 'red' }}>Please enter a valid URL</span>}
             </div>
           </InlineDialog>
         </Portal>

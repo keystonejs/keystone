@@ -16,10 +16,16 @@ import { Maximize2Icon } from '@keystone-ui/icons/icons/Maximize2Icon';
 import { Minimize2Icon } from '@keystone-ui/icons/icons/Minimize2Icon';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 
-import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
+import {
+  InlineDialog,
+  KeyboardInTooltip,
+  ToolbarButton,
+  ToolbarGroup,
+  ToolbarSeparator,
+} from './primitives';
 import { linkButton } from './link';
 import { BlockComponentsButtons } from './component-blocks';
-import { Mark, toggleMark } from './utils';
+import { Mark, modifierKeyText, toggleMark } from './utils';
 import { LayoutsButton } from './layouts';
 import { ListButton } from './lists';
 import { blockquoteButton } from './blockquote';
@@ -29,8 +35,6 @@ import { insertCodeBlock } from './code-block';
 import { TextAlignMenu } from './alignment';
 import { dividerButton } from './divider';
 import { useToolbarState } from './toolbar-state';
-
-// TODO: how to manage separators with dynamic feature sets...
 
 export function Toolbar({
   documentFeatures,
@@ -60,7 +64,14 @@ export function Toolbar({
         <TextAlignMenu alignment={documentFeatures.formatting.alignment} />
       )}
       {documentFeatures.formatting.listTypes.unordered && (
-        <Tooltip content="Bullet list" weight="subtle">
+        <Tooltip
+          content={
+            <Fragment>
+              Bullet List <KeyboardInTooltip>- </KeyboardInTooltip>
+            </Fragment>
+          }
+          weight="subtle"
+        >
           {attrs => (
             <ListButton type="unordered-list" {...attrs}>
               <BulletListIcon />
@@ -69,7 +80,14 @@ export function Toolbar({
         </Tooltip>
       )}
       {documentFeatures.formatting.listTypes.ordered && (
-        <Tooltip content="Numbered list" weight="subtle">
+        <Tooltip
+          content={
+            <Fragment>
+              Numbered List <KeyboardInTooltip>1. </KeyboardInTooltip>
+            </Fragment>
+          }
+          weight="subtle"
+        >
           {attrs => (
             <ListButton type="ordered-list" {...attrs}>
               <NumberedListIcon />
@@ -396,7 +414,15 @@ function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineM
   return (
     <Fragment>
       {marks.bold && (
-        <Tooltip content="Bold" weight="subtle">
+        <Tooltip
+          content={
+            <Fragment>
+              Bold
+              <KeyboardInTooltip>{modifierKeyText}B</KeyboardInTooltip>
+            </Fragment>
+          }
+          weight="subtle"
+        >
           {attrs => (
             <MarkButton type="bold" {...attrs}>
               <BoldIcon size="small" style={{ strokeWidth: 3 }} />
@@ -405,7 +431,15 @@ function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineM
         </Tooltip>
       )}
       {marks.italic && (
-        <Tooltip content="Italic" weight="subtle">
+        <Tooltip
+          content={
+            <Fragment>
+              Italic
+              <KeyboardInTooltip>{modifierKeyText}I</KeyboardInTooltip>
+            </Fragment>
+          }
+          weight="subtle"
+        >
           {attrs => (
             <MarkButton type="italic" {...attrs}>
               <ItalicIcon size="small" />

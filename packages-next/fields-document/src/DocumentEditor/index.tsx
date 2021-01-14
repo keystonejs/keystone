@@ -20,7 +20,7 @@ import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 
 import { withParagraphs } from './paragraphs';
-import { withLink } from './link';
+import { withLink, wrapLink } from './link';
 import { LayoutOptionsProvider, withLayouts } from './layouts';
 import { Mark, toggleMark } from './utils';
 import { Toolbar } from './Toolbar';
@@ -59,11 +59,17 @@ const HOTKEYS: Record<string, Mark> = {
 };
 
 const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
+  if (event.defaultPrevented) return;
   for (const hotkey in HOTKEYS) {
     if (isHotkey(hotkey, event.nativeEvent)) {
       event.preventDefault();
       toggleMark(editor, HOTKEYS[hotkey]);
     }
+  }
+  if (isHotkey('mod+k', event.nativeEvent) && !event.defaultPrevented) {
+    event.preventDefault();
+    wrapLink(editor, '');
+    return;
   }
   if (event.key === 'Tab' && editor.selection && Range.isCollapsed(editor.selection)) {
     const block = Editor.above(editor, {

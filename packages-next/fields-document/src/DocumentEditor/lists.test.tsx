@@ -33,12 +33,43 @@ test('ordered list shortcut', () => {
   `);
 });
 
-test('unordered list shortcut', () => {
+test('unordered list shortcut - ', () => {
   let editor = makeEditor(
     <editor>
       <paragraph>
         <text>
           -
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  );
+
+  editor.insertText(' ');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <unordered-list>
+        <list-item>
+          <text>
+            <cursor />
+          </text>
+        </list-item>
+      </unordered-list>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('unordered list shortcut * ', () => {
+  let editor = makeEditor(
+    <editor>
+      <paragraph>
+        <text>
+          *
           <cursor />
         </text>
       </paragraph>

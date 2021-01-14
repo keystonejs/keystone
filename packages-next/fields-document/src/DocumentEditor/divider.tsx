@@ -1,11 +1,11 @@
-import React, { ComponentProps, useMemo } from 'react';
+import React, { ComponentProps, Fragment, useMemo } from 'react';
 import { Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 
 import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon';
 import { Tooltip } from '@keystone-ui/tooltip';
 
-import { ToolbarButton } from './primitives';
+import { KeyboardInTooltip, ToolbarButton } from './primitives';
 import { useToolbarState } from './toolbar-state';
 
 const minusIcon = <MinusIcon size="small" />;
@@ -41,7 +41,14 @@ const DividerButton = ({
 };
 
 export const dividerButton = (
-  <Tooltip content="Divider" weight="subtle">
+  <Tooltip
+    content={
+      <Fragment>
+        Divider<KeyboardInTooltip>---</KeyboardInTooltip>
+      </Fragment>
+    }
+    weight="subtle"
+  >
     {attrs => <DividerButton attrs={attrs} />}
   </Tooltip>
 );

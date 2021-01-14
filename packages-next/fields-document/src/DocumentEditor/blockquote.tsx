@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { ComponentProps, useMemo } from 'react';
+import { ComponentProps, Fragment, useMemo } from 'react';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps } from 'slate-react';
 
@@ -8,7 +8,7 @@ import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
 
 import { IconBase } from './Toolbar';
-import { ToolbarButton } from './primitives';
+import { KeyboardInTooltip, ToolbarButton } from './primitives';
 import { isBlockActive } from './utils';
 import { useToolbarState } from './toolbar-state';
 
@@ -117,7 +117,14 @@ const BlockquoteButton = ({
   );
 };
 export const blockquoteButton = (
-  <Tooltip content="Quote" weight="subtle">
+  <Tooltip
+    content={
+      <Fragment>
+        Quote<KeyboardInTooltip>{'> '}</KeyboardInTooltip>
+      </Fragment>
+    }
+    weight="subtle"
+  >
     {attrs => <BlockquoteButton attrs={attrs} />}
   </Tooltip>
 );

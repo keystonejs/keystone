@@ -18,18 +18,27 @@ import { Relationships } from './DocumentEditor/relationship';
 import weakMemoize from '@emotion/weak-memoize';
 import isUrl from 'is-url';
 import { clientSideValidateProp } from './DocumentEditor/component-blocks/utils';
+import { ForceValidationProvider } from './DocumentEditor/utils';
 
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
+export const Field = ({
+  field,
+  value,
+  onChange,
+  autoFocus,
+  forceValidation,
+}: FieldProps<typeof controller>) => (
   <FieldContainer>
     <FieldLabel>{field.label}</FieldLabel>
-    <DocumentEditor
-      autoFocus={autoFocus}
-      value={value}
-      onChange={onChange}
-      componentBlocks={field.componentBlocks}
-      relationships={field.relationships}
-      documentFeatures={field.documentFeatures}
-    />
+    <ForceValidationProvider value={!!forceValidation}>
+      <DocumentEditor
+        autoFocus={autoFocus}
+        value={value}
+        onChange={onChange}
+        componentBlocks={field.componentBlocks}
+        relationships={field.relationships}
+        documentFeatures={field.documentFeatures}
+      />
+    </ForceValidationProvider>
   </FieldContainer>
 );
 
