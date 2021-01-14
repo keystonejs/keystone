@@ -25,7 +25,7 @@ export async function build() {
   );
 
   console.log('✨ Generating Admin UI');
-  await generateAdminUI(config, system);
+  await generateAdminUI(config, system.graphQLSchema, system.keystone);
   console.log('✨ Building Admin UI and API');
   await buildAdminUI(Path.resolve('.keystone'));
 }

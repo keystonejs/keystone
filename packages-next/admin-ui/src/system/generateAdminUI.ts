@@ -4,7 +4,8 @@ import Path from 'path';
 import fastGlob from 'fast-glob';
 import prettier from 'prettier';
 import resolve from 'resolve';
-import type { KeystoneConfig, KeystoneSystem } from '@keystone-next/types';
+import { GraphQLSchema } from 'graphql';
+import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 import { AdminFileToWrite } from '@keystone-next/types';
 import { writeAdminFiles } from '../templates';
 
@@ -43,7 +44,11 @@ async function writeAdminFile(file: AdminFileToWrite) {
   return Path.normalize(outputFilename);
 }
 
-export const generateAdminUI = async (config: KeystoneConfig, system: KeystoneSystem) => {
+export const generateAdminUI = async (
+  config: KeystoneConfig,
+  graphQLSchema: GraphQLSchema,
+  keystone: BaseKeystone
+) => {
   const projectAdminPath = Path.resolve(process.cwd(), './.keystone/admin');
 
   // Nuke any existing files in our target directory
@@ -57,7 +62,13 @@ export const generateAdminUI = async (config: KeystoneConfig, system: KeystoneSy
 
   // Write out the built-in admin UI files. Don't overwrite any user-defined pages.
   const configFileExists = getDoesAdminConfigExist();
-  const adminFiles = writeAdminFiles(config, system, configFileExists, projectAdminPath);
+  const adminFiles = writeAdminFiles(
+    config,
+    graphQLSchema,
+    keystone,
+    configFileExists,
+    projectAdminPath
+  );
   const baseFiles = adminFiles.filter(x => !uniqueFiles.has(Path.normalize(x.outputPath)));
   // this should always exist, the user should not be able to override it.
   baseFiles.push({
