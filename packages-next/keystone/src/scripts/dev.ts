@@ -28,7 +28,6 @@ export const dev = async () => {
   const PORT = config.server?.port || process.env.PORT || 3000;
 
   const initKeystone = async () => {
-    const system = createSystem(config);
     const { keystone, graphQLSchema, createContext } = createSystem(config);
 
     console.log('✨ Generating Schema');
