@@ -9,7 +9,7 @@ import { initConfig } from '../lib/initConfig';
 import { requireSource } from '../lib/requireSource';
 import { createExpressServer } from '../lib/createExpressServer';
 import { printGeneratedTypes } from './schema-type-printer';
-import { CONFIG_PATH, PORT } from './utils';
+import { CONFIG_PATH } from './utils';
 
 // TODO: Don't generate or start an Admin UI if it isn't configured!!
 const devLoadingHTMLFilepath = path.join(
@@ -32,9 +32,10 @@ export const dev = async () => {
   const server = express();
   let expressServer: null | ReturnType<typeof express> = null;
 
-  const initKeystone = async () => {
-    const config = initConfig(requireSource(CONFIG_PATH).default);
+  const config = initConfig(requireSource(CONFIG_PATH).default);
+  const PORT = config.server?.port || process.env.PORT || 3000;
 
+  const initKeystone = async () => {
     const system = createSystem(config);
     let printedSchema = printSchema(system.graphQLSchema);
     console.log('✨ Generating Schema');

@@ -1,7 +1,6 @@
 import { createSystem } from '../lib/createSystem';
 import { initConfig } from '../lib/initConfig';
 import { createExpressServer } from '../lib/createExpressServer';
-import { PORT } from './utils';
 import Path from 'path';
 import * as fs from 'fs-extra';
 
@@ -12,6 +11,7 @@ export const start = async () => {
     throw new Error('keystone-next build must be run before running keystone-next start');
   }
   const config = initConfig(require(apiFile).config);
+  const PORT = config.server?.port || process.env.PORT || 3000;
 
   const system = createSystem(config);
 
