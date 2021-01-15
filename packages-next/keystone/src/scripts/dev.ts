@@ -30,6 +30,7 @@ export const dev = async () => {
   const initKeystone = async () => {
     const system = createSystem(config);
     const { keystone, graphQLSchema, createContext } = createSystem(config);
+
     console.log('✨ Generating Schema');
     await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);
 
