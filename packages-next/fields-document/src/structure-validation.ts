@@ -9,7 +9,7 @@ import excess from 'io-ts-excess';
 // we'll then run normalize on it which will enforce more things
 const markValue = t.union([t.undefined, t.literal(true)]);
 
-const text = excess(
+const text: t.Type<TextWithMarks> = excess(
   t.type({
     text: t.string,
     bold: markValue,
@@ -23,11 +23,9 @@ const text = excess(
     insertMenu: markValue,
   })
 );
+type TextWithMarks = { text: string } & { [Key in Mark | 'insertMenu']: true | undefined };
 
-type Inline =
-  | ({ text: string } & { [Key in Mark | 'insertMenu']: true | undefined })
-  | Link
-  | Relationship;
+type Inline = TextWithMarks | Link | Relationship;
 
 type Link = { type: 'link'; href: string; children: Inline[] };
 

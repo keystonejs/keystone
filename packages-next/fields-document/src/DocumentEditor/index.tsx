@@ -51,7 +51,7 @@ import { ToolbarStateProvider } from './toolbar-state';
 import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './component-blocks/utils';
 import { withInsertMenu } from './insert-menu';
 import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts';
-import { withHtml } from './paste-html';
+import { withPasting } from './pasting';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -114,7 +114,7 @@ export function createDocumentEditor(
   relationships: Relationships,
   isShiftPressedRef: MutableRefObject<boolean>
 ) {
-  return withHtml(
+  return withPasting(
     withSoftBreaks(
       isShiftPressedRef,
       withBlocksSchema(
