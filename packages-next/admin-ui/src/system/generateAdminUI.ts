@@ -4,7 +4,8 @@ import Path from 'path';
 import fastGlob from 'fast-glob';
 import prettier from 'prettier';
 import resolve from 'resolve';
-import type { KeystoneConfig, KeystoneSystem } from '@keystone-next/types';
+import { GraphQLSchema } from 'graphql';
+import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 import { AdminFileToWrite } from '@keystone-next/types';
 import { writeAdminFiles } from '../templates';
 
@@ -24,8 +25,7 @@ function getDoesAdminConfigExist() {
   }
 }
 
-async function writeAdminFile(file: AdminFileToWrite) {
-  const projectAdminPath = Path.resolve(process.cwd(), './.keystone/admin');
+async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
   const outputFilename = Path.join(projectAdminPath, file.outputPath);
   if (file.mode === 'copy') {
     if (!Path.isAbsolute(file.inputPath)) {
@@ -43,35 +43,49 @@ async function writeAdminFile(file: AdminFileToWrite) {
   return Path.normalize(outputFilename);
 }
 
-export const generateAdminUI = async (config: KeystoneConfig, system: KeystoneSystem) => {
-  const projectAdminPath = Path.resolve(process.cwd(), './.keystone/admin');
-
+export const generateAdminUI = async (
+  config: KeystoneConfig,
+  graphQLSchema: GraphQLSchema,
+  keystone: BaseKeystone,
+  projectAdminPath: string
+) => {
   // Nuke any existing files in our target directory
   await fs.remove(projectAdminPath);
 
   // Write out the files configured by the user
-  const userPages = config.ui?.getAdditionalFiles?.map(x => x(config, system)) ?? [];
+  const userPages = config.ui?.getAdditionalFiles?.map(x => x(config)) ?? [];
   const userFilesToWrite = (await Promise.all(userPages)).flat();
-  const savedFiles = await Promise.all(userFilesToWrite.map(writeAdminFile));
+  const savedFiles = await Promise.all(
+    userFilesToWrite.map(file => writeAdminFile(file, projectAdminPath))
+  );
   const uniqueFiles = new Set(savedFiles);
 
   // Write out the built-in admin UI files. Don't overwrite any user-defined pages.
   const configFileExists = getDoesAdminConfigExist();
-  const adminFiles = writeAdminFiles(config, system, configFileExists, projectAdminPath);
+  const adminFiles = writeAdminFiles(
+    config,
+    graphQLSchema,
+    keystone,
+    configFileExists,
+    projectAdminPath
+  );
   const baseFiles = adminFiles.filter(x => !uniqueFiles.has(Path.normalize(x.outputPath)));
+
+  // FIXME: This path corresponds to the hardcoded value in CONFIG_PATH
+  const configModule = Path.join(projectAdminPath, '..', '..', 'keystone');
+  const outputDir = Path.join('pages', 'api');
+  const pathToConfig = Path.relative(Path.join(projectAdminPath, outputDir), configModule);
   // this should always exist, the user should not be able to override it.
   baseFiles.push({
     mode: 'write',
-    outputPath: 'pages/api/__keystone_api_build.js',
+    outputPath: Path.join(outputDir, '__keystone_api_build.js'),
     src: `
-    export {default as config} from '../../../../keystone'
-    
-    
-    export default function (req,res) {
-    return res.status(500)
-  }`,
+    export { default as config } from '${pathToConfig}'
+    export default function (req, res) {
+      return res.status(500)
+    }`,
   });
-  await Promise.all(baseFiles.map(writeAdminFile));
+  await Promise.all(baseFiles.map(file => writeAdminFile(file, projectAdminPath)));
 
   // Add files to pages/ which point to any files which exist in admin/pages
   const userPagesDir = Path.join(process.cwd(), 'admin', 'pages');

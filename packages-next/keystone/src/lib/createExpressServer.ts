@@ -6,12 +6,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { graphqlUploadExpress } from 'graphql-upload';
 // @ts-ignore
 import { formatError } from '@keystonejs/keystone/lib/Keystone/format-error';
-import type {
-  KeystoneSystem,
-  KeystoneConfig,
-  SessionImplementation,
-  CreateContext,
-} from '@keystone-next/types';
+import type { KeystoneConfig, SessionImplementation, CreateContext } from '@keystone-next/types';
 import { createAdminUIServer } from '@keystone-next/admin-ui/system';
 import { implementSession } from '../session';
 
@@ -61,8 +56,10 @@ const addApolloServer = ({
 
 export const createExpressServer = async (
   config: KeystoneConfig,
-  system: KeystoneSystem,
-  dev: boolean
+  graphQLSchema: GraphQLSchema,
+  createContext: CreateContext,
+  dev: boolean,
+  projectAdminPath: string
 ) => {
   const server = express();
 
@@ -79,11 +76,18 @@ export const createExpressServer = async (
   const sessionImplementation = config.session ? implementSession(config.session()) : undefined;
 
   console.log('✨ Preparing GraphQL Server');
-  const { graphQLSchema, createContext } = system;
   addApolloServer({ server, graphQLSchema, createContext, sessionImplementation });
 
   console.log('✨ Preparing Next.js app');
-  server.use(await createAdminUIServer(config.ui, system, dev, sessionImplementation));
+  server.use(
+    await createAdminUIServer(
+      config.ui,
+      createContext,
+      dev,
+      projectAdminPath,
+      sessionImplementation
+    )
+  );
 
   return server;
 };

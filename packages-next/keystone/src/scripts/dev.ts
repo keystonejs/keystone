@@ -1,8 +1,5 @@
 import path from 'path';
 import express from 'express';
-import { printSchema } from 'graphql';
-import * as fs from 'fs-extra';
-import prettier from 'prettier';
 import { generateAdminUI } from '@keystone-next/admin-ui/system';
 import { createSystem } from '../lib/createSystem';
 import { initConfig } from '../lib/initConfig';
@@ -19,15 +16,10 @@ const devLoadingHTMLFilepath = path.join(
   'dev-loading.html'
 );
 
-export const formatSource = (src: string, parser: 'babel' | 'babel-ts' = 'babel') =>
-  prettier.format(src, {
-    parser,
-    trailingComma: 'es5',
-    singleQuote: true,
-  });
-
 export const dev = async () => {
   console.log('🤞 Starting Keystone');
+  const dotKeystonePath = path.resolve('.keystone');
+  const projectAdminPath = path.join(dotKeystonePath, 'admin');
 
   const server = express();
   let expressServer: null | ReturnType<typeof express> = null;
@@ -37,24 +29,23 @@ export const dev = async () => {
 
   const initKeystone = async () => {
     const system = createSystem(config);
-    let printedSchema = printSchema(system.graphQLSchema);
+    const { keystone, graphQLSchema, createContext } = createSystem(config);
     console.log('✨ Generating Schema');
-    await fs.outputFile('./.keystone/schema.graphql', printedSchema);
-    await fs.outputFile(
-      './.keystone/schema-types.ts',
-      formatSource(
-        printGeneratedTypes(printedSchema, system.keystone, system.graphQLSchema),
-        'babel-ts'
-      )
-    );
+    await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);
 
     console.log('✨ Connecting to the Database');
-    await system.keystone.connect();
+    await keystone.connect({ context: createContext({ skipAccessControl: true }) });
 
     console.log('✨ Generating Admin UI');
-    await generateAdminUI(config, system);
+    await generateAdminUI(config, graphQLSchema, keystone, projectAdminPath);
 
-    expressServer = await createExpressServer(config, system, true);
+    expressServer = await createExpressServer(
+      config,
+      graphQLSchema,
+      createContext,
+      true,
+      projectAdminPath
+    );
     console.log(`👋 Admin UI Ready`);
   };
 

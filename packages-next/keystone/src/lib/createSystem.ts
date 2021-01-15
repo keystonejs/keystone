@@ -3,15 +3,12 @@ import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexAdapter } from '@keystonejs/adapter-knex';
 // @ts-ignore
 import { PrismaAdapter } from '@keystonejs/adapter-prisma';
-import type { KeystoneConfig, KeystoneSystem, BaseKeystone } from '@keystone-next/types';
+import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './createContext';
 
-export function createKeystone(
-  config: KeystoneConfig,
-  createContextFactory: () => ReturnType<typeof makeCreateContext>
-) {
+export function createKeystone(config: KeystoneConfig) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
@@ -34,9 +31,7 @@ export function createKeystone(
     cookieSecret: '123456789', // FIXME: Don't provide a default here. See #2882
     queryLimits: graphql?.queryLimits,
     // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
-    onConnect: () => {
-      return config.db.onConnect?.(createContextFactory()({ skipAccessControl: true }));
-    },
+    onConnect: (keystone, { context } = {}) => config.db.onConnect?.(context),
     // FIXME: Unsupported options: Need to work which of these we want to support with backwards
     // compatibility options.
     // defaultAccess
@@ -78,8 +73,8 @@ export function createKeystone(
   return keystone;
 }
 
-export function createSystem(config: KeystoneConfig): KeystoneSystem {
-  const keystone = createKeystone(config, () => createContext);
+export function createSystem(config: KeystoneConfig) {
+  const keystone = createKeystone(config);
 
   const graphQLSchema = createGraphQLSchema(config, keystone);
 

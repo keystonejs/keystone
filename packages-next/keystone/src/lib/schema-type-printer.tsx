@@ -11,6 +11,7 @@ import {
   FieldDefinitionNode,
   InputValueDefinitionNode,
 } from 'graphql';
+import prettier from 'prettier';
 import type { BaseKeystone } from '@keystone-next/types';
 
 let printEnumTypeDefinition = (node: EnumTypeDefinitionNode) => {
@@ -155,6 +156,9 @@ export type ${listKey}ListFn = (
 `;
     allListsStr += `\n  readonly ${JSON.stringify(listKey)}: ${listTypeInfoName};`;
   }
-
-  return printedTypes + allListsStr + '\n};\n';
+  return prettier.format(printedTypes + allListsStr + '\n};\n', {
+    parser: 'babel-ts',
+    trailingComma: 'es5',
+    singleQuote: true,
+  });
 }
