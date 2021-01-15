@@ -15,7 +15,13 @@ const ELEMENT_TAGS: Record<string, (element: Node) => Record<string, any>> = {
   H6: () => ({ type: 'heading', level: 6 }),
   IMG: el => ({
     type: 'paragraph',
-    children: [{ text: `<img src=${JSON.stringify((el as any).getAttribute('src') || '')}>` }],
+    children: [
+      {
+        text: `<img alt=${JSON.stringify(
+          (el as any).getAttribute('alt') || ''
+        )} src=${JSON.stringify((el as any).getAttribute('src') || '')}>`,
+      },
+    ],
   }),
   LI: () => ({ type: 'list-item' }),
   OL: () => ({ type: 'ordered-list' }),
@@ -45,16 +51,33 @@ function marksFromElementAttributes(element: Node) {
     if (markFromNodeName) {
       marks.add(markFromNodeName);
     }
+    const { fontWeight, textDecoration, verticalAlign } = style;
 
-    const textDecoration = style.textDecoration;
     if (textDecoration === 'underline') {
       marks.add('underline');
     } else if (textDecoration === 'line-through') {
       marks.add('strikethrough');
     }
     // Google Docs does weird things with <b>
-    if (nodeName === 'B' && style.fontWeight !== 'normal') {
+    if (nodeName === 'B' && fontWeight !== 'normal') {
       marks.add('bold');
+    } else if (
+      typeof fontWeight === 'string' &&
+      (fontWeight === 'bold' ||
+        fontWeight === 'bolder' ||
+        fontWeight === '1000' ||
+        /^[5-9]\d{2}$/.test(fontWeight))
+    ) {
+      marks.add('bold');
+    }
+    if (style.fontStyle === 'italic') {
+      marks.add('italic');
+    }
+    // Google Docs uses vertical align for subscript and superscript instead of <sup> and <sub>
+    if (verticalAlign === 'super') {
+      marks.add('superscript');
+    } else if (verticalAlign === 'sub') {
+      marks.add('subscript');
     }
   }
   return marks;
