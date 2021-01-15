@@ -2,7 +2,7 @@
 
 import { Descendant } from 'slate';
 import { Mark } from '../utils';
-import { addMarkToChildren, getTextNodeForCurrentlyActiveMarks } from './utils';
+import { addMarksToChildren, getTextNodeForCurrentlyActiveMarks } from './utils';
 
 const ELEMENT_TAGS: Record<string, (element: Node) => Record<string, any>> = {
   A: el => ({ type: 'link', url: (el as any).getAttribute('href') }),
@@ -25,23 +25,47 @@ const ELEMENT_TAGS: Record<string, (element: Node) => Record<string, any>> = {
   HR: () => ({ type: 'divider', children: [{ text: '' }] }),
 };
 
-// COMPAT: `B` is omitted here because Google Docs uses `<b>` in weird ways.
 const TEXT_TAGS: Record<string, Mark> = {
   CODE: 'code',
   DEL: 'strikethrough',
   S: 'strikethrough',
+  STRIKE: 'strikethrough',
   EM: 'italic',
   I: 'italic',
   STRONG: 'bold',
   U: 'underline',
 };
 
+function marksFromElementAttributes(element: Node) {
+  const marks = new Set<Mark>();
+  if (element instanceof HTMLElement) {
+    const style = element.style;
+    const { nodeName } = element;
+    const markFromNodeName = TEXT_TAGS[nodeName];
+    if (markFromNodeName) {
+      marks.add(markFromNodeName);
+    }
+
+    const textDecoration = style.textDecoration;
+    if (textDecoration === 'underline') {
+      marks.add('underline');
+    } else if (textDecoration === 'line-through') {
+      marks.add('strikethrough');
+    }
+    // Google Docs does weird things with <b>
+    if (nodeName === 'B' && style.fontWeight !== 'normal') {
+      marks.add('bold');
+    }
+  }
+  return marks;
+}
+
 export function deserializeHTML(html: string) {
   const parsed = new DOMParser().parseFromString(html, 'text/html');
   return deserializeHTMLNode(parsed.body);
 }
 
-export const deserializeHTMLNode = (el: Node): Descendant[] => {
+export function deserializeHTMLNode(el: Node): Descendant[] {
   if (el.nodeType === 3) {
     return [getTextNodeForCurrentlyActiveMarks(el.textContent || '')];
   }
@@ -53,22 +77,22 @@ export const deserializeHTMLNode = (el: Node): Descendant[] => {
     return [getTextNodeForCurrentlyActiveMarks('\n')];
   }
 
-  if (TEXT_TAGS[nodeName]) {
-    return addMarkToChildren(TEXT_TAGS[nodeName], () => deserializeChildren(el.childNodes));
-  }
+  const marks = marksFromElementAttributes(el);
 
-  if (ELEMENT_TAGS[nodeName]) {
-    const attrs = ELEMENT_TAGS[nodeName](el);
-    if (attrs.children) {
-      return [attrs as any];
+  return addMarksToChildren(marks, () => {
+    if (ELEMENT_TAGS[nodeName]) {
+      const attrs = ELEMENT_TAGS[nodeName](el);
+      if (attrs.children) {
+        return [attrs as any];
+      }
+      let children = deserializeChildren(el.childNodes);
+
+      return [{ ...attrs, children: children }];
     }
-    let children = deserializeChildren(el.childNodes);
 
-    return [{ ...attrs, children: children }];
-  }
-
-  return deserializeChildren(el.childNodes);
-};
+    return deserializeChildren(el.childNodes);
+  });
+}
 
 function deserializeChildren(nodes: Iterable<Node>) {
   const outputNodes: Descendant[] = [];

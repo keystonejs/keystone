@@ -21,6 +21,23 @@ export function addMarkToChildren<T>(mark: Mark, cb: () => T): T {
   }
 }
 
+export function addMarksToChildren<T>(marks: Set<Mark>, cb: () => T): T {
+  const marksToRemove = new Set<Mark>();
+  for (const mark of marks) {
+    if (!currentlyActiveMarks.has(mark)) {
+      marksToRemove.add(mark);
+    }
+    currentlyActiveMarks.add(mark);
+  }
+  try {
+    return cb();
+  } finally {
+    for (const mark of marksToRemove) {
+      currentlyActiveMarks.delete(mark);
+    }
+  }
+}
+
 export function getTextNodeForCurrentlyActiveMarks(text: string) {
   const node: Text = { text };
   for (const mark of currentlyActiveMarks) {
