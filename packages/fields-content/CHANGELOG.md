@@ -1,5 +1,13 @@
 # @keystonejs/fields-content
 
+## 9.0.5
+
+### Patch Changes
+
+- Updated dependencies [[`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be), [`81e86cbaa`](https://github.com/keystonejs/keystone/commit/81e86cbaa5c73633d6cb0ca2f84e834201e8bf9a)]:
+  - @keystonejs/utils@6.0.0
+  - @keystonejs/fields@21.0.1
+
 ## 9.0.4
 
 ### Patch Changes

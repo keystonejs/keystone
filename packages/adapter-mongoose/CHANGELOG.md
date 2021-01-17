@@ -1,5 +1,13 @@
 # @keystonejs/adapter-mongoose
 
+## 10.1.2
+
+### Patch Changes
+
+- Updated dependencies [[`3b7a056bb`](https://github.com/keystonejs/keystone/commit/3b7a056bb835482ceb408a70bf97300741552d19), [`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be), [`4768fbf83`](https://github.com/keystonejs/keystone/commit/4768fbf831ffff648e540c479a1954ae40e05aaa), [`74a8528ea`](https://github.com/keystonejs/keystone/commit/74a8528ea0dad739f4f16af32fe4f8926a188b61)]:
+  - @keystonejs/keystone@18.1.0
+  - @keystonejs/utils@6.0.0
+
 ## 10.1.1
 
 ### Patch Changes

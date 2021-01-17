@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/app-graphql-playground",
   "description": "KeystoneJS GraphQL Playground App.",
-  "version": "5.1.8",
+  "version": "5.1.9",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -11,7 +11,7 @@
     "@apollographql/graphql-playground-html": "^1.6.26",
     "@apollographql/graphql-playground-react": "^1.7.34",
     "@keystonejs/session": "^8.1.1",
-    "@keystonejs/utils": "^5.4.3",
+    "@keystonejs/utils": "^6.0.0",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.0",
     "falsey": "^1.0.0",

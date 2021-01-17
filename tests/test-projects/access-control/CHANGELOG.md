@@ -1,5 +1,17 @@
 # @keystonejs/cypress-project-access-control
 
+## 5.1.26
+
+### Patch Changes
+
+- Updated dependencies [[`3b7a056bb`](https://github.com/keystonejs/keystone/commit/3b7a056bb835482ceb408a70bf97300741552d19), [`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be), [`79967883e`](https://github.com/keystonejs/keystone/commit/79967883edaa86d0625235b558ff0f8f87e0b79f), [`4768fbf83`](https://github.com/keystonejs/keystone/commit/4768fbf831ffff648e540c479a1954ae40e05aaa), [`74a8528ea`](https://github.com/keystonejs/keystone/commit/74a8528ea0dad739f4f16af32fe4f8926a188b61), [`81e86cbaa`](https://github.com/keystonejs/keystone/commit/81e86cbaa5c73633d6cb0ca2f84e834201e8bf9a)]:
+  - @keystonejs/keystone@18.1.0
+  - @keystonejs/utils@6.0.0
+  - @keystonejs/app-admin-ui@7.3.13
+  - @keystonejs/fields@21.0.1
+  - @keystonejs/adapter-mongoose@10.1.2
+  - @keystonejs/app-graphql@6.2.1
+
 ## 5.1.25
 
 ### Patch Changes

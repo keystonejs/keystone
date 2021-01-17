@@ -1,5 +1,19 @@
 # @keystonejs/fields
 
+## 21.0.1
+
+### Patch Changes
+
+- [`81e86cbaa`](https://github.com/keystonejs/keystone/commit/81e86cbaa5c73633d6cb0ca2f84e834201e8bf9a) [#4653](https://github.com/keystonejs/keystone/pull/4653) Thanks [@timleslie](https://github.com/timleslie)! - Added `gqlOutputFieldResolvers` method to `DateTime` and `CalendarDay` field types, which ensures that read access control is correctly applied.
+
+- Updated dependencies [[`49eec4dea`](https://github.com/keystonejs/keystone/commit/49eec4dea522c6a043b3eaf93fc8be8256b00aa6), [`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be), [`79967883e`](https://github.com/keystonejs/keystone/commit/79967883edaa86d0625235b558ff0f8f87e0b79f)]:
+  - @keystonejs/adapter-prisma@1.1.2
+  - @keystonejs/utils@6.0.0
+  - @keystonejs/app-admin-ui@7.3.13
+  - @keystonejs/access-control@6.3.1
+  - @keystonejs/adapter-knex@12.0.4
+  - @keystonejs/adapter-mongoose@10.1.2
+
 ## 21.0.0
 
 ### Major Changes

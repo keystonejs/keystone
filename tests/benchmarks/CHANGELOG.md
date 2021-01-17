@@ -1,5 +1,17 @@
 # @keystonejs/benchmarks
 
+## 5.1.28
+
+### Patch Changes
+
+- Updated dependencies [[`3b7a056bb`](https://github.com/keystonejs/keystone/commit/3b7a056bb835482ceb408a70bf97300741552d19), [`4768fbf83`](https://github.com/keystonejs/keystone/commit/4768fbf831ffff648e540c479a1954ae40e05aaa), [`74a8528ea`](https://github.com/keystonejs/keystone/commit/74a8528ea0dad739f4f16af32fe4f8926a188b61), [`6ea4ff3cf`](https://github.com/keystonejs/keystone/commit/6ea4ff3cf77d5d2278bf4f0415d11aa7399a0490), [`81e86cbaa`](https://github.com/keystonejs/keystone/commit/81e86cbaa5c73633d6cb0ca2f84e834201e8bf9a)]:
+  - @keystonejs/keystone@18.1.0
+  - @keystonejs/test-utils@11.0.0
+  - @keystonejs/fields@21.0.1
+  - @keystonejs/adapter-knex@12.0.4
+  - @keystonejs/adapter-mongoose@10.1.2
+  - @keystonejs/app-graphql@6.2.1
+
 ## 5.1.27
 
 ### Patch Changes
