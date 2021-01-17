@@ -1,5 +1,15 @@
 # @keystonejs/app-admin-ui
 
+## 7.3.13
+
+### Patch Changes
+
+- [`79967883e`](https://github.com/keystonejs/keystone/commit/79967883edaa86d0625235b558ff0f8f87e0b79f) [#4651](https://github.com/keystonejs/keystone/pull/4651) Thanks [@timleslie](https://github.com/timleslie)! - Removed `errorPolicy: 'all'` from `useMutation` to allow `onError` callback to be triggered. Thanks `@miguelvvs`.
+
+- Updated dependencies [[`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be), [`81e86cbaa`](https://github.com/keystonejs/keystone/commit/81e86cbaa5c73633d6cb0ca2f84e834201e8bf9a)]:
+  - @keystonejs/utils@6.0.0
+  - @keystonejs/fields@21.0.1
+
 ## 7.3.12
 
 ### Patch Changes
