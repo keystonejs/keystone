@@ -3,12 +3,12 @@ import { createSystem } from '../lib/createSystem';
 import { initConfig } from '../lib/initConfig';
 import { createExpressServer } from '../lib/createExpressServer';
 import { PORT } from './utils';
+import type { StaticPaths } from './';
 import * as fs from 'fs-extra';
 
-export const start = async () => {
+export const start = async ({ projectAdminPath }: StaticPaths) => {
   console.log('🤞 Starting Keystone');
-  const dotKeystonePath = path.resolve('.keystone');
-  const projectAdminPath = path.join(dotKeystonePath, 'admin');
+
   const apiFile = path.join(projectAdminPath, '.next/server/pages/api/__keystone_api_build.js');
   if (!fs.existsSync(apiFile)) {
     throw new Error('keystone-next build must be run before running keystone-next start');

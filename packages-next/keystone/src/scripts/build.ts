@@ -1,15 +1,13 @@
-import path from 'path';
 import { buildAdminUI, generateAdminUI } from '@keystone-next/admin-ui/system';
 import { createSystem } from '../lib/createSystem';
 import { initConfig } from '../lib/initConfig';
 import { requireSource } from '../lib/requireSource';
 import { saveSchemaAndTypes } from '../lib/saveSchemaAndTypes';
 import { CONFIG_PATH } from './utils';
+import type { StaticPaths } from './';
 
-export async function build() {
+export async function build({ dotKeystonePath, projectAdminPath }: StaticPaths) {
   console.log('🤞 Building Keystone');
-  const dotKeystonePath = path.resolve('.keystone');
-  const projectAdminPath = path.join(dotKeystonePath, 'admin');
 
   const config = initConfig(requireSource(CONFIG_PATH).default);
 

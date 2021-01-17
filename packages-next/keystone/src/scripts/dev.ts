@@ -8,6 +8,8 @@ import { createExpressServer } from '../lib/createExpressServer';
 import { saveSchemaAndTypes } from '../lib/saveSchemaAndTypes';
 import { CONFIG_PATH, PORT } from './utils';
 
+import type { StaticPaths } from './';
+
 // TODO: Don't generate or start an Admin UI if it isn't configured!!
 const devLoadingHTMLFilepath = path.join(
   path.dirname(require.resolve('@keystone-next/keystone/package.json')),
@@ -16,10 +18,8 @@ const devLoadingHTMLFilepath = path.join(
   'dev-loading.html'
 );
 
-export const dev = async () => {
+export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) => {
   console.log('🤞 Starting Keystone');
-  const dotKeystonePath = path.resolve('.keystone');
-  const projectAdminPath = path.join(dotKeystonePath, 'admin');
 
   const server = express();
   let expressServer: null | ReturnType<typeof express> = null;

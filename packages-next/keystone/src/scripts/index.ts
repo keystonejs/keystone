@@ -1,7 +1,10 @@
+import path from 'path';
 import meow from 'meow';
 import { dev } from './dev';
 import { build } from './build';
 import { start } from './start';
+
+export type StaticPaths = { dotKeystonePath: string; projectAdminPath: string };
 
 function cli() {
   const commands = { dev, build, start };
@@ -21,7 +24,14 @@ function cli() {
     console.log(help);
     process.exit(1);
   }
-  commands[command as keyof typeof commands]();
+
+  // These paths are non-configurable, as we need to use them
+  // to find the config file (for `start`) itself!
+  const dotKeystonePath = path.resolve('.keystone');
+  const projectAdminPath = path.join(dotKeystonePath, 'admin');
+  const staticPaths: StaticPaths = { dotKeystonePath, projectAdminPath };
+
+  commands[command as keyof typeof commands](staticPaths);
 }
 
 cli();
