@@ -4,9 +4,13 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "keystone-next",
+    "prototype": "keystone-next prototype",
+    "dev": "keystone-next dev",
     "start": "keystone-next start",
-    "build": "keystone-next build"
+    "build": "keystone-next build",
+    "reset": "keystone-next reset",
+    "generate": "keystone-next generate",
+    "resolve": "keystone-next resolve"
   },
   "dependencies": {
     "@keystone-next/admin-ui": "^8.0.0",

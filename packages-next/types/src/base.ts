@@ -24,6 +24,7 @@ export type BaseKeystone = {
   getTypeDefs: (args: { schemaName: string }) => any;
   getResolvers: (args: { schemaName: string }) => any;
   queryLimits: { maxTotalResults: number };
+  _consolidateRelationships: () => Record<string, any>[];
 };
 
 // TODO: This needs to be reviewed and expanded

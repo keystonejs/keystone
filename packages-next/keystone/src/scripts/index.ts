@@ -1,24 +1,34 @@
 import path from 'path';
 import meow from 'meow';
-import { dev } from './dev';
-import { build } from './build';
-import { start } from './start';
+import { prototype } from './run/prototype';
+import { dev } from './run/dev';
+import { start } from './run/start';
+import { build } from './build/build';
+import { deploy } from './migrate/deploy';
+import { generate } from './migrate/generate';
 
 export type StaticPaths = { dotKeystonePath: string; projectAdminPath: string };
 
 function cli() {
-  const commands = { dev, build, start };
+  const commands = { prototype, dev, start, build, deploy, generate };
   const { input, help } = meow(
     `
     Usage
       $ keystone-next [command]
     Commands
-      dev          start the project in development mode
-      build        build the project (must be done before using start)
-      start        start the project in production mode
+      Run
+        prototype     start the project in prototyping mode
+        dev           start the project in development mode
+        start         start the project in production mode
+      Build
+        build         build the project (must be done before using start)
+      Migrate
+        reset         reset the database (this will drop all data!)
+        generate      generate a migration
+        deploy        deploy all migrations
     `
   );
-  const command = input[0] || 'dev';
+  const command = input[0] || 'prototype';
   if (!(command in commands)) {
     console.log(`${command} is not a command that keystone-next accepts`);
     console.log(help);
