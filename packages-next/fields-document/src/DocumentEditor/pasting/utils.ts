@@ -39,7 +39,7 @@ export function addMarksToChildren<T>(marks: Set<Mark>, cb: () => T): T {
   }
 }
 
-export function removeMarkForChildren<T>(mark: Mark, cb: () => T): T {
+export function forceDisableMarkForChildren<T>(mark: Mark, cb: () => T): T {
   const wasPreviouslyDisabled = currentlyDisabledMarks.has(mark);
   currentlyDisabledMarks.add(mark);
   try {

@@ -5,7 +5,7 @@ import { Mark } from '../utils';
 import {
   addMarksToChildren,
   getTextNodeForCurrentlyActiveMarks,
-  removeMarkForChildren,
+  forceDisableMarkForChildren,
 } from './utils';
 
 function getAlignmentFromElement(element: Node): 'center' | 'end' | undefined {
@@ -36,7 +36,7 @@ const ELEMENT_TAGS: Record<string, (element: Node) => Record<string, any>> = {
     type: 'link',
     href: (el as any).getAttribute('href'),
     // underline is on links in Google Docs
-    children: removeMarkForChildren('underline', () => deserializeChildren(el.childNodes)),
+    children: forceDisableMarkForChildren('underline', () => deserializeChildren(el.childNodes)),
   }),
   BLOCKQUOTE: () => ({ type: 'blockquote' }),
   H1: el => ({ type: 'heading', level: 1, textAlign: getAlignmentFromElement(el) }),
