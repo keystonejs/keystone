@@ -69,7 +69,7 @@
     "@keystonejs/test-utils": "*",
     "globby": "^11.0.2",
     "graphql-upload": "^11.0.0",
-    "mime": "^2.4.7"
+    "mime": "^2.5.0"
   },
   "preconstruct": {
     "entrypoints": [
