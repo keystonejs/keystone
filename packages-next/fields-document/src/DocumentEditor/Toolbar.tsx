@@ -328,7 +328,14 @@ const InsertBlockMenu = memo(function InsertBlockMenu({
         position: 'relative',
       }}
     >
-      <Tooltip content="Insert" weight="subtle">
+      <Tooltip
+        content={
+          <Fragment>
+            Insert <KeyboardInTooltip>/</KeyboardInTooltip>
+          </Fragment>
+        }
+        weight="subtle"
+      >
         {({ ref, ...attrs }) => (
           <ToolbarButton
             ref={applyRefs(ref, trigger.ref)}

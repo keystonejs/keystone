@@ -94,7 +94,7 @@ export const BlockComponentsButtons = ({ onClose }: { onClose: () => void }) => 
             onClose();
           }}
         >
-          + {blockComponents[key].label}
+          {blockComponents[key].label}
         </ToolbarButton>
       ))}
     </Fragment>
