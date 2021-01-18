@@ -196,11 +196,6 @@ test('inserting a void component block', () => {
   insertComponentBlock(editor, componentBlocks, 'basic', {});
   expect(editor).toMatchInlineSnapshot(`
     <editor>
-      <paragraph>
-        <text>
-          <cursor />
-        </text>
-      </paragraph>
       <component-block
         component="basic"
         props={
@@ -218,7 +213,7 @@ test('inserting a void component block', () => {
           }
         >
           <text>
-            
+            <cursor />
           </text>
         </component-inline-prop>
       </component-block>

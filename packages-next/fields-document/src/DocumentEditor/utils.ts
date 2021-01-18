@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
-import { Editor, Node, NodeEntry, Path, Transforms, Element } from 'slate';
+import { Editor, Node, NodeEntry, Path, Transforms, Element, PathRef } from 'slate';
 import { ReactEditor } from 'slate-react';
 
 export { useEditor as useStaticEditor } from 'slate-react';
@@ -102,4 +102,23 @@ export const ForceValidationProvider = ForceValidationContext.Provider;
 
 export function useForceValidation() {
   return useContext(ForceValidationContext);
+}
+
+export function insertNodesButReplaceIfSelectionIsAtEmptyParagraph(
+  editor: Editor,
+  nodes: Node | Node[]
+) {
+  let pathRefForEmptyParagraphAtCursor: PathRef | undefined;
+  if (editor.selection) {
+    const path = Path.parent(editor.selection.anchor.path);
+    const node = Node.get(editor, path);
+    if (node.type === 'paragraph' && Node.string(node) === '') {
+      pathRefForEmptyParagraphAtCursor = Editor.pathRef(editor, path);
+    }
+  }
+  Transforms.insertNodes(editor, nodes);
+  let path = pathRefForEmptyParagraphAtCursor?.unref();
+  if (path) {
+    Transforms.removeNodes(editor, { at: path });
+  }
 }

@@ -17,7 +17,11 @@ import { clientSideValidateProp, VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } fro
 import { createPreviewProps } from './preview-props';
 import { getInitialValue } from './initial-values';
 import { FormValue } from './form';
-import { useElementWithSetNodes, useStaticEditor } from '../utils';
+import {
+  insertNodesButReplaceIfSelectionIsAtEmptyParagraph,
+  useElementWithSetNodes,
+  useStaticEditor,
+} from '../utils';
 
 export { withComponentBlocks } from './with-component-blocks';
 
@@ -63,7 +67,7 @@ export function insertComponentBlock(
     componentBlocks[componentBlock],
     relationships
   );
-  Transforms.insertNodes(editor, node);
+  insertNodesButReplaceIfSelectionIsAtEmptyParagraph(editor, node);
   if (!isFakeVoid && editor.selection) {
     const [entry] = Editor.nodes(editor, {
       match: node => node.type === 'component-block',

@@ -2,6 +2,7 @@ import { Editor, Transforms, Range } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
+import { insertDivider } from './divider';
 import { DocumentFeaturesForNormalization } from './document-features-normalization';
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
 
@@ -124,11 +125,7 @@ export function withBlockMarkdownShortcuts(
   addShortcut(
     '---',
     () => {
-      Transforms.insertNodes(
-        editor,
-        { type: 'divider', children: [{ text: '' }] },
-        { match: node => node.type === 'paragraph' }
-      );
+      insertDivider(editor);
     },
     features => features.dividers
   );

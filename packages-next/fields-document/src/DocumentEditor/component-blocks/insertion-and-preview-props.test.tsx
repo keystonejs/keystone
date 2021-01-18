@@ -87,11 +87,6 @@ test('inserting a void component block', () => {
   insertComponentBlock(editor, componentBlocks, 'void', relationships);
   expect(editor).toMatchInlineSnapshot(`
     <editor>
-      <paragraph>
-        <text>
-          <cursor />
-        </text>
-      </paragraph>
       <component-block
         component="void"
         props={
@@ -109,7 +104,7 @@ test('inserting a void component block', () => {
           }
         >
           <text>
-            
+            <cursor />
           </text>
         </component-inline-prop>
       </component-block>
@@ -136,11 +131,6 @@ test('inserting a complex component block', () => {
   insertComponentBlock(editor, componentBlocks, 'complex', relationships);
   expect(editor).toMatchInlineSnapshot(`
     <editor>
-      <paragraph>
-        <text>
-          
-        </text>
-      </paragraph>
       <component-block
         component="complex"
         props={

@@ -16,18 +16,18 @@ test('inserting a divider with a shortcut works', () => {
   editor.insertText('-');
   expect(editor).toMatchInlineSnapshot(`
     <editor>
-      <paragraph>
-        <text>
-          
-        </text>
-      </paragraph>
       <divider
         @@isVoid={true}
       >
         <text>
-          <cursor />
+          
         </text>
       </divider>
+      <paragraph>
+        <text>
+          <cursor />
+        </text>
+      </paragraph>
       <paragraph>
         <text>
           

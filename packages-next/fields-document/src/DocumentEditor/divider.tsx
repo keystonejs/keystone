@@ -1,5 +1,5 @@
 import React, { ComponentProps, Fragment, useMemo } from 'react';
-import { Transforms } from 'slate';
+import { Editor } from 'slate';
 import { ReactEditor } from 'slate-react';
 
 import { MinusIcon } from '@keystone-ui/icons/icons/MinusIcon';
@@ -7,8 +7,17 @@ import { Tooltip } from '@keystone-ui/tooltip';
 
 import { KeyboardInTooltip, ToolbarButton } from './primitives';
 import { useToolbarState } from './toolbar-state';
+import { insertNodesButReplaceIfSelectionIsAtEmptyParagraph } from './utils';
 
 const minusIcon = <MinusIcon size="small" />;
+
+export function insertDivider(editor: Editor) {
+  insertNodesButReplaceIfSelectionIsAtEmptyParagraph(editor, {
+    type: 'divider',
+    children: [{ text: '' }],
+  });
+  Editor.insertNode(editor, { type: 'paragraph', children: [{ text: '' }] });
+}
 
 const DividerButton = ({
   attrs,
@@ -25,11 +34,6 @@ const DividerButton = ({
         isDisabled={isDisabled}
         onMouseDown={event => {
           event.preventDefault();
-          Transforms.insertNodes(
-            editor,
-            { type: 'divider', children: [{ text: '' }] },
-            { match: node => node.type === 'paragraph' }
-          );
         }}
         {...attrs}
       >

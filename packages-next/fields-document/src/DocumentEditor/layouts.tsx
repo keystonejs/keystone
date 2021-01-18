@@ -10,7 +10,12 @@ import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { paragraphElement } from './paragraphs';
-import { isBlockActive, moveChildren, useStaticEditor } from './utils';
+import {
+  insertNodesButReplaceIfSelectionIsAtEmptyParagraph,
+  isBlockActive,
+  moveChildren,
+  useStaticEditor,
+} from './utils';
 import { DocumentFeatures } from '../views';
 import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
 import { useToolbarState } from './toolbar-state';
@@ -134,18 +139,26 @@ const insertLayout = (editor: ReactEditor, layout: [number, ...number[]]) => {
   }
   const entry = firstNonEditorRootNodeEntry(editor);
   if (entry) {
-    Transforms.insertNodes(
-      editor,
-      [
-        {
-          type: 'layout',
-          layout,
-          children: [],
-        },
-      ],
-      { at: [entry[1][0] + 1] }
-    );
-    Transforms.select(editor, [entry[1][0] + 1, 0]);
+    const node = [
+      {
+        type: 'layout',
+        layout,
+        children: [
+          { type: 'layout-area', children: [{ type: 'paragraph', children: [{ text: '' }] }] },
+        ],
+      },
+    ];
+    if (
+      entry[0].type === 'paragraph' &&
+      (entry[0].children as any).length === 1 &&
+      (entry[0].children as any)[0].text === ''
+    ) {
+      insertNodesButReplaceIfSelectionIsAtEmptyParagraph(editor, node);
+      Transforms.select(editor, [entry[1][0], 0]);
+    } else {
+      Transforms.insertNodes(editor, node, { at: [entry[1][0] + 1] });
+      Transforms.select(editor, [entry[1][0] + 1, 0]);
+    }
   }
 };
 
