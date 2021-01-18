@@ -20,6 +20,9 @@ export function deserializeMarkdown(markdown: string) {
   const root = mdASTUtilFromMarkdown(markdown, markdownConfig);
   const getDefinition = definitions(root);
   let nodes = root.children;
+  if (nodes.length === 1 && nodes[0].type === 'paragraph') {
+    nodes = nodes[0].children;
+  }
   return deserializeChildren(nodes, getDefinition);
 }
 
@@ -116,6 +119,9 @@ function deserializeMarkdownNode(node: MDNode, getDefinition: GetDefinition): De
     }
     case 'emphasis': {
       return addMarkToChildren('italic', () => deserializeChildren(node.children, getDefinition));
+    }
+    case 'inlineCode': {
+      return addMarkToChildren('code', () => [getTextNodeForCurrentlyActiveMarks(node.value)]);
     }
     // while it would be nice if we parsed the html here
     // it's a bit more complicated than just parsing the html
