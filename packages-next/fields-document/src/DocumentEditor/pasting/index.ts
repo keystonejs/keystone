@@ -1,11 +1,23 @@
-import { Descendant, Editor, Transforms } from 'slate';
+import { Descendant, Editor, Transforms, Node, PathRef, Path } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { deserializeHTML } from './html';
 import { deserializeMarkdown } from './markdown';
 
 function insertFragmentButDifferent(editor: ReactEditor, nodes: Descendant[]) {
   if (Editor.isBlock(editor, nodes[0])) {
+    let pathRefForEmptyParagraphAtCursor: PathRef | undefined;
+    if (editor.selection) {
+      const path = Path.parent(editor.selection.anchor.path);
+      const node = Node.get(editor, path);
+      if (node.type === 'paragraph' && Node.string(node) === '') {
+        pathRefForEmptyParagraphAtCursor = Editor.pathRef(editor, path);
+      }
+    }
     Transforms.insertNodes(editor, nodes);
+    let path = pathRefForEmptyParagraphAtCursor?.unref();
+    if (path) {
+      Transforms.removeNodes(editor, { at: path });
+    }
   } else {
     Transforms.insertFragment(editor, nodes);
   }

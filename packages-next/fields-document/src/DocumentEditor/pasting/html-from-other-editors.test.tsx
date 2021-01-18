@@ -34,11 +34,6 @@ test('confluence', () => {
     )
   ).toMatchInlineSnapshot(`
     <editor>
-      <paragraph>
-        <text>
-          
-        </text>
-      </paragraph>
       <heading
         level={1}
       >
@@ -291,11 +286,6 @@ there is a break before this</p>
     )
   ).toMatchInlineSnapshot(`
     <editor>
-      <paragraph>
-        <text>
-          
-        </text>
-      </paragraph>
       <heading
         level={1}
       >
@@ -448,11 +438,6 @@ test('dropbox paper', () => {
     )
   ).toMatchInlineSnapshot(`
     <editor>
-      <paragraph>
-        <text>
-          
-        </text>
-      </paragraph>
       <heading
         level={1}
       >

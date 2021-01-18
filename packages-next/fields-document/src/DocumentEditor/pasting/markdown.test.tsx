@@ -76,11 +76,6 @@ there is a break before this
 `)
   ).toMatchInlineSnapshot(`
     <editor>
-      <paragraph>
-        <text>
-          
-        </text>
-      </paragraph>
       <heading
         level={1}
       >
