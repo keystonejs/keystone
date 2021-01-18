@@ -11434,7 +11434,7 @@ focus-lock@^0.8.1:
   dependencies:
     tslib "^1.9.3"
 
-focus-trap-react@^8.3.2:
+focus-trap-react@^8.4.0:
   version "8.4.0"
   resolved "https://registry.yarnpkg.com/focus-trap-react/-/focus-trap-react-8.4.0.tgz#7d2da18bec268742e6cc0c786f1aeea26abbf8c1"
   integrity sha512-Qay+xBVQDq2AgYvQChE3zoG6+JSm424AbTCjRmGqO/blOLjUc7UhixUeyZR180HN8HZ05GzZ1LjHz0nfrE3YKA==
