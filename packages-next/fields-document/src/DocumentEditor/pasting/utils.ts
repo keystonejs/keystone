@@ -8,6 +8,7 @@ import { Mark } from '../utils';
 // but in slate, marks are only represented on text nodes
 
 const currentlyActiveMarks = new Set<Mark>();
+const currentlyDisabledMarks = new Set<Mark>();
 
 export function addMarkToChildren<T>(mark: Mark, cb: () => T): T {
   const wasPreviouslyActive = currentlyActiveMarks.has(mark);
@@ -38,10 +39,24 @@ export function addMarksToChildren<T>(marks: Set<Mark>, cb: () => T): T {
   }
 }
 
+export function removeMarkForChildren<T>(mark: Mark, cb: () => T): T {
+  const wasPreviouslyDisabled = currentlyDisabledMarks.has(mark);
+  currentlyDisabledMarks.add(mark);
+  try {
+    return cb();
+  } finally {
+    if (!wasPreviouslyDisabled) {
+      currentlyDisabledMarks.delete(mark);
+    }
+  }
+}
+
 export function getTextNodeForCurrentlyActiveMarks(text: string) {
   const node: Text = { text };
   for (const mark of currentlyActiveMarks) {
-    node[mark] = true;
+    if (!currentlyDisabledMarks.has(mark)) {
+      node[mark] = true;
+    }
   }
   return node;
 }

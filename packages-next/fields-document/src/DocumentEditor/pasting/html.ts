@@ -2,17 +2,49 @@
 
 import { Descendant } from 'slate';
 import { Mark } from '../utils';
-import { addMarksToChildren, getTextNodeForCurrentlyActiveMarks } from './utils';
+import {
+  addMarksToChildren,
+  getTextNodeForCurrentlyActiveMarks,
+  removeMarkForChildren,
+} from './utils';
+
+function getAlignmentFromElement(element: Node): 'center' | 'end' | undefined {
+  const parent = element.parentElement;
+  // confluence
+  const attribute = parent?.getAttribute('data-align');
+  // note: we don't show html that confluence would parse as alignment
+  // we could change that but meh
+  // (they match on div.fabric-editor-block-mark with data-align)
+  if (attribute === 'center' || attribute === 'end') {
+    return attribute;
+  }
+  if (element instanceof HTMLElement) {
+    // Google docs
+    const textAlign = element.style.textAlign;
+    if (textAlign === 'center') {
+      return 'center';
+    }
+    // TODO: RTL things?
+    if (textAlign === 'right' || textAlign === 'end') {
+      return 'end';
+    }
+  }
+}
 
 const ELEMENT_TAGS: Record<string, (element: Node) => Record<string, any>> = {
-  A: el => ({ type: 'link', url: (el as any).getAttribute('href') }),
+  A: el => ({
+    type: 'link',
+    href: (el as any).getAttribute('href'),
+    // underline is on links in Google Docs
+    children: removeMarkForChildren('underline', () => deserializeChildren(el.childNodes)),
+  }),
   BLOCKQUOTE: () => ({ type: 'blockquote' }),
-  H1: () => ({ type: 'heading', level: 1 }),
-  H2: () => ({ type: 'heading', level: 2 }),
-  H3: () => ({ type: 'heading', level: 3 }),
-  H4: () => ({ type: 'heading', level: 4 }),
-  H5: () => ({ type: 'heading', level: 5 }),
-  H6: () => ({ type: 'heading', level: 6 }),
+  H1: el => ({ type: 'heading', level: 1, textAlign: getAlignmentFromElement(el) }),
+  H2: el => ({ type: 'heading', level: 2, textAlign: getAlignmentFromElement(el) }),
+  H3: el => ({ type: 'heading', level: 3, textAlign: getAlignmentFromElement(el) }),
+  H4: el => ({ type: 'heading', level: 4, textAlign: getAlignmentFromElement(el) }),
+  H5: el => ({ type: 'heading', level: 5, textAlign: getAlignmentFromElement(el) }),
+  H6: el => ({ type: 'heading', level: 6, textAlign: getAlignmentFromElement(el) }),
   IMG: el => ({
     type: 'paragraph',
     children: [
@@ -25,7 +57,7 @@ const ELEMENT_TAGS: Record<string, (element: Node) => Record<string, any>> = {
   }),
   LI: () => ({ type: 'list-item' }),
   OL: () => ({ type: 'ordered-list' }),
-  P: () => ({ type: 'paragraph' }),
+  P: el => ({ type: 'paragraph', textAlign: getAlignmentFromElement(el) }),
   PRE: () => ({ type: 'code' }),
   UL: () => ({ type: 'unordered-list' }),
   HR: () => ({ type: 'divider', children: [{ text: '' }] }),
@@ -40,6 +72,8 @@ const TEXT_TAGS: Record<string, Mark> = {
   I: 'italic',
   STRONG: 'bold',
   U: 'underline',
+  SUP: 'superscript',
+  SUB: 'subscript',
 };
 
 function marksFromElementAttributes(element: Node) {
@@ -57,6 +91,10 @@ function marksFromElementAttributes(element: Node) {
       marks.add('underline');
     } else if (textDecoration === 'line-through') {
       marks.add('strikethrough');
+    }
+    // confluence
+    if (nodeName === 'SPAN' && element.classList.contains('code')) {
+      marks.add('code');
     }
     // Google Docs does weird things with <b>
     if (nodeName === 'B' && fontWeight !== 'normal') {
@@ -90,17 +128,27 @@ export function deserializeHTML(html: string) {
 
 export function deserializeHTMLNode(el: Node): Descendant[] {
   if (el.nodeType === 3) {
-    return [getTextNodeForCurrentlyActiveMarks(el.textContent || '')];
+    const text = el.textContent;
+    if (!text?.trim()) {
+      return [];
+    }
+    return [getTextNodeForCurrentlyActiveMarks(text)];
   }
   if (el.nodeType !== 1) {
     return [];
   }
-  const { nodeName } = el;
+  let { nodeName } = el;
   if (nodeName === 'BR') {
     return [getTextNodeForCurrentlyActiveMarks('\n')];
   }
 
   const marks = marksFromElementAttributes(el);
+
+  // Dropbox Paper displays blockquotes as lists for some reason
+  if (el instanceof Element && el.classList.contains('listtype-quote')) {
+    marks.delete('italic');
+    nodeName = 'BLOCKQUOTE';
+  }
 
   return addMarksToChildren(marks, () => {
     if (ELEMENT_TAGS[nodeName]) {
