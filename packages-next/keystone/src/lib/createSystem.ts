@@ -1,3 +1,4 @@
+import path from 'path';
 import { Keystone } from '@keystonejs/keystone';
 import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexAdapter } from '@keystonejs/adapter-knex';
@@ -8,7 +9,7 @@ import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './createContext';
 
-export function createKeystone(config: KeystoneConfig) {
+export function createKeystone(config: KeystoneConfig, dotKeystonePath: string) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
@@ -23,7 +24,10 @@ export function createKeystone(config: KeystoneConfig) {
   } else if (db.adapter === 'mongoose') {
     adapter = new MongooseAdapter({ mongoUri: db.url, ...db.mongooseOptions });
   } else if (db.adapter === 'prisma_postgresql') {
-    adapter = new PrismaAdapter({ ...db });
+    adapter = new PrismaAdapter({
+      getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
+      ...db,
+    });
   }
   // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
   const keystone: BaseKeystone = new Keystone({
@@ -73,8 +77,8 @@ export function createKeystone(config: KeystoneConfig) {
   return keystone;
 }
 
-export function createSystem(config: KeystoneConfig) {
-  const keystone = createKeystone(config);
+export function createSystem(config: KeystoneConfig, dotKeystonePath: string) {
+  const keystone = createKeystone(config, dotKeystonePath);
 
   const graphQLSchema = createGraphQLSchema(config, keystone);
 

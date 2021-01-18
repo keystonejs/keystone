@@ -26,7 +26,7 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) =>
 
   const initKeystone = async () => {
     const config = initConfig(requireSource(CONFIG_PATH).default);
-    const { keystone, graphQLSchema, createContext } = createSystem(config);
+    const { keystone, graphQLSchema, createContext } = createSystem(config, dotKeystonePath);
 
     console.log('✨ Generating Schema');
     await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);

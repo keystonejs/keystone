@@ -6,7 +6,7 @@ import { PORT } from './utils';
 import type { StaticPaths } from './';
 import * as fs from 'fs-extra';
 
-export const start = async ({ projectAdminPath }: StaticPaths) => {
+export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) => {
   console.log('🤞 Starting Keystone');
 
   const apiFile = path.join(projectAdminPath, '.next/server/pages/api/__keystone_api_build.js');
@@ -14,7 +14,7 @@ export const start = async ({ projectAdminPath }: StaticPaths) => {
     throw new Error('keystone-next build must be run before running keystone-next start');
   }
   const config = initConfig(require(apiFile).config);
-  const { keystone, graphQLSchema, createContext } = createSystem(config);
+  const { keystone, graphQLSchema, createContext } = createSystem(config, dotKeystonePath);
 
   console.log('✨ Connecting to the Database');
   await keystone.connect({ context: createContext({ skipAccessControl: true }) });
