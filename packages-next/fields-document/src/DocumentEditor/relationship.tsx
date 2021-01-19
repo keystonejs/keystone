@@ -76,6 +76,7 @@ export function RelationshipButton({ onClose }: { onClose: () => void }) {
               Transforms.insertNodes(editor, {
                 type: 'relationship',
                 relationship: key,
+                data: null,
                 children: [{ text: '' }],
               });
               onClose();

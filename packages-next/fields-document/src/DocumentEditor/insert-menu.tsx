@@ -34,6 +34,7 @@ function getOptions(
           Transforms.insertNodes(editor, {
             type: 'relationship',
             relationship,
+            data: null,
             children: [{ text: '' }],
           });
         },
