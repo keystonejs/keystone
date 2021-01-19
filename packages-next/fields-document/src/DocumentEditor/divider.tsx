@@ -7,12 +7,12 @@ import { Tooltip } from '@keystone-ui/tooltip';
 
 import { KeyboardInTooltip, ToolbarButton } from './primitives';
 import { useToolbarState } from './toolbar-state';
-import { insertNodesButReplaceIfSelectionIsAtEmptyParagraph } from './utils';
+import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './utils';
 
 const minusIcon = <MinusIcon size="small" />;
 
 export function insertDivider(editor: Editor) {
-  insertNodesButReplaceIfSelectionIsAtEmptyParagraph(editor, {
+  insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
     type: 'divider',
     children: [{ text: '' }],
   });

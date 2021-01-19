@@ -9,20 +9,25 @@ import { ComponentBlock } from './component-blocks/api';
 import { InlineDialog, ToolbarButton } from './primitives';
 import { Relationships, useDocumentFieldRelationships } from './relationship';
 import { matchSorter } from 'match-sorter';
-import { useToolbarState } from './toolbar-state';
+import { ToolbarState, useToolbarState } from './toolbar-state';
+import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './utils';
+import { insertLayout } from './layouts';
+import scrollIntoView from 'scroll-into-view-if-needed';
 
 let noop = () => {};
 
 type Option = {
   label: string;
+  keywords?: string[];
   insert: (editor: ReactEditor) => void;
 };
 
 function getOptions(
+  toolbarState: ToolbarState,
   componentBlocks: Record<string, ComponentBlock>,
   relationships: Relationships
 ): Option[] {
-  return [
+  const options: (Option | boolean)[] = [
     ...Object.entries(relationships)
       .filter(
         (x): x is [string, Extract<Relationships[string], { kind: 'inline' }>] =>
@@ -45,20 +50,98 @@ function getOptions(
         insertComponentBlock(editor, componentBlocks, key, relationships);
       },
     })),
+    ...toolbarState.textStyles.allowedHeadingLevels.map(level => ({
+      label: `Heading ${level}`,
+      insert(editor: ReactEditor) {
+        insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
+          type: 'heading',
+          level,
+          children: [{ text: '' }],
+        });
+      },
+    })),
+    !toolbarState.blockquote.isDisabled &&
+      toolbarState.editorDocumentFeatures.formatting.blockTypes.blockquote && {
+        label: 'Blockquote',
+        insert(editor) {
+          insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
+            type: 'blockquote',
+            children: [{ text: '' }],
+          });
+        },
+      },
+    !toolbarState.code.isDisabled &&
+      toolbarState.editorDocumentFeatures.formatting.blockTypes.code && {
+        label: 'Code block',
+        insert(editor) {
+          insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
+            type: 'code',
+            children: [{ text: '' }],
+          });
+        },
+      },
+    !toolbarState.dividers.isDisabled &&
+      toolbarState.editorDocumentFeatures.dividers && {
+        label: 'Divider',
+        insert(editor) {
+          insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
+            type: 'divider',
+            children: [{ text: '' }],
+          });
+        },
+      },
+    !!toolbarState.editorDocumentFeatures.layouts.length && {
+      label: 'Layout',
+      insert(editor) {
+        insertLayout(editor, toolbarState.editorDocumentFeatures.layouts[0]);
+      },
+    },
+    !toolbarState.lists.ordered.isDisabled &&
+      toolbarState.editorDocumentFeatures.formatting.listTypes.ordered && {
+        label: 'Numbered List',
+        keywords: ['ordered list'],
+        insert(editor) {
+          insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
+            type: 'ordered-list',
+            children: [{ text: '' }],
+          });
+        },
+      },
+    !toolbarState.lists.unordered.isDisabled &&
+      toolbarState.editorDocumentFeatures.formatting.listTypes.unordered && {
+        label: 'Bullet List',
+        keywords: ['unordered list'],
+        insert(editor) {
+          insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
+            type: 'unordered-list',
+            children: [{ text: '' }],
+          });
+        },
+      },
   ];
+  return options.filter((x): x is Exclude<typeof x, boolean> => typeof x !== 'boolean');
 }
 
 function insertOption(editor: ReactEditor, text: Text, option: Option) {
   const path = ReactEditor.findPath(editor, text);
-  Transforms.delete(editor, { at: path });
+  Transforms.delete(editor, {
+    at: {
+      focus: Editor.start(editor, path),
+      anchor: Editor.end(editor, path),
+    },
+  });
+
+  console.log({ selection: editor.selection });
   option.insert(editor);
 }
 
+// TODO: the changing width of the menu when searching isn't great
 export function InsertMenu({ children, text }: { children: ReactNode; text: Text }) {
+  const toolbarState = useToolbarState();
   const {
     editor,
     relationships: { isDisabled: relationshipsDisabled },
-  } = useToolbarState();
+  } = toolbarState;
   const { dialog, trigger } = useControlledPopover(
     { isOpen: true, onClose: noop },
     { placement: 'bottom-start' }
@@ -66,10 +149,10 @@ export function InsertMenu({ children, text }: { children: ReactNode; text: Text
   const componentBlocks = useContext(ComponentBlockContext);
   const relationships = useDocumentFieldRelationships();
   const options = matchSorter(
-    getOptions(componentBlocks, relationshipsDisabled ? {} : relationships),
+    getOptions(toolbarState, componentBlocks, relationshipsDisabled ? {} : relationships),
     text.text.slice(1),
     {
-      keys: ['label'],
+      keys: ['label', 'keywords'],
     }
   );
 
@@ -83,6 +166,19 @@ export function InsertMenu({ children, text }: { children: ReactNode; text: Text
   useEffect(() => {
     stateRef.current = { selectedIndex, options, text };
   });
+
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = dialogRef.current?.children?.[selectedIndex];
+    if (dialogRef.current && element) {
+      scrollIntoView(element, {
+        scrollMode: 'if-needed',
+        boundary: dialogRef.current,
+        block: 'nearest',
+      });
+    }
+  }, [selectedIndex]);
 
   useEffect(() => {
     const domNode = ReactEditor.toDOMNode(editor, editor);
@@ -132,6 +228,7 @@ export function InsertMenu({ children, text }: { children: ReactNode; text: Text
       domNode.removeEventListener('keydown', listener);
     };
   }, [editor]);
+  const DIALOG_HEIGHT = 300;
   return (
     <Fragment>
       <span {...trigger.props} css={{ color: 'blue' }} ref={trigger.ref}>
@@ -141,23 +238,29 @@ export function InsertMenu({ children, text }: { children: ReactNode; text: Text
         <InlineDialog
           contentEditable={false}
           {...dialog.props}
-          css={{ display: options.length ? undefined : 'none', userSelect: 'none' }}
+          css={{
+            display: options.length ? undefined : 'none',
+            userSelect: 'none',
+            maxHeight: DIALOG_HEIGHT,
+          }}
           ref={dialog.ref}
         >
-          {options.map((option, index) => (
-            <ToolbarButton
-              key={option.label}
-              isPressed={index === selectedIndex}
-              onMouseEnter={() => {
-                setSelectedIndex(index);
-              }}
-              onClick={() => {
-                insertOption(editor, text, option);
-              }}
-            >
-              {option.label}
-            </ToolbarButton>
-          ))}
+          <div ref={dialogRef} css={{ overflowY: 'auto', maxHeight: DIALOG_HEIGHT - 8 * 2 }}>
+            {options.map((option, index) => (
+              <ToolbarButton
+                key={option.label}
+                isPressed={index === selectedIndex}
+                onMouseEnter={() => {
+                  setSelectedIndex(index);
+                }}
+                onClick={() => {
+                  insertOption(editor, text, option);
+                }}
+              >
+                {option.label}
+              </ToolbarButton>
+            ))}
+          </div>
         </InlineDialog>
       </Portal>
     </Fragment>

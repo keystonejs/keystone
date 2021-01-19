@@ -97,20 +97,21 @@ export function useForceValidation() {
   return useContext(ForceValidationContext);
 }
 
-export function insertNodesButReplaceIfSelectionIsAtEmptyParagraph(
+export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(
   editor: Editor,
   nodes: Node | Node[]
 ) {
-  let pathRefForEmptyParagraphAtCursor: PathRef | undefined;
-  if (editor.selection) {
-    const path = Path.parent(editor.selection.anchor.path);
-    const node = Node.get(editor, path);
-    if (node.type === 'paragraph' && Node.string(node) === '') {
-      pathRefForEmptyParagraphAtCursor = Editor.pathRef(editor, path);
-    }
+  let pathRefForEmptyNodeAtCursor: PathRef | undefined;
+  const entry = Editor.above(editor, {
+    match: node => node.type === 'heading' || node.type === 'paragraph',
+  });
+  console.log(entry);
+  if (entry && Node.string(entry[0]) === '') {
+    console.log('is empty thing');
+    pathRefForEmptyNodeAtCursor = Editor.pathRef(editor, entry[1]);
   }
   Transforms.insertNodes(editor, nodes);
-  let path = pathRefForEmptyParagraphAtCursor?.unref();
+  let path = pathRefForEmptyNodeAtCursor?.unref();
   if (path) {
     Transforms.removeNodes(editor, { at: path });
   }

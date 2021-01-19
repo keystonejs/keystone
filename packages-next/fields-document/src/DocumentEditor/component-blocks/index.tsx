@@ -18,7 +18,7 @@ import { createPreviewProps } from './preview-props';
 import { getInitialValue } from './initial-values';
 import { FormValue } from './form';
 import {
-  insertNodesButReplaceIfSelectionIsAtEmptyParagraph,
+  insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
   useElementWithSetNodes,
   useStaticEditor,
 } from '../utils';
@@ -67,7 +67,7 @@ export function insertComponentBlock(
     componentBlocks[componentBlock],
     relationships
   );
-  insertNodesButReplaceIfSelectionIsAtEmptyParagraph(editor, node);
+  insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, node);
   if (!isFakeVoid && editor.selection) {
     const [entry] = Editor.nodes(editor, {
       match: node => node.type === 'component-block',

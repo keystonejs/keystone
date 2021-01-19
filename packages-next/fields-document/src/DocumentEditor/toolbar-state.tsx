@@ -44,6 +44,7 @@ export type ToolbarState = {
   code: BasicToolbarItem;
   relationships: { isDisabled: boolean };
   editor: ReactEditor;
+  editorDocumentFeatures: DocumentFeatures;
 };
 
 const ToolbarStateContext = React.createContext<null | ToolbarState>(null);
@@ -239,6 +240,7 @@ export const createToolbarState = (
         !!hasBlockThatClearsOnClearFormatting(editor)
       ),
     },
+    editorDocumentFeatures,
   };
 };
 
