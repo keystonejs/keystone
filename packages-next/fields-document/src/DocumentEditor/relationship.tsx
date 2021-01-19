@@ -58,7 +58,7 @@ export function withRelationship(editor: ReactEditor) {
   return editor;
 }
 
-export function RelationshipButton() {
+export function RelationshipButton({ onClose }: { onClose: () => void }) {
   const {
     editor,
     relationships: { isDisabled },
@@ -78,6 +78,7 @@ export function RelationshipButton() {
                 relationship: key,
                 children: [{ text: '' }],
               });
+              onClose();
             }}
           >
             {relationship.label}

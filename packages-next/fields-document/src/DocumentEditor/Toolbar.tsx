@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Fragment, ReactNode, forwardRef, useState, memo, HTMLAttributes, useMemo } from 'react';
+import { Fragment, ReactNode, forwardRef, useState, HTMLAttributes, useMemo } from 'react';
 import { Editor, Transforms } from 'slate';
 import { applyRefs } from 'apply-ref';
 
@@ -31,7 +31,7 @@ import { ListButton } from './lists';
 import { blockquoteButton } from './blockquote';
 import { RelationshipButton } from './relationship';
 import { DocumentFeatures } from '../views';
-import { insertCodeBlock } from './code-block';
+import { codeButton } from './code-block';
 import { TextAlignMenu } from './alignment';
 import { dividerButton } from './divider';
 import { useToolbarState } from './toolbar-state';
@@ -104,8 +104,8 @@ export function Toolbar({
       {documentFeatures.links && linkButton}
       {documentFeatures.formatting.blockTypes.blockquote && blockquoteButton}
       {!!documentFeatures.layouts.length && <LayoutsButton layouts={documentFeatures.layouts} />}
-
-      <InsertBlockMenu blockTypes={documentFeatures.formatting.blockTypes} />
+      {documentFeatures.formatting.blockTypes.code && codeButton}
+      <InsertBlockMenu />
 
       <ToolbarSeparator />
       {useMemo(
@@ -301,11 +301,7 @@ function HeadingDialog({
   );
 }
 
-const InsertBlockMenu = memo(function InsertBlockMenu({
-  blockTypes,
-}: {
-  blockTypes: DocumentFeatures['formatting']['blockTypes'];
-}) {
+function InsertBlockMenu() {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {
@@ -358,39 +354,13 @@ const InsertBlockMenu = memo(function InsertBlockMenu({
       </Tooltip>
       {showMenu ? (
         <InlineDialog ref={dialog.ref} {...dialog.props}>
-          <InnerInsertBlockMenu blockTypes={blockTypes} onClose={() => setShowMenu(false)} />
+          <ToolbarGroup direction="column">
+            <RelationshipButton onClose={() => setShowMenu(false)} />
+            <BlockComponentsButtons onClose={() => setShowMenu(false)} />
+          </ToolbarGroup>
         </InlineDialog>
       ) : null}
     </div>
-  );
-});
-
-function InnerInsertBlockMenu({
-  blockTypes,
-  onClose,
-}: {
-  blockTypes: DocumentFeatures['formatting']['blockTypes'];
-  onClose: () => void;
-}) {
-  const { editor, code } = useToolbarState();
-
-  return (
-    <ToolbarGroup direction="column">
-      {blockTypes.code && (
-        <ToolbarButton
-          isDisabled={code.isDisabled}
-          onMouseDown={event => {
-            event.preventDefault();
-            insertCodeBlock(editor);
-            onClose();
-          }}
-        >
-          Code block
-        </ToolbarButton>
-      )}
-      <RelationshipButton />
-      <BlockComponentsButtons onClose={onClose} />
-    </ToolbarGroup>
   );
 }
 

@@ -41,7 +41,7 @@ export type ToolbarState = {
   // unlike the other things here which wrap elements
   layouts: { isSelected: boolean };
   dividers: { isDisabled: boolean };
-  code: { isDisabled: boolean };
+  code: BasicToolbarItem;
   relationships: { isDisabled: boolean };
   editor: ReactEditor;
 };
@@ -179,6 +179,7 @@ export const createToolbarState = (
     },
     relationships: { isDisabled: !locationDocumentFeatures.documentFeatures.relationships },
     code: {
+      isSelected: isBlockActive(editor, 'code'),
       isDisabled: !(
         locationDocumentFeatures.kind === 'block' &&
         locationDocumentFeatures.documentFeatures.formatting.blockTypes.code
