@@ -28,6 +28,7 @@ const argGenerator = {
     },
   }),
   prisma_postgresql: () => ({
+    migrationMode: 'prototype',
     dropDatabase: true,
     url: process.env.DATABASE_URL || '',
     provider: 'postgresql',
