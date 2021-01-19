@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
-import { Editor, Node, NodeEntry, Path, Transforms, Element, PathRef } from 'slate';
+import { Editor, Node, NodeEntry, Path, Transforms, Element, PathRef, Text } from 'slate';
 import { ReactEditor } from 'slate-react';
 
 export { useEditor as useStaticEditor } from 'slate-react';
@@ -33,6 +33,13 @@ export const isBlockActive = (editor: ReactEditor, format: string) => {
   return !!match;
 };
 
+export function clearFormatting(editor: Editor) {
+  Transforms.unwrapNodes(editor, {
+    match: node => node.type === 'heading' || node.type === 'blockquote' || node.type === 'code',
+  });
+  Transforms.unsetNodes(editor, allMarks, { match: Text.isText });
+}
+
 export function moveChildren(
   editor: Editor,
   parent: NodeEntry | Path,
@@ -50,20 +57,6 @@ export function moveChildren(
     }
   }
 }
-
-export const isMarkActive = (editor: ReactEditor, format: Mark) => {
-  const marks = Editor.marks(editor);
-  return marks ? marks[format] === true : false;
-};
-
-export const toggleMark = (editor: ReactEditor, format: Mark) => {
-  const isActive = isMarkActive(editor, format);
-  if (isActive) {
-    Editor.removeMark(editor, format);
-  } else {
-    Editor.addMark(editor, format, true);
-  }
-};
 
 // this ensures that when changes happen, they are immediately shown
 // this stops the problem of a cursor resetting to the end when a change is made

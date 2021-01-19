@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext } from 'react';
-import { Editor, Range } from 'slate';
+import { Editor, Range, Text } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
@@ -25,6 +25,9 @@ export type ToolbarState = {
   };
   marks: {
     [key in Mark]: BasicToolbarItem;
+  };
+  clearFormatting: {
+    isDisabled: boolean;
   };
   alignment: {
     selected: 'start' | 'center' | 'end';
@@ -121,18 +124,49 @@ export const createToolbarState = (
     softBreaks: true,
   };
 
+  let [maybeCodeBlockEntry] = Editor.nodes(editor, {
+    match: node => node.type !== 'code' && Editor.isBlock(editor, node),
+  });
   const editorMarks = Editor.marks(editor) || {};
   const marks: ToolbarState['marks'] = Object.fromEntries(
     allMarks.map(mark => [
       mark,
       {
         isDisabled:
-          locationDocumentFeatures.inlineMarks !== 'inherit' &&
-          !locationDocumentFeatures.inlineMarks[mark],
+          (locationDocumentFeatures.inlineMarks !== 'inherit' &&
+            !locationDocumentFeatures.inlineMarks[mark]) ||
+          !maybeCodeBlockEntry,
         isSelected: !!editorMarks[mark],
       },
     ])
   );
+
+  // Editor.marks is "what are the marks that would be applied if text was inserted now"
+  // that's not really the UX we want, if we have some a document like this
+  // <paragraph>
+  //   <text>
+  //     <anchor />
+  //     content
+  //   </text>
+  //   <text bold>bold</text>
+  //   <text>
+  //     content
+  //     <focus />
+  //   </text>
+  // </paragraph>
+
+  // we want bold to be shown as selected even though if you inserted text from that selection, it wouldn't be bold
+  // so we look at all the text nodes in the selection to get their marks
+  for (const node of Editor.nodes(editor, { match: Text.isText })) {
+    for (const key of Object.keys(node[0])) {
+      if (key === 'insertMenu' || key === 'text') {
+        continue;
+      }
+      if (key in marks) {
+        marks[key as Mark].isSelected = true;
+      }
+    }
+  }
 
   return {
     marks,
@@ -198,8 +232,21 @@ export const createToolbarState = (
         locationDocumentFeatures.kind === 'inline' ||
         !locationDocumentFeatures.documentFeatures.dividers,
     },
+    clearFormatting: {
+      isDisabled: !(
+        Object.values(marks).some(x => x.isSelected) ||
+        !!hasBlockThatClearsOnClearFormatting(editor)
+      ),
+    },
   };
 };
+
+function hasBlockThatClearsOnClearFormatting(editor: Editor) {
+  const [node] = Editor.nodes(editor, {
+    match: node => node.type === 'heading' || node.type === 'code' || node.type === 'blockquote',
+  });
+  return !!node;
+}
 
 export const ToolbarStateProvider = ({
   children,

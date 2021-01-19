@@ -22,7 +22,7 @@ import { withHistory } from 'slate-history';
 import { withParagraphs } from './paragraphs';
 import { withLink, wrapLink } from './link';
 import { LayoutOptionsProvider, withLayouts } from './layouts';
-import { Mark, toggleMark } from './utils';
+import { clearFormatting, Mark } from './utils';
 import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
 import { withHeading } from './heading';
@@ -59,15 +59,40 @@ const HOTKEYS: Record<string, Mark> = {
   'mod+u': 'underline',
 };
 
+function isMarkActive(editor: Editor, mark: Mark) {
+  const marks = Editor.marks(editor);
+  if (marks?.[mark]) {
+    return true;
+  }
+  // see the stuff about marks in toolbar-state for why this is here
+  for (const entry of Editor.nodes(editor, { match: Text.isText })) {
+    if (entry[0][mark]) {
+      return true;
+    }
+  }
+  return false;
+}
+
 const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
   if (event.defaultPrevented) return;
   for (const hotkey in HOTKEYS) {
     if (isHotkey(hotkey, event.nativeEvent)) {
       event.preventDefault();
-      toggleMark(editor, HOTKEYS[hotkey]);
+      const mark = HOTKEYS[hotkey];
+      const isActive = isMarkActive(editor, mark);
+      if (isActive) {
+        Editor.removeMark(editor, mark);
+      } else {
+        Editor.addMark(editor, mark, true);
+      }
+      return;
     }
   }
-  if (isHotkey('mod+k', event.nativeEvent) && !event.defaultPrevented) {
+  if (isHotkey('mod+\\', event.nativeEvent)) {
+    clearFormatting(editor);
+    return;
+  }
+  if (isHotkey('mod+k', event.nativeEvent)) {
     event.preventDefault();
     wrapLink(editor, '');
     return;

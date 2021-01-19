@@ -1,4 +1,4 @@
-import { Descendant, Editor, Transforms, Node, PathRef, Path } from 'slate';
+import { Descendant, Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { insertNodesButReplaceIfSelectionIsAtEmptyParagraph } from '../utils';
 import { deserializeHTML } from './html';

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { Fragment, ReactNode, forwardRef, useState, memo, HTMLAttributes, useMemo } from 'react';
-import { Transforms } from 'slate';
+import { Editor, Transforms } from 'slate';
 import { applyRefs } from 'apply-ref';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -25,7 +25,7 @@ import {
 } from './primitives';
 import { linkButton } from './link';
 import { BlockComponentsButtons } from './component-blocks';
-import { Mark, modifierKeyText, toggleMark } from './utils';
+import { clearFormatting, Mark, modifierKeyText } from './utils';
 import { LayoutsButton } from './layouts';
 import { ListButton } from './lists';
 import { blockquoteButton } from './blockquote';
@@ -145,7 +145,11 @@ const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function
         isSelected={isSelected}
         onMouseDown={event => {
           event.preventDefault();
-          toggleMark(editor, type);
+          if (isSelected) {
+            Editor.removeMark(editor, props.type);
+          } else {
+            Editor.addMark(editor, props.type, true);
+          }
         }}
         {...restProps}
       />
@@ -390,7 +394,6 @@ function InnerInsertBlockMenu({
   );
 }
 
-// TODO: Clear formatting
 function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineMarks'] }) {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
@@ -410,14 +413,6 @@ function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineM
       ],
     }
   );
-  const hasMenu =
-    marks.strikethrough ||
-    marks.underline ||
-    marks.code ||
-    marks.keyboard ||
-    marks.subscript ||
-    marks.superscript;
-
   return (
     <Fragment>
       {marks.bold && (
@@ -455,39 +450,133 @@ function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineM
         </Tooltip>
       )}
 
-      {hasMenu && (
-        <Fragment>
-          <Tooltip content="More formatting" weight="subtle">
-            {({ ref, ...attrs }) => (
-              <ToolbarButton
-                ref={applyRefs(ref, trigger.ref)}
-                isPressed={showMenu}
-                onClick={event => {
-                  event.preventDefault();
-                  setShowMenu(v => !v);
-                }}
-                {...trigger.props}
-                {...attrs}
-              >
-                <MoreHorizontalIcon size="small" />
-              </ToolbarButton>
-            )}
-          </Tooltip>
-          {showMenu && (
-            <InlineDialog ref={dialog.ref} {...dialog.props}>
-              <ToolbarGroup direction="column">
-                {marks.underline && <MarkButton type="underline">Underline</MarkButton>}
-                {marks.strikethrough && <MarkButton type="strikethrough">Strikethrough</MarkButton>}
-                {marks.code && <MarkButton type="code">Code</MarkButton>}
-                {marks.keyboard && <MarkButton type="keyboard">Keyboard</MarkButton>}
-                {marks.subscript && <MarkButton type="subscript">Subscript</MarkButton>}
-                {marks.superscript && <MarkButton type="superscript">Superscript</MarkButton>}
-              </ToolbarGroup>
-            </InlineDialog>
-          )}
-        </Fragment>
-      )}
+      <Tooltip content="More formatting" weight="subtle">
+        {attrs => (
+          <MoreFormattingButton
+            isOpen={showMenu}
+            onToggle={() => {
+              setShowMenu(v => !v);
+            }}
+            trigger={trigger}
+            attrs={attrs}
+          />
+        )}
+      </Tooltip>
+      {showMenu && <MoreFormattingDialog dialog={dialog} marks={marks} />}
     </Fragment>
+  );
+}
+
+function MoreFormattingDialog({
+  dialog,
+  marks,
+}: {
+  dialog: ReturnType<typeof useControlledPopover>['dialog'];
+  marks: DocumentFeatures['formatting']['inlineMarks'];
+}) {
+  // not doing optimisations in here because this will only render when it's open
+  // which will be rare and you won't be typing while it's open
+  const {
+    editor,
+    clearFormatting: { isDisabled },
+  } = useToolbarState();
+  return (
+    <InlineDialog ref={dialog.ref} {...dialog.props}>
+      <ToolbarGroup direction="column">
+        {marks.underline && (
+          <MarkButton type="underline">
+            <ContentInButtonWithShortcut content="Underline" shortcut={`${modifierKeyText}U`} />
+          </MarkButton>
+        )}
+        {marks.strikethrough && <MarkButton type="strikethrough">Strikethrough</MarkButton>}
+        {marks.code && <MarkButton type="code">Code</MarkButton>}
+        {marks.keyboard && <MarkButton type="keyboard">Keyboard</MarkButton>}
+        {marks.subscript && <MarkButton type="subscript">Subscript</MarkButton>}
+        {marks.superscript && <MarkButton type="superscript">Superscript</MarkButton>}
+        <ToolbarButton
+          isDisabled={isDisabled}
+          onMouseDown={event => {
+            event.preventDefault();
+            clearFormatting(editor);
+          }}
+        >
+          <ContentInButtonWithShortcut
+            content="Clear Formatting"
+            shortcut={`${modifierKeyText}\\`}
+          />
+        </ToolbarButton>
+      </ToolbarGroup>
+    </InlineDialog>
+  );
+}
+
+function ContentInButtonWithShortcut({ content, shortcut }: { content: string; shortcut: string }) {
+  const theme = useTheme();
+  return (
+    <span
+      css={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+      }}
+    >
+      <span>{content}</span>
+      <kbd
+        css={{
+          fontFamily: 'inherit',
+          marginLeft: theme.spacing.small,
+          padding: theme.spacing.xxsmall,
+          paddingLeft: theme.spacing.xsmall,
+          paddingRight: theme.spacing.xsmall,
+          backgroundColor: theme.palette.neutral400,
+          borderRadius: theme.radii.xsmall,
+          color: theme.colors.foregroundDim,
+          whiteSpace: 'pre',
+        }}
+      >
+        {shortcut}
+      </kbd>
+    </span>
+  );
+}
+
+function MoreFormattingButton({
+  onToggle,
+  isOpen,
+  trigger,
+  attrs,
+}: {
+  onToggle: () => void;
+  isOpen: boolean;
+  trigger: ReturnType<typeof useControlledPopover>['trigger'];
+  attrs: { ref: any };
+}) {
+  const { marks } = useToolbarState();
+  const isActive =
+    marks.strikethrough.isSelected ||
+    marks.underline.isSelected ||
+    marks.code.isSelected ||
+    marks.keyboard.isSelected ||
+    marks.subscript.isSelected ||
+    marks.superscript.isSelected;
+  return useMemo(
+    () => (
+      <ToolbarButton
+        isPressed={isOpen}
+        isSelected={isActive}
+        onClick={event => {
+          event.preventDefault();
+          onToggle();
+        }}
+        {...trigger.props}
+        {...attrs}
+        ref={applyRefs(attrs.ref, trigger.ref)}
+      >
+        <MoreHorizontalIcon size="small" />
+      </ToolbarButton>
+    ),
+    [isActive, onToggle, isOpen, trigger, attrs]
   );
 }
 
