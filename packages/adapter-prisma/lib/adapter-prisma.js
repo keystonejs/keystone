@@ -18,14 +18,15 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this.url = this.config.url || process.env.DATABASE_URL;
   }
 
-  async _connect({ rels }) {
-    await this._generateClient(rels);
-    const { PrismaClient } = require(this.clientPath);
-    this.prisma = new PrismaClient({
-      log: this.enableLogging && ['query'],
-      datasources: { [this.provider]: { url: this._url() } },
-    });
-    await this.prisma.$connect();
+  async _prepareSchema(rels) {
+    const clientDir = 'generated-client';
+    const prismaSchema = await this._generatePrismaSchema({ rels, clientDir });
+    // See if there is a prisma client available for this hash
+    const prismaPath = this.getPrismaPath({ prismaSchema });
+    this.schemaPath = path.join(prismaPath, 'schema.prisma');
+    this.clientPath = path.resolve(`${prismaPath}/${clientDir}`);
+    this.dbSchemaName = this.getDbSchemaName({ prismaSchema });
+    return { prismaSchema };
   }
 
   _url() {
@@ -38,34 +39,34 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     }
   }
 
+  _runPrismaCmd(cmd) {
+    return execSync(`yarn prisma ${cmd} --schema ${this.schemaPath}`, {
+      env: { ...process.env, DATABASE_URL: this._url() },
+      encoding: 'utf-8',
+    });
+  }
+
+  async _connect({ rels }) {
+    await this._generateClient(rels);
+    const { PrismaClient } = require(this.clientPath);
+    this.prisma = new PrismaClient({
+      log: this.enableLogging && ['query'],
+      datasources: { [this.provider]: { url: this._url() } },
+    });
+    await this.prisma.$connect();
+  }
+
   async _generateClient(rels) {
     // 1. Generate a formatted schema
+    const { prismaSchema } = await this._prepareSchema(rels);
 
     // 2. Check for existing schema
     // 2a1. If they're the same, we're golden
     // 2a2. If they're different, generate and run a migration
     // 2b. If it doesn't exist, generate and run a migration
-    const clientDir = 'generated-client';
-    const prismaSchema = await this._generatePrismaSchema({ rels, clientDir });
-    // See if there is a prisma client available for this hash
-    const prismaPath = this.getPrismaPath({ prismaSchema });
-    this.schemaPath = path.join(prismaPath, 'schema.prisma');
-    this.clientPath = path.resolve(`${prismaPath}/${clientDir}`);
-    this.dbSchemaName = this.getDbSchemaName({ prismaSchema });
 
     // // If any of our critical directories are missing, or if the schema has changed, then
     // // we've got things to do.
-    // const schemaState = 'matching';
-    // if (schemaState !== 'matching') {
-    //   // Write schema
-    // }
-    // if (!fs.existsSync(this.clientPath) || schemaState !== 'matching') {
-    //   // Generate prisma client
-    // }
-    // if (/* something */ false){
-    //   // generate and run a migration
-    // }
-
     if (
       !fs.existsSync(this.clientPath) ||
       !fs.existsSync(this.schemaPath) ||
@@ -97,6 +98,14 @@ class PrismaAdapter extends BaseKeystoneAdapter {
         this._executeMigrations();
       }
     }
+  }
+
+  _saveMigration({ name }) {
+    this._runPrismaCmd(`migrate save --name ${name} --experimental`);
+  }
+
+  _executeMigrations() {
+    this._runPrismaCmd('migrate up --experimental');
   }
 
   async _writePrismaSchema({ prismaSchema }) {
@@ -229,21 +238,6 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       this._saveMigration({ name: 'init' });
       this._executeMigrations();
     }
-  }
-
-  _saveMigration({ name }) {
-    this._runPrismaCmd(`migrate save --name ${name} --experimental`);
-  }
-
-  _executeMigrations() {
-    this._runPrismaCmd('migrate up --experimental');
-  }
-
-  _runPrismaCmd(cmd) {
-    return execSync(`yarn prisma ${cmd} --schema ${this.schemaPath}`, {
-      env: { ...process.env, DATABASE_URL: this._url() },
-      encoding: 'utf-8',
-    });
   }
 
   disconnect() {
