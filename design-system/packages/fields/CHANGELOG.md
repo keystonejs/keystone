@@ -1,5 +1,17 @@
 # @keystone-ui/fields
 
+## 1.1.0
+
+### Minor Changes
+
+- [`177cbd530`](https://github.com/keystonejs/keystone/commit/177cbd5303b814d1acaa8ded98e3d114c770bdba) [#4643](https://github.com/keystonejs/keystone/pull/4643) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Add DatePicker component to design system.
+  Update timestamp field in keystone-next to use the new DatePicker an an additional time picker input.
+
+### Patch Changes
+
+- Updated dependencies [[`160bd77d3`](https://github.com/keystonejs/keystone/commit/160bd77d39d5e99b11bee056fe2c3b2585126bbc)]:
+  - @keystone-ui/popover@1.1.1
+
 ## 1.0.3
 
 ### Patch Changes

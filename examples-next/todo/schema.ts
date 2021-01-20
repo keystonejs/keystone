@@ -54,6 +54,7 @@ export const lists = createSchema({
       label: text({ isRequired: true }),
       isComplete: checkbox(),
       assignedTo: relationship({ ref: 'User.tasks' }),
+      finishBy: timestamp(),
       ...trackingFields,
     },
   }),

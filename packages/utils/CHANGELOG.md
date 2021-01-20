@@ -1,5 +1,11 @@
 # @keystonejs/utils
 
+## 6.0.0
+
+### Major Changes
+
+- [`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be) [#4430](https://github.com/keystonejs/keystone/pull/4430) Thanks [@timleslie](https://github.com/timleslie)! - Converted package to TypeScript. `flatMap` no longer defaults the `fn` argument to `i => i`.
+
 ## 5.4.3
 
 ### Patch Changes

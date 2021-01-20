@@ -1,5 +1,21 @@
 # @keystonejs/keystone
 
+## 18.1.0
+
+### Minor Changes
+
+- [`4768fbf83`](https://github.com/keystonejs/keystone/commit/4768fbf831ffff648e540c479a1954ae40e05aaa) [#4654](https://github.com/keystonejs/keystone/pull/4654) Thanks [@timleslie](https://github.com/timleslie)! - Added an `args` paramter to `Keystone.connect(args)`, which is passed through as the second argument to the config function `onConnect(keystone, args)`.
+
+### Patch Changes
+
+- [`3b7a056bb`](https://github.com/keystonejs/keystone/commit/3b7a056bb835482ceb408a70bf97300741552d19) [#4652](https://github.com/keystonejs/keystone/pull/4652) Thanks [@timleslie](https://github.com/timleslie)! - Removed `addFieldValidationError` from the args passed to list validation hooks, as it was unused and could lead to confusion. Updated docs to clarify the validation hook arguments. Thanks @pahaz for the fix.
+
+* [`74a8528ea`](https://github.com/keystonejs/keystone/commit/74a8528ea0dad739f4f16af32fe4f8926a188b61) [#4649](https://github.com/keystonejs/keystone/pull/4649) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `serialize-error` to `^8.0.0`.
+
+* Updated dependencies [[`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be)]:
+  - @keystonejs/utils@6.0.0
+  - @keystonejs/access-control@6.3.1
+
 ## 18.0.0
 
 ### Major Changes
