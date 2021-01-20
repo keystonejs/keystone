@@ -102,6 +102,7 @@ const onlyChildrenElements: t.Type<OnlyChildrenElements> = t.recursion('OnlyChil
         t.literal('code'),
         t.literal('divider'),
         t.literal('list-item'),
+        t.literal('list-item-content'),
         t.literal('ordered-list'),
         t.literal('unordered-list'),
       ]),
@@ -117,6 +118,7 @@ type OnlyChildrenElements = {
     | 'code'
     | 'divider'
     | 'list-item'
+    | 'list-item-content'
     | 'ordered-list'
     | 'unordered-list';
   children: Children;

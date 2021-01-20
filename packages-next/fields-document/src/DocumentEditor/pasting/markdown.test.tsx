@@ -189,39 +189,51 @@ there is a break before this
       </divider>
       <unordered-list>
         <list-item>
-          <text>
-            unordered list
-          </text>
+          <list-item-content>
+            <text>
+              unordered list
+            </text>
+          </list-item-content>
         </list-item>
         <list-item>
-          <text>
-            item
-          </text>
+          <list-item-content>
+            <text>
+              item
+            </text>
+          </list-item-content>
         </list-item>
         <list-item>
-          <text>
-            nested item
-          </text>
+          <list-item-content>
+            <text>
+              nested item
+            </text>
+          </list-item-content>
         </list-item>
       </unordered-list>
       <ordered-list>
         <list-item>
-          <text>
-            ordered list
-          </text>
+          <list-item-content>
+            <text>
+              ordered list
+            </text>
+          </list-item-content>
         </list-item>
         <list-item>
-          <text>
-            item
-          </text>
-        </list-item>
-        <ordered-list>
-          <list-item>
+          <list-item-content>
             <text>
-              nested item
+              item
             </text>
-          </list-item>
-        </ordered-list>
+          </list-item-content>
+          <ordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  nested item
+                </text>
+              </list-item-content>
+            </list-item>
+          </ordered-list>
+        </list-item>
       </ordered-list>
       <paragraph>
         <text>

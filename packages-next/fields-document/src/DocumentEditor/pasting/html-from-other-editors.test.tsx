@@ -163,41 +163,53 @@ test('confluence', () => {
       </divider>
       <unordered-list>
         <list-item>
-          <text>
-            unordered list
-          </text>
+          <list-item-content>
+            <text>
+              unordered list
+            </text>
+          </list-item-content>
         </list-item>
         <list-item>
-          <text>
-            item
-          </text>
-        </list-item>
-        <unordered-list>
-          <list-item>
+          <list-item-content>
             <text>
-              nested item
+              item
             </text>
-          </list-item>
-        </unordered-list>
+          </list-item-content>
+          <unordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  nested item
+                </text>
+              </list-item-content>
+            </list-item>
+          </unordered-list>
+        </list-item>
       </unordered-list>
       <ordered-list>
         <list-item>
-          <text>
-            ordered list
-          </text>
+          <list-item-content>
+            <text>
+              ordered list
+            </text>
+          </list-item-content>
         </list-item>
         <list-item>
-          <text>
-            item
-          </text>
-        </list-item>
-        <ordered-list>
-          <list-item>
+          <list-item-content>
             <text>
-              nested item
+              item
             </text>
-          </list-item>
-        </ordered-list>
+          </list-item-content>
+          <ordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  nested item
+                </text>
+              </list-item-content>
+            </list-item>
+          </ordered-list>
+        </list-item>
       </ordered-list>
       <paragraph>
         <text>
@@ -379,43 +391,55 @@ there is a break before this</p>
       </divider>
       <unordered-list>
         <list-item>
-          <text>
-            unordered list
-          </text>
+          <list-item-content>
+            <text>
+              unordered list
+            </text>
+          </list-item-content>
         </list-item>
         <list-item>
-          <text>
-            item
-
-          </text>
-        </list-item>
-        <unordered-list>
-          <list-item>
+          <list-item-content>
             <text>
-              nested item
+              item
+
             </text>
-          </list-item>
-        </unordered-list>
+          </list-item-content>
+          <unordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  nested item
+                </text>
+              </list-item-content>
+            </list-item>
+          </unordered-list>
+        </list-item>
       </unordered-list>
       <ordered-list>
         <list-item>
-          <text>
-            ordered list
-          </text>
+          <list-item-content>
+            <text>
+              ordered list
+            </text>
+          </list-item-content>
         </list-item>
         <list-item>
-          <text>
-            item
-
-          </text>
-        </list-item>
-        <ordered-list>
-          <list-item>
+          <list-item-content>
             <text>
-              nested item
+              item
+
             </text>
-          </list-item>
-        </ordered-list>
+          </list-item-content>
+          <ordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  nested item
+                </text>
+              </list-item-content>
+            </list-item>
+          </ordered-list>
+        </list-item>
       </ordered-list>
       <paragraph>
         <text>
@@ -537,41 +561,49 @@ test('dropbox paper', () => {
       </divider>
       <unordered-list>
         <list-item>
-          <text>
-            unordered list
-          </text>
+          <list-item-content>
+            <text>
+              unordered list
+            </text>
+          </list-item-content>
         </list-item>
         <list-item>
-          <text>
-            item
-          </text>
+          <list-item-content>
+            <text>
+              item
+            </text>
+          </list-item-content>
         </list-item>
-        <unordered-list>
-          <list-item>
+        <list-item>
+          <list-item-content>
             <text>
               nested item
             </text>
-          </list-item>
-        </unordered-list>
+          </list-item-content>
+        </list-item>
       </unordered-list>
       <ordered-list>
         <list-item>
-          <text>
-            ordered list
-          </text>
+          <list-item-content>
+            <text>
+              ordered list
+            </text>
+          </list-item-content>
         </list-item>
         <list-item>
-          <text>
-            item
-          </text>
+          <list-item-content>
+            <text>
+              item
+            </text>
+          </list-item-content>
         </list-item>
-        <ordered-list>
-          <list-item>
+        <list-item>
+          <list-item-content>
             <text>
               nested item
             </text>
-          </list-item>
-        </ordered-list>
+          </list-item-content>
+        </list-item>
       </ordered-list>
       <paragraph>
         <text>
@@ -718,41 +750,49 @@ test('google docs', () => {
       </paragraph>
       <unordered-list>
         <list-item>
-          <text>
-            unordered list
-          </text>
+          <list-item-content>
+            <text>
+              unordered list
+            </text>
+          </list-item-content>
         </list-item>
         <list-item>
-          <text>
-            item
-          </text>
+          <list-item-content>
+            <text>
+              item
+            </text>
+          </list-item-content>
         </list-item>
-        <unordered-list>
-          <list-item>
+        <list-item>
+          <list-item-content>
             <text>
               nested item
             </text>
-          </list-item>
-        </unordered-list>
+          </list-item-content>
+        </list-item>
       </unordered-list>
       <ordered-list>
         <list-item>
-          <text>
-            ordered list
-          </text>
+          <list-item-content>
+            <text>
+              ordered list
+            </text>
+          </list-item-content>
         </list-item>
         <list-item>
-          <text>
-            item
-          </text>
+          <list-item-content>
+            <text>
+              item
+            </text>
+          </list-item-content>
         </list-item>
-        <ordered-list>
-          <list-item>
+        <list-item>
+          <list-item-content>
             <text>
               nested item
             </text>
-          </list-item>
-        </ordered-list>
+          </list-item-content>
+        </list-item>
       </ordered-list>
       <paragraph>
         <text>

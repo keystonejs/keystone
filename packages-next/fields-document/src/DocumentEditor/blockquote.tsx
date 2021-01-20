@@ -49,7 +49,10 @@ export const withBlockquote = (editor: ReactEditor) => {
         // it's the first paragraph in the panel
         editor.selection.anchor.path[editor.selection.anchor.path.length - 2] === 0
       ) {
-        Transforms.unwrapNodes(editor, { at: parentBlockquote.path });
+        Transforms.unwrapNodes(editor, {
+          match: node => node.type === 'blockquote',
+          split: true,
+        });
         return;
       }
     }

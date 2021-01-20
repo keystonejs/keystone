@@ -42,6 +42,7 @@ declare namespace __jsx {
       'ordered-list': OnlyChildren;
       'unordered-list': OnlyChildren;
       'list-item': OnlyChildren;
+      'list-item-content': OnlyChildren;
       link: {
         href: string;
         children: Children;

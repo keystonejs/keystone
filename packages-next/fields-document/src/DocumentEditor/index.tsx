@@ -26,7 +26,7 @@ import { clearFormatting, Mark } from './utils';
 import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
 import { withHeading } from './heading';
-import { isListType, withList } from './lists';
+import { nestList, unnestList, withList } from './lists';
 import {
   ComponentBlockContext,
   getPlaceholderTextForPropPath,
@@ -97,27 +97,14 @@ const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
     wrapLink(editor, '');
     return;
   }
-  if (event.key === 'Tab' && editor.selection && Range.isCollapsed(editor.selection)) {
-    const block = Editor.above(editor, {
-      match: n => Editor.isBlock(editor, n),
-    });
-
-    if (block && block[0].type === 'list-item') {
-      event.preventDefault();
-      if (event.shiftKey) {
-        Transforms.unwrapNodes(editor, {
-          match: node => isListType(node.type as string),
-          split: true,
-        });
-      } else {
-        const type = Editor.parent(editor, block[1])[0].type as string;
-        Transforms.wrapNodes(editor, {
-          type,
-          children: [],
-        });
-      }
-      return;
+  if (event.key === 'Tab') {
+    if (event.shiftKey) {
+      unnestList(editor);
+    } else {
+      nestList(editor);
     }
+    event.preventDefault();
+    return;
   }
   if (event.key === 'Tab' && editor.selection) {
     const layoutArea = Editor.above(editor, {
@@ -426,8 +413,6 @@ const paragraphLike = [...blockquoteChildren, 'blockquote'] as const;
 
 const insideOfLayouts = [...paragraphLike, 'component-block'] as const;
 
-const listChildren = ['list-item', 'ordered-list', 'unordered-list'] as const;
-
 export const editorSchema = makeEditorSchema({
   editor: {
     kind: 'blocks',
@@ -465,15 +450,20 @@ export const editorSchema = makeEditorSchema({
   },
   'ordered-list': {
     kind: 'blocks',
-    allowedChildren: listChildren,
+    allowedChildren: ['list-item'],
     invalidPositionHandleMode: 'move',
   },
   'unordered-list': {
     kind: 'blocks',
-    allowedChildren: listChildren,
+    allowedChildren: ['list-item'],
     invalidPositionHandleMode: 'move',
   },
-  'list-item': { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
+  'list-item': {
+    kind: 'blocks',
+    allowedChildren: ['list-item-content', 'ordered-list', 'unordered-list'],
+    invalidPositionHandleMode: 'unwrap',
+  },
+  'list-item-content': { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
 });
 
 function withBlocksSchema(editor: ReactEditor) {
