@@ -1,7 +1,7 @@
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Password, Relationship, Checkbox } = require('@keystonejs/fields');
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { PrismaAdapter } = require('@keystonejs/adapter-prisma');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 
@@ -17,7 +17,7 @@ const {
 const defaultAccess = ({ authentication: { item } }) => !!item;
 
 const keystone = new Keystone({
-  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/cypress-test-project' }),
+  adapter: new PrismaAdapter(),
   cookieSecret: 'qwerty',
   defaultAccess: {
     list: defaultAccess,

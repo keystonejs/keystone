@@ -9,7 +9,9 @@ describe('ReadOnly Fields', () => {
 
     cy.get('a[href^="/admin/read-only-lists/"]:first').click({ force: true });
 
-    ['slug', 'status', 'author', 'views', 'price', 'currency', 'hero'].forEach(field => {
+    // FIXME: Add price when we have Decimal support in prisma
+    // ['slug', 'status', 'author', 'views', 'price', 'currency', 'hero'].forEach(field => {
+    ['slug', 'status', 'author', 'views', 'currency', 'hero'].forEach(field => {
       cy.get(`label[for="ks-input-${field}"]`)
         .should('exist')
         .then(() => cy.get(`#ks-input-${field}`).should('be.disabled'));
