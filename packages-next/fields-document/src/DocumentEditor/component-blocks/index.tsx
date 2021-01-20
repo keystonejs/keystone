@@ -13,7 +13,7 @@ import { NotEditable } from '../../component-blocks';
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from '../primitives';
 import { ComponentPropField, ComponentBlock } from '../../component-blocks';
 import { Relationships, useDocumentFieldRelationships } from '../relationship';
-import { clientSideValidateProp, VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './utils';
+import { clientSideValidateProp } from './utils';
 import { createPreviewProps } from './preview-props';
 import { getInitialValue } from './initial-values';
 import { FormValue } from './form';
@@ -62,13 +62,11 @@ export function insertComponentBlock(
   componentBlock: string,
   relationships: Relationships
 ) {
-  let { node, isFakeVoid } = getInitialValue(
-    componentBlock,
-    componentBlocks[componentBlock],
-    relationships
-  );
+  let node = getInitialValue(componentBlock, componentBlocks[componentBlock], relationships);
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, node);
-  if (!isFakeVoid && editor.selection) {
+
+  // TODO: this is broken
+  if (editor.selection) {
     const [entry] = Editor.nodes(editor, {
       match: node => node.type === 'component-block',
     });
@@ -190,10 +188,6 @@ Content:`}
       {editMode && (
         <FormValue
           isValid={isValid}
-          onRelationshipValuesChange={relationships => {
-            setElement({ relationships });
-          }}
-          relationshipValues={currentElement.relationships as any}
           componentBlock={componentBlock}
           onClose={() => {
             setEditMode(false);
@@ -357,7 +351,7 @@ function ComponentBlockRender({
   let maybeChild: ReactElement | undefined;
   children.forEach((child: ReactElement) => {
     let stringified = JSON.stringify(child.props.element.propPath);
-    if (stringified === `["${VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP}"]`) {
+    if (stringified === undefined) {
       maybeChild = child;
     } else {
       childrenByPath[stringified] = child;

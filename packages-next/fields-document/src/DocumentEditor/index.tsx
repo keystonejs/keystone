@@ -48,7 +48,6 @@ import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
 import { withShortcuts } from './shortcuts';
 import { withDocumentFeaturesNormalization } from './document-features-normalization';
 import { ToolbarStateProvider } from './toolbar-state';
-import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './component-blocks/utils';
 import { withInsertMenu } from './insert-menu';
 import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts';
 import { withPasting } from './pasting';
@@ -257,12 +256,7 @@ export function DocumentEditor({
                     ([node, path]: NodeEntry<Node>) => {
                       let decorations: Range[] = [];
                       if (node.type === 'component-block' && Element.isElement(node)) {
-                        if (
-                          node.children.length === 1 &&
-                          (node.children[0].propPath as any).length === 1 &&
-                          (node.children[0].propPath as any)[0] ===
-                            VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP
-                        ) {
+                        if (node.children.length === 1 && node.children[0].propPath === undefined) {
                           return decorations;
                         }
                         node.children.forEach((child, index) => {

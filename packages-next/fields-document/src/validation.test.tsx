@@ -235,21 +235,14 @@ test('label and data in relationship props are stripped', () => {
     validate([
       {
         type: 'component-block',
-        props: {},
-        component: 'relationship',
-        relationships: {
-          '["one"]': {
-            relationship: 'one',
-            data: { id: 'some-id', label: 'some label', data: { something: true } },
-          },
-          '["many"]': {
-            relationship: 'many',
-            data: [
-              { id: 'some-id', label: 'some label', data: { something: true } },
-              { id: 'another-id', label: 'another label', data: { something: false } },
-            ],
-          },
+        props: {
+          one: { id: 'some-id', label: 'some label', data: { something: true } },
+          many: [
+            { id: 'some-id', label: 'some label', data: { something: true } },
+            { id: 'another-id', label: 'another label', data: { something: false } },
+          ],
         },
+        component: 'relationship',
         children: [],
       },
       {
@@ -261,36 +254,23 @@ test('label and data in relationship props are stripped', () => {
     <editor>
       <component-block
         component="relationship"
-        props={Object {}}
-        relationships={
+        props={
           Object {
-            "[\\"many\\"]": Object {
-              "data": Array [
-                Object {
-                  "id": "some-id",
-                },
-                Object {
-                  "id": "another-id",
-                },
-              ],
-              "relationship": "many",
-            },
-            "[\\"one\\"]": Object {
-              "data": Object {
+            "many": Array [
+              Object {
                 "id": "some-id",
               },
-              "relationship": "one",
+              Object {
+                "id": "another-id",
+              },
+            ],
+            "one": Object {
+              "id": "some-id",
             },
           }
         }
       >
-        <component-inline-prop
-          propPath={
-            Array [
-              "________VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP________",
-            ]
-          }
-        >
+        <component-inline-prop>
           <text>
             
           </text>
@@ -310,21 +290,14 @@ test('array in to-one relationship', () => {
     validate([
       {
         type: 'component-block',
-        props: {},
-        component: 'relationship',
-        relationships: {
-          '["one"]': {
-            relationship: 'one',
-            data: [],
-          },
-          '["many"]': {
-            relationship: 'many',
-            data: [
-              { id: 'some-id', label: 'some label', data: { something: true } },
-              { id: 'another-id', label: 'another label', data: { something: false } },
-            ],
-          },
+        props: {
+          one: [],
+          many: [
+            { id: 'some-id', label: 'some label', data: { something: true } },
+            { id: 'another-id', label: 'another label', data: { something: false } },
+          ],
         },
+        component: 'relationship',
         children: [],
       },
       {
@@ -332,9 +305,7 @@ test('array in to-one relationship', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(
-    `PropValidationError "One relationship value must be a relation or null" ["one"]`
-  );
+  ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship value" ["one"]`);
 });
 
 test('single item in many relationship', () => {
@@ -342,18 +313,11 @@ test('single item in many relationship', () => {
     validate([
       {
         type: 'component-block',
-        props: {},
-        component: 'relationship',
-        relationships: {
-          '["one"]': {
-            relationship: 'one',
-            data: null,
-          },
-          '["many"]': {
-            relationship: 'many',
-            data: { id: 'some-id', label: 'some label', data: { something: true } },
-          },
+        props: {
+          one: null,
+          many: { id: 'some-id', label: 'some label', data: { something: true } },
         },
+        component: 'relationship',
         children: [],
       },
       {
@@ -361,9 +325,7 @@ test('single item in many relationship', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(
-    `PropValidationError "Many relationship value must be an array" ["many"]`
-  );
+  ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship value" ["many"]`);
 });
 
 test('missing relationships', () => {
@@ -373,7 +335,6 @@ test('missing relationships', () => {
         type: 'component-block',
         props: {},
         component: 'relationship',
-        relationships: {},
         children: [],
       },
       {
@@ -381,67 +342,7 @@ test('missing relationships', () => {
         children: [{ text: '' }],
       },
     ])
-  ).toMatchInlineSnapshot(`PropValidationError "Missing relationship value" ["one"]`);
-});
-
-test('extra relationship', () => {
-  expect(
-    validate([
-      {
-        type: 'component-block',
-        props: {},
-        component: 'relationship',
-        relationships: {
-          '["one"]': {
-            relationship: 'one',
-            data: null,
-          },
-          '["many"]': {
-            relationship: 'many',
-            data: [],
-          },
-          '["other"]': {
-            relationship: 'many',
-            data: [],
-          },
-        },
-        children: [],
-      },
-      {
-        type: 'paragraph',
-        children: [{ text: '' }],
-      },
-    ])
-  ).toMatchInlineSnapshot(`[Error: Mismatched relationship count on component block]`);
-});
-
-test('different relationship than one specified at prop', () => {
-  expect(
-    validate([
-      {
-        type: 'component-block',
-        props: {},
-        component: 'relationship',
-        relationships: {
-          '["one"]': {
-            relationship: 'many',
-            data: null,
-          },
-          '["many"]': {
-            relationship: 'many',
-            data: [],
-          },
-        },
-        children: [],
-      },
-      {
-        type: 'paragraph',
-        children: [{ text: '' }],
-      },
-    ])
-  ).toMatchInlineSnapshot(
-    `PropValidationError "Incorrect relationship \\"many\\" specified where it should be \\"one\\"" ["one"]`
-  );
+  ).toMatchInlineSnapshot(`PropValidationError "Invalid relationship value" ["one"]`);
 });
 
 test('relationship specified in prop does not exist', () => {
@@ -449,14 +350,10 @@ test('relationship specified in prop does not exist', () => {
     validate([
       {
         type: 'component-block',
-        props: {},
-        component: 'relationshipSpecifiedInPropThatDoesNotExist',
-        relationships: {
-          '["prop"]': {
-            relationship: 'doesNotExist',
-            data: null,
-          },
+        props: {
+          prop: null,
         },
+        component: 'relationshipSpecifiedInPropThatDoesNotExist',
         children: [],
       },
       {
@@ -474,14 +371,10 @@ test("relationship specified in prop is not kind: 'prop'", () => {
     validate([
       {
         type: 'component-block',
-        props: {},
-        component: 'relationshipSpecifiedInPropIsWrongKind',
-        relationships: {
-          '["prop"]': {
-            relationship: 'inline',
-            data: null,
-          },
+        props: {
+          prop: null,
         },
+        component: 'relationshipSpecifiedInPropIsWrongKind',
         children: [],
       },
       {
@@ -501,7 +394,6 @@ test('excess prop', () => {
         type: 'component-block',
         props: { something: true, prop: '' },
         component: 'basic',
-        relationships: {},
         children: [],
       },
       {
@@ -521,7 +413,6 @@ test('form prop validation', () => {
         type: 'component-block',
         props: { prop: {} },
         component: 'basic',
-        relationships: {},
         children: [],
       },
       {
@@ -539,7 +430,6 @@ test('object prop of wrong type', () => {
         type: 'component-block',
         props: { prop: false },
         component: 'object',
-        relationships: {},
         children: [],
       },
       {
@@ -557,7 +447,6 @@ test('form prop failure inside of object', () => {
         type: 'component-block',
         props: { prop: { prop: false } },
         component: 'object',
-        relationships: {},
         children: [],
       },
       {
@@ -575,7 +464,6 @@ test('non-object value in conditional prop', () => {
         type: 'component-block',
         props: { prop: '' },
         component: 'conditional',
-        relationships: {},
         children: [],
       },
       {
@@ -593,7 +481,6 @@ test('excess prop in conditional object', () => {
         type: 'component-block',
         props: { prop: { discriminant: false, excess: true } },
         component: 'conditional',
-        relationships: {},
         children: [],
       },
       {
@@ -613,7 +500,6 @@ test('validation failure on discriminant', () => {
         type: 'component-block',
         props: { prop: { discriminant: '' } },
         component: 'conditional',
-        relationships: {},
         children: [],
       },
       {
@@ -631,7 +517,6 @@ test('validation failure on value', () => {
         type: 'component-block',
         props: { prop: { discriminant: true, value: false } },
         component: 'conditional',
-        relationships: {},
         children: [],
       },
       {

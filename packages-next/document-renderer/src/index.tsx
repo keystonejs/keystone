@@ -184,11 +184,6 @@ function set(obj: Record<string, any>, propPath: (string | number)[], value: any
 
 function createComponentBlockProps(node: Element, children: ReactElement[]) {
   const formProps = JSON.parse(JSON.stringify(node.props));
-  const relationships = node.relationships as any;
-  Object.keys(relationships).forEach(rawPropPath => {
-    const propPath = JSON.parse(rawPropPath);
-    set(formProps, propPath, relationships[rawPropPath]);
-  });
   node.children.forEach((child, i) => {
     const propPath = [...(child.propPath as any)];
     set(formProps, propPath, children[i]);

@@ -105,9 +105,7 @@ export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(
   const entry = Editor.above(editor, {
     match: node => node.type === 'heading' || node.type === 'paragraph',
   });
-  console.log(entry);
   if (entry && Node.string(entry[0]) === '') {
-    console.log('is empty thing');
     pathRefForEmptyNodeAtCursor = Editor.pathRef(editor, entry[1]);
   }
   Transforms.insertNodes(editor, nodes);

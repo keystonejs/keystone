@@ -94,15 +94,8 @@ test('inserting a void component block', () => {
             "text": "",
           }
         }
-        relationships={Object {}}
       >
-        <component-inline-prop
-          propPath={
-            Array [
-              "________VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP________",
-            ]
-          }
-        >
+        <component-inline-prop>
           <text>
             <cursor />
           </text>
@@ -136,27 +129,19 @@ test('inserting a complex component block', () => {
         props={
           Object {
             "object": Object {
+              "block": undefined,
               "conditional": Object {
                 "discriminant": false,
+                "value": null,
               },
               "conditionalSelect": Object {
                 "discriminant": "a",
                 "value": "",
               },
+              "inline": undefined,
+              "many": Array [],
               "prop": "",
               "select": "a",
-            },
-          }
-        }
-        relationships={
-          Object {
-            "[\\"object\\",\\"conditional\\",\\"value\\"]": Object {
-              "data": null,
-              "relationship": "one",
-            },
-            "[\\"object\\",\\"many\\"]": Object {
-              "data": Array [],
-              "relationship": "many",
             },
           }
         }
@@ -225,6 +210,7 @@ const makeEditorWithComplexComponentBlock = () =>
           object: {
             conditional: {
               discriminant: false,
+              value: null,
             },
             prop: '',
             select: 'a',
@@ -232,16 +218,7 @@ const makeEditorWithComplexComponentBlock = () =>
               discriminant: 'a',
               value: '',
             },
-          },
-        }}
-        relationships={{
-          '["object","conditional","value"]': {
-            data: null,
-            relationship: 'one',
-          },
-          '["object","many"]': {
-            data: [],
-            relationship: 'many',
+            many: [],
           },
         }}
       >
@@ -348,16 +325,9 @@ test('preview props conditional change', () => {
                 "discriminant": "a",
                 "value": "",
               },
+              "many": Array [],
               "prop": "",
               "select": "a",
-            },
-          }
-        }
-        relationships={
-          Object {
-            "[\\"object\\",\\"many\\"]": Object {
-              "data": Array [],
-              "relationship": "many",
             },
           }
         }
@@ -434,28 +404,10 @@ test('relationship many change', () => {
   let editor = makeEditorWithComplexComponentBlock();
 
   let previewProps = getPreviewProps(editor);
-  previewProps.object.many.onChange([{ data: {}, id: 'some-id', label: 'some-id' }]);
-  expect(editor.children[0].relationships).toMatchInlineSnapshot(`
-    Object {
-      "[\\"object\\",\\"conditional\\",\\"value\\"]": Object {
-        "data": null,
-        "relationship": "one",
-      },
-      "[\\"object\\",\\"many\\"]": Object {
-        "data": Array [
-          Object {
-            "data": Object {},
-            "id": "some-id",
-            "label": "some-id",
-          },
-        ],
-        "relationship": "many",
-      },
-    }
-  `);
-  expect(getPreviewProps(editor).object.many.value).toEqual([
-    { data: {}, id: 'some-id', label: 'some-id' },
-  ]);
+  const val = [{ data: {}, id: 'some-id', label: 'some-id' }];
+  previewProps.object.many.onChange(val);
+  expect((editor.children[0].props as any).object.many).toEqual(val);
+  expect(getPreviewProps(editor).object.many.value).toEqual(val);
 });
 
 function assert(condition: boolean): asserts condition {
@@ -469,38 +421,10 @@ test('relationship single change', () => {
 
   let previewProps = getPreviewProps(editor);
   assert(previewProps.object.conditional.discriminant === false);
-  previewProps.object.conditional.value.onChange({ data: {}, id: 'some-id', label: 'some-id' });
-  expect(editor.children[0].relationships).toMatchInlineSnapshot(`
-    Object {
-      "[\\"object\\",\\"conditional\\",\\"value\\"]": Object {
-        "data": Object {
-          "data": Object {},
-          "id": "some-id",
-          "label": "some-id",
-        },
-        "relationship": "one",
-      },
-      "[\\"object\\",\\"many\\"]": Object {
-        "data": Array [],
-        "relationship": "many",
-      },
-    }
-  `);
-  expect(getPreviewProps(editor).object.conditional).toMatchInlineSnapshot(`
-    Object {
-      "discriminant": false,
-      "onChange": [Function],
-      "options": undefined,
-      "value": Object {
-        "onChange": [Function],
-        "value": Object {
-          "data": Object {},
-          "id": "some-id",
-          "label": "some-id",
-        },
-      },
-    }
-  `);
+  const val = { data: {}, id: 'some-id', label: 'some-id' };
+  previewProps.object.conditional.value.onChange(val);
+  expect((editor.children[0].props as any).object.conditional.value).toEqual(val);
+  expect((getPreviewProps(editor).object.conditional.value as any).value).toEqual(val);
 });
 
 test('changing conditional with form inside', () => {

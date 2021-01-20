@@ -47,9 +47,8 @@ export class DocumentImplementation extends Implementation {
                   document,
                   context.graphql,
                   this.config.relationships,
-                  listKey => {
-                    return context.keystone.lists[listKey].gqlNames;
-                  }
+                  this.config.componentBlocks,
+                  listKey => context.keystone.lists[listKey].gqlNames
                 )
               : document,
         };

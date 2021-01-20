@@ -5,7 +5,7 @@ import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import React, { Fragment, useState } from 'react';
 import { ComponentPropField, RelationshipData, ComponentBlock } from '../../component-blocks';
 import { useDocumentFieldRelationships, Relationships } from '../relationship';
-import { RelationshipValues, onConditionalChange, assertNever } from './utils';
+import { assertNever, getPropsForConditionalChange } from './utils';
 import { Button as KeystoneUIButton } from '@keystone-ui/button';
 
 function FormValueContent({
@@ -13,16 +13,12 @@ function FormValueContent({
   path,
   value,
   onChange,
-  relationshipValues,
-  onRelationshipValuesChange,
   stringifiedPropPathToAutoFocus,
   forceValidation,
 }: {
   path: (string | number)[];
   props: Record<string, ComponentPropField>;
   value: any;
-  relationshipValues: RelationshipValues;
-  onRelationshipValuesChange(value: RelationshipValues): void;
   onChange(value: any): void;
   stringifiedPropPathToAutoFocus: string;
   forceValidation: boolean;
@@ -39,8 +35,6 @@ function FormValueContent({
             <FormValueContent
               forceValidation={forceValidation}
               stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
-              onRelationshipValuesChange={onRelationshipValuesChange}
-              relationshipValues={relationshipValues}
               key={key}
               path={path.concat(key)}
               props={prop.value}
@@ -57,8 +51,6 @@ function FormValueContent({
             <FormValueContent
               forceValidation={forceValidation}
               stringifiedPropPathToAutoFocus={stringifiedPropPathToAutoFocus}
-              onRelationshipValuesChange={onRelationshipValuesChange}
-              relationshipValues={relationshipValues}
               key={key}
               path={newPath}
               props={{
@@ -67,18 +59,10 @@ function FormValueContent({
               }}
               value={value[key]}
               onChange={val => {
-                onConditionalChange(
-                  val,
-                  value[key],
-                  newPath,
-                  relationshipValues,
-                  relationships,
-                  onRelationshipValuesChange,
-                  newVal => {
-                    onChange({ ...value, [key]: newVal });
-                  },
-                  prop
-                );
+                onChange({
+                  ...value,
+                  [key]: getPropsForConditionalChange(val, value[key], prop, relationships),
+                });
               }}
             />
           );
@@ -89,7 +73,7 @@ function FormValueContent({
             { kind: 'prop' }
           >;
           const stringifiedPath = JSON.stringify(path.concat(key));
-          const relationshipValue = relationshipValues[stringifiedPath];
+          const relationshipValue = value[key];
           return (
             <FieldContainer key={key}>
               <FieldLabel>{prop.label}</FieldLabel>
@@ -103,32 +87,32 @@ function FormValueContent({
                   relationship.many
                     ? {
                         kind: 'many',
-                        value: (relationshipValue.data as RelationshipData[]).map(x => ({
+                        value: (relationshipValue as RelationshipData[]).map(x => ({
                           id: x.id,
                           label: x.label || x.id,
                           data: x.data,
                         })),
                         onChange(data) {
-                          onRelationshipValuesChange({
-                            ...relationshipValues,
-                            [stringifiedPath]: { data, relationship: prop.relationship },
+                          onChange({
+                            ...value,
+                            [key]: data,
                           });
                         },
                       }
                     : {
                         kind: 'one',
-                        value: relationshipValue.data
+                        value: relationshipValue
                           ? {
-                              ...(relationshipValue.data as RelationshipData),
+                              ...(relationshipValue as RelationshipData),
                               label:
-                                (relationshipValue.data as RelationshipData).label ||
-                                (relationshipValue.data as RelationshipData).id,
+                                (relationshipValue as RelationshipData).label ||
+                                (relationshipValue as RelationshipData).id,
                             }
                           : null,
                         onChange(data) {
-                          onRelationshipValuesChange({
-                            ...relationshipValues,
-                            [stringifiedPath]: { data, relationship: prop.relationship },
+                          onChange({
+                            ...value,
+                            [key]: data,
                           });
                         },
                       }
@@ -197,16 +181,12 @@ export function FormValue({
   onClose,
   onChange,
   componentBlock,
-  onRelationshipValuesChange,
-  relationshipValues,
   isValid,
 }: {
   value: any;
   onChange(value: any): void;
   onClose(): void;
   componentBlock: ComponentBlock;
-  relationshipValues: RelationshipValues;
-  onRelationshipValuesChange(value: RelationshipValues): void;
   isValid: boolean;
 }) {
   const [forceValidation, setForceValidation] = useState(false);
@@ -215,8 +195,6 @@ export function FormValue({
     <Stack gap="xlarge" contentEditable={false}>
       <FormValueContent
         forceValidation={forceValidation}
-        onRelationshipValuesChange={onRelationshipValuesChange}
-        relationshipValues={relationshipValues}
         onChange={onChange}
         path={[]}
         props={componentBlock.props}

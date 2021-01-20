@@ -1,5 +1,4 @@
 import * as t from 'io-ts';
-import { RelationshipValues } from './DocumentEditor/component-blocks/utils';
 import { RelationshipData } from './DocumentEditor/component-blocks/api';
 import { Mark } from './DocumentEditor/utils';
 import isUrl from 'is-url';
@@ -178,25 +177,15 @@ const relationshipData: t.Type<RelationshipData> = excess(
 type ComponentBlock = {
   type: 'component-block';
   component: string;
-  relationships: RelationshipValues;
   props: Record<string, any>;
   children: Children;
 };
-
-const relationshipValues: t.Type<RelationshipValues> = t.record(
-  t.string,
-  t.type({
-    relationship: t.string,
-    data: t.union([relationshipData, t.readonlyArray(relationshipData), t.null]),
-  })
-);
 
 const componentBlock: t.Type<ComponentBlock> = t.recursion('ComponentBlock', () =>
   excess(
     t.type({
       type: t.literal('component-block'),
       component: t.string,
-      relationships: relationshipValues,
       props: t.record(t.string, t.any),
       children,
     })
@@ -205,7 +194,7 @@ const componentBlock: t.Type<ComponentBlock> = t.recursion('ComponentBlock', () 
 
 type ComponentProp = {
   type: 'component-inline-prop' | 'component-block-prop';
-  propPath: (string | number)[];
+  propPath: (string | number)[] | undefined;
   children: Children;
 };
 
@@ -213,7 +202,7 @@ const componentProp: t.Type<ComponentProp> = t.recursion('ComponentProp', () =>
   excess(
     t.type({
       type: t.union([t.literal('component-inline-prop'), t.literal('component-block-prop')]),
-      propPath: t.array(t.union([t.string, t.number])),
+      propPath: t.union([t.array(t.union([t.string, t.number])), t.undefined]),
       children,
     })
   )
@@ -230,6 +219,10 @@ export type ElementFromValidation = Block | Inline;
 const children: t.Type<Children> = t.recursion('Children', () => t.array(t.union([block, inline])));
 
 export const editorCodec = t.array(block);
+
+export function isRelationshipData(val: unknown): val is RelationshipData {
+  return relationshipData.validate(val, [])._tag === 'Right';
+}
 
 export function validateDocumentStructure(val: unknown): asserts val is ElementFromValidation[] {
   const result = editorCodec.validate(val, []);
