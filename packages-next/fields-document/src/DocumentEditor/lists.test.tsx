@@ -1,5 +1,4 @@
 /** @jsx jsx */
-import { Editor } from 'slate';
 import { nestList, toggleList } from './lists';
 import { jsx, makeEditor } from './tests/utils';
 
@@ -763,6 +762,76 @@ test('nest list', () => {
             </text>
           </list-item-content>
           <unordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  content
+                  <cursor />
+                </text>
+              </list-item-content>
+            </list-item>
+          </unordered-list>
+        </list-item>
+      </unordered-list>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('nest list when previous thing is nested', () => {
+  let editor = makeEditor(
+    <editor>
+      <unordered-list>
+        <list-item>
+          <list-item-content>
+            <text>some text</text>
+          </list-item-content>
+          <unordered-list>
+            <list-item>
+              <list-item-content>
+                <text>some more text</text>
+              </list-item-content>
+            </list-item>
+          </unordered-list>
+        </list-item>
+        <list-item>
+          <list-item-content>
+            <text>
+              content
+              <cursor />
+            </text>
+          </list-item-content>
+        </list-item>
+      </unordered-list>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+
+  nestList(editor);
+
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <unordered-list>
+        <list-item>
+          <list-item-content>
+            <text>
+              some text
+            </text>
+          </list-item-content>
+          <unordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  some more text
+                </text>
+              </list-item-content>
+            </list-item>
             <list-item>
               <list-item-content>
                 <text>

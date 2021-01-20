@@ -20,7 +20,11 @@ export const toggleList = (editor: ReactEditor, format: 'ordered-list' | 'unorde
       mode: isActive ? 'lowest' : 'all',
     });
     if (!isActive) {
-      Transforms.wrapNodes(editor, { type: format, children: [] });
+      Transforms.wrapNodes(
+        editor,
+        { type: format, children: [] },
+        { match: x => x.type !== 'list-item-content' && Editor.isBlock(editor, x) }
+      );
     }
   });
 };
@@ -127,7 +131,7 @@ export function withList(editor: ReactEditor) {
             if (Element.isElement(previousChild)) {
               Transforms.moveNodes(editor, {
                 at: path,
-                to: [...Path.previous(path), 1],
+                to: [...Path.previous(path), previousChild.children.length],
               });
               return;
             }
