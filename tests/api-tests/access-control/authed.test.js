@@ -1,12 +1,19 @@
 const { multiAdapterRunners } = require('@keystonejs/test-utils');
-const { createItem, createItems, deleteItem } = require('@keystonejs/server-side-graphql-client');
+const {
+  createItem,
+  createItems,
+  deleteItem,
+  updateItem,
+} = require('@keystonejs/server-side-graphql-client');
 const {
   FAKE_ID,
   FAKE_ID_2,
   getStaticListName,
   listAccessVariations,
+  fieldMatrix,
   getImperativeListName,
   getDeclarativeListName,
+  getFieldName,
   nameFn,
   setupKeystone,
 } = require('./utils');
@@ -30,7 +37,7 @@ const expectNamedArray = (data, errors, name, values) => {
 
 multiAdapterRunners().map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    let keystone, items;
+    let keystone, items, user;
     beforeAll(async () => {
       const _before = await before(setupKeystone);
       keystone = _before.keystone;
@@ -57,6 +64,12 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
           context,
         });
       }
+      user = await createItem({
+        listKey: 'User',
+        item: { name: 'test', yesRead: 'yes', noRead: 'no' },
+        returnFields: 'id name yesRead noRead',
+        context,
+      });
     });
     afterAll(async () => {
       await after(keystone);
@@ -84,9 +97,86 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             });
         });
       });
+      ['static'].forEach(mode => {
+        describe(mode, () => {
+          fieldMatrix
+            .filter(({ create }) => create)
+            .forEach(access => {
+              test(`field allowed: ${JSON.stringify(access)}`, async () => {
+                const listAccess = {
+                  create: true,
+                  read: true,
+                  update: true,
+                  delete: true,
+                  auth: false,
+                };
+                const createMutationName = `create${nameFn[mode](listAccess)}`;
+                const fieldName = getFieldName(access);
+                const query = `mutation { ${createMutationName}(data: { ${fieldName}: "bar" }) { id ${fieldName} } }`;
+                const { data, errors } = await keystone.executeGraphQL({ query });
+                expect(errors).toBe(undefined);
+                expect(data[createMutationName]).not.toBe(null);
+                expect(data[createMutationName].id).not.toBe(null);
+                if (access.read) {
+                  expect(data[createMutationName][fieldName]).toBe('bar');
+                } else {
+                  expect(data[createMutationName][fieldName]).toBe(undefined);
+                }
+                await deleteItem({
+                  keystone,
+                  listKey: nameFn[mode](listAccess),
+                  itemId: data[createMutationName].id,
+                });
+              });
+            });
+        });
+      });
+      ['imperative'].forEach(mode => {
+        describe(mode, () => {
+          fieldMatrix
+            .filter(({ create }) => create)
+            .forEach(access => {
+              test(`field allowed: ${JSON.stringify(access)}`, async () => {
+                const listAccess = {
+                  create: true,
+                  read: true,
+                  update: true,
+                  delete: true,
+                  auth: false,
+                };
+                const createMutationName = `create${nameFn[mode](listAccess)}`;
+                const fieldName = getFieldName(access);
+                const query = `mutation { ${createMutationName}(data: { ${fieldName}: "bar" }) { id } }`;
+                const { data, errors } = await keystone.executeGraphQL({ query });
+                expect(errors).toBe(undefined);
+                expect(data[createMutationName]).not.toBe(null);
+                expect(data[createMutationName].id).not.toBe(null);
+                await deleteItem({
+                  keystone,
+                  listKey: nameFn[mode](listAccess),
+                  itemId: data[createMutationName].id,
+                });
+              });
+            });
+        });
+      });
     });
 
     describe('read', () => {
+      test('authed user', async () => {
+        const query = `query { authenticatedUser { id yesRead noRead } }`;
+        const context = keystone.createContext({ authentication: { item: user, listKey: 'User' } });
+        const { data, errors } = await keystone.executeGraphQL({ context, query });
+        expect(data.authenticatedUser).not.toBe(null);
+        expect(data.authenticatedUser.id).toEqual(user.id);
+        expect(data.authenticatedUser.yesRead).toEqual(user.yesRead);
+        expect(data.authenticatedUser.noRead).toEqual(null);
+        expect(errors).toHaveLength(1);
+        expect(errors[0].name).toEqual('GraphQLError');
+        expect(errors[0].message).toEqual('You do not have access to this resource');
+        expect(errors[0].path).toEqual(['authenticatedUser', 'noRead']);
+      });
+
       ['imperative', 'declarative'].forEach(mode => {
         describe(mode, () => {
           listAccessVariations
@@ -159,6 +249,69 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             });
         });
       });
+      ['imperative', 'static'].forEach(mode => {
+        describe(mode, () => {
+          fieldMatrix
+            .filter(({ read }) => read)
+            .forEach(access => {
+              test(`field allowed - singular: ${JSON.stringify(access)}`, async () => {
+                const listAccess = {
+                  create: true,
+                  read: true,
+                  update: true,
+                  delete: true,
+                  auth: false,
+                };
+                const listKey = nameFn[mode](listAccess);
+                const item = items[listKey][0];
+                const fieldName = getFieldName(access);
+                const singleQueryName = listKey;
+                await updateItem({
+                  context: keystone.createContext({ schemaName: 'internal' }),
+                  listKey,
+                  item: { id: item.id, data: { [fieldName]: 'hello' } },
+                });
+                const query = `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`;
+                const { data, errors } = await keystone.executeGraphQL({ query });
+                expect(errors).toBe(undefined);
+                expect(data[singleQueryName]).not.toBe(null);
+                expect(data[singleQueryName].id).not.toBe(null);
+                expect(data[singleQueryName][fieldName]).toBe('hello');
+              });
+              test(`field allowed - multi: ${JSON.stringify(access)}`, async () => {
+                const listAccess = {
+                  create: true,
+                  read: true,
+                  update: true,
+                  delete: true,
+                  auth: false,
+                };
+                const listKey = nameFn[mode](listAccess);
+                const item = items[listKey][0];
+                const fieldName = getFieldName(access);
+                const allQueryName = `all${listKey}s`;
+                await updateItem({
+                  context: keystone.createContext({ schemaName: 'internal' }),
+                  listKey,
+                  item: { id: item.id, data: { [fieldName]: 'hello' } },
+                });
+                const query = `query { ${allQueryName} { id ${fieldName} } }`;
+                const { data, errors } = await keystone.executeGraphQL({ query });
+                expect(errors).toBe(undefined);
+                expect(data[allQueryName]).not.toBe(null);
+                expect(data[allQueryName]).toHaveLength(2);
+                for (const _item of data[allQueryName]) {
+                  expect(_item.id).not.toBe(null);
+                  if (_item.id === item.id) {
+                    expect(_item[fieldName]).toEqual('hello');
+                  } else {
+                    expect(_item[fieldName]).toEqual(null);
+                  }
+                }
+              });
+            });
+        });
+      });
     });
 
     describe('update', () => {
@@ -208,6 +361,63 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
                 await keystone.executeGraphQL({
                   query: `mutation { ${updateMutationName}(id: "${validId}", data: { name: "Hello" }) { id name } }`,
                 });
+              });
+            });
+        });
+      });
+      ['static'].forEach(mode => {
+        describe(mode, () => {
+          fieldMatrix
+            .filter(({ update }) => update)
+            .forEach(access => {
+              test(`field allowed: ${JSON.stringify(access)}`, async () => {
+                const listAccess = {
+                  create: true,
+                  read: true,
+                  update: true,
+                  delete: true,
+                  auth: false,
+                };
+                const listKey = nameFn[mode](listAccess);
+                const item = items[listKey][0];
+                const updateMutationName = `update${listKey}`;
+                const fieldName = getFieldName(access);
+                const query = `mutation { ${updateMutationName}(id: "${item.id}", data: { ${fieldName}: "bar" }) { id ${fieldName} } }`;
+                const { data, errors } = await keystone.executeGraphQL({ query });
+                expect(errors).toBe(undefined);
+                expect(data[updateMutationName]).not.toBe(null);
+                expect(data[updateMutationName].id).not.toBe(null);
+                if (access.read) {
+                  expect(data[updateMutationName][fieldName]).toBe('bar');
+                } else {
+                  expect(data[updateMutationName][fieldName]).toBe(undefined);
+                }
+              });
+            });
+        });
+      });
+      ['imperative'].forEach(mode => {
+        describe(mode, () => {
+          fieldMatrix
+            .filter(({ update }) => update)
+            .forEach(access => {
+              test(`field allowed: ${JSON.stringify(access)}`, async () => {
+                const listAccess = {
+                  create: true,
+                  read: true,
+                  update: true,
+                  delete: true,
+                  auth: false,
+                };
+                const listKey = nameFn[mode](listAccess);
+                const item = items[listKey][0];
+                const updateMutationName = `update${listKey}`;
+                const fieldName = getFieldName(access);
+                const query = `mutation { ${updateMutationName}(id: "${item.id}", data: { ${fieldName}: "bar" }) { id } }`;
+                const { data, errors } = await keystone.executeGraphQL({ query });
+                expect(errors).toBe(undefined);
+                expect(data[updateMutationName]).not.toBe(null);
+                expect(data[updateMutationName].id).not.toBe(null);
               });
             });
         });
