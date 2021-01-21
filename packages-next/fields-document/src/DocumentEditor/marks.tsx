@@ -1,9 +1,9 @@
-import { Editor, Transforms, Range, Text, Node, Path, Point } from 'slate';
+import { Editor, Transforms, Range, Text, Point } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
-import { Mark } from './utils';
+import { EditorAfterButIgnoringingPointsWithNoContent, Mark } from './utils';
 
 export const allMarkdownShortcuts = {
   bold: ['**', '__'],
@@ -50,76 +50,6 @@ function applyMark(
   // once you've ended the shortcut, you're done with the mark
   // so we need to remove it so the text you insert after doesn't have it
   editor.removeMark(mark);
-}
-
-function isAtStartOfBlockOrThereIsWhitespaceBeforePoint(editor: ReactEditor, point: Point) {
-  const pointBeforePoint = Editor.before(editor, point);
-
-  // we're the start of the editor and there isn't anything before us
-  if (!pointBeforePoint) {
-    return true;
-  }
-
-  const pathToBlockAbovePoint = Editor.above(editor, {
-    at: pointBeforePoint.path,
-    match: node => Editor.isBlock(editor, node),
-  })![1];
-
-  const pathToPointAboveSelection = Editor.above(editor, {
-    match: node => Editor.isBlock(editor, node),
-  })![1];
-
-  const isPointBeforePointPartOfBlockInSelection = Path.equals(
-    pathToBlockAbovePoint,
-    pathToPointAboveSelection
-  );
-  // the point before the given point is in the previous block
-  // so we're at the start of our block
-  if (!isPointBeforePointPartOfBlockInSelection) {
-    return true;
-  }
-  const text = (Node.get(editor, pointBeforePoint.path) as Text).text[pointBeforePoint.offset];
-  // yes, this could be simplified to return the result of test
-  // but it's useful to have breakpoints for a particular case
-  if (/\s/.test(text)) {
-    return true;
-  }
-  return false;
-}
-
-// sooooooooooooooo, this is kinda weird
-// what's going on is that we're searching through the result of Editor.string
-// when we find the shortcut text we're expecting, we have an offset from the start of the block.
-// you might be thinking
-// "cool, just call Editor.after(editor, {distance: offsetFromStart}) and then you have the point for that character"
-// but you'd be ✨😊✨ wrong ✨😊✨
-// because you can have two points that refer to essentially the same position
-// e.g. these two cursors are essentially in the same place but you could have it in either place
-// <text bold>some text<cursor/></text><text italic>more text</text>
-// <text bold>some text</text><text italic><cursor/>more text</text>
-// you've also got void nodes which don't have text
-
-// you could probably solve this problem more efficiently
-// but i'd rather stick with an implementation that definitely works and is pretty simple to understand
-// (if i were to implement this more efficently, i would probably write a different
-// implementation of Editor.after that skips the positions that don't have text
-// or implement the search differently so we have the points while searching)
-function getPointAtOffsetFromStartOfBlock(
-  editor: Editor,
-  offsetFromStart: number,
-  maybeRightPoint: Point,
-  startOfBlock: Point
-): Point {
-  const str = Editor.string(editor, { anchor: startOfBlock, focus: maybeRightPoint });
-  if (str.length === offsetFromStart) {
-    return maybeRightPoint;
-  }
-  return getPointAtOffsetFromStartOfBlock(
-    editor,
-    offsetFromStart,
-    Editor.after(editor, maybeRightPoint)!,
-    startOfBlock
-  );
 }
 
 export const withMarks = (
@@ -182,20 +112,23 @@ export const withMarks = (
               const startOfStartOfShortcut =
                 offsetFromStartOfBlock === 0
                   ? startOfBlock
-                  : getPointAtOffsetFromStartOfBlock(
-                      editor,
-                      offsetFromStartOfBlock,
-                      Editor.after(editor, startOfBlock, {
-                        distance: offsetFromStartOfBlock,
-                      })!,
-                      startOfBlock
-                    );
+                  : EditorAfterButIgnoringingPointsWithNoContent(editor, startOfBlock, {
+                      distance: offsetFromStartOfBlock,
+                    })!;
 
               const endOfStartOfShortcut = Editor.after(editor, startOfStartOfShortcut, {
                 distance: shortcutText.length,
               })!;
 
-              if (!isAtStartOfBlockOrThereIsWhitespaceBeforePoint(editor, startOfStartOfShortcut)) {
+              if (
+                offsetFromStartOfBlock !== 0 &&
+                !/\s/.test(
+                  Editor.string(editor, {
+                    anchor: Editor.before(editor, startOfStartOfShortcut, { unit: 'character' })!,
+                    focus: startOfStartOfShortcut,
+                  })
+                )
+              ) {
                 continue;
               }
 

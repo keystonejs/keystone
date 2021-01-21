@@ -1,5 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
-import { Editor, Node, NodeEntry, Path, Transforms, Element, PathRef, Text } from 'slate';
+import {
+  Editor,
+  Node,
+  NodeEntry,
+  Path,
+  Transforms,
+  Element,
+  PathRef,
+  Text,
+  Location,
+  Point,
+} from 'slate';
 import { ReactEditor } from 'slate-react';
 
 export { useEditor as useStaticEditor } from 'slate-react';
@@ -116,4 +127,42 @@ export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(
     // for some reason the editor blurs so we need to focus it again
     ReactEditor.focus(editor);
   }
+}
+
+export function EditorAfterButIgnoringingPointsWithNoContent(
+  editor: Editor,
+  at: Location,
+  {
+    distance = 1,
+  }: {
+    distance?: number;
+  } = {}
+): Point | undefined {
+  const anchor = Editor.point(editor, at, { edge: 'end' });
+  const focus = Editor.end(editor, []);
+  const range = { anchor, focus };
+  let d = 0;
+  let target;
+
+  for (const p of Editor.positions(editor, {
+    at: range,
+  })) {
+    if (d > distance) {
+      break;
+    }
+
+    // this is the important change
+    const node = Node.get(editor, p.path) as Text;
+    if (node.text.length === p.offset) {
+      continue;
+    }
+
+    if (d !== 0) {
+      target = p;
+    }
+
+    d++;
+  }
+
+  return target;
 }
