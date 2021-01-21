@@ -1,6 +1,4 @@
-/**
- * @jest-environment jsdom
- */
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { makeEditor, jsx } from '../tests/utils';
 import { MyDataTransfer } from './test-utils';

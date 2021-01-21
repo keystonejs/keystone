@@ -57,23 +57,19 @@ export function ComponentInlineProp(props: RenderElementProps) {
 }
 
 export function insertComponentBlock(
-  editor: Editor,
+  editor: ReactEditor,
   componentBlocks: Record<string, ComponentBlock>,
   componentBlock: string,
   relationships: Relationships
 ) {
   let node = getInitialValue(componentBlock, componentBlocks[componentBlock], relationships);
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, node);
-
-  // TODO: this is broken
-  if (editor.selection) {
-    const [entry] = Editor.nodes(editor, {
-      match: node => node.type === 'component-block',
-    });
-    if (entry) {
-      const point = Editor.start(editor, entry[1]);
-      Transforms.select(editor, point);
-    }
+  const componentBlockEntry = Editor.above(editor, {
+    match: node => node.type === 'component-block',
+  });
+  if (componentBlockEntry) {
+    const start = Editor.start(editor, componentBlockEntry[1]);
+    Transforms.setSelection(editor, { anchor: start, focus: start });
   }
 }
 

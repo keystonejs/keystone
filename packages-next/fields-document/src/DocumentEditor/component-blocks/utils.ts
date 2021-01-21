@@ -13,9 +13,6 @@ function _findChildPropPaths(
   prop: ComponentPropField,
   path: (string | number)[]
 ): PathToChildFieldWithOption[] {
-  if (!prop) {
-    debugger;
-  }
   switch (prop.kind) {
     case 'form':
     case 'relationship':

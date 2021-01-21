@@ -11,7 +11,7 @@ import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './u
 
 const minusIcon = <MinusIcon size="small" />;
 
-export function insertDivider(editor: Editor) {
+export function insertDivider(editor: ReactEditor) {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, {
     type: 'divider',
     children: [{ text: '' }],

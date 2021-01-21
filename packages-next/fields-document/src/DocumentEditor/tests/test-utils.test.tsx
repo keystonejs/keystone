@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { Editor } from 'slate';
 import { jsx, makeEditor } from './utils';

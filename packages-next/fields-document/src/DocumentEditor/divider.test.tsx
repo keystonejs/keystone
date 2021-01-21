@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { jsx, makeEditor } from './tests/utils';
 
@@ -12,7 +13,7 @@ test('inserting a divider with a shortcut works', () => {
       </paragraph>
     </editor>
   );
-
+  console.error('something');
   editor.insertText('-');
   expect(editor).toMatchInlineSnapshot(`
     <editor>

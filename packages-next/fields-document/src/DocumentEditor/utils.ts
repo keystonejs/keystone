@@ -98,7 +98,7 @@ export function useForceValidation() {
 }
 
 export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(
-  editor: Editor,
+  editor: ReactEditor,
   nodes: Node | Node[]
 ) {
   let pathRefForEmptyNodeAtCursor: PathRef | undefined;
@@ -112,5 +112,8 @@ export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(
   let path = pathRefForEmptyNodeAtCursor?.unref();
   if (path) {
     Transforms.removeNodes(editor, { at: path });
+    // even though the selection is in the right place after the removeNodes
+    // for some reason the editor blurs so we need to focus it again
+    ReactEditor.focus(editor);
   }
 }

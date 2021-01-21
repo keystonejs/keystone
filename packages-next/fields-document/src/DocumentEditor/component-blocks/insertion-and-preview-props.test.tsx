@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { component, fields } from '../../component-blocks';
 import { insertComponentBlock } from '.';
@@ -48,7 +49,15 @@ const componentBlocks = {
     props: { text: fields.text({ label: 'Text' }) },
   }),
   complex: component({
-    component: () => null,
+    component: props => {
+      return React.createElement(
+        'div',
+        null,
+        props.object.block,
+        props.object.inline,
+        props.object.conditional.discriminant && props.object.conditional.value
+      );
+    },
     label: 'Complex',
     props: {
       object: objectProp,

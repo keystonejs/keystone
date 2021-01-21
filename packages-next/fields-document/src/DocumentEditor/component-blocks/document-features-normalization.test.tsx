@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { component, fields } from '../../component-blocks';
 import { makeEditor, jsx } from '../tests/utils';

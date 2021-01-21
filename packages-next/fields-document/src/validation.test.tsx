@@ -77,7 +77,11 @@ const validate = (val: unknown) => {
       componentBlocks,
       relationships
     );
-    return makeEditor(<editor>{node}</editor>, { componentBlocks, relationships });
+    return makeEditor(<editor>{node}</editor>, {
+      componentBlocks,
+      relationships,
+      skipRenderingDOM: true,
+    });
   } catch (err) {
     return err;
   }

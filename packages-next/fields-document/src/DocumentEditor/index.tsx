@@ -21,24 +21,16 @@ import { withHistory } from 'slate-history';
 
 import { withParagraphs } from './paragraphs';
 import { withLink, wrapLink } from './link';
-import { LayoutOptionsProvider, withLayouts } from './layouts';
+import { withLayouts } from './layouts';
 import { clearFormatting, Mark } from './utils';
 import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
 import { withHeading } from './heading';
 import { nestList, unnestList, withList } from './lists';
-import {
-  ComponentBlockContext,
-  getPlaceholderTextForPropPath,
-  withComponentBlocks,
-} from './component-blocks';
+import { getPlaceholderTextForPropPath, withComponentBlocks } from './component-blocks';
 import { withBlockquote } from './blockquote';
 import { ComponentBlock } from '../component-blocks';
-import {
-  DocumentFieldRelationshipsProvider,
-  Relationships,
-  withRelationship,
-} from './relationship';
+import { Relationships, withRelationship } from './relationship';
 import { DocumentFeatures } from '../views';
 import { withDivider } from './divider';
 import { withCodeBlock } from './code-block';
@@ -200,8 +192,6 @@ export function DocumentEditor({
     [documentFeatures, componentBlocks, relationships]
   );
 
-  const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
-
   useMemo(() => {
     findDuplicateNodes(value);
   }, [value]);
@@ -221,82 +211,102 @@ export function DocumentEditor({
         }
       }
     >
-      <DocumentFieldRelationshipsProvider value={relationships}>
-        <LayoutOptionsProvider value={documentFeatures.layouts}>
-          <ComponentBlockContext.Provider value={componentBlocks}>
-            <Slate
-              // this fixes issues with Slate crashing when a fast refresh occcurs
-              key={identity}
-              editor={editor}
-              value={value}
-              onChange={value => {
-                onChange?.(value);
-              }}
-            >
-              <ToolbarStateProvider
-                componentBlocks={componentBlocks}
-                editorDocumentFeatures={documentFeatures}
-              >
-                {useMemo(
-                  () => (
-                    <Toolbar
-                      documentFeatures={documentFeatures}
-                      viewState={{
-                        expanded,
-                        toggle: () => {
-                          setExpanded(v => !v);
-                        },
-                      }}
-                    />
-                  ),
-                  [expanded, documentFeatures]
-                )}
-                <Editable
-                  decorate={useCallback(
-                    ([node, path]: NodeEntry<Node>) => {
-                      let decorations: Range[] = [];
-                      if (node.type === 'component-block' && Element.isElement(node)) {
-                        if (node.children.length === 1 && node.children[0].propPath === undefined) {
-                          return decorations;
-                        }
-                        node.children.forEach((child, index) => {
-                          if (Node.string(child) === '') {
-                            const start = Editor.start(editor, [...path, index]);
-                            const placeholder = getPlaceholderTextForPropPath(
-                              child.propPath as any,
-                              componentBlocks[node.component as string].props,
-                              node.props as any
-                            );
+      <Slate
+        // this fixes issues with Slate crashing when a fast refresh occcurs
+        key={identity}
+        editor={editor}
+        value={value}
+        onChange={value => {
+          onChange?.(value);
+        }}
+      >
+        <ToolbarStateProvider
+          componentBlocks={componentBlocks}
+          editorDocumentFeatures={documentFeatures}
+          relationships={relationships}
+        >
+          {useMemo(
+            () => (
+              <Toolbar
+                documentFeatures={documentFeatures}
+                viewState={{
+                  expanded,
+                  toggle: () => {
+                    setExpanded(v => !v);
+                  },
+                }}
+              />
+            ),
+            [expanded, documentFeatures]
+          )}
+          <DocumentEditorEditable
+            autoFocus={!!autoFocus}
+            componentBlocks={componentBlocks}
+            editor={editor}
+            readOnly={onChange === undefined}
+          />
+        </ToolbarStateProvider>
 
-                            decorations.push({
-                              placeholder,
-                              anchor: start,
-                              focus: start,
-                            });
-                          }
-                        });
-                      }
-                      return decorations;
-                    },
-                    [editor]
-                  )}
-                  css={styles}
-                  autoFocus={autoFocus}
-                  onKeyDown={onKeyDown}
-                  readOnly={onChange === undefined}
-                  renderElement={renderElement}
-                  renderLeaf={renderLeaf}
-                />
-              </ToolbarStateProvider>
-              {
-                // for debugging
-                false && <Debugger />
-              }
-            </Slate>
-          </ComponentBlockContext.Provider>
-        </LayoutOptionsProvider>
-      </DocumentFieldRelationshipsProvider>
+        {
+          // for debugging
+          false && <Debugger />
+        }
+      </Slate>
     </div>
+  );
+}
+
+export function DocumentEditorEditable({
+  editor,
+  componentBlocks,
+  autoFocus,
+  readOnly,
+}: {
+  editor: ReactEditor;
+  componentBlocks: Record<string, ComponentBlock>;
+  autoFocus: boolean;
+  readOnly: boolean;
+}) {
+  const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
+
+  return (
+    <Editable
+      decorate={useCallback(
+        ([node, path]: NodeEntry<Node>) => {
+          let decorations: Range[] = [];
+          if (node.type === 'component-block' && Element.isElement(node)) {
+            if (node.children.length === 1 && node.children[0].propPath === undefined) {
+              return decorations;
+            }
+            node.children.forEach((child, index) => {
+              if (Node.string(child) === '') {
+                const start = Editor.start(editor, [...path, index]);
+                const placeholder = getPlaceholderTextForPropPath(
+                  child.propPath as any,
+                  componentBlocks[node.component as string].props,
+                  node.props as any
+                );
+                if (placeholder) {
+                  decorations.push({
+                    placeholder,
+                    anchor: start,
+                    focus: start,
+                  });
+                }
+              }
+            });
+          }
+          return decorations;
+        },
+        [editor]
+      )}
+      css={styles}
+      autoFocus={autoFocus}
+      onKeyDown={onKeyDown}
+      readOnly={readOnly}
+      renderElement={renderElement}
+      renderLeaf={renderLeaf}
+    />
   );
 }
 
@@ -329,12 +339,14 @@ let listDepth = 10;
 
 while (listDepth--) {
   let arr = Array.from({ length: listDepth });
-  styles[arr.map(() => `ol`).join(' ')] = {
-    listStyle: orderedListStyles[listDepth % 3],
-  };
-  styles[arr.map(() => `ul`).join(' ')] = {
-    listStyle: unorderedListStyles[listDepth % 3],
-  };
+  if (arr.length) {
+    styles[arr.map(() => `ol`).join(' ')] = {
+      listStyle: orderedListStyles[listDepth % 3],
+    };
+    styles[arr.map(() => `ul`).join(' ')] = {
+      listStyle: unorderedListStyles[listDepth % 3],
+    };
+  }
 }
 
 /**

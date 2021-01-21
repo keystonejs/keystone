@@ -2,13 +2,16 @@ import React, { ReactNode, useContext } from 'react';
 import { Editor, Range, Text } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { DocumentFeatures } from '../views';
+import { ComponentBlockContext } from './component-blocks';
 import { ComponentBlock } from './component-blocks/api';
 import {
   DocumentFeaturesForChildField,
   getChildFieldAtPropPath,
   getDocumentFeaturesForChildField,
 } from './component-blocks/utils';
+import { LayoutOptionsProvider } from './layouts';
 import { isListType } from './lists';
+import { DocumentFieldRelationshipsProvider, Relationships } from './relationship';
 import { allMarks, isBlockActive, Mark } from './utils';
 
 type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean };
@@ -71,7 +74,7 @@ export function getAncestorComponentChildFieldDocumentFeatures(
     const ancestorComponent = Editor.parent(editor, ancestorComponentProp[1]);
     const component = ancestorComponent[0].component;
     const componentBlock = componentBlocks[component as string];
-    if (componentBlock) {
+    if (componentBlock && propPath) {
       const options = getChildFieldAtPropPath(
         propPath as any,
         ancestorComponent[0].props as any,
@@ -255,18 +258,26 @@ export const ToolbarStateProvider = ({
   children,
   componentBlocks,
   editorDocumentFeatures,
+  relationships,
 }: {
   children: ReactNode;
   componentBlocks: Record<string, ComponentBlock>;
   editorDocumentFeatures: DocumentFeatures;
+  relationships: Relationships;
 }) => {
   const editor = useSlate();
 
   return (
-    <ToolbarStateContext.Provider
-      value={createToolbarState(editor, componentBlocks, editorDocumentFeatures)}
-    >
-      {children}
-    </ToolbarStateContext.Provider>
+    <DocumentFieldRelationshipsProvider value={relationships}>
+      <LayoutOptionsProvider value={editorDocumentFeatures.layouts}>
+        <ComponentBlockContext.Provider value={componentBlocks}>
+          <ToolbarStateContext.Provider
+            value={createToolbarState(editor, componentBlocks, editorDocumentFeatures)}
+          >
+            {children}
+          </ToolbarStateContext.Provider>
+        </ComponentBlockContext.Provider>
+      </LayoutOptionsProvider>
+    </DocumentFieldRelationshipsProvider>
   );
 };

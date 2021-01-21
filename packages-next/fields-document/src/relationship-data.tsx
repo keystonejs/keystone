@@ -132,7 +132,7 @@ async function addRelationshipDataToComponentProps(
     case 'conditional': {
       return {
         discriminant: val.discriminant,
-        val: await addRelationshipDataToComponentProps(
+        value: await addRelationshipDataToComponentProps(
           prop.values[val.discriminant],
           val.value,
           fetchData

@@ -1,6 +1,4 @@
-/**
- * @jest-environment jsdom
- */
+/** @jest-environment jsdom */
 import React, { useState } from 'react';
 import { createEditor, Editor } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';

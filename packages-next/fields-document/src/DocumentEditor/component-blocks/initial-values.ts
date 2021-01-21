@@ -1,17 +1,27 @@
 import { ComponentPropField, ComponentBlock } from '../../component-blocks';
 import { Relationships } from '../relationship';
-import { assertNever } from './utils';
+import { assertNever, findChildPropPaths } from './utils';
 
 export function getInitialValue(
   type: string,
   componentBlock: ComponentBlock,
   relationships: Relationships
 ) {
+  const props = getInitialPropsValue(
+    { kind: 'object', value: componentBlock.props },
+    relationships
+  );
   return {
     type: 'component-block',
     component: type,
-    props: getInitialPropsValue({ kind: 'object', value: componentBlock.props }, relationships),
-    children: [{ text: '' }],
+    props,
+    children: findChildPropPaths(props, componentBlock.props).map(x => ({
+      type: `component-${x.options.kind}-prop`,
+      propPath: x.path,
+      children: [
+        x.options.kind === 'block' ? { type: 'paragraph', children: [{ text: '' }] } : { text: '' },
+      ],
+    })),
   };
 }
 

@@ -285,10 +285,15 @@ function HeadingDialog({
             isSelected={isSelected}
             onMouseDown={event => {
               event.preventDefault();
+
               if (isSelected) {
                 Transforms.unwrapNodes(editor, { match: n => n.type === 'heading' });
               } else {
-                Transforms.wrapNodes(editor, { type: 'heading', level: hNum, children: [] });
+                Transforms.setNodes(
+                  editor,
+                  { type: 'heading', level: hNum },
+                  { match: node => node.type === 'paragraph' || node.type === 'heading' }
+                );
               }
               onCloseMenu();
             }}
