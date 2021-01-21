@@ -36,12 +36,6 @@ module.exports = async (on, config) => {
         })
       );
     },
-
-    mongoInsertOne: ({ collection, document }) =>
-      dbConnection
-        .collection(collection)
-        .insertOne(document)
-        .then(({ insertedId }) => ({ id: insertedId })),
   });
 
   return config;
