@@ -43,6 +43,7 @@ import { ToolbarStateProvider } from './toolbar-state';
 import { withInsertMenu } from './insert-menu';
 import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts';
 import { withPasting } from './pasting';
+import { withMarkdownLinkShortcut } from './markdown-link-shortcut';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -134,18 +135,22 @@ export function createDocumentEditor(
                       withShortcuts(
                         withDivider(
                           withLayouts(
-                            withMarks(
+                            withMarkdownLinkShortcut(
                               documentFeatures,
                               componentBlocks,
-                              withCodeBlock(
-                                withBlockMarkdownShortcuts(
-                                  documentFeatures,
-                                  componentBlocks,
-                                  withBlockquote(
-                                    withDocumentFeaturesNormalization(
-                                      documentFeatures,
-                                      relationships,
-                                      withHistory(withReact(createEditor()))
+                              withMarks(
+                                documentFeatures,
+                                componentBlocks,
+                                withCodeBlock(
+                                  withBlockMarkdownShortcuts(
+                                    documentFeatures,
+                                    componentBlocks,
+                                    withBlockquote(
+                                      withDocumentFeaturesNormalization(
+                                        documentFeatures,
+                                        relationships,
+                                        withHistory(withReact(createEditor()))
+                                      )
                                     )
                                   )
                                 )
