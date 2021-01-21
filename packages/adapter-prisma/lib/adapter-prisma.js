@@ -11,6 +11,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     super(...arguments);
     this.name = 'prisma';
     this.provider = this.config.provider || 'postgresql';
+    this.migrationMode = this.config.migrationMode || 'dev';
 
     this.getPrismaPath = this.config.getPrismaPath || (() => '.prisma');
     this.getDbSchemaName = this.config.getDbSchemaName || (() => 'public');
@@ -46,6 +47,12 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     });
   }
 
+  async deploy(rels) {
+    // Apply any migrations which haven't already been applied
+    await this._prepareSchema(rels);
+    this._runPrismaCmd(`migrate deploy --preview-feature`);
+  }
+
   async _connect({ rels }) {
     await this._generateClient(rels);
     const { PrismaClient } = require(this.clientPath);
@@ -75,37 +82,35 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       if (fs.existsSync(this.clientPath)) {
         const existing = fs.readFileSync(this.schemaPath, { encoding: 'utf-8' });
         if (existing === prismaSchema) {
-          // 2a1. If they're the same, we're golden
-        } else {
-          // 2a2. If they're different, generate and run a migration
-          // Write prisma file
-          this._writePrismaSchema({ prismaSchema });
-
-          // Generate prisma client
-          await this._generatePrismaClient();
-
-          this._saveMigration({ name: `keystone-${cuid()}` });
-          this._executeMigrations();
+          // If they're the same, we're golden
+          return;
         }
-      } else {
-        this._writePrismaSchema({ prismaSchema });
-
-        // Generate prisma client
-        await this._generatePrismaClient();
-
-        // Need to generate and run a migration!!!
-        this._saveMigration({ name: 'init' });
-        this._executeMigrations();
       }
+      this._writePrismaSchema({ prismaSchema });
+
+      // Generate prisma client
+      await this._generatePrismaClient();
+
+      // Run prisma migrations
+      await this._runMigrations();
     }
   }
 
-  _saveMigration({ name }) {
-    this._runPrismaCmd(`migrate save --name ${name} --experimental`);
-  }
-
-  _executeMigrations() {
-    this._runPrismaCmd('migrate up --experimental');
+  async _runMigrations() {
+    if (this.migrationMode === 'prototype') {
+      // Sync the database directly, without generating any migration
+      this._runPrismaCmd(`db push --force --preview-feature`);
+    } else if (this.migrationMode === 'createOnly') {
+      // Generate a migration, but do not apply it
+      this._runPrismaCmd(`migrate dev --create-only --name keystone-${cuid()} --preview-feature`);
+    } else if (this.migrationMode === 'dev') {
+      // Generate and apply a migration if required.
+      this._runPrismaCmd(`migrate dev --name keystone-${cuid()} --preview-feature`);
+    } else if (this.migrationMode === 'none') {
+      // Explicitly disable running any migrations
+    } else {
+      throw new Error(`migrationMode must be one of 'dev', 'prototype', 'createOnly', or 'none`);
+    }
   }
 
   async _writePrismaSchema({ prismaSchema }) {
@@ -211,32 +216,32 @@ class PrismaAdapter extends BaseKeystoneAdapter {
 
   // This will drop all the tables in the backing database. Use wisely.
   async dropDatabase() {
-    let migrationNeeded = true;
-    if (this.provider === 'postgresql') {
-      for (const { tablename } of await this.prisma.$queryRaw(
-        `SELECT tablename FROM pg_tables WHERE schemaname='${this.dbSchemaName}'`
-      )) {
-        if (tablename.includes('_Migration')) {
-          migrationNeeded = false;
+    if (this.migrationMode === 'prototype') {
+      if (this.provider === 'postgresql') {
+        // Special fast path to drop data from a postgres database.
+        // This is an optimization which is particularly crucial in a unit testing context.
+        // This code path takes milliseconds, vs ~7 seconds for a migrate reset + db push
+        for (const { tablename } of await this.prisma.$queryRaw(
+          `SELECT tablename FROM pg_tables WHERE schemaname='${this.dbSchemaName}'`
+        )) {
+          await this.prisma.$queryRaw(
+            `TRUNCATE TABLE \"${this.dbSchemaName}\".\"${tablename}\" CASCADE;`
+          );
         }
-        await this.prisma.$queryRaw(
-          `TRUNCATE TABLE \"${this.dbSchemaName}\".\"${tablename}\" CASCADE;`
-        );
-      }
-      for (const { relname } of await this.prisma.$queryRaw(
-        `SELECT c.relname FROM pg_class AS c JOIN pg_namespace AS n ON c.relnamespace = n.oid WHERE c.relkind='S' AND n.nspname='${this.dbSchemaName}';`
-      )) {
-        if (!relname.includes('_Migration')) {
+        for (const { relname } of await this.prisma.$queryRaw(
+          `SELECT c.relname FROM pg_class AS c JOIN pg_namespace AS n ON c.relnamespace = n.oid WHERE c.relkind='S' AND n.nspname='${this.dbSchemaName}';`
+        )) {
           await this.prisma.$queryRaw(
             `ALTER SEQUENCE \"${this.dbSchemaName}\".\"${relname}\" RESTART WITH 1;`
           );
         }
+      } else {
+        // If we're in prototype mode then we need to rebuild the tables after a reset
+        this._runPrismaCmd(`migrate reset --force --preview-feature`);
+        this._runPrismaCmd(`db push --force --preview-feature`);
       }
-    }
-
-    if (migrationNeeded) {
-      this._saveMigration({ name: 'init' });
-      this._executeMigrations();
+    } else {
+      this._runPrismaCmd(`migrate reset --force --preview-feature`);
     }
   }
 
