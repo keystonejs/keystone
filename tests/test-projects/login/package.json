@@ -18,7 +18,7 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a tests/test-projects/login/.env file.\nSee tests/test-projects/login/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@keystonejs/adapter-mongoose": "^10.1.1",
+    "@keystonejs/adapter-prisma": "^1.1.2",
     "@keystonejs/app-admin-ui": "^7.3.12",
     "@keystonejs/app-graphql": "^6.2.0",
     "@keystonejs/app-static": "^5.1.3",

@@ -15,10 +15,10 @@ const {
 
 const { projectName } = require('./config');
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { PrismaAdapter } = require('@keystonejs/adapter-prisma');
 
 const keystone = new Keystone({
-  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/cypress-test-project' }),
+  adapter: new PrismaAdapter(),
   cookieSecret: 'qwerty',
 });
 

@@ -10,7 +10,6 @@ const {
   CalendarDay,
   DateTime,
   Url,
-  Decimal,
   Slug,
   Virtual,
 } = require('@keystonejs/fields');
@@ -40,10 +39,10 @@ const { formatISO } = require('date-fns');
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { PrismaAdapter } = require('@keystonejs/adapter-prisma');
 
 const keystone = new Keystone({
-  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/cypress-test-project' }),
+  adapter: new PrismaAdapter(),
   cookieSecret: 'qwerty',
 });
 
@@ -140,7 +139,8 @@ keystone.createList('Post', {
     },
     stars: { type: Stars, starCount: 5 },
     views: { type: Integer },
-    price: { type: Decimal, symbol: '$' },
+    // FIXME: Prisma doesn't support Decimal yet https://github.com/keystonejs/keystone/issues/4702
+    // price: { type: Decimal, symbol: '$' },
     currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },
     markdownValue: { type: Markdown },
@@ -225,7 +225,8 @@ keystone.createList('ReadOnlyList', {
       adminConfig: { isReadOnly: true },
     },
     views: { type: Integer, adminConfig: { isReadOnly: true } },
-    price: { type: Decimal, symbol: '$', adminConfig: { isReadOnly: true } },
+    // FIXME: Prisma doesn't support Decimal yet
+    // price: { type: Decimal, symbol: '$', adminConfig: { isReadOnly: true } },
     currency: { type: Text, adminConfig: { isReadOnly: true } },
     hero: { type: File, adapter: fileAdapter, adminConfig: { isReadOnly: true } },
     markdownValue: { type: Markdown, adminConfig: { isReadOnly: true } },
