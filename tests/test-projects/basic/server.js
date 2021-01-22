@@ -11,7 +11,7 @@ keystone
     dev: process.env.NODE_ENV !== 'production',
   })
   .then(async ({ middlewares }) => {
-    await keystone.connect(process.env.MONGODB_URI);
+    await keystone.connect();
 
     // Initialise some data.
     // NOTE: This is only for test purposes and should not be used in production

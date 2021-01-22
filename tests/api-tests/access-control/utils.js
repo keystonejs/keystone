@@ -81,7 +81,11 @@ const fieldMatrix = [
 ];
 const getFieldName = access => getPrefix(access);
 
-const nameFn = { imperative: getImperativeListName, declarative: getDeclarativeListName };
+const nameFn = {
+  imperative: getImperativeListName,
+  declarative: getDeclarativeListName,
+  static: getStaticListName,
+};
 
 const createFieldStatic = fieldAccess => ({
   [getFieldName(fieldAccess)]: {
@@ -103,7 +107,14 @@ function setupKeystone(adapterName) {
   return setupServer({
     adapterName,
     createLists: keystone => {
-      keystone.createList('User', { fields: { name: { type: Text } } });
+      keystone.createList('User', {
+        fields: {
+          name: { type: Text },
+          noRead: { type: Text, access: { read: () => false } },
+          yesRead: { type: Text, access: { read: () => true } },
+        },
+      });
+      keystone.createAuthStrategy({ type: PasswordAuthStrategy, list: 'User' });
 
       listAccessVariations.forEach(access => {
         keystone.createList(getStaticListName(access), {
