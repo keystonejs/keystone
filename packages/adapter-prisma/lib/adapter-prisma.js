@@ -172,6 +172,15 @@ class PrismaAdapter extends BaseKeystoneAdapter {
               `from_${path} ${listKey}[] @relation("${tableName}", references: [id])`,
             ])
         ),
+        ...flatten(
+          rels
+            .filter(({ right }) => !right)
+            .filter(({ left }) => left.refListKey === listAdapter.key)
+            .filter(({ cardinality }) => cardinality === '1:N' || cardinality === 'N:1')
+            .map(({ left: { path, listKey }, tableName, columnName }) => [
+              `from_${listKey}_${path} ${listKey}[] @relation("${tableName}${columnName}")`,
+            ])
+        ),
       ];
 
       return `
@@ -404,8 +413,8 @@ class PrismaListAdapter extends BaseListAdapter {
     if (search !== undefined && search !== '' && searchField) {
       if (searchField.fieldName === 'Text') {
         // FIXME: Think about regex
-        if (!ret.where) ret.where = { name: search };
-        else ret.where = { AND: [ret.where, { name: search }] };
+        if (!ret.where) ret.where = { name: { contains: search, mode: 'insensitive' } };
+        else ret.where = { AND: [ret.where, { name: { contains: search, mode: 'insensitive' } }] };
         // const f = escapeRegExp;
         // this._query.andWhere(`${baseTableAlias}.name`, '~*', f(search));
       } else {
