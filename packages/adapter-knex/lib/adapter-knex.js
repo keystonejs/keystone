@@ -648,17 +648,31 @@ class QueryBuilder {
         // SELECT ... ORDER BY <orderField>
         const [orderField, orderDirection] = this._getOrderFieldAndDirection(orderBy);
         const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
-        this._query.orderBy(sortKey, orderDirection);
+        
+        // Lists with a relationship field for its first field might not have the default sort
+        // field on their tables. We need to check and if doesn't exists revert to no order by   
+        
+        if(typeof listAdapter.realKeys[sortKey] !== "undefined") {
+          this._query.orderBy(sortKey, orderDirection);
+        }
       }
       if (sortBy !== undefined) {
-        // SELECT ... ORDER BY <orderField>[, <orderField>, ...]
+        // SELECT ... ORDER BY <orderField>[, <orderField>, ...]                
         this._query.orderBy(
+          // Lists with a relationship field for its first field might not have the default sort
+          // field on their tables. We need to check and if doesn't exists revert to no order by     
+
           sortBy.map(s => {
             const [orderField, orderDirection] = this._getOrderFieldAndDirection(s);
             const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
-
+            
+            if(typeof listAdapter.realKeys[orderField] !== "undefined") {                                        
+              return { column: sortKey, order: orderDirection };              
+            } else {            
+              return { };              
+            }      
             return { column: sortKey, order: orderDirection };
-          })
+          }).filter(s => Object.keys(s) > 0)   
         );
       }
     }
