@@ -51,6 +51,62 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     );
 
     test(
+      'users - case sensitive',
+      runner(setupKeystone, async ({ keystone }) => {
+        const create = async (listKey, item) => createItem({ keystone, listKey, item });
+        await Promise.all([
+          create('Test', { name: 'one' }),
+          create('Test', { name: '%islikelike%' }),
+          create('Test', { name: 'three' }),
+          create('Number', { name: 12345 }),
+        ]);
+
+        const { data, errors } = await keystone.executeGraphQL({
+          query: `
+          query {
+            allTests(
+              search: "ONE",
+            ) {
+              name
+            }
+          }
+      `,
+        });
+        expect(errors).toBe(undefined);
+        expect(data).toHaveProperty('allTests');
+        expect(data.allTests).toEqual([{ name: 'one' }]);
+      })
+    );
+
+    test(
+      'users - partial case sensitive',
+      runner(setupKeystone, async ({ keystone }) => {
+        const create = async (listKey, item) => createItem({ keystone, listKey, item });
+        await Promise.all([
+          create('Test', { name: 'one' }),
+          create('Test', { name: '%islikelike%' }),
+          create('Test', { name: 'three' }),
+          create('Number', { name: 12345 }),
+        ]);
+
+        const { data, errors } = await keystone.executeGraphQL({
+          query: `
+          query {
+            allTests(
+              search: "N",
+            ) {
+              name
+            }
+          }
+      `,
+        });
+        expect(errors).toBe(undefined);
+        expect(data).toHaveProperty('allTests');
+        expect(data.allTests).toEqual([{ name: 'one' }]);
+      })
+    );
+
+    test(
       'users - like escapes',
       runner(setupKeystone, async ({ keystone }) => {
         const create = async (listKey, item) => createItem({ keystone, listKey, item });
