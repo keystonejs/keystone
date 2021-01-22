@@ -28,7 +28,6 @@ function validateComponentBlockProps(
     if (prop.validate(value)) {
       return value;
     }
-    debugger;
     throw new PropValidationError('Invalid form prop value', path);
   }
   if (prop.kind === 'child') {
@@ -80,21 +79,28 @@ function validateComponentBlockProps(
     }
     const discriminant = (value as any).discriminant;
     const val = (value as any).value;
-
-    return {
-      discriminant: validateComponentBlockProps(
-        prop.discriminant,
-        discriminant,
-        relationships,
-        path.concat('discriminant')
-      ),
-      value: validateComponentBlockProps(
-        prop.values[discriminant],
-        val,
-        relationships,
-        path.concat('value')
-      ),
-    };
+    // for some reason mongo or mongoose or something is saving undefined as null
+    // so we're doing this so that we avoid setting undefined on objects
+    const obj: any = {};
+    const discriminantVal = validateComponentBlockProps(
+      prop.discriminant,
+      discriminant,
+      relationships,
+      path.concat('discriminant')
+    );
+    if (discriminantVal !== undefined) {
+      obj.discriminant = discriminantVal;
+    }
+    const conditionalFieldValue = validateComponentBlockProps(
+      prop.values[discriminant],
+      val,
+      relationships,
+      path.concat('value')
+    );
+    if (conditionalFieldValue !== undefined) {
+      obj.value = conditionalFieldValue;
+    }
+    return obj;
   }
 
   if (prop.kind === 'object') {
@@ -109,12 +115,17 @@ function validateComponentBlockProps(
     }
     let val: Record<string, any> = {};
     for (const key of Object.keys(prop.value)) {
-      val[key] = validateComponentBlockProps(
+      const propVal = validateComponentBlockProps(
         prop.value[key],
         (value as any)[key],
         relationships,
         path.concat(key)
       );
+      // for some reason mongo or mongoose or something is saving undefined as null
+      // so we're doing this so that we avoid setting undefined on objects
+      if (propVal !== undefined) {
+        val[key] = propVal;
+      }
     }
     return val;
   }

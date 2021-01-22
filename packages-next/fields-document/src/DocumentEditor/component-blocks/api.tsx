@@ -348,9 +348,11 @@ export const fields = {
   },
 };
 
-export type ComponentBlock = {
+export type ComponentBlock<
+  Props extends Record<string, ComponentPropField> = Record<string, ComponentPropField>
+> = {
   component: (props: any) => ReactElement | null;
-  props: Record<string, ComponentPropField>;
+  props: Props;
   label: string;
 } & (
   | {
@@ -412,9 +414,9 @@ export type ExtractPropFromComponentPropFieldForPreview<
     }[Cardinality]
   : never;
 
-type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField> = Prop extends [
-  ChildField
-]
+type ExtractPropFromComponentPropFieldForToolbar<
+  Prop extends ComponentPropField
+> = Prop extends ChildField
   ? undefined
   : Prop extends FormField<infer Value, infer Options>
   ? { readonly value: Value; onChange(value: Value): void; readonly options: Options }
@@ -476,7 +478,6 @@ export function component<
     props: PropsOption;
     label: string;
     // icon?: ReactElement;
-    // position?: 'toolbar' | 'insert-menu';
   } & (
     | {
         chromeless: true;
@@ -502,7 +503,7 @@ export function component<
         }) => ReactElement;
       }
   )
-): ComponentBlock {
+): ComponentBlock<PropsOption> {
   return options as any;
 }
 
@@ -511,3 +512,47 @@ export const NotEditable = ({ children, ...props }: HTMLAttributes<HTMLDivElemen
     {children}
   </div>
 );
+
+type Comp<Props> = (props: Props) => ReactElement | null;
+
+type ExtractPropFromComponentPropFieldForRendering<
+  Prop extends ComponentPropField
+> = Prop extends ChildField
+  ? ReactNode
+  : Prop extends FormField<infer Value, any>
+  ? Value
+  : Prop extends ObjectField<infer Value>
+  ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForRendering<Value[Key]> }
+  : Prop extends ConditionalField<infer Discriminant, infer Value, any>
+  ? {
+      readonly [Key in DiscriminantToString<Discriminant>]: {
+        readonly discriminant: Discriminant extends boolean
+          ? 'true' extends Key
+            ? true
+            : 'false' extends Key
+            ? false
+            : never
+          : Discriminant;
+        readonly value: Key extends keyof Value
+          ? ExtractPropFromComponentPropFieldForRendering<CastToComponentPropField<Value[Key]>>
+          : never;
+      };
+    }[DiscriminantToString<Discriminant>]
+  : Prop extends RelationshipField<infer Cardinality>
+  ? {
+      one: HydratedRelationshipData | null;
+      many: readonly HydratedRelationshipData[];
+    }[Cardinality]
+  : never;
+
+type ExtractPropsForPropsForRendering<Props extends Record<string, ComponentPropField>> = {
+  readonly [Key in keyof Props]: ExtractPropFromComponentPropFieldForRendering<Props[Key]>;
+};
+
+export type InferRenderersForComponentBlocks<
+  ComponentBlocks extends Record<string, ComponentBlock<any>>
+> = {
+  [Key in keyof ComponentBlocks]: Comp<
+    ExtractPropsForPropsForRendering<ComponentBlocks[Key]['props']>
+  >;
+};
