@@ -2,7 +2,7 @@
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, Select, TextInput, Checkbox } from '@keystone-ui/fields';
 import { HTMLAttributes, ReactElement, ReactNode, useState } from 'react';
-import isUrl from 'is-url';
+import { isValidURL } from '../isValidURL';
 
 export type FormField<Value, Options> = {
   kind: 'form';
@@ -151,7 +151,7 @@ export const fields = {
     defaultValue?: string;
   }): FormField<string, undefined> {
     const validate = (value: unknown) => {
-      return typeof value === 'string' && (value === '' || isUrl(value));
+      return typeof value === 'string' && (value === '' || isValidURL(value));
     };
     return {
       kind: 'form',

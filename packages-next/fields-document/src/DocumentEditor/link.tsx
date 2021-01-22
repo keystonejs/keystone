@@ -3,7 +3,6 @@
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
 import { Editor, Node, Range, Transforms } from 'slate';
 import { forwardRef, memo, useMemo, useState } from 'react';
-import isUrl from 'is-url';
 
 import { jsx, Portal, useTheme } from '@keystone-ui/core';
 import { useControlledPopover } from '@keystone-ui/popover';
@@ -14,13 +13,18 @@ import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import {
+  EditorAfterButIgnoringingPointsWithNoContent,
   isBlockActive,
   useElementWithSetNodes,
   useForceValidation,
   useStaticEditor,
 } from './utils';
-import { useToolbarState } from './toolbar-state';
+import { getAncestorComponentChildFieldDocumentFeatures, useToolbarState } from './toolbar-state';
 import { useEventCallback } from './utils';
+import { DocumentFeatures } from '../views';
+import { ComponentBlock } from './component-blocks/api';
+import { HistoryEditor } from 'slate-history';
+import { isValidURL } from './isValidURL';
 
 const isLinkActive = (editor: Editor) => {
   return isBlockActive(editor, 'link');
@@ -84,7 +88,7 @@ export const LinkElement = ({
     });
   });
   const forceValidation = useForceValidation();
-  const showInvalidState = isUrl(href) ? false : forceValidation || localForceValidation;
+  const showInvalidState = isValidURL(href) ? false : forceValidation || localForceValidation;
   return (
     <span {...attributes} css={{ position: 'relative', display: 'inline-block' }}>
       <a
@@ -200,20 +204,78 @@ export const linkButton = (
   </Tooltip>
 );
 
-export function withLink<T extends Editor>(editor: T): T {
+const markdownLinkPattern = /(^|\s)\[(.+?)\]\((\S+)\)$/;
+
+export function withLink<T extends HistoryEditor>(
+  editorDocumentFeatures: DocumentFeatures,
+  componentBlocks: Record<string, ComponentBlock>,
+  editor: T
+): T {
   const { insertText, isInline, normalizeNode } = editor;
 
   editor.isInline = element => {
     return element.type === 'link' ? true : isInline(element);
   };
 
-  editor.insertText = text => {
-    if (text && isUrl(text)) {
-      wrapLink(editor, text);
-    } else {
+  if (editorDocumentFeatures.links) {
+    editor.insertText = text => {
       insertText(text);
-    }
-  };
+      if (text !== ')' || !editor.selection) return;
+      const startOfBlock = Editor.start(
+        editor,
+        Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]
+      );
+
+      const startOfBlockToEndOfShortcutString = Editor.string(editor, {
+        anchor: editor.selection.anchor,
+        focus: startOfBlock,
+      });
+      const match = markdownLinkPattern.exec(startOfBlockToEndOfShortcutString);
+      if (!match) return;
+      const ancestorComponentChildFieldDocumentFeatures = getAncestorComponentChildFieldDocumentFeatures(
+        editor,
+        editorDocumentFeatures,
+        componentBlocks
+      );
+      if (ancestorComponentChildFieldDocumentFeatures?.documentFeatures.links === false) {
+        return;
+      }
+      const [, maybeWhitespace, linkText, href] = match;
+      // by doing this, the insertText(')') above will happen in a different undo than the link replacement
+      // so that means that when someone does an undo after this
+      // it will undo the the state of "[content](link)" rather than "[content](link" (note the missing closing bracket)
+      editor.history.undos.push([]);
+      const startOfShortcut =
+        match.index === 0
+          ? startOfBlock
+          : EditorAfterButIgnoringingPointsWithNoContent(editor, startOfBlock, {
+              distance: match.index,
+            })!;
+      const startOfLinkText = EditorAfterButIgnoringingPointsWithNoContent(
+        editor,
+        startOfShortcut,
+        {
+          distance: maybeWhitespace === '' ? 1 : 2,
+        }
+      )!;
+      const endOfLinkText = EditorAfterButIgnoringingPointsWithNoContent(editor, startOfLinkText, {
+        distance: linkText.length,
+      })!;
+
+      Transforms.delete(editor, {
+        at: { anchor: endOfLinkText, focus: editor.selection.anchor },
+      });
+      Transforms.delete(editor, {
+        at: { anchor: startOfShortcut, focus: startOfLinkText },
+      });
+
+      Transforms.wrapNodes(
+        editor,
+        { type: 'link', href, children: [] },
+        { at: { anchor: editor.selection.anchor, focus: startOfShortcut } }
+      );
+    };
+  }
 
   editor.normalizeNode = ([node, path]) => {
     if (node.type === 'link' && Node.string(node) === '') {

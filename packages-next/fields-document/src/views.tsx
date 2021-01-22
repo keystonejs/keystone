@@ -16,9 +16,9 @@ import { DocumentEditor } from './DocumentEditor';
 import { ComponentBlock } from './component-blocks';
 import { Relationships } from './DocumentEditor/relationship';
 import weakMemoize from '@emotion/weak-memoize';
-import isUrl from 'is-url';
 import { clientSideValidateProp } from './DocumentEditor/component-blocks/utils';
 import { ForceValidationProvider } from './DocumentEditor/utils';
+import { isValidURL } from './DocumentEditor/isValidURL';
 
 export const Field = ({
   field,
@@ -150,7 +150,7 @@ export const controller = (
         }
       }
     }
-    if (node.type === 'link' && (typeof node.href !== 'string' || !isUrl(node.href))) {
+    if (node.type === 'link' && (typeof node.href !== 'string' || !isValidURL(node.href))) {
       return false;
     }
     return node.children.every(node => validateNode(node));
