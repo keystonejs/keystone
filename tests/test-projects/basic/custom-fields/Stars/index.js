@@ -1,4 +1,9 @@
-const { Stars, MongoIntegerInterface, KnexIntegerInterface } = require('./Implementation');
+const {
+  Stars,
+  MongoIntegerInterface,
+  KnexIntegerInterface,
+  PrismaIntegerInterface,
+} = require('./Implementation');
 
 const { Integer } = require('@keystonejs/fields');
 
@@ -14,5 +19,6 @@ module.exports = {
   adapters: {
     mongoose: MongoIntegerInterface,
     knex: KnexIntegerInterface,
+    prisma: PrismaIntegerInterface,
   },
 };

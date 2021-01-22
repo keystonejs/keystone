@@ -1,4 +1,9 @@
-const { Stars, MongoIntegerInterface, KnexIntegerInterface } = require('./Implementation');
+const {
+  Stars,
+  MongoIntegerInterface,
+  KnexIntegerInterface,
+  PrismaIntegerInterface,
+} = require('./Implementation');
 
 // We're going to extend the integer field to store
 // a number between 1-5 and represent this as a rating
@@ -16,5 +21,6 @@ module.exports = {
   adapters: {
     mongoose: MongoIntegerInterface,
     knex: KnexIntegerInterface,
+    prisma: PrismaIntegerInterface,
   },
 };
