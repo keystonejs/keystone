@@ -413,8 +413,8 @@ class PrismaListAdapter extends BaseListAdapter {
     if (search !== undefined && search !== '' && searchField) {
       if (searchField.fieldName === 'Text') {
         // FIXME: Think about regex
-        if (!ret.where) ret.where = { name: search };
-        else ret.where = { AND: [ret.where, { name: search }] };
+        if (!ret.where) ret.where = { name: { contains: search, mode: 'insensitive' } };
+        else ret.where = { AND: [ret.where, { name: { contains: search, mode: 'insensitive' } }] };
         // const f = escapeRegExp;
         // this._query.andWhere(`${baseTableAlias}.name`, '~*', f(search));
       } else {
