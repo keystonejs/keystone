@@ -42,15 +42,9 @@ export const Field = ({
   </FieldContainer>
 );
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + '';
-  return linkTo ? (
-    <CellLink {...linkTo}>{JSON.stringify(value)}</CellLink>
-  ) : (
-    <CellContainer>{JSON.stringify(value)}</CellContainer>
-  );
+export const Cell: CellComponent = () => {
+  return null;
 };
-Cell.supportsLinkTo = true;
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
