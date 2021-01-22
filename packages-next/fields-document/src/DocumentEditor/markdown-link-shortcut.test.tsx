@@ -366,3 +366,50 @@ test('link shortcut works when inside of a component block with links option inh
     </editor>
   `);
 });
+
+test('an undo only reverts to the whole shortcut text', () => {
+  let editor = makeEditor(
+    <editor>
+      <paragraph>
+        <text>
+          [content](https://keystonejs.com
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  );
+  editor.insertText(')');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <paragraph>
+        <text>
+          
+        </text>
+        <link
+          @@isInline={true}
+          href="https://keystonejs.com"
+        >
+          <text>
+            content
+            <cursor />
+          </text>
+        </link>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+  // TODO: need to fix stuff around editor types
+  (editor as any).undo();
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <paragraph>
+        <text>
+          [content](https://keystonejs.com)
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
