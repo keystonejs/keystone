@@ -40,7 +40,6 @@ export function withMarkdownLinkShortcut<T extends HistoryEditor>(
     // by doing this, the insertText(')') above will happen in a different undo than the link replacement
     // so that means that when someone does an undo after this
     // it will undo the the state of "[content](link)" rather than "[content](link" (note the missing closing bracket)
-    // TODO: do this in the marks as well
     editor.history.undos.push([]);
     const startOfShortcut =
       match.index === 0

@@ -13,7 +13,6 @@ test('inserting a blockquote with a shortcut works', () => {
       </paragraph>
     </editor>
   );
-  Promise.reject(new Error());
   editor.insertText(' ');
   editor.insertText('some content');
   expect(editor).toMatchInlineSnapshot(`

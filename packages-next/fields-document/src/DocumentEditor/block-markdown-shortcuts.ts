@@ -1,4 +1,5 @@
 import { Editor, Transforms, Range } from 'slate';
+import { HistoryEditor } from 'slate-history';
 import { ReactEditor } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
@@ -6,7 +7,7 @@ import { insertDivider } from './divider';
 import { DocumentFeaturesForNormalization } from './document-features-normalization';
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
 
-export function withBlockMarkdownShortcuts<T extends ReactEditor>(
+export function withBlockMarkdownShortcuts<T extends ReactEditor & HistoryEditor>(
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
   editor: T
@@ -160,6 +161,8 @@ export function withBlockMarkdownShortcuts<T extends ReactEditor>(
       ) {
         return;
       }
+      // so that this starts a new undo group
+      editor.history.undos.push([]);
       Transforms.select(editor, range);
       Transforms.delete(editor);
       shortcut.insert();

@@ -476,4 +476,32 @@ describe.each(
       )
     );
   });
+
+  test('undo only undos adding the mark and removing the shortcut, keeps the inserted text', () => {
+    let editor = makeEditor(
+      <editor>
+        <paragraph>
+          <text>
+            {shortcut}something{shortcut.slice(0, -1)}
+            <cursor />
+          </text>
+        </paragraph>
+      </editor>
+    );
+
+    editor.insertText(shortcut.slice(-1));
+    (editor as any).undo();
+    expect(editor).toEqualEditor(
+      makeEditor(
+        <editor>
+          <paragraph>
+            <text>
+              {shortcut}something{shortcut}
+              <cursor />
+            </text>
+          </paragraph>
+        </editor>
+      )
+    );
+  });
 });
