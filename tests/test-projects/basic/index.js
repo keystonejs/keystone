@@ -139,7 +139,7 @@ keystone.createList('Post', {
     },
     stars: { type: Stars, starCount: 5 },
     views: { type: Integer },
-    // FIXME: Prisma doesn't support Decimal yet
+    // FIXME: Prisma doesn't support Decimal yet https://github.com/keystonejs/keystone/issues/4702
     // price: { type: Decimal, symbol: '$' },
     currency: { type: Text },
     hero: { type: File, adapter: fileAdapter },

@@ -9,7 +9,7 @@ describe('ReadOnly Fields', () => {
 
     cy.get('a[href^="/admin/read-only-lists/"]:first').click({ force: true });
 
-    // FIXME: Add price when we have Decimal support in prisma
+    // FIXME: Add price when we have Decimal support in prisma https://github.com/keystonejs/keystone/issues/4702
     // ['slug', 'status', 'author', 'views', 'price', 'currency', 'hero'].forEach(field => {
     ['slug', 'status', 'author', 'views', 'currency', 'hero'].forEach(field => {
       cy.get(`label[for="ks-input-${field}"]`)
