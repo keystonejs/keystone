@@ -41,7 +41,10 @@ export class UnsplashBlock extends Block {
       );
     }
 
-    const auxListKey = `_Block_${fromList}_${this.type}`;
+    const auxListKey =
+      getListByKey(fromList).adapter.parentAdapter.name === 'prisma'
+        ? `KS_Block_${fromList}_${this.type}`
+        : `_Block_${fromList}_${this.type}`;
 
     // Ensure the list is only instantiated once per server instance.
     let auxList = getListByKey(auxListKey);
