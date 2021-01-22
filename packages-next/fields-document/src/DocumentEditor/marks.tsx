@@ -14,14 +14,18 @@ export const allMarkdownShortcuts = {
 
 function applyMark(
   editor: ReactEditor,
-  selectionPoint: Point,
   mark: string,
   shortcutText: string,
   startOfStartPoint: Point
 ) {
   const startPointRef = Editor.pointRef(editor, startOfStartPoint);
 
-  const selectionPointRef = Editor.pointRef(editor, selectionPoint);
+  Transforms.delete(editor, {
+    at: editor.selection!.anchor,
+    distance: shortcutText.length,
+    reverse: true,
+  });
+  Transforms.delete(editor, { at: startOfStartPoint, distance: shortcutText.length });
 
   Transforms.setNodes(
     editor,
@@ -29,24 +33,9 @@ function applyMark(
     {
       match: Text.isText,
       split: true,
-      at: { anchor: startOfStartPoint, focus: selectionPoint },
+      at: { anchor: startPointRef.unref()!, focus: editor.selection!.anchor },
     }
   );
-  const startPointAfterMarkSet = startPointRef.unref();
-  if (startPointAfterMarkSet) {
-    Transforms.delete(editor, { at: startPointAfterMarkSet, distance: shortcutText.length });
-  }
-  const selectionPointAfterMarkSet = selectionPointRef.unref();
-  if (selectionPointAfterMarkSet) {
-    Transforms.delete(editor, {
-      at: {
-        anchor: Editor.before(editor, selectionPointAfterMarkSet, {
-          distance: shortcutText.length,
-        })!,
-        focus: selectionPointAfterMarkSet,
-      },
-    });
-  }
   // once you've ended the shortcut, you're done with the mark
   // so we need to remove it so the text you insert after doesn't have it
   editor.removeMark(mark);
@@ -164,13 +153,7 @@ export const withMarks = (
               ) {
                 continue;
               }
-              applyMark(
-                editor,
-                editor.selection.anchor,
-                mark,
-                shortcutText,
-                startOfStartOfShortcut
-              );
+              applyMark(editor, mark, shortcutText, startOfStartOfShortcut);
               return;
             }
           }
