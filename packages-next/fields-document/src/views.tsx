@@ -3,7 +3,6 @@
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { Node, Text } from 'slate';
-import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
 
 import {
   CardValueComponent,
