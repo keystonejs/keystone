@@ -78,7 +78,7 @@ export type KeystoneConfig = {
           provider?: string;
           getPrismaPath?: (arg: { prismaSchema: any }) => string;
           getDbSchemaName?: (arg: { prismaSchema: any }) => string;
-          enableLogging: boolean;
+          enableLogging?: boolean;
         }
     );
   graphql?: {
