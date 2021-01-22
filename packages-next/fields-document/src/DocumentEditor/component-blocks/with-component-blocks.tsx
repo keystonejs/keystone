@@ -101,12 +101,12 @@ function normalizeNodeWithinComponentProp(
   return didNormalization;
 }
 
-export function withComponentBlocks(
+export function withComponentBlocks<T extends ReactEditor>(
   blockComponents: Record<string, ComponentBlock | undefined>,
   editorDocumentFeatures: DocumentFeatures,
   relationships: Relationships,
-  editor: ReactEditor
-) {
+  editor: T
+): T {
   // note that conflicts between the editor document features
   // and the child field document features are dealt with elsewhere
   const memoizedGetDocumentFeaturesForChildField = weakMemoize(

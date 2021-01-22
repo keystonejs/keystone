@@ -61,7 +61,7 @@ export function useToolbarState() {
 }
 
 export function getAncestorComponentChildFieldDocumentFeatures(
-  editor: ReactEditor,
+  editor: Editor,
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>
 ): DocumentFeaturesForChildField | undefined {

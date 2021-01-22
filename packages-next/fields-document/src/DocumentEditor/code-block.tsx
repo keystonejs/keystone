@@ -3,12 +3,11 @@ import { jsx } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { useMemo, Fragment } from 'react';
 import { Editor, Transforms, Element, Text, Range, Point } from 'slate';
-import { ReactEditor } from 'slate-react';
 import { ToolbarButton, KeyboardInTooltip } from './primitives';
 import { useToolbarState } from './toolbar-state';
 import { CodeIcon } from '@keystone-ui/icons/icons/CodeIcon';
 
-export function withCodeBlock(editor: ReactEditor) {
+export function withCodeBlock<T extends Editor>(editor: T): T {
   const { insertBreak, normalizeNode } = editor;
 
   editor.insertBreak = () => {

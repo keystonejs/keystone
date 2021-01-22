@@ -1,5 +1,4 @@
 import { Editor, Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
 import { HistoryEditor } from 'slate-history';
 import { EditorAfterButIgnoringingPointsWithNoContent } from './utils';
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
@@ -8,16 +7,16 @@ import { ComponentBlock } from './component-blocks/api';
 
 const markdownLinkPattern = /(^|\s)\[(.+?)\]\((\S+)\)$/;
 
-export function withMarkdownLinkShortcut(
+export function withMarkdownLinkShortcut<T extends HistoryEditor>(
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
-  editor: ReactEditor
-) {
+  editor: T
+): T {
   if (!editorDocumentFeatures.links) return editor;
   const { insertText } = editor;
   editor.insertText = text => {
     insertText(text);
-    if (text !== ')' || !editor.selection || !HistoryEditor.isHistoryEditor(editor)) return;
+    if (text !== ')' || !editor.selection) return;
     const startOfBlock = Editor.start(
       editor,
       Editor.above(editor, { match: node => Editor.isBlock(editor, node) })![1]

@@ -1,5 +1,4 @@
 import { Editor, Transforms, Range, Text, Point } from 'slate';
-import { ReactEditor } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
@@ -12,12 +11,7 @@ export const allMarkdownShortcuts = {
   code: ['`'],
 };
 
-function applyMark(
-  editor: ReactEditor,
-  mark: string,
-  shortcutText: string,
-  startOfStartPoint: Point
-) {
+function applyMark(editor: Editor, mark: string, shortcutText: string, startOfStartPoint: Point) {
   const startPointRef = Editor.pointRef(editor, startOfStartPoint);
 
   Transforms.delete(editor, {
@@ -41,11 +35,11 @@ function applyMark(
   editor.removeMark(mark);
 }
 
-export const withMarks = (
+export function withMarks<T extends Editor>(
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
-  editor: ReactEditor
-) => {
+  editor: T
+): T {
   const selectedMarkdownShortcuts: Partial<typeof allMarkdownShortcuts> = {};
   const enabledMarks = editorDocumentFeatures.formatting.inlineMarks;
   (Object.keys(allMarkdownShortcuts) as (keyof typeof allMarkdownShortcuts)[]).forEach(mark => {
@@ -163,4 +157,4 @@ export const withMarks = (
   };
 
   return editor;
-};
+}

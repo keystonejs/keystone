@@ -12,7 +12,7 @@ function insertFragmentButDifferent(editor: ReactEditor, nodes: Descendant[]) {
   }
 }
 
-export function withPasting(editor: ReactEditor) {
+export function withPasting<T extends ReactEditor>(editor: T): T {
   const { insertData, setFragmentData } = editor;
 
   editor.setFragmentData = data => {

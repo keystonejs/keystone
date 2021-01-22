@@ -57,7 +57,7 @@ export const dividerButton = (
   </Tooltip>
 );
 
-export function withDivider(editor: ReactEditor) {
+export function withDivider<T extends Editor>(editor: T): T {
   const { isVoid } = editor;
   editor.isVoid = node => {
     return node.type === 'divider' || isVoid(node);

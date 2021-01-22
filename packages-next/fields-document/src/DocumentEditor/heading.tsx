@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
-import { ReactEditor, RenderElementProps } from 'slate-react';
+import { RenderElementProps } from 'slate-react';
 
 import { Editor, Transforms } from 'slate';
 
@@ -14,16 +14,16 @@ export const HeadingElement = ({ attributes, children, element }: RenderElementP
   );
 };
 
-export function withHeading(editor: ReactEditor) {
+export function withHeading<T extends Editor>(editor: T): T {
   const { insertBreak } = editor;
   editor.insertBreak = () => {
     insertBreak();
 
-    const [match] = Editor.nodes(editor, {
+    const entry = Editor.above(editor, {
       match: n => n.type === 'heading',
     });
-    if (!match) return;
-    const [, path] = match;
+    if (!entry) return;
+    const [, path] = entry;
     Transforms.unwrapNodes(editor, {
       at: path,
     });

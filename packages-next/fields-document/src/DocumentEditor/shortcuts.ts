@@ -1,4 +1,3 @@
-import { ReactEditor } from 'slate-react';
 import { Range, Editor, Transforms, Path } from 'slate';
 export const shortcuts: Record<string, string> = {
   '...': '…',
@@ -9,7 +8,7 @@ export const shortcuts: Record<string, string> = {
   '--': '–',
 };
 
-export function withShortcuts(editor: ReactEditor) {
+export function withShortcuts<T extends Editor>(editor: T): T {
   const { insertText } = editor;
   editor.insertText = text => {
     insertText(text);

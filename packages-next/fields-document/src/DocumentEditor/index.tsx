@@ -477,7 +477,7 @@ export const editorSchema = makeEditorSchema({
   'list-item-content': { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
 });
 
-function withBlocksSchema(editor: ReactEditor) {
+function withBlocksSchema<T extends Editor>(editor: T): T {
   const { normalizeNode } = editor;
   editor.normalizeNode = ([node, path]) => {
     if (Editor.isBlock(editor, node) || Editor.isEditor(node)) {

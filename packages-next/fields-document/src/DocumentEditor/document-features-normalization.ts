@@ -1,5 +1,4 @@
 import { Text, Transforms, Element, NodeEntry, Editor, Node } from 'slate';
-import { ReactEditor } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { Relationships } from './relationship';
 
@@ -18,7 +17,7 @@ function areArraysEqual(arrA: any[], arrB: any[]) {
 
 export function normalizeTextBasedOnInlineMarksAndSoftBreaks(
   [node, path]: NodeEntry<Text>,
-  editor: ReactEditor,
+  editor: Editor,
   inlineMarks: DocumentFeatures['formatting']['inlineMarks'],
   softBreaks: boolean
 ): boolean {
@@ -55,7 +54,7 @@ export type DocumentFeaturesForNormalization = Omit<DocumentFeatures, 'formattin
 
 export function normalizeInlineBasedOnLinksAndRelationships(
   [node, path]: NodeEntry<Element>,
-  editor: ReactEditor,
+  editor: Editor,
   links: boolean,
   relationshipsEnabled: boolean,
   relationships: Relationships
@@ -92,7 +91,7 @@ export function normalizeInlineBasedOnLinksAndRelationships(
 
 export function normalizeElementBasedOnDocumentFeatures(
   [node, path]: NodeEntry<Element>,
-  editor: ReactEditor,
+  editor: Editor,
   {
     formatting,
     dividers,
@@ -139,11 +138,11 @@ export function normalizeElementBasedOnDocumentFeatures(
   );
 }
 
-export function withDocumentFeaturesNormalization(
+export function withDocumentFeaturesNormalization<T extends Editor>(
   documentFeatures: DocumentFeatures,
   relationships: Relationships,
-  editor: ReactEditor
-) {
+  editor: T
+): T {
   const { normalizeNode } = editor;
   const documentFeaturesForNormalization = { ...documentFeatures, relationships: true };
   editor.normalizeNode = ([node, path]) => {

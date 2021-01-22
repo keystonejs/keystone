@@ -2,7 +2,6 @@
 
 import { ReactNode, forwardRef, useMemo } from 'react';
 import { Editor, Element, Node, NodeEntry, Path, Transforms, Range } from 'slate';
-import { ReactEditor } from 'slate-react';
 import { jsx } from '@keystone-ui/core';
 
 import { isBlockActive, moveChildren } from './utils';
@@ -11,7 +10,7 @@ import { useToolbarState } from './toolbar-state';
 
 export const isListType = (type: string) => type === 'ordered-list' || type === 'unordered-list';
 
-export const toggleList = (editor: ReactEditor, format: 'ordered-list' | 'unordered-list') => {
+export const toggleList = (editor: Editor, format: 'ordered-list' | 'unordered-list') => {
   const isActive = isBlockActive(editor, format);
   Editor.withoutNormalizing(editor, () => {
     Transforms.unwrapNodes(editor, {
@@ -30,7 +29,7 @@ export const toggleList = (editor: ReactEditor, format: 'ordered-list' | 'unorde
 };
 
 function getAncestorList(
-  editor: ReactEditor
+  editor: Editor
 ):
   | { isInside: false }
   | { isInside: true; list: NodeEntry<Element>; listItem: NodeEntry<Element> } {
@@ -52,7 +51,7 @@ function getAncestorList(
   return { isInside: false };
 }
 
-export function withList(editor: ReactEditor) {
+export function withList<T extends Editor>(editor: T): T {
   const { insertBreak, normalizeNode, deleteBackward } = editor;
   editor.deleteBackward = unit => {
     if (editor.selection) {

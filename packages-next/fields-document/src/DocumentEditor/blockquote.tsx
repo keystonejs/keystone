@@ -26,7 +26,7 @@ export const insertBlockquote = (editor: ReactEditor) => {
   }
 };
 
-function getDirectBlockquoteParentFromSelection(editor: ReactEditor) {
+function getDirectBlockquoteParentFromSelection(editor: Editor) {
   if (!editor.selection) return { isInside: false } as const;
   const [, parentPath] = Editor.parent(editor, editor.selection);
   const [maybeBlockquoteParent, maybeBlockquoteParentPath] = Editor.parent(editor, parentPath);
@@ -36,7 +36,7 @@ function getDirectBlockquoteParentFromSelection(editor: ReactEditor) {
     : ({ isInside: false } as const);
 }
 
-export const withBlockquote = (editor: ReactEditor) => {
+export function withBlockquote<T extends Editor>(editor: T): T {
   const { insertBreak, deleteBackward } = editor;
   editor.deleteBackward = unit => {
     if (editor.selection) {
@@ -74,7 +74,7 @@ export const withBlockquote = (editor: ReactEditor) => {
   };
 
   return editor;
-};
+}
 
 export const BlockquoteElement = ({ attributes, children }: RenderElementProps) => {
   const { colors, spacing } = useTheme();

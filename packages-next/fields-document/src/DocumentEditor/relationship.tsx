@@ -2,7 +2,7 @@
 
 import { createContext, Fragment, useContext } from 'react';
 import { ReactEditor, RenderElementProps } from 'slate-react';
-import { Transforms } from 'slate';
+import { Transforms, Editor } from 'slate';
 
 import { jsx } from '@keystone-ui/core';
 import { useKeystone } from '@keystone-next/admin-ui/context';
@@ -47,7 +47,7 @@ export function useDocumentFieldRelationships() {
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider;
 
-export function withRelationship(editor: ReactEditor) {
+export function withRelationship<T extends Editor>(editor: T): T {
   const { isVoid, isInline } = editor;
   editor.isVoid = element => {
     return element.type === 'relationship' || isVoid(element);

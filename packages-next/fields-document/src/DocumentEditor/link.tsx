@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
-import { Node, Range, Transforms } from 'slate';
+import { Editor, Node, Range, Transforms } from 'slate';
 import { forwardRef, memo, useMemo, useState } from 'react';
 import isUrl from 'is-url';
 
@@ -22,11 +22,11 @@ import {
 import { useToolbarState } from './toolbar-state';
 import { useEventCallback } from './utils';
 
-const isLinkActive = (editor: ReactEditor) => {
+const isLinkActive = (editor: Editor) => {
   return isBlockActive(editor, 'link');
 };
 
-export const wrapLink = (editor: ReactEditor, url: string) => {
+export const wrapLink = (editor: Editor, url: string) => {
   if (isLinkActive(editor)) {
     Transforms.unwrapNodes(editor, { match: n => n.type === 'link' });
     return;
@@ -200,8 +200,8 @@ export const linkButton = (
   </Tooltip>
 );
 
-export const withLink = (editor: ReactEditor) => {
-  const { insertData, insertText, isInline, normalizeNode } = editor;
+export function withLink<T extends Editor>(editor: T): T {
+  const { insertText, isInline, normalizeNode } = editor;
 
   editor.isInline = element => {
     return element.type === 'link' ? true : isInline(element);
@@ -223,15 +223,5 @@ export const withLink = (editor: ReactEditor) => {
     normalizeNode([node, path]);
   };
 
-  editor.insertData = (data: DataTransfer) => {
-    const text = data.getData('text/plain');
-
-    if (text && isUrl(text)) {
-      wrapLink(editor, text);
-    } else {
-      insertData(data);
-    }
-  };
-
   return editor;
-};
+}

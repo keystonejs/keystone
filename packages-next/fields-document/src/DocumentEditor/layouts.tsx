@@ -130,7 +130,7 @@ export const insertLayout = (editor: ReactEditor, layout: [number, ...number[]])
 };
 
 // Plugin
-export const withLayouts = (editor: ReactEditor) => {
+export function withLayouts<T extends Editor>(editor: T): T {
   const { normalizeNode, deleteBackward } = editor;
   editor.deleteBackward = unit => {
     if (
@@ -208,7 +208,7 @@ export const withLayouts = (editor: ReactEditor) => {
     normalizeNode(entry);
   };
   return editor;
-};
+}
 
 // Utils
 // ------------------------------

@@ -6,11 +6,11 @@ import { insertDivider } from './divider';
 import { DocumentFeaturesForNormalization } from './document-features-normalization';
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
 
-export function withBlockMarkdownShortcuts(
+export function withBlockMarkdownShortcuts<T extends ReactEditor>(
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
-  editor: ReactEditor
-) {
+  editor: T
+): T {
   const { insertText } = editor;
   const shortcuts: Record<
     string,

@@ -283,7 +283,7 @@ function findPathWithInsertMenu(node: Node, path: Path): Path | undefined {
   }
 }
 
-function removeInsertMenuMarkWhenOutsideOfSelection(editor: ReactEditor) {
+function removeInsertMenuMarkWhenOutsideOfSelection(editor: Editor) {
   const marks = Editor.marks(editor);
   const path = findPathWithInsertMenu(editor, []);
   if (
@@ -299,7 +299,7 @@ function removeInsertMenuMarkWhenOutsideOfSelection(editor: ReactEditor) {
   return false;
 }
 
-export function withInsertMenu(editor: ReactEditor) {
+export function withInsertMenu<T extends Editor>(editor: T): T {
   const { normalizeNode, apply, insertText } = editor;
   editor.normalizeNode = ([node, path]) => {
     if (Text.isText(node) && node.insertMenu) {
