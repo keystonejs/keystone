@@ -1,5 +1,11 @@
 # @keystone-next/types
 
+## 11.0.1
+
+### Patch Changes
+
+- [`a96c24cca`](https://github.com/keystonejs/keystone/commit/a96c24ccab8dadc9e8f0131fe6509abd64a776f5) [#4696](https://github.com/keystonejs/keystone/pull/4696) Thanks [@timleslie](https://github.com/timleslie)! - Marked `db.enableLogging` as optional.
+
 ## 11.0.0
 
 ### Major Changes

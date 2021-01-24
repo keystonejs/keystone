@@ -1,5 +1,14 @@
 # @keystone-next/fields-document
 
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies [[`6b95cb6e4`](https://github.com/keystonejs/keystone/commit/6b95cb6e4d5bea3a87e22765d5fcf31db2fc31ae), [`fc2b7101f`](https://github.com/keystonejs/keystone/commit/fc2b7101f35f20e4d729269a005816546bb37464), [`a96c24cca`](https://github.com/keystonejs/keystone/commit/a96c24ccab8dadc9e8f0131fe6509abd64a776f5), [`e7d4d54e5`](https://github.com/keystonejs/keystone/commit/e7d4d54e5b94e6b376d6eab28a0f2b074f2c95ed), [`a62a2d996`](https://github.com/keystonejs/keystone/commit/a62a2d996f1080051f7962b7063ae37d7e8b7e63)]:
+  - @keystonejs/adapter-prisma@2.0.0
+  - @keystone-next/types@11.0.1
+  - @keystonejs/fields@21.0.2
+
 ## 0.0.8
 
 ### Patch Changes
