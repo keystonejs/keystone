@@ -1,5 +1,22 @@
 # @keystonejs/adapter-prisma
 
+## 2.0.0
+
+### Major Changes
+
+- [`fc2b7101f`](https://github.com/keystonejs/keystone/commit/fc2b7101f35f20e4d729269a005816546bb37464) [#4691](https://github.com/keystonejs/keystone/pull/4691) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded Prisma to `2.15.0`, which includes the new migration framework. Added the `migrationMode` config option to the `PrismaAdapter` constructor to control how migrations are applied.
+
+### Patch Changes
+
+- [`6b95cb6e4`](https://github.com/keystonejs/keystone/commit/6b95cb6e4d5bea3a87e22765d5fcf31db2fc31ae) [#4692](https://github.com/keystonejs/keystone/pull/4692) Thanks [@timleslie](https://github.com/timleslie)! - Updated internals for easier development.
+
+* [`e7d4d54e5`](https://github.com/keystonejs/keystone/commit/e7d4d54e5b94e6b376d6eab28a0f2b074f2c95ed) [#4697](https://github.com/keystonejs/keystone/pull/4697) Thanks [@timleslie](https://github.com/timleslie)! - Fixed cases sensitivity and partial string search for the Prisma adapter.
+
+- [`a62a2d996`](https://github.com/keystonejs/keystone/commit/a62a2d996f1080051f7962b7063ae37d7e8b7e63) [#4698](https://github.com/keystonejs/keystone/pull/4698) Thanks [@timleslie](https://github.com/timleslie)! - Updated prisma schema generation to include explicit opposite field for one-sided 1:N relationships.
+
+- Updated dependencies []:
+  - @keystonejs/fields-auto-increment@8.1.2
+
 ## 1.1.2
 
 ### Patch Changes
