@@ -13,19 +13,6 @@ type _List = {
 };
 type _Keystone = { lists: Record<string, _List> };
 
-declare module 'express' {
-  interface Request {
-    user?: _Item;
-    authedListKey?: string;
-  }
-}
-declare module 'express-session' {
-  interface Session {
-    keystoneItemId: string;
-    keystoneListKey: string;
-  }
-}
-
 export class SessionManager {
   _cookieSecret: SessionOptions['secret'];
   _cookie: SessionOptions['cookie'];
@@ -124,8 +111,8 @@ export class SessionManager {
         return next();
       }
 
-      req.user = item;
-      req.authedListKey = req.session.keystoneListKey;
+      (req as any).user = item;
+      (req as any).authedListKey = (req.session as any).keystoneListKey;
 
       next();
     };
@@ -134,16 +121,17 @@ export class SessionManager {
   }
 
   async _getAuthedItem(req: Request, keystone: _Keystone) {
-    if (!req.session || !req.session.keystoneItemId) {
+    const session = req.session as any;
+    if (!session || !session.keystoneItemId) {
       return;
     }
-    const list = keystone.lists[req.session.keystoneListKey];
+    const list = keystone.lists[session.keystoneListKey];
     if (!list) {
       return;
     }
     let item: _Item | undefined;
     try {
-      item = (await list.adapter.itemsQuery({ where: { id: req.session.keystoneItemId } }))[0];
+      item = (await list.adapter.itemsQuery({ where: { id: session.keystoneItemId } }))[0];
     } catch (e) {
       return;
     }
@@ -157,15 +145,15 @@ export class SessionManager {
     return new Promise((resolve, reject) =>
       req.session.regenerate(err => {
         if (err) return reject(err);
-        req.session.keystoneListKey = list.key;
-        req.session.keystoneItemId = item.id;
+        (req.session as any).keystoneListKey = list.key;
+        (req.session as any).keystoneItemId = item.id;
         resolve(cookieSignature.sign(req.session.id, this._cookieSecret));
       })
     );
   }
 
   endAuthedSession(req: Request): Promise<{ success: boolean; listKey: string; itemId: string }> {
-    const { keystoneListKey, keystoneItemId } = req.session || {};
+    const { keystoneListKey, keystoneItemId } = (req.session as any) || {};
     return new Promise((resolve, reject) =>
       req.session.regenerate(err => {
         if (err) return reject(err);
