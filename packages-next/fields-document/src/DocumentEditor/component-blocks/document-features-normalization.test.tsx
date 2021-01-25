@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { component, fields } from '../../component-blocks';
 import { makeEditor, jsx } from '../tests/utils';
@@ -248,7 +249,7 @@ function makeEditorWithChildField(
   const Prop = `component-${childField.options.kind}-prop` as const;
   return makeEditor(
     <editor>
-      <component-block component={'comp'} relationships={{}} props={{}}>
+      <component-block component={'comp'} props={{}}>
         <Prop propPath={['child']}>{children}</Prop>
       </component-block>
       <paragraph>
@@ -286,7 +287,7 @@ Object.keys(cases).forEach(key => {
       expect(editor).toEqualEditor(
         makeEditor(
           <editor>
-            <component-block component={'comp'} relationships={{}} props={{}}>
+            <component-block component={'comp'} props={{}}>
               <Prop propPath={['child']}>{testCase.expectedNormalized}</Prop>
             </component-block>
             <paragraph>
@@ -313,7 +314,6 @@ test('mark disabled in inline prop', () => {
       <component-block
         component="comp"
         props={Object {}}
-        relationships={Object {}}
       >
         <component-inline-prop
           propPath={
@@ -351,7 +351,6 @@ test('mark enabled in inline prop', () => {
       <component-block
         component="comp"
         props={Object {}}
-        relationships={Object {}}
       >
         <component-inline-prop
           propPath={
@@ -393,7 +392,6 @@ test('mark disabled in block prop', () => {
       <component-block
         component="comp"
         props={Object {}}
-        relationships={Object {}}
       >
         <component-block-prop
           propPath={
@@ -435,7 +433,6 @@ test('mark enabled in block prop', () => {
       <component-block
         component="comp"
         props={Object {}}
-        relationships={Object {}}
       >
         <component-block-prop
           propPath={
@@ -479,7 +476,6 @@ test('heading disabled in block prop', () => {
       <component-block
         component="comp"
         props={Object {}}
-        relationships={Object {}}
       >
         <component-block-prop
           propPath={
@@ -521,7 +517,6 @@ test('heading enabled in block prop', () => {
       <component-block
         component="comp"
         props={Object {}}
-        relationships={Object {}}
       >
         <component-block-prop
           propPath={

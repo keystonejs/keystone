@@ -102,16 +102,10 @@ const Leaf = ({ leaf, text, children, attributes }: RenderLeafProps) => {
   if (subscript) {
     children = <sub>{children}</sub>;
   }
-  return (
-    <span
-      {...attributes}
-      style={{
-        textDecoration: underline ? 'underline' : undefined,
-      }}
-    >
-      {children}
-    </span>
-  );
+  if (underline) {
+    children = <u>{children}</u>;
+  }
+  return <span {...attributes}>{children}</span>;
 };
 
 export const renderLeaf = (props: RenderLeafProps) => {

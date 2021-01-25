@@ -1,40 +1,8 @@
 import { Relationships } from './DocumentEditor/relationship';
 import { BaseGeneratedListTypes, GqlNames, KeystoneGraphQLAPI } from '@keystone-next/types';
 import { Node } from 'slate';
-
-export function removeRelationshipData(nodes: Node[]): Node[] {
-  return nodes.map(node => {
-    if (node.type === 'relationship') {
-      return {
-        ...node,
-        data: (node.data as any)?.id != null ? { id: (node.data as any).id } : null,
-      };
-    }
-    if (node.type === 'component-block') {
-      let newRelationshipValues: Record<string, any> = {};
-      Object.keys(node.relationships as any).forEach(key => {
-        const relationshipValue = (node.relationships as any)[key];
-        newRelationshipValues[key] = {
-          relationship: relationshipValue.relationship,
-          data: Array.isArray(relationshipValue.data)
-            ? relationshipValue.data.map(({ id }: any) => ({ id }))
-            : relationshipValue.data?.id != null
-            ? { id: relationshipValue.id }
-            : null,
-        };
-      });
-      return { ...node, relationships: newRelationshipValues };
-    }
-
-    if (Array.isArray(node.children)) {
-      return {
-        ...node,
-        children: removeRelationshipData(node.children as Node[]),
-      };
-    }
-    return node;
-  });
-}
+import { ComponentBlock, ComponentPropField } from './DocumentEditor/component-blocks/api';
+import { assertNever } from './DocumentEditor/component-blocks/utils';
 
 const labelField = '____document_field_relationship_item_label';
 const idField = '____document_field_relationship_item_id';
@@ -43,9 +11,12 @@ export function addRelationshipData(
   nodes: Node[],
   graphQLAPI: KeystoneGraphQLAPI<Record<string, BaseGeneratedListTypes>>,
   relationships: Relationships,
+  componentBlocks: Record<string, ComponentBlock>,
   gqlNames: (listKey: string) => GqlNames
 ): Promise<Node[]> {
-  let fetchData = async (relationship: Relationships[string], data: any) => {
+  let fetchData = async (relationshipKey: string, data: any) => {
+    const relationship = relationships[relationshipKey];
+    if (!relationship) return data;
     if (relationship.kind === 'prop' && relationship.many) {
       const ids = Array.isArray(data) ? data.filter(item => item.id != null).map(x => x.id) : [];
 
@@ -92,27 +63,31 @@ export function addRelationshipData(
   return Promise.all(
     nodes.map(async node => {
       if (node.type === 'relationship') {
-        const relationship = relationships[node.relationship as string];
-        if (relationship) {
-          return { ...node, data: await fetchData(relationship, node.data) };
-        }
-        return node;
+        return { ...node, data: await fetchData(node.relationship as string, node.data) };
       }
       if (node.type === 'component-block') {
-        let newRelationshipValues: Record<string, any> = {};
-        await Promise.all(
-          Object.keys(node.relationships as any).map(async key => {
-            const relationshipValue = (node.relationships as any)[key];
-            newRelationshipValues[key] = {
-              relationship: relationshipValue.relationship,
-              data: await fetchData(
-                relationships[relationshipValue.relationship],
-                relationshipValue.data
-              ),
-            };
-          })
-        );
-        return { ...node, relationships: newRelationshipValues };
+        const componentBlock = componentBlocks[node.component as string];
+        if (componentBlock) {
+          const [props, children] = await Promise.all([
+            addRelationshipDataToComponentProps(
+              { kind: 'object', value: componentBlock.props },
+              node.props,
+              fetchData
+            ),
+            addRelationshipData(
+              node.children as Node[],
+              graphQLAPI,
+              relationships,
+              componentBlocks,
+              gqlNames
+            ),
+          ]);
+          return {
+            ...node,
+            props,
+            children,
+          };
+        }
       }
       if (Array.isArray(node.children)) {
         return {
@@ -121,6 +96,7 @@ export function addRelationshipData(
             node.children as Node[],
             graphQLAPI,
             relationships,
+            componentBlocks,
             gqlNames
           ),
         };
@@ -128,4 +104,41 @@ export function addRelationshipData(
       return node;
     })
   );
+}
+
+async function addRelationshipDataToComponentProps(
+  prop: ComponentPropField,
+  val: any,
+  fetchData: (relationship: string, data: any) => Promise<any>
+): Promise<any> {
+  switch (prop.kind) {
+    case 'child':
+    case 'form': {
+      return val;
+    }
+    case 'relationship': {
+      return fetchData(prop.relationship, val);
+    }
+    case 'object': {
+      return Object.fromEntries(
+        await Promise.all(
+          Object.keys(prop.value).map(async key => [
+            key,
+            await addRelationshipDataToComponentProps(prop.value[key], val[key], fetchData),
+          ])
+        )
+      );
+    }
+    case 'conditional': {
+      return {
+        discriminant: val.discriminant,
+        value: await addRelationshipDataToComponentProps(
+          prop.values[val.discriminant],
+          val.value,
+          fetchData
+        ),
+      };
+    }
+  }
+  assertNever(prop);
 }

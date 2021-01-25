@@ -1,16 +1,52 @@
-import { ReactElement, createElement, MutableRefObject } from 'react';
+import { ReactElement, createElement, MutableRefObject, useState } from 'react';
 import { Editor, Node, Path, Text, Range } from 'slate';
-import { ReactEditor } from 'slate-react';
-import { createDocumentEditor } from '..';
+import { ReactEditor, Slate } from 'slate-react';
+import { createDocumentEditor, DocumentEditorEditable } from '..';
 import { ComponentBlock } from '../../component-blocks';
 import { DocumentFeatures } from '../../views';
 
 export { __jsx as jsx } from './jsx/namespace';
 import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
 import jestDiff from 'jest-diff';
-import { validateDocument } from '../../validation';
+import { validateDocumentStructure } from '../../structure-validation';
 import { Relationships } from '../relationship';
-import { createToolbarState } from '../toolbar-state';
+import { createToolbarState, ToolbarStateProvider } from '../toolbar-state';
+import { validateAndNormalizeDocument } from '../../validation';
+import React from 'react';
+import { act, render } from '@testing-library/react';
+
+let oldConsoleError = console.error;
+
+console.error = (...stuff: any[]) => {
+  if (typeof stuff[0] === 'string') {
+    if (stuff[0].includes('validateDOMNesting')) {
+      return;
+    }
+    if (stuff[0].includes('inside a test was not wrapped in act')) {
+      const stack = new Error().stack;
+      if (stack?.includes('@popperjs/core') && stack.includes('forceUpdate')) {
+        return;
+      }
+    }
+  }
+  oldConsoleError(...stuff);
+  console.log(
+    'console.error was called, either add an exception for this kind of call or fix the problem'
+  );
+
+  // i very much don't like calling process.exit here
+  // but it seems to be the only way to get Jest to fail a test suite
+  // without throwing an error that is caught by Jest
+  // re why not just throw an error: console.error might be called
+  // in a promise that isn't handled for whatever reason
+  // so we can't know that throwing an error will actually fail the tests
+  // (idk why Jest doesn't fail on unhandled rejections)
+
+  // for whoever is trying to debug why this is failing here:
+  // you should remove the process.exit call and replace it with a throw
+  // and then look for unhandled rejections or thrown errors
+  process.exit(1);
+};
 
 function formatEditor(editor: Node) {
   return prettyFormat(editor, {
@@ -36,6 +72,28 @@ expect.extend({
       isNot: this.isNot,
       promise: this.promise,
     };
+    const receivedConfig = received.__config as any;
+    if (receivedConfig) {
+      validateAndNormalizeDocument(
+        received.children,
+        receivedConfig.documentFeatures,
+        receivedConfig.componentBlocks,
+        receivedConfig.relationships
+      );
+    } else {
+      validateDocumentStructure(received.children);
+    }
+    const expectedConfig = expected.__config as any;
+    if (expectedConfig) {
+      validateAndNormalizeDocument(
+        expected.children,
+        expectedConfig.documentFeatures,
+        expectedConfig.componentBlocks,
+        expectedConfig.relationships
+      );
+    } else {
+      validateDocumentStructure(expected.children);
+    }
 
     const pass =
       this.equals(received.children, expected.children) &&
@@ -97,6 +155,36 @@ export const defaultDocumentFeatures: DocumentFeatures = {
   layouts: [[1], [1, 1], [1, 1, 1], [1, 2, 1]],
 };
 
+function EditorComp({
+  editor,
+  componentBlocks,
+  documentFeatures,
+  relationships,
+}: {
+  editor: ReactEditor;
+  componentBlocks: Record<string, ComponentBlock>;
+  documentFeatures: DocumentFeatures;
+  relationships: Relationships;
+}) {
+  const [val, setVal] = useState(editor.children);
+  return (
+    <Slate editor={editor} value={val} onChange={setVal}>
+      <ToolbarStateProvider
+        componentBlocks={componentBlocks}
+        editorDocumentFeatures={documentFeatures}
+        relationships={relationships}
+      >
+        <DocumentEditorEditable
+          autoFocus={false}
+          componentBlocks={componentBlocks}
+          editor={editor}
+          readOnly={false}
+        />
+      </ToolbarStateProvider>
+    </Slate>
+  );
+}
+
 export const makeEditor = (
   node: Node,
   {
@@ -105,12 +193,14 @@ export const makeEditor = (
     normalization = 'disallow-non-normalized',
     isShiftPressedRef = { current: false },
     relationships = {},
+    skipRenderingDOM,
   }: {
     documentFeatures?: DocumentFeatures;
     componentBlocks?: Record<string, ComponentBlock>;
     normalization?: 'disallow-non-normalized' | 'normalize' | 'skip';
     relationships?: Relationships;
     isShiftPressedRef?: MutableRefObject<boolean>;
+    skipRenderingDOM?: boolean;
   } = {}
 ): ReactEditor => {
   if (!Editor.isEditor(node)) {
@@ -122,14 +212,22 @@ export const makeEditor = (
     relationships,
     isShiftPressedRef
   );
-  validateDocument(editor.children);
+  // for validation
+  editor.__config = {
+    documentFeatures,
+    componentBlocks,
+    relationships,
+  };
+
+  validateDocumentStructure(editor.children);
 
   // just a smoke test for the toolbar state
   createToolbarState(editor, componentBlocks, documentFeatures);
   const { onChange } = editor;
   editor.onChange = () => {
-    createToolbarState(editor, componentBlocks, documentFeatures);
-    onChange();
+    act(() => {
+      onChange();
+    });
   };
 
   editor.children = node.children;
@@ -150,6 +248,20 @@ export const makeEditor = (
     if (normalization === 'disallow-non-normalized') {
       expect(node).toEqualEditor(editor);
     }
+  }
+
+  if (skipRenderingDOM !== true) {
+    // this serves two purposes:
+    // - a smoke test to make sure the ui doesn't throw from any of the actions in the tests
+    // - so that things like ReactEditor.focus and etc. can be called
+    render(
+      <EditorComp
+        editor={editor}
+        componentBlocks={componentBlocks}
+        documentFeatures={documentFeatures}
+        relationships={relationships}
+      />
+    );
   }
   return editor;
 };
@@ -211,6 +323,13 @@ function nodeToReactElement(
     nodeToReactElement(editor, x, selection, path.concat(i))
   );
   if (Editor.isEditor(node)) {
+    const config = editor.__config as any;
+    validateAndNormalizeDocument(
+      node.children,
+      config.documentFeatures,
+      config.componentBlocks,
+      config.relationships
+    );
     const marks = Editor.marks(node);
 
     return createElement('editor', {

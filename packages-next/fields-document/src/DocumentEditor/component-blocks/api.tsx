@@ -1,19 +1,35 @@
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel, Select, TextInput, Checkbox } from '@keystone-ui/fields';
-import { HTMLAttributes, ReactElement, ReactNode } from 'react';
+import { HTMLAttributes, ReactElement, ReactNode, useState } from 'react';
+import { isValidURL } from '../isValidURL';
 
 export type FormField<Value, Options> = {
   kind: 'form';
   Input(props: {
     value: Value;
     onChange(value: Value): void;
-    path: (string | number)[];
     autoFocus: boolean;
+    /**
+     * This will be true when validate has returned false and the user has attempted to close the form
+     * or when the form is open and they attempt to save the item
+     */
+    forceValidation: boolean;
   }): ReactElement | null;
   options: Options;
   defaultValue: Value;
-  validate?(value: any): boolean;
+  /**
+   * validate will be called in two cases:
+   * - on the client in the editor when a user is changing the value.
+   *   Returning `false` will block closing the form
+   *   and saving the item.
+   * - on the server when a change is recieved before allowing it to be saved
+   *   if `true` is returned
+   * @param value The value of the form field. You should NOT trust
+   * this value to be of the correct type because it could come from
+   * a potentially malicious client
+   */
+  validate(value: unknown): boolean;
 };
 
 type InlineMarksConfig =
@@ -122,6 +138,46 @@ export const fields = {
       },
       options: undefined,
       defaultValue,
+      validate(value) {
+        return typeof value === 'string';
+      },
+    };
+  },
+  url({
+    label,
+    defaultValue = '',
+  }: {
+    label: string;
+    defaultValue?: string;
+  }): FormField<string, undefined> {
+    const validate = (value: unknown) => {
+      return typeof value === 'string' && (value === '' || isValidURL(value));
+    };
+    return {
+      kind: 'form',
+      Input({ value, onChange, autoFocus, forceValidation }) {
+        const [blurred, setBlurred] = useState(false);
+        const showValidation = forceValidation || (blurred && !validate(value));
+        return (
+          <FieldContainer>
+            <FieldLabel>{label}</FieldLabel>
+            <TextInput
+              onBlur={() => {
+                setBlurred(true);
+              }}
+              autoFocus={autoFocus}
+              value={value}
+              onChange={event => {
+                onChange(event.target.value);
+              }}
+            />
+            {showValidation && <span css={{ color: 'red' }}>Please provide a valid URL</span>}
+          </FieldContainer>
+        );
+      },
+      options: undefined,
+      defaultValue,
+      validate,
     };
   },
   select<Option extends { label: string; value: string }>({
@@ -133,6 +189,7 @@ export const fields = {
     options: readonly Option[];
     defaultValue: Option['value'];
   }): FormField<Option['value'], readonly Option[]> {
+    const optionValuesSet = new Set(options.map(x => x.value));
     return {
       kind: 'form',
       Input({ value, onChange, autoFocus }) {
@@ -153,6 +210,9 @@ export const fields = {
       },
       options,
       defaultValue,
+      validate(value) {
+        return typeof value === 'string' && optionValuesSet.has(value);
+      },
     };
   },
   checkbox({
@@ -181,6 +241,9 @@ export const fields = {
       },
       options: undefined,
       defaultValue,
+      validate(value) {
+        return typeof value === 'boolean';
+      },
     };
   },
   empty(): FormField<undefined, undefined> {
@@ -191,6 +254,9 @@ export const fields = {
       },
       options: undefined,
       defaultValue: undefined,
+      validate(value) {
+        return value === undefined;
+      },
     };
   },
   child(
@@ -282,9 +348,11 @@ export const fields = {
   },
 };
 
-export type ComponentBlock = {
+export type ComponentBlock<
+  Props extends Record<string, ComponentPropField> = Record<string, ComponentPropField>
+> = {
   component: (props: any) => ReactElement | null;
-  props: Record<string, ComponentPropField>;
+  props: Props;
   label: string;
 } & (
   | {
@@ -297,6 +365,7 @@ export type ComponentBlock = {
         props: Record<string, any>;
         onShowEditMode(): void;
         onRemove(): void;
+        isValid: boolean;
       }) => ReactElement;
     }
 );
@@ -345,9 +414,9 @@ export type ExtractPropFromComponentPropFieldForPreview<
     }[Cardinality]
   : never;
 
-type ExtractPropFromComponentPropFieldForToolbar<Prop extends ComponentPropField> = Prop extends [
-  ChildField
-]
+type ExtractPropFromComponentPropFieldForToolbar<
+  Prop extends ComponentPropField
+> = Prop extends ChildField
   ? undefined
   : Prop extends FormField<infer Value, infer Options>
   ? { readonly value: Value; onChange(value: Value): void; readonly options: Options }
@@ -391,8 +460,8 @@ export type HydratedRelationshipData = {
 
 export type RelationshipData = {
   id: string;
-  label?: string;
-  data?: Record<string, any>;
+  label: string | undefined;
+  data: Record<string, any> | undefined;
 };
 
 export function component<
@@ -409,7 +478,6 @@ export function component<
     props: PropsOption;
     label: string;
     // icon?: ReactElement;
-    // position?: 'toolbar' | 'insert-menu';
   } & (
     | {
         chromeless: true;
@@ -435,7 +503,7 @@ export function component<
         }) => ReactElement;
       }
   )
-): ComponentBlock {
+): ComponentBlock<PropsOption> {
   return options as any;
 }
 
@@ -444,3 +512,47 @@ export const NotEditable = ({ children, ...props }: HTMLAttributes<HTMLDivElemen
     {children}
   </div>
 );
+
+type Comp<Props> = (props: Props) => ReactElement | null;
+
+type ExtractPropFromComponentPropFieldForRendering<
+  Prop extends ComponentPropField
+> = Prop extends ChildField
+  ? ReactNode
+  : Prop extends FormField<infer Value, any>
+  ? Value
+  : Prop extends ObjectField<infer Value>
+  ? { readonly [Key in keyof Value]: ExtractPropFromComponentPropFieldForRendering<Value[Key]> }
+  : Prop extends ConditionalField<infer Discriminant, infer Value, any>
+  ? {
+      readonly [Key in DiscriminantToString<Discriminant>]: {
+        readonly discriminant: Discriminant extends boolean
+          ? 'true' extends Key
+            ? true
+            : 'false' extends Key
+            ? false
+            : never
+          : Discriminant;
+        readonly value: Key extends keyof Value
+          ? ExtractPropFromComponentPropFieldForRendering<CastToComponentPropField<Value[Key]>>
+          : never;
+      };
+    }[DiscriminantToString<Discriminant>]
+  : Prop extends RelationshipField<infer Cardinality>
+  ? {
+      one: HydratedRelationshipData | null;
+      many: readonly HydratedRelationshipData[];
+    }[Cardinality]
+  : never;
+
+type ExtractPropsForPropsForRendering<Props extends Record<string, ComponentPropField>> = {
+  readonly [Key in keyof Props]: ExtractPropFromComponentPropFieldForRendering<Props[Key]>;
+};
+
+export type InferRenderersForComponentBlocks<
+  ComponentBlocks extends Record<string, ComponentBlock<any>>
+> = {
+  [Key in keyof ComponentBlocks]: Comp<
+    ExtractPropsForPropsForRendering<ComponentBlocks[Key]['props']>
+  >;
+};

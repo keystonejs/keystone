@@ -11,6 +11,7 @@ import {
   memo,
   useCallback,
   useMemo,
+  ReactNode,
 } from 'react';
 import { applyRefs } from 'apply-ref';
 import { jsx, useId, useTheme, Portal } from '@keystone-ui/core';
@@ -31,7 +32,7 @@ type Props = {
   /** The target element. */
   children: (props: RenderProps) => ReactElement;
   /** The content of the tooltip. */
-  content: string;
+  content: ReactNode;
   /** Turn off, to maintain the tooltip when the user clicks the trigger element. */
   hideOnClick?: boolean;
   /** Where, in relation to the target, to place the tooltip. */
@@ -111,7 +112,7 @@ export const Tooltip = ({
 
 type ElementProps = {
   /** The content of the tooltip. */
-  children: string;
+  children: ReactNode;
   /** ID used to describe the invoking element. */
   id?: string;
   /** When true, the tooltip will be visible. */

@@ -12,6 +12,7 @@ import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
 import { KeystoneListsAPI } from '@keystone-next/types';
 import { KeystoneListsTypeInfo } from './.keystone/schema-types';
+import { componentBlocks } from './admin/fieldViews/Content';
 
 // TODO: Can we generate this type based on withItemData in the main config?
 type AccessArgs = {
@@ -166,6 +167,7 @@ export const lists = createSchema({
         ],
         links: true,
         dividers: true,
+        componentBlocks,
       }),
       publishDate: timestamp(),
       author: relationship({

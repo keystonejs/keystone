@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { jsx, makeEditor } from './tests/utils';
 

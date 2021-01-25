@@ -20,25 +20,17 @@ import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 
 import { withParagraphs } from './paragraphs';
-import { withLink } from './link';
-import { LayoutOptionsProvider, withLayouts } from './layouts';
-import { Mark, toggleMark } from './utils';
+import { withLink, wrapLink } from './link';
+import { withLayouts } from './layouts';
+import { clearFormatting, Mark } from './utils';
 import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
 import { withHeading } from './heading';
-import { isListType, withList } from './lists';
-import {
-  ComponentBlockContext,
-  getPlaceholderTextForPropPath,
-  withComponentBlocks,
-} from './component-blocks';
+import { nestList, unnestList, withList } from './lists';
+import { getPlaceholderTextForPropPath, withComponentBlocks } from './component-blocks';
 import { withBlockquote } from './blockquote';
 import { ComponentBlock } from '../component-blocks';
-import {
-  DocumentFieldRelationshipsProvider,
-  Relationships,
-  withRelationship,
-} from './relationship';
+import { Relationships, withRelationship } from './relationship';
 import { DocumentFeatures } from '../views';
 import { withDivider } from './divider';
 import { withCodeBlock } from './code-block';
@@ -48,9 +40,9 @@ import { useKeyDownRef, withSoftBreaks } from './soft-breaks';
 import { withShortcuts } from './shortcuts';
 import { withDocumentFeaturesNormalization } from './document-features-normalization';
 import { ToolbarStateProvider } from './toolbar-state';
-import { VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP } from './component-blocks/utils';
 import { withInsertMenu } from './insert-menu';
 import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts';
+import { withPasting } from './pasting';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -58,34 +50,52 @@ const HOTKEYS: Record<string, Mark> = {
   'mod+u': 'underline',
 };
 
+function isMarkActive(editor: Editor, mark: Mark) {
+  const marks = Editor.marks(editor);
+  if (marks?.[mark]) {
+    return true;
+  }
+  // see the stuff about marks in toolbar-state for why this is here
+  for (const entry of Editor.nodes(editor, { match: Text.isText })) {
+    if (entry[0][mark]) {
+      return true;
+    }
+  }
+  return false;
+}
+
 const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
+  if (event.defaultPrevented) return;
   for (const hotkey in HOTKEYS) {
     if (isHotkey(hotkey, event.nativeEvent)) {
       event.preventDefault();
-      toggleMark(editor, HOTKEYS[hotkey]);
-    }
-  }
-  if (event.key === 'Tab' && editor.selection && Range.isCollapsed(editor.selection)) {
-    const block = Editor.above(editor, {
-      match: n => Editor.isBlock(editor, n),
-    });
-
-    if (block && block[0].type === 'list-item') {
-      event.preventDefault();
-      if (event.shiftKey) {
-        Transforms.unwrapNodes(editor, {
-          match: node => isListType(node.type as string),
-          split: true,
-        });
+      const mark = HOTKEYS[hotkey];
+      const isActive = isMarkActive(editor, mark);
+      if (isActive) {
+        Editor.removeMark(editor, mark);
       } else {
-        const type = Editor.parent(editor, block[1])[0].type as string;
-        Transforms.wrapNodes(editor, {
-          type,
-          children: [],
-        });
+        Editor.addMark(editor, mark, true);
       }
       return;
     }
+  }
+  if (isHotkey('mod+\\', event.nativeEvent)) {
+    clearFormatting(editor);
+    return;
+  }
+  if (isHotkey('mod+k', event.nativeEvent)) {
+    event.preventDefault();
+    wrapLink(editor, '');
+    return;
+  }
+  if (event.key === 'Tab') {
+    if (event.shiftKey) {
+      unnestList(editor);
+    } else {
+      nestList(editor);
+    }
+    event.preventDefault();
+    return;
   }
   if (event.key === 'Tab' && editor.selection) {
     const layoutArea = Editor.above(editor, {
@@ -107,34 +117,38 @@ export function createDocumentEditor(
   relationships: Relationships,
   isShiftPressedRef: MutableRefObject<boolean>
 ) {
-  return withSoftBreaks(
-    isShiftPressedRef,
-    withBlocksSchema(
-      withLink(
-        withList(
-          withHeading(
-            withRelationship(
-              withInsertMenu(
-                withComponentBlocks(
-                  componentBlocks,
-                  documentFeatures,
-                  relationships,
-                  withParagraphs(
-                    withShortcuts(
-                      withDivider(
-                        withLayouts(
-                          withMarks(
-                            documentFeatures,
-                            componentBlocks,
-                            withCodeBlock(
-                              withBlockMarkdownShortcuts(
-                                documentFeatures,
-                                componentBlocks,
-                                withBlockquote(
-                                  withDocumentFeaturesNormalization(
-                                    documentFeatures,
-                                    relationships,
-                                    withHistory(withReact(createEditor()))
+  return withPasting(
+    withSoftBreaks(
+      isShiftPressedRef,
+      withBlocksSchema(
+        withLink(
+          documentFeatures,
+          componentBlocks,
+          withList(
+            withHeading(
+              withRelationship(
+                withInsertMenu(
+                  withComponentBlocks(
+                    componentBlocks,
+                    documentFeatures,
+                    relationships,
+                    withParagraphs(
+                      withShortcuts(
+                        withDivider(
+                          withLayouts(
+                            withMarks(
+                              documentFeatures,
+                              componentBlocks,
+                              withCodeBlock(
+                                withBlockMarkdownShortcuts(
+                                  documentFeatures,
+                                  componentBlocks,
+                                  withBlockquote(
+                                    withDocumentFeaturesNormalization(
+                                      documentFeatures,
+                                      relationships,
+                                      withHistory(withReact(createEditor()))
+                                    )
                                   )
                                 )
                               )
@@ -180,8 +194,6 @@ export function DocumentEditor({
     [documentFeatures, componentBlocks, relationships]
   );
 
-  const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
-
   useMemo(() => {
     findDuplicateNodes(value);
   }, [value]);
@@ -201,87 +213,102 @@ export function DocumentEditor({
         }
       }
     >
-      <DocumentFieldRelationshipsProvider value={relationships}>
-        <LayoutOptionsProvider value={documentFeatures.layouts}>
-          <ComponentBlockContext.Provider value={componentBlocks}>
-            <Slate
-              // this fixes issues with Slate crashing when a fast refresh occcurs
-              key={identity}
-              editor={editor}
-              value={value}
-              onChange={value => {
-                onChange?.(value);
-              }}
-            >
-              <ToolbarStateProvider
-                componentBlocks={componentBlocks}
-                editorDocumentFeatures={documentFeatures}
-              >
-                {useMemo(
-                  () => (
-                    <Toolbar
-                      documentFeatures={documentFeatures}
-                      viewState={{
-                        expanded,
-                        toggle: () => {
-                          setExpanded(v => !v);
-                        },
-                      }}
-                    />
-                  ),
-                  [expanded, documentFeatures]
-                )}
-                <Editable
-                  decorate={useCallback(
-                    ([node, path]: NodeEntry<Node>) => {
-                      let decorations: Range[] = [];
-                      if (node.type === 'component-block' && Element.isElement(node)) {
-                        if (
-                          node.children.length === 1 &&
-                          (node.children[0].propPath as any).length === 1 &&
-                          (node.children[0].propPath as any)[0] ===
-                            VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP
-                        ) {
-                          return decorations;
-                        }
-                        node.children.forEach((child, index) => {
-                          if (Node.string(child) === '') {
-                            const start = Editor.start(editor, [...path, index]);
-                            const placeholder = getPlaceholderTextForPropPath(
-                              child.propPath as any,
-                              componentBlocks[node.component as string].props,
-                              node.props as any
-                            );
+      <Slate
+        // this fixes issues with Slate crashing when a fast refresh occcurs
+        key={identity}
+        editor={editor}
+        value={value}
+        onChange={value => {
+          onChange?.(value);
+        }}
+      >
+        <ToolbarStateProvider
+          componentBlocks={componentBlocks}
+          editorDocumentFeatures={documentFeatures}
+          relationships={relationships}
+        >
+          {useMemo(
+            () => (
+              <Toolbar
+                documentFeatures={documentFeatures}
+                viewState={{
+                  expanded,
+                  toggle: () => {
+                    setExpanded(v => !v);
+                  },
+                }}
+              />
+            ),
+            [expanded, documentFeatures]
+          )}
+          <DocumentEditorEditable
+            autoFocus={!!autoFocus}
+            componentBlocks={componentBlocks}
+            editor={editor}
+            readOnly={onChange === undefined}
+          />
+        </ToolbarStateProvider>
 
-                            decorations.push({
-                              placeholder,
-                              anchor: start,
-                              focus: start,
-                            });
-                          }
-                        });
-                      }
-                      return decorations;
-                    },
-                    [editor]
-                  )}
-                  css={styles}
-                  autoFocus={autoFocus}
-                  onKeyDown={onKeyDown}
-                  readOnly={onChange === undefined}
-                  renderElement={renderElement}
-                  renderLeaf={renderLeaf}
-                />
-              </ToolbarStateProvider>
-              {
-                // for debugging
-                false && <Debugger />
-              }
-            </Slate>
-          </ComponentBlockContext.Provider>
-        </LayoutOptionsProvider>
-      </DocumentFieldRelationshipsProvider>
+        {
+          // for debugging
+          false && <Debugger />
+        }
+      </Slate>
     </div>
+  );
+}
+
+export function DocumentEditorEditable({
+  editor,
+  componentBlocks,
+  autoFocus,
+  readOnly,
+}: {
+  editor: ReactEditor;
+  componentBlocks: Record<string, ComponentBlock>;
+  autoFocus: boolean;
+  readOnly: boolean;
+}) {
+  const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
+
+  return (
+    <Editable
+      decorate={useCallback(
+        ([node, path]: NodeEntry<Node>) => {
+          let decorations: Range[] = [];
+          if (node.type === 'component-block' && Element.isElement(node)) {
+            if (node.children.length === 1 && node.children[0].propPath === undefined) {
+              return decorations;
+            }
+            node.children.forEach((child, index) => {
+              if (Node.string(child) === '') {
+                const start = Editor.start(editor, [...path, index]);
+                const placeholder = getPlaceholderTextForPropPath(
+                  child.propPath as any,
+                  componentBlocks[node.component as string].props,
+                  node.props as any
+                );
+                if (placeholder) {
+                  decorations.push({
+                    placeholder,
+                    anchor: start,
+                    focus: start,
+                  });
+                }
+              }
+            });
+          }
+          return decorations;
+        },
+        [editor]
+      )}
+      css={styles}
+      autoFocus={autoFocus}
+      onKeyDown={onKeyDown}
+      readOnly={readOnly}
+      renderElement={renderElement}
+      renderLeaf={renderLeaf}
+    />
   );
 }
 
@@ -314,12 +341,14 @@ let listDepth = 10;
 
 while (listDepth--) {
   let arr = Array.from({ length: listDepth });
-  styles[arr.map(() => `ol`).join(' ')] = {
-    listStyle: orderedListStyles[listDepth % 3],
-  };
-  styles[arr.map(() => `ul`).join(' ')] = {
-    listStyle: unorderedListStyles[listDepth % 3],
-  };
+  if (arr.length) {
+    styles[arr.map(() => `ol`).join(' ')] = {
+      listStyle: orderedListStyles[listDepth % 3],
+    };
+    styles[arr.map(() => `ul`).join(' ')] = {
+      listStyle: unorderedListStyles[listDepth % 3],
+    };
+  }
 }
 
 /**
@@ -392,8 +421,6 @@ const paragraphLike = [...blockquoteChildren, 'blockquote'] as const;
 
 const insideOfLayouts = [...paragraphLike, 'component-block'] as const;
 
-const listChildren = ['list-item', 'ordered-list', 'unordered-list'] as const;
-
 export const editorSchema = makeEditorSchema({
   editor: {
     kind: 'blocks',
@@ -431,18 +458,23 @@ export const editorSchema = makeEditorSchema({
   },
   'ordered-list': {
     kind: 'blocks',
-    allowedChildren: listChildren,
+    allowedChildren: ['list-item'],
     invalidPositionHandleMode: 'move',
   },
   'unordered-list': {
     kind: 'blocks',
-    allowedChildren: listChildren,
+    allowedChildren: ['list-item'],
     invalidPositionHandleMode: 'move',
   },
-  'list-item': { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
+  'list-item': {
+    kind: 'blocks',
+    allowedChildren: ['list-item-content', 'ordered-list', 'unordered-list'],
+    invalidPositionHandleMode: 'unwrap',
+  },
+  'list-item-content': { kind: 'inlines', invalidPositionHandleMode: 'unwrap' },
 });
 
-function withBlocksSchema(editor: ReactEditor) {
+function withBlocksSchema<T extends Editor>(editor: T): T {
   const { normalizeNode } = editor;
   editor.normalizeNode = ([node, path]) => {
     if (Editor.isBlock(editor, node) || Editor.isEditor(node)) {
@@ -488,7 +520,7 @@ function handleNodeInInvalidPosition(
   const nodeType = node.type as string;
   const childNodeInfo = editorSchema[nodeType];
 
-  if (childNodeInfo.invalidPositionHandleMode === 'unwrap') {
+  if (!childNodeInfo || childNodeInfo.invalidPositionHandleMode === 'unwrap') {
     Transforms.unwrapNodes(editor, { at: path });
     return;
   }

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { ButtonHTMLAttributes, HTMLAttributes, createContext, useContext } from 'react';
+import { ButtonHTMLAttributes, HTMLAttributes, createContext, useContext, ReactNode } from 'react';
 import { Box, MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
 
 // Spacers and Separators
@@ -150,3 +150,22 @@ export const ToolbarButton = forwardRefWithAs<'button', ToolbarButtonProps>(func
     />
   );
 });
+
+export function KeyboardInTooltip({ children }: { children: ReactNode }) {
+  const theme = useTheme();
+  return (
+    <kbd
+      css={{
+        margin: 2,
+        padding: theme.spacing.xxsmall,
+        fontFamily: 'inherit',
+        backgroundColor: theme.colors.foreground,
+        borderRadius: theme.radii.xsmall,
+        color: theme.colors.background,
+        whiteSpace: 'pre',
+      }}
+    >
+      {children}
+    </kbd>
+  );
+}
