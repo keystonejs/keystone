@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "cypress": "^5.6.0",
-    "cypress-file-upload": "^5.0.0",
+    "cypress-file-upload": "^5.0.2",
     "cypress-multi-reporters": "^1.4.0",
     "dotenv-safe": "^8.2.0",
     "execa": "^5.0.0",
