@@ -1,3 +1,4 @@
+import cuid from 'cuid';
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
@@ -92,14 +93,15 @@ export class File extends Implementation {
       return previousData;
     }
 
-    const newId = new mongoose.Types.ObjectId();
-
     const { id, filename, _meta } = await this.fileAdapter.save({
       stream,
       filename: originalFilename,
       mimetype,
       encoding,
-      id: newId,
+      id:
+        this.adapter.listAdapter.parentAdapter.name === 'mongoose'
+          ? new mongoose.Types.ObjectId()
+          : cuid(),
     });
 
     return { id, filename, originalFilename, mimetype, encoding, _meta };

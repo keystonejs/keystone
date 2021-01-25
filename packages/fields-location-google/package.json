@@ -18,6 +18,7 @@
     "@keystonejs/adapter-mongoose": "^10.1.0",
     "@keystonejs/adapter-prisma": "^2.0.0",
     "@keystonejs/fields": "^21.0.2",
+    "cuid": "^2.1.8",
     "google-maps-react": "^2.0.6",
     "mongoose": "^5.11.12",
     "node-fetch": "^2.6.1",

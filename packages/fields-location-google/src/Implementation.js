@@ -1,3 +1,4 @@
+import cuid from 'cuid';
 import { Implementation } from '@keystonejs/fields';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
@@ -96,7 +97,10 @@ export class LocationGoogleImplementation extends Implementation {
       const { place_id, formatted_address } = response.results[0];
       const { lat, lng } = response.results[0].geometry.location;
       return {
-        id: new mongoose.Types.ObjectId(),
+        id:
+          this.adapter.listAdapter.parentAdapter.name === 'mongoose'
+            ? new mongoose.Types.ObjectId()
+            : cuid(),
         googlePlaceID: place_id,
         formattedAddress: formatted_address,
         lat: lat,
