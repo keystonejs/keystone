@@ -1,1 +1,1 @@
-export { SessionManager } from '../lib/session';
+export { SessionManager } from './session';
