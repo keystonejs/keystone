@@ -34,6 +34,7 @@ const DividerButton = ({
         isDisabled={isDisabled}
         onMouseDown={event => {
           event.preventDefault();
+          insertDivider(editor);
         }}
         {...attrs}
       >

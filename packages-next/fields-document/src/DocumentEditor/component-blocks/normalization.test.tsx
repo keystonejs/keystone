@@ -118,7 +118,55 @@ test('non component block prop in component-block', () => {
   `);
 });
 
-test('content inside of VOID_BUT_NOT_REALLY_INLINE_COMPONENT_PROP', () => {
+test('content inside of void child prop', () => {
+  let editor = makeEditor(
+    <editor>
+      <component-block
+        component="basic"
+        props={{
+          prop: '',
+        }}
+      >
+        <component-inline-prop>
+          <text>some text</text>
+        </component-inline-prop>
+      </component-block>
+
+      <paragraph>
+        <text>
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>,
+    { normalization: 'normalize', componentBlocks }
+  );
+
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="basic"
+        props={
+          Object {
+            "prop": "",
+          }
+        }
+      >
+        <component-inline-prop>
+          <text>
+            
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('prop path for old fake void prop is removed', () => {
   let editor = makeEditor(
     <editor>
       <component-block
@@ -130,7 +178,7 @@ test('content inside of VOID_BUT_NOT_REALLY_INLINE_COMPONENT_PROP', () => {
         <component-inline-prop
           propPath={['________VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP________']}
         >
-          <text>some text</text>
+          <text />
         </component-inline-prop>
       </component-block>
 

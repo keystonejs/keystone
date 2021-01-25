@@ -7,7 +7,7 @@ type Children = Node | string | (Node | string)[];
 
 type OnlyChildren = { children: Children };
 
-type ComponentProp = { children: Children; propPath: (string | number)[] };
+type ComponentProp = { children: Children; propPath?: (string | number)[] };
 declare namespace __jsx {
   namespace JSX {
     interface IntrinsicElements {

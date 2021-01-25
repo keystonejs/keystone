@@ -129,6 +129,11 @@ export function insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(
   }
 }
 
+/**
+ * This is equivalent to Editor.after except that it ignores points that have no content
+ * like the point in a void text node, an empty text node and the last point in a text node
+ */
+// TODO: this would probably break if you were trying to get the last point in the editor?
 export function EditorAfterButIgnoringingPointsWithNoContent(
   editor: Editor,
   at: Location,

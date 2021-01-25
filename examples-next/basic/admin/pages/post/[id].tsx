@@ -14,7 +14,6 @@ type ComponentBlockRenderers = InferRenderersForComponentBlocks<
   typeof import('../../fieldViews/Content').componentBlocks
 >;
 
-// TODO: implement these
 const componentBlockRenderers: ComponentBlockRenderers = {
   hero: props => (
     <div

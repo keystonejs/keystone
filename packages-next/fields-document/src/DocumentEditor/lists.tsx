@@ -188,14 +188,10 @@ export function nestList(editor: Editor) {
 
   if (block && block[0].type === 'list-item-content') {
     const type = Editor.parent(editor, Path.parent(block[1]))[0].type as string;
-    Transforms.wrapNodes(
-      editor,
-      {
-        type,
-        children: [],
-      }
-      // { match: node => node.type === 'list-item' }
-    );
+    Transforms.wrapNodes(editor, {
+      type,
+      children: [],
+    });
     return true;
   }
   return false;

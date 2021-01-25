@@ -130,8 +130,6 @@ function insertOption(editor: ReactEditor, text: Text, option: Option) {
       anchor: Editor.end(editor, path),
     },
   });
-
-  console.log({ selection: editor.selection });
   option.insert(editor);
 }
 

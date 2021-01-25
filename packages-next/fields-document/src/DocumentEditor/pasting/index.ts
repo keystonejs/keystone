@@ -45,6 +45,7 @@ export function withPasting<T extends ReactEditor>(editor: T): T {
     if (blockAbove?.[0].type === 'code') {
       const plain = data.getData('text/plain');
       editor.insertText(plain);
+      return;
     }
     let vsCodeEditorData = data.getData('vscode-editor-data');
     if (vsCodeEditorData) {
