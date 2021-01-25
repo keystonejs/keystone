@@ -1,5 +1,23 @@
 # @keystonejs/cypress-project-access-control
 
+## 6.0.0
+
+### Major Changes
+
+- [`1813ec36e`](https://github.com/keystonejs/keystone/commit/1813ec36ee3d9f0e409c5b97e5a967ff803e0bf9) [#4693](https://github.com/keystonejs/keystone/pull/4693) Thanks [@timleslie](https://github.com/timleslie)! - Convert cypress test projects to use the `PrismaAdapter` rather than the `MongooseAdapter`.
+
+### Minor Changes
+
+- [`564879779`](https://github.com/keystonejs/keystone/commit/564879779209aa828ecb2fbc8c9688a2d770da76) [#4701](https://github.com/keystonejs/keystone/pull/4701) Thanks [@timleslie](https://github.com/timleslie)! - Ported field-level access-control tests from cypress to the API test framework.
+
+### Patch Changes
+
+- [`5025318a3`](https://github.com/keystonejs/keystone/commit/5025318a3bc59168b20710610286407b30416cbc) [#4700](https://github.com/keystonejs/keystone/pull/4700) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused `mongoInsertOne` from cypress plugins.
+
+- Updated dependencies [[`6b95cb6e4`](https://github.com/keystonejs/keystone/commit/6b95cb6e4d5bea3a87e22765d5fcf31db2fc31ae), [`fc2b7101f`](https://github.com/keystonejs/keystone/commit/fc2b7101f35f20e4d729269a005816546bb37464), [`e7d4d54e5`](https://github.com/keystonejs/keystone/commit/e7d4d54e5b94e6b376d6eab28a0f2b074f2c95ed), [`a62a2d996`](https://github.com/keystonejs/keystone/commit/a62a2d996f1080051f7962b7063ae37d7e8b7e63)]:
+  - @keystonejs/adapter-prisma@2.0.0
+  - @keystonejs/fields@21.0.2
+
 ## 5.1.26
 
 ### Patch Changes

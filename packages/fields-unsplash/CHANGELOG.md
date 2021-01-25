@@ -1,5 +1,15 @@
 # @keystonejs/fields-unsplash
 
+## 3.1.2
+
+### Patch Changes
+
+- [`88776915a`](https://github.com/keystonejs/keystone/commit/88776915af1b795b54c14a1187eee9a1e3b0ea80) [#4699](https://github.com/keystonejs/keystone/pull/4699) Thanks [@timleslie](https://github.com/timleslie)! - Updated auxillary list name to be compatible with the Prisma adapter requirements.
+
+- Updated dependencies [[`6b95cb6e4`](https://github.com/keystonejs/keystone/commit/6b95cb6e4d5bea3a87e22765d5fcf31db2fc31ae), [`fc2b7101f`](https://github.com/keystonejs/keystone/commit/fc2b7101f35f20e4d729269a005816546bb37464), [`e7d4d54e5`](https://github.com/keystonejs/keystone/commit/e7d4d54e5b94e6b376d6eab28a0f2b074f2c95ed), [`a62a2d996`](https://github.com/keystonejs/keystone/commit/a62a2d996f1080051f7962b7063ae37d7e8b7e63)]:
+  - @keystonejs/adapter-prisma@2.0.0
+  - @keystonejs/fields@21.0.2
+
 ## 3.1.1
 
 ### Patch Changes

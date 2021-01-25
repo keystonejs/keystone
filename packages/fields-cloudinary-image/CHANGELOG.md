@@ -1,5 +1,14 @@
 # @keystonejs/fields-cloudinary-image
 
+## 2.1.2
+
+### Patch Changes
+
+- [`88776915a`](https://github.com/keystonejs/keystone/commit/88776915af1b795b54c14a1187eee9a1e3b0ea80) [#4699](https://github.com/keystonejs/keystone/pull/4699) Thanks [@timleslie](https://github.com/timleslie)! - Updated auxillary list name to be compatible with the Prisma adapter requirements.
+
+- Updated dependencies []:
+  - @keystonejs/fields@21.0.2
+
 ## 2.1.1
 
 ### Patch Changes

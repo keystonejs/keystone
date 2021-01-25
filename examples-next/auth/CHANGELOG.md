@@ -1,5 +1,13 @@
 # @keystone-next/example-auth
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies [[`fe0c228b1`](https://github.com/keystonejs/keystone/commit/fe0c228b12530f6d384fa5eed9d5086768a24782), [`ac3db9561`](https://github.com/keystonejs/keystone/commit/ac3db95613093de83e2369f624ce9b6c77bb8eda), [`f162a9d72`](https://github.com/keystonejs/keystone/commit/f162a9d72859ae7f2932bf0859c712861918b9e6)]:
+  - @keystone-next/keystone@9.1.0
+  - @keystone-next/auth@12.0.0
+
 ## 0.0.11
 
 ### Patch Changes

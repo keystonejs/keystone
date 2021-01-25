@@ -1,7 +1,7 @@
 {
   "name": "create-keystone-app",
   "description": "Generate starter apps for Keystone 5",
-  "version": "3.4.1",
+  "version": "3.4.2",
   "bin": {
     "create-keystone-app": "bin/cli.js"
   },
@@ -17,7 +17,7 @@
   "dependencies": {
     "@keystonejs/adapter-knex": "^12.0.0",
     "@keystonejs/adapter-mongoose": "^10.0.1",
-    "@keystonejs/adapter-prisma": "^1.0.7",
+    "@keystonejs/adapter-prisma": "^2.0.0",
     "@sindresorhus/slugify": "^1.1.0",
     "arg": "^5.0.0",
     "cfonts": "^2.9.1",
