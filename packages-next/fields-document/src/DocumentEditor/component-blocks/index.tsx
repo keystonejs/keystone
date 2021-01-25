@@ -266,8 +266,7 @@ function DefaultToolbarWithChrome({
   return (
     <ToolbarGroup as={NotEditable} marginTop="small">
       <ToolbarButton
-        onClick={event => {
-          event.preventDefault();
+        onClick={() => {
           onShowEditMode();
         }}
       >
@@ -278,8 +277,7 @@ function DefaultToolbarWithChrome({
         {attrs => (
           <ToolbarButton
             variant="destructive"
-            onClick={event => {
-              event.preventDefault();
+            onClick={() => {
               onRemove();
             }}
             {...attrs}

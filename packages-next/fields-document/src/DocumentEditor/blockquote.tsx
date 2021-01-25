@@ -9,11 +9,11 @@ import { Tooltip } from '@keystone-ui/tooltip';
 
 import { IconBase } from './Toolbar';
 import { KeyboardInTooltip, ToolbarButton } from './primitives';
-import { isBlockActive } from './utils';
+import { isElementActive } from './utils';
 import { useToolbarState } from './toolbar-state';
 
 export const insertBlockquote = (editor: ReactEditor) => {
-  const isActive = isBlockActive(editor, 'blockquote');
+  const isActive = isElementActive(editor, 'blockquote');
   if (isActive) {
     Transforms.unwrapNodes(editor, {
       match: node => node.type === 'blockquote',

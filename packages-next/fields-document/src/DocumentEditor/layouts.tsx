@@ -12,7 +12,7 @@ import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './p
 import { paragraphElement } from './paragraphs';
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
-  isBlockActive,
+  isElementActive,
   moveChildren,
   useStaticEditor,
 } from './utils';
@@ -251,7 +251,7 @@ export const LayoutsButton = ({ layouts }: { layouts: DocumentFeatures['layouts'
             isSelected={isSelected}
             onMouseDown={event => {
               event.preventDefault();
-              if (isBlockActive(editor, 'layout')) {
+              if (isElementActive(editor, 'layout')) {
                 Transforms.unwrapNodes(editor, {
                   match: node => node.type === 'layout',
                 });

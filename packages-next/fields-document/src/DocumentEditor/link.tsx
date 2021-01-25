@@ -14,7 +14,7 @@ import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import {
   EditorAfterButIgnoringingPointsWithNoContent,
-  isBlockActive,
+  isElementActive,
   useElementWithSetNodes,
   useForceValidation,
   useStaticEditor,
@@ -27,7 +27,7 @@ import { HistoryEditor } from 'slate-history';
 import { isValidURL } from './isValidURL';
 
 const isLinkActive = (editor: Editor) => {
-  return isBlockActive(editor, 'link');
+  return isElementActive(editor, 'link');
 };
 
 export const wrapLink = (editor: Editor, url: string) => {

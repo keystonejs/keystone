@@ -72,7 +72,8 @@ export function RelationshipButton({ onClose }: { onClose: () => void }) {
           <ToolbarButton
             key={key}
             isDisabled={isDisabled}
-            onClick={() => {
+            onMouseDown={event => {
+              event.preventDefault();
               Transforms.insertNodes(editor, {
                 type: 'relationship',
                 relationship: key,

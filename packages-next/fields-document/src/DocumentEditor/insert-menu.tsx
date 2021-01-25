@@ -251,7 +251,8 @@ export function InsertMenu({ children, text }: { children: ReactNode; text: Text
                 onMouseEnter={() => {
                   setSelectedIndex(index);
                 }}
-                onClick={() => {
+                onMouseDown={event => {
+                  event.preventDefault();
                   insertOption(editor, text, option);
                 }}
               >

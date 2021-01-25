@@ -73,27 +73,20 @@ expect.extend({
       promise: this.promise,
     };
     const receivedConfig = received.__config as any;
-    if (receivedConfig) {
-      validateAndNormalizeDocument(
-        received.children,
-        receivedConfig.documentFeatures,
-        receivedConfig.componentBlocks,
-        receivedConfig.relationships
-      );
-    } else {
-      validateDocumentStructure(received.children);
-    }
+    validateAndNormalizeDocument(
+      received.children,
+      receivedConfig.documentFeatures,
+      receivedConfig.componentBlocks,
+      receivedConfig.relationships
+    );
+
     const expectedConfig = expected.__config as any;
-    if (expectedConfig) {
-      validateAndNormalizeDocument(
-        expected.children,
-        expectedConfig.documentFeatures,
-        expectedConfig.componentBlocks,
-        expectedConfig.relationships
-      );
-    } else {
-      validateDocumentStructure(expected.children);
-    }
+    validateAndNormalizeDocument(
+      expected.children,
+      expectedConfig.documentFeatures,
+      expectedConfig.componentBlocks,
+      expectedConfig.relationships
+    );
 
     const pass =
       this.equals(received.children, expected.children) &&
@@ -246,7 +239,18 @@ export const makeEditor = (
   if (normalization !== 'skip') {
     Editor.normalize(editor, { force: true });
     if (normalization === 'disallow-non-normalized') {
-      expect(node).toEqualEditor(editor);
+      expect(
+        // we need to make one of our editors because toEqualEditor expects the __config stuff to exist
+        // and if it fails, the snapshot serializer will be called to diff them which also expects __config
+        makeEditor(node, {
+          componentBlocks,
+          documentFeatures,
+          isShiftPressedRef,
+          normalization: 'skip',
+          relationships,
+          skipRenderingDOM,
+        })
+      ).toEqualEditor(editor);
     }
   }
 

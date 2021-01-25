@@ -4,19 +4,21 @@ import { ReactNode, forwardRef, useMemo } from 'react';
 import { Editor, Element, Node, NodeEntry, Path, Transforms, Range } from 'slate';
 import { jsx } from '@keystone-ui/core';
 
-import { isBlockActive, moveChildren } from './utils';
+import { isElementActive, moveChildren } from './utils';
 import { ToolbarButton } from './primitives';
-import { useToolbarState } from './toolbar-state';
+import { getListTypeAbove, useToolbarState } from './toolbar-state';
 
 export const isListType = (type: string) => type === 'ordered-list' || type === 'unordered-list';
 
 export const toggleList = (editor: Editor, format: 'ordered-list' | 'unordered-list') => {
-  const isActive = isBlockActive(editor, format);
+  const listAbove = getListTypeAbove(editor);
+  const isActive =
+    isElementActive(editor, format) && (listAbove === 'none' || listAbove === format);
   Editor.withoutNormalizing(editor, () => {
     Transforms.unwrapNodes(editor, {
       match: n => isListType(n.type as string),
       split: true,
-      mode: isActive ? 'lowest' : 'all',
+      mode: isActive ? 'all' : 'lowest',
     });
     if (!isActive) {
       Transforms.wrapNodes(

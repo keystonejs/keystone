@@ -900,3 +900,133 @@ test('inserting a break on end of list non-empty list item adds a new list item'
     </editor>
   `);
 });
+
+test('changing the type of a nested list', () => {
+  let editor = makeEditor(
+    <editor>
+      <unordered-list>
+        <list-item>
+          <list-item-content>
+            <text>some text</text>
+          </list-item-content>
+          <unordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  inner text
+                  <cursor />
+                </text>
+              </list-item-content>
+            </list-item>
+          </unordered-list>
+        </list-item>
+      </unordered-list>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+  toggleList(editor, 'ordered-list');
+
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <unordered-list>
+        <list-item>
+          <list-item-content>
+            <text>
+              some text
+            </text>
+          </list-item-content>
+          <ordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  inner text
+                  <cursor />
+                </text>
+              </list-item-content>
+            </list-item>
+          </ordered-list>
+        </list-item>
+      </unordered-list>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('changing the type of a nested list to something which it is nested inside', () => {
+  let editor = makeEditor(
+    <editor>
+      <unordered-list>
+        <list-item>
+          <list-item-content>
+            <text>top text</text>
+          </list-item-content>
+          <ordered-list>
+            <list-item>
+              <list-item-content>
+                <text>middle text</text>
+              </list-item-content>
+              <unordered-list>
+                <list-item>
+                  <list-item-content>
+                    <text>
+                      inner text
+                      <cursor />
+                    </text>
+                  </list-item-content>
+                </list-item>
+              </unordered-list>
+            </list-item>
+          </ordered-list>
+        </list-item>
+      </unordered-list>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+  toggleList(editor, 'ordered-list');
+
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <unordered-list>
+        <list-item>
+          <list-item-content>
+            <text>
+              top text
+            </text>
+          </list-item-content>
+          <ordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  middle text
+                </text>
+              </list-item-content>
+              <ordered-list>
+                <list-item>
+                  <list-item-content>
+                    <text>
+                      inner text
+                      <cursor />
+                    </text>
+                  </list-item-content>
+                </list-item>
+              </ordered-list>
+            </list-item>
+          </ordered-list>
+        </list-item>
+      </unordered-list>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
