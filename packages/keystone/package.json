@@ -38,7 +38,7 @@
     "p-waterfall": "^2.1.1",
     "pino": "^6.11.0",
     "pluralize": "^8.0.0",
-    "serialize-error": "^8.0.0",
+    "serialize-error": "^8.0.1",
     "stack-utils": "^2.0.3",
     "terminal-link": "^2.1.1"
   },
