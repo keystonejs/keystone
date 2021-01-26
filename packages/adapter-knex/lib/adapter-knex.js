@@ -648,7 +648,10 @@ class QueryBuilder {
         // SELECT ... ORDER BY <orderField>
         const [orderField, orderDirection] = this._getOrderFieldAndDirection(orderBy);
         const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
-        this._query.orderBy(sortKey, orderDirection);
+        
+        if(listAdapter.realKeys.includes(sortKey)) {
+          this._query.orderBy(sortKey, orderDirection);  
+        }        
       }
       if (sortBy !== undefined) {
         // SELECT ... ORDER BY <orderField>[, <orderField>, ...]
@@ -657,8 +660,12 @@ class QueryBuilder {
             const [orderField, orderDirection] = this._getOrderFieldAndDirection(s);
             const sortKey = listAdapter.fieldAdaptersByPath[orderField].sortKey || orderField;
 
-            return { column: sortKey, order: orderDirection };
-          })
+            if(listAdapter.realKeys.includes(sortKey)) {            
+              return { column: sortKey, order: orderDirection };              
+            } else {            
+              return undefined;              
+            }
+          }).filter(s => typeof s !== "undefined");
         );
       }
     }
