@@ -21,7 +21,7 @@
     "@emotion/core": "^10.1.1",
     "@emotion/styled": "^10.0.27",
     "@popperjs/core": "^2.6.0",
-    "focus-trap-react": "^8.4.0",
+    "focus-trap-react": "^8.4.1",
     "react-popper": "^2.2.4"
   },
   "module": "dist/popout.esm.js",
