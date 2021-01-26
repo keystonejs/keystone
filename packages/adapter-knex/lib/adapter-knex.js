@@ -665,7 +665,7 @@ class QueryBuilder {
             } else {            
               return undefined;              
             }
-          }).filter(s => typeof s !== "undefined");
+          }).filter(s => typeof s !== "undefined")
         );
       }
     }
