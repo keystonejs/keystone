@@ -10,7 +10,12 @@ import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { paragraphElement } from './paragraphs';
-import { isBlockActive, moveChildren, useStaticEditor } from './utils';
+import {
+  insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
+  isBlockActive,
+  moveChildren,
+  useStaticEditor,
+} from './utils';
 import { DocumentFeatures } from '../views';
 import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
 import { useToolbarState } from './toolbar-state';
@@ -107,50 +112,25 @@ export const LayoutArea = ({ attributes, children }: RenderElementProps) => {
   );
 };
 
-const isInsideLayout = (editor: ReactEditor) => {
-  return isBlockActive(editor, 'layout');
-};
-
-function firstNonEditorRootNodeEntry(editor: Editor) {
-  for (const entry of Editor.nodes(editor, {
-    reverse: true,
-  })) {
-    if (
-      Element.isElement(entry[0]) &&
-      // is a child of the editor
-      entry[1].length === 1
-    ) {
-      return entry;
-    }
-  }
-}
-
-const insertLayout = (editor: ReactEditor, layout: [number, ...number[]]) => {
-  if (isInsideLayout(editor)) {
-    Transforms.unwrapNodes(editor, {
-      match: node => node.type === 'layout',
-    });
-    return;
-  }
-  const entry = firstNonEditorRootNodeEntry(editor);
-  if (entry) {
-    Transforms.insertNodes(
-      editor,
-      [
-        {
-          type: 'layout',
-          layout,
-          children: [],
-        },
+export const insertLayout = (editor: ReactEditor, layout: [number, ...number[]]) => {
+  const node = [
+    {
+      type: 'layout',
+      layout,
+      children: [
+        { type: 'layout-area', children: [{ type: 'paragraph', children: [{ text: '' }] }] },
       ],
-      { at: [entry[1][0] + 1] }
-    );
-    Transforms.select(editor, [entry[1][0] + 1, 0]);
+    },
+  ];
+  insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, node);
+  const layoutEntry = Editor.above(editor, { match: x => x.type === 'layout' });
+  if (layoutEntry) {
+    Transforms.select(editor, [...layoutEntry[1], 0]);
   }
 };
 
 // Plugin
-export const withLayouts = (editor: ReactEditor) => {
+export function withLayouts<T extends Editor>(editor: T): T {
   const { normalizeNode, deleteBackward } = editor;
   editor.deleteBackward = unit => {
     if (
@@ -228,7 +208,7 @@ export const withLayouts = (editor: ReactEditor) => {
     normalizeNode(entry);
   };
   return editor;
-};
+}
 
 // Utils
 // ------------------------------
@@ -271,6 +251,12 @@ export const LayoutsButton = ({ layouts }: { layouts: DocumentFeatures['layouts'
             isSelected={isSelected}
             onMouseDown={event => {
               event.preventDefault();
+              if (isBlockActive(editor, 'layout')) {
+                Transforms.unwrapNodes(editor, {
+                  match: node => node.type === 'layout',
+                });
+                return;
+              }
               insertLayout(editor, layouts[0]);
             }}
             {...attrs}

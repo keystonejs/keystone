@@ -1,5 +1,16 @@
 # @keystonejs/demo-custom-fields
 
+## 1.1.0
+
+### Minor Changes
+
+- [`b48c75104`](https://github.com/keystonejs/keystone/commit/b48c7510411c9bbaa85c4efbd6a5ca946615df1e) [#4695](https://github.com/keystonejs/keystone/pull/4695) Thanks [@timleslie](https://github.com/timleslie)! - Added support for the Prisma database adapter.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @keystonejs/fields@21.0.2
+
 ## 1.0.18
 
 ### Patch Changes

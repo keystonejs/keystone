@@ -1,11 +1,13 @@
+/** @jsx jsx */
+import { jsx } from '@keystone-ui/core';
+import { Tooltip } from '@keystone-ui/tooltip';
+import { useMemo, Fragment } from 'react';
 import { Editor, Transforms, Element, Text, Range, Point } from 'slate';
-import { ReactEditor } from 'slate-react';
+import { ToolbarButton, KeyboardInTooltip } from './primitives';
+import { useToolbarState } from './toolbar-state';
+import { CodeIcon } from '@keystone-ui/icons/icons/CodeIcon';
 
-export function insertCodeBlock(editor: ReactEditor) {
-  Transforms.wrapNodes(editor, { type: 'code', children: [{ text: '' }] });
-}
-
-export function withCodeBlock(editor: ReactEditor) {
+export function withCodeBlock<T extends Editor>(editor: T): T {
   const { insertBreak, normalizeNode } = editor;
 
   editor.insertBreak = () => {
@@ -56,3 +58,44 @@ export function withCodeBlock(editor: ReactEditor) {
 
   return editor;
 }
+
+function CodeButton({ attrs }: { attrs: {} }) {
+  const {
+    editor,
+    code: { isDisabled, isSelected },
+  } = useToolbarState();
+
+  return useMemo(
+    () => (
+      <ToolbarButton
+        isSelected={isSelected}
+        isDisabled={isDisabled}
+        onMouseDown={event => {
+          event.preventDefault();
+          if (isSelected) {
+            Transforms.unwrapNodes(editor, { match: node => node.type === 'code' });
+          } else {
+            Transforms.wrapNodes(editor, { type: 'code', children: [{ text: '' }] });
+          }
+        }}
+        {...attrs}
+      >
+        <CodeIcon size="small" />
+      </ToolbarButton>
+    ),
+    [isDisabled, isSelected, attrs]
+  );
+}
+
+export const codeButton = (
+  <Tooltip
+    weight="subtle"
+    content={
+      <Fragment>
+        Code block <KeyboardInTooltip>```</KeyboardInTooltip>
+      </Fragment>
+    }
+  >
+    {attrs => <CodeButton attrs={attrs} />}
+  </Tooltip>
+);

@@ -1,14 +1,17 @@
 import React, { ReactNode, useContext } from 'react';
-import { Editor, Range } from 'slate';
+import { Editor, Range, Text } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
 import { DocumentFeatures } from '../views';
+import { ComponentBlockContext } from './component-blocks';
 import { ComponentBlock } from './component-blocks/api';
 import {
   DocumentFeaturesForChildField,
   getChildFieldAtPropPath,
   getDocumentFeaturesForChildField,
 } from './component-blocks/utils';
+import { LayoutOptionsProvider } from './layouts';
 import { isListType } from './lists';
+import { DocumentFieldRelationshipsProvider, Relationships } from './relationship';
 import { allMarks, isBlockActive, Mark } from './utils';
 
 type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean };
@@ -26,6 +29,9 @@ export type ToolbarState = {
   marks: {
     [key in Mark]: BasicToolbarItem;
   };
+  clearFormatting: {
+    isDisabled: boolean;
+  };
   alignment: {
     selected: 'start' | 'center' | 'end';
     isDisabled: boolean;
@@ -38,9 +44,10 @@ export type ToolbarState = {
   // unlike the other things here which wrap elements
   layouts: { isSelected: boolean };
   dividers: { isDisabled: boolean };
-  code: { isDisabled: boolean };
+  code: BasicToolbarItem;
   relationships: { isDisabled: boolean };
   editor: ReactEditor;
+  editorDocumentFeatures: DocumentFeatures;
 };
 
 const ToolbarStateContext = React.createContext<null | ToolbarState>(null);
@@ -54,7 +61,7 @@ export function useToolbarState() {
 }
 
 export function getAncestorComponentChildFieldDocumentFeatures(
-  editor: ReactEditor,
+  editor: Editor,
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>
 ): DocumentFeaturesForChildField | undefined {
@@ -67,7 +74,7 @@ export function getAncestorComponentChildFieldDocumentFeatures(
     const ancestorComponent = Editor.parent(editor, ancestorComponentProp[1]);
     const component = ancestorComponent[0].component;
     const componentBlock = componentBlocks[component as string];
-    if (componentBlock) {
+    if (componentBlock && propPath) {
       const options = getChildFieldAtPropPath(
         propPath as any,
         ancestorComponent[0].props as any,
@@ -121,18 +128,49 @@ export const createToolbarState = (
     softBreaks: true,
   };
 
+  let [maybeCodeBlockEntry] = Editor.nodes(editor, {
+    match: node => node.type !== 'code' && Editor.isBlock(editor, node),
+  });
   const editorMarks = Editor.marks(editor) || {};
   const marks: ToolbarState['marks'] = Object.fromEntries(
     allMarks.map(mark => [
       mark,
       {
         isDisabled:
-          locationDocumentFeatures.inlineMarks !== 'inherit' &&
-          !locationDocumentFeatures.inlineMarks[mark],
+          (locationDocumentFeatures.inlineMarks !== 'inherit' &&
+            !locationDocumentFeatures.inlineMarks[mark]) ||
+          !maybeCodeBlockEntry,
         isSelected: !!editorMarks[mark],
       },
     ])
   );
+
+  // Editor.marks is "what are the marks that would be applied if text was inserted now"
+  // that's not really the UX we want, if we have some a document like this
+  // <paragraph>
+  //   <text>
+  //     <anchor />
+  //     content
+  //   </text>
+  //   <text bold>bold</text>
+  //   <text>
+  //     content
+  //     <focus />
+  //   </text>
+  // </paragraph>
+
+  // we want bold to be shown as selected even though if you inserted text from that selection, it wouldn't be bold
+  // so we look at all the text nodes in the selection to get their marks
+  for (const node of Editor.nodes(editor, { match: Text.isText })) {
+    for (const key of Object.keys(node[0])) {
+      if (key === 'insertMenu' || key === 'text') {
+        continue;
+      }
+      if (key in marks) {
+        marks[key as Mark].isSelected = true;
+      }
+    }
+  }
 
   return {
     marks,
@@ -145,6 +183,7 @@ export const createToolbarState = (
     },
     relationships: { isDisabled: !locationDocumentFeatures.documentFeatures.relationships },
     code: {
+      isSelected: isBlockActive(editor, 'code'),
       isDisabled: !(
         locationDocumentFeatures.kind === 'block' &&
         locationDocumentFeatures.documentFeatures.formatting.blockTypes.code
@@ -198,25 +237,47 @@ export const createToolbarState = (
         locationDocumentFeatures.kind === 'inline' ||
         !locationDocumentFeatures.documentFeatures.dividers,
     },
+    clearFormatting: {
+      isDisabled: !(
+        Object.values(marks).some(x => x.isSelected) ||
+        !!hasBlockThatClearsOnClearFormatting(editor)
+      ),
+    },
+    editorDocumentFeatures,
   };
 };
+
+function hasBlockThatClearsOnClearFormatting(editor: Editor) {
+  const [node] = Editor.nodes(editor, {
+    match: node => node.type === 'heading' || node.type === 'code' || node.type === 'blockquote',
+  });
+  return !!node;
+}
 
 export const ToolbarStateProvider = ({
   children,
   componentBlocks,
   editorDocumentFeatures,
+  relationships,
 }: {
   children: ReactNode;
   componentBlocks: Record<string, ComponentBlock>;
   editorDocumentFeatures: DocumentFeatures;
+  relationships: Relationships;
 }) => {
   const editor = useSlate();
 
   return (
-    <ToolbarStateContext.Provider
-      value={createToolbarState(editor, componentBlocks, editorDocumentFeatures)}
-    >
-      {children}
-    </ToolbarStateContext.Provider>
+    <DocumentFieldRelationshipsProvider value={relationships}>
+      <LayoutOptionsProvider value={editorDocumentFeatures.layouts}>
+        <ComponentBlockContext.Provider value={componentBlocks}>
+          <ToolbarStateContext.Provider
+            value={createToolbarState(editor, componentBlocks, editorDocumentFeatures)}
+          >
+            {children}
+          </ToolbarStateContext.Provider>
+        </ComponentBlockContext.Provider>
+      </LayoutOptionsProvider>
+    </DocumentFieldRelationshipsProvider>
   );
 };

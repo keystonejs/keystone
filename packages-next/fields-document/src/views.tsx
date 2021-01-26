@@ -2,8 +2,7 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { Node } from 'slate';
-import { CellLink, CellContainer } from '@keystone-next/admin-ui/components';
+import { Node, Text } from 'slate';
 
 import {
   CardValueComponent,
@@ -15,30 +14,36 @@ import {
 import { DocumentEditor } from './DocumentEditor';
 import { ComponentBlock } from './component-blocks';
 import { Relationships } from './DocumentEditor/relationship';
+import weakMemoize from '@emotion/weak-memoize';
+import { clientSideValidateProp } from './DocumentEditor/component-blocks/utils';
+import { ForceValidationProvider } from './DocumentEditor/utils';
+import { isValidURL } from './DocumentEditor/isValidURL';
 
-export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
+export const Field = ({
+  field,
+  value,
+  onChange,
+  autoFocus,
+  forceValidation,
+}: FieldProps<typeof controller>) => (
   <FieldContainer>
     <FieldLabel>{field.label}</FieldLabel>
-    <DocumentEditor
-      autoFocus={autoFocus}
-      value={value}
-      onChange={onChange}
-      componentBlocks={field.componentBlocks}
-      relationships={field.relationships}
-      documentFeatures={field.documentFeatures}
-    />
+    <ForceValidationProvider value={!!forceValidation}>
+      <DocumentEditor
+        autoFocus={autoFocus}
+        value={value}
+        onChange={onChange}
+        componentBlocks={field.componentBlocks}
+        relationships={field.relationships}
+        documentFeatures={field.documentFeatures}
+      />
+    </ForceValidationProvider>
   </FieldContainer>
 );
 
-export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + '';
-  return linkTo ? (
-    <CellLink {...linkTo}>{JSON.stringify(value)}</CellLink>
-  ) : (
-    <CellContainer>{JSON.stringify(value)}</CellContainer>
-  );
+export const Cell: CellComponent = () => {
+  return null;
 };
-Cell.supportsLinkTo = true;
 
 export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
@@ -87,12 +92,62 @@ export const controller = (
   config: FieldControllerConfig<{
     relationships: Relationships;
     documentFeatures: DocumentFeatures;
+    componentBlocksPassedOnServer: string[];
   }>
 ): FieldController<Node[]> & {
   componentBlocks: Record<string, ComponentBlock>;
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
 } => {
+  const memoizedIsComponentBlockValid = weakMemoize((componentBlock: ComponentBlock) =>
+    weakMemoize((props: any) =>
+      clientSideValidateProp({ kind: 'object', value: componentBlock.props }, props)
+    )
+  );
+  const componentBlocks: Record<string, ComponentBlock> = config.customViews.componentBlocks || {};
+  const serverSideComponentBlocksSet = new Set(config.fieldMeta.componentBlocksPassedOnServer);
+  const componentBlocksOnlyBeingPassedOnTheClient = Object.keys(componentBlocks).filter(
+    x => !serverSideComponentBlocksSet.has(x)
+  );
+  if (componentBlocksOnlyBeingPassedOnTheClient.length) {
+    throw new Error(
+      `(${config.listKey}:${
+        config.path
+      }) The following component blocks are being passed in the custom view but not in the server-side field config: ${JSON.stringify(
+        componentBlocksOnlyBeingPassedOnTheClient
+      )}`
+    );
+  }
+  const clientSideComponentBlocksSet = new Set(Object.keys(componentBlocks));
+  const componentBlocksOnlyBeingPassedOnTheServer = config.fieldMeta.componentBlocksPassedOnServer.filter(
+    x => !clientSideComponentBlocksSet.has(x)
+  );
+  if (componentBlocksOnlyBeingPassedOnTheServer.length) {
+    throw new Error(
+      `(${config.listKey}:${
+        config.path
+      }) The following component blocks are being passed in the server-side field config but not in the custom view: ${JSON.stringify(
+        componentBlocksOnlyBeingPassedOnTheServer
+      )}`
+    );
+  }
+  const validateNode = weakMemoize((node: Node): boolean => {
+    if (Text.isText(node)) {
+      return true;
+    }
+    if (node.type === 'component-block') {
+      const componentBlock = componentBlocks[node.component as string];
+      if (componentBlock) {
+        if (!memoizedIsComponentBlockValid(componentBlock)(node.props)) {
+          return false;
+        }
+      }
+    }
+    if (node.type === 'link' && (typeof node.href !== 'string' || !isValidURL(node.href))) {
+      return false;
+    }
+    return node.children.every(node => validateNode(node));
+  });
   return {
     path: config.path,
     label: config.label,
@@ -107,5 +162,8 @@ export const controller = (
     serialize: value => ({
       [config.path]: value,
     }),
+    validate(value) {
+      return value.every(node => validateNode(node));
+    },
   };
 };

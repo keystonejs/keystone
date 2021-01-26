@@ -1,9 +1,32 @@
-const cookieSignature = require('cookie-signature');
-const expressSession = require('express-session');
-const cookie = require('cookie');
+// @ts-ignore
+import cookieSignature from 'cookie-signature';
+import expressSession from 'express-session';
+import type { SessionOptions } from 'express-session';
+import { Request, Response, NextFunction } from 'express';
+import cookie from 'cookie';
 
-class SessionManager {
-  constructor({ cookieSecret, cookie, sessionStore }) {
+// FIXME: In the future this types will need to come from Keystone itself.
+type _Item = { id: string };
+type _List = {
+  key: string;
+  adapter: { itemsQuery: (args: { where: { id: string } }) => Promise<_Item[]> };
+};
+type _Keystone = { lists: Record<string, _List> };
+
+export class SessionManager {
+  _cookieSecret: SessionOptions['secret'];
+  _cookie: SessionOptions['cookie'];
+  _sessionStore: SessionOptions['store'];
+
+  constructor({
+    cookieSecret,
+    cookie,
+    sessionStore,
+  }: {
+    cookieSecret: SessionOptions['secret'];
+    cookie: SessionOptions['cookie'];
+    sessionStore: SessionOptions['store'];
+  }) {
     if (!cookieSecret) {
       if (process.env.NODE_ENV === 'production') {
         throw new Error(
@@ -23,7 +46,7 @@ class SessionManager {
     this._sessionStore = sessionStore;
   }
 
-  getSessionMiddleware({ keystone }) {
+  getSessionMiddleware({ keystone }: { keystone: _Keystone }) {
     const COOKIE_NAME = 'keystone.sid';
 
     // We have at least one auth strategy
@@ -32,18 +55,20 @@ class SessionManager {
     // to `req`) will be available to all sub `express()` instances.
     // This way, we have one global setting for authentication / sessions that
     // all routes on the server can utilize.
-    const injectAuthCookieMiddleware = (req, res, next) => {
+    const injectAuthCookieMiddleware = (req: Request, res: Response, next: NextFunction) => {
       if (!req.headers) {
         return next();
       }
 
-      const authHeader = req.headers.authorization || req.headers.Authorization;
+      let authHeader = req.headers.authorization || req.headers.Authorization;
 
       if (!authHeader) {
         return next();
       }
-
-      const [type, token] = req.headers['authorization'].split(' ');
+      if (Array.isArray(authHeader)) {
+        authHeader = authHeader[0];
+      }
+      const [type, token] = authHeader.split(' ');
 
       if (type !== 'Bearer') {
         // TODO: Use logger
@@ -75,15 +100,19 @@ class SessionManager {
       store: this._sessionStore,
     });
 
-    const _populateAuthedItemMiddleware = async (req, res, next) => {
+    const _populateAuthedItemMiddleware = async (
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ) => {
       const item = await this._getAuthedItem(req, keystone);
       if (!item) {
         // TODO: probably destroy the session
         return next();
       }
 
-      req.user = item;
-      req.authedListKey = req.session.keystoneListKey;
+      (req as any).user = item;
+      (req as any).authedListKey = (req.session as any).keystoneListKey;
 
       next();
     };
@@ -91,17 +120,18 @@ class SessionManager {
     return [injectAuthCookieMiddleware, sessionMiddleware, _populateAuthedItemMiddleware];
   }
 
-  async _getAuthedItem(req, keystone) {
-    if (!req.session || !req.session.keystoneItemId) {
+  async _getAuthedItem(req: Request, keystone: _Keystone) {
+    const session = req.session as any;
+    if (!session || !session.keystoneItemId) {
       return;
     }
-    const list = keystone.lists[req.session.keystoneListKey];
+    const list = keystone.lists[session.keystoneListKey];
     if (!list) {
       return;
     }
-    let item;
+    let item: _Item | undefined;
     try {
-      item = (await list.adapter.itemsQuery({ where: { id: req.session.keystoneItemId } }))[0];
+      item = (await list.adapter.itemsQuery({ where: { id: session.keystoneItemId } }))[0];
     } catch (e) {
       return;
     }
@@ -111,19 +141,19 @@ class SessionManager {
     return item;
   }
 
-  startAuthedSession(req, { item, list }) {
+  startAuthedSession(req: Request, { item, list }: { item: _Item; list: _List }) {
     return new Promise((resolve, reject) =>
       req.session.regenerate(err => {
         if (err) return reject(err);
-        req.session.keystoneListKey = list.key;
-        req.session.keystoneItemId = item.id;
+        (req.session as any).keystoneListKey = list.key;
+        (req.session as any).keystoneItemId = item.id;
         resolve(cookieSignature.sign(req.session.id, this._cookieSecret));
       })
     );
   }
 
-  endAuthedSession(req) {
-    const { keystoneListKey, keystoneItemId } = req.session || {};
+  endAuthedSession(req: Request): Promise<{ success: boolean; listKey: string; itemId: string }> {
+    const { keystoneListKey, keystoneItemId } = (req.session as any) || {};
     return new Promise((resolve, reject) =>
       req.session.regenerate(err => {
         if (err) return reject(err);
@@ -132,12 +162,11 @@ class SessionManager {
     );
   }
 
-  getContext(req) {
+  getContext(req: Request) {
     return {
-      startAuthedSession: ({ item, list }) => this.startAuthedSession(req, { item, list }),
+      startAuthedSession: ({ item, list }: { item: _Item; list: _List }) =>
+        this.startAuthedSession(req, { item, list }),
       endAuthedSession: () => this.endAuthedSession(req),
     };
   }
 }
-
-module.exports = { SessionManager };

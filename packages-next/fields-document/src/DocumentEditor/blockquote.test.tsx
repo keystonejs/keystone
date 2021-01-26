@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { jsx, makeEditor } from './tests/utils';
 
@@ -12,7 +13,6 @@ test('inserting a blockquote with a shortcut works', () => {
       </paragraph>
     </editor>
   );
-
   editor.insertText(' ');
   editor.insertText('some content');
   expect(editor).toMatchInlineSnapshot(`

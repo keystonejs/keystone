@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { component, fields } from '../../component-blocks';
 import { insertComponentBlock } from '.';
@@ -77,7 +78,7 @@ test('component-inline-prop and component-block-prop outside of component-block 
 test('non component block prop in component-block', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component={'basic'} relationships={{}} props={{ basic: '' }}>
+      <component-block component={'basic'} props={{ prop: '' }}>
         <paragraph>
           <text />
         </paragraph>
@@ -98,18 +99,11 @@ test('non component block prop in component-block', () => {
         component="basic"
         props={
           Object {
-            "basic": "",
+            "prop": "",
           }
         }
-        relationships={Object {}}
       >
-        <component-inline-prop
-          propPath={
-            Array [
-              "________VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP________",
-            ]
-          }
-        >
+        <component-inline-prop>
           <text>
             
           </text>
@@ -124,19 +118,16 @@ test('non component block prop in component-block', () => {
   `);
 });
 
-test('content inside of VOID_BUT_NOT_REALLY_INLINE_COMPONENT_PROP', () => {
+test('content inside of void child prop', () => {
   let editor = makeEditor(
     <editor>
       <component-block
         component="basic"
         props={{
-          basic: '',
+          prop: '',
         }}
-        relationships={{}}
       >
-        <component-inline-prop
-          propPath={['________VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP________']}
-        >
+        <component-inline-prop>
           <text>some text</text>
         </component-inline-prop>
       </component-block>
@@ -156,18 +147,61 @@ test('content inside of VOID_BUT_NOT_REALLY_INLINE_COMPONENT_PROP', () => {
         component="basic"
         props={
           Object {
-            "basic": "",
+            "prop": "",
           }
         }
-        relationships={Object {}}
+      >
+        <component-inline-prop>
+          <text>
+            
+          </text>
+        </component-inline-prop>
+      </component-block>
+      <paragraph>
+        <text>
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test('prop path for old fake void prop is removed', () => {
+  let editor = makeEditor(
+    <editor>
+      <component-block
+        component="basic"
+        props={{
+          prop: '',
+        }}
       >
         <component-inline-prop
-          propPath={
-            Array [
-              "________VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP________",
-            ]
-          }
+          propPath={['________VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP________']}
         >
+          <text />
+        </component-inline-prop>
+      </component-block>
+
+      <paragraph>
+        <text>
+          <cursor />
+        </text>
+      </paragraph>
+    </editor>,
+    { normalization: 'normalize', componentBlocks }
+  );
+
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <component-block
+        component="basic"
+        props={
+          Object {
+            "prop": "",
+          }
+        }
+      >
+        <component-inline-prop>
           <text>
             
           </text>
@@ -196,11 +230,6 @@ test('inserting a void component block', () => {
   insertComponentBlock(editor, componentBlocks, 'basic', {});
   expect(editor).toMatchInlineSnapshot(`
     <editor>
-      <paragraph>
-        <text>
-          <cursor />
-        </text>
-      </paragraph>
       <component-block
         component="basic"
         props={
@@ -208,17 +237,10 @@ test('inserting a void component block', () => {
             "prop": "",
           }
         }
-        relationships={Object {}}
       >
-        <component-inline-prop
-          propPath={
-            Array [
-              "________VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP________",
-            ]
-          }
-        >
+        <component-inline-prop>
           <text>
-            
+            <cursor />
           </text>
         </component-inline-prop>
       </component-block>
@@ -237,7 +259,7 @@ test('extra component props are removed', () => {
       <paragraph>
         <text />
       </paragraph>
-      <component-block component="withChildElements" props={{ prop: '' }} relationships={{}}>
+      <component-block component="withChildElements" props={{ prop: '' }}>
         <component-block-prop propPath={['block']}>
           <paragraph>
             <text>
@@ -279,7 +301,6 @@ test('extra component props are removed', () => {
             "prop": "",
           }
         }
-        relationships={Object {}}
       >
         <component-block-prop
           propPath={
@@ -318,7 +339,7 @@ test('extra component props are removed', () => {
 test('missing component props are added', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="withChildElements" props={{ prop: '' }} relationships={{}}>
+      <component-block component="withChildElements" props={{ prop: '' }}>
         <component-block-prop propPath={['block']}>
           <paragraph>
             <text>
@@ -342,7 +363,6 @@ test('missing component props are added', () => {
             "prop": "",
           }
         }
-        relationships={Object {}}
       >
         <component-block-prop
           propPath={
@@ -381,7 +401,7 @@ test('missing component props are added', () => {
 test('prop with wrong type for a given prop path', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="withChildElements" props={{ prop: '' }} relationships={{}}>
+      <component-block component="withChildElements" props={{ prop: '' }}>
         <component-inline-prop propPath={['block']}>
           <text>
             some more text
@@ -407,7 +427,6 @@ test('prop with wrong type for a given prop path', () => {
             "prop": "",
           }
         }
-        relationships={Object {}}
       >
         <component-block-prop
           propPath={
@@ -447,7 +466,7 @@ test('prop with wrong type for a given prop path', () => {
 test('props in wrong order', () => {
   let editor = makeEditor(
     <editor>
-      <component-block component="withLotsOfChildElements" props={{}} relationships={{}}>
+      <component-block component="withLotsOfChildElements" props={{}}>
         <component-block-prop propPath={['last']}>
           <paragraph>
             <text />
@@ -473,7 +492,6 @@ test('props in wrong order', () => {
       <component-block
         component="withLotsOfChildElements"
         props={Object {}}
-        relationships={Object {}}
       >
         <component-block-prop
           propPath={
@@ -525,7 +543,7 @@ test('props in wrong order', () => {
 test('toggling to heading when in an inline prop', () => {
   const editor = makeEditor(
     <editor>
-      <component-block component="inline" props={{}} relationships={{}}>
+      <component-block component="inline" props={{}}>
         <component-inline-prop propPath={['child']}>
           <text>
             some
@@ -562,7 +580,6 @@ test('toggling to heading when in an inline prop', () => {
       <component-block
         component="inline"
         props={Object {}}
-        relationships={Object {}}
       >
         <component-inline-prop
           propPath={

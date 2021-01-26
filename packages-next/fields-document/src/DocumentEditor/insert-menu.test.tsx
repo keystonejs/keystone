@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { Transforms } from 'slate';
 import { jsx, makeEditor } from './tests/utils';
