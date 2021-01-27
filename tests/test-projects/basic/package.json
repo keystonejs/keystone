@@ -34,7 +34,6 @@
     "@keystonejs/fields-wysiwyg-tinymce": "^5.3.15",
     "@keystonejs/file-adapters": "^7.0.8",
     "@keystonejs/keystone": "^18.0.0",
-    "@keystonejs/oembed-adapters": "^6.0.0",
     "@keystonejs/server-side-graphql-client": "^1.1.2",
     "cross-env": "^7.0.3",
     "date-fns": "^2.16.1",
@@ -44,7 +43,7 @@
   },
   "devDependencies": {
     "cypress": "^5.6.0",
-    "cypress-file-upload": "^5.0.0",
+    "cypress-file-upload": "^5.0.2",
     "cypress-multi-reporters": "^1.4.0",
     "dotenv-safe": "^8.2.0",
     "execa": "^5.0.0",

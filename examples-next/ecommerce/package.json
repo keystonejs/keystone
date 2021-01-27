@@ -22,7 +22,7 @@
     "nodemailer": "^6.4.17",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "stripe": "^8.131.1"
+    "stripe": "^8.132.0"
   },
   "devDependencies": {
     "@keystonejs/test-utils": "^11.1.0",
