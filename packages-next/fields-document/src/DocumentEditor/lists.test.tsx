@@ -1154,3 +1154,48 @@ test.skip('toggling unordered-list in a nested unordered-list moves the list ite
     </editor>
   `);
 });
+
+// TODO: fix this
+// eslint-disable-next-line jest/no-disabled-tests
+test.skip('nesting multiple items at the same time works', () => {
+  let editor = makeEditor(
+    <editor>
+      <ordered-list>
+        <list-item>
+          <list-item-content>
+            <text>text</text>
+          </list-item-content>
+          <unordered-list>
+            <list-item>
+              <list-item-content>
+                <text>text</text>
+              </list-item-content>
+            </list-item>
+            <list-item>
+              <list-item-content>
+                <text>
+                  <anchor />
+                  text
+                </text>
+              </list-item-content>
+            </list-item>
+            <list-item>
+              <list-item-content>
+                <text>
+                  text
+                  <focus />
+                </text>
+              </list-item-content>
+            </list-item>
+          </unordered-list>
+        </list-item>
+      </ordered-list>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+  nestList(editor);
+
+  expect(editor).toMatchInlineSnapshot(``);
+});
