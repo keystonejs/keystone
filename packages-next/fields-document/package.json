@@ -1,8 +1,7 @@
 {
   "name": "@keystone-next/fields-document",
   "description": "KeystoneJS Document Field Type",
-  "version": "0.0.9",
-  "private": true,
+  "version": "0.0.0",
   "main": "dist/fields-document.cjs.js",
   "module": "dist/fields-document.esm.js",
   "preconstruct": {
