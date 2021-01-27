@@ -23,7 +23,7 @@ export function addRelationshipData(
       const ids = Array.isArray(data) ? data.filter(item => item.id != null).map(x => x.id) : [];
 
       if (ids.length) {
-        const labelField = getLabelFieldsForLists(graphQLAPI.schema);
+        const labelField = getLabelFieldsForLists(graphQLAPI.schema)[relationship.listKey];
         let val = await graphQLAPI.run({
           query: `query($ids: [ID!]!) {items:${
             gqlNames(relationship.listKey).listQueryName
