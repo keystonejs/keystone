@@ -1,14 +1,14 @@
 const { pick, defaultObj, intersection } = require('@keystonejs/utils');
 
-const validateGranularConfigTypes = (longHandAccess, validationError) => {
-  const errors = Object.entries(longHandAccess)
-    .map(([accessType, accessConfig]) => validationError(typeof accessConfig, accessType))
+const validateGranularConfigTypes = (parsedAccess, validateAccess) => {
+  const errors = Object.entries(parsedAccess)
+    .map(([accessType, access]) => validateAccess(typeof access, accessType))
     .filter(error => error);
 
   if (errors.length) {
     throw new Error(errors.join('\n'));
   }
-  return longHandAccess;
+  return parsedAccess;
 };
 
 const parseAccessCore = ({ accessTypes, access, defaultAccess, onGranularParseError }) => {
@@ -95,34 +95,34 @@ function parseCustomAccess({ defaultAccess, access = defaultAccess, schemaNames 
 
 function parseListAccess({ listKey, defaultAccess, access = defaultAccess, schemaNames }) {
   const accessTypes = ['create', 'read', 'update', 'delete', 'auth'];
-  const parseAndValidate = access =>
-    validateGranularConfigTypes(
-      parseAccessCore({
-        accessTypes,
-        access,
-        defaultAccess,
-        onGranularParseError: () => {
-          throw new Error(
-            `Must specify one of ${JSON.stringify(
-              accessTypes
-            )} access configs, but got ${JSON.stringify(
-              Object.keys(access)
-            )}. (Did you mean to specify a declarative access control config? This can be done on a granular basis only)`
-          );
-        },
-      }),
-      (type, accessType) => {
-        if (accessType === 'create') {
-          if (!['boolean', 'function'].includes(type)) {
-            return `Expected a Boolean, or Function for ${listKey}.access.${accessType}, but got ${type}. (NOTE: 'create' cannot have a Declarative access control config)`;
-          }
-        } else {
-          if (!['object', 'boolean', 'function'].includes(type)) {
-            return `Expected a Boolean, Object, or Function for ${listKey}.access.${accessType}, but got ${type}`;
-          }
+  const parseAndValidate = access => {
+    const parsedAccess = parseAccessCore({
+      accessTypes,
+      access,
+      defaultAccess,
+      onGranularParseError: () => {
+        throw new Error(
+          `Must specify one of ${JSON.stringify(
+            accessTypes
+          )} access configs, but got ${JSON.stringify(
+            Object.keys(access)
+          )}. (Did you mean to specify a declarative access control config? This can be done on a granular basis only)`
+        );
+      },
+    });
+    const validateAccess = (type, accessType) => {
+      if (accessType === 'create') {
+        if (!['boolean', 'function'].includes(type)) {
+          return `Expected a Boolean, or Function for ${listKey}.access.${accessType}, but got ${type}. (NOTE: 'create' cannot have a Declarative access control config)`;
+        }
+      } else {
+        if (!['object', 'boolean', 'function'].includes(type)) {
+          return `Expected a Boolean, Object, or Function for ${listKey}.access.${accessType}, but got ${type}`;
         }
       }
-    );
+    };
+    return validateGranularConfigTypes(parsedAccess, validateAccess);
+  };
   return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
 }
 
@@ -134,28 +134,28 @@ function parseFieldAccess({
   schemaNames,
 }) {
   const accessTypes = ['create', 'read', 'update'];
-  const parseAndValidate = access =>
-    validateGranularConfigTypes(
-      parseAccessCore({
-        accessTypes,
-        access,
-        defaultAccess,
-        onGranularParseError: () => {
-          throw new Error(
-            `Must specify one of ${JSON.stringify(
-              accessTypes
-            )} access configs, but got ${JSON.stringify(
-              Object.keys(access)
-            )}. (Did you mean to specify a declarative access control config? This can be done on lists only)`
-          );
-        },
-      }),
-      (type, accessType) => {
-        if (!['boolean', 'function'].includes(type)) {
-          return `Expected a Boolean or Function for ${listKey}.fields.${fieldKey}.access.${accessType}, but got ${type}. (NOTE: Fields cannot have declarative access control config)`;
-        }
+  const parseAndValidate = access => {
+    const parsedAccess = parseAccessCore({
+      accessTypes,
+      access,
+      defaultAccess,
+      onGranularParseError: () => {
+        throw new Error(
+          `Must specify one of ${JSON.stringify(
+            accessTypes
+          )} access configs, but got ${JSON.stringify(
+            Object.keys(access)
+          )}. (Did you mean to specify a declarative access control config? This can be done on lists only)`
+        );
+      },
+    });
+    const validateAccess = (type, accessType) => {
+      if (!['boolean', 'function'].includes(type)) {
+        return `Expected a Boolean or Function for ${listKey}.fields.${fieldKey}.access.${accessType}, but got ${type}. (NOTE: Fields cannot have declarative access control config)`;
       }
-    );
+    };
+    return validateGranularConfigTypes(parsedAccess, validateAccess);
+  };
   return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
 }
 
