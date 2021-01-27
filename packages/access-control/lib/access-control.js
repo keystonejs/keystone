@@ -1,8 +1,8 @@
-const { getType, pick, defaultObj, intersection } = require('@keystonejs/utils');
+const { pick, defaultObj, intersection } = require('@keystonejs/utils');
 
 const validateGranularConfigTypes = (longHandAccess, validationError) => {
   const errors = Object.entries(longHandAccess)
-    .map(([accessType, accessConfig]) => validationError(getType(accessConfig), accessType))
+    .map(([accessType, accessConfig]) => validationError(typeof accessConfig, accessType))
     .filter(error => error);
 
   if (errors.length) {
@@ -12,13 +12,12 @@ const validateGranularConfigTypes = (longHandAccess, validationError) => {
 };
 
 const parseAccessCore = ({ accessTypes, access, defaultAccess, onGranularParseError }) => {
-  const type = getType(access);
-  switch (type) {
-    case 'Boolean':
-    case 'Function':
+  switch (typeof access) {
+    case 'boolean':
+    case 'function':
       return defaultObj(accessTypes, access);
 
-    case 'Object':
+    case 'object':
       // An object was supplied, but it has the wrong keys (it's probably a
       // declarative access control config being used as a shorthand, which
       // isn't possible [due to `create` not supporting declarative config])
@@ -29,7 +28,7 @@ const parseAccessCore = ({ accessTypes, access, defaultAccess, onGranularParseEr
 
     default:
       throw new Error(
-        `Shorthand access must be specified as either a boolean or a function, received ${type}.`
+        `Shorthand access must be specified as either a boolean or a function, received ${typeof access}.`
       );
   }
 };
@@ -49,10 +48,9 @@ const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess, parseAnd
   }
 
   const providedNameCount = intersection(Object.keys(access), schemaNames).length;
-  const type = getType(access);
 
   if (
-    type === 'Object' &&
+    typeof access === 'object' &&
     providedNameCount > 0 &&
     providedNameCount < Object.keys(access).length
   ) {
@@ -64,7 +62,8 @@ const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess, parseAnd
     );
   }
 
-  const namesProvided = type === 'Object' && providedNameCount === Object.keys(access).length;
+  const namesProvided =
+    typeof access === 'object' && providedNameCount === Object.keys(access).length;
   return schemaNames.reduce(
     (acc, schemaName) => ({
       ...acc,
@@ -85,10 +84,9 @@ module.exports = {
   parseCustomAccess({ defaultAccess, access = defaultAccess, schemaNames }) {
     const accessTypes = [];
     const parseAndValidate = access => {
-      const type = getType(access);
-      if (!['Boolean', 'AsyncFunction', 'Function', 'Object'].includes(type)) {
+      if (!['boolean', 'function', 'object'].includes(typeof access)) {
         throw new Error(
-          `Expected a Boolean, Object, or Function for custom access, but got ${type}`
+          `Expected a Boolean, Object, or Function for custom access, but got ${typeof access}`
         );
       }
       return access;
@@ -116,11 +114,11 @@ module.exports = {
         }),
         (type, accessType) => {
           if (accessType === 'create') {
-            if (!['Boolean', 'AsyncFunction', 'Function'].includes(type)) {
+            if (!['boolean', 'function'].includes(type)) {
               return `Expected a Boolean, or Function for ${listKey}.access.${accessType}, but got ${type}. (NOTE: 'create' cannot have a Declarative access control config)`;
             }
           } else {
-            if (!['Object', 'Boolean', 'AsyncFunction', 'Function'].includes(type)) {
+            if (!['object', 'boolean', 'function'].includes(type)) {
               return `Expected a Boolean, Object, or Function for ${listKey}.access.${accessType}, but got ${type}`;
             }
           }
@@ -148,7 +146,7 @@ module.exports = {
           },
         }),
         (type, accessType) => {
-          if (!['Boolean', 'AsyncFunction', 'Function'].includes(type)) {
+          if (!['boolean', 'function'].includes(type)) {
             return `Expected a Boolean or Function for ${listKey}.fields.${fieldKey}.access.${accessType}, but got ${type}. (NOTE: Fields cannot have declarative access control config)`;
           }
         }
@@ -179,11 +177,10 @@ module.exports = {
         gqlName,
       });
     }
-    const type = getType(result);
 
-    if (!['Object', 'Boolean'].includes(type)) {
+    if (!['object', 'boolean'].includes(typeof result)) {
       throw new Error(
-        `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${type}`
+        `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${typeof result}`
       );
     }
     return result;
@@ -217,16 +214,14 @@ module.exports = {
       });
     }
 
-    const type = getType(result);
-
-    if (!['Object', 'Boolean'].includes(type)) {
+    if (!['object', 'boolean'].includes(typeof result)) {
       throw new Error(
-        `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${type}`
+        `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${typeof result}`
       );
     }
 
     // Special case for 'create' permission
-    if (operation === 'create' && type === 'Object') {
+    if (operation === 'create' && typeof result === 'object') {
       throw new Error(
         `Expected a Boolean for ${listKey}.access.create(), but got Object. (NOTE: 'create' cannot have a Declarative access control config)`
       );
@@ -266,11 +261,9 @@ module.exports = {
       });
     }
 
-    const type = getType(result);
-
-    if (type !== 'Boolean') {
+    if (typeof result !== 'boolean') {
       throw new Error(
-        `Must return a Boolean from ${listKey}.fields.${fieldKey}.access.${operation}(). Got ${type}`
+        `Must return a Boolean from ${listKey}.fields.${fieldKey}.access.${operation}(). Got ${typeof result}`
       );
     }
 
@@ -293,11 +286,9 @@ module.exports = {
       });
     }
 
-    const type = getType(result);
-
-    if (!['Object', 'Boolean'].includes(type)) {
+    if (!['object', 'boolean'].includes(typeof result)) {
       throw new Error(
-        `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${type}`
+        `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${typeof result}`
       );
     }
 
