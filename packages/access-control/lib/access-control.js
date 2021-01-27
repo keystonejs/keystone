@@ -1,49 +1,15 @@
 const { pick, defaultObj, intersection } = require('@keystonejs/utils');
 
-const validateGranularConfigTypes = (parsedAccess, validateAccess) => {
-  const errors = Object.entries(parsedAccess)
-    .map(([accessType, access]) => validateAccess(typeof access, accessType))
-    .filter(error => error);
-
-  if (errors.length) {
-    throw new Error(errors.join('\n'));
-  }
-  return parsedAccess;
-};
-
-const parseAccessCore = ({ accessTypes, access, defaultAccess, onGranularParseError }) => {
-  switch (typeof access) {
-    case 'boolean':
-    case 'function':
-      return defaultObj(accessTypes, access);
-
-    case 'object':
-      // An object was supplied, but it has the wrong keys (it's probably a
-      // declarative access control config being used as a shorthand, which
-      // isn't possible [due to `create` not supporting declarative config])
-      if (Object.keys(pick(access, accessTypes)).length === 0) {
-        onGranularParseError();
-      }
-      return { ...defaultObj(accessTypes, defaultAccess), ...pick(access, accessTypes) };
-
-    default:
-      throw new Error(
-        `Shorthand access must be specified as either a boolean or a function, received ${typeof access}.`
-      );
-  }
-};
-
-const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate }) => {
+const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess }) => {
   if (schemaNames.includes('internal')) {
     throw new Error(`"internal" is a reserved word and cannot be used as a schema name.`);
   }
 
   // Check that none of the schemaNames match the accessTypes
-  if (intersection(schemaNames, accessTypes).length > 0) {
+  const matchingNames = intersection(schemaNames, accessTypes);
+  if (matchingNames.length > 0) {
     throw new Error(
-      `${JSON.stringify(
-        intersection(schemaNames, accessTypes)
-      )} are reserved words and cannot be used as schema names.`
+      `${JSON.stringify(matchingNames)} are reserved words and cannot be used as schema names.`
     );
   }
 
@@ -55,33 +21,18 @@ const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess, parseAnd
     providedNameCount < Object.keys(access).length
   ) {
     // If some are in, and some are out, throw an error!
-    throw new Error(
-      `Invalid schema names: ${JSON.stringify(
-        Object.keys(access).filter(k => !schemaNames.includes(k))
-      )}`
-    );
+    const ks = Object.keys(access).filter(k => !schemaNames.includes(k));
+    throw new Error(`Invalid schema names: ${JSON.stringify(ks)}`);
   }
 
-  const namesProvided =
-    typeof access === 'object' && providedNameCount === Object.keys(access).length;
-  return schemaNames.reduce(
-    (acc, schemaName) => ({
-      ...acc,
-      [schemaName]: parseAndValidate(
-        namesProvided
-          ? access.hasOwnProperty(schemaName) // If all the keys are in schemaNames, parse each on their own
-            ? access[schemaName]
-            : defaultAccess
-          : access
-      ),
-      internal: accessTypes.length ? defaultObj(accessTypes, true) : true,
-    }),
-    {}
-  );
+  return typeof access === 'object' && providedNameCount === Object.keys(access).length
+    ? { ...defaultObj(schemaNames, defaultAccess), ...access } // Access keyed by schemaName
+    : defaultObj(schemaNames, access); // Access not keyed by schemaName
 };
 
 function parseCustomAccess({ defaultAccess, access = defaultAccess, schemaNames }) {
   const accessTypes = [];
+  const fullAccess = parseAccess({ schemaNames, accessTypes, access, defaultAccess });
   const parseAndValidate = access => {
     if (!['boolean', 'function', 'object'].includes(typeof access)) {
       throw new Error(
@@ -90,40 +41,63 @@ function parseCustomAccess({ defaultAccess, access = defaultAccess, schemaNames 
     }
     return access;
   };
-  return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
+  return schemaNames.reduce(
+    (acc, schemaName) => ({ ...acc, [schemaName]: parseAndValidate(fullAccess[schemaName]) }),
+    { internal: true }
+  );
 }
 
 function parseListAccess({ listKey, defaultAccess, access = defaultAccess, schemaNames }) {
   const accessTypes = ['create', 'read', 'update', 'delete', 'auth'];
+  const fullAccess = parseAccess({ schemaNames, accessTypes, access, defaultAccess });
   const parseAndValidate = access => {
-    const parsedAccess = parseAccessCore({
-      accessTypes,
-      access,
-      defaultAccess,
-      onGranularParseError: () => {
+    let parsedAccess;
+    switch (typeof access) {
+      case 'boolean':
+      case 'function':
+        parsedAccess = defaultObj(accessTypes, access);
+        break;
+      case 'object':
+        // An object was supplied, but it has the wrong keys (it's probably a
+        // declarative access control config being used as a shorthand, which
+        // isn't possible [due to `create` not supporting declarative config])
+        if (Object.keys(pick(access, accessTypes)).length === 0) {
+          const at = JSON.stringify(accessTypes);
+          const aks = JSON.stringify(Object.keys(access));
+          throw new Error(
+            `Must specify one of ${at} access configs, but got ${aks}. (Did you mean to specify a declarative access control config? This can be done on a granular basis only)`
+          );
+        }
+        parsedAccess = { ...defaultObj(accessTypes, defaultAccess), ...pick(access, accessTypes) };
+        break;
+      default:
         throw new Error(
-          `Must specify one of ${JSON.stringify(
-            accessTypes
-          )} access configs, but got ${JSON.stringify(
-            Object.keys(access)
-          )}. (Did you mean to specify a declarative access control config? This can be done on a granular basis only)`
+          `Shorthand access must be specified as either a boolean or a function, received ${typeof access}.`
         );
-      },
-    });
-    const validateAccess = (type, accessType) => {
-      if (accessType === 'create') {
-        if (!['boolean', 'function'].includes(type)) {
-          return `Expected a Boolean, or Function for ${listKey}.access.${accessType}, but got ${type}. (NOTE: 'create' cannot have a Declarative access control config)`;
+    }
+    const errors = Object.entries(parsedAccess)
+      .map(([accessType, access]) => {
+        if (accessType === 'create') {
+          if (!['boolean', 'function'].includes(typeof access)) {
+            return `Expected a Boolean, or Function for ${listKey}.access.${accessType}, but got ${typeof access}. (NOTE: 'create' cannot have a Declarative access control config)`;
+          }
+        } else {
+          if (!['object', 'boolean', 'function'].includes(typeof access)) {
+            return `Expected a Boolean, Object, or Function for ${listKey}.access.${accessType}, but got ${typeof access}`;
+          }
         }
-      } else {
-        if (!['object', 'boolean', 'function'].includes(type)) {
-          return `Expected a Boolean, Object, or Function for ${listKey}.access.${accessType}, but got ${type}`;
-        }
-      }
-    };
-    return validateGranularConfigTypes(parsedAccess, validateAccess);
+      })
+      .filter(error => error);
+
+    if (errors.length) {
+      throw new Error(errors.join('\n'));
+    }
+    return parsedAccess;
   };
-  return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
+  return schemaNames.reduce(
+    (acc, schemaName) => ({ ...acc, [schemaName]: parseAndValidate(fullAccess[schemaName]) }),
+    { internal: defaultObj(accessTypes, true) }
+  );
 }
 
 function parseFieldAccess({
@@ -134,29 +108,49 @@ function parseFieldAccess({
   schemaNames,
 }) {
   const accessTypes = ['create', 'read', 'update'];
+  const fullAccess = parseAccess({ schemaNames, accessTypes, access, defaultAccess });
   const parseAndValidate = access => {
-    const parsedAccess = parseAccessCore({
-      accessTypes,
-      access,
-      defaultAccess,
-      onGranularParseError: () => {
+    let parsedAccess;
+    switch (typeof access) {
+      case 'boolean':
+      case 'function':
+        parsedAccess = defaultObj(accessTypes, access);
+        break;
+      case 'object':
+        // An object was supplied, but it has the wrong keys (it's probably a
+        // declarative access control config being used as a shorthand, which
+        // isn't possible [due to `create` not supporting declarative config])
+        if (Object.keys(pick(access, accessTypes)).length === 0) {
+          const at = JSON.stringify(accessTypes);
+          const aks = JSON.stringify(Object.keys(access));
+          throw new Error(
+            `Must specify one of ${at} access configs, but got ${aks}. (Did you mean to specify a declarative access control config? This can be done on lists only)`
+          );
+        }
+        parsedAccess = { ...defaultObj(accessTypes, defaultAccess), ...pick(access, accessTypes) };
+        break;
+      default:
         throw new Error(
-          `Must specify one of ${JSON.stringify(
-            accessTypes
-          )} access configs, but got ${JSON.stringify(
-            Object.keys(access)
-          )}. (Did you mean to specify a declarative access control config? This can be done on lists only)`
+          `Shorthand access must be specified as either a boolean or a function, received ${typeof access}.`
         );
-      },
-    });
-    const validateAccess = (type, accessType) => {
-      if (!['boolean', 'function'].includes(type)) {
-        return `Expected a Boolean or Function for ${listKey}.fields.${fieldKey}.access.${accessType}, but got ${type}. (NOTE: Fields cannot have declarative access control config)`;
-      }
-    };
-    return validateGranularConfigTypes(parsedAccess, validateAccess);
+    }
+    const errors = Object.entries(parsedAccess)
+      .map(([accessType, access]) => {
+        if (!['boolean', 'function'].includes(typeof access)) {
+          return `Expected a Boolean or Function for ${listKey}.fields.${fieldKey}.access.${accessType}, but got ${typeof access}. (NOTE: Fields cannot have declarative access control config)`;
+        }
+      })
+      .filter(error => error);
+
+    if (errors.length) {
+      throw new Error(errors.join('\n'));
+    }
+    return parsedAccess;
   };
-  return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
+  return schemaNames.reduce(
+    (acc, schemaName) => ({ ...acc, [schemaName]: parseAndValidate(fullAccess[schemaName]) }),
+    { internal: defaultObj(accessTypes, true) }
+  );
 }
 
 async function validateCustomAccessControl({
