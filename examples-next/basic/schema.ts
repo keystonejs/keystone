@@ -144,12 +144,10 @@ export const lists = createSchema({
           mention: {
             kind: 'inline',
             label: 'Mention',
-            labelField: 'name',
             listKey: 'User',
           },
           featuredAuthors: {
             kind: 'prop',
-            labelField: 'name',
             listKey: 'User',
             many: true,
             selection: `posts(first: 10) {

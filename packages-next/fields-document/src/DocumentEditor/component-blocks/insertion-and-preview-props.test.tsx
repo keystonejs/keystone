@@ -69,14 +69,12 @@ const relationships: Relationships = {
   one: {
     kind: 'prop',
     many: false,
-    labelField: 'label',
     listKey: 'User',
     selection: null,
   },
   many: {
     kind: 'prop',
     many: true,
-    labelField: 'label',
     listKey: 'User',
     selection: null,
   },

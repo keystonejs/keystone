@@ -18,9 +18,6 @@ export type Relationships = Record<
     listKey: string;
     /** GraphQL fields to select when querying the field */
     selection: string | null;
-    // TODO: remove the need for this
-    /** This must be identical to the labelField of the list specified in the listKey */
-    labelField: string;
   } & (
     | {
         kind: 'inline';
