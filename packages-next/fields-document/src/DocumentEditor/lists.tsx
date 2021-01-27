@@ -188,15 +188,35 @@ export function nestList(editor: Editor) {
     match: n => Editor.isBlock(editor, n),
   });
 
-  if (block && block[0].type === 'list-item-content') {
-    const type = Editor.parent(editor, Path.parent(block[1]))[0].type as string;
-    Transforms.wrapNodes(editor, {
-      type,
-      children: [],
+  if (!block || block[0].type !== 'list-item-content') {
+    return false;
+  }
+  const listItemPath = Path.parent(block[1]);
+  // we're the first item in the list therefore we can't nest
+  if (listItemPath[listItemPath.length - 1] === 0) {
+    return false;
+  }
+  const previousListItemPath = Path.previous(listItemPath);
+  const previousListItemNode = Node.get(editor, previousListItemPath) as Element;
+  if (previousListItemNode.children.length !== 1) {
+    // there's a list nested inside our previous sibling list item so move there
+    Transforms.moveNodes(editor, {
+      at: listItemPath,
+      to: [
+        ...previousListItemPath,
+        previousListItemNode.children.length - 1,
+        (previousListItemNode.children[previousListItemNode.children.length - 1].children as any)
+          .length as number,
+      ],
     });
     return true;
   }
-  return false;
+  const type = Editor.parent(editor, Path.parent(block[1]))[0].type as string;
+  Transforms.wrapNodes(editor, {
+    type,
+    children: [],
+  });
+  return true;
 }
 
 export function unnestList(editor: Editor) {

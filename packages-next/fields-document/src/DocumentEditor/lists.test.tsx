@@ -1030,3 +1030,72 @@ test('changing the type of a nested list to something which it is nested inside'
     </editor>
   `);
 });
+
+test('nesting a list item in an ordered list into an unordered list makes the item unordered', () => {
+  let editor = makeEditor(
+    <editor>
+      <unordered-list>
+        <list-item>
+          <list-item-content>
+            <text>first</text>
+          </list-item-content>
+          <ordered-list>
+            <list-item>
+              <list-item-content>
+                <text>second</text>
+              </list-item-content>
+            </list-item>
+          </ordered-list>
+        </list-item>
+        <list-item>
+          <list-item-content>
+            <text>
+              third
+              <cursor />
+            </text>
+          </list-item-content>
+        </list-item>
+      </unordered-list>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+  nestList(editor);
+
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <unordered-list>
+        <list-item>
+          <list-item-content>
+            <text>
+              first
+            </text>
+          </list-item-content>
+          <ordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  second
+                </text>
+              </list-item-content>
+            </list-item>
+            <list-item>
+              <list-item-content>
+                <text>
+                  third
+                  <cursor />
+                </text>
+              </list-item-content>
+            </list-item>
+          </ordered-list>
+        </list-item>
+      </unordered-list>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
