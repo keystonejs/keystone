@@ -80,218 +80,238 @@ const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess, parseAnd
   );
 };
 
-module.exports = {
-  parseCustomAccess({ defaultAccess, access = defaultAccess, schemaNames }) {
-    const accessTypes = [];
-    const parseAndValidate = access => {
-      if (!['boolean', 'function', 'object'].includes(typeof access)) {
-        throw new Error(
-          `Expected a Boolean, Object, or Function for custom access, but got ${typeof access}`
-        );
-      }
-      return access;
-    };
-    return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
-  },
-
-  parseListAccess({ listKey, defaultAccess, access = defaultAccess, schemaNames }) {
-    const accessTypes = ['create', 'read', 'update', 'delete', 'auth'];
-    const parseAndValidate = access =>
-      validateGranularConfigTypes(
-        parseAccessCore({
-          accessTypes,
-          access,
-          defaultAccess,
-          onGranularParseError: () => {
-            throw new Error(
-              `Must specify one of ${JSON.stringify(
-                accessTypes
-              )} access configs, but got ${JSON.stringify(
-                Object.keys(access)
-              )}. (Did you mean to specify a declarative access control config? This can be done on a granular basis only)`
-            );
-          },
-        }),
-        (type, accessType) => {
-          if (accessType === 'create') {
-            if (!['boolean', 'function'].includes(type)) {
-              return `Expected a Boolean, or Function for ${listKey}.access.${accessType}, but got ${type}. (NOTE: 'create' cannot have a Declarative access control config)`;
-            }
-          } else {
-            if (!['object', 'boolean', 'function'].includes(type)) {
-              return `Expected a Boolean, Object, or Function for ${listKey}.access.${accessType}, but got ${type}`;
-            }
-          }
-        }
+function parseCustomAccess({ defaultAccess, access = defaultAccess, schemaNames }) {
+  const accessTypes = [];
+  const parseAndValidate = access => {
+    if (!['boolean', 'function', 'object'].includes(typeof access)) {
+      throw new Error(
+        `Expected a Boolean, Object, or Function for custom access, but got ${typeof access}`
       );
-    return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
-  },
+    }
+    return access;
+  };
+  return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
+}
 
-  parseFieldAccess({ listKey, fieldKey, defaultAccess, access = defaultAccess, schemaNames }) {
-    const accessTypes = ['create', 'read', 'update'];
-    const parseAndValidate = access =>
-      validateGranularConfigTypes(
-        parseAccessCore({
-          accessTypes,
-          access,
-          defaultAccess,
-          onGranularParseError: () => {
-            throw new Error(
-              `Must specify one of ${JSON.stringify(
-                accessTypes
-              )} access configs, but got ${JSON.stringify(
-                Object.keys(access)
-              )}. (Did you mean to specify a declarative access control config? This can be done on lists only)`
-            );
-          },
-        }),
-        (type, accessType) => {
+function parseListAccess({ listKey, defaultAccess, access = defaultAccess, schemaNames }) {
+  const accessTypes = ['create', 'read', 'update', 'delete', 'auth'];
+  const parseAndValidate = access =>
+    validateGranularConfigTypes(
+      parseAccessCore({
+        accessTypes,
+        access,
+        defaultAccess,
+        onGranularParseError: () => {
+          throw new Error(
+            `Must specify one of ${JSON.stringify(
+              accessTypes
+            )} access configs, but got ${JSON.stringify(
+              Object.keys(access)
+            )}. (Did you mean to specify a declarative access control config? This can be done on a granular basis only)`
+          );
+        },
+      }),
+      (type, accessType) => {
+        if (accessType === 'create') {
           if (!['boolean', 'function'].includes(type)) {
-            return `Expected a Boolean or Function for ${listKey}.fields.${fieldKey}.access.${accessType}, but got ${type}. (NOTE: Fields cannot have declarative access control config)`;
+            return `Expected a Boolean, or Function for ${listKey}.access.${accessType}, but got ${type}. (NOTE: 'create' cannot have a Declarative access control config)`;
+          }
+        } else {
+          if (!['object', 'boolean', 'function'].includes(type)) {
+            return `Expected a Boolean, Object, or Function for ${listKey}.access.${accessType}, but got ${type}`;
           }
         }
-      );
-    return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
-  },
+      }
+    );
+  return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
+}
 
-  async validateCustomAccessControl({
-    item,
-    args,
-    context,
-    info,
-    access,
-    authentication = {},
-    gqlName,
-  }) {
-    // Either a boolean or an object describing a where clause
-    let result;
-    if (typeof access !== 'function') {
-      result = access;
-    } else {
-      result = await access({
-        item,
-        args,
-        context,
-        info,
-        authentication: authentication.item ? authentication : {},
-        gqlName,
-      });
-    }
+function parseFieldAccess({
+  listKey,
+  fieldKey,
+  defaultAccess,
+  access = defaultAccess,
+  schemaNames,
+}) {
+  const accessTypes = ['create', 'read', 'update'];
+  const parseAndValidate = access =>
+    validateGranularConfigTypes(
+      parseAccessCore({
+        accessTypes,
+        access,
+        defaultAccess,
+        onGranularParseError: () => {
+          throw new Error(
+            `Must specify one of ${JSON.stringify(
+              accessTypes
+            )} access configs, but got ${JSON.stringify(
+              Object.keys(access)
+            )}. (Did you mean to specify a declarative access control config? This can be done on lists only)`
+          );
+        },
+      }),
+      (type, accessType) => {
+        if (!['boolean', 'function'].includes(type)) {
+          return `Expected a Boolean or Function for ${listKey}.fields.${fieldKey}.access.${accessType}, but got ${type}. (NOTE: Fields cannot have declarative access control config)`;
+        }
+      }
+    );
+  return parseAccess({ schemaNames, accessTypes, access, defaultAccess, parseAndValidate });
+}
 
-    if (!['object', 'boolean'].includes(typeof result)) {
-      throw new Error(
-        `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${typeof result}`
-      );
-    }
-    return result;
-  },
+async function validateCustomAccessControl({
+  item,
+  args,
+  context,
+  info,
+  access,
+  authentication = {},
+  gqlName,
+}) {
+  // Either a boolean or an object describing a where clause
+  let result;
+  if (typeof access !== 'function') {
+    result = access;
+  } else {
+    result = await access({
+      item,
+      args,
+      context,
+      info,
+      authentication: authentication.item ? authentication : {},
+      gqlName,
+    });
+  }
 
-  async validateListAccessControl({
-    access,
-    listKey,
-    operation,
-    authentication = {},
-    originalInput,
-    gqlName,
-    itemId,
-    itemIds,
-    context,
-  }) {
-    // Either a boolean or an object describing a where clause
-    let result;
-    if (typeof access[operation] !== 'function') {
-      result = access[operation];
-    } else {
-      result = await access[operation]({
-        authentication: authentication.item ? authentication : {},
-        listKey,
-        operation,
-        originalInput,
-        gqlName,
-        itemId,
-        itemIds,
-        context,
-      });
-    }
+  if (!['object', 'boolean'].includes(typeof result)) {
+    throw new Error(
+      `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${typeof result}`
+    );
+  }
+  return result;
+}
 
-    if (!['object', 'boolean'].includes(typeof result)) {
-      throw new Error(
-        `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${typeof result}`
-      );
-    }
+async function validateListAccessControl({
+  access,
+  listKey,
+  operation,
+  authentication = {},
+  originalInput,
+  gqlName,
+  itemId,
+  itemIds,
+  context,
+}) {
+  // Either a boolean or an object describing a where clause
+  let result;
+  if (typeof access[operation] !== 'function') {
+    result = access[operation];
+  } else {
+    result = await access[operation]({
+      authentication: authentication.item ? authentication : {},
+      listKey,
+      operation,
+      originalInput,
+      gqlName,
+      itemId,
+      itemIds,
+      context,
+    });
+  }
 
-    // Special case for 'create' permission
-    if (operation === 'create' && typeof result === 'object') {
-      throw new Error(
-        `Expected a Boolean for ${listKey}.access.create(), but got Object. (NOTE: 'create' cannot have a Declarative access control config)`
-      );
-    }
+  if (!['object', 'boolean'].includes(typeof result)) {
+    throw new Error(
+      `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${typeof result}`
+    );
+  }
 
-    return result;
-  },
+  // Special case for 'create' permission
+  if (operation === 'create' && typeof result === 'object') {
+    throw new Error(
+      `Expected a Boolean for ${listKey}.access.create(), but got Object. (NOTE: 'create' cannot have a Declarative access control config)`
+    );
+  }
 
-  async validateFieldAccessControl({
-    access,
-    listKey,
-    fieldKey,
-    originalInput,
-    existingItem,
-    operation,
-    authentication = {},
-    gqlName,
-    itemId,
-    itemIds,
-    context,
-  }) {
-    let result;
-    if (typeof access[operation] !== 'function') {
-      result = access[operation];
-    } else {
-      result = await access[operation]({
-        authentication: authentication.item ? authentication : {},
-        listKey,
-        fieldKey,
-        originalInput,
-        existingItem,
-        operation,
-        gqlName,
-        itemId,
-        itemIds,
-        context,
-      });
-    }
+  return result;
+}
 
-    if (typeof result !== 'boolean') {
-      throw new Error(
-        `Must return a Boolean from ${listKey}.fields.${fieldKey}.access.${operation}(). Got ${typeof result}`
-      );
-    }
+async function validateFieldAccessControl({
+  access,
+  listKey,
+  fieldKey,
+  originalInput,
+  existingItem,
+  operation,
+  authentication = {},
+  gqlName,
+  itemId,
+  itemIds,
+  context,
+}) {
+  let result;
+  if (typeof access[operation] !== 'function') {
+    result = access[operation];
+  } else {
+    result = await access[operation]({
+      authentication: authentication.item ? authentication : {},
+      listKey,
+      fieldKey,
+      originalInput,
+      existingItem,
+      operation,
+      gqlName,
+      itemId,
+      itemIds,
+      context,
+    });
+  }
 
-    return result;
-  },
+  if (typeof result !== 'boolean') {
+    throw new Error(
+      `Must return a Boolean from ${listKey}.fields.${fieldKey}.access.${operation}(). Got ${typeof result}`
+    );
+  }
 
-  async validateAuthAccessControl({ access, listKey, authentication = {}, gqlName, context }) {
-    const operation = 'auth';
-    // Either a boolean or an object describing a where clause
-    let result;
-    if (typeof access[operation] !== 'function') {
-      result = access[operation];
-    } else {
-      result = await access[operation]({
-        authentication: authentication.item ? authentication : {},
-        listKey,
-        operation,
-        gqlName,
-        context,
-      });
-    }
+  return result;
+}
 
-    if (!['object', 'boolean'].includes(typeof result)) {
-      throw new Error(
-        `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${typeof result}`
-      );
-    }
+async function validateAuthAccessControl({
+  access,
+  listKey,
+  authentication = {},
+  gqlName,
+  context,
+}) {
+  const operation = 'auth';
+  // Either a boolean or an object describing a where clause
+  let result;
+  if (typeof access[operation] !== 'function') {
+    result = access[operation];
+  } else {
+    result = await access[operation]({
+      authentication: authentication.item ? authentication : {},
+      listKey,
+      operation,
+      gqlName,
+      context,
+    });
+  }
 
-    return result;
-  },
+  if (!['object', 'boolean'].includes(typeof result)) {
+    throw new Error(
+      `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${typeof result}`
+    );
+  }
+
+  return result;
+}
+
+module.exports = {
+  parseCustomAccess,
+  parseListAccess,
+  parseFieldAccess,
+  validateCustomAccessControl,
+  validateListAccessControl,
+  validateFieldAccessControl,
+  validateAuthAccessControl,
 };
