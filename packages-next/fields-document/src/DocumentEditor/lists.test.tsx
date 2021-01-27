@@ -1099,3 +1099,58 @@ test('nesting a list item in an ordered list into an unordered list makes the it
     </editor>
   `);
 });
+
+// TODO: fix this(the snapshot shows the correct output)
+// eslint-disable-next-line jest/no-disabled-tests
+test.skip('toggling unordered-list in a nested unordered-list moves the list item out of the list', () => {
+  let editor = makeEditor(
+    <editor>
+      <ordered-list>
+        <list-item>
+          <list-item-content>
+            <text>first</text>
+          </list-item-content>
+          <unordered-list>
+            <list-item>
+              <list-item-content>
+                <text>
+                  second
+                  <cursor />
+                </text>
+              </list-item-content>
+            </list-item>
+          </unordered-list>
+        </list-item>
+      </ordered-list>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+  toggleList(editor, 'unordered-list');
+
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <ordered-list>
+        <list-item>
+          <list-item-content>
+            <text>
+              first
+            </text>
+          </list-item-content>
+        </list-item>
+      </ordered-list>
+      <paragraph>
+        <text>
+          second
+          <cursor />
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
