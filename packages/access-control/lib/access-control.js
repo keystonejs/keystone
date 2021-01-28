@@ -1,6 +1,6 @@
 const { pick, defaultObj, intersection } = require('@keystonejs/utils');
 
-const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess }) => {
+const checkSchemaNames = ({ schemaNames, accessTypes, access }) => {
   if (schemaNames.includes('internal')) {
     throw new Error(`"internal" is a reserved word and cannot be used as a schema name.`);
   }
@@ -13,26 +13,31 @@ const parseAccess = ({ schemaNames, accessTypes, access, defaultAccess }) => {
     );
   }
 
-  const providedNameCount = intersection(Object.keys(access), schemaNames).length;
-
-  if (
-    typeof access === 'object' &&
-    providedNameCount > 0 &&
-    providedNameCount < Object.keys(access).length
-  ) {
-    // If some are in, and some are out, throw an error!
-    const ks = Object.keys(access).filter(k => !schemaNames.includes(k));
-    throw new Error(`Invalid schema names: ${JSON.stringify(ks)}`);
+  if (typeof access === 'object') {
+    const accessKeys = Object.keys(access);
+    const providedNameCount = intersection(accessKeys, schemaNames).length;
+    if (providedNameCount > 0 && providedNameCount < accessKeys.length) {
+      // If some are in, and some are out, throw an error!
+      const ks = accessKeys.filter(k => !schemaNames.includes(k));
+      throw new Error(`Invalid schema names: ${JSON.stringify(ks)}`);
+    }
   }
 
-  return typeof access === 'object' && providedNameCount === Object.keys(access).length
-    ? { ...defaultObj(schemaNames, defaultAccess), ...access } // Access keyed by schemaName
-    : defaultObj(schemaNames, access); // Access not keyed by schemaName
+  const keyedBySchemaName =
+    typeof access === 'object' &&
+    intersection(Object.keys(access), schemaNames).length === Object.keys(access).length;
+  return keyedBySchemaName;
 };
 
 function parseCustomAccess({ defaultAccess, access = defaultAccess, schemaNames }) {
   const accessTypes = [];
-  const fullAccess = parseAccess({ schemaNames, accessTypes, access, defaultAccess });
+
+  const keyedBySchemaName = checkSchemaNames({ schemaNames, accessTypes, access });
+
+  const fullAccess = keyedBySchemaName
+    ? { ...defaultObj(schemaNames, defaultAccess), ...access } // Access keyed by schemaName
+    : defaultObj(schemaNames, access); // Access not keyed by schemaName
+
   const parseAndValidate = access => {
     if (!['boolean', 'function', 'object'].includes(typeof access)) {
       throw new Error(
@@ -49,7 +54,13 @@ function parseCustomAccess({ defaultAccess, access = defaultAccess, schemaNames 
 
 function parseListAccess({ listKey, defaultAccess, access = defaultAccess, schemaNames }) {
   const accessTypes = ['create', 'read', 'update', 'delete', 'auth'];
-  const fullAccess = parseAccess({ schemaNames, accessTypes, access, defaultAccess });
+
+  const keyedBySchemaName = checkSchemaNames({ schemaNames, accessTypes, access });
+
+  const fullAccess = keyedBySchemaName
+    ? { ...defaultObj(schemaNames, defaultAccess), ...access } // Access keyed by schemaName
+    : defaultObj(schemaNames, access); // Access not keyed by schemaName
+
   const parseAndValidate = access => {
     let parsedAccess;
     switch (typeof access) {
@@ -108,7 +119,13 @@ function parseFieldAccess({
   schemaNames,
 }) {
   const accessTypes = ['create', 'read', 'update'];
-  const fullAccess = parseAccess({ schemaNames, accessTypes, access, defaultAccess });
+
+  const keyedBySchemaName = checkSchemaNames({ schemaNames, accessTypes, access });
+
+  const fullAccess = keyedBySchemaName
+    ? { ...defaultObj(schemaNames, defaultAccess), ...access } // Access keyed by schemaName
+    : defaultObj(schemaNames, access); // Access not keyed by schemaName
+
   const parseAndValidate = access => {
     let parsedAccess;
     switch (typeof access) {
