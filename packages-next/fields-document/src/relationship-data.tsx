@@ -3,9 +3,11 @@ import { BaseGeneratedListTypes, GqlNames, KeystoneGraphQLAPI } from '@keystone-
 import { Node } from 'slate';
 import { ComponentBlock, ComponentPropField } from './DocumentEditor/component-blocks/api';
 import { assertNever } from './DocumentEditor/component-blocks/utils';
+import { GraphQLSchema, executeSync, parse } from 'graphql';
+import weakMemoize from '@emotion/weak-memoize';
 
-const labelField = '____document_field_relationship_item_label';
-const idField = '____document_field_relationship_item_id';
+const labelFieldAlias = '____document_field_relationship_item_label';
+const idFieldAlias = '____document_field_relationship_item_id';
 
 export function addRelationshipData(
   nodes: Node[],
@@ -21,17 +23,18 @@ export function addRelationshipData(
       const ids = Array.isArray(data) ? data.filter(item => item.id != null).map(x => x.id) : [];
 
       if (ids.length) {
+        const labelField = getLabelFieldsForLists(graphQLAPI.schema)[relationship.listKey];
         let val = await graphQLAPI.run({
           query: `query($ids: [ID!]!) {items:${
             gqlNames(relationship.listKey).listQueryName
-          }(where: {id_in:$ids}) {${idField}:id ${labelField}:${relationship.labelField}\n${
+          }(where: {id_in:$ids}) {${idFieldAlias}:id ${labelFieldAlias}:${labelField}\n${
             relationship.selection || ''
           }}}`,
           variables: { ids },
         });
 
         return Array.isArray(val.items)
-          ? val.items.map(({ [labelField]: label, [idField]: id, ...data }) => {
+          ? val.items.map(({ [labelFieldAlias]: label, [idFieldAlias]: id, ...data }) => {
               return { id, label, data };
             })
           : [];
@@ -40,19 +43,24 @@ export function addRelationshipData(
     } else {
       const id = data?.id;
       if (id != null) {
+        const labelField = getLabelFieldsForLists(graphQLAPI.schema)[relationship.listKey];
         let val = await graphQLAPI.run({
-          query: `query($id: ID!) {item:${relationship.listKey}(where: {id:$id}) {${labelField}:${
-            relationship.labelField
-          }\n${relationship.selection || ''}}}`,
+          query: `query($id: ID!) {item:${
+            relationship.listKey
+          }(where: {id:$id}) {${labelFieldAlias}:${labelField}\n${relationship.selection || ''}}}`,
           variables: { id },
         });
 
         return val.item
           ? {
               id,
-              label: val.item[labelField],
+              label: val.item[labelFieldAlias],
               data: (() => {
-                const { [labelField]: _ignore, ...otherData } = val.item;
+                const {
+                  [labelFieldAlias]: _ignore,
+                  [idFieldAlias]: _ignore2,
+                  ...otherData
+                } = val.item;
                 return otherData;
               })(),
             }
@@ -142,3 +150,32 @@ async function addRelationshipDataToComponentProps(
   }
   assertNever(prop);
 }
+
+const document = parse(`
+  query {
+    keystone {
+      adminMeta {
+        lists {
+          key
+          labelField
+        }
+      }
+    }
+  }
+`);
+
+export const getLabelFieldsForLists = weakMemoize(function getLabelFieldsForLists(
+  schema: GraphQLSchema
+): Record<string, string> {
+  const { data, errors } = executeSync({
+    schema,
+    document,
+    contextValue: { isAdminUIBuildProcess: true },
+  });
+  if (errors?.length) {
+    throw errors[0];
+  }
+  return Object.fromEntries(
+    data!.keystone.adminMeta.lists.map((x: any) => [x.key, x.labelField as string])
+  );
+});

@@ -12,6 +12,7 @@ import {
   Point,
 } from 'slate';
 import { ReactEditor } from 'slate-react';
+import { ElementFromValidation } from '../structure-validation';
 
 export { useEditor as useStaticEditor } from 'slate-react';
 
@@ -36,7 +37,10 @@ export const allMarks: Mark[] = [
   'keyboard',
 ];
 
-export const isBlockActive = (editor: Editor, format: string) => {
+export const isElementActive = (
+  editor: Editor,
+  format: Exclude<ElementFromValidation, { text: string }>['type']
+) => {
   const [match] = Editor.nodes(editor, {
     match: n => n.type === format,
   });

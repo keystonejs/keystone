@@ -12,7 +12,7 @@ import {
 import { LayoutOptionsProvider } from './layouts';
 import { isListType } from './lists';
 import { DocumentFieldRelationshipsProvider, Relationships } from './relationship';
-import { allMarks, isBlockActive, Mark } from './utils';
+import { allMarks, isElementActive, Mark } from './utils';
 
 type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean };
 
@@ -92,20 +92,6 @@ export const createToolbarState = (
   componentBlocks: Record<string, ComponentBlock>,
   editorDocumentFeatures: DocumentFeatures
 ): ToolbarState => {
-  let [headingEntry] = Editor.nodes(editor, {
-    match: n => n.type === 'heading',
-  });
-
-  let [listEntry] = Editor.nodes(editor, {
-    match: n => isListType(n.type as string),
-  });
-
-  let [alignableEntry] = Editor.nodes(editor, {
-    match: n => n.type === 'paragraph' || n.type === 'heading',
-  });
-
-  const isLinkActive = isBlockActive(editor, 'link');
-
   const locationDocumentFeatures: DocumentFeaturesForChildField = getAncestorComponentChildFieldDocumentFeatures(
     editor,
     editorDocumentFeatures,
@@ -161,16 +147,43 @@ export const createToolbarState = (
 
   // we want bold to be shown as selected even though if you inserted text from that selection, it wouldn't be bold
   // so we look at all the text nodes in the selection to get their marks
-  for (const node of Editor.nodes(editor, { match: Text.isText })) {
-    for (const key of Object.keys(node[0])) {
-      if (key === 'insertMenu' || key === 'text') {
-        continue;
-      }
-      if (key in marks) {
-        marks[key as Mark].isSelected = true;
+  // but only if the selection is expanded because if you're in the middle of some text
+  // with your selection collapsed with a mark but you've removed it(i.e. editor.removeMark)
+  // the text nodes you're in will have the mark but the ui should show the mark as not being selected
+  if (editor.selection && Range.isExpanded(editor.selection)) {
+    for (const node of Editor.nodes(editor, { match: Text.isText })) {
+      for (const key of Object.keys(node[0])) {
+        if (key === 'insertMenu' || key === 'text') {
+          continue;
+        }
+        if (key in marks) {
+          marks[key as Mark].isSelected = true;
+        }
       }
     }
   }
+
+  let [headingEntry] = Editor.nodes(editor, {
+    match: n => n.type === 'heading',
+  });
+
+  let [listEntry] = Editor.nodes(editor, {
+    match: n => isListType(n.type as string),
+  });
+
+  let [alignableEntry] = Editor.nodes(editor, {
+    match: n => n.type === 'paragraph' || n.type === 'heading',
+  });
+
+  // (we're gonna use markdown here because the equivelant slate structure is quite large and doesn't add value here)
+  // let's imagine a document that looks like this:
+  // - thing
+  //   1. something<cursor />
+  // in the toolbar, you don't want to see that both ordered and unordered lists are selected
+  // you want to see only ordered list selected, because
+  // - you want to know what list you're actually in, you don't really care about the outer list
+  // - when you want to change the list to a unordered list, the unordered list button should be inactive to show you can change to it
+  const listTypeAbove = getListTypeAbove(editor);
 
   return {
     marks,
@@ -183,7 +196,7 @@ export const createToolbarState = (
     },
     relationships: { isDisabled: !locationDocumentFeatures.documentFeatures.relationships },
     code: {
-      isSelected: isBlockActive(editor, 'code'),
+      isSelected: isElementActive(editor, 'code'),
       isDisabled: !(
         locationDocumentFeatures.kind === 'block' &&
         locationDocumentFeatures.documentFeatures.formatting.blockTypes.code
@@ -191,7 +204,9 @@ export const createToolbarState = (
     },
     lists: {
       ordered: {
-        isSelected: isBlockActive(editor, 'ordered-list'),
+        isSelected:
+          isElementActive(editor, 'ordered-list') &&
+          (listTypeAbove === 'none' || listTypeAbove === 'ordered-list'),
         isDisabled: !(
           locationDocumentFeatures.kind === 'block' &&
           locationDocumentFeatures.documentFeatures.formatting.listTypes.ordered &&
@@ -199,7 +214,9 @@ export const createToolbarState = (
         ),
       },
       unordered: {
-        isSelected: isBlockActive(editor, 'unordered-list'),
+        isSelected:
+          isElementActive(editor, 'unordered-list') &&
+          (listTypeAbove === 'none' || listTypeAbove === 'unordered-list'),
         isDisabled: !(
           locationDocumentFeatures.kind === 'block' &&
           locationDocumentFeatures.documentFeatures.formatting.listTypes.unordered &&
@@ -221,15 +238,15 @@ export const createToolbarState = (
         locationDocumentFeatures.kind === 'block' &&
         locationDocumentFeatures.documentFeatures.formatting.blockTypes.blockquote
       ),
-      isSelected: isBlockActive(editor, 'blockquote'),
+      isSelected: isElementActive(editor, 'blockquote'),
     },
-    layouts: { isSelected: isBlockActive(editor, 'layout') },
+    layouts: { isSelected: isElementActive(editor, 'layout') },
     links: {
       isDisabled:
         !editor.selection ||
         Range.isCollapsed(editor.selection) ||
         !locationDocumentFeatures.documentFeatures.links,
-      isSelected: isLinkActive,
+      isSelected: isElementActive(editor, 'link'),
     },
     editor,
     dividers: {
@@ -252,6 +269,14 @@ function hasBlockThatClearsOnClearFormatting(editor: Editor) {
     match: node => node.type === 'heading' || node.type === 'code' || node.type === 'blockquote',
   });
   return !!node;
+}
+
+export function getListTypeAbove(editor: Editor): 'none' | 'ordered-list' | 'unordered-list' {
+  const listAbove = Editor.above(editor, { match: n => isListType(n.type as string) });
+  if (!listAbove) {
+    return 'none';
+  }
+  return listAbove[0].type as any;
 }
 
 export const ToolbarStateProvider = ({

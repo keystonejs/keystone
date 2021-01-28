@@ -9,15 +9,14 @@ import { PropValidationError, validateAndNormalizeDocument } from './validation'
 // because the test utils run validation
 
 const relationships: Relationships = {
-  one: { kind: 'prop', labelField: 'label', listKey: 'Post', many: false, selection: 'somethine' },
+  one: { kind: 'prop', listKey: 'Post', many: false, selection: 'somethine' },
   inline: {
     kind: 'inline',
     label: 'Inline',
-    labelField: 'label',
     listKey: 'Post',
     selection: `something`,
   },
-  many: { kind: 'prop', labelField: 'label', listKey: 'Post', many: true, selection: 'somethine' },
+  many: { kind: 'prop', listKey: 'Post', many: true, selection: 'somethine' },
 };
 
 const componentBlocks: Record<string, ComponentBlock> = {

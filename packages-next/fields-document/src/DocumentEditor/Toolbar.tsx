@@ -112,7 +112,13 @@ export function Toolbar({
         () => (
           <Tooltip content={viewState.expanded ? 'Collapse' : 'Expand'} weight="subtle">
             {attrs => (
-              <ToolbarButton onClick={viewState.toggle} {...attrs}>
+              <ToolbarButton
+                onMouseDown={event => {
+                  event.preventDefault();
+                  viewState.toggle();
+                }}
+                {...attrs}
+              >
                 <ExpandIcon size="small" />
               </ToolbarButton>
             )}
@@ -198,7 +204,7 @@ function HeadingButton({
         ref={trigger.ref}
         isPressed={showMenu}
         isDisabled={isDisabled}
-        onClick={event => {
+        onMouseDown={event => {
           event.preventDefault();
           onToggleShowMenu();
         }}
@@ -437,7 +443,15 @@ function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineM
           />
         )}
       </Tooltip>
-      {showMenu && <MoreFormattingDialog dialog={dialog} marks={marks} />}
+      {showMenu && (
+        <MoreFormattingDialog
+          onCloseMenu={() => {
+            setShowMenu(false);
+          }}
+          dialog={dialog}
+          marks={marks}
+        />
+      )}
     </Fragment>
   );
 }
@@ -445,9 +459,11 @@ function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineM
 function MoreFormattingDialog({
   dialog,
   marks,
+  onCloseMenu,
 }: {
   dialog: ReturnType<typeof useControlledPopover>['dialog'];
   marks: DocumentFeatures['formatting']['inlineMarks'];
+  onCloseMenu: () => void;
 }) {
   // not doing optimisations in here because this will only render when it's open
   // which will be rare and you won't be typing while it's open
@@ -456,7 +472,15 @@ function MoreFormattingDialog({
     clearFormatting: { isDisabled },
   } = useToolbarState();
   return (
-    <InlineDialog ref={dialog.ref} {...dialog.props}>
+    <InlineDialog
+      onMouseDown={event => {
+        if ((event.target as any).nodeName === 'BUTTON') {
+          onCloseMenu();
+        }
+      }}
+      ref={dialog.ref}
+      {...dialog.props}
+    >
       <ToolbarGroup direction="column">
         {marks.underline && (
           <MarkButton type="underline">
@@ -540,7 +564,7 @@ function MoreFormattingButton({
       <ToolbarButton
         isPressed={isOpen}
         isSelected={isActive}
-        onClick={event => {
+        onMouseDown={event => {
           event.preventDefault();
           onToggle();
         }}

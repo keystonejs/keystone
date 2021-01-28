@@ -265,7 +265,6 @@ function makeEditorWithChildField(
         mention: {
           kind: 'inline',
           label: 'Mention',
-          labelField: 'name',
           listKey: 'User',
           selection: null,
         },

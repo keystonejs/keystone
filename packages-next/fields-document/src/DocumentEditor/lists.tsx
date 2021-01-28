@@ -4,19 +4,21 @@ import { ReactNode, forwardRef, useMemo } from 'react';
 import { Editor, Element, Node, NodeEntry, Path, Transforms, Range } from 'slate';
 import { jsx } from '@keystone-ui/core';
 
-import { isBlockActive, moveChildren } from './utils';
+import { isElementActive, moveChildren } from './utils';
 import { ToolbarButton } from './primitives';
-import { useToolbarState } from './toolbar-state';
+import { getListTypeAbove, useToolbarState } from './toolbar-state';
 
 export const isListType = (type: string) => type === 'ordered-list' || type === 'unordered-list';
 
 export const toggleList = (editor: Editor, format: 'ordered-list' | 'unordered-list') => {
-  const isActive = isBlockActive(editor, format);
+  const listAbove = getListTypeAbove(editor);
+  const isActive =
+    isElementActive(editor, format) && (listAbove === 'none' || listAbove === format);
   Editor.withoutNormalizing(editor, () => {
     Transforms.unwrapNodes(editor, {
       match: n => isListType(n.type as string),
       split: true,
-      mode: isActive ? 'lowest' : 'all',
+      mode: isActive ? 'all' : 'lowest',
     });
     if (!isActive) {
       Transforms.wrapNodes(
@@ -186,15 +188,35 @@ export function nestList(editor: Editor) {
     match: n => Editor.isBlock(editor, n),
   });
 
-  if (block && block[0].type === 'list-item-content') {
-    const type = Editor.parent(editor, Path.parent(block[1]))[0].type as string;
-    Transforms.wrapNodes(editor, {
-      type,
-      children: [],
+  if (!block || block[0].type !== 'list-item-content') {
+    return false;
+  }
+  const listItemPath = Path.parent(block[1]);
+  // we're the first item in the list therefore we can't nest
+  if (listItemPath[listItemPath.length - 1] === 0) {
+    return false;
+  }
+  const previousListItemPath = Path.previous(listItemPath);
+  const previousListItemNode = Node.get(editor, previousListItemPath) as Element;
+  if (previousListItemNode.children.length !== 1) {
+    // there's a list nested inside our previous sibling list item so move there
+    Transforms.moveNodes(editor, {
+      at: listItemPath,
+      to: [
+        ...previousListItemPath,
+        previousListItemNode.children.length - 1,
+        (previousListItemNode.children[previousListItemNode.children.length - 1].children as any)
+          .length as number,
+      ],
     });
     return true;
   }
-  return false;
+  const type = Editor.parent(editor, Path.parent(block[1]))[0].type as string;
+  Transforms.wrapNodes(editor, {
+    type,
+    children: [],
+  });
+  return true;
 }
 
 export function unnestList(editor: Editor) {
