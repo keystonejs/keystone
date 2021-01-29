@@ -88,7 +88,13 @@ export const omit = <T, K extends keyof T>(obj: T, keys: K[]) =>
 
 // [{ k1: v1, k2: v2, ...}, { k3: v3, k4: v4, ...}, ...] => { k1: v1, k2: v2, k3: v3, k4, v4, ... }
 // Gives priority to the objects which appear later in the list
-export const objMerge = <T>(objs: T[]) => objs.reduce((acc, obj) => ({ ...acc, ...obj }), {} as T);
+// See: https://fettblog.eu/typescript-union-to-intersection/
+type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any
+  ? R
+  : never;
+
+export const objMerge = <T extends any[]>(objs: [...T]) =>
+  objs.reduce((acc, obj) => ({ ...acc, ...obj }), {}) as UnionToIntersection<T[number]>;
 
 // [x, y, z] => { x: val, y: val, z: val}
 export const defaultObj = <T, K extends string>(keys: K[], val: T) =>
