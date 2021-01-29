@@ -12,27 +12,29 @@ export const escapeRegExp = (str: string) =>
   (str || '').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
 // { key: value, ... } => { key: mapFn(value, key), ... }
-export const mapKeys = <T, U>(
-  obj: Record<string, T>,
-  func: (value: T, key: string, obj: Record<string, T>) => U
-): Record<string, U> =>
-  Object.entries(obj).reduce((acc, [key, value]) => ({ ...acc, [key]: func(value, key, obj) }), {});
-
-// { key: value, ... } => { mapFn(key, value): value, ... }
-export const mapKeyNames = <T>(
-  obj: Record<string, T>,
-  func: (key: string, value: T, obj: Record<string, T>) => string
-): Record<string, T> =>
+export const mapKeys = <T, R>(obj: T, func: (value: T[keyof T], key: keyof T, obj: T) => R) =>
   Object.entries(obj).reduce(
-    (acc, [key, value]) => ({ ...acc, [func(key, value, obj)]: value }),
-    {}
+    (acc, [key, value]) => ({ ...acc, [key]: func(value, key as keyof T, obj) }),
+    {} as Record<keyof T, R>
   );
 
-export const resolveAllKeys = async <T>(obj: Record<string, Promise<T>>) => {
-  const returnValue: Record<string, T> = {};
-  const errors: Record<string, unknown> = {};
+// { key: value, ... } => { mapFn(key, value): value, ... }
+export const mapKeyNames = <T, R extends string>(
+  obj: T,
+  func: (key: keyof T, value: T[keyof T], obj: T) => R
+) =>
+  Object.entries(obj).reduce(
+    (acc, [key, value]) => ({ ...acc, [func(key as keyof T, value, obj)]: value }),
+    {} as Record<R, T[keyof T]>
+  );
 
-  const allPromises = Object.keys(obj).map(key =>
+type Await<TPromise extends Promise<any>> = TPromise extends Promise<infer Value> ? Value : never;
+
+export const resolveAllKeys = async <T extends Record<string, Promise<any>>>(obj: T) => {
+  const returnValue = {} as { [KK in keyof T]: Await<T[KK]> };
+  const errors = {} as Record<keyof T, unknown>;
+
+  const allPromises = (Object.keys(obj) as (keyof T)[]).map(key =>
     pReflect(obj[key]).then(val => {
       if (val.isFulfilled) {
         returnValue[key] = val.value;
@@ -69,34 +71,39 @@ export const unique = <T>(arr: T[]): T[] => [...new Set(arr)];
 export const intersection = <T>(array1: T[], array2: T[]) =>
   unique(array1.filter(value => array2.includes(value)));
 
-export const pick = <T>(obj: Record<string, T>, keys: string[]): Record<string, T> =>
-  keys.reduce((acc, key) => (key in obj ? { ...acc, [key]: obj[key] } : acc), {});
-
-export const omitBy = <T>(obj: Record<string, T>, func: (key: string) => boolean) =>
-  pick(
-    obj,
-    Object.keys(obj).filter(key => !func(key))
+export const pick = <T, K extends keyof T>(obj: T, keys: K[]) =>
+  keys.reduce(
+    (acc, key) => (key in obj ? { ...acc, [key]: obj[key] } : acc),
+    {} as { [P in K]: T[P] }
   );
 
-export const omit = <T>(obj: Record<string, T>, keys: string[]) =>
-  omitBy(obj, value => keys.includes(value));
+export const omitBy = <T>(obj: T, func: (key: keyof T) => boolean) =>
+  pick(
+    obj,
+    (Object.keys(obj) as (keyof T)[]).filter(key => !func(key))
+  ) as Partial<T>;
+
+export const omit = <T, K extends keyof T>(obj: T, keys: K[]) =>
+  omitBy(obj, value => keys.includes(value as K)) as Omit<T, K>;
 
 // [{ k1: v1, k2: v2, ...}, { k3: v3, k4: v4, ...}, ...] => { k1: v1, k2: v2, k3: v3, k4, v4, ... }
 // Gives priority to the objects which appear later in the list
-export const objMerge = <T>(objs: Record<string, T>[]) =>
-  objs.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+// See: https://fettblog.eu/typescript-union-to-intersection/
+type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any
+  ? R
+  : never;
+
+export const objMerge = <T extends any[]>(objs: [...T]) =>
+  objs.reduce((acc, obj) => ({ ...acc, ...obj }), {}) as UnionToIntersection<T[number]>;
 
 // [x, y, z] => { x: val, y: val, z: val}
-export const defaultObj = <T>(keys: string[], val: T): Record<string, T> =>
-  keys.reduce((acc, key) => ({ ...acc, [key]: val }), {});
+export const defaultObj = <T, K extends string>(keys: K[], val: T) =>
+  keys.reduce((acc, key) => ({ ...acc, [key]: val }), {} as Record<K, T>);
 
-export const filterValues = <T>(
-  obj: Record<string, T>,
-  predicate: (value: T) => boolean
-): Record<string, T> =>
+export const filterValues = <T>(obj: T, predicate: (value: T[keyof T]) => boolean) =>
   Object.entries(obj).reduce(
     (acc, [key, value]) => (predicate(value) ? { ...acc, [key]: value } : acc),
-    {}
+    {} as Partial<T>
   );
 
 /**
@@ -124,11 +131,11 @@ export const filterValues = <T>(
  * @param {String} keyedBy The property on the input objects to key the result.
  * @param {Function} mapFn A function returning the output object values. Takes each full input object.
  */
-export const arrayToObject = (
-  objs: Record<string, string>[],
-  keyedBy: string,
-  mapFn: (a: Record<string, string>) => any = i => i
-) => objs.reduce((acc, obj) => ({ ...acc, [obj[keyedBy]]: mapFn(obj) }), {});
+export const arrayToObject = <V extends string, T extends Record<string, V>, R>(
+  objs: T[],
+  keyedBy: keyof T,
+  mapFn: (a: T) => R = i => i as any
+) => objs.reduce((acc, obj) => ({ ...acc, [obj[keyedBy]]: mapFn(obj) }), {} as Record<V, R>);
 
 /**
  * Concatenates child arrays one level deep.
@@ -142,9 +149,9 @@ export const flatten = <T>(arr: T[][]) => Array.prototype.concat(...arr);
 export const flatMap = <T, U>(arr: T[], fn: (a: T) => U[]) => flatten(arr.map(fn));
 
 // { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar: 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
-export const zipObj = <T>(obj: Record<string, T[]>): Record<string, T>[] =>
+export const zipObj = <V, T extends Record<string, V[]>>(obj: T) =>
   Object.values(obj)[0].map((_, i) =>
-    Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {})
+    Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {} as Record<keyof T, V>)
   );
 
 // compose([f, g, h])(o) = h(g(f(o)))
