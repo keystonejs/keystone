@@ -11,5 +11,5 @@ export const deploy = async ({ dotKeystonePath }: StaticPaths) => {
   const keystone = createKeystone(config, dotKeystonePath, 'deploy');
 
   console.log('✨ Deploying migrations');
-  await keystone.adapters.PrismaAdapter.deploy(keystone._consolidateRelationships());
+  await keystone.adapter.deploy(keystone._consolidateRelationships());
 };

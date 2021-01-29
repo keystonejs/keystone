@@ -11,6 +11,6 @@ export const reset = async ({ dotKeystonePath }: StaticPaths) => {
   const keystone = createKeystone(config, dotKeystonePath, 'reset');
 
   console.log('✨ Resetting database');
-  await keystone.adapters.PrismaAdapter._prepareSchema(keystone._consolidateRelationships());
-  await keystone.adapters.PrismaAdapter.dropDatabase();
+  await keystone.adapter._prepareSchema(keystone._consolidateRelationships());
+  await keystone.adapter.dropDatabase();
 };

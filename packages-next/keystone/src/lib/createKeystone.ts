@@ -44,8 +44,6 @@ export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, 
     // FIXME: Unsupported options: Need to work which of these we want to support with backwards
     // compatibility options.
     // defaultAccess
-    // adapters
-    // defaultAdapter
     // sessionStore
     // cookie
     // schemaNames
