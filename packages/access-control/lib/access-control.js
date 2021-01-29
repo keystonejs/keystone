@@ -38,18 +38,17 @@ function parseCustomAccess({ defaultAccess, access = defaultAccess, schemaNames 
     ? { ...defaultObj(schemaNames, defaultAccess), ...access } // Access keyed by schemaName
     : defaultObj(schemaNames, access); // Access not keyed by schemaName
 
-  const parseAndValidate = access => {
+  const fullParsedAccess = { ...fullAccess, internal: true };
+
+  Object.values(fullParsedAccess).forEach(access => {
     if (!['boolean', 'function', 'object'].includes(typeof access)) {
       throw new Error(
         `Expected a Boolean, Object, or Function for custom access, but got ${typeof access}`
       );
     }
-    return access;
-  };
-  return schemaNames.reduce(
-    (acc, schemaName) => ({ ...acc, [schemaName]: parseAndValidate(fullAccess[schemaName]) }),
-    { internal: true }
-  );
+  });
+
+  return fullParsedAccess;
 }
 
 function parseListAccess({ listKey, defaultAccess, access = defaultAccess, schemaNames }) {
@@ -62,12 +61,10 @@ function parseListAccess({ listKey, defaultAccess, access = defaultAccess, schem
     : defaultObj(schemaNames, access); // Access not keyed by schemaName
 
   const parseAndValidate = access => {
-    let parsedAccess;
     switch (typeof access) {
       case 'boolean':
       case 'function':
-        parsedAccess = defaultObj(accessTypes, access);
-        break;
+        return defaultObj(accessTypes, access);
       case 'object':
         // An object was supplied, but it has the wrong keys (it's probably a
         // declarative access control config being used as a shorthand, which
@@ -79,13 +76,22 @@ function parseListAccess({ listKey, defaultAccess, access = defaultAccess, schem
             `Must specify one of ${at} access configs, but got ${aks}. (Did you mean to specify a declarative access control config? This can be done on a granular basis only)`
           );
         }
-        parsedAccess = { ...defaultObj(accessTypes, defaultAccess), ...pick(access, accessTypes) };
-        break;
+        return { ...defaultObj(accessTypes, defaultAccess), ...pick(access, accessTypes) };
       default:
         throw new Error(
           `Shorthand access must be specified as either a boolean or a function, received ${typeof access}.`
         );
     }
+  };
+  const fullParsedAccess = {
+    ...schemaNames.reduce(
+      (acc, schemaName) => ({ ...acc, [schemaName]: parseAndValidate(fullAccess[schemaName]) }),
+      {}
+    ),
+    internal: defaultObj(accessTypes, true),
+  };
+
+  Object.values(fullParsedAccess).forEach(parsedAccess => {
     const errors = Object.entries(parsedAccess)
       .map(([accessType, access]) => {
         if (accessType === 'create') {
@@ -103,12 +109,9 @@ function parseListAccess({ listKey, defaultAccess, access = defaultAccess, schem
     if (errors.length) {
       throw new Error(errors.join('\n'));
     }
-    return parsedAccess;
-  };
-  return schemaNames.reduce(
-    (acc, schemaName) => ({ ...acc, [schemaName]: parseAndValidate(fullAccess[schemaName]) }),
-    { internal: defaultObj(accessTypes, true) }
-  );
+  });
+
+  return fullParsedAccess;
 }
 
 function parseFieldAccess({
@@ -127,12 +130,10 @@ function parseFieldAccess({
     : defaultObj(schemaNames, access); // Access not keyed by schemaName
 
   const parseAndValidate = access => {
-    let parsedAccess;
     switch (typeof access) {
       case 'boolean':
       case 'function':
-        parsedAccess = defaultObj(accessTypes, access);
-        break;
+        return defaultObj(accessTypes, access);
       case 'object':
         // An object was supplied, but it has the wrong keys (it's probably a
         // declarative access control config being used as a shorthand, which
@@ -144,13 +145,22 @@ function parseFieldAccess({
             `Must specify one of ${at} access configs, but got ${aks}. (Did you mean to specify a declarative access control config? This can be done on lists only)`
           );
         }
-        parsedAccess = { ...defaultObj(accessTypes, defaultAccess), ...pick(access, accessTypes) };
-        break;
+        return { ...defaultObj(accessTypes, defaultAccess), ...pick(access, accessTypes) };
       default:
         throw new Error(
           `Shorthand access must be specified as either a boolean or a function, received ${typeof access}.`
         );
     }
+  };
+  const fullParsedAccess = {
+    ...schemaNames.reduce(
+      (acc, schemaName) => ({ ...acc, [schemaName]: parseAndValidate(fullAccess[schemaName]) }),
+      {}
+    ),
+    internal: defaultObj(accessTypes, true),
+  };
+
+  Object.values(fullParsedAccess).forEach(parsedAccess => {
     const errors = Object.entries(parsedAccess)
       .map(([accessType, access]) => {
         if (!['boolean', 'function'].includes(typeof access)) {
@@ -162,12 +172,9 @@ function parseFieldAccess({
     if (errors.length) {
       throw new Error(errors.join('\n'));
     }
-    return parsedAccess;
-  };
-  return schemaNames.reduce(
-    (acc, schemaName) => ({ ...acc, [schemaName]: parseAndValidate(fullAccess[schemaName]) }),
-    { internal: defaultObj(accessTypes, true) }
-  );
+  });
+
+  return fullParsedAccess;
 }
 
 async function validateCustomAccessControl({
