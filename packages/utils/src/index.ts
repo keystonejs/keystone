@@ -12,32 +12,29 @@ export const escapeRegExp = (str: string) =>
   (str || '').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
 // { key: value, ... } => { key: mapFn(value, key), ... }
-export const mapKeys = <T, K extends keyof T, R>(
-  obj: T,
-  func: (value: T[K], key: K, obj: T) => R
-) =>
+export const mapKeys = <T, R>(obj: T, func: (value: T[keyof T], key: keyof T, obj: T) => R) =>
   Object.entries(obj).reduce(
-    (acc, [key, value]) => ({ ...acc, [key]: func(value, key as K, obj) }),
-    {} as Record<K, R>
+    (acc, [key, value]) => ({ ...acc, [key]: func(value, key as keyof T, obj) }),
+    {} as Record<keyof T, R>
   );
 
 // { key: value, ... } => { mapFn(key, value): value, ... }
-export const mapKeyNames = <T, K extends keyof T, R extends string>(
+export const mapKeyNames = <T, R extends string>(
   obj: T,
-  func: (key: K, value: T[K], obj: T) => R
+  func: (key: keyof T, value: T[keyof T], obj: T) => R
 ) =>
   Object.entries(obj).reduce(
-    (acc, [key, value]) => ({ ...acc, [func(key as K, value, obj)]: value }),
-    {} as Record<R, T[K]>
+    (acc, [key, value]) => ({ ...acc, [func(key as keyof T, value, obj)]: value }),
+    {} as Record<R, T[keyof T]>
   );
 
-export const resolveAllKeys = async <V, T extends Record<string, Promise<V>>, K extends keyof T>(
-  obj: T
-) => {
-  const returnValue = {} as Record<K, V>;
-  const errors = {} as Record<K, unknown>;
+type Await<TPromise extends Promise<any>> = TPromise extends Promise<infer Value> ? Value : never;
 
-  const allPromises = (Object.keys(obj) as K[]).map(key =>
+export const resolveAllKeys = async <T extends Record<string, Promise<any>>>(obj: T) => {
+  const returnValue = {} as { [KK in keyof T]: Await<T[KK]> };
+  const errors = {} as Record<keyof T, unknown>;
+
+  const allPromises = (Object.keys(obj) as (keyof T)[]).map(key =>
     pReflect(obj[key]).then(val => {
       if (val.isFulfilled) {
         returnValue[key] = val.value;
@@ -80,10 +77,10 @@ export const pick = <T, K extends keyof T>(obj: T, keys: K[]) =>
     {} as { [P in K]: T[P] }
   );
 
-export const omitBy = <T, K extends keyof T>(obj: T, func: (key: K) => boolean) =>
+export const omitBy = <T>(obj: T, func: (key: keyof T) => boolean) =>
   pick(
     obj,
-    (Object.keys(obj) as K[]).filter(key => !func(key))
+    (Object.keys(obj) as (keyof T)[]).filter(key => !func(key))
   ) as Partial<T>;
 
 export const omit = <T, K extends keyof T>(obj: T, keys: K[]) =>
@@ -97,7 +94,7 @@ export const objMerge = <T>(objs: T[]) => objs.reduce((acc, obj) => ({ ...acc, .
 export const defaultObj = <T, K extends string>(keys: K[], val: T) =>
   keys.reduce((acc, key) => ({ ...acc, [key]: val }), {} as Record<K, T>);
 
-export const filterValues = <T, K extends keyof T>(obj: T, predicate: (value: T[K]) => boolean) =>
+export const filterValues = <T>(obj: T, predicate: (value: T[keyof T]) => boolean) =>
   Object.entries(obj).reduce(
     (acc, [key, value]) => (predicate(value) ? { ...acc, [key]: value } : acc),
     {} as Partial<T>
@@ -128,9 +125,9 @@ export const filterValues = <T, K extends keyof T>(obj: T, predicate: (value: T[
  * @param {String} keyedBy The property on the input objects to key the result.
  * @param {Function} mapFn A function returning the output object values. Takes each full input object.
  */
-export const arrayToObject = <V extends string, T extends Record<string, V>, K extends keyof T, R>(
+export const arrayToObject = <V extends string, T extends Record<string, V>, R>(
   objs: T[],
-  keyedBy: K,
+  keyedBy: keyof T,
   mapFn: (a: T) => R = i => i as any
 ) => objs.reduce((acc, obj) => ({ ...acc, [obj[keyedBy]]: mapFn(obj) }), {} as Record<V, R>);
 
@@ -146,9 +143,9 @@ export const flatten = <T>(arr: T[][]) => Array.prototype.concat(...arr);
 export const flatMap = <T, U>(arr: T[], fn: (a: T) => U[]) => flatten(arr.map(fn));
 
 // { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar: 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
-export const zipObj = <V, T extends Record<string, V[]>, K extends keyof T>(obj: T) =>
+export const zipObj = <V, T extends Record<string, V[]>>(obj: T) =>
   Object.values(obj)[0].map((_, i) =>
-    Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {} as Record<K, V>)
+    Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {} as Record<keyof T, V>)
   );
 
 // compose([f, g, h])(o) = h(g(f(o)))
