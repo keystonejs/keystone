@@ -1,14 +1,13 @@
 import path from 'path';
 import express from 'express';
 import { generateAdminUI } from '@keystone-next/admin-ui/system';
-import { createSystem } from '../lib/createSystem';
-import { initConfig } from '../lib/initConfig';
-import { requireSource } from '../lib/requireSource';
-import { createExpressServer } from '../lib/createExpressServer';
-import { saveSchemaAndTypes } from '../lib/saveSchemaAndTypes';
-import { CONFIG_PATH, PORT } from './utils';
-
-import type { StaticPaths } from './';
+import { createSystem } from '../../lib/createSystem';
+import { initConfig } from '../../lib/initConfig';
+import { requireSource } from '../../lib/requireSource';
+import { createExpressServer } from '../../lib/createExpressServer';
+import { saveSchemaAndTypes } from '../../lib/saveSchemaAndTypes';
+import { CONFIG_PATH, PORT } from '../utils';
+import type { StaticPaths } from '..';
 
 // TODO: Don't generate or start an Admin UI if it isn't configured!!
 const devLoadingHTMLFilepath = path.join(
@@ -18,7 +17,7 @@ const devLoadingHTMLFilepath = path.join(
   'dev-loading.html'
 );
 
-export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) => {
+export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths, script = 'dev') => {
   console.log('🤞 Starting Keystone');
 
   const server = express();
@@ -26,17 +25,22 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) =>
 
   const initKeystone = async () => {
     const config = initConfig(requireSource(CONFIG_PATH).default);
-    const { keystone, graphQLSchema, createContext } = createSystem(config, dotKeystonePath);
+    const { keystone, graphQLSchema, createContext } = createSystem(
+      config,
+      dotKeystonePath,
+      script
+    );
 
-    console.log('✨ Generating Schema');
+    console.log('✨ Generating graphQL schema');
     await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);
 
-    console.log('✨ Connecting to the Database');
+    console.log('✨ Connecting to the database');
     await keystone.connect({ context: createContext({ skipAccessControl: true }) });
 
-    console.log('✨ Generating Admin UI');
+    console.log('✨ Generating Admin UI code');
     await generateAdminUI(config, graphQLSchema, keystone, projectAdminPath);
 
+    console.log('✨ Creating server');
     expressServer = await createExpressServer(
       config,
       graphQLSchema,
@@ -44,7 +48,7 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) =>
       true,
       projectAdminPath
     );
-    console.log(`👋 Admin UI Ready`);
+    console.log(`👋 Admin UI and graphQL API ready`);
   };
 
   server.use('/__keystone_dev_status', (req, res) => {

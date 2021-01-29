@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "keystone-next",
+    "dev": "keystone-next dev",
     "start": "keystone-next start",
     "build": "keystone-next build"
   },

@@ -150,7 +150,7 @@
       "packages-next/*",
       "design-system/packages/*",
       "design-system/website",
-      "docs-next/website"
+      "docs-next"
     ],
     "nohoist": [
       "**/cypress-multi-reporters"

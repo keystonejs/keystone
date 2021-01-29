@@ -6,7 +6,7 @@ import { KnexAdapter } from '@keystonejs/adapter-knex';
 import { PrismaAdapter } from '@keystonejs/adapter-prisma';
 import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 
-export function createKeystone(config: KeystoneConfig, dotKeystonePath: string) {
+export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, script: string) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
@@ -23,6 +23,14 @@ export function createKeystone(config: KeystoneConfig, dotKeystonePath: string) 
   } else if (db.adapter === 'prisma_postgresql') {
     adapter = new PrismaAdapter({
       getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
+      migrationMode:
+        script === 'prototype'
+          ? 'prototype'
+          : script === 'generate'
+          ? 'createOnly'
+          : script === 'start'
+          ? 'none'
+          : 'dev',
       ...db,
     });
   }
