@@ -1,9 +1,9 @@
 import path from 'path';
-import { createSystem } from '../lib/createSystem';
-import { initConfig } from '../lib/initConfig';
-import { createExpressServer } from '../lib/createExpressServer';
-import { PORT } from './utils';
-import type { StaticPaths } from './';
+import { createSystem } from '../../lib/createSystem';
+import { initConfig } from '../../lib/initConfig';
+import { createExpressServer } from '../../lib/createExpressServer';
+import { PORT } from '../utils';
+import type { StaticPaths } from '..';
 import * as fs from 'fs-extra';
 
 export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) => {
@@ -14,11 +14,12 @@ export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) 
     throw new Error('keystone-next build must be run before running keystone-next start');
   }
   const config = initConfig(require(apiFile).config);
-  const { keystone, graphQLSchema, createContext } = createSystem(config, dotKeystonePath);
+  const { keystone, graphQLSchema, createContext } = createSystem(config, dotKeystonePath, 'start');
 
-  console.log('✨ Connecting to the Database');
+  console.log('✨ Connecting to the database');
   await keystone.connect({ context: createContext({ skipAccessControl: true }) });
 
+  console.log('✨ Creating server');
   const server = await createExpressServer(
     config,
     graphQLSchema,
@@ -26,7 +27,7 @@ export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) 
     false,
     projectAdminPath
   );
-  console.log(`👋 Admin UI Ready`);
+  console.log(`👋 Admin UI and graphQL API ready`);
 
   server.listen(PORT, (err?: any) => {
     if (err) throw err;
