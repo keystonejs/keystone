@@ -76,6 +76,7 @@ export const Navigation = () => {
       <Section label="Guides">
         <NavItem href="/guides/getting-started">Getting Started</NavItem>
         <NavItem href="/guides/installation">Installation</NavItem>
+        <NavItem href="/guides/api">API</NavItem>
       </Section>
     </Fragment>
   );
