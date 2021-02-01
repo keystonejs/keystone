@@ -14,7 +14,7 @@
     "@keystone-next/fields": "^4.1.0",
     "@keystone-next/keystone": "^9.2.0",
     "@keystone-next/types": "^11.0.2",
-    "next": "^9.5.5",
+    "next": "^10.0.6",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },
