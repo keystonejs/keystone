@@ -10,9 +10,9 @@ const {
   CalendarDay,
   DateTime,
   Url,
-  Decimal,
   Slug,
   Virtual,
+  Decimal,
 } = require('@keystonejs/fields');
 const { Content } = require('@keystonejs/fields-content');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystonejs/file-adapters');
@@ -40,10 +40,10 @@ const { formatISO } = require('date-fns');
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { PrismaAdapter } = require('@keystonejs/adapter-prisma');
 
 const keystone = new Keystone({
-  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/cypress-test-project' }),
+  adapter: new PrismaAdapter(),
   cookieSecret: 'qwerty',
 });
 

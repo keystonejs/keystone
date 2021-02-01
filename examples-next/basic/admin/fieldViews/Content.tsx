@@ -95,10 +95,7 @@ export const componentBlocks = {
         false: fields.empty(),
         true: fields.object({
           text: fields.child({ kind: 'inline', placeholder: 'CTA...' }),
-          href: fields.text({
-            label: 'Call to action link',
-            defaultValue: '#',
-          }),
+          href: fields.url({ label: 'Call to action link' }),
         }),
       }),
     },
@@ -132,8 +129,8 @@ export const componentBlocks = {
                   <li key={i}>
                     {author.label}
                     <ul>
-                      {author.data.posts.map((post: { title: string | null }) => {
-                        return <li>{post.title}</li>;
+                      {author.data.posts.map((post: { title: string | null }, i: number) => {
+                        return <li key={i}>{post.title}</li>;
                       })}
                     </ul>
                   </li>

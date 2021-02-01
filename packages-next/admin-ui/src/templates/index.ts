@@ -4,15 +4,17 @@ import { listTemplate } from './list';
 import { itemTemplate } from './item';
 import { noAccessTemplate } from './no-access';
 
-import type { KeystoneSystem, KeystoneConfig } from '@keystone-next/types';
+import type { BaseKeystone, KeystoneConfig } from '@keystone-next/types';
 import { AdminFileToWrite } from '@keystone-next/types';
 import * as Path from 'path';
+import { GraphQLSchema } from 'graphql';
 
 const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.json'));
 
 export const writeAdminFiles = (
   config: KeystoneConfig,
-  system: KeystoneSystem,
+  graphQLSchema: GraphQLSchema,
+  keystone: BaseKeystone,
   configFileExists: boolean,
   projectAdminPath: string
 ): AdminFileToWrite[] => [
@@ -24,14 +26,14 @@ export const writeAdminFiles = (
   {
     mode: 'write',
     outputPath: 'pages/_app.js',
-    src: appTemplate(config, system, { configFileExists, projectAdminPath }),
+    src: appTemplate(config, graphQLSchema, { configFileExists, projectAdminPath }),
   },
-  { mode: 'write', src: homeTemplate(system.keystone.lists), outputPath: 'pages/index.js' },
-  ...Object.values(system.keystone.lists).map(
+  { mode: 'write', src: homeTemplate(keystone.lists), outputPath: 'pages/index.js' },
+  ...Object.values(keystone.lists).map(
     ({ adminUILabels: { path }, key }) =>
       ({ mode: 'write', src: listTemplate(key), outputPath: `pages/${path}/index.js` } as const)
   ),
-  ...Object.values(system.keystone.lists).map(
+  ...Object.values(keystone.lists).map(
     ({ adminUILabels: { path }, key }) =>
       ({ mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` } as const)
   ),

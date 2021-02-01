@@ -1,5 +1,20 @@
 # @keystone-ui/tooltip
 
+## 1.0.6
+
+### Patch Changes
+
+- [`858eedb18`](https://github.com/keystonejs/keystone/commit/858eedb18c14ed017b01f588071192cdac355c47) [#4655](https://github.com/keystonejs/keystone/pull/4655) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Allowed `ReactNode` instead of just `string` for Tooltip content
+
+## 1.0.5
+
+### Patch Changes
+
+- [`160bd77d3`](https://github.com/keystonejs/keystone/commit/160bd77d39d5e99b11bee056fe2c3b2585126bbc) [#4638](https://github.com/keystonejs/keystone/pull/4638) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Improve performance when scrolling and resizing the page
+
+- Updated dependencies [[`160bd77d3`](https://github.com/keystonejs/keystone/commit/160bd77d39d5e99b11bee056fe2c3b2585126bbc)]:
+  - @keystone-ui/popover@1.1.1
+
 ## 1.0.4
 
 ### Patch Changes

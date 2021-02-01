@@ -1,5 +1,4 @@
 import { Node } from 'slate';
-import { RelationshipValues } from '../../component-blocks/utils';
 import { Mark } from '../../utils';
 
 export const __jsx: any;
@@ -8,7 +7,7 @@ type Children = Node | string | (Node | string)[];
 
 type OnlyChildren = { children: Children };
 
-type ComponentProp = { children: Children; propPath: (string | number)[] };
+type ComponentProp = { children: Children; propPath?: (string | number)[] };
 declare namespace __jsx {
   namespace JSX {
     interface IntrinsicElements {
@@ -33,7 +32,6 @@ declare namespace __jsx {
       };
       'component-block': {
         component: string;
-        relationships: RelationshipValues;
         props: Record<string, any>;
         children: Children;
       };
@@ -42,6 +40,7 @@ declare namespace __jsx {
       'ordered-list': OnlyChildren;
       'unordered-list': OnlyChildren;
       'list-item': OnlyChildren;
+      'list-item-content': OnlyChildren;
       link: {
         href: string;
         children: Children;

@@ -5,15 +5,7 @@ const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
 const { execute, print } = require('graphql');
 const { GraphQLUpload } = require('graphql-upload');
-const {
-  resolveAllKeys,
-  arrayToObject,
-  mapKeys,
-  objMerge,
-  flatten,
-  unique,
-  filterValues,
-} = require('@keystonejs/utils');
+const { arrayToObject, objMerge, flatten, unique, filterValues } = require('@keystonejs/utils');
 const {
   validateFieldAccessControl,
   validateListAccessControl,
@@ -34,9 +26,7 @@ const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
 module.exports = class Keystone {
   constructor({
     defaultAccess,
-    adapters,
     adapter,
-    defaultAdapter,
     onConnect,
     cookieSecret,
     sessionStore,
@@ -81,12 +71,8 @@ module.exports = class Keystone {
       }),
     ];
 
-    if (adapters) {
-      this.adapters = adapters;
-      this.defaultAdapter = defaultAdapter;
-    } else if (adapter) {
-      this.adapters = { [adapter.constructor.name]: adapter };
-      this.defaultAdapter = adapter.constructor.name;
+    if (adapter) {
+      this.adapter = adapter;
     } else {
       throw new Error('No database adapter provided');
     }
@@ -261,8 +247,7 @@ module.exports = class Keystone {
   }
 
   createList(key, config, { isAuxList = false } = {}) {
-    const { getListByKey, adapters } = this;
-    const adapterName = config.adapterName || this.defaultAdapter;
+    const { getListByKey, adapter } = this;
     const isReservedName = !isAuxList && key[0] === '_';
 
     if (isReservedName) {
@@ -288,7 +273,7 @@ module.exports = class Keystone {
       composePlugins(config.plugins || [])(config, { listKey: key, keystone: this }),
       {
         getListByKey,
-        adapter: adapters[adapterName],
+        adapter,
         defaultAccess: this.defaultAccess,
         registerType: type => this.registeredTypes.add(type),
         isAuxList,
@@ -445,9 +430,7 @@ module.exports = class Keystone {
    * constructor, or `undefined` if no `onConnect` method specified.
    */
   async connect(args) {
-    const { adapters } = this;
-    const rels = this._consolidateRelationships();
-    await resolveAllKeys(mapKeys(adapters, adapter => adapter.connect({ rels })));
+    await this.adapter.connect({ rels: this._consolidateRelationships() });
 
     if (this.eventHandlers.onConnect) {
       return this.eventHandlers.onConnect(this, args);
@@ -492,7 +475,7 @@ module.exports = class Keystone {
    * @return Promise<null>
    */
   async disconnect() {
-    await resolveAllKeys(mapKeys(this.adapters, adapter => adapter.disconnect()));
+    await this.adapter.disconnect();
   }
 
   getAdminMeta({ schemaName }) {

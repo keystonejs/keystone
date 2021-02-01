@@ -33,10 +33,7 @@ export type KeystoneAdminUIConfig = {
   publicPages?: string[];
   /** The basePath for the Admin UI App */
   path?: string;
-  getAdditionalFiles?: ((
-    config: KeystoneConfig,
-    system: KeystoneSystem
-  ) => MaybePromise<AdminFileToWrite[]>)[];
+  getAdditionalFiles?: ((config: KeystoneConfig) => MaybePromise<AdminFileToWrite[]>)[];
   pageMiddleware?: (args: {
     req: IncomingMessage;
     session: any;
@@ -81,7 +78,7 @@ export type KeystoneConfig = {
           provider?: string;
           getPrismaPath?: (arg: { prismaSchema: any }) => string;
           getDbSchemaName?: (arg: { prismaSchema: any }) => string;
-          enableLogging: boolean;
+          enableLogging?: boolean;
         }
     );
   graphql?: {
@@ -164,12 +161,6 @@ export type SessionImplementation = {
   ): Promise<SessionContext<any>>;
 };
 
-export type KeystoneSystem = {
-  keystone: BaseKeystone;
-  graphQLSchema: GraphQLSchema;
-  createContext: CreateContext;
-};
-
 export type AccessControlContext = {
   getListAccessControlForUser: any; // TODO
   getFieldAccessControlForUser: any; // TODO
@@ -195,7 +186,7 @@ export type KeystoneContext = {
   /** @deprecated */
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   maxTotalResults: number;
-  createContext: KeystoneSystem['createContext'];
+  createContext: CreateContext;
   req?: IncomingMessage;
 } & AccessControlContext &
   Partial<SessionContext<any>> &
@@ -218,7 +209,7 @@ export type KeystoneGraphQLAPI<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
 > = {
-  createContext: KeystoneSystem['createContext'];
+  createContext: CreateContext;
   schema: GraphQLSchema;
 
   run: (args: GraphQLExecutionArguments) => Promise<Record<string, any>>;

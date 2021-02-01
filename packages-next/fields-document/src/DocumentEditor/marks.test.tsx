@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { allMarkdownShortcuts } from './marks';
 import { jsx, makeEditor } from './tests/utils';
@@ -468,6 +469,34 @@ describe.each(
             <text>more </text>
             <text {...{ [markName]: true }}>
               something
+              <cursor />
+            </text>
+          </paragraph>
+        </editor>
+      )
+    );
+  });
+
+  test('undo only undos adding the mark and removing the shortcut, keeps the inserted text', () => {
+    let editor = makeEditor(
+      <editor>
+        <paragraph>
+          <text>
+            {shortcut}something{shortcut.slice(0, -1)}
+            <cursor />
+          </text>
+        </paragraph>
+      </editor>
+    );
+
+    editor.insertText(shortcut.slice(-1));
+    (editor as any).undo();
+    expect(editor).toEqualEditor(
+      makeEditor(
+        <editor>
+          <paragraph>
+            <text>
+              {shortcut}something{shortcut}
               <cursor />
             </text>
           </paragraph>

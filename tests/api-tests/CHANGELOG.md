@@ -1,5 +1,28 @@
 # @keystonejs/api-tests
 
+## 8.1.0
+
+### Minor Changes
+
+- [`564879779`](https://github.com/keystonejs/keystone/commit/564879779209aa828ecb2fbc8c9688a2d770da76) [#4701](https://github.com/keystonejs/keystone/pull/4701) Thanks [@timleslie](https://github.com/timleslie)! - Ported field-level access-control tests from cypress to the API test framework.
+
+### Patch Changes
+
+- [`e7d4d54e5`](https://github.com/keystonejs/keystone/commit/e7d4d54e5b94e6b376d6eab28a0f2b074f2c95ed) [#4697](https://github.com/keystonejs/keystone/pull/4697) Thanks [@timleslie](https://github.com/timleslie)! - Fixed cases sensitivity and partial string search for the Prisma adapter.
+
+- Updated dependencies [[`fe0c228b1`](https://github.com/keystonejs/keystone/commit/fe0c228b12530f6d384fa5eed9d5086768a24782), [`fc2b7101f`](https://github.com/keystonejs/keystone/commit/fc2b7101f35f20e4d729269a005816546bb37464)]:
+  - @keystonejs/test-utils@11.1.0
+  - @keystonejs/fields@21.0.2
+
+## 8.0.6
+
+### Patch Changes
+
+- Updated dependencies [[`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be), [`6ea4ff3cf`](https://github.com/keystonejs/keystone/commit/6ea4ff3cf77d5d2278bf4f0415d11aa7399a0490), [`81e86cbaa`](https://github.com/keystonejs/keystone/commit/81e86cbaa5c73633d6cb0ca2f84e834201e8bf9a)]:
+  - @keystonejs/utils@6.0.0
+  - @keystonejs/test-utils@11.0.0
+  - @keystonejs/fields@21.0.1
+
 ## 8.0.5
 
 ### Patch Changes

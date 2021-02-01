@@ -8,4 +8,5 @@ export type {
   ObjectField,
   RelationshipData,
   RelationshipField,
+  InferRenderersForComponentBlocks,
 } from './DocumentEditor/component-blocks/api';

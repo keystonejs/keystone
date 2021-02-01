@@ -1,5 +1,40 @@
 # @keystonejs/cypress-project-basic
 
+## 7.0.1
+
+### Patch Changes
+
+- [`a886039a1`](https://github.com/keystonejs/keystone/commit/a886039a1fc17c9b60b2955f0e58916ab1c3d7bf) [#4707](https://github.com/keystonejs/keystone/pull/4707) Thanks [@timleslie](https://github.com/timleslie)! - Added support for the `Decimal` field type with the Prisma database adapter.
+
+* [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9) [#3222](https://github.com/keystonejs/keystone/pull/3222) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for multiple database adapters in a single `Keystone` system. The `adapters` and `defaultAdapter` config options were removed from the `Keystone()` constructor. If you were accessing the adapter object via `keystone.adapters.KnexAdapter` or `keystone.adapters.MongooseAdapter` you should now simply access `keystone.adapter`.
+
+* Updated dependencies [[`a886039a1`](https://github.com/keystonejs/keystone/commit/a886039a1fc17c9b60b2955f0e58916ab1c3d7bf), [`680169cad`](https://github.com/keystonejs/keystone/commit/680169cad62dd889ec95961cba9df3b4d012887f), [`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d), [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9)]:
+  - @keystonejs/adapter-prisma@3.0.0
+  - @keystonejs/fields@21.1.0
+  - @keystonejs/keystone@19.0.0
+  - @keystonejs/fields-oembed@3.1.3
+  - @keystonejs/fields-unsplash@3.1.3
+  - @keystonejs/fields-cloudinary-image@2.1.3
+
+## 7.0.0
+
+### Major Changes
+
+- [`1813ec36e`](https://github.com/keystonejs/keystone/commit/1813ec36ee3d9f0e409c5b97e5a967ff803e0bf9) [#4693](https://github.com/keystonejs/keystone/pull/4693) Thanks [@timleslie](https://github.com/timleslie)! - Convert cypress test projects to use the `PrismaAdapter` rather than the `MongooseAdapter`.
+
+### Minor Changes
+
+- [`b48c75104`](https://github.com/keystonejs/keystone/commit/b48c7510411c9bbaa85c4efbd6a5ca946615df1e) [#4695](https://github.com/keystonejs/keystone/pull/4695) Thanks [@timleslie](https://github.com/timleslie)! - Added support for the Prisma database adapter.
+
+### Patch Changes
+
+- Updated dependencies [[`6b95cb6e4`](https://github.com/keystonejs/keystone/commit/6b95cb6e4d5bea3a87e22765d5fcf31db2fc31ae), [`fc2b7101f`](https://github.com/keystonejs/keystone/commit/fc2b7101f35f20e4d729269a005816546bb37464), [`88776915a`](https://github.com/keystonejs/keystone/commit/88776915af1b795b54c14a1187eee9a1e3b0ea80), [`e7d4d54e5`](https://github.com/keystonejs/keystone/commit/e7d4d54e5b94e6b376d6eab28a0f2b074f2c95ed), [`a62a2d996`](https://github.com/keystonejs/keystone/commit/a62a2d996f1080051f7962b7063ae37d7e8b7e63)]:
+  - @keystonejs/adapter-prisma@2.0.0
+  - @keystonejs/fields-cloudinary-image@2.1.2
+  - @keystonejs/fields-oembed@3.1.2
+  - @keystonejs/fields-unsplash@3.1.2
+  - @keystonejs/fields@21.0.2
+
 ## 6.0.16
 
 ### Patch Changes

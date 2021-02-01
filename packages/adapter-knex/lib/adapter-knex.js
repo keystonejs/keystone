@@ -16,11 +16,11 @@ const {
 class KnexAdapter extends BaseKeystoneAdapter {
   constructor({ knexOptions = {}, schemaName = 'public' } = {}) {
     super(...arguments);
+    this.listAdapterClass = KnexListAdapter;
     this.client = knexOptions.client || 'postgres';
     this.name = 'knex';
     this.minVer = '9.6.5';
     this.schemaName = schemaName;
-    this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
     this.rels = undefined;
   }
 
@@ -1012,8 +1012,6 @@ class KnexFieldAdapter extends BaseFieldAdapter {
     };
   }
 }
-
-KnexAdapter.defaultListAdapterClass = KnexListAdapter;
 
 module.exports = {
   KnexAdapter,

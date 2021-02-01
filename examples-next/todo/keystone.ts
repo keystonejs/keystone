@@ -22,8 +22,8 @@ const { withAuth } = createAuth({
 export default withAuth(
   config({
     db: {
-      adapter: 'mongoose',
-      url: 'mongodb://localhost/keystone-examples-todo',
+      adapter: 'prisma_postgresql',
+      url: 'postgres://keystone5:k3yst0n3@localhost:5432/todo-example',
     },
     lists,
     ui: {

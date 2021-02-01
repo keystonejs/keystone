@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { component, fields } from '../../component-blocks';
 import { insertComponentBlock } from '.';
@@ -48,7 +49,15 @@ const componentBlocks = {
     props: { text: fields.text({ label: 'Text' }) },
   }),
   complex: component({
-    component: () => null,
+    component: props => {
+      return React.createElement(
+        'div',
+        null,
+        props.object.block,
+        props.object.inline,
+        props.object.conditional.discriminant && props.object.conditional.value
+      );
+    },
     label: 'Complex',
     props: {
       object: objectProp,
@@ -60,14 +69,12 @@ const relationships: Relationships = {
   one: {
     kind: 'prop',
     many: false,
-    labelField: 'label',
     listKey: 'User',
     selection: null,
   },
   many: {
     kind: 'prop',
     many: true,
-    labelField: 'label',
     listKey: 'User',
     selection: null,
   },
@@ -87,11 +94,6 @@ test('inserting a void component block', () => {
   insertComponentBlock(editor, componentBlocks, 'void', relationships);
   expect(editor).toMatchInlineSnapshot(`
     <editor>
-      <paragraph>
-        <text>
-          <cursor />
-        </text>
-      </paragraph>
       <component-block
         component="void"
         props={
@@ -99,17 +101,10 @@ test('inserting a void component block', () => {
             "text": "",
           }
         }
-        relationships={Object {}}
       >
-        <component-inline-prop
-          propPath={
-            Array [
-              "________VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP________",
-            ]
-          }
-        >
+        <component-inline-prop>
           <text>
-            
+            <cursor />
           </text>
         </component-inline-prop>
       </component-block>
@@ -131,42 +126,29 @@ test('inserting a complex component block', () => {
         </text>
       </paragraph>
     </editor>,
-    { componentBlocks }
+    { componentBlocks, relationships }
   );
   insertComponentBlock(editor, componentBlocks, 'complex', relationships);
   expect(editor).toMatchInlineSnapshot(`
     <editor>
-      <paragraph>
-        <text>
-          
-        </text>
-      </paragraph>
       <component-block
         component="complex"
         props={
           Object {
             "object": Object {
+              "block": undefined,
               "conditional": Object {
                 "discriminant": false,
+                "value": null,
               },
               "conditionalSelect": Object {
                 "discriminant": "a",
                 "value": "",
               },
+              "inline": undefined,
+              "many": Array [],
               "prop": "",
               "select": "a",
-            },
-          }
-        }
-        relationships={
-          Object {
-            "[\\"object\\",\\"conditional\\",\\"value\\"]": Object {
-              "data": null,
-              "relationship": "one",
-            },
-            "[\\"object\\",\\"many\\"]": Object {
-              "data": Array [],
-              "relationship": "many",
             },
           }
         }
@@ -235,6 +217,7 @@ const makeEditorWithComplexComponentBlock = () =>
           object: {
             conditional: {
               discriminant: false,
+              value: null,
             },
             prop: '',
             select: 'a',
@@ -242,16 +225,7 @@ const makeEditorWithComplexComponentBlock = () =>
               discriminant: 'a',
               value: '',
             },
-          },
-        }}
-        relationships={{
-          '["object","conditional","value"]': {
-            data: null,
-            relationship: 'one',
-          },
-          '["object","many"]': {
-            data: [],
-            relationship: 'many',
+            many: [],
           },
         }}
       >
@@ -270,7 +244,7 @@ const makeEditorWithComplexComponentBlock = () =>
         <text />
       </paragraph>
     </editor>,
-    { componentBlocks }
+    { componentBlocks, relationships }
   );
 
 test('preview props api', () => {
@@ -358,16 +332,9 @@ test('preview props conditional change', () => {
                 "discriminant": "a",
                 "value": "",
               },
+              "many": Array [],
               "prop": "",
               "select": "a",
-            },
-          }
-        }
-        relationships={
-          Object {
-            "[\\"object\\",\\"many\\"]": Object {
-              "data": Array [],
-              "relationship": "many",
             },
           }
         }
@@ -444,28 +411,10 @@ test('relationship many change', () => {
   let editor = makeEditorWithComplexComponentBlock();
 
   let previewProps = getPreviewProps(editor);
-  previewProps.object.many.onChange([{ data: {}, id: 'some-id', label: 'some-id' }]);
-  expect(editor.children[0].relationships).toMatchInlineSnapshot(`
-    Object {
-      "[\\"object\\",\\"conditional\\",\\"value\\"]": Object {
-        "data": null,
-        "relationship": "one",
-      },
-      "[\\"object\\",\\"many\\"]": Object {
-        "data": Array [
-          Object {
-            "data": Object {},
-            "id": "some-id",
-            "label": "some-id",
-          },
-        ],
-        "relationship": "many",
-      },
-    }
-  `);
-  expect(getPreviewProps(editor).object.many.value).toEqual([
-    { data: {}, id: 'some-id', label: 'some-id' },
-  ]);
+  const val = [{ data: {}, id: 'some-id', label: 'some-id' }];
+  previewProps.object.many.onChange(val);
+  expect((editor.children[0].props as any).object.many).toEqual(val);
+  expect(getPreviewProps(editor).object.many.value).toEqual(val);
 });
 
 function assert(condition: boolean): asserts condition {
@@ -479,38 +428,10 @@ test('relationship single change', () => {
 
   let previewProps = getPreviewProps(editor);
   assert(previewProps.object.conditional.discriminant === false);
-  previewProps.object.conditional.value.onChange({ data: {}, id: 'some-id', label: 'some-id' });
-  expect(editor.children[0].relationships).toMatchInlineSnapshot(`
-    Object {
-      "[\\"object\\",\\"conditional\\",\\"value\\"]": Object {
-        "data": Object {
-          "data": Object {},
-          "id": "some-id",
-          "label": "some-id",
-        },
-        "relationship": "one",
-      },
-      "[\\"object\\",\\"many\\"]": Object {
-        "data": Array [],
-        "relationship": "many",
-      },
-    }
-  `);
-  expect(getPreviewProps(editor).object.conditional).toMatchInlineSnapshot(`
-    Object {
-      "discriminant": false,
-      "onChange": [Function],
-      "options": undefined,
-      "value": Object {
-        "onChange": [Function],
-        "value": Object {
-          "data": Object {},
-          "id": "some-id",
-          "label": "some-id",
-        },
-      },
-    }
-  `);
+  const val = { data: {}, id: 'some-id', label: 'some-id' };
+  previewProps.object.conditional.value.onChange(val);
+  expect((editor.children[0].props as any).object.conditional.value).toEqual(val);
+  expect((getPreviewProps(editor).object.conditional.value as any).value).toEqual(val);
 });
 
 test('changing conditional with form inside', () => {

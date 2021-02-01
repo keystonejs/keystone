@@ -33,6 +33,7 @@ interface Renderers {
     link: Component<{ children: ReactNode; href: string }> | 'a';
   } & MarkRenderers;
   block: {
+    block: OnlyChildrenComponent;
     paragraph: Component<{ children: ReactNode; textAlign: 'center' | 'end' | undefined }>;
     blockquote: OnlyChildrenComponent;
     code: Component<{ children: string }> | keyof JSX.IntrinsicElements;
@@ -57,11 +58,10 @@ const defaultRenderers: Renderers = {
     link: 'a',
     subscript: 'sub',
     superscript: 'sup',
-    underline: ({ children }) => {
-      return <span style={{ textDecoration: 'underline' }} children={children} />;
-    },
+    underline: 'u',
   },
   block: {
+    block: 'div',
     blockquote: 'blockquote',
     paragraph: ({ children, textAlign }) => {
       return <p style={{ textAlign }}>{children}</p>;
@@ -158,7 +158,11 @@ function DocumentNode({
       const Comp = componentBlocks[node.component as string];
       if (Comp) {
         const props = createComponentBlockProps(node, children);
-        return <Comp {...props} />;
+        return (
+          <renderers.block.block>
+            <Comp {...props} />
+          </renderers.block.block>
+        );
       }
       break;
     }
@@ -186,35 +190,30 @@ function set(obj: Record<string, any>, propPath: (string | number)[], value: any
 
 function createComponentBlockProps(node: Element, children: ReactElement[]) {
   const formProps = JSON.parse(JSON.stringify(node.props));
-  const relationships = node.relationships as any;
-  Object.keys(relationships).forEach(rawPropPath => {
-    const propPath = JSON.parse(rawPropPath);
-    set(formProps, propPath, relationships[rawPropPath]);
-  });
   node.children.forEach((child, i) => {
-    const propPath = [...(child.propPath as any)];
-    set(formProps, propPath, children[i]);
+    if (child.propPath) {
+      const propPath = [...(child.propPath as any)];
+      set(formProps, propPath, children[i]);
+    }
   });
+  return formProps;
 }
 
-type Props = {
+type Props<ComponentBlocks> = {
   document: Element[];
   renderers?: Partial<Renderers>;
-  // TODO allow inferring from the component blocks
-  componentBlocks: Record<string, Component<any>>;
+  componentBlocks?: ComponentBlocks;
 };
 
-export function DocumentRenderer(props: Props) {
+export function DocumentRenderer<ComponentBlocks extends Record<string, Component<any>>>(
+  props: Props<ComponentBlocks>
+) {
   const renderers = { ...defaultRenderers, ...props.renderers };
+  const componentBlocks = props.componentBlocks || {};
   return (
     <Fragment>
       {props.document.map((x, i) => (
-        <DocumentNode
-          node={x}
-          componentBlocks={props.componentBlocks}
-          renderers={renderers}
-          key={i}
-        />
+        <DocumentNode node={x} componentBlocks={componentBlocks} renderers={renderers} key={i} />
       ))}
     </Fragment>
   );

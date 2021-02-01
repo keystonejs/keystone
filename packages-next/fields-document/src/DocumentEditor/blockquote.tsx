@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { ComponentProps, useMemo } from 'react';
+import { ComponentProps, Fragment, useMemo } from 'react';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
 import { ReactEditor, RenderElementProps } from 'slate-react';
 
@@ -8,12 +8,12 @@ import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
 
 import { IconBase } from './Toolbar';
-import { ToolbarButton } from './primitives';
-import { isBlockActive } from './utils';
+import { KeyboardInTooltip, ToolbarButton } from './primitives';
+import { isElementActive } from './utils';
 import { useToolbarState } from './toolbar-state';
 
 export const insertBlockquote = (editor: ReactEditor) => {
-  const isActive = isBlockActive(editor, 'blockquote');
+  const isActive = isElementActive(editor, 'blockquote');
   if (isActive) {
     Transforms.unwrapNodes(editor, {
       match: node => node.type === 'blockquote',
@@ -26,7 +26,7 @@ export const insertBlockquote = (editor: ReactEditor) => {
   }
 };
 
-function getDirectBlockquoteParentFromSelection(editor: ReactEditor) {
+function getDirectBlockquoteParentFromSelection(editor: Editor) {
   if (!editor.selection) return { isInside: false } as const;
   const [, parentPath] = Editor.parent(editor, editor.selection);
   const [maybeBlockquoteParent, maybeBlockquoteParentPath] = Editor.parent(editor, parentPath);
@@ -36,7 +36,7 @@ function getDirectBlockquoteParentFromSelection(editor: ReactEditor) {
     : ({ isInside: false } as const);
 }
 
-export const withBlockquote = (editor: ReactEditor) => {
+export function withBlockquote<T extends Editor>(editor: T): T {
   const { insertBreak, deleteBackward } = editor;
   editor.deleteBackward = unit => {
     if (editor.selection) {
@@ -49,7 +49,10 @@ export const withBlockquote = (editor: ReactEditor) => {
         // it's the first paragraph in the panel
         editor.selection.anchor.path[editor.selection.anchor.path.length - 2] === 0
       ) {
-        Transforms.unwrapNodes(editor, { at: parentBlockquote.path });
+        Transforms.unwrapNodes(editor, {
+          match: node => node.type === 'blockquote',
+          split: true,
+        });
         return;
       }
     }
@@ -71,7 +74,7 @@ export const withBlockquote = (editor: ReactEditor) => {
   };
 
   return editor;
-};
+}
 
 export const BlockquoteElement = ({ attributes, children }: RenderElementProps) => {
   const { colors, spacing } = useTheme();
@@ -117,7 +120,14 @@ const BlockquoteButton = ({
   );
 };
 export const blockquoteButton = (
-  <Tooltip content="Quote" weight="subtle">
+  <Tooltip
+    content={
+      <Fragment>
+        Quote<KeyboardInTooltip>{'> '}</KeyboardInTooltip>
+      </Fragment>
+    }
+    weight="subtle"
+  >
     {attrs => <BlockquoteButton attrs={attrs} />}
   </Tooltip>
 );

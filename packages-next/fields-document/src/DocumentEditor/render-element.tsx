@@ -33,6 +33,8 @@ export const renderElement = (props: RenderElementProps) => {
       return <ul {...props.attributes}>{props.children}</ul>;
     case 'list-item':
       return <li {...props.attributes}>{props.children}</li>;
+    case 'list-item-content':
+      return <span {...props.attributes}>{props.children}</span>;
     case 'blockquote':
       return <BlockquoteElement {...props} />;
     case 'relationship':
