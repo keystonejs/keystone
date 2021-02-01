@@ -92,6 +92,7 @@ export type KeystoneConfig = {
   server?: {
     /** Configuration options for the cors middleware. Set to true to core Keystone defaults */
     cors?: any;
+    port?: number;
   };
 } & SchemaConfig;
 
