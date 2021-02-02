@@ -25,7 +25,7 @@
     "endent": "^2.0.1",
     "ensure-error": "^3.0.1",
     "express": "^4.17.1",
-    "express-pino-logger": "^5.0.0",
+    "express-pino-logger": "^6.0.0",
     "falsey": "^1.0.0",
     "fs-extra": "^9.1.0",
     "globby": "^11.0.2",
