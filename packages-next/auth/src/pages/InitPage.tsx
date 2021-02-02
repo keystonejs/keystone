@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { jsx, H1, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
+import { Checkbox, TextInput } from '@keystone-ui/fields';
 import { useRawKeystone } from '@keystone-next/admin-ui/context';
 import { FieldMeta } from '@keystone-next/types';
 import isDeepEqual from 'fast-deep-equal';
@@ -19,17 +20,35 @@ import {
   useInvalidFields,
 } from '@keystone-next/admin-ui-utils';
 
-const Welcome = () => {
+const emailKeysToGuess = ['email', 'username'];
+
+const guessEmailFromValue = (value: any) => {
+  for (const key of emailKeysToGuess) {
+    if (value[key] && typeof value[key].value === 'string') {
+      return value[key].value;
+    }
+  }
+};
+
+const Welcome = ({ value }: { value: any }) => {
+  const [subscribe, setSubscribe] = useState(true);
+  const [email, setEmail] = useState(guessEmailFromValue(value));
   return (
     <Stack gap="medium">
-      <div>Welcome to Keystone!</div>
+      <H1>Welcome to KeystoneJS</H1>
       <div>Next up: star the project, follow us on twitter for updates</div>
-      <div>And sign up to our mailing list:</div>
       <div>
-        <input type="text" />
+        <Checkbox checked={subscribe} onChange={() => setSubscribe(!subscribe)}>
+          sign up to our mailing list
+        </Checkbox>
       </div>
+      {subscribe ? (
+        <div>
+          <TextInput autoFocus value={email} onChange={e => setEmail(e.target.value)} />
+        </div>
+      ) : null}
       <div>
-        <Button as="a" weight="bold" tone="active" href="/">
+        <Button weight="bold" tone="active">
           Get started
         </Button>
       </div>
@@ -40,10 +59,11 @@ const Welcome = () => {
 export const InitPage = ({
   fieldPaths,
   listKey,
+  enableWelcome,
 }: {
   listKey: string;
   fieldPaths: string[];
-  showKeystoneSignup: boolean;
+  enableWelcome: boolean;
 }) => {
   const { adminMeta } = useKeystone();
   const fields = useMemo(() => {
@@ -66,6 +86,8 @@ export const InitPage = ({
 
   const [forceValidation, setForceValidation] = useState(false);
 
+  const [mode, setMode] = useState<'init' | 'welcome'>('init');
+
   const [
     createFirstItem,
     { loading, error, data },
@@ -84,17 +106,25 @@ export const InitPage = ({
 
   useEffect(() => {
     if (rawKeystone.authenticatedItem.state === 'authenticated') {
-      router.push((router.query.from as string | undefined) || '/');
+      if (enableWelcome) {
+        setMode('welcome');
+      } else {
+        router.push((router.query.from as string | undefined) || '/');
+      }
     }
   }, [rawKeystone.authenticatedItem, router.query.from]);
 
-  return (
+  return mode === 'init' ? (
     <SigninContainer>
       <H1>Welcome to KeystoneJS</H1>
       <p>Get Started by creating the first user:</p>
       <form
         onSubmit={event => {
           event.preventDefault();
+
+          setMode('welcome');
+          return;
+
           const newForceValidation = invalidFields.size !== 0;
           setForceValidation(newForceValidation);
 
@@ -145,6 +175,10 @@ export const InitPage = ({
           </Button>
         </Stack>
       </form>
+    </SigninContainer>
+  ) : (
+    <SigninContainer>
+      <Welcome value={value} />
     </SigninContainer>
   );
 };
