@@ -16,7 +16,7 @@ export const initTemplate = ({ listKey, initFirstItem }: InitTemplateArgs) => {
 
   export default function Init() {
     return <InitPage listKey="${listKey}" fieldPaths={fieldPaths} showKeystoneSignup={${JSON.stringify(
-    !initFirstItem.skipKeystoneSignup
+    !initFirstItem.skipKeystoneWelcome
   )}} />
   }
   `;

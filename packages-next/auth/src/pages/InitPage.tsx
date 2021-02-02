@@ -19,6 +19,24 @@ import {
   useInvalidFields,
 } from '@keystone-next/admin-ui-utils';
 
+const Welcome = () => {
+  return (
+    <Stack gap="medium">
+      <div>Welcome to Keystone!</div>
+      <div>Next up: star the project, follow us on twitter for updates</div>
+      <div>And sign up to our mailing list:</div>
+      <div>
+        <input type="text" />
+      </div>
+      <div>
+        <Button as="a" weight="bold" tone="active" href="/">
+          Get started
+        </Button>
+      </div>
+    </Stack>
+  );
+};
+
 export const InitPage = ({
   fieldPaths,
   listKey,
