@@ -47,7 +47,7 @@
     "date-fns": "^2.16.1",
     "decimal.js": "^10.2.1",
     "dumb-passwords": "^0.2.1",
-    "graphql": "^15.4.0",
+    "graphql": "^15.5.0",
     "image-extensions": "^1.1.0",
     "inflection": "^1.12.0",
     "intersection-observer": "^0.12.0",
