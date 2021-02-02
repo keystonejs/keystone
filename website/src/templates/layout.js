@@ -5,7 +5,7 @@ import { jsx, Global } from '@emotion/core';
 import { colors, borderRadius, gridSize } from '@arch-ui/theme';
 import { SkipNavLink } from '@reach/skip-nav';
 
-import { Header, SiteMeta } from '../components';
+import { Header, NextBanner, SiteMeta } from '../components';
 import { media, mediaMax } from '../utils/media';
 
 const globalStyles = {
@@ -89,6 +89,7 @@ export const Layout = ({ children, showSearch = true }) => {
       <SkipNavLink />
       <SiteMeta pathname="/" />
       <Header key="global-header" toggleMenu={toggleSidebar} showSearch={showSearch} />
+      <NextBanner />
       {children({ sidebarIsVisible, toggleSidebar })}
     </Fragment>
   );

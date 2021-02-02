@@ -5,3 +5,4 @@ export { SocialIconsNav } from './SocialIconsNav';
 export { Sidebar } from './Sidebar';
 export { Search } from './Search';
 export { SiteMeta } from './SiteMeta';
+export { NextBanner } from './NextBanner';
