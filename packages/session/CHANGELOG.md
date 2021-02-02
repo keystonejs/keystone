@@ -1,5 +1,11 @@
 # @keystonejs/session
 
+## 8.2.0
+
+### Minor Changes
+
+- [`621db113a`](https://github.com/keystonejs/keystone/commit/621db113a6a579cc3da19ae9cef50dc63ac8ca55) [#4605](https://github.com/keystonejs/keystone/pull/4605) Thanks [@timleslie](https://github.com/timleslie)! - Converted package to TypeScript.
+
 ## 8.1.1
 
 ### Patch Changes

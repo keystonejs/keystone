@@ -1,5 +1,11 @@
 # @keystonejs/utils
 
+## 6.0.1
+
+### Patch Changes
+
+- [`94c8d349d`](https://github.com/keystonejs/keystone/commit/94c8d349d3795cd9abec407f78752417623ee56f) [#4729](https://github.com/keystonejs/keystone/pull/4729) Thanks [@timleslie](https://github.com/timleslie)! - Updated type defintions of API functions to be more correct and informative.
+
 ## 6.0.0
 
 ### Major Changes

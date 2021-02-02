@@ -1,5 +1,18 @@
 # @keystonejs/adapter-knex
 
+## 13.0.0
+
+### Major Changes
+
+- [`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d) [#4709](https://github.com/keystonejs/keystone/pull/4709) Thanks [@timleslie](https://github.com/timleslie)! - Database adapters no longer support custom `ListAdapter` classes via the `listAdapterClass` option of `adapterConfig` in `createList()`.
+
+### Patch Changes
+
+- Updated dependencies [[`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d), [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9), [`94c8d349d`](https://github.com/keystonejs/keystone/commit/94c8d349d3795cd9abec407f78752417623ee56f)]:
+  - @keystonejs/keystone@19.0.0
+  - @keystonejs/utils@6.0.1
+  - @keystonejs/fields-auto-increment@8.1.3
+
 ## 12.0.4
 
 ### Patch Changes

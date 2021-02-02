@@ -1,5 +1,16 @@
 # @keystone-next/example-ecommerce
 
+## 0.2.11
+
+### Patch Changes
+
+- [`94fbb45f1`](https://github.com/keystonejs/keystone/commit/94fbb45f1920781423f6a8e489e812b74a260099) [#4728](https://github.com/keystonejs/keystone/pull/4728) Thanks [@timleslie](https://github.com/timleslie)! - Added new CLI options to support migrations in the Prisma adapter: `prototype`, `reset`, `generate`, and `deploy`.
+
+- Updated dependencies [[`94fbb45f1`](https://github.com/keystonejs/keystone/commit/94fbb45f1920781423f6a8e489e812b74a260099), [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9)]:
+  - @keystone-next/keystone@9.2.0
+  - @keystone-next/types@11.0.2
+  - @keystone-next/auth@13.0.0
+
 ## 0.2.10
 
 ### Patch Changes
