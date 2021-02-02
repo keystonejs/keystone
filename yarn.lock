@@ -12880,7 +12880,7 @@ graphql@^14.1.1, graphql@^14.5.8:
   dependencies:
     iterall "^1.2.2"
 
-graphql@^15.3.0, graphql@^15.4.0, graphql@^15.5.0:
+graphql@^15.3.0, graphql@^15.5.0:
   version "15.5.0"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.5.0.tgz#39d19494dbe69d1ea719915b578bf920344a69d5"
   integrity sha512-OmaM7y0kaK31NKG31q4YbD2beNYa6jBBKtMFT6gLYJljHLJr42IqJ8KX08u3Li/0ifzTU5HjmoOOrwa5BRLeDA==
