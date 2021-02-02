@@ -8,6 +8,7 @@ module.exports = {
     '--port':       Number,
     '-p':           '--port',
     '--entry':      String,
+    '--app_url':    String,
     '--out':        String,
     '-o':           '--out',
   },
@@ -17,6 +18,7 @@ module.exports = {
 
     Options
       --port, -p    Port to start on [${DEFAULT_PORT}]
+      --app_url     Custom application URL
       --entry       Entry file exporting keystone instance [${DEFAULT_ENTRY}]
   `,
   exec: async (args, { exeName, _cwd = process.cwd() } = {}, spinner) => {
