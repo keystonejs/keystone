@@ -1,12 +1,19 @@
+import { Role } from './schemas/Role';
+import { OrderItem } from './schemas/OrderItem';
+import { Order } from './schemas/Order';
+import { CartItem } from './schemas/CartItem';
+import { ProductImage } from './schemas/ProductImage';
+import { Product } from './schemas/Product';
+import { User } from './schemas/User';
 import 'dotenv/config';
 
-import { config } from '@keystone-next/keystone/schema';
+import { config, createSchema } from '@keystone-next/keystone/schema';
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
-import { lists } from './schema';
 import { extendGraphqlSchema } from './mutations';
 import { createAuth } from '@keystone-next/auth';
 import { insertSeedData } from './seed-data';
-import { permissionsList } from './fields';
+import { permissionsList } from './schemas/fields';
+import sendPasswordResetEmail from './lib/sendPasswordResetEmail';
 
 const databaseUrl = process.env.DATABASE_URL || 'mongodb://localhost/keystone-examples-ecommerce';
 const protectIdentities = process.env.NODE_ENV === 'production';
@@ -32,7 +39,8 @@ const { withAuth } = createAuth({
     },
   },
   passwordResetLink: {
-    sendToken(args) {
+    async sendToken(args) {
+      await sendPasswordResetEmail(args.token, args.identity);
       console.log(`Password reset info:`, args);
     },
   },
@@ -40,16 +48,30 @@ const { withAuth } = createAuth({
 
 export default withAuth(
   config({
+    server: {
+      cors: {
+        origin: ['http://localhost:2223'],
+        credentials: true,
+      },
+    },
     db: {
       adapter: 'mongoose',
       url: databaseUrl,
-      onConnect: async context => {
+      onConnect: async ({ keystone }) => {
         if (process.argv.includes('--seed-data')) {
-          insertSeedData(context);
+          insertSeedData(keystone);
         }
       },
     },
-    lists,
+    lists: createSchema({
+      User,
+      Product,
+      ProductImage,
+      CartItem,
+      Order,
+      OrderItem,
+      Role,
+    }),
     extendGraphqlSchema,
     ui: {
       // Anyone who has been assigned a role can access the Admin UI
