@@ -2,6 +2,215 @@ import { Page } from '../../components/Page';
 
 # System API
 
-(coming soon)
+The `keystone-next` CLI expects to find a module named `keystone.ts` with a default export of a Keystone system configuration returned from the function `config()`.
+
+```typescript filename=keystone.ts
+import { config } from '@keystone-next/keystone/schema';
+
+export default config({...});
+```
+
+The `config` function accepts an object representing all the configurable parts of your system:
+
+```typescript
+export default config({
+  lists: { ... },
+  db: { ... },
+  ui: { ... },
+  server: { ... },
+  session: () => { ... },
+  graphql: { ... },
+  extendGraphqlSchema: { ... },
+});
+```
+
+We will cover each of these options in turn below.
+
+The configuration object has a TypeScript type of `KeystoneConfig`, which can be imported from `@keystone-next/types`.
+This type definition should be considered the source of truth for the available configuration options.
+
+## `lists`
+
+```
+import type { ListSchemaConfig } from '@keystone-next/types';
+```
+
+The `lists` config option is where you define the data model, or schema, of your Keystone system.
+It has a TypeScript type of `DatabaseConfig`.
+This configuration is where you define and configure the `lists` and their `fields`.
+In general you will use `createSchema()` function to create this configuration option.
+See the [Schema API](./schema) docs for details on how to use this function.
+
+## `db`
+
+```
+import type { DatabaseConfig } from '@keystone-next/types';
+```
+
+The `db` config option configures the database used to store data in your Keystone system.
+It has a TypeScript type of `DatabaseConfig`.
+Keystone supports three different database types; **Prisma**, **PostgreSQL**, and **MongoDB**.
+These databases types are powered by their corresponding Keystone database adapter; `prisma_postgresql`, `knex`, and `mongoose`.
+The `prisma_postgresql` adapter includes support for the **migrate** commands of the Keystone [command line](../guides/cli).
+
+### `prisma_postgresql`
+
+```typescript
+export default config({
+  db: {
+    adapter: 'prisma_postgresql',
+    url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
+    onConnect: async context => { ... },
+    // Optional advanced configuration
+    dropDatabase: false;
+    getPrismaPath: ({ prismaSchema }) => '.prisma';
+    getDbSchemaName: ({ prismaSchema }) => '.prisma;
+    enableLogging: false;
+  },
+  ...
+});
+```
+
+### `knex`
+
+```typescript
+export default config({
+  db: {
+    adapter: 'knex',
+    url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
+    onConnect: async context => { ... },
+    // Optional advanced configuration
+    schemaName: 'public',
+    dropDatabase: false,
+    knexOptions: { ... },
+  },
+  ...
+});
+```
+
+### `mongoose`
+
+```typescript
+export default config({
+  db: {
+    adapter: 'mongoose':
+    url: 'mongodb://localhost/keystone',
+    onConnect: async context => { ... },
+    // Optional advanced configuration
+    mongooseOptions: { ... },
+  },
+  ...
+});
+```
+
+## `ui`
+
+```
+import type { AdminUIConfig } from '@keystone-next/types';
+```
+
+The `ui` config option configures the Admin UI which is provided by Keystone.
+It has a TypeScript type of `AdminUIConfig`.
+This config option is for "top level configuration" of the Admin UI.
+Fine grained configuration of how lists and fields behave in the Admin UI is handled in the `lists` definition.
+See the [Schema API](./schema) for more details.
+
+```typescript
+export default config({
+  ui: {
+    isAccessAllowed: async () => true,
+    path: 'admin',
+    // Optional advanced configuration
+    enableSessionItem: true,
+    publicPages: [],
+    getAdditionalFiles: async () => [],
+    pageMiddleware: async () = {}
+  },
+  ...
+});
+```
+
+## `server`
+
+```
+import type { ServerConfig } from '@keystone-next/types';
+```
+
+The **run** commands from the Keystone [command line](../guides/cli) will start an Express web-server for you.
+This server is configured via the `server` configuration option.
+
+```typescript
+export default config({
+  server: {
+    cors: { origin: ['http://localhost:7777'], credentials: true }:
+    port: 3000
+  },
+  ...
+});
+```
+
+## `session`
+
+```
+import type { SessionStrategy } from '@keystone-next/types';
+```
+
+The `session` config option allows you to configure session management of your Keystone system.
+It has a TypeScript type of `() => SessionStrategy<any>`.
+
+In general you will use functions from the `@keystone-next/keystone/session` package, rather than writing this function yourself.
+
+```typescript
+import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
+
+export default config({
+  session: withItemData(statelessSessions({ ... }), { ... }),
+  ...
+});
+```
+
+See the [Session API](./session) for more details on how to configure session management in Keystone.
+
+
+## `graphql`
+
+```
+import type { GraphQLConfig } from '@keystone-next/types';
+```
+
+The `graphql` config option allows you to configures certain aspects of your GraphQL API.
+It has a TypeScript type of `GraphQLConfig`.
+
+```typescript
+export default config({
+  graphql: {
+    queryLimits: { maxTotalResults: 100 }
+  },
+  ...
+});
+```
+
+## `extendGraphqlSchema`
+
+```
+import type { ExtendGraphqlSchema } from '@keystone-next/types';
+```
+
+The `extendGraphqlSchema` config option allows you to extend the GraphQL API which is generated by Keystone based on your schema definition.
+It has a TypeScript type of `ExtendGraphqlSchema`.
+
+In general you will use the function `graphQLSchemaExtension({ typeDefs, resolvers })` to create your schema extension.
+
+```typescript
+import { config, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
+
+export default config({
+  extendGraphqlSchema: graphQLSchemaExtension({ typeDefs, resolvers }),
+  ...
+});
+```
+
+See the [schema extension guide](../guides/schema-extension) for more details on how to use `graphQLSchemaExtension()` to extend your GraphQL API.
+>>>>>>> Update API docs
 
 export default ({ children }) => <Page>{children}</Page>;
