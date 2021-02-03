@@ -45,9 +45,11 @@ export const appTemplate = (
   const allViews = [..._allViews];
   const viewPaths: Record<string, string> = {};
   for (const views of allViews) {
-    viewPaths[views] = Path.isAbsolute(views)
+    const viewPath = Path.isAbsolute(views)
       ? Path.relative(Path.join(projectAdminPath, 'pages'), views)
       : views;
+    // Convert filesystem path separator to the `/` expected in JS imports
+    viewPaths[views] = viewPath.replace(new RegExp(`\\${Path.sep}`, 'g'), '/');
   }
   // -- TEMPLATE START
   return `

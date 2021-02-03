@@ -1,5 +1,6 @@
 import type Knex from 'knex';
 import type { ConnectOptions } from 'mongoose';
+import { CorsOptions } from 'cors';
 import type { FieldAccessControl } from './schema/access-control';
 import type { BaseGeneratedListTypes, JSONValue, GqlNames, MaybePromise } from './utils';
 import type { ListHooks } from './schema/hooks';
@@ -90,8 +91,10 @@ export type KeystoneConfig = {
   session?: () => SessionStrategy<any>;
   ui?: KeystoneAdminUIConfig;
   server?: {
-    /** Configuration options for the cors middleware. Set to true to core Keystone defaults */
-    cors?: any;
+    /** Configuration options for the cors middleware. Set to `true` to use core Keystone defaults */
+    cors?: CorsOptions | true;
+    /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
+    port?: number;
   };
 } & SchemaConfig;
 
