@@ -29,7 +29,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
             cart {
               id
               quantity
-              product { name price id description image { id publicUrlTransformed } }
+              product { name price id description photo { id publicUrlTransformed } }
             }`,
         });
 
@@ -58,7 +58,7 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
             description: cartItem.product.description,
             price: cartItem.product.price,
             quantity: cartItem.quantity,
-            image: { connect: { id: cartItem.product.image.id } },
+            image: { connect: { id: cartItem.product.photo.id } },
             user: { connect: { id: userId } },
           };
           return orderItem;

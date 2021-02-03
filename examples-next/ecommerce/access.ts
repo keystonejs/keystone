@@ -1,4 +1,4 @@
-import { permissionsList } from './fields';
+import { permissionsList } from './schemas/fields';
 import { ListAccessArgs } from './types';
 
 /*
@@ -17,6 +17,7 @@ const generatedPermissions = Object.fromEntries(
   permissionsList.map(permission => [
     permission,
     function ({ session }: ListAccessArgs) {
+      // Do they have that Permission? Yes or no
       return !!session?.data.role?.[permission];
     },
   ])
@@ -71,6 +72,15 @@ export const rules = {
       // Can update yourself
       return { id: session.itemId };
     }
+  },
+  canUpdateProducts({ session }: ListAccessArgs) {
+    // Do they have access?
+    if (permissions.canManageProducts({ session })) {
+      // They have the permission
+      return true;
+    }
+    // Otherwise, only allow them to manage their own products
+    return { user: { id: session?.itemId } };
   },
   canReadProducts: ({ session }: ListAccessArgs) => {
     if (session?.data.role?.canManageProducts) {

@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import cors from 'cors';
+import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
 import { ApolloServer } from 'apollo-server-express';
@@ -66,7 +66,7 @@ export const createExpressServer = async (
   if (config.server?.cors) {
     // Setting config.server.cors = true will provide backwards compatible defaults
     // Otherwise, the user can provide their own config object to use
-    const corsConfig =
+    const corsConfig: CorsOptions =
       typeof config.server.cors === 'boolean'
         ? { origin: true, credentials: true }
         : config.server.cors;
