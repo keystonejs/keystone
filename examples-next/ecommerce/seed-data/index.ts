@@ -1,9 +1,9 @@
 import { BaseKeystone } from '@keystone-next/types';
 import { products } from './data';
 
-export async function insertSeedData(keystone: any) {
+export async function insertSeedData(keystone: BaseKeystone) {
   console.log(`🌱 Inserting Seed Data: ${products.length} Products`);
-  const { mongoose } = keystone.adapters.MongooseAdapter;
+  const { mongoose } = keystone.adapter;
   for (const product of products) {
     console.log(`  🛍️ Adding Product: ${product.name}`);
     const { _id } = await mongoose
