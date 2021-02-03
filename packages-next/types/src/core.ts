@@ -91,7 +91,7 @@ export type KeystoneConfig = {
   session?: () => SessionStrategy<any>;
   ui?: KeystoneAdminUIConfig;
   server?: {
-    /** Configuration options for the cors middleware. Set to true to core Keystone defaults */
+    /** Configuration options for the cors middleware. Set to `true` to use core Keystone defaults */
     cors?: CorsOptions | true;
     /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
     port?: number;
