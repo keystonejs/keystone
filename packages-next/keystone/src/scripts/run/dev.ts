@@ -58,8 +58,8 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths, sc
     if (expressServer) return expressServer(req, res, next);
     res.sendFile(devLoadingHTMLFilepath);
   });
-  const PORT = config.server?.port || process.env.PORT || 3000;
-  server.listen(PORT, (err?: any) => {
+  const port = config.server?.port || process.env.PORT || 3000;
+  server.listen(port, (err?: any) => {
     if (err) throw err;
     console.log(`⭐️ Dev Server Ready on http://localhost:${PORT}`);
     // Don't start initialising Keystone until the dev server is ready,

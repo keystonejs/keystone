@@ -28,8 +28,8 @@ export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) 
   );
   console.log(`👋 Admin UI and graphQL API ready`);
 
-  const PORT = config.server?.port || process.env.PORT || 3000;
-  server.listen(PORT, (err?: any) => {
+  const port = config.server?.port || process.env.PORT || 3000;
+  server.listen(port, (err?: any) => {
     if (err) throw err;
     console.log(`⭐️ Server Ready on http://localhost:${PORT}`);
   });
