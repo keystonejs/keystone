@@ -6,7 +6,7 @@ import { updateAuthToken } from '../lib/updateAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
 import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
 
-export function getPasswordResetSchema({
+export function getPasswordResetSchema<I extends string, S extends string>({
   listKey,
   identityField,
   secretField,
@@ -15,8 +15,8 @@ export function getPasswordResetSchema({
   passwordResetLink,
 }: {
   listKey: string;
-  identityField: string;
-  secretField: string;
+  identityField: I;
+  secretField: S;
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   passwordResetLink: AuthTokenTypeConfig;
@@ -61,7 +61,7 @@ export function getPasswordResetSchema({
     `,
     resolvers: {
       Mutation: {
-        async [gqlNames.sendItemPasswordResetLink](root, args, context) {
+        async [gqlNames.sendItemPasswordResetLink](root: any, args: { [P in I]: string }, context) {
           const list = context.keystone.lists[listKey];
           const sudoContext = context.createContext({ skipAccessControl: true });
           const itemAPI = sudoContext.lists[listKey];
@@ -97,7 +97,11 @@ export function getPasswordResetSchema({
           }
           return null;
         },
-        async [gqlNames.redeemItemPasswordResetToken](root, args, context) {
+        async [gqlNames.redeemItemPasswordResetToken](
+          root: any,
+          args: { [P in I]: string } & { [P in S]: string } & { token: string },
+          context
+        ) {
           const list = context.keystone.lists[listKey];
           const sudoContext = context.createContext({ skipAccessControl: true });
           const itemAPI = sudoContext.lists[listKey];
@@ -145,7 +149,11 @@ export function getPasswordResetSchema({
         },
       },
       Query: {
-        async [gqlNames.validateItemPasswordResetToken](root, args, context) {
+        async [gqlNames.validateItemPasswordResetToken](
+          root: any,
+          args: { [P in I]: string } & { token: string },
+          context
+        ) {
           const list = context.keystone.lists[listKey];
           const sudoContext = context.createContext({ skipAccessControl: true });
           const itemAPI = sudoContext.lists[listKey];
