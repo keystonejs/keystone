@@ -17,12 +17,12 @@ function cli() {
       $ keystone-next [command]
     Commands
       Run
-        prototype     start the project in prototyping mode
+        prototype     (default) start the project in prototyping mode
         dev           start the project in development mode
         start         start the project in production mode
       Build
         build         build the project (must be done before using start)
-      Migrate
+      Migrate (Prisma only)
         reset         reset the database (this will drop all data!)
         generate      generate a migration
         deploy        deploy all migrations
