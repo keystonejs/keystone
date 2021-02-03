@@ -26,7 +26,7 @@ The CLI supports commands in three categories; Run, Build and Migrate.
 ### Run
 
 The **run** commands are used to prepare and then start your Keystone server.
-Keystone can be run in three different modes, prototyping, dev and production.
+Keystone can be run in three different modes; **prototyping**, **dev** and **production**.
 These different modes support different phases of your project life-cycle.
 The different modes differ in how they interact with your database and with your Admin UI application.
 
@@ -46,7 +46,7 @@ If you are using `prisma` and your database already includes migrations then you
 #### `keystone-next start`
 
 In **production** mode Keystone will not apply or generate any database migrations.
-It will use the pre-built version of the Admin UI, and a pre-built Prisma client.
+It will use the pre-built version of the Admin UI Next.js application, and a pre-built Prisma client.
 If database migrations have not been applied, the Prisma client is outdated or missing, or the Admin UI has not been built, then the server will not start.
 
 Note: Database migrations are only handled when using the `prisma` adapter.
@@ -55,7 +55,7 @@ Note: Database migrations are only handled when using the `prisma` adapter.
 
 ##### `keystone-next build`
 
-The `build` command is used to generate a built version of Admin UI and the Prisma client (if using the `prisma` adapter) which can be used when running the system in production mode (`keystone-next start`).
+The `build` command is used to generate a built version of Admin UI Next.js application and the Prisma client (if using the `prisma` adapter) which can be used when running the system in production mode (`keystone-next start`).
 
 ### Migrate (Prisma only)
 
