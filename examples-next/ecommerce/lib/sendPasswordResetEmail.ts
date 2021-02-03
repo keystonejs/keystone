@@ -16,7 +16,7 @@ export default async function sendPasswordResetEmail(resetToken: string, to: str
       console.log(`Error Sending Mail: `, err);
     });
 
-  if (process.env.MAIL_USER.includes('ethereal.email')) {
+  if (process.env.MAIL_USER?.includes('ethereal.email')) {
     console.log(`💌 Sent! Preview: `, getTestMessageUrl(info));
   }
 }
