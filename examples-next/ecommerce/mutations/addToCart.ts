@@ -1,7 +1,9 @@
+import { KeystoneContext } from '@keystone-next/types';
+
 export default async function addToCart(
   root: any,
   { productId }: { productId: string },
-  context: any
+  context: KeystoneContext
 ) {
   const { session } = context;
   console.log('adding to cart...');
