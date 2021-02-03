@@ -61,7 +61,7 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths, sc
   const port = config.server?.port || process.env.PORT || 3000;
   server.listen(port, (err?: any) => {
     if (err) throw err;
-    console.log(`⭐️ Dev Server Ready on http://localhost:${PORT}`);
+    console.log(`⭐️ Dev Server Ready on http://localhost:${port}`);
     // Don't start initialising Keystone until the dev server is ready,
     // otherwise it slows down the first response significantly
     initKeystone().catch(err => {

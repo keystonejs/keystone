@@ -31,6 +31,6 @@ export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) 
   const port = config.server?.port || process.env.PORT || 3000;
   server.listen(port, (err?: any) => {
     if (err) throw err;
-    console.log(`⭐️ Server Ready on http://localhost:${PORT}`);
+    console.log(`⭐️ Server Ready on http://localhost:${port}`);
   });
 };
