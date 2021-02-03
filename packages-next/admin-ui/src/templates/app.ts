@@ -44,10 +44,12 @@ export const appTemplate = (
   });
   const allViews = [..._allViews];
   const viewPaths: Record<string, string> = {};
+  const makeImportPath = (path: string) => path.replace(new RegExp('\\' + Path.sep, 'g'), '/');
   for (const views of allViews) {
-    viewPaths[views] = Path.isAbsolute(views)
-      ? Path.relative(Path.join(projectAdminPath, 'pages'), views)
-      : views;
+    const viewPath = Path.isAbsolute(views)
+    ? Path.relative(Path.join(projectAdminPath, 'pages'), views)
+    : views;
+    viewPaths[views] = makeImportPath(viewPath);
   }
   // -- TEMPLATE START
   return `
