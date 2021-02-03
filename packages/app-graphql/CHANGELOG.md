@@ -1,5 +1,19 @@
 # @keystonejs/app-graphql
 
+## 6.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be)]:
+  - @keystonejs/utils@6.0.0
+  - @keystonejs/app-graphql-playground@5.1.9
+
+## 6.2.0
+
+### Minor Changes
+
+- [`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95) [#4588](https://github.com/keystonejs/keystone/pull/4588) Thanks [@timleslie](https://github.com/timleslie)! - Updated graphql server to use the `graphql-upload` package directly to support uploads, rather than the built-in support provided by Apollo Server.
+
 ## 6.1.3
 
 ### Patch Changes

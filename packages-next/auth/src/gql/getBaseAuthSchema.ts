@@ -1,9 +1,11 @@
+import type { GraphQLSchemaExtension, KeystoneContext } from '@keystone-next/types';
+
 import { AuthGqlNames } from '../types';
 
 import { validateSecret } from '../lib/validateSecret';
 import { getPasswordAuthError } from '../lib/getErrorMessage';
 
-export function getBaseAuthSchema({
+export function getBaseAuthSchema<I extends string, S extends string>({
   listKey,
   identityField,
   secretField,
@@ -11,11 +13,11 @@ export function getBaseAuthSchema({
   gqlNames,
 }: {
   listKey: string;
-  identityField: string;
-  secretField: string;
+  identityField: I;
+  secretField: S;
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
-}) {
+}): GraphQLSchemaExtension {
   return {
     typeDefs: `
       # Auth
@@ -46,9 +48,18 @@ export function getBaseAuthSchema({
     `,
     resolvers: {
       Mutation: {
-        async [gqlNames.authenticateItemWithPassword](root: any, args: any, context: any) {
+        async [gqlNames.authenticateItemWithPassword](
+          root: any,
+          args: { [P in I]: string } & { [P in S]: string },
+          context
+        ) {
+          if (!context.startSession) {
+            throw new Error('No session implementation available on context');
+          }
+
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const sudoContext = context.createContext({ skipAccessControl: true });
+          const itemAPI = sudoContext.lists[listKey];
           const result = await validateSecret(
             list,
             identityField,
@@ -76,16 +87,22 @@ export function getBaseAuthSchema({
         },
       },
       Query: {
-        async authenticatedItem(root: any, args: any, { session, lists }: any) {
+        async authenticatedItem(root, args, { session, lists }) {
           if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
-            const item = await lists[session.listKey].findOne({ where: { id: session.itemId } });
-            return item || null;
+            try {
+              return lists[session.listKey].findOne({
+                where: { id: session.itemId },
+                resolveFields: false,
+              });
+            } catch (e) {
+              return null;
+            }
           }
           return null;
         },
       },
       AuthenticatedItem: {
-        __resolveType(rootVal: any, { session }: any) {
+        __resolveType(rootVal: any, { session }: KeystoneContext) {
           return session?.listKey;
         },
       },

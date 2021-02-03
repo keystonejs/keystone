@@ -121,3 +121,18 @@ CREATE TABLE keystone."Currency" (
     "totalIssued" numeric
 );
 ```
+
+### Prisma adapter
+
+The Prisma adapter uses the [Decimal prisma type](https://www.prisma.io/docs/concepts/components/preview-features/native-types/native-types-mappings#decimal).
+
+The Prisma field adapter supports two additional config options:
+
+| Option      | Type                | Default | Description                                                                                             |
+| ----------- | ------------------- | ------- | ------------------------------------------------------------------------------------------------------- |
+| `precision` | `Integer` or `null` | `18`    | The number of significant decimal digits stored                                                         |
+| `scale`     | `Integer` or `null` | `4`     | The number of significant fractional decimal digits stored (ie. on the right side of the decimal place) |
+
+If specified `scale` must be greater than `precision`.
+
+> **Note:** The Decimal field type in Prisma is still considered a preview feature, and should not be used in production.

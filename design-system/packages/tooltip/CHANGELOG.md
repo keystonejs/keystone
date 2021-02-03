@@ -1,5 +1,38 @@
 # @keystone-ui/tooltip
 
+## 1.0.6
+
+### Patch Changes
+
+- [`858eedb18`](https://github.com/keystonejs/keystone/commit/858eedb18c14ed017b01f588071192cdac355c47) [#4655](https://github.com/keystonejs/keystone/pull/4655) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Allowed `ReactNode` instead of just `string` for Tooltip content
+
+## 1.0.5
+
+### Patch Changes
+
+- [`160bd77d3`](https://github.com/keystonejs/keystone/commit/160bd77d39d5e99b11bee056fe2c3b2585126bbc) [#4638](https://github.com/keystonejs/keystone/pull/4638) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Improve performance when scrolling and resizing the page
+
+- Updated dependencies [[`160bd77d3`](https://github.com/keystonejs/keystone/commit/160bd77d39d5e99b11bee056fe2c3b2585126bbc)]:
+  - @keystone-ui/popover@1.1.1
+
+## 1.0.4
+
+### Patch Changes
+
+- [`ba842d48b`](https://github.com/keystonejs/keystone/commit/ba842d48b5e9499ccd6f59d1610d55e964ffdb93) [#4579](https://github.com/keystonejs/keystone/pull/4579) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Memoized tooltip element to improve performance
+
+## 1.0.3
+
+### Patch Changes
+
+- [`fa12a18b0`](https://github.com/keystonejs/keystone/commit/fa12a18b077367563b1b69db55274e47a1bd5027) [#4377](https://github.com/keystonejs/keystone/pull/4377) Thanks [@jossmac](https://github.com/jossmac)! - Update apply-ref dependency
+
+* [`eddd7e795`](https://github.com/keystonejs/keystone/commit/eddd7e79599e20f5bef61f240d874b37d0a084c4) [#4376](https://github.com/keystonejs/keystone/pull/4376) Thanks [@jossmac](https://github.com/jossmac)! - tidy the document field; primarily the toolbar
+
+* Updated dependencies [[`8b12f795d`](https://github.com/keystonejs/keystone/commit/8b12f795d64dc085ca663921aa6826350d234cd0), [`55a04a100`](https://github.com/keystonejs/keystone/commit/55a04a1004b7f15fcd41b4935d74fd1847c9deeb), [`f4a855c71`](https://github.com/keystonejs/keystone/commit/f4a855c71e966ef3ebc894a3b0f1af51e5182394), [`eddd7e795`](https://github.com/keystonejs/keystone/commit/eddd7e79599e20f5bef61f240d874b37d0a084c4)]:
+  - @keystone-ui/popover@1.1.0
+  - @keystone-ui/core@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes

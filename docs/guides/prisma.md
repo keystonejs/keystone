@@ -96,7 +96,7 @@ keystone.extendGraphQLSchema({
     {
       schema: 'allComplete: Boolean',
       resolver: async () => {
-        const { prisma } = keystone.adapters.PrismaAdapter;
+        const { prisma } = keystone.adapter;
         const unfinished = await prisma.todo.count({ where: { isComplete: { equals: false } } });
         return unfinished === 0;
       },
@@ -105,7 +105,7 @@ keystone.extendGraphQLSchema({
 });
 ```
 
-This query is using the `PrismaClient` object stored at `keystone.adapters.PrismaAdapter.prisma` to directly run this query against the database.
+This query is using the `PrismaClient` object stored at `keystone.adapterr.prisma` to directly run this query against the database.
 For more information on the Prisma Client API please consult the [Prisma docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
 
 > **Tip:** For full details on how to use up the Prisma Adapter, see the [Prisma Adapter API Docs](/packages/adapter-prisma/README.md)

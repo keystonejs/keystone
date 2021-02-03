@@ -1,5 +1,46 @@
 # @keystonejs/cypress-project-client-validation
 
+## 7.0.1
+
+### Patch Changes
+
+- [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9) [#3222](https://github.com/keystonejs/keystone/pull/3222) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for multiple database adapters in a single `Keystone` system. The `adapters` and `defaultAdapter` config options were removed from the `Keystone()` constructor. If you were accessing the adapter object via `keystone.adapters.KnexAdapter` or `keystone.adapters.MongooseAdapter` you should now simply access `keystone.adapter`.
+
+- Updated dependencies [[`a886039a1`](https://github.com/keystonejs/keystone/commit/a886039a1fc17c9b60b2955f0e58916ab1c3d7bf), [`680169cad`](https://github.com/keystonejs/keystone/commit/680169cad62dd889ec95961cba9df3b4d012887f), [`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d), [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9)]:
+  - @keystonejs/adapter-prisma@3.0.0
+  - @keystonejs/fields@21.1.0
+  - @keystonejs/keystone@19.0.0
+
+## 7.0.0
+
+### Major Changes
+
+- [`1813ec36e`](https://github.com/keystonejs/keystone/commit/1813ec36ee3d9f0e409c5b97e5a967ff803e0bf9) [#4693](https://github.com/keystonejs/keystone/pull/4693) Thanks [@timleslie](https://github.com/timleslie)! - Convert cypress test projects to use the `PrismaAdapter` rather than the `MongooseAdapter`.
+
+### Patch Changes
+
+- Updated dependencies [[`6b95cb6e4`](https://github.com/keystonejs/keystone/commit/6b95cb6e4d5bea3a87e22765d5fcf31db2fc31ae), [`fc2b7101f`](https://github.com/keystonejs/keystone/commit/fc2b7101f35f20e4d729269a005816546bb37464), [`e7d4d54e5`](https://github.com/keystonejs/keystone/commit/e7d4d54e5b94e6b376d6eab28a0f2b074f2c95ed), [`a62a2d996`](https://github.com/keystonejs/keystone/commit/a62a2d996f1080051f7962b7063ae37d7e8b7e63)]:
+  - @keystonejs/adapter-prisma@2.0.0
+  - @keystonejs/fields@21.0.2
+
+## 6.0.16
+
+### Patch Changes
+
+- Updated dependencies [[`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95), [`cf2819544`](https://github.com/keystonejs/keystone/commit/cf2819544426def260ada5eb18fdc9b8a01e9438), [`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95)]:
+  - @keystonejs/keystone@18.0.0
+  - @keystonejs/app-graphql@6.2.0
+  - @keystonejs/adapter-mongoose@10.1.1
+
+## 6.0.15
+
+### Patch Changes
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0), [`f8873064b`](https://github.com/keystonejs/keystone/commit/f8873064b667d62001afe7950e33d019bcff7be3), [`d329f07a5`](https://github.com/keystonejs/keystone/commit/d329f07a5ce7ebf5d658a7f90334ba4372a2a72d)]:
+  - @keystonejs/adapter-mongoose@10.1.0
+  - @keystonejs/fields@21.0.0
+  - @keystonejs/app-admin-ui@7.3.12
+
 ## 6.0.14
 
 ### Patch Changes

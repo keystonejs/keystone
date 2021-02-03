@@ -73,7 +73,6 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
   const { customToast } = useUIHooks();
 
   const [updateItem, { loading: updateInProgress }] = useMutation(list.updateMutation, {
-    errorPolicy: 'all',
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
   });
 

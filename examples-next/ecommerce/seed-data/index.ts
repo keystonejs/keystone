@@ -1,3 +1,4 @@
+import { BaseKeystone } from '@keystone-next/types';
 import { products } from './data';
 
 export async function insertSeedData(keystone: any) {

@@ -93,7 +93,6 @@ export const KeystoneProvider = (props: KeystoneProviderProps) => {
 
   return (
     <ApolloProvider client={apolloClient}>
-      <script src="http://localhost:8097" />
       <InternalKeystoneProvider {...props} />
     </ApolloProvider>
   );

@@ -57,7 +57,7 @@ export default withAuth(
     db: {
       adapter: 'mongoose',
       url: databaseUrl,
-      onConnect: async keystone => {
+      onConnect: async ({ keystone }) => {
         if (process.argv.includes('--seed-data')) {
           insertSeedData(keystone);
         }

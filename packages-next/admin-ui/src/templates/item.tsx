@@ -1,19 +1,10 @@
-import type { KeystoneSystem } from '@keystone-next/types';
-
-type ItemPageTemplateOptions = {
-  list: KeystoneSystem['adminMeta']['lists'][string];
-};
-
-export const itemTemplate = ({ list }: ItemPageTemplateOptions) => {
-  // -- TEMPLATE START
-  return `
+export const itemTemplate = (listKey: string) =>
+  `
 import React from 'react';
 
 import { ItemPage } from '@keystone-next/admin-ui/pages/ItemPage';
 
 export default function Item() {
-  return <ItemPage listKey="${list.key}" />;
+  return <ItemPage listKey="${listKey}" />;
 }
   `;
-  // -- TEMPLATE END
-};

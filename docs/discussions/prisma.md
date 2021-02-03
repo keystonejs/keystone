@@ -16,7 +16,7 @@ The Prisma adapter currently only supports PostgreSQL databases. Future releases
 
 ## Migrations
 
-[Prisma Migrate](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate) is currently considered experimental.
+[Prisma Migrate](https://www.prisma.io/docs/concepts/components/prisma-migrate) is currently in preview mode.
 The Prisma adapter will not be considered production ready until Prisma Migrate is also production ready.
 
 ## Field types

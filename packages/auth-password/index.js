@@ -12,7 +12,7 @@ class PasswordAuthStrategy {
     this.config = {
       identityField: 'email',
       secretField: 'password',
-      protectIdentities: false,
+      protectIdentities: true,
       ...config,
     };
   }

@@ -3,9 +3,12 @@ import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 import { Implementation } from '@keystonejs/fields';
 // eslint-disable-next-line import/no-unresolved
-import { addRelationshipData, removeRelationshipData } from './relationship-data';
+import { addRelationshipData } from './relationship-data';
 
-const graphQLOutputType = 'DocumentField';
+// this includes the list key and path because in the future
+// there will likely be additional fields specific to a particular field
+// such as exposing the relationships in the document
+const outputType = field => `${field.listKey}_${field.path}_DocumentField`;
 
 export class DocumentImplementation extends Implementation {
   get _supportsUnique() {
@@ -13,31 +16,41 @@ export class DocumentImplementation extends Implementation {
   }
 
   gqlOutputFields() {
-    return [`${this.path}: ${graphQLOutputType}`];
+    return [`${this.path}: ${outputType(this)}`];
   }
 
   getGqlAuxTypes() {
     return [
-      `type ${graphQLOutputType} {
-      document: JSON
+      `type ${outputType(this)} {
+      document(hydrateRelationships: Boolean! = false): JSON!
     }`,
     ];
   }
 
+  gqlAuxFieldResolvers() {
+    return {
+      [outputType(this)]: {
+        document: (rootVal, { hydrateRelationships }) => rootVal.document(hydrateRelationships),
+      },
+    };
+  }
   // Called on `User.avatar` for example
   gqlOutputFieldResolvers() {
     return {
       [this.path]: (item, _args, context) => {
-        if (!Array.isArray(item[this.path]?.document)) return null;
+        const document = item[this.path];
+        if (!Array.isArray(document)) return null;
         return {
-          document: addRelationshipData(
-            item[this.path].document,
-            context.graphql,
-            this.config.relationships,
-            listKey => {
-              return context.keystone.lists[listKey].gqlNames;
-            }
-          ),
+          document: hydrateRelationships =>
+            hydrateRelationships
+              ? addRelationshipData(
+                  document,
+                  context.graphql,
+                  this.config.relationships,
+                  this.config.componentBlocks,
+                  listKey => context.keystone.lists[listKey].gqlNames
+                )
+              : document,
         };
       },
     };
@@ -51,7 +64,12 @@ export class DocumentImplementation extends Implementation {
     if (data === undefined) {
       return undefined;
     }
-    return { document: removeRelationshipData(data) };
+    const nodes = this.config.___validateAndNormalize(data);
+    if (this.adapter.constructor === KnexDocumentInterface) {
+      // knex expects the json to be stringified
+      return JSON.stringify(nodes);
+    }
+    return nodes;
   }
 
   gqlUpdateInputFields() {

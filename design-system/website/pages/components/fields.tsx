@@ -1,8 +1,17 @@
 /* @jsx jsx */
 
 import { ComponentProps, ReactNode, useState } from 'react';
-import { jsx, useTheme } from '@keystone-ui/core';
-import { Checkbox, Radio, TextArea, TextInput, Switch, Select } from '@keystone-ui/fields';
+import { jsx, Stack, useTheme } from '@keystone-ui/core';
+import {
+  Checkbox,
+  Radio,
+  TextArea,
+  TextInput,
+  Switch,
+  Select,
+  DatePicker,
+  DateType,
+} from '@keystone-ui/fields';
 import { SegmentedControl } from '@keystone-ui/segmented-control';
 
 import { Page } from '../../components/Page';
@@ -27,6 +36,16 @@ const StatefulSwitch = ({ children, ...props }: ComponentProps<typeof Switch>) =
     <Switch checked={checked} onClick={() => setChecked(!checked)} {...props}>
       {children}
     </Switch>
+  );
+};
+
+const BasicDatePicker = () => {
+  let [value, setValue] = useState<DateType>('');
+  return (
+    <Stack gap="small">
+      <pre>{value || 'no value'}</pre>
+      <DatePicker onUpdate={setValue} onClear={() => setValue('')} value={value} />
+    </Stack>
   );
 };
 
@@ -157,6 +176,31 @@ export default function FieldsPage() {
           On + Disabled
         </Switch>
       </FieldWrapper>
+      <h2>Date Picker</h2>
+      <FieldWrapper>
+        <BasicDatePicker />
+      </FieldWrapper>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </Page>
   );
 }

@@ -1,5 +1,32 @@
 # @keystonejs/fields-cloudinary-image
 
+## 2.1.3
+
+### Patch Changes
+
+- Updated dependencies [[`a886039a1`](https://github.com/keystonejs/keystone/commit/a886039a1fc17c9b60b2955f0e58916ab1c3d7bf), [`680169cad`](https://github.com/keystonejs/keystone/commit/680169cad62dd889ec95961cba9df3b4d012887f), [`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d)]:
+  - @keystonejs/fields@21.1.0
+  - @keystonejs/adapter-knex@13.0.0
+  - @keystonejs/adapter-mongoose@11.0.0
+
+## 2.1.2
+
+### Patch Changes
+
+- [`88776915a`](https://github.com/keystonejs/keystone/commit/88776915af1b795b54c14a1187eee9a1e3b0ea80) [#4699](https://github.com/keystonejs/keystone/pull/4699) Thanks [@timleslie](https://github.com/timleslie)! - Updated auxillary list name to be compatible with the Prisma adapter requirements.
+
+- Updated dependencies []:
+  - @keystonejs/fields@21.0.2
+
+## 2.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0), [`d329f07a5`](https://github.com/keystonejs/keystone/commit/d329f07a5ce7ebf5d658a7f90334ba4372a2a72d)]:
+  - @keystonejs/adapter-mongoose@10.1.0
+  - @keystonejs/fields@21.0.0
+  - @keystonejs/fields-content@9.0.4
+
 ## 2.1.0
 
 ### Minor Changes

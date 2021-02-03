@@ -20,10 +20,10 @@ const { DISABLE_AUTH } = process.env;
 const LOCAL_FILE_SRC = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { PrismaAdapter } = require('@keystonejs/adapter-prisma');
 
 const keystone = new Keystone({
-  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/cypress-test-project' }),
+  adapter: new PrismaAdapter(),
   cookieSecret,
 });
 

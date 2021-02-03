@@ -41,10 +41,6 @@ module.exports = {
     return getPrefix(access);
   },
 
-  listNameToCollectionName(name) {
-    return `${name.toLowerCase()}s`;
-  },
-
   /* Generated with:
   const result = [];
   const options = ['create', 'read', 'update', 'delete', 'auth'];

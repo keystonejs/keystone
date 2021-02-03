@@ -1,5 +1,48 @@
 # @keystonejs/adapter-mongoose
 
+## 11.0.0
+
+### Major Changes
+
+- [`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d) [#4709](https://github.com/keystonejs/keystone/pull/4709) Thanks [@timleslie](https://github.com/timleslie)! - Database adapters no longer support custom `ListAdapter` classes via the `listAdapterClass` option of `adapterConfig` in `createList()`.
+
+### Patch Changes
+
+- Updated dependencies [[`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d), [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9), [`94c8d349d`](https://github.com/keystonejs/keystone/commit/94c8d349d3795cd9abec407f78752417623ee56f)]:
+  - @keystonejs/keystone@19.0.0
+  - @keystonejs/utils@6.0.1
+  - @keystonejs/fields-mongoid@9.1.3
+
+## 10.1.2
+
+### Patch Changes
+
+- Updated dependencies [[`3b7a056bb`](https://github.com/keystonejs/keystone/commit/3b7a056bb835482ceb408a70bf97300741552d19), [`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be), [`4768fbf83`](https://github.com/keystonejs/keystone/commit/4768fbf831ffff648e540c479a1954ae40e05aaa), [`74a8528ea`](https://github.com/keystonejs/keystone/commit/74a8528ea0dad739f4f16af32fe4f8926a188b61)]:
+  - @keystonejs/keystone@18.1.0
+  - @keystonejs/utils@6.0.0
+
+## 10.1.1
+
+### Patch Changes
+
+- [`cf2819544`](https://github.com/keystonejs/keystone/commit/cf2819544426def260ada5eb18fdc9b8a01e9438) [#4591](https://github.com/keystonejs/keystone/pull/4591) Thanks [@timleslie](https://github.com/timleslie)! - Reverted query optimisations which introduced regressions in `10.1.0`.
+
+- Updated dependencies [[`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95), [`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95)]:
+  - @keystonejs/keystone@18.0.0
+
+## 10.1.0
+
+### Minor Changes
+
+- [`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b) [#4516](https://github.com/keystonejs/keystone/pull/4516) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency mongoose to `^5.11.5`.
+
+* [`d329f07a5`](https://github.com/keystonejs/keystone/commit/d329f07a5ce7ebf5d658a7f90334ba4372a2a72d) [#4536](https://github.com/keystonejs/keystone/pull/4536) Thanks [@timleslie](https://github.com/timleslie)! - Improved performance of generated queries. Thanks to @enhancers for the code contribution and @gautamsi for leading the discussion.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @keystonejs/fields-mongoid@9.1.1
+
 ## 10.0.1
 
 ### Patch Changes

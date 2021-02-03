@@ -1,5 +1,32 @@
 # @keystonejs/fields-mongoid
 
+## 9.1.3
+
+### Patch Changes
+
+- Updated dependencies [[`a886039a1`](https://github.com/keystonejs/keystone/commit/a886039a1fc17c9b60b2955f0e58916ab1c3d7bf), [`680169cad`](https://github.com/keystonejs/keystone/commit/680169cad62dd889ec95961cba9df3b4d012887f), [`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d)]:
+  - @keystonejs/adapter-prisma@3.0.0
+  - @keystonejs/fields@21.1.0
+  - @keystonejs/adapter-knex@13.0.0
+  - @keystonejs/adapter-mongoose@11.0.0
+
+## 9.1.2
+
+### Patch Changes
+
+- Updated dependencies [[`6b95cb6e4`](https://github.com/keystonejs/keystone/commit/6b95cb6e4d5bea3a87e22765d5fcf31db2fc31ae), [`fc2b7101f`](https://github.com/keystonejs/keystone/commit/fc2b7101f35f20e4d729269a005816546bb37464), [`e7d4d54e5`](https://github.com/keystonejs/keystone/commit/e7d4d54e5b94e6b376d6eab28a0f2b074f2c95ed), [`a62a2d996`](https://github.com/keystonejs/keystone/commit/a62a2d996f1080051f7962b7063ae37d7e8b7e63)]:
+  - @keystonejs/adapter-prisma@2.0.0
+  - @keystonejs/fields@21.0.2
+
+## 9.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0), [`defd05365`](https://github.com/keystonejs/keystone/commit/defd05365f31d0d6d4b6fd9ffe0a0c3928f97e79), [`d329f07a5`](https://github.com/keystonejs/keystone/commit/d329f07a5ce7ebf5d658a7f90334ba4372a2a72d)]:
+  - @keystonejs/adapter-mongoose@10.1.0
+  - @keystonejs/fields@21.0.0
+  - @keystonejs/adapter-prisma@1.1.0
+
 ## 9.1.0
 
 ### Minor Changes

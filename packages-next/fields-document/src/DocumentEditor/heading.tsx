@@ -1,52 +1,32 @@
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
-import { ReactEditor, RenderElementProps } from 'slate-react';
+import { RenderElementProps } from 'slate-react';
 
 import { Editor, Transforms } from 'slate';
-import { getMaybeMarkdownShortcutText } from './utils';
 
 export const HeadingElement = ({ attributes, children, element }: RenderElementProps) => {
-  const Tag = `h${element.level}`;
-  return <Tag {...attributes}>{children}</Tag>;
+  const Tag = `h${element.level}` as 'h1';
+  return (
+    <Tag {...attributes} css={{ textAlign: element.textAlign as any }}>
+      {children}
+    </Tag>
+  );
 };
 
-export function withHeading(headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[], editor: ReactEditor) {
-  const { insertBreak, insertText } = editor;
+export function withHeading<T extends Editor>(editor: T): T {
+  const { insertBreak } = editor;
   editor.insertBreak = () => {
     insertBreak();
 
-    const [match] = Editor.nodes(editor, {
+    const entry = Editor.above(editor, {
       match: n => n.type === 'heading',
     });
-    if (!match) return;
-    const [, path] = match;
-    Transforms.setNodes(
-      editor,
-      { type: 'paragraph', children: [{ text: '' }] },
-      {
-        at: path,
-      }
-    );
-  };
-  if (headingLevels.length) {
-    const shortcuts: Record<string, number> = {};
-    headingLevels.forEach(value => {
-      shortcuts['#'.repeat(value)] = value;
+    if (!entry) return;
+    const [, path] = entry;
+    Transforms.unwrapNodes(editor, {
+      at: path,
     });
-    editor.insertText = text => {
-      const [shortcutText, deleteShortcutText] = getMaybeMarkdownShortcutText(text, editor);
-      if (shortcutText && shortcuts[shortcutText] !== undefined) {
-        deleteShortcutText();
-        Transforms.setNodes(
-          editor,
-          { type: 'heading', level: shortcuts[shortcutText] },
-          { match: node => node.type === 'paragraph' }
-        );
-        return;
-      }
-      insertText(text);
-    };
-  }
+  };
   return editor;
 }

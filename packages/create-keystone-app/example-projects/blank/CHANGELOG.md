@@ -1,5 +1,22 @@
 # @keystonejs/example-projects-blank
 
+## 5.0.17
+
+### Patch Changes
+
+- Updated dependencies [[`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d), [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9)]:
+  - @keystonejs/adapter-mongoose@11.0.0
+  - @keystonejs/keystone@19.0.0
+
+## 5.0.16
+
+### Patch Changes
+
+- Updated dependencies [[`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95), [`cf2819544`](https://github.com/keystonejs/keystone/commit/cf2819544426def260ada5eb18fdc9b8a01e9438), [`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95)]:
+  - @keystonejs/keystone@18.0.0
+  - @keystonejs/app-graphql@6.2.0
+  - @keystonejs/adapter-mongoose@10.1.1
+
 ## 5.0.15
 
 ### Patch Changes

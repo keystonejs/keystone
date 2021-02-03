@@ -43,7 +43,7 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 const keystone = new Keystone({
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/keystone' }),
 });
 
 keystone.createList('User', {
@@ -106,7 +106,7 @@ Example on how to `seed` the data upon database connection:
 const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 const keystone = new Keystone({
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/keystone' }),
   onConnect: async keystone => {
     await createItems({
       keystone,
@@ -180,7 +180,7 @@ The full example:
 
 ```javascript
 const keystone = new Keystone({
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/keystone' }),
   onConnect: async keystone => {
 
   // 1. Insert the user list first as it has no associated relationship.
@@ -249,7 +249,7 @@ In action:
 
 ```javascript
 const keystone = new Keystone({
-  adapter: new MongooseAdapter(),
+  adapter: new MongooseAdapter({ mongoUri: 'mongodb://localhost/keystone' }),
   onConnect: async keystone => {
     // 1. Create posts first as we need generated ids to establish relationship with user items.
     const posts = await createItems({
@@ -276,7 +276,7 @@ const keystone = new Keystone({
             password: 'dolphins',
             posts: {
               // Filtering list of items where title contains the word `React`
-              connect: post.filter(p => /\bReact\b/i.test(p.title)).map(i => ({ id: i.id })),
+              connect: posts.filter(p => /\bReact\b/i.test(p.title)).map(i => ({ id: i.id })),
             },
           },
         },

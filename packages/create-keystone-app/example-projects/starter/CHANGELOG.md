@@ -1,5 +1,36 @@
 # @keystonejs/example-projects-starter
 
+## 5.0.24
+
+### Patch Changes
+
+- Updated dependencies [[`a886039a1`](https://github.com/keystonejs/keystone/commit/a886039a1fc17c9b60b2955f0e58916ab1c3d7bf), [`680169cad`](https://github.com/keystonejs/keystone/commit/680169cad62dd889ec95961cba9df3b4d012887f), [`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d), [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9)]:
+  - @keystonejs/fields@21.1.0
+  - @keystonejs/adapter-mongoose@11.0.0
+  - @keystonejs/keystone@19.0.0
+
+## 5.0.23
+
+### Patch Changes
+
+- [`0dfb63414`](https://github.com/keystonejs/keystone/commit/0dfb6341412c3c7ae60f069d37fa96e0c9adc900) [#4304](https://github.com/keystonejs/keystone/pull/4304) Thanks [@timleslie](https://github.com/timleslie)! - Updated `protectIdenties` from the default `false` to `process.env.NODE_ENV === 'production'`, to provide a better balance of protection and convenience.
+
+- Updated dependencies [[`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95), [`cf2819544`](https://github.com/keystonejs/keystone/commit/cf2819544426def260ada5eb18fdc9b8a01e9438), [`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95), [`0dfb63414`](https://github.com/keystonejs/keystone/commit/0dfb6341412c3c7ae60f069d37fa96e0c9adc900)]:
+  - @keystonejs/keystone@18.0.0
+  - @keystonejs/app-graphql@6.2.0
+  - @keystonejs/adapter-mongoose@10.1.1
+  - @keystonejs/auth-password@6.0.0
+
+## 5.0.22
+
+### Patch Changes
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0), [`f8873064b`](https://github.com/keystonejs/keystone/commit/f8873064b667d62001afe7950e33d019bcff7be3), [`d329f07a5`](https://github.com/keystonejs/keystone/commit/d329f07a5ce7ebf5d658a7f90334ba4372a2a72d)]:
+  - @keystonejs/adapter-mongoose@10.1.0
+  - @keystonejs/fields@21.0.0
+  - @keystonejs/app-admin-ui@7.3.12
+  - @keystonejs/auth-password@5.1.18
+
 ## 5.0.21
 
 ### Patch Changes

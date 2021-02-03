@@ -406,8 +406,6 @@ export type _ListSchemaFieldsInput = {
   readonly type?: Scalars['String'] | null;
 };
 
-export type CacheControlScope = 'PUBLIC' | 'PRIVATE';
-
 export type PasswordAuthErrorCode =
   | 'FAILURE'
   | 'IDENTITY_NOT_FOUND'

@@ -1,5 +1,27 @@
 # @keystonejs/auth-password
 
+## 6.0.0
+
+### Major Changes
+
+- [`0dfb63414`](https://github.com/keystonejs/keystone/commit/0dfb6341412c3c7ae60f069d37fa96e0c9adc900) [#4304](https://github.com/keystonejs/keystone/pull/4304) Thanks [@timleslie](https://github.com/timleslie)! - Changed the default value of [`protectIdentities`](https://www.keystonejs.com/keystonejs/auth-password/#config) from `false` to `true`.
+  To keep the current behaviour you can explicitly pass through the value you want, e.g.
+
+  ```
+  keystone.createAuthStrategy({
+    type: PasswordAuthStrategy,
+    list: 'User',
+    config: { protectIdentities: true },
+  });
+  ```
+
+## 5.1.18
+
+### Patch Changes
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0)]:
+  - @keystonejs/fields@21.0.0
+
 ## 5.1.17
 
 ### Patch Changes

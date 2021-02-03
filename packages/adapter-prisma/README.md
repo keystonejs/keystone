@@ -12,7 +12,7 @@ The Prisma adapter allows Keystone to connect a database using Prisma Client, a 
 
 > **Tip:** Want to get started with Keystone + Prisma? [Follow the guide](/docs/guides/prisma.md)!
 >
-> **Warning:** The Keystone Prisma adapter is not currently production-ready. It depends on the [Prisma Migrate](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate) system which is currently flagged as `EXPERIMENTAL`. Once Prisma Migrate is out of experimental mode, we will release a production-ready version of this package.
+> **Warning:** The Keystone Prisma adapter is not currently production-ready. It depends on the [Prisma Migrate](https://www.prisma.io/docs/concepts/components/prisma-migrate) system which is currently flagged as `Preview`. Once Prisma Migrate is out of preview mode, we will release a production-ready version of this package.
 >
 > **Note:** This adapter currently only supports PostgreSQL databases, and has other limitations. For more details, see our [Prisma Adapter - Production Ready Checklist](/docs/discussions/prisma.md)
 
@@ -60,6 +60,12 @@ Enables logging at the [`query`](https://www.prisma.io/docs/reference/tools-and-
 _**Default:**_ `false`
 
 Allow the adapter to drop the entire database and recreate the tables / foreign keys based on the list schema in your application. This option is ignored in production, i.e. when the environment variable NODE_ENV === 'production'.
+
+### `migrationMode`
+
+_**Default:**_ `'dev'`
+
+Controls how and when migrations are applied. One of `'dev'`, `'prototype'`, `'createOnly'`, or `'none'`. In `prototype` mode, `prisma db push` is used to sync the database tables without generating migration files. In `dev` mode, migrations files are generated and applied whenever the schema changes. In `createOnly` mode, migrations are generated but not applied. In `none` mode, no migrations are generated or applied.
 
 ## Setup
 

@@ -2,7 +2,6 @@ const path = require('path');
 const chalk = require('chalk');
 const { DEFAULT_ENTRY } = require('../../constants');
 const { getEntryFileFullPath } = require('../utils');
-const { asyncForEach } = require('@keystonejs/utils');
 
 const createTables = async (args, entryFile, spinner) => {
   // Allow the spinner time to flush its output to the console.
@@ -10,25 +9,23 @@ const createTables = async (args, entryFile, spinner) => {
   const { keystone } = require(path.resolve(entryFile));
   await keystone.connect(); // Need to do _createTables post connect so awaiting connect
   let errors = false;
-  await asyncForEach(Object.values(keystone.adapters), async adapter => {
-    if (!adapter._createTables) {
-      spinner.info(chalk.yellow.bold(`create-tables is only required for KnexAdapter`));
-      return;
+  if (!keystone.adapter._createTables) {
+    spinner.info(chalk.yellow.bold(`create-tables is only required for KnexAdapter`));
+    return;
+  }
+  try {
+    console.log('Creating tables...');
+    await keystone.adapter._createTables();
+  } catch (e) {
+    if (e.message.includes('already exists')) {
+      spinner.fail(chalk.red.bold(`Table already exists`));
+      console.warn('Create tables should be used on an empty database');
+      console.warn(e.message);
+    } else {
+      console.error(e);
     }
-    try {
-      console.log('Creating tables...');
-      await adapter._createTables();
-    } catch (e) {
-      if (e.message.includes('already exists')) {
-        spinner.fail(chalk.red.bold(`Table already exists`));
-        console.warn('Create tables should be used on an empty database');
-        console.warn(e.message);
-      } else {
-        console.error(e);
-      }
-      errors = true;
-    }
-  });
+    errors = true;
+  }
   if (!errors) {
     spinner.succeed(chalk.green.bold(`Tables created`));
     process.exit(0);

@@ -57,12 +57,12 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
   getAdminMeta: (
     listKey,
     path,
-    adminMeta
+    adminMetaRoot
   ): Parameters<
     typeof import('@keystone-next/fields/types/relationship/views').controller
   >[0]['fieldMeta'] => {
     const refListKey = config.ref.split('.')[0];
-    if (!adminMeta.lists[refListKey]) {
+    if (!adminMetaRoot.listsByKey[refListKey]) {
       throw new Error(`The ref [${config.ref}] on relationship [${listKey}.${path}] is invalid`);
     }
     return {
@@ -81,7 +81,7 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
           }
         : {
             displayMode: 'select',
-            refLabelField: adminMeta.lists[refListKey].labelField,
+            refLabelField: adminMetaRoot.listsByKey[refListKey].labelField,
           }),
     };
   },

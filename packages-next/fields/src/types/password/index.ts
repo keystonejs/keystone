@@ -8,6 +8,7 @@ type PasswordFieldConfig<
 > = FieldConfig<TGeneratedListTypes> & {
   minLength?: number;
   isRequired?: boolean;
+  bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'compareSync' | 'hash' | 'hashSync'>;
 };
 
 export const password = <TGeneratedListTypes extends BaseGeneratedListTypes>(

@@ -9,8 +9,10 @@ const { defaultObj, mapKeys, identity, flatten } = require('@keystonejs/utils');
 class PrismaAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);
+    this.listAdapterClass = PrismaListAdapter;
     this.name = 'prisma';
     this.provider = this.config.provider || 'postgresql';
+    this.migrationMode = this.config.migrationMode || 'dev';
 
     this.getPrismaPath = this.config.getPrismaPath || (() => '.prisma');
     this.getDbSchemaName = this.config.getDbSchemaName || (() => 'public');
@@ -18,14 +20,15 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this.url = this.config.url || process.env.DATABASE_URL;
   }
 
-  async _connect({ rels }) {
-    await this._generateClient(rels);
-    const { PrismaClient } = require(this.clientPath);
-    this.prisma = new PrismaClient({
-      log: this.enableLogging && ['query'],
-      datasources: { [this.provider]: { url: this._url() } },
-    });
-    await this.prisma.$connect();
+  async _prepareSchema(rels) {
+    const clientDir = 'generated-client';
+    const prismaSchema = await this._generatePrismaSchema({ rels, clientDir });
+    // See if there is a prisma client available for this hash
+    const prismaPath = this.getPrismaPath({ prismaSchema });
+    this.schemaPath = path.join(prismaPath, 'schema.prisma');
+    this.clientPath = path.resolve(`${prismaPath}/${clientDir}`);
+    this.dbSchemaName = this.getDbSchemaName({ prismaSchema });
+    return { prismaSchema };
   }
 
   _url() {
@@ -38,34 +41,40 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     }
   }
 
+  _runPrismaCmd(cmd) {
+    return execSync(`yarn prisma ${cmd} --schema ${this.schemaPath}`, {
+      env: { ...process.env, DATABASE_URL: this._url() },
+      encoding: 'utf-8',
+    });
+  }
+
+  async deploy(rels) {
+    // Apply any migrations which haven't already been applied
+    await this._prepareSchema(rels);
+    this._runPrismaCmd(`migrate deploy --preview-feature`);
+  }
+
+  async _connect({ rels }) {
+    await this._generateClient(rels);
+    const { PrismaClient } = require(this.clientPath);
+    this.prisma = new PrismaClient({
+      log: this.enableLogging && ['query'],
+      datasources: { [this.provider]: { url: this._url() } },
+    });
+    await this.prisma.$connect();
+  }
+
   async _generateClient(rels) {
     // 1. Generate a formatted schema
+    const { prismaSchema } = await this._prepareSchema(rels);
 
     // 2. Check for existing schema
     // 2a1. If they're the same, we're golden
     // 2a2. If they're different, generate and run a migration
     // 2b. If it doesn't exist, generate and run a migration
-    const clientDir = 'generated-client';
-    const prismaSchema = await this._generatePrismaSchema({ rels, clientDir });
-    // See if there is a prisma client available for this hash
-    const prismaPath = this.getPrismaPath({ prismaSchema });
-    this.schemaPath = path.join(prismaPath, 'schema.prisma');
-    this.clientPath = path.resolve(`${prismaPath}/${clientDir}`);
-    this.dbSchemaName = this.getDbSchemaName({ prismaSchema });
 
     // // If any of our critical directories are missing, or if the schema has changed, then
     // // we've got things to do.
-    // const schemaState = 'matching';
-    // if (schemaState !== 'matching') {
-    //   // Write schema
-    // }
-    // if (!fs.existsSync(this.clientPath) || schemaState !== 'matching') {
-    //   // Generate prisma client
-    // }
-    // if (/* something */ false){
-    //   // generate and run a migration
-    // }
-
     if (
       !fs.existsSync(this.clientPath) ||
       !fs.existsSync(this.schemaPath) ||
@@ -74,28 +83,34 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       if (fs.existsSync(this.clientPath)) {
         const existing = fs.readFileSync(this.schemaPath, { encoding: 'utf-8' });
         if (existing === prismaSchema) {
-          // 2a1. If they're the same, we're golden
-        } else {
-          // 2a2. If they're different, generate and run a migration
-          // Write prisma file
-          this._writePrismaSchema({ prismaSchema });
-
-          // Generate prisma client
-          await this._generatePrismaClient();
-
-          this._saveMigration({ name: `keystone-${cuid()}` });
-          this._executeMigrations();
+          // If they're the same, we're golden
+          return;
         }
-      } else {
-        this._writePrismaSchema({ prismaSchema });
-
-        // Generate prisma client
-        await this._generatePrismaClient();
-
-        // Need to generate and run a migration!!!
-        this._saveMigration({ name: 'init' });
-        this._executeMigrations();
       }
+      this._writePrismaSchema({ prismaSchema });
+
+      // Generate prisma client
+      await this._generatePrismaClient();
+
+      // Run prisma migrations
+      await this._runMigrations();
+    }
+  }
+
+  async _runMigrations() {
+    if (this.migrationMode === 'prototype') {
+      // Sync the database directly, without generating any migration
+      this._runPrismaCmd(`db push --force --preview-feature`);
+    } else if (this.migrationMode === 'createOnly') {
+      // Generate a migration, but do not apply it
+      this._runPrismaCmd(`migrate dev --create-only --name keystone-${cuid()} --preview-feature`);
+    } else if (this.migrationMode === 'dev') {
+      // Generate and apply a migration if required.
+      this._runPrismaCmd(`migrate dev --name keystone-${cuid()} --preview-feature`);
+    } else if (this.migrationMode === 'none') {
+      // Explicitly disable running any migrations
+    } else {
+      throw new Error(`migrationMode must be one of 'dev', 'prototype', 'createOnly', or 'none`);
     }
   }
 
@@ -158,6 +173,15 @@ class PrismaAdapter extends BaseKeystoneAdapter {
               `from_${path} ${listKey}[] @relation("${tableName}", references: [id])`,
             ])
         ),
+        ...flatten(
+          rels
+            .filter(({ right }) => !right)
+            .filter(({ left }) => left.refListKey === listAdapter.key)
+            .filter(({ cardinality }) => cardinality === '1:N' || cardinality === 'N:1')
+            .map(({ left: { path, listKey }, tableName, columnName }) => [
+              `from_${listKey}_${path} ${listKey}[] @relation("${tableName}${columnName}")`,
+            ])
+        ),
       ];
 
       return `
@@ -185,6 +209,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       generator client {
         provider = "prisma-client-js"
         output = "${clientDir}"
+        previewFeatures = ["nativeTypes"]
       }`;
     return await formatSchema({ schema: header + models.join('\n') + '\n' + enums.join('\n') });
   }
@@ -202,48 +227,33 @@ class PrismaAdapter extends BaseKeystoneAdapter {
 
   // This will drop all the tables in the backing database. Use wisely.
   async dropDatabase() {
-    let migrationNeeded = true;
-    if (this.provider === 'postgresql') {
-      for (const { tablename } of await this.prisma.$queryRaw(
-        `SELECT tablename FROM pg_tables WHERE schemaname='${this.dbSchemaName}'`
-      )) {
-        if (tablename.includes('_Migration')) {
-          migrationNeeded = false;
+    if (this.migrationMode === 'prototype') {
+      if (this.provider === 'postgresql') {
+        // Special fast path to drop data from a postgres database.
+        // This is an optimization which is particularly crucial in a unit testing context.
+        // This code path takes milliseconds, vs ~7 seconds for a migrate reset + db push
+        for (const { tablename } of await this.prisma.$queryRaw(
+          `SELECT tablename FROM pg_tables WHERE schemaname='${this.dbSchemaName}'`
+        )) {
+          await this.prisma.$queryRaw(
+            `TRUNCATE TABLE \"${this.dbSchemaName}\".\"${tablename}\" CASCADE;`
+          );
         }
-        await this.prisma.$queryRaw(
-          `TRUNCATE TABLE \"${this.dbSchemaName}\".\"${tablename}\" CASCADE;`
-        );
-      }
-      for (const { relname } of await this.prisma.$queryRaw(
-        `SELECT c.relname FROM pg_class AS c JOIN pg_namespace AS n ON c.relnamespace = n.oid WHERE c.relkind='S' AND n.nspname='${this.dbSchemaName}';`
-      )) {
-        if (!relname.includes('_Migration')) {
+        for (const { relname } of await this.prisma.$queryRaw(
+          `SELECT c.relname FROM pg_class AS c JOIN pg_namespace AS n ON c.relnamespace = n.oid WHERE c.relkind='S' AND n.nspname='${this.dbSchemaName}';`
+        )) {
           await this.prisma.$queryRaw(
             `ALTER SEQUENCE \"${this.dbSchemaName}\".\"${relname}\" RESTART WITH 1;`
           );
         }
+      } else {
+        // If we're in prototype mode then we need to rebuild the tables after a reset
+        this._runPrismaCmd(`migrate reset --force --preview-feature`);
+        this._runPrismaCmd(`db push --force --preview-feature`);
       }
+    } else {
+      this._runPrismaCmd(`migrate reset --force --preview-feature`);
     }
-
-    if (migrationNeeded) {
-      this._saveMigration({ name: 'init' });
-      this._executeMigrations();
-    }
-  }
-
-  _saveMigration({ name }) {
-    this._runPrismaCmd(`migrate save --name ${name} --experimental`);
-  }
-
-  _executeMigrations() {
-    this._runPrismaCmd('migrate up --experimental');
-  }
-
-  _runPrismaCmd(cmd) {
-    return execSync(`yarn prisma ${cmd} --schema ${this.schemaPath}`, {
-      env: { ...process.env, DATABASE_URL: this._url() },
-      encoding: 'utf-8',
-    });
   }
 
   disconnect() {
@@ -321,7 +331,7 @@ class PrismaListAdapter extends BaseListAdapter {
 
   async _update(id, _data) {
     const include = this._include();
-    const existingItem = await this.model.findOne({ where: { id: Number(id) }, include });
+    const existingItem = await this.model.findUnique({ where: { id: Number(id) }, include });
     return this.model.update({
       where: { id: Number(id) },
       data: mapKeys(_data, (value, path) => {
@@ -405,8 +415,8 @@ class PrismaListAdapter extends BaseListAdapter {
     if (search !== undefined && search !== '' && searchField) {
       if (searchField.fieldName === 'Text') {
         // FIXME: Think about regex
-        if (!ret.where) ret.where = { name: search };
-        else ret.where = { AND: [ret.where, { name: search }] };
+        if (!ret.where) ret.where = { name: { contains: search, mode: 'insensitive' } };
+        else ret.where = { AND: [ret.where, { name: { contains: search, mode: 'insensitive' } }] };
         // const f = escapeRegExp;
         // this._query.andWhere(`${baseTableAlias}.name`, '~*', f(search));
       } else {
@@ -622,7 +632,5 @@ class PrismaFieldAdapter extends BaseFieldAdapter {
     };
   }
 }
-
-PrismaAdapter.defaultListAdapterClass = PrismaListAdapter;
 
 module.exports = { PrismaAdapter, PrismaListAdapter, PrismaFieldAdapter };

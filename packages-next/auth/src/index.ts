@@ -4,7 +4,6 @@ import {
   AdminFileToWrite,
   BaseGeneratedListTypes,
   KeystoneConfig,
-  SerializedFieldMeta,
   ExtendGraphqlSchema,
 } from '@keystone-next/types';
 import { password, timestamp } from '@keystone-next/fields';
@@ -18,6 +17,7 @@ import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema';
 
 import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';
+import { KeystoneContext } from '@keystone-next/types/src/core';
 
 const getSchemaExtension = ({
   identityField,
@@ -68,7 +68,6 @@ const getSchemaExtension = ({
         identityField,
         listKey,
         protectIdentities,
-        secretField,
         magicAuthLink,
         gqlNames,
       }),
@@ -84,7 +83,7 @@ const getSchemaExtension = ({
 export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   listKey,
   secretField,
-  protectIdentities = false,
+  protectIdentities = true,
   gqlSuffix = '',
   initFirstItem,
   identityField,
@@ -148,7 +147,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   const adminPageMiddleware: Auth['ui']['pageMiddleware'] = async ({
     req,
     isValidSession,
-    system,
+    createContext,
     session,
   }) => {
     const pathname = url.parse(req.url!).pathname!;
@@ -164,12 +163,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     }
 
     if (!session && initFirstItem) {
-      const { count } = await system.keystone.lists[listKey].adapter.itemsQuery(
-        {},
-        {
-          meta: true,
-        }
-      );
+      const count = await createContext({ skipAccessControl: true }).lists[listKey].count({});
       if (count === 0) {
         if (pathname !== '/init') {
           return {
@@ -197,7 +191,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const additionalFiles: Auth['ui']['getAdditionalFiles'] = system => {
+  const additionalFiles: Auth['ui']['getAdditionalFiles'] = () => {
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
@@ -206,16 +200,11 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       },
     ];
     if (initFirstItem) {
-      const fields: Record<string, SerializedFieldMeta> = {};
-      for (const fieldPath of initFirstItem.fields) {
-        fields[fieldPath] = system.adminMeta.lists[listKey].fields[fieldPath];
-      }
-
       filesToWrite.push({
         mode: 'write',
         outputPath: 'pages/init.js',
         // wonder what this template expects from config...
-        src: initTemplate({ listKey, initFirstItem, fields }),
+        src: initTemplate({ listKey, initFirstItem }),
       });
     }
     return filesToWrite;
@@ -253,9 +242,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     const specifiedListConfig = keystoneConfig.lists[listKey];
     if (keystoneConfig.lists[listKey] === undefined) {
       throw new Error(
-        `A createAuth() invocation specifies the list ${JSON.stringify(
-          listKey
-        )} but no list with that key has been defined.`
+        `A createAuth() invocation specifies the list "${listKey}" but no list with that key has been defined.`
       );
     }
 
@@ -263,9 +250,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     const identityFieldConfig = specifiedListConfig.fields[identityField];
     if (identityFieldConfig === undefined) {
       throw new Error(
-        `A createAuth() invocation for the ${JSON.stringify(
-          listKey
-        )} list specifies ${JSON.stringify(
+        `A createAuth() invocation for the "${listKey}" list specifies ${JSON.stringify(
           identityField
         )} as its identityField but no field with that key exists on the list.`
       );
@@ -275,9 +260,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     const secretFieldConfig = specifiedListConfig.fields[secretField];
     if (secretFieldConfig === undefined) {
       throw new Error(
-        `A createAuth() invocation for the ${JSON.stringify(
-          listKey
-        )} list specifies ${JSON.stringify(
+        `A createAuth() invocation for the "${listKey}" list specifies ${JSON.stringify(
           secretField
         )} as its secretField but no field with that key exists on the list.`
       );
@@ -289,9 +272,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     const secretTypename = secretFieldConfig.type && secretFieldConfig.type.type;
     if (typeof secretPrototype.compare !== 'function' || secretPrototype.compare.length < 2) {
       throw new Error(
-        `A createAuth() invocation for the ${JSON.stringify(
-          listKey
-        )} list specifies ${JSON.stringify(
+        `A createAuth() invocation for the "${listKey}" list specifies ${JSON.stringify(
           secretField
         )} as its secretField, which uses the field type ${JSON.stringify(
           secretTypename
@@ -305,9 +286,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     }
     if (typeof secretPrototype.generateHash !== 'function') {
       throw new Error(
-        `A createAuth() invocation for the ${JSON.stringify(
-          listKey
-        )} list specifies ${JSON.stringify(
+        `A createAuth() invocation for the "${listKey}" list specifies ${JSON.stringify(
           secretField
         )} as its secretField, which uses the field type ${JSON.stringify(
           secretTypename
@@ -324,9 +303,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     for (const field of initFirstItem?.fields || []) {
       if (specifiedListConfig.fields[field] === undefined) {
         throw new Error(
-          `A createAuth() invocation for the ${JSON.stringify(
-            listKey
-          )} list specifies the field ${JSON.stringify(
+          `A createAuth() invocation for the "${listKey}" list specifies the field ${JSON.stringify(
             field
           )} in initFirstItem.fields array but no field with that key exist on the list.`
         );
@@ -356,6 +333,23 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
           return (await adminPageMiddleware(args)) ?? keystoneConfig?.ui?.pageMiddleware?.(args);
         },
         enableSessionItem: true,
+        isAccessAllowed: async (context: KeystoneContext) => {
+          // Allow access to the adminMeta data from the /init path to correctly render that page
+          // even if the user isn't logged in (which should always be the case if they're seeing /init)
+          const headers = context.req?.headers;
+          const url = headers?.referer ? new URL(headers.referer) : undefined;
+          const accessingInitPage =
+            url?.pathname === '/init' &&
+            url?.host === headers?.host &&
+            (await context.createContext({ skipAccessControl: true }).lists[listKey].count({})) ===
+              0;
+          return (
+            accessingInitPage ||
+            (keystoneConfig.ui?.isAccessAllowed
+              ? keystoneConfig.ui.isAccessAllowed(context)
+              : context.session !== undefined)
+          );
+        },
       };
     }
     const existingExtendGraphQLSchema = keystoneConfig.extendGraphqlSchema;
