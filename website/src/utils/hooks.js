@@ -12,37 +12,33 @@ export function useDimensions() {
   return [ref, dimensions];
 }
 
-export function useNavData() {
-  // We filter out the index.md pages from the nav list
-  let data = useStaticQuery(graphql`
-    query HeadingQuery {
-      allSitePage(
-        filter: { path: { ne: "/dev-404-page/" }, context: { isIndex: { ne: true } } }
-        sort: {
-          fields: [
-            context___sortOrder
-            context___sortSubOrder
-            context___order
-            context___pageTitle
-          ]
-        }
-      ) {
-        edges {
-          node {
-            path
-            context {
-              navGroup
-              navSubGroup
-              order
-              isPackageIndex
-              pageTitle
-            }
+export const navQuery = graphql`
+  query NavQuery {
+    allSitePage(
+      filter: { path: { ne: "/dev-404-page/" }, context: { isIndex: { ne: true } } }
+      sort: {
+        fields: [context___sortOrder, context___sortSubOrder, context___order, context___pageTitle]
+      }
+    ) {
+      edges {
+        node {
+          path
+          context {
+            navGroup
+            navSubGroup
+            order
+            isPackageIndex
+            pageTitle
           }
         }
       }
     }
-  `);
+  }
+`;
 
+export function useNavData() {
+  // We filter out the index.md pages from the nav list
+  let data = useStaticQuery(navQuery);
   const navData = data.allSitePage.edges.reduce(
     (
       pageList,
@@ -80,5 +76,6 @@ export function useNavData() {
     },
     []
   );
+
   return navData;
 }

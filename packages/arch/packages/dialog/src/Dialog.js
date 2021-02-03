@@ -60,12 +60,13 @@ const ModalDialog = memo(
                   <Title>{heading}</Title>
                 </Header>
               ) : null}
-              <Body>{children}</Body>
+              <ScrollLock>
+                <Body>{children}</Body>
+              </ScrollLock>
               {footer ? <Footer>{footer}</Footer> : null}
             </Dialog>
           </FocusTrap>
         </Positioner>
-        <ScrollLock />
       </Fragment>,
       attachTo
     );

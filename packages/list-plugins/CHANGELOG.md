@@ -1,5 +1,68 @@
 # @keystonejs/list-plugins
 
+## 7.1.5
+
+### Patch Changes
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0)]:
+  - @keystonejs/fields@21.0.0
+  - @keystonejs/fields-authed-relationship@1.0.16
+
+## 7.1.4
+
+### Patch Changes
+
+- Updated dependencies [[`a5e40e6c4`](https://github.com/keystonejs/keystone/commit/a5e40e6c4af1ab38cc2079a0f6e27d39d6b7d546), [`2d660b2a1`](https://github.com/keystonejs/keystone/commit/2d660b2a1dd013787e022cad3a0c70dbe08c60da)]:
+  - @keystonejs/fields@20.0.0
+  - @keystonejs/fields-authed-relationship@1.0.15
+
+## 7.1.3
+
+### Patch Changes
+
+- Updated dependencies [[`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74)]:
+  - @keystonejs/fields@19.0.0
+  - @keystonejs/fields-authed-relationship@1.0.14
+
+## 7.1.2
+
+### Patch Changes
+
+- Updated dependencies [[`a02e69987`](https://github.com/keystonejs/keystone/commit/a02e69987902cfde38d820e68cb24b7a20ca1f6f), [`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4)]:
+  - @keystonejs/fields@18.0.0
+  - @keystonejs/fields-authed-relationship@1.0.13
+
+## 7.1.1
+
+### Patch Changes
+
+- [`a34341387`](https://github.com/keystonejs/keystone/commit/a343413874f9611ad17ec39ff6175664f8a14bb6) [#3569](https://github.com/keystonejs/keystone/pull/3569) Thanks [@singhArmani](https://github.com/singhArmani)! - Added missing `logging` plugin in the docs.
+
+- Updated dependencies [[`cd15192cd`](https://github.com/keystonejs/keystone/commit/cd15192cdae5e476f64a257c196ca569a9440d5a), [`d500613d8`](https://github.com/keystonejs/keystone/commit/d500613d8917e3cbcea2817501d607eddd3b1a8d), [`6c97a5534`](https://github.com/keystonejs/keystone/commit/6c97a5534e8a18d15aeac8b0471810fdd4d04f80), [`34fcc7052`](https://github.com/keystonejs/keystone/commit/34fcc7052a24db61f1f2f12c46110c060934f4ca), [`c3488c5e8`](https://github.com/keystonejs/keystone/commit/c3488c5e88628b15eb9fe804551c3c5c44c07e0f), [`e62b3308b`](https://github.com/keystonejs/keystone/commit/e62b3308bd841b5f58ac9fa1f84707f9187fda6b), [`7036585f2`](https://github.com/keystonejs/keystone/commit/7036585f25c3b690b7a6fd04c39b5b781ff5bcd9), [`2e6a06202`](https://github.com/keystonejs/keystone/commit/2e6a06202299b36c36fd3efd895f2280479eac31), [`a42ee3a30`](https://github.com/keystonejs/keystone/commit/a42ee3a306c899a7ae46909fe132522cbeff7812), [`438051442`](https://github.com/keystonejs/keystone/commit/4380514421020f4418a9f966c9fec60e014478b9), [`b3aa85031`](https://github.com/keystonejs/keystone/commit/b3aa850311cbc1622568f69f9cb4b9f46ab9db22), [`518718e19`](https://github.com/keystonejs/keystone/commit/518718e197d0a2d723c8e184552ddd5d8e165f12), [`28b88abd3`](https://github.com/keystonejs/keystone/commit/28b88abd369f0df12eae72107db7c24323eda4b5)]:
+  - @keystonejs/fields@17.1.1
+
+## 7.1.0
+
+### Minor Changes
+
+- [`84116f7c7`](https://github.com/keystonejs/keystone/commit/84116f7c75637a60936a130f104ac748c445acb5) [#3425](https://github.com/keystonejs/keystone/pull/3425) Thanks [@timleslie](https://github.com/timleslie)! - Added a `logging` plugin to log mutations in a Keystone system.
+
+### Patch Changes
+
+- Updated dependencies [[`d38c9174f`](https://github.com/keystonejs/keystone/commit/d38c9174f8146ad6e268be87cf5d54d5074bc593), [`e8b2e4772`](https://github.com/keystonejs/keystone/commit/e8b2e477206acffb143f19fb14be1e3b4cd0eb91)]:
+  - @keystonejs/fields@17.0.0
+  - @keystonejs/fields-authed-relationship@1.0.11
+
+## 7.0.5
+
+### Patch Changes
+
+- [`7f17cb22f`](https://github.com/keystonejs/keystone/commit/7f17cb22f2ad49d3e5110f68cbb29447a16aa7a7) [#3332](https://github.com/keystonejs/keystone/pull/3332) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Added tests to tracking plugin and fixed a bug where the 'update' operation was sometimes not setting the value of the `updatedBy` field.
+
+- Updated dependencies [[`d38a41f25`](https://github.com/keystonejs/keystone/commit/d38a41f25a1b4c90c05d2fb85116dc385d4ee77a), [`5ede731fc`](https://github.com/keystonejs/keystone/commit/5ede731fc58a79e7322b852bdd2d971ece45281e), [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25), [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7), [`149d6fd6f`](https://github.com/keystonejs/keystone/commit/149d6fd6ff057c17570346063c173376769dcc79), [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1), [`356dd27da`](https://github.com/keystonejs/keystone/commit/356dd27dab4ee6c89a9381dc92eef9534db52fc0)]:
+  - @keystonejs/fields@16.0.0
+  - @keystonejs/fields-authed-relationship@1.0.10
+
 ## 7.0.4
 
 ### Patch Changes

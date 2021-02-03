@@ -8,7 +8,7 @@ function graphql(query, variables = {}) {
       variables,
       query,
     }),
-  }).then(function(result) {
+  }).then(function (result) {
     return result.json();
   });
 }
@@ -71,7 +71,7 @@ function createToDoItem(todo) {
   removeItemButton.classList.add('remove-item', 'js-remove-todo-button');
   removeItemButton.innerHTML = DELETE_ICON;
   // Attach an event to remove the todo
-  removeItemButton.addEventListener('click', function() {
+  removeItemButton.addEventListener('click', function () {
     removeTodo(todo);
   });
 
@@ -90,7 +90,7 @@ function createList(data) {
   // Create the list
   const list = document.createElement('ul');
   list.classList.add('list');
-  data.allTodos.forEach(function(todo) {
+  data.allTodos.forEach(function (todo) {
     list.appendChild(createToDoItem(todo));
   });
   return list;
@@ -98,7 +98,7 @@ function createList(data) {
 
 function fetchData() {
   graphql(GET_TODOS)
-    .then(function(result) {
+    .then(function (result) {
       // Clear any existing elements from the list
       document.querySelector('.results').innerHTML = '';
 
@@ -106,7 +106,7 @@ function fetchData() {
       const list = createList(result.data);
       document.querySelector('.results').appendChild(list);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
       document.querySelector('.results').innerHTML = '<p>Error</p>';
     });

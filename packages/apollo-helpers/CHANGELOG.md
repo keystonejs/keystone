@@ -1,5 +1,31 @@
 # @keystonejs/apollo-helpers
 
+## 5.1.8
+
+### Patch Changes
+
+- [`ec116796b`](https://github.com/keystonejs/keystone/commit/ec116796b1f85d287172f1588c8c1a769ae46a88) [#3674](https://github.com/keystonejs/keystone/pull/3674) Thanks [@timleslie](https://github.com/timleslie)! - Use `@apollo/client` rather than `@apollo/react-components`, which are now deprecated (https://github.com/apollographql/react-apollo/blob/master/Changelog.md#%E2%80%8B400-2020-07-20).
+
+## 5.1.7
+
+### Patch Changes
+
+- [`729e897e6`](https://github.com/keystonejs/keystone/commit/729e897e689f2673f38d6c0caf22e7cee7ee8ff3) [#3496](https://github.com/keystonejs/keystone/pull/3496) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@types/react` to `^16.9.48`.
+
+* [`d3a4f9263`](https://github.com/keystonejs/keystone/commit/d3a4f9263de0d11a1613e420f660eccc2a48172d) [#3540](https://github.com/keystonejs/keystone/pull/3540) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@types/react` to `^16.9.49`.
+
+## 5.1.6
+
+### Patch Changes
+
+- [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+* [`877a5a90d`](https://github.com/keystonejs/keystone/commit/877a5a90d608f0a13b6c0ea103cb96e3ac2caacc) [#3438](https://github.com/keystonejs/keystone/pull/3438) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Apollo GraphQL package dependencies.
+
+- [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b) [#3439](https://github.com/keystonejs/keystone/pull/3439) Thanks [@renovate](https://github.com/apps/renovate)! - Updated babel dependencies.
+
 ## 5.1.5
 
 ### Patch Changes

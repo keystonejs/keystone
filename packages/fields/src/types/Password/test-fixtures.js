@@ -1,75 +1,38 @@
-import { matchFilter } from '@keystonejs/test-utils';
 import Password from './';
 import Text from '../Text';
 
 export const name = 'Password';
-export { Password as type };
-export const exampleValue = '"password"';
+export const type = Password;
+export const exampleValue = () => 'password';
+export const exampleValue2 = () => 'password2';
 export const supportsUnique = false;
+export const fieldName = 'password';
+export const readFieldName = 'password_is_set';
+export const skipCreateTest = true;
+export const skipUpdateTest = true;
 
-export const getTestFields = () => {
-  return {
-    name: { type: Text },
-    password: { type: Password, minLength: 4 },
-  };
-};
+export const getTestFields = () => ({ name: { type: Text }, password: { type, minLength: 4 } });
 
 export const initItems = () => {
   return [
     { name: 'person1', password: 'pass1' },
     { name: 'person2', password: '' },
     { name: 'person3', password: 'pass3' },
+    { name: 'person4', password: 'pass3' },
+    { name: 'person5', password: 'pass3' },
+    { name: 'person6', password: null },
+    { name: 'person7' },
   ];
 };
 
-export const filterTests = withKeystone => {
-  const match = (keystone, queryArgs, expected) =>
-    matchFilter({
-      keystone,
-      queryArgs,
-      fieldSelection: 'name password_is_set',
-      expected,
-      sortKey: 'name',
-    });
+export const storedValues = () => [
+  { name: 'person1', password_is_set: true },
+  { name: 'person2', password_is_set: false },
+  { name: 'person3', password_is_set: true },
+  { name: 'person4', password_is_set: true },
+  { name: 'person5', password_is_set: true },
+  { name: 'person6', password_is_set: false },
+  { name: 'person7', password_is_set: false },
+];
 
-  test(
-    'No filter',
-    withKeystone(({ keystone }) =>
-      match(keystone, undefined, [
-        { name: 'person1', password_is_set: true },
-        { name: 'person2', password_is_set: false },
-        { name: 'person3', password_is_set: true },
-      ])
-    )
-  );
-
-  test(
-    'Empty filter',
-    withKeystone(({ keystone }) =>
-      match(keystone, 'where: { }', [
-        { name: 'person1', password_is_set: true },
-        { name: 'person2', password_is_set: false },
-        { name: 'person3', password_is_set: true },
-      ])
-    )
-  );
-
-  test(
-    'Filter: is_set - true',
-    withKeystone(({ keystone }) =>
-      match(keystone, 'where: { password_is_set: true }', [
-        { name: 'person1', password_is_set: true },
-        { name: 'person3', password_is_set: true },
-      ])
-    )
-  );
-
-  test(
-    'Filter: is_set - false',
-    withKeystone(({ keystone }) =>
-      match(keystone, 'where: { password_is_set: false }', [
-        { name: 'person2', password_is_set: false },
-      ])
-    )
-  );
-};
+export const supportedFilters = () => ['is_set'];

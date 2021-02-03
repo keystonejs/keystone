@@ -1,16 +1,22 @@
-import { Integer, MongoIntegerInterface, KnexIntegerInterface } from './Implementation';
-import { importView } from '@keystonejs/build-field-types';
+import {
+  Integer,
+  MongoIntegerInterface,
+  KnexIntegerInterface,
+  PrismaIntegerInterface,
+} from './Implementation';
+import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Integer',
   implementation: Integer,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Filter: importView('./views/Filter'),
+    Controller: resolveView('types/Integer/views/Controller'),
+    Field: resolveView('types/Integer/views/Field'),
+    Filter: resolveView('types/Integer/views/Filter'),
   },
   adapters: {
     mongoose: MongoIntegerInterface,
     knex: KnexIntegerInterface,
+    prisma: PrismaIntegerInterface,
   },
 };

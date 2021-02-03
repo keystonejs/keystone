@@ -1,5 +1,399 @@
 # @keystonejs/fields
 
+## 21.1.0
+
+### Minor Changes
+
+- [`a886039a1`](https://github.com/keystonejs/keystone/commit/a886039a1fc17c9b60b2955f0e58916ab1c3d7bf) [#4707](https://github.com/keystonejs/keystone/pull/4707) Thanks [@timleslie](https://github.com/timleslie)! - Added support for the `Decimal` field type with the Prisma database adapter.
+
+* [`680169cad`](https://github.com/keystonejs/keystone/commit/680169cad62dd889ec95961cba9df3b4d012887f) [#4706](https://github.com/keystonejs/keystone/pull/4706) Thanks [@timleslie](https://github.com/timleslie)! - Changed `id` sub-field generator for `File` field type from mongoose ObjectID to `cuid` when using Knex or Prisma adapter.
+
+### Patch Changes
+
+- Updated dependencies [[`a886039a1`](https://github.com/keystonejs/keystone/commit/a886039a1fc17c9b60b2955f0e58916ab1c3d7bf), [`619ef5051`](https://github.com/keystonejs/keystone/commit/619ef50512c09d7cf988dc3c877eed868eba68a6), [`86b597d41`](https://github.com/keystonejs/keystone/commit/86b597d410c907ed54a4948da438de48e313302f), [`c1257ca83`](https://github.com/keystonejs/keystone/commit/c1257ca834ccf5a0407debe6e7d27b45ed32a26a), [`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d), [`5e22cc765`](https://github.com/keystonejs/keystone/commit/5e22cc765a8f18c467457fd2ba738cd90273c8c5), [`b9ec7fff9`](https://github.com/keystonejs/keystone/commit/b9ec7fff9d96ac56e2836543d698cf0b62b5dc8f), [`5ad7c12e8`](https://github.com/keystonejs/keystone/commit/5ad7c12e86573e73e85368076bdc1296f3f69db3), [`94c8d349d`](https://github.com/keystonejs/keystone/commit/94c8d349d3795cd9abec407f78752417623ee56f)]:
+  - @keystonejs/adapter-prisma@3.0.0
+  - @keystonejs/access-control@6.3.2
+  - @keystonejs/adapter-knex@13.0.0
+  - @keystonejs/adapter-mongoose@11.0.0
+  - @keystonejs/utils@6.0.1
+
+## 21.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`6b95cb6e4`](https://github.com/keystonejs/keystone/commit/6b95cb6e4d5bea3a87e22765d5fcf31db2fc31ae), [`fc2b7101f`](https://github.com/keystonejs/keystone/commit/fc2b7101f35f20e4d729269a005816546bb37464), [`e7d4d54e5`](https://github.com/keystonejs/keystone/commit/e7d4d54e5b94e6b376d6eab28a0f2b074f2c95ed), [`a62a2d996`](https://github.com/keystonejs/keystone/commit/a62a2d996f1080051f7962b7063ae37d7e8b7e63)]:
+  - @keystonejs/adapter-prisma@2.0.0
+
+## 21.0.1
+
+### Patch Changes
+
+- [`81e86cbaa`](https://github.com/keystonejs/keystone/commit/81e86cbaa5c73633d6cb0ca2f84e834201e8bf9a) [#4653](https://github.com/keystonejs/keystone/pull/4653) Thanks [@timleslie](https://github.com/timleslie)! - Added `gqlOutputFieldResolvers` method to `DateTime` and `CalendarDay` field types, which ensures that read access control is correctly applied.
+
+- Updated dependencies [[`49eec4dea`](https://github.com/keystonejs/keystone/commit/49eec4dea522c6a043b3eaf93fc8be8256b00aa6), [`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be), [`79967883e`](https://github.com/keystonejs/keystone/commit/79967883edaa86d0625235b558ff0f8f87e0b79f)]:
+  - @keystonejs/adapter-prisma@1.1.2
+  - @keystonejs/utils@6.0.0
+  - @keystonejs/app-admin-ui@7.3.13
+  - @keystonejs/access-control@6.3.1
+  - @keystonejs/adapter-knex@12.0.4
+  - @keystonejs/adapter-mongoose@10.1.2
+
+## 21.0.0
+
+### Major Changes
+
+- [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0) [#4544](https://github.com/keystonejs/keystone/pull/4544) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Replaced `useCompiledBcrypt` option with `bcrypt` option which accepts an alternative implementation of bcrypt(such as the native `bcrypt` npm package) in the password field type.
+
+  For example, if you had the following field definition:
+
+  ```js
+  password: { type: Password, useCompiledBcrypt: true }
+  ```
+
+  you will need to change it to:
+
+  ```js
+  password: { type: Password, bcrypt: require('bcrypt') }
+  ```
+
+### Minor Changes
+
+- [`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b) [#4516](https://github.com/keystonejs/keystone/pull/4516) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency mongoose to `^5.11.5`.
+
+### Patch Changes
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`f8873064b`](https://github.com/keystonejs/keystone/commit/f8873064b667d62001afe7950e33d019bcff7be3), [`defd05365`](https://github.com/keystonejs/keystone/commit/defd05365f31d0d6d4b6fd9ffe0a0c3928f97e79), [`d329f07a5`](https://github.com/keystonejs/keystone/commit/d329f07a5ce7ebf5d658a7f90334ba4372a2a72d)]:
+  - @keystonejs/adapter-mongoose@10.1.0
+  - @keystonejs/app-admin-ui@7.3.12
+  - @keystonejs/adapter-prisma@1.1.0
+
+## 20.1.3
+
+### Patch Changes
+
+- [`abdaeb9c1`](https://github.com/keystonejs/keystone/commit/abdaeb9c17a0f1d8e6eda1178d79107ac8770058) [#4421](https://github.com/keystonejs/keystone/pull/4421) Thanks [@miguelvvs](https://github.com/miguelvvs)! - Fixed a bug where the File field would show old state after an item is saved
+
+## 20.1.2
+
+### Patch Changes
+
+- [`038b0ae65`](https://github.com/keystonejs/keystone/commit/038b0ae6586f8673de22046842b2ef993b0e1937) [#4395](https://github.com/keystonejs/keystone/pull/4395) Thanks [@miguelvvs](https://github.com/miguelvvs)! - Cancel method was modified to clear the hidden file input and be able to pick exactly the same file that was selected before the cancel action.
+
+* [`4eef4dc55`](https://github.com/keystonejs/keystone/commit/4eef4dc5587cc06f08ead5d5d05db2e9a786b8bc) [#4409](https://github.com/keystonejs/keystone/pull/4409) Thanks [@timleslie](https://github.com/timleslie)! - Fixed [issue](https://github.com/keystonejs/keystone/issues/4310) with creating `Slug` fields when `{ queryLimits: { maxResults } }` is set.
+
+* Updated dependencies [[`fa12a18b0`](https://github.com/keystonejs/keystone/commit/fa12a18b077367563b1b69db55274e47a1bd5027)]:
+  - @keystonejs/app-admin-ui@7.3.11
+
+## 20.1.1
+
+### Patch Changes
+
+- [`c62a35fe0`](https://github.com/keystonejs/keystone/commit/c62a35fe0834ec60e2472b22feedda539d18a918) [#4309](https://github.com/keystonejs/keystone/pull/4309) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency tinymce to ^5.6.0
+
+- Updated dependencies [[`8d7056c8e`](https://github.com/keystonejs/keystone/commit/8d7056c8ed8d4fccfd61e64fc5fc2caf65899cee)]:
+  - @arch-ui/drawer@0.0.25
+  - @arch-ui/popout@0.0.23
+  - @keystonejs/app-admin-ui@7.3.10
+
+## 20.1.0
+
+### Minor Changes
+
+- [`fab97f6b4`](https://github.com/keystonejs/keystone/commit/fab97f6b416d7040cdd159be379e226142fc189c) [#4238](https://github.com/keystonejs/keystone/pull/4238) Thanks [@timleslie](https://github.com/timleslie)! - Added a `.getBackingTypes()` method to all `Field` implementations, which returns `{ path: { optional, type } }`. This method will be used to generate typescript types in our upcoming [new interfaces](https://www.keystonejs.com/blog/roadmap-update).
+
+### Patch Changes
+
+- [`7afde2fb5`](https://github.com/keystonejs/keystone/commit/7afde2fb516e1d3824d73a96308abb4a6b022400) [#4253](https://github.com/keystonejs/keystone/pull/4253) Thanks [@jossmac](https://github.com/jossmac)! - Admin UI layout experiments and general tidy, esp. fields
+
+* [`5216e9dc6`](https://github.com/keystonejs/keystone/commit/5216e9dc6894c1a6e81765c0278dc6f7c4cc617b) [#4204](https://github.com/keystonejs/keystone/pull/4204) Thanks [@JedWatson](https://github.com/JedWatson)! - Fix Select menu cropping in create item drawer
+
+* Updated dependencies [[`325910f8d`](https://github.com/keystonejs/keystone/commit/325910f8ddaf2b620ce08d64dc97850d57840115), [`745270261`](https://github.com/keystonejs/keystone/commit/745270261f86337206802bd4e66541c98fd4407f)]:
+  - @keystonejs/adapter-prisma@1.0.8
+
+## 20.0.0
+
+### Major Changes
+
+- [`a5e40e6c4`](https://github.com/keystonejs/keystone/commit/a5e40e6c4af1ab38cc2079a0f6e27d39d6b7d546) [#3549](https://github.com/keystonejs/keystone/pull/3549) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@sindresorhus/slugify` to `^1.1.0`. Includes a slight breaking change in how some slugs are computed in the `Slug` field type. See https://github.com/sindresorhus/slugify/releases/tag/v1.0.0.
+
+### Patch Changes
+
+- [`2d660b2a1`](https://github.com/keystonejs/keystone/commit/2d660b2a1dd013787e022cad3a0c70dbe08c60da) [#3580](https://github.com/keystonejs/keystone/pull/3580) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mongoose` to `^5.10.11`.
+
+- Updated dependencies [[`2d660b2a1`](https://github.com/keystonejs/keystone/commit/2d660b2a1dd013787e022cad3a0c70dbe08c60da), [`f2b841b90`](https://github.com/keystonejs/keystone/commit/f2b841b90d5ac8adece645df45b8a17832391b50), [`2b682d2c1`](https://github.com/keystonejs/keystone/commit/2b682d2c1b6dc798a8913e4d2e09767c7a2980ac)]:
+  - @keystonejs/adapter-mongoose@10.0.1
+  - @keystonejs/adapter-prisma@1.0.7
+  - @keystonejs/app-admin-ui@7.3.9
+
+## 19.1.1
+
+### Patch Changes
+
+- [`722f57f64`](https://github.com/keystonejs/keystone/commit/722f57f64c3cebe63041868005966367a0bfa2e3) [#4010](https://github.com/keystonejs/keystone/pull/4010) Thanks [@timleslie](https://github.com/timleslie)! - Updated Prisma data type selection for `Select` fields using the `PrismaAdapter`.
+
+- Updated dependencies [[`c4478b1c7`](https://github.com/keystonejs/keystone/commit/c4478b1c74e205232ecb321de91f0eda0e78b819), [`874fb3377`](https://github.com/keystonejs/keystone/commit/874fb337786dba2a2513f754bdfb2ab93ac81598)]:
+  - @keystonejs/adapter-knex@12.0.2
+  - @keystonejs/adapter-prisma@1.0.6
+
+## 19.1.0
+
+### Minor Changes
+
+- [`f13d7eaab`](https://github.com/keystonejs/keystone/commit/f13d7eaab8e6d53fa9766e419267305886900a28) [#3928](https://github.com/keystonejs/keystone/pull/3928) Thanks [@gautamsi](https://github.com/gautamsi)! - Added format option to DateTimeUtc field similar to DateTime field. This affects only the admn-ui display
+
+### Patch Changes
+
+- Updated dependencies [[`767a02a76`](https://github.com/keystonejs/keystone/commit/767a02a76d787a871832075402722c0df5213549), [`d157e7666`](https://github.com/keystonejs/keystone/commit/d157e7666d1057cbeab7dc274244d0e130171ec9)]:
+  - @keystonejs/adapter-knex@12.0.1
+  - @keystonejs/adapter-prisma@1.0.4
+
+## 19.0.0
+
+### Major Changes
+
+- [`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74) [#3684](https://github.com/keystonejs/keystone/pull/3684) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Make GraphQL output type field non-nullable when it is the primary key on a list
+
+### Patch Changes
+
+- Updated dependencies [[`f30928db3`](https://github.com/keystonejs/keystone/commit/f30928db31b0c0a10a27b827b44afc1896dfbafe), [`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74), [`bf06edbf4`](https://github.com/keystonejs/keystone/commit/bf06edbf47e69280c3a9e270daa578528d68c447), [`85fa68456`](https://github.com/keystonejs/keystone/commit/85fa684565d8c9c40036d4544b3c0235dbbd327b)]:
+  - @keystonejs/adapter-prisma@1.0.3
+  - @keystonejs/adapter-knex@12.0.0
+  - @keystonejs/adapter-mongoose@10.0.0
+  - @keystonejs/app-admin-ui@7.3.8
+
+## 18.0.0
+
+### Major Changes
+
+- [`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4) [#3298](https://github.com/keystonejs/keystone/pull/3298) Thanks [@timleslie](https://github.com/timleslie)! - Added support for a Prisma adapter to Keystone.
+
+### Patch Changes
+
+- [`a02e69987`](https://github.com/keystonejs/keystone/commit/a02e69987902cfde38d820e68cb24b7a20ca1f6f) [#3741](https://github.com/keystonejs/keystone/pull/3741) Thanks [@timleslie](https://github.com/timleslie)! - Updated internals of `Relationship` internals in preparation for `Prisma` support.
+
+- Updated dependencies [[`8c54a34be`](https://github.com/keystonejs/keystone/commit/8c54a34bec0f5f945447a2475f5500415eb154df), [`01b79349e`](https://github.com/keystonejs/keystone/commit/01b79349e625870193933aa044bdf27f8c75753e), [`48623ae44`](https://github.com/keystonejs/keystone/commit/48623ae44568bae1af2861003fa9922a0118cc57), [`966b5bc70`](https://github.com/keystonejs/keystone/commit/966b5bc7003e0f580528c4dcd46647cc4124b592), [`f70c9f1ba`](https://github.com/keystonejs/keystone/commit/f70c9f1ba7452b54a15ab71943a3777d5b6dade4), [`3e2ca3a2f`](https://github.com/keystonejs/keystone/commit/3e2ca3a2ffa00cb5aababee572902a78e657ec58), [`bf5801070`](https://github.com/keystonejs/keystone/commit/bf5801070568bbcc1ed4f3394a293bfa5bea8b98), [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc)]:
+  - @keystonejs/adapter-knex@11.0.7
+  - @keystonejs/app-admin-ui@7.3.7
+  - @keystonejs/adapter-mongoose@9.0.8
+  - @keystonejs/adapter-prisma@1.0.0
+
+## 17.1.3
+
+### Patch Changes
+
+- [`b32f006ad`](https://github.com/keystonejs/keystone/commit/b32f006ad283f8aa1911f55bbecac9942f3f9f25) [#3666](https://github.com/keystonejs/keystone/pull/3666) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@apollo/client` to `^3.2.0`.
+
+* [`6f42b0a9d`](https://github.com/keystonejs/keystone/commit/6f42b0a9d231049f9e7523eb78ec621d9c9d6df9) [#3678](https://github.com/keystonejs/keystone/pull/3678) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused dependency `pluralize`.
+
+- [`27783bbca`](https://github.com/keystonejs/keystone/commit/27783bbca3b1c5ff05402738c14ffa8db73e542b) [#3673](https://github.com/keystonejs/keystone/pull/3673) Thanks [@timleslie](https://github.com/timleslie)! - Updated `Slug` field type to use common tests where possible.
+
+* [`304701d7c`](https://github.com/keystonejs/keystone/commit/304701d7c23e98c8dc40c0f3f5512a0370107c06) [#3585](https://github.com/keystonejs/keystone/pull/3585) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `graphql` to `^15.3.0`.
+
+- [`b6e160678`](https://github.com/keystonejs/keystone/commit/b6e160678b449707261a54a9d565b91663784831) [#3671](https://github.com/keystonejs/keystone/pull/3671) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@primer/octicons-react` to `^11.0.0`.
+
+- Updated dependencies [[`92b34a74e`](https://github.com/keystonejs/keystone/commit/92b34a74e699e3a101f53064e52932b7daeccbfc), [`b32f006ad`](https://github.com/keystonejs/keystone/commit/b32f006ad283f8aa1911f55bbecac9942f3f9f25), [`ecbe1471f`](https://github.com/keystonejs/keystone/commit/ecbe1471fe22ca029a178a57dc216f6445b4053a), [`06dffc42b`](https://github.com/keystonejs/keystone/commit/06dffc42b08062e3166880146c8fb606493ead12), [`7a1f8bbdc`](https://github.com/keystonejs/keystone/commit/7a1f8bbdcdf68c9579e17db77fa826e811abcab4), [`d7fc663c3`](https://github.com/keystonejs/keystone/commit/d7fc663c3799afd2c646cc1ad6670f8e85002093), [`a14283b9c`](https://github.com/keystonejs/keystone/commit/a14283b9c9d80e8a38adede567695bf7e89cbcb9), [`6f42b0a9d`](https://github.com/keystonejs/keystone/commit/6f42b0a9d231049f9e7523eb78ec621d9c9d6df9), [`5c1e55721`](https://github.com/keystonejs/keystone/commit/5c1e5572134fa93c9aefbb537676e30cafd0e7d9), [`a79404183`](https://github.com/keystonejs/keystone/commit/a79404183c8080f5db5cc6591ab2fb4ff5398b5f), [`304701d7c`](https://github.com/keystonejs/keystone/commit/304701d7c23e98c8dc40c0f3f5512a0370107c06), [`aa5b4aa26`](https://github.com/keystonejs/keystone/commit/aa5b4aa269eebc6931d30f6eddc315805c1f4fef), [`b6e160678`](https://github.com/keystonejs/keystone/commit/b6e160678b449707261a54a9d565b91663784831), [`287e031fa`](https://github.com/keystonejs/keystone/commit/287e031facafe66ef71b0f6d6ee558904251589f), [`7956d5da0`](https://github.com/keystonejs/keystone/commit/7956d5da00197dc11f5d54f7870b8fa72c05a3c0)]:
+  - @keystonejs/app-admin-ui@7.3.6
+  - @arch-ui/drawer@0.0.24
+  - @arch-ui/popout@0.0.22
+  - @keystonejs/adapter-mongoose@9.0.7
+  - @arch-ui/day-picker@1.0.5
+  - @arch-ui/button@0.0.22
+  - @arch-ui/fields@3.0.5
+  - @arch-ui/options@0.0.24
+  - @keystonejs/adapter-knex@11.0.6
+
+## 17.1.2
+
+### Patch Changes
+
+- [`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a) [#3610](https://github.com/keystonejs/keystone/pull/3610) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `prettier` to `^2.1.1`.
+
+* [`dd49d2c04`](https://github.com/keystonejs/keystone/commit/dd49d2c040ea8fb8dfc36d2e556be88ca1b74b15) [#3606](https://github.com/keystonejs/keystone/pull/3606) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused dependencies.
+
+- [`8bd44758a`](https://github.com/keystonejs/keystone/commit/8bd44758ac742c95f42151c9fbc16700b698e8e4) [#3625](https://github.com/keystonejs/keystone/pull/3625) Thanks [@singhArmani](https://github.com/singhArmani)! - Updated ID field tests.
+
+* [`fe054e53e`](https://github.com/keystonejs/keystone/commit/fe054e53e71f13a69af1d6dd2a1cd8c68bb31059) [#3635](https://github.com/keystonejs/keystone/pull/3635) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@apollo/client` to `^3.1.5`.
+
+* Updated dependencies [[`8b0fd66bb`](https://github.com/keystonejs/keystone/commit/8b0fd66bbd73a99a4ed321ce737b5dc33e2d11d3), [`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a), [`8cae7cff5`](https://github.com/keystonejs/keystone/commit/8cae7cff513187ec6e740c4b17afb2b753fe625a), [`9dae7a5d0`](https://github.com/keystonejs/keystone/commit/9dae7a5d00a62cd0b7a4470695adc5e1678db3dc), [`7c47967d3`](https://github.com/keystonejs/keystone/commit/7c47967d3f8a6e0026f9cd0108ff1dafc8d331b9), [`c08200087`](https://github.com/keystonejs/keystone/commit/c082000871947eb0a2415ac7355c89bc7b277383), [`fe054e53e`](https://github.com/keystonejs/keystone/commit/fe054e53e71f13a69af1d6dd2a1cd8c68bb31059), [`379c78240`](https://github.com/keystonejs/keystone/commit/379c78240d788875d97642e1f53120818ad64aff)]:
+  - @keystonejs/server-side-graphql-client@1.1.2
+  - @keystonejs/adapter-knex@11.0.5
+  - @keystonejs/app-admin-ui@7.3.5
+  - @keystonejs/adapter-mongoose@9.0.6
+
+## 17.1.1
+
+### Patch Changes
+
+- [`cd15192cd`](https://github.com/keystonejs/keystone/commit/cd15192cdae5e476f64a257c196ca569a9440d5a) [#3510](https://github.com/keystonejs/keystone/pull/3510) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `graphql` to `^14.7.0`.
+
+* [`d500613d8`](https://github.com/keystonejs/keystone/commit/d500613d8917e3cbcea2817501d607eddd3b1a8d) [#3528](https://github.com/keystonejs/keystone/pull/3528) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `react-codemirror2` to `^6.0.1`.
+
+- [`6c97a5534`](https://github.com/keystonejs/keystone/commit/6c97a5534e8a18d15aeac8b0471810fdd4d04f80) [#3577](https://github.com/keystonejs/keystone/pull/3577) Thanks [@timleslie](https://github.com/timleslie)! - Updated test framework to support more detailed field tests.
+
+* [`34fcc7052`](https://github.com/keystonejs/keystone/commit/34fcc7052a24db61f1f2f12c46110c060934f4ca) [#3531](https://github.com/keystonejs/keystone/pull/3531) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `slate-react` to `^0.22.10`.
+
+- [`c3488c5e8`](https://github.com/keystonejs/keystone/commit/c3488c5e88628b15eb9fe804551c3c5c44c07e0f) [#3511](https://github.com/keystonejs/keystone/pull/3511) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `intersection-observer` to `^0.11.0`.
+
+* [`e62b3308b`](https://github.com/keystonejs/keystone/commit/e62b3308bd841b5f58ac9fa1f84707f9187fda6b) [#3524](https://github.com/keystonejs/keystone/pull/3524) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `node-fetch` to `^2.6.0`.
+
+- [`7036585f2`](https://github.com/keystonejs/keystone/commit/7036585f25c3b690b7a6fd04c39b5b781ff5bcd9) [#3530](https://github.com/keystonejs/keystone/pull/3530) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `slate` to `^0.47.9`.
+
+* [`2e6a06202`](https://github.com/keystonejs/keystone/commit/2e6a06202299b36c36fd3efd895f2280479eac31) [#3532](https://github.com/keystonejs/keystone/pull/3532) Thanks [@timleslie](https://github.com/timleslie)! - Consolidated filter tests across all field types.
+  Fixed errors with filtering by `null` in the `Decimal`, `MongoId` and `Uuid` field types.
+
+- [`a42ee3a30`](https://github.com/keystonejs/keystone/commit/a42ee3a306c899a7ae46909fe132522cbeff7812) [#3508](https://github.com/keystonejs/keystone/pull/3508) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `date-fns` to `^2.16.1`.
+
+* [`438051442`](https://github.com/keystonejs/keystone/commit/4380514421020f4418a9f966c9fec60e014478b9) [#3433](https://github.com/keystonejs/keystone/pull/3433) Thanks [@singhArmani](https://github.com/singhArmani)! - Added filter and CRUD tests for `File` field type.
+
+- [`b3aa85031`](https://github.com/keystonejs/keystone/commit/b3aa850311cbc1622568f69f9cb4b9f46ab9db22) [#3519](https://github.com/keystonejs/keystone/pull/3519) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mongoose` to `~5.9.29`.
+
+* [`518718e19`](https://github.com/keystonejs/keystone/commit/518718e197d0a2d723c8e184552ddd5d8e165f12) [#3586](https://github.com/keystonejs/keystone/pull/3586) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `graphql-upload` to `11.0.0`.
+
+- [`28b88abd3`](https://github.com/keystonejs/keystone/commit/28b88abd369f0df12eae72107db7c24323eda4b5) [#3507](https://github.com/keystonejs/keystone/pull/3507) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Apollo GraphQL packages dependencies.
+
+- Updated dependencies [[`e8e2baa7b`](https://github.com/keystonejs/keystone/commit/e8e2baa7b1a9330cb483c2f30682d64f857d314c), [`cd15192cd`](https://github.com/keystonejs/keystone/commit/cd15192cdae5e476f64a257c196ca569a9440d5a), [`e9bc4367a`](https://github.com/keystonejs/keystone/commit/e9bc4367ac31f3fe3a2898198c600c76c42165b2), [`5fb75bab6`](https://github.com/keystonejs/keystone/commit/5fb75bab638c59ccf690c46d862b9801bf1d28f6), [`729e897e6`](https://github.com/keystonejs/keystone/commit/729e897e689f2673f38d6c0caf22e7cee7ee8ff3), [`d3a4f9263`](https://github.com/keystonejs/keystone/commit/d3a4f9263de0d11a1613e420f660eccc2a48172d), [`40b751ad6`](https://github.com/keystonejs/keystone/commit/40b751ad6f09aec137ef42df10fdbb1240173afb), [`c3488c5e8`](https://github.com/keystonejs/keystone/commit/c3488c5e88628b15eb9fe804551c3c5c44c07e0f), [`003b856e6`](https://github.com/keystonejs/keystone/commit/003b856e686cc1ee0f984c1acf024c1fa0c27837), [`a42ee3a30`](https://github.com/keystonejs/keystone/commit/a42ee3a306c899a7ae46909fe132522cbeff7812), [`b3aa85031`](https://github.com/keystonejs/keystone/commit/b3aa850311cbc1622568f69f9cb4b9f46ab9db22), [`16fba3b98`](https://github.com/keystonejs/keystone/commit/16fba3b98271410e570a370f610da7cd0686f294), [`28b88abd3`](https://github.com/keystonejs/keystone/commit/28b88abd369f0df12eae72107db7c24323eda4b5), [`16e4d91a2`](https://github.com/keystonejs/keystone/commit/16e4d91a20cc6a079c60ea9801381da55444b1e1)]:
+  - @keystonejs/app-admin-ui@7.3.4
+  - @keystonejs/adapter-knex@11.0.4
+  - @arch-ui/day-picker@1.0.4
+  - @keystonejs/adapter-mongoose@9.0.5
+  - @arch-ui/drawer@0.0.23
+  - @arch-ui/popout@0.0.21
+  - @arch-ui/tooltip@0.1.14
+
+## 17.1.0
+
+### Minor Changes
+
+- [`69d627813`](https://github.com/keystonejs/keystone/commit/69d627813adfc10d29707f5c882ca15621de12a5) [#3501](https://github.com/keystonejs/keystone/pull/3501) Thanks [@singhArmani](https://github.com/singhArmani)! - Removed unsupported filters for `File`, `CloudinaryImage`, `LocationGoogle`, `Unsplash`, and `OEmbed` field types.
+
+### Patch Changes
+
+- [`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6) [#3481](https://github.com/keystonejs/keystone/pull/3481) Thanks [@Noviny](https://github.com/Noviny)! - Updated dependencies through a major version - this shouldn't require change by consumers.
+
+* [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+- [`ac44568f9`](https://github.com/keystonejs/keystone/commit/ac44568f91fd54ccbc39accf83bcfb3276ce1a72) [#3500](https://github.com/keystonejs/keystone/pull/3500) Thanks [@timleslie](https://github.com/timleslie)! - Updated test scripts to be more consistent.
+
+* [`877a5a90d`](https://github.com/keystonejs/keystone/commit/877a5a90d608f0a13b6c0ea103cb96e3ac2caacc) [#3438](https://github.com/keystonejs/keystone/pull/3438) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Apollo GraphQL package dependencies.
+
+- [`483b20ec5`](https://github.com/keystonejs/keystone/commit/483b20ec53ff89f1d026c0495fdae5df60a7cf59) [#3487](https://github.com/keystonejs/keystone/pull/3487) Thanks [@singhArmani](https://github.com/singhArmani)! - Updated CRUD API tests for field types.
+
+* [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b) [#3439](https://github.com/keystonejs/keystone/pull/3439) Thanks [@renovate](https://github.com/apps/renovate)! - Updated babel dependencies.
+
+- [`ea367f759`](https://github.com/keystonejs/keystone/commit/ea367f7594f47efc3528d9917cce010b3a16bf4d) [#3435](https://github.com/keystonejs/keystone/pull/3435) Thanks [@singhArmani](https://github.com/singhArmani)! - Updated `required` and `uniqueness` tests for field API.
+
+* [`0153168d7`](https://github.com/keystonejs/keystone/commit/0153168d73ce8cd7ede4eb9c8518e5e2bf859709) [#3456](https://github.com/keystonejs/keystone/pull/3456) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `apply-ref` to `^0.2.3`.
+
+* Updated dependencies [[`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6), [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e), [`64d745013`](https://github.com/keystonejs/keystone/commit/64d745013fd2cccc1fb14c4f02ac84778b5c9abc), [`877a5a90d`](https://github.com/keystonejs/keystone/commit/877a5a90d608f0a13b6c0ea103cb96e3ac2caacc), [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b), [`dc689f9ac`](https://github.com/keystonejs/keystone/commit/dc689f9ac8e213137dfed9e81992bbe4318b44ae), [`fcf632dbb`](https://github.com/keystonejs/keystone/commit/fcf632dbbc610bbf90dc3647f0acdf8c868b2a8d), [`096d13fc2`](https://github.com/keystonejs/keystone/commit/096d13fc25696ed1769cf817b705dfd80da601b2), [`0153168d7`](https://github.com/keystonejs/keystone/commit/0153168d73ce8cd7ede4eb9c8518e5e2bf859709)]:
+  - @keystonejs/adapter-knex@11.0.3
+  - @keystonejs/adapter-mongoose@9.0.4
+  - @arch-ui/drawer@0.0.22
+  - @arch-ui/popout@0.0.20
+  - @keystonejs/utils@5.4.3
+  - @keystonejs/app-admin-ui@7.3.3
+  - @arch-ui/alert@0.0.18
+  - @arch-ui/button@0.0.21
+  - @arch-ui/controls@0.1.9
+  - @arch-ui/day-picker@1.0.3
+  - @arch-ui/fields@3.0.4
+  - @arch-ui/filters@0.0.20
+  - @arch-ui/input@0.1.11
+  - @arch-ui/layout@0.2.14
+  - @arch-ui/loading@0.0.18
+  - @arch-ui/lozenge@0.0.17
+  - @arch-ui/options@0.0.23
+  - @arch-ui/tooltip@0.1.13
+  - @arch-ui/typography@0.0.18
+  - @arch-ui/select@0.1.9
+  - @arch-ui/theme@0.0.11
+
+## 17.0.0
+
+### Major Changes
+
+- [`d38c9174f`](https://github.com/keystonejs/keystone/commit/d38c9174f8146ad6e268be87cf5d54d5074bc593) [#3394](https://github.com/keystonejs/keystone/pull/3394) Thanks [@timleslie](https://github.com/timleslie)! - Converted `Field` getters `.gqlUpdateInputFields` and `.gqlCreateInputFields` into methods, `.gqlUpdateInputFields({ schemaName })` and `...gqlCreateInputFields({ schemaName })`.
+
+### Patch Changes
+
+- [`e8b2e4772`](https://github.com/keystonejs/keystone/commit/e8b2e477206acffb143f19fb14be1e3b4cd0eb91) [#3409](https://github.com/keystonejs/keystone/pull/3409) Thanks [@timleslie](https://github.com/timleslie)! - Fixed incorrectly generated graphQL for certain access control configurations #3389.
+
+- Updated dependencies [[`fba90ac5d`](https://github.com/keystonejs/keystone/commit/fba90ac5db7328e952c44cb7c0bb8db76dd954b8)]:
+  - @keystonejs/app-admin-ui@7.3.2
+  - @keystonejs/adapter-knex@11.0.2
+  - @keystonejs/adapter-mongoose@9.0.3
+  - @keystonejs/test-utils@8.0.1
+
+## 16.1.0
+
+### Minor Changes
+
+- [`9338f3739`](https://github.com/keystonejs/keystone/commit/9338f3739ecff5f626a713a06ce65c1e29888d25) [#3363](https://github.com/keystonejs/keystone/pull/3363) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Expose field type views at `@keystonejs/fields/types/*/views/{Cell,Controller,Filter,Field}`
+
+### Patch Changes
+
+- [`3db2f3956`](https://github.com/keystonejs/keystone/commit/3db2f395688342fe9a1dda14be5ce8308c9c39a6) [#3374](https://github.com/keystonejs/keystone/pull/3374) Thanks [@timleslie](https://github.com/timleslie)! - Cleaned up the implementation of generating unique `Slug` values.
+
+* [`7e78ffdaa`](https://github.com/keystonejs/keystone/commit/7e78ffdaa96050e49e8e2678a3c4f1897fedae4f) [#3400](https://github.com/keystonejs/keystone/pull/3400) Thanks [@timleslie](https://github.com/timleslie)! - Restricted `mongoose` to the version range `~5.9.11` to avoid a [bug](https://github.com/keystonejs/keystone/issues/3397) in `5.10.0`.
+
+- [`7b0875723`](https://github.com/keystonejs/keystone/commit/7b0875723783780988f2dee4e5ee406a3b44ca98) [#3371](https://github.com/keystonejs/keystone/pull/3371) Thanks [@singhArmani](https://github.com/singhArmani)! - Added filter tests for `DateTimeUtc` field
+
+* [`0369985e3`](https://github.com/keystonejs/keystone/commit/0369985e320afd6112f2664f8a8edc1ed7167130) [#3391](https://github.com/keystonejs/keystone/pull/3391) Thanks [@timleslie](https://github.com/timleslie)! - Removed the `MockAdapter`, `MockListAdapter` and `MockIdType` classes from `@keystonejs/test-utils`.
+
+- [`7422922f5`](https://github.com/keystonejs/keystone/commit/7422922f5649a2b52699f67a77645e9c91800688) [#3375](https://github.com/keystonejs/keystone/pull/3375) Thanks [@singhArmani](https://github.com/singhArmani)! - Added `Filter` tests for the `Url` field type
+
+* [`df8f92a37`](https://github.com/keystonejs/keystone/commit/df8f92a378d2d787f5bee774f013767c09ec35cf) [#3392](https://github.com/keystonejs/keystone/pull/3392) Thanks [@timleslie](https://github.com/timleslie)! - Updated `match` function in tests to use `getItems` function from `server-side-graphql-client`.
+
+- [`cc5bb8915`](https://github.com/keystonejs/keystone/commit/cc5bb891579281338ad7fad0873531be81d877d4) [#3387](https://github.com/keystonejs/keystone/pull/3387) Thanks [@singhArmani](https://github.com/singhArmani)! - Refactored internals to use `server-side-graphql-client`.
+
+* [`1b3943e4f`](https://github.com/keystonejs/keystone/commit/1b3943e4f66c61c446085736949c6b83e9087afb) [#3378](https://github.com/keystonejs/keystone/pull/3378) Thanks [@timleslie](https://github.com/timleslie)! - Updated tests for the `Slug` field type.
+
+- [`b300720eb`](https://github.com/keystonejs/keystone/commit/b300720eb4e079bc30efb17ed3b48ab71cadc160) [#3373](https://github.com/keystonejs/keystone/pull/3373) Thanks [@timleslie](https://github.com/timleslie)! - Removed internal global variables.
+
+- Updated dependencies [[`7e78ffdaa`](https://github.com/keystonejs/keystone/commit/7e78ffdaa96050e49e8e2678a3c4f1897fedae4f), [`72cd47b35`](https://github.com/keystonejs/keystone/commit/72cd47b357052b69e1d525758ff8a1a0cf44c5c2), [`0369985e3`](https://github.com/keystonejs/keystone/commit/0369985e320afd6112f2664f8a8edc1ed7167130), [`9338f3739`](https://github.com/keystonejs/keystone/commit/9338f3739ecff5f626a713a06ce65c1e29888d25), [`714316718`](https://github.com/keystonejs/keystone/commit/7143167187e3e3519b0b58e2b04ff0fee8fc75dc), [`cc5bb8915`](https://github.com/keystonejs/keystone/commit/cc5bb891579281338ad7fad0873531be81d877d4)]:
+  - @keystonejs/adapter-mongoose@9.0.2
+  - @keystonejs/server-side-graphql-client@1.1.1
+  - @keystonejs/test-utils@8.0.0
+  - @keystonejs/app-admin-ui@7.3.1
+
+## 16.0.0
+
+### Major Changes
+
+- [`d38a41f25`](https://github.com/keystonejs/keystone/commit/d38a41f25a1b4c90c05d2fb85116dc385d4ee77a) [#3308](https://github.com/keystonejs/keystone/pull/3308) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Move `@keystonejs/fields-datetime-utc` into `@keystonejs/fields`. Please update your imports from `@keystonejs/fields-datetime-utc` to `@keystonejs/fields`.
+
+* [`5ede731fc`](https://github.com/keystonejs/keystone/commit/5ede731fc58a79e7322b852bdd2d971ece45281e) [#3305](https://github.com/keystonejs/keystone/pull/3305) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved the `Location` field from `@keystonejs/fields` to `@keystonejs/fields-location-google` and renamed to `LocationGoogle`. If you were using the `Location` field from `@keystonejs/fields`, please install `@keystonejs/fields-location-google` and import `LocationGoogle` from it.
+
+- [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25) [#3280](https://github.com/keystonejs/keystone/pull/3280) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved `@keystonejs/fields-cloudinary-image`, `@keystonejs/fields-unsplash` and `@keystonejs/fields-oembed` out of the core fields package `@keystonejs/fields`.
+
+  ```js
+  const { CloudinaryImage, Unsplash, OEmbed } = require('@keystonejs/fields');
+  ```
+
+  Needs to be changed to:
+
+  ```js
+  const { CloudinaryImage } = require('@keystonejs/fields-cloudinary-image');
+  const { Unsplash } = require('@keystonejs/fields-unsplash');
+  const { OEmbed } = require('@keystonejs/fields-oembed');
+  ```
+
+* [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1) [#3307](https://github.com/keystonejs/keystone/pull/3307) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved the `Color` field from `@keystonejs/fields` to `@keystonejs/fields-color`.
+
+  Note: If using the `Color` field you need to update imports to point to `@keystonejs/fields-color`.
+
+### Minor Changes
+
+- [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7) [#3125](https://github.com/keystonejs/keystone/pull/3125) Thanks [@Vultraz](https://github.com/Vultraz)! - Migrated to Apollo Client v3.
+
+### Patch Changes
+
+- [`149d6fd6f`](https://github.com/keystonejs/keystone/commit/149d6fd6ff057c17570346063c173376769dcc79) [#3304](https://github.com/keystonejs/keystone/pull/3304) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Renamed `@keystonejs/field-content` to `@keystonejs/fields-content`. Please install `@keystonejs/fields-content` and update your imports from `@keystonejs/field-content` to `@keystonejs/fields-content`.
+
+- Updated dependencies [[`318e39b74`](https://github.com/keystonejs/keystone/commit/318e39b74b2fa3152d4ff09bccec93238e8345ef), [`b0af7d5ba`](https://github.com/keystonejs/keystone/commit/b0af7d5baa6ceea8d80215afa290fd76240ee823), [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7)]:
+  - @keystonejs/app-admin-ui@7.3.0
+
 ## 15.0.0
 
 ### Major Changes

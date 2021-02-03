@@ -1,5 +1,213 @@
 # @keystonejs/keystone
 
+## 19.0.0
+
+### Major Changes
+
+- [`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d) [#4709](https://github.com/keystonejs/keystone/pull/4709) Thanks [@timleslie](https://github.com/timleslie)! - Database adapters no longer support custom `ListAdapter` classes via the `listAdapterClass` option of `adapterConfig` in `createList()`.
+
+* [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9) [#3222](https://github.com/keystonejs/keystone/pull/3222) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for multiple database adapters in a single `Keystone` system. The `adapters` and `defaultAdapter` config options were removed from the `Keystone()` constructor. If you were accessing the adapter object via `keystone.adapters.KnexAdapter` or `keystone.adapters.MongooseAdapter` you should now simply access `keystone.adapter`.
+
+### Patch Changes
+
+- Updated dependencies [[`619ef5051`](https://github.com/keystonejs/keystone/commit/619ef50512c09d7cf988dc3c877eed868eba68a6), [`86b597d41`](https://github.com/keystonejs/keystone/commit/86b597d410c907ed54a4948da438de48e313302f), [`c1257ca83`](https://github.com/keystonejs/keystone/commit/c1257ca834ccf5a0407debe6e7d27b45ed32a26a), [`621db113a`](https://github.com/keystonejs/keystone/commit/621db113a6a579cc3da19ae9cef50dc63ac8ca55), [`5e22cc765`](https://github.com/keystonejs/keystone/commit/5e22cc765a8f18c467457fd2ba738cd90273c8c5), [`b9ec7fff9`](https://github.com/keystonejs/keystone/commit/b9ec7fff9d96ac56e2836543d698cf0b62b5dc8f), [`5ad7c12e8`](https://github.com/keystonejs/keystone/commit/5ad7c12e86573e73e85368076bdc1296f3f69db3), [`94c8d349d`](https://github.com/keystonejs/keystone/commit/94c8d349d3795cd9abec407f78752417623ee56f)]:
+  - @keystonejs/access-control@6.3.2
+  - @keystonejs/session@8.2.0
+  - @keystonejs/utils@6.0.1
+
+## 18.1.0
+
+### Minor Changes
+
+- [`4768fbf83`](https://github.com/keystonejs/keystone/commit/4768fbf831ffff648e540c479a1954ae40e05aaa) [#4654](https://github.com/keystonejs/keystone/pull/4654) Thanks [@timleslie](https://github.com/timleslie)! - Added an `args` paramter to `Keystone.connect(args)`, which is passed through as the second argument to the config function `onConnect(keystone, args)`.
+
+### Patch Changes
+
+- [`3b7a056bb`](https://github.com/keystonejs/keystone/commit/3b7a056bb835482ceb408a70bf97300741552d19) [#4652](https://github.com/keystonejs/keystone/pull/4652) Thanks [@timleslie](https://github.com/timleslie)! - Removed `addFieldValidationError` from the args passed to list validation hooks, as it was unused and could lead to confusion. Updated docs to clarify the validation hook arguments. Thanks @pahaz for the fix.
+
+* [`74a8528ea`](https://github.com/keystonejs/keystone/commit/74a8528ea0dad739f4f16af32fe4f8926a188b61) [#4649](https://github.com/keystonejs/keystone/pull/4649) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `serialize-error` to `^8.0.0`.
+
+* Updated dependencies [[`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be)]:
+  - @keystonejs/utils@6.0.0
+  - @keystonejs/access-control@6.3.1
+
+## 18.0.0
+
+### Major Changes
+
+- [`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95) [#4588](https://github.com/keystonejs/keystone/pull/4588) Thanks [@timleslie](https://github.com/timleslie)! - Updated `keystone.getTypedefs` and `keystone.getResolvers` to explicity return `scalar Upload` and its associated resolver.
+
+### Minor Changes
+
+- [`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95) [#4588](https://github.com/keystonejs/keystone/pull/4588) Thanks [@timleslie](https://github.com/timleslie)! - Updated graphql server to use the `graphql-upload` package directly to support uploads, rather than the built-in support provided by Apollo Server.
+
+## 17.1.2
+
+### Patch Changes
+
+- [`a3a58bcca`](https://github.com/keystonejs/keystone/commit/a3a58bcca56943f2240104dae3c816188eead6f1) [#4412](https://github.com/keystonejs/keystone/pull/4412) Thanks [@timleslie](https://github.com/timleslie)! - Added a check to prevent using graphQL keywords `Query`, `Mutation` and `Subscription` as list names.
+
+## 17.1.1
+
+### Patch Changes
+
+- [`3dd5c570a`](https://github.com/keystonejs/keystone/commit/3dd5c570a27d0795a689407d96fc9623c90a66df) [#4061](https://github.com/keystonejs/keystone/pull/4061) Thanks [@timleslie](https://github.com/timleslie)! - Updated error handling to throw Error objects rather than Strings for invalid field configurations.
+
+## 17.1.0
+
+### Minor Changes
+
+- [`20c921c80`](https://github.com/keystonejs/keystone/commit/20c921c805f9ba8e779d0af584e6ff036c264bd4) [#3849](https://github.com/keystonejs/keystone/pull/3849) Thanks [@gautamsi](https://github.com/gautamsi)! - Added `fieldPath` as an argument to all field hooks.
+
+## 17.0.0
+
+### Major Changes
+
+- [`cc56990f2`](https://github.com/keystonejs/keystone/commit/cc56990f2e9a4ecf0c112362e8d472b9286f76bc) [#3596](https://github.com/keystonejs/keystone/pull/3596) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `pluralize` to `^8.0.0`.
+  This may cause changes to your GraphQL schema if you have list names which are now treated differently by this library.
+  Check the [`pluralize` release notes](https://github.com/plurals/pluralize/releases/v8.0.0) for details.
+  You can override the behaviour of `pluralize` by passing in `singular` or `plural` config options to `keystone.createList()`.
+
+### Patch Changes
+
+- [`df0687184`](https://github.com/keystonejs/keystone/commit/df068718456d23819a7cae491870be4560b2010d) [#3743](https://github.com/keystonejs/keystone/pull/3743) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `apollo-server-express` to `^2.18.0`. This brings in some [changes related to apollo reporting](https://github.com/apollographql/apollo-server/blob/main/CHANGELOG.md#v2180), which maybe of interested to users who use this feature.
+
+## 16.0.0
+
+### Major Changes
+
+- [`83007be79`](https://github.com/keystonejs/keystone/commit/83007be798ebd751d7eb708cde366dc35999af72) [#3593](https://github.com/keystonejs/keystone/pull/3593) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `pino` to `^6.6.1`. See the pino [release notes](https://github.com/pinojs/pino/releases/v6.0.0) for breaking changes to logging output.
+
+### Patch Changes
+
+- [`38e3ad9c3`](https://github.com/keystonejs/keystone/commit/38e3ad9c3e7124d06f11c7046821c857cf7f9ad2) [#3685](https://github.com/keystonejs/keystone/pull/3685) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Remove unused dependency on `@keystonejs/fields`
+
+* [`304701d7c`](https://github.com/keystonejs/keystone/commit/304701d7c23e98c8dc40c0f3f5512a0370107c06) [#3585](https://github.com/keystonejs/keystone/pull/3585) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `graphql` to `^15.3.0`.
+
+- [`7a1f8bbdc`](https://github.com/keystonejs/keystone/commit/7a1f8bbdcdf68c9579e17db77fa826e811abcab4) [#3645](https://github.com/keystonejs/keystone/pull/3645) Thanks [@timleslie](https://github.com/timleslie)! - Removed dependency on `@keystonejs/logger`, which is no longer maintained.
+
+* [`d95010eea`](https://github.com/keystonejs/keystone/commit/d95010eea35f40274f412dad5c2fed6b16ae6c60) [#3663](https://github.com/keystonejs/keystone/pull/3663) Thanks [@Vultraz](https://github.com/Vultraz)! - Enabled schema tracing if APOLLO_KEY is set.
+
+- [`104232785`](https://github.com/keystonejs/keystone/commit/104232785aac856be6a3ba55f8fa0fd8357237ed) [#3576](https://github.com/keystonejs/keystone/pull/3576) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `express-pino-logger` to `^5.0.0`.
+
+## 15.0.0
+
+### Major Changes
+
+- [`77aa2d7d1`](https://github.com/keystonejs/keystone/commit/77aa2d7d156a83759a7f3c26e8c5bd019966b054) [#3629](https://github.com/keystonejs/keystone/pull/3629) Thanks [@timleslie](https://github.com/timleslie)! - Removed the automatic mapping of native types to keystone field types when defining fields. Keystone will no longer convert `{ type: String }` to `{ type: Text }`, `{ type: Number }` to `{ type: Float }`, or `{ type: Boolean }` to `{ type: Checkbox }`.
+
+### Patch Changes
+
+- [`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a) [#3610](https://github.com/keystonejs/keystone/pull/3610) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `prettier` to `^2.1.1`.
+
+* [`d7eac6629`](https://github.com/keystonejs/keystone/commit/d7eac662956fc2dffd9ea5cfedf60e51ecc1b80d) [#3608](https://github.com/keystonejs/keystone/pull/3608) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `ora` to `^5.1.0`.
+
+- [`d07f6bfb6`](https://github.com/keystonejs/keystone/commit/d07f6bfb6b3bd65036c2030d2758abdf4eca1a9e) [#3567](https://github.com/keystonejs/keystone/pull/3567) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `endent` to `^2.0.1`.
+
+- Updated dependencies [[`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a), [`dd49d2c04`](https://github.com/keystonejs/keystone/commit/dd49d2c040ea8fb8dfc36d2e556be88ca1b74b15), [`8bd44758a`](https://github.com/keystonejs/keystone/commit/8bd44758ac742c95f42151c9fbc16700b698e8e4), [`0b400eb8f`](https://github.com/keystonejs/keystone/commit/0b400eb8f4674f37d8ea304130b9e339fad60d48), [`fe054e53e`](https://github.com/keystonejs/keystone/commit/fe054e53e71f13a69af1d6dd2a1cd8c68bb31059)]:
+  - @keystonejs/fields@17.1.2
+  - @keystonejs/logger@6.0.0
+
+## 14.0.2
+
+### Patch Changes
+
+- [`cd15192cd`](https://github.com/keystonejs/keystone/commit/cd15192cdae5e476f64a257c196ca569a9440d5a) [#3510](https://github.com/keystonejs/keystone/pull/3510) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `graphql` to `^14.7.0`.
+
+* [`7bfdb79ee`](https://github.com/keystonejs/keystone/commit/7bfdb79ee43235418f098e5fe7412968dcf6c397) [#3564](https://github.com/keystonejs/keystone/pull/3564) Thanks [@Vultraz](https://github.com/Vultraz)! - Added an error when creating a list with the reserved name 'Upload'.
+
+- [`d71f98791`](https://github.com/keystonejs/keystone/commit/d71f987917509a206b1e0a994dbc6641a7cf4e06) [#3484](https://github.com/keystonejs/keystone/pull/3484) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `endent` to `^1.4.1`.
+
+* [`28b88abd3`](https://github.com/keystonejs/keystone/commit/28b88abd369f0df12eae72107db7c24323eda4b5) [#3507](https://github.com/keystonejs/keystone/pull/3507) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Apollo GraphQL packages dependencies.
+
+* Updated dependencies [[`cd15192cd`](https://github.com/keystonejs/keystone/commit/cd15192cdae5e476f64a257c196ca569a9440d5a), [`d500613d8`](https://github.com/keystonejs/keystone/commit/d500613d8917e3cbcea2817501d607eddd3b1a8d), [`6c97a5534`](https://github.com/keystonejs/keystone/commit/6c97a5534e8a18d15aeac8b0471810fdd4d04f80), [`34fcc7052`](https://github.com/keystonejs/keystone/commit/34fcc7052a24db61f1f2f12c46110c060934f4ca), [`c3488c5e8`](https://github.com/keystonejs/keystone/commit/c3488c5e88628b15eb9fe804551c3c5c44c07e0f), [`e62b3308b`](https://github.com/keystonejs/keystone/commit/e62b3308bd841b5f58ac9fa1f84707f9187fda6b), [`7036585f2`](https://github.com/keystonejs/keystone/commit/7036585f25c3b690b7a6fd04c39b5b781ff5bcd9), [`2e6a06202`](https://github.com/keystonejs/keystone/commit/2e6a06202299b36c36fd3efd895f2280479eac31), [`a42ee3a30`](https://github.com/keystonejs/keystone/commit/a42ee3a306c899a7ae46909fe132522cbeff7812), [`438051442`](https://github.com/keystonejs/keystone/commit/4380514421020f4418a9f966c9fec60e014478b9), [`b3aa85031`](https://github.com/keystonejs/keystone/commit/b3aa850311cbc1622568f69f9cb4b9f46ab9db22), [`518718e19`](https://github.com/keystonejs/keystone/commit/518718e197d0a2d723c8e184552ddd5d8e165f12), [`766303d46`](https://github.com/keystonejs/keystone/commit/766303d46d14275f49c200444a00ef6283be2322), [`28b88abd3`](https://github.com/keystonejs/keystone/commit/28b88abd369f0df12eae72107db7c24323eda4b5)]:
+  - @keystonejs/fields@17.1.1
+  - @keystonejs/logger@5.1.3
+
+## 14.0.1
+
+### Patch Changes
+
+- [`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6) [#3481](https://github.com/keystonejs/keystone/pull/3481) Thanks [@Noviny](https://github.com/Noviny)! - Updated dependencies through a major version - this shouldn't require change by consumers.
+
+* [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+- [`877a5a90d`](https://github.com/keystonejs/keystone/commit/877a5a90d608f0a13b6c0ea103cb96e3ac2caacc) [#3438](https://github.com/keystonejs/keystone/pull/3438) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Apollo GraphQL package dependencies.
+
+* [`7f04d9dd2`](https://github.com/keystonejs/keystone/commit/7f04d9dd21ad792b540d9e0a5d83356c091597ad) [#3478](https://github.com/keystonejs/keystone/pull/3478) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `cors` to `^2.8.5`.
+
+* Updated dependencies [[`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6), [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e), [`db0797f7f`](https://github.com/keystonejs/keystone/commit/db0797f7f442c2c42cc941633930de527c722f48), [`ac44568f9`](https://github.com/keystonejs/keystone/commit/ac44568f91fd54ccbc39accf83bcfb3276ce1a72), [`877a5a90d`](https://github.com/keystonejs/keystone/commit/877a5a90d608f0a13b6c0ea103cb96e3ac2caacc), [`483b20ec5`](https://github.com/keystonejs/keystone/commit/483b20ec53ff89f1d026c0495fdae5df60a7cf59), [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b), [`ea367f759`](https://github.com/keystonejs/keystone/commit/ea367f7594f47efc3528d9917cce010b3a16bf4d), [`69d627813`](https://github.com/keystonejs/keystone/commit/69d627813adfc10d29707f5c882ca15621de12a5), [`07e246d15`](https://github.com/keystonejs/keystone/commit/07e246d15586dede7fa9a04bcc13020c8c5c3a25), [`0153168d7`](https://github.com/keystonejs/keystone/commit/0153168d73ce8cd7ede4eb9c8518e5e2bf859709)]:
+  - @keystonejs/fields@17.1.0
+  - @keystonejs/utils@5.4.3
+  - @keystonejs/session@8.1.1
+
+## 14.0.0
+
+### Major Changes
+
+- [`d38c9174f`](https://github.com/keystonejs/keystone/commit/d38c9174f8146ad6e268be87cf5d54d5074bc593) [#3394](https://github.com/keystonejs/keystone/pull/3394) Thanks [@timleslie](https://github.com/timleslie)! - Converted `Field` getters `.gqlUpdateInputFields` and `.gqlCreateInputFields` into methods, `.gqlUpdateInputFields({ schemaName })` and `...gqlCreateInputFields({ schemaName })`.
+
+### Minor Changes
+
+- [`25f50dadc`](https://github.com/keystonejs/keystone/commit/25f50dadc07d888de18d485244c84d17462dce2e) [#3420](https://github.com/keystonejs/keystone/pull/3420) Thanks [@timleslie](https://github.com/timleslie)! - Added `listKey` as an argument to all hooks.
+
+* [`c243839c1`](https://github.com/keystonejs/keystone/commit/c243839c12abc8cffe8ff788fe57dcb880dc3a41) [#3427](https://github.com/keystonejs/keystone/pull/3427) Thanks [@timleslie](https://github.com/timleslie)! - Added `plugins` argument to `keystone.createAuthStrategy()`. See [docs](/docs/api/authentication.md) for more details.
+
+### Patch Changes
+
+- [`f714ac1e2`](https://github.com/keystonejs/keystone/commit/f714ac1e2c49ef44d756e35042bdb7da6db589a7) [#3426](https://github.com/keystonejs/keystone/pull/3426) Thanks [@timleslie](https://github.com/timleslie)! - Fixed errors when calling `keystone.createContext()` with no arguments.
+
+- Updated dependencies [[`d38c9174f`](https://github.com/keystonejs/keystone/commit/d38c9174f8146ad6e268be87cf5d54d5074bc593), [`e8b2e4772`](https://github.com/keystonejs/keystone/commit/e8b2e477206acffb143f19fb14be1e3b4cd0eb91)]:
+  - @keystonejs/fields@17.0.0
+  - @keystonejs/test-utils@8.0.1
+
+## 13.1.1
+
+### Patch Changes
+
+- [`0369985e3`](https://github.com/keystonejs/keystone/commit/0369985e320afd6112f2664f8a8edc1ed7167130) [#3391](https://github.com/keystonejs/keystone/pull/3391) Thanks [@timleslie](https://github.com/timleslie)! - Removed the `MockAdapter`, `MockListAdapter` and `MockIdType` classes from `@keystonejs/test-utils`.
+
+- Updated dependencies [[`9338f3739`](https://github.com/keystonejs/keystone/commit/9338f3739ecff5f626a713a06ce65c1e29888d25), [`3db2f3956`](https://github.com/keystonejs/keystone/commit/3db2f395688342fe9a1dda14be5ce8308c9c39a6), [`7e78ffdaa`](https://github.com/keystonejs/keystone/commit/7e78ffdaa96050e49e8e2678a3c4f1897fedae4f), [`7b0875723`](https://github.com/keystonejs/keystone/commit/7b0875723783780988f2dee4e5ee406a3b44ca98), [`0369985e3`](https://github.com/keystonejs/keystone/commit/0369985e320afd6112f2664f8a8edc1ed7167130), [`714316718`](https://github.com/keystonejs/keystone/commit/7143167187e3e3519b0b58e2b04ff0fee8fc75dc), [`7422922f5`](https://github.com/keystonejs/keystone/commit/7422922f5649a2b52699f67a77645e9c91800688), [`df8f92a37`](https://github.com/keystonejs/keystone/commit/df8f92a378d2d787f5bee774f013767c09ec35cf), [`cc5bb8915`](https://github.com/keystonejs/keystone/commit/cc5bb891579281338ad7fad0873531be81d877d4), [`1b3943e4f`](https://github.com/keystonejs/keystone/commit/1b3943e4f66c61c446085736949c6b83e9087afb), [`b300720eb`](https://github.com/keystonejs/keystone/commit/b300720eb4e079bc30efb17ed3b48ab71cadc160)]:
+  - @keystonejs/fields@16.1.0
+  - @keystonejs/test-utils@8.0.0
+
+## 13.1.0
+
+### Minor Changes
+
+- [`845b6a21b`](https://github.com/keystonejs/keystone/commit/845b6a21b62e615135eb738ad332fc035b93191b) [#2039](https://github.com/keystonejs/keystone/pull/2039) Thanks [@molomby](https://github.com/molomby)! - Added [authentication hooks](https://www.keystonejs.com/api/hooks).
+
+  You can now customise the behaviour of authentication mutations as follows:
+
+  ```js
+  keystone.creatAuthStrategy({
+    type: PasswordAuthStrategy,
+    list: 'User',
+    hooks: {
+      resolveAuthInput: async (...) => {...},
+      validateAuthInput: async (...) => {...},
+      beforeAuth: async (...) => {...},
+      afterAuth: async (...) => {...},
+
+      beforeUnauth: async (...) => {...},
+      afterUnauth: async (...) => {...},
+    },
+  })
+  ```
+
+### Patch Changes
+
+- [`1a89bbdc6`](https://github.com/keystonejs/keystone/commit/1a89bbdc6b2122a5c8217e6f6c750f7cfb69dc2c) [#3355](https://github.com/keystonejs/keystone/pull/3355) Thanks [@singhArmani](https://github.com/singhArmani)! - - Added a function `gqlNames(listKey)` to the `context` object created by `keystone.createContext` This allows extracting graphQL query and mutation names from the `context` object.
+  - Made the `keystone` argument optional when a `context` value is provided in any of the utility functions in `server-side-graphql-client` package.
+
+* [`7650ecd3e`](https://github.com/keystonejs/keystone/commit/7650ecd3e60b52983015ac0058b8b0066b074e1e) [#3331](https://github.com/keystonejs/keystone/pull/3331) Thanks [@Vultraz](https://github.com/Vultraz)! - Import gql literal from Apollo server.
+
+* Updated dependencies [[`d38a41f25`](https://github.com/keystonejs/keystone/commit/d38a41f25a1b4c90c05d2fb85116dc385d4ee77a), [`5ede731fc`](https://github.com/keystonejs/keystone/commit/5ede731fc58a79e7322b852bdd2d971ece45281e), [`f8d4b175b`](https://github.com/keystonejs/keystone/commit/f8d4b175bbc29962569acb24b34c29c44b61791f), [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25), [`694f3acfb`](https://github.com/keystonejs/keystone/commit/694f3acfb9faa78aebfcf48cf711165560f16ff7), [`149d6fd6f`](https://github.com/keystonejs/keystone/commit/149d6fd6ff057c17570346063c173376769dcc79), [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1)]:
+  - @keystonejs/fields@16.0.0
+  - @keystonejs/session@8.1.0
+
 ## 13.0.0
 
 ### Major Changes
@@ -24,7 +232,7 @@
   const { createItems } = require('@keystonejs/server-side-graphql-client');
   createItems({
     keystone,
-    listName: 'User',
+    listKey: 'User',
     items: [{ data: { name: 'Ticiana' } }, {data:  { name: 'Lauren' } }]
   })
   ```

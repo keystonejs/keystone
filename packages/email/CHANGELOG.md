@@ -1,5 +1,37 @@
 # @keystonejs/email
 
+## 5.2.0
+
+### Minor Changes
+
+- [`481329c2b`](https://github.com/keystonejs/keystone/commit/481329c2bd404419efddfd0ed6f3db9a86a30f91) [#3721](https://github.com/keystonejs/keystone/pull/3721) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency mjml to ^4.7.0 (see [changelog](https://github.com/mjmlio/mjml/releases/tag/v4.7.0))
+
+## 5.1.9
+
+### Patch Changes
+
+- [`6a7395d58`](https://github.com/keystonejs/keystone/commit/6a7395d5848c6630b8e3943bcd9e3245aa6e2574) [#3649](https://github.com/keystonejs/keystone/pull/3649) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mjml-react` to `^1.0.58`.
+
+## 5.1.8
+
+### Patch Changes
+
+- [`ddf5f6ae9`](https://github.com/keystonejs/keystone/commit/ddf5f6ae9418ff0c14de2273e329eed5441ce5bb) [#3611](https://github.com/keystonejs/keystone/pull/3611) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dev dependency `pug` to `^3.0.0`.
+
+## 5.1.7
+
+### Patch Changes
+
+- [`3a1f4d1e2`](https://github.com/keystonejs/keystone/commit/3a1f4d1e26bfa6cb553761b42a7f05d09a41a3b4) [#3514](https://github.com/keystonejs/keystone/pull/3514) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `mjml` to `^4.6.3`.
+
+* [`16e4d91a2`](https://github.com/keystonejs/keystone/commit/16e4d91a20cc6a079c60ea9801381da55444b1e1) [#3545](https://github.com/keystonejs/keystone/pull/3545) Thanks [@renovate](https://github.com/apps/renovate)! - Updated react monorepo dependencies.
+
+## 5.1.6
+
+### Patch Changes
+
+- [`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6) [#3481](https://github.com/keystonejs/keystone/pull/3481) Thanks [@Noviny](https://github.com/Noviny)! - Updated dependencies through a major version - this shouldn't require change by consumers.
+
 ## 5.1.5
 
 ### Patch Changes

@@ -1,17 +1,23 @@
-import { importView } from '@keystonejs/build-field-types';
-import { CalendarDay, MongoCalendarDayInterface, KnexCalendarDayInterface } from './Implementation';
+import { resolveView } from '../../resolve-view';
+import {
+  CalendarDay,
+  MongoCalendarDayInterface,
+  KnexCalendarDayInterface,
+  PrismaCalendarDayInterface,
+} from './Implementation';
 
 export default {
   type: 'CalendarDay',
   implementation: CalendarDay,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Filter: importView('./views/Filter'),
-    Cell: importView('./views/Cell'),
+    Controller: resolveView('types/CalendarDay/views/Controller'),
+    Field: resolveView('types/CalendarDay/views/Field'),
+    Filter: resolveView('types/CalendarDay/views/Filter'),
+    Cell: resolveView('types/CalendarDay/views/Cell'),
   },
   adapters: {
     mongoose: MongoCalendarDayInterface,
     knex: KnexCalendarDayInterface,
+    prisma: PrismaCalendarDayInterface,
   },
 };

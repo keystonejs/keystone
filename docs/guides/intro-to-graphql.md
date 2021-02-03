@@ -99,8 +99,9 @@ Creates multiple `Users`. Parameters are the same as `createUser` except the dat
 
 ```graphql
 mutation {
-  createUsers(data: [{ name: "Mike" }]) {
+  createUsers(data: [{ data: { name: "Mike" } }, { data: { name: "Maher" } }]) {
     id
+    name
   }
 }
 ```
@@ -135,17 +136,22 @@ Delete a single Entity by ID. Accepts a single parameter where the `id` matches 
 
 ```graphql
 mutation {
-  deleteUser(id: ID)
+  deleteUser(id: ID) {
+    id
+  }
 }
 ```
 
 ### `deleteUsers`
 
 Delete multiple entities by ID. Similar to `deleteUser` where the `id` parameter is an array of ids.
+You can add more IDs like this `[ID1, ID2]` and don't forget to write the IDs in string format `""` like this `["5f67974b476e6e2d58c2bfb0", "5f67974b476e6e2d58c2bfb1"]`
 
 ```graphql
 mutation {
-  deleteUsers(id: [ID])
+  deleteUsers(ids: [ID]) {
+    id
+  }
 }
 ```
 
@@ -170,14 +176,14 @@ query GetUsers {
   }
 }`;
 
-fetch('/admin/api', {
+const data = await fetch('/admin/api', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
-  body: {
+  body: JSON.stringify({
     query: GET_ALL_USERS,
-  },
+  }),
 }).then(result => result.json());
 ```
 
@@ -194,15 +200,15 @@ mutation AddUser($name: String!) {
   }
 }`;
 
-fetch('/admin/api', {
+const data = await fetch('/admin/api', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
-  body: {
+  body: JSON.stringify({
     query: ADD_USER,
     variables: { name: 'Mike' },
-  },
+  }),
 }).then(result => result.json());
 ```
 
@@ -232,7 +238,7 @@ The options available in a where clause depend on the field types.
 
 ```graphql
 query {
-  allUsers (where: { name_starts_with_i: 'A'} ) {
+  allUsers(where: { name_starts_with_i: "A" }) {
     id
   }
 }
@@ -295,12 +301,7 @@ You can combine multiple where clauses with `AND` or `OR` operators.
 
 ```graphql
 query {
-  allUsers (where: {
-    OR: [
-      { name_starts_with_i: 'A' },
-      { email_starts_with_i: 'A' },
-    ]
-  } ) {
+  allUsers(where: { OR: [{ name_starts_with_i: "A" }, { email_starts_with_i: "A" }] }) {
     id
   }
 }
@@ -308,7 +309,7 @@ query {
 
 ### `search`
 
-Will search the list to limit results.
+Will search the list to limit results. For now, it can search only by `name` field. The `name` field must be a `Text` type.
 
 ```graphql
 query {
@@ -393,10 +394,10 @@ It is important to provide the same `where` and `search` arguments to both the `
 
 ```graphql
 query {
-  allUsers (search: 'a', skip: 10, first: 10) {
+  allUsers(search: "a", skip: 10, first: 10) {
     id
   }
-  _allUsersMeta(search: 'a') {
+  _allUsersMeta(search: "a") {
     count
   }
 }

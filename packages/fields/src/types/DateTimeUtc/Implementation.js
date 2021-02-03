@@ -1,12 +1,14 @@
 import { DateTime } from 'luxon';
 import { Implementation } from '../../Implementation';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 
 export class DateTimeUtcImplementation extends Implementation {
-  constructor() {
+  constructor(path, { format = 'yyyy-MM-dd[T]HH:mm:ss.SSSxx' }) {
     super(...arguments);
     this.isOrderable = true;
+    this.format = format;
   }
 
   get _supportsUnique() {
@@ -26,10 +28,10 @@ export class DateTimeUtcImplementation extends Implementation {
       ...this.inInputFields('String'),
     ];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
   getGqlAuxTypes() {
@@ -37,7 +39,10 @@ export class DateTimeUtcImplementation extends Implementation {
   }
 
   extendAdminMeta(meta) {
-    return { ...meta, format: 'yyyy-MM-dd[T]HH:mm:ss.SSSxx' };
+    return { ...meta, format: this.format };
+  }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'Date | null' } };
   }
 }
 
@@ -87,5 +92,38 @@ export class KnexDateTimeUtcInterface extends KnexFieldAdapter {
       ...this.orderingConditions(dbPath, toDate),
       ...this.inConditions(dbPath, toDate),
     };
+  }
+}
+
+export class PrismaDateTimeUtcInterface extends PrismaFieldAdapter {
+  constructor() {
+    super(...arguments);
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+  }
+
+  getPrismaSchema() {
+    return [this._schemaField({ type: 'DateTime' })];
+  }
+
+  _stringToDate(s) {
+    return s && new Date(s);
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      ...this.equalityConditions(dbPath, this._stringToDate),
+      ...this.orderingConditions(dbPath, this._stringToDate),
+      ...this.inConditions(dbPath, this._stringToDate),
+    };
+  }
+
+  setupHooks({ addPreSaveHook }) {
+    addPreSaveHook(item => {
+      if (item[this.path]) {
+        item[this.path] = this._stringToDate(item[this.path]);
+      }
+      return item;
+    });
   }
 }

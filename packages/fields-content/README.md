@@ -130,6 +130,6 @@ export function processNodeForConnectQuery({ id, node }) { return { node, query 
 In addition to the standard set of blocks exposed by the `Content` field, you can create custom blocks using the above API.
 Some other field types also expose custom blocks that can be used in the `Content` field. You can find examples of custom blocks in the following fields:
 
-- [CloudinaryImage field](/packages/fields/src/types/CloudinaryImage/README.md).
-- [oEmbed field](/packages/fields/src/types/OEmbed/README.md).
-- [Unsplash field](/packages/fields/src/types/Unsplash/README.md).
+- [CloudinaryImage field](/packages/fields-cloudinary-image/README.md).
+- [oEmbed field](/packages/fields-oembed/README.md).
+- [Unsplash field](/packages/fields-unsplash/README.md).

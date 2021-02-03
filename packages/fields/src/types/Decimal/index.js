@@ -1,16 +1,22 @@
-import { Decimal, MongoDecimalInterface, KnexDecimalInterface } from './Implementation';
-import { importView } from '@keystonejs/build-field-types';
+import {
+  Decimal,
+  MongoDecimalInterface,
+  KnexDecimalInterface,
+  PrismaDecimalInterface,
+} from './Implementation';
+import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Decimal',
   implementation: Decimal,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Filter: importView('./views/Filter'),
+    Controller: resolveView('types/Decimal/views/Controller'),
+    Field: resolveView('types/Decimal/views/Field'),
+    Filter: resolveView('types/Decimal/views/Filter'),
   },
   adapters: {
     mongoose: MongoDecimalInterface,
     knex: KnexDecimalInterface,
+    prisma: PrismaDecimalInterface,
   },
 };

@@ -1,0 +1,57 @@
+# Auth TODO
+
+- [x] Get everything actually working again @mitchell
+- [x] Validate config in createAuth (e.g identityField and secretField exist on the list) @mitchell
+- [x] Implement graphQLSchemaExtension properly based on config @mitchell
+- [x] Secure Admin paths with `secureFn` if it is provided @mitchell
+  - [x] Except `publicRoutes`
+  - [x] Implement no access UI
+  - [x] Make no access UI look nice @jed
+- [x] Put generating Auth Admin UI Pages in the package, add them with `getAdditionalFiles` @mitchell
+- [x] Load Admin Meta from an API route @mitchell
+  - [ ] With good HTTP caching headers
+  - [x] Protect it with the `secureFn`
+  - [x] Make it synchronously available on all pages
+- [x] Write `withItemData` wrapper for sessions @noviny
+  - [x] Session functions will need enough API to execute a query
+- [x] Pass session in context as `session` @mitchell
+  - [x] Remove `authentication` property from context and the usages of it
+  - [x] Pass this as an arg on access control? -- yes
+- [x] Implement signout @jed
+  - [x] Only generate the endSession mutation if session.end exists
+  - [ ] Create UI for the signout page
+  - [ ] Only generate the signout page if the config is enabled
+  - [x] Add a signout button to the Admin UI when the config is enabled
+- [.] Implement forgotten password & magic links @molomby
+  - [x] Define the list/fields
+  - [x] Add the mutations (auth, get reset token, get magic link)
+  - [x] Don't error on failure; create types/union type; `UserPasswordAuthSuccess { item token } UserPasswordAuthFailure { code message }`
+  - [x] Refactor the list and field validation into `validateConfig()`
+  - [x] Build out redemption mutations
+  - [x] `Auth` to return set of fields (to be added to the list); move fields def from example app
+  - [x] `withAuth()` to configure the list config directly
+  - [x] Add suffix to config; use for types, mutations, field names, etc.
+  - [ ] Add config for `validUserConditions` as an optional set of GraphQL filters; slightly refactor loading of item(s)
+  - [ ] Fix the `withAuth` destructuring around fields
+  - [ ] Hooks – See notes in HOOKS.md
+    - [ ] Review/revise the [existing hooks](https://www.keystonejs.com/api/hooks#authentication-hooks)
+    - [ ] Implement hooks for the auth, reset pass and magic link
+    - [ ] Support rate limiting use case
+  - [ ] Generate the UI if it is enabled
+  - [ ] Wire up the UI
+- [ ] Implement init first user @mitchell
+  - [x] Generate the UI if it is enabled
+  - [x] Add the check for (no users?) => redirect
+  - [x] Lock down with (any users?) => nope
+  - [x] Correctly render the field views for the fields defined
+  - [x] Create the user
+  - [ ] Add second screen for following / subscribing to Keystone
+  - [ ] Set up something somewhere for us to collect the data
+- [ ] Write documentation for createAuth @molomby
+
+# Backlog
+
+- [ ] Handle session token authorisation header use case
+- [ ] Review the API that session functions get, try not to provide the keystone instance
+- [ ] 2FA
+- [ ] Social Auth

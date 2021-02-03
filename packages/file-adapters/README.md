@@ -29,7 +29,7 @@ const fileAdapter = new LocalFileAdapter({...});
 | `getFilename` | `Function` | `null`         | Function taking a `{ id, originalFilename }` parameter. Should return a string with the name for the uploaded file on disk. |
 
 > **Note:** `src` and `path` may be the same.
-> **Note 2:** You will need to set also a [static file server](https://v5.keystonejs.com/keystonejs/app-static/#static-file-app) to consume the uploaded files.
+> **Note 2:** You may also need to use a [static file server](https://v5.keystonejs.com/keystonejs/app-static/#static-file-app) to host the uploaded files.
 
 ### Methods
 
@@ -68,6 +68,33 @@ keystone.createList('UploadTest', {
   },
 });
 ```
+
+### GraphQL Usage
+
+You can upload files directly through the GraphQL API. For example, with the above list you can do the following:
+
+```javascript
+// Query
+mutation uploadImageQuery ($file: Upload){
+  createUploadTest(data: {
+    file: $file,
+  }) {
+    id
+    file {
+      publicUrl
+    }
+  }
+}
+
+// Variables
+variables: {
+  file: // File path
+},
+```
+
+Note that you'll need support in your GraphQL Client to make this work. Two popular ones include [apollo-upload-client](https://github.com/jaydenseric/apollo-upload-client) and [urql](https://formidable.com/open-source/urql/docs/advanced/persistence-and-uploads/#file-uploads).
+
+If you're not familiar with file uploads in GraphQL, check out [Altair Playground](https://altair.sirmuel.design/) and follow the [file upload docs](https://altair.sirmuel.design/docs/features/file-upload.html) to try it out.
 
 ## `CloudinaryFileAdapter`
 
@@ -126,14 +153,14 @@ const fileAdapter = new S3Adapter({
 
 ### Config
 
-| Option         | Type              | Default     | Description                                                                                                                                                                                                                              |
-| -------------- | ----------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bucket`       | `String`          | Required    | S3 bucket name                                                                                                                                                                                                                           |
-| `folder`       | `String`          | `''`        | Upload folder from root of bucket. By default uploads will be sent to the bucket's root folder.                                                                                                                                          |
-| `getFilename`  | `Function`        | `null`      | Function taking a `{ id, originalFilename }` parameter. Should return a string with the name for the uploaded file on disk.                                                                                                              |
-| `publicUrl`    | `Function`        |             | By default the publicUrl returns a url for the S3 bucket in the form `https://{bucket}.s3.amazonaws.com/{key}/{filename}`. This will only work if the bucket is configured to allow public access.                                       |
-| `s3Options`    | `Object`          | `undefined` | For available options refer to the [AWS S3 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)                                                                                                                         |
-| `uploadParams` | `Object|Function` | `{}`        | A config object or function returning a config object to be passed with each call to S3.upload. For available options refer to the [AWS S3 upload API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property). |
+| Option         | Type                   | Default     | Description                                                                                                                                                                                                                              |
+| -------------- | ---------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bucket`       | `String`               | Required    | S3 bucket name                                                                                                                                                                                                                           |
+| `folder`       | `String`               | `''`        | Upload folder from root of bucket. By default uploads will be sent to the bucket's root folder.                                                                                                                                          |
+| `getFilename`  | `Function`             | `null`      | Function taking a `{ id, originalFilename }` parameter. Should return a string with the name for the uploaded file on disk.                                                                                                              |
+| `publicUrl`    | `Function`             |             | By default the publicUrl returns a url for the S3 bucket in the form `https://{bucket}.s3.amazonaws.com/{key}/{filename}`. This will only work if the bucket is configured to allow public access.                                       |
+| `s3Options`    | `Object`               | `undefined` | For available options refer to the [AWS S3 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html)                                                                                                                         |
+| `uploadParams` | `Object    | Function` | `{}`        | A config object or function returning a config object to be passed with each call to S3.upload. For available options refer to the [AWS S3 upload API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property). |
 
 > **Note:** Authentication can be done in many different ways. One option is to include valid `accessKeyId` and `secretAccessKey` properties in the `s3Options` parameter. Other methods include setting environment variables. See [Setting Credentials in Node.js](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html) for a complete set of options.
 

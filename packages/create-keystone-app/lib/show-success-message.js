@@ -3,12 +3,14 @@ const path = require('path');
 const terminalLink = require('terminal-link');
 const { getProjectDirectory } = require('./util');
 const { getAdapterChoice } = require('./get-adapter-choice');
+const { getAdapterConfig } = require('./get-adapter-config');
 
 const showSuccessMessage = async () => {
   const projectDir = await getProjectDirectory();
-  const adapterConfig = await getAdapterChoice();
+  const adapterChoice = await getAdapterChoice();
   let knexMessage = '';
-  if (adapterConfig.name === 'PostgreSQL') {
+  const adapterConfig = await getAdapterConfig();
+  if (adapterChoice.key === 'PostgreSQL') {
     knexMessage = `
 ${c.bold('  Before you run Keystone you will need to initialise the tables in your database:')}
 
@@ -28,7 +30,7 @@ ${c.bold('  Before you run Keystone you will need to initialise the tables in yo
   ${c.bold('To launch your app, run:')}
 
   - cd ${projectDir}
-  - yarn dev
+  - ${adapterChoice.key === 'Prisma' ? `DATABASE_URL=${adapterConfig} yarn dev` : 'yarn dev'}
 
   ${c.bold('Next steps:')}
 

@@ -2,6 +2,7 @@ import {
   DateTimeUtcImplementation,
   MongoDateTimeUtcInterface,
   KnexDateTimeUtcInterface,
+  PrismaDateTimeUtcInterface,
 } from './Implementation';
 import DateTime from '../DateTime';
 
@@ -17,5 +18,6 @@ export default {
   adapters: {
     mongoose: MongoDateTimeUtcInterface,
     knex: KnexDateTimeUtcInterface,
+    prisma: PrismaDateTimeUtcInterface,
   },
 };

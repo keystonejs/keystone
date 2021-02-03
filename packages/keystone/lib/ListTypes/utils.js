@@ -1,7 +1,4 @@
 const { upcase, resolveAllKeys, arrayToObject } = require('@keystonejs/utils');
-const { logger } = require('@keystonejs/logger');
-
-const keystoneLogger = logger('keystone');
 
 const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
 
@@ -20,11 +17,7 @@ const keyToLabel = str => {
   return label;
 };
 
-const labelToPath = str =>
-  str
-    .split(' ')
-    .join('-')
-    .toLowerCase();
+const labelToPath = str => str.split(' ').join('-').toLowerCase();
 
 const labelToClass = str => str.replace(/\s+/g, '');
 
@@ -33,47 +26,6 @@ const opToType = {
   create: 'mutation',
   update: 'mutation',
   delete: 'mutation',
-};
-
-const mapNativeTypeToKeystoneType = (type, listKey, fieldPath) => {
-  const { Text, Checkbox, Float } = require('@keystonejs/fields');
-
-  const nativeTypeMap = new Map([
-    [
-      Boolean,
-      {
-        name: 'Boolean',
-        keystoneType: Checkbox,
-      },
-    ],
-    [
-      String,
-      {
-        name: 'String',
-        keystoneType: Text,
-      },
-    ],
-    [
-      Number,
-      {
-        name: 'Number',
-        keystoneType: Float,
-      },
-    ],
-  ]);
-
-  if (!nativeTypeMap.has(type)) {
-    return type;
-  }
-
-  const { name, keystoneType } = nativeTypeMap.get(type);
-
-  keystoneLogger.warn(
-    { nativeType: type, keystoneType, listKey, fieldPath },
-    `Mapped field ${listKey}.${fieldPath} from native JavaScript type '${name}', to '${keystoneType.type.type}' from the @keystonejs/fields package.`
-  );
-
-  return keystoneType;
 };
 
 const getDefaultLabelResolver = labelField => item => {
@@ -100,7 +52,6 @@ module.exports = {
   labelToPath,
   labelToClass,
   opToType,
-  mapNativeTypeToKeystoneType,
   getDefaultLabelResolver,
   mapToFields,
 };

@@ -5,7 +5,7 @@ module.exports = async keystone => {
   // Count existing users
   const {
     data: {
-      _allUsersMeta: { count },
+      _allUsersMeta: { count = 0 },
     },
   } = await keystone.executeGraphQL({
     context: keystone.createContext({ skipAccessControl: true }),

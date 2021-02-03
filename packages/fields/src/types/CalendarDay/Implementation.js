@@ -2,6 +2,8 @@ import { formatISO, parseISO, compareAsc, compareDesc, isValid } from 'date-fns'
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
+
 export class CalendarDay extends Implementation {
   constructor(path, { format = 'yyyy-MM-dd', dateFrom, dateTo }) {
     super(...arguments);
@@ -40,7 +42,9 @@ export class CalendarDay extends Implementation {
   gqlOutputFields() {
     return [`${this.path}: String`];
   }
-
+  gqlOutputFieldResolvers() {
+    return { [`${this.path}`]: item => item[this.path] };
+  }
   gqlQueryInputFields() {
     return [
       ...this.equalityInputFields('String'),
@@ -49,11 +53,11 @@ export class CalendarDay extends Implementation {
     ];
   }
 
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
 
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
 
@@ -91,6 +95,10 @@ export class CalendarDay extends Implementation {
         });
       }
     }
+  }
+
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'string | null' } };
   }
 }
 
@@ -135,6 +143,44 @@ export class KnexCalendarDayInterface extends CommonCalendarInterface(KnexFieldA
   }
 
   setupHooks({ addPostReadHook }) {
+    addPostReadHook(item => {
+      if (item[this.path]) {
+        item[this.path] = formatISO(item[this.path], { representation: 'date' });
+      }
+      return item;
+    });
+  }
+}
+
+export class PrismaCalendarDayInterface extends CommonCalendarInterface(PrismaFieldAdapter) {
+  constructor() {
+    super(...arguments);
+  }
+
+  getPrismaSchema() {
+    return [this._schemaField({ type: 'DateTime' })];
+  }
+
+  _stringToDate(s) {
+    return s && new Date(s + 'T00:00:00+0000');
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      ...this.equalityConditions(dbPath, this._stringToDate),
+      ...this.orderingConditions(dbPath, this._stringToDate),
+      ...this.inConditions(dbPath, this._stringToDate),
+    };
+  }
+
+  setupHooks({ addPreSaveHook, addPostReadHook }) {
+    addPreSaveHook(item => {
+      if (item[this.path]) {
+        item[this.path] = this._stringToDate(item[this.path]);
+      }
+      return item;
+    });
+
     addPostReadHook(item => {
       if (item[this.path]) {
         item[this.path] = formatISO(item[this.path], { representation: 'date' });

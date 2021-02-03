@@ -1,16 +1,17 @@
-import { Text, MongoTextInterface, KnexTextInterface } from './Implementation';
-import { importView } from '@keystonejs/build-field-types';
+import { Text, MongoTextInterface, KnexTextInterface, PrismaTextInterface } from './Implementation';
+import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Text',
   implementation: Text,
   views: {
-    Controller: importView('./views/Controller'),
-    Field: importView('./views/Field'),
-    Filter: importView('./views/Filter'),
+    Controller: resolveView('types/Text/views/Controller'),
+    Field: resolveView('types/Text/views/Field'),
+    Filter: resolveView('types/Text/views/Filter'),
   },
   adapters: {
     mongoose: MongoTextInterface,
     knex: KnexTextInterface,
+    prisma: PrismaTextInterface,
   },
 };

@@ -13,21 +13,19 @@ const {
   arrayToObject,
 } = require('@keystonejs/utils');
 const { parseListAccess } = require('@keystonejs/access-control');
-const { logger } = require('@keystonejs/logger');
 const {
   preventInvalidUnderscorePrefix,
   keyToLabel,
   labelToPath,
   labelToClass,
   opToType,
-  mapNativeTypeToKeystoneType,
   getDefaultLabelResolver,
   mapToFields,
 } = require('./utils');
 const { HookManager } = require('./hooks');
 const { LimitsExceededError, throwAccessDenied } = require('./graphqlErrors');
 
-const graphqlLogger = logger('graphql');
+const { graphqlLogger } = require('../Keystone/logger');
 
 module.exports = class List {
   constructor(
@@ -165,17 +163,16 @@ module.exports = class List {
     if (this.fieldsInitialised) return;
     this.fieldsInitialised = true;
 
-    let sanitisedFieldsConfig = mapKeys(this._fields, (fieldConfig, path) => ({
-      ...fieldConfig,
-      type: mapNativeTypeToKeystoneType(fieldConfig.type, this.key, path),
-    }));
+    let sanitisedFieldsConfig = this._fields;
 
     // Add an 'id' field if none supplied
     if (!sanitisedFieldsConfig.id) {
       if (typeof this.adapter.parentAdapter.getDefaultPrimaryKeyConfig !== 'function') {
-        throw `No 'id' field given for the '${this.key}' list and the list adapter ` +
-          `in used (${this.adapter.key}) doesn't supply a default primary key config ` +
-          `(no 'getDefaultPrimaryKeyConfig()' function)`;
+        throw new Error(
+          `No 'id' field given for the '${this.key}' list and the list adapter ` +
+            `in used (${this.adapter.key}) doesn't supply a default primary key config ` +
+            `(no 'getDefaultPrimaryKeyConfig()' function)`
+        );
       }
       // Rebuild the object so id is "first"
       sanitisedFieldsConfig = {
@@ -187,21 +184,29 @@ module.exports = class List {
     // Helpful errors for misconfigured lists
     Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
       if (!this.isAuxList && fieldKey[0] === '_') {
-        throw `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`;
+        throw new Error(
+          `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`
+        );
       }
       if (typeof fieldConfig.type === 'undefined') {
-        throw `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
-          `(${this.key}.${fieldKey}.type is undefined)`;
+        throw new Error(
+          `The '${this.key}.${fieldKey}' field doesn't specify a valid type. ` +
+            `(${this.key}.${fieldKey}.type is undefined)`
+        );
       }
       const adapters = fieldConfig.type.adapters;
       if (typeof adapters === 'undefined' || Object.entries(adapters).length === 0) {
-        throw `The type given for the '${this.key}.${fieldKey}' field doesn't define any adapters.`;
+        throw new Error(
+          `The type given for the '${this.key}.${fieldKey}' field doesn't define any adapters.`
+        );
       }
     });
 
     Object.values(sanitisedFieldsConfig).forEach(({ type }) => {
       if (!type.adapters[this.adapterName]) {
-        throw `Adapter type "${this.adapterName}" does not support field type "${type.type}"`;
+        throw new Error(
+          `Adapter type "${this.adapterName}" does not support field type "${type.type}"`
+        );
       }
     });
 
@@ -1013,7 +1018,9 @@ module.exports = class List {
     if (schemaAccess.update && updateFields.length) {
       types.push(`
         input ${this.gqlNames.updateInputName} {
-          ${flatten(updateFields.map(field => field.gqlUpdateInputFields)).join('\n')}
+          ${flatten(updateFields.map(field => field.gqlUpdateInputFields({ schemaName }))).join(
+            '\n'
+          )}
         }
       `);
       types.push(`
@@ -1028,7 +1035,9 @@ module.exports = class List {
     if (schemaAccess.create && createFields.length) {
       types.push(`
         input ${this.gqlNames.createInputName} {
-          ${flatten(createFields.map(field => field.gqlCreateInputFields)).join('\n')}
+          ${flatten(createFields.map(field => field.gqlCreateInputFields({ schemaName }))).join(
+            '\n'
+          )}
         }
       `);
       types.push(`

@@ -173,10 +173,10 @@ class Field {
       `${this.path}_not_ends_with_i: ${type}`,
     ];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [];
   }
   getAdminMeta({ schemaName }) {
@@ -220,6 +220,13 @@ class Field {
     }
     // By default, the default value is undefined
     return undefined;
+  }
+
+  getBackingTypes() {
+    // Return the typescript types of the backing item for this field type.
+    // This method can be helpful if you want to auto-generate typescript types.
+    // Future releases of Keystone will provide full typescript support
+    return { [this.path]: { optional: true, type: 'any' } };
   }
 }
 

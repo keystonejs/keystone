@@ -1,12 +1,7 @@
 import mongoose from 'mongoose';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
-
-const {
-  Schema: {
-    Types: { ObjectId },
-  },
-} = mongoose;
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 
 import { Implementation } from '../../Implementation';
 import { resolveNested } from './nested-mutations';
@@ -131,10 +126,11 @@ export class Relationship extends Implementation {
       return {
         [this.path]: (item, _, context, info) => {
           // No ID set, so we return null for the value
-          if (!item[this.path]) {
+          const id = item && (item[this.adapter.idPath] || (item[this.path] && item[this.path].id));
+          if (!id) {
             return null;
           }
-          const filteredQueryArgs = { where: { id: item[this.path].toString() } };
+          const filteredQueryArgs = { where: { id: id.toString() } };
           // We do a full query to ensure things like access control are applied
           return refList
             .listQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName, info)
@@ -213,7 +209,7 @@ export class Relationship extends Implementation {
         : [];
       currentValue = currentValue.map(({ id }) => id.toString());
     } else {
-      currentValue = item && item[this.path];
+      currentValue = item && (item[this.adapter.idPath] || (item[this.path] && item[this.path].id));
       currentValue = currentValue && currentValue.toString();
     }
 
@@ -233,6 +229,7 @@ export class Relationship extends Implementation {
 
   getGqlAuxTypes({ schemaName }) {
     const { refList } = this.tryResolveRefList();
+    const schemaAccess = refList.access[schemaName];
     // We need an input type that is specific to creating nested items when
     // creating a relationship, ie;
     //
@@ -250,63 +247,90 @@ export class Relationship extends Implementation {
     // mutation createPost() {
     //   author: { connect: { id: 'abc123' } }
     // }
-    const operations = [];
-    if (this.many) {
-      if (refList.access[schemaName].create) {
-        operations.push(`# Provide data to create a set of new ${refList.key}. Will also connect.
+    if (
+      schemaAccess.read ||
+      schemaAccess.create ||
+      schemaAccess.update ||
+      schemaAccess.delete ||
+      schemaAccess.auth
+    ) {
+      const operations = [];
+      if (this.many) {
+        if (refList.access[schemaName].create) {
+          operations.push(`# Provide data to create a set of new ${refList.key}. Will also connect.
           create: [${refList.gqlNames.createInputName}]`);
-      }
-      operations.push(
-        `# Provide a filter to link to a set of existing ${refList.key}.
+        }
+
+        operations.push(
+          `# Provide a filter to link to a set of existing ${refList.key}.
           connect: [${refList.gqlNames.whereUniqueInputName}]`,
-        `# Provide a filter to remove to a set of existing ${refList.key}.
+          `# Provide a filter to remove to a set of existing ${refList.key}.
           disconnect: [${refList.gqlNames.whereUniqueInputName}]`,
-        `# Remove all ${refList.key} in this list.
+          `# Remove all ${refList.key} in this list.
           disconnectAll: Boolean`
-      );
-      return [
-        `input ${refList.gqlNames.relateToManyInputName} {
+        );
+        return [
+          `input ${refList.gqlNames.relateToManyInputName} {
           ${operations.join('\n')}
         }
       `,
-      ];
-    } else {
-      if (refList.access[schemaName].create) {
-        operations.push(`# Provide data to create a new ${refList.key}.
+        ];
+      } else {
+        if (schemaAccess.create) {
+          operations.push(`# Provide data to create a new ${refList.key}.
         create: ${refList.gqlNames.createInputName}`);
-      }
-      operations.push(
-        `# Provide a filter to link to an existing ${refList.key}.
+        }
+
+        operations.push(
+          `# Provide a filter to link to an existing ${refList.key}.
         connect: ${refList.gqlNames.whereUniqueInputName}`,
-        `# Provide a filter to remove to an existing ${refList.key}.
+          `# Provide a filter to remove to an existing ${refList.key}.
         disconnect: ${refList.gqlNames.whereUniqueInputName}`,
-        `# Remove the existing ${refList.key} (if any).
+          `# Remove the existing ${refList.key} (if any).
         disconnectAll: Boolean`
-      );
-      return [
-        `input ${refList.gqlNames.relateToOneInputName} {
+        );
+        return [
+          `input ${refList.gqlNames.relateToOneInputName} {
           ${operations.join('\n')}
         }
       `,
-      ];
-    }
-  }
-  get gqlUpdateInputFields() {
-    const { refList } = this.tryResolveRefList();
-    if (this.many) {
-      return [`${this.path}: ${refList.gqlNames.relateToManyInputName}`];
+        ];
+      }
     } else {
-      return [`${this.path}: ${refList.gqlNames.relateToOneInputName}`];
+      return [];
     }
   }
-  get gqlCreateInputFields() {
-    return this.gqlUpdateInputFields;
+  gqlUpdateInputFields({ schemaName }) {
+    const { refList } = this.tryResolveRefList();
+    const schemaAccess = refList.access[schemaName];
+    if (
+      schemaAccess.read ||
+      schemaAccess.create ||
+      schemaAccess.update ||
+      schemaAccess.delete ||
+      schemaAccess.auth
+    ) {
+      if (this.many) {
+        return [`${this.path}: ${refList.gqlNames.relateToManyInputName}`];
+      } else {
+        return [`${this.path}: ${refList.gqlNames.relateToOneInputName}`];
+      }
+    } else {
+      return [];
+    }
+  }
+  gqlCreateInputFields({ schemaName }) {
+    return this.gqlUpdateInputFields({ schemaName });
+  }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'string | null' } };
   }
 }
 
 export class MongoRelationshipInterface extends MongooseFieldAdapter {
   constructor(...args) {
     super(...args);
+    this.idPath = this.dbPath;
 
     // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
     const [refListKey, refFieldPath] = this.config.ref.split('.');
@@ -315,7 +339,7 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
     this.isRelationship = true;
   }
 
-  addToMongooseSchema(schema, mongoose, rels) {
+  addToMongooseSchema(schema, _mongoose, rels) {
     // If we're relating to 'many' things, we don't store ids in this table
     if (!this.field.many) {
       // If we're the right hand side of a 1:1 relationship, do nothing.
@@ -327,13 +351,9 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
       }
 
       // Otherwise, we're are hosting a foreign key
-      const {
-        refListKey: ref,
-        config: { many },
-      } = this;
-      const type = many ? [ObjectId] : ObjectId; // FIXME: redundant?
-      const schemaOptions = { type, ref };
-      schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
+      const { refListKey, config } = this;
+      const type = mongoose.Types.ObjectId;
+      schema.add({ [this.path]: this.mergeSchemaOptions({ type, ref: refListKey }, config) });
     }
   }
 
@@ -349,6 +369,7 @@ export class MongoRelationshipInterface extends MongooseFieldAdapter {
 export class KnexRelationshipInterface extends KnexFieldAdapter {
   constructor() {
     super(...arguments);
+    this.idPath = this.dbPath;
     this.isRelationship = true;
 
     // Default isIndexed to true if it's not explicitly provided
@@ -404,6 +425,33 @@ export class KnexRelationshipInterface extends KnexFieldAdapter {
     return {
       [`${this.path}_is_null`]: value => b =>
         value ? b.whereNull(dbPath) : b.whereNotNull(dbPath),
+    };
+  }
+}
+
+export class PrismaRelationshipInterface extends PrismaFieldAdapter {
+  constructor() {
+    super(...arguments);
+    this.idPath = `${this.dbPath}Id`;
+    this.isRelationship = true;
+
+    // Default isIndexed to true if it's not explicitly provided
+    // Mutually exclusive with isUnique
+    this.isUnique = typeof this.config.isUnique === 'undefined' ? false : !!this.config.isUnique;
+    this.isIndexed =
+      typeof this.config.isIndexed === 'undefined'
+        ? !this.config.isUnique
+        : !!this.config.isIndexed;
+
+    // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
+    const [refListKey, refFieldPath] = this.config.ref.split('.');
+    this.refListKey = refListKey;
+    this.refFieldPath = refFieldPath;
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      [`${this.path}_is_null`]: value => (value ? { [dbPath]: null } : { NOT: { [dbPath]: null } }),
     };
   }
 }

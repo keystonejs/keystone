@@ -1,4 +1,4 @@
-const getWorkspaces = require('get-workspaces').default;
+const { getPackages } = require('@manypkg/get-packages');
 const fs = require('fs');
 const path = require('path');
 
@@ -9,23 +9,26 @@ async function getPackagePlugins() {
     return fs.existsSync(fullDir) && fs.lstatSync(fullDir).isDirectory();
   });
 
-  const workspaces = await getWorkspaces({ cwd: rootDir });
+  const { packages } = await getPackages(rootDir);
 
   return [
     ...docSections.map(name => ({
       resolve: 'gatsby-source-filesystem',
       options: { name, path: `${rootDir}/docs/${name}/` },
     })),
-    ...workspaces
-      .filter(({ config }) => !config.private)
+    ...packages
+      .filter(({ packageJson }) => !packageJson.private)
       .filter(({ dir }) => fs.existsSync(dir))
-      .filter(({ dir }) => !dir.includes('arch'))
-      .map(({ dir, config }) => ({
+      .filter(
+        ({ dir }) =>
+          !dir.includes('arch') && !dir.includes('packages-next') && !dir.includes('design-system')
+      )
+      .map(({ dir, packageJson }) => ({
         resolve: 'gatsby-source-filesystem',
         options: {
           // This `name` will show up as `sourceInstanceName` on a node's "parent"
           // See `gatsby-node.js` for where it's used.
-          name: config.name,
+          name: packageJson.name,
           path: `${dir}`,
           ignore: [`**/**/CHANGELOG.md`, '**/*.{js,json}'],
         },

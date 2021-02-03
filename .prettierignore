@@ -5,9 +5,11 @@ coverage
 packages/test-project/public
 website/.cache/**/*
 website/public/**/*
-demo-projects/todo/.cache
-demo-projects/blog/app/.next
+examples/todo/.cache
+examples/blog/app/.next
 packages/arch/www/public/**/*
 .changeset/**/*
 **/dist
 **/.next
+**/.keystone
+.api-test-prisma-clients

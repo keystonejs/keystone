@@ -1,6 +1,8 @@
+import cuid from 'cuid';
 import { Implementation } from '@keystonejs/fields';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 import mongoose from 'mongoose';
 
 import fetch from 'node-fetch';
@@ -8,10 +10,6 @@ import fetch from 'node-fetch';
 // Disabling the getter of mongoose >= 5.1.0
 // https://github.com/Automattic/mongoose/blob/master/migrating_to_5.md#checking-if-a-path-is-populated
 mongoose.set('objectIdGetter', false);
-
-const {
-  Types: { ObjectId },
-} = mongoose;
 
 export class LocationGoogleImplementation extends Implementation {
   constructor(_, { googleMapsKey }) {
@@ -43,11 +41,7 @@ export class LocationGoogleImplementation extends Implementation {
   }
 
   gqlQueryInputFields() {
-    return [
-      ...this.equalityInputFields('String'),
-      ...this.stringInputFields('String'),
-      ...this.inInputFields('String'),
-    ];
+    return [...this.equalityInputFields('String'), ...this.inInputFields('String')];
   }
 
   getGqlAuxTypes() {
@@ -103,7 +97,10 @@ export class LocationGoogleImplementation extends Implementation {
       const { place_id, formatted_address } = response.results[0];
       const { lat, lng } = response.results[0].geometry.location;
       return {
-        id: new ObjectId(),
+        id:
+          this.adapter.listAdapter.parentAdapter.name === 'mongoose'
+            ? new mongoose.Types.ObjectId()
+            : cuid(),
         googlePlaceID: place_id,
         formattedAddress: formatted_address,
         lat: lat,
@@ -114,12 +111,23 @@ export class LocationGoogleImplementation extends Implementation {
     return null;
   }
 
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
 
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: String`];
+  }
+  getBackingTypes() {
+    const type = `null | {
+      id: string;
+      googlePlaceID: string;
+      formattedAddress: string;
+      lat: number;
+      lng: number;
+      }
+    `;
+    return { [this.path]: { optional: true, type } };
   }
 }
 
@@ -128,7 +136,6 @@ const CommonLocationInterface = superclass =>
     getQueryConditions(dbPath) {
       return {
         ...this.equalityConditions(dbPath),
-        ...this.stringConditions(dbPath),
         ...this.inConditions(dbPath),
       };
     }
@@ -138,7 +145,7 @@ export class MongoLocationGoogleInterface extends CommonLocationInterface(Mongoo
   addToMongooseSchema(schema) {
     const schemaOptions = {
       type: {
-        id: ObjectId,
+        id: mongoose.Types.ObjectId,
         googlePlaceID: String,
         formattedAddress: String,
         lat: Number,
@@ -156,8 +163,10 @@ export class KnexLocationGoogleInterface extends CommonLocationInterface(KnexFie
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
     if (this.config.isIndexed) {
-      throw `The Location field type doesn't support indexes on Knex. ` +
-        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+      throw (
+        `The LocationGoogle field type doesn't support indexes on Knex. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      );
     }
   }
 
@@ -165,5 +174,23 @@ export class KnexLocationGoogleInterface extends CommonLocationInterface(KnexFie
     const column = table.jsonb(this.path);
     if (this.isNotNullable) column.notNullable();
     if (this.defaultTo) column.defaultTo(this.defaultTo);
+  }
+}
+
+export class PrismaLocationGoogleInterface extends CommonLocationInterface(PrismaFieldAdapter) {
+  constructor() {
+    super(...arguments);
+    // Error rather than ignoring invalid config
+    // We totally can index these values, it's just not trivial. See issue #1297
+    if (this.config.isIndexed) {
+      throw (
+        `The LocationGoogle field type doesn't support indexes on Prisma. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      );
+    }
+  }
+
+  getPrismaSchema() {
+    return [this._schemaField({ type: 'Json' })];
   }
 }

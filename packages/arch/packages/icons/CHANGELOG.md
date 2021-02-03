@@ -1,5 +1,19 @@
 # @arch-ui/icons
 
+## 0.1.3
+
+### Patch Changes
+
+- [`e78b72f35`](https://github.com/keystonejs/keystone/commit/e78b72f35c75207195c31d0109d592260e7b706a) [#3624](https://github.com/keystonejs/keystone/pull/3624) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@primer/octicons` to `^11.0.`.
+
+## 0.1.2
+
+### Patch Changes
+
+- [`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6) [#3481](https://github.com/keystonejs/keystone/pull/3481) Thanks [@Noviny](https://github.com/Noviny)! - Updated dependencies through a major version - this shouldn't require change by consumers.
+
+* [`0fc878fa9`](https://github.com/keystonejs/keystone/commit/0fc878fa918c3196196f943f195ffaa62fce504b) [#3439](https://github.com/keystonejs/keystone/pull/3439) Thanks [@renovate](https://github.com/apps/renovate)! - Updated babel dependencies.
+
 ## 0.1.1
 
 ### Patch Changes

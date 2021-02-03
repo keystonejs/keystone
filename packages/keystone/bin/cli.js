@@ -5,7 +5,6 @@ const ora = require('ora');
 const path = require('path');
 const globby = require('globby');
 const ciInfo = require('ci-info');
-const devnull = require('dev-null');
 const commandRunner = require('./command-runner');
 
 const commandDir = path.join(__dirname, 'commands');
@@ -57,7 +56,7 @@ if (args['--help']) {
 const spinner = ora({
   text: 'Initialising Keystone CLI',
   // Don't show any loading output on CI
-  ...(ciInfo.isCI && { stream: devnull() }),
+  isSilent: !!ciInfo.isCi,
 }).start();
 
 // Everything else is assumed to be a command we want to execute

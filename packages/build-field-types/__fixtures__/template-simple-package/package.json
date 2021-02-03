@@ -1,7 +1,0 @@
-{
-  "name": "template-package-json",
-  "version": "1.0.0",
-  "main": "dist/template-package-json.cjs.js",
-  "license": "MIT",
-  "private": true
-}
