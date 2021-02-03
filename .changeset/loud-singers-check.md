@@ -3,4 +3,4 @@
 '@keystone-next/types': minor
 ---
 
-Ability to set server port number via keystone config
+Added the ability to set the server port number via `config.server.port`.
