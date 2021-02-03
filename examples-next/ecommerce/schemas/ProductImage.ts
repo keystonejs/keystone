@@ -10,7 +10,6 @@ export const cloudinary = {
   apiSecret: process.env.CLOUDINARY_SECRET || '',
 };
 
-
 export const ProductImage = list({
   access: {
     create: permissions.canManageProducts,

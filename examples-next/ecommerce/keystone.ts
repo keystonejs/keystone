@@ -51,8 +51,8 @@ export default withAuth(
     server: {
       cors: {
         origin: ['http://localhost:2223'],
-        credentials: true
-      }
+        credentials: true,
+      },
     },
     db: {
       adapter: 'mongoose',

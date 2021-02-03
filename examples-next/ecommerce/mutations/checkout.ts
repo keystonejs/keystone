@@ -34,7 +34,7 @@ export default async function checkout(root: any, { token }: { token: string }, 
           }
         } }
       }`,
-    });
+  });
 
   // 2. recalculate the total for the price
   const amount = User.cart.reduce(
@@ -47,15 +47,17 @@ export default async function checkout(root: any, { token }: { token: string }, 
   // by passing confirm: true, We do stripe.paymentIntent.create() and stripe.paymentIntent.confirm() in 1 go.
   // You can bypass stripe by using this:
   // const charge = { id: `fake-charge-${Date.now()}`, amount, token };
-  const charge = await stripe.paymentIntents.create({
-    amount,
-    currency: 'USD',
-    confirm: true,
-    payment_method: token,
-  }).catch(err => {
-    console.log('shoot!');
-    console.log(err);
-  }) as any; // TODO: Stripe Type?
+  const charge = (await stripe.paymentIntents
+    .create({
+      amount,
+      currency: 'USD',
+      confirm: true,
+      payment_method: token,
+    })
+    .catch(err => {
+      console.log('shoot!');
+      console.log(err);
+    })) as any; // TODO: Stripe Type?
   console.log(`Back from stripe!`, charge.id);
 
   // 4. Convert the CartItems to OrderItems

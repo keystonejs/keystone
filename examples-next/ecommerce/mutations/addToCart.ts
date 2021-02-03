@@ -1,4 +1,8 @@
-export default async function addToCart(root: any, { productId }: { productId: string }, context: any) {
+export default async function addToCart(
+  root: any,
+  { productId }: { productId: string },
+  context: any
+) {
   const { session } = context;
   console.log('adding to cart...');
   // 1. Make sure they are signed in
@@ -8,7 +12,7 @@ export default async function addToCart(root: any, { productId }: { productId: s
   }
   // 2. Query the users current cart, to see if they already have that item
   const allCartItems = await context.lists.CartItem.findMany({
-    where: { user: { id: userId }, product: { id: productId } }
+    where: { user: { id: userId }, product: { id: productId } },
   });
 
   // 3. Check if that item is already in their cart and increment by 1 if it is

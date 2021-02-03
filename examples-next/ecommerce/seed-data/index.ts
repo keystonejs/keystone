@@ -7,8 +7,8 @@ export async function insertSeedData(keystone: any) {
   for (const product of products) {
     console.log(`  🛍️ Adding Product: ${product.name}`);
     const { _id } = await mongoose
-    .model('ProductImage')
-    .create({ photo: product.photo, altText: product.description });
+      .model('ProductImage')
+      .create({ photo: product.photo, altText: product.description });
     product.photo = _id;
     await mongoose.model('Product').create(product);
   }

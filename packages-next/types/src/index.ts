@@ -66,7 +66,7 @@ export type KeystoneConfig = {
   ui?: KeystoneAdminUIConfig;
   server?: {
     /** Configuration options for the cors middleware. Set to true to core Keystone defaults */
-    cors?: CorsOptions
+    cors?: CorsOptions;
   };
 } & SchemaConfig;
 
