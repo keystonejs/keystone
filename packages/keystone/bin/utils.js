@@ -5,7 +5,7 @@ const ciInfo = require('ci-info');
 const chalk = require('chalk');
 const path = require('path');
 
-const { DEFAULT_ENTRY, DEFAULT_PORT } = require('../constants');
+const { DEFAULT_ENTRY, DEFAULT_PORT, DEFAULT_APP_URL } = require('../constants');
 
 const verifyTableMessages = verifyTableResults => {
   const verifyTableErrors = verifyTableResults.filter(({ isRejected }) => isRejected);
@@ -45,11 +45,11 @@ const verifyTableMessages = verifyTableResults => {
   }
 };
 
-const ttyLink = (text, path, port) => {
+const ttyLink = (text, path, appUrl) => {
   if (ciInfo.isCI) {
     return;
   }
-  const url = `http://localhost:${port}${path}`;
+  const url = `${appUrl}${path}`;
   const link = terminalLink(url, url, { fallback: () => url });
   console.log(`🔗 ${chalk.green(text)}\t${link}`);
 };
@@ -96,6 +96,7 @@ function extractAppMeta(apps, dev) {
 
 async function executeDefaultServer(args, entryFile, distDir, spinner) {
   const port = args['--port'] ? args['--port'] : DEFAULT_PORT;
+  const appUrl = args['--app-url'] ? args['--app-url'] : DEFAULT_APP_URL;
   let status = 'start-server';
 
   spinner.text = 'Starting Keystone server';
@@ -163,13 +164,12 @@ async function executeDefaultServer(args, entryFile, distDir, spinner) {
   app.use(middlewares);
   status = 'started';
   spinner.succeed(chalk.green.bold(`Keystone instance is ready at http://localhost:${port} 🚀`));
-
   const { adminPath, graphiqlPath, apiPath } = extractAppMeta(apps, dev);
 
   /* eslint-disable no-unused-expressions */
-  adminPath && ttyLink('Keystone Admin UI:', adminPath, port);
-  graphiqlPath && ttyLink('GraphQL Playground:', graphiqlPath, port);
-  apiPath && ttyLink('GraphQL API:\t', apiPath, port);
+  adminPath && ttyLink('Keystone Admin UI:', adminPath, appUrl);
+  graphiqlPath && ttyLink('GraphQL Playground:', graphiqlPath, appUrl);
+  apiPath && ttyLink('GraphQL API:\t', apiPath, appUrl);
   /* eslint-enable no-unused-expressions */
 
   return { port, server };
