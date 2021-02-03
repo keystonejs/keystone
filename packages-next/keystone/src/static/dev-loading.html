@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>KeystoneJS</title>
+    <style type="text/css">
+      html,
+      body {
+        height: 100vh;
+      }
+      body {
+        align-items: center;
+        background-color: #fafbfc;
+        color: #172b4d;
+        display: flex;
+        flex-direction: column;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+          sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+        font-size: 15px;
+        justify-content: center;
+        letter-spacing: -0.005em;
+        margin: 0;
+        padding: 0;
+        text-decoration-skip: ink;
+        text-rendering: optimizeLegibility;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1 {
+        font-weight: 300;
+        margin-bottom: 0.66em;
+        margin-top: 0;
+      }
+      p {
+        color: #6c798f;
+      }
+      .container {
+        margin-top: -4vh;
+        padding-left: 1em;
+        padding-right: 1em;
+        text-align: center;
+      }
+      /* Loading spinner from loading.io/css */
+      .loading-spinner {
+        display: inline-block;
+        height: 64px;
+        position: relative;
+        width: 64px;
+      }
+      .loading-spinner > div {
+        animation-timing-function: cubic-bezier(0, 1, 1, 0);
+        background: #172b4d;
+        border-radius: 50%;
+        height: 11px;
+        position: absolute;
+        top: 27px;
+        width: 11px;
+      }
+      .loading-spinner div:nth-child(1) {
+        animation: loading-spinner1 0.6s infinite;
+        left: 6px;
+      }
+      .loading-spinner div:nth-child(2) {
+        animation: loading-spinner2 0.6s infinite;
+        left: 6px;
+      }
+      .loading-spinner div:nth-child(3) {
+        animation: loading-spinner2 0.6s infinite;
+        left: 26px;
+      }
+      .loading-spinner div:nth-child(4) {
+        animation: loading-spinner3 0.6s infinite;
+        left: 45px;
+      }
+      @keyframes loading-spinner1 {
+        0% {
+          opacity: 0;
+          transform: scale(0);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes loading-spinner3 {
+        0% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0);
+        }
+      }
+      @keyframes loading-spinner2 {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(19px, 0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="loading-spinner">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <h1 id="status">Keystone is loading...</h1>
+      <p id="message">This page will reload when the server is ready</p>
+    </div>
+    <script>
+      const INTERVAL = 250;
+      const statusEl = document.querySelector('#status');
+      const messageEl = document.querySelector('#message');
+      const loadingEl = document.querySelector('.loading-spinner');
+
+      function onError(err) {
+        statusEl.innerHTML = 'Error';
+        messageEl.innerHTML = 'Please check your console.';
+        loadingEl.remove();
+        throw err;
+      }
+      function onReady() {
+        statusEl.innerHTML = 'Keystone is ready!';
+        messageEl.innerHTML = 'Reloading the page...';
+        location.reload(true);
+      }
+
+      function checkStatus() {
+        fetch('/__keystone_dev_status', { headers: { Accept: 'application/json' } })
+          .then(result => result.json())
+          .then(status => {
+            if (status.ready) {
+              onReady();
+            } else {
+              setTimeout(checkStatus, INTERVAL);
+            }
+          })
+          .catch(error => {
+            onError();
+          });
+      }
+
+      const interval = setTimeout(checkStatus, 250);
+    </script>
+  </body>
+</html>

@@ -1,6 +1,7 @@
 import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 import { parseFieldAccess } from '@keystonejs/access-control';
 
 export class Virtual extends Implementation {
@@ -57,6 +58,10 @@ export class Virtual extends Implementation {
       return prev;
     }, {});
   }
+
+  getBackingTypes() {
+    return {};
+  }
 }
 
 const CommonTextInterface = superclass =>
@@ -80,4 +85,14 @@ export class KnexVirtualInterface extends CommonTextInterface(KnexFieldAdapter) 
     this.realKeys = [];
   }
   addToTableSchema() {}
+}
+
+export class PrismaVirtualInterface extends CommonTextInterface(PrismaFieldAdapter) {
+  constructor() {
+    super(...arguments);
+    this.realKeys = [];
+  }
+  getPrismaSchema() {
+    return [];
+  }
 }

@@ -16,20 +16,21 @@ const {
 } = require('@keystonejs/utils');
 
 const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
-const { queryParser, pipelineBuilder } = require('@keystonejs/mongo-join-builder');
+const { pipelineBuilder } = require('./join-builder');
+const { queryParser } = require('./query-parser');
 
 const debugMongoose = () => !!process.env.DEBUG_MONGOOSE;
 
 class MongooseAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);
+    this.listAdapterClass = MongooseListAdapter;
     this.name = 'mongoose';
     this.mongoose = new mongoose.Mongoose();
     this.minVer = '4.0.0';
     if (debugMongoose()) {
       this.mongoose.set('debug', true);
     }
-    this.listAdapterClass = this.listAdapterClass || this.defaultListAdapterClass;
     this._manyModels = {};
   }
 
@@ -719,8 +720,6 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
     return this.path;
   }
 }
-
-MongooseAdapter.defaultListAdapterClass = MongooseListAdapter;
 
 module.exports = {
   MongooseAdapter,

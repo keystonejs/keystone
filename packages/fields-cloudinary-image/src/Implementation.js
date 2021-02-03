@@ -89,9 +89,19 @@ class CloudinaryImage extends File.implementation {
       },
     };
   }
+
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'any' } };
+  }
 }
 
 const MongoCloudinaryImageInterface = File.adapters.mongoose;
 const KnexCloudinaryImageInterface = File.adapters.knex;
+const PrismaCloudinaryImageInterface = File.adapters.prisma;
 
-export { CloudinaryImage, MongoCloudinaryImageInterface, KnexCloudinaryImageInterface };
+export {
+  CloudinaryImage,
+  MongoCloudinaryImageInterface,
+  KnexCloudinaryImageInterface,
+  PrismaCloudinaryImageInterface,
+};

@@ -13,6 +13,7 @@ import { borderRadius, colors, gridSize } from '@arch-ui/theme';
 import { Layout, Content } from '../templates/layout';
 import mdComponents from '../components/markdown';
 import { SiteMeta } from '../components/SiteMeta';
+import { BlogMeta } from '../components/BlogMeta';
 import { Container } from '../components';
 import { Sidebar } from '../components/Sidebar';
 import { media, mq } from '../utils/media';
@@ -24,7 +25,7 @@ const slugger = new Slugger();
 
 export default function Template({
   data: { mdx, site }, // this prop will be injected by the GraphQL query below.
-  pageContext: { slug },
+  pageContext: { slug, isBlog, author, date, pageTitle },
 }) {
   let [contentRef, setContentRef] = useState(null);
   let navData = useNavData();
@@ -44,7 +45,11 @@ export default function Template({
   const { body, fields, headings } = mdx;
 
   const { siteMetadata } = site;
-  const suffix = fields.navGroup ? ` (${titleCase(fields.navGroup)})` : '';
+  const suffix = fields.navGroup
+    ? fields.navGroup === 'API'
+      ? 'API'
+      : ` (${titleCase(fields.navGroup)})`
+    : '';
   const title = `${
     fields.pageTitle.charAt(0) === '@' ? fields.heading : fields.pageTitle
   }${suffix}`;
@@ -68,10 +73,14 @@ export default function Template({
         <meta property="og:type" content="article" />
         <meta name="twitter:description" content={fields.description} />
       </Helmet>
-      <Layout>
+      <Layout showSearch={fields.navGroup !== 'blog'}>
         {({ sidebarIsVisible, toggleSidebar }) => (
           <Container hasGutters={false} css={{ display: 'flex' }}>
-            <Sidebar isVisible={sidebarIsVisible} toggleSidebar={toggleSidebar} />
+            <Sidebar
+              isVisible={sidebarIsVisible}
+              toggleSidebar={toggleSidebar}
+              currentGroup={fields.navGroup}
+            />
             <Content css={{ alignItems: 'flex-start', display: 'flex', flex: 1 }}>
               <div
                 ref={setContentRef}
@@ -84,6 +93,13 @@ export default function Template({
                 }}
               >
                 <SkipNavContent />
+                {isBlog ? (
+                  <Fragment>
+                    <mdComponents.h1>{pageTitle}</mdComponents.h1>
+                    <BlogMeta author={author} date={date} />
+                  </Fragment>
+                ) : null}
+
                 <MDXProvider components={mdComponents}>
                   <MDXRenderer>{body}</MDXRenderer>
                 </MDXProvider>

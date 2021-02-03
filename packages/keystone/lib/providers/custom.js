@@ -1,11 +1,8 @@
 const { gql } = require('apollo-server-express');
 const { parseCustomAccess } = require('@keystonejs/access-control');
 const { objMerge } = require('@keystonejs/utils');
-const { logger } = require('@keystonejs/logger');
-
 const { AccessDeniedError } = require('../ListTypes/graphqlErrors');
-
-const graphqlLogger = logger('graphql');
+const { graphqlLogger } = require('../Keystone/logger');
 
 class CustomProvider {
   constructor({ schemaNames, defaultAccess }) {

@@ -6,7 +6,7 @@
 
 KS_DB_NAME="keystone"
 KS_USER_NAME="keystone5"
-KS_USER_PASS="k3yst0n3"
+KS_USER_PASS="change_me_plz"
 
 # On MacOS the super use is the current username, no password
 SUPER_USER="${USER}"

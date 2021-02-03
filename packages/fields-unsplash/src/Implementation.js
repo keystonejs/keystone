@@ -1,5 +1,6 @@
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 import UnsplashAPI, { toJson } from 'unsplash-js';
 import queryString from 'query-string';
 
@@ -74,11 +75,7 @@ export class Unsplash extends Implementation {
 
   // Filter based on Unsplash Image IDs
   gqlQueryInputFields() {
-    return [
-      ...this.equalityInputFields('String'),
-      ...this.stringInputFields('String'),
-      ...this.inInputFields('String'),
-    ];
+    return [...this.equalityInputFields('String'), ...this.inInputFields('String')];
   }
 
   getGqlAuxTypes() {
@@ -253,11 +250,14 @@ export class Unsplash extends Implementation {
     return transformImageFromApiToKs5(apiResponse, { includeId: true });
   }
 
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: String`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: String`];
+  }
+  getBackingTypes() {
+    return { [this.path]: { optional: true, type: 'Record<string, any> | null' } };
   }
 }
 
@@ -265,9 +265,8 @@ const CommonUnsplashInterface = superclass =>
   class extends superclass {
     getQueryConditions(dbPath) {
       return {
-        ...this.equalityConditions(dbPath, ({ unsplashId }) => unsplashId),
-        ...this.stringConditions(dbPath, ({ unsplashId }) => unsplashId),
-        ...this.inConditions(dbPath, ({ unsplashId }) => unsplashId),
+        ...this.equalityConditions(dbPath, val => (val ? val.unsplashId : null)),
+        ...this.inConditions(dbPath, val => (val ? val.unsplashId : null)),
       };
     }
   };
@@ -286,8 +285,10 @@ export class KnexUnsplashInterface extends CommonUnsplashInterface(KnexFieldAdap
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
     if (this.config.isIndexed) {
-      throw `The Unsplash field type doesn't support indexes on Knex. ` +
-        `Check the config for ${this.path} on the ${this.field.listKey} list`;
+      throw (
+        `The Unsplash field type doesn't support indexes on Knex. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      );
     }
   }
 
@@ -295,5 +296,23 @@ export class KnexUnsplashInterface extends CommonUnsplashInterface(KnexFieldAdap
     const column = table.jsonb(this.path);
     if (this.isNotNullable) column.notNullable();
     if (this.defaultTo) column.defaultTo(this.defaultTo);
+  }
+}
+
+export class PrismaUnsplashInterface extends CommonUnsplashInterface(PrismaFieldAdapter) {
+  constructor() {
+    super(...arguments);
+
+    // Error rather than ignoring invalid config
+    // We totally can index these values, it's just not trivial. See issue #1297
+    if (this.config.isIndexed) {
+      throw (
+        `The Unsplash field type doesn't support indexes on Prisma. ` +
+        `Check the config for ${this.path} on the ${this.field.listKey} list`
+      );
+    }
+  }
+  getPrismaSchema() {
+    return [this._schemaField({ type: 'Json' })];
   }
 }

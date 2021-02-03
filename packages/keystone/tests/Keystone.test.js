@@ -25,10 +25,10 @@ class MockFieldImplementation {
   gqlQueryInputFields() {
     return ['zip: Boolean'];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return ['zap: Boolean'];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return ['quux: Boolean'];
   }
   getGqlAuxQueries() {
@@ -114,6 +114,20 @@ describe('Keystone.createList()', () => {
     expect(keystone.listsArray[0]).toBeInstanceOf(List);
 
     expect(keystone.listsArray[0]).toBe(keystone.lists['User']);
+  });
+
+  test('Reserved words', () => {
+    const config = {
+      adapter: new MockAdapter(),
+      cookieSecret: 'secretForTesting',
+    };
+    const keystone = new Keystone(config);
+
+    for (const listName of ['Query', 'Mutation', 'Subscription']) {
+      expect(() => keystone.createList(listName, {})).toThrow(
+        `Invalid list name "${listName}". List names cannot be reserved GraphQL keywords`
+      );
+    }
   });
 
   /* eslint-disable jest/no-disabled-tests */

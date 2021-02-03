@@ -1,5 +1,8 @@
-packages/test-project/public
-demo-projects/test-project
+# Next.js build dir
+.next
+
+# Keystone build dir
+.keystone
 
 # Logs
 logs
@@ -111,3 +114,5 @@ tags
 
 projects/
 temp/
+
+.api-test-prisma-clients

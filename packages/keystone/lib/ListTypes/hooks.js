@@ -29,7 +29,8 @@ class HookManager {
   }
 
   async resolveInput({ resolvedData, existingItem, context, operation, originalInput }) {
-    const args = { resolvedData, existingItem, context, originalInput, operation };
+    const { listKey } = this;
+    const args = { resolvedData, existingItem, context, originalInput, operation, listKey };
 
     // First we run the field type hooks
     // NOTE: resolveInput is run on _every_ field, regardless if it has a value
@@ -46,7 +47,7 @@ class HookManager {
       ...resolvedData,
       ...(await mapToFields(
         this.fields.filter(field => field.hooks.resolveInput),
-        field => field.hooks.resolveInput({ ...args, resolvedData })
+        field => field.hooks.resolveInput({ ...args, fieldPath: field.path, resolvedData })
       )),
     };
 
@@ -70,7 +71,8 @@ class HookManager {
   }
 
   async validateInput({ resolvedData, existingItem, context, operation, originalInput }) {
-    const args = { resolvedData, existingItem, context, originalInput, operation };
+    const { listKey } = this;
+    const args = { resolvedData, existingItem, context, originalInput, operation, listKey };
     // Check for isRequired
     const fieldValidationErrors = this.fields
       .filter(
@@ -97,7 +99,8 @@ class HookManager {
   }
 
   async validateDelete({ existingItem, context, operation }) {
-    const args = { existingItem, context, operation };
+    const { listKey } = this;
+    const args = { existingItem, context, operation, listKey };
     const fields = this.fields;
     await this._validateHook({ args, fields, operation, hookName: 'validateDelete' });
   }
@@ -106,12 +109,13 @@ class HookManager {
     const { originalInput } = args;
     const fieldValidationErrors = [];
     // FIXME: Can we do this in a way where we simply return validation errors instead?
-    args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
+    const addFieldValidationError = (msg, _data = {}, internalData = {}) =>
       fieldValidationErrors.push({ msg, data: _data, internalData });
-    await mapToFields(fields, field => field[hookName](args));
+    const fieldArgs = { addFieldValidationError, ...args };
+    await mapToFields(fields, field => field[hookName]({ fieldPath: field.path, ...fieldArgs }));
     await mapToFields(
       fields.filter(field => field.hooks[hookName]),
-      field => field.hooks[hookName](args)
+      field => field.hooks[hookName]({ fieldPath: field.path, ...fieldArgs })
     );
     if (fieldValidationErrors.length) {
       this._throwValidationFailure({ errors: fieldValidationErrors, operation, originalInput });
@@ -131,22 +135,26 @@ class HookManager {
   }
 
   async beforeChange({ resolvedData, existingItem, context, operation, originalInput }) {
-    const args = { resolvedData, existingItem, context, originalInput, operation };
+    const { listKey } = this;
+    const args = { resolvedData, existingItem, context, originalInput, operation, listKey };
     await this._runHook({ args, fieldObject: resolvedData, hookName: 'beforeChange' });
   }
 
   async beforeDelete({ existingItem, context, operation }) {
-    const args = { existingItem, context, operation };
+    const { listKey } = this;
+    const args = { existingItem, context, operation, listKey };
     await this._runHook({ args, fieldObject: existingItem, hookName: 'beforeDelete' });
   }
 
   async afterChange({ updatedItem, existingItem, context, operation, originalInput }) {
-    const args = { updatedItem, originalInput, existingItem, context, operation };
+    const { listKey } = this;
+    const args = { updatedItem, originalInput, existingItem, context, operation, listKey };
     await this._runHook({ args, fieldObject: updatedItem, hookName: 'afterChange' });
   }
 
   async afterDelete({ existingItem, context, operation }) {
-    const args = { existingItem, context, operation };
+    const { listKey } = this;
+    const args = { existingItem, context, operation, listKey };
     await this._runHook({ args, fieldObject: existingItem, hookName: 'afterDelete' });
   }
 
@@ -156,7 +164,7 @@ class HookManager {
     await mapToFields(fields, field => field[hookName](args));
     await mapToFields(
       fields.filter(field => field.hooks[hookName]),
-      field => field.hooks[hookName](args)
+      field => field.hooks[hookName]({ fieldPath: field.path, ...args })
     );
 
     if (this.hooks[hookName]) await this.hooks[hookName](args);

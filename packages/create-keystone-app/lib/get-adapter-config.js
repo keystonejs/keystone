@@ -16,14 +16,16 @@ const getAdapterConfig = async () => {
       return CONNECTION_STRING;
     }
 
-    const adapter = await getAdapterChoice();
+    const adapterChoice = await getAdapterChoice();
     const projectName = await getProjectName();
     const response = await prompts(
       {
         type: 'text',
         name: 'value',
         message: 'Where is your database located?',
-        initial: adapter.defaultConfig(projectName),
+        initial: adapterChoice.defaultConfig(projectName),
+        validate: value =>
+          value.length && value !== 'e.g. postgres://user:password@localhost:5432/db_name',
         onCancel: () => {
           return true;
         },

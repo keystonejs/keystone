@@ -1,5 +1,57 @@
 # @keystonejs/file-adapters
 
+## 7.0.8
+
+### Patch Changes
+
+- [`5799f3e48`](https://github.com/keystonejs/keystone/commit/5799f3e483fdf7db8ab1f868b26628fa85bbbb43) [#3681](https://github.com/keystonejs/keystone/pull/3681) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `aws-sdk` to `^2.757.0`.
+
+## 7.0.7
+
+### Patch Changes
+
+- [`4d8b4a04e`](https://github.com/keystonejs/keystone/commit/4d8b4a04ef2f5ab616cc425e87e75e9a5bbf6abe) [#3667](https://github.com/keystonejs/keystone/pull/3667) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `aws-sdk` to `^2.753.0`.
+
+* [`1c99f76d3`](https://github.com/keystonejs/keystone/commit/1c99f76d3c1dc02e08c3e39259c39cfd89d829a3) [#3641](https://github.com/keystonejs/keystone/pull/3641) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `aws-sdk` to `^2.751.0`.
+
+## 7.0.6
+
+### Patch Changes
+
+- [`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a) [#3610](https://github.com/keystonejs/keystone/pull/3610) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `prettier` to `^2.1.1`.
+
+* [`3599776bd`](https://github.com/keystonejs/keystone/commit/3599776bd160e7b46ceca3d81a22ddb6bd7941a2) [#3604](https://github.com/keystonejs/keystone/pull/3604) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `aws-sdk` to `^2.747.0`.
+
+- [`4e9cf67c2`](https://github.com/keystonejs/keystone/commit/4e9cf67c235f58f9158facac1b5ce9830905b9ef) [#3619](https://github.com/keystonejs/keystone/pull/3619) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `aws-sdk` to `^2.748.0`.
+
+* [`f0d91f9f2`](https://github.com/keystonejs/keystone/commit/f0d91f9f285df3379011b6f450a6a70c3fbb3170) [#3639](https://github.com/keystonejs/keystone/pull/3639) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `aws-sdk` to `^2.750.0`.
+
+## 7.0.5
+
+### Patch Changes
+
+- [`7fb51fba4`](https://github.com/keystonejs/keystone/commit/7fb51fba4682ded82df99330b4fe69b8bad0a2ce) [#3490](https://github.com/keystonejs/keystone/pull/3490) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `cloudinary` to `^1.23.0`.
+
+* [`743646a59`](https://github.com/keystonejs/keystone/commit/743646a59c91d02d09000bb21c80e6311bc12645) [#3498](https://github.com/keystonejs/keystone/pull/3498) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `aws-sdk` to `^2.743.0`.
+
+- [`a21517ece`](https://github.com/keystonejs/keystone/commit/a21517ecee1e3bca6909ca996057b98833ea9313) [#3557](https://github.com/keystonejs/keystone/pull/3557) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `aws-sdk` to `^2.746.0`.
+
+## 7.0.4
+
+### Patch Changes
+
+- [`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6) [#3481](https://github.com/keystonejs/keystone/pull/3481) Thanks [@Noviny](https://github.com/Noviny)! - Updated dependencies through a major version - this shouldn't require change by consumers.
+
+* [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+## 7.0.3
+
+### Patch Changes
+
+- [`2f76473ae`](https://github.com/keystonejs/keystone/commit/2f76473ae045b1d8b48688ac6de842c51a2fc345) [#3393](https://github.com/keystonejs/keystone/pull/3393) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed S3 adapter issue on windows where the wrong path character was being used due to `path.join`
+
 ## 7.0.2
 
 ### Patch Changes

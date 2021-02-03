@@ -13,6 +13,7 @@ import { Lozenge } from '@arch-ui/lozenge';
 import { Button, LoadingButton } from '@arch-ui/button';
 import { FlexGroup } from '@arch-ui/layout';
 import { borderRadius, colors, gridSize } from '@arch-ui/theme';
+import isEqual from 'lodash.isequal';
 
 function uploadButtonLabelFn({ status }) {
   return status === 'empty' ? 'Upload File' : 'Change File';
@@ -46,6 +47,33 @@ function errorMessageFn({ type }) {
 }
 
 export default class FileField extends Component {
+  static getDerivedStateFromProps(props, state) {
+    const { savedValue, value } = props;
+    const { changeStatus } = state;
+
+    switch (changeStatus) {
+      case 'removed':
+        //file was removed and change was saved.
+        if (savedValue === null && value === null) {
+          return {
+            originalFile: savedValue,
+            changeStatus: 'empty',
+          };
+        }
+        break;
+      case 'updated':
+        //file was updated and change was saved
+        if (isEqual(savedValue, value)) {
+          return {
+            originalFile: savedValue,
+            changeStatus: 'stored',
+          };
+        }
+        break;
+    }
+    return null;
+  }
+
   static propTypes = {
     cancelButtonLabel: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
@@ -65,10 +93,10 @@ export default class FileField extends Component {
     super(props);
     const { value } = props;
 
-    this.originalFile = value;
-    const changeStatus = this.originalFile ? 'stored' : 'empty';
+    const changeStatus = value ? 'stored' : 'empty';
 
     this.state = {
+      originalFile: value,
       changeStatus,
       dataURI: null,
       errorMessage: null,
@@ -83,10 +111,13 @@ export default class FileField extends Component {
 
   onCancel = () => {
     // revert to the original file if available
-    this.props.onChange(this.originalFile);
+    const { originalFile } = this.state;
+    this.props.onChange(originalFile);
+
+    if (this.inputRef) this.inputRef.value = '';
 
     this.setState({
-      changeStatus: this.originalFile ? 'stored' : 'empty',
+      changeStatus: originalFile ? 'stored' : 'empty',
       dataURI: null,
       errorMessage: null,
     });
@@ -139,10 +170,10 @@ export default class FileField extends Component {
 
   getFile = () => {
     const { value } = this.props;
-    const { changeStatus } = this.state;
+    const { changeStatus, originalFile } = this.state;
 
     const isRemoved = changeStatus === 'removed';
-    const file = isRemoved ? this.originalFile : value;
+    const file = isRemoved ? originalFile : value;
     const type = file && file['__typename'] ? 'server' : 'client';
 
     return { file, type };

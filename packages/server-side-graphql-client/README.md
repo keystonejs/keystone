@@ -121,7 +121,7 @@ const { createItem } = require('@keystonejs/server-side-graphql-client');
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    email: { type: String },
+    email: { type: Text },
   },
 });
 
@@ -160,7 +160,7 @@ const { createItems } = require('@keystonejs/server-side-graphql-client');
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    email: { type: String },
+    email: { type: Text },
   },
 });
 
@@ -202,7 +202,7 @@ const { getItem } = require('@keystonejs/server-side-graphql-client');
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    email: { type: String },
+    email: { type: Text },
   },
 });
 
@@ -238,7 +238,7 @@ const { getItems } = require('@keystonejs/server-side-graphql-client');
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    email: { type: String },
+    email: { type: Text },
   },
 });
 
@@ -280,7 +280,7 @@ const { updateItem } = require('@keystonejs/server-side-graphql-client');
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    email: { type: String },
+    email: { type: Text },
   },
 });
 
@@ -316,7 +316,7 @@ const { updateItems } = require('@keystonejs/server-side-graphql-client');
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    email: { type: String },
+    email: { type: Text },
   },
 });
 
@@ -358,7 +358,7 @@ const { deleteItem } = require('@keystonejs/server-side-graphql-client');
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    email: { type: String },
+    email: { type: Text },
   },
 });
 
@@ -389,7 +389,7 @@ const { deleteItems } = require('@keystonejs/server-side-graphql-client');
 keystone.createList('User', {
   fields: {
     name: { type: Text },
-    email: { type: String },
+    email: { type: Text },
   },
 });
 
@@ -406,7 +406,7 @@ deletedUsers(['123', '456']);
 
 | Properties | Type       | Default    | Description                                                               |
 | ---------- | ---------- | ---------- | ------------------------------------------------------------------------- |
-| `itemId`   | `String[]` | (required) | Array of item `id`s to be deleted.                                        |
+| `items`    | `String[]` | (required) | Array of item `id`s to be deleted.                                        |
 | `pageSize` | `Number`   | 500        | The delete mutation batch size. Useful when deleting a large set of data. |
 
 ### `runCustomQuery`

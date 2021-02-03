@@ -1,4 +1,3 @@
-import pluralize from 'pluralize';
 import { resolveView } from './resolve-view';
 
 import { Block } from '@keystonejs/fields-content/Block';
@@ -24,8 +23,10 @@ export class ImageBlock extends Block {
     super(...arguments);
 
     this.joinList = joinList;
-
-    const auxListKey = `_Block_${fromList}_${this.type}`;
+    const auxListKey =
+      getListByKey(fromList).adapter.parentAdapter.name === 'prisma'
+        ? `KS_Block_${fromList}_${this.type}`
+        : `_Block_${fromList}_${this.type}`;
 
     // Ensure the list is only instantiated once per server instance.
     let auxList = getListByKey(auxListKey);
@@ -67,7 +68,7 @@ export class ImageBlock extends Block {
   }
 
   get path() {
-    return pluralize.plural(this.type);
+    return 'cloudinaryImages';
   }
 
   getAdminViews() {

@@ -1,5 +1,113 @@
 # create-keystone-app
 
+## 3.4.3
+
+### Patch Changes
+
+- Updated dependencies [[`a886039a1`](https://github.com/keystonejs/keystone/commit/a886039a1fc17c9b60b2955f0e58916ab1c3d7bf), [`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d)]:
+  - @keystonejs/adapter-prisma@3.0.0
+  - @keystonejs/adapter-knex@13.0.0
+  - @keystonejs/adapter-mongoose@11.0.0
+
+## 3.4.2
+
+### Patch Changes
+
+- Updated dependencies [[`6b95cb6e4`](https://github.com/keystonejs/keystone/commit/6b95cb6e4d5bea3a87e22765d5fcf31db2fc31ae), [`fc2b7101f`](https://github.com/keystonejs/keystone/commit/fc2b7101f35f20e4d729269a005816546bb37464), [`e7d4d54e5`](https://github.com/keystonejs/keystone/commit/e7d4d54e5b94e6b376d6eab28a0f2b074f2c95ed), [`a62a2d996`](https://github.com/keystonejs/keystone/commit/a62a2d996f1080051f7962b7063ae37d7e8b7e63)]:
+  - @keystonejs/adapter-prisma@2.0.0
+
+## 3.4.1
+
+### Patch Changes
+
+- [`a5e40e6c4`](https://github.com/keystonejs/keystone/commit/a5e40e6c4af1ab38cc2079a0f6e27d39d6b7d546) [#3549](https://github.com/keystonejs/keystone/pull/3549) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@sindresorhus/slugify` to `^1.1.0`. Includes a slight breaking change in how some slugs are computed in the `Slug` field type. See https://github.com/sindresorhus/slugify/releases/tag/v1.0.0.
+
+- Updated dependencies [[`2d660b2a1`](https://github.com/keystonejs/keystone/commit/2d660b2a1dd013787e022cad3a0c70dbe08c60da), [`f2b841b90`](https://github.com/keystonejs/keystone/commit/f2b841b90d5ac8adece645df45b8a17832391b50)]:
+  - @keystonejs/adapter-mongoose@10.0.1
+  - @keystonejs/adapter-prisma@1.0.7
+
+## 3.4.0
+
+### Minor Changes
+
+- [`002bd5b92`](https://github.com/keystonejs/keystone/commit/002bd5b928298a47c29aef709adbe75db8985128) [#3739](https://github.com/keystonejs/keystone/pull/3739) Thanks [@timleslie](https://github.com/timleslie)! - Added support for creating projects using the Prisma adapter.
+
+### Patch Changes
+
+- [`b6b537977`](https://github.com/keystonejs/keystone/commit/b6b5379777327cbe0e44f13a636b74edc3227bfd) [#3930](https://github.com/keystonejs/keystone/pull/3930) Thanks [@timleslie](https://github.com/timleslie)! - Updated internals to better support more than two database adapter options.
+
+- Updated dependencies [[`29d55659c`](https://github.com/keystonejs/keystone/commit/29d55659ccbb224a5b63e608d1e6bba98d053f71)]:
+  - @keystonejs/adapter-prisma@1.0.5
+
+## 3.3.6
+
+### Patch Changes
+
+- Updated dependencies [[`e5efd0ef3`](https://github.com/keystonejs/keystone/commit/e5efd0ef3d6943534cb6c728afe5dbf0caf43e74), [`85fa68456`](https://github.com/keystonejs/keystone/commit/85fa684565d8c9c40036d4544b3c0235dbbd327b)]:
+  - @keystonejs/adapter-knex@12.0.0
+  - @keystonejs/adapter-mongoose@10.0.0
+
+## 3.3.5
+
+### Patch Changes
+
+- [`504b9726f`](https://github.com/keystonejs/keystone/commit/504b9726f5997572e1471b10a629285828871960) [#3648](https://github.com/keystonejs/keystone/pull/3648) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `got` to `^11.6.2`.
+
+* [`c082e9d0f`](https://github.com/keystonejs/keystone/commit/c082e9d0ff48282d93116fb0642f93931032e6c9) [#3656](https://github.com/keystonejs/keystone/pull/3656) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `nuxt` to `^2.14.5`.
+
+* Updated dependencies [[`06dffc42b`](https://github.com/keystonejs/keystone/commit/06dffc42b08062e3166880146c8fb606493ead12), [`7a1f8bbdc`](https://github.com/keystonejs/keystone/commit/7a1f8bbdcdf68c9579e17db77fa826e811abcab4), [`6f42b0a9d`](https://github.com/keystonejs/keystone/commit/6f42b0a9d231049f9e7523eb78ec621d9c9d6df9), [`5c1e55721`](https://github.com/keystonejs/keystone/commit/5c1e5572134fa93c9aefbb537676e30cafd0e7d9), [`7956d5da0`](https://github.com/keystonejs/keystone/commit/7956d5da00197dc11f5d54f7870b8fa72c05a3c0)]:
+  - @keystonejs/adapter-mongoose@9.0.7
+  - @keystonejs/adapter-knex@11.0.6
+
+## 3.3.4
+
+### Patch Changes
+
+- [`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a) [#3610](https://github.com/keystonejs/keystone/pull/3610) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `prettier` to `^2.1.1`.
+
+* [`a905f169b`](https://github.com/keystonejs/keystone/commit/a905f169b618d99dc1acf69a87ebed070c7cec93) [#3621](https://github.com/keystonejs/keystone/pull/3621) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `got` to `^11.6.1`.
+
+* Updated dependencies [[`4f6883dc3`](https://github.com/keystonejs/keystone/commit/4f6883dc38962805f96256f9fdf42fb77bb3326a), [`9dae7a5d0`](https://github.com/keystonejs/keystone/commit/9dae7a5d00a62cd0b7a4470695adc5e1678db3dc)]:
+  - @keystonejs/adapter-knex@11.0.5
+  - @keystonejs/adapter-mongoose@9.0.6
+
+## 3.3.3
+
+### Patch Changes
+
+- [`c1be3454b`](https://github.com/keystonejs/keystone/commit/c1be3454b825e135612d2f85e16f3001446135e2) [#3571](https://github.com/keystonejs/keystone/pull/3571) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `got` to `^11.6.0`.
+
+* [`4bc27e7ed`](https://github.com/keystonejs/keystone/commit/4bc27e7ed8dea155b3b32a107cc799bf20b967b5) [#3525](https://github.com/keystonejs/keystone/pull/3525) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `nuxt` to `^2.14.4`.
+
+* Updated dependencies [[`e9bc4367a`](https://github.com/keystonejs/keystone/commit/e9bc4367ac31f3fe3a2898198c600c76c42165b2), [`003b856e6`](https://github.com/keystonejs/keystone/commit/003b856e686cc1ee0f984c1acf024c1fa0c27837), [`b3aa85031`](https://github.com/keystonejs/keystone/commit/b3aa850311cbc1622568f69f9cb4b9f46ab9db22), [`16fba3b98`](https://github.com/keystonejs/keystone/commit/16fba3b98271410e570a370f610da7cd0686f294)]:
+  - @keystonejs/adapter-knex@11.0.4
+  - @keystonejs/adapter-mongoose@9.0.5
+
+## 3.3.2
+
+### Patch Changes
+
+- [`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6) [#3481](https://github.com/keystonejs/keystone/pull/3481) Thanks [@Noviny](https://github.com/Noviny)! - Updated dependencies through a major version - this shouldn't require change by consumers.
+
+* [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
+- [`9e978e5d0`](https://github.com/keystonejs/keystone/commit/9e978e5d08585ebd3cd3be435b8443b932ab1508) [#3464](https://github.com/keystonejs/keystone/pull/3464) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `cfonts` to `^2.8.6`.
+
+- Updated dependencies [[`6cb4476ff`](https://github.com/keystonejs/keystone/commit/6cb4476ff15923933862c1cd7d4b1ade794106c6), [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e), [`096d13fc2`](https://github.com/keystonejs/keystone/commit/096d13fc25696ed1769cf817b705dfd80da601b2)]:
+  - @keystonejs/adapter-knex@11.0.3
+  - @keystonejs/adapter-mongoose@9.0.4
+
+## 3.3.1
+
+### Patch Changes
+
+- [`59d1eae47`](https://github.com/keystonejs/keystone/commit/59d1eae47a32fea711a1b9a728bc7bb9688aa124) [#3370](https://github.com/keystonejs/keystone/pull/3370) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fetch commits to find the last release from the default branch rather than `create-keystone-app-from-github`
+
+- Updated dependencies [[`7e78ffdaa`](https://github.com/keystonejs/keystone/commit/7e78ffdaa96050e49e8e2678a3c4f1897fedae4f)]:
+  - @keystonejs/adapter-mongoose@9.0.2
+
 ## 3.3.0
 
 ### Minor Changes

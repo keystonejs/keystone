@@ -12,7 +12,7 @@ parsing `.md` files using `.mdx` instead of using the `.mdx` file extension.
 
 ## Where we get content from.
 
-The first two are the `tutorials/` and the `guides/` directories within the website folder.
+The first two are the `tutorials/` and the `guides/` directories within the `docs` folder.
 These are for tutorials and guides (more on that below). This will provide most general content.
 
 The third is `.md` files from packages. Every `.md` file in a package is converted into a page

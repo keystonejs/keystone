@@ -1,6 +1,7 @@
 import { Implementation } from '@keystonejs/fields';
 import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
 import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
+import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 
 export class MongoIdImplementation extends Implementation {
   get _supportsUnique() {
@@ -8,7 +9,7 @@ export class MongoIdImplementation extends Implementation {
   }
 
   gqlOutputFields() {
-    return [`${this.path}: ID`];
+    return [`${this.path}: ID${this.isPrimaryKey ? '!' : ''}`];
   }
   gqlOutputFieldResolvers() {
     return { [`${this.path}`]: item => item[this.path] };
@@ -16,11 +17,17 @@ export class MongoIdImplementation extends Implementation {
   gqlQueryInputFields() {
     return [...this.equalityInputFields('ID'), ...this.inInputFields('ID')];
   }
-  get gqlUpdateInputFields() {
+  gqlUpdateInputFields() {
     return [`${this.path}: ID`];
   }
-  get gqlCreateInputFields() {
+  gqlCreateInputFields() {
     return [`${this.path}: ID`];
+  }
+  getBackingTypes() {
+    if (this.path === 'id') {
+      return { [this.path]: { optional: false, type: 'string' } };
+    }
+    return { [this.path]: { optional: true, type: 'string | null' } };
   }
 }
 
@@ -73,8 +80,15 @@ export class MongooseMongoIdInterface extends MongooseFieldAdapter {
   getQueryConditions(dbPath) {
     const mongoose = this.listAdapter.parentAdapter.mongoose;
     return {
-      ...this.equalityConditions(this.field.isPrimaryKey ? '_id' : dbPath, mongoose.Types.ObjectId),
-      ...this.inConditions(this.field.isPrimaryKey ? '_id' : dbPath, mongoose.Types.ObjectId),
+      ...this.equalityConditions(
+        this.field.isPrimaryKey ? '_id' : dbPath,
+        s => s && mongoose.Types.ObjectId(s)
+      ),
+      //NOTE: ObjectId(null) returns a new ObjectId value
+      ...this.inConditions(
+        this.field.isPrimaryKey ? '_id' : dbPath,
+        s => s && mongoose.Types.ObjectId(s)
+      ),
     };
   }
 }
@@ -104,11 +118,60 @@ export class KnexMongoIdInterface extends KnexFieldAdapter {
       }
 
       if (item[this.path]) {
-        if (typeof item[this.path] === 'string') {
+        if (typeof item[this.path] === 'string' && validator(item[this.path])) {
           item[this.path] = normaliseValue(item[this.path]);
         } else {
           // Should have been caught by the validator??
-          throw `Invalid MongoID value given for '${this.path}'`;
+          throw new Error(`Invalid MongoID value given for '${this.path}'`);
+        }
+      } else {
+        item[this.path] = null;
+      }
+
+      return item;
+    });
+    addPostReadHook(item => {
+      if (item[this.path]) {
+        item[this.path] = normaliseValue(item[this.path]);
+      }
+      return item;
+    });
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      ...this.equalityConditions(dbPath, normaliseValue),
+      ...this.inConditions(dbPath, normaliseValue),
+    };
+  }
+}
+
+export class PrismaMongoIdInterface extends PrismaFieldAdapter {
+  constructor() {
+    super(...arguments);
+    this.isUnique = !!this.config.isUnique;
+    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
+  }
+
+  getPrismaSchema() {
+    return [this._schemaField({ type: 'String' })];
+  }
+
+  setupHooks({ addPreSaveHook, addPostReadHook }) {
+    addPreSaveHook(item => {
+      // Only run the hook if the item actually contains the field
+      // NOTE: Can't use hasOwnProperty here, as the mongoose data object
+      // returned isn't a POJO
+      if (!(this.path in item)) {
+        return item;
+      }
+
+      if (item[this.path]) {
+        if (typeof item[this.path] === 'string' && validator(item[this.path])) {
+          item[this.path] = normaliseValue(item[this.path]);
+        } else {
+          // Should have been caught by the validator??
+          throw new Error(`Invalid MongoID value given for '${this.path}'`);
         }
       } else {
         item[this.path] = null;

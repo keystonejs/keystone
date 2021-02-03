@@ -1,5 +1,25 @@
 # @keystonejs/app-nuxt
 
+## 5.1.6
+
+### Patch Changes
+
+- [`c082e9d0f`](https://github.com/keystonejs/keystone/commit/c082e9d0ff48282d93116fb0642f93931032e6c9) [#3656](https://github.com/keystonejs/keystone/pull/3656) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `nuxt` to `^2.14.5`.
+
+## 5.1.5
+
+### Patch Changes
+
+- [`4bc27e7ed`](https://github.com/keystonejs/keystone/commit/4bc27e7ed8dea155b3b32a107cc799bf20b967b5) [#3525](https://github.com/keystonejs/keystone/pull/3525) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `nuxt` to `^2.14.4`.
+
+## 5.1.4
+
+### Patch Changes
+
+- [`5935b89f8`](https://github.com/keystonejs/keystone/commit/5935b89f8862b36f14d09da68f056f759a860f3e) [#3477](https://github.com/keystonejs/keystone/pull/3477) Thanks [@Noviny](https://github.com/Noviny)! - Updating dependencies:
+
+  These changes bring the keystone dev experience inline with installing keystone from npm :D
+
 ## 5.1.3
 
 ### Patch Changes

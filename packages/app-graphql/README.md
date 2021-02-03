@@ -44,3 +44,7 @@ module.exports = {
 | `graphiqlPath` | `String` | `/admin/graphiql` | Change the GraphiQL playground path              |
 | `schemaName`   | `String` | `admin`           | Change the graphQL schema name (not recommended) |
 | `apollo`       | `Object` | `{}`              | Options passed directly to Apollo Server         |
+
+## Setting a custom schemaName
+
+To use a custom `schemaName`, please ensure it is also passed in to the [keystone constructor](https://www.keystonejs.com/keystonejs/keystone/#schemanames) at initialization.

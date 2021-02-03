@@ -106,7 +106,7 @@ test('gqlQueryInputFields', () => {
 test('gqlUpdateInputFields', () => {
   const impl = new Field('path', {}, args);
 
-  expect(impl.gqlUpdateInputFields).toEqual([]);
+  expect(impl.gqlUpdateInputFields()).toEqual([]);
 });
 
 test('gqlOutputFieldResolvers', () => {

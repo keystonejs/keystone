@@ -1,0 +1,30 @@
+{
+  "name": "@keystone-next/cloudinary",
+  "version": "2.0.8",
+  "license": "MIT",
+  "main": "dist/cloudinary.cjs.js",
+  "module": "dist/cloudinary.esm.js",
+  "dependencies": {
+    "@babel/runtime": "^7.12.5",
+    "@keystone-next/admin-ui": "^8.0.0",
+    "@keystone-next/types": "^11.0.0",
+    "@keystone-ui/button": "^2.0.1",
+    "@keystone-ui/core": "^1.0.4",
+    "@keystone-ui/fields": "^1.1.0",
+    "@keystone-ui/pill": "^1.0.2",
+    "@keystonejs/fields-cloudinary-image": "^2.1.1",
+    "@keystonejs/file-adapters": "^7.0.8",
+    "@types/react": "^16.14.2",
+    "react": "^16.14.0"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts",
+      "views/index.tsx"
+    ]
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/cloudinary"
+}

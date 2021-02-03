@@ -14,10 +14,8 @@ by adapters for different data stores (e.g. Mongoose, Postgres, etc).
 
 ## Usage
 
-### Single adapter
-
-Every `Keystone` system requires at least one adapter.
-To use a single adapter in your project, provide an instance of your adapter of choice as the `adapter` config item.
+Every `Keystone` system requires a database adapter.
+You need to provide an instance of your adapter of choice as the `adapter` config item when creating your `Keystone` object.
 
 ```js
 const keystone = new Keystone({
@@ -26,30 +24,6 @@ const keystone = new Keystone({
 ```
 
 All the `Lists` in your system will be backed by this adapter.
-
-### Multiple adapters
-
-If you want to use multiple adapters in your system (e.g. a different database for content management and business data),
-you can provide an `adapters` object in your config, along with a `defaultAdapter`.
-
-```js
-const keystone = new Keystone({
-  adapters: {
-    content: new MongooseAdapter(),
-    data: new PostgresAdapter(),
-  },
-  defaultAdapter: 'data',
-});
-```
-
-When you create your lists, the default adapter will be used unless your specify an `adapterName` in the config.
-
-```js
-keystone.createList('Pages', {
-  adapterName: 'content',
-  fields: {...},
-});
-```
 
 ## The adapter data model
 
@@ -119,49 +93,3 @@ Experiment at your own risk.
 
 When creating a new field type, a `FieldAdapter` must be implemented for each `KeystoneAdapter` you want to support.
 The `.adapters` mapping for your new field type should contain the mapping from adapter name to `FieldAdapter` class for each adapter.
-
-## Advanced usage
-
-### Custom `ListAdapter`
-
-Each `KeystoneAdapter` defines a `defaultListAdapterClass`, which will be used for creating all list adapters.
-This can be customised with the `listAdapterClass` config property, which will use the custom class for all lists.
-
-```js
-const keystone = new Keystone({
-  adapter: new MongooseAdapter({
-    listAdapterClass: require('custom-mongoose-list-adapter'),
-  }),
-});
-```
-
-A custom list adapter can also be used on a per list basis.
-
-```js
-keystone.createList('User', {
-  listAdapterClass: require('custom-mongoose-list-adapter'),
-  fields: {...},
-});
-```
-
-### Custom `FieldAdapter`
-
-The recommended mechanism for customising the field type adapter is to create a new field type which overrides a specific field adapter mapping.
-
-```js
-import { Text } from '@keystonejs/fields';
-
-const CustomText = {
-  ...Text,
-  adapters: {
-    ...Text.adapters,
-    mongoose: require('custom-mongoose-text-field-adapter'),
-  },
-};
-
-keystone.createList('User', {
-  fields: {
-    name: { type: CustomText },
-  },
-});
-```
