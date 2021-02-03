@@ -109,13 +109,13 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           expect(result1.data!.checkout.items[0].description).toEqual(product1.description);
           expect(result1.data!.checkout.items[0].price).toEqual(product1.price);
           expect(result1.data!.checkout.items[0].quantity).toEqual(3);
-          expect(result1.data!.checkout.items[0].image.id).toEqual(product1.image.id);
+          expect(result1.data!.checkout.items[0].image.id).toEqual(product1.photo.id);
           expect(result1.data!.checkout.items[1].name).toEqual(product2.name);
           expect(result1.data!.checkout.items[1].user.id).toEqual(user1.id);
           expect(result1.data!.checkout.items[1].description).toEqual(product2.description);
           expect(result1.data!.checkout.items[1].price).toEqual(product2.price);
           expect(result1.data!.checkout.items[1].quantity).toEqual(2);
-          expect(result1.data!.checkout.items[1].image.id).toEqual(product2.image.id);
+          expect(result1.data!.checkout.items[1].image.id).toEqual(product2.photo.id);
 
           // Checkout user 2
           const result2 = await asUser(context, user2.id).graphql.raw({
@@ -134,13 +134,13 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           expect(result2.data!.checkout.items[0].description).toEqual(product1.description);
           expect(result2.data!.checkout.items[0].price).toEqual(product1.price);
           expect(result2.data!.checkout.items[0].quantity).toEqual(2);
-          expect(result2.data!.checkout.items[0].image.id).toEqual(product1.image.id);
+          expect(result2.data!.checkout.items[0].image.id).toEqual(product1.photo.id);
           expect(result2.data!.checkout.items[1].name).toEqual(product2.name);
           expect(result2.data!.checkout.items[1].user.id).toEqual(user2.id);
           expect(result2.data!.checkout.items[1].description).toEqual(product2.description);
           expect(result2.data!.checkout.items[1].price).toEqual(product2.price);
           expect(result2.data!.checkout.items[1].quantity).toEqual(3);
-          expect(result2.data!.checkout.items[1].image.id).toEqual(product2.image.id);
+          expect(result2.data!.checkout.items[1].image.id).toEqual(product2.photo.id);
         })
       );
     });
