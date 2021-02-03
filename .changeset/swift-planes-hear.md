@@ -2,4 +2,4 @@
 '@keystone-next/admin-ui': patch
 ---
 
-Fixed separator issue on Windows for new interface.
+Fixed import path separator on Windows when generating Admin UI code.
