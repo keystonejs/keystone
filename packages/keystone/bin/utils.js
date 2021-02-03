@@ -96,7 +96,7 @@ function extractAppMeta(apps, dev) {
 
 async function executeDefaultServer(args, entryFile, distDir, spinner) {
   const port = args['--port'] ? args['--port'] : DEFAULT_PORT;
-  const appUrl = args['--app_url'] ? args['--app_url'] : DEFAULT_APP_URL;
+  const appUrl = args['--app-url'] ? args['--app-url'] : DEFAULT_APP_URL;
   let status = 'start-server';
 
   spinner.text = 'Starting Keystone server';
