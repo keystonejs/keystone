@@ -2,4 +2,4 @@
 '@keystonejs/keystone': minor
 ---
 
-Added APP_URL option for set custom URL of app web interface
+Added an `APP_URL` environment variable and `--app-url` command line option to a set custom URL to be reported when starting the server.
