@@ -33,26 +33,36 @@ const guessEmailFromValue = (value: any) => {
 const Welcome = ({ value }: { value: any }) => {
   const [subscribe, setSubscribe] = useState(true);
   const [email, setEmail] = useState(guessEmailFromValue(value));
+  const router = useRouter();
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (subscribe && email) {
+      // ADD MAILCHIMP INTEGRATION HERE
+    }
+    router.push((router.query.from as string | undefined) || '/');
+  };
   return (
-    <Stack gap="medium">
-      <H1>Welcome to KeystoneJS</H1>
-      <div>Next up: star the project, follow us on twitter for updates</div>
-      <div>
-        <Checkbox checked={subscribe} onChange={() => setSubscribe(!subscribe)}>
-          sign up to our mailing list
-        </Checkbox>
-      </div>
-      {subscribe ? (
+    <form onSubmit={onSubmit}>
+      <Stack gap="medium">
+        <H1>Welcome to KeystoneJS</H1>
+        <div>Next up: star the project, follow us on twitter for updates</div>
         <div>
-          <TextInput autoFocus value={email} onChange={e => setEmail(e.target.value)} />
+          <Checkbox checked={subscribe} onChange={() => setSubscribe(!subscribe)}>
+            sign up to our mailing list
+          </Checkbox>
         </div>
-      ) : null}
-      <div>
-        <Button weight="bold" tone="active">
-          Get started
-        </Button>
-      </div>
-    </Stack>
+        {subscribe ? (
+          <div>
+            <TextInput autoFocus value={email} onChange={e => setEmail(e.target.value)} />
+          </div>
+        ) : null}
+        <div>
+          <Button type="submit" weight="bold" tone="active">
+            Get started
+          </Button>
+        </div>
+      </Stack>
+    </form>
   );
 };
 
