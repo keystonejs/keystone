@@ -93,6 +93,8 @@ export type KeystoneConfig = {
   server?: {
     /** Configuration options for the cors middleware. Set to `true` to use core Keystone defaults */
     cors?: CorsOptions | true;
+    /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
+    port?: number;
   };
 } & SchemaConfig;
 

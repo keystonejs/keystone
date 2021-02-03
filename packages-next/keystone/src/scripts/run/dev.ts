@@ -6,7 +6,7 @@ import { initConfig } from '../../lib/initConfig';
 import { requireSource } from '../../lib/requireSource';
 import { createExpressServer } from '../../lib/createExpressServer';
 import { saveSchemaAndTypes } from '../../lib/saveSchemaAndTypes';
-import { CONFIG_PATH, PORT } from '../utils';
+import { CONFIG_PATH } from '../utils';
 import type { StaticPaths } from '..';
 
 // TODO: Don't generate or start an Admin UI if it isn't configured!!
@@ -23,8 +23,8 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths, sc
   const server = express();
   let expressServer: null | ReturnType<typeof express> = null;
 
+  const config = initConfig(requireSource(CONFIG_PATH).default);
   const initKeystone = async () => {
-    const config = initConfig(requireSource(CONFIG_PATH).default);
     const { keystone, graphQLSchema, createContext } = createSystem(
       config,
       dotKeystonePath,
@@ -58,9 +58,10 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths, sc
     if (expressServer) return expressServer(req, res, next);
     res.sendFile(devLoadingHTMLFilepath);
   });
-  server.listen(PORT, (err?: any) => {
+  const port = config.server?.port || process.env.PORT || 3000;
+  server.listen(port, (err?: any) => {
     if (err) throw err;
-    console.log(`⭐️ Dev Server Ready on http://localhost:${PORT}`);
+    console.log(`⭐️ Dev Server Ready on http://localhost:${port}`);
     // Don't start initialising Keystone until the dev server is ready,
     // otherwise it slows down the first response significantly
     initKeystone().catch(err => {
