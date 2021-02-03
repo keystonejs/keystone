@@ -30,16 +30,34 @@ const guessEmailFromValue = (value: any) => {
   }
 };
 
+// email validation regex from https://html.spec.whatwg.org/multipage/input.html#email-state-(type=email)
+const validEmail = (email: string) =>
+  /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
+    email
+  );
+
 const Welcome = ({ value }: { value: any }) => {
-  const [subscribe, setSubscribe] = useState(true);
-  const [email, setEmail] = useState(guessEmailFromValue(value));
+  const [subscribe, setSubscribe] = useState<boolean>(true);
+  const [email, setEmail] = useState<string>(guessEmailFromValue(value));
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (subscribe && email) {
-      // ADD MAILCHIMP INTEGRATION HERE
+    setError(null);
+    // Check if user wants to subscribe.
+    // and there's a valid email address.
+    if (subscribe) {
+      // Basic validation check on the email?
+      if (validEmail(email)) {
+        // if good add email to mailing list
+        // and redirect to dashboard.
+      } else {
+        // if bad set error message
+        setError('Email is invalid');
+        return;
+      }
     }
-    router.push((router.query.from as string | undefined) || '/');
+    return router.push((router.query.from as string | undefined) || '/');
   };
   return (
     <form onSubmit={onSubmit}>
@@ -54,6 +72,7 @@ const Welcome = ({ value }: { value: any }) => {
         {subscribe ? (
           <div>
             <TextInput autoFocus value={email} onChange={e => setEmail(e.target.value)} />
+            <p css={{ color: 'red' }}>{error}</p>
           </div>
         ) : null}
         <div>
@@ -115,10 +134,18 @@ export const InitPage = ({
   const rawKeystone = useRawKeystone();
 
   useEffect(() => {
+    // This effect handles both cases:
+    // a ) Our form submission is complete with new data
+    // b ) User lands in init page due to a client side SPA redirect
+    // Either way we check for an authenticated item
     if (rawKeystone.authenticatedItem.state === 'authenticated') {
+      // If it exists we then check if enableWelcome is true
+      // if it is then we set the mode to welcome first.
+      // To tell the component to render the Welcome screen
       if (enableWelcome) {
         setMode('welcome');
       } else {
+        // otherwise we route them through to the admin dashboard
         router.push((router.query.from as string | undefined) || '/');
       }
     }
@@ -131,31 +158,35 @@ export const InitPage = ({
       <form
         onSubmit={event => {
           event.preventDefault();
-
-          setMode('welcome');
-          return;
-
+          // Check if there are any invalidFields
           const newForceValidation = invalidFields.size !== 0;
           setForceValidation(newForceValidation);
 
+          // if yes, don't submit the form
           if (newForceValidation) return;
+
+          // If not we serialize the data
           const data: Record<string, any> = {};
           const allSerializedValues = serializeValueToObjByFieldKey(fields, value);
           Object.keys(allSerializedValues).forEach(fieldPath => {
             const { controller } = fields[fieldPath];
             const serialized = allSerializedValues[fieldPath];
+            // we check the serialized values against the default values on the controller
             if (!isDeepEqual(serialized, controller.serialize(controller.defaultValue))) {
+              // if they're different add them to the data object.
               Object.assign(data, serialized);
             }
           });
+
+          // Create the first item in the database.
           createFirstItem({
             variables: {
               data,
             },
           })
             .then(() => {
+              // refetch admin meta
               reinitContext();
-              router.push('/');
             })
             .catch(() => {});
         }}
