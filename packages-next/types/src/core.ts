@@ -25,7 +25,7 @@ export type AdminFileToWrite =
       outputPath: string;
     };
 
-export type KeystoneAdminUIConfig = {
+export type AdminUIConfig = {
   /** Enables certain functionality in the Admin UI that expects the session to be an item */
   enableSessionItem?: boolean;
   /** A function that can be run to validate that the current session should have access to the Admin UI */
@@ -89,7 +89,7 @@ export type KeystoneConfig = {
     };
   };
   session?: () => SessionStrategy<any>;
-  ui?: KeystoneAdminUIConfig;
+  ui?: AdminUIConfig;
   server?: {
     /** Configuration options for the cors middleware. Set to `true` to use core Keystone defaults */
     cors?: CorsOptions | true;
