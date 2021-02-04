@@ -28,10 +28,10 @@ export default auth.withAuth(
       adapter: 'mongoose',
       url: 'mongodb://localhost/keystone-examples-next-basic',
     },
-    graphql: {
-      // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
-      path: '/api/graphql',
-    },
+    // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
+    // graphql: {
+    //   path: '/api/graphql',
+    // },
     ui: {
       // NOTE -- this is not implemented, keystone currently always provides an admin ui at /
       path: '/admin',

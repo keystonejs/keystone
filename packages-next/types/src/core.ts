@@ -60,6 +60,15 @@ export type DatabaseCommon = {
   onConnect?: (args: KeystoneContext) => Promise<void>;
 };
 
+export type GraphQLConfig = {
+  // FIXME: We currently hardcode `/api/graphql` in a bunch of places
+  // We should be able to use config.graphql.path to set this path.
+  // path?: string;
+  queryLimits?: {
+    maxTotalResults?: number;
+  };
+};
+
 export type KeystoneConfig = {
   db: DatabaseCommon &
     (
@@ -82,12 +91,7 @@ export type KeystoneConfig = {
           enableLogging?: boolean;
         }
     );
-  graphql?: {
-    path?: string;
-    queryLimits?: {
-      maxTotalResults?: number;
-    };
-  };
+  graphql?: GraphQLConfig;
   session?: () => SessionStrategy<any>;
   ui?: KeystoneAdminUIConfig;
   server?: {
