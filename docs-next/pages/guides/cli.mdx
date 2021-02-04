@@ -1,4 +1,4 @@
-import { Page } from '../../components/Page';
+import { Markdown } from '../../components/Page';
 
 ## Command Line
 
@@ -74,4 +74,4 @@ This command should be run after running `keystone-next reset` and the generated
 This command will apply any migrations in the migrations directory.
 It should be used in production to apply migrations before starting the server.
 
-export default ({ children }) => <Page>{children}</Page>;
+export default ({ children }) => <Markdown>{children}</Markdown>;

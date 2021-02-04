@@ -1,12 +1,10 @@
-/* @jsx jsx */
-
-import { jsx } from '@keystone-ui/core';
+import React from 'react';
 
 import { Page } from '../components/Page';
 
 export default function IndexPage() {
   return (
-    <Page>
+    <Page isProse>
       <h1>Welcome</h1>
       <p>These are the docs for the next version of KeystoneJS.</p>
     </Page>
