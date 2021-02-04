@@ -25,7 +25,7 @@ export type AdminFileToWrite =
       outputPath: string;
     };
 
-export type KeystoneAdminUIConfig = {
+export type AdminUIConfig = {
   /** Enables certain functionality in the Admin UI that expects the session to be an item */
   enableSessionItem?: boolean;
   /** A function that can be run to validate that the current session should have access to the Admin UI */
@@ -60,6 +60,15 @@ export type DatabaseCommon = {
   onConnect?: (args: KeystoneContext) => Promise<void>;
 };
 
+export type GraphQLConfig = {
+  // FIXME: We currently hardcode `/api/graphql` in a bunch of places
+  // We should be able to use config.graphql.path to set this path.
+  // path?: string;
+  queryLimits?: {
+    maxTotalResults?: number;
+  };
+};
+
 export type KeystoneConfig = {
   lists: ListSchemaConfig;
   db: DatabaseCommon &
@@ -83,14 +92,9 @@ export type KeystoneConfig = {
           enableLogging?: boolean;
         }
     );
-  graphql?: {
-    path?: string;
-    queryLimits?: {
-      maxTotalResults?: number;
-    };
-  };
+  graphql?: GraphQLConfig;
   session?: () => SessionStrategy<any>;
-  ui?: KeystoneAdminUIConfig;
+  ui?: AdminUIConfig;
   server?: {
     /** Configuration options for the cors middleware. Set to `true` to use core Keystone defaults */
     cors?: CorsOptions | true;
