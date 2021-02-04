@@ -86,8 +86,8 @@ class MongooseAdapter extends BaseKeystoneAdapter {
 
     const rightFkPath = columnNames[columnKey].far;
 
-    schema.add({ [leftFkPath]: {index: true} });
-    schema.add({ [rightFkPath]: {index: true} });
+    schema.add({ [leftFkPath]: { index: true } });
+    schema.add({ [rightFkPath]: { index: true } });
     // 4th param is 'skipInit' which avoids calling `model.init()`.
     // We call model.init() later, after we have a connection up and running to
     // avoid issues with Mongoose's lazy queue and setting up the indexes.
