@@ -31,6 +31,24 @@ const NavItem = ({ href, children }: NavItemProps) => {
   );
 };
 
+// const SubSection: React.ComponentType<{ label: string }> = ({ children, label }) => {
+//   return (
+//     <Fragment>
+//       <h4
+//         css={{
+//           fontWeight: 500,
+//           fontSize: '1em',
+//           textTransform: 'uppercase',
+//           margin: '0.5em 0',
+//         }}
+//       >
+//         {label}
+//       </h4>
+//       <ul css={{ padding: 0 }}>{children}</ul>
+//     </Fragment>
+//   );
+// };
+
 export const Navigation = () => {
   return (
     <div className="font-medium">
@@ -39,9 +57,12 @@ export const Navigation = () => {
         <NavItem href="/guides/getting-started">Getting Started</NavItem>
         <NavItem href="/guides/installation">Installation</NavItem>
         <NavItem href="/guides/cli">Command Line</NavItem>
+        <NavItem href="/guides/schema-extension">Schema Extension</NavItem>
       </Section>
       <Section label="API">
         <NavItem href="/apis/system">System API</NavItem>
+        <NavItem href="/apis/schema">Schema API</NavItem>
+        <NavItem href="/apis/session">Session API</NavItem>
       </Section>
     </div>
   );

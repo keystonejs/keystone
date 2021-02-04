@@ -30,6 +30,9 @@ Keystone can be run in three different modes; **prototyping**, **dev** and **pro
 These different modes support different phases of your project life-cycle.
 The different modes differ in how they interact with your database and with your Admin UI application.
 
+Note: All the **run** commands expect to find a module called `keystone.ts` with a default export which returns a system configuration `config()` from `@keystone-next/keystone/schema`.
+See the [System Configuration API](../apis/system) for details on how to configure a Keystone system.
+
 #### `keystone-next prototype` (default)
 
 In **prototyping** mode, Keystone will try its hardest to put your database into a state which is consistent with your schema.
