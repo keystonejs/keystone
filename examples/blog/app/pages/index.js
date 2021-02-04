@@ -32,7 +32,7 @@ const Post = ({ post }) => {
           <div css={{ marginTop: '1em', borderTop: '1px solid hsl(200, 20%, 80%)' }}>
             <p css={{ fontSize: '0.8em', marginBottom: 0, color: 'hsl(200, 20%, 50%)' }}>
               Posted by {post.author ? post.author.name : 'someone'} on{' '}
-              {format(parseISO(post.posted), 'dd/MM/yyyy')}
+              {post.posted ? format(parseISO(post.posted), 'dd/MM/yyyy') : 'Unknown'}
             </p>
           </div>
         </article>
