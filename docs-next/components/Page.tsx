@@ -6,7 +6,7 @@ import { Navigation } from './Navigation';
 
 export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boolean }) => {
   return (
-    <div className="antialiased">
+    <div className="antialiased pb-24">
       <div className="pt-4 pb-4 border-b border-gray-200">
         <div className="w-full max-w-6xl mx-auto flex items-center justify-between sticky">
           <h2 className="flex items-center">
