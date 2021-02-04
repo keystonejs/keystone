@@ -58,7 +58,6 @@ export type DatabaseConfig = DatabaseCommon &
     | {
         adapter: 'prisma_postgresql';
         dropDatabase?: boolean;
-        provider?: string;
         getPrismaPath?: (arg: { prismaSchema: any }) => string;
         getDbSchemaName?: (arg: { prismaSchema: any }) => string;
         enableLogging?: boolean;
