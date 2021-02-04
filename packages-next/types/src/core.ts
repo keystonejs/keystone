@@ -1,47 +1,8 @@
-import type Knex from 'knex';
-import type { ConnectOptions } from 'mongoose';
-import { CorsOptions } from 'cors';
-import type { FieldAccessControl } from './schema/access-control';
-import type { BaseGeneratedListTypes, JSONValue, GqlNames, MaybePromise } from './utils';
-import type { ListHooks } from './schema/hooks';
-import { SessionStrategy } from './session';
-import { ListSchemaConfig, ExtendGraphqlSchema } from './schema';
 import { IncomingMessage, ServerResponse } from 'http';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
-import { AdminMetaRootVal } from './admin-meta';
+
+import type { BaseGeneratedListTypes, GqlNames, MaybePromise } from './utils';
 import { BaseKeystone } from './base';
-
-export type { ListHooks };
-
-export type AdminFileToWrite =
-  | {
-      mode: 'write';
-      src: string;
-      outputPath: string;
-    }
-  | {
-      mode: 'copy';
-      inputPath: string;
-      outputPath: string;
-    };
-
-export type AdminUIConfig = {
-  /** Enables certain functionality in the Admin UI that expects the session to be an item */
-  enableSessionItem?: boolean;
-  /** A function that can be run to validate that the current session should have access to the Admin UI */
-  isAccessAllowed?: (context: KeystoneContext) => MaybePromise<boolean>;
-  /** An array of page routes that can be accessed without passing the isAccessAllowed check */
-  publicPages?: string[];
-  /** The basePath for the Admin UI App */
-  path?: string;
-  getAdditionalFiles?: ((config: KeystoneConfig) => MaybePromise<AdminFileToWrite[]>)[];
-  pageMiddleware?: (args: {
-    req: IncomingMessage;
-    session: any;
-    isValidSession: boolean;
-    createContext: CreateContext;
-  }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
-};
 
 // DatabaseAPIs is used to provide access to the underlying database abstraction through
 // context and other developer-facing APIs in Keystone, so they can be used easily.
@@ -53,100 +14,6 @@ export type DatabaseAPIs = {
   knex?: any;
   mongoose?: any;
   prisma?: any;
-};
-
-export type DatabaseCommon = {
-  url: string;
-  onConnect?: (args: KeystoneContext) => Promise<void>;
-};
-
-export type GraphQLConfig = {
-  // FIXME: We currently hardcode `/api/graphql` in a bunch of places
-  // We should be able to use config.graphql.path to set this path.
-  // path?: string;
-  queryLimits?: {
-    maxTotalResults?: number;
-  };
-};
-
-export type KeystoneConfig = {
-  lists: ListSchemaConfig;
-  db: DatabaseCommon &
-    (
-      | {
-          adapter: 'mongoose';
-          mongooseOptions?: { mongoUri?: string } & ConnectOptions;
-        }
-      | {
-          adapter: 'knex';
-          dropDatabase?: boolean;
-          knexOptions?: { client?: string; connection?: string } & Knex.Config<any>;
-          schemaName?: string;
-        }
-      | {
-          adapter: 'prisma_postgresql';
-          dropDatabase?: boolean;
-          provider?: string;
-          getPrismaPath?: (arg: { prismaSchema: any }) => string;
-          getDbSchemaName?: (arg: { prismaSchema: any }) => string;
-          enableLogging?: boolean;
-        }
-    );
-  graphql?: GraphQLConfig;
-  session?: () => SessionStrategy<any>;
-  ui?: AdminUIConfig;
-  server?: {
-    /** Configuration options for the cors middleware. Set to `true` to use core Keystone defaults */
-    cors?: CorsOptions | true;
-    /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
-    port?: number;
-  };
-  extendGraphqlSchema?: ExtendGraphqlSchema;
-};
-
-export type MaybeItemFunction<T> =
-  | T
-  | ((args: {
-      session: any;
-      item: { id: string | number; [path: string]: any };
-    }) => MaybePromise<T>);
-export type MaybeSessionFunction<T extends string | boolean> =
-  | T
-  | ((args: { session: any }) => MaybePromise<T>);
-
-export type FieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
-  access?: FieldAccessControl<TGeneratedListTypes>;
-  hooks?: ListHooks<TGeneratedListTypes>;
-  label?: string;
-  ui?: {
-    views?: string;
-    description?: string;
-    createView?: {
-      fieldMode?: MaybeSessionFunction<'edit' | 'hidden'>;
-    };
-    listView?: {
-      fieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
-    };
-    itemView?: {
-      fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'>;
-    };
-  };
-};
-
-export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
-  /**
-   * The real keystone type for the field
-   */
-  type: any;
-  /**
-   * The config for the field
-   */
-  config: FieldConfig<TGeneratedListTypes>;
-  /**
-   * The resolved path to the views for the field type
-   */
-  views: string;
-  getAdminMeta?: (listKey: string, path: string, adminMeta: AdminMetaRootVal) => JSONValue;
 };
 
 /* TODO: Review these types */
