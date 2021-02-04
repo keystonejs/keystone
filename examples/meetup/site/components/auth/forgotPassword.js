@@ -17,7 +17,7 @@ export const CREATE_FORGOT_PASSWORD_TOKEN = gql`
   }
 `;
 
-export default ({ onSuccess, onClickSignin }) => {
+const ForgotPassword = ({ onSuccess, onClickSignin }) => {
   const [email, setEmail] = useState('');
   const [emailSent, setEmailSent] = useState(false);
   const { isAuthenticated } = useAuth();
@@ -90,3 +90,5 @@ export default ({ onSuccess, onClickSignin }) => {
     </>
   );
 };
+
+export default ForgotPassword;
