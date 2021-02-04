@@ -1,4 +1,3 @@
-import type Knex from 'knex';
 import type { ConnectOptions } from 'mongoose';
 import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
@@ -26,10 +25,10 @@ import type { MaybePromise } from '../utils';
 export type KeystoneConfig = {
   lists: ListSchemaConfig;
   db: DatabaseConfig;
-  graphql?: GraphQLConfig;
-  session?: () => SessionStrategy<any>;
   ui?: AdminUIConfig;
   server?: ServerConfig;
+  session?: () => SessionStrategy<any>;
+  graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
 };
 
@@ -57,39 +56,13 @@ export type DatabaseConfig = DatabaseCommon &
   (
     | {
         adapter: 'prisma_postgresql';
-        dropDatabase?: boolean;
+        enableLogging?: boolean;
         getPrismaPath?: (arg: { prismaSchema: any }) => string;
         getDbSchemaName?: (arg: { prismaSchema: any }) => string;
-        enableLogging?: boolean;
       }
-    | {
-        adapter: 'knex';
-        dropDatabase?: boolean;
-        knexOptions?: { client?: string; connection?: string } & Knex.Config<any>;
-        schemaName?: string;
-      }
+    | { adapter: 'knex'; dropDatabase?: boolean; schemaName?: string }
     | { adapter: 'mongoose'; mongooseOptions?: { mongoUri?: string } & ConnectOptions }
   );
-
-// config.graphql
-
-export type GraphQLConfig = {
-  // FIXME: We currently hardcode `/api/graphql` in a bunch of places
-  // We should be able to use config.graphql.path to set this path.
-  // path?: string;
-  queryLimits?: {
-    maxTotalResults?: number;
-  };
-};
-
-// config.server
-
-export type ServerConfig = {
-  /** Configuration options for the cors middleware. Set to `true` to use core Keystone defaults */
-  cors?: CorsOptions | true;
-  /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
-  port?: number;
-};
 
 // config.ui
 
@@ -114,6 +87,26 @@ export type AdminUIConfig = {
 export type AdminFileToWrite =
   | { mode: 'write'; src: string; outputPath: string }
   | { mode: 'copy'; inputPath: string; outputPath: string };
+
+// config.server
+
+export type ServerConfig = {
+  /** Configuration options for the cors middleware. Set to `true` to use core Keystone defaults */
+  cors?: CorsOptions | true;
+  /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
+  port?: number;
+};
+
+// config.graphql
+
+export type GraphQLConfig = {
+  // FIXME: We currently hardcode `/api/graphql` in a bunch of places
+  // We should be able to use config.graphql.path to set this path.
+  // path?: string;
+  queryLimits?: {
+    maxTotalResults?: number;
+  };
+};
 
 // config.extendGraphqlSchema
 

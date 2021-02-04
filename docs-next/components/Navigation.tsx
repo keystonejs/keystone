@@ -63,6 +63,7 @@ export const Navigation = () => {
         <NavItem href="/apis/system">System API</NavItem>
         <NavItem href="/apis/schema">Schema API</NavItem>
         <NavItem href="/apis/session">Session API</NavItem>
+        <NavItem href="/apis/context">Context API</NavItem>
       </Section>
     </div>
   );
