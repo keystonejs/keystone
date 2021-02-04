@@ -5,7 +5,7 @@ import type { FieldAccessControl } from './schema/access-control';
 import type { BaseGeneratedListTypes, JSONValue, GqlNames, MaybePromise } from './utils';
 import type { ListHooks } from './schema/hooks';
 import { SessionStrategy } from './session';
-import { SchemaConfig } from './schema';
+import { ListSchemaConfig, ExtendGraphqlSchema } from './schema';
 import { IncomingMessage, ServerResponse } from 'http';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import { AdminMetaRootVal } from './admin-meta';
@@ -70,6 +70,7 @@ export type GraphQLConfig = {
 };
 
 export type KeystoneConfig = {
+  lists: ListSchemaConfig;
   db: DatabaseCommon &
     (
       | {
@@ -100,7 +101,8 @@ export type KeystoneConfig = {
     /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
     port?: number;
   };
-} & SchemaConfig;
+  extendGraphqlSchema?: ExtendGraphqlSchema;
+};
 
 export type MaybeItemFunction<T> =
   | T

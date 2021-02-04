@@ -1,13 +1,9 @@
 import type { GraphQLSchema } from 'graphql';
 import type { FieldType, MaybeItemFunction, MaybeSessionFunction } from '..';
+import type { BaseKeystone } from '../base';
 import type { BaseGeneratedListTypes } from '../utils';
 import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
-
-export type SchemaConfig = {
-  lists: ListSchemaConfig;
-  extendGraphqlSchema?: ExtendGraphqlSchema;
-};
 
 export type ListSchemaConfig = Record<string, ListConfig<BaseGeneratedListTypes, any>>;
 
@@ -165,7 +161,4 @@ export type ListConfig<
   // queries, upserts, etc, in particular follow Prisma's design)
 };
 
-export type ExtendGraphqlSchema = (
-  schema: GraphQLSchema,
-  keystoneClassInstance: any
-) => GraphQLSchema;
+export type ExtendGraphqlSchema = (schema: GraphQLSchema, keystone: BaseKeystone) => GraphQLSchema;
