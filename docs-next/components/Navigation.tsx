@@ -77,7 +77,9 @@ export const Navigation = () => {
         <NavItem href="/guides/getting-started">Getting Started</NavItem>
         <NavItem href="/guides/installation">Installation</NavItem>
         <NavItem href="/guides/cli">Command Line</NavItem>
-        <NavItem href="/guides/api">API</NavItem>
+      </Section>
+      <Section label="API">
+        <NavItem href="/apis/system">System API</NavItem>
       </Section>
     </Fragment>
   );
