@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { Core } from '@keystone-ui/core';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 
 import { handleRouteChange } from '../lib/analytics';
+
+import 'tailwindcss/tailwind.css';
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -15,9 +16,5 @@ export default function App({ Component, pageProps }: AppProps) {
     };
   }, [router.events]);
 
-  return (
-    <Core>
-      <Component {...pageProps} />
-    </Core>
-  );
+  return <Component {...pageProps} />;
 }

@@ -1,6 +1,6 @@
-import { Page } from '../../components/Page';
+import { Markdown } from '../../components/Page';
 
-## Command Line
+# Command Line
 
 Keystone provides a command line interface (CLI) for running your Keystone system.
 The command `keystone-next` lets you control how you build and run your system, and how your migrate and seed the data in your database.
@@ -77,4 +77,4 @@ This command should be run after running `keystone-next reset` and the generated
 This command will apply any migrations in the migrations directory.
 It should be used in production to apply migrations before starting the server.
 
-export default ({ children }) => <Page>{children}</Page>;
+export default ({ children }) => <Markdown>{children}</Markdown>;
