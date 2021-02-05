@@ -31,15 +31,21 @@ This type definition should be considered the source of truth for the available 
 
 ## `lists`
 
-```
-import type { ListSchemaConfig } from '@keystone-next/types';
-```
-
 The `lists` config option is where you define the data model, or schema, of your Keystone system.
-It has a TypeScript type of `DatabaseConfig`.
-This configuration is where you define and configure the `lists` and their `fields`.
-In general you will use `createSchema()` function to create this configuration option.
+It has a TypeScript type of `ListSchemaConfig`.
+This is where you define and configure the `lists` and their `fields` of your data model.
+In general you will use the `createSchema()` function to create this configuration option.
 See the [Schema API](./schema) docs for details on how to use this function.
+
+```typescript
+import type { ListSchemaConfig } from '@keystone-next/types';
+import { config, createSchema } from '@keystone-next/keystone/schema'
+
+export default config({
+  lists: createSchema({ ... }),
+  ...
+});
+```
 
 ## `db`
 
@@ -50,10 +56,23 @@ import type { DatabaseConfig } from '@keystone-next/types';
 The `db` config option configures the database used to store data in your Keystone system.
 It has a TypeScript type of `DatabaseConfig`.
 Keystone supports three different database types; **Prisma**, **PostgreSQL**, and **MongoDB**.
-These databases types are powered by their corresponding Keystone database adapter; `prisma_postgresql`, `knex`, and `mongoose`.
+These database types are powered by their corresponding Keystone database adapter; `prisma_postgresql`, `knex`, and `mongoose`.
 The `prisma_postgresql` adapter includes support for the **migrate** commands of the Keystone [command line](../guides/cli).
 
+All database adapters require the `url` argument, which defines the connection URL for your database.
+They also all have an optional `onConnect` async function, which takes a [`KeystoneContext`](./context) object, and lets perform any actions you might need at startup, such as data seeding.
+
+As well as these common options, each adapter supports a number of optional advanced configuration options.
+
 ### `prisma_postgresql`
+
+Advanced configuration:
+
+- `enableLogging` (default: `false`): Enable logging from the Prisma client.
+- `getPrismaPath` (default: `() => '.keystone/prisma'` ): Set the location of the generated Prisma schema and client.
+- `getDbSchemaName` (default: `() => 'public'` ): Set the schema named used in the database.
+
+The functions for `getPrismaPath` and `getDbSchemaName` are each provided with the generated Prisma schema as a `string` in the `{ prismaSchema }` argument.
 
 ```typescript
 export default config({
@@ -62,16 +81,20 @@ export default config({
     url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
     onConnect: async context => { ... },
     // Optional advanced configuration
-    dropDatabase: false;
+    enableLogging: true;
     getPrismaPath: ({ prismaSchema }) => '.prisma';
-    getDbSchemaName: ({ prismaSchema }) => '.prisma;
-    enableLogging: false;
+    getDbSchemaName: ({ prismaSchema }) => 'prisma';
   },
   ...
 });
 ```
 
 ### `knex`
+
+Advanced configuration:
+
+- `schemaName` (default: `'public'` ): Set the schema named used in the database.
+- `dropDatabase` (default: `false`): Setting this to `true` will cause Keystone to drop your database and then recreate the tables after connecting to the database.
 
 ```typescript
 export default config({
@@ -82,13 +105,16 @@ export default config({
     // Optional advanced configuration
     schemaName: 'public',
     dropDatabase: false,
-    knexOptions: { ... },
   },
   ...
 });
 ```
 
 ### `mongoose`
+
+Advanced configuration:
+
+- `mongooseOptions` (default: `{}` ): Additional options to be passed into `mongoose.connect()`. See the [Mongoose docs](https://mongoosejs.com/docs/api.html#mongoose_Mongoose-connect) for a detailed list of options
 
 ```typescript
 export default config({
@@ -111,14 +137,23 @@ import type { AdminUIConfig } from '@keystone-next/types';
 
 The `ui` config option configures the Admin UI which is provided by Keystone.
 It has a TypeScript type of `AdminUIConfig`.
-This config option is for "top level configuration" of the Admin UI.
-Fine grained configuration of how lists and fields behave in the Admin UI is handled in the `lists` definition.
-See the [Schema API](./schema) for more details.
+This config option is for top level configuration of the Admin UI.
+Fine grained configuration of how lists and fields behave in the Admin UI is handled in the `lists` definition (see the [Schema API](./schema) for more details).
+
+Options:
+
+- `isAccessAllowed` (default: `(context) => !!context.session`): This function controls whether a user is able to access the Admin UI.
+It takes a [`KeystoneContext`](./context) object as an argument.
+- `path` (default: `'admin'` ): The URL path where you Admin UI will be accessible from.
+
+Advanced configuration:
+
+(coming soon)
 
 ```typescript
 export default config({
   ui: {
-    isAccessAllowed: async () => true,
+    isAccessAllowed: async (context) => true,
     path: 'admin',
     // Optional advanced configuration
     enableSessionItem: true,
@@ -138,6 +173,13 @@ import type { ServerConfig } from '@keystone-next/types';
 
 The **run** commands from the Keystone [command line](../guides/cli) will start an Express web-server for you.
 This server is configured via the `server` configuration option.
+
+Options:
+
+- `cors` (default: `undefined`): Allows you to configure the [cors middleware](https://www.npmjs.com/package/cors#configuration-options) for your Express server.
+If left undefined `cors` will not be used.
+- `port` (default: `3000` ): The port your Express server will listen on.
+
 
 ```typescript
 export default config({
@@ -171,7 +213,6 @@ export default config({
 
 See the [Session API](./session) for more details on how to configure session management in Keystone.
 
-
 ## `graphql`
 
 ```
@@ -180,6 +221,12 @@ import type { GraphQLConfig } from '@keystone-next/types';
 
 The `graphql` config option allows you to configures certain aspects of your GraphQL API.
 It has a TypeScript type of `GraphQLConfig`.
+
+Options:
+
+- `queryLimits` (default: `undefined`): Allows you to limit the number of results returned from a query to your GraphQL API.
+See also the per-list `queryLimits` option in the [Schema API](./schema).
+
 
 ```typescript
 export default config({
