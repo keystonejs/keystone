@@ -1,6 +1,7 @@
 /* @jsx jsx */
 
 import { useEffect, useMemo, useState } from 'react';
+import fetch from 'cross-fetch';
 
 import { jsx, H1, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
@@ -36,6 +37,8 @@ const validEmail = (email: string) =>
     email
   );
 
+const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
+
 const Welcome = ({ value }: { value: any }) => {
   const [subscribe, setSubscribe] = useState<boolean>(true);
   const [email, setEmail] = useState<string>(guessEmailFromValue(value));
@@ -51,6 +54,21 @@ const Welcome = ({ value }: { value: any }) => {
       if (validEmail(email)) {
         // if good add email to mailing list
         // and redirect to dashboard.
+        return fetch(signupURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: value.username,
+            email,
+            source: '@keystone-next/auth InitPage',
+          }),
+        })
+          .then(() => {
+            router.push((router.query.from as string | undefined) || '/');
+          })
+          .catch(() => {});
       } else {
         // if bad set error message
         setError('Email is invalid');
