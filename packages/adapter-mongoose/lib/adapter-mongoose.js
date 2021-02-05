@@ -90,8 +90,8 @@ class MongooseAdapter extends BaseKeystoneAdapter {
     schema.add({ [rightFkPath]: {} });
 
     // create 2 way indexes for reference fields
-    schema.index({ [leftFkPath]: 1, [rightFkPath]: 1 });
-    schema.index({ [rightFkPath]: 1, [leftFkPath]: 1 });
+    schema.index({ [leftFkPath]: 1 });
+    schema.index({ [rightFkPath]: 1 });
 
     // 4th param is 'skipInit' which avoids calling `model.init()`.
     // We call model.init() later, after we have a connection up and running to
