@@ -635,7 +635,7 @@ class MongooseFieldAdapter extends BaseFieldAdapter {
       // drop and recreate all indexes.
       schemaOptions.unique = true;
     }
-    if (this.isIndexed) {
+    if (this.isIndexed || this.isRelationship) {
       schemaOptions.index = true;
     }
     return { ...schemaOptions, ...mongooseOptions };
