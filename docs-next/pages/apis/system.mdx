@@ -24,7 +24,7 @@ export default config({
 });
 ```
 
-We will cover each of these options in turn below.
+We will cover each of these options below.
 
 The configuration object has a TypeScript type of `KeystoneConfig`, which can be imported from `@keystone-next/types`.
 This type definition should be considered the source of truth for the available configuration options.
@@ -143,8 +143,8 @@ Fine grained configuration of how lists and fields behave in the Admin UI is han
 Options:
 
 - `isAccessAllowed` (default: `(context) => !!context.session`): This function controls whether a user is able to access the Admin UI.
-It takes a [`KeystoneContext`](./context) object as an argument.
-- `path` (default: `'admin'` ): The URL path where you Admin UI will be accessible from.
+  It takes a [`KeystoneContext`](./context) object as an argument.
+- `path` (default: `'admin'` ): The URL path where your Admin UI will be accessible from.
 
 Advanced configuration:
 
@@ -177,9 +177,8 @@ This server is configured via the `server` configuration option.
 Options:
 
 - `cors` (default: `undefined`): Allows you to configure the [cors middleware](https://www.npmjs.com/package/cors#configuration-options) for your Express server.
-If left undefined `cors` will not be used.
+  If left undefined `cors` will not be used.
 - `port` (default: `3000` ): The port your Express server will listen on.
-
 
 ```typescript
 export default config({
@@ -225,8 +224,7 @@ It has a TypeScript type of `GraphQLConfig`.
 Options:
 
 - `queryLimits` (default: `undefined`): Allows you to limit the number of results returned from a query to your GraphQL API.
-See also the per-list `queryLimits` option in the [Schema API](./schema).
-
+  See also the per-list `queryLimits` option in the [Schema API](./schema).
 
 ```typescript
 export default config({
