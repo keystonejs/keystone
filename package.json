@@ -18,7 +18,7 @@
     "cypress:run": "status=0; yarn workspace @keystonejs/cypress-project-basic run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-login run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-twitter-login run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-access-control run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-client-validation run cypress:run || status=$?; exit $status",
     "cypress:open": "status=0; yarn workspace @keystonejs/cypress-project-basic run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-login run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-twitter-login run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-access-control run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-client-validation run cypress:open || status=$?; exit $status",
     "format:file": "prettier --write",
-    "format": "prettier --write \"**/*.{js,json,ts,tsx,md}\" && remark . --output",
+    "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\" && remark . --output",
     "fresh": "yarn clean && yarn",
     "clean": "rimraf \"**/cypress/{screenshots,videos,reports}\" \"**/node_modules\" \"**/yarn-error.log\" \"**/out.log\" \"**/.DS_Store\" \"**/website/.cache\" \"**/dist\"",
     "lint:eslint": "eslint . --ext ts,tsx,js",
