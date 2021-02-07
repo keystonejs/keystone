@@ -13,12 +13,18 @@ export const permissionFields = {
     defaultValue: false,
     label: 'User can Edit other users',
   }),
-  canManageRoles: checkbox({ defaultValue: false, label: 'User can CRUD roles' }),
+  canManageRoles: checkbox({
+    defaultValue: false,
+    label: 'User can CRUD roles',
+  }),
   canManageCart: checkbox({
     defaultValue: false,
     label: 'User can see and manage cart and cart items',
   }),
-  canManageOrders: checkbox({ defaultValue: false, label: 'User can see and manage orders' }),
+  canManageOrders: checkbox({
+    defaultValue: false,
+    label: 'User can see and manage orders',
+  }),
 };
 
 export type Permission = keyof typeof permissionFields;

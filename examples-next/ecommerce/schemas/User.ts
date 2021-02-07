@@ -1,40 +1,25 @@
-import { text, password, relationship } from '@keystone-next/fields';
 import { list } from '@keystone-next/keystone/schema';
-import { rules, permissions } from '../access';
+import { text, password, relationship } from '@keystone-next/fields';
+import { permissions, rules } from '../access';
 
 export const User = list({
   access: {
-    // anyone should be able to create a user (sign up)
-    create: true,
-    // only admins can see the list of users, but people should be able to see themselves
-    read: rules.canReadUsers,
-    update: rules.canUpdateUsers,
+    create: () => true,
+    read: rules.canManageUsers,
+    update: rules.canManageUsers,
+    // only people with the permission can delete themselves!
+    // You can't delete yourself
     delete: permissions.canManageUsers,
   },
   ui: {
-    // only admins can create and delete users in the Admin UI
+    // hide the backend UI from regular users
     hideCreate: args => !permissions.canManageUsers(args),
     hideDelete: args => !permissions.canManageUsers(args),
-    listView: {
-      initialColumns: ['name', 'email'],
-    },
   },
   fields: {
     name: text({ isRequired: true }),
     email: text({ isRequired: true, isUnique: true }),
     password: password(),
-    role: relationship({
-      ref: 'Role.assignedTo',
-      access: {
-        create: permissions.canManageUsers,
-        update: permissions.canManageUsers,
-      },
-      ui: {
-        itemView: {
-          fieldMode: args => (permissions.canManageUsers(args) ? 'edit' : 'read'),
-        },
-      },
-    }),
     cart: relationship({
       ref: 'CartItem.user',
       many: true,
@@ -43,20 +28,17 @@ export const User = list({
         itemView: { fieldMode: 'read' },
       },
     }),
-    orders: relationship({
-      ref: 'Order.user',
-      many: true,
+    orders: relationship({ ref: 'Order.user', many: true }),
+    role: relationship({
+      ref: 'Role.assignedTo',
       access: {
-        create: () => false,
-        read: true,
-        update: () => false,
-      },
-      ui: {
-        createView: { fieldMode: 'hidden' },
-        itemView: { fieldMode: 'read' },
+        create: permissions.canManageUsers,
+        update: permissions.canManageUsers,
       },
     }),
-    // resetToken: text(),
-    // resetTokenExpiry: timestamp()
+    products: relationship({
+      ref: 'Product.user',
+      many: true,
+    }),
   },
 });

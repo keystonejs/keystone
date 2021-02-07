@@ -1,24 +1,21 @@
-import { virtual, integer, relationship, text } from '@keystone-next/fields';
+import { integer, text, relationship, virtual } from '@keystone-next/fields';
 import { list } from '@keystone-next/keystone/schema';
-import { rules } from '../access';
+import { isSignedIn, rules } from '../access';
 import formatMoney from '../lib/formatMoney';
 
 export const Order = list({
   access: {
-    create: () => false,
+    create: isSignedIn,
     read: rules.canOrder,
     update: () => false,
     delete: () => false,
   },
-  ui: {
-    hideCreate: true,
-    hideDelete: true,
-    listView: { initialColumns: ['label', 'user', 'items'] },
-  },
   fields: {
     label: virtual({
       graphQLReturnType: 'String',
-      resolver: item => formatMoney(item.total),
+      resolver(item) {
+        return `${formatMoney(item.total)}`;
+      },
     }),
     total: integer(),
     items: relationship({ ref: 'OrderItem.order', many: true }),
