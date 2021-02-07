@@ -2,7 +2,6 @@ import path from 'path';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { createExpressServer } from '../../lib/createExpressServer';
-import { PORT } from '../utils';
 import type { StaticPaths } from '..';
 import * as fs from 'fs-extra';
 
@@ -29,8 +28,9 @@ export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) 
   );
   console.log(`👋 Admin UI and graphQL API ready`);
 
-  server.listen(PORT, (err?: any) => {
+  const port = config.server?.port || process.env.PORT || 3000;
+  server.listen(port, (err?: any) => {
     if (err) throw err;
-    console.log(`⭐️ Server Ready on http://localhost:${PORT}`);
+    console.log(`⭐️ Server Ready on http://localhost:${port}`);
   });
 };

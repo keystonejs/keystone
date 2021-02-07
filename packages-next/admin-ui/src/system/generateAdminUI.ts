@@ -90,11 +90,14 @@ export const generateAdminUI = async (
   // Add files to pages/ which point to any files which exist in admin/pages
   const userPagesDir = Path.join(process.cwd(), 'admin', 'pages');
   const files = await fastGlob('**/*.{js,jsx,ts,tsx}', { cwd: userPagesDir });
+
   await Promise.all(
     files.map(async filename => {
       const outputFilename = Path.join(projectAdminPath, 'pages', filename);
       const path = Path.relative(Path.dirname(outputFilename), Path.join(userPagesDir, filename));
-      await fs.outputFile(outputFilename, `export { default } from "${path}"`);
+      // Convert filesystem path separator to the `/` expected in JS imports
+      const importPath = path.replace(new RegExp(`\\${Path.sep}`, 'g'), '/');
+      await fs.outputFile(outputFilename, `export { default } from "${importPath}"`);
     })
   );
 };

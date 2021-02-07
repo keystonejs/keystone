@@ -1,21 +1,10 @@
-import type { GraphQLSchema } from 'graphql';
-import type { FieldType, MaybeItemFunction, MaybeSessionFunction } from '..';
-import type { BaseGeneratedListTypes } from '../utils';
 import type { ListHooks } from './hooks';
-import type { ListAccessControl } from './access-control';
+import type { ListAccessControl, FieldAccessControl } from './access-control';
 
-export type SchemaConfig = {
-  lists: ListSchemaConfig;
-  extendGraphqlSchema?: ExtendGraphqlSchema;
-};
+import { AdminMetaRootVal } from '../admin-meta';
+import type { BaseGeneratedListTypes, MaybePromise, JSONValue } from '../utils';
 
 export type ListSchemaConfig = Record<string, ListConfig<BaseGeneratedListTypes, any>>;
-
-export type BaseFields<TGeneratedListTypes extends BaseGeneratedListTypes> = {
-  [key: string]: FieldType<TGeneratedListTypes>;
-};
-
-export type CacheHint = { scope: 'PRIVATE' | 'PUBLIC'; maxAge: number };
 
 export type ListConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes,
@@ -27,34 +16,15 @@ export type ListConfig<
       changing the singular or plural will not change the label or queryName options (and vice-versa)
       Note from Mitchell: The above is incorrect based on Keystone's current implementation.
     */
-  /**
-   * The label used for the list
-   * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
-   */
-  label?: string;
-  /**
-   * The singular form of the list key
-   * @default pluralize.singular(label)
-   */
-  singular?: string;
-  /**
-   * The plural form of the list key
-   * @default pluralize.plural(label)
-   */
-  plural?: string;
-  /**
-   * Defaults the Admin UI and GraphQL descriptions
-   */
-  description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
-
   fields: Fields;
+
   /**
    * Controls what data users of the Admin UI and GraphQL can access and change
    * @default true
    * @see https://www.keystonejs.com/guides/access-control
    */
   access?: ListAccessControl<TGeneratedListTypes> | boolean;
-  idField?: FieldType<TGeneratedListTypes>;
+
   /** Config for how this list should act in the Admin UI */
   ui?: {
     /**
@@ -134,6 +104,17 @@ export type ListConfig<
     };
   };
 
+  /**
+   * Hooks to modify the behaviour of GraphQL operations at certain points
+   * @see https://www.keystonejs.com/guides/hooks
+   */
+  hooks?: ListHooks<TGeneratedListTypes>;
+
+  /**
+   * Defaults the Admin UI and GraphQL descriptions
+   */
+  description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
+
   graphql?: {
     // was previously top-level cacheHint
     cacheHint?: CacheHint;
@@ -152,20 +133,83 @@ export type ListConfig<
     };
   };
 
+  plugins?: any[]; // array of plugins that can modify the list config
+
+  /**
+   * The label used for the list
+   * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
+   */
+  label?: string;
+
+  /**
+   * The singular form of the list key
+   * @default pluralize.singular(label)
+   */
+  singular?: string;
+
+  /**
+   * The plural form of the list key
+   * @default pluralize.plural(label)
+   */
+  plural?: string;
+
+  idField?: FieldType<TGeneratedListTypes>;
+
   // TODO: Timl has thoughts, was previously adapterConfig
   db?: Record<string, any>; // adapter-specific config
-  /**
-   * Hooks to modify the behaviour of GraphQL operations at certain points
-   * @see https://www.keystonejs.com/guides/hooks
-   */
-  hooks?: ListHooks<TGeneratedListTypes>;
-  plugins?: any[]; // array of plugins that can modify the list config
 
   // TODO: Come back to how we can facilitate unique fields and combinations of fields (for
   // queries, upserts, etc, in particular follow Prisma's design)
 };
 
-export type ExtendGraphqlSchema = (
-  schema: GraphQLSchema,
-  keystoneClassInstance: any
-) => GraphQLSchema;
+export type BaseFields<TGeneratedListTypes extends BaseGeneratedListTypes> = {
+  [key: string]: FieldType<TGeneratedListTypes>;
+};
+
+export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
+  /**
+   * The real keystone type for the field
+   */
+  type: any;
+  /**
+   * The config for the field
+   */
+  config: FieldConfig<TGeneratedListTypes>;
+  /**
+   * The resolved path to the views for the field type
+   */
+  views: string;
+  getAdminMeta?: (listKey: string, path: string, adminMeta: AdminMetaRootVal) => JSONValue;
+};
+
+export type FieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
+  access?: FieldAccessControl<TGeneratedListTypes>;
+  hooks?: ListHooks<TGeneratedListTypes>;
+  label?: string;
+  ui?: {
+    views?: string;
+    description?: string;
+    createView?: {
+      fieldMode?: MaybeSessionFunction<'edit' | 'hidden'>;
+    };
+    listView?: {
+      fieldMode?: MaybeSessionFunction<'read' | 'hidden'>;
+    };
+    itemView?: {
+      fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'>;
+    };
+  };
+};
+
+export type MaybeSessionFunction<T extends string | boolean> =
+  | T
+  | ((args: { session: any }) => MaybePromise<T>);
+
+export type MaybeItemFunction<T> =
+  | T
+  | ((args: {
+      session: any;
+      item: { id: string | number; [path: string]: any };
+    }) => MaybePromise<T>);
+
+export type CacheHint = { scope: 'PRIVATE' | 'PUBLIC'; maxAge: number };
