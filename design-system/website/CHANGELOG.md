@@ -1,5 +1,11 @@
 # @keystone-ui/website
 
+## 0.0.5
+
+### Patch Changes
+
+- [`75d3c521e`](https://github.com/keystonejs/keystone/commit/75d3c521e4f1f0a1eec9bc91319839a2afc000e0) [#4770](https://github.com/keystonejs/keystone/pull/4770) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded Next.js dependency to `10.0.5`.
+
 ## 0.0.4
 
 ### Patch Changes

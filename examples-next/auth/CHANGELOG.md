@@ -1,5 +1,15 @@
 # @keystone-next/example-auth
 
+## 0.0.15
+
+### Patch Changes
+
+- [`75d3c521e`](https://github.com/keystonejs/keystone/commit/75d3c521e4f1f0a1eec9bc91319839a2afc000e0) [#4770](https://github.com/keystonejs/keystone/pull/4770) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded Next.js dependency to `10.0.5`.
+
+- Updated dependencies [[`75d3c521e`](https://github.com/keystonejs/keystone/commit/75d3c521e4f1f0a1eec9bc91319839a2afc000e0)]:
+  - @keystone-next/admin-ui@8.0.2
+  - @keystone-next/keystone@9.3.1
+
 ## 0.0.14
 
 ### Patch Changes
