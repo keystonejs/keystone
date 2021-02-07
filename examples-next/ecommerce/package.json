@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-ecommerce",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "author": "Wes Bos & Jed Watson",
   "license": "MIT",
@@ -16,12 +16,12 @@
     "@babel/preset-react": "^7.12.10",
     "@babel/preset-typescript": "^7.12.7",
     "@babel/runtime": "^7.12.5",
-    "@keystone-next/admin-ui": "^8.0.1",
+    "@keystone-next/admin-ui": "^8.0.2",
     "@keystone-next/auth": "^14.0.0",
     "@keystone-next/cloudinary": "^2.0.9",
     "@keystone-next/fields": "^4.1.1",
-    "@keystone-next/keystone": "^9.3.0",
-    "@keystone-next/types": "^12.0.0",
+    "@keystone-next/keystone": "^9.3.1",
+    "@keystone-next/types": "^12.0.1",
     "@keystonejs/server-side-graphql-client": "^1.1.2",
     "@types/nodemailer": "^6.4.0",
     "dotenv": "^8.2.0",
@@ -32,7 +32,7 @@
     "stripe": "^8.132.0"
   },
   "devDependencies": {
-    "@keystonejs/test-utils": "^11.1.2",
+    "@keystonejs/test-utils": "^11.1.3",
     "typescript": "^4.1.3"
   },
   "engines": {

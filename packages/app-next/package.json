@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/app-next",
   "description": "KeystoneJS Next.js App.",
-  "version": "5.2.3",
+  "version": "6.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {

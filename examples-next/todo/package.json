@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-todo",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -13,10 +13,10 @@
     "resolve": "keystone-next resolve"
   },
   "dependencies": {
-    "@keystone-next/admin-ui": "^8.0.1",
+    "@keystone-next/admin-ui": "^8.0.2",
     "@keystone-next/auth": "^14.0.0",
     "@keystone-next/fields": "^4.1.1",
-    "@keystone-next/keystone": "^9.3.0",
+    "@keystone-next/keystone": "^9.3.1",
     "next": "10.0.5",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"

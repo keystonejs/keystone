@@ -1,5 +1,12 @@
 # @keystonejs/test-utils
 
+## 11.1.3
+
+### Patch Changes
+
+- Updated dependencies [[`75d3c521e`](https://github.com/keystonejs/keystone/commit/75d3c521e4f1f0a1eec9bc91319839a2afc000e0)]:
+  - @keystone-next/keystone@9.3.1
+
 ## 11.1.2
 
 ### Patch Changes
