@@ -114,42 +114,40 @@ export function getAdminMetaSchema({
         resolve(rootVal, args) {
           return { fieldPath: rootVal.path, listKey: rootVal.listKey, itemId: args.id };
         },
-        type: types.nonNull(
-          types.object<FieldIdentifier & { itemId: string }>()({
-            name: 'KeystoneAdminUIFieldMetaItemView',
-            fields: {
-              fieldMode: types.field({
-                type: types.nonNull(
-                  types.enum({
-                    name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
-                    values: types.enumValues(['edit', 'read', 'hidden']),
-                  })
-                ),
-                async resolve(rootVal, args, context) {
-                  if ('isAdminUIBuildProcess' in context) {
-                    throw new Error(
-                      'KeystoneAdminUIFieldMetaItemView.fieldMode cannot be resolved during the build process'
-                    );
-                  }
-                  const item = await context
-                    .createContext({ skipAccessControl: true })
-                    .lists[rootVal.listKey].findOne({
-                      where: { id: rootVal.itemId },
-                      resolveFields: false,
-                    });
-                  const listConfig = config.lists[rootVal.listKey];
-                  const sessionFunction =
-                    listConfig.fields[rootVal.fieldPath].config.ui?.itemView?.fieldMode ??
-                    listConfig.ui?.itemView?.defaultFieldMode;
-                  return runMaybeFunction(sessionFunction, 'edit', {
-                    session: context.session,
-                    item,
+        type: types.object<FieldIdentifier & { itemId: string }>()({
+          name: 'KeystoneAdminUIFieldMetaItemView',
+          fields: {
+            fieldMode: types.field({
+              type: types.nonNull(
+                types.enum({
+                  name: 'KeystoneAdminUIFieldMetaItemViewFieldMode',
+                  values: types.enumValues(['edit', 'read', 'hidden']),
+                })
+              ),
+              async resolve(rootVal, args, context) {
+                if ('isAdminUIBuildProcess' in context) {
+                  throw new Error(
+                    'KeystoneAdminUIFieldMetaItemView.fieldMode cannot be resolved during the build process'
+                  );
+                }
+                const item = await context
+                  .createContext({ skipAccessControl: true })
+                  .lists[rootVal.listKey].findOne({
+                    where: { id: rootVal.itemId },
+                    resolveFields: false,
                   });
-                },
-              }),
-            },
-          })
-        ),
+                const listConfig = config.lists[rootVal.listKey];
+                const sessionFunction =
+                  listConfig.fields[rootVal.fieldPath].config.ui?.itemView?.fieldMode ??
+                  listConfig.ui?.itemView?.defaultFieldMode;
+                return runMaybeFunction(sessionFunction, 'edit', {
+                  session: context.session,
+                  item,
+                });
+              },
+            }),
+          },
+        }),
       }),
     },
   });
