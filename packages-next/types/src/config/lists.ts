@@ -204,7 +204,7 @@ export type MaybeItemFunction<T> =
 
 export type ListGraphQLConfig = {
   // was previously top-level cacheHint
-  cacheHint?: CacheHint;
+  // cacheHint?: CacheHint;
   /**
    * The description added to the GraphQL schema
    * @default listConfig.description
@@ -220,4 +220,4 @@ export type ListGraphQLConfig = {
   };
 };
 
-export type CacheHint = { scope: 'PRIVATE' | 'PUBLIC'; maxAge: number };
+// export type CacheHint = { scope: 'PRIVATE' | 'PUBLIC'; maxAge: number };
