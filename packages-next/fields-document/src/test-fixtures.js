@@ -12,9 +12,11 @@ export const supportsUnique = false;
 export const fieldName = 'content';
 export const subfieldName = 'document';
 
+export const fieldConfig = () => ({ ___validateAndNormalize: x => x });
+
 export const getTestFields = () => ({
   name: { type: Text },
-  content: { type },
+  content: { type, ___validateAndNormalize: x => x },
 });
 
 export const initItems = () => {

@@ -7,7 +7,6 @@ import {
   DocumentFeaturesForChildField,
   findChildPropPaths,
   getDocumentFeaturesForChildField,
-  VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP,
 } from './utils';
 import { DocumentFeatures } from '../../views';
 import {
@@ -102,12 +101,12 @@ function normalizeNodeWithinComponentProp(
   return didNormalization;
 }
 
-export function withComponentBlocks(
+export function withComponentBlocks<T extends ReactEditor>(
   blockComponents: Record<string, ComponentBlock | undefined>,
   editorDocumentFeatures: DocumentFeatures,
   relationships: Relationships,
-  editor: ReactEditor
-) {
+  editor: T
+): T {
   // note that conflicts between the editor document features
   // and the child field document features are dealt with elsewhere
   const memoizedGetDocumentFeaturesForChildField = weakMemoize(
@@ -187,9 +186,7 @@ export function withComponentBlocks(
     if (Element.isElement(node) || Editor.isEditor(node)) {
       if (
         node.type === 'component-inline-prop' &&
-        node.propPath &&
-        (node.propPath as any).length === 1 &&
-        (node.propPath as any)[0] === VOID_BUT_NOT_REALLY_COMPONENT_INLINE_PROP &&
+        !node.propPath &&
         (node.children.length !== 1 ||
           !Text.isText(node.children[0]) ||
           node.children[0].text !== '')
@@ -205,7 +202,7 @@ export function withComponentBlocks(
         if (componentBlock) {
           let missingKeys = new Map(
             findChildPropPaths(node.props as any, componentBlock.props).map(x => [
-              JSON.stringify(x.path),
+              JSON.stringify(x.path) as string | undefined,
               x.options.kind,
             ])
           );
@@ -218,7 +215,7 @@ export function withComponentBlocks(
               editor,
               [...missingKeys].map(([prop, kind]) => ({
                 type: `component-${kind}-prop`,
-                propPath: JSON.parse(prop),
+                propPath: prop ? JSON.parse(prop) : prop,
                 children: [{ text: '' }],
               })),
               { at: [...path, node.children.length] }

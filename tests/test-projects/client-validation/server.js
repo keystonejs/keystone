@@ -17,14 +17,14 @@ keystone
     // NOTE: This is only for test purposes and should not be used in production
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
-      await dropAllDatabases(keystone.adapters);
+      await keystone.adapter.dropDatabase();
       await seedData(initialData);
     }
 
     const app = express();
 
     app.get('/reset-db', async (req, res) => {
-      await dropAllDatabases(keystone.adapters);
+      await keystone.adapter.dropDatabase();
       await seedData(initialData);
       res.redirect('/admin');
     });
@@ -39,14 +39,6 @@ keystone
     console.error(error);
     process.exit(1);
   });
-
-/**
- * @param {object} list of all the keystone adapters passed in while configuring the app.
- * @returns {Promise[]} array of Promises for dropping the keystone databases.
- */
-function dropAllDatabases(adapters) {
-  return Promise.all(Object.values(adapters).map(adapter => adapter.dropDatabase()));
-}
 
 async function seedData(initialData) {
   return createItems({

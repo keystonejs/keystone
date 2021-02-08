@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 
 /** @jsx jsx */
 
-export default () => (
+const Header = () => (
   <header
     css={{
       display: 'flex',
@@ -18,3 +18,5 @@ export default () => (
     </Link>
   </header>
 );
+
+export default Header;

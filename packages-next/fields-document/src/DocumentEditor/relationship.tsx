@@ -2,7 +2,7 @@
 
 import { createContext, Fragment, useContext } from 'react';
 import { ReactEditor, RenderElementProps } from 'slate-react';
-import { Transforms } from 'slate';
+import { Transforms, Editor } from 'slate';
 
 import { jsx } from '@keystone-ui/core';
 import { useKeystone } from '@keystone-next/admin-ui/context';
@@ -18,9 +18,6 @@ export type Relationships = Record<
     listKey: string;
     /** GraphQL fields to select when querying the field */
     selection: string | null;
-    // TODO: remove the need for this
-    /** This must be identical to the labelField of the list specified in the listKey */
-    labelField: string;
   } & (
     | {
         kind: 'inline';
@@ -47,7 +44,7 @@ export function useDocumentFieldRelationships() {
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider;
 
-export function withRelationship(editor: ReactEditor) {
+export function withRelationship<T extends Editor>(editor: T): T {
   const { isVoid, isInline } = editor;
   editor.isVoid = element => {
     return element.type === 'relationship' || isVoid(element);
@@ -58,7 +55,7 @@ export function withRelationship(editor: ReactEditor) {
   return editor;
 }
 
-export function RelationshipButton() {
+export function RelationshipButton({ onClose }: { onClose: () => void }) {
   const {
     editor,
     relationships: { isDisabled },
@@ -72,12 +69,15 @@ export function RelationshipButton() {
           <ToolbarButton
             key={key}
             isDisabled={isDisabled}
-            onClick={() => {
+            onMouseDown={event => {
+              event.preventDefault();
               Transforms.insertNodes(editor, {
                 type: 'relationship',
                 relationship: key,
+                data: null,
                 children: [{ text: '' }],
               });
+              onClose();
             }}
           >
             {relationship.label}

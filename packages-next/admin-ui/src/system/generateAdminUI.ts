@@ -8,6 +8,7 @@ import { GraphQLSchema } from 'graphql';
 import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 import { AdminFileToWrite } from '@keystone-next/types';
 import { writeAdminFiles } from '../templates';
+import { serializePathForImport } from '../utils/serializePathForImport';
 
 export const formatSource = (src: string, parser: 'babel' | 'babel-ts' = 'babel') =>
   prettier.format(src, { parser, trailingComma: 'es5', singleQuote: true });
@@ -80,7 +81,7 @@ export const generateAdminUI = async (
     mode: 'write',
     outputPath: Path.join(outputDir, '__keystone_api_build.js'),
     src: `
-    export { default as config } from '${pathToConfig}'
+    export { default as config } from ${serializePathForImport(pathToConfig)}
     export default function (req, res) {
       return res.status(500)
     }`,
@@ -90,11 +91,13 @@ export const generateAdminUI = async (
   // Add files to pages/ which point to any files which exist in admin/pages
   const userPagesDir = Path.join(process.cwd(), 'admin', 'pages');
   const files = await fastGlob('**/*.{js,jsx,ts,tsx}', { cwd: userPagesDir });
+
   await Promise.all(
     files.map(async filename => {
       const outputFilename = Path.join(projectAdminPath, 'pages', filename);
       const path = Path.relative(Path.dirname(outputFilename), Path.join(userPagesDir, filename));
-      await fs.outputFile(outputFilename, `export { default } from "${path}"`);
+      const importPath = serializePathForImport(path);
+      await fs.outputFile(outputFilename, `export { default } from ${importPath}`);
     })
   );
 };

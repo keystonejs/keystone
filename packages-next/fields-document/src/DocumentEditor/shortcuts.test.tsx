@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /** @jsx jsx */
 import { shortcuts } from './shortcuts';
 import { jsx, makeEditor } from './tests/utils';

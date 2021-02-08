@@ -1,15 +1,17 @@
 import { Editor, Transforms, Range } from 'slate';
+import { HistoryEditor } from 'slate-history';
 import { ReactEditor } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
+import { insertDivider } from './divider';
 import { DocumentFeaturesForNormalization } from './document-features-normalization';
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
 
-export function withBlockMarkdownShortcuts(
+export function withBlockMarkdownShortcuts<T extends ReactEditor & HistoryEditor>(
   documentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
-  editor: ReactEditor
-) {
+  editor: T
+): T {
   const { insertText } = editor;
   const shortcuts: Record<
     string,
@@ -70,6 +72,17 @@ export function withBlockMarkdownShortcuts(
     },
     features => features.formatting.listTypes.unordered
   );
+  addShortcut(
+    '* ',
+    () => {
+      Transforms.wrapNodes(
+        editor,
+        { type: 'unordered-list', children: [] },
+        { match: n => Editor.isBlock(editor, n) }
+      );
+    },
+    features => features.formatting.listTypes.unordered
+  );
 
   documentFeatures.formatting.headingLevels.forEach(level => {
     addShortcut(
@@ -113,11 +126,7 @@ export function withBlockMarkdownShortcuts(
   addShortcut(
     '---',
     () => {
-      Transforms.insertNodes(
-        editor,
-        { type: 'divider', children: [{ text: '' }] },
-        { match: node => node.type === 'paragraph' }
-      );
+      insertDivider(editor);
     },
     features => features.dividers
   );
@@ -152,6 +161,8 @@ export function withBlockMarkdownShortcuts(
       ) {
         return;
       }
+      // so that this starts a new undo group
+      editor.history.undos.push([]);
       Transforms.select(editor, range);
       Transforms.delete(editor);
       shortcut.insert();

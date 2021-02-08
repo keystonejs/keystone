@@ -4,8 +4,8 @@ import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './createContext';
 import { createKeystone } from './createKeystone';
 
-export function createSystem(config: KeystoneConfig, dotKeystonePath: string) {
-  const keystone = createKeystone(config, dotKeystonePath);
+export function createSystem(config: KeystoneConfig, dotKeystonePath: string, script: string) {
+  const keystone = createKeystone(config, dotKeystonePath, script);
 
   const graphQLSchema = createGraphQLSchema(config, keystone);
 

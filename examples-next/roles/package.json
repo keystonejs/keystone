@@ -1,20 +1,20 @@
 {
   "name": "@keystone-next/example-roles",
-  "version": "0.0.9",
+  "version": "0.0.13",
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "keystone-next",
+    "dev": "keystone-next dev",
     "start": "keystone-next start",
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@keystone-next/admin-ui": "^8.0.0",
-    "@keystone-next/auth": "^11.0.0",
-    "@keystone-next/fields": "^4.1.0",
-    "@keystone-next/keystone": "^9.0.2",
-    "@keystone-next/types": "^11.0.0",
-    "next": "^9.5.5",
+    "@keystone-next/admin-ui": "^8.0.2",
+    "@keystone-next/auth": "^14.0.0",
+    "@keystone-next/fields": "^4.1.1",
+    "@keystone-next/keystone": "^9.3.1",
+    "@keystone-next/types": "^12.0.1",
+    "next": "10.0.5",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },

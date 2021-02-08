@@ -17,7 +17,7 @@ keystone
     // NOTE: This is only for test purposes and should not be used in production
     const users = await keystone.lists.User.adapter.findAll();
     if (!users.length) {
-      await Promise.all(Object.values(keystone.adapters).map(adapter => adapter.dropDatabase()));
+      await keystone.adapter.dropDatabase();
       const context = keystone.createContext({ schemaName: 'internal' });
       for (const [listKey, items] of Object.entries(initialData)) {
         await createItems({ keystone, listKey, items: items.map(x => ({ data: x })), context });
@@ -27,7 +27,7 @@ keystone
     const app = express();
 
     app.get('/reset-db', async (req, res) => {
-      await Promise.all(Object.values(keystone.adapters).map(adapter => adapter.dropDatabase()));
+      await keystone.adapter.dropDatabase();
       const context = keystone.createContext({ schemaName: 'internal' });
       for (const [listKey, items] of Object.entries(initialData)) {
         await createItems({ keystone, listKey, items: items.map(x => ({ data: x })), context });

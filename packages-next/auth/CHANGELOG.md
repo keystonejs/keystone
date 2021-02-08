@@ -1,5 +1,36 @@
 # @keystone-next/auth
 
+## 14.0.0
+
+### Patch Changes
+
+- [`314edec3d`](https://github.com/keystonejs/keystone/commit/314edec3d12f3bb56611f101edc3a78cba940605) [#4384](https://github.com/keystonejs/keystone/pull/4384) Thanks [@timleslie](https://github.com/timleslie)! - Added improved types to resolver functions.
+
+* [`5be53ddc3`](https://github.com/keystonejs/keystone/commit/5be53ddc39be1415d56e2fa5e7898ab9edf468d5) [#4762](https://github.com/keystonejs/keystone/pull/4762) Thanks [@timleslie](https://github.com/timleslie)! - Renamed the type `KeystoneAdminUIConfig` to `AdminUIConfig`.
+
+* Updated dependencies [[`1744c5f05`](https://github.com/keystonejs/keystone/commit/1744c5f05c9a13e680aaa1ed151f23f1d015ed9c), [`26543bd07`](https://github.com/keystonejs/keystone/commit/26543bd0752c470e336d61644c14e6a5333f65c0), [`d9675553b`](https://github.com/keystonejs/keystone/commit/d9675553b33f39e2c7ada7eb6555d16e9fccb37e), [`fd0dff3fd`](https://github.com/keystonejs/keystone/commit/fd0dff3fdfcbe20b2884357a6e1b20f1b7307652), [`5be53ddc3`](https://github.com/keystonejs/keystone/commit/5be53ddc39be1415d56e2fa5e7898ab9edf468d5), [`fb8bcff91`](https://github.com/keystonejs/keystone/commit/fb8bcff91ef487730164c3330e0742ab13d9b3d7), [`096927a68`](https://github.com/keystonejs/keystone/commit/096927a6813a23030988ba8b64b2e8452f571a33)]:
+  - @keystone-next/types@12.0.0
+  - @keystone-next/keystone@9.3.0
+  - @keystone-next/admin-ui@8.0.1
+  - @keystone-next/admin-ui-utils@2.0.8
+  - @keystone-next/fields@4.1.1
+
+## 13.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`94fbb45f1`](https://github.com/keystonejs/keystone/commit/94fbb45f1920781423f6a8e489e812b74a260099), [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9)]:
+  - @keystone-next/keystone@9.2.0
+  - @keystone-next/types@11.0.2
+
+## 12.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`fe0c228b1`](https://github.com/keystonejs/keystone/commit/fe0c228b12530f6d384fa5eed9d5086768a24782), [`a96c24cca`](https://github.com/keystonejs/keystone/commit/a96c24ccab8dadc9e8f0131fe6509abd64a776f5), [`ac3db9561`](https://github.com/keystonejs/keystone/commit/ac3db95613093de83e2369f624ce9b6c77bb8eda), [`f162a9d72`](https://github.com/keystonejs/keystone/commit/f162a9d72859ae7f2932bf0859c712861918b9e6)]:
+  - @keystone-next/keystone@9.1.0
+  - @keystone-next/types@11.0.1
+
 ## 11.0.0
 
 ### Patch Changes

@@ -4,7 +4,7 @@ import type { BaseGeneratedListTypes, GqlNames } from './utils';
 // TODO: This is only a partial typing of the core Keystone class.
 // We should definitely invest some time into making this more correct.
 export type BaseKeystone = {
-  adapters: Record<string, any>;
+  adapter: Record<string, any>;
   createList: (
     key: string,
     config: {
@@ -24,6 +24,7 @@ export type BaseKeystone = {
   getTypeDefs: (args: { schemaName: string }) => any;
   getResolvers: (args: { schemaName: string }) => any;
   queryLimits: { maxTotalResults: number };
+  _consolidateRelationships: () => Record<string, any>[];
 };
 
 // TODO: This needs to be reviewed and expanded

@@ -1,12 +1,11 @@
 import { Editor, Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
 
 export const paragraphElement = () => ({
   type: 'paragraph',
   children: [{ text: '' }],
 });
 
-export const withParagraphs = (editor: ReactEditor) => {
+export function withParagraphs<T extends Editor>(editor: T): T {
   const { normalizeNode } = editor;
 
   editor.normalizeNode = entry => {
@@ -26,4 +25,4 @@ export const withParagraphs = (editor: ReactEditor) => {
   };
 
   return editor;
-};
+}

@@ -9,7 +9,7 @@ import { gridSize, colors } from '../../theme';
 
 const onChange = handler => e => handler(e.target.value);
 
-export default ({ onSuccess, onClickForgot }) => {
+const SignIn = ({ onSuccess, onClickForgot }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -82,3 +82,5 @@ export default ({ onSuccess, onClickForgot }) => {
     </>
   );
 };
+
+export default SignIn;

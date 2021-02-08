@@ -1,5 +1,5 @@
 export * from './core';
-export * from './schema';
+export * from './config';
 export * from './utils';
 export * from './session';
 export * from './admin-meta';

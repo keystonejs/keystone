@@ -9,6 +9,7 @@ const { defaultObj, mapKeys, identity, flatten } = require('@keystonejs/utils');
 class PrismaAdapter extends BaseKeystoneAdapter {
   constructor() {
     super(...arguments);
+    this.listAdapterClass = PrismaListAdapter;
     this.name = 'prisma';
     this.provider = this.config.provider || 'postgresql';
     this.migrationMode = this.config.migrationMode || 'dev';
@@ -208,6 +209,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       generator client {
         provider = "prisma-client-js"
         output = "${clientDir}"
+        previewFeatures = ["nativeTypes"]
       }`;
     return await formatSchema({ schema: header + models.join('\n') + '\n' + enums.join('\n') });
   }
@@ -630,7 +632,5 @@ class PrismaFieldAdapter extends BaseFieldAdapter {
     };
   }
 }
-
-PrismaAdapter.defaultListAdapterClass = PrismaListAdapter;
 
 module.exports = { PrismaAdapter, PrismaListAdapter, PrismaFieldAdapter };

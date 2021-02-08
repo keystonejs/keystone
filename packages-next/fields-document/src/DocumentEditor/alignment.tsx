@@ -140,7 +140,7 @@ function TextAlignButton(props: {
       <ToolbarButton
         isDisabled={isDisabled}
         isPressed={props.showMenu}
-        onClick={event => {
+        onMouseDown={event => {
           event.preventDefault();
           props.onToggle();
         }}
