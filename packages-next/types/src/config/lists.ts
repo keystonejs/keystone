@@ -79,20 +79,22 @@ export type ListAdminUIConfig<
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
    * @default 'name' if it exists, otherwise 'id'
    */
-  labelField?: keyof Fields; // path of the field to use as the label for items in the list, defaults to 'name' or 'id'
+  labelField?: keyof Fields; // path of the field to use as the label for items in the list, defaults to 'label', 'name', 'title' or 'id'
+
+  /** The path that the list should be at in the Admin UI */
+  // Not currently used. Should be passed into `keystone.createList()`.
+  // path?: string;
+  /**
+   * The description shown on the list page
+   * @default listConfig.description
+   */
+  description?: string; // the description displayed below the field in the Admin UI
 
   /**
    * Excludes this list from the Admin UI
    * @default false
    */
   isHidden?: MaybeSessionFunction<boolean>;
-  /** The path that the list should be at in the Admin UI */
-  path?: string;
-  /**
-   * The description shown on the list page
-   * @default listConfig.description
-   */
-  description?: string; // the description displayed below the field in the Admin UI
   /**
    * Hides the create button in the Admin UI.
    * Note that this does **not** disable creating items through the GraphQL API, it only hides the button to create an item for this list in the Admin UI.
@@ -105,17 +107,6 @@ export type ListAdminUIConfig<
    * @default false
    */
   hideDelete?: MaybeSessionFunction<boolean>;
-  /**
-   * Configuration specific to the create view in the Admin UI
-   */
-  createView?: {
-    /**
-     * The default field mode for fields on the create view for this list.
-     * Specific field modes on a per-field basis via a field's config.
-     * @default 'edit'
-     */
-    defaultFieldMode?: MaybeSessionFunction<'edit' | 'hidden'>;
-  };
   /**
    * Configuration specific to the list view in the Admin UI
    */
@@ -138,6 +129,19 @@ export type ListAdminUIConfig<
     pageSize?: number; // default number of items to display per page on the list screen
     // note: we are removing maximumPageSize
   };
+
+  /**
+   * Configuration specific to the create view in the Admin UI
+   */
+  createView?: {
+    /**
+     * The default field mode for fields on the create view for this list.
+     * Specific field modes on a per-field basis via a field's config.
+     * @default 'edit'
+     */
+    defaultFieldMode?: MaybeSessionFunction<'edit' | 'hidden'>;
+  };
+
   /**
    * Configuration specific to the item view in the Admin UI
    */
