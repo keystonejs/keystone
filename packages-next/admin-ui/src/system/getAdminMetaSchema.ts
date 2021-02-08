@@ -53,8 +53,8 @@ let typeDefs = gql`
     label: String!
     isOrderable: Boolean!
     fieldMeta: JSON
-    viewsHash: String!
-    customViewsHash: String
+    viewsIndex: Int!
+    customViewsIndex: Int
     createView: KeystoneAdminUIFieldMetaCreateView!
     listView: KeystoneAdminUIFieldMetaListView!
     itemView(id: ID!): KeystoneAdminUIFieldMetaItemView

@@ -74,24 +74,24 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
       };
       list.fields.forEach(field => {
         expectedExports.forEach(exportName => {
-          if ((fieldViews[field.viewsHash] as any)[exportName] === undefined) {
+          if ((fieldViews[field.viewsIndex] as any)[exportName] === undefined) {
             throw new Error(
               `The view for the field at ${list.key}.${field.path} is missing the ${exportName} export`
             );
           }
         });
-        Object.keys(fieldViews[field.viewsHash]).forEach(exportName => {
+        Object.keys(fieldViews[field.viewsIndex]).forEach(exportName => {
           if (!expectedExports.has(exportName) && exportName !== 'allowedExportsOnCustomViews') {
             throw new Error(
               `Unexpected export named ${exportName} from the view from the field at ${list.key}.${field.path}`
             );
           }
         });
-        const views = fieldViews[field.viewsHash];
+        const views = fieldViews[field.viewsIndex];
         const customViews: Record<string, any> = {};
-        if (field.customViewsHash !== null) {
+        if (field.customViewsIndex !== null) {
           const customViewsSource: FieldViews[number] & Record<string, any> =
-            fieldViews[field.customViewsHash];
+            fieldViews[field.customViewsIndex];
           const allowedExportsOnCustomViews = new Set(views.allowedExportsOnCustomViews);
           Object.keys(customViewsSource).forEach(exportName => {
             if (allowedExportsOnCustomViews.has(exportName)) {
@@ -108,7 +108,7 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
         runtimeAdminMeta.lists[list.key].fields[field.path] = {
           ...field,
           views,
-          controller: fieldViews[field.viewsHash].controller({
+          controller: fieldViews[field.viewsIndex].controller({
             listKey: list.key,
             fieldMeta: field.fieldMeta,
             label: field.label,
