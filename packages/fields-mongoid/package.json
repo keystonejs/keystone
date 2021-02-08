@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@arch-ui/input": "^0.1.11",
-    "@babel/runtime": "^7.12.5",
+    "@babel/runtime": "^7.12.13",
     "@keystonejs/adapter-knex": "^13.0.0",
     "@keystonejs/adapter-mongoose": "^11.0.0",
     "@keystonejs/adapter-prisma": "^3.0.0",

@@ -9,7 +9,7 @@
     "build": "keystone-next build"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.5",
+    "@babel/runtime": "^7.12.13",
     "@emotion/core": "^10.1.1",
     "@graphql-tools/merge": "^6.2.7",
     "@keystone-next/admin-ui": "^8.0.2",
@@ -24,11 +24,11 @@
     "@keystone-ui/icons": "^1.0.0",
     "@keystone-ui/tooltip": "^1.0.6",
     "@preconstruct/next": "^2.0.0",
-    "@types/react": "^16.14.2",
+    "@types/react": "^16.14.3",
     "apollo-server-micro": "^2.19.2",
     "graphql": "^15.5.0",
     "graphql-tag": "^2.11.0",
-    "next": "10.0.5",
+    "next": "10.0.6",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },

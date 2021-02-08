@@ -7,7 +7,7 @@
     "dev": "next -p 8000"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.5",
+    "@babel/runtime": "^7.12.13",
     "@keystone-ui/button": "^2.0.1",
     "@keystone-ui/core": "^1.0.2",
     "@keystone-ui/fields": "^1.0.1",
@@ -19,17 +19,17 @@
     "@tailwindcss/typography": "^0.4.0",
     "@types/classnames": "^2.2.11",
     "@types/gtag.js": "^0.0.4",
-    "@types/react": "^16.14.2",
+    "@types/react": "^16.14.3",
     "@types/react-dom": "^16.9.10",
     "@types/webpack": "^4.41.26",
     "autoprefixer": "^10.2.4",
     "classnames": "^2.2.6",
-    "next": "10.0.5",
+    "next": "10.0.6",
     "next-compose-plugins": "^2.2.1",
-    "postcss": "^8.2.4",
+    "postcss": "^8.2.5",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "tailwindcss": "^2.0.2"
+    "tailwindcss": "^2.0.3"
   },
   "devDependencies": {
     "typescript": "^4.1.3"
