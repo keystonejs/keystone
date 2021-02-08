@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import fetch from 'cross-fetch';
 
-import { jsx, H1, Stack } from '@keystone-ui/core';
+import { jsx, H1, Stack, Inline } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Checkbox, TextInput } from '@keystone-ui/fields';
 import { useRawKeystone } from '@keystone-next/admin-ui/context';
@@ -37,12 +37,14 @@ const validEmail = (email: string) =>
     email
   );
 
-const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
+// const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
+const signupURL = 'http://localhost:3000/api/newsletter-signup';
 
 const Welcome = ({ value }: { value: any }) => {
   const [subscribe, setSubscribe] = useState<boolean>(true);
   const [email, setEmail] = useState<string>(guessEmailFromValue(value));
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -51,6 +53,7 @@ const Welcome = ({ value }: { value: any }) => {
     // and there's a valid email address.
     if (subscribe) {
       // Basic validation check on the email?
+      setLoading(true);
       if (validEmail(email)) {
         // if good add email to mailing list
         // and redirect to dashboard.
@@ -68,8 +71,11 @@ const Welcome = ({ value }: { value: any }) => {
           .then(() => {
             router.push((router.query.from as string | undefined) || '/');
           })
-          .catch(() => {});
+          .catch(() => {
+            // WHAT TO DO WITH CAUGHT ERRORS?
+          });
       } else {
+        setLoading(false);
         // if bad set error message
         setError('Email is invalid');
         return;
@@ -93,11 +99,18 @@ const Welcome = ({ value }: { value: any }) => {
             <p css={{ color: 'red' }}>{error}</p>
           </div>
         ) : null}
-        <div>
-          <Button type="submit" weight="bold" tone="active">
-            Get started
-          </Button>
-        </div>
+        {subscribe ? (
+          <Inline gap="small" align="center">
+            <Button isLoading={loading} type="submit" weight="bold" tone="active">
+              {subscribe ? 'Subscribe' : 'Get started'}
+            </Button>
+            {error && <a href={'/'}>Continue</a>}
+          </Inline>
+        ) : (
+          <Link href="/">
+            <Button as="a">Get Started</Button>
+          </Link>
+        )}
       </Stack>
     </form>
   );
