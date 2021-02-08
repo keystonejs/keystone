@@ -39,8 +39,8 @@ export function getAdminMetaSchema({
         type: types.nonNull(types.Boolean),
       }),
       fieldMeta: types.field({ type: jsonScalar }),
-      viewsHash: types.field({ type: types.nonNull(types.String) }),
-      customViewsHash: types.field({ type: types.String }),
+      viewsIndex: types.field({ type: types.nonNull(types.Int) }),
+      customViewsIndex: types.field({ type: types.Int }),
       createView: types.field({
         resolve(rootVal) {
           return { fieldPath: rootVal.path, listKey: rootVal.listKey };

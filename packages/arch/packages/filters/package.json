@@ -15,7 +15,7 @@
     "@arch-ui/controls": "^0.1.9",
     "@arch-ui/layout": "^0.2.14",
     "@arch-ui/theme": "^0.0.11",
-    "@babel/runtime": "^7.12.5",
+    "@babel/runtime": "^7.12.13",
     "@emotion/core": "^10.1.1",
     "react-radios": "^1.1.0"
   },

@@ -49,8 +49,8 @@ export type FieldMeta = {
   label: string;
   isOrderable: boolean;
   fieldMeta: JSONValue;
-  viewsHash: string;
-  customViewsHash: string | null;
+  viewsIndex: number;
+  customViewsIndex: number | null;
   views: FieldViews[number];
   controller: FieldController<unknown, JSONValue>;
 };
@@ -127,8 +127,8 @@ export type FieldMetaRootVal = {
   label: string;
   isOrderable: boolean;
   fieldMeta: JSONValue | null;
-  viewsHash: string;
-  customViewsHash: string | null;
+  viewsIndex: number;
+  customViewsIndex: number | null;
   listKey: string;
 };
 

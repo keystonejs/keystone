@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@arch-ui/theme": "0.0.11",
-    "@babel/runtime": "^7.12.5",
+    "@babel/runtime": "^7.12.13",
     "@emotion/core": "^10.1.1",
     "@emotion/styled": "^10.0.27"
   },
