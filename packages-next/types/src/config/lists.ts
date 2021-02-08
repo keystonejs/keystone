@@ -77,9 +77,9 @@ export type ListAdminUIConfig<
 > = {
   /**
    * The field to use as a label in the Admin UI. If you want to base the label off more than a single field, use a virtual field and reference that field here.
-   * @default 'name' if it exists, otherwise 'id'
+   * @default 'label', if it exists, falling back to 'name', then 'title', and finally 'id', which is guaranteed to exist.
    */
-  labelField?: keyof Fields; // path of the field to use as the label for items in the list, defaults to 'label', 'name', 'title' or 'id'
+  labelField?: keyof Fields;
 
   /** The path that the list should be at in the Admin UI */
   // Not currently used. Should be passed into `keystone.createList()`.
