@@ -14,6 +14,7 @@ import { SigninContainer } from '../components/SigninContainer';
 import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
 import { useReinitContext, useKeystone } from '@keystone-next/admin-ui/context';
 import { useRouter } from '@keystone-next/admin-ui/router';
+import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics';
 import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
 import {
   Fields,
@@ -21,24 +22,7 @@ import {
   useInvalidFields,
 } from '@keystone-next/admin-ui-utils';
 
-const emailKeysToGuess = ['email', 'username'];
-
-const guessEmailFromValue = (value: any) => {
-  for (const key of emailKeysToGuess) {
-    if (value[key] && typeof value[key].value === 'string') {
-      return value[key].value;
-    }
-  }
-};
-
-// email validation regex from https://html.spec.whatwg.org/multipage/input.html#email-state-(type=email)
-const validEmail = (email: string) =>
-  /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
-    email
-  );
-
-// const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
-const signupURL = 'http://localhost:3000/api/newsletter-signup';
+const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 
 const Welcome = ({ value }: { value: any }) => {
   const [subscribe, setSubscribe] = useState<boolean>(true);
@@ -85,35 +69,31 @@ const Welcome = ({ value }: { value: any }) => {
     return router.push((router.query.from as string | undefined) || '/');
   };
   return (
-    <form onSubmit={onSubmit}>
-      <Stack gap="medium">
-        <H1>Welcome to KeystoneJS</H1>
-        <div>Next up: star the project, follow us on twitter for updates</div>
-        <div>
-          <Checkbox checked={subscribe} onChange={() => setSubscribe(!subscribe)}>
-            sign up to our mailing list
-          </Checkbox>
-        </div>
-        {subscribe ? (
-          <div>
-            <TextInput autoFocus value={email} onChange={e => setEmail(e.target.value)} />
-            <p css={{ color: 'red' }}>{error}</p>
-          </div>
-        ) : null}
-        {subscribe ? (
+    <Stack gap="medium">
+      <H1>Welcome to KeystoneJS</H1>
+      <div>Next up: star the project, follow us on twitter for updates</div>
+      <div>
+        <Checkbox checked={subscribe} onChange={() => setSubscribe(!subscribe)}>
+          sign up to our mailing list
+        </Checkbox>
+      </div>
+      {subscribe ? (
+        <form onSubmit={onSubmit}>
+          <TextInput autoFocus value={email} onChange={e => setEmail(e.target.value)} />
+          <p css={{ color: 'red' }}>{error}</p>
           <Inline gap="small" align="center">
             <Button isLoading={loading} type="submit" weight="bold" tone="active">
               {subscribe ? 'Subscribe' : 'Get started'}
             </Button>
             {error && <a href={'/'}>Continue</a>}
           </Inline>
-        ) : (
-          <Link href="/">
-            <Button as="a">Get Started</Button>
-          </Link>
-        )}
-      </Stack>
-    </form>
+        </form>
+      ) : (
+        <Button type="button" weight="bold" tone="active" onClick={() => router.push('/')}>
+          Get Started
+        </Button>
+      )}
+    </Stack>
   );
 };
 
