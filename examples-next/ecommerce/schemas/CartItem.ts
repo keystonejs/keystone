@@ -1,7 +1,6 @@
-import { virtual, integer, relationship } from '@keystone-next/fields';
+import { integer, relationship } from '@keystone-next/fields';
 import { list } from '@keystone-next/keystone/schema';
-import { isSignedIn, rules } from '../access';
-import { ListsAPI } from '../types';
+import { rules, isSignedIn } from '../access';
 
 export const CartItem = list({
   access: {
@@ -10,28 +9,18 @@ export const CartItem = list({
     update: rules.canOrder,
     delete: rules.canOrder,
   },
+  ui: {
+    listView: {
+      initialColumns: ['product', 'quantity', 'user'],
+    },
+  },
   fields: {
-    label: virtual({
-      graphQLReturnType: 'String',
-      resolver: async (cartItem, args, ctx) => {
-        const lists: ListsAPI = ctx.lists;
-        if (!cartItem.product) {
-          return `🛒 ${cartItem.quantity} of (invalid product)`;
-        }
-        let product = await lists.Product.findOne({
-          where: { id: String(cartItem.product) },
-        });
-        if (product?.name) {
-          return `🛒 ${cartItem.quantity} of ${product.name}`;
-        }
-        return `🛒 ${cartItem.quantity} of (invalid product)`;
-      },
-    }),
+    // TODO: Custom Label in here
     quantity: integer({
       defaultValue: 1,
       isRequired: true,
     }),
-    product: relationship({ ref: 'Product' /* , isRequired: true */ }),
-    user: relationship({ ref: 'User.cart' /* , isRequired: true */ }),
+    product: relationship({ ref: 'Product' }),
+    user: relationship({ ref: 'User.cart' }),
   },
 });

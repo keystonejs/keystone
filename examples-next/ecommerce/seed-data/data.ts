@@ -1,7 +1,7 @@
 function timestamp() {
   // sometime in the last 30 days
-  const timestamp = Date.now() - Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 30);
-  return new Date(timestamp).toISOString();
+  const stampy = Date.now() - Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 30);
+  return new Date(stampy).toISOString();
 }
 
 export const products = [
