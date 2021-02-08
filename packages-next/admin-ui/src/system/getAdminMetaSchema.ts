@@ -1,4 +1,3 @@
-import { gql } from '../apollo';
 import { createAdminMeta } from './createAdminMeta';
 import {
   KeystoneContext,
@@ -9,88 +8,10 @@ import {
   FieldMetaRootVal,
   JSONValue,
 } from '@keystone-next/types';
-import { types } from '@ts-gql/schema';
+import { bindTypesToContext } from '@ts-gql/schema';
 import { GraphQLObjectType, GraphQLScalarType, GraphQLSchema } from 'graphql';
 
-let typeDefs = gql`
-  type Query {
-    keystone: KeystoneMeta!
-  }
-  type KeystoneMeta {
-    adminMeta: KeystoneAdminMeta!
-  }
-
-  type KeystoneAdminMeta {
-    enableSignout: Boolean!
-    enableSessionItem: Boolean!
-    lists: [KeystoneAdminUIListMeta!]!
-    list(key: String!): KeystoneAdminUIListMeta
-  }
-
-  type KeystoneAdminUIListMeta {
-    key: String!
-    itemQueryName: String!
-    listQueryName: String!
-    hideCreate: Boolean!
-    hideDelete: Boolean!
-    path: String!
-    label: String!
-    singular: String!
-    plural: String!
-    description: String
-    initialColumns: [String!]!
-    pageSize: Int!
-    labelField: String!
-    fields: [KeystoneAdminUIFieldMeta!]!
-    initialSort: KeystoneAdminUISort
-    isHidden: Boolean!
-  }
-
-  type KeystoneAdminUISort {
-    field: String!
-    direction: KeystoneAdminUISortDirection!
-  }
-
-  type KeystoneAdminUIFieldMeta {
-    path: String!
-    label: String!
-    isOrderable: Boolean!
-    fieldMeta: JSON
-    viewsHash: String!
-    customViewsHash: String
-    createView: KeystoneAdminUIFieldMetaCreateView!
-    listView: KeystoneAdminUIFieldMetaListView!
-    itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
-  }
-
-  type KeystoneAdminUIFieldMetaCreateView {
-    fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
-  }
-  type KeystoneAdminUIFieldMetaListView {
-    fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
-  }
-  type KeystoneAdminUIFieldMetaItemView {
-    fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
-  }
-
-  enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
-    edit
-    hidden
-  }
-  enum KeystoneAdminUIFieldMetaListViewFieldMode {
-    read
-    hidden
-  }
-  enum KeystoneAdminUIFieldMetaItemViewFieldMode {
-    edit
-    read
-    hidden
-  }
-  enum KeystoneAdminUISortDirection {
-    ASC
-    DESC
-  }
-`;
+const types = bindTypesToContext<KeystoneContext | { isAdminUIBuildProcess: true }>();
 
 export function getAdminMetaSchema({
   keystone,
@@ -107,7 +28,7 @@ export function getAdminMetaSchema({
     config.session === undefined
       ? undefined
       : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined);
-  const jsonScalar = types.custom<JSONValue>(schema.getType('JSON') as GraphQLScalarType);
+  const jsonScalar = types.scalar<JSONValue>(schema.getType('JSON') as GraphQLScalarType);
 
   const KeystoneAdminUIFieldMeta = types.object<FieldMetaRootVal>()({
     name: 'KeystoneAdminUIFieldMeta',
@@ -121,11 +42,11 @@ export function getAdminMetaSchema({
       viewsHash: types.field({ type: types.nonNull(types.String) }),
       customViewsHash: types.field({ type: types.String }),
       createView: types.field({
-        resolve() {
-          return { fieldMode: 'edit' };
+        resolve(rootVal) {
+          return { fieldPath: rootVal.path, listKey: rootVal.listKey };
         },
         type: types.nonNull(
-          types.object<{ fieldMode: 'edit' }>()({
+          types.object<FieldIdentifier>()({
             name: 'KeystoneAdminUIFieldMetaCreateView',
             fields: {
               fieldMode: types.field({
@@ -135,12 +56,17 @@ export function getAdminMetaSchema({
                     values: types.enumValues(['edit', 'hidden']),
                   })
                 ),
-                async resolve() {
+                async resolve(rootVal, args, context) {
+                  if ('isAdminUIBuildProcess' in context) {
+                    throw new Error(
+                      'KeystoneAdminUIFieldMetaCreateView.fieldMode cannot be resolved during the build process'
+                    );
+                  }
                   const listConfig = config.lists[rootVal.listKey];
                   const sessionFunction =
                     listConfig.fields[rootVal.fieldPath].config.ui?.createView?.fieldMode ??
                     listConfig.ui?.createView?.defaultFieldMode;
-                  return runMaybeFunction(sessionFunction, 'edit', { session });
+                  return runMaybeFunction(sessionFunction, 'edit', { session: context.session });
                 },
               }),
             },
@@ -148,11 +74,11 @@ export function getAdminMetaSchema({
         ),
       }),
       listView: types.field({
-        resolve() {
-          return { fieldMode: 'read' };
+        resolve(rootVal) {
+          return { fieldPath: rootVal.path, listKey: rootVal.listKey };
         },
         type: types.nonNull(
-          types.object<{ fieldMode: 'read' }>()({
+          types.object<FieldIdentifier>()({
             name: 'KeystoneAdminUIFieldMetaListView',
             fields: {
               fieldMode: types.field({
@@ -162,12 +88,17 @@ export function getAdminMetaSchema({
                     values: types.enumValues(['read', 'hidden']),
                   })
                 ),
-                async resolve() {
+                async resolve(rootVal, args, context) {
+                  if ('isAdminUIBuildProcess' in context) {
+                    throw new Error(
+                      'KeystoneAdminUIFieldMetaListView.fieldMode cannot be resolved during the build process'
+                    );
+                  }
                   const listConfig = config.lists[rootVal.listKey];
                   const sessionFunction =
                     listConfig.fields[rootVal.fieldPath].config.ui?.listView?.fieldMode ??
                     listConfig.ui?.listView?.defaultFieldMode;
-                  return runMaybeFunction(sessionFunction, 'read', { session });
+                  return runMaybeFunction(sessionFunction, 'read', { session: context.session });
                 },
               }),
             },
@@ -180,11 +111,11 @@ export function getAdminMetaSchema({
             type: types.nonNull(types.ID),
           }),
         },
-        resolve() {
-          return { fieldMode: 'edit' };
+        resolve(rootVal, args) {
+          return { fieldPath: rootVal.path, listKey: rootVal.listKey, itemId: args.id };
         },
         type: types.nonNull(
-          types.object<{ fieldMode: 'edit' }>()({
+          types.object<FieldIdentifier & { itemId: string }>()({
             name: 'KeystoneAdminUIFieldMetaItemView',
             fields: {
               fieldMode: types.field({
@@ -194,7 +125,12 @@ export function getAdminMetaSchema({
                     values: types.enumValues(['edit', 'read', 'hidden']),
                   })
                 ),
-                async resolve() {
+                async resolve(rootVal, args, context) {
+                  if ('isAdminUIBuildProcess' in context) {
+                    throw new Error(
+                      'KeystoneAdminUIFieldMetaItemView.fieldMode cannot be resolved during the build process'
+                    );
+                  }
                   const item = await context
                     .createContext({ skipAccessControl: true })
                     .lists[rootVal.listKey].findOne({
@@ -245,14 +181,26 @@ export function getAdminMetaSchema({
       }),
       hideCreate: types.field({
         type: types.nonNull(types.Boolean),
-        resolve() {
-          return false;
+        resolve(rootVal, args, context) {
+          if ('isAdminUIBuildProcess' in context) {
+            throw new Error(
+              'KeystoneAdminUIListMeta.hideCreate cannot be resolved during the build process'
+            );
+          }
+          const listConfig = config.lists[rootVal.key];
+          return runMaybeFunction(listConfig.ui?.hideCreate, false, { session: context.session });
         },
       }),
       hideDelete: types.field({
         type: types.nonNull(types.Boolean),
-        resolve() {
-          return false;
+        resolve(rootVal, args, context) {
+          if ('isAdminUIBuildProcess' in context) {
+            throw new Error(
+              'KeystoneAdminUIListMeta.hideDelete cannot be resolved during the build process'
+            );
+          }
+          const listConfig = config.lists[rootVal.key];
+          return runMaybeFunction(listConfig.ui?.hideDelete, false, { session: context.session });
         },
       }),
       path: types.field({ type: types.nonNull(types.String) }),
@@ -271,8 +219,14 @@ export function getAdminMetaSchema({
       initialSort: types.field({ type: KeystoneAdminUISort }),
       isHidden: types.field({
         type: types.nonNull(types.Boolean),
-        resolve() {
-          return false;
+        resolve(rootVal, args, context) {
+          if ('isAdminUIBuildProcess' in context) {
+            throw new Error(
+              'KeystoneAdminUIListMeta.isHidden cannot be resolved during the build process'
+            );
+          }
+          const listConfig = config.lists[rootVal.key];
+          return runMaybeFunction(listConfig.ui?.isHidden, false, { session: context.session });
         },
       }),
     },
@@ -310,7 +264,7 @@ export function getAdminMetaSchema({
       fields: {
         adminMeta: types.field({
           type: types.nonNull(adminMeta),
-          resolve() {
+          resolve(rootVal, args, context) {
             if ('isAdminUIBuildProcess' in context || isAccessAllowed === undefined) {
               return adminMetaRoot;
             }
@@ -327,9 +281,11 @@ export function getAdminMetaSchema({
       },
     })
   );
+  const schemaConfig = schema.toConfig();
   const queryTypeConfig = schema.getQueryType()!.toConfig();
   return new GraphQLSchema({
-    ...schema.toConfig(),
+    ...schemaConfig,
+    types: schemaConfig.types.filter(x => x.name !== 'Query'),
     query: new GraphQLObjectType({
       ...queryTypeConfig,
       fields: () => ({

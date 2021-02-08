@@ -62,6 +62,6 @@ export function createGraphQLSchema(config: KeystoneConfig, keystone: BaseKeysto
   }
 
   // Merge in the admin-meta graphQL API
-  graphQLSchema = getAdminMetaSchema({ keystone, config, graphQLSchema });
+  graphQLSchema = getAdminMetaSchema({ keystone, config, schema: graphQLSchema });
   return graphQLSchema;
 }
