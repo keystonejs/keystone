@@ -13,7 +13,7 @@ import type {
   FieldConfig,
   MaybeSessionFunction,
   MaybeItemFunction,
-  CacheHint,
+  // CacheHint,
 } from './lists';
 
 import type { KeystoneContext } from '..';
@@ -42,7 +42,7 @@ export type {
   FieldConfig,
   MaybeSessionFunction,
   MaybeItemFunction,
-  CacheHint,
+  // CacheHint,
 };
 
 // config.db

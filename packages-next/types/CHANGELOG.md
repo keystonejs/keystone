@@ -1,5 +1,15 @@
 # @keystone-next/types
 
+## 12.0.1
+
+### Patch Changes
+
+- [`6ecd2a766`](https://github.com/keystonejs/keystone/commit/6ecd2a766c868d46f84291bc1611eadef79e6100) [#4772](https://github.com/keystonejs/keystone/pull/4772) Thanks [@timleslie](https://github.com/timleslie)! - Removed `config.db.dropDatabase` for `prisma_postgresql` and `config.db.knexOptions` for `knex` as they were unused.
+
+* [`777981069`](https://github.com/keystonejs/keystone/commit/7779810691c4154e1344ced4fb94c5bb9524a71f) [#4765](https://github.com/keystonejs/keystone/pull/4765) Thanks [@timleslie](https://github.com/timleslie)! - Reorganised package internals to allow for easier documentation.
+
+- [`4d808eaa5`](https://github.com/keystonejs/keystone/commit/4d808eaa5aa1593ad1e54000d80f674f7c4d12bd) [#4766](https://github.com/keystonejs/keystone/pull/4766) Thanks [@timleslie](https://github.com/timleslie)! - Removed `config.db.provider` option, which did not have any meaningful, viable value.
+
 ## 12.0.0
 
 ### Major Changes

@@ -8,6 +8,7 @@ import { GraphQLSchema } from 'graphql';
 import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 import { AdminFileToWrite } from '@keystone-next/types';
 import { writeAdminFiles } from '../templates';
+import { serializePathForImport } from '../utils/serializePathForImport';
 
 export const formatSource = (src: string, parser: 'babel' | 'babel-ts' = 'babel') =>
   prettier.format(src, { parser, trailingComma: 'es5', singleQuote: true });
@@ -80,7 +81,7 @@ export const generateAdminUI = async (
     mode: 'write',
     outputPath: Path.join(outputDir, '__keystone_api_build.js'),
     src: `
-    export { default as config } from '${pathToConfig}'
+    export { default as config } from ${serializePathForImport(pathToConfig)}
     export default function (req, res) {
       return res.status(500)
     }`,
@@ -95,9 +96,8 @@ export const generateAdminUI = async (
     files.map(async filename => {
       const outputFilename = Path.join(projectAdminPath, 'pages', filename);
       const path = Path.relative(Path.dirname(outputFilename), Path.join(userPagesDir, filename));
-      // Convert filesystem path separator to the `/` expected in JS imports
-      const importPath = path.replace(new RegExp(`\\${Path.sep}`, 'g'), '/');
-      await fs.outputFile(outputFilename, `export { default } from "${importPath}"`);
+      const importPath = serializePathForImport(path);
+      await fs.outputFile(outputFilename, `export { default } from ${importPath}`);
     })
   );
 };
