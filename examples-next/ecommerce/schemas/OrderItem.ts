@@ -1,29 +1,32 @@
-import { text, relationship, integer } from '@keystone-next/fields';
+import { integer, text, relationship } from '@keystone-next/fields';
 import { list } from '@keystone-next/keystone/schema';
-import { rules } from '../access';
+import { isSignedIn, rules } from '../access';
 
 export const OrderItem = list({
   access: {
-    create: () => false,
-    read: rules.canOrder,
+    create: isSignedIn,
+    read: rules.canManageOrderItems,
     update: () => false,
     delete: () => false,
   },
-  ui: {
-    hideCreate: true,
-    hideDelete: true,
-    listView: { initialColumns: ['name', 'price', 'quantity'] },
-  },
   fields: {
     name: text({ isRequired: true }),
-    order: relationship({ ref: 'Order.items' }),
-    user: relationship({ ref: 'User' }),
-    description: text({ ui: { displayMode: 'textarea' } }),
-    price: integer(),
-    quantity: integer({ isRequired: true }),
-    image: relationship({
-      ref: 'ProductImage',
-      ui: { displayMode: 'cards', cardFields: ['image'] },
+    description: text({
+      ui: {
+        displayMode: 'textarea',
+      },
     }),
+    photo: relationship({
+      ref: 'ProductImage',
+      ui: {
+        displayMode: 'cards',
+        cardFields: ['image', 'altText'],
+        inlineCreate: { fields: ['image', 'altText'] },
+        inlineEdit: { fields: ['image', 'altText'] },
+      },
+    }),
+    price: integer(),
+    quantity: integer(),
+    order: relationship({ ref: 'Order.items' }),
   },
 });
