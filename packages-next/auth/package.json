@@ -17,6 +17,7 @@
     "@keystone-ui/core": "^1.0.4",
     "@keystone-ui/fields": "^1.1.0",
     "@keystone-ui/notice": "^1.0.1",
+    "cross-fetch": "^3.0.6",
     "fast-deep-equal": "^3.1.3",
     "graphql": "^15.4.0"
   },
