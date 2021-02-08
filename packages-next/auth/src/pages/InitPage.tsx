@@ -71,8 +71,9 @@ const Welcome = ({ value }: { value: any }) => {
           .then(() => {
             router.push((router.query.from as string | undefined) || '/');
           })
-          .catch(() => {
+          .catch(err => {
             // WHAT TO DO WITH CAUGHT ERRORS?
+            setError(err);
           });
       } else {
         setLoading(false);
