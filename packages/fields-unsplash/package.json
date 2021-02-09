@@ -25,11 +25,11 @@
     "unsplash-js": "^6.3.0"
   },
   "peerDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "devDependencies": {
     "dotenv": "^8.2.0",
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "main": "dist/fields-unsplash.cjs.js",
   "module": "dist/fields-unsplash.esm.js",

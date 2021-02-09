@@ -29,8 +29,8 @@
     "@reach/router": "^1.3.4",
     "clipboard-copy": "^4.0.1",
     "gatsby": "2.13.25",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0"
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "scripts": {
     "start": "gatsby develop",

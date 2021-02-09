@@ -14,7 +14,7 @@
     "@keystone-ui/popover": "^1.1.1",
     "@types/react-select": "^3.1.2",
     "date-fns": "^2.16.1",
-    "react": "^16.14.0",
+    "react": "^17.0.1",
     "react-day-picker": "npm:react-day-picker@^7.4.8",
     "react-focus-lock": "^2.5.0",
     "react-select": "^3.2.0"
