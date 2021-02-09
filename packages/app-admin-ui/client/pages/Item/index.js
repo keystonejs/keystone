@@ -55,6 +55,30 @@ const getCurrentValues = memoizeOne(getValues);
 
 const deserializeItem = memoizeOne((list, data) => list.deserializeItemData(data));
 
+const getFieldGroups = memoizeOne(list => {
+  const fieldGroups = list.fieldGroups || [];
+  if(fieldGroups.length) {
+    return fieldGroups.map(({ label, fields }) => {
+      const fieldsToRender = fields.map((fieldName) => {
+        const field = list.fields.find((field) => field.path === fieldName);
+        if(!field) {
+          throw new Error(`Field ${fieldName} not found`);
+        }
+        return field;
+      });
+      return {
+        label,
+        fields: fieldsToRender
+      };
+    });
+  }
+  return [
+    {
+      fields: getRenderableFields(list)
+    }
+  ];
+});
+
 const getRenderableFields = memoizeOne(list =>
   list.fields.filter(({ isPrimaryKey }) => !isPrimaryKey)
 );
@@ -76,6 +100,8 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
     onError: error => handleCreateUpdateMutationError({ error, addToast }),
   });
 
+  const fieldGroups = getFieldGroups(list);
+  console.log(fieldGroups);
   const getFieldsObject = memoizeOne(() =>
     arrayToObject(
       // NOTE: We _exclude_ read only fields
@@ -243,71 +269,76 @@ const ItemDetails = ({ list, item: initialData, itemErrors, onUpdate }) => {
       <Card css={{ marginBottom: '3em', paddingBottom: 0 }}>
         <Form>
           <AutocompleteCaptor />
-          {getRenderableFields(list).map((field, i) => (
-            <Render key={field.path}>
-              {() => {
-                const [Field] = field.readViews([field.views.Field]);
-                const isReadOnly = checkIsReadOnly(field) || !list.access.update;
-                // eslint-disable-next-line react-hooks/rules-of-hooks
-                const onChange = useCallback(
-                  value => {
-                    setItem(oldItem => {
-                      // Don't flag things as changed if they're not actually changed
-                      if (oldItem[field.path] === value) {
-                        return oldItem;
-                      }
+          {fieldGroups.map(({ label, fields }) => (
+            <div>
+              {label && (<h3>{label}</h3>)}
+              {fields.map((field, i) => (
+              <Render key={field.path}>
+                {() => {
+                  const [Field] = field.readViews([field.views.Field]);
+                  const isReadOnly = checkIsReadOnly(field) || !list.access.update;
+                  // eslint-disable-next-line react-hooks/rules-of-hooks
+                  const onChange = useCallback(
+                    value => {
+                      setItem(oldItem => {
+                        // Don't flag things as changed if they're not actually changed
+                        if (oldItem[field.path] === value) {
+                          return oldItem;
+                        }
 
-                      setValidationErrors({});
-                      setValidationWarnings({});
+                        setValidationErrors({});
+                        setValidationWarnings({});
 
-                      itemHasChanged.current = true;
+                        itemHasChanged.current = true;
 
-                      return {
-                        ...oldItem,
-                        [field.path]: value,
-                      };
-                    });
-                  },
-                  [field]
-                );
-                // eslint-disable-next-line react-hooks/rules-of-hooks
-                return useMemo(
-                  () => (
-                    <ErrorBoundary>
-                      <Field
-                        autoFocus={!i}
-                        field={field}
-                        list={list}
-                        item={item}
-                        isDisabled={isReadOnly}
-                        errors={[
-                          ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
-                          ...(validationErrors[field.path] || []),
-                        ]}
-                        warnings={validationWarnings[field.path] || []}
-                        value={item[field.path]}
-                        savedValue={initialData[field.path]}
-                        onChange={onChange}
-                        renderContext="page"
-                      />
-                    </ErrorBoundary>
-                  ),
-                  [
-                    i,
-                    field,
-                    list,
-                    itemErrors[field.path],
-                    item[field.path],
-                    item.id,
-                    validationErrors[field.path],
-                    validationWarnings[field.path],
-                    initialData[field.path],
-                    onChange,
-                    isReadOnly,
-                  ]
-                );
-              }}
-            </Render>
+                        return {
+                          ...oldItem,
+                          [field.path]: value,
+                        };
+                      });
+                    },
+                    [field]
+                  );
+                  // eslint-disable-next-line react-hooks/rules-of-hooks
+                  return useMemo(
+                    () => (
+                      <ErrorBoundary>
+                        <Field
+                          autoFocus={!i}
+                          field={field}
+                          list={list}
+                          item={item}
+                          isDisabled={isReadOnly}
+                          errors={[
+                            ...(itemErrors[field.path] ? [itemErrors[field.path]] : []),
+                            ...(validationErrors[field.path] || []),
+                          ]}
+                          warnings={validationWarnings[field.path] || []}
+                          value={item[field.path]}
+                          savedValue={initialData[field.path]}
+                          onChange={onChange}
+                          renderContext="page"
+                        />
+                      </ErrorBoundary>
+                    ),
+                    [
+                      i,
+                      field,
+                      list,
+                      itemErrors[field.path],
+                      item[field.path],
+                      item.id,
+                      validationErrors[field.path],
+                      validationWarnings[field.path],
+                      initialData[field.path],
+                      onChange,
+                      isReadOnly,
+                    ]
+                  );
+                }}
+              </Render>
+            ))}
+            </div>
           ))}
         </Form>
         <Footer

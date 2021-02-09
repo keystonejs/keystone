@@ -67,9 +67,9 @@ export const AdminMetaProvider = ({ children }) => {
   readViews([...viewsToLoad]);
 
   Object.entries(lists || {}).forEach(
-    ([key, { access, adminConfig, adminDoc, fields, gqlNames, label, path, plural, singular }]) => {
+    ([key, { access, adminConfig, adminDoc, fields, gqlNames, label, path, plural, singular, fieldGroups }]) => {
       const list = new List(
-        { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular },
+        { access, adminConfig, adminDoc, fields, gqlNames, key, label, path, plural, singular, fieldGroups },
         { readViews, preloadViews, getListByKey, apiPath, adminPath },
         views[key]
       );
