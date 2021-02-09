@@ -6,6 +6,7 @@ import { Relationships } from './DocumentEditor/relationship';
 import {
   ElementFromValidation,
   isRelationshipData,
+  TextWithMarks,
   validateDocumentStructure,
 } from './structure-validation';
 import { DocumentFeatures } from './views';
@@ -132,6 +133,10 @@ function validateComponentBlockProps(
   assertNever(prop);
 }
 
+function isText(node: ElementFromValidation): node is TextWithMarks {
+  return Text.isText(node);
+}
+
 // note that the errors thrown from here will only be exposed
 // as internal server error from the graphql api in prod
 // this is fine because these cases are pretty much all about
@@ -141,7 +146,7 @@ export function getValidatedNodeWithNormalizedComponentFormProps(
   componentBlocks: Record<string, ComponentBlock>,
   relationships: Relationships
 ): ElementFromValidation {
-  if (Text.isText(node)) {
+  if (isText(node)) {
     return node;
   }
   if (node.type === 'component-block') {
@@ -172,7 +177,7 @@ export function getValidatedNodeWithNormalizedComponentFormProps(
   }
   return {
     ...node,
-    children: (node.children as any).map((x: ElementFromValidation) =>
+    children: node.children.map(x =>
       getValidatedNodeWithNormalizedComponentFormProps(x, componentBlocks, relationships)
     ),
   };

@@ -22,11 +22,13 @@ const text: t.Type<TextWithMarks> = excess(
     insertMenu: markValue,
   })
 );
-type TextWithMarks = { text: string } & { [Key in Mark | 'insertMenu']: true | undefined };
+export type TextWithMarks = { type?: never; text: string } & {
+  [Key in Mark | 'insertMenu']: true | undefined;
+};
 
 type Inline = TextWithMarks | Link | Relationship;
 
-type Link = { type: 'link'; href: string; children: Inline[] };
+type Link = { type: 'link'; href: string; children: Children };
 
 class URLType extends t.Type<string> {
   readonly _tag: 'URLType' = 'URLType';
@@ -47,7 +49,7 @@ const link: t.Type<Link> = t.recursion('Link', () =>
     t.type({
       type: t.literal('link'),
       href: urlType,
-      children: inlineChildren,
+      children,
     })
   )
 );
@@ -56,7 +58,7 @@ type Relationship = {
   type: 'relationship';
   relationship: string;
   data: RelationshipData | null;
-  children: [{ text: '' }];
+  children: Children;
 };
 
 const relationship: t.Type<Relationship> = t.recursion('Relationship', () =>
@@ -65,14 +67,12 @@ const relationship: t.Type<Relationship> = t.recursion('Relationship', () =>
       type: t.literal('relationship'),
       relationship: t.string,
       data: t.union([t.null, relationshipData]),
-      children: t.tuple([excess(t.type({ text: t.literal('') }))]),
+      children,
     })
   )
 );
 
 const inline = t.union([text, link, relationship]);
-
-const inlineChildren = t.array(inline);
 
 type Children = (Block | Inline)[];
 
