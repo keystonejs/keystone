@@ -5,7 +5,7 @@ title: Using Keystone with Prisma
 
 # Using Keystone with Prisma
 
-> **Warning:** The Prisma adapter uses Prisma Migrate, which is currently [considered experimental](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate). We do not recommend using the Prisma adapter for production systems yet.
+> **Warning:** The Prisma adapter uses Prisma Migrate, which is currently in [preview](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-migrate). We do not recommend using the Prisma adapter for production systems yet.
 
 In this guide we'll walk you through the steps to create a new project using Keystone and [Prisma](https://github.com/prisma/prisma), automatically run a migration when changing your Keystone schema, and use Prisma Client directly in a custom query.
 

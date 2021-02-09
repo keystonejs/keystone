@@ -37,7 +37,7 @@
     "io-ts": "^2.2.14",
     "io-ts-excess": "^1.0.1",
     "is-hotkey": "^0.2.0",
-    "match-sorter": "^6.1.0",
+    "match-sorter": "^6.2.0",
     "mdast-util-definitions": "^4.0.0",
     "mdast-util-from-markdown": "^0.8.5",
     "mdast-util-gfm-autolink-literal": "^0.1.3",
