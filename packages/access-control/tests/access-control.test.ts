@@ -5,7 +5,7 @@ import {
   validateListAccessControl,
   validateFieldAccessControl,
   validateAuthAccessControl,
-} from '../';
+} from '../src';
 
 const internalAccess = {
   create: true,
@@ -17,6 +17,7 @@ const internalAccess = {
 
 describe('Access control package tests', () => {
   describe('parseListAccess', () => {
+    const listKey = 'key';
     const statics = [true, false]; // type StaticAccess = boolean;
     const imperatives = [() => true, () => false]; // type ImperativeAccess = AccessInput => boolean;
     const where = { name: 'foo' }; // GraphQLWhere
@@ -26,7 +27,7 @@ describe('Access control package tests', () => {
 
     test('StaticAccess | ImperativeAccess are valid defaults', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
-        expect(parseListAccess({ defaultAccess, schemaNames })).toEqual({
+        expect(parseListAccess({ listKey, defaultAccess, schemaNames })).toEqual({
           internal: internalAccess,
           public: {
             create: defaultAccess,
@@ -41,14 +42,15 @@ describe('Access control package tests', () => {
 
     test('Non-function declaratives and other misc values are not value inputs for defaultAccess', () => {
       [{ read: where }, 10].forEach(defaultAccess => {
-        expect(() => parseListAccess({ defaultAccess, schemaNames })).toThrow(Error);
+        // @ts-ignore
+        expect(() => parseListAccess({ listKey, defaultAccess, schemaNames })).toThrow(Error);
       });
     });
 
     test('StaticAccess | ImperativeAccess are valid access modes, and should override the defaults', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         [...statics, ...imperatives].forEach(access => {
-          expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
+          expect(parseListAccess({ listKey, defaultAccess, access, schemaNames })).toEqual({
             internal: internalAccess,
             public: {
               create: access,
@@ -68,7 +70,7 @@ describe('Access control package tests', () => {
         ['read', 'update', 'delete', 'auth'].forEach(operation => {
           [...statics, ...imperatives, ...declaratives].forEach(opAccess => {
             const access = { [operation]: opAccess };
-            expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
+            expect(parseListAccess({ listKey, defaultAccess, access, schemaNames })).toEqual({
               internal: internalAccess,
               public: {
                 create: defaultAccess,
@@ -84,9 +86,9 @@ describe('Access control package tests', () => {
         });
 
         // Misc values are not valid per-operation access modes
-        expect(() => parseListAccess({ defaultAccess, access: { read: 10 }, schemaNames })).toThrow(
-          Error
-        );
+        expect(() =>
+          parseListAccess({ listKey, defaultAccess, access: { read: 10 }, schemaNames })
+        ).toThrow(Error);
       });
     });
 
@@ -94,7 +96,7 @@ describe('Access control package tests', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         [...statics, ...imperatives].forEach(opAccess => {
           const access = { create: opAccess };
-          expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
+          expect(parseListAccess({ listKey, defaultAccess, access, schemaNames })).toEqual({
             internal: internalAccess,
             public: {
               create: opAccess,
@@ -109,33 +111,46 @@ describe('Access control package tests', () => {
         // DeclarativeAccess | Misc values are not valid per-operation access modes (create)
         [where, 10].forEach(opAccess => {
           expect(() =>
-            parseListAccess({ defaultAccess, access: { create: opAccess }, schemaNames })
+            parseListAccess({ listKey, defaultAccess, access: { create: opAccess }, schemaNames })
           ).toThrow(Error);
         });
       });
     });
 
     test('access as an object with bad fields or bad type', () => {
-      expect(() => parseListAccess({ access: { a: 1 }, schemaNames })).toThrow(Error);
-      expect(() => parseListAccess({ access: 10, schemaNames })).toThrow(Error);
+      // @ts-ignore
+      expect(() => parseListAccess({ listKey, access: { a: 1 }, schemaNames })).toThrow(Error);
+      // @ts-ignore
+      expect(() => parseListAccess({ listKey, access: 10, schemaNames })).toThrow(Error);
     });
 
     test('Schema names which match access types should throw', () => {
-      expect(() => parseListAccess({ access: true, schemaNames: ['public', 'read'] })).toThrow(
-        Error
-      );
+      expect(() =>
+        parseListAccess({
+          listKey,
+          defaultAccess: true,
+          access: true,
+          schemaNames: ['public', 'read'],
+        })
+      ).toThrow(Error);
     });
+
     test('creating a `internal` schema should throw', () => {
-      expect(() => parseListAccess({ access: true, schemaNames: ['public', 'internal'] })).toThrow(
-        Error
-      );
+      expect(() =>
+        parseListAccess({
+          listKey,
+          defaultAccess: true,
+          access: true,
+          schemaNames: ['public', 'internal'],
+        })
+      ).toThrow(Error);
     });
 
     test('Schema names matching the access keys', () => {
       const schemaNames = ['public', 'private'];
       const access = { public: true };
       const defaultAccess = false;
-      expect(parseListAccess({ defaultAccess, access, schemaNames })).toEqual({
+      expect(parseListAccess({ listKey, defaultAccess, access, schemaNames })).toEqual({
         internal: internalAccess,
         public: { create: true, read: true, update: true, delete: true, auth: true },
         private: { create: false, read: false, update: false, delete: false, auth: false },
@@ -146,51 +161,49 @@ describe('Access control package tests', () => {
       const schemaNames = ['public', 'private'];
       const access = { public: true, missing: false };
       const defaultAccess = false;
-      expect(() => parseListAccess({ defaultAccess, access, schemaNames })).toThrow(Error);
+      expect(() => parseListAccess({ listKey, defaultAccess, access, schemaNames })).toThrow(Error);
     });
   });
 
   describe('parseFieldAccess', () => {
     const statics = [true, false]; // type StaticAccess = boolean;
-    const imperatives = [() => true, () => false]; // type ImperativeAccess = AccessInput => boolean;
+    const imperatives = [async () => true, async () => false]; // type ImperativeAccess = AccessInput => boolean;
     const schemaNames = ['public'];
 
     test('StaticAccess | ImperativeAccess are valid defaults', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
-        expect(parseFieldAccess({ defaultAccess, schemaNames })).toEqual({
-          internal: {
-            create: true,
-            read: true,
-            update: true,
-          },
-          public: {
-            create: defaultAccess,
-            read: defaultAccess,
-            update: defaultAccess,
-          },
+        expect(
+          parseFieldAccess({ defaultAccess, schemaNames, listKey: 'listKey', fieldKey: 'fieldKey' })
+        ).toEqual({
+          internal: { create: true, read: true, update: true },
+          public: { create: defaultAccess, read: defaultAccess, update: defaultAccess },
         });
       });
     });
 
     test('Objects and other misc values are not value inputs for defaultAccess', () => {
       [{ a: 1 }, 10].forEach(defaultAccess => {
-        expect(() => parseListAccess({ defaultAccess, schemaNames })).toThrow(Error);
+        expect(() =>
+          // @ts-ignore
+          parseListAccess({ listKey: 'lisKey', fieldKey: 'fieldKey', defaultAccess, schemaNames })
+        ).toThrow(Error);
       });
     });
+
     test('StaticAccess | ImperativeAccess are valid access modes, and should override the defaults', () => {
       [...statics, ...imperatives].forEach(defaultAccess => {
         [...statics, ...imperatives].forEach(access => {
-          expect(parseFieldAccess({ defaultAccess, access, schemaNames })).toEqual({
-            internal: {
-              create: true,
-              read: true,
-              update: true,
-            },
-            public: {
-              create: access,
-              read: access,
-              update: access,
-            },
+          expect(
+            parseFieldAccess({
+              defaultAccess,
+              access,
+              schemaNames,
+              listKey: 'listKey',
+              fieldKey: 'fieldKey',
+            })
+          ).toEqual({
+            internal: { create: true, read: true, update: true },
+            public: { create: access, read: access, update: access },
           });
         });
       });
@@ -201,12 +214,16 @@ describe('Access control package tests', () => {
         ['create', 'read', 'update'].forEach(operation => {
           [...statics, ...imperatives].forEach(opAccess => {
             const access = { [operation]: opAccess };
-            expect(parseFieldAccess({ defaultAccess, access, schemaNames })).toEqual({
-              internal: {
-                create: true,
-                read: true,
-                update: true,
-              },
+            expect(
+              parseFieldAccess({
+                defaultAccess,
+                access,
+                schemaNames,
+                listKey: 'listKey',
+                fieldKey: 'fieldKey',
+              })
+            ).toEqual({
+              internal: { create: true, read: true, update: true },
               public: {
                 create: defaultAccess,
                 read: defaultAccess,
@@ -219,15 +236,39 @@ describe('Access control package tests', () => {
 
           // Misc values are not valid per-operation access modes
           expect(() =>
-            parseFieldAccess({ defaultAccess, access: { [operation]: 10 }, schemaNames })
+            parseFieldAccess({
+              defaultAccess,
+              access: { [operation]: 10 },
+              schemaNames,
+              listKey: 'listKey',
+              fieldKey: 'fieldKey',
+            })
           ).toThrow(Error);
         });
       });
     });
 
     test('Misc', () => {
-      expect(() => parseFieldAccess({ access: { a: 1 }, schemaNames })).toThrow(Error);
-      expect(() => parseFieldAccess({ access: 10, schemaNames })).toThrow(Error);
+      expect(() =>
+        parseFieldAccess({
+          defaultAccess: true,
+          // @ts-ignore
+          access: { a: 1 },
+          schemaNames,
+          listKey: 'listKey',
+          fieldKey: 'fieldKey',
+        })
+      ).toThrow(Error);
+      expect(() =>
+        parseFieldAccess({
+          defaultAccess: true,
+          // @ts-ignore
+          access: 10,
+          schemaNames,
+          listKey: 'listKey',
+          fieldKey: 'fieldKey',
+        })
+      ).toThrow(Error);
     });
   });
 
@@ -258,15 +299,18 @@ describe('Access control package tests', () => {
         });
 
         // Misc values are not valid per-operation access modes
+        // @ts-ignore
         expect(() => parseCustomAccess({ defaultAccess, access: 10, schemaNames })).toThrow(Error);
       });
     });
 
     test('Misc values are not value inputs for defaultAccess', () => {
+      // @ts-ignore
       expect(() => parseCustomAccess({ defaultAccess: 10, schemaNames })).toThrow(Error);
     });
 
     test('Misc values are not value inputs for access', () => {
+      // @ts-ignore
       expect(() => parseCustomAccess({ access: 10, schemaNames })).toThrow(Error);
     });
 
@@ -290,26 +334,42 @@ describe('Access control package tests', () => {
   });
 
   test('validateListAccessControl', async () => {
-    let operation = 'read';
-    const access = { [operation]: true };
-
+    const operation = 'read' as const;
+    const access = { [operation]: true as boolean | (() => Promise<boolean>) };
+    const _access = { create: false, update: false, delete: false };
     // Test the static case: returning a boolean
+    const listArgs = {
+      listKey: 'listKey',
+      authentication: {},
+      gqlName: 'gqlName',
+      context: {},
+    };
     await expect(
-      validateListAccessControl({ access: { [operation]: true }, operation })
+      validateListAccessControl({
+        access: { [operation]: true, ..._access },
+        operation,
+        ...listArgs,
+      })
     ).resolves.toBe(true);
     await expect(
-      validateListAccessControl({ access: { [operation]: false }, operation })
+      validateListAccessControl({
+        access: { [operation]: false, ..._access },
+        operation,
+        ...listArgs,
+      })
     ).resolves.toBe(false);
     await expect(
-      validateListAccessControl({ access: { [operation]: 10 }, operation })
+      // @ts-ignore
+      validateListAccessControl({ access: { [operation]: 10, ..._access }, operation, ...listArgs })
     ).rejects.toThrow(Error);
 
     const originalInput = {};
     const accessFn = jest.fn(() => true);
 
     await validateListAccessControl({
-      access: { [operation]: accessFn },
+      access: { [operation]: accessFn, ..._access },
       operation,
+      ...listArgs,
       originalInput,
     });
 
@@ -322,72 +382,92 @@ describe('Access control package tests', () => {
 
     const items = [{}, { item: {} }];
     for (const authentication of items) {
-      operation = 'read';
-
       // Boolean function
-      access[operation] = () => true;
+      access[operation] = async () => true;
       await expect(
         validateListAccessControl({
-          access: { [operation]: () => true },
+          access: { [operation]: () => true, ..._access },
           operation,
+          ...listArgs,
           authentication,
         })
       ).resolves.toBe(true);
       await expect(
         validateListAccessControl({
-          access: { [operation]: () => false },
+          access: { [operation]: () => false, ..._access },
           operation,
+          ...listArgs,
           authentication,
         })
       ).resolves.toBe(false);
       // Object function
       await expect(
         validateListAccessControl({
-          access: { [operation]: () => ({ a: 1 }) },
+          access: { [operation]: () => ({ a: 1 }), ..._access },
           operation,
+          ...listArgs,
           authentication,
         })
       ).resolves.toEqual({ a: 1 });
 
       // Object function with create operation
-      operation = 'create';
       await expect(
         validateListAccessControl({
-          access: { [operation]: () => ({ a: 1 }) },
-          operation,
+          // @ts-ignore
+          access: { create: () => ({ a: 1 }) },
+          operation: 'create',
+          ...listArgs,
           authentication,
         })
       ).rejects.toThrow(Error);
 
       // Number function
       await expect(
-        validateListAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
+        validateListAccessControl({
+          // @ts-ignore
+          access: { create: () => 10 },
+          operation: 'create',
+          ...listArgs,
+          authentication,
+        })
       ).rejects.toThrow(Error);
     }
   });
 
   test('validateFieldAccessControl', async () => {
-    const operation = 'read';
+    const operation = 'read' as const;
     // Test the StaticAccess case: returning a boolean
+    const _access = { create: false, update: false };
+    const fieldArgs = {
+      operation,
+      listKey: 'listKey',
+      fieldKey: 'fieldKey',
+      originalInput: {},
+      existingItem: {},
+      authentication: {},
+      gqlName: 'gqlName',
+      itemId: {},
+      itemIds: [],
+      context: {},
+    };
     await expect(
-      validateFieldAccessControl({ access: { [operation]: true }, operation })
+      validateFieldAccessControl({ access: { [operation]: true, ..._access }, ...fieldArgs })
     ).resolves.toBe(true);
     await expect(
-      validateFieldAccessControl({ access: { [operation]: false }, operation })
+      validateFieldAccessControl({ access: { [operation]: false, ..._access }, ...fieldArgs })
     ).resolves.toBe(false);
     await expect(
-      validateFieldAccessControl({ access: { [operation]: 10 }, operation })
+      // @ts-ignore
+      validateFieldAccessControl({ access: { [operation]: 10, ..._access }, ...fieldArgs })
     ).rejects.toThrow(Error);
 
     const originalInput = {};
     const existingItem = {};
-    const accessFn = jest.fn(() => true);
+    const accessFn = jest.fn(async () => true);
 
     await validateFieldAccessControl({
-      access: { [operation]: accessFn },
-      operation,
-      originalInput,
-      existingItem,
+      access: { [operation]: accessFn, ..._access },
+      ...fieldArgs,
     });
 
     expect(accessFn).toHaveBeenCalledTimes(1);
@@ -403,69 +483,92 @@ describe('Access control package tests', () => {
       // Test the ImperativeAccess case: a function which should return boolean
       await expect(
         validateFieldAccessControl({
-          access: { [operation]: () => true },
-          operation,
+          access: { [operation]: async () => true, ..._access },
+          ...fieldArgs,
           authentication,
         })
       ).resolves.toBe(true);
 
       await expect(
         validateFieldAccessControl({
-          access: { [operation]: () => false },
-          operation,
+          access: { [operation]: async () => false, ..._access },
+          ...fieldArgs,
           authentication,
         })
       ).resolves.toBe(false);
 
       await expect(
-        validateFieldAccessControl({ access: { [operation]: () => 10 }, operation, authentication })
+        validateFieldAccessControl({
+          // @ts-ignore
+          access: { [operation]: () => 10, ..._access },
+          ...fieldArgs,
+          authentication,
+        })
       ).rejects.toThrow(Error);
     }
   });
 
   test('validateAuthAccessControl', async () => {
-    let operation = 'auth';
-    const access = { [operation]: true };
-
+    const operation = 'auth';
     // Test the static case: returning a boolean
-    await expect(validateAuthAccessControl({ access: { [operation]: true } })).resolves.toBe(true);
-    await expect(validateAuthAccessControl({ access: { [operation]: false } })).resolves.toBe(
-      false
-    );
-    await expect(validateAuthAccessControl({ access: { [operation]: 10 } })).rejects.toThrow(Error);
+    const authArgs = { listKey: 'listKey', authentication: {}, gqlName: 'gqlName', context: {} };
+    await expect(
+      validateAuthAccessControl({ access: { [operation]: true }, ...authArgs })
+    ).resolves.toBe(true);
+    await expect(
+      validateAuthAccessControl({ access: { [operation]: false }, ...authArgs })
+    ).resolves.toBe(false);
+    await expect(
+      // @ts-ignore
+      validateAuthAccessControl({ access: { [operation]: 10 }, ...authArgs })
+    ).rejects.toThrow(Error);
 
     const accessFn = jest.fn(() => true);
 
-    await validateAuthAccessControl({ access: { [operation]: accessFn } });
+    await validateAuthAccessControl({ access: { [operation]: accessFn }, ...authArgs });
 
     expect(accessFn).toHaveBeenCalledTimes(1);
 
     const items = [{}, { item: {} }];
     for (const authentication of items) {
-      operation = 'auth';
-
       // Boolean function
-      access[operation] = () => true;
       await expect(
-        validateAuthAccessControl({ access: { [operation]: () => true }, authentication })
+        validateAuthAccessControl({
+          access: { [operation]: () => true },
+          ...authArgs,
+          authentication,
+        })
       ).resolves.toBe(true);
       await expect(
-        validateAuthAccessControl({ access: { [operation]: () => false }, authentication })
+        validateAuthAccessControl({
+          access: { [operation]: () => false },
+          ...authArgs,
+          authentication,
+        })
       ).resolves.toBe(false);
       // Object function
       await expect(
-        validateAuthAccessControl({ access: { [operation]: () => ({ a: 1 }) }, authentication })
+        validateAuthAccessControl({
+          access: { [operation]: () => ({ a: 1 }) },
+          ...authArgs,
+          authentication,
+        })
       ).resolves.toEqual({ a: 1 });
 
       // Object function with create operation
-      operation = 'create';
       await expect(
-        validateAuthAccessControl({ access: { [operation]: () => ({ a: 1 }) }, authentication })
+        validateAuthAccessControl({
+          // @ts-ignore
+          access: { create: () => ({ a: 1 }) },
+          ...authArgs,
+          authentication,
+        })
       ).rejects.toThrow(Error);
 
       // Number function
       await expect(
-        validateAuthAccessControl({ access: { [operation]: () => 10 }, authentication })
+        // @ts-ignore
+        validateAuthAccessControl({ access: { create: () => 10 }, ...authArgs, authentication })
       ).rejects.toThrow(Error);
     }
   });
