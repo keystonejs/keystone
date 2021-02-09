@@ -19,7 +19,7 @@
     "@tailwindcss/typography": "^0.4.0",
     "@types/classnames": "^2.2.11",
     "@types/gtag.js": "^0.0.4",
-    "@types/react": "^16.14.3",
+    "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
     "@types/webpack": "^4.41.26",
     "autoprefixer": "^10.2.4",
