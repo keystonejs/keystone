@@ -99,7 +99,7 @@ export const ComponentBlocksElement = ({
   attributes,
   children,
   element: __elementToGetPath,
-}: RenderElementProps) => {
+}: RenderElementProps & { element: { type: 'component-block' } }) => {
   const editor = useStaticEditor();
   const focused = useFocused();
   const selected = useSelected();
@@ -107,9 +107,7 @@ export const ComponentBlocksElement = ({
   const [currentElement, setElement] = useElementWithSetNodes(editor, __elementToGetPath);
   const { colors, fields, spacing, typography } = useTheme();
   const blockComponents = useContext(ComponentBlockContext)!;
-  const componentBlock = blockComponents[currentElement.component as string] as
-    | ComponentBlock
-    | undefined;
+  const componentBlock = blockComponents[currentElement.component] as ComponentBlock | undefined;
   const isValid = useMemo(() => {
     return componentBlock
       ? clientSideValidateProp(
@@ -128,11 +126,6 @@ export const ComponentBlocksElement = ({
 Props:
 
 ${JSON.stringify(currentElement.props, null, 2)}
-
-Relationships:
-
-${JSON.stringify(currentElement.relationships, null, 2)}
-
 
 Content:`}
         </pre>

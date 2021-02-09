@@ -195,7 +195,7 @@ const getPreviewProps = (
   object: ExtractPropFromComponentPropFieldForPreview<typeof objectProp>;
 } =>
   createPreviewProps(
-    editor.children[0] as Element,
+    editor.children[0] as Element & { type: 'component-block' },
     componentBlocks.complex,
     {
       '["object","block"]': React.createElement('block-prop'),
@@ -403,7 +403,7 @@ test('preview props form change', () => {
 
   let previewProps = getPreviewProps(editor);
   previewProps.object.select.onChange('b');
-  expect((editor.children[0].props as any).object.select).toBe('b');
+  expect((editor.children[0] as any).props.object.select).toBe('b');
   expect(getPreviewProps(editor).object.select.value).toBe('b');
 });
 
@@ -413,7 +413,7 @@ test('relationship many change', () => {
   let previewProps = getPreviewProps(editor);
   const val = [{ data: {}, id: 'some-id', label: 'some-id' }];
   previewProps.object.many.onChange(val);
-  expect((editor.children[0].props as any).object.many).toEqual(val);
+  expect((editor.children[0] as any).props.object.many).toEqual(val);
   expect(getPreviewProps(editor).object.many.value).toEqual(val);
 });
 
@@ -430,7 +430,7 @@ test('relationship single change', () => {
   assert(previewProps.object.conditional.discriminant === false);
   const val = { data: {}, id: 'some-id', label: 'some-id' };
   previewProps.object.conditional.value.onChange(val);
-  expect((editor.children[0].props as any).object.conditional.value).toEqual(val);
+  expect((editor.children[0] as any).props.object.conditional.value).toEqual(val);
   expect((getPreviewProps(editor).object.conditional.value as any).value).toEqual(val);
 });
 
@@ -441,7 +441,7 @@ test('changing conditional with form inside', () => {
   assert(previewProps.object.conditional.discriminant === false);
   previewProps.object.conditionalSelect.onChange('b');
 
-  expect((editor.children[0].props as any).object.conditionalSelect).toMatchInlineSnapshot(`
+  expect((editor.children[0] as any).props.object.conditionalSelect).toMatchInlineSnapshot(`
     Object {
       "discriminant": "b",
       "value": "B",
@@ -477,7 +477,7 @@ test('changing form inside conditional', () => {
   assert(previewProps.object.conditional.discriminant === false);
   previewProps.object.conditionalSelect.value.onChange('Some content');
 
-  expect((editor.children[0].props as any).object.conditionalSelect).toMatchInlineSnapshot(`
+  expect((editor.children[0] as any).props.object.conditionalSelect).toMatchInlineSnapshot(`
     Object {
       "discriminant": "a",
       "value": "Some content",

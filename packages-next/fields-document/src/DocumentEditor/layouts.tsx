@@ -25,13 +25,17 @@ const LayoutOptionsContext = createContext<[number, ...number[]][]>([]);
 export const LayoutOptionsProvider = LayoutOptionsContext.Provider;
 
 // UI Components
-export const LayoutContainer = ({ attributes, children, element }: RenderElementProps) => {
+export const LayoutContainer = ({
+  attributes,
+  children,
+  element,
+}: RenderElementProps & { element: { type: 'layout' } }) => {
   const { spacing } = useTheme();
   const focused = useFocused();
   const selected = useSelected();
   const editor = useStaticEditor();
 
-  const layout = element.layout as number[];
+  const layout = element.layout;
   const layoutOptions = useContext(LayoutOptionsContext);
 
   return (
@@ -62,11 +66,14 @@ export const LayoutContainer = ({ attributes, children, element }: RenderElement
                 onMouseDown={event => {
                   event.preventDefault();
                   const path = ReactEditor.findPath(editor, element);
-                  const cols = {
-                    type: 'layout',
-                    layout: layoutOption,
-                  };
-                  Transforms.setNodes(editor, cols, { at: path });
+                  Transforms.setNodes(
+                    editor,
+                    {
+                      type: 'layout',
+                      layout: layoutOption,
+                    },
+                    { at: path }
+                  );
                 }}
               >
                 {makeLayoutIcon(layoutOption)}
@@ -113,7 +120,7 @@ export const LayoutArea = ({ attributes, children }: RenderElementProps) => {
 };
 
 export const insertLayout = (editor: ReactEditor, layout: [number, ...number[]]) => {
-  const node = [
+  insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, [
     {
       type: 'layout',
       layout,
@@ -121,8 +128,7 @@ export const insertLayout = (editor: ReactEditor, layout: [number, ...number[]])
         { type: 'layout-area', children: [{ type: 'paragraph', children: [{ text: '' }] }] },
       ],
     },
-  ];
-  insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, node);
+  ]);
   const layoutEntry = Editor.above(editor, { match: x => x.type === 'layout' });
   if (layoutEntry) {
     Transforms.select(editor, [...layoutEntry[1], 0]);

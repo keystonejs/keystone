@@ -12,14 +12,16 @@ export function getInitialValue(
     relationships
   );
   return {
-    type: 'component-block',
+    type: 'component-block' as const,
     component: type,
     props,
     children: findChildPropPaths(props, componentBlock.props).map(x => ({
-      type: `component-${x.options.kind}-prop`,
+      type: `component-${x.options.kind}-prop` as const,
       propPath: x.path,
       children: [
-        x.options.kind === 'block' ? { type: 'paragraph', children: [{ text: '' }] } : { text: '' },
+        x.options.kind === 'block'
+          ? { type: 'paragraph' as const, children: [{ text: '' }] }
+          : { text: '' },
       ],
     })),
   };

@@ -347,7 +347,7 @@ export function withInsertMenu<T extends Editor>(editor: T): T {
         before &&
         (Point.equals(startOfBlock, before) ||
           (before.offset !== 0 &&
-            /\s/.test((Node.get(editor, before.path)!.text as string)[before.offset - 1])))
+            /\s/.test((Node.get(editor, before.path) as Text).text[before.offset - 1])))
       ) {
         Transforms.setNodes(
           editor,

@@ -5,7 +5,11 @@ import { RenderElementProps } from 'slate-react';
 
 import { Editor, Transforms } from 'slate';
 
-export const HeadingElement = ({ attributes, children, element }: RenderElementProps) => {
+export const HeadingElement = ({
+  attributes,
+  children,
+  element,
+}: RenderElementProps & { element: { type: 'heading' } }) => {
   const Tag = `h${element.level}` as 'h1';
   return (
     <Tag {...attributes} css={{ textAlign: element.textAlign as any }}>

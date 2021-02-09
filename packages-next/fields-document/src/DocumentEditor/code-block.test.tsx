@@ -101,10 +101,10 @@ test('non-text is removed from code blocks', () => {
 
   const { isVoid, isInline } = editor;
   editor.isVoid = element => {
-    return element.type === 'inline-void' || isVoid(element);
+    return (element as any).type === 'inline-void' || isVoid(element);
   };
   editor.isInline = element => {
-    return element.type === 'inline-void' || isInline(element);
+    return (element as any).type === 'inline-void' || isInline(element);
   };
 
   Editor.normalize(editor, { force: true });

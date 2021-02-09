@@ -43,6 +43,7 @@ import { ToolbarStateProvider } from './toolbar-state';
 import { withInsertMenu } from './insert-menu';
 import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts';
 import { withPasting } from './pasting';
+import type {} from './slate-types';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -177,8 +178,8 @@ export function DocumentEditor({
   documentFeatures,
 }: {
   autoFocus?: boolean;
-  onChange: undefined | ((value: Node[]) => void);
-  value: Node[];
+  onChange: undefined | ((value: Descendant[]) => void);
+  value: Descendant[];
   componentBlocks: Record<string, ComponentBlock>;
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
@@ -193,10 +194,6 @@ export function DocumentEditor({
     ],
     [documentFeatures, componentBlocks, relationships]
   );
-
-  useMemo(() => {
-    findDuplicateNodes(value);
-  }, [value]);
 
   return (
     <div
@@ -286,12 +283,21 @@ export function DocumentEditorEditable({
       decorate={useCallback(
         ([node, path]: NodeEntry<Node>) => {
           let decorations: Range[] = [];
-          if (node.type === 'component-block' && Element.isElement(node)) {
-            if (node.children.length === 1 && node.children[0].propPath === undefined) {
+          if (node.type === 'component-block') {
+            if (
+              node.children.length === 1 &&
+              Element.isElement(node.children[0]) &&
+              node.children[0].type === 'component-inline-prop' &&
+              node.children[0].propPath === undefined
+            ) {
               return decorations;
             }
             node.children.forEach((child, index) => {
-              if (Node.string(child) === '') {
+              if (
+                Node.string(child) === '' &&
+                Element.isElement(child) &&
+                (child.type === 'component-block-prop' || child.type === 'component-inline-prop')
+              ) {
                 const start = Editor.start(editor, [...path, index]);
                 const placeholder = getPlaceholderTextForPropPath(
                   child.propPath as any,
@@ -359,24 +365,6 @@ while (listDepth--) {
     styles[arr.map(() => `ul`).join(' ')] = {
       listStyle: unorderedListStyles[listDepth % 3],
     };
-  }
-}
-
-/**
- * Slate freaks out(which is quite expected ofc) if the
- * same nodes(as in ===, same shape is fine) are in the tree
- * multiple times so we'll validate it here to avoid running into it
- * strange and hard to debug problems
- */
-function findDuplicateNodes(nodes: Node[], found: WeakSet<object> = new WeakSet()) {
-  for (const node of nodes) {
-    if (found.has(node)) {
-      throw new Error('Duplicate node found: ' + JSON.stringify(node));
-    }
-    found.add(node);
-    if (Array.isArray(node.children)) {
-      findDuplicateNodes(node.children, found);
-    }
   }
 }
 
@@ -506,7 +494,7 @@ function withBlocksSchema<T extends Editor>(editor: T): T {
           if (!Editor.isBlock(editor, childNode)) {
             Transforms.wrapNodes(
               editor,
-              { type: info.blockToWrapInlinesIn, children: [] },
+              { type: info.blockToWrapInlinesIn as any, children: [] },
               { at: childPath }
             );
             return;

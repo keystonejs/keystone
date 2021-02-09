@@ -88,11 +88,15 @@ export function RelationshipButton({ onClose }: { onClose: () => void }) {
   );
 }
 
-export function RelationshipElement({ attributes, children, element }: RenderElementProps) {
+export function RelationshipElement({
+  attributes,
+  children,
+  element,
+}: RenderElementProps & { element: { type: 'relationship' } }) {
   const keystone = useKeystone();
   const editor = useStaticEditor();
   const relationships = useContext(DocumentFieldRelationshipsContext)!;
-  const relationship = relationships[element.relationship as string] as Exclude<
+  const relationship = relationships[element.relationship] as Exclude<
     Relationships[string],
     { kind: 'prop' }
   >;

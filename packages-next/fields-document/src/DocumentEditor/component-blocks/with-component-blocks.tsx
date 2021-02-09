@@ -2,7 +2,7 @@ import { ReactEditor } from 'slate-react';
 import { Editor, Element, Transforms, Range, NodeEntry, Path, Node, Text } from 'slate';
 
 import { ChildField, ComponentBlock } from '../../component-blocks';
-import { moveChildren } from '../utils';
+import { assert, moveChildren } from '../utils';
 import {
   DocumentFeaturesForChildField,
   findChildPropPaths,
@@ -17,11 +17,7 @@ import {
 import weakMemoize from '@emotion/weak-memoize';
 import { Relationships } from '../relationship';
 
-function getAncestorComponentBlock(
-  editor: ReactEditor
-):
-  | { isInside: false }
-  | { isInside: true; componentBlock: NodeEntry<Element>; prop: NodeEntry<Element> } {
+function getAncestorComponentBlock(editor: ReactEditor) {
   if (editor.selection) {
     const ancestorEntry = Editor.above(editor, {
       match: node => Editor.isBlock(editor, node) && node.type !== 'paragraph',
@@ -33,12 +29,16 @@ function getAncestorComponentBlock(
     ) {
       return {
         isInside: true,
-        componentBlock: Editor.parent(editor, ancestorEntry[1]),
-        prop: ancestorEntry,
-      };
+        componentBlock: Editor.parent(editor, ancestorEntry[1]) as NodeEntry<
+          Element & { type: 'component-block' }
+        >,
+        prop: ancestorEntry as NodeEntry<
+          Element & { type: 'component-inline-prop' | 'component-block-prop' }
+        >,
+      } as const;
     }
   }
-  return { isInside: false };
+  return { isInside: false } as const;
 }
 
 const alreadyNormalizedThings: WeakMap<
@@ -198,23 +198,24 @@ export function withComponentBlocks<T extends ReactEditor>(
       }
 
       if (Element.isElement(node) && node.type === 'component-block') {
-        const componentBlock = blockComponents[node.component as string];
+        const componentBlock = blockComponents[node.component];
         if (componentBlock) {
           let missingKeys = new Map(
-            findChildPropPaths(node.props as any, componentBlock.props).map(x => [
+            findChildPropPaths(node.props, componentBlock.props).map(x => [
               JSON.stringify(x.path) as string | undefined,
               x.options.kind,
             ])
           );
 
           node.children.forEach(node => {
+            assert(node.type === 'component-block-prop' || node.type === 'component-inline-prop');
             missingKeys.delete(JSON.stringify(node.propPath));
           });
           if (missingKeys.size) {
             Transforms.insertNodes(
               editor,
               [...missingKeys].map(([prop, kind]) => ({
-                type: `component-${kind}-prop`,
+                type: `component-${kind}-prop` as const,
                 propPath: prop ? JSON.parse(prop) : prop,
                 children: [{ text: '' }],
               })),
@@ -260,7 +261,7 @@ export function withComponentBlocks<T extends ReactEditor>(
                   Transforms.moveNodes(editor, { at: childPath, to: [...path, expectedIndex] });
                   return;
                 }
-                const expectedChildNodeType = `component-${propInfo.options.kind}-prop`;
+                const expectedChildNodeType = `component-${propInfo.options.kind}-prop` as const;
                 if (childNode.type !== expectedChildNodeType) {
                   Transforms.setNodes(editor, { type: expectedChildNodeType }, { at: childPath });
                   return;

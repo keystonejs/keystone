@@ -13690,10 +13690,10 @@ imagemin@^6.1.0:
     pify "^4.0.1"
     replace-ext "^1.0.0"
 
-immer@^5.0.0:
-  version "5.3.6"
-  resolved "https://registry.yarnpkg.com/immer/-/immer-5.3.6.tgz#51eab8cbbeb13075fe2244250f221598818cac04"
-  integrity sha512-pqWQ6ozVfNOUDjrLfm4Pt7q4Q12cGw2HUZgry4Q5+Myxu9nmHRkWBpI0J4+MK0AxbdFtdMTwEGVl7Vd+vEiK+A==
+immer@^7.0.0:
+  version "7.0.15"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-7.0.15.tgz#dc3bc6db87401659d2e737c67a21b227c484a4ad"
+  integrity sha512-yM7jo9+hvYgvdCQdqvhCNRRio0SCXc8xDPzA25SvKWa7b1WVPjLwQs1VYU5JPXjcJPTqAa5NP5dqpORGYBQ2AA==
 
 immutable@^4.0.0-rc.12, immutable@^4.0.0-rc.9:
   version "4.0.0-rc.12"
@@ -23302,12 +23302,12 @@ slate-drop-or-paste-images@^0.9.1:
     is-url "^1.2.2"
     slate-dev-logger "^0.1.0"
 
-slate-history@^0.59.0:
-  version "0.59.0"
-  resolved "https://registry.yarnpkg.com/slate-history/-/slate-history-0.59.0.tgz#3c5ecbe8893ce2ae9523068ccc17c62d52b24a1a"
-  integrity sha512-LBaVmxA7QKr5faDUt0rjgFH4TwAslyl4rrltpM6PVZYeJ301KkpUTqZf83asDjwgt5pl9nEx4huKL7IlX+rZfA==
+slate-history@^0.60.3:
+  version "0.60.3"
+  resolved "https://registry.yarnpkg.com/slate-history/-/slate-history-0.60.3.tgz#c90ae5a578055e1c1a1eb75b7a6c3c48241293b8"
+  integrity sha512-OJpJqAGaKgGeb2oI4t/pq/jlsMn0lzV0m/SpMfqpckTVafgTZKKW2aEz9j+p1q+M7ui4OV8vTY+NQ92fmyl+Ow==
   dependencies:
-    immer "^5.0.0"
+    immer "^7.0.0"
     is-plain-object "^3.0.0"
 
 slate-hotkeys@^0.2.9:
@@ -23318,10 +23318,10 @@ slate-hotkeys@^0.2.9:
     is-hotkey "0.1.4"
     slate-dev-environment "^0.2.2"
 
-slate-hyperscript@^0.59.0:
-  version "0.59.0"
-  resolved "https://registry.yarnpkg.com/slate-hyperscript/-/slate-hyperscript-0.59.0.tgz#3bab0c418854b3e26530064c142b8a64b87dc7a8"
-  integrity sha512-HvZLA5RSAs27ZznD2r5sy2RP114K7+I/jOt3glFtQLFKEptxsIFTgTsEyxMhD6864tOPqs56m6IyA0tX/jhzjA==
+slate-hyperscript@^0.60.3:
+  version "0.60.3"
+  resolved "https://registry.yarnpkg.com/slate-hyperscript/-/slate-hyperscript-0.60.3.tgz#7f234ee198d4cccfb94360cde9c5884011c2791f"
+  integrity sha512-Sf5JPQRwhlNCCs7gjVQVE/i2afgJu7Ybx20NrmkRd6Ur8HrWKdz+7Voia6GK34SX0pY0rQg/o5/zED/yq0UYBQ==
   dependencies:
     is-plain-object "^3.0.0"
 
@@ -23362,10 +23362,10 @@ slate-react@^0.22.10:
     tiny-invariant "^1.0.1"
     tiny-warning "^0.0.3"
 
-"slate-react@npm:slate-react@^0.59.0":
-  version "0.59.0"
-  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.59.0.tgz#c8043dce7ea71279f314d9951c32e4f548b1ea0b"
-  integrity sha512-Fx5vfTi0s1fY5PaXzPH8uA9mW8aevVVYrGGvqX/k363tlPDnQSs/QTibIyFl1Y3MPJ+GdocoyOGjAaZMUIXfIg==
+"slate-react@npm:slate-react@^0.60.3":
+  version "0.60.3"
+  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.60.3.tgz#e627e777bdacc1110a88a43bceb45f9cdae57290"
+  integrity sha512-AdB+lDGHjmtDThT7rGtwNs+3kvm2t0pMlcOR+UCFf84ArFYNXqw9NgcH1nQ9ahoi9SyA0nyXgorZhuO6PNxhRA==
   dependencies:
     "@types/is-hotkey" "^0.1.1"
     "@types/lodash" "^4.14.149"
@@ -23389,14 +23389,14 @@ slate@^0.47.9:
     tiny-warning "^0.0.3"
     type-of "^2.0.1"
 
-"slate@npm:slate@^0.59.0":
-  version "0.59.0"
-  resolved "https://registry.yarnpkg.com/slate/-/slate-0.59.0.tgz#3169daf2f036e84aa149f60e0d12ef2fc4c0839e"
-  integrity sha512-M4UTMkXExxuq8tCD+knn7BtV2pmY8pepay++EF59rmg/v4RB6X1gNzA0xP3aw2rqYl8TmWdOBdy9InFrm3WyXw==
+"slate@npm:slate@^0.60.3":
+  version "0.60.3"
+  resolved "https://registry.yarnpkg.com/slate/-/slate-0.60.3.tgz#747123ab71f571ba7f7b72411d35b314ffdf9b58"
+  integrity sha512-CitRYpOOXYC7za/Qz2ZjU5uZ8HfQZ1J1dCBJmdAPwbwlqq55MhXiE/mEiuYMuxC2fRMijAIII9lFExbf/86Z8g==
   dependencies:
     "@types/esrever" "^0.2.0"
     esrever "^0.2.0"
-    immer "^5.0.0"
+    immer "^7.0.0"
     is-plain-object "^3.0.0"
     tiny-warning "^1.0.3"
 

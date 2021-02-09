@@ -1,7 +1,7 @@
 import { Editor, Transforms } from 'slate';
 
 export const paragraphElement = () => ({
-  type: 'paragraph',
+  type: 'paragraph' as const,
   children: [{ text: '' }],
 });
 
