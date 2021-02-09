@@ -60,6 +60,8 @@ export const Navigation = () => {
         <NavItem href="/guides/access-control">Access Control</NavItem>
         <NavItem href="/guides/hooks">Hooks</NavItem>
         <NavItem href="/guides/schema-extension">Schema Extension</NavItem>
+        <NavItem href="/guides/document">Document Fields</NavItem>
+        <NavItem href="/guides/virtual">Virtual Fields</NavItem>
       </Section>
       <Section label="API">
         <NavItem href="/apis/config">Config API</NavItem>
@@ -69,6 +71,7 @@ export const Navigation = () => {
         <NavItem href="/apis/hooks">Hooks API</NavItem>
         <NavItem href="/apis/session">Session API</NavItem>
         <NavItem href="/apis/context">Context API</NavItem>
+        <NavItem href="/apis/graphql">GraphQL API</NavItem>
       </Section>
     </div>
   );
