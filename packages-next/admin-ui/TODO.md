@@ -15,7 +15,7 @@
   - [x] mongoId in fields package
   - [x] `idField` option
   - [x] disallow `id` field in fields object
-  - [x] default `idField` to `autoIncrement` for Knex(& Prisma but we don't handle Prisma in the new interfaces just yet so not gonna actually do that yet) and `mongoId` for Mongoose with fieldMode: 'hidden' for itemView and createView
+  - [x] default `idField` to `autoIncrement` for Knex & Prisma and `mongoId` for Mongoose with fieldMode: 'hidden' for itemView and createView
 - [x] Remove usage of label field in Admin UI and remove it from the GraphQL schema(~~with a feature flag to turn it back on~~ and allow Keystone fields named `_label_` so users can create a virtual field for `_label_`)
 - [ ] Ensure support for field descriptions in the create and item views
 - [ ] Figure out what to support for custom list views

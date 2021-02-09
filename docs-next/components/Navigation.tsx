@@ -57,11 +57,16 @@ export const Navigation = () => {
         <NavItem href="/guides/getting-started">Getting Started</NavItem>
         <NavItem href="/guides/installation">Installation</NavItem>
         <NavItem href="/guides/cli">Command Line</NavItem>
+        <NavItem href="/guides/access-control">Access Control</NavItem>
+        <NavItem href="/guides/hooks">Hooks</NavItem>
         <NavItem href="/guides/schema-extension">Schema Extension</NavItem>
       </Section>
       <Section label="API">
-        <NavItem href="/apis/system">System API</NavItem>
+        <NavItem href="/apis/config">Config API</NavItem>
         <NavItem href="/apis/schema">Schema API</NavItem>
+        <NavItem href="/apis/fields">Fields API</NavItem>
+        <NavItem href="/apis/access-control">Access Control API</NavItem>
+        <NavItem href="/apis/hooks">Hooks API</NavItem>
         <NavItem href="/apis/session">Session API</NavItem>
         <NavItem href="/apis/context">Context API</NavItem>
       </Section>
