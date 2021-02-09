@@ -163,6 +163,7 @@
   "preconstruct": {
     "packages": [
       "packages/arch/packages/*",
+      "packages/access-control",
       "packages/apollo-helpers",
       "packages/session",
       "packages/test-utils",
