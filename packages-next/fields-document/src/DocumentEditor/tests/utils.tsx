@@ -350,7 +350,7 @@ function nodeToReactElement(
     computedData['@@isInline'] = true;
   }
   if (type !== undefined) {
-    return createElement(type as string, { ...restNode, ...computedData, children });
+    return createElement(type, { ...restNode, ...computedData, children });
   }
   return createElement('element', { ...node, ...computedData, children });
 }

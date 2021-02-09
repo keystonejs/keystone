@@ -230,12 +230,11 @@ export function withComponentBlocks<T extends ReactEditor>(
             string,
             { options: ChildField['options']; index: number } | undefined
           > = {};
-          findChildPropPaths(
-            node.props as any,
-            blockComponents[node.component as string]!.props
-          ).forEach((x, index) => {
-            stringifiedInlinePropPaths[JSON.stringify(x.path)] = { options: x.options, index };
-          });
+          findChildPropPaths(node.props, blockComponents[node.component]!.props).forEach(
+            (x, index) => {
+              stringifiedInlinePropPaths[JSON.stringify(x.path)] = { options: x.options, index };
+            }
+          );
 
           for (const [index, childNode] of node.children.entries()) {
             if (

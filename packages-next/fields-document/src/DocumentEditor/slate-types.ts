@@ -48,7 +48,7 @@ type ComponentBlock = {
 
 type ComponentProp = {
   type: 'component-inline-prop' | 'component-block-prop';
-  propPath: (string | number)[] | undefined;
+  propPath?: (string | number)[] | undefined;
 };
 
 type Element =

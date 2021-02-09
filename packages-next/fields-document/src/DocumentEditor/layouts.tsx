@@ -164,16 +164,15 @@ export function withLayouts<T extends Editor>(editor: T): T {
     const [node, path] = entry;
 
     if (Element.isElement(node) && node.type === 'layout') {
-      let layout = node.layout as number[];
       if (node.layout === undefined) {
         Transforms.unwrapNodes(editor, { at: path });
         return;
       }
-      if (node.children.length < layout.length) {
+      if (node.children.length < node.layout.length) {
         Transforms.insertNodes(
           editor,
           Array.from({
-            length: layout.length - node.children.length,
+            length: node.layout.length - node.children.length,
           }).map(() => ({
             type: 'layout-area',
             children: [paragraphElement()],
@@ -184,22 +183,22 @@ export function withLayouts<T extends Editor>(editor: T): T {
         );
         return;
       }
-      if (node.children.length > layout.length) {
+      if (node.children.length > node.layout.length) {
         Array.from({
-          length: node.children.length - layout.length,
+          length: node.children.length - node.layout.length,
         })
           .map((_, i) => i)
           .reverse()
           .forEach(i => {
-            const layoutAreaToRemovePath = [...path, i + layout.length];
-            const child = node.children[i + layout.length] as Element;
+            const layoutAreaToRemovePath = [...path, i + node.layout.length];
+            const child = node.children[i + node.layout.length] as Element;
             moveChildren(
               editor,
               layoutAreaToRemovePath,
               [
                 ...path,
-                layout.length - 1,
-                (node.children[layout.length - 1] as Element).children.length,
+                node.layout.length - 1,
+                (node.children[node.layout.length - 1] as Element).children.length,
               ],
               node => node.type !== 'paragraph' || Node.string(child) !== ''
             );

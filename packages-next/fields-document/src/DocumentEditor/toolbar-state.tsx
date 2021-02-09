@@ -10,7 +10,7 @@ import {
   getDocumentFeaturesForChildField,
 } from './component-blocks/utils';
 import { LayoutOptionsProvider } from './layouts';
-import { isListType, isListNode } from './lists';
+import { isListNode } from './lists';
 import { DocumentFieldRelationshipsProvider, Relationships } from './relationship';
 import { allMarks, isElementActive, Mark, nodeTypeMatcher } from './utils';
 
@@ -190,7 +190,7 @@ export const createToolbarState = (
   return {
     marks,
     textStyles: {
-      selected: headingEntry ? (headingEntry[0].level as any) : 'normal',
+      selected: headingEntry ? headingEntry[0].level : 'normal',
       allowedHeadingLevels:
         locationDocumentFeatures.kind === 'block' && !listEntry
           ? locationDocumentFeatures.documentFeatures.formatting.headingLevels
@@ -233,7 +233,7 @@ export const createToolbarState = (
           locationDocumentFeatures.kind === 'block' &&
           locationDocumentFeatures.documentFeatures.formatting.alignment
         ),
-      selected: alignableEntry ? (alignableEntry[0].textAlign as any) || 'start' : 'start',
+      selected: alignableEntry?.[0].textAlign || 'start',
     },
     blockquote: {
       isDisabled: !(
@@ -274,11 +274,11 @@ function hasBlockThatClearsOnClearFormatting(editor: Editor) {
 }
 
 export function getListTypeAbove(editor: Editor): 'none' | 'ordered-list' | 'unordered-list' {
-  const listAbove = Editor.above(editor, { match: n => isListType(n.type as string) });
+  const listAbove = Editor.above(editor, { match: isListNode });
   if (!listAbove) {
     return 'none';
   }
-  return listAbove[0].type as any;
+  return listAbove[0].type;
 }
 
 export const ToolbarStateProvider = ({

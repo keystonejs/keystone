@@ -181,7 +181,7 @@ Content:`}
           onClose={() => {
             setEditMode(false);
           }}
-          value={currentElement.props as any}
+          value={currentElement.props}
           onChange={val => {
             setElement({ props: val });
           }}
@@ -328,7 +328,7 @@ function ComponentBlockRender({
   onElementChange,
   children: _children,
 }: {
-  element: Element;
+  element: Element & { type: 'component-block' };
   onElementChange: (element: Partial<Element>) => void;
   componentBlock: ComponentBlock;
   children: any;

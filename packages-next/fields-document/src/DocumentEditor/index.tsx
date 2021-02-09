@@ -296,13 +296,14 @@ export function DocumentEditorEditable({
               if (
                 Node.string(child) === '' &&
                 Element.isElement(child) &&
-                (child.type === 'component-block-prop' || child.type === 'component-inline-prop')
+                (child.type === 'component-block-prop' || child.type === 'component-inline-prop') &&
+                child.propPath !== undefined
               ) {
                 const start = Editor.start(editor, [...path, index]);
                 const placeholder = getPlaceholderTextForPropPath(
-                  child.propPath as any,
-                  componentBlocks[node.component as string].props,
-                  node.props as any
+                  child.propPath,
+                  componentBlocks[node.component].props,
+                  node.props
                 );
                 if (placeholder) {
                   decorations.push({
@@ -368,31 +369,42 @@ while (listDepth--) {
   }
 }
 
+type Block = Exclude<Element, { type: 'relationship' | 'link' }>;
+
+type BlockType = Block['type'];
+
 type EditorSchema = Record<
-  string,
+  BlockType | 'editor',
   | {
       kind: 'blocks';
-      allowedChildren: ReadonlySet<string>;
-      blockToWrapInlinesIn: string;
+      allowedChildren: ReadonlySet<Element['type']>;
+      blockToWrapInlinesIn: TypesWhichHaveNoExtraRequiredProps;
       invalidPositionHandleMode: 'unwrap' | 'move';
     }
   | { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' }
 >;
 
-function makeEditorSchema<
-  Obj extends Record<
-    string,
+type TypesWhichHaveNoExtraRequiredProps = {
+  [Type in Block['type']]: { type: Type; children: Descendant[] } extends Block & { type: Type }
+    ? Type
+    : never;
+}[Block['type']];
+
+function makeEditorSchema(
+  obj: Record<
+    BlockType | 'editor',
     | {
         kind: 'blocks';
-        allowedChildren: readonly [Extract<keyof Obj, string>, ...Extract<keyof Obj, string>[]];
+        allowedChildren: readonly [TypesWhichHaveNoExtraRequiredProps, ...BlockType[]];
         invalidPositionHandleMode: 'unwrap' | 'move';
       }
     | { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' }
   >
->(obj: Obj) {
-  let ret: EditorSchema = {};
-  Object.keys(obj).forEach(key => {
+) {
+  let ret: EditorSchema = {} as any;
+  (Object.keys(obj) as (keyof typeof obj)[]).forEach(key => {
     const val = obj[key];
+
     if (val.kind === 'blocks') {
       ret[key] = {
         kind: 'blocks',
@@ -476,7 +488,7 @@ export const editorSchema = makeEditorSchema({
 function withBlocksSchema<T extends Editor>(editor: T): T {
   const { normalizeNode } = editor;
   editor.normalizeNode = ([node, path]) => {
-    if (Editor.isBlock(editor, node) || Editor.isEditor(node)) {
+    if (!Text.isText(node) && node.type !== 'link' && node.type !== 'relationship') {
       const nodeType = Editor.isEditor(node) ? 'editor' : node.type;
       if (typeof nodeType !== 'string' || editorSchema[nodeType] === undefined) {
         Transforms.unwrapNodes(editor, { at: path });
@@ -491,15 +503,21 @@ function withBlocksSchema<T extends Editor>(editor: T): T {
             return;
           }
         } else {
-          if (!Editor.isBlock(editor, childNode)) {
+          if (
+            !Editor.isBlock(editor, childNode) ||
+            // these checks are implicit in Editor.isBlock
+            // but that isn't encoded in types so these will make TS happy
+            childNode.type === 'link' ||
+            childNode.type === 'relationship'
+          ) {
             Transforms.wrapNodes(
               editor,
-              { type: info.blockToWrapInlinesIn as any, children: [] },
+              { type: info.blockToWrapInlinesIn, children: [] },
               { at: childPath }
             );
             return;
           }
-          if (!info.allowedChildren.has(childNode.type as string)) {
+          if (!info.allowedChildren.has(childNode.type)) {
             handleNodeInInvalidPosition(editor, [childNode, childPath], path);
             return;
           }
@@ -513,19 +531,20 @@ function withBlocksSchema<T extends Editor>(editor: T): T {
 
 function handleNodeInInvalidPosition(
   editor: Editor,
-  [node, path]: NodeEntry<Descendant>,
+  [node, path]: NodeEntry<Block>,
   parentPath: Path
 ) {
-  const nodeType = node.type as string;
+  const nodeType = node.type;
   const childNodeInfo = editorSchema[nodeType];
 
   if (!childNodeInfo || childNodeInfo.invalidPositionHandleMode === 'unwrap') {
     Transforms.unwrapNodes(editor, { at: path });
     return;
   }
-  const parentNode = Node.get(editor, parentPath);
-  const info =
-    editorSchema[(parentNode.type as string) || Editor.isEditor(parentNode) ? 'editor' : ''];
+  // the parent of a block will never be an inline so this casting is okay
+  const parentNode = Node.get(editor, parentPath) as Block;
+
+  const info = editorSchema[parentNode.type || 'editor'];
   if (info?.kind === 'blocks' && info.allowedChildren.has(nodeType)) {
     Transforms.moveNodes(editor, { at: path, to: Path.next(parentPath) });
     return;

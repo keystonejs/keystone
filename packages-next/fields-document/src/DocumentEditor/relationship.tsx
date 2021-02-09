@@ -126,7 +126,10 @@ export function RelationshipElement({
             list={keystone.adminMeta.lists[relationship.listKey]}
             state={{
               kind: 'one',
-              value: (element.data as any) || null,
+              value:
+                element.data === null
+                  ? null
+                  : { id: element.data.id, label: element.data.label || element.data.id },
               onChange(value) {
                 Transforms.setNodes(
                   editor,

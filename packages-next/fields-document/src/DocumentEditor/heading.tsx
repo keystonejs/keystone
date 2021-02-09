@@ -10,9 +10,9 @@ export const HeadingElement = ({
   children,
   element,
 }: RenderElementProps & { element: { type: 'heading' } }) => {
-  const Tag = `h${element.level}` as 'h1';
+  const Tag = `h${element.level}` as const;
   return (
-    <Tag {...attributes} css={{ textAlign: element.textAlign as any }}>
+    <Tag {...attributes} css={{ textAlign: element.textAlign }}>
       {children}
     </Tag>
   );

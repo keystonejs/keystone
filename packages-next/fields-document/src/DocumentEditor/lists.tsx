@@ -21,7 +21,7 @@ export const toggleList = (editor: Editor, format: 'ordered-list' | 'unordered-l
     isElementActive(editor, format) && (listAbove === 'none' || listAbove === format);
   Editor.withoutNormalizing(editor, () => {
     Transforms.unwrapNodes(editor, {
-      match: n => isListType(n.type as string),
+      match: isListNode,
       split: true,
       mode: isActive ? 'all' : 'lowest',
     });
@@ -65,7 +65,7 @@ export function withList<T extends Editor>(editor: T): T {
         Editor.isStart(editor, editor.selection.anchor, ancestorList.list[1])
       ) {
         Transforms.unwrapNodes(editor, {
-          match: node => isListType(node.type as string),
+          match: isListNode,
           split: true,
         });
         return;
@@ -80,7 +80,7 @@ export function withList<T extends Editor>(editor: T): T {
     });
     if (listItem && Node.string(listItem[0]) === '') {
       Transforms.unwrapNodes(editor, {
-        match: node => isListType(node.type as string),
+        match: isListNode,
         split: true,
       });
       return;
@@ -92,7 +92,7 @@ export function withList<T extends Editor>(editor: T): T {
   editor.normalizeNode = entry => {
     const [node, path] = entry;
     if (Element.isElement(node) || Editor.isEditor(node)) {
-      const isElementBeingNormalizedAList = isListType(node.type as string);
+      const isElementBeingNormalizedAList = isListNode(node);
       for (const [childNode, childPath] of Node.children(editor, path)) {
         const index = childPath[childPath.length - 1];
         // merge sibling lists
@@ -202,7 +202,7 @@ export function nestList(editor: Editor) {
         ...previousListItemPath,
         previousListItemNode.children.length - 1,
         (previousListItemNode.children[previousListItemNode.children.length - 1] as any).children
-          .length as number,
+          .length,
       ],
     });
     return true;
@@ -224,7 +224,7 @@ export function unnestList(editor: Editor) {
 
   if (block && block[0].type === 'list-item-content') {
     Transforms.unwrapNodes(editor, {
-      match: node => isListType(node.type as string),
+      match: isListNode,
       split: true,
     });
     return true;
