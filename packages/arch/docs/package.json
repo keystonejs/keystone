@@ -25,7 +25,7 @@
     "@arch-ui/typography": "^0.0.18",
     "@emotion/core": "^10.1.1",
     "@emotion/styled": "^10.0.27",
-    "@primer/octicons-react": "^11.2.0",
+    "@primer/octicons-react": "^11.3.0",
     "@reach/router": "^1.3.4",
     "clipboard-copy": "^4.0.1",
     "gatsby": "2.13.25",
