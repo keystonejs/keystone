@@ -23,12 +23,12 @@
   "devDependencies": {
     "@keystone-next/admin-ui": "^8.0.1",
     "@keystone-next/keystone": "^9.3.0",
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "peerDependencies": {
     "@keystone-next/admin-ui": "^8.0.1",
     "@keystone-next/keystone": "^9.3.0",
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "preconstruct": {
     "entrypoints": [

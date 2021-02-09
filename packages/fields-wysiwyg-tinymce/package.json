@@ -19,7 +19,7 @@
     "@primer/octicons-react": "^11.2.0",
     "@tinymce/tinymce-react": "^3.10.1",
     "prop-types": "^15.7.2",
-    "react": "^16.14.0",
+    "react": "^17.0.1",
     "tinymce": "^5.6.2"
   },
   "peerDependencies": {

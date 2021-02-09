@@ -27,8 +27,8 @@
     "next": "10.0.5",
     "next-compose-plugins": "^2.2.1",
     "postcss": "^8.2.5",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "tailwindcss": "^2.0.3"
   },
   "devDependencies": {

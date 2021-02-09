@@ -19,7 +19,7 @@
     "@primer/octicons-react": "^11.2.0",
     "codemirror": "^5.59.2",
     "prop-types": "^15.7.2",
-    "react": "^16.14.0",
+    "react": "^17.0.1",
     "react-codemirror2": "^7.2.1"
   },
   "devDependencies": {

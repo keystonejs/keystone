@@ -16,14 +16,14 @@
   },
   "peerDependencies": {
     "mjml-react": "^1.0.65",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0"
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "devDependencies": {
     "mjml-react": "^1.0.65",
     "pug": "3.0.0",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0"
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/email"
 }
