@@ -165,6 +165,7 @@
       "packages/arch/packages/*",
       "packages/access-control",
       "packages/apollo-helpers",
+      "packages/app-version",
       "packages/session",
       "packages/test-utils",
       "packages/utils",
