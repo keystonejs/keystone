@@ -34,7 +34,7 @@ export default auth.withAuth(
     // },
     ui: {
       // NOTE -- this is not implemented, keystone currently always provides an admin ui at /
-      path: '/admin',
+      // path: '/admin',
       // isAccessAllowed,
     },
     lists,

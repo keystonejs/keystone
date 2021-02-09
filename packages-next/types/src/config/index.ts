@@ -74,7 +74,8 @@ export type AdminUIConfig = {
   /** An array of page routes that can be accessed without passing the isAccessAllowed check */
   publicPages?: string[];
   /** The basePath for the Admin UI App */
-  path?: string;
+  // FIXME: currently unused
+  // path?: string;
   getAdditionalFiles?: ((config: KeystoneConfig) => MaybePromise<AdminFileToWrite[]>)[];
   pageMiddleware?: (args: {
     req: IncomingMessage;
