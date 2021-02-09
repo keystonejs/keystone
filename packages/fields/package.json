@@ -39,7 +39,7 @@
     "@keystonejs/app-admin-ui": "^7.3.13",
     "@keystonejs/server-side-graphql-client": "^1.1.2",
     "@keystonejs/utils": "^6.0.1",
-    "@primer/octicons-react": "^11.2.0",
+    "@primer/octicons-react": "^11.3.0",
     "@sindresorhus/slugify": "^1.1.0",
     "apollo-errors": "^1.9.0",
     "bcryptjs": "^2.4.3",

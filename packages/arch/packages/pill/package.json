@@ -17,7 +17,7 @@
     "@babel/runtime": "^7.12.13",
     "@emotion/core": "^10.1.1",
     "@emotion/styled": "^10.0.27",
-    "@primer/octicons-react": "^11.2.0"
+    "@primer/octicons-react": "^11.3.0"
   },
   "module": "dist/pill.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/arch/packages/pill"
