@@ -52,8 +52,12 @@ const Welcome = ({ value }: { value: any }) => {
             source: '@keystone-next/auth InitPage',
           }),
         })
-          .then(() => {
-            router.push((router.query.from as string | undefined) || '/');
+          .then(res => {
+            if (res.status !== 200) {
+              res.json().then(({ error }) => setError(error));
+            } else {
+              router.push((router.query.from as string | undefined) || '/');
+            }
           })
           .catch(err => {
             // WHAT TO DO WITH CAUGHT ERRORS?
