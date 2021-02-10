@@ -16,13 +16,16 @@ import { useReinitContext, useKeystone } from '@keystone-next/admin-ui/context';
 import { useRouter } from '@keystone-next/admin-ui/router';
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics';
 import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
+import { IconTwitter, IconGithub } from '../components/Icons';
 import {
   Fields,
   serializeValueToObjByFieldKey,
   useInvalidFields,
 } from '@keystone-next/admin-ui-utils';
 
-const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
+// const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
+// const signupURL = 'http://localhost:8080/api/newsletter-signup';
+const signupURL = 'https://keystone-next-mailing-list-n2ap1thf5.vercel.app/api/newsletter-signup';
 
 const Welcome = ({ value }: { value: any }) => {
   const [subscribe, setSubscribe] = useState<boolean>(true);
@@ -57,18 +60,22 @@ const Welcome = ({ value }: { value: any }) => {
               // We explicitly set the status in our endpoint
               // any status that isn't 200 we assume is a failure
               // which we want to surface to the user
-              res.json().then(({ error }) => setError(error));
+              res.json().then(({ error }) => {
+                setError(error);
+                setLoading(false);
+              });
             } else {
               router.push((router.query.from as string | undefined) || '/');
             }
           })
           .catch(err => {
             // network errors or failed parse
-            setError(err);
+            setError(err.toString());
+            setLoading(false);
           });
       } else {
         setLoading(false);
-        // if email failes validation set error message
+        // if email fails validation set error message
         setError('Email is invalid');
         return;
       }
@@ -77,29 +84,53 @@ const Welcome = ({ value }: { value: any }) => {
   };
   return (
     <Stack gap="medium">
-      <H1>Welcome to KeystoneJS</H1>
-      <div>Next up: star the project, follow us on twitter for updates</div>
+      <div
+        css={{
+          display: 'flex',
+          flexDirection: 'row',
+          '> *': {
+            marginRight: '0.25em',
+          },
+          alignItems: 'center',
+        }}
+      >
+        <H1>Welcome to KeystoneJS</H1>
+        <IconGithub href="https://github.com/keystonejs/keystone" target="_blank" title="Github" />
+        <IconTwitter href="https://twitter.com/keystonejs" target="_blank" title="Twitter" />
+        {/* Next up: <a href="https://github.com/keystonejs/keystone/">star the project </a>, follow us
+        on <a href="https://twitter.com/keystonejs?lang=en">twitter</a> for updates */}
+      </div>
       <div>
-        <Checkbox checked={subscribe} onChange={() => setSubscribe(!subscribe)}>
+        <Checkbox
+          checked={subscribe}
+          onChange={() => {
+            setError(null);
+            setSubscribe(!subscribe);
+          }}
+        >
           sign up to our mailing list
         </Checkbox>
       </div>
-      {subscribe ? (
-        <form onSubmit={onSubmit}>
-          <TextInput autoFocus value={email} onChange={e => setEmail(e.target.value)} />
-          <p css={{ color: 'red' }}>{error}</p>
-          <Inline gap="small" align="center">
-            <Button isLoading={loading} type="submit" weight="bold" tone="active">
-              {subscribe ? 'Subscribe' : 'Get started'}
-            </Button>
-            {error && <a href={'/'}>Continue</a>}
-          </Inline>
-        </form>
-      ) : (
-        <Button type="button" weight="bold" tone="active" onClick={() => router.push('/')}>
-          Get Started
-        </Button>
-      )}
+      <form onSubmit={onSubmit}>
+        <TextInput
+          disabled={!subscribe}
+          autoFocus
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <p css={{ color: 'red' }}>{error}</p>
+        <Inline gap="small" align="center">
+          <Button
+            isLoading={loading}
+            type={subscribe ? 'submit' : 'button'}
+            weight="bold"
+            tone="active"
+          >
+            {subscribe ? 'Subscribe' : 'Get started'}
+          </Button>
+          {error && <a href={'/'}>Continue</a>}
+        </Inline>
+      </form>
     </Stack>
   );
 };
