@@ -580,7 +580,11 @@ function handleNodeInInvalidPosition(
 
   const info = editorSchema[parentNode.type || 'editor'];
   if (info?.kind === 'blocks' && info.allowedChildren.has(nodeType)) {
-    Transforms.moveNodes(editor, { at: path, to: Path.next(parentPath) });
+    if (parentPath.length === 0) {
+      Transforms.moveNodes(editor, { at: path, to: [path[0] + 1] });
+    } else {
+      Transforms.moveNodes(editor, { at: path, to: Path.next(parentPath) });
+    }
     return;
   }
   if (Editor.isEditor(parentNode)) {
