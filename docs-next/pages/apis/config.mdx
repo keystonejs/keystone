@@ -1,6 +1,6 @@
 import { Markdown } from '../../components/Page';
 
-# System API
+# System Configuration API
 
 The `keystone-next` CLI expects to find a module named `keystone.ts` with a default export of a Keystone system configuration returned from the function `config()`.
 
@@ -10,7 +10,7 @@ import { config } from '@keystone-next/keystone/schema';
 export default config({...});
 ```
 
-The `config` function accepts an object representing all the configurable parts of your system:
+The `config` function accepts an object representing all the configurable parts of the system:
 
 ```typescript
 export default config({
@@ -31,15 +31,15 @@ This type definition should be considered the source of truth for the available 
 
 ## `lists`
 
-The `lists` config option is where you define the data model, or schema, of your Keystone system.
+The `lists` config option is where you define the data model, or schema, of the Keystone system.
 It has a TypeScript type of `ListSchemaConfig`.
-This is where you define and configure the `lists` and their `fields` of your data model.
+This is where you define and configure the `lists` and their `fields` of the data model.
 In general you will use the `createSchema()` function to create this configuration option.
 See the [Schema API](./schema) docs for details on how to use this function.
 
 ```typescript
 import type { ListSchemaConfig } from '@keystone-next/types';
-import { config, createSchema } from '@keystone-next/keystone/schema'
+import { config, createSchema } from '@keystone-next/keystone/schema';
 
 export default config({
   lists: createSchema({ ... }),
@@ -81,9 +81,9 @@ export default config({
     url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
     onConnect: async context => { ... },
     // Optional advanced configuration
-    enableLogging: true;
-    getPrismaPath: ({ prismaSchema }) => '.prisma';
-    getDbSchemaName: ({ prismaSchema }) => 'prisma';
+    enableLogging: true,
+    getPrismaPath: ({ prismaSchema }) => '.prisma',
+    getDbSchemaName: ({ prismaSchema }) => 'prisma',
   },
   ...
 });
@@ -144,7 +144,6 @@ Options:
 
 - `isAccessAllowed` (default: `(context) => !!context.session`): This function controls whether a user is able to access the Admin UI.
   It takes a [`KeystoneContext`](./context) object as an argument.
-- `path` (default: `'admin'` ): The URL path where your Admin UI will be accessible from.
 
 Advanced configuration:
 
@@ -154,7 +153,6 @@ Advanced configuration:
 export default config({
   ui: {
     isAccessAllowed: async (context) => true,
-    path: 'admin',
     // Optional advanced configuration
     enableSessionItem: true,
     publicPages: [],
@@ -223,8 +221,8 @@ It has a TypeScript type of `GraphQLConfig`.
 
 Options:
 
-- `queryLimits` (default: `undefined`): Allows you to limit the number of results returned from a query to your GraphQL API.
-  See also the per-list `queryLimits` option in the [Schema API](./schema).
+- `queryLimits` (default: `undefined`): Allows you to limit the total number of results returned from a query to your GraphQL API.
+  See also the per-list `graphql.queryLimits` option in the [Schema API](./schema).
 
 ```typescript
 export default config({

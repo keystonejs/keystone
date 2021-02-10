@@ -4,11 +4,15 @@
   "version": "1.0.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
+  "main": "dist/app-version.cjs.js",
+  "module": "dist/app-version.esm.js",
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystonejs/access-control": "^6.0.0"
+    "@babel/runtime": "^7.12.13",
+    "@keystonejs/access-control": "^6.0.0",
+    "express": "^4.17.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/app-version"
 }
