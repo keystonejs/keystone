@@ -3,10 +3,10 @@
 // this file contains module augmentation, if it is imported
 // then it will be in the generated declarations which means it will pollute
 // the consumers types if they're already using slate
-// (ideally Slate would use generics instead of module augmentation so this
+//
+// ideally Slate would use generics instead of module augmentation so this
 // wouldn't be a problem but for now, it is so
 // DO NOT IMPORT THIS FILE
-// )
 import { RelationshipData } from './component-blocks/api';
 import { Mark } from './utils';
 
