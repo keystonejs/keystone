@@ -505,3 +505,93 @@ describe.each(
     );
   });
 });
+
+test('inserting a break at the end of a block with a mark removes the mark', () => {
+  let editor = makeEditor(
+    <editor marks={{ bold: true }}>
+      <paragraph>
+        <text bold>
+          some content
+          <cursor />
+        </text>
+      </paragraph>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+
+  editor.insertBreak();
+  editor.insertText('a');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <paragraph>
+        <text
+          bold={true}
+        >
+          some content
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          a
+          <cursor />
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
+
+test("inserting a break in the middle of text doesn't remove the mark", () => {
+  let editor = makeEditor(
+    <editor marks={{ bold: true }}>
+      <paragraph>
+        <text bold>
+          some <cursor /> content
+        </text>
+      </paragraph>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+
+  editor.insertBreak();
+  editor.insertText('a');
+  expect(editor).toMatchInlineSnapshot(`
+    <editor
+      marks={
+        Object {
+          "bold": true,
+        }
+      }
+    >
+      <paragraph>
+        <text
+          bold={true}
+        >
+          some 
+        </text>
+      </paragraph>
+      <paragraph>
+        <text
+          bold={true}
+        >
+          a
+          <cursor />
+           content
+        </text>
+      </paragraph>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+    </editor>
+  `);
+});
