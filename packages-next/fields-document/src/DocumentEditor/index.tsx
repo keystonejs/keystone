@@ -44,7 +44,6 @@ import { ToolbarStateProvider } from './toolbar-state';
 import { withInsertMenu } from './insert-menu';
 import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts';
 import { withPasting } from './pasting';
-import type {} from './slate-types';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',

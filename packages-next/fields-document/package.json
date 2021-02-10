@@ -4,6 +4,12 @@
   "version": "1.0.1",
   "main": "dist/fields-document.cjs.js",
   "module": "dist/fields-document.esm.js",
+  "files": [
+    "dist",
+    "component-blocks",
+    "primitives",
+    "views"
+  ],
   "preconstruct": {
     "entrypoints": [
       "component-blocks.tsx",
