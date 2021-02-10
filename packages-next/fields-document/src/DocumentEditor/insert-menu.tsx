@@ -266,11 +266,16 @@ export function InsertMenu({ children, text }: { children: ReactNode; text: Text
   );
 }
 
+const nodeListsWithoutInsertMenu = new WeakSet<Node[]>();
+
 const nodesWithoutInsertMenu = new WeakSet<Node>();
 
 function findPathWithInsertMenu(node: Node, path: Path): Path | undefined {
   if (Text.isText(node)) {
     return node.insertMenu ? path : undefined;
+  }
+  if (nodeListsWithoutInsertMenu.has(node.children)) {
+    return;
   }
   for (const [index, child] of node.children.entries()) {
     if (nodesWithoutInsertMenu.has(child)) continue;
@@ -280,14 +285,14 @@ function findPathWithInsertMenu(node: Node, path: Path): Path | undefined {
     }
     nodesWithoutInsertMenu.add(child);
   }
+  nodeListsWithoutInsertMenu.add(node.children);
 }
 
 function removeInsertMenuMarkWhenOutsideOfSelection(editor: Editor) {
-  const marks = Editor.marks(editor);
   const path = findPathWithInsertMenu(editor, []);
   if (
     path &&
-    !marks?.insertMenu &&
+    !Editor.marks(editor)?.insertMenu &&
     (!editor.selection ||
       !Path.equals(editor.selection.anchor.path, path) ||
       !Path.equals(editor.selection.focus.path, path))
@@ -319,7 +324,7 @@ export function withInsertMenu<T extends Editor>(editor: T): T {
         return;
       }
     }
-    if (removeInsertMenuMarkWhenOutsideOfSelection(editor)) {
+    if (Editor.isEditor(editor) && removeInsertMenuMarkWhenOutsideOfSelection(editor)) {
       return;
     }
     normalizeNode([node, path]);
@@ -331,8 +336,10 @@ export function withInsertMenu<T extends Editor>(editor: T): T {
     // because normalizeNode won't be called on selection changes
     // but apply will
     // we're still calling this from normalizeNode though because we want it to happen
-    // when force normalization happens
-    removeInsertMenuMarkWhenOutsideOfSelection(editor);
+    // when normalization happens
+    if (op.type === 'set_selection') {
+      removeInsertMenuMarkWhenOutsideOfSelection(editor);
+    }
   };
 
   editor.insertText = text => {
