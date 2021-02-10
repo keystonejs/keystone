@@ -54,18 +54,21 @@ const Welcome = ({ value }: { value: any }) => {
         })
           .then(res => {
             if (res.status !== 200) {
+              // We explicitly set the status in our endpoint
+              // any status that isn't 200 we assume is a failure
+              // which we want to surface to the user
               res.json().then(({ error }) => setError(error));
             } else {
               router.push((router.query.from as string | undefined) || '/');
             }
           })
           .catch(err => {
-            // WHAT TO DO WITH CAUGHT ERRORS?
+            // network errors or failed parse
             setError(err);
           });
       } else {
         setLoading(false);
-        // if bad set error message
+        // if email failes validation set error message
         setError('Email is invalid');
         return;
       }
