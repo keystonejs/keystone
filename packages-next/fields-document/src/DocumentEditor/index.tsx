@@ -55,7 +55,7 @@ const HOTKEYS: Record<string, Mark> = {
 const IS_NODE_LIST_CACHE = new WeakMap<any[], boolean>();
 
 // a workaround until https://github.com/ianstormtaylor/slate/pull/4072 is merged
-// this has taken an average keypress from ~40-50ms to ~20-30ms
+// this has taken an average keypress from ~40-50ms to ~20-30ms in dev
 Node.isNodeList = (value): value is Node[] => {
   if (!Array.isArray(value)) {
     return false;
@@ -71,7 +71,7 @@ Node.isNodeList = (value): value is Node[] => {
 
 const IS_OPERATION_LIST_CACHE = new WeakMap<any[], boolean>();
 
-// this has taken pasting a pretty large document from ~5 seconds to ~3 seconds
+// this has taken pasting a pretty large document from ~5 seconds to ~3 seconds in dev
 Operation.isOperationList = (value): value is Operation[] => {
   if (!Array.isArray(value)) {
     return false;
