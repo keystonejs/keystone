@@ -4,7 +4,8 @@ The document editor is using [Slate](https://github.com/ianstormtaylor/slate). T
 
 ## Plugins
 
-For normalization and handling user input and some other things(you can see what they are by looking at the type definition for the `Editor` in Slate), you write [Slate "plugins"](https://docs.slatejs.org/concepts/07-plugins), plugins are not some special API, it means accepting an `Editor` object and returning it but modifying some of the properties.
+For normalization and handling user input and some other things(you can see what they are by looking at the type definition for the `Editor` in Slate), you write [Slate "plugins"](https://docs.slatejs.org/concepts/07-plugins).
+Plugins are not some special API, it means accepting an `Editor` object and returning it but modifying some of the properties.
 
 ## Rendering
 
@@ -12,30 +13,30 @@ The rendering of the editor is mostly like any other bit of React code. See http
 
 The editor is very performance-sensitive because it will re-render on every keystroke so keep these things in mind while writing code for rendering the editor:
 
-- Renderers for elements/leaves should never use `useSlate` or `useToolbarState` because they will change on every editor change, if they need to get the editor to do something in response to a user action, they should use `useStaticEditor` which will not cause re-renders
+- Renderers for elements/leaves should never use `useSlate` or `useToolbarState` because they will change on every editor change. If they need to get the editor to do something in response to a user action, they should use `useStaticEditor` which will not cause re-renders.
 - All state derived from the document/selection that is shown in the toolbar should come from `useToolbarState` so that it is only computed once
-- Components that use `useToolbarState` and are shown when the user is typing(i.e. things that aren't in dialogs) should memoize the React elements they return with `useMemo` to avoid re-rendering when the state they consume from `useToolbarState` hasn't changed
-- Calls to `useToolbarState` should be as deep as possible to re-render the smallest number of components change when the relevant part of the toolbar state changes(e.g. a tooltip should be above the component that renders the tooltip so that it doesn't need to re-render even if the button inside it needs to re-render)
+- Components that use `useToolbarState` and are shown when the user is typing (i.e. things that aren't in dialogs) should memoize the React elements they return with `useMemo` to avoid re-rendering when the state they consume from `useToolbarState` hasn't changed
+- Calls to `useToolbarState` should be as deep as possible to re-render the smallest number of components change when the relevant part of the toolbar state changes (e.g. a tooltip should be above the component that renders the tooltip so that it doesn't need to re-render even if the button inside it needs to re-render)
 
 ## Normalization
 
-Normalization is used in the editor to enforce a specific structure. Slate runs normalization by going through all the changed or "dirty" nodes and keeps calling `editor.normalizeNode` from the deepest node that changed up to the `Editor` until the normalization doesn't make any more changes.
+Normalization is used in the editor to enforce a specific structure. Slate runs normalization by going through all the changed or "dirty" nodes and calling `editor.normalizeNode` from the deepest node that changed up to the `Editor` until the normalization doesn't make any more changes.
 
 For example, if you have two lists next to each other, you want to merge them so that they're one list. You don't want to do this in response to a specific user action because any number of things could result in two lists being next to each other so this is where you would use normalization.
 
-Besides bespoke normalization for the different types of nodes, there is a set of generic normalization which enforces which block types can have which children, search for `editorSchema` in the to see how this works.
+Besides bespoke normalization for the different types of nodes, there is a set of generic normalization which enforces which block types can have which children. Search for `editorSchema` in the to see how this works.
 
 If you want to ensure that the parent of a node is always of a particular type, you must do this by checking the children of a node, not the parent of a node because normalization only runs on nodes that have changed and when a node is moved, normalization will not happen on that node because it did not actually change, normalization will happen on the parent it moved from and to though because both of those node's children array changed.
 
 ## User Input
 
-Some behaviour should happen in response to user input, for example markdown shortcuts. These shouldn't happen in normalization because you still want people to be able to write `> ` for example without it becoming a blockquote by undoing it so for these kind of things, they're handled by overriding `editor.insertText`, `editor.insertBreak`, `editor.insertData` or `onKeyDown`(which is a prop to the `Editable` component rather than on the editor instance)
+Some behaviour should happen in response to user input, for example markdown shortcuts. These shouldn't happen in normalization because you still want people to be able to write `> ` for example without it becoming a blockquote by undoing it so for these kind of things, they're handled by overriding `editor.insertText`, `editor.insertBreak`, `editor.insertData` or `onKeyDown` (which is a prop to the `Editable` component rather than on the editor instance).
 
 ## DocumentFeatures
 
 - `DocumentFeatures` is the configuration of what is enabled in the editor
 - Disabling a feature in `DocumentFeatures` disables it globally and means that it should not be shown in the toolbar and all instances of it should be normalized away
-- Features can also be disabled locally for the current selection(e.g. most things are disabled in code blocks, features can be disabled inside of component child props) which will be represented in the `ToolbarState`
+- Features can also be disabled locally for the current selection (e.g. most things are disabled in code blocks, features can be disabled inside of component child props) which will be represented in the `ToolbarState`
 - The disabled status in the `ToolbarState` refers to the local disabled status only, it doesn't care about the global disabled status so a feature could have `isDisabled: false` locally and be disabled globally
 
 ## Component Blocks
@@ -44,7 +45,7 @@ Component blocks are the main way that solution developers customise the editor.
 
 ## Tests
 
-The tests in the document editor are mainly about testing normalization and user input because most of the complexity is there though the UI is also rendered by helpers as a smoke test to ensure nothing immediately blows up. In tests, the document structure is written in jsx, use your editor's autocomplete to see what you can use in the jsx. When making assertions about the document structure of the editor, you should generally use inline snapshots. If you're abstractly testing some behaviour, for example testing markdown shortcuts for each of the marks, use `toEqualEditor`.
+The tests in the document editor are mainly about testing normalization and user input because most of the complexity is there. The UI is also rendered by helpers as a smoke test to ensure nothing immediately blows up. In tests, the document structure is written in jsx, use your editor's autocomplete to see what you can use in the jsx. When making assertions about the document structure of the editor, you should generally use inline snapshots. If you're abstractly testing some behaviour, for example testing markdown shortcuts for each of the marks, use `toEqualEditor`.
 
 ## Random notes
 
