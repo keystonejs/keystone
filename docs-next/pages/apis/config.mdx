@@ -205,14 +205,7 @@ In general you will use functions from the `@keystone-next/keystone/session` pac
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
 
 export default config({
-  session: withItemData(
-    statelessSessions({
-      /* ... */
-    }),
-    {
-      /* ... */
-    }
-  ),
+  session: withItemData(statelessSessions({ /* ... */ }), { /* ... */ }),
   /* ... */
 });
 ```
