@@ -49,7 +49,8 @@ The editor is very performance-sensitive because it will re-render on every keys
 ## Normalization
 
 Normalization is used in the editor to enforce a specific structure.
-Slate runs normalization by going through all the changed or "dirty" nodes and calling `editor.normalizeNode` from the deepest node that changed up to the `Editor` until the normalization doesn't make any more changes.
+Slate runs normalization by going through all the changed or "dirty" nodes when changes happen on client and calling `editor.normalizeNode` from the deepest node that changed up to the `Editor` until the normalization doesn't make any more changes.
+The entire document is also normalized in `resolveInput`.
 
 For example, if you have two lists next to each other, you want to merge them so that they're one list.
 You don't want to do this in response to a specific user action because any number of things could result in two lists being next to each other so this is where you would use normalization.
