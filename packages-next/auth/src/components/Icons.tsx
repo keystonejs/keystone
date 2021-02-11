@@ -1,8 +1,8 @@
 /* @jsx jsx */
 
-import { jsx } from '@keystone-ui/core';
+import { forwardRefWithAs, jsx } from '@keystone-ui/core';
 
-const Icon = ({ children, ...props }) => {
+const Icon: React.ComponentType = ({ children, ...props }) => {
   return (
     <a
       css={{
@@ -63,8 +63,9 @@ export const IconGithub = (props: any) => (
 // Misc
 // ==============================
 
-const A11yText = ({ tag: Tag = 'span', ...props }) => (
+const A11yText = forwardRefWithAs<'span', {}>(({ as: Tag = 'span', ...props }, ref) => (
   <Tag
+    ref={ref}
     css={{
       border: 0,
       clip: 'rect(1px, 1px, 1px, 1px)',
@@ -77,4 +78,4 @@ const A11yText = ({ tag: Tag = 'span', ...props }) => (
     }}
     {...props}
   />
-);
+));
