@@ -96,6 +96,8 @@ const { data, errors } = await context.executeGraphQL({
 });
 ```
 
+If you want to disable access control you can use the `context.sudo()` method, which is equivalent to `context.createContext({ skipAccessControl: true })`.
+
 ## General purpose operations
 
 There are situations where you might want to execute a GraphQL operations outside of the context of a resolver function.

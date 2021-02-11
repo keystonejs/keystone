@@ -11,10 +11,7 @@ exports.singleton = () => (
       const {
         data: { [list.gqlNames.listQueryMetaName]: listQuery } = {},
         errors,
-      } = await context.executeGraphQL({
-        context: context.createContext({ skipAccessControl: true }),
-        query,
-      });
+      } = await context.executeGraphQL({ context: context.sudo(), query });
       if (errors) {
         throw errors;
       }
