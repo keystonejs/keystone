@@ -2,7 +2,7 @@
 
 import { forwardRefWithAs, jsx } from '@keystone-ui/core';
 
-const Icon: React.ComponentType = ({ children, ...props }) => {
+const Icon = ({ children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
   return (
     <a
       css={{

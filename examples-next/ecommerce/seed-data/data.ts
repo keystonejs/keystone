@@ -1,9 +1,16 @@
+function timestamp() {
+  // sometime in the last 30 days
+  const stampy = Date.now() - Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 30);
+  return new Date(stampy).toISOString();
+}
+
 export const products = [
   {
     name: 'Yeti Hondo',
     description: 'soo nice',
+    status: 'AVAILABLE',
     price: 3423,
-    image: {
+    photo: {
       id: '5dfbed262849d7961377c2c0',
       filename: 'hondo.jpg',
       originalFilename: 'hondo.jpg',
@@ -17,7 +24,7 @@ export const products = [
         height: 457,
         format: 'jpg',
         resource_type: 'image',
-        created_at: '2019-12-19T21:35:35Z',
+        created_at: timestamp(),
         tags: [],
         bytes: 27871,
         type: 'upload',
@@ -32,16 +39,17 @@ export const products = [
     },
     // createdBy: null,
     // updatedBy: null,
-    // updatedAt_utc: '2019-12-19T21:35:35.739Z',
+    // updatedAt_utc: '2020-12-19T21:35:35.739Z',
     // updatedAt_offset: '+00:00',
-    // createdAt_utc: '2019-12-19T21:35:35.739Z',
+    // createdAt_utc: '2020-12-19T21:35:35.739Z',
     // createdAt_offset: '+00:00',
   },
   {
     name: 'Airmax 270',
     description: 'Great shoes!',
+    status: 'AVAILABLE',
     price: 5234,
-    image: {
+    photo: {
       id: '5e2a13f0689b2835ae71d1a5',
       filename: '270-camo-sunset.jpg',
       originalFilename: '270-camo-sunset.jpg',
@@ -55,7 +63,7 @@ export const products = [
         height: 640,
         format: 'jpg',
         resource_type: 'image',
-        created_at: '2020-01-23T21:45:20Z',
+        created_at: timestamp(),
         tags: [],
         bytes: 45455,
         type: 'upload',
@@ -78,8 +86,9 @@ export const products = [
   {
     name: 'KITH Hoodie',
     description: 'Love this hoodie',
+    status: 'AVAILABLE',
     price: 23562,
-    image: {
+    photo: {
       id: '5e2a13ff689b2835ae71d1a7',
       filename: 'kith-hoodie.jpg',
       originalFilename: 'kith-hoodie.jpg',
@@ -93,7 +102,7 @@ export const products = [
         height: 2000,
         format: 'jpg',
         resource_type: 'image',
-        created_at: '2020-01-23T21:45:35Z',
+        created_at: timestamp(),
         tags: [],
         bytes: 202924,
         type: 'upload',
@@ -116,8 +125,9 @@ export const products = [
   {
     name: 'Fanorak',
     description: 'Super hip. Comes in a number of colours',
+    status: 'AVAILABLE',
     price: 252342,
-    image: {
+    photo: {
       id: '5e2a1413689b2835ae71d1a9',
       filename: 'TNF-fanorak.png',
       originalFilename: 'TNF-fanorak.png',
@@ -131,7 +141,7 @@ export const products = [
         height: 1490,
         format: 'png',
         resource_type: 'image',
-        created_at: '2020-01-23T21:45:57Z',
+        created_at: timestamp(),
         tags: [],
         bytes: 2454948,
         type: 'upload',
@@ -154,8 +164,9 @@ export const products = [
   {
     name: 'Nike Vapormax',
     description: 'Kind of squeaky on some floors',
+    status: 'AVAILABLE',
     price: 83456,
-    image: {
+    photo: {
       id: '5e2a142c689b2835ae71d1ab',
       filename: 'vapormax.jpg',
       originalFilename: 'vapormax.jpg',
@@ -169,7 +180,7 @@ export const products = [
         height: 735,
         format: 'jpg',
         resource_type: 'image',
-        created_at: '2020-01-23T21:46:20Z',
+        created_at: timestamp(),
         tags: [],
         bytes: 183071,
         type: 'upload',
@@ -192,8 +203,9 @@ export const products = [
   {
     name: 'Yeti Cooler',
     description: 'Who spends this much on a cooler?!',
+    status: 'AVAILABLE',
     price: 75654,
-    image: {
+    photo: {
       id: '5e2a143f689b2835ae71d1ad',
       filename: 'coral-yeti.jpg',
       originalFilename: 'coral-yeti.jpg',
@@ -207,7 +219,7 @@ export const products = [
         height: 1144,
         format: 'jpg',
         resource_type: 'image',
-        created_at: '2020-01-23T21:46:39Z',
+        created_at: timestamp(),
         tags: [],
         bytes: 286643,
         type: 'upload',
@@ -230,8 +242,9 @@ export const products = [
   {
     name: 'Naked and Famous Denim',
     description: 'Japanese Denim, made in Canada',
+    status: 'AVAILABLE',
     price: 10924,
-    image: {
+    photo: {
       id: '5e2a145d689b2835ae71d1af',
       filename: 'naked-and-famous-denim.jpg',
       originalFilename: 'naked-and-famous-denim.jpg',
@@ -245,7 +258,7 @@ export const products = [
         height: 683,
         format: 'jpg',
         resource_type: 'image',
-        created_at: '2020-01-23T21:47:10Z',
+        created_at: timestamp(),
         tags: [],
         bytes: 146817,
         type: 'upload',
@@ -268,8 +281,9 @@ export const products = [
   {
     name: 'Rimowa Luggage',
     description: 'S T E A L T H',
+    status: 'AVAILABLE',
     price: 47734,
-    image: {
+    photo: {
       id: '5e2a147b689b2835ae71d1b1',
       filename: 'rimowa.png',
       originalFilename: 'rimowa.png',
@@ -283,7 +297,7 @@ export const products = [
         height: 1004,
         format: 'png',
         resource_type: 'image',
-        created_at: '2020-01-23T21:47:40Z',
+        created_at: timestamp(),
         tags: [],
         bytes: 953657,
         type: 'upload',
@@ -306,8 +320,9 @@ export const products = [
   {
     name: 'Black Hole ',
     description: 'Outdoorsy ',
+    status: 'AVAILABLE',
     price: 4534,
-    image: {
+    photo: {
       id: '5e2a149b689b2835ae71d1b3',
       filename: 'patagonia black hole.jpg',
       originalFilename: 'patagonia black hole.jpg',
@@ -321,7 +336,7 @@ export const products = [
         height: 2000,
         format: 'jpg',
         resource_type: 'image',
-        created_at: '2020-01-23T21:48:13Z',
+        created_at: timestamp(),
         tags: [],
         bytes: 515360,
         type: 'upload',
@@ -344,8 +359,9 @@ export const products = [
   {
     name: 'Nudie Belt',
     description: 'Sick design',
+    status: 'AVAILABLE',
     price: 5234,
-    image: {
+    photo: {
       id: '5e2a14b1689b2835ae71d1b5',
       filename: 'nudie-belt.jpg',
       originalFilename: 'nudie-belt.jpg',
@@ -359,7 +375,7 @@ export const products = [
         height: 650,
         format: 'jpg',
         resource_type: 'image',
-        created_at: '2020-01-23T21:48:34Z',
+        created_at: timestamp(),
         tags: [],
         bytes: 71291,
         type: 'upload',
@@ -382,8 +398,9 @@ export const products = [
   {
     name: 'Goose',
     description: 'Keep warm.',
+    status: 'AVAILABLE',
     price: 74544,
-    image: {
+    photo: {
       id: '5e2a14bf689b2835ae71d1b7',
       filename: 'canada-goose.jpg',
       originalFilename: 'canada-goose.jpg',
@@ -397,7 +414,7 @@ export const products = [
         height: 800,
         format: 'jpg',
         resource_type: 'image',
-        created_at: '2020-01-23T21:48:48Z',
+        created_at: timestamp(),
         tags: [],
         bytes: 180261,
         type: 'upload',
@@ -420,8 +437,9 @@ export const products = [
   {
     name: 'Ultraboost',
     description: 'blacked out',
+    status: 'AVAILABLE',
     price: 6344,
-    image: {
+    photo: {
       id: '5e2a14cc689b2835ae71d1b9',
       filename: 'ultra-boost.jpg',
       originalFilename: 'ultra-boost.jpg',
@@ -435,7 +453,7 @@ export const products = [
         height: 372,
         format: 'jpg',
         resource_type: 'image',
-        created_at: '2020-01-23T21:49:01Z',
+        created_at: timestamp(),
         tags: [],
         bytes: 50754,
         type: 'upload',

@@ -12,7 +12,7 @@ import { CREATE_USER } from '../../graphql/users';
 
 const onChange = handler => e => handler(e.target.value);
 
-export default () => {
+const SignUp = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -104,3 +104,5 @@ export default () => {
     </>
   );
 };
+
+export default SignUp;

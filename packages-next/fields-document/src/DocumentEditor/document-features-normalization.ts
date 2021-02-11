@@ -67,12 +67,12 @@ export function normalizeInlineBasedOnLinksAndRelationships(
   if (
     node.type === 'relationship' &&
     (!relationshipsEnabled ||
-      relationships[node.relationship as string] === undefined ||
-      relationships[node.relationship as string].kind !== 'inline')
+      relationships[node.relationship] === undefined ||
+      relationships[node.relationship].kind !== 'inline')
   ) {
     const data: any = node.data;
     if (data) {
-      const relationship = relationships[node.relationship as string];
+      const relationship = relationships[node.relationship];
       Transforms.insertText(
         editor,
         `${data.label || data.id || ''} (${
@@ -103,14 +103,13 @@ export function normalizeElementBasedOnDocumentFeatures(
 ): boolean {
   if (
     (node.type === 'heading' &&
-      (!formatting.headingLevels.length ||
-        !formatting.headingLevels.includes(node.level as any))) ||
+      (!formatting.headingLevels.length || !formatting.headingLevels.includes(node.level))) ||
     (node.type === 'ordered-list' && !formatting.listTypes.ordered) ||
     (node.type === 'unordered-list' && !formatting.listTypes.unordered) ||
     (node.type === 'code' && !formatting.blockTypes.code) ||
     (node.type === 'blockquote' && !formatting.blockTypes.blockquote) ||
     (node.type === 'layout' &&
-      (layouts.length === 0 || !layouts.some(layout => areArraysEqual(layout, node.layout as any))))
+      (layouts.length === 0 || !layouts.some(layout => areArraysEqual(layout, node.layout))))
   ) {
     Transforms.unwrapNodes(editor, { at: path });
     return true;

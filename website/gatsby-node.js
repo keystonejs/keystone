@@ -28,6 +28,7 @@ const GROUPS = [
   'list-plugins',
   'road-map',
 ];
+
 const SUB_GROUPS = [
   '',
   'apps',

@@ -9,7 +9,7 @@ import Meta from '../components/Meta';
 import { gridSize } from '../theme';
 import Signup from '../components/auth/signup';
 
-export default () => {
+const SignUp = () => {
   return (
     <>
       <Meta title="Join" />
@@ -22,3 +22,5 @@ export default () => {
     </>
   );
 };
+
+export default SignUp;

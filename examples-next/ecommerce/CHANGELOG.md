@@ -1,5 +1,32 @@
 # @keystone-next/example-ecommerce
 
+## 0.3.1
+
+### Patch Changes
+
+- [`75d3c521e`](https://github.com/keystonejs/keystone/commit/75d3c521e4f1f0a1eec9bc91319839a2afc000e0) [#4770](https://github.com/keystonejs/keystone/pull/4770) Thanks [@timleslie](https://github.com/timleslie)! - Upgraded Next.js dependency to `10.0.5`.
+
+- Updated dependencies [[`6ecd2a766`](https://github.com/keystonejs/keystone/commit/6ecd2a766c868d46f84291bc1611eadef79e6100), [`777981069`](https://github.com/keystonejs/keystone/commit/7779810691c4154e1344ced4fb94c5bb9524a71f), [`75d3c521e`](https://github.com/keystonejs/keystone/commit/75d3c521e4f1f0a1eec9bc91319839a2afc000e0), [`4d808eaa5`](https://github.com/keystonejs/keystone/commit/4d808eaa5aa1593ad1e54000d80f674f7c4d12bd)]:
+  - @keystone-next/types@12.0.1
+  - @keystone-next/admin-ui@8.0.2
+  - @keystone-next/keystone@9.3.1
+
+## 0.3.0
+
+### Minor Changes
+
+- [`909459ea4`](https://github.com/keystonejs/keystone/commit/909459ea4edff1680bc9b95104edbb4eee4f8253) [#4755](https://github.com/keystonejs/keystone/pull/4755) Thanks [@timleslie](https://github.com/timleslie)! - Updated with the latest changes from the advanced-react course.
+
+### Patch Changes
+
+- Updated dependencies [[`1744c5f05`](https://github.com/keystonejs/keystone/commit/1744c5f05c9a13e680aaa1ed151f23f1d015ed9c), [`26543bd07`](https://github.com/keystonejs/keystone/commit/26543bd0752c470e336d61644c14e6a5333f65c0), [`d9675553b`](https://github.com/keystonejs/keystone/commit/d9675553b33f39e2c7ada7eb6555d16e9fccb37e), [`fd0dff3fd`](https://github.com/keystonejs/keystone/commit/fd0dff3fdfcbe20b2884357a6e1b20f1b7307652), [`314edec3d`](https://github.com/keystonejs/keystone/commit/314edec3d12f3bb56611f101edc3a78cba940605), [`5be53ddc3`](https://github.com/keystonejs/keystone/commit/5be53ddc39be1415d56e2fa5e7898ab9edf468d5), [`fb8bcff91`](https://github.com/keystonejs/keystone/commit/fb8bcff91ef487730164c3330e0742ab13d9b3d7), [`096927a68`](https://github.com/keystonejs/keystone/commit/096927a6813a23030988ba8b64b2e8452f571a33)]:
+  - @keystone-next/types@12.0.0
+  - @keystone-next/keystone@9.3.0
+  - @keystone-next/auth@14.0.0
+  - @keystone-next/admin-ui@8.0.1
+  - @keystone-next/cloudinary@2.0.9
+  - @keystone-next/fields@4.1.1
+
 ## 0.2.11
 
 ### Patch Changes

@@ -1,20 +1,5 @@
-/* @jsx jsx */
-
-import { ReactNode } from 'react';
-import { jsx, useTheme } from '@keystone-ui/core';
+import React, { ReactNode } from 'react';
 
 export const Code = ({ children }: { children: ReactNode }) => {
-  const { palette, spacing, radii } = useTheme();
-  return (
-    <code
-      css={{
-        color: palette.neutral700,
-        background: palette.neutral100,
-        padding: spacing.xsmall,
-        borderRadius: radii.small,
-      }}
-    >
-      {children}
-    </code>
-  );
+  return <code className="text-gray-700 bg-gray-50 p-2 rounded">{children}</code>;
 };

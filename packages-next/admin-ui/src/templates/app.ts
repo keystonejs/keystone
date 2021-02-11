@@ -11,8 +11,8 @@ import {
   SelectionNode,
 } from 'graphql';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
-import { viewHash } from '../utils/viewHash';
 import Path from 'path';
+import { serializePathForImport } from '../utils/serializePathForImport';
 
 type AppTemplateOptions = { configFileExists: boolean; projectAdminPath: string };
 
@@ -42,13 +42,12 @@ export const appTemplate = (
       }
     }
   });
-  const allViews = [..._allViews];
-  const viewPaths: Record<string, string> = {};
-  for (const views of allViews) {
-    viewPaths[views] = Path.isAbsolute(views)
+  const allViews = [..._allViews].map(views => {
+    const viewPath = Path.isAbsolute(views)
       ? Path.relative(Path.join(projectAdminPath, 'pages'), views)
       : views;
-  }
+    return serializePathForImport(viewPath);
+  });
   // -- TEMPLATE START
   return `
 import React from 'react';
@@ -57,7 +56,7 @@ import { KeystoneProvider } from '@keystone-next/admin-ui/context';
 import { ErrorBoundary } from '@keystone-next/admin-ui/components';
 import { Core } from '@keystone-ui/core';
 
-${allViews.map(views => `import * as ${viewHash(views)} from "${viewPaths[views]}"`).join('\n')}
+${allViews.map((views, i) => `import * as view${i} from ${views}`).join('\n')}
 
 ${
   configFileExists
@@ -65,7 +64,7 @@ ${
     : 'const adminConfig = {};'
 }
 
-const fieldViews = {${allViews.map(viewHash)}};
+const fieldViews = [${allViews.map((_, i) => `view${i}`)}];
 
 const lazyMetadataQuery = ${JSON.stringify(getLazyMetadataQuery(graphQLSchema, adminMeta))};
 

@@ -1,83 +1,78 @@
-/* @jsx jsx */
-
-import { Fragment, ReactNode } from 'react';
-import { jsx, useTheme } from '@keystone-ui/core';
+import React, { Fragment, ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-
-const Brand = () => {
-  const { palette } = useTheme();
-  return (
-    <h2>
-      <Link href="/" passHref>
-        <a
-          css={{
-            color: palette.neutral700,
-            textDecoration: 'none',
-            display: 'block',
-          }}
-        >
-          Keystone Next
-        </a>
-      </Link>
-    </h2>
-  );
-};
+import cx from 'classnames';
 
 type SectionProps = { label: string; children: ReactNode };
 const Section = ({ label, children }: SectionProps) => {
   return (
     <Fragment>
-      <h3>{label}</h3>
-      <ul css={{ margin: 0, padding: 0 }}>{children}</ul>
+      <h3 className="uppercase mt-6 mb-2 text-gray-700 font-bold">{label}</h3>
+      {children}
     </Fragment>
   );
 };
 
 type NavItemProps = { href: string; children: ReactNode };
 const NavItem = ({ href, children }: NavItemProps) => {
-  const { palette, radii, spacing } = useTheme();
   const router = useRouter();
   const isSelected = router.pathname === href;
   return (
-    <li
-      css={{
-        listStyle: 'none',
-        marginLeft: 0,
-        paddingLeft: 0,
-      }}
-    >
-      <Link href={href} passHref>
-        <a
-          css={{
-            color: isSelected ? palette.neutral800 : palette.neutral700,
-            backgroundColor: isSelected ? palette.white : undefined,
-            borderRadius: radii.medium,
-            padding: spacing.small,
-            display: 'block',
-            textDecoration: 'none',
-            ':hover': {
-              color: isSelected ? undefined : palette.blue500,
-              backgroundColor: isSelected ? undefined : palette.white,
-            },
-          }}
-        >
-          {children}
-        </a>
-      </Link>
-    </li>
+    <Link href={href} passHref>
+      <a
+        className={cx(
+          isSelected ? 'text-gray-900' : 'text-gray-500 hover:text-gray-800',
+          'block no-underline py-1'
+        )}
+      >
+        {children}
+      </a>
+    </Link>
   );
 };
 
+// const SubSection: React.ComponentType<{ label: string }> = ({ children, label }) => {
+//   return (
+//     <Fragment>
+//       <h4
+//         css={{
+//           fontWeight: 500,
+//           fontSize: '1em',
+//           textTransform: 'uppercase',
+//           margin: '0.5em 0',
+//         }}
+//       >
+//         {label}
+//       </h4>
+//       <ul css={{ padding: 0 }}>{children}</ul>
+//     </Fragment>
+//   );
+// };
+
 export const Navigation = () => {
   return (
-    <Fragment>
-      <Brand />
+    <div className="font-medium">
+      <NavItem href="/">Welcome</NavItem>
       <Section label="Guides">
         <NavItem href="/guides/getting-started">Getting Started</NavItem>
         <NavItem href="/guides/installation">Installation</NavItem>
-        <NavItem href="/guides/api">API</NavItem>
+        <NavItem href="/guides/cli">Command Line</NavItem>
+        <NavItem href="/guides/access-control">Access Control</NavItem>
+        <NavItem href="/guides/hooks">Hooks</NavItem>
+        <NavItem href="/guides/schema-extension">Schema Extension</NavItem>
+        <NavItem href="/guides/document">Document Fields</NavItem>
+        <NavItem href="/guides/virtual">Virtual Fields</NavItem>
       </Section>
-    </Fragment>
+      <Section label="API">
+        <NavItem href="/apis/config">Config API</NavItem>
+        <NavItem href="/apis/schema">Schema API</NavItem>
+        <NavItem href="/apis/fields">Fields API</NavItem>
+        <NavItem href="/apis/access-control">Access Control API</NavItem>
+        <NavItem href="/apis/hooks">Hooks API</NavItem>
+        <NavItem href="/apis/session">Session API</NavItem>
+        <NavItem href="/apis/context">Context API</NavItem>
+        <NavItem href="/apis/graphql">GraphQL API</NavItem>
+      </Section>
+    </div>
   );
 };

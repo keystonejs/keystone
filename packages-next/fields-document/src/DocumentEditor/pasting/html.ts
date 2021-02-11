@@ -1,6 +1,6 @@
 // loosely based on https://github.com/ianstormtaylor/slate/blob/d22c76ae1313fe82111317417912a2670e73f5c9/site/examples/paste-html.tsx
 
-import { Descendant } from 'slate';
+import { Descendant, Element } from 'slate';
 import { Mark } from '../utils';
 import {
   addMarksToChildren,
@@ -31,7 +31,13 @@ function getAlignmentFromElement(element: Node): 'center' | 'end' | undefined {
   }
 }
 
-const ELEMENT_TAGS: Record<string, (element: Node) => Record<string, any>> = {
+// See https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#distributive-conditional-types
+type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
+
+const ELEMENT_TAGS: Record<
+  string,
+  (element: Node) => DistributiveOmit<Element, 'children'> & { children?: Descendant[] }
+> = {
   A: el => ({
     type: 'link',
     href: (el as any).getAttribute('href'),
@@ -145,7 +151,7 @@ export function deserializeHTMLNode(el: Node): Descendant[] {
   const marks = marksFromElementAttributes(el);
 
   // Dropbox Paper displays blockquotes as lists for some reason
-  if (el instanceof Element && el.classList.contains('listtype-quote')) {
+  if (el instanceof globalThis.Element && el.classList.contains('listtype-quote')) {
     marks.delete('italic');
     nodeName = 'BLOCKQUOTE';
   }

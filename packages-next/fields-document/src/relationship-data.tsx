@@ -1,6 +1,6 @@
 import { Relationships } from './DocumentEditor/relationship';
 import { BaseGeneratedListTypes, GqlNames, KeystoneGraphQLAPI } from '@keystone-next/types';
-import { Node } from 'slate';
+import { Descendant } from 'slate';
 import { ComponentBlock, ComponentPropField } from './DocumentEditor/component-blocks/api';
 import { assertNever } from './DocumentEditor/component-blocks/utils';
 import { GraphQLSchema, executeSync, parse } from 'graphql';
@@ -10,12 +10,12 @@ const labelFieldAlias = '____document_field_relationship_item_label';
 const idFieldAlias = '____document_field_relationship_item_id';
 
 export function addRelationshipData(
-  nodes: Node[],
+  nodes: Descendant[],
   graphQLAPI: KeystoneGraphQLAPI<Record<string, BaseGeneratedListTypes>>,
   relationships: Relationships,
   componentBlocks: Record<string, ComponentBlock>,
   gqlNames: (listKey: string) => GqlNames
-): Promise<Node[]> {
+): Promise<Descendant[]> {
   let fetchData = async (relationshipKey: string, data: any) => {
     const relationship = relationships[relationshipKey];
     if (!relationship) return data;
@@ -83,7 +83,7 @@ export function addRelationshipData(
               fetchData
             ),
             addRelationshipData(
-              node.children as Node[],
+              node.children,
               graphQLAPI,
               relationships,
               componentBlocks,
@@ -97,11 +97,11 @@ export function addRelationshipData(
           };
         }
       }
-      if (Array.isArray(node.children)) {
+      if ('children' in node && Array.isArray(node.children)) {
         return {
           ...node,
           children: await addRelationshipData(
-            node.children as Node[],
+            node.children,
             graphQLAPI,
             relationships,
             componentBlocks,

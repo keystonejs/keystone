@@ -1,5 +1,11 @@
 # @keystonejs/keystone
 
+## 19.1.0
+
+### Minor Changes
+
+- [`3c1fa3203`](https://github.com/keystonejs/keystone/commit/3c1fa3203a6a9eeb2525c256f858f2e6cebea804) [#4738](https://github.com/keystonejs/keystone/pull/4738) Thanks [@MurzNN](https://github.com/MurzNN)! - Added an `APP_URL` environment variable and `--app-url` command line option to a set custom URL to be reported when starting the server.
+
 ## 19.0.0
 
 ### Major Changes
