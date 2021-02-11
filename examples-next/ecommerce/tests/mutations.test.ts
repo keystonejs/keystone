@@ -24,7 +24,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
             id
             label
             total
-            items(sortBy: [name_ASC]) { name user { id } description price quantity image { id } }
+            items(sortBy: [name_ASC]) { name description price quantity photo { id } }
             user { id }
             charge
           } }`;
@@ -38,7 +38,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           });
           expect(data).toEqual({ checkout: null });
           expect(errors).toHaveLength(1);
-          expect(errors![0].message).toEqual('You must be signed in to complete this order.');
+          expect(errors![0].message).toEqual('Sorry! You must be signed in to create an order!');
         })
       );
       test(
@@ -53,9 +53,9 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
               description: 'TEST 1',
               status: 'AVAILABLE',
               price: 5,
-              image: { create: { altText: 'product 1' } },
+              photo: { create: { altText: 'product 1' } },
             },
-            resolveFields: 'id name description price image { id }',
+            resolveFields: 'id name description price photo { id }',
           });
           const product2 = await Product.createOne({
             data: {
@@ -63,9 +63,9 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
               description: 'TEST 2',
               status: 'AVAILABLE',
               price: 7,
-              image: { create: { altText: 'product 2' } },
+              photo: { create: { altText: 'product 2' } },
             },
-            resolveFields: 'id name description price image { id }',
+            resolveFields: 'id name description price photo { id }',
           });
 
           // Create some users
@@ -105,17 +105,15 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           expect(result1.data!.checkout.user.id).toEqual(user1.id);
           expect(result1.data!.checkout.items).toHaveLength(2);
           expect(result1.data!.checkout.items[0].name).toEqual(product1.name);
-          expect(result1.data!.checkout.items[0].user.id).toEqual(user1.id);
           expect(result1.data!.checkout.items[0].description).toEqual(product1.description);
           expect(result1.data!.checkout.items[0].price).toEqual(product1.price);
           expect(result1.data!.checkout.items[0].quantity).toEqual(3);
-          expect(result1.data!.checkout.items[0].image.id).toEqual(product1.image.id);
+          expect(result1.data!.checkout.items[0].photo.id).toEqual(product1.photo.id);
           expect(result1.data!.checkout.items[1].name).toEqual(product2.name);
-          expect(result1.data!.checkout.items[1].user.id).toEqual(user1.id);
           expect(result1.data!.checkout.items[1].description).toEqual(product2.description);
           expect(result1.data!.checkout.items[1].price).toEqual(product2.price);
           expect(result1.data!.checkout.items[1].quantity).toEqual(2);
-          expect(result1.data!.checkout.items[1].image.id).toEqual(product2.image.id);
+          expect(result1.data!.checkout.items[1].photo.id).toEqual(product2.photo.id);
 
           // Checkout user 2
           const result2 = await asUser(context, user2.id).graphql.raw({
@@ -130,17 +128,15 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           expect(result2.data!.checkout.user.id).toEqual(user2.id);
           expect(result2.data!.checkout.items).toHaveLength(2);
           expect(result2.data!.checkout.items[0].name).toEqual(product1.name);
-          expect(result2.data!.checkout.items[0].user.id).toEqual(user2.id);
           expect(result2.data!.checkout.items[0].description).toEqual(product1.description);
           expect(result2.data!.checkout.items[0].price).toEqual(product1.price);
           expect(result2.data!.checkout.items[0].quantity).toEqual(2);
-          expect(result2.data!.checkout.items[0].image.id).toEqual(product1.image.id);
+          expect(result2.data!.checkout.items[0].photo.id).toEqual(product1.photo.id);
           expect(result2.data!.checkout.items[1].name).toEqual(product2.name);
-          expect(result2.data!.checkout.items[1].user.id).toEqual(user2.id);
           expect(result2.data!.checkout.items[1].description).toEqual(product2.description);
           expect(result2.data!.checkout.items[1].price).toEqual(product2.price);
           expect(result2.data!.checkout.items[1].quantity).toEqual(3);
-          expect(result2.data!.checkout.items[1].image.id).toEqual(product2.image.id);
+          expect(result2.data!.checkout.items[1].photo.id).toEqual(product2.photo.id);
         })
       );
     });
@@ -156,7 +152,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           const { data, errors } = await graphql.raw({ query, variables: { productId } });
           expect(data).toEqual({ addToCart: null });
           expect(errors).toHaveLength(1);
-          expect(errors![0].message).toEqual('You must be signed in to add cart items.');
+          expect(errors![0].message).toEqual('You must be logged in to do this!');
         })
       );
 
@@ -198,7 +194,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           expect(data).toEqual({ addToCart: null });
           expect(errors).toHaveLength(1);
           expect(errors![0].message).toEqual(
-            'Argument "productId" of non-null type "ID!" must not be null.'
+            'Variable "$data" got invalid value null at "data.product.connect.id"; Expected non-nullable type "ID!" not to be null.'
           );
         })
       );

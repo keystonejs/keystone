@@ -1,18 +1,11 @@
-import { permissionsList } from './fields';
+import { permissionsList } from './schemas/fields';
 import { ListAccessArgs } from './types';
+// At it's simplest, the access control returns a yes or no value depending on the users session
 
-/*
-  The basic level of access to the system is being signed in as a valid user. This gives you access
-  to the Admin UI, access to your own User and Todo items, and read access to roles.
-*/
-export const isSignedIn = ({ session }: ListAccessArgs) => {
+export function isSignedIn({ session }: ListAccessArgs) {
   return !!session;
-};
+}
 
-/*
-  Permissions are shorthand functions for checking that the current user's role has the specified
-  permission boolean set to true
-*/
 const generatedPermissions = Object.fromEntries(
   permissionsList.map(permission => [
     permission,
@@ -22,61 +15,68 @@ const generatedPermissions = Object.fromEntries(
   ])
 );
 
+// Permissions check if someone meets a criteria - yes or no.
 export const permissions = {
-  // We create a permission for each can* field on the Role type
   ...generatedPermissions,
-  // we can also add additional permissions as we need them
-  isAwesome({ session }: ListAccessArgs) {
-    if (session?.data.name?.includes('wes') || session?.data.name?.includes('jed')) {
-      // they are awesome, let them have access
-      return true;
-    }
-    return false; // not awesome, no access
+  isAwesome({ session }: ListAccessArgs): boolean {
+    return !!session?.data.name.includes('wes');
   },
 };
 
-/*
-  Rules are logical functions that can be used for list access, and may return a boolean (meaning
-  all or no items are available) or a set of filters that limit the available items
-*/
+// Rule based function
+// Rules can return a boolean - yes or no - or a filter which limits which products they can CRUD.
 export const rules = {
-  canOrder: ({ session }: ListAccessArgs) => {
-    if (!session) return false; // not signed in
-    if (permissions.canManageCart(session)) return true; // if they have the permission
-    // otherwise we only show them cart items that they own
-    return {
-      user: { id: session.itemId },
-    };
-  },
-  canReadUsers: ({ session }: ListAccessArgs) => {
-    if (!session) {
-      // No session? No people.
+  canManageProducts({ session }: ListAccessArgs) {
+    if (!isSignedIn({ session })) {
       return false;
-    } else if (session.data.role?.canSeeOtherUsers) {
-      // Can see everyone
-      return true;
-    } else {
-      // Can only see yourself
-      return { id: session.itemId };
     }
+    // 1. Do they have the permission of canManageProducts
+    if (permissions.canManageProducts({ session })) {
+      return true;
+    }
+    // 2. If not, do they own this item?
+    return { user: { id: session?.itemId } };
   },
-  canUpdateUsers: ({ session }: ListAccessArgs) => {
-    if (!session) {
-      // No session? No people.
+  canOrder({ session }: ListAccessArgs) {
+    if (!isSignedIn({ session })) {
       return false;
-    } else if (session.data.role?.canManageUsers) {
-      // Can update everyone
-      return true;
-    } else {
-      // Can update yourself
-      return { id: session.itemId };
     }
+    // 1. Do they have the permission of canManageProducts
+    if (permissions.canManageCart({ session })) {
+      return true;
+    }
+    // 2. If not, do they own this item?
+    return { user: { id: session?.itemId } };
   },
-  canReadProducts: ({ session }: ListAccessArgs) => {
-    if (session?.data.role?.canManageProducts) {
-      return true;
-    } else {
-      return { status: 'AVAILABLE' };
+  canManageOrderItems({ session }: ListAccessArgs) {
+    if (!isSignedIn({ session })) {
+      return false;
     }
+    // 1. Do they have the permission of canManageProducts
+    if (permissions.canManageCart({ session })) {
+      return true;
+    }
+    // 2. If not, do they own this item?
+    return { order: { user: { id: session?.itemId } } };
+  },
+  canReadProducts({ session }: ListAccessArgs) {
+    if (!isSignedIn({ session })) {
+      return false;
+    }
+    if (permissions.canManageProducts({ session })) {
+      return true; // They can read everything!
+    }
+    // They should only see available products (based on the status field)
+    return { status: 'AVAILABLE' };
+  },
+  canManageUsers({ session }: ListAccessArgs) {
+    if (!isSignedIn({ session })) {
+      return false;
+    }
+    if (permissions.canManageUsers({ session })) {
+      return true;
+    }
+    // Otherwise they may only update themselves!
+    return { id: session?.itemId };
   },
 };

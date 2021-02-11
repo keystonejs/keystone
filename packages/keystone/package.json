@@ -1,7 +1,7 @@
 {
   "name": "@keystonejs/keystone",
   "description": "The main @keystonejs class & CLI. This is where the magic happens.",
-  "version": "19.0.0",
+  "version": "19.1.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -25,11 +25,11 @@
     "endent": "^2.0.1",
     "ensure-error": "^3.0.1",
     "express": "^4.17.1",
-    "express-pino-logger": "^5.0.0",
+    "express-pino-logger": "^6.0.0",
     "falsey": "^1.0.0",
     "fs-extra": "^9.1.0",
     "globby": "^11.0.2",
-    "graphql": "^15.4.0",
+    "graphql": "^15.5.0",
     "graphql-type-json": "^0.3.2",
     "graphql-upload": "^11.0.0",
     "lodash.flattendeep": "^4.4.0",

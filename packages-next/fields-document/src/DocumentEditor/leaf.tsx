@@ -37,7 +37,7 @@ function Placeholder({ placeholder, children }: { placeholder: string; children:
             }
           }}
         >
-          {placeholder as string}
+          {placeholder}
         </span>
       </span>
       {children}
@@ -61,7 +61,7 @@ const Leaf = ({ leaf, text, children, attributes }: RenderLeafProps) => {
   } = leaf;
 
   if (placeholder !== undefined) {
-    children = <Placeholder placeholder={placeholder as string}>{children}</Placeholder>;
+    children = <Placeholder placeholder={placeholder}>{children}</Placeholder>;
   }
 
   if (insertMenu) {

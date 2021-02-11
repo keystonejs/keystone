@@ -15,6 +15,7 @@ import {
   Text,
   Descendant,
   Path,
+  Operation,
 } from 'slate';
 import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
@@ -48,6 +49,39 @@ const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
   'mod+i': 'italic',
   'mod+u': 'underline',
+};
+
+const IS_NODE_LIST_CACHE = new WeakMap<any[], boolean>();
+
+// a workaround until https://github.com/ianstormtaylor/slate/pull/4072 is merged
+// this has taken an average keypress from ~40-50ms to ~20-30ms in dev
+Node.isNodeList = (value): value is Node[] => {
+  if (!Array.isArray(value)) {
+    return false;
+  }
+  const cachedResult = IS_NODE_LIST_CACHE.get(value);
+  if (cachedResult !== undefined) {
+    return cachedResult;
+  }
+  const isNodeList = value.every(val => Node.isNode(val));
+  IS_NODE_LIST_CACHE.set(value, isNodeList);
+  return isNodeList;
+};
+
+const IS_OPERATION_LIST_CACHE = new WeakMap<any[], boolean>();
+
+// this has taken pasting a pretty large document from ~5 seconds to ~3 seconds in dev
+Operation.isOperationList = (value): value is Operation[] => {
+  if (!Array.isArray(value)) {
+    return false;
+  }
+  const cachedResult = IS_OPERATION_LIST_CACHE.get(value);
+  if (cachedResult !== undefined) {
+    return cachedResult;
+  }
+  const isOperationList = value.every(val => Operation.isOperation(val));
+  IS_OPERATION_LIST_CACHE.set(value, isOperationList);
+  return isOperationList;
 };
 
 function isMarkActive(editor: Editor, mark: Mark) {
@@ -177,8 +211,8 @@ export function DocumentEditor({
   documentFeatures,
 }: {
   autoFocus?: boolean;
-  onChange: undefined | ((value: Node[]) => void);
-  value: Node[];
+  onChange: undefined | ((value: Descendant[]) => void);
+  value: Descendant[];
   componentBlocks: Record<string, ComponentBlock>;
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
@@ -193,10 +227,6 @@ export function DocumentEditor({
     ],
     [documentFeatures, componentBlocks, relationships]
   );
-
-  useMemo(() => {
-    findDuplicateNodes(value);
-  }, [value]);
 
   return (
     <div
@@ -286,17 +316,27 @@ export function DocumentEditorEditable({
       decorate={useCallback(
         ([node, path]: NodeEntry<Node>) => {
           let decorations: Range[] = [];
-          if (node.type === 'component-block' && Element.isElement(node)) {
-            if (node.children.length === 1 && node.children[0].propPath === undefined) {
+          if (node.type === 'component-block') {
+            if (
+              node.children.length === 1 &&
+              Element.isElement(node.children[0]) &&
+              node.children[0].type === 'component-inline-prop' &&
+              node.children[0].propPath === undefined
+            ) {
               return decorations;
             }
             node.children.forEach((child, index) => {
-              if (Node.string(child) === '') {
+              if (
+                Node.string(child) === '' &&
+                Element.isElement(child) &&
+                (child.type === 'component-block-prop' || child.type === 'component-inline-prop') &&
+                child.propPath !== undefined
+              ) {
                 const start = Editor.start(editor, [...path, index]);
                 const placeholder = getPlaceholderTextForPropPath(
-                  child.propPath as any,
-                  componentBlocks[node.component as string].props,
-                  node.props as any
+                  child.propPath,
+                  componentBlocks[node.component].props,
+                  node.props
                 );
                 if (placeholder) {
                   decorations.push({
@@ -362,49 +402,42 @@ while (listDepth--) {
   }
 }
 
-/**
- * Slate freaks out(which is quite expected ofc) if the
- * same nodes(as in ===, same shape is fine) are in the tree
- * multiple times so we'll validate it here to avoid running into it
- * strange and hard to debug problems
- */
-function findDuplicateNodes(nodes: Node[], found: WeakSet<object> = new WeakSet()) {
-  for (const node of nodes) {
-    if (found.has(node)) {
-      throw new Error('Duplicate node found: ' + JSON.stringify(node));
-    }
-    found.add(node);
-    if (Array.isArray(node.children)) {
-      findDuplicateNodes(node.children, found);
-    }
-  }
-}
+type Block = Exclude<Element, { type: 'relationship' | 'link' }>;
+
+type BlockType = Block['type'];
 
 type EditorSchema = Record<
-  string,
+  BlockType | 'editor',
   | {
       kind: 'blocks';
-      allowedChildren: ReadonlySet<string>;
-      blockToWrapInlinesIn: string;
+      allowedChildren: ReadonlySet<Element['type']>;
+      blockToWrapInlinesIn: TypesWhichHaveNoExtraRequiredProps;
       invalidPositionHandleMode: 'unwrap' | 'move';
     }
   | { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' }
 >;
 
-function makeEditorSchema<
-  Obj extends Record<
-    string,
+type TypesWhichHaveNoExtraRequiredProps = {
+  [Type in Block['type']]: { type: Type; children: Descendant[] } extends Block & { type: Type }
+    ? Type
+    : never;
+}[Block['type']];
+
+function makeEditorSchema(
+  obj: Record<
+    BlockType | 'editor',
     | {
         kind: 'blocks';
-        allowedChildren: readonly [Extract<keyof Obj, string>, ...Extract<keyof Obj, string>[]];
+        allowedChildren: readonly [TypesWhichHaveNoExtraRequiredProps, ...BlockType[]];
         invalidPositionHandleMode: 'unwrap' | 'move';
       }
     | { kind: 'inlines'; invalidPositionHandleMode: 'unwrap' | 'move' }
   >
->(obj: Obj) {
-  let ret: EditorSchema = {};
-  Object.keys(obj).forEach(key => {
+) {
+  let ret: EditorSchema = {} as any;
+  (Object.keys(obj) as (keyof typeof obj)[]).forEach(key => {
     const val = obj[key];
+
     if (val.kind === 'blocks') {
       ret[key] = {
         kind: 'blocks',
@@ -488,7 +521,7 @@ export const editorSchema = makeEditorSchema({
 function withBlocksSchema<T extends Editor>(editor: T): T {
   const { normalizeNode } = editor;
   editor.normalizeNode = ([node, path]) => {
-    if (Editor.isBlock(editor, node) || Editor.isEditor(node)) {
+    if (!Text.isText(node) && node.type !== 'link' && node.type !== 'relationship') {
       const nodeType = Editor.isEditor(node) ? 'editor' : node.type;
       if (typeof nodeType !== 'string' || editorSchema[nodeType] === undefined) {
         Transforms.unwrapNodes(editor, { at: path });
@@ -503,7 +536,13 @@ function withBlocksSchema<T extends Editor>(editor: T): T {
             return;
           }
         } else {
-          if (!Editor.isBlock(editor, childNode)) {
+          if (
+            !Editor.isBlock(editor, childNode) ||
+            // these checks are implicit in Editor.isBlock
+            // but that isn't encoded in types so these will make TS happy
+            childNode.type === 'link' ||
+            childNode.type === 'relationship'
+          ) {
             Transforms.wrapNodes(
               editor,
               { type: info.blockToWrapInlinesIn, children: [] },
@@ -511,7 +550,7 @@ function withBlocksSchema<T extends Editor>(editor: T): T {
             );
             return;
           }
-          if (!info.allowedChildren.has(childNode.type as string)) {
+          if (!info.allowedChildren.has(childNode.type)) {
             handleNodeInInvalidPosition(editor, [childNode, childPath], path);
             return;
           }
@@ -525,21 +564,26 @@ function withBlocksSchema<T extends Editor>(editor: T): T {
 
 function handleNodeInInvalidPosition(
   editor: Editor,
-  [node, path]: NodeEntry<Descendant>,
+  [node, path]: NodeEntry<Block>,
   parentPath: Path
 ) {
-  const nodeType = node.type as string;
+  const nodeType = node.type;
   const childNodeInfo = editorSchema[nodeType];
 
   if (!childNodeInfo || childNodeInfo.invalidPositionHandleMode === 'unwrap') {
     Transforms.unwrapNodes(editor, { at: path });
     return;
   }
-  const parentNode = Node.get(editor, parentPath);
-  const info =
-    editorSchema[(parentNode.type as string) || Editor.isEditor(parentNode) ? 'editor' : ''];
+  // the parent of a block will never be an inline so this casting is okay
+  const parentNode = Node.get(editor, parentPath) as Block;
+
+  const info = editorSchema[parentNode.type || 'editor'];
   if (info?.kind === 'blocks' && info.allowedChildren.has(nodeType)) {
-    Transforms.moveNodes(editor, { at: path, to: Path.next(parentPath) });
+    if (parentPath.length === 0) {
+      Transforms.moveNodes(editor, { at: path, to: [path[0] + 1] });
+    } else {
+      Transforms.moveNodes(editor, { at: path, to: Path.next(parentPath) });
+    }
     return;
   }
   if (Editor.isEditor(parentNode)) {

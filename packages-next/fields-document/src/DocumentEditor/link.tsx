@@ -38,16 +38,23 @@ export const wrapLink = (editor: Editor, url: string) => {
 
   const { selection } = editor;
   const isCollapsed = selection && Range.isCollapsed(selection);
-  const link = {
-    type: 'link',
-    href: url,
-    children: isCollapsed ? [{ text: url }] : [{ text: '' }],
-  };
 
   if (isCollapsed) {
-    Transforms.insertNodes(editor, link);
+    Transforms.insertNodes(editor, {
+      type: 'link',
+      href: url,
+      children: [{ text: url }],
+    });
   } else {
-    Transforms.wrapNodes(editor, link, { split: true });
+    Transforms.wrapNodes(
+      editor,
+      {
+        type: 'link',
+        href: url,
+        children: [{ text: '' }],
+      },
+      { split: true }
+    );
   }
 };
 
@@ -55,11 +62,11 @@ export const LinkElement = ({
   attributes,
   children,
   element: __elementForGettingPath,
-}: RenderElementProps) => {
+}: RenderElementProps & { element: { type: 'link' } }) => {
   const { typography } = useTheme();
   const editor = useStaticEditor();
   const [currentElement, setNode] = useElementWithSetNodes(editor, __elementForGettingPath);
-  const href = currentElement.href as string;
+  const href = currentElement.href;
 
   const selected = useSelected();
   const focused = useFocused();

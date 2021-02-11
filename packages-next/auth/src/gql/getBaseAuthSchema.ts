@@ -1,11 +1,11 @@
-import type { GraphQLSchemaExtension } from '@keystone-next/types';
+import type { GraphQLSchemaExtension, KeystoneContext } from '@keystone-next/types';
 
 import { AuthGqlNames } from '../types';
 
 import { validateSecret } from '../lib/validateSecret';
 import { getPasswordAuthError } from '../lib/getErrorMessage';
 
-export function getBaseAuthSchema({
+export function getBaseAuthSchema<I extends string, S extends string>({
   listKey,
   identityField,
   secretField,
@@ -13,8 +13,8 @@ export function getBaseAuthSchema({
   gqlNames,
 }: {
   listKey: string;
-  identityField: string;
-  secretField: string;
+  identityField: I;
+  secretField: S;
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
 }): GraphQLSchemaExtension {
@@ -48,7 +48,11 @@ export function getBaseAuthSchema({
     `,
     resolvers: {
       Mutation: {
-        async [gqlNames.authenticateItemWithPassword](root, args, context) {
+        async [gqlNames.authenticateItemWithPassword](
+          root: any,
+          args: { [P in I]: string } & { [P in S]: string },
+          context
+        ) {
           if (!context.startSession) {
             throw new Error('No session implementation available on context');
           }
@@ -98,7 +102,7 @@ export function getBaseAuthSchema({
         },
       },
       AuthenticatedItem: {
-        __resolveType(rootVal, { session }) {
+        __resolveType(rootVal: any, { session }: KeystoneContext) {
           return session?.listKey;
         },
       },

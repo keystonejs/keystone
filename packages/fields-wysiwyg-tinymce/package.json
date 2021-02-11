@@ -13,13 +13,13 @@
     "@arch-ui/fields": "^3.0.5",
     "@arch-ui/input": "^0.1.11",
     "@arch-ui/theme": "^0.0.11",
-    "@babel/runtime": "^7.12.5",
+    "@babel/runtime": "^7.12.13",
     "@emotion/core": "^10.1.1",
     "@keystonejs/fields": "^21.0.0",
-    "@primer/octicons-react": "^11.2.0",
-    "@tinymce/tinymce-react": "^3.9.0",
+    "@primer/octicons-react": "^11.3.0",
+    "@tinymce/tinymce-react": "^3.10.1",
     "prop-types": "^15.7.2",
-    "react": "^16.14.0",
+    "react": "^17.0.1",
     "tinymce": "^5.6.2"
   },
   "peerDependencies": {

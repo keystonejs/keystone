@@ -36,7 +36,11 @@ export function getInitFirstItemSchema({
       `,
     resolvers: {
       Mutation: {
-        async [gqlNames.createInitialItem](rootVal, { data }, context) {
+        async [gqlNames.createInitialItem](
+          root: any,
+          { data }: { data: Record<string, any> },
+          context
+        ) {
           if (!context.startSession) {
             throw new Error('No session implementation available on context');
           }

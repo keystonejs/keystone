@@ -5,16 +5,16 @@
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
   "devDependencies": {
-    "@types/react": "^16.14.2"
+    "@types/react": "^17.0.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.5",
+    "@babel/runtime": "^7.12.13",
     "@keystone-ui/core": "^1.0.4",
     "@keystone-ui/icons": "^1.0.0",
     "@keystone-ui/popover": "^1.1.1",
     "@types/react-select": "^3.1.2",
-    "date-fns": "^2.16.1",
-    "react": "^16.14.0",
+    "date-fns": "^2.17.0",
+    "react": "^17.0.1",
     "react-day-picker": "npm:react-day-picker@^7.4.8",
     "react-focus-lock": "^2.5.0",
     "react-select": "^3.2.0"

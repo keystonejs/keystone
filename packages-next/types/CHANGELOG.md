@@ -1,5 +1,33 @@
 # @keystone-next/types
 
+## 12.0.1
+
+### Patch Changes
+
+- [`6ecd2a766`](https://github.com/keystonejs/keystone/commit/6ecd2a766c868d46f84291bc1611eadef79e6100) [#4772](https://github.com/keystonejs/keystone/pull/4772) Thanks [@timleslie](https://github.com/timleslie)! - Removed `config.db.dropDatabase` for `prisma_postgresql` and `config.db.knexOptions` for `knex` as they were unused.
+
+* [`777981069`](https://github.com/keystonejs/keystone/commit/7779810691c4154e1344ced4fb94c5bb9524a71f) [#4765](https://github.com/keystonejs/keystone/pull/4765) Thanks [@timleslie](https://github.com/timleslie)! - Reorganised package internals to allow for easier documentation.
+
+- [`4d808eaa5`](https://github.com/keystonejs/keystone/commit/4d808eaa5aa1593ad1e54000d80f674f7c4d12bd) [#4766](https://github.com/keystonejs/keystone/pull/4766) Thanks [@timleslie](https://github.com/timleslie)! - Removed `config.db.provider` option, which did not have any meaningful, viable value.
+
+## 12.0.0
+
+### Major Changes
+
+- [`1744c5f05`](https://github.com/keystonejs/keystone/commit/1744c5f05c9a13e680aaa1ed151f23f1d015ed9c) [#4763](https://github.com/keystonejs/keystone/pull/4763) Thanks [@timleslie](https://github.com/timleslie)! - Removed the type `SchemaConfig`. Updated the `keystone` parameter of `ExtendGraphqlSchema` to be `BaseKeystone`.
+
+* [`5be53ddc3`](https://github.com/keystonejs/keystone/commit/5be53ddc39be1415d56e2fa5e7898ab9edf468d5) [#4762](https://github.com/keystonejs/keystone/pull/4762) Thanks [@timleslie](https://github.com/timleslie)! - Renamed the type `KeystoneAdminUIConfig` to `AdminUIConfig`.
+
+### Minor Changes
+
+- [`fd0dff3fd`](https://github.com/keystonejs/keystone/commit/fd0dff3fdfcbe20b2884357a6e1b20f1b7307652) [#4669](https://github.com/keystonejs/keystone/pull/4669) Thanks [@MurzNN](https://github.com/MurzNN)! - Added the ability to set the server port number via `config.server.port`.
+
+### Patch Changes
+
+- [`d9675553b`](https://github.com/keystonejs/keystone/commit/d9675553b33f39e2c7ada7eb6555d16e9fccb37e) [#4761](https://github.com/keystonejs/keystone/pull/4761) Thanks [@timleslie](https://github.com/timleslie)! - Remove unused configuration option `config.graphql.path` from the `KeystoneConfig` type.
+
+* [`096927a68`](https://github.com/keystonejs/keystone/commit/096927a6813a23030988ba8b64b2e8452f571a33) [#4756](https://github.com/keystonejs/keystone/pull/4756) Thanks [@timleslie](https://github.com/timleslie)! - Added correct types for `config.server.cors`.
+
 ## 11.0.2
 
 ### Patch Changes

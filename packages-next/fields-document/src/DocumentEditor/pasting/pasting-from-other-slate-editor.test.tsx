@@ -34,10 +34,14 @@ function OtherEditor({ editor }: { editor: ReactEditor }) {
     <Slate editor={editor} onChange={setVal} value={val}>
       <Editable
         renderElement={({ element, attributes, children }) => {
-          return element.isHeading ? <h1 {...attributes}>{children}</h1> : <p>{children}</p>;
+          return (element as any).isHeading ? (
+            <h1 {...attributes}>{children}</h1>
+          ) : (
+            <p>{children}</p>
+          );
         }}
         renderLeaf={({ attributes, children, leaf }) => {
-          return leaf.strong ? (
+          return (leaf as any).strong ? (
             <strong {...attributes}>{children}</strong>
           ) : (
             <span {...attributes}>{children}</span>

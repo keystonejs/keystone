@@ -72,7 +72,7 @@ test('inserting a break at the end of the heading exits the heading', () => {
   `);
 });
 
-test('inserting a break in the middle of the heading splits the text and exits the heading', () => {
+test('inserting a break in the middle of the heading splits the text and does not exit the heading', () => {
   let editor = makeEditor(
     <editor>
       <heading level={1}>
@@ -97,12 +97,54 @@ test('inserting a break in the middle of the heading splits the text and exits t
           Some 
         </text>
       </heading>
-      <paragraph>
+      <heading
+        level={1}
+      >
         <text>
           <cursor />
           heading
         </text>
+      </heading>
+      <paragraph>
+        <text>
+          
+        </text>
       </paragraph>
+    </editor>
+  `);
+});
+
+test('inserting a break at the start of the heading inserts a paragraph above the heading', () => {
+  let editor = makeEditor(
+    <editor>
+      <heading level={1}>
+        <text>
+          <cursor />
+          Some heading
+        </text>
+      </heading>
+      <paragraph>
+        <text />
+      </paragraph>
+    </editor>
+  );
+
+  editor.insertBreak();
+  expect(editor).toMatchInlineSnapshot(`
+    <editor>
+      <paragraph>
+        <text>
+          
+        </text>
+      </paragraph>
+      <heading
+        level={1}
+      >
+        <text>
+          <cursor />
+          Some heading
+        </text>
+      </heading>
       <paragraph>
         <text>
           

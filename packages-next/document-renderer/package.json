@@ -8,7 +8,7 @@
     "react": "^16.14.0 || 17"
   },
   "devDependencies": {
-    "react": "^16.14.0"
+    "react": "^17.0.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/document-renderer"
 }

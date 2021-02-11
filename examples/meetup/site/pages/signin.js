@@ -12,7 +12,7 @@ import Footer from '../components/Footer';
 import Meta from '../components/Meta';
 import { gridSize } from '../theme';
 
-export default () => {
+const SignIn = () => {
   const { isAuthenticated } = useAuth();
 
   // if the user is logged in, redirect to the homepage
@@ -34,3 +34,5 @@ export default () => {
     </>
   );
 };
+
+export default SignIn;
