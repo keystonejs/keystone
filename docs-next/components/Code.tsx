@@ -13,6 +13,7 @@ export const Code = ({ children, className }: { children: string; className: any
               ...style,
               backgroundColor: 'transparent',
               padding: '20px',
+              margin: '0',
             }}
           >
             {tokens.map((line, i) => {
