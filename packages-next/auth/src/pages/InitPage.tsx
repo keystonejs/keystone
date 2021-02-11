@@ -13,7 +13,7 @@ import isDeepEqual from 'fast-deep-equal';
 import { SigninContainer } from '../components/SigninContainer';
 import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
 import { useReinitContext, useKeystone } from '@keystone-next/admin-ui/context';
-import { useRouter } from '@keystone-next/admin-ui/router';
+import { useRouter, Link } from '@keystone-next/admin-ui/router';
 import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics';
 import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
 import { IconTwitter, IconGithub } from '../components/Icons';
@@ -23,9 +23,7 @@ import {
   useInvalidFields,
 } from '@keystone-next/admin-ui-utils';
 
-// const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
-// const signupURL = 'http://localhost:8080/api/newsletter-signup';
-const signupURL = 'https://keystone-next-mailing-list-n2ap1thf5.vercel.app/api/newsletter-signup';
+const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 
 const Welcome = ({ value }: { value: any }) => {
   const [subscribe, setSubscribe] = useState<boolean>(true);
@@ -83,22 +81,34 @@ const Welcome = ({ value }: { value: any }) => {
     return router.push((router.query.from as string | undefined) || '/');
   };
   return (
-    <Stack gap="medium">
-      <div
+    <Stack gap="large">
+      <Stack
+        gap="small"
+        align="center"
+        across
         css={{
-          display: 'flex',
-          flexDirection: 'row',
-          '> *': {
-            marginRight: '0.25em',
-          },
-          alignItems: 'center',
+          width: '100%',
+          justifyContent: 'space-between',
         }}
       >
-        <H1>Welcome to KeystoneJS</H1>
-        <IconGithub href="https://github.com/keystonejs/keystone" target="_blank" title="Github" />
-        <IconTwitter href="https://twitter.com/keystonejs" target="_blank" title="Twitter" />
-        {/* Next up: <a href="https://github.com/keystonejs/keystone/">star the project </a>, follow us
-        on <a href="https://twitter.com/keystonejs?lang=en">twitter</a> for updates */}
+        <H1>Welcome</H1>
+        <Stack across gap="small">
+          <IconTwitter title="Twitter Logo" />
+          <IconGithub
+            href="https://github.com/keystonejs/keystone"
+            target="_blank"
+            title="Github"
+          />
+        </Stack>
+      </Stack>
+
+      <p css={{ margin: 0 }}>
+        Thanks for installing KeystoneJS. While you're getting started, check out the docs at{' '}
+        <a href="https://next.keystonejs.com">next.keystonejs.com</a>
+      </p>
+      <div>
+        If you'd like to stay up to date with the exciting things we have planned, join our mailing
+        list (just useful announcements, no spam!)
       </div>
       <div>
         <Checkbox
@@ -119,16 +129,15 @@ const Welcome = ({ value }: { value: any }) => {
           onChange={e => setEmail(e.target.value)}
         />
         <p css={{ color: 'red' }}>{error}</p>
-        <Inline gap="small" align="center">
-          <Button
-            isLoading={loading}
-            type={subscribe ? 'submit' : 'button'}
-            weight="bold"
-            tone="active"
-          >
-            {subscribe ? 'Subscribe' : 'Get started'}
+        <Inline gap="medium" align="center">
+          <Button isLoading={loading} type={'submit'} weight="bold" tone="active">
+            {error ? 'Try again' : 'Continue'}
           </Button>
-          {error && <a href={'/'}>Continue</a>}
+          {error && (
+            <Button as={Link} href={'/'} tone="active">
+              Continue
+            </Button>
+          )}
         </Inline>
       </form>
     </Stack>
@@ -228,7 +237,9 @@ export const InitPage = ({
             }
           });
 
-          // Create the first item in the database.
+          // setMode('welcome');
+
+          // // Create the first item in the database.
           createFirstItem({
             variables: {
               data,
