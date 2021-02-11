@@ -31,6 +31,7 @@ function getAlignmentFromElement(element: Node): 'center' | 'end' | undefined {
   }
 }
 
+// See https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#distributive-conditional-types
 type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
 
 const ELEMENT_TAGS: Record<
