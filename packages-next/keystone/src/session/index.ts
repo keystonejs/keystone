@@ -17,12 +17,6 @@ function generateSessionId() {
   return uid(24);
 }
 
-function asSessionStrategy<TSessionStrategy extends SessionStrategy<any>>(
-  sessionStrategy: TSessionStrategy
-): TSessionStrategy {
-  return sessionStrategy;
-}
-
 const TOKEN_NAME = 'keystonejs-session';
 const MAX_AGE = 60 * 60 * 8; // 8 hours
 
@@ -67,13 +61,14 @@ type FieldSelections = {
   [listKey: string]: string;
 };
 
-type CreateSession = ReturnType<typeof statelessSessions>;
-
 /* TODO:
   - [ ] We could support additional where input to validate item sessions (e.g an isEnabled boolean)
 */
 
-export function withItemData(createSession: CreateSession, fieldSelections: FieldSelections = {}) {
+export function withItemData<T extends { listKey: string; itemId: string }>(
+  createSession: () => SessionStrategy<T>,
+  fieldSelections: FieldSelections = {}
+): () => SessionStrategy<T & { data: any }> {
   return (): SessionStrategy<any> => {
     const { get, ...sessionStrategy } = createSession();
     return {
@@ -115,13 +110,13 @@ export function withItemData(createSession: CreateSession, fieldSelections: Fiel
   };
 }
 
-export function statelessSessions({
+export function statelessSessions<T>({
   secret,
   maxAge = MAX_AGE,
   path = '/',
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
-}: StatelessSessionsOptions): () => SessionStrategy<Record<string, any>> {
+}: StatelessSessionsOptions): () => SessionStrategy<T> {
   return () => {
     if (!secret) {
       throw new Error('You must specify a session secret to use sessions');
@@ -129,9 +124,8 @@ export function statelessSessions({
     if (secret.length < 32) {
       throw new Error('The session secret must be at least 32 characters long');
     }
-    return asSessionStrategy({
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      async get({ req, createContext }) {
+    return {
+      async get({ req }) {
         if (!req.headers.cookie) return;
         let cookies = cookie.parse(req.headers.cookie);
         if (!cookies[TOKEN_NAME]) return;
@@ -169,7 +163,7 @@ export function statelessSessions({
 
         return sealedData;
       },
-    });
+    };
   };
 }
 
