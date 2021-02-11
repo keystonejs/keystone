@@ -1,6 +1,6 @@
 # Document editor architecture
 
-The document editor is using [Slate](https://github.com/ianstormtaylor/slate). To learn about Slate generally, go through https://docs.slatejs.org/walkthroughs and https://docs.slatejs.org/concepts. The sections on [Nodes](https://docs.slatejs.org/concepts/02-nodes) and [Locations](https://docs.slatejs.org/concepts/03-locations) contain especially important terminology.
+The document editor uses [Slate](https://github.com/ianstormtaylor/slate). To learn about Slate generally, go through https://docs.slatejs.org/walkthroughs and https://docs.slatejs.org/concepts. The sections on [Nodes](https://docs.slatejs.org/concepts/02-nodes) and [Locations](https://docs.slatejs.org/concepts/03-locations) contain especially important terminology.
 
 ## Plugins
 
