@@ -22,7 +22,7 @@ export const SigninContainer = ({ children }: SigninContainerProps) => {
       <Box
         css={{
           background: colors.background,
-          minWidth: 600,
+          width: 600,
           boxShadow: shadow.s100,
         }}
         margin="medium"
