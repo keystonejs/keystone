@@ -12,17 +12,29 @@ import { config, createSchema, list } from '@keystone-next/keystone/schema';
 export default config({
   lists: createSchema({
     ListName: list({
-      fields: { ... },
-      idField: { ... },
-      access: { ... },
-      ui: { ... },
-      hooks: { ... },
-      graphql: { ... },
-      description: '...',
+      fields: {
+        /* ... */
+      },
+      idField: {
+        /* ... */
+      },
+      access: {
+        /* ... */
+      },
+      ui: {
+        /* ... */
+      },
+      hooks: {
+        /* ... */
+      },
+      graphql: {
+        /* ... */
+      },
+      description: '/* ... */',
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -41,13 +53,15 @@ export default config({
   lists: createSchema({
     ListName: list({
       fields: {
-        fieldName: text({ ... }),
-        ...
+        fieldName: text({
+          /* ... */
+        }),
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -66,7 +80,9 @@ import { autoincrement, mongoId } from '@keystone-next/fields';
 export default config({
   lists: createSchema({
     ListName: list({
-      fields: { ... },
+      fields: {
+        /* ... */
+      },
       // prisma_postgresql and knex adapters
       idField: autoincrement({
         ui: {
@@ -81,11 +97,11 @@ export default config({
           itemView: { fieldMode: 'hidden' },
         },
       }),
-      ...
+      /* ... */
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -144,16 +160,16 @@ import { text } from '@keystone-next/fields`;
 export default config({
   lists: createSchema({
     ListName: list({
-      fields: { name: text({ ... }) },
+      fields: { name: text({ /* ... */ }) },
       ui: {
         labelField: 'name',
-        description: '...',
+        description: '/* ... */',
         isHidden: ({ session }) => false,
         hideCreate: ({ session }) => false,
         hideDelete: ({ session }) => false,
         listView: {
           defaultFieldMode: ({ session }) => 'read',
-          initialColumns: ['name', ...],
+          initialColumns: ['name', /* ... */],
           initialSort: { field: 'name', direction: 'ASC' },
           pageSize: 50,
         },
@@ -165,12 +181,11 @@ export default config({
         },
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
-
 
 ## `hooks`
 
@@ -199,16 +214,16 @@ export default config({
   lists: createSchema({
     ListName: list({
       graphql: {
-        description: '...',
-        itemQueryName: '...',
-        listQueryName: '...',
+        description: '/* ... */',
+        itemQueryName: '/* ... */',
+        listQueryName: '/* ... */',
         queryLimits: { maxResults: 100 },
       },
-      ...
+      /* ... */
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 

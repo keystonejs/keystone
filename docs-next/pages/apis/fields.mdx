@@ -38,13 +38,15 @@ export default config({
   lists: createSchema({
     ListName: list({
       fields: {
-        fieldName: text({ ... }),
-        ...
+        fieldName: text({
+          /* ... */
+        }),
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -74,12 +76,16 @@ export default config({
     ListName: list({
       fields: {
         fieldName: text({
-          access: { ... },
-          hooks: { ... },
-          label: '...',
+          access: {
+            /* ... */
+          },
+          hooks: {
+            /* ... */
+          },
+          label: '/* ... */',
           ui: {
-            views: '...',
-            description: '...',
+            views: '/* ... */',
+            description: '/* ... */',
             createView: {
               fieldMode: ({ session }) => 'edit',
             },
@@ -91,12 +97,12 @@ export default config({
             },
           },
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -126,12 +132,12 @@ export default config({
           defaultValue: true,
           isRequired: true,
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -163,12 +169,12 @@ export default config({
           isIndexed: true,
           isUnique: true,
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -196,12 +202,12 @@ export default config({
           minLength: 10,
           bcrypt: require('bcrypt'),
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -219,7 +225,7 @@ Options:
   `label` is a string to be displayed in the Admin UI.
   `value` is either a `string` (for `{ dataType: 'string' }` or `{ dataType: 'enum' }`), or a `number` (for `{ dataType: 'integer' }`).
   The `value` will be used in the GraphQL API and stored in the database.
-- `defaultValue`:  (default: `undefined`): Can be either a string/integer value or an async function which takes an argument `({ context, originalItem })` and returns a string/integer value.
+- `defaultValue`: (default: `undefined`): Can be either a string/integer value or an async function which takes an argument `({ context, originalItem })` and returns a string/integer value.
   This value will be used for the field when creating items if no explicit value is set, and must be one of the values defined in `options`.
   `context` is a [`KeystoneContext`](./context) object.
   `originalItem` is an object containing the data passed in to the `create` mutation.
@@ -240,21 +246,21 @@ export default config({
         fieldName: select({
           dataType: 'enum',
           options: [
-            { label: '...', value: '...' },
-            ...
+            { label: '/* ... */', value: '/* ... */' },
+            /* ... */
           ],
-          defaultValue: '...',
+          defaultValue: '/* ... */',
           isRequired: true,
           isIndexed: true,
           isUnique: true,
           ui: { displayMode: 'select' },
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -283,18 +289,18 @@ export default config({
     ListName: list({
       fields: {
         fieldName: text({
-          defaultValue: '...',
+          defaultValue: '/* ... */',
           isRequired: true,
           isIndexed: true,
           isUnique: true,
           ui: { displayMode: 'textarea' },
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -327,12 +333,12 @@ export default config({
           isIndexed: true,
           isUnique: true,
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -353,19 +359,19 @@ export default config({
     ListName: list({
       fields: {
         fieldName: relationship({
-          ref: '...',
+          ref: '/* ... */',
           many: false,
-          ui: { ... }.
-          defaultValue: '...',
-          isIndexed: '...',
-          isUnique: '...',
+          ui: { /* ... */ }.
+          defaultValue: '/* ... */',
+          isIndexed: '/* ... */',
+          isUnique: '/* ... */',
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -396,12 +402,12 @@ export default config({
           isIndexed: true,
           isUnique: true,
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -425,17 +431,17 @@ export default config({
     ListName: list({
       fields: {
         fieldName: mongoId({
-          defaultValue: '...',
+          defaultValue: '/* ... */',
           isRequired: true,
           isIndexed: true,
           isUnique: true,
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -464,21 +470,21 @@ export default config({
     ListName: list({
       fields: {
         fieldName: virtual({
-          resolver: (item, args, context, info) => `...`,
-          graphQLReturnType: '...',
-          graphQLReturnFragment: '...',
-          extendGraphQLTypes: ['...'],
+          resolver: (item, args, context, info) => `/* ... */`,
+          graphQLReturnType: '/* ... */',
+          graphQLReturnFragment: '/* ... */',
+          extendGraphQLTypes: ['/* ... */'],
           args: [
-            { name: '...', type: 'String' },
-            ...
-          ]
+            { name: '/* ... */', type: 'String' },
+            /* ... */
+          ],
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -506,22 +512,22 @@ export default config({
     ListName: list({
       fields: {
         fieldName: document({
-          relationships: { ... };
+          relationships: { /* ... */ };
           componentBlocks: {
-            block: { ... },
-            ...
+            block: { /* ... */ },
+            /* ... */
           };
-          formatting: { ... };
+          formatting: { /* ... */ };
           links: true,
           dividers: true,
-          layouts: [...],
+          layouts: [/* ... */],
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
@@ -553,12 +559,12 @@ export default config({
             folder: process.env.CLOUDINARY_API_FOLDER,
           },
         }),
-        ...
+        /* ... */
       },
     }),
-    ...
+    /* ... */
   }),
-  ...
+  /* ... */
 });
 ```
 
