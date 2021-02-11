@@ -38,7 +38,9 @@ export default config({
   lists: createSchema({
     ListName: list({
       fields: {
-        fieldName: text({ /* ... */ }),
+        fieldName: text({
+          /* ... */
+        }),
         /* ... */
       },
     }),
@@ -74,12 +76,16 @@ export default config({
     ListName: list({
       fields: {
         fieldName: text({
-          access: { /* ... */ },
-          hooks: { /* ... */ },
+          access: {
+            /* ... */
+          },
+          hooks: {
+            /* ... */
+          },
           label: '...',
           ui: {
             views: '...',
-            description: '/* ... */',
+            description: '...',
             createView: {
               fieldMode: ({ session }) => 'edit',
             },
@@ -243,7 +249,7 @@ export default config({
             { label: '...', value: '...' },
             /* ... */
           ],
-          defaultValue: '/* ... */',
+          defaultValue: '...',
           isRequired: true,
           isIndexed: true,
           isUnique: true,
@@ -283,7 +289,7 @@ export default config({
     ListName: list({
       fields: {
         fieldName: text({
-          defaultValue: '/* ... */',
+          defaultValue: '...',
           isRequired: true,
           isIndexed: true,
           isUnique: true,
@@ -353,12 +359,12 @@ export default config({
     ListName: list({
       fields: {
         fieldName: relationship({
-          ref: '/* ... */',
+          ref: '...',
           many: false,
           ui: { /* ... */ }.
-          defaultValue: '/* ... */',
-          isIndexed: '/* ... */',
-          isUnique: '/* ... */',
+          defaultValue: '...',
+          isIndexed: '...',
+          isUnique: '...',
         }),
         /* ... */
       },
@@ -425,7 +431,7 @@ export default config({
     ListName: list({
       fields: {
         fieldName: mongoId({
-          defaultValue: '/* ... */',
+          defaultValue: '...',
           isRequired: true,
           isIndexed: true,
           isUnique: true,
@@ -465,11 +471,11 @@ export default config({
       fields: {
         fieldName: virtual({
           resolver: (item, args, context, info) => `/* ... */`,
-          graphQLReturnType: '/* ... */',
-          graphQLReturnFragment: '/* ... */',
-          extendGraphQLTypes: ['/* ... */'],
+          graphQLReturnType: '...',
+          graphQLReturnFragment: '...',
+          extendGraphQLTypes: ['...'],
           args: [
-            { name: '/* ... */', type: 'String' },
+            { name: '...', type: 'String' },
             /* ... */
           ],
         }),
