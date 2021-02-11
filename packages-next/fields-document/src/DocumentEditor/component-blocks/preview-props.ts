@@ -81,15 +81,15 @@ function _getPreviewProps(
 }
 
 export function createPreviewProps(
-  element: Element,
+  element: Element & { type: 'component-block' },
   componentBlock: ComponentBlock,
   childrenByPath: Record<string, ReactElement>,
   relationships: Relationships,
-  setNode: (props: Partial<Element>) => void
+  setNode: (props: Partial<Element & { type: 'component-block' }>) => void
 ) {
   return _getPreviewProps(
     { kind: 'object', value: componentBlock.props },
-    element.props as any,
+    element.props,
     childrenByPath,
     [],
     relationships,

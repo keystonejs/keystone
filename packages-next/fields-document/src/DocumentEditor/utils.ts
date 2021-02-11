@@ -14,7 +14,7 @@ import {
 import { ReactEditor } from 'slate-react';
 import { ElementFromValidation } from '../structure-validation';
 
-export { useEditor as useStaticEditor } from 'slate-react';
+export { useSlateStatic as useStaticEditor } from 'slate-react';
 
 export type Mark =
   | 'bold'
@@ -76,14 +76,17 @@ export function moveChildren(
 // this ensures that when changes happen, they are immediately shown
 // this stops the problem of a cursor resetting to the end when a change is made
 // because the changes are applied asynchronously
-export function useElementWithSetNodes(editor: ReactEditor, element: Element) {
+export function useElementWithSetNodes<TElement extends Element>(
+  editor: ReactEditor,
+  element: TElement
+) {
   const [state, setState] = useState({ element, elementWithChanges: element });
   if (state.element !== element) {
     setState({ element, elementWithChanges: element });
   }
   const setNodes = (changes: Partial<Element>) => {
     Transforms.setNodes(editor, changes, { at: ReactEditor.findPath(editor, element) });
-    setState({ element, elementWithChanges: { ...element, ...changes } });
+    setState({ element, elementWithChanges: { ...element, ...changes } as any });
   };
   return [state.elementWithChanges, setNodes] as const;
 }
@@ -174,4 +177,21 @@ export function EditorAfterButIgnoringingPointsWithNoContent(
   }
 
   return target;
+}
+
+export function nodeTypeMatcher<Type extends Element['type'][]>(
+  ...args: Type
+): (node: Node) => node is Element & { type: Type[number] } {
+  if (args.length === 1) {
+    const type = args[0];
+    return ((node: Node) => node.type === type) as any;
+  }
+  const set = new Set(args);
+  return ((node: Node) => typeof node.type === 'string' && set.has(node.type)) as any;
+}
+
+export function assert(condition: boolean): asserts condition {
+  if (!condition) {
+    throw new Error('failed assert');
+  }
 }

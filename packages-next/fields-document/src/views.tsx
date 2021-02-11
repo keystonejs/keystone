@@ -2,7 +2,7 @@
 
 import { jsx } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { Node, Text } from 'slate';
+import { Descendant, Node, Text } from 'slate';
 
 import {
   CardValueComponent,
@@ -94,7 +94,7 @@ export const controller = (
     documentFeatures: DocumentFeatures;
     componentBlocksPassedOnServer: string[];
   }>
-): FieldController<Node[]> & {
+): FieldController<Descendant[]> & {
   componentBlocks: Record<string, ComponentBlock>;
   relationships: Relationships;
   documentFeatures: DocumentFeatures;

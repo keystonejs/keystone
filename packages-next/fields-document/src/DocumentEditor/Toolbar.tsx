@@ -283,7 +283,7 @@ function HeadingDialog({
   return (
     <ToolbarGroup direction="column">
       {headingLevels.map(hNum => {
-        let Tag = `h${hNum}` as 'h1';
+        let Tag = `h${hNum}` as const;
         const isSelected = textStyles.selected === hNum;
         return (
           <ToolbarButton

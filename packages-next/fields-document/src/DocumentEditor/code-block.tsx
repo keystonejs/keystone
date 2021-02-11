@@ -14,8 +14,8 @@ export function withCodeBlock<T extends Editor>(editor: T): T {
     const [node, path] = Editor.above(editor, {
       match: n => Editor.isBlock(editor, n),
     }) || [editor, []];
-    if (node.type === 'code') {
-      const text = node.children[0].text as string;
+    if (node.type === 'code' && Text.isText(node.children[0])) {
+      const text = node.children[0].text;
       if (
         text[text.length - 1] === '\n' &&
         editor.selection &&

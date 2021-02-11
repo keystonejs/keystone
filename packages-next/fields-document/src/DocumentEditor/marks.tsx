@@ -1,4 +1,4 @@
-import { Editor, Transforms, Range, Text, Point } from 'slate';
+import { Editor, Transforms, Range, Text, Point, Node, Path } from 'slate';
 import { HistoryEditor } from 'slate-history';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
@@ -48,6 +48,34 @@ export function withMarks<T extends HistoryEditor>(
   componentBlocks: Record<string, ComponentBlock>,
   editor: T
 ): T {
+  const { insertText, insertBreak } = editor;
+
+  editor.insertBreak = () => {
+    insertBreak();
+    const marksAfterInsertBreak = Editor.marks(editor);
+    if (!marksAfterInsertBreak || !editor.selection) return;
+    const parentBlock = Editor.above(editor, { match: node => Editor.isBlock(editor, node) });
+    if (!parentBlock) return;
+    const point = EditorAfterButIgnoringingPointsWithNoContent(editor, editor.selection.anchor);
+    const marksAfterInsertBreakArr = Object.keys(
+      marksAfterInsertBreak
+    ) as (keyof typeof marksAfterInsertBreak)[];
+    if (!point || !Path.isDescendant(point.path, parentBlock[1])) {
+      for (const mark of marksAfterInsertBreakArr) {
+        editor.removeMark(mark);
+      }
+
+      return;
+    }
+    const textNode = Node.get(editor, point.path) as Text;
+
+    for (const mark of marksAfterInsertBreakArr) {
+      if (!textNode[mark]) {
+        editor.removeMark(mark);
+      }
+    }
+  };
+
   const selectedMarkdownShortcuts: Partial<typeof allMarkdownShortcuts> = {};
   const enabledMarks = editorDocumentFeatures.formatting.inlineMarks;
   (Object.keys(allMarkdownShortcuts) as (keyof typeof allMarkdownShortcuts)[]).forEach(mark => {
@@ -57,8 +85,6 @@ export function withMarks<T extends HistoryEditor>(
   });
 
   if (Object.keys(selectedMarkdownShortcuts).length === 0) return editor;
-
-  const { insertText } = editor;
 
   editor.insertText = text => {
     insertText(text);

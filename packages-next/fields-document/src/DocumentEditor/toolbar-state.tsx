@@ -10,9 +10,9 @@ import {
   getDocumentFeaturesForChildField,
 } from './component-blocks/utils';
 import { LayoutOptionsProvider } from './layouts';
-import { isListType } from './lists';
+import { isListNode } from './lists';
 import { DocumentFieldRelationshipsProvider, Relationships } from './relationship';
-import { allMarks, isElementActive, Mark } from './utils';
+import { allMarks, isElementActive, Mark, nodeTypeMatcher } from './utils';
 
 type BasicToolbarItem = { isSelected: boolean; isDisabled: boolean };
 
@@ -66,22 +66,24 @@ export function getAncestorComponentChildFieldDocumentFeatures(
   componentBlocks: Record<string, ComponentBlock>
 ): DocumentFeaturesForChildField | undefined {
   const ancestorComponentProp = Editor.above(editor, {
-    match: n => n.type === 'component-inline-prop' || n.type === 'component-block-prop',
+    match: nodeTypeMatcher('component-block-prop', 'component-inline-prop'),
   });
 
   if (ancestorComponentProp) {
     const propPath = ancestorComponentProp[0].propPath;
     const ancestorComponent = Editor.parent(editor, ancestorComponentProp[1]);
-    const component = ancestorComponent[0].component;
-    const componentBlock = componentBlocks[component as string];
-    if (componentBlock && propPath) {
-      const options = getChildFieldAtPropPath(
-        propPath as any,
-        ancestorComponent[0].props as any,
-        componentBlock.props
-      )?.options;
-      if (options) {
-        return getDocumentFeaturesForChildField(editorDocumentFeatures, options);
+    if (ancestorComponent[0].type === 'component-block') {
+      const component = ancestorComponent[0].component;
+      const componentBlock = componentBlocks[component];
+      if (componentBlock && propPath) {
+        const options = getChildFieldAtPropPath(
+          propPath,
+          ancestorComponent[0].props,
+          componentBlock.props
+        )?.options;
+        if (options) {
+          return getDocumentFeaturesForChildField(editorDocumentFeatures, options);
+        }
       }
     }
   }
@@ -164,15 +166,15 @@ export const createToolbarState = (
   }
 
   let [headingEntry] = Editor.nodes(editor, {
-    match: n => n.type === 'heading',
+    match: nodeTypeMatcher('heading'),
   });
 
   let [listEntry] = Editor.nodes(editor, {
-    match: n => isListType(n.type as string),
+    match: isListNode,
   });
 
   let [alignableEntry] = Editor.nodes(editor, {
-    match: n => n.type === 'paragraph' || n.type === 'heading',
+    match: nodeTypeMatcher('paragraph', 'heading'),
   });
 
   // (we're gonna use markdown here because the equivelant slate structure is quite large and doesn't add value here)
@@ -188,7 +190,7 @@ export const createToolbarState = (
   return {
     marks,
     textStyles: {
-      selected: headingEntry ? (headingEntry[0].level as any) : 'normal',
+      selected: headingEntry ? headingEntry[0].level : 'normal',
       allowedHeadingLevels:
         locationDocumentFeatures.kind === 'block' && !listEntry
           ? locationDocumentFeatures.documentFeatures.formatting.headingLevels
@@ -231,7 +233,7 @@ export const createToolbarState = (
           locationDocumentFeatures.kind === 'block' &&
           locationDocumentFeatures.documentFeatures.formatting.alignment
         ),
-      selected: alignableEntry ? (alignableEntry[0].textAlign as any) || 'start' : 'start',
+      selected: alignableEntry?.[0].textAlign || 'start',
     },
     blockquote: {
       isDisabled: !(
@@ -272,11 +274,11 @@ function hasBlockThatClearsOnClearFormatting(editor: Editor) {
 }
 
 export function getListTypeAbove(editor: Editor): 'none' | 'ordered-list' | 'unordered-list' {
-  const listAbove = Editor.above(editor, { match: n => isListType(n.type as string) });
+  const listAbove = Editor.above(editor, { match: isListNode });
   if (!listAbove) {
     return 'none';
   }
-  return listAbove[0].type as any;
+  return listAbove[0].type;
 }
 
 export const ToolbarStateProvider = ({

@@ -72,7 +72,7 @@ expect.extend({
       isNot: this.isNot,
       promise: this.promise,
     };
-    const receivedConfig = received.__config as any;
+    const receivedConfig = (received as any).__config;
     validateAndNormalizeDocument(
       received.children,
       receivedConfig.documentFeatures,
@@ -80,7 +80,7 @@ expect.extend({
       receivedConfig.relationships
     );
 
-    const expectedConfig = expected.__config as any;
+    const expectedConfig = (expected as any).__config;
     validateAndNormalizeDocument(
       expected.children,
       expectedConfig.documentFeatures,
@@ -206,7 +206,7 @@ export const makeEditor = (
     isShiftPressedRef
   );
   // for validation
-  editor.__config = {
+  (editor as any).__config = {
     documentFeatures,
     componentBlocks,
     relationships,
@@ -327,7 +327,7 @@ function nodeToReactElement(
     nodeToReactElement(editor, x, selection, path.concat(i))
   );
   if (Editor.isEditor(node)) {
-    const config = editor.__config as any;
+    const config = (editor as any).__config;
     validateAndNormalizeDocument(
       node.children,
       config.documentFeatures,
@@ -350,7 +350,7 @@ function nodeToReactElement(
     computedData['@@isInline'] = true;
   }
   if (type !== undefined) {
-    return createElement(type as string, { ...restNode, ...computedData, children });
+    return createElement(type, { ...restNode, ...computedData, children });
   }
   return createElement('element', { ...node, ...computedData, children });
 }
