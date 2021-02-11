@@ -237,8 +237,6 @@ export const InitPage = ({
             }
           });
 
-          // setMode('welcome');
-
           // // Create the first item in the database.
           createFirstItem({
             variables: {
