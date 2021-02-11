@@ -10,18 +10,11 @@ export type FieldDefaultValue<T> =
   | MaybePromise<(args: FieldDefaultValueArgs<T>) => T | null | undefined>;
 
 export type CreateContext = (args: {
-  sessionContext?: SessionContext<any>;
   skipAccessControl?: boolean;
   req?: IncomingMessage;
-}) => KeystoneContext;
-
-export type SessionImplementation = {
-  createSessionContext(
-    req: IncomingMessage,
-    res: ServerResponse,
-    createContext: CreateContext
-  ): Promise<SessionContext<any>>;
-};
+  res?: ServerResponse;
+  sessionStrategy?: SessionStrategy<any>;
+}) => Promise<KeystoneContext>;
 
 export type GraphQLResolver = (root: any, args: any, context: KeystoneContext) => any;
 

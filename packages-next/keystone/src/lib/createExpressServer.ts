@@ -8,7 +8,6 @@ import { graphqlUploadExpress } from 'graphql-upload';
 import { formatError } from '@keystonejs/keystone/lib/Keystone/format-error';
 import type { KeystoneConfig, CreateContext, SessionStrategy } from '@keystone-next/types';
 import { createAdminUIServer } from '@keystone-next/admin-ui/system';
-import { createSessionContext } from '../session';
 
 const addApolloServer = ({
   server,
@@ -28,12 +27,7 @@ const addApolloServer = ({
     playground: { settings: { 'request.credentials': 'same-origin' } },
     formatError, // TODO: this needs to be discussed
     context: async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
-      createContext({
-        sessionContext: sessionStrategy
-          ? await createSessionContext(sessionStrategy, req, res, createContext)
-          : undefined,
-        req,
-      }),
+      createContext({ req, res, sessionStrategy }),
     // FIXME: support for apollo studio tracing
     // ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
     //   ? { tracing: true }

@@ -1,14 +1,30 @@
-import type { IncomingMessage } from 'http';
+import type { IncomingMessage, ServerResponse } from 'http';
 import { execute, GraphQLSchema, parse } from 'graphql';
 import type {
-  SessionContext,
   KeystoneContext,
   KeystoneGraphQLAPI,
   BaseKeystone,
+  SessionStrategy,
+  CreateContext,
 } from '@keystone-next/types';
 
 import { itemAPIForList, getArgsFactory } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
+
+export async function createSessionContext<T>(
+  sessionStrategy: SessionStrategy<T> | undefined,
+  req: IncomingMessage,
+  res: ServerResponse,
+  createContext: CreateContext
+) {
+  return sessionStrategy
+    ? {
+        session: await sessionStrategy.get({ req, createContext }),
+        startSession: (data: T) => sessionStrategy.start({ res, data, createContext }),
+        endSession: () => sessionStrategy.end({ req, res, createContext }),
+      }
+    : {};
+}
 
 export function makeCreateContext({
   graphQLSchema,
@@ -24,16 +40,18 @@ export function makeCreateContext({
     getArgsByList[listKey] = getArgsFactory(list, graphQLSchema);
   }
 
-  const createContext = ({
-    sessionContext,
+  const createContext = async ({
     skipAccessControl = false,
     req,
+    res,
+    sessionStrategy,
   }: {
-    sessionContext?: SessionContext<any>;
     skipAccessControl?: boolean;
     req?: IncomingMessage;
-  } = {}): KeystoneContext => {
-    const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, variables }) => {
+    res?: ServerResponse;
+    sessionStrategy?: SessionStrategy<any>;
+  } = {}): Promise<KeystoneContext> => {
+    const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, context, variables }) => {
       if (typeof query === 'string') {
         query = parse(query);
       }
@@ -76,7 +94,7 @@ export function makeCreateContext({
           req,
         }),
       req,
-      ...sessionContext,
+      ...(await createSessionContext(sessionStrategy, req!, res!, createContext)),
       // Note: These two fields let us use the server-side-graphql-client library.
       // We may want to remove them once the updated itemAPI w/ resolveFields is available.
       executeGraphQL: rawGraphQL,

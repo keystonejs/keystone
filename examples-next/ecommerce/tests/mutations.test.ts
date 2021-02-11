@@ -24,7 +24,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
       test(
         'Not logged in should throw',
         runner(setupKeystone, async ({ context }) => {
-          const _context = asUser(context, undefined);
+          const _context = await asUser(context, undefined);
           const { data, errors } = await _context.graphql.raw({
             query,
             variables: { token },
@@ -70,7 +70,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           });
 
           // Add some products to some carts
-          const q1 = asUser(context, user1.id).graphql.raw;
+          const q1 = (await asUser(context, user1.id)).graphql.raw;
           const q =
             'mutation m($productId: ID!){ addToCart(productId: $productId) { id label quantity product { id } user { id } } }';
           await q1({ query: q, variables: { productId: product1.id } });
@@ -78,7 +78,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           await q1({ query: q, variables: { productId: product1.id } });
           await q1({ query: q, variables: { productId: product2.id } });
           await q1({ query: q, variables: { productId: product1.id } });
-          const q2 = asUser(context, user2.id).graphql.raw;
+          const q2 = (await asUser(context, user2.id)).graphql.raw;
           await q2({ query: q, variables: { productId: product2.id } });
           await q2({ query: q, variables: { productId: product1.id } });
           await q2({ query: q, variables: { productId: product2.id } });
@@ -86,7 +86,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           await q2({ query: q, variables: { productId: product2.id } });
 
           // Checkout user 1
-          const result1 = await asUser(context, user1.id).graphql.raw({
+          const result1 = await (await asUser(context, user1.id)).graphql.raw({
             query,
             variables: { token },
           });
@@ -109,7 +109,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           expect(result1.data!.checkout.items[1].photo.id).toEqual(product2.photo.id);
 
           // Checkout user 2
-          const result2 = await asUser(context, user2.id).graphql.raw({
+          const result2 = await (await asUser(context, user2.id)).graphql.raw({
             query,
             variables: { token },
           });
@@ -140,7 +140,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
       test(
         'Not logged in should throw',
         runner(setupKeystone, async ({ context }) => {
-          const { graphql } = asUser(context, undefined);
+          const { graphql } = await asUser(context, undefined);
           const productId = '123456781234567812345678';
           const { data, errors } = await graphql.raw({ query, variables: { productId } });
           expect(data).toEqual({ addToCart: null });
@@ -152,7 +152,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
       test(
         'Adding a non-existant product should throw',
         runner(setupKeystone, async ({ context }) => {
-          const { graphql } = asUser(context, '123456781234567812345678');
+          const { graphql } = await asUser(context, '123456781234567812345678');
           const productId = '123456781234567812345678';
           const { data, errors } = await graphql.raw({ query, variables: { productId } });
           expect(data).toEqual({ addToCart: null });
@@ -164,7 +164,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
       test(
         'Adding a mis-formed product should throw',
         runner(setupKeystone, async ({ context }) => {
-          const { graphql } = asUser(context, '123456781234567812345678');
+          const { graphql } = await asUser(context, '123456781234567812345678');
           const productId = '123';
           const { data, errors } = await graphql.raw({ query, variables: { productId } });
           expect(data).toEqual({ addToCart: null });
@@ -178,7 +178,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
       test(
         'Adding a null product should throw',
         runner(setupKeystone, async ({ context }) => {
-          const { graphql } = asUser(context, '123456781234567812345678');
+          const { graphql } = await asUser(context, '123456781234567812345678');
           const { data, errors } = await graphql.raw({
             // Note: $pid can be null as we need to check the behaviour of addToCart
             query: 'mutation m($pid: ID){ addToCart(productId: $pid) { id } }',
@@ -207,7 +207,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           });
 
           // Add product to cart
-          const { data, errors } = await asUser(context, user.id).graphql.raw({
+          const { data, errors } = await (await asUser(context, user.id)).graphql.raw({
             query,
             variables: { productId: product.id },
           });
@@ -232,7 +232,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           });
 
           // Add product to cart
-          const { data, errors } = await asUser(context, user.id).graphql.raw({
+          const { data, errors } = await (await asUser(context, user.id)).graphql.raw({
             query,
             variables: { productId: product.id },
           });
@@ -257,7 +257,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           });
 
           // Add product to cart
-          const { data, errors } = await asUser(context, user.id).graphql.raw({
+          const { data, errors } = await (await asUser(context, user.id)).graphql.raw({
             query,
             variables: { productId: product.id },
           });
@@ -284,15 +284,15 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           });
 
           // Add product to cart
-          await asUser(context, user.id).graphql.raw({
+          await (await asUser(context, user.id)).graphql.raw({
             query,
             variables: { productId: product.id },
           });
-          await asUser(context, user.id).graphql.raw({
+          await (await asUser(context, user.id)).graphql.raw({
             query,
             variables: { productId: product.id },
           });
-          const { data, errors } = await asUser(context, user.id).graphql.raw({
+          const { data, errors } = await (await asUser(context, user.id)).graphql.raw({
             query,
             variables: { productId: product.id },
           });
@@ -321,7 +321,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           });
 
           // Add products to cart
-          const q = asUser(context, user.id).graphql.raw;
+          const q = (await asUser(context, user.id)).graphql.raw;
           await q({ query, variables: { productId: product1.id } });
           await q({ query, variables: { productId: product2.id } });
           await q({ query, variables: { productId: product1.id } });
