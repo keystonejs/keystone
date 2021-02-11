@@ -68,9 +68,7 @@ import { autoincrement, mongoId } from '@keystone-next/fields';
 export default config({
   lists: createSchema({
     ListName: list({
-      fields: {
-        /* ... */
-      },
+      fields: { /* ... */ },
       // prisma_postgresql and knex adapters
       idField: autoincrement({
         ui: {
