@@ -20,7 +20,6 @@ export type FilterTypeToFormat<Value extends JSONValue> = {
   readonly type: string;
   readonly label: string;
   readonly value: Value;
-  thing: React.AnchorHTMLAttributes<HTMLAnchorElement>;
 };
 
 export type FieldController<FormState, FilterValue extends JSONValue = never> = {
