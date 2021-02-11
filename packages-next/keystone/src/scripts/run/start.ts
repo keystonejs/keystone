@@ -18,7 +18,7 @@ export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) 
   const { keystone, graphQLSchema, createContext } = createSystem(config, dotKeystonePath, 'start');
 
   console.log('✨ Connecting to the database');
-  await keystone.connect({ context: createContext().sudo() });
+  await keystone.connect({ context: (await createContext()).sudo() });
 
   console.log('✨ Creating server');
   const server = await createExpressServer(

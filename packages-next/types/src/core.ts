@@ -3,6 +3,7 @@ import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 
 import type { BaseGeneratedListTypes, GqlNames, MaybePromise } from './utils';
 import { BaseKeystone } from './base';
+import { SessionStrategy } from './session';
 
 // DatabaseAPIs is used to provide access to the underlying database abstraction through
 // context and other developer-facing APIs in Keystone, so they can be used easily.
@@ -23,19 +24,12 @@ export type FieldDefaultValue<T> =
   | null
   | MaybePromise<(args: FieldDefaultValueArgs<T>) => T | null | undefined>;
 
-export type CreateContext = (args: {
-  sessionContext?: SessionContext<any>;
+export type CreateContext<SessionType> = (args: {
   skipAccessControl?: boolean;
   req?: IncomingMessage;
-}) => KeystoneContext;
-
-export type SessionImplementation = {
-  createSessionContext(
-    req: IncomingMessage,
-    res: ServerResponse,
-    createContext: CreateContext
-  ): Promise<SessionContext<any>>;
-};
+  res?: ServerResponse;
+  sessionStrategy?: SessionStrategy<SessionType>;
+}) => Promise<KeystoneContext>;
 
 export type AccessControlContext = {
   getListAccessControlForUser: any; // TODO

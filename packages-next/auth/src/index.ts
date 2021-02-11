@@ -163,7 +163,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     }
 
     if (!session && initFirstItem) {
-      const count = await createContext({}).sudo().lists[listKey].count({});
+      const count = await (await createContext({})).sudo().lists[listKey].count({});
       if (count === 0) {
         if (pathname !== '/init') {
           return {

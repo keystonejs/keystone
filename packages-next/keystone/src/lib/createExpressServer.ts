@@ -6,11 +6,10 @@ import { ApolloServer } from 'apollo-server-express';
 import { graphqlUploadExpress } from 'graphql-upload';
 // @ts-ignore
 import { formatError } from '@keystonejs/keystone/lib/Keystone/format-error';
-import type { KeystoneConfig, CreateContext, SessionStrategy } from '@keystone-next/types';
+import type { KeystoneConfig, SessionStrategy, CreateContext } from '@keystone-next/types';
 import { createAdminUIServer } from '@keystone-next/admin-ui/system';
-import { createSessionContext } from '../session';
 
-const addApolloServer = ({
+const addApolloServer = <SessionType>({
   server,
   graphQLSchema,
   createContext,
@@ -18,8 +17,8 @@ const addApolloServer = ({
 }: {
   server: express.Express;
   graphQLSchema: GraphQLSchema;
-  createContext: CreateContext;
-  sessionStrategy?: SessionStrategy<any>;
+  createContext: CreateContext<SessionType>;
+  sessionStrategy?: SessionStrategy<SessionType>;
 }) => {
   const apolloServer = new ApolloServer({
     uploads: false,
@@ -28,12 +27,7 @@ const addApolloServer = ({
     playground: { settings: { 'request.credentials': 'same-origin' } },
     formatError, // TODO: this needs to be discussed
     context: async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
-      createContext({
-        sessionContext: sessionStrategy
-          ? await createSessionContext(sessionStrategy, req, res, createContext)
-          : undefined,
-        req,
-      }),
+      createContext({ skipAccessControl: false, req, res, sessionStrategy }),
     // FIXME: support for apollo studio tracing
     // ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
     //   ? { tracing: true }
@@ -59,7 +53,7 @@ const addApolloServer = ({
 export const createExpressServer = async (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
-  createContext: CreateContext,
+  createContext: CreateContext<any>,
   dev: boolean,
   projectAdminPath: string
 ) => {

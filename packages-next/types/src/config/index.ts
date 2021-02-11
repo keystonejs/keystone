@@ -83,7 +83,7 @@ export type AdminUIConfig = {
     req: IncomingMessage;
     session: any;
     isValidSession: boolean;
-    createContext: CreateContext;
+    createContext: CreateContext<any>;
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
 };
 

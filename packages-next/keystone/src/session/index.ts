@@ -1,13 +1,6 @@
-import { IncomingMessage, ServerResponse } from 'http';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
-import {
-  SessionStrategy,
-  JSONValue,
-  SessionStoreFunction,
-  SessionContext,
-  CreateContext,
-} from '@keystone-next/types';
+import { SessionStrategy, JSONValue, SessionStoreFunction } from '@keystone-next/types';
 
 // uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
@@ -73,9 +66,8 @@ export function withItemData<T extends { listKey: string; itemId: string }>(
     const { get, ...sessionStrategy } = createSession();
     return {
       ...sessionStrategy,
-      get: async ({ req, createContext }) => {
-        const session = await get({ req, createContext });
-        const sudoContext = createContext({}).sudo();
+      get: async ({ req, sudoContext }) => {
+        const session = await get({ req, sudoContext });
         if (
           !session ||
           !session.listKey ||
@@ -179,8 +171,8 @@ export function storedSessions({
     let store = typeof storeOption === 'function' ? storeOption({ maxAge }) : storeOption;
     let isConnected = false;
     return {
-      async get({ req, createContext }) {
-        let sessionId = await get({ req, createContext });
+      async get({ req, sudoContext }) {
+        let sessionId = await get({ req, sudoContext });
         if (typeof sessionId === 'string') {
           if (!isConnected) {
             await store.connect?.();
@@ -189,17 +181,17 @@ export function storedSessions({
           return store.get(sessionId);
         }
       },
-      async start({ res, data, createContext }) {
+      async start({ res, data, context }) {
         let sessionId = generateSessionId();
         if (!isConnected) {
           await store.connect?.();
           isConnected = true;
         }
         await store.set(sessionId, data);
-        return start?.({ res, data: { sessionId }, createContext }) || '';
+        return start?.({ res, data: { sessionId }, context }) || '';
       },
-      async end({ req, res, createContext }) {
-        let sessionId = await get({ req, createContext });
+      async end({ req, res, context }) {
+        let sessionId = await get({ req, sudoContext: context.sudo() });
         if (typeof sessionId === 'string') {
           if (!isConnected) {
             await store.connect?.();
@@ -207,24 +199,8 @@ export function storedSessions({
           }
           await store.delete(sessionId);
         }
-        await end?.({ req, res, createContext });
+        await end?.({ req, res, context });
       },
     };
-  };
-}
-
-/**
- * This is the function createSystem uses to implement the session strategy provided
- */
-export async function createSessionContext<T>(
-  sessionStrategy: SessionStrategy<T>,
-  req: IncomingMessage,
-  res: ServerResponse,
-  createContext: CreateContext
-): Promise<SessionContext<T>> {
-  return {
-    session: await sessionStrategy.get({ req, createContext }),
-    startSession: (data: T) => sessionStrategy.start({ res, data, createContext }),
-    endSession: () => sessionStrategy.end({ req, res, createContext }),
   };
 }
