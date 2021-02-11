@@ -1,4 +1,6 @@
 import React, { ReactNode } from 'react';
+import { Code } from '../components/Code';
+import { MDXProvider } from '@mdx-js/react';
 import cx from 'classnames';
 import Link from 'next/link';
 
@@ -63,4 +65,12 @@ export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boo
   );
 };
 
-export const Markdown = ({ children }: { children: ReactNode }) => <Page isProse>{children}</Page>;
+const components = {
+  code: Code,
+};
+
+export const Markdown = ({ children }: { children: ReactNode }) => (
+  <Page isProse>
+    <MDXProvider components={components}>{children}</MDXProvider>
+  </Page>
+);
