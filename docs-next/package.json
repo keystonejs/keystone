@@ -14,6 +14,7 @@
     "@keystone-ui/notice": "^1.0.1",
     "@keystone-ui/tooltip": "^1.0.2",
     "@mdx-js/loader": "^1.6.22",
+    "@mdx-js/react": "^1.6.22",
     "@next/mdx": "^10.0.6",
     "@preconstruct/next": "^2.0.0",
     "@tailwindcss/typography": "^0.4.0",
