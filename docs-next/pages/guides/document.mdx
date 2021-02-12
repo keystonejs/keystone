@@ -1,7 +1,129 @@
-import { Markdown } from '../../components/Page';
+import { Page } from '../../components/Page';
+import { DocumentEditorDemo } from '../../components/DocumentEditorDemo';
 
-# How To Use Document Fields
+## Customising the features of the editor
 
-(coming soon)
+## Component Blocks
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+Component blocks allow you to add custom blocks to the editor that accept unstructured content and can render a form that renders arbitrary React components.
+
+### Fields
+
+There are a variety
+
+### Form Fields
+
+`@keystone-next/keystone/component-blocks` ships with a set of form fields for common purposes:
+
+- `fields.text({ label: '...', defaultValue: '...' })`
+- `fields.url({ label: '...', defaultValue: '...' })`
+- `fields.select({ label: '...', options: [{ label:'A', value:'a' }, { label:'B', value:'b' }] defaultValue: 'a' })`
+- `fields.checkbox({ label: '...', defaultValue: false })`
+
+You can write your own form fields that conform to this API.
+
+```ts
+type FormField<Value, Options> = {
+  kind: 'form';
+  Input(props: {
+    value: Value;
+    onChange(value: Value): void;
+    autoFocus: boolean;
+    /**
+     * This will be true when validate has returned false and the user has attempted to close the form
+     * or when the form is open and they attempt to save the item
+     */
+    forceValidation: boolean;
+  }): ReactElement | null;
+  /**
+   * The options are config about the field that are available on the
+   * preview props when rendering the toolbar and preview component
+   */
+  options: Options;
+  defaultValue: Value;
+  /**
+   * validate will be called in two cases:
+   * - on the client in the editor when a user is changing the value.
+   *   Returning `false` will block closing the form
+   *   and saving the item.
+   * - on the server when a change is recieved before allowing it to be saved
+   *   if `true` is returned
+   * @param value The value of the form field. You should NOT trust
+   * this value to be of the correct type because it could come from
+   * a potentially malicious client
+   */
+  validate(value: unknown): boolean;
+};
+```
+
+### Relationships
+
+You can .
+Note that these are not stored like relationship fields on lists are, they are stored as ids embedded in the document structure.
+
+### Objects
+
+```tsx
+fields.object({
+  text: fields.text({ label: 'Text' }),
+  child: fields.placeholder({ placeholder: 'Content...' }),
+});
+```
+
+### Conditional
+
+You can conditionally have fields with `fields.conditional`, they require a form field whose value is either a string or a boolean.
+
+```tsx
+fields.
+```
+
+> You might find `fields.empty()` useful which stores and renders nothing if you want to have a field in one case and nothing anything in another
+
+## Rendering
+
+To render the document in a React app, use the `@keystone-next/document-renderer` package.
+
+```tsx
+import { DocumentRenderer } from '@keystone-next/document-renderer';
+
+<DocumentRenderer document={document} />;
+```
+
+```tsx
+import { DocumentRenderer } from '@keystone-next/document-renderer';
+
+const renderers:Props={}
+
+
+<DocumentRenderer document={document} />;
+```
+
+### Typing props for rendering component blocks
+
+If you're using TypeScript, you can infer the props types for component with `InferRenderersForComponentBlocks` from `@keystone-next/fields-document/component-blocks`.
+
+```tsx
+import { DocumentRenderer } from '@keystone-next/document-renderer';
+import { InferRenderersForComponentBlocks } from '@keystone-next/fields-document/component-blocks';
+import { componentBlocks } from '../path/to/your/custom/views';
+const componentBlockRenderers: InferRenderersForComponentBlocks<typeof componentBlocks> = {
+  someComponentBlock: props => {
+    // props will be inferred from your component blocks
+  },
+};
+
+<DocumentRenderer document={document} componentBlocks={componentBlockRenderers} />;
+```
+
+export default ({ children }) => {
+  return (
+    <Page>
+      <div className="prose">
+        <h1>How To Use Document Fields</h1>
+      </div>
+      <DocumentEditorDemo />
+      <div className="prose">{children}</div>
+    </Page>
+  );
+};

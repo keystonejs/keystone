@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { createIcon } from '../Icon';
+
 export const CodeIcon = createIcon(
   <React.Fragment>
     <polyline points="16 18 22 12 16 6" />
