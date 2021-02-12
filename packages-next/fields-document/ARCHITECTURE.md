@@ -61,10 +61,10 @@ When a node is moved, normalization will not happen on that node because it did 
 Normalization will happen on the old and the new parent nodes of the node that moved because both of the parent nodes children arrays changed.
 If you want to enforce something about the relationship between a parent and child node, you must do this by doing normalization when `normalizeNode` is passed the parent node since the child node won't be passed to `normalizeNode` when it is moved.
 
-## User Input
+## Changing the default handling of user input
 
-Some behaviour should happen in response to user input, for example markdown shortcuts.
-These shouldn't happen in normalization because you still want people to be able to write `> ` for example without it becoming a blockquote by undoing it so for these kind of things, they're handled by overriding `editor.insertText`, `editor.insertBreak`, `editor.insertData` or `onKeyDown` (which is a prop to the `Editable` component rather than on the editor instance).
+For some behaviour like markdown shortcuts, you need to change the default handling of user input like converting a paragraph to a blockquote when a user types `> `.
+Changing the default handling of user input is done by overriding `editor.insertText`, `editor.insertBreak`, `editor.insertData` or `onKeyDown` (which is a prop to the `Editable` component rather than on the editor instance).
 
 ## DocumentFeatures
 
