@@ -7,7 +7,6 @@ import {
   SessionStoreFunction,
   SessionContext,
   CreateContext,
-  SessionImplementation,
 } from '@keystone-next/types';
 
 // uid-safe is what express-session uses so let's just use it
@@ -218,18 +217,15 @@ export function storedSessions({
 /**
  * This is the function createSystem uses to implement the session strategy provided
  */
-export function implementSession<T>(sessionStrategy: SessionStrategy<T>): SessionImplementation {
+export async function createSessionContext<T>(
+  sessionStrategy: SessionStrategy<T>,
+  req: IncomingMessage,
+  res: ServerResponse,
+  createContext: CreateContext
+): Promise<SessionContext<T>> {
   return {
-    async createSessionContext(
-      req: IncomingMessage,
-      res: ServerResponse,
-      createContext: CreateContext
-    ): Promise<SessionContext<T>> {
-      return {
-        session: await sessionStrategy.get({ req, createContext }),
-        startSession: (data: T) => sessionStrategy.start({ res, data, createContext }),
-        endSession: () => sessionStrategy.end({ req, res, createContext }),
-      };
-    },
+    session: await sessionStrategy.get({ req, createContext }),
+    startSession: (data: T) => sessionStrategy.start({ res, data, createContext }),
+    endSession: () => sessionStrategy.end({ req, res, createContext }),
   };
 }
