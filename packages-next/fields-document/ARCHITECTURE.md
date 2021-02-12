@@ -31,7 +31,7 @@ A trivial document with a single heading and paragraph would look like:
 
 ## Plugins
 
-For normalization and handling user input and some other things(you can see what they are by looking at the type definition for the `Editor` in Slate), you write [Slate "plugins"](https://docs.slatejs.org/concepts/07-plugins).
+For normalization and handling user input and some other things (you can see what they are by looking at the type definition for the `Editor` in Slate), you write [Slate "plugins"](https://docs.slatejs.org/concepts/07-plugins).
 Plugins are not some special API, it means accepting an `Editor` object and returning it but modifying some of the properties.
 
 ## Rendering
@@ -41,7 +41,7 @@ See https://docs.slatejs.org/concepts/08-rendering for how rendering the documen
 
 The editor is very performance-sensitive because it will re-render on every keystroke so keep these things in mind while writing code for rendering the editor:
 
-- Renderers for elements/leaves should never use `useSlate` or `useToolbarState` because they will change on every editor change. If they need to get the editor to do something in response to a user action, they should use `useStaticEditor` which will not cause re-renders.
+- Renderers for elements/leaves should never use `useSlate` or `useToolbarState` because those hooks will cause a re-render on every editor change. If they need to get the editor to do something in response to a user action, they should use `useStaticEditor` which will not cause re-renders.
 - All state derived from the document/selection that is shown in the toolbar should come from `useToolbarState` so that it is only computed once
 - Components that use `useToolbarState` and are shown when the user is typing (i.e. things that aren't in dialogs) should memoize the React elements they return with `useMemo` to avoid re-rendering when the state they consume from `useToolbarState` hasn't changed
 - Calls to `useToolbarState` should be as deep as possible to re-render the smallest number of components change when the relevant part of the toolbar state changes (e.g. a tooltip should be above the component that renders the tooltip so that it doesn't need to re-render even if the button inside it needs to re-render)
