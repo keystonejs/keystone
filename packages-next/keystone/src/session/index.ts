@@ -75,7 +75,7 @@ export function withItemData<T extends { listKey: string; itemId: string }>(
       ...sessionStrategy,
       get: async ({ req, createContext }) => {
         const session = await get({ req, createContext });
-        const sudoContext = createContext({ skipAccessControl: true });
+        const sudoContext = createContext({}).sudo();
         if (
           !session ||
           !session.listKey ||
@@ -177,23 +177,36 @@ export function storedSessions({
   return () => {
     let { get, start, end } = statelessSessions({ ...statelessSessionsOptions, maxAge })();
     let store = typeof storeOption === 'function' ? storeOption({ maxAge }) : storeOption;
+    let isConnected = false;
     return {
       connect: store.connect,
       disconnect: store.disconnect,
       async get({ req, createContext }) {
         let sessionId = await get({ req, createContext });
         if (typeof sessionId === 'string') {
+          if (!isConnected) {
+            await store.connect?.();
+            isConnected = true;
+          }
           return store.get(sessionId);
         }
       },
       async start({ res, data, createContext }) {
         let sessionId = generateSessionId();
+        if (!isConnected) {
+          await store.connect?.();
+          isConnected = true;
+        }
         await store.set(sessionId, data);
         return start?.({ res, data: { sessionId }, createContext }) || '';
       },
       async end({ req, res, createContext }) {
         let sessionId = await get({ req, createContext });
         if (typeof sessionId === 'string') {
+          if (!isConnected) {
+            await store.connect?.();
+            isConnected = true;
+          }
           await store.delete(sessionId);
         }
         await end?.({ req, res, createContext });
@@ -206,17 +219,12 @@ export function storedSessions({
  * This is the function createSystem uses to implement the session strategy provided
  */
 export function implementSession<T>(sessionStrategy: SessionStrategy<T>): SessionImplementation {
-  let isConnected = false;
   return {
     async createSessionContext(
       req: IncomingMessage,
       res: ServerResponse,
       createContext: CreateContext
     ): Promise<SessionContext<T>> {
-      if (!isConnected) {
-        await sessionStrategy.connect?.();
-        isConnected = true;
-      }
       return {
         session: await sessionStrategy.get({ req, createContext }),
         startSession: (data: T) => sessionStrategy.start({ res, data, createContext }),

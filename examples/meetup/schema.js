@@ -216,7 +216,7 @@ exports.ForgottenPasswordToken = {
       const now = new Date().toISOString();
 
       const { errors, data } = await context.executeGraphQL({
-        context: context.createContext({ skipAccessControl: true }),
+        context: context.sudo(),
         query: `
         query GetUserAndToken($user: ID!, $now: DateTime!) {
           User( where: { id: $user }) {
@@ -274,7 +274,7 @@ exports.customSchema = {
         const expiresAt = new Date(now + tokenExpiration).toISOString();
 
         const { errors: userErrors, data: userData } = await context.executeGraphQL({
-          context: context.createContext({ skipAccessControl: true }),
+          context: context.sudo(),
           query: `
             query findUserByEmail($email: String!) {
               allUsers(where: { email: $email }) {
@@ -304,7 +304,7 @@ exports.customSchema = {
         };
 
         const { errors } = await context.executeGraphQL({
-          context: context.createContext({ skipAccessControl: true }),
+          context: context.sudo(),
           query: `
             mutation createForgottenPasswordToken(
               $userId: ID!,
@@ -345,7 +345,7 @@ exports.customSchema = {
         const now = Date.now();
 
         const { errors, data } = await context.executeGraphQL({
-          context: context.createContext({ skipAccessControl: true }),
+          context: context.sudo(),
           query: `
             query findUserFromToken($token: String!, $now: DateTime!) {
               passwordTokens: allForgottenPasswordTokens(where: { token: $token, expiresAt_gte: $now }) {
@@ -368,7 +368,7 @@ exports.customSchema = {
         const tokenId = data.passwordTokens[0].id;
 
         const { errors: passwordError } = await context.executeGraphQL({
-          context: context.createContext({ skipAccessControl: true }),
+          context: context.sudo(),
           query: `mutation UpdateUserPassword($user: ID!, $password: String!) {
             updateUser(id: $user, data: { password: $password }) {
               id
@@ -383,7 +383,7 @@ exports.customSchema = {
         }
 
         await context.executeGraphQL({
-          context: context.createContext({ skipAccessControl: true }),
+          context: context.sudo(),
           query: `mutation DeletePasswordToken($tokenId: ID!) {
             deleteForgottenPasswordToken(id: $tokenId) {
               id

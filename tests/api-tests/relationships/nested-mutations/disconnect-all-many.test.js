@@ -190,7 +190,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }`,
               variables: { userId: createUser.id },
-              context: keystone.createContext({ skipAccessControl: true }),
+              context: keystone.createContext().sudo(),
             });
             expect(result.errors).toBe(undefined);
             expect(result.data.UserToNotesNoRead.notes).toHaveLength(0);

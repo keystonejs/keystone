@@ -59,8 +59,7 @@ export function getMagicAuthLinkSchema<I extends string>({
       Mutation: {
         async [gqlNames.sendItemMagicAuthLink](root: any, args: { [P in I]: string }, context) {
           const list = context.keystone.lists[listKey];
-          const sudoContext = context.createContext({ skipAccessControl: true });
-          const itemAPI = sudoContext.lists[listKey];
+          const itemAPI = context.sudo().lists[listKey];
           const tokenType = 'magicAuth';
           const identity = args[identityField];
 
@@ -105,8 +104,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           }
 
           const list = context.keystone.lists[listKey];
-          const sudoContext = context.createContext({ skipAccessControl: true });
-          const itemAPI = sudoContext.lists[listKey];
+          const itemAPI = context.sudo().lists[listKey];
           const tokenType = 'magicAuth';
           const result = await validateAuthToken(
             tokenType,
