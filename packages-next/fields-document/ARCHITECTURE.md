@@ -32,7 +32,7 @@ A trivial document with a single heading and paragraph would look like:
 ## Plugins
 
 For normalization and handling user input and some other things (you can see what they are by looking at the type definition for the `Editor` in Slate), you write [Slate "plugins"](https://docs.slatejs.org/concepts/07-plugins).
-Plugins are not some special API, it means accepting an `Editor` object and returning it but modifying some of the properties.
+Plugins are functions which accept an `Editor`, modify some of its properties, and then return it.
 
 ## Rendering
 
@@ -49,17 +49,17 @@ The editor is very performance-sensitive because it will re-render on every keys
 ## Normalization
 
 Normalization is used in the editor to enforce a specific structure.
-Slate runs normalization by going through all the changed or "dirty" nodes when changes happen on client and calling `editor.normalizeNode` from the deepest node that changed up to the `Editor` until the normalization doesn't make any more changes.
+Slate runs normalization by going through all the changed or "dirty" nodes when changes happen on the client and calling `editor.normalizeNode` from the deepest node that changed up to the `Editor` until the normalization doesn't make any more changes.
 The entire document is also normalized in `resolveInput`.
 
 For example, if you have two lists next to each other, you want to merge them so that they're one list.
 You don't want to do this in response to a specific user action because any number of things could result in two lists being next to each other so this is where you would use normalization.
 
-Besides bespoke normalization for the different types of nodes, there is a set of generic normalization which enforces which block types can have which children. Search for `editorSchema` in the to see how this works.
+Besides bespoke normalization for the different types of nodes, there is a set of generic normalization which enforces which block types can have which children. Search for `editorSchema` in the code to see how this works.
 
 When a node is moved, normalization will not happen on that node because it did not actually change.
 Normalization will happen on the old and the new parent nodes of the node that moved because both of the parent nodes children arrays changed.
-If you want to enforce something about the relationship between a parent and child node, you must do this by doing normalization when normalizeNode is passed the parent node since the child node won't be passed to normalizeNode when it is moved.
+If you want to enforce something about the relationship between a parent and child node, you must do this by doing normalization when `normalizeNode` is passed the parent node since the child node won't be passed to `normalizeNode` when it is moved.
 
 ## User Input
 
@@ -77,7 +77,7 @@ These shouldn't happen in normalization because you still want people to be able
 
 Component blocks are the main way that solution developers customise the editor.
 See the docs for the document field for how they're used.
-The way they're represented in the structure is that nodes with the type `component-block` store the form data and they have children of type `component-block-prop` and `component-inline-prop` with a `propPath` which points to where in the props structure they are. (note that they are both blocks, inline and block in the name refers to what kind of children they contain)
+The way they're represented in the structure is that nodes with the type `component-block` store the form data and they have children of type `component-block-prop` and `component-inline-prop` with a `propPath` which points to where in the props structure they are. (note that they are both blocks, "inline" and "block" in the name refers to what kind of children they contain)
 
 ## Validation
 
