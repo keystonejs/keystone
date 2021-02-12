@@ -7,20 +7,36 @@ The `keystone-next` CLI expects to find a module named `keystone.ts` with a defa
 ```typescript filename=keystone.ts
 import { config } from '@keystone-next/keystone/schema';
 
-export default config({ /* ... */ });
+export default config({
+  /* ... */
+});
 ```
 
 The `config` function accepts an object representing all the configurable parts of the system:
 
 ```typescript
 export default config({
-  lists: { /* ... */ },
-  db: { /* ... */ },
-  ui: { /* ... */ },
-  server: { /* ... */ },
-  session: () => { /* ... */ },
-  graphql: { /* ... */ },
-  extendGraphqlSchema: {/* ... */ },
+  lists: {
+    /* ... */
+  },
+  db: {
+    /* ... */
+  },
+  ui: {
+    /* ... */
+  },
+  server: {
+    /* ... */
+  },
+  session: () => {
+    /* ... */
+  },
+  graphql: {
+    /* ... */
+  },
+  extendGraphqlSchema: {
+    /* ... */
+  },
 });
 ```
 
@@ -29,7 +45,7 @@ We will cover each of these options below.
 The configuration object has a TypeScript type of `KeystoneConfig`, which can be imported from `@keystone-next/types`.
 This type definition should be considered the source of truth for the available configuration options.
 
-## `lists`
+## lists
 
 The `lists` config option is where you define the data model, or schema, of the Keystone system.
 It has a TypeScript type of `ListSchemaConfig`.
@@ -49,7 +65,7 @@ export default config({
 });
 ```
 
-## `db`
+## db
 
 ```
 import type { DatabaseConfig } from '@keystone-next/types';
@@ -66,7 +82,7 @@ They also all have an optional `onConnect` async function, which takes a [`Keyst
 
 As well as these common options, each adapter supports a number of optional advanced configuration options.
 
-### `prisma_postgresql`
+### prisma_postgresql
 
 Advanced configuration:
 
@@ -81,7 +97,9 @@ export default config({
   db: {
     adapter: 'prisma_postgresql',
     url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
-    onConnect: async context => { /* ... */ },
+    onConnect: async context => {
+      /* ... */
+    },
     // Optional advanced configuration
     enableLogging: true,
     getPrismaPath: ({ prismaSchema }) => '.prisma',
@@ -91,7 +109,7 @@ export default config({
 });
 ```
 
-### `knex`
+### knex
 
 Advanced configuration:
 
@@ -103,7 +121,9 @@ export default config({
   db: {
     adapter: 'knex',
     url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
-    onConnect: async context => { /* ... */ },
+    onConnect: async context => {
+      /* ... */
+    },
     // Optional advanced configuration
     schemaName: 'public',
     dropDatabase: false,
@@ -112,7 +132,7 @@ export default config({
 });
 ```
 
-### `mongoose`
+### mongoose
 
 Advanced configuration:
 
@@ -131,7 +151,7 @@ export default config({
 });
 ```
 
-## `ui`
+## ui
 
 ```
 import type { AdminUIConfig } from '@keystone-next/types';
@@ -165,7 +185,7 @@ export default config({
 });
 ```
 
-## `server`
+## server
 
 ```
 import type { ServerConfig } from '@keystone-next/types';
@@ -190,7 +210,7 @@ export default config({
 });
 ```
 
-## `session`
+## session
 
 ```
 import type { SessionStrategy } from '@keystone-next/types';
@@ -205,14 +225,21 @@ In general you will use functions from the `@keystone-next/keystone/session` pac
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
 
 export default config({
-  session: withItemData(statelessSessions({ /* ... */ }), { /* ... */ }),
+  session: withItemData(
+    statelessSessions({
+      /* ... */
+    }),
+    {
+      /* ... */
+    }
+  ),
   /* ... */
 });
 ```
 
 See the [Session API](./session) for more details on how to configure session management in Keystone.
 
-## `graphql`
+## graphql
 
 ```
 import type { GraphQLConfig } from '@keystone-next/types';
@@ -235,7 +262,7 @@ export default config({
 });
 ```
 
-## `extendGraphqlSchema`
+## extendGraphqlSchema
 
 ```
 import type { ExtendGraphqlSchema } from '@keystone-next/types';

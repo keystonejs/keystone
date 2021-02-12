@@ -11450,11 +11450,6 @@ from@~0:
   resolved "https://registry.yarnpkg.com/from/-/from-0.1.7.tgz#83c60afc58b9c56997007ed1a768b3ab303a44fe"
   integrity sha1-g8YK/Fi5xWmXAH7Rp2izqzA6RP4=
 
-fs-capacitor@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/fs-capacitor/-/fs-capacitor-2.0.4.tgz#5a22e72d40ae5078b4fe64fe4d08c0d3fc88ad3c"
-  integrity sha512-8S4f4WsCryNw2mJJchi46YgB6CR5Ze+4L1h8ewl9tEpL4SJ3ZO+c/bS4BWhB8bK+O3TMqhuZarTitd0S0eh2pA==
-
 fs-capacitor@^6.1.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/fs-capacitor/-/fs-capacitor-6.2.0.tgz#fa79ac6576629163cb84561995602d8999afb7f5"
@@ -12718,7 +12713,7 @@ graphql-type-json@^0.3.2:
   resolved "https://registry.yarnpkg.com/graphql-type-json/-/graphql-type-json-0.3.2.tgz#f53a851dbfe07bd1c8157d24150064baab41e115"
   integrity sha512-J+vjof74oMlCWXSvt0DOf2APEdZOCdubEvGDUAlqH//VBYcOYsGgRW7Xzorr44LvkjiuvecWc8fChxuZZbChtg==
 
-graphql-upload@^11.0.0:
+graphql-upload@^11.0.0, graphql-upload@^8.0.2:
   version "11.0.0"
   resolved "https://registry.yarnpkg.com/graphql-upload/-/graphql-upload-11.0.0.tgz#24b245ff18f353bab6715e8a055db9fd73035e10"
   integrity sha512-zsrDtu5gCbQFDWsNa5bMB4nf1LpKX9KDgh+f8oL1288ijV4RxeckhVozAjqjXAfRpxOHD1xOESsh6zq8SjdgjA==
