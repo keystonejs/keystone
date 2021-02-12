@@ -51,7 +51,7 @@ interface Renderers {
   };
 }
 
-const defaultRenderers: Renderers = {
+export const defaultRenderers: Renderers = {
   inline: {
     bold: 'strong',
     code: 'code',
@@ -221,16 +221,21 @@ function createComponentBlockProps(node: Element, children: ReactElement[]) {
   return formProps;
 }
 
-type Props<ComponentBlocks> = {
+export type DocumentRendererProps<
+  ComponentBlocks extends Record<string, Component<any>> = Record<string, Component<any>>
+> = {
   document: Element[];
-  renderers?: Partial<Renderers>;
+  renderers?: { inline?: Partial<Renderers['inline']>; block?: Partial<Renderers['block']> };
   componentBlocks?: ComponentBlocks;
 };
 
 export function DocumentRenderer<ComponentBlocks extends Record<string, Component<any>>>(
-  props: Props<ComponentBlocks>
+  props: DocumentRendererProps<ComponentBlocks>
 ) {
-  const renderers = { ...defaultRenderers, ...props.renderers };
+  const renderers = {
+    inline: { ...props.renderers?.inline, ...defaultRenderers.inline },
+    block: { ...props.renderers?.block, ...defaultRenderers.block },
+  };
   const componentBlocks = props.componentBlocks || {};
   return (
     <Fragment>
