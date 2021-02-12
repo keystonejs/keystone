@@ -216,7 +216,7 @@ export class SlugImplementation extends Text {
           // retreiving an accurate list of all existing items. Because we add the
           // unique constraint to the field, the database will throw an error if
           // we miss a match and try to insert anyway.
-          context: context.createContext({ skipAccessControl: true }),
+          context: context.sudo(),
           listKey: this.listKey,
           first: 1,
           where: {

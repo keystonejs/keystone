@@ -124,10 +124,7 @@ class PassportAuthStrategy {
 
   async _executeQuery({ query, variables }) {
     const { errors, data } = await this._keystone.executeGraphQL({
-      context: this._keystone.createContext({
-        schemaName: this._schemaName,
-        skipAccessControl: true,
-      }),
+      context: this._keystone.createContext({ schemaName: this._schemaName }).sudo(),
       query,
       variables,
     });

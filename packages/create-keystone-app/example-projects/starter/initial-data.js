@@ -8,7 +8,7 @@ module.exports = async keystone => {
       _allUsersMeta: { count = 0 },
     },
   } = await keystone.executeGraphQL({
-    context: keystone.createContext({ skipAccessControl: true }),
+    context: keystone.createContext().sudo(),
     query: `query {
       _allUsersMeta {
         count
@@ -21,7 +21,7 @@ module.exports = async keystone => {
     const email = 'admin@example.com';
 
     const { errors } = await keystone.executeGraphQL({
-      context: keystone.createContext({ skipAccessControl: true }),
+      context: keystone.createContext().sudo(),
       query: `mutation initialUser($password: String, $email: String) {
             createUser(data: {name: "Admin", email: $email, isAdmin: true, password: $password}) {
               id

@@ -63,6 +63,7 @@ export type KeystoneContext = {
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   maxTotalResults: number;
   createContext: CreateContext;
+  sudo: () => KeystoneContext;
   req?: IncomingMessage;
 } & AccessControlContext &
   Partial<SessionContext<any>> &

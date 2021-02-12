@@ -130,12 +130,10 @@ export function getAdminMetaSchema({
                     'KeystoneAdminUIFieldMetaItemView.fieldMode cannot be resolved during the build process'
                   );
                 }
-                const item = await context
-                  .createContext({ skipAccessControl: true })
-                  .lists[rootVal.listKey].findOne({
-                    where: { id: rootVal.itemId },
-                    resolveFields: false,
-                  });
+                const item = await context.sudo().lists[rootVal.listKey].findOne({
+                  where: { id: rootVal.itemId },
+                  resolveFields: false,
+                });
                 const listConfig = config.lists[rootVal.listKey];
                 const sessionFunction =
                   listConfig.fields[rootVal.fieldPath].config.ui?.itemView?.fieldMode ??

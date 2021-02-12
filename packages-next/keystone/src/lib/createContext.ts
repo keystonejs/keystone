@@ -80,6 +80,7 @@ export function makeCreateContext({
         skipAccessControl = _skipAccessControl,
         req = _req,
       } = {}) => createContext({ sessionContext, skipAccessControl, req }),
+      sudo: () => createContext({ sessionContext, skipAccessControl: true, req }),
       req,
       ...sessionContext,
       // Note: These two fields let us use the server-side-graphql-client library.
