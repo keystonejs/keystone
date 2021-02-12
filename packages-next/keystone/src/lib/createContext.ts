@@ -54,9 +54,6 @@ export function makeCreateContext({
       return result.data as Record<string, any>;
     };
     const itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
-    const _sessionContext = sessionContext;
-    const _skipAccessControl = skipAccessControl;
-    const _req = req;
     const contextToReturn: KeystoneContext = {
       schemaName: 'public',
       ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
@@ -75,12 +72,14 @@ export function makeCreateContext({
         schema: graphQLSchema,
       } as KeystoneGraphQLAPI<any>,
       maxTotalResults: keystone.queryLimits.maxTotalResults,
-      createContext: ({
-        sessionContext = _sessionContext,
-        skipAccessControl = _skipAccessControl,
-        req = _req,
-      } = {}) => createContext({ sessionContext, skipAccessControl, req }),
       sudo: () => createContext({ sessionContext, skipAccessControl: true, req }),
+      exitSudo: () => createContext({ sessionContext, skipAccessControl: false, req }),
+      withSession: session =>
+        createContext({
+          sessionContext: { ...sessionContext, session } as SessionContext<any>,
+          skipAccessControl,
+          req,
+        }),
       req,
       ...sessionContext,
       // Note: These two fields let us use the server-side-graphql-client library.

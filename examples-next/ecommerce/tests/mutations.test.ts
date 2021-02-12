@@ -7,14 +7,7 @@ function setupKeystone(adapterName: AdapterName) {
 }
 
 const asUser = (context: KeystoneContext, itemId?: string) =>
-  context.createContext({
-    skipAccessControl: false,
-    sessionContext: {
-      session: { itemId, data: {} },
-      startSession: async () => '',
-      endSession: async () => {},
-    },
-  });
+  context.exitSudo().withSession({ itemId, data: {} });
 
 multiAdapterRunners('mongoose').map(({ runner }) =>
   describe(`Custom mutations`, () => {
