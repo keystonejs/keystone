@@ -1,7 +1,53 @@
 import { Page } from '../../components/Page';
 import { DocumentEditorDemo } from '../../components/DocumentEditorDemo';
 
-## Customising the features of the editor
+### Document Features
+
+### Relationships
+
+```tsx
+type RelationshipsConfig = Record<
+  string,
+  {
+    listKey: string;
+    /** GraphQL fields to select when querying the field */
+    selection?: string;
+  } & (
+    | {
+        kind: 'inline';
+        label: string;
+      }
+    | {
+        kind: 'prop';
+        many?: true;
+      }
+  )
+>;
+```
+
+```tsx
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { document } from '@keystone-next/fields-document';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        fieldName: document({
+          relationships: {
+            user: {
+              kind: 'inline',
+            },
+          },
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
 
 ## Component Blocks
 
@@ -64,6 +110,8 @@ Note that these are not stored like relationship fields on lists are, they are s
 ### Objects
 
 ```tsx
+import { fields } from '@keystone-next/fields-document/component-blocks';
+
 fields.object({
   text: fields.text({ label: 'Text' }),
   child: fields.placeholder({ placeholder: 'Content...' }),
@@ -72,10 +120,18 @@ fields.object({
 
 ### Conditional
 
-You can conditionally have fields with `fields.conditional`, they require a form field whose value is either a string or a boolean.
+You can conditionally show different fields with `fields.conditional`, they require a form field with a value that is either a string or a boolean as the discriminant and an object of fields for the values.
 
 ```tsx
-fields.
+import { fields } from '@keystone-next/fields-document/component-blocks';
+
+fields.conditional(fields.checkbox({ label: 'Show Call to action' }), {
+  true: fields.object({
+    url: fields.url({ label: 'URL' }),
+    content: fields.child({ kind: 'inline', placehodler: 'Call to Action' }),
+  }),
+  false: fields.empty(),
+});
 ```
 
 > You might find `fields.empty()` useful which stores and renders nothing if you want to have a field in one case and nothing anything in another
@@ -90,16 +146,31 @@ import { DocumentRenderer } from '@keystone-next/document-renderer';
 <DocumentRenderer document={document} />;
 ```
 
+### Overriding the default renderers
+
 ```tsx
-import { DocumentRenderer } from '@keystone-next/document-renderer';
+import { DocumentRenderer, DocumentRendererProps } from '@keystone-next/document-renderer';
 
-const renderers:Props={}
+const renderers: DocumentRendererProps['renderers'] = {
+  // use your editor's autocomplete to see what other renderers you can override
+  inline: {
+    bold: ({ children }) => {
+      return <strong>{children}</strong>;
+    },
+  },
+  block: {
+    paragraph: ({ children, textAlign }) => {
+      return <p style={{ textAlign }}>{children}</p>;
+    },
+  },
+};
 
-
-<DocumentRenderer document={document} />;
+<DocumentRenderer document={document} renderers={renderers} />;
 ```
 
-### Typing props for rendering component blocks
+### Rendering Component blocks
+
+#### Typing props for rendering component blocks
 
 If you're using TypeScript, you can infer the props types for component with `InferRenderersForComponentBlocks` from `@keystone-next/fields-document/component-blocks`.
 
