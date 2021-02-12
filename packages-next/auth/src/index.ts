@@ -163,7 +163,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     }
 
     if (!session && initFirstItem) {
-      const count = await createContext({ skipAccessControl: true }).lists[listKey].count({});
+      const count = await createContext({}).sudo().lists[listKey].count({});
       if (count === 0) {
         if (pathname !== '/init') {
           return {
@@ -341,8 +341,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
           const accessingInitPage =
             url?.pathname === '/init' &&
             url?.host === headers?.host &&
-            (await context.createContext({ skipAccessControl: true }).lists[listKey].count({})) ===
-              0;
+            (await context.sudo().lists[listKey].count({})) === 0;
           return (
             accessingInitPage ||
             (keystoneConfig.ui?.isAccessAllowed

@@ -31,6 +31,9 @@ type MarkRenderers = { [Key in Mark]: OnlyChildrenComponent };
 interface Renderers {
   inline: {
     link: Component<{ children: ReactNode; href: string }> | 'a';
+    relationship: Component<{
+      data: { id: string; label: string; data: Record<string, any> } | null;
+    }>;
   } & MarkRenderers;
   block: {
     block: OnlyChildrenComponent;
@@ -59,6 +62,9 @@ export const defaultRenderers: Renderers = {
     subscript: 'sub',
     superscript: 'sup',
     underline: 'u',
+    relationship: ({ data }) => {
+      return <span>{data?.label}</span>;
+    },
   },
   block: {
     block: 'div',
@@ -110,7 +116,7 @@ function DocumentNode({
   if (typeof _node.text === 'string') {
     let child = <Fragment>{_node.text}</Fragment>;
     (Object.keys(renderers.inline) as (keyof typeof renderers.inline)[]).forEach(markName => {
-      if (markName !== 'link' && _node[markName]) {
+      if (markName !== 'link' && markName !== 'relationship' && _node[markName]) {
         const Mark = renderers.inline[markName];
         child = <Mark>{child}</Mark>;
       }
@@ -172,6 +178,22 @@ function DocumentNode({
         <renderers.block.list
           children={children}
           type={node.type === 'ordered-list' ? 'ordered' : 'unordered'}
+        />
+      );
+    }
+    case 'relationship': {
+      const data = node.data as any;
+      return (
+        <renderers.inline.relationship
+          data={
+            data
+              ? {
+                  id: data.id,
+                  label: data.label || data.id,
+                  data: data.data || {},
+                }
+              : null
+          }
         />
       );
     }

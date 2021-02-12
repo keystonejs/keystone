@@ -40,11 +40,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'createItem: Should create and get single item',
         runner(setupKeystone, async ({ keystone }) => {
-          const context = keystone.createContext({
-            schemaName: 'public',
-            authentication: {},
-            skipAccessControl: true,
-          });
+          const context = keystone
+            .createContext({ schemaName: 'public', authentication: {} })
+            .sudo();
           // Seed the db
           const item = await createItem({ keystone, context, listKey, item: testData[0].data });
           expect(typeof item.id).toBe('string');
@@ -244,11 +242,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'Should make keystone optional when context is present',
         runner(setupKeystone, async ({ keystone }) => {
-          const context = keystone.createContext({
-            schemaName: 'public',
-            authentication: {},
-            skipAccessControl: true,
-          });
+          const context = keystone
+            .createContext({ schemaName: 'public', authentication: {} })
+            .sudo();
           // Seed the db
           const item = await createItem({ context, listKey: 'Test', item: testData[0].data });
           expect(typeof item.id).toBe('string');

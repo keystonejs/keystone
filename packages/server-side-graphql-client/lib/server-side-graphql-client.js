@@ -1,9 +1,5 @@
 const getContext = keystone =>
-  keystone.createContext({
-    schemaName: 'public',
-    authentication: {},
-    skipAccessControl: true,
-  });
+  keystone.createContext({ schemaName: 'public', authentication: {} }).sudo();
 
 const runQuery = async ({ keystone, query, variables, context = getContext(keystone) }) => {
   const { data, errors } = await context.executeGraphQL({
