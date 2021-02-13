@@ -21,6 +21,10 @@ const modifiers = {
 };
 
 function printIndex(fieldPath: string, index: undefined | 'index' | 'unique') {
+  // For id fields we already have the primary index
+  if (fieldPath === 'id') {
+    return '';
+  }
   return {
     none: '',
     unique: '@unique',
@@ -177,13 +181,13 @@ function assertDbFieldIsValidForIdField(
       } field`
     );
   }
-  if (field.index !== undefined) {
+  if (field.index !== undefined && field.index !== 'unique') {
     throw new Error(
       `id fields must not specify indexes themselves but the id field for the ${listKey} list specifies an index`
     );
   }
   // this will likely be loosened in the future
-  if (field.default === undefined) {
+  if (field.mode !== 'required' && field.default === undefined) {
     throw new Error(
       `id fields must specify a Prisma/database level default value but the id field for the ${listKey} list does not`
     );

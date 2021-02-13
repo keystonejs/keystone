@@ -30,7 +30,7 @@ export const integer =
   meta =>
     fieldType({
       kind: 'scalar',
-      mode: 'optional',
+      mode: isRequired ? 'required' : 'optional',
       scalar: 'Int',
       index: getIndexType({ isIndexed, isUnique }),
     })({

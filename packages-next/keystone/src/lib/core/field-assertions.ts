@@ -69,30 +69,12 @@ function assertIdFieldGraphQLTypesCorrect(list: ListForValidation) {
       `The idField on a list must define a uniqueWhere GraphQL input with the ID GraphQL scalar type but the idField for ${list.listKey} does not define one`
     );
   }
-  if (idField.input.uniqueWhere.arg.type !== schema.ID) {
-    throw new Error(
-      `The idField on a list must define a uniqueWhere GraphQL input with the ID GraphQL scalar type but the idField for ${
-        list.listKey
-      } defines the type ${idField.input.uniqueWhere.arg.type.graphQLType.toString()}`
-    );
-  }
-  // we may want to loosen these constraints in the future
-  if (idField.input.create !== undefined) {
-    throw new Error(
-      `The idField on a list must not define a create GraphQL input but the idField for ${list.listKey} does define one`
-    );
-  }
-  if (idField.input.update !== undefined) {
-    throw new Error(
-      `The idField on a list must not define an update GraphQL input but the idField for ${list.listKey} does define one`
-    );
-  }
   if (idField.access.read === false) {
     throw new Error(
       `The idField on a list must not have access.read be set to false but ${list.listKey} does`
     );
   }
-  if (idField.output.type.kind !== 'non-null' || idField.output.type.of !== schema.ID) {
+  if (idField.output.type.kind !== 'non-null' && idField.dbField.mode !== 'required') {
     throw new Error(
       `The idField on a list must define a GraphQL output field with a non-nullable ID GraphQL scalar type but the idField for ${
         list.listKey
