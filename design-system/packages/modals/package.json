@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/modals",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "license": "MIT",
   "main": "dist/modals.cjs.js",
   "module": "dist/modals.esm.js",
@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.13",
-    "@keystone-ui/button": "^2.0.1",
-    "@keystone-ui/core": "^1.0.2",
+    "@keystone-ui/button": "^3.0.0",
+    "@keystone-ui/core": "^2.0.0",
     "react": "^17.0.1",
     "react-focus-lock": "^2.5.0",
     "react-remove-scroll": "^2.4.1",

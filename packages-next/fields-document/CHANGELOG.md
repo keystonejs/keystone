@@ -1,5 +1,35 @@
 # @keystone-next/fields-document
 
+## 2.0.0
+
+### Major Changes
+
+- [`b97216a65`](https://github.com/keystonejs/keystone/commit/b97216a6526fffcca8232d86b115c28cb19587bf) [#4622](https://github.com/keystonejs/keystone/pull/4622) Thanks [@renovate](https://github.com/apps/renovate)! - Updated react and react-dom to v17
+
+### Patch Changes
+
+- [`0929fbc4b`](https://github.com/keystonejs/keystone/commit/0929fbc4b7a8ea3511438df26742c9272b2e6b9a) [#4802](https://github.com/keystonejs/keystone/pull/4802) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Stopped unwrapping headings when in the middle of a heading
+
+* [`0929fbc4b`](https://github.com/keystonejs/keystone/commit/0929fbc4b7a8ea3511438df26742c9272b2e6b9a) [#4802](https://github.com/keystonejs/keystone/pull/4802) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated slate to 0.60.3
+
+- [`0929fbc4b`](https://github.com/keystonejs/keystone/commit/0929fbc4b7a8ea3511438df26742c9272b2e6b9a) [#4802](https://github.com/keystonejs/keystone/pull/4802) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed editor so that when the user is at the end of a text node with a mark and a break is inserted, the mark is removed
+
+- Updated dependencies [[`ee019cfc5`](https://github.com/keystonejs/keystone/commit/ee019cfc51a831d005524e5427d0ebe1c71a1dee), [`b97216a65`](https://github.com/keystonejs/keystone/commit/b97216a6526fffcca8232d86b115c28cb19587bf), [`208722a42`](https://github.com/keystonejs/keystone/commit/208722a4234434e116846756bab18f7e11674ec8), [`ad75e3d61`](https://github.com/keystonejs/keystone/commit/ad75e3d61c73ba1239fd21b58f175aac01d9f302), [`a0931858e`](https://github.com/keystonejs/keystone/commit/a0931858e499d9504e4e822b850dcf89c3cdac60), [`d8f64887f`](https://github.com/keystonejs/keystone/commit/d8f64887f2aa428ea8ac35d0efa50ce05534f40b), [`45b047ad0`](https://github.com/keystonejs/keystone/commit/45b047ad015fc9d72cf8c2b85529ffe3abbc189e), [`74f428353`](https://github.com/keystonejs/keystone/commit/74f428353b90958f97669cbcb78e18ca44438765), [`4035218df`](https://github.com/keystonejs/keystone/commit/4035218df390beff3d42c0d3fc21335230d8a60d), [`954350389`](https://github.com/keystonejs/keystone/commit/9543503894c3e78a9b69a75cbfb3ca6b85ae34e8), [`e29ae2749`](https://github.com/keystonejs/keystone/commit/e29ae2749321c103dd494eba6778ee4137bb2aa3), [`ee019cfc5`](https://github.com/keystonejs/keystone/commit/ee019cfc51a831d005524e5427d0ebe1c71a1dee), [`8d0be8a89`](https://github.com/keystonejs/keystone/commit/8d0be8a89e2d9b89826365f81f47b8d8863b93d0)]:
+  - @keystone-next/admin-ui@9.0.0
+  - @keystonejs/fields@22.0.0
+  - @keystone-next/admin-ui-utils@3.0.0
+  - @keystone-next/fields@5.0.0
+  - @keystone-ui/button@3.0.0
+  - @keystone-ui/core@2.0.0
+  - @keystone-ui/fields@2.0.0
+  - @keystone-ui/icons@2.0.0
+  - @keystone-ui/popover@2.0.0
+  - @keystone-ui/tooltip@2.0.0
+  - @keystone-next/types@13.0.0
+  - @keystonejs/adapter-mongoose@11.0.1
+  - @keystonejs/adapter-prisma@3.0.1
+  - @keystonejs/adapter-knex@13.0.1
+
 ## 1.0.1
 
 ### Patch Changes

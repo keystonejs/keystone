@@ -1,5 +1,11 @@
 # @keystonejs/access-control
 
+## 7.0.0
+
+### Major Changes
+
+- [`28a61dc67`](https://github.com/keystonejs/keystone/commit/28a61dc67b990ebd16bfc4e1c0a1e9ffb0e54d81) [#4801](https://github.com/keystonejs/keystone/pull/4801) Thanks [@timleslie](https://github.com/timleslie)! - Converted the `@keystonejs/access-control` package to TypeScript.
+
 ## 6.3.2
 
 ### Patch Changes

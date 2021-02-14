@@ -1,5 +1,15 @@
 # @keystonejs/adapter-knex
 
+## 13.0.1
+
+### Patch Changes
+
+- [`45b047ad0`](https://github.com/keystonejs/keystone/commit/45b047ad015fc9d72cf8c2b85529ffe3abbc189e) [#4791](https://github.com/keystonejs/keystone/pull/4791) Thanks [@josemf](https://github.com/josemf)! - Bug fix: "order by" crash on non real keys when list first field is a relationship
+
+- Updated dependencies [[`4035218df`](https://github.com/keystonejs/keystone/commit/4035218df390beff3d42c0d3fc21335230d8a60d), [`8d0be8a89`](https://github.com/keystonejs/keystone/commit/8d0be8a89e2d9b89826365f81f47b8d8863b93d0)]:
+  - @keystonejs/keystone@19.2.0
+  - @keystonejs/fields-auto-increment@8.1.4
+
 ## 13.0.0
 
 ### Major Changes
