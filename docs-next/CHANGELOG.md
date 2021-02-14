@@ -1,5 +1,22 @@
 # @keystone-next/website
 
+## 1.0.0
+
+### Major Changes
+
+- [`b97216a65`](https://github.com/keystonejs/keystone/commit/b97216a6526fffcca8232d86b115c28cb19587bf) [#4622](https://github.com/keystonejs/keystone/pull/4622) Thanks [@renovate](https://github.com/apps/renovate)! - Updated react and react-dom to v17
+
+### Patch Changes
+
+- [`28c2ee5be`](https://github.com/keystonejs/keystone/commit/28c2ee5bee5866c90c6f114e9120f57434f552fe) [#4811](https://github.com/keystonejs/keystone/pull/4811) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added syntax highlighting to code in mdx.
+
+- Updated dependencies [[`b97216a65`](https://github.com/keystonejs/keystone/commit/b97216a6526fffcca8232d86b115c28cb19587bf)]:
+  - @keystone-ui/button@3.0.0
+  - @keystone-ui/core@2.0.0
+  - @keystone-ui/fields@2.0.0
+  - @keystone-ui/notice@2.0.0
+  - @keystone-ui/tooltip@2.0.0
+
 ## 0.1.1
 
 ### Patch Changes
