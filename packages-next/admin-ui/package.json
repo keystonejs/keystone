@@ -3,7 +3,7 @@
   "version": "8.0.2",
   "license": "MIT",
   "dependencies": {
-    "@apollo/client": "^3.2.9",
+    "@apollo/client": "^3.3.10",
     "@babel/runtime": "^7.12.13",
     "@emotion/hash": "^0.8.0",
     "@emotion/weak-memoize": "^0.2.5",
