@@ -1,5 +1,19 @@
 # @keystonejs/keystone
 
+## 19.2.0
+
+### Minor Changes
+
+- [`4035218df`](https://github.com/keystonejs/keystone/commit/4035218df390beff3d42c0d3fc21335230d8a60d) [#4512](https://github.com/keystonejs/keystone/pull/4512) Thanks [@renovate](https://github.com/apps/renovate)! - Upgraded dependency `apollo-server-express` to `^2.21.0`. Apollo Server can now be installed with `graphql@15` without causing peer dependency errors or warnings.
+
+* [`8d0be8a89`](https://github.com/keystonejs/keystone/commit/8d0be8a89e2d9b89826365f81f47b8d8863b93d0) [#4815](https://github.com/keystonejs/keystone/pull/4815) Thanks [@timleslie](https://github.com/timleslie)! - Added a `.sudo()` method to `context` objects, which is equivalent to the common operation `context.createContext({ skipAccessControl: true })`.
+
+### Patch Changes
+
+- Updated dependencies [[`28a61dc67`](https://github.com/keystonejs/keystone/commit/28a61dc67b990ebd16bfc4e1c0a1e9ffb0e54d81), [`92727414a`](https://github.com/keystonejs/keystone/commit/92727414af4e6efcb8d691f8197c6165ae469577)]:
+  - @keystonejs/access-control@7.0.0
+  - @keystonejs/app-version@2.0.0
+
 ## 19.1.0
 
 ### Minor Changes

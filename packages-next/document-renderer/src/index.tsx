@@ -31,6 +31,9 @@ type MarkRenderers = { [Key in Mark]: OnlyChildrenComponent };
 interface Renderers {
   inline: {
     link: Component<{ children: ReactNode; href: string }> | 'a';
+    relationship: Component<{
+      data: { id: string; label: string; data: Record<string, any> } | null;
+    }>;
   } & MarkRenderers;
   block: {
     block: OnlyChildrenComponent;
@@ -48,7 +51,7 @@ interface Renderers {
   };
 }
 
-const defaultRenderers: Renderers = {
+export const defaultRenderers: Renderers = {
   inline: {
     bold: 'strong',
     code: 'code',
@@ -59,6 +62,9 @@ const defaultRenderers: Renderers = {
     subscript: 'sub',
     superscript: 'sup',
     underline: 'u',
+    relationship: ({ data }) => {
+      return <span>{data?.label}</span>;
+    },
   },
   block: {
     block: 'div',
@@ -110,7 +116,7 @@ function DocumentNode({
   if (typeof _node.text === 'string') {
     let child = <Fragment>{_node.text}</Fragment>;
     (Object.keys(renderers.inline) as (keyof typeof renderers.inline)[]).forEach(markName => {
-      if (markName !== 'link' && _node[markName]) {
+      if (markName !== 'link' && markName !== 'relationship' && _node[markName]) {
         const Mark = renderers.inline[markName];
         child = <Mark>{child}</Mark>;
       }
@@ -175,6 +181,22 @@ function DocumentNode({
         />
       );
     }
+    case 'relationship': {
+      const data = node.data as any;
+      return (
+        <renderers.inline.relationship
+          data={
+            data
+              ? {
+                  id: data.id,
+                  label: data.label || data.id,
+                  data: data.data || {},
+                }
+              : null
+          }
+        />
+      );
+    }
   }
   return <Fragment>{children}</Fragment>;
 }
@@ -199,16 +221,21 @@ function createComponentBlockProps(node: Element, children: ReactElement[]) {
   return formProps;
 }
 
-type Props<ComponentBlocks> = {
+export type DocumentRendererProps<
+  ComponentBlocks extends Record<string, Component<any>> = Record<string, Component<any>>
+> = {
   document: Element[];
-  renderers?: Partial<Renderers>;
+  renderers?: { inline?: Partial<Renderers['inline']>; block?: Partial<Renderers['block']> };
   componentBlocks?: ComponentBlocks;
 };
 
 export function DocumentRenderer<ComponentBlocks extends Record<string, Component<any>>>(
-  props: Props<ComponentBlocks>
+  props: DocumentRendererProps<ComponentBlocks>
 ) {
-  const renderers = { ...defaultRenderers, ...props.renderers };
+  const renderers = {
+    inline: { ...props.renderers?.inline, ...defaultRenderers.inline },
+    block: { ...props.renderers?.block, ...defaultRenderers.block },
+  };
   const componentBlocks = props.componentBlocks || {};
   return (
     <Fragment>

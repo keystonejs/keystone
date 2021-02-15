@@ -1,5 +1,17 @@
 # @keystonejs/cypress-project-access-control
 
+## 6.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`b97216a65`](https://github.com/keystonejs/keystone/commit/b97216a6526fffcca8232d86b115c28cb19587bf), [`d8f64887f`](https://github.com/keystonejs/keystone/commit/d8f64887f2aa428ea8ac35d0efa50ce05534f40b), [`4035218df`](https://github.com/keystonejs/keystone/commit/4035218df390beff3d42c0d3fc21335230d8a60d), [`8d0be8a89`](https://github.com/keystonejs/keystone/commit/8d0be8a89e2d9b89826365f81f47b8d8863b93d0)]:
+  - @keystonejs/fields@22.0.0
+  - @keystonejs/adapter-prisma@3.0.1
+  - @keystonejs/app-admin-ui@7.4.0
+  - @keystonejs/keystone@19.2.0
+  - @keystonejs/server-side-graphql-client@2.0.0
+  - @keystonejs/auth-password@6.0.1
+
 ## 6.0.1
 
 ### Patch Changes

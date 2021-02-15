@@ -62,8 +62,9 @@ export type KeystoneContext = {
   /** @deprecated */
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   maxTotalResults: number;
-  createContext: CreateContext;
   sudo: () => KeystoneContext;
+  exitSudo: () => KeystoneContext;
+  withSession: (session: any) => KeystoneContext;
   req?: IncomingMessage;
 } & AccessControlContext &
   Partial<SessionContext<any>> &
@@ -86,7 +87,6 @@ export type KeystoneGraphQLAPI<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
 > = {
-  createContext: CreateContext;
   schema: GraphQLSchema;
 
   run: (args: GraphQLExecutionArguments) => Promise<Record<string, any>>;

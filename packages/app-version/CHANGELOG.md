@@ -1,5 +1,16 @@
 # @keystonejs/app-version
 
+## 2.0.0
+
+### Major Changes
+
+- [`92727414a`](https://github.com/keystonejs/keystone/commit/92727414af4e6efcb8d691f8197c6165ae469577) [#4803](https://github.com/keystonejs/keystone/pull/4803) Thanks [@timleslie](https://github.com/timleslie)! - Convert package `@keystonejs/app-version` to TypeScript.
+
+### Patch Changes
+
+- Updated dependencies [[`28a61dc67`](https://github.com/keystonejs/keystone/commit/28a61dc67b990ebd16bfc4e1c0a1e9ffb0e54d81)]:
+  - @keystonejs/access-control@7.0.0
+
 ## 1.0.2
 
 ### Patch Changes
