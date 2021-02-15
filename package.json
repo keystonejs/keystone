@@ -64,7 +64,7 @@
     "@typescript-eslint/parser": "^4.15.1",
     "all-contributors-cli": "^6.19.0",
     "autoprefixer": "^10.2.4",
-    "babel-plugin-emotion": "^10.0.33",
+    "babel-plugin-emotion": "^10.2.2",
     "chalk": "^4.1.0",
     "chalk-cli": "^4.1.0",
     "cross-env": "^7.0.3",
