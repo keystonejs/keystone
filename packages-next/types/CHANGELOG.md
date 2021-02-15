@@ -1,5 +1,21 @@
 # @keystone-next/types
 
+## 13.0.0
+
+### Major Changes
+
+- [`e29ae2749`](https://github.com/keystonejs/keystone/commit/e29ae2749321c103dd494eba6778ee4137bb2aa3) [#4818](https://github.com/keystonejs/keystone/pull/4818) Thanks [@timleslie](https://github.com/timleslie)! - Added `context.exitSudo()` and `context.withSession(session)` methods. Removed `context.createContext()`.
+
+* [`8d0be8a89`](https://github.com/keystonejs/keystone/commit/8d0be8a89e2d9b89826365f81f47b8d8863b93d0) [#4815](https://github.com/keystonejs/keystone/pull/4815) Thanks [@timleslie](https://github.com/timleslie)! - Added a `.sudo()` method to `context` objects, which is equivalent to the common operation `context.createContext({ skipAccessControl: true })`.
+
+### Patch Changes
+
+- [`208722a42`](https://github.com/keystonejs/keystone/commit/208722a4234434e116846756bab18f7e11674ec8) [#4784](https://github.com/keystonejs/keystone/pull/4784) Thanks [@timleslie](https://github.com/timleslie)! - Reordered type definitions for consistency with docs. Remove unused type `ListAdminUIConfig.path`.
+
+* [`ad75e3d61`](https://github.com/keystonejs/keystone/commit/ad75e3d61c73ba1239fd21b58f175aac01d9f302) [#4798](https://github.com/keystonejs/keystone/pull/4798) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused type `config.ui.path`.
+
+- [`954350389`](https://github.com/keystonejs/keystone/commit/9543503894c3e78a9b69a75cbfb3ca6b85ae34e8) [#4778](https://github.com/keystonejs/keystone/pull/4778) Thanks [@timleslie](https://github.com/timleslie)! - Removed the unused `plural`, `singular`, `label`, `db`, and `graphql.cacheHint` list config options.
+
 ## 12.0.1
 
 ### Patch Changes

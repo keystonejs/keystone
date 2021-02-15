@@ -30,16 +30,10 @@ export type Relationships = Record<
   )
 >;
 
-const DocumentFieldRelationshipsContext = createContext<null | Relationships>(null);
+const DocumentFieldRelationshipsContext = createContext<Relationships>({});
 
 export function useDocumentFieldRelationships() {
-  let relationships = useContext(DocumentFieldRelationshipsContext);
-  if (!relationships) {
-    throw new Error(
-      'DocumentFieldRelationshipsProvider must be used above call to useDocumentFieldRelationships'
-    );
-  }
-  return relationships;
+  return useContext(DocumentFieldRelationshipsContext);
 }
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider;

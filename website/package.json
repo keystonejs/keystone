@@ -2,7 +2,7 @@
   "name": "@keystonejs/website",
   "description": "KeystoneJS documentation. Powered by Gatsby.",
   "private": true,
-  "version": "5.3.14",
+  "version": "6.0.0",
   "author": "The KeystoneJS Development Team",
   "repository": "https://github.com/keystonejs/keystone/tree/master/website",
   "homepage": "https://github.com/keystonejs/keystone",

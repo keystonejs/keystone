@@ -41,9 +41,9 @@ export function Toolbar({
   viewState,
 }: {
   documentFeatures: DocumentFeatures;
-  viewState: { expanded: boolean; toggle: () => void };
+  viewState?: { expanded: boolean; toggle: () => void };
 }) {
-  const ExpandIcon = viewState.expanded ? Minimize2Icon : Maximize2Icon;
+  const ExpandIcon = viewState?.expanded ? Minimize2Icon : Maximize2Icon;
 
   return (
     <ToolbarContainer>
@@ -109,21 +109,22 @@ export function Toolbar({
 
       <ToolbarSeparator />
       {useMemo(
-        () => (
-          <Tooltip content={viewState.expanded ? 'Collapse' : 'Expand'} weight="subtle">
-            {attrs => (
-              <ToolbarButton
-                onMouseDown={event => {
-                  event.preventDefault();
-                  viewState.toggle();
-                }}
-                {...attrs}
-              >
-                <ExpandIcon size="small" />
-              </ToolbarButton>
-            )}
-          </Tooltip>
-        ),
+        () =>
+          viewState && (
+            <Tooltip content={viewState.expanded ? 'Collapse' : 'Expand'} weight="subtle">
+              {attrs => (
+                <ToolbarButton
+                  onMouseDown={event => {
+                    event.preventDefault();
+                    viewState.toggle();
+                  }}
+                  {...attrs}
+                >
+                  <ExpandIcon size="small" />
+                </ToolbarButton>
+              )}
+            </Tooltip>
+          ),
         [viewState]
       )}
     </ToolbarContainer>

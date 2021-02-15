@@ -216,7 +216,6 @@
   },
   "resolutions": {
     "babel-plugin-remove-graphql-queries": "2.7.2",
-    "graphql-upload": "^11.0.0",
     "gatsby-cli": "2.7.15",
     "gatsby-link": "2.2.2",
     "gatsby-plugin-page-creator": "2.1.5"
