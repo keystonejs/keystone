@@ -208,12 +208,8 @@ import { statelessSessions, withItemData } from '@keystone-next/keystone/session
 
 export default config({
   session: withItemData(
-    statelessSessions({
-      /* ... */
-    }),
-    {
-      /* ... */
-    }
+    statelessSessions({ /* ... */ }),
+    { /* ... */ }
   ),
   /* ... */
 });
