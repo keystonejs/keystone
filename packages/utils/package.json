@@ -9,7 +9,7 @@
   "main": "dist/utils.cjs.js",
   "module": "dist/utils.esm.js",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v10.23.3"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.13",

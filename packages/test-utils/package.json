@@ -7,7 +7,7 @@
   "main": "dist/test-utils.cjs.js",
   "module": "dist/test-utils.esm.js",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v10.23.3"
   },
   "dependencies": {
     "@keystone-next/keystone": "10.0.0",

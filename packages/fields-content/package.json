@@ -5,7 +5,7 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v10.23.3"
   },
   "dependencies": {
     "@arch-ui/color-utils": "^0.0.2",

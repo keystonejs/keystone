@@ -5,7 +5,7 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v10.23.3"
   },
   "scripts": {
     "build": "echo 'noop - see the Keystone package.json#build script'"
