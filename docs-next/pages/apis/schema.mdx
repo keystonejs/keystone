@@ -28,7 +28,7 @@ export default config({
 
 This document will explain the configuration options which can be used with the `list()` function.
 
-## `fields`
+## fields
 
 The `fields` option defines the names, types, and configuration of the fields in the list.
 This configuration option takes an object with field names as keys, and configured field types as values.
@@ -41,7 +41,9 @@ export default config({
   lists: createSchema({
     ListName: list({
       fields: {
-        fieldName: text({ /* ... */ }),
+        fieldName: text({
+          /* ... */
+        }),
         /* ... */
       },
     }),
@@ -53,7 +55,7 @@ export default config({
 
 For full details on the available field types and their configuration options please see the [Fields API](./fields).
 
-## `idField`
+## idField
 
 The `idField` option lets you override the default ID field used by Keystone.
 By default the `prisma_postgresql` and `knex` adapters use `autoincrement`, and `mongoose` uses `mongoId`, as an ID field type.
@@ -94,14 +96,14 @@ You can override these defaults, or any other field config options, by providing
 
 The `idField` will always be made available in the GraphQL API with a name of `id`.
 
-## `access`
+## access
 
 The `access` option defines the [Access Control](../guides/access-control) rules for the list.
 These rules determine which of the CRUD (create, read, update, delete) operations users are allowed to perform.
 
 See the [Access Control API](./access-control) for full details on the available access control options.
 
-## `ui`
+## ui
 
 The `ui` option controls how the list is displayed and interacted with in the Admin UI.
 
@@ -171,14 +173,14 @@ export default config({
 });
 ```
 
-## `hooks`
+## hooks
 
 The `hooks` option defines [hook](../guides/hooks) functions for the list.
 Hooks allow you to execute code at different stages of the mutation lifecycle.
 
 See the [Hooks API](./hooks) for full details on the available hook options.
 
-## `graphql`
+## graphql
 
 The `graphql` config option allows you to configures certain aspects of the GraphQL API.
 
@@ -211,7 +213,7 @@ export default config({
 });
 ```
 
-## `description`
+## description
 
 The `description` option defines a string which will be used as a description in the Admin UI and GraphQL API docs.
 This option can be individually overriden by the `graphql.description` or `ui.description` options.

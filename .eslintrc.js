@@ -1,3 +1,8 @@
+const reactComponentTypeMessage = {
+  message:
+    'This type includes the children prop which is generally wrong, instead of using this type, type the props of the component',
+};
+
 module.exports = {
   parser: '@typescript-eslint/parser',
   env: {
@@ -89,6 +94,12 @@ module.exports = {
               'The `String` type refers to the String object which is probably not what you want, you probably want `string` instead which refers to the string primitive type.',
             fixWith: 'string',
           },
+          ComponentType: reactComponentTypeMessage,
+          FC: reactComponentTypeMessage,
+          SFC: reactComponentTypeMessage,
+          'React.ComponentType': reactComponentTypeMessage,
+          'React.FC': reactComponentTypeMessage,
+          'React.SFC': reactComponentTypeMessage,
         },
       },
     ],
