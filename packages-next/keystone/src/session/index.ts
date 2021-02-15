@@ -179,8 +179,6 @@ export function storedSessions({
     let store = typeof storeOption === 'function' ? storeOption({ maxAge }) : storeOption;
     let isConnected = false;
     return {
-      connect: store.connect,
-      disconnect: store.disconnect,
       async get({ req, createContext }) {
         let sessionId = await get({ req, createContext });
         if (typeof sessionId === 'string') {
