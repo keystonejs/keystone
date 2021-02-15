@@ -62,7 +62,7 @@
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
-    "all-contributors-cli": "^6.19.0",
+    "all-contributors-cli": "^6.20.0",
     "autoprefixer": "^10.2.4",
     "babel-plugin-emotion": "^10.2.2",
     "chalk": "^4.1.0",
