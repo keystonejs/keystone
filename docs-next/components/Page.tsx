@@ -6,8 +6,6 @@ import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
 import { MDXProvider } from '@mdx-js/react';
 import cx from 'classnames';
 import Link from 'next/link';
-import { ToastProvider } from '@keystone-ui/toast';
-
 import { Navigation } from './Navigation';
 
 export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boolean }) => {
@@ -81,8 +79,6 @@ const components = {
 
 export const Markdown = ({ children }: { children: ReactNode }) => (
   <Page isProse>
-    <MDXProvider components={components}>
-      <ToastProvider>{children}</ToastProvider>
-    </MDXProvider>
+    <MDXProvider components={components}>{children}</MDXProvider>
   </Page>
 );

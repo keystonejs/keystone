@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { useRef } from 'react';
-import { ToastProvider } from '@keystone-ui/toast';
 import { jsx } from '@keystone-ui/core';
 import slugify from '@sindresorhus/slugify';
 import { CopyToClipboard } from './CopyToClipboard';
@@ -21,39 +20,38 @@ const getAnchor = element => {
   }
   return '';
 };
-
 const Heading = ({ as: Tag, children, ...props }) => {
   const headingRef = useRef(null);
+  const depth = parseInt(Tag.slice(1), 10);
+  const hasCopy = depth > 1 && depth < 5;
   const id = getAnchor(children);
   return (
-    <ToastProvider>
-      <Tag
+    <Tag
+      css={{
+        color: '#091E42', //N100 in arch
+        fontWeight: 600,
+        lineHeight: 1,
+        marginBottom: '0.66em',
+        marginTop: '1.66em',
+      }}
+      id={id}
+      {...props}
+    >
+      <span
+        ref={headingRef}
         css={{
-          color: '#091E42', //N100 in arch
-          fontWeight: 600,
-          lineHeight: 1,
-          marginBottom: '0.66em',
-          marginTop: '1.66em',
-        }}
-        id={id}
-        {...props}
-      >
-        <span
-          ref={headingRef}
-          css={{
-            display: 'block',
-            position: 'relative',
+          display: 'block',
+          position: 'relative',
 
-            '&:hover a, &:focus-within a': {
-              opacity: 1,
-            },
-          }}
-        >
-          <CopyToClipboard value={children} />
-          {children}
-        </span>
-      </Tag>
-    </ToastProvider>
+          '&:hover a, &:focus-within a': {
+            opacity: 1,
+          },
+        }}
+      >
+        {hasCopy && <CopyToClipboard value={children} />}
+        {children}
+      </span>
+    </Tag>
   );
 };
 

@@ -2498,32 +2498,6 @@
     "@babel/runtime" "^7.7.2"
     regenerator-runtime "^0.13.3"
 
-"@keystone-ui/core@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@keystone-ui/core/-/core-2.0.0.tgz#87a42a0e9c07b1f9b696278971b88494f45c3317"
-  integrity sha512-3B9a9f1ahjoWnYjA9/o0TW1QP8G9oZ0Za9ct+2XbIU2mAvO0Cn5p1xi4Yf5xw1U7TW9jQ5b45MQDSSRz6+sc+A==
-  dependencies:
-    "@babel/runtime" "^7.12.13"
-    "@emotion/react" "11.1.5"
-    facepaint "^1.2.1"
-
-"@keystone-ui/icons@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@keystone-ui/icons/-/icons-2.0.0.tgz#fb630ccc31048aba71ed70f996cbfe1edce6576c"
-  integrity sha512-AL5NvVFr57VlgvGAv3M7uVwZT7Jbk2r3+QZJ7yiZsaSzoQS/8LHzWWhmP9Ko9uBz0wiYbi0E2sqIKOg17qySDA==
-  dependencies:
-    "@babel/runtime" "^7.12.13"
-    "@keystone-ui/core" "^2.0.0"
-
-"@keystone-ui/toast@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@keystone-ui/toast/-/toast-2.0.0.tgz#2bce7cc9763a2c3a39869a0c30381980d340d087"
-  integrity sha512-B/ntZcS6Fffkm82ImYwdR999rKrK+xGWNnnR3B2o38XAvfJ/ssh+X3nTKJIxiIf20fxGjUbd47kUOo75WXf7zQ==
-  dependencies:
-    "@babel/runtime" "^7.12.13"
-    "@keystone-ui/core" "^2.0.0"
-    "@keystone-ui/icons" "^2.0.0"
-
 "@manypkg/cli@^0.17.0":
   version "0.17.0"
   resolved "https://registry.yarnpkg.com/@manypkg/cli/-/cli-0.17.0.tgz#d5b91a150acca808a53bcc90046712a6efb44f5d"
@@ -3822,16 +3796,6 @@
   dependencies:
     "@types/express" "*"
 
-"@types/express@^4.17.11":
-  version "4.17.11"
-  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.11.tgz#debe3caa6f8e5fcda96b47bd54e2f40c4ee59545"
-  integrity sha512-no+R6rW60JEc59977wIxreQVsIEOAYwgCqldrA/vkpCnbD7MqTefO97lmoBe4WE0F156bC4uLSP1XHDOySnChg==
-  dependencies:
-    "@types/body-parser" "*"
-    "@types/express-serve-static-core" "^4.17.18"
-    "@types/qs" "*"
-    "@types/serve-static" "*"
-
 "@types/express@*", "@types/express@4.17.7":
   version "4.17.7"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.7.tgz#42045be6475636d9801369cd4418ef65cdb0dd59"
@@ -3839,6 +3803,16 @@
   dependencies:
     "@types/body-parser" "*"
     "@types/express-serve-static-core" "*"
+    "@types/qs" "*"
+    "@types/serve-static" "*"
+
+"@types/express@^4.17.11":
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.11.tgz#debe3caa6f8e5fcda96b47bd54e2f40c4ee59545"
+  integrity sha512-no+R6rW60JEc59977wIxreQVsIEOAYwgCqldrA/vkpCnbD7MqTefO97lmoBe4WE0F156bC4uLSP1XHDOySnChg==
+  dependencies:
+    "@types/body-parser" "*"
+    "@types/express-serve-static-core" "^4.17.18"
     "@types/qs" "*"
     "@types/serve-static" "*"
 
@@ -11476,6 +11450,11 @@ from@~0:
   resolved "https://registry.yarnpkg.com/from/-/from-0.1.7.tgz#83c60afc58b9c56997007ed1a768b3ab303a44fe"
   integrity sha1-g8YK/Fi5xWmXAH7Rp2izqzA6RP4=
 
+fs-capacitor@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/fs-capacitor/-/fs-capacitor-2.0.4.tgz#5a22e72d40ae5078b4fe64fe4d08c0d3fc88ad3c"
+  integrity sha512-8S4f4WsCryNw2mJJchi46YgB6CR5Ze+4L1h8ewl9tEpL4SJ3ZO+c/bS4BWhB8bK+O3TMqhuZarTitd0S0eh2pA==
+
 fs-capacitor@^6.1.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/fs-capacitor/-/fs-capacitor-6.2.0.tgz#fa79ac6576629163cb84561995602d8999afb7f5"
@@ -12739,7 +12718,7 @@ graphql-type-json@^0.3.2:
   resolved "https://registry.yarnpkg.com/graphql-type-json/-/graphql-type-json-0.3.2.tgz#f53a851dbfe07bd1c8157d24150064baab41e115"
   integrity sha512-J+vjof74oMlCWXSvt0DOf2APEdZOCdubEvGDUAlqH//VBYcOYsGgRW7Xzorr44LvkjiuvecWc8fChxuZZbChtg==
 
-graphql-upload@^11.0.0, graphql-upload@^8.0.2:
+graphql-upload@^11.0.0:
   version "11.0.0"
   resolved "https://registry.yarnpkg.com/graphql-upload/-/graphql-upload-11.0.0.tgz#24b245ff18f353bab6715e8a055db9fd73035e10"
   integrity sha512-zsrDtu5gCbQFDWsNa5bMB4nf1LpKX9KDgh+f8oL1288ijV4RxeckhVozAjqjXAfRpxOHD1xOESsh6zq8SjdgjA==
@@ -26346,8 +26325,10 @@ watchpack@^1.5.0, watchpack@^1.7.4:
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
+    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
+    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
