@@ -2498,6 +2498,32 @@
     "@babel/runtime" "^7.7.2"
     regenerator-runtime "^0.13.3"
 
+"@keystone-ui/core@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@keystone-ui/core/-/core-2.0.0.tgz#87a42a0e9c07b1f9b696278971b88494f45c3317"
+  integrity sha512-3B9a9f1ahjoWnYjA9/o0TW1QP8G9oZ0Za9ct+2XbIU2mAvO0Cn5p1xi4Yf5xw1U7TW9jQ5b45MQDSSRz6+sc+A==
+  dependencies:
+    "@babel/runtime" "^7.12.13"
+    "@emotion/react" "11.1.5"
+    facepaint "^1.2.1"
+
+"@keystone-ui/icons@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@keystone-ui/icons/-/icons-2.0.0.tgz#fb630ccc31048aba71ed70f996cbfe1edce6576c"
+  integrity sha512-AL5NvVFr57VlgvGAv3M7uVwZT7Jbk2r3+QZJ7yiZsaSzoQS/8LHzWWhmP9Ko9uBz0wiYbi0E2sqIKOg17qySDA==
+  dependencies:
+    "@babel/runtime" "^7.12.13"
+    "@keystone-ui/core" "^2.0.0"
+
+"@keystone-ui/toast@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@keystone-ui/toast/-/toast-2.0.0.tgz#2bce7cc9763a2c3a39869a0c30381980d340d087"
+  integrity sha512-B/ntZcS6Fffkm82ImYwdR999rKrK+xGWNnnR3B2o38XAvfJ/ssh+X3nTKJIxiIf20fxGjUbd47kUOo75WXf7zQ==
+  dependencies:
+    "@babel/runtime" "^7.12.13"
+    "@keystone-ui/core" "^2.0.0"
+    "@keystone-ui/icons" "^2.0.0"
+
 "@manypkg/cli@^0.17.0":
   version "0.17.0"
   resolved "https://registry.yarnpkg.com/@manypkg/cli/-/cli-0.17.0.tgz#d5b91a150acca808a53bcc90046712a6efb44f5d"
@@ -8004,7 +8030,7 @@ copy-descriptor@^0.1.0:
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
 
-copy-to-clipboard@^3, copy-to-clipboard@^3.0.8, copy-to-clipboard@^3.2.0:
+copy-to-clipboard@^3, copy-to-clipboard@^3.0.8, copy-to-clipboard@^3.2.0, copy-to-clipboard@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/copy-to-clipboard/-/copy-to-clipboard-3.3.1.tgz#115aa1a9998ffab6196f93076ad6da3b913662ae"
   integrity sha512-i13qo6kIHTTpCm8/Wup+0b1mVWETvu2kIMzKoK8FpkLkFxlt0znUAHcMzox+T8sPlqtZXq3CulEjQHsYiGFJUw==

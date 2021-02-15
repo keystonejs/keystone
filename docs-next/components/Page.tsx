@@ -1,9 +1,12 @@
-import React, { ReactNode } from 'react';
+/** @jsx jsx  */
+import { ReactNode } from 'react';
+import { jsx } from '@keystone-ui/core';
 import { Code } from '../components/Code';
 import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
 import { MDXProvider } from '@mdx-js/react';
 import cx from 'classnames';
 import Link from 'next/link';
+import { ToastProvider } from '@keystone-ui/toast';
 
 import { Navigation } from './Navigation';
 
@@ -78,6 +81,8 @@ const components = {
 
 export const Markdown = ({ children }: { children: ReactNode }) => (
   <Page isProse>
-    <MDXProvider components={components}>{children}</MDXProvider>
+    <MDXProvider components={components}>
+      <ToastProvider>{children}</ToastProvider>
+    </MDXProvider>
   </Page>
 );

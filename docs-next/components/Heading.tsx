@@ -1,11 +1,9 @@
 /** @jsx jsx */
 import { useRef } from 'react';
+import { ToastProvider } from '@keystone-ui/toast';
 import { jsx } from '@keystone-ui/core';
 import slugify from '@sindresorhus/slugify';
-
-// import { colors, gridSize } from '@arch-ui/theme';
-// import { Link } from 'next/router';
-// import { LinkIcon } from '@primer/octicons-react';
+import { CopyToClipboard } from './CopyToClipboard';
 
 // offset header height for hash links
 const hashLinkOffset = {
@@ -25,68 +23,37 @@ const getAnchor = element => {
 };
 
 const Heading = ({ as: Tag, children, ...props }) => {
-  console.log(props);
-  //   const iconSize = 24;
-  //   const depth = parseInt(Tag.slice(1), 10);
-  //   const hasLink = depth > 1 && depth < 5;
   const headingRef = useRef(null);
   const id = getAnchor(children);
-
-  /// TODO, make this copy text on click, rather than be a link.
-  //   const link = hasLink && (
-  //     <a
-  //       href={`#${id}`}
-  //       css={{
-  //         alignItems: 'center',
-  //         color: colors.N40,
-  //         display: 'flex',
-  //         fontSize: '1rem',
-  //         height: iconSize,
-  //         justifyContent: 'center',
-  //         marginTop: -iconSize / 2,
-  //         opacity: 0,
-  //         overflow: 'visible',
-  //         paddingRight: gridSize / 2,
-  //         position: 'absolute',
-  //         top: '50%',
-  //         transform: 'translateX(-100%)',
-  //         width: iconSize,
-
-  //         '&:hover': {
-  //           color: colors.primary,
-  //         },
-  //       }}
-  //     >
-  //       <LinkIcon width={iconSize} />
-  //     </a>
-  //   );
-
   return (
-    <Tag
-      css={{
-        color: '#091E42', //N100 in arch
-        fontWeight: 600,
-        lineHeight: 1,
-        marginBottom: '0.66em',
-        marginTop: '1.66em',
-      }}
-      id={id}
-      {...props}
-    >
-      <span
-        ref={headingRef}
+    <ToastProvider>
+      <Tag
         css={{
-          display: 'block',
-          position: 'relative',
-
-          '&:hover a, &:focus-within a': {
-            opacity: 1,
-          },
+          color: '#091E42', //N100 in arch
+          fontWeight: 600,
+          lineHeight: 1,
+          marginBottom: '0.66em',
+          marginTop: '1.66em',
         }}
+        id={id}
+        {...props}
       >
-        {children}
-      </span>
-    </Tag>
+        <span
+          ref={headingRef}
+          css={{
+            display: 'block',
+            position: 'relative',
+
+            '&:hover a, &:focus-within a': {
+              opacity: 1,
+            },
+          }}
+        >
+          <CopyToClipboard value={children} />
+          {children}
+        </span>
+      </Tag>
+    </ToastProvider>
   );
 };
 
