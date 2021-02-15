@@ -105,9 +105,7 @@ export default config({
   db: {
     adapter: 'knex',
     url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
-    onConnect: async context => {
-      /* ... */
-    },
+    onConnect: async context => { /* ... */ },
     // Optional advanced configuration
     schemaName: 'public',
     dropDatabase: false,
