@@ -58,7 +58,7 @@ const Heading = ({ as: Tag, children, ...props }: HeadingProps) => {
           },
         }}
       >
-        {hasCopy && <CopyToClipboard value={children} />}
+        {hasCopy && <CopyToClipboard value={id} />}
         {children}
       </span>
     </Tag>
