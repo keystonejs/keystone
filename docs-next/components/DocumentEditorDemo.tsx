@@ -189,13 +189,6 @@ const fromEntriesButTypedWell: <Key extends string | number | symbol, Val>(
 ) => Record<Key, Val> = Object.fromEntries;
 
 function documentFeaturesFormToValue(formValue: DocumentFeaturesFormValue): DocumentFeatures {
-  console.log(
-    fromEntriesButTypedWell(
-      marks.map(mark => {
-        return [mark, formValue.inlineMarks.includes(mark)];
-      })
-    )
-  );
   return {
     formatting: {
       alignment: {
