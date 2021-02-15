@@ -167,12 +167,7 @@ function EditorComp({
         editorDocumentFeatures={documentFeatures}
         relationships={relationships}
       >
-        <DocumentEditorEditable
-          autoFocus={false}
-          componentBlocks={componentBlocks}
-          editor={editor}
-          readOnly={false}
-        />
+        <DocumentEditorEditable />
       </ToolbarStateProvider>
     </Slate>
   );

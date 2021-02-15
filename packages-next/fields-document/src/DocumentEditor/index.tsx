@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { KeyboardEvent, MutableRefObject, useState } from 'react';
+import { KeyboardEvent, MutableRefObject, ReactNode, useContext, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { useCallback, useMemo } from 'react';
 import {
@@ -28,7 +28,11 @@ import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
 import { withHeading } from './heading';
 import { nestList, unnestList, withList } from './lists';
-import { getPlaceholderTextForPropPath, withComponentBlocks } from './component-blocks';
+import {
+  ComponentBlockContext,
+  getPlaceholderTextForPropPath,
+  withComponentBlocks,
+} from './component-blocks';
 import { withBlockquote } from './blockquote';
 import { ComponentBlock } from '../component-blocks';
 import { Relationships, withRelationship } from './relationship';
@@ -44,6 +48,10 @@ import { ToolbarStateProvider } from './toolbar-state';
 import { withInsertMenu } from './insert-menu';
 import { withBlockMarkdownShortcuts } from './block-markdown-shortcuts';
 import { withPasting } from './pasting';
+
+// the docs site needs access to Editor and importing slate would use the version from the content field
+// so we're exporting it from here (note that this is not at all visible in the published version)
+export { Editor } from 'slate';
 
 const HOTKEYS: Record<string, Mark> = {
   'mod+b': 'bold',
@@ -220,11 +228,8 @@ export function DocumentEditor({
   const isShiftPressedRef = useKeyDownRef('Shift');
   const { colors } = useTheme();
   const [expanded, setExpanded] = useState(false);
-  const [editor, identity] = useMemo(
-    () => [
-      createDocumentEditor(documentFeatures, componentBlocks, relationships, isShiftPressedRef),
-      Math.random().toString(36),
-    ],
+  const editor = useMemo(
+    () => createDocumentEditor(documentFeatures, componentBlocks, relationships, isShiftPressedRef),
     [documentFeatures, componentBlocks, relationships]
   );
 
@@ -243,9 +248,10 @@ export function DocumentEditor({
         }
       }
     >
-      <Slate
-        // this fixes issues with Slate crashing when a fast refresh occcurs
-        key={identity}
+      <DocumentEditorProvider
+        componentBlocks={componentBlocks}
+        documentFeatures={documentFeatures}
+        relationships={relationships}
         editor={editor}
         value={value}
         onChange={value => {
@@ -262,53 +268,89 @@ export function DocumentEditor({
           }
         }}
       >
-        <ToolbarStateProvider
-          componentBlocks={componentBlocks}
-          editorDocumentFeatures={documentFeatures}
-          relationships={relationships}
-        >
-          {useMemo(
-            () => (
-              <Toolbar
-                documentFeatures={documentFeatures}
-                viewState={{
-                  expanded,
-                  toggle: () => {
-                    setExpanded(v => !v);
-                  },
-                }}
-              />
-            ),
-            [expanded, documentFeatures]
-          )}
-          <DocumentEditorEditable
-            autoFocus={!!autoFocus}
-            componentBlocks={componentBlocks}
-            editor={editor}
-            readOnly={onChange === undefined}
-          />
-        </ToolbarStateProvider>
-
+        {useMemo(
+          () => (
+            <Toolbar
+              documentFeatures={documentFeatures}
+              viewState={{
+                expanded,
+                toggle: () => {
+                  setExpanded(v => !v);
+                },
+              }}
+            />
+          ),
+          [expanded, documentFeatures]
+        )}
+        <DocumentEditorEditable autoFocus={autoFocus} readOnly={onChange === undefined} />
         {
           // for debugging
           false && <Debugger />
         }
-      </Slate>
+      </DocumentEditorProvider>
     </div>
   );
 }
 
-export function DocumentEditorEditable({
+export function DocumentEditorProvider({
+  children,
   editor,
+  onChange,
+  value,
   componentBlocks,
+  documentFeatures,
+  relationships,
+}: {
+  children: ReactNode;
+  value: Descendant[];
+  onChange: (value: Descendant[]) => void;
+  editor: ReactEditor;
+  componentBlocks: Record<string, ComponentBlock>;
+  relationships: Relationships;
+  documentFeatures: DocumentFeatures;
+}) {
+  const identity = useMemo(() => Math.random().toString(36), [editor]);
+  return (
+    <Slate
+      // this fixes issues with Slate crashing when a fast refresh occcurs
+      key={identity}
+      editor={editor}
+      value={value}
+      onChange={value => {
+        onChange(value);
+        // this fixes a strange issue in Safari where the selection stays inside of the editor
+        // after a blur event happens but the selection is still in the editor
+        // so the cursor is visually in the wrong place and it inserts text backwards
+        const selection = window.getSelection();
+        if (selection && !ReactEditor.isFocused(editor)) {
+          const editorNode = ReactEditor.toDOMNode(editor, editor);
+          if (selection.anchorNode === editorNode) {
+            ReactEditor.focus(editor);
+          }
+        }
+      }}
+    >
+      <ToolbarStateProvider
+        componentBlocks={componentBlocks}
+        editorDocumentFeatures={documentFeatures}
+        relationships={relationships}
+      >
+        {children}
+      </ToolbarStateProvider>
+    </Slate>
+  );
+}
+
+export function DocumentEditorEditable({
   autoFocus,
   readOnly,
 }: {
-  editor: ReactEditor;
-  componentBlocks: Record<string, ComponentBlock>;
-  autoFocus: boolean;
-  readOnly: boolean;
+  autoFocus?: boolean;
+  readOnly?: boolean;
 }) {
+  const editor = useSlate();
+  const componentBlocks = useContext(ComponentBlockContext);
+
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
 
   return (
