@@ -1,5 +1,4 @@
 /** @jsx jsx */
-import { useState, useEffect } from 'react';
 import { jsx } from '@keystone-ui/core';
 import copy from 'copy-to-clipboard';
 import { LinkIcon } from '@primer/octicons-react';
@@ -9,23 +8,15 @@ export const CopyToClipboard = ({ value }: { value: string }) => {
   const iconSize = 24; // arch-ui theme
   const gridSize = 8; // arch-ui theme
   const { addToast } = useToasts();
-  const [copyStatus, setCopyStatus] = useState('');
-  useEffect(() => {
-    if (copyStatus === 'success') {
-      addToast({ title: 'Copied to clipboard', tone: 'positive' });
-    } else if (copyStatus === 'failure') {
-      addToast({ title: 'Faild to oopy to clipboard', tone: 'negative' });
-    }
-  }, [copyStatus]);
+
   const onSuccess = () => {
-    setCopyStatus('success');
+    addToast({ title: 'Copied to clipboard', tone: 'positive' });
   };
   const onFailure = () => {
-    setCopyStatus('failure');
+    addToast({ title: 'Faild to oopy to clipboard', tone: 'negative' });
   };
   const onClick = event => {
     event.preventDefault();
-    setCopyStatus('');
     if (typeof value !== 'string' || typeof window === 'undefined') return;
     const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
     const text = `${url}#${value}`;
