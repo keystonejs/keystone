@@ -65,7 +65,7 @@ export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boo
   );
 };
 
-const components = {
+export const components = {
   code: Code,
 };
 

@@ -1,29 +1,17 @@
-import { Page } from '../../components/Page';
-import { DocumentEditorDemo } from '../../components/DocumentEditorDemo';
+import { Page, components } from '../../components/Page';
+import { DocumentEditorDemo, DocumentFeaturesCode } from '../../components/DocumentEditorDemo';
+import { MDXProvider } from '@mdx-js/react';
 
-### Document Features
+### General Features
+
+The specific features of the editor that are enabled
+See below for the configuration for enabling all features.
+
+<DocumentFeaturesCode />
 
 ### Relationships
 
-```tsx
-type RelationshipsConfig = Record<
-  string,
-  {
-    listKey: string;
-    /** GraphQL fields to select when querying the field */
-    selection?: string;
-  } & (
-    | {
-        kind: 'inline';
-        label: string;
-      }
-    | {
-        kind: 'prop';
-        many?: true;
-      }
-  )
->;
-```
+The document field can have inline relationships for things like mentions. These are not stored like relationship fields on lists are, they are stored as ids in the document structure.
 
 ```tsx
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -35,10 +23,58 @@ export default config({
       fields: {
         fieldName: document({
           relationships: {
-            user: {
+            mention: {
               kind: 'inline',
+              listKey: 'User',
+              label: 'Mention',
+              selection: 'some graphql selection',
             },
           },
+          /* ... */
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
+By default, only the ids for relationships are sent in document, if you'd like to include the label and extra data from the selection specified in the relationship, you can pass `hydrateRelationships: true` to the field.
+
+```graphql
+query {
+  allPosts {
+    content(hydrateRelationships: true) {
+      document
+    }
+  }
+}
+```
+
+Whenever a value is saved to the document field, if the extra data from the selection and label are present on relationships, they will be removed so only the id is stored.
+
+You can also have relationships for props, see the section on relationships props
+
+```tsx
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { document } from '@keystone-next/fields-document';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        fieldName: document({
+          relationships: {
+            featuredAuthors: {
+              kind: 'inline',
+              listKey: 'User',
+              selection: 'posts { id title }',
+              many: true,
+            },
+          },
+          /* ... */
         }),
         /* ... */
       },
@@ -51,13 +87,158 @@ export default config({
 
 ## Component Blocks
 
-Component blocks allow you to add custom blocks to the editor that accept unstructured content and can render a form that renders arbitrary React components.
+Component blocks allow you to add custom blocks to the editor that can accept unstructured content and render a form that renders arbitrary React components for input.
+
+To add component blocks, you need to create a file somewhere and export component blocks from there
+
+`component-blocks.tsx`
+
+```tsx
+import { component } from '@keystone-next/fields-document/component-blocks';
+
+export const componentBlocks = {
+  quote: component({
+    label: 'Quote',
+    component: props => {
+      return <blockquote>{props.content}</blockquote>;
+    },
+  }),
+};
+```
+
+<details>
+
+<summary>
+  In the document editor at the top of this page, the Notice block is implemented as a component
+  block, see the implemention by expanding this.
+</summary>
+
+```tsx
+import { component, fields } from '@keystone-next/fields-document/component-blocks';
+
+export const componentBlocks = {
+  notice: component({
+    component: function Notice({ content, intent }) {
+      const { palette, radii, spacing } = useTheme();
+      const intentMap = {
+        info: {
+          background: palette.blue100,
+          foreground: palette.blue700,
+          icon: noticeIconMap.info,
+        },
+        error: {
+          background: palette.red100,
+          foreground: palette.red700,
+          icon: noticeIconMap.error,
+        },
+        warning: {
+          background: palette.yellow100,
+          foreground: palette.yellow700,
+          icon: noticeIconMap.warning,
+        },
+        success: {
+          background: palette.green100,
+          foreground: palette.green700,
+          icon: noticeIconMap.success,
+        },
+      };
+      const intentConfig = intentMap[intent.value];
+
+      return (
+        <div
+          css={{
+            borderRadius: radii.small,
+            display: 'flex',
+            paddingLeft: spacing.medium,
+            paddingRight: spacing.medium,
+          }}
+          style={{
+            background: intentConfig.background,
+          }}
+        >
+          <div
+            contentEditable={false}
+            css={{
+              color: intentConfig.foreground,
+              marginRight: spacing.small,
+              marginTop: '1em',
+              userSelect: 'none',
+            }}
+          >
+            <intentConfig.icon />
+          </div>
+          <div css={{ flex: 1 }}>{content}</div>
+        </div>
+      );
+    },
+    label: 'Notice',
+    chromeless: true,
+    props: {
+      intent: fields.select({
+        label: 'Intent',
+        options: [
+          { value: 'info', label: 'Info' },
+          { value: 'warning', label: 'Warning' },
+          { value: 'error', label: 'Error' },
+          { value: 'success', label: 'Success' },
+        ] as const,
+        defaultValue: 'info',
+      }),
+      content: fields.child({
+        kind: 'block',
+        placeholder: '',
+        formatting: 'inherit',
+        dividers: 'inherit',
+        links: 'inherit',
+        relationships: 'inherit',
+      }),
+    },
+    toolbar({ props, onRemove }) {
+      return (
+        <ToolbarGroup>
+          {props.intent.options.map(opt => {
+            const Icon = noticeIconMap[opt.value];
+
+            return (
+              <Tooltip key={opt.value} content={opt.label} weight="subtle">
+                {attrs => (
+                  <ToolbarButton
+                    isSelected={props.intent.value === opt.value}
+                    onClick={() => {
+                      props.intent.onChange(opt.value);
+                    }}
+                    {...attrs}
+                  >
+                    <Icon size="small" />
+                  </ToolbarButton>
+                )}
+              </Tooltip>
+            );
+          })}
+
+          <ToolbarSeparator />
+
+          <Tooltip content="Remove" weight="subtle">
+            {attrs => (
+              <ToolbarButton variant="destructive" onClick={onRemove} {...attrs}>
+                <Trash2Icon size="small" />
+              </ToolbarButton>
+            )}
+          </Tooltip>
+        </ToolbarGroup>
+      );
+    },
+  }),
+};
+```
+
+</details>
 
 ### Fields
 
 There are a variety
 
-### Form Fields
+#### Form Fields
 
 `@keystone-next/keystone/component-blocks` ships with a set of form fields for common purposes:
 
@@ -102,7 +283,18 @@ type FormField<Value, Options> = {
 };
 ```
 
-### Relationships
+#### Object Fields
+
+To nest a group of component block fields into
+
+```tsx
+fields.object({
+  a: fields.text({ label: 'A' }),
+  a: fields.text({ label: 'B' }),
+});
+```
+
+#### Relationship Fields
 
 You can .
 Note that these are not stored like relationship fields on lists are, they are stored as ids embedded in the document structure.
@@ -118,7 +310,7 @@ fields.object({
 });
 ```
 
-### Conditional
+### Conditional Fields
 
 You can conditionally show different fields with `fields.conditional`, they require a form field with a value that is either a string or a boolean as the discriminant and an object of fields for the values.
 
@@ -194,7 +386,9 @@ export default ({ children }) => {
         <h1>How To Use Document Fields</h1>
       </div>
       <DocumentEditorDemo />
-      <div className="prose">{children}</div>
+      <div className="prose">
+        <MDXProvider components={components}>{children}</MDXProvider>
+      </div>
     </Page>
   );
 };
