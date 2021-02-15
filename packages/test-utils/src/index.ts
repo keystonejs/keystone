@@ -66,15 +66,8 @@ async function setupFromConfig({
   config.ui = { isDisabled: true };
   config = initConfig(config);
 
-  const { keystone, createContext, graphQLSchema } = createSystem(
-    config,
-    path.resolve('.keystone'),
-    ''
-  );
-
-  const app = await createExpressServer(config, graphQLSchema, createContext, true, '');
-
-  return { keystone, context: createContext().sudo(), app };
+  const { keystone, createContext } = createSystem(config, path.resolve('.keystone'), '');
+  return { keystone, context: (await createContext()).sudo() };
 }
 
 async function setupServer({

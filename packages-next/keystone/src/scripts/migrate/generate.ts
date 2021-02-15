@@ -19,7 +19,7 @@ export const generate = async ({ dotKeystonePath }: StaticPaths) => {
   await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);
 
   console.log('✨ Generating migration');
-  await keystone.connect({ context: createContext().sudo() });
+  await keystone.connect({ context: (await createContext()).sudo() });
 
   await keystone.disconnect();
 };

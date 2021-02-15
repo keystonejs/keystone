@@ -74,7 +74,7 @@ export function withItemData<T extends { listKey: string; itemId: string }>(
       ...sessionStrategy,
       get: async ({ req, createContext }) => {
         const session = await get({ req, createContext });
-        const sudoContext = createContext({}).sudo();
+        const sudoContext = (await createContext({})).sudo();
         if (
           !session ||
           !session.listKey ||

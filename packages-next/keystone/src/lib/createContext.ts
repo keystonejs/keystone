@@ -6,6 +6,7 @@ import type {
   BaseKeystone,
   SessionStrategy,
   CreateContext,
+  SessionContext,
 } from '@keystone-next/types';
 
 import { itemAPIForList, getArgsFactory } from './itemAPI';
