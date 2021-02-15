@@ -82,7 +82,7 @@ export function withItemData<T extends { listKey: string; itemId: string }>(
           !session.itemId ||
           !sudoContext.lists[session.listKey]
         ) {
-          return;
+          return session;
         }
 
         // NOTE: This is wrapped in a try-catch block because a "not found" result will currently
@@ -95,15 +95,15 @@ export function withItemData<T extends { listKey: string; itemId: string }>(
             where: { id: session.itemId },
             resolveFields: fieldSelections[session.listKey] || 'id',
           });
-          // If there is no matching item found, return no session
+          // If there is no matching item found, return the session without a `data value
           if (!item) {
-            return;
+            return session;
           }
           return { ...session, data: item };
         } catch (e) {
           // TODO: This swallows all errors, we need a way to differentiate between "not found" and
           // actual exceptions that should be thrown
-          return;
+          return session;
         }
       },
     };
