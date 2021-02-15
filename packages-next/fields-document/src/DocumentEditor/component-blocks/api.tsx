@@ -1,6 +1,13 @@
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
-import { FieldContainer, FieldLabel, Select, TextInput, Checkbox } from '@keystone-ui/fields';
+import {
+  FieldContainer,
+  FieldLabel,
+  Select,
+  TextInput,
+  Checkbox,
+  MultiSelect,
+} from '@keystone-ui/fields';
 import { HTMLAttributes, ReactElement, ReactNode, useState } from 'react';
 import { isValidURL } from '../isValidURL';
 
@@ -16,6 +23,10 @@ export type FormField<Value, Options> = {
      */
     forceValidation: boolean;
   }): ReactElement | null;
+  /**
+   * The options are config about the field that are available on the
+   * preview props when rendering the toolbar and preview component
+   */
   options: Options;
   defaultValue: Value;
   /**
@@ -204,6 +215,7 @@ export const fields = {
                   onChange(option.value);
                 }
               }}
+              options={options}
             />
           </FieldContainer>
         );
@@ -212,6 +224,43 @@ export const fields = {
       defaultValue,
       validate(value) {
         return typeof value === 'string' && optionValuesSet.has(value);
+      },
+    };
+  },
+  multiselect<Option extends { label: string; value: string }>({
+    label,
+    options,
+    defaultValue,
+  }: {
+    label: string;
+    options: readonly Option[];
+    defaultValue: readonly Option['value'][];
+  }): FormField<readonly Option['value'][], readonly Option[]> {
+    const valuesToOption = new Map(options.map(x => [x.value, x]));
+    return {
+      kind: 'form',
+      Input({ value, onChange, autoFocus }) {
+        return (
+          <FieldContainer>
+            <FieldLabel>{label}</FieldLabel>
+            <MultiSelect
+              autoFocus={autoFocus}
+              value={value.map(x => valuesToOption.get(x)!)}
+              options={options}
+              onChange={options => {
+                onChange(options.map(x => x.value));
+              }}
+            />
+          </FieldContainer>
+        );
+      },
+      options,
+      defaultValue,
+      validate(value) {
+        return (
+          Array.isArray(value) &&
+          value.every(value => typeof value === 'string' && valuesToOption.has(value))
+        );
       },
     };
   },
@@ -470,14 +519,16 @@ export function component<
   }
 >(
   options: {
+    /** The preview component shown in the editor */
     component: (
       props: {
         [Key in keyof PropsOption]: ExtractPropFromComponentPropFieldForPreview<PropsOption[Key]>;
       }
     ) => ReactElement | null;
+    /** The props that the preview component, toolbar and rendered component will receive */
     props: PropsOption;
+    /** The label to show in the insert menu and chrome around the block if chromeless is false */
     label: string;
-    // icon?: ReactElement;
   } & (
     | {
         chromeless: true;
@@ -508,9 +559,9 @@ export function component<
 }
 
 export const NotEditable = ({ children, ...props }: HTMLAttributes<HTMLDivElement>) => (
-  <div css={{ userSelect: 'none' }} contentEditable={false} {...props}>
+  <span css={{ userSelect: 'none' }} contentEditable={false} {...props}>
     {children}
-  </div>
+  </span>
 );
 
 type Comp<Props> = (props: Props) => ReactElement | null;
