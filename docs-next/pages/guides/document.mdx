@@ -1,5 +1,9 @@
 import { Page, components } from '../../components/Page';
-import { DocumentEditorDemo, DocumentFeaturesCode } from '../../components/DocumentEditorDemo';
+import {
+  DocumentEditorDemo,
+  DocumentFeaturesFormAndCode,
+  DocumentFeaturesProvider,
+} from '../../components/DocumentEditorDemo';
 import { MDXProvider } from '@mdx-js/react';
 
 ### General Features
@@ -7,7 +11,7 @@ import { MDXProvider } from '@mdx-js/react';
 The specific features of the editor that are enabled
 See below for the configuration for enabling all features.
 
-<DocumentFeaturesCode />
+<DocumentFeaturesFormAndCode />
 
 ### Relationships
 
@@ -382,13 +386,15 @@ const componentBlockRenderers: InferRenderersForComponentBlocks<typeof component
 export default ({ children }) => {
   return (
     <Page>
-      <div className="prose">
-        <h1>How To Use Document Fields</h1>
-      </div>
-      <DocumentEditorDemo />
-      <div className="prose">
-        <MDXProvider components={components}>{children}</MDXProvider>
-      </div>
+      <DocumentFeaturesProvider>
+        <div className="prose">
+          <h1>How To Use Document Fields</h1>
+        </div>
+        <DocumentEditorDemo />
+        <div className="prose">
+          <MDXProvider components={components}>{children}</MDXProvider>
+        </div>
+      </DocumentFeaturesProvider>
     </Page>
   );
 };

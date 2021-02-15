@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { Global, jsx, useTheme } from '@keystone-ui/core';
-import { useMemo, useState } from 'react';
+import { ReactNode, useContext, useMemo, useState } from 'react';
 
 import { DocumentEditor } from '@keystone-next/fields-document/src/DocumentEditor';
 import { FormValueContent } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/form';
@@ -13,6 +13,7 @@ import {
 } from '@keystone-next/fields-document/component-blocks';
 import { componentBlocks as componentBlocksInExampleProject } from '../../examples-next/basic/admin/fieldViews/Content';
 import { Code } from './Code';
+import React from 'react';
 
 const headingLevels = ['1', '2', '3', '4', '5', '6'] as const;
 
@@ -54,13 +55,15 @@ const documentFeaturesProp = fields.object({
   }),
   links: fields.checkbox({
     label: 'Links',
+    defaultValue: true,
   }),
   dividers: fields.checkbox({
     label: 'Dividers',
+    defaultValue: true,
   }),
-  softBreaks: fields.checkbox({ label: 'Soft Breaks' }),
-  layouts: fields.checkbox({ label: 'Layouts' }),
-  useShorthand: fields.checkbox({ label: 'Use shorthand in code example' }),
+  softBreaks: fields.checkbox({ label: 'Soft Breaks', defaultValue: true }),
+  layouts: fields.checkbox({ label: 'Layouts', defaultValue: true }),
+  useShorthand: fields.checkbox({ label: 'Use shorthand in code example', defaultValue: true }),
 });
 
 type DocumentFeaturesFormValue = Parameters<
@@ -88,26 +91,29 @@ export default config({
     ListName: list({
       fields: {
         fieldName: document({
-          ${JSON.stringify(
-            config,
-            // every value in an array on a new line looks real bad, especially for layouts
-            (_, val) =>
-              Array.isArray(val)
-                ? Array.isArray(val[0])
-                  ? // this case is for layouts
-                    val.map(x => `[${x.join(', ')}]`)
-                  : // this case is for headingLevels
-                    `[${val.join(', ')}]`
-                : val,
-            2
-          )
-            .replace(/"/g, '')
-            .replace(/^{/, '')
-            .replace(/{$/, '')
-            .trim()
-            .split('\n')
-            .map((x, i) => (i === 0 ? x : ' '.repeat(10) + x))
-            .join('\n')}
+  ${JSON.stringify(
+    config,
+    (_, val) =>
+      // false is an invalid value for all the inputs
+      val === false
+        ? undefined
+        : // every value in an array on a new line looks real bad, especially for layouts
+        Array.isArray(val)
+        ? Array.isArray(val[0])
+          ? // this case is for layouts
+            val.map(x => `[${x.join(', ')}]`)
+          : // this case is for headingLevels
+            `[${val.join(', ')}]`
+        : val,
+    2
+  )
+    .replace(/"/g, '')
+    .replace(/^{/, '')
+    .replace(/{$/, '')
+    .trim()
+    .split('\n')
+    .map(x => ' '.repeat(10) + x)
+    .join('\n')}
           /* ... */
         }),
         /* ... */
@@ -122,9 +128,6 @@ export default config({
 
 function documentFeaturesToShorthand(documentFeatures: DocumentFeatures): DocumentFieldConfig {
   return {
-    layouts: documentFeatures.layouts.length === 0 ? undefined : documentFeatures.layouts,
-    dividers: boolToTrueOrUndefined(documentFeatures.dividers),
-    links: boolToTrueOrUndefined(documentFeatures.links),
     formatting: objToShorthand({
       alignment: objToShorthand({
         center: boolToTrueOrUndefined(documentFeatures.formatting.alignment.center),
@@ -151,23 +154,23 @@ function documentFeaturesToShorthand(documentFeatures: DocumentFeatures): Docume
       }),
       softBreaks: boolToTrueOrUndefined(documentFeatures.formatting.softBreaks),
     }),
+    links: boolToTrueOrUndefined(documentFeatures.links),
+    layouts: documentFeatures.layouts.length === 0 ? undefined : documentFeatures.layouts,
+    dividers: boolToTrueOrUndefined(documentFeatures.dividers),
   };
 }
 
 function objToShorthand<
   Obj extends Record<string, undefined | true | readonly any[] | Record<string, any>>
 >(obj: Obj): Obj | true | undefined {
-  let state: Obj[keyof Obj] | 'vary';
-  Object.values(obj).forEach((val, i) => {
-    if (i === 0) state = val as any;
-    if (val !== state) {
-      state = 'vary';
+  const values = Object.values(obj);
+  let state: typeof values[number] = values[0]!;
+  for (const val of values) {
+    if (val !== state || (val !== undefined && val !== true)) {
+      return obj;
     }
-  });
-  if (state === true || state === undefined) {
-    return state as true | undefined;
   }
-  return obj;
+  return state as any;
 }
 
 function boolToTrueOrUndefined(bool: boolean): true | undefined {
@@ -225,19 +228,58 @@ function documentFeaturesFormToValue(formValue: DocumentFeaturesFormValue): Docu
   };
 }
 
-export function DocumentFeaturesCode() {
+const DocumentFeaturesContext = React.createContext<{
+  documentFeatures: DocumentFeatures;
+  formValue: DocumentFeaturesFormValue;
+  setFormValue: (value: DocumentFeaturesFormValue) => void;
+}>({} as any);
+
+export function DocumentFeaturesProvider({ children }: { children: ReactNode }) {
+  const [formValue, setFormValue] = useState<DocumentFeaturesFormValue>(() =>
+    getInitialPropsValue(documentFeaturesProp, {})
+  );
   return (
-    <Code className="language-js">
-      {useMemo(
-        () =>
-          documentFeaturesCodeExample(
-            documentFeaturesFormValue.useShorthand
-              ? documentFeaturesToShorthand(documentFeatures)
-              : documentFeatures
-          ),
-        [documentFeatures, documentFeaturesFormValue]
+    <DocumentFeaturesContext.Provider
+      value={useMemo(
+        () => ({
+          documentFeatures: documentFeaturesFormToValue(formValue),
+          formValue,
+          setFormValue,
+        }),
+        [formValue]
       )}
-    </Code>
+    >
+      {children}
+    </DocumentFeaturesContext.Provider>
+  );
+}
+
+export function DocumentFeaturesFormAndCode() {
+  const { documentFeatures, formValue, setFormValue } = useContext(DocumentFeaturesContext);
+  return (
+    <div>
+      <FormValueContent
+        prop={documentFeaturesProp}
+        forceValidation={false}
+        path={[]}
+        stringifiedPropPathToAutoFocus=""
+        value={formValue}
+        onChange={setFormValue}
+      />
+      <pre>
+        <Code className="language-tsx">
+          {useMemo(
+            () =>
+              documentFeaturesCodeExample(
+                formValue.useShorthand
+                  ? documentFeaturesToShorthand(documentFeatures)
+                  : documentFeatures
+              ),
+            [documentFeatures, formValue]
+          )}
+        </Code>
+      </pre>
+    </div>
   );
 }
 
@@ -247,12 +289,7 @@ export const DocumentEditorDemo = () => {
   ] as any);
 
   const theme = useTheme();
-  const [documentFeaturesFormValue, setDocumentFeatures] = useState<DocumentFeaturesFormValue>(() =>
-    getInitialPropsValue(documentFeaturesProp, {})
-  );
-  const documentFeatures = useMemo(() => documentFeaturesFormToValue(documentFeaturesFormValue), [
-    documentFeaturesFormValue,
-  ]);
+  const { documentFeatures } = useContext(DocumentFeaturesContext);
   return (
     <div
       css={{
@@ -298,14 +335,6 @@ export const DocumentEditorDemo = () => {
         <summary>View Document Structure</summary>
         <pre>{JSON.stringify(value, null, 2)}</pre>
       </details>
-      <FormValueContent
-        prop={documentFeaturesProp}
-        forceValidation={false}
-        path={[]}
-        stringifiedPropPathToAutoFocus=""
-        value={documentFeaturesFormValue}
-        onChange={setDocumentFeatures}
-      />
     </div>
   );
 };
