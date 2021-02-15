@@ -1,8 +1,15 @@
 /** @jsx jsx */
 import { Global, jsx, useTheme } from '@keystone-ui/core';
-import { ReactNode, useContext, useMemo, useState } from 'react';
+import { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
-import { DocumentEditor } from '@keystone-next/fields-document/src/DocumentEditor';
+import {
+  createDocumentEditor,
+  DocumentEditorEditable,
+  DocumentEditorProvider,
+  Editor,
+} from '@keystone-next/fields-document/src/DocumentEditor';
+import { Toolbar } from '@keystone-next/fields-document/src/DocumentEditor/Toolbar';
+import { useKeyDownRef } from '@keystone-next/fields-document/src/DocumentEditor/soft-breaks';
 import { FormValueContent } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/form';
 import { getInitialPropsValue } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/initial-values';
 import { DocumentFeatures } from '@keystone-next/fields-document/views';
@@ -290,6 +297,20 @@ export const DocumentEditorDemo = () => {
 
   const theme = useTheme();
   const { documentFeatures } = useContext(DocumentFeaturesContext);
+
+  const isShiftPressedRef = useKeyDownRef('Shift');
+  const editor = useMemo(
+    () => createDocumentEditor(documentFeatures, componentBlocks, emptyObj, isShiftPressedRef),
+    [documentFeatures]
+  );
+
+  // this is why we're creating the editor ourselves and not using the DocumentEditor component
+  useEffect(() => {
+    // we want to force normalize when the document features change so
+    // that no invalid things exist after a user changes something
+    Editor.normalize(editor, { force: true });
+  }, [documentFeatures]);
+
   return (
     <div
       css={{
@@ -323,13 +344,22 @@ export const DocumentEditorDemo = () => {
           borderBottom: `1px ${theme.colors.border} solid`,
         }}
       >
-        <DocumentEditor
+        <DocumentEditorProvider
           value={value}
           onChange={setValue}
-          documentFeatures={documentFeatures}
+          editor={editor}
           componentBlocks={componentBlocks}
+          documentFeatures={documentFeatures}
           relationships={emptyObj}
-        />
+        >
+          {useMemo(
+            () => (
+              <Toolbar documentFeatures={documentFeatures} />
+            ),
+            [documentFeatures]
+          )}
+          <DocumentEditorEditable />
+        </DocumentEditorProvider>
       </div>
       <details css={{ marginBottom: theme.spacing.xlarge }}>
         <summary>View Document Structure</summary>
