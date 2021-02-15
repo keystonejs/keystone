@@ -14,9 +14,10 @@ It will update the code block below and the editor above.
 
 <DocumentFeaturesFormAndCode />
 
-### Relationships
+### Inline Relationships
 
-The document field can have inline relationships for things like mentions. These are not stored like relationship fields on lists are, they are stored as ids in the document structure.
+The document field can have inline relationships for things like mentions.
+These are not stored like relationship fields on lists, they are stored as ids in the document structure.
 
 ```tsx
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -32,7 +33,7 @@ export default config({
               kind: 'inline',
               listKey: 'User',
               label: 'Mention',
-              selection: 'some graphql selection',
+              selection: 'some GraphQL selection',
             },
           },
           /* ... */
@@ -46,7 +47,8 @@ export default config({
 });
 ```
 
-By default, only the ids for relationships are sent in document, if you'd like to include the label and extra data from the selection specified in the relationship, you can pass `hydrateRelationships: true` to the field.
+By default, only the ids for relationships are sent in document.
+If you'd like to include the label and extra data from the selection specified in the relationship, you can pass `hydrateRelationships: true` to the field.
 
 ```graphql
 query {
@@ -58,37 +60,7 @@ query {
 }
 ```
 
-Whenever a value is saved to the document field, if the extra data from the selection and label are present on relationships, they will be removed so only the id is stored.
-
-You can also have relationships for props, see the section on relationships props
-
-```tsx
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { document } from '@keystone-next/fields-document';
-
-export default config({
-  lists: createSchema({
-    ListName: list({
-      fields: {
-        fieldName: document({
-          relationships: {
-            featuredAuthors: {
-              kind: 'inline',
-              listKey: 'User',
-              selection: 'posts { id title }',
-              many: true,
-            },
-          },
-          /* ... */
-        }),
-        /* ... */
-      },
-    }),
-    /* ... */
-  }),
-  /* ... */
-});
-```
+Whenever a value is saved to the document field, the extra data from the selection and the label on relationships are removed if they exist so only the id is stored.
 
 ## Component Blocks
 
@@ -99,26 +71,77 @@ To add component blocks, you need to create a file somewhere and export componen
 `component-blocks.tsx`
 
 ```tsx
-import { component } from '@keystone-next/fields-document/component-blocks';
+import React from 'react';
+import { component, fields } from '@keystone-next/fields-document/component-blocks';
 
+// naming the export componentBlocks is important because the Admin UI
+// expects to find the components like on the componentBlocks export
 export const componentBlocks = {
   quote: component({
-    label: 'Quote',
-    component: props => {
-      return <blockquote>{props.content}</blockquote>;
+    component: ({ attribution, content }) => {
+      return (
+        <div
+          style={{
+            borderLeft: '3px solid #CBD5E0',
+            paddingLeft: 16,
+          }}
+        >
+          <div style={{ fontStyle: 'italic', color: '#4A5568' }}>{content}</div>
+          <div style={{ fontWeight: 'bold', color: '#718096' }}>
+            <NotEditable>— </NotEditable>
+            {attribution}
+          </div>
+        </div>
+      );
     },
+    label: 'Quote',
+    props: {
+      content: fields.child({
+        kind: 'block',
+        placeholder: 'Quote...',
+        formatting: { inlineMarks: 'inherit', softBreaks: 'inherit' },
+        links: 'inherit',
+      }),
+      attribution: fields.child({ kind: 'inline', placeholder: 'Attribution...' }),
+    },
+    chromeless: true,
   }),
 };
+```
+
+You need to import the `componentBlocks` and pass it to the document field along with the path to the file with the component blocks to `views`.
+
+`keystone.ts`
+
+```ts
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { document } from '@keystone-next/fields-document';
+import { componentBlocks } from './component-blocks';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        fieldName: document({
+          views: require.resolve('./component-blocks'),
+          componentBlocks,
+        }),
+      },
+    }),
+  }),
+});
 ```
 
 <details>
 
 <summary>
-  In the document editor at the top of this page, the Notice block is implemented as a component
-  block, see the implemention by expanding this.
+  In the document editor at the top of this page, the Quote(shown above), Notice and Hero are
+  implemented as component blocks, see the implemention for Notice and Hero by expanding this.
 </summary>
 
 ```tsx
+/** @jsx */
+import { jsx } from '@keystone-ui/core';
 import { component, fields } from '@keystone-next/fields-document/component-blocks';
 
 export const componentBlocks = {
@@ -243,6 +266,8 @@ export const componentBlocks = {
 
 There are a variety
 
+#### Child Fields
+
 #### Form Fields
 
 `@keystone-next/keystone/component-blocks` ships with a set of form fields for common purposes:
@@ -290,9 +315,11 @@ type FormField<Value, Options> = {
 
 #### Object Fields
 
-To nest a group of component block fields into
+To nest a group of component block fields, you can use `fields.object`
 
 ```tsx
+import { fields } from '@keystone-next/fields-document/component-blocks';
+
 fields.object({
   a: fields.text({ label: 'A' }),
   a: fields.text({ label: 'B' }),
@@ -301,8 +328,45 @@ fields.object({
 
 #### Relationship Fields
 
-You can .
-Note that these are not stored like relationship fields on lists are, they are stored as ids embedded in the document structure.
+To use relationship fields on component blocks, you need to add a relationship to the document field config.
+
+```tsx
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { document } from '@keystone-next/fields-document';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        fieldName: document({
+          relationships: {
+            featuredAuthors: {
+              kind: 'prop',
+              listKey: 'User',
+              selection: 'posts { id title }',
+              many: true,
+            },
+          },
+          /* ... */
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
+You can reference the key of the relationship in the relationship and in the form, it will render a relationship select like the relationship field on lists.
+
+```tsx
+import { fields } from '@keystone-next/fields-document/component-blocks';
+
+fields.relationship({ label: 'Authors', relationship: 'featuredAuthors' });
+```
+
+> Note: Like inline relationships, relationship fields on component blocks are not stored like relationship fields on lists, they are stored as ids in the document structure.
 
 ### Objects
 
@@ -332,6 +396,29 @@ fields.conditional(fields.checkbox({ label: 'Show Call to action' }), {
 ```
 
 > You might find `fields.empty()` useful which stores and renders nothing if you want to have a field in one case and nothing anything in another
+
+### Preview Props
+
+### Chromeless
+
+If you want to give your component blocks a more native feel in the editor, you can set `chromeless: true`.
+When you disable it, the generated form is disabled.
+In the editor at the top of this page, the Notice and Quote blocks are chromeless and the Hero has the chrome enabled.
+You will likely want to provide a custom [toolbar](#toolbar) when you set `chromeless: true`.
+
+```tsx
+component({
+  chromeless: false,
+});
+```
+
+### Toolbar
+
+```tsx
+component({
+  chromeless: false,
+});
+```
 
 ## Rendering
 
