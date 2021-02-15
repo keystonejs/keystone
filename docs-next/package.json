@@ -8,9 +8,11 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.13",
+    "@keystone-next/fields-document": "^2.0.0",
     "@keystone-ui/button": "^3.0.0",
     "@keystone-ui/core": "^2.0.0",
     "@keystone-ui/fields": "^2.0.0",
+    "@keystone-ui/icons": "^2.0.0",
     "@keystone-ui/notice": "^2.0.0",
     "@keystone-ui/tooltip": "^2.0.0",
     "@mdx-js/loader": "^1.6.22",

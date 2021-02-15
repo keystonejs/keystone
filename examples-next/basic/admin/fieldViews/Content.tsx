@@ -185,17 +185,17 @@ export const componentBlocks = {
             background: intentConfig.background,
           }}
         >
-          <div
-            contentEditable={false}
-            css={{
-              color: intentConfig.foreground,
-              marginRight: spacing.small,
-              marginTop: '1em',
-              userSelect: 'none',
-            }}
-          >
-            <intentConfig.icon />
-          </div>
+          <NotEditable>
+            <div
+              css={{
+                color: intentConfig.foreground,
+                marginRight: spacing.small,
+                marginTop: '1em',
+              }}
+            >
+              <intentConfig.icon />
+            </div>
+          </NotEditable>
           <div css={{ flex: 1 }}>{content}</div>
         </div>
       );
@@ -269,14 +269,7 @@ export const componentBlocks = {
         >
           <div css={{ fontStyle: 'italic', color: '#4A5568' }}>{content}</div>
           <div css={{ fontWeight: 'bold', color: '#718096' }}>
-            <span
-              contentEditable={false}
-              style={{
-                userSelect: 'none',
-              }}
-            >
-              —{' '}
-            </span>
+            <NotEditable>— </NotEditable>
             {attribution}
           </div>
         </div>
