@@ -65,12 +65,7 @@ export function makeCreateContext({
       knex: keystone.adapter.knex,
       mongoose: keystone.adapter.mongoose,
       prisma: keystone.adapter.prisma,
-      graphql: {
-        createContext,
-        raw: rawGraphQL,
-        run: runGraphQL,
-        schema: graphQLSchema,
-      } as KeystoneGraphQLAPI<any>,
+      graphql: { raw: rawGraphQL, run: runGraphQL, schema: graphQLSchema },
       maxTotalResults: keystone.queryLimits.maxTotalResults,
       sudo: () => createContext({ sessionContext, skipAccessControl: true, req }),
       exitSudo: () => createContext({ sessionContext, skipAccessControl: false, req }),

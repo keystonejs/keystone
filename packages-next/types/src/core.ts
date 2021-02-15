@@ -87,7 +87,6 @@ export type KeystoneGraphQLAPI<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
 > = {
-  createContext: CreateContext;
   schema: GraphQLSchema;
 
   run: (args: GraphQLExecutionArguments) => Promise<Record<string, any>>;
