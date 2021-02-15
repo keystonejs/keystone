@@ -81,9 +81,7 @@ export default config({
   db: {
     adapter: 'prisma_postgresql',
     url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
-    onConnect: async context => {
-      /* ... */
-    },
+    onConnect: async context => { /* ... */ },
     // Optional advanced configuration
     enableLogging: true,
     getPrismaPath: ({ prismaSchema }) => '.prisma',
