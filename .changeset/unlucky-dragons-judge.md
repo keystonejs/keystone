@@ -3,4 +3,4 @@
 '@keystone-next/types': major
 ---
 
-Remove `context.graphql.createContext` from `KeystoneContext`.
+Removed `context.graphql.createContext` from `KeystoneContext`.
