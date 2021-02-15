@@ -13,14 +13,24 @@ const hashLinkOffset = {
     marginTop: -60,
   },
 };
-const getAnchor = element => {
-  const text = element;
+const getAnchor = (text: string) => {
   if (typeof text === 'string') {
     return slugify(text);
   }
   return '';
 };
-const Heading = ({ as: Tag, children, ...props }) => {
+
+// emotions JSX pragma  appends the correct css prop type
+// if the underlying component expects an optional className prop
+interface StringOnlyChildren {
+  children: string;
+  className?: string;
+}
+
+interface HeadingProps extends StringOnlyChildren {
+  as: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+}
+const Heading = ({ as: Tag, children, ...props }: HeadingProps) => {
   const headingRef = useRef(null);
   const depth = parseInt(Tag.slice(1), 10);
   const hasCopy = depth > 1 && depth < 5;
@@ -55,7 +65,7 @@ const Heading = ({ as: Tag, children, ...props }) => {
   );
 };
 
-export const H1 = props => (
+export const H1 = (props: StringOnlyChildren) => (
   <Heading
     css={{
       fontSize: '2.4rem',
@@ -67,7 +77,7 @@ export const H1 = props => (
     as="h1"
   />
 );
-export const H2 = props => (
+export const H2 = (props: StringOnlyChildren) => (
   <Heading
     {...props}
     css={{
@@ -80,7 +90,7 @@ export const H2 = props => (
     as="h2"
   />
 );
-export const H3 = props => (
+export const H3 = (props: StringOnlyChildren) => (
   <Heading
     css={{
       fontSize: '1.4rem',
@@ -94,7 +104,7 @@ export const H3 = props => (
   />
 );
 
-export const H4 = props => (
+export const H4 = (props: StringOnlyChildren) => (
   <Heading
     css={{
       fontSize: '1.2rem',
@@ -105,7 +115,11 @@ export const H4 = props => (
   />
 );
 
-export const H5 = props => <Heading css={{ fontSize: '1rem' }} as="h5" {...props} />;
-export const H6 = props => <Heading css={{ fontSize: '0.9rem' }} as="h6" {...props} />;
+export const H5 = (props: StringOnlyChildren) => (
+  <Heading css={{ fontSize: '1rem' }} as="h5" {...props} />
+);
+export const H6 = (props: StringOnlyChildren) => (
+  <Heading css={{ fontSize: '0.9rem' }} as="h6" {...props} />
+);
 
 export default Heading;

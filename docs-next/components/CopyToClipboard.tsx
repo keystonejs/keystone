@@ -15,7 +15,7 @@ export const CopyToClipboard = ({ value }: { value: string }) => {
   const onFailure = () => {
     addToast({ title: 'Faild to oopy to clipboard', tone: 'negative' });
   };
-  const onClick = event => {
+  const onClick = (event: React.SyntheticEvent) => {
     event.preventDefault();
     if (typeof value !== 'string' || typeof window === 'undefined') return;
     const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
@@ -26,8 +26,14 @@ export const CopyToClipboard = ({ value }: { value: string }) => {
       return;
     } else {
       // Fallback to a library that leverages document.execCommand
-      // for brwoser versions that dont' support the navigator object.
-      copy(text);
+      // for browser versions that dont' support the navigator object.
+      // As document.execCommand
+      try {
+        copy(text);
+      } catch (e) {
+        addToast({ title: 'Faild to oopy to clipboard', tone: 'negative' });
+      }
+
       return;
     }
   };
