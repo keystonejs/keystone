@@ -8,17 +8,15 @@ type InitTemplateArgs = {
 
 export const initTemplate = ({ listKey, initFirstItem }: InitTemplateArgs) => {
   // -- TEMPLATE START
-  return `import { InitPage } from '@keystone-next/auth/pages/InitPage';
-  import React from 'react';
-  import { gql } from '@keystone-next/admin-ui/apollo';
+  return `import { getInitPage } from '@keystone-next/auth/pages/InitPage';
 
-  const fieldPaths = ${JSON.stringify(initFirstItem.fields)};
+const fieldPaths = ${JSON.stringify(initFirstItem.fields)};
 
-  export default function Init() {
-    return <InitPage listKey="${listKey}" fieldPaths={fieldPaths} enableWelcome={${JSON.stringify(
-    !initFirstItem.skipKeystoneWelcome
-  )}} />
-  }
-  `;
+export default getInitPage(${JSON.stringify({
+    listKey,
+    fieldPaths: initFirstItem.fields,
+    enableWelcome: !initFirstItem.skipKeystoneWelcome,
+  })});
+`;
   // -- TEMPLATE END
 };

@@ -144,15 +144,15 @@ const Welcome = ({ value }: { value: any }) => {
   );
 };
 
-export const InitPage = ({
-  fieldPaths,
-  listKey,
-  enableWelcome,
-}: {
+type InitPageProps = {
   listKey: string;
   fieldPaths: string[];
   enableWelcome: boolean;
-}) => {
+};
+
+export const getInitPage = (props: InitPageProps) => () => <InitPage {...props} />;
+
+const InitPage = ({ fieldPaths, listKey, enableWelcome }: InitPageProps) => {
   const { adminMeta } = useKeystone();
   const fields = useMemo(() => {
     const fields: Record<string, FieldMeta> = {};
