@@ -1,5 +1,7 @@
 import { Markdown } from '../components/Page';
 
+export const meta = {};
+
 # What's New in Keystone Next
 
 > Note: this page is a working draft, we have more to talk about!
@@ -32,7 +34,7 @@ WYSIWYG previews. Perfect for authoring content that works with a Design System 
 
 Check out the [Live Demo and Docs](./guides/document-fields)
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown meta={meta}>{children}</Markdown>;
 
 ## Extensible GraphQL Schema
 

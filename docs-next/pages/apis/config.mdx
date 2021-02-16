@@ -1,4 +1,5 @@
 import { Markdown } from '../../components/Page';
+export const meta = {};
 
 # System Configuration API
 
@@ -7,20 +8,36 @@ The `keystone-next` CLI expects to find a module named `keystone.ts` with a defa
 ```typescript filename=keystone.ts
 import { config } from '@keystone-next/keystone/schema';
 
-export default config({ /* ... */ });
+export default config({
+  /* ... */
+});
 ```
 
 The `config` function accepts an object representing all the configurable parts of the system:
 
 ```typescript
 export default config({
-  lists: { /* ... */ },
-  db: { /* ... */ },
-  ui: { /* ... */ },
-  server: { /* ... */ },
-  session: () => { /* ... */ },
-  graphql: { /* ... */ },
-  extendGraphqlSchema: { /* ... */ },
+  lists: {
+    /* ... */
+  },
+  db: {
+    /* ... */
+  },
+  ui: {
+    /* ... */
+  },
+  server: {
+    /* ... */
+  },
+  session: () => {
+    /* ... */
+  },
+  graphql: {
+    /* ... */
+  },
+  extendGraphqlSchema: {
+    /* ... */
+  },
 });
 ```
 
@@ -81,7 +98,9 @@ export default config({
   db: {
     adapter: 'prisma_postgresql',
     url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
-    onConnect: async context => { /* ... */ },
+    onConnect: async context => {
+      /* ... */
+    },
     // Optional advanced configuration
     enableLogging: true,
     getPrismaPath: ({ prismaSchema }) => '.prisma',
@@ -103,7 +122,9 @@ export default config({
   db: {
     adapter: 'knex',
     url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
-    onConnect: async context => { /* ... */ },
+    onConnect: async context => {
+      /* ... */
+    },
     // Optional advanced configuration
     schemaName: 'public',
     dropDatabase: false,
@@ -208,8 +229,12 @@ import { statelessSessions, withItemData } from '@keystone-next/keystone/session
 
 export default config({
   session: withItemData(
-    statelessSessions({ /* ... */ }),
-    { /* ... */ }
+    statelessSessions({
+      /* ... */
+    }),
+    {
+      /* ... */
+    }
   ),
   /* ... */
 });
@@ -262,4 +287,4 @@ export default config({
 
 See the [schema extension guide](../guides/schema-extension) for more details on how to use `graphQLSchemaExtension()` to extend your GraphQL API.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown meta={meta}>{children}</Markdown>;
