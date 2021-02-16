@@ -319,6 +319,9 @@ export const DocumentEditorDemo = () => {
         h3: { fontSize: '1.17em' },
         h5: { fontSize: '0.83em' },
         h6: { fontSize: '0.67em' },
+        'ul, ol': {
+          paddingLeft: 40,
+        },
       }}
     >
       <Global
