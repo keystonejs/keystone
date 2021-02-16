@@ -1,18 +1,21 @@
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
-const { Integer, Virtual } = require('@keystonejs/fields');
+const { integer, virtual } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 
 function makeSetupKeystone(fields) {
   return function setupKeystone(adapterName) {
-    return setupServer({
+    return setupFromConfig({
       adapterName,
-      createLists: keystone => {
-        keystone.createList('Post', {
-          fields: {
-            value: { type: Integer },
-            ...fields,
-          },
-        });
-      },
+      config: createSchema({
+        lists: {
+          Post: list({
+            fields: {
+              value: integer(),
+              ...fields,
+            },
+          }),
+        },
+      }),
     });
   };
 }
@@ -24,10 +27,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'Default - resolver returns a string',
         runner(
           makeSetupKeystone({
-            foo: { type: Virtual, resolver: () => 'Hello world!' },
+            foo: virtual({ resolver: () => 'Hello world!' }),
           }),
-          async ({ keystone }) => {
-            const { data, errors } = await keystone.executeGraphQL({
+          async ({ context }) => {
+            const { data, errors } = await context.executeGraphQL({
               query: `mutation {
                 createPost(data: { value: 1 }) { value, foo }
               }`,
@@ -43,10 +46,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'graphQLReturnType',
         runner(
           makeSetupKeystone({
-            foo: { type: Virtual, graphQLReturnType: 'Int', resolver: () => 42 },
+            foo: virtual({ graphQLReturnType: 'Int', resolver: () => 42 }),
           }),
-          async ({ keystone }) => {
-            const { data, errors } = await keystone.executeGraphQL({
+          async ({ context }) => {
+            const { data, errors } = await context.executeGraphQL({
               query: `mutation {
                 createPost(data: { value: 1 }) { value, foo }
               }`,
@@ -62,18 +65,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'args',
         runner(
           makeSetupKeystone({
-            foo: {
-              type: Virtual,
+            foo: virtual({
               graphQLReturnType: 'Int',
               args: [
                 { name: 'x', type: 'Int' },
                 { name: 'y', type: 'Int' },
               ],
               resolver: (item, { x = 5, y = 6 }) => x * y,
-            },
+            }),
           }),
-          async ({ keystone }) => {
-            const { data, errors } = await keystone.executeGraphQL({
+          async ({ context }) => {
+            const { data, errors } = await context.executeGraphQL({
               query: `mutation {
                 createPost(data: { value: 1 }) { value, foo(x: 10, y: 20) }
               }`,
@@ -89,18 +91,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'args - use defaults',
         runner(
           makeSetupKeystone({
-            foo: {
-              type: Virtual,
+            foo: virtual({
               graphQLReturnType: 'Int',
               args: [
                 { name: 'x', type: 'Int' },
                 { name: 'y', type: 'Int' },
               ],
               resolver: (item, { x = 5, y = 6 }) => x * y,
-            },
+            }),
           }),
-          async ({ keystone }) => {
-            const { data, errors } = await keystone.executeGraphQL({
+          async ({ context }) => {
+            const { data, errors } = await context.executeGraphQL({
               query: `mutation {
                 createPost(data: { value: 1 }) { value, foo }
               }`,
@@ -116,15 +117,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'graphQLReturnFragment',
         runner(
           makeSetupKeystone({
-            foo: {
-              type: Virtual,
+            foo: virtual({
               extendGraphQLTypes: [`type Movie { title: String, rating: Int }`],
               graphQLReturnType: '[Movie]',
               resolver: () => [{ title: 'CATS!', rating: 100 }],
-            },
+            }),
           }),
-          async ({ keystone }) => {
-            const { data, errors } = await keystone.executeGraphQL({
+          async ({ context }) => {
+            const { data, errors } = await context.executeGraphQL({
               query: `mutation {
                 createPost(data: { value: 1 }) { value, foo { title rating } }
               }`,

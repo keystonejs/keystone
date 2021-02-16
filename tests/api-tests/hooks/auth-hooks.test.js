@@ -1,7 +1,7 @@
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Password } = require('@keystonejs/fields');
-const { createItem } = require('@keystonejs/server-side-graphql-client');
 const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { createItem } = require('@keystonejs/server-side-graphql-client');
 const superagent = require('superagent');
 
 function setupKeystone(adapterName) {

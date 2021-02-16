@@ -1,6 +1,6 @@
 # Document editor architecture
 
-The document editor uses [Slate](https://github.com/ianstormtaylor/slate). To learn about Slate generally, go through https://docs.slatejs.org/walkthroughs and https://docs.slatejs.org/concepts. The sections on [Nodes](https://docs.slatejs.org/concepts/02-nodes) and [Locations](https://docs.slatejs.org/concepts/03-locations) contain especially important terminology.
+The document editor uses [Slate](https://github.com/ianstormtaylor/slate). To learn about Slate generally, go through <https://docs.slatejs.org/walkthroughs> and <https://docs.slatejs.org/concepts>. The sections on [Nodes](https://docs.slatejs.org/concepts/02-nodes) and [Locations](https://docs.slatejs.org/concepts/03-locations) contain especially important terminology.
 
 ## Data storage
 
@@ -37,7 +37,7 @@ Plugins are functions which accept an `Editor`, modify some of its properties, a
 ## Rendering
 
 The rendering of the editor is like any other bit of React code.
-See https://docs.slatejs.org/concepts/08-rendering for how rendering the document works in Slate.
+See <https://docs.slatejs.org/concepts/08-rendering> for how rendering the document works in Slate.
 
 The editor is very performance-sensitive because it will re-render on every keystroke so keep these things in mind while writing code for rendering the editor:
 
@@ -63,7 +63,7 @@ If you want to enforce something about the relationship between a parent and chi
 
 ## Changing the default handling of user input
 
-For some behaviour like markdown shortcuts, you need to change the default handling of user input like converting a paragraph to a blockquote when a user types `> `.
+For some behaviour like markdown shortcuts, you need to change the default handling of user input like converting a paragraph to a blockquote when a user types `>`.
 Changing the default handling of user input is done by overriding `editor.insertText`, `editor.insertBreak`, `editor.insertData` or `onKeyDown` (which is a prop to the `Editable` component rather than on the editor instance).
 
 ## DocumentFeatures

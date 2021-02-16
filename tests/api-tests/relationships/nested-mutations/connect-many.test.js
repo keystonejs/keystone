@@ -1,78 +1,77 @@
 const { gen, sampleOne } = require('testcheck');
-const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('Note', {
-        fields: {
-          content: { type: Text },
-        },
-      });
-
-      keystone.createList('User', {
-        fields: {
-          username: { type: Text },
-          notes: { type: Relationship, ref: 'Note', many: true },
-        },
-      });
-
-      keystone.createList('NoteNoRead', {
-        fields: {
-          content: { type: Text },
-        },
-        access: {
-          read: () => false,
-        },
-      });
-
-      keystone.createList('UserToNotesNoRead', {
-        fields: {
-          username: { type: Text },
-          notes: { type: Relationship, ref: 'NoteNoRead', many: true },
-        },
-      });
-
-      keystone.createList('NoteNoCreate', {
-        fields: {
-          content: { type: Text },
-        },
-        access: {
-          create: () => false,
-        },
-      });
-
-      keystone.createList('UserToNotesNoCreate', {
-        fields: {
-          username: { type: Text },
-          notes: { type: Relationship, ref: 'NoteNoCreate', many: true },
-        },
-      });
-    },
+    config: createSchema({
+      lists: {
+        Note: list({
+          fields: {
+            content: text(),
+          },
+        }),
+        User: list({
+          fields: {
+            username: text(),
+            notes: relationship({ ref: 'Note', many: true }),
+          },
+        }),
+        NoteNoRead: list({
+          fields: {
+            content: text(),
+          },
+          access: {
+            read: () => false,
+          },
+        }),
+        UserToNotesNoRead: list({
+          fields: {
+            username: text(),
+            notes: relationship({ ref: 'NoteNoRead', many: true }),
+          },
+        }),
+        NoteNoCreate: list({
+          fields: {
+            content: text(),
+          },
+          access: {
+            create: () => false,
+          },
+        }),
+        UserToNotesNoCreate: list({
+          fields: {
+            username: text(),
+            notes: relationship({ ref: 'NoteNoCreate', many: true }),
+          },
+        }),
+      },
+    }),
   });
 }
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('no access control', () => {
       test(
         'connect nested from within create mutation',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const noteContent = sampleOne(alphanumGenerator);
 
           // Create an item to link against
           const createNote = await createItem({
-            keystone,
+            context,
             listKey: 'Note',
             item: { content: noteContent },
           });
 
           // Create an item that does the linking
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 createUser(data: {
@@ -94,7 +93,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { createUser },
             errors: errors2,
-          } = await keystone.executeGraphQL({
+          } = await context.executeGraphQL({
             query: `
               mutation {
                 createUser(data: {
@@ -110,7 +109,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(createUser).toMatchObject({ id: expect.any(String), notes: expect.any(Array) });
 
           // Test an empty list of related notes
-          const result = await keystone.executeGraphQL({
+          const result = await context.executeGraphQL({
             query: `
               mutation {
                 createUser(data: {
@@ -129,24 +128,24 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'connect nested from within create many mutation',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const noteContent = sampleOne(alphanumGenerator);
           const noteContent2 = sampleOne(alphanumGenerator);
 
           // Create an item to link against
           const createNote = await createItem({
-            keystone,
+            context,
             listKey: 'Note',
             item: { content: noteContent },
           });
           const createNote2 = await createItem({
-            keystone,
+            context,
             listKey: 'Note',
             item: { content: noteContent2 },
           });
 
           // Create an item that does the linking
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 createUsers(data: [
@@ -167,31 +166,31 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'connect nested from within update mutation adds to an empty list',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const noteContent = sampleOne(alphanumGenerator);
           const noteContent2 = sampleOne(alphanumGenerator);
 
           // Create an item to link against
           const createNote = await createItem({
-            keystone,
+            context,
             listKey: 'Note',
             item: { content: noteContent },
           });
           const createNote2 = await createItem({
-            keystone,
+            context,
             listKey: 'Note',
             item: { content: noteContent2 },
           });
 
           // Create an item to update
           const createUser = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { username: 'A thing' },
           });
 
           // Update the item and link the relationship field
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 updateUser(
@@ -222,7 +221,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { updateUser },
             errors: errors2,
-          } = await keystone.executeGraphQL({
+          } = await context.executeGraphQL({
             query: `
               mutation {
                 updateUser(
@@ -255,31 +254,31 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'connect nested from within update mutation adds to an existing list',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const noteContent = sampleOne(alphanumGenerator);
           const noteContent2 = sampleOne(alphanumGenerator);
 
           // Create an item to link against
           const createNote = await createItem({
-            keystone,
+            context,
             listKey: 'Note',
             item: { content: noteContent },
           });
           const createNote2 = await createItem({
-            keystone,
+            context,
             listKey: 'Note',
             item: { content: noteContent2 },
           });
 
           // Create an item to update
           const createUser = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
           });
 
           // Update the item and link the relationship field
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 updateUser(
@@ -313,25 +312,25 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'connect nested from within update many mutation adds to an existing list',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const noteContent = sampleOne(alphanumGenerator);
           const noteContent2 = sampleOne(alphanumGenerator);
 
           // Create an item to link against
           const createNote = await createItem({
-            keystone,
+            context,
             listKey: 'Note',
             item: { content: noteContent },
           });
           const createNote2 = await createItem({
-            keystone,
+            context,
             listKey: 'Note',
             item: { content: noteContent2 },
           });
 
           // Create an item to update
           const createUser = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: {
               username: 'user1',
@@ -339,12 +338,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
           });
           const createUser2 = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { username: 'user2' },
           });
 
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 updateUsers(data: [
@@ -373,11 +372,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('non-matching filter', () => {
       test(
         'errors if connecting items which cannot be found during creating',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
 
           // Create an item that does the linking
-          const { errors } = await keystone.executeGraphQL({
+          const { errors } = await context.executeGraphQL({
             query: `
               mutation {
                 createUser(data: {
@@ -398,14 +397,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'errors if connecting items which cannot be found during update',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
 
           // Create an item to link against
-          const createUser = await createItem({ keystone, listKey: 'User', item: {} });
+          const createUser = await createItem({ context, listKey: 'User', item: {} });
 
           // Create an item that does the linking
-          const { errors } = await keystone.executeGraphQL({
+          const { errors } = await context.executeGraphQL({
             query: `
               mutation {
                 updateUser(
@@ -432,17 +431,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'throws when link nested from within create mutation',
-          runner(setupKeystone, async ({ keystone }) => {
+          runner(setupKeystone, async ({ context }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
             const createNoteNoRead = await createItem({
-              keystone,
+              context,
               listKey: 'NoteNoRead',
               item: { content: noteContent },
             });
 
-            const { errors } = await keystone.executeGraphQL({
+            const { errors } = await context.exitSudo().executeGraphQL({
               query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -466,25 +465,25 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'throws when link nested from within update mutation',
-          runner(setupKeystone, async ({ keystone }) => {
+          runner(setupKeystone, async ({ context }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
             const createNote = await createItem({
-              keystone,
+              context,
               listKey: 'NoteNoRead',
               item: { content: noteContent },
             });
 
             // Create an item to update
             const createUser = await createItem({
-              keystone,
+              context,
               listKey: 'UserToNotesNoRead',
               item: { username: 'A thing' },
             });
 
             // Update the item and link the relationship field
-            const { errors } = await keystone.executeGraphQL({
+            const { errors } = await context.exitSudo().executeGraphQL({
               query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -513,18 +512,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('create: false on related list', () => {
         test(
           'does not throw when link nested from within create mutation',
-          runner(setupKeystone, async ({ keystone }) => {
+          runner(setupKeystone, async ({ context }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
             const createNoteNoCreate = await createItem({
-              keystone,
+              context,
               listKey: 'NoteNoCreate',
               item: { content: noteContent },
             });
 
             // Create an item that does the linking
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.exitSudo().executeGraphQL({
               query: `
                 mutation {
                   createUserToNotesNoCreate(data: {
@@ -543,25 +542,25 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'does not throw when link nested from within update mutation',
-          runner(setupKeystone, async ({ keystone }) => {
+          runner(setupKeystone, async ({ context }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
             const createNote = await createItem({
-              keystone,
+              context,
               listKey: 'NoteNoCreate',
               item: { content: noteContent },
             });
 
             // Create an item to update
             const createUser = await createItem({
-              keystone,
+              context,
               listKey: 'UserToNotesNoCreate',
               item: { username: 'A thing' },
             });
 
             // Update the item and link the relationship field
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.exitSudo().executeGraphQL({
               query: `
                 mutation {
                   updateUserToNotesNoCreate(
