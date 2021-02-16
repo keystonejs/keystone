@@ -1,41 +1,44 @@
 const { gen, sampleOne } = require('testcheck');
 
-const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 const { createItem, createItems } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('Post', {
-        fields: {
-          title: { type: Text },
-          author: { type: Relationship, ref: 'User' },
-        },
-      });
-
-      keystone.createList('User', {
-        fields: {
-          name: { type: Text },
-          feed: { type: Relationship, ref: 'Post', many: true },
-        },
-      });
-    },
+    config: createSchema({
+      lists: {
+        Post: list({
+          fields: {
+            title: text(),
+            author: relationship({ ref: 'User' }),
+          },
+        }),
+        User: list({
+          fields: {
+            name: text(),
+            feed: relationship({ ref: 'Post', many: true }),
+          },
+        }),
+      },
+    }),
   });
 }
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('Querying with relationship filters', () => {
       describe('to-single', () => {
         test(
           'with data',
-          runner(setupKeystone, async ({ keystone }) => {
+          runner(setupKeystone, async ({ context }) => {
             // Create an item to link against
             const users = await createItems({
-              keystone,
+              context,
               listKey: 'User',
               items: [
                 { data: { name: 'Jess' } },
@@ -44,7 +47,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               ],
             });
             const posts = await createItems({
-              keystone,
+              context,
               listKey: 'Post',
               items: [
                 {
@@ -76,7 +79,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Create an item that does the linking
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
           query {
             allPosts(where: {
@@ -104,11 +107,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           'without data',
-          runner(setupKeystone, async ({ keystone }) => {
+          runner(setupKeystone, async ({ context }) => {
             // Create an item to link against
-            const user = await createItem({ keystone, listKey: 'User', item: { name: 'Jess' } });
+            const user = await createItem({ context, listKey: 'User', item: { name: 'Jess' } });
             const posts = await createItems({
-              keystone,
+              context,
               listKey: 'Post',
               items: [
                 {
@@ -123,7 +126,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Create an item that does the linking
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
           query {
             allPosts(where: {
@@ -177,12 +180,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_every condition',
-          runner(setupKeystone, async ({ keystone }) => {
-            const create = async (listKey, item) => createItem({ keystone, listKey, item });
+          runner(setupKeystone, async ({ context }) => {
+            const create = async (listKey, item) => createItem({ context, listKey, item });
             const { users } = await setup(create);
 
             // EVERY
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
           query {
             allUsers(where: {
@@ -208,12 +211,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_some condition',
-          runner(setupKeystone, async ({ keystone }) => {
-            const create = async (listKey, item) => createItem({ keystone, listKey, item });
+          runner(setupKeystone, async ({ context }) => {
+            const create = async (listKey, item) => createItem({ context, listKey, item });
             const { users } = await setup(create);
 
             // SOME
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
           query {
             allUsers(where: {
@@ -245,12 +248,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_none condition',
-          runner(setupKeystone, async ({ keystone }) => {
-            const create = async (listKey, item) => createItem({ keystone, listKey, item });
+          runner(setupKeystone, async ({ context }) => {
+            const create = async (listKey, item) => createItem({ context, listKey, item });
             const { users } = await setup(create);
 
             // NONE
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
           query {
             allUsers(where: {
@@ -300,12 +303,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_every condition',
-          runner(setupKeystone, async ({ keystone }) => {
-            const create = async (listKey, item) => createItem({ keystone, listKey, item });
+          runner(setupKeystone, async ({ context }) => {
+            const create = async (listKey, item) => createItem({ context, listKey, item });
             const { users } = await setup(create);
 
             // EVERY
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
           query {
             allUsers(where: {
@@ -329,12 +332,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_some condition',
-          runner(setupKeystone, async ({ keystone }) => {
-            const create = async (listKey, item) => createItem({ keystone, listKey, item });
+          runner(setupKeystone, async ({ context }) => {
+            const create = async (listKey, item) => createItem({ context, listKey, item });
             const { users } = await setup(create);
 
             // SOME
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
           query {
             allUsers(where: {
@@ -363,12 +366,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_none condition',
-          runner(setupKeystone, async ({ keystone }) => {
-            const create = async (listKey, item) => createItem({ keystone, listKey, item });
+          runner(setupKeystone, async ({ context }) => {
+            const create = async (listKey, item) => createItem({ context, listKey, item });
             const { users } = await setup(create);
 
             // NONE
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
           query {
             allUsers(where: {
@@ -412,12 +415,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_every condition',
-          runner(setupKeystone, async ({ keystone }) => {
-            const create = async (listKey, item) => createItem({ keystone, listKey, item });
+          runner(setupKeystone, async ({ context }) => {
+            const create = async (listKey, item) => createItem({ context, listKey, item });
             const { users } = await setup(create);
 
             // EVERY
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
           query {
             allUsers(where: {
@@ -446,12 +449,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_some condition',
-          runner(setupKeystone, async ({ keystone }) => {
-            const create = async (listKey, item) => createItem({ keystone, listKey, item });
+          runner(setupKeystone, async ({ context }) => {
+            const create = async (listKey, item) => createItem({ context, listKey, item });
             const { users } = await setup(create);
 
             // SOME
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
           query {
             allUsers(where: {
@@ -475,12 +478,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
         test(
           '_none condition',
-          runner(setupKeystone, async ({ keystone }) => {
-            const create = async (listKey, item) => createItem({ keystone, listKey, item });
+          runner(setupKeystone, async ({ context }) => {
+            const create = async (listKey, item) => createItem({ context, listKey, item });
             const { users } = await setup(create);
 
             // NONE
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
           query {
             allUsers(where: {

@@ -1,12 +1,13 @@
 const { gen, sampleOne } = require('testcheck');
-const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 const { createItem, createItems } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-const createInitialData = async keystone => {
-  const { data, errors } = await keystone.executeGraphQL({
+const createInitialData = async context => {
+  const { data, errors } = await context.executeGraphQL({
     query: `
       mutation {
         createCompanies(data: [
@@ -24,14 +25,14 @@ const createInitialData = async keystone => {
   });
   expect(errors).toBe(undefined);
   const owners = await createItems({
-    keystone,
+    context,
     listKey: 'Owner',
     items: data.createCompanies.map(({ id }) => ({
       data: { name: `Owner_of_${id}`, companies: { connect: [{ id }] } },
     })),
   });
   const custodians = await createItems({
-    keystone,
+    context,
     listKey: 'Custodian',
     items: data.createLocations.map(({ id }) => ({
       data: { name: `Custodian_of_${id}`, locations: { connect: [{ id }] } },
@@ -40,9 +41,9 @@ const createInitialData = async keystone => {
   return { locations: data.createLocations, companies: data.createCompanies, owners, custodians };
 };
 
-const createCompanyAndLocation = async keystone => {
+const createCompanyAndLocation = async context => {
   const [cu1, cu2] = await createItems({
-    keystone,
+    context,
     listKey: 'Custodian',
     items: [
       { data: { name: sampleOne(alphanumGenerator) } },
@@ -51,7 +52,7 @@ const createCompanyAndLocation = async keystone => {
   });
 
   return createItem({
-    keystone,
+    context,
     listKey: 'Owner',
     item: {
       name: sampleOne(alphanumGenerator),
@@ -92,36 +93,38 @@ const createCompanyAndLocation = async keystone => {
 };
 
 const setupKeystone = adapterName =>
-  setupServer({
+  setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('Owner', {
-        fields: {
-          name: { type: Text },
-          companies: { type: Relationship, ref: 'Company.owners', many: true },
-        },
-      });
-      keystone.createList('Company', {
-        fields: {
-          name: { type: Text },
-          location: { type: Relationship, ref: 'Location.company' },
-          owners: { type: Relationship, ref: 'Owner.companies', many: true },
-        },
-      });
-      keystone.createList('Location', {
-        fields: {
-          name: { type: Text },
-          company: { type: Relationship, ref: 'Company.location' },
-          custodians: { type: Relationship, ref: 'Custodian.locations', many: true },
-        },
-      });
-      keystone.createList('Custodian', {
-        fields: {
-          name: { type: Text },
-          locations: { type: Relationship, ref: 'Location.custodians', many: true },
-        },
-      });
-    },
+    config: createSchema({
+      lists: {
+        Owner: list({
+          fields: {
+            name: text(),
+            companies: relationship({ ref: 'Company.owners', many: true }),
+          },
+        }),
+        Company: list({
+          fields: {
+            name: text(),
+            location: relationship({ ref: 'Location.company' }),
+            owners: relationship({ ref: 'Owner.companies', many: true }),
+          },
+        }),
+        Location: list({
+          fields: {
+            name: text(),
+            company: relationship({ ref: 'Company.location' }),
+            custodians: relationship({ ref: 'Custodian.locations', many: true }),
+          },
+        }),
+        Custodian: list({
+          fields: {
+            name: text(),
+            locations: relationship({ ref: 'Location.custodians', many: true }),
+          },
+        }),
+      },
+    }),
   });
 
 multiAdapterRunners().map(({ runner, adapterName }) =>
@@ -130,11 +133,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('Read', () => {
         test(
           'Where A',
-          runner(setupKeystone, async ({ keystone }) => {
-            await createInitialData(keystone);
-            const owner = await createCompanyAndLocation(keystone);
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            const owner = await createCompanyAndLocation(context);
             const name1 = owner.companies[0].location.custodians[0].name;
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `{
                   allOwners(where: { companies_some: { location: { custodians_some: { name: "${name1}" } } } }) { id companies { location { custodians { name } } } }
                 }`,
@@ -146,11 +149,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         );
         test(
           'Where B',
-          runner(setupKeystone, async ({ keystone }) => {
-            await createInitialData(keystone);
-            const owner = await createCompanyAndLocation(keystone);
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            const owner = await createCompanyAndLocation(context);
             const name1 = owner.name;
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `{
                   allCustodians(where: { locations_some: { company: { owners_some: { name: "${name1}" } } } }) { id locations { company { owners { name } } } }
                 }`,
@@ -161,11 +164,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         );
         test(
           'Where C',
-          runner(setupKeystone, async ({ keystone }) => {
-            await createInitialData(keystone);
-            const owner = await createCompanyAndLocation(keystone);
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            const owner = await createCompanyAndLocation(context);
             const name1 = owner.name;
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `{
                   allOwners(where: { companies_some: { location: { custodians_some: { locations_some: { company: { owners_some: { name: "${name1}" } } } } } } }) { id companies { location { custodians { name } } } }
                 }`,
@@ -177,12 +180,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         );
         test(
           'Where D',
-          runner(setupKeystone, async ({ keystone }) => {
-            await createInitialData(keystone);
-            const owner = await createCompanyAndLocation(keystone);
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            const owner = await createCompanyAndLocation(context);
             const name1 = owner.companies[0].location.custodians[0].name;
 
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `{
                   allCustodians(where: { locations_some: { company: { owners_some: { companies_some: { location: { custodians_some: { name: "${name1}" } } } } } } }) { id locations { company { owners { name } } } }
                 }`,
