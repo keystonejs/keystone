@@ -49,42 +49,23 @@ export const appTemplate = (
     return serializePathForImport(viewPath);
   });
   // -- TEMPLATE START
-  return `
-import React from 'react';
+  return `import { getApp } from '@keystone-next/admin-ui/pages/App';
 
-import { KeystoneProvider } from '@keystone-next/admin-ui/context';
-import { ErrorBoundary } from '@keystone-next/admin-ui/components';
-import { Core } from '@keystone-ui/core';
-
-${allViews.map((views, i) => `import * as view${i} from ${views}`).join('\n')}
+${allViews.map((views, i) => `import * as view${i} from ${views};`).join('\n')}
 
 ${
   configFileExists
     ? `import * as adminConfig from "../../../admin/config";`
-    : 'const adminConfig = {};'
+    : 'var adminConfig = {};'
 }
 
-const fieldViews = [${allViews.map((_, i) => `view${i}`)}];
-
-const lazyMetadataQuery = ${JSON.stringify(getLazyMetadataQuery(graphQLSchema, adminMeta))};
-
-export default function App({ Component, pageProps }) {
-  return (
-    <Core>
-      <KeystoneProvider
-        adminConfig={adminConfig}
-        adminMetaHash="${adminMetaQueryResultHash}"
-        fieldViews={fieldViews}
-        lazyMetadataQuery={lazyMetadataQuery}
-      >
-        <ErrorBoundary>
-          <Component {...pageProps} />
-        </ErrorBoundary>
-      </KeystoneProvider>
-    </Core>
-  );
-}
-  `;
+export default getApp({
+  lazyMetadataQuery: ${JSON.stringify(getLazyMetadataQuery(graphQLSchema, adminMeta))},
+  fieldViews: [${allViews.map((_, i) => `view${i}`)}],
+  adminMetaHash: "${adminMetaQueryResultHash}",
+  adminConfig: adminConfig
+});
+`;
   // -- TEMPLATE END
 };
 

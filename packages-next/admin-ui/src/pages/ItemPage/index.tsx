@@ -281,7 +281,9 @@ function DeleteButton({
   );
 }
 
-export const ItemPage = ({ listKey }: ItemPageProps) => {
+export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />;
+
+const ItemPage = ({ listKey }: ItemPageProps) => {
   const router = useRouter();
   const { id } = router.query;
   const list = useList(listKey);

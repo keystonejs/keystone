@@ -12,19 +12,23 @@ import { useMutation, gql } from '@keystone-next/admin-ui/apollo';
 import { useRawKeystone, useReinitContext } from '@keystone-next/admin-ui/context';
 import { useRouter } from '@keystone-next/admin-ui/router';
 
+type SigninPageProps = {
+  identityField: string;
+  secretField: string;
+  mutationName: string;
+  successTypename: string;
+  failureTypename: string;
+};
+
+export const getSigninPage = (props: SigninPageProps) => () => <SigninPage {...props} />;
+
 export const SigninPage = ({
   identityField,
   secretField,
   mutationName,
   successTypename,
   failureTypename,
-}: {
-  identityField: string;
-  secretField: string;
-  mutationName: string;
-  successTypename: string;
-  failureTypename: string;
-}) => {
+}: SigninPageProps) => {
   const mutation = gql`
     mutation($identity: String!, $secret: String!) {
       authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {
