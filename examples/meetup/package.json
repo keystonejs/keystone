@@ -44,7 +44,7 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-toast-notifications": "^2.4.0",
+    "react-toast-notifications": "^2.4.3",
     "react-use-form-state": "^0.13.2",
     "uuid": "^8.3.2"
   },

@@ -9,7 +9,7 @@ type FieldImperative<T> = (args: T) => Promise<Static>;
 // address the `any` fields here.
 type Context = any;
 type ListAccessArgs = {
-  operation: keyof ListAccess;
+  operation: keyof ListAccess<ListAccessArgs>;
   listKey: string;
   authentication: any;
   gqlName: string;
@@ -19,7 +19,7 @@ type ListAccessArgs = {
   itemIds?: any;
 };
 type FieldAccessArgs = {
-  operation: keyof FieldAccess;
+  operation: keyof FieldAccess<FieldAccessArgs>;
   listKey: string;
   fieldKey: string;
   originalInput: any;
@@ -31,7 +31,7 @@ type FieldAccessArgs = {
   context: Context;
 };
 type AuthAccessArgs = {
-  operation: keyof AuthAccess;
+  operation: keyof AuthAccess<AuthAccessArgs>;
   listKey: string;
   authentication: any;
   gqlName: string;
@@ -46,24 +46,23 @@ type CustomAccessArgs = {
   gqlName: string;
 };
 
-type ListAccess = {
-  create: Static | Declarative | Imperative<ListAccessArgs>;
-  read: Static | Declarative | Imperative<ListAccessArgs>;
-  update: Static | Declarative | Imperative<ListAccessArgs>;
-  delete: Static | Declarative | Imperative<ListAccessArgs>;
+type ListAccess<Args> = {
+  create: Static | Declarative | Imperative<Args>;
+  read: Static | Declarative | Imperative<Args>;
+  update: Static | Declarative | Imperative<Args>;
+  delete: Static | Declarative | Imperative<Args>;
 };
-type AuthAccess = {
-  auth: Static | Declarative | Imperative<AuthAccessArgs>;
+type AuthAccess<Args> = {
+  auth: Static | Declarative | Imperative<Args>;
 };
-type FieldAccess = {
-  create: Static | FieldImperative<FieldAccessArgs>;
-  read: Static | FieldImperative<FieldAccessArgs>;
-  update: Static | FieldImperative<FieldAccessArgs>;
+type FieldAccess<Args> = {
+  create: Static | FieldImperative<Args>;
+  read: Static | FieldImperative<Args>;
+  update: Static | FieldImperative<Args>;
 };
-
 // Note: Declarative here (custom) is really just Record<string,any> and is returned to the user
 // to do whatever they want with...
-type CustomAccess = Static | Declarative | Imperative<CustomAccessArgs>;
+type CustomAccess<Args> = Static | Declarative | Imperative<Args>;
 
 const checkSchemaNames = ({
   schemaNames,
@@ -102,20 +101,20 @@ const checkSchemaNames = ({
   return keyedBySchemaName;
 };
 
-export function parseCustomAccess<SN extends string>({
+export function parseCustomAccess<SN extends string, Args>({
   defaultAccess,
   access = defaultAccess,
   schemaNames,
 }: {
-  defaultAccess: CustomAccess;
-  access?: Partial<Record<SN, CustomAccess>> | CustomAccess;
+  defaultAccess: CustomAccess<Args>;
+  access?: Partial<Record<SN, CustomAccess<Args>>> | CustomAccess<Args>;
   schemaNames: SN[];
 }) {
   const accessTypes = [] as string[];
 
   const keyedBySchemaName = checkSchemaNames({ schemaNames, accessTypes, access });
 
-  type GG = CustomAccess;
+  type GG = CustomAccess<Args>;
   const fullAccess = keyedBySchemaName
     ? { ...defaultObj(schemaNames, defaultAccess), ...(access as Partial<Record<SN, GG>>) } // Access keyed by schemaName
     : defaultObj(schemaNames, access as GG); // Access not keyed by schemaName
@@ -133,35 +132,41 @@ export function parseCustomAccess<SN extends string>({
   return fullParsedAccess;
 }
 
-type ListAuthAccess = ListAccess & AuthAccess;
-export function parseListAccess<SN extends string>({
+type ListAuthAccess<Args> = ListAccess<Args> & AuthAccess<Args>;
+export function parseListAccess<SN extends string, Args>({
   listKey,
   defaultAccess,
   access = defaultAccess,
   schemaNames,
 }: {
   listKey: string;
-  defaultAccess: ListAccess['read'];
+  defaultAccess: ListAccess<Args>['read'];
   access?:
-    | Partial<Record<SN, Partial<ListAuthAccess> | ListAccess['read']>>
-    | Partial<ListAuthAccess>
-    | ListAccess['read'];
+    | Partial<Record<SN, Partial<ListAuthAccess<Args>> | ListAccess<Args>['read']>>
+    | Partial<ListAuthAccess<Args>>
+    | ListAccess<Args>['read'];
   schemaNames: SN[];
 }) {
-  const accessTypes = ['create', 'read', 'update', 'delete', 'auth'] as (keyof ListAuthAccess)[];
+  const accessTypes = [
+    'create',
+    'read',
+    'update',
+    'delete',
+    'auth',
+  ] as (keyof ListAuthAccess<Args>)[];
 
   const keyedBySchemaName = checkSchemaNames({ schemaNames, accessTypes, access });
 
-  type GG = Partial<ListAuthAccess> | ListAccess['read'];
+  type GG = Partial<ListAuthAccess<Args>> | ListAccess<Args>['read'];
   const fullAccess = keyedBySchemaName
     ? { ...defaultObj(schemaNames, defaultAccess), ...(access as Partial<Record<SN, GG>>) } // Access keyed by schemaName
     : defaultObj(schemaNames, access as GG | undefined); // Access not keyed by schemaName
 
   const parseAndValidate = (access: GG = {}) => {
     if (typeof access === 'boolean' || typeof access === 'function') {
-      return defaultObj(accessTypes, access) as ListAccess['read'];
+      return defaultObj(accessTypes, access) as ListAccess<Args>['read'];
     } else if (typeof access === 'object') {
-      const _access = access as Partial<ListAuthAccess>;
+      const _access = access as Partial<ListAuthAccess<Args>>;
       if (Object.keys(pick(_access, accessTypes)).length === 0) {
         // An object was supplied, but it has the wrong keys (it's probably a
         // declarative access control config being used as a shorthand, which
@@ -182,7 +187,7 @@ export function parseListAccess<SN extends string>({
   const fullParsedAccess = {
     ...schemaNames.reduce(
       (acc, schemaName) => ({ ...acc, [schemaName]: parseAndValidate(fullAccess[schemaName]) }),
-      {} as Record<SN, ListAuthAccess>
+      {} as Record<SN, ListAuthAccess<Args>>
     ),
     internal: defaultObj(accessTypes, true as const),
   };
@@ -210,7 +215,7 @@ export function parseListAccess<SN extends string>({
   return fullParsedAccess;
 }
 
-export function parseFieldAccess<SN extends string>({
+export function parseFieldAccess<SN extends string, Args>({
   listKey,
   fieldKey,
   defaultAccess,
@@ -219,18 +224,18 @@ export function parseFieldAccess<SN extends string>({
 }: {
   listKey: string;
   fieldKey: string;
-  defaultAccess: FieldAccess['read'];
+  defaultAccess: FieldAccess<Args>['read'];
   access?:
-    | Partial<Record<SN, Partial<FieldAccess> | FieldAccess['read']>>
-    | Partial<FieldAccess>
-    | FieldAccess['read'];
+    | Partial<Record<SN, Partial<FieldAccess<Args>> | FieldAccess<Args>['read']>>
+    | Partial<FieldAccess<Args>>
+    | FieldAccess<Args>['read'];
   schemaNames: SN[];
 }) {
-  const accessTypes = ['create', 'read', 'update'] as (keyof FieldAccess)[];
+  const accessTypes = ['create', 'read', 'update'] as (keyof FieldAccess<Args>)[];
 
   const keyedBySchemaName = checkSchemaNames({ schemaNames, accessTypes, access });
 
-  type GG = Partial<FieldAccess> | FieldAccess['read'];
+  type GG = Partial<FieldAccess<Args>> | FieldAccess<Args>['read'];
   const fullAccess = keyedBySchemaName
     ? { ...defaultObj(schemaNames, defaultAccess), ...(access as Partial<Record<SN, GG>>) } // Access keyed by schemaName
     : defaultObj(schemaNames, access as GG | undefined); // Access not keyed by schemaName
@@ -239,7 +244,7 @@ export function parseFieldAccess<SN extends string>({
     if (typeof access === 'boolean' || typeof access === 'function') {
       return defaultObj(accessTypes, access);
     } else if (typeof access === 'object') {
-      const _access = access as Partial<FieldAccess>;
+      const _access = access as Partial<FieldAccess<Args>>;
       if (Object.keys(pick(_access, accessTypes)).length === 0) {
         // An object was supplied, but it has the wrong keys (it's probably a
         // declarative access control config being used as a shorthand, which
@@ -260,7 +265,7 @@ export function parseFieldAccess<SN extends string>({
   const fullParsedAccess = {
     ...schemaNames.reduce(
       (acc, schemaName) => ({ ...acc, [schemaName]: parseAndValidate(fullAccess[schemaName]) }),
-      {} as Record<SN, FieldAccess>
+      {} as Record<SN, FieldAccess<Args>>
     ),
     internal: defaultObj(accessTypes, true as const),
   };
@@ -290,7 +295,7 @@ export async function validateCustomAccessControl({
   access,
   authentication = {},
   gqlName,
-}: { access: CustomAccess } & CustomAccessArgs) {
+}: { access: CustomAccess<CustomAccessArgs> } & CustomAccessArgs) {
   // Either a boolean or an object describing a where clause
   let result: Static | Declarative = false;
   if (typeof access !== 'function') {
@@ -324,7 +329,7 @@ export async function validateListAccessControl({
   itemId,
   itemIds,
   context,
-}: { access: ListAccess } & ListAccessArgs) {
+}: { access: ListAccess<ListAccessArgs> } & ListAccessArgs) {
   // Either a boolean or an object describing a where clause
   let result: Static | Declarative = false;
   const acc = access[operation];
@@ -371,7 +376,7 @@ export async function validateFieldAccessControl({
   itemId,
   itemIds,
   context,
-}: { access: FieldAccess } & FieldAccessArgs) {
+}: { access: FieldAccess<FieldAccessArgs> } & FieldAccessArgs) {
   let result: boolean = false;
   const acc = access[operation];
   if (typeof acc !== 'function') {
@@ -406,7 +411,7 @@ export async function validateAuthAccessControl({
   authentication = {},
   gqlName,
   context,
-}: { access: AuthAccess } & Omit<AuthAccessArgs, 'operation'>) {
+}: { access: AuthAccess<AuthAccessArgs> } & Omit<AuthAccessArgs, 'operation'>) {
   const operation = 'auth';
   // Either a boolean or an object describing a where clause
   let result: Static | Declarative = false;

@@ -27,6 +27,7 @@ type StatelessSessionsOptions = {
   secret: string;
   /**
    * Iron seal options for customizing the key derivation algorithm used to generate encryption and integrity verification keys as well as the algorithms and salt sizes used.
+   * See {@link https://hapi.dev/module/iron/api/?v=6.0.0#options} for available options.
    *
    * @default Iron.defaults
    */
