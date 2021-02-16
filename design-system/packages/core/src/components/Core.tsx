@@ -55,11 +55,9 @@ const BaseCSS = ({ includeNormalize, optimizeLegibility }: BaseCSSProps) => {
 
             // optimize legibility
             ...(optimizeLegibility && {
-              fontFeatureSettings: '"liga" 1', // Enable OpenType ligatures in IE
               textRendering: 'optimizeLegibility',
               WebkitFontSmoothing: 'antialiased',
               MozOsxFontSmoothing: 'grayscale',
-              MozFontFeatureSettings: '"liga" on',
             }),
           },
 
