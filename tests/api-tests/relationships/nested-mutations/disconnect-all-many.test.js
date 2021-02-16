@@ -1,59 +1,57 @@
 const { gen, sampleOne } = require('testcheck');
-const { Text, Relationship } = require('@keystonejs/fields');
-const { setupServer, multiAdapterRunners } = require('@keystonejs/test-utils');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('Note', {
-        fields: {
-          content: { type: Text },
-        },
-      });
-
-      keystone.createList('User', {
-        fields: {
-          username: { type: Text },
-          notes: { type: Relationship, ref: 'Note', many: true },
-        },
-      });
-
-      keystone.createList('NoteNoRead', {
-        fields: {
-          content: { type: Text },
-        },
-        access: {
-          read: () => false,
-        },
-      });
-
-      keystone.createList('UserToNotesNoRead', {
-        fields: {
-          username: { type: Text },
-          notes: { type: Relationship, ref: 'NoteNoRead', many: true },
-        },
-      });
-
-      keystone.createList('NoteNoCreate', {
-        fields: {
-          content: { type: Text },
-        },
-        access: {
-          create: () => false,
-        },
-      });
-
-      keystone.createList('UserToNotesNoCreate', {
-        fields: {
-          username: { type: Text },
-          notes: { type: Relationship, ref: 'NoteNoCreate', many: true },
-        },
-      });
-    },
+    config: createSchema({
+      lists: {
+        Note: list({
+          fields: {
+            content: text(),
+          },
+        }),
+        User: list({
+          fields: {
+            username: text(),
+            notes: relationship({ ref: 'Note', many: true }),
+          },
+        }),
+        NoteNoRead: list({
+          fields: {
+            content: text(),
+          },
+          access: {
+            read: () => false,
+          },
+        }),
+        UserToNotesNoRead: list({
+          fields: {
+            username: text(),
+            notes: relationship({ ref: 'NoteNoRead', many: true }),
+          },
+        }),
+        NoteNoCreate: list({
+          fields: {
+            content: text(),
+          },
+          access: {
+            create: () => false,
+          },
+        }),
+        UserToNotesNoCreate: list({
+          fields: {
+            username: text(),
+            notes: relationship({ ref: 'NoteNoCreate', many: true }),
+          },
+        }),
+      },
+    }),
   });
 }
 
@@ -62,25 +60,25 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('no access control', () => {
       test(
         'removes all items from list',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const noteContent = `foo${sampleOne(alphanumGenerator)}`;
           const noteContent2 = `foo${sampleOne(alphanumGenerator)}`;
 
           // Create two items with content that can be matched
           const createNote = await createItem({
-            keystone,
+            context,
             listKey: 'Note',
             item: { content: noteContent },
           });
           const createNote2 = await createItem({
-            keystone,
+            context,
             listKey: 'Note',
             item: { content: noteContent2 },
           });
 
           // Create an item to update
           const createUser = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: {
               username: 'A thing',
@@ -89,7 +87,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Update the item and link the relationship field
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 updateUser(
@@ -115,9 +113,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'silently succeeds if used during create',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           // Create an item that does the linking
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 createUser(data: {
@@ -143,19 +141,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       describe('read: false on related list', () => {
         test(
           'has no effect when specifying disconnectAll',
-          runner(setupKeystone, async ({ keystone }) => {
+          runner(setupKeystone, async ({ context }) => {
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
             const createNote = await createItem({
-              keystone,
+              context,
               listKey: 'NoteNoRead',
               item: { content: noteContent },
             });
 
             // Create an item to update
             const createUser = await createItem({
-              keystone,
+              context,
               listKey: 'UserToNotesNoRead',
               item: {
                 username: 'A thing',
@@ -164,7 +162,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { errors } = await keystone.executeGraphQL({
+            const { errors } = await context.exitSudo().executeGraphQL({
               query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -181,7 +179,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             expect(errors).toBe(undefined);
 
-            const result = await keystone.executeGraphQL({
+            const result = await context.executeGraphQL({
               query: `
                 query getUserNodes($userId: ID!){
                   UserToNotesNoRead(where: { id: $userId }) {
@@ -190,7 +188,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }`,
               variables: { userId: createUser.id },
-              context: keystone.createContext().sudo(),
+              context,
             });
             expect(result.errors).toBe(undefined);
             expect(result.data.UserToNotesNoRead.notes).toHaveLength(0);

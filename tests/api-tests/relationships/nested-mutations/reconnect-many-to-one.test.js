@@ -1,25 +1,27 @@
-const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 const { createItems } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('Note', {
-        fields: {
-          title: { type: Text },
-          author: { type: Relationship, ref: 'User.notes' },
-        },
-      });
-
-      keystone.createList('User', {
-        fields: {
-          username: { type: Text },
-          notes: { type: Relationship, ref: 'Note.author', many: true },
-        },
-      });
-    },
+    config: createSchema({
+      lists: {
+        Note: list({
+          fields: {
+            title: text(),
+            author: relationship({ ref: 'User.notes' }),
+          },
+        }),
+        User: list({
+          fields: {
+            username: text(),
+            notes: relationship({ ref: 'Note.author', many: true }),
+          },
+        }),
+      },
+    }),
   });
 }
 
@@ -28,10 +30,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('Reconnect', () => {
       test(
         'Reconnect from the many side',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           // Create some notes
           const [noteA, noteB, noteC, noteD] = await createItems({
-            keystone,
+            context,
             listKey: 'Note',
             items: [
               { data: { title: 'A' } },
@@ -42,7 +44,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create some users that does the linking
-          const { data: alice, errors } = await keystone.executeGraphQL({
+          const { data: alice, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 createUser(data: {
@@ -55,7 +57,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }`,
           });
           expect(errors).toBe(undefined);
-          const { data: bob, errors: errors2 } = await keystone.executeGraphQL({
+          const { data: bob, errors: errors2 } = await context.executeGraphQL({
             query: `
               mutation {
                 createUser(data: {
@@ -76,7 +78,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // Set Bob as the author of note B
           await (async () => {
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
                 mutation {
                   updateUser(id: "${bob.createUser.id}" data: {
@@ -94,7 +96,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // B should see Bob as its author
           await (async () => {
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
                 query {
                   Note(where: { id: "${noteB.id}"}) {
@@ -112,7 +114,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // Alice should no longer see `B` in her notes
           await (async () => {
-            const { data, errors } = await keystone.executeGraphQL({
+            const { data, errors } = await context.executeGraphQL({
               query: `
                 query {
                   User(where: { id: "${alice.createUser.id}"}) {

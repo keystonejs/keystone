@@ -1,13 +1,16 @@
 const { createItem } = require('@keystonejs/server-side-graphql-client');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
-const { Text } = require('@keystonejs/fields');
+const { text } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 
 const setupList = (adapterName, fields) => () =>
-  setupServer({
+  setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('User', { fields });
-    },
+    config: createSchema({
+      lists: {
+        User: list({ fields }),
+      },
+    }),
   });
 
 describe('defaultValue field config', () => {
@@ -15,9 +18,9 @@ describe('defaultValue field config', () => {
     describe(`Adapter: ${adapterName}`, () => {
       test(
         'Has no default by default',
-        runner(setupList(adapterName, { name: { type: Text } }), async ({ keystone }) => {
+        runner(setupList(adapterName, { name: text() }), async ({ context }) => {
           const listKey = 'User';
-          const result = await createItem({ keystone, listKey, item: {}, returnFields: 'name' });
+          const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
           expect(result).toMatchObject({ name: null });
         })
       );
@@ -25,10 +28,10 @@ describe('defaultValue field config', () => {
       test(
         'Sets undefined as a default',
         runner(
-          setupList(adapterName, { name: { type: Text, defaultValue: undefined } }),
-          async ({ keystone }) => {
+          setupList(adapterName, { name: text({ defaultValue: undefined }) }),
+          async ({ context }) => {
             const listKey = 'User';
-            const result = await createItem({ keystone, listKey, item: {}, returnFields: 'name' });
+            const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
             expect(result).toMatchObject({ name: null });
           }
         )
@@ -37,10 +40,10 @@ describe('defaultValue field config', () => {
       test(
         'Sets null as a default',
         runner(
-          setupList(adapterName, { name: { type: Text, defaultValue: null } }),
-          async ({ keystone }) => {
+          setupList(adapterName, { name: text({ defaultValue: null }) }),
+          async ({ context }) => {
             const listKey = 'User';
-            const result = await createItem({ keystone, listKey, item: {}, returnFields: 'name' });
+            const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
             expect(result).toMatchObject({ name: null });
           }
         )
@@ -49,10 +52,10 @@ describe('defaultValue field config', () => {
       test(
         'Sets a scalar as a default',
         runner(
-          setupList(adapterName, { name: { type: Text, defaultValue: 'hello' } }),
-          async ({ keystone }) => {
+          setupList(adapterName, { name: text({ defaultValue: 'hello' }) }),
+          async ({ context }) => {
             const listKey = 'User';
-            const result = await createItem({ keystone, listKey, item: {}, returnFields: 'name' });
+            const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
             expect(result).toMatchObject({ name: 'hello' });
           }
         )
@@ -61,10 +64,10 @@ describe('defaultValue field config', () => {
       test(
         'executes a function to get default',
         runner(
-          setupList(adapterName, { name: { type: Text, defaultValue: () => 'foobar' } }),
-          async ({ keystone }) => {
+          setupList(adapterName, { name: text({ defaultValue: () => 'foobar' }) }),
+          async ({ context }) => {
             const listKey = 'User';
-            const result = await createItem({ keystone, listKey, item: {}, returnFields: 'name' });
+            const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
             expect(result).toMatchObject({ name: 'foobar' });
           }
         )
@@ -74,11 +77,11 @@ describe('defaultValue field config', () => {
         'handles promises returned from function',
         runner(
           setupList(adapterName, {
-            name: { type: Text, defaultValue: () => Promise.resolve('zippity') },
+            name: text({ defaultValue: () => Promise.resolve('zippity') }),
           }),
-          async ({ keystone }) => {
+          async ({ context }) => {
             const listKey = 'User';
-            const result = await createItem({ keystone, listKey, item: {}, returnFields: 'name' });
+            const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
             expect(result).toMatchObject({ name: 'zippity' });
           }
         )
@@ -87,9 +90,9 @@ describe('defaultValue field config', () => {
       test('executes the function with the correct parameters', () => {
         const defaultValue = jest.fn();
         return runner(
-          setupList(adapterName, { name: { type: Text, defaultValue } }),
-          async ({ keystone }) => {
-            await createItem({ keystone, listKey: 'User', item: {} });
+          setupList(adapterName, { name: text({ defaultValue }) }),
+          async ({ context }) => {
+            await createItem({ context, listKey: 'User', item: {} });
             expect(defaultValue).toHaveBeenCalledTimes(1);
             expect(defaultValue).toHaveBeenCalledWith(
               expect.objectContaining({
@@ -105,13 +108,13 @@ describe('defaultValue field config', () => {
         const defaultValue = jest.fn(({ originalInput }) => `${originalInput.salutation} X`);
         return runner(
           setupList(adapterName, {
-            name: { type: Text, defaultValue },
-            salutation: { type: Text },
+            name: text({ defaultValue }),
+            salutation: text(),
           }),
-          async ({ keystone }) => {
+          async ({ context }) => {
             const item = { salutation: 'Doctor' };
             const listKey = 'User';
-            const result = await createItem({ keystone, listKey, item, returnFields: 'name' });
+            const result = await createItem({ context, listKey, item, returnFields: 'name' });
             expect(defaultValue).toHaveBeenCalledTimes(1);
             expect(defaultValue).toHaveBeenCalledWith(
               expect.objectContaining({
