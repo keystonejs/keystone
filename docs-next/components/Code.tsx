@@ -1,22 +1,23 @@
 import React from 'react';
-import Highlight, { defaultProps, Language } from 'prism-react-renderer';
+import Highlight, { Language, Prism } from 'prism-react-renderer';
+import theme from '../lib/prism-theme';
 
 export const Code = ({ children, className }: { children: string; className: any }) => {
   const language: Language = className ? className.replace(/language-/, '') : 'typescript';
   return (
-    <Highlight {...defaultProps} code={children} language={language}>
-      {({ className, style, tokens, getLineProps, getTokenProps }) => {
+    <Highlight Prism={Prism} code={children} language={language} theme={theme}>
+      {({ className, style, tokens: tokens, getLineProps, getTokenProps }) => {
         return (
-          <pre
+          <div
             className={className}
             style={{
               ...style,
-              backgroundColor: 'transparent',
-              padding: '20px',
-              margin: '0',
+              backgroundColor: 'transparent !important',
             }}
           >
             {tokens.map((line, i) => {
+              // Suppress a trailing empty line in the code block
+              if (i === tokens.length - 1 && line.length === 1 && !line[0].content) return;
               return (
                 <div key={i} {...getLineProps({ line, key: i })}>
                   {line.map((token, key) => (
@@ -25,7 +26,7 @@ export const Code = ({ children, className }: { children: string; className: any
                 </div>
               );
             })}
-          </pre>
+          </div>
         );
       }}
     </Highlight>
