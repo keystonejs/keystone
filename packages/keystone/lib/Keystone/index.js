@@ -106,7 +106,7 @@ module.exports = class Keystone {
           context,
           info,
           access: access[schemaName],
-          authentication,
+          authentication: authentication && authentication.item ? authentication : {},
           gqlName,
         });
       },
@@ -125,7 +125,7 @@ module.exports = class Keystone {
           access: access[schemaName],
           originalInput,
           operation,
-          authentication,
+          authentication: authentication && authentication.item ? authentication : {},
           listKey,
           gqlName,
           itemId,
@@ -151,7 +151,7 @@ module.exports = class Keystone {
           originalInput,
           existingItem,
           operation,
-          authentication,
+          authentication: authentication && authentication.item ? authentication : {},
           fieldKey,
           listKey,
           gqlName,
@@ -167,7 +167,7 @@ module.exports = class Keystone {
       async (access, listKey, { gqlName, context } = {}) => {
         return validateAuthAccessControl({
           access: access[schemaName],
-          authentication,
+          authentication: authentication && authentication.item ? authentication : {},
           listKey,
           gqlName,
           context,
