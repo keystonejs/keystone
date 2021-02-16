@@ -1,7 +1,11 @@
 const withPreconstruct = require('@preconstruct/next');
 const withPlugins = require('next-compose-plugins');
+const mdxHints = require('./remark-plugins/hints');
 const withMDX = require('@next/mdx')({
   extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [mdxHints],
+  },
 });
 
 module.exports = withPlugins([

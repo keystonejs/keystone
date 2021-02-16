@@ -27,9 +27,9 @@ export type SessionStore = {
   connect?: () => Promise<void>;
   disconnect?: () => Promise<void>;
   get(key: string): undefined | JSONValue | Promise<JSONValue | undefined>;
-  // � using any here rather than void to be compatible with Map. note that `| Promise<void>` doesn't actually do anything type wise because it just turns into any, it's just to show intent here
+  // 😞 using any here rather than void to be compatible with Map. note that `| Promise<void>` doesn't actually do anything type wise because it just turns into any, it's just to show intent here
   set(key: string, value: JSONValue): any | Promise<void>;
-  // � | boolean is for compatibility with Map
+  // 😞 | boolean is for compatibility with Map
   delete(key: string): void | boolean | Promise<void>;
 };
 

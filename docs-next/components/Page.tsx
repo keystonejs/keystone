@@ -20,7 +20,7 @@ export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boo
               className="w-8 h-8 mr-2"
             />
             <Link href="/" passHref>
-              <a className="bg-clip-text text-transparent bg-gradient-to-r from-lightblue-500 to-indigo-600 text-xl font-semibold">
+              <a className="bg-clip-text text-transparent hover:text-transparent bg-gradient-to-r from-lightblue-500 to-indigo-600 hover:from-lightblue-400 hover:to-indigo-700 text-xl font-semibold">
                 Keystone Next
               </a>
             </Link>
