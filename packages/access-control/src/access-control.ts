@@ -293,7 +293,7 @@ export async function validateCustomAccessControl({
   context,
   info,
   access,
-  authentication = {},
+  authentication,
   gqlName,
 }: { access: CustomAccess<CustomAccessArgs> } & CustomAccessArgs) {
   // Either a boolean or an object describing a where clause
@@ -301,14 +301,7 @@ export async function validateCustomAccessControl({
   if (typeof access !== 'function') {
     result = access;
   } else {
-    result = await access({
-      item,
-      args,
-      context,
-      info,
-      authentication: authentication.item ? authentication : {},
-      gqlName,
-    });
+    result = await access({ item, args, context, info, authentication, gqlName });
   }
 
   if (!['object', 'boolean'].includes(typeof result)) {
@@ -323,7 +316,7 @@ export async function validateListAccessControl({
   access,
   listKey,
   operation,
-  authentication = {},
+  authentication,
   originalInput,
   gqlName,
   itemId,
@@ -337,7 +330,7 @@ export async function validateListAccessControl({
     result = acc;
   } else {
     result = await acc({
-      authentication: authentication.item ? authentication : {},
+      authentication,
       listKey,
       operation,
       originalInput,
@@ -371,7 +364,7 @@ export async function validateFieldAccessControl({
   originalInput,
   existingItem,
   operation,
-  authentication = {},
+  authentication,
   gqlName,
   itemId,
   itemIds,
@@ -383,7 +376,7 @@ export async function validateFieldAccessControl({
     result = acc;
   } else {
     result = await acc({
-      authentication: authentication.item ? authentication : {},
+      authentication,
       listKey,
       fieldKey,
       originalInput,
@@ -408,7 +401,7 @@ export async function validateFieldAccessControl({
 export async function validateAuthAccessControl({
   access,
   listKey,
-  authentication = {},
+  authentication,
   gqlName,
   context,
 }: { access: AuthAccess<AuthAccessArgs> } & Omit<AuthAccessArgs, 'operation'>) {
@@ -419,13 +412,7 @@ export async function validateAuthAccessControl({
   if (typeof acc !== 'function') {
     result = acc;
   } else {
-    result = await acc({
-      authentication: authentication.item ? authentication : {},
-      listKey,
-      operation,
-      gqlName,
-      context,
-    });
+    result = await acc({ authentication, listKey, operation, gqlName, context });
   }
 
   if (!['object', 'boolean'].includes(typeof result)) {
