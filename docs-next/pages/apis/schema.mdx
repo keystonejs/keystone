@@ -1,4 +1,5 @@
 import { Markdown } from '../../components/Page';
+export const meta = {};
 
 # Schema API
 
@@ -69,7 +70,9 @@ import { autoincrement, mongoId } from '@keystone-next/fields';
 export default config({
   lists: createSchema({
     ListName: list({
-      fields: { /* ... */ },
+      fields: {
+        /* ... */
+      },
       // prisma_postgresql and knex adapters
       idField: autoincrement({
         ui: {
@@ -244,4 +247,4 @@ export default config({
 The `description` option defines a string which will be used as a description in the Admin UI and GraphQL API docs.
 This option can be individually overriden by the `graphql.description` or `ui.description` options.
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown meta={meta}>{children}</Markdown>;

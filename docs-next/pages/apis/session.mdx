@@ -1,4 +1,5 @@
 import { Markdown } from '../../components/Page';
+export const meta = {};
 
 # Session API
 
@@ -14,7 +15,9 @@ export default config({
   session: withItemData(
     statelessSessions({
       secret: 'ABCDEFGH1234567887654321HGFEDCBA',
-      ironOptions: { /* ... */ },
+      ironOptions: {
+        /* ... */
+      },
       maxAge: 60 * 60 * 24,
       secure: true,
       path: '/',
@@ -146,11 +149,13 @@ import { statelessSessions, withItemData } from '@keystone-next/keystone/session
 
 export default config({
   session: withItemData(
-    statelessSessions({ /* ... */ }),
+    statelessSessions({
+      /* ... */
+    }),
     { User: 'name isAdmin' }
   ),
   /* ... */
 });
 ```
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown meta={meta}>{children}</Markdown>;

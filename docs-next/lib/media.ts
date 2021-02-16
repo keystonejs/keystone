@@ -1,5 +1,6 @@
 import facepaint from 'facepaint';
 
+<<<<<<< HEAD
 type BREAKPOINTSTYPE = {
   xs: number;
   sm: number;
@@ -22,6 +23,17 @@ type MediaType = {
 export const media: MediaType = bpEntries.reduce(
   (obj, [key, value]) => ({ ...obj, [key]: minWidth(value) }),
   {} as Record<keyof MediaType, string>
+=======
+export const BREAK_POINTS = { xs: 576, sm: 768, md: 992, lg: 1200 };
+const bpEntries = Object.entries(BREAK_POINTS);
+const maxWidth = (width, m = true) => `${m ? '@media ' : ''}(max-width: ${width}px)`;
+const minWidth = (width, m = true) => `${m ? '@media ' : ''}(min-width: ${width}px)`;
+
+// MIN-width queries (default)
+export const media = bpEntries.reduce(
+  (obj, [key, value]) => ({ ...obj, [key]: minWidth(value) }),
+  {}
+>>>>>>> 7237d988a... local nav and heading collection init
 );
 
 // MAX-width queries

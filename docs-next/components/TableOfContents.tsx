@@ -5,9 +5,14 @@ import { media } from '../lib/media';
 
 // it's important that IDs are sorted by the order they appear in the document
 // so we can pluck active from the beginning
+<<<<<<< HEAD
 function sortVisible(allIds: (string | null)[], targetId: string | null) {
   return (ids: (string | null)[] | never[]): (string | null)[] | never[] =>
     [...ids, targetId].sort((a, b) => (allIds.indexOf(a) > allIds.indexOf(b) ? 1 : -1));
+=======
+function sortVisible(allIds, targetId) {
+  return ids => [...ids, targetId].sort((a, b) => (allIds.indexOf(a) > allIds.indexOf(b) ? 1 : -1));
+>>>>>>> 7237d988a... local nav and heading collection init
 }
 
 const observerOptions = {
@@ -16,6 +21,7 @@ const observerOptions = {
 };
 
 const gridSize = 8;
+<<<<<<< HEAD
 
 interface Heading {
   id: string;
@@ -41,6 +47,21 @@ export const TableOfContents = ({
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           const targetId: string | null = entry.target.getAttribute('id');
+=======
+const borderRadius = 4;
+
+export const TableOfContents = ({ container, headings, editUrl }) => {
+  let allIds = headings.map(h => h.id);
+  let [visibleIds, setVisibleIds] = useState([]);
+  let [lastVisibleId, setLastVisbleId] = useState('');
+
+  // observe relevant headings
+  useEffect(() => {
+    if (container) {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          const targetId = entry.target.getAttribute('id');
+>>>>>>> 7237d988a... local nav and heading collection init
           if (entry.isIntersecting && entry.intersectionRatio === 1) {
             setVisibleIds(sortVisible(allIds, targetId));
             setLastVisbleId(targetId);
@@ -50,10 +71,16 @@ export const TableOfContents = ({
         });
       }, observerOptions);
 
+<<<<<<< HEAD
       container.current.querySelectorAll('h2, h3').forEach((node: Element) => {
         observer.observe(node);
       });
       return () => observer.disconnect();
+=======
+      container.querySelectorAll('h2, h3').forEach(node => {
+        observer.observe(node);
+      });
+>>>>>>> 7237d988a... local nav and heading collection init
     }
   }, [container]);
 
@@ -91,12 +118,20 @@ export const TableOfContents = ({
         On this page
       </h4>
       <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
+<<<<<<< HEAD
         {headings.map((h: Heading, i: number) => {
           let isActive = activeId === h.id;
           const slug = `#${h.id}`;
           return (
             <li
               key={h.label + i}
+=======
+        {headings.map((h, i) => {
+          let isActive = activeId === h.id;
+          return (
+            <li
+              key={h.value + i}
+>>>>>>> 7237d988a... local nav and heading collection init
               css={{
                 // increase specificity to element - avoid `!important` declaration
                 // override CSS targeting LI elements from `<Content/>`
@@ -104,12 +139,22 @@ export const TableOfContents = ({
               }}
             >
               <a
+<<<<<<< HEAD
                 css={{
                   color: isActive ? '#2684FF' : h.depth === 2 ? '#253858' : '#6C798F',
                   display: 'block',
                   fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
                   fontWeight: isActive ? 500 : 'normal',
                   paddingLeft: h.depth === 3 ? '0.5rem' : undefined,
+=======
+                className="text-gray-500"
+                css={{
+                  // color: isActive ? '#2684FF' : h.depth === 2 ? '#253858' : '#6C798F',
+                  display: 'block',
+                  fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
+                  fontWeight: isActive ? '500' : 'normal',
+                  paddingLeft: h.depth === 3 ? '0.5rem' : null,
+>>>>>>> 7237d988a... local nav and heading collection init
 
                   // prefer padding an anchor, rather than margin on list-item, to increase hit area
                   paddingBottom: '0.4em',
@@ -119,7 +164,11 @@ export const TableOfContents = ({
                     color: '#2684FF',
                   },
                 }}
+<<<<<<< HEAD
                 href={slug}
+=======
+                href={`#${h.id}`}
+>>>>>>> 7237d988a... local nav and heading collection init
               >
                 {h.label}
               </a>
@@ -127,6 +176,84 @@ export const TableOfContents = ({
           );
         })}
       </ul>
+<<<<<<< HEAD
     </div>
   );
 };
+=======
+      <EditSection>
+        {/* <p>
+          Have you found a mistake, something that is missing, or could be improved on
+          this page? Please edit the Markdown file on GitHub and submit a PR with your
+          changes.
+        </p> */}
+        <EditButton href={editUrl} target="_blank">
+          <svg
+            fill="currentColor"
+            height="1.25em"
+            width="1.25em"
+            viewBox="0 0 40 40"
+            css={{ marginLeft: -(gridSize / 2), marginRight: '0.5em' }}
+          >
+            <path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z" />
+          </svg>
+          Edit on GitHub
+        </EditButton>
+      </EditSection>
+    </div>
+  );
+};
+
+const Button = ({ as: Tag, ...props }) => (
+  <Tag
+    css={{
+      border: `1px solid rgba(0, 0, 0, 0.1)`,
+      borderBottomColor: `rgba(0, 0, 0, 0.2) !important`,
+      borderRadius: borderRadius,
+      color: '#172B4D',
+      display: 'inline-block',
+      fontWeight: 500,
+      padding: `${gridSize * 0.75}px ${gridSize * 2}px`,
+      outline: 'none',
+
+      ':hover, :focus': {
+        backgroundColor: 'white !important',
+        borderColor: `rgba(0, 0, 0, 0.15)`,
+        boxShadow: '0 2px 1px rgba(0,0,0,0.05)',
+        textDecoration: 'none',
+      },
+      ':active': {
+        backgroundColor: `${'#F4F5F7'} !important`,
+        boxShadow: 'none',
+      },
+    }}
+    {...props}
+  />
+);
+
+// Edit
+// ------------------------------
+
+const EditSection = props => (
+  <section
+    css={{
+      borderTop: `1px solid #EBECF0`,
+      marginTop: gridSize * 4,
+      paddingBottom: gridSize * 4,
+      paddingTop: gridSize * 4,
+    }}
+    {...props}
+  />
+);
+const EditButton = props => (
+  <Button
+    as="a"
+    css={{
+      alignItems: 'center',
+      display: 'inline-flex',
+      fontSize: '0.85rem',
+    }}
+    {...props}
+  />
+);
+>>>>>>> 7237d988a... local nav and heading collection init

@@ -1,4 +1,5 @@
 import { Markdown } from '../../components/Page';
+export const meta = {};
 
 # Fields API
 
@@ -568,4 +569,4 @@ export default config({
 });
 ```
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => <Markdown meta={meta}>{children}</Markdown>;
