@@ -2,4 +2,4 @@
 '@keystone-ui/core': patch
 ---
 
-Stopped enabing lignatures with the `optimizeLegibility` prop in `Core`
+Stopped enabling lignatures with the `optimizeLegibility` prop in `Core`
