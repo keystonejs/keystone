@@ -1,10 +1,5 @@
 export const itemTemplate = (listKey: string) =>
-  `
-import React from 'react';
+  `import { getItemPage } from '@keystone-next/admin-ui/pages/ItemPage';
 
-import { ItemPage } from '@keystone-next/admin-ui/pages/ItemPage';
-
-export default function Item() {
-  return <ItemPage listKey="${listKey}" />;
-}
-  `;
+export default getItemPage(${JSON.stringify({ listKey })})
+`;

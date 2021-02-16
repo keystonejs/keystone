@@ -1,10 +1,5 @@
 export const listTemplate = (listKey: string) =>
-  `
-import React from 'react';
+  `import { getListPage } from '@keystone-next/admin-ui/pages/ListPage';
 
-import { ListPage } from '@keystone-next/admin-ui/pages/ListPage';
-
-export default function List() {
-  return <ListPage listKey="${listKey}" />;
-}
-  `;
+export default getListPage(${JSON.stringify({ listKey })});
+`;
