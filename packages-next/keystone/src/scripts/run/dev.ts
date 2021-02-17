@@ -37,8 +37,12 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths, sc
     console.log('✨ Connecting to the database');
     await keystone.connect({ context: createContext().sudo() });
 
-    console.log('✨ Generating Admin UI code');
-    await generateAdminUI(config, graphQLSchema, keystone, projectAdminPath);
+    if (config.ui?.isDisabled) {
+      console.log('✨ Skipping Admin UI code generation');
+    } else {
+      console.log('✨ Generating Admin UI code');
+      await generateAdminUI(config, graphQLSchema, keystone, projectAdminPath);
+    }
 
     console.log('✨ Creating server');
     expressServer = await createExpressServer(

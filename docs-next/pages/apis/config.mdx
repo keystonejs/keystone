@@ -144,6 +144,7 @@ Fine grained configuration of how lists and fields behave in the Admin UI is han
 
 Options:
 
+- `isDisabled` (default: `false`): If `isDisabled` is set to `true` then the Admin UI will be completely disabled.
 - `isAccessAllowed` (default: `(context) => !!context.session`): This function controls whether a user is able to access the Admin UI.
   It takes a [`KeystoneContext`](./context) object as an argument.
 
@@ -154,6 +155,7 @@ Advanced configuration:
 ```typescript
 export default config({
   ui: {
+    isDisabled: false,
     isAccessAllowed: async context => true,
     // Optional advanced configuration
     enableSessionItem: true,
