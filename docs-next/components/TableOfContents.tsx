@@ -81,7 +81,7 @@ export const TableOfContents = ({ container, headings, editUrl }) => {
           let isActive = activeId === h.id;
           return (
             <li
-              key={h.value + i}
+              key={h.label + i}
               css={{
                 // increase specificity to element - avoid `!important` declaration
                 // override CSS targeting LI elements from `<Content/>`
@@ -106,7 +106,7 @@ export const TableOfContents = ({ container, headings, editUrl }) => {
                 }}
                 href={`#${h.id}`}
               >
-                {h.value}
+                {h.label}
               </a>
             </li>
           );
