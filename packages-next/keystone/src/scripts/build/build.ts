@@ -77,11 +77,6 @@ const reexportKeystoneConfig = async (projectAdminPath: string, isDisabled?: boo
         mode: 'copy' as const,
         inputPath: Path.join(pkgDir, 'static', 'tsconfig.json'),
         outputPath: 'tsconfig.json',
-      },
-      {
-        mode: 'write' as const,
-        src: `import React from 'react'; export default () => <></>`,
-        outputPath: Path.join('pages', 'index.js'),
       }
     );
   }
