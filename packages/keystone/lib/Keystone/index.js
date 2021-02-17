@@ -171,6 +171,7 @@ module.exports = class Keystone {
           listKey,
           gqlName,
           context,
+          operation: 'auth',
         });
       },
       { isPromise: true }
