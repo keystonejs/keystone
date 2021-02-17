@@ -31,7 +31,7 @@ export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) 
   if (config.ui?.isDisabled) {
     console.log(`👋 GraphQL API ready`);
   } else {
-    console.log(`👋 Admin UI and graphQL API ready`);
+    console.log(`👋 Admin UI and GraphQL API ready`);
   }
 
   const port = config.server?.port || process.env.PORT || 3000;

@@ -68,23 +68,21 @@ const reexportKeystoneConfig = async (projectAdminPath: string, isDisabled?: boo
     // These are the basic files required to have a valid Next.js project. If the
     // Admin UI is disabled then we need to do this ourselves here.
     files.push(
-      ...[
-        {
-          mode: 'copy' as const,
-          inputPath: Path.join(pkgDir, 'static', 'next.config.js'),
-          outputPath: 'next.config.js',
-        },
-        {
-          mode: 'copy' as const,
-          inputPath: Path.join(pkgDir, 'static', 'tsconfig.json'),
-          outputPath: 'tsconfig.json',
-        },
-        {
-          mode: 'write' as const,
-          src: `import React from 'react'; export default () => <></>`,
-          outputPath: Path.join('pages', 'index.js'),
-        },
-      ]
+      {
+        mode: 'copy' as const,
+        inputPath: Path.join(pkgDir, 'static', 'next.config.js'),
+        outputPath: 'next.config.js',
+      },
+      {
+        mode: 'copy' as const,
+        inputPath: Path.join(pkgDir, 'static', 'tsconfig.json'),
+        outputPath: 'tsconfig.json',
+      },
+      {
+        mode: 'write' as const,
+        src: `import React from 'react'; export default () => <></>`,
+        outputPath: Path.join('pages', 'index.js'),
+      }
     );
   }
   await Promise.all(files.map(file => writeAdminFile(file, projectAdminPath)));
