@@ -9,7 +9,7 @@ export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) 
   console.log('🤞 Starting Keystone');
 
   // This is the compiled version of the configuration which was generated during the build step.
-  // See generateKeystoneConfig().
+  // See reexportKeystoneConfig().
   const apiFile = path.join(projectAdminPath, '.next/server/pages/api/__keystone_api_build.js');
   if (!fs.existsSync(apiFile)) {
     throw new Error('keystone-next build must be run before running keystone-next start');
