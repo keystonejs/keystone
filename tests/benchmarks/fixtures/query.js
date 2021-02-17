@@ -1,50 +1,55 @@
-const { Text, Relationship } = require('@keystonejs/fields');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { setupFromConfig } = require('@keystonejs/test-utils');
 const { createItem, createItems } = require('@keystonejs/server-side-graphql-client');
-const { setupServer } = require('@keystonejs/test-utils');
 const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('User', {
-        fields: {
-          name: { type: Text },
-          posts: { type: Relationship, ref: 'Post', many: true },
-        },
-      });
-      keystone.createList('Post', {
-        fields: {
-          title: { type: Text },
-        },
-      });
-    },
+    config: createSchema({
+      lists: {
+        User: list({
+          fields: {
+            name: text(),
+            posts: relationship({ ref: 'Post', many: true }),
+          },
+        }),
+        Post: list({
+          fields: {
+            title: text(),
+          },
+        }),
+      },
+    }),
   });
 }
 
 const group = new FixtureGroup(setupKeystone);
 
 group.add({
-  fn: async ({ keystone, adapterName }) => {
+  fn: async ({ context, adapterName }) => {
     const { id: userId } = await createItem({
-      keystone,
+      context,
+      listKey: 'User',
       item: { name: 'test', posts: { create: [] } },
     });
     const query = `query getPost($userId: ID!) { User(where: { id: $userId }) { id } }`;
-    const { time, success } = await timeQuery({ keystone, query, variables: { userId } });
+    const { time, success } = await timeQuery({ context, query, variables: { userId } });
     console.log({ adapterName, time, success, name: 'Cold read with relationship, N=1' });
   },
 });
 
 group.add({
-  fn: async ({ keystone, adapterName }) => {
+  fn: async ({ context, adapterName }) => {
     const { id: userId } = await createItem({
-      keystone,
+      context,
+      listKey: 'User',
       item: { name: 'test', posts: { create: [] } },
     });
     const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
     const { time, success } = await timeQuery({
-      keystone,
+      context,
       query,
       variables: { userId },
       repeat: 1000,
@@ -57,16 +62,17 @@ range(14).forEach(i => {
   const N = 1;
   const M = 2 ** i;
   group.add({
-    fn: async ({ keystone, adapterName }) => {
+    fn: async ({ context, adapterName }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
       const users = await createItems({
-        keystone,
-        item: populate(N, i => ({ data: { name: `test${i}`, posts } })),
+        context,
+        listKey: 'User',
+        items: populate(N, i => ({ data: { name: `test${i}`, posts } })),
       });
       const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
       const { time, success } = await timeQuery({
-        keystone,
+        context,
         query,
         variables: { userId },
         repeat: 1000,
@@ -86,16 +92,17 @@ range(k).forEach(i => {
   const N = 2 ** i;
   const M = 2 ** (k - 1 - i);
   group.add({
-    fn: async ({ keystone, adapterName }) => {
+    fn: async ({ context, adapterName }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
       const users = await createItems({
-        keystone,
-        item: populate(N, i => ({ data: { name: `test${i}`, posts } })),
+        context,
+        listKey: 'User',
+        items: populate(N, i => ({ data: { name: `test${i}`, posts } })),
       });
       const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
       const { time, success } = await timeQuery({
-        keystone,
+        context,
         query,
         variables: { userId },
         repeat: 1000,
@@ -114,16 +121,17 @@ range(14).forEach(i => {
   const N = 1;
   const M = 2 ** i;
   group.add({
-    fn: async ({ keystone, adapterName }) => {
+    fn: async ({ context, adapterName }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
       const users = await createItems({
-        keystone,
-        item: populate(N, i => ({ data: { name: `test${i}`, posts } })),
+        context,
+        listKey: 'User',
+        items: populate(N, i => ({ data: { name: `test${i}`, posts } })),
       });
       const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id posts { id } } }`;
       const { time, success } = await timeQuery({
-        keystone,
+        context,
         query,
         variables: { userId },
         repeat: 100,
@@ -142,16 +150,17 @@ range(k).forEach(i => {
   const N = 2 ** i;
   const M = 2 ** (k - 1 - i);
   group.add({
-    fn: async ({ keystone, adapterName }) => {
+    fn: async ({ context, adapterName }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
       const users = await createItems({
-        keystone,
-        item: populate(N, i => ({ data: { name: `test${i}`, posts } })),
+        context,
+        listKey: 'User',
+        items: populate(N, i => ({ data: { name: `test${i}`, posts } })),
       });
       const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id posts { id } } }`;
       const { time, success } = await timeQuery({
-        keystone,
+        context,
         query,
         variables: { userId },
         repeat: 100,

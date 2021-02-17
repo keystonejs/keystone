@@ -14,6 +14,8 @@
   "repository": "https://github.com/keystonejs/keystone/tree/master/tests/benchmarks",
   "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
+    "@keystone-next/fields": "^5.0.0",
+    "@keystone-next/keystone": "^10.0.0",
     "@keystonejs/adapter-knex": "^13.0.1",
     "@keystonejs/adapter-mongoose": "^11.0.1",
     "@keystonejs/app-graphql": "^6.2.1",
