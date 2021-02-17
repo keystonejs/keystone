@@ -23,7 +23,7 @@ export function serializePathForImport(path: string) {
 export const formatSource = (src: string, parser: 'babel' | 'babel-ts' = 'babel') =>
   prettier.format(src, { parser, trailingComma: 'es5', singleQuote: true });
 
-const generateKeystoneConfig = async (projectAdminPath: string) => {
+const reexportKeystoneConfig = async (projectAdminPath: string) => {
   // We re-export the Keystone config file into the Admin UI project folder
   // so that when we run the build step, we will end up with a compiled version
   // of the configuration file in the .next/ directory. Even if we're not building
@@ -54,7 +54,7 @@ export async function build({ dotKeystonePath, projectAdminPath }: StaticPaths) 
   await generateAdminUI(config, graphQLSchema, keystone, projectAdminPath);
 
   console.log('✨ Generating Keystone config code');
-  await generateKeystoneConfig(projectAdminPath);
+  await reexportKeystoneConfig(projectAdminPath);
 
   console.log('✨ Building Admin UI');
   await buildAdminUI(projectAdminPath);
