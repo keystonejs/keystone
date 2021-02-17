@@ -9,7 +9,24 @@ import Link from 'next/link';
 import { Navigation } from './Navigation';
 import { TableOfContents } from './TableOfContents';
 
-export const Page = ({ children, meta, isProse }: { children: ReactNode; isProse?: boolean }) => {
+interface Meta {
+  headings: Array<{
+    type: string;
+    label: string;
+    id: string;
+    position: Record<string, any>;
+  }>;
+}
+
+export const Page = ({
+  children,
+  meta,
+  isProse,
+}: {
+  children: ReactNode;
+  isProse?: boolean;
+  meta: Meta;
+}) => {
   const [mobileNavCollapsed, setMobileNavCollapsed] = useState(true);
   const [contentRef, setContentRef] = useState(null);
   return (
@@ -106,9 +123,8 @@ export const components = {
   h6: H6,
 };
 
-export const Markdown = ({ children, meta }: { children: ReactNode }) =>
-  console.log(meta) || (
-    <Page meta={meta} isProse>
-      <MDXProvider components={components}>{children}</MDXProvider>
-    </Page>
-  );
+export const Markdown = ({ children, meta }: { children: ReactNode; meta: Meta }) => (
+  <Page meta={meta} isProse>
+    <MDXProvider components={components}>{children}</MDXProvider>
+  </Page>
+);
