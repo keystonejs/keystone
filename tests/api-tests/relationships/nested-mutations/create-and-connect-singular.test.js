@@ -1,33 +1,36 @@
-const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('Group', {
-        fields: {
-          name: { type: Text },
-        },
-      });
-
-      keystone.createList('Event', {
-        fields: {
-          title: { type: Text },
-          group: { type: Relationship, ref: 'Group' },
-        },
-      });
-    },
+    config: createSchema({
+      lists: {
+        Group: list({
+          fields: {
+            name: text(),
+          },
+        }),
+        Event: list({
+          fields: {
+            title: text(),
+            group: relationship({ ref: 'Group' }),
+          },
+        }),
+      },
+    }),
   });
 }
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('errors on incomplete data', () => {
       test(
         'when neither id or create data passed',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           // Create an item that does the linking
-          const { errors } = await keystone.executeGraphQL({
+          const { errors } = await context.executeGraphQL({
             query: `
               mutation {
                 createEvent(data: { group: {} }) {
@@ -44,9 +47,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'when both id and create data passed',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           // Create an item that does the linking
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 createEvent(data: { group: {

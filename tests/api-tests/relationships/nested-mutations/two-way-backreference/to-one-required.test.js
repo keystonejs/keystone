@@ -1,38 +1,41 @@
 const { gen, sampleOne } = require('testcheck');
-const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 const { getItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('Company', {
-        fields: {
-          name: { type: Text },
-          location: { type: Relationship, ref: 'Location.company' },
-        },
-      });
-
-      keystone.createList('Location', {
-        fields: {
-          name: { type: Text },
-          company: { type: Relationship, ref: 'Company.location', isRequired: true },
-        },
-      });
-    },
+    config: createSchema({
+      lists: {
+        Company: list({
+          fields: {
+            name: text(),
+            location: relationship({ ref: 'Location.company' }),
+          },
+        }),
+        Location: list({
+          fields: {
+            name: text(),
+            company: relationship({ ref: 'Company.location', isRequired: true }),
+          },
+        }),
+      },
+    }),
   });
 }
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('update one to one relationship back reference', () => {
       test(
         'nested create',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const locationName = sampleOne(alphanumGenerator);
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 createCompany(data: {
@@ -52,7 +55,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const locationId = data.createCompany.location.id;
 
           const company = await getItem({
-            keystone,
+            context,
             listKey: 'Company',
             itemId: companyId,
             returnFields: 'id location { id }',

@@ -1,40 +1,42 @@
-const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('User', {
-        fields: {
-          company: { type: Relationship, ref: 'Company' },
-          workHistory: { type: Relationship, ref: 'Company', many: true },
-        },
-      });
-
-      keystone.createList('Company', {
-        fields: {
-          name: { type: Text },
-          employees: { type: Relationship, ref: 'User', many: true },
-        },
-      });
-
-      keystone.createList('Post', {
-        fields: {
-          content: { type: Text },
-          author: { type: Relationship, ref: 'User' },
-        },
-      });
-    },
+    config: createSchema({
+      lists: {
+        User: list({
+          fields: {
+            company: relationship({ ref: 'Company' }),
+            workHistory: relationship({ ref: 'Company', many: true }),
+          },
+        }),
+        Company: list({
+          fields: {
+            name: text(),
+            employees: relationship({ ref: 'User', many: true }),
+          },
+        }),
+        Post: list({
+          fields: {
+            content: text(),
+            author: relationship({ ref: 'User' }),
+          },
+        }),
+      },
+    }),
   });
 }
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('_FooMeta query for individual list meta data', () => {
       test(
         `'schema' field returns results`,
-        runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await keystone.executeGraphQL({
+        runner(setupKeystone, async ({ context }) => {
+          const { data, errors } = await context.executeGraphQL({
             query: `
           query {
             _CompaniesMeta {
@@ -76,8 +78,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         `'schema.relatedFields' returns empty array when none exist`,
-        runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await keystone.executeGraphQL({
+        runner(setupKeystone, async ({ context }) => {
+          const { data, errors } = await context.executeGraphQL({
             query: `
           query {
             _PostsMeta {
@@ -116,8 +118,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('_ksListsMeta query for all lists meta data', () => {
       test(
         'returns results for all lists',
-        runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await keystone.executeGraphQL({
+        runner(setupKeystone, async ({ context }) => {
+          const { data, errors } = await context.executeGraphQL({
             query: `
           query {
             _ksListsMeta {
@@ -250,8 +252,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'returns results for one list',
-        runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await keystone.executeGraphQL({
+        runner(setupKeystone, async ({ context }) => {
+          const { data, errors } = await context.executeGraphQL({
             query: `
           query {
             _ksListsMeta(where: { key: "User" }) {
@@ -323,8 +325,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'returns results for one list and one type of field',
-        runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await keystone.executeGraphQL({
+        runner(setupKeystone, async ({ context }) => {
+          const { data, errors } = await context.executeGraphQL({
             query: `
           query {
             _ksListsMeta(where: { key: "Company" }) {

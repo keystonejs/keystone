@@ -1,39 +1,42 @@
-const { Text } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { text } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('User', {
-        fields: {
-          name: {
-            type: Text,
-            hooks: {
-              resolveInput: ({ resolvedData }) => {
-                return `${resolvedData.name}-field`;
+    config: createSchema({
+      lists: {
+        User: list({
+          fields: {
+            name: text({
+              hooks: {
+                resolveInput: ({ resolvedData }) => {
+                  return `${resolvedData.name}-field`;
+                },
               },
+            }),
+          },
+          hooks: {
+            resolveInput: ({ resolvedData }) => {
+              return {
+                name: `${resolvedData.name}-list`,
+              };
             },
           },
-        },
-        hooks: {
-          resolveInput: ({ resolvedData }) => {
-            return {
-              name: `${resolvedData.name}-list`,
-            };
-          },
-        },
-      });
-    },
+        }),
+      },
+    }),
   });
 }
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('List Hooks: #resolveInput()', () => {
       it(
         'resolves fields first, then passes them to the list',
-        runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await keystone.executeGraphQL({
+        runner(setupKeystone, async ({ context }) => {
+          const { data, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 createUser(data: { name: "jess" }) { name }
