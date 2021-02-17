@@ -1,61 +1,63 @@
-const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('User', {
-        fields: {
-          company: { type: Relationship, ref: 'Company' },
-          posts: { type: Relationship, ref: 'Post', many: true },
-        },
-      });
-
-      keystone.createList('Company', {
-        fields: {
-          name: { type: Text },
-        },
-      });
-
-      keystone.createList('Post', {
-        fields: {
-          content: { type: Text },
-        },
-      });
-    },
+    config: createSchema({
+      lists: {
+        User: list({
+          fields: {
+            company: relationship({ ref: 'Company' }),
+            posts: relationship({ ref: 'Post', many: true }),
+          },
+        }),
+        Company: list({
+          fields: {
+            name: text(),
+          },
+        }),
+        Post: list({
+          fields: {
+            content: text(),
+          },
+        }),
+      },
+    }),
   });
 }
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('relationship filtering', () => {
       test(
         'nested to-single relationships can be filtered within AND clause',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const company = await createItem({
-            keystone,
+            context,
             listKey: 'Company',
             item: { name: 'Thinkmill' },
           });
           const otherCompany = await createItem({
-            keystone,
+            context,
             listKey: 'Company',
             item: { name: 'Cete' },
           });
 
           const user = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { company: { connect: { id: company.id } } },
           });
           await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { company: { connect: { id: otherCompany.id } } },
           });
 
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
         query {
           allUsers(where: {
@@ -92,30 +94,30 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested to-single relationships can be filtered within OR clause',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const company = await createItem({
-            keystone,
+            context,
             listKey: 'Company',
             item: { name: 'Thinkmill' },
           });
           const otherCompany = await createItem({
-            keystone,
+            context,
             listKey: 'Company',
             item: { name: 'Cete' },
           });
 
           const user = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { company: { connect: { id: company.id } } },
           });
           await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { company: { connect: { id: otherCompany.id } } },
           });
 
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
           query {
             allUsers(where: {
@@ -152,29 +154,29 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested to-many relationships can be filtered within AND clause',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const ids = [];
 
           ids.push(
-            (await createItem({ keystone, listKey: 'Post', item: { content: 'Hello world' } })).id
+            (await createItem({ context, listKey: 'Post', item: { content: 'Hello world' } })).id
           );
           ids.push(
-            (await createItem({ keystone, listKey: 'Post', item: { content: 'hi world' } })).id
+            (await createItem({ context, listKey: 'Post', item: { content: 'hi world' } })).id
           );
           ids.push(
-            (await createItem({ keystone, listKey: 'Post', item: { content: 'Hello? Or hi?' } })).id
+            (await createItem({ context, listKey: 'Post', item: { content: 'Hello? Or hi?' } })).id
           );
 
           const user = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { posts: { connect: ids.map(id => ({ id })) } },
           });
 
           // Create a dummy user to make sure we're actually filtering it out
-          await createItem({ keystone, listKey: 'User', item: {} });
+          await createItem({ context, listKey: 'User', item: {} });
 
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
         query {
           allUsers(where: {
@@ -204,29 +206,29 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'nested to-many relationships can be filtered within OR clause',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const ids = [];
 
           ids.push(
-            (await createItem({ keystone, listKey: 'Post', item: { content: 'Hello world' } })).id
+            (await createItem({ context, listKey: 'Post', item: { content: 'Hello world' } })).id
           );
           ids.push(
-            (await createItem({ keystone, listKey: 'Post', item: { content: 'hi world' } })).id
+            (await createItem({ context, listKey: 'Post', item: { content: 'hi world' } })).id
           );
           ids.push(
-            (await createItem({ keystone, listKey: 'Post', item: { content: 'Hello? Or hi?' } })).id
+            (await createItem({ context, listKey: 'Post', item: { content: 'Hello? Or hi?' } })).id
           );
 
           const user = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { posts: { connect: ids.map(id => ({ id })) } },
           });
 
           // Create a dummy user to make sure we're actually filtering it out
-          await createItem({ keystone, listKey: 'User', item: {} });
+          await createItem({ context, listKey: 'User', item: {} });
 
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
           query {
             allUsers(where: {
@@ -256,31 +258,31 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'many-to-many filtering composes with one-to-many filtering',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const adsCompany = await createItem({
-            keystone,
+            context,
             listKey: 'Company',
             item: { name: 'AdsAdsAds' },
             returnFields: 'id name',
           });
           const otherCompany = await createItem({
-            keystone,
+            context,
             listKey: 'Company',
             item: { name: 'Thinkmill' },
             returnFields: 'id name',
           });
 
           // Content can have multiple authors
-          const spam1 = await createItem({ keystone, listKey: 'Post', item: { content: 'spam' } });
-          const spam2 = await createItem({ keystone, listKey: 'Post', item: { content: 'spam' } });
+          const spam1 = await createItem({ context, listKey: 'Post', item: { content: 'spam' } });
+          const spam2 = await createItem({ context, listKey: 'Post', item: { content: 'spam' } });
           const content = await createItem({
-            keystone,
+            context,
             listKey: 'Post',
             item: { content: 'cute cat pics' },
           });
 
           const spammyUser = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: {
               company: { connect: { id: adsCompany.id } },
@@ -288,7 +290,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
           });
           const mixedUser = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: {
               company: { connect: { id: adsCompany.id } },
@@ -296,7 +298,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
           });
           const nonSpammyUser = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: {
               company: { connect: { id: adsCompany.id } },
@@ -304,12 +306,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
           });
           const quietUser = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { company: { connect: { id: adsCompany.id } } },
           });
           await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: {
               company: { connect: { id: otherCompany.id } },
@@ -317,7 +319,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
           });
           await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: {
               company: { connect: { id: otherCompany.id } },
@@ -327,7 +329,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // adsCompany users whose every post is spam
           // NB: this includes users who have no posts at all
-          let { data, errors } = await keystone.executeGraphQL({
+          let { data, errors } = await context.executeGraphQL({
             query: `
         query {
           allUsers(where: {
@@ -357,7 +359,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           ]);
 
           // adsCompany users with no spam
-          ({ data, errors } = await keystone.executeGraphQL({
+          ({ data, errors } = await context.executeGraphQL({
             query: `
         query {
           allUsers(where: {
@@ -389,7 +391,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           ]);
 
           // adsCompany users with some spam
-          ({ data, errors } = await keystone.executeGraphQL({
+          ({ data, errors } = await context.executeGraphQL({
             query: `
         query {
           allUsers(where: {
