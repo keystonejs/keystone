@@ -89,9 +89,8 @@ export const TableOfContents = ({ container, headings, editUrl }) => {
               }}
             >
               <a
-                className="text-gray-500"
                 css={{
-                  // color: isActive ? '#2684FF' : h.depth === 2 ? '#253858' : '#6C798F',
+                  color: isActive ? '#2684FF' : h.depth === 2 ? '#253858' : '#6C798F',
                   display: 'block',
                   fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
                   fontWeight: isActive ? '500' : 'normal',
@@ -107,7 +106,7 @@ export const TableOfContents = ({ container, headings, editUrl }) => {
                 }}
                 href={`#${h.id}`}
               >
-                {h.label}
+                {h.value}
               </a>
             </li>
           );
