@@ -1,6 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
-const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
 const { createItem } = require('@keystonejs/server-side-graphql-client');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -8,41 +9,43 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const postNames = ['Post 1', 'Post 2', 'Post 3'];
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('UserToPostLimitedRead', {
-        fields: {
-          username: { type: Text },
-          posts: { type: Relationship, ref: 'PostLimitedRead', many: true },
-        },
-      });
-
-      keystone.createList('PostLimitedRead', {
-        fields: {
-          name: { type: Text },
-          content: { type: Text },
-        },
-        access: {
-          // Limit read access to the first post only
-          read: { name_in: [postNames[1]] },
-        },
-      });
-    },
+    config: createSchema({
+      lists: {
+        UserToPostLimitedRead: list({
+          fields: {
+            username: text(),
+            posts: relationship({ ref: 'PostLimitedRead', many: true }),
+          },
+        }),
+        PostLimitedRead: list({
+          fields: {
+            name: text(),
+            content: text(),
+          },
+          access: {
+            // Limit read access to the first post only
+            read: { name_in: [postNames[1]] },
+          },
+        }),
+      },
+    }),
   });
 }
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('relationship filtering with access control', () => {
       test(
         'implicitly filters to only the IDs in the database by default',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           // Create all of the posts with the given IDs & random content
           const posts = await Promise.all(
             postNames.map(name => {
               const postContent = sampleOne(alphanumGenerator);
               return createItem({
-                keystone,
+                context,
                 listKey: 'PostLimitedRead',
                 item: { content: postContent, name },
               });
@@ -53,7 +56,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // specified in the read access control filter
           const username = sampleOne(alphanumGenerator);
           const user = await createItem({
-            keystone,
+            context,
             listKey: 'UserToPostLimitedRead',
             item: {
               username,
@@ -62,7 +65,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.exitSudo().executeGraphQL({
             query: `
               query {
                 UserToPostLimitedRead(where: { id: "${user.id}" }) {
@@ -89,13 +92,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'explicitly filters when given a `where` clause',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           // Create all of the posts with the given IDs & random content
           const posts = await Promise.all(
             postNames.map(name => {
               const postContent = sampleOne(alphanumGenerator);
               return createItem({
-                keystone,
+                context,
                 listKey: 'PostLimitedRead',
                 item: { content: postContent, name },
               });
@@ -106,7 +109,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // specified in the read access control filter
           const username = sampleOne(alphanumGenerator);
           const user = await createItem({
-            keystone,
+            context,
             listKey: 'UserToPostLimitedRead',
             item: {
               username,
@@ -115,7 +118,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.exitSudo().executeGraphQL({
             query: `
               query {
                 UserToPostLimitedRead(where: { id: "${user.id}" }) {
