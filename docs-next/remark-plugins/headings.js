@@ -1,6 +1,5 @@
 const visit = require('unist-util-visit');
 const slugify = require('@sindresorhus/slugify');
-const fs = require('fs');
 
 function insertAtEnd(node, { children }) {
   // find index of last import
@@ -8,12 +7,8 @@ function insertAtEnd(node, { children }) {
 }
 
 module.exports = () => {
-  const fileMap = {
-    headings: {},
-  };
   return (tree, file) => {
     const headings = [];
-    const slug = slugify(file.basename.replace('.mdx', ''));
     visit(tree, 'heading', node => {
       if (node.depth > 1) {
         let heading = {
@@ -30,15 +25,12 @@ module.exports = () => {
       }
     });
 
-    fileMap.headings[slug] = headings;
-
     visit(tree, 'export', node => {
       if (node.default) {
         const key = 'Markdown';
         const index = node.value.indexOf(key);
         if (index > -1) {
           const offset = index + key.length;
-          // console.log(node.value, typeof node.value);
           const beginning = node.value.slice(0, offset);
           const end = node.value.slice(offset);
           node.value = `${beginning} meta={meta} ${end}`;
