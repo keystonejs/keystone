@@ -99,7 +99,7 @@ const runTestInServer = async (app, testFn) => {
   try {
     const _runQuery = async (query, agent) => {
       const { port } = server.address();
-      const url = `http://localhost:${port}/admin/api`;
+      const url = `http://localhost:${port}/api/graphql`;
       agent = agent || superagent.agent();
       const { res } = await agent.post(url).set('Accept', 'application/json').send({ query });
       // console.log(res);
