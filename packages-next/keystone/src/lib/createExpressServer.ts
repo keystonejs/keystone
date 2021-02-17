@@ -80,10 +80,14 @@ export const createExpressServer = async (
   console.log('✨ Preparing GraphQL Server');
   addApolloServer({ server, graphQLSchema, createContext, sessionStrategy });
 
-  console.log('✨ Preparing Next.js app');
-  server.use(
-    await createAdminUIServer(config.ui, createContext, dev, projectAdminPath, sessionStrategy)
-  );
+  if (config.ui?.isDisabled) {
+    console.log('✨ Skipping Admin UI app');
+  } else {
+    console.log('✨ Preparing Admin UI Next.js app');
+    server.use(
+      await createAdminUIServer(config.ui, createContext, dev, projectAdminPath, sessionStrategy)
+    );
+  }
 
   return server;
 };

@@ -404,8 +404,8 @@ export async function validateAuthAccessControl({
   authentication,
   gqlName,
   context,
-}: { access: AuthAccess<AuthAccessArgs> } & Omit<AuthAccessArgs, 'operation'>) {
-  const operation = 'auth';
+  operation,
+}: { access: AuthAccess<AuthAccessArgs> } & AuthAccessArgs) {
   // Either a boolean or an object describing a where clause
   let result: Static | Declarative = false;
   const acc = access[operation];
