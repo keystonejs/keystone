@@ -17,6 +17,7 @@ const observerOptions = {
 
 const gridSize = 8;
 
+<<<<<<< HEAD
 interface Heading {
   id: string;
   label: string;
@@ -30,6 +31,9 @@ export const TableOfContents = ({
   container: React.RefObject<HTMLElement | null>;
   headings: Heading[];
 }) => {
+=======
+export const TableOfContents = ({ container, headings }) => {
+>>>>>>> d2cdab10f... remove plugin, use React to coerce a heading list instead
   let allIds = headings.map(h => h.id);
   let [visibleIds, setVisibleIds] = useState<Array<string | null>>([]);
   let [lastVisibleId, setLastVisbleId] = useState<string | null>(null);
@@ -53,6 +57,10 @@ export const TableOfContents = ({
       container.current.querySelectorAll('h2, h3').forEach((node: Element) => {
         observer.observe(node);
       });
+<<<<<<< HEAD
+=======
+
+>>>>>>> d2cdab10f... remove plugin, use React to coerce a heading list instead
       return () => observer.disconnect();
     }
   }, [container]);
@@ -109,7 +117,12 @@ export const TableOfContents = ({
                   display: 'block',
                   fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
                   fontWeight: isActive ? 500 : 'normal',
+<<<<<<< HEAD
                   paddingLeft: h.depth === 3 ? '0.5rem' : undefined,
+=======
+                  paddingLeft: h.depth === 3 ? '0.5rem' : null,
+
+>>>>>>> d2cdab10f... remove plugin, use React to coerce a heading list instead
                   // prefer padding an anchor, rather than margin on list-item, to increase hit area
                   paddingBottom: '0.4em',
                   paddingTop: '0.4em',

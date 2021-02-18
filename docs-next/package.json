@@ -33,7 +33,11 @@
     "classnames": "^2.2.6",
     "copy-to-clipboard": "^3.3.1",
     "facepaint": "^1.2.1",
+<<<<<<< HEAD
     "next": "10.0.7",
+=======
+    "next": "10.0.5",
+>>>>>>> d2cdab10f... remove plugin, use React to coerce a heading list instead
     "next-compose-plugins": "^2.2.1",
     "postcss": "^8.2.6",
     "prism-react-renderer": "^1.1.1",
