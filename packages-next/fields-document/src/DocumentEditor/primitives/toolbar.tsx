@@ -44,16 +44,13 @@ type ToolbarGroupProps = { direction?: DirectionType } & MarginProps &
   HTMLAttributes<HTMLDivElement>;
 export const ToolbarGroup = forwardRefWithAs<'div', ToolbarGroupProps>(
   ({ direction = 'row', ...props }, ref) => {
-    const { spacing } = useTheme();
-
     return (
       <ToolbarGroupContext.Provider value={{ direction }}>
         <Box
           ref={ref}
           css={{
-            display: 'inline-grid',
-            gap: spacing.xxsmall,
-            gridAutoFlow: autoFlowDirection[direction],
+            display: 'flex',
+            flexWrap: 'wrap',
           }}
           {...props}
         />
