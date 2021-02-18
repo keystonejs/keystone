@@ -822,6 +822,7 @@ class QueryBuilder {
               .from(`${tableName} as ${subBaseTableAlias}`);
             // We need to filter out nulls before passing back to the top level query
             // otherwise postgres will give very incorrect answers.
+            // subQuery.whereNotNull(`${subBaseTableAlias}.${columnName}`);
             subQuery.whereNotNull(columnName);
           } else {
             const { near, far } = listAdapter._getNearFar(fieldAdapter);
