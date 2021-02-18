@@ -1,5 +1,7 @@
 import { KeystoneContext } from '@keystone-next/types';
 import { multiAdapterRunners, setupFromConfig, AdapterName } from '@keystonejs/test-utils';
+
+process.env.COOKIE_SECRET = "yummahhhh1242452aksndflkasjdflk3";
 import config from '../keystone';
 
 function setupKeystone(adapterName: AdapterName) {
