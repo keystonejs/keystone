@@ -20,10 +20,24 @@ const { withAuth } = createAuth({
   },
 });
 
+type DatabaseAdapterType = 'prisma_postgresql' | 'knex' | 'mongoose';
+let databaseAdapter: DatabaseAdapterType = 'prisma_postgresql';
+switch (process.env.DATABASE_ADAPTER || '') {
+  case 'prisma_postgresql':
+    databaseAdapter = 'prisma_postgresql';
+    break;
+  case 'knex':
+    databaseAdapter = 'knex';
+    break;
+  case 'mongoose':
+    databaseAdapter = 'mongoose';
+    break;
+}
+
 export default withAuth(
   config({
     db: {
-      adapter: process.env.DATABASE_ADAPTER || 'prisma_postgresql',
+      adapter: databaseAdapter,
       url: process.env.DATABASE_URL || 'postgres://keystone5:k3yst0n3@localhost:5432/todo-example',
     },
     lists,
