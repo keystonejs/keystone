@@ -10,7 +10,6 @@ import cx from 'classnames';
 import Link from 'next/link';
 import { Navigation } from './Navigation';
 import { TableOfContents } from './TableOfContents';
-import slugify from '@sindresorhus/slugify';
 
 export const Page = ({
   headings = [],

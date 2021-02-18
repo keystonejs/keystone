@@ -10,10 +10,14 @@ type BREAKPOINTSTYPE = {
 export const BREAK_POINTS: BREAKPOINTSTYPE = { xs: 576, sm: 768, md: 992, lg: 1200 };
 const bpEntries: Array<[string, number]> = Object.entries(BREAK_POINTS);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c01b54e37... fix types
 const maxWidth = (width: number, m: boolean = true) =>
   `${m ? '@media ' : ''}(max-width: ${width}px)`;
 const minWidth = (width: number, m: boolean = true) =>
   `${m ? '@media ' : ''}(min-width: ${width}px)`;
+<<<<<<< HEAD
 
 type MediaType = {
   [P in keyof BREAKPOINTSTYPE]: string;
@@ -22,6 +26,8 @@ type MediaType = {
 const maxWidth = (width, m = true) => `${m ? '@media ' : ''}(max-width: ${width}px)`;
 const minWidth = (width, m = true) => `${m ? '@media ' : ''}(min-width: ${width}px)`;
 >>>>>>> d2cdab10f... remove plugin, use React to coerce a heading list instead
+=======
+>>>>>>> c01b54e37... fix types
 
 type MediaType = {
   [P in keyof BREAKPOINTSTYPE]: string;

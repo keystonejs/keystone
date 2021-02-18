@@ -18,6 +18,9 @@ const observerOptions = {
 const gridSize = 8;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c01b54e37... fix types
 interface Heading {
   id: string;
   label: string;
@@ -28,12 +31,18 @@ export const TableOfContents = ({
   container,
   headings,
 }: {
+<<<<<<< HEAD
   container: React.RefObject<HTMLElement | null>;
   headings: Heading[];
 }) => {
 =======
 export const TableOfContents = ({ container, headings }) => {
 >>>>>>> d2cdab10f... remove plugin, use React to coerce a heading list instead
+=======
+  container: HTMLElement | null;
+  headings: Heading[];
+}) => {
+>>>>>>> c01b54e37... fix types
   let allIds = headings.map(h => h.id);
   let [visibleIds, setVisibleIds] = useState<Array<string | null>>([]);
   let [lastVisibleId, setLastVisbleId] = useState<string | null>(null);
@@ -54,7 +63,11 @@ export const TableOfContents = ({ container, headings }) => {
         });
       }, observerOptions);
 
+<<<<<<< HEAD
       container.current.querySelectorAll('h2, h3').forEach((node: Element) => {
+=======
+      container.querySelectorAll('h2, h3').forEach((node: HTMLElement) => {
+>>>>>>> c01b54e37... fix types
         observer.observe(node);
       });
 <<<<<<< HEAD
@@ -118,9 +131,13 @@ export const TableOfContents = ({ container, headings }) => {
                   fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
                   fontWeight: isActive ? 500 : 'normal',
 <<<<<<< HEAD
+<<<<<<< HEAD
                   paddingLeft: h.depth === 3 ? '0.5rem' : undefined,
 =======
                   paddingLeft: h.depth === 3 ? '0.5rem' : null,
+=======
+                  paddingLeft: h.depth === 3 ? '0.5rem' : undefined,
+>>>>>>> c01b54e37... fix types
 
 >>>>>>> d2cdab10f... remove plugin, use React to coerce a heading list instead
                   // prefer padding an anchor, rather than margin on list-item, to increase hit area
