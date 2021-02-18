@@ -1,6 +1,6 @@
 /** @jsx jsx */
+import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { Global, jsx, useTheme } from '@keystone-ui/core';
-import { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
 import {
   createDocumentEditor,
@@ -18,9 +18,10 @@ import {
   fields,
   InferRenderersForComponentBlocks,
 } from '@keystone-next/fields-document/component-blocks';
-import { componentBlocks as componentBlocksInExampleProject } from '../../examples-next/basic/admin/fieldViews/Content';
+
 import { Code } from './Code';
-import React from 'react';
+import { initialContent } from '../lib/initialDocumentDemoContent';
+import { componentBlocks as componentBlocksInExampleProject } from '../../examples-next/basic/admin/fieldViews/Content';
 
 const headingLevels = ['1', '2', '3', '4', '5', '6'] as const;
 
@@ -284,9 +285,7 @@ export function DocumentFeaturesFormAndCode() {
 }
 
 export const DocumentEditorDemo = () => {
-  const [value, setValue] = useState([
-    { type: 'paragraph', children: [{ text: 'Try using the document editor!' }] },
-  ] as any);
+  const [value, setValue] = useState(initialContent as any);
 
   const theme = useTheme();
   const { documentFeatures } = useContext(DocumentFeaturesContext);
