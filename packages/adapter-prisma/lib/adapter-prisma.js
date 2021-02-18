@@ -170,8 +170,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
             .filter(({ left }) => left.refListKey === listAdapter.key)
             .filter(({ cardinality }) => cardinality === 'N:N')
             .map(({ left: { path, listKey }, tableName }) => [
-              `from_${path} ${listKey}[] @relation("${tableName}", references: [id])`,
-              // `from_${listKey}_${path} ${listKey}[] @relation("${tableName}", references: [id])`,
+              `from_${listKey}_${path} ${listKey}[] @relation("${tableName}", references: [id])`,
             ])
         ),
         ...flatten(

@@ -1,10 +1,7 @@
-const { gen, sampleOne } = require('testcheck');
 const { text, relationship } = require('@keystone-next/fields');
 const { createSchema, list } = require('@keystone-next/keystone/schema');
 const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
-const { createItem, createItems, updateItems } = require('@keystonejs/server-side-graphql-client');
-
-const alphanumGenerator = gen.alphaNumString.notEmpty();
+const { createItems, updateItems } = require('@keystonejs/server-side-graphql-client');
 
 const createInitialData = async context => {
   const roles = await createItems({
@@ -51,7 +48,7 @@ const createInitialData = async context => {
     ],
     returnFields: 'id name',
   });
-  const locations = await createItems({
+  await createItems({
     context,
     listKey: 'Location',
     items: [
@@ -154,25 +151,21 @@ const setupKeystone = adapterName =>
 
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    describe(`One-to-one relationships`, () => {
-      describe('Read', () => {
-        test.only(
-          'Where A',
-          runner(setupKeystone, async ({ context }) => {
-            await createInitialData(context);
-            const { data, errors } = await context.executeGraphQL({
-              query: `{
+    test(
+      'Query',
+      runner(setupKeystone, async ({ context }) => {
+        await createInitialData(context);
+        const { data, errors } = await context.executeGraphQL({
+          query: `{
                   allEmployees(where: {
                     company: { employees_some: { role: { name: "RoleA" } } }
                   }) { id name }
                 }`,
-            });
-            expect(errors).toBe(undefined);
-            expect(data.allEmployees).toHaveLength(1);
-            expect(data.allEmployees[0].name).toEqual('EmployeeA');
-          })
-        );
-      });
-    });
+        });
+        expect(errors).toBe(undefined);
+        expect(data.allEmployees).toHaveLength(1);
+        expect(data.allEmployees[0].name).toEqual('EmployeeA');
+      })
+    );
   })
 );
