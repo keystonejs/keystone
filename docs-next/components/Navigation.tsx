@@ -39,6 +39,7 @@ export const Navigation = () => {
       <NavItem href="/">Welcome</NavItem>
       <NavItem href="/whats-new">What's New</NavItem>
       <NavItem href="/roadmap">Roadmap</NavItem>
+      <NavItem href="/faqs">FAQs</NavItem>
       <Section label="Guides">
         <NavItem href="/guides/getting-started" isPlaceholder>
           Getting Started
@@ -56,8 +57,8 @@ export const Navigation = () => {
         <NavItem href="/guides/schema-extension" isPlaceholder>
           Schema Extension
         </NavItem>
-        <NavItem href="/guides/document">Document Fields</NavItem>
-        <NavItem href="/guides/virtual" isPlaceholder>
+        <NavItem href="/guides/document-fields">Document Fields</NavItem>
+        <NavItem href="/guides/virtual-fields" isPlaceholder>
           Virtual Fields
         </NavItem>
       </Section>
