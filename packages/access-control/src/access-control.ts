@@ -1,68 +1,29 @@
 import { pick, defaultObj, intersection } from '@keystonejs/utils';
 
+type MaybePromise<T> = T | Promise<T>;
+
 type Static = boolean;
 type Declarative = Record<string, any>;
-type Imperative<T> = (args: T) => Promise<Static | Declarative>;
-type FieldImperative<T> = (args: T) => Promise<Static>;
+type Imperative<T> = (args: T) => MaybePromise<Static | Declarative>;
+type FieldImperative<T> = (args: T) => MaybePromise<Static>;
 
-// FIXME: As more of Keystone becomes typed we will need to
-// address the `any` fields here.
-type Context = any;
-type ListAccessArgs = {
-  operation: keyof ListAccess<ListAccessArgs>;
-  listKey: string;
-  authentication: any;
-  gqlName: string;
-  context: Context;
-  originalInput?: any;
-  itemId?: any;
-  itemIds?: any;
-};
-type FieldAccessArgs = {
-  operation: keyof FieldAccess<FieldAccessArgs>;
-  listKey: string;
-  fieldKey: string;
-  originalInput: any;
-  existingItem: any;
-  authentication: any;
-  gqlName: string;
-  itemId: any;
-  itemIds: any;
-  context: Context;
-};
-type AuthAccessArgs = {
-  operation: keyof AuthAccess<AuthAccessArgs>;
-  listKey: string;
-  authentication: any;
-  gqlName: string;
-  context: Context;
-};
-type CustomAccessArgs = {
-  item: any;
-  args: any;
-  context: Context;
-  info: any;
-  authentication: any;
-  gqlName: string;
-};
-
-type ListAccess<Args> = {
+export type ListAccess<Args> = {
   create: Static | Declarative | Imperative<Args>;
   read: Static | Declarative | Imperative<Args>;
   update: Static | Declarative | Imperative<Args>;
   delete: Static | Declarative | Imperative<Args>;
 };
-type AuthAccess<Args> = {
+export type AuthAccess<Args> = {
   auth: Static | Declarative | Imperative<Args>;
 };
-type FieldAccess<Args> = {
+export type FieldAccess<Args> = {
   create: Static | FieldImperative<Args>;
   read: Static | FieldImperative<Args>;
   update: Static | FieldImperative<Args>;
 };
 // Note: Declarative here (custom) is really just Record<string,any> and is returned to the user
 // to do whatever they want with...
-type CustomAccess<Args> = Static | Declarative | Imperative<Args>;
+export type CustomAccess<Args> = Static | Declarative | Imperative<Args>;
 
 const checkSchemaNames = ({
   schemaNames,
@@ -287,21 +248,19 @@ export function parseFieldAccess<SN extends string, Args>({
   return fullParsedAccess;
 }
 
-export async function validateCustomAccessControl({
-  item,
-  args,
-  context,
-  info,
+export async function validateCustomAccessControl<Args>({
   access,
-  authentication,
-  gqlName,
-}: { access: CustomAccess<CustomAccessArgs> } & CustomAccessArgs) {
+  args,
+}: {
+  access: CustomAccess<Args>;
+  args: Args;
+}) {
   // Either a boolean or an object describing a where clause
   let result: Static | Declarative = false;
   if (typeof access !== 'function') {
     result = access;
   } else {
-    result = await access({ item, args, context, info, authentication, gqlName });
+    result = await access(args);
   }
 
   if (!['object', 'boolean'].includes(typeof result)) {
@@ -312,33 +271,16 @@ export async function validateCustomAccessControl({
   return result;
 }
 
-export async function validateListAccessControl({
-  access,
-  listKey,
-  operation,
-  authentication,
-  originalInput,
-  gqlName,
-  itemId,
-  itemIds,
-  context,
-}: { access: ListAccess<ListAccessArgs> } & ListAccessArgs) {
+export async function validateListAccessControl<
+  Args extends { operation: keyof ListAccess<any>; listKey: string }
+>({ access, args }: { access: ListAccess<Args>; args: Args }) {
   // Either a boolean or an object describing a where clause
   let result: Static | Declarative = false;
-  const acc = access[operation];
+  const acc = access[args.operation];
   if (typeof acc !== 'function') {
     result = acc;
   } else {
-    result = await acc({
-      authentication,
-      listKey,
-      operation,
-      originalInput,
-      gqlName,
-      itemId,
-      itemIds,
-      context,
-    });
+    result = await acc(args);
   }
 
   if (!['object', 'boolean'].includes(typeof result)) {
@@ -348,71 +290,47 @@ export async function validateListAccessControl({
   }
 
   // Special case for 'create' permission
-  if (operation === 'create' && typeof result === 'object') {
+  if (args.operation === 'create' && typeof result === 'object') {
     throw new Error(
-      `Expected a Boolean for ${listKey}.access.create(), but got Object. (NOTE: 'create' cannot have a Declarative access control config)`
+      `Expected a Boolean for ${args.listKey}.access.create(), but got Object. (NOTE: 'create' cannot have a Declarative access control config)`
     );
   }
 
   return result;
 }
 
-export async function validateFieldAccessControl({
-  access,
-  listKey,
-  fieldKey,
-  originalInput,
-  existingItem,
-  operation,
-  authentication,
-  gqlName,
-  itemId,
-  itemIds,
-  context,
-}: { access: FieldAccess<FieldAccessArgs> } & FieldAccessArgs) {
+export async function validateFieldAccessControl<
+  Args extends { operation: keyof FieldAccess<Args>; listKey: string; fieldKey: string }
+>({ access, args }: { access: FieldAccess<Args>; args: Args }) {
   let result: boolean = false;
-  const acc = access[operation];
+  const acc = access[args.operation];
   if (typeof acc !== 'function') {
     result = acc;
   } else {
-    result = await acc({
-      authentication,
-      listKey,
-      fieldKey,
-      originalInput,
-      existingItem,
-      operation,
-      gqlName,
-      itemId,
-      itemIds,
-      context,
-    });
+    result = await acc(args);
   }
 
   if (typeof result !== 'boolean') {
     throw new Error(
-      `Must return a Boolean from ${listKey}.fields.${fieldKey}.access.${operation}(). Got ${typeof result}`
+      `Must return a Boolean from ${args.listKey}.fields.${args.fieldKey}.access.${
+        args.operation
+      }(). Got ${typeof result}`
     );
   }
 
   return result;
 }
 
-export async function validateAuthAccessControl({
-  access,
-  listKey,
-  authentication,
-  gqlName,
-  context,
-  operation,
-}: { access: AuthAccess<AuthAccessArgs> } & AuthAccessArgs) {
+export async function validateAuthAccessControl<
+  Args extends { operation: keyof AuthAccess<Args> }
+>({ access, args }: { access: AuthAccess<Args>; args: Args }) {
   // Either a boolean or an object describing a where clause
   let result: Static | Declarative = false;
-  const acc = access[operation];
+  const acc = access[args.operation];
   if (typeof acc !== 'function') {
     result = acc;
   } else {
-    result = await acc({ authentication, listKey, operation, gqlName, context });
+    result = await acc(args);
   }
 
   if (!['object', 'boolean'].includes(typeof result)) {

@@ -101,13 +101,15 @@ module.exports = class Keystone {
     const getCustomAccessControlForUser = memoize(
       async (item, args, context, info, access, gqlName) => {
         return validateCustomAccessControl({
-          item,
-          args,
-          context,
-          info,
           access: access[schemaName],
-          authentication: authentication && authentication.item ? authentication : {},
-          gqlName,
+          args: {
+            item,
+            args,
+            context,
+            info,
+            authentication: authentication && authentication.item ? authentication : {},
+            gqlName,
+          },
         });
       },
       { isPromise: true }
@@ -123,14 +125,16 @@ module.exports = class Keystone {
       ) => {
         return validateListAccessControl({
           access: access[schemaName],
-          originalInput,
-          operation,
-          authentication: authentication && authentication.item ? authentication : {},
-          listKey,
-          gqlName,
-          itemId,
-          itemIds,
-          context,
+          args: {
+            originalInput,
+            operation,
+            authentication: authentication && authentication.item ? authentication : {},
+            listKey,
+            gqlName,
+            itemId,
+            itemIds,
+            context,
+          },
         });
       },
       { isPromise: true }
@@ -148,16 +152,18 @@ module.exports = class Keystone {
       ) => {
         return validateFieldAccessControl({
           access: access[schemaName],
-          originalInput,
-          existingItem,
-          operation,
-          authentication: authentication && authentication.item ? authentication : {},
-          fieldKey,
-          listKey,
-          gqlName,
-          itemId,
-          itemIds,
-          context,
+          args: {
+            originalInput,
+            existingItem,
+            operation,
+            authentication: authentication && authentication.item ? authentication : {},
+            fieldKey,
+            listKey,
+            gqlName,
+            itemId,
+            itemIds,
+            context,
+          },
         });
       },
       { isPromise: true }
@@ -167,11 +173,13 @@ module.exports = class Keystone {
       async (access, listKey, { gqlName, context } = {}) => {
         return validateAuthAccessControl({
           access: access[schemaName],
-          authentication: authentication && authentication.item ? authentication : {},
-          listKey,
-          gqlName,
-          context,
-          operation: 'auth',
+          args: {
+            authentication: authentication && authentication.item ? authentication : {},
+            listKey,
+            gqlName,
+            context,
+            operation: 'auth',
+          },
         });
       },
       { isPromise: true }
