@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Fragment, useState, SyntheticEvent } from 'react';
+import { Fragment, useState, ReactNode, SyntheticEvent } from 'react';
 import { jsx, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { TextInput } from '@keystone-ui/fields';
@@ -10,8 +10,13 @@ const validEmail = (email: string) =>
   );
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
-
-export const SignupForm = () => {
+export const SubscribeForm = ({
+  autoFocus,
+  children,
+}: {
+  autoFocus?: boolean;
+  children: ReactNode;
+}) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +28,7 @@ export const SignupForm = () => {
     // and there's a valid email address.
     // Basic validation check on the email?
     setLoading(true);
+    return setFormSubmitted(true);
     if (validEmail(email)) {
       // if good add email to mailing list
       // and redirect to dashboard.
@@ -33,7 +39,7 @@ export const SignupForm = () => {
         },
         body: JSON.stringify({
           email,
-          source: '@keystone-next/website Index',
+          source: '@keystone-next/website',
         }),
       })
         .then(res => {
@@ -57,27 +63,32 @@ export const SignupForm = () => {
     } else {
       setLoading(false);
       // if email fails validation set error message
-      setError('Email is invalid');
+      setError('Please enter a valid email');
       return;
     }
   };
-  return (
+  return !formSubmitted ? (
     <Fragment>
-      {!formSubmitted ? (
-        <form onSubmit={onSubmit}>
+      {children}
+      <form onSubmit={onSubmit}>
+        <Stack gap="small">
           <Stack across gap="small">
-            <Stack gap="small">
-              <TextInput autoFocus value={email} onChange={e => setEmail(e.target.value)} />
-              <p css={{ margin: '0 !important', color: 'red' }}>{error}</p>
-            </Stack>
+            <TextInput
+              autoComplete="off"
+              autoFocus={autoFocus}
+              placeholder="Your email address"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
             <Button isLoading={loading} type={'submit'} weight="bold" tone="active">
-              {error ? 'Try again' : 'Signup'}
+              {error ? 'Try again' : 'Subscribe'}
             </Button>
           </Stack>
-        </form>
-      ) : (
-        <p>Thank you</p>
-      )}
+          <p css={{ margin: '0 !important', color: 'red' }}>{error}</p>
+        </Stack>
+      </form>
     </Fragment>
+  ) : (
+    <p>❤️ Thank you for subscribing!</p>
   );
 };
