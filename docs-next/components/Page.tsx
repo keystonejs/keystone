@@ -57,7 +57,7 @@ export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boo
         </div>
       </div>
       <div className="w-full max-w-5xl mx-auto block md:flex">
-        <aside className="flex-none md:w-52 md:mr-4 text-sm">
+        <aside className="flex-none md:w-52 md:mr-4 md:text-sm">
           {mobileNavCollapsed ? (
             <div
               className="py-4 px-2 border-b border-grey-200 font-semibold md:hidden"
