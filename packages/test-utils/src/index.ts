@@ -13,7 +13,7 @@ import { KnexAdapter } from '@keystonejs/adapter-knex';
 import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
 // @ts-ignore
 import { PrismaAdapter } from '@keystonejs/adapter-prisma';
-import { initConfig, createSystem } from '@keystone-next/keystone';
+import { initConfig, createSystem, createExpressServer } from '@keystone-next/keystone';
 import type { KeystoneConfig, BaseKeystone, KeystoneContext } from '@keystone-next/types';
 
 export type AdapterName = 'mongoose' | 'knex' | 'prisma_postgresql';
@@ -63,10 +63,18 @@ async function setupFromConfig({
     const adapterArgs = await argGenerator[adapterName]();
     config.db = { adapter: adapterName, ...adapterArgs };
   }
+  config.ui = { isDisabled: true };
   config = initConfig(config);
 
-  const { keystone, createContext } = createSystem(config, path.resolve('.keystone'), '');
-  return { keystone, context: createContext().sudo() };
+  const { keystone, createContext, graphQLSchema } = createSystem(
+    config,
+    path.resolve('.keystone'),
+    ''
+  );
+
+  const app = await createExpressServer(config, graphQLSchema, createContext, true, '');
+
+  return { keystone, context: createContext().sudo(), app };
 }
 
 async function setupServer({
@@ -104,7 +112,7 @@ async function setupServer({
   const apps = [
     new GraphQLApp({
       schemaName,
-      apiPath: '/admin/api',
+      apiPath: '/api/graphql',
       graphiqlPath: '/admin/graphiql',
       apollo: {
         tracing: true,
@@ -144,7 +152,7 @@ function networkedGraphqlRequest({
   Object.entries(headers).forEach(([key, value]) => request.set(key, value));
 
   return request
-    .post('/admin/api', { query, variables, operationName })
+    .post('/api/graphql', { query, variables, operationName })
     .then((res: ServerResponse & { text: string }) => {
       expect(res.statusCode).toBe(expectedStatusCode);
       return { ...JSON.parse(res.text), res };

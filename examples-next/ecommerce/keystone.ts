@@ -18,7 +18,7 @@ const databaseURL = process.env.DATABASE_URL || 'mongodb://localhost/keystone-si
 
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 360, // How long they stay signed in?
-  secret: process.env.COOKIE_SECRET!,
+  secret: process.env.COOKIE_SECRET || 'this secret should only be used in testing',
 };
 
 const { withAuth } = createAuth({
