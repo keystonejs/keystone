@@ -403,7 +403,7 @@ class PrismaListAdapter extends BaseListAdapter {
           ? a.field === a.rel.right // Two-sided
             ? a.rel.left.path
             : a.rel.right.path
-          : `from_${a.rel.left.path}`; // One-sided
+          : `from_${a.rel.left.listKey}_${a.rel.left.path}`; // One-sided
         ret.where[path] = { some: { id: Number(from.fromId) } };
       } else {
         ret.where[a.rel.columnName] = { id: Number(from.fromId) };
