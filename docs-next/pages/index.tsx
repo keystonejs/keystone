@@ -25,7 +25,7 @@ export default function IndexPage() {
         <Link href="/guides/document-fields">Document Field</Link>
       </p>
       <p>
-        <SubscribeForm autoFocus>
+        <SubscribeForm>
           <div className="mb-2">
             <span className="inline-block bg-green-100 border border-green-300 uppercase text-green-600 px-2 text-sm font-semibold rounded">
               New

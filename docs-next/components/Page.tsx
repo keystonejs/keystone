@@ -57,25 +57,27 @@ export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boo
         </div>
       </div>
       <div className="w-full max-w-5xl mx-auto block md:flex">
-        <aside className="flex-none md:w-52 md:mr-4 text-sm">
+        <aside className="flex-none md:w-52 md:mr-4 md:text-sm">
           {mobileNavCollapsed ? (
-            <div
-              className="py-4 px-2 border-b border-grey-200 font-semibold md:hidden"
+            <a
+              href="javascript:;"
+              className="block text-gray-600 hover:text-gray-900 py-4 px-2 border-b border-grey-200 font-semibold md:hidden"
               onClick={() => setMobileNavCollapsed(false)}
             >
               Show Nav
-            </div>
+            </a>
           ) : null}
           <div className={`px-2 mt-6 md:block ${mobileNavCollapsed ? 'hidden' : ''}`}>
             <Navigation />
           </div>
           {!mobileNavCollapsed ? (
-            <div
-              className="py-4 px-2 mt-4 border-b border-t border-grey-200 font-semibold md:hidden"
+            <a
+              href="javascript:;"
+              className="block text-gray-600 hover:text-gray-900 py-4 px-2 mt-4 border-b border-t border-grey-200 font-semibold md:hidden"
               onClick={() => setMobileNavCollapsed(true)}
             >
               Hide Nav
-            </div>
+            </a>
           ) : null}
         </aside>
         <div className="min-w-0 w-full flex-auto max-h-full overflow-visible px-2">
