@@ -39,6 +39,7 @@ export const Navigation = () => {
       <NavItem href="/">Welcome</NavItem>
       <NavItem href="/whats-new">What's New</NavItem>
       <NavItem href="/roadmap">Roadmap</NavItem>
+      <NavItem href="/faqs">FAQs</NavItem>
       <Section label="Guides">
         <NavItem href="/guides/getting-started" isPlaceholder>
           Getting Started
