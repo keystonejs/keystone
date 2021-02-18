@@ -473,7 +473,7 @@ const componentBlockRenderers: InferRenderersForComponentBlocks<typeof component
 
 export default ({ children }) => {
   return (
-    <Page>
+    <Page mdxContent={children}>
       <DocumentFeaturesProvider>
         <div className="prose max-w-none">
           <h1>How To Use Document Fields</h1>

@@ -15,9 +15,8 @@ const observerOptions = {
 };
 
 const gridSize = 8;
-const borderRadius = 4;
 
-export const TableOfContents = ({ container, headings, editUrl }) => {
+export const TableOfContents = ({ container, headings }) => {
   let allIds = headings.map(h => h.id);
   let [visibleIds, setVisibleIds] = useState([]);
   let [lastVisibleId, setLastVisbleId] = useState('');
@@ -40,6 +39,8 @@ export const TableOfContents = ({ container, headings, editUrl }) => {
       container.querySelectorAll('h2, h3').forEach(node => {
         observer.observe(node);
       });
+
+      return () => observer.disconnect();
     }
   }, [container]);
 
@@ -93,7 +94,7 @@ export const TableOfContents = ({ container, headings, editUrl }) => {
                   color: isActive ? '#2684FF' : h.depth === 2 ? '#253858' : '#6C798F',
                   display: 'block',
                   fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
-                  fontWeight: isActive ? '500' : 'normal',
+                  fontWeight: isActive ? 500 : 'normal',
                   paddingLeft: h.depth === 3 ? '0.5rem' : null,
 
                   // prefer padding an anchor, rather than margin on list-item, to increase hit area
@@ -112,78 +113,6 @@ export const TableOfContents = ({ container, headings, editUrl }) => {
           );
         })}
       </ul>
-      <EditSection>
-        {/* <p>
-          Have you found a mistake, something that is missing, or could be improved on
-          this page? Please edit the Markdown file on GitHub and submit a PR with your
-          changes.
-        </p> */}
-        <EditButton href={editUrl} target="_blank">
-          <svg
-            fill="currentColor"
-            height="1.25em"
-            width="1.25em"
-            viewBox="0 0 40 40"
-            css={{ marginLeft: -(gridSize / 2), marginRight: '0.5em' }}
-          >
-            <path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z" />
-          </svg>
-          Edit on GitHub
-        </EditButton>
-      </EditSection>
     </div>
   );
 };
-
-const Button = ({ as: Tag, ...props }) => (
-  <Tag
-    css={{
-      border: `1px solid rgba(0, 0, 0, 0.1)`,
-      borderBottomColor: `rgba(0, 0, 0, 0.2) !important`,
-      borderRadius: borderRadius,
-      color: '#172B4D',
-      display: 'inline-block',
-      fontWeight: 500,
-      padding: `${gridSize * 0.75}px ${gridSize * 2}px`,
-      outline: 'none',
-
-      ':hover, :focus': {
-        backgroundColor: 'white !important',
-        borderColor: `rgba(0, 0, 0, 0.15)`,
-        boxShadow: '0 2px 1px rgba(0,0,0,0.05)',
-        textDecoration: 'none',
-      },
-      ':active': {
-        backgroundColor: `${'#F4F5F7'} !important`,
-        boxShadow: 'none',
-      },
-    }}
-    {...props}
-  />
-);
-
-// Edit
-// ------------------------------
-
-const EditSection = props => (
-  <section
-    css={{
-      borderTop: `1px solid #EBECF0`,
-      marginTop: gridSize * 4,
-      paddingBottom: gridSize * 4,
-      paddingTop: gridSize * 4,
-    }}
-    {...props}
-  />
-);
-const EditButton = props => (
-  <Button
-    as="a"
-    css={{
-      alignItems: 'center',
-      display: 'inline-flex',
-      fontSize: '0.85rem',
-    }}
-    {...props}
-  />
-);

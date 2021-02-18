@@ -32,6 +32,7 @@
     "autoprefixer": "^10.2.4",
     "classnames": "^2.2.6",
     "copy-to-clipboard": "^3.3.1",
+    "facepaint": "^1.2.1",
     "next": "10.0.5",
     "next-compose-plugins": "^2.2.1",
     "postcss": "^8.2.6",
