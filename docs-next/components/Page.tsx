@@ -12,8 +12,8 @@ export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boo
   const [mobileNavCollapsed, setMobileNavCollapsed] = useState(true);
   return (
     <div className="antialiased pb-24">
-      <div className="pt-4 pb-4 border-b border-gray-200">
-        <div className="w-full max-w-5xl mx-auto flex items-center justify-between sticky px-2 md:px-0">
+      <div className="py-4 border-b border-gray-200">
+        <div className="w-full max-w-5xl mx-auto flex items-center justify-between sticky px-2">
           <h2 className="flex items-center">
             <img
               alt="KeystoneJS Logo"
@@ -66,7 +66,7 @@ export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boo
               Show Nav
             </div>
           ) : null}
-          <div className={`px-2 md:px-0 mt-6 md:block ${mobileNavCollapsed ? 'hidden' : ''}`}>
+          <div className={`px-2 mt-6 md:block ${mobileNavCollapsed ? 'hidden' : ''}`}>
             <Navigation />
           </div>
           {!mobileNavCollapsed ? (
@@ -78,8 +78,8 @@ export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boo
             </div>
           ) : null}
         </aside>
-        <div className="min-w-0 w-full flex-auto max-h-full overflow-visible px-2 md:px-0">
-          <div className={cx({ prose: isProse }, 'w-full mt-6')}>{children}</div>
+        <div className="min-w-0 w-full flex-auto max-h-full overflow-visible px-2">
+          <div className={cx({ prose: isProse }, 'w-full max-w-none mt-6')}>{children}</div>
         </div>
       </div>
     </div>
