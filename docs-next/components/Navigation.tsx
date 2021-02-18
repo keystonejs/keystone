@@ -21,10 +21,8 @@ const NavItem = ({ href, isPlaceholder, children }: NavItemProps) => {
     <Link href={href} passHref>
       <a
         className={cx(
-          isSelected
-            ? 'text-gray-900'
-            : `${isPlaceholder ? 'text-gray-300' : 'text-gray-500'} hover:text-gray-800`,
-          'block no-underline py-1'
+          isSelected ? 'text-gray-900' : `${isPlaceholder ? 'text-gray-300' : 'text-gray-500'}`,
+          'block no-underline py-1 hover:text-gray-800'
         )}
       >
         {children}
