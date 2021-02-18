@@ -50,6 +50,15 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
   if (typeof window !== 'undefined' && adminMetaFromLocalStorage === undefined && !called) {
     fetchStaticAdminMeta();
   }
+
+  let shouldFetchAdminMeta = adminMetaFromLocalStorage === undefined && !called;
+
+  useEffect(() => {
+    if (shouldFetchAdminMeta) {
+      fetchStaticAdminMeta();
+    }
+  }, [shouldFetchAdminMeta, fetchStaticAdminMeta]);
+
   const runtimeAdminMeta = useMemo(() => {
     if ((!data || error) && !adminMetaFromLocalStorage) {
       return undefined;
