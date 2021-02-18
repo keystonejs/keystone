@@ -11,6 +11,8 @@
   "repository": "https://github.com/keystonejs/keystone/tree/master/tests/api-tests",
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
+    "@hapi/iron": "^5.1.4",
+    "@keystone-next/auth": "*",
     "@keystone-next/fields": "*",
     "@keystone-next/keystone": "*",
     "@keystonejs/adapter-knex": "*",
