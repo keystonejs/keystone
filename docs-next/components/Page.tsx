@@ -1,5 +1,5 @@
 /** @jsx jsx  */
-import { Children, ReactNode, useState } from 'react';
+import { Children, ReactNode, useRef, useState } from 'react';
 import { jsx } from '@keystone-ui/core';
 import { Code } from '../components/Code';
 import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
@@ -30,7 +30,7 @@ export const Page = ({
   isProse?: boolean;
 }) => {
   const [mobileNavCollapsed, setMobileNavCollapsed] = useState(true);
-  const [contentRef, setContentRef] = useState(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
   const headings = Children.toArray(mdxContent)
     .filter((child: any) => {
       return child.props?.mdxType && ['h2', 'h3'].includes(child.props.mdxType);
@@ -112,12 +112,11 @@ export const Page = ({
             </a>
           ) : null}
         </aside>
-        <div
-          ref={setContentRef}
-          className="min-w-0 w-full flex-auto max-h-full overflow-visible px-2"
-        >
+        <div ref={contentRef} className="min-w-0 w-full flex-auto max-h-full overflow-visible px-2">
           <div className={cx({ prose: isProse }, 'w-full max-w-none mt-6')}>{children}</div>
-          {headings.length ? <TableOfContents container={contentRef} headings={headings} /> : null}
+          {headings.length ? (
+            <TableOfContents container={contentRef.current} headings={headings} />
+          ) : null}
         </div>
       </div>
     </div>

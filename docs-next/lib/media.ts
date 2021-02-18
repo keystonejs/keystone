@@ -9,8 +9,10 @@ type BREAKPOINTSTYPE = {
 
 export const BREAK_POINTS: BREAKPOINTSTYPE = { xs: 576, sm: 768, md: 992, lg: 1200 };
 const bpEntries: Array<[string, number]> = Object.entries(BREAK_POINTS);
-const maxWidth = (width, m = true) => `${m ? '@media ' : ''}(max-width: ${width}px)`;
-const minWidth = (width, m = true) => `${m ? '@media ' : ''}(min-width: ${width}px)`;
+const maxWidth = (width: number, m: boolean = true) =>
+  `${m ? '@media ' : ''}(max-width: ${width}px)`;
+const minWidth = (width: number, m: boolean = true) =>
+  `${m ? '@media ' : ''}(min-width: ${width}px)`;
 
 type MediaType = {
   [P in keyof BREAKPOINTSTYPE]: string;

@@ -5,8 +5,9 @@ import { media } from '../lib/media';
 
 // it's important that IDs are sorted by the order they appear in the document
 // so we can pluck active from the beginning
-function sortVisible(allIds, targetId) {
-  return ids => [...ids, targetId].sort((a, b) => (allIds.indexOf(a) > allIds.indexOf(b) ? 1 : -1));
+function sortVisible(allIds: (string | null)[], targetId: string | null) {
+  return (ids: (string | null)[] | never[]): (string | null)[] | never[] =>
+    [...ids, targetId].sort((a, b) => (allIds.indexOf(a) > allIds.indexOf(b) ? 1 : -1));
 }
 
 const observerOptions = {
@@ -16,17 +17,29 @@ const observerOptions = {
 
 const gridSize = 8;
 
-export const TableOfContents = ({ container, headings }) => {
+interface Heading {
+  id: string;
+  label: string;
+  depth: number;
+}
+
+export const TableOfContents = ({
+  container,
+  headings,
+}: {
+  container: HTMLElement | null;
+  headings: Heading[];
+}) => {
   let allIds = headings.map(h => h.id);
-  let [visibleIds, setVisibleIds] = useState([]);
-  let [lastVisibleId, setLastVisbleId] = useState('');
+  let [visibleIds, setVisibleIds] = useState<Array<string | null>>([]);
+  let [lastVisibleId, setLastVisbleId] = useState<string | null>(null);
 
   // observe relevant headings
   useEffect(() => {
     if (container) {
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-          const targetId = entry.target.getAttribute('id');
+          const targetId: string | null = entry.target.getAttribute('id');
           if (entry.isIntersecting && entry.intersectionRatio === 1) {
             setVisibleIds(sortVisible(allIds, targetId));
             setLastVisbleId(targetId);
@@ -36,7 +49,7 @@ export const TableOfContents = ({ container, headings }) => {
         });
       }, observerOptions);
 
-      container.querySelectorAll('h2, h3').forEach(node => {
+      container.querySelectorAll('h2, h3').forEach((node: HTMLElement) => {
         observer.observe(node);
       });
 
@@ -78,7 +91,7 @@ export const TableOfContents = ({ container, headings }) => {
         On this page
       </h4>
       <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
-        {headings.map((h, i) => {
+        {headings.map((h: Heading, i: number) => {
           let isActive = activeId === h.id;
           return (
             <li
@@ -95,7 +108,7 @@ export const TableOfContents = ({ container, headings }) => {
                   display: 'block',
                   fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
                   fontWeight: isActive ? 500 : 'normal',
-                  paddingLeft: h.depth === 3 ? '0.5rem' : null,
+                  paddingLeft: h.depth === 3 ? '0.5rem' : undefined,
 
                   // prefer padding an anchor, rather than margin on list-item, to increase hit area
                   paddingBottom: '0.4em',
