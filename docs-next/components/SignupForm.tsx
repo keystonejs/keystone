@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Fragment, useState } from 'react';
+import { Fragment, useState, SyntheticEvent } from 'react';
 import { jsx, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { TextInput } from '@keystone-ui/fields';
@@ -14,9 +14,9 @@ const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 export const SignupForm = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const onSubmit = event => {
+  const onSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
     setError(null);
     // Check if user wants to subscribe.
