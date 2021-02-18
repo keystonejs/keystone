@@ -1,5 +1,5 @@
 /** @jsx jsx  */
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { jsx } from '@keystone-ui/core';
 import { Code } from '../components/Code';
 import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
@@ -9,10 +9,11 @@ import Link from 'next/link';
 import { Navigation } from './Navigation';
 
 export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boolean }) => {
+  const [mobileNavCollapsed, setMobileNavCollapsed] = useState(true);
   return (
     <div className="antialiased pb-24">
       <div className="pt-4 pb-4 border-b border-gray-200">
-        <div className="w-full max-w-6xl mx-auto flex items-center justify-between sticky">
+        <div className="w-full max-w-5xl mx-auto flex items-center justify-between sticky px-2 md:px-0">
           <h2 className="flex items-center">
             <img
               alt="KeystoneJS Logo"
@@ -55,12 +56,30 @@ export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boo
           </div>
         </div>
       </div>
-      <div className="w-full max-w-6xl mx-auto flex mt-6">
-        <aside className="flex-none w-52 mr-4 text-sm">
-          <Navigation />
+      <div className="w-full max-w-5xl mx-auto block md:flex">
+        <aside className="flex-none md:w-52 md:mr-4 text-sm">
+          {mobileNavCollapsed ? (
+            <div
+              className="py-4 px-2 border-b border-grey-200 font-semibold md:hidden"
+              onClick={() => setMobileNavCollapsed(false)}
+            >
+              Show Nav
+            </div>
+          ) : null}
+          <div className={`px-2 md:px-0 mt-6 md:block ${mobileNavCollapsed ? 'hidden' : ''}`}>
+            <Navigation />
+          </div>
+          {!mobileNavCollapsed ? (
+            <div
+              className="py-4 px-2 mt-4 border-b border-t border-grey-200 font-semibold md:hidden"
+              onClick={() => setMobileNavCollapsed(true)}
+            >
+              Hide Nav
+            </div>
+          ) : null}
         </aside>
-        <div className="min-w-0 w-full flex-auto max-h-full overflow-visible">
-          <div className={cx({ prose: isProse }, 'w-full')}>{children}</div>
+        <div className="min-w-0 w-full flex-auto max-h-full overflow-visible px-2 md:px-0">
+          <div className={cx({ prose: isProse }, 'w-full mt-6')}>{children}</div>
         </div>
       </div>
     </div>
