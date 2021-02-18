@@ -2,39 +2,46 @@ import { Markdown } from '../components/Page';
 
 # Roadmap
 
-> Note: this page is WIP, and will be updated based on research and feedback
-
 When Keystone 5 was announced in 2018, it was a great leap forward for the project from a back-end
 Node.js CMS platform built with MongoDB, to a modern platform with first class support for GraphQL,
 PostgreSQL, and more.
 
-Three years on, Keystone Next is a preview of the next major release of KeystoneJS, the most
-powerful headless content management system around. We've substantially rewritten the CLI, Schema
-config, and Admin UI to make them more powerful and easier to use than ever before.
+Keystone Next is a preview of the next major release of KeystoneJS, the most powerful headless
+content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI
+to make them more powerful and easier to use than ever before.
 
-We've also created a new Document field type that lets you compose content from customisable
-component blocks, making Keystone the first headless CMS built for the Design System generation.
+In the last six months, we built around the existing stable core of Keystone 5's packages to test
+the changes we wanted to make and validate our ideas. We're now happy with what we've built, and
+over the course of this year, Keystone Next will become Keystone 6.
 
-#### 👇🏻 Here's what's next on our list:
+There is a lot to do, and with a larger than ever team at [Thinkmill](https://www.thinkmill.com.au)
+working on it, we're excited to show you what we're planning and get it shipped!
 
-## From Keystone Next to Keystone 6
+## Project Status
 
-When making the major changes for Keystone Next, we built around the existing stable core of
-Keystone 5's packages. Now we've reached this milestone, we're focusing on completing the
-transition, updating the core engine, and simplifying our architecture.
+Keystone Next has been released to npm as a preview of where we're going. Now we're focusing on
+completing the transition, which includes:
 
-Through this process we'll continue making updates to the `@keystone-next` packages, refactoring the
-core of Keystone 5 into the new engine, and laying the groundwork for the future.
+- Updating the core engine and simplifying our architecture
+- Separating Keystone 5 and Keystone Next into distinct GitHub projects
+- Writing docs and making the new packages easy to get started with
 
-There is a lot to do, and with a larger than ever team at [Thinkmill](https://www.thinkmill.com.au) working on
-it, we're excited to show you what we're planning and get it shipped!
+Here's what you'll see in the next month:
+
+- We'll launch next.keystonejs.com (this website! you've found it, but we're in stealth)
+- A new project starter and getting started guide
+- A new set of example projects demoing how to use Keystone Next features
+- A Keystone 5 repo created in our GitHub org, which we're going to move the `@keystonejs` packages
+  into for ongoing maintenance and releases
+
+### 👇🏻 What's next on our list
 
 ## Streamlined back-end with Prisma
 
-[Prisma](https://www.prisma.io/) is the next-generation ORM for JavaScript and TypeScript, and we added it to Keystone
-in 2020. It supports PostgreSQL, MySQL and SQLite with MS SQL and MongoDB support on the way. Today,
-Prisma is mature enough for Keystone to use and is already more powerful than the Knex and Mongoose
-ORMs we used in Keystone 5.
+[Prisma](https://www.prisma.io/) is the next-generation ORM for JavaScript and TypeScript, and we
+added it to Keystone in 2020. It supports PostgreSQL, MySQL and SQLite with MS SQL and MongoDB
+support on the way. Today, Prisma is mature enough for Keystone to use and is already more powerful
+than the Knex and Mongoose ORMs we used in Keystone 5.
 
 To simplify Keystone's back-end, and let us focus on building higher level features to make content
 management and application development on Keystone even better, we're planning to remove our
