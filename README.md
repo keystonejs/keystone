@@ -11,7 +11,7 @@
 </div>
 <br>
 
-[![Build Status](https://img.shields.io/circleci/project/github/keystonejs/keystone/master.svg)](https://circleci.com/gh/keystonejs/keystone)
+![CI](https://github.com/keystonejs/keystone/workflows/CI/badge.svg)
 [![slack](https://keystone-community.now.sh//badge.svg)](https://keystone-community.now.sh/)
 [![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=react-select)
 
@@ -206,7 +206,7 @@ This is due to permission restrictions regarding the creation of [symbolic links
 ### Testing
 
 Keystone uses [Jest](https://facebook.github.io/jest) for unit tests and [Cypress](https://www.cypress.io) for end-to-end tests.
-All tests can be run locally and on [CircleCI](https://circleci.com/gh/keystonejs/keystone).
+All tests can be run locally and on [GitHub](https://github.com/keystonejs/keystone/actions?query=workflow%3ACI).
 
 ### Unit Tests
 
