@@ -47,9 +47,6 @@ export function useAdminMeta(adminMetaHash: string, fieldViews: FieldViews) {
   const [fetchStaticAdminMeta, { data, error, called }] = useLazyQuery(staticAdminMetaQuery, {
     fetchPolicy: 'network-only',
   });
-  if (typeof window !== 'undefined' && adminMetaFromLocalStorage === undefined && !called) {
-    fetchStaticAdminMeta();
-  }
 
   let shouldFetchAdminMeta = adminMetaFromLocalStorage === undefined && !called;
 
