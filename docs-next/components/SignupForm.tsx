@@ -9,8 +9,7 @@ const validEmail = (email: string) =>
     email
   );
 
-// const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
-const signupURL = 'http://localhost:8080/api/newsletter-signup';
+const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 
 export const SignupForm = () => {
   const [email, setEmail] = useState('');
