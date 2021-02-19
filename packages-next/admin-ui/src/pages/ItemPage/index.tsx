@@ -577,7 +577,7 @@ const ColumnLayout = (props: HTMLAttributes<HTMLDivElement>) => {
   const { spacing } = useTheme();
 
   return (
-    <Container css={{ position: 'relative' }}>
+    <Container css={{ position: 'relative', height: '100%' }}>
       <div
         css={{
           alignItems: 'start',
