@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { ButtonHTMLAttributes, HTMLAttributes, createContext, useContext, ReactNode } from 'react';
-import { Inline, MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
+import { Box, Inline, MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
 
 // Spacers and Separators
 // ------------------------------
@@ -40,15 +40,24 @@ type DirectionType = keyof typeof autoFlowDirection;
 const ToolbarGroupContext = createContext<{ direction: DirectionType }>({ direction: 'row' });
 const useToolbarGroupContext = () => useContext(ToolbarGroupContext);
 
-type ToolbarGroupProps = { direction?: DirectionType } & MarginProps &
+type ToolbarGroupProps = { direction?: DirectionType; wrap?: boolean } & MarginProps &
   HTMLAttributes<HTMLDivElement>;
 export const ToolbarGroup = forwardRefWithAs<'div', ToolbarGroupProps>(
   ({ children, direction = 'row', ...props }, ref) => {
+    const { spacing } = useTheme();
     return (
       <ToolbarGroupContext.Provider value={{ direction }}>
-        <Inline ref={ref} {...props}>
+        <Box
+          ref={ref}
+          css={{
+            display: 'inline-grid',
+            gap: spacing.xxsmall,
+            gridAutoFlow: autoFlowDirection[direction],
+          }}
+          {...props}
+        >
           {children}
-        </Inline>
+        </Box>
       </ToolbarGroupContext.Provider>
     );
   }
