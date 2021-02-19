@@ -112,13 +112,14 @@ const simpleTokenizer = (listAdapter, query, queryKey, path) => {
 
 const modifierTokenizer = (listAdapter, query, queryKey, path) => {
   const refListAdapter = getRelatedListAdapterFromQueryPath(listAdapter, path);
+  const searchFieldName = listAdapter.config.searchField || 'name';
   return {
     // TODO: Implement configurable search fields for lists
     $search: value => {
       if (!value || (getType(value) === 'String' && !value.trim())) {
         return undefined;
       }
-      return { $match: { name: new RegExp(`${escapeRegExp(value)}`, 'i') } };
+      return { $match: { [searchFieldName]: new RegExp(`${escapeRegExp(value)}`, 'i') } };
     },
     $orderBy: (value, _, listAdapter) => {
       const [orderField, orderDirection] = value.split('_');

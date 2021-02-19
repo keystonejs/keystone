@@ -18,6 +18,7 @@ export default config({
       ui: { /* ... */ },
       hooks: { /* ... */ },
       graphql: { /* ... */ },
+      db: { /* ... */ },
       description: '...',
     }),
     /* ... */
@@ -204,6 +205,31 @@ export default config({
         itemQueryName: '...',
         listQueryName: '...',
         queryLimits: { maxResults: 100 },
+      },
+      /* ... */
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
+## db
+
+The `db` config option allows you to configures certain aspects of the database connection specific to this list.
+
+Options:
+
+- `searchField` (default: `"name"`): The name of the field to use when performing `search` filters in the GraphQL API.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      db: {
+        searchField: 'email',
       },
       /* ... */
     }),

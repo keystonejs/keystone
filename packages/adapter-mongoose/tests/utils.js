@@ -9,6 +9,7 @@ const tagsAdapter = {
     },
   ],
   graphQlQueryPathToMongoField: orderField => orderField,
+  config: {},
 };
 
 const postsAdapter = {
@@ -42,6 +43,7 @@ const postsAdapter = {
     },
   ],
   graphQlQueryPathToMongoField: orderField => orderField,
+  config: {},
 };
 
 const listAdapter = {
@@ -87,6 +89,7 @@ const listAdapter = {
       }),
     },
   ],
+  config: {},
 };
 
 listAdapter.fieldAdapters.push({
