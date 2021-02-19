@@ -347,20 +347,27 @@ describe('Access control package tests', () => {
     await expect(
       validateListAccessControl({
         access: { [operation]: true, ..._access },
-        operation,
-        ...listArgs,
+        args: {
+          operation,
+          ...listArgs,
+        },
       })
     ).resolves.toBe(true);
     await expect(
       validateListAccessControl({
         access: { [operation]: false, ..._access },
-        operation,
-        ...listArgs,
+        args: {
+          operation,
+          ...listArgs,
+        },
       })
     ).resolves.toBe(false);
     await expect(
-      // @ts-ignore
-      validateListAccessControl({ access: { [operation]: 10, ..._access }, operation, ...listArgs })
+      validateListAccessControl({
+        // @ts-ignore
+        access: { [operation]: 10, ..._access },
+        args: { operation, ...listArgs },
+      })
     ).rejects.toThrow(Error);
 
     const originalInput = {};
@@ -368,9 +375,11 @@ describe('Access control package tests', () => {
 
     await validateListAccessControl({
       access: { [operation]: accessFn, ..._access },
-      operation,
-      ...listArgs,
-      originalInput,
+      args: {
+        operation,
+        ...listArgs,
+        originalInput,
+      },
     });
 
     expect(accessFn).toHaveBeenCalledTimes(1);
@@ -387,26 +396,32 @@ describe('Access control package tests', () => {
       await expect(
         validateListAccessControl({
           access: { [operation]: () => true, ..._access },
-          operation,
-          ...listArgs,
-          authentication,
+          args: {
+            operation,
+            ...listArgs,
+            authentication,
+          },
         })
       ).resolves.toBe(true);
       await expect(
         validateListAccessControl({
           access: { [operation]: () => false, ..._access },
-          operation,
-          ...listArgs,
-          authentication,
+          args: {
+            operation,
+            ...listArgs,
+            authentication,
+          },
         })
       ).resolves.toBe(false);
       // Object function
       await expect(
         validateListAccessControl({
           access: { [operation]: () => ({ a: 1 }), ..._access },
-          operation,
-          ...listArgs,
-          authentication,
+          args: {
+            operation,
+            ...listArgs,
+            authentication,
+          },
         })
       ).resolves.toEqual({ a: 1 });
 
@@ -415,9 +430,11 @@ describe('Access control package tests', () => {
         validateListAccessControl({
           // @ts-ignore
           access: { create: () => ({ a: 1 }) },
-          operation: 'create',
-          ...listArgs,
-          authentication,
+          args: {
+            operation: 'create',
+            ...listArgs,
+            authentication,
+          },
         })
       ).rejects.toThrow(Error);
 
@@ -426,9 +443,11 @@ describe('Access control package tests', () => {
         validateListAccessControl({
           // @ts-ignore
           access: { create: () => 10 },
-          operation: 'create',
-          ...listArgs,
-          authentication,
+          args: {
+            operation: 'create',
+            ...listArgs,
+            authentication,
+          },
         })
       ).rejects.toThrow(Error);
     }
@@ -451,14 +470,14 @@ describe('Access control package tests', () => {
       context: {},
     };
     await expect(
-      validateFieldAccessControl({ access: { [operation]: true, ..._access }, ...fieldArgs })
+      validateFieldAccessControl({ access: { [operation]: true, ..._access }, args: fieldArgs })
     ).resolves.toBe(true);
     await expect(
-      validateFieldAccessControl({ access: { [operation]: false, ..._access }, ...fieldArgs })
+      validateFieldAccessControl({ access: { [operation]: false, ..._access }, args: fieldArgs })
     ).resolves.toBe(false);
     await expect(
       // @ts-ignore
-      validateFieldAccessControl({ access: { [operation]: 10, ..._access }, ...fieldArgs })
+      validateFieldAccessControl({ access: { [operation]: 10, ..._access }, args: fieldArgs })
     ).rejects.toThrow(Error);
 
     const originalInput = {};
@@ -467,7 +486,7 @@ describe('Access control package tests', () => {
 
     await validateFieldAccessControl({
       access: { [operation]: accessFn, ..._access },
-      ...fieldArgs,
+      args: fieldArgs,
     });
 
     expect(accessFn).toHaveBeenCalledTimes(1);
@@ -484,16 +503,20 @@ describe('Access control package tests', () => {
       await expect(
         validateFieldAccessControl({
           access: { [operation]: async () => true, ..._access },
-          ...fieldArgs,
-          authentication,
+          args: {
+            ...fieldArgs,
+            authentication,
+          },
         })
       ).resolves.toBe(true);
 
       await expect(
         validateFieldAccessControl({
           access: { [operation]: async () => false, ..._access },
-          ...fieldArgs,
-          authentication,
+          args: {
+            ...fieldArgs,
+            authentication,
+          },
         })
       ).resolves.toBe(false);
 
@@ -501,8 +524,10 @@ describe('Access control package tests', () => {
         validateFieldAccessControl({
           // @ts-ignore
           access: { [operation]: () => 10, ..._access },
-          ...fieldArgs,
-          authentication,
+          args: {
+            ...fieldArgs,
+            authentication,
+          },
         })
       ).rejects.toThrow(Error);
     }
@@ -513,19 +538,25 @@ describe('Access control package tests', () => {
     // Test the static case: returning a boolean
     const authArgs = { listKey: 'listKey', authentication: {}, gqlName: 'gqlName', context: {} };
     await expect(
-      validateAuthAccessControl({ access: { [operation]: true }, operation, ...authArgs })
+      validateAuthAccessControl({ access: { [operation]: true }, args: { operation, ...authArgs } })
     ).resolves.toBe(true);
     await expect(
-      validateAuthAccessControl({ access: { [operation]: false }, operation, ...authArgs })
+      validateAuthAccessControl({
+        access: { [operation]: false },
+        args: { operation, ...authArgs },
+      })
     ).resolves.toBe(false);
     await expect(
       // @ts-ignore
-      validateAuthAccessControl({ access: { [operation]: 10 }, operation, ...authArgs })
+      validateAuthAccessControl({ access: { [operation]: 10 }, args: { operation, ...authArgs } })
     ).rejects.toThrow(Error);
 
     const accessFn = jest.fn(() => true);
 
-    await validateAuthAccessControl({ access: { [operation]: accessFn }, operation, ...authArgs });
+    await validateAuthAccessControl({
+      access: { [operation]: accessFn },
+      args: { operation, ...authArgs },
+    });
 
     expect(accessFn).toHaveBeenCalledTimes(1);
 
@@ -535,26 +566,32 @@ describe('Access control package tests', () => {
       await expect(
         validateAuthAccessControl({
           access: { [operation]: () => true },
-          operation,
-          ...authArgs,
-          authentication,
+          args: {
+            operation,
+            ...authArgs,
+            authentication,
+          },
         })
       ).resolves.toBe(true);
       await expect(
         validateAuthAccessControl({
           access: { [operation]: () => false },
-          operation,
-          ...authArgs,
-          authentication,
+          args: {
+            operation,
+            ...authArgs,
+            authentication,
+          },
         })
       ).resolves.toBe(false);
       // Object function
       await expect(
         validateAuthAccessControl({
           access: { [operation]: () => ({ a: 1 }) },
-          operation,
-          ...authArgs,
-          authentication,
+          args: {
+            operation,
+            ...authArgs,
+            authentication,
+          },
         })
       ).resolves.toEqual({ a: 1 });
 
@@ -563,9 +600,11 @@ describe('Access control package tests', () => {
         validateAuthAccessControl({
           // @ts-ignore
           access: { create: () => ({ a: 1 }) },
-          operation,
-          ...authArgs,
-          authentication,
+          args: {
+            operation,
+            ...authArgs,
+            authentication,
+          },
         })
       ).rejects.toThrow(Error);
 
@@ -574,9 +613,11 @@ describe('Access control package tests', () => {
         validateAuthAccessControl({
           // @ts-ignore
           access: { create: () => 10 },
-          operation,
-          ...authArgs,
-          authentication,
+          args: {
+            operation,
+            ...authArgs,
+            authentication,
+          },
         })
       ).rejects.toThrow(Error);
     }
