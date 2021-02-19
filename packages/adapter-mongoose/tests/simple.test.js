@@ -4,7 +4,7 @@ describe('Simple tokenizer', () => {
   test('Uses correct conditions', () => {
     const simpleConditions = { name: () => ({ foo: 'bar' }) };
     const getQueryConditions = jest.fn(() => simpleConditions);
-    const listAdapter = { fieldAdapters: [{ getQueryConditions }] };
+    const listAdapter = { fieldAdapters: [{ getQueryConditions }], config: {} };
 
     expect(simpleTokenizer(listAdapter, { name: 'hi' }, 'name', ['name'])).toMatchObject({
       foo: 'bar',
@@ -15,7 +15,7 @@ describe('Simple tokenizer', () => {
   test('Falls back to modifier conditions when no simple condition found', () => {
     const simpleConditions = { notinuse: () => ({ foo: 'bar' }) };
     const getQueryConditions = jest.fn(() => simpleConditions);
-    const listAdapter = { fieldAdapters: [{ getQueryConditions }] };
+    const listAdapter = { fieldAdapters: [{ getQueryConditions }], config: {} };
 
     expect(modifierTokenizer(listAdapter, { $count: 'hi' }, '$count', ['$count'])).toMatchObject({
       $count: 'hi',
@@ -26,7 +26,7 @@ describe('Simple tokenizer', () => {
   test('returns empty array when no matches found', () => {
     const simpleConditions = { notinuse: () => ({ foo: 'bar' }) };
     const getQueryConditions = jest.fn(() => simpleConditions);
-    const listAdapter = { fieldAdapters: [{ getQueryConditions }] };
+    const listAdapter = { fieldAdapters: [{ getQueryConditions }], config: {} };
 
     const result = simpleTokenizer(listAdapter, { name: 'hi' }, 'name', ['name']);
     expect(result).toBe(undefined);
@@ -37,7 +37,7 @@ describe('Simple tokenizer', () => {
     const nameConditions = jest.fn(() => ({ foo: 'bar' }));
     const simpleConditions = { name: nameConditions };
     const getQueryConditions = jest.fn(() => simpleConditions);
-    const listAdapter = { fieldAdapters: [{ getQueryConditions }] };
+    const listAdapter = { fieldAdapters: [{ getQueryConditions }], config: {} };
 
     expect(simpleTokenizer(listAdapter, { name: 'hi' }, 'name', ['name'])).toMatchObject({
       foo: 'bar',

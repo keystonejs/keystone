@@ -15,6 +15,7 @@ export type BaseKeystone = {
       listQueryName?: string;
       itemQueryName?: string;
       hooks?: Record<string, any>;
+      adapterConfig?: { searchField?: string };
     }
   ) => BaseKeystoneList;
   connect: (args?: any) => Promise<void>;

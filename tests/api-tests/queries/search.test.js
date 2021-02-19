@@ -18,6 +18,12 @@ function setupKeystone(adapterName) {
             name: integer(),
           },
         }),
+        Custom: list({
+          fields: {
+            other: text(),
+          },
+          db: { searchField: 'other' },
+        }),
       },
     }),
   });
@@ -224,6 +230,35 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           { name: 'one' },
           { name: 'three' },
         ]); // All results
+      })
+    );
+    test(
+      'custom',
+      runner(setupKeystone, async ({ context }) => {
+        const create = async (listKey, item) => createItem({ context, listKey, item });
+        await Promise.all([
+          create('Test', { name: 'one' }),
+          create('Test', { name: '%islikelike%' }),
+          create('Test', { name: 'three' }),
+          create('Number', { name: 12345 }),
+          create('Custom', { other: 'one' }),
+          create('Custom', { other: 'two' }),
+        ]);
+
+        const { data, errors } = await context.executeGraphQL({
+          query: `
+          query {
+            allCustoms(
+              search: "one",
+            ) {
+              other
+            }
+          }
+      `,
+        });
+        expect(errors).toBe(undefined);
+        expect(data).toHaveProperty('allCustoms');
+        expect(data.allCustoms).toEqual([{ other: 'one' }]);
       })
     );
   })

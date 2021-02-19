@@ -50,7 +50,7 @@ export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, 
     // appVersion
   });
 
-  Object.entries(lists).forEach(([key, { fields, graphql, access, hooks, description }]) => {
+  Object.entries(lists).forEach(([key, { fields, graphql, access, hooks, description, db }]) => {
     keystone.createList(key, {
       fields: Object.fromEntries(
         Object.entries(fields).map(([key, { type, config }]: any) => [key, { type, ...config }])
@@ -61,6 +61,7 @@ export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, 
       listQueryName: graphql?.listQueryName,
       itemQueryName: graphql?.itemQueryName,
       hooks,
+      adapterConfig: db,
       // FIXME: Unsupported options: Need to work which of these we want to support with backwards
       // compatibility options.
       // adminDoc
@@ -71,7 +72,6 @@ export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, 
       // singular
       // plural
       // path
-      // adapterConfig
       // cacheHint
       // plugins
     });

@@ -43,6 +43,8 @@ export type ListConfig<
 
   graphql?: ListGraphQLConfig;
 
+  db?: ListDBConfig;
+
   // Not currently supported
   // plugins?: any[]; // array of plugins that can modify the list config
 
@@ -222,6 +224,14 @@ export type ListGraphQLConfig = {
   queryLimits?: {
     maxResults?: number; // maximum number of items that can be returned in a query (or subquery)
   };
+};
+
+export type ListDBConfig = {
+  /**
+   * The name of the field to use for `search` filter operations.
+   * @default "name""
+   */
+  searchField?: string;
 };
 
 // export type CacheHint = { scope: 'PRIVATE' | 'PUBLIC'; maxAge: number };

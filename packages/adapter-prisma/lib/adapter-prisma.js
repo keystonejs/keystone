@@ -411,18 +411,29 @@ class PrismaListAdapter extends BaseListAdapter {
     }
 
     // TODO: Implement configurable search fields for lists
-    const searchField = this.fieldAdaptersByPath['name'];
+    const searchFieldName = this.config.searchField || 'name';
+    const searchField = this.fieldAdaptersByPath[searchFieldName];
     if (search !== undefined && search !== '' && searchField) {
       if (searchField.fieldName === 'Text') {
         // FIXME: Think about regex
-        if (!ret.where) ret.where = { name: { contains: search, mode: 'insensitive' } };
-        else ret.where = { AND: [ret.where, { name: { contains: search, mode: 'insensitive' } }] };
+        if (!ret.where) {
+          ret.where = { [searchFieldName]: { contains: search, mode: 'insensitive' } };
+        } else {
+          ret.where = {
+            AND: [ret.where, { [searchFieldName]: { contains: search, mode: 'insensitive' } }],
+          };
+        }
         // const f = escapeRegExp;
-        // this._query.andWhere(`${baseTableAlias}.name`, '~*', f(search));
+        // this._query.andWhere(`${baseTableAlias}.${searchFieldName}`, '~*', f(search));
       } else {
         // Return no results
-        if (!ret.where) ret.where = { AND: [{ name: null }, { NOT: { name: null } }] };
-        else ret.where = { AND: [ret.where, { name: null }, { NOT: { name: null } }] };
+        if (!ret.where) {
+          ret.where = { AND: [{ [searchFieldName]: null }, { NOT: { [searchFieldName]: null } }] };
+        } else {
+          ret.where = {
+            AND: [ret.where, { [searchFieldName]: null }, { NOT: { [searchFieldName]: null } }],
+          };
+        }
       }
     }
 
