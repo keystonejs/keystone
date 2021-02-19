@@ -78,6 +78,20 @@ export class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
     if (this.isNotNullable) column.notNullable();
     if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
+
+  addToForeignTableSchema(table, { path, isUnique, isIndexed, isNotNullable }) {
+    if (!this.field.isPrimaryKey) {
+      throw (
+        `Can't create foreign key '${path}' on table "${table._tableName}"; ` +
+        `'${this.path}' on list '${this.field.listKey}' as is not the primary key.`
+      );
+    }
+
+    const column = table.text(path);
+    if (isUnique) column.unique();
+    else if (isIndexed) column.index();
+    if (isNotNullable) column.notNullable();
+  }
 }
 
 export class PrismaTextInterface extends CommonTextInterface(PrismaFieldAdapter) {

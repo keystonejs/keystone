@@ -76,6 +76,20 @@ export class KnexIntegerInterface extends CommonIntegerInterface(KnexFieldAdapte
     if (this.isNotNullable) column.notNullable();
     if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
   }
+
+  addToForeignTableSchema(table, { path, isUnique, isIndexed, isNotNullable }) {
+    if (!this.field.isPrimaryKey) {
+      throw (
+        `Can't create foreign key '${path}' on table "${table._tableName}"; ` +
+        `'${this.path}' on list '${this.field.listKey}' as is not the primary key.`
+      );
+    }
+
+    const column = table.integer(path).unsigned();
+    if (isUnique) column.unique();
+    else if (isIndexed) column.index();
+    if (isNotNullable) column.notNullable();
+  }
 }
 
 export class PrismaIntegerInterface extends CommonIntegerInterface(PrismaFieldAdapter) {
