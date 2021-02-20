@@ -75,6 +75,9 @@ export const createExpressServer = async (
     server.use(cors(corsConfig));
   }
 
+  if (config.server?.configureServer) {
+    config.server.configureServer(server);
+  }
   const sessionStrategy = config.session ? config.session() : undefined;
 
   console.log('✨ Preparing GraphQL Server');

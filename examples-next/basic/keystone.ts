@@ -52,5 +52,10 @@ export default auth.withAuth(
     //   // store: redisSessionStore({ client: redis.createClient() }),
     //   secret: sessionSecret,
     // }),
+    server: {
+      configureServer(app) {
+        app.set('trust proxy', true);
+      },
+    },
   })
 );
