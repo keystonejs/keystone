@@ -112,10 +112,21 @@ export const Page = ({
             </a>
           ) : null}
         </aside>
-        <div ref={contentRef} className="min-w-0 w-full flex-auto max-h-full overflow-visible px-2">
-          <div className={cx({ prose: isProse }, 'w-full max-w-none mt-6')}>{children}</div>
+        <div
+          ref={contentRef}
+          className="min-w-0 md:flex w-full flex-auto max-h-full overflow-visible px-2"
+        >
+          <div
+            className={cx({ prose: isProse }, 'w-full max-w-none mt-6', {
+              'md:w-3/4': headings.length,
+            })}
+          >
+            {children}
+          </div>
           {headings.length ? (
-            <TableOfContents container={contentRef.current} headings={headings} />
+            <div className="md:w-1/4 hidden md:block">
+              <TableOfContents container={contentRef} headings={headings} />
+            </div>
           ) : null}
         </div>
       </div>

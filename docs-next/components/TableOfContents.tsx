@@ -27,7 +27,7 @@ export const TableOfContents = ({
   container,
   headings,
 }: {
-  container: HTMLElement | null;
+  container: React.RefObject<HTMLElement | null>;
   headings: Heading[];
 }) => {
   let allIds = headings.map(h => h.id);
@@ -35,11 +35,13 @@ export const TableOfContents = ({
   let [lastVisibleId, setLastVisbleId] = useState<string | null>(null);
 
   // observe relevant headings
+
   useEffect(() => {
-    if (container) {
+    if (container.current) {
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           const targetId: string | null = entry.target.getAttribute('id');
+          console.log(targetId);
           if (entry.isIntersecting && entry.intersectionRatio === 1) {
             setVisibleIds(sortVisible(allIds, targetId));
             setLastVisbleId(targetId);
@@ -49,16 +51,17 @@ export const TableOfContents = ({
         });
       }, observerOptions);
 
-      container.querySelectorAll('h2, h3').forEach((node: Element) => {
+      container.current.querySelectorAll('h2, h3').forEach((node: Element) => {
         observer.observe(node);
       });
-
       return () => observer.disconnect();
     }
   }, [container]);
 
   // catch if we're in a long gap between headings and resolve to the last available.
   let activeId = visibleIds[0] || lastVisibleId;
+
+  console.log('ACTIVE ID', activeId);
 
   return (
     <div
