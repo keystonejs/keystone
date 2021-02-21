@@ -81,8 +81,8 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --maxWorkers=1 api-tests
         env:
-          CLOUDINARY_CLOUD_NAME: keystone-cloudinary
-          CLOUDINARY_KEY: 758252673115372
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
           CI_NODE_TOTAL: 9
           CI_NODE_INDEX: ${{ matrix.index }}
@@ -137,8 +137,8 @@ jobs:
       - name: Unit tests
         run: yarn jest --ci --maxWorkers=1 --testPathIgnorePatterns=api-tests
         env:
-          CLOUDINARY_CLOUD_NAME: keystone-cloudinary
-          CLOUDINARY_KEY: 758252673115372
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
 
   linting:
@@ -195,9 +195,9 @@ jobs:
           - 5432:5432
     env:
       DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/test_db'
-      CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME
-      CLOUDINARY_KEY: $CLOUDINARY_KEY
-      CLOUDINARY_SECRET: $CLOUDINARY_SECRET
+      CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+      CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
+      CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
       PORT: 3000
     strategy:
       fail-fast: false
