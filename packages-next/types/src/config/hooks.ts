@@ -92,7 +92,9 @@ type ValidateInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
 ) => Promise<void> | void;
 
 type BeforeOrAfterChangeHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
-  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & ({ updatedItem: TGeneratedListTypes['inputs']['update']})
+  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & {
+    updatedItem: TGeneratedListTypes['inputs']['create'] | TGeneratedListTypes['inputs']['update'];
+  }
 ) => Promise<void> | void;
 
 type ArgsForDeleteOperation<TGeneratedListTypes extends BaseGeneratedListTypes> = {
