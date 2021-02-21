@@ -60,9 +60,12 @@ export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boo
         <aside className="flex-none md:w-52 md:mr-4 md:text-sm">
           {mobileNavCollapsed ? (
             <a
-              href="javascript:;"
+              href="#"
               className="block text-gray-600 hover:text-gray-900 py-4 px-2 border-b border-grey-200 font-semibold md:hidden"
-              onClick={() => setMobileNavCollapsed(false)}
+              onClick={event => {
+                event.preventDefault();
+                setMobileNavCollapsed(false);
+              }}
             >
               Show Nav
             </a>
@@ -72,9 +75,12 @@ export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boo
           </div>
           {!mobileNavCollapsed ? (
             <a
-              href="javascript:;"
+              href="#"
               className="block text-gray-600 hover:text-gray-900 py-4 px-2 mt-4 border-b border-t border-grey-200 font-semibold md:hidden"
-              onClick={() => setMobileNavCollapsed(true)}
+              onClick={event => {
+                event.preventDefault();
+                setMobileNavCollapsed(true);
+              }}
             >
               Hide Nav
             </a>
