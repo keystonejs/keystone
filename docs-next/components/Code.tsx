@@ -1,4 +1,6 @@
+/** @jsx jsx */
 import React from 'react';
+import { jsx, css } from '@emotion/core';
 import Highlight, { Language, Prism } from 'prism-react-renderer';
 import theme from '../lib/prism-theme';
 
@@ -30,5 +32,22 @@ export const Code = ({ children, className }: { children: string; className: any
         );
       }}
     </Highlight>
+  );
+};
+
+export const InlineCode = ({ children }) => {
+  return (
+    <code
+      className="bg-gray-50"
+      css={css`
+        padding: 0.2em 0.4em;
+        margin: 0;
+        font-size: 85% !important;
+        color: #24292e !important;
+        border-radius: 6px;
+      `}
+    >
+      {children}
+    </code>
   );
 };

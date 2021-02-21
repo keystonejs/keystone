@@ -4,6 +4,21 @@ module.exports = {
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    typography: {
+      default: {
+        css: {
+          code: {
+            '&::before': {
+              display: 'none',
+            },
+            '&::after': {
+              display: 'none',
+            },
+          },
+          // ...
+        },
+      },
+    },
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
