@@ -10,16 +10,6 @@ import { Navigation } from './Navigation';
 import { TableOfContents } from './TableOfContents';
 import slugify from '@sindresorhus/slugify';
 
-interface Meta {
-  headings: Array<{
-    type: string;
-    label: string;
-    id: string;
-    position: Record<string, any>;
-  }>;
-  editUrl: string;
-}
-
 export const Page = ({
   mdxContent,
   children,
@@ -144,7 +134,7 @@ export const components = {
   h6: H6,
 };
 
-export const Markdown = ({ children }: { children: ReactNode; meta: Meta }) => (
+export const Markdown = ({ children }: { children: ReactNode }) => (
   <Page mdxContent={children} isProse>
     <MDXProvider components={components}>{children}</MDXProvider>
   </Page>
