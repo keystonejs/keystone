@@ -38,13 +38,16 @@ export const Code = ({ children, className }: { children: string; className: any
 export const InlineCode = ({ children }) => {
   return (
     <code
-      className="bg-gray-50"
+      className="bg-gray-50 py-1 px-16 m-0 rounded-sm"
       css={css`
-        padding: 0.2em 0.4em;
-        margin: 0;
+        &::before {
+          display: none;
+        }
+        &::after {
+          display: none;
+        }
         font-size: 85% !important;
         color: #24292e !important;
-        border-radius: 6px;
       `}
     >
       {children}
