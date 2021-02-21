@@ -8,6 +8,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "apollo-server-types": "^0.6.3",
     "cors": "^2.8.5",
     "graphql": "^15.5.0"
   },
