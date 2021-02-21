@@ -49,7 +49,7 @@ export const TableOfContents = ({
         });
       }, observerOptions);
 
-      container.querySelectorAll('h2, h3').forEach((node: HTMLElement) => {
+      container.querySelectorAll('h2, h3').forEach((node: Element) => {
         observer.observe(node);
       });
 
