@@ -14,7 +14,7 @@ import {
 
 export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof controller>) => (
   <FieldContainer>
-    <FieldLabel>{field.label} 26</FieldLabel>
+    <FieldLabel>{field.label}</FieldLabel>
     {onChange ? (
       <TextInput
         autoFocus={autoFocus}
