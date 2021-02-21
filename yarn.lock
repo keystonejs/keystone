@@ -21247,9 +21247,9 @@ react-copy-to-clipboard@^5.0.1:
     prop-types "^15.5.8"
 
 react-day-picker@^8.0.0-beta.3:
-  version "8.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.0.0-beta.10.tgz#373f2d865e2489ff7fb13f0e22a44ab0ffd99468"
-  integrity sha512-Aaju3/mlG0mNJA1nZBXq7J+Fvmo/IZAdHPDqud5Iparn/lVbyXM/+ivJts53w2ox4cYKrfYG9fijt/eLyXzJ9w==
+  version "8.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.0.0-beta.3.tgz#4e6c3f734d8f810e62f40c43193561fb889b2a89"
+  integrity sha512-qvasG5iH6M+Ix3HAtCiSum6xbngG5re5F2bZN3VRof7FAl3LJbNcq+5geEITSLRt5uo3IsXF5eFvG6Ggpzw8og==
 
 "react-day-picker@npm:react-day-picker@^7.4.8":
   version "7.4.8"
