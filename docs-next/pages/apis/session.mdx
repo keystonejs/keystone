@@ -14,9 +14,7 @@ export default config({
   session: withItemData(
     statelessSessions({
       secret: 'ABCDEFGH1234567887654321HGFEDCBA',
-      ironOptions: {
-        /* ... */
-      },
+      ironOptions: { /* ... */ },
       maxAge: 60 * 60 * 24,
       secure: true,
       path: '/',
@@ -148,9 +146,7 @@ import { statelessSessions, withItemData } from '@keystone-next/keystone/session
 
 export default config({
   session: withItemData(
-    statelessSessions({
-      /* ... */
-    }),
+    statelessSessions({ /* ... */ }),
     { User: 'name isAdmin' }
   ),
   /* ... */
