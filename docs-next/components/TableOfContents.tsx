@@ -41,7 +41,6 @@ export const TableOfContents = ({
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           const targetId: string | null = entry.target.getAttribute('id');
-          console.log(targetId);
           if (entry.isIntersecting && entry.intersectionRatio === 1) {
             setVisibleIds(sortVisible(allIds, targetId));
             setLastVisbleId(targetId);
@@ -60,8 +59,6 @@ export const TableOfContents = ({
 
   // catch if we're in a long gap between headings and resolve to the last available.
   let activeId = visibleIds[0] || lastVisibleId;
-
-  console.log('ACTIVE ID', activeId);
 
   return (
     <div
