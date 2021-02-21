@@ -476,7 +476,6 @@ const componentBlockRenderers: InferRenderersForComponentBlocks<typeof component
 export default ({ children }) => {
   const headings = getHeadings(children);
   return (
-<<<<<<< HEAD
     <Page
       headings={[
         {
@@ -487,9 +486,6 @@ export default ({ children }) => {
         ...headings,
       ]}
     >
-=======
-    <Page mdxContent={children}>
->>>>>>> d2cdab10f... remove plugin, use React to coerce a heading list instead
       <DocumentFeaturesProvider>
         <div className="prose max-w-none">
           <H1>How To Use Document Fields</H1>
