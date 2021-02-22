@@ -1,5 +1,7 @@
 /** @jsx jsx  */
-import { Children, ReactNode, useRef, useState } from 'react';
+import { ReactNode } from 'react';
+import { useRef, useState } from 'react';
+import { getHeadings, Heading } from '../lib/getHeadings';
 import { jsx } from '@keystone-ui/core';
 import { Code } from '../components/Code';
 import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
@@ -8,30 +10,18 @@ import cx from 'classnames';
 import Link from 'next/link';
 import { Navigation } from './Navigation';
 import { TableOfContents } from './TableOfContents';
-import slugify from '@sindresorhus/slugify';
 
 export const Page = ({
-  mdxContent,
+  headings = [],
   children,
   isProse,
 }: {
-  mdxContent?: ReactNode;
+  headings?: Heading[];
   children: ReactNode;
   isProse?: boolean;
 }) => {
   const [mobileNavCollapsed, setMobileNavCollapsed] = useState(true);
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const headings = Children.toArray(mdxContent)
-    .filter((child: any) => {
-      return child.props?.mdxType && ['h1', 'h2', 'h3'].includes(child.props.mdxType);
-    })
-    .map((child: any) => {
-      return {
-        id: `${slugify(child.props.children)}`,
-        depth: (child.props?.mdxType && parseInt(child.props.mdxType.replace('h', ''), 0)) ?? 0,
-        label: child.props.children,
-      };
-    });
   return (
     <div className="antialiased pb-24">
       <div className="py-4 border-b border-gray-200">
@@ -140,8 +130,11 @@ export const components = {
   h6: H6,
 };
 
-export const Markdown = ({ children }: { children: ReactNode }) => (
-  <Page mdxContent={children} isProse>
-    <MDXProvider components={components}>{children}</MDXProvider>
-  </Page>
-);
+export const Markdown = ({ children }: { children: ReactNode }) => {
+  const headings = getHeadings(children);
+  return (
+    <Page headings={headings} isProse>
+      <MDXProvider components={components}>{children}</MDXProvider>
+    </Page>
+  );
+};

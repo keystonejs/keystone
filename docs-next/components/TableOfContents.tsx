@@ -93,6 +93,7 @@ export const TableOfContents = ({
       <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
         {headings.map((h: Heading, i: number) => {
           let isActive = activeId === h.id;
+          const slug = `#${h.id}`;
           return (
             <li
               key={h.label + i}
@@ -118,7 +119,7 @@ export const TableOfContents = ({
                     color: '#2684FF',
                   },
                 }}
-                href={`#${h.id}`}
+                href={slug}
               >
                 {h.label}
               </a>
