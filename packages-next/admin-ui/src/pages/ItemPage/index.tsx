@@ -577,7 +577,9 @@ const ColumnLayout = (props: HTMLAttributes<HTMLDivElement>) => {
   const { spacing } = useTheme();
 
   return (
-    <Container css={{ position: 'relative' }}>
+    // this container must be relative to catch absolute children
+    // particularly the "expanded" document-field, which needs a height of 100%
+    <Container css={{ position: 'relative', height: '100%' }}>
       <div
         css={{
           alignItems: 'start',

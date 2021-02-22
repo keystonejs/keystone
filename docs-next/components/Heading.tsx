@@ -107,7 +107,6 @@ export const H3 = (props: StringOnlyChildren) => (
 export const H4 = (props: StringOnlyChildren) => (
   <Heading
     css={{
-      fontSize: '1.2rem',
       ...hashLinkOffset,
     }}
     {...props}
