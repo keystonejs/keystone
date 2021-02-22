@@ -7,7 +7,7 @@
   "main": "dist/access-control.cjs.js",
   "module": "dist/access-control.esm.js",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v10.23.3"
   },
   "dependencies": {
     "@keystonejs/utils": "^6.0.1"

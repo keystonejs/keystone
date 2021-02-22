@@ -221,6 +221,6 @@
     "gatsby-plugin-page-creator": "2.1.5"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v10.23.3"
   }
 }
