@@ -12,7 +12,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.10",
+    "@apollo/client": "^3.3.11",
     "@arch-ui/alert": "^0.0.18",
     "@arch-ui/button": "^0.0.22",
     "@arch-ui/controls": "^0.1.9",
@@ -30,7 +30,7 @@
     "@arch-ui/theme": "^0.0.11",
     "@arch-ui/tooltip": "^0.1.14",
     "@arch-ui/typography": "^0.0.18",
-    "@babel/runtime": "^7.12.13",
+    "@babel/runtime": "^7.12.18",
     "@emotion/core": "^10.1.1",
     "@keystonejs/access-control": "^7.0.0",
     "@keystonejs/adapter-knex": "^13.0.1",
@@ -54,11 +54,11 @@
     "lodash.groupby": "^4.6.0",
     "lodash.isequal": "^4.5.0",
     "luxon": "^1.26.0",
-    "mongoose": "^5.11.16",
+    "mongoose": "^5.11.17",
     "p-settle": "^4.1.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
-    "react-day-picker": "^8.0.0-beta.3",
+    "react-day-picker": "^8.0.0-beta.11",
     "react-dom": "^17.0.1",
     "react-image": "^4.0.3",
     "react-select": "^3.2.0",
@@ -70,7 +70,7 @@
     "@keystonejs/test-utils": "*",
     "globby": "^11.0.2",
     "graphql-upload": "^11.0.0",
-    "mime": "^2.5.0"
+    "mime": "^2.5.2"
   },
   "preconstruct": {
     "entrypoints": [
