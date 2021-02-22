@@ -1847,7 +1847,7 @@
     "@graphql-tools/utils" "^7.1.2"
     tslib "~2.1.0"
 
-"@graphql-tools/utils@^7.1.2", "@graphql-tools/utils@^7.2.6", "@graphql-tools/utils@^7.5.0":
+"@graphql-tools/utils@^7.1.2", "@graphql-tools/utils@^7.5.0":
   version "7.5.0"
   resolved "https://registry.yarnpkg.com/@graphql-tools/utils/-/utils-7.5.0.tgz#8485d42eea0f723748dca4cc09344f032bd1e2fa"
   integrity sha512-8f//RSqHmKRdg9A3GHlZdxzlVfF/938ZD9edXLW7EriSABg1BXu3veru9W02VqORypArb2S/Tyeyvsk2gForqA==
