@@ -13877,15 +13877,10 @@ io-ts-excess@^1.0.1:
   dependencies:
     io-ts "^2.0.0"
 
-io-ts@^2.0.0:
+io-ts@^2.0.0, io-ts@^2.2.14:
   version "2.2.14"
   resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.14.tgz#99405fab547690784d70c54a3048a44711237316"
   integrity sha512-UWL1mdDe5YI4+/7YlrbsSwKmsECFFlWcVHT2CPGzeNODHj2qY0cibjulYfrfz5SCPoDAsjVP7vFKGcF+L10+SQ==
-
-io-ts@^2.2.15:
-  version "2.2.15"
-  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.15.tgz#0b0b19a6f8a64f4a524ad5810d56432789428128"
-  integrity sha512-ww2ZPrErx5pjCCI/tWRwjlEIDEndnN9kBIxAylXj+WNIH4ZVgaUqFuabGouehkRuvrmvzO5OnZmLf+o50h4izQ==
 
 ip-regex@^2.1.0:
   version "2.1.0"
@@ -21063,10 +21058,10 @@ react-copy-to-clipboard@^5.0.1:
     copy-to-clipboard "^3"
     prop-types "^15.5.8"
 
-react-day-picker@^8.0.0-beta.11:
-  version "8.0.0-beta.11"
-  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.0.0-beta.11.tgz#f767a87f49e96905d847d286b16aa8b853a105d3"
-  integrity sha512-7wXQSxcqjoryLI9vsmi1We8bRyPYXbjJqFdevKUNewdVEda5sqY5h9BEoge1denspzxL2hToHKLECOSYsLHMwg==
+react-day-picker@^8.0.0-beta.3:
+  version "8.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.0.0-beta.3.tgz#4e6c3f734d8f810e62f40c43193561fb889b2a89"
+  integrity sha512-qvasG5iH6M+Ix3HAtCiSum6xbngG5re5F2bZN3VRof7FAl3LJbNcq+5geEITSLRt5uo3IsXF5eFvG6Ggpzw8og==
 
 "react-day-picker@npm:react-day-picker@^7.4.8":
   version "7.4.8"
