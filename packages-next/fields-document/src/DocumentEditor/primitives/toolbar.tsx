@@ -40,7 +40,7 @@ type DirectionType = keyof typeof autoFlowDirection;
 const ToolbarGroupContext = createContext<{ direction: DirectionType }>({ direction: 'row' });
 const useToolbarGroupContext = () => useContext(ToolbarGroupContext);
 
-type ToolbarGroupProps = { direction?: DirectionType; wrap?: boolean } & MarginProps &
+type ToolbarGroupProps = { direction?: DirectionType } & MarginProps &
   HTMLAttributes<HTMLDivElement>;
 export const ToolbarGroup = forwardRefWithAs<'div', ToolbarGroupProps>(
   ({ children, direction = 'row', ...props }, ref) => {
