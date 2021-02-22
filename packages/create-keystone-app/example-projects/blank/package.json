@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@keystonejs/adapter-mongoose": "^11.0.0",
-    "@keystonejs/app-admin-ui": "^7.3.8",
+    "@keystonejs/app-admin-ui": "^7.4.0",
     "@keystonejs/app-graphql": "^6.2.0",
     "@keystonejs/keystone": "^19.0.0",
     "cross-env": "^7.0.3"
