@@ -34,7 +34,7 @@
     "@keystonejs/fields-authed-relationship": "^1.0.17",
     "@keystonejs/list-plugins": "^8.0.0",
     "@keystonejs/test-utils": "^12.0.0",
-    "@keystonejs/utils": "^6.0.0",
+    "@keystonejs/utils": "^6.0.1",
     "express": "^4.17.1"
   }
 }
