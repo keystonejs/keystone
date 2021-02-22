@@ -64,9 +64,7 @@ export const Navigation = () => {
         <NavItem href="/apis/config">Config API</NavItem>
         <NavItem href="/apis/schema">Schema API</NavItem>
         <NavItem href="/apis/fields">Fields API</NavItem>
-        <NavItem href="/apis/access-control" isPlaceholder>
-          Access Control API
-        </NavItem>
+        <NavItem href="/apis/access-control">Access Control API</NavItem>
         <NavItem href="/apis/hooks" isPlaceholder>
           Hooks API
         </NavItem>
@@ -79,6 +77,9 @@ export const Navigation = () => {
         </NavItem>
         <NavItem href="/apis/graphql" isPlaceholder>
           GraphQL API
+        </NavItem>
+        <NavItem href="/apis/items" isPlaceholder>
+          List Item API
         </NavItem>
       </Section>
     </div>
