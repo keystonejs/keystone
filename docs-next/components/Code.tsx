@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import React from 'react';
+import { ReactNode } from 'react';
 import { jsx, css } from '@emotion/core';
 import Highlight, { Language, Prism } from 'prism-react-renderer';
 import theme from '../lib/prism-theme';
@@ -35,7 +35,7 @@ export const Code = ({ children, className }: { children: string; className: any
   );
 };
 
-export const InlineCode = ({ children }) => {
+export const InlineCode = ({ children }: { children: ReactNode }) => {
   return (
     <code
       className="bg-gray-50 py-1 px-16 m-0 rounded-sm"
