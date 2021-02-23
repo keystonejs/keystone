@@ -7,7 +7,7 @@
     "dev": "next -p 8000"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.13",
+    "@babel/runtime": "^7.12.18",
     "@keystone-next/fields-document": "^2.0.0",
     "@keystone-ui/button": "^3.0.0",
     "@keystone-ui/core": "^2.0.0",
@@ -32,7 +32,8 @@
     "autoprefixer": "^10.2.4",
     "classnames": "^2.2.6",
     "copy-to-clipboard": "^3.3.1",
-    "next": "10.0.5",
+    "facepaint": "^1.2.1",
+    "next": "10.0.7",
     "next-compose-plugins": "^2.2.1",
     "postcss": "^8.2.6",
     "prism-react-renderer": "^1.1.1",

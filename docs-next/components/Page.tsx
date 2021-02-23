@@ -1,15 +1,27 @@
 /** @jsx jsx  */
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
+import { useRef, useState } from 'react';
+import { getHeadings, Heading } from '../lib/getHeadings';
 import { jsx } from '@keystone-ui/core';
-import { Code } from '../components/Code';
+import { Code, InlineCode } from '../components/Code';
 import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
 import { MDXProvider } from '@mdx-js/react';
 import cx from 'classnames';
 import Link from 'next/link';
 import { Navigation } from './Navigation';
+import { TableOfContents } from './TableOfContents';
 
-export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boolean }) => {
+export const Page = ({
+  headings = [],
+  children,
+  isProse,
+}: {
+  headings?: Heading[];
+  children: ReactNode;
+  isProse?: boolean;
+}) => {
   const [mobileNavCollapsed, setMobileNavCollapsed] = useState(true);
+  const contentRef = useRef<HTMLDivElement | null>(null);
   return (
     <div className="antialiased pb-24">
       <div className="py-4 border-b border-gray-200">
@@ -86,8 +98,22 @@ export const Page = ({ children, isProse }: { children: ReactNode; isProse?: boo
             </a>
           ) : null}
         </aside>
-        <div className="min-w-0 w-full flex-auto max-h-full overflow-visible px-2">
-          <div className={cx({ prose: isProse }, 'w-full max-w-none mt-6')}>{children}</div>
+        <div
+          ref={contentRef}
+          className="min-w-0 md:flex w-full flex-auto max-h-full overflow-visible px-2"
+        >
+          <div
+            className={cx({ prose: isProse }, 'w-full max-w-none mt-6', {
+              'md:w-3/4': headings.length,
+            })}
+          >
+            {children}
+          </div>
+          {headings.length ? (
+            <div className="md:w-1/4 hidden md:block">
+              <TableOfContents container={contentRef} headings={headings} />
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
@@ -102,10 +128,14 @@ export const components = {
   h4: H4,
   h5: H5,
   h6: H6,
+  inlineCode: InlineCode,
 };
 
-export const Markdown = ({ children }: { children: ReactNode }) => (
-  <Page isProse>
-    <MDXProvider components={components}>{children}</MDXProvider>
-  </Page>
-);
+export const Markdown = ({ children }: { children: ReactNode }) => {
+  const headings = getHeadings(children);
+  return (
+    <Page headings={headings} isProse>
+      <MDXProvider components={components}>{children}</MDXProvider>
+    </Page>
+  );
+};
