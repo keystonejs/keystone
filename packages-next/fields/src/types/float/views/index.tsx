@@ -18,7 +18,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
     {onChange ? (
       <TextInput
         autoFocus={autoFocus}
-        onChange={event => onChange(event.target.value)}
+        onChange={event => onChange(event.target.value.replace(/[^\d\.]/, ''))}
         value={value}
       />
     ) : (
