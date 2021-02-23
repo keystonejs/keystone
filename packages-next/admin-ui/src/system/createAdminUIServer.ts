@@ -29,7 +29,9 @@ export const createAdminUIServer = async (
     });
     const isValidSession = ui?.isAccessAllowed
       ? await ui.isAccessAllowed(context)
-      : context.session !== undefined;
+      : sessionStrategy
+      ? context.session !== undefined
+      : true;
     const maybeRedirect = await ui?.pageMiddleware?.({
       req,
       session: context.session,
