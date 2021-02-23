@@ -110,6 +110,7 @@ export const TableOfContents = ({
                   fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
                   fontWeight: isActive ? 500 : 'normal',
                   paddingLeft: h.depth === 3 ? '0.5rem' : undefined,
+
                   // prefer padding an anchor, rather than margin on list-item, to increase hit area
                   paddingBottom: '0.4em',
                   paddingTop: '0.4em',
