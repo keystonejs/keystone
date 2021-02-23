@@ -337,7 +337,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
           // Allow access to the adminMeta data from the /init path to correctly render that page
           // even if the user isn't logged in (which should always be the case if they're seeing /init)
           const headers = context.req?.headers;
-          const host = headers ? (headers['x-forwarded-host'] || headers.host) : null;
+          const host = headers ? headers['x-forwarded-host'] || headers.host : null;
           const url = headers?.referer ? new URL(headers.referer) : undefined;
           const accessingInitPage =
             url?.pathname === '/init' &&
