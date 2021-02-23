@@ -48,8 +48,11 @@ export const controller = (config: FieldControllerConfig): FieldController<strin
     label: config.label,
     graphqlSelection: config.path,
     defaultValue: '',
-    deserialize: data => (parseFloat(data[config.path]) || '') + '',
-    serialize: value => ({ [config.path]: parseFloat(value.replace(',', '.')) || null }),
+    deserialize: data => {
+      const value = data[config.path];
+      return typeof value === 'number' ? value + '' : '';
+    },
+    serialize: value => ({ [config.path]: value === '' ? null : parseFloat(value) }),
     filter: {
       Filter(props) {
         return (
