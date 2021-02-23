@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { ReactNode } from 'react';
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@keystone-ui/core';
 import Highlight, { Language, Prism } from 'prism-react-renderer';
 import theme from '../lib/prism-theme';
 
