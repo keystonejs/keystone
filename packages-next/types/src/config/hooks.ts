@@ -29,7 +29,7 @@ export type ListHooks<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   /**
    * Used to **cause side effects** after a delete operation operation has occurred
    */
-  afterDelete?: BeforeOrAfterChangeHook<TGeneratedListTypes>;
+  afterDelete?: BeforeOrAfterDeleteHook<TGeneratedListTypes>;
 };
 
 type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedListTypes> = (
@@ -92,7 +92,9 @@ type ValidateInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
 ) => Promise<void> | void;
 
 type BeforeOrAfterChangeHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
-  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes>
+  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & {
+    updatedItem: TGeneratedListTypes['inputs']['create'] | TGeneratedListTypes['inputs']['update'];
+  }
 ) => Promise<void> | void;
 
 type ArgsForDeleteOperation<TGeneratedListTypes extends BaseGeneratedListTypes> = {

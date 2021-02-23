@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { ButtonHTMLAttributes, HTMLAttributes, createContext, useContext, ReactNode } from 'react';
-import { Inline, MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
+import { Box, MarginProps, forwardRefWithAs, jsx, useTheme } from '@keystone-ui/core';
 
 // Spacers and Separators
 // ------------------------------
@@ -44,11 +44,20 @@ type ToolbarGroupProps = { direction?: DirectionType } & MarginProps &
   HTMLAttributes<HTMLDivElement>;
 export const ToolbarGroup = forwardRefWithAs<'div', ToolbarGroupProps>(
   ({ children, direction = 'row', ...props }, ref) => {
+    const { spacing } = useTheme();
     return (
       <ToolbarGroupContext.Provider value={{ direction }}>
-        <Inline ref={ref} {...props}>
+        <Box
+          ref={ref}
+          css={{
+            display: 'inline-grid',
+            gap: spacing.xxsmall,
+            gridAutoFlow: autoFlowDirection[direction],
+          }}
+          {...props}
+        >
           {children}
-        </Inline>
+        </Box>
       </ToolbarGroupContext.Provider>
     );
   }
