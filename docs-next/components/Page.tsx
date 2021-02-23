@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { useRef, useState } from 'react';
 import { getHeadings, Heading } from '../lib/getHeadings';
 import { jsx } from '@keystone-ui/core';
-import { Code } from '../components/Code';
+import { Code, InlineCode } from '../components/Code';
 import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
 import { MDXProvider } from '@mdx-js/react';
 import cx from 'classnames';
@@ -128,6 +128,7 @@ export const components = {
   h4: H4,
   h5: H5,
   h6: H6,
+  inlineCode: InlineCode,
 };
 
 export const Markdown = ({ children }: { children: ReactNode }) => {
