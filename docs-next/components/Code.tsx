@@ -1,4 +1,6 @@
-import React from 'react';
+/** @jsx jsx */
+import { ReactNode } from 'react';
+import { jsx, css } from '@keystone-ui/core';
 import Highlight, { Language, Prism } from 'prism-react-renderer';
 import theme from '../lib/prism-theme';
 
@@ -30,5 +32,26 @@ export const Code = ({ children, className }: { children: string; className: any
         );
       }}
     </Highlight>
+  );
+};
+
+export const InlineCode = ({ children }: { children: ReactNode }) => {
+  return (
+    <code
+      className="bg-gray-100 py-1 px-1.5 m-0 rounded-sm"
+      css={css`
+        &::before {
+          display: none;
+        }
+        &::after {
+          display: none;
+        }
+        font-size: 85% !important;
+        font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+        color: #24292e !important;
+      `}
+    >
+      {children}
+    </code>
   );
 };
