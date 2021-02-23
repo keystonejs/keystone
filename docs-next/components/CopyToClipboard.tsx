@@ -16,7 +16,7 @@ export const CopyToClipboard = ({ value }: { value: string }) => {
     addToast({ title: 'Faild to oopy to clipboard', tone: 'negative' });
   };
   const onClick = (event: React.SyntheticEvent) => {
-    event.preventDefault();
+    // event.preventDefault();
     if (typeof value !== 'string' || typeof window === 'undefined') return;
     const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
     const text = `${url}#${value}`;
@@ -40,7 +40,7 @@ export const CopyToClipboard = ({ value }: { value: string }) => {
 
   return (
     <a
-      href={`#`}
+      href={`#${value}`}
       css={{
         alignItems: 'center',
         color: '#97A0AF', // colors.n40
