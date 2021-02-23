@@ -8,7 +8,7 @@
     "typescript": "^4.1.5"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.13",
+    "@babel/runtime": "^7.12.18",
     "@keystone-next/admin-ui": "^9.0.0",
     "@keystone-next/admin-ui-utils": "^3.0.0",
     "@keystone-next/types": "^13.0.0",

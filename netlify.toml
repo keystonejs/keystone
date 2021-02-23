@@ -1,8 +1,0 @@
-[build]
-  command = "yarn website build"
-  publish = "website/public"
-  ignore = "git diff --quiet HEAD^ HEAD website/ yarn.lock packages/**/*.md docs/"
-[build.environment]
-  NODE_VERSION = "10"
-  YARN_VERSION = "1.15.2"
-  YARN_FLAGS = "--frozen-lockfile"

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@keystonejs/fields": "^22.0.0",
-    "@keystonejs/session": "^8.1.0"
+    "@keystonejs/session": "^8.1.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/auth-password"
 }

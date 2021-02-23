@@ -19,7 +19,7 @@
     "@arch-ui/input": "^0.1.11",
     "@keystonejs/adapter-prisma": "^3.0.1",
     "@keystonejs/app-admin-ui": "^7.4.0",
-    "@keystonejs/app-graphql": "^6.2.0",
+    "@keystonejs/app-graphql": "^6.2.1",
     "@keystonejs/app-static": "^5.1.3",
     "@keystonejs/auth-passport": "^6.0.0",
     "@keystonejs/auth-password": "^6.0.1",
