@@ -47,7 +47,6 @@ type Config = FieldControllerConfig<{
   scale: number;
 }>;
 
-
 export const controller = (config: Config): FieldController<string, string> => {
   console.log('controller');
   console.log(config);
@@ -57,12 +56,15 @@ export const controller = (config: Config): FieldController<string, string> => {
     graphqlSelection: config.path,
     defaultValue: '',
     deserialize: data => (parseFloat(data[config.path]) || '') + '',
-    serialize: value => ({ [config.path]: parseFloat(value.replace(',', '.')).toFixed(config.fieldMeta.scale).toString() || null }),
+    serialize: value => ({
+      [config.path]:
+        parseFloat(value.replace(',', '.')).toFixed(config.fieldMeta.scale).toString() || null,
+    }),
     filter: {
       Filter(props) {
         return (
           <TextInput
-          onChange={event => {
+            onChange={event => {
               props.onChange(event.target.value.replace(/[^\d\.,\s]/g, ''));
             }}
             value={props.value}
