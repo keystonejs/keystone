@@ -14,15 +14,11 @@ export default config({
       fields: {
         fieldName: text({
           access: { /* ... */ },
-          /* ... */
         }),
       },
       access: { /* ... */ },
-      /* ... */
     }),
-    /* ... */
   }),
-  /* ... */
 });
 ```
 
@@ -55,11 +51,8 @@ export default config({
         update: true,
         delete: true,
       },
-      /* ... */
     }),
-    /* ... */
   }),
-  /* ... */
 });
 ```
 
@@ -88,11 +81,8 @@ export default config({
     ListKey: list({
       // Static access control definition
       access: true,
-      /* ... */
     }),
-    /* ... */
   }),
-  /* ... */
 });
 ```
 
@@ -116,11 +106,8 @@ export default config({
       fields: { isLocked: checkbox() },
       // Declarative access control definition
       access: { isLocked: false },
-      /* ... */
     }),
-    /* ... */
   }),
-  /* ... */
 });
 ```
 
@@ -149,11 +136,8 @@ export default config({
     ListKey: list({
       // Imperative access control definition
       access: args => true,
-      /* ... */
     }),
-    /* ... */
   }),
-  /* ... */
 });
 ```
 
@@ -195,11 +179,8 @@ export default config({
       }) => {
         return true;
       },
-      /* ... */
     }),
-    /* ... */
   }),
-  /* ... */
 });
 ```
 
@@ -232,17 +213,11 @@ export default config({
               read: true,
               update: true,
             },
-            /* ... */
           },
-          /* ... */
         }),
-        /* ... */
       },
-      /* ... */
     }),
-    /* ... */
   }),
-  /* ... */
 });
 ```
 
@@ -274,15 +249,10 @@ export default config({
         fieldName: text({
           // Static access control definition
           access: true,
-          /* ... */
         }),
-        /* ... */
       },
-      /* ... */
     }),
-    /* ... */
   }),
-  /* ... */
 });
 ```
 
@@ -307,15 +277,10 @@ export default config({
         fieldName: text({
           // Imperative access control definition
           access: args => true,
-          /* ... */
         }),
-        /* ... */
       },
-      /* ... */
     }),
-    /* ... */
   }),
-  /* ... */
 });
 ```
 
@@ -358,15 +323,10 @@ export default config({
           }) => {
             return true;
           },
-          /* ... */
         }),
-        /* ... */
       },
-      /* ... */
     }),
-    /* ... */
   }),
-  /* ... */
 });
 ```
 
