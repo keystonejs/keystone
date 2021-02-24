@@ -2,4 +2,4 @@
 '@keystone-next/auth': patch
 ---
 
-Check x-forwarded-host before host for support reverse proxy defaults
+Fixed a bug which prevented accessing the '/init` path from behind a reverse proxy.
