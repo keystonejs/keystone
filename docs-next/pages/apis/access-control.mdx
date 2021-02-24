@@ -45,7 +45,7 @@ import { config, createSchema, list } from '@keystone-next/keystone/schema';
 
 export default config({
   lists: createSchema({
-    ListName: list({
+    ListKey: list({
       // Concise access control definition
       access: true,
       // Verbose access control definition
@@ -85,7 +85,7 @@ import { config, createSchema, list } from '@keystone-next/keystone/schema';
 
 export default config({
   lists: createSchema({
-    ListName: list({
+    ListKey: list({
       // Static access control definition
       access: true,
       /* ... */
@@ -112,7 +112,7 @@ import { config, createSchema, list } from '@keystone-next/keystone/schema';
 
 export default config({
   lists: createSchema({
-    ListName: list({
+    ListKey: list({
       fields: { isLocked: checkbox() },
       // Declarative access control definition
       access: { isLocked: false },
@@ -146,7 +146,7 @@ import { config, createSchema, list } from '@keystone-next/keystone/schema';
 
 export default config({
   lists: createSchema({
-    ListName: list({
+    ListKey: list({
       // Imperative access control definition
       access: args => true,
       /* ... */
@@ -181,7 +181,7 @@ import { config, createSchema, list } from '@keystone-next/keystone/schema';
 
 export default config({
   lists: createSchema({
-    ListName: list({
+    ListKey: list({
       // Imperative access control definition
       access: ({
         listKey,
@@ -220,7 +220,7 @@ import { text } from '@keystone-next/fields';
 
 export default config({
   lists: createSchema({
-    ListName: list({
+    ListKey: list({
       fields: {
         fieldName: text({
           access: {
@@ -269,7 +269,7 @@ import { text } from '@keystone-next/fields';
 
 export default config({
   lists: createSchema({
-    ListName: list({
+    ListKey: list({
       fields: {
         fieldName: text({
           // Static access control definition
@@ -302,7 +302,7 @@ import { text } from '@keystone-next/fields';
 
 export default config({
   lists: createSchema({
-    ListName: list({
+    ListKey: list({
       fields: {
         fieldName: text({
           // Imperative access control definition
@@ -341,7 +341,7 @@ import { text } from '@keystone-next/fields';
 
 export default config({
   lists: createSchema({
-    ListName: list({
+    ListKey: list({
       fields: {
         fieldName: text({
           // Imperative access control definition
