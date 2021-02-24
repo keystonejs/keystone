@@ -28,7 +28,6 @@ export const SubscribeForm = ({
     // and there's a valid email address.
     // Basic validation check on the email?
     setLoading(true);
-    return setFormSubmitted(true);
     if (validEmail(email)) {
       // if good add email to mailing list
       // and redirect to dashboard.
@@ -84,7 +83,7 @@ export const SubscribeForm = ({
               {error ? 'Try again' : 'Subscribe'}
             </Button>
           </Stack>
-          <p css={{ margin: '0 !important', color: 'red' }}>{error}</p>
+          {error ? <p css={{ margin: '0 !important', color: 'red' }}>{error}</p> : null}
         </Stack>
       </form>
     </Fragment>
