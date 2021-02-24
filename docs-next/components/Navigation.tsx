@@ -59,6 +59,9 @@ export const Navigation = () => {
         <NavItem href="/guides/virtual-fields" isPlaceholder>
           Virtual Fields
         </NavItem>
+        <NavItem href="/guides/testing" isPlaceholder>
+          Testing
+        </NavItem>
       </Section>
       <Section label="API">
         <NavItem href="/apis/config">Config API</NavItem>
@@ -72,9 +75,7 @@ export const Navigation = () => {
         <NavItem href="/apis/auth" isPlaceholder>
           Authentication API
         </NavItem>
-        <NavItem href="/apis/context" isPlaceholder>
-          Context API
-        </NavItem>
+        <NavItem href="/apis/context">Context API</NavItem>
         <NavItem href="/apis/graphql" isPlaceholder>
           GraphQL API
         </NavItem>
