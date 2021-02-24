@@ -4,10 +4,11 @@ import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
 import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
 
 export class Text extends Implementation {
-  constructor(path, { isMultiline }) {
+  constructor(path, { isMultiline, maxLength }) {
     super(...arguments);
     this.isMultiline = isMultiline;
     this.isOrderable = true;
+    this.maxLength = maxLength;
   }
 
   get _supportsUnique() {
@@ -60,7 +61,12 @@ const CommonTextInterface = superclass =>
 
 export class MongoTextInterface extends CommonTextInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
-    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
+    schema.add({
+      [this.path]: this.mergeSchemaOptions(
+        { type: String, maxlength: this.config.maxLength || null },
+        this.config
+      ),
+    });
   }
 }
 
@@ -72,7 +78,10 @@ export class KnexTextInterface extends CommonTextInterface(KnexFieldAdapter) {
   }
 
   addToTableSchema(table) {
-    const column = table.text(this.path);
+    const column =
+      this.config.maxLength > 0
+        ? table.string(this.path, this.config.maxLength)
+        : table.text(this.path);
     if (this.isUnique) column.unique();
     else if (this.isIndexed) column.index();
     if (this.isNotNullable) column.notNullable();
