@@ -120,7 +120,7 @@ A more common pattern is to return a declarative access control rule from an [im
 
 ### Imperative (list)
 
-Imperative access control rules are functions which return either a boolean value or a [declarative](#declarative-list) value (e.g. a GraphQL `where` clause).
+Imperative access control rules are functions which return either a boolean value or a [declarative](#declarative-list) value (i.e. a GraphQL `where` clause).
 Imperative access control functions can be either synchronous or async.
 The function is passed a set of arguments which depends on the operation being performed.
 For multi-valued operations the function is only called once, and must evaluate the entire operation as a whole.
