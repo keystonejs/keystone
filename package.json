@@ -187,6 +187,7 @@
     "distFilenameStrategy": "unscoped-package-name"
   },
   "jest": {
+    "testRegex": "(/__tests__/.*|(\\.|/)(test))\\.[jt]sx?$",
     "setupFilesAfterEnv": [
       "./tests/jest/setup.js"
     ],
