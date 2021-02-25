@@ -17,7 +17,7 @@ import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema';
 
 import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';
-import { KeystoneContext } from '@keystone-next/types/src/core';
+import { KeystoneContext } from '@keystone-next/types';
 
 const getSchemaExtension = ({
   identityField,
