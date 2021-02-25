@@ -231,11 +231,13 @@ function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promi
 
 function _before(adapterName: AdapterName) {
   return async function (
-    setupKeystone: (adapterName: AdapterName) => Promise<{ keystone: Keystone<string>; app: any }>
+    setupKeystone: (
+      adapterName: AdapterName
+    ) => Promise<{ keystone: Keystone<string>; app: any; context: any }>
   ) {
-    const { keystone, app } = await setupKeystone(adapterName);
+    const { keystone, context, app } = await setupKeystone(adapterName);
     await keystone.connect();
-    return { keystone, app };
+    return { keystone, context, app };
   };
 }
 
