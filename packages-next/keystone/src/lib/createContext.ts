@@ -33,7 +33,7 @@ export function makeCreateContext({
     skipAccessControl?: boolean;
     req?: IncomingMessage;
   } = {}): KeystoneContext => {
-    const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, context, variables }) => {
+    const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, variables }) => {
       if (typeof query === 'string') {
         query = parse(query);
       }
@@ -41,13 +41,13 @@ export function makeCreateContext({
         execute({
           schema: graphQLSchema,
           document: query,
-          contextValue: context ?? contextToReturn,
+          contextValue: contextToReturn,
           variableValues: variables,
         })
       );
     };
-    const runGraphQL: KeystoneGraphQLAPI<any>['run'] = async args => {
-      let result = await rawGraphQL(args);
+    const runGraphQL: KeystoneGraphQLAPI<any>['run'] = async ({ query, variables }) => {
+      let result = await rawGraphQL({ query, variables });
       if (result.errors?.length) {
         throw result.errors[0];
       }
