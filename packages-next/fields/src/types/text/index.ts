@@ -24,6 +24,6 @@ export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   views: resolveView('text/views'),
   getAdminMeta: () => ({
     displayMode: config.ui?.displayMode ?? 'input',
-    maxLength: config.maxLength ?? null
+    maxLength: config.maxLength ?? null,
   }),
 });
