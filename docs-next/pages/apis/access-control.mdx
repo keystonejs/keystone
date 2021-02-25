@@ -125,9 +125,11 @@ Imperative access control functions can be either synchronous or async.
 The function is passed a set of arguments which depends on the operation being performed.
 For multi-valued operations the function is only called once, and must evaluate the entire operation as a whole.
 
-If the function returns `false` then an `Access Denied` error will be returned.
-If the function returns `true` then the operation will be allowed.
-If the function returns a declarative value then this will be applied to the operation as decribed [above](#declarative-list).
+If the function returns:
+
+- `false` then an `Access Denied` error will be returned.
+- `true` then the operation will be allowed.
+- **a declarative value** then this will be applied to the operation as decribed [above](#declarative-list).
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -289,16 +291,16 @@ export default config({
 
 Imperative access control functions are passed a collection of arguments which can be used to determine whether the operation is allowed.
 
-| Argument        | Description                                                                                                                                                   |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `listKey`       | The key of the list being operated on.                                                                                                                        |
-| `fieldKey`      | The key of the field being operated on.                                                                                                                       |
-| `operation`     | The CRU operation being performed (`'create'`, `'read'`, `'update'`).                                                                                        |
-| `session`       | The current session object. See the [Sessions API](./session) for details                                                                                     |
-| `originalInput` | For `create` and `update` operations, this is the value of `data` passed into the mutation. For `read` operations this value is `undefined`.                  |
-| `gqlName`       | The name of the query or mutation being called.                                                                                                               |
-| `itemId`        | The `id` of the item being updated, deleted, or read.                                                                                                         |
-| `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                               |
+| Argument        | Description                                                                                                                                                        |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `listKey`       | The key of the list being operated on.                                                                                                                             |
+| `fieldKey`      | The key of the field being operated on.                                                                                                                            |
+| `operation`     | The CRU operation being performed (`'create'`, `'read'`, `'update'`).                                                                                              |
+| `session`       | The current session object. See the [Sessions API](./session) for details                                                                                          |
+| `originalInput` | For `create` and `update` operations, this is the value of `data` passed into the mutation. For `read` operations this value is `undefined`.                       |
+| `gqlName`       | The name of the query or mutation being called.                                                                                                                    |
+| `itemId`        | The `id` of the item being updated, deleted, or read.                                                                                                              |
+| `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                    |
 | `item`          | The item being updated, deleted, or read. This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
 
 ```typescript
