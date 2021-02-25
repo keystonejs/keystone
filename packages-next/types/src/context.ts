@@ -82,7 +82,6 @@ export type KeystoneGraphQLAPI<
 };
 
 type GraphQLExecutionArguments = {
-  context?: any;
   query: string | DocumentNode;
   variables: Record<string, any>;
 };
