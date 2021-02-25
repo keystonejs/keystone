@@ -18,7 +18,6 @@ type FieldAccessArgs = {
   originalInput: any;
   gqlName: string;
   itemId: any;
-  itemIds: any;
   context: KeystoneContext;
   item: any;
   fieldKey: string;
@@ -124,12 +123,7 @@ export const accessControlContext = {
     originalInput: FieldAccessArgs['originalInput'],
     item: FieldAccessArgs['item'],
     operation: FieldAccessArgs['operation'],
-    {
-      gqlName,
-      itemId,
-      itemIds,
-      context,
-    }: Pick<FieldAccessArgs, 'gqlName' | 'itemId' | 'itemIds' | 'context'>
+    { gqlName, itemId, context }: Pick<FieldAccessArgs, 'gqlName' | 'itemId' | 'context'>
   ) {
     return validateFieldAccessControl({
       access: access[context.schemaName],
@@ -141,7 +135,6 @@ export const accessControlContext = {
       listKey,
       gqlName,
       itemId,
-      itemIds,
       context,
     });
   },
