@@ -19,7 +19,7 @@ jobs:
         with:
           filters: |
             shouldRunTests:
-              - '!{{website,docs,examples,packages-next,examples-next,design-system}/**,**/*.md}'
+              - '!{{website,docs,examples,design-system}/**,**/*.md}'
       - run: echo "SHOULD_RUN_TESTS=$SHOULD_RUN" >> $GITHUB_ENV
         if: github.event_name == 'pull_request'
         env:
