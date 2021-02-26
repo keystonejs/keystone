@@ -3,8 +3,6 @@ import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keys
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
 
-export type Int = number & { __int__: void };
-
 export type DecimalFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = FieldConfig<TGeneratedListTypes> & {
@@ -24,6 +22,6 @@ export const decimal = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   views: resolveView('decimal/views'),
   getAdminMeta: () => ({
     precision: config.precision || null,
-    scale: config.precision || null,
+    scale: config.scale || null,
   }),
 });
