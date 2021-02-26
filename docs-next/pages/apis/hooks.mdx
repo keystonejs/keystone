@@ -5,6 +5,7 @@ import { Markdown } from '../../components/Page';
 Hooks allow you to execute code at different stages of the mutation lifecycle when performing create, update, and delete operations.
 Lists and fields both support the same set of hook functions, with some slight differences in the arguments they accept.
 The differences will be explicitly called out below.
+For each hook, the fields hooks are applied to all fields in parallel first, followed by the list hooks.
 
 For examples of how to use hooks in your system please see the [hooks guide](../guides/hooks).
 
@@ -437,19 +438,19 @@ export default config({
 
 Create and update operations take a `data` value for a single item from the GraphQL input and then perform a number of _data resolving_ steps before writing the final value to the database.
 
-At the start of an operation, `resolvedData` is set to be `data`.
 At each stage of the data resolving process, the value of `resolvedData` can be modifed or augmented.
 The final value of `resolvedData` is the value that will be validated and saved to the database.
 
 The data resolving steps are applied in the following order:
 
-1. Defaults (built in): Any fields which have a default value and are `undefined` in `resolvedData` will be set to their default value.
-2. Relationships (built in): The values for relationship fields on `resolvedData` are either an ID string (for `one` relationships), or an array of ID strings (for `many` relationships).
+1. Initialisation: Set the value of `resolvedData` to the `data` input value from the GraphQL mutation.
+2. Defaults (built in): Any fields which have a default value and are `undefined` in `resolvedData` will be set to their default value.
+3. Relationships (built in): The values for relationship fields on `resolvedData` are either an ID string (for `one` relationships), or an array of ID strings (for `many` relationships).
    This is the format expected when saving relationship fields to the data.
    The value is computed by combining the provided `connect`, `create`, `disconnect`, and `disconnectAll` values with the existing data in the database.
    Any nested create operations are performed as part of this process.
-3. Field values (built in): Some fields types take the value given in the GraphQL operation and convert it into a different type or format to be saved to the database.
-4. Field hooks (user defined): A `resolveInput` field hook can return a new value for its field.
-5. List hooks (user defined): A `resolveInput` list hook can return a new value for the entire `resolvedData` object.
+4. Field values (built in): Some fields types take the value given in the GraphQL operation and convert it into a different type or format to be saved to the database.
+5. Field hooks (user defined): A `resolveInput` field hook can return a new value for its field, which will the current field value on `resolvedData`.
+6. List hooks (user defined): A `resolveInput` list hook can return a new value for the entire `resolvedData` object.
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
