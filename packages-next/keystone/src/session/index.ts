@@ -122,7 +122,7 @@ export function statelessSessions<T>({
   path = '/',
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
-  domain
+  domain,
 }: StatelessSessionsOptions): () => SessionStrategy<T> {
   return () => {
     if (!secret) {
@@ -150,7 +150,7 @@ export function statelessSessions<T>({
             secure,
             path,
             sameSite: 'lax',
-            domain
+            domain,
           })
         );
       },
@@ -166,7 +166,7 @@ export function statelessSessions<T>({
             secure,
             path,
             sameSite: 'lax',
-            domain
+            domain,
           })
         );
 
