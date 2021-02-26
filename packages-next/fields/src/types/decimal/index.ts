@@ -9,8 +9,8 @@ export type DecimalFieldConfig<
   isRequired?: boolean;
   isIndexed?: boolean;
   isUnique?: boolean;
-  precision?: Int;
-  scale?: Int;
+  precision?: number;
+  scale?: number;
   defaultValue?: FieldDefaultValue<string>;
 };
 
