@@ -178,6 +178,84 @@ export default config({
 });
 ```
 
+### float
+
+A `float` field represents a float value.
+
+Options:
+
+- `defaultValue` (default: `undefined`): Can be either a float value or an async function which takes an argument `({ context, originalItem })` and returns a float value.
+  This value will be used for the field when creating items if no explicit value is set.
+  `context` is a [`KeystoneContext`](./context) object.
+  `originalItem` is an object containing the data passed in to the `create` mutation.
+- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+- `isIndexed` (`knex` and `mongoose` adapters only. Default: `false`): If `true` a database level index will be applied to this field, which can make searching faster.
+- `isUnique` (default: `false`): If `true` then all values of this field must be unique.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { float } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        fieldName: float({
+          defaultValue: 3.14159,
+          isRequired: true,
+          isIndexed: true,
+          isUnique: true,
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
+### decimal
+
+A `decimal` field represents a decimal value.
+
+Options:
+
+- `defaultValue` (default: `undefined`): Can be either a decimal value or an async function which takes an argument `({ context, originalItem })` and returns an decimal value.
+  This value will be used for the field when creating items if no explicit value is set.
+  `context` is a [`KeystoneContext`](./context) object.
+  `originalItem` is an object containing the data passed in to the `create` mutation.
+- `precision` (default: `null` treated as `18`): Maximum number of digits that are present in the number.
+- `scale` (default: `null` treated as `4`): Maximum number of decimal places.
+- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+- `isIndexed` (`knex` and `mongoose` adapters only. Default: `false`): If `true` a database level index will be applied to this field, which can make searching faster.
+- `isUnique` (default: `false`): If `true` then all values of this field must be unique.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { decimal } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        fieldName: decimal({
+          defaultValue: 3.142,
+          precision: 12,
+          scale: 3,
+          isRequired: true,
+          isIndexed: true,
+          isUnique: true,
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
 ### password
 
 A `password` field represents an encrypted password value.
