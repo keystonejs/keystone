@@ -1,4 +1,4 @@
-import type { KeystoneContext } from './core';
+import type { KeystoneContext } from './context';
 import type { BaseGeneratedListTypes, GqlNames } from './utils';
 
 // TODO: This is only a partial typing of the core Keystone class.

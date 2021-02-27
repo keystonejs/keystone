@@ -19,7 +19,7 @@ jobs:
         with:
           filters: |
             shouldRunTests:
-              - '!{{website,docs,examples,packages-next,examples-next,design-system}/**,**/*.md}'
+              - '!{{website,docs,examples,design-system}/**,**/*.md}'
       - run: echo "SHOULD_RUN_TESTS=$SHOULD_RUN" >> $GITHUB_ENV
         if: github.event_name == 'pull_request'
         env:
@@ -203,10 +203,11 @@ jobs:
       fail-fast: false
       matrix:
         project:
-          - test-projects/basic
-          - test-projects/login
-          - test-projects/access-control
-          - test-projects/client-validation
+          - tests/test-projects/basic
+          - tests/test-projects/login
+          - tests/test-projects/access-control
+          - tests/test-projects/client-validation
+          - docs-next
     steps:
       - name: Checkout Repo
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -236,9 +237,9 @@ jobs:
       - name: Install Dependencies
         run: yarn
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-      - run: yarn --cwd tests/${{ matrix.project }} cypress install
+      - run: yarn --cwd ${{ matrix.project }} cypress install
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
-      - run: yarn --cwd tests/${{ matrix.project }} cypress:run:ci
+      - run: yarn --cwd ${{ matrix.project }} cypress:run:ci
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - uses: actions/upload-artifact@v2
         if: failure()
