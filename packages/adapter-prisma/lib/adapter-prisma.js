@@ -42,7 +42,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   }
 
   _runPrismaCmd(cmd) {
-    return execSync(`yarn prisma ${cmd} --schema ${this.schemaPath}`, {
+    return execSync(`yarn prisma ${cmd} --schema "${this.schemaPath}"`, {
       env: { ...process.env, DATABASE_URL: this._url() },
       encoding: 'utf-8',
     });
