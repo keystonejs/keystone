@@ -55,6 +55,12 @@ type StatelessSessionsOptions = {
    * @default '/'
    */
   path?: string;
+  /**
+   * Specifies the domain for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.3|`Domain` `Set-Cookie` attribute}
+   *
+   * @default current domain
+   */
+  domain?: string;
 };
 
 type FieldSelections = {
@@ -116,6 +122,7 @@ export function statelessSessions<T>({
   path = '/',
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
+  domain,
 }: StatelessSessionsOptions): () => SessionStrategy<T> {
   return () => {
     if (!secret) {
@@ -143,6 +150,7 @@ export function statelessSessions<T>({
             secure,
             path,
             sameSite: 'lax',
+            domain,
           })
         );
       },
@@ -158,6 +166,7 @@ export function statelessSessions<T>({
             secure,
             path,
             sameSite: 'lax',
+            domain,
           })
         );
 

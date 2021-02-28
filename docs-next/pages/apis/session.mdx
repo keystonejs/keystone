@@ -18,6 +18,7 @@ export default config({
       maxAge: 60 * 60 * 24,
       secure: true,
       path: '/',
+      domain: 'localhost',
     }),
     { User: 'name isAdmin' }
   ),
@@ -62,6 +63,8 @@ Options
   For Firefox, the `https:` requirements are ignored when the `secure` attribute is set by localhost (since Firefox 75).
 - `path` (default: `'/'`): A path that must exist in the requested URL, or the browser won't send the cookie header.
   The forward slash (`/`) character is interpreted as a directory separator, and subdirectories will be matched as well: for `path: '/docs'`, `/docs`, `/docs/Web/`, and `/docs/Web/HTTP` will all match.
+- `domain` (default: current document URL): Host to which the cookie will be sent. See [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#attributes) for more details on the `domain` cookie attribute..
+  **Note**: Only one domain is allowed. If a domain is specified then subdomains are always included.
 
 ### Session stores
 
