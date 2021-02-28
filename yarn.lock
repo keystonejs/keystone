@@ -4044,16 +4044,7 @@
   resolved "https://registry.yarnpkg.com/@types/keystonejs__fields/-/keystonejs__fields-5.1.1.tgz#1c91718eeee0b2e58a2b3f57ad234967bad202df"
   integrity sha512-m8Ny/rTXzzoKO33UDkcspmHK0Q/qP4teo2510+HG1NMxM7pF/jPPL/viGtAJF/eIYEsSZxzwNSTFWMw/DlPIwQ==
 
-"@types/keystonejs__keystone@*":
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/@types/keystonejs__keystone/-/keystonejs__keystone-7.0.1.tgz#3dbb00813aff29149f0ae877514be0b077455ec0"
-  integrity sha512-m0LTB8aKkBQrU5+B2Qc2e5YMdi/YrmqH5doPtETqda6zMaFeV+L9DGAUQMyT8CjOK73kPDMVljNDkZ5/MvQ3RA==
-  dependencies:
-    "@types/express" "*"
-    "@types/keystonejs__fields" "*"
-    graphql "^15.4.0"
-
-"@types/keystonejs__keystone@^6.0.1":
+"@types/keystonejs__keystone@*", "@types/keystonejs__keystone@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@types/keystonejs__keystone/-/keystonejs__keystone-6.0.1.tgz#4f11248c3aaac76ca92e452c78fd733bc1ba74db"
   integrity sha512-Viu3zQGrNiGfCIPgdUrGtlMuSwFwDbH50YGej6CBJ2lXfY56/YHmNS8gRq3yADxwJqVbaBBc+GHzhdGZmknMvQ==
@@ -12713,7 +12704,7 @@ graphql@^14.1.1, graphql@^14.5.8:
   dependencies:
     iterall "^1.2.2"
 
-graphql@^15.3.0, graphql@^15.4.0, graphql@^15.5.0:
+graphql@^15.3.0, graphql@^15.5.0:
   version "15.5.0"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.5.0.tgz#39d19494dbe69d1ea719915b578bf920344a69d5"
   integrity sha512-OmaM7y0kaK31NKG31q4YbD2beNYa6jBBKtMFT6gLYJljHLJr42IqJ8KX08u3Li/0ifzTU5HjmoOOrwa5BRLeDA==
@@ -21144,9 +21135,9 @@ react-copy-to-clipboard@^5.0.1:
     prop-types "^15.5.8"
 
 react-day-picker@^8.0.0-beta.3:
-  version "8.0.0-beta.16"
-  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.0.0-beta.16.tgz#5930c58e46a26d5b530fe44b35b1858ced0b04a7"
-  integrity sha512-vl1/sjcX9CrHHpQkD6bUYJ4a/0u1Wzix7Qjj2/V1C/56n4Ch1OKwT+RL40oRc1q/gXKDxb8UByw/NAZl6hgi/g==
+  version "8.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.0.0-beta.3.tgz#4e6c3f734d8f810e62f40c43193561fb889b2a89"
+  integrity sha512-qvasG5iH6M+Ix3HAtCiSum6xbngG5re5F2bZN3VRof7FAl3LJbNcq+5geEITSLRt5uo3IsXF5eFvG6Ggpzw8og==
 
 "react-day-picker@npm:react-day-picker@^7.4.8":
   version "7.4.8"
