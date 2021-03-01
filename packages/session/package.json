@@ -7,7 +7,7 @@
   "main": "dist/session.cjs.js",
   "module": "dist/session.esm.js",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v10.24.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.18",

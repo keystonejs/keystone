@@ -6,7 +6,7 @@
   "author": "The Keystone Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v10.24.0"
   },
   "dependencies": {
     "loader-utils": "^2.0.0"
