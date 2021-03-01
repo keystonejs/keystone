@@ -49,6 +49,9 @@ export const Navigation = () => {
         <NavItem href="/guides/hooks" isPlaceholder>
           Hooks
         </NavItem>
+        <NavItem href="/guides/auth" isPlaceholder>
+          Authentication
+        </NavItem>
         <NavItem href="/guides/schema-extension" isPlaceholder>
           Schema Extension
         </NavItem>
@@ -67,9 +70,7 @@ export const Navigation = () => {
         <NavItem href="/apis/access-control">Access Control API</NavItem>
         <NavItem href="/apis/hooks"> Hooks API</NavItem>
         <NavItem href="/apis/session">Session API</NavItem>
-        <NavItem href="/apis/auth" isPlaceholder>
-          Authentication API
-        </NavItem>
+        <NavItem href="/apis/auth">Authentication API</NavItem>
         <NavItem href="/apis/context">Context API</NavItem>
         <NavItem href="/apis/graphql" isPlaceholder>
           GraphQL API
