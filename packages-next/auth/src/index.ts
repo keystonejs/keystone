@@ -60,14 +60,16 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       listView: { fieldMode: 'hidden' },
     },
   } as const;
-
+  // These field names have to follow this format so that for e.g
+  // validateAuthToken() behaves correctly.
+  const tokenFields = (tokenType: 'passwordReset' | 'magicAuth') => ({
+    [`${tokenType}Token`]: password({ ...fieldConfig }),
+    [`${tokenType}IssuedAt`]: timestamp({ ...fieldConfig }),
+    [`${tokenType}RedeemedAt`]: timestamp({ ...fieldConfig }),
+  });
   const additionalListFields = {
-    [`passwordResetToken`]: password({ ...fieldConfig }),
-    [`passwordResetIssuedAt`]: timestamp({ ...fieldConfig }),
-    [`passwordResetRedeemedAt`]: timestamp({ ...fieldConfig }),
-    [`magicAuthToken`]: password({ ...fieldConfig }),
-    [`magicAuthIssuedAt`]: timestamp({ ...fieldConfig }),
-    [`magicAuthRedeemedAt`]: timestamp({ ...fieldConfig }),
+    ...(passwordResetLink && tokenFields('passwordReset')),
+    ...(magicAuthLink && tokenFields('magicAuth')),
   };
 
   /**
