@@ -31,7 +31,7 @@ You can learn more about the next version, which is now [in preview](https://nex
 
 ## Keystone 5
 
-The **Keystone 5** codebase is now in active maintenance mode and now lives at [keystonejs/keystone-5](https://github.com/keystonejs/keystone-5).
+The [keystonejs/keystone-5](Keystone 5) codebase is now in active maintenance mode and now lives at [keystonejs/keystone-5](https://github.com/keystonejs/keystone-5).
 
 For more information please read our [Keystone 5 and beyond](https://github.com/keystonejs/keystone-5/issues/21) post.
 
