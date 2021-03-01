@@ -11,8 +11,10 @@
 </div>
 <br>
 
-[![slack](https://keystone-community.now.sh//badge.svg)](https://keystone-community.now.sh/)
-[![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=react-select)
+<div align="center">
+  [![slack](https://keystone-community.now.sh//badge.svg)](https://keystone-community.now.sh/)
+  [![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=react-select)
+</div>
 
 ## Contents
 
