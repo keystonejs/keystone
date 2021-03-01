@@ -18,6 +18,7 @@
 ## Contents
 
 - [Keystone Next](#keystone-next)
+- [Keystone 5](#keystone-5)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
 
@@ -32,6 +33,12 @@ In the last six months, we built around the existing stable core of Keystone 5's
 There is a lot to do, and with a larger than ever team at Thinkmill working on it, we're excited to show you what we're planning and get it shipped!
 
 You can learn more about the next version, which is now [in preview](https://next.keystonejs.com/roadmap).
+
+## Keystone 5
+
+The Keystone 5 codebase is now in active maintenance mode and now lives at [keystonejs/keystone-5](https://github.com/keystonejs/keystone-5).
+
+For more information please read our [Keystone 5 and beyond](https://github.com/keystonejs/keystone-5/issues/21) post.
 
 <!-- ## Getting Started -->
 <!-- TBC -->
