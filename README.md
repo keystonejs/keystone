@@ -16,11 +16,11 @@
 
 ## Contents
 
-- [What's new](#whats-new)
+- [Keystone Next](#keystone-next)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
 
-## What's new?
+## Keystone Next
 
 When Keystone 5 was announced in 2018, it was a great leap forward for the project from a back-end Node.js CMS platform built with MongoDB, to a modern platform with first class support for GraphQL, PostgreSQL, and more.
 
