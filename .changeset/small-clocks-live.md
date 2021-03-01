@@ -2,4 +2,4 @@
 '@keystone-next/auth': patch
 ---
 
-Moved the `getSchemaExtension` code into its own code for easier documentation.
+Moved the `getSchemaExtension` code into its own file for easier documentation.
