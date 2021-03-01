@@ -4,7 +4,7 @@
   <p><b>A scalable platform and CMS to build Node.js applications.</b></p>
   <p><code>schema => ({ GraphQL, AdminUI })</code></p>
   <br>
-  <p>Keystone comes with first-class GraphQL support, a highly extensible architecture, and a wonderful Admin UI.</p>
+  <p>Keystone Next is a preview of the next major release of KeystoneJS, the most powerful headless content management system around.</p>
   <sub>Looking for Keystone 5? Head over to <a href="https://github.com/keystonejs/keystone-5"><code>keystone-5</code></a>.</sub>
   <br>
 </div>
