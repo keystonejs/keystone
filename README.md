@@ -1,6 +1,5 @@
 <div align="center">
   <img src="website/static/readme-header.png" width="557">
-  <h1>KeystoneJS</h1>
   <br>
   <p><b>A scalable platform and CMS to build Node.js applications.</b></p>
   <p><code>schema => ({ GraphQL, AdminUI })</code></p>
@@ -11,32 +10,43 @@
 </div>
 <br>
 
-[![slack](https://keystone-community.now.sh//badge.svg)](https://keystone-community.now.sh/)
-[![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=react-select)
+<!-- ![CI](https://github.com/keystonejs/keystone/workflows/CI/badge.svg) -->
+<!-- [![slack](https://keystone-community.now.sh//badge.svg)](https://keystone-community.now.sh/) -->
+<!-- [![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=react-select) -->
 
 ## Contents
 
-- [What's new](#whats-new)
+- [What's new?](#whats-new)
+- [Keystone 5](#keystone-5)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
 
 ## What's new?
 
-When Keystone 5 was announced in 2018, it was a great leap forward for the project from a back-end Node.js CMS platform built with MongoDB, to a modern platform with first class support for GraphQL, PostgreSQL, and more.
+**[Keystone Next](http://next.keystonejs.com)** is a preview of the next major release of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
 
-Keystone Next is a preview of the next major release of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
-
-In the last six months, we built around the existing stable core of Keystone 5's packages to test the changes we wanted to make and validate our ideas. We're now happy with what we've built, and over the course of this year, Keystone Next will become Keystone 6.
-
-There is a lot to do, and with a larger than ever team at Thinkmill working on it, we're excited to show you what we're planning and get it shipped!
+To learn more, check out our [What's next for KeystoneJS](https://github.com/keystonejs/keystone/issues/4962) announcement post.
 
 You can learn more about the next version, which is now [in preview](https://next.keystonejs.com/roadmap).
+
+## Keystone 5
+
+The **Keystone 5** codebase is now in active maintenance mode and now lives at [keystonejs/keystone-5](https://github.com/keystonejs/keystone-5).
+
+For more information please read our [Keystone 5 and beyond](https://github.com/keystonejs/keystone-5/issues/21) post.
 
 <!-- ## Getting Started -->
 <!-- TBC -->
 
-<!-- ## Documentation -->
-<!-- TBC -->
+## Documentation
+
+The [Keystone Next](https://next.keystonejs.com/whats-new) website contains a documentation preview.
+
+In the next month you'll see a new project starter and getting started guide, as well as a new set of example projects demoing how to use Keystone Next features.
+
+## Feedback
+
+We'd love to hear your feedback, reach out on Twitter at [KeystoneJS](https://twitter.com/keystonejs) and [subscribe](https://next.keystonejs.com/roadmap#project-status) to be notified of our progress.
 
 <!-- ## Version control -->
 <!-- TBC -->
