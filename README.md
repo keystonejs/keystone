@@ -1,6 +1,6 @@
 <div align="center">
   <img src="website/static/readme-header-next.png" width="445">
-  <br><br>
+  <br>
   <p><b>A scalable platform and CMS to build Node.js applications.</b></p>
   <p><code>schema => ({ GraphQL, AdminUI })</code></p>
   <br>
