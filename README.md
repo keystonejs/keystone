@@ -23,7 +23,7 @@
 
 ## What's new?
 
-**[Keystone Next](http://next.keystonejs.com)** is a preview of the next major release of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
+[Keystone Next](http://next.keystonejs.com) is a preview of the next major release of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
 
 To learn more, check out our [What's next for KeystoneJS](https://github.com/keystonejs/keystone/issues/4962) announcement post.
 
