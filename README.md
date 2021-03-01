@@ -17,20 +17,16 @@
 
 ## Contents
 
-- [Keystone Next](#keystone-next)
+- [What's new?](#whats-new)
 - [Keystone 5](#keystone-5)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
 
-## Keystone Next
-
-When **Keystone 5** was announced in 2018, it was a great leap forward for the project from a back-end Node.js CMS platform built with MongoDB, to a modern platform with first class support for GraphQL, PostgreSQL, and more.
+## What's new?
 
 **[Keystone Next](http://next.keystonejs.com)** is a preview of the next major release of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
 
-In the last six months, we built around the existing stable core of Keystone 5's packages to test the changes we wanted to make and validate our ideas. We're now happy with what we've built, and over the course of this year, Keystone Next will become Keystone 6.
-
-There is a lot to do, and with a larger than ever team at [Thinkmill](https://thinkmill.com.au) working on it, we're excited to show you what we're planning and get it shipped!
+To learn more, check out our [What's next for KeystoneJS](https://github.com/keystonejs/keystone/issues/4962) announcement post.
 
 You can learn more about the next version, which is now [in preview](https://next.keystonejs.com/roadmap).
 
