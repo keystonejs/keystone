@@ -17,7 +17,6 @@ describe('all pages', () => {
         if (item) {
           cy.get('main a').then(anchors => {
             for (let anchor of anchors) {
-              if (anchor.href !== undefined) console.log(anchor);
               expect(anchor.href).to.not.equal(undefined);
             }
           });
