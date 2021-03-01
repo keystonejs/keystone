@@ -26,7 +26,7 @@
 
 When **Keystone 5** was announced in 2018, it was a great leap forward for the project from a back-end Node.js CMS platform built with MongoDB, to a modern platform with first class support for GraphQL, PostgreSQL, and more.
 
-**[Keystone Next]**(http://next.keystonejs.com) is a preview of the next major release of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
+**[Keystone Next](http://next.keystonejs.com)** is a preview of the next major release of KeystoneJS, the most powerful headless content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
 
 In the last six months, we built around the existing stable core of Keystone 5's packages to test the changes we wanted to make and validate our ideas. We're now happy with what we've built, and over the course of this year, Keystone Next will become Keystone 6.
 
