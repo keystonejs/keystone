@@ -1,79 +1,16 @@
 import url from 'url';
-import { mergeSchemas } from '@graphql-tools/merge';
 import {
   AdminFileToWrite,
   BaseGeneratedListTypes,
   KeystoneConfig,
-  ExtendGraphqlSchema,
+  KeystoneContext,
 } from '@keystone-next/types';
 import { password, timestamp } from '@keystone-next/fields';
 
-import { AuthConfig, Auth, AuthGqlNames, AuthTokenTypeConfig } from './types';
-
-import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
-import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
-import { getPasswordResetSchema } from './gql/getPasswordResetSchema';
-import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema';
-
+import { AuthConfig, Auth, AuthGqlNames } from './types';
+import { getSchemaExtension } from './schema';
 import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';
-import { KeystoneContext } from '@keystone-next/types';
-
-const getSchemaExtension = ({
-  identityField,
-  listKey,
-  protectIdentities,
-  secretField,
-  gqlNames,
-  initFirstItem,
-  passwordResetLink,
-  magicAuthLink,
-}: {
-  identityField: string;
-  listKey: string;
-  protectIdentities: boolean;
-  secretField: string;
-  gqlNames: AuthGqlNames;
-  initFirstItem?: any;
-  passwordResetLink?: any;
-  magicAuthLink?: AuthTokenTypeConfig;
-}): ExtendGraphqlSchema => (schema, keystone) =>
-  [
-    getBaseAuthSchema({
-      identityField,
-      listKey,
-      protectIdentities,
-      secretField,
-      gqlNames,
-    }),
-    initFirstItem &&
-      getInitFirstItemSchema({
-        listKey,
-        fields: initFirstItem.fields,
-        itemData: initFirstItem.itemData,
-        gqlNames,
-        keystone,
-      }),
-    passwordResetLink &&
-      getPasswordResetSchema({
-        identityField,
-        listKey,
-        protectIdentities,
-        secretField,
-        passwordResetLink,
-        gqlNames,
-      }),
-    magicAuthLink &&
-      getMagicAuthLinkSchema({
-        identityField,
-        listKey,
-        protectIdentities,
-        magicAuthLink,
-        gqlNames,
-      }),
-  ]
-    .filter(x => x)
-    .reduce((s, extension) => mergeSchemas({ schemas: [s], ...extension }), schema);
 
 /**
  * createAuth function
