@@ -33,7 +33,7 @@ const NavItem = ({ href, isPlaceholder, children }: NavItemProps) => {
 
 export const Navigation = () => {
   return (
-    <div className="font-medium">
+    <nav className="font-medium">
       <NavItem href="/">Welcome</NavItem>
       <NavItem href="/whats-new">What's New</NavItem>
       <NavItem href="/roadmap">Roadmap</NavItem>
@@ -82,6 +82,6 @@ export const Navigation = () => {
           List Item API
         </NavItem>
       </Section>
-    </div>
+    </nav>
   );
 };

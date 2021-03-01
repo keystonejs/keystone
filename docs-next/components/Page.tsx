@@ -23,8 +23,8 @@ export const Page = ({
   const [mobileNavCollapsed, setMobileNavCollapsed] = useState(true);
   const contentRef = useRef<HTMLDivElement | null>(null);
   return (
-    <div className="antialiased pb-24">
-      <div className="py-4 border-b border-gray-200">
+    <div className="pb-24">
+      <header className="py-4 border-b border-gray-200">
         <div className="w-full max-w-5xl mx-auto flex items-center justify-between sticky px-2">
           <h2 className="flex items-center">
             <img
@@ -67,7 +67,7 @@ export const Page = ({
             </a>
           </div>
         </div>
-      </div>
+      </header>
       <div className="w-full max-w-5xl mx-auto block md:flex">
         <aside className="flex-none md:w-52 md:mr-4 md:text-sm">
           {mobileNavCollapsed ? (
@@ -98,7 +98,7 @@ export const Page = ({
             </a>
           ) : null}
         </aside>
-        <div
+        <main
           ref={contentRef}
           className="min-w-0 md:flex w-full flex-auto max-h-full overflow-visible px-2"
         >
@@ -114,7 +114,7 @@ export const Page = ({
               <TableOfContents container={contentRef} headings={headings} />
             </div>
           ) : null}
-        </div>
+        </main>
       </div>
     </div>
   );
