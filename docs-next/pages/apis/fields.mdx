@@ -14,6 +14,7 @@ import {
   // Scalar types
   checkbox,
   integer,
+  float,
   password,
   select,
   text,
@@ -165,6 +166,43 @@ export default config({
       fields: {
         fieldName: integer({
           defaultValue: 0,
+          isRequired: true,
+          isIndexed: true,
+          isUnique: true,
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
+### float
+
+A `float` field represents a floating point value.
+
+Options:
+
+- `defaultValue` (default: `undefined`): Can be either a float value or an async function which takes an argument `({ context, originalItem })` and returns a float value.
+  This value will be used for the field when creating items if no explicit value is set.
+  `context` is a [`KeystoneContext`](./context) object.
+  `originalItem` is an object containing the data passed in to the `create` mutation.
+- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+- `isIndexed` (`knex` and `mongoose` adapters only. Default: `false`): If `true` a database level index will be applied to this field, which can make searching faster.
+- `isUnique` (default: `false`): If `true` then all values of this field must be unique.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { float } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        fieldName: float({
+          defaultValue: 3.14159,
           isRequired: true,
           isIndexed: true,
           isUnique: true,

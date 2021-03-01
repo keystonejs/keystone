@@ -1,79 +1,16 @@
 import url from 'url';
-import { mergeSchemas } from '@graphql-tools/merge';
 import {
   AdminFileToWrite,
   BaseGeneratedListTypes,
   KeystoneConfig,
-  ExtendGraphqlSchema,
+  KeystoneContext,
 } from '@keystone-next/types';
 import { password, timestamp } from '@keystone-next/fields';
 
-import { AuthConfig, Auth, AuthGqlNames, AuthTokenTypeConfig } from './types';
-
-import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
-import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
-import { getPasswordResetSchema } from './gql/getPasswordResetSchema';
-import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema';
-
+import { AuthConfig, Auth, AuthGqlNames } from './types';
+import { getSchemaExtension } from './schema';
 import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';
-import { KeystoneContext } from '@keystone-next/types';
-
-const getSchemaExtension = ({
-  identityField,
-  listKey,
-  protectIdentities,
-  secretField,
-  gqlNames,
-  initFirstItem,
-  passwordResetLink,
-  magicAuthLink,
-}: {
-  identityField: string;
-  listKey: string;
-  protectIdentities: boolean;
-  secretField: string;
-  gqlNames: AuthGqlNames;
-  initFirstItem?: any;
-  passwordResetLink?: any;
-  magicAuthLink?: AuthTokenTypeConfig;
-}): ExtendGraphqlSchema => (schema, keystone) =>
-  [
-    getBaseAuthSchema({
-      identityField,
-      listKey,
-      protectIdentities,
-      secretField,
-      gqlNames,
-    }),
-    initFirstItem &&
-      getInitFirstItemSchema({
-        listKey,
-        fields: initFirstItem.fields,
-        itemData: initFirstItem.itemData,
-        gqlNames,
-        keystone,
-      }),
-    passwordResetLink &&
-      getPasswordResetSchema({
-        identityField,
-        listKey,
-        protectIdentities,
-        secretField,
-        passwordResetLink,
-        gqlNames,
-      }),
-    magicAuthLink &&
-      getMagicAuthLinkSchema({
-        identityField,
-        listKey,
-        protectIdentities,
-        magicAuthLink,
-        gqlNames,
-      }),
-  ]
-    .filter(x => x)
-    .reduce((s, extension) => mergeSchemas({ schemas: [s], ...extension }), schema);
 
 /**
  * createAuth function
@@ -84,31 +21,30 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   listKey,
   secretField,
   protectIdentities = true,
-  gqlSuffix = '',
   initFirstItem,
   identityField,
   magicAuthLink,
   passwordResetLink,
 }: AuthConfig<GeneratedListTypes>): Auth {
   const gqlNames: AuthGqlNames = {
-    CreateInitialInput: `CreateInitial${listKey}Input${gqlSuffix}`,
-    createInitialItem: `createInitial${listKey}${gqlSuffix}`,
-    authenticateItemWithPassword: `authenticate${listKey}WithPassword${gqlSuffix}`,
-    ItemAuthenticationWithPasswordResult: `${listKey}AuthenticationWithPasswordResult${gqlSuffix}`,
-    ItemAuthenticationWithPasswordSuccess: `${listKey}AuthenticationWithPasswordSuccess${gqlSuffix}`,
-    ItemAuthenticationWithPasswordFailure: `${listKey}AuthenticationWithPasswordFailure${gqlSuffix}`,
-    sendItemPasswordResetLink: `send${listKey}PasswordResetLink${gqlSuffix}`,
-    SendItemPasswordResetLinkResult: `Send${listKey}PasswordResetLinkResult${gqlSuffix}`,
-    validateItemPasswordResetToken: `validate${listKey}PasswordResetToken${gqlSuffix}`,
-    ValidateItemPasswordResetTokenResult: `Validate${listKey}PasswordResetTokenResult${gqlSuffix}`,
-    redeemItemPasswordResetToken: `redeem${listKey}PasswordResetToken${gqlSuffix}`,
-    RedeemItemPasswordResetTokenResult: `Redeem${listKey}PasswordResetTokenResult${gqlSuffix}`,
-    sendItemMagicAuthLink: `send${listKey}MagicAuthLink${gqlSuffix}`,
-    SendItemMagicAuthLinkResult: `Send${listKey}MagicAuthLinkResult${gqlSuffix}`,
-    redeemItemMagicAuthToken: `redeem${listKey}MagicAuthToken${gqlSuffix}`,
-    RedeemItemMagicAuthTokenResult: `Redeem${listKey}MagicAuthTokenResult${gqlSuffix}`,
-    RedeemItemMagicAuthTokenSuccess: `Redeem${listKey}MagicAuthTokenSuccess${gqlSuffix}`,
-    RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure${gqlSuffix}`,
+    CreateInitialInput: `CreateInitial${listKey}Input`,
+    createInitialItem: `createInitial${listKey}`,
+    authenticateItemWithPassword: `authenticate${listKey}WithPassword`,
+    ItemAuthenticationWithPasswordResult: `${listKey}AuthenticationWithPasswordResult`,
+    ItemAuthenticationWithPasswordSuccess: `${listKey}AuthenticationWithPasswordSuccess`,
+    ItemAuthenticationWithPasswordFailure: `${listKey}AuthenticationWithPasswordFailure`,
+    sendItemPasswordResetLink: `send${listKey}PasswordResetLink`,
+    SendItemPasswordResetLinkResult: `Send${listKey}PasswordResetLinkResult`,
+    validateItemPasswordResetToken: `validate${listKey}PasswordResetToken`,
+    ValidateItemPasswordResetTokenResult: `Validate${listKey}PasswordResetTokenResult`,
+    redeemItemPasswordResetToken: `redeem${listKey}PasswordResetToken`,
+    RedeemItemPasswordResetTokenResult: `Redeem${listKey}PasswordResetTokenResult`,
+    sendItemMagicAuthLink: `send${listKey}MagicAuthLink`,
+    SendItemMagicAuthLinkResult: `Send${listKey}MagicAuthLinkResult`,
+    redeemItemMagicAuthToken: `redeem${listKey}MagicAuthToken`,
+    RedeemItemMagicAuthTokenResult: `Redeem${listKey}MagicAuthTokenResult`,
+    RedeemItemMagicAuthTokenSuccess: `Redeem${listKey}MagicAuthTokenSuccess`,
+    RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure`,
   };
 
   // Fields added to the auth list
