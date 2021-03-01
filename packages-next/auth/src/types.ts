@@ -56,8 +56,6 @@ export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
     /** Extra input to add for the create mutation */
     itemData?: Partial<GeneratedListTypes['inputs']['create']>;
   };
-  /** A string added GraphQL names created by this package; can be used to support multiple sets of auth functionality */
-  gqlSuffix?: string;
 };
 
 export type Auth = {
