@@ -225,8 +225,8 @@ Options:
   This value will be used for the field when creating items if no explicit value is set.
   `context` is a [`KeystoneContext`](./context) object.
   `originalItem` is an object containing the data passed in to the `create` mutation.
-- `precision` (default: `null` treated as `18`): Maximum number of digits that are present in the number.
-- `scale` (default: `null` treated as `4`): Maximum number of decimal places.
+- `precision` (default: `18`): Maximum number of digits that are present in the number.
+- `scale` (default: `4`): Maximum number of decimal places.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
 - `isIndexed` (`knex` and `mongoose` adapters only. Default: `false`): If `true` a database level index will be applied to this field, which can make searching faster.
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
