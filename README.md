@@ -43,8 +43,15 @@ For more information please read our [Keystone 5 and beyond](https://github.com/
 <!-- ## Getting Started -->
 <!-- TBC -->
 
-<!-- ## Documentation -->
-<!-- TBC -->
+## Documentation
+
+The [Keystone Next](https://next.keystonejs.com/whats-new) website contains a documentation preview.
+
+In the next month you'll see a new project starter and getting started guide, as well as a new set of example projects demoing how to use Keystone Next features.
+
+## Feedback
+
+We'd love to hear your feedback, reach out on Twitter at [KeystoneJS](https://twitter.com/keystonejs) and [subscribe](https://next.keystonejs.com/roadmap#project-status) to be notified of our progress.
 
 <!-- ## Version control -->
 <!-- TBC -->
