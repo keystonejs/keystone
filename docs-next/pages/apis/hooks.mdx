@@ -5,7 +5,10 @@ import { Markdown } from '../../components/Page';
 Hooks allow you to execute code at different stages of the mutation lifecycle when performing create, update, and delete operations.
 Lists and fields both support the same set of hook functions, with some slight differences in the arguments they accept.
 The differences will be explicitly called out below.
-For each hook, the fields hooks are applied to all fields in parallel first, followed by the list hooks.
+
+For each hook, the fields hooks are applied to **all fields first** in parallel, followed by the list hooks.
+
+All hook functions are async and, with the exception of `resolveInput`, do not return a value.
 
 For examples of how to use hooks in your system please see the [hooks guide](../guides/hooks).
 
@@ -124,7 +127,7 @@ The `validateInput` function is used to validate the [`resolvedData`](#resolved-
 It is invoked after the `resolveInput` hooks have been run.
 
 If the `resolvedData` is invalid then the function should report validation errors with `addValidationError(msg)` for list hooks, or `addFieldValidationError(msg)` for field hooks.
-These error messages will be returned as a `ValidationFailureError` from the GraphQL API.
+These error messages will be returned as a `ValidationFailureError` from the GraphQL API, and the operation will not be completed.
 
 | Argument                       | Description                                                                                                                                                                                                 |
 | :----------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -444,7 +447,7 @@ The final value of `resolvedData` is the value that will be validated and saved 
 The data resolving steps are applied in the following order:
 
 1. Initialisation: Set the value of `resolvedData` to the `data` input value from the GraphQL mutation.
-2. Defaults (built in): Any fields which have a default value and are `undefined` in `resolvedData` will be set to their default value.
+2. Defaults (built in, `create` only): Any fields which have a default value and are `undefined` in `resolvedData` will be set to their default value.
 3. Relationships (built in): The values for relationship fields on `resolvedData` are either an ID string (for `one` relationships), or an array of ID strings (for `many` relationships).
    This is the format expected when saving relationship fields to the database.
    The value is computed by combining the provided `connect`, `create`, `disconnect`, and `disconnectAll` values with the existing data in the database.
