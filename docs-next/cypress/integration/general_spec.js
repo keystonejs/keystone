@@ -2,7 +2,7 @@ describe('all pages', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8000');
   });
-  it.skip('should have basic markup', () => {
+  it('should have basic markup', () => {
     return cy.get('nav a').each(navItem => {
       cy.visit(navItem[0].href).get('nav');
       cy.get('header');
