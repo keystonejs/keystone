@@ -62,9 +62,9 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   } as const;
 
   const additionalListFields = {
-    [`${secretField}ResetToken`]: password({ ...fieldConfig }),
-    [`${secretField}ResetIssuedAt`]: timestamp({ ...fieldConfig }),
-    [`${secretField}ResetRedeemedAt`]: timestamp({ ...fieldConfig }),
+    [`passwordResetToken`]: password({ ...fieldConfig }),
+    [`passwordResetIssuedAt`]: timestamp({ ...fieldConfig }),
+    [`passwordResetRedeemedAt`]: timestamp({ ...fieldConfig }),
     [`magicAuthToken`]: password({ ...fieldConfig }),
     [`magicAuthIssuedAt`]: timestamp({ ...fieldConfig }),
     [`magicAuthRedeemedAt`]: timestamp({ ...fieldConfig }),
