@@ -7627,7 +7627,7 @@ cloudinary-core@^2.10.2:
   resolved "https://registry.yarnpkg.com/cloudinary-core/-/cloudinary-core-2.11.3.tgz#1440f61c6280485094aac87021b7e10f746dc69e"
   integrity sha512-ZRnpjSgvx+LbSf+aEz5NKzxDB4Z0436aY/0BSDa90kAHiwAyd84VyEi95I74SE80e15Ri9t5S2xtksTXpzk9Xw==
 
-cloudinary@^1.24.0:
+cloudinary@^1.25.0:
   version "1.25.0"
   resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.25.0.tgz#c6c92fb126f15f3f4858a928724bc0a760fe3f61"
   integrity sha512-OwpRleb6cy/PQRHqgrRhaiK/lbppnFUXVygAq8l8ku3Cphmjk5ukQZGdMG9CzLatObzgT5hA6M8OG+GZ71zPZw==

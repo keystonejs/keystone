@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@keystonejs/file-adapters": "*",
-    "cloudinary": "^1.24.0",
+    "cloudinary": "^1.25.0",
     "dotenv": "^8.2.0",
     "graphql-upload": "^11.0.0",
     "mime": "^2.5.2"
