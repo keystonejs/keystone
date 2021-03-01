@@ -52,6 +52,7 @@ export const Navigation = () => {
         <NavItem href="/guides/hooks" isPlaceholder>
           Hooks
         </NavItem>
+
         <NavItem href="/guides/schema-extension" isPlaceholder>
           Schema Extension
         </NavItem>
@@ -78,7 +79,7 @@ export const Navigation = () => {
         <NavItem href="/apis/graphql" isPlaceholder>
           GraphQL API
         </NavItem>
-        <NavItem href="/apis/items" isPlaceholder>
+        <NavItem href="/apis/list-items" isPlaceholder>
           List Item API
         </NavItem>
       </Section>
