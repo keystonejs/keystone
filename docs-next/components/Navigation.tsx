@@ -52,7 +52,6 @@ export const Navigation = () => {
         <NavItem href="/guides/hooks" isPlaceholder>
           Hooks
         </NavItem>
-
         <NavItem href="/guides/schema-extension" isPlaceholder>
           Schema Extension
         </NavItem>
