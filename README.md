@@ -1,6 +1,6 @@
 <div align="center">
   <img src="website/static/readme-header.png" width="557">
-  <h1>KeystoneJS</h1>
+  <h1>Keystone Next</h1>
   <br>
   <p><b>A scalable platform and CMS to build Node.js applications.</b></p>
   <p><code>schema => ({ GraphQL, AdminUI })</code></p>
