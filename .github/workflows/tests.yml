@@ -135,7 +135,7 @@ jobs:
       - name: Install Dependencies
         run: yarn
       - name: Unit tests
-        run: yarn jest --ci --maxWorkers=1 --testPathIgnorePatterns=(api-tests|examples-smoke-tests)
+        run: yarn jest --ci --maxWorkers=1 --testPathIgnorePatterns=api-tests,examples-smoke-tests
         env:
           CLOUDINARY_CLOUD_NAME: keystone-cloudinary
           CLOUDINARY_KEY: 758252673115372
@@ -144,6 +144,7 @@ jobs:
   examples_smoke_tests:
     name: Smoke Tests For Examples
     runs-on: ubuntu-latest
+    needs: should_run_tests
     services:
       postgres:
         image: postgres:12
