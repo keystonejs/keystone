@@ -39,6 +39,9 @@ exampleProjectTests('basic', browserType => {
           }
         `,
       }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }).then(res => res.json());
     expect(usersResponse).toEqual({
       data: {
