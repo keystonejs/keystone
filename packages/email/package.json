@@ -11,7 +11,7 @@
     "express-react-views": "^0.11.0",
     "keystone-email": "^1.1.0",
     "memoize-one": "^5.1.1",
-    "mjml": "^4.8.1",
+    "mjml": "^4.8.2",
     "pify": "^5.0.0"
   },
   "peerDependencies": {
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "mjml-react": "^1.1.1",
-    "pug": "3.0.0",
+    "pug": "3.0.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

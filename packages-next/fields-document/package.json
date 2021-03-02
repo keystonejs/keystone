@@ -40,7 +40,7 @@
     "apply-ref": "^1.0.0",
     "fp-ts": "^2.9.5",
     "graphql": "^15.5.0",
-    "io-ts": "^2.2.14",
+    "io-ts": "^2.2.15",
     "io-ts-excess": "^1.0.1",
     "is-hotkey": "^0.2.0",
     "match-sorter": "^6.2.0",
@@ -51,7 +51,7 @@
     "micromark-extension-gfm-autolink-literal": "0.5.6",
     "micromark-extension-gfm-strikethrough": "0.6.3",
     "react": "^17.0.1",
-    "scroll-into-view-if-needed": "^2.2.26",
+    "scroll-into-view-if-needed": "^2.2.27",
     "slate": "npm:slate@^0.60.4",
     "slate-history": "^0.60.4",
     "slate-react": "npm:slate-react@^0.60.4"
