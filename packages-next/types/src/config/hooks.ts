@@ -67,6 +67,8 @@ type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedLis
    * The key of the list that the operation is occurring on
    */
   listKey: string;
+
+  // fieldPath: string
 };
 
 type ValidationArgs = {

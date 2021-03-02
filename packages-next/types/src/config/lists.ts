@@ -180,7 +180,7 @@ export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
 
 export type FieldConfig<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   access?: FieldAccessControl<TGeneratedListTypes>;
-  hooks?: ListHooks<TGeneratedListTypes>;
+  hooks?: ListHooks<TGeneratedListTypes>; // really? ListHooks?
   label?: string;
   ui?: {
     views?: string;

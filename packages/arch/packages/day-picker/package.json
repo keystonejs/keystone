@@ -21,7 +21,7 @@
     "@emotion/styled": "^10.0.27",
     "@primer/octicons-react": "^11.3.0",
     "chrono-node": "^1.4.8",
-    "date-fns": "^2.17.0",
+    "date-fns": "^2.18.0",
     "intersection-observer": "^0.12.0",
     "moment": "^2.29.1",
     "react-window": "^1.8.6"
