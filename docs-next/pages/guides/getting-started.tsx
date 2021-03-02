@@ -7,7 +7,6 @@ export default function GettingStarted() {
     <Page isProse>
       <H1>Getting Started</H1>
       <p>(coming soon)</p>
-      <a href="#">FAKE LINK</a>
     </Page>
   );
 }
