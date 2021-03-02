@@ -5,7 +5,7 @@
   "main": "dist/cloudinary.cjs.js",
   "module": "dist/cloudinary.esm.js",
   "dependencies": {
-    "@babel/runtime": "^7.12.18",
+    "@babel/runtime": "^7.13.9",
     "@keystone-next/admin-ui": "^9.0.0",
     "@keystone-next/types": "^13.0.0",
     "@keystone-ui/button": "^3.0.0",

@@ -10,7 +10,7 @@
     "cypress:run:ci": "start-server-and-test dev http://localhost:8000 cy:run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.18",
+    "@babel/runtime": "^7.13.9",
     "@keystone-next/fields-document": "^2.0.0",
     "@keystone-ui/button": "^3.0.0",
     "@keystone-ui/core": "^2.0.0",
