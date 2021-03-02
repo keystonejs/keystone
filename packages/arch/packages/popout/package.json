@@ -20,7 +20,7 @@
     "@babel/runtime": "^7.12.18",
     "@emotion/core": "^10.1.1",
     "@emotion/styled": "^10.0.27",
-    "@popperjs/core": "^2.8.3",
+    "@popperjs/core": "^2.8.6",
     "focus-trap-react": "^8.4.2",
     "react-popper": "^2.2.4"
   },
