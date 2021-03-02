@@ -8,8 +8,8 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@apollographql/graphql-playground-html": "^1.6.26",
-    "@apollographql/graphql-playground-react": "^1.7.36",
+    "@apollographql/graphql-playground-html": "^1.6.27",
+    "@apollographql/graphql-playground-react": "^1.7.39",
     "@keystonejs/session": "^8.1.1",
     "@keystonejs/utils": "^6.0.1",
     "body-parser": "^1.19.0",
