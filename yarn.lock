@@ -17390,7 +17390,7 @@ mjml-raw@4.8.2:
     lodash "^4.17.15"
     mjml-core "4.8.2"
 
-mjml-react@^1.1.1:
+mjml-react@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/mjml-react/-/mjml-react-1.2.0.tgz#8d1d2ed21704fea66e9f19cb3f30c10657f08a8c"
   integrity sha512-9FvdafjzDzUOqNkZ/mNvdP5wWojPsqH6HdWLt5qMZWN3VSOT4kFfc4M1ifXN071E8UvlzuzPQ5kvzhmktuvexg==

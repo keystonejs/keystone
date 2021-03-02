@@ -15,12 +15,12 @@
     "pify": "^5.0.0"
   },
   "peerDependencies": {
-    "mjml-react": "^1.1.1",
+    "mjml-react": "^1.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
   "devDependencies": {
-    "mjml-react": "^1.1.1",
+    "mjml-react": "^1.2.0",
     "pug": "3.0.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
