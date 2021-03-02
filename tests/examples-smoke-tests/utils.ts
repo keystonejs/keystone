@@ -104,7 +104,15 @@ export const exampleProjectTests = (
       });
     }
 
-    describe.each(['chromium', 'webkit', 'firefox'] as const)('%s', browserName => {
+    describe.each([
+      'chromium',
+      'firefox',
+      // we don't run the tests on webkit in production
+      // because unlike chromium and firefox
+      // webkit doesn't treat localhost as a secure context
+      // and we enable secure cookies in production
+      ...(mode === 'prod' ? [] : (['webkit'] as const)),
+    ] as const)('%s', browserName => {
       beforeAll(async () => {
         await deleteAllData(projectDir);
       });

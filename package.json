@@ -146,7 +146,7 @@
       "tests/test-projects/*",
       "tests/api-tests",
       "tests/benchmarks",
-      "tests/examples-tests",
+      "tests/examples-smoke-tests",
       "examples/*",
       "website",
       "packages/create-keystone-app/example-projects/*",
