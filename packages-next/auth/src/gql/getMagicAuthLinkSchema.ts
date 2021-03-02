@@ -90,7 +90,7 @@ export function getMagicAuthLinkSchema<I extends string>({
               resolveFields: false,
             });
 
-            await magicAuthLink.sendToken({ itemId, identity, token });
+            await magicAuthLink.sendToken({ itemId, identity, token, context });
           }
           return null;
         },
