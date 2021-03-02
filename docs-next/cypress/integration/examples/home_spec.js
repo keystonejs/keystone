@@ -1,5 +1,3 @@
-/// <reference types="cypress" />
-
 describe('basic docs tests', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8000');
