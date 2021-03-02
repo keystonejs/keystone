@@ -10,7 +10,7 @@
     "cypress:run:ci": "start-server-and-test dev http://localhost:8000 cy:run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.18",
+    "@babel/runtime": "^7.13.9",
     "@keystone-next/fields-document": "^2.0.0",
     "@keystone-ui/button": "^3.0.0",
     "@keystone-ui/core": "^2.0.0",
@@ -40,7 +40,7 @@
     "next": "10.0.7",
     "next-compose-plugins": "^2.2.1",
     "postcss": "^8.2.6",
-    "prism-react-renderer": "^1.1.1",
+    "prism-react-renderer": "^1.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "tailwindcss": "^2.0.3",

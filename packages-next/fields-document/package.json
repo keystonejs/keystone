@@ -19,7 +19,7 @@
     ]
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.18",
+    "@babel/runtime": "^7.13.9",
     "@braintree/sanitize-url": "^5.0.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-next/admin-ui": "^9.0.0",
@@ -43,7 +43,7 @@
     "io-ts": "^2.2.15",
     "io-ts-excess": "^1.0.1",
     "is-hotkey": "^0.2.0",
-    "match-sorter": "^6.2.0",
+    "match-sorter": "^6.3.0",
     "mdast-util-definitions": "^4.0.0",
     "mdast-util-from-markdown": "^0.8.5",
     "mdast-util-gfm-autolink-literal": "^0.1.3",
