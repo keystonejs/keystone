@@ -11,11 +11,11 @@
     "seed-data": "keystone-next --seed-data"
   },
   "dependencies": {
-    "@babel/plugin-transform-runtime": "^7.12.17",
-    "@babel/preset-env": "^7.12.17",
+    "@babel/plugin-transform-runtime": "^7.13.9",
+    "@babel/preset-env": "^7.13.9",
     "@babel/preset-react": "^7.12.13",
-    "@babel/preset-typescript": "^7.12.17",
-    "@babel/runtime": "^7.12.18",
+    "@babel/preset-typescript": "^7.13.0",
+    "@babel/runtime": "^7.13.9",
     "@keystone-next/admin-ui": "^9.0.0",
     "@keystone-next/auth": "^15.0.0",
     "@keystone-next/cloudinary": "^3.0.0",
