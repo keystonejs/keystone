@@ -152,7 +152,7 @@ Imperative access control functions are passed a collection of arguments which c
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `listKey`       | The key of the list being operated on.                                                                                                                                                     |
 | `operation`     | The CRUD operation being performed (`'create'`, `'read'`, `'update'`, `'delete'`).                                                                                                         |
-| `session`       | The current session object. See the [Sessions API](./session) for details                                                                                                                  |
+| `session`       | The current session object. See the [Sessions API](./session) for details.                                                                                                                 |
 | `originalInput` | For `create` and `update` operations, this is the value of `data` passed into the mutation. For `read` and `delete` operations this value is `undefined`.                                  |
 | `gqlName`       | The name of the query or mutation being called.                                                                                                                                            |
 | `itemId`        | The `id` of the item being updated/deleted in singular `update` and `delete` operations. The `id` of the item being searched for in a single item query. `undefined` for other operations. |
@@ -296,7 +296,7 @@ Imperative access control functions are passed a collection of arguments which c
 | `listKey`       | The key of the list being operated on.                                                                                                                             |
 | `fieldKey`      | The key of the field being operated on.                                                                                                                            |
 | `operation`     | The CRU operation being performed (`'create'`, `'read'`, `'update'`).                                                                                              |
-| `session`       | The current session object. See the [Sessions API](./session) for details                                                                                          |
+| `session`       | The current session object. See the [Sessions API](./session) for details.                                                                                         |
 | `originalInput` | For `create` and `update` operations, this is the value of `data` passed into the mutation. For `read` operations this value is `undefined`.                       |
 | `gqlName`       | The name of the query or mutation being called.                                                                                                                    |
 | `context`       | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                    |
