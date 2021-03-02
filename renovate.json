@@ -11,7 +11,12 @@
       "enabled": false
     },
     {
-      "packagePatterns": ["gatsby", "remark", "babel-plugin-remove-graphql-queries"],
+      "packagePatterns": [
+        "gatsby",
+        "remark",
+        "babel-plugin-remove-graphql-queries",
+        "react-day-picker"
+      ],
       "enabled": false
     },
     {
