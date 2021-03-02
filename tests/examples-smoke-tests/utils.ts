@@ -38,6 +38,7 @@ export const initUserTest = (getPage: () => playwright.Page) => {
     await page.click('button:has-text("Get started")');
     await page.uncheck('input[type="checkbox"]', { force: true });
     await Promise.all([page.waitForNavigation(), page.click('text=Continue')]);
+    await page.waitForSelector('text=Signed in as Admin');
   });
 };
 

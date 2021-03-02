@@ -8,15 +8,13 @@
   "engines": {
     "node": ">=10.0.0"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/tests/examples-tests",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/tests/examples-smoke-tests",
   "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
     "@types/tough-cookie": "^4.0.0",
     "execa": "^5.0.0",
-    "got": "^11.8.2",
-    "playwright": "^1.9.1",
-    "tough-cookie": "^4.0.0",
     "node-fetch": "^2.6.1",
+    "playwright": "^1.9.1",
     "tree-kill": "^1.2.2"
   }
 }

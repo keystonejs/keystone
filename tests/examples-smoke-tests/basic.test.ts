@@ -1,6 +1,6 @@
 import { Browser, Page } from 'playwright';
 import { exampleProjectTests, initUserTest } from './utils';
-import got from 'got';
+import fetch from 'node-fetch';
 
 exampleProjectTests('basic', browserType => {
   let browser: Browser = undefined as any;
@@ -27,9 +27,9 @@ exampleProjectTests('basic', browserType => {
   });
 
   test('can see users', async () => {
-    const usersResponse = await got('http://localhost:3000/api/graphql', {
+    const usersResponse = await fetch('http://localhost:3000/api/graphql', {
       method: 'POST',
-      json: {
+      body: JSON.stringify({
         query: `
           query {
             allUsers {
@@ -38,10 +38,9 @@ exampleProjectTests('basic', browserType => {
             }
           }
         `,
-      },
-      responseType: 'json',
-    });
-    expect(usersResponse.body).toEqual({
+      }),
+    }).then(res => res.json());
+    expect(usersResponse).toEqual({
       data: {
         allUsers: [{ id: expect.stringMatching(/\d+/), name: 'Admin1' }],
       },
