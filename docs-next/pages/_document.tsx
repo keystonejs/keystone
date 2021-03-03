@@ -14,6 +14,8 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <link rel="shortcut icon" href="/favicon.ico" />
+          <meta property="og:image" content={'/og-image-landscape.png'} />
+          <meta name="twitter:image" content={`/og-image-square.png`} />
           <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} />
           <script
             dangerouslySetInnerHTML={{
