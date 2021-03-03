@@ -345,7 +345,6 @@ class PrismaListAdapter extends BaseListAdapter {
           ? {
               connect: Array.isArray(value)
                 ? value.map(x => {
-                    let xx = x;
                     return { id: this._formatValue(x, path) };
                   })
                 : { id: this._formatValue(value, path) },
