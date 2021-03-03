@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields-unsplash",
+  "name": "@keystonejs-next/fields-unsplash-legacy",
   "description": "KeystoneJS Unsplash Field Type",
   "version": "3.2.0",
   "author": "The KeystoneJS Development Team",

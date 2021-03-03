@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/example-projects-todo",
+  "name": "@keystonejs-next/example-projects-todo-legacy",
   "description": "An example KeystoneJS project showcasing a simple Todo List with a Keystone StaticApp front-end.",
   "private": true,
   "version": "5.0.25",

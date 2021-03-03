@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/app-admin-ui",
+  "name": "@keystonejs-next/app-admin-ui-legacy",
   "description": "KeystoneJS Admin UI App.",
   "version": "7.4.0",
   "author": "The KeystoneJS Development Team",

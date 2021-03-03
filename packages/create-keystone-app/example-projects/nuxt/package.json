@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/example-projects-nuxt",
+  "name": "@keystonejs-next/example-projects-nuxt-legacy",
   "description": "A NuxtJS example project.",
   "private": true,
   "version": "5.0.26",

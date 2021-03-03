@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields-color",
+  "name": "@keystonejs-next/fields-color-legacy",
   "description": "KeystoneJS Color Field Type",
   "version": "1.0.10",
   "author": "The KeystoneJS Development Team",

@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields-auto-increment",
+  "name": "@keystonejs-next/fields-auto-increment-legacy",
   "description": "KeystoneJS AutoIncrement Field Type",
   "version": "8.1.4",
   "author": "The KeystoneJS Development Team",

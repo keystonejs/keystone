@@ -2,6 +2,7 @@
   "name": "@arch-ui/options",
   "description": "Options UI as used in @keystonejs Admin UI.",
   "version": "0.0.24",
+  "private": true,
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/options.cjs.js",

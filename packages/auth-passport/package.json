@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/auth-passport",
+  "name": "@keystonejs-next/auth-passport-legacy",
   "description": "Provides Social Authentication Strategies based on PassportJS.",
   "version": "6.0.0",
   "author": "The KeystoneJS Development Team",

@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/access-control",
+  "name": "@keystonejs-next/access-control-legacy",
   "description": "KeystoneJS Access Control parsing and validating utilities.",
   "version": "7.0.0",
   "author": "The KeystoneJS Development Team",

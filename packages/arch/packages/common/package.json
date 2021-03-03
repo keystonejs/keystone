@@ -2,6 +2,7 @@
   "name": "@arch-ui/common",
   "description": "Common config used throughout @arch-ui Components and @keystonejs Admin UI.",
   "version": "0.0.12",
+  "private": true,
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/common.cjs.js",

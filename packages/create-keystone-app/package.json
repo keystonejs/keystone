@@ -2,6 +2,7 @@
   "name": "create-keystone-app",
   "description": "Generate starter apps for Keystone 5",
   "version": "3.4.3",
+  "private": true,
   "bin": {
     "create-keystone-app": "bin/cli.js"
   },

@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields-wysiwyg-tinymce",
+  "name": "@keystonejs-next/fields-wysiwyg-tinymce-legacy",
   "description": "KeystoneJS WYSIWYG HTML Field Type, powered by TinyMCE",
   "homepage": "https://github.com/keystonejs/keystone",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-wysiwyg-tinymce",

@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields-markdown",
+  "name": "@keystonejs-next/fields-markdown-legacy",
   "description": "KeystoneJS Markdown Field Type",
   "version": "5.2.14",
   "author": "The KeystoneJS Development Team",

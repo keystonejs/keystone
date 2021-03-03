@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/test-utils",
+  "name": "@keystonejs-next/test-utils-legacy",
   "description": "Common utilities used while testing @keystonejs/* packages.",
   "version": "12.0.0",
   "author": "The KeystoneJS Development Team",

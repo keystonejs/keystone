@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/list-plugins",
+  "name": "@keystonejs-next/list-plugins-legacy",
   "description": "List level plugins which can update list config during list initialization including adding additional fields",
   "version": "8.0.0",
   "author": "The KeystoneJS Development Team",

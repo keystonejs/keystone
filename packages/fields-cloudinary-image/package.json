@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields-cloudinary-image",
+  "name": "@keystonejs-next/fields-cloudinary-image-legacy",
   "description": "KeystoneJS Cloudinary Image Field Type",
   "version": "2.1.4",
   "author": "The KeystoneJS Development Team",

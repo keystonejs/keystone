@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/server-side-graphql-client",
+  "name": "@keystonejs-next/server-side-graphql-client-legacy",
   "description": "A library for running server-side graphQL queries and mutations in Keystone.",
   "version": "2.0.0",
   "author": "The KeystoneJS Development Team",

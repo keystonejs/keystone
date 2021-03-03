@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields-oembed",
+  "name": "@keystonejs-next/fields-oembed-legacy",
   "description": "KeystoneJS oEmbed Field Type",
   "version": "3.1.4",
   "author": "The KeystoneJS Development Team",

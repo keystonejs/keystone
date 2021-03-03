@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/adapter-knex",
+  "name": "@keystonejs-next/adapter-knex-legacy",
   "description": "KeystoneJS Knex Database Adapter",
   "version": "13.0.1",
   "author": "The KeystoneJS Development Team",

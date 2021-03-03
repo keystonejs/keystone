@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields-mongoid",
+  "name": "@keystonejs-next/fields-mongoid-legacy",
   "description": "KeystoneJS MongoId Field Type",
   "version": "9.1.4",
   "author": "The KeystoneJS Development Team",

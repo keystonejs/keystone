@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/example-projects-starter",
+  "name": "@keystonejs-next/example-projects-starter-legacy",
   "description": "An example KeystoneJS project with a User list and Authentication.",
   "private": true,
   "version": "6.0.0",

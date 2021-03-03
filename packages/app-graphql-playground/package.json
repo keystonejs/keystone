@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/app-graphql-playground",
+  "name": "@keystonejs-next/app-graphql-playground-legacy",
   "description": "KeystoneJS GraphQL Playground App.",
   "version": "5.1.9",
   "author": "The KeystoneJS Development Team",

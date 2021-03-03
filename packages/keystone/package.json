@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/keystone",
+  "name": "@keystonejs-next/keystone-legacy",
   "description": "The main @keystonejs class & CLI. This is where the magic happens.",
   "version": "19.2.0",
   "author": "The KeystoneJS Development Team",

@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields",
+  "name": "@keystonejs-next/fields-legacy",
   "description": "KeystoneJS Field Types including Text, Password, DateTime, Integer, and more.",
   "homepage": "https://github.com/keystonejs/keystone",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields",

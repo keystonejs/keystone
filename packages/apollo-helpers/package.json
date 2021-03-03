@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/apollo-helpers",
+  "name": "@keystonejs-next/apollo-helpers-legacy",
   "description": "Utilities to make using react-apollo + KeystoneJS easier.",
   "version": "5.2.0",
   "author": "The KeystoneJS Development Team",

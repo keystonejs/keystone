@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/file-adapters",
+  "name": "@keystonejs-next/file-adapters-legacy",
   "description": "Adapters for handling storage of the File type",
   "version": "7.0.8",
   "main": "index.js",

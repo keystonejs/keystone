@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields-content",
+  "name": "@keystonejs-next/fields-content-legacy",
   "description": "A block-based content field for KeystoneJS",
   "version": "9.0.6",
   "author": "The KeystoneJS Development Team",

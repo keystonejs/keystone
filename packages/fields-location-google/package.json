@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields-location-google",
+  "name": "@keystonejs-next/fields-location-google-legacy",
   "description": "KeystoneJS LocationGoogle field type.",
   "version": "3.3.1",
   "author": "The KeystoneJS Development Team",

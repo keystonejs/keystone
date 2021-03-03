@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/example-projects-blank",
+  "name": "@keystonejs-next/example-projects-blank-legacy",
   "description": "A blank KeystoneJS starter project.",
   "private": true,
   "version": "5.0.17",

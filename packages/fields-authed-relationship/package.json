@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields-authed-relationship",
+  "name": "@keystonejs-next/fields-authed-relationship-legacy",
   "description": "KeystoneJS AuthedRelationship Field Type",
   "version": "1.0.17",
   "author": "The KeystoneJS Development Team",

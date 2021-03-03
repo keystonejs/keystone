@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/app-graphql",
+  "name": "@keystonejs-next/app-graphql-legacy",
   "description": "KeystoneJS GraphQL App.",
   "version": "6.2.1",
   "author": "The KeystoneJS Development Team",

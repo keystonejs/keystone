@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/app-version",
+  "name": "@keystonejs-next/app-version-legacy",
   "description": "KeystoneJS App Version Plugin",
   "version": "2.0.0",
   "author": "The KeystoneJS Development Team",
