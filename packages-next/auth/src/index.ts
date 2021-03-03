@@ -322,6 +322,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   };
 
   return {
+    withAuth,
     // In the future we may want to return the following so that developers can
     // roll their own. This is pending a review of the use cases this might be
     // appropriate for, along with documentation and testing.
@@ -334,6 +335,5 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     // fields: additionalListFields,
     // extendGraphqlSchema,
     // validateConfig,
-    withAuth,
   };
 }
