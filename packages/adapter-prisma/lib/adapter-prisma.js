@@ -331,7 +331,7 @@ class PrismaListAdapter extends BaseListAdapter {
 
   _getFieldStorageFormat(path) {
     let prismaSchema = this.fieldAdaptersByPath[path].getPrismaSchema();
-    if(prismaSchema.length > 1) return 'mixed';
+    if (prismaSchema.length > 1) return 'mixed';
     prismaSchema = prismaSchema[0];
     let prismaSchemaFormat = prismaSchema[0].replace(/^(\w+)\s+(\w+).+$/, '$2');
     return prismaSchemaFormat;
@@ -356,7 +356,10 @@ class PrismaListAdapter extends BaseListAdapter {
 
   async _update(id, _data) {
     const include = this._include();
-    const existingItem = await this.model.findUnique({ where: { id: this._formatValue(id, 'id') }, include });
+    const existingItem = await this.model.findUnique({
+      where: { id: this._formatValue(id, 'id') },
+      include,
+    });
     return this.model.update({
       where: { id: this._formatValue(id, 'id') },
       data: mapKeys(_data, (value, path) => {
