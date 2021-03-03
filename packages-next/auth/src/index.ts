@@ -32,18 +32,22 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   // to match this. -TL
   const protectIdentities = true;
   const gqlNames: AuthGqlNames = {
-    CreateInitialInput: `CreateInitial${listKey}Input`,
-    createInitialItem: `createInitial${listKey}`,
+    // Core
     authenticateItemWithPassword: `authenticate${listKey}WithPassword`,
     ItemAuthenticationWithPasswordResult: `${listKey}AuthenticationWithPasswordResult`,
     ItemAuthenticationWithPasswordSuccess: `${listKey}AuthenticationWithPasswordSuccess`,
     ItemAuthenticationWithPasswordFailure: `${listKey}AuthenticationWithPasswordFailure`,
+    // Initial data
+    CreateInitialInput: `CreateInitial${listKey}Input`,
+    createInitialItem: `createInitial${listKey}`,
+    // Password reset
     sendItemPasswordResetLink: `send${listKey}PasswordResetLink`,
     SendItemPasswordResetLinkResult: `Send${listKey}PasswordResetLinkResult`,
     validateItemPasswordResetToken: `validate${listKey}PasswordResetToken`,
     ValidateItemPasswordResetTokenResult: `Validate${listKey}PasswordResetTokenResult`,
     redeemItemPasswordResetToken: `redeem${listKey}PasswordResetToken`,
     RedeemItemPasswordResetTokenResult: `Redeem${listKey}PasswordResetTokenResult`,
+    // Magic auth
     sendItemMagicAuthLink: `send${listKey}MagicAuthLink`,
     SendItemMagicAuthLinkResult: `Send${listKey}MagicAuthLinkResult`,
     redeemItemMagicAuthToken: `redeem${listKey}MagicAuthToken`,
@@ -52,11 +56,11 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure`,
   };
 
-  // Fields added to the auth list
-
-  // TODO: These access control settings are not static, because we're still using executGraphQL
-  // internally and stataic false excludes them from the schema. When the implementation is
-  // updated to use our crud API, we can set these to static false values.
+  /**
+   * fields
+   *
+   * Fields added to the auth list.
+   */
   const fieldConfig = {
     access: () => false,
     ui: {
@@ -72,13 +76,13 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     [`${tokenType}IssuedAt`]: timestamp({ ...fieldConfig }),
     [`${tokenType}RedeemedAt`]: timestamp({ ...fieldConfig }),
   });
-  const additionalListFields = {
+  const fields = {
     ...(passwordResetLink && tokenFields('passwordReset')),
     ...(magicAuthLink && tokenFields('magicAuth')),
   };
 
   /**
-   * adminPageMiddleware
+   * pageMiddleware
    *
    * Should be added to the ui.pageMiddleware stack.
    *
@@ -87,7 +91,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *  - to the init page when initFirstItem is configured, and there are no user in the database
    *  - to the signin page when no valid session is present
    */
-  const adminPageMiddleware: AdminUIConfig['pageMiddleware'] = async ({
+  const pageMiddleware: AdminUIConfig['pageMiddleware'] = async ({
     req,
     isValidSession,
     createContext,
@@ -97,10 +101,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
 
     if (isValidSession) {
       if (pathname === '/signin' || (initFirstItem && pathname === '/init')) {
-        return {
-          kind: 'redirect',
-          to: '/',
-        };
+        return { kind: 'redirect', to: '/' };
       }
       return;
     }
@@ -109,32 +110,26 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       const count = await createContext({}).sudo().lists[listKey].count({});
       if (count === 0) {
         if (pathname !== '/init') {
-          return {
-            kind: 'redirect',
-            to: '/init',
-          };
+          return { kind: 'redirect', to: '/init' };
         }
         return;
       }
     }
 
     if (!session && pathname !== '/signin') {
-      return {
-        kind: 'redirect',
-        to: `/signin?from=${encodeURIComponent(req.url!)}`,
-      };
+      return { kind: 'redirect', to: `/signin?from=${encodeURIComponent(req.url!)}` };
     }
   };
 
   /**
-   * additionalFiles
+   * getAdditionalFiles
    *
    * This function adds files to be generated into the Admin UI build. Must be added to the
-   * ui.additionalFiles config.
+   * ui.getAdditionalFiles config.
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const additionalFiles = () => {
+  const getAdditionalFiles = () => {
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
@@ -158,9 +153,9 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * Must be added to the ui.publicPages config
    */
-  const publicAuthPages = ['/signin'];
+  const publicPages = ['/signin'];
   if (initFirstItem) {
-    publicAuthPages.push('/init');
+    publicPages.push('/init');
   }
 
   /**
@@ -185,74 +180,61 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    * Validates the provided auth config; optional step when integrating auth
    */
   const validateConfig = (keystoneConfig: KeystoneConfig) => {
-    const specifiedListConfig = keystoneConfig.lists[listKey];
-    if (keystoneConfig.lists[listKey] === undefined) {
-      throw new Error(
-        `A createAuth() invocation specifies the list "${listKey}" but no list with that key has been defined.`
-      );
+    const listConfig = keystoneConfig.lists[listKey];
+    if (listConfig === undefined) {
+      const msg = `A createAuth() invocation specifies the list "${listKey}" but no list with that key has been defined.`;
+      throw new Error(msg);
     }
 
     // TODO: Check for String-like typing for identityField? How?
-    const identityFieldConfig = specifiedListConfig.fields[identityField];
+    // TODO: Validate that the identifyField is unique.
+    // TODO: If this field isn't required, what happens if I try to log in as `null`?
+    const identityFieldConfig = listConfig.fields[identityField];
     if (identityFieldConfig === undefined) {
-      throw new Error(
-        `A createAuth() invocation for the "${listKey}" list specifies ${JSON.stringify(
-          identityField
-        )} as its identityField but no field with that key exists on the list.`
-      );
+      const i = JSON.stringify(identityField);
+      const msg = `A createAuth() invocation for the "${listKey}" list specifies ${i} as its identityField but no field with that key exists on the list.`;
+      throw new Error(msg);
     }
 
     // TODO: We could make the secret field optional to disable the standard id/secret auth and password resets (ie. magic links only)
-    const secretFieldConfig = specifiedListConfig.fields[secretField];
+    const secretFieldConfig = listConfig.fields[secretField];
     if (secretFieldConfig === undefined) {
-      throw new Error(
-        `A createAuth() invocation for the "${listKey}" list specifies ${JSON.stringify(
-          secretField
-        )} as its secretField but no field with that key exists on the list.`
-      );
+      const s = JSON.stringify(secretField);
+      const msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField but no field with that key exists on the list.`;
+      throw new Error(msg);
     }
-    const secretPrototype =
-      secretFieldConfig.type &&
-      secretFieldConfig.type.implementation &&
-      secretFieldConfig.type.implementation.prototype;
-    const secretTypename = secretFieldConfig.type && secretFieldConfig.type.type;
+
+    // FIXME: Until we explicity support user defined field types, should we just check against .type.type === 'Password'?
+    const { type } = secretFieldConfig;
+    const secretPrototype = type && type.implementation && type.implementation.prototype;
+    const secretTypename = type && type.type;
     if (typeof secretPrototype.compare !== 'function' || secretPrototype.compare.length < 2) {
-      throw new Error(
-        `A createAuth() invocation for the "${listKey}" list specifies ${JSON.stringify(
-          secretField
-        )} as its secretField, which uses the field type ${JSON.stringify(
-          secretTypename
-        )}. But the ${JSON.stringify(
-          secretTypename
-        )} field type doesn't implement the required compare() functionality.` +
-          (secretTypename !== 'Password'
-            ? ` Did you mean to reference a field of type Password instead?`
-            : '')
-      );
+      const s = JSON.stringify(secretField);
+      const st = JSON.stringify(secretTypename);
+      let msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField, which uses the field type ${st}. But the ${st} field type doesn't implement the required compare() functionality.`;
+      if (secretTypename !== 'Password') {
+        msg += ` Did you mean to reference a field of type Password instead?`;
+      }
+      throw new Error(msg);
     }
+
+    // Ditto here, just explicitly enforce the use of our `password` field.
     if (typeof secretPrototype.generateHash !== 'function') {
-      throw new Error(
-        `A createAuth() invocation for the "${listKey}" list specifies ${JSON.stringify(
-          secretField
-        )} as its secretField, which uses the field type ${JSON.stringify(
-          secretTypename
-        )}. But the ${JSON.stringify(
-          secretTypename
-        )} field type doesn't implement the required generateHash() functionality.` +
-          (secretTypename !== 'Password'
-            ? ` Did you mean to reference a field of type Password instead?`
-            : '')
-      );
+      const s = JSON.stringify(secretField);
+      const st = JSON.stringify(secretTypename);
+      let msg = `A createAuth() invocation for the "${listKey}" list specifies ${s} as its secretField, which uses the field type ${st}. But the ${st} field type doesn't implement the required generateHash() functionality.`;
+      if (secretTypename !== 'Password') {
+        msg += ` Did you mean to reference a field of type Password instead?`;
+      }
+      throw new Error(msg);
     }
 
     // TODO: Could also validate initFirstItem.itemData keys?
     for (const field of initFirstItem?.fields || []) {
-      if (specifiedListConfig.fields[field] === undefined) {
-        throw new Error(
-          `A createAuth() invocation for the "${listKey}" list specifies the field ${JSON.stringify(
-            field
-          )} in initFirstItem.fields array but no field with that key exist on the list.`
-        );
+      if (listConfig.fields[field] === undefined) {
+        const f = JSON.stringify(field);
+        const msg = `A createAuth() invocation for the "${listKey}" list specifies the field ${f} in initFirstItem.fields array but no field with that key exist on the list.`;
+        throw new Error(msg);
       }
     }
   };
@@ -273,11 +255,10 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     if (keystoneConfig.ui) {
       ui = {
         ...keystoneConfig.ui,
-        publicPages: [...(keystoneConfig.ui.publicPages || []), ...publicAuthPages],
-        getAdditionalFiles: [...(keystoneConfig.ui.getAdditionalFiles || []), additionalFiles],
-        pageMiddleware: async args => {
-          return (await adminPageMiddleware(args)) ?? keystoneConfig?.ui?.pageMiddleware?.(args);
-        },
+        publicPages: [...(keystoneConfig.ui.publicPages || []), ...publicPages],
+        getAdditionalFiles: [...(keystoneConfig.ui.getAdditionalFiles || []), getAdditionalFiles],
+        pageMiddleware: async args =>
+          (await pageMiddleware(args)) ?? keystoneConfig?.ui?.pageMiddleware?.(args),
         enableSessionItem: true,
         isAccessAllowed: async (context: KeystoneContext) => {
           // Allow access to the adminMeta data from the /init path to correctly render that page
@@ -299,23 +280,17 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       };
     }
     const existingExtendGraphQLSchema = keystoneConfig.extendGraphqlSchema;
-
+    const listConfig = keystoneConfig.lists[listKey];
     return {
       ...keystoneConfig,
       ui,
       // Add the additional fields to the references lists fields object
-      // TODO: The additionalListFields we're adding here shouldn't naively replace existing fields with the same key
+      // TODO: The fields we're adding here shouldn't naively replace existing fields with the same key
       // Leaving existing fields in place would allow solution devs to customise these field defs (eg. access control,
       // work factor for the tokens, etc.) without abandoning the withAuth() interface
       lists: {
         ...keystoneConfig.lists,
-        [listKey]: {
-          ...keystoneConfig.lists[listKey],
-          fields: {
-            ...keystoneConfig.lists[listKey].fields,
-            ...additionalListFields,
-          },
-        },
+        [listKey]: { ...listConfig, fields: { ...listConfig.fields, ...fields } },
       },
       extendGraphqlSchema: existingExtendGraphQLSchema
         ? (schema, keystone) =>
@@ -329,13 +304,8 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     // In the future we may want to return the following so that developers can
     // roll their own. This is pending a review of the use cases this might be
     // appropriate for, along with documentation and testing.
-    // ui: {
-    //   enableSessionItem: true,
-    //   pageMiddleware: adminPageMiddleware,
-    //   publicPages: publicAuthPages,
-    //   getAdditionalFiles: additionalFiles,
-    // },
-    // fields: additionalListFields,
+    // ui: { enableSessionItem: true, pageMiddleware, getAdditionalFiles, publicPages },
+    // fields,
     // extendGraphqlSchema,
     // validateConfig,
   };

@@ -24,8 +24,12 @@ export function getPasswordResetSchema<I extends string, S extends string>({
   return {
     typeDefs: `
       # Reset password
+      type Query {
+        ${gqlNames.validateItemPasswordResetToken}(${identityField}: String!, token: String!): ${gqlNames.ValidateItemPasswordResetTokenResult}
+      }
       type Mutation {
         ${gqlNames.sendItemPasswordResetLink}(${identityField}: String!): ${gqlNames.SendItemPasswordResetLinkResult}
+        ${gqlNames.redeemItemPasswordResetToken}(${identityField}: String!, token: String!, ${secretField}: String!): ${gqlNames.RedeemItemPasswordResetTokenResult}
       }
       type ${gqlNames.SendItemPasswordResetLinkResult} {
         code: PasswordResetRequestErrorCode!
@@ -35,15 +39,10 @@ export function getPasswordResetSchema<I extends string, S extends string>({
         IDENTITY_NOT_FOUND
         MULTIPLE_IDENTITY_MATCHES
       }
-      type Query {
-        ${gqlNames.validateItemPasswordResetToken}(${identityField}: String!, token: String!): ${gqlNames.ValidateItemPasswordResetTokenResult}
-      }
+
       type ${gqlNames.ValidateItemPasswordResetTokenResult} {
         code: PasswordResetRedemptionErrorCode!
         message: String!
-      }
-      type Mutation {
-        ${gqlNames.redeemItemPasswordResetToken}(${identityField}: String!, token: String!, ${secretField}: String!): ${gqlNames.RedeemItemPasswordResetTokenResult}
       }
       type ${gqlNames.RedeemItemPasswordResetTokenResult} {
         code: PasswordResetRedemptionErrorCode!
@@ -66,9 +65,11 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           const itemAPI = context.sudo().lists[listKey];
           const tokenType = 'passwordReset';
           const identity = args[identityField];
+
           const result = await createAuthToken(identityField, protectIdentities, identity, itemAPI);
 
           // Note: `success` can be false with no code
+          // If protectIdentities === true then result.code will *always* be undefined.
           if (!result.success && result.code) {
             const message = getAuthTokenErrorMessage({
               identityField,
@@ -78,6 +79,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             });
             return { code: result.code, message };
           }
+
           // Update system state
           if (result.success) {
             // Save the token and related info back to the item
@@ -116,6 +118,9 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           );
 
           if (!result.success) {
+            // Code could be FAILURE, TOKEN_REDEEMED, or TOKEN_EXPIRED
+            // Message will be 'Auth token redemption failed.', 'Auth tokens are single use and the auth token provided has already been redeemed.'
+            // or 'The auth token provided has expired.'
             const message = getAuthTokenErrorMessage({
               identityField,
               itemSingular: list.adminUILabels.singular,
