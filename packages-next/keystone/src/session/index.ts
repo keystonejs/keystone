@@ -1,3 +1,5 @@
+import { mergeSchemas } from '@graphql-tools/merge';
+import { GraphQLSchema } from 'graphql';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
@@ -7,7 +9,9 @@ import {
   SessionStoreFunction,
   SessionContext,
   CreateContext,
+  KeystoneContext,
 } from '@keystone-next/types';
+import { gql } from '../schema';
 
 // uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
@@ -236,4 +240,25 @@ export async function createSessionContext<T>(
     startSession: (data: T) => sessionStrategy.start({ res, data, createContext }),
     endSession: () => sessionStrategy.end({ req, res, createContext }),
   };
+}
+
+export function sessionSchema(graphQLSchema: GraphQLSchema) {
+  return mergeSchemas({
+    schemas: [graphQLSchema],
+    typeDefs: gql`
+      type Mutation {
+        endSession: Boolean!
+      }
+    `,
+    resolvers: {
+      Mutation: {
+        async endSession(rootVal, args, context: KeystoneContext) {
+          if (context.endSession) {
+            await context.endSession();
+          }
+          return true;
+        },
+      },
+    },
+  });
 }
