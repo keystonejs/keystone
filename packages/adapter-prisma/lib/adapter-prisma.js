@@ -333,6 +333,9 @@ class PrismaListAdapter extends BaseListAdapter {
 
   _getFieldStorageFormat(path) {
     let prismaSchema = this.fieldAdaptersByPath[path].getPrismaSchema();
+    if (this.fieldAdaptersByPath[path].fieldName == 'Relationship') {
+      prismaSchema = this.getListAdapterByKey(this.fieldAdaptersByPath[path].refListKey).fieldAdaptersByPath['id'].getPrismaSchema();
+    }
     if (prismaSchema.length > 1) return 'mixed';
     let prismaSchemaFormat = prismaSchema[0].replace(/^(\w+)\s+(\w+).+$/, '$2');
     return prismaSchemaFormat;
