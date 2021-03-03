@@ -85,6 +85,8 @@ export type AdminUIConfig = {
     isValidSession: boolean;
     createContext: CreateContext;
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
+  /** Enables nextjs graphql api route mode */
+  enableGraphQlApiEndpoint?: boolean;
 };
 
 export type AdminFileToWrite =
