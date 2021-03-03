@@ -1,9 +1,4 @@
-import {
-  BaseGeneratedListTypes,
-  AdminUIConfig,
-  KeystoneConfig,
-  KeystoneContext,
-} from '@keystone-next/types';
+import { BaseGeneratedListTypes, KeystoneContext } from '@keystone-next/types';
 
 export type AuthGqlNames = {
   CreateInitialInput: string;
@@ -60,19 +55,6 @@ export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
     /** Extra input to add for the create mutation */
     itemData?: Partial<GeneratedListTypes['inputs']['create']>;
   };
-};
-
-export type Auth = {
-  ui: {
-    enableSessionItem: NonNullable<AdminUIConfig['enableSessionItem']>;
-    publicPages: NonNullable<AdminUIConfig['publicPages']>;
-    pageMiddleware: NonNullable<AdminUIConfig['pageMiddleware']>;
-    getAdditionalFiles: NonNullable<AdminUIConfig['getAdditionalFiles']>[number];
-  };
-  extendGraphqlSchema: NonNullable<KeystoneConfig['extendGraphqlSchema']>;
-  fields: { [prop: string]: any };
-  validateConfig: (keystoneConfig: KeystoneConfig) => void;
-  withAuth: (config: KeystoneConfig) => KeystoneConfig;
 };
 
 export type AuthTokenRequestErrorCode = 'IDENTITY_NOT_FOUND' | 'MULTIPLE_IDENTITY_MATCHES';
