@@ -47,8 +47,6 @@ export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
   identityField: GeneratedListTypes['fields'];
   /** The path of the field the secret is stored in; must be password-ish */
   secretField: GeneratedListTypes['fields'];
-  /** Attempts to prevent consumers of the API from being able to determine the value of identity fields */
-  protectIdentities?: boolean;
   /** Password reset link functionality */
   passwordResetLink?: AuthTokenTypeConfig;
   /** "Magic link" functionality */
