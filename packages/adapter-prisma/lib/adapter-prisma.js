@@ -321,9 +321,10 @@ class PrismaListAdapter extends BaseListAdapter {
       case 'String':
         return value + '' || '';
       case 'Int':
+        return parseInt(value) || null;
       case 'Float':
       case 'Decimal':
-        return Number(value) || null;
+        return parseFloat(value) || null;
       default:
         return value;
     }
@@ -339,16 +340,19 @@ class PrismaListAdapter extends BaseListAdapter {
 
   async _create(_data) {
     return this.model.create({
-      data: mapKeys(_data, (value, path) =>
+      data: mapKeys(_data, (value, path) => 
         this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].isRelationship
           ? {
-              connect: Array.isArray(value)
-                ? value.map(x => ({ id: this._formatValue(x, path) }))
-                : { id: this._formatValue(value, path) },
-            }
+            connect: Array.isArray(value)
+              ? value.map(x => {
+                let xx = x;
+                return { id: this._formatValue(x, path) };
+              })
+              : { id: this._formatValue(value, path) },
+          }
           : this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].gqlToPrisma
-          ? this.fieldAdaptersByPath[path].gqlToPrisma(value)
-          : value
+            ? this.fieldAdaptersByPath[path].gqlToPrisma(value)
+            : value
       ),
       include: this._include(),
     });
@@ -432,9 +436,9 @@ class PrismaListAdapter extends BaseListAdapter {
             ? a.rel.left.path
             : a.rel.right.path
           : `from_${a.rel.left.listKey}_${a.rel.left.path}`; // One-sided
-        ret.where[path] = { some: { id: from._formatValue(from.fromId, 'id') } };
+        ret.where[path] = { some: { id: from.fromList.adapter._formatValue(from.fromId, 'id') } };
       } else {
-        ret.where[a.rel.columnName] = { id: from._formatValue(from.fromId, 'id') };
+        ret.where[a.rel.columnName] = { id: from.fromList.adapter._formatValue(from.fromId, 'id') };
       }
     }
 
