@@ -33,6 +33,7 @@ export default auth.withAuth(
     },
     ui: {
       isAccessAllowed: context => !!context.session?.data,
+      enableGraphQlApiEndpoint: true,
     },
     lists,
     session: withItemData(

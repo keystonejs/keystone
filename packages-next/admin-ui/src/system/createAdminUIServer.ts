@@ -1,5 +1,4 @@
 import url from 'url';
-import next from 'next';
 import express from 'express';
 import type { KeystoneConfig, SessionStrategy, CreateContext } from '@keystone-next/types';
 import { createSessionContext } from '@keystone-next/keystone/session';
@@ -11,6 +10,8 @@ export const createAdminUIServer = async (
   projectAdminPath: string,
   sessionStrategy?: SessionStrategy<any>
 ) => {
+  const thing = 'n' + 'ext';
+  const next = require(thing);
   const app = next({ dev, dir: projectAdminPath });
   const handle = app.getRequestHandler();
   await app.prepare();
