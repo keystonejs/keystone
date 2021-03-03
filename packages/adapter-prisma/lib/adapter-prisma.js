@@ -152,7 +152,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
                   (r.cardinality === '1:1' && isLeft)
                 ) {
                   // We're the owner of the foreign key column
-                  let format = f.adapter.listAdapter._getFieldStorageFormat(f.path);
+                  let format = f.getListByKey(f.refListKey).adapter._getFieldStorageFormat('id');
                   return [
                     `${f.path} ${f.refListKey}? @relation("${relName}", fields: [${f.path}Id], references: [id])`,
                     `${f.path}Id ${format}? @map("${r.columnName}")`,
