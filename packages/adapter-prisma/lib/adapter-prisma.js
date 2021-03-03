@@ -152,9 +152,10 @@ class PrismaAdapter extends BaseKeystoneAdapter {
                   (r.cardinality === '1:1' && isLeft)
                 ) {
                   // We're the owner of the foreign key column
+                  let format = f.adapter.listAdapter._getFieldStorageFormat(f.path);
                   return [
                     `${f.path} ${f.refListKey}? @relation("${relName}", fields: [${f.path}Id], references: [id])`,
-                    `${f.path}Id Int? @map("${r.columnName}")`,
+                    `${f.path}Id ${format}? @map("${r.columnName}")`,
                   ];
                 } else if (r.cardinality === '1:1') {
                   return [`${f.path} ${f.refListKey}? @relation("${relName}")`];
@@ -333,7 +334,6 @@ class PrismaListAdapter extends BaseListAdapter {
   _getFieldStorageFormat(path) {
     let prismaSchema = this.fieldAdaptersByPath[path].getPrismaSchema();
     if (prismaSchema.length > 1) return 'mixed';
-    prismaSchema = prismaSchema[0];
     let prismaSchemaFormat = prismaSchema[0].replace(/^(\w+)\s+(\w+).+$/, '$2');
     return prismaSchemaFormat;
   }
