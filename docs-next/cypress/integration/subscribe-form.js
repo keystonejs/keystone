@@ -11,12 +11,12 @@ describe('on successful submit', () => {
     cy.get('form button').click();
   });
   it('should replace the form with a thank you message', () => {
-    cy.wait('@newsletterSignup').then(() => {
+    return cy.wait('@newsletterSignup').then(() => {
       cy.contains('❤️ Thank you for subscribing!');
     });
   });
   it('should post the email to the expected URL', () => {
-    cy.wait('@newsletterSignup').then(({ request }) => {
+    return cy.wait('@newsletterSignup').then(({ request }) => {
       expect(request.body.email).to.equal('cc.lee@live.com.au');
       expect(request.body.source).to.equal('@keystone-next/website');
     });
@@ -39,12 +39,12 @@ describe('on unsuccessful server side validation', () => {
     cy.get('form button').click();
   });
   it('should prompt the user to try again', () => {
-    cy.wait('@newsletterSignup').then(() => {
+    return cy.wait('@newsletterSignup').then(() => {
       cy.get('form button').contains('Try again');
     });
   });
-  it.only('should display an appropriate error message', () => {
-    cy.wait('@newsletterSignup').then(() => {
+  it('should display an appropriate error message', () => {
+    return cy.wait('@newsletterSignup').then(() => {
       cy.contains('Invalid email address');
     });
   });
