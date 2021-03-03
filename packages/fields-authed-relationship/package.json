@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs-next/fields-authed-relationship-legacy",
+  "name": "@keystone-next/fields-authed-relationship-legacy",
   "description": "KeystoneJS AuthedRelationship Field Type",
   "version": "1.0.17",
   "author": "The KeystoneJS Development Team",
@@ -12,12 +12,12 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.9",
-    "@keystonejs/fields": "^22.0.0"
+    "@keystone-next/fields": "^22.0.0"
   },
   "devDependencies": {
-    "@keystonejs/auth-password": "*",
-    "@keystonejs/server-side-graphql-client": "*",
-    "@keystonejs/test-utils": "*"
+    "@keystone-next/auth-password": "*",
+    "@keystone-next/server-side-graphql-client": "*",
+    "@keystone-next/test-utils": "*"
   },
   "module": "dist/fields-authed-relationship.esm.js"
 }

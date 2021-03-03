@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs-next/session-legacy",
+  "name": "@keystone-next/session-legacy",
   "description": "Tools to assist with setting up session management in your Keystone system.",
   "version": "8.2.0",
   "author": "The KeystoneJS Development Team",

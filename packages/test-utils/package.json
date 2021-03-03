@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs-next/test-utils-legacy",
+  "name": "@keystone-next/test-utils-legacy",
   "description": "Common utilities used while testing @keystonejs/* packages.",
   "version": "12.0.0",
   "author": "The KeystoneJS Development Team",
@@ -11,11 +11,11 @@
   },
   "dependencies": {
     "@keystone-next/keystone": "10.0.0",
-    "@keystonejs/adapter-knex": "^13.0.1",
-    "@keystonejs/adapter-mongoose": "^11.0.1",
-    "@keystonejs/adapter-prisma": "^3.0.1",
-    "@keystonejs/app-graphql": "^6.2.1",
-    "@keystonejs/keystone": "^19.2.0",
+    "@keystone-next/adapter-knex": "^13.0.1",
+    "@keystone-next/adapter-mongoose": "^11.0.1",
+    "@keystone-next/adapter-prisma": "^3.0.1",
+    "@keystone-next/app-graphql": "^6.2.1",
+    "@keystone-next/keystone": "^19.2.0",
     "express": "^4.17.1",
     "mongodb-memory-server-core": "^6.9.3",
     "supertest-light": "^1.0.3"

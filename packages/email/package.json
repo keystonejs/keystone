@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs-next/email-legacy",
+  "name": "@keystone-next/email-legacy",
   "description": "Easily send emails from a KeystoneJS application",
   "version": "5.2.0",
   "author": "The KeystoneJS Development Team",

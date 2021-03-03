@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs-next/adapter-mongoose-legacy",
+  "name": "@keystone-next/adapter-mongoose-legacy",
   "description": "KeystoneJS Mongoose Database adapter.",
   "version": "11.0.1",
   "author": "The KeystoneJS Development Team",
@@ -8,9 +8,9 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystonejs/fields-mongoid": "^9.1.4",
-    "@keystonejs/keystone": "^19.2.0",
-    "@keystonejs/utils": "^6.0.1",
+    "@keystone-next/fields-mongoid": "^9.1.4",
+    "@keystone-next/keystone": "^19.2.0",
+    "@keystone-next/utils": "^6.0.1",
     "cuid": "^2.1.8",
     "mongoose": "^5.11.18",
     "p-settle": "^4.1.1"

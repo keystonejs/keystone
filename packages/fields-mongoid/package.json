@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs-next/fields-mongoid-legacy",
+  "name": "@keystone-next/fields-mongoid-legacy",
   "description": "KeystoneJS MongoId Field Type",
   "version": "9.1.4",
   "author": "The KeystoneJS Development Team",
@@ -14,10 +14,10 @@
   "dependencies": {
     "@arch-ui/input": "^0.1.11",
     "@babel/runtime": "^7.13.9",
-    "@keystonejs/adapter-knex": "^13.0.1",
-    "@keystonejs/adapter-mongoose": "^11.0.1",
-    "@keystonejs/adapter-prisma": "^3.0.1",
-    "@keystonejs/fields": "^22.0.0",
+    "@keystone-next/adapter-knex": "^13.0.1",
+    "@keystone-next/adapter-mongoose": "^11.0.1",
+    "@keystone-next/adapter-prisma": "^3.0.1",
+    "@keystone-next/fields": "^22.0.0",
     "react": "^17.0.1"
   },
   "preconstruct": {

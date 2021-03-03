@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs-next/auth-password-legacy",
+  "name": "@keystone-next/auth-password-legacy",
   "description": "Provides a basic password authentication strategy.",
   "version": "6.0.1",
   "author": "The KeystoneJS Development Team",
@@ -8,8 +8,8 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystonejs/fields": "^22.0.0",
-    "@keystonejs/session": "^8.1.1"
+    "@keystone-next/fields": "^22.0.0",
+    "@keystone-next/session": "^8.1.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/auth-password"
 }

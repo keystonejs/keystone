@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs-next/fields-content-legacy",
+  "name": "@keystone-next/fields-content-legacy",
   "description": "A block-based content field for KeystoneJS",
   "version": "9.0.6",
   "author": "The KeystoneJS Development Team",
@@ -17,8 +17,8 @@
     "@arch-ui/typography": "^0.0.18",
     "@babel/runtime": "^7.13.9",
     "@emotion/core": "^10.1.1",
-    "@keystonejs/fields": "^22.0.0",
-    "@keystonejs/utils": "^6.0.1",
+    "@keystone-next/fields": "^22.0.0",
+    "@keystone-next/utils": "^6.0.1",
     "@popperjs/core": "^2.8.6",
     "@primer/octicons-react": "^11.3.0",
     "apply-ref": "^1.0.0",
@@ -39,7 +39,7 @@
     "slate-react": "^0.22.10"
   },
   "devDependencies": {
-    "@keystonejs/server-side-graphql-client": "*"
+    "@keystone-next/server-side-graphql-client": "*"
   },
   "preconstruct": {
     "entrypoints": [

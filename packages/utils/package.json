@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs-next/utils-legacy",
+  "name": "@keystone-next/utils-legacy",
   "description": "Common utility functions used throughout @keystonejs packages.",
   "version": "6.0.1",
   "author": "The KeystoneJS Development Team",

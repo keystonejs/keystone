@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs-next/access-control-legacy",
+  "name": "@keystone-next/access-control-legacy",
   "description": "KeystoneJS Access Control parsing and validating utilities.",
   "version": "7.0.0",
   "author": "The KeystoneJS Development Team",
@@ -10,7 +10,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystonejs/utils": "^6.0.1"
+    "@keystone-next/utils": "^6.0.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/access-control"
 }
