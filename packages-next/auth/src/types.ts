@@ -1,4 +1,9 @@
-import { BaseGeneratedListTypes, AdminUIConfig, KeystoneConfig } from '@keystone-next/types';
+import {
+  BaseGeneratedListTypes,
+  AdminUIConfig,
+  KeystoneConfig,
+  KeystoneContext,
+} from '@keystone-next/types';
 
 export type AuthGqlNames = {
   CreateInitialInput: string;
@@ -25,6 +30,7 @@ export type SendTokenFn = (args: {
   itemId: string | number;
   identity: string;
   token: string;
+  context: KeystoneContext;
 }) => Promise<void> | void;
 
 export type AuthTokenTypeConfig = {

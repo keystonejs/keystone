@@ -92,7 +92,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
               resolveFields: false,
             });
 
-            await passwordResetLink.sendToken({ itemId, identity, token });
+            await passwordResetLink.sendToken({ itemId, identity, token, context });
           }
           return null;
         },
