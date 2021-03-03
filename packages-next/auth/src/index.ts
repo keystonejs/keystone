@@ -157,7 +157,10 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * Must be added to the ui.publicPages config
    */
-  const publicAuthPages = ['/signin', '/init'];
+  const publicAuthPages = ['/signin'];
+  if (initFirstItem) {
+    publicAuthPages.push('/init');
+  }
 
   /**
    * extendGraphqlSchema
