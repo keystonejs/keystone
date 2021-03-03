@@ -26,6 +26,11 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   magicAuthLink,
   passwordResetLink,
 }: AuthConfig<GeneratedListTypes>) {
+  // The protectIdentities flag is currently under review to see whether it should be
+  // part of the createAuth API (in which case its use cases need to be documented and tested)
+  // or whether always being true is what we want, in which case we can refactor our code
+  // to match this. -TL
+  const protectIdentities = true;
   const gqlNames: AuthGqlNames = {
     CreateInitialInput: `CreateInitial${listKey}Input`,
     createInitialItem: `createInitial${listKey}`,
