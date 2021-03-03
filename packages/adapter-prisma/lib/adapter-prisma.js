@@ -319,7 +319,7 @@ class PrismaListAdapter extends BaseListAdapter {
         return Boolean(value);
       case 'DateTime':
       case 'String':
-        return value + '' || '';
+        return (value || '') + '';
       case 'Int':
         return parseInt(value) || null;
       case 'Float':
