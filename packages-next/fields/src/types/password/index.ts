@@ -1,3 +1,4 @@
+// @ts-ignore
 import { Password } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';

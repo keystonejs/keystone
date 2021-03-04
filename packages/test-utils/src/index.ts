@@ -6,10 +6,13 @@ import express from 'express';
 import supertest from 'supertest-light';
 import MongoDBMemoryServer from 'mongodb-memory-server-core';
 import url from 'url';
+// @ts-ignore
 import { Keystone } from '@keystone-next/keystone-legacy';
 // @ts-ignore
 import { GraphQLApp } from '@keystone-next/app-graphql-legacy';
+// @ts-ignore
 import { KnexAdapter } from '@keystone-next/adapter-knex-legacy';
+// @ts-ignore
 import { MongooseAdapter } from '@keystone-next/adapter-mongoose-legacy';
 // @ts-ignore
 import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
