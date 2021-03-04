@@ -11,7 +11,9 @@
 <br>
 
 <!-- ![CI](https://github.com/keystonejs/keystone/workflows/CI/badge.svg) -->
+
 <!-- [![slack](https://keystone-community.now.sh//badge.svg)](https://keystone-community.now.sh/) -->
+
 <!-- [![Supported by Thinkmill](https://thinkmill.github.io/badge/heart.svg)](http://thinkmill.com.au/?utm_source=github&utm_medium=badge&utm_campaign=react-select) -->
 
 ## Contents
@@ -36,6 +38,7 @@ The [Keystone 5](https://github.com/keystonejs/keystone-5) codebase is now in ac
 For more information please read our [Keystone 5 and beyond](https://github.com/keystonejs/keystone-5/issues/21) post.
 
 <!-- ## Getting Started -->
+
 <!-- TBC -->
 
 ## Documentation
@@ -49,27 +52,35 @@ In the next month you'll see a new project starter and getting started guide, as
 We'd love to hear your feedback, reach out on Twitter at [KeystoneJS](https://twitter.com/keystonejs) and [subscribe](https://next.keystonejs.com/roadmap#project-status) to be notified of our progress.
 
 <!-- ## Version control -->
+
 <!-- TBC -->
 
 <!-- ## Contributing -->
+
 <!-- TBC -->
 
 <!-- ### Demo Projects -->
+
 <!-- TBC -->
 
 <!-- ### Development Practices -->
+
 <!-- TBC -->
 
 <!-- ### Setup -->
+
 <!-- TBC -->
 
 <!-- ### Testing -->
+
 <!-- TBC -->
 
 <!-- ### Unit Tests -->
+
 <!-- TBC -->
 
 <!-- ### End-to-End Tests -->
+
 <!-- TBC -->
 
 ## Code of Conduct

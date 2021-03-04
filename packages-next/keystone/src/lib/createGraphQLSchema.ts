@@ -1,11 +1,9 @@
 import { GraphQLObjectType } from 'graphql';
-import { mergeSchemas } from '@graphql-tools/merge';
 import { mapSchema } from '@graphql-tools/utils';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import type { KeystoneConfig, KeystoneContext, BaseKeystone } from '@keystone-next/types';
+import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 import { getAdminMetaSchema } from '@keystone-next/admin-ui/system';
-
-import { gql } from '../schema';
+import { sessionSchema } from '../session';
 
 export function createGraphQLSchema(config: KeystoneConfig, keystone: BaseKeystone) {
   // Start with the core keystone graphQL schema
@@ -41,24 +39,7 @@ export function createGraphQLSchema(config: KeystoneConfig, keystone: BaseKeysto
 
   // Merge in session graphQL API
   if (config.session) {
-    graphQLSchema = mergeSchemas({
-      schemas: [graphQLSchema],
-      typeDefs: gql`
-        type Mutation {
-          endSession: Boolean!
-        }
-      `,
-      resolvers: {
-        Mutation: {
-          async endSession(rootVal, args, context: KeystoneContext) {
-            if (context.endSession) {
-              await context.endSession();
-            }
-            return true;
-          },
-        },
-      },
-    });
+    graphQLSchema = sessionSchema(graphQLSchema);
   }
 
   // Merge in the admin-meta graphQL API

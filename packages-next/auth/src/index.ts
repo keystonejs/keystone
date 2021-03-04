@@ -4,10 +4,11 @@ import {
   BaseGeneratedListTypes,
   KeystoneConfig,
   KeystoneContext,
+  AdminUIConfig,
 } from '@keystone-next/types';
 import { password, timestamp } from '@keystone-next/fields';
 
-import { AuthConfig, Auth, AuthGqlNames } from './types';
+import { AuthConfig, AuthGqlNames } from './types';
 import { getSchemaExtension } from './schema';
 import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';
@@ -20,12 +21,16 @@ import { initTemplate } from './templates/init';
 export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   listKey,
   secretField,
-  protectIdentities = true,
   initFirstItem,
   identityField,
   magicAuthLink,
   passwordResetLink,
-}: AuthConfig<GeneratedListTypes>): Auth {
+}: AuthConfig<GeneratedListTypes>) {
+  // The protectIdentities flag is currently under review to see whether it should be
+  // part of the createAuth API (in which case its use cases need to be documented and tested)
+  // or whether always being true is what we want, in which case we can refactor our code
+  // to match this. -TL
+  const protectIdentities = true;
   const gqlNames: AuthGqlNames = {
     CreateInitialInput: `CreateInitial${listKey}Input`,
     createInitialItem: `createInitial${listKey}`,
@@ -60,14 +65,16 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       listView: { fieldMode: 'hidden' },
     },
   } as const;
-
+  // These field names have to follow this format so that for e.g
+  // validateAuthToken() behaves correctly.
+  const tokenFields = (tokenType: 'passwordReset' | 'magicAuth') => ({
+    [`${tokenType}Token`]: password({ ...fieldConfig }),
+    [`${tokenType}IssuedAt`]: timestamp({ ...fieldConfig }),
+    [`${tokenType}RedeemedAt`]: timestamp({ ...fieldConfig }),
+  });
   const additionalListFields = {
-    [`${secretField}ResetToken`]: password({ ...fieldConfig }),
-    [`${secretField}ResetIssuedAt`]: timestamp({ ...fieldConfig }),
-    [`${secretField}ResetRedeemedAt`]: timestamp({ ...fieldConfig }),
-    [`magicAuthToken`]: password({ ...fieldConfig }),
-    [`magicAuthIssuedAt`]: timestamp({ ...fieldConfig }),
-    [`magicAuthRedeemedAt`]: timestamp({ ...fieldConfig }),
+    ...(passwordResetLink && tokenFields('passwordReset')),
+    ...(magicAuthLink && tokenFields('magicAuth')),
   };
 
   /**
@@ -80,7 +87,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *  - to the init page when initFirstItem is configured, and there are no user in the database
    *  - to the signin page when no valid session is present
    */
-  const adminPageMiddleware: Auth['ui']['pageMiddleware'] = async ({
+  const adminPageMiddleware: AdminUIConfig['pageMiddleware'] = async ({
     req,
     isValidSession,
     createContext,
@@ -127,7 +134,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const additionalFiles: Auth['ui']['getAdditionalFiles'] = () => {
+  const additionalFiles = () => {
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
@@ -151,7 +158,10 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * Must be added to the ui.publicPages config
    */
-  const publicAuthPages = ['/signin', '/init'];
+  const publicAuthPages = ['/signin'];
+  if (initFirstItem) {
+    publicAuthPages.push('/init');
+  }
 
   /**
    * extendGraphqlSchema
@@ -314,21 +324,19 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     };
   };
 
-  /**
-   * Alongside withAuth (recommended) all the config is returned so you can extend or replace
-   * the default implementation with your own custom functionality, and integrate the result into
-   * your keystone config by hand.
-   */
   return {
-    ui: {
-      enableSessionItem: true,
-      pageMiddleware: adminPageMiddleware,
-      publicPages: publicAuthPages,
-      getAdditionalFiles: additionalFiles,
-    },
-    fields: additionalListFields,
-    extendGraphqlSchema,
-    validateConfig,
     withAuth,
+    // In the future we may want to return the following so that developers can
+    // roll their own. This is pending a review of the use cases this might be
+    // appropriate for, along with documentation and testing.
+    // ui: {
+    //   enableSessionItem: true,
+    //   pageMiddleware: adminPageMiddleware,
+    //   publicPages: publicAuthPages,
+    //   getAdditionalFiles: additionalFiles,
+    // },
+    // fields: additionalListFields,
+    // extendGraphqlSchema,
+    // validateConfig,
   };
 }

@@ -1,5 +1,3 @@
-/// <reference types="cypress" />
-
 describe('on click of a link icon', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8000/guides/cli', {
