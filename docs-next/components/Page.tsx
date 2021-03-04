@@ -1,5 +1,6 @@
 /** @jsx jsx  */
 import { Fragment, ReactNode } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { useRef, useState } from 'react';
 import { getHeadings, Heading } from '../lib/getHeadings';
@@ -23,6 +24,7 @@ export const Page = ({
   title?: string;
   isProse?: boolean;
 }) => {
+  const router = useRouter();
   const [mobileNavCollapsed, setMobileNavCollapsed] = useState(true);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const metaTitle = title ? `Keystone Next - ${title}` : `Keystone Next`;

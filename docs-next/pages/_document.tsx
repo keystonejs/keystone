@@ -10,7 +10,7 @@ class MyDocument extends Document {
   }
 
   render() {
-    const siteUrl = 'https://next.keystonejs.com';
+    const siteUrl = process.env.siteUrl;
     return (
       <Html>
         <Head>
