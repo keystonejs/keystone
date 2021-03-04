@@ -335,7 +335,7 @@ class PrismaListAdapter extends BaseListAdapter {
 
   _getFieldStorageFormat(path) {
     let prismaSchema = this.fieldAdaptersByPath[path].getPrismaSchema();
-    if (this.fieldAdaptersByPath[path].fieldName == 'Relationship') {
+    if (this.fieldAdaptersByPath[path].isRelationship) {
       prismaSchema = this.getListAdapterByKey(
         this.fieldAdaptersByPath[path].refListKey
       ).fieldAdaptersByPath['id'].getPrismaSchema();
@@ -349,13 +349,15 @@ class PrismaListAdapter extends BaseListAdapter {
     return this.model.create({
       data: mapKeys(_data, (value, path) =>
         this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].isRelationship
-          ? {
-              connect: Array.isArray(value)
-                ? value.map(x => {
-                    return { id: this._formatFieldValue(x, path) };
-                  })
-                : { id: this._formatFieldValue(value, path) },
-            }
+          ? value == null
+            ? {}
+            : {
+                connect: Array.isArray(value)
+                  ? value.map(x => {
+                      return { id: this._formatFieldValue(x, path) };
+                    })
+                  : { id: this._formatFieldValue(value, path) },
+              }
           : this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].gqlToPrisma
           ? this.fieldAdaptersByPath[path].gqlToPrisma(value)
           : value
@@ -442,9 +444,13 @@ class PrismaListAdapter extends BaseListAdapter {
             ? a.rel.left.path
             : a.rel.right.path
           : `from_${a.rel.left.listKey}_${a.rel.left.path}`; // One-sided
-        ret.where[path] = { some: { id: from.fromList.adapter._formatFieldValue(from.fromId, 'id') } };
+        ret.where[path] = {
+          some: { id: from.fromList.adapter._formatFieldValue(from.fromId, 'id') },
+        };
       } else {
-        ret.where[a.rel.columnName] = { id: from.fromList.adapter._formatFieldValue(from.fromId, 'id') };
+        ret.where[a.rel.columnName] = {
+          id: from.fromList.adapter._formatFieldValue(from.fromId, 'id'),
+        };
       }
     }
 
