@@ -1,7 +1,7 @@
 import { mergeSchemas } from '@graphql-tools/merge';
 import { ExtendGraphqlSchema } from '@keystone-next/types';
 
-import { AuthGqlNames, AuthTokenTypeConfig } from './types';
+import { AuthGqlNames, AuthTokenTypeConfig, InitFirstItemConfig } from './types';
 import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
 import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
 import { getPasswordResetSchema } from './gql/getPasswordResetSchema';
@@ -22,8 +22,8 @@ export const getSchemaExtension = ({
   protectIdentities: boolean;
   secretField: string;
   gqlNames: AuthGqlNames;
-  initFirstItem?: any;
-  passwordResetLink?: any;
+  initFirstItem?: InitFirstItemConfig<any>;
+  passwordResetLink?: AuthTokenTypeConfig;
   magicAuthLink?: AuthTokenTypeConfig;
 }): ExtendGraphqlSchema => (schema, keystone) =>
   [
