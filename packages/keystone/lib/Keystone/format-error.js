@@ -7,7 +7,7 @@ const ensureError = require('ensure-error');
 const { serializeError } = require('serialize-error');
 const StackUtils = require('stack-utils');
 const cuid = require('cuid');
-const { omit } = require('@keystonejs/utils');
+const { omit } = require('@keystone-next/utils-legacy');
 const { graphqlLogger } = require('./logger');
 
 const stackUtil = new StackUtils({ cwd: process.cwd(), internals: StackUtils.nodeInternals() });

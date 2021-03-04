@@ -2,6 +2,7 @@
   "name": "@arch-ui/confirm",
   "description": "Confirmation UI as used in @keystonejs Admin UI.",
   "version": "0.0.23",
+  "private": true,
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/confirm.cjs.js",

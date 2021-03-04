@@ -1,4 +1,4 @@
-import { File } from '@keystonejs/fields';
+import { File } from '@keystone-next/fields-legacy';
 
 class CloudinaryImage extends File.implementation {
   constructor() {

@@ -1,7 +1,7 @@
-const { setupServer } = require('@keystonejs/test-utils');
-const { Text } = require('@keystonejs/fields');
-const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
-const { objMerge } = require('@keystonejs/utils');
+const { setupServer } = require('@keystone-next/test-utils-legacy');
+const { Text } = require('@keystone-next/fields-legacy');
+const { PasswordAuthStrategy } = require('@keystone-next/auth-password-legacy');
+const { objMerge } = require('@keystone-next/utils-legacy');
 
 const FAKE_ID = { mongoose: '5b3eabd9e9f2e3e4866742ea', knex: 137, prisma: 137 };
 const FAKE_ID_2 = { mongoose: '5b3eabd9e9f2e3e4866742eb', knex: 138, prisma: 138 };

@@ -1,8 +1,8 @@
 import path from 'path';
 
-import { Block } from '@keystonejs/fields-content/Block';
+import { Block } from '@keystone-next/fields-content-legacy/Block';
 import { Unsplash } from '.';
-import { Relationship } from '@keystonejs/fields';
+import { Relationship } from '@keystone-next/fields-legacy';
 
 const RelationshipWrapper = {
   ...Relationship,
@@ -18,7 +18,7 @@ const RelationshipWrapper = {
 };
 
 const unsplashBlockView = path.join(
-  path.dirname(require.resolve('@keystonejs/fields-unsplash/package.json')),
+  path.dirname(require.resolve('@keystone-next/fields-unsplash-legacy/package.json')),
   'views/blocks/unsplash-image'
 );
 

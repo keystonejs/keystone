@@ -1,8 +1,8 @@
 import { Implementation } from '../../Implementation';
-import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
-import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
-import { parseFieldAccess } from '@keystonejs/access-control';
+import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
+import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
+import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { parseFieldAccess } from '@keystone-next/access-control-legacy';
 
 export class Virtual extends Implementation {
   constructor(

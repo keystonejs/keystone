@@ -1,5 +1,5 @@
-import { getItems } from '@keystonejs/server-side-graphql-client';
-import { Text } from '@keystonejs/fields';
+import { getItems } from '@keystone-next/server-side-graphql-client-legacy';
+import { Text } from '@keystone-next/fields-legacy';
 import { AutoIncrement } from './index';
 
 export const name = 'AutoIncrement';

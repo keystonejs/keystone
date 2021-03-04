@@ -1,7 +1,7 @@
-const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
-const { Text, Password } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
-const { createItem } = require('@keystonejs/server-side-graphql-client');
+const { PasswordAuthStrategy } = require('@keystone-next/auth-password-legacy');
+const { Text, Password } = require('@keystone-next/fields-legacy');
+const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
+const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
 const superagent = require('superagent');
 
 function setupKeystone(adapterName) {
