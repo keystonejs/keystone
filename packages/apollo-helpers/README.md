@@ -14,7 +14,7 @@ A set of functions and components to ease using
 ## Installation
 
 ```shell
-yarn add @keystonejs/apollo-helpers
+yarn add @keystone-next/apollo-helpers-legacy
 ```
 
 ## Usage
