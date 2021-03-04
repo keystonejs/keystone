@@ -315,6 +315,7 @@ class PrismaListAdapter extends BaseListAdapter {
 
   _formatFieldValue(value, path) {
     let format = this._getFieldStorageFormat(path);
+    if (value == null) return null;
     switch (format) {
       case 'Boolean':
         return Boolean(value);
