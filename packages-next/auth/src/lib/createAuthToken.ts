@@ -12,7 +12,7 @@ function generateToken(length: number): string {
 
 // TODO: Auth token mutations may leak user identities due to timing attacks :(
 // We don't (currently) make any effort to mitigate the time taken to record the new token or sent the email when successful
-export async function updateAuthToken(
+export async function createAuthToken(
   identityField: string,
   protectIdentities: boolean,
   identity: string,
