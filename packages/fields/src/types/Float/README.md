@@ -11,7 +11,7 @@ An imprecise numeric value, stored as a floating point.
 ## Usage
 
 ```js
-const { Float, DateTime } = require('@keystonejs/fields');
+const { Float, DateTime } = require('@keystone-next/fields-legacy');
 
 keystone.createList('SensorReading', {
   fields: {

@@ -11,7 +11,7 @@ A whole number.
 ## Usage
 
 ```js
-const { Integer, Text } = require('@keystonejs/fields');
+const { Integer, Text } = require('@keystone-next/fields-legacy');
 
 keystone.createList('Review', {
   fields: {

@@ -10,7 +10,7 @@
     "node": ">=10.0.0"
   },
   "devDependencies": {
-    "@keystone-next/fields": "*",
-    "@keystone-next/test-utils": "*"
+    "@keystone-next/fields-legacy": "*",
+    "@keystone-next/test-utils-legacy": "*"
   }
 }

@@ -8,8 +8,8 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystone-next/fields": "^22.0.0",
-    "@keystone-next/session": "^8.1.1",
+    "@keystone-next/fields-legacy": "^22.0.0",
+    "@keystone-next/session-legacy": "^8.1.1",
     "express": "^4.17.1",
     "nanoassert": "^2.0.0",
     "passport": "^0.4.1",

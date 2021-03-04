@@ -1,4 +1,4 @@
-import { Password } from '@keystonejs/fields';
+import { Password } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';

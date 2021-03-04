@@ -22,10 +22,10 @@ const { data, errors } = await keystone.executeGraphQL({
 const user = data.createUserInput;
 ```
 
-Using `@keystonejs/server-side-graphql-client` we can replace this with
+Using `@keystone-next/server-side-graphql-client-legacy` we can replace this with
 
 ```js
-const { createItem } = require('@keystonejs/server-side-graphql-client');
+const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
 
 const user = await createItem({
   keystone,
@@ -116,7 +116,7 @@ Create a single item.
 #### Usage
 
 ```js
-const { createItem } = require('@keystonejs/server-side-graphql-client');
+const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
 
 keystone.createList('User', {
   fields: {
@@ -155,7 +155,7 @@ Create multiple items.
 #### Usage
 
 ```js
-const { createItems } = require('@keystonejs/server-side-graphql-client');
+const { createItems } = require('@keystone-next/server-side-graphql-client-legacy');
 
 keystone.createList('User', {
   fields: {
@@ -197,7 +197,7 @@ Retrieve a single item by its ID.
 #### Usage
 
 ```js
-const { getItem } = require('@keystonejs/server-side-graphql-client');
+const { getItem } = require('@keystone-next/server-side-graphql-client-legacy');
 
 keystone.createList('User', {
   fields: {
@@ -233,7 +233,7 @@ Retrieve multiple items. Use [where](https://www.keystonejs.com/guides/intro-to-
 #### Usage
 
 ```js
-const { getItems } = require('@keystonejs/server-side-graphql-client');
+const { getItems } = require('@keystone-next/server-side-graphql-client-legacy');
 
 keystone.createList('User', {
   fields: {
@@ -275,7 +275,7 @@ Update a single item.
 #### Usage
 
 ```js
-const { updateItem } = require('@keystonejs/server-side-graphql-client');
+const { updateItem } = require('@keystone-next/server-side-graphql-client-legacy');
 
 keystone.createList('User', {
   fields: {
@@ -311,7 +311,7 @@ Update multiple items.
 #### Usage
 
 ```js
-const { updateItems } = require('@keystonejs/server-side-graphql-client');
+const { updateItems } = require('@keystone-next/server-side-graphql-client-legacy');
 
 keystone.createList('User', {
   fields: {
@@ -353,7 +353,7 @@ Delete a single item.
 #### Usage
 
 ```js
-const { deleteItem } = require('@keystonejs/server-side-graphql-client');
+const { deleteItem } = require('@keystone-next/server-side-graphql-client-legacy');
 
 keystone.createList('User', {
   fields: {
@@ -384,7 +384,7 @@ Delete multiple items.
 #### Usage
 
 ```js
-const { deleteItems } = require('@keystonejs/server-side-graphql-client');
+const { deleteItems } = require('@keystone-next/server-side-graphql-client-legacy');
 
 keystone.createList('User', {
   fields: {

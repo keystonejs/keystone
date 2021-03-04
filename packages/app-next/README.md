@@ -13,7 +13,7 @@ A KeystoneJS app for serving a [Next.js](https://nextjs.org/) application.
 ## Usage
 
 ```javascript
-const { NextApp } = require('@keystonejs/app-next');
+const { NextApp } = require('@keystone-next/app-next-legacy');
 
 module.exports = {
   keystone,

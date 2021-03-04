@@ -390,15 +390,15 @@
 - [`1d9068770`](https://github.com/keystonejs/keystone/commit/1d9068770d03658954044c530e56e66169667e25) [#3280](https://github.com/keystonejs/keystone/pull/3280) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved `@keystonejs/fields-cloudinary-image`, `@keystonejs/fields-unsplash` and `@keystonejs/fields-oembed` out of the core fields package `@keystonejs/fields`.
 
   ```js
-  const { CloudinaryImage, Unsplash, OEmbed } = require('@keystonejs/fields');
+  const { CloudinaryImage, Unsplash, OEmbed } = require('@keystone-next/fields-legacy');
   ```
 
   Needs to be changed to:
 
   ```js
-  const { CloudinaryImage } = require('@keystonejs/fields-cloudinary-image');
-  const { Unsplash } = require('@keystonejs/fields-unsplash');
-  const { OEmbed } = require('@keystonejs/fields-oembed');
+  const { CloudinaryImage } = require('@keystone-next/fields-cloudinary-image-legacy');
+  const { Unsplash } = require('@keystone-next/fields-unsplash-legacy');
+  const { OEmbed } = require('@keystone-next/fields-oembed-legacy');
   ```
 
 * [`e44102e9f`](https://github.com/keystonejs/keystone/commit/e44102e9f7f770b1528d642d763ccf9f88f3cbb1) [#3307](https://github.com/keystonejs/keystone/pull/3307) Thanks [@MadeByMike](https://github.com/MadeByMike)! - Moved the `Color` field from `@keystonejs/fields` to `@keystonejs/fields-color`.

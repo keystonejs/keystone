@@ -1,4 +1,4 @@
-const { getType, flatten } = require('@keystonejs/utils');
+const { getType, flatten } = require('@keystone-next/utils-legacy');
 
 const { simpleTokenizer, relationshipTokenizer, modifierTokenizer } = require('./tokenizers');
 

@@ -12,12 +12,12 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.9",
-    "@keystone-next/fields": "^22.0.0"
+    "@keystone-next/fields-legacy": "^22.0.0"
   },
   "devDependencies": {
-    "@keystone-next/auth-password": "*",
-    "@keystone-next/server-side-graphql-client": "*",
-    "@keystone-next/test-utils": "*"
+    "@keystone-next/auth-password-legacy": "*",
+    "@keystone-next/server-side-graphql-client-legacy": "*",
+    "@keystone-next/test-utils-legacy": "*"
   },
   "module": "dist/fields-authed-relationship.esm.js"
 }

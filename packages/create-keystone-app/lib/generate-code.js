@@ -13,9 +13,9 @@ const generateCode = async () => {
   }[adapterChoice.key];
 
   const adapterRequire = {
-    MongoDB: `const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');`,
-    PostgreSQL: `const { KnexAdapter: Adapter } = require('@keystonejs/adapter-knex');`,
-    Prisma: `const { PrismaAdapter: Adapter } = require('@keystonejs/adapter-prisma');`,
+    MongoDB: `const { MongooseAdapter: Adapter } = require('@keystone-next/adapter-mongoose-legacy');`,
+    PostgreSQL: `const { KnexAdapter: Adapter } = require('@keystone-next/adapter-knex-legacy');`,
+    Prisma: `const { PrismaAdapter: Adapter } = require('@keystone-next/adapter-prisma-legacy');`,
   }[adapterChoice.key];
 
   return `${adapterRequire}

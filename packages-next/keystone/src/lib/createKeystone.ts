@@ -1,9 +1,9 @@
 import path from 'path';
-import { Keystone } from '@keystonejs/keystone';
-import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
-import { KnexAdapter } from '@keystonejs/adapter-knex';
+import { Keystone } from '@keystone-next/keystone-legacy';
+import { MongooseAdapter } from '@keystone-next/adapter-mongoose-legacy';
+import { KnexAdapter } from '@keystone-next/adapter-knex-legacy';
 // @ts-ignore
-import { PrismaAdapter } from '@keystonejs/adapter-prisma';
+import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
 import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 
 export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, script: string) {

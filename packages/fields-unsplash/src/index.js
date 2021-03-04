@@ -7,7 +7,7 @@ import {
 } from './Implementation';
 import { UnsplashBlock } from './UnsplashBlock';
 
-const pkgDir = path.dirname(require.resolve('@keystonejs/fields-unsplash/package.json'));
+const pkgDir = path.dirname(require.resolve('@keystone-next/fields-unsplash-legacy/package.json'));
 
 export const Unsplash = {
   type: 'Unsplash',

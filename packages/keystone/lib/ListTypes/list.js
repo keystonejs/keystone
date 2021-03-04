@@ -11,8 +11,8 @@ const {
   zipObj,
   createLazyDeferred,
   arrayToObject,
-} = require('@keystonejs/utils');
-const { parseListAccess } = require('@keystonejs/access-control');
+} = require('@keystone-next/utils-legacy');
+const { parseListAccess } = require('@keystone-next/access-control-legacy');
 const {
   preventInvalidUnderscorePrefix,
   keyToLabel,

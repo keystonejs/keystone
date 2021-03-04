@@ -65,7 +65,7 @@
   You will need to change this to:
 
   ```
-  const { createItems } = require('@keystonejs/server-side-graphql-client');
+  const { createItems } = require('@keystone-next/server-side-graphql-client-legacy');
 
   createItems({
     keystone,

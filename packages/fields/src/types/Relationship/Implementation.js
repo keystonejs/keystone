@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
-import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
+import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
+import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
+import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 
 import { Implementation } from '../../Implementation';
 import { resolveNested } from './nested-mutations';

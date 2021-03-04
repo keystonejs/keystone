@@ -1,4 +1,4 @@
-const { Text } = require('@keystonejs/fields');
+const { Text } = require('@keystone-next/fields-legacy');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 

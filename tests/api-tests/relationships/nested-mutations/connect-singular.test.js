@@ -1,7 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
-const { Text, Relationship } = require('@keystonejs/fields');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
-const { createItem, getItem } = require('@keystonejs/server-side-graphql-client');
+const { Text, Relationship } = require('@keystone-next/fields-legacy');
+const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
+const { createItem, getItem } = require('@keystone-next/server-side-graphql-client-legacy');
 
 function setupKeystone(adapterName) {
   return setupServer({

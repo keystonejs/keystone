@@ -1,5 +1,5 @@
 const { GraphQLJSON } = require('graphql-type-json');
-const { flatten, objMerge, unique } = require('@keystonejs/utils');
+const { flatten, objMerge, unique } = require('@keystone-next/utils-legacy');
 
 const { getListCRUDTypes } = require('./listCRUDTypes');
 

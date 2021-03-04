@@ -35,7 +35,7 @@ const keystone = new Keystone({
 It can also be used directly if you would like to manually manage your middleware stack of graphQL providers.
 
 ```javascript
-const { AppVersionProvider, appVersionMiddleware } = require('@keystonejs/app-version');
+const { AppVersionProvider, appVersionMiddleware } = require('@keystone-next/app-version-legacy');
 
 const version = '1.0.0';
 
