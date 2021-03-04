@@ -10,10 +10,34 @@ class MyDocument extends Document {
   }
 
   render() {
+    const siteUrl = process.env.siteUrl;
     return (
       <Html>
         <Head>
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32X32.png" />
+          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16X16.png" />
+          <link rel="mask-icon" color="#2684FF" href="/safari-pinned-tab.svg" />
           <link rel="shortcut icon" href="/favicon.ico" />
+
+          <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1,shrink-to-fit=no,viewport-fit=cover"
+          />
+
+          <meta property="og:image" content={`${siteUrl}/og-image-landscape.png`} />
+          <meta property="og:image:width" content="761" />
+          <meta property="og:image:height" content="410" />
+          <meta property="og:type" content="website" />
+          <meta property="og:locale" content="en" />
+
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:image" content={`${siteUrl}/og-image-square.png`} />
+
+          <meta name="msapplication-TileColor" content="#2684FF" />
+          <meta name="msapplication-config" content="/browserconfig.xml" />
+          <meta name="theme-color" content="#ffffff" />
+
           <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} />
           <script
             dangerouslySetInnerHTML={{
