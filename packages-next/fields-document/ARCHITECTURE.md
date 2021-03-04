@@ -63,7 +63,7 @@ If you want to enforce something about the relationship between a parent and chi
 
 ## Changing the default handling of user input
 
-For some behaviour like markdown shortcuts, you need to change the default handling of user input like converting a paragraph to a blockquote when a user types `> `.
+For some behaviour like markdown shortcuts, you need to change the default handling of user input like converting a paragraph to a blockquote when a user types `>`.
 Changing the default handling of user input is done by overriding `editor.insertText`, `editor.insertBreak`, `editor.insertData` or `onKeyDown` (which is a prop to the `Editable` component rather than on the editor instance).
 
 ## DocumentFeatures

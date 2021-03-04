@@ -1,5 +1,9 @@
 const { multiAdapterRunners } = require('@keystone-next/test-utils-legacy');
-const { deleteItem, createItems, updateItem } = require('@keystone-next/server-side-graphql-client-legacy');
+const {
+  deleteItem,
+  createItems,
+  updateItem,
+} = require('@keystone-next/server-side-graphql-client-legacy');
 const {
   FAKE_ID,
   nameFn,

@@ -2,7 +2,11 @@ const { versionGreaterOrEqualTo } = require('@keystone-next/utils-legacy');
 
 const knex = require('knex');
 const pSettle = require('p-settle');
-const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystone-next/keystone-legacy');
+const {
+  BaseKeystoneAdapter,
+  BaseListAdapter,
+  BaseFieldAdapter,
+} = require('@keystone-next/keystone-legacy');
 
 const {
   escapeRegExp,

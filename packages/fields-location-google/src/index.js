@@ -7,7 +7,9 @@ import {
 } from './Implementation';
 import path from 'path';
 
-const pkgDir = path.dirname(require.resolve('@keystone-next/fields-location-google-legacy/package.json'));
+const pkgDir = path.dirname(
+  require.resolve('@keystone-next/fields-location-google-legacy/package.json')
+);
 
 export const LocationGoogle = {
   type: 'LocationGoogle',

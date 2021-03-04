@@ -5,7 +5,13 @@ const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
 const { execute, print } = require('graphql');
 const { GraphQLUpload } = require('graphql-upload');
-const { arrayToObject, objMerge, flatten, unique, filterValues } = require('@keystone-next/utils-legacy');
+const {
+  arrayToObject,
+  objMerge,
+  flatten,
+  unique,
+  filterValues,
+} = require('@keystone-next/utils-legacy');
 const {
   validateFieldAccessControl,
   validateListAccessControl,

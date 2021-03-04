@@ -3,7 +3,11 @@ const path = require('path');
 const { execSync } = require('child_process');
 const cuid = require('cuid');
 const { getGenerators, formatSchema } = require('@prisma/sdk');
-const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystone-next/keystone-legacy');
+const {
+  BaseKeystoneAdapter,
+  BaseListAdapter,
+  BaseFieldAdapter,
+} = require('@keystone-next/keystone-legacy');
 const { defaultObj, mapKeys, identity, flatten } = require('@keystone-next/utils-legacy');
 
 class PrismaAdapter extends BaseKeystoneAdapter {

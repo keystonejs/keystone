@@ -1,5 +1,10 @@
 // We don't currently have uniqueness tests for Relationship field types
-import { createItem, getItem, getItems, updateItem } from '@keystone-next/server-side-graphql-client-legacy';
+import {
+  createItem,
+  getItem,
+  getItems,
+  updateItem,
+} from '@keystone-next/server-side-graphql-client-legacy';
 import { Text } from '@keystone-next/fields-legacy';
 import { Content } from './index';
 

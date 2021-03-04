@@ -10,7 +10,9 @@ function prepareMiddleware() {
   return app;
 }
 
-const pkgDir = dirname(require.resolve('@keystone-next/fields-wysiwyg-tinymce-legacy/package.json'));
+const pkgDir = dirname(
+  require.resolve('@keystone-next/fields-wysiwyg-tinymce-legacy/package.json')
+);
 
 export let Wysiwyg = {
   type: 'Wysiwyg',

@@ -15,7 +15,11 @@ const {
   versionGreaterOrEqualTo,
 } = require('@keystone-next/utils-legacy');
 
-const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystone-next/keystone-legacy');
+const {
+  BaseKeystoneAdapter,
+  BaseListAdapter,
+  BaseFieldAdapter,
+} = require('@keystone-next/keystone-legacy');
 const { pipelineBuilder } = require('./join-builder');
 const { queryParser } = require('./query-parser');
 

@@ -10,11 +10,11 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystone-next/keystone": "10.0.0",
     "@keystone-next/adapter-knex-legacy": "^13.0.1",
     "@keystone-next/adapter-mongoose-legacy": "^11.0.1",
     "@keystone-next/adapter-prisma-legacy": "^3.0.1",
     "@keystone-next/app-graphql-legacy": "^6.2.1",
+    "@keystone-next/keystone": "10.0.0",
     "@keystone-next/keystone-legacy": "^19.2.0",
     "express": "^4.17.1",
     "mongodb-memory-server-core": "^6.9.3",

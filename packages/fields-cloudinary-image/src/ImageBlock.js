@@ -3,7 +3,10 @@ import { resolveView } from './resolve-view';
 import { Block } from '@keystone-next/fields-content-legacy/Block';
 import { imageContainer, caption } from '@keystone-next/fields-content-legacy/blocks';
 import { CloudinaryImage } from '.';
-import { Select as SelectType, Relationship as RelationshipType } from '@keystone-next/fields-legacy';
+import {
+  Select as SelectType,
+  Relationship as RelationshipType,
+} from '@keystone-next/fields-legacy';
 
 const RelationshipWrapper = {
   ...RelationshipType,
