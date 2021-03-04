@@ -614,6 +614,8 @@ module.exports = class List {
   async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
     const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
     const resolvedRelationships = await mapToFields(fields, async field => {
+      // Treat `null` as `undefined`, e.g. a no-op
+      if (data[field.path] === null) return undefined;
       const { create, connect, disconnect, currentValue } = await field.resolveNestedOperations(
         data[field.path],
         existingItem,
