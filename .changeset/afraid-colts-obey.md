@@ -86,4 +86,4 @@
 '@keystone-next/website-legacy': patch
 ---
 
-Updating legacy packages to the @keystone-next namespace.
+Updated legacy packages to the @keystone-next namespace.
