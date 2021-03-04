@@ -316,11 +316,13 @@ class PrismaListAdapter extends BaseListAdapter {
     return this.model.create({
       data: mapKeys(_data, (value, path) =>
         this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].isRelationship
-          ? {
-              connect: Array.isArray(value)
-                ? value.map(x => ({ id: Number(x) }))
-                : { id: Number(value) },
-            }
+          ? value == null
+            ? {}
+            : {
+                connect: Array.isArray(value)
+                  ? value.map(x => ({ id: Number(x) }))
+                  : { id: Number(value) },
+              }
           : this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].gqlToPrisma
           ? this.fieldAdaptersByPath[path].gqlToPrisma(value)
           : value
