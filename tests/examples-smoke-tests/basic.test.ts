@@ -26,7 +26,7 @@ exampleProjectTests('basic', browserType => {
     await page.waitForSelector('text=No changes');
   });
 
-  test('can see users', async () => {
+  test('can query users', async () => {
     const usersResponse = await fetch('http://localhost:3000/api/graphql', {
       method: 'POST',
       body: JSON.stringify({
