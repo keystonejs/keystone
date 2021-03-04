@@ -313,7 +313,7 @@ class PrismaListAdapter extends BaseListAdapter {
     return Object.keys(include).length > 0 ? include : undefined;
   }
 
-  _formatValue(value, path) {
+  _formatFieldValue(value, path) {
     let format = this._getFieldStorageFormat(path);
     switch (format) {
       case 'Boolean':
@@ -326,6 +326,7 @@ class PrismaListAdapter extends BaseListAdapter {
       case 'Float':
       case 'Decimal':
         return parseFloat(value) || null;
+      case '_MultipleFields':
       default:
         return value;
     }
@@ -338,7 +339,7 @@ class PrismaListAdapter extends BaseListAdapter {
         this.fieldAdaptersByPath[path].refListKey
       ).fieldAdaptersByPath['id'].getPrismaSchema();
     }
-    if (prismaSchema.length > 1) return 'mixed';
+    if (prismaSchema.length > 1) return '_MultipleFields';
     let prismaSchemaFormat = prismaSchema[0].replace(/^(\w+)\s+(\w+).+$/, '$2');
     return prismaSchemaFormat;
   }
@@ -350,9 +351,9 @@ class PrismaListAdapter extends BaseListAdapter {
           ? {
               connect: Array.isArray(value)
                 ? value.map(x => {
-                    return { id: this._formatValue(x, path) };
+                    return { id: this._formatFieldValue(x, path) };
                   })
-                : { id: this._formatValue(value, path) },
+                : { id: this._formatFieldValue(value, path) },
             }
           : this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].gqlToPrisma
           ? this.fieldAdaptersByPath[path].gqlToPrisma(value)
@@ -365,18 +366,18 @@ class PrismaListAdapter extends BaseListAdapter {
   async _update(id, _data) {
     const include = this._include();
     const existingItem = await this.model.findUnique({
-      where: { id: this._formatValue(id, 'id') },
+      where: { id: this._formatFieldValue(id, 'id') },
       include,
     });
     return this.model.update({
-      where: { id: this._formatValue(id, 'id') },
+      where: { id: this._formatFieldValue(id, 'id') },
       data: mapKeys(_data, (value, path) => {
         if (
           this.fieldAdaptersByPath[path] &&
           this.fieldAdaptersByPath[path].isRelationship &&
           Array.isArray(value)
         ) {
-          const vs = value.map(x => this._formatValue(x, path));
+          const vs = value.map(x => this._formatFieldValue(x, path));
           const toDisconnect = existingItem[path].filter(({ id }) => !vs.includes(id));
           const toConnect = vs
             .filter(id => !existingItem[path].map(({ id }) => id).includes(id))
@@ -389,7 +390,7 @@ class PrismaListAdapter extends BaseListAdapter {
         return this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].isRelationship
           ? value === null
             ? { disconnect: true }
-            : { connect: { id: this._formatValue(value, path) } }
+            : { connect: { id: this._formatFieldValue(value, path) } }
           : value;
       }),
       include,
@@ -397,7 +398,7 @@ class PrismaListAdapter extends BaseListAdapter {
   }
 
   async _delete(id) {
-    return this.model.delete({ where: { id: this._formatValue(id, 'id') } });
+    return this.model.delete({ where: { id: this._formatFieldValue(id, 'id') } });
   }
 
   ////////// Queries //////////
@@ -440,9 +441,9 @@ class PrismaListAdapter extends BaseListAdapter {
             ? a.rel.left.path
             : a.rel.right.path
           : `from_${a.rel.left.listKey}_${a.rel.left.path}`; // One-sided
-        ret.where[path] = { some: { id: from.fromList.adapter._formatValue(from.fromId, 'id') } };
+        ret.where[path] = { some: { id: from.fromList.adapter._formatFieldValue(from.fromId, 'id') } };
       } else {
-        ret.where[a.rel.columnName] = { id: from.fromList.adapter._formatValue(from.fromId, 'id') };
+        ret.where[a.rel.columnName] = { id: from.fromList.adapter._formatFieldValue(from.fromId, 'id') };
       }
     }
 
