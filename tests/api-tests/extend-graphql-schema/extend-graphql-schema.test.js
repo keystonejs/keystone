@@ -1,4 +1,4 @@
-const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
 import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
 

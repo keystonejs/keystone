@@ -1,5 +1,5 @@
 // @ts-ignore
-import { MongoId } from '@keystonejs/fields-mongoid';
+import { MongoId } from '@keystone-next/fields-mongoid-legacy';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';

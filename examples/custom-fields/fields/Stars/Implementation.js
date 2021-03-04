@@ -1,4 +1,4 @@
-const { Integer } = require('@keystonejs/fields');
+const { Integer } = require('@keystone-next/fields-legacy');
 
 class Stars extends Integer.implementation {
   constructor(path, { starCount = 5 }) {

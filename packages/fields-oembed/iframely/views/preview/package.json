@@ -1,4 +1,4 @@
 {
-  "main": "dist/fields-oembed.cjs.js",
-  "module": "dist/fields-oembed.esm.js"
+  "main": "dist/fields-oembed-legacy.cjs.js",
+  "module": "dist/fields-oembed-legacy.esm.js"
 }

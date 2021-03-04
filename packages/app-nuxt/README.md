@@ -11,7 +11,7 @@ title: Nuxt.js app
 ## Usage
 
 ```javascript
-const { NuxtApp } = require('@keystonejs/app-nuxt');
+const { NuxtApp } = require('@keystone-next/app-nuxt-legacy');
 
 const config = {
   srcDir: 'src',

@@ -1,4 +1,4 @@
-import { getItems } from '@keystonejs/server-side-graphql-client';
+import { getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import Text from '../Text';
 import DateTimeUtc from './';
 

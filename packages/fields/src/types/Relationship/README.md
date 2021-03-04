@@ -14,7 +14,7 @@ See the [Configuring Relationships](/docs/guides/relationships.md) guide for mor
 ## Usage
 
 ```javascript
-const { Relationship, Text } = require('@keystonejs/fields');
+const { Relationship, Text } = require('@keystone-next/fields-legacy');
 
 keystone.createList('User', {
   fields: {

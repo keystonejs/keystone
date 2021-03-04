@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-import { arrayToObject, mapKeys, omit } from '@keystonejs/utils';
+import { arrayToObject, mapKeys, omit } from '@keystone-next/utils-legacy';
 
 export default class List {
   constructor(

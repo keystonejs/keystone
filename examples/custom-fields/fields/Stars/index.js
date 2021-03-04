@@ -7,7 +7,7 @@ const {
 
 // We're going to extend the integer field to store
 // a number between 1-5 and represent this as a rating
-const { Integer } = require('@keystonejs/fields');
+const { Integer } = require('@keystone-next/fields-legacy');
 
 module.exports = {
   type: 'Stars',

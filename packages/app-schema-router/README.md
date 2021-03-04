@@ -17,11 +17,11 @@ a `routerId`, which is used to pick between different GraphQL schemas which exis
 ## Usage
 
 ```javascript
-const { Keystone } = require('@keystonejs/keystone');
-const { GraphQLAppPlayground } = require('@keystonejs/app-graphql-playground');
-const { SchemaRouterApp } = require('@keystonejs/app-schema-router');
-const { GraphQLApp } = require('@keystonejs/app-graphql');
-const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { Keystone } = require('@keystone-next/keystone-legacy');
+const { GraphQLAppPlayground } = require('@keystone-next/app-graphql-playground-legacy');
+const { SchemaRouterApp } = require('@keystone-next/app-schema-router-legacy');
+const { GraphQLApp } = require('@keystone-next/app-graphql-legacy');
+const { AdminUIApp } = require('@keystone-next/app-admin-ui-legacy');
 
 module.exports = {
   keystone: new Keystone(),

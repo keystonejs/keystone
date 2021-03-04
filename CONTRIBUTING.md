@@ -61,8 +61,8 @@ An example, if you generate a changeset that includes `adapter-mongoose` as a pa
 
 ```md
 ---
-'@keystonejs/adapter-mongoose': patch
-'@keystonejs/keystone': minor
+'@keystone-next/adapter-mongoose-legacy': patch
+'@keystone-next/keystone-legacy': minor
 ---
 
 A very useful description of the changes should be here.

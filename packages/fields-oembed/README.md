@@ -16,9 +16,9 @@ Stores data in the oEmbed format:
 ## Usage
 
 ```js
-const { Keystone } = require('@keystonejs/keystone');
-const { OEmbed, Text } = require('@keystonejs/fields');
-const { OEmbed, IframelyOEmbedAdapter } = require('@keystonejs/fields-oembed');
+const { Keystone } = require('@keystone-next/keystone-legacy');
+const { OEmbed, Text } = require('@keystone-next/fields-legacy');
+const { OEmbed, IframelyOEmbedAdapter } = require('@keystone-next/fields-oembed-legacy');
 
 const keystone = new Keystone({...});
 
@@ -239,10 +239,10 @@ The `OEmbed` field exposes a block that can be used in the [content field](/pack
 ### Usage
 
 ```js
-const { Keystone } = require('@keystonejs/keystone');
-const { Content } = require('@keystonejs/fields-content');
-const { Text } = require('@keystonejs/fields');
-const { OEmbed, IframelyOEmbedAdapter } = require('@keystonejs/fields-oembed');
+const { Keystone } = require('@keystone-next/keystone-legacy');
+const { Content } = require('@keystone-next/fields-content-legacy');
+const { Text } = require('@keystone-next/fields-legacy');
+const { OEmbed, IframelyOEmbedAdapter } = require('@keystone-next/fields-oembed-legacy');
 
 const iframelyAdapter = new IframelyOEmbedAdapter({
   apiKey: process.env.IFRAMELY_API_KEY, // Get one from https://iframely.com

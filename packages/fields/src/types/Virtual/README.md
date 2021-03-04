@@ -18,7 +18,7 @@ The first argument to the resolver function is the list `item`.
 ### Basic
 
 ```js
-const { Virtual, Text } = require('@keystonejs/fields');
+const { Virtual, Text } = require('@keystone-next/fields-legacy');
 
 keystone.createList('Example', {
   fields: {
@@ -38,7 +38,7 @@ keystone.createList('Example', {
 If the return type is not `String` then you need to define `graphQLReturnType`.
 
 ```js
-const { Virtual } = require('@keystonejs/fields');
+const { Virtual } = require('@keystone-next/fields-legacy');
 
 keystone.createList('Example', {
   fields: {
@@ -56,7 +56,7 @@ keystone.createList('Example', {
 For more complex types you can define a `graphQLReturnFragment` as well as `extendGraphQLTypes`. Resolver functions can be `async` so you can even fetch data from the file system or an external API:
 
 ```js
-const { Virtual } = require('@keystonejs/fields');
+const { Virtual } = require('@keystone-next/fields-legacy');
 
 keystone.createList('Example', {
   fields: {
@@ -84,7 +84,7 @@ The GraphQL arguments to a `Virtual` field can be specified using the `args` opt
 The values for these arguments are made available in the second argument to the resolver function.
 
 ```js
-const { Virtual, CalendarDay } = require('@keystonejs/fields');
+const { Virtual, CalendarDay } = require('@keystone-next/fields-legacy');
 const { format, parseISO } = require('date-fns');
 
 keystone.createList('Example', {
@@ -106,7 +106,7 @@ The `item` argument to the resolver function is the raw database representation 
 If you need to access data beyond what lives on the `item` you can execute a [server-side GraphQL query](/docs/discussions/server-side-graphql.md) using `context.executeGraphQL()`.
 
 ```js
-const { Virtual, CalendarDay } = require('@keystonejs/fields');
+const { Virtual, CalendarDay } = require('@keystone-next/fields-legacy');
 const { format, parseISO } = require('date-fns');
 
 keystone.createList('Example', {

@@ -6,12 +6,12 @@ title: Mongoose adapter
 
 # Mongoose database adapter
 
-[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/adapter-mongoose)
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystone-next/adapter-mongoose-legacy)
 
 ## Usage
 
 ```javascript
-const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
+const { MongooseAdapter } = require('@keystone-next/adapter-mongoose-legacy');
 
 const keystone = new Keystone({
   adapter: new MongooseAdapter({...}),

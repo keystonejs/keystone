@@ -13,15 +13,15 @@ This field inserts a string path into your schema based on the `Text` field type
 This package isn't included with the keystone fields package and needs to be installed:
 
 ```shell allowCopy=false showLanguage=false
-yarn add @keystonejs/fields-markdown
+yarn add @keystone-next/fields-markdown-legacy
 # or
-npm install @keystonejs/fields-markdown
+npm install @keystone-next/fields-markdown-legacy
 ```
 
 Then import it, and use it like any other field:
 
 ```js
-const { Markdown } = require('@keystonejs/fields-markdown');
+const { Markdown } = require('@keystone-next/fields-markdown-legacy');
 
 keystone.createList('Post', {
   fields: {

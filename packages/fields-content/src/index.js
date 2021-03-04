@@ -1,4 +1,4 @@
-import { Text } from '@keystonejs/fields';
+import { Text } from '@keystone-next/fields-legacy';
 import {
   Content as ContentType,
   MongoContentInterface,

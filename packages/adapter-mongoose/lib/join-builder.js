@@ -1,4 +1,4 @@
-const { flatten, defaultObj } = require('@keystonejs/utils');
+const { flatten, defaultObj } = require('@keystone-next/utils-legacy');
 
 /**
  * Format of input object:

@@ -19,8 +19,8 @@ It supports the core Mongoose and Knex adapters:
 ## Usage
 
 ```js
-const { Keystone } = require('@keystonejs/keystone');
-const { MongoId } = require('@keystonejs/fields-mongoid');
+const { Keystone } = require('@keystone-next/keystone-legacy');
+const { MongoId } = require('@keystone-next/fields-mongoid-legacy');
 
 const keystone = new Keystone(/* ... */);
 

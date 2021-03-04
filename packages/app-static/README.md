@@ -13,10 +13,10 @@ A KeystoneJS app to serve static files such as images, CSS and JavaScript with s
 ## Usage
 
 ```js title=index.js
-const { Keystone } = require('@keystonejs/keystone');
-const { GraphQLApp } = require('@keystonejs/app-graphql');
-const { AdminUIApp } = require('@keystonejs/app-admin-ui');
-const { StaticApp } = require('@keystonejs/app-static');
+const { Keystone } = require('@keystone-next/keystone-legacy');
+const { GraphQLApp } = require('@keystone-next/app-graphql-legacy');
+const { AdminUIApp } = require('@keystone-next/app-admin-ui-legacy');
+const { StaticApp } = require('@keystone-next/app-static-legacy');
 
 module.exports = {
   keystone: new Keystone(),

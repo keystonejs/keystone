@@ -14,7 +14,7 @@ A set of functions and components to ease using
 ## Installation
 
 ```shell
-yarn add @keystonejs/apollo-helpers
+yarn add @keystone-next/apollo-helpers-legacy
 ```
 
 ## Usage
@@ -31,7 +31,7 @@ import { HttpLink } from 'apollo-link-http';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from 'react-apollo';
-import { Query, KeystoneProvider } from '@keystonejs/apollo-helpers';
+import { Query, KeystoneProvider } from '@keystone-next/apollo-helpers-legacy';
 
 const client = new ApolloClient({
   link: new HttpLink({ uri: '...' }),
@@ -73,7 +73,7 @@ import {
   KeystoneProvider,
   injectIsOptimisticFlag,
   flattenApollo,
-} from '@keystonejs/apollo-helpers';
+} from '@keystone-next/apollo-helpers-legacy';
 
 const cache = new InMemoryCache();
 

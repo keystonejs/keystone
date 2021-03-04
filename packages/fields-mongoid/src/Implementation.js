@@ -1,7 +1,7 @@
-import { Implementation } from '@keystonejs/fields';
-import { MongooseFieldAdapter } from '@keystonejs/adapter-mongoose';
-import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
-import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
+import { Implementation } from '@keystone-next/fields-legacy';
+import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
+import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
+import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 
 export class MongoIdImplementation extends Implementation {
   get _supportsUnique() {
