@@ -25,11 +25,11 @@ export const Page = ({
 }) => {
   const [mobileNavCollapsed, setMobileNavCollapsed] = useState(true);
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const metaTitle = title ? `Keystone Next Documentation - ${title}` : `Keystone Next`;
+  const metaTitle = title ? `${title} - Keystone Next Documentation` : `Keystone Next`;
   return (
     <Fragment>
       <Head>
-        <meta property="og:site_name" content={metaTitle} />
+        <meta key="og:site_name" property="og:site_name" content={metaTitle} />
         <title>{metaTitle}</title>
       </Head>
       <div className="pb-24">
