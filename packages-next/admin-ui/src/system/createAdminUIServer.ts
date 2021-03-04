@@ -19,7 +19,7 @@ export const createAdminUIServer = async (
   const publicPages = ui?.publicPages ?? [];
   return async (req: express.Request, res: express.Response) => {
     const { pathname } = url.parse(req.url);
-    if (pathname?.startsWith('/_next')) {
+    if (pathname?.startsWith('/_next') || pathname === '/api/graphql') {
       handle(req, res);
       return;
     }
