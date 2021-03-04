@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/demo-project-blog",
+  "name": "@keystone-next/demo-project-blog-legacy",
   "description": "An example KeystoneJS project showcasing a Blogging Site.",
   "private": true,
   "version": "7.0.0",

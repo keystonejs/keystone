@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/cypress-project-client-validation",
+  "name": "@keystone-next/cypress-project-client-validation-legacy",
   "description": "A KeystoneJS demo project for integration testing. See @keystonejs/keystone for more.",
   "private": true,
   "version": "7.0.2",

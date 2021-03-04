@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/benchmarks",
+  "name": "@keystone-next/benchmarks-legacy",
   "description": "A set of benchmarks for running against the KeystoneJS API.",
   "private": true,
   "version": "5.1.30",

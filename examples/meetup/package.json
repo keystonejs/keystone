@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/demo-project-meetup",
+  "name": "@keystone-next/demo-project-meetup-legacy",
   "description": "An example KeystoneJS project showcasing a Meetup Site.",
   "private": true,
   "version": "7.0.0",

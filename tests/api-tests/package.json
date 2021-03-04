@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/api-tests",
+  "name": "@keystone-next/api-tests-legacy",
   "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
   "version": "9.0.0",

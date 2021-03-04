@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/demo-custom-fields",
+  "name": "@keystone-next/demo-custom-fields-legacy",
   "description": "An example KeystoneJS project showcasing custom fields.",
   "private": true,
   "version": "2.0.0",

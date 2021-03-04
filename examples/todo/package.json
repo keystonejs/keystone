@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/demo-project-todo",
+  "name": "@keystone-next/demo-project-todo-legacy",
   "description": "An example KeystoneJS project showcasing a simple Todo List.",
   "private": true,
   "version": "5.1.26",

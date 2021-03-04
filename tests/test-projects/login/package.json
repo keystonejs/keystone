@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/cypress-project-login",
+  "name": "@keystone-next/cypress-project-login-legacy",
   "description": "A KeystoneJS demo project for integration testing. See @keystonejs/keystone for more.",
   "private": true,
   "version": "6.0.2",

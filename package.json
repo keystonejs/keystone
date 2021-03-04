@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/mono-repo",
+  "name": "@keystone-next/mono-repo-legacy",
   "description": "KeystoneJS monorepo for all the @keystonejs / @arch-ui (and more) packages. Powered by Yarn.",
   "private": true,
   "version": "0.0.0",
