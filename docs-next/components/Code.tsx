@@ -7,7 +7,7 @@ import theme from '../lib/prism-theme';
 export const Code = ({ children, className }: { children: string; className: any }) => {
   const language: Language = className ? className.replace(/language-/, '') : 'typescript';
   return (
-    <Highlight Prism={Prism} code={children} language={language} theme={theme}>
+    <Highlight Prism={Prism} code={children.trim()} language={language} theme={theme}>
       {({ className, style, tokens: tokens, getLineProps, getTokenProps }) => {
         return (
           <div
