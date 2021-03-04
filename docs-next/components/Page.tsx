@@ -25,7 +25,7 @@ export const Page = ({
 }) => {
   const [mobileNavCollapsed, setMobileNavCollapsed] = useState(true);
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const metaTitle = title ? `Keystone Next - ${title}` : `Keystone Next`;
+  const metaTitle = title ? `Keystone Next Documentation - ${title}` : `Keystone Next`;
   return (
     <Fragment>
       <Head>
