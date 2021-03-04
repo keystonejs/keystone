@@ -18,8 +18,6 @@ export const Code = ({ children, className }: { children: string; className: any
             }}
           >
             {tokens.map((line, i) => {
-              // Suppress a trailing empty line in the code block
-              if (i === tokens.length - 1 && line.length === 1 && !line[0].content) return;
               return (
                 <div key={i} {...getLineProps({ line, key: i })}>
                   {line.map((token, key) => (
