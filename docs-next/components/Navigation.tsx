@@ -70,9 +70,7 @@ export const Navigation = () => {
         <NavItem href="/apis/session">Session API</NavItem>
         <NavItem href="/apis/auth">Authentication API</NavItem>
         <NavItem href="/apis/context">Context API</NavItem>
-        <NavItem href="/apis/graphql" isPlaceholder>
-          GraphQL API
-        </NavItem>
+        <NavItem href="/apis/graphql">GraphQL API</NavItem>
         <NavItem href="/apis/list-items" isPlaceholder>
           List Item API
         </NavItem>
