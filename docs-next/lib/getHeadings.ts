@@ -10,7 +10,6 @@ export interface Heading {
 export const getHeadings = (children: ReactNode): Heading[] => {
   return Children.toArray(children)
     .filter((child: any) => {
-      console.log(child.props?.mdxType);
       return child.props?.mdxType && ['h1', 'h2', 'h3'].includes(child.props.mdxType);
     })
     .map((child: any) => {
