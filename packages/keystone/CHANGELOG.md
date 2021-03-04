@@ -249,7 +249,7 @@
   You will need to change this to:
 
   ```
-  const { createItems } = require('@keystone-next/server-side-graphql-client-legacy');
+  const { createItems } = require('@keystonejs/server-side-graphql-client');
   createItems({
     keystone,
     listKey: 'User',
