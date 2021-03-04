@@ -31,8 +31,8 @@
     "dotenv": "^8.2.0",
     "react": "^17.0.1"
   },
-  "main": "dist/fields-unsplash.cjs.js",
-  "module": "dist/fields-unsplash.esm.js",
+  "main": "dist/fields-unsplash-legacy.cjs.js",
+  "module": "dist/fields-unsplash-legacy.esm.js",
   "preconstruct": {
     "entrypoints": [
       "index.js",

@@ -4,8 +4,8 @@
   "version": "2.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
-  "main": "dist/app-version.cjs.js",
-  "module": "dist/app-version.esm.js",
+  "main": "dist/app-version-legacy.cjs.js",
+  "module": "dist/app-version-legacy.esm.js",
   "engines": {
     "node": ">=10.0.0"
   },

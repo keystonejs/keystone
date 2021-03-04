@@ -31,7 +31,7 @@
       "views/Field.js"
     ]
   },
-  "main": "dist/fields-markdown.cjs.js",
-  "module": "dist/fields-markdown.esm.js",
+  "main": "dist/fields-markdown-legacy.cjs.js",
+  "module": "dist/fields-markdown-legacy.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-markdown"
 }

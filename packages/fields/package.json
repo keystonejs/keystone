@@ -4,8 +4,8 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields",
   "version": "22.0.0",
-  "main": "dist/fields.cjs.js",
-  "module": "dist/fields.esm.js",
+  "main": "dist/fields-legacy.cjs.js",
+  "module": "dist/fields-legacy.esm.js",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {

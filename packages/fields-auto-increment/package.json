@@ -18,6 +18,6 @@
   "devDependencies": {
     "@keystone-next/server-side-graphql-client-legacy": "*"
   },
-  "main": "dist/fields-auto-increment.cjs.js",
-  "module": "dist/fields-auto-increment.esm.js"
+  "main": "dist/fields-auto-increment-legacy.cjs.js",
+  "module": "dist/fields-auto-increment-legacy.esm.js"
 }

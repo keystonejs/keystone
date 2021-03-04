@@ -34,6 +34,6 @@
       "views/*.js"
     ]
   },
-  "main": "dist/fields-location-google.cjs.js",
-  "module": "dist/fields-location-google.esm.js"
+  "main": "dist/fields-location-google-legacy.cjs.js",
+  "module": "dist/fields-location-google-legacy.esm.js"
 }

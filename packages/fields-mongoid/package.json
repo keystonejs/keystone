@@ -4,8 +4,8 @@
   "version": "9.1.4",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
-  "main": "dist/fields-mongoid.cjs.js",
-  "module": "dist/fields-mongoid.esm.js",
+  "main": "dist/fields-mongoid-legacy.cjs.js",
+  "module": "dist/fields-mongoid-legacy.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-mongoid",
   "homepage": "https://github.com/keystonejs/keystone",
   "engines": {

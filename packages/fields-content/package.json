@@ -52,7 +52,7 @@
       "views/editor/blocks/*.js"
     ]
   },
-  "main": "dist/fields-content.cjs.js",
-  "module": "dist/fields-content.esm.js",
+  "main": "dist/fields-content-legacy.cjs.js",
+  "module": "dist/fields-content-legacy.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-content"
 }

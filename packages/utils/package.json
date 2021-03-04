@@ -6,8 +6,8 @@
   "license": "MIT",
   "homepage": "https://github.com/keystonejs/keystone",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/utils",
-  "main": "dist/utils.cjs.js",
-  "module": "dist/utils.esm.js",
+  "main": "dist/utils-legacy.cjs.js",
+  "module": "dist/utils-legacy.esm.js",
   "engines": {
     "node": ">=10.0.0"
   },
