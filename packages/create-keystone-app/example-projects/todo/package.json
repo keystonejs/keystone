@@ -17,7 +17,7 @@
     "create-tables": "cross-env keystone create-tables"
   },
   "dependencies": {
-1adapter-mongoose": "^11.0.1",
+    "@keystone-next/adapter-mongoose-legacy": "^11.0.1",
     "@keystone-next/app-admin-ui-legacy": "^7.4.0",
     "@keystone-next/app-graphql-legacy": "^6.2.1",
     "@keystone-next/app-static-legacy": "^5.1.3",
