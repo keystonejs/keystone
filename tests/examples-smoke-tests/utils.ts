@@ -27,8 +27,8 @@ const promiseSignal = (): Promise<void> & { resolve: () => void } => {
   return Object.assign(promise, { resolve: resolve as any });
 };
 
-export const initUserTest = (getPage: () => playwright.Page) => {
-  test('init user', async () => {
+export const initFirstItemTest = (getPage: () => playwright.Page) => {
+  test('init first item', async () => {
     let page = getPage();
     await page.fill('label:has-text("Name") >> .. >> input', 'Admin');
     await page.fill('label:has-text("Email") >> .. >> input', 'admin@keystonejs.com');

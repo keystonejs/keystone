@@ -1,5 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests, initUserTest } from './utils';
+import { exampleProjectTests, initFirstItemTest } from './utils';
 
 exampleProjectTests('roles', browserType => {
   let browser: Browser = undefined as any;
@@ -9,7 +9,7 @@ exampleProjectTests('roles', browserType => {
     page = await browser.newPage();
     page.goto('http://localhost:3000');
   });
-  initUserTest(() => page);
+  initFirstItemTest(() => page);
   afterAll(async () => {
     await browser.close();
   });

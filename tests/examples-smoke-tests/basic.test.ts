@@ -1,5 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests, initUserTest } from './utils';
+import { exampleProjectTests, initFirstItemTest } from './utils';
 import fetch from 'node-fetch';
 
 exampleProjectTests('basic', browserType => {
@@ -10,7 +10,7 @@ exampleProjectTests('basic', browserType => {
     page = await browser.newPage();
     page.goto('http://localhost:3000');
   });
-  initUserTest(() => page);
+  initFirstItemTest(() => page);
   test('sign out and sign in', async () => {
     await page.click('[aria-label="Links and signout"]');
     await Promise.all([page.waitForNavigation(), page.click('button:has-text("Sign out")')]);

@@ -1,5 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests, initUserTest } from './utils';
+import { exampleProjectTests, initFirstItemTest } from './utils';
 
 // this is disabled currently because it's currently failing and we want to get the tests in without being blocked on this
 
@@ -11,7 +11,7 @@ exampleProjectTests('ecommerce', browserType => {
     page = await browser.newPage();
     page.goto('http://localhost:3000');
   });
-  initUserTest(() => page);
+  initFirstItemTest(() => page);
   afterAll(async () => {
     await browser.close();
   });
