@@ -2,6 +2,7 @@
   "name": "@arch-ui/popout",
   "description": "Popout Component used in @keystonejs Admin UI.",
   "version": "0.0.23",
+  "private": true,
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/popout.cjs.js",

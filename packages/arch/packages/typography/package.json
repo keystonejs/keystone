@@ -2,6 +2,7 @@
   "name": "@arch-ui/typography",
   "description": "Typography Components used throughout @arch-ui packages and @keystonejs Admin UI.",
   "version": "0.0.18",
+  "private": true,
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/typography.cjs.js",

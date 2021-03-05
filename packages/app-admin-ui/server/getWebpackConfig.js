@@ -53,7 +53,9 @@ module.exports = function ({ adminMeta, adminViews, entry, outputPath }) {
   const { pages, hooks, listViews } = adminViews;
   rules.push({
     test: /FIELD_TYPES/,
-    use: [{ loader: '@keystonejs/field-views-loader', options: { pages, hooks, listViews } }],
+    use: [
+      { loader: '@keystone-next/field-views-loader-legacy', options: { pages, hooks, listViews } },
+    ],
   });
 
   const entryPath = `./${entry}.js`;

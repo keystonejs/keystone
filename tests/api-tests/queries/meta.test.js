@@ -1,6 +1,6 @@
 const { text, relationship } = require('@keystone-next/fields');
 const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
 
 function setupKeystone(adapterName) {
   return setupFromConfig({

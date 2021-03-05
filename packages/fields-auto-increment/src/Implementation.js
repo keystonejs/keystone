@@ -1,6 +1,6 @@
-import { Implementation } from '@keystonejs/fields';
-import { KnexFieldAdapter } from '@keystonejs/adapter-knex';
-import { PrismaFieldAdapter } from '@keystonejs/adapter-prisma';
+import { Implementation } from '@keystone-next/fields-legacy';
+import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
+import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 
 export class AutoIncrementImplementation extends Implementation {
   constructor(path, { gqlType, isUnique = true, access = {}, ...config } = {}, context = {}) {

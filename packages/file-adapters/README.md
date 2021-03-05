@@ -15,7 +15,7 @@ Different contexts are supported by different file adapters. This package contai
 ### Usage
 
 ```javascript
-const { LocalFileAdapter } = require('@keystonejs/file-adapters');
+const { LocalFileAdapter } = require('@keystone-next/file-adapters-legacy');
 
 const fileAdapter = new LocalFileAdapter({...});
 ```
@@ -38,7 +38,7 @@ const fileAdapter = new LocalFileAdapter({...});
 Takes a `file` object (such as the one returned in file field hooks) and deletes that file from disk.
 
 ```js
-const { File } = require('@keystonejs/fields');
+const { File } = require('@keystone-next/fields-legacy');
 
 const fileAdapter = new LocalFileAdapter({
   src: './files',
@@ -101,7 +101,7 @@ If you're not familiar with file uploads in GraphQL, check out [Altair Playgroun
 ### Usage
 
 ```javascript
-const { CloudinaryAdapter } = require('@keystonejs/file-adapters');
+const { CloudinaryAdapter } = require('@keystone-next/file-adapters-legacy');
 
 const fileAdapter = new CloudinaryAdapter({...});
 ```
@@ -126,7 +126,7 @@ Deletes the provided file from cloudinary. Takes a `file` object (such as the on
 ### Usage
 
 ```javascript
-const { S3Adapter } = require('@keystonejs/file-adapters');
+const { S3Adapter } = require('@keystone-next/file-adapters-legacy');
 
 const CF_DISTRIBUTION_ID = 'cloudfront-distribution-id';
 const S3_PATH = 'uploads';

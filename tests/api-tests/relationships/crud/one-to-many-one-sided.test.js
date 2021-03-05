@@ -1,7 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { text, relationship } = require('@keystone-next/fields');
 const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -248,6 +248,25 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(Company.location.id.toString()).toBe(Location.id.toString());
           })
         );
+
+        test(
+          'With null',
+          runner(setupKeystone, async ({ context }) => {
+            const { data, errors } = await context.executeGraphQL({
+              query: `
+                mutation {
+                  createCompany(data: {
+                    location: null
+                  }) { id location { id } }
+                }
+            `,
+            });
+            expect(errors).toBe(undefined);
+
+            // Location should be empty
+            expect(data.createCompany.location).toBe(null);
+          })
+        );
       });
 
       describe('Update', () => {
@@ -362,6 +381,32 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Check the link has been broken
             const result = await getCompanyAndLocation(context, company.id, location.id);
             expect(result.Company.location).toBe(null);
+          })
+        );
+
+        test(
+          'With null',
+          runner(setupKeystone, async ({ context }) => {
+            // Manually setup a connected Company <-> Location
+            const { location, company } = await createCompanyAndLocation(context);
+
+            // Run the query with a null operation
+            const { data, errors } = await context.executeGraphQL({
+              query: `
+                mutation {
+                  updateCompany(
+                    id: "${company.id}",
+                    data: { location: null }
+                  ) { id location { id name } }
+                }
+            `,
+            });
+            expect(errors).toBe(undefined);
+
+            // Check that the location is still there
+            expect(data.updateCompany.id).toEqual(company.id);
+            expect(data.updateCompany.location).not.toBe(null);
+            expect(data.updateCompany.location.id).toEqual(location.id);
           })
         );
       });

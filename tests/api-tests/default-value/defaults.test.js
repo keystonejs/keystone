@@ -1,7 +1,7 @@
-const { createItem } = require('@keystonejs/server-side-graphql-client');
+const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
 const { text } = require('@keystone-next/fields');
 const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
 
 const setupList = (adapterName, fields) => () =>
   setupFromConfig({

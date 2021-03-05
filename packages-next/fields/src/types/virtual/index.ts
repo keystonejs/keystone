@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Virtual } from '@keystonejs/fields';
+import { Virtual } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes, KeystoneContext } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';

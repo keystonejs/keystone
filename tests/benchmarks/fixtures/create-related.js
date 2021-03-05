@@ -1,6 +1,6 @@
 const { text, relationship } = require('@keystone-next/fields');
 const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { setupFromConfig } = require('@keystonejs/test-utils');
+const { setupFromConfig } = require('@keystone-next/test-utils-legacy');
 const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
 
 function setupKeystone(adapterName) {

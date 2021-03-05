@@ -1,4 +1,4 @@
-const { AuthedRelationship } = require('@keystonejs/fields-authed-relationship');
+const { AuthedRelationship } = require('@keystone-next/fields-authed-relationship-legacy');
 const { composeHook } = require('../utils');
 
 const _byTracking = ({ created = true, updated = true }) => ({

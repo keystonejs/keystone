@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 import { Suspense, Fragment, useState, createContext, useContext } from 'react';
 import { Button } from '@arch-ui/button';
 import PreviewPlaceholder from '../preview';
-import { BlockMenuItem } from '@keystonejs/fields-content/block-components';
+import { BlockMenuItem } from '@keystone-next/fields-content-legacy/block-components';
 
 export let type = 'oEmbed';
 export const path = 'oEmbeds';

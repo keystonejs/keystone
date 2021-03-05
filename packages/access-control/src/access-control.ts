@@ -1,4 +1,4 @@
-import { pick, defaultObj, intersection } from '@keystonejs/utils';
+import { pick, defaultObj, intersection } from '@keystone-next/utils-legacy';
 
 type MaybePromise<T> = T | Promise<T>;
 

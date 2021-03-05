@@ -1,6 +1,6 @@
 {
-  "main": "dist/fields-content.cjs.js",
-  "module": "dist/fields-content.esm.js",
+  "main": "dist/fields-content-legacy.cjs.js",
+  "module": "dist/fields-content-legacy.esm.js",
   "field-types": {
     "source": "../src/Block"
   }

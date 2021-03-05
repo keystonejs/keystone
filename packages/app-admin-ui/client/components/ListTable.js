@@ -3,7 +3,7 @@ import { jsx } from '@emotion/core';
 import { Suspense, Fragment, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import { captureSuspensePromises, noop } from '@keystonejs/utils';
+import { captureSuspensePromises, noop } from '@keystone-next/utils-legacy';
 import { KebabHorizontalIcon, LinkIcon, ShieldIcon, TrashcanIcon } from '@primer/octicons-react';
 import { colors, gridSize } from '@arch-ui/theme';
 import { alpha } from '@arch-ui/color-utils';

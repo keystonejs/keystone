@@ -1,5 +1,5 @@
 const express = require('express');
-const { createItems } = require('@keystonejs/server-side-graphql-client');
+const { createItems } = require('@keystone-next/server-side-graphql-client-legacy');
 
 const { keystone, apps } = require('./index');
 const { port } = require('./config');

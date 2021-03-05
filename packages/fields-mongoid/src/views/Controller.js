@@ -1,4 +1,4 @@
-import FieldController from '@keystonejs/fields/Controller';
+import FieldController from '@keystone-next/fields-legacy/Controller';
 
 export default class MongoIdController extends FieldController {
   getFilterGraphQL = ({ type, value }) => {

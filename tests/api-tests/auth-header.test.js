@@ -7,8 +7,8 @@ const {
   multiAdapterRunners,
   setupFromConfig,
   networkedGraphqlRequest,
-} = require('@keystonejs/test-utils');
-const { createItems } = require('@keystonejs/server-side-graphql-client');
+} = require('@keystone-next/test-utils-legacy');
+const { createItems } = require('@keystone-next/server-side-graphql-client-legacy');
 
 const initialData = {
   User: [

@@ -5,15 +5,21 @@ const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
 const { execute, print } = require('graphql');
 const { GraphQLUpload } = require('graphql-upload');
-const { arrayToObject, objMerge, flatten, unique, filterValues } = require('@keystonejs/utils');
+const {
+  arrayToObject,
+  objMerge,
+  flatten,
+  unique,
+  filterValues,
+} = require('@keystone-next/utils-legacy');
 const {
   validateFieldAccessControl,
   validateListAccessControl,
   validateCustomAccessControl,
   validateAuthAccessControl,
-} = require('@keystonejs/access-control');
-const { SessionManager } = require('@keystonejs/session');
-const { AppVersionProvider, appVersionMiddleware } = require('@keystonejs/app-version');
+} = require('@keystone-next/access-control-legacy');
+const { SessionManager } = require('@keystone-next/session-legacy');
+const { AppVersionProvider, appVersionMiddleware } = require('@keystone-next/app-version-legacy');
 
 const { List } = require('../ListTypes');
 const { DEFAULT_DIST_DIR } = require('../../constants');
@@ -226,7 +232,7 @@ module.exports = class Keystone {
     const schema = this._schemas[context.schemaName];
     if (!schema) {
       throw new Error(
-        `No executable schema named '${context.schemaName}' is available. Have you setup '@keystonejs/app-graphql'?`
+        `No executable schema named '${context.schemaName}' is available. Have you setup '@keystone-next/app-graphql-legacy'?`
       );
     }
 

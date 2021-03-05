@@ -1,3 +1,3 @@
 throw new Error(
-  '`@keystonejs/fields-datetime-utc` has been moved into `@keystonejs/fields`, please import `DateTimeUtc` from `@keystonejs/fields` instead of `@keystonejs/fields-datetime-utc`'
+  '`@keystone-next/fields-datetime-utc-legacy` has been moved into `@keystone-next/fields-legacy`, please import `DateTimeUtc` from `@keystone-next/fields-legacy` instead of `@keystone-next/fields-datetime-utc-legacy`'
 );

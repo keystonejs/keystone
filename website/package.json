@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/website",
+  "name": "@keystone-next/website-legacy",
   "description": "KeystoneJS documentation. Powered by Gatsby.",
   "private": true,
   "version": "6.0.0",

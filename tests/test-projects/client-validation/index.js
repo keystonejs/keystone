@@ -1,12 +1,12 @@
-const { Keystone } = require('@keystonejs/keystone');
-const { Text, Password, Checkbox } = require('@keystonejs/fields');
-const { GraphQLApp } = require('@keystonejs/app-graphql');
-const { AdminUIApp } = require('@keystonejs/app-admin-ui');
-const { StaticApp } = require('@keystonejs/app-static');
+const { Keystone } = require('@keystone-next/keystone-legacy');
+const { Text, Password, Checkbox } = require('@keystone-next/fields-legacy');
+const { GraphQLApp } = require('@keystone-next/app-graphql-legacy');
+const { AdminUIApp } = require('@keystone-next/app-admin-ui-legacy');
+const { StaticApp } = require('@keystone-next/app-static-legacy');
 
 const { staticRoute, staticPath } = require('./config');
 
-const { PrismaAdapter } = require('@keystonejs/adapter-prisma');
+const { PrismaAdapter } = require('@keystone-next/adapter-prisma-legacy');
 
 const keystone = new Keystone({
   adapter: new PrismaAdapter(),

@@ -1,5 +1,5 @@
 {
-  "name": "@keystonejs/fields-unsplash",
+  "name": "@keystone-next/fields-unsplash-legacy",
   "description": "KeystoneJS Unsplash Field Type",
   "version": "3.2.0",
   "author": "The KeystoneJS Development Team",
@@ -15,11 +15,11 @@
     "@arch-ui/input": "^0.1.11",
     "@babel/runtime": "^7.13.9",
     "@emotion/core": "^10.1.1",
-    "@keystonejs/adapter-knex": "^13.0.1",
-    "@keystonejs/adapter-mongoose": "^11.0.1",
-    "@keystonejs/adapter-prisma": "^3.0.1",
-    "@keystonejs/fields": "^22.0.0",
-    "@keystonejs/fields-content": "^9.0.6",
+    "@keystone-next/adapter-knex-legacy": "^13.0.1",
+    "@keystone-next/adapter-mongoose-legacy": "^11.0.1",
+    "@keystone-next/adapter-prisma-legacy": "^3.0.1",
+    "@keystone-next/fields-content-legacy": "^9.0.6",
+    "@keystone-next/fields-legacy": "^22.0.0",
     "node-fetch": "^2.6.1",
     "query-string": "^6.14.1",
     "unsplash-js": "^6.3.0"
@@ -31,8 +31,8 @@
     "dotenv": "^8.2.0",
     "react": "^17.0.1"
   },
-  "main": "dist/fields-unsplash.cjs.js",
-  "module": "dist/fields-unsplash.esm.js",
+  "main": "dist/fields-unsplash-legacy.cjs.js",
+  "module": "dist/fields-unsplash-legacy.esm.js",
   "preconstruct": {
     "entrypoints": [
       "index.js",
