@@ -2,7 +2,7 @@
   "name": "@keystone-next/api-tests-legacy",
   "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
-  "version": "9.0.0",
+  "version": "9.1.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -29,12 +29,12 @@
     "testcheck": "^1.0.0-rc.2"
   },
   "dependencies": {
-    "@keystone-next/auth-password-legacy": "^6.0.1",
-    "@keystone-next/fields-authed-relationship-legacy": "^1.0.17",
-    "@keystone-next/fields-legacy": "^22.0.0",
-    "@keystone-next/list-plugins-legacy": "^8.0.0",
-    "@keystone-next/test-utils-legacy": "^12.0.0",
-    "@keystone-next/utils-legacy": "^6.0.1",
+    "@keystone-next/auth-password-legacy": "^6.0.2",
+    "@keystone-next/fields-authed-relationship-legacy": "^1.0.18",
+    "@keystone-next/fields-legacy": "^22.0.1",
+    "@keystone-next/list-plugins-legacy": "^8.0.1",
+    "@keystone-next/test-utils-legacy": "^13.0.0",
+    "@keystone-next/utils-legacy": "^6.0.2",
     "express": "^4.17.1"
   }
 }
