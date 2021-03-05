@@ -1,5 +1,25 @@
 # @keystonejs/api-tests
 
+## 9.1.0
+
+### Minor Changes
+
+- [`5d565ea57`](https://github.com/keystonejs/keystone/commit/5d565ea57853713458329b823bde7a38776b02bc) [#4892](https://github.com/keystonejs/keystone/pull/4892) Thanks [@timleslie](https://github.com/timleslie)! - Added support for configuring the field to use for `search` filtering via the `db: { searchField }` list config option.
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+* [`a16d2cbff`](https://github.com/keystonejs/keystone/commit/a16d2cbffd9aa57d0cbdd783ff5ff0c699ff2d8b) [#5016](https://github.com/keystonejs/keystone/pull/5016) Thanks [@timleslie](https://github.com/timleslie)! - Added explicit handling of `null` values for relationship fields in `create` and `update` mutations.
+
+* Updated dependencies [[`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7), [`6dcd01c5d`](https://github.com/keystonejs/keystone/commit/6dcd01c5d55e809e62ce72c4ba5fbdbf8bd87515), [`7ae67b857`](https://github.com/keystonejs/keystone/commit/7ae67b857745985061700b0477c3f585b3b8efbf), [`7b84c4066`](https://github.com/keystonejs/keystone/commit/7b84c40661a086b5468cc4d4542dfb696bfc2f93), [`0cd5acb82`](https://github.com/keystonejs/keystone/commit/0cd5acb82b2e640821c092eb429401eb9d7e8e9a)]:
+  - @keystone-next/auth-password-legacy@6.0.2
+  - @keystone-next/fields-legacy@22.0.1
+  - @keystone-next/fields-authed-relationship-legacy@1.0.18
+  - @keystone-next/list-plugins-legacy@8.0.1
+  - @keystone-next/test-utils-legacy@13.0.0
+  - @keystone-next/utils-legacy@6.0.2
+
 ## 9.0.0
 
 ### Major Changes
