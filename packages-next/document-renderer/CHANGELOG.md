@@ -1,5 +1,11 @@
 # @keystone-next/document-renderer
 
+## 2.0.1
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
 ## 2.0.0
 
 ### Major Changes

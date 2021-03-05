@@ -1,5 +1,17 @@
 # @keystonejs/fields-cloudinary-image
 
+## 2.1.5
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+- Updated dependencies [[`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7), [`7b84c4066`](https://github.com/keystonejs/keystone/commit/7b84c40661a086b5468cc4d4542dfb696bfc2f93), [`5d565ea57`](https://github.com/keystonejs/keystone/commit/5d565ea57853713458329b823bde7a38776b02bc), [`00f19daee`](https://github.com/keystonejs/keystone/commit/00f19daee8bbd75fb58fb76caaa9a3de70ebfcac)]:
+  - @keystone-next/adapter-knex-legacy@13.1.0
+  - @keystone-next/adapter-mongoose-legacy@11.1.0
+  - @keystone-next/fields-legacy@22.0.1
+  - @keystone-next/fields-content-legacy@9.0.7
+
 ## 2.1.4
 
 ### Patch Changes
