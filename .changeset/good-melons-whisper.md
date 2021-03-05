@@ -3,4 +3,4 @@
 '@keystonejs/fields': minor
 ---
 
-Added decimal field type for keystone-next with precision, scale
+Added a `decimal` field type to keystone-next.
