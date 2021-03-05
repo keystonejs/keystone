@@ -157,21 +157,27 @@ jobs:
     env:
       DATABASE_URL: 'postgres://keystone5:k3yst0n3@localhost:5432/test_db'
     strategy:
+      matrix:
+        test: ['auth.test.ts', 'basic.test.ts', 'roles.test.ts', 'todo.test.ts']
       fail-fast: false
     steps:
       - name: Checkout Repo
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/checkout@v2
 
       - name: Setup Node.js 14.x
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/setup-node@main
         with:
           node-version: 14.x
 
       - name: Get yarn cache directory path
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - uses: actions/cache@v2
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         id: yarn-cache
         with:
           path: |
@@ -182,11 +188,15 @@ jobs:
             ${{ runner.os }}-yarn-v4-
 
       - name: Install Dependencies
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn
       - uses: microsoft/playwright-github-action@v1
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - run: node ./node_modules/playwright/install.js
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
       - name: Unit tests
-        run: yarn jest --ci --maxWorkers=1 tests/examples-smoke-tests
+        if: needs.should_run_tests.outputs.shouldRunTests == 'true'
+        run: yarn jest --ci --maxWorkers=1 tests/examples-smoke-tests/${{ matrix.test }}
 
   linting:
     name: Linting
