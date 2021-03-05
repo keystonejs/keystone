@@ -62,7 +62,9 @@ export const exampleProjectTests = (
       let adminUIReady = promiseSignal();
       let listener = (chunk: any) => {
         let stringified = chunk.toString('utf8');
-        console.log(stringified);
+        if (process.env.VERBOSE) {
+          console.log(stringified);
+        }
         if (stringified.includes('API ready')) {
           adminUIReady.resolve();
         }
@@ -93,11 +95,13 @@ export const exampleProjectTests = (
           cwd: projectDir,
           env: process.env,
         });
-        const logChunk = (chunk: any) => {
-          console.log(chunk.toString('utf8'));
-        };
-        keystoneBuildProcess.stdout!.on('data', logChunk);
-        keystoneBuildProcess.stderr!.on('data', logChunk);
+        if (process.env.VERBOSE) {
+          const logChunk = (chunk: any) => {
+            console.log(chunk.toString('utf8'));
+          };
+          keystoneBuildProcess.stdout!.on('data', logChunk);
+          keystoneBuildProcess.stderr!.on('data', logChunk);
+        }
         await keystoneBuildProcess;
       });
       test('start keystone in prod', async () => {
@@ -107,12 +111,12 @@ export const exampleProjectTests = (
 
     describe.each([
       'chromium',
-      'firefox',
-      // we don't run the tests on webkit in production
-      // because unlike chromium and firefox
-      // webkit doesn't treat localhost as a secure context
-      // and we enable secure cookies in production
-      ...(mode === 'prod' ? [] : (['webkit'] as const)),
+      // 'firefox',
+      // // we don't run the tests on webkit in production
+      // // because unlike chromium and firefox
+      // // webkit doesn't treat localhost as a secure context
+      // // and we enable secure cookies in production
+      // ...(mode === 'prod' ? [] : (['webkit'] as const)),
     ] as const)('%s', browserName => {
       beforeAll(async () => {
         await deleteAllData(projectDir);
