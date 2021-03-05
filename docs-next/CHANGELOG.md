@@ -1,5 +1,37 @@
 # @keystone-next/website
 
+## 1.1.0
+
+### Minor Changes
+
+- [`b1da7806c`](https://github.com/keystonejs/keystone/commit/b1da7806c0e82f676de5bc51595069be71b86331) [#4922](https://github.com/keystonejs/keystone/pull/4922) Thanks [@timleslie](https://github.com/timleslie)! - Added access control API docs.
+
+* [`f4163a06d`](https://github.com/keystonejs/keystone/commit/f4163a06d27fcb106a0159711010e0087eebc945) [#4838](https://github.com/keystonejs/keystone/pull/4838) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added anchoring and copy to clipboard functionality to headings
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+* [`2655c0b1b`](https://github.com/keystonejs/keystone/commit/2655c0b1bf714d80d46e1ff4e414b4bce474c23d) [#4866](https://github.com/keystonejs/keystone/pull/4866) Thanks [@timleslie](https://github.com/timleslie)! - Added a `config.ui.isDisabled` option to completely disable the Admin UI.
+
+- [`f4163a06d`](https://github.com/keystonejs/keystone/commit/f4163a06d27fcb106a0159711010e0087eebc945) [#4838](https://github.com/keystonejs/keystone/pull/4838) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Remove backticks from headings in docs
+
+* [`45d2b7cc9`](https://github.com/keystonejs/keystone/commit/45d2b7cc9b56a73c68f424cffc5cf143dfc9caa9) [#4925](https://github.com/keystonejs/keystone/pull/4925) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Removed backticks from inline code blocks in mdx, and made minor styling changes.
+
+- [`1f315bbfb`](https://github.com/keystonejs/keystone/commit/1f315bbfb750d9570d7969aa0c9349e6a7d427e4) [#4961](https://github.com/keystonejs/keystone/pull/4961) Thanks [@timleslie](https://github.com/timleslie)! - Added docs for the `float` field type.
+
+* [`954083571`](https://github.com/keystonejs/keystone/commit/954083571d8ca8c3b37deb8332f911c4cc755f89) [#4926](https://github.com/keystonejs/keystone/pull/4926) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added a favicon to @keystone-next/website
+
+* Updated dependencies [[`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7), [`556c1f95f`](https://github.com/keystonejs/keystone/commit/556c1f95f287035493704d6f5d9744fd5e9774b6), [`556c1f95f`](https://github.com/keystonejs/keystone/commit/556c1f95f287035493704d6f5d9744fd5e9774b6), [`556c1f95f`](https://github.com/keystonejs/keystone/commit/556c1f95f287035493704d6f5d9744fd5e9774b6), [`556c1f95f`](https://github.com/keystonejs/keystone/commit/556c1f95f287035493704d6f5d9744fd5e9774b6), [`3ca5038a0`](https://github.com/keystonejs/keystone/commit/3ca5038a021105a7452f4e7a4641107caa4ffe3a), [`d53eb872f`](https://github.com/keystonejs/keystone/commit/d53eb872ffb0396fcdcae34c380acf9739c8ca5d)]:
+  - @keystone-ui/button@3.0.1
+  - @keystone-ui/core@2.0.1
+  - @keystone-ui/fields@2.0.1
+  - @keystone-ui/icons@2.0.1
+  - @keystone-ui/notice@2.0.1
+  - @keystone-ui/toast@2.0.1
+  - @keystone-ui/tooltip@2.0.1
+  - @keystone-next/fields-document@3.0.0
+
 ## 1.0.0
 
 ### Major Changes

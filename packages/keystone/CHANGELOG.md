@@ -1,5 +1,29 @@
 # @keystonejs/keystone
 
+## 19.3.0
+
+### Minor Changes
+
+- [`5d565ea57`](https://github.com/keystonejs/keystone/commit/5d565ea57853713458329b823bde7a38776b02bc) [#4892](https://github.com/keystonejs/keystone/pull/4892) Thanks [@timleslie](https://github.com/timleslie)! - Added support for configuring the field to use for `search` filtering via the `db: { searchField }` list config option.
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+* [`6f985acc7`](https://github.com/keystonejs/keystone/commit/6f985acc775d6037ac69a01215f962285de78c75) [#4861](https://github.com/keystonejs/keystone/pull/4861) Thanks [@timleslie](https://github.com/timleslie)! - The functions `validate*AccessControl` no longer set default values for the `authentication` value. If you are calling these functions directly you will need to make sure you pass in a value for `authentication`. If you are not directly calling these functions then there are no changes required.
+
+- [`4eb4753e4`](https://github.com/keystonejs/keystone/commit/4eb4753e45e5a6ca37bdc756aef7adda7f551da4) [#4865](https://github.com/keystonejs/keystone/pull/4865) Thanks [@timleslie](https://github.com/timleslie)! - Updated `validateAuthAccessControl` to now require an explicit `operation` argument.
+
+* [`891cd490a`](https://github.com/keystonejs/keystone/commit/891cd490a17026f4af29f0ed9b9ca411747d1d63) [#4875](https://github.com/keystonejs/keystone/pull/4875) Thanks [@timleslie](https://github.com/timleslie)! - Updated the `validate*AccessControl` functions to take `{ access, args: ... }`. Unless you are directly calling these functions no code changes are required.
+
+- [`a16d2cbff`](https://github.com/keystonejs/keystone/commit/a16d2cbffd9aa57d0cbdd783ff5ff0c699ff2d8b) [#5016](https://github.com/keystonejs/keystone/pull/5016) Thanks [@timleslie](https://github.com/timleslie)! - Added explicit handling of `null` values for relationship fields in `create` and `update` mutations.
+
+- Updated dependencies [[`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7), [`15b1132d2`](https://github.com/keystonejs/keystone/commit/15b1132d20d13f79bbf1707e1897b31da887c2b7), [`6f985acc7`](https://github.com/keystonejs/keystone/commit/6f985acc775d6037ac69a01215f962285de78c75), [`4eb4753e4`](https://github.com/keystonejs/keystone/commit/4eb4753e45e5a6ca37bdc756aef7adda7f551da4), [`891cd490a`](https://github.com/keystonejs/keystone/commit/891cd490a17026f4af29f0ed9b9ca411747d1d63)]:
+  - @keystone-next/access-control-legacy@8.0.0
+  - @keystone-next/app-version-legacy@2.0.1
+  - @keystone-next/session-legacy@8.2.1
+  - @keystone-next/utils-legacy@6.0.2
+
 ## 19.2.0
 
 ### Minor Changes

@@ -1,5 +1,15 @@
 # @keystonejs/app-graphql-playground
 
+## 5.1.10
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+- Updated dependencies [[`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7)]:
+  - @keystone-next/session-legacy@8.2.1
+  - @keystone-next/utils-legacy@6.0.2
+
 ## 5.1.9
 
 ### Patch Changes

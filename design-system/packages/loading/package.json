@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/loading",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "MIT",
   "main": "dist/loading.cjs.js",
   "module": "dist/loading.esm.js",
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.9",
-    "@keystone-ui/core": "^2.0.0",
+    "@keystone-ui/core": "^2.0.1",
     "react": "^17.0.1"
   },
   "engines": {

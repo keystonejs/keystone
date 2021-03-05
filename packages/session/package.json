@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/session-legacy",
   "description": "Tools to assist with setting up session management in your Keystone system.",
-  "version": "8.2.0",
+  "version": "8.2.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "main": "dist/session-legacy.cjs.js",
