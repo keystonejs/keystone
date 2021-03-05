@@ -1,7 +1,7 @@
 ---
 '@keystone-next/website-legacy': minor
 '@keystone-next/keystone-legacy': minor
-'@keystone-next/types-legacy': minor
+'@keystone-next/types': minor
 '@keystone-next/api-tests-legacy': minor
 ---
 
