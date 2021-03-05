@@ -49,10 +49,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   );
 };
 
-type Config = FieldControllerConfig<{
-  displayMode: 'input' | 'textarea';
-  maxLength: number;
-}>;
+type Config = FieldControllerConfig<{ displayMode: 'input' | 'textarea' }>;
 
 export const controller = (
   config: Config
@@ -67,12 +64,7 @@ export const controller = (
       const value = data[config.path];
       return typeof value === 'string' ? value : '';
     },
-    serialize: value => {
-      if (config.fieldMeta.maxLength) {
-        value = value.substring(0, config.fieldMeta.maxLength);
-      }
-      return { [config.path]: value };
-    },
+    serialize: value => ({ [config.path]: value }),
     filter: {
       Filter(props) {
         return (

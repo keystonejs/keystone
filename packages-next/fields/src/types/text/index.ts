@@ -11,7 +11,6 @@ export type TextFieldConfig<
   isRequired?: boolean;
   isUnique?: boolean;
   isIndexed?: boolean;
-  maxLength?: number;
   ui?: {
     displayMode?: 'input' | 'textarea';
   };
@@ -23,8 +22,5 @@ export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: Text,
   config,
   views: resolveView('text/views'),
-  getAdminMeta: () => ({
-    displayMode: config.ui?.displayMode ?? 'input',
-    maxLength: config.maxLength ?? null,
-  }),
+  getAdminMeta: () => ({ displayMode: config.ui?.displayMode ?? 'input' }),
 });
