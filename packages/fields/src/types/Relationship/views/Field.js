@@ -16,7 +16,7 @@ import {
   ListProvider,
   useList,
   useAdminMeta,
-} from '@keystonejs/app-admin-ui/components';
+} from '@keystone-next/app-admin-ui-legacy/components';
 
 const MAX_IDS_IN_FILTER = 100;
 

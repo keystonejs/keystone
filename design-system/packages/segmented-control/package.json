@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/segmented-control",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "MIT",
   "main": "dist/segmented-control.cjs.js",
   "module": "dist/segmented-control.esm.js",
@@ -9,8 +9,8 @@
     "react": "^17.0.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.18",
-    "@keystone-ui/core": "^2.0.0"
+    "@babel/runtime": "^7.13.9",
+    "@keystone-ui/core": "^2.0.1"
   },
   "peerDependencies": {
     "react": "^17.0.1"

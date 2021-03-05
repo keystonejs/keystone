@@ -1,7 +1,7 @@
 const { gen, sampleOne } = require('testcheck');
 const { text, relationship } = require('@keystone-next/fields');
 const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystonejs/test-utils');
+const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -384,6 +384,25 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               });
           })
         );
+
+        test(
+          'With null',
+          runner(setupKeystone, async ({ context }) => {
+            const { data, errors } = await context.executeGraphQL({
+              query: `
+                mutation {
+                  createUser(data: {
+                    friend: null
+                  }) { id friend { id } }
+                }
+            `,
+            });
+            expect(errors).toBe(undefined);
+
+            // Friend should be empty
+            expect(data.createUser.friend).toBe(null);
+          })
+        );
       });
 
       describe('Update', () => {
@@ -499,6 +518,32 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const result = await getUserAndFriend(context, user.id, friend.id);
             expect(result.User.friend).toBe(null);
             expect(result.Friend.friendOf).toBe(null);
+          })
+        );
+
+        test(
+          'With null',
+          runner(setupKeystone, async ({ context }) => {
+            // Manually setup a connected Company <-> Location
+            const { user, friend } = await createUserAndFriend(context);
+
+            // Run the query with a null operation
+            const { data, errors } = await context.executeGraphQL({
+              query: `
+                mutation {
+                  updateUser(
+                    id: "${user.id}",
+                    data: { friend: null }
+                  ) { id friend { id name } }
+                }
+            `,
+            });
+            expect(errors).toBe(undefined);
+
+            // Check that the friend is still there
+            expect(data.updateUser.id).toEqual(user.id);
+            expect(data.updateUser.friend).not.toBe(null);
+            expect(data.updateUser.friend.id).toEqual(friend.id);
           })
         );
       });

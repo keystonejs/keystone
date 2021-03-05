@@ -2,7 +2,7 @@ import type { GraphQLSchemaExtension } from '@keystone-next/types';
 
 import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 
-import { updateAuthToken } from '../lib/updateAuthToken';
+import { createAuthToken } from '../lib/createAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
 import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
 
@@ -66,7 +66,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           const itemAPI = context.sudo().lists[listKey];
           const tokenType = 'passwordReset';
           const identity = args[identityField];
-          const result = await updateAuthToken(identityField, protectIdentities, identity, itemAPI);
+          const result = await createAuthToken(identityField, protectIdentities, identity, itemAPI);
 
           // Note: `success` can be false with no code
           if (!result.success && result.code) {
@@ -92,7 +92,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
               resolveFields: false,
             });
 
-            await passwordResetLink.sendToken({ itemId, identity, token });
+            await passwordResetLink.sendToken({ itemId, identity, token, context });
           }
           return null;
         },

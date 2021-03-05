@@ -1,5 +1,9 @@
 import { KeystoneContext } from '@keystone-next/types';
-import { multiAdapterRunners, setupFromConfig, AdapterName } from '@keystonejs/test-utils';
+import {
+  multiAdapterRunners,
+  setupFromConfig,
+  AdapterName,
+} from '@keystone-next/test-utils-legacy';
 import config from '../keystone';
 
 function setupKeystone(adapterName: AdapterName) {

@@ -1,16 +1,16 @@
 {
-  "name": "@keystonejs/session",
+  "name": "@keystone-next/session-legacy",
   "description": "Tools to assist with setting up session management in your Keystone system.",
-  "version": "8.2.0",
+  "version": "8.2.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
-  "main": "dist/session.cjs.js",
-  "module": "dist/session.esm.js",
+  "main": "dist/session-legacy.cjs.js",
+  "module": "dist/session-legacy.esm.js",
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.18",
+    "@babel/runtime": "^7.13.9",
     "@types/express-session": "^1.17.3",
     "cookie": "^0.4.1",
     "cookie-signature": "^1.1.0",

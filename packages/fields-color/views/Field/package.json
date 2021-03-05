@@ -1,4 +1,4 @@
 {
-  "main": "dist/fields-color.cjs.js",
-  "module": "dist/fields-color.esm.js"
+  "main": "dist/fields-color-legacy.cjs.js",
+  "module": "dist/fields-color-legacy.esm.js"
 }

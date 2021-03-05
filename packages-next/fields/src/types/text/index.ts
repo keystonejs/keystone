@@ -1,4 +1,5 @@
-import { Text } from '@keystonejs/fields';
+// @ts-ignore
+import { Text } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';

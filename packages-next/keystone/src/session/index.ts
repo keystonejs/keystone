@@ -1,3 +1,5 @@
+import { mergeSchemas } from '@graphql-tools/merge';
+import { GraphQLSchema } from 'graphql';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
@@ -7,7 +9,9 @@ import {
   SessionStoreFunction,
   SessionContext,
   CreateContext,
+  KeystoneContext,
 } from '@keystone-next/types';
+import { gql } from '../schema';
 
 // uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
@@ -55,6 +59,12 @@ type StatelessSessionsOptions = {
    * @default '/'
    */
   path?: string;
+  /**
+   * Specifies the domain for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.3|`Domain` `Set-Cookie` attribute}
+   *
+   * @default current domain
+   */
+  domain?: string;
 };
 
 type FieldSelections = {
@@ -116,6 +126,7 @@ export function statelessSessions<T>({
   path = '/',
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
+  domain,
 }: StatelessSessionsOptions): () => SessionStrategy<T> {
   return () => {
     if (!secret) {
@@ -143,6 +154,7 @@ export function statelessSessions<T>({
             secure,
             path,
             sameSite: 'lax',
+            domain,
           })
         );
       },
@@ -158,6 +170,7 @@ export function statelessSessions<T>({
             secure,
             path,
             sameSite: 'lax',
+            domain,
           })
         );
 
@@ -227,4 +240,25 @@ export async function createSessionContext<T>(
     startSession: (data: T) => sessionStrategy.start({ res, data, createContext }),
     endSession: () => sessionStrategy.end({ req, res, createContext }),
   };
+}
+
+export function sessionSchema(graphQLSchema: GraphQLSchema) {
+  return mergeSchemas({
+    schemas: [graphQLSchema],
+    typeDefs: gql`
+      type Mutation {
+        endSession: Boolean!
+      }
+    `,
+    resolvers: {
+      Mutation: {
+        async endSession(rootVal, args, context: KeystoneContext) {
+          if (context.endSession) {
+            await context.endSession();
+          }
+          return true;
+        },
+      },
+    },
+  });
 }

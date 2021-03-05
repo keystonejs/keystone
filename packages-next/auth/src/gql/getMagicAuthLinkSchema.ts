@@ -2,7 +2,7 @@ import type { GraphQLSchemaExtension } from '@keystone-next/types';
 
 import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 
-import { updateAuthToken } from '../lib/updateAuthToken';
+import { createAuthToken } from '../lib/createAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
 import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
 
@@ -63,7 +63,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           const tokenType = 'magicAuth';
           const identity = args[identityField];
 
-          const result = await updateAuthToken(identityField, protectIdentities, identity, itemAPI);
+          const result = await createAuthToken(identityField, protectIdentities, identity, itemAPI);
 
           // Note: `success` can be false with no code
           if (!result.success && result.code) {
@@ -90,7 +90,7 @@ export function getMagicAuthLinkSchema<I extends string>({
               resolveFields: false,
             });
 
-            await magicAuthLink.sendToken({ itemId, identity, token });
+            await magicAuthLink.sendToken({ itemId, identity, token, context });
           }
           return null;
         },

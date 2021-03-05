@@ -3,8 +3,12 @@ const path = require('path');
 const { execSync } = require('child_process');
 const cuid = require('cuid');
 const { getGenerators, formatSchema } = require('@prisma/sdk');
-const { BaseKeystoneAdapter, BaseListAdapter, BaseFieldAdapter } = require('@keystonejs/keystone');
-const { defaultObj, mapKeys, identity, flatten } = require('@keystonejs/utils');
+const {
+  BaseKeystoneAdapter,
+  BaseListAdapter,
+  BaseFieldAdapter,
+} = require('@keystone-next/keystone-legacy');
+const { defaultObj, mapKeys, identity, flatten } = require('@keystone-next/utils-legacy');
 
 class PrismaAdapter extends BaseKeystoneAdapter {
   constructor() {
@@ -42,7 +46,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   }
 
   _runPrismaCmd(cmd) {
-    return execSync(`yarn prisma ${cmd} --schema ${this.schemaPath}`, {
+    return execSync(`yarn prisma ${cmd} --schema "${this.schemaPath}"`, {
       env: { ...process.env, DATABASE_URL: this._url() },
       encoding: 'utf-8',
     });
@@ -73,28 +77,28 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     // 2a2. If they're different, generate and run a migration
     // 2b. If it doesn't exist, generate and run a migration
 
-    // // If any of our critical directories are missing, or if the schema has changed, then
-    // // we've got things to do.
-    if (
-      !fs.existsSync(this.clientPath) ||
-      !fs.existsSync(this.schemaPath) ||
-      fs.readFileSync(this.schemaPath, { encoding: 'utf-8' }) !== prismaSchema
-    ) {
-      if (fs.existsSync(this.clientPath)) {
-        const existing = fs.readFileSync(this.schemaPath, { encoding: 'utf-8' });
-        if (existing === prismaSchema) {
-          // If they're the same, we're golden
-          return;
-        }
+    // If any of our critical directories are missing, or if the schema has changed, then
+    // we've got things to do.
+
+    try {
+      const existing = fs.readFileSync(this.schemaPath, { encoding: 'utf-8' });
+      if (existing === prismaSchema && fs.existsSync(this.clientPath)) {
+        // If they're the same, we're golden
+        return;
       }
-      this._writePrismaSchema({ prismaSchema });
-
-      // Generate prisma client
-      await this._generatePrismaClient();
-
-      // Run prisma migrations
-      await this._runMigrations();
+    } catch (err) {
+      if (err.code !== 'ENOENT') {
+        throw err;
+      }
     }
+
+    this._writePrismaSchema({ prismaSchema });
+
+    // Generate prisma client
+    await this._generatePrismaClient();
+
+    // Run prisma migrations
+    await this._runMigrations();
   }
 
   async _runMigrations() {
@@ -268,7 +272,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
 
   getDefaultPrimaryKeyConfig() {
     // Required here due to circular refs
-    const { AutoIncrement } = require('@keystonejs/fields-auto-increment');
+    const { AutoIncrement } = require('@keystone-next/fields-auto-increment-legacy');
     return AutoIncrement.primaryKeyDefaults[this.name].getConfig();
   }
 

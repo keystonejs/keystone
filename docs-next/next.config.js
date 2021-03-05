@@ -12,6 +12,9 @@ module.exports = withPlugins([
   withPreconstruct,
   [withMDX, { pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'] }],
   nextConfig => {
+    nextConfig.env = {
+      siteUrl: 'https://next.keystonejs.com',
+    };
     nextConfig.typescript = {
       ...nextConfig.typescript,
       // we run TS elsewhere, Next runs against a different TS config which it insists on existing

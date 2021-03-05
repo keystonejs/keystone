@@ -6,7 +6,7 @@ order: 3
 
 # Fields
 
-Keystone contains a set of primitive fields types that can be imported from the `@keystonejs/fields` package:
+Keystone contains a set of primitive fields types that can be imported from the `@keystone-next/fields-legacy` package:
 
 | Field type                                                          | Description                                                                                                                                            |
 | :------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -50,7 +50,7 @@ In addition to these, some complex types are packaged separately:
 Fields definitions are provided when creating a list. Field definitions should be an object where the key is the field name and the value is an object containing the fields config:
 
 ```javascript
-const { Text } = require('@keystonejs/fields');
+const { Text } = require('@keystone-next/fields-legacy');
 
 keystone.createList('Post', {
   fields: {

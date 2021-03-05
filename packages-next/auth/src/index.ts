@@ -1,79 +1,17 @@
 import url from 'url';
-import { mergeSchemas } from '@graphql-tools/merge';
 import {
   AdminFileToWrite,
   BaseGeneratedListTypes,
   KeystoneConfig,
-  ExtendGraphqlSchema,
+  KeystoneContext,
+  AdminUIConfig,
 } from '@keystone-next/types';
 import { password, timestamp } from '@keystone-next/fields';
 
-import { AuthConfig, Auth, AuthGqlNames, AuthTokenTypeConfig } from './types';
-
-import { getBaseAuthSchema } from './gql/getBaseAuthSchema';
-import { getInitFirstItemSchema } from './gql/getInitFirstItemSchema';
-import { getPasswordResetSchema } from './gql/getPasswordResetSchema';
-import { getMagicAuthLinkSchema } from './gql/getMagicAuthLinkSchema';
-
+import { AuthConfig, AuthGqlNames } from './types';
+import { getSchemaExtension } from './schema';
 import { signinTemplate } from './templates/signin';
 import { initTemplate } from './templates/init';
-import { KeystoneContext } from '@keystone-next/types/src/core';
-
-const getSchemaExtension = ({
-  identityField,
-  listKey,
-  protectIdentities,
-  secretField,
-  gqlNames,
-  initFirstItem,
-  passwordResetLink,
-  magicAuthLink,
-}: {
-  identityField: string;
-  listKey: string;
-  protectIdentities: boolean;
-  secretField: string;
-  gqlNames: AuthGqlNames;
-  initFirstItem?: any;
-  passwordResetLink?: any;
-  magicAuthLink?: AuthTokenTypeConfig;
-}): ExtendGraphqlSchema => (schema, keystone) =>
-  [
-    getBaseAuthSchema({
-      identityField,
-      listKey,
-      protectIdentities,
-      secretField,
-      gqlNames,
-    }),
-    initFirstItem &&
-      getInitFirstItemSchema({
-        listKey,
-        fields: initFirstItem.fields,
-        itemData: initFirstItem.itemData,
-        gqlNames,
-        keystone,
-      }),
-    passwordResetLink &&
-      getPasswordResetSchema({
-        identityField,
-        listKey,
-        protectIdentities,
-        secretField,
-        passwordResetLink,
-        gqlNames,
-      }),
-    magicAuthLink &&
-      getMagicAuthLinkSchema({
-        identityField,
-        listKey,
-        protectIdentities,
-        magicAuthLink,
-        gqlNames,
-      }),
-  ]
-    .filter(x => x)
-    .reduce((s, extension) => mergeSchemas({ schemas: [s], ...extension }), schema);
 
 /**
  * createAuth function
@@ -83,32 +21,35 @@ const getSchemaExtension = ({
 export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   listKey,
   secretField,
-  protectIdentities = true,
-  gqlSuffix = '',
   initFirstItem,
   identityField,
   magicAuthLink,
   passwordResetLink,
-}: AuthConfig<GeneratedListTypes>): Auth {
+}: AuthConfig<GeneratedListTypes>) {
+  // The protectIdentities flag is currently under review to see whether it should be
+  // part of the createAuth API (in which case its use cases need to be documented and tested)
+  // or whether always being true is what we want, in which case we can refactor our code
+  // to match this. -TL
+  const protectIdentities = true;
   const gqlNames: AuthGqlNames = {
-    CreateInitialInput: `CreateInitial${listKey}Input${gqlSuffix}`,
-    createInitialItem: `createInitial${listKey}${gqlSuffix}`,
-    authenticateItemWithPassword: `authenticate${listKey}WithPassword${gqlSuffix}`,
-    ItemAuthenticationWithPasswordResult: `${listKey}AuthenticationWithPasswordResult${gqlSuffix}`,
-    ItemAuthenticationWithPasswordSuccess: `${listKey}AuthenticationWithPasswordSuccess${gqlSuffix}`,
-    ItemAuthenticationWithPasswordFailure: `${listKey}AuthenticationWithPasswordFailure${gqlSuffix}`,
-    sendItemPasswordResetLink: `send${listKey}PasswordResetLink${gqlSuffix}`,
-    SendItemPasswordResetLinkResult: `Send${listKey}PasswordResetLinkResult${gqlSuffix}`,
-    validateItemPasswordResetToken: `validate${listKey}PasswordResetToken${gqlSuffix}`,
-    ValidateItemPasswordResetTokenResult: `Validate${listKey}PasswordResetTokenResult${gqlSuffix}`,
-    redeemItemPasswordResetToken: `redeem${listKey}PasswordResetToken${gqlSuffix}`,
-    RedeemItemPasswordResetTokenResult: `Redeem${listKey}PasswordResetTokenResult${gqlSuffix}`,
-    sendItemMagicAuthLink: `send${listKey}MagicAuthLink${gqlSuffix}`,
-    SendItemMagicAuthLinkResult: `Send${listKey}MagicAuthLinkResult${gqlSuffix}`,
-    redeemItemMagicAuthToken: `redeem${listKey}MagicAuthToken${gqlSuffix}`,
-    RedeemItemMagicAuthTokenResult: `Redeem${listKey}MagicAuthTokenResult${gqlSuffix}`,
-    RedeemItemMagicAuthTokenSuccess: `Redeem${listKey}MagicAuthTokenSuccess${gqlSuffix}`,
-    RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure${gqlSuffix}`,
+    CreateInitialInput: `CreateInitial${listKey}Input`,
+    createInitialItem: `createInitial${listKey}`,
+    authenticateItemWithPassword: `authenticate${listKey}WithPassword`,
+    ItemAuthenticationWithPasswordResult: `${listKey}AuthenticationWithPasswordResult`,
+    ItemAuthenticationWithPasswordSuccess: `${listKey}AuthenticationWithPasswordSuccess`,
+    ItemAuthenticationWithPasswordFailure: `${listKey}AuthenticationWithPasswordFailure`,
+    sendItemPasswordResetLink: `send${listKey}PasswordResetLink`,
+    SendItemPasswordResetLinkResult: `Send${listKey}PasswordResetLinkResult`,
+    validateItemPasswordResetToken: `validate${listKey}PasswordResetToken`,
+    ValidateItemPasswordResetTokenResult: `Validate${listKey}PasswordResetTokenResult`,
+    redeemItemPasswordResetToken: `redeem${listKey}PasswordResetToken`,
+    RedeemItemPasswordResetTokenResult: `Redeem${listKey}PasswordResetTokenResult`,
+    sendItemMagicAuthLink: `send${listKey}MagicAuthLink`,
+    SendItemMagicAuthLinkResult: `Send${listKey}MagicAuthLinkResult`,
+    redeemItemMagicAuthToken: `redeem${listKey}MagicAuthToken`,
+    RedeemItemMagicAuthTokenResult: `Redeem${listKey}MagicAuthTokenResult`,
+    RedeemItemMagicAuthTokenSuccess: `Redeem${listKey}MagicAuthTokenSuccess`,
+    RedeemItemMagicAuthTokenFailure: `Redeem${listKey}MagicAuthTokenFailure`,
   };
 
   // Fields added to the auth list
@@ -124,14 +65,16 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       listView: { fieldMode: 'hidden' },
     },
   } as const;
-
+  // These field names have to follow this format so that for e.g
+  // validateAuthToken() behaves correctly.
+  const tokenFields = (tokenType: 'passwordReset' | 'magicAuth') => ({
+    [`${tokenType}Token`]: password({ ...fieldConfig }),
+    [`${tokenType}IssuedAt`]: timestamp({ ...fieldConfig }),
+    [`${tokenType}RedeemedAt`]: timestamp({ ...fieldConfig }),
+  });
   const additionalListFields = {
-    [`${secretField}ResetToken`]: password({ ...fieldConfig }),
-    [`${secretField}ResetIssuedAt`]: timestamp({ ...fieldConfig }),
-    [`${secretField}ResetRedeemedAt`]: timestamp({ ...fieldConfig }),
-    [`magicAuthToken`]: password({ ...fieldConfig }),
-    [`magicAuthIssuedAt`]: timestamp({ ...fieldConfig }),
-    [`magicAuthRedeemedAt`]: timestamp({ ...fieldConfig }),
+    ...(passwordResetLink && tokenFields('passwordReset')),
+    ...(magicAuthLink && tokenFields('magicAuth')),
   };
 
   /**
@@ -144,7 +87,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *  - to the init page when initFirstItem is configured, and there are no user in the database
    *  - to the signin page when no valid session is present
    */
-  const adminPageMiddleware: Auth['ui']['pageMiddleware'] = async ({
+  const adminPageMiddleware: AdminUIConfig['pageMiddleware'] = async ({
     req,
     isValidSession,
     createContext,
@@ -191,7 +134,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * The signin page is always included, and the init page is included when initFirstItem is set
    */
-  const additionalFiles: Auth['ui']['getAdditionalFiles'] = () => {
+  const additionalFiles = () => {
     let filesToWrite: AdminFileToWrite[] = [
       {
         mode: 'write',
@@ -215,7 +158,10 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *
    * Must be added to the ui.publicPages config
    */
-  const publicAuthPages = ['/signin', '/init'];
+  const publicAuthPages = ['/signin'];
+  if (initFirstItem) {
+    publicAuthPages.push('/init');
+  }
 
   /**
    * extendGraphqlSchema
@@ -337,10 +283,11 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
           // Allow access to the adminMeta data from the /init path to correctly render that page
           // even if the user isn't logged in (which should always be the case if they're seeing /init)
           const headers = context.req?.headers;
+          const host = headers ? headers['x-forwarded-host'] || headers['host'] : null;
           const url = headers?.referer ? new URL(headers.referer) : undefined;
           const accessingInitPage =
             url?.pathname === '/init' &&
-            url?.host === headers?.host &&
+            url?.host === host &&
             (await context.sudo().lists[listKey].count({})) === 0;
           return (
             accessingInitPage ||
@@ -377,21 +324,19 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     };
   };
 
-  /**
-   * Alongside withAuth (recommended) all the config is returned so you can extend or replace
-   * the default implementation with your own custom functionality, and integrate the result into
-   * your keystone config by hand.
-   */
   return {
-    ui: {
-      enableSessionItem: true,
-      pageMiddleware: adminPageMiddleware,
-      publicPages: publicAuthPages,
-      getAdditionalFiles: additionalFiles,
-    },
-    fields: additionalListFields,
-    extendGraphqlSchema,
-    validateConfig,
     withAuth,
+    // In the future we may want to return the following so that developers can
+    // roll their own. This is pending a review of the use cases this might be
+    // appropriate for, along with documentation and testing.
+    // ui: {
+    //   enableSessionItem: true,
+    //   pageMiddleware: adminPageMiddleware,
+    //   publicPages: publicAuthPages,
+    //   getAdditionalFiles: additionalFiles,
+    // },
+    // fields: additionalListFields,
+    // extendGraphqlSchema,
+    // validateConfig,
   };
 }

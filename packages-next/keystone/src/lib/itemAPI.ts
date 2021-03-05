@@ -9,7 +9,7 @@ import {
   deleteItem,
   deleteItems,
   // @ts-ignore
-} from '@keystonejs/server-side-graphql-client';
+} from '@keystone-next/server-side-graphql-client-legacy';
 import {
   BaseGeneratedListTypes,
   BaseKeystoneList,

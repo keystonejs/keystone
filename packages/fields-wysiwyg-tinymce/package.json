@@ -1,9 +1,9 @@
 {
-  "name": "@keystonejs/fields-wysiwyg-tinymce",
+  "name": "@keystone-next/fields-wysiwyg-tinymce-legacy",
   "description": "KeystoneJS WYSIWYG HTML Field Type, powered by TinyMCE",
   "homepage": "https://github.com/keystonejs/keystone",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-wysiwyg-tinymce",
-  "version": "5.3.16",
+  "version": "5.3.17",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -13,9 +13,9 @@
     "@arch-ui/fields": "^3.0.5",
     "@arch-ui/input": "^0.1.11",
     "@arch-ui/theme": "^0.0.11",
-    "@babel/runtime": "^7.12.18",
+    "@babel/runtime": "^7.13.9",
     "@emotion/core": "^10.1.1",
-    "@keystonejs/fields": "^22.0.0",
+    "@keystone-next/fields-legacy": "^22.0.1",
     "@primer/octicons-react": "^11.3.0",
     "@tinymce/tinymce-react": "^3.10.2",
     "prop-types": "^15.7.2",
@@ -31,8 +31,8 @@
       "views/Field.js"
     ]
   },
-  "main": "dist/fields-wysiwyg-tinymce.cjs.js",
-  "module": "dist/fields-wysiwyg-tinymce.esm.js",
+  "main": "dist/fields-wysiwyg-tinymce-legacy.cjs.js",
+  "module": "dist/fields-wysiwyg-tinymce-legacy.esm.js",
   "devDependencies": {
     "express": "^4.17.1"
   }

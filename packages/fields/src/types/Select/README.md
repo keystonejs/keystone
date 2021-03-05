@@ -12,7 +12,7 @@ Presented as a dropdown in the Admin UI.
 ## Usage
 
 ```js
-const { Select } = require('@keystonejs/fields');
+const { Select } = require('@keystone-next/fields-legacy');
 
 keystone.createList('Orders', {
   fields: {

@@ -40,10 +40,12 @@ const { withAuth } = createAuth({
 
 export default withAuth(
   config({
-    db: {
-      adapter: 'mongoose',
-      url: 'mongodb://localhost/keystone-examples-roles',
-    },
+    db: process.env.DATABASE_URL
+      ? { adapter: 'prisma_postgresql', url: process.env.DATABASE_URL }
+      : {
+          adapter: 'mongoose',
+          url: 'mongodb://localhost/keystone-examples-roles',
+        },
     lists,
     ui: {
       /* Everyone who is signed in can access the Admin UI */

@@ -57,10 +57,12 @@ const { withAuth } = createAuth({
 // withAuth applies the signin functionality to the keystone config
 export default withAuth(
   config({
-    db: {
-      adapter: 'mongoose',
-      url: 'mongodb://localhost/keystone-examples-next-auth',
-    },
+    db: process.env.DATABASE_URL
+      ? { adapter: 'prisma_postgresql', url: process.env.DATABASE_URL }
+      : {
+          adapter: 'mongoose',
+          url: 'mongodb://localhost/keystone-examples-next-auth',
+        },
     lists,
     ui: {},
     session: withItemData(

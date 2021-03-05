@@ -14,6 +14,7 @@ import {
   // Scalar types
   checkbox,
   integer,
+  float,
   password,
   select,
   text,
@@ -38,9 +39,7 @@ export default config({
   lists: createSchema({
     ListName: list({
       fields: {
-        fieldName: text({
-          /* ... */
-        }),
+        fieldName: text({ /* ... */ }),
         /* ... */
       },
     }),
@@ -76,12 +75,8 @@ export default config({
     ListName: list({
       fields: {
         fieldName: text({
-          access: {
-            /* ... */
-          },
-          hooks: {
-            /* ... */
-          },
+          access: { /* ... */ },
+          hooks: { /* ... */ },
           label: '...',
           ui: {
             views: '...',
@@ -180,7 +175,7 @@ export default config({
 
 ### float
 
-A `float` field represents a float value.
+A `float` field represents a floating point value.
 
 Options:
 
@@ -439,7 +434,7 @@ export default config({
         fieldName: relationship({
           ref: '...',
           many: false,
-          ui: { /* ... */ }.
+          ui: { /* ... */ },
           defaultValue: '...',
           isIndexed: '...',
           isUnique: '...',
@@ -590,12 +585,12 @@ export default config({
     ListName: list({
       fields: {
         fieldName: document({
-          relationships: { /* ... */ };
+          relationships: { /* ... */ },
           componentBlocks: {
             block: { /* ... */ },
             /* ... */
-          };
-          formatting: { /* ... */ };
+          },
+          formatting: { /* ... */ },
           links: true,
           dividers: true,
           layouts: [/* ... */],

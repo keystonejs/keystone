@@ -1,7 +1,11 @@
 import cuid from 'cuid';
-import { createItem, deleteItem, updateItem } from '@keystonejs/server-side-graphql-client';
-import { multiAdapterRunners, setupServer } from '@keystonejs/test-utils';
-import { Text, Slug } from '@keystonejs/fields';
+import {
+  createItem,
+  deleteItem,
+  updateItem,
+} from '@keystone-next/server-side-graphql-client-legacy';
+import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
+import { Text, Slug } from '@keystone-next/fields-legacy';
 
 const reverse = str => str.split('').reverse().join('');
 

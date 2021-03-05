@@ -6,7 +6,7 @@ title: Prisma adapter
 
 # Prisma database adapter
 
-[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystonejs/adapter-prisma)
+[![View changelog](https://img.shields.io/badge/changelogs.xyz-Explore%20Changelog-brightgreen)](https://changelogs.xyz/@keystone-next/adapter-prisma-legacy)
 
 The Prisma adapter allows Keystone to connect a database using Prisma Client, a type-safe and auto-generated database client. You can learn more about Prisma Client in the [Prisma docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
 
@@ -19,7 +19,7 @@ The Prisma adapter allows Keystone to connect a database using Prisma Client, a 
 ## Usage
 
 ```javascript
-const { PrismaAdapter } = require('@keystonejs/adapter-prisma');
+const { PrismaAdapter } = require('@keystone-next/adapter-prisma-legacy');
 
 const keystone = new Keystone({
   adapter: new PrismaAdapter({ url: 'postgres://...' }),

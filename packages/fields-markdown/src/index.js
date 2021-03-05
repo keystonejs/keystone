@@ -1,7 +1,7 @@
 import path from 'path';
-import { Text } from '@keystonejs/fields';
+import { Text } from '@keystone-next/fields-legacy';
 
-const pkgDir = path.dirname(require.resolve('@keystonejs/fields-markdown/package.json'));
+const pkgDir = path.dirname(require.resolve('@keystone-next/fields-markdown-legacy/package.json'));
 
 export let Markdown = {
   type: 'Markdown',

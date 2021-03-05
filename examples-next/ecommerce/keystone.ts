@@ -46,16 +46,18 @@ export default withAuth(
         credentials: true,
       },
     },
-    db: {
-      adapter: 'mongoose',
-      url: databaseURL,
-      async onConnect(keystone) {
-        console.log('Connected to the database!');
-        if (process.argv.includes('--seed-data')) {
-          await insertSeedData(keystone);
-        }
-      },
-    },
+    db: process.env.DATABASE_URL
+      ? { adapter: 'prisma_postgresql', url: process.env.DATABASE_URL }
+      : {
+          adapter: 'mongoose',
+          url: databaseURL,
+          async onConnect(keystone) {
+            console.log('Connected to the database!');
+            if (process.argv.includes('--seed-data')) {
+              await insertSeedData(keystone);
+            }
+          },
+        },
     lists: createSchema({
       // Schema items go in here
       User,

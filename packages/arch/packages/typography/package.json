@@ -2,6 +2,7 @@
   "name": "@arch-ui/typography",
   "description": "Typography Components used throughout @arch-ui packages and @keystonejs Admin UI.",
   "version": "0.0.18",
+  "private": true,
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/typography.cjs.js",
@@ -13,7 +14,7 @@
   },
   "dependencies": {
     "@arch-ui/theme": "0.0.11",
-    "@babel/runtime": "^7.12.18",
+    "@babel/runtime": "^7.13.9",
     "@emotion/core": "^10.1.1",
     "@emotion/styled": "^10.0.27"
   },

@@ -13,9 +13,9 @@ A KeystoneJS app which provides an Admin UI for content management.
 ## Usage
 
 ```js
-const { Keystone } = require('@keystonejs/keystone');
-const { GraphQLApp } = require('@keystonejs/app-graphql');
-const { AdminUIApp } = require('@keystonejs/app-admin-ui');
+const { Keystone } = require('@keystone-next/keystone-legacy');
+const { GraphQLApp } = require('@keystone-next/app-graphql-legacy');
+const { AdminUIApp } = require('@keystone-next/app-admin-ui-legacy');
 
 const keystone = new Keystone({...});
 
@@ -111,7 +111,7 @@ Header components on the Item Details page can be replaced using this hook. Ths 
 > This must return a React component.
 
 ```javascript title=/admin-ui/index.js
-import { ItemId, AddNewItem } from '@keystonejs/app-admin-ui/components';
+import { ItemId, AddNewItem } from '@keystone-next/app-admin-ui-legacy/components';
 export default {
   // re-implement the default AddNewItem and ItemId button + custom text
   itemHeaderActions: () => (
@@ -131,7 +131,7 @@ Header components on the List page can be replaced using this hook. This replace
 > This must return a React component.
 
 ```javascript title=/admin-ui/index.js
-import { CreateItem } from '@keystonejs/app-admin-ui/components';
+import { CreateItem } from '@keystone-next/app-admin-ui-legacy/components';
 export default {
   // re-implement the default create item button + custom text
   listHeaderActions: () => (
@@ -150,7 +150,7 @@ Custom Actions component for multiple items in the list can be replaced with thi
 > This must return a React component.
 
 ```javascript title=/admin-ui/index.js
-import { UpdateItems, DeleteItems } from '@keystonejs/app-admin-ui/components';
+import { UpdateItems, DeleteItems } from '@keystone-next/app-admin-ui-legacy/components';
 export default {
   // re-implement the default delete many and update many items buttons + custom text
   listManageActions: () => (

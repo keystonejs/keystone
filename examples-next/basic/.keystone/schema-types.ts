@@ -26,6 +26,10 @@ export type UserWhereInput = {
   readonly OR?: ReadonlyArray<UserWhereInput | null> | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
+  readonly id_lt?: Scalars['ID'] | null;
+  readonly id_lte?: Scalars['ID'] | null;
+  readonly id_gt?: Scalars['ID'] | null;
+  readonly id_gte?: Scalars['ID'] | null;
   readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly name?: Scalars['String'] | null;
@@ -224,6 +228,10 @@ export type PhoneNumberWhereInput = {
   readonly OR?: ReadonlyArray<PhoneNumberWhereInput | null> | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
+  readonly id_lt?: Scalars['ID'] | null;
+  readonly id_lte?: Scalars['ID'] | null;
+  readonly id_gt?: Scalars['ID'] | null;
+  readonly id_gte?: Scalars['ID'] | null;
   readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly user?: UserWhereInput | null;
@@ -306,6 +314,10 @@ export type PostWhereInput = {
   readonly OR?: ReadonlyArray<PostWhereInput | null> | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
+  readonly id_lt?: Scalars['ID'] | null;
+  readonly id_lte?: Scalars['ID'] | null;
+  readonly id_gt?: Scalars['ID'] | null;
+  readonly id_gte?: Scalars['ID'] | null;
   readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly title?: Scalars['String'] | null;
