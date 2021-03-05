@@ -79,7 +79,6 @@ export const exampleProjectTests = (
         // so we use tree-kill to kill the process and it's children
         await treeKill(keystoneProcess.pid);
       };
-      console.log('here');
       await adminUIReady;
     }
 
