@@ -40,6 +40,10 @@ export type UserWhereInput = {
   readonly OR?: ReadonlyArray<UserWhereInput | null> | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
+  readonly id_lt?: Scalars['ID'] | null;
+  readonly id_lte?: Scalars['ID'] | null;
+  readonly id_gt?: Scalars['ID'] | null;
+  readonly id_gte?: Scalars['ID'] | null;
   readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly name?: Scalars['String'] | null;
@@ -115,31 +119,6 @@ export type UserWhereInput = {
   readonly passwordResetRedeemedAt_not_in?: ReadonlyArray<
     Scalars['String'] | null
   > | null;
-  readonly magicAuthToken_is_set?: Scalars['Boolean'] | null;
-  readonly magicAuthIssuedAt?: Scalars['String'] | null;
-  readonly magicAuthIssuedAt_not?: Scalars['String'] | null;
-  readonly magicAuthIssuedAt_lt?: Scalars['String'] | null;
-  readonly magicAuthIssuedAt_lte?: Scalars['String'] | null;
-  readonly magicAuthIssuedAt_gt?: Scalars['String'] | null;
-  readonly magicAuthIssuedAt_gte?: Scalars['String'] | null;
-  readonly magicAuthIssuedAt_in?: ReadonlyArray<
-    Scalars['String'] | null
-  > | null;
-  readonly magicAuthIssuedAt_not_in?: ReadonlyArray<
-    Scalars['String'] | null
-  > | null;
-  readonly magicAuthRedeemedAt?: Scalars['String'] | null;
-  readonly magicAuthRedeemedAt_not?: Scalars['String'] | null;
-  readonly magicAuthRedeemedAt_lt?: Scalars['String'] | null;
-  readonly magicAuthRedeemedAt_lte?: Scalars['String'] | null;
-  readonly magicAuthRedeemedAt_gt?: Scalars['String'] | null;
-  readonly magicAuthRedeemedAt_gte?: Scalars['String'] | null;
-  readonly magicAuthRedeemedAt_in?: ReadonlyArray<
-    Scalars['String'] | null
-  > | null;
-  readonly magicAuthRedeemedAt_not_in?: ReadonlyArray<
-    Scalars['String'] | null
-  > | null;
 };
 
 export type UserWhereUniqueInput = {
@@ -164,11 +143,7 @@ export type SortUsersBy =
   | 'passwordResetIssuedAt_ASC'
   | 'passwordResetIssuedAt_DESC'
   | 'passwordResetRedeemedAt_ASC'
-  | 'passwordResetRedeemedAt_DESC'
-  | 'magicAuthIssuedAt_ASC'
-  | 'magicAuthIssuedAt_DESC'
-  | 'magicAuthRedeemedAt_ASC'
-  | 'magicAuthRedeemedAt_DESC';
+  | 'passwordResetRedeemedAt_DESC';
 
 export type UserUpdateInput = {
   readonly name?: Scalars['String'] | null;
@@ -181,9 +156,6 @@ export type UserUpdateInput = {
   readonly passwordResetToken?: Scalars['String'] | null;
   readonly passwordResetIssuedAt?: Scalars['String'] | null;
   readonly passwordResetRedeemedAt?: Scalars['String'] | null;
-  readonly magicAuthToken?: Scalars['String'] | null;
-  readonly magicAuthIssuedAt?: Scalars['String'] | null;
-  readonly magicAuthRedeemedAt?: Scalars['String'] | null;
 };
 
 export type UsersUpdateInput = {
@@ -202,9 +174,6 @@ export type UserCreateInput = {
   readonly passwordResetToken?: Scalars['String'] | null;
   readonly passwordResetIssuedAt?: Scalars['String'] | null;
   readonly passwordResetRedeemedAt?: Scalars['String'] | null;
-  readonly magicAuthToken?: Scalars['String'] | null;
-  readonly magicAuthIssuedAt?: Scalars['String'] | null;
-  readonly magicAuthRedeemedAt?: Scalars['String'] | null;
 };
 
 export type UsersCreateInput = {
@@ -230,6 +199,10 @@ export type ProductWhereInput = {
   readonly OR?: ReadonlyArray<ProductWhereInput | null> | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
+  readonly id_lt?: Scalars['ID'] | null;
+  readonly id_lte?: Scalars['ID'] | null;
+  readonly id_gt?: Scalars['ID'] | null;
+  readonly id_gte?: Scalars['ID'] | null;
   readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly name?: Scalars['String'] | null;
@@ -391,6 +364,10 @@ export type ProductImageWhereInput = {
   readonly OR?: ReadonlyArray<ProductImageWhereInput | null> | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
+  readonly id_lt?: Scalars['ID'] | null;
+  readonly id_lte?: Scalars['ID'] | null;
+  readonly id_gt?: Scalars['ID'] | null;
+  readonly id_gte?: Scalars['ID'] | null;
   readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly image?: Scalars['String'] | null;
@@ -457,6 +434,10 @@ export type CartItemWhereInput = {
   readonly OR?: ReadonlyArray<CartItemWhereInput | null> | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
+  readonly id_lt?: Scalars['ID'] | null;
+  readonly id_lte?: Scalars['ID'] | null;
+  readonly id_gt?: Scalars['ID'] | null;
+  readonly id_gte?: Scalars['ID'] | null;
   readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly quantity?: Scalars['Int'] | null;
@@ -520,6 +501,10 @@ export type OrderItemWhereInput = {
   readonly OR?: ReadonlyArray<OrderItemWhereInput | null> | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
+  readonly id_lt?: Scalars['ID'] | null;
+  readonly id_lte?: Scalars['ID'] | null;
+  readonly id_gt?: Scalars['ID'] | null;
+  readonly id_gte?: Scalars['ID'] | null;
   readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly name?: Scalars['String'] | null;
@@ -639,6 +624,10 @@ export type OrderWhereInput = {
   readonly OR?: ReadonlyArray<OrderWhereInput | null> | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
+  readonly id_lt?: Scalars['ID'] | null;
+  readonly id_lte?: Scalars['ID'] | null;
+  readonly id_gt?: Scalars['ID'] | null;
+  readonly id_gte?: Scalars['ID'] | null;
   readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly total?: Scalars['Int'] | null;
@@ -725,6 +714,10 @@ export type RoleWhereInput = {
   readonly OR?: ReadonlyArray<RoleWhereInput | null> | null;
   readonly id?: Scalars['ID'] | null;
   readonly id_not?: Scalars['ID'] | null;
+  readonly id_lt?: Scalars['ID'] | null;
+  readonly id_lte?: Scalars['ID'] | null;
+  readonly id_gt?: Scalars['ID'] | null;
+  readonly id_gte?: Scalars['ID'] | null;
   readonly id_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly id_not_in?: ReadonlyArray<Scalars['ID'] | null> | null;
   readonly name?: Scalars['String'] | null;
@@ -876,10 +869,7 @@ export type UserListTypeInfo = {
     | 'products'
     | 'passwordResetToken'
     | 'passwordResetIssuedAt'
-    | 'passwordResetRedeemedAt'
-    | 'magicAuthToken'
-    | 'magicAuthIssuedAt'
-    | 'magicAuthRedeemedAt';
+    | 'passwordResetRedeemedAt';
   backing: {
     readonly id: string;
     readonly name?: string | null;
@@ -892,9 +882,6 @@ export type UserListTypeInfo = {
     readonly passwordResetToken?: string | null;
     readonly passwordResetIssuedAt?: Date | null;
     readonly passwordResetRedeemedAt?: Date | null;
-    readonly magicAuthToken?: string | null;
-    readonly magicAuthIssuedAt?: Date | null;
-    readonly magicAuthRedeemedAt?: Date | null;
   };
   inputs: {
     where: UserWhereInput;
