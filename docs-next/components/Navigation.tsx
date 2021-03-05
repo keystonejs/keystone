@@ -39,9 +39,7 @@ export const Navigation = () => {
       <NavItem href="/roadmap">Roadmap</NavItem>
       <NavItem href="/faqs">FAQs</NavItem>
       <Section label="Guides">
-        <NavItem href="/guides/installation" isPlaceholder>
-          Installation
-        </NavItem>
+        <NavItem href="/guides/installation">Installation</NavItem>
         <NavItem href="/guides/cli">Command Line</NavItem>
         <NavItem href="/guides/access-control" isPlaceholder>
           Access Control
