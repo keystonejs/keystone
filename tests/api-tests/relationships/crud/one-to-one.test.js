@@ -670,6 +670,44 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(result2.company).toEqual({ id: company.id });
           })
         );
+
+        test(
+          'With null A',
+          runner(setupKeystone, async ({ context }) => {
+            const { data, errors } = await context.executeGraphQL({
+              query: `
+                mutation {
+                  createCompany(data: {
+                    location: null
+                  }) { id location { id } }
+                }
+            `,
+            });
+            expect(errors).toBe(undefined);
+
+            // Location should be empty
+            expect(data.createCompany.location).toBe(null);
+          })
+        );
+
+        test(
+          'With null B',
+          runner(setupKeystone, async ({ context }) => {
+            const { data, errors } = await context.executeGraphQL({
+              query: `
+                mutation {
+                  createLocation(data: {
+                    company: null
+                  }) { id company { id } }
+                }
+            `,
+            });
+            expect(errors).toBe(undefined);
+
+            // Company should be empty
+            expect(data.createLocation.company).toBe(null);
+          })
+        );
       });
 
       describe('Update', () => {
@@ -1030,6 +1068,56 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const result = await getCompanyAndLocation(context, company.id, location.id);
             expect(result.Company.location).toBe(null);
             expect(result.Location.company).toBe(null);
+          })
+        );
+
+        test(
+          'With null A',
+          runner(setupKeystone, async ({ context }) => {
+            // Manually setup a connected Company <-> Location
+            const { location, company } = await createCompanyAndLocation(context);
+
+            // Run the query with a null operation
+            const { data, errors } = await context.executeGraphQL({
+              query: `
+                mutation {
+                  updateCompany(
+                    id: "${company.id}",
+                    data: { location: null }
+                  ) { id location { id name } }
+                }`,
+            });
+            expect(errors).toBe(undefined);
+
+            // Check that the location is still there
+            expect(data.updateCompany.id).toEqual(company.id);
+            expect(data.updateCompany.location).not.toBe(null);
+            expect(data.updateCompany.location.id).toEqual(location.id);
+          })
+        );
+
+        test(
+          'With null B',
+          runner(setupKeystone, async ({ context }) => {
+            // Manually setup a connected Company <-> Location
+            const { location, company } = await createLocationAndCompany(context);
+
+            // Run the query with a null operation
+            const { data, errors } = await context.executeGraphQL({
+              query: `
+                mutation {
+                  updateLocation(
+                    id: "${location.id}",
+                    data: { company: null }
+                  ) { id company { id name } }
+                }`,
+            });
+            expect(errors).toBe(undefined);
+
+            // Check that the company is still there
+            expect(data.updateLocation.id).toEqual(location.id);
+            expect(data.updateLocation.company).not.toBe(null);
+            expect(data.updateLocation.company.id).toEqual(company.id);
           })
         );
       });

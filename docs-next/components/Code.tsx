@@ -7,7 +7,7 @@ import theme from '../lib/prism-theme';
 export const Code = ({ children, className }: { children: string; className: any }) => {
   const language: Language = className ? className.replace(/language-/, '') : 'typescript';
   return (
-    <Highlight Prism={Prism} code={children} language={language} theme={theme}>
+    <Highlight Prism={Prism} code={children.trim()} language={language} theme={theme}>
       {({ className, style, tokens: tokens, getLineProps, getTokenProps }) => {
         return (
           <div
@@ -18,8 +18,6 @@ export const Code = ({ children, className }: { children: string; className: any
             }}
           >
             {tokens.map((line, i) => {
-              // Suppress a trailing empty line in the code block
-              if (i === tokens.length - 1 && line.length === 1 && !line[0].content) return;
               return (
                 <div key={i} {...getLineProps({ line, key: i })}>
                   {line.map((token, key) => (
