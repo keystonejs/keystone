@@ -45,7 +45,7 @@ export default config({
   session: statelessSessions({ /* ... */ }),
 
   // Stored
-  session: storedSessions({ store: { /* ... */ }, /* ... */, }),
+  session: storedSessions({ store: { /* ... */ }, /* ... */ }),
   /* ... */
 });
 ```
@@ -75,22 +75,14 @@ A `SessionStore` object has the following interface:
 
 ```typescript
 const store = {
-  connect: () => {
-    /* ... */
-  },
-  disconnect: () => {
-    /* ... */
-  },
-  set: (sessionId, data) => {
-    /* ... */
-  },
+  connect: () => { /* ... */ },
+  disconnect: () => { /* ... */ },
+  set: (sessionId, data) => { /* ... */ },
   get: sessionId => {
     /* ... */
     return data;
   },
-  delete: sessionId => {
-    /* ... */
-  },
+  delete: sessionId => { /* ... */ },
 };
 ```
 

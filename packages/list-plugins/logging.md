@@ -10,7 +10,7 @@ This plugin provides a mechanism for logging all mutations in a Keystone system.
 ## Usage
 
 ```js
-const { logging } = require('@keystonejs/list-plugins');
+const { logging } = require('@keystone-next/list-plugins-legacy');
 
 keystone.createList('ListWithPlugin', {
   fields: {...},

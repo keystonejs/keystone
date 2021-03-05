@@ -6,13 +6,16 @@ import express from 'express';
 import supertest from 'supertest-light';
 import MongoDBMemoryServer from 'mongodb-memory-server-core';
 import url from 'url';
-import { Keystone } from '@keystonejs/keystone';
 // @ts-ignore
-import { GraphQLApp } from '@keystonejs/app-graphql';
-import { KnexAdapter } from '@keystonejs/adapter-knex';
-import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
+import { Keystone } from '@keystone-next/keystone-legacy';
 // @ts-ignore
-import { PrismaAdapter } from '@keystonejs/adapter-prisma';
+import { GraphQLApp } from '@keystone-next/app-graphql-legacy';
+// @ts-ignore
+import { KnexAdapter } from '@keystone-next/adapter-knex-legacy';
+// @ts-ignore
+import { MongooseAdapter } from '@keystone-next/adapter-mongoose-legacy';
+// @ts-ignore
+import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { initConfig, createSystem, createExpressServer } from '@keystone-next/keystone';
 import type { KeystoneConfig, BaseKeystone, KeystoneContext } from '@keystone-next/types';
 
@@ -72,7 +75,7 @@ async function setupFromConfig({
     ''
   );
 
-  const app = await createExpressServer(config, graphQLSchema, createContext, true, '');
+  const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
 
   return { keystone, context: createContext().sudo(), app };
 }

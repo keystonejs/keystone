@@ -3,10 +3,10 @@ const { print } = require('graphql/language/printer');
 
 const { List } = require('../lib/ListTypes');
 const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
-const { Text, Checkbox, Float, Relationship, Integer } = require('@keystonejs/fields');
+const { Text, Checkbox, Float, Relationship, Integer } = require('@keystone-next/fields-legacy');
 const path = require('path');
 
-let fieldsPackagePath = path.dirname(require.resolve('@keystonejs/fields/package.json'));
+let fieldsPackagePath = path.dirname(require.resolve('@keystone-next/fields-legacy/package.json'));
 function resolveViewPath(viewPath) {
   return path.join(fieldsPackagePath, 'types', viewPath);
 }

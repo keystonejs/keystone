@@ -1,7 +1,7 @@
 {
-  "name": "@keystonejs/fields-location-google",
+  "name": "@keystone-next/fields-location-google-legacy",
   "description": "KeystoneJS LocationGoogle field type.",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-location-google",
@@ -12,12 +12,12 @@
   "dependencies": {
     "@arch-ui/fields": "^3.0.5",
     "@arch-ui/select": "^0.1.9",
-    "@babel/runtime": "^7.12.18",
+    "@babel/runtime": "^7.13.9",
     "@emotion/core": "^10.1.1",
-    "@keystonejs/adapter-knex": "^13.0.1",
-    "@keystonejs/adapter-mongoose": "^11.0.1",
-    "@keystonejs/adapter-prisma": "^3.0.1",
-    "@keystonejs/fields": "^22.0.0",
+    "@keystone-next/adapter-knex-legacy": "^13.1.0",
+    "@keystone-next/adapter-mongoose-legacy": "^11.1.0",
+    "@keystone-next/adapter-prisma-legacy": "^3.1.0",
+    "@keystone-next/fields-legacy": "^22.0.1",
     "cuid": "^2.1.8",
     "google-maps-react": "^2.0.6",
     "mongoose": "^5.11.18",
@@ -34,6 +34,6 @@
       "views/*.js"
     ]
   },
-  "main": "dist/fields-location-google.cjs.js",
-  "module": "dist/fields-location-google.esm.js"
+  "main": "dist/fields-location-google-legacy.cjs.js",
+  "module": "dist/fields-location-google-legacy.esm.js"
 }

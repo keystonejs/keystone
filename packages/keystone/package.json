@@ -1,7 +1,7 @@
 {
-  "name": "@keystonejs/keystone",
+  "name": "@keystone-next/keystone-legacy",
   "description": "The main @keystonejs class & CLI. This is where the magic happens.",
-  "version": "19.2.0",
+  "version": "19.3.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -11,10 +11,10 @@
     "keystone": "bin/cli.js"
   },
   "dependencies": {
-    "@keystonejs/access-control": "^7.0.0",
-    "@keystonejs/app-version": "^2.0.0",
-    "@keystonejs/session": "^8.2.0",
-    "@keystonejs/utils": "^6.0.1",
+    "@keystone-next/access-control-legacy": "^8.0.0",
+    "@keystone-next/app-version-legacy": "^2.0.1",
+    "@keystone-next/session-legacy": "^8.2.1",
+    "@keystone-next/utils-legacy": "^6.0.2",
     "apollo-errors": "^1.9.0",
     "apollo-server-express": "^2.21.0",
     "arg": "^5.0.0",
@@ -43,8 +43,8 @@
     "terminal-link": "^2.1.1"
   },
   "devDependencies": {
-    "@keystonejs/fields": "^22.0.0",
-    "@keystonejs/test-utils": "*",
+    "@keystone-next/fields-legacy": "^22.0.1",
+    "@keystone-next/test-utils-legacy": "*",
     "p-is-promise": "^3.0.0",
     "tmp": "^0.2.1"
   },

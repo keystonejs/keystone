@@ -11,8 +11,8 @@ Support files hosted in a range of different contexts, e.g. in the local filesys
 ## Usage
 
 ```js
-const { File } = require('@keystonejs/fields');
-const { LocalFileAdapter } = require('@keystonejs/file-adapters');
+const { File } = require('@keystone-next/fields-legacy');
+const { LocalFileAdapter } = require('@keystone-next/file-adapters-legacy');
 
 const fileAdapter = new LocalFileAdapter({
   /*...config */

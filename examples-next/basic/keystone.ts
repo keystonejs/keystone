@@ -24,10 +24,12 @@ const auth = createAuth({
 
 export default auth.withAuth(
   config({
-    db: {
-      adapter: 'mongoose',
-      url: 'mongodb://localhost/keystone-examples-next-basic',
-    },
+    db: process.env.DATABASE_URL
+      ? { adapter: 'prisma_postgresql', url: process.env.DATABASE_URL }
+      : {
+          adapter: 'mongoose',
+          url: 'mongodb://localhost/keystone-examples-next-basic',
+        },
     // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
     // graphql: {
     //   path: '/api/graphql',

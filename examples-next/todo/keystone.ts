@@ -23,7 +23,7 @@ export default withAuth(
   config({
     db: {
       adapter: 'prisma_postgresql',
-      url: 'postgres://keystone5:k3yst0n3@localhost:5432/todo-example',
+      url: process.env.DATABASE_URL || 'postgres://keystone5:k3yst0n3@localhost:5432/todo-example',
     },
     lists,
     ui: {

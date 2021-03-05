@@ -1,6 +1,6 @@
 const globby = require('globby');
-const { multiAdapterRunners, setupServer } = require('@keystonejs/test-utils');
-const { Text } = require('@keystonejs/fields');
+const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
+const { Text } = require('@keystone-next/fields-legacy');
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.js`, {
   absolute: true,

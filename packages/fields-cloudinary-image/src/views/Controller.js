@@ -1,4 +1,4 @@
-import FieldController from '@keystonejs/fields/Controller';
+import FieldController from '@keystone-next/fields-legacy/Controller';
 
 export default class CloudinaryImageController extends FieldController {
   getQueryFragment = () => `

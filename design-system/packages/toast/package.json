@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/toast",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "MIT",
   "main": "dist/toast.cjs.js",
   "module": "dist/toast.esm.js",
@@ -9,9 +9,9 @@
     "react": "^17.0.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.18",
-    "@keystone-ui/core": "^2.0.0",
-    "@keystone-ui/icons": "^2.0.0"
+    "@babel/runtime": "^7.13.9",
+    "@keystone-ui/core": "^2.0.1",
+    "@keystone-ui/icons": "^2.0.1"
   },
   "peerDependencies": {
     "react": "^17.0.1"

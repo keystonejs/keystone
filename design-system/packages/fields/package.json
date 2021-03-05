@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/fields",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "MIT",
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
@@ -8,10 +8,10 @@
     "@types/react": "^17.0.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.18",
-    "@keystone-ui/core": "^2.0.0",
-    "@keystone-ui/icons": "^2.0.0",
-    "@keystone-ui/popover": "^2.0.0",
+    "@babel/runtime": "^7.13.9",
+    "@keystone-ui/core": "^2.0.1",
+    "@keystone-ui/icons": "^2.0.1",
+    "@keystone-ui/popover": "^2.0.1",
     "@types/react-select": "^3.1.2",
     "date-fns": "^2.18.0",
     "react": "^17.0.1",

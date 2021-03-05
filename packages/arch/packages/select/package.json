@@ -2,6 +2,7 @@
   "name": "@arch-ui/select",
   "description": "Select Component used in @keystonejs Admin UI.",
   "version": "0.1.9",
+  "private": true,
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/select.cjs.js",
@@ -13,7 +14,7 @@
   },
   "dependencies": {
     "@arch-ui/theme": "^0.0.11",
-    "@babel/runtime": "^7.12.18",
+    "@babel/runtime": "^7.13.9",
     "react-select": "^3.2.0"
   },
   "module": "dist/select.esm.js",

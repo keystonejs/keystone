@@ -11,7 +11,7 @@ but they will be updated automatically when items are created or updated.
 ## Usage
 
 ```js
-const { atTracking } = require('@keystonejs/list-plugins');
+const { atTracking } = require('@keystone-next/list-plugins-legacy');
 
 keystone.createList('ListWithPlugin', {
   fields: {...},
@@ -47,7 +47,7 @@ By default access control on at tracking fields is read only:
 If you prefer, you can import _either_ `createdAt` or `updatedAt` to apply a single tracking field:
 
 ```javascript
-const { createdAt, updatedAt } = require('@keystonejs/list-plugins');
+const { createdAt, updatedAt } = require('@keystone-next/list-plugins-legacy');
 ```
 
 > **Note:** The API is the same for each export as `atTracking`.

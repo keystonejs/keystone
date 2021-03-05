@@ -1,4 +1,4 @@
-import { BaseGeneratedListTypes, AdminUIConfig, KeystoneConfig } from '@keystone-next/types';
+import { BaseGeneratedListTypes, KeystoneContext } from '@keystone-next/types';
 
 export type AuthGqlNames = {
   CreateInitialInput: string;
@@ -25,6 +25,7 @@ export type SendTokenFn = (args: {
   itemId: string | number;
   identity: string;
   token: string;
+  context: KeystoneContext;
 }) => Promise<void> | void;
 
 export type AuthTokenTypeConfig = {
@@ -41,34 +42,21 @@ export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
   identityField: GeneratedListTypes['fields'];
   /** The path of the field the secret is stored in; must be password-ish */
   secretField: GeneratedListTypes['fields'];
-  /** Attempts to prevent consumers of the API from being able to determine the value of identity fields */
-  protectIdentities?: boolean;
   /** Password reset link functionality */
   passwordResetLink?: AuthTokenTypeConfig;
   /** "Magic link" functionality */
   magicAuthLink?: AuthTokenTypeConfig;
   /** The initial user/db seeding functionality */
-  initFirstItem?: {
-    /** Array of fields to collect, e.g ['name', 'email', 'password'] */
-    fields: GeneratedListTypes['fields'][];
-    /** Suppresses the second screen where we ask people to subscribe and follow Keystone */
-    skipKeystoneWelcome?: boolean;
-    /** Extra input to add for the create mutation */
-    itemData?: Partial<GeneratedListTypes['inputs']['create']>;
-  };
+  initFirstItem?: InitFirstItemConfig<GeneratedListTypes>;
 };
 
-export type Auth = {
-  ui: {
-    enableSessionItem: NonNullable<AdminUIConfig['enableSessionItem']>;
-    publicPages: NonNullable<AdminUIConfig['publicPages']>;
-    pageMiddleware: NonNullable<AdminUIConfig['pageMiddleware']>;
-    getAdditionalFiles: NonNullable<AdminUIConfig['getAdditionalFiles']>[number];
-  };
-  extendGraphqlSchema: NonNullable<KeystoneConfig['extendGraphqlSchema']>;
-  fields: { [prop: string]: any };
-  validateConfig: (keystoneConfig: KeystoneConfig) => void;
-  withAuth: (config: KeystoneConfig) => KeystoneConfig;
+export type InitFirstItemConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
+  /** Array of fields to collect, e.g ['name', 'email', 'password'] */
+  fields: GeneratedListTypes['fields'][];
+  /** Suppresses the second screen where we ask people to subscribe and follow Keystone */
+  skipKeystoneWelcome?: boolean;
+  /** Extra input to add for the create mutation */
+  itemData?: Partial<GeneratedListTypes['inputs']['create']>;
 };
 
 export type AuthTokenRequestErrorCode = 'IDENTITY_NOT_FOUND' | 'MULTIPLE_IDENTITY_MATCHES';

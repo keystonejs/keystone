@@ -16,10 +16,10 @@ editing flows.
 
 ## Usage
 
-This package isn't included with the keystone fields package and needs to be installed with `yarn add @keystonejs/fields-content` or `npm install @keystonejs/fields-content`.
+This package isn't included with the keystone fields package and needs to be installed with `yarn add @keystone-next/fields-content-legacy` or `npm install @keystone-next/fields-content-legacy`.
 
 ```javascript
-const { Content } = require('@keystonejs/fields-content');
+const { Content } = require('@keystone-next/fields-content-legacy');
 
 keystone.createList('Post', {
   fields: {

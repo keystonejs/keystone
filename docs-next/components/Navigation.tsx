@@ -39,15 +39,16 @@ export const Navigation = () => {
       <NavItem href="/roadmap">Roadmap</NavItem>
       <NavItem href="/faqs">FAQs</NavItem>
       <Section label="Guides">
-        <NavItem href="/guides/installation" isPlaceholder>
-          Installation
-        </NavItem>
+        <NavItem href="/guides/installation">Installation</NavItem>
         <NavItem href="/guides/cli">Command Line</NavItem>
         <NavItem href="/guides/access-control" isPlaceholder>
           Access Control
         </NavItem>
         <NavItem href="/guides/hooks" isPlaceholder>
           Hooks
+        </NavItem>
+        <NavItem href="/guides/auth" isPlaceholder>
+          Authentication
         </NavItem>
         <NavItem href="/guides/schema-extension" isPlaceholder>
           Schema Extension
@@ -67,13 +68,9 @@ export const Navigation = () => {
         <NavItem href="/apis/access-control">Access Control API</NavItem>
         <NavItem href="/apis/hooks"> Hooks API</NavItem>
         <NavItem href="/apis/session">Session API</NavItem>
-        <NavItem href="/apis/auth" isPlaceholder>
-          Authentication API
-        </NavItem>
+        <NavItem href="/apis/auth">Authentication API</NavItem>
         <NavItem href="/apis/context">Context API</NavItem>
-        <NavItem href="/apis/graphql" isPlaceholder>
-          GraphQL API
-        </NavItem>
+        <NavItem href="/apis/graphql">GraphQL API</NavItem>
         <NavItem href="/apis/list-items" isPlaceholder>
           List Item API
         </NavItem>

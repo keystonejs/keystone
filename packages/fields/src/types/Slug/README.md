@@ -23,8 +23,8 @@ As we have specified a `title` field, its value will be used to generate a
 unique slug.
 
 ```javascript
-const { Slug, Text } = require('@keystonejs/fields');
-const { Keystone } = require('@keystonejs/keystone');
+const { Slug, Text } = require('@keystone-next/fields-legacy');
+const { Keystone } = require('@keystone-next/keystone-legacy');
 
 const keystone = new Keystone(/* ... */);
 
@@ -41,8 +41,8 @@ keystone.createList('Post', {
 The item's `username` value will be used to generate a unique slug.
 
 ```javascript
-const { Slug, Text } = require('@keystonejs/fields');
-const { Keystone } = require('@keystonejs/keystone');
+const { Slug, Text } = require('@keystone-next/fields-legacy');
+const { Keystone } = require('@keystone-next/keystone-legacy');
 
 const keystone = new Keystone(/* ... */);
 
@@ -60,8 +60,8 @@ keystone.createList('User', {
 ### Custom `generate` method
 
 ```javascript
-const { Slug, Text, DateTime } = require('@keystonejs/fields');
-const { Keystone } = require('@keystonejs/keystone');
+const { Slug, Text, DateTime } = require('@keystone-next/fields-legacy');
+const { Keystone } = require('@keystone-next/keystone-legacy');
 const slugify = require('slugify');
 
 const keystone = new Keystone(/* ... */);

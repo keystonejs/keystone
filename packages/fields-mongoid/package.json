@@ -1,11 +1,11 @@
 {
-  "name": "@keystonejs/fields-mongoid",
+  "name": "@keystone-next/fields-mongoid-legacy",
   "description": "KeystoneJS MongoId Field Type",
-  "version": "9.1.4",
+  "version": "9.1.5",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
-  "main": "dist/fields-mongoid.cjs.js",
-  "module": "dist/fields-mongoid.esm.js",
+  "main": "dist/fields-mongoid-legacy.cjs.js",
+  "module": "dist/fields-mongoid-legacy.esm.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-mongoid",
   "homepage": "https://github.com/keystonejs/keystone",
   "engines": {
@@ -13,11 +13,11 @@
   },
   "dependencies": {
     "@arch-ui/input": "^0.1.11",
-    "@babel/runtime": "^7.12.18",
-    "@keystonejs/adapter-knex": "^13.0.1",
-    "@keystonejs/adapter-mongoose": "^11.0.1",
-    "@keystonejs/adapter-prisma": "^3.0.1",
-    "@keystonejs/fields": "^22.0.0",
+    "@babel/runtime": "^7.13.9",
+    "@keystone-next/adapter-knex-legacy": "^13.1.0",
+    "@keystone-next/adapter-mongoose-legacy": "^11.1.0",
+    "@keystone-next/adapter-prisma-legacy": "^3.1.0",
+    "@keystone-next/fields-legacy": "^22.0.1",
     "react": "^17.0.1"
   },
   "preconstruct": {

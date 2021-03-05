@@ -5,7 +5,7 @@ import { GraphQLSchema } from 'graphql';
 import { ApolloServer } from 'apollo-server-express';
 import { graphqlUploadExpress } from 'graphql-upload';
 // @ts-ignore
-import { formatError } from '@keystonejs/keystone/lib/Keystone/format-error';
+import { formatError } from '@keystone-next/keystone-legacy/lib/Keystone/format-error';
 import type { KeystoneConfig, CreateContext, SessionStrategy } from '@keystone-next/types';
 import { createAdminUIServer } from '@keystone-next/admin-ui/system';
 import { createSessionContext } from '../session';
@@ -61,7 +61,8 @@ export const createExpressServer = async (
   graphQLSchema: GraphQLSchema,
   createContext: CreateContext,
   dev: boolean,
-  projectAdminPath: string
+  projectAdminPath: string,
+  isVerbose: boolean = true
 ) => {
   const server = express();
 
@@ -77,13 +78,13 @@ export const createExpressServer = async (
 
   const sessionStrategy = config.session ? config.session() : undefined;
 
-  console.log('✨ Preparing GraphQL Server');
+  if (isVerbose) console.log('✨ Preparing GraphQL Server');
   addApolloServer({ server, graphQLSchema, createContext, sessionStrategy });
 
   if (config.ui?.isDisabled) {
-    console.log('✨ Skipping Admin UI app');
+    if (isVerbose) console.log('✨ Skipping Admin UI app');
   } else {
-    console.log('✨ Preparing Admin UI Next.js app');
+    if (isVerbose) console.log('✨ Preparing Admin UI Next.js app');
     server.use(
       await createAdminUIServer(config.ui, createContext, dev, projectAdminPath, sessionStrategy)
     );

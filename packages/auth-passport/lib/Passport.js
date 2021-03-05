@@ -336,7 +336,7 @@ class PassportAuthStrategy {
 
   _createSessionList() {
     if (!this._getSessionList()) {
-      const { Text, Relationship } = require('@keystonejs/fields');
+      const { Text, Relationship } = require('@keystone-next/fields-legacy');
 
       // TODO: Set read permissions to be 'internal' (within keystone) only so
       // it doesn't expose a graphQL endpoint, or can be read or modified by

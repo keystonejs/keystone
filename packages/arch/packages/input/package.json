@@ -2,6 +2,7 @@
   "name": "@arch-ui/input",
   "description": "Input component as used in @keystonejs Admin UI.",
   "version": "0.1.11",
+  "private": true,
   "author": "Jed Watson",
   "license": "MIT",
   "main": "dist/input.cjs.js",
@@ -15,7 +16,7 @@
     "@arch-ui/color-utils": "0.0.2",
     "@arch-ui/common": "0.0.12",
     "@arch-ui/theme": "0.0.11",
-    "@babel/runtime": "^7.12.18",
+    "@babel/runtime": "^7.13.9",
     "@emotion/core": "^10.1.1"
   },
   "module": "dist/input.esm.js",

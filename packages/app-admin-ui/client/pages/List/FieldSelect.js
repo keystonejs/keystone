@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { jsx } from '@emotion/core';
 import { Options } from '@arch-ui/options';
-import { arrayToObject } from '@keystonejs/utils';
+import { arrayToObject } from '@keystone-next/utils-legacy';
 
 function isOptionSelected(opt, selected) {
   return Boolean(selected.filter(x => x.path === opt.path).length);

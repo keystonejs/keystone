@@ -1,5 +1,5 @@
 // @ts-ignore
-import { AutoIncrement } from '@keystonejs/fields-auto-increment';
+import { AutoIncrement } from '@keystone-next/fields-auto-increment-legacy';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
