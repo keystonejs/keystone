@@ -344,7 +344,10 @@ class PrismaListAdapter extends BaseListAdapter {
         this.fieldAdaptersByPath[path].refListKey
       ).fieldAdaptersByPath['id'].getPrismaSchema();
     }
-    if (prismaSchema.length > 1) return '_MultipleFields';
+    if (prismaSchema.length > 1) {
+      // TODO: Make proper hangle of fields with multiple schema items
+      return '_MultipleFields';
+    }
     let prismaSchemaFormat = prismaSchema[0].replace(/^(\w+)\s+(\w+).+$/, '$2');
     return prismaSchemaFormat;
   }
@@ -353,15 +356,13 @@ class PrismaListAdapter extends BaseListAdapter {
     return this.model.create({
       data: mapKeys(_data, (value, path) =>
         this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].isRelationship
-          ? value == null
-            ? {}
-            : {
-                connect: Array.isArray(value)
-                  ? value.map(x => {
-                      return { id: this._formatFieldValue(x, path) };
-                    })
-                  : { id: this._formatFieldValue(value, path) },
-              }
+          ? {
+              connect: Array.isArray(value)
+                ? value.map(x => {
+                    return { id: this._formatFieldValue(x, path) };
+                  })
+                : { id: this._formatFieldValue(value, path) },
+            }
           : this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].gqlToPrisma
           ? this.fieldAdaptersByPath[path].gqlToPrisma(value)
           : value
