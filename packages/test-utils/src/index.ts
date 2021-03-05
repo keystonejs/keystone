@@ -75,7 +75,7 @@ async function setupFromConfig({
     ''
   );
 
-  const app = await createExpressServer(config, graphQLSchema, createContext, true, '');
+  const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
 
   return { keystone, context: createContext().sudo(), app };
 }
