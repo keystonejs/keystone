@@ -15,11 +15,6 @@
       "folder": "todo",
       "title": "Todo",
       "description": "A very simple Todo app with a static front-end written in good old HTML, CSS and JavaScript."
-    },
-    {
-      "folder": "nuxt",
-      "title": "Nuxt",
-      "description": "A simple app using the NuxtJS front-end framework."
     }
   ]
 }
