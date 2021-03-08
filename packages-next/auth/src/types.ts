@@ -42,12 +42,12 @@ export type AuthConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {
   identityField: GeneratedListTypes['fields'];
   /** The path of the field the secret is stored in; must be password-ish */
   secretField: GeneratedListTypes['fields'];
+  /** The initial user/db seeding functionality */
+  initFirstItem?: InitFirstItemConfig<GeneratedListTypes>;
   /** Password reset link functionality */
   passwordResetLink?: AuthTokenTypeConfig;
   /** "Magic link" functionality */
   magicAuthLink?: AuthTokenTypeConfig;
-  /** The initial user/db seeding functionality */
-  initFirstItem?: InitFirstItemConfig<GeneratedListTypes>;
 };
 
 export type InitFirstItemConfig<GeneratedListTypes extends BaseGeneratedListTypes> = {

@@ -40,7 +40,6 @@ module.exports = {
           '**/__tests__/**/*',
           '**/*test.*',
           '**/tests/**/*',
-          '**/examples/**/*',
           '**/build/**/*',
           `packages/fields/src/**/filterTests.*`,
           '**/test-fixtures.*',

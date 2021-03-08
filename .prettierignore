@@ -3,10 +3,6 @@ packages/icons/icons/*
 reports
 coverage
 packages/test-project/public
-website/.cache/**/*
-website/public/**/*
-examples/todo/.cache
-examples/blog/app/.next
 packages/arch/www/public/**/*
 .changeset/**/*
 **/dist

@@ -35,6 +35,11 @@ export async function validateAuthToken(
     // Rewrite error codes
     if (result.code === 'SECRET_NOT_SET') return { success: false, code: 'TOKEN_NOT_SET' };
     if (result.code === 'SECRET_MISMATCH') return { success: false, code: 'TOKEN_MISMATCH' };
+    // Will generally be { success: false, code: 'FAILURE' } due to protectIdentities
+    // Could be due to:
+    // - Missing identity
+    // - Missing secret
+    // - Secret mismatch.
     return result as { success: false; code: AuthTokenRedemptionErrorCode };
   }
 
