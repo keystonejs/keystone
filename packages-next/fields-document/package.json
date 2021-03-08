@@ -40,7 +40,7 @@
     "apply-ref": "^1.0.0",
     "fp-ts": "^2.9.5",
     "graphql": "^15.5.0",
-    "io-ts": "^2.2.16",
+    "io-ts": "^2.2.15",
     "io-ts-excess": "^1.0.1",
     "is-hotkey": "^0.2.0",
     "match-sorter": "^6.3.0",
