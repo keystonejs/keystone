@@ -24,6 +24,7 @@ export function getMagicAuthLinkSchema<I extends string>({
       # Magic links
       type Mutation {
         ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): ${gqlNames.SendItemMagicAuthLinkResult}
+        ${gqlNames.redeemItemMagicAuthToken}(${identityField}: String!, token: String!): ${gqlNames.RedeemItemMagicAuthTokenResult}!
       }
       type ${gqlNames.SendItemMagicAuthLinkResult} {
         code: MagicLinkRequestErrorCode!
@@ -32,9 +33,6 @@ export function getMagicAuthLinkSchema<I extends string>({
       enum MagicLinkRequestErrorCode {
         IDENTITY_NOT_FOUND
         MULTIPLE_IDENTITY_MATCHES
-      }
-      type Mutation {
-        ${gqlNames.redeemItemMagicAuthToken}(${identityField}: String!, token: String!): ${gqlNames.RedeemItemMagicAuthTokenResult}!
       }
       union ${gqlNames.RedeemItemMagicAuthTokenResult} = ${gqlNames.RedeemItemMagicAuthTokenSuccess} | ${gqlNames.RedeemItemMagicAuthTokenFailure}
       type ${gqlNames.RedeemItemMagicAuthTokenSuccess} {
@@ -66,6 +64,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           const result = await createAuthToken(identityField, protectIdentities, identity, itemAPI);
 
           // Note: `success` can be false with no code
+          // If protectIdentities === true then result.code will *always* be undefined.
           if (!result.success && result.code) {
             const message = getAuthTokenErrorMessage({
               identityField,
