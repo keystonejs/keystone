@@ -27,13 +27,16 @@ const auth = createAuth({
 
 export default auth.withAuth(
   config({
+    experimental: {
+      /** Enables nextjs graphql api route mode */
+      enableNextJsGraphqlApiEndpoint: true,
+    },
     db: {
       adapter: 'prisma_postgresql',
       url: process.env.DATABASE_URL || 'postgres://username:password@localhost/database-name',
     },
     ui: {
       isAccessAllowed: context => !!context.session?.data,
-      enableGraphQlApiEndpoint: true,
     },
     lists,
     session: withItemData(
