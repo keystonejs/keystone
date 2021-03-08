@@ -14,7 +14,6 @@ const {
   Virtual,
   Decimal,
 } = require('@keystone-next/fields-legacy');
-const { Content } = require('@keystone-next/fields-content-legacy');
 const { CloudinaryAdapter, LocalFileAdapter } = require('@keystone-next/file-adapters-legacy');
 const { Markdown } = require('@keystone-next/fields-markdown-legacy');
 const { Wysiwyg } = require('@keystone-next/fields-wysiwyg-tinymce-legacy');
@@ -165,23 +164,6 @@ keystone.createList('Post', {
         return data.map(({ title, rating }) => ({ title, rating }));
       },
     },
-    value: {
-      type: Content,
-      blocks: [
-        ...(cloudinaryAdapter
-          ? [[CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }]]
-          : []),
-        ...(embedAdapter ? [[OEmbed.blocks.oEmbed, { adapter: embedAdapter }]] : []),
-        ...(unsplash.accessKey
-          ? [[Unsplash.blocks.unsplashImage, { attribution: 'KeystoneJS', ...unsplash }]]
-          : []),
-        Content.blocks.blockquote,
-        Content.blocks.orderedList,
-        Content.blocks.unorderedList,
-        Content.blocks.link,
-        Content.blocks.heading,
-      ],
-    },
   },
   adminConfig: {
     defaultPageSize: 20,
@@ -230,24 +212,6 @@ keystone.createList('ReadOnlyList', {
     hero: { type: File, adapter: fileAdapter, adminConfig: { isReadOnly: true } },
     markdownValue: { type: Markdown, adminConfig: { isReadOnly: true } },
     wysiwygValue: { type: Wysiwyg, adminConfig: { isReadOnly: true } },
-    value: {
-      type: Content,
-      blocks: [
-        ...(cloudinaryAdapter
-          ? [[CloudinaryImage.blocks.image, { adapter: cloudinaryAdapter }]]
-          : []),
-        ...(embedAdapter ? [[OEmbed.blocks.oEmbed, { adapter: embedAdapter }]] : []),
-        ...(unsplash.accessKey
-          ? [[Unsplash.blocks.unsplashImage, { attribution: 'KeystoneJS', ...unsplash }]]
-          : []),
-        Content.blocks.blockquote,
-        Content.blocks.orderedList,
-        Content.blocks.unorderedList,
-        Content.blocks.link,
-        Content.blocks.heading,
-      ],
-      adminConfig: { isReadOnly: true },
-    },
   },
   adminConfig: {
     defaultPageSize: 20,
