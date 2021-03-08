@@ -26,7 +26,6 @@
     "@keystone-next/app-static-legacy": "^5.1.4",
     "@keystone-next/fields-cloudinary-image-legacy": "^2.1.5",
     "@keystone-next/fields-color-legacy": "^1.0.11",
-    "@keystone-next/fields-content-legacy": "^9.0.7",
     "@keystone-next/fields-legacy": "^22.0.1",
     "@keystone-next/fields-markdown-legacy": "^5.2.15",
     "@keystone-next/fields-oembed-legacy": "^3.1.5",
