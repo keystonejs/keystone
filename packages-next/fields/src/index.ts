@@ -5,6 +5,7 @@ export { password } from './types/password';
 export { timestamp } from './types/timestamp';
 export { integer } from './types/integer';
 export { float } from './types/float';
+export { decimal } from './types/decimal';
 export { mongoId } from './types/mongoId';
 export { autoIncrement } from './types/autoIncrement';
 export { select } from './types/select';
