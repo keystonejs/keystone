@@ -161,7 +161,6 @@
     "packages": [
       "packages/arch/packages/*",
       "packages/access-control",
-      "packages/apollo-helpers",
       "packages/app-version",
       "packages/session",
       "packages/test-utils",
@@ -201,7 +200,6 @@
     "collectCoverageFrom": [
       "packages/**/*.js",
       "!packages/**/dist/**",
-      "!packages/apollo-helpers/**",
       "!packages/app-admin-ui/client/**",
       "!packages/arch/**",
       "!packages/create-keystone-app/templates/**",
