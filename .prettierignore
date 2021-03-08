@@ -3,7 +3,6 @@ packages/icons/icons/*
 reports
 coverage
 packages/test-project/public
-packages/arch/www/public/**/*
 .changeset/**/*
 **/dist
 **/.next
