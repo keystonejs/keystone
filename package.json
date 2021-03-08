@@ -9,8 +9,6 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
     "prisma": "prisma",
-    "dev": "yarn demo todo dev",
-    "demo": "yarn --cwd ./examples",
     "website": "manypkg run @keystone-next/website-legacy",
     "arch-docs": "manypkg run arch/docs",
     "docs-next": "manypkg run @keystone-next/website dev",
@@ -146,7 +144,6 @@
       "tests/api-tests",
       "tests/benchmarks",
       "tests/examples-smoke-tests",
-      "examples/*",
       "website",
       "projects/*",
       "examples-next/*",
