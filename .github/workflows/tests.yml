@@ -99,7 +99,7 @@ jobs:
           name: cypress-videos
           path: cypress/videos
 
-  api-tests:
+  graphql-api-tests:
     name: GraphQL API Tests
     needs: should_run_tests
     runs-on: ubuntu-latest
