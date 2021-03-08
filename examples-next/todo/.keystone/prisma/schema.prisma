@@ -17,14 +17,17 @@ model Todo {
   updatedAt    DateTime?
   assignedTo   User?     @relation("TodoassignedTo", fields: [assignedToId], references: [id])
   assignedToId Int?      @map("assignedTo")
+  createdBy    User?     @relation("TodocreatedBy", fields: [createdById], references: [id])
+  createdById  Int?      @map("createdBy")
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String?
-  email     String?
-  password  String?
-  createdAt DateTime?
-  updatedAt DateTime?
-  tasks     Todo[]    @relation("TodoassignedTo")
+  id                  Int       @id @default(autoincrement())
+  name                String?
+  email               String?
+  password            String?
+  createdAt           DateTime?
+  updatedAt           DateTime?
+  tasks               Todo[]    @relation("TodoassignedTo")
+  from_Todo_createdBy Todo[]    @relation("TodocreatedBy")
 }

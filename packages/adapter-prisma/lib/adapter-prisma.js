@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const cuid = require('cuid');
 const { getGenerators, formatSchema } = require('@prisma/sdk');
 const {
   BaseKeystoneAdapter,
@@ -49,6 +48,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     return execSync(`yarn prisma ${cmd} --schema "${this.schemaPath}"`, {
       env: { ...process.env, DATABASE_URL: this._url() },
       encoding: 'utf-8',
+      stdio: 'inherit',
     });
   }
 
@@ -80,18 +80,6 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     // If any of our critical directories are missing, or if the schema has changed, then
     // we've got things to do.
 
-    try {
-      const existing = fs.readFileSync(this.schemaPath, { encoding: 'utf-8' });
-      if (existing === prismaSchema && fs.existsSync(this.clientPath)) {
-        // If they're the same, we're golden
-        return;
-      }
-    } catch (err) {
-      if (err.code !== 'ENOENT') {
-        throw err;
-      }
-    }
-
     this._writePrismaSchema({ prismaSchema });
 
     // Generate prisma client
@@ -107,10 +95,10 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       this._runPrismaCmd(`db push --accept-data-loss --preview-feature`);
     } else if (this.migrationMode === 'createOnly') {
       // Generate a migration, but do not apply it
-      this._runPrismaCmd(`migrate dev --create-only --name keystone-${cuid()} --preview-feature`);
+      this._runPrismaCmd(`migrate dev --create-only --preview-feature`);
     } else if (this.migrationMode === 'dev') {
       // Generate and apply a migration if required.
-      this._runPrismaCmd(`migrate dev --name keystone-${cuid()} --preview-feature`);
+      this._runPrismaCmd(`migrate dev --preview-feature`);
     } else if (this.migrationMode === 'none') {
       // Explicitly disable running any migrations
     } else {

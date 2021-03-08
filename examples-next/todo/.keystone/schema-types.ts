@@ -47,6 +47,8 @@ export type TodoWhereInput = {
   readonly isComplete_not?: Scalars['Boolean'] | null;
   readonly assignedTo?: UserWhereInput | null;
   readonly assignedTo_is_null?: Scalars['Boolean'] | null;
+  readonly createdBy?: UserWhereInput | null;
+  readonly createdBy_is_null?: Scalars['Boolean'] | null;
   readonly finishBy?: Scalars['String'] | null;
   readonly finishBy_not?: Scalars['String'] | null;
   readonly finishBy_lt?: Scalars['String'] | null;
@@ -86,6 +88,8 @@ export type SortTodosBy =
   | 'isComplete_DESC'
   | 'assignedTo_ASC'
   | 'assignedTo_DESC'
+  | 'createdBy_ASC'
+  | 'createdBy_DESC'
   | 'finishBy_ASC'
   | 'finishBy_DESC'
   | 'createdAt_ASC'
@@ -97,6 +101,7 @@ export type TodoUpdateInput = {
   readonly label?: Scalars['String'] | null;
   readonly isComplete?: Scalars['Boolean'] | null;
   readonly assignedTo?: UserRelateToOneInput | null;
+  readonly createdBy?: UserRelateToOneInput | null;
   readonly finishBy?: Scalars['String'] | null;
 };
 
@@ -109,6 +114,7 @@ export type TodoCreateInput = {
   readonly label?: Scalars['String'] | null;
   readonly isComplete?: Scalars['Boolean'] | null;
   readonly assignedTo?: UserRelateToOneInput | null;
+  readonly createdBy?: UserRelateToOneInput | null;
   readonly finishBy?: Scalars['String'] | null;
 };
 
@@ -273,6 +279,7 @@ export type TodoListTypeInfo = {
     | 'label'
     | 'isComplete'
     | 'assignedTo'
+    | 'createdBy'
     | 'finishBy'
     | 'createdAt'
     | 'updatedAt';
@@ -281,6 +288,7 @@ export type TodoListTypeInfo = {
     readonly label?: string | null;
     readonly isComplete?: boolean | null;
     readonly assignedTo?: string | null;
+    readonly createdBy?: string | null;
     readonly finishBy?: Date | null;
     readonly createdAt?: Date | null;
     readonly updatedAt?: Date | null;
