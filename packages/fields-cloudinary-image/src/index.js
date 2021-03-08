@@ -6,7 +6,6 @@ import {
   KnexCloudinaryImageInterface,
   PrismaCloudinaryImageInterface,
 } from './Implementation';
-import { ImageBlock } from './ImageBlock';
 
 export const CloudinaryImage = {
   type: 'CloudinaryImage',
@@ -20,11 +19,5 @@ export const CloudinaryImage = {
     mongoose: MongoCloudinaryImageInterface,
     knex: KnexCloudinaryImageInterface,
     prisma: PrismaCloudinaryImageInterface,
-  },
-  blocks: {
-    image: ImageBlock,
-    // gallery: {
-    //   type: 'cloudinaryGallery',
-    // },
   },
 };

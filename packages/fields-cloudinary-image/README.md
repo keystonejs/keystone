@@ -105,22 +105,3 @@ query getFirstCloudinaryImage {
   }
 }
 ```
-
-## Cloudinary image block
-
-The `CloudinaryImage` field also exposes a block that can be used in the [Content](/packages/fields-content/README.md) field.
-
-### Usage
-
-```js title=index.js
-const { Content } = require('@keystone-next/fields-content-legacy');
-
-keystone.createList('Post', {
-  fields: {
-    body: {
-      type: Content,
-      blocks: [Content.blocks.heading, [CloudinaryImage.blocks.image, { adapter }]],
-    },
-  },
-});
-```
