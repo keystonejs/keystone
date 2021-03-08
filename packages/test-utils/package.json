@@ -17,7 +17,7 @@
     "@keystone-next/keystone": "11.0.0",
     "@keystone-next/keystone-legacy": "^19.3.0",
     "express": "^4.17.1",
-    "mongodb-memory-server-core": "^6.9.3",
+    "mongodb-memory-server-core": "^6.9.6",
     "supertest-light": "^1.0.3"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/test-utils"

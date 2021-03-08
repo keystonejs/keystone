@@ -11,7 +11,7 @@
     "@keystone-next/fields-auto-increment-legacy": "^8.1.5",
     "@keystone-next/keystone-legacy": "^19.3.0",
     "@keystone-next/utils-legacy": "^6.0.2",
-    "knex": "^0.21.18",
+    "knex": "^0.21.19",
     "p-settle": "^4.1.1",
     "pg": "^8.5.1"
   },

@@ -10,8 +10,8 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@arch-ui/fields": "^3.0.5",
-    "@arch-ui/select": "^0.1.9",
+    "@arch-ui/fields": "^3.0.6",
+    "@arch-ui/select": "^0.1.10",
     "@babel/runtime": "^7.13.9",
     "@emotion/core": "^10.1.1",
     "@keystone-next/adapter-knex-legacy": "^13.1.0",
@@ -20,7 +20,7 @@
     "@keystone-next/fields-legacy": "^22.0.1",
     "cuid": "^2.1.8",
     "google-maps-react": "^2.0.6",
-    "mongoose": "^5.11.18",
+    "mongoose": "^5.11.19",
     "node-fetch": "^2.6.1",
     "react": "^17.0.1",
     "react-toast-notifications": "^2.4.3"
