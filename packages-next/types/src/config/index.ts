@@ -30,6 +30,11 @@ export type KeystoneConfig = {
   session?: () => SessionStrategy<any>;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
+  /** Experimental config options */
+  experimental?: {
+    /** Enables nextjs graphql api route mode */
+    enableGraphQlApiEndpoint?: boolean;
+  };
 };
 
 // config.lists
@@ -85,8 +90,6 @@ export type AdminUIConfig = {
     isValidSession: boolean;
     createContext: CreateContext;
   }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
-  /** Enables nextjs graphql api route mode */
-  enableGraphQlApiEndpoint?: boolean;
 };
 
 export type AdminFileToWrite =
