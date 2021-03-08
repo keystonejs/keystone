@@ -28,7 +28,7 @@ export const Field = ({ field, value, onChange, autoFocus }: FieldProps<typeof c
 );
 
 export const Cell: CellComponent = ({ item, field, linkTo }) => {
-  let value = item[field.path] + '';
+  let value = item[field.path] || '';
   return linkTo ? <CellLink {...linkTo}>{value}</CellLink> : <CellContainer>{value}</CellContainer>;
 };
 Cell.supportsLinkTo = true;
@@ -53,7 +53,7 @@ export const controller = (config: Config): FieldController<string, string> => {
     label: config.label,
     graphqlSelection: config.path,
     defaultValue: '',
-    deserialize: data => data[config.path] + '',
+    deserialize: data => data[config.path] || '',
     serialize: value => ({ [config.path]: value === '' ? null : value }),
     filter: {
       Filter(props) {
