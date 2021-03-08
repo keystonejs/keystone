@@ -5,7 +5,7 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v14.16.0"
   },
   "dependencies": {
     "@arch-ui/button": "^0.0.23",

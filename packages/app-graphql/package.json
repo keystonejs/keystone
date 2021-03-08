@@ -5,7 +5,7 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v14.16.0"
   },
   "dependencies": {
     "@keystone-next/app-graphql-playground-legacy": "^5.1.10",

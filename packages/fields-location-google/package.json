@@ -7,7 +7,7 @@
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-location-google",
   "homepage": "https://github.com/keystonejs/keystone",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v14.16.0"
   },
   "dependencies": {
     "@arch-ui/fields": "^3.0.6",

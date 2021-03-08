@@ -7,7 +7,7 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/server-side-graphql-client",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v14.16.0"
   },
   "devDependencies": {
     "@keystone-next/fields-legacy": "*",
