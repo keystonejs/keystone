@@ -251,11 +251,11 @@ class PrismaAdapter extends BaseKeystoneAdapter {
         }
       } else {
         // If we're in prototype mode then we need to rebuild the tables after a reset
-        this._runPrismaCmd(`migrate reset --accept-data-loss --preview-feature`);
+        this._runPrismaCmd(`migrate reset --force --preview-feature`);
         this._runPrismaCmd(`db push --accept-data-loss --preview-feature`);
       }
     } else {
-      this._runPrismaCmd(`migrate reset --accept-data-loss --preview-feature`);
+      this._runPrismaCmd(`migrate reset --force --preview-feature`);
     }
   }
 
