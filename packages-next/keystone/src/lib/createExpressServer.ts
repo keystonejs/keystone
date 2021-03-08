@@ -78,7 +78,7 @@ export const createExpressServer = async (
 
   const sessionStrategy = config.session ? config.session() : undefined;
 
-  if (config.experimental?.enableGraphQlApiEndpoint) {
+  if (config.experimental?.enableNextJsGraphqlApiEndpoint) {
     if (isVerbose) console.log('✨ Skipping GraphQL Server');
   } else {
     if (isVerbose) console.log('✨ Preparing GraphQL Server');

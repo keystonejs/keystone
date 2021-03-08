@@ -33,7 +33,7 @@ export type KeystoneConfig = {
   /** Experimental config options */
   experimental?: {
     /** Enables nextjs graphql api route mode */
-    enableGraphQlApiEndpoint?: boolean;
+    enableNextJsGraphqlApiEndpoint?: boolean;
   };
 };
 
