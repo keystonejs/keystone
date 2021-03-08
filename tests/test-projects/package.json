@@ -3,8 +3,7 @@
 		"start": "yarn basic start",
 		"access-control": "yarn --cwd access-control",
 		"basic": "yarn --cwd basic",
-		"login": "yarn --cwd login",
-		"social-login": "yarn --cwd social-login"
+		"login": "yarn --cwd login"
 	},
   "repository": "https://github.com/keystonejs/keystone.git",
   "homepage": "https://github.com/keystonejs/keystone",
