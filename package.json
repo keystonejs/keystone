@@ -9,7 +9,6 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
     "prisma": "prisma",
-    "website": "manypkg run @keystone-next/website-legacy",
     "arch-docs": "manypkg run arch/docs",
     "docs-next": "manypkg run @keystone-next/website dev",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
@@ -18,7 +17,7 @@
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\" && remark . --output",
     "fresh": "yarn clean && yarn",
-    "clean": "rimraf \"**/cypress/{screenshots,videos,reports}\" \"**/node_modules\" \"**/yarn-error.log\" \"**/out.log\" \"**/.DS_Store\" \"**/website/.cache\" \"**/dist\"",
+    "clean": "rimraf \"**/cypress/{screenshots,videos,reports}\" \"**/node_modules\" \"**/yarn-error.log\" \"**/out.log\" \"**/.DS_Store\" \"**/dist\"",
     "lint:eslint": "eslint . --ext ts,tsx,js",
     "lint:prettier": "prettier --list-different \"**/*.{js,json,ts,tsx}\"",
     "lint:markdown": "remark . --frail --quiet",
@@ -144,7 +143,6 @@
       "tests/api-tests",
       "tests/benchmarks",
       "tests/examples-smoke-tests",
-      "website",
       "projects/*",
       "examples-next/*",
       "packages-next/*",
@@ -188,8 +186,7 @@
     "testSequencer": "./tests/jest/jest-sequencer.js",
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
-      "/node_modules/",
-      "<rootDir>/website/.cache"
+      "/node_modules/"
     ],
     "transformIgnorePatterns": [
       "/node_modules/",
