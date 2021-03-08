@@ -195,8 +195,6 @@
       "packages/**/*.js",
       "!packages/**/dist/**",
       "!packages/app-admin-ui/client/**",
-      "!packages/create-keystone-app/templates/**",
-      "!packages/arch/**",
       "!packages/core/tests/default-entry/index.js",
       "!packages/fields/**/views/**",
       "!packages/fields/**/test-fixtures.js",
