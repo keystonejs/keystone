@@ -104,7 +104,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   async _runMigrations() {
     if (this.migrationMode === 'prototype') {
       // Sync the database directly, without generating any migration
-      this._runPrismaCmd(`db push --force --preview-feature`);
+      this._runPrismaCmd(`db push --accept-data-loss --preview-feature`);
     } else if (this.migrationMode === 'createOnly') {
       // Generate a migration, but do not apply it
       this._runPrismaCmd(`migrate dev --create-only --name keystone-${cuid()} --preview-feature`);
@@ -251,11 +251,11 @@ class PrismaAdapter extends BaseKeystoneAdapter {
         }
       } else {
         // If we're in prototype mode then we need to rebuild the tables after a reset
-        this._runPrismaCmd(`migrate reset --force --preview-feature`);
-        this._runPrismaCmd(`db push --force --preview-feature`);
+        this._runPrismaCmd(`migrate reset --accept-data-loss --preview-feature`);
+        this._runPrismaCmd(`db push --accept-data-loss --preview-feature`);
       }
     } else {
-      this._runPrismaCmd(`migrate reset --force --preview-feature`);
+      this._runPrismaCmd(`migrate reset --accept-data-loss --preview-feature`);
     }
   }
 
