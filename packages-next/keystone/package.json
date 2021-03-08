@@ -36,7 +36,7 @@
     "@types/prettier": "^2.2.2",
     "@types/source-map-support": "^0.5.3",
     "@types/uid-safe": "^2.1.2",
-    "apollo-server-express": "^2.21.0",
+    "apollo-server-express": "^2.21.1",
     "cookie": "^0.4.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",

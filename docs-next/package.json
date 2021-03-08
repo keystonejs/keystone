@@ -30,7 +30,7 @@
     "@types/gtag.js": "^0.0.4",
     "@types/mdx-js__react": "^1.5.3",
     "@types/react": "^17.0.3",
-    "@types/react-dom": "^17.0.1",
+    "@types/react-dom": "^17.0.2",
     "@types/webpack": "^4.41.26",
     "autoprefixer": "^10.2.5",
     "classnames": "^2.2.6",
