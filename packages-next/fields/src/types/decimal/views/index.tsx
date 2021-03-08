@@ -48,18 +48,13 @@ type Config = FieldControllerConfig<{
 }>;
 
 export const controller = (config: Config): FieldController<string, string> => {
-  console.log('controller');
-  console.log(config);
   return {
     path: config.path,
     label: config.label,
     graphqlSelection: config.path,
     defaultValue: '',
-    deserialize: data => (parseFloat(data[config.path]) || '') + '',
-    serialize: value => ({
-      [config.path]:
-        parseFloat(value.replace(',', '.')).toFixed(config.fieldMeta.scale).toString() || null,
-    }),
+    deserialize: data => data[config.path] + '',
+    serialize: value => ({ [config.path]: value === '' ? null : value }),
     filter: {
       Filter(props) {
         return (
@@ -79,8 +74,8 @@ export const controller = (config: Config): FieldController<string, string> => {
 
         return {
           [key]: ['in', 'not_in'].includes(type)
-            ? valueWithoutWhitespace.split(',').map(i => parseFloat(i).toFixed(2))
-            : parseFloat(valueWithoutWhitespace),
+            ? valueWithoutWhitespace.split(',').map(i => i)
+            : valueWithoutWhitespace,
         };
       },
       Label({ label, value, type }) {
