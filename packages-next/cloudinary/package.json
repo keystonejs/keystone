@@ -14,7 +14,7 @@
     "@keystone-ui/core": "^2.0.1",
     "@keystone-ui/fields": "^2.0.1",
     "@keystone-ui/pill": "^2.0.1",
-    "@types/react": "^17.0.2",
+    "@types/react": "^17.0.3",
     "react": "^17.0.1"
   },
   "engines": {

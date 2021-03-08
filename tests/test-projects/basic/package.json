@@ -19,7 +19,7 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a tests/test-projects/basic/.env file.\nSee tests/test-projects/basic/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@arch-ui/fields": "^3.0.5",
+    "@arch-ui/fields": "^3.0.6",
     "@keystone-next/adapter-prisma-legacy": "^3.1.0",
     "@keystone-next/app-admin-ui-legacy": "^7.4.1",
     "@keystone-next/app-graphql-legacy": "^6.2.2",
@@ -46,7 +46,7 @@
     "cypress-multi-reporters": "^1.4.0",
     "dotenv-safe": "^8.2.0",
     "execa": "^5.0.0",
-    "mocha": "^8.3.0",
+    "mocha": "^8.3.1",
     "mocha-junit-reporter": "^2.0.0",
     "pino-colada": "^2.1.0",
     "start-server-and-test": "^1.12.0"
