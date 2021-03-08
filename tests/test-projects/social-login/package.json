@@ -15,8 +15,8 @@
     "cypress:run": "exit 0"
   },
   "dependencies": {
-    "@arch-ui/fields": "^3.0.5",
-    "@arch-ui/input": "^0.1.11",
+    "@arch-ui/fields": "^3.0.6",
+    "@arch-ui/input": "^0.1.12",
     "@keystone-next/adapter-prisma-legacy": "^3.1.0",
     "@keystone-next/app-admin-ui-legacy": "^7.4.1",
     "@keystone-next/app-graphql-legacy": "^6.2.2",

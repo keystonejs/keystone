@@ -12,12 +12,12 @@
     "@keystone-next/keystone-legacy": "^19.3.0",
     "@keystone-next/utils-legacy": "^6.0.2",
     "cuid": "^2.1.8",
-    "mongoose": "^5.11.18",
+    "mongoose": "^5.11.19",
     "p-settle": "^4.1.1"
   },
   "devDependencies": {
     "mongodb": "^3.6.4",
-    "mongodb-memory-server-core": "^6.9.3",
+    "mongodb-memory-server-core": "^6.9.6",
     "pluralize": "^8.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-mongoose"
