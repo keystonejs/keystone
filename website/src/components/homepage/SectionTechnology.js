@@ -17,11 +17,6 @@ const CARDS = [
     to: `/keystonejs/app-next/`,
   },
   {
-    heading: `Nuxt.js`,
-    content: `Nuxt is a progressive framework based on Vue.js to create modern web applications. It can be used to create from static landing pages to complex enterprise ready web applications.`,
-    to: `/keystonejs/app-nuxt/`,
-  },
-  {
     heading: `Headless`,
     content: `The primary focus of KeystoneJS is the GraphQL API and Admin UI. Because of this KeystoneJS works with all major front-end frameworks and is headless by default.`,
     to: `/keystonejs/app-graphql/`,
