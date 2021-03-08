@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const { getGenerators, formatSchema } = require('@prisma/sdk');
+const {MigrateDev} = require('@prisma/migrate');
 const {
   BaseKeystoneAdapter,
   BaseListAdapter,

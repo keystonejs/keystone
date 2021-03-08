@@ -12,6 +12,7 @@
     "@keystone-next/keystone-legacy": "^19.3.0",
     "@keystone-next/utils-legacy": "^6.0.2",
     "@prisma/client": "2.18.0",
+    "@prisma/migrate": "2.18.0",
     "@prisma/sdk": "2.18.0",
     "cuid": "^2.1.8",
     "prisma": "2.18.0"
