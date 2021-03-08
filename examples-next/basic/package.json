@@ -24,11 +24,11 @@
     "@keystone-ui/icons": "^2.0.1",
     "@keystone-ui/tooltip": "^2.0.1",
     "@preconstruct/next": "^2.0.0",
-    "@types/react": "^17.0.2",
+    "@types/react": "^17.0.3",
     "apollo-server-micro": "^2.21.0",
     "graphql": "^15.5.0",
     "graphql-tag": "^2.11.0",
-    "next": "10.0.7",
+    "next": "10.0.8",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
