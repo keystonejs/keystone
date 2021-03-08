@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/mono-repo-legacy",
-  "description": "KeystoneJS monorepo for all the @keystonejs / @arch-ui (and more) packages. Powered by Yarn.",
+  "description": "KeystoneJS monorepo for all the @keystonejs-next packages",
   "private": true,
   "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
@@ -9,7 +9,6 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
     "prisma": "prisma",
-    "arch-docs": "manypkg run arch/docs",
     "docs-next": "manypkg run @keystone-next/website dev",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
     "cypress:run": "status=0; yarn workspace @keystone-next/cypress-project-basic-legacy run cypress:run || status=$?; yarn workspace @keystone-next/cypress-project-login-legacy run cypress:run || status=$?; yarn workspace @keystone-next/cypress-project-twitter-login-legacy run cypress:run || status=$?; yarn workspace @keystone-next/cypress-project-access-control-legacy run cypress:run || status=$?; yarn workspace @keystone-next/cypress-project-client-validation-legacy run cypress:run || status=$?; exit $status",
@@ -136,9 +135,6 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "!packages/arch",
-      "packages/arch/docs",
-      "packages/arch/packages/*",
       "tests/test-projects/*",
       "tests/api-tests",
       "tests/benchmarks",
@@ -156,7 +152,6 @@
   },
   "preconstruct": {
     "packages": [
-      "packages/arch/packages/*",
       "packages/access-control",
       "packages/app-version",
       "packages/session",
@@ -196,7 +191,6 @@
       "packages/**/*.js",
       "!packages/**/dist/**",
       "!packages/app-admin-ui/client/**",
-      "!packages/arch/**",
       "!packages/core/tests/default-entry/index.js",
       "!packages/fields/**/views/**",
       "!packages/fields/**/test-fixtures.js",
