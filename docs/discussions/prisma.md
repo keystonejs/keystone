@@ -52,7 +52,6 @@ We would like to have full support for all Keystone field types, and are working
 | `Virtual`            |            `N/A`            |
 | **Extra fields**     |                             |
 | `Color`              |           `String`          |
-| `Content`            |         `@relation`         |
 | `AuthedRelationship` |         `@relation`         |
 | `AutoIncrement`      |            `Int`            |
 | `CloudinaryImage`    |            `Json`           |

@@ -171,7 +171,6 @@
       "packages/fields-mongoid",
       "packages/fields-location-google",
       "packages/fields-wysiwyg-tinymce",
-      "packages/fields-content",
       "packages/fields-color",
       "packages/fields",
       "packages-next/*",
