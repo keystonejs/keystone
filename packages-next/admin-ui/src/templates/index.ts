@@ -38,5 +38,13 @@ export const writeAdminFiles = (
     ({ adminUILabels: { path }, key }) =>
       ({ mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` } as const)
   ),
-  { mode: 'write', src: apiTemplate, outputPath: 'pages/api/graphql.js' },
+  ...(config.ui?.enableGraphQlApiEndpoint
+    ? [
+        {
+          mode: 'write' as const,
+          src: apiTemplate,
+          outputPath: 'pages/api/graphql.js',
+        },
+      ]
+    : []),
 ];

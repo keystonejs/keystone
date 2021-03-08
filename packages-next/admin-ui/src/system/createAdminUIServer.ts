@@ -10,7 +10,8 @@ export const createAdminUIServer = async (
   projectAdminPath: string,
   sessionStrategy?: SessionStrategy<any>
 ) => {
-  const thing = 'n' + 'ext';
+  /** We do this to stop webpack from bundling next inside of next */
+  const thing = 'next';
   const next = require(thing);
   const app = next({ dev, dir: projectAdminPath });
   const handle = app.getRequestHandler();
