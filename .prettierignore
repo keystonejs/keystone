@@ -5,7 +5,6 @@ coverage
 packages/test-project/public
 website/.cache/**/*
 website/public/**/*
-packages/arch/www/public/**/*
 .changeset/**/*
 **/dist
 **/.next
