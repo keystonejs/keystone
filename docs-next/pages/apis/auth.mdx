@@ -25,11 +25,15 @@ const { withAuth } = createAuth({
     skipKeystoneWelcome: false,
   },
   passwordResetLink: {
-    sendToken: async ({ itemId, identity, token, context }) => { /* ... */ },
+    sendToken: async ({ itemId, identity, token, context }) => {
+      /* ... */
+    },
     tokensValidForMins: 60,
   },
   magicAuthLink: {
-    sendToken: async ({ itemId, identity, token, context }) => { /* ... */ },
+    sendToken: async ({ itemId, identity, token, context }) => {
+      /* ... */
+    },
     tokensValidForMins: 60,
   },
 });
@@ -44,7 +48,9 @@ export default withAuth(
           isAdmin: checkbox(),
         },
       }),
-      session: () => { /* ... */ },
+      session: () => {
+        /* ... */
+      },
     }),
   })
 );
@@ -217,7 +223,9 @@ const { withAuth } = createAuth({
   secretField: 'password',
 
   passwordResetLink: {
-    sendToken: async ({ itemId, identity, token, context }) => { /* ... */ },
+    sendToken: async ({ itemId, identity, token, context }) => {
+      /* ... */
+    },
     tokensValidForMins: 60,
   },
 });
@@ -356,7 +364,9 @@ const { withAuth } = createAuth({
   secretField: 'password',
 
   magicAuthLink: {
-    sendToken: async ({ itemId, identity, token, context }) => { /* ... */ },
+    sendToken: async ({ itemId, identity, token, context }) => {
+      /* ... */
+    },
     tokensValidForMins: 60,
   },
 });

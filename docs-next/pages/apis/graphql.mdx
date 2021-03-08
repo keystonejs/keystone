@@ -24,37 +24,71 @@ This system will generate the following GraphQL API.
 
 ```graphql
 type Query {
-  """ Search for the User item with the matching ID. """
+  """
+   Search for the User item with the matching ID.
+  """
   User(where: UserWhereUniqueInput!): User
 
-  """ Search for all User items which match the where clause. """
-  allUsers(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int): [User]
+  """
+   Search for all User items which match the where clause.
+  """
+  allUsers(
+    where: UserWhereInput
+    search: String
+    sortBy: [SortUsersBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [User]
 
-  """ Perform a meta-query on all User items which match the where clause. """
-  _allUsersMeta(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int): _QueryMeta
+  """
+   Perform a meta-query on all User items which match the where clause.
+  """
+  _allUsersMeta(
+    where: UserWhereInput
+    search: String
+    sortBy: [SortUsersBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
 }
 
 type Mutation {
-  """ Create a single User item. """
+  """
+   Create a single User item.
+  """
   createUser(data: UserCreateInput): User
 
-  """ Create multiple User items. """
+  """
+   Create multiple User items.
+  """
   createUsers(data: [UsersCreateInput]): [User]
 
-  """ Update a single User item by ID. """
+  """
+   Update a single User item by ID.
+  """
   updateUser(id: ID!, data: UserUpdateInput): User
 
-  """ Update multiple User items by ID. """
+  """
+   Update multiple User items by ID.
+  """
   updateUsers(data: [UsersUpdateInput]): [User]
 
-  """ Delete a single User item by ID. """
+  """
+   Delete a single User item by ID.
+  """
   deleteUser(id: ID!): User
 
-  """ Delete multiple User items by ID. """
+  """
+   Delete multiple User items by ID.
+  """
   deleteUsers(ids: [ID!]): [User]
 }
 
-""" A keystone list """
+"""
+ A keystone list
+"""
 type User {
   id: ID!
   name: String
@@ -130,7 +164,9 @@ type _QueryMeta {
 
 ```graphql
 type Query {
-  """ Search for the User item with the matching ID. """
+  """
+   Search for the User item with the matching ID.
+  """
   User(where: UserWhereUniqueInput!): User
 }
 
@@ -148,8 +184,17 @@ type User {
 
 ```graphql
 type Query {
-  """ Search for all User items which match the where clause. """
-  allUsers(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int): [User]
+  """
+   Search for all User items which match the where clause.
+  """
+  allUsers(
+    where: UserWhereInput
+    search: String
+    sortBy: [SortUsersBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [User]
 }
 
 input UserWhereInput {
@@ -196,12 +241,21 @@ type User {
 }
 ```
 
-### _allUsersMeta
+### \_allUsersMeta
 
 ```graphql
 type Query {
-  """ Perform a meta-query on all User items which match the where clause. """
-  _allUsersMeta(where: UserWhereInput, search: String, sortBy: [SortUsersBy!], orderBy: String, first: Int, skip: Int): _QueryMeta
+  """
+   Perform a meta-query on all User items which match the where clause.
+  """
+  _allUsersMeta(
+    where: UserWhereInput
+    search: String
+    sortBy: [SortUsersBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
 }
 
 input UserWhereInput {
@@ -253,7 +307,9 @@ type _QueryMeta {
 
 ```graphql
 type Mutation {
-  """ Create a single User item. """
+  """
+   Create a single User item.
+  """
   createUser(data: UserCreateInput): User
 }
 
@@ -271,7 +327,9 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Create multiple User items. """
+  """
+   Create multiple User items.
+  """
   createUsers(data: [UsersCreateInput]): [User]
 }
 
@@ -293,7 +351,9 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Update a single User item by ID. """
+  """
+   Update a single User item by ID.
+  """
   updateUser(id: ID!, data: UserUpdateInput): User
 }
 
@@ -311,7 +371,9 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Update multiple User items by ID. """
+  """
+   Update multiple User items by ID.
+  """
   updateUsers(data: [UsersUpdateInput]): [User]
 }
 
@@ -334,7 +396,9 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Delete a single User item by ID. """
+  """
+   Delete a single User item by ID.
+  """
   deleteUser(id: ID!): User
 }
 
@@ -348,7 +412,9 @@ type User {
 
 ```graphql
 type Mutation {
-  """ Delete multiple User items by ID. """
+  """
+   Delete multiple User items by ID.
+  """
   deleteUsers(ids: [ID!]): [User]
 }
 

@@ -12,13 +12,27 @@ import { config, createSchema, list } from '@keystone-next/keystone/schema';
 export default config({
   lists: createSchema({
     ListName: list({
-      fields: { /* ... */ },
-      idField: { /* ... */ },
-      access: { /* ... */ },
-      ui: { /* ... */ },
-      hooks: { /* ... */ },
-      graphql: { /* ... */ },
-      db: { /* ... */ },
+      fields: {
+        /* ... */
+      },
+      idField: {
+        /* ... */
+      },
+      access: {
+        /* ... */
+      },
+      ui: {
+        /* ... */
+      },
+      hooks: {
+        /* ... */
+      },
+      graphql: {
+        /* ... */
+      },
+      db: {
+        /* ... */
+      },
       description: '...',
     }),
     /* ... */
@@ -42,7 +56,9 @@ export default config({
   lists: createSchema({
     ListName: list({
       fields: {
-        fieldName: text({ /* ... */ }),
+        fieldName: text({
+          /* ... */
+        }),
         /* ... */
       },
     }),
@@ -67,7 +83,9 @@ import { autoincrement, mongoId } from '@keystone-next/fields';
 export default config({
   lists: createSchema({
     ListName: list({
-      fields: { /* ... */ },
+      fields: {
+        /* ... */
+      },
       // prisma_postgresql and knex adapters
       idField: autoincrement({
         ui: {
