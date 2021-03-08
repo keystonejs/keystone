@@ -1,15 +1,9 @@
 const express = require('express');
 const { graphqlUploadExpress } = require('graphql-upload');
-const { GraphQLPlaygroundApp } = require('@keystone-next/app-graphql-playground-legacy');
 const validation = require('./validation');
 
 class GraphQLApp {
-  constructor({
-    apiPath = '/admin/api',
-    graphiqlPath = '/admin/graphiql',
-    schemaName = 'public',
-    apollo = {},
-  } = {}) {
+  constructor({ apiPath = '/admin/api', schemaName = 'public', apollo = {} } = {}) {
     if (schemaName === 'internal') {
       throw new Error(
         "The schemaName 'internal' is a reserved name cannot be used in a GraphQLApp."
@@ -17,7 +11,6 @@ class GraphQLApp {
     }
 
     this._apiPath = apiPath;
-    this._graphiqlPath = graphiqlPath;
     this._apollo = apollo;
     this._schemaName = schemaName;
   }
@@ -32,16 +25,7 @@ class GraphQLApp {
       dev,
     });
     const apiPath = this._apiPath;
-    const graphiqlPath = this._graphiqlPath;
     const app = express();
-
-    if (dev && graphiqlPath) {
-      // This is a convenience to make the out of the box experience slightly simpler.
-      // We should reconsider support for this at some point in the future. -TL
-      app.use(
-        new GraphQLPlaygroundApp({ apiPath, graphiqlPath }).prepareMiddleware({ keystone, dev })
-      );
-    }
 
     const maxFileSize = (this._apollo && this._apollo.maxFileSize) || 200 * 1024 * 1024;
     const maxFiles = (this._apollo && this._apollo.maxFileSize) || 5;

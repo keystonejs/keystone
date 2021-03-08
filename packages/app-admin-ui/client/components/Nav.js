@@ -19,7 +19,7 @@ import {
 import { Title, Truncate } from '@arch-ui/typography';
 import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
-import { PersonIcon, SignOutIcon, TerminalIcon, MarkGithubIcon } from '@primer/octicons-react';
+import { PersonIcon, SignOutIcon, MarkGithubIcon } from '@primer/octicons-react';
 
 import { useAdminMeta } from '../providers/AdminMeta';
 import { useResizeHandler, KEYBOARD_SHORTCUT } from '../hooks/ResizeHandler';
@@ -376,7 +376,7 @@ const UserInfo = ({ authListPath }) => {
 const GITHUB_PROJECT = 'https://github.com/keystonejs/keystone';
 
 const ActionItems = ({ mouseIsOverNav }) => {
-  const { signoutPath, graphiqlPath, authStrategy } = useAdminMeta();
+  const { signoutPath, authStrategy } = useAdminMeta();
 
   const entries = useMemo(
     () => [
@@ -391,12 +391,6 @@ const ActionItems = ({ mouseIsOverNav }) => {
         : []),
       ...(ENABLE_DEV_FEATURES
         ? [
-            {
-              label: 'GraphQL Playground',
-              to: graphiqlPath,
-              icon: TerminalIcon,
-              target: '_blank',
-            },
             {
               label: 'Keystone on GitHub',
               to: GITHUB_PROJECT,
