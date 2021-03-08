@@ -25,7 +25,8 @@ export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, 
     adapter = new MongooseAdapter({ mongoUri: db.url, ...db.mongooseOptions });
   } else if (db.adapter === 'prisma_postgresql') {
     adapter = new PrismaAdapter({
-      getPrismaPath: () => '.keystone/prisma',
+      getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
+
       migrationMode:
         script === 'prototype'
           ? 'prototype'
