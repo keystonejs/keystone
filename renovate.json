@@ -25,7 +25,7 @@
     }
   ],
   "rangeStrategy": "bump",
-  "schedule": ["before 7pm on Tuesday"],
+  "schedule": ["before 7am on Tuesday", "before 7am on Wednesday"],
   "timezone": "Australia/Sydney",
   "updateNotScheduled": false
 }
