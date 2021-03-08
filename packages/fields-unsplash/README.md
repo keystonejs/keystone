@@ -168,35 +168,3 @@ Will result in something like:
   }
 }
 ```
-
-## Unsplash block
-
-The `Unsplash` field exposes a block that can be used in the [content field](/packages/fields-content/README.md).
-
-### Usage
-
-```js
-const { Keystone } = require('@keystone-next/keystone-legacy');
-const { Content } = require('@keystone-next/fields-content-legacy');
-const { Unsplash } = require('@keystone-next/fields-unsplash-legacy');
-const { Text } = require('@keystone-next/fields-legacy');
-
-keystone.createList('Post', {
-  fields: {
-    body: {
-      type: Content,
-      blocks: [
-        Content.blocks.heading,
-        [
-          Unsplash.blocks.unsplashImage,
-          {
-            attribution: 'KeystoneJS',
-            accessKey: process.env.UNSPLASH_ACCESS_KEY,
-            secretKey: process.env.UNSPLASH_SECRET_KEY,
-          },
-        ],
-      ],
-    },
-  },
-});
-```

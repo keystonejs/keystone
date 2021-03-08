@@ -20,7 +20,6 @@
     "@keystone-next/adapter-knex-legacy": "^13.1.0",
     "@keystone-next/adapter-mongoose-legacy": "^11.1.0",
     "@keystone-next/adapter-prisma-legacy": "^3.1.0",
-    "@keystone-next/fields-content-legacy": "^9.0.7",
     "@keystone-next/fields-legacy": "^22.0.1",
     "node-fetch": "^2.6.1",
     "query-string": "^6.14.1"
@@ -38,7 +37,6 @@
     "entrypoints": [
       "index.js",
       "iframely/views/preview.js",
-      "views/blocks/oembed.js",
       "views/*.js"
     ]
   }

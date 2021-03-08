@@ -231,29 +231,3 @@ Will result in something like:
   }
 }
 ```
-
-## OEmbed block
-
-The `OEmbed` field exposes a block that can be used in the [content field](/packages/fields-content/README.md).
-
-### Usage
-
-```js
-const { Keystone } = require('@keystone-next/keystone-legacy');
-const { Content } = require('@keystone-next/fields-content-legacy');
-const { Text } = require('@keystone-next/fields-legacy');
-const { OEmbed, IframelyOEmbedAdapter } = require('@keystone-next/fields-oembed-legacy');
-
-const iframelyAdapter = new IframelyOEmbedAdapter({
-  apiKey: process.env.IFRAMELY_API_KEY, // Get one from https://iframely.com
-});
-
-keystone.createList('Post', {
-  fields: {
-    body: {
-      type: Content,
-      blocks: [Content.blocks.heading, [OEmbed.blocks.oEmbed, { adapter: iframelyAdapter }]],
-    },
-  },
-});
-```
