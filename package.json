@@ -49,7 +49,7 @@
     "@babel/preset-env": "^7.13.9",
     "@babel/preset-react": "^7.12.13",
     "@babel/preset-typescript": "^7.13.0",
-    "@changesets/changelog-github": "^0.2.8",
+    "@changesets/changelog-github": "^0.3.0",
     "@changesets/cli": "^2.14.1",
     "@jest/test-sequencer": "^26.6.3",
     "@manypkg/cli": "^0.17.0",
