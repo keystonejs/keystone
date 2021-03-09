@@ -5,9 +5,11 @@
   "license": "MIT",
   "scripts": {
     "dev": "next -p 8000",
+    "build": "next build",
+    "start": "next start -p 8000",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "cypress:run:ci": "start-server-and-test dev http://localhost:8000 cy:run"
+    "cypress:run:ci": "yarn build && start-server-and-test start http://localhost:8000 cy:run"
   },
   "dependencies": {
     "@babel/runtime": "^7.13.9",
