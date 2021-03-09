@@ -1,18 +1,34 @@
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
-const cuid = require('cuid');
-const { getGenerators, formatSchema } = require('@prisma/sdk');
-const {
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import cuid from 'cuid';
+import { getGenerators, formatSchema } from '@prisma/sdk';
+import {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('@keystone-next/keystone-legacy');
-const { defaultObj, mapKeys, identity, flatten } = require('@keystone-next/utils-legacy');
+  // @ts-ignore
+} from '@keystone-next/keystone-legacy';
+import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
 
-class PrismaAdapter extends BaseKeystoneAdapter {
-  constructor() {
-    super(...arguments);
+type Rels = any[];
+
+export class PrismaAdapter extends BaseKeystoneAdapter {
+  name: string;
+  listAdapterClass: typeof PrismaListAdapter;
+  provider: string;
+  migrationMode: string;
+  config: any;
+  getPrismaPath: (args: { prismaSchema: string }) => string;
+  getDbSchemaName: (args: { prismaSchema: string }) => string;
+  enableLogging: boolean;
+  url: string;
+  schemaPath!: string;
+  clientPath!: string;
+  dbSchemaName!: string;
+  prisma!: any;
+  constructor(...args: any[]) {
+    super(...args);
     this.listAdapterClass = PrismaListAdapter;
     this.name = 'prisma';
     this.provider = this.config.provider || 'postgresql';
@@ -24,7 +40,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this.url = this.config.url || process.env.DATABASE_URL;
   }
 
-  async _prepareSchema(rels) {
+  async _prepareSchema(rels: any) {
     const clientDir = 'generated-client';
     const prismaSchema = await this._generatePrismaSchema({ rels, clientDir });
     // See if there is a prisma client available for this hash
@@ -45,20 +61,20 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     }
   }
 
-  _runPrismaCmd(cmd) {
+  _runPrismaCmd(cmd: string) {
     return execSync(`yarn prisma ${cmd} --schema "${this.schemaPath}"`, {
       env: { ...process.env, DATABASE_URL: this._url() },
       encoding: 'utf-8',
     });
   }
 
-  async deploy(rels) {
+  async deploy(rels: any) {
     // Apply any migrations which haven't already been applied
     await this._prepareSchema(rels);
     this._runPrismaCmd(`migrate deploy --preview-feature`);
   }
 
-  async _connect({ rels }) {
+  async _connect({ rels }: { rels: any }) {
     await this._generateClient(rels);
     const { PrismaClient } = require(this.clientPath);
     this.prisma = new PrismaClient({
@@ -68,7 +84,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     await this.prisma.$connect();
   }
 
-  async _generateClient(rels) {
+  async _generateClient(rels: any) {
     // 1. Generate a formatted schema
     const { prismaSchema } = await this._prepareSchema(rels);
 
@@ -118,7 +134,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     }
   }
 
-  async _writePrismaSchema({ prismaSchema }) {
+  async _writePrismaSchema({ prismaSchema }: { prismaSchema: string }) {
     // Make output dir (you know, just in case!)
     fs.mkdirSync(this.clientPath, { recursive: true });
 
@@ -132,10 +148,17 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     generator.stop();
   }
 
-  async _generatePrismaSchema({ rels, clientDir }) {
+  listAdapters!: Record<
+    string,
+    { fieldAdapters: any[]; key: string; _postConnect: (args: any) => Promise<any> }
+  >;
+
+  async _generatePrismaSchema({ rels, clientDir }: { rels: any[]; clientDir: string }) {
     const models = Object.values(this.listAdapters).map(listAdapter => {
       const scalarFields = flatten(
-        listAdapter.fieldAdapters.filter(f => !f.field.isRelationship).map(f => f.getPrismaSchema())
+        listAdapter.fieldAdapters
+          .filter((f: any) => !f.field.isRelationship)
+          .map(f => f.getPrismaSchema())
       );
       const relFields = [
         ...flatten(
@@ -217,7 +240,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     return await formatSchema({ schema: header + models.join('\n') + '\n' + enums.join('\n') });
   }
 
-  async postConnect({ rels }) {
+  async postConnect({ rels }: { rels: any }) {
     Object.values(this.listAdapters).forEach(listAdapter => {
       listAdapter._postConnect({ rels, prisma: this.prisma });
     });
@@ -280,13 +303,19 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   }
 }
 
-class PrismaListAdapter extends BaseListAdapter {
-  constructor(key, parentAdapter) {
+export class PrismaListAdapter extends BaseListAdapter {
+  getListAdapterByKey: (key: string) => any;
+  model!: any;
+  key!: string;
+  fieldAdaptersByPath!: Record<string, any>;
+  fieldAdapters!: any[];
+  config: any;
+  constructor(key: string, parentAdapter: any) {
     super(...arguments);
     this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
   }
 
-  _postConnect({ rels, prisma }) {
+  _postConnect({ rels, prisma }: { rels: Rels; prisma: any }) {
     // https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema/models#queries-crud
     // "By default the name of the property is the lowercase form of the model name,
     // e.g. user for a User model or post for a Post model."
@@ -315,9 +344,9 @@ class PrismaListAdapter extends BaseListAdapter {
     return Object.keys(include).length > 0 ? include : undefined;
   }
 
-  async _create(_data) {
+  async _create(_data: Record<string, any>) {
     return this.model.create({
-      data: mapKeys(_data, (value, path) =>
+      data: mapKeys(_data, (value: any, path: string) =>
         this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].isRelationship
           ? {
               connect: Array.isArray(value)
@@ -332,7 +361,7 @@ class PrismaListAdapter extends BaseListAdapter {
     });
   }
 
-  async _update(id, _data) {
+  async _update(id: string, _data: Record<string, any>) {
     const include = this._include();
     const existingItem = await this.model.findUnique({ where: { id: Number(id) }, include });
     return this.model.update({
@@ -344,9 +373,9 @@ class PrismaListAdapter extends BaseListAdapter {
           Array.isArray(value)
         ) {
           const vs = value.map(x => Number(x));
-          const toDisconnect = existingItem[path].filter(({ id }) => !vs.includes(id));
+          const toDisconnect = existingItem[path].filter(({ id }: any) => !vs.includes(id));
           const toConnect = vs
-            .filter(id => !existingItem[path].map(({ id }) => id).includes(id))
+            .filter(id => !existingItem[path].map(({ id }: any) => id).includes(id))
             .map(id => ({ id }));
           return {
             disconnect: toDisconnect.length ? toDisconnect : undefined,
@@ -363,12 +392,12 @@ class PrismaListAdapter extends BaseListAdapter {
     });
   }
 
-  async _delete(id) {
+  async _delete(id: string) {
     return this.model.delete({ where: { id: Number(id) } });
   }
 
   ////////// Queries //////////
-  async _itemsQuery(args, { meta = false, from = {} } = {}) {
+  async _itemsQuery(args: Record<string, any>, { meta = false, from = {} } = {}) {
     const filter = this.prismaFilter({ args, meta, from });
     if (meta) {
       let count = await this.model.count(filter);
@@ -388,8 +417,8 @@ class PrismaListAdapter extends BaseListAdapter {
     }
   }
 
-  prismaFilter({ args: { where = {}, first, skip, sortBy, orderBy, search }, meta, from }) {
-    const ret = {};
+  prismaFilter({ args: { where = {}, first, skip, sortBy, orderBy, search }, meta, from }: any) {
+    const ret: any = {};
     const allWheres = this.processWheres(where);
 
     if (allWheres) {
@@ -459,7 +488,7 @@ class PrismaListAdapter extends BaseListAdapter {
       if (sortBy !== undefined) {
         // SELECT ... ORDER BY <orderField>[, <orderField>, ...]
         if (!ret.orderBy) ret.orderBy = {};
-        sortBy.forEach(s => {
+        sortBy.forEach((s: string) => {
           const [orderField, orderDirection] = s.split('_');
           const sortKey = this.fieldAdaptersByPath[orderField].sortKey || orderField;
           ret.orderBy[sortKey] = orderDirection.toLowerCase();
@@ -476,14 +505,14 @@ class PrismaListAdapter extends BaseListAdapter {
     return ret;
   }
 
-  processWheres(where) {
-    const processRelClause = (fieldPath, clause) =>
+  processWheres(where: Record<string, any>) {
+    const processRelClause = (fieldPath: string, clause: Record<string, any>) =>
       this.getListAdapterByKey(this.fieldAdaptersByPath[fieldPath].refListKey).processWheres(
         clause
       );
     const wheres = Object.entries(where).map(([condition, value]) => {
       if (condition === 'AND' || condition === 'OR') {
-        return { [condition]: value.map(w => this.processWheres(w)) };
+        return { [condition]: value.map((w: any) => this.processWheres(w)) };
       } else if (
         this.fieldAdaptersByPath[condition] &&
         this.fieldAdaptersByPath[condition].isRelationship
@@ -516,12 +545,17 @@ class PrismaListAdapter extends BaseListAdapter {
   }
 }
 
-class PrismaFieldAdapter extends BaseFieldAdapter {
+type Conditions = Record<string, (value: any) => any>;
+
+export class PrismaFieldAdapter extends BaseFieldAdapter {
+  config!: any;
+  field!: any;
+  path!: string;
   constructor() {
     super(...arguments);
   }
 
-  _schemaField({ type, extra = '' }) {
+  _schemaField({ type, extra = '' }: { type: string; extra?: string }) {
     const { isRequired, isUnique } = this.config;
     return `${this.path} ${type}${isRequired || this.field.isPrimaryKey ? '' : '?'} ${
       this.field.isPrimaryKey ? '@id' : ''
@@ -541,7 +575,7 @@ class PrismaFieldAdapter extends BaseFieldAdapter {
   //   `dbPath`: The database field/column name to be used in the comparison
   //   `f`: (non-string methods only) A value transformation function which converts from a string type
   //        provided by graphQL into a native adapter type.
-  equalityConditions(dbPath, f = identity) {
+  equalityConditions(dbPath: string, f = identity): Conditions {
     return {
       [this.path]: value => ({ [dbPath]: { equals: f(value) } }),
       [`${this.path}_not`]: value =>
@@ -553,7 +587,7 @@ class PrismaFieldAdapter extends BaseFieldAdapter {
     };
   }
 
-  equalityConditionsInsensitive(dbPath, f = identity) {
+  equalityConditionsInsensitive(dbPath: string, f = identity): Conditions {
     return {
       [`${this.path}_i`]: value => ({ [dbPath]: { equals: f(value), mode: 'insensitive' } }),
       [`${this.path}_not_i`]: value =>
@@ -568,17 +602,22 @@ class PrismaFieldAdapter extends BaseFieldAdapter {
     };
   }
 
-  inConditions(dbPath, f = identity) {
+  inConditions(dbPath: string, f = identity): Conditions {
     return {
       [`${this.path}_in`]: value =>
         value.includes(null)
-          ? { OR: [{ [dbPath]: { in: value.filter(x => x !== null).map(f) } }, { [dbPath]: null }] }
+          ? {
+              OR: [
+                { [dbPath]: { in: value.filter((x: any) => x !== null).map(f) } },
+                { [dbPath]: null },
+              ],
+            }
           : { [dbPath]: { in: value.map(f) } },
       [`${this.path}_not_in`]: value =>
         value.includes(null)
           ? {
               AND: [
-                { NOT: { [dbPath]: { in: value.filter(x => x !== null).map(f) } } },
+                { NOT: { [dbPath]: { in: value.filter((x: any) => x !== null).map(f) } } },
                 { NOT: { [dbPath]: null } },
               ],
             }
@@ -588,7 +627,7 @@ class PrismaFieldAdapter extends BaseFieldAdapter {
     };
   }
 
-  orderingConditions(dbPath, f = identity) {
+  orderingConditions(dbPath: string, f = identity): Conditions {
     return {
       [`${this.path}_lt`]: value => ({ [dbPath]: { lt: f(value) } }),
       [`${this.path}_lte`]: value => ({ [dbPath]: { lte: f(value) } }),
@@ -597,7 +636,7 @@ class PrismaFieldAdapter extends BaseFieldAdapter {
     };
   }
 
-  stringConditions(dbPath, f = identity) {
+  stringConditions(dbPath: string, f = identity): Conditions {
     return {
       [`${this.path}_contains`]: value => ({ [dbPath]: { contains: f(value) } }),
       [`${this.path}_not_contains`]: value => ({
@@ -614,7 +653,7 @@ class PrismaFieldAdapter extends BaseFieldAdapter {
     };
   }
 
-  stringConditionsInsensitive(dbPath, f = identity) {
+  stringConditionsInsensitive(dbPath: string, f = identity): Conditions {
     return {
       [`${this.path}_contains_i`]: value => ({
         [dbPath]: { contains: f(value), mode: 'insensitive' },
@@ -646,5 +685,3 @@ class PrismaFieldAdapter extends BaseFieldAdapter {
     };
   }
 }
-
-module.exports = { PrismaAdapter, PrismaListAdapter, PrismaFieldAdapter };
