@@ -1,13 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const { getGenerators, formatSchema } = require('@prisma/sdk');
-const { DbPush, MigrateDev } = require('@prisma/migrate');
-const {
+import fs from 'fs';
+import path from 'path';
+import { getGenerators, formatSchema } from '@prisma/sdk';
+import { DbPush, MigrateDev } from '@prisma/migrate';
+import {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('@keystone-next/keystone-legacy');
-const { defaultObj, mapKeys, identity, flatten } = require('@keystone-next/utils-legacy');
+} from '@keystone-next/keystone-legacy';
+import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
 
 class PrismaAdapter extends BaseKeystoneAdapter {
   constructor() {
@@ -651,4 +651,4 @@ class PrismaFieldAdapter extends BaseFieldAdapter {
   }
 }
 
-module.exports = { PrismaAdapter, PrismaListAdapter, PrismaFieldAdapter };
+export { PrismaAdapter, PrismaListAdapter, PrismaFieldAdapter };
