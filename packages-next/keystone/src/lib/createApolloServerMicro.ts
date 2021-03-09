@@ -1,6 +1,7 @@
 import { createSystem } from './createSystem';
 import { initConfig } from './initConfig';
 import { createSessionContext } from '../session';
+// @ts-ignore
 import { formatError } from '@keystone-next/keystone-legacy/lib/Keystone/format-error';
 import { ApolloServer } from 'apollo-server-micro';
 import { KeystoneConfig } from '@keystone-next/types';
