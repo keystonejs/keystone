@@ -14,9 +14,7 @@ export default config({
   session: withItemData(
     statelessSessions({
       secret: 'ABCDEFGH1234567887654321HGFEDCBA',
-      ironOptions: {
-        /* ... */
-      },
+      ironOptions: { /* ... */ },
       maxAge: 60 * 60 * 24,
       secure: true,
       path: '/',
@@ -44,16 +42,10 @@ import { statelessSessions, storedSessions } from '@keystone-next/keystone/sessi
 
 export default config({
   // Stateless
-  session: statelessSessions({
-    /* ... */
-  }),
+  session: statelessSessions({ /* ... */ }),
 
   // Stored
-  session: storedSessions({
-    store: {
-      /* ... */
-    } /* ... */,
-  }),
+  session: storedSessions({ store: { /* ... */ }, /* ... */ }),
   /* ... */
 });
 ```
@@ -83,22 +75,14 @@ A `SessionStore` object has the following interface:
 
 ```typescript
 const store = {
-  connect: () => {
-    /* ... */
-  },
-  disconnect: () => {
-    /* ... */
-  },
-  set: (sessionId, data) => {
-    /* ... */
-  },
+  connect: () => { /* ... */ },
+  disconnect: () => { /* ... */ },
+  set: (sessionId, data) => { /* ... */ },
   get: sessionId => {
     /* ... */
     return data;
   },
-  delete: sessionId => {
-    /* ... */
-  },
+  delete: sessionId => { /* ... */ },
 };
 ```
 
@@ -157,9 +141,7 @@ import { statelessSessions, withItemData } from '@keystone-next/keystone/session
 
 export default config({
   session: withItemData(
-    statelessSessions({
-      /* ... */
-    }),
+    statelessSessions({ /* ... */ }),
     { User: 'name isAdmin' }
   ),
   /* ... */
