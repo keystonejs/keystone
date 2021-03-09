@@ -19,7 +19,7 @@
     ]
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.9",
+    "@babel/runtime": "^7.13.10",
     "@braintree/sanitize-url": "^5.0.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-next/adapter-knex-legacy": "^13.1.0",

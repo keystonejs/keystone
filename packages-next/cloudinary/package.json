@@ -5,7 +5,7 @@
   "main": "dist/cloudinary.cjs.js",
   "module": "dist/cloudinary.esm.js",
   "dependencies": {
-    "@babel/runtime": "^7.13.9",
+    "@babel/runtime": "^7.13.10",
     "@keystone-next/admin-ui": "^10.0.1",
     "@keystone-next/fields-cloudinary-image-legacy": "^3.0.0",
     "@keystone-next/file-adapters-legacy": "^7.0.9",

@@ -30,7 +30,7 @@
     "@arch-ui/theme": "^0.0.12",
     "@arch-ui/tooltip": "^0.1.15",
     "@arch-ui/typography": "^0.0.19",
-    "@babel/runtime": "^7.13.9",
+    "@babel/runtime": "^7.13.10",
     "@emotion/core": "^10.1.1",
     "@keystone-next/access-control-legacy": "^8.0.0",
     "@keystone-next/adapter-knex-legacy": "^13.1.0",

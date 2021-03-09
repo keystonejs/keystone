@@ -13,7 +13,7 @@
     "react-dom": "^17.0.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.9",
+    "@babel/runtime": "^7.13.10",
     "@keystone-ui/core": "^2.0.1",
     "@keystone-ui/popover": "^2.0.1",
     "apply-ref": "^1.0.0"
