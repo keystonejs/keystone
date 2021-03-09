@@ -34,7 +34,6 @@
     "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md\"",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "heroku-postbuild": "yarn build && yarn workspace @keystone-next/demo-project-blog-legacy build",
     "npm-tag": "manypkg npm-tag",
     "update": "manypkg upgrade",
     "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn"
