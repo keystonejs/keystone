@@ -94,7 +94,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   async _runMigrations({ prismaSchema }) {
     if (this.migrationMode === 'prototype') {
       // Sync the database directly, without generating any migration
-      runMigrations('prototype', this._url(), prismaSchema, path.resolve(this.schemaPath));
+      await runMigrations('prototype', this._url(), prismaSchema, path.resolve(this.schemaPath));
     } else if (this.migrationMode === 'createOnly') {
       // Generate a migration, but do not apply it
       let migrateDev = new MigrateDev();

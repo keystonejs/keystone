@@ -15,6 +15,7 @@ export async function runMigrations(
 }
 
 export async function runPrototypeMigrations(dbUrl: string, schema: string, schemaPath: string) {
+  // this is kinda wrong because this is async but meh
   let oldValueOnDatabaseUrlEnvVar = process.env.DATABASE_URL;
   try {
     let before = Date.now();
