@@ -22,7 +22,7 @@
     "@keystone-next/adapter-knex-legacy": "^13.1.0",
     "@keystone-next/adapter-mongoose-legacy": "^11.1.0",
     "@keystone-next/fields-legacy": "^22.1.0",
-    "@primer/octicons-react": "^11.3.0",
+    "@primer/octicons-react": "^12.1.0",
     "image-extensions": "^1.1.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.14.1",

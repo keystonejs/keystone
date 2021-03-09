@@ -39,7 +39,7 @@
     "@keystone-next/app-admin-ui-legacy": "^7.4.1",
     "@keystone-next/server-side-graphql-client-legacy": "^2.0.1",
     "@keystone-next/utils-legacy": "^6.0.2",
-    "@primer/octicons-react": "^11.3.0",
+    "@primer/octicons-react": "^12.1.0",
     "@sindresorhus/slugify": "^1.1.0",
     "apollo-errors": "^1.9.0",
     "bcryptjs": "^2.4.3",
