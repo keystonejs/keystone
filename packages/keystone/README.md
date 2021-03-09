@@ -13,7 +13,6 @@ const { Keystone } = require('@keystone-next/keystone-legacy');
 
 const keystone = new Keystone({
   adapter,
-  appVersion,
   cookie,
   cookieSecret,
   defaultAccess,
@@ -23,26 +22,6 @@ const keystone = new Keystone({
   schemaNames,
 });
 ```
-
-### `appVersion`
-
-Configure the application version, which can be surfaced via HTTP headers or GraphQL.
-
-The `version` can be any string value you choose to use for your system. If `addVersionToHttpHeaders` is `true` then all requests will have the header `X-Keystone-App-Version` set. The version can also be queried from the GraphQL API as `{ appVersion }`. You can control whether this is exposed in your schema using `access`, which can be either a boolean, or an object with `schemaName` keys and boolean values.
-
-```javascript
-const keystone = new Keystone({
-  appVersion: {
-    version: '1.0.0',
-    addVersionToHttpHeaders: true,
-    access: true,
-  },
-});
-```
-
-#### Why don't we just use `access` to control the HTTP header?
-
-> We want to attach the HTTP header at the very top of the middleware stack, so if something gets rejected we can at least be sure of the system version that did the rejecting. This happens well before we have worked out which schema the person is trying to access, and therefore our access control isn’t ready to be used. Also, the access control that we set up is all about controlling access to the GraphQL API, and HTTP headers are a Different Thing, so even if it was technically possible to use the same mechanism, it really makes sense to decouple those two things.
 
 ### `cookie`
 
