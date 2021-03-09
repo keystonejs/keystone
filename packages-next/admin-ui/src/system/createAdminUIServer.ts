@@ -1,5 +1,4 @@
 import url from 'url';
-import next from 'next';
 import express from 'express';
 import type { KeystoneConfig, SessionStrategy, CreateContext } from '@keystone-next/types';
 import { createSessionContext } from '@keystone-next/keystone/session';
@@ -11,6 +10,9 @@ export const createAdminUIServer = async (
   projectAdminPath: string,
   sessionStrategy?: SessionStrategy<any>
 ) => {
+  /** We do this to stop webpack from bundling next inside of next */
+  const thing = 'next';
+  const next = require(thing);
   const app = next({ dev, dir: projectAdminPath });
   const handle = app.getRequestHandler();
   await app.prepare();
@@ -18,7 +20,7 @@ export const createAdminUIServer = async (
   const publicPages = ui?.publicPages ?? [];
   return async (req: express.Request, res: express.Response) => {
     const { pathname } = url.parse(req.url);
-    if (pathname?.startsWith('/_next')) {
+    if (pathname?.startsWith('/_next') || pathname === '/api/graphql') {
       handle(req, res);
       return;
     }

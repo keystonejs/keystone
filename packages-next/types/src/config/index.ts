@@ -30,6 +30,11 @@ export type KeystoneConfig = {
   session?: () => SessionStrategy<any>;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
+  /** Experimental config options */
+  experimental?: {
+    /** Enables nextjs graphql api route mode */
+    enableNextJsGraphqlApiEndpoint?: boolean;
+  };
 };
 
 // config.lists
