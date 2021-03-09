@@ -80,7 +80,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     await this._generatePrismaClient({ prismaSchema });
 
     // Run prisma migrations
-    await this._runMigrations();
+    await this._runMigrations({ prismaSchema });
   }
 
   async _runMigrations({ prismaSchema }) {
