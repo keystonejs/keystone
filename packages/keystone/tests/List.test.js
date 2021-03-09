@@ -94,16 +94,10 @@ class MockFieldImplementation {
   getGqlAuxQueries() {
     return [];
   }
-  getGqlAuxMutations() {
-    return [];
-  }
   gqlOutputFieldResolvers() {
     return {};
   }
   gqlAuxQueryResolvers() {
-    return {};
-  }
-  gqlAuxMutationResolvers() {
     return {};
   }
   gqlAuxFieldResolvers() {
@@ -722,12 +716,6 @@ describe(`getGqlQueries()`, () => {
   });
 });
 
-test('getFieldsRelatedTo', () => {
-  const list = setup();
-  expect(list.getFieldsRelatedTo('Other')).toEqual([list.fieldsByPath['other']]);
-  expect(list.getFieldsRelatedTo('Missing')).toEqual([]);
-});
-
 test('_wrapFieldResolverWith', async () => {
   const resolver = () => 'result';
   const list = setup();
@@ -758,11 +746,6 @@ test('gqlAuxFieldResolvers', () => {
 test('gqlAuxQueryResolvers', () => {
   const list = setup();
   expect(list.gqlAuxQueryResolvers()).toEqual({});
-});
-
-test('gqlAuxMutationResolvers', () => {
-  const list = setup();
-  expect(list.gqlAuxMutationResolvers()).toEqual({});
 });
 
 describe(`getGqlMutations()`, () => {
@@ -1265,15 +1248,6 @@ test('deleteManyMutation', async () => {
     { name: 'b', email: 'b@example.com', index: 1 },
     { name: 'c', email: 'c@example.com', index: 2 },
   ]);
-});
-
-test('getFieldByPath', () => {
-  const list = setup();
-  expect(list.getFieldByPath('name').path).toEqual('name');
-  expect(list.getFieldByPath('email').path).toEqual('email');
-  expect(list.getFieldByPath('hidden').path).toEqual('hidden');
-  expect(list.getFieldByPath('writeOnce').path).toEqual('writeOnce');
-  expect(list.getFieldByPath('missing')).toBe(undefined);
 });
 
 describe('List Hooks', () => {

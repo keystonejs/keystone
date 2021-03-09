@@ -34,9 +34,6 @@ class MockFieldImplementation {
   getGqlAuxQueries() {
     return ['getFoo: Boolean'];
   }
-  getGqlAuxMutations() {
-    return ['mutateFoo: Boolean'];
-  }
   extendAdminViews(views) {
     return views;
   }
@@ -87,7 +84,6 @@ test('unique typeDefs', () => {
   const schema = keystone.dumpSchema();
   expect(schema.match(/scalar Foo/g) || []).toHaveLength(1);
   expect(schema.match(/getFoo: Boolean/g) || []).toHaveLength(1);
-  expect(schema.match(/mutateFoo: Boolean/g) || []).toHaveLength(1);
 });
 
 describe('Keystone.createList()', () => {
