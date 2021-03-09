@@ -2172,19 +2172,12 @@
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"
   integrity sha512-QD1PhQk+s31P1ixsX0H0Suoupp3VMXzIVMSwobR3F3MSUO2YCV0B7xqLcUw/Bh8yuvd3LhpyqLQWTNcRmp6IdQ==
 
-"@hapi/b64@4.x.x":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@hapi/b64/-/b64-4.2.1.tgz#bf8418d7907c5e73463f2e3b5c6fca7e9f2a1357"
-  integrity sha512-zqHpQuH5CBMw6hADzKfU/IGNrxq1Q+/wTYV+OiZRQN9F3tMyk+9BUMeBvFRMamduuqL8iSp62QAnJ+7ATiYLWA==
+"@hapi/b64@5.x.x":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@hapi/b64/-/b64-5.0.0.tgz#b8210cbd72f4774985e78569b77e97498d24277d"
+  integrity sha512-ngu0tSEmrezoiIaNGG6rRvKOUkUuDdf4XTPnONHGYfSGRmDqPZX5oJL6HAdKTo1UQHECbdB4OzhWrfgVppjHUw==
   dependencies:
-    "@hapi/hoek" "8.x.x"
-
-"@hapi/boom@7.x.x":
-  version "7.4.11"
-  resolved "https://registry.yarnpkg.com/@hapi/boom/-/boom-7.4.11.tgz#37af8417eb9416aef3367aa60fa04a1a9f1fc262"
-  integrity sha512-VSU/Cnj1DXouukYxxkes4nNJonCnlogHvIff1v1RVoN4xzkKhMXX+GRmb3NyH1iar10I9WFPDv2JPwfH3GaV0A==
-  dependencies:
-    "@hapi/hoek" "8.x.x"
+    "@hapi/hoek" "9.x.x"
 
 "@hapi/boom@9.x.x":
   version "9.1.1"
@@ -2198,12 +2191,17 @@
   resolved "https://registry.yarnpkg.com/@hapi/bourne/-/bourne-1.3.2.tgz#0a7095adea067243ce3283e1b56b8a8f453b242a"
   integrity sha512-1dVNHT76Uu5N3eJNTYcvxee+jzX4Z9lfciqRRHCU27ihbUcYi+iSc2iml5Ke1LXe1SyJCLA0+14Jh4tXJgOppA==
 
-"@hapi/cryptiles@4.x.x":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@hapi/cryptiles/-/cryptiles-4.2.1.tgz#ff0f18d79074659838caedbb911851313ad1ffbc"
-  integrity sha512-XoqgKsHK0l/VpqPs+tr6j6vE+VQ3+2bkF2stvttmc7xAOf1oSAwHcJ0tlp/6MxMysktt1IEY0Csy3khKaP9/uQ==
+"@hapi/bourne@2.x.x":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@hapi/bourne/-/bourne-2.0.0.tgz#5bb2193eb685c0007540ca61d166d4e1edaf918d"
+  integrity sha512-WEezM1FWztfbzqIUbsDzFRVMxSoLy3HugVcux6KDDtTqzPsLE8NDRHfXvev66aH1i2oOKKar3/XDjbvh/OUBdg==
+
+"@hapi/cryptiles@5.x.x":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@hapi/cryptiles/-/cryptiles-5.1.0.tgz#655de4cbbc052c947f696148c83b187fc2be8f43"
+  integrity sha512-fo9+d1Ba5/FIoMySfMqPBR/7Pa29J2RsiPrl7bkwo5W5o+AN1dAYQRi4SPrPwwVxVGKjgLOEWrsvt1BonJSfLA==
   dependencies:
-    "@hapi/boom" "7.x.x"
+    "@hapi/boom" "9.x.x"
 
 "@hapi/hoek@8.x.x", "@hapi/hoek@^8.3.0":
   version "8.5.1"
@@ -2215,16 +2213,16 @@
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.1.1.tgz#9daf5745156fd84b8e9889a2dc721f0c58e894aa"
   integrity sha512-CAEbWH7OIur6jEOzaai83jq3FmKmv4PmX1JYfs9IrYcGEVI/lyL1EXJGCj7eFVJ0bg5QR8LMxBlEtA+xKiLpFw==
 
-"@hapi/iron@^5.1.4":
-  version "5.1.4"
-  resolved "https://registry.yarnpkg.com/@hapi/iron/-/iron-5.1.4.tgz#7406f36847f798f52b92d1d97f855e27973832b7"
-  integrity sha512-+ElC+OCiwWLjlJBmm8ZEWjlfzTMQTdgPnU/TsoU5QsktspIWmWi9IU4kU83nH+X/SSya8TP8h8P11Wr5L7dkQQ==
+"@hapi/iron@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@hapi/iron/-/iron-6.0.0.tgz#ca3f9136cda655bdd6028de0045da0de3d14436f"
+  integrity sha512-zvGvWDufiTGpTJPG1Y/McN8UqWBu0k/xs/7l++HVU535NLHXsHhy54cfEMdW7EjwKfbBfM9Xy25FmTiobb7Hvw==
   dependencies:
-    "@hapi/b64" "4.x.x"
-    "@hapi/boom" "7.x.x"
-    "@hapi/bourne" "1.x.x"
-    "@hapi/cryptiles" "4.x.x"
-    "@hapi/hoek" "8.x.x"
+    "@hapi/b64" "5.x.x"
+    "@hapi/boom" "9.x.x"
+    "@hapi/bourne" "2.x.x"
+    "@hapi/cryptiles" "5.x.x"
+    "@hapi/hoek" "9.x.x"
 
 "@hapi/joi@^15.1.0":
   version "15.1.1"

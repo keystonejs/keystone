@@ -11,7 +11,7 @@
   "repository": "https://github.com/keystonejs/keystone/tree/master/tests/api-tests",
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
-    "@hapi/iron": "^5.1.4",
+    "@hapi/iron": "^6.0.0",
     "@keystone-next/adapter-knex-legacy": "*",
     "@keystone-next/adapter-mongoose-legacy": "*",
     "@keystone-next/app-graphql-legacy": "*",
