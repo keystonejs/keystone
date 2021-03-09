@@ -12,9 +12,11 @@ export function createSystem(
 ) {
   const keystone = createKeystone(config, dotKeystonePath, migrationMode, prismaClient);
 
-  const graphQLSchema = createGraphQLSchema(config, keystone);
+  const graphQLSchema = createGraphQLSchema(config, keystone, 'public');
 
-  const createContext = makeCreateContext({ keystone, graphQLSchema });
+  const internalSchema = createGraphQLSchema(config, keystone, 'internal');
+
+  const createContext = makeCreateContext({ keystone, graphQLSchema, internalSchema });
 
   return { keystone, graphQLSchema, createContext };
 }

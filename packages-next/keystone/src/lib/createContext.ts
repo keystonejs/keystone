@@ -12,34 +12,45 @@ import { accessControlContext, skipAccessControlContext } from './createAccessCo
 
 export function makeCreateContext({
   graphQLSchema,
+  internalSchema,
   keystone,
 }: {
   graphQLSchema: GraphQLSchema;
+  internalSchema: GraphQLSchema;
   keystone: BaseKeystone;
 }) {
   // We precompute these helpers here rather than every time createContext is called
   // because they require parsing the entire schema, which is potentially expensive.
-  const getArgsByList: Record<string, ReturnType<typeof getArgsFactory>> = {};
+  const publicGetArgsByList: Record<string, ReturnType<typeof getArgsFactory>> = {};
   for (const [listKey, list] of Object.entries(keystone.lists)) {
-    getArgsByList[listKey] = getArgsFactory(list, graphQLSchema);
+    publicGetArgsByList[listKey] = getArgsFactory(list, graphQLSchema);
+  }
+
+  const internalGetArgsByList: Record<string, ReturnType<typeof getArgsFactory>> = {};
+  for (const [listKey, list] of Object.entries(keystone.lists)) {
+    internalGetArgsByList[listKey] = getArgsFactory(list, internalSchema);
   }
 
   const createContext = ({
     sessionContext,
     skipAccessControl = false,
     req,
+    schemaName = 'public',
   }: {
     sessionContext?: SessionContext<any>;
     skipAccessControl?: boolean;
     req?: IncomingMessage;
+    schemaName?: 'public' | 'internal';
   } = {}): KeystoneContext => {
+    const schema = schemaName === 'public' ? graphQLSchema : internalSchema;
+
     const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, variables }) => {
       if (typeof query === 'string') {
         query = parse(query);
       }
       return Promise.resolve(
         execute({
-          schema: graphQLSchema,
+          schema,
           document: query,
           contextValue: contextToReturn,
           variableValues: variables,
@@ -55,7 +66,7 @@ export function makeCreateContext({
     };
     const itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
     const contextToReturn: KeystoneContext = {
-      schemaName: 'public',
+      schemaName,
       ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
       lists: itemAPI,
       totalResults: 0,
@@ -65,9 +76,10 @@ export function makeCreateContext({
       knex: keystone.adapter.knex,
       mongoose: keystone.adapter.mongoose,
       prisma: keystone.adapter.prisma,
-      graphql: { raw: rawGraphQL, run: runGraphQL, schema: graphQLSchema },
+      graphql: { raw: rawGraphQL, run: runGraphQL, schema },
       maxTotalResults: keystone.queryLimits.maxTotalResults,
-      sudo: () => createContext({ sessionContext, skipAccessControl: true, req }),
+      sudo: () =>
+        createContext({ sessionContext, skipAccessControl: true, req, schemaName: 'internal' }),
       exitSudo: () => createContext({ sessionContext, skipAccessControl: false, req }),
       withSession: session =>
         createContext({
@@ -82,6 +94,7 @@ export function makeCreateContext({
       executeGraphQL: rawGraphQL,
       gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
     };
+    const getArgsByList = schemaName === 'public' ? publicGetArgsByList : internalGetArgsByList;
     for (const [listKey, list] of Object.entries(keystone.lists)) {
       itemAPI[listKey] = itemAPIForList(list, contextToReturn, getArgsByList[listKey]);
     }
