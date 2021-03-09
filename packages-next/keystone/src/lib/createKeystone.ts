@@ -31,9 +31,9 @@ export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, 
           ? 'prototype'
           : script === 'generate'
           ? 'createOnly'
-          : script === 'start'
-          ? 'none'
-          : 'dev',
+          : script === 'dev'
+          ? 'dev'
+          : 'none',
       ...db,
     });
   }
