@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/fields-unsplash-legacy",
   "description": "KeystoneJS Unsplash Field Type",
-  "version": "3.2.1",
+  "version": "4.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-unsplash",
@@ -17,8 +17,8 @@
     "@emotion/core": "^10.1.1",
     "@keystone-next/adapter-knex-legacy": "^13.1.0",
     "@keystone-next/adapter-mongoose-legacy": "^11.1.0",
-    "@keystone-next/adapter-prisma-legacy": "^3.1.0",
-    "@keystone-next/fields-legacy": "^22.0.1",
+    "@keystone-next/adapter-prisma-legacy": "^3.2.0",
+    "@keystone-next/fields-legacy": "^22.1.0",
     "node-fetch": "^2.6.1",
     "query-string": "^6.14.1",
     "unsplash-js": "^6.3.0"

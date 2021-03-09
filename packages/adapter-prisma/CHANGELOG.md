@@ -1,5 +1,11 @@
 # @keystonejs/adapter-prisma
 
+## 3.2.0
+
+### Minor Changes
+
+- [`7bb173018`](https://github.com/keystonejs/keystone/commit/7bb173018afc6d8af4c602dc86c5c4b471277b97) [#5040](https://github.com/keystonejs/keystone/pull/5040) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Updated Prisma to 2.18.0
+
 ## 3.1.0
 
 ### Minor Changes

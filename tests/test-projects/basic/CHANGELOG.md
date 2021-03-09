@@ -1,5 +1,18 @@
 # @keystonejs/cypress-project-basic
 
+## 7.0.4
+
+### Patch Changes
+
+- [`afccc27ea`](https://github.com/keystonejs/keystone/commit/afccc27eaa3a0574fa326dcc791526c4ac8f5e43) [#5036](https://github.com/keystonejs/keystone/pull/5036) Thanks [@timleslie](https://github.com/timleslie)! - Remove support for `fields-content` blocks.
+
+- Updated dependencies [[`7bb173018`](https://github.com/keystonejs/keystone/commit/7bb173018afc6d8af4c602dc86c5c4b471277b97), [`aba7c45d7`](https://github.com/keystonejs/keystone/commit/aba7c45d7645aa71b50de070d37896b73248751a), [`afccc27ea`](https://github.com/keystonejs/keystone/commit/afccc27eaa3a0574fa326dcc791526c4ac8f5e43)]:
+  - @keystone-next/adapter-prisma-legacy@3.2.0
+  - @keystone-next/fields-legacy@22.1.0
+  - @keystone-next/fields-cloudinary-image-legacy@3.0.0
+  - @keystone-next/fields-oembed-legacy@4.0.0
+  - @keystone-next/fields-unsplash-legacy@4.0.0
+
 ## 7.0.3
 
 ### Patch Changes
