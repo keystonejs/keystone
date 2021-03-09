@@ -26,7 +26,6 @@ export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, 
   } else if (db.adapter === 'prisma_postgresql') {
     adapter = new PrismaAdapter({
       getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
-
       migrationMode:
         script === 'prototype'
           ? 'prototype'
