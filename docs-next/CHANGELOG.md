@@ -1,5 +1,13 @@
 # @keystone-next/website
 
+## 1.1.1
+
+### Patch Changes
+
+- [#5073](https://github.com/keystonejs/keystone/pull/5073) [`ba637676b`](https://github.com/keystonejs/keystone/commit/ba637676b83625b06581daae6fd625d8fb0b612d) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Moved viewport meta tag from \_document to \_app to avoid dedupe issues and next warnings.
+
+* [#5072](https://github.com/keystonejs/keystone/pull/5072) [`5a78af92e`](https://github.com/keystonejs/keystone/commit/5a78af92e1ab364f9ab444c5244f9581e33bad1f) Thanks [@timleslie](https://github.com/timleslie)! - Updated cypress tests to pre-build the site before running the tests.
+
 ## 1.1.0
 
 ### Minor Changes
