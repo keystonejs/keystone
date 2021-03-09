@@ -1,5 +1,17 @@
 # @keystonejs/fields-unsplash
 
+## 4.0.0
+
+### Major Changes
+
+- [`afccc27ea`](https://github.com/keystonejs/keystone/commit/afccc27eaa3a0574fa326dcc791526c4ac8f5e43) [#5036](https://github.com/keystonejs/keystone/pull/5036) Thanks [@timleslie](https://github.com/timleslie)! - Remove support for `fields-content` blocks.
+
+### Patch Changes
+
+- Updated dependencies [[`7bb173018`](https://github.com/keystonejs/keystone/commit/7bb173018afc6d8af4c602dc86c5c4b471277b97), [`aba7c45d7`](https://github.com/keystonejs/keystone/commit/aba7c45d7645aa71b50de070d37896b73248751a)]:
+  - @keystone-next/adapter-prisma-legacy@3.2.0
+  - @keystone-next/fields-legacy@22.1.0
+
 ## 3.2.1
 
 ### Patch Changes

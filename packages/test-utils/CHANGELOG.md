@@ -1,5 +1,13 @@
 # @keystonejs/test-utils
 
+## 13.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`7bb173018`](https://github.com/keystonejs/keystone/commit/7bb173018afc6d8af4c602dc86c5c4b471277b97), [`9b202b31a`](https://github.com/keystonejs/keystone/commit/9b202b31a7d4944b709fe0ce58d6ca7ec1523a02)]:
+  - @keystone-next/adapter-prisma-legacy@3.2.0
+  - @keystone-next/keystone@11.0.1
+
 ## 13.0.0
 
 ### Major Changes

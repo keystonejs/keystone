@@ -1,5 +1,16 @@
 # @keystonejs/fields
 
+## 22.1.0
+
+### Minor Changes
+
+- [`aba7c45d7`](https://github.com/keystonejs/keystone/commit/aba7c45d7645aa71b50de070d37896b73248751a) [#4938](https://github.com/keystonejs/keystone/pull/4938) Thanks [@MurzNN](https://github.com/MurzNN)! - Added a `decimal` field type to keystone-next.
+
+### Patch Changes
+
+- Updated dependencies [[`7bb173018`](https://github.com/keystonejs/keystone/commit/7bb173018afc6d8af4c602dc86c5c4b471277b97)]:
+  - @keystone-next/adapter-prisma-legacy@3.2.0
+
 ## 22.0.1
 
 ### Patch Changes
