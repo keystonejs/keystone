@@ -2,6 +2,7 @@ import { appTemplate } from './app';
 import { homeTemplate } from './home';
 import { listTemplate } from './list';
 import { itemTemplate } from './item';
+import { apiTemplate } from './api';
 import { noAccessTemplate } from './no-access';
 
 import type { BaseKeystone, KeystoneConfig } from '@keystone-next/types';
@@ -37,4 +38,13 @@ export const writeAdminFiles = (
     ({ adminUILabels: { path }, key }) =>
       ({ mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` } as const)
   ),
+  ...(config.experimental?.enableNextJsGraphqlApiEndpoint
+    ? [
+        {
+          mode: 'write' as const,
+          src: apiTemplate,
+          outputPath: 'pages/api/graphql.js',
+        },
+      ]
+    : []),
 ];

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/admin-ui",
-  "version": "10.0.0",
+  "version": "10.0.1",
   "license": "MIT",
   "dependencies": {
     "@apollo/client": "^3.3.11",
@@ -8,8 +8,8 @@
     "@emotion/hash": "^0.8.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-next/admin-ui-utils": "^3.0.1",
-    "@keystone-next/keystone": "^11.0.0",
-    "@keystone-next/types": "^14.0.0",
+    "@keystone-next/keystone": "^11.0.1",
+    "@keystone-next/types": "^14.0.1",
     "@keystone-ui/button": "^3.0.1",
     "@keystone-ui/core": "^2.0.1",
     "@keystone-ui/fields": "^2.0.1",
@@ -37,7 +37,7 @@
     "prettier": "^2.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "resolve": "^1.19.0",
+    "resolve": "^1.20.0",
     "tabbable": "^5.1.6"
   },
   "engines": {

@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/fields",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "license": "MIT",
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
@@ -9,12 +9,12 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.9",
-    "@keystone-next/admin-ui": "^10.0.0",
+    "@keystone-next/admin-ui": "^10.0.1",
     "@keystone-next/admin-ui-utils": "^3.0.1",
     "@keystone-next/fields-auto-increment-legacy": "^8.1.5",
-    "@keystone-next/fields-legacy": "^22.0.1",
+    "@keystone-next/fields-legacy": "^22.1.0",
     "@keystone-next/fields-mongoid-legacy": "^9.1.5",
-    "@keystone-next/types": "^14.0.0",
+    "@keystone-next/types": "^14.0.1",
     "@keystone-ui/button": "^3.0.1",
     "@keystone-ui/core": "^2.0.1",
     "@keystone-ui/fields": "^2.0.1",
@@ -28,7 +28,7 @@
     "@types/keystonejs__fields": "^5.1.1",
     "@types/react": "^17.0.3",
     "bcryptjs": "^2.4.3",
-    "date-fns": "^2.18.0",
+    "date-fns": "^2.19.0",
     "fast-deep-equal": "^3.1.3",
     "intersection-observer": "^0.12.0",
     "react": "^17.0.1"
