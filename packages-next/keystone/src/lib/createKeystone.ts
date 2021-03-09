@@ -7,9 +7,13 @@ import { MongooseAdapter } from '@keystone-next/adapter-mongoose-legacy';
 import { KnexAdapter } from '@keystone-next/adapter-knex-legacy';
 // @ts-ignore
 import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
-import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
+import type { KeystoneConfig, BaseKeystone, MigrationMode } from '@keystone-next/types';
 
-export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, script: string) {
+export function createKeystone(
+  config: KeystoneConfig,
+  dotKeystonePath: string,
+  migrationMode: MigrationMode
+) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
@@ -26,14 +30,7 @@ export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, 
   } else if (db.adapter === 'prisma_postgresql') {
     adapter = new PrismaAdapter({
       getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
-      migrationMode:
-        script === 'prototype'
-          ? 'prototype'
-          : script === 'generate'
-          ? 'createOnly'
-          : script === 'start'
-          ? 'none'
-          : 'dev',
+      migrationMode,
       ...db,
     });
   }

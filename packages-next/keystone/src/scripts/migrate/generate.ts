@@ -12,7 +12,7 @@ export const generate = async ({ dotKeystonePath }: StaticPaths) => {
   const { keystone, graphQLSchema, createContext } = createSystem(
     config,
     dotKeystonePath,
-    'generate'
+    'createOnly'
   );
 
   console.log('✨ Generating graphQL schema');

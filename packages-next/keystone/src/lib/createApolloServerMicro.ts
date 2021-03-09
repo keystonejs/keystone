@@ -8,7 +8,7 @@ import { KeystoneConfig } from '@keystone-next/types';
 
 export const createApolloServerMicro = (keystoneConfig: KeystoneConfig) => {
   const sessionStrategy = keystoneConfig.session ? keystoneConfig.session() : undefined;
-  const system = createSystem(initConfig(keystoneConfig), '.keystone', 'start');
+  const system = createSystem(initConfig(keystoneConfig), '.keystone', 'none');
 
   const connectionPromise = system.keystone.connect();
 
