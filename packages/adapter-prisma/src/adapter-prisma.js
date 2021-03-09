@@ -1,13 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 import { getGenerators, formatSchema } from '@prisma/sdk';
-import { DbPush, MigrateDev } from '@prisma/migrate';
+import { MigrateDev } from '@prisma/migrate';
 import {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
 } from '@keystone-next/keystone-legacy';
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
+// eslint-disable-next-line import/no-unresolved
+import { runMigrations } from './migrations';
 
 class PrismaAdapter extends BaseKeystoneAdapter {
   constructor() {
@@ -75,26 +77,16 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this._writePrismaSchema({ prismaSchema });
 
     // Generate prisma client
-    await this._generatePrismaClient();
+    await this._generatePrismaClient({ prismaSchema });
 
     // Run prisma migrations
     await this._runMigrations();
   }
 
-  async _runMigrations() {
+  async _runMigrations({ prismaSchema }) {
     if (this.migrationMode === 'prototype') {
       // Sync the database directly, without generating any migration
-      let dbPush = new DbPush();
-      let oldDatabaseURLValue = process.env.DATABASE_URL;
-      process.env.DATABASE_URL = this._url();
-      await dbPush.parse([
-        '--accept-data-loss',
-        '--skip-generate',
-        '--preview-feature',
-        '--schema',
-        this.schemaPath,
-      ]);
-      process.env.DATABASE_URL = oldDatabaseURLValue;
+      runMigrations('prototype', this._url(), prismaSchema, path.resolve(this.schemaPath));
     } else if (this.migrationMode === 'createOnly') {
       // Generate a migration, but do not apply it
       let migrateDev = new MigrateDev();
