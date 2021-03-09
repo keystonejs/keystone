@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 import { getGenerators, formatSchema } from '@prisma/sdk';
 import { MigrateDev } from '@prisma/migrate';
 import {
@@ -44,6 +45,13 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     if (this.provider === 'postgresql') {
       return this.dbSchemaName ? `${this.url}?schema=${this.dbSchemaName}` : this.url;
     }
+  }
+
+  _runPrismaCmd(cmd) {
+    return execSync(`yarn prisma ${cmd} --schema "${this.schemaPath}"`, {
+      env: { ...process.env, DATABASE_URL: this._url() },
+      encoding: 'utf-8',
+    });
   }
 
   async deploy(rels) {
