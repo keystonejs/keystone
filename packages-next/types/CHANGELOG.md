@@ -1,5 +1,11 @@
 # @keystone-next/types
 
+## 14.0.1
+
+### Patch Changes
+
+- [`9b202b31a`](https://github.com/keystonejs/keystone/commit/9b202b31a7d4944b709fe0ce58d6ca7ec1523a02) [#5033](https://github.com/keystonejs/keystone/pull/5033) Thanks [@rohan-deshpande](https://github.com/rohan-deshpande)! - Added `experimental` config namespace and `enableNextJsGraphqlApiEndpoint` property to support the GraphQL API being served from a Next.js API route rather than Express
+
 ## 14.0.0
 
 ### Major Changes

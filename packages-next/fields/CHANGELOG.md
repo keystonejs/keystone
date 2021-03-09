@@ -1,5 +1,18 @@
 # @keystone-next/fields
 
+## 5.2.0
+
+### Minor Changes
+
+- [`aba7c45d7`](https://github.com/keystonejs/keystone/commit/aba7c45d7645aa71b50de070d37896b73248751a) [#4938](https://github.com/keystonejs/keystone/pull/4938) Thanks [@MurzNN](https://github.com/MurzNN)! - Added a `decimal` field type to keystone-next.
+
+### Patch Changes
+
+- Updated dependencies [[`aba7c45d7`](https://github.com/keystonejs/keystone/commit/aba7c45d7645aa71b50de070d37896b73248751a), [`9b202b31a`](https://github.com/keystonejs/keystone/commit/9b202b31a7d4944b709fe0ce58d6ca7ec1523a02)]:
+  - @keystone-next/fields-legacy@22.1.0
+  - @keystone-next/admin-ui@10.0.1
+  - @keystone-next/types@14.0.1
+
 ## 5.1.0
 
 ### Minor Changes
