@@ -40,7 +40,7 @@ export class PrismaAdapter extends BaseKeystoneAdapter {
     this.url = this.config.url || process.env.DATABASE_URL;
   }
 
-  async _prepareSchema(rels: any) {
+  async _prepareSchema(rels: Rels) {
     const clientDir = 'generated-client';
     const prismaSchema = await this._generatePrismaSchema({ rels, clientDir });
     // See if there is a prisma client available for this hash
@@ -68,13 +68,13 @@ export class PrismaAdapter extends BaseKeystoneAdapter {
     });
   }
 
-  async deploy(rels: any) {
+  async deploy(rels: Rels) {
     // Apply any migrations which haven't already been applied
     await this._prepareSchema(rels);
     this._runPrismaCmd(`migrate deploy --preview-feature`);
   }
 
-  async _connect({ rels }: { rels: any }) {
+  async _connect({ rels }: { rels: Rels }) {
     await this._generateClient(rels);
     const { PrismaClient } = require(this.clientPath);
     this.prisma = new PrismaClient({
@@ -84,7 +84,7 @@ export class PrismaAdapter extends BaseKeystoneAdapter {
     await this.prisma.$connect();
   }
 
-  async _generateClient(rels: any) {
+  async _generateClient(rels: Rels) {
     // 1. Generate a formatted schema
     const { prismaSchema } = await this._prepareSchema(rels);
 
@@ -153,7 +153,7 @@ export class PrismaAdapter extends BaseKeystoneAdapter {
     { fieldAdapters: any[]; key: string; _postConnect: (args: any) => Promise<any> }
   >;
 
-  async _generatePrismaSchema({ rels, clientDir }: { rels: any[]; clientDir: string }) {
+  async _generatePrismaSchema({ rels, clientDir }: { rels: Rels; clientDir: string }) {
     const models = Object.values(this.listAdapters).map(listAdapter => {
       const scalarFields = flatten(
         listAdapter.fieldAdapters
@@ -240,7 +240,7 @@ export class PrismaAdapter extends BaseKeystoneAdapter {
     return await formatSchema({ schema: header + models.join('\n') + '\n' + enums.join('\n') });
   }
 
-  async postConnect({ rels }: { rels: any }) {
+  async postConnect({ rels }: { rels: Rels }) {
     Object.values(this.listAdapters).forEach(listAdapter => {
       listAdapter._postConnect({ rels, prisma: this.prisma });
     });
