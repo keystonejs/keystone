@@ -15,13 +15,14 @@ export async function runMigrations(
 }
 
 export async function runPrototypeMigrations(dbUrl: string, schema: string, schemaPath: string) {
-  let before = Date.now();
-  let migrate = new Migrate(schemaPath);
-
-  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
   let oldValueOnDatabaseUrlEnvVar = process.env.DATABASE_URL;
   try {
+    let before = Date.now();
     process.env.DATABASE_URL = dbUrl;
+
+    let migrate = new Migrate(schemaPath);
+
+    await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
     let migration = await migrate.engine.schemaPush({
       // TODO: we probably want to do something like db push does where either there's
       // a prompt or an argument needs to be passed to make it force(i.e. lose data)
