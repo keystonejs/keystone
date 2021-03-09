@@ -87,21 +87,33 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       let dbPush = new DbPush();
       let oldDatabaseURLValue = process.env.DATABASE_URL;
       process.env.DATABASE_URL = this._url();
-      await dbPush.parse(['--accept-data-loss', '--preview-feature', '--schema', this.schemaPath]);
+      await dbPush.parse([
+        '--accept-data-loss',
+        '--skip-generate',
+        '--preview-feature',
+        '--schema',
+        this.schemaPath,
+      ]);
       process.env.DATABASE_URL = oldDatabaseURLValue;
     } else if (this.migrationMode === 'createOnly') {
       // Generate a migration, but do not apply it
       let migrateDev = new MigrateDev();
       let oldDatabaseURLValue = process.env.DATABASE_URL;
       process.env.DATABASE_URL = this._url();
-      await migrateDev.parse(['--create-only', '--preview-feature', '--schema', this.schemaPath]);
+      await migrateDev.parse([
+        '--create-only',
+        '--skip-generate',
+        '--preview-feature',
+        '--schema',
+        this.schemaPath,
+      ]);
       process.env.DATABASE_URL = oldDatabaseURLValue;
     } else if (this.migrationMode === 'dev') {
       // Generate and apply a migration if required.
       let migrateDev = new MigrateDev();
       let oldDatabaseURLValue = process.env.DATABASE_URL;
       process.env.DATABASE_URL = this._url();
-      await migrateDev.parse(['--preview-feature', '--schema', this.schemaPath]);
+      await migrateDev.parse(['--preview-feature', '--skip-generate', '--schema', this.schemaPath]);
       process.env.DATABASE_URL = oldDatabaseURLValue;
     } else if (this.migrationMode === 'none') {
       // Explicitly disable running any migrations
