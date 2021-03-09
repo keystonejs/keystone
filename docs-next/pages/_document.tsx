@@ -20,11 +20,6 @@ class MyDocument extends Document {
           <link rel="mask-icon" color="#2684FF" href="/safari-pinned-tab.svg" />
           <link rel="shortcut icon" href="/favicon.ico" />
 
-          <meta
-            name="viewport"
-            content="width=device-width,initial-scale=1,shrink-to-fit=no,viewport-fit=cover"
-          />
-
           <meta property="og:image" content={`${siteUrl}/og-image-landscape.png`} />
           <meta property="og:image:width" content="761" />
           <meta property="og:image:height" content="410" />
