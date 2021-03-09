@@ -6,7 +6,6 @@ import {
   KnexOEmbedInterface,
   PrismaOEmbedInterface,
 } from './Implementation';
-import { OEmbedBlock } from './OEmbedBlock';
 export { IframelyOEmbedAdapter } from './iframely/iframely';
 
 export const OEmbed = {
@@ -21,8 +20,5 @@ export const OEmbed = {
     mongoose: MongoOEmbedInterface,
     knex: KnexOEmbedInterface,
     prisma: PrismaOEmbedInterface,
-  },
-  blocks: {
-    oEmbed: OEmbedBlock,
   },
 };

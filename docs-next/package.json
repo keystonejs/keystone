@@ -21,7 +21,7 @@
     "@keystone-ui/tooltip": "^2.0.1",
     "@mdx-js/loader": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
-    "@next/mdx": "^10.0.7",
+    "@next/mdx": "^10.0.8",
     "@preconstruct/next": "^2.0.0",
     "@primer/octicons-react": "^11.3.0",
     "@sindresorhus/slugify": "^1.1.0",
@@ -29,17 +29,17 @@
     "@types/classnames": "^2.2.11",
     "@types/gtag.js": "^0.0.4",
     "@types/mdx-js__react": "^1.5.3",
-    "@types/react": "^17.0.2",
-    "@types/react-dom": "^17.0.1",
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.2",
     "@types/webpack": "^4.41.26",
-    "autoprefixer": "^10.2.4",
+    "autoprefixer": "^10.2.5",
     "classnames": "^2.2.6",
     "copy-to-clipboard": "^3.3.1",
     "cypress": "^5.6.0",
     "facepaint": "^1.2.1",
-    "next": "10.0.7",
+    "next": "10.0.8",
     "next-compose-plugins": "^2.2.1",
-    "postcss": "^8.2.6",
+    "postcss": "^8.2.7",
     "prism-react-renderer": "^1.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "start-server-and-test": "^1.12.0",
-    "typescript": "^4.1.5"
+    "typescript": "^4.2.3"
   },
   "engines": {
     "node": ">=10.0.0"
