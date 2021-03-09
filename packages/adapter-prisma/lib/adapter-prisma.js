@@ -1,8 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
 const { getGenerators, formatSchema } = require('@prisma/sdk');
-const {MigrateDev} = require('@prisma/migrate');
+const { DbPush, MigrateDev } = require('@prisma/migrate');
 const {
   BaseKeystoneAdapter,
   BaseListAdapter,
@@ -45,14 +44,6 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     }
   }
 
-  _runPrismaCmd(cmd) {
-    return execSync(`yarn prisma ${cmd} --schema "${this.schemaPath}"`, {
-      env: { ...process.env, DATABASE_URL: this._url() },
-      encoding: 'utf-8',
-      stdio: 'inherit',
-    });
-  }
-
   async deploy(rels) {
     // Apply any migrations which haven't already been applied
     await this._prepareSchema(rels);
@@ -93,13 +84,25 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   async _runMigrations() {
     if (this.migrationMode === 'prototype') {
       // Sync the database directly, without generating any migration
-      this._runPrismaCmd(`db push --accept-data-loss --preview-feature`);
+      let dbPush = new DbPush();
+      let oldDatabaseURLValue = process.env.DATABASE_URL;
+      process.env.DATABASE_URL = this._url();
+      await dbPush.parse(['--accept-data-loss', '--preview-feature', '--schema', this.schemaPath]);
+      process.env.DATABASE_URL = oldDatabaseURLValue;
     } else if (this.migrationMode === 'createOnly') {
       // Generate a migration, but do not apply it
-      this._runPrismaCmd(`migrate dev --create-only --preview-feature`);
+      let migrateDev = new MigrateDev();
+      let oldDatabaseURLValue = process.env.DATABASE_URL;
+      process.env.DATABASE_URL = this._url();
+      await migrateDev.parse(['--create-only', '--preview-feature', '--schema', this.schemaPath]);
+      process.env.DATABASE_URL = oldDatabaseURLValue;
     } else if (this.migrationMode === 'dev') {
       // Generate and apply a migration if required.
-      this._runPrismaCmd(`migrate dev --preview-feature`);
+      let migrateDev = new MigrateDev();
+      let oldDatabaseURLValue = process.env.DATABASE_URL;
+      process.env.DATABASE_URL = this._url();
+      await migrateDev.parse(['--preview-feature', '--schema', this.schemaPath]);
+      process.env.DATABASE_URL = oldDatabaseURLValue;
     } else if (this.migrationMode === 'none') {
       // Explicitly disable running any migrations
     } else {
