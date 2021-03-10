@@ -1,5 +1,14 @@
 # @keystonejs/api-tests
 
+## 9.1.1
+
+### Patch Changes
+
+- [#5079](https://github.com/keystonejs/keystone/pull/5079) [`57c98c90e`](https://github.com/keystonejs/keystone/commit/57c98c90ee4220bcc59925a154a231989d25de51) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@hapi/iron` to `^6.0.0`.
+
+- Updated dependencies []:
+  - @keystone-next/test-utils-legacy@13.0.2
+
 ## 9.1.0
 
 ### Minor Changes

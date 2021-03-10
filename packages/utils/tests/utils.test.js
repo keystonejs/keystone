@@ -14,11 +14,9 @@ const {
   defaultObj,
   arrayToObject,
   flatten,
-  flatMap,
   zipObj,
   captureSuspensePromises,
   upcase,
-  asyncForEach,
   ...utils
 } = require('../src');
 
@@ -212,27 +210,6 @@ describe('utils', () => {
     expect(flatten(a)).toEqual([1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]);
   });
 
-  test('flatMap', () => {
-    expect(flatMap([], x => x)).toEqual([]);
-    expect(flatMap([1, 2, 3], x => x)).toEqual([1, 2, 3]);
-    expect(flatMap([[1, 2, 3]], x => x)).toEqual([1, 2, 3]);
-    expect(
-      flatMap(
-        [
-          [1, 2, 3],
-          [4, 5],
-          6,
-          [
-            [7, 8],
-            [9, 10],
-          ],
-        ],
-        x => x
-      )
-    ).toEqual([1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]);
-    expect(flatMap([{ vals: [2, 2] }, { vals: [3] }], x => x.vals)).toEqual([2, 2, 3]);
-  });
-
   ['noop', 'identity'].forEach(fnName => {
     test(fnName, () => {
       expect(utils[fnName]()).toEqual(undefined);
@@ -298,16 +275,6 @@ describe('utils', () => {
         ],
       },
     });
-  });
-
-  test('asyncForEach', async () => {
-    const callback = jest.fn().mockResolvedValue(1);
-    const array = [10, 20, 30];
-    await asyncForEach(array, callback);
-    expect(callback).toHaveBeenCalledTimes(3);
-    expect(callback).toHaveBeenNthCalledWith(1, 10, 0, array);
-    expect(callback).toHaveBeenNthCalledWith(2, 20, 1, array);
-    expect(callback).toHaveBeenNthCalledWith(3, 30, 2, array);
   });
 
   describe('captureSuspensePromises', () => {

@@ -1,8 +1,15 @@
 export const apiTemplate = `
 import keystoneConfig from '../../../../keystone';
-import { createApolloServerMicro } from '@keystone-next/keystone';
+import { initConfig, createSystem, createApolloServerMicro } from '@keystone-next/keystone';
 
-const apolloServer = createApolloServerMicro(keystoneConfig);
+const config = initConfig(keystoneConfig);
+const { graphQLSchema, keystone, createContext } = createSystem(config, '.keystone', 'start');
+const apolloServer = createApolloServerMicro({
+  graphQLSchema,
+  createContext,
+  sessionStrategy: _config.session ? _config.session() : undefined,
+  connectionPromise: keystone.connect(),
+});
 
 export const config = {
   api: {
