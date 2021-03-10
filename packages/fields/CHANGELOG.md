@@ -1,5 +1,21 @@
 # @keystonejs/fields
 
+## 23.0.0
+
+### Major Changes
+
+- [#5065](https://github.com/keystonejs/keystone/pull/5065) [`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393) Thanks [@timleslie](https://github.com/timleslie)! - Removed the obsolete methods `List.getFieldsRelatedTo()`, `List.getFieldByPath()`, `List.gqlAuxMutationResolvers()`, `Field.parseFieldAccess()`, `Field.getGqlAuxMutations()`, and `Field.gqlAuxMutationResolvers()`.
+
+### Patch Changes
+
+- Updated dependencies [[`b44f07b6a`](https://github.com/keystonejs/keystone/commit/b44f07b6a7ce1eef6d41513096eadea5aa2be5f7), [`acc6e9772`](https://github.com/keystonejs/keystone/commit/acc6e9772b4a312a62ea756777034638c03a3761), [`b4b276cf6`](https://github.com/keystonejs/keystone/commit/b4b276cf66f90dce2d711c144c0d99c4752f1f5e)]:
+  - @keystone-next/utils-legacy@7.0.0
+  - @keystone-next/adapter-prisma-legacy@3.3.0
+  - @keystone-next/app-admin-ui-legacy@7.4.2
+  - @keystone-next/access-control-legacy@8.0.1
+  - @keystone-next/adapter-knex-legacy@13.2.1
+  - @keystone-next/adapter-mongoose-legacy@11.1.1
+
 ## 22.1.0
 
 ### Minor Changes
