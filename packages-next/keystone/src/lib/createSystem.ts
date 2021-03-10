@@ -4,8 +4,13 @@ import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './createContext';
 import { createKeystone } from './createKeystone';
 
-export function createSystem(config: KeystoneConfig, dotKeystonePath: string, script: string) {
-  const keystone = createKeystone(config, dotKeystonePath, script);
+export function createSystem(
+  config: KeystoneConfig,
+  dotKeystonePath: string,
+  script: string,
+  prismaClient?: any
+) {
+  const keystone = createKeystone(config, dotKeystonePath, script, prismaClient);
 
   const graphQLSchema = createGraphQLSchema(config, keystone);
 
