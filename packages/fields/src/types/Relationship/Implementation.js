@@ -36,7 +36,7 @@ export class Relationship extends Implementation {
     let refField;
 
     if (refFieldPath) {
-      refField = refList.getFieldByPath(refFieldPath);
+      refField = refList.fieldsByPath[refFieldPath];
 
       if (!refField) {
         throw new Error(

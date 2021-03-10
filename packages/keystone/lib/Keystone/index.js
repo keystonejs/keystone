@@ -19,10 +19,8 @@ const {
   validateAuthAccessControl,
 } = require('@keystone-next/access-control-legacy');
 const { SessionManager } = require('@keystone-next/session-legacy');
-const { AppVersionProvider, appVersionMiddleware } = require('@keystone-next/app-version-legacy');
 
 const { List } = require('../ListTypes');
-const { DEFAULT_DIST_DIR } = require('../../constants');
 const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
 const { formatError } = require('./format-error');
 
@@ -43,11 +41,6 @@ module.exports = class Keystone {
       sameSite: false,
     },
     schemaNames = ['public'],
-    appVersion = {
-      version: '1.0.0',
-      addVersionToHttpHeaders: true,
-      access: true,
-    },
   }) {
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
     this.auth = {};
@@ -63,19 +56,10 @@ module.exports = class Keystone {
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
-    this.appVersion = appVersion;
 
     this._listCRUDProvider = new ListCRUDProvider();
     this._customProvider = new CustomProvider({ schemaNames, defaultAccess: this.defaultAccess });
-    this._providers = [
-      this._listCRUDProvider,
-      this._customProvider,
-      new AppVersionProvider({
-        version: appVersion.version,
-        access: appVersion.access,
-        schemaNames,
-      }),
-    ];
+    this._providers = [this._listCRUDProvider, this._customProvider];
 
     if (adapter) {
       this.adapter = adapter;
@@ -580,7 +564,6 @@ module.exports = class Keystone {
 
   async _prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors }) {
     return flattenDeep([
-      this.appVersion.addVersionToHttpHeaders && appVersionMiddleware(this.appVersion.version),
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
@@ -600,13 +583,7 @@ module.exports = class Keystone {
           ...apps,
         ]
           .filter(({ prepareMiddleware } = {}) => !!prepareMiddleware)
-          .map(app =>
-            app.prepareMiddleware({
-              keystone: this,
-              dev,
-              distDir: distDir || DEFAULT_DIST_DIR,
-            })
-          )
+          .map(app => app.prepareMiddleware({ keystone: this, dev, distDir: distDir || 'dist' }))
       )),
     ]).filter(middleware => !!middleware);
   }

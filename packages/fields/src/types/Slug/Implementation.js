@@ -52,7 +52,7 @@ export class SlugImplementation extends Text {
 
       generateFn = ({ resolvedData, existingItem }) => {
         // Look up fields on the list to ensure a valid field was passed
-        if (!this.getListByKey(this.listKey).getFieldByPath(from)) {
+        if (!this.getListByKey(this.listKey).fieldsByPath[from]) {
           throw new Error(
             `The field '${from}' does not exist on the list '${listKey}' as specified in the 'from' option of '${listAndFieldPath}'`
           );

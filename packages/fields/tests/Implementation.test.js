@@ -70,18 +70,6 @@ test('gqlAuxQueryResolvers', () => {
   expect(impl.gqlAuxQueryResolvers()).toEqual({});
 });
 
-test('getGqlAuxMutations()', () => {
-  const impl = new Field('path', {}, args);
-
-  expect(impl.getGqlAuxMutations()).toEqual([]);
-});
-
-test('gqlAuxMutationResolvers', () => {
-  const impl = new Field('path', {}, args);
-
-  expect(impl.gqlAuxMutationResolvers()).toEqual({});
-});
-
 test('afterChange()', async () => {
   const impl = new Field('path', {}, args);
 

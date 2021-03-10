@@ -56,7 +56,6 @@ export function createKeystone(
     // sessionStore
     // cookie
     // schemaNames
-    // appVersion
   });
 
   Object.entries(lists).forEach(([key, { fields, graphql, access, hooks, description, db }]) => {
