@@ -7,12 +7,12 @@ import { MongooseAdapter } from '@keystone-next/adapter-mongoose-legacy';
 import { KnexAdapter } from '@keystone-next/adapter-knex-legacy';
 // @ts-ignore
 import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
-import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
+import type { KeystoneConfig, BaseKeystone, MigrationMode } from '@keystone-next/types';
 
 export function createKeystone(
   config: KeystoneConfig,
   dotKeystonePath: string,
-  script: string,
+  migrationMode: MigrationMode,
   prismaClient?: any
 ) {
   // Note: For backwards compatibility we may want to expose
@@ -31,14 +31,7 @@ export function createKeystone(
   } else if (db.adapter === 'prisma_postgresql') {
     adapter = new PrismaAdapter({
       getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
-      migrationMode:
-        script === 'prototype'
-          ? 'prototype'
-          : script === 'generate'
-          ? 'createOnly'
-          : script === 'dev'
-          ? 'dev'
-          : 'none',
+      migrationMode,
       prismaClient,
       ...db,
     });

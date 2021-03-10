@@ -8,7 +8,7 @@ export const deploy = async ({ dotKeystonePath }: StaticPaths) => {
   console.log('🤞 Migrating Keystone');
 
   const config = initConfig(requireSource(CONFIG_PATH).default);
-  const keystone = createKeystone(config, dotKeystonePath, 'deploy');
+  const keystone = createKeystone(config, dotKeystonePath, 'none');
 
   console.log('✨ Deploying migrations');
   await keystone.adapter.deploy(keystone._consolidateRelationships());

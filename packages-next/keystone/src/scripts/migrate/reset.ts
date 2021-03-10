@@ -8,7 +8,7 @@ export const reset = async ({ dotKeystonePath }: StaticPaths) => {
   console.log('🤞 Migrating Keystone');
 
   const config = initConfig(requireSource(CONFIG_PATH).default);
-  const keystone = createKeystone(config, dotKeystonePath, 'reset');
+  const keystone = createKeystone(config, dotKeystonePath, 'none');
 
   console.log('✨ Resetting database');
   await keystone.adapter._prepareSchema(keystone._consolidateRelationships());
