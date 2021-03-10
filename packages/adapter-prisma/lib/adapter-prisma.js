@@ -13,7 +13,7 @@ const { defaultObj, mapKeys, identity, flatten } = require('@keystone-next/utils
 class PrismaAdapter extends BaseKeystoneAdapter {
   constructor(config = {}) {
     super(...arguments);
-    this.injectedPrismaClient = config.prismaClient;
+    this._prismaClient = config.prismaClient;
 
     this.listAdapterClass = PrismaListAdapter;
     this.name = 'prisma';
@@ -61,8 +61,8 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   }
 
   async _getPrismaClient({ rels }) {
-    if (this.injectedPrismaClient) {
-      return this.injectedPrismaClient;
+    if (this._prismaClient) {
+      return this._prismaClient;
     }
     await this._generateClient(rels);
     return require(this.clientPath).PrismaClient;
