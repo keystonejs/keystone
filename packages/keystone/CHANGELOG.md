@@ -1,5 +1,23 @@
 # @keystonejs/keystone
 
+## 20.0.0
+
+### Major Changes
+
+- [#5065](https://github.com/keystonejs/keystone/pull/5065) [`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393) Thanks [@timleslie](https://github.com/timleslie)! - Removed the obsolete methods `List.getFieldsRelatedTo()`, `List.getFieldByPath()`, `List.gqlAuxMutationResolvers()`, `Field.parseFieldAccess()`, `Field.getGqlAuxMutations()`, and `Field.gqlAuxMutationResolvers()`.
+
+* [#5041](https://github.com/keystonejs/keystone/pull/5041) [`ab14e7043`](https://github.com/keystonejs/keystone/commit/ab14e70435ef89cf702d407c90396eca53bc3f4d) Thanks [@timleslie](https://github.com/timleslie)! - Removed CLI from the package.
+
+- [#5062](https://github.com/keystonejs/keystone/pull/5062) [`7ad7430dc`](https://github.com/keystonejs/keystone/commit/7ad7430dc377f79f7ad4024879ec2966ba0d185f) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy appVersion support.
+
+### Patch Changes
+
+- [#5038](https://github.com/keystonejs/keystone/pull/5038) [`b4b276cf6`](https://github.com/keystonejs/keystone/commit/b4b276cf66f90dce2d711c144c0d99c4752f1f5e) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for `GraphQLPlaygroundApp`.
+
+- Updated dependencies [[`b44f07b6a`](https://github.com/keystonejs/keystone/commit/b44f07b6a7ce1eef6d41513096eadea5aa2be5f7)]:
+  - @keystone-next/utils-legacy@7.0.0
+  - @keystone-next/access-control-legacy@8.0.1
+
 ## 19.3.0
 
 ### Minor Changes

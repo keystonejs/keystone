@@ -1,5 +1,11 @@
 # @keystonejs/utils
 
+## 7.0.0
+
+### Major Changes
+
+- [#5066](https://github.com/keystonejs/keystone/pull/5066) [`b44f07b6a`](https://github.com/keystonejs/keystone/commit/b44f07b6a7ce1eef6d41513096eadea5aa2be5f7) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused functions `flatMap`, `compose`, and `asyncForEach`.
+
 ## 6.0.2
 
 ### Patch Changes

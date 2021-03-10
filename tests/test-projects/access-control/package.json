@@ -2,7 +2,7 @@
   "name": "@keystone-next/cypress-project-access-control-legacy",
   "description": "A KeystoneJS demo project for integration testing. See @keystone-next/keystone-legacy for more.",
   "private": true,
-  "version": "6.0.3",
+  "version": "6.0.4",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -18,14 +18,14 @@
     "cypress:open": "if [ -f .env ]; then yarn prepare-test-server cypress:open:cmd; else echo \"\nError: Must create a tests/test-projects/access-control/.env file.\nSee tests/test-projects/access-control/.env.example for values\n\"; exit 1; fi"
   },
   "dependencies": {
-    "@keystone-next/adapter-prisma-legacy": "^3.1.0",
-    "@keystone-next/app-admin-ui-legacy": "^7.4.1",
-    "@keystone-next/app-graphql-legacy": "^6.2.2",
-    "@keystone-next/auth-password-legacy": "^6.0.2",
-    "@keystone-next/fields-legacy": "^22.0.1",
-    "@keystone-next/keystone-legacy": "^19.3.0",
+    "@keystone-next/adapter-prisma-legacy": "^3.3.0",
+    "@keystone-next/app-admin-ui-legacy": "^7.4.2",
+    "@keystone-next/app-graphql-legacy": "^7.0.0",
+    "@keystone-next/auth-password-legacy": "^6.0.3",
+    "@keystone-next/fields-legacy": "^23.0.0",
+    "@keystone-next/keystone-legacy": "^20.0.0",
     "@keystone-next/server-side-graphql-client-legacy": "^2.0.1",
-    "@keystone-next/utils-legacy": "^6.0.2",
+    "@keystone-next/utils-legacy": "^7.0.0",
     "cross-env": "^7.0.3",
     "express": "^4.17.1"
   },

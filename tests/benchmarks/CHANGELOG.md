@@ -1,5 +1,19 @@
 # @keystonejs/benchmarks
 
+## 5.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393), [`a2c52848a`](https://github.com/keystonejs/keystone/commit/a2c52848a3a7b66a1968a430040887194e6138d1), [`acc6e9772`](https://github.com/keystonejs/keystone/commit/acc6e9772b4a312a62ea756777034638c03a3761), [`b4b276cf6`](https://github.com/keystonejs/keystone/commit/b4b276cf66f90dce2d711c144c0d99c4752f1f5e), [`ab14e7043`](https://github.com/keystonejs/keystone/commit/ab14e70435ef89cf702d407c90396eca53bc3f4d), [`7ad7430dc`](https://github.com/keystonejs/keystone/commit/7ad7430dc377f79f7ad4024879ec2966ba0d185f), [`acc6e9772`](https://github.com/keystonejs/keystone/commit/acc6e9772b4a312a62ea756777034638c03a3761)]:
+  - @keystone-next/fields-legacy@23.0.0
+  - @keystone-next/keystone-legacy@20.0.0
+  - @keystone-next/keystone@12.0.0
+  - @keystone-next/app-graphql-legacy@7.0.0
+  - @keystone-next/test-utils-legacy@13.0.3
+  - @keystone-next/adapter-knex-legacy@13.2.1
+  - @keystone-next/adapter-mongoose-legacy@11.1.1
+  - @keystone-next/fields@5.2.1
+
 ## 5.2.0
 
 ### Minor Changes
