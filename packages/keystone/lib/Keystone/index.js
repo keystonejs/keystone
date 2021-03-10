@@ -21,7 +21,6 @@ const {
 const { SessionManager } = require('@keystone-next/session-legacy');
 
 const { List } = require('../ListTypes');
-const { DEFAULT_DIST_DIR } = require('../../constants');
 const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
 const { formatError } = require('./format-error');
 
@@ -584,13 +583,7 @@ module.exports = class Keystone {
           ...apps,
         ]
           .filter(({ prepareMiddleware } = {}) => !!prepareMiddleware)
-          .map(app =>
-            app.prepareMiddleware({
-              keystone: this,
-              dev,
-              distDir: distDir || DEFAULT_DIST_DIR,
-            })
-          )
+          .map(app => app.prepareMiddleware({ keystone: this, dev, distDir: distDir || 'dist' }))
       )),
     ]).filter(middleware => !!middleware);
   }
