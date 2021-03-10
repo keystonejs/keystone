@@ -4,4 +4,4 @@
 '@keystone-next/test-utils-legacy': major
 ---
 
-Updated `createKeystone` to accept a migration mode rather than script
+Updated `createKeystone` and `createSystem` to accept a migration mode rather than script
