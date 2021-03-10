@@ -44,12 +44,8 @@ export const createExpressServer = async (
 
   const sessionStrategy = config.session ? config.session() : undefined;
 
-  if (config.experimental?.enableNextJsGraphqlApiEndpoint) {
-    if (isVerbose) console.log('✨ Skipping GraphQL Server');
-  } else {
-    if (isVerbose) console.log('✨ Preparing GraphQL Server');
-    addApolloServer({ server, graphQLSchema, createContext, sessionStrategy });
-  }
+  if (isVerbose) console.log('✨ Preparing GraphQL Server');
+  addApolloServer({ server, graphQLSchema, createContext, sessionStrategy });
 
   if (config.ui?.isDisabled) {
     if (isVerbose) console.log('✨ Skipping Admin UI app');
