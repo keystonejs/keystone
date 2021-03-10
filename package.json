@@ -32,8 +32,6 @@
     "build": "preconstruct build",
     "prepare": "manypkg check && preconstruct dev && yarn run --silent contributing-guide",
     "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md\"",
-    "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate",
     "npm-tag": "manypkg npm-tag",
     "update": "manypkg upgrade",
     "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn"
@@ -57,7 +55,6 @@
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
-    "all-contributors-cli": "^6.20.0",
     "autoprefixer": "^10.2.5",
     "babel-plugin-emotion": "^10.2.2",
     "chalk": "^4.1.0",
