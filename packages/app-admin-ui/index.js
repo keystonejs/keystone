@@ -14,7 +14,6 @@ class AdminUIApp {
     name = 'Keystone',
     adminPath = '/admin',
     apiPath = '/admin/api',
-    graphiqlPath = '/admin/graphiql',
     authStrategy,
     pages,
     enableDefaultRoute = false,
@@ -44,7 +43,6 @@ class AdminUIApp {
     this.authStrategy = authStrategy;
     this.pages = pages;
     this.apiPath = apiPath;
-    this.graphiqlPath = graphiqlPath;
     this.enableDefaultRoute = enableDefaultRoute;
     this.hooks = hooks;
     this.defaultPageSize = defaultPageSize;
@@ -111,7 +109,7 @@ class AdminUIApp {
 
   getAdminUIMeta(keystone) {
     // This is exposed as the global `KEYSTONE_ADMIN_META` in the client.
-    const { name, adminPath, apiPath, graphiqlPath, pages, hooks } = this;
+    const { name, adminPath, apiPath, pages, hooks } = this;
     const { signinPath, signoutPath } = this.routes;
     const { lists } = keystone.getAdminMeta({ schemaName: this._schemaName });
     const authStrategy = this.authStrategy ? this.authStrategy.getAdminMeta() : undefined;
@@ -141,7 +139,6 @@ class AdminUIApp {
     return {
       adminPath,
       apiPath,
-      graphiqlPath,
       pages,
       hooks,
       signinPath,
