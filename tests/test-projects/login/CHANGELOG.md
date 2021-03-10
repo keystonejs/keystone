@@ -1,5 +1,18 @@
 # @keystonejs/cypress-project-login
 
+## 6.0.4
+
+### Patch Changes
+
+- Updated dependencies [[`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393), [`acc6e9772`](https://github.com/keystonejs/keystone/commit/acc6e9772b4a312a62ea756777034638c03a3761), [`b4b276cf6`](https://github.com/keystonejs/keystone/commit/b4b276cf66f90dce2d711c144c0d99c4752f1f5e), [`ab14e7043`](https://github.com/keystonejs/keystone/commit/ab14e70435ef89cf702d407c90396eca53bc3f4d), [`7ad7430dc`](https://github.com/keystonejs/keystone/commit/7ad7430dc377f79f7ad4024879ec2966ba0d185f)]:
+  - @keystone-next/fields-legacy@23.0.0
+  - @keystone-next/keystone-legacy@20.0.0
+  - @keystone-next/adapter-prisma-legacy@3.3.0
+  - @keystone-next/app-graphql-legacy@7.0.0
+  - @keystone-next/app-admin-ui-legacy@7.4.2
+  - @keystone-next/auth-password-legacy@6.0.3
+  - @keystone-next/list-plugins-legacy@8.0.2
+
 ## 6.0.3
 
 ### Patch Changes

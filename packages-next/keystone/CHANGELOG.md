@@ -1,5 +1,39 @@
 # @keystone-next/keystone
 
+## 12.0.0
+
+### Major Changes
+
+- [#5082](https://github.com/keystonejs/keystone/pull/5082) [`a2c52848a`](https://github.com/keystonejs/keystone/commit/a2c52848a3a7b66a1968a430040887194e6138d1) Thanks [@timleslie](https://github.com/timleslie)! - Updated `createApolloServerMicro` to take system arguments rather than a `KeystoneConfig` object.
+
+### Minor Changes
+
+- [#5085](https://github.com/keystonejs/keystone/pull/5085) [`acc6e9772`](https://github.com/keystonejs/keystone/commit/acc6e9772b4a312a62ea756777034638c03a3761) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added an option to pass in the prisma client to use instead of attempting to generate one and `require()`ing it to fix the experimental `enableNextJsGraphqlApiEndpoint` option not working on Vercel
+
+* [#5085](https://github.com/keystonejs/keystone/pull/5085) [`acc6e9772`](https://github.com/keystonejs/keystone/commit/acc6e9772b4a312a62ea756777034638c03a3761) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Changed experimental `enableNextJsGraphqlApiEndpoint` option so that it doesn't use the API Route when running through Keystone's CLI
+
+### Patch Changes
+
+- Updated dependencies [[`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393), [`a2c52848a`](https://github.com/keystonejs/keystone/commit/a2c52848a3a7b66a1968a430040887194e6138d1), [`acc6e9772`](https://github.com/keystonejs/keystone/commit/acc6e9772b4a312a62ea756777034638c03a3761), [`b4b276cf6`](https://github.com/keystonejs/keystone/commit/b4b276cf66f90dce2d711c144c0d99c4752f1f5e), [`ab14e7043`](https://github.com/keystonejs/keystone/commit/ab14e70435ef89cf702d407c90396eca53bc3f4d), [`7ad7430dc`](https://github.com/keystonejs/keystone/commit/7ad7430dc377f79f7ad4024879ec2966ba0d185f)]:
+  - @keystone-next/keystone-legacy@20.0.0
+  - @keystone-next/admin-ui@11.0.0
+  - @keystone-next/adapter-prisma-legacy@3.3.0
+  - @keystone-next/app-graphql-legacy@7.0.0
+  - @keystone-next/adapter-knex-legacy@13.2.1
+  - @keystone-next/adapter-mongoose-legacy@11.1.1
+  - @keystone-next/fields@5.2.1
+
+## 11.0.2
+
+### Patch Changes
+
+- [#5079](https://github.com/keystonejs/keystone/pull/5079) [`57c98c90e`](https://github.com/keystonejs/keystone/commit/57c98c90ee4220bcc59925a154a231989d25de51) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@hapi/iron` to `^6.0.0`.
+
+* [#5068](https://github.com/keystonejs/keystone/pull/5068) [`ed3c98839`](https://github.com/keystonejs/keystone/commit/ed3c988392bce981ef7d81c1eb14a045c6198da8) Thanks [@rohan-deshpande](https://github.com/rohan-deshpande)! - Fixed issue where createKeystone would call prisma migrate dev when the build script was run
+
+* Updated dependencies [[`3eabc35e0`](https://github.com/keystonejs/keystone/commit/3eabc35e0d41b60449ff456e9a0ec3eabf360508)]:
+  - @keystone-next/adapter-knex-legacy@13.2.0
+
 ## 11.0.1
 
 ### Patch Changes

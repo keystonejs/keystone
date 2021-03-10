@@ -1,5 +1,12 @@
 # @keystonejs/fields-color
 
+## 1.0.12
+
+### Patch Changes
+
+- Updated dependencies [[`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393)]:
+  - @keystone-next/fields-legacy@23.0.0
+
 ## 1.0.11
 
 ### Patch Changes

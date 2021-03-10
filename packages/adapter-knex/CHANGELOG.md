@@ -1,5 +1,20 @@
 # @keystonejs/adapter-knex
 
+## 13.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`b44f07b6a`](https://github.com/keystonejs/keystone/commit/b44f07b6a7ce1eef6d41513096eadea5aa2be5f7), [`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393), [`b4b276cf6`](https://github.com/keystonejs/keystone/commit/b4b276cf66f90dce2d711c144c0d99c4752f1f5e), [`ab14e7043`](https://github.com/keystonejs/keystone/commit/ab14e70435ef89cf702d407c90396eca53bc3f4d), [`7ad7430dc`](https://github.com/keystonejs/keystone/commit/7ad7430dc377f79f7ad4024879ec2966ba0d185f)]:
+  - @keystone-next/utils-legacy@7.0.0
+  - @keystone-next/keystone-legacy@20.0.0
+  - @keystone-next/fields-auto-increment-legacy@8.1.6
+
+## 13.2.0
+
+### Minor Changes
+
+- [#5049](https://github.com/keystonejs/keystone/pull/5049) [`3eabc35e0`](https://github.com/keystonejs/keystone/commit/3eabc35e0d41b60449ff456e9a0ec3eabf360508) Thanks [@renovate](https://github.com/apps/renovate)! - Updated `knex` dependency to `^0.95.1`.
+
 ## 13.1.0
 
 ### Minor Changes

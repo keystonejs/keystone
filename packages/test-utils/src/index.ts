@@ -116,7 +116,6 @@ async function setupServer({
     new GraphQLApp({
       schemaName,
       apiPath: '/api/graphql',
-      graphiqlPath: '/admin/graphiql',
       apollo: {
         tracing: true,
         cacheControl: {

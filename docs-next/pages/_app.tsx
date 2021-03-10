@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx, Core } from '@keystone-ui/core';
+import Head from 'next/head';
 import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
@@ -21,6 +22,12 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <Core>
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width,initial-scale=1,shrink-to-fit=no,viewport-fit=cover"
+        />
+      </Head>
       <ToastProvider>
         <Component {...pageProps} />
       </ToastProvider>

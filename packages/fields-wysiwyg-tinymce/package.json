@@ -3,7 +3,7 @@
   "description": "KeystoneJS WYSIWYG HTML Field Type, powered by TinyMCE",
   "homepage": "https://github.com/keystonejs/keystone",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-wysiwyg-tinymce",
-  "version": "5.3.17",
+  "version": "5.3.18",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -13,14 +13,14 @@
     "@arch-ui/fields": "^3.0.6",
     "@arch-ui/input": "^0.1.12",
     "@arch-ui/theme": "^0.0.12",
-    "@babel/runtime": "^7.13.9",
+    "@babel/runtime": "^7.13.10",
     "@emotion/core": "^10.1.1",
-    "@keystone-next/fields-legacy": "^22.0.1",
+    "@keystone-next/fields-legacy": "^23.0.0",
     "@primer/octicons-react": "^11.3.0",
     "@tinymce/tinymce-react": "^3.10.3",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
-    "tinymce": "^5.6.2"
+    "tinymce": "^5.7.0"
   },
   "peerDependencies": {
     "express": "^4.17.1"

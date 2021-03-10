@@ -1,5 +1,13 @@
 # @keystonejs/list-plugins
 
+## 8.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393)]:
+  - @keystone-next/fields-legacy@23.0.0
+  - @keystone-next/fields-authed-relationship-legacy@1.0.19
+
 ## 8.0.1
 
 ### Patch Changes

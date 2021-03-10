@@ -1,5 +1,12 @@
 # @keystonejs/access-control
 
+## 8.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`b44f07b6a`](https://github.com/keystonejs/keystone/commit/b44f07b6a7ce1eef6d41513096eadea5aa2be5f7)]:
+  - @keystone-next/utils-legacy@7.0.0
+
 ## 8.0.0
 
 ### Major Changes

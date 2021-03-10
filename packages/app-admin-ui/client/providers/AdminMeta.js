@@ -11,7 +11,6 @@ const { __pages__: pageViews, __hooks__: hookView, ...listViews } = views;
 const {
   adminPath,
   apiPath,
-  graphiqlPath,
   pages,
   hooks,
   signinPath,
@@ -93,7 +92,6 @@ export const AdminMetaProvider = ({ children }) => {
   const value = {
     adminPath,
     apiPath,
-    graphiqlPath,
     signinPath,
     signoutPath,
     authStrategy,

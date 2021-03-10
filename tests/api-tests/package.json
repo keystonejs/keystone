@@ -2,7 +2,7 @@
   "name": "@keystone-next/api-tests-legacy",
   "description": "A set of tests for running against the KeystoneJS API.",
   "private": true,
-  "version": "9.1.0",
+  "version": "9.1.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -11,7 +11,7 @@
   "repository": "https://github.com/keystonejs/keystone/tree/master/tests/api-tests",
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
-    "@hapi/iron": "^5.1.4",
+    "@hapi/iron": "^6.0.0",
     "@keystone-next/adapter-knex-legacy": "*",
     "@keystone-next/adapter-mongoose-legacy": "*",
     "@keystone-next/app-graphql-legacy": "*",
@@ -29,12 +29,12 @@
     "testcheck": "^1.0.0-rc.2"
   },
   "dependencies": {
-    "@keystone-next/auth-password-legacy": "^6.0.2",
-    "@keystone-next/fields-authed-relationship-legacy": "^1.0.18",
-    "@keystone-next/fields-legacy": "^22.0.1",
-    "@keystone-next/list-plugins-legacy": "^8.0.1",
-    "@keystone-next/test-utils-legacy": "^13.0.0",
-    "@keystone-next/utils-legacy": "^6.0.2",
+    "@keystone-next/auth-password-legacy": "^6.0.3",
+    "@keystone-next/fields-authed-relationship-legacy": "^1.0.19",
+    "@keystone-next/fields-legacy": "^23.0.0",
+    "@keystone-next/list-plugins-legacy": "^8.0.2",
+    "@keystone-next/test-utils-legacy": "^13.0.3",
+    "@keystone-next/utils-legacy": "^7.0.0",
     "express": "^4.17.1"
   }
 }

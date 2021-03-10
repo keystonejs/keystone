@@ -1,5 +1,16 @@
 # @keystonejs/app-graphql
 
+## 7.0.0
+
+### Major Changes
+
+- [#5038](https://github.com/keystonejs/keystone/pull/5038) [`b4b276cf6`](https://github.com/keystonejs/keystone/commit/b4b276cf66f90dce2d711c144c0d99c4752f1f5e) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for `GraphQLPlaygroundApp`.
+
+### Patch Changes
+
+- Updated dependencies [[`b44f07b6a`](https://github.com/keystonejs/keystone/commit/b44f07b6a7ce1eef6d41513096eadea5aa2be5f7)]:
+  - @keystone-next/utils-legacy@7.0.0
+
 ## 6.2.2
 
 ### Patch Changes

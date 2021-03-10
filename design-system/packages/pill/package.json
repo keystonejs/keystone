@@ -11,7 +11,7 @@
     "react": "^17.0.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.9",
+    "@babel/runtime": "^7.13.10",
     "@keystone-ui/core": "^2.0.1",
     "@keystone-ui/icons": "^2.0.1"
   },

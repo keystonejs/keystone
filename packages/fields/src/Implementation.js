@@ -48,7 +48,7 @@ class Field {
     // Should be overwritten by types that implement a Relationship interface
     this.isRelationship = false;
 
-    this.access = this.parseFieldAccess({
+    this.access = parseFieldAccess({
       schemaNames,
       listKey,
       fieldKey: path,
@@ -61,10 +61,6 @@ class Field {
   // Fields should override this method if they want to support uniqueness.
   get _supportsUnique() {
     return false;
-  }
-
-  parseFieldAccess(args) {
-    return parseFieldAccess(args);
   }
 
   // Field types should replace this if they want to any fields to the output type
@@ -96,13 +92,6 @@ class Field {
     return [];
   }
   gqlAuxQueryResolvers() {
-    return {};
-  }
-
-  getGqlAuxMutations() {
-    return [];
-  }
-  gqlAuxMutationResolvers() {
     return {};
   }
 

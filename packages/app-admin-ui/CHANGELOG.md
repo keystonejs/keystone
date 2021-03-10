@@ -1,5 +1,15 @@
 # @keystonejs/app-admin-ui
 
+## 7.4.2
+
+### Patch Changes
+
+- [#5038](https://github.com/keystonejs/keystone/pull/5038) [`b4b276cf6`](https://github.com/keystonejs/keystone/commit/b4b276cf66f90dce2d711c144c0d99c4752f1f5e) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for `GraphQLPlaygroundApp`.
+
+- Updated dependencies [[`b44f07b6a`](https://github.com/keystonejs/keystone/commit/b44f07b6a7ce1eef6d41513096eadea5aa2be5f7), [`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393)]:
+  - @keystone-next/utils-legacy@7.0.0
+  - @keystone-next/fields-legacy@23.0.0
+
 ## 7.4.1
 
 ### Patch Changes

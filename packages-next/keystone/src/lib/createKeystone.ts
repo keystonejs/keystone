@@ -12,7 +12,8 @@ import type { KeystoneConfig, BaseKeystone, MigrationMode } from '@keystone-next
 export function createKeystone(
   config: KeystoneConfig,
   dotKeystonePath: string,
-  migrationMode: MigrationMode
+  migrationMode: MigrationMode,
+  prismaClient?: any
 ) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
@@ -31,6 +32,7 @@ export function createKeystone(
     adapter = new PrismaAdapter({
       getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
       migrationMode,
+      prismaClient,
       ...db,
     });
   }
@@ -47,7 +49,6 @@ export function createKeystone(
     // sessionStore
     // cookie
     // schemaNames
-    // appVersion
   });
 
   Object.entries(lists).forEach(([key, { fields, graphql, access, hooks, description, db }]) => {
