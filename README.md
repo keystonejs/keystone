@@ -89,4 +89,4 @@ KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/code-of-conduc
 
 ## License
 
-Copyright (c) 2021 Jed Watson. Licensed under the MIT License.
+Copyright (c) 2021 Thinkmill Labs Pty Ltd. Licensed under the MIT License.
