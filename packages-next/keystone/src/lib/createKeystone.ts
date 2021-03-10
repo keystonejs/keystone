@@ -9,7 +9,12 @@ import { KnexAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
 import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 
-export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, script: string) {
+export function createKeystone(
+  config: KeystoneConfig,
+  dotKeystonePath: string,
+  script: string,
+  prismaClient?: any
+) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
@@ -34,6 +39,7 @@ export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, 
           : script === 'dev'
           ? 'dev'
           : 'none',
+      prismaClient,
       ...db,
     });
   }

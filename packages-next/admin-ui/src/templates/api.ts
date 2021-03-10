@@ -1,9 +1,10 @@
 export const apiTemplate = `
 import keystoneConfig from '../../../../keystone';
 import { initConfig, createSystem, createApolloServerMicro } from '@keystone-next/keystone';
+import { PrismaClient } from '../../../prisma/generated-client';
 
-const config = initConfig(keystoneConfig);
-const { graphQLSchema, keystone, createContext } = createSystem(config, '.keystone', 'start');
+const initializedKeystoneConfig = initConfig(keystoneConfig);
+const { graphQLSchema, keystone, createContext } = createSystem(initializedKeystoneConfig, '.keystone', 'start', PrismaClient);
 const apolloServer = createApolloServerMicro({
   graphQLSchema,
   createContext,

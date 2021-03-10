@@ -12,7 +12,11 @@ export const config = withPreconstruct({
         require.resolve('@keystone-next/admin-ui/package.json')
       ),
     };
-    config.externals = [...config.externals, /@keystone-next\/keystone/];
+    config.externals = [
+      ...config.externals,
+      /@keystone-next\/keystone/,
+      /prisma[\/\\]generated-client/,
+    ];
     return config;
   },
 });

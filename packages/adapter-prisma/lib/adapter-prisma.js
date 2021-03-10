@@ -11,8 +11,10 @@ const {
 const { defaultObj, mapKeys, identity, flatten } = require('@keystone-next/utils-legacy');
 
 class PrismaAdapter extends BaseKeystoneAdapter {
-  constructor() {
+  constructor(config = {}) {
     super(...arguments);
+    this.injectedPrismaClient = config.prismaClient;
+
     this.listAdapterClass = PrismaListAdapter;
     this.name = 'prisma';
     this.provider = this.config.provider || 'postgresql';
@@ -58,9 +60,16 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this._runPrismaCmd(`migrate deploy --preview-feature`);
   }
 
-  async _connect({ rels }) {
+  async _getPrismaClient({ rels }) {
+    if (this.injectedPrismaClient) {
+      return this.injectedPrismaClient;
+    }
     await this._generateClient(rels);
-    const { PrismaClient } = require(this.clientPath);
+    return require(this.clientPath).PrismaClient;
+  }
+
+  async _connect({ rels }) {
+    const PrismaClient = await this._getPrismaClient({ rels });
     this.prisma = new PrismaClient({
       log: this.enableLogging && ['query'],
       datasources: { [this.provider]: { url: this._url() } },
