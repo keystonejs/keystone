@@ -61,7 +61,7 @@
     "react-day-picker": "8.0.0-beta.3",
     "react-dom": "^17.0.1",
     "react-image": "^4.0.3",
-    "react-select": "^3.2.0",
+    "react-select": "^4.2.1",
     "react-toast-notifications": "^2.4.3"
   },
   "devDependencies": {
