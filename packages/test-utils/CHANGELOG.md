@@ -1,5 +1,13 @@
 # @keystonejs/test-utils
 
+## 13.0.2
+
+### Patch Changes
+
+- Updated dependencies [[`3eabc35e0`](https://github.com/keystonejs/keystone/commit/3eabc35e0d41b60449ff456e9a0ec3eabf360508), [`57c98c90e`](https://github.com/keystonejs/keystone/commit/57c98c90ee4220bcc59925a154a231989d25de51), [`ed3c98839`](https://github.com/keystonejs/keystone/commit/ed3c988392bce981ef7d81c1eb14a045c6198da8)]:
+  - @keystone-next/adapter-knex-legacy@13.2.0
+  - @keystone-next/keystone@11.0.2
+
 ## 13.0.1
 
 ### Patch Changes
