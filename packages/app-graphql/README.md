@@ -37,11 +37,11 @@ module.exports = {
 
 ## Config
 
-| Option         | Type     | Default           | Description                                      |
-| -------------- | -------- | ----------------- | ------------------------------------------------ |
-| `apiPath`      | `String` | `/admin/api`      | Change the API path                              |
-| `schemaName`   | `String` | `admin`           | Change the graphQL schema name (not recommended) |
-| `apollo`       | `Object` | `{}`              | Options passed directly to Apollo Server         |
+| Option       | Type     | Default      | Description                                      |
+| ------------ | -------- | ------------ | ------------------------------------------------ |
+| `apiPath`    | `String` | `/admin/api` | Change the API path                              |
+| `schemaName` | `String` | `admin`      | Change the graphQL schema name (not recommended) |
+| `apollo`     | `Object` | `{}`         | Options passed directly to Apollo Server         |
 
 ## Setting a custom schemaName
 
