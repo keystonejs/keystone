@@ -1,5 +1,17 @@
 # @keystone-next/fields-document
 
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393), [`a2c52848a`](https://github.com/keystonejs/keystone/commit/a2c52848a3a7b66a1968a430040887194e6138d1), [`acc6e9772`](https://github.com/keystonejs/keystone/commit/acc6e9772b4a312a62ea756777034638c03a3761)]:
+  - @keystone-next/fields-legacy@23.0.0
+  - @keystone-next/admin-ui@11.0.0
+  - @keystone-next/adapter-prisma-legacy@3.3.0
+  - @keystone-next/adapter-knex-legacy@13.2.1
+  - @keystone-next/adapter-mongoose-legacy@11.1.1
+  - @keystone-next/fields@5.2.1
+
 ## 3.0.0
 
 ### Major Changes

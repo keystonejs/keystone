@@ -1,5 +1,17 @@
 # @keystonejs/api-tests
 
+## 9.1.2
+
+### Patch Changes
+
+- Updated dependencies [[`b44f07b6a`](https://github.com/keystonejs/keystone/commit/b44f07b6a7ce1eef6d41513096eadea5aa2be5f7), [`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393), [`b4b276cf6`](https://github.com/keystonejs/keystone/commit/b4b276cf66f90dce2d711c144c0d99c4752f1f5e)]:
+  - @keystone-next/utils-legacy@7.0.0
+  - @keystone-next/fields-legacy@23.0.0
+  - @keystone-next/test-utils-legacy@13.0.3
+  - @keystone-next/auth-password-legacy@6.0.3
+  - @keystone-next/fields-authed-relationship-legacy@1.0.19
+  - @keystone-next/list-plugins-legacy@8.0.2
+
 ## 9.1.1
 
 ### Patch Changes
