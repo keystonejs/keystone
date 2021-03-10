@@ -50,7 +50,6 @@ export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, 
     // sessionStore
     // cookie
     // schemaNames
-    // appVersion
   });
 
   Object.entries(lists).forEach(([key, { fields, graphql, access, hooks, description, db }]) => {
