@@ -12,7 +12,7 @@ export type KeystoneContext = {
   withSession: (session: any) => KeystoneContext;
   totalResults: number;
   maxTotalResults: number;
-  schemaName: 'public';
+  schemaName: 'public' | 'internal';
   /** @deprecated */
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   /** @deprecated */
