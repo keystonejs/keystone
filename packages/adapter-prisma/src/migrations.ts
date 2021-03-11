@@ -14,35 +14,44 @@ export async function runMigrations(
   }
 }
 
-export async function runPrototypeMigrations(dbUrl: string, schema: string, schemaPath: string) {
-  // this is kinda wrong because this is async but meh
-  let oldValueOnDatabaseUrlEnvVar = process.env.DATABASE_URL;
+// what we're doing here is setting the DB url on process.env.DATABASE_URL
+// and then resetting it after so that we're not polluting process.env.DATABASE_URL
+// Migrate reads the env variables a single time when it starts the child process that it talks to
+// so we're setting the env variable _just_ long enough for Migrate to read it and then we reset it immediately after
+function runMigrateWithDbURL<T>(dbUrl: string, cb: () => T): T {
+  let prevDBURLFromEnv = process.env.DATABASE_URL;
   try {
-    let before = Date.now();
     process.env.DATABASE_URL = dbUrl;
+    return cb();
+  } finally {
+    process.env.DATABASE_URL = prevDBURLFromEnv;
+  }
+}
 
-    let migrate = new Migrate(schemaPath);
+export async function runPrototypeMigrations(dbUrl: string, schema: string, schemaPath: string) {
+  let before = Date.now();
 
-    await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
-    let migration = await migrate.engine.schemaPush({
+  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
+  let migrate = new Migrate(schemaPath);
+
+  let migration = await runMigrateWithDbURL(dbUrl, () =>
+    migrate.engine.schemaPush({
       // TODO: we probably want to do something like db push does where either there's
       // a prompt or an argument needs to be passed to make it force(i.e. lose data)
       force: true,
       schema,
-    });
-    migrate.stop();
+    })
+  );
+  migrate.stop();
 
-    if (migration.warnings.length === 0 && migration.executedSteps === 0) {
-      console.info(`\nThe database is already in sync with the Prisma schema.`);
-    } else {
-      console.info(
-        `\n${
-          process.platform === 'win32' ? '' : '🚀  '
-        }Your database is now in sync with your schema. Done in ${formatms(Date.now() - before)}`
-      );
-    }
-  } finally {
-    process.env.DATABASE_URL = oldValueOnDatabaseUrlEnvVar;
+  if (migration.warnings.length === 0 && migration.executedSteps === 0) {
+    console.info(`\nThe database is already in sync with the Prisma schema.`);
+  } else {
+    console.info(
+      `\n${
+        process.platform === 'win32' ? '' : '🚀  '
+      }Your database is now in sync with your schema. Done in ${formatms(Date.now() - before)}`
+    );
   }
 }
 

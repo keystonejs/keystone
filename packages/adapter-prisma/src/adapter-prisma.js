@@ -12,8 +12,6 @@ import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-leg
 // eslint-disable-next-line import/no-unresolved
 import { runMigrations } from './migrations';
 
-const DB_URL_FROM_ENV = process.env.DATABASE_URL;
-
 class PrismaAdapter extends BaseKeystoneAdapter {
   constructor(config = {}) {
     super(...arguments);
@@ -27,7 +25,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this.getPrismaPath = this.config.getPrismaPath || (() => '.prisma');
     this.getDbSchemaName = this.config.getDbSchemaName || (() => 'public');
     this.enableLogging = this.config.enableLogging || false;
-    this.url = this.config.url || DB_URL_FROM_ENV;
+    this.url = this.config.url || process.env.DATABASE_URL;
   }
 
   async _prepareSchema(rels) {
