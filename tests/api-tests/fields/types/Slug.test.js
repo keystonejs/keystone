@@ -39,7 +39,7 @@ describe('Slug#implementation', () => {
         }).not.toThrow();
       });
 
-      test.skip(
+      test(
         "By default, generates a slug from the 'name' field",
         runner(
           setupList(adapterName, {
