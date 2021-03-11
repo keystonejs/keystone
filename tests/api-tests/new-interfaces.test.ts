@@ -1,11 +1,12 @@
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
+import type { AdapterName } from '@keystone-next/test-utils-legacy';
 
-function setupKeystone(adapterName) {
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: createSchema({ lists: { User: list({ fields: { name: text() } }) } }),
+    config: testConfig({ lists: createSchema({ User: list({ fields: { name: text() } }) }) }),
   });
 }
 
