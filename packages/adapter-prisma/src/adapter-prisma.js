@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import cuid from 'cuid';
-import { getGenerators, formatSchema } from '@prisma/sdk';
+import { getGenerator, formatSchema } from '@prisma/sdk';
 import {
   BaseKeystoneAdapter,
   BaseListAdapter,
@@ -93,11 +93,8 @@ class PrismaAdapter extends BaseKeystoneAdapter {
 
     this._writePrismaSchema({ prismaSchema });
 
-    // Generate prisma client
-    await this._generatePrismaClient();
-
-    // Run prisma migrations
-    await this._runMigrations({ prismaSchema });
+    // Generate prisma client and run prisma migrations
+    await Promise.all([this._generatePrismaClient(), this._runMigrations({ prismaSchema })]);
   }
 
   async _runMigrations({ prismaSchema }) {
@@ -126,7 +123,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   }
 
   async _generatePrismaClient() {
-    const generator = (await getGenerators({ schemaPath: this.schemaPath }))[0];
+    const generator = await getGenerator({ schemaPath: this.schemaPath });
     await generator.generate();
     generator.stop();
   }
