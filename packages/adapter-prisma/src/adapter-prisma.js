@@ -10,7 +10,7 @@ import {
 } from '@keystone-next/keystone-legacy';
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
 // eslint-disable-next-line import/no-unresolved
-import { runMigrations } from './migrations';
+import { runPrototypeMigrations } from './migrations';
 
 class PrismaAdapter extends BaseKeystoneAdapter {
   constructor(config = {}) {
@@ -100,7 +100,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   async _runMigrations({ prismaSchema }) {
     if (this.migrationMode === 'prototype') {
       // Sync the database directly, without generating any migration
-      await runMigrations('prototype', this._url(), prismaSchema, path.resolve(this.schemaPath));
+      await runPrototypeMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
     } else if (this.migrationMode === 'createOnly') {
       // Generate a migration, but do not apply it
       this._runPrismaCmd(`migrate dev --create-only --name keystone-${cuid()} --preview-feature`);
