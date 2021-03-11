@@ -18,8 +18,13 @@ import { MongooseAdapter } from '@keystone-next/adapter-mongoose-legacy';
 import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { initConfig, createSystem, createExpressServer } from '@keystone-next/keystone';
 import type { KeystoneConfig, BaseKeystone, KeystoneContext } from '@keystone-next/types';
+import memoizeOne from 'memoize-one';
 
 export type AdapterName = 'mongoose' | 'knex' | 'prisma_postgresql';
+
+const hashPrismaSchema = memoizeOne(prismaSchema =>
+  crypto.createHash('md5').update(prismaSchema).digest('hex')
+);
 
 const argGenerator = {
   mongoose: getMongoMemoryServerConfig,
@@ -37,13 +42,10 @@ const argGenerator = {
     provider: 'postgresql',
     // Put the generated client at a unique path
     getPrismaPath: ({ prismaSchema }: { prismaSchema: string }) =>
-      path.join(
-        '.api-test-prisma-clients',
-        crypto.createHash('sha256').update(prismaSchema).digest('hex')
-      ),
+      path.join('.api-test-prisma-clients', hashPrismaSchema(prismaSchema)),
     // Slice down to the hash make a valid postgres schema name
     getDbSchemaName: ({ prismaSchema }: { prismaSchema: string }) =>
-      crypto.createHash('sha256').update(prismaSchema).digest('hex').slice(0, 16),
+      hashPrismaSchema(prismaSchema).slice(0, 16),
     // Turn this on if you need verbose debug info
     enableLogging: false,
   }),
