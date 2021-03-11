@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
+    "@keystone-next/adapter-knex-legacy": "^13.2.1",
+    "@keystone-next/adapter-mongoose-legacy": "^11.1.1",
+    "@keystone-next/adapter-prisma-legacy": "^3.3.0",
     "@keystone-next/admin-ui": "^11.0.0",
     "@keystone-next/admin-ui-utils": "^3.0.1",
     "@keystone-next/fields-auto-increment-legacy": "^8.1.6",
