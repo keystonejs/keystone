@@ -4,7 +4,7 @@ export type BaseGeneratedListTypes = {
   backing: BackingTypeForItem;
   inputs: { create: GraphQLInput; update: GraphQLInput; where: GraphQLInput };
   args: {
-    listQuery?: {
+    listQuery: {
       readonly where?: GraphQLInput | null;
       readonly search?: string | null;
       readonly first?: number | null;

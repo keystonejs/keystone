@@ -147,7 +147,11 @@ export type ${listTypeInfoName} = {
     update: ${gqlNames.updateInputName};
   };
   args: {
-    listQuery: ${listQuery ? printArgs(listQuery.arguments!) : undefined}
+    listQuery: ${
+      listQuery
+        ? printArgs(listQuery.arguments!)
+        : 'import("@keystone-next-types").BaseGeneratedListTypes["args"]["listQuery"]'
+    }
   };
 };
 
