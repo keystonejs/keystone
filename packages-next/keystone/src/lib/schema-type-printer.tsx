@@ -150,7 +150,7 @@ export type ${listTypeInfoName} = {
     listQuery: ${
       listQuery
         ? printArgs(listQuery.arguments!)
-        : 'import("@keystone-next-types").BaseGeneratedListTypes["args"]["listQuery"]'
+        : 'import("@keystone-next/types").BaseGeneratedListTypes["args"]["listQuery"]'
     }
   };
 };
