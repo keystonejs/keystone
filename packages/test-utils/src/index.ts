@@ -49,33 +49,39 @@ const argGenerator = {
   }),
 };
 
+// Users should use testConfig({ ... }) in place of config({ ... }) when setting up
+// their system for test. We explicitly don't allow them to control the 'db' or 'ui'
+// properties as we're going to set that up as part of setupFromConfig.
+type TestKeystoneConfig = Omit<KeystoneConfig, 'db' | 'ui'>;
+export const testConfig = (config: TestKeystoneConfig) => config;
+
 async function setupFromConfig({
   adapterName,
   config,
 }: {
   adapterName: AdapterName;
-  config: KeystoneConfig;
+  config: TestKeystoneConfig;
 }) {
+  let db: KeystoneConfig['db'];
   if (adapterName === 'knex') {
     const adapterArgs = await argGenerator[adapterName]();
-    config.db = { adapter: adapterName, url: adapterArgs.knexOptions.connection, ...adapterArgs };
+    db = { adapter: adapterName, url: adapterArgs.knexOptions.connection, ...adapterArgs };
   } else if (adapterName === 'mongoose') {
     const adapterArgs = await argGenerator[adapterName]();
-    config.db = { adapter: adapterName, url: adapterArgs.mongoUri, mongooseOptions: adapterArgs };
+    db = { adapter: adapterName, url: adapterArgs.mongoUri, mongooseOptions: adapterArgs };
   } else if (adapterName === 'prisma_postgresql') {
     const adapterArgs = await argGenerator[adapterName]();
-    config.db = { adapter: adapterName, ...adapterArgs };
+    db = { adapter: adapterName, ...adapterArgs };
   }
-  config.ui = { isDisabled: true };
-  config = initConfig(config);
+  const _config = initConfig({ ...config, db: db!, ui: { isDisabled: true } });
 
   const { keystone, createContext, graphQLSchema } = createSystem(
-    config,
+    _config,
     path.resolve('.keystone'),
     'prototype'
   );
 
-  const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
+  const app = await createExpressServer(_config, graphQLSchema, createContext, true, '', false);
 
   return { keystone, context: createContext().sudo(), app };
 }
@@ -88,7 +94,7 @@ async function setupServer({
   keystoneOptions,
   graphqlOptions = {},
 }: {
-  adapterName: 'mongoose' | 'knex' | 'prisma_postgresql';
+  adapterName: AdapterName;
   schemaName: string;
   schemaNames: string[];
   createLists: (args: Keystone<string>) => void;
@@ -254,19 +260,19 @@ function multiAdapterRunners(only = process.env.TEST_ADAPTER) {
   return [
     {
       runner: _keystoneRunner('mongoose', teardownMongoMemoryServer),
-      adapterName: 'mongoose',
+      adapterName: 'mongoose' as const,
       before: _before('mongoose'),
       after: _after(teardownMongoMemoryServer),
     },
     {
       runner: _keystoneRunner('knex', () => {}),
-      adapterName: 'knex',
+      adapterName: 'knex' as const,
       before: _before('knex'),
       after: _after(() => {}),
     },
     {
       runner: _keystoneRunner('prisma_postgresql', () => {}),
-      adapterName: 'prisma_postgresql',
+      adapterName: 'prisma_postgresql' as const,
       before: _before('prisma_postgresql'),
       after: _after(() => {}),
     },
