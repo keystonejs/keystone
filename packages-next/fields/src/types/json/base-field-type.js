@@ -1,16 +1,16 @@
 import {
   JsonImplementation,
-  PrismaDocumentInterface,
-  KnexDocumentInterface,
-  MongoDocumentInterface,
+  PrismaJsonInterface,
+  KnexJsonInterface,
+  MongoJsonInterface,
 } from './Implementation';
 
 export const JsonFieldType = {
-  type: 'DocuJsonment',
+  type: 'Json',
   implementation: JsonImplementation,
   adapters: {
-    prisma: PrismaDocumentInterface,
-    knex: KnexDocumentInterface,
-    mongoose: MongoDocumentInterface,
+    prisma: PrismaJsonInterface,
+    knex: KnexJsonInterface,
+    mongoose: MongoJsonInterface,
   },
 };

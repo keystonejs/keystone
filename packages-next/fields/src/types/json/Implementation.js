@@ -38,7 +38,7 @@ export class JsonImplementation extends Implementation {
   }
 }
 
-const CommonDocumentInterface = superclass =>
+const CommonJsonInterface = superclass =>
   class extends superclass {
     getQueryConditions(dbPath) {
       return {
@@ -52,14 +52,14 @@ const CommonDocumentInterface = superclass =>
     }
   };
 
-export class MongoDocumentInterface extends CommonDocumentInterface(MongooseFieldAdapter) {
+export class MongoJsonInterface extends CommonJsonInterface(MongooseFieldAdapter) {
   addToMongooseSchema(schema) {
     const schemaOptions = { type: Object };
     schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
   }
 }
 
-export class KnexDocumentInterface extends CommonDocumentInterface(KnexFieldAdapter) {
+export class KnexJsonInterface extends CommonJsonInterface(KnexFieldAdapter) {
   constructor() {
     super(...arguments);
 
@@ -80,7 +80,7 @@ export class KnexDocumentInterface extends CommonDocumentInterface(KnexFieldAdap
   }
 }
 
-export class PrismaDocumentInterface extends CommonDocumentInterface(PrismaFieldAdapter) {
+export class PrismaJsonInterface extends CommonJsonInterface(PrismaFieldAdapter) {
   constructor() {
     super(...arguments);
 
