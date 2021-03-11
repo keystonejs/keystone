@@ -70,6 +70,7 @@ A static value of `false` implies that the operation can never be executed.
 As such, Keystone will exclude the related operations and types from the GraphQL API.
 For example, if you set `{ create: false }` then the mutations `createItem` and `createItems` will be removed from the GraphQL API.
 If you want to keep the operations in the GraphQL API while preventing all access, you can use the [imperative](#imperative-list) access control rule `() => false`.
+The excluded operations can still be access by using [`context.sudo()`](./context#new-context-creators).
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -238,6 +239,7 @@ A static value of `false` implies that the operation can never be executed.
 As such, Keystone will exclude the field from the related operations and types in the GraphQL API.
 For example, if you set `{ update: false }` then the field would not appear in the `ItemUpdateInput` and `ItemsUpdateInputs` types of the GraphQL API.
 If you want to keep the fields in the GraphQL API while preventing all access, you can use the [imperative](#imperative-list) access control rule `() => false`.
+The excluded operations can still be access by using [`context.sudo()`](./context#new-context-creators).
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';

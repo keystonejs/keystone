@@ -5,11 +5,15 @@ import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 import { getAdminMetaSchema } from '@keystone-next/admin-ui/system';
 import { sessionSchema } from '../session';
 
-export function createGraphQLSchema(config: KeystoneConfig, keystone: BaseKeystone) {
+export function createGraphQLSchema(
+  config: KeystoneConfig,
+  keystone: BaseKeystone,
+  schemaName: 'public' | 'internal' = 'public'
+) {
   // Start with the core keystone graphQL schema
   let graphQLSchema = makeExecutableSchema({
-    typeDefs: keystone.getTypeDefs({ schemaName: 'public' }),
-    resolvers: keystone.getResolvers({ schemaName: 'public' }),
+    typeDefs: keystone.getTypeDefs({ schemaName }),
+    resolvers: keystone.getResolvers({ schemaName }),
   });
 
   // Filter out the _label_ field from all lists
