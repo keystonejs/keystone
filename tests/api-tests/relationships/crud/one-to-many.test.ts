@@ -1,12 +1,20 @@
-const { gen, sampleOne } = require('testcheck');
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
+import { gen, sampleOne } from 'testcheck';
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import type { AdapterName } from '@keystone-next/test-utils-legacy';
+import type { KeystoneContext } from '@keystone-next/types';
+
+type IdType = any;
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-const createInitialData = async context => {
-  const { data, errors } = await context.executeGraphQL({
+const createInitialData = async (context: KeystoneContext) => {
+  type T = {
+    data: { createLocations: { id: IdType }[]; createCompanies: { id: IdType }[] };
+    errors: undefined;
+  };
+  const { data, errors }: T = await context.executeGraphQL({
     query: `
       mutation {
         createCompanies(data: [
@@ -25,16 +33,20 @@ const createInitialData = async context => {
   return { locations: data.createLocations, companies: data.createCompanies };
 };
 
-const createCompanyAndLocation = async context => {
+const createCompanyAndLocation = async (context: KeystoneContext) => {
+  type T = {
+    data: { createCompany: { id: IdType; locations: { id: IdType; company: { id: IdType } }[] } };
+    errors: undefined;
+  };
   const {
     data: { createCompany },
     errors,
-  } = await context.executeGraphQL({
+  }: T = await context.executeGraphQL({
     query: `
       mutation {
         createCompany(data: {
           locations: { create: [{ name: "${sampleOne(alphanumGenerator)}" }] }
-        }) { id locations { id } }
+        }) { id locations { id company { id } } }
       }`,
   });
   expect(errors).toBe(undefined);
@@ -45,91 +57,139 @@ const createCompanyAndLocation = async context => {
   );
 
   // Sanity check the links are setup correctly
-  expect(Company.locations.map(({ id }) => id.toString())).toStrictEqual([Location.id.toString()]);
+  expect(Company.locations.map(({ id }: { id: IdType }) => id.toString())).toEqual([Location.id]);
+  expect(Location.company.id.toString()).toBe(Company.id.toString());
 
   return { company: createCompany, location: createCompany.locations[0] };
 };
 
-const getCompanyAndLocation = async (context, companyId, locationId) => {
-  const { data } = await context.executeGraphQL({
+const getCompanyAndLocation = async (
+  context: KeystoneContext,
+  companyId: IdType,
+  locationId: IdType
+) => {
+  type T = {
+    data: {
+      Company: { id: IdType; locations: { id: IdType }[] };
+      Location: { id: IdType; company: { id: IdType } };
+    };
+  };
+  const { data }: T = await context.executeGraphQL({
     query: `
       {
         Company(where: { id: "${companyId}"} ) { id locations { id } }
-        Location(where: { id: "${locationId}"} ) { id }
+        Location(where: { id: "${locationId}"} ) { id company { id } }
       }`,
   });
   return data;
 };
 
-const createReadData = async context => {
-  // create locations [A, A, B, B, C, C];
+const createReadData = async (context: KeystoneContext) => {
+  // create locations [A, A, B, B, C, C, D];
   const { data, errors } = await context.executeGraphQL({
     query: `mutation create($locations: [LocationsCreateInput]) { createLocations(data: $locations) { id name } }`,
     variables: {
-      locations: ['A', 'A', 'B', 'B', 'C', 'C'].map(name => ({ data: { name } })),
+      locations: ['A', 'A', 'B', 'B', 'C', 'C', 'D'].map(name => ({ data: { name } })),
     },
   });
   expect(errors).toBe(undefined);
   const { createLocations } = data;
   await Promise.all(
-    [
-      [0, 1, 2, 3, 4, 5], //  -> [A, A, B, B, C, C]
-      [0, 2, 4], //  -> [A, B, C]
-      [0, 1], //  -> [A, A]
-      [0, 2], //  -> [A, B]
-      [0, 4], //  -> [A, C]
-      [2, 3], //  -> [B, B]
-      [0], //  -> [A]
-      [2], //  -> [B]
-      [], //  -> []
-    ].map(async locationIdxs => {
-      const ids = locationIdxs.map(i => ({ id: createLocations[i].id }));
-      const { data, errors } = await context.executeGraphQL({
-        query: `mutation create($locations: [LocationWhereUniqueInput]) { createCompany(data: {
+    Object.entries({
+      ABC: [0, 2, 4], //  -> [A, B, C]
+      AB: [1, 3], //  -> [A, B]
+      C: [5], //  -> [C]
+      '': [], //  -> []
+    }).map(async ([name, locationIdxs]) => {
+      const ids = locationIdxs.map((i: number) => ({ id: createLocations[i].id }));
+      const { errors } = await context.executeGraphQL({
+        query: `mutation create($locations: [LocationWhereUniqueInput], $name: String) { createCompany(data: {
+          name: $name
     locations: { connect: $locations }
   }) { id locations { name }}}`,
-        variables: { locations: ids },
+        variables: { locations: ids, name },
       });
       expect(errors).toBe(undefined);
-
-      return data.createCompany;
     })
   );
 };
 
-const setupKeystone = adapterName =>
+const setupKeystone = (adapterName: AdapterName) =>
   setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         Company: list({
           fields: {
             name: text(),
-            locations: relationship({ ref: 'Location', many: true }),
+            locations: relationship({ ref: 'Location.company', many: true }),
           },
         }),
         Location: list({
           fields: {
             name: text(),
+            company: relationship({ ref: 'Company.locations' }),
           },
         }),
-      },
+      }),
     }),
   });
 
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    describe(`Many-to-many relationships`, () => {
+    describe(`One-to-many relationships`, () => {
       describe('Read', () => {
+        test(
+          'one',
+          runner(setupKeystone, async ({ context }) => {
+            await createReadData(context);
+            await Promise.all(
+              [
+                ['A', 5],
+                ['B', 5],
+                ['C', 4],
+                ['D', 0],
+              ].map(async ([name, count]) => {
+                const { data, errors } = await context.executeGraphQL({
+                  query: `{ allLocations(where: { company: { name_contains: "${name}"}}) { id }}`,
+                });
+                expect(errors).toBe(undefined);
+                expect(data.allLocations.length).toEqual(count);
+              })
+            );
+          })
+        );
+        test(
+          'is_null: true',
+          runner(setupKeystone, async ({ context }) => {
+            await createReadData(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{ allLocations(where: { company_is_null: true }) { id }}`,
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allLocations.length).toEqual(1);
+          })
+        );
+        test(
+          'is_null: false',
+          runner(setupKeystone, async ({ context }) => {
+            await createReadData(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{ allLocations(where: { company_is_null: false }) { id }}`,
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allLocations.length).toEqual(6);
+          })
+        );
         test(
           '_some',
           runner(setupKeystone, async ({ context }) => {
             await createReadData(context);
             await Promise.all(
               [
-                ['A', 6],
-                ['B', 5],
-                ['C', 3],
+                ['A', 2],
+                ['B', 2],
+                ['C', 2],
                 ['D', 0],
               ].map(async ([name, count]) => {
                 const { data, errors } = await context.executeGraphQL({
@@ -147,10 +207,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             await createReadData(context);
             await Promise.all(
               [
-                ['A', 3],
-                ['B', 4],
-                ['C', 6],
-                ['D', 9],
+                ['A', 2],
+                ['B', 2],
+                ['C', 2],
+                ['D', 4],
               ].map(async ([name, count]) => {
                 const { data, errors } = await context.executeGraphQL({
                   query: `{ allCompanies(where: { locations_none: { name: "${name}"}}) { id }}`,
@@ -167,9 +227,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             await createReadData(context);
             await Promise.all(
               [
-                ['A', 3],
-                ['B', 3],
-                ['C', 1],
+                ['A', 1],
+                ['B', 1],
+                ['C', 2],
                 ['D', 1],
               ].map(async ([name, count]) => {
                 const { data, errors } = await context.executeGraphQL({
@@ -201,67 +261,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data._allLocationsMeta.count).toEqual(3);
           })
         );
-
-        test(
-          '_some',
-          runner(setupKeystone, async ({ context }) => {
-            await createReadData(context);
-            await Promise.all(
-              [
-                ['A', 6],
-                ['B', 5],
-                ['C', 3],
-                ['D', 0],
-              ].map(async ([name, count]) => {
-                const { data, errors } = await context.executeGraphQL({
-                  query: `{ _allCompaniesMeta(where: { locations_some: { name: "${name}"}}) { count }}`,
-                });
-                expect(errors).toBe(undefined);
-                expect(data._allCompaniesMeta.count).toEqual(count);
-              })
-            );
-          })
-        );
-        test(
-          '_none',
-          runner(setupKeystone, async ({ context }) => {
-            await createReadData(context);
-            await Promise.all(
-              [
-                ['A', 3],
-                ['B', 4],
-                ['C', 6],
-                ['D', 9],
-              ].map(async ([name, count]) => {
-                const { data, errors } = await context.executeGraphQL({
-                  query: `{ _allCompaniesMeta(where: { locations_none: { name: "${name}"}}) { count }}`,
-                });
-                expect(errors).toBe(undefined);
-                expect(data._allCompaniesMeta.count).toEqual(count);
-              })
-            );
-          })
-        );
-        test(
-          '_every',
-          runner(setupKeystone, async ({ context }) => {
-            await createReadData(context);
-            await Promise.all(
-              [
-                ['A', 3],
-                ['B', 3],
-                ['C', 1],
-                ['D', 1],
-              ].map(async ([name, count]) => {
-                const { data, errors } = await context.executeGraphQL({
-                  query: `{ _allCompaniesMeta(where: { locations_every: { name: "${name}"}}) { count }}`,
-                });
-                expect(errors).toBe(undefined);
-                expect(data._allCompaniesMeta.count).toEqual(count);
-              })
-            );
-          })
-        );
       });
 
       describe('Create', () => {
@@ -270,7 +269,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           runner(setupKeystone, async ({ context }) => {
             const { locations } = await createInitialData(context);
             const location = locations[0];
-            const { data, errors } = await context.executeGraphQL({
+            type T = {
+              data: { createCompany: { id: IdType; locations: { id: IdType }[] } };
+              errors: undefined;
+            };
+            const { data, errors }: T = await context.executeGraphQL({
               query: `
                 mutation {
                   createCompany(data: {
@@ -289,10 +292,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               data.createCompany.id,
               location.id
             );
+
             // Everything should now be connected
-            expect(Company.locations.map(({ id }) => id.toString())).toEqual([
-              Location.id.toString(),
+            expect(data.createCompany.locations.map(({ id }) => id.toString())).toEqual([
+              location.id,
             ]);
+            expect(Location.company.id.toString()).toBe(Company.id.toString());
           })
         );
 
@@ -321,6 +326,117 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(Company.locations.map(({ id }) => id.toString())).toEqual([
               Location.id.toString(),
             ]);
+            expect(Location.company.id.toString()).toBe(Company.id.toString());
+          })
+        );
+
+        test(
+          'With nested connect',
+          runner(setupKeystone, async ({ context }) => {
+            const { companies } = await createInitialData(context);
+            const company = companies[0];
+            const locationName = sampleOne(alphanumGenerator);
+
+            const { data, errors } = await context.executeGraphQL({
+              query: `
+                mutation {
+                  createCompany(data: {
+                    locations: { create: [{ name: "${locationName}" company: { connect: { id: "${company.id}" } } }] }
+                  }) { id locations { id company { id } } }
+                }
+            `,
+            });
+            expect(errors).toBe(undefined);
+
+            const { Company, Location } = await getCompanyAndLocation(
+              context,
+              data.createCompany.id,
+              data.createCompany.locations[0].id
+            );
+
+            // Everything should now be connected
+            expect(Company.locations.map(({ id }) => id.toString())).toEqual([Location.id]);
+            expect(Location.company.id.toString()).toBe(Company.id.toString());
+
+            type T = {
+              data: {
+                allCompanies: {
+                  id: IdType;
+                  locations: { id: IdType; company: { id: IdType } }[];
+                }[];
+              };
+              errors: undefined;
+            };
+            const {
+              data: { allCompanies },
+              errors: errors2,
+            }: T = await context.executeGraphQL({
+              query: `{ allCompanies { id locations { id company { id } } } }`,
+            });
+            expect(errors2).toBe(undefined);
+            // The nested company should not have a location
+            expect(
+              allCompanies.filter(({ id }) => id === Company.id)[0].locations[0].company.id
+            ).toEqual(Company.id);
+            allCompanies
+              .filter(({ id }) => id !== Company.id)
+              .forEach(company => {
+                expect(company.locations).toEqual([]);
+              });
+          })
+        );
+
+        test(
+          'With nested create',
+          runner(setupKeystone, async ({ context }) => {
+            const locationName = sampleOne(alphanumGenerator);
+            const companyName = sampleOne(alphanumGenerator);
+
+            const { data, errors } = await context.executeGraphQL({
+              query: `
+                mutation {
+                  createCompany(data: {
+                    locations: { create: [{ name: "${locationName}" company: { create: { name: "${companyName}" } } }] }
+                  }) { id locations { id company { id } } }
+                }
+            `,
+            });
+            expect(errors).toBe(undefined);
+
+            const { Company, Location } = await getCompanyAndLocation(
+              context,
+              data.createCompany.id,
+              data.createCompany.locations[0].id
+            );
+            // Everything should now be connected
+            expect(Company.locations.map(({ id }) => id.toString())).toEqual([Location.id]);
+            expect(Location.company.id.toString()).toBe(Company.id.toString());
+
+            // The nested company should not have a location
+            type T = {
+              data: {
+                allCompanies: {
+                  id: IdType;
+                  locations: { id: IdType; company: { id: IdType } }[];
+                }[];
+              };
+              errors: undefined;
+            };
+            const {
+              data: { allCompanies },
+              errors: errors2,
+            }: T = await context.executeGraphQL({
+              query: `{ allCompanies { id locations { id company { id } } } }`,
+            });
+            expect(errors2).toBe(undefined);
+            expect(
+              allCompanies.filter(({ id }) => id === Company.id)[0].locations[0].company.id
+            ).toEqual(Company.id);
+            allCompanies
+              .filter(({ id }) => id !== Company.id)
+              .forEach(company => {
+                expect(company.locations).toEqual([]);
+              });
           })
         );
 
@@ -354,6 +470,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Sanity check the links don't yet exist
             // `...not.toBe(expect.anything())` allows null and undefined values
             expect(company.locations).not.toBe(expect.anything());
+            expect(location.company).not.toBe(expect.anything());
 
             const { errors } = await context.executeGraphQL({
               query: `
@@ -375,6 +492,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(Company.locations.map(({ id }) => id.toString())).toEqual([
               Location.id.toString(),
             ]);
+            expect(Location.company.id.toString()).toBe(Company.id.toString());
           })
         );
 
@@ -406,6 +524,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(Company.locations.map(({ id }) => id.toString())).toEqual([
               Location.id.toString(),
             ]);
+            expect(Location.company.id.toString()).toBe(Company.id.toString());
           })
         );
 
@@ -433,6 +552,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Check the link has been broken
             const result = await getCompanyAndLocation(context, company.id, location.id);
             expect(result.Company.locations).toEqual([]);
+            expect(result.Location.company).toBe(null);
           })
         );
 
@@ -460,6 +580,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Check the link has been broken
             const result = await getCompanyAndLocation(context, company.id, location.id);
             expect(result.Company.locations).toEqual([]);
+            expect(result.Location.company).toBe(null);
           })
         );
 
@@ -507,6 +628,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Check the link has been broken
             const result = await getCompanyAndLocation(context, company.id, location.id);
             expect(result.Company).toBe(null);
+            expect(result.Location.company).toBe(null);
           })
         );
       });
