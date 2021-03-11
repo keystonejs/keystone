@@ -2,8 +2,7 @@
 .next
 
 # Keystone build dir
-**/.keystone/admin
-**/.keystone/prisma/generated-client
+.keystone
 
 # Logs
 logs

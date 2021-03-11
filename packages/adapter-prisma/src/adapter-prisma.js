@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
+import cuid from 'cuid';
 import { getGenerators, formatSchema } from '@prisma/sdk';
-import { MigrateDev } from '@prisma/migrate';
 import {
   BaseKeystoneAdapter,
   BaseListAdapter,
@@ -106,24 +106,10 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       await runMigrations('prototype', this._url(), prismaSchema, path.resolve(this.schemaPath));
     } else if (this.migrationMode === 'createOnly') {
       // Generate a migration, but do not apply it
-      let migrateDev = new MigrateDev();
-      let oldDatabaseURLValue = process.env.DATABASE_URL;
-      process.env.DATABASE_URL = this._url();
-      await migrateDev.parse([
-        '--create-only',
-        '--skip-generate',
-        '--preview-feature',
-        '--schema',
-        this.schemaPath,
-      ]);
-      process.env.DATABASE_URL = oldDatabaseURLValue;
+      this._runPrismaCmd(`migrate dev --create-only --name keystone-${cuid()} --preview-feature`);
     } else if (this.migrationMode === 'dev') {
       // Generate and apply a migration if required.
-      let migrateDev = new MigrateDev();
-      let oldDatabaseURLValue = process.env.DATABASE_URL;
-      process.env.DATABASE_URL = this._url();
-      await migrateDev.parse(['--preview-feature', '--skip-generate', '--schema', this.schemaPath]);
-      process.env.DATABASE_URL = oldDatabaseURLValue;
+      this._runPrismaCmd(`migrate dev --name keystone-${cuid()} --preview-feature`);
     } else if (this.migrationMode === 'none') {
       // Explicitly disable running any migrations
     } else {
