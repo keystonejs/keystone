@@ -1,6 +1,7 @@
-const { multiAdapterRunners } = require('@keystone-next/test-utils-legacy');
-const { arrayToObject } = require('@keystone-next/utils-legacy');
-const {
+import { multiAdapterRunners } from '@keystone-next/test-utils-legacy';
+import { KeystoneContext } from '@keystone-next/types';
+import { arrayToObject } from '@keystone-next/utils-legacy';
+import {
   setupKeystone,
   getStaticListName,
   getImperativeListName,
@@ -8,7 +9,7 @@ const {
   listAccessVariations,
   fieldMatrix,
   getFieldName,
-} = require('./utils');
+} from './utils';
 
 const introspectionQuery = `{
   __schema {
@@ -44,7 +45,15 @@ const imperativeList = getImperativeListName({
 
 multiAdapterRunners().map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    let keystone, queries, mutations, types, fieldTypes, context;
+    let keystone: any,
+      queries: string[],
+      mutations: string[],
+      types: string[],
+      fieldTypes: Record<
+        string,
+        { name: string; fields: Record<string, any>; inputFields: Record<string, any> }
+      >,
+      context: KeystoneContext;
     beforeAll(async () => {
       const _before = await before(setupKeystone);
       keystone = _before.keystone;
@@ -54,14 +63,24 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
         query: introspectionQuery,
       });
       expect(errors).toBe(undefined);
-      queries = data.__schema.queryType.fields.map(({ name }) => name);
-      mutations = data.__schema.mutationType.fields.map(({ name }) => name);
-      types = data.__schema.types.map(({ name }) => name);
-      fieldTypes = arrayToObject(data.__schema.types, 'name', type =>
-        Object.assign({}, type, {
-          fields: arrayToObject(type.fields || [], 'name'),
-          inputFields: arrayToObject(type.inputFields || [], 'name'),
-        })
+      const __schema: {
+        types: { name: string; fields: { name: string }[]; inputFields: { name: string }[] }[];
+        queryType: { fields: { name: string }[] };
+        mutationType: { fields: { name: string }[] };
+      } = data.__schema;
+      queries = __schema.queryType.fields.map(({ name }) => name);
+      mutations = __schema.mutationType.fields.map(({ name }) => name);
+      types = __schema.types.map(({ name }) => name);
+      fieldTypes = __schema.types.reduce(
+        (acc, type) => ({
+          ...acc,
+          [type.name]: {
+            name: type.name,
+            fields: arrayToObject(type.fields || [], 'name'),
+            inputFields: arrayToObject(type.inputFields || [], 'name'),
+          },
+        }),
+        {}
       );
     });
     afterAll(async () => {

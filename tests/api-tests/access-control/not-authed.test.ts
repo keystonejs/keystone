@@ -1,6 +1,7 @@
-const { multiAdapterRunners } = require('@keystone-next/test-utils-legacy');
-const { createItems, updateItem } = require('@keystone-next/server-side-graphql-client-legacy');
-const {
+import { multiAdapterRunners } from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItems, updateItem } from '@keystone-next/server-side-graphql-client-legacy';
+import {
   FAKE_ID,
   nameFn,
   listAccessVariations,
@@ -10,9 +11,14 @@ const {
   getStaticListName,
   getImperativeListName,
   getDeclarativeListName,
-} = require('./utils');
+} from './utils';
+import { KeystoneContext } from '@keystone-next/types';
 
-const expectNoAccess = (data, errors, name) => {
+const expectNoAccess = <N extends string>(
+  data: Record<N, null>,
+  errors: { message: string; path: string[] }[],
+  name: N
+) => {
   expect(data[name]).toBe(null);
   expect(errors).toHaveLength(1);
   const error = errors[0];
@@ -21,16 +27,20 @@ const expectNoAccess = (data, errors, name) => {
   expect(error.path[0]).toEqual(name);
 };
 
+type IdType = any;
+
 multiAdapterRunners().map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    let keystone, items, context;
+    let keystone: any,
+      items: Record<string, { id: IdType; name: string }[]>,
+      context: KeystoneContext;
     beforeAll(async () => {
       const _before = await before(setupKeystone);
       keystone = _before.keystone;
       context = _before.context;
 
       // ensure every list has at least some data
-      const initialData = listAccessVariations.reduce(
+      const initialData: Record<string, { name: string }[]> = listAccessVariations.reduce(
         (acc, access) =>
           Object.assign(acc, {
             [getStaticListName(access)]: [{ name: 'Hello' }, { name: 'Hi' }],
@@ -56,7 +66,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
     });
 
     describe('create', () => {
-      ['imperative'].forEach(mode => {
+      (['imperative'] as const).forEach(mode => {
         describe(mode, () => {
           listAccessVariations
             .filter(({ create }) => !create)
@@ -71,7 +81,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
         });
       });
 
-      ['static'].forEach(mode => {
+      (['static'] as const).forEach(mode => {
         describe(mode, () => {
           fieldMatrix
             .filter(({ create }) => !create)
@@ -104,7 +114,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             });
         });
       });
-      ['imperative'].forEach(mode => {
+      (['imperative'] as const).forEach(mode => {
         describe(mode, () => {
           fieldMatrix
             .filter(({ create }) => !create)
@@ -133,7 +143,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
     });
 
     describe('read', () => {
-      ['imperative', 'declarative'].forEach(mode => {
+      (['imperative', 'declarative'] as const).forEach(mode => {
         describe(mode, () => {
           listAccessVariations
             .filter(({ read }) => !read)
@@ -167,7 +177,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             });
         });
       });
-      ['imperative'].forEach(mode => {
+      (['imperative'] as const).forEach(mode => {
         describe(mode, () => {
           fieldMatrix
             .filter(({ read }) => !read)
@@ -235,7 +245,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             });
         });
       });
-      ['static'].forEach(mode => {
+      (['static'] as const).forEach(mode => {
         describe(mode, () => {
           fieldMatrix
             .filter(({ read }) => !read)
@@ -294,7 +304,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
     });
 
     describe('update', () => {
-      ['imperative', 'declarative'].forEach(mode => {
+      (['imperative', 'declarative'] as const).forEach(mode => {
         describe(mode, () => {
           listAccessVariations
             .filter(({ update }) => !update)
@@ -309,7 +319,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
         });
       });
 
-      ['static'].forEach(mode => {
+      (['static'] as const).forEach(mode => {
         describe(mode, () => {
           fieldMatrix
             .filter(({ update }) => !update)
@@ -339,7 +349,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             });
         });
       });
-      ['imperative'].forEach(mode => {
+      (['imperative'] as const).forEach(mode => {
         describe(mode, () => {
           fieldMatrix
             .filter(({ update }) => !update)
@@ -370,7 +380,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
     });
 
     describe('delete', () => {
-      ['imperative', 'declarative'].forEach(mode => {
+      (['imperative', 'declarative'] as const).forEach(mode => {
         describe(mode, () => {
           listAccessVariations
             .filter(access => !access.delete)
