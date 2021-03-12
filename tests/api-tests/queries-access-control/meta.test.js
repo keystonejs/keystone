@@ -1,49 +1,48 @@
-const { Text, Relationship } = require('@keystone-next/fields-legacy');
-const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('User', {
-        fields: {
-          company: { type: Relationship, ref: 'Company' },
-          workHistory: {
-            type: Relationship,
-            ref: 'Company',
-            many: true,
-            access: { read: false },
+    config: createSchema({
+      lists: {
+        User: list({
+          fields: {
+            company: relationship({ ref: 'Company' }),
+            workHistory: relationship({
+              ref: 'Company',
+              many: true,
+              access: { read: false },
+            }),
+            posts: relationship({ ref: 'Post', many: true }),
           },
-          posts: { type: Relationship, ref: 'Post', many: true },
-        },
-      });
-
-      keystone.createList('Company', {
-        fields: {
-          name: { type: Text },
-          employees: { type: Relationship, ref: 'User' },
-        },
-      });
-
-      keystone.createList('Post', {
-        fields: {
-          content: { type: Text },
-          author: { type: Relationship, ref: 'User' },
-        },
-        access: {
-          read: false,
-        },
-      });
-    },
+        }),
+        Company: list({
+          fields: {
+            name: text(),
+            employees: relationship({ ref: 'User' }),
+          },
+        }),
+        Post: list({
+          fields: {
+            content: text(),
+            author: relationship({ ref: 'User' }),
+          },
+          access: { read: false },
+        }),
+      },
+    }),
   });
 }
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('_FooMeta query for individual list meta data', () => {
       test(
         `'access' field returns results`,
-        runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await keystone.executeGraphQL({
+        runner(setupKeystone, async ({ context }) => {
+          const { data, errors } = await context.exitSudo().executeGraphQL({
             query: `
           query {
             _CompaniesMeta {
@@ -52,7 +51,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 read
                 update
                 delete
-                auth
               }
             }
           }
@@ -66,15 +64,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             read: true,
             update: true,
             delete: true,
-            auth: true,
           });
         })
       );
 
       test(
         `'schema' field returns results`,
-        runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await keystone.executeGraphQL({
+        runner(setupKeystone, async ({ context }) => {
+          const { data, errors } = await context.exitSudo().executeGraphQL({
             query: `
           query {
             _CompaniesMeta {
@@ -119,8 +116,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('_ksListsMeta query for all lists meta data', () => {
       test(
         `'access' field returns results`,
-        runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await keystone.executeGraphQL({
+        runner(setupKeystone, async ({ context }) => {
+          const { data, errors } = await context.exitSudo().executeGraphQL({
             query: `
           query {
             _ksListsMeta {
@@ -130,7 +127,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 read
                 update
                 delete
-                auth
               }
             }
           }
@@ -147,7 +143,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 read: true,
                 update: true,
                 delete: true,
-                auth: true,
               },
             },
             {
@@ -157,7 +152,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 read: true,
                 update: true,
                 delete: true,
-                auth: true,
               },
             },
           ]);
@@ -166,8 +160,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'returns results for all visible lists',
-        runner(setupKeystone, async ({ keystone }) => {
-          const { data, errors } = await keystone.executeGraphQL({
+        runner(setupKeystone, async ({ context }) => {
+          const { data, errors } = await context.exitSudo().executeGraphQL({
             query: `
           query {
             _ksListsMeta {

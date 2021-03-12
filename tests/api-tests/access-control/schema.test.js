@@ -44,12 +44,13 @@ const imperativeList = getImperativeListName({
 
 multiAdapterRunners().map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    let keystone, queries, mutations, types, fieldTypes;
+    let keystone, queries, mutations, types, fieldTypes, context;
     beforeAll(async () => {
       const _before = await before(setupKeystone);
       keystone = _before.keystone;
+      context = _before.context;
 
-      const { data, errors } = await keystone.executeGraphQL({
+      const { data, errors } = await context.exitSudo().executeGraphQL({
         query: introspectionQuery,
       });
       expect(errors).toBe(undefined);
@@ -72,7 +73,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
         test(JSON.stringify(access), async () => {
           const name = getStaticListName(access);
           // The type is used in all the queries and mutations as a return type
-          if (access.create || access.read || access.update || access.delete || access.auth) {
+          if (access.create || access.read || access.update || access.delete) {
             expect(types).toContain(`${name}`);
             // Filter types are also available for update/delete/create (thanks
             // to nested mutations)

@@ -946,13 +946,7 @@ module.exports = class List {
     // We want to include `id` fields
     // If read is globally set to false, makes sense to never show it
     const readFields = this.getAllFieldsWithAccess({ schemaName, access: 'read' });
-    if (
-      schemaAccess.read ||
-      schemaAccess.create ||
-      schemaAccess.update ||
-      schemaAccess.delete ||
-      schemaAccess.auth
-    ) {
+    if (schemaAccess.read || schemaAccess.create || schemaAccess.update || schemaAccess.delete) {
       types.push(
         ...flatten(this.fields.map(field => field.getGqlAuxTypes({ schemaName }))),
         `
@@ -1143,13 +1137,7 @@ module.exports = class List {
 
   gqlAuxFieldResolvers({ schemaName }) {
     const schemaAccess = this.access[schemaName];
-    if (
-      schemaAccess.read ||
-      schemaAccess.create ||
-      schemaAccess.update ||
-      schemaAccess.delete ||
-      schemaAccess.auth
-    ) {
+    if (schemaAccess.read || schemaAccess.create || schemaAccess.update || schemaAccess.delete) {
       return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers({ schemaName })));
     }
     return {};
