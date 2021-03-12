@@ -76,7 +76,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           // Add some products to some carts
           const q1 = asUser(context, user1.id).graphql.raw;
           const q =
-            'mutation m($productId: ID!){ addToCart(productId: $productId) { id label quantity product { id } user { id } } }';
+            'mutation m($productId: ID!){ addToCart(productId: $productId) { id quantity product { id } user { id } } }';
           await q1({ query: q, variables: { productId: product1.id } });
           await q1({ query: q, variables: { productId: product2.id } });
           await q1({ query: q, variables: { productId: product1.id } });
@@ -140,7 +140,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
 
     describe('addToCart(productId)', () => {
       const query =
-        'mutation m($productId: ID!){ addToCart(productId: $productId) { id label quantity product { id } user { id } } }';
+        'mutation m($productId: ID!){ addToCart(productId: $productId) { id quantity product { id } user { id } } }';
       test(
         'Not logged in should throw',
         runner(setupKeystone, async ({ context }) => {

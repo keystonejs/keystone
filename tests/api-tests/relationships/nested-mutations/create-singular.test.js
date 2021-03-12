@@ -329,7 +329,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
                 if (group.name === 'GroupNoCreateHard') {
                   // For { create: false } the mutation won't even exist, so we expect a different behaviour
-                  expect(data[`createEventTo${group.name}`]).toBe(null);
+                  expect(data).toBe(undefined);
+                  expect(errors).toHaveLength(1);
+                  expect(errors[0].message).toEqual(
+                    `Field "create" is not defined by type "${group.name}RelateToOneInput".`
+                  );
                 } else {
                   // Assert it throws an access denied error
                   expect(data[`createEventTo${group.name}`]).toBe(null);
@@ -401,7 +405,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 // Assert it throws an access denied error
                 if (group.name === 'GroupNoCreateHard') {
                   // For { create: false } the mutation won't even exist, so we expect a different behaviour
-                  expect(data[`updateEventTo${group.name}`]).toBe(null);
+                  expect(data).toBe(undefined);
+                  expect(errors).toHaveLength(1);
+                  expect(errors[0].message).toEqual(
+                    `Field "create" is not defined by type "${group.name}RelateToOneInput".`
+                  );
                 } else {
                   expect(data[`updateEventTo${group.name}`]).toBe(null);
                   expect(errors).toHaveLength(1);
