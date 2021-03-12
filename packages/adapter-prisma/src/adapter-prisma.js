@@ -1,14 +1,16 @@
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
-const cuid = require('cuid');
-const { getGenerators, formatSchema } = require('@prisma/sdk');
-const {
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import cuid from 'cuid';
+import { getGenerator, formatSchema } from '@prisma/sdk';
+import {
   BaseKeystoneAdapter,
   BaseListAdapter,
   BaseFieldAdapter,
-} = require('@keystone-next/keystone-legacy');
-const { defaultObj, mapKeys, identity, flatten } = require('@keystone-next/utils-legacy');
+} from '@keystone-next/keystone-legacy';
+import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
+// eslint-disable-next-line import/no-unresolved
+import { runPrototypeMigrations } from './migrations';
 
 class PrismaAdapter extends BaseKeystoneAdapter {
   constructor(config = {}) {
@@ -34,6 +36,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this.schemaPath = path.join(prismaPath, 'schema.prisma');
     this.clientPath = path.resolve(`${prismaPath}/${clientDir}`);
     this.dbSchemaName = this.getDbSchemaName({ prismaSchema });
+    this.prismaSchema = prismaSchema;
     return { prismaSchema };
   }
 
@@ -69,6 +72,13 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   }
 
   async _connect({ rels }) {
+    // the adapter was already connected since we have a prisma client
+    // it may have been disconnected since it was connected though
+    // so connect but don't regenerate the prisma client
+    if (this.prisma) {
+      await this.prisma.$connect();
+      return;
+    }
     const PrismaClient = await this._getPrismaClient({ rels });
     this.prisma = new PrismaClient({
       log: this.enableLogging && ['query'],
@@ -89,31 +99,16 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     // If any of our critical directories are missing, or if the schema has changed, then
     // we've got things to do.
 
-    try {
-      const existing = fs.readFileSync(this.schemaPath, { encoding: 'utf-8' });
-      if (existing === prismaSchema && fs.existsSync(this.clientPath)) {
-        // If they're the same, we're golden
-        return;
-      }
-    } catch (err) {
-      if (err.code !== 'ENOENT') {
-        throw err;
-      }
-    }
-
     this._writePrismaSchema({ prismaSchema });
 
-    // Generate prisma client
-    await this._generatePrismaClient();
-
-    // Run prisma migrations
-    await this._runMigrations();
+    // Generate prisma client and run prisma migrations
+    await Promise.all([this._generatePrismaClient(), this._runMigrations({ prismaSchema })]);
   }
 
-  async _runMigrations() {
+  async _runMigrations({ prismaSchema }) {
     if (this.migrationMode === 'prototype') {
       // Sync the database directly, without generating any migration
-      this._runPrismaCmd(`db push --accept-data-loss --preview-feature`);
+      await runPrototypeMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
     } else if (this.migrationMode === 'createOnly') {
       // Generate a migration, but do not apply it
       this._runPrismaCmd(`migrate dev --create-only --name keystone-${cuid()} --preview-feature`);
@@ -136,7 +131,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   }
 
   async _generatePrismaClient() {
-    const generator = (await getGenerators({ schemaPath: this.schemaPath }))[0];
+    const generator = await getGenerator({ schemaPath: this.schemaPath });
     await generator.generate();
     generator.stop();
   }
@@ -261,7 +256,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       } else {
         // If we're in prototype mode then we need to rebuild the tables after a reset
         this._runPrismaCmd(`migrate reset --force --preview-feature`);
-        this._runPrismaCmd(`db push --accept-data-loss --preview-feature`);
+        await runPrototypeMigrations(this._url(), this.prismaSchema, path.resolve(this.schemaPath));
       }
     } else {
       this._runPrismaCmd(`migrate reset --force --preview-feature`);
@@ -656,4 +651,4 @@ class PrismaFieldAdapter extends BaseFieldAdapter {
   }
 }
 
-module.exports = { PrismaAdapter, PrismaListAdapter, PrismaFieldAdapter };
+export { PrismaAdapter, PrismaListAdapter, PrismaFieldAdapter };

@@ -132,6 +132,7 @@
       "packages/fields-wysiwyg-tinymce",
       "packages/fields-color",
       "packages/fields",
+      "packages/adapter-prisma",
       "packages-next/*",
       "design-system/packages/*"
     ],
