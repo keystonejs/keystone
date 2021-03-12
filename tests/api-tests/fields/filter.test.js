@@ -2,6 +2,7 @@ const globby = require('globby');
 const path = require('path');
 const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
 import { createItem, getItems } from '@keystone-next/server-side-graphql-client-legacy';
+import memoizeOne from 'memoize-one';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.js`, {
   absolute: true,
@@ -19,24 +20,24 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach(matrixValue => {
           const listKey = 'Test';
+
+          const server = memoizeOne(() => {
+            const createLists = keystone => {
+              // Create a list with all the fields required for testing
+              keystone.createList(listKey, { fields: mod.getTestFields(matrixValue) });
+            };
+            return setupServer({ adapterName, createLists });
+          });
+
           const withKeystone = (testFn = () => {}) =>
-            runner(
-              () => {
-                const createLists = keystone => {
-                  // Create a list with all the fields required for testing
-                  keystone.createList(listKey, { fields: mod.getTestFields(matrixValue) });
-                };
-                return setupServer({ adapterName, createLists });
-              },
-              async ({ keystone, ...rest }) => {
-                // Populate the database before running the tests
-                // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
-                for (const item of mod.initItems(matrixValue)) {
-                  await createItem({ keystone, listKey, item });
-                }
-                return testFn({ keystone, listKey, adapterName, ...rest });
+            runner(server, async ({ keystone, ...rest }) => {
+              // Populate the database before running the tests
+              // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
+              for (const item of mod.initItems(matrixValue)) {
+                await createItem({ keystone, listKey, item });
               }
-            );
+              return testFn({ keystone, listKey, adapterName, ...rest });
+            });
 
           if (mod.filterTests) {
             describe(`${mod.name} - ${matrixValue} - Custom Filtering`, () => {
