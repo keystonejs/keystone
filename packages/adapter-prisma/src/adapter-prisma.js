@@ -67,9 +67,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     if (this._prismaClient) {
       return this._prismaClient;
     }
-    if (this.migrationMode !== 'none-skip-client-generation') {
-      await this._generateClient(rels);
-    }
+    await this._generateClient(rels);
     return require(this.clientPath).PrismaClient;
   }
 
@@ -90,21 +88,17 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   }
 
   async _generateClient(rels) {
-    // 1. Generate a formatted schema
+    // Generate a formatted schema
+    // note that we currently still need to call _prepareSchema even during
+    // a `keystone-next start` because it has various side effects
     const { prismaSchema } = await this._prepareSchema(rels);
 
-    // 2. Check for existing schema
-    // 2a1. If they're the same, we're golden
-    // 2a2. If they're different, generate and run a migration
-    // 2b. If it doesn't exist, generate and run a migration
+    if (this.migrationMode !== 'none-skip-client-generation') {
+      this._writePrismaSchema({ prismaSchema });
 
-    // If any of our critical directories are missing, or if the schema has changed, then
-    // we've got things to do.
-
-    this._writePrismaSchema({ prismaSchema });
-
-    // Generate prisma client and run prisma migrations
-    await Promise.all([this._generatePrismaClient(), this._runMigrations({ prismaSchema })]);
+      // Generate prisma client and run prisma migrations
+      await Promise.all([this._generatePrismaClient(), this._runMigrations({ prismaSchema })]);
+    }
   }
 
   async _runMigrations({ prismaSchema }) {
