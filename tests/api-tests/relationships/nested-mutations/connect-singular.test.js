@@ -1,124 +1,115 @@
 const { gen, sampleOne } = require('testcheck');
-const { Text, Relationship } = require('@keystone-next/fields-legacy');
-const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
+const { text, relationship } = require('@keystone-next/fields');
+const { createSchema, list } = require('@keystone-next/keystone/schema');
+const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
 const { createItem, getItem } = require('@keystone-next/server-side-graphql-client-legacy');
 
 function setupKeystone(adapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('Group', {
-        fields: {
-          name: { type: Text },
-        },
-      });
-
-      keystone.createList('Event', {
-        fields: {
-          title: { type: Text },
-          group: { type: Relationship, ref: 'Group' },
-        },
-      });
-
-      keystone.createList('GroupNoRead', {
-        fields: {
-          name: { type: Text },
-        },
-        access: {
-          read: () => false,
-        },
-      });
-
-      keystone.createList('EventToGroupNoRead', {
-        fields: {
-          title: { type: Text },
-          group: { type: Relationship, ref: 'GroupNoRead' },
-        },
-      });
-
-      keystone.createList('GroupNoReadHard', {
-        fields: { name: { type: Text } },
-        access: { read: false },
-      });
-
-      keystone.createList('EventToGroupNoReadHard', {
-        fields: {
-          title: { type: Text },
-          group: { type: Relationship, ref: 'GroupNoReadHard' },
-        },
-      });
-
-      keystone.createList('GroupNoCreate', {
-        fields: {
-          name: { type: Text },
-        },
-        access: {
-          create: () => false,
-        },
-      });
-
-      keystone.createList('EventToGroupNoCreate', {
-        fields: {
-          title: { type: Text },
-          group: { type: Relationship, ref: 'GroupNoCreate' },
-        },
-      });
-
-      keystone.createList('GroupNoCreateHard', {
-        fields: { name: { type: Text } },
-        access: { create: false },
-      });
-
-      keystone.createList('EventToGroupNoCreateHard', {
-        fields: {
-          title: { type: Text },
-          group: { type: Relationship, ref: 'GroupNoCreateHard' },
-        },
-      });
-
-      keystone.createList('GroupNoUpdate', {
-        fields: { name: { type: Text } },
-        access: { update: () => false },
-      });
-
-      keystone.createList('EventToGroupNoUpdate', {
-        fields: {
-          title: { type: Text },
-          group: { type: Relationship, ref: 'GroupNoUpdate' },
-        },
-      });
-
-      keystone.createList('GroupNoUpdateHard', {
-        fields: { name: { type: Text } },
-        access: { update: false },
-      });
-
-      keystone.createList('EventToGroupNoUpdateHard', {
-        fields: {
-          title: { type: Text },
-          group: { type: Relationship, ref: 'GroupNoUpdateHard' },
-        },
-      });
-    },
+    config: createSchema({
+      lists: {
+        Group: list({
+          fields: {
+            name: text(),
+          },
+        }),
+        Event: list({
+          fields: {
+            title: text(),
+            group: relationship({ ref: 'Group' }),
+          },
+        }),
+        GroupNoRead: list({
+          fields: {
+            name: text(),
+          },
+          access: {
+            read: () => false,
+          },
+        }),
+        EventToGroupNoRead: list({
+          fields: {
+            title: text(),
+            group: relationship({ ref: 'GroupNoRead' }),
+          },
+        }),
+        GroupNoReadHard: list({
+          fields: { name: text() },
+          access: { read: false },
+        }),
+        EventToGroupNoReadHard: list({
+          fields: {
+            title: text(),
+            group: relationship({ ref: 'GroupNoReadHard' }),
+          },
+        }),
+        GroupNoCreate: list({
+          fields: {
+            name: text(),
+          },
+          access: {
+            create: () => false,
+          },
+        }),
+        EventToGroupNoCreate: list({
+          fields: {
+            title: text(),
+            group: relationship({ ref: 'GroupNoCreate' }),
+          },
+        }),
+        GroupNoCreateHard: list({
+          fields: { name: text() },
+          access: { create: false },
+        }),
+        EventToGroupNoCreateHard: list({
+          fields: {
+            title: text(),
+            group: relationship({ ref: 'GroupNoCreateHard' }),
+          },
+        }),
+        GroupNoUpdate: list({
+          fields: { name: text() },
+          access: { update: () => false },
+        }),
+        EventToGroupNoUpdate: list({
+          fields: {
+            title: text(),
+            group: relationship({ ref: 'GroupNoUpdate' }),
+          },
+        }),
+        GroupNoUpdateHard: list({
+          fields: { name: text() },
+          access: { update: false },
+        }),
+        EventToGroupNoUpdateHard: list({
+          fields: {
+            title: text(),
+            group: relationship({ ref: 'GroupNoUpdateHard' }),
+          },
+        }),
+      },
+    }),
   });
 }
+
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('no access control', () => {
       test(
         'link nested from within create mutation',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item to link against
           const createGroup = await createItem({
-            keystone,
+            context,
             listKey: 'Group',
             item: { name: groupName },
           });
 
           // Create an item that does the linking
-          const { data, errors } = await keystone.executeGraphQL({
+          const { data, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 createEvent(data: {
@@ -137,12 +128,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'link nested from within update mutation',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item to link against
           const createGroup = await createItem({
-            keystone,
+            context,
             listKey: 'Group',
             item: { name: groupName },
           });
@@ -151,13 +142,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const {
             data: { createEvent },
             errors,
-          } = await keystone.executeGraphQL({
+          } = await context.executeGraphQL({
             query: 'mutation { createEvent(data: { title: "A thing", }) { id } }',
           });
           expect(errors).toBe(undefined);
 
           // Update the item and link the relationship field
-          const { data, errors: errors2 } = await keystone.executeGraphQL({
+          const { data, errors: errors2 } = await context.executeGraphQL({
             query: `
               mutation {
                 updateEvent(
@@ -189,11 +180,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('non-matching filter', () => {
       test(
         'errors if connecting an item which cannot be found during creating',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
 
           // Create an item that does the linking
-          const { errors } = await keystone.executeGraphQL({
+          const { errors } = await context.executeGraphQL({
             query: `
               mutation {
                 createEvent(data: {
@@ -212,14 +203,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'errors if connecting an item which cannot be found during update',
-        runner(setupKeystone, async ({ keystone }) => {
+        runner(setupKeystone, async ({ context }) => {
           const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
 
           // Create an item to link against
-          const createEvent = await createItem({ keystone, listKey: 'Event', item: {} });
+          const createEvent = await createItem({ context, listKey: 'Event', item: {} });
 
           // Create an item that does the linking
-          const { errors } = await keystone.executeGraphQL({
+          const { errors } = await context.executeGraphQL({
             query: `
               mutation {
                 updateEvent(
@@ -253,21 +244,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           if (group.allowed) {
             test(
               'does not throw error when linking nested within create mutation',
-              runner(setupKeystone, async ({ keystone }) => {
+              runner(setupKeystone, async ({ context }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
                 // We can't use the graphQL query here (it's `create: () => false`)
                 const { id } = await createItem({
-                  keystone,
                   listKey: group.name,
                   item: { name: groupName },
-                  context: keystone.createContext({ schemaName: 'internal' }),
+                  context,
                 });
                 expect(id).toBeTruthy();
 
                 // Create an item that does the linking
-                const { data, errors } = await keystone.executeGraphQL({
+                const { data, errors } = await context.exitSudo().executeGraphQL({
                   query: `
                     mutation {
                       createEventTo${group.name}(data: {
@@ -290,28 +280,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             );
             test(
               'does not throw error when linking nested within update mutation',
-              runner(setupKeystone, async ({ keystone }) => {
+              runner(setupKeystone, async ({ context }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
                 const groupModel = await createItem({
-                  keystone,
                   listKey: group.name,
                   item: { name: groupName },
-                  context: keystone.createContext({ schemaName: 'internal' }),
+                  context,
                 });
                 expect(groupModel.id).toBeTruthy();
 
                 // Create an item to update
                 const eventModel = await createItem({
-                  keystone,
+                  context,
                   listKey: `EventTo${group.name}`,
                   item: { title: 'A Thing' },
                 });
                 expect(eventModel.id).toBeTruthy();
 
                 // Update the item and link the relationship field
-                const { data, errors } = await keystone.executeGraphQL({
+                const { data, errors } = await context.exitSudo().executeGraphQL({
                   query: `
                     mutation {
                       updateEventTo${group.name}(
@@ -340,7 +329,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
                 // See that it actually stored the group ID on the Event record
                 const event = await getItem({
-                  keystone,
+                  context,
                   listKey: `EventTo${group.name}`,
                   itemId: data[`updateEventTo${group.name}`].id,
                   returnFields: 'id group { id name }',
@@ -353,12 +342,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           } else {
             test(
               'throws error when linking nested within update mutation',
-              runner(setupKeystone, async ({ keystone }) => {
+              runner(setupKeystone, async ({ context }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
                 const groupModel = await createItem({
-                  keystone,
+                  context,
                   listKey: group.name,
                   item: { name: groupName },
                 });
@@ -366,14 +355,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
                 // Create an item to update
                 const eventModel = await createItem({
-                  keystone,
+                  context,
                   listKey: `EventTo${group.name}`,
                   item: { title: 'A thing' },
                 });
                 expect(eventModel.id).toBeTruthy();
 
                 // Update the item and link the relationship field
-                const { errors } = await keystone.executeGraphQL({
+                const { errors } = await context.exitSudo().executeGraphQL({
                   query: `
                     mutation {
                       updateEventTo${group.name}(
@@ -399,19 +388,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             test(
               'throws error when linking nested within create mutation',
-              runner(setupKeystone, async ({ keystone }) => {
+              runner(setupKeystone, async ({ context }) => {
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
                 const { id } = await createItem({
-                  keystone,
+                  context,
                   listKey: group.name,
                   item: { name: groupName },
                 });
                 expect(id).toBeTruthy();
 
                 // Create an item that does the linking
-                const { errors } = await keystone.executeGraphQL({
+                const { errors } = await context.exitSudo().executeGraphQL({
                   query: `
                     mutation {
                       createEventTo${group.name}(data: {
