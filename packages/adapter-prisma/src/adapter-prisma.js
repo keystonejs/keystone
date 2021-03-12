@@ -67,7 +67,9 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     if (this._prismaClient) {
       return this._prismaClient;
     }
-    await this._generateClient(rels);
+    if (this.migrationMode !== 'none-skip-client-generation') {
+      await this._generateClient(rels);
+    }
     return require(this.clientPath).PrismaClient;
   }
 
