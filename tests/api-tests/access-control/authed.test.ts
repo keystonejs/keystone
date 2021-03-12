@@ -1,11 +1,12 @@
-const { multiAdapterRunners } = require('@keystone-next/test-utils-legacy');
-const {
+import { multiAdapterRunners } from '@keystone-next/test-utils-legacy';
+import {
   createItem,
   createItems,
   deleteItem,
   updateItem,
-} = require('@keystone-next/server-side-graphql-client-legacy');
-const {
+  // @ts-ignore
+} from '@keystone-next/server-side-graphql-client-legacy';
+import {
   FAKE_ID,
   FAKE_ID_2,
   getStaticListName,
@@ -16,8 +17,16 @@ const {
   getFieldName,
   nameFn,
   setupKeystone,
-} = require('./utils');
-const expectNoAccess = (data, errors, name) => {
+} from './utils';
+import { KeystoneContext } from '@keystone-next/types';
+
+type IdType = any;
+
+const expectNoAccess = <N extends string>(
+  data: Record<N, null>,
+  errors: { message: string; path: string[] }[],
+  name: N
+) => {
   expect(data[name]).toBe(null);
   expect(errors).toHaveLength(1);
   const error = errors[0];
@@ -26,7 +35,12 @@ const expectNoAccess = (data, errors, name) => {
   expect(error.path[0]).toEqual(name);
 };
 
-const expectNamedArray = (data, errors, name, values) => {
+const expectNamedArray = <T extends { id: IdType }, N extends string>(
+  data: Record<N, T[]>,
+  errors: undefined,
+  name: N,
+  values: T[]
+) => {
   expect(errors).toBe(undefined);
   expect(data[name]).toHaveLength(values.length);
   const sortedData = data[name].map(({ id }) => id).sort();
@@ -37,14 +51,17 @@ const expectNamedArray = (data, errors, name, values) => {
 
 multiAdapterRunners().map(({ before, after, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    let keystone, items, user, context;
+    let keystone: any,
+      items: Record<string, { id: IdType; name: string }[]>,
+      user: { id: IdType; name: string; yesRead: string; noRead: string },
+      context: KeystoneContext;
     beforeAll(async () => {
       const _before = await before(setupKeystone);
       keystone = _before.keystone;
       context = _before.context;
 
       // ensure every list has at least some data
-      const initialData = listAccessVariations.reduce(
+      const initialData: Record<string, { name: string }[]> = listAccessVariations.reduce(
         (acc, access) =>
           Object.assign(acc, {
             [getStaticListName(access)]: [{ name: 'Hello' }, { name: 'Hi' }],
@@ -76,7 +93,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
     });
 
     describe('create', () => {
-      ['imperative'].forEach(mode => {
+      (['imperative'] as const).forEach(mode => {
         describe(mode, () => {
           listAccessVariations
             .filter(({ create }) => create)
@@ -97,7 +114,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             });
         });
       });
-      ['static'].forEach(mode => {
+      (['static'] as const).forEach(mode => {
         describe(mode, () => {
           fieldMatrix
             .filter(({ create }) => create)
@@ -132,7 +149,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             });
         });
       });
-      ['imperative'].forEach(mode => {
+      (['imperative'] as const).forEach(mode => {
         describe(mode, () => {
           fieldMatrix
             .filter(({ create }) => create)
@@ -181,7 +198,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
         expect(errors[0].path).toEqual(['authenticatedItem', 'noRead']);
       });
 
-      ['imperative', 'declarative'].forEach(mode => {
+      (['imperative', 'declarative'] as const).forEach(mode => {
         describe(mode, () => {
           listAccessVariations
             .filter(({ read }) => read)
@@ -212,7 +229,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
 
               test(`single allowed: ${JSON.stringify(access)}`, async () => {
                 const singleQueryName = nameFn[mode](access);
-                const validId = items[singleQueryName].find(({ name }) => name === 'Hello').id;
+                const validId = items[singleQueryName].find(({ name }) => name === 'Hello')?.id;
                 const query = `query { ${singleQueryName}(where: { id: "${validId}" }) { id } }`;
                 const { data, errors } = await context.exitSudo().executeGraphQL({ query });
                 expect(errors).toBe(undefined);
@@ -222,7 +239,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
 
               test(`single not allowed: ${JSON.stringify(access)}`, async () => {
                 const singleQueryName = nameFn[mode](access);
-                const invalidId = items[singleQueryName].find(({ name }) => name !== 'Hello').id;
+                const invalidId = items[singleQueryName].find(({ name }) => name !== 'Hello')?.id;
                 const query = `query { ${singleQueryName}(where: { id: "${invalidId}" }) { id } }`;
                 const { data, errors } = await context.exitSudo().executeGraphQL({ query });
                 if (mode === 'imperative') {
@@ -253,7 +270,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             });
         });
       });
-      ['imperative', 'static'].forEach(mode => {
+      (['imperative', 'static'] as const).forEach(mode => {
         describe(mode, () => {
           fieldMatrix
             .filter(({ read }) => read)
@@ -317,7 +334,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
     });
 
     describe('update', () => {
-      ['imperative', 'declarative'].forEach(mode => {
+      (['imperative', 'declarative'] as const).forEach(mode => {
         describe(mode, () => {
           listAccessVariations
             .filter(({ update }) => update)
@@ -332,7 +349,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
               test(`denies by declarative: ${JSON.stringify(access)}`, async () => {
                 const updateMutationName = `update${nameFn[mode](access)}`;
                 const singleQueryName = nameFn[mode](access);
-                const invalidId = items[singleQueryName].find(({ name }) => name !== 'Hello').id;
+                const invalidId = items[singleQueryName].find(({ name }) => name !== 'Hello')?.id;
                 const query = `mutation { ${updateMutationName}(id: "${invalidId}", data: { name: "bar" }) { id name } }`;
                 const { data, errors } = await context.exitSudo().executeGraphQL({ query });
                 if (mode === 'imperative') {
@@ -352,7 +369,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
               test(`allows: ${JSON.stringify(access)}`, async () => {
                 const updateMutationName = `update${nameFn[mode](access)}`;
                 const singleQueryName = nameFn[mode](access);
-                const validId = items[singleQueryName].find(({ name }) => name === 'Hello').id;
+                const validId = items[singleQueryName].find(({ name }) => name === 'Hello')?.id;
                 const query = `mutation { ${updateMutationName}(id: "${validId}", data: { name: "bar" }) { id name } }`;
                 const { data, errors } = await context.exitSudo().executeGraphQL({ query });
                 expect(errors).toBe(undefined);
@@ -367,7 +384,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             });
         });
       });
-      ['static'].forEach(mode => {
+      (['static'] as const).forEach(mode => {
         describe(mode, () => {
           fieldMatrix
             .filter(({ update }) => update)
@@ -399,7 +416,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             });
         });
       });
-      ['imperative'].forEach(mode => {
+      (['imperative'] as const).forEach(mode => {
         describe(mode, () => {
           fieldMatrix
             .filter(({ update }) => update)
@@ -427,12 +444,12 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
     });
 
     describe('delete', () => {
-      [('imperative', 'declarative')].forEach(mode => {
+      (['imperative', 'declarative'] as const).forEach(mode => {
         describe(mode, () => {
           listAccessVariations
             .filter(access => access.delete)
             .forEach(access => {
-              const create = async item =>
+              const create = async (item: { name: string }) =>
                 createItem({
                   listKey: nameFn[mode](access),
                   item,

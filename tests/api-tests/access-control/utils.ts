@@ -1,17 +1,28 @@
-const { text, password } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { statelessSessions, withItemData } = require('@keystone-next/keystone/session');
-const { setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createAuth } = require('@keystone-next/auth');
-const { objMerge } = require('@keystone-next/utils-legacy');
+import { text, password } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
+import { AdapterName, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import { createAuth } from '@keystone-next/auth';
+import { objMerge } from '@keystone-next/utils-legacy';
+import type { KeystoneConfig } from '@keystone-next/types';
 
-const FAKE_ID = { mongoose: '5b3eabd9e9f2e3e4866742ea', knex: 137, prisma: 137 };
-const FAKE_ID_2 = { mongoose: '5b3eabd9e9f2e3e4866742eb', knex: 138, prisma: 138 };
+const FAKE_ID = {
+  mongoose: '5b3eabd9e9f2e3e4866742ea',
+  knex: 137,
+  prisma_postgresql: 137,
+} as const;
+const FAKE_ID_2 = {
+  mongoose: '5b3eabd9e9f2e3e4866742eb',
+  knex: 138,
+  prisma_postgresql: 138,
+} as const;
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
 
-const yesNo = truthy => (truthy ? 'Yes' : 'No');
+const yesNo = (truthy: boolean | undefined) => (truthy ? 'Yes' : 'No');
 
-const getPrefix = access => {
+type BooleanAccess = { create: boolean; read: boolean; update: boolean; delete?: boolean };
+
+const getPrefix = (access: BooleanAccess) => {
   // prettier-ignore
   let prefix = `${yesNo(access.create)}Create${yesNo(access.read)}Read${yesNo(access.update)}Update`;
   if (Object.prototype.hasOwnProperty.call(access, 'delete')) {
@@ -20,9 +31,9 @@ const getPrefix = access => {
   return prefix;
 };
 
-const getStaticListName = access => `${getPrefix(access)}StaticList`;
-const getImperativeListName = access => `${getPrefix(access)}ImperativeList`;
-const getDeclarativeListName = access => `${getPrefix(access)}DeclarativeList`;
+const getStaticListName = (access: BooleanAccess) => `${getPrefix(access)}StaticList`;
+const getImperativeListName = (access: BooleanAccess) => `${getPrefix(access)}ImperativeList`;
+const getDeclarativeListName = (access: BooleanAccess) => `${getPrefix(access)}DeclarativeList`;
 
 /* Generated with:
   const result = [];
@@ -37,7 +48,7 @@ const getDeclarativeListName = access => `${getPrefix(access)}DeclarativeList`;
     }), {}));
   }
   */
-const listAccessVariations = [
+const listAccessVariations: BooleanAccess[] = [
   { create: false, read: false, update: false, delete: false },
   { create: true, read: false, update: false, delete: false },
   { create: false, read: true, update: false, delete: false },
@@ -56,7 +67,7 @@ const listAccessVariations = [
   { create: true, read: true, update: true, delete: true },
 ];
 
-const fieldMatrix = [
+const fieldMatrix: BooleanAccess[] = [
   { create: false, read: false, update: false },
   { create: true, read: false, update: false },
   { create: false, read: true, update: false },
@@ -66,7 +77,7 @@ const fieldMatrix = [
   { create: false, read: true, update: true },
   { create: true, read: true, update: true },
 ];
-const getFieldName = access => getPrefix(access);
+const getFieldName = (access: BooleanAccess) => getPrefix(access);
 
 const nameFn = {
   imperative: getImperativeListName,
@@ -74,10 +85,10 @@ const nameFn = {
   static: getStaticListName,
 };
 
-const createFieldStatic = fieldAccess => ({
+const createFieldStatic = (fieldAccess: BooleanAccess) => ({
   [getFieldName(fieldAccess)]: text({ access: fieldAccess }),
 });
-const createFieldImperative = fieldAccess => ({
+const createFieldImperative = (fieldAccess: BooleanAccess) => ({
   [getFieldName(fieldAccess)]: text({
     access: {
       create: () => fieldAccess.create,
@@ -86,8 +97,8 @@ const createFieldImperative = fieldAccess => ({
     },
   }),
 });
-function setupKeystone(adapterName) {
-  const lists = {
+function setupKeystone(adapterName: AdapterName) {
+  const lists = createSchema({
     User: list({
       fields: {
         name: text(),
@@ -97,7 +108,7 @@ function setupKeystone(adapterName) {
         yesRead: text({ access: { read: () => true } }),
       },
     }),
-  };
+  });
 
   listAccessVariations.forEach(access => {
     lists[getStaticListName(access)] = list({
@@ -134,14 +145,14 @@ function setupKeystone(adapterName) {
   return setupFromConfig({
     adapterName,
     config: auth.withAuth(
-      createSchema({
+      testConfig({
         lists,
         session: withItemData(statelessSessions({ secret: COOKIE_SECRET }), { User: 'id' }),
-      })
+      }) as KeystoneConfig
     ),
   });
 }
-module.exports = {
+export {
   FAKE_ID,
   FAKE_ID_2,
   getStaticListName,
