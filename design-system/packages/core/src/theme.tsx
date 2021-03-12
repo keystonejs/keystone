@@ -9,6 +9,8 @@ export const ThemeContext = createContext<{
   theme: theme,
 });
 
+export const baseTheme: Theme = theme;
+
 export const ThemeProvider = ({ theme, children }: { theme: Theme; children: ReactNode }) => {
   return <ThemeContext.Provider value={{ theme }}>{children}</ThemeContext.Provider>;
 };

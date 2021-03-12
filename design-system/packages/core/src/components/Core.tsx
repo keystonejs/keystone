@@ -4,9 +4,12 @@ import { jsx, Global } from '../emotion';
 import { Fragment, ReactNode } from 'react';
 
 import { normalize } from '../normalize';
-import { useTheme } from '../theme';
+import { ThemeProvider, useTheme, baseTheme } from '../theme';
+import { Theme } from '../types';
 
 type CoreProps = {
+  /** Custom theme */
+  theme?: Theme;
   /** The app content. */
   children: ReactNode;
   /** Include styles to normalize element styles among browsers. */
@@ -16,15 +19,18 @@ type CoreProps = {
 };
 
 export const Core = ({
+  theme,
   children,
   includeNormalize = true,
   optimizeLegibility = true,
 }: CoreProps) => {
   return (
-    <Fragment>
+    <ThemeProvider theme={{...baseTheme, ...theme}} children={
+      <Fragment>
       <BaseCSS includeNormalize={includeNormalize} optimizeLegibility={optimizeLegibility} />
       {children}
     </Fragment>
+    } />
   );
 };
 
