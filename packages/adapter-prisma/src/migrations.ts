@@ -31,14 +31,12 @@ export async function runPrototypeMigrations(dbUrl: string, schema: string, sche
     })
   );
   migrate.stop();
-  console.dir(migration, { depth: null });
+
   if (migration.warnings.length === 0 && migration.executedSteps === 0) {
-    console.info(`\nThe database is already in sync with the Prisma schema.`);
+    console.info(`✨ The database is already in sync with the Prisma schema.`);
   } else {
     console.info(
-      `\n${
-        process.platform === 'win32' ? '' : '🚀  '
-      }Your database is now in sync with your schema. Done in ${formatms(Date.now() - before)}`
+      `✨ Your database is now in sync with your schema. Done in ${formatms(Date.now() - before)}`
     );
   }
 }
@@ -49,7 +47,7 @@ async function ensureDatabaseExists(dbUrl: string, schemaDir: string) {
   if (result && result.exitCode === 0) {
     const credentials = uriToCredentials(dbUrl);
     console.log(
-      `${credentials.type} database ${credentials.database} created at ${getDbLocation(
+      `✨ ${credentials.type} database "${credentials.database}" created at ${getDbLocation(
         credentials
       )}`
     );

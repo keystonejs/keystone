@@ -36,6 +36,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this.schemaPath = path.join(prismaPath, 'schema.prisma');
     this.clientPath = path.resolve(`${prismaPath}/${clientDir}`);
     this.dbSchemaName = this.getDbSchemaName({ prismaSchema });
+    this.prismaSchema = prismaSchema;
     return { prismaSchema };
   }
 
@@ -255,7 +256,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       } else {
         // If we're in prototype mode then we need to rebuild the tables after a reset
         this._runPrismaCmd(`migrate reset --force --preview-feature`);
-        this._runPrismaCmd(`db push --accept-data-loss --preview-feature`);
+        await runPrototypeMigrations(this._url(), this.prismaSchema, path.resolve(this.schemaPath));
       }
     } else {
       this._runPrismaCmd(`migrate reset --force --preview-feature`);
