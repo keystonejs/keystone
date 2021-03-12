@@ -71,6 +71,13 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   }
 
   async _connect({ rels }) {
+    // the adapter was already connected since we have a prisma client
+    // it may have been disconnected since it was connected though
+    // so connect but don't regenerate the prisma client
+    if (this.prisma) {
+      await this.prisma.$connect();
+      return;
+    }
     const PrismaClient = await this._getPrismaClient({ rels });
     this.prisma = new PrismaClient({
       log: this.enableLogging && ['query'],

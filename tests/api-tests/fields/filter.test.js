@@ -21,16 +21,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         (mod.testMatrix || ['default']).forEach(matrixValue => {
           const listKey = 'Test';
 
-          const server = memoizeOne(() => {
+          // we want to memoize the server creation since it's the same fields
+          // for all the tests and setting up a keystone instance for prisma
+          // can be a bit slow
+          const _getServer = () => {
             const createLists = keystone => {
               // Create a list with all the fields required for testing
               keystone.createList(listKey, { fields: mod.getTestFields(matrixValue) });
             };
             return setupServer({ adapterName, createLists });
-          });
+          };
+
+          // we don't memoize it for mongoose though since it has a cleanup which messes the memoization up
+          const getServer = adapterName === 'mongoose' ? _getServer : memoizeOne(_getServer);
 
           const withKeystone = (testFn = () => {}) =>
-            runner(server, async ({ keystone, ...rest }) => {
+            runner(getServer, async ({ keystone, ...rest }) => {
               // Populate the database before running the tests
               // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
               for (const item of mod.initItems(matrixValue)) {
