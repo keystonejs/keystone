@@ -1,13 +1,21 @@
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import {
+  AdapterName,
+  multiAdapterRunners,
+  setupFromConfig,
+  testConfig,
+} from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
-function setupKeystone(adapterName) {
+type IdType = any;
+
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         User: list({
           fields: {
             company: relationship({ ref: 'Company' }),
@@ -24,7 +32,7 @@ function setupKeystone(adapterName) {
             content: text(),
           },
         }),
-      },
+      }),
     }),
   });
 }
@@ -176,7 +184,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           await createItem({ context, listKey: 'User', item: {} });
 
-          const { data, errors } = await context.executeGraphQL({
+          type T = {
+            data: { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
+            errors: unknown;
+          };
+          const { data, errors }: T = await context.executeGraphQL({
             query: `
         query {
           allUsers(where: {
@@ -228,7 +240,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           await createItem({ context, listKey: 'User', item: {} });
 
-          const { data, errors } = await context.executeGraphQL({
+          type T = {
+            data: { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
+            errors: unknown;
+          };
+          const { data, errors }: T = await context.executeGraphQL({
             query: `
           query {
             allUsers(where: {
@@ -329,7 +345,17 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // adsCompany users whose every post is spam
           // NB: this includes users who have no posts at all
-          let { data, errors } = await context.executeGraphQL({
+          type T = {
+            data: {
+              allUsers: {
+                id: IdType;
+                company: { id: IdType; name: string };
+                posts: { content: string }[];
+              }[];
+            };
+            errors: unknown;
+          };
+          const result1: T = await context.executeGraphQL({
             query: `
         query {
           allUsers(where: {
@@ -349,17 +375,22 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
-          expect(data.allUsers).toHaveLength(2);
-          expect(data.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
-          expect(data.allUsers.map(u => u.id).sort()).toEqual([spammyUser.id, quietUser.id].sort());
-          expect(data.allUsers.map(u => u.posts.every(p => p.content === 'spam'))).toEqual([
+          expect(result1.errors).toBe(undefined);
+          expect(result1.data.allUsers).toHaveLength(2);
+          expect(result1.data.allUsers.map(u => u.company.id)).toEqual([
+            adsCompany.id,
+            adsCompany.id,
+          ]);
+          expect(result1.data.allUsers.map(u => u.id).sort()).toEqual(
+            [spammyUser.id, quietUser.id].sort()
+          );
+          expect(result1.data.allUsers.map(u => u.posts.every(p => p.content === 'spam'))).toEqual([
             true,
             true,
           ]);
 
           // adsCompany users with no spam
-          ({ data, errors } = await context.executeGraphQL({
+          const result2: T = await context.executeGraphQL({
             query: `
         query {
           allUsers(where: {
@@ -377,21 +408,24 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
         }
       `,
-          }));
+          });
 
-          expect(errors).toBe(undefined);
-          expect(data.allUsers).toHaveLength(2);
-          expect(data.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
-          expect(data.allUsers.map(u => u.id).sort()).toEqual(
+          expect(result2.errors).toBe(undefined);
+          expect(result2.data.allUsers).toHaveLength(2);
+          expect(result2.data.allUsers.map(u => u.company.id)).toEqual([
+            adsCompany.id,
+            adsCompany.id,
+          ]);
+          expect(result2.data.allUsers.map(u => u.id).sort()).toEqual(
             [nonSpammyUser.id, quietUser.id].sort()
           );
-          expect(data.allUsers.map(u => u.posts.every(p => p.content !== 'spam'))).toEqual([
+          expect(result2.data.allUsers.map(u => u.posts.every(p => p.content !== 'spam'))).toEqual([
             true,
             true,
           ]);
 
           // adsCompany users with some spam
-          ({ data, errors } = await context.executeGraphQL({
+          const result3: T = await context.executeGraphQL({
             query: `
         query {
           allUsers(where: {
@@ -409,13 +443,18 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
         }
       `,
-          }));
+          });
 
-          expect(errors).toBe(undefined);
-          expect(data.allUsers).toHaveLength(2);
-          expect(data.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
-          expect(data.allUsers.map(u => u.id).sort()).toEqual([mixedUser.id, spammyUser.id].sort());
-          expect(data.allUsers.map(u => u.posts.some(p => p.content === 'spam'))).toEqual([
+          expect(result3.errors).toBe(undefined);
+          expect(result3.data.allUsers).toHaveLength(2);
+          expect(result3.data.allUsers.map(u => u.company.id)).toEqual([
+            adsCompany.id,
+            adsCompany.id,
+          ]);
+          expect(result3.data.allUsers.map(u => u.id).sort()).toEqual(
+            [mixedUser.id, spammyUser.id].sort()
+          );
+          expect(result3.data.allUsers.map(u => u.posts.some(p => p.content === 'spam'))).toEqual([
             true,
             true,
           ]);

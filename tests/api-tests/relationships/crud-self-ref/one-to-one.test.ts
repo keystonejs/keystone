@@ -12,7 +12,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   type T = {
     data: { createUsers: { id: IdType }[] };
-    errors: undefined;
+    errors: unknown;
   };
   const { data, errors }: T = await context.executeGraphQL({
     query: `
@@ -37,7 +37,7 @@ const createUserAndFriend = async (context: KeystoneContext) => {
         friend: { id: IdType; name: string; friendOf: { id: IdType } };
       };
     };
-    errors: undefined;
+    errors: unknown;
   };
   const {
     data: { createUser },

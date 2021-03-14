@@ -12,7 +12,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   type T = {
     data: { createLocations: { id: IdType }[]; createCompanies: { id: IdType }[] };
-    errors: undefined;
+    errors: unknown;
   };
   const { data, errors }: T = await context.executeGraphQL({
     query: `
@@ -36,7 +36,7 @@ const createInitialData = async (context: KeystoneContext) => {
 const createCompanyAndLocation = async (context: KeystoneContext) => {
   type T = {
     data: { createCompany: { id: IdType; location: { id: IdType } } };
-    errors: undefined;
+    errors: unknown;
   };
   const {
     data: { createCompany },
@@ -67,7 +67,7 @@ const createComplexData = async (context: KeystoneContext) => {
     data: {
       createCompanies: { id: IdType; name: string; location: { id: IdType; name: string } }[];
     };
-    errors: undefined;
+    errors: unknown;
   };
   const { data, errors }: T1 = await context.executeGraphQL({
     query: `
@@ -94,7 +94,7 @@ const createComplexData = async (context: KeystoneContext) => {
       createCompany: { id: IdType; name: string; location: { id: IdType; name: string } };
       createLocation: { id: IdType; name: string };
     };
-    errors: undefined;
+    errors: unknown;
   };
   const result: T2 = await context.executeGraphQL({
     query: `mutation {
@@ -109,7 +109,7 @@ const createComplexData = async (context: KeystoneContext) => {
   expect(result.data.createCompany.location.name).toEqual('B');
   expect(result.data.createLocation.name).toEqual('C');
 
-  type T3 = { data: { allLocations: { id: IdType; name: string }[] }; errors: undefined };
+  type T3 = { data: { allLocations: { id: IdType; name: string }[] }; errors: unknown };
   const {
     data: { allLocations },
     errors: errors2,

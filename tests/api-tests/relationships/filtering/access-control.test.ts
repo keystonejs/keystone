@@ -1,18 +1,24 @@
-const { gen, sampleOne } = require('testcheck');
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
+import { gen, sampleOne } from 'testcheck';
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import {
+  AdapterName,
+  multiAdapterRunners,
+  setupFromConfig,
+  testConfig,
+} from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const postNames = ['Post 1', 'Post 2', 'Post 3'];
 
-function setupKeystone(adapterName) {
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         UserToPostLimitedRead: list({
           fields: {
             username: text(),
@@ -29,7 +35,7 @@ function setupKeystone(adapterName) {
             read: { name_in: [postNames[1]] },
           },
         }),
-      },
+      }),
     }),
   });
 }
