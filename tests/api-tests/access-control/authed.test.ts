@@ -37,7 +37,7 @@ const expectNoAccess = <N extends string>(
 
 const expectNamedArray = <T extends { id: IdType }, N extends string>(
   data: Record<N, T[]>,
-  errors: undefined,
+  errors: unknown,
   name: N,
   values: T[]
 ) => {

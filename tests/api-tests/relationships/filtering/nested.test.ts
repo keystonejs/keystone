@@ -1,13 +1,17 @@
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createItem, createItems } = require('@keystone-next/server-side-graphql-client-legacy');
+import { AdapterName, testConfig } from '@keystone-next/test-utils-legacy';
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItem, createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
-function setupKeystone(adapterName) {
+type IdType = any;
+
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         User: list({
           fields: {
             company: relationship({ ref: 'Company' }),
@@ -24,7 +28,7 @@ function setupKeystone(adapterName) {
             content: text(),
           },
         }),
-      },
+      }),
     }),
   });
 }
@@ -54,20 +58,24 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await context.executeGraphQL({
+          type T = {
+            data: { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
+            errors: unknown;
+          };
+          const { data, errors }: T = await context.executeGraphQL({
             query: `
-        query {
-          allUsers {
-            id
-            posts (where: {
-              content_contains: "hi",
-            }){
-              id
-              content
-            }
-          }
-        }
-      `,
+              query {
+                allUsers {
+                  id
+                  posts (where: {
+                    content_contains: "hi",
+                  }){
+                    id
+                    content
+                  }
+                }
+              }
+            `,
           });
 
           expect(errors).toBe(undefined);

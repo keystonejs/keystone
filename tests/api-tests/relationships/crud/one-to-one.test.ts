@@ -14,7 +14,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   type T = {
     data: { createLocations: { id: IdType }[]; createCompanies: { id: IdType }[] };
-    errors: undefined;
+    errors: unknown;
   };
   const { data, errors }: T = await context.executeGraphQL({
     query: `
@@ -45,7 +45,7 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
         location: { id: IdType; name: string; company: { id: IdType } };
       };
     };
-    errors: undefined;
+    errors: unknown;
   };
   const {
     data: { createCompany },
@@ -82,7 +82,7 @@ const createLocationAndCompany = async (context: KeystoneContext) => {
         company: { id: IdType; name: string; location: { id: IdType } };
       };
     };
-    errors: undefined;
+    errors: unknown;
   };
   const {
     data: { createLocation },
@@ -487,7 +487,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               data: {
                 allCompanies: { id: IdType; location: { id: IdType; company: { id: IdType } } }[];
               };
-              errors: undefined;
+              errors: unknown;
             };
             const {
               data: { allCompanies },
@@ -538,7 +538,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               data: {
                 allLocations: { id: IdType; company: { id: IdType; location: { id: IdType } } }[];
               };
-              errors: undefined;
+              errors: unknown;
             };
             const {
               data: { allLocations },
@@ -590,7 +590,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               data: {
                 allCompanies: { id: IdType; location: { id: IdType; company: { id: IdType } } }[];
               };
-              errors: undefined;
+              errors: unknown;
             };
             const {
               data: { allCompanies },
