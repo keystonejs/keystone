@@ -22,7 +22,7 @@ export const ComingSoon = () => {
         across
       >
         <p css={{ margin: '0 !important ' }}>
-          Coming Soon...Visit our roadmap for more inforamtion
+          Coming Soon... Visit our roadmap for more information
         </p>
         <Link href="/roadmap" passHref>
           <Button
