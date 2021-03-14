@@ -1,7 +1,9 @@
 /** @jsx jsx */
-import { jsx, Box, Stack } from '@keystone-ui/core';
+import { jsx, Box, Stack, css } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
-export default function ComingSoon() {
+import Link from 'next/link';
+
+export const ComingSoon = () => {
   return (
     <Box
       padding="medium"
@@ -22,8 +24,19 @@ export default function ComingSoon() {
         <p css={{ margin: '0 !important ' }}>
           Coming Soon...Visit our roadmap for more inforamtion
         </p>
-        <Button tone="active">Roadmap</Button>
+        <Link href="/roadmap" passHref>
+          <Button
+            css={css`
+              text-decoration: none !important;
+              color: #2563eb !important;
+            `}
+            as="a"
+            tone="active"
+          >
+            Roadmap
+          </Button>
+        </Link>
       </Stack>
     </Box>
   );
-}
+};
