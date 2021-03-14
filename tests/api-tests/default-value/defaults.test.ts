@@ -1,15 +1,18 @@
-const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
-const { text } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
+import { AdapterName, testConfig } from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
+import { text } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
+import type { BaseFields } from '@keystone-next/types';
 
-const setupList = (adapterName, fields) => () =>
+const setupList = (adapterName: AdapterName, fields: BaseFields<any>) => () =>
   setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         User: list({ fields }),
-      },
+      }),
     }),
   });
 
