@@ -1,12 +1,20 @@
-const { gen, sampleOne } = require('testcheck');
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
+import { gen, sampleOne } from 'testcheck';
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import type { AdapterName } from '@keystone-next/test-utils-legacy';
+import type { KeystoneContext } from '@keystone-next/types';
+
+type IdType = any;
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-const createInitialData = async context => {
-  const { data, errors } = await context.executeGraphQL({
+const createInitialData = async (context: KeystoneContext) => {
+  type T = {
+    data: { createLocations: { id: IdType }[]; createCompanies: { id: IdType }[] };
+    errors: undefined;
+  };
+  const { data, errors }: T = await context.executeGraphQL({
     query: `
       mutation {
         createCompanies(data: [
@@ -25,11 +33,15 @@ const createInitialData = async context => {
   return { locations: data.createLocations, companies: data.createCompanies };
 };
 
-const createCompanyAndLocation = async context => {
+const createCompanyAndLocation = async (context: KeystoneContext) => {
+  type T = {
+    data: { createCompany: { id: IdType; location: { id: IdType } } };
+    errors: undefined;
+  };
   const {
     data: { createCompany },
     errors,
-  } = await context.executeGraphQL({
+  }: T = await context.executeGraphQL({
     query: `
       mutation {
         createCompany(data: {
@@ -50,8 +62,14 @@ const createCompanyAndLocation = async context => {
   return { company: createCompany, location: createCompany.location };
 };
 
-const createComplexData = async context => {
-  const { data, errors } = await context.executeGraphQL({
+const createComplexData = async (context: KeystoneContext) => {
+  type T1 = {
+    data: {
+      createCompanies: { id: IdType; name: string; location: { id: IdType; name: string } }[];
+    };
+    errors: undefined;
+  };
+  const { data, errors }: T1 = await context.executeGraphQL({
     query: `
       mutation {
         createCompanies(data: [
@@ -71,7 +89,14 @@ const createComplexData = async context => {
   expect(data.createCompanies[2].location.name).toEqual('B');
   expect(data.createCompanies[3].name).toEqual('E');
   expect(data.createCompanies[3].location).toBe(null);
-  const result = await context.executeGraphQL({
+  type T2 = {
+    data: {
+      createCompany: { id: IdType; name: string; location: { id: IdType; name: string } };
+      createLocation: { id: IdType; name: string };
+    };
+    errors: undefined;
+  };
+  const result: T2 = await context.executeGraphQL({
     query: `mutation {
       createCompany(data: { name: "D" location: { connect: { id: "${data.createCompanies[2].location.id}" } } }) {
         id name location { id name }
@@ -84,10 +109,11 @@ const createComplexData = async context => {
   expect(result.data.createCompany.location.name).toEqual('B');
   expect(result.data.createLocation.name).toEqual('C');
 
+  type T3 = { data: { allLocations: { id: IdType; name: string }[] }; errors: undefined };
   const {
     data: { allLocations },
     errors: errors2,
-  } = await context.executeGraphQL({ query: '{ allLocations { id name } }' });
+  }: T3 = await context.executeGraphQL({ query: '{ allLocations { id name } }' });
   expect(errors2).toBe(undefined);
   return {
     companies: [...data.createCompanies, result.data.createCompany],
@@ -95,8 +121,15 @@ const createComplexData = async context => {
   };
 };
 
-const getCompanyAndLocation = async (context, companyId, locationId) => {
-  const { data } = await context.executeGraphQL({
+const getCompanyAndLocation = async (
+  context: KeystoneContext,
+  companyId: IdType,
+  locationId: IdType
+) => {
+  type T = {
+    data: { Company: { id: IdType; location: { id: IdType } }; Location: { id: IdType } };
+  };
+  const { data }: T = await context.executeGraphQL({
     query: `
   {
     Company(where: { id: "${companyId}"} ) { id location { id } }
@@ -106,11 +139,11 @@ const getCompanyAndLocation = async (context, companyId, locationId) => {
   return data;
 };
 
-const setupKeystone = adapterName =>
+const setupKeystone = (adapterName: AdapterName) =>
   setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         Company: list({
           fields: {
             name: text(),
@@ -122,7 +155,7 @@ const setupKeystone = adapterName =>
             name: text(),
           },
         }),
-      },
+      }),
     }),
   });
 
@@ -439,7 +472,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               const { companies } = await createComplexData(context);
 
               // Delete company {name}
-              const id = companies.find(company => company.name === name).id;
+              const id = companies.find(company => company.name === name)?.id;
               const { data, errors } = await context.executeGraphQL({
                 query: `mutation { deleteCompany(id: "${id}") { id } }`,
               });
@@ -498,7 +531,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               const { locations } = await createComplexData(context);
 
               // Delete location {name}
-              const id = locations.find(location => location.name === name).id;
+              const id = locations.find(location => location.name === name)?.id;
               const { data, errors } = await context.executeGraphQL({
                 query: `mutation { deleteLocation(id: "${id}") { id } }`,
               });

@@ -1,12 +1,20 @@
-const { gen, sampleOne } = require('testcheck');
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
+import { gen, sampleOne } from 'testcheck';
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import type { AdapterName } from '@keystone-next/test-utils-legacy';
+import type { KeystoneContext } from '@keystone-next/types';
+
+type IdType = any;
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-const createInitialData = async context => {
-  const { data, errors } = await context.executeGraphQL({
+const createInitialData = async (context: KeystoneContext) => {
+  type T = {
+    data: { createUsers: { id: IdType }[] };
+    errors: undefined;
+  };
+  const { data, errors }: T = await context.executeGraphQL({
     query: `
       mutation {
         createUsers(data: [
@@ -20,11 +28,12 @@ const createInitialData = async context => {
   return { users: data.createUsers };
 };
 
-const createUserAndFriend = async context => {
+const createUserAndFriend = async (context: KeystoneContext) => {
+  type T = { data: { createUser: { id: IdType; friend: { id: IdType } } }; errors: undefined };
   const {
     data: { createUser },
     errors,
-  } = await context.executeGraphQL({
+  }: T = await context.executeGraphQL({
     query: `
       mutation {
         createUser(data: {
@@ -41,7 +50,7 @@ const createUserAndFriend = async context => {
   return { user: createUser, friend: createUser.friend };
 };
 
-const createComplexData = async context => {
+const createComplexData = async (context: KeystoneContext) => {
   const { data, errors } = await context.executeGraphQL({
     query: `
     mutation {
@@ -77,16 +86,21 @@ const createComplexData = async context => {
   expect(result.data.createUsers[0].friend.name).toEqual('B1');
   expect(result.data.createUsers[1].name).toEqual('C1');
 
+  type T = {
+    data: { allUsers: { id: IdType; name: string; friend: { id: IdType; name: string } }[] };
+    errors: undefined;
+  };
   const {
     data: { allUsers },
     errors: errors2,
-  } = await context.executeGraphQL({ query: '{ allUsers { id name friend { id name } } }' });
+  }: T = await context.executeGraphQL({ query: '{ allUsers { id name friend { id name } } }' });
   expect(errors2).toBe(undefined);
   return { users: allUsers };
 };
 
-const getUserAndFriend = async (context, userId, friendId) => {
-  const { data } = await context.executeGraphQL({
+const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friendId: IdType) => {
+  type T = { data: { User: { id: IdType; friend: { id: IdType } }; Friend: { id: IdType } } };
+  const { data }: T = await context.executeGraphQL({
     query: `
   {
     User(where: { id: "${userId}"} ) { id friend { id } }
@@ -96,18 +110,18 @@ const getUserAndFriend = async (context, userId, friendId) => {
   return data;
 };
 
-const setupKeystone = adapterName =>
+const setupKeystone = (adapterName: AdapterName) =>
   setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         User: list({
           fields: {
             name: text(),
             friend: relationship({ ref: 'User' }),
           },
         }),
-      },
+      }),
     }),
   });
 
@@ -414,7 +428,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               const { users } = await createComplexData(context);
 
               // Delete company {name}
-              const id = users.find(company => company.name === name).id;
+              const id = users.find(company => company.name === name)?.id;
               const { data, errors } = await context.executeGraphQL({
                 query: `mutation { deleteUser(id: "${id}") { id } }`,
               });
@@ -427,7 +441,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   query: '{ allUsers(sortBy: name_ASC) { id name friend { id name } } }',
                 });
                 expect(errors).toBe(undefined);
-                const users = data.allUsers.filter(({ name }) => name.length === 1);
+                const users = data.allUsers.filter(
+                  ({ name }: { name: string }) => name.length === 1
+                );
                 const expected = [
                   ['A', 'A1'],
                   ['B', 'D1'],
@@ -456,7 +472,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   query: '{ allUsers(sortBy: name_ASC) { id name } }',
                 });
                 expect(errors).toBe(undefined);
-                const friends = data.allUsers.filter(({ name }) => name.length === 2);
+                const friends = data.allUsers.filter(
+                  ({ name }: { name: string }) => name.length === 2
+                );
                 expect(friends[0].name).toEqual('A1');
                 expect(friends[1].name).toEqual('B1');
                 expect(friends[2].name).toEqual('C1');
@@ -474,7 +492,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               const { users } = await createComplexData(context);
 
               // Delete friend {name}
-              const id = users.find(user => user.name === name).id;
+              const id = users.find(user => user.name === name)?.id;
               const { data, errors } = await context.executeGraphQL({
                 query: `mutation { deleteUser(id: "${id}") { id } }`,
               });
@@ -487,7 +505,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   query: '{ allUsers(sortBy: name_ASC) { id name friend { id name } } }',
                 });
                 expect(errors).toBe(undefined);
-                const users = data.allUsers.filter(({ name }) => name.length === 1);
+                const users = data.allUsers.filter(
+                  ({ name }: { name: string }) => name.length === 1
+                );
                 expect(users[0].name).toEqual('A');
                 if (name === 'A1') {
                   expect(users[0].friend).toBe(null);
@@ -522,7 +542,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   query: '{ allUsers(sortBy: name_ASC) { id name } }',
                 });
                 expect(errors).toBe(undefined);
-                const friends = data.allUsers.filter(({ name }) => name.length === 2);
+                const friends = data.allUsers.filter(
+                  ({ name }: { name: string }) => name.length === 2
+                );
                 const expected = ['A1', 'B1', 'C1', 'D1'].filter(x => x !== name);
                 expect(friends[0].name).toEqual(expected[0]);
                 expect(friends[1].name).toEqual(expected[1]);
