@@ -1,13 +1,22 @@
-const { gen, sampleOne } = require('testcheck');
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createItem, createItems } = require('@keystone-next/server-side-graphql-client-legacy');
+import { AdapterName, testConfig } from '@keystone-next/test-utils-legacy';
+import { KeystoneContext } from '@keystone-next/types';
+import { gen, sampleOne } from 'testcheck';
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItem, createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-const createInitialData = async context => {
-  const { data, errors } = await context.executeGraphQL({
+type IdType = any;
+
+const createInitialData = async (context: KeystoneContext) => {
+  type T = {
+    data: { createCompanies: { id: IdType }[]; createLocations: { id: IdType }[] };
+    errors: unknown;
+  };
+  const { data, errors }: T = await context.executeGraphQL({
     query: `
       mutation {
         createCompanies(data: [
@@ -41,7 +50,7 @@ const createInitialData = async context => {
   return { locations: data.createLocations, companies: data.createCompanies, owners, custodians };
 };
 
-const createCompanyAndLocation = async context => {
+const createCompanyAndLocation = async (context: KeystoneContext) => {
   const [cu1, cu2] = await createItems({
     context,
     listKey: 'Custodian',
@@ -92,11 +101,11 @@ const createCompanyAndLocation = async context => {
   });
 };
 
-const setupKeystone = adapterName =>
+const setupKeystone = (adapterName: AdapterName) =>
   setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         Owner: list({
           fields: {
             name: text(),
@@ -123,7 +132,7 @@ const setupKeystone = adapterName =>
             locations: relationship({ ref: 'Location.custodians', many: true }),
           },
         }),
-      },
+      }),
     }),
   });
 
