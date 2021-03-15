@@ -1,5 +1,7 @@
 {
   "template": "node",
-  "startScript": "prototype",
-  "node": "14"
+  "container": {
+    "startScript": "prototype",
+    "node": "14"
+  }
 }
