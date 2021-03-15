@@ -143,16 +143,10 @@ export const components = {
   inlineCode: InlineCode,
 };
 
-export const Markdown = ({
-  children,
-  isProse = true,
-}: {
-  children: ReactNode;
-  isProse?: boolean;
-}) => {
+export const Markdown = ({ children }: { children: ReactNode }) => {
   const headings = getHeadings(children);
   return (
-    <Page headings={headings} title={headings[0].label} isProse={isProse}>
+    <Page headings={headings} title={headings[0].label}>
       <MDXProvider components={components}>{children}</MDXProvider>
     </Page>
   );
