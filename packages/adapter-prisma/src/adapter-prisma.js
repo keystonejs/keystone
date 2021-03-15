@@ -188,9 +188,27 @@ class PrismaAdapter extends BaseKeystoneAdapter {
         ),
       ];
 
+      const indexes = flatten(
+        listAdapter.fieldAdapters
+          .map(({ field }) => field)
+          .filter(f => f.isRelationship)
+          .map(f => {
+            const r = rels.find(r => r.left === f || r.right === f);
+            const isLeft = r.left === f;
+            if (
+              (r.cardinality === 'N:1' && isLeft) ||
+              (r.cardinality === '1:N' && !isLeft) ||
+              (r.cardinality === '1:1' && isLeft)
+            ) {
+              return [`@@index([${f.path}Id])`];
+            }
+            return [];
+          })
+      );
+
       return `
         model ${listAdapter.key} {
-          ${[...scalarFields, ...relFields].join('\n  ')}
+          ${[...scalarFields, ...relFields, ...indexes].join('\n  ')}
         }`;
     });
 
