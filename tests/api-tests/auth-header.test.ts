@@ -1,14 +1,19 @@
 import Iron from '@hapi/iron';
-const { text, timestamp, password } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { statelessSessions, withItemData } = require('@keystone-next/keystone/session');
-const { createAuth } = require('@keystone-next/auth');
-const {
+import express from 'express';
+import { text, timestamp, password } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
+import { createAuth } from '@keystone-next/auth';
+import {
   multiAdapterRunners,
   setupFromConfig,
   networkedGraphqlRequest,
-} = require('@keystone-next/test-utils-legacy');
-const { createItems } = require('@keystone-next/server-side-graphql-client-legacy');
+  AdapterName,
+  testConfig,
+} from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
+import type { KeystoneContext, KeystoneConfig } from '@keystone-next/types';
 
 const initialData = {
   User: [
@@ -30,16 +35,16 @@ const initialData = {
 };
 
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
-const defaultAccess = context => !!context.session?.item;
+const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.session?.item;
 
 const auth = createAuth({ listKey: 'User', identityField: 'email', secretField: 'password' });
 
-function setupKeystone(adapterName) {
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
     config: auth.withAuth(
-      createSchema({
-        lists: {
+      testConfig({
+        lists: createSchema({
           Post: list({
             fields: {
               title: text(),
@@ -57,17 +62,16 @@ function setupKeystone(adapterName) {
               read: defaultAccess,
               update: defaultAccess,
               delete: defaultAccess,
-              auth: true,
             },
           }),
-        },
+        }),
         session: withItemData(statelessSessions({ secret: COOKIE_SECRET }), { User: 'id' }),
-      })
+      }) as KeystoneConfig
     ),
   });
 }
 
-function login(app, email, password) {
+function login(app: express.Application, email: string, password: string) {
   return networkedGraphqlRequest({
     app,
     query: `
@@ -81,9 +85,15 @@ function login(app, email, password) {
       }
     `,
     variables: { email, password },
-  }).then(({ data }) => {
-    return data.authenticateUserWithPassword || {};
-  });
+  }).then(
+    ({
+      data,
+    }: {
+      data?: { authenticateUserWithPassword?: { sessionToken: string; item: { id: any } } };
+    }) => {
+      return data?.authenticateUserWithPassword || {};
+    }
+  );
 }
 
 multiAdapterRunners().map(({ runner, adapterName }) =>
