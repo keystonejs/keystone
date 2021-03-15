@@ -1,16 +1,24 @@
-const { gen, sampleOne } = require('testcheck');
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
+import { gen, sampleOne } from 'testcheck';
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import {
+  AdapterName,
+  multiAdapterRunners,
+  setupFromConfig,
+  testConfig,
+} from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-function setupKeystone(adapterName) {
+type IdType = any;
+
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         Note: list({
           fields: {
             content: text(),
@@ -50,7 +58,7 @@ function setupKeystone(adapterName) {
             notes: relationship({ ref: 'NoteNoCreate', many: true }),
           },
         }),
-      },
+      }),
     }),
   });
 }
@@ -91,10 +99,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the nested create
+          type T = {
+            data: { createUser: { id: IdType; notes: { id: IdType; content: string }[] } };
+            errors: unknown;
+          };
+
           const {
             data: { createUser },
             errors: errors2,
-          } = await context.executeGraphQL({
+          }: T = await context.executeGraphQL({
             query: `
               mutation {
                 createUser(data: {
@@ -197,10 +210,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
           });
 
+          type T = {
+            data: { updateUser: { id: IdType; notes: { id: IdType; content: string }[] } };
+            errors: unknown;
+          };
           const {
             data: { updateUser },
             errors: errors2,
-          } = await context.executeGraphQL({
+          }: T = await context.executeGraphQL({
             query: `
               mutation {
                 updateUser(

@@ -169,9 +169,9 @@ function networkedGraphqlRequest({
   app: express.Application;
   query: string;
   variables?: Record<string, any>;
-  headers: Record<string, any>;
-  expectedStatusCode: number;
-  operationName: string;
+  headers?: Record<string, any>;
+  expectedStatusCode?: number;
+  operationName?: string;
 }) {
   const request = supertest(app).set('Accept', 'application/json');
 
@@ -221,7 +221,11 @@ async function teardownMongoMemoryServer() {
   mongoServer = null;
 }
 
-type Setup = { keystone: Keystone<string> | BaseKeystone; context: KeystoneContext };
+type Setup = {
+  keystone: Keystone<string> | BaseKeystone;
+  context: KeystoneContext;
+  app: express.Application;
+};
 
 function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promise<void> | void) {
   return function (
