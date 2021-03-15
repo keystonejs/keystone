@@ -1,20 +1,25 @@
-const { integer, virtual } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
+import { integer, virtual } from '@keystone-next/fields';
+import { BaseFields, createSchema, list } from '@keystone-next/keystone/schema';
+import {
+  AdapterName,
+  multiAdapterRunners,
+  setupFromConfig,
+  testConfig,
+} from '@keystone-next/test-utils-legacy';
 
-function makeSetupKeystone(fields) {
-  return function setupKeystone(adapterName) {
+function makeSetupKeystone(fields: BaseFields<any>) {
+  return function setupKeystone(adapterName: AdapterName) {
     return setupFromConfig({
       adapterName,
-      config: createSchema({
-        lists: {
+      config: testConfig({
+        lists: createSchema({
           Post: list({
             fields: {
               value: integer(),
               ...fields,
             },
           }),
-        },
+        }),
       }),
     });
   };

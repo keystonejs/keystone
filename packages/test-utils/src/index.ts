@@ -108,16 +108,16 @@ async function setupServer({
   schemaName = 'public',
   schemaNames = ['public'],
   createLists = () => {},
-  keystoneOptions,
+  keystoneOptions = {},
   graphqlOptions = {},
 }: {
   adapterName: AdapterName;
-  schemaName: string;
-  schemaNames: string[];
+  schemaName?: string;
+  schemaNames?: string[];
   createLists: (args: Keystone<string>) => void;
-  keystoneOptions: Record<string, any>; // FIXME: should match args of Keystone constructor
-  graphqlOptions: Record<string, any>; // FIXME: should match args of GraphQLApp constuctor
-}) {
+  keystoneOptions?: Record<string, any>; // FIXME: should match args of Keystone constructor
+  graphqlOptions?: Record<string, any>; // FIXME: should match args of GraphQLApp constuctor
+}): Promise<Setup> {
   const Adapter = {
     mongoose: MongooseAdapter,
     knex: KnexAdapter,
@@ -155,7 +155,7 @@ async function setupServer({
   const app = express();
   app.use(middlewares);
 
-  return { keystone, app };
+  return ({ keystone, app } as unknown) as Setup;
 }
 
 function networkedGraphqlRequest({
@@ -230,7 +230,7 @@ type Setup = {
 function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promise<void> | void) {
   return function (
     setupKeystoneFn: (adaptername: AdapterName) => Promise<Setup>,
-    testFn: (setup: Setup) => Promise<void>
+    testFn?: (setup: Setup) => Promise<void>
   ) {
     return async function () {
       if (!testFn) {

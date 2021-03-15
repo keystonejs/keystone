@@ -1,8 +1,10 @@
-const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
-const { Text, DateTime } = require('@keystone-next/fields-legacy');
-const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
+import { AdapterName, multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { Text, DateTime } from '@keystone-next/fields-legacy';
+// @ts-ignore
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
-function setupKeystone(adapterName) {
+function setupKeystone(adapterName: AdapterName) {
   return setupServer({
     adapterName,
     createLists: keystone => {
