@@ -1,16 +1,18 @@
-const { gen, sampleOne } = require('testcheck');
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { getItem } = require('@keystone-next/server-side-graphql-client-legacy');
+import { AdapterName, testConfig } from '@keystone-next/test-utils-legacy';
+import { gen, sampleOne } from 'testcheck';
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { getItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-function setupKeystone(adapterName) {
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         Company: list({
           fields: {
             name: text(),
@@ -20,10 +22,12 @@ function setupKeystone(adapterName) {
         Location: list({
           fields: {
             name: text(),
+            // FIXME: We don't actully enforce isRequired.
+            // @ts-ignore
             company: relationship({ ref: 'Company.location', isRequired: true }),
           },
         }),
-      },
+      }),
     }),
   });
 }

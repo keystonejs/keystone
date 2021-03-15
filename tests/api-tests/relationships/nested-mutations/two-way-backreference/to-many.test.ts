@@ -1,18 +1,23 @@
-const { gen, sampleOne } = require('testcheck');
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createItem, updateItems } = require('@keystone-next/server-side-graphql-client-legacy');
+import { AdapterName, testConfig } from '@keystone-next/test-utils-legacy';
+import { gen, sampleOne } from 'testcheck';
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItem, updateItems } from '@keystone-next/server-side-graphql-client-legacy';
+import { KeystoneContext } from '@keystone-next/types';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-const toStr = items => items.map(item => item.toString());
+type IdType = any;
 
-function setupKeystone(adapterName) {
+const toStr = (items: any[]) => items.map(item => item.toString());
+
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         Student: list({
           fields: {
             name: text(),
@@ -25,12 +30,12 @@ function setupKeystone(adapterName) {
             students: relationship({ ref: 'Student.teachers', many: true }),
           },
         }),
-      },
+      }),
     }),
   });
 }
 
-const getTeacher = async (context, teacherId) => {
+const getTeacher = async (context: KeystoneContext, teacherId: IdType) => {
   const { data, errors } = await context.executeGraphQL({
     query: `
       query getTeacher($teacherId: ID!){
@@ -45,7 +50,7 @@ const getTeacher = async (context, teacherId) => {
   return data.Teacher;
 };
 
-const getStudent = async (context, studentId) => {
+const getStudent = async (context: KeystoneContext, studentId: IdType) => {
   const { data } = await context.executeGraphQL({
     query: `
       query getStudent($studentId: ID!){
@@ -60,7 +65,7 @@ const getStudent = async (context, studentId) => {
 };
 
 // We can't assume what IDs get assigned, or what order they come back in
-const compareIds = (list, ids) =>
+const compareIds = (list: { id: IdType }[], ids: IdType[]) =>
   expect(toStr(list.map(({ id }) => id).sort())).toMatchObject(
     ids.map(({ id }) => id.toString()).sort()
   );

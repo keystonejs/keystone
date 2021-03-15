@@ -1,8 +1,8 @@
 # Keystone-Next Roles-based Access Example
 
-👋🏻 This example demostrates how you can set up a powerful, custom roles-based access control system with Keystone for an otherwise very simple to-do app.
+👋 This example demonstrates how you can set up a powerful, custom roles-based access control system with Keystone for an otherwise very simple to-do app.
 
-Roles are stored in a list, and each user is related to a role. Each role has a granular set of permissions selected from the avialable checkboxes.
+Roles are stored in a list, and each user is related to a role. Each role has a granular set of permissions selected from the available checkboxes.
 
 Role permissions are loaded at the start of the request for the current user, and cached in the session object for use in the access control methods and hooks.
 
@@ -19,4 +19,4 @@ To run the project locally:
 - Make sure you have a local mongo server up and running on the default port
 - Open this folder in your terminal and run `yarn dev`
 
-If everything works 🤞🏻 the GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000)
+If everything works 🤞 the GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000)
