@@ -142,6 +142,11 @@ export class KnexDecimalInterface extends KnexFieldAdapter {
 export class PrismaDecimalInterface extends PrismaFieldAdapter {
   constructor() {
     super(...arguments);
+    if (this.listAdapter.parentAdapter.provider === 'sqlite') {
+      throw new Error(
+        `PrismaAdapter provider "sqlite" does not support field type "${this.field.constructor.name}"`
+      );
+    }
     const { precision, scale } = this.config;
     this.isUnique = !!this.config.isUnique;
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;

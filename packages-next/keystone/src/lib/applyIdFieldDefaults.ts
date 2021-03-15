@@ -15,9 +15,12 @@ export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['li
     }
     let idField =
       config.lists[key].idField ??
-      { mongoose: mongoId({}), knex: autoIncrement({}), prisma_postgresql: autoIncrement({}) }[
-        config.db.adapter
-      ];
+      {
+        mongoose: mongoId({}),
+        knex: autoIncrement({}),
+        prisma_postgresql: autoIncrement({}),
+        prisma_sqlite: autoIncrement({}),
+      }[config.db.adapter];
     idField = {
       ...idField,
       config: {
