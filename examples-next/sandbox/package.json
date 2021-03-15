@@ -25,5 +25,5 @@
   "prisma": {
     "schema": ".keystone/prisma/schema.prisma"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/todo"
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/sandbox"
 }
