@@ -4,7 +4,8 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "yarn && yarn keystone-next prototype"
+    "dev": "keystone-next prototype",
+    "sandbox": "yarn && yarn dev"
   },
   "dependencies": {
     "@keystone-next/admin-ui": "^11.0.0",
