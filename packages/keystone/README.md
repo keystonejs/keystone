@@ -117,7 +117,6 @@ _**Default:**_ `['public']`
 | `createAuthStrategy`  | Creates a new authentication middleware instance.                            |
 | `createList`          | Add a list to the `Keystone` schema.                                         |
 | `disconnect`          | Disconnect from the adapter.                                                 |
-| `extendGraphQLSchema` | Extend keystones generated schema with custom types, queries, and mutations. |
 | `prepare`             | Manually prepare `Keystone` middlewares.                                     |
 | `createContext`       | Create a `context` object that can be used with `executeGraphQL()`.          |
 | `executeGraphQL`      | Execute a server-side GraphQL operation within the given context.            |
@@ -178,30 +177,6 @@ keystone.createList('Posts', {...});
 ### `disconnect()`
 
 Disconnect the adapter.
-
-### `extendGraphQLSchema(config)`
-
-Extends keystones generated schema with custom types, queries, and mutations.
-
-```javascript
-keystone.extendGraphQLSchema({
-  types: [{ type: 'type MyType { original: Int, double: Float }' }],
-  queries: [
-    {
-      schema: 'double(x: Int): MyType',
-      resolver: (_, { x }) => ({ original: x, double: 2.0 * x }),
-    },
-  ],
-  mutations: [
-    {
-      schema: 'triple(x: Int): Int',
-      resolver: (_, { x }) => 3 * x,
-    },
-  ],
-});
-```
-
-See the [Custom schema guide](/docs/guides/custom-schema.md) for more information on utilizing custom schema.
 
 #### Config
 
