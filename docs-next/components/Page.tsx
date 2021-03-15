@@ -1,6 +1,7 @@
 /** @jsx jsx  */
 import { Fragment, ReactNode } from 'react';
 import Head from 'next/head';
+import { proseStyles } from '../lib/prose-lite';
 import { useRef, useState } from 'react';
 import { getHeadings, Heading } from '../lib/getHeadings';
 import { jsx } from '@keystone-ui/core';
@@ -115,6 +116,7 @@ export const Page = ({
               className={cx({ prose: isProse }, 'w-full max-w-none mt-6', {
                 'md:w-3/4': headings.length,
               })}
+              css={isProse ? proseStyles.css : undefined}
             >
               {children}
             </main>
@@ -141,10 +143,16 @@ export const components = {
   inlineCode: InlineCode,
 };
 
-export const Markdown = ({ children }: { children: ReactNode }) => {
+export const Markdown = ({
+  children,
+  isProse = true,
+}: {
+  children: ReactNode;
+  isProse?: boolean;
+}) => {
   const headings = getHeadings(children);
   return (
-    <Page headings={headings} title={headings[0].label} isProse>
+    <Page headings={headings} title={headings[0].label} isProse={isProse}>
       <MDXProvider components={components}>{children}</MDXProvider>
     </Page>
   );
