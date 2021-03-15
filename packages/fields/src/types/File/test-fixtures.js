@@ -11,6 +11,7 @@ export const type = File;
 export const supportsUnique = false;
 export const fieldName = 'image';
 export const subfieldName = 'originalFilename';
+export const unSupportedAdapterList = ['prisma_sqlite'];
 
 // Grab all the image files from the directory
 const directory = './files';
@@ -89,5 +90,5 @@ export const afterAll = () => {
 
 export const supportedFilters = adapterName => [
   'null_equality',
-  adapterName !== 'prisma_postgresql' && 'in_empty_null',
+  !['prisma_postgresql'].includes(adapterName) && 'in_empty_null',
 ];

@@ -1,5 +1,5 @@
 import type { IncomingMessage } from 'http';
-import { execute, GraphQLSchema, parse } from 'graphql';
+import { graphql, GraphQLSchema, print } from 'graphql';
 import type {
   SessionContext,
   KeystoneContext,
@@ -45,16 +45,9 @@ export function makeCreateContext({
     const schema = schemaName === 'public' ? graphQLSchema : internalSchema;
 
     const rawGraphQL: KeystoneGraphQLAPI<any>['raw'] = ({ query, variables }) => {
-      if (typeof query === 'string') {
-        query = parse(query);
-      }
+      const source = typeof query === 'string' ? query : print(query);
       return Promise.resolve(
-        execute({
-          schema,
-          document: query,
-          contextValue: contextToReturn,
-          variableValues: variables,
-        })
+        graphql({ schema, source, contextValue: contextToReturn, variableValues: variables })
       );
     };
     const runGraphQL: KeystoneGraphQLAPI<any>['run'] = async ({ query, variables }) => {

@@ -1,4 +1,4 @@
-const { PrismaAdapter } = require('../lib/adapter-prisma');
+const { PrismaAdapter } = require('..');
 
 global.console = {
   error: jest.fn(),

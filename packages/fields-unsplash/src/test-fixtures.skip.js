@@ -49,5 +49,5 @@ export const storedValues = () => [
 
 export const supportedFilters = adapterName => [
   'null_equality',
-  adapterName !== 'prisma_postgresql' && 'in_empty_null',
+  !['prisma_postgresql', 'prisma_sqlite'].includes(adapterName) && 'in_empty_null',
 ];

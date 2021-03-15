@@ -32,7 +32,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'filter works when there is no dash in list name',
         runner(setupKeystone, async ({ context }) => {
           const { data, errors } = await context.executeGraphQL({
-            query: `{ allUsers(where: { noDash: "aValue" })}`,
+            query: `{ allUsers(where: { noDash: "aValue" }) { id } }`,
           });
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers', []);
@@ -42,7 +42,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'filter works when there is one dash in list name',
         runner(setupKeystone, async ({ context }) => {
           const { data, errors } = await context.executeGraphQL({
-            query: `{ allUsers(where: { single_dash: "aValue" })}`,
+            query: `{ allUsers(where: { single_dash: "aValue" }) { id } }`,
           });
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers', []);
@@ -52,7 +52,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'filter works when there are multiple dashes in list name',
         runner(setupKeystone, async ({ context }) => {
           const { data, errors } = await context.executeGraphQL({
-            query: `{ allUsers(where: { many_many_many_dashes: "aValue" })}`,
+            query: `{ allUsers(where: { many_many_many_dashes: "aValue" }) { id } }`,
           });
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers', []);
@@ -62,7 +62,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'filter works when there are multiple dashes in a row in a list name',
         runner(setupKeystone, async ({ context }) => {
           const { data, errors } = await context.executeGraphQL({
-            query: `{ allUsers(where: { multi____dash: "aValue" })}`,
+            query: `{ allUsers(where: { multi____dash: "aValue" }) { id } }`,
           });
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers', []);
@@ -72,7 +72,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'filter works when there is one dash in list name as part of a relationship',
         runner(setupKeystone, async ({ context }) => {
           const { data, errors } = await context.executeGraphQL({
-            query: `{ allSecondaryLists(where: { user_is_null: true })}`,
+            query: `{ allSecondaryLists(where: { someUser_is_null: true }) { id } }`,
           });
           expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allSecondaryLists', []);
