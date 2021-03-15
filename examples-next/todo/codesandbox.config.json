@@ -1,0 +1,5 @@
+{
+  "template": "node",
+  "startScript": "prototype",
+  "node": "14"
+}

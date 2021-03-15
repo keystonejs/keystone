@@ -21,13 +21,19 @@ const { withAuth } = createAuth({
 
 export default withAuth(
   config({
-    db: {
-      adapter: 'prisma_postgresql',
-      url: process.env.DATABASE_URL || 'postgres://keystone5:k3yst0n3@localhost:5432/todo-example',
-    },
+    db: process.env.DATABASE_URL?.startsWith('postgres')
+      ? {
+          adapter: 'prisma_postgresql',
+          url: process.env.DATABASE_URL,
+        }
+      : {
+          adapter: 'prisma_sqlite',
+          url: process.env.DATABASE_URL || 'file:./dev.db',
+        },
+    experimental: { prismaSqlite: true },
     lists,
     ui: {
-      isAccessAllowed: ({ session }) => !!session,
+      isAccessAllowed: ({ session }) => !!session?.data,
     },
     session: withItemData(statelessSessions(sessionConfig)),
   })
