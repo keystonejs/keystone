@@ -45,6 +45,7 @@ export async function runPrototypeMigrations(dbUrl: string, schema: string, sche
   }
 }
 
+// TODO: don't have all the process.exit calls here
 export async function devMigrations(dbUrl: string, schema: string, schemaPath: string) {
   await ensureDatabaseExists(dbUrl);
   let migrate = new Migrate(schemaPath);
@@ -55,19 +56,21 @@ export async function devMigrations(dbUrl: string, schema: string, schemaPath: s
   if (appliedMigrationNames.length > 0) {
     console.info(
       `The following migration(s) have been applied:\n\n${printFilesFromMigrationIds(
-        'migrations',
-        appliedMigrationNames,
-        { 'migration.sql': '' }
+        appliedMigrationNames
       )}`
     );
   }
   const evaluateDataLossResult = await runMigrateWithDbUrl(dbUrl, () => migrate.evaluateDataLoss());
-
+  let migrationCanBeApplied = true;
+  // see the link below for what "unexecutable steps" are
+  // https://github.com/prisma/prisma-engines/blob/c65d20050f139a7917ef2efc47a977338070ea61/migration-engine/connectors/sql-migration-connector/src/sql_destructive_change_checker/unexecutable_step_check.rs
+  // the tl;dr s basically "making things "
   if (evaluateDataLossResult.unexecutableSteps) {
     console.log(`${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`);
     for (const item of evaluateDataLossResult.unexecutableSteps) {
       console.log(`  • Step ${item.stepIndex} ${item.message}`);
     }
+    migrationCanBeApplied = false;
   }
   if (evaluateDataLossResult.warnings.length) {
     console.log(chalk.bold(`\n⚠️  There will be data loss when applying the migration:\n`));
@@ -81,25 +84,25 @@ export async function devMigrations(dbUrl: string, schema: string, schemaPath: s
         'Some data will be lost'
       )}.`,
     });
+    if (confirmation.value) {
+    } else {
+      process.exit(1);
+    }
   }
 }
 
-function printFilesFromMigrationIds(
-  directory: string,
-  migrationIds: string[],
-  files: Record<string, string>
-): string {
-  const fileNames = Object.keys(files);
+function printFilesFromMigrationIds(migrationIds: string[]) {
+  return `.keystone/prisma/migrations/\n${migrationIds
+    .map(migrationId => `  └─ ${printMigrationId(migrationId)}/\n    └─ migration.sql`)
+    .join('\n')}`;
+}
 
-  let message = `\
-${directory}/`;
-
-  migrationIds.forEach(migrationId => {
-    message += `\n  └─ ${printMigrationId(migrationId)}/
-${indent(fileNames.map(f => `└─ ${f}`).join('\n'), 4)}`;
-  });
-
-  return message;
+function printMigrationId(migrationId: string): string {
+  const words = migrationId.split('_');
+  if (words.length === 1) {
+    return chalk.cyan.bold(migrationId);
+  }
+  return `${words[0]}_${chalk.cyan.bold(words.slice(1).join('_'))}`;
 }
 
 async function ensureDatabaseExists(dbUrl: string) {
