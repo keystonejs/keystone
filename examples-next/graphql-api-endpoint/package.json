@@ -15,5 +15,8 @@
     "@keystone-next/keystone": "^12.0.0",
     "apollo-server-micro": "^2.21.1"
   },
+  "prisma": {
+    "schema": ".keystone/prisma/schema.prisma"
+  },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/graphql-api-endpoint"
 }
