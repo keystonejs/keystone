@@ -12,7 +12,7 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 const createInitialData = async (context: KeystoneContext) => {
   type T = {
     data: { createLocations: { id: IdType }[]; createCompanies: { id: IdType }[] };
-    errors: undefined;
+    errors: unknown;
   };
   const { data, errors }: T = await context.executeGraphQL({
     query: `
@@ -38,7 +38,7 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
     data: {
       createCompany: { id: IdType; locations: { id: IdType; companies: { id: IdType }[] }[] };
     };
-    errors: undefined;
+    errors: unknown;
   };
   const {
     data: { createCompany },
@@ -388,7 +388,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   locations: { id: IdType; companies: { id: IdType }[] }[];
                 }[];
               };
-              errors: undefined;
+              errors: unknown;
             };
             const {
               data: { allCompanies },
@@ -447,7 +447,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   locations: { id: IdType; companies: { id: IdType }[] }[];
                 }[];
               };
-              errors: undefined;
+              errors: unknown;
             };
             const {
               data: { allCompanies },

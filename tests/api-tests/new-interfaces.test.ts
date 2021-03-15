@@ -6,7 +6,11 @@ import type { AdapterName } from '@keystone-next/test-utils-legacy';
 function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: testConfig({ lists: createSchema({ User: list({ fields: { name: text() } }) }) }),
+    config: testConfig({
+      lists: createSchema({
+        User: list({ fields: { name: text() } }),
+      }),
+    }),
   });
 }
 
