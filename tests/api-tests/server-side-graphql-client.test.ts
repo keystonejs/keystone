@@ -1,7 +1,12 @@
-const { text, integer } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const {
+import { text, integer } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import {
+  AdapterName,
+  multiAdapterRunners,
+  setupFromConfig,
+  testConfig,
+} from '@keystone-next/test-utils-legacy';
+import {
   createItems,
   createItem,
   deleteItem,
@@ -10,21 +15,28 @@ const {
   getItems,
   updateItem,
   updateItems,
-} = require('@keystone-next/server-side-graphql-client-legacy');
+  // @ts-ignore
+} from '@keystone-next/server-side-graphql-client-legacy';
+import { KeystoneContext } from '@keystone-next/types';
 
 const testData = Array(50)
-  .fill()
+  .fill(0)
   .map((_, i) => ({ data: { name: `test${String(i).padStart(2, '0')}`, age: 10 * i } }));
 
 const listKey = 'Test';
 const returnFields = 'name age';
 
-const seedDb = ({ context, items = testData }) => createItems({ context, listKey, items });
+type IdType = any;
 
-function setupKeystone(adapterName) {
+const seedDb = ({ context }: { context: KeystoneContext }): { id: IdType }[] =>
+  createItems({ context, listKey, items: testData });
+
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: createSchema({ lists: { Test: list({ fields: { name: text(), age: integer() } }) } }),
+    config: testConfig({
+      lists: createSchema({ Test: list({ fields: { name: text(), age: integer() } }) }),
+    }),
   });
 }
 
@@ -50,7 +62,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Seed the db
           await createItems({ context, listKey, items: testData });
           // Get all the items back from db
-          const allItems = await getItems({ context, listKey, returnFields });
+          const allItems: { age: number }[] = await getItems({ context, listKey, returnFields });
 
           expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
             testData.map(x => x.data)
@@ -102,7 +114,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await deleteItem({ context, listKey, returnFields, itemId: items[0].id });
 
           // Retrieve items
-          const allItems = await getItems({ context, listKey, returnFields });
+          const allItems: { age: number }[] = await getItems({ context, listKey, returnFields });
 
           expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
             testData.map(d => d.data).filter(x => x.name !== 'test00')
@@ -115,7 +127,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Seed the db
           const items = await seedDb({ context });
           // Delete multiple items
-          const deletedItems = await deleteItems({
+          const deletedItems: { age: number }[] = await deleteItems({
             context,
             listKey,
             returnFields,
@@ -139,7 +151,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ context }) => {
           // Seed the db
           await seedDb({ context });
-          const allItems = await getItems({ context, listKey, returnFields });
+          const allItems: { age: number }[] = await getItems({ context, listKey, returnFields });
 
           expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
             testData.map(x => x.data)
@@ -167,7 +179,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Seed the db
           await seedDb({ context });
 
-          const getItemsBySortOrder = sortBy =>
+          const getItemsBySortOrder = (sortBy: string) =>
             getItems({ context, listKey, returnFields, sortBy });
 
           const allItemsAscAge = await getItemsBySortOrder('age_ASC');
@@ -181,7 +193,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ context }) => {
           await seedDb({ context });
 
-          const getFirstItems = (first, pageSize) =>
+          const getFirstItems = (first?: number, pageSize?: number) =>
             getItems({
               context,
               listKey,
@@ -217,7 +229,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ context }) => {
           await seedDb({ context });
           const first = 4;
-          const getSortItems = sortBy =>
+          const getSortItems = (sortBy: string) =>
             getItems({ context, listKey, returnFields, skip: 3, first, sortBy });
           const itemsDESC = await getSortItems('age_DESC');
           expect(itemsDESC.length).toEqual(first);
