@@ -36,22 +36,22 @@ const createInitialData = async (context: KeystoneContext) => {
       {
         data: {
           name: 'EmployeeA',
-          company: { connect: { id: companies.find(({ name }) => name === 'CompanyA')?.id } },
-          role: { connect: { id: roles.find(({ name }) => name === 'RoleA')?.id } },
+          company: { connect: { id: companies.find(({ name }) => name === 'CompanyA')!.id } },
+          role: { connect: { id: roles.find(({ name }) => name === 'RoleA')!.id } },
         },
       },
       {
         data: {
           name: 'EmployeeB',
-          company: { connect: { id: companies.find(({ name }) => name === 'CompanyB')?.id } },
-          role: { connect: { id: roles.find(({ name }) => name === 'RoleB')?.id } },
+          company: { connect: { id: companies.find(({ name }) => name === 'CompanyB')!.id } },
+          role: { connect: { id: roles.find(({ name }) => name === 'RoleB')!.id } },
         },
       },
       {
         data: {
           name: 'EmployeeC',
-          company: { connect: { id: companies.find(({ name }) => name === 'CompanyC')?.id } },
-          role: { connect: { id: roles.find(({ name }) => name === 'RoleC')?.id } },
+          company: { connect: { id: companies.find(({ name }) => name === 'CompanyC')!.id } },
+          role: { connect: { id: roles.find(({ name }) => name === 'RoleC')!.id } },
         },
       },
     ],
@@ -99,24 +99,24 @@ const createInitialData = async (context: KeystoneContext) => {
     listKey: 'Role',
     items: [
       {
-        id: roles.find(({ name }) => name === 'RoleA')?.id,
+        id: roles.find(({ name }) => name === 'RoleA')!.id,
         data: {
-          company: { connect: { id: companies.find(({ name }) => name === 'CompanyA')?.id } },
-          employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeA')?.id }] },
+          company: { connect: { id: companies.find(({ name }) => name === 'CompanyA')!.id } },
+          employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeA')!.id }] },
         },
       },
       {
-        id: roles.find(({ name }) => name === 'RoleB')?.id,
+        id: roles.find(({ name }) => name === 'RoleB')!.id,
         data: {
-          company: { connect: { id: companies.find(({ name }) => name === 'CompanyB')?.id } },
-          employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeB')?.id }] },
+          company: { connect: { id: companies.find(({ name }) => name === 'CompanyB')!.id } },
+          employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeB')!.id }] },
         },
       },
       {
-        id: roles.find(({ name }) => name === 'RoleC')?.id,
+        id: roles.find(({ name }) => name === 'RoleC')!.id,
         data: {
-          company: { connect: { id: companies.find(({ name }) => name === 'CompanyC')?.id } },
-          employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeC')?.id }] },
+          company: { connect: { id: companies.find(({ name }) => name === 'CompanyC')!.id } },
+          employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeC')!.id }] },
         },
       },
     ],
