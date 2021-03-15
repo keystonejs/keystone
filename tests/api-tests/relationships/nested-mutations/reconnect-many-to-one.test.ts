@@ -1,13 +1,21 @@
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createItems } = require('@keystone-next/server-side-graphql-client-legacy');
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import {
+  AdapterName,
+  multiAdapterRunners,
+  setupFromConfig,
+  testConfig,
+} from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
-function setupKeystone(adapterName) {
+type IdType = any;
+
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         Note: list({
           fields: {
             title: text(),
@@ -20,7 +28,7 @@ function setupKeystone(adapterName) {
             notes: relationship({ ref: 'Note.author', many: true }),
           },
         }),
-      },
+      }),
     }),
   });
 }
@@ -44,7 +52,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create some users that does the linking
-          const { data: alice, errors } = await context.executeGraphQL({
+          type T = {
+            data: { createUser: { id: IdType; notes: { id: IdType; title: string }[] } };
+            errors: unknown;
+          };
+          const { data: alice, errors }: T = await context.executeGraphQL({
             query: `
               mutation {
                 createUser(data: {
@@ -57,7 +69,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }`,
           });
           expect(errors).toBe(undefined);
-          const { data: bob, errors: errors2 } = await context.executeGraphQL({
+          const { data: bob, errors: errors2 }: T = await context.executeGraphQL({
             query: `
               mutation {
                 createUser(data: {
@@ -78,7 +90,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // Set Bob as the author of note B
           await (async () => {
-            const { data, errors } = await context.executeGraphQL({
+            type T = {
+              data: { updateUser: { id: IdType; notes: { id: IdType; title: string }[] } };
+              errors: unknown;
+            };
+            const { data, errors }: T = await context.executeGraphQL({
               query: `
                 mutation {
                   updateUser(id: "${bob.createUser.id}" data: {
@@ -114,7 +130,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // Alice should no longer see `B` in her notes
           await (async () => {
-            const { data, errors } = await context.executeGraphQL({
+            type T = {
+              data: { User: { id: IdType; notes: { id: IdType; title: string }[] } };
+              errors: unknown;
+            };
+            const { data, errors }: T = await context.executeGraphQL({
               query: `
                 query {
                   User(where: { id: "${alice.createUser.id}"}) {
