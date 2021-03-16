@@ -20,7 +20,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this.listAdapterClass = PrismaListAdapter;
     this.name = 'prisma';
     this.provider = this.config.provider || 'postgresql';
-    this.migrationMode = this.config.migrationMode || 'dev';
+    this.migrationMode = this.config.migrationMode || 'prototype';
 
     this.getPrismaPath = this.config.getPrismaPath || (() => '.prisma');
     this.getDbSchemaName = this.config.getDbSchemaName || (() => 'public');
