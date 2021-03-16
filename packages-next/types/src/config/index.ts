@@ -2,6 +2,7 @@ import type { ConnectOptions } from 'mongoose';
 import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
 import { IncomingMessage } from 'http';
+import type { Config } from 'apollo-server-express';
 
 import type { ListHooks } from './hooks';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
@@ -34,6 +35,8 @@ export type KeystoneConfig = {
   experimental?: {
     /** Enables nextjs graphql api route mode */
     enableNextJsGraphqlApiEndpoint?: boolean;
+    /** Enable Prisma+SQLite support */
+    prismaSqlite?: boolean;
   };
 };
 
@@ -64,6 +67,11 @@ export type DatabaseConfig = DatabaseCommon &
         enableLogging?: boolean;
         getPrismaPath?: (arg: { prismaSchema: any }) => string;
         getDbSchemaName?: (arg: { prismaSchema: any }) => string;
+      }
+    | {
+        adapter: 'prisma_sqlite';
+        enableLogging?: boolean;
+        getPrismaPath?: (arg: { prismaSchema: any }) => string;
       }
     | { adapter: 'knex'; dropDatabase?: boolean; schemaName?: string }
     | { adapter: 'mongoose'; mongooseOptions?: { mongoUri?: string } & ConnectOptions }
@@ -114,6 +122,11 @@ export type GraphQLConfig = {
   queryLimits?: {
     maxTotalResults?: number;
   };
+  /**
+   *  Additional options to pass into the ApolloServer constructor.
+   *  @see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor
+   */
+  apolloConfig?: Config;
 };
 
 // config.extendGraphqlSchema

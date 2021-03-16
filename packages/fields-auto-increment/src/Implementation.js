@@ -115,7 +115,11 @@ export class KnexAutoIncrementInterface extends KnexFieldAdapter {
 export class PrismaAutoIncrementInterface extends PrismaFieldAdapter {
   constructor() {
     super(...arguments);
-
+    if (this.listAdapter.parentAdapter.provider === 'sqlite' && !this.field.isPrimaryKey) {
+      throw new Error(
+        `PrismaAdapter provider "sqlite" does not support field type "${this.field.constructor.name}"`
+      );
+    }
     // Default isUnique to true if not specified
     this.isUnique = typeof this.config.isUnique === 'undefined' ? true : !!this.config.isUnique;
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
