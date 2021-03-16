@@ -2,6 +2,7 @@ import type { ConnectOptions } from 'mongoose';
 import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
 import { IncomingMessage } from 'http';
+import type { Config } from 'apollo-server-express';
 
 import type { ListHooks } from './hooks';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
@@ -121,6 +122,11 @@ export type GraphQLConfig = {
   queryLimits?: {
     maxTotalResults?: number;
   };
+  /**
+   *  Additional options to pass into the ApolloServer constructor.
+   *  @see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor
+   */
+  apolloConfig?: Config;
 };
 
 // config.extendGraphqlSchema
