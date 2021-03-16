@@ -1,0 +1,13 @@
+# TODO
+
+- What is access control
+- What is roles based access control
+- Where do we use it
+- Install Keystone next app
+- List the types of controls/roles we want
+- Write schema for roles
+- Create access file
+- Write isSignedIn
+- Use it in schema
+- Add access functions for rest
+- Add granular tweak for canUpdatePosts and canDeletePosts
