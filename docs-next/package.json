@@ -36,7 +36,7 @@
     "autoprefixer": "^10.2.5",
     "classnames": "^2.2.6",
     "copy-to-clipboard": "^3.3.1",
-    "cypress": "^5.6.0",
+    "cypress": "^6.7.1",
     "facepaint": "^1.2.1",
     "next": "10.0.8",
     "next-compose-plugins": "^2.2.1",
