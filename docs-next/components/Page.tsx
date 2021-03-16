@@ -116,7 +116,7 @@ export const Page = ({
               className={cx({ prose: isProse }, 'w-full max-w-none mt-6', {
                 'md:w-3/4': headings.length,
               })}
-              css={isProse ? proseStyles.css : undefined}
+              css={isProse ? proseStyles : undefined}
             >
               {children}
             </main>
