@@ -12,7 +12,7 @@
     "@keystone-next/keystone-legacy": "^20.0.0",
     "@keystone-next/utils-legacy": "^7.0.0",
     "cuid": "^2.1.8",
-    "mongoose": "^5.11.19",
+    "mongoose": "^5.12.0",
     "p-settle": "^4.1.1"
   },
   "devDependencies": {
