@@ -57,7 +57,7 @@ For full details on the available field types and their configuration options pl
 ## idField
 
 The `idField` option lets you override the default ID field used by Keystone.
-By default the `prisma_postgresql` and `knex` adapters use `autoincrement`, and `mongoose` uses `mongoId`, as an ID field type.
+By default the `prisma_postgresql`, `prisma_sqlite`, and `knex` adapters use `autoincrement`, and `mongoose` uses `mongoId`, as an ID field type.
 The default configuration (e.g. when `idField: undefined` ) is equivalent to:
 
 ```typescript
@@ -68,7 +68,7 @@ export default config({
   lists: createSchema({
     ListName: list({
       fields: { /* ... */ },
-      // prisma_postgresql and knex adapters
+      // prisma_postgresql, prisma_sqlite and knex adapters
       idField: autoincrement({
         ui: {
           createView: { fieldMode: 'hidden' },
