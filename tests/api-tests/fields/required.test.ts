@@ -1,6 +1,7 @@
-const globby = require('globby');
-const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
-const { Text } = require('@keystone-next/fields-legacy');
+import globby from 'globby';
+import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { Text } from '@keystone-next/fields-legacy';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.js`, {
   absolute: true,
@@ -14,7 +15,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           !skipRequiredTest && !unSupportedAdapterList.includes(adapterName)
       )
       .forEach(mod => {
-        (mod.testMatrix || ['default']).forEach(matrixValue => {
+        (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           describe(`${mod.name} - ${matrixValue} - isRequired`, () => {
             beforeAll(() => {
               if (mod.beforeAll) {
@@ -26,7 +27,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 await mod.afterAll();
               }
             });
-            const keystoneTestWrapper = testFn =>
+            const keystoneTestWrapper = (testFn: (setup: any) => Promise<void>) =>
               runner(
                 () =>
                   setupServer({
