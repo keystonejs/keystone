@@ -1,6 +1,6 @@
-const globby = require('globby');
-const path = require('path');
-const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
+import globby from 'globby';
+import path from 'path';
+import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.js`, {
   absolute: true,
@@ -14,7 +14,7 @@ multiAdapterRunners().map(({ adapterName, after }) => {
   if (unsupportedModules.length > 0) {
     describe(`${adapterName} adapter`, () => {
       unsupportedModules.forEach(mod => {
-        (mod.testMatrix || ['default']).forEach(matrixValue => {
+        (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           const listKey = 'Test';
 
           describe(`${mod.name} - Unsupported field type`, () => {
@@ -32,7 +32,7 @@ multiAdapterRunners().map(({ adapterName, after }) => {
             });
 
             test('Delete', async () => {
-              const createLists = keystone => {
+              const createLists = (keystone: any) => {
                 // Create a list with all the fields required for testing
                 keystone.createList(listKey, { fields: mod.getTestFields(matrixValue) });
               };
