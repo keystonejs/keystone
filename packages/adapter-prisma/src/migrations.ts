@@ -3,6 +3,7 @@ import { Migrate } from '@prisma/migrate';
 import chalk from 'chalk';
 import { confirmPrompt, textPrompt } from './prompts';
 import slugify from '@sindresorhus/slugify';
+import path from 'path';
 
 // we don't want to pollute process.env.DATABASE_URL so we're
 // setting the env variable _just_ long enough for Migrate to
@@ -24,7 +25,7 @@ function runMigrateWithDbUrl<T>(dbUrl: string, cb: () => T): T {
 export async function runPrototypeMigrations(dbUrl: string, schema: string, schemaPath: string) {
   let before = Date.now();
 
-  await ensureDatabaseExists(dbUrl);
+  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
   let migrate = new Migrate(schemaPath);
 
   let migration = await runMigrateWithDbUrl(dbUrl, () =>
@@ -48,7 +49,7 @@ export async function runPrototypeMigrations(dbUrl: string, schema: string, sche
 
 // TODO: don't have process.exit calls here
 export async function devMigrations(dbUrl: string, prismaSchema: string, schemaPath: string) {
-  await ensureDatabaseExists(dbUrl);
+  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
   let migrate = new Migrate(schemaPath);
   try {
     const devDiagnostic = await migrate.devDiagnostic();
@@ -168,9 +169,9 @@ function printMigrationId(migrationId: string): string {
   return `${words[0]}_${chalk.cyan.bold(words.slice(1).join('_'))}`;
 }
 
-async function ensureDatabaseExists(dbUrl: string) {
+async function ensureDatabaseExists(dbUrl: string, schemaDir: string) {
   // createDatabase will return false when the database already exists
-  const result = await createDatabase(dbUrl);
+  const result = await createDatabase(dbUrl, schemaDir);
   if (result && result.exitCode === 0) {
     const credentials = uriToCredentials(dbUrl);
     console.log(
