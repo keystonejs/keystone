@@ -1,10 +1,10 @@
-const round = num =>
+const round = (num: number) =>
   num
     .toFixed(7)
     .replace(/(\.[0-9]+?)0+$/, '$1')
     .replace(/\.0$/, '');
-const rem = px => `${round(px / 16)}rem`;
-const em = (px, base) => `${round(px / base)}em`;
+const rem = (px: number) => `${round(px / 16)}rem`;
+const em = (px: number, base: number) => `${round(px / base)}em`;
 
 const defaultTheme = {
   colors: {
