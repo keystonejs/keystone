@@ -1,12 +1,13 @@
-const globby = require('globby');
-const path = require('path');
-const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
+import globby from 'globby';
+import path from 'path';
+import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
 import {
   createItem,
   deleteItem,
   getItems,
   getItem,
   updateItem,
+  // @ts-ignore
 } from '@keystone-next/server-side-graphql-client-legacy';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.js`, {
@@ -23,12 +24,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           !skipCrudTest && !unSupportedAdapterList.includes(adapterName)
       )
       .forEach(mod => {
-        (mod.testMatrix || ['default']).forEach(matrixValue => {
+        (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           const listKey = 'Test';
-          const keystoneTestWrapper = (testFn = () => {}) =>
+          const keystoneTestWrapper = (testFn: (args: any) => void = () => {}) =>
             runner(
               () => {
-                const createLists = keystone => {
+                const createLists = (keystone: any) => {
                   // Create a list with all the fields required for testing
                   keystone.createList(listKey, { fields: mod.getTestFields(matrixValue) });
                 };
@@ -85,8 +86,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 ? `id name ${fieldName} { ${subfieldName} }`
                 : `id name ${fieldName}`;
 
-              const withHelpers = wrappedFn => {
-                return async ({ keystone, listKey }) => {
+              const withHelpers = (wrappedFn: (args: any) => void | Promise<void>) => {
+                return async ({ keystone, listKey }: { keystone: any; listKey: string }) => {
                   const items = await getItems({
                     keystone,
                     listKey,

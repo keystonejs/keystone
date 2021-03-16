@@ -1,6 +1,7 @@
-const globby = require('globby');
-const { Text } = require('@keystone-next/fields-legacy');
-const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
+import globby from 'globby';
+// @ts-ignore
+import { Text } from '@keystone-next/fields-legacy';
+import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.js`, {
   absolute: true,
@@ -14,7 +15,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
           supportsUnique && !unSupportedAdapterList.includes(adapterName)
       )
       .forEach(mod => {
-        (mod.testMatrix || ['default']).forEach(matrixValue => {
+        (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           describe(`${mod.name} - ${matrixValue} - isUnique`, () => {
             beforeAll(() => {
               if (mod.beforeAll) {
@@ -26,7 +27,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
                 await mod.afterAll();
               }
             });
-            const keystoneTestWrapper = testFn =>
+            const keystoneTestWrapper = (testFn: (setup: any) => Promise<void>) =>
               runner(
                 () =>
                   setupServer({
@@ -136,7 +137,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
           !unSupportedAdapterList.includes(adapterName)
       )
       .forEach(mod => {
-        (mod.testMatrix || ['default']).forEach(matrixValue => {
+        (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           describe(`${mod.name} - ${matrixValue} - isUnique`, () => {
             test('Ensure non-supporting fields throw an error', async () => {
               // Try to create a thing and have it fail

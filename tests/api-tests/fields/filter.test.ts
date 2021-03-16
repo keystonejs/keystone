@@ -1,6 +1,7 @@
-const globby = require('globby');
-const path = require('path');
-const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
+import globby from 'globby';
+import path from 'path';
+import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
+// @ts-ignore
 import { createItem, getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import memoizeOne from 'memoize-one';
 
@@ -18,14 +19,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           !skipCrudTest && !unSupportedAdapterList.includes(adapterName)
       )
       .forEach(mod => {
-        (mod.testMatrix || ['default']).forEach(matrixValue => {
+        (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           const listKey = 'Test';
 
           // we want to memoize the server creation since it's the same fields
           // for all the tests and setting up a keystone instance for prisma
           // can be a bit slow
           const _getServer = () => {
-            const createLists = keystone => {
+            const createLists = (keystone: any) => {
               // Create a list with all the fields required for testing
               keystone.createList(listKey, { fields: mod.getTestFields(matrixValue) });
             };
@@ -35,7 +36,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // we don't memoize it for mongoose though since it has a cleanup which messes the memoization up
           const getServer = adapterName === 'mongoose' ? _getServer : memoizeOne(_getServer);
 
-          const withKeystone = (testFn = () => {}) =>
+          const withKeystone = (testFn: (args: any) => void = () => {}) =>
             runner(getServer, async ({ keystone, ...rest }) => {
               // Populate the database before running the tests
               // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
@@ -81,7 +82,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 ? `name ${fieldName} { ${subfieldName} }`
                 : `name ${fieldName}`;
 
-              const match = async (keystone, where, expected, sortBy = 'name_ASC') =>
+              const match = async (
+                keystone: any,
+                where: Record<string, any> | undefined,
+                expected: any[],
+                sortBy = 'name_ASC'
+              ) =>
                 expect(await getItems({ keystone, listKey, where, returnFields, sortBy })).toEqual(
                   expected.map(i => storedValues[i])
                 );
