@@ -16,6 +16,7 @@ const apolloServer = createApolloServerMicro({
   graphQLSchema,
   createContext,
   sessionStrategy: initializedKeystoneConfig.session ? initializedKeystoneConfig.session() : undefined,
+  apolloConfig: config.graphql?.apolloConfig,
   connectionPromise: keystone.connect(),
 });
 
