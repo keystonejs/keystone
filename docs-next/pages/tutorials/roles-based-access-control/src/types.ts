@@ -6,12 +6,11 @@ export type Session = {
     role?: {
       id: string;
       name: string;
-      canCreateTodos: boolean;
-      canManageAllTodos: boolean;
-      canSeeOtherPeople: boolean;
-      canEditOtherPeople: boolean;
-      canManagePeople: boolean;
+      canManageUsers: boolean;
       canManageRoles: boolean;
+      canCreatePosts: boolean;
+      canUpdatePosts: boolean;
+      canDeletePosts: boolean;
     };
   };
 };

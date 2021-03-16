@@ -24,7 +24,6 @@ export const lists = createSchema({
       }),
       posts: relationship({ ref: 'Post.author', many: true }),
       role: relationship({
-        isRequired: true,
         ref: 'Role.assignedTo',
         access: {
           create: permissions.canManageUsers,

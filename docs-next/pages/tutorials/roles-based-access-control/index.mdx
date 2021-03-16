@@ -1,3 +1,5 @@
+import { Markdown } from '../../../components/Page';
+
 # TODO
 
 - What is access control
@@ -10,4 +12,7 @@
 - Write isSignedIn
 - Use it in schema
 - Add access functions for rest
-- Add granular tweak for canUpdatePosts and canDeletePosts
+- Add granular tweak for `canUpdatePosts` and `canDeletePosts`
+
+
+export default ({ children }) => <Markdown>{children}</Markdown>;
