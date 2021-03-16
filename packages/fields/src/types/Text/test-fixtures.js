@@ -31,12 +31,12 @@ export const storedValues = () => [
   { name: 'g', testField: null },
 ];
 
-export const supportedFilters = () => [
+export const supportedFilters = adapterName => [
   'null_equality',
   'equality',
-  'equality_case_insensitive',
+  adapterName !== 'prisma_sqlite' && 'equality_case_insensitive',
   'in_empty_null',
   'in_value',
-  'string',
-  'string_case_insensitive',
+  adapterName !== 'prisma_sqlite' && 'string',
+  adapterName !== 'prisma_sqlite' && 'string_case_insensitive',
 ];
