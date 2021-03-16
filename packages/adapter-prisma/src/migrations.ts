@@ -51,15 +51,34 @@ export async function devMigrations(dbUrl: string, prismaSchema: string, schemaP
   await ensureDatabaseExists(dbUrl);
   let migrate = new Migrate(schemaPath);
   try {
-    const migrationIdsApplied: string[] = [];
+    const devDiagnostic = await migrate.devDiagnostic();
+    // when the action is reset, the database is somehow inconsistent with the migrations so we need to reset it
+    // (not just some migrations need to be applied but there's some inconsistency)
+    if (devDiagnostic.action.tag === 'reset') {
+      console.log(`${devDiagnostic.action.reason}
+
+We need to reset the database at ${dbUrl}.`);
+      const confirmedReset = await confirmPrompt(
+        `Do you want to continue? ${chalk.red('All data will be lost')}.`
+      );
+      console.info(); // empty line
+
+      if (!confirmedReset) {
+        console.info('Reset cancelled.');
+        process.exit(0);
+      }
+
+      // Do the reset
+      await migrate.reset();
+    }
+
     let { appliedMigrationNames } = await runMigrateWithDbUrl(dbUrl, () =>
       migrate.applyMigrations()
     );
-    migrationIdsApplied.push(...appliedMigrationNames);
     // Inform user about applied migrations now
-    if (appliedMigrationNames.length > 0) {
+    if (appliedMigrationNames.length) {
       console.info(
-        `The following migration(s) have been applied:\n\n${printFilesFromMigrationIds(
+        `✨ The following migration(s) have been applied:\n\n${printFilesFromMigrationIds(
           appliedMigrationNames
         )}`
       );
@@ -70,7 +89,7 @@ export async function devMigrations(dbUrl: string, prismaSchema: string, schemaP
     // if there are no steps, there was no change to the prisma schema so we don't need to create a migration
     if (evaluateDataLossResult.migrationSteps.length) {
       console.log('✨ There was a change to your Keystone schema that requires a migration');
-      let migrationCanBeApplied = !!evaluateDataLossResult.unexecutableSteps.length;
+      let migrationCanBeApplied = !evaluateDataLossResult.unexecutableSteps.length;
       // see the link below for what "unexecutable steps" are
       // https://github.com/prisma/prisma-engines/blob/c65d20050f139a7917ef2efc47a977338070ea61/migration-engine/connectors/sql-migration-connector/src/sql_destructive_change_checker/unexecutable_step_check.rs
       // the tl;dr is "making things non null when there are nulls in the db"
@@ -87,6 +106,8 @@ export async function devMigrations(dbUrl: string, prismaSchema: string, schemaP
           console.log(`  • ${warning.message}`);
         }
       }
+
+      console.log(); // for an empty line
 
       let migrationName = await getMigrationName();
 
@@ -118,6 +139,8 @@ export async function devMigrations(dbUrl: string, prismaSchema: string, schemaP
         );
         process.exit(1);
       }
+    } else if (!appliedMigrationNames.length) {
+      console.log('✨ Your database is already up to date, no migrations need to be applied');
     }
   } finally {
     migrate.stop();
