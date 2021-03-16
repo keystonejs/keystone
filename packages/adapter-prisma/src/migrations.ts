@@ -1,7 +1,8 @@
 import { createDatabase, uriToCredentials, DatabaseCredentials } from '@prisma/sdk';
 import { Migrate } from '@prisma/migrate';
 import chalk from 'chalk';
-import prompt from 'prompts';
+import { confirmPrompt, textPrompt } from './prompts';
+import slugify from '@sindresorhus/slugify';
 
 // we don't want to pollute process.env.DATABASE_URL so we're
 // setting the env variable _just_ long enough for Migrate to
@@ -45,50 +46,89 @@ export async function runPrototypeMigrations(dbUrl: string, schema: string, sche
   }
 }
 
-// TODO: don't have all the process.exit calls here
-export async function devMigrations(dbUrl: string, schema: string, schemaPath: string) {
+// TODO: don't have process.exit calls here
+export async function devMigrations(dbUrl: string, prismaSchema: string, schemaPath: string) {
   await ensureDatabaseExists(dbUrl);
   let migrate = new Migrate(schemaPath);
-  const migrationIdsApplied: string[] = [];
-  let { appliedMigrationNames } = await runMigrateWithDbUrl(dbUrl, () => migrate.applyMigrations());
-  migrationIdsApplied.push(...appliedMigrationNames);
-  // Inform user about applied migrations now
-  if (appliedMigrationNames.length > 0) {
-    console.info(
-      `The following migration(s) have been applied:\n\n${printFilesFromMigrationIds(
-        appliedMigrationNames
-      )}`
+  try {
+    const migrationIdsApplied: string[] = [];
+    let { appliedMigrationNames } = await runMigrateWithDbUrl(dbUrl, () =>
+      migrate.applyMigrations()
     );
-  }
-  const evaluateDataLossResult = await runMigrateWithDbUrl(dbUrl, () => migrate.evaluateDataLoss());
-  let migrationCanBeApplied = true;
-  // see the link below for what "unexecutable steps" are
-  // https://github.com/prisma/prisma-engines/blob/c65d20050f139a7917ef2efc47a977338070ea61/migration-engine/connectors/sql-migration-connector/src/sql_destructive_change_checker/unexecutable_step_check.rs
-  // the tl;dr s basically "making things "
-  if (evaluateDataLossResult.unexecutableSteps) {
-    console.log(`${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`);
-    for (const item of evaluateDataLossResult.unexecutableSteps) {
-      console.log(`  • Step ${item.stepIndex} ${item.message}`);
+    migrationIdsApplied.push(...appliedMigrationNames);
+    // Inform user about applied migrations now
+    if (appliedMigrationNames.length > 0) {
+      console.info(
+        `The following migration(s) have been applied:\n\n${printFilesFromMigrationIds(
+          appliedMigrationNames
+        )}`
+      );
     }
-    migrationCanBeApplied = false;
-  }
-  if (evaluateDataLossResult.warnings.length) {
-    console.log(chalk.bold(`\n⚠️  There will be data loss when applying the migration:\n`));
-    for (const warning of evaluateDataLossResult.warnings) {
-      console.log(chalk(`  • ${warning.message}`));
+    const evaluateDataLossResult = await runMigrateWithDbUrl(dbUrl, () =>
+      migrate.evaluateDataLoss()
+    );
+    // if there are no steps, there was no change to the prisma schema so we don't need to create a migration
+    if (evaluateDataLossResult.migrationSteps.length) {
+      console.log('✨ There was a change to your Keystone schema that requires a migration');
+      let migrationCanBeApplied = !!evaluateDataLossResult.unexecutableSteps.length;
+      // see the link below for what "unexecutable steps" are
+      // https://github.com/prisma/prisma-engines/blob/c65d20050f139a7917ef2efc47a977338070ea61/migration-engine/connectors/sql-migration-connector/src/sql_destructive_change_checker/unexecutable_step_check.rs
+      // the tl;dr is "making things non null when there are nulls in the db"
+      if (!migrationCanBeApplied) {
+        console.log(`${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`);
+        for (const item of evaluateDataLossResult.unexecutableSteps) {
+          console.log(`  • Step ${item.stepIndex} ${item.message}`);
+        }
+      }
+      let hasDataloss = !!evaluateDataLossResult.warnings.length;
+      if (hasDataloss) {
+        console.log(chalk.bold(`\n⚠️  There will be data loss when applying the migration:\n`));
+        for (const warning of evaluateDataLossResult.warnings) {
+          console.log(`  • ${warning.message}`);
+        }
+      }
+
+      let migrationName = await getMigrationName();
+
+      let { generatedMigrationName } = await runMigrateWithDbUrl(dbUrl, () =>
+        migrate.createMigration({
+          migrationsDirectoryPath: migrate.migrationsDirectoryPath,
+          // https://github.com/prisma/prisma-engines/blob/11dfcc85d7f9b55235e31630cd87da7da3aed8cc/migration-engine/core/src/commands/create_migration.rs#L16-L17
+          // draft means "create an empty migration even if there are no changes rather than exiting"
+          // because this whole thing only happens when there are changes to the schema, this can be false
+          // (we should also ofc have a way to create an empty migration but that's a separate thing)
+          draft: false,
+          prismaSchema,
+          migrationName,
+        })
+      );
+
+      console.log(
+        `✨ A migration has been created at .keystone/prisma/migrations/${generatedMigrationName}`
+      );
+
+      let shouldApplyMigration =
+        migrationCanBeApplied && (await confirmPrompt('Would you like to apply this migration?'));
+      if (shouldApplyMigration) {
+        await runMigrateWithDbUrl(dbUrl, () => migrate.applyMigrations());
+        console.log('✅ The migration has been applied');
+      } else {
+        console.log(
+          'Please edit the migration and run keystone-next dev again to apply the migration'
+        );
+        process.exit(1);
+      }
     }
-    const confirmation = await prompt({
-      type: 'confirm',
-      name: 'value',
-      message: `Are you sure you want create this migration? ${chalk.red(
-        'Some data will be lost'
-      )}.`,
-    });
-    if (confirmation.value) {
-    } else {
-      process.exit(1);
-    }
+  } finally {
+    migrate.stop();
   }
+}
+
+// based on https://github.com/prisma/prisma/blob/3fed5919545bfae0a82d35134a4f1d21359118cb/src/packages/migrate/src/utils/promptForMigrationName.ts
+const MAX_MIGRATION_NAME_LENGTH = 200;
+async function getMigrationName() {
+  let migrationName = await textPrompt('Name of migration');
+  return slugify(migrationName, { separator: '_' }).substring(0, MAX_MIGRATION_NAME_LENGTH);
 }
 
 function printFilesFromMigrationIds(migrationIds: string[]) {
