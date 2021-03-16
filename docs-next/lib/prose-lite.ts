@@ -258,7 +258,6 @@ export const proseStyles = {
   code: {
     color: defaultTheme.colors.gray[900],
     fontWeight: 600,
-    fontSize: em(14, 16),
   },
   'code::before': {
     content: '"`"',
@@ -338,7 +337,7 @@ export const proseStyles = {
   },
   fontSize: rem(16),
   lineHeight: round(28 / 16),
-  p: {
+  '> p': {
     marginTop: em(20, 16),
     marginBottom: em(20, 16),
   },

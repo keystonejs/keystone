@@ -113,7 +113,7 @@ export const Page = ({
             className="min-w-0 md:flex w-full flex-auto max-h-full overflow-visible px-2"
           >
             <main
-              className={cx({ prose: isProse }, 'w-full max-w-none mt-6', {
+              className={cx('w-full max-w-none mt-6', {
                 'md:w-3/4': headings.length,
               })}
               css={isProse ? proseStyles : undefined}
