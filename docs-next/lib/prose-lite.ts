@@ -137,10 +137,10 @@ export const proseStyles = {
         color: defaultTheme.colors.gray[600],
       },
       'blockquote p:first-of-type::before': {
-        content: '',
+        content: '""',
       },
       'blockquote p:last-of-type::after': {
-        content: '',
+        content: '""',
       },
       a: {
         color: defaultTheme.colors.gray[900],

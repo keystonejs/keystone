@@ -182,7 +182,7 @@ export class PrismaSelectInterface extends CommonSelectInterface(PrismaFieldAdap
     this.isUnique = !!this.config.isUnique;
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
     this._prismaType =
-      this.config.dataType === 'enum'
+      this.config.dataType === 'enum' && this.listAdapter.parentAdapter.provider !== 'sqlite'
         ? `${this.field.listKey}${inflection.classify(this.path)}Enum`
         : this.config.dataType === 'integer'
         ? 'Int'

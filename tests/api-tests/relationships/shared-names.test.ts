@@ -1,16 +1,25 @@
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createItems, updateItems } = require('@keystone-next/server-side-graphql-client-legacy');
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import {
+  AdapterName,
+  multiAdapterRunners,
+  setupFromConfig,
+  testConfig,
+} from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItems, updateItems } from '@keystone-next/server-side-graphql-client-legacy';
+import { KeystoneContext } from '@keystone-next/types';
 
-const createInitialData = async context => {
-  const roles = await createItems({
+type IdType = any;
+
+const createInitialData = async (context: KeystoneContext) => {
+  const roles: { id: IdType; name: string }[] = await createItems({
     context,
     listKey: 'Role',
     items: [{ data: { name: 'RoleA' } }, { data: { name: 'RoleB' } }, { data: { name: 'RoleC' } }],
     returnFields: 'id name',
   });
-  const companies = await createItems({
+  const companies: { id: IdType; name: string }[] = await createItems({
     context,
     listKey: 'Company',
     items: [
@@ -20,29 +29,29 @@ const createInitialData = async context => {
     ],
     returnFields: 'id name',
   });
-  const employees = await createItems({
+  const employees: { id: IdType; name: string }[] = await createItems({
     context,
     listKey: 'Employee',
     items: [
       {
         data: {
           name: 'EmployeeA',
-          company: { connect: { id: companies.find(({ name }) => name === 'CompanyA').id } },
-          role: { connect: { id: roles.find(({ name }) => name === 'RoleA').id } },
+          company: { connect: { id: companies.find(({ name }) => name === 'CompanyA')!.id } },
+          role: { connect: { id: roles.find(({ name }) => name === 'RoleA')!.id } },
         },
       },
       {
         data: {
           name: 'EmployeeB',
-          company: { connect: { id: companies.find(({ name }) => name === 'CompanyB').id } },
-          role: { connect: { id: roles.find(({ name }) => name === 'RoleB').id } },
+          company: { connect: { id: companies.find(({ name }) => name === 'CompanyB')!.id } },
+          role: { connect: { id: roles.find(({ name }) => name === 'RoleB')!.id } },
         },
       },
       {
         data: {
           name: 'EmployeeC',
-          company: { connect: { id: companies.find(({ name }) => name === 'CompanyC').id } },
-          role: { connect: { id: roles.find(({ name }) => name === 'RoleC').id } },
+          company: { connect: { id: companies.find(({ name }) => name === 'CompanyC')!.id } },
+          role: { connect: { id: roles.find(({ name }) => name === 'RoleC')!.id } },
         },
       },
     ],
@@ -90,35 +99,35 @@ const createInitialData = async context => {
     listKey: 'Role',
     items: [
       {
-        id: roles.find(({ name }) => name === 'RoleA').id,
+        id: roles.find(({ name }) => name === 'RoleA')!.id,
         data: {
-          company: { connect: { id: companies.find(({ name }) => name === 'CompanyA').id } },
-          employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeA').id }] },
+          company: { connect: { id: companies.find(({ name }) => name === 'CompanyA')!.id } },
+          employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeA')!.id }] },
         },
       },
       {
-        id: roles.find(({ name }) => name === 'RoleB').id,
+        id: roles.find(({ name }) => name === 'RoleB')!.id,
         data: {
-          company: { connect: { id: companies.find(({ name }) => name === 'CompanyB').id } },
-          employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeB').id }] },
+          company: { connect: { id: companies.find(({ name }) => name === 'CompanyB')!.id } },
+          employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeB')!.id }] },
         },
       },
       {
-        id: roles.find(({ name }) => name === 'RoleC').id,
+        id: roles.find(({ name }) => name === 'RoleC')!.id,
         data: {
-          company: { connect: { id: companies.find(({ name }) => name === 'CompanyC').id } },
-          employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeC').id }] },
+          company: { connect: { id: companies.find(({ name }) => name === 'CompanyC')!.id } },
+          employees: { connect: [{ id: employees.find(({ name }) => name === 'EmployeeC')!.id }] },
         },
       },
     ],
   });
 };
 
-const setupKeystone = adapterName =>
+const setupKeystone = (adapterName: AdapterName) =>
   setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         Employee: list({
           fields: {
             name: text(),
@@ -145,7 +154,7 @@ const setupKeystone = adapterName =>
             employees: relationship({ ref: 'Employee', many: true }),
           },
         }),
-      },
+      }),
     }),
   });
 

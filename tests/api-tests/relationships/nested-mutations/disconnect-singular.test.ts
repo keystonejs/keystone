@@ -1,16 +1,22 @@
-const { gen, sampleOne } = require('testcheck');
-const { text, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createItem, getItem } = require('@keystone-next/server-side-graphql-client-legacy');
+import { gen, sampleOne } from 'testcheck';
+import { text, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import {
+  AdapterName,
+  multiAdapterRunners,
+  setupFromConfig,
+  testConfig,
+} from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItem, getItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-function setupKeystone(adapterName) {
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         Group: list({
           fields: {
             name: text(),
@@ -36,7 +42,7 @@ function setupKeystone(adapterName) {
             group: relationship({ ref: 'GroupNoRead' }),
           },
         }),
-      },
+      }),
     }),
   });
 }
@@ -45,7 +51,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe('no access control', () => {
       test(
-        'removes item from list',
+        'removes matched item from list',
         runner(setupKeystone, async ({ context }) => {
           const groupName = `foo${sampleOne(alphanumGenerator)}`;
 
@@ -59,7 +65,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createEvent = await createItem({
             context,
             listKey: 'Event',
-            item: { title: 'A thing', group: { connect: { id: createGroup.id } } },
+            item: {
+              title: 'A thing',
+              group: { connect: { id: createGroup.id } },
+            },
             returnFields: 'id group { id }',
           });
 
@@ -74,7 +83,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 updateEvent(
                   id: "${createEvent.id}"
                   data: {
-                    group: { disconnectAll: true }
+                    group: { disconnect: { id: "${createGroup.id}" } }
                   }
                 ) {
                   id
@@ -103,13 +112,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'silently succeeds if used during create',
         runner(setupKeystone, async ({ context }) => {
+          const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+
           // Create an item that does the linking
           const { data, errors } = await context.executeGraphQL({
             query: `
               mutation {
                 createEvent(data: {
                   group: {
-                    disconnectAll: true
+                    disconnect: { id: "${FAKE_ID}" }
                   }
                 }) {
                   id
@@ -120,6 +131,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }`,
           });
           expect(errors).toBe(undefined);
+
           expect(data.createEvent).toMatchObject({ id: expect.any(String), group: null });
           expect(data.createEvent).not.toHaveProperty('errors');
         })
@@ -128,6 +140,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'silently succeeds if no item to disconnect during update',
         runner(setupKeystone, async ({ context }) => {
+          const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+
           // Create an item to link against
           const createEvent = await createItem({ context, listKey: 'Event', item: {} });
 
@@ -139,7 +153,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   id: "${createEvent.id}",
                   data: {
                     group: {
-                      disconnectAll: true
+                      disconnect: { id: "${FAKE_ID}" }
                     }
                   }
                 ) {
@@ -155,12 +169,58 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(data.updateEvent).not.toHaveProperty('errors');
         })
       );
+
+      test(
+        'silently succeeds if item to disconnect does not match during update',
+        runner(setupKeystone, async ({ context }) => {
+          const groupName = `foo${sampleOne(alphanumGenerator)}`;
+          const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
+
+          // Create an item to link against
+          const createGroup = await createItem({
+            context,
+            listKey: 'Group',
+            item: { name: groupName },
+          });
+          const createEvent = await createItem({
+            context,
+            listKey: 'Event',
+            item: { group: { connect: { id: createGroup.id } } },
+          });
+
+          // Create an item that does the linking
+          const { data, errors } = await context.executeGraphQL({
+            query: `
+              mutation {
+                updateEvent(
+                  id: "${createEvent.id}",
+                  data: {
+                    group: {
+                      disconnect: { id: "${FAKE_ID}" }
+                    }
+                  }
+                ) {
+                  id
+                  group {
+                    id
+                  }
+                }
+              }`,
+          });
+          expect(errors).toBe(undefined);
+          expect(data.updateEvent).toMatchObject({
+            id: expect.any(String),
+            group: { id: createGroup.id },
+          });
+          expect(data.updateEvent).not.toHaveProperty('errors');
+        })
+      );
     });
 
     describe('with access control', () => {
       describe('read: false on related list', () => {
         test(
-          'has no effect when using disconnectAll',
+          'has no effect when disconnecting a specific id',
           runner(setupKeystone, async ({ context }) => {
             const groupName = sampleOne(alphanumGenerator);
 
@@ -190,14 +250,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   updateEventToGroupNoRead(
                     id: "${createEvent.id}"
                     data: {
-                      group: { disconnectAll: true }
+                      group: { disconnect: { id: "${createGroup.id}" } }
                     }
                   ) {
                     id
                   }
                 }`,
             });
-
             expect(errors).toBe(undefined);
 
             // Avoid false-positives by checking the database directly
@@ -212,12 +271,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(eventData.group).toBe(null);
           })
         );
-
-        test.failing('silently ignores an item that otherwise would match the filter', () => {
-          // TODO: Fill this in when we support more filtering on Unique items than
-          // just ID.
-          expect(false).toBe(true);
-        });
       });
     });
   })

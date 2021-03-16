@@ -829,11 +829,22 @@ module.exports = class List {
     // FIXME: We should do all of these in parallel and return *all* the field access violations
     await this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
-    return Promise.all(
-      itemsToUpdate.map(({ existingItem, id, data }) =>
-        this._updateSingle(id, data, existingItem, context, mutationState)
-      )
-    );
+    if (this.adapterName === 'prisma' && this.adapter.parentAdapter.provider === 'sqlite') {
+      // We perform these operations sequentially as a workaround for a connection
+      // timeout bug that happens in prisma+sqlite: https://github.com/prisma/prisma/issues/2955
+      const ret = [];
+      for (const item of itemsToUpdate) {
+        const { existingItem, id, data } = item;
+        ret.push(await this._updateSingle(id, data, existingItem, context, mutationState));
+      }
+      return ret;
+    } else {
+      return Promise.all(
+        itemsToUpdate.map(({ existingItem, id, data }) =>
+          this._updateSingle(id, data, existingItem, context, mutationState)
+        )
+      );
+    }
   }
 
   async _updateSingle(id, originalInput, existingItem, context, mutationState) {
@@ -916,9 +927,19 @@ module.exports = class List {
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 
-    return Promise.all(
-      existingItems.map(existingItem => this._deleteSingle(existingItem, context, mutationState))
-    );
+    if (this.adapterName === 'prisma' && this.adapter.parentAdapter.provider === 'sqlite') {
+      // We perform these operations sequentially as a workaround for a connection
+      // timeout bug that happens in prisma+sqlite: https://github.com/prisma/prisma/issues/2955
+      const ret = [];
+      for (const existingItem of existingItems) {
+        ret.push(await this._deleteSingle(existingItem, context, mutationState));
+      }
+      return ret;
+    } else {
+      return Promise.all(
+        existingItems.map(existingItem => this._deleteSingle(existingItem, context, mutationState))
+      );
+    }
   }
 
   async _deleteSingle(existingItem, context, mutationState) {

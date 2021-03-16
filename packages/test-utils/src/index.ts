@@ -20,7 +20,7 @@ import { initConfig, createSystem, createExpressServer } from '@keystone-next/ke
 import type { KeystoneConfig, BaseKeystone, KeystoneContext } from '@keystone-next/types';
 import memoizeOne from 'memoize-one';
 
-export type AdapterName = 'mongoose' | 'knex' | 'prisma_postgresql';
+export type AdapterName = 'mongoose' | 'knex' | 'prisma_postgresql' | 'prisma_sqlite';
 
 const hashPrismaSchema = memoizeOne(prismaSchema =>
   crypto.createHash('md5').update(prismaSchema).digest('hex')
@@ -49,6 +49,17 @@ const argGenerator = {
     // Turn this on if you need verbose debug info
     enableLogging: false,
   }),
+  prisma_sqlite: () => ({
+    migrationMode: 'prototype',
+    dropDatabase: true,
+    url: process.env.DATABASE_URL || '',
+    provider: 'sqlite',
+    // Put the generated client at a unique path
+    getPrismaPath: ({ prismaSchema }: { prismaSchema: string }) =>
+      path.join('.api-test-prisma-clients', hashPrismaSchema(prismaSchema)),
+    // Turn this on if you need verbose debug info
+    enableLogging: false,
+  }),
 };
 
 // Users should use testConfig({ ... }) in place of config({ ... }) when setting up
@@ -74,6 +85,10 @@ async function setupFromConfig({
   } else if (adapterName === 'prisma_postgresql') {
     const adapterArgs = await argGenerator[adapterName]();
     db = { adapter: adapterName, ...adapterArgs };
+  } else if (adapterName === 'prisma_sqlite') {
+    const adapterArgs = await argGenerator[adapterName]();
+    db = { adapter: adapterName, ...adapterArgs };
+    config.experimental = { prismaSqlite: true };
   }
   const _config = initConfig({ ...config, db: db!, ui: { isDisabled: true } });
 
@@ -107,6 +122,7 @@ async function setupServer({
     mongoose: MongooseAdapter,
     knex: KnexAdapter,
     prisma_postgresql: PrismaAdapter,
+    prisma_sqlite: PrismaAdapter,
   }[adapterName];
 
   const keystone = new Keystone({
@@ -153,9 +169,9 @@ function networkedGraphqlRequest({
   app: express.Application;
   query: string;
   variables?: Record<string, any>;
-  headers: Record<string, any>;
-  expectedStatusCode: number;
-  operationName: string;
+  headers?: Record<string, any>;
+  expectedStatusCode?: number;
+  operationName?: string;
 }) {
   const request = supertest(app).set('Accept', 'application/json');
 
@@ -205,7 +221,11 @@ async function teardownMongoMemoryServer() {
   mongoServer = null;
 }
 
-type Setup = { keystone: Keystone<string> | BaseKeystone; context: KeystoneContext };
+type Setup = {
+  keystone: Keystone<string> | BaseKeystone;
+  context: KeystoneContext;
+  app: express.Application;
+};
 
 function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promise<void> | void) {
   return function (
@@ -276,6 +296,12 @@ function multiAdapterRunners(only = process.env.TEST_ADAPTER) {
       runner: _keystoneRunner('prisma_postgresql', () => {}),
       adapterName: 'prisma_postgresql' as const,
       before: _before('prisma_postgresql'),
+      after: _after(() => {}),
+    },
+    {
+      runner: _keystoneRunner('prisma_sqlite', () => {}),
+      adapterName: 'prisma_sqlite' as const,
+      before: _before('prisma_sqlite'),
       after: _after(() => {}),
     },
   ].filter(a => typeof only === 'undefined' || a.adapterName === only);

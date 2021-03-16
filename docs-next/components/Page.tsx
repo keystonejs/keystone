@@ -146,7 +146,7 @@ export const components = {
 export const Markdown = ({ children }: { children: ReactNode }) => {
   const headings = getHeadings(children);
   return (
-    <Page headings={headings} title={headings[0].label}>
+    <Page headings={headings} isProse title={headings[0].label}>
       <MDXProvider components={components}>{children}</MDXProvider>
     </Page>
   );

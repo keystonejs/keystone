@@ -11,6 +11,7 @@ export const exampleValue2 = () => [
 export const supportsUnique = false;
 export const fieldName = 'content';
 export const subfieldName = 'document';
+export const unSupportedAdapterList = ['prisma_sqlite'];
 
 export const fieldConfig = () => ({ ___validateAndNormalize: x => x });
 
