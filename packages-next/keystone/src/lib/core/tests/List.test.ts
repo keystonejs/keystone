@@ -1,4 +1,5 @@
 import { gql } from 'apollo-server-express';
+import { GraphQLResolveInfo } from 'graphql';
 import { print } from 'graphql/language/printer';
 import { text, relationship } from '@keystone-next/fields';
 import { BaseListConfig, KeystoneContext } from '@keystone-next/types';
@@ -542,8 +543,10 @@ test('_wrapFieldResolverWith', async () => {
   const resolver = () => 'result';
   const list = setup();
   const newResolver = list._wrapFieldResolver(list.fieldsByPath['name'], resolver);
-  await expect(newResolver({}, {}, context)).resolves.toEqual('result');
-  await expect(newResolver({ makeFalse: true }, {}, context)).rejects.toThrow(AccessDeniedError);
+  await expect(newResolver({}, {}, context, {} as GraphQLResolveInfo)).resolves.toEqual('result');
+  await expect(
+    newResolver({ makeFalse: true }, {}, context, {} as GraphQLResolveInfo)
+  ).rejects.toThrow(AccessDeniedError);
 });
 
 test('gqlFieldResolvers', () => {
