@@ -1,15 +1,21 @@
+import express from 'express';
 // We don't currently have uniqueness tests for Relationship field types
+// @ts-ignore
 import { Text, Password } from '@keystone-next/fields-legacy';
+// @ts-ignore
 import { PasswordAuthStrategy } from '@keystone-next/auth-password-legacy';
 import {
+  AdapterName,
   multiAdapterRunners,
   networkedGraphqlRequest,
   setupServer,
 } from '@keystone-next/test-utils-legacy';
+// @ts-ignore
 import { AuthedRelationship } from '@keystone-next/fields-authed-relationship-legacy';
-const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
+// @ts-ignore
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
-function setupKeystone(adapterName) {
+function setupKeystone(adapterName: AdapterName) {
   return setupServer({
     adapterName,
     createLists: keystone => {
@@ -42,7 +48,7 @@ function setupKeystone(adapterName) {
   });
 }
 
-async function login(app, username, password) {
+async function login(app: express.Application, username: string, password: string) {
   const { data } = await networkedGraphqlRequest({
     app,
     query: `

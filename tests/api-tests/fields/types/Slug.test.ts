@@ -3,11 +3,13 @@ import {
   createItem,
   deleteItem,
   updateItem,
+  // @ts-ignore
 } from '@keystone-next/server-side-graphql-client-legacy';
-import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
+import { AdapterName, multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
+// @ts-ignore
 import { Text, Slug } from '@keystone-next/fields-legacy';
 
-const reverse = str => str.split('').reverse().join('');
+const reverse = (str: string) => str.split('').reverse().join('');
 
 const generateListName = () =>
   // Ensure we prefix with something easy to delete, but also must always start
@@ -18,7 +20,7 @@ const generateListName = () =>
   // Ensure plurality isn't a problem
   'foo';
 
-const setupList = (adapterName, fields) => () =>
+const setupList = (adapterName: AdapterName, fields: any) => () =>
   setupServer({
     adapterName,
     createLists: keystone => {
@@ -34,7 +36,7 @@ describe('Slug#implementation', () => {
           runner(
             setupList(adapterName, { url: { type: Slug, from: 'foo' } }),
             // Empty test, we just want to assert the setup works
-            () => {}
+            async () => {}
           )();
         }).not.toThrow();
       });
@@ -192,7 +194,11 @@ describe('Slug#implementation', () => {
           runner(
             setupList(adapterName, {
               name: { type: Text },
-              url: { type: Slug, from: 'name', makeUnique: ({ slug }) => reverse(slug) },
+              url: {
+                type: Slug,
+                from: 'name',
+                makeUnique: ({ slug }: { slug: string }) => reverse(slug),
+              },
             }),
             async ({ keystone }) => {
               const { key: listKey } = keystone.listsArray[0];
@@ -250,7 +256,7 @@ describe('Slug#implementation', () => {
                 type: Slug,
                 from: 'name',
                 alwaysMakeUnique: true,
-                makeUnique: ({ slug }) => reverse(slug),
+                makeUnique: ({ slug }: { slug: string }) => reverse(slug),
               },
             }),
             async ({ keystone }) => {
@@ -666,7 +672,7 @@ describe('Slug#implementation', () => {
           runner(
             setupList(adapterName, {
               name: { type: Text },
-              url: { type: Slug, makeUnique: ({ slug }) => slug },
+              url: { type: Slug, makeUnique: ({ slug }: { slug: string }) => slug },
             }),
             async ({ keystone }) => {
               const { key: listKey } = keystone.listsArray[0];
