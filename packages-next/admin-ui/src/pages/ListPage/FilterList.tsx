@@ -1,12 +1,12 @@
 /** @jsx jsx */
 import { Inline, jsx, Stack } from '@keystone-ui/core';
 import { FieldMeta, ListMeta } from '@keystone-next/types';
-import { Filter } from './useFilters';
-import { useRouter } from '../../router';
 import { Button } from '@keystone-ui/button';
 import { usePopover, PopoverDialog } from '@keystone-ui/popover';
 import { FormEvent, Fragment, useState } from 'react';
 import { Pill } from '@keystone-ui/pill';
+import { useRouter } from '../../router';
+import { Filter } from './useFilters';
 
 export function FilterList({ filters, list }: { filters: Filter[]; list: ListMeta }) {
   return (

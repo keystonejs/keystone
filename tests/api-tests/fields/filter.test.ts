@@ -1,5 +1,5 @@
-import globby from 'globby';
 import path from 'path';
+import globby from 'globby';
 import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
 // @ts-ignore
 import { createItem, getItems } from '@keystone-next/server-side-graphql-client-legacy';

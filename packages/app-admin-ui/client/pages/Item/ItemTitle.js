@@ -8,13 +8,12 @@ import { IconButton } from '@arch-ui/button';
 import { gridSize } from '@arch-ui/theme';
 import { PageTitle } from '@arch-ui/typography';
 
-import { Search } from './Search';
 import { useUIHooks } from '../../providers/Hooks';
 import { useList } from '../../providers/List';
+import ListDescription from '../../components/ListDescription';
+import { Search } from './Search';
 import AddNewItem from './AddNewItem';
 import ItemId from './ItemId';
-
-import ListDescription from '../../components/ListDescription';
 
 const Container = ({ children }) => {
   const padding = gridSize * 2;

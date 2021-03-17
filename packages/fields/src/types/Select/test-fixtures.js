@@ -1,5 +1,5 @@
-import Select from './';
 import Text from '../Text';
+import Select from './';
 
 export const name = 'Select';
 export const type = Select;

@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon';
-import { Implementation } from '../../Implementation';
 import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
+import { Implementation } from '../../Implementation';
 
 export class DateTimeUtcImplementation extends Implementation {
   constructor(path, { format = 'yyyy-MM-dd[T]HH:mm:ss.SSSxx' }) {

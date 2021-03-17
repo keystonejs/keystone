@@ -1,10 +1,10 @@
+import { resolveView } from '../../resolve-view';
 import {
   Relationship,
   MongoRelationshipInterface,
   KnexRelationshipInterface,
   PrismaRelationshipInterface,
 } from './Implementation';
-import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Relationship',

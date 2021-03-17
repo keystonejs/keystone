@@ -1,9 +1,8 @@
 import React from 'react';
 
+import { InfoIcon } from '@primer/octicons-react';
 import DocTitle from '../components/DocTitle';
 import PageError from '../components/PageError';
-
-import { InfoIcon } from '@primer/octicons-react';
 
 const NoListsPage = () => {
   return (

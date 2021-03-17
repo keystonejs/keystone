@@ -1,7 +1,7 @@
 /** @jsx jsx */
+import { jsx, Center, Stack } from '@keystone-ui/core';
 import { Link, useRouter } from '../../router';
 import { useList } from '../..';
-import { jsx, Center, Stack } from '@keystone-ui/core';
 
 function Page({ page, currentPage }: { page: number; currentPage: number }) {
   const { query } = useRouter();

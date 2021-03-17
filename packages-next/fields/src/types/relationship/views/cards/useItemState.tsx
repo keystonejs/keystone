@@ -1,8 +1,8 @@
 import { FieldMeta, ListMeta } from '@keystone-next/types';
 import { useCallback, useMemo, useState } from 'react';
 import { gql, useQuery } from '@keystone-next/admin-ui/apollo';
-import { controller } from '../index';
 import { DataGetter, makeDataGetter } from '@keystone-next/admin-ui-utils';
+import { controller } from '../index';
 
 type ItemsState =
   | {

@@ -13,9 +13,9 @@ import Select from '@arch-ui/select';
 import { LoadingSpinner } from '@arch-ui/loading';
 
 import FieldSelect from '../FieldSelect';
-import PopoutForm from './PopoutForm';
 import { DisclosureArrow, POPOUT_GUTTER } from '../../../components/Popout';
 import { ErrorBoundary } from '../../../components/ErrorBoundary';
+import PopoutForm from './PopoutForm';
 
 const EventCatcher = props => (
   <div

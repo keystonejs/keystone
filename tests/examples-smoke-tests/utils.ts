@@ -1,6 +1,6 @@
 import path from 'path';
-import execa from 'execa';
 import { promisify } from 'util';
+import execa from 'execa';
 import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
 

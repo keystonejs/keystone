@@ -15,13 +15,12 @@ const {
 const {
   validateFieldAccessControl,
   validateListAccessControl,
-  validateCustomAccessControl,
   validateAuthAccessControl,
 } = require('@keystone-next/access-control-legacy');
 const { SessionManager } = require('@keystone-next/session-legacy');
 
 const { List } = require('../ListTypes');
-const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
+const { ListAuthProvider, ListCRUDProvider } = require('../providers');
 const { formatError } = require('./format-error');
 
 // composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
@@ -58,8 +57,7 @@ module.exports = class Keystone {
     this._schemaNames = schemaNames;
 
     this._listCRUDProvider = new ListCRUDProvider();
-    this._customProvider = new CustomProvider({ schemaNames, defaultAccess: this.defaultAccess });
-    this._providers = [this._listCRUDProvider, this._customProvider];
+    this._providers = [this._listCRUDProvider];
 
     if (adapter) {
       this.adapter = adapter;
@@ -79,7 +77,6 @@ module.exports = class Keystone {
   _getAccessControlContext({ schemaName, authentication, skipAccessControl }) {
     if (skipAccessControl) {
       return {
-        getCustomAccessControlForUser: () => true,
         getListAccessControlForUser: () => true,
         getFieldAccessControlForUser: () => true,
         getAuthAccessControlForUser: () => true,
@@ -88,23 +85,6 @@ module.exports = class Keystone {
     // memoizing to avoid requests that hit the same type multiple times.
     // We do it within the request callback so we can resolve it based on the
     // request info (like who's logged in right now, etc)
-    const getCustomAccessControlForUser = memoize(
-      async (item, args, context, info, access, gqlName) => {
-        return validateCustomAccessControl({
-          access: access[schemaName],
-          args: {
-            item,
-            args,
-            context,
-            info,
-            authentication: authentication && authentication.item ? authentication : {},
-            gqlName,
-          },
-        });
-      },
-      { isPromise: true }
-    );
-
     const getListAccessControlForUser = memoize(
       async (
         access,
@@ -176,7 +156,6 @@ module.exports = class Keystone {
     );
 
     return {
-      getCustomAccessControlForUser,
       getListAccessControlForUser,
       getFieldAccessControlForUser,
       getAuthAccessControlForUser,
@@ -294,10 +273,6 @@ module.exports = class Keystone {
     this._listCRUDProvider.lists.push(list);
     list.initFields();
     return list;
-  }
-
-  extendGraphQLSchema({ types = [], queries = [], mutations = [], subscriptions = [] }) {
-    return this._customProvider.extendGraphQLSchema({ types, queries, mutations, subscriptions });
   }
 
   _consolidateRelationships() {
@@ -598,7 +573,7 @@ module.exports = class Keystone {
     this.createApolloServer({ schemaName: 'internal' });
     const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
     // These function can't be called after prepare(), so make them throw an error from now on.
-    ['extendGraphQLSchema', 'createList', 'createAuthStrategy'].forEach(f => {
+    ['createList', 'createAuthStrategy'].forEach(f => {
       this[f] = () => {
         throw new Error(`keystone.${f} must be called before keystone.prepare()`);
       };
