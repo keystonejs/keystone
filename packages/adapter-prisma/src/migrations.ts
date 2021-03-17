@@ -47,6 +47,7 @@ export async function runPrototypeMigrations(dbUrl: string, schema: string, sche
   }
 }
 
+// https://github.com/prisma/prisma/blob/527b6bd35e7fe4dbe854653f872a07b25febeb65/src/packages/migrate/src/commands/MigrateDeploy.ts
 export async function deployMigrations(dbUrl: string, schemaPath: string) {
   await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
   const migrate = new Migrate(schemaPath);
