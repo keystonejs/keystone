@@ -10,7 +10,7 @@ import {
 } from '@keystone-next/keystone-legacy';
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
 // eslint-disable-next-line import/no-unresolved
-import { runPrototypeMigrations, devMigrations } from './migrations';
+import { runPrototypeMigrations, devMigrations, deployMigrations } from './migrations';
 
 class PrismaAdapter extends BaseKeystoneAdapter {
   constructor(config = {}) {
@@ -62,7 +62,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   async deploy(rels) {
     // Apply any migrations which haven't already been applied
     await this._prepareSchema(rels);
-    this._runPrismaCmd(`migrate deploy --preview-feature`);
+    await deployMigrations(this._url(), path.resolve(this.schemaPath));
   }
 
   async _getPrismaClient({ rels }) {

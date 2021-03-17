@@ -47,6 +47,62 @@ export async function runPrototypeMigrations(dbUrl: string, schema: string, sche
   }
 }
 
+// https://github.com/prisma/prisma/blob/527b6bd35e7fe4dbe854653f872a07b25febeb65/src/packages/migrate/src/commands/MigrateDeploy.ts
+export async function deployMigrations(dbUrl: string, schemaPath: string) {
+  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
+  const migrate = new Migrate(schemaPath);
+
+  try {
+    const diagnoseResult = await runMigrateWithDbUrl(dbUrl, () =>
+      migrate.diagnoseMigrationHistory({
+        optInToShadowDatabase: false,
+      })
+    );
+    const listMigrationDirectoriesResult = await runMigrateWithDbUrl(dbUrl, () =>
+      migrate.listMigrationDirectories()
+    );
+
+    console.info(); // empty line
+    if (listMigrationDirectoriesResult.migrations.length > 0) {
+      const migrations = listMigrationDirectoriesResult.migrations;
+      console.info(
+        `${migrations.length} migration${
+          migrations.length > 1 ? 's' : ''
+        } found in .keystone/prisma/migrations`
+      );
+    } else {
+      console.info(`No migration found in .keystone/prisma/migrations`);
+    }
+
+    const editedMigrationNames = diagnoseResult.editedMigrationNames;
+    if (editedMigrationNames.length > 0) {
+      console.info(
+        `${chalk.yellow(
+          'WARNING The following migrations have been modified since they were applied:'
+        )}
+${editedMigrationNames.join('\n')}`
+      );
+    }
+
+    const { appliedMigrationNames: migrationIds } = await runMigrateWithDbUrl(dbUrl, () =>
+      migrate.applyMigrations()
+    );
+
+    console.info(); // empty line
+    if (migrationIds.length === 0) {
+      console.log(chalk.greenBright(`No pending migrations to apply.`));
+    } else {
+      console.log(`The following migration${
+        migrationIds.length > 1 ? 's' : ''
+      } have been applied:\n\n${printFilesFromMigrationIds(migrationIds)}
+    
+${chalk.greenBright('All migrations have been successfully applied.')}`);
+    }
+  } finally {
+    migrate.stop();
+  }
+}
+
 // TODO: don't have process.exit calls here
 export async function devMigrations(dbUrl: string, prismaSchema: string, schemaPath: string) {
   await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
