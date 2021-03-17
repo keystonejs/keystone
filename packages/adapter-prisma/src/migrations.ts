@@ -56,7 +56,7 @@ export async function devMigrations(dbUrl: string, prismaSchema: string, schemaP
     // note that the other action devDiagnostic can return is createMigration
     // that doesn't necessarily mean that we need to create a migration
     // it only means that we don't need to reset the database
-    const devDiagnostic = await migrate.devDiagnostic();
+    const devDiagnostic = await runMigrateWithDbUrl(dbUrl, () => migrate.devDiagnostic());
     // when the action is reset, the database is somehow inconsistent with the migrations so we need to reset it
     // (not just some migrations need to be applied but there's some inconsistency)
     if (devDiagnostic.action.tag === 'reset') {
