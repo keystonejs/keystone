@@ -1,5 +1,5 @@
-// @ts-ignore
 import Path from 'path';
+// @ts-ignore
 import withPreconstruct from '@preconstruct/next';
 
 export const config = withPreconstruct({
