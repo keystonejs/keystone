@@ -10,7 +10,7 @@ import {
 } from '@keystone-next/keystone-legacy';
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
 // eslint-disable-next-line import/no-unresolved
-import { runPrototypeMigrations } from './migrations';
+import { runPrototypeMigrations, devMigrations } from './migrations';
 
 class PrismaAdapter extends BaseKeystoneAdapter {
   constructor(config = {}) {
@@ -20,7 +20,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this.listAdapterClass = PrismaListAdapter;
     this.name = 'prisma';
     this.provider = this.config.provider || 'postgresql';
-    this.migrationMode = this.config.migrationMode || 'dev';
+    this.migrationMode = this.config.migrationMode || 'prototype';
 
     this.getPrismaPath = this.config.getPrismaPath || (() => '.prisma');
     this.getDbSchemaName = this.config.getDbSchemaName || (() => 'public');
@@ -112,7 +112,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       this._runPrismaCmd(`migrate dev --create-only --name keystone-${cuid()} --preview-feature`);
     } else if (this.migrationMode === 'dev') {
       // Generate and apply a migration if required.
-      this._runPrismaCmd(`migrate dev --name keystone-${cuid()} --preview-feature`);
+      await devMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
     } else if (this.migrationMode === 'none') {
       // Explicitly disable running any migrations
     } else {
