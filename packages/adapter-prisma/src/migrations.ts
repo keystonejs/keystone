@@ -100,9 +100,8 @@ We need to reset the database at ${dbUrl}.`);
           console.log(`  • Step ${item.stepIndex} ${item.message}`);
         }
       }
-      let hasDataloss = !!evaluateDataLossResult.warnings.length;
-      if (hasDataloss) {
-        console.log(chalk.bold(`\n⚠️  There will be data loss when applying the migration:\n`));
+      if (evaluateDataLossResult.warnings.length) {
+        console.log(chalk.bold(`\n⚠️  Warnings:\n`));
         for (const warning of evaluateDataLossResult.warnings) {
           console.log(`  • ${warning.message}`);
         }
