@@ -98,7 +98,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
     );
     // if there are no steps, there was no change to the prisma schema so we don't need to create a migration
     if (evaluateDataLossResult.migrationSteps.length) {
-      console.log('✨ There was a change to your Keystone schema that requires a migration');
+      console.log('✨ There has been a change to your Keystone schema that requires a migration');
       let migrationCanBeApplied = !evaluateDataLossResult.unexecutableSteps.length;
       // see the link below for what "unexecutable steps" are
       // https://github.com/prisma/prisma-engines/blob/c65d20050f139a7917ef2efc47a977338070ea61/migration-engine/connectors/sql-migration-connector/src/sql_destructive_change_checker/unexecutable_step_check.rs
@@ -150,16 +150,16 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
         console.log(
           'Please edit the migration and run keystone-next dev again to apply the migration'
         );
-        process.exit(1);
+        process.exit(0);
       }
     } else {
       if (appliedMigrationNames.length) {
         console.log(
-          '✨ Your migrations are already up to date, no new migrations need to be created'
+          '✨ Your migrations are up to date, no new migrations need to be created'
         );
       } else {
         console.log(
-          '✨ Your database is already up to date, no migrations need to be created or applied'
+          '✨ Your database is up to date, no migrations need to be created or applied'
         );
       }
     }
