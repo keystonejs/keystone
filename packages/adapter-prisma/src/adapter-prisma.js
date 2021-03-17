@@ -285,7 +285,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
         throw new Error('Only "postgresql" and "sqlite" providers are supported');
       }
     } else {
-      resetDatabaseWithMigrations(this._url());
+      resetDatabaseWithMigrations(this._url(), path.resolve(this.schemaPath));
     }
   }
 

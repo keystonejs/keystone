@@ -110,8 +110,6 @@ export async function resetDatabaseWithMigrations(dbUrl: string, schemaPath: str
   const migrate = new Migrate(schemaPath);
 
   try {
-    const migrate = new Migrate(schemaPath);
-
     await migrate.reset();
 
     const { appliedMigrationNames: migrationIds } = await migrate.applyMigrations();
