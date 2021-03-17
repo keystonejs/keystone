@@ -46,7 +46,7 @@
     "graphql": "^15.5.0",
     "graphql-upload": "^11.0.0",
     "meow": "^9.0.0",
-    "next": "10.0.8",
+    "next": "^10.0.8",
     "object-hash": "^2.1.1",
     "pirates": "^4.0.1",
     "pluralize": "^8.0.0",

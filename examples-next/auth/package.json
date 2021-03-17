@@ -13,7 +13,7 @@
     "@keystone-next/auth": "^17.0.0",
     "@keystone-next/fields": "^5.2.1",
     "@keystone-next/keystone": "^12.0.0",
-    "next": "10.0.8",
+    "next": "^10.0.8",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
