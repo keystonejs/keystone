@@ -4,9 +4,8 @@ const { GraphQLApp } = require('@keystone-next/app-graphql-legacy');
 const { AdminUIApp } = require('@keystone-next/app-admin-ui-legacy');
 const { StaticApp } = require('@keystone-next/app-static-legacy');
 
-const { staticRoute, staticPath } = require('./config');
-
 const { PrismaAdapter } = require('@keystone-next/adapter-prisma-legacy');
+const { staticRoute, staticPath } = require('./config');
 
 const keystone = new Keystone({
   adapter: new PrismaAdapter(),

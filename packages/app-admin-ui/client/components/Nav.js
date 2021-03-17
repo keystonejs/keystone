@@ -21,11 +21,10 @@ import Tooltip from '@arch-ui/tooltip';
 import { FlexGroup } from '@arch-ui/layout';
 import { PersonIcon, SignOutIcon, MarkGithubIcon } from '@primer/octicons-react';
 
+import { gql, useQuery } from '@apollo/client';
 import { useAdminMeta } from '../providers/AdminMeta';
 import { useResizeHandler, KEYBOARD_SHORTCUT } from '../hooks/ResizeHandler';
 import { useScrollQuery } from '../hooks/ScrollQuery';
-
-import { gql, useQuery } from '@apollo/client';
 
 const TRANSITION_DURATION = '220ms';
 const TRANSITION_EASING = 'cubic-bezier(0.2, 0, 0, 1)';

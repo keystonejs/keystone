@@ -1,10 +1,10 @@
+const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const compression = require('compression');
-const path = require('path');
-const fs = require('fs');
 const fallback = require('express-history-api-fallback');
 
 const getWebpackConfig = require('./server/getWebpackConfig');

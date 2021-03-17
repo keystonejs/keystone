@@ -10,13 +10,13 @@ import { gridSize } from '@arch-ui/theme';
 import { IconButton } from '@arch-ui/button';
 import Tooltip from '@arch-ui/tooltip';
 
-import RelationshipSelect from './RelationshipSelect';
 import {
   CreateItemModal,
   ListProvider,
   useList,
   useAdminMeta,
 } from '@keystone-next/app-admin-ui-legacy/components';
+import RelationshipSelect from './RelationshipSelect';
 
 const MAX_IDS_IN_FILTER = 100;
 

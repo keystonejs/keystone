@@ -6,9 +6,9 @@ import { Pill } from '@arch-ui/pill';
 import { Button } from '@arch-ui/button';
 import { gridSize } from '@arch-ui/theme';
 
+import { useListFilter } from '../dataHooks';
 import EditFilterPopout from './EditFilterPopout';
 import AddFilterPopout from './AddFilterPopout';
-import { useListFilter } from '../dataHooks';
 
 export const elementOffsetStyles = {
   marginBottom: gridSize / 2,

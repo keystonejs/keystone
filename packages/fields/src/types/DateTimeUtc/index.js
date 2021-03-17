@@ -1,10 +1,10 @@
+import DateTime from '../DateTime';
 import {
   DateTimeUtcImplementation,
   MongoDateTimeUtcInterface,
   KnexDateTimeUtcInterface,
   PrismaDateTimeUtcInterface,
 } from './Implementation';
-import DateTime from '../DateTime';
 
 export default {
   type: 'DateTimeUtc',

@@ -27,9 +27,9 @@ import {
 import { gridSize } from '@arch-ui/theme';
 import { AutocompleteCaptor } from '@arch-ui/input';
 
-import PageLoading from './PageLoading';
 import { useList } from '../providers/List';
 import { validateFields, handleCreateUpdateMutationError } from '../util';
+import PageLoading from './PageLoading';
 import { ErrorBoundary } from './ErrorBoundary';
 
 const Render = ({ children }) => children();

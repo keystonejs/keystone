@@ -4,6 +4,7 @@ const { Text, Password, Select } = require('@keystone-next/fields-legacy');
 const { GraphQLApp } = require('@keystone-next/app-graphql-legacy');
 const { AdminUIApp } = require('@keystone-next/app-admin-ui-legacy');
 const { objMerge } = require('@keystone-next/utils-legacy');
+const { PrismaAdapter } = require('@keystone-next/adapter-prisma-legacy');
 const {
   getStaticListName,
   getImperativeListName,
@@ -14,8 +15,6 @@ const {
 } = require('./cypress/integration/util');
 
 const { projectName } = require('./config');
-
-const { PrismaAdapter } = require('@keystone-next/adapter-prisma-legacy');
 
 const keystone = new Keystone({
   adapter: new PrismaAdapter(),

@@ -1,7 +1,7 @@
 import { config } from '@keystone-next/keystone/schema';
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
-import { lists } from './schema';
 import { createAuth } from '@keystone-next/auth';
+import { lists } from './schema';
 
 /**
  * TODO: Implement validateItem. Would be invoked by the getItem() method in

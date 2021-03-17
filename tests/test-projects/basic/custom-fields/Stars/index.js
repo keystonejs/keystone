@@ -1,11 +1,10 @@
+const { Integer } = require('@keystone-next/fields-legacy');
 const {
   Stars,
   MongoIntegerInterface,
   KnexIntegerInterface,
   PrismaIntegerInterface,
 } = require('./Implementation');
-
-const { Integer } = require('@keystone-next/fields-legacy');
 
 module.exports = {
   type: 'Stars',

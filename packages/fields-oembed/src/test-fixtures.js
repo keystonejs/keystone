@@ -1,8 +1,7 @@
-const { Text } = require('@keystone-next/fields-legacy');
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
-
 import { OEmbed, IframelyOEmbedAdapter } from './';
+const path = require('path');
+const { Text } = require('@keystone-next/fields-legacy');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 export const name = 'OEmbed';
 export const type = OEmbed;

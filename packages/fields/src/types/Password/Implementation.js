@@ -1,8 +1,8 @@
-import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
 import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import dumbPasswords from 'dumb-passwords';
+import { Implementation } from '../../Implementation';
 
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 

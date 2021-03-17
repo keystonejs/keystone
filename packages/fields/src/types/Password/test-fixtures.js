@@ -1,5 +1,5 @@
-import Password from './';
 import Text from '../Text';
+import Password from './';
 
 export const name = 'Password';
 export const type = Password;
