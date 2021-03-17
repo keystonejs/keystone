@@ -62,7 +62,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   async deploy(rels) {
     // Apply any migrations which haven't already been applied
     await this._prepareSchema(rels);
-    await deployMigrations();
+    await deployMigrations(this._url(), path.resolve(this.schemaPath));
   }
 
   async _getPrismaClient({ rels }) {
