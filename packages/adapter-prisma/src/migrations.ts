@@ -52,6 +52,10 @@ export async function devMigrations(dbUrl: string, prismaSchema: string, schemaP
   await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
   let migrate = new Migrate(schemaPath);
   try {
+    // see if we need to reset the database
+    // note that the other action devDiagnostic can return is createMigration
+    // that doesn't necessarily mean that we need to create a migration
+    // it only means that we don't need to reset the database
     const devDiagnostic = await migrate.devDiagnostic();
     // when the action is reset, the database is somehow inconsistent with the migrations so we need to reset it
     // (not just some migrations need to be applied but there's some inconsistency)
@@ -84,6 +88,8 @@ We need to reset the database at ${dbUrl}.`);
         )}`
       );
     }
+    // evaluateDataLoss basically means "try to create a migration but don't write it"
+    // so we can tell the user whether it can be executed and if there will be data loss
     const evaluateDataLossResult = await runMigrateWithDbUrl(dbUrl, () =>
       migrate.evaluateDataLoss()
     );
@@ -100,6 +106,9 @@ We need to reset the database at ${dbUrl}.`);
           console.log(`  • Step ${item.stepIndex} ${item.message}`);
         }
       }
+      // warnings mean "if the migration was applied to the database you're connected to, you will lose x data"
+      // note that if you have a field where all of the values are null on your local db and you've removed it, you won't get a warning here.
+      // there will be a warning in a comment in the generated migration though.
       if (evaluateDataLossResult.warnings.length) {
         console.log(chalk.bold(`\n⚠️  Warnings:\n`));
         for (const warning of evaluateDataLossResult.warnings) {
@@ -111,6 +120,7 @@ We need to reset the database at ${dbUrl}.`);
 
       let migrationName = await getMigrationName();
 
+      // note this only creates the migration, it does not apply it
       let { generatedMigrationName } = await runMigrateWithDbUrl(dbUrl, () =>
         migrate.createMigration({
           migrationsDirectoryPath: migrate.migrationsDirectoryPath,
