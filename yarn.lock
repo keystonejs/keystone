@@ -2,26 +2,7 @@
 # yarn lockfile v1
 
 
-"@apollo/client@^3.1.3", "@apollo/client@^3.2.5":
-  version "3.3.11"
-  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.3.11.tgz#125051405e83dc899d471d43b79fd6045d92a802"
-  integrity sha512-54+D5FB6RJlQ+g37f432gaexnyvDsG5X6L9VO5kqN54HJlbF8hCf/8CXtAQEHCWodAwZhy6kOLp2RM96829q3A==
-  dependencies:
-    "@graphql-typed-document-node/core" "^3.0.0"
-    "@types/zen-observable" "^0.8.0"
-    "@wry/context" "^0.5.2"
-    "@wry/equality" "^0.3.0"
-    fast-json-stable-stringify "^2.0.0"
-    graphql-tag "^2.12.0"
-    hoist-non-react-statics "^3.3.2"
-    optimism "^0.14.0"
-    prop-types "^15.7.2"
-    symbol-observable "^2.0.0"
-    ts-invariant "^0.6.0"
-    tslib "^1.10.0"
-    zen-observable "^0.8.14"
-
-"@apollo/client@^3.3.12":
+"@apollo/client@^3.1.3", "@apollo/client@^3.2.5", "@apollo/client@^3.3.12":
   version "3.3.12"
   resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.3.12.tgz#e723161617c479812ac425803a2b6a7c1b2466dd"
   integrity sha512-1wLVqRpujzbLRWmFPnRCDK65xapOe2txY0sTI+BaqEbumMUVNS3vxojT6hRHf9ODFEK+F6MLrud2HGx0mB3eQw==
@@ -9128,15 +9109,10 @@ io-ts-excess@^1.0.1:
   dependencies:
     io-ts "^2.0.0"
 
-io-ts@^2.0.0:
+io-ts@^2.0.0, io-ts@^2.2.15:
   version "2.2.15"
   resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.15.tgz#0b0b19a6f8a64f4a524ad5810d56432789428128"
   integrity sha512-ww2ZPrErx5pjCCI/tWRwjlEIDEndnN9kBIxAylXj+WNIH4ZVgaUqFuabGouehkRuvrmvzO5OnZmLf+o50h4izQ==
-
-io-ts@^2.2.16:
-  version "2.2.16"
-  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.16.tgz#597dffa03db1913fc318c9c6df6931cb4ed808b2"
-  integrity sha512-y5TTSa6VP6le0hhmIyN0dqEXkrZeJLeC5KApJq6VLci3UEKF80lZ+KuoUs02RhBxNWlrqSNxzfI7otLX1Euv8Q==
 
 ipaddr.js@1.9.1:
   version "1.9.1"
@@ -14404,10 +14380,10 @@ slash@^3.0.0:
   resolved "https://registry.yarnpkg.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
 
-slate-history@^0.60.8:
-  version "0.60.8"
-  resolved "https://registry.yarnpkg.com/slate-history/-/slate-history-0.60.8.tgz#0a20b571565749d128eff7435513f6e99b654eda"
-  integrity sha512-YcYehjQQ6nYYTt2mUtKH0xsA0jT43JE+A5UZmyPAViJkv1ALEGNHF+aFV+/BSv+nqt+dkaghqhg3zE2+4EpYHQ==
+slate-history@^0.60.4:
+  version "0.60.4"
+  resolved "https://registry.yarnpkg.com/slate-history/-/slate-history-0.60.4.tgz#0fe6abc45029a08a8b0a084581c3040de223189c"
+  integrity sha512-Srf2GgVa67bO4Bi8ctxr9M/fKwoSbInANv1YzvS8JlWAnqZagY97SGoZHMJcPIngbIYIO7v+DYPshL8Csaq1/Q==
   dependencies:
     immer "^7.0.0"
     is-plain-object "^3.0.0"
@@ -14419,10 +14395,10 @@ slate-hyperscript@^0.60.8:
   dependencies:
     is-plain-object "^3.0.0"
 
-slate-react@^0.60.8:
-  version "0.60.8"
-  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.60.8.tgz#f70b094a32be03451373df9c81a7598bd12c7aab"
-  integrity sha512-bNPmRED5C/cNDklaWhKgZb9NTqarcJ7FJW+c/Q1mYGqORrzxFQ8w5dPTGoC1eRjHsVbbML68yYBl0P/IKrTQFw==
+slate-react@^0.60.4:
+  version "0.60.4"
+  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.60.4.tgz#032eae50e043b5be9c399b391aad5e391937ff9c"
+  integrity sha512-e/mI7qChCAVV5FJPplG3/f9JyqtgVwUDM4D0rKA5Bycwarmw6orPqyrEDG8BPMHewuLOzyRXsRoiZ7umJoz/IA==
   dependencies:
     "@types/is-hotkey" "^0.1.1"
     "@types/lodash" "^4.14.149"
@@ -14432,10 +14408,10 @@ slate-react@^0.60.8:
     lodash "^4.17.4"
     scroll-into-view-if-needed "^2.2.20"
 
-slate@^0.60.8:
-  version "0.60.8"
-  resolved "https://registry.yarnpkg.com/slate/-/slate-0.60.8.tgz#06be43852cba23e1ff5edffb3ca1f28d7a4d4491"
-  integrity sha512-LlgbpIMugJ84LgSzwfZw+MN9aguoRTBIJgb0JETNjvwX4pFudZrpln+tFQC3EdtW8oBIzwBR0sHxRA5Ud1qglg==
+slate@^0.60.4:
+  version "0.60.4"
+  resolved "https://registry.yarnpkg.com/slate/-/slate-0.60.4.tgz#dc4be8c019d876abe141c1a5d789f54e849e05b1"
+  integrity sha512-WXiP0XP/rbkZdDko3U4u+WbVY4e4/l7MZb0amKSDpyrYyuBpQUUZby9OqurepdtkaJukjs0iYMqNPRgI1//NhA==
   dependencies:
     "@types/esrever" "^0.2.0"
     esrever "^0.2.0"
@@ -15559,15 +15535,6 @@ ts-invariant@^0.4.0:
   resolved "https://registry.yarnpkg.com/ts-invariant/-/ts-invariant-0.4.4.tgz#97a523518688f93aafad01b0e80eb803eb2abd86"
   integrity sha512-uEtWkFM/sdZvRNNDL3Ehu4WVpwaulhwQszV8mrtcdeE8nN00BV9mAmQ88RkrBhFgl9gMgvjJLAQcZbnPXI9mlA==
   dependencies:
-    tslib "^1.9.3"
-
-ts-invariant@^0.6.0:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/ts-invariant/-/ts-invariant-0.6.1.tgz#eb4c52b45daaca8367abbfd6cff998ea871d592d"
-  integrity sha512-QQgN33g8E8yrdDuH29HASveLtbzMnRRgWh0i/JNTW4+zcLsdIOnfsgEDi/NKx4UckQyuMFt9Ujm6TWLWQ58Kvg==
-  dependencies:
-    "@types/ungap__global-this" "^0.3.1"
-    "@ungap/global-this" "^0.4.2"
     tslib "^1.9.3"
 
 ts-invariant@^0.6.2:
