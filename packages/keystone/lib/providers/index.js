@@ -1,4 +1,3 @@
-const { CustomProvider } = require('./custom');
 const { ListAuthProvider } = require('./listAuth');
 const { ListCRUDProvider } = require('./listCRUD');
 
@@ -34,4 +33,4 @@ const { ListCRUDProvider } = require('./listCRUD');
 //   }
 // }
 
-module.exports = { CustomProvider, ListAuthProvider, ListCRUDProvider };
+module.exports = { ListAuthProvider, ListCRUDProvider };
