@@ -60,9 +60,12 @@ export async function devMigrations(dbUrl: string, prismaSchema: string, schemaP
     // when the action is reset, the database is somehow inconsistent with the migrations so we need to reset it
     // (not just some migrations need to be applied but there's some inconsistency)
     if (devDiagnostic.action.tag === 'reset') {
+      const credentials = uriToCredentials(dbUrl);
       console.log(`${devDiagnostic.action.reason}
 
-We need to reset the database at ${dbUrl}.`);
+We need to reset the ${credentials.type} database "${credentials.database}" at ${getDbLocation(
+        credentials
+      )}.`);
       const confirmedReset = await confirmPrompt(
         `Do you want to continue? ${chalk.red('All data will be lost')}.`
       );
