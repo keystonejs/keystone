@@ -1,0 +1,85 @@
+import { Markdown } from '../../../components/Page';
+import Image from 'next/image';
+
+# Getting started with `create-keystone-next-app`
+
+[`create-keystone-next-app`](https://github.com/keystonejs/create-keystone-next-app) is a CLI app that makes it easier for you to get started with Keystone.
+It will generate a couple files for you and install all the dependencies you need to run the AdminUI and start using the GraphQL API.
+
+## Quick Start
+
+```sh
+yarn create keystone-next-app
+cd my-app
+yarn dev
+```
+
+## Installing your own Keystone instance
+
+Open your preferred shell and make sure you are in the folder you would like to create your new project in.
+`create-keystone-next-app` will generate a new folder with your new Keystone files in.
+
+### Yarn
+
+Use [`yarn create`](https://classic.yarnpkg.com/en/docs/cli/create/):
+
+```sh
+cd your/path/
+yarn create keystone-next-app
+```
+
+### npm
+
+Use [`npm init`](https://docs.npmjs.com/cli/v7/commands/npm-init):
+
+```sh
+npm init keystone-next-app
+```
+
+_(`npm init <initializer>` is available in npm 6+)_
+
+### npx
+
+Use npms [`npx`](https://docs.npmjs.com/cli/v7/commands/npx):
+
+```sh
+cd your/path/
+npx create-keystone-next-app
+```
+
+_(npx comes with npm 5.2+)_
+
+The cli will ask you to name your new app and for a way to connect to your database.
+Make sure you have your connection url ready for your database like e.g. `postgres://localhost/my-app` or `postgres://username@localhost/my-app`.
+
+_(If you run into trouble with the database, check out this guide on [Database Setup](https://www.keystonejs.com/quick-start/adapters))_
+
+## Opening your shiny new AdminUI
+
+After you ran `create-keystone-next-app` you can now `cd` into the folder that was created for you and run Keystone.
+
+```sh
+cd my-app
+yarn dev
+```
+
+This will generate the AdminUI pages via [NextJs](https://nextjs.org/) on [http://localhost:3000](http://localhost:3000).
+
+<Image
+  src={require('./assets/welcome-screen.png')}
+  alt="The welcome screen giving you the ability the create a new user to log into the AdminUI"
+  width={1328}
+  height={1020}
+/>
+
+When you visit the AdminUI for the first time you will be presented with a handy screen that asked you to create a user.
+Go ahead and create your first user.
+
+<Image
+  src={require('./assets/adminui.png')}
+  alt="The AdminUI of Keystone"
+  width={1886}
+  height={630}
+/>
+
+export default ({ children }) => <Markdown>{children}</Markdown>;
