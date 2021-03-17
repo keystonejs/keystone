@@ -25,7 +25,7 @@
     "lodash.flattendeep": "^4.4.0",
     "micro-memoize": "^4.0.9",
     "p-waterfall": "^2.1.1",
-    "pino": "^6.11.1",
+    "pino": "^6.11.2",
     "pluralize": "^8.0.0",
     "serialize-error": "^8.0.1",
     "stack-utils": "^2.0.3"
