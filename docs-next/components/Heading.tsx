@@ -4,15 +4,6 @@ import { jsx } from '@keystone-ui/core';
 import slugify from '@sindresorhus/slugify';
 import { CopyToClipboard } from './CopyToClipboard';
 
-// offset header height for hash links
-const hashLinkOffset = {
-  '::before': {
-    content: '" "',
-    height: 'calc(32px + 60px)',
-    display: 'block',
-    marginTop: -60,
-  },
-};
 const getAnchor = (text: string) => {
   if (typeof text === 'string') {
     return slugify(text);
@@ -52,7 +43,6 @@ const Heading = ({ as: Tag, children, ...props }: HeadingProps) => {
         css={{
           display: 'block',
           position: 'relative',
-
           '&:hover a, &:focus-within a': {
             opacity: 1,
           },
@@ -85,7 +75,6 @@ export const H2 = (props: StringOnlyChildren) => (
       fontWeight: 500,
       letterSpacing: '-0.025em',
       marginTop: 0,
-      ...hashLinkOffset,
     }}
     as="h2"
   />
@@ -97,22 +86,13 @@ export const H3 = (props: StringOnlyChildren) => (
       fontWeight: 500,
       letterSpacing: '-0.025em',
       marginTop: 0,
-      ...hashLinkOffset,
     }}
     {...props}
     as="h3"
   />
 );
 
-export const H4 = (props: StringOnlyChildren) => (
-  <Heading
-    css={{
-      ...hashLinkOffset,
-    }}
-    {...props}
-    as="h4"
-  />
-);
+export const H4 = (props: StringOnlyChildren) => <Heading {...props} as="h4" />;
 
 export const H5 = (props: StringOnlyChildren) => (
   <Heading css={{ fontSize: '1rem' }} as="h5" {...props} />
