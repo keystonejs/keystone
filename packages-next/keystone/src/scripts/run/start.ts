@@ -1,9 +1,9 @@
 import path from 'path';
+import * as fs from 'fs-extra';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { createExpressServer } from '../../lib/createExpressServer';
 import type { StaticPaths } from '..';
-import * as fs from 'fs-extra';
 
 export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) => {
   console.log('🤞 Starting Keystone');

@@ -1,6 +1,6 @@
-import { resolveView } from '../resolve-view';
-import fetch from 'node-fetch';
 import crypto from 'crypto';
+import fetch from 'node-fetch';
+import { resolveView } from '../resolve-view';
 
 const VALID_URL = /^https?:\/\//i;
 const IS_MD5 = /[a-f0-9]{32}/i;

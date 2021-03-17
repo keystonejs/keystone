@@ -1,6 +1,6 @@
 // @ts-ignore
-import withPreconstruct from '@preconstruct/next';
 import Path from 'path';
+import withPreconstruct from '@preconstruct/next';
 
 export const config = withPreconstruct({
   webpack(config: any) {

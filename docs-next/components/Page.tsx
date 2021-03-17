@@ -1,15 +1,15 @@
 /** @jsx jsx  */
 import { Fragment, ReactNode } from 'react';
 import Head from 'next/head';
-import { proseStyles } from '../lib/prose-lite';
 import { useRef, useState } from 'react';
-import { getHeadings, Heading } from '../lib/getHeadings';
 import { jsx } from '@keystone-ui/core';
-import { Code, InlineCode } from '../components/Code';
-import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
 import { MDXProvider } from '@mdx-js/react';
 import cx from 'classnames';
 import Link from 'next/link';
+import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
+import { Code, InlineCode } from '../components/Code';
+import { getHeadings, Heading } from '../lib/getHeadings';
+import { proseStyles } from '../lib/prose-lite';
 import { Navigation } from './Navigation';
 import { TableOfContents } from './TableOfContents';
 

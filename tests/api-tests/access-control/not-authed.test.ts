@@ -1,6 +1,7 @@
 import { multiAdapterRunners } from '@keystone-next/test-utils-legacy';
 // @ts-ignore
 import { createItems, updateItem } from '@keystone-next/server-side-graphql-client-legacy';
+import { KeystoneContext } from '@keystone-next/types';
 import {
   FAKE_ID,
   nameFn,
@@ -12,7 +13,6 @@ import {
   getImperativeListName,
   getDeclarativeListName,
 } from './utils';
-import { KeystoneContext } from '@keystone-next/types';
 
 const expectNoAccess = <N extends string>(
   data: Record<N, null>,

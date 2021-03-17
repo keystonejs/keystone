@@ -3,10 +3,10 @@
 import { Children, ReactNode } from 'react';
 import { jsx } from '../emotion';
 
-import { Box, BoxProps } from './Box';
 import { forwardRefWithAs } from '../utils';
 import { Theme } from '../types';
 import { useTheme } from '../theme';
+import { Box, BoxProps } from './Box';
 
 const alignment = {
   center: 'center',

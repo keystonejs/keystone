@@ -1,5 +1,5 @@
-import type { JSONValue } from './utils';
 import type { ServerResponse, IncomingMessage } from 'http';
+import type { JSONValue } from './utils';
 import { CreateContext } from '.';
 
 export type SessionStrategy<StoredSessionData, StartSessionData = never> = {

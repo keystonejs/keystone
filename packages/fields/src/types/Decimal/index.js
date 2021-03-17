@@ -1,10 +1,10 @@
+import { resolveView } from '../../resolve-view';
 import {
   Decimal,
   MongoDecimalInterface,
   KnexDecimalInterface,
   PrismaDecimalInterface,
 } from './Implementation';
-import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Decimal',

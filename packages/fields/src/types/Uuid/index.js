@@ -1,10 +1,10 @@
+import { resolveView } from '../../resolve-view';
 import {
   UuidImplementation,
   MongoUuidInterface,
   KnexUuidInterface,
   PrismaUuidInterface,
 } from './Implementation';
-import { resolveView } from '../../resolve-view';
 
 const Uuid = {
   type: 'Uuid',

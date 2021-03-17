@@ -1,6 +1,7 @@
 import path from 'path';
 import express from 'express';
 import { generateAdminUI } from '@keystone-next/admin-ui/system';
+import { MigrationMode } from '@keystone-next/types';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { requireSource } from '../../lib/requireSource';
@@ -8,7 +9,6 @@ import { createExpressServer } from '../../lib/createExpressServer';
 import { saveSchemaAndTypes } from '../../lib/saveSchemaAndTypes';
 import { CONFIG_PATH } from '../utils';
 import type { StaticPaths } from '..';
-import { MigrationMode } from '@keystone-next/types';
 
 // TODO: Don't generate or start an Admin UI if it isn't configured!!
 const devLoadingHTMLFilepath = path.join(

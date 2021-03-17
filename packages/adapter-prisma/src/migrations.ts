@@ -1,6 +1,6 @@
+import path from 'path';
 import { createDatabase, uriToCredentials, DatabaseCredentials } from '@prisma/sdk';
 import { Migrate } from '@prisma/migrate';
-import path from 'path';
 
 // we don't want to pollute process.env.DATABASE_URL so we're
 // setting the env variable _just_ long enough for Migrate to

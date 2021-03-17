@@ -4,15 +4,13 @@ import { gql, useQuery } from '@apollo/client';
 import { Container, Grid, Cell } from '@arch-ui/layout';
 import { PageTitle } from '@arch-ui/typography';
 
+import useResizeObserver from 'use-resize-observer';
+import throttle from 'lodash.throttle';
 import { ListProvider } from '../../providers/List';
 import DocTitle from '../../components/DocTitle';
 import PageError from '../../components/PageError';
-import { Box, HeaderInset } from './components';
-
 import { useAdminMeta } from '../../providers/AdminMeta';
-
-import useResizeObserver from 'use-resize-observer';
-import throttle from 'lodash.throttle';
+import { Box, HeaderInset } from './components';
 
 const getCountQuery = lists => {
   if (!lists) return null;

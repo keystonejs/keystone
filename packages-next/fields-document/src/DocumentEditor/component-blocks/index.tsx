@@ -13,15 +13,15 @@ import { NotEditable } from '../../component-blocks';
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from '../primitives';
 import { ComponentPropField, ComponentBlock } from '../../component-blocks';
 import { Relationships, useDocumentFieldRelationships } from '../relationship';
-import { clientSideValidateProp } from './utils';
-import { createPreviewProps } from './preview-props';
-import { getInitialValue } from './initial-values';
-import { FormValue } from './form';
 import {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading,
   useElementWithSetNodes,
   useStaticEditor,
 } from '../utils';
+import { clientSideValidateProp } from './utils';
+import { createPreviewProps } from './preview-props';
+import { getInitialValue } from './initial-values';
+import { FormValue } from './form';
 
 export { withComponentBlocks } from './with-component-blocks';
 

@@ -1,6 +1,6 @@
-import { DocumentFieldType } from './base-field-type';
-import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-next/types';
 import path from 'path';
+import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-next/types';
+import { DocumentFieldType } from './base-field-type';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
