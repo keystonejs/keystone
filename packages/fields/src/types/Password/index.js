@@ -1,10 +1,10 @@
+import { resolveView } from '../../resolve-view';
 import {
   Password,
   MongoPasswordInterface,
   KnexPasswordInterface,
   PrismaPasswordInterface,
 } from './Implementation';
-import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Password',

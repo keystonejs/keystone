@@ -8,6 +8,8 @@ import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 
+import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
+import { DocumentFeatures } from '../views';
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import { paragraphElement } from './paragraphs';
 import {
@@ -16,8 +18,6 @@ import {
   moveChildren,
   useStaticEditor,
 } from './utils';
-import { DocumentFeatures } from '../views';
-import { ColumnsIcon } from '@keystone-ui/icons/icons/ColumnsIcon';
 import { useToolbarState } from './toolbar-state';
 
 const LayoutOptionsContext = createContext<[number, ...number[]][]>([]);

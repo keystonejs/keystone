@@ -11,10 +11,10 @@ import {
   FieldControllerConfig,
   FieldProps,
 } from '@keystone-next/types';
+import weakMemoize from '@emotion/weak-memoize';
 import { DocumentEditor } from './DocumentEditor';
 import { ComponentBlock } from './component-blocks';
 import { Relationships } from './DocumentEditor/relationship';
-import weakMemoize from '@emotion/weak-memoize';
 import { clientSideValidateProp } from './DocumentEditor/component-blocks/utils';
 import { ForceValidationProvider } from './DocumentEditor/utils';
 import { isValidURL } from './DocumentEditor/isValidURL';

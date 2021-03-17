@@ -1,6 +1,6 @@
+import { IncomingMessage, ServerResponse } from 'http';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { GraphQLSchema } from 'graphql';
-import { IncomingMessage, ServerResponse } from 'http';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
 import {
@@ -11,10 +11,9 @@ import {
   CreateContext,
   KeystoneContext,
 } from '@keystone-next/types';
-import { gql } from '../schema';
-
 // uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
+import { gql } from '../schema';
 
 function generateSessionId() {
   return uid(24);

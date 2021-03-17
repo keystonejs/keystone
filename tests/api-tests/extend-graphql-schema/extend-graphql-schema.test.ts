@@ -1,11 +1,19 @@
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
+import {
+  AdapterName,
+  multiAdapterRunners,
+  setupFromConfig,
+  testConfig,
+} from '@keystone-next/test-utils-legacy';
 import { createSchema, list, graphQLSchemaExtension, gql } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
 
-const falseFn = () => false;
+const falseFn: (...args: any) => boolean = () => false;
 
-const withAccessCheck = (access, resolver) => {
-  return (...args) => {
+const withAccessCheck = <T, Args extends unknown[]>(
+  access: boolean | ((...args: Args) => boolean),
+  resolver: (...args: Args) => T
+): ((...args: Args) => T) => {
+  return (...args: Args) => {
     if (typeof access === 'function') {
       if (!access(...args)) {
         throw new Error('Access denied');
@@ -17,15 +25,15 @@ const withAccessCheck = (access, resolver) => {
   };
 };
 
-function setupKeystone(adapterName) {
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         User: list({
           fields: { name: text() },
         }),
-      },
+      }),
       extendGraphqlSchema: graphQLSchemaExtension({
         typeDefs: gql`
           type Query {
@@ -52,7 +60,7 @@ function setupKeystone(adapterName) {
 
 multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
-    describe('keystone.extendGraphQLSchema()', () => {
+    describe('extendGraphqlSchema', () => {
       it(
         'Executes custom queries correctly',
         runner(setupKeystone, async ({ context }) => {

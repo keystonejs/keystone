@@ -1,5 +1,5 @@
-import type { KeystoneListsAPI } from '@keystone-next/types';
 import { randomBytes } from 'crypto';
+import type { KeystoneListsAPI } from '@keystone-next/types';
 import { AuthTokenRequestErrorCode } from '../types';
 import { findMatchingIdentity } from './findMatchingIdentity';
 

@@ -1,9 +1,9 @@
+import path from 'path';
 import { createDatabase, uriToCredentials, DatabaseCredentials } from '@prisma/sdk';
 import { Migrate } from '@prisma/migrate';
 import chalk from 'chalk';
-import { confirmPrompt, textPrompt } from './prompts';
 import slugify from '@sindresorhus/slugify';
-import path from 'path';
+import { confirmPrompt, textPrompt } from './prompts';
 
 // we don't want to pollute process.env.DATABASE_URL so we're
 // setting the env variable _just_ long enough for Migrate to
@@ -112,13 +112,16 @@ export async function devMigrations(dbUrl: string, prismaSchema: string, schemaP
     // note that the other action devDiagnostic can return is createMigration
     // that doesn't necessarily mean that we need to create a migration
     // it only means that we don't need to reset the database
-    const devDiagnostic = await migrate.devDiagnostic();
+    const devDiagnostic = await runMigrateWithDbUrl(dbUrl, () => migrate.devDiagnostic());
     // when the action is reset, the database is somehow inconsistent with the migrations so we need to reset it
     // (not just some migrations need to be applied but there's some inconsistency)
     if (devDiagnostic.action.tag === 'reset') {
+      const credentials = uriToCredentials(dbUrl);
       console.log(`${devDiagnostic.action.reason}
 
-We need to reset the database at ${dbUrl}.`);
+We need to reset the ${credentials.type} database "${credentials.database}" at ${getDbLocation(
+        credentials
+      )}.`);
       const confirmedReset = await confirmPrompt(
         `Do you want to continue? ${chalk.red('All data will be lost')}.`
       );
@@ -151,7 +154,7 @@ We need to reset the database at ${dbUrl}.`);
     );
     // if there are no steps, there was no change to the prisma schema so we don't need to create a migration
     if (evaluateDataLossResult.migrationSteps.length) {
-      console.log('✨ There was a change to your Keystone schema that requires a migration');
+      console.log('✨ There has been a change to your Keystone schema that requires a migration');
       let migrationCanBeApplied = !evaluateDataLossResult.unexecutableSteps.length;
       // see the link below for what "unexecutable steps" are
       // https://github.com/prisma/prisma-engines/blob/c65d20050f139a7917ef2efc47a977338070ea61/migration-engine/connectors/sql-migration-connector/src/sql_destructive_change_checker/unexecutable_step_check.rs
@@ -203,17 +206,13 @@ We need to reset the database at ${dbUrl}.`);
         console.log(
           'Please edit the migration and run keystone-next dev again to apply the migration'
         );
-        process.exit(1);
+        process.exit(0);
       }
     } else {
       if (appliedMigrationNames.length) {
-        console.log(
-          '✨ Your migrations are already up to date, no new migrations need to be created'
-        );
+        console.log('✨ Your migrations are up to date, no new migrations need to be created');
       } else {
-        console.log(
-          '✨ Your database is already up to date, no migrations need to be created or applied'
-        );
+        console.log('✨ Your database is up to date, no migrations need to be created or applied');
       }
     }
   } finally {

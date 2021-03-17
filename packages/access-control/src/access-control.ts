@@ -62,37 +62,6 @@ const checkSchemaNames = ({
   return keyedBySchemaName;
 };
 
-export function parseCustomAccess<SN extends string, Args>({
-  defaultAccess,
-  access = defaultAccess,
-  schemaNames,
-}: {
-  defaultAccess: CustomAccess<Args>;
-  access?: Partial<Record<SN, CustomAccess<Args>>> | CustomAccess<Args>;
-  schemaNames: SN[];
-}) {
-  const accessTypes = [] as string[];
-
-  const keyedBySchemaName = checkSchemaNames({ schemaNames, accessTypes, access });
-
-  type GG = CustomAccess<Args>;
-  const fullAccess = keyedBySchemaName
-    ? { ...defaultObj(schemaNames, defaultAccess), ...(access as Partial<Record<SN, GG>>) } // Access keyed by schemaName
-    : defaultObj(schemaNames, access as GG); // Access not keyed by schemaName
-
-  const fullParsedAccess = { ...fullAccess, internal: true as const };
-
-  Object.values(fullParsedAccess).forEach(access => {
-    if (typeof access !== 'boolean' && typeof access !== 'function' && typeof access !== 'object') {
-      throw new Error(
-        `Expected a Boolean, Object, or Function for custom access, but got ${typeof access}`
-      );
-    }
-  });
-
-  return fullParsedAccess;
-}
-
 type ListAuthAccess<Args> = ListAccess<Args> & AuthAccess<Args>;
 export function parseListAccess<SN extends string, Args>({
   listKey,
@@ -246,29 +215,6 @@ export function parseFieldAccess<SN extends string, Args>({
   });
 
   return fullParsedAccess;
-}
-
-export async function validateCustomAccessControl<Args>({
-  access,
-  args,
-}: {
-  access: CustomAccess<Args>;
-  args: Args;
-}) {
-  // Either a boolean or an object describing a where clause
-  let result: Static | Declarative = false;
-  if (typeof access !== 'function') {
-    result = access;
-  } else {
-    result = await access(args);
-  }
-
-  if (!['object', 'boolean'].includes(typeof result)) {
-    throw new Error(
-      `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${typeof result}`
-    );
-  }
-  return result;
 }
 
 export async function validateListAccessControl<

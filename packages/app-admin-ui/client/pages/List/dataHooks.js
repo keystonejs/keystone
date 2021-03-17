@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
+import { useList } from '../../providers/List';
 import { pseudoLabelField } from './FieldSelect';
 import { decodeSearch, encodeSearch } from './url-state';
-import { useList } from '../../providers/List';
 
 /**
  * URL State Hook

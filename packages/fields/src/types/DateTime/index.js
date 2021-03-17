@@ -1,10 +1,10 @@
+import { resolveView } from '../../resolve-view';
 import {
   DateTime,
   MongoDateTimeInterface,
   KnexDateTimeInterface,
   PrismaDateTimeInterface,
 } from './Implementation';
-import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'DateTime',

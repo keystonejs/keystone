@@ -25,6 +25,8 @@ const { graphql } = require('graphql');
 const { OEmbed, IframelyOEmbedAdapter } = require('@keystone-next/fields-oembed-legacy');
 const { CloudinaryImage } = require('@keystone-next/fields-cloudinary-image-legacy');
 const { Unsplash } = require('@keystone-next/fields-unsplash-legacy');
+const { PrismaAdapter } = require('@keystone-next/adapter-prisma-legacy');
+const { formatISO } = require('date-fns');
 
 const MockOEmbedAdapter = require('./mocks/oembed-adapter');
 
@@ -34,12 +36,9 @@ const LOCAL_FILE_SRC = `${staticPath}/avatars`;
 const LOCAL_FILE_ROUTE = `${staticRoute}/avatars`;
 
 const Stars = require('./custom-fields/Stars');
-const { formatISO } = require('date-fns');
 
 // TODO: Make this work again
 // const SecurePassword = require('./custom-fields/SecurePassword');
-
-const { PrismaAdapter } = require('@keystone-next/adapter-prisma-legacy');
 
 const keystone = new Keystone({
   adapter: new PrismaAdapter(),

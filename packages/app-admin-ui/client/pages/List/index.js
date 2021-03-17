@@ -13,6 +13,7 @@ import Tooltip from '@arch-ui/tooltip';
 import { applyRefs } from 'apply-ref';
 import { LoadingIndicator } from '@arch-ui/loading';
 
+import { captureSuspensePromises } from '@keystone-next/utils-legacy';
 import CreateItemModal from '../../components/CreateItemModal';
 import DocTitle from '../../components/DocTitle';
 import ListDescription from '../../components/ListDescription';
@@ -21,6 +22,8 @@ import PageError from '../../components/PageError';
 import { DisclosureArrow } from '../../components/Popout';
 import { HeaderInset } from '../Home/components';
 
+import { useList } from '../../providers/List';
+import { useUIHooks } from '../../providers/Hooks';
 import ColumnPopout from './ColumnSelect';
 import ActiveFilters from './Filters/ActiveFilters';
 import SortPopout from './SortSelect';
@@ -28,9 +31,6 @@ import Pagination, { getPaginationLabel } from './Pagination';
 import Search from './Search';
 import Management, { ManageToolbar } from './Management';
 import { useListFilter, useListSort, useListUrlState } from './dataHooks';
-import { captureSuspensePromises } from '@keystone-next/utils-legacy';
-import { useList } from '../../providers/List';
-import { useUIHooks } from '../../providers/Hooks';
 import CreateItem from './CreateItem';
 
 export function ListLayout(props) {
