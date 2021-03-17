@@ -6,11 +6,12 @@ import { start } from './run/start';
 import { build } from './build/build';
 import { deploy } from './migrate/deploy';
 import { generate } from './migrate/generate';
+import { reset } from './migrate/reset';
 
 export type StaticPaths = { dotKeystonePath: string; projectAdminPath: string };
 
 function cli() {
-  const commands = { prototype, dev, start, build, deploy, generate };
+  const commands = { prototype, dev, start, build, deploy, generate, reset };
   const { input, help } = meow(
     `
     Usage
