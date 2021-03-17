@@ -149,8 +149,16 @@ We need to reset the database at ${dbUrl}.`);
         );
         process.exit(1);
       }
-    } else if (!appliedMigrationNames.length) {
-      console.log('✨ Your database is already up to date, no migrations need to be applied');
+    } else {
+      if (appliedMigrationNames.length) {
+        console.log(
+          '✨ Your migrations are already up to date, no new migrations need to be created'
+        );
+      } else {
+        console.log(
+          '✨ Your database is already up to date, no migrations need to be created or applied'
+        );
+      }
     }
   } finally {
     migrate.stop();
