@@ -3,15 +3,14 @@ import { jsx } from '@emotion/core';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { withPseudoState } from 'react-pseudo-state';
-import { useList } from '../../providers/List';
-
-import CreateItemModal from '../../components/CreateItemModal';
 
 import { PlusIcon } from '@primer/octicons-react';
 import { Card } from '@arch-ui/card';
 import { colors, gridSize } from '@arch-ui/theme';
 import { LoadingIndicator } from '@arch-ui/loading';
 import { A11yText } from '@arch-ui/typography';
+import CreateItemModal from '../../components/CreateItemModal';
+import { useList } from '../../providers/List';
 
 export const HeaderInset = props => (
   <div css={{ paddingLeft: gridSize * 2, paddingRight: gridSize * 2 }} {...props} />

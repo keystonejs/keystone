@@ -2,9 +2,9 @@
 
 import { jsx } from '../emotion';
 
-import { Box, BoxProps } from './Box';
 import { forwardRefWithAs } from '../utils';
 import { useTheme } from '../theme';
+import { Box, BoxProps } from './Box';
 
 export const HeadingTypes = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
 type HeadingType = typeof HeadingTypes[number];

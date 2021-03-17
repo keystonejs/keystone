@@ -26,17 +26,17 @@ import PageError from '../../components/PageError';
 import PageLoading from '../../components/PageLoading';
 import PreventNavigation from '../../components/PreventNavigation';
 import { ErrorBoundary } from '../../components/ErrorBoundary';
-import Footer from './Footer';
 import {
   deconstructErrorsToDataShape,
   toastItemSuccess,
   validateFields,
   handleCreateUpdateMutationError,
 } from '../../util';
-import { ItemTitle } from './ItemTitle';
 import { ItemProvider } from '../../providers/Item';
 import { useList } from '../../providers/List';
 import { useUIHooks } from '../../providers/Hooks';
+import { ItemTitle } from './ItemTitle';
+import Footer from './Footer';
 
 const Render = ({ children }) => children();
 

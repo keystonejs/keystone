@@ -15,7 +15,6 @@ const {
 const {
   validateFieldAccessControl,
   validateListAccessControl,
-  validateCustomAccessControl,
   validateAuthAccessControl,
 } = require('@keystone-next/access-control-legacy');
 const { SessionManager } = require('@keystone-next/session-legacy');
@@ -78,7 +77,6 @@ module.exports = class Keystone {
   _getAccessControlContext({ schemaName, authentication, skipAccessControl }) {
     if (skipAccessControl) {
       return {
-        getCustomAccessControlForUser: () => true,
         getListAccessControlForUser: () => true,
         getFieldAccessControlForUser: () => true,
         getAuthAccessControlForUser: () => true,
@@ -87,23 +85,6 @@ module.exports = class Keystone {
     // memoizing to avoid requests that hit the same type multiple times.
     // We do it within the request callback so we can resolve it based on the
     // request info (like who's logged in right now, etc)
-    const getCustomAccessControlForUser = memoize(
-      async (item, args, context, info, access, gqlName) => {
-        return validateCustomAccessControl({
-          access: access[schemaName],
-          args: {
-            item,
-            args,
-            context,
-            info,
-            authentication: authentication && authentication.item ? authentication : {},
-            gqlName,
-          },
-        });
-      },
-      { isPromise: true }
-    );
-
     const getListAccessControlForUser = memoize(
       async (
         access,
@@ -175,7 +156,6 @@ module.exports = class Keystone {
     );
 
     return {
-      getCustomAccessControlForUser,
       getListAccessControlForUser,
       getFieldAccessControlForUser,
       getAuthAccessControlForUser,

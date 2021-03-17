@@ -1,10 +1,10 @@
+import { resolveView } from '../../resolve-view';
 import {
   Float,
   MongoFloatInterface,
   KnexFloatInterface,
   PrismaFloatInterface,
 } from './Implementation';
-import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Float',

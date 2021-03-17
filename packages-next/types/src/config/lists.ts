@@ -1,8 +1,7 @@
-import type { ListHooks } from './hooks';
-import type { ListAccessControl, FieldAccessControl } from './access-control';
-
 import { AdminMetaRootVal } from '../admin-meta';
 import type { BaseGeneratedListTypes, MaybePromise, JSONValue } from '../utils';
+import type { ListHooks } from './hooks';
+import type { ListAccessControl, FieldAccessControl } from './access-control';
 
 export type ListSchemaConfig = Record<string, ListConfig<BaseGeneratedListTypes, any>>;
 

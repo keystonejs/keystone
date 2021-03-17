@@ -2,7 +2,6 @@
 
 import { forwardRef, useState, useMemo } from 'react';
 import { jsx } from '@emotion/core';
-import { styles } from './styles';
 import { A11yText } from '@arch-ui/typography';
 import Tooltip from '@arch-ui/tooltip';
 import { gridSize, colors, borderRadius } from '@arch-ui/theme';
@@ -13,6 +12,7 @@ import 'codemirror/mode/markdown/markdown';
 import 'codemirror/mode/gfm/gfm';
 
 import { Controlled as CodeMirror } from 'react-codemirror2';
+import { styles } from './styles';
 import { getTools } from './get-tools';
 
 const ToolbarButton = forwardRef((props, ref) => {

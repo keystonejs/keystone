@@ -2,9 +2,9 @@
 
 import { jsx } from '../emotion';
 
-import { Box, MarginProps } from './Box';
 import { useTheme } from '../theme';
 import { ResponsiveProp, Theme } from '../types';
+import { Box, MarginProps } from './Box';
 
 type ColorType = ResponsiveProp<keyof Theme['palette']>;
 

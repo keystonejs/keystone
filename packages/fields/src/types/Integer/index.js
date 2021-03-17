@@ -1,10 +1,10 @@
+import { resolveView } from '../../resolve-view';
 import {
   Integer,
   MongoIntegerInterface,
   KnexIntegerInterface,
   PrismaIntegerInterface,
 } from './Implementation';
-import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Integer',

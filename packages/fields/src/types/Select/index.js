@@ -1,10 +1,10 @@
+import { resolveView } from '../../resolve-view';
 import {
   Select,
   MongoSelectInterface,
   KnexSelectInterface,
   PrismaSelectInterface,
 } from './Implementation';
-import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Select',
