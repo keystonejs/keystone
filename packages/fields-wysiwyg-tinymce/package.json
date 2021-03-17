@@ -17,10 +17,10 @@
     "@emotion/core": "^10.1.1",
     "@keystone-next/fields-legacy": "^23.0.0",
     "@primer/octicons-react": "^11.3.0",
-    "@tinymce/tinymce-react": "^3.10.3",
+    "@tinymce/tinymce-react": "^3.10.4",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
-    "tinymce": "^5.7.0"
+    "tinymce": "^5.7.1"
   },
   "peerDependencies": {
     "express": "^4.17.1"
