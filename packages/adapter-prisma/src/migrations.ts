@@ -154,13 +154,9 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
       }
     } else {
       if (appliedMigrationNames.length) {
-        console.log(
-          '✨ Your migrations are up to date, no new migrations need to be created'
-        );
+        console.log('✨ Your migrations are up to date, no new migrations need to be created');
       } else {
-        console.log(
-          '✨ Your database is up to date, no migrations need to be created or applied'
-        );
+        console.log('✨ Your database is up to date, no migrations need to be created or applied');
       }
     }
   } finally {
