@@ -1,4 +1,3 @@
-import { createAdminMeta } from './createAdminMeta';
 import {
   KeystoneContext,
   KeystoneConfig,
@@ -10,6 +9,7 @@ import {
 } from '@keystone-next/types';
 import { bindTypesToContext } from '@ts-gql/schema';
 import { GraphQLObjectType, GraphQLScalarType, GraphQLSchema } from 'graphql';
+import { createAdminMeta } from './createAdminMeta';
 
 const types = bindTypesToContext<KeystoneContext | { isAdminUIBuildProcess: true }>();
 

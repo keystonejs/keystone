@@ -1,5 +1,5 @@
-import { Text, MongoTextInterface, KnexTextInterface, PrismaTextInterface } from './Implementation';
 import { resolveView } from '../../resolve-view';
+import { Text, MongoTextInterface, KnexTextInterface, PrismaTextInterface } from './Implementation';
 
 export default {
   type: 'Text',

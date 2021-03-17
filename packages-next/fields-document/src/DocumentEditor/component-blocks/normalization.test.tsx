@@ -1,9 +1,9 @@
 /** @jest-environment jsdom */
 /** @jsx jsx */
-import { component, fields } from '../../component-blocks';
-import { insertComponentBlock } from '.';
-import { jsx, makeEditor } from '../tests/utils';
 import { Transforms } from 'slate';
+import { component, fields } from '../../component-blocks';
+import { jsx, makeEditor } from '../tests/utils';
+import { insertComponentBlock } from '.';
 
 const componentBlocks = {
   basic: component({

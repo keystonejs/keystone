@@ -111,15 +111,15 @@ _**Default:**_ `['public']`
 
 ## Methods
 
-| Method                | Description                                                                  |
-| --------------------- | ---------------------------------------------------------------------------- |
-| `connect`             | Manually connect to Adapter.                                                 |
-| `createAuthStrategy`  | Creates a new authentication middleware instance.                            |
-| `createList`          | Add a list to the `Keystone` schema.                                         |
-| `disconnect`          | Disconnect from the adapter.                                                 |
-| `prepare`             | Manually prepare `Keystone` middlewares.                                     |
-| `createContext`       | Create a `context` object that can be used with `executeGraphQL()`.          |
-| `executeGraphQL`      | Execute a server-side GraphQL operation within the given context.            |
+| Method               | Description                                                         |
+| -------------------- | ------------------------------------------------------------------- |
+| `connect`            | Manually connect to Adapter.                                        |
+| `createAuthStrategy` | Creates a new authentication middleware instance.                   |
+| `createList`         | Add a list to the `Keystone` schema.                                |
+| `disconnect`         | Disconnect from the adapter.                                        |
+| `prepare`            | Manually prepare `Keystone` middlewares.                            |
+| `createContext`      | Create a `context` object that can be used with `executeGraphQL()`. |
+| `executeGraphQL`     | Execute a server-side GraphQL operation within the given context.   |
 
 <!--
 ## Super secret methods

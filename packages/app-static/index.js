@@ -1,7 +1,7 @@
+const pathModule = require('path');
 const fs = require('fs-extra');
 const express = require('express');
 const fallback = require('express-history-api-fallback');
-const pathModule = require('path');
 
 const getDistDir = (src, distDir) => {
   const srcRelative = pathModule.relative(process.cwd(), src);

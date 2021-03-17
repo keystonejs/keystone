@@ -1,8 +1,8 @@
 const express = require('express');
 const { createItems } = require('@keystone-next/server-side-graphql-client-legacy');
 
-const { keystone, apps } = require('./index');
 const initialData = require('./data');
+const { keystone, apps } = require('./index');
 
 keystone
   .prepare({ apps, dev: process.env.NODE_ENV !== 'production' })

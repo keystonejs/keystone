@@ -1,7 +1,7 @@
-import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
 import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { Implementation } from '../../Implementation';
 
 export class UuidImplementation extends Implementation {
   constructor(path, { caseTo = 'lower' }) {

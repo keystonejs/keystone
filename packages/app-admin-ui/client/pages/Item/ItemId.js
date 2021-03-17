@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { IdCopy } from './IdCopy';
 import { useItem } from '../../providers/Item';
+import { IdCopy } from './IdCopy';
 
 const ItemId = () => {
   let { id } = useItem();

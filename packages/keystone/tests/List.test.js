@@ -1,10 +1,10 @@
+const path = require('path');
 const { gql } = require('apollo-server-express');
 const { print } = require('graphql/language/printer');
 
+const { Text, Checkbox, Float, Relationship, Integer } = require('@keystone-next/fields-legacy');
 const { List } = require('../lib/ListTypes');
 const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
-const { Text, Checkbox, Float, Relationship, Integer } = require('@keystone-next/fields-legacy');
-const path = require('path');
 
 let fieldsPackagePath = path.dirname(require.resolve('@keystone-next/fields-legacy/package.json'));
 function resolveViewPath(viewPath) {

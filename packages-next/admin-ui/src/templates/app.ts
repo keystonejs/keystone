@@ -1,3 +1,4 @@
+import Path from 'path';
 import type { KeystoneConfig, FieldType } from '@keystone-next/types';
 import hashString from '@emotion/hash';
 import {
@@ -11,7 +12,6 @@ import {
   SelectionNode,
 } from 'graphql';
 import { staticAdminMetaQuery, StaticAdminMetaQuery } from '../admin-meta-graphql';
-import Path from 'path';
 import { serializePathForImport } from '../utils/serializePathForImport';
 
 type AppTemplateOptions = { configFileExists: boolean; projectAdminPath: string };

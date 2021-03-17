@@ -1,3 +1,4 @@
+import path from 'path';
 import { Text } from '@keystone-next/fields-legacy';
 import {
   LocationGoogleImplementation,
@@ -5,7 +6,6 @@ import {
   KnexLocationGoogleInterface,
   PrismaLocationGoogleInterface,
 } from './Implementation';
-import path from 'path';
 
 const pkgDir = path.dirname(
   require.resolve('@keystone-next/fields-location-google-legacy/package.json')

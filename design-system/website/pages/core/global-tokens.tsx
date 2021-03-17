@@ -2,9 +2,9 @@
 
 import { jsx, useTheme } from '@keystone-ui/core';
 
+import { Fragment } from 'react';
 import { Page } from '../../components/Page';
 import { ReadableColor } from '../../components/ReadableColor';
-import { Fragment } from 'react';
 
 const PALETTES = [
   'neutral',

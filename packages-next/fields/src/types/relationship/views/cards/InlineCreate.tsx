@@ -16,8 +16,8 @@ import {
 } from '@keystone-next/admin-ui-utils';
 import { Button } from '@keystone-ui/button';
 import { ListMeta } from '@keystone-next/types';
-import { useFieldsObj } from './useItemState';
 import { Fields } from '@keystone-next/admin-ui-utils';
+import { useFieldsObj } from './useItemState';
 
 export function InlineCreate({
   list,

@@ -47,6 +47,7 @@ module.exports = {
       },
     ],
     'import/no-unresolved': 'error',
+    'import/order': 'error',
     'jest/valid-describe': 'off',
     'jest/valid-expect': 'off',
     'jest/no-conditional-expect': 'off',

@@ -3,8 +3,8 @@ import React, { Fragment, useState } from 'react';
 import { TrashcanIcon } from '@primer/octicons-react';
 import { IconButton } from '@arch-ui/button';
 
-import DeleteManyItemsModal from './DeleteManyItemsModal';
 import { useList } from '../providers/List';
+import DeleteManyItemsModal from './DeleteManyItemsModal';
 
 const DeleteItems = () => {
   const [deleteModalIsVisible, setDeleteModal] = useState(false);

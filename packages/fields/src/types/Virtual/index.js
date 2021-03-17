@@ -1,10 +1,10 @@
+import { resolveView } from '../../resolve-view';
 import {
   Virtual,
   MongoVirtualInterface,
   KnexVirtualInterface,
   PrismaVirtualInterface,
 } from './Implementation';
-import { resolveView } from '../../resolve-view';
 
 export default {
   type: 'Virtual',

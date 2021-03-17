@@ -1,5 +1,5 @@
-const loaderUtils = require('loader-utils');
 const fs = require('fs');
+const loaderUtils = require('loader-utils');
 
 function serialize(value, allPaths) {
   if (typeof value === 'string') {

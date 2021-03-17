@@ -1,5 +1,5 @@
-import Slug from './';
 import Text from '../Text';
+import Slug from './';
 
 export const name = 'Slug';
 export const type = Slug;

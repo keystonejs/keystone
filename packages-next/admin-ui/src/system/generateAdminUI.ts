@@ -1,5 +1,5 @@
-import fs from 'fs-extra';
 import Path from 'path';
+import fs from 'fs-extra';
 
 import fastGlob from 'fast-glob';
 import prettier from 'prettier';

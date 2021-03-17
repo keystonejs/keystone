@@ -1,9 +1,9 @@
+import { Integer } from '@keystone-next/fields-legacy';
 import {
   AutoIncrementImplementation,
   KnexAutoIncrementInterface,
   PrismaAutoIncrementInterface,
 } from './Implementation';
-import { Integer } from '@keystone-next/fields-legacy';
 
 export const AutoIncrement = {
   type: 'AutoIncrement',

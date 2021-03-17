@@ -6,6 +6,7 @@ import {
   updateItem,
   // @ts-ignore
 } from '@keystone-next/server-side-graphql-client-legacy';
+import { KeystoneContext } from '@keystone-next/types';
 import {
   FAKE_ID,
   FAKE_ID_2,
@@ -18,7 +19,6 @@ import {
   nameFn,
   setupKeystone,
 } from './utils';
-import { KeystoneContext } from '@keystone-next/types';
 
 type IdType = any;
 

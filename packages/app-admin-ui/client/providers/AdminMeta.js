@@ -1,9 +1,8 @@
 /* global KEYSTONE_ADMIN_META */
 
+import React, { useContext, createContext } from 'react';
 import List from '../classes/List';
 import { views, readViews, preloadViews } from '../FIELD_TYPES';
-
-import React, { useContext, createContext } from 'react';
 
 const { __pages__: pageViews, __hooks__: hookView, ...listViews } = views;
 

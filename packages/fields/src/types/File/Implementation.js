@@ -1,9 +1,9 @@
 import cuid from 'cuid';
-import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
 import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import mongoose from 'mongoose';
+import { Implementation } from '../../Implementation';
 
 // Disabling the getter of mongoose >= 5.1.0
 // https://mongoosejs.com/docs/migrating_to_5.html#id-getter

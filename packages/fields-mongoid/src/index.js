@@ -1,11 +1,11 @@
 import path from 'path';
+import { Text } from '@keystone-next/fields-legacy';
 import {
   MongoIdImplementation,
   MongooseMongoIdInterface,
   KnexMongoIdInterface,
   PrismaMongoIdInterface,
 } from './Implementation';
-import { Text } from '@keystone-next/fields-legacy';
 
 const pkgDir = path.dirname(require.resolve('@keystone-next/fields-mongoid-legacy/package.json'));
 
