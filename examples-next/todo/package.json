@@ -10,7 +10,7 @@
     "build": "keystone-next build",
     "reset": "keystone-next reset",
     "generate": "keystone-next generate",
-    "resolve": "keystone-next resolve"
+    "deploy": "keystone-next deploy"
   },
   "dependencies": {
     "@keystone-next/admin-ui": "^11.0.0",
