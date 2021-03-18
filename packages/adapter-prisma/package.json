@@ -16,8 +16,12 @@
     "@prisma/client": "2.18.0",
     "@prisma/migrate": "2.18.0",
     "@prisma/sdk": "2.18.0",
+    "@sindresorhus/slugify": "^1.1.0",
+    "@types/prompts": "^2.0.9",
+    "chalk": "^4.1.0",
     "cuid": "^2.1.8",
-    "prisma": "2.18.0"
+    "prisma": "2.18.0",
+    "prompts": "^2.4.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-prisma"
 }

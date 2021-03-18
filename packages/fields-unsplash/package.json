@@ -10,7 +10,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.11",
+    "@apollo/client": "^3.3.12",
     "@arch-ui/fields": "^3.0.6",
     "@arch-ui/input": "^0.1.12",
     "@babel/runtime": "^7.13.10",
