@@ -129,7 +129,7 @@ export async function resetDatabaseWithMigrations(dbUrl: string, schemaPath: str
   }
 }
 
-type CLIOptionsForCreateMigration = {
+export type CLIOptionsForCreateMigration = {
   allowEmpty: boolean;
   acceptDataLoss: boolean;
   name: string | undefined;
