@@ -62,7 +62,7 @@ export async function runPrototypeMigrations(dbUrl: string, schema: string, sche
 
 // https://github.com/prisma/prisma/blob/527b6bd35e7fe4dbe854653f872a07b25febeb65/src/packages/migrate/src/commands/MigrateDeploy.ts
 export async function deployMigrations(dbUrl: string, schemaPath: string) {
-  withMigrate(dbUrl, schemaPath, async migrate => {
+  return withMigrate(dbUrl, schemaPath, async migrate => {
     const diagnoseResult = await runMigrateWithDbUrl(dbUrl, () =>
       migrate.diagnoseMigrationHistory({
         optInToShadowDatabase: false,
@@ -113,7 +113,7 @@ ${chalk.greenBright('All migrations have been successfully applied.')}`);
 
 // https://github.com/prisma/prisma/blob/527b6bd35e7fe4dbe854653f872a07b25febeb65/src/packages/migrate/src/commands/MigrateReset.ts
 export async function resetDatabaseWithMigrations(dbUrl: string, schemaPath: string) {
-  withMigrate(dbUrl, schemaPath, async migrate => {
+  return withMigrate(dbUrl, schemaPath, async migrate => {
     await runMigrateWithDbUrl(dbUrl, () => migrate.reset());
 
     const { appliedMigrationNames: migrationIds } = await runMigrateWithDbUrl(dbUrl, () =>
@@ -145,7 +145,7 @@ export async function createMigration(
   schemaPath: string,
   cliOptions: CLIOptionsForCreateMigration
 ) {
-  withMigrate(dbUrl, schemaPath, async migrate => {
+  return withMigrate(dbUrl, schemaPath, async migrate => {
     // see if we need to reset the database
     // note that the other action devDiagnostic can return is createMigration
     // that doesn't necessarily mean that we need to create a migration
@@ -272,7 +272,7 @@ export async function createMigration(
 
 // TODO: don't have process.exit calls here
 export async function devMigrations(dbUrl: string, prismaSchema: string, schemaPath: string) {
-  withMigrate(dbUrl, schemaPath, async migrate => {
+  return withMigrate(dbUrl, schemaPath, async migrate => {
     // see if we need to reset the database
     // note that the other action devDiagnostic can return is createMigration
     // that doesn't necessarily mean that we need to create a migration
