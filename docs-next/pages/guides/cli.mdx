@@ -65,12 +65,14 @@ The `build` command is used to generate a built version of Admin UI Next.js appl
 #### keystone-next reset
 
 This command invokes `prisma migrate reset` to reset your local database to a state consistent with the migrations directory.
-Use this command before running `keystone-next generate` to ensure that a valid migration is created.
+You generally shouldn't need to use `keystone-next reset` directly unless you want to have a fresh database because `keystone-next dev` and `keystone-next generate` will prompt you to reset your database when it determines your database is inconsistent with your migrations.
 
 #### keystone-next generate
 
-This command will generate a migration schema based on the current state of your database and your Keystone schema.
-This command should be run after running `keystone-next reset` and the generated migration artefact should be added to your repository so that it can be shared with other developers and deployed in production.
+This command will generate a migration based on the current state of your database and your Keystone schema.
+The generated migration artefact should be added to your repository so that it can be shared with other developers and deployed in production.
+You should generally use `keystone-next dev` instead of `keystone-next generate` because it will prompt you to create a migration when you need to.
+You only need to use `keystone-next generate` when you want to generate an empty migration to do something that isn't a result of a schema change or generate a migration in a non-interactive environment.
 
 #### keystone-next deploy
 
