@@ -22,7 +22,7 @@ function runMigrateWithDbUrl<T>(dbUrl: string, cb: () => T): T {
   }
 }
 
-async function withMigration<T>(
+async function withMigrate<T>(
   dbUrl: string,
   schemaPath: string,
   cb: (migrate: Migrate) => Promise<T>
@@ -40,7 +40,7 @@ async function withMigration<T>(
 export async function runPrototypeMigrations(dbUrl: string, schema: string, schemaPath: string) {
   let before = Date.now();
 
-  let migration = await withMigration(dbUrl, schemaPath, async migrate =>
+  let migration = await withMigrate(dbUrl, schemaPath, async migrate =>
     runMigrateWithDbUrl(dbUrl, () =>
       migrate.engine.schemaPush({
         // TODO: we probably want to do something like db push does where either there's
@@ -62,7 +62,7 @@ export async function runPrototypeMigrations(dbUrl: string, schema: string, sche
 
 // https://github.com/prisma/prisma/blob/527b6bd35e7fe4dbe854653f872a07b25febeb65/src/packages/migrate/src/commands/MigrateDeploy.ts
 export async function deployMigrations(dbUrl: string, schemaPath: string) {
-  withMigration(dbUrl, schemaPath, async migrate => {
+  withMigrate(dbUrl, schemaPath, async migrate => {
     const diagnoseResult = await runMigrateWithDbUrl(dbUrl, () =>
       migrate.diagnoseMigrationHistory({
         optInToShadowDatabase: false,
@@ -113,7 +113,7 @@ ${chalk.greenBright('All migrations have been successfully applied.')}`);
 
 // https://github.com/prisma/prisma/blob/527b6bd35e7fe4dbe854653f872a07b25febeb65/src/packages/migrate/src/commands/MigrateReset.ts
 export async function resetDatabaseWithMigrations(dbUrl: string, schemaPath: string) {
-  withMigration(dbUrl, schemaPath, async migrate => {
+  withMigrate(dbUrl, schemaPath, async migrate => {
     await runMigrateWithDbUrl(dbUrl, () => migrate.reset());
 
     const { appliedMigrationNames: migrationIds } = await runMigrateWithDbUrl(dbUrl, () =>
@@ -134,7 +134,7 @@ export async function resetDatabaseWithMigrations(dbUrl: string, schemaPath: str
 
 // TODO: don't have process.exit calls here
 export async function devMigrations(dbUrl: string, prismaSchema: string, schemaPath: string) {
-  withMigration(dbUrl, schemaPath, async migrate => {
+  withMigrate(dbUrl, schemaPath, async migrate => {
     // see if we need to reset the database
     // note that the other action devDiagnostic can return is createMigration
     // that doesn't necessarily mean that we need to create a migration
