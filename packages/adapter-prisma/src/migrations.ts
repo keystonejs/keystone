@@ -31,7 +31,7 @@ async function withMigration<T>(
   const migrate = new Migrate(schemaPath);
 
   try {
-    return cb(migrate);
+    return await cb(migrate);
   } finally {
     migrate.stop();
   }
