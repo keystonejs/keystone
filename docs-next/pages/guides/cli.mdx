@@ -73,6 +73,11 @@ This command will generate a migration based on the current state of your databa
 The generated migration artefact should be added to your repository so that it can be shared with other developers and deployed in production.
 You should generally use `keystone-next dev` instead of `keystone-next generate` because it will prompt you to create a migration when you need to.
 You only need to use `keystone-next generate` when you want to generate an empty migration to do something that isn't a result of a schema change or generate a migration in a non-interactive environment.
+`keystone-next generate` accepts the following options as command line arguments or as prompts:
+
+- `--name` to set the name of the migration
+- `--accept-data-loss` to allow resetting the database when it is out of sync with the migrations
+- `--allow-empty` to create an empty migration when there are no changes to the schema
 
 #### keystone-next deploy
 
