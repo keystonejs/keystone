@@ -204,7 +204,9 @@ export async function createMigration(
     if (!evaluateDataLossResult.migrationSteps.length && cliOptions.allowEmpty === false) {
       console.log('There have been no changes to your schema that require a migration');
       if (process.stdout.isTTY) {
-        await confirmPrompt('Are you sure that you want to create an empty migration?');
+        if (!(await confirmPrompt('Are you sure that you want to create an empty migration?'))) {
+          process.exit(0);
+        }
       } else {
         console.log(
           "We've detected that you're in a non-interactive environment so you need to pass --allow-empty to create an empty migration"
