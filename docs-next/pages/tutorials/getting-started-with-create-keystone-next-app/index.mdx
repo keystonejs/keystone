@@ -1,5 +1,16 @@
 import { Markdown } from '../../../components/Page';
 import Image from 'next/image';
+import Link from 'next/link';
+
+<img
+  src={require('./assets/cover.png')}
+  alt="A terminal with the output of create-keystone-next-app"
+  style={{
+    margin: '0 -1rem 2rem -1rem',
+    width: 'calc(100% + 2rem)',
+    maxWidth: 'none',
+  }}
+/>
 
 # Getting started with `create-keystone-next-app`
 
@@ -17,7 +28,7 @@ yarn dev
 ## Installing your own Keystone instance
 
 Open your preferred shell and make sure you are in the folder you would like to create your new project in.
-`create-keystone-next-app` will generate a new folder with your new Keystone files in.
+`create-keystone-next-app` will generate a new folder with your new Keystone files in it.
 
 ### Yarn
 
@@ -77,13 +88,12 @@ Go ahead and create your first user.
 
 <Image
   src={require('./assets/adminui.png')}
-  alt="The AdminUI of Keystone"
+  alt="The AdminUI of Keystone showing the two lists: User and Posts"
   width={1886}
   height={630}
 />
 
-Now you can see you have a new Keystone AdminUI that comes with three lists (one of them hidden on the dashboard).
-Let's chat about the files that were generated for you
+Now you can see your new Keystone AdminUI that comes with two visible lists and a bunch of files that were generated for you.
 
 ```sh
 .
@@ -94,5 +104,10 @@ Let's chat about the files that were generated for you
 ├── tsconfig.json # Your typescript config
 └── yarn.lock     # An finally your yarn lock file
 ```
+
+## Where to next?
+
+- Read more about the Keystone config inside `keystone.ts` over at <Link href="/apis/config" passHref><a>System Configuration API</a></Link>
+- Read more about how you create a database schema for Keystone over at <Link href="/apis/schema" passHref><a>Schema API</a></Link>
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
