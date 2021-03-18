@@ -3,7 +3,7 @@ const flattenDeep = require('lodash.flattendeep');
 const memoize = require('micro-memoize');
 const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
-const { execute, print } = require('graphql');
+const { execute } = require('graphql');
 const { GraphQLUpload } = require('graphql-upload');
 const {
   arrayToObject,
@@ -529,12 +529,6 @@ module.exports = class Keystone {
       },
       o => Object.entries(o).length > 0
     );
-  }
-
-  dumpSchema(schemaName = 'public') {
-    return this.getTypeDefs({ schemaName })
-      .map(t => print(t))
-      .join('\n');
   }
 
   async _prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors }) {
