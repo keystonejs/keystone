@@ -103,6 +103,32 @@ ${chalk.greenBright('All migrations have been successfully applied.')}`);
   }
 }
 
+// https://github.com/prisma/prisma/blob/527b6bd35e7fe4dbe854653f872a07b25febeb65/src/packages/migrate/src/commands/MigrateReset.ts
+export async function resetDatabaseWithMigrations(dbUrl: string, schemaPath: string) {
+  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
+  const migrate = new Migrate(schemaPath);
+
+  try {
+    await runMigrateWithDbUrl(dbUrl, () => migrate.reset());
+
+    const { appliedMigrationNames: migrationIds } = await runMigrateWithDbUrl(dbUrl, () =>
+      migrate.applyMigrations()
+    );
+
+    console.log(`${chalk.green('Database reset successful')}`);
+
+    if (migrationIds.length) {
+      console.info(
+        `\nThe following migration(s) have been applied:\n\n${printFilesFromMigrationIds(
+          migrationIds
+        )}`
+      );
+    }
+  } finally {
+    migrate.stop();
+  }
+}
+
 // TODO: don't have process.exit calls here
 export async function devMigrations(dbUrl: string, prismaSchema: string, schemaPath: string) {
   await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
