@@ -22,21 +22,34 @@ function runMigrateWithDbUrl<T>(dbUrl: string, cb: () => T): T {
   }
 }
 
+async function withMigrate<T>(
+  dbUrl: string,
+  schemaPath: string,
+  cb: (migrate: Migrate) => Promise<T>
+) {
+  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
+  const migrate = new Migrate(schemaPath);
+
+  try {
+    return await cb(migrate);
+  } finally {
+    migrate.stop();
+  }
+}
+
 export async function runPrototypeMigrations(dbUrl: string, schema: string, schemaPath: string) {
   let before = Date.now();
 
-  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
-  let migrate = new Migrate(schemaPath);
-
-  let migration = await runMigrateWithDbUrl(dbUrl, () =>
-    migrate.engine.schemaPush({
-      // TODO: we probably want to do something like db push does where either there's
-      // a prompt or an argument needs to be passed to make it force(i.e. lose data)
-      force: true,
-      schema,
-    })
+  let migration = await withMigrate(dbUrl, schemaPath, async migrate =>
+    runMigrateWithDbUrl(dbUrl, () =>
+      migrate.engine.schemaPush({
+        // TODO: we probably want to do something like db push does where either there's
+        // a prompt or an argument needs to be passed to make it force(i.e. lose data)
+        force: true,
+        schema,
+      })
+    )
   );
-  migrate.stop();
 
   if (migration.warnings.length === 0 && migration.executedSteps === 0) {
     console.info(`✨ The database is already in sync with the Prisma schema.`);
@@ -49,10 +62,7 @@ export async function runPrototypeMigrations(dbUrl: string, schema: string, sche
 
 // https://github.com/prisma/prisma/blob/527b6bd35e7fe4dbe854653f872a07b25febeb65/src/packages/migrate/src/commands/MigrateDeploy.ts
 export async function deployMigrations(dbUrl: string, schemaPath: string) {
-  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
-  const migrate = new Migrate(schemaPath);
-
-  try {
+  withMigrate(dbUrl, schemaPath, async migrate => {
     const diagnoseResult = await runMigrateWithDbUrl(dbUrl, () =>
       migrate.diagnoseMigrationHistory({
         optInToShadowDatabase: false,
@@ -95,20 +105,15 @@ ${editedMigrationNames.join('\n')}`
       console.log(`The following migration${
         migrationIds.length > 1 ? 's' : ''
       } have been applied:\n\n${printFilesFromMigrationIds(migrationIds)}
-    
+
 ${chalk.greenBright('All migrations have been successfully applied.')}`);
     }
-  } finally {
-    migrate.stop();
-  }
+  });
 }
 
 // https://github.com/prisma/prisma/blob/527b6bd35e7fe4dbe854653f872a07b25febeb65/src/packages/migrate/src/commands/MigrateReset.ts
 export async function resetDatabaseWithMigrations(dbUrl: string, schemaPath: string) {
-  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
-  const migrate = new Migrate(schemaPath);
-
-  try {
+  withMigrate(dbUrl, schemaPath, async migrate => {
     await runMigrateWithDbUrl(dbUrl, () => migrate.reset());
 
     const { appliedMigrationNames: migrationIds } = await runMigrateWithDbUrl(dbUrl, () =>
@@ -124,16 +129,12 @@ export async function resetDatabaseWithMigrations(dbUrl: string, schemaPath: str
         )}`
       );
     }
-  } finally {
-    migrate.stop();
-  }
+  });
 }
 
 // TODO: don't have process.exit calls here
 export async function devMigrations(dbUrl: string, prismaSchema: string, schemaPath: string) {
-  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
-  let migrate = new Migrate(schemaPath);
-  try {
+  withMigrate(dbUrl, schemaPath, async migrate => {
     // see if we need to reset the database
     // note that the other action devDiagnostic can return is createMigration
     // that doesn't necessarily mean that we need to create a migration
@@ -241,9 +242,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
         console.log('✨ Your database is up to date, no migrations need to be created or applied');
       }
     }
-  } finally {
-    migrate.stop();
-  }
+  });
 }
 
 // based on https://github.com/prisma/prisma/blob/3fed5919545bfae0a82d35134a4f1d21359118cb/src/packages/migrate/src/utils/promptForMigrationName.ts
