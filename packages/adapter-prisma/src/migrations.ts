@@ -114,7 +114,7 @@ export async function resetDatabaseWithMigrations(dbUrl: string, schemaPath: str
     const { appliedMigrationNames: migrationIds } = await runMigrateWithDbUrl(dbUrl, () =>
       migrate.applyMigrations()
     );
-    migrate.stop();
+
     console.log(`${chalk.green('Database reset successful')}`);
 
     if (migrationIds.length) {
