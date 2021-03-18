@@ -145,9 +145,7 @@ export async function createMigration(
   schemaPath: string,
   cliOptions: CLIOptionsForCreateMigration
 ) {
-  await ensureDatabaseExists(dbUrl, path.dirname(schemaPath));
-  let migrate = new Migrate(schemaPath);
-  try {
+  withMigrate(dbUrl, schemaPath, async migrate => {
     // see if we need to reset the database
     // note that the other action devDiagnostic can return is createMigration
     // that doesn't necessarily mean that we need to create a migration
@@ -267,9 +265,7 @@ export async function createMigration(
     console.log(
       `✨ A migration has been created at .keystone/prisma/migrations/${generatedMigrationName}`
     );
-  } finally {
-    migrate.stop();
-  }
+  });
 }
 
 // TODO: don't have process.exit calls here
