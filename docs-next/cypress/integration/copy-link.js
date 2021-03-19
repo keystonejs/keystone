@@ -18,9 +18,7 @@ describe('on click of a link icon', () => {
   it('changes the URL to the specified anchor href', () => {
     cy.get('#keystone-next-dev-default a').click();
     return cy.window().then(win => {
-      expect(win.location.href).to.equal(
-        'http://localhost:8000/guides/cli#keystone-dev-prototype-default'
-      );
+      expect(win.location.href).to.equal('http://localhost:8000/guides/cli#keystone-dev-default');
     });
   });
 });
