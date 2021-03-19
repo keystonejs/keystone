@@ -247,7 +247,12 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   // This will drop all the tables in the backing database. Use wisely.
   async dropDatabase() {
     if (this.migrationMode === 'prototype') {
-      runPrototypeMigrations(this._url(), this.prismaSchema, path.resolve(this.schemaPath), true);
+      await runPrototypeMigrations(
+        this._url(),
+        this.prismaSchema,
+        path.resolve(this.schemaPath),
+        true
+      );
       // if (this.provider === 'postgresql') {
       //   // Special fast path to drop data from a postgres database.
       //   // This is an optimization which is particularly crucial in a unit testing context.
