@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { getGenerator, formatSchema, uriToCredentials } from '@prisma/sdk';
+import { getGenerator, formatSchema } from '@prisma/sdk';
 import {
   BaseKeystoneAdapter,
   BaseListAdapter,
@@ -12,7 +12,6 @@ import {
   devMigrations,
   deployMigrations,
   resetDatabaseWithMigrations,
-  dropDatabaseAndRunPrototypeMigrations,
   // eslint-disable-next-line import/no-unresolved
 } from './migrations';
 
@@ -93,7 +92,12 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   async _runMigrations({ prismaSchema }) {
     if (this.migrationMode === 'prototype') {
       // Sync the database directly, without generating any migration
-      await runPrototypeMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
+      await runPrototypeMigrations(
+        this._url(),
+        prismaSchema,
+        path.resolve(this.schemaPath),
+        !!this.config.dropDatabase && process.env.NODE_ENV !== 'production'
+      );
     } else if (this.migrationMode === 'dev') {
       // Generate and apply a migration if required.
       await devMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
@@ -228,7 +232,13 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       listAdapter._postConnect({ rels, prisma: this.prisma });
     });
 
-    if (this.config.dropDatabase && process.env.NODE_ENV !== 'production') {
+    if (
+      this.config.dropDatabase &&
+      process.env.NODE_ENV !== 'production' &&
+      // we have a fast path for prototype mode that runs before the schema push
+      // when dropDatabase is set statically in the config
+      this.migrationMode !== 'prototype'
+    ) {
       await this.dropDatabase();
     }
     return [];
@@ -237,11 +247,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   // This will drop all the tables in the backing database. Use wisely.
   async dropDatabase() {
     if (this.migrationMode === 'prototype') {
-      dropDatabaseAndRunPrototypeMigrations(
-        this._url(),
-        this.prismaSchema,
-        path.resolve(this.schemaPath)
-      );
+      runPrototypeMigrations(this._url(), this.prismaSchema, path.resolve(this.schemaPath), true);
       // if (this.provider === 'postgresql') {
       //   // Special fast path to drop data from a postgres database.
       //   // This is an optimization which is particularly crucial in a unit testing context.

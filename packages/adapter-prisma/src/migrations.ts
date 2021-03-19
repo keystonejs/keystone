@@ -1,5 +1,5 @@
 import path from 'path';
-import { createDatabase, uriToCredentials, DatabaseCredentials, dropDatabase } from '@prisma/sdk';
+import { createDatabase, uriToCredentials, DatabaseCredentials } from '@prisma/sdk';
 import { Migrate } from '@prisma/migrate';
 import chalk from 'chalk';
 import slugify from '@sindresorhus/slugify';
@@ -37,28 +37,27 @@ async function withMigrate<T>(
   }
 }
 
-export async function dropDatabaseAndRunPrototypeMigrations(
+export async function runPrototypeMigrations(
   dbUrl: string,
   schema: string,
-  schemaPath: string
+  schemaPath: string,
+  shouldResetDatabase: boolean
 ) {
-  await dropDatabase(dbUrl, path.dirname(schemaPath));
-  await runPrototypeMigrations(dbUrl, schema, schemaPath);
-}
-
-export async function runPrototypeMigrations(dbUrl: string, schema: string, schemaPath: string) {
   let before = Date.now();
 
-  let migration = await withMigrate(dbUrl, schemaPath, async migrate =>
-    runMigrateWithDbUrl(dbUrl, () =>
+  let migration = await withMigrate(dbUrl, schemaPath, async migrate => {
+    if (shouldResetDatabase) {
+      await runMigrateWithDbUrl(dbUrl, () => migrate.reset());
+    }
+    return runMigrateWithDbUrl(dbUrl, () =>
       migrate.engine.schemaPush({
         // TODO: we probably want to do something like db push does where either there's
         // a prompt or an argument needs to be passed to make it force(i.e. lose data)
         force: true,
         schema,
       })
-    )
-  );
+    );
+  });
 
   if (migration.warnings.length === 0 && migration.executedSteps === 0) {
     console.info(`✨ The database is already in sync with the Prisma schema.`);
