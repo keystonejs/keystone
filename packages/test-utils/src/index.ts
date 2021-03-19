@@ -26,6 +26,8 @@ const hashPrismaSchema = memoizeOne(prismaSchema =>
   crypto.createHash('md5').update(prismaSchema).digest('hex')
 );
 
+const schemaName = Math.round(Math.random() * 100000000000000).toString(36);
+
 const argGenerator = {
   mongoose: getMongoMemoryServerConfig,
   knex: () => ({
@@ -38,21 +40,18 @@ const argGenerator = {
   prisma_postgresql: () => ({
     migrationMode: 'prototype',
     dropDatabase: true,
-    url: process.env.DATABASE_URL || '',
+    url: `${process.env.DATABASE_URL!}?schema=${schemaName}`,
     provider: 'postgresql',
     // Put the generated client at a unique path
     getPrismaPath: ({ prismaSchema }: { prismaSchema: string }) =>
       path.join('.api-test-prisma-clients', hashPrismaSchema(prismaSchema)),
-    // Slice down to the hash make a valid postgres schema name
-    getDbSchemaName: ({ prismaSchema }: { prismaSchema: string }) =>
-      hashPrismaSchema(prismaSchema).slice(0, 16),
     // Turn this on if you need verbose debug info
     enableLogging: false,
   }),
   prisma_sqlite: () => ({
     migrationMode: 'prototype',
     dropDatabase: true,
-    url: process.env.DATABASE_URL || '',
+    url: process.env.DATABASE_URL!,
     provider: 'sqlite',
     // Put the generated client at a unique path
     getPrismaPath: ({ prismaSchema }: { prismaSchema: string }) =>
