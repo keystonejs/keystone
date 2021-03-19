@@ -1,5 +1,5 @@
 import path from 'path';
-import { createDatabase, uriToCredentials, DatabaseCredentials } from '@prisma/sdk';
+import { createDatabase, uriToCredentials, DatabaseCredentials, dropDatabase } from '@prisma/sdk';
 import { Migrate } from '@prisma/migrate';
 import chalk from 'chalk';
 import slugify from '@sindresorhus/slugify';
@@ -35,6 +35,15 @@ async function withMigrate<T>(
   } finally {
     migrate.stop();
   }
+}
+
+export async function dropDatabaseAndRunPrototypeMigrations(
+  dbUrl: string,
+  schema: string,
+  schemaPath: string
+) {
+  await dropDatabase(dbUrl, path.dirname(schemaPath));
+  await runPrototypeMigrations(dbUrl, schema, schemaPath);
 }
 
 export async function runPrototypeMigrations(dbUrl: string, schema: string, schemaPath: string) {
