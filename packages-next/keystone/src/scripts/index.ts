@@ -1,6 +1,5 @@
 import path from 'path';
 import meow from 'meow';
-import { prototype } from './run/prototype';
 import { dev } from './run/dev';
 import { start } from './run/start';
 import { build } from './build/build';
@@ -10,7 +9,7 @@ import { reset } from './migrate/reset';
 
 export type StaticPaths = { dotKeystonePath: string; projectAdminPath: string };
 
-const commands = { prototype, dev, start, build, deploy, generate, reset };
+const commands = { dev, start, build, deploy, generate, reset };
 
 function cli() {
   const { input, help, flags } = meow(
@@ -19,8 +18,7 @@ function cli() {
       $ keystone-next [command]
     Commands
       Run
-        prototype     (default) start the project in prototyping mode
-        dev           start the project in development mode
+        dev           (default) start the project in development mode
         start         start the project in production mode
       Build
         build         build the project (must be done before using start)
@@ -37,7 +35,7 @@ function cli() {
       },
     }
   );
-  const command = input[0] || 'prototype';
+  const command = input[0] || 'dev';
   if (!isCommand(command)) {
     console.log(`${command} is not a command that keystone-next accepts`);
     console.log(help);

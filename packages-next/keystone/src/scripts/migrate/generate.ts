@@ -14,6 +14,18 @@ export const generate = async (
   args: CLIOptionsForCreateMigration
 ) => {
   const config = initConfig(requireSource(CONFIG_PATH).default);
+  if (config.db.adapter !== 'prisma_postgresql' && config.db.adapter !== 'prisma_sqlite') {
+    console.log('keystone-next generate only supports Prisma');
+    process.exit(1);
+  }
+
+  if (!config.db.useMigrations) {
+    console.log(
+      'useMigrations must be set to true in your db config to use keystone-next generate'
+    );
+    process.exit(1);
+  }
+
   const { keystone } = createSystem(config, dotKeystonePath, 'none');
 
   await keystone.adapter._generateClient(keystone._consolidateRelationships());
