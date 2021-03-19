@@ -34,10 +34,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           };
 
           // we don't memoize it for mongoose though since it has a cleanup which messes the memoization up
-          const getServer = adapterName === 'mongoose' ? _getServer : memoizeOne(_getServer);
+          // const getServer = adapterName === 'mongoose' ? _getServer : memoizeOne(_getServer);
 
           const withKeystone = (testFn: (args: any) => void = () => {}) =>
-            runner(getServer, async ({ keystone, ...rest }) => {
+            runner(_getServer, async ({ keystone, ...rest }) => {
               // Populate the database before running the tests
               // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
               for (const item of mod.initItems(matrixValue)) {
