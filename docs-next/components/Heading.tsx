@@ -63,13 +63,12 @@ export const H1 = (props: StringOnlyChildren) => (
       letterSpacing: '-0.025em',
       marginTop: 0,
     }}
-    {...props}
     as="h1"
+    {...props}
   />
 );
 export const H2 = (props: StringOnlyChildren) => (
   <Heading
-    {...props}
     css={{
       fontSize: '1.8rem',
       fontWeight: 500,
@@ -77,6 +76,7 @@ export const H2 = (props: StringOnlyChildren) => (
       marginTop: 0,
     }}
     as="h2"
+    {...props}
   />
 );
 export const H3 = (props: StringOnlyChildren) => (
@@ -87,8 +87,8 @@ export const H3 = (props: StringOnlyChildren) => (
       letterSpacing: '-0.025em',
       marginTop: 0,
     }}
-    {...props}
     as="h3"
+    {...props}
   />
 );
 
