@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/website",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,12 +9,12 @@
   "dependencies": {
     "@babel/runtime": "^7.13.10",
     "@keystone-ui/button": "^3.0.1",
-    "@keystone-ui/core": "^2.0.1",
-    "@keystone-ui/fields": "^2.0.1",
+    "@keystone-ui/core": "^2.0.2",
+    "@keystone-ui/fields": "^2.0.2",
     "@keystone-ui/loading": "^2.0.1",
     "@keystone-ui/modals": "^2.0.1",
-    "@keystone-ui/notice": "^2.0.1",
-    "@keystone-ui/options": "^2.0.1",
+    "@keystone-ui/notice": "^2.0.2",
+    "@keystone-ui/options": "^2.0.2",
     "@keystone-ui/pill": "^2.0.1",
     "@keystone-ui/popover": "^2.0.1",
     "@keystone-ui/segmented-control": "^2.0.1",
