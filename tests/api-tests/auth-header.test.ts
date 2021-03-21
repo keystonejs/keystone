@@ -34,7 +34,7 @@ const initialData = {
 };
 
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
-const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.session?.item;
+const defaultAccess = ({ context }: { context: KeystoneContext }) => !!context.session?.data;
 
 const auth = createAuth({ listKey: 'User', identityField: 'email', secretField: 'password' });
 
