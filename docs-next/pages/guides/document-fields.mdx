@@ -1,10 +1,11 @@
 import { Page, components } from '../../components/Page';
 import { H1 } from '../../components/Heading';
 import { getHeadings } from '../../lib/getHeadings';
+import { proseStyles } from '../../lib/prose-lite';
 import {
-  DocumentEditorDemo,
-  DocumentFeaturesFormAndCode,
-  DocumentFeaturesProvider,
+DocumentEditorDemo,
+DocumentFeaturesFormAndCode,
+DocumentFeaturesProvider,
 } from '../../components/DocumentEditorDemo';
 import { MDXProvider } from '@mdx-js/react';
 
@@ -493,7 +494,9 @@ export default ({ children }) => {
         </div>
         <DocumentEditorDemo />
         <div className="prose max-w-none">
-          <MDXProvider components={components}>{children}</MDXProvider>
+          <MDXProvider components={components}>
+              {children}
+          </MDXProvider>
         </div>
       </DocumentFeaturesProvider>
     </Page>
