@@ -34,8 +34,8 @@ See the [System Configuration API](../apis/config) for details on how to configu
 
 In **dev** mode, Keystone will start the dev server and update your database is a different way depending on `db.useMigrations`:
 
-- If `db.useMigrations` is false(the default), Keystone will use Prisma Migrate to update your databse so that it matches your schema. It may lose data while updating your databse so you should only use this mode in initial development.
-- If `db.useMigrations` is true, Keystone will use Prisma Migrate to apply any existing migrations and prompt you to create a migration if there was a change to your schema.
+- If `db.useMigrations` is `false` (the default), Keystone will use Prisma Migrate to update your database so that it matches your schema. It may lose data while updating your database so you should only use this mode in initial development.
+- If `db.useMigrations` is `true`, Keystone will use Prisma Migrate to apply any existing migrations and prompt you to create a migration if there was a change to your schema.
 
 #### keystone-next start
 

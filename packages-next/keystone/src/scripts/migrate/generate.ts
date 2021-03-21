@@ -21,7 +21,7 @@ export const generate = async (
 
   if (!config.db.useMigrations) {
     console.log(
-      'useMigrations must be set to true in your db config to use keystone-next generate'
+      'db.useMigrations must be set to true in your config to use keystone-next generate'
     );
     process.exit(1);
   }
