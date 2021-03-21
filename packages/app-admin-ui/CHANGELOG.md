@@ -1,5 +1,17 @@
 # @keystonejs/app-admin-ui
 
+## 7.4.3
+
+### Patch Changes
+
+- [#4717](https://github.com/keystonejs/keystone/pull/4717) [`17c86e0c3`](https://github.com/keystonejs/keystone/commit/17c86e0c3eda7ba08d1bb8edf5eb8ddc9a819e5a) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency react-select to v4
+
+* [#5150](https://github.com/keystonejs/keystone/pull/5150) [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed) Thanks [@timleslie](https://github.com/timleslie)! - Applied eslint `import/order` rule.
+
+* Updated dependencies [[`8e9b04ecd`](https://github.com/keystonejs/keystone/commit/8e9b04ecd07d9c5d0e6aead4705e7a655498ae05), [`17c86e0c3`](https://github.com/keystonejs/keystone/commit/17c86e0c3eda7ba08d1bb8edf5eb8ddc9a819e5a), [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed)]:
+  - @keystone-next/fields-legacy@23.1.0
+  - @keystone-next/field-views-loader-legacy@6.0.3
+
 ## 7.4.2
 
 ### Patch Changes

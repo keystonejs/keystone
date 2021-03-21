@@ -1,5 +1,15 @@
 # @keystone-ui/options
 
+## 2.0.2
+
+### Patch Changes
+
+- [#4717](https://github.com/keystonejs/keystone/pull/4717) [`17c86e0c3`](https://github.com/keystonejs/keystone/commit/17c86e0c3eda7ba08d1bb8edf5eb8ddc9a819e5a) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency react-select to v4
+
+- Updated dependencies [[`17c86e0c3`](https://github.com/keystonejs/keystone/commit/17c86e0c3eda7ba08d1bb8edf5eb8ddc9a819e5a), [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed)]:
+  - @keystone-ui/fields@2.0.2
+  - @keystone-ui/core@2.0.2
+
 ## 2.0.1
 
 ### Patch Changes

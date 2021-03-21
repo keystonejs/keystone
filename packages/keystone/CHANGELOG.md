@@ -1,5 +1,28 @@
 # @keystonejs/keystone
 
+## 21.0.0
+
+### Major Changes
+
+- [#5154](https://github.com/keystonejs/keystone/pull/5154) [`2bccf71b1`](https://github.com/keystonejs/keystone/commit/2bccf71b152a9be65a2df6a9751f1d7a382041ae) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused `keystone.dumpSchema()`.
+
+* [#5147](https://github.com/keystonejs/keystone/pull/5147) [`4ac9148a0`](https://github.com/keystonejs/keystone/commit/4ac9148a0fa5b302d50e0ca4293206e2ef3616b7) Thanks [@timleslie](https://github.com/timleslie)! - Removed `context.getCustomAccessControlForUser()`.
+
+- [#5145](https://github.com/keystonejs/keystone/pull/5145) [`bafdcb7bd`](https://github.com/keystonejs/keystone/commit/bafdcb7bdcba641bb8a00689a2bcefed10f4d890) Thanks [@timleslie](https://github.com/timleslie)! - Removed `keystone.extendGraphQLSchema()`.
+
+### Minor Changes
+
+- [#3946](https://github.com/keystonejs/keystone/pull/3946) [`8e9b04ecd`](https://github.com/keystonejs/keystone/commit/8e9b04ecd07d9c5d0e6aead4705e7a655498ae05) Thanks [@timleslie](https://github.com/timleslie)! - Added experimental support for Prisma + SQLite as a database adapter.
+
+### Patch Changes
+
+- [#5150](https://github.com/keystonejs/keystone/pull/5150) [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed) Thanks [@timleslie](https://github.com/timleslie)! - Applied eslint `import/order` rule.
+
+* [#4931](https://github.com/keystonejs/keystone/pull/4931) [`a4002b045`](https://github.com/keystonejs/keystone/commit/a4002b045b3e783971c382f9373159c04845beeb) Thanks [@timleslie](https://github.com/timleslie)! - Updated schema generation to no longer consider `access.auth`, as it is no longer used in Keystone Next.
+
+* Updated dependencies [[`4ac9148a0`](https://github.com/keystonejs/keystone/commit/4ac9148a0fa5b302d50e0ca4293206e2ef3616b7)]:
+  - @keystone-next/access-control-legacy@9.0.0
+
 ## 20.0.0
 
 ### Major Changes
