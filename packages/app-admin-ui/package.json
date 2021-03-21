@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/app-admin-ui-legacy",
   "description": "KeystoneJS Admin UI App.",
-  "version": "7.4.2",
+  "version": "7.4.3",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -38,8 +38,8 @@
     "@babel/core": "^7.13.10",
     "@babel/runtime": "^7.13.10",
     "@emotion/core": "^10.1.1",
-    "@keystone-next/field-views-loader-legacy": "^6.0.2",
-    "@keystone-next/fields-legacy": "^23.0.0",
+    "@keystone-next/field-views-loader-legacy": "^6.0.3",
+    "@keystone-next/fields-legacy": "^23.1.0",
     "@keystone-next/session-legacy": "^8.2.1",
     "@keystone-next/utils-legacy": "^7.0.0",
     "@primer/octicons-react": "^11.3.0",

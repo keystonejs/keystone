@@ -54,7 +54,7 @@ export const exampleProjectTests = (
       await cleanupKeystoneProcess();
     });
 
-    async function startKeystone(command: 'start' | 'prototype') {
+    async function startKeystone(command: 'start' | 'dev') {
       let keystoneProcess = execa('yarn', ['keystone-next', command], {
         cwd: projectDir,
         env: process.env,
@@ -84,7 +84,7 @@ export const exampleProjectTests = (
 
     if (mode === 'dev') {
       test('start keystone in dev', async () => {
-        await startKeystone('prototype');
+        await startKeystone('dev');
       });
     }
 

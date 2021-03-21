@@ -64,12 +64,14 @@ export type DatabaseConfig = DatabaseCommon &
   (
     | {
         adapter: 'prisma_postgresql';
+        useMigrations?: boolean;
         enableLogging?: boolean;
         getPrismaPath?: (arg: { prismaSchema: any }) => string;
         getDbSchemaName?: (arg: { prismaSchema: any }) => string;
       }
     | {
         adapter: 'prisma_sqlite';
+        useMigrations?: boolean;
         enableLogging?: boolean;
         getPrismaPath?: (arg: { prismaSchema: any }) => string;
       }

@@ -67,4 +67,4 @@ export function getGqlNames({
   };
 }
 
-export type MigrationMode = 'none-skip-client-generation' | 'none' | 'dev' | 'prototype';
+export type MigrationAction = 'none-skip-client-generation' | 'none' | 'dev';
