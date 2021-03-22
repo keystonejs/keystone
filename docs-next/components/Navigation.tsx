@@ -38,6 +38,11 @@ export const Navigation = () => {
       <NavItem href="/whats-new">What's New</NavItem>
       <NavItem href="/roadmap">Roadmap</NavItem>
       <NavItem href="/faqs">FAQs</NavItem>
+      <Section label="Tutorials">
+        <NavItem href="/tutorials/getting-started-with-create-keystone-next-app">
+          Getting started
+        </NavItem>
+      </Section>
       <Section label="Guides">
         <NavItem href="/guides/installation">Installation</NavItem>
         <NavItem href="/guides/cli">Command Line</NavItem>
@@ -59,11 +64,6 @@ export const Navigation = () => {
         </NavItem>
         <NavItem href="/guides/testing" isPlaceholder>
           Testing
-        </NavItem>
-      </Section>
-      <Section label="Tutorials">
-        <NavItem href="/tutorials/getting-started-with-create-keystone-next-app">
-          Getting started
         </NavItem>
       </Section>
       <Section label="API">
