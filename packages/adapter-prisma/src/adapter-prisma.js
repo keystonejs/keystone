@@ -99,7 +99,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
         !!this.config.dropDatabase && process.env.NODE_ENV !== 'production'
       );
       this.justResetDatabaseAfterPrototypeMigrations = true;
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // await new Promise(resolve => setTimeout(resolve, 100));
     } else if (this.migrationMode === 'dev') {
       // Generate and apply a migration if required.
       await devMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
