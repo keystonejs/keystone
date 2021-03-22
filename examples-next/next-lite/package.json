@@ -6,11 +6,10 @@
   "scripts": {
     "dev": "next dev",
     "start": "next start",
-    "build": "next build"
+    "build": "keystone build && next build"
   },
   "dependencies": {
     "@keystone-next/admin-ui": "^12.0.0",
-    "@keystone-next/auth": "^18.0.0",
     "@keystone-next/fields": "^5.3.0",
     "@keystone-next/keystone": "^13.0.0",
     "dotenv": "^8.2.0",
