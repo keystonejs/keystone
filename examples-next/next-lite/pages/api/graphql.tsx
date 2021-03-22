@@ -1,3 +1,5 @@
+// TODO: Generate something into .keystone that we can import that makes this cleaner
+
 import { initConfig, createSystem, createApolloServerMicro } from '@keystone-next/keystone';
 import keystoneConfig from '../../keystone';
 
