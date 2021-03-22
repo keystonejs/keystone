@@ -41,8 +41,8 @@ const argGenerator = {
     url: `${process.env.DATABASE_URL!}?schema=public`,
     provider: 'postgresql',
     // Put the generated client at a unique path
-    getPrismaPath: ({ prismaSchema }: { prismaSchema: string }) =>
-      path.join('.api-test-prisma-clients', hashPrismaSchema(prismaSchema)),
+    // getPrismaPath: ({ prismaSchema }: { prismaSchema: string }) =>
+    //   path.join('.api-test-prisma-clients', hashPrismaSchema(prismaSchema)),
     // Turn this on if you need verbose debug info
     enableLogging: false,
   }),
@@ -52,8 +52,8 @@ const argGenerator = {
     url: process.env.DATABASE_URL!,
     provider: 'sqlite',
     // Put the generated client at a unique path
-    getPrismaPath: ({ prismaSchema }: { prismaSchema: string }) =>
-      path.join('.api-test-prisma-clients', hashPrismaSchema(prismaSchema)),
+    // getPrismaPath: ({ prismaSchema }: { prismaSchema: string }) =>
+    //   path.join('.api-test-prisma-clients', hashPrismaSchema(prismaSchema)),
     // Turn this on if you need verbose debug info
     enableLogging: false,
   }),
