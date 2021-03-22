@@ -150,7 +150,7 @@ export type ListAdminUIConfig<
      * Users of the Admin UI can select different columns to show in the UI.
      * @default the first three fields in the list
      */
-    initialColumns?: (keyof Fields)[];
+    initialColumns?: ('id' | keyof Fields)[];
     // was previously top-level defaultSort
     initialSort?: { field: keyof Fields; direction: 'ASC' | 'DESC' };
     // was previously defaultPageSize
