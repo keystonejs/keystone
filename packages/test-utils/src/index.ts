@@ -38,7 +38,7 @@ const argGenerator = {
   prisma_postgresql: () => ({
     migrationMode: 'prototype',
     dropDatabase: true,
-    url: process.env.DATABASE_URL!,
+    url: `${process.env.DATABASE_URL!}?schema=public`,
     provider: 'postgresql',
     // Put the generated client at a unique path
     getPrismaPath: ({ prismaSchema }: { prismaSchema: string }) =>
