@@ -92,7 +92,13 @@ class PrismaAdapter extends BaseKeystoneAdapter {
   async _runMigrations({ prismaSchema }) {
     if (this.migrationMode === 'prototype') {
       // Sync the database directly, without generating any migration
-      await runPrototypeMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath), false);
+      await runPrototypeMigrations(
+        this._url(),
+        prismaSchema,
+        path.resolve(this.schemaPath),
+        !!this.config.dropDatabase && process.env.NODE_ENV !== 'production'
+      );
+      this.justResetDatabaseAfterPrototypeMigrations = true;
     } else if (this.migrationMode === 'dev') {
       // Generate and apply a migration if required.
       await devMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
@@ -226,9 +232,12 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     Object.values(this.listAdapters).forEach(listAdapter => {
       listAdapter._postConnect({ rels, prisma: this.prisma });
     });
-
     if (this.config.dropDatabase && process.env.NODE_ENV !== 'production') {
-      await this.dropDatabase();
+      if (this.justResetDatabaseAfterPrototypeMigrations) {
+        this.justResetDatabaseAfterPrototypeMigrations = false;
+      } else {
+        await this.dropDatabase();
+      }
     }
     return [];
   }
