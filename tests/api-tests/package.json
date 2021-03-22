@@ -23,7 +23,7 @@
     "@keystone-next/session-legacy": "*",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.8",
-    "globby": "^11.0.2",
+    "globby": "^11.0.3",
     "memoize-one": "^5.1.1",
     "superagent": "^6.1.0",
     "supertest-light": "^1.0.3",

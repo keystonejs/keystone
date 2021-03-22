@@ -12,7 +12,7 @@
     "@keystone-next/session-legacy": "^8.2.1",
     "@keystone-next/utils-legacy": "^7.0.0",
     "apollo-errors": "^1.9.0",
-    "apollo-server-express": "^2.21.1",
+    "apollo-server-express": "^2.21.2",
     "cors": "^2.8.5",
     "cuid": "^2.1.8",
     "ensure-error": "^3.0.1",
