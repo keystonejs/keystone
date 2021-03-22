@@ -9,7 +9,6 @@ import Link from 'next/link';
 import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
 import { Code, InlineCode } from '../components/Code';
 import { getHeadings, Heading } from '../lib/getHeadings';
-import { proseStyles } from '../lib/prose-lite';
 import { Navigation } from './Navigation';
 import { TableOfContents } from './TableOfContents';
 
@@ -113,10 +112,9 @@ export const Page = ({
             className="min-w-0 md:flex w-full flex-auto max-h-full overflow-visible px-2"
           >
             <main
-              className={cx('w-full max-w-none mt-6', {
+              className={cx({ prose: isProse }, 'w-full max-w-none mt-6', {
                 'md:w-3/4': headings.length,
               })}
-              css={isProse ? proseStyles : undefined}
             >
               {children}
             </main>
