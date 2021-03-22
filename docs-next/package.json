@@ -45,11 +45,11 @@
     "prism-react-renderer": "^1.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "tailwindcss": "^2.0.3",
+    "tailwindcss": "^2.0.4",
     "unist-builder": "^2.0.3"
   },
   "devDependencies": {
-    "start-server-and-test": "^1.12.0",
+    "start-server-and-test": "^1.12.1",
     "typescript": "^4.2.3"
   },
   "engines": {
