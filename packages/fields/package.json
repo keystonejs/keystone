@@ -36,7 +36,6 @@
     "@keystone-next/adapter-knex-legacy": "^13.2.2",
     "@keystone-next/adapter-mongoose-legacy": "^11.1.2",
     "@keystone-next/adapter-prisma-legacy": "^4.0.0",
-    "@keystone-next/app-admin-ui-legacy": "^7.4.3",
     "@keystone-next/server-side-graphql-client-legacy": "^2.0.1",
     "@keystone-next/utils-legacy": "^7.0.0",
     "@primer/octicons-react": "^11.3.0",

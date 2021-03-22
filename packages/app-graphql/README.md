@@ -19,7 +19,6 @@ For information about writing queries and mutations for KeystoneJS see the [Intr
 ```javascript
 const { Keystone } = require('@keystone-next/keystone-legacy');
 const { GraphQLApp } = require('@keystone-next/app-graphql-legacy');
-const { AdminUIApp } = require('@keystone-next/app-admin-ui-legacy');
 
 module.exports = {
   keystone: new Keystone(),
@@ -30,7 +29,6 @@ module.exports = {
       schemaName: 'admin',
       apollo: {},
     }),
-    new AdminUIApp(),
   ],
 };
 ```
