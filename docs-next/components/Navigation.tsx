@@ -65,7 +65,6 @@ export const Navigation = () => {
         <NavItem href="/tutorials/getting-started-with-create-keystone-next-app">
           Getting started
         </NavItem>
-        <NavItem href="/tutorials/roles-based-access-control">Roles based access control</NavItem>
       </Section>
       <Section label="API">
         <NavItem href="/apis/config">Config API</NavItem>
