@@ -153,8 +153,8 @@ export class PrismaDecimalInterface extends PrismaFieldAdapter {
 
     // In addition to the standard knexOptions this type supports precision and scale
     // const { precision, scale } = this.knexOptions;
-    this.precision = precision === null ? null : parseInt(precision) || 18;
-    this.scale = scale === null ? null : (this.precision, parseInt(scale) || 4);
+    this.precision = precision == null ? 18 : parseInt(precision);
+    this.scale = scale == null ? 4 : parseInt(scale);
     if (this.scale !== null && this.precision !== null && this.scale > this.precision) {
       throw (
         `The scale configured for Decimal field '${this.path}' (${this.scale}) ` +
