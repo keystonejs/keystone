@@ -250,6 +250,7 @@ function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promi
         await testFn(setup);
       } finally {
         await keystone.disconnect();
+        jest.resetModules();
         await tearDownFunction();
       }
     };
