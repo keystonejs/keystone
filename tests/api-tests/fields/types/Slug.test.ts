@@ -1,4 +1,4 @@
-import cuid from 'cuid';
+// import cuid from 'cuid';
 import {
   createItem,
   deleteItem,
@@ -11,20 +11,20 @@ import { Text, Slug } from '@keystone-next/fields-legacy';
 
 const reverse = (str: string) => str.split('').reverse().join('');
 
-const generateListName = () =>
-  // Ensure we prefix with something easy to delete, but also must always start
-  // with an upper case alpha character
-  'Slugtest' +
-  // Add randomness
-  cuid.slug() +
-  // Ensure plurality isn't a problem
-  'foo';
+// const generateListName = () =>
+//   // Ensure we prefix with something easy to delete, but also must always start
+//   // with an upper case alpha character
+//   'Slugtest' +
+//   // Add randomness
+//   cuid.slug() +
+//   // Ensure plurality isn't a problem
+//   'foo';
 
 const setupList = (adapterName: AdapterName, fields: any) => () =>
   setupServer({
     adapterName,
     createLists: keystone => {
-      keystone.createList(generateListName(), { fields });
+      keystone.createList('SlugTest', { fields });
     },
   });
 
