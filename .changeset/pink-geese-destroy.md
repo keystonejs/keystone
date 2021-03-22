@@ -3,4 +3,4 @@
 '@keystone-next/fields-legacy': minor
 ---
 
-Decimal field - fix checking precision and scale to allow pass nougth in scale value
+Decimal field - fix checking precision and scale to allow pass nought in scale value
