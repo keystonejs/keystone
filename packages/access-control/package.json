@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/access-control-legacy",
   "description": "KeystoneJS Access Control parsing and validating utilities.",
-  "version": "8.0.1",
+  "version": "9.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "main": "dist/access-control-legacy.cjs.js",

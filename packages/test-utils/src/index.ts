@@ -92,7 +92,7 @@ async function setupFromConfig({
   const { keystone, createContext, graphQLSchema } = createSystem(
     _config,
     path.resolve('.keystone'),
-    'prototype'
+    'dev'
   );
 
   const app = await createExpressServer(_config, graphQLSchema, createContext, true, '', false);

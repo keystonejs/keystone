@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/fields-markdown-legacy",
   "description": "KeystoneJS Markdown Field Type",
-  "version": "5.2.16",
+  "version": "5.3.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -15,7 +15,7 @@
     "@arch-ui/typography": "^0.0.19",
     "@babel/runtime": "^7.13.10",
     "@emotion/core": "^10.1.1",
-    "@keystone-next/fields-legacy": "^23.0.0",
+    "@keystone-next/fields-legacy": "^23.1.0",
     "@primer/octicons-react": "^11.3.0",
     "codemirror": "^5.59.4",
     "prop-types": "^15.7.2",
