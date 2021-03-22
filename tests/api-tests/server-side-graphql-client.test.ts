@@ -94,14 +94,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Seed the db
           const seedItems = await seedDb({ context });
           // Update multiple items
-          const items = await updateItems({
+          const items = (await updateItems({
             context,
             listKey,
             items: seedItems.map((item, i) => ({ id: item.id, data: { name: `update-${i}` } })),
             returnFields,
-          });
-
-          expect(items).toEqual(seedItems.map((item, i) => ({ name: `update-${i}`, age: 10 * i })));
+          })) as { name: string; age: number }[];
+          expect(items.sort((a, b) => (a.age > b.age ? 1 : -1))).toEqual(
+            seedItems.map((item, i) => ({ name: `update-${i}`, age: 10 * i }))
+          );
         })
       );
     });

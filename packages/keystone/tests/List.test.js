@@ -122,9 +122,9 @@ class MockListAdapter {
     this.parentAdapter = parentAdapter;
     this.index = 3;
     this.items = {
-      0: { name: 'a', email: 'a@example.com', index: 0 },
-      1: { name: 'b', email: 'b@example.com', index: 1 },
-      2: { name: 'c', email: 'c@example.com', index: 2 },
+      0: { name: 'a', email: 'a@example.com', id: 0 },
+      1: { name: 'b', email: 'b@example.com', id: 1 },
+      2: { name: 'c', email: 'c@example.com', id: 2 },
     };
   }
   newFieldAdapter = () => new MockFieldAdapter();
@@ -788,7 +788,7 @@ test('getAccessControlledItem', async () => {
   ).toEqual({
     name: 'b',
     email: 'b@example.com',
-    index: 1,
+    id: 1,
   });
   await expect(
     list.getAccessControlledItem(10, true, { context, operation: 'read', gqlName: 'testing' })
@@ -803,7 +803,7 @@ test('getAccessControlledItem', async () => {
   ).toEqual({
     name: 'b',
     email: 'b@example.com',
-    index: 1,
+    id: 1,
   });
   await expect(
     list.getAccessControlledItem(1, { id: 2 }, { context, operation: 'read', gqlName: 'testing' })
@@ -818,7 +818,7 @@ test('getAccessControlledItem', async () => {
   ).toEqual({
     name: 'b',
     email: 'b@example.com',
-    index: 1,
+    id: 1,
   });
   await expect(
     list.getAccessControlledItem(
@@ -837,7 +837,7 @@ test('getAccessControlledItem', async () => {
   ).toEqual({
     name: 'b',
     email: 'b@example.com',
-    index: 1,
+    id: 1,
   });
   await expect(
     list.getAccessControlledItem(
@@ -856,7 +856,7 @@ test('getAccessControlledItem', async () => {
   ).toEqual({
     name: 'b',
     email: 'b@example.com',
-    index: 1,
+    id: 1,
   });
   await expect(
     list.getAccessControlledItem(
@@ -871,43 +871,43 @@ test('getAccessControlledItems', async () => {
   const list = setup();
   expect(await list.getAccessControlledItems([], true)).toEqual([]);
   expect(await list.getAccessControlledItems([1, 2], true)).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'b', email: 'b@example.com', id: 1 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
   expect(await list.getAccessControlledItems([1, 2, 1, 2], true)).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'b', email: 'b@example.com', id: 1 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
 
   expect(await list.getAccessControlledItems([1, 2], { id: 1 })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'b', email: 'b@example.com', id: 1 },
   ]);
   expect(await list.getAccessControlledItems([1, 2], { id: 3 })).toEqual([]);
 
   expect(await list.getAccessControlledItems([1, 2], { id_in: [1, 2, 3] })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'b', email: 'b@example.com', id: 1 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
   expect(await list.getAccessControlledItems([1, 2], { id_in: [2, 3] })).toEqual([
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
   expect(await list.getAccessControlledItems([1, 2], { id_in: [3, 4] })).toEqual([]);
 
   expect(await list.getAccessControlledItems([1, 2], { id_not: 2 })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'b', email: 'b@example.com', id: 1 },
   ]);
   expect(await list.getAccessControlledItems([1, 2], { id_not: 3 })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'b', email: 'b@example.com', id: 1 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
 
   expect(await list.getAccessControlledItems([1, 2], { id_not_in: [1, 2, 3] })).toEqual([]);
   expect(await list.getAccessControlledItems([1, 2], { id_not_in: [2, 3] })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'b', email: 'b@example.com', id: 1 },
   ]);
   expect(await list.getAccessControlledItems([1, 2], { id_not_in: [3, 4] })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'b', email: 'b@example.com', id: 1 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
 });
 
@@ -929,7 +929,7 @@ test(`gqlQueryResolvers`, () => {
 test('listQuery', async () => {
   const list = setup();
   expect(await list.listQuery({ where: { id: 1 } }, context, 'testing')).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'b', email: 'b@example.com', id: 1 },
   ]);
 });
 
@@ -1023,7 +1023,7 @@ test('itemQuery', async () => {
   expect(await list.itemQuery({ where: { id: 0 } }, context)).toEqual({
     name: 'a',
     email: 'a@example.com',
-    index: 0,
+    id: 0,
   });
   await expect(list.itemQuery({ where: { id: 4 } }, context)).rejects.toThrow(AccessDeniedError);
 });
@@ -1106,7 +1106,7 @@ test('updateMutation', async () => {
     { name: 'update', email: 'update@example.com' },
     context
   );
-  expect(result).toEqual({ name: 'update', email: 'update@example.com', index: 1 });
+  expect(result).toEqual({ name: 'update', email: 'update@example.com', id: 1 });
 });
 
 test('updateManyMutation', async () => {
@@ -1119,23 +1119,23 @@ test('updateManyMutation', async () => {
     context
   );
   expect(result).toEqual([
-    { name: 'update1', email: 'update1@example.com', index: 1 },
-    { name: 'c', email: 'update2@example.com', index: 2 },
+    { name: 'update1', email: 'update1@example.com', id: 1 },
+    { name: 'c', email: 'update2@example.com', id: 2 },
   ]);
 });
 
 test('deleteMutation', async () => {
   const list = setup();
   const result = await list.deleteMutation(1, context);
-  expect(result).toEqual({ name: 'b', email: 'b@example.com', index: 1 });
+  expect(result).toEqual({ name: 'b', email: 'b@example.com', id: 1 });
 });
 
 test('deleteManyMutation', async () => {
   const list = setup();
   const result = await list.deleteManyMutation([1, 2], context);
   expect(result).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'b', email: 'b@example.com', id: 1 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
 });
 
