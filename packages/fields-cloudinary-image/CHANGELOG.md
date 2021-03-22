@@ -1,5 +1,22 @@
 # @keystonejs/fields-cloudinary-image
 
+## 3.1.0
+
+### Minor Changes
+
+- [#3946](https://github.com/keystonejs/keystone/pull/3946) [`8e9b04ecd`](https://github.com/keystonejs/keystone/commit/8e9b04ecd07d9c5d0e6aead4705e7a655498ae05) Thanks [@timleslie](https://github.com/timleslie)! - Added experimental support for Prisma + SQLite as a database adapter.
+
+### Patch Changes
+
+- [#5150](https://github.com/keystonejs/keystone/pull/5150) [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed) Thanks [@timleslie](https://github.com/timleslie)! - Applied eslint `import/order` rule.
+
+* [#5089](https://github.com/keystonejs/keystone/pull/5089) [`a4e34e9eb`](https://github.com/keystonejs/keystone/commit/a4e34e9ebb6f746f54ccd898d0aeb4dc5c5d9271) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused `slate` dependencies.
+
+* Updated dependencies [[`8e9b04ecd`](https://github.com/keystonejs/keystone/commit/8e9b04ecd07d9c5d0e6aead4705e7a655498ae05), [`17c86e0c3`](https://github.com/keystonejs/keystone/commit/17c86e0c3eda7ba08d1bb8edf5eb8ddc9a819e5a), [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed)]:
+  - @keystone-next/fields-legacy@23.1.0
+  - @keystone-next/adapter-mongoose-legacy@11.1.2
+  - @keystone-next/adapter-knex-legacy@13.2.2
+
 ## 3.0.1
 
 ### Patch Changes

@@ -63,29 +63,6 @@ test('Check require', () => {
   expect(Keystone).not.toBeNull();
 });
 
-test('unique typeDefs', () => {
-  const config = {
-    adapter: new MockAdapter(),
-    cookieSecret: 'secretForTesting',
-  };
-  const keystone = new Keystone(config);
-
-  keystone.createList('User', {
-    fields: {
-      images: { type: MockFieldType },
-    },
-  });
-
-  keystone.createList('Post', {
-    fields: {
-      hero: { type: MockFieldType },
-    },
-  });
-  const schema = keystone.dumpSchema();
-  expect(schema.match(/scalar Foo/g) || []).toHaveLength(1);
-  expect(schema.match(/getFoo: Boolean/g) || []).toHaveLength(1);
-});
-
 describe('Keystone.createList()', () => {
   test('basic', () => {
     const config = {

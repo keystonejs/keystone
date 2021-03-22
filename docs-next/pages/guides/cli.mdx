@@ -10,8 +10,7 @@ Usage
   $ keystone-next [command]
 Commands
   Run
-    prototype     (default) start the project in prototyping mode
-    dev           start the project in development mode
+    dev           (default) start the project in development mode
     start         start the project in production mode
   Build
     build         build the project (must be done before using start)
@@ -26,25 +25,17 @@ The CLI supports commands in three categories; Run, Build and Migrate.
 ### Run
 
 The **run** commands are used to prepare and then start your Keystone server.
-Keystone can be run in three different modes; **prototyping**, **dev** and **production**.
-These different modes support different phases of your project life-cycle.
-The different modes differ in how they interact with your database and with your Admin UI application.
+Keystone can be run in two different modes; **dev** and **production**.
 
 Note: All the **run** commands expect to find a module called `keystone.ts` with a default export which returns a system configuration `config()` from `@keystone-next/keystone/schema`.
 See the [System Configuration API](../apis/config) for details on how to configure a Keystone system.
 
-#### keystone-next prototype (default)
+#### keystone-next dev (default)
 
-In **prototyping** mode, Keystone will try its hardest to put your database into a state which is consistent with your schema.
-This might require Keystone to delete data in your database.
-This mode of operation should only be used when you are first getting started with Keystone and are not yet working with real data.
-In prototyping mode you can quickly change your schema and immediately see the changes reflected in your database and Admin UI when you restart.
+In **dev** mode, Keystone will start the dev server and update your database is a different way depending on `db.useMigrations`:
 
-#### keystone-next dev
-
-**Dev** mode is identical to **prototyping** mode when using the `knex` of `mongoose` adapters.
-When using the `prisma` adapter, Keystone will use Prisma's migration framework to generate and locally apply migrations when you start your system.
-If you are using `prisma` and your database already includes migrations then you must use **dev** mode, and not **prototyping** mode.
+- If `db.useMigrations` is `false` (the default), Keystone will use Prisma Migrate to update your database so that it matches your schema. It may lose data while updating your database so you should only use this mode in initial development.
+- If `db.useMigrations` is `true`, Keystone will use Prisma Migrate to apply any existing migrations and prompt you to create a migration if there was a change to your schema.
 
 #### keystone-next start
 
@@ -65,14 +56,25 @@ The `build` command is used to generate a built version of Admin UI Next.js appl
 #### keystone-next reset
 
 This command invokes `prisma migrate reset` to reset your local database to a state consistent with the migrations directory.
-Use this command before running `keystone-next generate` to ensure that a valid migration is created.
+You generally shouldn't need to use `keystone-next reset` directly unless you want to have a fresh database because `keystone-next dev` and `keystone-next generate` will prompt you to reset your database when it determines your database is inconsistent with your migrations.
 
 #### keystone-next generate
 
-This command will generate a migration schema based on the current state of your database and your Keystone schema.
-This command should be run after running `keystone-next reset` and the generated migration artefact should be added to your repository so that it can be shared with other developers and deployed in production.
+> keystone-next generate is only usable when db.useMigrations is set to true in your config
+
+This command will generate a migration based on the current state of your database and your Keystone schema.
+The generated migration artefact should be added to your repository so that it can be shared with other developers and deployed in production.
+You should generally use `keystone-next dev` instead of `keystone-next generate` because it will prompt you to create a migration when you need to.
+You only need to use `keystone-next generate` when you want to generate an empty migration to do something that isn't a result of a schema change or generate a migration in a non-interactive environment.
+`keystone-next generate` accepts the following options as command line arguments or as prompts:
+
+- `--name` to set the name of the migration
+- `--accept-data-loss` to allow resetting the database when it is out of sync with the migrations
+- `--allow-empty` to create an empty migration when there are no changes to the schema
 
 #### keystone-next deploy
+
+> keystone-next deploy is only usable when db.useMigrations is set to true in your config
 
 This command will apply any migrations in the migrations directory.
 It should be used in production to apply migrations before starting the server.

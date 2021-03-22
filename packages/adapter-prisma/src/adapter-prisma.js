@@ -1,7 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
-import cuid from 'cuid';
 import { getGenerator, formatSchema } from '@prisma/sdk';
 import {
   BaseKeystoneAdapter,
@@ -57,13 +55,6 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     }
   }
 
-  _runPrismaCmd(cmd) {
-    return execSync(`yarn prisma ${cmd} --schema "${this.schemaPath}"`, {
-      env: { ...process.env, DATABASE_URL: this._url() },
-      encoding: 'utf-8',
-    });
-  }
-
   async deploy(rels) {
     // Apply any migrations which haven't already been applied
     await this._prepareSchema(rels);
@@ -112,16 +103,15 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     if (this.migrationMode === 'prototype') {
       // Sync the database directly, without generating any migration
       await runPrototypeMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
-    } else if (this.migrationMode === 'createOnly') {
-      // Generate a migration, but do not apply it
-      this._runPrismaCmd(`migrate dev --create-only --name keystone-${cuid()} --preview-feature`);
     } else if (this.migrationMode === 'dev') {
       // Generate and apply a migration if required.
       await devMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
     } else if (this.migrationMode === 'none') {
       // Explicitly disable running any migrations
     } else {
-      throw new Error(`migrationMode must be one of 'dev', 'prototype', 'createOnly', or 'none`);
+      throw new Error(
+        `migrationMode must be one of 'dev', 'prototype', 'none-skip-client-generation', or 'none`
+      );
     }
   }
 
