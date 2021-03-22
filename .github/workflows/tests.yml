@@ -51,7 +51,6 @@ jobs:
       matrix:
         project:
           - docs-next
-          - tests/test-projects/basic
           - tests/test-projects/login
           - tests/test-projects/access-control
           - tests/test-projects/client-validation
