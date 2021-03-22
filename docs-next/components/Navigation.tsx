@@ -44,7 +44,6 @@ export const Navigation = () => {
         </NavItem>
       </Section>
       <Section label="Guides">
-        <NavItem href="/guides/installation">Installation</NavItem>
         <NavItem href="/guides/cli">Command Line</NavItem>
         <NavItem href="/guides/access-control" isPlaceholder>
           Access Control
