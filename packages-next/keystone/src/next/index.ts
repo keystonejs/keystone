@@ -1,6 +1,11 @@
 import { spawnSync, spawn } from 'child_process';
+import path from 'path';
+import { uriToCredentials } from '@prisma/sdk';
 import fs from 'fs-extra';
 import withPreconstruct from '@preconstruct/next';
+import { requireSource } from '../lib/requireSource';
+import { CONFIG_PATH } from '../scripts/utils';
+import { initConfig } from '../lib/initConfig';
 
 let hasAlreadyStarted = false;
 
@@ -56,11 +61,30 @@ import { KeystoneListsTypeInfo } from './types';
 export const lists: KeystoneListsAPI<KeystoneListsTypeInfo>;
 `
     );
+    const config = initConfig(requireSource(CONFIG_PATH).default);
+    if (config.db.adapter === 'prisma_sqlite') {
+      const creds = uriToCredentials(config.db.url);
+      const filename = path.resolve(
+        path.join(process.cwd(), '.keystone/prisma'),
+        creds.uri!.replace('file:', '')
+      );
+      fs.outputFileSync(
+        'node_modules/.keystone/prisma.js',
+        `module.exports = require('../../.keystone/prisma/generated-client');
+const path = require("path");
 
-    fs.outputFileSync(
-      'node_modules/.keystone/prisma.js',
-      `module.exports = require('../../.keystone/prisma/generated-client')`
-    );
+path.join(__dirname, ${JSON.stringify(
+          path.relative(path.resolve('node_modules/.keystone'), filename)
+        )});
+path.join(process.cwd(), ${JSON.stringify(path.relative(process.cwd(), filename))});
+`
+      );
+    } else {
+      fs.outputFileSync(
+        'node_modules/.keystone/prisma.js',
+        `module.exports = require('../../.keystone/prisma/generated-client');`
+      );
+    }
   }
   if (phase === 'phase-development-server' && !hasAlreadyStarted) {
     hasAlreadyStarted = true;
