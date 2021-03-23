@@ -63,6 +63,7 @@
   "preconstruct": {
     "entrypoints": [
       "index.ts",
+      "next/{index,graphql,api,generate-prisma}.ts",
       "schema/index.ts",
       "session/index.ts",
       "scripts/index.ts"

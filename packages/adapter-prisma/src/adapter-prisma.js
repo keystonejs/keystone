@@ -77,7 +77,9 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       await this.prisma.$connect();
       return;
     }
-    const PrismaClient = await this._getPrismaClient({ rels });
+    const PrismaClient = this._prismaClient
+      ? this._prismaClient
+      : await this._getPrismaClient({ rels });
     this.prisma = new PrismaClient({
       log: this.enableLogging && ['query'],
       datasources: { [this.provider]: { url: this._url() } },
