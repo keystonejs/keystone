@@ -154,10 +154,12 @@ class PrismaAdapter extends BaseKeystoneAdapter {
                 ) {
                   // We're the owner of the foreign key column
                   let format = f.getListByKey(f.refListKey).adapter._getFieldStorageFormat('id');
-                  let formatExtra = f.getListByKey(f.refListKey).adapter._getFieldStorageFormat('id', true);
+                  let formatExtra = f
+                    .getListByKey(f.refListKey)
+                    .adapter._getFieldStorageFormat('id', true);
                   return [
                     `${f.path} ${f.refListKey}? @relation("${relName}", fields: [${f.path}Id], references: [id])`,
-                    `${f.path}Id ${format}? @map("${r.columnName}") ${formatExtra}`
+                    `${f.path}Id ${format}? @map("${r.columnName}") ${formatExtra}`,
                   ];
                 } else if (r.cardinality === '1:1') {
                   return [`${f.path} ${f.refListKey}? @relation("${relName}")`];
@@ -373,7 +375,9 @@ class PrismaListAdapter extends BaseListAdapter {
     // let columnName = prismaSchemaParts[1];
     let columnType = prismaSchemaParts[2];
     // let columnIsRequired = prismaSchemaParts[3] == '?';
-    let columnExtras = prismaSchemaParts[4].split(/\s+/).filter(param => !param.match(/^@(id|default)/));
+    let columnExtras = prismaSchemaParts[4]
+      .split(/\s+/)
+      .filter(param => !param.match(/^@(id|default)/));
     return returnExtra ? columnExtras.join(' ') : columnType;
   }
 
