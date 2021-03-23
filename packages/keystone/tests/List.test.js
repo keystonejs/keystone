@@ -73,9 +73,6 @@ class MockFieldImplementation {
     this.config = {};
     this.hooks = {};
   }
-  getAdminMeta() {
-    return { path: 'id' };
-  }
   gqlOutputFields() {
     return ['id: ID'];
   }
@@ -399,73 +396,6 @@ test('labelResolver', () => {
     listExtras()
   );
   expect(list4.labelResolver({ email: 'a@example.com', id: '4' })).toEqual('4');
-});
-
-describe('getAdminMeta()', () => {
-  test('adminMeta() - Smoke test', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-    expect(adminMeta).not.toBeNull();
-  });
-
-  test('getAdminMeta() - labels', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-
-    expect(adminMeta.key).toEqual('Test');
-    expect(adminMeta.access).toEqual({
-      create: true,
-      delete: true,
-      read: true,
-      update: true,
-      auth: true,
-    });
-    expect(adminMeta.label).toEqual('Tests');
-    expect(adminMeta.singular).toEqual('Test');
-    expect(adminMeta.plural).toEqual('Tests');
-    expect(adminMeta.path).toEqual('tests');
-    expect(adminMeta.gqlNames).toEqual({
-      outputTypeName: 'Test',
-      itemQueryName: 'Test',
-      listQueryName: 'allTests',
-      listQueryMetaName: '_allTestsMeta',
-      listSortName: 'SortTestsBy',
-      listMetaName: '_TestsMeta',
-      deleteMutationName: 'deleteTest',
-      deleteManyMutationName: 'deleteTests',
-      updateMutationName: 'updateTest',
-      createMutationName: 'createTest',
-      updateManyMutationName: 'updateTests',
-      createManyMutationName: 'createTests',
-      whereInputName: 'TestWhereInput',
-      whereUniqueInputName: 'TestWhereUniqueInput',
-      updateInputName: 'TestUpdateInput',
-      createInputName: 'TestCreateInput',
-      updateManyInputName: 'TestsUpdateInput',
-      createManyInputName: 'TestsCreateInput',
-      relateToManyInputName: 'TestRelateToManyInput',
-      relateToOneInputName: 'TestRelateToOneInput',
-    });
-    expect(adminMeta.adminConfig).toEqual({
-      defaultColumns: 'name,email',
-      defaultSort: 'name',
-    });
-  });
-
-  test('getAdminMeta() - fields', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-
-    expect(adminMeta.fields).toHaveLength(5);
-    expect(adminMeta.fields[0].path).toEqual('id');
-    expect(adminMeta.fields[1].path).toEqual('name');
-    expect(adminMeta.fields[2].path).toEqual('email');
-    expect(adminMeta.fields[3].path).toEqual('other');
-    expect(adminMeta.fields[4].path).toEqual('writeOnce');
-  });
 });
 
 describe(`getGqlTypes()`, () => {
