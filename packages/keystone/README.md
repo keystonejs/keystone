@@ -13,21 +13,12 @@ const { Keystone } = require('@keystone-next/keystone-legacy');
 
 const keystone = new Keystone({
   adapter,
-  cookie,
-  cookieSecret,
   defaultAccess,
   onConnect,
   queryLimits,
-  sessionStore,
   schemaNames,
 });
 ```
-
-### `cookie`
-
-_**Default:**_ see Usage.
-
-A description of the cookie properties is included in the [express-session documentation](https://github.com/expressjs/session#cookie).
 
 #### `secure`
 
@@ -47,10 +38,6 @@ const keystone = new Keystone({
   },
 });
 ```
-
-### `cookieSecret`
-
-The secret used to sign session ID cookies. In production mode (`process.env.NODE_ENV === 'production'`) this option is required. In development mode, if undefined, a random `cookieSecret` will be generated each time Keystone starts (this will cause sessions to be reset between restarts).
 
 ### `defaultAccess`
 
@@ -89,21 +76,6 @@ const keystone = new Keystone({
 - `maxTotalResults`: limit of the total results of all relationship subqueries
 
 Note that `maxTotalResults` applies to the total results of all relationship queries separately, even if some are nested inside others.
-
-### `sessionStore`
-
-Sets the Express server's [session middleware](https://github.com/expressjs/session). This should be configured before deploying your app.
-
-This example uses the [`connect-mongo`](https://github.com/jdesboeufs/connect-mongo) middleware, but you can use [any of the stores that work with `express session`](https://github.com/expressjs/session#compatible-session-stores).
-
-```javascript
-const expressSession = require('express-session');
-const MongoStore = require('connect-mongo')(expressSession);
-
-const keystone = new Keystone({
-  sessionStore: new MongoStore({ url: 'mongodb://localhost/my-app' }),
-});
-```
 
 ### `schemaNames`
 

@@ -67,7 +67,6 @@ describe('Keystone.createList()', () => {
   test('basic', () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const keystone = new Keystone(config);
 
@@ -92,7 +91,6 @@ describe('Keystone.createList()', () => {
   test('Reserved words', () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const keystone = new Keystone(config);
 
@@ -114,7 +112,6 @@ describe('Keystone.createList()', () => {
   test('plugins', () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const keystone = new Keystone(config);
 
@@ -159,7 +156,6 @@ describe('keystone.prepare()', () => {
   test('returns a Promise', () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const keystone = new Keystone(config);
 
@@ -171,7 +167,6 @@ describe('keystone.prepare()', () => {
   test('returns the middlewares array', async () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const keystone = new Keystone(config);
     const { middlewares } = await keystone.prepare();
@@ -182,7 +177,6 @@ describe('keystone.prepare()', () => {
   test('handles apps:undefined', async () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const keystone = new Keystone(config);
     const { middlewares } = await keystone.prepare({ apps: undefined });
@@ -193,7 +187,6 @@ describe('keystone.prepare()', () => {
   test('handles apps:[]', async () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const keystone = new Keystone(config);
     const { middlewares } = await keystone.prepare({ apps: [] });
@@ -204,7 +197,6 @@ describe('keystone.prepare()', () => {
   test('Handles apps without a `prepareMiddleware`', async () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const keystone = new Keystone(config);
     // For less-brittle tests, we grab the list of middlewares when prepare is
@@ -219,7 +211,6 @@ describe('keystone.prepare()', () => {
   test('filters out null middleware results', async () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const keystone = new Keystone(config);
     // For less-brittle tests, we grab the list of middlewares when prepare is
@@ -234,7 +225,6 @@ describe('keystone.prepare()', () => {
   test('filters out empty middleware arrays', async () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const keystone = new Keystone(config);
     // For less-brittle tests, we grab the list of middlewares when prepare is
@@ -249,7 +239,6 @@ describe('keystone.prepare()', () => {
   test('returns middlewares', async () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const middleware = jest.fn(() => {});
     const keystone = new Keystone(config);
@@ -264,7 +253,6 @@ describe('keystone.prepare()', () => {
   test('flattens deeply nested middlewares', async () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const keystone = new Keystone(config);
     const fn0 = jest.fn(() => {});
@@ -281,7 +269,6 @@ describe('keystone.prepare()', () => {
   test('should create `internal` GraphQL schema instance', async () => {
     const config = {
       adapter: new MockAdapter(),
-      cookieSecret: 'secretForTesting',
     };
     const keystone = new Keystone(config);
 

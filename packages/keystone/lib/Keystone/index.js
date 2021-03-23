@@ -21,20 +21,7 @@ const { formatError } = require('./format-error');
 const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
 
 module.exports = class Keystone {
-  constructor({
-    defaultAccess,
-    adapter,
-    onConnect,
-    cookieSecret,
-    sessionStore,
-    queryLimits = {},
-    cookie = {
-      secure: process.env.NODE_ENV === 'production', // Default to true in production
-      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-      sameSite: false,
-    },
-    schemaNames = ['public'],
-  }) {
+  constructor({ defaultAccess, adapter, onConnect, queryLimits = {}, schemaNames = ['public'] }) {
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
@@ -42,9 +29,11 @@ module.exports = class Keystone {
     this.getListByKey = key => this.lists[key];
     this._schemas = {};
     this._sessionManager = new SessionManager({
-      cookieSecret,
-      cookie,
-      sessionStore,
+      cookie: {
+        secure: process.env.NODE_ENV === 'production', // Default to true in production
+        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+        sameSite: false,
+      },
     });
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
