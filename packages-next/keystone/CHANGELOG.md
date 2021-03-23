@@ -1,5 +1,16 @@
 # @keystone-next/keystone
 
+## 14.0.0
+
+### Major Changes
+
+- [#5168](https://github.com/keystonejs/keystone/pull/5168) [`343b74246`](https://github.com/keystonejs/keystone/commit/343b742468e01a6cf9003ee47ee2d2a6d9dbd011) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Fixed `withItemData` returning sessions that don't match an item rather than treating them as invalid
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @keystone-next/admin-ui@12.0.1
+
 ## 13.0.0
 
 ### Major Changes
