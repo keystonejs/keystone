@@ -130,7 +130,6 @@ async function setupServer({
     // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
     defaultAccess: { list: true, field: true },
     schemaNames,
-    cookieSecret: 'secretForTesting',
     ...keystoneOptions,
   });
 
