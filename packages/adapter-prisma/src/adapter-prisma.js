@@ -154,9 +154,10 @@ class PrismaAdapter extends BaseKeystoneAdapter {
                 ) {
                   // We're the owner of the foreign key column
                   let format = f.getListByKey(f.refListKey).adapter._getFieldStorageFormat('id');
+                  let formatExtra = f.getListByKey(f.refListKey).adapter._getFieldStorageFormat('id', true);
                   return [
                     `${f.path} ${f.refListKey}? @relation("${relName}", fields: [${f.path}Id], references: [id])`,
-                    `${f.path}Id ${format}? @map("${r.columnName}")`,
+                    `${f.path}Id ${format}? @map("${r.columnName}") ${formatExtra}`
                   ];
                 } else if (r.cardinality === '1:1') {
                   return [`${f.path} ${f.refListKey}? @relation("${relName}")`];
@@ -356,7 +357,7 @@ class PrismaListAdapter extends BaseListAdapter {
     }
   }
 
-  _getFieldStorageFormat(path) {
+  _getFieldStorageFormat(path, returnExtra = false) {
     let prismaSchema = this.fieldAdaptersByPath[path].getPrismaSchema();
     if (this.fieldAdaptersByPath[path].isRelationship) {
       prismaSchema = this.getListAdapterByKey(
@@ -367,8 +368,13 @@ class PrismaListAdapter extends BaseListAdapter {
       // TODO: Make proper hangle of fields with multiple schema items
       return '_MultipleFields';
     }
-    let prismaSchemaFormat = prismaSchema[0].replace(/^(\w+)\s+(\w+).+$/, '$2');
-    return prismaSchemaFormat;
+    let prismaSchemaLine = prismaSchema[0];
+    let prismaSchemaParts = prismaSchemaLine.match(/^\s*(\w+)\s+(\w+)(\?)?\s+(.+)\s*$/);
+    // let columnName = prismaSchemaParts[1];
+    let columnType = prismaSchemaParts[2];
+    // let columnIsRequired = prismaSchemaParts[3] == '?';
+    let columnExtras = prismaSchemaParts[4].split(/\s+/).filter(param => !param.match(/^@(id|default)/));
+    return returnExtra ? columnExtras.join(' ') : columnType;
   }
 
   async _create(_data) {
