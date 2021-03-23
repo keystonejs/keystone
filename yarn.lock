@@ -1857,11 +1857,6 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@iframely/embed.js@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@iframely/embed.js/-/embed.js-1.3.1.tgz#b37c19604ff28bc22b3200e4ffa9151f44d0319c"
-  integrity sha512-u2P0QV0KsI4+PNqFgHbURNzL0azsd7ibVENpSb7sAG/6E90z/qwti+vNQhYDcx5wwituwwY2XquUH0EfZvTtiA==
-
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
