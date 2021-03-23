@@ -1,5 +1,14 @@
 # @keystonejs/benchmarks
 
+## 5.2.3
+
+### Patch Changes
+
+- Updated dependencies [[`eae55db19`](https://github.com/keystonejs/keystone/commit/eae55db19b656e2bfa7b1e7d7aaf2f57b0a95299), [`343b74246`](https://github.com/keystonejs/keystone/commit/343b742468e01a6cf9003ee47ee2d2a6d9dbd011)]:
+  - @keystone-next/fields-legacy@23.2.0
+  - @keystone-next/keystone@14.0.0
+  - @keystone-next/test-utils-legacy@14.0.1
+
 ## 5.2.2
 
 ### Patch Changes

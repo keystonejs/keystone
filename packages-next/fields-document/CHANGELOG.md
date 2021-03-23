@@ -1,5 +1,17 @@
 # @keystone-next/fields-document
 
+## 3.2.0
+
+### Minor Changes
+
+- [#5173](https://github.com/keystonejs/keystone/pull/5173) [`7debecb86`](https://github.com/keystonejs/keystone/commit/7debecb86ea41eed98da80324482bd1c63781005) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added support for SQLite with Prisma
+
+### Patch Changes
+
+- Updated dependencies [[`eae55db19`](https://github.com/keystonejs/keystone/commit/eae55db19b656e2bfa7b1e7d7aaf2f57b0a95299)]:
+  - @keystone-next/fields-legacy@23.2.0
+  - @keystone-next/admin-ui@12.0.1
+
 ## 3.1.0
 
 ### Minor Changes

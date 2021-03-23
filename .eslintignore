@@ -2,4 +2,3 @@ node_modules
 coverage
 dist
 reports
-tests/test-projects/**/cypress

@@ -51,9 +51,16 @@ export class File extends Implementation {
   gqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
-        const itemValues = item[this.path];
+        let itemValues = item[this.path];
         if (!itemValues) {
           return null;
+        }
+        if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
+          // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
+          // https://github.com/prisma/prisma/issues/3786
+          try {
+            itemValues = JSON.parse(itemValues);
+          } catch (err) {}
         }
 
         return {
@@ -104,7 +111,13 @@ export class File extends Implementation {
           : cuid(),
     });
 
-    return { id, filename, originalFilename, mimetype, encoding, _meta };
+    const ret = { id, filename, originalFilename, mimetype, encoding, _meta };
+    if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
+      // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
+      // https://github.com/prisma/prisma/issues/3786
+      return JSON.stringify(ret);
+    }
+    return ret;
   }
 
   gqlUpdateInputFields() {
@@ -179,12 +192,6 @@ export class KnexFileInterface extends CommonFileInterface(KnexFieldAdapter) {
 export class PrismaFileInterface extends CommonFileInterface(PrismaFieldAdapter) {
   constructor() {
     super(...arguments);
-    if (this.listAdapter.parentAdapter.provider === 'sqlite') {
-      throw new Error(
-        `PrismaAdapter provider "sqlite" does not support field type "${this.field.constructor.name}"`
-      );
-    }
-
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
     if (this.config.isIndexed) {
@@ -195,6 +202,12 @@ export class PrismaFileInterface extends CommonFileInterface(PrismaFieldAdapter)
     }
   }
   getPrismaSchema() {
-    return [this._schemaField({ type: 'Json' })];
+    // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
+    // https://github.com/prisma/prisma/issues/3786
+    return [
+      this._schemaField({
+        type: this.listAdapter.parentAdapter.provider === 'sqlite' ? 'String' : 'Json',
+      }),
+    ];
   }
 }

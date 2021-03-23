@@ -1,5 +1,14 @@
 # keystone-next-app
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [[`7debecb86`](https://github.com/keystonejs/keystone/commit/7debecb86ea41eed98da80324482bd1c63781005), [`343b74246`](https://github.com/keystonejs/keystone/commit/343b742468e01a6cf9003ee47ee2d2a6d9dbd011)]:
+  - @keystone-next/fields-document@3.2.0
+  - @keystone-next/keystone@14.0.0
+  - @keystone-next/auth@19.0.0
+
 ## 0.0.3
 
 ### Patch Changes
