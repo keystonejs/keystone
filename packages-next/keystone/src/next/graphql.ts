@@ -1,5 +1,5 @@
 import { KeystoneConfig } from '@keystone-next/types';
-import { initConfig, createSystem, createApolloServerMicro } from '../..';
+import { initConfig, createSystem, createApolloServerMicro } from '..';
 
 export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient: any) {
   const initializedKeystoneConfig = initConfig(keystoneConfig);
