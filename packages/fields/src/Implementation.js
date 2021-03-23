@@ -168,31 +168,6 @@ class Field {
   gqlUpdateInputFields() {
     return [];
   }
-  getAdminMeta({ schemaName }) {
-    const schemaAccess = this.access[schemaName];
-    return this.extendAdminMeta({
-      label: this.label,
-      path: this.path,
-      type: this.constructor.name,
-      isRequired: this.isRequired,
-      isOrderable: this.isOrderable,
-      // We can only pass scalar default values through to the admin ui, not
-      // functions
-      defaultValue: typeof this.defaultValue !== 'function' ? this.defaultValue : undefined,
-      isPrimaryKey: this.isPrimaryKey,
-      ...this.adminConfig,
-      // NOTE: This data is serialised, so we're unable to pass through any
-      // access control _functions_. But we can still check for the boolean case
-      // and pass that through (we assume that if there is a function, it's a
-      // "maybe" true, so default it to true).
-      access: {
-        create: !!schemaAccess.create,
-        read: !!schemaAccess.read,
-        update: !!schemaAccess.update,
-      },
-      adminDoc: this.adminDoc,
-    });
-  }
   extendAdminMeta(meta) {
     return meta;
   }
