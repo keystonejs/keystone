@@ -5,10 +5,10 @@
   "main": "dist/options.cjs.js",
   "module": "dist/options.esm.js",
   "peerDependencies": {
-    "react": "^17.0.1"
+    "react": "^17.0.2"
   },
   "devDependencies": {
-    "react": "^17.0.1"
+    "react": "^17.0.2"
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
