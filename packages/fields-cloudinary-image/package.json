@@ -10,32 +10,12 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@arch-ui/button": "^0.0.23",
-    "@arch-ui/fields": "^3.0.6",
-    "@arch-ui/input": "^0.1.12",
-    "@arch-ui/layout": "^0.2.15",
-    "@arch-ui/lozenge": "^0.0.18",
-    "@arch-ui/theme": "^0.0.12",
-    "@babel/runtime": "^7.13.10",
-    "@emotion/core": "^10.1.1",
-    "@iframely/embed.js": "^1.3.1",
     "@keystone-next/adapter-knex-legacy": "^13.2.2",
     "@keystone-next/adapter-mongoose-legacy": "^11.1.2",
-    "@keystone-next/fields-legacy": "^23.2.0",
-    "@primer/octicons-react": "^11.3.0",
-    "image-extensions": "^1.1.0",
-    "prop-types": "^15.7.2",
-    "query-string": "^6.14.1",
-    "react": "^17.0.1"
+    "@keystone-next/fields-legacy": "^23.2.0"
   },
   "main": "dist/fields-cloudinary-image-legacy.cjs.js",
   "module": "dist/fields-cloudinary-image-legacy.esm.js",
-  "preconstruct": {
-    "entrypoints": [
-      "index.js",
-      "views/*.js"
-    ]
-  },
   "devDependencies": {
     "@keystone-next/file-adapters-legacy": "*",
     "cloudinary": "^1.25.1",
