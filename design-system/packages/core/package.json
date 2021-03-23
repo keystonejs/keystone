@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
+    "@emotion/cache": "^10.0.27",
     "@emotion/react": "11.1.5",
     "facepaint": "^1.2.1"
   },

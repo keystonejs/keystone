@@ -1,15 +1,9 @@
-const path = require('path');
 const { gql } = require('apollo-server-express');
 const { print } = require('graphql/language/printer');
 
 const { Text, Checkbox, Float, Relationship, Integer } = require('@keystone-next/fields-legacy');
 const { List } = require('../lib/ListTypes');
 const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
-
-let fieldsPackagePath = path.dirname(require.resolve('@keystone-next/fields-legacy/package.json'));
-function resolveViewPath(viewPath) {
-  return path.join(fieldsPackagePath, 'types', viewPath);
-}
 
 Text.adapters['mock'] = {};
 Checkbox.adapters['mock'] = {};
@@ -122,7 +116,6 @@ class MockFieldAdapter {
 
 const MockIdType = {
   implementation: MockFieldImplementation,
-  views: {},
   adapters: { mock: MockFieldAdapter },
 };
 
@@ -292,39 +285,6 @@ describe('new List()', () => {
     expect(idOnlyList.fields).toHaveLength(1);
     expect(list.fields[0]).toBeInstanceOf(MockIdType.implementation);
     expect(list.fieldsByPath['id']).toBeInstanceOf(MockIdType.implementation);
-  });
-
-  test('new List() - views', () => {
-    const list = setup();
-    expect(list.views).toEqual({
-      id: {},
-      name: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      email: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      other: {
-        Controller: resolveViewPath('Relationship/views/Controller'),
-        Field: resolveViewPath('Relationship/views/Field'),
-        Filter: resolveViewPath('Relationship/views/Filter'),
-        Cell: resolveViewPath('Relationship/views/Cell'),
-      },
-      hidden: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      writeOnce: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-    });
   });
 
   test('new List() - adapter', () => {
