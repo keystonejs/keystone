@@ -31,7 +31,7 @@
     "@arch-ui/tooltip": "^0.1.15",
     "@arch-ui/typography": "^0.0.19",
     "@babel/runtime": "^7.13.10",
-    "@emotion/core": "^10.1.1",
+    "@emotion/core": "^11.0.0",
     "@keystone-next/access-control-legacy": "^9.0.0",
     "@keystone-next/adapter-knex-legacy": "^13.2.2",
     "@keystone-next/adapter-mongoose-legacy": "^11.1.2",
