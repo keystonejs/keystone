@@ -12,8 +12,7 @@ export const withKeystone = (internalConfig: any = {}) => (
     | 'phase-development-server',
   thing: any
 ) => {
-  if (phase === 'phase-development-server' && !hasAlreadyStarted) {
-    hasAlreadyStarted = true;
+  if (phase === 'phase-development-server' || phase === 'phase-production-build') {
     fs.outputFileSync(
       'node_modules/.keystone/graphql.js',
       `import keystoneConfig from '../../keystone';
@@ -62,6 +61,9 @@ export const lists: KeystoneListsAPI<KeystoneListsTypeInfo>;
       'node_modules/.keystone/prisma.js',
       `module.exports = require('../../.keystone/prisma/generated-client')`
     );
+  }
+  if (phase === 'phase-development-server' && !hasAlreadyStarted) {
+    hasAlreadyStarted = true;
 
     spawnSync('node', [require.resolve('@keystone-next/keystone/next/generate-prisma')], {
       stdio: 'inherit',
@@ -71,7 +73,7 @@ export const lists: KeystoneListsAPI<KeystoneListsTypeInfo>;
     setTimeout(() => {
       spawn('node', [require.resolve('@keystone-next/keystone/bin/cli')], {
         stdio: 'inherit',
-        env: { ...process.env, PORT: process.env.PORT || 3001 },
+        env: { ...process.env, PORT: process.env.PORT || '3001' },
       });
     }, 100);
   }
