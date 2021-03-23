@@ -5,13 +5,7 @@ const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
 const { execute } = require('graphql');
 const { GraphQLUpload } = require('graphql-upload');
-const {
-  arrayToObject,
-  objMerge,
-  flatten,
-  unique,
-  filterValues,
-} = require('@keystone-next/utils-legacy');
+const { objMerge, flatten, unique, filterValues } = require('@keystone-next/utils-legacy');
 const {
   validateFieldAccessControl,
   validateListAccessControl,
@@ -452,16 +446,6 @@ module.exports = class Keystone {
    */
   async disconnect() {
     await this.adapter.disconnect();
-  }
-
-  getAdminViews({ schemaName }) {
-    return {
-      listViews: arrayToObject(
-        this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
-        'key',
-        list => list.views
-      ),
-    };
   }
 
   getTypeDefs({ schemaName }) {
