@@ -1,6 +1,5 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
-import isPromise from 'p-is-promise';
 import semver from 'semver';
 
 export const noop = <T>(x: T): T => x;
@@ -211,45 +210,6 @@ export const createLazyDeferred = <T, S>() => {
     },
   };
 };
-
-/**
- * Given an array of functions which may throw a Promise when executed, we want
- * to ensure all functions are executed, reducing any thrown Promises to a
- * single Promise, which is itself rethrown.
- * If no Promises are thrown, this is the equivalent of a .map
- * @param {Array} executors
- */
-export const captureSuspensePromises = <T>(executors: (() => T)[]) => {
-  const values: T[] = [];
-  const promises = executors
-    .map(executor => {
-      try {
-        values.push(executor());
-      } catch (loadingPromiseOrError) {
-        // An actual error was thrown, so we want to bubble that up
-        if (!isPromise(loadingPromiseOrError)) {
-          throw loadingPromiseOrError;
-        }
-        // Return a Suspense promise
-        return loadingPromiseOrError;
-      }
-    })
-    .filter(Boolean);
-
-  if (promises.length) {
-    // All the suspense promises are reduced to a single promise then rethrown
-    throw Promise.all(promises);
-  }
-
-  return values;
-};
-
-/**
- * Returns the length of all arrays in obj
- * @param {*} obj An objects whose property values are arrays.
- */
-export const countArrays = (obj: Record<string, any[]>) =>
-  Object.values(obj).reduce((total, items) => total + (items ? items.length : 0), 0);
 
 /**
  * Compares two version strings or number arrays in the major.minor.patch format.
