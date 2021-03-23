@@ -1,4 +1,6 @@
-import { Markdown } from '../../../components/Page';
+import { Page, components } from '../../../components/Page';
+import { getHeadings } from '../../../lib/getHeadings';
+import { MDXProvider } from '@mdx-js/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -134,4 +136,15 @@ The files come with three npm scripts you can run locally.
 - Read more about the Keystone config inside `keystone.ts` over at [System Configuration API](/apis/config).
 - Read more about how you create a database schema for Keystone over at [Schema API](/apis/schema).
 
-export default ({ children }) => <Markdown>{children}</Markdown>;
+export default ({ children }) => {
+  const headings = getHeadings(children);
+  return (
+    <Page
+      title={'Getting started'}
+      headings={headings}
+      isProse
+    >
+      <MDXProvider components={components}>{children}</MDXProvider>
+    </Page>
+  );
+};
