@@ -154,7 +154,6 @@
     "collectCoverageFrom": [
       "packages/**/*.js",
       "!packages/**/dist/**",
-      "!packages/app-admin-ui/client/**",
       "!packages/core/tests/default-entry/index.js",
       "!packages/fields/**/views/**",
       "!packages/fields/**/test-fixtures.js",
