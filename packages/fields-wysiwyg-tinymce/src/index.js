@@ -1,4 +1,4 @@
-import { dirname, join } from 'path';
+import { dirname } from 'path';
 import express from 'express';
 import { Text } from '@keystone-next/fields-legacy';
 import { WysiwygImplementation } from './Implementation';
@@ -10,18 +10,9 @@ function prepareMiddleware() {
   return app;
 }
 
-const pkgDir = dirname(
-  require.resolve('@keystone-next/fields-wysiwyg-tinymce-legacy/package.json')
-);
-
 export let Wysiwyg = {
   type: 'Wysiwyg',
   implementation: WysiwygImplementation,
-  views: {
-    Controller: Text.views.Controller,
-    Field: join(pkgDir, 'views/Field'),
-    Filter: Text.views.Filter,
-  },
   adapters: Text.adapters,
   prepareMiddleware,
 };
