@@ -3,52 +3,25 @@ const flattenDeep = require('lodash.flattendeep');
 const memoize = require('micro-memoize');
 const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
-const { execute, print } = require('graphql');
+const { execute } = require('graphql');
 const { GraphQLUpload } = require('graphql-upload');
-const {
-  arrayToObject,
-  objMerge,
-  flatten,
-  unique,
-  filterValues,
-} = require('@keystone-next/utils-legacy');
+const { objMerge, flatten, unique, filterValues } = require('@keystone-next/utils-legacy');
 const {
   validateFieldAccessControl,
   validateListAccessControl,
-  validateCustomAccessControl,
   validateAuthAccessControl,
 } = require('@keystone-next/access-control-legacy');
 const { SessionManager } = require('@keystone-next/session-legacy');
-const { AppVersionProvider, appVersionMiddleware } = require('@keystone-next/app-version-legacy');
 
 const { List } = require('../ListTypes');
-const { DEFAULT_DIST_DIR } = require('../../constants');
-const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
+const { ListAuthProvider, ListCRUDProvider } = require('../providers');
 const { formatError } = require('./format-error');
 
 // composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
 const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
 
 module.exports = class Keystone {
-  constructor({
-    defaultAccess,
-    adapter,
-    onConnect,
-    cookieSecret,
-    sessionStore,
-    queryLimits = {},
-    cookie = {
-      secure: process.env.NODE_ENV === 'production', // Default to true in production
-      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-      sameSite: false,
-    },
-    schemaNames = ['public'],
-    appVersion = {
-      version: '1.0.0',
-      addVersionToHttpHeaders: true,
-      access: true,
-    },
-  }) {
+  constructor({ defaultAccess, adapter, onConnect, queryLimits = {}, schemaNames = ['public'] }) {
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
@@ -56,26 +29,18 @@ module.exports = class Keystone {
     this.getListByKey = key => this.lists[key];
     this._schemas = {};
     this._sessionManager = new SessionManager({
-      cookieSecret,
-      cookie,
-      sessionStore,
+      cookie: {
+        secure: process.env.NODE_ENV === 'production', // Default to true in production
+        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+        sameSite: false,
+      },
     });
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
-    this.appVersion = appVersion;
 
     this._listCRUDProvider = new ListCRUDProvider();
-    this._customProvider = new CustomProvider({ schemaNames, defaultAccess: this.defaultAccess });
-    this._providers = [
-      this._listCRUDProvider,
-      this._customProvider,
-      new AppVersionProvider({
-        version: appVersion.version,
-        access: appVersion.access,
-        schemaNames,
-      }),
-    ];
+    this._providers = [this._listCRUDProvider];
 
     if (adapter) {
       this.adapter = adapter;
@@ -95,7 +60,6 @@ module.exports = class Keystone {
   _getAccessControlContext({ schemaName, authentication, skipAccessControl }) {
     if (skipAccessControl) {
       return {
-        getCustomAccessControlForUser: () => true,
         getListAccessControlForUser: () => true,
         getFieldAccessControlForUser: () => true,
         getAuthAccessControlForUser: () => true,
@@ -104,23 +68,6 @@ module.exports = class Keystone {
     // memoizing to avoid requests that hit the same type multiple times.
     // We do it within the request callback so we can resolve it based on the
     // request info (like who's logged in right now, etc)
-    const getCustomAccessControlForUser = memoize(
-      async (item, args, context, info, access, gqlName) => {
-        return validateCustomAccessControl({
-          access: access[schemaName],
-          args: {
-            item,
-            args,
-            context,
-            info,
-            authentication: authentication && authentication.item ? authentication : {},
-            gqlName,
-          },
-        });
-      },
-      { isPromise: true }
-    );
-
     const getListAccessControlForUser = memoize(
       async (
         access,
@@ -192,7 +139,6 @@ module.exports = class Keystone {
     );
 
     return {
-      getCustomAccessControlForUser,
       getListAccessControlForUser,
       getFieldAccessControlForUser,
       getAuthAccessControlForUser,
@@ -310,10 +256,6 @@ module.exports = class Keystone {
     this._listCRUDProvider.lists.push(list);
     list.initFields();
     return list;
-  }
-
-  extendGraphQLSchema({ types = [], queries = [], mutations = [], subscriptions = [] }) {
-    return this._customProvider.extendGraphQLSchema({ types, queries, mutations, subscriptions });
   }
 
   _consolidateRelationships() {
@@ -495,37 +437,6 @@ module.exports = class Keystone {
     await this.adapter.disconnect();
   }
 
-  getAdminMeta({ schemaName }) {
-    // We've consciously made a design choice that the `read` permission on a
-    // list is a master switch in the Admin UI (not the GraphQL API).
-    // Justification: If you want to Create without the Read permission, you
-    // technically don't have permission to read the result of your creation.
-    // If you want to Update an item, you can't see what the current values
-    // are. If you want to delete an item, you'd need to be given direct
-    // access to it (direct URI), but can't see anything about that item. And
-    // in fact, being able to load a page with a 'delete' button on it
-    // violates the read permission as it leaks the fact that item exists.
-    // In all these cases, the Admin UI becomes unnecessarily complex.
-    // So we only allow all these actions if you also have read access.
-    const lists = arrayToObject(
-      this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
-      'key',
-      list => list.getAdminMeta({ schemaName })
-    );
-
-    return { lists };
-  }
-
-  getAdminViews({ schemaName }) {
-    return {
-      listViews: arrayToObject(
-        this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
-        'key',
-        list => list.views
-      ),
-    };
-  }
-
   getTypeDefs({ schemaName }) {
     const queries = unique(flatten(this._providers.map(p => p.getQueries({ schemaName }))));
     const mutations = unique(flatten(this._providers.map(p => p.getMutations({ schemaName }))));
@@ -572,15 +483,8 @@ module.exports = class Keystone {
     );
   }
 
-  dumpSchema(schemaName = 'public') {
-    return this.getTypeDefs({ schemaName })
-      .map(t => print(t))
-      .join('\n');
-  }
-
   async _prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors }) {
     return flattenDeep([
-      this.appVersion.addVersionToHttpHeaders && appVersionMiddleware(this.appVersion.version),
       // Used by other middlewares such as authentication strategies. Important
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
@@ -600,13 +504,7 @@ module.exports = class Keystone {
           ...apps,
         ]
           .filter(({ prepareMiddleware } = {}) => !!prepareMiddleware)
-          .map(app =>
-            app.prepareMiddleware({
-              keystone: this,
-              dev,
-              distDir: distDir || DEFAULT_DIST_DIR,
-            })
-          )
+          .map(app => app.prepareMiddleware({ keystone: this, dev, distDir: distDir || 'dist' }))
       )),
     ]).filter(middleware => !!middleware);
   }
@@ -621,7 +519,7 @@ module.exports = class Keystone {
     this.createApolloServer({ schemaName: 'internal' });
     const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
     // These function can't be called after prepare(), so make them throw an error from now on.
-    ['extendGraphQLSchema', 'createList', 'createAuthStrategy'].forEach(f => {
+    ['createList', 'createAuthStrategy'].forEach(f => {
       this[f] = () => {
         throw new Error(`keystone.${f} must be called before keystone.prepare()`);
       };

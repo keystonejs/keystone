@@ -4,8 +4,8 @@ import { ButtonHTMLAttributes, forwardRef } from 'react';
 import { jsx, useTheme } from '@keystone-ui/core';
 import { XIcon } from '@keystone-ui/icons/icons/XIcon';
 import { CalendarIcon } from '@keystone-ui/icons/icons/CalendarIcon';
-import { Adornment, AdornmentWrapper } from './Adornments';
 import { useInputTokens, useInputStyles } from '../..';
+import { Adornment, AdornmentWrapper } from './Adornments';
 
 type ButtonProps = {
   invalid?: boolean;

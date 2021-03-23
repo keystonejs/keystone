@@ -1,6 +1,6 @@
+import Path from 'path';
 // @ts-ignore
 import withPreconstruct from '@preconstruct/next';
-import Path from 'path';
 
 export const config = withPreconstruct({
   webpack(config: any) {
@@ -12,6 +12,11 @@ export const config = withPreconstruct({
         require.resolve('@keystone-next/admin-ui/package.json')
       ),
     };
+    config.externals = [
+      ...config.externals,
+      /@keystone-next\/keystone/,
+      /prisma[\/\\]generated-client/,
+    ];
     return config;
   },
 });

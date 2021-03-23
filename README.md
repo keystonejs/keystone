@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="website/static/readme-header-next.png" width="445">
+  <img src="assets/readme-header-next.png" width="445">
   <br><br>
   <p><b>A scalable platform and CMS to build Node.js applications.</b></p>
   <p><code>schema => ({ GraphQL, AdminUI })</code></p>
@@ -89,4 +89,4 @@ KeystoneJS adheres to the [Contributor Covenant Code of Conduct](/code-of-conduc
 
 ## License
 
-Copyright (c) 2021 Jed Watson. Licensed under the MIT License.
+Copyright (c) 2021 Thinkmill Labs Pty Ltd. Licensed under the MIT License.

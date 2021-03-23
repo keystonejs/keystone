@@ -197,6 +197,9 @@ function DocumentNode({
         />
       );
     }
+    case 'link': {
+      return <renderers.inline.link href={node.href as string}>{children}</renderers.inline.link>;
+    }
   }
   return <Fragment>{children}</Fragment>;
 }

@@ -1,7 +1,7 @@
-const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 import { Text } from '@keystone-next/fields-legacy';
 import { Unsplash } from './';
+const path = require('path');
 
 // Field configurations
 export const name = 'Unsplash';
@@ -49,5 +49,5 @@ export const storedValues = () => [
 
 export const supportedFilters = adapterName => [
   'null_equality',
-  adapterName !== 'prisma_postgresql' && 'in_empty_null',
+  !['prisma_postgresql', 'prisma_sqlite'].includes(adapterName) && 'in_empty_null',
 ];

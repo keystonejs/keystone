@@ -1,8 +1,8 @@
+import fs from 'fs';
+import path from 'path';
 import { LocalFileAdapter } from '@keystone-next/file-adapters-legacy';
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
-import fs from 'fs';
-import path from 'path';
 import Text from '../Text';
 import File from './';
 
@@ -89,5 +89,5 @@ export const afterAll = () => {
 
 export const supportedFilters = adapterName => [
   'null_equality',
-  adapterName !== 'prisma_postgresql' && 'in_empty_null',
+  !['prisma_postgresql'].includes(adapterName) && 'in_empty_null',
 ];

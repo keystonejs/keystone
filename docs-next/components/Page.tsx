@@ -2,13 +2,13 @@
 import { Fragment, ReactNode } from 'react';
 import Head from 'next/head';
 import { useRef, useState } from 'react';
-import { getHeadings, Heading } from '../lib/getHeadings';
 import { jsx } from '@keystone-ui/core';
-import { Code, InlineCode } from '../components/Code';
-import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
 import { MDXProvider } from '@mdx-js/react';
 import cx from 'classnames';
 import Link from 'next/link';
+import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
+import { Code, InlineCode } from '../components/Code';
+import { getHeadings, Heading } from '../lib/getHeadings';
 import { Navigation } from './Navigation';
 import { TableOfContents } from './TableOfContents';
 
@@ -144,7 +144,7 @@ export const components = {
 export const Markdown = ({ children }: { children: ReactNode }) => {
   const headings = getHeadings(children);
   return (
-    <Page headings={headings} title={headings[0].label} isProse>
+    <Page headings={headings} isProse title={headings[0].label}>
       <MDXProvider components={components}>{children}</MDXProvider>
     </Page>
   );

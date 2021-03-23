@@ -1,58 +1,34 @@
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { Config } from 'apollo-server-express';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
-import { ApolloServer } from 'apollo-server-express';
 import { graphqlUploadExpress } from 'graphql-upload';
-// @ts-ignore
-import { formatError } from '@keystone-next/keystone-legacy/lib/Keystone/format-error';
 import type { KeystoneConfig, CreateContext, SessionStrategy } from '@keystone-next/types';
 import { createAdminUIServer } from '@keystone-next/admin-ui/system';
-import { createSessionContext } from '../session';
+import { createApolloServerExpress } from './createApolloServer';
 
 const addApolloServer = ({
   server,
   graphQLSchema,
   createContext,
   sessionStrategy,
+  apolloConfig,
 }: {
   server: express.Express;
   graphQLSchema: GraphQLSchema;
   createContext: CreateContext;
   sessionStrategy?: SessionStrategy<any>;
+  apolloConfig?: Config;
 }) => {
-  const apolloServer = new ApolloServer({
-    uploads: false,
-    schema: graphQLSchema,
-    // FIXME: allow the dev to control where/when they get a playground
-    playground: { settings: { 'request.credentials': 'same-origin' } },
-    formatError, // TODO: this needs to be discussed
-    context: async ({ req, res }: { req: IncomingMessage; res: ServerResponse }) =>
-      createContext({
-        sessionContext: sessionStrategy
-          ? await createSessionContext(sessionStrategy, req, res, createContext)
-          : undefined,
-        req,
-      }),
-    // FIXME: support for apollo studio tracing
-    // ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
-    //   ? { tracing: true }
-    //   : {
-    //       engine: false,
-    //       // Only enable tracing in dev mode so we can get local debug info, but
-    //       // don't bother returning that info on prod when the `engine` is
-    //       // disabled.
-    //       tracing: dev,
-    //     }),
-    // FIXME: Support for generic custom apollo configuration
-    // ...apolloConfig,
+  const apolloServer = createApolloServerExpress({
+    graphQLSchema,
+    createContext,
+    sessionStrategy,
+    apolloConfig,
   });
+  server.use(graphqlUploadExpress());
   // FIXME: Support custom API path via config.graphql.path.
   // Note: Core keystone uses '/admin/api' as the default.
-  // FIXME: Support for file handling configuration
-  // maxFileSize: 200 * 1024 * 1024,
-  // maxFiles: 5,
-  server.use(graphqlUploadExpress());
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql', cors: false });
 };
 
@@ -79,7 +55,13 @@ export const createExpressServer = async (
   const sessionStrategy = config.session ? config.session() : undefined;
 
   if (isVerbose) console.log('✨ Preparing GraphQL Server');
-  addApolloServer({ server, graphQLSchema, createContext, sessionStrategy });
+  addApolloServer({
+    server,
+    graphQLSchema,
+    createContext,
+    sessionStrategy,
+    apolloConfig: config.graphql?.apolloConfig,
+  });
 
   if (config.ui?.isDisabled) {
     if (isVerbose) console.log('✨ Skipping Admin UI app');

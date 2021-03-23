@@ -1,6 +1,5 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
-import isPromise from 'p-is-promise';
 import semver from 'semver';
 
 export const noop = <T>(x: T): T => x;
@@ -145,18 +144,11 @@ export const arrayToObject = <V extends string, T extends Record<string, V>, R>(
  */
 export const flatten = <T>(arr: T[][]) => Array.prototype.concat(...arr);
 
-// flatMap([{ vals: [2, 2] }, { vals: [3] }], x => x.vals) => [2, 2, 3]
-export const flatMap = <T, U>(arr: T[], fn: (a: T) => U[]) => flatten(arr.map(fn));
-
 // { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar: 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
 export const zipObj = <V, T extends Record<string, V[]>>(obj: T) =>
   Object.values(obj)[0].map((_, i) =>
     Object.keys(obj).reduce((acc, k) => ({ ...acc, [k]: obj[k][i] }), {} as Record<keyof T, V>)
   );
-
-// compose([f, g, h])(o) = h(g(f(o)))
-export const compose = <T>(fns: ((a: T) => T)[]) => (o: T): T =>
-  fns.reduce((acc, fn) => fn(acc), o);
 
 export const mergeWhereClause = (
   queryArgs: Record<string, any>,
@@ -220,45 +212,6 @@ export const createLazyDeferred = <T, S>() => {
 };
 
 /**
- * Given an array of functions which may throw a Promise when executed, we want
- * to ensure all functions are executed, reducing any thrown Promises to a
- * single Promise, which is itself rethrown.
- * If no Promises are thrown, this is the equivalent of a .map
- * @param {Array} executors
- */
-export const captureSuspensePromises = <T>(executors: (() => T)[]) => {
-  const values: T[] = [];
-  const promises = executors
-    .map(executor => {
-      try {
-        values.push(executor());
-      } catch (loadingPromiseOrError) {
-        // An actual error was thrown, so we want to bubble that up
-        if (!isPromise(loadingPromiseOrError)) {
-          throw loadingPromiseOrError;
-        }
-        // Return a Suspense promise
-        return loadingPromiseOrError;
-      }
-    })
-    .filter(Boolean);
-
-  if (promises.length) {
-    // All the suspense promises are reduced to a single promise then rethrown
-    throw Promise.all(promises);
-  }
-
-  return values;
-};
-
-/**
- * Returns the length of all arrays in obj
- * @param {*} obj An objects whose property values are arrays.
- */
-export const countArrays = (obj: Record<string, any[]>) =>
-  Object.values(obj).reduce((total, items) => total + (items ? items.length : 0), 0);
-
-/**
  * Compares two version strings or number arrays in the major.minor.patch format.
  * @param {Array<Number>|String} comp The version to compare.
  * @param {Array<Number>|String} base The version against which to compare.
@@ -288,17 +241,3 @@ export const versionGreaterOrEqualTo = (
  * @returns The new string
  */
 export const upcase = (str: string) => str.substr(0, 1).toUpperCase() + str.substr(1);
-
-/**
- * Iteratively execute a callback against each item in an array.
- * @param {Array} array An array of items.
- * @param {Function} callback A callback function returning a promise.
- */
-export const asyncForEach = async <T>(
-  array: T[],
-  callback: (item: T, index: number, array: T[]) => Promise<void>
-) => {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array);
-  }
-};

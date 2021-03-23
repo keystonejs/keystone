@@ -1,10 +1,15 @@
+import { IncomingMessage } from 'http';
 import type { ConnectOptions } from 'mongoose';
 import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
-import { IncomingMessage } from 'http';
+import type { Config } from 'apollo-server-express';
 
-import type { ListHooks } from './hooks';
-import type { ListAccessControl, FieldAccessControl } from './access-control';
+import type { KeystoneContext } from '..';
+
+import { CreateContext } from '../core';
+import type { BaseKeystone } from '../base';
+import { SessionStrategy } from '../session';
+import type { MaybePromise } from '../utils';
 import type {
   ListSchemaConfig,
   ListConfig,
@@ -15,12 +20,8 @@ import type {
   MaybeItemFunction,
   // CacheHint,
 } from './lists';
-
-import type { KeystoneContext } from '..';
-import { CreateContext } from '../core';
-import type { BaseKeystone } from '../base';
-import { SessionStrategy } from '../session';
-import type { MaybePromise } from '../utils';
+import type { ListAccessControl, FieldAccessControl } from './access-control';
+import type { ListHooks } from './hooks';
 
 export type KeystoneConfig = {
   lists: ListSchemaConfig;
@@ -30,6 +31,13 @@ export type KeystoneConfig = {
   session?: () => SessionStrategy<any>;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
+  /** Experimental config options */
+  experimental?: {
+    /** Enables nextjs graphql api route mode */
+    enableNextJsGraphqlApiEndpoint?: boolean;
+    /** Enable Prisma+SQLite support */
+    prismaSqlite?: boolean;
+  };
 };
 
 // config.lists
@@ -56,9 +64,16 @@ export type DatabaseConfig = DatabaseCommon &
   (
     | {
         adapter: 'prisma_postgresql';
+        useMigrations?: boolean;
         enableLogging?: boolean;
         getPrismaPath?: (arg: { prismaSchema: any }) => string;
         getDbSchemaName?: (arg: { prismaSchema: any }) => string;
+      }
+    | {
+        adapter: 'prisma_sqlite';
+        useMigrations?: boolean;
+        enableLogging?: boolean;
+        getPrismaPath?: (arg: { prismaSchema: any }) => string;
       }
     | { adapter: 'knex'; dropDatabase?: boolean; schemaName?: string }
     | { adapter: 'mongoose'; mongooseOptions?: { mongoUri?: string } & ConnectOptions }
@@ -109,6 +124,11 @@ export type GraphQLConfig = {
   queryLimits?: {
     maxTotalResults?: number;
   };
+  /**
+   *  Additional options to pass into the ApolloServer constructor.
+   *  @see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor
+   */
+  apolloConfig?: Config;
 };
 
 // config.extendGraphqlSchema

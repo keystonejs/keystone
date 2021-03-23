@@ -1,8 +1,8 @@
 import inflection from 'inflection';
-import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
 import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { Implementation } from '../../Implementation';
 
 function initOptions(options) {
   let optionsArray = options;
@@ -182,7 +182,7 @@ export class PrismaSelectInterface extends CommonSelectInterface(PrismaFieldAdap
     this.isUnique = !!this.config.isUnique;
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
     this._prismaType =
-      this.config.dataType === 'enum'
+      this.config.dataType === 'enum' && this.listAdapter.parentAdapter.provider !== 'sqlite'
         ? `${this.field.listKey}${inflection.classify(this.path)}Enum`
         : this.config.dataType === 'integer'
         ? 'Int'

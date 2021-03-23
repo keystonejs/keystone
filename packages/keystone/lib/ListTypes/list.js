@@ -13,6 +13,7 @@ const {
   arrayToObject,
 } = require('@keystone-next/utils-legacy');
 const { parseListAccess } = require('@keystone-next/access-control-legacy');
+const { graphqlLogger } = require('../Keystone/logger');
 const {
   preventInvalidUnderscorePrefix,
   keyToLabel,
@@ -24,8 +25,6 @@ const {
 } = require('./utils');
 const { HookManager } = require('./hooks');
 const { LimitsExceededError, throwAccessDenied } = require('./graphqlErrors');
-
-const { graphqlLogger } = require('../Keystone/logger');
 
 module.exports = class List {
   constructor(
@@ -234,26 +233,6 @@ module.exports = class List {
     });
   }
 
-  getAdminMeta({ schemaName }) {
-    const schemaAccess = this.access[schemaName];
-    return {
-      key: this.key,
-      // Reduce to truthy values (functions can't be passed over the webpack
-      // boundary)
-      access: mapKeys(schemaAccess, val => !!val),
-      label: this.adminUILabels.label,
-      singular: this.adminUILabels.singular,
-      plural: this.adminUILabels.plural,
-      path: this.adminUILabels.path,
-      gqlNames: this.gqlNames,
-      fields: this.fields
-        .filter(field => field.access[schemaName].read)
-        .map(field => field.getAdminMeta({ schemaName })),
-      adminDoc: this.adminDoc,
-      adminConfig: this.adminConfig,
-    };
-  }
-
   getFieldsWithAccess({ schemaName, access }) {
     return this.fields
       .filter(({ path }) => path !== 'id') // Exclude the id fields update types
@@ -274,16 +253,6 @@ module.exports = class List {
       `first: Int`,
       `skip: Int`,
     ];
-  }
-
-  getFieldsRelatedTo(listKey) {
-    return this.fields.filter(
-      ({ isRelationship, refListKey }) => isRelationship && refListKey === listKey
-    );
-  }
-
-  getFieldByPath(path) {
-    return this.fieldsByPath[path];
   }
 
   getPrimaryKey() {
@@ -839,11 +808,22 @@ module.exports = class List {
     // FIXME: We should do all of these in parallel and return *all* the field access violations
     await this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
-    return Promise.all(
-      itemsToUpdate.map(({ existingItem, id, data }) =>
-        this._updateSingle(id, data, existingItem, context, mutationState)
-      )
-    );
+    if (this.adapterName === 'prisma' && this.adapter.parentAdapter.provider === 'sqlite') {
+      // We perform these operations sequentially as a workaround for a connection
+      // timeout bug that happens in prisma+sqlite: https://github.com/prisma/prisma/issues/2955
+      const ret = [];
+      for (const item of itemsToUpdate) {
+        const { existingItem, id, data } = item;
+        ret.push(await this._updateSingle(id, data, existingItem, context, mutationState));
+      }
+      return ret;
+    } else {
+      return Promise.all(
+        itemsToUpdate.map(({ existingItem, id, data }) =>
+          this._updateSingle(id, data, existingItem, context, mutationState)
+        )
+      );
+    }
   }
 
   async _updateSingle(id, originalInput, existingItem, context, mutationState) {
@@ -926,9 +906,19 @@ module.exports = class List {
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 
-    return Promise.all(
-      existingItems.map(existingItem => this._deleteSingle(existingItem, context, mutationState))
-    );
+    if (this.adapterName === 'prisma' && this.adapter.parentAdapter.provider === 'sqlite') {
+      // We perform these operations sequentially as a workaround for a connection
+      // timeout bug that happens in prisma+sqlite: https://github.com/prisma/prisma/issues/2955
+      const ret = [];
+      for (const existingItem of existingItems) {
+        ret.push(await this._deleteSingle(existingItem, context, mutationState));
+      }
+      return ret;
+    } else {
+      return Promise.all(
+        existingItems.map(existingItem => this._deleteSingle(existingItem, context, mutationState))
+      );
+    }
   }
 
   async _deleteSingle(existingItem, context, mutationState) {
@@ -956,13 +946,7 @@ module.exports = class List {
     // We want to include `id` fields
     // If read is globally set to false, makes sense to never show it
     const readFields = this.getAllFieldsWithAccess({ schemaName, access: 'read' });
-    if (
-      schemaAccess.read ||
-      schemaAccess.create ||
-      schemaAccess.update ||
-      schemaAccess.delete ||
-      schemaAccess.auth
-    ) {
+    if (schemaAccess.read || schemaAccess.create || schemaAccess.update || schemaAccess.delete) {
       types.push(
         ...flatten(this.fields.map(field => field.getGqlAuxTypes({ schemaName }))),
         `
@@ -1092,7 +1076,7 @@ module.exports = class List {
 
   getGqlMutations({ schemaName }) {
     const schemaAccess = this.access[schemaName];
-    const mutations = flatten(this.fields.map(field => field.getGqlAuxMutations()));
+    const mutations = [];
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
@@ -1153,13 +1137,7 @@ module.exports = class List {
 
   gqlAuxFieldResolvers({ schemaName }) {
     const schemaAccess = this.access[schemaName];
-    if (
-      schemaAccess.read ||
-      schemaAccess.create ||
-      schemaAccess.update ||
-      schemaAccess.delete ||
-      schemaAccess.auth
-    ) {
+    if (schemaAccess.read || schemaAccess.create || schemaAccess.update || schemaAccess.delete) {
       return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers({ schemaName })));
     }
     return {};
@@ -1287,11 +1265,6 @@ module.exports = class List {
         };
       },
     };
-  }
-
-  gqlAuxMutationResolvers() {
-    // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers()));
   }
 
   gqlMutationResolvers({ schemaName }) {

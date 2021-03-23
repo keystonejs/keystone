@@ -88,7 +88,7 @@ export async function build({ dotKeystonePath, projectAdminPath }: StaticPaths) 
 
   const config = initConfig(requireSource(CONFIG_PATH).default);
 
-  const { keystone, graphQLSchema } = createSystem(config, dotKeystonePath, 'build');
+  const { keystone, graphQLSchema } = createSystem(config, dotKeystonePath, 'none');
 
   console.log('✨ Generating graphQL schema');
   await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);
@@ -103,9 +103,6 @@ export async function build({ dotKeystonePath, projectAdminPath }: StaticPaths) 
   console.log('✨ Generating Keystone config code');
   await reexportKeystoneConfig(projectAdminPath, config.ui?.isDisabled);
 
-  console.log('✨ Building Admin UI');
-  await buildAdminUI(projectAdminPath);
-
   console.log('✨ Generating database client');
   // FIXME: This should never generate a migratration... right?
   // FIXME: This needs to generate clients for the correct build target using binaryTarget
@@ -113,4 +110,7 @@ export async function build({ dotKeystonePath, projectAdminPath }: StaticPaths) 
   if (keystone.adapter.name === 'prisma') {
     await keystone.adapter._generateClient(keystone._consolidateRelationships());
   }
+
+  console.log('✨ Building Admin UI');
+  await buildAdminUI(projectAdminPath);
 }

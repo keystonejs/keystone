@@ -1,7 +1,7 @@
-const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 import { Text } from '@keystone-next/fields-legacy';
 import { LocationGoogle } from './';
+const path = require('path');
 
 export const name = 'LocationGoogle';
 export const type = LocationGoogle;

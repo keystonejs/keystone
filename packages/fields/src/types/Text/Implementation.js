@@ -1,7 +1,7 @@
-import { Implementation } from '../../Implementation';
 import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
 import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { Implementation } from '../../Implementation';
 
 export class Text extends Implementation {
   constructor(path, { isMultiline }) {
@@ -21,11 +21,16 @@ export class Text extends Implementation {
     return { [`${this.path}`]: item => item[this.path] };
   }
   gqlQueryInputFields() {
+    const { listAdapter } = this.adapter;
     return [
       ...this.equalityInputFields('String'),
-      ...this.stringInputFields('String'),
-      ...this.equalityInputFieldsInsensitive('String'),
-      ...this.stringInputFieldsInsensitive('String'),
+      ...(listAdapter.name === 'prisma' && listAdapter.provider === 'sqlite'
+        ? []
+        : [
+            ...this.stringInputFields('String'),
+            ...this.equalityInputFieldsInsensitive('String'),
+            ...this.stringInputFieldsInsensitive('String'),
+          ]),
       ...this.inInputFields('String'),
     ];
   }
@@ -47,11 +52,16 @@ export class Text extends Implementation {
 const CommonTextInterface = superclass =>
   class extends superclass {
     getQueryConditions(dbPath) {
+      const { listAdapter } = this;
       return {
         ...this.equalityConditions(dbPath),
-        ...this.stringConditions(dbPath),
-        ...this.equalityConditionsInsensitive(dbPath),
-        ...this.stringConditionsInsensitive(dbPath),
+        ...(listAdapter.name === 'prisma' && listAdapter.provider === 'sqlite'
+          ? {}
+          : {
+              ...this.stringConditions(dbPath),
+              ...this.equalityConditionsInsensitive(dbPath),
+              ...this.stringConditionsInsensitive(dbPath),
+            }),
         // These have no case-insensitive counter parts
         ...this.inConditions(dbPath),
       };

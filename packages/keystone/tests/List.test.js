@@ -1,10 +1,10 @@
+const path = require('path');
 const { gql } = require('apollo-server-express');
 const { print } = require('graphql/language/printer');
 
+const { Text, Checkbox, Float, Relationship, Integer } = require('@keystone-next/fields-legacy');
 const { List } = require('../lib/ListTypes');
 const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
-const { Text, Checkbox, Float, Relationship, Integer } = require('@keystone-next/fields-legacy');
-const path = require('path');
 
 let fieldsPackagePath = path.dirname(require.resolve('@keystone-next/fields-legacy/package.json'));
 function resolveViewPath(viewPath) {
@@ -73,9 +73,6 @@ class MockFieldImplementation {
     this.config = {};
     this.hooks = {};
   }
-  getAdminMeta() {
-    return { path: 'id' };
-  }
   gqlOutputFields() {
     return ['id: ID'];
   }
@@ -94,16 +91,10 @@ class MockFieldImplementation {
   getGqlAuxQueries() {
     return [];
   }
-  getGqlAuxMutations() {
-    return [];
-  }
   gqlOutputFieldResolvers() {
     return {};
   }
   gqlAuxQueryResolvers() {
-    return {};
-  }
-  gqlAuxMutationResolvers() {
     return {};
   }
   gqlAuxFieldResolvers() {
@@ -125,7 +116,9 @@ class MockFieldImplementation {
   async validateDelete() {}
   async afterDelete() {}
 }
-class MockFieldAdapter {}
+class MockFieldAdapter {
+  listAdapter = { name: 'mock' };
+}
 
 const MockIdType = {
   implementation: MockFieldImplementation,
@@ -405,73 +398,6 @@ test('labelResolver', () => {
   expect(list4.labelResolver({ email: 'a@example.com', id: '4' })).toEqual('4');
 });
 
-describe('getAdminMeta()', () => {
-  test('adminMeta() - Smoke test', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-    expect(adminMeta).not.toBeNull();
-  });
-
-  test('getAdminMeta() - labels', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-
-    expect(adminMeta.key).toEqual('Test');
-    expect(adminMeta.access).toEqual({
-      create: true,
-      delete: true,
-      read: true,
-      update: true,
-      auth: true,
-    });
-    expect(adminMeta.label).toEqual('Tests');
-    expect(adminMeta.singular).toEqual('Test');
-    expect(adminMeta.plural).toEqual('Tests');
-    expect(adminMeta.path).toEqual('tests');
-    expect(adminMeta.gqlNames).toEqual({
-      outputTypeName: 'Test',
-      itemQueryName: 'Test',
-      listQueryName: 'allTests',
-      listQueryMetaName: '_allTestsMeta',
-      listSortName: 'SortTestsBy',
-      listMetaName: '_TestsMeta',
-      deleteMutationName: 'deleteTest',
-      deleteManyMutationName: 'deleteTests',
-      updateMutationName: 'updateTest',
-      createMutationName: 'createTest',
-      updateManyMutationName: 'updateTests',
-      createManyMutationName: 'createTests',
-      whereInputName: 'TestWhereInput',
-      whereUniqueInputName: 'TestWhereUniqueInput',
-      updateInputName: 'TestUpdateInput',
-      createInputName: 'TestCreateInput',
-      updateManyInputName: 'TestsUpdateInput',
-      createManyInputName: 'TestsCreateInput',
-      relateToManyInputName: 'TestRelateToManyInput',
-      relateToOneInputName: 'TestRelateToOneInput',
-    });
-    expect(adminMeta.adminConfig).toEqual({
-      defaultColumns: 'name,email',
-      defaultSort: 'name',
-    });
-  });
-
-  test('getAdminMeta() - fields', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-
-    expect(adminMeta.fields).toHaveLength(5);
-    expect(adminMeta.fields[0].path).toEqual('id');
-    expect(adminMeta.fields[1].path).toEqual('name');
-    expect(adminMeta.fields[2].path).toEqual('email');
-    expect(adminMeta.fields[3].path).toEqual('other');
-    expect(adminMeta.fields[4].path).toEqual('writeOnce');
-  });
-});
-
 describe(`getGqlTypes()`, () => {
   const type = `""" A keystone list """
       type Test {
@@ -722,12 +648,6 @@ describe(`getGqlQueries()`, () => {
   });
 });
 
-test('getFieldsRelatedTo', () => {
-  const list = setup();
-  expect(list.getFieldsRelatedTo('Other')).toEqual([list.fieldsByPath['other']]);
-  expect(list.getFieldsRelatedTo('Missing')).toEqual([]);
-});
-
 test('_wrapFieldResolverWith', async () => {
   const resolver = () => 'result';
   const list = setup();
@@ -758,11 +678,6 @@ test('gqlAuxFieldResolvers', () => {
 test('gqlAuxQueryResolvers', () => {
   const list = setup();
   expect(list.gqlAuxQueryResolvers()).toEqual({});
-});
-
-test('gqlAuxMutationResolvers', () => {
-  const list = setup();
-  expect(list.gqlAuxMutationResolvers()).toEqual({});
 });
 
 describe(`getGqlMutations()`, () => {
@@ -1265,15 +1180,6 @@ test('deleteManyMutation', async () => {
     { name: 'b', email: 'b@example.com', index: 1 },
     { name: 'c', email: 'c@example.com', index: 2 },
   ]);
-});
-
-test('getFieldByPath', () => {
-  const list = setup();
-  expect(list.getFieldByPath('name').path).toEqual('name');
-  expect(list.getFieldByPath('email').path).toEqual('email');
-  expect(list.getFieldByPath('hidden').path).toEqual('hidden');
-  expect(list.getFieldByPath('writeOnce').path).toEqual('writeOnce');
-  expect(list.getFieldByPath('missing')).toBe(undefined);
 });
 
 describe('List Hooks', () => {

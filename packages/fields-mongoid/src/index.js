@@ -1,22 +1,13 @@
-import path from 'path';
 import {
   MongoIdImplementation,
   MongooseMongoIdInterface,
   KnexMongoIdInterface,
   PrismaMongoIdInterface,
 } from './Implementation';
-import { Text } from '@keystone-next/fields-legacy';
-
-const pkgDir = path.dirname(require.resolve('@keystone-next/fields-mongoid-legacy/package.json'));
 
 export const MongoId = {
   type: 'MongoId',
   implementation: MongoIdImplementation,
-  views: {
-    Controller: path.join(pkgDir, 'views/Controller'),
-    Field: Text.views.Field,
-    Filter: path.join(pkgDir, 'views/Filter'),
-  },
   adapters: {
     knex: KnexMongoIdInterface,
     mongoose: MongooseMongoIdInterface,

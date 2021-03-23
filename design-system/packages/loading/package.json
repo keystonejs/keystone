@@ -5,10 +5,10 @@
   "main": "dist/loading.cjs.js",
   "module": "dist/loading.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.2"
+    "@types/react": "^17.0.3"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.9",
+    "@babel/runtime": "^7.13.10",
     "@keystone-ui/core": "^2.0.1",
     "react": "^17.0.1"
   },

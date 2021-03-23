@@ -1,5 +1,53 @@
 # @keystonejs/fields-cloudinary-image
 
+## 3.2.0
+
+### Minor Changes
+
+- [#5189](https://github.com/keystonejs/keystone/pull/5189) [`56c4dd0f8`](https://github.com/keystonejs/keystone/commit/56c4dd0f85e677e14a4a930818d5a9d5808e61fa) Thanks [@timleslie](https://github.com/timleslie)! - Added support for the `Cloudinary` field type with Primsa + SQLite.
+
+### Patch Changes
+
+- Updated dependencies [[`eae55db19`](https://github.com/keystonejs/keystone/commit/eae55db19b656e2bfa7b1e7d7aaf2f57b0a95299)]:
+  - @keystone-next/fields-legacy@23.2.0
+
+## 3.1.0
+
+### Minor Changes
+
+- [#3946](https://github.com/keystonejs/keystone/pull/3946) [`8e9b04ecd`](https://github.com/keystonejs/keystone/commit/8e9b04ecd07d9c5d0e6aead4705e7a655498ae05) Thanks [@timleslie](https://github.com/timleslie)! - Added experimental support for Prisma + SQLite as a database adapter.
+
+### Patch Changes
+
+- [#5150](https://github.com/keystonejs/keystone/pull/5150) [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed) Thanks [@timleslie](https://github.com/timleslie)! - Applied eslint `import/order` rule.
+
+* [#5089](https://github.com/keystonejs/keystone/pull/5089) [`a4e34e9eb`](https://github.com/keystonejs/keystone/commit/a4e34e9ebb6f746f54ccd898d0aeb4dc5c5d9271) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused `slate` dependencies.
+
+* Updated dependencies [[`8e9b04ecd`](https://github.com/keystonejs/keystone/commit/8e9b04ecd07d9c5d0e6aead4705e7a655498ae05), [`17c86e0c3`](https://github.com/keystonejs/keystone/commit/17c86e0c3eda7ba08d1bb8edf5eb8ddc9a819e5a), [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed)]:
+  - @keystone-next/fields-legacy@23.1.0
+  - @keystone-next/adapter-mongoose-legacy@11.1.2
+  - @keystone-next/adapter-knex-legacy@13.2.2
+
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393)]:
+  - @keystone-next/fields-legacy@23.0.0
+  - @keystone-next/adapter-knex-legacy@13.2.1
+  - @keystone-next/adapter-mongoose-legacy@11.1.1
+
+## 3.0.0
+
+### Major Changes
+
+- [`afccc27ea`](https://github.com/keystonejs/keystone/commit/afccc27eaa3a0574fa326dcc791526c4ac8f5e43) [#5036](https://github.com/keystonejs/keystone/pull/5036) Thanks [@timleslie](https://github.com/timleslie)! - Remove support for `fields-content` blocks.
+
+### Patch Changes
+
+- Updated dependencies [[`aba7c45d7`](https://github.com/keystonejs/keystone/commit/aba7c45d7645aa71b50de070d37896b73248751a)]:
+  - @keystone-next/fields-legacy@22.1.0
+
 ## 2.1.5
 
 ### Patch Changes

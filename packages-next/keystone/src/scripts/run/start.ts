@@ -1,9 +1,9 @@
 import path from 'path';
+import * as fs from 'fs-extra';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { createExpressServer } from '../../lib/createExpressServer';
 import type { StaticPaths } from '..';
-import * as fs from 'fs-extra';
 
 export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) => {
   console.log('🤞 Starting Keystone');
@@ -15,7 +15,11 @@ export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) 
     throw new Error('keystone-next build must be run before running keystone-next start');
   }
   const config = initConfig(require(apiFile).config);
-  const { keystone, graphQLSchema, createContext } = createSystem(config, dotKeystonePath, 'start');
+  const { keystone, graphQLSchema, createContext } = createSystem(
+    config,
+    dotKeystonePath,
+    'none-skip-client-generation'
+  );
 
   console.log('✨ Connecting to the database');
   await keystone.connect({ context: createContext().sudo() });

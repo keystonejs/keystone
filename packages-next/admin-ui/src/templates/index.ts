@@ -1,13 +1,13 @@
+import * as Path from 'path';
+import type { BaseKeystone, KeystoneConfig } from '@keystone-next/types';
+import { AdminFileToWrite } from '@keystone-next/types';
+import { GraphQLSchema } from 'graphql';
 import { appTemplate } from './app';
 import { homeTemplate } from './home';
 import { listTemplate } from './list';
 import { itemTemplate } from './item';
+import { apiTemplate } from './api';
 import { noAccessTemplate } from './no-access';
-
-import type { BaseKeystone, KeystoneConfig } from '@keystone-next/types';
-import { AdminFileToWrite } from '@keystone-next/types';
-import * as Path from 'path';
-import { GraphQLSchema } from 'graphql';
 
 const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.json'));
 
@@ -37,4 +37,13 @@ export const writeAdminFiles = (
     ({ adminUILabels: { path }, key }) =>
       ({ mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` } as const)
   ),
+  ...(config.experimental?.enableNextJsGraphqlApiEndpoint
+    ? [
+        {
+          mode: 'write' as const,
+          src: apiTemplate,
+          outputPath: 'pages/api/graphql.js',
+        },
+      ]
+    : []),
 ];

@@ -5,7 +5,6 @@ import {
   KnexUnsplashInterface,
   PrismaUnsplashInterface,
 } from './Implementation';
-import { UnsplashBlock } from './UnsplashBlock';
 
 const pkgDir = path.dirname(require.resolve('@keystone-next/fields-unsplash-legacy/package.json'));
 
@@ -21,8 +20,5 @@ export const Unsplash = {
     mongoose: MongoUnsplashInterface,
     knex: KnexUnsplashInterface,
     prisma: PrismaUnsplashInterface,
-  },
-  blocks: {
-    unsplashImage: UnsplashBlock,
   },
 };

@@ -2,9 +2,9 @@
 
 import { jsx, useTheme, Inline } from '@keystone-ui/core';
 
+import { Fragment } from 'react';
 import { Page } from '../../components/Page';
 import { ReadableColor } from '../../components/ReadableColor';
-import { Fragment } from 'react';
 
 type SelectableColorType = keyof ReturnType<typeof useTheme>['selectableColors'];
 

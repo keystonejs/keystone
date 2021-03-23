@@ -7,9 +7,14 @@ import { MongooseAdapter } from '@keystone-next/adapter-mongoose-legacy';
 import { KnexAdapter } from '@keystone-next/adapter-knex-legacy';
 // @ts-ignore
 import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
-import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
+import type { KeystoneConfig, BaseKeystone, MigrationAction } from '@keystone-next/types';
 
-export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, script: string) {
+export function createKeystone(
+  config: KeystoneConfig,
+  dotKeystonePath: string,
+  migrationAction: MigrationAction,
+  prismaClient?: any
+) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
@@ -27,30 +32,36 @@ export function createKeystone(config: KeystoneConfig, dotKeystonePath: string, 
     adapter = new PrismaAdapter({
       getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
       migrationMode:
-        script === 'prototype'
-          ? 'prototype'
-          : script === 'generate'
-          ? 'createOnly'
-          : script === 'start'
-          ? 'none'
-          : 'dev',
+        migrationAction === 'dev' ? (db.useMigrations ? 'dev' : 'prototype') : migrationAction,
+      prismaClient,
       ...db,
+      provider: 'postgresql',
+    });
+  } else if (db.adapter === 'prisma_sqlite') {
+    if (!config.experimental?.prismaSqlite) {
+      throw new Error(
+        'SQLite support is still experimental. You must set { experimental: { prismaSqlite: true } } in your config to use this feature.'
+      );
+    }
+    adapter = new PrismaAdapter({
+      getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
+      prismaClient,
+      migrationMode:
+        migrationAction === 'dev' ? (db.useMigrations ? 'dev' : 'prototype') : migrationAction,
+      ...db,
+      provider: 'sqlite',
     });
   }
   // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
   const keystone: BaseKeystone = new Keystone({
     adapter,
-    cookieSecret: '123456789', // FIXME: Don't provide a default here. See #2882
     queryLimits: graphql?.queryLimits,
     // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
     onConnect: (keystone, { context } = {}) => config.db.onConnect?.(context),
     // FIXME: Unsupported options: Need to work which of these we want to support with backwards
     // compatibility options.
     // defaultAccess
-    // sessionStore
-    // cookie
     // schemaNames
-    // appVersion
   });
 
   Object.entries(lists).forEach(([key, { fields, graphql, access, hooks, description, db }]) => {

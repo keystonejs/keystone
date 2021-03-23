@@ -1,5 +1,5 @@
-import Slug from './';
 import Text from '../Text';
+import Slug from './';
 
 export const name = 'Slug';
 export const type = Slug;
@@ -43,10 +43,10 @@ export const storedValues = () => [
   { name: 'g', testField: 'null' },
 ];
 
-export const supportedFilters = () => [
+export const supportedFilters = adapterName => [
   'equality',
-  'equality_case_insensitive',
+  adapterName !== 'prisma_sqlite' && 'equality_case_insensitive',
   'in_value',
-  'string',
-  'string_case_insensitive',
+  adapterName !== 'prisma_sqlite' && 'string',
+  adapterName !== 'prisma_sqlite' && 'string_case_insensitive',
 ];

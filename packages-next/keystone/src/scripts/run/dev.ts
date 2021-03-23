@@ -17,7 +17,7 @@ const devLoadingHTMLFilepath = path.join(
   'dev-loading.html'
 );
 
-export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths, script = 'dev') => {
+export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) => {
   console.log('🤞 Starting Keystone');
 
   const server = express();
@@ -25,11 +25,7 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths, sc
 
   const config = initConfig(requireSource(CONFIG_PATH).default);
   const initKeystone = async () => {
-    const { keystone, graphQLSchema, createContext } = createSystem(
-      config,
-      dotKeystonePath,
-      script
-    );
+    const { keystone, graphQLSchema, createContext } = createSystem(config, dotKeystonePath, 'dev');
 
     console.log('✨ Generating graphQL schema');
     await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);

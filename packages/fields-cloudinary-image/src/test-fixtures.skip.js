@@ -1,14 +1,14 @@
-const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
-import { CloudinaryAdapter } from '@keystone-next/file-adapters-legacy';
-import { Text } from '@keystone-next/fields-legacy';
-import cloudinary from 'cloudinary';
-import { Upload } from 'graphql-upload';
-import mime from 'mime';
 import fs from 'fs';
+import mime from 'mime';
+import { Upload } from 'graphql-upload';
+import cloudinary from 'cloudinary';
+import { Text } from '@keystone-next/fields-legacy';
+import { CloudinaryAdapter } from '@keystone-next/file-adapters-legacy';
 
 import { CloudinaryImage } from './';
+const path = require('path');
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'cloudinary_cloud_name',
@@ -78,5 +78,5 @@ export const storedValues = () => [
 
 export const supportedFilters = adapterName => [
   'null_equality',
-  adapterName !== 'prisma_postgresql' && 'in_empty_null',
+  !['prisma_postgresql', 'prisma_sqlite'].includes(adapterName) && 'in_empty_null',
 ];

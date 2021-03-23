@@ -1,24 +1,24 @@
 import path from 'path';
 import meow from 'meow';
-import { prototype } from './run/prototype';
 import { dev } from './run/dev';
 import { start } from './run/start';
 import { build } from './build/build';
 import { deploy } from './migrate/deploy';
 import { generate } from './migrate/generate';
+import { reset } from './migrate/reset';
 
 export type StaticPaths = { dotKeystonePath: string; projectAdminPath: string };
 
+const commands = { dev, start, build, deploy, generate, reset };
+
 function cli() {
-  const commands = { prototype, dev, start, build, deploy, generate };
-  const { input, help } = meow(
+  const { input, help, flags } = meow(
     `
     Usage
       $ keystone-next [command]
     Commands
       Run
-        prototype     (default) start the project in prototyping mode
-        dev           start the project in development mode
+        dev           (default) start the project in development mode
         start         start the project in production mode
       Build
         build         build the project (must be done before using start)
@@ -26,10 +26,17 @@ function cli() {
         reset         reset the database (this will drop all data!)
         generate      generate a migration
         deploy        deploy all migrations
-    `
+    `,
+    {
+      flags: {
+        allowEmpty: { default: false, type: 'boolean' },
+        acceptDataLoss: { default: false, type: 'boolean' },
+        name: { type: 'string' },
+      },
+    }
   );
-  const command = input[0] || 'prototype';
-  if (!(command in commands)) {
+  const command = input[0] || 'dev';
+  if (!isCommand(command)) {
     console.log(`${command} is not a command that keystone-next accepts`);
     console.log(help);
     process.exit(1);
@@ -41,7 +48,15 @@ function cli() {
   const projectAdminPath = path.join(dotKeystonePath, 'admin');
   const staticPaths: StaticPaths = { dotKeystonePath, projectAdminPath };
 
-  commands[command as keyof typeof commands](staticPaths);
+  if (command === 'generate') {
+    generate(staticPaths, flags);
+  } else {
+    commands[command](staticPaths);
+  }
+}
+
+function isCommand(command: string): command is keyof typeof commands {
+  return command in commands;
 }
 
 cli();

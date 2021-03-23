@@ -1,10 +1,10 @@
+import { resolveView } from '../../resolve-view';
 import {
   SlugImplementation,
   MongoSlugInterface,
   KnexSlugInterface,
   PrismaSlugInterface,
 } from './Implementation';
-import { resolveView } from '../../resolve-view';
 
 const Slug = {
   type: 'Slug',

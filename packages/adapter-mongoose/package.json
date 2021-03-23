@@ -1,23 +1,23 @@
 {
   "name": "@keystone-next/adapter-mongoose-legacy",
   "description": "KeystoneJS Mongoose Database adapter.",
-  "version": "11.1.0",
+  "version": "11.1.2",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystone-next/fields-mongoid-legacy": "^9.1.5",
-    "@keystone-next/keystone-legacy": "^19.3.0",
-    "@keystone-next/utils-legacy": "^6.0.2",
+    "@keystone-next/fields-mongoid-legacy": "^9.1.7",
+    "@keystone-next/keystone-legacy": "^21.0.0",
+    "@keystone-next/utils-legacy": "^7.0.0",
     "cuid": "^2.1.8",
-    "mongoose": "^5.11.18",
+    "mongoose": "^5.12.1",
     "p-settle": "^4.1.1"
   },
   "devDependencies": {
-    "mongodb": "^3.6.4",
-    "mongodb-memory-server-core": "^6.9.3",
+    "mongodb": "^3.6.5",
+    "mongodb-memory-server-core": "^6.9.6",
     "pluralize": "^8.0.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-mongoose"

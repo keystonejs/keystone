@@ -10,7 +10,7 @@ export type FloatFieldConfig<
   isRequired?: boolean;
   isIndexed?: boolean;
   isUnique?: boolean;
-  defaultValue?: FieldDefaultValue<string>;
+  defaultValue?: FieldDefaultValue<number>;
 };
 
 export const float = <TGeneratedListTypes extends BaseGeneratedListTypes>(

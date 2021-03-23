@@ -1,6 +1,6 @@
 import { Browser, Page } from 'playwright';
-import { exampleProjectTests, initFirstItemTest } from './utils';
 import fetch from 'node-fetch';
+import { exampleProjectTests, initFirstItemTest } from './utils';
 
 exampleProjectTests('basic', browserType => {
   let browser: Browser = undefined as any;
