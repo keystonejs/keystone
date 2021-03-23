@@ -47,6 +47,7 @@ module.exports = class List {
       adapterConfig = {},
       queryLimits = {},
       cacheHint,
+      fieldGroups = {}
     },
     { getListByKey, adapter, defaultAccess, registerType, createAuxList, isAuxList, schemaNames }
   ) {
@@ -55,7 +56,7 @@ module.exports = class List {
     this._hooks = hooks;
     this.schemaDoc = schemaDoc;
     this.adminDoc = adminDoc;
-
+    this.fieldGroups = fieldGroups;
     // Assuming the id column shouldn't be included in default columns or sort
     const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
     this.adminConfig = {
@@ -250,6 +251,7 @@ module.exports = class List {
         .map(field => field.getAdminMeta({ schemaName })),
       adminDoc: this.adminDoc,
       adminConfig: this.adminConfig,
+      fieldGroups: this.fieldGroups,
     };
   }
 
