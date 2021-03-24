@@ -34,14 +34,10 @@ class MockFieldImplementation {
   getGqlAuxQueries() {
     return ['getFoo: Boolean'];
   }
-  extendAdminViews(views) {
-    return views;
-  }
 }
 
 const MockFieldType = {
   implementation: MockFieldImplementation,
-  views: {},
   adapters: { mock: MockFieldAdapter },
 };
 
