@@ -1,6 +1,8 @@
+// @ts-ignore
 import { getItems } from '@keystone-next/server-side-graphql-client-legacy';
-import Text from '../Text';
-import DateTimeUtc from './';
+// @ts-ignore
+import { Text, DateTimeUtc } from '@keystone-next/fields-legacy';
+import { AdapterName } from '@keystone-next/test-utils-legacy';
 
 export const name = 'DateTimeUtc';
 export const type = DateTimeUtc;
@@ -41,8 +43,13 @@ export const supportedFilters = () => [
   'in_equal',
 ];
 
-export const filterTests = withKeystone => {
-  const match = async (keystone, where, expected, sortBy = 'name_ASC') =>
+export const filterTests = (withKeystone: (args: any) => any) => {
+  const match = async (
+    keystone: any,
+    where: Record<string, any> | undefined,
+    expected: any,
+    sortBy = 'name_ASC'
+  ) =>
     expect(
       await getItems({
         keystone,
@@ -55,7 +62,7 @@ export const filterTests = withKeystone => {
 
   test(
     'Sorting: sortBy: lastOnline_ASC',
-    withKeystone(({ keystone, adapterName }) =>
+    withKeystone(({ keystone, adapterName }: { keystone: any; adapterName: AdapterName }) =>
       match(
         keystone,
         undefined,
@@ -95,7 +102,7 @@ export const filterTests = withKeystone => {
 
   test(
     'Sorting: sortBy: lastOnline_DESC',
-    withKeystone(({ keystone, adapterName }) =>
+    withKeystone(({ keystone, adapterName }: { keystone: any; adapterName: AdapterName }) =>
       match(
         keystone,
         undefined,

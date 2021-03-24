@@ -3,7 +3,7 @@ import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-lega
 // @ts-ignore
 import { Text } from '@keystone-next/fields-legacy';
 
-const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.js`, {
+const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
 multiAdapterRunners().map(({ runner, adapterName }) =>

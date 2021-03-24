@@ -1,5 +1,5 @@
-import Text from '../Text';
-import Integer from './';
+// @ts-ignore
+import { Text, Integer } from '@keystone-next/fields-legacy';
 
 export const name = 'Integer';
 export const type = Integer;
