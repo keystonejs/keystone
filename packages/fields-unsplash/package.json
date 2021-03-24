@@ -10,11 +10,6 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.12",
-    "@arch-ui/fields": "^3.0.6",
-    "@arch-ui/input": "^0.1.12",
-    "@babel/runtime": "^7.13.10",
-    "@emotion/core": "^10.1.1",
     "@keystone-next/adapter-knex-legacy": "^13.2.2",
     "@keystone-next/adapter-mongoose-legacy": "^11.1.2",
     "@keystone-next/adapter-prisma-legacy": "^4.0.0",
@@ -23,19 +18,9 @@
     "query-string": "^6.14.1",
     "unsplash-js": "^6.3.0"
   },
-  "peerDependencies": {
-    "react": "^17.0.1"
-  },
   "devDependencies": {
-    "dotenv": "^8.2.0",
-    "react": "^17.0.1"
+    "dotenv": "^8.2.0"
   },
   "main": "dist/fields-unsplash-legacy.cjs.js",
-  "module": "dist/fields-unsplash-legacy.esm.js",
-  "preconstruct": {
-    "entrypoints": [
-      "index.js",
-      "views/*.js"
-    ]
-  }
+  "module": "dist/fields-unsplash-legacy.esm.js"
 }

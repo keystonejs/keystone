@@ -223,34 +223,11 @@ module.exports = class List {
         })
     );
     this.fields = Object.values(this.fieldsByPath);
-    this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
-      this.fieldsByPath[path].extendAdminViews({ ...type.views })
-    );
     this.hookManager = new HookManager({
       fields: this.fields,
       hooks: this._hooks,
       listKey: this.key,
     });
-  }
-
-  getAdminMeta({ schemaName }) {
-    const schemaAccess = this.access[schemaName];
-    return {
-      key: this.key,
-      // Reduce to truthy values (functions can't be passed over the webpack
-      // boundary)
-      access: mapKeys(schemaAccess, val => !!val),
-      label: this.adminUILabels.label,
-      singular: this.adminUILabels.singular,
-      plural: this.adminUILabels.plural,
-      path: this.adminUILabels.path,
-      gqlNames: this.gqlNames,
-      fields: this.fields
-        .filter(field => field.access[schemaName].read)
-        .map(field => field.getAdminMeta({ schemaName })),
-      adminDoc: this.adminDoc,
-      adminConfig: this.adminConfig,
-    };
   }
 
   getFieldsWithAccess({ schemaName, access }) {

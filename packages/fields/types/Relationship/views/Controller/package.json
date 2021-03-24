@@ -1,4 +1,0 @@
-{
-  "main": "dist/fields-legacy.cjs.js",
-  "module": "dist/fields-legacy.esm.js"
-}

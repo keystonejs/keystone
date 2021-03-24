@@ -1,4 +1,3 @@
-import { resolveView } from '../../resolve-view';
 import {
   SlugImplementation,
   MongoSlugInterface,
@@ -9,11 +8,6 @@ import {
 const Slug = {
   type: 'Slug',
   implementation: SlugImplementation,
-  views: {
-    Controller: resolveView('types/Text/views/Controller'),
-    Field: resolveView('types/Text/views/Field'),
-    Filter: resolveView('types/Text/views/Filter'),
-  },
   adapters: {
     knex: KnexSlugInterface,
     mongoose: MongoSlugInterface,

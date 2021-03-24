@@ -5,13 +5,7 @@ const falsey = require('falsey');
 const createCorsMiddleware = require('cors');
 const { execute } = require('graphql');
 const { GraphQLUpload } = require('graphql-upload');
-const {
-  arrayToObject,
-  objMerge,
-  flatten,
-  unique,
-  filterValues,
-} = require('@keystone-next/utils-legacy');
+const { objMerge, flatten, unique, filterValues } = require('@keystone-next/utils-legacy');
 const {
   validateFieldAccessControl,
   validateListAccessControl,
@@ -27,20 +21,7 @@ const { formatError } = require('./format-error');
 const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
 
 module.exports = class Keystone {
-  constructor({
-    defaultAccess,
-    adapter,
-    onConnect,
-    cookieSecret,
-    sessionStore,
-    queryLimits = {},
-    cookie = {
-      secure: process.env.NODE_ENV === 'production', // Default to true in production
-      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-      sameSite: false,
-    },
-    schemaNames = ['public'],
-  }) {
+  constructor({ defaultAccess, adapter, onConnect, queryLimits = {}, schemaNames = ['public'] }) {
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
@@ -48,9 +29,11 @@ module.exports = class Keystone {
     this.getListByKey = key => this.lists[key];
     this._schemas = {};
     this._sessionManager = new SessionManager({
-      cookieSecret,
-      cookie,
-      sessionStore,
+      cookie: {
+        secure: process.env.NODE_ENV === 'production', // Default to true in production
+        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+        sameSite: false,
+      },
     });
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
@@ -452,37 +435,6 @@ module.exports = class Keystone {
    */
   async disconnect() {
     await this.adapter.disconnect();
-  }
-
-  getAdminMeta({ schemaName }) {
-    // We've consciously made a design choice that the `read` permission on a
-    // list is a master switch in the Admin UI (not the GraphQL API).
-    // Justification: If you want to Create without the Read permission, you
-    // technically don't have permission to read the result of your creation.
-    // If you want to Update an item, you can't see what the current values
-    // are. If you want to delete an item, you'd need to be given direct
-    // access to it (direct URI), but can't see anything about that item. And
-    // in fact, being able to load a page with a 'delete' button on it
-    // violates the read permission as it leaks the fact that item exists.
-    // In all these cases, the Admin UI becomes unnecessarily complex.
-    // So we only allow all these actions if you also have read access.
-    const lists = arrayToObject(
-      this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
-      'key',
-      list => list.getAdminMeta({ schemaName })
-    );
-
-    return { lists };
-  }
-
-  getAdminViews({ schemaName }) {
-    return {
-      listViews: arrayToObject(
-        this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
-        'key',
-        list => list.views
-      ),
-    };
   }
 
   getTypeDefs({ schemaName }) {

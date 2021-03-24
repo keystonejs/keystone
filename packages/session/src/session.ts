@@ -33,10 +33,6 @@ export class SessionManager {
           'The cookieSecret config option is required when running Keystone in a production environment. Update your app or environment config so this value is supplied to the Keystone constructor. See [https://www.keystonejs.com/keystonejs/keystone/#cookiesecret] for details.'
         );
       } else {
-        console.warn(
-          'No cookieSecret value was provided. Please generate a secure value and add it to your app. Until this is done, a random cookieSecret will be generated each time Keystone is started. This will cause sessions to be reset between restarts. See [https://www.keystonejs.com/keystonejs/keystone/#cookiesecret] for details.'
-        );
-
         cookieSecret = [...Array(30)].map(() => ((Math.random() * 36) | 0).toString(36)).join('');
       }
     }
