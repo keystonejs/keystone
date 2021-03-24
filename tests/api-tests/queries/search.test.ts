@@ -1,13 +1,19 @@
-const { text, integer } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const { multiAdapterRunners, setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
+import { text, integer } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import {
+  AdapterName,
+  multiAdapterRunners,
+  setupFromConfig,
+  testConfig,
+} from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
-function setupKeystone(adapterName) {
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
-    config: createSchema({
-      lists: {
+    config: testConfig({
+      lists: createSchema({
         Test: list({
           fields: {
             name: text(),
@@ -24,7 +30,7 @@ function setupKeystone(adapterName) {
           },
           db: { searchField: 'other' },
         }),
-      },
+      }),
     }),
   });
 }
@@ -34,7 +40,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     test(
       'users',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey, item) => createItem({ context, listKey, item });
+        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -62,7 +68,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     test(
       'users - case sensitive',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey, item) => createItem({ context, listKey, item });
+        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -90,7 +96,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     test(
       'users - partial case sensitive',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey, item) => createItem({ context, listKey, item });
+        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -118,7 +124,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     test(
       'users - like escapes',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey, item) => createItem({ context, listKey, item });
+        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -146,7 +152,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     test(
       'users - regex',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey, item) => createItem({ context, listKey, item });
+        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
 
         await Promise.all([
           create('Test', { name: 'one' }),
@@ -175,7 +181,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     test(
       'users - numbers',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey, item) => createItem({ context, listKey, item });
+        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -203,7 +209,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     test(
       'empty string',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey, item) => createItem({ context, listKey, item });
+        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -235,7 +241,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     test(
       'custom',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey, item) => createItem({ context, listKey, item });
+        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
