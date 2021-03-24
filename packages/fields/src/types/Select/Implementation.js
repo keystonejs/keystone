@@ -64,7 +64,7 @@ function validateOptions({ options, dataType, listKey, path }) {
 }
 
 export class Select extends Implementation {
-  constructor(path, { options, dataType = 'enum' }) {
+  constructor(path, { options, dataType = 'string' }) {
     super(...arguments);
     this.options = initOptions(options);
     validateOptions({ options: this.options, dataType, listKey: this.listKey, path });
