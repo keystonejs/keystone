@@ -15,7 +15,7 @@
     "@keystone-ui/fields": "^2.0.2",
     "@keystone-ui/pill": "^2.0.1",
     "@types/react": "^17.0.3",
-    "react": "^17.0.1"
+    "react": "^17.0.2"
   },
   "engines": {
     "node": ">=10.0.0"

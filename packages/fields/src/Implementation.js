@@ -171,9 +171,6 @@ class Field {
   extendAdminMeta(meta) {
     return meta;
   }
-  extendAdminViews(views) {
-    return views;
-  }
   getDefaultValue({ context, originalInput }) {
     if (typeof this.defaultValue !== 'undefined') {
       if (typeof this.defaultValue === 'function') {

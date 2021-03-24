@@ -223,9 +223,6 @@ module.exports = class List {
         })
     );
     this.fields = Object.values(this.fieldsByPath);
-    this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
-      this.fieldsByPath[path].extendAdminViews({ ...type.views })
-    );
     this.hookManager = new HookManager({
       fields: this.fields,
       hooks: this._hooks,

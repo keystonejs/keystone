@@ -14,10 +14,10 @@
     "graphql": "^15.5.0"
   },
   "peerDependencies": {
-    "react": "^17.0.1"
+    "react": "^17.0.2"
   },
   "devDependencies": {
-    "react": "^17.0.1"
+    "react": "^17.0.2"
   },
   "engines": {
     "node": ">=10.0.0"
