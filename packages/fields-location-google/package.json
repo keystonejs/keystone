@@ -15,7 +15,7 @@
     "@keystone-next/adapter-prisma-legacy": "^4.0.0",
     "@keystone-next/fields-legacy": "^23.1.0",
     "cuid": "^2.1.8",
-    "mongoose": "^5.12.1",
+    "mongoose": "^5.12.2",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
