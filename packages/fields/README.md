@@ -8,24 +8,24 @@ order: 3
 
 Keystone contains a set of primitive fields types that can be imported from the `@keystone-next/fields-legacy` package:
 
-| Field type                                                          | Description                                                                                                                                            |
-| :------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`CalendarDay`](/packages/fields/src/types/CalendarDay/README.md)   | An abstract "day" value; useful for Birthdays and other all-day events always celebrated in the local time zone                                        |
-| [`Checkbox`](/packages/fields/src/types/Checkbox/README.md)         | A single Boolean value                                                                                                                                 |
-| [`DateTime`](/packages/fields/src/types/DateTime/README.md)         | A point in time and a time zone offset                                                                                                                 |
-| [`DateTimeUtc`](/packages/fields/src/types/DateTimeUtc/README.md)   | Represents points in time, stored in UTC                                                                                                               |
-| [`Decimal`](/packages/fields/src/types/Decimal/README.md)           | Exact, numeric values in base-10; useful for currency, etc.                                                                                            |
-| [`File`](/packages/fields/src/types/File/README.md)                 | Files backed various storage mediums: local filesystem, cloud based hosting, etc.                                                                      |
-| [`Float`](/packages/fields/src/types/Float/README.md)               | An imprecise numeric value, stored as a floating point                                                                                                 |
-| [`Integer`](/packages/fields/src/types/Integer/README.md)           | A whole number                                                                                                                                         |
-| [`Password`](/packages/fields/src/types/Password/README.md)         | A [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt) hash of the value supplied; used by the [Password auth strategy](/packages/auth-password/README.md) |
-| [`Relationship`](/packages/fields/src/types/Relationship/README.md) | A link between the current list and others, often paired with a field on the other list                                                                |
-| [`Select`](/packages/fields/src/types/Select/README.md)             | One of several predefined string values, presented as a dropdown                                                                                       |
-| [`Slug`](/packages/fields/src/types/Slug/README.md)                 | Generate unique slugs (aka. keys, url segments) based on the item's data                                                                               |
-| [`Text`](/packages/fields/src/types/Text/README.md)                 | A basic but versatile text field of arbitrary length                                                                                                   |
-| [`Url`](/packages/fields/src/types/Url/README.md)                   | Extends the [`Text`](/packages/fields/src/types/Text/README.md) type to store HTTP URLs                                                                |
-| [`Uuid`](/packages/fields/src/types/Uuid/README.md)                 | [Universally Unique Identifiers](https://en.wikipedia.org/wiki/Universally_unique_identifier) (UUIDs); useful for `id` fields                          |
-| [`Virtual`](/packages/fields/src/types/Virtual/README.md)           | Read-only field with a developer-defined resolver, executed on read                                                                                    |
+| Field type                                                          | Description                                                                                                                   |
+| :------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------- |
+| [`CalendarDay`](/packages/fields/src/types/CalendarDay/README.md)   | An abstract "day" value; useful for Birthdays and other all-day events always celebrated in the local time zone               |
+| [`Checkbox`](/packages/fields/src/types/Checkbox/README.md)         | A single Boolean value                                                                                                        |
+| [`DateTime`](/packages/fields/src/types/DateTime/README.md)         | A point in time and a time zone offset                                                                                        |
+| [`DateTimeUtc`](/packages/fields/src/types/DateTimeUtc/README.md)   | Represents points in time, stored in UTC                                                                                      |
+| [`Decimal`](/packages/fields/src/types/Decimal/README.md)           | Exact, numeric values in base-10; useful for currency, etc.                                                                   |
+| [`File`](/packages/fields/src/types/File/README.md)                 | Files backed various storage mediums: local filesystem, cloud based hosting, etc.                                             |
+| [`Float`](/packages/fields/src/types/Float/README.md)               | An imprecise numeric value, stored as a floating point                                                                        |
+| [`Integer`](/packages/fields/src/types/Integer/README.md)           | A whole number                                                                                                                |
+| [`Password`](/packages/fields/src/types/Password/README.md)         | A [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt) hash of the value supplied;                                                |
+| [`Relationship`](/packages/fields/src/types/Relationship/README.md) | A link between the current list and others, often paired with a field on the other list                                       |
+| [`Select`](/packages/fields/src/types/Select/README.md)             | One of several predefined string values, presented as a dropdown                                                              |
+| [`Slug`](/packages/fields/src/types/Slug/README.md)                 | Generate unique slugs (aka. keys, url segments) based on the item's data                                                      |
+| [`Text`](/packages/fields/src/types/Text/README.md)                 | A basic but versatile text field of arbitrary length                                                                          |
+| [`Url`](/packages/fields/src/types/Url/README.md)                   | Extends the [`Text`](/packages/fields/src/types/Text/README.md) type to store HTTP URLs                                       |
+| [`Uuid`](/packages/fields/src/types/Uuid/README.md)                 | [Universally Unique Identifiers](https://en.wikipedia.org/wiki/Universally_unique_identifier) (UUIDs); useful for `id` fields |
+| [`Virtual`](/packages/fields/src/types/Virtual/README.md)           | Read-only field with a developer-defined resolver, executed on read                                                           |
 
 In addition to these, some complex types are packaged separately:
 
