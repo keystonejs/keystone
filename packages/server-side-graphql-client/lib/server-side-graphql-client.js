@@ -1,7 +1,4 @@
-const getContext = keystone =>
-  keystone.createContext({ schemaName: 'public', authentication: {} }).sudo();
-
-const runQuery = async ({ keystone, query, variables, context = getContext(keystone) }) => {
+const runQuery = async ({ query, variables, context }) => {
   const { data, errors } = await context.executeGraphQL({
     query,
     variables,
@@ -38,31 +35,18 @@ const _runChunkedMutation = async ({ query, gqlName, pageSize, items, context })
   return [].concat(...result.map(item => item[gqlName]));
 };
 
-const createItem = async ({
-  keystone,
-  listKey,
-  item,
-  returnFields = `id`,
-  context = getContext(keystone),
-}) => {
+const createItem = async ({ listKey, item, returnFields = `id`, context }) => {
   const { createMutationName, createInputName } = context.gqlNames(listKey);
 
   const query = `mutation ($item: ${createInputName}){
     ${createMutationName}(data: $item) { ${returnFields} }
   }`;
 
-  const result = await runQuery({ keystone, query, variables: { item }, context });
+  const result = await runQuery({ query, variables: { item }, context });
   return result[createMutationName];
 };
 
-const createItems = async ({
-  keystone,
-  listKey,
-  items,
-  pageSize = 500,
-  returnFields = `id`,
-  context = getContext(keystone),
-}) => {
+const createItems = async ({ listKey, items, pageSize = 500, returnFields = `id`, context }) => {
   const { createManyMutationName, createManyInputName } = context.gqlNames(listKey);
 
   const query = `mutation ($items: [${createManyInputName}]){
@@ -78,13 +62,7 @@ const createItems = async ({
   });
 };
 
-const getItem = async ({
-  keystone,
-  listKey,
-  itemId,
-  returnFields = `id`,
-  context = getContext(keystone),
-}) => {
+const getItem = async ({ listKey, itemId, returnFields = `id`, context }) => {
   const { itemQueryName } = context.gqlNames(listKey);
 
   const query = `query ($id: ID!) { ${itemQueryName}(where: { id: $id }) { ${returnFields} }  }`;
@@ -93,7 +71,6 @@ const getItem = async ({
 };
 
 const getItems = async ({
-  keystone,
   listKey,
   where = {},
   sortBy,
@@ -101,7 +78,7 @@ const getItems = async ({
   skip,
   pageSize = 500,
   returnFields = `id`,
-  context = getContext(keystone),
+  context,
 }) => {
   const { listQueryName, whereInputName, listSortName } = context.gqlNames(listKey);
 
@@ -139,13 +116,7 @@ const getItems = async ({
   return allItems;
 };
 
-const updateItem = async ({
-  keystone,
-  listKey,
-  item,
-  returnFields = `id`,
-  context = getContext(keystone),
-}) => {
+const updateItem = async ({ listKey, item, returnFields = `id`, context }) => {
   const { updateMutationName, updateInputName } = context.gqlNames(listKey);
 
   const query = `mutation ($id: ID!, $data: ${updateInputName}){
@@ -161,14 +132,7 @@ const updateItem = async ({
   return result[updateMutationName];
 };
 
-const updateItems = async ({
-  keystone,
-  listKey,
-  items,
-  pageSize = 500,
-  returnFields = `id`,
-  context = getContext(keystone),
-}) => {
+const updateItems = async ({ listKey, items, pageSize = 500, returnFields = `id`, context }) => {
   const { updateManyMutationName, updateManyInputName } = context.gqlNames(listKey);
 
   const query = `mutation ($items: [${updateManyInputName}]){
@@ -183,13 +147,7 @@ const updateItems = async ({
   });
 };
 
-const deleteItem = async ({
-  keystone,
-  listKey,
-  itemId,
-  returnFields = `id`,
-  context = getContext(keystone),
-}) => {
+const deleteItem = async ({ listKey, itemId, returnFields = `id`, context }) => {
   const { deleteMutationName } = context.gqlNames(listKey);
 
   const query = `mutation ($id: ID!){
@@ -200,14 +158,7 @@ const deleteItem = async ({
   return result[deleteMutationName];
 };
 
-const deleteItems = async ({
-  keystone,
-  listKey,
-  items,
-  pageSize = 500,
-  returnFields = `id`,
-  context = getContext(keystone),
-}) => {
+const deleteItems = async ({ listKey, items, pageSize = 500, returnFields = `id`, context }) => {
   const { deleteManyMutationName } = context.gqlNames(listKey);
 
   const query = `mutation ($items: [ID!]){

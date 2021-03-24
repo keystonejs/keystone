@@ -28,7 +28,7 @@ Using `@keystone-next/server-side-graphql-client-legacy` we can replace this wit
 const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
 
 const user = await createItem({
-  keystone,
+  context,
   listKey: 'User',
   item: { name: 'Alice' },
   returnFields: `id name`,
@@ -47,7 +47,7 @@ These utilities can be used for a wide range of specific use-cases, some more co
 
 ```js
 const seedUsers = async usersData => {
-  await createItems({ keystone, listKey: 'User', items: usersData });
+  await createItems({ context, listKey: 'User', items: usersData });
 };
 ```
 
@@ -66,7 +66,7 @@ keystone.createList('Page', {
       // Whenever copy field is set fetch the related data
       const pageToCopy = resolvedData.copy
         ? await getItem({
-            keystone,
+            context,
             listKey: 'Page',
             itemId: resolvedData.copy,
             returnFields: 'name, content',
@@ -127,7 +127,7 @@ keystone.createList('User', {
 
 const addUser = async userInput => {
   const user = await createItem({
-    keystone,
+    context,
     listKey: 'User',
     item: userInput,
     returnFields: `name, email`,
@@ -171,7 +171,7 @@ const dummyUsers = [
 
 const addUsers = async () => {
   const users = await createItems({
-    keystone,
+    context,
     listKey: 'User',
     items: dummyUsers,
     returnFields: `name`,
@@ -208,7 +208,7 @@ keystone.createList('User', {
 
 const getUser = async ({ itemId }) => {
   const user = await getItem({
-    keystone,
+    context,
     listKey: 'User',
     itemId,
     returnFields: 'id, name',
@@ -243,9 +243,9 @@ keystone.createList('User', {
 });
 
 const getUsers = async () => {
-  const allUsers = await getItems({ keystone, listKey: 'User', returnFields: 'name' });
+  const allUsers = await getItems({ context, listKey: 'User', returnFields: 'name' });
   const someUsers = await getItems({
-    keystone,
+    context,
     listKey: 'User',
     returnFields: 'name',
     where: { name: 'user1' },
@@ -286,7 +286,7 @@ keystone.createList('User', {
 
 const updateUser = async updateUser => {
   const updatedUser = await updateItem({
-    keystone,
+    context,
     listKey: 'User',
     item: updateUser,
     returnFields: 'name',
@@ -322,7 +322,7 @@ keystone.createList('User', {
 
 const updateUsers = async updateUsers => {
   const users = await updateItems({
-    keystone,
+    context,
     listKey: 'User',
     items: updateUsers,
     returnFields: 'name',
@@ -394,7 +394,7 @@ keystone.createList('User', {
 });
 
 const deletedUsers = async items => {
-  const users = await deleteItems({ keystone, listKey: 'User', items });
+  const users = await deleteItems({ context, listKey: 'User', items });
   console.log(users); // [{id: '123'}, {id: '456'}]
 };
 deletedUsers(['123', '456']);
@@ -417,7 +417,6 @@ Execute a custom query.
 
 | Properties  | Type     | Default    | Description                                                                                                                                                                                                         |
 | ----------- | -------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `keystone`  | Object   | (required) | Keystone instance.                                                                                                                                                                                                  |
 | `query`     | String   | (required) | The GraphQL query to execute.                                                                                                                                                                                       |
 | `variables` | Object   | (required) | Object containing variables your custom query needs.                                                                                                                                                                |
 | `context`   | `Object` | N/A        | An Apollo [`context` object](https://www.apollographql.com/docs/apollo-server/data/resolvers/#the-context-argument). See the [server side graphQL docs](/docs/discussions/server-side-graphql.md) for more details. |
