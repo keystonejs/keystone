@@ -14,7 +14,7 @@ const {
 const { SessionManager } = require('@keystone-next/session-legacy');
 
 const { List } = require('../ListTypes');
-const { ListAuthProvider, ListCRUDProvider } = require('../providers');
+const { ListCRUDProvider } = require('../providers');
 const { formatError } = require('./format-error');
 
 // composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
@@ -187,26 +187,6 @@ module.exports = class Keystone {
     }
 
     return execute(schema, query, null, context, variables);
-  }
-
-  createAuthStrategy(options) {
-    const { type: StrategyType, list: listKey, config, hooks } = composePlugins(
-      options.plugins || []
-    )(options, { keystone: this });
-    const { authType } = StrategyType;
-    if (!this.auth[listKey]) {
-      this.auth[listKey] = {};
-    }
-    const strategy = new StrategyType(this, listKey, config);
-    strategy.authType = authType;
-    this.auth[listKey][authType] = strategy;
-    if (!this.lists[listKey]) {
-      throw new Error(`List "${listKey}" does not exist.`);
-    }
-    this._providers.push(
-      new ListAuthProvider({ list: this.lists[listKey], authStrategy: strategy, hooks })
-    );
-    return strategy;
   }
 
   createList(key, config, { isAuxList = false } = {}) {
@@ -519,7 +499,7 @@ module.exports = class Keystone {
     this.createApolloServer({ schemaName: 'internal' });
     const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
     // These function can't be called after prepare(), so make them throw an error from now on.
-    ['createList', 'createAuthStrategy'].forEach(f => {
+    ['createList'].forEach(f => {
       this[f] = () => {
         throw new Error(`keystone.${f} must be called before keystone.prepare()`);
       };
