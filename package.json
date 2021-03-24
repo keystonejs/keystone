@@ -120,7 +120,6 @@
       "packages/session",
       "packages/test-utils",
       "packages/utils",
-      "packages/fields-authed-relationship",
       "packages/fields-auto-increment",
       "packages/fields-oembed",
       "packages/fields-unsplash",
