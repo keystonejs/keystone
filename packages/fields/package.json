@@ -35,7 +35,6 @@
     "p-settle": "^4.1.1"
   },
   "devDependencies": {
-    "@keystone-next/app-static-legacy": "*",
     "@keystone-next/file-adapters-legacy": "*",
     "@keystone-next/test-utils-legacy": "*",
     "globby": "^11.0.3",
