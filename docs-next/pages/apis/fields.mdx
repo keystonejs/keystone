@@ -24,7 +24,7 @@ import {
   relationship,
 
   // Index types
-  autoincrement,
+  autoIncrement,
   mongoId,
 
   // Virtual type
@@ -450,7 +450,7 @@ export default config({
 
 ## Index types
 
-### autoincrement
+### autoIncrement
 
 (coming soon)
 
@@ -463,13 +463,13 @@ Options:
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { autoincrement } from '@keystone-next/fields';
+import { autoIncrement } from '@keystone-next/fields';
 
 export default config({
   lists: createSchema({
     ListName: list({
       fields: {
-        fieldName: autoincrement({
+        fieldName: autoIncrement({
           defaultValue: 0,
           isRequired: true,
           isIndexed: true,
