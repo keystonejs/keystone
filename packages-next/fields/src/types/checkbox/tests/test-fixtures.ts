@@ -1,5 +1,5 @@
-import Text from '../Text';
-import Checkbox from './';
+// @ts-ignore
+import { Checkbox, Text } from '@keystone-next/fields-legacy';
 
 export const name = 'Checkbox';
 export const type = Checkbox;

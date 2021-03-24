@@ -1,5 +1,5 @@
-import Text from '../Text';
-import Password from './';
+// @ts-ignore
+import { Text, Password } from '@keystone-next/fields-legacy';
 
 export const name = 'Password';
 export const type = Password;

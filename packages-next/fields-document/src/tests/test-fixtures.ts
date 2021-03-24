@@ -1,5 +1,6 @@
+// @ts-ignore
 import { Text } from '@keystone-next/fields-legacy';
-import { DocumentFieldType } from './base-field-type';
+import { DocumentFieldType } from '../base-field-type';
 
 export const name = 'Document';
 export const type = DocumentFieldType;
@@ -12,11 +13,11 @@ export const supportsUnique = false;
 export const fieldName = 'content';
 export const subfieldName = 'document';
 
-export const fieldConfig = () => ({ ___validateAndNormalize: x => x });
+export const fieldConfig = () => ({ ___validateAndNormalize: (x: any) => x });
 
 export const getTestFields = () => ({
   name: { type: Text },
-  content: { type, ___validateAndNormalize: x => x },
+  content: { type, ___validateAndNormalize: (x: any) => x },
 });
 
 export const initItems = () => {

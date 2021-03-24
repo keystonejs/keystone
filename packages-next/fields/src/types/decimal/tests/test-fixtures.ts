@@ -1,5 +1,6 @@
-import Text from '../Text';
-import Decimal from './';
+// @ts-ignore
+import { Text, Decimal } from '@keystone-next/fields-legacy';
+import { AdapterName } from '@keystone-next/test-utils-legacy';
 
 export const name = 'Decimal';
 export const type = Decimal;
@@ -36,7 +37,7 @@ export const storedValues = () => [
   { name: 'price7', price: null },
 ];
 
-export const supportedFilters = adapterName => [
+export const supportedFilters = (adapterName: AdapterName) => [
   'null_equality',
   'equality',
   'ordering',

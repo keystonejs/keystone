@@ -1,14 +1,16 @@
-import Text from '../Text';
-import Select from './';
+// @ts-ignore
+import { Text, Select } from '@keystone-next/fields-legacy';
+
+type MatrixValue = typeof testMatrix[number];
 
 export const name = 'Select';
 export const type = Select;
-export const exampleValue = matrixValue =>
+export const exampleValue = (matrixValue: MatrixValue) =>
   matrixValue === 'enum' ? 'thinkmill' : matrixValue === 'string' ? 'a string' : 1;
-export const exampleValue2 = matrixValue =>
+export const exampleValue2 = (matrixValue: MatrixValue) =>
   matrixValue === 'enum' ? 'atlassian' : matrixValue === 'string' ? '1number' : 2;
 export const supportsUnique = true;
-export const fieldConfig = matrixValue => ({
+export const fieldConfig = (matrixValue: MatrixValue) => ({
   dataType: matrixValue,
   options:
     matrixValue === 'enum'
@@ -41,14 +43,14 @@ export const fieldName = 'company';
 
 export const supportedFilters = () => ['null_equality', 'equality', 'in_empty_null', 'in_equal'];
 
-export const testMatrix = ['enum', 'string', 'integer'];
+export const testMatrix = ['enum', 'string', 'integer'] as const;
 
-export const getTestFields = matrixValue => ({
+export const getTestFields = (matrixValue: MatrixValue) => ({
   name: { type: Text },
   company: { type, ...fieldConfig(matrixValue) },
 });
 
-export const initItems = matrixValue => {
+export const initItems = (matrixValue: MatrixValue) => {
   if (matrixValue === 'enum') {
     return [
       { name: 'a', company: 'thinkmill' },
@@ -83,7 +85,7 @@ export const initItems = matrixValue => {
   return [];
 };
 
-export const storedValues = matrixValue => {
+export const storedValues = (matrixValue: MatrixValue) => {
   if (matrixValue === 'enum') {
     return [
       { name: 'a', company: 'thinkmill' },

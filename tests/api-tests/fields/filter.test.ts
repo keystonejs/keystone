@@ -5,7 +5,7 @@ import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-lega
 import { createItem, getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import memoizeOne from 'memoize-one';
 
-const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.js`, {
+const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
 testModules.push(path.resolve('packages/fields/tests/test-fixtures.js'));

@@ -1,5 +1,5 @@
-import Text from '../Text';
-import Float from '.';
+// @ts-ignore
+import { Text, Float } from '@keystone-next/fields-legacy';
 
 export const name = 'Float';
 export const type = Float;

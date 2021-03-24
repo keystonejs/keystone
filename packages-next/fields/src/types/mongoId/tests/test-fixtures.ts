@@ -1,6 +1,7 @@
+// @ts-ignore
 import { Text } from '@keystone-next/fields-legacy';
-
-import { MongoId } from './index';
+// @ts-ignore
+import { MongoId } from '@keystone-next/fields-mongoid-legacy';
 
 export const name = 'MongoId';
 export const type = MongoId;
