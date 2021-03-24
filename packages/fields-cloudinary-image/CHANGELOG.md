@@ -1,5 +1,16 @@
 # @keystonejs/fields-cloudinary-image
 
+## 3.2.0
+
+### Minor Changes
+
+- [#5189](https://github.com/keystonejs/keystone/pull/5189) [`56c4dd0f8`](https://github.com/keystonejs/keystone/commit/56c4dd0f85e677e14a4a930818d5a9d5808e61fa) Thanks [@timleslie](https://github.com/timleslie)! - Added support for the `Cloudinary` field type with Primsa + SQLite.
+
+### Patch Changes
+
+- Updated dependencies [[`eae55db19`](https://github.com/keystonejs/keystone/commit/eae55db19b656e2bfa7b1e7d7aaf2f57b0a95299)]:
+  - @keystone-next/fields-legacy@23.2.0
+
 ## 3.1.0
 
 ### Minor Changes

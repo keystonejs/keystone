@@ -103,50 +103,6 @@ test('gqlOutputFieldResolvers', () => {
   expect(impl.gqlOutputFieldResolvers({ schemaName })).toEqual({});
 });
 
-describe('getAdminMeta()', () => {
-  test('meta is as expect', () => {
-    const impl = new Field('path', { label: 'config label', defaultValue: 'default' }, args);
-    const schemaName = 'public';
-
-    const value = impl.getAdminMeta({ schemaName });
-    expect(value).toEqual({
-      access: {
-        create: true,
-        read: true,
-        update: true,
-      },
-      label: 'config label',
-      path: 'path',
-      type: 'Field',
-      defaultValue: 'default',
-      isOrderable: false,
-      isPrimaryKey: false,
-      isRequired: false,
-    });
-  });
-
-  test('when defaultValue is a function, forced to `undefined`', () => {
-    const impl = new Field('path', { label: 'config label', defaultValue: () => 'default' }, args);
-    const schemaName = 'public';
-
-    const value = impl.getAdminMeta({ schemaName });
-    expect(value).toEqual({
-      access: {
-        create: true,
-        read: true,
-        update: true,
-      },
-      label: 'config label',
-      path: 'path',
-      type: 'Field',
-      defaultValue: undefined,
-      isOrderable: false,
-      isPrimaryKey: false,
-      isRequired: false,
-    });
-  });
-});
-
 test('extendAdminMeta()', () => {
   const impl = new Field('path', {}, args);
 

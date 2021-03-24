@@ -105,18 +105,10 @@ async function setupFromConfig({
 
 async function setupServer({
   adapterName,
-  schemaName = 'public',
-  schemaNames = ['public'],
-  createLists = () => {},
-  keystoneOptions = {},
-  graphqlOptions = {},
+  createLists,
 }: {
   adapterName: AdapterName;
-  schemaName?: string;
-  schemaNames?: string[];
   createLists: (args: Keystone<string>) => void;
-  keystoneOptions?: Record<string, any>; // FIXME: should match args of Keystone constructor
-  graphqlOptions?: Record<string, any>; // FIXME: should match args of GraphQLApp constuctor
 }): Promise<Setup> {
   const Adapter = {
     mongoose: MongooseAdapter,
@@ -129,24 +121,14 @@ async function setupServer({
     adapter: new Adapter(await argGenerator[adapterName]()),
     // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
     defaultAccess: { list: true, field: true },
-    schemaNames,
-    cookieSecret: 'secretForTesting',
-    ...keystoneOptions,
   });
 
   createLists(keystone);
 
   const apps = [
     new GraphQLApp({
-      schemaName,
       apiPath: '/api/graphql',
-      apollo: {
-        tracing: true,
-        cacheControl: {
-          defaultMaxAge: 3600,
-        },
-      },
-      ...graphqlOptions,
+      apollo: { tracing: true, cacheControl: { defaultMaxAge: 3600 } },
     }),
   ];
 

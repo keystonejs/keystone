@@ -1,6 +1,6 @@
 {
   "name": "keystone-next-app",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "scripts": {
     "dev": "keystone-next dev",
@@ -9,11 +9,11 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
-    "@keystone-next/auth": "^18.0.0",
+    "@keystone-next/auth": "^19.0.0",
     "@keystone-next/fields": "^5.3.0",
-    "@keystone-next/fields-document": "^3.1.0",
-    "@keystone-next/keystone": "^13.0.0",
-    "apollo-server-micro": "^2.21.1"
+    "@keystone-next/fields-document": "^3.2.0",
+    "@keystone-next/keystone": "^14.0.0",
+    "apollo-server-micro": "^2.21.2"
   },
   "prisma": {
     "schema": ".keystone/prisma/schema.prisma"

@@ -1,15 +1,9 @@
-const path = require('path');
 const { gql } = require('apollo-server-express');
 const { print } = require('graphql/language/printer');
 
 const { Text, Checkbox, Float, Relationship, Integer } = require('@keystone-next/fields-legacy');
 const { List } = require('../lib/ListTypes');
 const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
-
-let fieldsPackagePath = path.dirname(require.resolve('@keystone-next/fields-legacy/package.json'));
-function resolveViewPath(viewPath) {
-  return path.join(fieldsPackagePath, 'types', viewPath);
-}
 
 Text.adapters['mock'] = {};
 Checkbox.adapters['mock'] = {};
@@ -73,9 +67,6 @@ class MockFieldImplementation {
     this.config = {};
     this.hooks = {};
   }
-  getAdminMeta() {
-    return { path: 'id' };
-  }
   gqlOutputFields() {
     return ['id: ID'];
   }
@@ -103,9 +94,6 @@ class MockFieldImplementation {
   gqlAuxFieldResolvers() {
     return {};
   }
-  extendAdminViews(views) {
-    return views;
-  }
   getDefaultValue() {
     return;
   }
@@ -125,7 +113,6 @@ class MockFieldAdapter {
 
 const MockIdType = {
   implementation: MockFieldImplementation,
-  views: {},
   adapters: { mock: MockFieldAdapter },
 };
 
@@ -297,39 +284,6 @@ describe('new List()', () => {
     expect(list.fieldsByPath['id']).toBeInstanceOf(MockIdType.implementation);
   });
 
-  test('new List() - views', () => {
-    const list = setup();
-    expect(list.views).toEqual({
-      id: {},
-      name: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      email: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      other: {
-        Controller: resolveViewPath('Relationship/views/Controller'),
-        Field: resolveViewPath('Relationship/views/Field'),
-        Filter: resolveViewPath('Relationship/views/Filter'),
-        Cell: resolveViewPath('Relationship/views/Cell'),
-      },
-      hidden: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      writeOnce: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-    });
-  });
-
   test('new List() - adapter', () => {
     const list = setup();
     expect(list.adapter).toBeInstanceOf(MockListAdapter);
@@ -399,73 +353,6 @@ test('labelResolver', () => {
     listExtras()
   );
   expect(list4.labelResolver({ email: 'a@example.com', id: '4' })).toEqual('4');
-});
-
-describe('getAdminMeta()', () => {
-  test('adminMeta() - Smoke test', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-    expect(adminMeta).not.toBeNull();
-  });
-
-  test('getAdminMeta() - labels', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-
-    expect(adminMeta.key).toEqual('Test');
-    expect(adminMeta.access).toEqual({
-      create: true,
-      delete: true,
-      read: true,
-      update: true,
-      auth: true,
-    });
-    expect(adminMeta.label).toEqual('Tests');
-    expect(adminMeta.singular).toEqual('Test');
-    expect(adminMeta.plural).toEqual('Tests');
-    expect(adminMeta.path).toEqual('tests');
-    expect(adminMeta.gqlNames).toEqual({
-      outputTypeName: 'Test',
-      itemQueryName: 'Test',
-      listQueryName: 'allTests',
-      listQueryMetaName: '_allTestsMeta',
-      listSortName: 'SortTestsBy',
-      listMetaName: '_TestsMeta',
-      deleteMutationName: 'deleteTest',
-      deleteManyMutationName: 'deleteTests',
-      updateMutationName: 'updateTest',
-      createMutationName: 'createTest',
-      updateManyMutationName: 'updateTests',
-      createManyMutationName: 'createTests',
-      whereInputName: 'TestWhereInput',
-      whereUniqueInputName: 'TestWhereUniqueInput',
-      updateInputName: 'TestUpdateInput',
-      createInputName: 'TestCreateInput',
-      updateManyInputName: 'TestsUpdateInput',
-      createManyInputName: 'TestsCreateInput',
-      relateToManyInputName: 'TestRelateToManyInput',
-      relateToOneInputName: 'TestRelateToOneInput',
-    });
-    expect(adminMeta.adminConfig).toEqual({
-      defaultColumns: 'name,email',
-      defaultSort: 'name',
-    });
-  });
-
-  test('getAdminMeta() - fields', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-
-    expect(adminMeta.fields).toHaveLength(5);
-    expect(adminMeta.fields[0].path).toEqual('id');
-    expect(adminMeta.fields[1].path).toEqual('name');
-    expect(adminMeta.fields[2].path).toEqual('email');
-    expect(adminMeta.fields[3].path).toEqual('other');
-    expect(adminMeta.fields[4].path).toEqual('writeOnce');
-  });
 });
 
 describe(`getGqlTypes()`, () => {

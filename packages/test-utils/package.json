@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/test-utils-legacy",
   "description": "Common utilities used while testing @keystonejs/* packages.",
-  "version": "14.0.0",
+  "version": "14.0.1",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "main": "dist/test-utils-legacy.cjs.js",
@@ -14,7 +14,7 @@
     "@keystone-next/adapter-mongoose-legacy": "^11.1.2",
     "@keystone-next/adapter-prisma-legacy": "^4.0.0",
     "@keystone-next/app-graphql-legacy": "^7.0.0",
-    "@keystone-next/keystone": "13.0.0",
+    "@keystone-next/keystone": "14.0.0",
     "@keystone-next/keystone-legacy": "^21.0.0",
     "express": "^4.17.1",
     "memoize-one": "^5.1.1",

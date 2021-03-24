@@ -1,11 +1,8 @@
 import crypto from 'crypto';
 import fetch from 'node-fetch';
-import { resolveView } from '../resolve-view';
 
 const VALID_URL = /^https?:\/\//i;
 const IS_MD5 = /[a-f0-9]{32}/i;
-
-const previewComponent = resolveView('iframely/views/preview');
 
 export class IframelyOEmbedAdapter {
   constructor({ apiKey, parameters } = {}) {
@@ -55,18 +52,5 @@ export class IframelyOEmbedAdapter {
     }).map(([key, value]) => `${key}=${encodeURIComponent(value)}`);
 
     return fetch(`https://iframe.ly/api/oembed?${params.join('&')}`).then(res => res.json());
-  }
-
-  getAdminViews() {
-    return [previewComponent];
-  }
-
-  getViewOptions() {
-    return {
-      previewComponent,
-      // NOTE: This is the md5'd API key from the constructor, which is ok to
-      // put on the client according to the docs
-      clientApiKey: this.apiKey,
-    };
   }
 }

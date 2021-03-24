@@ -79,6 +79,13 @@ class CloudinaryImage extends File.implementation {
         if (!itemValues) {
           return null;
         }
+        if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
+          // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
+          // https://github.com/prisma/prisma/issues/3786
+          try {
+            itemValues = JSON.parse(itemValues);
+          } catch (err) {}
+        }
 
         return {
           publicUrl: this.fileAdapter.publicUrl(itemValues),

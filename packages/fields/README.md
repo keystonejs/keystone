@@ -29,18 +29,17 @@ Keystone contains a set of primitive fields types that can be imported from the 
 
 In addition to these, some complex types are packaged separately:
 
-| Field type                                                             | Description                                                                                                                                                           |
-| :--------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`AuthedRelationship`](/packages/fields-authed-relationship/README.md) | Extendes the [`Relationship`](/packages/fields/src/types/Relationship/README.md) type; automatically set to the currently authenticated item during a create mutation |
-| [`AutoIncrement`](/packages/fields-auto-increment/README.md)           | An automatically incrementing integer; the default type for `id` fields when using the Knex DB adapter                                                                |
-| [`Markdown`](/packages/fields-markdown/README.md)                      | Markdown content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [CodeMirror](https://codemirror.net/) editor in the Admin UI    |
-| [`MongoId`](/packages/fields-mongoid/README.md)                        | Arbitrary [Mongo `ObjectId`](https://docs.mongodb.com/manual/reference/method/ObjectId/) values; the default type for `id` fields when using the Mongoose DB adapter  |
-| [`Wysiwyg`](/packages/fields-wysiwyg-tinymce/README.md)                | Rich text content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [TinyMCE](https://www.tiny.cloud/) editor in the Admin UI      |
-| [`LocationGoogle`](/packages/fields-location-google/README.md)         | Data from the [Google Maps API](https://developers.google.com/maps/documentation/javascript/reference)                                                                |
-| [`Color`](/packages/fields-color/README.md)                            | Hexidecimal RGBA color values; uses a color picker in the Admin UI                                                                                                    |
-| [`OEmbed`](/packages/fields-oembed/README.md)                          | Data in the [oEmbed format](https://oembed.com/); allowing an embedded representation of a URL on third party sites                                                   |
-| [`CloudinaryImage`](/packages/fields-cloudinary-image/README.md)       | Allows uploading images to the [Cloudinary](https://cloudinary.com/) image hosting service                                                                            |
-| [`Unsplash`](/packages/fields-unsplash/README.md)                      | Meta data from the [Unsplash API](https://unsplash.com/developers) and generates URLs to dynamically transformed images                                               |
+| Field type                                                       | Description                                                                                                                                                          |
+| :--------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`AutoIncrement`](/packages/fields-auto-increment/README.md)     | An automatically incrementing integer; the default type for `id` fields when using the Knex DB adapter                                                               |
+| [`Markdown`](/packages/fields-markdown/README.md)                | Markdown content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [CodeMirror](https://codemirror.net/) editor in the Admin UI   |
+| [`MongoId`](/packages/fields-mongoid/README.md)                  | Arbitrary [Mongo `ObjectId`](https://docs.mongodb.com/manual/reference/method/ObjectId/) values; the default type for `id` fields when using the Mongoose DB adapter |
+| [`Wysiwyg`](/packages/fields-wysiwyg-tinymce/README.md)          | Rich text content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [TinyMCE](https://www.tiny.cloud/) editor in the Admin UI     |
+| [`LocationGoogle`](/packages/fields-location-google/README.md)   | Data from the [Google Maps API](https://developers.google.com/maps/documentation/javascript/reference)                                                               |
+| [`Color`](/packages/fields-color/README.md)                      | Hexidecimal RGBA color values; uses a color picker in the Admin UI                                                                                                   |
+| [`OEmbed`](/packages/fields-oembed/README.md)                    | Data in the [oEmbed format](https://oembed.com/); allowing an embedded representation of a URL on third party sites                                                  |
+| [`CloudinaryImage`](/packages/fields-cloudinary-image/README.md) | Allows uploading images to the [Cloudinary](https://cloudinary.com/) image hosting service                                                                           |
+| [`Unsplash`](/packages/fields-unsplash/README.md)                | Meta data from the [Unsplash API](https://unsplash.com/developers) and generates URLs to dynamically transformed images                                              |
 
 > **Tip:** Need something else? Keystone lets you create [custom field types](/docs/guides/custom-field-types.md) to support almost any use case.
 

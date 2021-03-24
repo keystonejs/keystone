@@ -51,9 +51,6 @@ jobs:
       matrix:
         project:
           - docs-next
-          - tests/test-projects/login
-          - tests/test-projects/access-control
-          - tests/test-projects/client-validation
     steps:
       - name: Checkout Repo
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'

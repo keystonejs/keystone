@@ -14,10 +14,10 @@
     "@keystone-ui/popover": "^2.0.1",
     "@types/react-select": "^4.0.13",
     "date-fns": "^2.19.0",
-    "react": "^17.0.1",
+    "react": "^17.0.2",
     "react-day-picker": "npm:react-day-picker@^7.4.8",
     "react-focus-lock": "^2.5.0",
-    "react-select": "^4.2.1"
+    "react-select": "^4.3.0"
   },
   "engines": {
     "node": ">=10.0.0"

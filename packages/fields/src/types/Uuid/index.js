@@ -1,4 +1,3 @@
-import { resolveView } from '../../resolve-view';
 import {
   UuidImplementation,
   MongoUuidInterface,
@@ -9,11 +8,6 @@ import {
 const Uuid = {
   type: 'Uuid',
   implementation: UuidImplementation,
-  views: {
-    Controller: resolveView('types/Uuid/views/Controller'),
-    Field: resolveView('types/Uuid/views/Field'),
-    Filter: resolveView('types/Uuid/views/Filter'),
-  },
   adapters: {
     knex: KnexUuidInterface,
     mongoose: MongoUuidInterface,

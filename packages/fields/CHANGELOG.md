@@ -1,5 +1,11 @@
 # @keystonejs/fields
 
+## 23.2.0
+
+### Minor Changes
+
+- [#5188](https://github.com/keystonejs/keystone/pull/5188) [`eae55db19`](https://github.com/keystonejs/keystone/commit/eae55db19b656e2bfa7b1e7d7aaf2f57b0a95299) Thanks [@timleslie](https://github.com/timleslie)! - Added support for the `File` field type with Primsa + SQLite.
+
 ## 23.1.0
 
 ### Minor Changes

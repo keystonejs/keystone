@@ -55,15 +55,12 @@ export function createKeystone(
   // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
   const keystone: BaseKeystone = new Keystone({
     adapter,
-    cookieSecret: '123456789', // FIXME: Don't provide a default here. See #2882
     queryLimits: graphql?.queryLimits,
     // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
     onConnect: (keystone, { context } = {}) => config.db.onConnect?.(context),
     // FIXME: Unsupported options: Need to work which of these we want to support with backwards
     // compatibility options.
     // defaultAccess
-    // sessionStore
-    // cookie
     // schemaNames
   });
 

@@ -38,7 +38,14 @@ export class DocumentImplementation extends Implementation {
   gqlOutputFieldResolvers() {
     return {
       [this.path]: (item, _args, context) => {
-        const document = item[this.path];
+        let document = item[this.path];
+        if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
+          // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
+          // https://github.com/prisma/prisma/issues/3786
+          try {
+            document = JSON.parse(document);
+          } catch (err) {}
+        }
         if (!Array.isArray(document)) return null;
         return {
           document: hydrateRelationships =>
@@ -67,6 +74,11 @@ export class DocumentImplementation extends Implementation {
     const nodes = this.config.___validateAndNormalize(data);
     if (this.adapter.constructor === KnexDocumentInterface) {
       // knex expects the json to be stringified
+      return JSON.stringify(nodes);
+    }
+    if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
+      // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
+      // https://github.com/prisma/prisma/issues/3786
       return JSON.stringify(nodes);
     }
     return nodes;
@@ -121,11 +133,6 @@ export class KnexDocumentInterface extends CommonDocumentInterface(KnexFieldAdap
 export class PrismaDocumentInterface extends CommonDocumentInterface(PrismaFieldAdapter) {
   constructor() {
     super(...arguments);
-    if (this.listAdapter.parentAdapter.provider === 'sqlite') {
-      throw new Error(
-        `PrismaAdapter provider "sqlite" does not support field type "${this.field.constructor.name}"`
-      );
-    }
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
     if (this.config.isIndexed) {
@@ -137,6 +144,15 @@ export class PrismaDocumentInterface extends CommonDocumentInterface(PrismaField
   }
 
   getPrismaSchema() {
-    return [this._schemaField({ type: 'Json' })];
+    return [
+      this._schemaField({
+        type:
+          this.listAdapter.parentAdapter.provider === 'sqlite'
+            ? // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
+              // https://github.com/prisma/prisma/issues/3786
+              'String'
+            : 'Json',
+      }),
+    ];
   }
 }
