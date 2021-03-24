@@ -1,17 +1,20 @@
-const { text, integer, relationship } = require('@keystone-next/fields');
-const { createSchema, list } = require('@keystone-next/keystone/schema');
-const {
+import { text, integer, relationship } from '@keystone-next/fields';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import {
   multiAdapterRunners,
   setupFromConfig,
   networkedGraphqlRequest,
   testConfig,
-} = require('@keystone-next/test-utils-legacy');
-const {
-  validation: { depthLimit, definitionLimit, fieldLimit },
-} = require('@keystone-next/app-graphql-legacy');
-const { createItems } = require('@keystone-next/server-side-graphql-client-legacy');
+  AdapterName,
+} from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { validation } from '@keystone-next/app-graphql-legacy';
+// @ts-ignore
+import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
-function setupKeystone(adapterName) {
+const { depthLimit, definitionLimit, fieldLimit } = validation;
+
+function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
     adapterName,
     config: testConfig({
