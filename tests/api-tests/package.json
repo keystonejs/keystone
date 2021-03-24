@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "@keystone-next/auth-password-legacy": "^6.0.3",
-    "@keystone-next/fields-authed-relationship-legacy": "^1.0.19",
     "@keystone-next/fields-legacy": "^23.1.0",
     "@keystone-next/test-utils-legacy": "^14.0.0",
     "@keystone-next/types": "^15.0.0",
