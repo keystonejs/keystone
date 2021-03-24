@@ -14,7 +14,7 @@ export type MongoIdFieldConfig<
 };
 
 export const mongoId = <TGeneratedListTypes extends BaseGeneratedListTypes>(
-  config: MongoIdFieldConfig<TGeneratedListTypes>
+  config: MongoIdFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
   type: MongoId,
   config,
