@@ -94,9 +94,6 @@ class MockFieldImplementation {
   gqlAuxFieldResolvers() {
     return {};
   }
-  extendAdminViews(views) {
-    return views;
-  }
   getDefaultValue() {
     return;
   }
