@@ -65,7 +65,8 @@
   "preconstruct": {
     "entrypoints": [
       "index.ts",
-      "next/{index,graphql,api,generate-prisma}.ts",
+      "next/index.ts",
+      "next/___internal-do-not-use-will-break-in-patch/{api,generate-prisma,graphql}.ts",
       "schema/index.ts",
       "session/index.ts",
       "scripts/index.ts"

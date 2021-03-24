@@ -1,8 +1,8 @@
 import path from 'path';
-import { createSystem } from '../lib/createSystem';
-import { initConfig } from '../lib/initConfig';
-import { requireSource } from '../lib/requireSource';
-import { CONFIG_PATH } from '../scripts/utils';
+import { createSystem } from '../../lib/createSystem';
+import { initConfig } from '../../lib/initConfig';
+import { requireSource } from '../../lib/requireSource';
+import { CONFIG_PATH } from '../../scripts/utils';
 
 const dotKeystonePath = path.resolve('.keystone');
 

@@ -2,6 +2,7 @@ import { spawnSync, spawn } from 'child_process';
 import path from 'path';
 import { uriToCredentials } from '@prisma/sdk';
 import fs from 'fs-extra';
+// @ts-ignore
 import withPreconstruct from '@preconstruct/next';
 import { requireSource } from '../lib/requireSource';
 import { CONFIG_PATH } from '../scripts/utils';
@@ -22,7 +23,7 @@ export const withKeystone = (internalConfig: any = {}) => (
       'node_modules/.keystone/graphql.js',
       `import keystoneConfig from '../../keystone';
 import { PrismaClient } from '.keystone/prisma'
-import { nextGraphQLAPIRoute } from '@keystone-next/keystone/next/graphql';
+import { nextGraphQLAPIRoute } from '@keystone-next/keystone/next/___internal-do-not-use-will-break-in-patch/graphql';
 
 export const config = {
   api: {
@@ -46,7 +47,7 @@ export default config;
     );
     fs.outputFileSync(
       'node_modules/.keystone/api.js',
-      `import { createListsAPI } from '@keystone-next/keystone/next/api';
+      `import { createListsAPI } from '@keystone-next/keystone/next/___internal-do-not-use-will-break-in-patch/api';
 import keystoneConfig from '../../keystone';
 import { PrismaClient } from '.keystone/prisma'
 
@@ -89,9 +90,17 @@ path.join(process.cwd(), ${JSON.stringify(path.relative(process.cwd(), filename)
   if (phase === 'phase-development-server' && !hasAlreadyStarted) {
     hasAlreadyStarted = true;
 
-    spawnSync('node', [require.resolve('@keystone-next/keystone/next/generate-prisma')], {
-      stdio: 'inherit',
-    });
+    spawnSync(
+      'node',
+      [
+        require.resolve(
+          '@keystone-next/keystone/next/___internal-do-not-use-will-break-in-patch/generate-prisma'
+        ),
+      ],
+      {
+        stdio: 'inherit',
+      }
+    );
     // for some reason things blow up with EADDRINUSE if the dev call happens synchronously here
     // so we wait a sec and then do it
     setTimeout(() => {
