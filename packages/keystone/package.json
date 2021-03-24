@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@keystone-next/access-control-legacy": "^9.0.0",
-    "@keystone-next/session-legacy": "^8.2.1",
     "@keystone-next/utils-legacy": "^7.0.0",
     "apollo-errors": "^1.9.0",
     "apollo-server-express": "^2.21.2",

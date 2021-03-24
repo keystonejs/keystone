@@ -11,7 +11,6 @@ const {
   validateListAccessControl,
   validateAuthAccessControl,
 } = require('@keystone-next/access-control-legacy');
-const { SessionManager } = require('@keystone-next/session-legacy');
 
 const { List } = require('../ListTypes');
 const { ListCRUDProvider } = require('../providers');
@@ -28,13 +27,6 @@ module.exports = class Keystone {
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
     this._schemas = {};
-    this._sessionManager = new SessionManager({
-      cookie: {
-        secure: process.env.NODE_ENV === 'production', // Default to true in production
-        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-        sameSite: false,
-      },
-    });
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
     this._schemaNames = schemaNames;
@@ -387,7 +379,6 @@ module.exports = class Keystone {
           authentication: { item: req.user, listKey: req.authedListKey },
           skipAccessControl: false,
         }),
-        ...this._sessionManager.getContext(req),
         req,
       }),
       ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
@@ -469,7 +460,6 @@ module.exports = class Keystone {
       // to be first so the methods added to `req` are available further down
       // the request pipeline.
       // TODO: set up a session test rig (maybe by wrapping an in-memory store)
-      this._sessionManager.getSessionMiddleware({ keystone: this }),
       falsey(process.env.DISABLE_LOGGING) && require('express-pino-logger')(pinoOptions),
       cors && createCorsMiddleware(cors),
       ...(await Promise.all(
