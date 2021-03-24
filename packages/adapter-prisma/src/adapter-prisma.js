@@ -353,6 +353,9 @@ class PrismaListAdapter extends BaseListAdapter {
       case 'Float':
       case 'Decimal':
         return parseFloat(value) || null;
+      case 'BigInt':
+        // eslint-disable-next-line no-undef
+        return BigInt(value) || null;
       case '_MultipleFields':
       default:
         return value;
