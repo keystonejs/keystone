@@ -68,10 +68,6 @@ The key to this mapping is the `KeystoneAdapter` instance's `.name` property.
 var fieldTypeDef = {
   type: 'Text',
   implementation: Text,
-  views: {
-    Controller: path.resolve(__dirname, './Controller'),
-    Field: path.resolve(__dirname, './views/Field'),
-  },
   adapters: {
     mongoose: MongoTextInterface,
   },

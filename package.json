@@ -155,7 +155,6 @@
       "packages/**/*.js",
       "!packages/**/dist/**",
       "!packages/core/tests/default-entry/index.js",
-      "!packages/fields/**/views/**",
       "!packages/fields/**/test-fixtures.js",
       "!packages/fields/types.js"
     ]
