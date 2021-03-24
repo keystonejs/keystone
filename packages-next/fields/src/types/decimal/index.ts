@@ -23,6 +23,6 @@ export const decimal = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   views: resolveView('decimal/views'),
   getAdminMeta: () => ({
     precision: config.precision || null,
-    scale: Number.isInteger(config.scale) ? config.scale : null,
+    scale: config.scale != null ? config.scale : null,
   }),
 });
