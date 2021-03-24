@@ -1,11 +1,6 @@
 import path from 'path';
 import globby from 'globby';
-import {
-  multiAdapterRunners,
-  setupServer,
-  testConfig,
-  setupFromConfig,
-} from '@keystone-next/test-utils-legacy';
+import { multiAdapterRunners, testConfig, setupFromConfig } from '@keystone-next/test-utils-legacy';
 import {
   createItem,
   deleteItem,
@@ -35,27 +30,16 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const listKey = 'Test';
           const keystoneTestWrapper = (testFn: (args: any) => void = () => {}) =>
             runner(
-              () => {
-                if (mod.newInterfaces) {
-                  return setupFromConfig({
-                    adapterName,
-                    config: testConfig({
-                      lists: createSchema({
-                        [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
-                      }),
+              () =>
+                setupFromConfig({
+                  adapterName,
+                  config: testConfig({
+                    lists: createSchema({
+                      [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
                     }),
-                  });
-                } else {
-                  throw new Error('Old interfaces no longer supportes');
-                  return setupServer({
-                    adapterName,
-                    createLists: (keystone: any) => {
-                      // Create a list with all the fields required for testing
-                      keystone.createList(listKey, { fields: mod.getTestFields(matrixValue) });
-                    },
-                  });
-                }
-              },
+                  }),
+                }),
+
               async ({ context, keystone, ...rest }) => {
                 // Populate the database before running the tests
                 for (const item of mod.initItems(matrixValue)) {

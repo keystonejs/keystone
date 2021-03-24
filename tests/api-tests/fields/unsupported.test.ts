@@ -1,11 +1,6 @@
 import path from 'path';
 import globby from 'globby';
-import {
-  multiAdapterRunners,
-  setupFromConfig,
-  setupServer,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
@@ -38,25 +33,15 @@ multiAdapterRunners().map(({ adapterName, after }) => {
             });
 
             test('Throws', async () => {
-              if (!mod.newInterfaces) throw new Error('Old interfaces no longer supportes');
-
               await expect(async () =>
-                mod.newInterfaces
-                  ? setupFromConfig({
-                      adapterName,
-                      config: testConfig({
-                        lists: createSchema({
-                          [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
-                        }),
-                      }),
-                    })
-                  : setupServer({
-                      adapterName,
-                      createLists: (keystone: any) => {
-                        // Create a list with all the fields required for testing
-                        keystone.createList(listKey, { fields: mod.getTestFields(matrixValue) });
-                      },
-                    })
+                setupFromConfig({
+                  adapterName,
+                  config: testConfig({
+                    lists: createSchema({
+                      [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
+                    }),
+                  }),
+                })
               ).rejects.toThrow(Error);
             });
           });

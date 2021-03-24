@@ -8,14 +8,6 @@ import supertest from 'supertest-light';
 import MongoDBMemoryServer from 'mongodb-memory-server-core';
 // @ts-ignore
 import { Keystone } from '@keystone-next/keystone-legacy';
-// @ts-ignore
-import { GraphQLApp } from '@keystone-next/app-graphql-legacy';
-// @ts-ignore
-import { KnexAdapter } from '@keystone-next/adapter-knex-legacy';
-// @ts-ignore
-import { MongooseAdapter } from '@keystone-next/adapter-mongoose-legacy';
-// @ts-ignore
-import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { initConfig, createSystem, createExpressServer } from '@keystone-next/keystone';
 import type { KeystoneConfig, BaseKeystone, KeystoneContext } from '@keystone-next/types';
 import memoizeOne from 'memoize-one';
@@ -103,43 +95,6 @@ async function setupFromConfig({
   return { keystone, context: createContext().sudo(), app };
 }
 
-async function setupServer({
-  adapterName,
-  createLists,
-}: {
-  adapterName: AdapterName;
-  createLists: (args: Keystone<string>) => void;
-}): Promise<Setup> {
-  const Adapter = {
-    mongoose: MongooseAdapter,
-    knex: KnexAdapter,
-    prisma_postgresql: PrismaAdapter,
-    prisma_sqlite: PrismaAdapter,
-  }[adapterName];
-
-  const keystone = new Keystone({
-    adapter: new Adapter(await argGenerator[adapterName]()),
-    // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
-    defaultAccess: { list: true, field: true },
-  });
-
-  createLists(keystone);
-
-  const apps = [
-    new GraphQLApp({
-      apiPath: '/api/graphql',
-      apollo: { tracing: true, cacheControl: { defaultMaxAge: 3600 } },
-    }),
-  ];
-
-  const { middlewares } = await keystone.prepare({ dev: true, apps });
-
-  const app = express();
-  app.use(middlewares);
-
-  return ({ keystone, app } as unknown) as Setup;
-}
-
 function networkedGraphqlRequest({
   app,
   query,
@@ -203,11 +158,7 @@ async function teardownMongoMemoryServer() {
   mongoServer = null;
 }
 
-type Setup = {
-  keystone: Keystone<string> | BaseKeystone;
-  context: KeystoneContext;
-  app: express.Application;
-};
+type Setup = { keystone: BaseKeystone; context: KeystoneContext; app: express.Application };
 
 function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promise<void> | void) {
   return function (
@@ -289,4 +240,4 @@ function multiAdapterRunners(only = process.env.TEST_ADAPTER) {
   ].filter(a => typeof only === 'undefined' || a.adapterName === only);
 }
 
-export { setupServer, setupFromConfig, multiAdapterRunners, networkedGraphqlRequest };
+export { setupFromConfig, multiAdapterRunners, networkedGraphqlRequest };

@@ -50,7 +50,6 @@ export const supportedFilters = () => ['null_equality', 'equality', 'in_empty_nu
 
 export const testMatrix = ['enum', 'string', 'integer'] as const;
 
-export const newInterfaces = true;
 export const getTestFields = (matrixValue: MatrixValue) => ({
   name: text(),
   company: select(fieldConfig(matrixValue)),

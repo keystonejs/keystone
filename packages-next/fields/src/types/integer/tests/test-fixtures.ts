@@ -8,7 +8,6 @@ export const exampleValue2 = () => 38;
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const newInterfaces = true;
 export const getTestFields = () => ({ name: text(), testField: integer() });
 
 export const initItems = () => {

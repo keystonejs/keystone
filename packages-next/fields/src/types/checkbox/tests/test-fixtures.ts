@@ -8,7 +8,6 @@ export const exampleValue2 = () => false;
 export const supportsUnique = false;
 export const fieldName = 'enabled';
 
-export const newInterfaces = true;
 export const getTestFields = () => ({ name: text(), enabled: checkbox() });
 
 export const initItems = () => {

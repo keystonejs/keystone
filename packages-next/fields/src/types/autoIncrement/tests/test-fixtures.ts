@@ -25,7 +25,6 @@ export const fieldConfig = (matrixValue: MatrixValue) => ({
   access: { create: true, update: true },
 });
 
-export const newInterfaces = true;
 export const getTestFields = (matrixValue: MatrixValue) => ({
   name: text(),
   orderNumber: autoIncrement({

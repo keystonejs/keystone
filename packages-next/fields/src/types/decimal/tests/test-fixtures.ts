@@ -10,7 +10,6 @@ export const supportsUnique = true;
 export const fieldName = 'price';
 export const unSupportedAdapterList = ['prisma_sqlite'];
 
-export const newInterfaces = true;
 export const getTestFields = () => ({
   name: text(),
   price: decimal({ scale: 2 }),
