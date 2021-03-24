@@ -1,10 +1,16 @@
-const { PasswordAuthStrategy } = require('@keystone-next/auth-password-legacy');
-const { Text, Password } = require('@keystone-next/fields-legacy');
-const { multiAdapterRunners, setupServer } = require('@keystone-next/test-utils-legacy');
-const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
-const superagent = require('superagent');
+import { AddressInfo } from 'net';
+// @ts-ignore
+import { PasswordAuthStrategy } from '@keystone-next/auth-password-legacy';
+// @ts-ignore
+import { Text, Password } from '@keystone-next/fields-legacy';
+import { AdapterName, multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
+// @ts-ignore
+import superagent from 'superagent';
+import express from 'express';
 
-function setupKeystone(adapterName) {
+function setupKeystone(adapterName: AdapterName) {
   return setupServer({
     adapterName,
     createLists: keystone => {
@@ -20,7 +26,7 @@ function setupKeystone(adapterName) {
         type: PasswordAuthStrategy,
         list: 'User',
         hooks: {
-          resolveAuthInput: ({ context, operation, originalInput }) => {
+          resolveAuthInput: ({ context, operation, originalInput }: any) => {
             expect(context).not.toBe(undefined);
             expect(operation).toEqual('authenticate');
 
@@ -38,7 +44,7 @@ function setupKeystone(adapterName) {
             originalInput,
             operation,
             addValidationError,
-          }) => {
+          }: any) => {
             expect(context).not.toBe(undefined);
             expect(operation).toEqual('authenticate');
             expect(originalInput).not.toBe(undefined);
@@ -46,7 +52,7 @@ function setupKeystone(adapterName) {
               addValidationError('INVALID EMAIL');
             }
           },
-          beforeAuth: ({ resolvedData, context, originalInput, operation }) => {
+          beforeAuth: ({ resolvedData, context, originalInput, operation }: any) => {
             expect(context).not.toBe(undefined);
             expect(operation).toEqual('authenticate');
             expect(resolvedData.email).not.toBe(undefined);
@@ -62,7 +68,7 @@ function setupKeystone(adapterName) {
             success,
             message,
             token,
-          }) => {
+          }: any) => {
             expect(context).not.toBe(undefined);
             expect(operation).toEqual('authenticate');
             expect(originalInput).not.toBe(undefined);
@@ -78,11 +84,11 @@ function setupKeystone(adapterName) {
               expect(message).toEqual('Authentication successful');
             }
           },
-          beforeUnauth: ({ operation, context }) => {
+          beforeUnauth: ({ operation, context }: any) => {
             expect(context).not.toBe(undefined);
             expect(operation).toEqual('unauthenticate');
           },
-          afterUnauth: ({ operation, context, listKey, itemId }) => {
+          afterUnauth: ({ operation, context, listKey, itemId }: any) => {
             expect(context).not.toBe(undefined);
             expect(operation).toEqual('unauthenticate');
             expect(listKey).toEqual('User');
@@ -94,11 +100,11 @@ function setupKeystone(adapterName) {
   });
 }
 
-const runTestInServer = async (app, testFn) => {
+const runTestInServer = async (app: express.Application, testFn: (arg: any) => Promise<any>) => {
   const server = app.listen(0);
   try {
-    const _runQuery = async (query, agent) => {
-      const { port } = server.address();
+    const _runQuery = async (query: string, agent: any) => {
+      const { port } = server.address() as AddressInfo;
       const url = `http://localhost:${port}/api/graphql`;
       agent = agent || superagent.agent();
       const { res } = await agent.post(url).set('Accept', 'application/json').send({ query });
