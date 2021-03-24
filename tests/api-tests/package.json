@@ -37,6 +37,7 @@
     "@keystone-next/test-utils-legacy": "^14.0.0",
     "@keystone-next/types": "^15.0.0",
     "@keystone-next/utils-legacy": "^7.0.0",
+    "apollo-cache-control": "^0.11.6",
     "express": "^4.17.1"
   }
 }

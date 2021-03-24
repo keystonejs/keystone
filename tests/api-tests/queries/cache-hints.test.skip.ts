@@ -1,93 +1,96 @@
-const { Integer, Text, Relationship } = require('@keystone-next/fields-legacy');
-const {
+import { CacheScope } from 'apollo-cache-control';
+import { text, relationship, integer } from '@keystone-next/fields';
+import {
   multiAdapterRunners,
-  setupServer,
+  setupFromConfig,
   networkedGraphqlRequest,
-} = require('@keystone-next/test-utils-legacy');
-const { createItems } = require('@keystone-next/server-side-graphql-client-legacy');
+  testConfig,
+  AdapterName,
+} from '@keystone-next/test-utils-legacy';
+// @ts-ignore
+import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
+import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
+import { KeystoneContext } from '@keystone-next/types';
 
-function setupKeystone(adapterName) {
-  return setupServer({
+function setupKeystone(adapterName: AdapterName) {
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('Post', {
-        fields: {
-          title: { type: Text },
-          author: { type: Relationship, ref: 'User.posts', many: true },
-        },
-        cacheHint: {
-          scope: 'PUBLIC',
-          maxAge: 100,
-        },
-      });
-
-      keystone.createList('User', {
-        fields: {
-          name: {
-            type: Text,
-            cacheHint: {
-              maxAge: 80,
+    config: testConfig({
+      lists: createSchema({
+        Post: list({
+          fields: {
+            title: text(),
+            author: relationship({ ref: 'User.posts', many: true }),
+          },
+          graphql: {
+            // @ts-ignore
+            cacheHint: { scope: CacheScope.Public, maxAge: 100 },
+          },
+        }),
+        User: list({
+          fields: {
+            name: text({
+              // @ts-ignore
+              graphql: { cacheHint: { maxAge: 80 } },
+            }),
+            favNumber: integer({
+              // @ts-ignore
+              graphql: { cacheHint: { maxAge: 10, scope: CacheScope.Private } },
+            }),
+            posts: relationship({ ref: 'Post.author', many: true }),
+          },
+          graphql: {
+            // @ts-ignore
+            cacheHint: ({ results, operationName, meta }) => {
+              if (meta) {
+                return { scope: CacheScope.Public, maxAge: 90 };
+              }
+              if (operationName === 'complexQuery') {
+                return { maxAge: 1 };
+              }
+              if (results.length === 0) {
+                return { maxAge: 5 };
+              }
+              return { maxAge: 100 };
             },
           },
-          favNumber: {
-            type: Integer,
-            cacheHint: {
-              maxAge: 10,
-              scope: 'PRIVATE',
+        }),
+      }),
+      extendGraphqlSchema: graphQLSchemaExtension({
+        typeDefs: `
+          type MyType {
+            original: Int
+            double: Float
+          }
+
+          type Mutation {
+            triple(x: Int): Int
+          }
+
+          type Query {
+            double(x: Int): MyType
+          }
+        `,
+        resolvers: {
+          Query: {
+            // @ts-ignore
+            double: (root, { x }, context, info) => {
+              info.cacheControl.setCacheHint({ scope: CacheScope.Public, maxAge: 100 });
+              return { original: x, double: 2.0 * x };
             },
           },
-          posts: { type: Relationship, ref: 'Post.author', many: true },
+          Mutation: {
+            triple: (root, { x }) => 3 * x,
+          },
         },
-        cacheHint: ({ results, operationName, meta }) => {
-          if (meta) {
-            return {
-              scope: 'PUBLIC',
-              maxAge: 90,
-            };
-          }
-          if (operationName === 'complexQuery') {
-            return {
-              maxAge: 1,
-            };
-          }
-          if (results.length === 0) {
-            return {
-              maxAge: 5,
-            };
-          }
-          return {
-            maxAge: 100,
-          };
-        },
-      });
-
-      // These should be added to the system and tested when we implement cacheHints
-      // keystone.extendGraphQLSchema({
-      //   types: [{ type: 'type MyType { original: Int, double: Float }' }],
-      //   queries: [
-      //     {
-      //       schema: 'double(x: Int): MyType',
-      //       resolver: (_, { x }) => ({ original: x, double: 2.0 * x }),
-      //       cacheHint: {
-      //         scope: 'PUBLIC',
-      //         maxAge: 100,
-      //       },
-      //     },
-      //   ],
-      //   mutations: [
-      //     {
-      //       schema: 'triple(x: Int): Int',
-      //       resolver: (_, { x }) => 3 * x,
-      //     },
-      //   ],
-      // });
-    },
+      }),
+    }),
   });
 }
 
-const addFixtures = async keystone => {
+const addFixtures = async (context: KeystoneContext) => {
   const users = await createItems({
-    keystone,
+    context,
     listKey: 'User',
     items: [
       { data: { name: 'Jess', favNumber: 1 } },
@@ -97,7 +100,7 @@ const addFixtures = async keystone => {
   });
 
   const posts = await createItems({
-    keystone,
+    context,
     listKey: 'Post',
     items: [
       { data: { author: { connect: [{ id: users[0].id }] }, title: 'One author' } },
@@ -124,8 +127,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('cache hints', () => {
       test(
         'users',
-        runner(setupKeystone, async ({ keystone, app }) => {
-          await addFixtures(keystone);
+        runner(setupKeystone, async ({ context, app }) => {
+          await addFixtures(context);
 
           // Basic query
           let { data, errors, res } = await networkedGraphqlRequest({
@@ -230,8 +233,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'posts',
-        runner(setupKeystone, async ({ keystone, app }) => {
-          await addFixtures(keystone);
+        runner(setupKeystone, async ({ context, app }) => {
+          await addFixtures(context);
           // The Post list has a static cache hint
 
           // Basic query
@@ -327,8 +330,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
       test(
         'mutations',
-        runner(setupKeystone, async ({ keystone, app }) => {
-          const { posts } = await addFixtures(keystone);
+        runner(setupKeystone, async ({ context, app }) => {
+          const { posts } = await addFixtures(context);
 
           // Mutation responses shouldn't be cached.
           // Here's a smoke test to make sure they still work.
@@ -354,8 +357,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       // eslint-disable-next-line jest/no-disabled-tests
       test.skip(
         'extendGraphQLSchemaQueries',
-        runner(setupKeystone, async ({ keystone, app }) => {
-          await addFixtures(keystone);
+        runner(setupKeystone, async ({ context, app }) => {
+          await addFixtures(context);
 
           // Basic query
           let { data, errors, res } = await networkedGraphqlRequest({
@@ -380,8 +383,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       // eslint-disable-next-line jest/no-disabled-tests
       test.skip(
         'extendGraphQLSchemaMutations',
-        runner(setupKeystone, async ({ keystone, app }) => {
-          await addFixtures(keystone);
+        runner(setupKeystone, async ({ context, app }) => {
+          await addFixtures(context);
 
           // Mutation responses shouldn't be cached.
           // Here's a smoke test to make sure they still work.
