@@ -30,7 +30,6 @@
     "testcheck": "^1.0.0-rc.2"
   },
   "dependencies": {
-    "@keystone-next/auth-password-legacy": "^6.0.3",
     "@keystone-next/fields-legacy": "^23.1.0",
     "@keystone-next/test-utils-legacy": "^14.0.0",
     "@keystone-next/types": "^15.0.0",
