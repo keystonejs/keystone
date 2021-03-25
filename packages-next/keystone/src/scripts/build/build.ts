@@ -84,7 +84,7 @@ const reexportKeystoneConfig = async (projectAdminPath: string, isDisabled?: boo
 };
 
 export async function build({ dotKeystonePath, projectAdminPath }: StaticPaths) {
-  console.log('🤞 Building Keystone');
+  console.log('✨ Building Keystone');
 
   const config = initConfig(requireSource(CONFIG_PATH).default);
 
