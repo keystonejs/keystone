@@ -130,6 +130,7 @@ const ListPage = ({ listKey }: ListPageProps) => {
     typeof query.pageSize === 'string' && !Number.isNaN(parseInt(query.pageSize))
       ? parseInt(query.pageSize)
       : list.pageSize;
+  console.log(pageSize);
 
   const sort = useSort(list);
 
@@ -239,66 +240,68 @@ const ListPage = ({ listKey }: ListPageProps) => {
             {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
           </Stack>
           {data.meta.count ? (
-            <Fragment>
-              <ResultsSummaryContainer>
-                {(() => {
-                  const selectedItems = selectedItemsState.selectedItems;
-                  const selectedItemsCount = selectedItems.size;
-                  if (selectedItemsCount) {
+            console.log('META COUNT', data.meta.count) || (
+              <Fragment>
+                <ResultsSummaryContainer>
+                  {(() => {
+                    const selectedItems = selectedItemsState.selectedItems;
+                    const selectedItemsCount = selectedItems.size;
+                    if (selectedItemsCount) {
+                      return (
+                        <Fragment>
+                          <span css={{ marginRight: theme.spacing.small }}>
+                            Selected {selectedItemsCount} of {data.items.length}
+                          </span>
+                          {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
+                            <DeleteManyButton
+                              list={list}
+                              selectedItems={selectedItems}
+                              refetch={refetch}
+                            />
+                          )}
+                        </Fragment>
+                      );
+                    }
                     return (
                       <Fragment>
-                        <span css={{ marginRight: theme.spacing.small }}>
-                          Selected {selectedItemsCount} of {data.items.length}
-                        </span>
-                        {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
-                          <DeleteManyButton
-                            list={list}
-                            selectedItems={selectedItems}
-                            refetch={refetch}
-                          />
+                        <PaginationLabel
+                          currentPage={currentPage}
+                          pageSize={pageSize}
+                          plural={list.plural}
+                          singular={list.singular}
+                          total={data.meta.count}
+                        />
+                        , sorted by <SortSelection list={list} />
+                        with{' '}
+                        <FieldSelection
+                          list={list}
+                          fieldModesByFieldPath={listViewFieldModesByField}
+                        />{' '}
+                        {loading && (
+                          <LoadingDots label="Loading item data" size="small" tone="active" />
                         )}
                       </Fragment>
                     );
-                  }
-                  return (
-                    <Fragment>
-                      <PaginationLabel
-                        currentPage={currentPage}
-                        pageSize={pageSize}
-                        plural={list.plural}
-                        singular={list.singular}
-                        total={data.meta.count}
-                      />
-                      , sorted by <SortSelection list={list} />
-                      with{' '}
-                      <FieldSelection
-                        list={list}
-                        fieldModesByFieldPath={listViewFieldModesByField}
-                      />{' '}
-                      {loading && (
-                        <LoadingDots label="Loading item data" size="small" tone="active" />
-                      )}
-                    </Fragment>
-                  );
-                })()}
-              </ResultsSummaryContainer>
-              <ListTable
-                count={data.meta.count}
-                currentPage={currentPage}
-                itemsGetter={dataGetter.get('items')}
-                listKey={listKey}
-                pageSize={pageSize}
-                selectedFields={selectedFields}
-                sort={sort}
-                selectedItems={selectedItemsState.selectedItems}
-                onSelectedItemsChange={selectedItems => {
-                  setSelectedItems({
-                    itemsFromServer: selectedItemsState.itemsFromServer,
-                    selectedItems,
-                  });
-                }}
-              />
-            </Fragment>
+                  })()}
+                </ResultsSummaryContainer>
+                <ListTable
+                  count={data.meta.count}
+                  currentPage={currentPage}
+                  itemsGetter={dataGetter.get('items')}
+                  listKey={listKey}
+                  pageSize={pageSize}
+                  selectedFields={selectedFields}
+                  sort={sort}
+                  selectedItems={selectedItemsState.selectedItems}
+                  onSelectedItemsChange={selectedItems => {
+                    setSelectedItems({
+                      itemsFromServer: selectedItemsState.itemsFromServer,
+                      selectedItems,
+                    });
+                  }}
+                />
+              </Fragment>
+            )
           ) : (
             <ResultsSummaryContainer>No {list.plural} found.</ResultsSummaryContainer>
           )}
