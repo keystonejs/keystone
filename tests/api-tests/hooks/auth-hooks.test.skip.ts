@@ -1,103 +1,112 @@
 import { AddressInfo } from 'net';
-// @ts-ignore
-import { PasswordAuthStrategy } from '@keystone-next/auth-password-legacy';
-// @ts-ignore
-import { Text, Password } from '@keystone-next/fields-legacy';
-import { AdapterName, multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
+import {
+  AdapterName,
+  multiAdapterRunners,
+  testConfig,
+  setupFromConfig,
+} from '@keystone-next/test-utils-legacy';
 // @ts-ignore
 import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 // @ts-ignore
 import superagent from 'superagent';
 import express from 'express';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { text, password } from '@keystone-next/fields';
 
 function setupKeystone(adapterName: AdapterName) {
-  return setupServer({
+  return setupFromConfig({
     adapterName,
-    createLists: keystone => {
-      keystone.createList('User', {
-        fields: {
-          name: { type: Text },
-          email: { type: Text },
-          password: { type: Password },
-        },
-      });
-
-      keystone.createAuthStrategy({
-        type: PasswordAuthStrategy,
-        list: 'User',
-        hooks: {
-          resolveAuthInput: ({ context, operation, originalInput }: any) => {
-            expect(context).not.toBe(undefined);
-            expect(operation).toEqual('authenticate');
-
-            if (originalInput.email === 'triggerBadResolve') {
-              return undefined;
-            }
-            if (originalInput.email === 'fixOnResolve') {
-              return { email: 'test@example.com', password: 'testing123' };
-            }
-            return originalInput;
+    config: testConfig({
+      lists: createSchema({
+        User: list({
+          fields: {
+            name: text(),
+            email: text(),
+            password: password(),
           },
-          validateAuthInput: ({
-            resolvedData,
-            context,
-            originalInput,
-            operation,
-            addValidationError,
-          }: any) => {
-            expect(context).not.toBe(undefined);
-            expect(operation).toEqual('authenticate');
-            expect(originalInput).not.toBe(undefined);
-            if (resolvedData.email === 'invalid') {
-              addValidationError('INVALID EMAIL');
-            }
-          },
-          beforeAuth: ({ resolvedData, context, originalInput, operation }: any) => {
-            expect(context).not.toBe(undefined);
-            expect(operation).toEqual('authenticate');
-            expect(resolvedData.email).not.toBe(undefined);
-            expect(resolvedData.password).not.toBe(undefined);
-            expect(originalInput).not.toBe(undefined);
-          },
-          afterAuth: ({
-            resolvedData,
-            context,
-            operation,
-            originalInput,
-            item,
-            success,
-            message,
-            token,
-          }: any) => {
-            expect(context).not.toBe(undefined);
-            expect(operation).toEqual('authenticate');
-            expect(originalInput).not.toBe(undefined);
-            if (resolvedData.email === 'test@example.com') {
-              expect(item.id).not.toBe(undefined);
-              expect(success).toEqual(true);
-              expect(token).not.toBe(undefined);
-              expect(message).toEqual('Authentication successful');
-            } else {
-              expect(item).toBe(null);
-              expect(success).toBe(false);
-              expect(token).not.toBe(undefined);
-              expect(message).toEqual('Authentication successful');
-            }
-          },
-          beforeUnauth: ({ operation, context }: any) => {
-            expect(context).not.toBe(undefined);
-            expect(operation).toEqual('unauthenticate');
-          },
-          afterUnauth: ({ operation, context, listKey, itemId }: any) => {
-            expect(context).not.toBe(undefined);
-            expect(operation).toEqual('unauthenticate');
-            expect(listKey).toEqual('User');
-            expect(itemId).not.toBe(undefined);
-          },
-        },
-      });
-    },
+        }),
+      }),
+    }),
   });
+
+  // FIXME: Once auth hooks are implemented we need to use the new API to setup
+  // equivalent hooks to the following, and then adjust the tests to match.
+  //     keystone.createAuthStrategy({
+  //       type: PasswordAuthStrategy,
+  //       list: 'User',
+  //       hooks: {
+  //         resolveAuthInput: ({ context, operation, originalInput }: any) => {
+  //           expect(context).not.toBe(undefined);
+  //           expect(operation).toEqual('authenticate');
+
+  //           if (originalInput.email === 'triggerBadResolve') {
+  //             return undefined;
+  //           }
+  //           if (originalInput.email === 'fixOnResolve') {
+  //             return { email: 'test@example.com', password: 'testing123' };
+  //           }
+  //           return originalInput;
+  //         },
+  //         validateAuthInput: ({
+  //           resolvedData,
+  //           context,
+  //           originalInput,
+  //           operation,
+  //           addValidationError,
+  //         }: any) => {
+  //           expect(context).not.toBe(undefined);
+  //           expect(operation).toEqual('authenticate');
+  //           expect(originalInput).not.toBe(undefined);
+  //           if (resolvedData.email === 'invalid') {
+  //             addValidationError('INVALID EMAIL');
+  //           }
+  //         },
+  //         beforeAuth: ({ resolvedData, context, originalInput, operation }: any) => {
+  //           expect(context).not.toBe(undefined);
+  //           expect(operation).toEqual('authenticate');
+  //           expect(resolvedData.email).not.toBe(undefined);
+  //           expect(resolvedData.password).not.toBe(undefined);
+  //           expect(originalInput).not.toBe(undefined);
+  //         },
+  //         afterAuth: ({
+  //           resolvedData,
+  //           context,
+  //           operation,
+  //           originalInput,
+  //           item,
+  //           success,
+  //           message,
+  //           token,
+  //         }: any) => {
+  //           expect(context).not.toBe(undefined);
+  //           expect(operation).toEqual('authenticate');
+  //           expect(originalInput).not.toBe(undefined);
+  //           if (resolvedData.email === 'test@example.com') {
+  //             expect(item.id).not.toBe(undefined);
+  //             expect(success).toEqual(true);
+  //             expect(token).not.toBe(undefined);
+  //             expect(message).toEqual('Authentication successful');
+  //           } else {
+  //             expect(item).toBe(null);
+  //             expect(success).toBe(false);
+  //             expect(token).not.toBe(undefined);
+  //             expect(message).toEqual('Authentication successful');
+  //           }
+  //         },
+  //         beforeUnauth: ({ operation, context }: any) => {
+  //           expect(context).not.toBe(undefined);
+  //           expect(operation).toEqual('unauthenticate');
+  //         },
+  //         afterUnauth: ({ operation, context, listKey, itemId }: any) => {
+  //           expect(context).not.toBe(undefined);
+  //           expect(operation).toEqual('unauthenticate');
+  //           expect(listKey).toEqual('User');
+  //           expect(itemId).not.toBe(undefined);
+  //         },
+  //       },
+  //     });
+  //   },
+  // });
 }
 
 const runTestInServer = async (app: express.Application, testFn: (arg: any) => Promise<any>) => {
@@ -124,10 +133,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
     describe('Auth Hooks', () => {
       test(
         'Auth/unauth with valid creds',
-        runner(setupKeystone, async ({ app, keystone }) => {
+        runner(setupKeystone, async ({ app, context }) => {
           // Add a user with a password
           const user = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { name: 'test', email: 'test@example.com', password: 'testing123' },
           });
@@ -162,10 +171,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       );
       test(
         'Auth with bad resolveAuthInput return value',
-        runner(setupKeystone, async ({ app, keystone }) => {
+        runner(setupKeystone, async ({ app, context }) => {
           // Add a user with a password
           await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { name: 'test', email: 'test@example.com', password: 'testing123' },
           });
@@ -192,10 +201,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       );
       test(
         'Auth/unauth with good resolveAuthInput return value',
-        runner(setupKeystone, async ({ app, keystone }) => {
+        runner(setupKeystone, async ({ app, context }) => {
           // Add a user with a password
           const user = await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { name: 'test', email: 'test@example.com', password: 'testing123' },
           });
@@ -230,10 +239,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       );
       test(
         'Auth with values caught in validation hook return value',
-        runner(setupKeystone, async ({ app, keystone }) => {
+        runner(setupKeystone, async ({ app, context }) => {
           // Add a user with a password
           await createItem({
-            keystone,
+            context,
             listKey: 'User',
             item: { name: 'test', email: 'test@example.com', password: 'testing123' },
           });
