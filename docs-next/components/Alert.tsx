@@ -1,7 +1,8 @@
 /** @jsx jsx */
+import { ReactNode } from 'react';
 import { jsx, Box } from '@keystone-ui/core';
 
-export function Alert({ children }) {
+export function Alert({ children }: { children: ReactNode }) {
   return (
     <Box padding="medium" rounding="medium" foreground="yellow900" background="yellow50">
       <span
