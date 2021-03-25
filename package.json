@@ -123,7 +123,6 @@
       "packages/fields-auto-increment",
       "packages/fields-cloudinary-image",
       "packages/fields-mongoid",
-      "packages/fields-location-google",
       "packages/fields",
       "packages/adapter-prisma",
       "packages-next/*",
