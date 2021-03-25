@@ -4,24 +4,12 @@ import { parseFieldAccess } from '@keystone-next/access-control-legacy';
 class Field {
   constructor(
     path,
-    {
-      hooks = {},
-      isRequired,
-      defaultValue,
-      access,
-      label,
-      schemaDoc,
-      adminDoc,
-      adminConfig,
-      ...config
-    },
+    { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, ...config },
     { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
   ) {
     this.path = path;
     this.isPrimaryKey = path === 'id';
     this.schemaDoc = schemaDoc;
-    this.adminDoc = adminDoc;
-    this.adminConfig = adminConfig;
     this.config = config;
     this.isRequired = !!isRequired;
     this.defaultValue = defaultValue;
@@ -48,13 +36,7 @@ class Field {
     // Should be overwritten by types that implement a Relationship interface
     this.isRelationship = false;
 
-    this.access = parseFieldAccess({
-      schemaNames,
-      listKey,
-      fieldKey: path,
-      defaultAccess,
-      access,
-    });
+    this.access = parseFieldAccess({ schemaNames, listKey, fieldKey: path, defaultAccess, access });
   }
 
   // By default we assume that fields do not support unique constraints.
@@ -167,9 +149,6 @@ class Field {
   }
   gqlUpdateInputFields() {
     return [];
-  }
-  extendAdminMeta(meta) {
-    return meta;
   }
   getDefaultValue({ context, originalInput }) {
     if (typeof this.defaultValue !== 'undefined') {

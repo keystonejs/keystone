@@ -38,12 +38,6 @@ export class Decimal extends Implementation {
   gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
-  extendAdminMeta(meta) {
-    return {
-      ...meta,
-      symbol: this.symbol,
-    };
-  }
   getBackingTypes() {
     return { [this.path]: { optional: true, type: 'string | null' } };
   }
