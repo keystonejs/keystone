@@ -8,19 +8,19 @@ order: 3
 
 Keystone contains a set of primitive fields types that can be imported from the `@keystone-next/fields-legacy` package:
 
-| Field type                                                          | Description                                                                                                                   |
-| :------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------- |
-| [`Checkbox`](/packages/fields/src/types/Checkbox/README.md)         | A single Boolean value                                                                                                        |
-| [`DateTimeUtc`](/packages/fields/src/types/DateTimeUtc/README.md)   | Represents points in time, stored in UTC                                                                                      |
-| [`Decimal`](/packages/fields/src/types/Decimal/README.md)           | Exact, numeric values in base-10; useful for currency, etc.                                                                   |
-| [`File`](/packages/fields/src/types/File/README.md)                 | Files backed various storage mediums: local filesystem, cloud based hosting, etc.                                             |
-| [`Float`](/packages/fields/src/types/Float/README.md)               | An imprecise numeric value, stored as a floating point                                                                        |
-| [`Integer`](/packages/fields/src/types/Integer/README.md)           | A whole number                                                                                                                |
-| [`Password`](/packages/fields/src/types/Password/README.md)         | A [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt) hash of the value supplied;                                                |
-| [`Relationship`](/packages/fields/src/types/Relationship/README.md) | A link between the current list and others, often paired with a field on the other list                                       |
-| [`Select`](/packages/fields/src/types/Select/README.md)             | One of several predefined string values, presented as a dropdown                                                              |
-| [`Text`](/packages/fields/src/types/Text/README.md)                 | A basic but versatile text field of arbitrary length                                                                          |
-| [`Virtual`](/packages/fields/src/types/Virtual/README.md)           | Read-only field with a developer-defined resolver, executed on read                                                           |
+| Field type                                                          | Description                                                                             |
+| :------------------------------------------------------------------ | :-------------------------------------------------------------------------------------- |
+| [`Checkbox`](/packages/fields/src/types/Checkbox/README.md)         | A single Boolean value                                                                  |
+| [`DateTimeUtc`](/packages/fields/src/types/DateTimeUtc/README.md)   | Represents points in time, stored in UTC                                                |
+| [`Decimal`](/packages/fields/src/types/Decimal/README.md)           | Exact, numeric values in base-10; useful for currency, etc.                             |
+| [`File`](/packages/fields/src/types/File/README.md)                 | Files backed various storage mediums: local filesystem, cloud based hosting, etc.       |
+| [`Float`](/packages/fields/src/types/Float/README.md)               | An imprecise numeric value, stored as a floating point                                  |
+| [`Integer`](/packages/fields/src/types/Integer/README.md)           | A whole number                                                                          |
+| [`Password`](/packages/fields/src/types/Password/README.md)         | A [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt) hash of the value supplied;          |
+| [`Relationship`](/packages/fields/src/types/Relationship/README.md) | A link between the current list and others, often paired with a field on the other list |
+| [`Select`](/packages/fields/src/types/Select/README.md)             | One of several predefined string values, presented as a dropdown                        |
+| [`Text`](/packages/fields/src/types/Text/README.md)                 | A basic but versatile text field of arbitrary length                                    |
+| [`Virtual`](/packages/fields/src/types/Virtual/README.md)           | Read-only field with a developer-defined resolver, executed on read                     |
 
 In addition to these, some complex types are packaged separately:
 
@@ -29,7 +29,6 @@ In addition to these, some complex types are packaged separately:
 | [`AutoIncrement`](/packages/fields-auto-increment/README.md)     | An automatically incrementing integer; the default type for `id` fields when using the Knex DB adapter                                                               |
 | [`Markdown`](/packages/fields-markdown/README.md)                | Markdown content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [CodeMirror](https://codemirror.net/) editor in the Admin UI   |
 | [`MongoId`](/packages/fields-mongoid/README.md)                  | Arbitrary [Mongo `ObjectId`](https://docs.mongodb.com/manual/reference/method/ObjectId/) values; the default type for `id` fields when using the Mongoose DB adapter |
-| [`Wysiwyg`](/packages/fields-wysiwyg-tinymce/README.md)          | Rich text content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [TinyMCE](https://www.tiny.cloud/) editor in the Admin UI     |
 | [`LocationGoogle`](/packages/fields-location-google/README.md)   | Data from the [Google Maps API](https://developers.google.com/maps/documentation/javascript/reference)                                                               |
 | [`Color`](/packages/fields-color/README.md)                      | Hexidecimal RGBA color values; uses a color picker in the Admin UI                                                                                                   |
 | [`OEmbed`](/packages/fields-oembed/README.md)                    | Data in the [oEmbed format](https://oembed.com/); allowing an embedded representation of a URL on third party sites                                                  |
