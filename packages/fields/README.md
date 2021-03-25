@@ -53,14 +53,12 @@ Fields share some standard configuration options.
 | Option         | Type                                | Default     | Description                                                                                                                                           |
 | -------------- | ----------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `type`         | `FieldType`                         | (required)  |                                                                                                                                                       |
-| `adminDoc`     | `String`                            | `false`     | A description for the field used in the AdminUI.                                                                                                      |
 | `schemaDoc`    | `String`                            | `false`     | A description for the field used in the GraphQL schema.                                                                                               |
 | `defaultValue` | `Any` \| `Function`                 | `undefined` | A valid default value for the field type. Functions must return a valid value. Use `undefined` to set no default, and `null` to set an empty default. |
 | `isUnique`     | `Boolean`                           | `false`     | Whether or not the field should be unique.                                                                                                            |
 | `isRequired`   | `Boolean`                           | `false`     | Whether or not the field should be mandatory.                                                                                                         |
 | `access`       | `Boolean` \| `Function` \| `Object` | `true`      | See: [Access control](https://keystonejs.com/guides/access-control) options for fields.                                                               |
 | `label`        | `String`                            |             | Label for the field.                                                                                                                                  |
-| `adminConfig`  | `Object`                            | `{}`        | Additional config which can be used when customizing `admin-ui`                                                                                       |
 
 > **Note:** Many field types have additional config options. See the documentation for individual field types for more detail.
 
@@ -72,35 +70,10 @@ A valid `Keystone` field type.
 
 Sets the label for the field in the AdminUI
 
-### `adminDoc`
-
-A description of the field used in the AdminUI.
-
 ### `schemaDoc`
 
 A description of the field used used in the GraphQL schema.
 
-### `adminConfig`
-
-Additional field configs affecting field rendering or display in `admin-ui`.
-
-#### `adminConfig.isReadOnly`
-
-Fields with `isReadOnly` set to `true` will be disabled preventing users from modifying them in the Admin UI. This does not affect access control and fields can still be updated via GraphQL.
-
-```javascript
-keystone.createList('Post', {
-  fields: {
-    title: { type: Text },
-    slug: {
-      type: Text,
-      adminConfig: {
-        isReadOnly: true, //slug can be created automatically and you may want to show this as read only
-      },
-    },
-  },
-});
-```
 
 ### `defaultValue`
 

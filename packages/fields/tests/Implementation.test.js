@@ -103,14 +103,6 @@ test('gqlOutputFieldResolvers', () => {
   expect(impl.gqlOutputFieldResolvers({ schemaName })).toEqual({});
 });
 
-test('extendAdminMeta()', () => {
-  const impl = new Field('path', {}, args);
-
-  const meta = { a: 1 };
-  const value = impl.extendAdminMeta(meta);
-  expect(value).toEqual(meta);
-});
-
 describe('getDefaultValue()', () => {
   test('undefined by default', () => {
     const impl = new Field('path', {}, args);

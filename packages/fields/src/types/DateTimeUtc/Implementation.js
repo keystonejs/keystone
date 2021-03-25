@@ -38,9 +38,6 @@ export class DateTimeUtcImplementation extends Implementation {
     return [`scalar String`];
   }
 
-  extendAdminMeta(meta) {
-    return { ...meta, format: this.format };
-  }
   getBackingTypes() {
     return { [this.path]: { optional: true, type: 'Date | null' } };
   }

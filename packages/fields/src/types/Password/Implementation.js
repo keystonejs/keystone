@@ -78,11 +78,6 @@ export class Password extends Implementation {
     return this.bcrypt.hashSync(plaintext, this.workFactor);
   }
 
-  extendAdminMeta(meta) {
-    const { minLength } = this;
-    return { ...meta, minLength };
-  }
-
   // Force values to be hashed when set
   validateNewPassword(password) {
     if (this.rejectCommon && dumbPasswords.check(password)) {
