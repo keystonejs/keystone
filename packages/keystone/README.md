@@ -83,15 +83,14 @@ _**Default:**_ `['public']`
 
 ## Methods
 
-| Method               | Description                                                         |
-| -------------------- | ------------------------------------------------------------------- |
-| `connect`            | Manually connect to Adapter.                                        |
-| `createAuthStrategy` | Creates a new authentication middleware instance.                   |
-| `createList`         | Add a list to the `Keystone` schema.                                |
-| `disconnect`         | Disconnect from the adapter.                                        |
-| `prepare`            | Manually prepare `Keystone` middlewares.                            |
-| `createContext`      | Create a `context` object that can be used with `executeGraphQL()`. |
-| `executeGraphQL`     | Execute a server-side GraphQL operation within the given context.   |
+| Method           | Description                                                         |
+| ---------------- | ------------------------------------------------------------------- |
+| `connect`        | Manually connect to Adapter.                                        |
+| `createList`     | Add a list to the `Keystone` schema.                                |
+| `disconnect`     | Disconnect from the adapter.                                        |
+| `prepare`        | Manually prepare `Keystone` middlewares.                            |
+| `createContext`  | Create a `context` object that can be used with `executeGraphQL()`. |
+| `executeGraphQL` | Execute a server-side GraphQL operation within the given context.   |
 
 <!--
 ## Super secret methods
@@ -115,17 +114,6 @@ keystone.connect();
 ```
 
 > **Note:** `keystone.connect()` is only required for custom servers. Most example projects use the `keystone start` command to start a server and automatically connect.
-
-### `createAuthStrategy(config)`
-
-Creates a new authentication middleware instance. See:
-
-- [Authentication guide](https://www.keystonejs.com/guides/authentication)
-- [Authentication API docs](https://www.keystonejs.com/api/authentication)
-
-```javascript allowCopy=false showLanguage=false
-const authStrategy = keystone.createAuthStrategy({...});
-```
 
 ### `createList(listKey, config)`
 
