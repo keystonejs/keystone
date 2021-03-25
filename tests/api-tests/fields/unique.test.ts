@@ -1,7 +1,14 @@
 import globby from 'globby';
 // @ts-ignore
 import { Text } from '@keystone-next/fields-legacy';
-import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
+import {
+  multiAdapterRunners,
+  setupFromConfig,
+  setupServer,
+  testConfig,
+} from '@keystone-next/test-utils-legacy';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -30,27 +37,44 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
             const keystoneTestWrapper = (testFn: (setup: any) => Promise<void>) =>
               runner(
                 () =>
-                  setupServer({
-                    adapterName,
-                    createLists: keystone => {
-                      keystone.createList('Test', {
-                        fields: {
-                          name: { type: Text },
-                          testField: {
-                            type: mod.type,
-                            isUnique: true,
-                            ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
-                          },
+                  mod.newInterfaces
+                    ? setupFromConfig({
+                        adapterName,
+                        config: testConfig({
+                          lists: createSchema({
+                            Test: list({
+                              fields: {
+                                name: text(),
+                                testField: mod.typeFunction({
+                                  isUnique: true,
+                                  ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                                }),
+                              },
+                            }),
+                          }),
+                        }),
+                      })
+                    : setupServer({
+                        adapterName,
+                        createLists: keystone => {
+                          keystone.createList('Test', {
+                            fields: {
+                              name: { type: Text },
+                              testField: {
+                                type: mod.type,
+                                isUnique: true,
+                                ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                              },
+                            },
+                          });
                         },
-                      });
-                    },
-                  }),
+                      }),
                 testFn
               );
             test(
               'uniqueness is enforced over multiple mutations',
-              keystoneTestWrapper(async ({ keystone }) => {
-                const { errors } = await keystone.executeGraphQL({
+              keystoneTestWrapper(async ({ keystone, context }) => {
+                const { errors } = await (context || keystone).executeGraphQL({
                   query: `
                   mutation($data: TestCreateInput) {
                     createTest(data: $data) { id }
@@ -60,7 +84,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
                 });
                 expect(errors).toBe(undefined);
 
-                const { errors: errors2 } = await keystone.executeGraphQL({
+                const { errors: errors2 } = await (context || keystone).executeGraphQL({
                   query: `
                   mutation($data: TestCreateInput) {
                     createTest(data: $data) { id }
@@ -80,8 +104,8 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
 
             test(
               'uniqueness is enforced over single mutation',
-              keystoneTestWrapper(async ({ keystone }) => {
-                const { errors } = await keystone.executeGraphQL({
+              keystoneTestWrapper(async ({ keystone, context }) => {
+                const { errors } = await (context || keystone).executeGraphQL({
                   query: `
                   mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
                     foo: createTest(data: $fooData) { id }
@@ -105,8 +129,8 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
 
             test(
               'Configuring uniqueness on one field does not affect others',
-              keystoneTestWrapper(async ({ keystone }) => {
-                const { data, errors } = await keystone.executeGraphQL({
+              keystoneTestWrapper(async ({ keystone, context }) => {
+                const { data, errors } = await (context || keystone).executeGraphQL({
                   query: `
                   mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
                     foo: createTest(data: $fooData) { id }
@@ -143,21 +167,40 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
               // Try to create a thing and have it fail
               let erroredOut = false;
               try {
-                await setupServer({
-                  adapterName,
-                  createLists: keystone => {
-                    keystone.createList('Test', {
-                      fields: {
-                        name: { type: Text },
-                        testField: {
-                          type: mod.type,
-                          isUnique: true,
-                          ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                if (mod.newInterfaces) {
+                  await setupFromConfig({
+                    adapterName,
+                    config: testConfig({
+                      lists: createSchema({
+                        Test: list({
+                          fields: {
+                            name: text(),
+                            testField: mod.typeFunction({
+                              isUnique: true,
+                              ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                            }),
+                          },
+                        }),
+                      }),
+                    }),
+                  });
+                } else {
+                  await setupServer({
+                    adapterName,
+                    createLists: keystone => {
+                      keystone.createList('Test', {
+                        fields: {
+                          name: { type: Text },
+                          testField: {
+                            type: mod.type,
+                            isUnique: true,
+                            ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                          },
                         },
-                      },
-                    });
-                  },
-                });
+                      });
+                    },
+                  });
+                }
               } catch (error) {
                 expect(error.message).toMatch('isUnique is not a supported option for field type');
                 erroredOut = true;
