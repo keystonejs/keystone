@@ -1,1 +1,0 @@
-export { SessionManager } from './session';

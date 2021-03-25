@@ -22,7 +22,6 @@
     "@keystone-next/keystone": "^14.0.0",
     "@keystone-next/keystone-legacy": "^21.0.0",
     "@keystone-next/server-side-graphql-client-legacy": "^2.0.1",
-    "@keystone-next/session-legacy": "^8.2.1",
     "@keystone-next/test-utils-legacy": "^14.0.1",
     "cookie-signature": "^1.1.0",
     "supertest-light": "^1.0.3",

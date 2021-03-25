@@ -20,7 +20,6 @@
     "@keystone-next/keystone": "*",
     "@keystone-next/keystone-legacy": "*",
     "@keystone-next/server-side-graphql-client-legacy": "*",
-    "@keystone-next/session-legacy": "*",
     "cookie-signature": "^1.1.0",
     "cuid": "^2.1.8",
     "globby": "^11.0.3",
