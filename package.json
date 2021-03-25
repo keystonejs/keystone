@@ -122,7 +122,6 @@
       "packages/utils",
       "packages/fields-auto-increment",
       "packages/fields-cloudinary-image",
-      "packages/fields-markdown",
       "packages/fields-mongoid",
       "packages/fields-location-google",
       "packages/fields",

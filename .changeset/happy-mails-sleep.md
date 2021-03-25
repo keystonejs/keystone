@@ -1,7 +1,6 @@
 ---
 '@keystone-next/fields-auto-increment-legacy': major
 '@keystone-next/fields-location-google-legacy': major
-'@keystone-next/fields-markdown-legacy': major
 '@keystone-next/fields-mongoid-legacy': major
 ---
 
