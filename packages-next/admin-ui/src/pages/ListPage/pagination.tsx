@@ -1,5 +1,7 @@
 /** @jsx jsx */
-import { jsx, Center, Stack } from '@keystone-ui/core';
+import { jsx, Center, Stack, css, useTheme } from '@keystone-ui/core';
+import { Select } from '@keystone-ui/fields';
+import { ChevronRightIcon, ChevronLeftIcon } from '@keystone-ui/icons';
 import { Link, useRouter } from '../../router';
 import { useList } from '../..';
 
@@ -23,7 +25,86 @@ function Page({ page, currentPage }: { page: number; currentPage: number }) {
   );
 }
 
-export function Pagination({
+export function Pagination({ currentPage, total, pageSize, list }) {
+  const { query, pathname, push } = useRouter();
+  const { opacity } = useTheme();
+
+  const nextPage = currentPage + 1;
+  const prevPage = currentPage - 1;
+  const minPage = 1;
+
+  const nxtQuery = { ...query, page: nextPage };
+  const prevQuery = { ...query, page: prevPage };
+
+  const limit = Math.ceil(total / pageSize);
+  const pages = [];
+
+  const onChange = (selectedOption: { value: string; label: string }) => {
+    push({
+      pathname,
+      query: {
+        ...query,
+        page: selectedOption.value,
+      },
+    });
+  };
+
+  for (let page = minPage; page <= limit; page++) {
+    pages.push({
+      label: String(page),
+      value: String(page),
+    });
+  }
+  return (
+    <Stack
+      as="nav"
+      role="navigation"
+      aria-label="Pagination"
+      gap="small"
+      across
+      align="center"
+      css={{
+        justifyContent: 'space-between',
+      }}
+    >
+      <Stack gap="small" across align="center">
+        <Select
+          width="medium"
+          value={{ label: String(currentPage), value: String(currentPage) }}
+          options={pages}
+          onChange={onChange}
+        />
+        <p>of {limit}</p>
+      </Stack>
+      <Link
+        css={{
+          color: '#415269',
+          ...(prevPage < minPage && {
+            pointerEvents: 'none',
+            opacity: opacity.disabled,
+          }),
+        }}
+        href={{ query: prevQuery }}
+      >
+        <ChevronLeftIcon />
+      </Link>
+      <Link
+        css={{
+          color: '#415269',
+          ...(nextPage > limit && {
+            pointerEvents: 'none',
+            opacity: opacity.disabled,
+          }),
+        }}
+        href={{ query: nxtQuery }}
+      >
+        <ChevronRightIcon />
+      </Link>
+    </Stack>
+  );
+}
+
+export function PaginationO({
   currentPage,
   total,
   pageSize,
