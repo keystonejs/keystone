@@ -1,5 +1,7 @@
 import { Page, components } from '../../../components/Page';
 import { getHeadings } from '../../../lib/getHeadings';
+import { InlineCode } from '../../../components/Code';
+import { Alert } from '../../../components/Alert';
 import { MDXProvider } from '@mdx-js/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,7 +16,7 @@ import Link from 'next/link';
   }}
 />
 
-# Getting started with `create-keystone-next-app`
+# Getting started
 
 [`create-keystone-next-app`](https://github.com/keystonejs/create-keystone-next-app) is a CLI app that makes it easier for you to get started with Keystone.
 It will generate a couple of files for you and install all the dependencies you need to run the Admin UI and start using the GraphQL API.
@@ -50,7 +52,9 @@ cd your/path/
 npm init keystone-next-app
 ```
 
-_(`npm init <initializer>` is available in npm 6+)_
+<Alert>
+  <InlineCode>npm init {"<initializer>"}</InlineCode> is available in npm 6+
+</Alert>
 
 ### npx
 
@@ -61,12 +65,18 @@ cd your/path/
 npx create-keystone-next-app
 ```
 
-_(npx comes with npm 5.2+)_
+<Alert>
+  <InlineCode>npx</InlineCode> comes with npm 5.2+
+</Alert>
+
+## Connecting your database
 
 The CLI will ask you to name your new app and for a way to connect to your database.
 Make sure you have your connection URL ready for your database, e.g. `postgres://localhost/my-app` or `postgres://username:password@localhost/my-app`.
 
-_(If you run into trouble with the database, check out this guide on [Database Setup](https://www.keystonejs.com/quick-start/adapters))_
+<Alert>
+  If you run into trouble with the database, check out this guide on <Link href="https://www.keystonejs.com/quick-start/adapters">Database Setup</Link>
+</Alert>
 
 ## Opening your shiny new Admin UI
 
@@ -131,10 +141,12 @@ The files come with three npm scripts you can run locally.
 
 - The `start` script will run Keystone in production mode.
 
+Read more about the cli in our [command line guides](/guides/cli).
+
 ## Where to next?
 
-- Read more about the Keystone config inside `keystone.ts` over at [System Configuration API](/apis/config).
-- Read more about how you create a database schema for Keystone over at [Schema API](/apis/schema).
+- Customize Keystone with the [System Configuration API](/apis/config).
+- Add fields and relationships using [Schema API](/apis/schema).
 
 export default ({ children }) => {
   const headings = getHeadings(children);
