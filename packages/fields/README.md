@@ -30,7 +30,6 @@ In addition to these, some complex types are packaged separately:
 | [`Markdown`](/packages/fields-markdown/README.md)                | Markdown content; based on the [`Text`](/packages/fields/src/types/Text/README.md) type and using the [CodeMirror](https://codemirror.net/) editor in the Admin UI   |
 | [`MongoId`](/packages/fields-mongoid/README.md)                  | Arbitrary [Mongo `ObjectId`](https://docs.mongodb.com/manual/reference/method/ObjectId/) values; the default type for `id` fields when using the Mongoose DB adapter |
 | [`LocationGoogle`](/packages/fields-location-google/README.md)   | Data from the [Google Maps API](https://developers.google.com/maps/documentation/javascript/reference)                                                               |
-| [`Color`](/packages/fields-color/README.md)                      | Hexidecimal RGBA color values; uses a color picker in the Admin UI                                                                                                   |
 | [`CloudinaryImage`](/packages/fields-cloudinary-image/README.md) | Allows uploading images to the [Cloudinary](https://cloudinary.com/) image hosting service                                                                           |
 
 > **Tip:** Need something else? Keystone lets you create [custom field types](/docs/guides/custom-field-types.md) to support almost any use case.

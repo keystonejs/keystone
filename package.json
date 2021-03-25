@@ -125,7 +125,6 @@
       "packages/fields-markdown",
       "packages/fields-mongoid",
       "packages/fields-location-google",
-      "packages/fields-color",
       "packages/fields",
       "packages/adapter-prisma",
       "packages-next/*",
