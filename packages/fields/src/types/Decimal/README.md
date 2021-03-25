@@ -15,11 +15,10 @@ See the [Storage section](#storage) for specifics.
 ## Usage
 
 ```js
-const { DateTime, Decimal, Text } = require('@keystone-next/fields-legacy');
+const { Decimal, Text } = require('@keystone-next/fields-legacy');
 
 keystone.createList('Payment', {
   fields: {
-    timestamp: { type: DateTime },
     description: { type: Text },
     amount: { type: Decimal },
   },

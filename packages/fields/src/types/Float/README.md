@@ -11,11 +11,10 @@ An imprecise numeric value, stored as a floating point.
 ## Usage
 
 ```js
-const { Float, DateTime } = require('@keystone-next/fields-legacy');
+const { Float } = require('@keystone-next/fields-legacy');
 
 keystone.createList('SensorReading', {
   fields: {
-    loggedAt: { type: DateTime },
     temperature: { type: Float },
     humidity: { type: Float },
   },
