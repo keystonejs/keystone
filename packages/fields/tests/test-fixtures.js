@@ -1,13 +1,14 @@
 import { getItems } from '@keystone-next/server-side-graphql-client-legacy';
-import Text from '../src/types/Text';
+import { text } from '@keystone-next/fields';
 
 export const name = 'ID';
-export { Text as type };
+
 export const exampleValue = () => '"foo"';
 
+export const newInterfaces = true;
 export const getTestFields = () => {
   return {
-    name: { type: Text },
+    name: text(),
   };
 };
 

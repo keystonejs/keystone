@@ -43,6 +43,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }),
               });
             } else {
+              throw new Error('Old interfaces no longer supportes');
               return setupServer({
                 adapterName,
                 createLists: (keystone: any) => {
