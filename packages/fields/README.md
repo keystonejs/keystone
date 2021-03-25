@@ -31,7 +31,6 @@ In addition to these, some complex types are packaged separately:
 | [`MongoId`](/packages/fields-mongoid/README.md)                  | Arbitrary [Mongo `ObjectId`](https://docs.mongodb.com/manual/reference/method/ObjectId/) values; the default type for `id` fields when using the Mongoose DB adapter |
 | [`LocationGoogle`](/packages/fields-location-google/README.md)   | Data from the [Google Maps API](https://developers.google.com/maps/documentation/javascript/reference)                                                               |
 | [`Color`](/packages/fields-color/README.md)                      | Hexidecimal RGBA color values; uses a color picker in the Admin UI                                                                                                   |
-| [`OEmbed`](/packages/fields-oembed/README.md)                    | Data in the [oEmbed format](https://oembed.com/); allowing an embedded representation of a URL on third party sites                                                  |
 | [`CloudinaryImage`](/packages/fields-cloudinary-image/README.md) | Allows uploading images to the [Cloudinary](https://cloudinary.com/) image hosting service                                                                           |
 
 > **Tip:** Need something else? Keystone lets you create [custom field types](/docs/guides/custom-field-types.md) to support almost any use case.
