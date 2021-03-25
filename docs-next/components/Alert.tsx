@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, Box, css } from '@keystone-ui/core';
+import { jsx, Box } from '@keystone-ui/core';
 
 export function Alert({ children }) {
   return (
