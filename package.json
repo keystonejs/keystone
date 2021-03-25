@@ -122,7 +122,6 @@
       "packages/utils",
       "packages/fields-auto-increment",
       "packages/fields-oembed",
-      "packages/fields-unsplash",
       "packages/fields-cloudinary-image",
       "packages/fields-markdown",
       "packages/fields-mongoid",
