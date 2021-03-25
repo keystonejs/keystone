@@ -59,10 +59,8 @@ export default withAuth(
   config({
     db: process.env.DATABASE_URL
       ? { adapter: 'prisma_postgresql', url: process.env.DATABASE_URL }
-      : {
-          adapter: 'mongoose',
-          url: 'mongodb://localhost/keystone-examples-next-auth',
-        },
+      : { adapter: 'prisma_sqlite', url: 'file:./keystone-examples-next-auth.db' },
+    experimental: { prismaSqlite: true },
     lists,
     ui: {},
     session: withItemData(
