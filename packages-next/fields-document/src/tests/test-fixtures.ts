@@ -17,7 +17,6 @@ export const supportsUnique = false;
 export const fieldName = 'content';
 export const subfieldName = 'document';
 
-export const newInterfaces = true;
 export const getTestFields = () => ({ name: text(), content: document() });
 
 export const initItems = () => {

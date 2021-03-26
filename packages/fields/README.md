@@ -74,7 +74,6 @@ Sets the label for the field in the AdminUI
 
 A description of the field used used in the GraphQL schema.
 
-
 ### `defaultValue`
 
 Sets the value when no data is provided.

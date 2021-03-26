@@ -1,12 +1,5 @@
 import globby from 'globby';
-// @ts-ignore
-import { Text } from '@keystone-next/fields-legacy';
-import {
-  multiAdapterRunners,
-  setupFromConfig,
-  setupServer,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
 
@@ -35,9 +28,9 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
               }
             });
             const keystoneTestWrapper = (testFn: (setup: any) => Promise<void>) =>
-              runner(() => {
-                if (mod.newInterfaces) {
-                  return setupFromConfig({
+              runner(
+                () =>
+                  setupFromConfig({
                     adapterName,
                     config: testConfig({
                       lists: createSchema({
@@ -52,26 +45,9 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
                         }),
                       }),
                     }),
-                  });
-                } else {
-                  throw new Error('Old interfaces no longer supportes');
-                  return setupServer({
-                    adapterName,
-                    createLists: keystone => {
-                      keystone.createList('Test', {
-                        fields: {
-                          name: { type: Text },
-                          testField: {
-                            type: mod.type,
-                            isUnique: true,
-                            ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
-                          },
-                        },
-                      });
-                    },
-                  });
-                }
-              }, testFn);
+                  }),
+                testFn
+              );
             test(
               'uniqueness is enforced over multiple mutations',
               keystoneTestWrapper(async ({ keystone, context }) => {
@@ -168,41 +144,22 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
               // Try to create a thing and have it fail
               let erroredOut = false;
               try {
-                if (mod.newInterfaces) {
-                  await setupFromConfig({
-                    adapterName,
-                    config: testConfig({
-                      lists: createSchema({
-                        Test: list({
-                          fields: {
-                            name: text(),
-                            testField: mod.typeFunction({
-                              isUnique: true,
-                              ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
-                            }),
-                          },
-                        }),
-                      }),
-                    }),
-                  });
-                } else {
-                  throw new Error('Old interfaces no longer supportes');
-                  await setupServer({
-                    adapterName,
-                    createLists: keystone => {
-                      keystone.createList('Test', {
+                await setupFromConfig({
+                  adapterName,
+                  config: testConfig({
+                    lists: createSchema({
+                      Test: list({
                         fields: {
-                          name: { type: Text },
-                          testField: {
-                            type: mod.type,
+                          name: text(),
+                          testField: mod.typeFunction({
                             isUnique: true,
                             ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
-                          },
+                          }),
                         },
-                      });
-                    },
-                  });
-                }
+                      }),
+                    }),
+                  }),
+                });
               } catch (error) {
                 expect(error.message).toMatch('isUnique is not a supported option for field type');
                 erroredOut = true;

@@ -1,12 +1,5 @@
 import globby from 'globby';
-import {
-  multiAdapterRunners,
-  setupFromConfig,
-  setupServer,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
-// @ts-ignore
-import { Text } from '@keystone-next/fields-legacy';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
 
@@ -35,9 +28,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }
             });
             const keystoneTestWrapper = (testFn: (setup: any) => Promise<void>) =>
-              runner(() => {
-                if (mod.newInterfaces) {
-                  return setupFromConfig({
+              runner(
+                () =>
+                  setupFromConfig({
                     adapterName,
                     config: testConfig({
                       lists: createSchema({
@@ -52,26 +45,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                         }),
                       }),
                     }),
-                  });
-                } else {
-                  throw new Error('Old interfaces no longer supportes');
-                  return setupServer({
-                    adapterName,
-                    createLists: keystone => {
-                      keystone.createList('Test', {
-                        fields: {
-                          name: { type: Text },
-                          testField: {
-                            type: mod.type,
-                            isRequired: true,
-                            ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
-                          },
-                        },
-                      });
-                    },
-                  });
-                }
-              }, testFn);
+                  }),
+                testFn
+              );
             test(
               'Create an object without the required field',
               keystoneTestWrapper(async ({ keystone, context }) => {

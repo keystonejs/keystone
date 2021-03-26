@@ -8,7 +8,6 @@ export const exampleValue2 = () => 6.283;
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const newInterfaces = true;
 export const getTestFields = () => ({ name: text(), testField: float() });
 
 export const initItems = () => {

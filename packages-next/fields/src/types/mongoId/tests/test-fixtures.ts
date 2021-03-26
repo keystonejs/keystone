@@ -8,7 +8,6 @@ export const exampleValue2 = () => '123456781234567812345679';
 export const supportsUnique = true;
 export const fieldName = 'oldId';
 
-export const newInterfaces = true;
 export const getTestFields = () => ({ name: text(), oldId: mongoId() });
 
 export const initItems = () => {

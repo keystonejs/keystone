@@ -8,7 +8,6 @@ export const exampleValue2 = () => 'bar';
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const newInterfaces = true;
 export const getTestFields = () => ({ name: text(), testField: text() });
 
 export const initItems = () => {

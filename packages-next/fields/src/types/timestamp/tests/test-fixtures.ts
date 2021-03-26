@@ -12,7 +12,6 @@ export const exampleValue2 = () => '2000-01-20T00:08:00.000Z';
 export const supportsUnique = true;
 export const fieldName = 'lastOnline';
 
-export const newInterfaces = true;
 export const getTestFields = () => ({ name: text(), lastOnline: timestamp() });
 
 export const initItems = () => {

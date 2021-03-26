@@ -11,7 +11,6 @@ export const readFieldName = 'password_is_set';
 export const skipCreateTest = true;
 export const skipUpdateTest = true;
 
-export const newInterfaces = true;
 export const getTestFields = () => ({ name: text(), password: password({ minLength: 4 }) });
 
 export const initItems = () => {

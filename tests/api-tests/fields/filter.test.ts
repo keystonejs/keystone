@@ -1,11 +1,6 @@
 import path from 'path';
 import globby from 'globby';
-import {
-  multiAdapterRunners,
-  setupFromConfig,
-  setupServer,
-  testConfig,
-} from '@keystone-next/test-utils-legacy';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 // @ts-ignore
 import { createItem, getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import memoizeOne from 'memoize-one';
@@ -32,27 +27,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // we want to memoize the server creation since it's the same fields
           // for all the tests and setting up a keystone instance for prisma
           // can be a bit slow
-          const _getServer = () => {
-            if (mod.newInterfaces) {
-              return setupFromConfig({
-                adapterName,
-                config: testConfig({
-                  lists: createSchema({
-                    [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
-                  }),
+          const _getServer = () =>
+            setupFromConfig({
+              adapterName,
+              config: testConfig({
+                lists: createSchema({
+                  [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
                 }),
-              });
-            } else {
-              throw new Error('Old interfaces no longer supportes');
-              return setupServer({
-                adapterName,
-                createLists: (keystone: any) => {
-                  // Create a list with all the fields required for testing
-                  keystone.createList(listKey, { fields: mod.getTestFields(matrixValue) });
-                },
-              });
-            }
-          };
+              }),
+            });
 
           // we don't memoize it for mongoose though since it has a cleanup which messes the memoization up
           const getServer = adapterName === 'mongoose' ? _getServer : memoizeOne(_getServer);
