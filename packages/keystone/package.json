@@ -17,7 +17,6 @@
     "express": "^4.17.1",
     "express-pino-logger": "^6.0.0",
     "falsey": "^1.0.0",
-    "graphql": "^15.5.0",
     "graphql-type-json": "^0.3.2",
     "graphql-upload": "^11.0.0",
     "micro-memoize": "^4.0.9",
@@ -29,7 +28,8 @@
   },
   "devDependencies": {
     "@keystone-next/fields-legacy": "^23.1.0",
-    "@keystone-next/test-utils-legacy": "*"
+    "@keystone-next/test-utils-legacy": "*",
+    "graphql": "^15.5.0"    
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/keystone"
 }
