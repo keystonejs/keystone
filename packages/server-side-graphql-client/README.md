@@ -5,12 +5,12 @@ title: Server-side graphQL client
 
 # Server-side graphQL client
 
-This library provides wrapper functions around `keystone.executeGraphQL` to make it easier to run server-side queries and mutations without needing to write boilerplate GraphQL.
+This library provides wrapper functions around `context.graphql.raw` to make it easier to run server-side queries and mutations without needing to write boilerplate GraphQL.
 
-Creating a new `User` item would be written as follows using `keystone.executeGraphQL`:
+Creating a new `User` item would be written as follows using `context.graphql.raw`:
 
 ```js
-const { data, errors } = await keystone.executeGraphQL({
+const { data, errors } = await context.graphql.raw({
   query: `mutation ($item: createUserInput){
     createUser(data: $item) {
       id
@@ -35,7 +35,7 @@ const user = await createItem({
 });
 ```
 
-There are three key differences between `keystone.executeGraphQL` and `createItem` (and other functions from this package):
+There are three key differences between `context.graphql.raw` and `createItem` (and other functions from this package):
 
 1. If there is an error, `createItem` will be thrown as an exception, rather than providing the error as a return value.
 2. `createItem` runs with _access control disabled_. This is suitable for use cases such as seeding data or other server side scripts where the query is triggered by the system, rather than a specific user. This can be controlled with the `context` option.
