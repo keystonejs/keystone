@@ -35,42 +35,43 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
               }
             });
             const keystoneTestWrapper = (testFn: (setup: any) => Promise<void>) =>
-              runner(
-                () =>
-                  mod.newInterfaces
-                    ? setupFromConfig({
-                        adapterName,
-                        config: testConfig({
-                          lists: createSchema({
-                            Test: list({
-                              fields: {
-                                name: text(),
-                                testField: mod.typeFunction({
-                                  isUnique: true,
-                                  ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
-                                }),
-                              },
+              runner(() => {
+                if (mod.newInterfaces) {
+                  return setupFromConfig({
+                    adapterName,
+                    config: testConfig({
+                      lists: createSchema({
+                        Test: list({
+                          fields: {
+                            name: text(),
+                            testField: mod.typeFunction({
+                              isUnique: true,
+                              ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
                             }),
-                          }),
+                          },
                         }),
-                      })
-                    : setupServer({
-                        adapterName,
-                        createLists: keystone => {
-                          keystone.createList('Test', {
-                            fields: {
-                              name: { type: Text },
-                              testField: {
-                                type: mod.type,
-                                isUnique: true,
-                                ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
-                              },
-                            },
-                          });
-                        },
                       }),
-                testFn
-              );
+                    }),
+                  });
+                } else {
+                  throw new Error('Old interfaces no longer supportes');
+                  return setupServer({
+                    adapterName,
+                    createLists: keystone => {
+                      keystone.createList('Test', {
+                        fields: {
+                          name: { type: Text },
+                          testField: {
+                            type: mod.type,
+                            isUnique: true,
+                            ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                          },
+                        },
+                      });
+                    },
+                  });
+                }
+              }, testFn);
             test(
               'uniqueness is enforced over multiple mutations',
               keystoneTestWrapper(async ({ keystone, context }) => {
@@ -185,6 +186,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
                     }),
                   });
                 } else {
+                  throw new Error('Old interfaces no longer supportes');
                   await setupServer({
                     adapterName,
                     createLists: keystone => {

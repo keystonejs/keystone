@@ -38,6 +38,8 @@ multiAdapterRunners().map(({ adapterName, after }) => {
             });
 
             test('Throws', async () => {
+              if (!mod.newInterfaces) throw new Error('Old interfaces no longer supportes');
+
               await expect(async () =>
                 mod.newInterfaces
                   ? setupFromConfig({
