@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server-express');
+const { gql } = require('apollo-server-express');
 const memoize = require('micro-memoize');
 const { execute } = require('graphql');
 const { GraphQLUpload } = require('graphql-upload');
@@ -11,7 +11,6 @@ const {
 
 const { List } = require('../ListTypes');
 const { ListCRUDProvider } = require('../providers');
-const { formatError } = require('./format-error');
 
 // composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
 const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
@@ -363,39 +362,6 @@ module.exports = class Keystone {
     if (this.eventHandlers.onConnect) {
       return this.eventHandlers.onConnect(this, args);
     }
-  }
-
-  createApolloServer({ apolloConfig = {}, schemaName, dev }) {
-    // add the Admin GraphQL API
-    const server = new ApolloServer({
-      typeDefs: this.getTypeDefs({ schemaName }),
-      resolvers: this.getResolvers({ schemaName }),
-      context: ({ req }) => ({
-        ...this.createContext({
-          schemaName,
-          authentication: { item: req.user, listKey: req.authedListKey },
-          skipAccessControl: false,
-        }),
-        req,
-      }),
-      ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
-        ? {
-            tracing: true,
-          }
-        : {
-            engine: false,
-            // Only enable tracing in dev mode so we can get local debug info, but
-            // don't bother returning that info on prod when the `engine` is
-            // disabled.
-            tracing: dev,
-          }),
-      formatError,
-      ...apolloConfig,
-      uploads: false, // User cannot override this as it would clash with the upload middleware
-    });
-    this._schemas[schemaName] = server.schema;
-
-    return server;
   }
 
   /**
