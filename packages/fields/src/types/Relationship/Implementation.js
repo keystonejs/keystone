@@ -452,7 +452,7 @@ export class PrismaRelationshipInterface extends PrismaFieldAdapter {
   setupHooks({ addPostReadHook }) {
 
     addPostReadHook(item => {
-      if (typeof item[this.path + 'Id'] == 'bigint') {
+      if (typeof item[this.path + 'Id'] === 'bigint') {
         item[this.path + 'Id'] = item[this.path + 'Id'].toString();
       }
       return item;
