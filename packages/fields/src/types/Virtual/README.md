@@ -103,7 +103,7 @@ keystone.createList('Example', {
 ### Server-side queries
 
 The `item` argument to the resolver function is the raw database representation of the item, so related items will not be directly available on this object.
-If you need to access data beyond what lives on the `item` you can execute a [server-side GraphQL query](/docs/discussions/server-side-graphql.md) using `context.executeGraphQL()`.
+If you need to access data beyond what lives on the `item` you can execute a [server-side GraphQL query](/docs/discussions/server-side-graphql.md) using `context.graphql.raw()`.
 
 ```js
 const { Virtual } = require('@keystone-next/fields-legacy');
@@ -114,7 +114,7 @@ keystone.createList('Example', {
     virtual: {
       type: Virtual,
       resolver: async (item, args, context) => {
-        const { data, errors } = await context.executeGraphQL({ query: `{ ... }` })
+        const { data, errors } = await context.graphql.raw({ query: `{ ... }` })
         ...
       }
     },

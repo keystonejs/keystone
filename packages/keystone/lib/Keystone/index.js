@@ -1,6 +1,5 @@
 const { gql } = require('apollo-server-express');
 const memoize = require('micro-memoize');
-const { execute } = require('graphql');
 const { GraphQLUpload } = require('graphql-upload');
 const { objMerge, flatten, unique, filterValues } = require('@keystone-next/utils-legacy');
 const {
@@ -152,29 +151,8 @@ module.exports = class Keystone {
     } = {}) => this.createContext({ schemaName, authentication, skipAccessControl });
     context.sudo = () =>
       this.createContext({ schemaName, authentication, skipAccessControl: true });
-    context.executeGraphQL = ({ context = defaults.context, query, variables }) =>
-      this.executeGraphQL({ context, query, variables });
     context.gqlNames = listKey => this.lists[listKey].gqlNames;
     return context;
-  }
-
-  executeGraphQL({ context, query, variables }) {
-    if (!context) {
-      context = this.createContext({});
-    }
-
-    const schema = this._schemas[context.schemaName];
-    if (!schema) {
-      throw new Error(
-        `No executable schema named '${context.schemaName}' is available. Have you setup '@keystone-next/app-graphql-legacy'?`
-      );
-    }
-
-    if (typeof query === 'string') {
-      query = gql(query);
-    }
-
-    return execute(schema, query, null, context, variables);
   }
 
   createList(key, config, { isAuxList = false } = {}) {
