@@ -449,6 +449,16 @@ export class PrismaRelationshipInterface extends PrismaFieldAdapter {
     this.refFieldPath = refFieldPath;
   }
 
+  setupHooks({ addPostReadHook }) {
+
+    addPostReadHook(item => {
+      if (typeof item[this.path + 'Id'] == 'bigint') {
+        item[this.path + 'Id'] = item[this.path + 'Id'].toString();
+      }
+      return item;
+    });
+  }
+
   getQueryConditions(dbPath) {
     return {
       [`${this.path}_is_null`]: value => (value ? { [dbPath]: null } : { NOT: { [dbPath]: null } }),
