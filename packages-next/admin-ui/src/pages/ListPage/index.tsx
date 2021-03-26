@@ -21,12 +21,13 @@ import { gql, TypedDocumentNode, useMutation, useQuery } from '../../apollo';
 import { CellLink } from '../../components';
 import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
+import { Pagination } from '../../components/Pagination';
 import { useList } from '../../context';
 import { Link, useRouter } from '../../router';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
-import { PaginationLabel, Pagination } from './pagination';
+import { PaginationLabel } from './pagination';
 import { SortSelection } from './SortSelection';
 import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
@@ -130,7 +131,6 @@ const ListPage = ({ listKey }: ListPageProps) => {
     typeof query.pageSize === 'string' && !Number.isNaN(parseInt(query.pageSize))
       ? parseInt(query.pageSize)
       : list.pageSize;
-  console.log(pageSize);
 
   const sort = useSort(list);
 
@@ -240,68 +240,66 @@ const ListPage = ({ listKey }: ListPageProps) => {
             {filters.filters.length ? <FilterList filters={filters.filters} list={list} /> : null}
           </Stack>
           {data.meta.count ? (
-            console.log('META COUNT', data.meta.count) || (
-              <Fragment>
-                <ResultsSummaryContainer>
-                  {(() => {
-                    const selectedItems = selectedItemsState.selectedItems;
-                    const selectedItemsCount = selectedItems.size;
-                    if (selectedItemsCount) {
-                      return (
-                        <Fragment>
-                          <span css={{ marginRight: theme.spacing.small }}>
-                            Selected {selectedItemsCount} of {data.items.length}
-                          </span>
-                          {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
-                            <DeleteManyButton
-                              list={list}
-                              selectedItems={selectedItems}
-                              refetch={refetch}
-                            />
-                          )}
-                        </Fragment>
-                      );
-                    }
+            <Fragment>
+              <ResultsSummaryContainer>
+                {(() => {
+                  const selectedItems = selectedItemsState.selectedItems;
+                  const selectedItemsCount = selectedItems.size;
+                  if (selectedItemsCount) {
                     return (
                       <Fragment>
-                        <PaginationLabel
-                          currentPage={currentPage}
-                          pageSize={pageSize}
-                          plural={list.plural}
-                          singular={list.singular}
-                          total={data.meta.count}
-                        />
-                        , sorted by <SortSelection list={list} />
-                        with{' '}
-                        <FieldSelection
-                          list={list}
-                          fieldModesByFieldPath={listViewFieldModesByField}
-                        />{' '}
-                        {loading && (
-                          <LoadingDots label="Loading item data" size="small" tone="active" />
+                        <span css={{ marginRight: theme.spacing.small }}>
+                          Selected {selectedItemsCount} of {data.items.length}
+                        </span>
+                        {!(metaQuery.data?.keystone.adminMeta.list?.hideDelete ?? true) && (
+                          <DeleteManyButton
+                            list={list}
+                            selectedItems={selectedItems}
+                            refetch={refetch}
+                          />
                         )}
                       </Fragment>
                     );
-                  })()}
-                </ResultsSummaryContainer>
-                <ListTable
-                  count={data.meta.count}
-                  currentPage={currentPage}
-                  itemsGetter={dataGetter.get('items')}
-                  listKey={listKey}
-                  pageSize={pageSize}
-                  selectedFields={selectedFields}
-                  sort={sort}
-                  selectedItems={selectedItemsState.selectedItems}
-                  onSelectedItemsChange={selectedItems => {
-                    setSelectedItems({
-                      itemsFromServer: selectedItemsState.itemsFromServer,
-                      selectedItems,
-                    });
-                  }}
-                />
-              </Fragment>
-            )
+                  }
+                  return (
+                    <Fragment>
+                      <PaginationLabel
+                        currentPage={currentPage}
+                        pageSize={pageSize}
+                        plural={list.plural}
+                        singular={list.singular}
+                        total={data.meta.count}
+                      />
+                      , sorted by <SortSelection list={list} />
+                      with{' '}
+                      <FieldSelection
+                        list={list}
+                        fieldModesByFieldPath={listViewFieldModesByField}
+                      />{' '}
+                      {loading && (
+                        <LoadingDots label="Loading item data" size="small" tone="active" />
+                      )}
+                    </Fragment>
+                  );
+                })()}
+              </ResultsSummaryContainer>
+              <ListTable
+                count={data.meta.count}
+                currentPage={currentPage}
+                itemsGetter={dataGetter.get('items')}
+                listKey={listKey}
+                pageSize={pageSize}
+                selectedFields={selectedFields}
+                sort={sort}
+                selectedItems={selectedItemsState.selectedItems}
+                onSelectedItemsChange={selectedItems => {
+                  setSelectedItems({
+                    itemsFromServer: selectedItemsState.itemsFromServer,
+                    selectedItems,
+                  });
+                }}
+              />
+            </Fragment>
           ) : (
             <ResultsSummaryContainer>No {list.plural} found.</ResultsSummaryContainer>
           )}
@@ -679,7 +677,7 @@ function ListTable({
           })}
         </tbody>
       </TableContainer>
-      <Pagination listKey={listKey} total={count} currentPage={currentPage} pageSize={pageSize} />
+      <Pagination list={list} total={count} currentPage={currentPage} pageSize={pageSize} />
     </Box>
   );
 }
