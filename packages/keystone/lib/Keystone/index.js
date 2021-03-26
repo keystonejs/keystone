@@ -1,8 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server-express');
-const flattenDeep = require('lodash.flattendeep');
 const memoize = require('micro-memoize');
-const falsey = require('falsey');
-const createCorsMiddleware = require('cors');
 const { execute } = require('graphql');
 const { GraphQLUpload } = require('graphql-upload');
 const { objMerge, flatten, unique, filterValues } = require('@keystone-next/utils-legacy');
@@ -452,49 +449,5 @@ module.exports = class Keystone {
       },
       o => Object.entries(o).length > 0
     );
-  }
-
-  async _prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors }) {
-    return flattenDeep([
-      // Used by other middlewares such as authentication strategies. Important
-      // to be first so the methods added to `req` are available further down
-      // the request pipeline.
-      // TODO: set up a session test rig (maybe by wrapping an in-memory store)
-      falsey(process.env.DISABLE_LOGGING) && require('express-pino-logger')(pinoOptions),
-      cors && createCorsMiddleware(cors),
-      ...(await Promise.all(
-        [
-          // Inject any field middlewares (eg; WYSIWIG's static assets)
-          // We do this first to avoid it conflicting with any catch-all routes the
-          // user may have specified
-          ...this.registeredTypes,
-          ...flattenDeep(
-            Object.values(this.auth).map(authStrategies => Object.values(authStrategies))
-          ),
-          ...apps,
-        ]
-          .filter(({ prepareMiddleware } = {}) => !!prepareMiddleware)
-          .map(app => app.prepareMiddleware({ keystone: this, dev, distDir: distDir || 'dist' }))
-      )),
-    ]).filter(middleware => !!middleware);
-  }
-
-  async prepare({
-    dev = false,
-    apps = [],
-    distDir,
-    pinoOptions,
-    cors = { origin: true, credentials: true },
-  } = {}) {
-    this.createApolloServer({ schemaName: 'internal' });
-    const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
-    // These function can't be called after prepare(), so make them throw an error from now on.
-    ['createList'].forEach(f => {
-      this[f] = () => {
-        throw new Error(`keystone.${f} must be called before keystone.prepare()`);
-      };
-    });
-
-    return { middlewares };
   }
 };

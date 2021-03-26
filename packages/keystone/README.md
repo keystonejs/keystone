@@ -170,19 +170,6 @@ For more information about the first four arguments, please see the [Apollo docs
 - The `access` argument for `types`, `queries`, and `mutations` are all either boolean values which are used at schema generation time to include or exclude the item from the schema, or a function which must return boolean.
 - See the [Access control API](https://www.keystonejs.com/api/access-control#custom-schema-access-control) docs for more details.
 
-### `prepare(config)`
-
-Manually prepare middlewares. Returns a promise representing the processed middlewares. They are available as an array through the `middlewares` property of the returned object.
-
-#### Usage
-
-```javascript
-const { middlewares } = await keystone.prepare({
-  apps,
-  dev: process.env.NODE_ENV !== 'production',
-});
-```
-
 #### Config
 
 | Option        | Type      | default                               | Description                                                                                                         |
