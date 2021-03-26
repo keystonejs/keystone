@@ -15,11 +15,8 @@
     "cuid": "^2.1.8",
     "ensure-error": "^3.0.1",
     "express": "^4.17.1",
-    "express-pino-logger": "^6.0.0",
-    "falsey": "^1.0.0",
     "graphql-type-json": "^0.3.2",
     "graphql-upload": "^11.0.0",
-    "pino": "^6.11.2",
     "pluralize": "^8.0.0",
     "serialize-error": "^8.0.1",
     "stack-utils": "^2.0.3"

@@ -3,12 +3,10 @@ const {
   formatError: _formatError,
   isInstance: isApolloErrorInstance,
 } = require('apollo-errors');
-const ensureError = require('ensure-error');
 const { serializeError } = require('serialize-error');
 const StackUtils = require('stack-utils');
 const cuid = require('cuid');
 const { omit } = require('@keystone-next/utils-legacy');
-const { graphqlLogger } = require('./logger');
 
 const stackUtil = new StackUtils({ cwd: process.cwd(), internals: StackUtils.nodeInternals() });
 
@@ -22,9 +20,7 @@ const cleanError = maybeError => {
 
 const NestedError = createError('NestedError', {
   message: 'Nested errors occurred',
-  options: {
-    showPath: true,
-  },
+  options: { showPath: true },
 });
 
 const safeFormatError = error => {
@@ -67,64 +63,23 @@ const flattenNestedErrors = error =>
     []
   );
 
-const formatError = error => {
+export const formatError = error => {
   const { originalError } = error;
   if (originalError && !originalError.path) {
     originalError.path = error.path;
   }
-
-  try {
-    // For correlating user error reports with logs
-    error.uid = cuid();
-
-    if (isApolloErrorInstance(originalError)) {
-      // log internalData to stdout but not include it in the formattedError
-      // TODO: User pino for logging
-      graphqlLogger.info({
-        type: 'error',
-        data: originalError.data,
-        internalData: originalError.internalData,
-      });
-    } else {
-      const exception = originalError || (error.extensions && error.extensions.exception);
-      if (exception) {
-        const pinoError = {
-          ...omit(serializeError(error), ['extensions']),
-          ...omit(exception, ['name', 'model', 'stacktrace']),
-          stack: stackUtil.clean(exception.stacktrace || exception.stack),
-        };
-
-        if (pinoError.errors) {
-          pinoError.errors = flattenNestedErrors(exception).map(safeFormatError);
-        }
-
-        graphqlLogger.error(pinoError);
-      } else {
-        const errorOutput = serializeError(ensureError(error));
-        errorOutput.stack = stackUtil.clean(errorOutput.stack);
-        graphqlLogger.error(errorOutput);
-      }
-    }
-  } catch (formatErrorError) {
-    // Something went wrong with formatting above, so we log the errors
-    graphqlLogger.error(serializeError(ensureError(error)));
-    graphqlLogger.error(serializeError(ensureError(formatErrorError)));
-
-    return safeFormatError(error);
-  }
+  // For correlating user error reports with logs
+  error.uid = cuid();
 
   try {
     let formattedError;
 
     // Support throwing multiple errors
     if (originalError && originalError.errors) {
+      // Format (aka; serialize) the error
       const multipleErrorContainer = new NestedError({
-        data: {
-          // Format (aka; serialize) the error
-          errors: flattenNestedErrors(originalError).map(safeFormatError),
-        },
+        data: { errors: flattenNestedErrors(originalError).map(safeFormatError) },
       });
-
       formattedError = safeFormatError(multipleErrorContainer);
     } else {
       formattedError = safeFormatError(error);
@@ -143,8 +98,4 @@ const formatError = error => {
     // least some useful info
     return safeFormatError(error);
   }
-};
-
-module.exports = {
-  formatError,
 };
