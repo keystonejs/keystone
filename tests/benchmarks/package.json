@@ -16,7 +16,6 @@
   "dependencies": {
     "@keystone-next/adapter-knex-legacy": "^13.2.2",
     "@keystone-next/adapter-mongoose-legacy": "^11.1.2",
-    "@keystone-next/app-graphql-legacy": "^7.0.0",
     "@keystone-next/fields": "^5.3.0",
     "@keystone-next/fields-legacy": "^23.2.0",
     "@keystone-next/keystone": "^14.0.0",

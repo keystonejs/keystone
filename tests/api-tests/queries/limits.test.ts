@@ -8,11 +8,9 @@ import {
   AdapterName,
 } from '@keystone-next/test-utils-legacy';
 // @ts-ignore
-import { validation } from '@keystone-next/app-graphql-legacy';
-// @ts-ignore
 import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
-
-const { depthLimit, definitionLimit, fieldLimit } = validation;
+// @ts-ignore
+import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
 function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
