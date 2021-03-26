@@ -11,9 +11,6 @@ const {
 const { List } = require('../ListTypes');
 const { ListCRUDProvider } = require('../providers');
 
-// composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
-const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
-
 module.exports = class Keystone {
   constructor({ defaultAccess, adapter, onConnect, queryLimits = {}, schemaNames = ['public'] }) {
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
@@ -177,26 +174,22 @@ module.exports = class Keystone {
       );
     }
 
-    const list = new List(
-      key,
-      composePlugins(config.plugins || [])(config, { listKey: key, keystone: this }),
-      {
-        getListByKey,
-        adapter,
-        defaultAccess: this.defaultAccess,
-        registerType: type => this.registeredTypes.add(type),
-        isAuxList,
-        createAuxList: (auxKey, auxConfig) => {
-          if (isAuxList) {
-            throw new Error(
-              `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
-            );
-          }
-          return this.createList(auxKey, auxConfig, { isAuxList: true });
-        },
-        schemaNames: this._schemaNames,
-      }
-    );
+    const list = new List(key, config, {
+      getListByKey,
+      adapter,
+      defaultAccess: this.defaultAccess,
+      registerType: type => this.registeredTypes.add(type),
+      isAuxList,
+      createAuxList: (auxKey, auxConfig) => {
+        if (isAuxList) {
+          throw new Error(
+            `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
+          );
+        }
+        return this.createList(auxKey, auxConfig, { isAuxList: true });
+      },
+      schemaNames: this._schemaNames,
+    });
     this.lists[key] = list;
     this.listsArray.push(list);
     this._listCRUDProvider.lists.push(list);

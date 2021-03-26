@@ -103,46 +103,4 @@ describe('Keystone.createList()', () => {
     test.todo('throws error when create/read/update/delete are not correct type');
   });
   /* eslint-enable jest/no-disabled-tests */
-
-  test('plugins', () => {
-    const config = {
-      adapter: new MockAdapter(),
-    };
-    const keystone = new Keystone(config);
-
-    keystone.createList('User', {
-      fields: {
-        name: { type: MockFieldType },
-        email: { type: MockFieldType },
-      },
-    });
-    keystone.createList('Post', {
-      fields: {
-        title: { type: MockFieldType },
-        content: { type: MockFieldType },
-      },
-      plugins: [
-        config => ({ ...config, fields: { ...config.fields, extra: { type: MockFieldType } } }),
-      ],
-    });
-    keystone.createList('Comment', {
-      fields: {
-        heading: { type: MockFieldType },
-        content: { type: MockFieldType },
-      },
-      plugins: [
-        // Add a field and then remove it, to make sure plugins happen in the right order
-        config => ({ ...config, fields: { ...config.fields, extra: { type: MockFieldType } } }),
-        config => ({
-          ...config,
-          fields: Object.entries(config.fields)
-            .filter(([name]) => name !== 'extra')
-            .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {}),
-        }),
-      ],
-    });
-    expect(keystone.lists['User'].fields.length).toEqual(3); // id, name, email
-    expect(keystone.lists['Post'].fields.length).toEqual(4); // id, title, content, extra
-    expect(keystone.lists['Comment'].fields.length).toEqual(3); // id, heading, content
-  });
 });
