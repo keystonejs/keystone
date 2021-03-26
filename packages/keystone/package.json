@@ -19,7 +19,6 @@
     "falsey": "^1.0.0",
     "graphql-type-json": "^0.3.2",
     "graphql-upload": "^11.0.0",
-    "micro-memoize": "^4.0.9",
     "p-waterfall": "^2.1.1",
     "pino": "^6.11.2",
     "pluralize": "^8.0.0",
