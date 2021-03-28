@@ -3,16 +3,13 @@ import meow from 'meow';
 import { dev } from './run/dev';
 import { start } from './run/start';
 import { build } from './build/build';
-import { deploy } from './migrate/deploy';
-import { generate } from './migrate/generate';
-import { reset } from './migrate/reset';
 
 export type StaticPaths = { dotKeystonePath: string; projectAdminPath: string };
 
-const commands = { dev, start, build, deploy, generate, reset };
+const commands = { dev, start, build };
 
 function cli() {
-  const { input, help, flags } = meow(
+  const { input, help } = meow(
     `
     Usage
       $ keystone-next [command]
@@ -48,11 +45,7 @@ function cli() {
   const projectAdminPath = path.join(dotKeystonePath, 'admin');
   const staticPaths: StaticPaths = { dotKeystonePath, projectAdminPath };
 
-  if (command === 'generate') {
-    generate(staticPaths, flags);
-  } else {
-    commands[command](staticPaths);
-  }
+  commands[command](staticPaths);
 }
 
 function isCommand(command: string): command is keyof typeof commands {
