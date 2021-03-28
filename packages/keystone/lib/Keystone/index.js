@@ -1,12 +1,6 @@
 const { gql } = require('apollo-server-express');
-const memoize = require('micro-memoize');
 const { GraphQLUpload } = require('graphql-upload');
 const { objMerge, flatten, unique, filterValues } = require('@keystone-next/utils-legacy');
-const {
-  validateFieldAccessControl,
-  validateListAccessControl,
-  validateAuthAccessControl,
-} = require('@keystone-next/access-control-legacy');
 
 const { List } = require('../ListTypes');
 const { ListCRUDProvider } = require('../providers');
@@ -38,117 +32,6 @@ module.exports = class Keystone {
     if (this.queryLimits.maxTotalResults < 1) {
       throw new Error("queryLimits.maxTotalResults can't be < 1");
     }
-  }
-
-  _getAccessControlContext({ schemaName, authentication, skipAccessControl }) {
-    if (skipAccessControl) {
-      return {
-        getListAccessControlForUser: () => true,
-        getFieldAccessControlForUser: () => true,
-        getAuthAccessControlForUser: () => true,
-      };
-    }
-    // memoizing to avoid requests that hit the same type multiple times.
-    // We do it within the request callback so we can resolve it based on the
-    // request info (like who's logged in right now, etc)
-    const getListAccessControlForUser = memoize(
-      async (
-        access,
-        listKey,
-        originalInput,
-        operation,
-        { gqlName, itemId, itemIds, context } = {}
-      ) => {
-        return validateListAccessControl({
-          access: access[schemaName],
-          args: {
-            originalInput,
-            operation,
-            authentication: authentication && authentication.item ? authentication : {},
-            listKey,
-            gqlName,
-            itemId,
-            itemIds,
-            context,
-          },
-        });
-      },
-      { isPromise: true }
-    );
-
-    const getFieldAccessControlForUser = memoize(
-      async (
-        access,
-        listKey,
-        fieldKey,
-        originalInput,
-        existingItem,
-        operation,
-        { gqlName, itemId, itemIds, context } = {}
-      ) => {
-        return validateFieldAccessControl({
-          access: access[schemaName],
-          args: {
-            originalInput,
-            existingItem,
-            operation,
-            authentication: authentication && authentication.item ? authentication : {},
-            fieldKey,
-            listKey,
-            gqlName,
-            itemId,
-            itemIds,
-            context,
-          },
-        });
-      },
-      { isPromise: true }
-    );
-
-    const getAuthAccessControlForUser = memoize(
-      async (access, listKey, { gqlName, context } = {}) => {
-        return validateAuthAccessControl({
-          access: access[schemaName],
-          args: {
-            authentication: authentication && authentication.item ? authentication : {},
-            listKey,
-            gqlName,
-            context,
-            operation: 'auth',
-          },
-        });
-      },
-      { isPromise: true }
-    );
-
-    return {
-      getListAccessControlForUser,
-      getFieldAccessControlForUser,
-      getAuthAccessControlForUser,
-    };
-  }
-
-  createContext({ schemaName = 'public', authentication = {}, skipAccessControl = false } = {}) {
-    const context = {
-      schemaName,
-      authedItem: authentication.item,
-      authedListKey: authentication.listKey,
-      ...this._getAccessControlContext({ schemaName, authentication, skipAccessControl }),
-      totalResults: 0,
-      maxTotalResults: this.queryLimits.maxTotalResults,
-    };
-    // Locally bind the values we use as defaults into an object to make
-    // JS behave the way we want.
-    const defaults = { schemaName, authentication, skipAccessControl, context };
-    context.createContext = ({
-      schemaName = defaults.schemaName,
-      authentication = defaults.authentication,
-      skipAccessControl = defaults.skipAccessControl,
-    } = {}) => this.createContext({ schemaName, authentication, skipAccessControl });
-    context.sudo = () =>
-      this.createContext({ schemaName, authentication, skipAccessControl: true });
-    context.gqlNames = listKey => this.lists[listKey].gqlNames;
-    return context;
   }
 
   createList(key, config, { isAuxList = false } = {}) {
