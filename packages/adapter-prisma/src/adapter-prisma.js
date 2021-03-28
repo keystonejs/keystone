@@ -29,6 +29,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this.getDbSchemaName = this.config.getDbSchemaName || (() => 'public');
     this.enableLogging = this.config.enableLogging || false;
     this.url = this.config.url || process.env.DATABASE_URL;
+    this.clientPath = path.resolve('node_modules/.prisma/client');
   }
 
   async _prepareSchema(rels) {
@@ -37,7 +38,6 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     // See if there is a prisma client available for this hash
     const prismaPath = this.getPrismaPath({ prismaSchema });
     this.schemaPath = path.join(prismaPath, 'schema.prisma');
-    this.clientPath = path.resolve(`${prismaPath}/${clientDir}`);
     this.dbSchemaName = this.getDbSchemaName({ prismaSchema });
     this.prismaSchema = prismaSchema;
     return { prismaSchema };
@@ -66,7 +66,15 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       return this._prismaClient;
     }
     await this._generateClient(rels);
-    return require(this.clientPath).PrismaClient;
+    if (typeof jest !== 'undefined') {
+      let prismaClient;
+      jest.isolateModules(() => {
+        prismaClient = require(this.clientPath).PrismaClient;
+      });
+      return prismaClient;
+    } else {
+      return require(this.clientPath).PrismaClient;
+    }
   }
 
   async _connect({ rels }) {
@@ -286,7 +294,6 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     // Object.values(this.listAdapters).forEach(listAdapter => {
     //   delete listAdapter.prisma;
     // });
-    // delete require.cache[require.resolve(this.clientPath)];
   }
 
   getDefaultPrimaryKeyConfig() {
