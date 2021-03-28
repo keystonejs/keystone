@@ -48,7 +48,7 @@ module.exports = class List {
       queryLimits = {},
       cacheHint,
     },
-    { getListByKey, adapter, defaultAccess, registerType, createAuxList, isAuxList, schemaNames }
+    { getListByKey, adapter, defaultAccess, registerType, createAuxList, isAuxList }
   ) {
     this.key = key;
     this._fields = fields;
@@ -115,7 +115,7 @@ module.exports = class List {
 
     this.adapterName = adapter.name;
     this.adapter = adapter.newListAdapter(this.key, adapterConfig);
-    this._schemaNames = schemaNames;
+    this._schemaNames = ['public'];
 
     this.access = parseListAccess({
       schemaNames: this._schemaNames,

@@ -6,7 +6,7 @@ const { List } = require('../ListTypes');
 const { ListCRUDProvider } = require('../providers');
 
 module.exports = class Keystone {
-  constructor({ defaultAccess, adapter, onConnect, queryLimits = {}, schemaNames = ['public'] }) {
+  constructor({ defaultAccess, adapter, onConnect, queryLimits = {} }) {
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
     this.auth = {};
     this.lists = {};
@@ -15,7 +15,6 @@ module.exports = class Keystone {
     this._schemas = {};
     this.eventHandlers = { onConnect };
     this.registeredTypes = new Set();
-    this._schemaNames = schemaNames;
 
     this._listCRUDProvider = new ListCRUDProvider();
     this._providers = [this._listCRUDProvider];
@@ -71,7 +70,6 @@ module.exports = class Keystone {
         }
         return this.createList(auxKey, auxConfig, { isAuxList: true });
       },
-      schemaNames: this._schemaNames,
     });
     this.lists[key] = list;
     this.listsArray.push(list);
