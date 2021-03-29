@@ -92,8 +92,6 @@ To perform CRUD operations, use the following functions:
 - [`deleteItem`](#deleteitem)
 - [`deleteItems`](#deleteitems)
 
-For custom queries use [`runCustomQuery`](#runcustomquery).
-
 > NOTE: All functions accept a config object as an argument, and return a `Promise`.
 
 ### Shared Config Options
@@ -408,15 +406,3 @@ deletedUsers(['123', '456']);
 | ---------- | ---------- | ---------- | ------------------------------------------------------------------------- |
 | `items`    | `String[]` | (required) | Array of item `id`s to be deleted.                                        |
 | `pageSize` | `Number`   | 500        | The delete mutation batch size. Useful when deleting a large set of data. |
-
-### `runCustomQuery`
-
-Execute a custom query.
-
-#### Config
-
-| Properties  | Type     | Default    | Description                                                                                                                                                                                                         |
-| ----------- | -------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `query`     | String   | (required) | The GraphQL query to execute.                                                                                                                                                                                       |
-| `variables` | Object   | (required) | Object containing variables your custom query needs.                                                                                                                                                                |
-| `context`   | `Object` | N/A        | An Apollo [`context` object](https://www.apollographql.com/docs/apollo-server/data/resolvers/#the-context-argument). See the [server side graphQL docs](/docs/discussions/server-side-graphql.md) for more details. |

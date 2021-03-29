@@ -185,5 +185,4 @@ module.exports = {
   updateItems,
   deleteItem,
   deleteItems,
-  runCustomQuery: runQuery,
 };

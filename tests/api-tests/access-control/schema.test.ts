@@ -59,10 +59,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
       keystone = _before.keystone;
       context = _before.context;
 
-      const { data, errors } = await context.exitSudo().executeGraphQL({
-        query: introspectionQuery,
-      });
-      expect(errors).toBe(undefined);
+      const data = await context.exitSudo().graphql.run({ query: introspectionQuery });
       const __schema: {
         types: { name: string; fields: { name: string }[]; inputFields: { name: string }[] }[];
         queryType: { fields: { name: string }[] };

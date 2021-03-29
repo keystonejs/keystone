@@ -14,7 +14,7 @@ import { insertSeedData } from './seed-data';
 import { sendPasswordResetEmail } from './lib/mail';
 import { extendGraphqlSchema } from './mutations';
 
-const databaseURL = process.env.DATABASE_URL || 'mongodb://localhost/keystone-sick-fits-tutorial';
+const databaseURL = process.env.DATABASE_URL || 'file:./keystone.db';
 
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 360, // How long they stay signed in?
@@ -49,7 +49,7 @@ export default withAuth(
     db: process.env.DATABASE_URL
       ? { adapter: 'prisma_postgresql', url: process.env.DATABASE_URL }
       : {
-          adapter: 'mongoose',
+          adapter: 'prisma_sqlite',
           url: databaseURL,
           async onConnect(keystone) {
             console.log('Connected to the database!');
@@ -58,6 +58,7 @@ export default withAuth(
             }
           },
         },
+    experimental: { prismaSqlite: true },
     lists: createSchema({
       // Schema items go in here
       User,
