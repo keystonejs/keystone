@@ -10,7 +10,6 @@ import {
   AdapterName,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 import type { KeystoneContext, KeystoneConfig } from '@keystone-next/types';
 

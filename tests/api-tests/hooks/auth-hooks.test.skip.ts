@@ -5,7 +5,6 @@ import {
   testConfig,
   setupFromConfig,
 } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 // @ts-ignore
 import superagent from 'superagent';

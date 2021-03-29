@@ -3,7 +3,6 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItem, getItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 function setupKeystone(adapterName: AdapterName) {
@@ -337,8 +336,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   returnFields: 'id group { id name }',
                 });
                 expect(event).toBeTruthy();
-                expect(event.group).toBeTruthy();
-                expect(event.group.name).toBe(groupName);
+                expect(event!.group).toBeTruthy();
+                expect(event!.group.name).toBe(groupName);
               })
             );
           } else {

@@ -50,8 +50,8 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
               );
             test(
               'uniqueness is enforced over multiple mutations',
-              keystoneTestWrapper(async ({ keystone, context }) => {
-                const { errors } = await (context || keystone).executeGraphQL({
+              keystoneTestWrapper(async ({ context }) => {
+                const { errors } = await context.executeGraphQL({
                   query: `
                   mutation($data: TestCreateInput) {
                     createTest(data: $data) { id }
@@ -61,7 +61,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
                 });
                 expect(errors).toBe(undefined);
 
-                const { errors: errors2 } = await (context || keystone).executeGraphQL({
+                const { errors: errors2 } = await context.executeGraphQL({
                   query: `
                   mutation($data: TestCreateInput) {
                     createTest(data: $data) { id }
@@ -81,8 +81,8 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
 
             test(
               'uniqueness is enforced over single mutation',
-              keystoneTestWrapper(async ({ keystone, context }) => {
-                const { errors } = await (context || keystone).executeGraphQL({
+              keystoneTestWrapper(async ({ context }) => {
+                const { errors } = await context.executeGraphQL({
                   query: `
                   mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
                     foo: createTest(data: $fooData) { id }
@@ -106,8 +106,8 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
 
             test(
               'Configuring uniqueness on one field does not affect others',
-              keystoneTestWrapper(async ({ keystone, context }) => {
-                const { data, errors } = await (context || keystone).executeGraphQL({
+              keystoneTestWrapper(async ({ context }) => {
+                const { data, errors } = await context.executeGraphQL({
                   query: `
                   mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
                     foo: createTest(data: $fooData) { id }
