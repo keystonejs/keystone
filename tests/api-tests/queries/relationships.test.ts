@@ -84,7 +84,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Create an item that does the linking
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
           query {
             allPosts(where: {
@@ -97,7 +97,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(errors).toBe(undefined);
             expect(data).toHaveProperty('allPosts');
             expect(data.allPosts).toHaveLength(3);
 
@@ -131,7 +130,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Create an item that does the linking
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
           query {
             allPosts(where: {
@@ -151,7 +150,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data).toMatchObject({
               allPosts: [{ id: posts[0].id, title: posts[0].title }],
             });
-            expect(errors).toBe(undefined);
           })
         );
       });
@@ -191,7 +189,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { users } = await setup(create);
 
             // EVERY
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
           query {
             allUsers(where: {
@@ -211,7 +209,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data).toMatchObject({
               allUsers: [{ id: users[2].id, feed: [{ title: 'I like Jelly' }] }],
             });
-            expect(errors).toBe(undefined);
           })
         );
 
@@ -223,7 +220,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { users } = await setup(create);
 
             // SOME
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
           query {
             allUsers(where: {
@@ -238,7 +235,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(errors).toBe(undefined);
             expect(data).toHaveProperty('allUsers');
             expect(data.allUsers).toHaveLength(2);
 
@@ -261,7 +257,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { users } = await setup(create);
 
             // NONE
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
           query {
             allUsers(where: {
@@ -281,7 +277,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data).toMatchObject({
               allUsers: [{ id: users[1].id, feed: [{ title: 'Bye' }] }],
             });
-            expect(errors).toBe(undefined);
           })
         );
       });
@@ -317,7 +312,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { users } = await setup(create);
 
             // EVERY
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
           query {
             allUsers(where: {
@@ -335,7 +330,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data.allUsers).toHaveLength(2);
             expect(data.allUsers).toContainEqual({ id: users[2].id, feed: [] });
             expect(data.allUsers).toContainEqual({ id: users[3].id, feed: [] });
-            expect(errors).toBe(undefined);
           })
         );
 
@@ -347,7 +341,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { users } = await setup(create);
 
             // SOME
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
           query {
             allUsers(where: {
@@ -370,7 +364,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               ],
             });
             expect(data.allUsers).toHaveLength(1);
-            expect(errors).toBe(undefined);
           })
         );
 
@@ -382,7 +375,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { users } = await setup(create);
 
             // NONE
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
           query {
             allUsers(where: {
@@ -398,7 +391,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(errors).toBe(undefined);
             expect(data).toHaveProperty('allUsers');
             expect(data.allUsers).toHaveLength(3);
 
@@ -432,7 +424,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { users } = await setup(create);
 
             // EVERY
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
           query {
             allUsers(where: {
@@ -455,7 +447,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(allUsers).toContainEqual({ id: users[1].id, feed: [] });
             expect(allUsers).toContainEqual({ id: users[2].id, feed: [] });
             expect(allUsers).toContainEqual({ id: users[3].id, feed: [] });
-            expect(errors).toBe(undefined);
           })
         );
 
@@ -467,7 +458,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { users } = await setup(create);
 
             // SOME
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
           query {
             allUsers(where: {
@@ -485,7 +476,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
             expect(data).toMatchObject({ allUsers: [] });
             expect(data.allUsers).toHaveLength(0);
-            expect(errors).toBe(undefined);
           })
         );
 
@@ -497,7 +487,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const { users } = await setup(create);
 
             // NONE
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
           query {
             allUsers(where: {
@@ -512,7 +502,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(errors).toBe(undefined);
             expect(data).toHaveProperty('allUsers');
             expect(data.allUsers).toHaveLength(4);
 
