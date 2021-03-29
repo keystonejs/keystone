@@ -91,6 +91,7 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
 
       <Stack gap="medium" across align="center">
         <Select
+          menuIsOpen
           width="medium"
           value={{ label: String(currentPage), value: String(currentPage) }}
           options={pages}
@@ -125,5 +126,36 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
         </Link>
       </Stack>
     </Stack>
+  );
+}
+
+export function PaginationLabel({
+  currentPage,
+  pageSize,
+  plural,
+  singular,
+  total,
+}: {
+  currentPage: number;
+  pageSize: number;
+  plural: string;
+  singular: string;
+  total: number;
+}) {
+  const { stats } = usePaginationStats({
+    list: { plural, singular },
+    currentPage,
+    total,
+    pageSize,
+  });
+
+  if (!total) {
+    return <span>No {plural}</span>;
+  }
+
+  return (
+    <span>
+      Showing <strong>{stats}</strong>
+    </span>
   );
 }
