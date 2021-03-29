@@ -117,7 +117,10 @@ temp/
 
 .api-test-prisma-clients
 
-
 # SQLite databases
-
 *.db
+
+# These are here temporarily until the examples properly use the new CLI
+# This should be removed and these files should be committed
+examples-next/*/schema.graphql
+examples-next/*/schema.prisma

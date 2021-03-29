@@ -35,8 +35,7 @@ function cli() {
   const cwd = process.cwd();
 
   if (command === 'prisma') {
-    console.log(process.argv.slice(2));
-    // prisma(cwd, process.argv.slice(2));
+    prisma(cwd, process.argv.slice(3));
   } else if (command === 'postinstall') {
     postinstall(cwd, flags.fix);
   } else {
