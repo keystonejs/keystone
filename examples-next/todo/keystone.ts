@@ -64,9 +64,9 @@ export default withAuth(
       /* could be 'cloud' */
       mode: 'local',
       /* where images get stored when uploaded */
-      uploadPath: './public/content-images',
+      uploadPath: './public/images',
       /* the basePath for where image are served from */
-      publicPath: '/content-images',
+      publicPath: '/images',
     },
     ui: {
       isAccessAllowed: ({ session }) => !!session,
