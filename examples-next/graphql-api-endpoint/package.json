@@ -13,7 +13,7 @@
     "@keystone-next/fields": "^5.3.0",
     "@keystone-next/fields-document": "^3.2.0",
     "@keystone-next/keystone": "^14.0.0",
-    "apollo-server-micro": "^2.22.1"
+    "apollo-server-micro": "^2.22.2"
   },
   "prisma": {
     "schema": ".keystone/prisma/schema.prisma"
