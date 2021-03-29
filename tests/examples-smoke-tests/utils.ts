@@ -5,7 +5,7 @@ import _treeKill from 'tree-kill';
 import * as playwright from 'playwright';
 
 async function deleteAllData(projectDir: string) {
-  const { PrismaClient } = require(path.join(projectDir, './.keystone/prisma/generated-client'));
+  const { PrismaClient } = require(path.join(projectDir, 'node_modules/.prisma/client'));
 
   let prisma = new PrismaClient();
 

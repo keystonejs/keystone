@@ -6,7 +6,7 @@ import { confirmPrompt } from '@keystone-next/adapter-prisma-legacy/src/prompts'
 import { getGenerator } from '@prisma/sdk';
 import { printGeneratedTypes } from './schema-type-printer';
 
-function getSchemaPaths(cwd: string) {
+export function getSchemaPaths(cwd: string) {
   return {
     prisma: path.join(cwd, 'schema.prisma'),
     graphql: path.join(cwd, 'schema.graphql'),
@@ -26,6 +26,7 @@ export async function getCommittedArtifacts(
     graphql: printSchema(graphQLSchema),
     prisma: await keystone.adapter._generatePrismaSchema({
       rels: keystone._consolidateRelationships(),
+      clientDir: 'node_modules/.prisma/client',
     }),
   };
 }
@@ -99,6 +100,7 @@ export async function generateCommittedArtifacts(
 ) {
   const artifacts = await getCommittedArtifacts(graphQLSchema, keystone);
   await writeCommittedArtifacts(artifacts, cwd);
+  return artifacts;
 }
 
 export async function generateNodeModulesArtifacts(
@@ -125,5 +127,5 @@ async function generatePrismaClient(cwd: string) {
 }
 
 export function requirePrismaClient(cwd: string) {
-  return require(path.join(cwd, 'node_modules/.prisma/client'));
+  return require(path.join(cwd, 'node_modules/.prisma/client')).PrismaClient;
 }

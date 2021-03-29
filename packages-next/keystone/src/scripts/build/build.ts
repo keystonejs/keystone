@@ -87,7 +87,7 @@ export async function build(cwd: string) {
 
   const config = initConfig(requireSource(CONFIG_PATH).default);
 
-  const { keystone, graphQLSchema } = createSystem(config, '', 'none');
+  const { keystone, graphQLSchema } = createSystem(config, cwd, 'none');
 
   await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
 

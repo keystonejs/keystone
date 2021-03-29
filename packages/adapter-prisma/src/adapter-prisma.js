@@ -217,7 +217,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       }
       generator client {
         provider = "prisma-client-js"
-        ${clientDir ? `output = "${clientDir}"` : ''}
+        output = "${clientDir}"
       }`;
     return await formatSchema({ schema: header + models.join('\n') + '\n' + enums.join('\n') });
   }

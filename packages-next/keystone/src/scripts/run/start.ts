@@ -18,7 +18,7 @@ export const start = async (cwd: string) => {
   const config = initConfig(require(apiFile).config);
   const { keystone, graphQLSchema, createContext } = createSystem(
     config,
-    '',
+    cwd,
     'none',
     requirePrismaClient(cwd)
   );

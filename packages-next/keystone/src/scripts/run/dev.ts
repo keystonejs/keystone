@@ -1,6 +1,7 @@
 import path from 'path';
 import express from 'express';
 import { generateAdminUI } from '@keystone-next/admin-ui/system';
+import { devMigrations, runPrototypeMigrations } from '@keystone-next/adapter-prisma-legacy';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { requireSource } from '../../lib/requireSource';
@@ -8,6 +9,7 @@ import { createExpressServer } from '../../lib/createExpressServer';
 import {
   generateCommittedArtifacts,
   generateNodeModulesArtifacts,
+  getSchemaPaths,
   requirePrismaClient,
 } from '../../lib/artifacts';
 import { CONFIG_PATH } from '../utils';
@@ -29,18 +31,26 @@ export const dev = async (cwd: string) => {
   const config = initConfig(requireSource(CONFIG_PATH).default);
   const initKeystone = async () => {
     {
-      const { keystone, graphQLSchema } = createSystem(config, '', 'none');
+      const { keystone, graphQLSchema } = createSystem(config, cwd, 'none');
 
       console.log('✨ Generating GraphQL and Prisma schemas');
-      await generateCommittedArtifacts(graphQLSchema, keystone, cwd);
+      const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, keystone, cwd)).prisma;
       await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
+
+      if (config.db.adapter === 'prisma_postgresql' || config.db.adapter === 'prisma_sqlite') {
+        if (config.db.useMigrations) {
+          await devMigrations(config.db.url, prismaSchema, getSchemaPaths(cwd).prisma);
+        } else {
+          await runPrototypeMigrations(config.db.url, prismaSchema, getSchemaPaths(cwd).prisma);
+        }
+      }
     }
 
     const prismaClient = requirePrismaClient(cwd);
 
     const { keystone, graphQLSchema, createContext } = createSystem(
       config,
-      '',
+      cwd,
       'none',
       prismaClient
     );
