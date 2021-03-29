@@ -57,8 +57,10 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     if (this._prismaClient) {
       return this._prismaClient;
     }
-    if (this.migrationMode !== 'prototype') {
-      throw new Error('a PrismaClient must be passed to ');
+    if (this.migrationMode === 'none') {
+      throw new Error(
+        'a prisma client must be passed to the prisma adapter when the migration mode is none'
+      );
     }
     await this._generateClient(rels);
     return require(this.clientPath).PrismaClient;
@@ -86,12 +88,10 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     // a `keystone-next start` because it has various side effects
     const { prismaSchema } = await this._prepareSchema(rels);
 
-    if (this.migrationMode === 'prototype') {
-      this._writePrismaSchema({ prismaSchema });
+    this._writePrismaSchema({ prismaSchema });
 
-      // Generate prisma client and run prisma migrations
-      await Promise.all([this._generatePrismaClient(), this._runMigrations({ prismaSchema })]);
-    }
+    // Generate prisma client and run prisma migrations
+    await Promise.all([this._generatePrismaClient(), this._runMigrations({ prismaSchema })]);
   }
 
   async _runMigrations({ prismaSchema }) {
