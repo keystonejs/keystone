@@ -1,27 +1,24 @@
 import { Markdown } from '../components/Page';
+import { Status } from '../components/Status';
 import { SubscribeForm } from '../components/SubscribeForm';
 
 # Roadmap
 
-When Keystone 5 was announced in 2018, it was a great leap forward for the project from a back-end
-Node.js CMS platform built with MongoDB, to a modern platform with first class support for GraphQL,
-PostgreSQL, and more!
+Big things! While we work towards Keystone 6 (our next major release of KeystoneJS this year) we’ve launched Keystone Next - an exciting preview of the most powerful headless content management system around.
 
-Keystone Next is a preview of the next major release of KeystoneJS, the most powerful headless
-content management system around. We've substantially rewritten the CLI, Schema config, and Admin UI
-to make them more powerful and easier to use than ever before.
+In 2018 when Keystone 5 was announced, it was a great leap forward from a back-end Node.js CMS platform built with MongoDB, to a modern platform with first class support for GraphQL, PostgreSQL, and more.
 
-In the last six months, we built around the existing stable core of Keystone 5's packages to test
-the changes we wanted to make and validate our ideas. We're now happy with what we've built, and
-over the course of this year, Keystone Next will become Keystone 6.
+Over the last six months, we’ve built around the existing stable core of Keystone 5's packages to test the changes we wanted to make and validate our ideas. Now, in Keystone Next, we've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
 
-There is a lot to do, and with a larger than ever team at [Thinkmill](https://www.thinkmill.com.au)
-working on it, we're excited to show you what we're planning and get it shipped!
+There is a lot more to do, and with a larger than ever team at [Thinkmill](https://www.thinkmill.com.au) working on it, we're excited to show you what we're planning and get it shipped!
+
+We'll be updating this roadmap fortnightly (or as often as we need to) to help you track our progress and plans, find info that matters to your project, and communicate with us more dynamically while we grow the platform.
+
+If you’re looking for active conversations and interactions, please join our [KeystoneJS Slack](https://community.slack.com), and feel free to [open a PR](https://github.com/keystonejs/keystone/pulls).
 
 ## Project Status
 
-Keystone Next has been released to npm as a preview of where we're going. Now we're focusing on
-completing the transition, which includes:
+Keystone Next has been released to npm as a preview of where we're going. Now we're focusing on completing the transition, which includes:
 
 - Updating the core engine and simplifying our architecture
 - Separating Keystone 5 and Keystone Next into distinct GitHub projects
@@ -29,11 +26,10 @@ completing the transition, which includes:
 
 Here's what you'll see in the next month:
 
-- We'll launch next.keystonejs.com (this website! you've found it, but we're in stealth)
+- We'll launch [next.keystonejs.com](https://next.keystonejs.com) (this website! you've found it, but we're in stealth)
 - A new project starter and getting started guide
 - A new set of example projects demoing how to use Keystone Next features
-- A Keystone 5 repo created in our GitHub org, which we're going to move the `@keystonejs` packages
-  into for ongoing maintenance and releases
+- A Keystone 5 repo created in our GitHub org, which we're going to move the @keystonejs packages into for ongoing maintenance and releases
 
 <SubscribeForm>
   <p>Keep up to date as we progress through our roadmap:</p>
@@ -41,7 +37,17 @@ Here's what you'll see in the next month:
 
 ### 👇 What's next on our list
 
+We’re status-tagging everything we’re tracking. Leaning on Basecamp’s [Shape Up](https://basecamp.com/shapeup/3.4-chapter-12#work-is-like-a-hill) (and RedwoodJS) we’re using colour-coded labels to help surface our activities, making it quicker and clearer for you to understand where things are up to:
+
+- <Status look="notStarted">Not started</Status>
+- <Status look="figuringItOut">Figuring it out</Status>
+- <Status look="theresAPlan">There's a plan</Status>
+- <Status look="makingItHappen">Making it happen</Status>
+- <Status look="cleaningUp">Cleaning up</Status>
+
 ## Streamlined back-end with Prisma
+
+<Status look="makingItHappen">Making it happen</Status>
 
 [Prisma](https://www.prisma.io/) is the next-generation ORM for JavaScript and TypeScript, and we
 added it to Keystone in 2020. It supports PostgreSQL, MySQL and SQLite with MS SQL and MongoDB
@@ -58,6 +64,8 @@ anyone building apps on Keystone has the full power of Prisma Client available t
 
 ## Improved Build and Deployment Options
 
+<Status look="makingItHappen">Making it happen</Status>
+
 Deploying a database-backed application to production is still surprisingly complex, and it can be
 challenging to find the right tradeoffs and hosting providers. So we're looking at ways Keystone can
 help streamline these options.
@@ -67,6 +75,8 @@ GraphQL API and Admin UI applications, and independent `dev`, `build` and `start
 to Prisma, it will also include tools for previewing and managing database changes.
 
 ## GraphQL API Updates
+
+<Status look="figuringItOut">Figuring it out</Status>
 
 Keystone's GraphQL API has been stable (no breaking changes!) for several years now. While this has
 been great for building front-end apps with confidence, it has held us back from fixing some pain
@@ -78,11 +88,15 @@ streamlined migration stories for.
 
 ## Field Types Review
 
+<Status look="figuringItOut">Figuring it out</Status>
+
 We're planning to revisit our field types and make them more powerful and consistent. This will
 include new interface options for the Admin UI, new features for validation and logic, and better
 `null` value handling.
 
 ## Nested (JSON) Fields
+
+<Status look="notStarted">Not started</Status>
 
 Often when you're working with items, you want to allow content authors to manage nested repeating
 data. Relationships have traditionally been the answer for this, but come with complexity and can't
@@ -93,11 +107,15 @@ stored in a JSON field in the database.
 
 ## Singletons
 
+<Status look="notStarted">Not started</Status>
+
 Keystone is great for lists of data, but sometimes you want a single object that is editable through
 the Admin UI and accessible in the GraphQL API. So we're planning to add the ability to define
 singletons in Keystone's Schema.
 
 ## Translation Support
+
+<Status look="notStarted">Not started</Status>
 
 If you're building a website with multi-language support, in Keystone 5 you have to add individual
 fields for each translation. To make for a better authoring experience, simpler schema definition,
@@ -105,6 +123,8 @@ and streamlined experience for front-end developers we're planning to build firs
 translated fields into Keystone.
 
 ## Draft / Preview / Publishing Workflow
+
+<Status look="notStarted">Not started</Status>
 
 Previewing content changes is a critical part of editing with confidence, but it's hard to implement
 consistently across sets of changes in a relational database backend.
@@ -117,6 +137,8 @@ We're also looking at a built-in solution for tracking changes and version histo
 
 ## Admin UI Field Groups and Dynamic Updates
 
+<Status look="notStarted">Not started</Status>
+
 When lists get complex, you want to break up the form into multiple sections of fields. Also, some
 fields depend on the value of others, and the form should update dynamically as item data is
 changed.
@@ -126,8 +148,6 @@ better authoring experience out of the box.
 
 ## Feedback
 
-We'd love to hear from you! Reach out to us at [@KeystoneJS](https://twitter.com/keystonejs) on
-Twitter with your feedback or start a
-[discussion on GitHub](https://github.com/keystonejs/keystone/discussions).
+We'd love to hear from you! If you’ve got feedback (or praise 🙌), send it our way at [@KeystoneJS](https://twitter.com/keystonejs) on Twitter, or start a discussion / ask a question / make some friends in our [KeystoneJS Slack community](https://github.com/keystonejs/keystone/discussions).
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
