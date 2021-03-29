@@ -157,6 +157,7 @@ export async function createMigration(
       const credentials = uriToCredentials(dbUrl);
       if (cliOptions.acceptDataLoss === false) {
         console.log(`${devDiagnostic.action.reason}
+
         We need to reset the ${credentials.type} database "${
           credentials.database
         }" at ${getDbLocation(credentials)}.`);
