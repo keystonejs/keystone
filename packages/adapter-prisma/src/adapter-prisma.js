@@ -73,7 +73,9 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       });
       return prismaClient;
     } else {
-      return require(this.clientPath).PrismaClient;
+      const resolved = require.resolve(this.clientPath);
+      delete require.cache[resolved];
+      return require(resolved).PrismaClient;
     }
   }
 
