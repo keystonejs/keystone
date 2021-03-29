@@ -107,5 +107,5 @@ export async function build(cwd: string) {
   await reexportKeystoneConfig(getAdminPath(cwd), config.ui?.isDisabled);
 
   console.log('✨ Building Admin UI');
-  await buildAdminUI(cwd);
+  await buildAdminUI(getAdminPath(cwd));
 }
