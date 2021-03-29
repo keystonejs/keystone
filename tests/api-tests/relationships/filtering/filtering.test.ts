@@ -64,7 +64,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             item: { company: { connect: { id: otherCompany.id } } },
           });
 
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
         query {
           allUsers(where: {
@@ -83,7 +83,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data.allUsers).toHaveLength(1);
           expect(data).toMatchObject({
             allUsers: [
@@ -124,7 +123,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             item: { company: { connect: { id: otherCompany.id } } },
           });
 
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
           query {
             allUsers(where: {
@@ -143,7 +142,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data.allUsers).toHaveLength(1);
           expect(data).toMatchObject({
             allUsers: [
@@ -183,11 +181,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           await createItem({ context, listKey: 'User', item: {} });
 
-          type T = {
-            data: { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
-            errors: unknown;
-          };
-          const { data, errors }: T = await context.executeGraphQL({
+          const data = (await context.graphql.run({
             query: `
         query {
           allUsers(where: {
@@ -204,9 +198,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
         }
       `,
-          });
+          })) as { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
           expect(data.allUsers).toHaveLength(1);
           expect(data.allUsers[0].id).toEqual(user.id);
@@ -239,11 +232,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Create a dummy user to make sure we're actually filtering it out
           await createItem({ context, listKey: 'User', item: {} });
 
-          type T = {
-            data: { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
-            errors: unknown;
-          };
-          const { data, errors }: T = await context.executeGraphQL({
+          const data = (await context.graphql.run({
             query: `
           query {
             allUsers(where: {
@@ -260,9 +249,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           }
         `,
-          });
+          })) as { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
           expect(data.allUsers).toHaveLength(1);
           expect(data.allUsers[0].id).toEqual(user.id);
@@ -345,16 +333,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // adsCompany users whose every post is spam
           // NB: this includes users who have no posts at all
           type T = {
-            data: {
-              allUsers: {
-                id: IdType;
-                company: { id: IdType; name: string };
-                posts: { content: string }[];
-              }[];
-            };
-            errors: unknown;
+            allUsers: {
+              id: IdType;
+              company: { id: IdType; name: string };
+              posts: { content: string }[];
+            }[];
           };
-          const result1: T = await context.executeGraphQL({
+          const result1 = (await context.graphql.run({
             query: `
         query {
           allUsers(where: {
@@ -372,24 +357,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
         }
       `,
-          });
+          })) as T;
 
-          expect(result1.errors).toBe(undefined);
-          expect(result1.data.allUsers).toHaveLength(2);
-          expect(result1.data.allUsers.map(u => u.company.id)).toEqual([
-            adsCompany.id,
-            adsCompany.id,
-          ]);
-          expect(result1.data.allUsers.map(u => u.id).sort()).toEqual(
+          expect(result1.allUsers).toHaveLength(2);
+          expect(result1.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
+          expect(result1.allUsers.map(u => u.id).sort()).toEqual(
             [spammyUser.id, quietUser.id].sort()
           );
-          expect(result1.data.allUsers.map(u => u.posts.every(p => p.content === 'spam'))).toEqual([
+          expect(result1.allUsers.map(u => u.posts.every(p => p.content === 'spam'))).toEqual([
             true,
             true,
           ]);
 
           // adsCompany users with no spam
-          const result2: T = await context.executeGraphQL({
+          const result2 = (await context.graphql.run({
             query: `
         query {
           allUsers(where: {
@@ -407,24 +388,20 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
         }
       `,
-          });
+          })) as T;
 
-          expect(result2.errors).toBe(undefined);
-          expect(result2.data.allUsers).toHaveLength(2);
-          expect(result2.data.allUsers.map(u => u.company.id)).toEqual([
-            adsCompany.id,
-            adsCompany.id,
-          ]);
-          expect(result2.data.allUsers.map(u => u.id).sort()).toEqual(
+          expect(result2.allUsers).toHaveLength(2);
+          expect(result2.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
+          expect(result2.allUsers.map(u => u.id).sort()).toEqual(
             [nonSpammyUser.id, quietUser.id].sort()
           );
-          expect(result2.data.allUsers.map(u => u.posts.every(p => p.content !== 'spam'))).toEqual([
+          expect(result2.allUsers.map(u => u.posts.every(p => p.content !== 'spam'))).toEqual([
             true,
             true,
           ]);
 
           // adsCompany users with some spam
-          const result3: T = await context.executeGraphQL({
+          const result3 = (await context.graphql.run({
             query: `
         query {
           allUsers(where: {
@@ -442,18 +419,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
         }
       `,
-          });
+          })) as T;
 
-          expect(result3.errors).toBe(undefined);
-          expect(result3.data.allUsers).toHaveLength(2);
-          expect(result3.data.allUsers.map(u => u.company.id)).toEqual([
-            adsCompany.id,
-            adsCompany.id,
-          ]);
-          expect(result3.data.allUsers.map(u => u.id).sort()).toEqual(
+          expect(result3.allUsers).toHaveLength(2);
+          expect(result3.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
+          expect(result3.allUsers.map(u => u.id).sort()).toEqual(
             [mixedUser.id, spammyUser.id].sort()
           );
-          expect(result3.data.allUsers.map(u => u.posts.some(p => p.content === 'spam'))).toEqual([
+          expect(result3.allUsers.map(u => u.posts.some(p => p.content === 'spam'))).toEqual([
             true,
             true,
           ]);

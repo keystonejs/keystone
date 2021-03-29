@@ -57,11 +57,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          type T = {
-            data: { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
-            errors: unknown;
-          };
-          const { data, errors }: T = await context.executeGraphQL({
+          const data = (await context.graphql.run({
             query: `
               query {
                 allUsers {
@@ -75,9 +71,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }
             `,
-          });
+          })) as { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
           expect(data.allUsers).toHaveLength(2);
           data.allUsers[0].posts = data.allUsers[0].posts.map(({ id }) => id).sort();
@@ -114,7 +109,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
         query {
           allUsers {
@@ -127,7 +122,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
           expect(data.allUsers).toContainEqual({ id: user.id, posts: [ids[0]] });
           expect(data.allUsers).toContainEqual({ id: user2.id, posts: [ids[0]] });
@@ -156,7 +150,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
         query {
           allUsers {
@@ -174,7 +168,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
           expect(data.allUsers).toContainEqual({ id: user.id, posts: [ids[2]] });
           expect(data.allUsers).toContainEqual({ id: user2.id, posts: [] });
@@ -203,7 +196,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
         query {
           allUsers {
@@ -222,7 +215,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0.posts');
           expect(data.allUsers).toContainEqual({
             id: user.id,
@@ -240,7 +232,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ context }) => {
           await createItem({ context, listKey: 'User', item: {} });
 
-          const result = await context.executeGraphQL({
+          const result = await context.graphql.run({
             query: `
               query {
                 allUsers(where: { posts_some: { content_contains: "foo" } }) {
@@ -249,10 +241,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }
             `,
           });
-          expect(result.errors).toBe(undefined);
 
-          expect(Array.isArray(result.data.allUsers)).toBeTruthy();
-          expect(result.data.allUsers).toHaveLength(0);
+          expect(Array.isArray(result.allUsers)).toBeTruthy();
+          expect(result.allUsers).toHaveLength(0);
         })
       );
     });
@@ -280,7 +271,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
         query {
           allUsers {
@@ -293,7 +284,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data.allUsers).toHaveLength(2);
           expect(data).toHaveProperty('allUsers.0._postsMeta');
           expect(data.allUsers).toContainEqual({ id: user.id, _postsMeta: { count: 3 } });
@@ -323,7 +313,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
         query {
           allUsers {
@@ -338,7 +328,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data.allUsers).toHaveLength(2);
           expect(data).toHaveProperty('allUsers.0._postsMeta');
           expect(data.allUsers).toContainEqual({ id: user.id, _postsMeta: { count: 2 } });
@@ -368,7 +357,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
         query {
           allUsers {
@@ -381,7 +370,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('allUsers.0._postsMeta');
           expect(data.allUsers).toHaveLength(2);
           expect(data.allUsers).toContainEqual({ id: user.id, _postsMeta: { count: 1 } });
@@ -411,7 +399,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
         query {
           allUsers {
@@ -429,7 +417,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data.allUsers).toHaveLength(2);
           expect(data).toHaveProperty('allUsers.0._postsMeta');
           expect(data.allUsers).toContainEqual({ id: user.id, _postsMeta: { count: 1 } });
@@ -459,7 +446,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             ],
           });
 
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               query {
                 allUsers {
@@ -477,7 +464,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data.allUsers).toHaveLength(2);
           expect(data).toHaveProperty('allUsers.0._postsMeta');
           expect(data.allUsers).toContainEqual({ id: user.id, _postsMeta: { count: 2 } });
