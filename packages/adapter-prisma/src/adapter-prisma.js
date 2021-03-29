@@ -127,10 +127,10 @@ class PrismaAdapter extends BaseKeystoneAdapter {
 
   async _writePrismaSchema({ prismaSchema }) {
     // Make output dir (you know, just in case!)
-    fs.mkdirSync(this.clientPath, { recursive: true });
+    fs.mkdirSync(path.dirname(this.schemaPath), { recursive: true });
 
     // Write prisma file
-    fs.writeSync(fs.openSync(this.schemaPath, 'w'), prismaSchema);
+    fs.writeFileSync(this.schemaPath, prismaSchema);
   }
 
   async _generatePrismaClient() {
