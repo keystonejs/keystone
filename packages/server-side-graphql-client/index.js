@@ -1,5 +1,4 @@
 const {
-  runCustomQuery,
   getItem,
   getItems,
   createItems,
@@ -11,7 +10,6 @@ const {
 } = require('./lib/server-side-graphql-client');
 
 module.exports = {
-  runCustomQuery,
   getItem,
   getItems,
   createItems,
