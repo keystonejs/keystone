@@ -10,7 +10,6 @@ export type TextFieldConfig<
   defaultValue?: FieldDefaultValue<string>;
   isRequired?: boolean;
   isUnique?: boolean;
-  isIndexed?: boolean;
   ui?: {
     displayMode?: 'input' | 'textarea';
   };

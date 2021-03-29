@@ -8,7 +8,6 @@ export type MongoIdFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = FieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
-  isIndexed?: boolean;
   isUnique?: boolean;
   defaultValue?: FieldDefaultValue<string>;
 };

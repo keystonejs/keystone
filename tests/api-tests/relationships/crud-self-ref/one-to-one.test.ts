@@ -98,95 +98,93 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
   describe(`Adapter: ${adapterName}`, () => {
     describe(`One-to-one relationships`, () => {
       describe('Read', () => {
-        if (adapterName !== 'mongoose') {
-          test(
-            'Where - friend',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              const { user, friend } = await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+        test(
+          'Where - friend',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            const { user, friend } = await createUserAndFriend(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   allUsers(where: { friend: { name: "${friend.name}"} }) { id }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allUsers.length).toEqual(1);
-              expect(data.allUsers[0].id).toEqual(user.id);
-            })
-          );
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allUsers.length).toEqual(1);
+            expect(data.allUsers[0].id).toEqual(user.id);
+          })
+        );
 
-          test(
-            'Where - friendOf',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              const { user, friend } = await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+        test(
+          'Where - friendOf',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            const { user, friend } = await createUserAndFriend(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   allUsers(where: { friendOf: { name: "${user.name}"} }) { id }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allUsers.length).toEqual(1);
-              expect(data.allUsers[0].id).toEqual(friend.id);
-            })
-          );
-          test(
-            'Where friend: is_null: true',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allUsers.length).toEqual(1);
+            expect(data.allUsers[0].id).toEqual(friend.id);
+          })
+        );
+        test(
+          'Where friend: is_null: true',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createUserAndFriend(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   allUsers(where: { friend_is_null: true }) { id }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allUsers.length).toEqual(4);
-            })
-          );
-          test(
-            'Where friendOf: is_null: true',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allUsers.length).toEqual(4);
+          })
+        );
+        test(
+          'Where friendOf: is_null: true',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createUserAndFriend(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   allUsers(where: { friendOf_is_null: true }) { id }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allUsers.length).toEqual(4);
-            })
-          );
-          test(
-            'Where friend: is_null: false',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allUsers.length).toEqual(4);
+          })
+        );
+        test(
+          'Where friend: is_null: false',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createUserAndFriend(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   allUsers(where: { friend_is_null: false }) { id }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allUsers.length).toEqual(1);
-            })
-          );
-          test(
-            'Where friendOf: is_null: false',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allUsers.length).toEqual(1);
+          })
+        );
+        test(
+          'Where friendOf: is_null: false',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createUserAndFriend(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   allUsers(where: { friendOf_is_null: false }) { id }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allUsers.length).toEqual(1);
-            })
-          );
-        }
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allUsers.length).toEqual(1);
+          })
+        );
 
         test(
           'Count',
@@ -204,66 +202,64 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           })
         );
 
-        if (adapterName !== 'mongoose') {
-          test(
-            'Where with count - friend',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              const { friend } = await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+        test(
+          'Where with count - friend',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            const { friend } = await createUserAndFriend(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   _allUsersMeta(where: { friend: { name: "${friend.name}"} }) { count }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data._allUsersMeta.count).toEqual(1);
-            })
-          );
+            });
+            expect(errors).toBe(undefined);
+            expect(data._allUsersMeta.count).toEqual(1);
+          })
+        );
 
-          test(
-            'Where with count - friendOf',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              const { user } = await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+        test(
+          'Where with count - friendOf',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            const { user } = await createUserAndFriend(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   _allUsersMeta(where: { friendOf: { name: "${user.name}"} }) { count }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data._allUsersMeta.count).toEqual(1);
-            })
-          );
-          test(
-            'Where null with count - friend',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+            });
+            expect(errors).toBe(undefined);
+            expect(data._allUsersMeta.count).toEqual(1);
+          })
+        );
+        test(
+          'Where null with count - friend',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createUserAndFriend(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   _allUsersMeta(where: { friend_is_null: true }) { count }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data._allUsersMeta.count).toEqual(4);
-            })
-          );
+            });
+            expect(errors).toBe(undefined);
+            expect(data._allUsersMeta.count).toEqual(4);
+          })
+        );
 
-          test(
-            'Where null with count - friendOf',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createUserAndFriend(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+        test(
+          'Where null with count - friendOf',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createUserAndFriend(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   _allUsersMeta(where: { friendOf_is_null: true }) { count }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data._allUsersMeta.count).toEqual(4);
-            })
-          );
-        }
+            });
+            expect(errors).toBe(undefined);
+            expect(data._allUsersMeta.count).toEqual(4);
+          })
+        );
       });
 
       describe('Create', () => {

@@ -45,7 +45,6 @@ export type RelationshipFieldConfig<
     hideCreate?: boolean;
   };
   defaultValue?: FieldDefaultValue<Record<string, unknown>>;
-  isIndexed?: boolean;
   isUnique?: boolean;
 } & (SelectDisplayConfig | CardsDisplayConfig);
 

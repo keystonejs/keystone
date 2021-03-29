@@ -12,7 +12,7 @@ import { initConfig, createSystem, createExpressServer } from '@keystone-next/ke
 import type { KeystoneConfig, BaseKeystone, KeystoneContext } from '@keystone-next/types';
 import memoizeOne from 'memoize-one';
 
-export type AdapterName = 'mongoose' | 'knex' | 'prisma_postgresql' | 'prisma_sqlite';
+export type AdapterName = 'prisma_postgresql' | 'prisma_sqlite';
 
 const hashPrismaSchema = memoizeOne(prismaSchema =>
   crypto.createHash('md5').update(prismaSchema).digest('hex')
@@ -68,13 +68,7 @@ async function setupFromConfig({
   config: TestKeystoneConfig;
 }) {
   let db: KeystoneConfig['db'];
-  if (adapterName === 'knex') {
-    const adapterArgs = await argGenerator[adapterName]();
-    db = { adapter: adapterName, url: adapterArgs.knexOptions.connection, ...adapterArgs };
-  } else if (adapterName === 'mongoose') {
-    const adapterArgs = await argGenerator[adapterName]();
-    db = { adapter: adapterName, url: adapterArgs.mongoUri, mongooseOptions: adapterArgs };
-  } else if (adapterName === 'prisma_postgresql') {
+  if (adapterName === 'prisma_postgresql') {
     const adapterArgs = await argGenerator[adapterName]();
     db = { adapter: adapterName, ...adapterArgs };
   } else if (adapterName === 'prisma_sqlite') {
@@ -128,34 +122,15 @@ function networkedGraphqlRequest({
 // One instance per node.js thread which cleans itself up when the main process
 // exits
 let mongoServer: MongoDBMemoryServer | undefined | null;
-let mongoServerReferences = 0;
 
 async function getMongoMemoryServerConfig() {
   mongoServer = mongoServer || new MongoDBMemoryServer();
-  mongoServerReferences++;
   // Passing `true` here generates a new, random DB name for us
   const mongoUri = await mongoServer.getConnectionString(true);
   // In theory the dbName can contain query params so lets parse it then extract the db name
   const dbName = url.parse(mongoUri).pathname!.split('/').pop();
 
   return { mongoUri, dbName };
-}
-
-async function teardownMongoMemoryServer() {
-  mongoServerReferences--;
-  if (mongoServerReferences < 0) {
-    mongoServerReferences = 0;
-  }
-
-  if (mongoServerReferences > 0) {
-    return Promise.resolve();
-  }
-
-  if (!mongoServer) {
-    return Promise.resolve();
-  }
-  await mongoServer.stop();
-  mongoServer = null;
 }
 
 type Setup = { keystone: BaseKeystone; context: KeystoneContext; app: express.Application };
@@ -213,18 +188,6 @@ function _after(tearDownFunction: () => Promise<void> | void) {
 
 function multiAdapterRunners(only = process.env.TEST_ADAPTER) {
   return [
-    {
-      runner: _keystoneRunner('mongoose', teardownMongoMemoryServer),
-      adapterName: 'mongoose' as const,
-      before: _before('mongoose'),
-      after: _after(teardownMongoMemoryServer),
-    },
-    {
-      runner: _keystoneRunner('knex', () => {}),
-      adapterName: 'knex' as const,
-      before: _before('knex'),
-      after: _after(() => {}),
-    },
     {
       runner: _keystoneRunner('prisma_postgresql', () => {}),
       adapterName: 'prisma_postgresql' as const,
