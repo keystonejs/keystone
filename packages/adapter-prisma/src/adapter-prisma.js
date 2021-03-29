@@ -29,7 +29,6 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     this.getDbSchemaName = this.config.getDbSchemaName || (() => 'public');
     this.enableLogging = this.config.enableLogging || false;
     this.url = this.config.url || process.env.DATABASE_URL;
-    this.clientPath = path.resolve('node_modules/.prisma/client');
   }
 
   async _prepareSchema(rels) {
@@ -66,14 +65,15 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       return this._prismaClient;
     }
     await this._generateClient(rels);
+    const clientPath = path.resolve('node_modules/.prisma/client');
     if (typeof jest !== 'undefined') {
       let prismaClient;
       jest.isolateModules(() => {
-        prismaClient = require(this.clientPath).PrismaClient;
+        prismaClient = require(clientPath).PrismaClient;
       });
       return prismaClient;
     } else {
-      const resolved = require.resolve(this.clientPath);
+      const resolved = require.resolve(clientPath);
       delete require.cache[resolved];
       return require(resolved).PrismaClient;
     }
