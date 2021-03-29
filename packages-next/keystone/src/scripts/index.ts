@@ -1,34 +1,27 @@
-import path from 'path';
 import meow from 'meow';
 import { dev } from './run/dev';
 import { start } from './run/start';
 import { build } from './build/build';
+import { prisma } from './prisma';
+import { postinstall } from './postinstall';
 
-export type StaticPaths = { dotKeystonePath: string; projectAdminPath: string };
-
-const commands = { dev, start, build };
+const commands = { dev, start, build, prisma, postinstall };
 
 function cli() {
-  const { input, help } = meow(
+  const { input, help, flags } = meow(
     `
     Usage
       $ keystone-next [command]
     Commands
-      Run
         dev           (default) start the project in development mode
         start         start the project in production mode
-      Build
         build         build the project (must be done before using start)
-      Migrate (Prisma only)
-        reset         reset the database (this will drop all data!)
-        generate      generate a migration
-        deploy        deploy all migrations
+        prisma        run the prisma CLI
+        postinstall   
     `,
     {
       flags: {
-        allowEmpty: { default: false, type: 'boolean' },
-        acceptDataLoss: { default: false, type: 'boolean' },
-        name: { type: 'string' },
+        fix: { default: false, type: 'boolean' },
       },
     }
   );
@@ -39,13 +32,16 @@ function cli() {
     process.exit(1);
   }
 
-  // These paths are non-configurable, as we need to use them
-  // to find the config file (for `start`) itself!
-  const dotKeystonePath = path.resolve('.keystone');
-  const projectAdminPath = path.join(dotKeystonePath, 'admin');
-  const staticPaths: StaticPaths = { dotKeystonePath, projectAdminPath };
+  const cwd = process.cwd();
 
-  commands[command](staticPaths);
+  if (command === 'prisma') {
+    console.log(process.argv.slice(2));
+    // prisma(cwd, process.argv.slice(2));
+  } else if (command === 'postinstall') {
+    postinstall(cwd, flags.fix);
+  } else {
+    commands[command](cwd);
+  }
 }
 
 function isCommand(command: string): command is keyof typeof commands {

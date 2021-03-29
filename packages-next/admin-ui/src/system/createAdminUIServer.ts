@@ -2,18 +2,19 @@ import url from 'url';
 import express from 'express';
 import type { KeystoneConfig, SessionStrategy, CreateContext } from '@keystone-next/types';
 import { createSessionContext } from '@keystone-next/keystone/session';
+import { getAdminPath } from '@keystone-next/keystone/src/scripts/utils';
 
 export const createAdminUIServer = async (
   ui: KeystoneConfig['ui'],
   createContext: CreateContext,
   dev: boolean,
-  projectAdminPath: string,
+  cwd: string,
   sessionStrategy?: SessionStrategy<any>
 ) => {
   /** We do this to stop webpack from bundling next inside of next */
   const thing = 'next';
   const next = require(thing);
-  const app = next({ dev, dir: projectAdminPath });
+  const app = next({ dev, dir: getAdminPath(cwd) });
   const handle = app.getRequestHandler();
   await app.prepare();
 

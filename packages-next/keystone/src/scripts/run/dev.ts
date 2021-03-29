@@ -5,9 +5,12 @@ import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { requireSource } from '../../lib/requireSource';
 import { createExpressServer } from '../../lib/createExpressServer';
-import { generateNodeModulesArtifacts, writeCommittedArtifacts } from '../../lib/artifacts';
+import {
+  generateCommittedArtifacts,
+  generateNodeModulesArtifacts,
+  requirePrismaClient,
+} from '../../lib/artifacts';
 import { CONFIG_PATH } from '../utils';
-import type { StaticPaths } from '..';
 
 // TODO: Don't generate or start an Admin UI if it isn't configured!!
 const devLoadingHTMLFilepath = path.join(
@@ -17,7 +20,7 @@ const devLoadingHTMLFilepath = path.join(
   'dev-loading.html'
 );
 
-export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) => {
+export const dev = async (cwd: string) => {
   console.log('🤞 Starting Keystone');
 
   const server = express();
@@ -25,10 +28,22 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) =>
 
   const config = initConfig(requireSource(CONFIG_PATH).default);
   const initKeystone = async () => {
-    const { keystone, graphQLSchema, createContext } = createSystem(config, dotKeystonePath, 'dev');
+    {
+      const { keystone, graphQLSchema } = createSystem(config, '', 'none');
 
-    console.log('✨ Generating GraphQL and Prisma schemas');
-    await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);
+      console.log('✨ Generating GraphQL and Prisma schemas');
+      await generateCommittedArtifacts(graphQLSchema, keystone, cwd);
+      await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
+    }
+
+    const prismaClient = requirePrismaClient(cwd);
+
+    const { keystone, graphQLSchema, createContext } = createSystem(
+      config,
+      '',
+      'none',
+      prismaClient
+    );
 
     console.log('✨ Connecting to the database');
     await keystone.connect({ context: createContext().sudo() });
@@ -37,17 +52,11 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) =>
       console.log('✨ Skipping Admin UI code generation');
     } else {
       console.log('✨ Generating Admin UI code');
-      await generateAdminUI(config, graphQLSchema, keystone, projectAdminPath);
+      await generateAdminUI(config, graphQLSchema, keystone, cwd);
     }
 
     console.log('✨ Creating server');
-    expressServer = await createExpressServer(
-      config,
-      graphQLSchema,
-      createContext,
-      true,
-      projectAdminPath
-    );
+    expressServer = await createExpressServer(config, graphQLSchema, createContext, true, cwd);
     console.log(`👋 Admin UI and graphQL API ready`);
   };
 

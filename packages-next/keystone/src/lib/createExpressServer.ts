@@ -37,7 +37,7 @@ export const createExpressServer = async (
   graphQLSchema: GraphQLSchema,
   createContext: CreateContext,
   dev: boolean,
-  projectAdminPath: string,
+  cwd: string,
   isVerbose: boolean = true
 ) => {
   const server = express();
@@ -67,9 +67,7 @@ export const createExpressServer = async (
     if (isVerbose) console.log('✨ Skipping Admin UI app');
   } else {
     if (isVerbose) console.log('✨ Preparing Admin UI Next.js app');
-    server.use(
-      await createAdminUIServer(config.ui, createContext, dev, projectAdminPath, sessionStrategy)
-    );
+    server.use(await createAdminUIServer(config.ui, createContext, dev, cwd, sessionStrategy));
   }
 
   return server;

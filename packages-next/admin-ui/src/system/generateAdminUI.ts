@@ -7,6 +7,7 @@ import resolve from 'resolve';
 import { GraphQLSchema } from 'graphql';
 import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 import { AdminFileToWrite } from '@keystone-next/types';
+import { getAdminPath } from '@keystone-next/keystone/src/scripts/utils';
 import { writeAdminFiles } from '../templates';
 import { serializePathForImport } from '../utils/serializePathForImport';
 
@@ -48,8 +49,9 @@ export const generateAdminUI = async (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
   keystone: BaseKeystone,
-  projectAdminPath: string
+  cwd: string
 ) => {
+  const projectAdminPath = getAdminPath(cwd);
   // Nuke any existing files in our target directory
   await fs.remove(projectAdminPath);
 

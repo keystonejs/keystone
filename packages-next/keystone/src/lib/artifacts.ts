@@ -92,6 +92,15 @@ export async function writeCommittedArtifacts(artifacts: CommittedArtifacts, cwd
   ]);
 }
 
+export async function generateCommittedArtifacts(
+  graphQLSchema: GraphQLSchema,
+  keystone: BaseKeystone,
+  cwd: string
+) {
+  const artifacts = await getCommittedArtifacts(graphQLSchema, keystone);
+  await writeCommittedArtifacts(artifacts, cwd);
+}
+
 export async function generateNodeModulesArtifacts(
   graphQLSchema: GraphQLSchema,
   keystone: BaseKeystone,
@@ -113,4 +122,8 @@ async function generatePrismaClient(cwd: string) {
   const generator = await getGenerator({ schemaPath: getSchemaPaths(cwd).prisma });
   await generator.generate();
   generator.stop();
+}
+
+export function requirePrismaClient(cwd: string) {
+  return require(path.join(cwd, 'node_modules/.prisma/client'));
 }

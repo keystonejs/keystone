@@ -3,35 +3,31 @@ import * as fs from 'fs-extra';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { createExpressServer } from '../../lib/createExpressServer';
-import type { StaticPaths } from '..';
+import { getAdminPath } from '../utils';
+import { requirePrismaClient } from '../../lib/artifacts';
 
-export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) => {
+export const start = async (cwd: string) => {
   console.log('🤞 Starting Keystone');
 
   // This is the compiled version of the configuration which was generated during the build step.
   // See reexportKeystoneConfig().
-  const apiFile = path.join(projectAdminPath, '.next/server/pages/api/__keystone_api_build.js');
+  const apiFile = path.join(getAdminPath(cwd), '.next/server/pages/api/__keystone_api_build.js');
   if (!fs.existsSync(apiFile)) {
     throw new Error('keystone-next build must be run before running keystone-next start');
   }
   const config = initConfig(require(apiFile).config);
   const { keystone, graphQLSchema, createContext } = createSystem(
     config,
-    dotKeystonePath,
-    'none-skip-client-generation'
+    '',
+    'none',
+    requirePrismaClient(cwd)
   );
 
   console.log('✨ Connecting to the database');
   await keystone.connect({ context: createContext().sudo() });
 
   console.log('✨ Creating server');
-  const server = await createExpressServer(
-    config,
-    graphQLSchema,
-    createContext,
-    false,
-    projectAdminPath
-  );
+  const server = await createExpressServer(config, graphQLSchema, createContext, false, cwd);
   if (config.ui?.isDisabled) {
     console.log(`👋 GraphQL API ready`);
   } else {
