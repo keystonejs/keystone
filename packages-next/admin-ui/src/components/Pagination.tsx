@@ -87,6 +87,7 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
 
       <Stack gap="medium" across align="center">
         <Select
+          menuIsOpen
           width="medium"
           value={{ label: String(currentPage), value: String(currentPage) }}
           options={pages}
@@ -138,7 +139,11 @@ export function PaginationLabel({
   singular: string;
   total: number;
 }) {
+<<<<<<< HEAD
   const { stats } = getPaginationStats({
+=======
+  const { stats } = usePaginationStats({
+>>>>>>> 47feeaf10... move PaginationLabel to components folder, and refactor to use usePaginationStats hook
     list: { plural, singular },
     currentPage,
     total,
