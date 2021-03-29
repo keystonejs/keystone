@@ -15,7 +15,10 @@
   "main": "dist/fields-cloudinary-image-legacy.cjs.js",
   "module": "dist/fields-cloudinary-image-legacy.esm.js",
   "devDependencies": {
+    "@keystone-next/cloudinary": "*",
+    "@keystone-next/fields": "*",
     "@keystone-next/file-adapters-legacy": "*",
+    "@keystone-next/test-utils-legacy": "*",
     "cloudinary": "^1.25.1",
     "dotenv": "^8.2.0",
     "graphql-upload": "^11.0.0",

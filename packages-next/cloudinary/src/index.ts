@@ -1,7 +1,6 @@
 import path from 'path';
 // @ts-ignore
 import { CloudinaryImage } from '@keystone-next/fields-cloudinary-image-legacy';
-// @ts-ignore
 import { CloudinaryAdapter } from '@keystone-next/file-adapters-legacy';
 import type { FieldType, FieldConfig, BaseGeneratedListTypes } from '@keystone-next/types';
 

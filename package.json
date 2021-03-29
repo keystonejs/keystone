@@ -118,7 +118,6 @@
   "preconstruct": {
     "packages": [
       "packages/access-control",
-      "packages/session",
       "packages/test-utils",
       "packages/utils",
       "packages/fields-auto-increment",
@@ -126,6 +125,7 @@
       "packages/fields",
       "packages/adapter-prisma",
       "packages/server-side-graphql-client",
+      "packages/file-adapters",
       "packages-next/*",
       "design-system/packages/*"
     ],

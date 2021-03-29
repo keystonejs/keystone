@@ -5,7 +5,7 @@ import { cloudinaryImage } from '@keystone-next/cloudinary';
 import { isSignedIn, permissions } from '../access';
 
 export const cloudinary = {
-  cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'fake',
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'fake',
   apiKey: process.env.CLOUDINARY_KEY || 'fake',
   apiSecret: process.env.CLOUDINARY_SECRET || 'fake',
   folder: 'sickfits',

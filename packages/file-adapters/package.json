@@ -2,15 +2,17 @@
   "name": "@keystone-next/file-adapters-legacy",
   "description": "Adapters for handling storage of the File type",
   "version": "8.0.0",
-  "main": "index.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/file-adapters",
   "homepage": "https://github.com/keystonejs/keystone",
   "author": "The Keystone Development Team",
   "license": "MIT",
+  "main": "dist/file-adapters-legacy.cjs.js",
+  "module": "dist/file-adapters-legacy.esm.js",
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "@babel/runtime": "^7.13.10",
     "cloudinary": "^1.25.1",
     "mkdirp": "^1.0.4"
   }

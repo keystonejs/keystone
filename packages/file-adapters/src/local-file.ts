@@ -1,15 +1,28 @@
-const fs = require('fs');
-const path = require('path');
-const mkdirp = require('mkdirp');
+import fs from 'fs';
+import path from 'path';
+// @ts-ignore
+import mkdirp from 'mkdirp';
 
-module.exports = class LocalFileAdapter {
-  constructor({ src, path: inputPath, getFilename }) {
+export class LocalFileAdapter {
+  src: string;
+  path: string;
+  getFilename: (arg: { id: string; originalFilename: string }) => string;
+  constructor({
+    src,
+    path: inputPath,
+    getFilename,
+  }: {
+    src: string;
+    path: string;
+    getFilename?: (arg: { id: string; originalFilename: string }) => string;
+  }) {
     this.src = path.resolve(src);
     this.path = inputPath;
-    this.getFilename = getFilename;
 
-    if (!this.getFilename) {
+    if (!getFilename) {
       this.getFilename = ({ id, originalFilename }) => `${id}-${originalFilename}`;
+    } else {
+      this.getFilename = getFilename;
     }
 
     if (!this.src) {
@@ -26,7 +39,15 @@ module.exports = class LocalFileAdapter {
   /**
    * Params: { stream, filename, mimetype, encoding, id }
    */
-  save({ stream, filename: originalFilename, id }) {
+  save({
+    stream,
+    filename: originalFilename,
+    id,
+  }: {
+    stream: fs.ReadStream;
+    id: string;
+    filename: string;
+  }) {
     const filename = this.getFilename({ id, originalFilename });
     if (!filename) {
       throw new Error(
@@ -35,14 +56,13 @@ module.exports = class LocalFileAdapter {
     }
 
     const filePath = path.join(this.src, filename);
+    // https://github.com/jaydenseric/apollo-upload-examples/issues/22
     return new Promise((resolve, reject) =>
       stream
         .on('error', error => {
-          if (stream.truncated) {
-            // Delete the truncated file
-            fs.unlinkSync(filePath);
-          }
-          reject(error);
+          fs.unlink(filePath, () => {
+            reject(error);
+          });
         })
         .pipe(fs.createWriteStream(filePath))
         .on('error', error => reject(error))
@@ -54,8 +74,8 @@ module.exports = class LocalFileAdapter {
    * Deletes the file from disk
    * @param file File field data
    */
-  delete(file) {
-    return new Promise((resolve, reject) => {
+  delete(file: { filename: string }) {
+    return new Promise<void>((resolve, reject) => {
       if (file) {
         fs.unlink(path.join(this.src, file.filename), error => {
           if (error) {
@@ -73,7 +93,7 @@ module.exports = class LocalFileAdapter {
   /**
    * Params: { id, filename }
    */
-  publicUrl({ filename }) {
+  publicUrl({ filename }: { filename: string }) {
     return `${this.path}/${filename}`;
   }
-};
+}
