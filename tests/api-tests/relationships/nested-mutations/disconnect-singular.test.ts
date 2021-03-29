@@ -7,7 +7,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItem, getItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -268,7 +267,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             expect(eventData).toHaveProperty('group');
-            expect(eventData.group).toBe(null);
+            expect(eventData!.group).toBe(null);
           })
         );
       });

@@ -5,7 +5,6 @@ import {
   createItems,
   deleteItem,
   updateItem,
-  // @ts-ignore
 } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import {
@@ -74,19 +73,19 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
 
       items = {};
       for (const [listKey, _items] of Object.entries(initialData)) {
-        items[listKey] = await createItems({
+        items[listKey] = (await createItems({
           listKey,
           items: _items.map(x => ({ data: x })),
           returnFields: 'id, name',
           context,
-        });
+        })) as { id: IdType; name: string }[];
       }
-      user = await createItem({
+      user = (await createItem({
         listKey: 'User',
         item: { name: 'test', yesRead: 'yes', noRead: 'no' },
         returnFields: 'id name yesRead noRead',
         context,
-      });
+      })) as { id: IdType; name: string; yesRead: string; noRead: string };
     });
     afterAll(async () => {
       await after(keystone);

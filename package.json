@@ -125,6 +125,7 @@
       "packages/fields-mongoid",
       "packages/fields",
       "packages/adapter-prisma",
+      "packages/server-side-graphql-client",
       "packages-next/*",
       "design-system/packages/*"
     ],

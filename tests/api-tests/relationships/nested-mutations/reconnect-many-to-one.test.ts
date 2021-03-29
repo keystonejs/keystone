@@ -6,7 +6,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
 type IdType = any;
