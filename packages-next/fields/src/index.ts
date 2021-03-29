@@ -3,6 +3,7 @@ export { relationship } from './types/relationship';
 export { text } from './types/text';
 export { password } from './types/password';
 export { timestamp } from './types/timestamp';
+export { image } from './types/image';
 export { integer } from './types/integer';
 export { float } from './types/float';
 export { decimal } from './types/decimal';

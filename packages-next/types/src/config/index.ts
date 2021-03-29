@@ -24,9 +24,12 @@ import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
 
 export type KeystoneConfig = {
+  // e.g 'thinkmill:243809dsjkfdls-r2y8osdfjsdf-23y8osf',
+  cloud?: string;
   lists: ListSchemaConfig;
   db: DatabaseConfig;
   ui?: AdminUIConfig;
+  images?: ImagesConfig;
   server?: ServerConfig;
   session?: () => SessionStrategy<any>;
   graphql?: GraphQLConfig;
@@ -105,6 +108,20 @@ export type AdminUIConfig = {
 export type AdminFileToWrite =
   | { mode: 'write'; src: string; outputPath: string }
   | { mode: 'copy'; inputPath: string; outputPath: string };
+
+// config.images
+
+export type ImagesConfig =
+  | {
+      mode: 'local';
+      /** The path local images are uploaded to */
+      uploadPath?: string;
+      /** The path local images will be served from, outside of keystone */
+      publicPath?: string;
+    }
+  | {
+      mode: 'cloud';
+    };
 
 // config.server
 
