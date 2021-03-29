@@ -132,6 +132,143 @@ export async function resetDatabaseWithMigrations(dbUrl: string, schemaPath: str
   });
 }
 
+export type CLIOptionsForCreateMigration = {
+  allowEmpty: boolean;
+  acceptDataLoss: boolean;
+  name: string | undefined;
+};
+
+// TODO: don't have process.exit calls here
+export async function createMigration(
+  dbUrl: string,
+  prismaSchema: string,
+  schemaPath: string,
+  cliOptions: CLIOptionsForCreateMigration
+) {
+  return withMigrate(dbUrl, schemaPath, async migrate => {
+    // see if we need to reset the database
+    // note that the other action devDiagnostic can return is createMigration
+    // that doesn't necessarily mean that we need to create a migration
+    // it only means that we don't need to reset the database
+    const devDiagnostic = await runMigrateWithDbUrl(dbUrl, () => migrate.devDiagnostic());
+    // when the action is reset, the database is somehow inconsistent with the migrations so we need to reset it
+    // (not just some migrations need to be applied but there's some inconsistency)
+    if (devDiagnostic.action.tag === 'reset') {
+      const credentials = uriToCredentials(dbUrl);
+      if (cliOptions.acceptDataLoss === false) {
+        console.log(`${devDiagnostic.action.reason}
+        We need to reset the ${credentials.type} database "${
+          credentials.database
+        }" at ${getDbLocation(credentials)}.`);
+
+        if (!process.stdout.isTTY) {
+          console.log(
+            "We've detected that you're in a non-interactive environment so you need to pass --accept-data-loss to reset the database"
+          );
+          process.exit(1);
+        }
+        const confirmedReset = await confirmPrompt(
+          `Do you want to continue? ${chalk.red('All data will be lost')}.`
+        );
+        console.info(); // empty line
+
+        if (!confirmedReset) {
+          console.info('Reset cancelled.');
+          process.exit(0);
+        }
+      }
+
+      // Do the reset
+      await migrate.reset();
+    }
+
+    let { appliedMigrationNames } = await runMigrateWithDbUrl(dbUrl, () =>
+      migrate.applyMigrations()
+    );
+    // Inform user about applied migrations now
+    if (appliedMigrationNames.length) {
+      console.info(
+        `✨ The following migration(s) have been applied:\n\n${printFilesFromMigrationIds(
+          appliedMigrationNames
+        )}`
+      );
+    }
+    // evaluateDataLoss basically means "try to create a migration but don't write it"
+    // so we can tell the user whether it can be executed and if there will be data loss
+    const evaluateDataLossResult = await runMigrateWithDbUrl(dbUrl, () =>
+      migrate.evaluateDataLoss()
+    );
+
+    // there are no steps to the migration so we need to make sure the user wants to create an empty migration
+    if (!evaluateDataLossResult.migrationSteps.length && cliOptions.allowEmpty === false) {
+      console.log('There have been no changes to your schema that require a migration');
+      if (process.stdout.isTTY) {
+        if (!(await confirmPrompt('Are you sure that you want to create an empty migration?'))) {
+          process.exit(0);
+        }
+      } else {
+        console.log(
+          "We've detected that you're in a non-interactive environment so you need to pass --allow-empty to create an empty migration"
+        );
+        // note this is a failure even though the migrations are up to date
+        // since the user said "i want to create a migration" and we've said no
+        process.exit(1);
+      }
+    }
+
+    let migrationCanBeApplied = !evaluateDataLossResult.unexecutableSteps.length;
+    // see the link below for what "unexecutable steps" are
+    // https://github.com/prisma/prisma-engines/blob/c65d20050f139a7917ef2efc47a977338070ea61/migration-engine/connectors/sql-migration-connector/src/sql_destructive_change_checker/unexecutable_step_check.rs
+    // the tl;dr is "making things non null when there are nulls in the db"
+    if (!migrationCanBeApplied) {
+      console.log(`${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`);
+      for (const item of evaluateDataLossResult.unexecutableSteps) {
+        console.log(`  • Step ${item.stepIndex} ${item.message}`);
+      }
+    }
+    // warnings mean "if the migration was applied to the database you're connected to, you will lose x data"
+    // note that if you have a field where all of the values are null on your local db and you've removed it, you won't get a warning here.
+    // there will be a warning in a comment in the generated migration though.
+    if (evaluateDataLossResult.warnings.length) {
+      console.log(chalk.bold(`\n⚠️  Warnings:\n`));
+      for (const warning of evaluateDataLossResult.warnings) {
+        console.log(`  • ${warning.message}`);
+      }
+    }
+
+    console.log(); // for an empty line
+
+    let migrationName = await (() => {
+      if (cliOptions.name) {
+        return cliOptions.name;
+      }
+      if (process.stdout.isTTY) {
+        return getMigrationName();
+      }
+      console.log(
+        "We've detected that you're in a non-interactive environment so you need to pass --name to provide a migration name"
+      );
+      process.exit(1);
+    })();
+
+    // note this only creates the migration, it does not apply it
+    let { generatedMigrationName } = await runMigrateWithDbUrl(dbUrl, () =>
+      migrate.createMigration({
+        migrationsDirectoryPath: migrate.migrationsDirectoryPath,
+        // https://github.com/prisma/prisma-engines/blob/11dfcc85d7f9b55235e31630cd87da7da3aed8cc/migration-engine/core/src/commands/create_migration.rs#L16-L17
+        // draft means "create an empty migration even if there are no changes rather than exiting"
+        draft: true,
+        prismaSchema,
+        migrationName,
+      })
+    );
+
+    console.log(
+      `✨ A migration has been created at .keystone/prisma/migrations/${generatedMigrationName}`
+    );
+  });
+}
+
 // TODO: don't have process.exit calls here
 export async function devMigrations(dbUrl: string, prismaSchema: string, schemaPath: string) {
   return withMigrate(dbUrl, schemaPath, async migrate => {
