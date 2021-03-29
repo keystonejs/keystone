@@ -28,7 +28,7 @@
   "devDependencies": {
     "@keystone-next/fields-legacy": "^23.1.0",
     "@keystone-next/test-utils-legacy": "*",
-    "graphql": "^15.5.0"    
+    "graphql": "^15.5.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/keystone"
 }

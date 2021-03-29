@@ -5,7 +5,7 @@ import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { requireSource } from '../../lib/requireSource';
 import { createExpressServer } from '../../lib/createExpressServer';
-import { saveSchemaAndTypes } from '../../lib/saveSchemaAndTypes';
+import { generateNodeModulesArtifacts, writeCommittedArtifacts } from '../../lib/artifacts';
 import { CONFIG_PATH } from '../utils';
 import type { StaticPaths } from '..';
 
@@ -27,7 +27,7 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) =>
   const initKeystone = async () => {
     const { keystone, graphQLSchema, createContext } = createSystem(config, dotKeystonePath, 'dev');
 
-    console.log('✨ Generating graphQL schema');
+    console.log('✨ Generating GraphQL and Prisma schemas');
     await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);
 
     console.log('✨ Connecting to the database');

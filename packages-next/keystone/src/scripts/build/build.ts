@@ -6,7 +6,7 @@ import { AdminFileToWrite } from '@keystone-next/types';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { requireSource } from '../../lib/requireSource';
-import { saveSchemaAndTypes } from '../../lib/saveSchemaAndTypes';
+import { saveSchemaAndTypes } from '../../lib/artifacts';
 import { CONFIG_PATH } from '../utils';
 import type { StaticPaths } from '..';
 

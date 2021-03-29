@@ -9,8 +9,6 @@ import {
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
 import {
   runPrototypeMigrations,
-  devMigrations,
-  deployMigrations,
   resetDatabaseWithMigrations,
   // eslint-disable-next-line import/no-unresolved
 } from './migrations';
@@ -55,15 +53,12 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     }
   }
 
-  async deploy(rels) {
-    // Apply any migrations which haven't already been applied
-    await this._prepareSchema(rels);
-    await deployMigrations(this._url(), path.resolve(this.schemaPath));
-  }
-
   async _getPrismaClient({ rels }) {
     if (this._prismaClient) {
       return this._prismaClient;
+    }
+    if (this.migrationMode !== 'prototype') {
+      throw new Error('a PrismaClient must be passed to ');
     }
     await this._generateClient(rels);
     return require(this.clientPath).PrismaClient;
@@ -91,7 +86,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     // a `keystone-next start` because it has various side effects
     const { prismaSchema } = await this._prepareSchema(rels);
 
-    if (this.migrationMode !== 'none-skip-client-generation') {
+    if (this.migrationMode === 'prototype') {
       this._writePrismaSchema({ prismaSchema });
 
       // Generate prisma client and run prisma migrations
@@ -103,15 +98,10 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     if (this.migrationMode === 'prototype') {
       // Sync the database directly, without generating any migration
       await runPrototypeMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
-    } else if (this.migrationMode === 'dev') {
-      // Generate and apply a migration if required.
-      await devMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
     } else if (this.migrationMode === 'none') {
       // Explicitly disable running any migrations
     } else {
-      throw new Error(
-        `migrationMode must be one of 'dev', 'prototype', 'none-skip-client-generation', or 'none`
-      );
+      throw new Error(`migrationMode must be one of 'prototype' or 'none'`);
     }
   }
 
@@ -227,7 +217,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       }
       generator client {
         provider = "prisma-client-js"
-        output = "${clientDir}"
+        ${clientDir ? `output = "${clientDir}"` : ''}
       }`;
     return await formatSchema({ schema: header + models.join('\n') + '\n' + enums.join('\n') });
   }
