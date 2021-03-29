@@ -6,11 +6,10 @@ import { createKeystone } from './createKeystone';
 
 export function createSystem(
   config: KeystoneConfig,
-  cwd: string,
   migrationAction: MigrationAction,
   prismaClient?: any
 ) {
-  const keystone = createKeystone(config, cwd, migrationAction, prismaClient);
+  const keystone = createKeystone(config, migrationAction, prismaClient);
 
   const graphQLSchema = createGraphQLSchema(config, keystone, 'public');
 

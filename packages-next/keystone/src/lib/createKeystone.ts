@@ -10,7 +10,6 @@ import type { KeystoneConfig, BaseKeystone, MigrationAction } from '@keystone-ne
 
 export function createKeystone(
   config: KeystoneConfig,
-  cwd: string,
   migrationAction: MigrationAction,
   prismaClient?: any
 ) {
@@ -29,7 +28,6 @@ export function createKeystone(
     adapter = new MongooseAdapter({ mongoUri: db.url, ...db.mongooseOptions });
   } else if (db.adapter === 'prisma_postgresql') {
     adapter = new PrismaAdapter({
-      getPrismaPath: () => cwd,
       migrationMode:
         migrationAction === 'dev' ? (db.useMigrations ? 'dev' : 'prototype') : migrationAction,
       prismaClient,
@@ -43,7 +41,6 @@ export function createKeystone(
       );
     }
     adapter = new PrismaAdapter({
-      getPrismaPath: () => cwd,
       prismaClient,
       migrationMode:
         migrationAction === 'dev' ? (db.useMigrations ? 'dev' : 'prototype') : migrationAction,

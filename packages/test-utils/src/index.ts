@@ -84,7 +84,7 @@ async function setupFromConfig({
   }
   const _config = initConfig({ ...config, db: db!, ui: { isDisabled: true } });
 
-  const { keystone, createContext, graphQLSchema } = createSystem(_config, '', 'dev');
+  const { keystone, createContext, graphQLSchema } = createSystem(_config, 'dev');
 
   const app = await createExpressServer(_config, graphQLSchema, createContext, true, '', false);
 
