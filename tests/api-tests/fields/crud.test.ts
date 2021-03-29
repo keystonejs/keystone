@@ -40,12 +40,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }),
                 }),
 
-              async ({ context, keystone, ...rest }) => {
+              async ({ context, ...rest }) => {
                 // Populate the database before running the tests
                 for (const item of mod.initItems(matrixValue)) {
-                  await createItem({ keystone, context, listKey, item });
+                  await createItem({ context, listKey, item });
                 }
-                return testFn({ context, keystone, listKey, adapterName, ...rest });
+                return testFn({ context, listKey, adapterName, ...rest });
               }
             );
 
@@ -94,22 +94,19 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
               const withHelpers = (wrappedFn: (args: any) => void | Promise<void>) => {
                 return async ({
-                  keystone,
                   context,
                   listKey,
                 }: {
-                  keystone: any;
                   context: KeystoneContext;
                   listKey: string;
                 }) => {
                   const items = await getItems({
-                    keystone,
                     context,
                     listKey,
                     returnFields,
                     sortBy: 'name_ASC',
                   });
-                  return wrappedFn({ context, keystone, listKey, items });
+                  return wrappedFn({ context, listKey, items });
                 };
               };
 
@@ -119,9 +116,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 test(
                   'Create',
                   keystoneTestWrapper(
-                    withHelpers(async ({ context, keystone, listKey }) => {
+                    withHelpers(async ({ context, listKey }) => {
                       const data = await createItem({
-                        keystone,
                         context,
                         listKey,
                         item: { name: 'Newly created', [fieldName]: exampleValue(matrixValue) },
@@ -142,9 +138,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 test(
                   'Read',
                   keystoneTestWrapper(
-                    withHelpers(async ({ keystone, context, listKey, items }) => {
+                    withHelpers(async ({ context, listKey, items }) => {
                       const data = await getItem({
-                        keystone,
                         context,
                         listKey,
                         itemId: items[0].id,
@@ -166,9 +161,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   test(
                     'Updating the value',
                     keystoneTestWrapper(
-                      withHelpers(async ({ keystone, context, items, listKey }) => {
+                      withHelpers(async ({ context, items, listKey }) => {
                         const data = await updateItem({
-                          keystone,
                           context,
                           listKey,
                           item: {
@@ -190,9 +184,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   test(
                     'Updating the value to null',
                     keystoneTestWrapper(
-                      withHelpers(async ({ keystone, context, items, listKey }) => {
+                      withHelpers(async ({ context, items, listKey }) => {
                         const data = await updateItem({
-                          keystone,
                           context,
                           listKey,
                           item: {
@@ -210,9 +203,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   test(
                     'Updating without this field',
                     keystoneTestWrapper(
-                      withHelpers(async ({ keystone, context, items, listKey }) => {
+                      withHelpers(async ({ context, items, listKey }) => {
                         const data = await updateItem({
-                          keystone,
                           context,
                           listKey,
                           item: {
@@ -238,9 +230,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 test(
                   'Delete',
                   keystoneTestWrapper(
-                    withHelpers(async ({ keystone, context, items, listKey }) => {
+                    withHelpers(async ({ context, items, listKey }) => {
                       const data = await deleteItem({
-                        keystone,
                         context,
                         listKey,
                         itemId: items[0].id,
@@ -254,12 +245,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                         subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
                       );
 
-                      const allItems = await getItems({
-                        keystone,
-                        context,
-                        listKey,
-                        returnFields,
-                      });
+                      const allItems = await getItems({ context, listKey, returnFields });
                       expect(allItems).toEqual(expect.not.arrayContaining([data]));
                     })
                   )
