@@ -14,10 +14,11 @@ export async function postinstall(cwd: string, shouldFix: boolean) {
   const { keystone, graphQLSchema } = createSystem(config, cwd, 'none');
 
   if (shouldFix) {
-    console.log('✨ Generating GraphQL and Prisma schemas');
     await generateCommittedArtifacts(graphQLSchema, keystone, cwd);
+    console.log('✨ Generated GraphQL and Prisma schemas');
   } else {
     await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
+    console.log('✨ GraphQL and Prisma schemas are up to date');
   }
   await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
 }
