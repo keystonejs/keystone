@@ -5,6 +5,7 @@ import { GraphQLSchema } from 'graphql';
 import { graphqlUploadExpress } from 'graphql-upload';
 import type { KeystoneConfig, CreateContext, SessionStrategy } from '@keystone-next/types';
 import { createAdminUIServer } from '@keystone-next/admin-ui/system';
+import { getAdminPath } from '../scripts/utils';
 import { createApolloServerExpress } from './createApolloServer';
 
 const addApolloServer = ({
@@ -67,7 +68,9 @@ export const createExpressServer = async (
     if (isVerbose) console.log('✨ Skipping Admin UI app');
   } else {
     if (isVerbose) console.log('✨ Preparing Admin UI Next.js app');
-    server.use(await createAdminUIServer(config.ui, createContext, dev, cwd, sessionStrategy));
+    server.use(
+      await createAdminUIServer(config.ui, createContext, dev, getAdminPath(cwd), sessionStrategy)
+    );
   }
 
   return server;

@@ -49,9 +49,8 @@ export const generateAdminUI = async (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
   keystone: BaseKeystone,
-  cwd: string
+  projectAdminPath: string
 ) => {
-  const projectAdminPath = getAdminPath(cwd);
   // Nuke any existing files in our target directory
   await fs.remove(projectAdminPath);
 

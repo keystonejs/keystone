@@ -12,7 +12,7 @@ import {
   getSchemaPaths,
   requirePrismaClient,
 } from '../../lib/artifacts';
-import { CONFIG_PATH } from '../utils';
+import { CONFIG_PATH, getAdminPath } from '../utils';
 
 // TODO: Don't generate or start an Admin UI if it isn't configured!!
 const devLoadingHTMLFilepath = path.join(
@@ -57,7 +57,7 @@ export const dev = async (cwd: string) => {
       console.log('✨ Skipping Admin UI code generation');
     } else {
       console.log('✨ Generating Admin UI code');
-      await generateAdminUI(config, graphQLSchema, keystone, cwd);
+      await generateAdminUI(config, graphQLSchema, keystone, getAdminPath(cwd));
     }
 
     console.log('✨ Creating server');
