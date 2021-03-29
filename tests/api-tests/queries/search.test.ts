@@ -47,7 +47,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Number', { name: 12345 }),
         ]);
 
-        const { data, errors } = await context.executeGraphQL({
+        const data = await context.graphql.run({
           query: `
           query {
             allTests(
@@ -58,7 +58,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
         });
-        expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allTests');
         expect(data.allTests).toEqual([{ name: 'one' }]);
       })
@@ -75,7 +74,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Number', { name: 12345 }),
         ]);
 
-        const { data, errors } = await context.executeGraphQL({
+        const data = await context.graphql.run({
           query: `
           query {
             allTests(
@@ -86,7 +85,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
         });
-        expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allTests');
         expect(data.allTests).toEqual([{ name: 'one' }]);
       })
@@ -103,7 +101,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Number', { name: 12345 }),
         ]);
 
-        const { data, errors } = await context.executeGraphQL({
+        const data = await context.graphql.run({
           query: `
           query {
             allTests(
@@ -114,7 +112,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
         });
-        expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allTests');
         expect(data.allTests).toEqual([{ name: 'one' }]);
       })
@@ -131,7 +128,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Number', { name: 12345 }),
         ]);
 
-        const { data, errors } = await context.executeGraphQL({
+        const data = await context.graphql.run({
           query: `
           query {
             allTests(
@@ -142,7 +139,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
         });
-        expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allTests');
         expect(data.allTests).toEqual([{ name: '%islikelike%' }]);
       })
@@ -160,7 +156,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Number', { name: 12345 }),
         ]);
 
-        const { data, errors } = await context.executeGraphQL({
+        const data = await context.graphql.run({
           query: `
           query {
             allTests(
@@ -171,7 +167,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
         });
-        expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allTests');
         expect(data.allTests).toEqual([]); // No results
       })
@@ -188,7 +183,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Number', { name: 12345 }),
         ]);
 
-        const { data, errors } = await context.executeGraphQL({
+        const data = await context.graphql.run({
           query: `
           query {
             allNumbers(
@@ -199,7 +194,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
         });
-        expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allNumbers');
         expect(data.allNumbers).toEqual([]); // No results
       })
@@ -216,7 +210,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Number', { name: 12345 }),
         ]);
 
-        const { data, errors } = await context.executeGraphQL({
+        const data = await context.graphql.run({
           query: `
           query {
             allTests(
@@ -228,7 +222,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
         });
-        expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allTests');
         expect(data.allTests).toEqual([
           { name: '%islikelike%' },
@@ -250,7 +243,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           create('Custom', { other: 'two' }),
         ]);
 
-        const { data, errors } = await context.executeGraphQL({
+        const data = await context.graphql.run({
           query: `
           query {
             allCustoms(
@@ -261,7 +254,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           }
       `,
         });
-        expect(errors).toBe(undefined);
         expect(data).toHaveProperty('allCustoms');
         expect(data.allCustoms).toEqual([{ other: 'one' }]);
       })
