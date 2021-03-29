@@ -74,15 +74,9 @@ export const supportedFilters = () => [];
 export const filterTests = (withKeystone: (arg: any) => any, matrixValue: MatrixValue) => {
   const _storedValues = storedValues(matrixValue);
   const _f = matrixValue === 'ID' ? (x: any) => x.toString() : (x: any) => x;
-  const match = async (
-    keystone: any,
-    context: KeystoneContext,
-    where: Record<string, any>,
-    expected: any[]
-  ) =>
+  const match = async (context: KeystoneContext, where: Record<string, any>, expected: any[]) =>
     expect(
       await getItems({
-        keystone,
         context,
         listKey: 'Test',
         where,
@@ -93,92 +87,92 @@ export const filterTests = (withKeystone: (arg: any) => any, matrixValue: Matrix
 
   test(
     'Filter: orderNumber',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber: _f(1) }, [0])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber: _f(1) }, [0])
     )
   );
 
   test(
     'Filter: orderNumber_not',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber_not: _f(1) }, [1, 2, 3, 4, 5, 6])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber_not: _f(1) }, [1, 2, 3, 4, 5, 6])
     )
   );
 
   test(
     'Filter: orderNumber_not null',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber_not: null }, [0, 1, 2, 3, 4, 5, 6])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber_not: null }, [0, 1, 2, 3, 4, 5, 6])
     )
   );
 
   test(
     'Filter: orderNumber_lt',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber_lt: _f(2) }, [0])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber_lt: _f(2) }, [0])
     )
   );
 
   test(
     'Filter: orderNumber_lte',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber_lte: _f(2) }, [0, 1])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber_lte: _f(2) }, [0, 1])
     )
   );
 
   test(
     'Filter: orderNumber_gt',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber_gt: _f(2) }, [2, 3, 4, 5, 6])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber_gt: _f(2) }, [2, 3, 4, 5, 6])
     )
   );
 
   test(
     'Filter: orderNumber_gte',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber_gte: _f(2) }, [1, 2, 3, 4, 5, 6])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber_gte: _f(2) }, [1, 2, 3, 4, 5, 6])
     )
   );
 
   test(
     'Filter: orderNumber_in (empty list)',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber_in: [] }, [])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber_in: [] }, [])
     )
   );
 
   test(
     'Filter: orderNumber_not_in (empty list)',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber_not_in: [] }, [0, 1, 2, 3, 4, 5, 6])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber_not_in: [] }, [0, 1, 2, 3, 4, 5, 6])
     )
   );
 
   test(
     'Filter: orderNumber_in',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber_in: ([1, 2, 3] as const).map(_f) }, [0, 1, 2])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber_in: ([1, 2, 3] as const).map(_f) }, [0, 1, 2])
     )
   );
 
   test(
     'Filter: orderNumber_not_in',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber_not_in: [1, 2, 3].map(_f) }, [3, 4, 5, 6])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber_not_in: [1, 2, 3].map(_f) }, [3, 4, 5, 6])
     )
   );
 
   test(
     'Filter: orderNumber_in null',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber_in: [null] }, [])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber_in: [null] }, [])
     )
   );
 
   test(
     'Filter: orderNumber_not_in null',
-    withKeystone(({ keystone, context }: { keystone: any; context: KeystoneContext }) =>
-      match(keystone, context, { orderNumber_not_in: [null] }, [0, 1, 2, 3, 4, 5, 6])
+    withKeystone(({ context }: { context: KeystoneContext }) =>
+      match(context, { orderNumber_not_in: [null] }, [0, 1, 2, 3, 4, 5, 6])
     )
   );
 };

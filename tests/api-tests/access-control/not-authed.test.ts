@@ -54,7 +54,6 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
       items = {};
       for (const [listKey, _items] of Object.entries(initialData)) {
         items[listKey] = await createItems({
-          keystone,
           listKey,
           items: _items.map(x => ({ data: x })),
           returnFields: 'id, name',
