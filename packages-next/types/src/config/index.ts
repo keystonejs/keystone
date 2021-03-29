@@ -113,14 +113,16 @@ export type AdminFileToWrite =
 
 export type ImagesConfig =
   | {
-      mode: 'local';
-      /** The path local images are uploaded to */
-      uploadPath?: string;
-      /** The path local images will be served from, outside of keystone */
-      publicPath?: string;
+      upload: 'local';
+      local: {
+        /** The path local images are uploaded to */
+        uploadPath?: string;
+        /** The path local images will be served from, outside of keystone */
+        publicPath?: string;
+      };
     }
   | {
-      mode: 'cloud';
+      upload: 'cloud';
     };
 
 // config.server

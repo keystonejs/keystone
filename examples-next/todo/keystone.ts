@@ -34,16 +34,34 @@ export type ImageInTheDatabase = {
 };
 
 /*
-type ImageResizeArgs = {
-  width?: number;
-  height?: number;
-  strategy?: 'fit' | 'cover' | 'stretch';
-};
+type UpdateImageInput {
+  upload: Upload
+  set: GraphqlImageInputType
+  delete: boolean;
+}
+
+mutation updatePost {
+  image: UpdateImageInput
+}
 */
-export type GraphqlImageType = {
+
+export type GraphqlImageInputType = {
   field: {
     mode: 'local' | 'cloud';
-    // {keystone.config.publicPath}/{id}.{extension}
+    id: string;
+    width: number;
+    height: number;
+    // blurhash: { hash: string; x: number; y: number };
+    extension: string;
+    filesize: number;
+  };
+};
+export type GraphqlImageOutputType = {
+  field: {
+    mode: 'local' | 'cloud';
+    id: string;
+    // https://image.keystone.cloud/thinkmill/{id}.{ext}
+    // {keystone.config.publicPath}/{id}.{ext}
     src: string;
     width: number;
     height: number;
@@ -62,11 +80,13 @@ export default withAuth(
     lists,
     images: {
       /* could be 'cloud' */
-      mode: 'local',
-      /* where images get stored when uploaded */
-      uploadPath: './public/images',
-      /* the basePath for where image are served from */
-      publicPath: '/images',
+      upload: 'local',
+      local: {
+        /* where images get stored when uploaded */
+        uploadPath: './public/images',
+        /* the basePath for where image are served from */
+        publicPath: '/images',
+      },
     },
     ui: {
       isAccessAllowed: ({ session }) => !!session,
