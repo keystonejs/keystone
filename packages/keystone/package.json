@@ -11,7 +11,7 @@
     "@keystone-next/access-control-legacy": "^9.0.0",
     "@keystone-next/utils-legacy": "^7.0.0",
     "apollo-errors": "^1.9.0",
-    "apollo-server-express": "^2.22.1",
+    "apollo-server-express": "^2.22.2",
     "cuid": "^2.1.8",
     "ensure-error": "^3.0.1",
     "express": "^4.17.1",
