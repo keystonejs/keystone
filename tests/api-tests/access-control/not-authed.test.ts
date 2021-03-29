@@ -1,6 +1,5 @@
 import { GraphQLError } from 'graphql';
 import { multiAdapterRunners } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItems, updateItem } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import {
@@ -53,12 +52,12 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
 
       items = {};
       for (const [listKey, _items] of Object.entries(initialData)) {
-        items[listKey] = await createItems({
+        items[listKey] = (await createItems({
           listKey,
           items: _items.map(x => ({ data: x })),
           returnFields: 'id, name',
           context,
-        });
+        })) as { id: IdType; name: string }[];
       }
     });
     afterAll(async () => {

@@ -7,7 +7,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItem, getItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 function setupKeystone(adapterName: AdapterName) {
@@ -261,8 +260,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   context,
                 });
                 expect(event).toBeTruthy();
-                expect(event.group).toBeTruthy();
-                expect(event.group.name).toBe(groupName);
+                expect(event!.group).toBeTruthy();
+                expect(event!.group.name).toBe(groupName);
               })
             );
 
@@ -307,8 +306,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   context,
                 });
                 expect(event).toBeTruthy();
-                expect(event.group).toBeTruthy();
-                expect(event.group.name).toBe(groupName);
+                expect(event!.group).toBeTruthy();
+                expect(event!.group.name).toBe(groupName);
               })
             );
           } else {

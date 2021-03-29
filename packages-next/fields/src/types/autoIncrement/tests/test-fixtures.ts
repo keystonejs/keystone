@@ -1,4 +1,3 @@
-// @ts-ignore
 import { getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import { text } from '../../text';

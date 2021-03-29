@@ -7,7 +7,6 @@ import {
   getItems,
   getItem,
   updateItem,
-  // @ts-ignore
 } from '@keystone-next/server-side-graphql-client-legacy';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { KeystoneContext } from '@keystone-next/types';
@@ -147,7 +146,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       });
                       expect(data).not.toBe(null);
                       expect(
-                        subfieldName ? data[fieldName][subfieldName] : data[fieldName]
+                        subfieldName ? data?.[fieldName][subfieldName] : data?.[fieldName]
                       ).toEqual(
                         subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
                       );
@@ -173,7 +172,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                         });
                         expect(data).not.toBe(null);
                         expect(
-                          subfieldName ? data[fieldName][subfieldName] : data[fieldName]
+                          subfieldName ? data?.[fieldName][subfieldName] : data?.[fieldName]
                         ).toEqual(
                           updateReturnedValue ? updateReturnedValue : exampleValue2(matrixValue)
                         );
@@ -195,7 +194,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                           returnFields,
                         });
                         expect(data).not.toBe(null);
-                        expect(data[fieldName]).toBe(null);
+                        expect(data?.[fieldName]).toBe(null);
                       })
                     )
                   );
@@ -214,9 +213,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                           returnFields,
                         });
                         expect(data).not.toBe(null);
-                        expect(data.name).toBe('Updated value');
+                        expect(data!.name).toBe('Updated value');
                         expect(
-                          subfieldName ? data[fieldName][subfieldName] : data[fieldName]
+                          subfieldName ? data?.[fieldName][subfieldName] : data?.[fieldName]
                         ).toEqual(
                           subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
                         );
@@ -238,9 +237,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                         returnFields,
                       });
                       expect(data).not.toBe(null);
-                      expect(data.name).toBe(items[0].name);
+                      expect(data!.name).toBe(items[0].name);
                       expect(
-                        subfieldName ? data[fieldName][subfieldName] : data[fieldName]
+                        subfieldName ? data?.[fieldName][subfieldName] : data?.[fieldName]
                       ).toEqual(
                         subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
                       );

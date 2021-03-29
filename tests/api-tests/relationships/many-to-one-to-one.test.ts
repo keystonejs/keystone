@@ -4,7 +4,6 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItem, createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
