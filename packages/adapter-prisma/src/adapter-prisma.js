@@ -37,6 +37,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     // See if there is a prisma client available for this hash
     const prismaPath = this.getPrismaPath({ prismaSchema });
     this.schemaPath = path.join(prismaPath, 'schema.prisma');
+    this.clientPath = path.resolve(`${prismaPath}/${clientDir}`);
     this.dbSchemaName = this.getDbSchemaName({ prismaSchema });
     this.prismaSchema = prismaSchema;
     return { prismaSchema };
@@ -65,18 +66,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       return this._prismaClient;
     }
     await this._generateClient(rels);
-    const clientPath = path.resolve('node_modules/.prisma/client');
-    if (typeof jest !== 'undefined') {
-      let prismaClient;
-      jest.isolateModules(() => {
-        prismaClient = require(clientPath).PrismaClient;
-      });
-      return prismaClient;
-    } else {
-      const resolved = require.resolve(clientPath);
-      delete require.cache[resolved];
-      return require(resolved).PrismaClient;
-    }
+    return require(this.clientPath).PrismaClient;
   }
 
   async _connect({ rels }) {
@@ -127,10 +117,10 @@ class PrismaAdapter extends BaseKeystoneAdapter {
 
   async _writePrismaSchema({ prismaSchema }) {
     // Make output dir (you know, just in case!)
-    fs.mkdirSync(path.dirname(this.schemaPath), { recursive: true });
+    fs.mkdirSync(this.clientPath, { recursive: true });
 
     // Write prisma file
-    fs.writeFileSync(this.schemaPath, prismaSchema);
+    fs.writeSync(fs.openSync(this.schemaPath, 'w'), prismaSchema);
   }
 
   async _generatePrismaClient() {
@@ -296,6 +286,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     // Object.values(this.listAdapters).forEach(listAdapter => {
     //   delete listAdapter.prisma;
     // });
+    // delete require.cache[require.resolve(this.clientPath)];
   }
 
   getDefaultPrimaryKeyConfig() {
