@@ -41,13 +41,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const getServer = adapterName === 'mongoose' ? _getServer : memoizeOne(_getServer);
 
           const withKeystone = (testFn: (args: any) => void = () => {}) =>
-            runner(getServer, async ({ keystone, context, ...rest }) => {
+            runner(getServer, async ({ context, ...rest }) => {
               // Populate the database before running the tests
               // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
               for (const item of mod.initItems(matrixValue)) {
-                await createItem({ keystone, context, listKey, item });
+                await createItem({ context, listKey, item });
               }
-              return testFn({ keystone, context, listKey, adapterName, ...rest });
+              return testFn({ context, listKey, adapterName, ...rest });
             });
 
           if (mod.filterTests) {
