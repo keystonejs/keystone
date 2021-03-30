@@ -70,7 +70,7 @@ class PrismaAdapter {
     if (!this.config.prismaClient) {
       throw new Error('You must pass the prismaClient option to connect to a database');
     }
-    const PrismaClient = await this.config.prismaClient;
+    const PrismaClient = this.config.prismaClient;
     this.prisma = new PrismaClient({
       log: this.enableLogging && ['query'],
       datasources: { [this.provider]: { url: this.url } },
