@@ -65,11 +65,6 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     if (this._prismaClient) {
       return this._prismaClient;
     }
-    if (this.migrationMode === 'none-skip-client-generation') {
-      throw new Error(
-        'a prisma client must be passed to the prisma adapter when the migration mode is none-skip-client-generation'
-      );
-    }
     await this._generateClient(rels);
     return require(this.clientPath).PrismaClient;
   }
@@ -115,7 +110,7 @@ class PrismaAdapter extends BaseKeystoneAdapter {
       // Explicitly disable running any migrations
     } else {
       throw new Error(
-        `migrationMode must be one of 'dev', 'prototype', 'none-skip-client-generation', or 'none'`
+        `migrationMode must be one of 'dev', 'prototype', 'none-skip-client-generation', or 'none`
       );
     }
   }
