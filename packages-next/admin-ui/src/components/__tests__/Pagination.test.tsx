@@ -24,7 +24,7 @@ describe('<Pagination/>', () => {
         list={{ plural: 'Items', singular: 'Item' }}
       />
     );
-    screen.getByRole('navigation');
+    screen.getByRole('navi1gation');
   });
   describe('chevron functionality', () => {
     it('should have a disabled back button, when on the first page', () => {
@@ -113,10 +113,5 @@ describe('<Pagination/>', () => {
       expect(push).toHaveBeenCalledTimes(1);
       expect(push.mock.calls[0][0]).toBe('/?pageSize=10&page=1');
     });
-  });
-  // Currently impossible to test the select component with @testing-library
-  describe('select functionality', () => {
-    it.skip('should have the correct number of options in the pages select input', () => {});
-    it.skip('should navigate to the corresponding page on selecting an option', () => {});
   });
 });
