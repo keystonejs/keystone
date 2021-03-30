@@ -4,7 +4,7 @@ import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { createExpressServer } from '../../lib/createExpressServer';
 import { getAdminPath } from '../utils';
-import { requirePrismaClient } from '../../lib/artifacts';
+import { requirePrismaClient } from '../../artifacts';
 
 export const start = async (cwd: string) => {
   console.log('✨ Starting Keystone');
