@@ -111,8 +111,8 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: id_in - missing id',
-    withKeystone(({ keystone, adapterName }) => {
-      const fakeID = adapterName === 'mongoose' ? '0123456789abcdef01234567' : 1000;
+    withKeystone(({ keystone }) => {
+      const fakeID = 1000;
       return match(keystone, { id_in: [fakeID] }, []);
     })
   );
@@ -145,9 +145,9 @@ export const filterTests = withKeystone => {
 
   test(
     'Filter: id_not_in - missing id',
-    withKeystone(async ({ keystone, adapterName }) => {
+    withKeystone(async ({ keystone }) => {
       const IDs = await getIDs(keystone);
-      const fakeID = adapterName === 'mongoose' ? '0123456789abcdef01234567' : 1000;
+      const fakeID = 1000;
       return match(keystone, { id_not_in: [fakeID] }, [
         { id: IDs['person1'], name: 'person1' },
         { id: IDs['person2'], name: 'person2' },
