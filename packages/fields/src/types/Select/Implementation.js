@@ -1,6 +1,4 @@
 import inflection from 'inflection';
-import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
-import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '../../Implementation';
 
@@ -123,56 +121,7 @@ export class Select extends Implementation {
   }
 }
 
-const CommonSelectInterface = superclass =>
-  class extends superclass {
-    getQueryConditions(dbPath) {
-      return {
-        ...this.equalityConditions(dbPath),
-        ...this.inConditions(dbPath),
-      };
-    }
-  };
-
-export class MongoSelectInterface extends CommonSelectInterface(MongooseFieldAdapter) {
-  addToMongooseSchema(schema) {
-    const options =
-      this.field.dataType === 'integer'
-        ? { type: Number }
-        : {
-            type: String,
-            enum: [...this.field.options.map(i => i.value), null],
-          };
-    schema.add({ [this.path]: this.mergeSchemaOptions(options, this.config) });
-  }
-}
-
-export class KnexSelectInterface extends CommonSelectInterface(KnexFieldAdapter) {
-  constructor() {
-    super(...arguments);
-    this.isUnique = !!this.config.isUnique;
-    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
-  }
-
-  addToTableSchema(table) {
-    let column;
-    if (this.field.dataType === 'enum') {
-      column = table.enu(
-        this.path,
-        this.field.options.map(({ value }) => value)
-      );
-    } else if (this.field.dataType === 'integer') {
-      column = table.integer(this.path);
-    } else {
-      column = table.text(this.path);
-    }
-    if (this.isUnique) column.unique();
-    else if (this.isIndexed) column.index();
-    if (this.isNotNullable) column.notNullable();
-    if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
-  }
-}
-
-export class PrismaSelectInterface extends CommonSelectInterface(PrismaFieldAdapter) {
+export class PrismaSelectInterface extends PrismaFieldAdapter {
   constructor() {
     super(...arguments);
     this.isUnique = !!this.config.isUnique;
@@ -197,5 +146,12 @@ export class PrismaSelectInterface extends CommonSelectInterface(PrismaFieldAdap
 
   getPrismaSchema() {
     return [this._schemaField({ type: this._prismaType })];
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      ...this.equalityConditions(dbPath),
+      ...this.inConditions(dbPath),
+    };
   }
 }
