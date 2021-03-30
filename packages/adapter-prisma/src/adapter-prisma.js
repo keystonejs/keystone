@@ -2,6 +2,10 @@ import path from 'path';
 import pWaterfall from 'p-waterfall';
 import { formatSchema } from '@prisma/sdk';
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
+import {
+  resetDatabaseWithMigrations,
+  // eslint-disable-next-line import/no-unresolved
+} from './migrations';
 
 class PrismaAdapter {
   constructor(config = {}) {
