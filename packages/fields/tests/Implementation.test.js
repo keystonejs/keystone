@@ -38,14 +38,6 @@ describe('new Implementation()', () => {
   });
 });
 
-test('addToMongooseSchema()', () => {
-  const impl = new Field('path', {}, args);
-
-  expect(() => {
-    impl.adapter.addToMongooseSchema();
-  }).toThrow(Error);
-});
-
 test('getGqlAuxTypes()', () => {
   const impl = new Field('path', {}, args);
   const schemaName = 'public';

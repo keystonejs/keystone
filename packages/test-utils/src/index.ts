@@ -1,12 +1,10 @@
 import path from 'path';
 import crypto from 'crypto';
 import { ServerResponse } from 'http';
-import url from 'url';
 import fs from 'fs';
 import express from 'express';
 // @ts-ignore
 import supertest from 'supertest-light';
-import MongoDBMemoryServer from 'mongodb-memory-server-core';
 // @ts-ignore
 import { Keystone } from '@keystone-next/keystone-legacy';
 import { initConfig, createSystem, createExpressServer } from '@keystone-next/keystone';
@@ -27,14 +25,6 @@ const hashPrismaSchema = memoizeOne(prismaSchema =>
 );
 
 const argGenerator = {
-  mongoose: getMongoMemoryServerConfig,
-  knex: () => ({
-    dropDatabase: true,
-    knexOptions: {
-      connection:
-        process.env.DATABASE_URL || process.env.KNEX_URI || 'postgres://localhost/keystone',
-    },
-  }),
   prisma_postgresql: () => ({
     migrationMode: 'none-skip-client-generation',
     url: process.env.DATABASE_URL!,
@@ -150,20 +140,6 @@ function networkedGraphqlRequest({
     .catch((error: Error) => ({
       errors: [error],
     }));
-}
-
-// One instance per node.js thread which cleans itself up when the main process
-// exits
-let mongoServer: MongoDBMemoryServer | undefined | null;
-
-async function getMongoMemoryServerConfig() {
-  mongoServer = mongoServer || new MongoDBMemoryServer();
-  // Passing `true` here generates a new, random DB name for us
-  const mongoUri = await mongoServer.getConnectionString(true);
-  // In theory the dbName can contain query params so lets parse it then extract the db name
-  const dbName = url.parse(mongoUri).pathname!.split('/').pop();
-
-  return { mongoUri, dbName };
 }
 
 type Setup = { keystone: BaseKeystone; context: KeystoneContext; app: express.Application };

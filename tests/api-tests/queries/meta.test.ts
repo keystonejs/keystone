@@ -157,9 +157,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 fields: [
                   {
                     name: 'id',
-                    type: expect.stringMatching(
-                      /MongoIdImplementation|AutoIncrementImplementation/
-                    ),
+                    type: expect.stringMatching(/AutoIncrementImplementation/),
                   },
                   {
                     name: 'company',
@@ -195,9 +193,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 fields: [
                   {
                     name: 'id',
-                    type: expect.stringMatching(
-                      /MongoIdImplementation|AutoIncrementImplementation/
-                    ),
+                    type: expect.stringMatching(/AutoIncrementImplementation/),
                   },
                   {
                     name: 'name',
@@ -227,9 +223,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 fields: [
                   {
                     name: 'id',
-                    type: expect.stringMatching(
-                      /MongoIdImplementation|AutoIncrementImplementation/
-                    ),
+                    type: expect.stringMatching(/AutoIncrementImplementation/),
                   },
                   {
                     name: 'content',
@@ -290,9 +284,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 fields: [
                   {
                     name: 'id',
-                    type: expect.stringMatching(
-                      /MongoIdImplementation|AutoIncrementImplementation/
-                    ),
+                    type: expect.stringMatching(/AutoIncrementImplementation/),
                   },
                   {
                     name: 'company',
