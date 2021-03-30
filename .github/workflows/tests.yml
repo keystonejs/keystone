@@ -153,10 +153,6 @@ jobs:
           CI_NODE_TOTAL: 9
           CI_NODE_INDEX: ${{ matrix.index }}
           TEST_ADAPTER: ${{ matrix.adapter }}
-          IFRAMELY_API_KEY: ${{ secrets.IFRAMELY_API_KEY }}
-          UNSPLASH_KEY: ${{ secrets.UNSPLASH_KEY}}
-          UNSPLASH_SECRET: ${{ secrets.UNSPLASH_SECRET}}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           DATABASE_URL: ${{ matrix.adapter == 'prisma_sqlite' && 'file:./dev.db' || 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' }}
 
   non-api-tests:

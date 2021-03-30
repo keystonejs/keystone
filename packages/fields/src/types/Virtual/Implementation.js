@@ -42,13 +42,6 @@ export class Virtual extends Implementation {
   gqlQueryInputFields() {
     return [];
   }
-  extendAdminMeta(meta) {
-    return {
-      ...meta,
-      graphQLSelection: this.graphQLReturnFragment,
-      isReadOnly: true,
-    };
-  }
 
   parseFieldAccess(args) {
     const parsedAccess = parseFieldAccess(args);

@@ -36,7 +36,7 @@ export const Code = ({ children, className }: { children: string; className: any
 export const InlineCode = ({ children }: { children: ReactNode }) => {
   return (
     <code
-      className="bg-gray-100 py-1 px-1.5 m-0 rounded-sm"
+      className="bg-gray-200 py-1 px-1.5 m-0 rounded-sm bg-opacity-50"
       css={css`
         &::before {
           display: none;

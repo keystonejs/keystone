@@ -83,7 +83,7 @@ export type KeystoneGraphQLAPI<
 
 type GraphQLExecutionArguments = {
   query: string | DocumentNode;
-  variables: Record<string, any>;
+  variables?: Record<string, any>;
 };
 
 // Access control API

@@ -83,15 +83,13 @@ _**Default:**_ `['public']`
 
 ## Methods
 
-| Method               | Description                                                         |
-| -------------------- | ------------------------------------------------------------------- |
-| `connect`            | Manually connect to Adapter.                                        |
-| `createAuthStrategy` | Creates a new authentication middleware instance.                   |
-| `createList`         | Add a list to the `Keystone` schema.                                |
-| `disconnect`         | Disconnect from the adapter.                                        |
-| `prepare`            | Manually prepare `Keystone` middlewares.                            |
-| `createContext`      | Create a `context` object that can be used with `executeGraphQL()`. |
-| `executeGraphQL`     | Execute a server-side GraphQL operation within the given context.   |
+| Method          | Description                                                              |
+| --------------- | ------------------------------------------------------------------------ |
+| `connect`       | Manually connect to Adapter.                                             |
+| `createList`    | Add a list to the `Keystone` schema.                                     |
+| `disconnect`    | Disconnect from the adapter.                                             |
+| `prepare`       | Manually prepare `Keystone` middlewares.                                 |
+| `createContext` | Create a `context` object that can be used with `context.graphql.raw()`. |
 
 <!--
 ## Super secret methods
@@ -115,17 +113,6 @@ keystone.connect();
 ```
 
 > **Note:** `keystone.connect()` is only required for custom servers. Most example projects use the `keystone start` command to start a server and automatically connect.
-
-### `createAuthStrategy(config)`
-
-Creates a new authentication middleware instance. See:
-
-- [Authentication guide](https://www.keystonejs.com/guides/authentication)
-- [Authentication API docs](https://www.keystonejs.com/api/authentication)
-
-```javascript allowCopy=false showLanguage=false
-const authStrategy = keystone.createAuthStrategy({...});
-```
 
 ### `createList(listKey, config)`
 
@@ -182,19 +169,6 @@ For more information about the first four arguments, please see the [Apollo docs
 - The `access` argument for `types`, `queries`, and `mutations` are all either boolean values which are used at schema generation time to include or exclude the item from the schema, or a function which must return boolean.
 - See the [Access control API](https://www.keystonejs.com/api/access-control#custom-schema-access-control) docs for more details.
 
-### `prepare(config)`
-
-Manually prepare middlewares. Returns a promise representing the processed middlewares. They are available as an array through the `middlewares` property of the returned object.
-
-#### Usage
-
-```javascript
-const { middlewares } = await keystone.prepare({
-  apps,
-  dev: process.env.NODE_ENV !== 'production',
-});
-```
-
 #### Config
 
 | Option        | Type      | default                               | Description                                                                                                         |
@@ -207,7 +181,7 @@ const { middlewares } = await keystone.prepare({
 
 ### `createContext({ schemaName, authentication, skipAccessControl })`
 
-Create a `context` object that can be used with `executeGraphQL()`.
+Create a `context` object that can be used with `context.graphql.raw()`.
 
 #### Usage
 
@@ -218,7 +192,7 @@ const { gql } = require('apollo-server-express');
 const context = keystone.createContext().sudo()
 
 // Execute a GraphQL operation with no access control
-const { data, errors } = await keystone.executeGraphQL({ context, query: gql` ... `, variables: { ... }})
+const { data, errors } = await context.graphql.raw({ context, query: gql` ... `, variables: { ... }})
 ```
 
 #### Config
@@ -229,10 +203,6 @@ const { data, errors } = await keystone.executeGraphQL({ context, query: gql` ..
 | `authentication`    | `Object`  | `{}`     | `{ item: { id }, listAuthKey: "" }`. Specifies the item to be used in access control checks. |
 | `skipAccessControl` | `Boolean` | `false`  | Set to `true` to skip all access control checks.                                             |
 
-### `executeGraphQL({ context, query, variables })`
-
-Execute a server-side GraphQL query within the given context.
-
 #### Usage
 
 ```javascript
@@ -242,7 +212,7 @@ const { gql } = require('apollo-server-express');
 const context = keystone.createContext().sudo()
 
 // Execute a GraphQL operation with no access control
-const { data, errors } = await keystone.executeGraphQL({ context, query: gql` ... `, variables: { ... }})
+const { data, errors } = await context.graphql.raw({ query: gql` ... `, variables: { ... }})
 ```
 
 #### Config

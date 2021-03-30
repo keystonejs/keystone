@@ -8,7 +8,6 @@ import {
   updateItems,
   deleteItem,
   deleteItems,
-  // @ts-ignore
 } from '@keystone-next/server-side-graphql-client-legacy';
 import {
   BaseGeneratedListTypes,

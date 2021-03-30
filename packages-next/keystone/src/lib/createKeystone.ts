@@ -61,7 +61,6 @@ export function createKeystone(
     // FIXME: Unsupported options: Need to work which of these we want to support with backwards
     // compatibility options.
     // defaultAccess
-    // schemaNames
   });
 
   Object.entries(lists).forEach(([key, { fields, graphql, access, hooks, description, db }]) => {

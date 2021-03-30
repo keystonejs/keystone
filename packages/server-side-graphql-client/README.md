@@ -5,12 +5,12 @@ title: Server-side graphQL client
 
 # Server-side graphQL client
 
-This library provides wrapper functions around `keystone.executeGraphQL` to make it easier to run server-side queries and mutations without needing to write boilerplate GraphQL.
+This library provides wrapper functions around `context.graphql.raw` to make it easier to run server-side queries and mutations without needing to write boilerplate GraphQL.
 
-Creating a new `User` item would be written as follows using `keystone.executeGraphQL`:
+Creating a new `User` item would be written as follows using `context.graphql.raw`:
 
 ```js
-const { data, errors } = await keystone.executeGraphQL({
+const { data, errors } = await context.graphql.raw({
   query: `mutation ($item: createUserInput){
     createUser(data: $item) {
       id
@@ -28,14 +28,14 @@ Using `@keystone-next/server-side-graphql-client-legacy` we can replace this wit
 const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
 
 const user = await createItem({
-  keystone,
+  context,
   listKey: 'User',
   item: { name: 'Alice' },
   returnFields: `id name`,
 });
 ```
 
-There are three key differences between `keystone.executeGraphQL` and `createItem` (and other functions from this package):
+There are three key differences between `context.graphql.raw` and `createItem` (and other functions from this package):
 
 1. If there is an error, `createItem` will be thrown as an exception, rather than providing the error as a return value.
 2. `createItem` runs with _access control disabled_. This is suitable for use cases such as seeding data or other server side scripts where the query is triggered by the system, rather than a specific user. This can be controlled with the `context` option.
@@ -47,7 +47,7 @@ These utilities can be used for a wide range of specific use-cases, some more co
 
 ```js
 const seedUsers = async usersData => {
-  await createItems({ keystone, listKey: 'User', items: usersData });
+  await createItems({ context, listKey: 'User', items: usersData });
 };
 ```
 
@@ -66,7 +66,7 @@ keystone.createList('Page', {
       // Whenever copy field is set fetch the related data
       const pageToCopy = resolvedData.copy
         ? await getItem({
-            keystone,
+            context,
             listKey: 'Page',
             itemId: resolvedData.copy,
             returnFields: 'name, content',
@@ -91,8 +91,6 @@ To perform CRUD operations, use the following functions:
 - [`updateItems`](#updateitems)
 - [`deleteItem`](#deleteitem)
 - [`deleteItems`](#deleteitems)
-
-For custom queries use [`runCustomQuery`](#runcustomquery).
 
 > NOTE: All functions accept a config object as an argument, and return a `Promise`.
 
@@ -127,7 +125,7 @@ keystone.createList('User', {
 
 const addUser = async userInput => {
   const user = await createItem({
-    keystone,
+    context,
     listKey: 'User',
     item: userInput,
     returnFields: `name, email`,
@@ -171,7 +169,7 @@ const dummyUsers = [
 
 const addUsers = async () => {
   const users = await createItems({
-    keystone,
+    context,
     listKey: 'User',
     items: dummyUsers,
     returnFields: `name`,
@@ -208,7 +206,7 @@ keystone.createList('User', {
 
 const getUser = async ({ itemId }) => {
   const user = await getItem({
-    keystone,
+    context,
     listKey: 'User',
     itemId,
     returnFields: 'id, name',
@@ -243,9 +241,9 @@ keystone.createList('User', {
 });
 
 const getUsers = async () => {
-  const allUsers = await getItems({ keystone, listKey: 'User', returnFields: 'name' });
+  const allUsers = await getItems({ context, listKey: 'User', returnFields: 'name' });
   const someUsers = await getItems({
-    keystone,
+    context,
     listKey: 'User',
     returnFields: 'name',
     where: { name: 'user1' },
@@ -286,7 +284,7 @@ keystone.createList('User', {
 
 const updateUser = async updateUser => {
   const updatedUser = await updateItem({
-    keystone,
+    context,
     listKey: 'User',
     item: updateUser,
     returnFields: 'name',
@@ -322,7 +320,7 @@ keystone.createList('User', {
 
 const updateUsers = async updateUsers => {
   const users = await updateItems({
-    keystone,
+    context,
     listKey: 'User',
     items: updateUsers,
     returnFields: 'name',
@@ -394,7 +392,7 @@ keystone.createList('User', {
 });
 
 const deletedUsers = async items => {
-  const users = await deleteItems({ keystone, listKey: 'User', items });
+  const users = await deleteItems({ context, listKey: 'User', items });
   console.log(users); // [{id: '123'}, {id: '456'}]
 };
 deletedUsers(['123', '456']);
@@ -408,16 +406,3 @@ deletedUsers(['123', '456']);
 | ---------- | ---------- | ---------- | ------------------------------------------------------------------------- |
 | `items`    | `String[]` | (required) | Array of item `id`s to be deleted.                                        |
 | `pageSize` | `Number`   | 500        | The delete mutation batch size. Useful when deleting a large set of data. |
-
-### `runCustomQuery`
-
-Execute a custom query.
-
-#### Config
-
-| Properties  | Type     | Default    | Description                                                                                                                                                                                                         |
-| ----------- | -------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `keystone`  | Object   | (required) | Keystone instance.                                                                                                                                                                                                  |
-| `query`     | String   | (required) | The GraphQL query to execute.                                                                                                                                                                                       |
-| `variables` | Object   | (required) | Object containing variables your custom query needs.                                                                                                                                                                |
-| `context`   | `Object` | N/A        | An Apollo [`context` object](https://www.apollographql.com/docs/apollo-server/data/resolvers/#the-context-argument). See the [server side graphQL docs](/docs/discussions/server-side-graphql.md) for more details. |

@@ -15,11 +15,6 @@ class CloudinaryImage extends File.implementation {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
 
-  extendAdminMeta(meta) {
-    // Overwrite so we have only the original meta
-    return meta;
-  }
-
   getFileUploadType() {
     return 'Upload';
   }

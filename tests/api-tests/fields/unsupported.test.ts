@@ -1,6 +1,7 @@
 import path from 'path';
 import globby from 'globby';
-import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import { createSchema, list } from '@keystone-next/keystone/schema';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -31,14 +32,17 @@ multiAdapterRunners().map(({ adapterName, after }) => {
               await after({ disconnect: () => {} });
             });
 
-            test('Delete', async () => {
-              const createLists = (keystone: any) => {
-                // Create a list with all the fields required for testing
-                keystone.createList(listKey, { fields: mod.getTestFields(matrixValue) });
-              };
-              await expect(async () => setupServer({ adapterName, createLists })).rejects.toThrow(
-                Error
-              );
+            test('Throws', async () => {
+              await expect(async () =>
+                setupFromConfig({
+                  adapterName,
+                  config: testConfig({
+                    lists: createSchema({
+                      [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
+                    }),
+                  }),
+                })
+              ).rejects.toThrow(Error);
             });
           });
         });

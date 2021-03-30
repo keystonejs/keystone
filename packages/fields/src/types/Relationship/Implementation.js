@@ -67,11 +67,6 @@ export class Relationship extends Implementation {
     }
   }
 
-  extendAdminMeta(meta) {
-    const { refListKey: ref, refFieldPath, many } = this;
-    return { ...meta, ref, refFieldPath, many };
-  }
-
   gqlQueryInputFields({ schemaName }) {
     const { refList } = this.tryResolveRefList();
 

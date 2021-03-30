@@ -1,7 +1,7 @@
 import globby from 'globby';
-import { multiAdapterRunners, setupServer } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
-import { Text } from '@keystone-next/fields-legacy';
+import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import { createSchema, list } from '@keystone-next/keystone/schema';
+import { text } from '@keystone-next/fields';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -30,27 +30,28 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const keystoneTestWrapper = (testFn: (setup: any) => Promise<void>) =>
               runner(
                 () =>
-                  setupServer({
+                  setupFromConfig({
                     adapterName,
-                    createLists: keystone => {
-                      keystone.createList('Test', {
-                        fields: {
-                          name: { type: Text },
-                          testField: {
-                            type: mod.type,
-                            isRequired: true,
-                            ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                    config: testConfig({
+                      lists: createSchema({
+                        Test: list({
+                          fields: {
+                            name: text(),
+                            testField: mod.typeFunction({
+                              isRequired: true,
+                              ...(mod.fieldConfig ? mod.fieldConfig(matrixValue) : {}),
+                            }),
                           },
-                        },
-                      });
-                    },
+                        }),
+                      }),
+                    }),
                   }),
                 testFn
               );
             test(
               'Create an object without the required field',
-              keystoneTestWrapper(async ({ keystone }) => {
-                const { data, errors } = await keystone.executeGraphQL({
+              keystoneTestWrapper(async ({ context }) => {
+                const { data, errors } = await context.executeGraphQL({
                   query: `
                   mutation {
                     createTest(data: { name: "test entry" } ) { id }
@@ -66,8 +67,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             test(
               'Update an object with the required field having a null value',
-              keystoneTestWrapper(async ({ keystone }) => {
-                const { data: data0, errors: errors0 } = await keystone.executeGraphQL({
+              keystoneTestWrapper(async ({ context }) => {
+                const { data: data0, errors: errors0 } = await context.executeGraphQL({
                   query: `
                   mutation($data: TestCreateInput) {
                     createTest(data: $data ) { id }
@@ -80,7 +81,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   },
                 });
                 expect(errors0).toBe(undefined);
-                const { data, errors } = await keystone.executeGraphQL({
+                const { data, errors } = await context.executeGraphQL({
                   query: `
                   mutation {
                     updateTest(id: "${data0.createTest.id}" data: { name: "updated test entry", testField: null } ) { id }
@@ -96,8 +97,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             test(
               'Update an object without the required field',
-              keystoneTestWrapper(async ({ keystone }) => {
-                const { data: data0, errors: errors0 } = await keystone.executeGraphQL({
+              keystoneTestWrapper(async ({ context }) => {
+                const { data: data0, errors: errors0 } = await context.executeGraphQL({
                   query: `
                   mutation($data: TestCreateInput) {
                     createTest(data: $data ) { id }
@@ -110,7 +111,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   },
                 });
                 expect(errors0).toBe(undefined);
-                const { data, errors } = await keystone.executeGraphQL({
+                const { data, errors } = await context.executeGraphQL({
                   query: `
                   mutation {
                     updateTest(id: "${data0.createTest.id}" data: { name: "updated test entry" } ) { id }

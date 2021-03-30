@@ -1,5 +1,5 @@
 ---
-'@keystone-next/fields': major
+'@keystone-next/fields': minor
 ---
 
-Fixed the `select` field type to always use the correct underlying types.
+`select` field type now uses the correct underlying type, allowing the use of `{ dataType: 'enum' }` and `{ dataType: 'integer'}`.

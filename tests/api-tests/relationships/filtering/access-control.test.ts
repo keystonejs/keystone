@@ -7,7 +7,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -71,7 +70,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await context.exitSudo().executeGraphQL({
+          const data = await context.exitSudo().graphql.run({
             query: `
               query {
                 UserToPostLimitedRead(where: { id: "${user.id}" }) {
@@ -85,7 +84,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             UserToPostLimitedRead: {
               id: expect.any(String),
@@ -124,7 +122,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await context.exitSudo().executeGraphQL({
+          const data = await context.exitSudo().graphql.run({
             query: `
               query {
                 UserToPostLimitedRead(where: { id: "${user.id}" }) {
@@ -140,7 +138,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             UserToPostLimitedRead: {
               id: expect.any(String),

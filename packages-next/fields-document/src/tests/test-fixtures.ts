@@ -1,24 +1,23 @@
-// @ts-ignore
-import { Text } from '@keystone-next/fields-legacy';
-import { DocumentFieldType } from '../base-field-type';
+import { text } from '@keystone-next/fields';
+import { document } from '..';
 
 export const name = 'Document';
-export const type = DocumentFieldType;
+export const typeFunction = document;
 export const exampleValue = () => [{ type: 'paragraph', children: [{ text: '' }] }];
 export const exampleValue2 = () => [
   { type: 'heading', children: [{ text: 'heading' }], level: 1 },
   { type: 'paragraph', children: [{ text: '' }] },
 ];
+export const updateReturnedValue = [
+  { type: 'paragraph', children: [{ text: 'heading' }] },
+  { type: 'paragraph', children: [{ text: '' }] },
+];
+
 export const supportsUnique = false;
 export const fieldName = 'content';
 export const subfieldName = 'document';
 
-export const fieldConfig = () => ({ ___validateAndNormalize: (x: any) => x });
-
-export const getTestFields = () => ({
-  name: { type: Text },
-  content: { type, ___validateAndNormalize: (x: any) => x },
-});
+export const getTestFields = () => ({ name: text(), content: document() });
 
 export const initItems = () => {
   return [
@@ -53,7 +52,7 @@ export const storedValues = () => [
     name: 'b',
     content: {
       document: [
-        { type: 'heading', children: [{ text: 'heading' }], level: 1 },
+        { type: 'paragraph', children: [{ text: 'heading' }] },
         { type: 'paragraph', children: [{ text: '' }] },
       ],
     },
@@ -62,7 +61,7 @@ export const storedValues = () => [
     name: 'c',
     content: {
       document: [
-        { type: 'blockquote', children: [{ type: 'paragraph', children: [{ text: '' }] }] },
+        { type: 'paragraph', children: [{ text: '' }] },
         { type: 'paragraph', children: [{ text: '' }] },
       ],
     },

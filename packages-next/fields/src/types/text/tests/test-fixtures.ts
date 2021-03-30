@@ -1,15 +1,14 @@
-// @ts-ignore
-import { Text } from '@keystone-next/fields-legacy';
 import { AdapterName } from '@keystone-next/test-utils-legacy';
+import { text } from '..';
 
 export const name = 'Text';
-export const type = Text;
+export const typeFunction = text;
 export const exampleValue = () => 'foo';
 export const exampleValue2 = () => 'bar';
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({ name: { type: Text }, testField: { type } });
+export const getTestFields = () => ({ name: text(), testField: text() });
 
 export const initItems = () => {
   return [

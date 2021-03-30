@@ -1,14 +1,14 @@
-// @ts-ignore
-import { Text, Float } from '@keystone-next/fields-legacy';
+import { float } from '..';
+import { text } from '../../text';
 
 export const name = 'Float';
-export const type = Float;
+export const typeFunction = float;
 export const exampleValue = () => 6.28;
 export const exampleValue2 = () => 6.283;
 export const supportsUnique = true;
 export const fieldName = 'testField';
 
-export const getTestFields = () => ({ name: { type: Text }, testField: { type } });
+export const getTestFields = () => ({ name: text(), testField: float() });
 
 export const initItems = () => {
   return [

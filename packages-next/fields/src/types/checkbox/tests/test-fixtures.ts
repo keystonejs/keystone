@@ -1,14 +1,14 @@
-// @ts-ignore
-import { Checkbox, Text } from '@keystone-next/fields-legacy';
+import { checkbox } from '..';
+import { text } from '../../text';
 
 export const name = 'Checkbox';
-export const type = Checkbox;
+export const typeFunction = checkbox;
 export const exampleValue = () => true;
 export const exampleValue2 = () => false;
 export const supportsUnique = false;
 export const fieldName = 'enabled';
 
-export const getTestFields = () => ({ name: { type: Text }, enabled: { type } });
+export const getTestFields = () => ({ name: text(), enabled: checkbox() });
 
 export const initItems = () => {
   return [

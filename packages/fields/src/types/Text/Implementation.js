@@ -40,10 +40,6 @@ export class Text extends Implementation {
   gqlCreateInputFields() {
     return [`${this.path}: String`];
   }
-  extendAdminMeta(meta) {
-    const { isMultiline } = this;
-    return { isMultiline, ...meta };
-  }
   getBackingTypes() {
     return { [this.path]: { optional: true, type: 'string | null' } };
   }

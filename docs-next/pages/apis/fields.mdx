@@ -33,7 +33,7 @@ import {
 
 // Complex types
 import { document } from '@keystone-next/fields-document';
-import { cloudinary } from '@keystone-next/cloudinary';
+import { cloudinaryImage } from '@keystone-next/cloudinary';
 
 export default config({
   lists: createSchema({
@@ -604,7 +604,7 @@ export default config({
 });
 ```
 
-### cloudinary
+### cloudinaryImage
 
 (coming soon)
 
@@ -617,13 +617,13 @@ export default config({
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { cloudinary } from '@keystone-next/cloudinary';
+import { cloudinaryImage } from '@keystone-next/cloudinary';
 
 export default config({
   lists: createSchema({
     ListName: list({
       fields: {
-        fieldName: cloudinary({
+        fieldName: cloudinaryImage({
           isRequired: true,
           cloudinary: {
             cloudName: process.env.CLOUDINARY_CLOUD_NAME,

@@ -1,16 +1,14 @@
-// @ts-ignore
-import { Text } from '@keystone-next/fields-legacy';
-// @ts-ignore
-import { MongoId } from '@keystone-next/fields-mongoid-legacy';
+import { mongoId } from '..';
+import { text } from '../../text';
 
 export const name = 'MongoId';
-export const type = MongoId;
+export const typeFunction = mongoId;
 export const exampleValue = () => '123456781234567812345678';
 export const exampleValue2 = () => '123456781234567812345679';
 export const supportsUnique = true;
 export const fieldName = 'oldId';
 
-export const getTestFields = () => ({ name: { type: Text }, oldId: { type } });
+export const getTestFields = () => ({ name: text(), oldId: mongoId() });
 
 export const initItems = () => {
   return [

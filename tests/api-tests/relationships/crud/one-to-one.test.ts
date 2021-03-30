@@ -2,7 +2,6 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItem, getItems, getItem } from '@keystone-next/server-side-graphql-client-legacy';
 import type { AdapterName } from '@keystone-next/test-utils-legacy';
 import type { KeystoneContext } from '@keystone-next/types';
@@ -655,7 +654,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               itemId: company1.id,
               returnFields: 'id location { id }',
             });
-            expect(result1.location).toBe(null);
+            expect(result1?.location).toBe(null);
 
             const result2 = await getItem({
               context,
@@ -663,7 +662,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               itemId: company2.id,
               returnFields: 'id location { id }',
             });
-            expect(result2.location).toEqual({ id: location.id });
+            expect(result2?.location).toEqual({ id: location.id });
           })
         );
         test(
@@ -712,7 +711,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               itemId: location1.id,
               returnFields: 'id company { id }',
             });
-            expect(result1.company).toBe(null);
+            expect(result1?.company).toBe(null);
 
             const result2 = await getItem({
               context,
@@ -720,7 +719,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               itemId: location2.id,
               returnFields: 'id company { id }',
             });
-            expect(result2.company).toEqual({ id: company.id });
+            expect(result2?.company).toEqual({ id: company.id });
           })
         );
 

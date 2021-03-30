@@ -37,7 +37,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         `'schema' field returns results`,
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
           query {
             _CompaniesMeta {
@@ -58,7 +58,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('_CompaniesMeta.schema');
           expect(data._CompaniesMeta.schema).toMatchObject({
             type: 'Company',
@@ -80,7 +79,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         `'schema.relatedFields' returns empty array when none exist`,
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
           query {
             _PostsMeta {
@@ -101,7 +100,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('_PostsMeta.schema');
           expect(data._PostsMeta.schema).toMatchObject({
             type: 'Post',
@@ -120,7 +118,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'returns results for all lists',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
           query {
             _ksListsMeta {
@@ -146,7 +144,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('_ksListsMeta');
           expect(data._ksListsMeta).toMatchObject([
             {
@@ -254,7 +251,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'returns results for one list',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
           query {
             _ksListsMeta(where: { key: "User" }) {
@@ -280,7 +277,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('_ksListsMeta');
           expect(data._ksListsMeta).toMatchObject([
             {
@@ -327,7 +323,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'returns results for one list and one type of field',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
           query {
             _ksListsMeta(where: { key: "Company" }) {
@@ -353,7 +349,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('_ksListsMeta');
           expect(data._ksListsMeta).toMatchObject([
             {

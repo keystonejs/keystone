@@ -15,7 +15,6 @@ import {
   getItems,
   updateItem,
   updateItems,
-  // @ts-ignore
 } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 
@@ -28,8 +27,8 @@ const returnFields = 'name age';
 
 type IdType = any;
 
-const seedDb = ({ context }: { context: KeystoneContext }): { id: IdType }[] =>
-  createItems({ context, listKey, items: testData });
+const seedDb = ({ context }: { context: KeystoneContext }): Promise<{ id: IdType }[]> =>
+  createItems({ context, listKey, items: testData }) as Promise<{ id: IdType }[]>;
 
 function setupKeystone(adapterName: AdapterName) {
   return setupFromConfig({
@@ -62,7 +61,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Seed the db
           await createItems({ context, listKey, items: testData });
           // Get all the items back from db
-          const allItems: { age: number }[] = await getItems({ context, listKey, returnFields });
+          const allItems = (await getItems({ context, listKey, returnFields })) as {
+            age: number;
+          }[];
 
           expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
             testData.map(x => x.data)
@@ -93,14 +94,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Seed the db
           const seedItems = await seedDb({ context });
           // Update multiple items
-          const items = await updateItems({
+          const items = (await updateItems({
             context,
             listKey,
             items: seedItems.map((item, i) => ({ id: item.id, data: { name: `update-${i}` } })),
             returnFields,
-          });
-
-          expect(items).toEqual(seedItems.map((item, i) => ({ name: `update-${i}`, age: 10 * i })));
+          })) as { name: string; age: number }[];
+          expect(items.sort((a, b) => (a.age > b.age ? 1 : -1))).toEqual(
+            seedItems.map((item, i) => ({ name: `update-${i}`, age: 10 * i }))
+          );
         })
       );
     });
@@ -114,7 +116,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           await deleteItem({ context, listKey, returnFields, itemId: items[0].id });
 
           // Retrieve items
-          const allItems: { age: number }[] = await getItems({ context, listKey, returnFields });
+          const allItems = (await getItems({ context, listKey, returnFields })) as {
+            age: number;
+          }[];
 
           expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
             testData.map(d => d.data).filter(x => x.name !== 'test00')
@@ -127,12 +131,12 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           // Seed the db
           const items = await seedDb({ context });
           // Delete multiple items
-          const deletedItems: { age: number }[] = await deleteItems({
+          const deletedItems = (await deleteItems({
             context,
             listKey,
             returnFields,
             items: items.map(item => item.id),
-          });
+          })) as { age: number }[];
 
           expect(deletedItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
             testData.map(d => d.data)
@@ -151,7 +155,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         runner(setupKeystone, async ({ context }) => {
           // Seed the db
           await seedDb({ context });
-          const allItems: { age: number }[] = await getItems({ context, listKey, returnFields });
+          const allItems = (await getItems({ context, listKey, returnFields })) as {
+            age: number;
+          }[];
 
           expect(allItems.sort((x, y) => (x.age > y.age ? 1 : -1))).toEqual(
             testData.map(x => x.data)
