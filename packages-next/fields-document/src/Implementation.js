@@ -1,5 +1,3 @@
-import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
-import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '@keystone-next/fields-legacy';
 // eslint-disable-next-line import/no-unresolved
@@ -72,10 +70,6 @@ export class DocumentImplementation extends Implementation {
       return undefined;
     }
     const nodes = this.config.___validateAndNormalize(data);
-    if (this.adapter.constructor === KnexDocumentInterface) {
-      // knex expects the json to be stringified
-      return JSON.stringify(nodes);
-    }
     if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
       // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
       // https://github.com/prisma/prisma/issues/3786
@@ -95,42 +89,7 @@ export class DocumentImplementation extends Implementation {
   }
 }
 
-const CommonDocumentInterface = superclass =>
-  class extends superclass {
-    getQueryConditions() {
-      return {};
-    }
-  };
-
-export class MongoDocumentInterface extends CommonDocumentInterface(MongooseFieldAdapter) {
-  addToMongooseSchema(schema) {
-    const schemaOptions = { type: Object };
-    schema.add({ [this.path]: this.mergeSchemaOptions(schemaOptions, this.config) });
-  }
-}
-
-export class KnexDocumentInterface extends CommonDocumentInterface(KnexFieldAdapter) {
-  constructor() {
-    super(...arguments);
-
-    // Error rather than ignoring invalid config
-    // We totally can index these values, it's just not trivial. See issue #1297
-    if (this.config.isIndexed) {
-      throw new Error(
-        `The Document field type doesn't support indexes on Knex. ` +
-          `Check the config for ${this.path} on the ${this.field.listKey} list`
-      );
-    }
-  }
-
-  addToTableSchema(table) {
-    const column = table.jsonb(this.path);
-    if (this.isNotNullable) column.notNullable();
-    if (this.defaultTo) column.defaultTo(this.defaultTo);
-  }
-}
-
-export class PrismaDocumentInterface extends CommonDocumentInterface(PrismaFieldAdapter) {
+export class PrismaDocumentInterface extends PrismaFieldAdapter {
   constructor() {
     super(...arguments);
     // Error rather than ignoring invalid config
@@ -154,5 +113,9 @@ export class PrismaDocumentInterface extends CommonDocumentInterface(PrismaField
             : 'Json',
       }),
     ];
+  }
+
+  getQueryConditions() {
+    return {};
   }
 }

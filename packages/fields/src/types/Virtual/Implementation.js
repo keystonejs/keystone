@@ -1,5 +1,3 @@
-import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
-import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { parseFieldAccess } from '@keystone-next/access-control-legacy';
 import { Implementation } from '../../Implementation';
@@ -57,35 +55,17 @@ export class Virtual extends Implementation {
   }
 }
 
-const CommonTextInterface = superclass =>
-  class extends superclass {
-    getQueryConditions() {
-      return {};
-    }
-  };
-
-export class MongoVirtualInterface extends CommonTextInterface(MongooseFieldAdapter) {
+export class PrismaVirtualInterface extends PrismaFieldAdapter {
   constructor() {
     super(...arguments);
     this.realKeys = [];
   }
-  addToMongooseSchema() {}
-}
 
-export class KnexVirtualInterface extends CommonTextInterface(KnexFieldAdapter) {
-  constructor() {
-    super(...arguments);
-    this.realKeys = [];
-  }
-  addToTableSchema() {}
-}
-
-export class PrismaVirtualInterface extends CommonTextInterface(PrismaFieldAdapter) {
-  constructor() {
-    super(...arguments);
-    this.realKeys = [];
-  }
   getPrismaSchema() {
     return [];
+  }
+
+  getQueryConditions() {
+    return {};
   }
 }

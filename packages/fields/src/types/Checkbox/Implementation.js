@@ -1,5 +1,3 @@
-import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
-import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '../../Implementation';
 
@@ -31,37 +29,6 @@ export class Checkbox extends Implementation {
   }
   getBackingTypes() {
     return { [this.path]: { optional: true, type: 'boolean | null' } };
-  }
-}
-
-export class MongoCheckboxInterface extends MongooseFieldAdapter {
-  addToMongooseSchema(schema) {
-    schema.add({ [this.path]: this.mergeSchemaOptions({ type: Boolean }, this.config) });
-  }
-  getQueryConditions(dbPath) {
-    return this.equalityConditions(dbPath);
-  }
-}
-
-export class KnexCheckboxInterface extends KnexFieldAdapter {
-  constructor() {
-    super(...arguments);
-
-    // Error rather than ignoring invalid config
-    if (this.config.isIndexed) {
-      throw (
-        `The Checkbox field type doesn't support indexes on Knex. ` +
-        `Check the config for ${this.path} on the ${this.field.listKey} list`
-      );
-    }
-  }
-  addToTableSchema(table) {
-    const column = table.boolean(this.path);
-    if (this.isNotNullable) column.notNullable();
-    if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
-  }
-  getQueryConditions(dbPath) {
-    return this.equalityConditions(dbPath);
   }
 }
 
