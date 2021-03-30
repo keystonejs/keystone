@@ -6,7 +6,7 @@ import { createExpressServer } from '../../lib/createExpressServer';
 import type { StaticPaths } from '..';
 
 export const start = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) => {
-  console.log('🤞 Starting Keystone');
+  console.log('✨ Starting Keystone');
 
   // This is the compiled version of the configuration which was generated during the build step.
   // See reexportKeystoneConfig().
