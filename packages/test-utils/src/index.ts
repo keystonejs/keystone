@@ -2,6 +2,7 @@ import path from 'path';
 import crypto from 'crypto';
 import { ServerResponse } from 'http';
 import url from 'url';
+import fs from 'fs';
 import express from 'express';
 // @ts-ignore
 import supertest from 'supertest-light';
@@ -38,7 +39,7 @@ const argGenerator = {
     dropDatabase: true,
     url: process.env.DATABASE_URL!,
     provider: 'postgresql',
-    getDbSchemaName: () => undefined,
+    getDbSchemaName: () => null as any,
     // Turn this on if you need verbose debug info
     enableLogging: false,
   }),
@@ -84,6 +85,7 @@ async function setupFromConfig({
       config.db.url = `${config.db.url}?schema=${hash.toString()}`;
     }
     const cwd = path.join('.api-test-prisma-clients', hashPrismaSchema(artifacts.prisma));
+    fs.mkdirSync(cwd, { recursive: true });
     await writeCommittedArtifacts(artifacts, cwd);
     await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
     return requirePrismaClient(cwd);
