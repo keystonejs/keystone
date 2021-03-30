@@ -6,7 +6,7 @@ title: AutoIncrement
 
 # AutoIncrement
 
-An automatically incrementing integer with support for the Knex adapter. It's important to note that this type:
+An automatically incrementing integer with support for the Prisma adapter. It's important to note that this type:
 
 - Has [important limitations](#limitations) due to varying support from the underlying DB platform
 - Has [non-standard defaults](#non-standard-defaults) for much of its configuration
@@ -111,21 +111,3 @@ See the [non-standard defaults section](#non-standard-defaults) for details.
 | `${path}_gte`    | `Int` or `ID`     | Greater or equal to than the value provided |
 | `${path}_in`     | `[Int]` or `[ID]` | In the array of integers provided           |
 | `${path}_not_in` | `[Int]` or `[ID]` | Not in the array of integers provided       |
-
-## Storage
-
-### Mongoose adapter
-
-Not supported.
-
-### Knex adapter
-
-The `AutoIncrement` field type uses [`increments()`](https://knexjs.org/#Schema-increments) by default.
-The underlying implementation varies in significant ways depending on the DB platform used (see [limitations](#limitations)).
-
-One implication of `increments()` is that Knex will
-[always make it the primary key](https://github.com/tgriesser/knex/issues/385) of the table.
-To work around this, if this type is not being used as the lists primary key,
-we replace the generic `increments()` call with an explicitly build `serial` column.
-This work around only supports PostgreSQL; on other DB platforms, this type can only be used for the `id` field.
-See the [Limitations section](#limitations) more about auto inc and their usage as primary keys.

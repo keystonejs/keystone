@@ -12,7 +12,6 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "devDependencies": {
     "@hapi/iron": "^6.0.0",
-    "@keystone-next/adapter-knex-legacy": "*",
     "@keystone-next/adapter-mongoose-legacy": "*",
     "@keystone-next/auth": "*",
     "@keystone-next/fields": "*",
