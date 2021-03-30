@@ -65,19 +65,7 @@ async function setupFromConfig({
     _config = { ..._config, experimental: { prismaSqlite: true } };
   }
 
-  let onConnect = async (): Promise<void> => {
-    throw new Error('onConnect was not set');
-  };
-  const config = initConfig({
-    ..._config,
-    ui: { isDisabled: true },
-    db: {
-      ...db!,
-      async onConnect() {
-        await onConnect();
-      },
-    },
-  });
+  const config = initConfig({ ..._config, db: db!, ui: { isDisabled: true } });
 
   const prismaClient = await (async () => {
     const { keystone, graphQLSchema } = createSystem(config, 'none-skip-client-generation');
@@ -91,13 +79,6 @@ async function setupFromConfig({
     await writeCommittedArtifacts(artifacts, cwd);
     await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
     runPrototypeMigrations(config.db.url, artifacts.prisma, path.join(cwd, 'schema.prisma'), true);
-    onConnect = async () =>
-      runPrototypeMigrations(
-        config.db.url,
-        artifacts.prisma,
-        path.join(cwd, 'schema.prisma'),
-        true
-      );
     return requirePrismaClient(cwd);
   })();
 
