@@ -24,10 +24,10 @@ Keystone contains a set of primitive fields types that can be imported from the 
 
 In addition to these, some complex types are packaged separately:
 
-| Field type                                                       | Description                                                                                            |
-| :--------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------- |
-| [`AutoIncrement`](/packages/fields-auto-increment/README.md)     | An automatically incrementing integer; the default type for `id` fields when using the Knex DB adapter |
-| [`CloudinaryImage`](/packages/fields-cloudinary-image/README.md) | Allows uploading images to the [Cloudinary](https://cloudinary.com/) image hosting service             |
+| Field type                                                       | Description                                                                                                                                                          |
+| :--------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`AutoIncrement`](/packages/fields-auto-increment/README.md)     | An automatically incrementing integer; the default type for `id` fields when using the Prisma DB adapter                                                               |
+| [`CloudinaryImage`](/packages/fields-cloudinary-image/README.md) | Allows uploading images to the [Cloudinary](https://cloudinary.com/) image hosting service                                                                           |
 
 > **Tip:** Need something else? Keystone lets you create [custom field types](/docs/guides/custom-field-types.md) to support almost any use case.
 

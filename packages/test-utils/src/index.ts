@@ -20,13 +20,6 @@ const hashPrismaSchema = memoizeOne(prismaSchema =>
 
 const argGenerator = {
   mongoose: getMongoMemoryServerConfig,
-  knex: () => ({
-    dropDatabase: true,
-    knexOptions: {
-      connection:
-        process.env.DATABASE_URL || process.env.KNEX_URI || 'postgres://localhost/keystone',
-    },
-  }),
   prisma_postgresql: () => ({
     migrationMode: 'prototype',
     dropDatabase: true,
