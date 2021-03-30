@@ -48,6 +48,7 @@
     "@jest/test-sequencer": "^26.6.3",
     "@manypkg/cli": "^0.17.0",
     "@preconstruct/cli": "2.0.6",
+    "@testing-library/jest-dom": "^5.11.10",
     "@types/jest": "^26.0.22",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
@@ -132,7 +133,7 @@
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "./tests/jest/setup.js"
+      "./tests/jest/setup.ts"
     ],
     "testSequencer": "./tests/jest/jest-sequencer.js",
     "testEnvironment": "node",
