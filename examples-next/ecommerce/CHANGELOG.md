@@ -1,5 +1,20 @@
 # @keystone-next/example-ecommerce
 
+## 2.0.0
+
+### Major Changes
+
+- [#5230](https://github.com/keystonejs/keystone/pull/5230) [`673b21a0d`](https://github.com/keystonejs/keystone/commit/673b21a0dae32630507fe4913d57c4937abb442f) Thanks [@timleslie](https://github.com/timleslie)! - Updated project to use `prisma_sqlite` rather than `mongoose` as the database adapter if `DATABASSE_URL` is not provided.
+
+### Patch Changes
+
+- Updated dependencies [[`0e01f471d`](https://github.com/keystonejs/keystone/commit/0e01f471dc669e46c88233cb8ce698749ddcf4fa), [`76e5c7bd3`](https://github.com/keystonejs/keystone/commit/76e5c7bd3d5e4b74b1b3b6b6d6c23d087e81bb21), [`f73cc9377`](https://github.com/keystonejs/keystone/commit/f73cc93779c9fce1f86730e065c02ede92016ad2), [`db6cb59dc`](https://github.com/keystonejs/keystone/commit/db6cb59dc0d32e3700c5aa0202428b627c40503d), [`da900777a`](https://github.com/keystonejs/keystone/commit/da900777a27264595a68fe1ed0e7a689944eb372), [`34dd809ee`](https://github.com/keystonejs/keystone/commit/34dd809eef2368bba1e50ed613b36c5dac7262d1), [`0b679b742`](https://github.com/keystonejs/keystone/commit/0b679b742fb0d5d4c19db4498e327c44dd68b963), [`fe4b48907`](https://github.com/keystonejs/keystone/commit/fe4b48907fc002711640bfdf4644eb6d2d8643b6), [`b36758a12`](https://github.com/keystonejs/keystone/commit/b36758a121c096e8776420949c77a5304957a969)]:
+  - @keystone-next/fields@5.4.0
+  - @keystone-next/server-side-graphql-client-legacy@3.0.0
+  - @keystone-next/types@15.0.1
+  - @keystone-next/keystone@14.0.1
+  - @keystone-next/cloudinary@3.0.5
+
 ## 1.0.4
 
 ### Patch Changes

@@ -1,5 +1,39 @@
 # @keystonejs/keystone
 
+## 22.0.0
+
+### Major Changes
+
+- [#5250](https://github.com/keystonejs/keystone/pull/5250) [`e944b1ebb`](https://github.com/keystonejs/keystone/commit/e944b1ebbede95500b06028c591ee8947278a479) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy method `keystone.createContext()`.
+
+* [#5196](https://github.com/keystonejs/keystone/pull/5196) [`ca1be4156`](https://github.com/keystonejs/keystone/commit/ca1be415663dd822b3adda1e073bd7a1d4a9b97b) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy method `.getAdminMeta` from `Keystone`, `List` and `Field` classes.
+
+- [#5220](https://github.com/keystonejs/keystone/pull/5220) [`7ae452ad1`](https://github.com/keystonejs/keystone/commit/7ae452ad144d1186225e94ff39be0eaf9983f585) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy `keystone.createAuthStrategy()` method.
+
+* [#5226](https://github.com/keystonejs/keystone/pull/5226) [`45272d0b1`](https://github.com/keystonejs/keystone/commit/45272d0b1dc68e6ae8dbc4cfda790b3a50cf1b25) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy method `keystone.prepare()`.
+
+- [#5248](https://github.com/keystonejs/keystone/pull/5248) [`ade638de0`](https://github.com/keystonejs/keystone/commit/ade638de07142e8ecd0c3bf6c805eed76fd89878) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for legacy `plugins` argument to `List` config.
+
+* [#5247](https://github.com/keystonejs/keystone/pull/5247) [`2a1fc416e`](https://github.com/keystonejs/keystone/commit/2a1fc416e8f0a83e108a72fcec81b380c601f3ef) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy method `keystone.executeGraphQL()`.
+
+- [#5208](https://github.com/keystonejs/keystone/pull/5208) [`4d405390c`](https://github.com/keystonejs/keystone/commit/4d405390c0f8dcc37e6fe4da7ce3866c699088f3) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy property `List.views` and method `Field.extendAdminViews()`.
+
+* [#5198](https://github.com/keystonejs/keystone/pull/5198) [`b36758a12`](https://github.com/keystonejs/keystone/commit/b36758a121c096e8776420949c77a5304957a969) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy `cookieSecret`, `cookie`, and `sessionStore` arguments from the `Keystone` constructor.
+
+- [#5249](https://github.com/keystonejs/keystone/pull/5249) [`fe9fc5e0d`](https://github.com/keystonejs/keystone/commit/fe9fc5e0de8cefb889624e43bc281ac408bcd3b8) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy `schemaNames` argument from the `Keystone` and `List` constructors.
+
+* [#5246](https://github.com/keystonejs/keystone/pull/5246) [`b8cd13fdf`](https://github.com/keystonejs/keystone/commit/b8cd13fdfcec645140a06b0331b240583eace061) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy `keystone.createApolloServer` method.
+
+- [#5195](https://github.com/keystonejs/keystone/pull/5195) [`32578f01e`](https://github.com/keystonejs/keystone/commit/32578f01e70ea972d438a29fa1e3793c1e02750b) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy method `Keystone.getAdminViews()`.
+
+### Patch Changes
+
+- [#5184](https://github.com/keystonejs/keystone/pull/5184) [`5510ae33f`](https://github.com/keystonejs/keystone/commit/5510ae33fb18d42e378a00f1f78b803fb01b3fad) Thanks [@timleslie](https://github.com/timleslie)! - Fixed bug with updateMany on lists with declarative access control.
+
+- Updated dependencies [[`97609a623`](https://github.com/keystonejs/keystone/commit/97609a623334fd8d7b9e24dd099abda2e2a37853)]:
+  - @keystone-next/utils-legacy@8.0.0
+  - @keystone-next/access-control-legacy@9.0.1
+
 ## 21.0.0
 
 ### Major Changes
