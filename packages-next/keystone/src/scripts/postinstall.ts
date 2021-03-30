@@ -3,7 +3,7 @@ import {
   generateCommittedArtifacts,
   generateNodeModulesArtifacts,
   validateCommittedArtifacts,
-} from '../lib/artifacts';
+} from '../artifacts';
 import { requireSource } from '../lib/requireSource';
 import { initConfig } from '../lib/initConfig';
 import { CONFIG_PATH } from './utils';
