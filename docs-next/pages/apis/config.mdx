@@ -69,11 +69,7 @@ As well as these common options, each adapter supports a number of optional adva
 Advanced configuration:
 
 - `enableLogging` (default: `false`): Enable logging from the Prisma client.
-- `getPrismaPath` (default: `() => '.keystone/prisma'` ): Set the location of the generated Prisma schema and client.
-- `getDbSchemaName` (default: `() => 'public'` ): Set the schema named used in the database.
 - `useMigrations` (default: `false`): Determines whether to use migrations or automatically force-update the database with the latest schema and potentially lose data.
-
-The functions for `getPrismaPath` and `getDbSchemaName` are each provided with the generated Prisma schema as a `string` in the `{ prismaSchema }` argument.
 
 ```typescript
 export default config({
@@ -83,8 +79,6 @@ export default config({
     onConnect: async context => { /* ... */ },
     // Optional advanced configuration
     enableLogging: true,
-    getPrismaPath: ({ prismaSchema }) => '.prisma',
-    getDbSchemaName: ({ prismaSchema }) => 'prisma',
     useMigrations: true,
   },
   /* ... */
@@ -99,10 +93,7 @@ To use this option you must also set `{ experimental: { prismaSqlite: true } }`.
 Advanced configuration:
 
 - `enableLogging` (default: `false`): Enable logging from the Prisma client.
-- `getPrismaPath` (default: `() => '.keystone/prisma'` ): Set the location of the generated Prisma schema and client.
 - `useMigrations` (default: `false`): Determines whether to use migrations or automatically force-update the database with the latest schema and potentially lose data.
-
-The function for `getPrismaPath` is provided with the generated Prisma schema as a `string` in the `{ prismaSchema }` argument.
 
 ```typescript
 export default config({
@@ -112,7 +103,6 @@ export default config({
     onConnect: async context => { /* ... */ },
     // Optional advanced configuration
     enableLogging: true,
-    getPrismaPath: ({ prismaSchema }) => '.prisma',
     useMigrations: true,
   },
   /* ... */

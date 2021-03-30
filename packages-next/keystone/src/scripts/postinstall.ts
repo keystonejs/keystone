@@ -3,7 +3,7 @@ import {
   generateCommittedArtifacts,
   generateNodeModulesArtifacts,
   validateCommittedArtifacts,
-} from '../lib/artifacts';
+} from '../artifacts';
 import { requireSource } from '../lib/requireSource';
 import { initConfig } from '../lib/initConfig';
 import { CONFIG_PATH } from './utils';
@@ -11,7 +11,7 @@ import { CONFIG_PATH } from './utils';
 export async function postinstall(cwd: string, shouldFix: boolean) {
   const config = initConfig(requireSource(CONFIG_PATH).default);
 
-  const { keystone, graphQLSchema } = createSystem(config, 'none-skip-client-generation');
+  const { keystone, graphQLSchema } = createSystem(config);
 
   if (shouldFix) {
     await generateCommittedArtifacts(graphQLSchema, keystone, cwd);

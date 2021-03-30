@@ -1,12 +1,20 @@
 import path from 'path';
 import crypto from 'crypto';
 import { ServerResponse } from 'http';
+import fs from 'fs';
 import express from 'express';
 // @ts-ignore
 import supertest from 'supertest-light';
 // @ts-ignore
 import { Keystone } from '@keystone-next/keystone-legacy';
 import { initConfig, createSystem, createExpressServer } from '@keystone-next/keystone';
+import { runPrototypeMigrations } from '@keystone-next/adapter-prisma-legacy';
+import {
+  getCommittedArtifacts,
+  writeCommittedArtifacts,
+  requirePrismaClient,
+  generateNodeModulesArtifacts,
+} from '@keystone-next/keystone/artifacts';
 import type { KeystoneConfig, BaseKeystone, KeystoneContext } from '@keystone-next/types';
 import memoizeOne from 'memoize-one';
 
@@ -18,27 +26,15 @@ const hashPrismaSchema = memoizeOne(prismaSchema =>
 
 const argGenerator = {
   prisma_postgresql: () => ({
-    migrationMode: 'prototype',
-    dropDatabase: true,
-    url: process.env.DATABASE_URL || '',
+    url: process.env.DATABASE_URL!,
     provider: 'postgresql',
-    // Put the generated client at a unique path
-    getPrismaPath: ({ prismaSchema }: { prismaSchema: string }) =>
-      path.join('.api-test-prisma-clients', hashPrismaSchema(prismaSchema)),
-    // Slice down to the hash make a valid postgres schema name
-    getDbSchemaName: ({ prismaSchema }: { prismaSchema: string }) =>
-      hashPrismaSchema(prismaSchema).slice(0, 16),
+    getDbSchemaName: () => null as any,
     // Turn this on if you need verbose debug info
     enableLogging: false,
   }),
   prisma_sqlite: () => ({
-    migrationMode: 'prototype',
-    dropDatabase: true,
-    url: process.env.DATABASE_URL || '',
+    url: process.env.DATABASE_URL!,
     provider: 'sqlite',
-    // Put the generated client at a unique path
-    getPrismaPath: ({ prismaSchema }: { prismaSchema: string }) =>
-      path.join('.api-test-prisma-clients', hashPrismaSchema(prismaSchema)),
     // Turn this on if you need verbose debug info
     enableLogging: false,
   }),
@@ -50,9 +46,11 @@ const argGenerator = {
 type TestKeystoneConfig = Omit<KeystoneConfig, 'db' | 'ui'>;
 export const testConfig = (config: TestKeystoneConfig) => config;
 
+const alreadyGeneratedProjects = new Set<string>();
+
 async function setupFromConfig({
   adapterName,
-  config,
+  config: _config,
 }: {
   adapterName: AdapterName;
   config: TestKeystoneConfig;
@@ -64,13 +62,37 @@ async function setupFromConfig({
   } else if (adapterName === 'prisma_sqlite') {
     const adapterArgs = await argGenerator[adapterName]();
     db = { adapter: adapterName, ...adapterArgs };
-    config.experimental = { prismaSqlite: true };
+    _config = { ..._config, experimental: { prismaSqlite: true } };
   }
-  const _config = initConfig({ ...config, db: db!, ui: { isDisabled: true } });
 
-  const { keystone, createContext, graphQLSchema } = createSystem(_config, 'dev');
+  const config = initConfig({ ..._config, db: db!, ui: { isDisabled: true } });
 
-  const app = await createExpressServer(_config, graphQLSchema, createContext, true, '', false);
+  const prismaClient = await (async () => {
+    const { keystone, graphQLSchema } = createSystem(config);
+    const artifacts = await getCommittedArtifacts(graphQLSchema, keystone);
+    const hash = hashPrismaSchema(artifacts.prisma);
+    if (adapterName === 'prisma_postgresql') {
+      config.db.url = `${config.db.url}?schema=${hash.toString()}`;
+    }
+    const cwd = path.resolve('.api-test-prisma-clients', hash);
+    if (!alreadyGeneratedProjects.has(hash)) {
+      alreadyGeneratedProjects.add(hash);
+      fs.mkdirSync(cwd, { recursive: true });
+      await writeCommittedArtifacts(artifacts, cwd);
+      await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
+    }
+    await runPrototypeMigrations(
+      config.db.url,
+      artifacts.prisma,
+      path.join(cwd, 'schema.prisma'),
+      true
+    );
+    return requirePrismaClient(cwd);
+  })();
+
+  const { keystone, createContext, graphQLSchema } = createSystem(config, prismaClient);
+
+  const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
 
   return { keystone, context: createContext().sudo(), app };
 }
@@ -126,7 +148,6 @@ function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promi
       }
       const setup = await setupKeystoneFn(adapterName);
       const { keystone } = setup;
-
       await keystone.connect();
 
       try {

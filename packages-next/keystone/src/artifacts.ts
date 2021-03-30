@@ -3,8 +3,8 @@ import { printSchema, GraphQLSchema } from 'graphql';
 import * as fs from 'fs-extra';
 import type { BaseKeystone } from '@keystone-next/types';
 import { getGenerator } from '@prisma/sdk';
-import { confirmPrompt } from './prompts';
-import { printGeneratedTypes } from './schema-type-printer';
+import { confirmPrompt } from './lib/prompts';
+import { printGeneratedTypes } from './lib/schema-type-printer';
 
 export function getSchemaPaths(cwd: string) {
   return {

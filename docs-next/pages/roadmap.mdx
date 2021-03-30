@@ -14,7 +14,7 @@ There is a lot more to do, and with a larger than ever team at [Thinkmill](https
 
 We'll be updating this roadmap fortnightly (or as often as we need to) to help you track our progress and plans, find info that matters to your project, and communicate with us more dynamically while we grow the platform.
 
-If you’re looking for active conversations and interactions, please join our [KeystoneJS Slack](https://community.slack.com), and feel free to [open a PR](https://github.com/keystonejs/keystone/pulls).
+If you’re looking for active conversations and interactions, please join our [KeystoneJS Slack](http://community.keystonejs.com), and feel free to [open a PR](https://github.com/keystonejs/keystone/pulls).
 
 ## Project Status
 
@@ -37,17 +37,17 @@ Here's what you'll see in the next month:
 
 ### 👇 What's next on our list
 
-We’re status-tagging everything we’re tracking. Leaning on Basecamp’s [Shape Up](https://basecamp.com/shapeup/3.4-chapter-12#work-is-like-a-hill) (and RedwoodJS) we’re using colour-coded labels to help surface our activities, making it quicker and clearer for you to understand where things are up to:
+We’re status-tagging everything we’re tracking. Borrowing from RedwoodJS's roadmap format and leaning on Basecamp’s [Shape Up](https://basecamp.com/shapeup/3.4-chapter-12#work-is-like-a-hill) we’re using colour-coded labels to help surface our activities, making it quicker and clearer for you to understand where things are up to:
 
-- <Status look="notStarted">Not started</Status>
-- <Status look="figuringItOut">Figuring it out</Status>
-- <Status look="theresAPlan">There's a plan</Status>
-- <Status look="makingItHappen">Making it happen</Status>
-- <Status look="cleaningUp">Cleaning up</Status>
+- <Status look="notStarted" />
+- <Status look="figuringItOut" />
+- <Status look="theresAPlan" />
+- <Status look="makingItHappen" />
+- <Status look="cleaningUp" />
 
 ## Streamlined back-end with Prisma
 
-<Status look="makingItHappen">Making it happen</Status>
+<Status look="makingItHappen" />
 
 [Prisma](https://www.prisma.io/) is the next-generation ORM for JavaScript and TypeScript, and we
 added it to Keystone in 2020. It supports PostgreSQL, MySQL and SQLite with MS SQL and MongoDB
@@ -64,7 +64,7 @@ anyone building apps on Keystone has the full power of Prisma Client available t
 
 ## Improved Build and Deployment Options
 
-<Status look="makingItHappen">Making it happen</Status>
+<Status look="makingItHappen" />
 
 Deploying a database-backed application to production is still surprisingly complex, and it can be
 challenging to find the right tradeoffs and hosting providers. So we're looking at ways Keystone can
@@ -76,7 +76,7 @@ to Prisma, it will also include tools for previewing and managing database chang
 
 ## GraphQL API Updates
 
-<Status look="figuringItOut">Figuring it out</Status>
+<Status look="figuringItOut" />
 
 Keystone's GraphQL API has been stable (no breaking changes!) for several years now. While this has
 been great for building front-end apps with confidence, it has held us back from fixing some pain
@@ -88,7 +88,7 @@ streamlined migration stories for.
 
 ## Field Types Review
 
-<Status look="figuringItOut">Figuring it out</Status>
+<Status look="theresAPlan" />
 
 We're planning to revisit our field types and make them more powerful and consistent. This will
 include new interface options for the Admin UI, new features for validation and logic, and better
@@ -96,7 +96,7 @@ include new interface options for the Admin UI, new features for validation and 
 
 ## Nested (JSON) Fields
 
-<Status look="notStarted">Not started</Status>
+<Status look="notStarted" />
 
 Often when you're working with items, you want to allow content authors to manage nested repeating
 data. Relationships have traditionally been the answer for this, but come with complexity and can't
@@ -107,7 +107,7 @@ stored in a JSON field in the database.
 
 ## Singletons
 
-<Status look="notStarted">Not started</Status>
+<Status look="notStarted" />
 
 Keystone is great for lists of data, but sometimes you want a single object that is editable through
 the Admin UI and accessible in the GraphQL API. So we're planning to add the ability to define
@@ -115,7 +115,7 @@ singletons in Keystone's Schema.
 
 ## Translation Support
 
-<Status look="notStarted">Not started</Status>
+<Status look="notStarted" />
 
 If you're building a website with multi-language support, in Keystone 5 you have to add individual
 fields for each translation. To make for a better authoring experience, simpler schema definition,
@@ -124,7 +124,7 @@ translated fields into Keystone.
 
 ## Draft / Preview / Publishing Workflow
 
-<Status look="notStarted">Not started</Status>
+<Status look="notStarted" />
 
 Previewing content changes is a critical part of editing with confidence, but it's hard to implement
 consistently across sets of changes in a relational database backend.
@@ -137,7 +137,7 @@ We're also looking at a built-in solution for tracking changes and version histo
 
 ## Admin UI Field Groups and Dynamic Updates
 
-<Status look="notStarted">Not started</Status>
+<Status look="notStarted" />
 
 When lists get complex, you want to break up the form into multiple sections of fields. Also, some
 fields depend on the value of others, and the form should update dynamically as item data is
@@ -148,6 +148,6 @@ better authoring experience out of the box.
 
 ## Feedback
 
-We'd love to hear from you! If you’ve got feedback (or praise 🙌), send it our way at [@KeystoneJS](https://twitter.com/keystonejs) on Twitter, or start a discussion / ask a question / make some friends in our [KeystoneJS Slack community](https://github.com/keystonejs/keystone/discussions).
+We'd love to hear from you! If you’ve got feedback (or praise 🙌), send it our way at [@KeystoneJS](https://twitter.com/keystonejs) on Twitter, or start a discussion / ask a question / make some friends in our [KeystoneJS Slack community](http://community.keystonejs.com).
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
