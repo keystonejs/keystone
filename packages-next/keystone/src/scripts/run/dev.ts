@@ -61,7 +61,13 @@ export const dev = async (cwd: string) => {
     }
 
     console.log('✨ Creating server');
-    expressServer = await createExpressServer(config, graphQLSchema, createContext, true, cwd);
+    expressServer = await createExpressServer(
+      config,
+      graphQLSchema,
+      createContext,
+      true,
+      getAdminPath(cwd)
+    );
     console.log(`👋 Admin UI and graphQL API ready`);
   };
 

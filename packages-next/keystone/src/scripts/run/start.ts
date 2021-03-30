@@ -26,7 +26,13 @@ export const start = async (cwd: string) => {
   await keystone.connect({ context: createContext().sudo() });
 
   console.log('✨ Creating server');
-  const server = await createExpressServer(config, graphQLSchema, createContext, false, cwd);
+  const server = await createExpressServer(
+    config,
+    graphQLSchema,
+    createContext,
+    false,
+    getAdminPath(cwd)
+  );
   if (config.ui?.isDisabled) {
     console.log(`👋 GraphQL API ready`);
   } else {
