@@ -12,7 +12,6 @@
 - [ ] Add an example that implements custom fields
 - [x] `idField` option
   - [x] autoIncrement in fields package
-  - [x] mongoId in fields package
   - [x] `idField` option
   - [x] disallow `id` field in fields object
   - [x] default `idField` to `autoIncrement` for Prisma with fieldMode: 'hidden' for itemView and createView
