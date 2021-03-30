@@ -44,6 +44,7 @@ export const Navigation = () => {
         </NavItem>
       </Section>
       <Section label="Guides">
+        <NavItem href="/guides/keystone-5-vs-keystone-next">Keystone 5 vs Next</NavItem>
         <NavItem href="/guides/cli">Command Line</NavItem>
         <NavItem href="/guides/access-control" isPlaceholder>
           Access Control
@@ -64,7 +65,6 @@ export const Navigation = () => {
         <NavItem href="/guides/testing" isPlaceholder>
           Testing
         </NavItem>
-        <NavItem href="/guides/keystone-5-vs-keystone-next">Keystone 5 vs Next</NavItem>
       </Section>
       <Section label="API">
         <NavItem href="/apis/config">Config API</NavItem>
