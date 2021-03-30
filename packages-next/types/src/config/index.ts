@@ -1,5 +1,4 @@
 import { IncomingMessage } from 'http';
-import type { ConnectOptions } from 'mongoose';
 import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
 import type { Config } from 'apollo-server-express';
@@ -75,8 +74,6 @@ export type DatabaseConfig = DatabaseCommon &
         enableLogging?: boolean;
         getPrismaPath?: (arg: { prismaSchema: any }) => string;
       }
-    | { adapter: 'knex'; dropDatabase?: boolean; schemaName?: string }
-    | { adapter: 'mongoose'; mongooseOptions?: { mongoUri?: string } & ConnectOptions }
   );
 
 // config.ui

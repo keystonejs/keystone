@@ -15,8 +15,6 @@
     "@graphql-tools/schema": "^7.1.3",
     "@graphql-tools/utils": "^7.6.0",
     "@hapi/iron": "^6.0.0",
-    "@keystone-next/adapter-knex-legacy": "^13.2.3",
-    "@keystone-next/adapter-mongoose-legacy": "^11.1.3",
     "@keystone-next/adapter-prisma-legacy": "4.0.1",
     "@keystone-next/admin-ui": "^12.0.1",
     "@keystone-next/fields": "^5.4.0",
