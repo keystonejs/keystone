@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/server-side-graphql-client-legacy",
   "description": "A library for running server-side graphQL queries and mutations in Keystone.",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "homepage": "https://github.com/keystonejs/keystone",
@@ -12,7 +12,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystone-next/types": "^15.0.0",
+    "@keystone-next/types": "^15.0.1",
     "graphql": "^15.5.0"
   },
   "devDependencies": {

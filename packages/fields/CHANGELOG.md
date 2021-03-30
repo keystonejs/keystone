@@ -1,5 +1,31 @@
 # @keystonejs/fields
 
+## 24.0.0
+
+### Major Changes
+
+- [#5196](https://github.com/keystonejs/keystone/pull/5196) [`ca1be4156`](https://github.com/keystonejs/keystone/commit/ca1be415663dd822b3adda1e073bd7a1d4a9b97b) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy method `.getAdminMeta` from `Keystone`, `List` and `Field` classes.
+
+* [#5208](https://github.com/keystonejs/keystone/pull/5208) [`4d405390c`](https://github.com/keystonejs/keystone/commit/4d405390c0f8dcc37e6fe4da7ce3866c699088f3) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy property `List.views` and method `Field.extendAdminViews()`.
+
+- [#5194](https://github.com/keystonejs/keystone/pull/5194) [`a8be4c860`](https://github.com/keystonejs/keystone/commit/a8be4c8602bcda63d96fc956ead8568d8c989ffc) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy Admin UI views.
+
+* [#5244](https://github.com/keystonejs/keystone/pull/5244) [`0e1487385`](https://github.com/keystonejs/keystone/commit/0e1487385c42556c027a6f7bfbc9aa806b3cbd66) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy arguments `adminDoc` and `adminConfig`, and the method `extendAdminMeta`.
+
+- [#5186](https://github.com/keystonejs/keystone/pull/5186) [`aa76102c1`](https://github.com/keystonejs/keystone/commit/aa76102c11bdfea02059df66f406a8b1d387c879) Thanks [@timleslie](https://github.com/timleslie)! - Removed `app-admin-ui-legacy` package.
+
+* [#5234](https://github.com/keystonejs/keystone/pull/5234) [`f448a8b3a`](https://github.com/keystonejs/keystone/commit/f448a8b3a36b295d4ce5ff9ef2fd7aabcdb5dacc) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy field types `CalendarDay`, `DateTime`, `Slug`, `Url`, and `Uuid`.
+
+### Patch Changes
+
+- Updated dependencies [[`0e01f471d`](https://github.com/keystonejs/keystone/commit/0e01f471dc669e46c88233cb8ce698749ddcf4fa), [`76e5c7bd3`](https://github.com/keystonejs/keystone/commit/76e5c7bd3d5e4b74b1b3b6b6d6c23d087e81bb21), [`97609a623`](https://github.com/keystonejs/keystone/commit/97609a623334fd8d7b9e24dd099abda2e2a37853), [`da900777a`](https://github.com/keystonejs/keystone/commit/da900777a27264595a68fe1ed0e7a689944eb372)]:
+  - @keystone-next/fields@5.4.0
+  - @keystone-next/utils-legacy@8.0.0
+  - @keystone-next/adapter-knex-legacy@13.2.3
+  - @keystone-next/adapter-mongoose-legacy@11.1.3
+  - @keystone-next/adapter-prisma-legacy@4.0.1
+  - @keystone-next/access-control-legacy@9.0.1
+
 ## 23.2.0
 
 ### Minor Changes

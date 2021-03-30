@@ -37,9 +37,7 @@ context = {
   withSession,
 
   // Database access
-  knex,
   prisma,
-  mongoose,
 
   // Access control helpers
   getListAccessControlForUser,
@@ -108,13 +106,7 @@ The following functions will create a new `KeystoneContext` object with this beh
 
 ### Database access
 
-The `KeystoneContext` object exposes the underlying database driver directly, depending on the value of [`config.db.adapter`](http://localhost:8000/apis/config#db).
-
-If `config.db.adapter === 'prisma_postgresql'` or `'prisma_sqlite'`, then `context.prisma` will be a [Prisma Client](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference) object.
-
-If `config.db.adapter === 'knex'`, then `context.knex` will be a [Knex connection](http://knexjs.org/) object.
-
-if `config.db.adapter === 'mongoose'`, then `context.mongoose` will be a [Mongoose](https://mongoosejs.com/docs/api/mongoose.html) object.
+The `KeystoneContext` object exposes the underlying database driver directly via `context.prisma`, which is be a [Prisma Client](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference) object.
 
 ### Access control helpers
 

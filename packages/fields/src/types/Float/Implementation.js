@@ -1,5 +1,3 @@
-import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
-import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '../../Implementation';
 
@@ -38,45 +36,20 @@ export class Float extends Implementation {
   }
 }
 
-const CommonFloatInterface = superclass =>
-  class extends superclass {
-    getQueryConditions(dbPath) {
-      return {
-        ...this.equalityConditions(dbPath),
-        ...this.orderingConditions(dbPath),
-        ...this.inConditions(dbPath),
-      };
-    }
-  };
-
-export class MongoFloatInterface extends CommonFloatInterface(MongooseFieldAdapter) {
-  addToMongooseSchema(schema) {
-    schema.add({ [this.path]: this.mergeSchemaOptions({ type: Number }, this.config) });
-  }
-}
-
-export class KnexFloatInterface extends CommonFloatInterface(KnexFieldAdapter) {
-  constructor() {
-    super(...arguments);
-    this.isUnique = !!this.config.isUnique;
-    this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
-  }
-
-  addToTableSchema(table) {
-    const column = table.float(this.path);
-    if (this.isUnique) column.unique();
-    else if (this.isIndexed) column.index();
-    if (this.isNotNullable) column.notNullable();
-    if (typeof this.defaultTo !== 'undefined') column.defaultTo(this.defaultTo);
-  }
-}
-
-export class PrismaFloatInterface extends CommonFloatInterface(PrismaFieldAdapter) {
+export class PrismaFloatInterface extends PrismaFieldAdapter {
   constructor() {
     super(...arguments);
   }
 
   getPrismaSchema() {
     return this._schemaField({ type: 'Float' });
+  }
+
+  getQueryConditions(dbPath) {
+    return {
+      ...this.equalityConditions(dbPath),
+      ...this.orderingConditions(dbPath),
+      ...this.inConditions(dbPath),
+    };
   }
 }

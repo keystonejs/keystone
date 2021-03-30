@@ -2,7 +2,6 @@ import path from 'path';
 import globby from 'globby';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createItem, getItems } from '@keystone-next/server-side-graphql-client-legacy';
-import memoizeOne from 'memoize-one';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { KeystoneContext } from '@keystone-next/types';
 
@@ -23,10 +22,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           const listKey = 'Test';
 
-          // we want to memoize the server creation since it's the same fields
-          // for all the tests and setting up a keystone instance for prisma
-          // can be a bit slow
-          const _getServer = () =>
+          const getServer = () =>
             setupFromConfig({
               adapterName,
               config: testConfig({
@@ -35,9 +31,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }),
               }),
             });
-
-          // we don't memoize it for mongoose though since it has a cleanup which messes the memoization up
-          const getServer = adapterName === 'mongoose' ? _getServer : memoizeOne(_getServer);
 
           const withKeystone = (testFn: (args: any) => void = () => {}) =>
             runner(getServer, async ({ context, ...rest }) => {

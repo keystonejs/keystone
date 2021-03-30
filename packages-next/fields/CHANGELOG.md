@@ -1,5 +1,23 @@
 # @keystone-next/fields
 
+## 5.4.0
+
+### Minor Changes
+
+- [#5217](https://github.com/keystonejs/keystone/pull/5217) [`da900777a`](https://github.com/keystonejs/keystone/commit/da900777a27264595a68fe1ed0e7a689944eb372) Thanks [@timleslie](https://github.com/timleslie)! - `select` field type now uses the correct underlying type, allowing the use of `{ dataType: 'enum' }` and `{ dataType: 'integer'}`.
+
+### Patch Changes
+
+- [#5216](https://github.com/keystonejs/keystone/pull/5216) [`0e01f471d`](https://github.com/keystonejs/keystone/commit/0e01f471dc669e46c88233cb8ce698749ddcf4fa) Thanks [@timleslie](https://github.com/timleslie)! - Added a default config value of `{}` for the `mongoId` field type.
+
+* [#5212](https://github.com/keystonejs/keystone/pull/5212) [`76e5c7bd3`](https://github.com/keystonejs/keystone/commit/76e5c7bd3d5e4b74b1b3b6b6d6c23d087e81bb21) Thanks [@timleslie](https://github.com/timleslie)! - Moved test fixtures into the new packages.
+
+* Updated dependencies [[`ca1be4156`](https://github.com/keystonejs/keystone/commit/ca1be415663dd822b3adda1e073bd7a1d4a9b97b), [`9e78d8818`](https://github.com/keystonejs/keystone/commit/9e78d88187d8d789e5f080fd4529742f54ff1ddd), [`4d405390c`](https://github.com/keystonejs/keystone/commit/4d405390c0f8dcc37e6fe4da7ce3866c699088f3), [`34dd809ee`](https://github.com/keystonejs/keystone/commit/34dd809eef2368bba1e50ed613b36c5dac7262d1), [`a8be4c860`](https://github.com/keystonejs/keystone/commit/a8be4c8602bcda63d96fc956ead8568d8c989ffc), [`0e1487385`](https://github.com/keystonejs/keystone/commit/0e1487385c42556c027a6f7bfbc9aa806b3cbd66), [`aa76102c1`](https://github.com/keystonejs/keystone/commit/aa76102c11bdfea02059df66f406a8b1d387c879), [`f448a8b3a`](https://github.com/keystonejs/keystone/commit/f448a8b3a36b295d4ce5ff9ef2fd7aabcdb5dacc)]:
+  - @keystone-next/fields-legacy@24.0.0
+  - @keystone-next/fields-auto-increment-legacy@9.0.0
+  - @keystone-next/fields-mongoid-legacy@10.0.0
+  - @keystone-next/types@15.0.1
+
 ## 5.3.0
 
 ### Minor Changes

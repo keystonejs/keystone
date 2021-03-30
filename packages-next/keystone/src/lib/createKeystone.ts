@@ -1,38 +1,17 @@
-import path from 'path';
 // @ts-ignore
 import { Keystone } from '@keystone-next/keystone-legacy';
-// @ts-ignore
-import { MongooseAdapter } from '@keystone-next/adapter-mongoose-legacy';
-// @ts-ignore
-import { KnexAdapter } from '@keystone-next/adapter-knex-legacy';
-// @ts-ignore
 import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
-import type { KeystoneConfig, BaseKeystone, MigrationAction } from '@keystone-next/types';
+import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 
-export function createKeystone(
-  config: KeystoneConfig,
-  dotKeystonePath: string,
-  migrationAction: MigrationAction,
-  prismaClient?: any
-) {
+export function createKeystone(config: KeystoneConfig, prismaClient?: any) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
   // it in their existing custom servers or original CLI systems.
   const { db, graphql, lists } = config;
   let adapter;
-  if (db.adapter === 'knex') {
-    adapter = new KnexAdapter({
-      knexOptions: { connection: db.url },
-      dropDatabase: db.dropDatabase,
-    });
-  } else if (db.adapter === 'mongoose') {
-    adapter = new MongooseAdapter({ mongoUri: db.url, ...db.mongooseOptions });
-  } else if (db.adapter === 'prisma_postgresql') {
+  if (db.adapter === 'prisma_postgresql') {
     adapter = new PrismaAdapter({
-      getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
-      migrationMode:
-        migrationAction === 'dev' ? (db.useMigrations ? 'dev' : 'prototype') : migrationAction,
       prismaClient,
       ...db,
       provider: 'postgresql',
@@ -44,10 +23,7 @@ export function createKeystone(
       );
     }
     adapter = new PrismaAdapter({
-      getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
       prismaClient,
-      migrationMode:
-        migrationAction === 'dev' ? (db.useMigrations ? 'dev' : 'prototype') : migrationAction,
       ...db,
       provider: 'sqlite',
     });

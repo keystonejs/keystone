@@ -1,5 +1,5 @@
 import type { KeystoneConfig } from '@keystone-next/types';
-import { autoIncrement, mongoId } from '@keystone-next/fields';
+import { autoIncrement } from '@keystone-next/fields';
 
 /* Validate lists config and default the id field */
 export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['lists'] {
@@ -16,8 +16,6 @@ export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['li
     let idField =
       config.lists[key].idField ??
       {
-        mongoose: mongoId({}),
-        knex: autoIncrement({}),
         prisma_postgresql: autoIncrement({}),
         prisma_sqlite: autoIncrement({}),
       }[config.db.adapter];

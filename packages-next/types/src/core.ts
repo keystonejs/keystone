@@ -66,5 +66,3 @@ export function getGqlNames({
     relateToOneInputName: `${_itemQueryName}RelateToOneInput`,
   };
 }
-
-export type MigrationAction = 'none-skip-client-generation' | 'none' | 'dev';

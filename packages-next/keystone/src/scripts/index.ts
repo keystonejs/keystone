@@ -1,15 +1,11 @@
-import path from 'path';
 import meow from 'meow';
 import { dev } from './run/dev';
 import { start } from './run/start';
 import { build } from './build/build';
-import { deploy } from './migrate/deploy';
-import { generate } from './migrate/generate';
-import { reset } from './migrate/reset';
+import { prisma } from './prisma';
+import { postinstall } from './postinstall';
 
-export type StaticPaths = { dotKeystonePath: string; projectAdminPath: string };
-
-const commands = { dev, start, build, deploy, generate, reset };
+const commands = { dev, start, build, prisma, postinstall };
 
 function cli() {
   const { input, help, flags } = meow(
@@ -17,21 +13,15 @@ function cli() {
     Usage
       $ keystone-next [command]
     Commands
-      Run
         dev           (default) start the project in development mode
         start         start the project in production mode
-      Build
         build         build the project (must be done before using start)
-      Migrate (Prisma only)
-        reset         reset the database (this will drop all data!)
-        generate      generate a migration
-        deploy        deploy all migrations
+        prisma        run the prisma CLI
+        postinstall   
     `,
     {
       flags: {
-        allowEmpty: { default: false, type: 'boolean' },
-        acceptDataLoss: { default: false, type: 'boolean' },
-        name: { type: 'string' },
+        fix: { default: false, type: 'boolean' },
       },
     }
   );
@@ -42,16 +32,14 @@ function cli() {
     process.exit(1);
   }
 
-  // These paths are non-configurable, as we need to use them
-  // to find the config file (for `start`) itself!
-  const dotKeystonePath = path.resolve('.keystone');
-  const projectAdminPath = path.join(dotKeystonePath, 'admin');
-  const staticPaths: StaticPaths = { dotKeystonePath, projectAdminPath };
+  const cwd = process.cwd();
 
-  if (command === 'generate') {
-    generate(staticPaths, flags);
+  if (command === 'prisma') {
+    prisma(cwd, process.argv.slice(3));
+  } else if (command === 'postinstall') {
+    postinstall(cwd, flags.fix);
   } else {
-    commands[command](staticPaths);
+    commands[command](cwd);
   }
 }
 

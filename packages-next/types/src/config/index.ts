@@ -1,5 +1,4 @@
 import { IncomingMessage } from 'http';
-import type { ConnectOptions } from 'mongoose';
 import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
 import type { Config } from 'apollo-server-express';
@@ -66,17 +65,12 @@ export type DatabaseConfig = DatabaseCommon &
         adapter: 'prisma_postgresql';
         useMigrations?: boolean;
         enableLogging?: boolean;
-        getPrismaPath?: (arg: { prismaSchema: any }) => string;
-        getDbSchemaName?: (arg: { prismaSchema: any }) => string;
       }
     | {
         adapter: 'prisma_sqlite';
         useMigrations?: boolean;
         enableLogging?: boolean;
-        getPrismaPath?: (arg: { prismaSchema: any }) => string;
       }
-    | { adapter: 'knex'; dropDatabase?: boolean; schemaName?: string }
-    | { adapter: 'mongoose'; mongooseOptions?: { mongoUri?: string } & ConnectOptions }
   );
 
 // config.ui

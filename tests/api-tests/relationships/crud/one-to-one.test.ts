@@ -191,72 +191,70 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data.allCompanies[0].id).toEqual(company.id);
           })
         );
-        if (adapterName !== 'mongoose') {
-          test(
-            'Where A: is_null: true',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createCompanyAndLocation(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+        test(
+          'Where A: is_null: true',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createCompanyAndLocation(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   allLocations(where: { company_is_null: true }) { id }
                   allCompanies(where: { location_is_null: true }) { id }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allLocations.length).toEqual(4);
-              expect(data.allCompanies.length).toEqual(3);
-            })
-          );
-          test(
-            'Where B: is_null: true',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createLocationAndCompany(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allLocations.length).toEqual(4);
+            expect(data.allCompanies.length).toEqual(3);
+          })
+        );
+        test(
+          'Where B: is_null: true',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createLocationAndCompany(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   allLocations(where: { company_is_null: true }) { id }
                   allCompanies(where: { location_is_null: true }) { id }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allLocations.length).toEqual(4);
-              expect(data.allCompanies.length).toEqual(3);
-            })
-          );
-          test(
-            'Where A: is_null: false',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createCompanyAndLocation(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allLocations.length).toEqual(4);
+            expect(data.allCompanies.length).toEqual(3);
+          })
+        );
+        test(
+          'Where A: is_null: false',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createCompanyAndLocation(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   allLocations(where: { company_is_null: false }) { id }
                   allCompanies(where: { location_is_null: false }) { id }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allLocations.length).toEqual(1);
-              expect(data.allCompanies.length).toEqual(1);
-            })
-          );
-          test(
-            'Where B: is_null: false',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createLocationAndCompany(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allLocations.length).toEqual(1);
+            expect(data.allCompanies.length).toEqual(1);
+          })
+        );
+        test(
+          'Where B: is_null: false',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createLocationAndCompany(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   allLocations(where: { company_is_null: false }) { id }
                   allCompanies(where: { location_is_null: false }) { id }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data.allLocations.length).toEqual(1);
-              expect(data.allCompanies.length).toEqual(1);
-            })
-          );
-        }
+            });
+            expect(errors).toBe(undefined);
+            expect(data.allLocations.length).toEqual(1);
+            expect(data.allCompanies.length).toEqual(1);
+          })
+        );
 
         test(
           'Count',
@@ -308,40 +306,38 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(data._allLocationsMeta.count).toEqual(1);
           })
         );
-        if (adapterName !== 'mongoose') {
-          test(
-            'Where null with count A',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createCompanyAndLocation(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+        test(
+          'Where null with count A',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createCompanyAndLocation(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   _allLocationsMeta(where: { company_is_null: true }) { count }
                   _allCompaniesMeta(where: { location_is_null: true }) { count }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data._allCompaniesMeta.count).toEqual(3);
-              expect(data._allLocationsMeta.count).toEqual(4);
-            })
-          );
-          test(
-            'Where null with count B',
-            runner(setupKeystone, async ({ context }) => {
-              await createInitialData(context);
-              await createLocationAndCompany(context);
-              const { data, errors } = await context.executeGraphQL({
-                query: `{
+            });
+            expect(errors).toBe(undefined);
+            expect(data._allCompaniesMeta.count).toEqual(3);
+            expect(data._allLocationsMeta.count).toEqual(4);
+          })
+        );
+        test(
+          'Where null with count B',
+          runner(setupKeystone, async ({ context }) => {
+            await createInitialData(context);
+            await createLocationAndCompany(context);
+            const { data, errors } = await context.executeGraphQL({
+              query: `{
                   _allLocationsMeta(where: { company_is_null: true }) { count }
                   _allCompaniesMeta(where: { location_is_null: true }) { count }
                 }`,
-              });
-              expect(errors).toBe(undefined);
-              expect(data._allCompaniesMeta.count).toEqual(3);
-              expect(data._allLocationsMeta.count).toEqual(4);
-            })
-          );
-        }
+            });
+            expect(errors).toBe(undefined);
+            expect(data._allCompaniesMeta.count).toEqual(3);
+            expect(data._allLocationsMeta.count).toEqual(4);
+          })
+        );
       });
 
       describe('Create', () => {

@@ -15,8 +15,7 @@ export const fieldName = 'orderNumber';
 export const skipCreateTest = false;
 export const skipUpdateTest = true;
 
-// `AutoIncrement` field type is not supported by `mongoose`. So, we need to filter it out while performing `API` tests.
-export const unSupportedAdapterList = ['mongoose', 'prisma_sqlite'];
+export const unSupportedAdapterList = ['prisma_sqlite'];
 
 // Be default, `AutoIncrement` are read-only. But for `isRequired` test purpose, we need to bypass these restrictions.
 export const fieldConfig = (matrixValue: MatrixValue) => ({

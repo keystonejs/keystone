@@ -21,12 +21,12 @@ import { gql, TypedDocumentNode, useMutation, useQuery } from '../../apollo';
 import { CellLink } from '../../components';
 import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
+import { Pagination, PaginationLabel } from '../../components/Pagination';
 import { useList } from '../../context';
 import { Link, useRouter } from '../../router';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
-import { PaginationLabel, Pagination } from './pagination';
 import { SortSelection } from './SortSelection';
 import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
@@ -676,7 +676,7 @@ function ListTable({
           })}
         </tbody>
       </TableContainer>
-      <Pagination listKey={listKey} total={count} currentPage={currentPage} pageSize={pageSize} />
+      <Pagination list={list} total={count} currentPage={currentPage} pageSize={pageSize} />
     </Box>
   );
 }

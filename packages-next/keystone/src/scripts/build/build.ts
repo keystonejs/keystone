@@ -6,9 +6,8 @@ import { AdminFileToWrite } from '@keystone-next/types';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { requireSource } from '../../lib/requireSource';
-import { saveSchemaAndTypes } from '../../lib/saveSchemaAndTypes';
-import { CONFIG_PATH } from '../utils';
-import type { StaticPaths } from '..';
+import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../../artifacts';
+import { CONFIG_PATH, getAdminPath } from '../utils';
 
 // FIXME: Duplicated from admin-ui package. Need to decide on a common home.
 async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
@@ -83,34 +82,30 @@ const reexportKeystoneConfig = async (projectAdminPath: string, isDisabled?: boo
   await Promise.all(files.map(file => writeAdminFile(file, projectAdminPath)));
 };
 
-export async function build({ dotKeystonePath, projectAdminPath }: StaticPaths) {
+export async function build(cwd: string) {
   console.log('✨ Building Keystone');
 
   const config = initConfig(requireSource(CONFIG_PATH).default);
 
-  const { keystone, graphQLSchema } = createSystem(config, dotKeystonePath, 'none');
+  const { keystone, graphQLSchema } = createSystem(config);
 
-  console.log('✨ Generating graphQL schema');
-  await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);
+  await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
+
+  console.log('✨ Generating database client');
+  // FIXME: This needs to generate clients for the correct build target using binaryTarget
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
+  await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
 
   if (config.ui?.isDisabled) {
     console.log('✨ Skipping Admin UI code generation');
   } else {
     console.log('✨ Generating Admin UI code');
-    await generateAdminUI(config, graphQLSchema, keystone, projectAdminPath);
+    await generateAdminUI(config, graphQLSchema, keystone, getAdminPath(cwd));
   }
 
   console.log('✨ Generating Keystone config code');
-  await reexportKeystoneConfig(projectAdminPath, config.ui?.isDisabled);
-
-  console.log('✨ Generating database client');
-  // FIXME: This should never generate a migratration... right?
-  // FIXME: This needs to generate clients for the correct build target using binaryTarget
-  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
-  if (keystone.adapter.name === 'prisma') {
-    await keystone.adapter._generateClient(keystone._consolidateRelationships());
-  }
+  await reexportKeystoneConfig(getAdminPath(cwd), config.ui?.isDisabled);
 
   console.log('✨ Building Admin UI');
-  await buildAdminUI(projectAdminPath);
+  await buildAdminUI(getAdminPath(cwd));
 }

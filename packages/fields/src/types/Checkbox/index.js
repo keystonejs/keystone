@@ -1,16 +1,9 @@
-import {
-  Checkbox,
-  MongoCheckboxInterface,
-  KnexCheckboxInterface,
-  PrismaCheckboxInterface,
-} from './Implementation';
+import { Checkbox, PrismaCheckboxInterface } from './Implementation';
 
 export default {
   type: 'Checkbox',
   implementation: Checkbox,
   adapters: {
-    mongoose: MongoCheckboxInterface,
-    knex: KnexCheckboxInterface,
     prisma: PrismaCheckboxInterface,
   },
 };
