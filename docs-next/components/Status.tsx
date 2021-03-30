@@ -4,28 +4,23 @@ import { jsx } from '@keystone-ui/core';
 const statusMap = {
   notStarted: {
     label: 'Not started',
-    color: '#666666',
-    backgroundColor: '#eeeeee',
+    color: 'gray',
   },
   figuringItOut: {
     label: 'Figuring it out',
-    color: '#D97706',
-    backgroundColor: '#FEF3C7',
+    color: 'orange',
   },
   theresAPlan: {
     label: 'There’s a plan',
-    color: '#DB2777',
-    backgroundColor: '#FCE7F3',
+    color: 'pink',
   },
   makingItHappen: {
     label: 'Making it happen',
-    color: '#1D4ED8',
-    backgroundColor: '#DBEAFE',
+    color: 'blue',
   },
   cleaningUp: {
     label: 'Cleaning up',
-    color: '#15803D',
-    backgroundColor: '#DCFCE7',
+    color: 'green',
   },
 };
 
@@ -34,20 +29,11 @@ type StatusProps = {
 };
 export function Status({ look }: StatusProps) {
   const status = statusMap[look];
-  const styles = {
-    '&::before': {
-      display: 'none',
-    },
-    '&::after': {
-      display: 'none',
-    },
-    fontSize: '85%',
-    fontFamily: 'SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace',
-    padding: '0.25rem 0.375rem',
-    borderRadius: 6,
-    color: status.color,
-    backgroundColor: status.backgroundColor,
-  };
+  const styles = `
+    rounded font-mono text-sm py-1 px-2
+    bg-${status.color}-100
+    text-${status.color}-700
+  `;
 
-  return <span css={styles}>{status.label}</span>;
+  return <span className={styles}>{status.label}</span>;
 }
