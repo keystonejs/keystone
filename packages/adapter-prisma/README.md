@@ -41,12 +41,6 @@ _**Default:**_ `false`
 
 Enables logging at the [`query`](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#overview) level in the Prisma client.
 
-### `dropDatabase`
-
-_**Default:**_ `false`
-
-Allow the adapter to drop the entire database and recreate the tables / foreign keys based on the list schema in your application. This option is ignored in production, i.e. when the environment variable NODE_ENV === 'production'.
-
 ## Setup
 
 Before running Keystone with the Prisma adapter you will need to have a PostgreSQL database to connect to.
