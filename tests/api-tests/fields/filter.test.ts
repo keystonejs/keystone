@@ -2,7 +2,6 @@ import path from 'path';
 import globby from 'globby';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createItem, getItems } from '@keystone-next/server-side-graphql-client-legacy';
-import memoizeOne from 'memoize-one';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { KeystoneContext } from '@keystone-next/types';
 

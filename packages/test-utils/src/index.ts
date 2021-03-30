@@ -48,6 +48,8 @@ const argGenerator = {
 type TestKeystoneConfig = Omit<KeystoneConfig, 'db' | 'ui'>;
 export const testConfig = (config: TestKeystoneConfig) => config;
 
+const alreadyGeneratedProjects = new Set<string>();
+
 async function setupFromConfig({
   adapterName,
   config: _config,
@@ -74,11 +76,19 @@ async function setupFromConfig({
     if (adapterName === 'prisma_postgresql') {
       config.db.url = `${config.db.url}?schema=${hash.toString()}`;
     }
-    const cwd = path.resolve('.api-test-prisma-clients', hashPrismaSchema(artifacts.prisma));
-    fs.mkdirSync(cwd, { recursive: true });
-    await writeCommittedArtifacts(artifacts, cwd);
-    await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
-    runPrototypeMigrations(config.db.url, artifacts.prisma, path.join(cwd, 'schema.prisma'), true);
+    const cwd = path.resolve('.api-test-prisma-clients', hash);
+    if (!alreadyGeneratedProjects.has(hash)) {
+      alreadyGeneratedProjects.add(hash);
+      fs.mkdirSync(cwd, { recursive: true });
+      await writeCommittedArtifacts(artifacts, cwd);
+      await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
+      await runPrototypeMigrations(
+        config.db.url,
+        artifacts.prisma,
+        path.join(cwd, 'schema.prisma'),
+        true
+      );
+    }
     return requirePrismaClient(cwd);
   })();
 
