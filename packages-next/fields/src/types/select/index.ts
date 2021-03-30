@@ -23,7 +23,6 @@ export type SelectFieldConfig<
       displayMode?: 'select' | 'segmented-control';
     };
     isRequired?: boolean;
-    isIndexed?: boolean;
     isUnique?: boolean;
   };
 

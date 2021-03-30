@@ -56,10 +56,8 @@ import type { DatabaseConfig } from '@keystone-next/types';
 
 The `db` config option configures the database used to store data in your Keystone system.
 It has a TypeScript type of `DatabaseConfig`.
-Keystone supports three different database types; **Prisma**, **PostgreSQL**, and **MongoDB**.
-Prisma in turn support both **PostgreSQL** and **SQLite** databases.
-These database types are powered by their corresponding Keystone database adapter; `prisma_postgresql`, `prisma_sqlite`, `knex`, and `mongoose`.
-The `prisma_postgresql` and `prisma_sqlite` adapters includes support for the **migrate** commands of the Keystone [command line](../guides/cli).
+Keystone supports the database types **PostgreSQL** and **SQLite**.
+These database types are powered by their corresponding Keystone database adapters; `prisma_postgresql` and `prisma_sqlite`.
 
 All database adapters require the `url` argument, which defines the connection URL for your database.
 They also all have an optional `onConnect` async function, which takes a [`KeystoneContext`](./context) object, and lets perform any actions you might need at startup, such as data seeding.
@@ -131,46 +129,6 @@ The `prisma_sqlite` is not intended to be used in production systems, and has ce
 - `text`: The `text` field type does not support the advanced filtering operations `contains`, `starts_with`, `ends_with`, or case insensitive filtering.
 - `autoIncrement`: The `autoIncrement` field type can only be used as an `id` field.
 - `select`: Using the `dataType: 'enum'` will use a GraphQL `String` type, rather than an `Enum` type.
-
-### knex
-
-Advanced configuration:
-
-- `schemaName` (default: `'public'` ): Set the schema named used in the database.
-- `dropDatabase` (default: `false`): Setting this to `true` will cause Keystone to drop your database and then recreate the tables after connecting to the database.
-
-```typescript
-export default config({
-  db: {
-    adapter: 'knex',
-    url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
-    onConnect: async context => { /* ... */ },
-    // Optional advanced configuration
-    schemaName: 'public',
-    dropDatabase: false,
-  },
-  /* ... */
-});
-```
-
-### mongoose
-
-Advanced configuration:
-
-- `mongooseOptions` (default: `{}` ): Additional options to be passed into `mongoose.connect()`. See the [Mongoose docs](https://mongoosejs.com/docs/api.html#mongoose_Mongoose-connect) for a detailed list of options
-
-```typescript
-export default config({
-  db: {
-    adapter: 'mongoose':
-    url: 'mongodb://localhost/keystone',
-    onConnect: async context => { /* ... */ },
-    // Optional advanced configuration
-    mongooseOptions: { /* ... */ },
-  },
-  /* ... */
-});
-```
 
 ## ui
 

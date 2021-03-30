@@ -36,8 +36,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }),
             });
 
-          // we don't memoize it for mongoose though since it has a cleanup which messes the memoization up
-          const getServer = adapterName === 'mongoose' ? _getServer : memoizeOne(_getServer);
+          const getServer = memoizeOne(_getServer);
 
           const withKeystone = (testFn: (args: any) => void = () => {}) =>
             runner(getServer, async ({ context, ...rest }) => {
