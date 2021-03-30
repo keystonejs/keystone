@@ -7,7 +7,6 @@ import {
   runPrototypeMigrations,
   devMigrations,
   deployMigrations,
-  resetDatabaseWithMigrations,
   // eslint-disable-next-line import/no-unresolved
 } from './migrations';
 
