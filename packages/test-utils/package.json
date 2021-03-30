@@ -10,6 +10,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
+    "@keystone-next/adapter-prisma-legacy": "^4.0.1",
     "@keystone-next/keystone": "14.0.1",
     "@keystone-next/keystone-legacy": "^22.0.0",
     "express": "^4.17.1",

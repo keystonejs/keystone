@@ -10,6 +10,7 @@ import MongoDBMemoryServer from 'mongodb-memory-server-core';
 // @ts-ignore
 import { Keystone } from '@keystone-next/keystone-legacy';
 import { initConfig, createSystem, createExpressServer } from '@keystone-next/keystone';
+import { runPrototypeMigrations } from '@keystone-next/adapter-prisma-legacy';
 import {
   getCommittedArtifacts,
   writeCommittedArtifacts,
@@ -36,7 +37,6 @@ const argGenerator = {
   }),
   prisma_postgresql: () => ({
     migrationMode: 'none-skip-client-generation',
-    dropDatabase: true,
     url: process.env.DATABASE_URL!,
     provider: 'postgresql',
     getDbSchemaName: () => null as any,
@@ -45,7 +45,6 @@ const argGenerator = {
   }),
   prisma_sqlite: () => ({
     migrationMode: 'none-skip-client-generation',
-    dropDatabase: true,
     url: process.env.DATABASE_URL!,
     provider: 'sqlite',
     // Turn this on if you need verbose debug info
@@ -84,10 +83,16 @@ async function setupFromConfig({
     if (adapterName === 'prisma_postgresql') {
       config.db.url = `${config.db.url}?schema=${hash.toString()}`;
     }
-    const cwd = path.join('.api-test-prisma-clients', hashPrismaSchema(artifacts.prisma));
+    const cwd = path.resolve('.api-test-prisma-clients', hashPrismaSchema(artifacts.prisma));
     fs.mkdirSync(cwd, { recursive: true });
     await writeCommittedArtifacts(artifacts, cwd);
     await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
+    await runPrototypeMigrations(
+      config.db.url,
+      artifacts.prisma,
+      path.join(cwd, 'schema.prisma'),
+      true
+    );
     return requirePrismaClient(cwd);
   })();
 
