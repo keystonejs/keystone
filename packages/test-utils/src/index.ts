@@ -82,13 +82,13 @@ async function setupFromConfig({
       fs.mkdirSync(cwd, { recursive: true });
       await writeCommittedArtifacts(artifacts, cwd);
       await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
-      await runPrototypeMigrations(
-        config.db.url,
-        artifacts.prisma,
-        path.join(cwd, 'schema.prisma'),
-        true
-      );
     }
+    await runPrototypeMigrations(
+      config.db.url,
+      artifacts.prisma,
+      path.join(cwd, 'schema.prisma'),
+      true
+    );
     return requirePrismaClient(cwd);
   })();
 
