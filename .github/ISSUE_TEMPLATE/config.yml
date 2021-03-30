@@ -1,8 +1,8 @@
 contact_links:
-  - name: Questions (Stack Overflow)
+  - name: Question (Stack Overflow)
     url: http://slack.keystonejs.com/
     about: Reach out to our Stack Overflow community.
-  - name: Feature requests (GitHub Discussions)
+  - name: Feature request (GitHub Discussions)
     url: https://github.com/keystonejs/keystone/discussions
     about: Tell us about your ideas for Keystone Next.
   - name: Chat (Slack)
