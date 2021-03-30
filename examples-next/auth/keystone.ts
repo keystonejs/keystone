@@ -60,7 +60,6 @@ export default withAuth(
     db: process.env.DATABASE_URL
       ? { adapter: 'prisma_postgresql', url: process.env.DATABASE_URL }
       : { adapter: 'prisma_sqlite', url: 'file:./keystone.db' },
-    experimental: { prismaSqlite: true },
     lists,
     ui: {},
     session: withItemData(
