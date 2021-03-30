@@ -65,6 +65,7 @@
   "preconstruct": {
     "entrypoints": [
       "index.ts",
+      "artifacts.ts",
       "schema/index.ts",
       "session/index.ts",
       "scripts/index.ts"

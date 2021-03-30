@@ -6,7 +6,7 @@ import { AdminFileToWrite } from '@keystone-next/types';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { requireSource } from '../../lib/requireSource';
-import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../../lib/artifacts';
+import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../../artifacts';
 import { CONFIG_PATH, getAdminPath } from '../utils';
 
 // FIXME: Duplicated from admin-ui package. Need to decide on a common home.
