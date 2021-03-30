@@ -1,6 +1,6 @@
 contact_links:
   - name: Question (Stack Overflow)
-    url: http://slack.keystonejs.com/
+    url: https://stackoverflow.com/questions/ask
     about: Reach out to our Stack Overflow community.
   - name: Feature request (GitHub Discussions)
     url: https://github.com/keystonejs/keystone/discussions
