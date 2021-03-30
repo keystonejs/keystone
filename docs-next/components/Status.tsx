@@ -1,42 +1,40 @@
 /** @jsx jsx */
-import { ReactNode } from 'react';
 import { jsx } from '@keystone-ui/core';
 
 interface StatusProps {
-  children: ReactNode;
-  look:
-    | 'default'
-    | 'notStarted'
-    | 'figuringItOut'
-    | 'theresAPlan'
-    | 'makingItHappen'
-    | 'cleaningUp';
+  look: 'notStarted' | 'figuringItOut' | 'theresAPlan' | 'makingItHappen' | 'cleaningUp';
 }
-export function Status({ look = 'default', children }: StatusProps) {
-  const styleMap = {
-    default: {
-      color: '#1a202c',
-      backgroundColor: '#eff4f8',
-    },
+export function Status({ look }: StatusProps) {
+  const statusMap = {
     notStarted: {
-      color: '#bf4722',
-      backgroundColor: '#faeae5',
+      label: 'Not started',
+      icon: '🛑',
+      color: '#DC2626',
+      backgroundColor: '#FEE2E2',
     },
     figuringItOut: {
-      color: '#c05621',
-      backgroundColor: '#feebc8',
+      label: 'Figuring it out',
+      icon: '🖊️',
+      color: '#D97706',
+      backgroundColor: '#FEF3C7',
     },
     theresAPlan: {
-      color: '#6b46c1',
-      backgroundColor: '#e9d8fd',
+      label: 'There’s a plan',
+      icon: '📋',
+      color: '#DB2777',
+      backgroundColor: '#FCE7F3',
     },
     makingItHappen: {
-      color: '#2b6cb0',
-      backgroundColor: '#bee3f8',
+      label: 'Making it happen',
+      icon: '🔧',
+      color: '#1D4ED8',
+      backgroundColor: '#DBEAFE',
     },
     cleaningUp: {
-      color: '#2f855a',
-      backgroundColor: '#c6f6d5',
+      label: 'Cleaning up',
+      icon: '🧹',
+      color: '#15803D',
+      backgroundColor: '#DCFCE7',
     },
   };
 
@@ -57,10 +55,13 @@ export function Status({ look = 'default', children }: StatusProps) {
     <span
       css={{
         ...commonStyles,
-        ...styleMap[look],
+        ...statusMap[look],
       }}
     >
-      {children}
+      <span aria-hidden="true" role="img">
+        {statusMap[look].icon}
+      </span>{' '}
+      {statusMap[look].label}
     </span>
   );
 }
