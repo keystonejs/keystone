@@ -1,26 +1,98 @@
 import pWaterfall from 'p-waterfall';
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
 
+// Note: These type definitions are preliminary while we're working towards
+// a full TypeScript conversion.
+type Rel = {
+  left: Field<any>;
+  right: Field<any>;
+  cardinality: 'N:N' | 'N:1' | '1:N' | '1:1';
+  tableName: string;
+  columnName: string;
+};
+type Rels = Rel[];
+
+type ListAdapterConfig = { searchField?: string };
+
+type List = { adapter: PrismaListAdapter };
+
+type Field<P extends string> = {
+  isRelationship: boolean;
+  path: P;
+  listKey: string;
+  refListKey: string;
+  isPrimaryKey: boolean;
+  adapter: PrismaFieldAdapter<P>;
+};
+
+type ItemQueryArgs = Record<string, any>;
+
+type IdType = string | number;
+
+type FromType = { fromId?: IdType; fromField?: string; fromList?: List };
+
+type PrismaModel = {
+  count: (filter: Filter) => Promise<number>;
+  findMany: (filter: Filter) => Promise<any[]>;
+  delete: (arg: { where: { id: number } }) => Promise<void>;
+  findUnique: (args: {
+    where: { id: number };
+    include?: Record<string, any>;
+  }) => Promise<Record<string, any> | undefined>;
+  create: (args: { data: Record<string, any>; include?: Record<string, any> }) => Promise<any>;
+  update: (args: {
+    where: { id: number };
+    data: Record<string, any>;
+    include?: Record<string, any>;
+  }) => Promise<any>;
+};
+
+type Filter = {
+  where?: Record<string, any>;
+  take?: number;
+  skip?: number;
+  orderBy?: Record<string, any>;
+  include?: Record<string, boolean>;
+};
+
 class PrismaAdapter {
+  config: {
+    prismaClient?: any;
+    provider?: 'postgresql' | 'sqlite';
+    enableLogging?: boolean;
+    url?: string;
+  };
+  listAdapters: Record<string, PrismaListAdapter>;
+  listAdapterClass?: any;
+  _prismaClient?: any;
+  name: 'prisma';
+  provider: 'postgresql' | 'sqlite';
+  enableLogging: boolean;
+  url: string;
+
+  schemaPath?: string;
+  clientPath?: string;
+  prisma: any;
+
   constructor(config = {}) {
     this.config = { ...config };
     this.listAdapters = {};
     this.name = 'prisma';
     this.provider = this.config.provider || 'postgresql';
     this.enableLogging = this.config.enableLogging || false;
-    this.url = this.config.url || process.env.DATABASE_URL;
+    this.url = this.config.url || process.env.DATABASE_URL || '';
   }
 
-  newListAdapter(key, adapterConfig) {
+  newListAdapter(key: string, adapterConfig: ListAdapterConfig) {
     this.listAdapters[key] = new PrismaListAdapter(key, this, adapterConfig);
     return this.listAdapters[key];
   }
 
-  getListAdapterByKey(key) {
+  getListAdapterByKey(key: string) {
     return this.listAdapters[key];
   }
 
-  async connect({ rels }) {
+  async connect({ rels }: { rels: Rels }) {
     // Connect to the database
     // the adapter was already connected since we have a prisma client
     // it may have been disconnected since it was connected though
@@ -45,7 +117,7 @@ class PrismaAdapter {
     await this.prisma.$connect();
   }
 
-  _generatePrismaSchema({ rels, clientDir }) {
+  _generatePrismaSchema({ rels, clientDir }: { rels: Rels; clientDir: string }) {
     const models = Object.values(this.listAdapters).map(listAdapter => {
       const scalarFields = flatten(
         listAdapter.fieldAdapters.filter(f => !f.field.isRelationship).map(f => f.getPrismaSchema())
@@ -56,7 +128,7 @@ class PrismaAdapter {
             .map(({ field }) => field)
             .filter(f => f.isRelationship)
             .map(f => {
-              const r = rels.find(r => r.left === f || r.right === f);
+              const r = rels.find(r => r.left === f || r.right === f) as Rel;
               const isLeft = r.left === f;
               if (r.cardinality === 'N:N') {
                 const relName = r.tableName;
@@ -106,7 +178,7 @@ class PrismaAdapter {
           .map(({ field }) => field)
           .filter(f => f.isRelationship)
           .map(f => {
-            const r = rels.find(r => r.left === f || r.right === f);
+            const r = rels.find(r => r.left === f || r.right === f) as Rel;
             const isLeft = r.left === f;
             if (
               (r.cardinality === 'N:1' && isLeft) ||
@@ -154,7 +226,17 @@ class PrismaAdapter {
 }
 
 class PrismaListAdapter {
-  constructor(key, parentAdapter, config) {
+  key: string;
+  parentAdapter: PrismaAdapter;
+  fieldAdapters: PrismaFieldAdapter<any>[];
+  fieldAdaptersByPath: Record<string, PrismaFieldAdapter<any>>;
+  config: ListAdapterConfig;
+  preSaveHooks: any[];
+  postReadHooks: any[];
+  model?: PrismaModel;
+  getListAdapterByKey: (key: string) => PrismaListAdapter | undefined;
+
+  constructor(key: string, parentAdapter: PrismaAdapter, config: ListAdapterConfig) {
     this.key = key;
     this.parentAdapter = parentAdapter;
     this.fieldAdapters = [];
@@ -163,7 +245,7 @@ class PrismaListAdapter {
 
     this.preSaveHooks = [];
     this.postReadHooks = [
-      item => {
+      (item: any) => {
         // FIXME: This can hopefully be removed once graphql 14.1.0 is released.
         // https://github.com/graphql/graphql-js/pull/1520
         if (item && item.id) item.id = item.id.toString();
@@ -173,7 +255,14 @@ class PrismaListAdapter {
     this.getListAdapterByKey = parentAdapter.getListAdapterByKey.bind(parentAdapter);
   }
 
-  newFieldAdapter(fieldAdapterClass, name, path, field, getListByKey, config) {
+  newFieldAdapter<P extends string>(
+    fieldAdapterClass: typeof PrismaFieldAdapter,
+    name: string,
+    path: P,
+    field: Field<P>,
+    getListByKey: (key: string) => List | undefined,
+    config: ListAdapterConfig
+  ) {
     const adapter = new fieldAdapterClass(name, path, field, this, getListByKey, config);
     adapter.setupHooks({
       addPreSaveHook: this.addPreSaveHook.bind(this),
@@ -184,44 +273,46 @@ class PrismaListAdapter {
     return adapter;
   }
 
-  addPreSaveHook(hook) {
+  addPreSaveHook(hook: any) {
     this.preSaveHooks.push(hook);
   }
 
-  addPostReadHook(hook) {
+  addPostReadHook(hook: any) {
     this.postReadHooks.push(hook);
   }
 
-  onPreSave(item) {
+  onPreSave(item: any) {
     // We waterfall so the final item is a composed version of the input passing
     // through each consecutive hook
-    return pWaterfall(this.preSaveHooks, item);
+    return pWaterfall(this.preSaveHooks, item) as Promise<Record<string, any>>;
   }
 
-  async onPostRead(item) {
+  async onPostRead(item: Promise<any>) {
     // We waterfall so the final item is a composed version of the input passing
     // through each consecutive hook
     return pWaterfall(this.postReadHooks, await item);
   }
 
-  async create(data) {
+  async create(data: any) {
     return this.onPostRead(this._create(await this.onPreSave(data)));
   }
 
-  async delete(id) {
+  async delete(id: IdType) {
     return this._delete(id);
   }
 
-  async update(id, data) {
+  async update(id: IdType, data: any) {
     return this.onPostRead(this._update(id, await this.onPreSave(data)));
   }
 
-  async itemsQuery(args, { meta = false, from = {} } = {}) {
+  async itemsQuery(args: ItemQueryArgs, { meta = false, from = {} } = {}) {
     const results = await this._itemsQuery(args, { meta, from });
-    return meta ? results : Promise.all(results.map(item => this.onPostRead(item)));
+    return meta
+      ? results
+      : Promise.all((results as any[]).map((item: any) => this.onPostRead(item)));
   }
 
-  _setupModel({ rels, prisma }) {
+  _setupModel({ rels, prisma }: { rels: Rels; prisma: any }) {
     // https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema/models#queries-crud
     // "By default the name of the property is the lowercase form of the model name,
     // e.g. user for a User model or post for a Post model."
@@ -243,15 +334,15 @@ class PrismaListAdapter {
     const include = defaultObj(
       this.fieldAdapters
         .filter(({ isRelationship }) => isRelationship)
-        .filter(a => a.config.many || (a.rel.cardinality === '1:1' && a.rel.right.adapter === a))
+        .filter(a => a.config.many || (a.rel!.cardinality === '1:1' && a.rel!.right.adapter === a))
         .map(a => a.path),
       { select: { id: true } }
     );
     return Object.keys(include).length > 0 ? include : undefined;
   }
 
-  async _create(_data) {
-    return this.model.create({
+  async _create(_data: Record<string, any>) {
+    return this.model!.create({
       data: mapKeys(_data, (value, path) =>
         this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].isRelationship
           ? {
@@ -259,7 +350,7 @@ class PrismaListAdapter {
                 ? value.map(x => ({ id: Number(x) }))
                 : { id: Number(value) },
             }
-          : this.fieldAdaptersByPath[path] && this.fieldAdaptersByPath[path].gqlToPrisma
+          : this.fieldAdaptersByPath[path]
           ? this.fieldAdaptersByPath[path].gqlToPrisma(value)
           : value
       ),
@@ -267,10 +358,10 @@ class PrismaListAdapter {
     });
   }
 
-  async _update(id, _data) {
+  async _update(id: IdType, _data: Record<string, any>) {
     const include = this._include();
-    const existingItem = await this.model.findUnique({ where: { id: Number(id) }, include });
-    return this.model.update({
+    const existingItem = await this.model!.findUnique({ where: { id: Number(id) }, include });
+    return this.model!.update({
       where: { id: Number(id) },
       data: mapKeys(_data, (value, path) => {
         if (
@@ -279,9 +370,13 @@ class PrismaListAdapter {
           Array.isArray(value)
         ) {
           const vs = value.map(x => Number(x));
-          const toDisconnect = existingItem[path].filter(({ id }) => !vs.includes(id));
+          const toDisconnect = (existingItem![path] as { id: number }[]).filter(
+            ({ id }) => !vs.includes(id)
+          );
           const toConnect = vs
-            .filter(id => !existingItem[path].map(({ id }) => id).includes(id))
+            .filter(
+              id => !(existingItem![path] as { id: number }[]).map(({ id }) => id).includes(id)
+            )
             .map(id => ({ id }));
           return {
             disconnect: toDisconnect.length ? toDisconnect : undefined,
@@ -298,15 +393,18 @@ class PrismaListAdapter {
     });
   }
 
-  async _delete(id) {
-    return this.model.delete({ where: { id: Number(id) } });
+  async _delete(id: IdType) {
+    return this.model!.delete({ where: { id: Number(id) } });
   }
 
   ////////// Queries //////////
-  async _itemsQuery(args, { meta = false, from = {} } = {}) {
+  async _itemsQuery(
+    args: ItemQueryArgs,
+    { meta = false, from = {} }: { meta?: boolean; from?: FromType } = {}
+  ) {
     const filter = this.prismaFilter({ args, meta, from });
     if (meta) {
-      let count = await this.model.count(filter);
+      let count = await this.model!.count(filter);
       const { first, skip } = args;
 
       // Adjust the count as appropriate
@@ -319,12 +417,27 @@ class PrismaListAdapter {
       count = Math.max(0, count); // Don't want to go negative from a skip!
       return { count };
     } else {
-      return this.model.findMany(filter);
+      return this.model!.findMany(filter);
     }
   }
 
-  prismaFilter({ args: { where = {}, first, skip, sortBy, orderBy, search }, meta, from }) {
-    const ret = {};
+  prismaFilter({
+    args: { where = {}, first, skip, sortBy, orderBy, search },
+    meta,
+    from,
+  }: {
+    args: {
+      where?: Record<string, any>;
+      first?: number;
+      skip?: number;
+      sortBy?: string[];
+      orderBy?: Record<string, any>;
+      search?: string;
+    };
+    meta: boolean;
+    from: FromType;
+  }) {
+    const ret: Filter = {};
     const allWheres = this.processWheres(where);
 
     if (allWheres) {
@@ -335,7 +448,8 @@ class PrismaListAdapter {
       if (!ret.where) {
         ret.where = {};
       }
-      const a = from.fromList.adapter.fieldAdaptersByPath[from.fromField];
+      const a = from.fromList!.adapter.fieldAdaptersByPath[from.fromField!];
+      if (!a.rel) throw Error(`Relationship information missing from field adapter ${a}`);
       if (a.rel.cardinality === 'N:N') {
         const path = a.rel.right
           ? a.field === a.rel.right // Two-sided
@@ -398,12 +512,12 @@ class PrismaListAdapter {
         sortBy.forEach(s => {
           const [orderField, orderDirection] = s.split('_');
           const sortKey = this.fieldAdaptersByPath[orderField].sortKey || orderField;
-          ret.orderBy[sortKey] = orderDirection.toLowerCase();
+          ret.orderBy![sortKey] = orderDirection.toLowerCase();
         });
       }
 
       this.fieldAdapters
-        .filter(a => a.isRelationship && a.rel.cardinality === '1:1' && a.rel.right === a.field)
+        .filter(a => a.isRelationship && a.rel!.cardinality === '1:1' && a.rel!.right === a.field)
         .forEach(({ path }) => {
           if (!ret.include) ret.include = {};
           ret.include[path] = true;
@@ -412,14 +526,14 @@ class PrismaListAdapter {
     return ret;
   }
 
-  processWheres(where) {
-    const processRelClause = (fieldPath, clause) =>
-      this.getListAdapterByKey(this.fieldAdaptersByPath[fieldPath].refListKey).processWheres(
+  processWheres(where: Record<string, any>): Record<string, any> | undefined {
+    const processRelClause = (fieldPath: string, clause: Record<string, any>) =>
+      this.getListAdapterByKey(this.fieldAdaptersByPath[fieldPath].refListKey!)!.processWheres(
         clause
       );
     const wheres = Object.entries(where).map(([condition, value]) => {
       if (condition === 'AND' || condition === 'OR') {
-        return { [condition]: value.map(w => this.processWheres(w)) };
+        return { [condition]: (value as Record<string, any>[]).map(w => this.processWheres(w)) };
       } else if (
         this.fieldAdaptersByPath[condition] &&
         this.fieldAdaptersByPath[condition].isRelationship
@@ -452,8 +566,30 @@ class PrismaListAdapter {
   }
 }
 
-class PrismaFieldAdapter {
-  constructor(fieldName, path, field, listAdapter, getListByKey, config = {}) {
+// FIXME: Enumerate the valid types
+type PrismaType = string;
+
+class PrismaFieldAdapter<P extends string> {
+  fieldName: string;
+  path: P;
+  field: Field<P>;
+  listAdapter: PrismaListAdapter;
+  config: Record<string, any>;
+  getListByKey: (arg: string) => List | undefined;
+  dbPath: string;
+  isRelationship?: boolean;
+  rel?: Rel;
+  sortKey?: string;
+  refListKey?: string;
+
+  constructor(
+    fieldName: string,
+    path: P,
+    field: Field<P>,
+    listAdapter: PrismaListAdapter,
+    getListByKey: (arg: string) => List | undefined,
+    config = {}
+  ) {
     this.fieldName = fieldName;
     this.path = path;
     this.field = field;
@@ -463,9 +599,18 @@ class PrismaFieldAdapter {
     this.dbPath = path;
   }
 
-  setupHooks() {}
+  setupHooks({}) {}
 
-  _schemaField({ type, extra = '' }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getQueryConditions(dbPath: string) {
+    return {} as Record<string, any>;
+  }
+
+  gqlToPrisma(value: any) {
+    return value;
+  }
+
+  _schemaField({ type, extra = '' }: { type: PrismaType; extra?: string }) {
     const { isRequired, isUnique } = this.config;
     return `${this.path} ${type}${isRequired || this.field.isPrimaryKey ? '' : '?'} ${
       this.field.isPrimaryKey ? '@id' : ''
@@ -485,10 +630,10 @@ class PrismaFieldAdapter {
   //   `dbPath`: The database field/column name to be used in the comparison
   //   `f`: (non-string methods only) A value transformation function which converts from a string type
   //        provided by graphQL into a native adapter type.
-  equalityConditions(dbPath, f = identity) {
+  equalityConditions<T>(dbPath: string, f = identity) {
     return {
-      [this.path]: value => ({ [dbPath]: { equals: f(value) } }),
-      [`${this.path}_not`]: value =>
+      [this.path]: (value: T) => ({ [dbPath]: { equals: f(value) } }),
+      [`${this.path}_not`]: (value: T | null) =>
         value === null
           ? { NOT: { [dbPath]: { equals: f(value) } } }
           : {
@@ -497,10 +642,12 @@ class PrismaFieldAdapter {
     };
   }
 
-  equalityConditionsInsensitive(dbPath, f = identity) {
+  equalityConditionsInsensitive(dbPath: string, f = identity) {
     return {
-      [`${this.path}_i`]: value => ({ [dbPath]: { equals: f(value), mode: 'insensitive' } }),
-      [`${this.path}_not_i`]: value =>
+      [`${this.path}_i`]: (value: string) => ({
+        [dbPath]: { equals: f(value), mode: 'insensitive' },
+      }),
+      [`${this.path}_not_i`]: (value: string) =>
         value === null
           ? { NOT: { [dbPath]: { equals: f(value), mode: 'insensitive' } } }
           : {
@@ -512,13 +659,13 @@ class PrismaFieldAdapter {
     };
   }
 
-  inConditions(dbPath, f = identity) {
+  inConditions<T>(dbPath: string, f = identity) {
     return {
-      [`${this.path}_in`]: value =>
+      [`${this.path}_in`]: (value: (T | null)[]) =>
         value.includes(null)
           ? { OR: [{ [dbPath]: { in: value.filter(x => x !== null).map(f) } }, { [dbPath]: null }] }
           : { [dbPath]: { in: value.map(f) } },
-      [`${this.path}_not_in`]: value =>
+      [`${this.path}_not_in`]: (value: (T | null)[]) =>
         value.includes(null)
           ? {
               AND: [
@@ -532,56 +679,56 @@ class PrismaFieldAdapter {
     };
   }
 
-  orderingConditions(dbPath, f = identity) {
+  orderingConditions<T>(dbPath: string, f = identity) {
     return {
-      [`${this.path}_lt`]: value => ({ [dbPath]: { lt: f(value) } }),
-      [`${this.path}_lte`]: value => ({ [dbPath]: { lte: f(value) } }),
-      [`${this.path}_gt`]: value => ({ [dbPath]: { gt: f(value) } }),
-      [`${this.path}_gte`]: value => ({ [dbPath]: { gte: f(value) } }),
+      [`${this.path}_lt`]: (value: T) => ({ [dbPath]: { lt: f(value) } }),
+      [`${this.path}_lte`]: (value: T) => ({ [dbPath]: { lte: f(value) } }),
+      [`${this.path}_gt`]: (value: T) => ({ [dbPath]: { gt: f(value) } }),
+      [`${this.path}_gte`]: (value: T) => ({ [dbPath]: { gte: f(value) } }),
     };
   }
 
-  stringConditions(dbPath, f = identity) {
+  stringConditions(dbPath: string, f = identity) {
     return {
-      [`${this.path}_contains`]: value => ({ [dbPath]: { contains: f(value) } }),
-      [`${this.path}_not_contains`]: value => ({
+      [`${this.path}_contains`]: (value: string) => ({ [dbPath]: { contains: f(value) } }),
+      [`${this.path}_not_contains`]: (value: string) => ({
         OR: [{ NOT: { [dbPath]: { contains: f(value) } } }, { [dbPath]: null }],
       }),
-      [`${this.path}_starts_with`]: value => ({ [dbPath]: { startsWith: f(value) } }),
-      [`${this.path}_not_starts_with`]: value => ({
+      [`${this.path}_starts_with`]: (value: string) => ({ [dbPath]: { startsWith: f(value) } }),
+      [`${this.path}_not_starts_with`]: (value: string) => ({
         OR: [{ NOT: { [dbPath]: { startsWith: f(value) } } }, { [dbPath]: null }],
       }),
-      [`${this.path}_ends_with`]: value => ({ [dbPath]: { endsWith: f(value) } }),
-      [`${this.path}_not_ends_with`]: value => ({
+      [`${this.path}_ends_with`]: (value: string) => ({ [dbPath]: { endsWith: f(value) } }),
+      [`${this.path}_not_ends_with`]: (value: string) => ({
         OR: [{ NOT: { [dbPath]: { endsWith: f(value) } } }, { [dbPath]: null }],
       }),
     };
   }
 
-  stringConditionsInsensitive(dbPath, f = identity) {
+  stringConditionsInsensitive(dbPath: string, f = identity) {
     return {
-      [`${this.path}_contains_i`]: value => ({
+      [`${this.path}_contains_i`]: (value: string) => ({
         [dbPath]: { contains: f(value), mode: 'insensitive' },
       }),
-      [`${this.path}_not_contains_i`]: value => ({
+      [`${this.path}_not_contains_i`]: (value: string) => ({
         OR: [
           { NOT: { [dbPath]: { contains: f(value), mode: 'insensitive' } } },
           { [dbPath]: null },
         ],
       }),
-      [`${this.path}_starts_with_i`]: value => ({
+      [`${this.path}_starts_with_i`]: (value: string) => ({
         [dbPath]: { startsWith: f(value), mode: 'insensitive' },
       }),
-      [`${this.path}_not_starts_with_i`]: value => ({
+      [`${this.path}_not_starts_with_i`]: (value: string) => ({
         OR: [
           { NOT: { [dbPath]: { startsWith: f(value), mode: 'insensitive' } } },
           { [dbPath]: null },
         ],
       }),
-      [`${this.path}_ends_with_i`]: value => ({
+      [`${this.path}_ends_with_i`]: (value: string) => ({
         [dbPath]: { endsWith: f(value), mode: 'insensitive' },
       }),
-      [`${this.path}_not_ends_with_i`]: value => ({
+      [`${this.path}_not_ends_with_i`]: (value: string) => ({
         OR: [
           { NOT: { [dbPath]: { endsWith: f(value), mode: 'insensitive' } } },
           { [dbPath]: null },
