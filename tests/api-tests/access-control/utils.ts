@@ -7,14 +7,10 @@ import { objMerge } from '@keystone-next/utils-legacy';
 import type { KeystoneConfig } from '@keystone-next/types';
 
 const FAKE_ID = {
-  mongoose: '5b3eabd9e9f2e3e4866742ea',
-  knex: 137,
   prisma_postgresql: 137,
   prisma_sqlite: 137,
 } as const;
 const FAKE_ID_2 = {
-  mongoose: '5b3eabd9e9f2e3e4866742eb',
-  knex: 138,
   prisma_postgresql: 138,
   prisma_sqlite: 137,
 } as const;

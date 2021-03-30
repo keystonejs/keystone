@@ -19,6 +19,7 @@
     "@sindresorhus/slugify": "^1.1.0",
     "@types/prompts": "^2.0.9",
     "chalk": "^4.1.0",
+    "p-waterfall": "^2.1.1",
     "prompts": "^2.4.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-prisma"

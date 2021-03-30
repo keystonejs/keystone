@@ -57,7 +57,7 @@ keystone.createList('Rsvp', {
 
 The Select field can store its value as any of the three following types:
 
-- `enum` (stored as a string in MongoDB)
+- `enum`
 - `string`
 - `integer`
 

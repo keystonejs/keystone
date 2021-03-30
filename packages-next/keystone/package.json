@@ -27,8 +27,6 @@
     "@types/express": "^4.17.11",
     "@types/fs-extra": "^9.0.9",
     "@types/graphql-upload": "^8.0.4",
-    "@types/keystonejs__adapter-knex": "^6.3.2",
-    "@types/keystonejs__adapter-mongoose": "^5.1.2",
     "@types/keystonejs__keystone": "^7.0.1",
     "@types/pluralize": "^0.0.29",
     "@types/prettier": "^2.2.3",
