@@ -24,11 +24,10 @@ Keystone contains a set of primitive fields types that can be imported from the 
 
 In addition to these, some complex types are packaged separately:
 
-| Field type                                                       | Description                                                                                                                                                          |
-| :--------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`AutoIncrement`](/packages/fields-auto-increment/README.md)     | An automatically incrementing integer; the default type for `id` fields when using the Knex DB adapter                                                               |
-| [`MongoId`](/packages/fields-mongoid/README.md)                  | Arbitrary [Mongo `ObjectId`](https://docs.mongodb.com/manual/reference/method/ObjectId/) values; the default type for `id` fields when using the Mongoose DB adapter |
-| [`CloudinaryImage`](/packages/fields-cloudinary-image/README.md) | Allows uploading images to the [Cloudinary](https://cloudinary.com/) image hosting service                                                                           |
+| Field type                                                       | Description                                                                                            |
+| :--------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------- |
+| [`AutoIncrement`](/packages/fields-auto-increment/README.md)     | An automatically incrementing integer; the default type for `id` fields when using the Knex DB adapter |
+| [`CloudinaryImage`](/packages/fields-cloudinary-image/README.md) | Allows uploading images to the [Cloudinary](https://cloudinary.com/) image hosting service             |
 
 > **Tip:** Need something else? Keystone lets you create [custom field types](/docs/guides/custom-field-types.md) to support almost any use case.
 
