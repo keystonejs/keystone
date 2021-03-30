@@ -23,10 +23,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           const listKey = 'Test';
 
-          // we want to memoize the server creation since it's the same fields
-          // for all the tests and setting up a keystone instance for prisma
-          // can be a bit slow
-          const _getServer = () =>
+          const getServer = () =>
             setupFromConfig({
               adapterName,
               config: testConfig({
@@ -35,8 +32,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }),
               }),
             });
-
-          const getServer = memoizeOne(_getServer);
 
           const withKeystone = (testFn: (args: any) => void = () => {}) =>
             runner(getServer, async ({ context, ...rest }) => {
