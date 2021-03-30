@@ -11,7 +11,7 @@ import {
   generateNodeModulesArtifacts,
   getSchemaPaths,
   requirePrismaClient,
-} from '../../lib/artifacts';
+} from '../../artifacts';
 import { CONFIG_PATH, getAdminPath } from '../utils';
 
 // TODO: Don't generate or start an Admin UI if it isn't configured!!

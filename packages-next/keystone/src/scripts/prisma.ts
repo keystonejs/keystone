@@ -1,6 +1,6 @@
 import execa from 'execa';
 import { createSystem } from '../lib/createSystem';
-import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../lib/artifacts';
+import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../artifacts';
 import { requireSource } from '../lib/requireSource';
 import { initConfig } from '../lib/initConfig';
 import { CONFIG_PATH } from './utils';
