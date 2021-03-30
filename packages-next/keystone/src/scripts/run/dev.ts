@@ -23,7 +23,7 @@ const devLoadingHTMLFilepath = path.join(
 );
 
 export const dev = async (cwd: string) => {
-  console.log('🤞 Starting Keystone');
+  console.log('✨ Starting Keystone');
 
   const server = express();
   let expressServer: null | ReturnType<typeof express> = null;

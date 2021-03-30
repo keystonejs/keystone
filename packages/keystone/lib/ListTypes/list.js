@@ -10,7 +10,6 @@ const {
   flatten,
   zipObj,
   createLazyDeferred,
-  arrayToObject,
 } = require('@keystone-next/utils-legacy');
 const { parseListAccess } = require('@keystone-next/access-control-legacy');
 const { graphqlLogger } = require('../Keystone/logger');
@@ -792,14 +791,13 @@ module.exports = class List {
     const extraData = { gqlName, itemIds: ids };
 
     const access = await this.checkListAccess(context, data, operation, extraData);
-
     const existingItems = await this.getAccessControlledItems(ids, access);
-    const existingItemsById = arrayToObject(existingItems, 'id');
 
+    // Only update those items which pass access control
     const itemsToUpdate = zipObj({
-      existingItem: ids.map(id => existingItemsById[id]),
-      id: ids, // itemId is taken from here in checkFieldAccess
-      data: data.map(d => d.data),
+      existingItem: existingItems,
+      id: existingItems.map(({ id }) => id), // itemId is taken from here in checkFieldAccess
+      data: existingItems.map(({ id }) => data.find(d => d.id === id).data),
     });
 
     // FIXME: We should do all of these in parallel and return *all* the field access violations

@@ -64,7 +64,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // 2 results is okay
-            let { data, errors } = await context.executeGraphQL({
+            let data = await context.graphql.run({
               query: `
           query {
             allUsers(
@@ -77,12 +77,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(errors).toBe(undefined);
             expect(data).toHaveProperty('allUsers');
             expect(data.allUsers).toEqual([{ name: 'Jess' }, { name: 'Johanna' }]);
 
             // No results is okay
-            ({ data, errors } = await context.executeGraphQL({
+            data = await context.graphql.run({
               query: `
           query {
             allUsers(
@@ -92,14 +91,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           }
       `,
-            }));
+            });
 
-            expect(errors).toBe(undefined);
             expect(data).toHaveProperty('allUsers');
             expect(data.allUsers.length).toEqual(0);
 
             // Count is still correct
-            ({ data, errors } = await context.executeGraphQL({
+            data = await context.graphql.run({
               query: `
           query {
             meta: _allUsersMeta {
@@ -107,14 +105,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           }
       `,
-            }));
+            });
 
-            expect(errors).toBe(undefined);
             expect(data).toHaveProperty('meta');
             expect(data.meta.count).toBe(users.length);
 
             // This query is only okay because of the "first" parameter
-            ({ data, errors } = await context.executeGraphQL({
+            data = await context.graphql.run({
               query: `
           query {
             allUsers(first: 1) {
@@ -122,14 +119,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           }
       `,
-            }));
+            });
 
-            expect(errors).toBe(undefined);
             expect(data).toHaveProperty('allUsers');
             expect(data.allUsers.length).toEqual(1);
 
             // This query returns too many results
-            ({ errors } = await context.executeGraphQL({
+            let errors;
+            ({ errors } = await context.graphql.raw({
               query: `
           query {
             allUsers {
@@ -142,7 +139,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(errors).toMatchObject([{ message: 'Your request exceeded server limits' }]);
 
             // The query results don't break the limits, but the "first" parameter does
-            ({ errors } = await context.executeGraphQL({
+            ({ errors } = await context.graphql.raw({
               query: `
           query {
             allUsers(
@@ -197,7 +194,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Reset the count for each query
             context.totalResults = 0;
             // A basic query that should work
-            let { data, errors } = await context.executeGraphQL({
+            let data = await context.graphql.run({
               query: `
           query {
             allPosts(
@@ -212,7 +209,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
             });
 
-            expect(errors).toBe(undefined);
             expect(data).toHaveProperty('allPosts');
             expect(data.allPosts).toEqual([
               {
@@ -224,7 +220,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Reset the count for each query
             context.totalResults = 0;
             // Each subquery is within the limit (even though the total isn't)
-            ({ data, errors } = await context.executeGraphQL({
+            data = await context.graphql.run({
               query: `
           query {
             allPosts(
@@ -243,9 +239,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           }
       `,
-            }));
+            });
 
-            expect(errors).toBe(undefined);
             expect(data).toHaveProperty('allPosts');
             expect(data.allPosts).toEqual([
               {
@@ -260,7 +255,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Reset the count for each query
             context.totalResults = 0;
             // This post has too many authors
-            ({ errors } = await context.executeGraphQL({
+            let errors;
+            ({ errors } = await context.graphql.raw({
               query: `
           query {
             allPosts(
@@ -280,7 +276,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // Requesting the too-many-authors post is okay as long as the authors aren't returned
             // Reset the count for each query
             context.totalResults = 0;
-            ({ data, errors } = await context.executeGraphQL({
+            data = await context.graphql.run({
               query: `
           query {
             allPosts(
@@ -290,16 +286,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             }
           }
       `,
-            }));
+            });
 
-            expect(errors).toBe(undefined);
             expect(data).toHaveProperty('allPosts');
             expect(data.allPosts).toEqual([{ title: 'Three authors' }]);
 
             // Some posts are okay, but one breaks the limit
             // Reset the count for each query
             context.totalResults = 0;
-            ({ errors } = await context.executeGraphQL({
+            ({ errors } = await context.graphql.raw({
               query: `
           query {
             allPosts {
@@ -317,7 +312,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             // All subqueries are within limits, but the total isn't
             // Reset the count for each query
             context.totalResults = 0;
-            ({ errors } = await context.executeGraphQL({
+            ({ errors } = await context.graphql.raw({
               query: `
           query {
             allPosts(where: { title: "Two authors" }) {
