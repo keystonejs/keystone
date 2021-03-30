@@ -8,7 +8,6 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystone-next/fields-mongoid-legacy": "^10.0.0",
     "@keystone-next/keystone-legacy": "^22.0.0",
     "@keystone-next/utils-legacy": "^8.0.0",
     "cuid": "^2.1.8",

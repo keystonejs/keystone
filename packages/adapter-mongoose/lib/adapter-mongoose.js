@@ -135,8 +135,7 @@ class MongooseAdapter extends BaseKeystoneAdapter {
 
   getDefaultPrimaryKeyConfig() {
     // Required here due to circular refs
-    const { MongoId } = require('@keystone-next/fields-mongoid-legacy');
-    return MongoId.primaryKeyDefaults[this.name].getConfig();
+    return {};
   }
 
   async checkDatabaseVersion() {
