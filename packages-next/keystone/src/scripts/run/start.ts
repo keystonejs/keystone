@@ -16,11 +16,7 @@ export const start = async (cwd: string) => {
     throw new Error('keystone-next build must be run before running keystone-next start');
   }
   const config = initConfig(require(apiFile).config);
-  const { keystone, graphQLSchema, createContext } = createSystem(
-    config,
-    'none-skip-client-generation',
-    requirePrismaClient(cwd)
-  );
+  const { keystone, graphQLSchema, createContext } = createSystem(config, requirePrismaClient(cwd));
 
   console.log('✨ Connecting to the database');
   await keystone.connect({ context: createContext().sudo() });

@@ -1,13 +1,9 @@
 // @ts-ignore
 import { Keystone } from '@keystone-next/keystone-legacy';
 import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
-import type { KeystoneConfig, BaseKeystone, MigrationAction } from '@keystone-next/types';
+import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
 
-export function createKeystone(
-  config: KeystoneConfig,
-  migrationAction: MigrationAction,
-  prismaClient?: any
-) {
+export function createKeystone(config: KeystoneConfig, prismaClient?: any) {
   // Note: For backwards compatibility we may want to expose
   // this as a public API so that users can start their transition process
   // by using this pattern for creating their Keystone object before using
@@ -16,8 +12,6 @@ export function createKeystone(
   let adapter;
   if (db.adapter === 'prisma_postgresql') {
     adapter = new PrismaAdapter({
-      migrationMode:
-        migrationAction === 'dev' ? (db.useMigrations ? 'dev' : 'prototype') : migrationAction,
       prismaClient,
       ...db,
       provider: 'postgresql',
@@ -30,8 +24,6 @@ export function createKeystone(
     }
     adapter = new PrismaAdapter({
       prismaClient,
-      migrationMode:
-        migrationAction === 'dev' ? (db.useMigrations ? 'dev' : 'prototype') : migrationAction,
       ...db,
       provider: 'sqlite',
     });
