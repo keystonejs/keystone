@@ -12,29 +12,25 @@ interface PaginationProps {
   list: Record<string, any>;
 }
 
-const usePaginationStats = ({ list, pageSize, currentPage, total }: PaginationProps) => {
-  const [stats, setStats] = useState<string>('');
-  const { singular, plural } = list;
-  useEffect(() => {
-    if (total > pageSize) {
-      const start = pageSize * (currentPage - 1) + 1;
-      const end = Math.min(start + pageSize - 1, total);
-      setStats(`${start} - ${end} of ${total} ${list.plural}`);
-    } else {
-      if (total > 1 && list.plural) {
-        setStats(`${total} ${list.plural}`);
-      } else if (total === 1 && list.singular) {
-        setStats(`${total} ${list.singular}`);
-      }
+const getPaginationStats = ({ list, pageSize, currentPage, total }: PaginationProps) => {
+  let stats = '';
+  if (total > pageSize) {
+    const start = pageSize * (currentPage - 1) + 1;
+    const end = Math.min(start + pageSize - 1, total);
+    stats = `${start} - ${end} of ${total} ${list.plural}`;
+  } else {
+    if (total > 1 && list.plural) {
+      stats = `${total} ${list.plural}`;
+    } else if (total === 1 && list.singular) {
+      stats = `${total} ${list.singular}`;
     }
-  }, [plural, singular, total, pageSize, currentPage]);
-
+  }
   return { stats };
 };
 
 export function Pagination({ currentPage, total, pageSize, list }: PaginationProps) {
   const { query, pathname, push } = useRouter();
-  const { stats } = usePaginationStats({ list, currentPage, total, pageSize });
+  const { stats } = getPaginationStats({ list, currentPage, total, pageSize });
   const { opacity } = useTheme();
 
   const nextPage = currentPage + 1;
@@ -95,6 +91,7 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
           width="medium"
           value={{ label: String(currentPage), value: String(currentPage) }}
           options={pages}
+          menuPortalTarget={document.body}
           onChange={onChange}
         />
         <span>of {limit}</span>
@@ -142,7 +139,7 @@ export function PaginationLabel({
   singular: string;
   total: number;
 }) {
-  const { stats } = usePaginationStats({
+  const { stats } = getPaginationStats({
     list: { plural, singular },
     currentPage,
     total,
