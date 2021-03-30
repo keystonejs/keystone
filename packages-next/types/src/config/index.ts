@@ -1,5 +1,6 @@
 import { IncomingMessage } from 'http';
 import type { ConnectOptions } from 'mongoose';
+import type { Express } from 'express';
 import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
 import type { Config } from 'apollo-server-express';
@@ -113,6 +114,8 @@ export type ServerConfig = {
   cors?: CorsOptions | true;
   /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
   port?: number;
+  /** Function to configure express, similar to configureExpress from production */
+  configureServer?: (app: Express) => void;
 };
 
 // config.graphql

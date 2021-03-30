@@ -10,6 +10,7 @@
   "dependencies": {
     "apollo-server-types": "^0.6.3",
     "cors": "^2.8.5",
+    "express": "^4.17.1",
     "graphql": "^15.5.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/types"
