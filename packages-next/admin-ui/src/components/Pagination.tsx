@@ -1,5 +1,4 @@
 /** @jsx jsx */
-import { useEffect, useState } from 'react';
 import { jsx, Stack, useTheme } from '@keystone-ui/core';
 import { Select } from '@keystone-ui/fields';
 import { ChevronRightIcon, ChevronLeftIcon } from '@keystone-ui/icons';

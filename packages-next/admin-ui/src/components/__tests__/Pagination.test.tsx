@@ -24,7 +24,7 @@ describe('<Pagination/>', () => {
         list={{ plural: 'Items', singular: 'Item' }}
       />
     );
-    screen.getByRole('navi1gation');
+    screen.getByRole('navigation');
   });
   describe('chevron functionality', () => {
     it('should have a disabled back button, when on the first page', () => {
