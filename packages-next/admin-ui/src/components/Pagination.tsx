@@ -14,6 +14,7 @@ interface PaginationProps {
 
 const usePaginationStats = ({ list, pageSize, currentPage, total }: PaginationProps) => {
   const [stats, setStats] = useState<string>('');
+  const { singular, plural } = list;
   useEffect(() => {
     if (total > pageSize) {
       const start = pageSize * (currentPage - 1) + 1;
@@ -22,11 +23,11 @@ const usePaginationStats = ({ list, pageSize, currentPage, total }: PaginationPr
     } else {
       if (total > 1 && list.plural) {
         setStats(`${total} ${list.plural}`);
-      } else {
+      } else if (total === 1 && list.singular) {
         setStats(`${total} ${list.singular}`);
       }
     }
-  }, [list, total, pageSize, currentPage]);
+  }, [plural, singular, total, pageSize, currentPage]);
 
   return { stats };
 };
