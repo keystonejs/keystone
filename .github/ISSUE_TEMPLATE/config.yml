@@ -1,7 +1,7 @@
 contact_links:
-  - name: Question about Keystone
-    url: http://community.keystonejs.com/
-    about: If you have a question related to Keystone. Reach out to the community at http://community.keystonejs.com/
-  - name: Feature Request
-    url: https://github.com/keystonejs/keystone/discussions/
+  - name: Question or Feature Request (Slack)
+    url: http://slack.keystonejs.com/
     about: Discuss or request a feature in Keystone Next.
+  - name: Question (Stack Overflow)
+    url: http://slack.keystonejs.com/
+    about: Reach out to our Stack Overflow community.
