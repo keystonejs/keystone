@@ -37,19 +37,27 @@ async function withMigrate<T>(
   }
 }
 
-export async function runPrototypeMigrations(dbUrl: string, schema: string, schemaPath: string) {
+export async function runPrototypeMigrations(
+  dbUrl: string,
+  schema: string,
+  schemaPath: string,
+  shouldDropDatabase = false
+) {
   let before = Date.now();
 
-  let migration = await withMigrate(dbUrl, schemaPath, async migrate =>
-    runMigrateWithDbUrl(dbUrl, () =>
+  let migration = await withMigrate(dbUrl, schemaPath, async migrate => {
+    if (shouldDropDatabase) {
+      await runMigrateWithDbUrl(dbUrl, () => migrate.engine.reset());
+    }
+    return runMigrateWithDbUrl(dbUrl, () =>
       migrate.engine.schemaPush({
         // TODO: we probably want to do something like db push does where either there's
         // a prompt or an argument needs to be passed to make it force(i.e. lose data)
         force: true,
         schema,
       })
-    )
-  );
+    );
+  });
 
   if (migration.warnings.length === 0 && migration.executedSteps === 0) {
     console.info(`✨ The database is already in sync with the Prisma schema.`);
