@@ -74,9 +74,22 @@ async function setupFromConfig({
     db = { adapter: adapterName, ...adapterArgs };
     _config = { ..._config, experimental: { prismaSqlite: true } };
   }
-  const config = initConfig({ ..._config, db: db!, ui: { isDisabled: true } });
 
-  const [prismaClient, runMigrations] = await (async () => {
+  let onConnect = async (): Promise<void> => {
+    throw new Error('onConnect was not set');
+  };
+  const config = initConfig({
+    ..._config,
+    ui: { isDisabled: true },
+    db: {
+      ...db!,
+      async onConnect() {
+        await onConnect();
+      },
+    },
+  });
+
+  const prismaClient = await (async () => {
     const { keystone, graphQLSchema } = createSystem(config, 'none-skip-client-generation');
     const artifacts = await getCommittedArtifacts(graphQLSchema, keystone);
     const hash = hashPrismaSchema(artifacts.prisma);
@@ -87,16 +100,15 @@ async function setupFromConfig({
     fs.mkdirSync(cwd, { recursive: true });
     await writeCommittedArtifacts(artifacts, cwd);
     await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
-    return [
-      requirePrismaClient(cwd),
-      () =>
-        runPrototypeMigrations(
-          config.db.url,
-          artifacts.prisma,
-          path.join(cwd, 'schema.prisma'),
-          true
-        ),
-    ];
+    runPrototypeMigrations(config.db.url, artifacts.prisma, path.join(cwd, 'schema.prisma'), true);
+    onConnect = async () =>
+      runPrototypeMigrations(
+        config.db.url,
+        artifacts.prisma,
+        path.join(cwd, 'schema.prisma'),
+        true
+      );
+    return requirePrismaClient(cwd);
   })();
 
   const { keystone, createContext, graphQLSchema } = createSystem(
@@ -104,12 +116,6 @@ async function setupFromConfig({
     'none-skip-client-generation',
     prismaClient
   );
-
-  let oldKeystoneConnect = keystone.connect;
-  keystone.connect = async function (...args) {
-    await runMigrations();
-    oldKeystoneConnect.call(this, ...args);
-  };
 
   const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
 
