@@ -1,4 +1,3 @@
-import path from 'path';
 // @ts-ignore
 import { Keystone } from '@keystone-next/keystone-legacy';
 import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
@@ -6,7 +5,6 @@ import type { KeystoneConfig, BaseKeystone, MigrationAction } from '@keystone-ne
 
 export function createKeystone(
   config: KeystoneConfig,
-  dotKeystonePath: string,
   migrationAction: MigrationAction,
   prismaClient?: any
 ) {
@@ -18,7 +16,6 @@ export function createKeystone(
   let adapter;
   if (db.adapter === 'prisma_postgresql') {
     adapter = new PrismaAdapter({
-      getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
       migrationMode:
         migrationAction === 'dev' ? (db.useMigrations ? 'dev' : 'prototype') : migrationAction,
       prismaClient,
@@ -32,7 +29,6 @@ export function createKeystone(
       );
     }
     adapter = new PrismaAdapter({
-      getPrismaPath: () => path.join(dotKeystonePath, 'prisma'),
       prismaClient,
       migrationMode:
         migrationAction === 'dev' ? (db.useMigrations ? 'dev' : 'prototype') : migrationAction,

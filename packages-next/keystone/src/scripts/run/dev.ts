@@ -1,13 +1,18 @@
 import path from 'path';
 import express from 'express';
 import { generateAdminUI } from '@keystone-next/admin-ui/system';
+import { devMigrations, runPrototypeMigrations } from '@keystone-next/adapter-prisma-legacy';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { requireSource } from '../../lib/requireSource';
 import { createExpressServer } from '../../lib/createExpressServer';
-import { saveSchemaAndTypes } from '../../lib/saveSchemaAndTypes';
-import { CONFIG_PATH } from '../utils';
-import type { StaticPaths } from '..';
+import {
+  generateCommittedArtifacts,
+  generateNodeModulesArtifacts,
+  getSchemaPaths,
+  requirePrismaClient,
+} from '../../lib/artifacts';
+import { CONFIG_PATH, getAdminPath } from '../utils';
 
 // TODO: Don't generate or start an Admin UI if it isn't configured!!
 const devLoadingHTMLFilepath = path.join(
@@ -17,7 +22,7 @@ const devLoadingHTMLFilepath = path.join(
   'dev-loading.html'
 );
 
-export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) => {
+export const dev = async (cwd: string) => {
   console.log('✨ Starting Keystone');
 
   const server = express();
@@ -25,10 +30,29 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) =>
 
   const config = initConfig(requireSource(CONFIG_PATH).default);
   const initKeystone = async () => {
-    const { keystone, graphQLSchema, createContext } = createSystem(config, dotKeystonePath, 'dev');
+    {
+      const { keystone, graphQLSchema } = createSystem(config, 'none-skip-client-generation');
 
-    console.log('✨ Generating graphQL schema');
-    await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);
+      console.log('✨ Generating GraphQL and Prisma schemas');
+      const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, keystone, cwd)).prisma;
+      await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
+
+      if (config.db.adapter === 'prisma_postgresql' || config.db.adapter === 'prisma_sqlite') {
+        if (config.db.useMigrations) {
+          await devMigrations(config.db.url, prismaSchema, getSchemaPaths(cwd).prisma);
+        } else {
+          await runPrototypeMigrations(config.db.url, prismaSchema, getSchemaPaths(cwd).prisma);
+        }
+      }
+    }
+
+    const prismaClient = requirePrismaClient(cwd);
+
+    const { keystone, graphQLSchema, createContext } = createSystem(
+      config,
+      'none-skip-client-generation',
+      prismaClient
+    );
 
     console.log('✨ Connecting to the database');
     await keystone.connect({ context: createContext().sudo() });
@@ -37,7 +61,7 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) =>
       console.log('✨ Skipping Admin UI code generation');
     } else {
       console.log('✨ Generating Admin UI code');
-      await generateAdminUI(config, graphQLSchema, keystone, projectAdminPath);
+      await generateAdminUI(config, graphQLSchema, keystone, getAdminPath(cwd));
     }
 
     console.log('✨ Creating server');
@@ -46,7 +70,7 @@ export const dev = async ({ dotKeystonePath, projectAdminPath }: StaticPaths) =>
       graphQLSchema,
       createContext,
       true,
-      projectAdminPath
+      getAdminPath(cwd)
     );
     console.log(`👋 Admin UI and graphQL API ready`);
   };
