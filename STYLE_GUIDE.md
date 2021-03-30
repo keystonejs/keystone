@@ -33,7 +33,7 @@ Also, it should go without saying:
 
 - Ensure correct spelling; spell-check documents before committing.
   (We _favour_ UK/Australian spelling.)
-- Ensure correct capitalisation, inc. product names and acronyms (eg: JavaScript, URL, Node.js, MongoDB).
+- Ensure correct capitalisation, inc. product names and acronyms (eg: JavaScript, URL, Node.js).
   Note, _abbreviations_ like "etc.", "ie." and "eg." are not acronyms;
   they should only be capitalised if at the start of a sentence.
 - Ensure correct English grammar (or Miss Willings will come for you 👩🏼‍🏫).
