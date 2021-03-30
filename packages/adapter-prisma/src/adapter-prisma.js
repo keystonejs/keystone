@@ -277,46 +277,7 @@ class PrismaAdapter {
       listAdapter._postConnect({ rels, prisma: this.prisma });
     });
 
-    if (this.config.dropDatabase && process.env.NODE_ENV !== 'production') {
-      await this.dropDatabase();
-    }
     return [];
-  }
-
-  // This will drop all the tables in the backing database. Use wisely.
-  async dropDatabase() {
-    if (this.migrationMode === 'prototype') {
-      if (this.provider === 'postgresql') {
-        // Special fast path to drop data from a postgres database.
-        // This is an optimization which is particularly crucial in a unit testing context.
-        // This code path takes milliseconds, vs ~7 seconds for a migrate reset + db push
-        for (const { tablename } of await this.prisma.$queryRaw(
-          `SELECT tablename FROM pg_tables WHERE schemaname='${this.dbSchemaName}'`
-        )) {
-          await this.prisma.$queryRaw(
-            `TRUNCATE TABLE \"${this.dbSchemaName}\".\"${tablename}\" CASCADE;`
-          );
-        }
-        for (const { relname } of await this.prisma.$queryRaw(
-          `SELECT c.relname FROM pg_class AS c JOIN pg_namespace AS n ON c.relnamespace = n.oid WHERE c.relkind='S' AND n.nspname='${this.dbSchemaName}';`
-        )) {
-          await this.prisma.$queryRaw(
-            `ALTER SEQUENCE \"${this.dbSchemaName}\".\"${relname}\" RESTART WITH 1;`
-          );
-        }
-      } else if (this.provider === 'sqlite') {
-        const tables = await this.prisma.$queryRaw(
-          "SELECT name FROM sqlite_master WHERE type='table';"
-        );
-        for (const { name } of tables) {
-          await this.prisma.$queryRaw(`DELETE FROM "${name}";`);
-        }
-      } else {
-        throw new Error('Only "postgresql" and "sqlite" providers are supported');
-      }
-    } else {
-      resetDatabaseWithMigrations(this._url(), path.resolve(this.schemaPath));
-    }
   }
 
   disconnect() {
