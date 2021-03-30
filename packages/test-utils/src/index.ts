@@ -26,7 +26,6 @@ const hashPrismaSchema = memoizeOne(prismaSchema =>
 
 const argGenerator = {
   prisma_postgresql: () => ({
-    migrationMode: 'none-skip-client-generation',
     url: process.env.DATABASE_URL!,
     provider: 'postgresql',
     getDbSchemaName: () => null as any,
@@ -34,7 +33,6 @@ const argGenerator = {
     enableLogging: false,
   }),
   prisma_sqlite: () => ({
-    migrationMode: 'none-skip-client-generation',
     url: process.env.DATABASE_URL!,
     provider: 'sqlite',
     // Turn this on if you need verbose debug info
@@ -70,7 +68,7 @@ async function setupFromConfig({
   const config = initConfig({ ..._config, db: db!, ui: { isDisabled: true } });
 
   const prismaClient = await (async () => {
-    const { keystone, graphQLSchema } = createSystem(config, 'none-skip-client-generation');
+    const { keystone, graphQLSchema } = createSystem(config);
     const artifacts = await getCommittedArtifacts(graphQLSchema, keystone);
     const hash = hashPrismaSchema(artifacts.prisma);
     if (adapterName === 'prisma_postgresql') {
@@ -92,11 +90,7 @@ async function setupFromConfig({
     return requirePrismaClient(cwd);
   })();
 
-  const { keystone, createContext, graphQLSchema } = createSystem(
-    config,
-    'none-skip-client-generation',
-    prismaClient
-  );
+  const { keystone, createContext, graphQLSchema } = createSystem(config, prismaClient);
 
   const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
 

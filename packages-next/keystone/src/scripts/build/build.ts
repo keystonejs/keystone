@@ -87,7 +87,7 @@ export async function build(cwd: string) {
 
   const config = initConfig(requireSource(CONFIG_PATH).default);
 
-  const { keystone, graphQLSchema } = createSystem(config, 'none-skip-client-generation');
+  const { keystone, graphQLSchema } = createSystem(config);
 
   await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
 
