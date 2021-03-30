@@ -4,7 +4,7 @@ contact_links:
     about: Reach out to our Stack Overflow community.
   - name: Feature Requests (GitHub Discussions)
     url: https://github.com/keystonejs/keystone/discussions
-    about: Discuss Keystone Next with us!
+    about: Tell us about your ideas for Keystone Next.
   - name: Chat (Slack)
     url: http://slack.keystonejs.com/
     about: Discuss Keystone Next with us!
