@@ -1,5 +1,11 @@
 # @keystone-next/types
 
+## 15.0.1
+
+### Patch Changes
+
+- [#5257](https://github.com/keystonejs/keystone/pull/5257) [`34dd809ee`](https://github.com/keystonejs/keystone/commit/34dd809eef2368bba1e50ed613b36c5dac7262d1) Thanks [@timleslie](https://github.com/timleslie)! - Updated type `GraphQLExecutionArguments.variables` to be optional.
+
 ## 15.0.0
 
 ### Major Changes
