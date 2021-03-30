@@ -21,27 +21,12 @@ import { gql, TypedDocumentNode, useMutation, useQuery } from '../../apollo';
 import { CellLink } from '../../components';
 import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
-<<<<<<< HEAD
-<<<<<<< HEAD
 import { Pagination, PaginationLabel } from '../../components/Pagination';
-=======
-import { Pagination } from '../../components/Pagination';
->>>>>>> 9e709ee64... refine, accessibility, types
-=======
-import { Pagination, PaginationLabel } from '../../components/Pagination';
->>>>>>> 4c3cf0c79... add tests
 import { useList } from '../../context';
 import { Link, useRouter } from '../../router';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-import { PaginationLabel } from './pagination';
->>>>>>> 9e709ee64... refine, accessibility, types
-=======
->>>>>>> 4c3cf0c79... add tests
 import { SortSelection } from './SortSelection';
 import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';

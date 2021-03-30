@@ -139,11 +139,7 @@ export function PaginationLabel({
   singular: string;
   total: number;
 }) {
-<<<<<<< HEAD
   const { stats } = getPaginationStats({
-=======
-  const { stats } = usePaginationStats({
->>>>>>> 47feeaf10... move PaginationLabel to components folder, and refactor to use usePaginationStats hook
     list: { plural, singular },
     currentPage,
     total,
