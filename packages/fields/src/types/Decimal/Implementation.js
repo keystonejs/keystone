@@ -52,8 +52,6 @@ export class PrismaDecimalInterface extends PrismaFieldAdapter {
     this.isUnique = !!this.config.isUnique;
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
 
-    // In addition to the standard knexOptions this type supports precision and scale
-    // const { precision, scale } = this.knexOptions;
     this.precision = precision === null ? null : parseInt(precision) || 18;
     this.scale = scale === null ? null : (this.precision, parseInt(scale) || 4);
     if (this.scale !== null && this.precision !== null && this.scale > this.precision) {
