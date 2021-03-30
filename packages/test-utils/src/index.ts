@@ -36,6 +36,7 @@ const argGenerator = {
     },
   }),
   prisma_postgresql: () => ({
+    dropDatabase: true,
     migrationMode: 'none-skip-client-generation',
     url: process.env.DATABASE_URL!,
     provider: 'postgresql',
@@ -44,6 +45,7 @@ const argGenerator = {
     enableLogging: false,
   }),
   prisma_sqlite: () => ({
+    dropDatabase: true,
     migrationMode: 'none-skip-client-generation',
     url: process.env.DATABASE_URL!,
     provider: 'sqlite',
