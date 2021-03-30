@@ -92,7 +92,6 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
 
       <Stack gap="medium" across align="center">
         <Select
-          menuIsOpen
           width="medium"
           value={{ label: String(currentPage), value: String(currentPage) }}
           options={pages}
