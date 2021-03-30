@@ -2,8 +2,8 @@ import path from 'path';
 import { printSchema, GraphQLSchema } from 'graphql';
 import * as fs from 'fs-extra';
 import type { BaseKeystone } from '@keystone-next/types';
-import { confirmPrompt } from '@keystone-next/adapter-prisma-legacy/src/prompts';
 import { getGenerator } from '@prisma/sdk';
+import { confirmPrompt } from './prompts';
 import { printGeneratedTypes } from './schema-type-printer';
 
 export function getSchemaPaths(cwd: string) {
