@@ -36,7 +36,6 @@ const argGenerator = {
     },
   }),
   prisma_postgresql: () => ({
-    dropDatabase: true,
     migrationMode: 'none-skip-client-generation',
     url: process.env.DATABASE_URL!,
     provider: 'postgresql',
@@ -45,7 +44,6 @@ const argGenerator = {
     enableLogging: false,
   }),
   prisma_sqlite: () => ({
-    dropDatabase: true,
     migrationMode: 'none-skip-client-generation',
     url: process.env.DATABASE_URL!,
     provider: 'sqlite',
@@ -78,7 +76,7 @@ async function setupFromConfig({
   }
   const config = initConfig({ ..._config, db: db!, ui: { isDisabled: true } });
 
-  const prismaClient = await (async () => {
+  const [prismaClient, runMigrations] = await (async () => {
     const { keystone, graphQLSchema } = createSystem(config, 'none-skip-client-generation');
     const artifacts = await getCommittedArtifacts(graphQLSchema, keystone);
     const hash = hashPrismaSchema(artifacts.prisma);
@@ -89,13 +87,16 @@ async function setupFromConfig({
     fs.mkdirSync(cwd, { recursive: true });
     await writeCommittedArtifacts(artifacts, cwd);
     await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
-    await runPrototypeMigrations(
-      config.db.url,
-      artifacts.prisma,
-      path.join(cwd, 'schema.prisma'),
-      true
-    );
-    return requirePrismaClient(cwd);
+    return [
+      requirePrismaClient(cwd),
+      () =>
+        runPrototypeMigrations(
+          config.db.url,
+          artifacts.prisma,
+          path.join(cwd, 'schema.prisma'),
+          true
+        ),
+    ];
   })();
 
   const { keystone, createContext, graphQLSchema } = createSystem(
@@ -103,6 +104,12 @@ async function setupFromConfig({
     'none-skip-client-generation',
     prismaClient
   );
+
+  let oldKeystoneConnect = keystone.connect;
+  keystone.connect = async function (...args) {
+    await runMigrations();
+    oldKeystoneConnect.call(this, ...args);
+  };
 
   const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
 
@@ -174,7 +181,6 @@ function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promi
       }
       const setup = await setupKeystoneFn(adapterName);
       const { keystone } = setup;
-
       await keystone.connect();
 
       try {
