@@ -8,7 +8,7 @@ import { CONFIG_PATH } from './utils';
 export async function prisma(cwd: string, args: string[]) {
   const config = initConfig(requireSource(CONFIG_PATH).default);
 
-  const { keystone, graphQLSchema } = createSystem(config, 'none');
+  const { keystone, graphQLSchema } = createSystem(config, 'none-skip-client-generation');
 
   await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
   await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);

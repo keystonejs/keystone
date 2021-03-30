@@ -5,7 +5,6 @@ import { GraphQLSchema } from 'graphql';
 import { graphqlUploadExpress } from 'graphql-upload';
 import type { KeystoneConfig, CreateContext, SessionStrategy } from '@keystone-next/types';
 import { createAdminUIServer } from '@keystone-next/admin-ui/system';
-import { getAdminPath } from '../scripts/utils';
 import { createApolloServerExpress } from './createApolloServer';
 
 const addApolloServer = ({

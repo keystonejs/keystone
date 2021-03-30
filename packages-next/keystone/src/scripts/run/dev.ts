@@ -31,7 +31,7 @@ export const dev = async (cwd: string) => {
   const config = initConfig(requireSource(CONFIG_PATH).default);
   const initKeystone = async () => {
     {
-      const { keystone, graphQLSchema } = createSystem(config, 'none');
+      const { keystone, graphQLSchema } = createSystem(config, 'none-skip-client-generation');
 
       console.log('✨ Generating GraphQL and Prisma schemas');
       const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, keystone, cwd)).prisma;
@@ -48,7 +48,11 @@ export const dev = async (cwd: string) => {
 
     const prismaClient = requirePrismaClient(cwd);
 
-    const { keystone, graphQLSchema, createContext } = createSystem(config, 'none', prismaClient);
+    const { keystone, graphQLSchema, createContext } = createSystem(
+      config,
+      'none-skip-client-generation',
+      prismaClient
+    );
 
     console.log('✨ Connecting to the database');
     await keystone.connect({ context: createContext().sudo() });

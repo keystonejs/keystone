@@ -9,6 +9,8 @@ import {
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
 import {
   runPrototypeMigrations,
+  devMigrations,
+  deployMigrations,
   resetDatabaseWithMigrations,
   // eslint-disable-next-line import/no-unresolved
 } from './migrations';
@@ -53,13 +55,19 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     }
   }
 
+  async deploy(rels) {
+    // Apply any migrations which haven't already been applied
+    await this._prepareSchema(rels);
+    await deployMigrations(this._url(), path.resolve(this.schemaPath));
+  }
+
   async _getPrismaClient({ rels }) {
     if (this._prismaClient) {
       return this._prismaClient;
     }
-    if (this.migrationMode === 'none') {
+    if (this.migrationMode === 'none-skip-client-generation') {
       throw new Error(
-        'a prisma client must be passed to the prisma adapter when the migration mode is none'
+        'a prisma client must be passed to the prisma adapter when the migration mode is none-skip-client-generation'
       );
     }
     await this._generateClient(rels);
@@ -88,20 +96,27 @@ class PrismaAdapter extends BaseKeystoneAdapter {
     // a `keystone-next start` because it has various side effects
     const { prismaSchema } = await this._prepareSchema(rels);
 
-    this._writePrismaSchema({ prismaSchema });
+    if (this.migrationMode !== 'none-skip-client-generation') {
+      this._writePrismaSchema({ prismaSchema });
 
-    // Generate prisma client and run prisma migrations
-    await Promise.all([this._generatePrismaClient(), this._runMigrations({ prismaSchema })]);
+      // Generate prisma client and run prisma migrations
+      await Promise.all([this._generatePrismaClient(), this._runMigrations({ prismaSchema })]);
+    }
   }
 
   async _runMigrations({ prismaSchema }) {
     if (this.migrationMode === 'prototype') {
       // Sync the database directly, without generating any migration
       await runPrototypeMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
+    } else if (this.migrationMode === 'dev') {
+      // Generate and apply a migration if required.
+      await devMigrations(this._url(), prismaSchema, path.resolve(this.schemaPath));
     } else if (this.migrationMode === 'none') {
       // Explicitly disable running any migrations
     } else {
-      throw new Error(`migrationMode must be one of 'prototype' or 'none'`);
+      throw new Error(
+        `migrationMode must be one of 'dev', 'prototype', 'none-skip-client-generation', or 'none'`
+      );
     }
   }
 
