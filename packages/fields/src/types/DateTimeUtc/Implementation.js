@@ -48,7 +48,7 @@ export class PrismaDateTimeUtcInterface extends PrismaFieldAdapter {
   }
 
   getPrismaSchema() {
-    return [this._schemaField({ type: 'DateTime' })];
+    return [this._schemaField({ type: 'DateTime', extra: '@postgresql.Timestamptz(3)' })];
   }
 
   _stringToDate(s) {
