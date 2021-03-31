@@ -1,21 +1,19 @@
 import { KeystoneConfig } from '@keystone-next/types';
-import { initConfig, createSystem, createApolloServerMicro } from '../..';
+import { initConfig } from '../lib/initConfig';
+import { createSystem } from '../lib/createSystem';
+import { createApolloServerMicro } from '../lib/createApolloServer';
 
 export function nextGraphQLAPIRoute(keystoneConfig: KeystoneConfig, prismaClient: any) {
   const initializedKeystoneConfig = initConfig(keystoneConfig);
   const { graphQLSchema, keystone, createContext } = createSystem(
     initializedKeystoneConfig,
-    '.keystone',
-    'none-skip-client-generation',
     prismaClient
   );
 
   const apolloServer = createApolloServerMicro({
     graphQLSchema,
     createContext,
-    sessionStrategy: initializedKeystoneConfig.session
-      ? initializedKeystoneConfig.session()
-      : undefined,
+    sessionStrategy: initializedKeystoneConfig.session?.(),
     apolloConfig: initializedKeystoneConfig.graphql?.apolloConfig,
     connectionPromise: keystone.connect(),
   });

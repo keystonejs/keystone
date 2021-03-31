@@ -1,9 +1,8 @@
 import React from 'react';
-import { GetStaticPathsResult, GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 
 import { lists } from '.keystone/api';
 
-export default function PostPage({ post }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function PostPage({ post }) {
   return (
     <div>
       <h1>{post.title}</h1>
@@ -12,7 +11,7 @@ export default function PostPage({ post }: InferGetStaticPropsType<typeof getSta
   );
 }
 
-export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+export async function getStaticPaths(){
   const posts = await lists.Post.findMany({
     resolveFields: false,
   });
@@ -28,7 +27,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   };
 }
 
-export async function getStaticProps({ params: { slug } }: GetStaticPropsContext) {
+export async function getStaticProps({ params: { slug } }) {
   const [post] = await lists.Post.findMany({
     where: { slug: slug as string },
     resolveFields: false,

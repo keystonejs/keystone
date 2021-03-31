@@ -64,12 +64,9 @@
   "preconstruct": {
     "entrypoints": [
       "index.ts",
-<<<<<<< HEAD
-      "next/index.ts",
-      "next/___internal-do-not-use-will-break-in-patch/{api,generate-prisma,graphql}.ts",
-=======
+      "next.ts",
+      "___internal-do-not-use-will-break-in-patch/{node-api,next-graphql}.ts",
       "artifacts.ts",
->>>>>>> master
       "schema/index.ts",
       "session/index.ts",
       "scripts/index.ts"

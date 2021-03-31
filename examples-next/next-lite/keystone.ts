@@ -6,6 +6,8 @@ export default config({
   db: { adapter: 'prisma_sqlite', url: 'file:./app.db' },
   experimental: {
     prismaSqlite: true,
+    generateNextGraphqlAPI: true,
+    generateNodeAPI: true,
   },
   lists: { Post },
 });
