@@ -191,12 +191,6 @@ class PrismaAdapter {
     return this.prisma.$disconnect();
   }
 
-  getDefaultPrimaryKeyConfig() {
-    // Required here due to circular refs
-    const { AutoIncrement } = require('@keystone-next/fields-auto-increment-legacy');
-    return AutoIncrement.primaryKeyDefaults[this.name].getConfig();
-  }
-
   async checkDatabaseVersion() {
     // FIXME: Decide what/how we want to check things here
   }

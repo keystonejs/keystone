@@ -48,6 +48,7 @@ export async function pushPrismaSchemaToDatabase(
   let migration = await withMigrate(dbUrl, schemaPath, async migrate => {
     if (shouldDropDatabase) {
       await runMigrateWithDbUrl(dbUrl, () => migrate.engine.reset());
+      console.log('✨ Your database has been reset');
     }
     return runMigrateWithDbUrl(dbUrl, () =>
       migrate.engine.schemaPush({
@@ -69,36 +70,45 @@ export async function pushPrismaSchemaToDatabase(
 }
 
 // TODO: don't have process.exit calls here
-export async function devMigrations(dbUrl: string, prismaSchema: string, schemaPath: string) {
+export async function devMigrations(
+  dbUrl: string,
+  prismaSchema: string,
+  schemaPath: string,
+  shouldDropDatabase: boolean
+) {
   return withMigrate(dbUrl, schemaPath, async migrate => {
-    // see if we need to reset the database
-    // note that the other action devDiagnostic can return is createMigration
-    // that doesn't necessarily mean that we need to create a migration
-    // it only means that we don't need to reset the database
-    const devDiagnostic = await runMigrateWithDbUrl(dbUrl, () => migrate.devDiagnostic());
-    // when the action is reset, the database is somehow inconsistent with the migrations so we need to reset it
-    // (not just some migrations need to be applied but there's some inconsistency)
-    if (devDiagnostic.action.tag === 'reset') {
-      const credentials = uriToCredentials(dbUrl);
-      console.log(`${devDiagnostic.action.reason}
+    if (shouldDropDatabase) {
+      await runMigrateWithDbUrl(dbUrl, () => migrate.reset());
+      console.log('✨ Your database has been reset');
+    } else {
+      // see if we need to reset the database
+      // note that the other action devDiagnostic can return is createMigration
+      // that doesn't necessarily mean that we need to create a migration
+      // it only means that we don't need to reset the database
+      const devDiagnostic = await runMigrateWithDbUrl(dbUrl, () => migrate.devDiagnostic());
+      // when the action is reset, the database is somehow inconsistent with the migrations so we need to reset it
+      // (not just some migrations need to be applied but there's some inconsistency)
+      if (devDiagnostic.action.tag === 'reset') {
+        const credentials = uriToCredentials(dbUrl);
+        console.log(`${devDiagnostic.action.reason}
 
 We need to reset the ${credentials.type} database "${credentials.database}" at ${getDbLocation(
-        credentials
-      )}.`);
-      const confirmedReset = await confirmPrompt(
-        `Do you want to continue? ${chalk.red('All data will be lost')}.`
-      );
-      console.info(); // empty line
+          credentials
+        )}.`);
+        const confirmedReset = await confirmPrompt(
+          `Do you want to continue? ${chalk.red('All data will be lost')}.`
+        );
+        console.info(); // empty line
 
-      if (!confirmedReset) {
-        console.info('Reset cancelled.');
-        process.exit(0);
+        if (!confirmedReset) {
+          console.info('Reset cancelled.');
+          process.exit(0);
+        }
+
+        // Do the reset
+        await runMigrateWithDbUrl(dbUrl, () => migrate.reset());
       }
-
-      // Do the reset
-      await migrate.reset();
     }
-
     let { appliedMigrationNames } = await runMigrateWithDbUrl(dbUrl, () =>
       migrate.applyMigrations()
     );
