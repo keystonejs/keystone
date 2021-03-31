@@ -126,7 +126,6 @@ class MockListAdapter {
     this.index += 1;
     return this.items[this.index - 1];
   };
-  findById = id => this.items[id];
   delete = async id => {
     this.items[id] = undefined;
   };
@@ -144,7 +143,6 @@ class MockListAdapter {
         : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
     }
   };
-  itemsQueryMeta = async args => this.itemsQuery(args, { meta: true });
   update = (id, item) => {
     this.items[id] = { ...this.items[id], ...item };
     return this.items[id];

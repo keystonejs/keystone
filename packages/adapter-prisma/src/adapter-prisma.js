@@ -216,39 +216,9 @@ class PrismaListAdapter {
     return this.onPostRead(this._update(id, await this.onPreSave(data)));
   }
 
-  async findAll() {
-    return Promise.all((await this._itemsQuery({})).map(item => this.onPostRead(item)));
-  }
-
-  async findById(id) {
-    return this.onPostRead((await this._itemsQuery({ where: { id }, first: 1 }))[0] || null);
-  }
-
-  async find(condition) {
-    return Promise.all(
-      (await this._itemsQuery({ where: condition })).map(item => this.onPostRead(item))
-    );
-  }
-
-  async findOne(condition) {
-    return this.onPostRead((await this._itemsQuery({ where: condition, first: 1 }))[0]);
-  }
-
   async itemsQuery(args, { meta = false, from = {} } = {}) {
     const results = await this._itemsQuery(args, { meta, from });
     return meta ? results : Promise.all(results.map(item => this.onPostRead(item)));
-  }
-
-  itemsQueryMeta(args) {
-    return this.itemsQuery(args, { meta: true });
-  }
-
-  getFieldAdapterByPath(path) {
-    return this.fieldAdaptersByPath[path];
-  }
-
-  getPrimaryKeyAdapter() {
-    return this.fieldAdaptersByPath['id'];
   }
 
   _setupModel({ rels, prisma }) {
