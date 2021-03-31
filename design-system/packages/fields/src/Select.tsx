@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
-import ReactSelect, { Props, OptionsType } from 'react-select';
+import ReactSelect, { Props, OptionsType, StylesConfig } from 'react-select';
 import { useInputTokens } from './hooks/inputs';
 import { WidthType } from './types';
 
@@ -113,11 +113,40 @@ const useStyles = ({
 
 const portalTarget = typeof document !== 'undefined' ? document.body : undefined;
 
+const composeStyles = (
+  defaultStyles: ReturnType<typeof useStyles>,
+  customStyles?: StylesConfig<Option, boolean>
+) => {
+  // can memoize this later if it proves to be unperformant.
+  if (!customStyles) {
+    return defaultStyles;
+  } else {
+    return Object.entries(defaultStyles).reduce((acc, curr) => {
+      const [key, value]: [string, (provided: any, state?: any) => Record<string, any>] = curr;
+      const customStylesFn = customStyles[key as keyof StylesConfig<Option, boolean>];
+      const composedStylesFn = function composedStylesFn(provided: any, state?: any) {
+        if (customStylesFn) {
+          return {
+            ...value(provided, state),
+            ...customStylesFn(provided, state),
+          };
+        } else {
+          return { ...value(provided, state) };
+        }
+      };
+
+      acc[key as keyof StylesConfig<Option, boolean>] = composedStylesFn;
+      return acc;
+    }, {} as StylesConfig<Option, boolean>);
+  }
+};
+
 export function Select({
   onChange,
   value,
   width: widthKey = 'large',
   portalMenu,
+  styles,
   ...props
 }: BaseSelectProps & {
   value: Option | null;
@@ -125,13 +154,14 @@ export function Select({
   onChange(value: Option | null): void;
 }) {
   const tokens = useInputTokens({ width: widthKey });
-  const styles = useStyles({ tokens });
+  const defaultStyles = useStyles({ tokens });
+  const composedStyles = composeStyles(defaultStyles, styles);
 
   return (
     <ReactSelect
       value={value}
       // css={{ width: tokens.width }}
-      styles={styles}
+      styles={composedStyles}
       onChange={value => {
         if (!value) {
           onChange(null);
@@ -151,6 +181,7 @@ export function MultiSelect({
   value,
   width: widthKey = 'large',
   portalMenu,
+  styles,
   ...props
 }: BaseSelectProps & {
   value: OptionsType<Option>;
@@ -158,12 +189,13 @@ export function MultiSelect({
   onChange(value: OptionsType<Option>): void;
 }) {
   const tokens = useInputTokens({ width: widthKey });
-  const styles = useStyles({ tokens, multi: true });
+  const defaultStyles = useStyles({ tokens, multi: true });
+  const composedStyles = composeStyles(defaultStyles, styles);
 
   return (
     <ReactSelect
       // css={{ width: tokens.width }}
-      styles={styles}
+      styles={composedStyles}
       value={value}
       onChange={value => {
         if (!value) {
