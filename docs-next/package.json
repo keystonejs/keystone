@@ -41,7 +41,7 @@
     "next": "^10.0.9",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.7.0",
-    "postcss": "^8.2.8",
+    "postcss": "^8.2.9",
     "prism-react-renderer": "^1.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
