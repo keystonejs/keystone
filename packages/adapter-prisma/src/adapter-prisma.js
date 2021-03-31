@@ -36,26 +36,13 @@ class PrismaAdapter {
       log: this.enableLogging && ['query'],
       datasources: { [this.provider]: { url: this.url } },
     });
-    await this.prisma.$connect();
 
-    // Set up all list adapters
-    try {
-      Object.values(this.listAdapters).forEach(listAdapter => {
-        listAdapter._postConnect({ rels, prisma: this.prisma });
-      });
-    } catch (error) {
-      // close the database connection if it was opened
-      try {
-        await this.disconnect();
-      } catch (closeError) {
-        // Add the inability to close the database connection as an additional
-        // error
-        error.errors = error.errors || [];
-        error.errors.push(closeError);
-      }
-      // re-throw the error
-      throw error;
-    }
+    // Set up all list adapter models
+    Object.values(this.listAdapters).forEach(listAdapter => {
+      listAdapter._setupModel({ rels, prisma: this.prisma });
+    });
+
+    await this.prisma.$connect();
   }
 
   _generatePrismaSchema({ rels, clientDir }) {
@@ -264,7 +251,7 @@ class PrismaListAdapter {
     return this.fieldAdaptersByPath['id'];
   }
 
-  _postConnect({ rels, prisma }) {
+  _setupModel({ rels, prisma }) {
     // https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema/models#queries-crud
     // "By default the name of the property is the lowercase form of the model name,
     // e.g. user for a User model or post for a Post model."
