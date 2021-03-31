@@ -48,15 +48,20 @@ export async function pushPrismaSchemaToDatabase(
   let migration = await withMigrate(dbUrl, schemaPath, async migrate => {
     if (shouldDropDatabase) {
       await runMigrateWithDbUrl(dbUrl, () => migrate.engine.reset());
+      return runMigrateWithDbUrl(dbUrl, () =>
+        migrate.engine.schemaPush({
+          force: true,
+          schema,
+        })
+      );
     }
-    return runMigrateWithDbUrl(dbUrl, () =>
+    let migration = runMigrateWithDbUrl(dbUrl, () =>
       migrate.engine.schemaPush({
-        // TODO: we probably want to do something like db push does where either there's
-        // a prompt or an argument needs to be passed to make it force(i.e. lose data)
-        force: true,
+        force: false,
         schema,
       })
     );
+    return migration;
   });
 
   if (migration.warnings.length === 0 && migration.executedSteps === 0) {
