@@ -15,3 +15,15 @@ export async function confirmPrompt(message: string): Promise<boolean> {
   }
   return value;
 }
+
+export async function textPrompt(message: string): Promise<string> {
+  const { value } = await prompts({
+    name: 'value',
+    type: 'text',
+    message,
+  });
+  if (value === undefined) {
+    process.exit(1);
+  }
+  return value;
+}
