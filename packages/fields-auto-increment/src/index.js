@@ -6,11 +6,4 @@ export const AutoIncrement = {
   adapters: {
     prisma: PrismaAutoIncrementInterface,
   },
-
-  primaryKeyDefaults: {
-    prisma: {
-      // Uniqueness, non-nullability and GraphQL type are implied
-      getConfig: () => ({ type: AutoIncrement }),
-    },
-  },
 };
