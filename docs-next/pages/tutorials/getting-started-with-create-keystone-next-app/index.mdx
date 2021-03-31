@@ -72,10 +72,11 @@ npx create-keystone-next-app
 ## Connecting your database
 
 The CLI will ask you to name your new app and for a way to connect to your database.
+
 Make sure you have your connection URL ready for your database, e.g. `postgres://localhost/my-app` or `postgres://username:password@localhost/my-app`.
 
 <Alert>
-  If you run into trouble with the database, check out this guide on <Link href="https://www.keystonejs.com/quick-start/adapters">Database Setup</Link>
+  Keystone Next has removed adapter infrastructure support and now supports a single adapter for <link href="https://www.prisma.io/">Prisma</Link>. <Link href="https://www.prisma.io/docs/reference/database-reference/supported-databases">View supported databases here</Link>
 </Alert>
 
 ## Opening your shiny new Admin UI
