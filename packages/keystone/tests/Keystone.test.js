@@ -51,7 +51,6 @@ class MockListAdapter {
 class MockAdapter {
   name = 'mock';
   newListAdapter = () => new MockListAdapter(this);
-  getDefaultPrimaryKeyConfig = () => ({ type: MockFieldType });
 }
 
 test('Check require', () => {
@@ -70,6 +69,7 @@ describe('Keystone.createList()', () => {
 
     keystone.createList('User', {
       fields: {
+        id: { type: MockFieldType },
         name: { type: MockFieldType },
         email: { type: MockFieldType },
       },

@@ -51,17 +51,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
             test(
               'uniqueness is enforced over multiple mutations',
               keystoneTestWrapper(async ({ context }) => {
-                const { errors } = await context.executeGraphQL({
-                  query: `
-                  mutation($data: TestCreateInput) {
-                    createTest(data: $data) { id }
-                  }
-                `,
-                  variables: { data: { testField: mod.exampleValue(matrixValue) } },
-                });
-                expect(errors).toBe(undefined);
-
-                const { errors: errors2 } = await context.executeGraphQL({
+                await context.graphql.run({
                   query: `
                   mutation($data: TestCreateInput) {
                     createTest(data: $data) { id }
@@ -70,8 +60,17 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
                   variables: { data: { testField: mod.exampleValue(matrixValue) } },
                 });
 
-                expect(errors2).toHaveProperty('0.message');
-                expect(errors2[0].message).toEqual(
+                const { errors } = await context.graphql.raw({
+                  query: `
+                  mutation($data: TestCreateInput) {
+                    createTest(data: $data) { id }
+                  }
+                `,
+                  variables: { data: { testField: mod.exampleValue(matrixValue) } },
+                });
+
+                expect(errors).toHaveProperty('0.message');
+                expect(errors[0].message).toEqual(
                   expect.stringMatching(
                     /duplicate key|to be unique|Unique constraint failed on the fields/
                   )
@@ -82,7 +81,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
             test(
               'uniqueness is enforced over single mutation',
               keystoneTestWrapper(async ({ context }) => {
-                const { errors } = await context.executeGraphQL({
+                const { errors } = await context.graphql.raw({
                   query: `
                   mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
                     foo: createTest(data: $fooData) { id }
@@ -107,7 +106,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
             test(
               'Configuring uniqueness on one field does not affect others',
               keystoneTestWrapper(async ({ context }) => {
-                const { data, errors } = await context.executeGraphQL({
+                const data = await context.graphql.run({
                   query: `
                   mutation($fooData: TestCreateInput, $barData: TestCreateInput) {
                     foo: createTest(data: $fooData) { id }
@@ -120,7 +119,6 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
                   },
                 });
 
-                expect(errors).toBe(undefined);
                 expect(data).toHaveProperty('foo.id');
                 expect(data).toHaveProperty('bar.id');
               })

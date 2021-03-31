@@ -22,6 +22,7 @@ function cli() {
     {
       flags: {
         fix: { default: false, type: 'boolean' },
+        resetDb: { default: false, type: 'boolean' },
       },
     }
   );
@@ -38,6 +39,8 @@ function cli() {
     prisma(cwd, process.argv.slice(3));
   } else if (command === 'postinstall') {
     postinstall(cwd, flags.fix);
+  } else if (command === 'dev') {
+    dev(cwd, flags.resetDb);
   } else {
     commands[command](cwd);
   }
