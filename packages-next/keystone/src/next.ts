@@ -43,7 +43,8 @@ export const withKeystone = (internalConfig: any = {}) => (
       webpackConfig.externals = [
         ...webpackConfig.externals,
         '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/api',
-        '@keystone-next/keystone/next/___internal-do-not-use-will-break-in-patch/graphql-api',
+        '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/next-graphql',
+        '@keystone-next/keystone/next',
         '@keystone-next/keystone',
         '.prisma/client',
       ];
