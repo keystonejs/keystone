@@ -35,31 +35,11 @@ _**Default:**_ `DATABASE_URL`
 The connection string for your database, in the form `postgres://<user>:<password>@<host>:<port>/<dbname>`.
 By default it will use the value of the environment variable `DATABASE_URL`. You can learn more about the connection string format used in the [Prisma docs](https://www.prisma.io/docs/reference/database-connectors/connection-urls).
 
-### `getPrismaPath`
-
-_**Default:**_ `({ prismaSchema }) => '.prisma'`
-
-A function which returns a directory name for storing the generated Prisma schema and client.
-
-### `getDbSchemaName`
-
-_**Default:**_ `({ prismaSchema }) => 'public'`
-
-A function which returns a database schema name to use for storage of all Keystone tables in your database.
-
-> You can also set the schema name by including the suffix `?schema=...` in your `DATABASE_URL` or `url`. In this case you should set this value to `() => null`.
-
 ### `enableLogging`
 
 _**Default:**_ `false`
 
 Enables logging at the [`query`](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#overview) level in the Prisma client.
-
-### `migrationMode`
-
-_**Default:**_ `'dev'`
-
-Controls how and when migrations are applied. One of `'dev'`, `'prototype'`, `'createOnly'`, or `'none'`. In `prototype` mode, `prisma db push` is used to sync the database tables without generating migration files. In `dev` mode, migrations files are generated and applied whenever the schema changes. In `createOnly` mode, migrations are generated but not applied. In `none` mode, no migrations are generated or applied.
 
 ## Setup
 
