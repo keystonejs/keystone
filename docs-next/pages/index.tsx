@@ -15,26 +15,23 @@ export default function IndexPage() {
         headless content management system around.
       </p>
       <p>
-      <Link href="/tutorials/getting-started-with-create-keystone-next-app" passHref>
-          <Button
-            tone="active"
-            weight="bold"
-          >
+        <Link href="/tutorials/getting-started-with-create-keystone-next-app" passHref>
+          <Button tone="active" weight="bold">
             Get started
           </Button>
         </Link>
-        </p>
+      </p>
       <p>
-        We’re improving Keystone's <strong>interfaces</strong>,
-        including the way you configure and run projects, and creating a whole new Admin UI. To
-        learn more, check out our <Link href="/roadmap">Roadmap</Link>, and <Link href="/whats-new">What’s New</Link>.
+        We’re improving Keystone's <strong>interfaces</strong>, including the way you configure and
+        run projects, and creating a whole new Admin UI. To learn more, check out our{' '}
+        <Link href="/roadmap">Roadmap</Link>, and <Link href="/whats-new">What’s New</Link>.
       </p>
       <p>
         🤩 &nbsp;To see one of our favourite new features, check out the{' '}
         <Link href="/guides/document-fields">Document Field</Link>.
       </p>
       <h2>Stay connected</h2>
-            <p>
+      <p>
         <SubscribeForm>
           <div className="mb-2">
             <span className="inline-block bg-green-100 border border-green-300 uppercase text-green-600 px-2 text-sm font-semibold rounded">
@@ -48,9 +45,8 @@ export default function IndexPage() {
         Get help in our{' '}
         <a href="https://community.keystonejs.com/" target="_blank">
           Community Slack
-        </a>,
-        {' '}
-        and follow us on {' '}
+        </a>
+        , and follow us on{' '}
         <a href="https://twitter.com/keystonejs" target="_blank">
           Twitter
         </a>{' '}
