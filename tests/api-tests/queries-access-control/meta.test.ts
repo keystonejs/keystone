@@ -43,7 +43,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         `'access' field returns results`,
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.exitSudo().executeGraphQL({
+          const data = await context.exitSudo().graphql.run({
             query: `
           query {
             _CompaniesMeta {
@@ -58,7 +58,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('_CompaniesMeta.access');
           expect(data._CompaniesMeta.access).toMatchObject({
             create: true,
@@ -72,7 +71,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         `'schema' field returns results`,
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.exitSudo().executeGraphQL({
+          const data = await context.exitSudo().graphql.run({
             query: `
           query {
             _CompaniesMeta {
@@ -93,7 +92,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('_CompaniesMeta.schema');
           expect(data._CompaniesMeta.schema).toMatchObject({
             type: 'Company',
@@ -118,7 +116,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         `'access' field returns results`,
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.exitSudo().executeGraphQL({
+          const data = await context.exitSudo().graphql.run({
             query: `
           query {
             _ksListsMeta {
@@ -134,7 +132,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('_ksListsMeta');
           expect(data._ksListsMeta).toMatchObject([
             {
@@ -162,7 +159,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'returns results for all visible lists',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.exitSudo().executeGraphQL({
+          const data = await context.exitSudo().graphql.run({
             query: `
           query {
             _ksListsMeta {
@@ -184,7 +181,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       `,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toHaveProperty('_ksListsMeta');
           expect(data._ksListsMeta).toMatchObject([
             {
