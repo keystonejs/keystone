@@ -5,18 +5,14 @@ class PrismaAdapter {
   constructor(config = {}) {
     this.config = { ...config };
     this.listAdapters = {};
-    this.listAdapterClass = undefined;
-
-    this.listAdapterClass = PrismaListAdapter;
     this.name = 'prisma';
     this.provider = this.config.provider || 'postgresql';
-
     this.enableLogging = this.config.enableLogging || false;
     this.url = this.config.url || process.env.DATABASE_URL;
   }
 
   newListAdapter(key, adapterConfig) {
-    this.listAdapters[key] = new this.listAdapterClass(key, this, adapterConfig);
+    this.listAdapters[key] = new PrismaListAdapter(key, this, adapterConfig);
     return this.listAdapters[key];
   }
 
@@ -26,22 +22,27 @@ class PrismaAdapter {
 
   async connect({ rels }) {
     // Connect to the database
-    await this._connect({ rels }, this.config);
+    // the adapter was already connected since we have a prisma client
+    // it may have been disconnected since it was connected though
+    // so connect but don't regenerate the prisma client
+    if (this.prisma) {
+      await this.prisma.$connect();
+      return;
+    }
+    if (!this.config.prismaClient) {
+      throw new Error('You must pass the prismaClient option to connect to a database');
+    }
+    this.prisma = new this.config.prismaClient({
+      log: this.enableLogging && ['query'],
+      datasources: { [this.provider]: { url: this.url } },
+    });
+    await this.prisma.$connect();
 
     // Set up all list adapters
     try {
-      // Validate the minimum database version requirements are met.
-      await this.checkDatabaseVersion();
-
-      const taskResults = await this.postConnect({ rels });
-      const errors = taskResults.filter(({ isRejected }) => isRejected).map(({ reason }) => reason);
-
-      if (errors.length) {
-        if (errors.length === 1) throw errors[0];
-        const error = new Error('Multiple errors in PrismaAdapter.postConnect():');
-        error.errors = errors;
-        throw error;
-      }
+      Object.values(this.listAdapters).forEach(listAdapter => {
+        listAdapter._postConnect({ rels, prisma: this.prisma });
+      });
     } catch (error) {
       // close the database connection if it was opened
       try {
@@ -55,25 +56,6 @@ class PrismaAdapter {
       // re-throw the error
       throw error;
     }
-  }
-
-  async _connect() {
-    // the adapter was already connected since we have a prisma client
-    // it may have been disconnected since it was connected though
-    // so connect but don't regenerate the prisma client
-    if (this.prisma) {
-      await this.prisma.$connect();
-      return;
-    }
-    if (!this.config.prismaClient) {
-      throw new Error('You must pass the prismaClient option to connect to a database');
-    }
-    const PrismaClient = this.config.prismaClient;
-    this.prisma = new PrismaClient({
-      log: this.enableLogging && ['query'],
-      datasources: { [this.provider]: { url: this.url } },
-    });
-    await this.prisma.$connect();
   }
 
   _generatePrismaSchema({ rels, clientDir }) {
@@ -179,20 +161,8 @@ class PrismaAdapter {
     return header + models.join('\n') + '\n' + enums.join('\n');
   }
 
-  async postConnect({ rels }) {
-    Object.values(this.listAdapters).forEach(listAdapter => {
-      listAdapter._postConnect({ rels, prisma: this.prisma });
-    });
-
-    return [];
-  }
-
   disconnect() {
     return this.prisma.$disconnect();
-  }
-
-  async checkDatabaseVersion() {
-    // FIXME: Decide what/how we want to check things here
   }
 }
 
