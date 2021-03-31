@@ -1,5 +1,6 @@
 import React from 'react';
 
+// eslint-disable-next-line import/no-unresolved
 import { lists } from '.keystone/api';
 
 export default function PostPage({ post }) {

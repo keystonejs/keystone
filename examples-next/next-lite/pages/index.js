@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+// eslint-disable-next-line import/no-unresolved
 import { lists } from '.keystone/api';
 
 export default function HomePage({ posts }) {
