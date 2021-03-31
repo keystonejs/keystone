@@ -25,16 +25,6 @@ const context = {
 // Needs to be wrapped in a mock type for gql to correctly parse it.
 const normalise = s => print(gql(`type t { ${s} }`));
 
-const config = {
-  fields: {
-    name: { type: Text },
-    email: { type: Text },
-    other: { type: Relationship, ref: 'Other' },
-    hidden: { type: Text, access: { read: false, create: true, update: true, delete: true } },
-    writeOnce: { type: Text, access: { read: true, create: true, update: false, delete: true } },
-  },
-};
-
 const getListByKey = listKey => {
   if (listKey === 'Other') {
     return {
@@ -174,6 +164,17 @@ const listExtras = () => ({
   schemaNames: ['public'],
 });
 
+const config = {
+  fields: {
+    id: { type: MockIdType },
+    name: { type: Text },
+    email: { type: Text },
+    other: { type: Relationship, ref: 'Other' },
+    hidden: { type: Text, access: { read: false, create: true, update: true, delete: true } },
+    writeOnce: { type: Text, access: { read: true, create: true, update: false, delete: true } },
+  },
+};
+
 const setup = extraConfig => {
   const list = new List('Test', { ...config, ...extraConfig }, listExtras());
   list.initFields();
@@ -276,7 +277,7 @@ describe('new List()', () => {
     expect(list.fieldsByPath['hidden']).toBeInstanceOf(Text.implementation);
     expect(list.fieldsByPath['writeOnce']).toBeInstanceOf(Text.implementation);
 
-    const idOnlyList = new List('NoField', { fields: {} }, listExtras());
+    const idOnlyList = new List('NoField', { fields: { id: { type: MockIdType } } }, listExtras());
     idOnlyList.initFields();
     expect(idOnlyList.fields).toHaveLength(1);
     expect(list.fields[0]).toBeInstanceOf(MockIdType.implementation);

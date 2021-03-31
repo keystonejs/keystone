@@ -69,6 +69,7 @@ describe('Keystone.createList()', () => {
 
     keystone.createList('User', {
       fields: {
+        id: { type: MockFieldType },
         name: { type: MockFieldType },
         email: { type: MockFieldType },
       },
