@@ -1,23 +1,18 @@
 import pWaterfall from 'p-waterfall';
-import { formatSchema } from '@prisma/sdk';
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
 
 class PrismaAdapter {
   constructor(config = {}) {
     this.config = { ...config };
     this.listAdapters = {};
-    this.listAdapterClass = undefined;
-
-    this.listAdapterClass = PrismaListAdapter;
     this.name = 'prisma';
     this.provider = this.config.provider || 'postgresql';
-
     this.enableLogging = this.config.enableLogging || false;
     this.url = this.config.url || process.env.DATABASE_URL;
   }
 
   newListAdapter(key, adapterConfig) {
-    this.listAdapters[key] = new this.listAdapterClass(key, this, adapterConfig);
+    this.listAdapters[key] = new PrismaListAdapter(key, this, adapterConfig);
     return this.listAdapters[key];
   }
 
@@ -27,38 +22,6 @@ class PrismaAdapter {
 
   async connect({ rels }) {
     // Connect to the database
-    await this._connect({ rels }, this.config);
-
-    // Set up all list adapters
-    try {
-      // Validate the minimum database version requirements are met.
-      await this.checkDatabaseVersion();
-
-      const taskResults = await this.postConnect({ rels });
-      const errors = taskResults.filter(({ isRejected }) => isRejected).map(({ reason }) => reason);
-
-      if (errors.length) {
-        if (errors.length === 1) throw errors[0];
-        const error = new Error('Multiple errors in PrismaAdapter.postConnect():');
-        error.errors = errors;
-        throw error;
-      }
-    } catch (error) {
-      // close the database connection if it was opened
-      try {
-        await this.disconnect();
-      } catch (closeError) {
-        // Add the inability to close the database connection as an additional
-        // error
-        error.errors = error.errors || [];
-        error.errors.push(closeError);
-      }
-      // re-throw the error
-      throw error;
-    }
-  }
-
-  async _connect() {
     // the adapter was already connected since we have a prisma client
     // it may have been disconnected since it was connected though
     // so connect but don't regenerate the prisma client
@@ -69,15 +32,20 @@ class PrismaAdapter {
     if (!this.config.prismaClient) {
       throw new Error('You must pass the prismaClient option to connect to a database');
     }
-    const PrismaClient = this.config.prismaClient;
-    this.prisma = new PrismaClient({
+    this.prisma = new this.config.prismaClient({
       log: this.enableLogging && ['query'],
       datasources: { [this.provider]: { url: this.url } },
     });
+
+    // Set up all list adapter models
+    Object.values(this.listAdapters).forEach(listAdapter => {
+      listAdapter._setupModel({ rels, prisma: this.prisma });
+    });
+
     await this.prisma.$connect();
   }
 
-  async _generatePrismaSchema({ rels, clientDir }) {
+  _generatePrismaSchema({ rels, clientDir }) {
     const models = Object.values(this.listAdapters).map(listAdapter => {
       const scalarFields = flatten(
         listAdapter.fieldAdapters.filter(f => !f.field.isRelationship).map(f => f.getPrismaSchema())
@@ -177,29 +145,11 @@ class PrismaAdapter {
         provider = "prisma-client-js"
         output = "${clientDir}"
       }`;
-    return await formatSchema({ schema: header + models.join('\n') + '\n' + enums.join('\n') });
-  }
-
-  async postConnect({ rels }) {
-    Object.values(this.listAdapters).forEach(listAdapter => {
-      listAdapter._postConnect({ rels, prisma: this.prisma });
-    });
-
-    return [];
+    return header + models.join('\n') + '\n' + enums.join('\n');
   }
 
   disconnect() {
     return this.prisma.$disconnect();
-  }
-
-  getDefaultPrimaryKeyConfig() {
-    // Required here due to circular refs
-    const { AutoIncrement } = require('@keystone-next/fields-auto-increment-legacy');
-    return AutoIncrement.primaryKeyDefaults[this.name].getConfig();
-  }
-
-  async checkDatabaseVersion() {
-    // FIXME: Decide what/how we want to check things here
   }
 }
 
@@ -266,42 +216,12 @@ class PrismaListAdapter {
     return this.onPostRead(this._update(id, await this.onPreSave(data)));
   }
 
-  async findAll() {
-    return Promise.all((await this._itemsQuery({})).map(item => this.onPostRead(item)));
-  }
-
-  async findById(id) {
-    return this.onPostRead((await this._itemsQuery({ where: { id }, first: 1 }))[0] || null);
-  }
-
-  async find(condition) {
-    return Promise.all(
-      (await this._itemsQuery({ where: condition })).map(item => this.onPostRead(item))
-    );
-  }
-
-  async findOne(condition) {
-    return this.onPostRead((await this._itemsQuery({ where: condition, first: 1 }))[0]);
-  }
-
   async itemsQuery(args, { meta = false, from = {} } = {}) {
     const results = await this._itemsQuery(args, { meta, from });
     return meta ? results : Promise.all(results.map(item => this.onPostRead(item)));
   }
 
-  itemsQueryMeta(args) {
-    return this.itemsQuery(args, { meta: true });
-  }
-
-  getFieldAdapterByPath(path) {
-    return this.fieldAdaptersByPath[path];
-  }
-
-  getPrimaryKeyAdapter() {
-    return this.fieldAdaptersByPath['id'];
-  }
-
-  _postConnect({ rels, prisma }) {
+  _setupModel({ rels, prisma }) {
     // https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema/models#queries-crud
     // "By default the name of the property is the lowercase form of the model name,
     // e.g. user for a User model or post for a Post model."

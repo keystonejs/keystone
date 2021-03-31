@@ -178,7 +178,7 @@ export const initialContent = [
               },
               {
                 text:
-                  ', but you can build your own, by just defining their prop types (like you do your Keystone schema) and providing a React Compoent to render the preview.',
+                  ', but you can build your own, by just defining their prop types (like you do your Keystone schema) and providing a React Component to render the preview.',
               },
             ],
           },
@@ -187,7 +187,7 @@ export const initialContent = [
             children: [
               {
                 text:
-                  'They store structured data, and can be inserted (and edited!) anywhere in the document. You can even link them to other item in your database with the Realtionship field type.',
+                  'They store structured data, and can be inserted (and edited!) anywhere in the document. You can even link them to other item in your database with the Relationship field type.',
               },
             ],
           },

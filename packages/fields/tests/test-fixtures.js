@@ -21,7 +21,7 @@ export const skipCommonFilterTest = true;
 
 const getIDs = async keystone => {
   const IDs = {};
-  await keystone.lists['Test'].adapter.findAll().then(data => {
+  await keystone.lists['Test'].adapter.itemsQuery({}).then(data => {
     data.forEach(entry => {
       IDs[entry.name] = entry.id.toString();
     });

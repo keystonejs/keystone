@@ -8,7 +8,7 @@ import supertest from 'supertest-light';
 // @ts-ignore
 import { Keystone } from '@keystone-next/keystone-legacy';
 import { initConfig, createSystem, createExpressServer } from '@keystone-next/keystone';
-import { runPrototypeMigrations } from '@keystone-next/adapter-prisma-legacy';
+import { pushPrismaSchemaToDatabase } from '@keystone-next/keystone/migrations';
 import {
   getCommittedArtifacts,
   writeCommittedArtifacts,
@@ -81,7 +81,7 @@ async function setupFromConfig({
       await writeCommittedArtifacts(artifacts, cwd);
       await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
     }
-    await runPrototypeMigrations(
+    await pushPrismaSchemaToDatabase(
       config.db.url,
       artifacts.prisma,
       path.join(cwd, 'schema.prisma'),

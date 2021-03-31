@@ -10,17 +10,9 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystone-next/fields-auto-increment-legacy": "^9.0.0",
     "@keystone-next/keystone-legacy": "^22.0.0",
     "@keystone-next/utils-legacy": "^8.0.0",
-    "@prisma/client": "2.19.0",
-    "@prisma/migrate": "2.19.0",
-    "@prisma/sdk": "2.19.0",
-    "@sindresorhus/slugify": "^1.1.0",
-    "@types/prompts": "^2.0.9",
-    "chalk": "^4.1.0",
-    "p-waterfall": "^2.1.1",
-    "prompts": "^2.4.0"
+    "p-waterfall": "^2.1.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/adapter-prisma"
 }

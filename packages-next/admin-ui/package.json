@@ -58,7 +58,7 @@
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/admin-ui",
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.10",
-    "@testing-library/react": "^11.2.5",
+    "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^13.1.1"
   }
 }

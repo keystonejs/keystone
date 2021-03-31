@@ -37,17 +37,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       it(
         'resolves fields first, then passes them to the list',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 createUser(data: { name: "jess" }) { name }
               }
             `,
           });
-
-          if (errors && errors.length) {
-            throw errors;
-          }
 
           // Field should be executed first, appending `-field`, then the list
           // should be executed which appends `-list`, and finally that total

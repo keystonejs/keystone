@@ -92,7 +92,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Update the item and link the relationship field
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 updateUser(
@@ -112,7 +112,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           expect(data).toMatchObject({ updateUser: { id: expect.any(String), notes: [] } });
-          expect(errors).toBe(undefined);
         })
       );
 
@@ -120,7 +119,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'silently succeeds if used during create',
         runner(setupKeystone, async ({ context }) => {
           // Create an item that does the linking
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 createUser(data: {
@@ -136,7 +135,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }`,
           });
 
-          expect(errors).toBe(undefined);
           expect(data.createUser).toMatchObject({ id: expect.any(String), notes: [] });
         })
       );
@@ -167,7 +165,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update the item and link the relationship field
-            const { errors } = await context.exitSudo().executeGraphQL({
+            await context.exitSudo().graphql.run({
               query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -182,9 +180,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }`,
             });
 
-            expect(errors).toBe(undefined);
-
-            const result = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 query getUserNodes($userId: ID!){
                   UserToNotesNoRead(where: { id: $userId }) {
@@ -193,10 +189,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }`,
               variables: { userId: createUser.id },
-              context,
             });
-            expect(result.errors).toBe(undefined);
-            expect(result.data.UserToNotesNoRead.notes).toHaveLength(0);
+            expect(data.UserToNotesNoRead.notes).toHaveLength(0);
           })
         );
       });

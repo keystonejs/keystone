@@ -2,7 +2,7 @@ import path from 'path';
 import { printSchema, GraphQLSchema } from 'graphql';
 import * as fs from 'fs-extra';
 import type { BaseKeystone, KeystoneConfig } from '@keystone-next/types';
-import { getGenerator } from '@prisma/sdk';
+import { getGenerator, formatSchema } from '@prisma/sdk';
 import { confirmPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
 
@@ -24,9 +24,11 @@ export async function getCommittedArtifacts(
 ): Promise<CommittedArtifacts> {
   return {
     graphql: printSchema(graphQLSchema),
-    prisma: await keystone.adapter._generatePrismaSchema({
-      rels: keystone._consolidateRelationships(),
-      clientDir: 'node_modules/.prisma/client',
+    prisma: await formatSchema({
+      schema: keystone.adapter._generatePrismaSchema({
+        rels: keystone._consolidateRelationships(),
+        clientDir: 'node_modules/.prisma/client',
+      }),
     }),
   };
 }

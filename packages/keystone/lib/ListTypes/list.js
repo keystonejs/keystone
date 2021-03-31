@@ -165,18 +165,7 @@ module.exports = class List {
 
     // Add an 'id' field if none supplied
     if (!sanitisedFieldsConfig.id) {
-      if (typeof this.adapter.parentAdapter.getDefaultPrimaryKeyConfig !== 'function') {
-        throw new Error(
-          `No 'id' field given for the '${this.key}' list and the list adapter ` +
-            `in used (${this.adapter.key}) doesn't supply a default primary key config ` +
-            `(no 'getDefaultPrimaryKeyConfig()' function)`
-        );
-      }
-      // Rebuild the object so id is "first"
-      sanitisedFieldsConfig = {
-        id: this.adapter.parentAdapter.getDefaultPrimaryKeyConfig(),
-        ...sanitisedFieldsConfig,
-      };
+      throw new Error(`No 'id' field given for the '${this.key}' list.`);
     }
 
     // Helpful errors for misconfigured lists
