@@ -164,7 +164,6 @@ class MockListAdapter {
 class MockAdapter {
   name = 'mock';
   newListAdapter = () => new MockListAdapter(this);
-  getDefaultPrimaryKeyConfig = () => ({ type: MockIdType });
 }
 
 const listExtras = () => ({

@@ -51,7 +51,6 @@ class MockListAdapter {
 class MockAdapter {
   name = 'mock';
   newListAdapter = () => new MockListAdapter(this);
-  getDefaultPrimaryKeyConfig = () => ({ type: MockFieldType });
 }
 
 test('Check require', () => {
