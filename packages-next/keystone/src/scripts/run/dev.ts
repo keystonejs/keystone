@@ -35,7 +35,7 @@ export const dev = async (cwd: string) => {
 
       console.log('✨ Generating GraphQL and Prisma schemas');
       const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, keystone, cwd)).prisma;
-      await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
+      await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
 
       if (config.db.adapter === 'prisma_postgresql' || config.db.adapter === 'prisma_sqlite') {
         if (config.db.useMigrations) {

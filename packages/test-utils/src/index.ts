@@ -79,7 +79,7 @@ async function setupFromConfig({
       alreadyGeneratedProjects.add(hash);
       fs.mkdirSync(cwd, { recursive: true });
       await writeCommittedArtifacts(artifacts, cwd);
-      await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
+      await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
     }
     await runPrototypeMigrations(
       config.db.url,

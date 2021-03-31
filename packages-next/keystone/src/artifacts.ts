@@ -106,7 +106,9 @@ export async function generateCommittedArtifacts(
 const nodeAPIJS = (
   cwd: string,
   config: KeystoneConfig
-) => `import { createListsAPI } from '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/node-api'
+) => `import keystoneConfig from '../../keystone';
+import { PrismaClient } from '.prisma/client';
+import { createListsAPI } from '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/node-api';
 ${makeVercelIncludeTheSQLiteDB(cwd, path.join(cwd, 'node_modules/.keystone/next'), config)}
 
 export const lists = createListsAPI(keystoneConfig, PrismaClient);
@@ -140,7 +142,7 @@ const nextGraphQLAPIJS = (
   cwd: string,
   config: KeystoneConfig
 ) => `import keystoneConfig from '../../../keystone';
-import { PrismaClient } from '.prisma/client'
+import { PrismaClient } from '.prisma/client';
 import { nextGraphQLAPIRoute } from '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/next-graphql';
 ${makeVercelIncludeTheSQLiteDB(cwd, path.join(cwd, 'node_modules/.keystone/next'), config)}
 
