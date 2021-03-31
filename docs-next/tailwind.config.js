@@ -1,7 +1,18 @@
 const colors = require('tailwindcss/colors');
 
+const preserveColors = ['gray', 'orange', 'pink', 'blue', 'green'];
+
 module.exports = {
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+  purge: {
+    enabled: true,
+    content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+    options: {
+      safelist: [
+        ...preserveColors.map(i => `bg-${i}-100`),
+        ...preserveColors.map(i => `text-${i}-700`),
+      ],
+    },
+  },
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors: {
