@@ -1,7 +1,7 @@
 import path from 'path';
 import express from 'express';
 import { generateAdminUI } from '@keystone-next/admin-ui/system';
-import { devMigrations, runPrototypeMigrations } from '@keystone-next/adapter-prisma-legacy';
+import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { requireSource } from '../../lib/requireSource';
@@ -41,7 +41,7 @@ export const dev = async (cwd: string) => {
         if (config.db.useMigrations) {
           await devMigrations(config.db.url, prismaSchema, getSchemaPaths(cwd).prisma);
         } else {
-          await runPrototypeMigrations(config.db.url, prismaSchema, getSchemaPaths(cwd).prisma);
+          await pushPrismaSchemaToDatabase(config.db.url, prismaSchema, getSchemaPaths(cwd).prisma);
         }
       }
     }

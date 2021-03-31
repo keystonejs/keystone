@@ -1,5 +1,4 @@
 import pWaterfall from 'p-waterfall';
-import { formatSchema } from '@prisma/sdk';
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
 
 class PrismaAdapter {
@@ -77,7 +76,7 @@ class PrismaAdapter {
     await this.prisma.$connect();
   }
 
-  async _generatePrismaSchema({ rels, clientDir }) {
+  _generatePrismaSchema({ rels, clientDir }) {
     const models = Object.values(this.listAdapters).map(listAdapter => {
       const scalarFields = flatten(
         listAdapter.fieldAdapters.filter(f => !f.field.isRelationship).map(f => f.getPrismaSchema())
@@ -177,7 +176,7 @@ class PrismaAdapter {
         provider = "prisma-client-js"
         output = "${clientDir}"
       }`;
-    return await formatSchema({ schema: header + models.join('\n') + '\n' + enums.join('\n') });
+    return header + models.join('\n') + '\n' + enums.join('\n');
   }
 
   async postConnect({ rels }) {
