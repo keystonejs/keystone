@@ -15,11 +15,6 @@ class CloudinaryImage extends File.implementation {
     return [`${this.path}: ${this.graphQLOutputType}`];
   }
 
-  extendAdminMeta(meta) {
-    // Overwrite so we have only the original meta
-    return meta;
-  }
-
   getFileUploadType() {
     return 'Upload';
   }
@@ -102,13 +97,6 @@ class CloudinaryImage extends File.implementation {
   }
 }
 
-const MongoCloudinaryImageInterface = File.adapters.mongoose;
-const KnexCloudinaryImageInterface = File.adapters.knex;
 const PrismaCloudinaryImageInterface = File.adapters.prisma;
 
-export {
-  CloudinaryImage,
-  MongoCloudinaryImageInterface,
-  KnexCloudinaryImageInterface,
-  PrismaCloudinaryImageInterface,
-};
+export { CloudinaryImage, PrismaCloudinaryImageInterface };

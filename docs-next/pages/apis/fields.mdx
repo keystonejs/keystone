@@ -24,8 +24,7 @@ import {
   relationship,
 
   // Index types
-  autoincrement,
-  mongoId,
+  autoIncrement,
 
   // Virtual type
   virtual,
@@ -33,7 +32,7 @@ import {
 
 // Complex types
 import { document } from '@keystone-next/fields-document';
-import { cloudinary } from '@keystone-next/cloudinary';
+import { cloudinaryImage } from '@keystone-next/cloudinary';
 
 export default config({
   lists: createSchema({
@@ -147,7 +146,6 @@ Options:
   `context` is a [`KeystoneContext`](./context) object.
   `originalItem` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isIndexed` (`knex` and `mongoose` adapters only. Default: `false`): If `true` a database level index will be applied to this field, which can make searching faster.
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 
 ```typescript
@@ -161,7 +159,6 @@ export default config({
         fieldName: integer({
           defaultValue: 0,
           isRequired: true,
-          isIndexed: true,
           isUnique: true,
         }),
         /* ... */
@@ -184,7 +181,6 @@ Options:
   `context` is a [`KeystoneContext`](./context) object.
   `originalItem` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isIndexed` (`knex` and `mongoose` adapters only. Default: `false`): If `true` a database level index will be applied to this field, which can make searching faster.
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 
 ```typescript
@@ -198,7 +194,6 @@ export default config({
         fieldName: float({
           defaultValue: 3.14159,
           isRequired: true,
-          isIndexed: true,
           isUnique: true,
         }),
         /* ... */
@@ -223,7 +218,6 @@ Options:
 - `precision` (default: `18`): Maximum number of digits that are present in the number.
 - `scale` (default: `4`): Maximum number of decimal places.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isIndexed` (`knex` and `mongoose` adapters only. Default: `false`): If `true` a database level index will be applied to this field, which can make searching faster.
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 
 ```typescript
@@ -239,7 +233,6 @@ export default config({
           precision: 12,
           scale: 3,
           isRequired: true,
-          isIndexed: true,
           isUnique: true,
         }),
         /* ... */
@@ -303,7 +296,6 @@ Options:
   `context` is a [`KeystoneContext`](./context) object.
   `originalItem` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isIndexed` (`knex` and `mongoose` adapters only. Default: `false`): If `true` a database level index will be applied to this field, which can make searching faster.
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 - `ui` (default: `{ displayMode: 'select' }`): Configures the display mode of the field in the Admin UI.
   Can be one of `['select', 'segmented-control']`.
@@ -324,7 +316,6 @@ export default config({
           ],
           defaultValue: '...',
           isRequired: true,
-          isIndexed: true,
           isUnique: true,
           ui: { displayMode: 'select' },
         }),
@@ -348,7 +339,6 @@ Options:
   `context` is a [`KeystoneContext`](./context) object.
   `originalItem` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isIndexed` (`knex` and `mongoose` adapters only. Default: `false`): If `true` a database level index will be applied to this field, which can make searching faster.
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 - `ui` (default: `{ displayMode: 'input' }`): Configures the display mode of the field in the Admin UI.
   Can be one of `['input', 'textarea']`.
@@ -364,7 +354,6 @@ export default config({
         fieldName: text({
           defaultValue: '...',
           isRequired: true,
-          isIndexed: true,
           isUnique: true,
           ui: { displayMode: 'textarea' },
         }),
@@ -389,7 +378,6 @@ Options:
   `context` is a [`KeystoneContext`](./context) object.
   `originalItem` is an object containing the data passed in to the `create` mutation.
 - `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
-- `isIndexed` (`knex` and `mongoose` adapters only. Default: `false`): If `true` a database level index will be applied to this field, which can make searching faster.
 - `isUnique` (default: `false`): If `true` then all values of this field must be unique.
 
 ```typescript
@@ -403,7 +391,6 @@ export default config({
         fieldName: timestamp({
           defaultValue: '1970-01-01T00:00:00.000Z',
           isRequired: true,
-          isIndexed: true,
           isUnique: true,
         }),
         /* ... */
@@ -436,7 +423,6 @@ export default config({
           many: false,
           ui: { /* ... */ },
           defaultValue: '...',
-          isIndexed: '...',
           isUnique: '...',
         }),
         /* ... */
@@ -450,7 +436,7 @@ export default config({
 
 ## Index types
 
-### autoincrement
+### autoIncrement
 
 (coming soon)
 
@@ -458,55 +444,19 @@ Options:
 
 - `defaultValue`
 - `isRequired`
-- `isIndexed` (`knex` and `mongoose` adapters only)
 - `isUnique`
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { autoincrement } from '@keystone-next/fields';
+import { autoIncrement } from '@keystone-next/fields';
 
 export default config({
   lists: createSchema({
     ListName: list({
       fields: {
-        fieldName: autoincrement({
+        fieldName: autoIncrement({
           defaultValue: 0,
           isRequired: true,
-          isIndexed: true,
-          isUnique: true,
-        }),
-        /* ... */
-      },
-    }),
-    /* ... */
-  }),
-  /* ... */
-});
-```
-
-### mongoId
-
-(coming soon)
-
-Options:
-
-- `defaultValue`
-- `isRequired`
-- `isIndexed` (`knex` and `mongoose` adapters only)
-- `isUnique`
-
-```typescript
-import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { mongoId } from '@keystone-next/fields';
-
-export default config({
-  lists: createSchema({
-    ListName: list({
-      fields: {
-        fieldName: mongoId({
-          defaultValue: '...',
-          isRequired: true,
-          isIndexed: true,
           isUnique: true,
         }),
         /* ... */
@@ -604,7 +554,7 @@ export default config({
 });
 ```
 
-### cloudinary
+### cloudinaryImage
 
 (coming soon)
 
@@ -617,13 +567,13 @@ export default config({
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
-import { cloudinary } from '@keystone-next/cloudinary';
+import { cloudinaryImage } from '@keystone-next/cloudinary';
 
 export default config({
   lists: createSchema({
     ListName: list({
       fields: {
-        fieldName: cloudinary({
+        fieldName: cloudinaryImage({
           isRequired: true,
           cloudinary: {
             cloudName: process.env.CLOUDINARY_CLOUD_NAME,

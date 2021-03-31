@@ -1,5 +1,18 @@
 # @keystonejs/fields-auto-increment
 
+## 9.0.0
+
+### Major Changes
+
+- [#5192](https://github.com/keystonejs/keystone/pull/5192) [`9e78d8818`](https://github.com/keystonejs/keystone/commit/9e78d88187d8d789e5f080fd4529742f54ff1ddd) Thanks [@timleslie](https://github.com/timleslie)! - Removed `views` export, which was used to provide functionality to the legacy Admin UI.
+
+### Patch Changes
+
+- Updated dependencies [[`ca1be4156`](https://github.com/keystonejs/keystone/commit/ca1be415663dd822b3adda1e073bd7a1d4a9b97b), [`4d405390c`](https://github.com/keystonejs/keystone/commit/4d405390c0f8dcc37e6fe4da7ce3866c699088f3), [`a8be4c860`](https://github.com/keystonejs/keystone/commit/a8be4c8602bcda63d96fc956ead8568d8c989ffc), [`0e1487385`](https://github.com/keystonejs/keystone/commit/0e1487385c42556c027a6f7bfbc9aa806b3cbd66), [`aa76102c1`](https://github.com/keystonejs/keystone/commit/aa76102c11bdfea02059df66f406a8b1d387c879), [`f448a8b3a`](https://github.com/keystonejs/keystone/commit/f448a8b3a36b295d4ce5ff9ef2fd7aabcdb5dacc)]:
+  - @keystone-next/fields-legacy@24.0.0
+  - @keystone-next/adapter-knex-legacy@13.2.3
+  - @keystone-next/adapter-prisma-legacy@4.0.1
+
 ## 8.2.0
 
 ### Minor Changes

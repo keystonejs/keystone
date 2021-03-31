@@ -3,7 +3,6 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -375,7 +374,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'errors if connecting items which cannot be found during creating',
         runner(setupKeystone, async ({ context }) => {
-          const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
+          const FAKE_ID = 100;
 
           // Create an item that does the linking
           const { errors } = await context.executeGraphQL({
@@ -400,7 +399,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'errors if connecting items which cannot be found during update',
         runner(setupKeystone, async ({ context }) => {
-          const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
+          const FAKE_ID = 100;
 
           // Create an item to link against
           const createUser = await createItem({ context, listKey: 'User', item: {} });

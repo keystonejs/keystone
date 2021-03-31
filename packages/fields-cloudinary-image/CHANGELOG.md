@@ -1,5 +1,20 @@
 # @keystonejs/fields-cloudinary-image
 
+## 4.0.0
+
+### Major Changes
+
+- [#5244](https://github.com/keystonejs/keystone/pull/5244) [`0e1487385`](https://github.com/keystonejs/keystone/commit/0e1487385c42556c027a6f7bfbc9aa806b3cbd66) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy arguments `adminDoc` and `adminConfig`, and the method `extendAdminMeta`.
+
+* [#5193](https://github.com/keystonejs/keystone/pull/5193) [`eb39fa37d`](https://github.com/keystonejs/keystone/commit/eb39fa37d43f2fe894a96e492750c8bd1b54bc54) Thanks [@timleslie](https://github.com/timleslie)! - Removed `views` export, which was used to provide functionality to the legacy Admin UI.
+
+### Patch Changes
+
+- Updated dependencies [[`ca1be4156`](https://github.com/keystonejs/keystone/commit/ca1be415663dd822b3adda1e073bd7a1d4a9b97b), [`4d405390c`](https://github.com/keystonejs/keystone/commit/4d405390c0f8dcc37e6fe4da7ce3866c699088f3), [`a8be4c860`](https://github.com/keystonejs/keystone/commit/a8be4c8602bcda63d96fc956ead8568d8c989ffc), [`0e1487385`](https://github.com/keystonejs/keystone/commit/0e1487385c42556c027a6f7bfbc9aa806b3cbd66), [`aa76102c1`](https://github.com/keystonejs/keystone/commit/aa76102c11bdfea02059df66f406a8b1d387c879), [`f448a8b3a`](https://github.com/keystonejs/keystone/commit/f448a8b3a36b295d4ce5ff9ef2fd7aabcdb5dacc)]:
+  - @keystone-next/fields-legacy@24.0.0
+  - @keystone-next/adapter-knex-legacy@13.2.3
+  - @keystone-next/adapter-mongoose-legacy@11.1.3
+
 ## 3.2.0
 
 ### Minor Changes

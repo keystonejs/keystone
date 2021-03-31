@@ -3,7 +3,6 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItem, getItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 function setupKeystone(adapterName: AdapterName) {
@@ -183,7 +182,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'errors if connecting an item which cannot be found during creating',
         runner(setupKeystone, async ({ context }) => {
-          const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
+          const FAKE_ID = 100;
 
           // Create an item that does the linking
           const { errors } = await context.executeGraphQL({
@@ -206,7 +205,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       test(
         'errors if connecting an item which cannot be found during update',
         runner(setupKeystone, async ({ context }) => {
-          const FAKE_ID = adapterName === 'mongoose' ? '5b84f38256d3c2df59a0d9bf' : 100;
+          const FAKE_ID = 100;
 
           // Create an item to link against
           const createEvent = await createItem({ context, listKey: 'Event', item: {} });
@@ -337,8 +336,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   returnFields: 'id group { id name }',
                 });
                 expect(event).toBeTruthy();
-                expect(event.group).toBeTruthy();
-                expect(event.group.name).toBe(groupName);
+                expect(event!.group).toBeTruthy();
+                expect(event!.group.name).toBe(groupName);
               })
             );
           } else {

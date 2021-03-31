@@ -1,20 +1,21 @@
 {
   "name": "@keystone-next/fields",
-  "version": "5.3.0",
+  "version": "5.4.0",
   "license": "MIT",
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
   "devDependencies": {
+    "@keystone-next/server-side-graphql-client-legacy": "3.0.0",
+    "@keystone-next/test-utils-legacy": "15.0.0",
     "typescript": "^4.2.3"
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
     "@keystone-next/admin-ui": "^12.0.0",
     "@keystone-next/admin-ui-utils": "^3.0.2",
-    "@keystone-next/fields-auto-increment-legacy": "^8.2.0",
-    "@keystone-next/fields-legacy": "^23.1.0",
-    "@keystone-next/fields-mongoid-legacy": "^9.1.7",
-    "@keystone-next/types": "^15.0.0",
+    "@keystone-next/fields-auto-increment-legacy": "^9.0.0",
+    "@keystone-next/fields-legacy": "^24.0.0",
+    "@keystone-next/types": "^15.0.1",
     "@keystone-ui/button": "^3.0.1",
     "@keystone-ui/core": "^2.0.2",
     "@keystone-ui/fields": "^2.0.2",

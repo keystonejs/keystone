@@ -8,7 +8,6 @@ export type DecimalFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = FieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
-  isIndexed?: boolean;
   isUnique?: boolean;
   precision?: number;
   scale?: number;

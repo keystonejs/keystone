@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/types",
-  "version": "15.0.0",
+  "version": "15.0.1",
   "license": "MIT",
   "main": "dist/types.cjs.js",
   "module": "dist/types.esm.js",
@@ -8,7 +8,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "apollo-server-types": "^0.6.3",
+    "apollo-server-types": "^0.7.0",
     "cors": "^2.8.5",
     "graphql": "^15.5.0"
   },

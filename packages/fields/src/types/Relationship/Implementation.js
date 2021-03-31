@@ -1,6 +1,3 @@
-import mongoose from 'mongoose';
-import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
-import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 
 import { Implementation } from '../../Implementation';
@@ -65,11 +62,6 @@ export class Relationship extends Implementation {
     } else {
       return [`${this.path}: ${refList.gqlNames.outputTypeName}`];
     }
-  }
-
-  extendAdminMeta(meta) {
-    const { refListKey: ref, refFieldPath, many } = this;
-    return { ...meta, ref, refFieldPath, many };
   }
 
   gqlQueryInputFields({ schemaName }) {
@@ -324,108 +316,6 @@ export class Relationship extends Implementation {
   }
   getBackingTypes() {
     return { [this.path]: { optional: true, type: 'string | null' } };
-  }
-}
-
-export class MongoRelationshipInterface extends MongooseFieldAdapter {
-  constructor(...args) {
-    super(...args);
-    this.idPath = this.dbPath;
-
-    // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
-    const [refListKey, refFieldPath] = this.config.ref.split('.');
-    this.refListKey = refListKey;
-    this.refFieldPath = refFieldPath;
-    this.isRelationship = true;
-  }
-
-  addToMongooseSchema(schema, _mongoose, rels) {
-    // If we're relating to 'many' things, we don't store ids in this table
-    if (!this.field.many) {
-      // If we're the right hand side of a 1:1 relationship, do nothing.
-      const { right, cardinality } = rels.find(
-        ({ left, right }) => left.adapter === this || (right && right.adapter === this)
-      );
-      if (cardinality === '1:1' && right && right.adapter === this) {
-        return;
-      }
-
-      // Otherwise, we're are hosting a foreign key
-      const { refListKey, config } = this;
-      const type = mongoose.Types.ObjectId;
-      schema.add({ [this.path]: this.mergeSchemaOptions({ type, ref: refListKey }, config) });
-    }
-  }
-
-  getQueryConditions(dbPath) {
-    return {
-      [`${this.path}_is_null`]: value => ({
-        [dbPath]: value ? { $not: { $exists: true, $ne: null } } : { $exists: true, $ne: null },
-      }),
-    };
-  }
-}
-
-export class KnexRelationshipInterface extends KnexFieldAdapter {
-  constructor() {
-    super(...arguments);
-    this.idPath = this.dbPath;
-    this.isRelationship = true;
-
-    // Default isIndexed to true if it's not explicitly provided
-    // Mutually exclusive with isUnique
-    this.isUnique = typeof this.config.isUnique === 'undefined' ? false : !!this.config.isUnique;
-    this.isIndexed =
-      typeof this.config.isIndexed === 'undefined'
-        ? !this.config.isUnique
-        : !!this.config.isIndexed;
-
-    // JM: It bugs me this is duplicated in the implementation but initialisation order makes it hard to avoid
-    const [refListKey, refFieldPath] = this.config.ref.split('.');
-    this.refListKey = refListKey;
-    this.refFieldPath = refFieldPath;
-  }
-
-  // Override the isNotNullable defaulting logic; default to false, not field.isRequired
-  // Non-nullability of foreign keys in a one-to-many configuration causes problems with complicates creates
-  // It implies a precedence in ordering of create operations and can break the nexted create resolvers
-  // Also, if a pair of list both have a non-nullable relationship with the other, all inserts on either will fail
-  get isNotNullable() {
-    if (this._isNotNullable) return this._isNotNullable;
-
-    return (this._isNotNullable = !!(typeof this.knexOptions.isNotNullable === 'undefined'
-      ? false
-      : this.knexOptions.isNotNullable));
-  }
-
-  addToTableSchema(table, rels) {
-    // If we're relating to 'many' things, we don't store ids in this table
-    if (!this.field.many) {
-      // If we're the right hand side of a 1:1 relationship, do nothing.
-      const { right, cardinality } = rels.find(
-        ({ left, right }) => left.adapter === this || (right && right.adapter === this)
-      );
-      if (cardinality === '1:1' && right && right.adapter === this) {
-        return;
-      }
-      // The foreign key needs to do this work for us; we don't know what type it is
-      const refList = this.getListByKey(this.refListKey);
-      const refId = refList.getPrimaryKey();
-      const foreignKeyConfig = {
-        path: this.path,
-        isUnique: this.isUnique,
-        isIndexed: this.isIndexed,
-        isNotNullable: this.isNotNullable,
-      };
-      refId.adapter.addToForeignTableSchema(table, foreignKeyConfig);
-    }
-  }
-
-  getQueryConditions(dbPath) {
-    return {
-      [`${this.path}_is_null`]: value => b =>
-        value ? b.whereNull(dbPath) : b.whereNotNull(dbPath),
-    };
   }
 }
 

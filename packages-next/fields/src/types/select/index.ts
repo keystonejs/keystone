@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Text } from '@keystone-next/fields-legacy';
+import { Select } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
@@ -23,14 +23,13 @@ export type SelectFieldConfig<
       displayMode?: 'select' | 'segmented-control';
     };
     isRequired?: boolean;
-    isIndexed?: boolean;
     isUnique?: boolean;
   };
 
 export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: SelectFieldConfig<TGeneratedListTypes>
 ): FieldType<TGeneratedListTypes> => ({
-  type: Text,
+  type: Select,
   config,
   views: resolveView('select/views'),
   getAdminMeta: () => ({

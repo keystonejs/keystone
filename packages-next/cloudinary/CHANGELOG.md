@@ -1,5 +1,14 @@
 # @keystone-next/cloudinary
 
+## 3.0.5
+
+### Patch Changes
+
+- Updated dependencies [[`34dd809ee`](https://github.com/keystonejs/keystone/commit/34dd809eef2368bba1e50ed613b36c5dac7262d1), [`0e1487385`](https://github.com/keystonejs/keystone/commit/0e1487385c42556c027a6f7bfbc9aa806b3cbd66), [`7bf269057`](https://github.com/keystonejs/keystone/commit/7bf26905751bad910562c6925a88e1cd760e2a80), [`eb39fa37d`](https://github.com/keystonejs/keystone/commit/eb39fa37d43f2fe894a96e492750c8bd1b54bc54)]:
+  - @keystone-next/types@15.0.1
+  - @keystone-next/fields-cloudinary-image-legacy@4.0.0
+  - @keystone-next/file-adapters-legacy@8.0.0
+
 ## 3.0.4
 
 ### Patch Changes

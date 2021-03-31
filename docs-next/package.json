@@ -32,7 +32,7 @@
     "@types/mdx-js__react": "^1.5.3",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
-    "@types/webpack": "^4.41.26",
+    "@types/webpack": "^4.41.27",
     "autoprefixer": "^10.2.5",
     "classnames": "^2.2.6",
     "copy-to-clipboard": "^3.3.1",

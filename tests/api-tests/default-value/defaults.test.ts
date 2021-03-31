@@ -1,5 +1,4 @@
 import { AdapterName, testConfig } from '@keystone-next/test-utils-legacy';
-// @ts-ignore
 import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 import { text } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';

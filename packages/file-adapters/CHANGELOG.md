@@ -1,5 +1,11 @@
 # @keystonejs/file-adapters
 
+## 8.0.0
+
+### Major Changes
+
+- [#5228](https://github.com/keystonejs/keystone/pull/5228) [`7bf269057`](https://github.com/keystonejs/keystone/commit/7bf26905751bad910562c6925a88e1cd760e2a80) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy `S3Adapter`.
+
 ## 7.0.9
 
 ### Patch Changes

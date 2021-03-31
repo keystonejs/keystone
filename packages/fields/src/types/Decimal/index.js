@@ -1,16 +1,9 @@
-import {
-  Decimal,
-  MongoDecimalInterface,
-  KnexDecimalInterface,
-  PrismaDecimalInterface,
-} from './Implementation';
+import { Decimal, PrismaDecimalInterface } from './Implementation';
 
 export default {
   type: 'Decimal',
   implementation: Decimal,
   adapters: {
-    mongoose: MongoDecimalInterface,
-    knex: KnexDecimalInterface,
     prisma: PrismaDecimalInterface,
   },
 };

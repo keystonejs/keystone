@@ -38,14 +38,6 @@ describe('new Implementation()', () => {
   });
 });
 
-test('addToMongooseSchema()', () => {
-  const impl = new Field('path', {}, args);
-
-  expect(() => {
-    impl.adapter.addToMongooseSchema();
-  }).toThrow(Error);
-});
-
 test('getGqlAuxTypes()', () => {
   const impl = new Field('path', {}, args);
   const schemaName = 'public';
@@ -101,14 +93,6 @@ test('gqlOutputFieldResolvers', () => {
   const impl = new Field('path', {}, args);
   const schemaName = 'public';
   expect(impl.gqlOutputFieldResolvers({ schemaName })).toEqual({});
-});
-
-test('extendAdminMeta()', () => {
-  const impl = new Field('path', {}, args);
-
-  const meta = { a: 1 };
-  const value = impl.extendAdminMeta(meta);
-  expect(value).toEqual(meta);
 });
 
 describe('getDefaultValue()', () => {

@@ -83,7 +83,7 @@ export type KeystoneGraphQLAPI<
 
 type GraphQLExecutionArguments = {
   query: string | DocumentNode;
-  variables: Record<string, any>;
+  variables?: Record<string, any>;
 };
 
 // Access control API
@@ -106,12 +106,6 @@ export type SessionContext<T> = {
 
 // DatabaseAPIs is used to provide access to the underlying database abstraction through
 // context and other developer-facing APIs in Keystone, so they can be used easily.
-
-// The implementation is very basic, and assumes there's a single adapter keyed by the constructor
-// name. Since there's no option _not_ to do that using the new config, we probably don't need
-// anything more sophisticated than this.
 export type DatabaseAPIs = {
-  knex?: any;
-  mongoose?: any;
   prisma?: any;
 };

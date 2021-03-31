@@ -9,9 +9,7 @@ global.console = {
 describe('Prisma Adapter', () => {
   // eslint-disable-next-line jest/no-disabled-tests
   test.skip('throws when database cannot be found using connection string', async () => {
-    const testAdapter = new PrismaAdapter({
-      knexOptions: { connection: 'postgres://localhost/undefined_database' },
-    });
+    const testAdapter = new PrismaAdapter({ url: 'postgres://localhost/undefined_database' });
     const result = await testAdapter._connect().catch(result => result);
 
     expect(result).toBeInstanceOf(Error);
@@ -23,14 +21,7 @@ describe('Prisma Adapter', () => {
   // eslint-disable-next-line jest/no-disabled-tests
   test.skip('throws when database cannot be found using connection object', async () => {
     const testAdapter = new PrismaAdapter({
-      knexOptions: {
-        connection: {
-          host: '127.0.0.1',
-          user: 'your_database_user',
-          password: 'your_database_password',
-          database: 'undefined_database',
-        },
-      },
+      url: 'postgres://your_database_user:your_database_password@127.0.0.1/undefined_database',
     });
     const result = await testAdapter._connect().catch(result => result);
 

@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/file-adapters-legacy",
   "description": "Adapters for handling storage of the File type",
-  "version": "7.0.9",
+  "version": "8.0.0",
   "main": "index.js",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/file-adapters",
   "homepage": "https://github.com/keystonejs/keystone",
@@ -11,9 +11,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.869.0",
     "cloudinary": "^1.25.1",
-    "mkdirp": "^1.0.4",
-    "url-join": "^4.0.1"
+    "mkdirp": "^1.0.4"
   }
 }

@@ -1,5 +1,3 @@
-import { MongooseFieldAdapter } from '@keystone-next/adapter-mongoose-legacy';
-import { KnexFieldAdapter } from '@keystone-next/adapter-knex-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import dumbPasswords from 'dumb-passwords';
 import { Implementation } from '../../Implementation';
@@ -78,11 +76,6 @@ export class Password extends Implementation {
     return this.bcrypt.hashSync(plaintext, this.workFactor);
   }
 
-  extendAdminMeta(meta) {
-    const { minLength } = this;
-    return { ...meta, minLength };
-  }
-
   // Force values to be hashed when set
   validateNewPassword(password) {
     if (this.rejectCommon && dumbPasswords.check(password)) {
@@ -103,88 +96,7 @@ export class Password extends Implementation {
   }
 }
 
-const CommonPasswordInterface = superclass =>
-  class extends superclass {
-    setupHooks({ addPreSaveHook }) {
-      // Updates the relevant value in the item provided (by referrence)
-      addPreSaveHook(async item => {
-        const path = this.field.path;
-        const plaintext = item[path];
-
-        // Only run the hook if the item actually contains the field
-        // NOTE: Can't use hasOwnProperty here, as the mongoose data object
-        // returned isn't a POJO
-        if (!(path in item)) {
-          return item;
-        }
-
-        if (plaintext) {
-          if (typeof plaintext === 'string') {
-            item[path] = await this.field.generateHash(plaintext);
-          } else {
-            // Should have been caught by the validator??
-            throw `Invalid Password value given for '${path}'`;
-          }
-        } else {
-          item[path] = null;
-        }
-
-        return item;
-      });
-    }
-  };
-
-export class MongoPasswordInterface extends CommonPasswordInterface(MongooseFieldAdapter) {
-  addToMongooseSchema(schema) {
-    schema.add({ [this.path]: this.mergeSchemaOptions({ type: String }, this.config) });
-  }
-
-  getQueryConditions(dbPath) {
-    return {
-      [`${this.path}_is_set`]: value => ({
-        [dbPath]: value ? { $regex: bcryptHashRegex } : { $not: bcryptHashRegex },
-      }),
-    };
-  }
-}
-
-export class KnexPasswordInterface extends CommonPasswordInterface(KnexFieldAdapter) {
-  constructor() {
-    super(...arguments);
-
-    // Error rather than ignoring invalid config
-    if (this.config.isIndexed) {
-      throw (
-        `The Password field type doesn't support indexes on Knex. ` +
-        `Check the config for ${this.path} on the ${this.field.listKey} list`
-      );
-    }
-    if (this.config.defaultTo) {
-      throw (
-        `The Password field type doesn't support the Knex 'defaultTo' config. ` +
-        `Check the config for ${this.path} on the ${this.field.listKey} list`
-      );
-    }
-  }
-
-  addToTableSchema(table) {
-    const column = table.string(this.path, 60);
-    if (this.isNotNullable) column.notNullable();
-  }
-
-  getQueryConditions(dbPath) {
-    // JM: I wonder if performing a regex match here leaks any timing info that
-    // could be used to extract information about the hash.. :/
-    return {
-      [`${this.path}_is_set`]: value => b =>
-        value
-          ? b.where(dbPath, '~', bcryptHashRegex.source)
-          : b.where(dbPath, '!~', bcryptHashRegex.source).orWhereNull(dbPath),
-    };
-  }
-}
-
-export class PrismaPasswordInterface extends CommonPasswordInterface(PrismaFieldAdapter) {
+export class PrismaPasswordInterface extends PrismaFieldAdapter {
   constructor() {
     super(...arguments);
 
@@ -210,5 +122,33 @@ export class PrismaPasswordInterface extends CommonPasswordInterface(PrismaField
       // ? b.where(dbPath, '~', bcryptHashRegex.source)
       // : b.where(dbPath, '!~', bcryptHashRegex.source).orWhereNull(dbPath),
     };
+  }
+
+  setupHooks({ addPreSaveHook }) {
+    // Updates the relevant value in the item provided (by referrence)
+    addPreSaveHook(async item => {
+      const path = this.field.path;
+      const plaintext = item[path];
+
+      // Only run the hook if the item actually contains the field
+      // NOTE: Can't use hasOwnProperty here, as the mongoose data object
+      // returned isn't a POJO
+      if (!(path in item)) {
+        return item;
+      }
+
+      if (plaintext) {
+        if (typeof plaintext === 'string') {
+          item[path] = await this.field.generateHash(plaintext);
+        } else {
+          // Should have been caught by the validator??
+          throw `Invalid Password value given for '${path}'`;
+        }
+      } else {
+        item[path] = null;
+      }
+
+      return item;
+    });
   }
 }
