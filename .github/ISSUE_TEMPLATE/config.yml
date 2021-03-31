@@ -1,7 +1,14 @@
+blank_issues_enabled: false
 contact_links:
-  - name: Question about Keystone
-    url: http://community.keystonejs.com/
-    about: If you have a question related to Keystone. Reach out to the community at http://community.keystonejs.com/
-  - name: Feature Request
-    url: https://github.com/keystonejs/keystone/discussions/
-    about: Discuss or request a feature in Keystone Next.
+  - name: Question (Stack Overflow)
+    url: https://stackoverflow.com/questions/ask
+    about: Reach out to our Stack Overflow community.
+  - name: Feature request (GitHub Discussions)
+    url: https://github.com/keystonejs/keystone/discussions
+    about: Share your feature requests and ideas with us!
+  - name: Chat (Slack)
+    url: http://slack.keystonejs.com/
+    about: Get the latest announcements about Keystone Next and and chat with the community.
+  - name: Keystone 5
+    url: https://github.com/keystonejs/keystone-5
+    about: Now in maintenance mode, please visit our dedicated Keystone 5 repository for support.
