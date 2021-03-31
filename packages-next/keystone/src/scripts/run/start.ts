@@ -1,12 +1,13 @@
 import path from 'path';
 import * as fs from 'fs-extra';
+import { KeystoneConfig } from '@keystone-next/types';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { createExpressServer } from '../../lib/createExpressServer';
 import { getAdminPath } from '../utils';
 import { requirePrismaClient } from '../../artifacts';
 
-export const start = async (cwd: string) => {
+export const start = async (cwd: string, customConfig?: KeystoneConfig) => {
   console.log('✨ Starting Keystone');
 
   // This is the compiled version of the configuration which was generated during the build step.
@@ -15,7 +16,7 @@ export const start = async (cwd: string) => {
   if (!fs.existsSync(apiFile)) {
     throw new Error('keystone-next build must be run before running keystone-next start');
   }
-  const config = initConfig(require(apiFile).config);
+  const config = customConfig ?? initConfig(require(apiFile).config);
   const { keystone, graphQLSchema, createContext } = createSystem(config, requirePrismaClient(cwd));
 
   console.log('✨ Connecting to the database');
