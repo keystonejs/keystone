@@ -20,6 +20,6 @@ export default function HomePage({ posts }) {
 }
 
 export async function getStaticProps() {
-  const posts = await lists.Post.findMany({ resolveFields: false });
+  const posts = await lists.Post.findMany({ resolveFields: 'slug title' });
   return { props: { posts } };
 }

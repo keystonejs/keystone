@@ -11,16 +11,12 @@ export default function PostPage({ post }) {
   );
 }
 
-export async function getStaticPaths(){
+export async function getStaticPaths() {
   const posts = await lists.Post.findMany({
-    resolveFields: false,
+    resolveFields: 'slug',
   });
 
-  const paths = posts
-    .map(post => post.slug)
-    .filter((slug): slug is string => !!slug)
-    .map(slug => `/post/${slug}`);
-  console.log(paths);
+  const paths = posts.map(post => post.slug).map(slug => `/post/${slug}`);
   return {
     paths,
     fallback: false,
@@ -29,8 +25,8 @@ export async function getStaticPaths(){
 
 export async function getStaticProps({ params: { slug } }) {
   const [post] = await lists.Post.findMany({
-    where: { slug: slug as string },
-    resolveFields: false,
+    where: { slug: slug },
+    resolveFields: 'title content',
   });
   return { props: { post } };
 }
