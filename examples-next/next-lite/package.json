@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "start": "next start",
-    "build": "keystone-next build && next build"
+    "build": "next build"
   },
   "dependencies": {
     "@keystone-next/admin-ui": "^12.0.0",
