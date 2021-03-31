@@ -9,3 +9,6 @@ contact_links:
   - name: Chat (Slack)
     url: http://slack.keystonejs.com/
     about: Get the latest announcements about Keystone Next and and chat with the community.
+  - name: Keystone 5
+    url: https://github.com/keystonejs/keystone-5
+    about: Now in maintenance mode, please visit our dedicated Keystone 5 repository for support.
