@@ -1,14 +1,17 @@
 type ImageMode = 'local' | 'cloud';
 type ImageFormat = 'jpeg' | 'jpg' | 'png' | 'gif' | 'webp';
 type ImageObjectFit = 'fixed' | 'intrinsic' | 'responsive' | 'fill';
+type BlurHash = { hash: string; x: number; y: number };
 
 export type Image = {
   mode: ImageMode;
   id: string;
   extension: ImageFormat;
   filesize: number;
+  name: string;
   width: number;
   height: number;
+  blurHash: BlurHash;
 };
 
 export type ImageInputType = {
@@ -25,6 +28,7 @@ export type ImageOutputType = {
   width: number;
   height: number;
   filesize: number;
+  blurHash: BlurHash;
   transform: (
     width: number,
     height: number,
