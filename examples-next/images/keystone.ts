@@ -19,58 +19,6 @@ const { withAuth } = createAuth({
   },
 });
 
-export type ImageInTheDatabase = {
-  mode: 'local' | 'cloud';
-  // e.g 'c8cd1b99-8647-4b7e-a5d1-6693c79620a9'
-  id: string;
-  // source image extension
-  ext: string;
-  // blur hash
-  // blurhash: { hash: string; x: number; y: number };
-  // metadata about the source image
-  filesize: number;
-  width: number;
-  height: number;
-};
-
-/*
-type UpdateImageInput {
-  upload: Upload
-  set: GraphqlImageInputType
-  delete: boolean;
-}
-
-mutation updatePost {
-  image: UpdateImageInput
-}
-*/
-
-export type GraphqlImageInputType = {
-  field: {
-    mode: 'local' | 'cloud';
-    id: string;
-    width: number;
-    height: number;
-    // blurhash: { hash: string; x: number; y: number };
-    extension: string;
-    filesize: number;
-  };
-};
-export type GraphqlImageOutputType = {
-  field: {
-    mode: 'local' | 'cloud';
-    id: string;
-    // https://image.keystone.cloud/thinkmill/{id}.{ext}
-    // {keystone.config.publicPath}/{id}.{ext}
-    src: string;
-    width: number;
-    height: number;
-    // blurhash: { hash: string; x: number; y: number };
-    extension: string;
-    filesize: number;
-  };
-};
-
 export default withAuth(
   config({
     db: {
