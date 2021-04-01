@@ -163,14 +163,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       'Query',
       runner(setupKeystone, async ({ context }) => {
         await createInitialData(context);
-        const { data, errors } = await context.executeGraphQL({
+        const data = await context.graphql.run({
           query: `{
                   allEmployees(where: {
                     company: { employees_some: { role: { name: "RoleA" } } }
                   }) { id name }
                 }`,
         });
-        expect(errors).toBe(undefined);
         expect(data.allEmployees).toHaveLength(1);
         expect(data.allEmployees[0].name).toEqual('EmployeeA');
       })
