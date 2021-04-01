@@ -110,10 +110,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(errors).toBe(undefined);
 
           // Sanity check that the items are actually created
-          const {
-            data: { allNotes },
-            errors: errors2,
-          } = await context.executeGraphQL({
+          const { allNotes } = await context.graphql.run({
             query: `
               query {
                 allNotes(where: { id_in: [${data.createUser.notes
@@ -124,7 +121,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-          expect(errors2).toBe(undefined);
           expect(allNotes).toHaveLength(data.createUser.notes.length);
         })
       );
