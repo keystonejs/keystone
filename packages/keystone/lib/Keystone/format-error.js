@@ -63,7 +63,7 @@ const flattenNestedErrors = error =>
     []
   );
 
-export const formatError = error => {
+const formatError = error => {
   const { originalError } = error;
   if (originalError && !originalError.path) {
     originalError.path = error.path;
@@ -98,4 +98,8 @@ export const formatError = error => {
     // least some useful info
     return safeFormatError(error);
   }
+};
+
+module.exports = {
+  formatError,
 };
