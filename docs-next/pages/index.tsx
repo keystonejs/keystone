@@ -1,7 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
 
-import { css } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
 import { Page } from '../components/Page';
 import { SubscribeForm } from '../components/SubscribeForm';
