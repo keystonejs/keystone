@@ -279,7 +279,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item that does the nested create
-            const { errors } = await context.exitSudo().executeGraphQL({
+            const { errors } = await context.exitSudo().graphql.raw({
               query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -295,11 +295,11 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             expect(errors).toHaveLength(1);
-            const error = errors[0];
+            const error = errors![0];
             expect(error.message).toEqual('You do not have access to this resource');
             expect(error.path).toHaveLength(2);
-            expect(error.path[0]).toEqual('createUserToNotesNoRead');
-            expect(error.path[1]).toEqual('notes');
+            expect(error.path![0]).toEqual('createUserToNotesNoRead');
+            expect(error.path![1]).toEqual('notes');
           })
         );
 
@@ -309,7 +309,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item that does the nested create
-            const { errors } = await context.exitSudo().executeGraphQL({
+            const { errors } = await context.exitSudo().graphql.raw({
               query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -338,7 +338,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update an item that does the nested create
-            const { errors } = await context.exitSudo().executeGraphQL({
+            const { errors } = await context.exitSudo().graphql.raw({
               query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -366,7 +366,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item that does the nested create
-            const { errors } = await context.exitSudo().executeGraphQL({
+            const { errors } = await context.exitSudo().graphql.raw({
               query: `
                 mutation {
                   createUserToNotesNoCreate(data: {
@@ -380,18 +380,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             // Assert it throws an access denied error
             expect(errors).toHaveLength(1);
-            const error = errors[0];
+            const error = errors![0];
             expect(error.message).toEqual(
               'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>'
             );
             expect(error.path).toHaveLength(1);
-            expect(error.path[0]).toEqual('createUserToNotesNoCreate');
+            expect(error.path![0]).toEqual('createUserToNotesNoCreate');
 
             // Confirm it didn't insert either of the records anyway
-            const {
-              data: { allNoteNoCreates, allUserToNotesNoCreates },
-              errors: errors2,
-            } = await context.executeGraphQL({
+            const { allNoteNoCreates, allUserToNotesNoCreates } = await context.graphql.run({
               query: `
                 query {
                   allNoteNoCreates(where: { content: "${noteContent}" }) {
@@ -404,7 +401,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }`,
             });
-            expect(errors2).toBe(undefined);
             expect(allNoteNoCreates).toMatchObject([]);
             expect(allUserToNotesNoCreates).toMatchObject([]);
           })

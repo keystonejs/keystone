@@ -22,7 +22,7 @@ const devLoadingHTMLFilepath = path.join(
   'dev-loading.html'
 );
 
-export const dev = async (cwd: string) => {
+export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   console.log('✨ Starting Keystone');
 
   const server = express();
@@ -38,9 +38,19 @@ export const dev = async (cwd: string) => {
       await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
 
       if (config.db.useMigrations) {
-        await devMigrations(config.db.url, prismaSchema, getSchemaPaths(cwd).prisma);
+        await devMigrations(
+          config.db.url,
+          prismaSchema,
+          getSchemaPaths(cwd).prisma,
+          shouldDropDatabase
+        );
       } else {
-        await pushPrismaSchemaToDatabase(config.db.url, prismaSchema, getSchemaPaths(cwd).prisma);
+        await pushPrismaSchemaToDatabase(
+          config.db.url,
+          prismaSchema,
+          getSchemaPaths(cwd).prisma,
+          shouldDropDatabase
+        );
       }
     }
 

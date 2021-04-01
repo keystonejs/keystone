@@ -31,7 +31,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'when neither id or create data passed',
         runner(setupKeystone, async ({ context }) => {
           // Create an item that does the linking
-          const { errors } = await context.executeGraphQL({
+          const { errors } = await context.graphql.raw({
             query: `
               mutation {
                 createEvent(data: { group: {} }) {
@@ -50,7 +50,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'when both id and create data passed',
         runner(setupKeystone, async ({ context }) => {
           // Create an item that does the linking
-          const { data, errors } = await context.executeGraphQL({
+          const { data, errors } = await context.graphql.raw({
             query: `
               mutation {
                 createEvent(data: { group: {
@@ -62,7 +62,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }`,
           });
 
-          expect(data.createEvent).toBe(null);
+          expect(data?.createEvent).toBe(null);
           expect(errors).toMatchObject([
             { message: 'Nested mutation operation invalid for Event.group<Group>' },
           ]);

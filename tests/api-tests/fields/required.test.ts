@@ -51,7 +51,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             test(
               'Create an object without the required field',
               keystoneTestWrapper(async ({ context }) => {
-                const { data, errors } = await context.executeGraphQL({
+                const { data, errors } = await context.graphql.raw({
                   query: `
                   mutation {
                     createTest(data: { name: "test entry" } ) { id }
@@ -68,7 +68,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             test(
               'Update an object with the required field having a null value',
               keystoneTestWrapper(async ({ context }) => {
-                const { data: data0, errors: errors0 } = await context.executeGraphQL({
+                const data0 = await context.graphql.run({
                   query: `
                   mutation($data: TestCreateInput) {
                     createTest(data: $data ) { id }
@@ -80,8 +80,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     },
                   },
                 });
-                expect(errors0).toBe(undefined);
-                const { data, errors } = await context.executeGraphQL({
+                const { data, errors } = await context.graphql.raw({
                   query: `
                   mutation {
                     updateTest(id: "${data0.createTest.id}" data: { name: "updated test entry", testField: null } ) { id }
@@ -98,7 +97,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             test(
               'Update an object without the required field',
               keystoneTestWrapper(async ({ context }) => {
-                const { data: data0, errors: errors0 } = await context.executeGraphQL({
+                const data0 = await context.graphql.run({
                   query: `
                   mutation($data: TestCreateInput) {
                     createTest(data: $data ) { id }
@@ -110,15 +109,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     },
                   },
                 });
-                expect(errors0).toBe(undefined);
-                const { data, errors } = await context.executeGraphQL({
+                const data = await context.graphql.run({
                   query: `
                   mutation {
                     updateTest(id: "${data0.createTest.id}" data: { name: "updated test entry" } ) { id }
                   }`,
                 });
                 expect(data.updateTest).not.toBe(null);
-                expect(errors).toBe(undefined);
               })
             );
           });

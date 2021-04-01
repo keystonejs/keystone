@@ -33,7 +33,7 @@
     "@types/keystonejs__keystone": "^7.0.1",
     "@types/pluralize": "^0.0.29",
     "@types/prettier": "^2.2.3",
-    "@types/prompts": "^2.0.9",
+    "@types/prompts": "^2.0.10",
     "@types/source-map-support": "^0.5.3",
     "@types/uid-safe": "^2.1.2",
     "apollo-server-express": "^2.22.2",
