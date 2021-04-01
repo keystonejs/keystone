@@ -48,16 +48,69 @@ export async function pushPrismaSchemaToDatabase(
   let migration = await withMigrate(dbUrl, schemaPath, async migrate => {
     if (shouldDropDatabase) {
       await runMigrateWithDbUrl(dbUrl, () => migrate.engine.reset());
+      let migration = await runMigrateWithDbUrl(dbUrl, () =>
+        migrate.engine.schemaPush({
+          force: true,
+          schema,
+        })
+      );
       console.log('✨ Your database has been reset');
+      return migration;
     }
-    return runMigrateWithDbUrl(dbUrl, () =>
+    // what does force on migrate.engine.schemaPush mean?
+    // - true: ignore warnings but will not run anything if there are unexecutable steps(so the database needs to be reset before)
+    // - false: if there are warnings or unexecutable steps, don't run the migration
+    // https://github.com/prisma/prisma-engines/blob/a2de6b71267b45669d25c3a27ad30998862a275c/migration-engine/core/src/commands/schema_push.rs
+    let migration = await runMigrateWithDbUrl(dbUrl, () =>
       migrate.engine.schemaPush({
-        // TODO: we probably want to do something like db push does where either there's
-        // a prompt or an argument needs to be passed to make it force(i.e. lose data)
-        force: true,
+        force: false,
         schema,
       })
     );
+
+    // if there are unexecutable steps, we need to reset the database or the user can switch to using migrations
+    // there's no point in asking if they're okay with the warnings separately after asking if they're okay with
+    // resetting their db since their db is already empty so they don't have any data to lose
+    if (migration.unexecutable.length) {
+      logUnexecutableSteps(migration.unexecutable);
+      if (migration.warnings.length) {
+        logWarnings(migration.warnings);
+      }
+      console.log('\nTo apply this migration, we need to reset the database.');
+      console.log(
+        'If you want to keep the data in your database, set db.useMigrations to true in your config or change the data in your database so the migration can be applied'
+      );
+      if (
+        !(await confirmPrompt(`Do you want to continue? ${chalk.red('All data will be lost')}.`))
+      ) {
+        console.log('Reset cancelled');
+        process.exit(0);
+      }
+      await runMigrateWithDbUrl(dbUrl, () => migrate.reset());
+      return runMigrateWithDbUrl(dbUrl, () =>
+        migrate.engine.schemaPush({
+          force: false,
+          schema,
+        })
+      );
+    }
+    if (migration.warnings.length) {
+      logWarnings(migration.warnings);
+      if (
+        !(await confirmPrompt(`Do you want to continue? ${chalk.red('Some data will be lost')}.`))
+      ) {
+        console.log('Push cancelled.');
+        process.exit(0);
+      }
+      return runMigrateWithDbUrl(dbUrl, () =>
+        migrate.engine.schemaPush({
+          force: true,
+          schema,
+        })
+      );
+    }
+
+    return migration;
   });
 
   if (migration.warnings.length === 0 && migration.executedSteps === 0) {
@@ -66,6 +119,20 @@ export async function pushPrismaSchemaToDatabase(
     console.info(
       `✨ Your database is now in sync with your schema. Done in ${formatms(Date.now() - before)}`
     );
+  }
+}
+
+function logUnexecutableSteps(unexecutableSteps: string[]) {
+  console.log(`${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`);
+  for (const item of unexecutableSteps) {
+    console.log(`  • ${item}`);
+  }
+}
+
+function logWarnings(warnings: string[]) {
+  console.log(chalk.bold(`\n⚠️  Warnings:\n`));
+  for (const warning of warnings) {
+    console.log(`  • ${warning}`);
   }
 }
 
@@ -133,19 +200,13 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
       // https://github.com/prisma/prisma-engines/blob/c65d20050f139a7917ef2efc47a977338070ea61/migration-engine/connectors/sql-migration-connector/src/sql_destructive_change_checker/unexecutable_step_check.rs
       // the tl;dr is "making things non null when there are nulls in the db"
       if (!migrationCanBeApplied) {
-        console.log(`${chalk.bold.red('\n⚠️ We found changes that cannot be executed:\n')}`);
-        for (const item of evaluateDataLossResult.unexecutableSteps) {
-          console.log(`  • Step ${item.stepIndex} ${item.message}`);
-        }
+        logUnexecutableSteps(evaluateDataLossResult.unexecutableSteps.map(x => x.message));
       }
       // warnings mean "if the migration was applied to the database you're connected to, you will lose x data"
       // note that if you have a field where all of the values are null on your local db and you've removed it, you won't get a warning here.
       // there will be a warning in a comment in the generated migration though.
       if (evaluateDataLossResult.warnings.length) {
-        console.log(chalk.bold(`\n⚠️  Warnings:\n`));
-        for (const warning of evaluateDataLossResult.warnings) {
-          console.log(`  • ${warning.message}`);
-        }
+        logWarnings(evaluateDataLossResult.warnings.map(x => x.message));
       }
 
       console.log(); // for an empty line
