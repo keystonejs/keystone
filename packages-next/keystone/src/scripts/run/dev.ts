@@ -37,22 +37,20 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, keystone, cwd)).prisma;
       await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
 
-      if (config.db.adapter === 'prisma_postgresql' || config.db.adapter === 'prisma_sqlite') {
-        if (config.db.useMigrations) {
-          await devMigrations(
-            config.db.url,
-            prismaSchema,
-            getSchemaPaths(cwd).prisma,
-            shouldDropDatabase
-          );
-        } else {
-          await pushPrismaSchemaToDatabase(
-            config.db.url,
-            prismaSchema,
-            getSchemaPaths(cwd).prisma,
-            shouldDropDatabase
-          );
-        }
+      if (config.db.useMigrations) {
+        await devMigrations(
+          config.db.url,
+          prismaSchema,
+          getSchemaPaths(cwd).prisma,
+          shouldDropDatabase
+        );
+      } else {
+        await pushPrismaSchemaToDatabase(
+          config.db.url,
+          prismaSchema,
+          getSchemaPaths(cwd).prisma,
+          shouldDropDatabase
+        );
       }
     }
 
