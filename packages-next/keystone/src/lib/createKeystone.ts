@@ -17,11 +17,6 @@ export function createKeystone(config: KeystoneConfig, prismaClient?: any) {
       provider: 'postgresql',
     });
   } else if (db.adapter === 'prisma_sqlite') {
-    if (!config.experimental?.prismaSqlite) {
-      throw new Error(
-        'SQLite support is still experimental. You must set { experimental: { prismaSqlite: true } } in your config to use this feature.'
-      );
-    }
     adapter = new PrismaAdapter({
       prismaClient,
       ...db,

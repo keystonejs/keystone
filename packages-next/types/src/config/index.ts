@@ -34,8 +34,6 @@ export type KeystoneConfig = {
   experimental?: {
     /** Enables nextjs graphql api route mode */
     enableNextJsGraphqlApiEndpoint?: boolean;
-    /** Enable Prisma+SQLite support */
-    prismaSqlite?: boolean;
   };
 };
 

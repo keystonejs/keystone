@@ -87,9 +87,6 @@ export default config({
 
 ### prisma_sqlite
 
-Support for SQLite with Prisma is still in preview.
-To use this option you must also set `{ experimental: { prismaSqlite: true } }`.
-
 Advanced configuration:
 
 - `enableLogging` (default: `false`): Enable logging from the Prisma client.
@@ -265,7 +262,6 @@ import { config } from '@keystone-next/keystone/schema';
 export default config({
   experimental: {
     enableNextJsGraphqlApiEndpoint: true,
-    prismaSqlite: true,
   }
   /* ... */
 });
@@ -274,7 +270,5 @@ export default config({
 Options:
 
 - `enableNextJsGraphqlApiEndpoint`: (coming soon)
-- `prismaSqlite`: Enables the use of SQLite with Prisma.
-  This flag is required when setting `{ db: { adapter: 'prisma_sqlite' } }`.
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
