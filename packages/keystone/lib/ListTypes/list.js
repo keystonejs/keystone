@@ -12,7 +12,6 @@ const {
   createLazyDeferred,
 } = require('@keystone-next/utils-legacy');
 const { parseListAccess } = require('@keystone-next/access-control-legacy');
-const { graphqlLogger } = require('../Keystone/logger');
 const {
   preventInvalidUnderscorePrefix,
   keyToLabel,
@@ -317,11 +316,6 @@ module.exports = class List {
       }
     );
     if (!access) {
-      graphqlLogger.debug(
-        { operation, access, gqlName, ...extraInternalData },
-        'Access statically or implicitly denied'
-      );
-      graphqlLogger.info({ operation, gqlName, ...extraInternalData }, 'Access Denied');
       // If the client handles errors correctly, it should be able to
       // receive partial data (for the fields the user has access to),
       // and then an `errors` array of AccessDeniedError's
@@ -331,9 +325,7 @@ module.exports = class List {
   }
 
   async getAccessControlledItem(id, access, { context, operation, gqlName, info }) {
-    const _throwAccessDenied = msg => {
-      graphqlLogger.debug({ id, operation, access, gqlName }, msg);
-      graphqlLogger.info({ id, operation, gqlName }, 'Access Denied');
+    const _throwAccessDenied = () => {
       // If the client handles errors correctly, it should be able to
       // receive partial data (for the fields the user has access to),
       // and then an `errors` array of AccessDeniedError's
@@ -351,7 +343,7 @@ module.exports = class List {
       // the user has access to. So we have to do a check here to see if the
       // ID they're requesting matches that ID.
       // Nice side-effect: We can throw without having to ever query the DB.
-      _throwAccessDenied('Item excluded this id from filters');
+      _throwAccessDenied();
     } else {
       // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
       // We only want 1 item, don't make the DB do extra work
@@ -372,7 +364,7 @@ module.exports = class List {
       // that return null do not exist). Similar to how S3 returns 403's
       // always instead of ever returning 404's.
       // Our version is to always throw if not found.
-      _throwAccessDenied('Zero items found');
+      _throwAccessDenied();
     }
     // Found the item, and it passed the filter test
     return item;
@@ -470,7 +462,6 @@ module.exports = class List {
     info
   ) {
     const operation = 'read';
-    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
 
     const access = await this.checkListAccess(context, undefined, operation, {
       gqlName,
@@ -484,7 +475,6 @@ module.exports = class List {
       info,
     });
 
-    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'End query');
     return result;
   }
 

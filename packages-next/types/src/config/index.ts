@@ -34,8 +34,6 @@ export type KeystoneConfig = {
   experimental?: {
     /** Enables nextjs graphql api route mode */
     enableNextJsGraphqlApiEndpoint?: boolean;
-    /** Enable Prisma+SQLite support */
-    prismaSqlite?: boolean;
     /** Creates a file at `node_modules/.keystone/api` with a `lists` export */
     generateNodeAPI?: boolean;
     /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */
