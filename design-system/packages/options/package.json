@@ -15,7 +15,7 @@
     "@keystone-ui/core": "^2.0.2",
     "@keystone-ui/fields": "^2.0.2",
     "@keystone-ui/icons": "^2.0.1",
-    "@types/react-select": "^4.0.13",
+    "@types/react-select": "^4.0.14",
     "react-select": "^4.3.0"
   },
   "engines": {

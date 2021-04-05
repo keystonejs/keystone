@@ -28,7 +28,7 @@
     "p-settle": "^4.1.1"
   },
   "devDependencies": {
-    "@apollo/client": "^3.3.13",
+    "@apollo/client": "^3.3.14",
     "@keystone-next/file-adapters-legacy": "*",
     "@keystone-next/server-side-graphql-client-legacy": "*",
     "@keystone-next/test-utils-legacy": "*",

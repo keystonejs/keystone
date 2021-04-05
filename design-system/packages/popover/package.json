@@ -15,7 +15,7 @@
   "dependencies": {
     "@babel/runtime": "^7.13.10",
     "@keystone-ui/core": "^2.0.1",
-    "@popperjs/core": "^2.9.1",
+    "@popperjs/core": "^2.9.2",
     "react-popper": "^2.2.5"
   },
   "engines": {
