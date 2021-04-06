@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/keystone-legacy",
   "description": "The main @keystonejs class & CLI. This is where the magic happens.",
-  "version": "22.0.0",
+  "version": "23.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
@@ -22,7 +22,7 @@
     "stack-utils": "^2.0.3"
   },
   "devDependencies": {
-    "@keystone-next/fields-legacy": "^24.0.0",
+    "@keystone-next/fields-legacy": "^25.0.0",
     "@keystone-next/test-utils-legacy": "*",
     "graphql": "^15.5.0"
   },

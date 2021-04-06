@@ -1,5 +1,16 @@
 # @keystonejs/fields-cloudinary-image
 
+## 5.0.0
+
+### Major Changes
+
+- [#5273](https://github.com/keystonejs/keystone/pull/5273) [`4fa66ac1f`](https://github.com/keystonejs/keystone/commit/4fa66ac1fc6fd0a43da17dd90797733e8c958785) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for the `knex` and `mongoose` field adapters.
+
+### Patch Changes
+
+- Updated dependencies [[`e702fea44`](https://github.com/keystonejs/keystone/commit/e702fea44c3116db158d97b5ffd24440f09c9d49), [`8665cfe66`](https://github.com/keystonejs/keystone/commit/8665cfe66016e0356681413e31f80a6d5586d364), [`4fa66ac1f`](https://github.com/keystonejs/keystone/commit/4fa66ac1fc6fd0a43da17dd90797733e8c958785), [`9e450d6b3`](https://github.com/keystonejs/keystone/commit/9e450d6b326e2ba5f46e49ecf53b6bd7a627e9ca)]:
+  - @keystone-next/fields-legacy@25.0.0
+
 ## 4.0.0
 
 ### Major Changes

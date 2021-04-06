@@ -1,5 +1,11 @@
 # @keystone-ui/fields
 
+## 2.1.0
+
+### Minor Changes
+
+- [#5322](https://github.com/keystonejs/keystone/pull/5322) [`d93bab17b`](https://github.com/keystonejs/keystone/commit/d93bab17b69c76e57580dc00e41314215da6d49b) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added styles prop to @keystone-ui/fields select components to enable style customisations to propagate to the underlying reaect-select implementation.
+
 ## 2.0.2
 
 ### Patch Changes
