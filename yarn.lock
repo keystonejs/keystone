@@ -1950,10 +1950,10 @@
   dependencies:
     resolve "^1.17.0"
 
-"@primer/octicons-react@^11.3.0":
-  version "11.3.0"
-  resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-11.3.0.tgz#794641d95ff5749a9438a2e0c201956b2a377b60"
-  integrity sha512-4sVhkrBKuj3h+PFw69yOyO/l3nQB/mm95V+Kz7LRSlIrbZr6hZarZD5Ft4ewdONPROkIHQM/6KSK90+OAimxsQ==
+"@primer/octicons-react@^13.0.0":
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/@primer/octicons-react/-/octicons-react-13.0.0.tgz#a7f2288fd9cf9cabc1e75553a0dd9f00d74b68c1"
+  integrity sha512-j5XppNRCvgaMZLPsVvvmp6GSh7P5pq6PUbsfLNBWi2Kz3KYDeoGDWbPr5MjoxFOGUn6Hjnt6qjHPRxahd11vLQ==
 
 "@prisma/client@2.19.0":
   version "2.19.0"
