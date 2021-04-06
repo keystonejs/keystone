@@ -94,7 +94,7 @@ export async function build(cwd: string) {
   console.log('✨ Generating database client');
   // FIXME: This needs to generate clients for the correct build target using binaryTarget
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
-  await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
+  await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
 
   if (config.ui?.isDisabled) {
     console.log('✨ Skipping Admin UI code generation');
