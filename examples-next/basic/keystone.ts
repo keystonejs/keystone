@@ -27,7 +27,6 @@ export default auth.withAuth(
     db: process.env.DATABASE_URL
       ? { adapter: 'prisma_postgresql', url: process.env.DATABASE_URL }
       : { adapter: 'prisma_sqlite', url: 'file:./keystone.db' },
-    experimental: { prismaSqlite: true },
     // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
     // graphql: {
     //   path: '/api/graphql',

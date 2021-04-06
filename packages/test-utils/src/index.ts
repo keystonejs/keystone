@@ -55,17 +55,12 @@ async function setupFromConfig({
   adapterName: AdapterName;
   config: TestKeystoneConfig;
 }) {
-  let db: KeystoneConfig['db'];
-  if (adapterName === 'prisma_postgresql') {
-    const adapterArgs = await argGenerator[adapterName]();
-    db = { adapter: adapterName, ...adapterArgs };
-  } else if (adapterName === 'prisma_sqlite') {
-    const adapterArgs = await argGenerator[adapterName]();
-    db = { adapter: adapterName, ...adapterArgs };
-    _config = { ..._config, experimental: { prismaSqlite: true } };
-  }
-
-  const config = initConfig({ ..._config, db: db!, ui: { isDisabled: true } });
+  const adapterArgs = await argGenerator[adapterName]();
+  const config = initConfig({
+    ..._config,
+    db: { adapter: adapterName, ...adapterArgs },
+    ui: { isDisabled: true },
+  });
 
   const prismaClient = await (async () => {
     const { keystone, graphQLSchema } = createSystem(config);
