@@ -11,7 +11,7 @@ export async function prisma(cwd: string, args: string[]) {
   const { keystone, graphQLSchema } = createSystem(config);
 
   await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
-  await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
+  await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
 
   await execa('node', [require.resolve('prisma'), ...args], {
     cwd,

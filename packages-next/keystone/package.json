@@ -21,6 +21,7 @@
     "@keystone-next/keystone-legacy": "^22.0.0",
     "@keystone-next/server-side-graphql-client-legacy": "3.0.0",
     "@keystone-next/types": "^15.0.1",
+    "@preconstruct/next": "^2.0.0",
     "@prisma/client": "2.19.0",
     "@prisma/migrate": "2.19.0",
     "@prisma/sdk": "2.19.0",
@@ -67,6 +68,8 @@
   "preconstruct": {
     "entrypoints": [
       "index.ts",
+      "next.ts",
+      "___internal-do-not-use-will-break-in-patch/{node-api,next-graphql}.ts",
       "artifacts.ts",
       "migrations.ts",
       "schema/index.ts",
