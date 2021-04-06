@@ -52,7 +52,7 @@
     "scroll-into-view-if-needed": "^2.2.28",
     "slate": "^0.60.4",
     "slate-history": "^0.60.4",
-    "slate-react": "^0.60.4"
+    "slate-react": "^0.62.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/fields-document",
   "devDependencies": {
