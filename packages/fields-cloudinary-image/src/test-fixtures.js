@@ -1,13 +1,10 @@
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
-
 import fs from 'fs';
 import mime from 'mime';
 import { Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
-import { Text } from '@keystone-next/fields-legacy';
-import { CloudinaryAdapter } from '@keystone-next/file-adapters-legacy';
+import { cloudinaryImage } from '@keystone-next/cloudinary';
+import { text } from '@keystone-next/fields';
 
-import { CloudinaryImage } from './';
 const path = require('path');
 
 cloudinary.v2.config({
@@ -28,16 +25,9 @@ const prepareFile = _filePath => {
   return upload;
 };
 
-const cloudinaryAdapter = new CloudinaryAdapter({
-  cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'cloudinary_cloud_name',
-  apiKey: process.env.CLOUDINARY_KEY || 'cloudinary_key',
-  apiSecret: process.env.CLOUDINARY_SECRET || 'cloudinary_secret',
-  folder: 'cloudinary-test',
-});
-
 // Configurations
 export const name = 'CloudinaryImage';
-export const type = CloudinaryImage;
+export const typeFunction = cloudinaryImage;
 export const supportsUnique = false;
 export const fieldName = 'image';
 export const subfieldName = 'originalFilename';
@@ -50,10 +40,24 @@ export const exampleValue2 = () => prepareFile('keystone.jpeg');
 export const createReturnedValue = exampleValue().file.filename;
 export const updateReturnedValue = exampleValue2().file.filename;
 
-export const fieldConfig = () => ({ adapter: cloudinaryAdapter });
+export const fieldConfig = () => ({
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'cloudinary_cloud_name',
+    apiKey: process.env.CLOUDINARY_KEY || 'cloudinary_key',
+    apiSecret: process.env.CLOUDINARY_SECRET || 'cloudinary_secret',
+    folder: 'cloudinary-test',
+  },
+});
 export const getTestFields = () => ({
-  name: { type: Text },
-  image: { type, adapter: cloudinaryAdapter },
+  name: text(),
+  image: cloudinaryImage({
+    cloudinary: {
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'cloudinary_cloud_name',
+      apiKey: process.env.CLOUDINARY_KEY || 'cloudinary_key',
+      apiSecret: process.env.CLOUDINARY_SECRET || 'cloudinary_secret',
+      folder: 'cloudinary-test',
+    },
+  }),
 });
 
 export const initItems = () => [
