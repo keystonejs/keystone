@@ -10,7 +10,9 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystone-next/fields-legacy": "^25.0.0"
+    "@keystone-next/adapter-prisma-legacy": "^5.0.0",
+    "@keystone-next/fields-legacy": "^25.0.0",
+    "cuid": "^2.1.8"
   },
   "main": "dist/fields-cloudinary-image-legacy.cjs.js",
   "module": "dist/fields-cloudinary-image-legacy.esm.js",
