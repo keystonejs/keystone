@@ -93,7 +93,8 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
           styles={{
             valueContainer: provided => ({
               ...provided,
-              padding: '0 12px',
+              paddingLeft: '12px',
+              paddingRight: '16px',
             }),
           }}
           menuPortalTarget={document.body}

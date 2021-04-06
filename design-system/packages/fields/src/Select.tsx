@@ -162,7 +162,7 @@ export function MultiSelect({
 }) {
   const tokens = useInputTokens({ width: widthKey });
   const defaultStyles = useStyles({ tokens, multi: true });
-  const composedStyles = composeStyles(defaultStyles, styles);
+  const composedStyles = styles ? mergeStyles(defaultStyles, styles) : defaultStyles;
 
   return (
     <ReactSelect
