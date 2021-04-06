@@ -27,14 +27,14 @@ const hashPrismaSchema = memoizeOne(prismaSchema =>
 const argGenerator = {
   prisma_postgresql: () => ({
     url: process.env.DATABASE_URL!,
-    provider: 'postgresql',
+    provider: 'postgresql' as const,
     getDbSchemaName: () => null as any,
     // Turn this on if you need verbose debug info
     enableLogging: false,
   }),
   prisma_sqlite: () => ({
     url: process.env.DATABASE_URL!,
-    provider: 'sqlite',
+    provider: 'sqlite' as const,
     // Turn this on if you need verbose debug info
     enableLogging: false,
   }),
@@ -58,7 +58,7 @@ async function setupFromConfig({
   const adapterArgs = await argGenerator[adapterName]();
   const config = initConfig({
     ..._config,
-    db: { adapter: adapterName, ...adapterArgs },
+    db: adapterArgs,
     ui: { isDisabled: true },
   });
 
