@@ -32,7 +32,7 @@ export default auth.withAuth(
       enableNextJsGraphqlApiEndpoint: true,
     },
     db: {
-      adapter: 'prisma_postgresql',
+      provider: 'postgresql',
       url: process.env.DATABASE_URL || 'postgres://username:password@localhost/database-name',
     },
     ui: {
