@@ -1,7 +1,7 @@
 import path from 'path';
 import { printSchema, GraphQLSchema } from 'graphql';
 import * as fs from 'fs-extra';
-import type { BaseKeystone } from '@keystone-next/types';
+import type { BaseKeystone, KeystoneConfig } from '@keystone-next/types';
 import { getGenerator, formatSchema } from '@prisma/sdk';
 import { confirmPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
@@ -105,20 +105,93 @@ export async function generateCommittedArtifacts(
   return artifacts;
 }
 
+const nodeAPIJS = (
+  cwd: string,
+  config: KeystoneConfig
+) => `import keystoneConfig from '../../keystone';
+import { PrismaClient } from '.prisma/client';
+import { createListsAPI } from '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/node-api';
+${makeVercelIncludeTheSQLiteDB(cwd, path.join(cwd, 'node_modules/.keystone/next'), config)}
+
+export const lists = createListsAPI(keystoneConfig, PrismaClient);
+`;
+
+const nodeAPIDTS = `import { KeystoneListsAPI } from '@keystone-next/types';
+import { KeystoneListsTypeInfo } from './types';
+
+export const lists: KeystoneListsAPI<KeystoneListsTypeInfo>;`;
+
+const makeVercelIncludeTheSQLiteDB = (
+  cwd: string,
+  directoryOfFileToBeWritten: string,
+  config: KeystoneConfig
+) => {
+  if (config.db.adapter === 'prisma_sqlite' || config.db.provider === 'sqlite') {
+    const sqliteDbAbsolutePath = path.resolve(cwd, config.db.url.replace('file:', ''));
+
+    return `import path from 'path';
+
+    path.join(__dirname, ${JSON.stringify(
+      path.relative(directoryOfFileToBeWritten, sqliteDbAbsolutePath)
+    )});
+    path.join(process.cwd(), ${JSON.stringify(path.relative(cwd, sqliteDbAbsolutePath))});
+    `;
+  }
+  return '';
+};
+
+const nextGraphQLAPIJS = (
+  cwd: string,
+  config: KeystoneConfig
+) => `import keystoneConfig from '../../../keystone';
+import { PrismaClient } from '.prisma/client';
+import { nextGraphQLAPIRoute } from '@keystone-next/keystone/___internal-do-not-use-will-break-in-patch/next-graphql';
+${makeVercelIncludeTheSQLiteDB(cwd, path.join(cwd, 'node_modules/.keystone/next'), config)}
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+export default nextGraphQLAPIRoute(keystoneConfig, PrismaClient);
+`;
+
+// note the export default config is just a lazy way of going "this is also any"
+const nextGraphQLAPIDTS = `export const config: any;
+export default config;
+`;
+
 export async function generateNodeModulesArtifacts(
   graphQLSchema: GraphQLSchema,
   keystone: BaseKeystone,
+  config: KeystoneConfig,
   cwd: string
 ) {
   const printedSchema = printSchema(graphQLSchema);
-
+  const dotKeystoneDir = path.join(cwd, 'node_modules/.keystone');
   await Promise.all([
     generatePrismaClient(cwd),
     fs.outputFile(
-      path.join(cwd, 'node_modules/.keystone/types.d.ts'),
+      path.join(dotKeystoneDir, 'types.d.ts'),
       printGeneratedTypes(printedSchema, keystone, graphQLSchema)
     ),
-    fs.outputFile(path.join(cwd, 'node_modules/.keystone/types.js'), ''),
+    fs.outputFile(path.join(dotKeystoneDir, 'types.js'), ''),
+    ...(config.experimental?.generateNodeAPI
+      ? [
+          fs.outputFile(path.join(dotKeystoneDir, 'api.js'), nodeAPIJS(cwd, config)),
+          fs.outputFile(path.join(dotKeystoneDir, 'api.d.ts'), nodeAPIDTS),
+        ]
+      : []),
+    ...(config.experimental?.generateNextGraphqlAPI
+      ? [
+          fs.outputFile(
+            path.join(dotKeystoneDir, 'next/graphql-api.js'),
+            nextGraphQLAPIJS(cwd, config)
+          ),
+          fs.outputFile(path.join(dotKeystoneDir, 'next/graphql-api.d.ts'), nextGraphQLAPIDTS),
+        ]
+      : []),
   ]);
 }
 

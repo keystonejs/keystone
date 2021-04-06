@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/fields-cloudinary-image-legacy",
   "description": "KeystoneJS Cloudinary Image Field Type",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields-cloudinary-image",
@@ -10,7 +10,7 @@
     "node": ">=10.0.0"
   },
   "dependencies": {
-    "@keystone-next/fields-legacy": "^24.0.0"
+    "@keystone-next/fields-legacy": "^25.0.0"
   },
   "main": "dist/fields-cloudinary-image-legacy.cjs.js",
   "module": "dist/fields-cloudinary-image-legacy.esm.js",

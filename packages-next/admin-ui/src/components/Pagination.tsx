@@ -90,6 +90,13 @@ export function Pagination({ currentPage, total, pageSize, list }: PaginationPro
           width="medium"
           value={{ label: String(currentPage), value: String(currentPage) }}
           options={pages}
+          styles={{
+            valueContainer: provided => ({
+              ...provided,
+              paddingLeft: '12px',
+              paddingRight: '16px',
+            }),
+          }}
           menuPortalTarget={document.body}
           onChange={onChange}
         />
