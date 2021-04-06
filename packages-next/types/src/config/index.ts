@@ -63,16 +63,36 @@ export type DatabaseCommon = {
 
 export type DatabaseConfig = DatabaseCommon &
   (
-    | {
-        adapter: 'prisma_postgresql';
+    | ((
+        | {
+            /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
+            adapter: 'prisma_postgresql';
+            provider?: undefined;
+          }
+        | {
+            /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
+            adapter?: undefined;
+            provider: 'postgresql';
+          }
+      ) & {
         useMigrations?: boolean;
         enableLogging?: boolean;
-      }
-    | {
-        adapter: 'prisma_sqlite';
+      })
+    | ((
+        | {
+            /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
+            adapter: 'prisma_sqlite';
+            provider?: undefined;
+          }
+        | {
+            /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
+            adapter?: undefined;
+            provider: 'sqlite';
+          }
+      ) & {
         useMigrations?: boolean;
         enableLogging?: boolean;
-      }
+      })
   );
 
 // config.ui
