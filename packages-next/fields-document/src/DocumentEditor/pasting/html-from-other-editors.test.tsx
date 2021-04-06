@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
 /** @jsx jsx */
 import { makeEditor, jsx } from '../tests/utils';
-import { MyDataTransfer } from './test-utils';
+import { MyDataTransfer } from './data-transfer';
 
 // TODO: lists from notion have a newline in the list item before a nested list
 // (i'm guessing this is because notion does the Right thing with nested lists
