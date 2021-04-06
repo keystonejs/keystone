@@ -2,7 +2,7 @@
 
 import { Fragment, ReactElement, createContext, useContext, useState, useMemo } from 'react';
 import { ReactEditor, RenderElementProps, useFocused, useSelected } from 'slate-react';
-import { Editor, Element, Transforms } from 'slate';
+import { Editor, Element, Transforms, Node } from 'slate';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
@@ -18,6 +18,7 @@ import {
   useElementWithSetNodes,
   useStaticEditor,
 } from '../utils';
+import { PlaceholderContext } from '../leaf';
 import { clientSideValidateProp } from './utils';
 import { createPreviewProps } from './preview-props';
 import { getInitialValue } from './initial-values';
@@ -340,6 +341,17 @@ function ComponentBlockRender({
     if (stringified === undefined) {
       maybeChild = child;
     } else {
+      const childElement = child.props.element;
+      if (Node.string(childElement) === '') {
+        const placeholder = getPlaceholderTextForPropPath(
+          childElement.propPath,
+          componentBlock.props,
+          element.props
+        );
+        child = (
+          <PlaceholderContext.Provider value={placeholder}>{child}</PlaceholderContext.Provider>
+        );
+      }
       childrenByPath[stringified] = child;
     }
   });

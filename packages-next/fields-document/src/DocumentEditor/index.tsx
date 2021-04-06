@@ -1,9 +1,9 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { KeyboardEvent, MutableRefObject, ReactNode, useContext, useState } from 'react';
+import { KeyboardEvent, MutableRefObject, ReactNode, useState } from 'react';
 import isHotkey from 'is-hotkey';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   Editor,
   Node,
@@ -29,11 +29,7 @@ import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
 import { withHeading } from './heading';
 import { nestList, unnestList, withList } from './lists';
-import {
-  ComponentBlockContext,
-  getPlaceholderTextForPropPath,
-  withComponentBlocks,
-} from './component-blocks';
+import { withComponentBlocks } from './component-blocks';
 import { withBlockquote } from './blockquote';
 import { Relationships, withRelationship } from './relationship';
 import { withDivider } from './divider';
@@ -315,51 +311,11 @@ export function DocumentEditorEditable({
   readOnly?: boolean;
 }) {
   const editor = useSlate();
-  const componentBlocks = useContext(ComponentBlockContext);
 
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
 
   return (
     <Editable
-      decorate={useCallback(
-        ([node, path]: NodeEntry<Node>) => {
-          let decorations: Range[] = [];
-          if (node.type === 'component-block') {
-            if (
-              node.children.length === 1 &&
-              Element.isElement(node.children[0]) &&
-              node.children[0].type === 'component-inline-prop' &&
-              node.children[0].propPath === undefined
-            ) {
-              return decorations;
-            }
-            node.children.forEach((child, index) => {
-              if (
-                Node.string(child) === '' &&
-                Element.isElement(child) &&
-                (child.type === 'component-block-prop' || child.type === 'component-inline-prop') &&
-                child.propPath !== undefined
-              ) {
-                const start = Editor.start(editor, [...path, index]);
-                const placeholder = getPlaceholderTextForPropPath(
-                  child.propPath,
-                  componentBlocks[node.component].props,
-                  node.props
-                );
-                if (placeholder) {
-                  decorations.push({
-                    placeholder,
-                    anchor: start,
-                    focus: start,
-                  });
-                }
-              }
-            });
-          }
-          return decorations;
-        },
-        [editor]
-      )}
       css={styles}
       autoFocus={autoFocus}
       onKeyDown={onKeyDown}

@@ -7,7 +7,7 @@
 // ideally Slate would use generics instead of module augmentation so this
 // wouldn't be a problem but for now, it is so
 // DO NOT IMPORT THIS FILE
-import { Descendant, BaseRange } from 'slate';
+import { Descendant } from 'slate';
 import { HistoryEditor } from 'slate-history';
 import { ReactEditor } from 'slate-react';
 import { RelationshipData } from './component-blocks/api';
@@ -84,7 +84,6 @@ type Element =
 declare module 'slate' {
   interface CustomTypes {
     Element: Element;
-    Range: { placeholder?: string } & BaseRange;
     // this isn't really correct but the TS slate stuff is all wrong so we need this 😩
     Editor: { type?: undefined; children: Descendant[] } & ReactEditor & HistoryEditor;
     Text: {
