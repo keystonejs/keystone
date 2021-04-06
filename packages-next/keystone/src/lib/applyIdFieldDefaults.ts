@@ -13,12 +13,7 @@ export function applyIdFieldDefaults(config: KeystoneConfig): KeystoneConfig['li
         )} list. This is not allowed, use the idField option instead.`
       );
     }
-    let idField =
-      config.lists[key].idField ??
-      {
-        prisma_postgresql: autoIncrement({}),
-        prisma_sqlite: autoIncrement({}),
-      }[config.db.adapter];
+    let idField = config.lists[key].idField ?? autoIncrement({});
     idField = {
       ...idField,
       config: {

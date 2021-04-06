@@ -1,18 +1,18 @@
 {
   "name": "@keystone-next/cloudinary",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "license": "MIT",
   "main": "dist/cloudinary.cjs.js",
   "module": "dist/cloudinary.esm.js",
   "dependencies": {
     "@babel/runtime": "^7.13.10",
-    "@keystone-next/admin-ui": "^12.0.0",
-    "@keystone-next/fields-cloudinary-image-legacy": "^4.0.0",
+    "@keystone-next/admin-ui": "^13.0.0",
+    "@keystone-next/fields-cloudinary-image-legacy": "^5.0.0",
     "@keystone-next/file-adapters-legacy": "^8.0.0",
-    "@keystone-next/types": "^15.0.1",
+    "@keystone-next/types": "^16.0.0",
     "@keystone-ui/button": "^3.0.1",
     "@keystone-ui/core": "^2.0.2",
-    "@keystone-ui/fields": "^2.0.2",
+    "@keystone-ui/fields": "^2.1.0",
     "@keystone-ui/pill": "^2.0.1",
     "@types/react": "^17.0.3",
     "react": "^17.0.2"
