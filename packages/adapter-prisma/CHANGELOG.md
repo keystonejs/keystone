@@ -1,5 +1,32 @@
 # @keystonejs/adapter-prisma
 
+## 5.0.0
+
+### Major Changes
+
+- [#5319](https://github.com/keystonejs/keystone/pull/5319) [`1261c398b`](https://github.com/keystonejs/keystone/commit/1261c398b94ffef2737226cceaebaed1b3c04c72) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy `PrismaAdapter.listAdapterClass`, `PrismaAdapter.postConnect()`, and `PrismaAdapter.checkDatabaseVersion()`.
+
+* [#5302](https://github.com/keystonejs/keystone/pull/5302) [`1e6d12f47`](https://github.com/keystonejs/keystone/commit/1e6d12f47076816d2a2441b42471176c5a7f2f8c) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed `CLIOptionsForCreateMigration` and `createMigration` exports
+
+- [#5324](https://github.com/keystonejs/keystone/pull/5324) [`e702fea44`](https://github.com/keystonejs/keystone/commit/e702fea44c3116db158d97b5ffd24440f09c9d49) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy `.find()`, `.findAll()`, `.findOne()`, `.findById()`, `.itemsQueryMeta()`, `.getFieldAdapterByPath()`, and `.getPrimaryKeyAdapter()` methods from `PrismaListAdapter`.
+
+* [#5287](https://github.com/keystonejs/keystone/pull/5287) [`95fefaf81`](https://github.com/keystonejs/keystone/commit/95fefaf815204d6af6e407690f44750f500602e3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed `getDbSchemaName` and `getPrismaPath` database adapter options. To change the database schema that Keystone uses, you can add `?schema=whatever` to the database url.
+
+- [#5302](https://github.com/keystonejs/keystone/pull/5302) [`1e6d12f47`](https://github.com/keystonejs/keystone/commit/1e6d12f47076816d2a2441b42471176c5a7f2f8c) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed formatting of Prisma schema returned from `_generatePrismaSchema` method and made it return synchronously
+
+* [#5320](https://github.com/keystonejs/keystone/pull/5320) [`fda82869c`](https://github.com/keystonejs/keystone/commit/fda82869c376d05fd007bec22d7bde2604db445b) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy default ID field support.
+
+- [#5285](https://github.com/keystonejs/keystone/pull/5285) [`5cd94b2a3`](https://github.com/keystonejs/keystone/commit/5cd94b2a32b3eddaf00ad77229f7e9664899c3b9) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed `dropDatabase` method and config option
+
+* [#5287](https://github.com/keystonejs/keystone/pull/5287) [`95fefaf81`](https://github.com/keystonejs/keystone/commit/95fefaf815204d6af6e407690f44750f500602e3) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed migrationMode and all migration related methods on the adapter and instead require that a prisma client is passed to the adapter to be able to connect to the database
+
+### Patch Changes
+
+- [#5281](https://github.com/keystonejs/keystone/pull/5281) [`4f0abec0b`](https://github.com/keystonejs/keystone/commit/4f0abec0b19c3495c1ae6d7dac49fb46253cf7b3) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy `BaseKeystoneAdapter`, `BaseListAdapter`, and `BaseFieldAdapter` exports.
+
+- Updated dependencies [[`e702fea44`](https://github.com/keystonejs/keystone/commit/e702fea44c3116db158d97b5ffd24440f09c9d49), [`955787055`](https://github.com/keystonejs/keystone/commit/955787055a54fb33eb45c80dd39fa86a9ff632a0), [`fda82869c`](https://github.com/keystonejs/keystone/commit/fda82869c376d05fd007bec22d7bde2604db445b), [`4f0abec0b`](https://github.com/keystonejs/keystone/commit/4f0abec0b19c3495c1ae6d7dac49fb46253cf7b3)]:
+  - @keystone-next/keystone-legacy@23.0.0
+
 ## 4.0.1
 
 ### Patch Changes
