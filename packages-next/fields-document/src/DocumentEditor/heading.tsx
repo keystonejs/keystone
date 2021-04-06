@@ -5,7 +5,7 @@ import { RenderElementProps } from 'slate-react';
 
 import { Editor, Transforms, Range, Point, Path, Node, Element, Text } from 'slate';
 
-const headingStylesMap: Record<string, any> = {
+const headingStylesMap = {
   h1: { fontSize: '2.2rem' },
   h2: { fontSize: '1.8rem' },
   h3: { fontSize: '1.5rem' },
