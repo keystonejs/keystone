@@ -235,14 +235,8 @@ export function DocumentEditor({
 
   return (
     <div
-      css={{
-        h1: { fontSize: '2.2rem' },
-        h2: { fontSize: '1.8rem' },
-        h3: { fontSize: '1.5rem' },
-        h4: { fontSize: '1.2rem' },
-        h5: { fontSize: '0.83rem' },
-        h6: { fontSize: '0.67rem' },
-        ...(expanded && {
+      css={
+        expanded && {
           background: colors.background,
           bottom: 0,
           left: 0,
@@ -251,8 +245,8 @@ export function DocumentEditor({
           right: 0,
           top: 0,
           zIndex: 100,
-        }),
-      }}
+        }
+      }
     >
       <DocumentEditorProvider
         componentBlocks={componentBlocks}
