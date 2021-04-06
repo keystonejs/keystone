@@ -87,7 +87,7 @@ export const afterAll = () => {
   });
 };
 
-export const supportedFilters = adapterName => [
+export const supportedFilters = provider => [
   'null_equality',
-  !['prisma_postgresql'].includes(adapterName) && 'in_empty_null',
+  !['postgresql'].includes(provider) && 'in_empty_null',
 ];

@@ -1,4 +1,4 @@
-import { AdapterName, testConfig } from '@keystone-next/test-utils-legacy';
+import { ProviderName, testConfig } from '@keystone-next/test-utils-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
@@ -95,9 +95,9 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
   });
 };
 
-const setupKeystone = (adapterName: AdapterName) =>
+const setupKeystone = (provider: ProviderName) =>
   setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Owner: list({
@@ -130,8 +130,8 @@ const setupKeystone = (adapterName: AdapterName) =>
     }),
   });
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe(`One-to-one relationships`, () => {
       describe('Read', () => {
         test(

@@ -3,7 +3,7 @@ import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createItem, getItems, getItem } from '@keystone-next/server-side-graphql-client-legacy';
-import type { AdapterName } from '@keystone-next/test-utils-legacy';
+import type { ProviderName } from '@keystone-next/test-utils-legacy';
 import type { KeystoneContext } from '@keystone-next/types';
 
 type IdType = any;
@@ -130,9 +130,9 @@ const getCompanyAndLocation = async (
   return data;
 };
 
-const setupKeystone = (adapterName: AdapterName) =>
+const setupKeystone = (provider: ProviderName) =>
   setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Company: list({
@@ -151,8 +151,8 @@ const setupKeystone = (adapterName: AdapterName) =>
     }),
   });
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe(`One-to-one relationships`, () => {
       describe('Read', () => {
         test(

@@ -1,7 +1,7 @@
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
@@ -122,9 +122,9 @@ const createInitialData = async (context: KeystoneContext) => {
   });
 };
 
-const setupKeystone = (adapterName: AdapterName) =>
+const setupKeystone = (provider: ProviderName) =>
   setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Employee: list({
@@ -157,8 +157,8 @@ const setupKeystone = (adapterName: AdapterName) =>
     }),
   });
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     test(
       'Query',
       runner(setupKeystone, async ({ context }) => {

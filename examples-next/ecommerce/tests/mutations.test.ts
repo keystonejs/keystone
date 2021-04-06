@@ -2,14 +2,14 @@ import { KeystoneContext } from '@keystone-next/types';
 import {
   multiAdapterRunners,
   setupFromConfig,
-  AdapterName,
+  ProviderName,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
 import config from '../keystone';
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: config.lists,
       extendGraphqlSchema: config.extendGraphqlSchema,
@@ -23,7 +23,7 @@ const FAKE_ID = 12345;
 const asUser = (context: KeystoneContext, itemId?: number) =>
   context.exitSudo().withSession({ itemId, data: {} });
 
-multiAdapterRunners('prisma_postgresql').map(({ runner }) =>
+multiAdapterRunners('postgresql').map(({ runner }) =>
   describe(`Custom mutations`, () => {
     describe('checkout(token)', () => {
       const token = 'TOKEN'; // This is not currently used by the mutation
