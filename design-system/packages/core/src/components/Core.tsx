@@ -52,6 +52,20 @@ const BaseCSS = ({ includeNormalize, optimizeLegibility }: BaseCSSProps) => {
             fontWeight: typography.fontWeight.regular,
             lineHeight: typography.leading.base,
             fontFamily: typography.fontFamily.body,
+            'h1,h2,h3,h4,h5,h6': { fontWeight: 'bold' },
+
+            h1: { fontSize: '2.2rem' },
+            h2: { fontSize: '1.8rem' },
+            h3: { fontSize: '1.5rem' },
+            h4: { fontSize: '1.2rem' },
+            h5: { fontSize: '0.83rem' },
+            h6: { fontSize: '0.67rem' },
+
+            // h1: { fontSize: '2em' },
+            // h2: { fontSize: '1.5em' },
+            // h3: { fontSize: '1.17em' },
+            // h5: { fontSize: '0.83em' },
+            // h6: { fontSize: '0.67em' },
 
             // optimize legibility
             ...(optimizeLegibility && {
