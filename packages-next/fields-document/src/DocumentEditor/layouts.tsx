@@ -119,7 +119,7 @@ export const LayoutArea = ({ attributes, children }: RenderElementProps) => {
   );
 };
 
-export const insertLayout = (editor: ReactEditor, layout: [number, ...number[]]) => {
+export const insertLayout = (editor: Editor, layout: [number, ...number[]]) => {
   insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading(editor, [
     {
       type: 'layout',

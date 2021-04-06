@@ -57,7 +57,7 @@ export function ComponentInlineProp(props: RenderElementProps) {
 }
 
 export function insertComponentBlock(
-  editor: ReactEditor,
+  editor: Editor,
   componentBlocks: Record<string, ComponentBlock>,
   componentBlock: string,
   relationships: Relationships

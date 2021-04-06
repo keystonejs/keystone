@@ -85,8 +85,8 @@ declare module 'slate' {
   interface CustomTypes {
     Element: Element;
     Range: { placeholder?: string } & BaseRange;
-    // this isn't really correct here but the TS slate stuff is all wrong so we need this 😩
-    Editor: { type?: undefined } & ReactEditor & HistoryEditor;
+    // this isn't really correct but the TS slate stuff is all wrong so we need this 😩
+    Editor: { type?: undefined; children: Descendant[] } & ReactEditor & HistoryEditor;
     Text: {
       type?: undefined;
       placeholder?: string;

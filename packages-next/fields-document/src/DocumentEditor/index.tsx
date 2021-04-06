@@ -59,39 +59,6 @@ const HOTKEYS: Record<string, Mark> = {
   'mod+u': 'underline',
 };
 
-const IS_NODE_LIST_CACHE = new WeakMap<any[], boolean>();
-
-// a workaround until https://github.com/ianstormtaylor/slate/pull/4072 is merged
-// this has taken an average keypress from ~40-50ms to ~20-30ms in dev
-Node.isNodeList = (value): value is Node[] => {
-  if (!Array.isArray(value)) {
-    return false;
-  }
-  const cachedResult = IS_NODE_LIST_CACHE.get(value);
-  if (cachedResult !== undefined) {
-    return cachedResult;
-  }
-  const isNodeList = value.every(val => Node.isNode(val));
-  IS_NODE_LIST_CACHE.set(value, isNodeList);
-  return isNodeList;
-};
-
-const IS_OPERATION_LIST_CACHE = new WeakMap<any[], boolean>();
-
-// this has taken pasting a pretty large document from ~5 seconds to ~3 seconds in dev
-Operation.isOperationList = (value): value is Operation[] => {
-  if (!Array.isArray(value)) {
-    return false;
-  }
-  const cachedResult = IS_OPERATION_LIST_CACHE.get(value);
-  if (cachedResult !== undefined) {
-    return cachedResult;
-  }
-  const isOperationList = value.every(val => Operation.isOperation(val));
-  IS_OPERATION_LIST_CACHE.set(value, isOperationList);
-  return isOperationList;
-};
-
 function isMarkActive(editor: Editor, mark: Mark) {
   const marks = Editor.marks(editor);
   if (marks?.[mark]) {
@@ -106,7 +73,7 @@ function isMarkActive(editor: Editor, mark: Mark) {
   return false;
 }
 
-const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
+const getKeyDownHandler = (editor: Editor) => (event: KeyboardEvent) => {
   if (event.defaultPrevented) return;
   for (const hotkey in HOTKEYS) {
     if (isHotkey(hotkey, event.nativeEvent)) {
@@ -304,7 +271,7 @@ export function DocumentEditorProvider({
   children: ReactNode;
   value: Descendant[];
   onChange: (value: Descendant[]) => void;
-  editor: ReactEditor;
+  editor: Editor;
   componentBlocks: Record<string, ComponentBlock>;
   relationships: Relationships;
   documentFeatures: DocumentFeatures;

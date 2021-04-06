@@ -2,7 +2,7 @@
 
 import { ComponentProps, Fragment, useMemo } from 'react';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
-import { ReactEditor, RenderElementProps } from 'slate-react';
+import { RenderElementProps } from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
@@ -12,7 +12,7 @@ import { KeyboardInTooltip, ToolbarButton } from './primitives';
 import { isElementActive } from './utils';
 import { useToolbarState } from './toolbar-state';
 
-export const insertBlockquote = (editor: ReactEditor) => {
+export const insertBlockquote = (editor: Editor) => {
   const isActive = isElementActive(editor, 'blockquote');
   if (isActive) {
     Transforms.unwrapNodes(editor, {
