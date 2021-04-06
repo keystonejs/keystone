@@ -15,7 +15,7 @@
     "react": "^17.0.2"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v10.24.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/button"
 }

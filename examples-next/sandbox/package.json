@@ -14,7 +14,7 @@
     "@keystone-next/keystone": "^15.0.0"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v10.24.1"
   },
   "prisma": {
     "schema": ".keystone/prisma/schema.prisma"

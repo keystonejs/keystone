@@ -8,7 +8,7 @@
   "author": "The Keystone Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v10.24.1"
   },
   "dependencies": {
     "cloudinary": "^1.25.1",

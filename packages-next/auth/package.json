@@ -5,7 +5,7 @@
   "main": "dist/auth.cjs.js",
   "module": "dist/auth.esm.js",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=v10.24.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
