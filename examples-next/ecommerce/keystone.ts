@@ -58,7 +58,6 @@ export default withAuth(
             }
           },
         },
-    experimental: { prismaSqlite: true },
     lists: createSchema({
       // Schema items go in here
       User,

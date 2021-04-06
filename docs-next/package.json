@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/website",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -13,10 +13,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
-    "@keystone-next/fields-document": "^3.1.0",
+    "@keystone-next/fields-document": "^4.0.0",
     "@keystone-ui/button": "^3.0.1",
     "@keystone-ui/core": "^2.0.2",
-    "@keystone-ui/fields": "^2.0.2",
+    "@keystone-ui/fields": "^2.1.0",
     "@keystone-ui/icons": "^2.0.1",
     "@keystone-ui/notice": "^2.0.2",
     "@keystone-ui/toast": "^2.0.1",
@@ -34,7 +34,7 @@
     "@types/react-dom": "^17.0.3",
     "@types/webpack": "^4.41.27",
     "autoprefixer": "^10.2.5",
-    "classnames": "^2.2.6",
+    "classnames": "^2.3.1",
     "copy-to-clipboard": "^3.3.1",
     "cypress": "^5.6.0",
     "facepaint": "^1.2.1",

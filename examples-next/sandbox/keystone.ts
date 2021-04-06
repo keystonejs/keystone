@@ -16,6 +16,5 @@ export default config({
         adapter: 'prisma_sqlite',
         url: process.env.DATABASE_URL || 'file:./dev.db',
       },
-  experimental: { prismaSqlite: true },
   lists,
 });

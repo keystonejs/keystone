@@ -10,18 +10,13 @@ export function createKeystone(config: KeystoneConfig, prismaClient?: any) {
   // it in their existing custom servers or original CLI systems.
   const { db, graphql, lists } = config;
   let adapter;
-  if (db.adapter === 'prisma_postgresql') {
+  if (db.adapter === 'prisma_postgresql' || db.provider === 'postgresql') {
     adapter = new PrismaAdapter({
       prismaClient,
       ...db,
       provider: 'postgresql',
     });
-  } else if (db.adapter === 'prisma_sqlite') {
-    if (!config.experimental?.prismaSqlite) {
-      throw new Error(
-        'SQLite support is still experimental. You must set { experimental: { prismaSqlite: true } } in your config to use this feature.'
-      );
-    }
+  } else if (db.adapter === 'prisma_sqlite' || db.provider === 'sqlite') {
     adapter = new PrismaAdapter({
       prismaClient,
       ...db,

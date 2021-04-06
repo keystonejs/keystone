@@ -20,5 +20,5 @@ export async function postinstall(cwd: string, shouldFix: boolean) {
     await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
     console.log('✨ GraphQL and Prisma schemas are up to date');
   }
-  await generateNodeModulesArtifacts(graphQLSchema, keystone, cwd);
+  await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
 }
