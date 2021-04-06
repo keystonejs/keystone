@@ -15,7 +15,6 @@ import {
   Text,
   Descendant,
   Path,
-  Operation,
 } from 'slate';
 import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
