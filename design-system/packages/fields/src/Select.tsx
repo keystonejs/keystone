@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, useTheme } from '@keystone-ui/core';
-import ReactSelect, { Props, OptionsType, StylesConfig } from 'react-select';
+import ReactSelect, { Props, OptionsType, mergeStyles } from 'react-select';
 import { useInputTokens } from './hooks/inputs';
 import { WidthType } from './types';
 
@@ -113,34 +113,6 @@ const useStyles = ({
 
 const portalTarget = typeof document !== 'undefined' ? document.body : undefined;
 
-const composeStyles = (
-  defaultStyles: ReturnType<typeof useStyles>,
-  customStyles?: StylesConfig<Option, boolean>
-) => {
-  // can memoize this later if it proves to be unperformant.
-  if (!customStyles) {
-    return defaultStyles;
-  } else {
-    return Object.entries(defaultStyles).reduce((acc, curr) => {
-      const [key, value]: [string, (provided: any, state?: any) => Record<string, any>] = curr;
-      const customStylesFn = customStyles[key as keyof StylesConfig<Option, boolean>];
-      const composedStylesFn = function composedStylesFn(provided: any, state?: any) {
-        if (customStylesFn) {
-          return {
-            ...value(provided, state),
-            ...customStylesFn(provided, state),
-          };
-        } else {
-          return { ...value(provided, state) };
-        }
-      };
-
-      acc[key as keyof StylesConfig<Option, boolean>] = composedStylesFn;
-      return acc;
-    }, {} as StylesConfig<Option, boolean>);
-  }
-};
-
 export function Select({
   onChange,
   value,
@@ -155,7 +127,7 @@ export function Select({
 }) {
   const tokens = useInputTokens({ width: widthKey });
   const defaultStyles = useStyles({ tokens });
-  const composedStyles = composeStyles(defaultStyles, styles);
+  const composedStyles = styles ? mergeStyles(defaultStyles, styles) : defaultStyles;
 
   return (
     <ReactSelect
