@@ -1,5 +1,6 @@
 import { Editor, Transforms, Range, Text, Point, Node, Path } from 'slate';
 import { HistoryEditor } from 'slate-history';
+import { ReactEditor } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
 import { getAncestorComponentChildFieldDocumentFeatures } from './toolbar-state';
@@ -12,12 +13,7 @@ export const allMarkdownShortcuts = {
   code: ['`'],
 };
 
-function applyMark(
-  editor: HistoryEditor,
-  mark: string,
-  shortcutText: string,
-  startOfStartPoint: Point
-) {
+function applyMark(editor: Editor, mark: string, shortcutText: string, startOfStartPoint: Point) {
   // so that this starts a new undo group
   editor.history.undos.push([]);
   const startPointRef = Editor.pointRef(editor, startOfStartPoint);
@@ -43,7 +39,7 @@ function applyMark(
   editor.removeMark(mark);
 }
 
-export function withMarks<T extends HistoryEditor>(
+export function withMarks<T extends HistoryEditor & ReactEditor>(
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
   editor: T

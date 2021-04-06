@@ -90,7 +90,7 @@ export function getAncestorComponentChildFieldDocumentFeatures(
 }
 
 export const createToolbarState = (
-  editor: ReactEditor,
+  editor: Editor,
   componentBlocks: Record<string, ComponentBlock>,
   editorDocumentFeatures: DocumentFeatures
 ): ToolbarState => {
