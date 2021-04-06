@@ -6,13 +6,13 @@ import { text } from '@keystone-next/fields';
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     testModules
       .map(require)
       .filter(
         ({ skipRequiredTest, unSupportedAdapterList = [] }) =>
-          !skipRequiredTest && !unSupportedAdapterList.includes(adapterName)
+          !skipRequiredTest && !unSupportedAdapterList.includes(provider)
       )
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
@@ -31,7 +31,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               runner(
                 () =>
                   setupFromConfig({
-                    adapterName,
+                    provider,
                     config: testConfig({
                       lists: createSchema({
                         Test: list({

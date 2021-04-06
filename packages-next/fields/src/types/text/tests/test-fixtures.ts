@@ -1,4 +1,4 @@
-import { AdapterName } from '@keystone-next/test-utils-legacy';
+import { ProviderName } from '@keystone-next/test-utils-legacy';
 import { text } from '..';
 
 export const name = 'Text';
@@ -32,12 +32,12 @@ export const storedValues = () => [
   { name: 'g', testField: null },
 ];
 
-export const supportedFilters = (adapterName: AdapterName) => [
+export const supportedFilters = (provider: ProviderName) => [
   'null_equality',
   'equality',
-  adapterName !== 'prisma_sqlite' && 'equality_case_insensitive',
+  provider !== 'sqlite' && 'equality_case_insensitive',
   'in_empty_null',
   'in_value',
-  adapterName !== 'prisma_sqlite' && 'string',
-  adapterName !== 'prisma_sqlite' && 'string_case_insensitive',
+  provider !== 'sqlite' && 'string',
+  provider !== 'sqlite' && 'string_case_insensitive',
 ];

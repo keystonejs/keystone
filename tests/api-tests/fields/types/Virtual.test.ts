@@ -1,16 +1,16 @@
 import { integer, virtual } from '@keystone-next/fields';
 import { BaseFields, createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
 
 function makeSetupKeystone(fields: BaseFields<any>) {
-  return function setupKeystone(adapterName: AdapterName) {
+  return function setupKeystone(provider: ProviderName) {
     return setupFromConfig({
-      adapterName,
+      provider,
       config: testConfig({
         lists: createSchema({
           Post: list({
@@ -25,8 +25,8 @@ function makeSetupKeystone(fields: BaseFields<any>) {
   };
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('Virtual field type', () => {
       test(
         'Default - resolver returns a string',

@@ -1,7 +1,7 @@
 import { text, integer } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
@@ -30,17 +30,17 @@ type IdType = any;
 const seedDb = ({ context }: { context: KeystoneContext }): Promise<{ id: IdType }[]> =>
   createItems({ context, listKey, items: testData }) as Promise<{ id: IdType }[]>;
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({ Test: list({ fields: { name: text(), age: integer() } }) }),
     }),
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('create', () => {
       test(
         'createItem: Should create and get single item',

@@ -76,7 +76,7 @@ export const storedValues = () => [
   { image: null, name: 'file6' },
 ];
 
-export const supportedFilters = adapterName => [
+export const supportedFilters = provider => [
   'null_equality',
-  !['prisma_postgresql', 'prisma_sqlite'].includes(adapterName) && 'in_empty_null',
+  !['postgresql', 'sqlite'].includes(provider) && 'in_empty_null',
 ];

@@ -1,12 +1,12 @@
 import { text, checkbox } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import type { AdapterName } from '@keystone-next/test-utils-legacy';
+import type { ProviderName } from '@keystone-next/test-utils-legacy';
 import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
-const setupKeystone = (adapterName: AdapterName) =>
+const setupKeystone = (provider: ProviderName) =>
   setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         User: list({
@@ -25,8 +25,8 @@ const setupKeystone = (adapterName: AdapterName) =>
     }),
   });
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     test(
       'updateMany with declarative access control',
       runner(setupKeystone, async ({ context }) => {

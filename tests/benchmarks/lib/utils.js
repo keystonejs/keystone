@@ -18,8 +18,8 @@ const timeQuery = async ({ context, query, variables, repeat = 1 }) => {
 };
 
 const fixture = async (setupKeystone, fn) => {
-  const subfixtures = multiAdapterRunners().map(({ runner, adapterName }) =>
-    runner(setupKeystone, args => fn({ ...args, adapterName }))
+  const subfixtures = multiAdapterRunners().map(({ runner, provider }) =>
+    runner(setupKeystone, args => fn({ ...args, provider }))
   );
   for (let i = 0; i < subfixtures.length; i++) {
     await subfixtures[i]();
