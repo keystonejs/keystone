@@ -84,7 +84,6 @@ type Element =
 declare module 'slate' {
   interface CustomTypes {
     Element: Element;
-    // this isn't really correct but the TS slate stuff is all wrong so we need this 😩
     Editor: { type?: undefined; children: Descendant[] } & ReactEditor & HistoryEditor;
     Text: {
       type?: undefined;
