@@ -1,5 +1,19 @@
 # @keystonejs/keystone
 
+## 23.0.0
+
+### Major Changes
+
+- [#5343](https://github.com/keystonejs/keystone/pull/5343) [`955787055`](https://github.com/keystonejs/keystone/commit/955787055a54fb33eb45c80dd39fa86a9ff632a0) Thanks [@timleslie](https://github.com/timleslie)! - Removed logging of errors to stdout using `pino` pending a complete rewrite of this functionality.
+
+* [#5320](https://github.com/keystonejs/keystone/pull/5320) [`fda82869c`](https://github.com/keystonejs/keystone/commit/fda82869c376d05fd007bec22d7bde2604db445b) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy default ID field support.
+
+- [#5281](https://github.com/keystonejs/keystone/pull/5281) [`4f0abec0b`](https://github.com/keystonejs/keystone/commit/4f0abec0b19c3495c1ae6d7dac49fb46253cf7b3) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy `BaseKeystoneAdapter`, `BaseListAdapter`, and `BaseFieldAdapter` exports.
+
+### Patch Changes
+
+- [#5324](https://github.com/keystonejs/keystone/pull/5324) [`e702fea44`](https://github.com/keystonejs/keystone/commit/e702fea44c3116db158d97b5ffd24440f09c9d49) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy `.find()`, `.findAll()`, `.findOne()`, `.findById()`, `.itemsQueryMeta()`, `.getFieldAdapterByPath()`, and `.getPrimaryKeyAdapter()` methods from `PrismaListAdapter`.
+
 ## 22.0.0
 
 ### Major Changes

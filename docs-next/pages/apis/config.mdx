@@ -57,14 +57,14 @@ import type { DatabaseConfig } from '@keystone-next/types';
 The `db` config option configures the database used to store data in your Keystone system.
 It has a TypeScript type of `DatabaseConfig`.
 Keystone supports the database types **PostgreSQL** and **SQLite**.
-These database types are powered by their corresponding Keystone database adapters; `prisma_postgresql` and `prisma_sqlite`.
+These database types are powered by their corresponding Prisma database providers; `postgresql` and `sqlite`.
 
 All database adapters require the `url` argument, which defines the connection URL for your database.
 They also all have an optional `onConnect` async function, which takes a [`KeystoneContext`](./context) object, and lets perform any actions you might need at startup, such as data seeding.
 
-As well as these common options, each adapter supports a number of optional advanced configuration options.
+As well as these common options, each provider supports a number of optional advanced configuration options.
 
-### prisma_postgresql
+### postgresql
 
 Advanced configuration:
 
@@ -74,7 +74,7 @@ Advanced configuration:
 ```typescript
 export default config({
   db: {
-    adapter: 'prisma_postgresql',
+    provider: 'postgresql',
     url: 'postgres://dbuser:dbpass@localhost:5432/keystone',
     onConnect: async context => { /* ... */ },
     // Optional advanced configuration
@@ -85,10 +85,7 @@ export default config({
 });
 ```
 
-### prisma_sqlite
-
-Support for SQLite with Prisma is still in preview.
-To use this option you must also set `{ experimental: { prismaSqlite: true } }`.
+### sqlite
 
 Advanced configuration:
 
@@ -98,7 +95,7 @@ Advanced configuration:
 ```typescript
 export default config({
   db: {
-    adapter: 'prisma_sqlite',
+    provider: 'sqlite',
     url: 'file:./keystone.db',
     onConnect: async context => { /* ... */ },
     // Optional advanced configuration
@@ -111,7 +108,7 @@ export default config({
 
 #### Limitations
 
-The `prisma_sqlite` is not intended to be used in production systems, and has certain limitations:
+The `sqlite` provider is not intended to be used in production systems, and has certain limitations:
 
 - `document`: The `document` field type is not supported.
 - `decimal`: The `decimal` field type is not supported.
@@ -265,7 +262,8 @@ import { config } from '@keystone-next/keystone/schema';
 export default config({
   experimental: {
     enableNextJsGraphqlApiEndpoint: true,
-    prismaSqlite: true,
+    generateNextGraphqlAPI: true,
+    generateNodeAPI: true,
   }
   /* ... */
 });
@@ -274,7 +272,7 @@ export default config({
 Options:
 
 - `enableNextJsGraphqlApiEndpoint`: (coming soon)
-- `prismaSqlite`: Enables the use of SQLite with Prisma.
-  This flag is required when setting `{ db: { adapter: 'prisma_sqlite' } }`.
+- `generateNextGraphqlAPI`: Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route
+- `generateNodeAPI`: Creates a file at `node_modules/.keystone/api` with a `lists` export
 
 export default ({ children }) => <Markdown>{children}</Markdown>;

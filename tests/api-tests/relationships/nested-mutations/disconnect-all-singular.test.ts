@@ -73,7 +73,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           expect(createEvent.group.id.toString()).toBe(createGroup.id);
 
           // Update the item and link the relationship field
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 updateEvent(
@@ -91,7 +91,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           expect(data).toMatchObject({ updateEvent: { id: expect.any(String), group: null } });
-          expect(errors).toBe(undefined);
 
           // Avoid false-positives by checking the database directly
           const eventData = await getItem({
@@ -109,7 +108,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
         'silently succeeds if used during create',
         runner(setupKeystone, async ({ context }) => {
           // Create an item that does the linking
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 createEvent(data: {
@@ -124,7 +123,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-          expect(errors).toBe(undefined);
           expect(data.createEvent).toMatchObject({ id: expect.any(String), group: null });
           expect(data.createEvent).not.toHaveProperty('errors');
         })
@@ -137,7 +135,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const createEvent = await createItem({ context, listKey: 'Event', item: {} });
 
           // Create an item that does the linking
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 updateEvent(
@@ -155,7 +153,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-          expect(errors).toBe(undefined);
           expect(data.updateEvent).toMatchObject({ id: expect.any(String), group: null });
           expect(data.updateEvent).not.toHaveProperty('errors');
         })
@@ -189,7 +186,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             expect(createEvent.group.id.toString()).toBe(createGroup.id);
 
             // Update the item and link the relationship field
-            const { errors } = await context.exitSudo().executeGraphQL({
+            await context.exitSudo().graphql.run({
               query: `
                 mutation {
                   updateEventToGroupNoRead(
@@ -202,8 +199,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }`,
             });
-
-            expect(errors).toBe(undefined);
 
             // Avoid false-positives by checking the database directly
             const eventData = await getItem({

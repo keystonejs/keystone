@@ -364,7 +364,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 expect(result.data[`all${group.name}s`]).toMatchObject([]);
 
                 // Confirm it didn't insert either of the records anyway
-                const result2 = await context.executeGraphQL({
+                const data2 = await context.graphql.run({
                   query: `
                     query {
                       allEventTo${group.name}s(where: { title: "${eventName}" }) {
@@ -373,8 +373,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                       }
                     }`,
                 });
-                expect(result2.errors).toBe(undefined);
-                expect(result2.data[`allEventTo${group.name}s`]).toMatchObject([]);
+                expect(data2[`allEventTo${group.name}s`]).toMatchObject([]);
               })
             );
 

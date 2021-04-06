@@ -1,6 +1,6 @@
 {
   "name": "@keystone-next/example-sandbox",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -8,10 +8,10 @@
     "sandbox": "yarn && yarn dev"
   },
   "dependencies": {
-    "@keystone-next/admin-ui": "^12.0.1",
-    "@keystone-next/auth": "^19.0.0",
-    "@keystone-next/fields": "^5.3.0",
-    "@keystone-next/keystone": "^14.0.0"
+    "@keystone-next/admin-ui": "^13.0.0",
+    "@keystone-next/auth": "^20.0.0",
+    "@keystone-next/fields": "^6.0.0",
+    "@keystone-next/keystone": "^15.0.0"
   },
   "engines": {
     "node": ">=10.0.0"

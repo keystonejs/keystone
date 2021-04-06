@@ -64,32 +64,27 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       it(
         'Executes custom queries correctly',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               query {
                 double(x: 10)
               }
             `,
           });
-
-          if (errors && errors.length) {
-            throw errors;
-          }
-
           expect(data.double).toEqual(20);
         })
       );
       it(
         'Denies access acording to access control',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
+          const { data, errors } = await context.graphql.raw({
             query: `
               query {
                 quads(x: 10)
               }
             `,
           });
-          expect(data.quads).toBe(null);
+          expect(data?.quads).toBe(null);
           expect(errors).not.toBe(undefined);
           expect(errors).toHaveLength(1);
         })
@@ -97,17 +92,13 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
       it(
         'Executes custom mutations correctly',
         runner(setupKeystone, async ({ context }) => {
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 triple(x: 10)
               }
             `,
           });
-
-          if (errors && errors.length) {
-            throw errors;
-          }
 
           expect(data.triple).toEqual(30);
         })
