@@ -70,7 +70,7 @@ class CloudinaryImage extends File.implementation {
   gqlOutputFieldResolvers() {
     return {
       [this.path]: item => {
-        const itemValues = item[this.path];
+        let itemValues = item[this.path];
         if (!itemValues) {
           return null;
         }
