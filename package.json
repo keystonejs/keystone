@@ -121,7 +121,6 @@
       "packages/session",
       "packages/test-utils",
       "packages/utils",
-      "packages/fields",
       "packages/adapter-prisma",
       "packages/server-side-graphql-client",
       "packages-next/*",

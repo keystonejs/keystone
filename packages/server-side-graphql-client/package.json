@@ -16,7 +16,6 @@
     "graphql": "^15.5.0"
   },
   "devDependencies": {
-    "@keystone-next/fields-legacy": "*",
     "@keystone-next/test-utils-legacy": "*"
   }
 }

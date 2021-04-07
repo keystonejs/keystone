@@ -8,7 +8,7 @@
     "@babel/runtime": "^7.13.10",
     "@keystone-next/adapter-prisma-legacy": "^5.0.0",
     "@keystone-next/admin-ui": "^13.0.0",
-    "@keystone-next/fields-legacy": "^25.0.0",
+    "@keystone-next/fields": "^6.0.0",
     "@keystone-next/types": "^16.0.0",
     "@keystone-ui/button": "^3.0.1",
     "@keystone-ui/core": "^2.0.2",
@@ -20,7 +20,6 @@
     "react": "^17.0.2"
   },
   "devDependencies": {
-    "@keystone-next/fields": "*",
     "graphql-upload": "^11.0.0",
     "mime": "^2.5.2"
   },

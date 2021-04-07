@@ -1,6 +1,6 @@
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import dumbPasswords from 'dumb-passwords';
-import { Implementation } from '@keystone-next/fields-legacy';
+import { Implementation } from '../../Implementation';
 
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 

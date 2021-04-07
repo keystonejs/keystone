@@ -10,6 +10,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
   describe(`Provider: ${provider}`, () => {
     testModules
       .map(require)
+      .filter(mod => !mod.skipUniqueTest)
       .filter(
         ({ supportsUnique, unSupportedAdapterList = [] }) =>
           supportsUnique && !unSupportedAdapterList.includes(provider)
@@ -129,6 +130,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
 
     testModules
       .map(require)
+      .filter(mod => !mod.skipUniqueTest)
       .filter(
         ({ supportsUnique, unSupportedAdapterList = [] }) =>
           !supportsUnique && supportsUnique !== null && !unSupportedAdapterList.includes(provider)

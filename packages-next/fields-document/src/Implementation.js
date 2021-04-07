@@ -1,5 +1,5 @@
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '@keystone-next/fields-legacy';
+import { Implementation } from '@keystone-next/fields';
 // eslint-disable-next-line import/no-unresolved
 import { addRelationshipData } from './relationship-data';
 

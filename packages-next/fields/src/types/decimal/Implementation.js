@@ -1,6 +1,6 @@
 import { Decimal as _Decimal } from 'decimal.js';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '@keystone-next/fields-legacy';
+import { Implementation } from '../../Implementation';
 
 export class Decimal extends Implementation {
   constructor(path, { symbol }) {
