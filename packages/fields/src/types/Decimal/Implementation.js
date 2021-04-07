@@ -24,7 +24,7 @@ export class Decimal extends Implementation {
     return [
       ...this.equalityInputFields('String'),
       ...this.orderingInputFields('String'),
-      ...(this.adapter.listAdapter.parentAdapter.name === 'prisma_postgresql'
+      ...(this.adapter.listAdapter.parentAdapter.name === 'postgresql'
         ? []
         : this.inInputFields('String')),
     ];

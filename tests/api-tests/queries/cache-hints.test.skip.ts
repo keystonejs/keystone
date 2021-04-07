@@ -5,15 +5,15 @@ import {
   setupFromConfig,
   networkedGraphqlRequest,
   testConfig,
-  AdapterName,
+  ProviderName,
 } from '@keystone-next/test-utils-legacy';
 import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
 import { KeystoneContext } from '@keystone-next/types';
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Post: list({
@@ -121,8 +121,8 @@ const addFixtures = async (context: KeystoneContext) => {
   return { users, posts };
 };
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('cache hints', () => {
       test(
         'users',

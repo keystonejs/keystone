@@ -1,4 +1,4 @@
-import { AdapterName, testConfig } from '@keystone-next/test-utils-legacy';
+import { ProviderName, testConfig } from '@keystone-next/test-utils-legacy';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
@@ -6,9 +6,9 @@ import { createItem, createItems } from '@keystone-next/server-side-graphql-clie
 
 type IdType = any;
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         User: list({
@@ -32,8 +32,8 @@ function setupKeystone(adapterName: AdapterName) {
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('relationship filtering', () => {
       test(
         'nested to-many relationships can be filtered',

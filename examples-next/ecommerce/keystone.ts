@@ -47,9 +47,9 @@ export default withAuth(
       },
     },
     db: process.env.DATABASE_URL
-      ? { adapter: 'prisma_postgresql', url: process.env.DATABASE_URL }
+      ? { provider: 'postgresql', url: process.env.DATABASE_URL }
       : {
-          adapter: 'prisma_sqlite',
+          provider: 'sqlite',
           url: databaseURL,
           async onConnect(keystone) {
             console.log('Connected to the database!');

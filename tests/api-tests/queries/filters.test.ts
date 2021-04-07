@@ -1,15 +1,15 @@
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         User: list({
@@ -30,8 +30,8 @@ function setupKeystone(adapterName: AdapterName) {
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('filtering on list name', () => {
       test(
         'filter works when there is no dash in list name',
