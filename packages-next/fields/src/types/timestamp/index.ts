@@ -1,8 +1,7 @@
-// @ts-ignore
-import { DateTimeUtc } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
+import { DateTimeUtcImplementation, PrismaDateTimeUtcInterface } from './Implementation';
 
 export type TimestampFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
@@ -15,7 +14,11 @@ export type TimestampFieldConfig<
 export const timestamp = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: TimestampFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
-  type: DateTimeUtc,
+  type: {
+    type: 'DateTimeUtc',
+    implementation: DateTimeUtcImplementation,
+    adapters: { prisma: PrismaDateTimeUtcInterface },
+  },
   config,
   views: resolveView('timestamp/views'),
 });
