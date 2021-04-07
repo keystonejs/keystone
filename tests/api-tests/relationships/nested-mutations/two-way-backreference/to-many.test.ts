@@ -1,4 +1,4 @@
-import { AdapterName, testConfig } from '@keystone-next/test-utils-legacy';
+import { ProviderName, testConfig } from '@keystone-next/test-utils-legacy';
 import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
@@ -12,9 +12,9 @@ type IdType = any;
 
 const toStr = (items: any[]) => items.map(item => item.toString());
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Student: list({
@@ -69,8 +69,8 @@ const compareIds = (list: { id: IdType }[], ids: IdType[]) =>
     ids.map(({ id }) => id.toString()).sort()
   );
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('update many to many relationship back reference', () => {
       describe('nested connect', () => {
         test(

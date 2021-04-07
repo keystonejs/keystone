@@ -6,16 +6,23 @@
   "module": "dist/cloudinary.esm.js",
   "dependencies": {
     "@babel/runtime": "^7.13.10",
+    "@keystone-next/adapter-prisma-legacy": "^5.0.0",
     "@keystone-next/admin-ui": "^13.0.0",
-    "@keystone-next/fields-cloudinary-image-legacy": "^5.0.0",
-    "@keystone-next/file-adapters-legacy": "^8.0.0",
+    "@keystone-next/fields-legacy": "^25.0.0",
     "@keystone-next/types": "^16.0.0",
     "@keystone-ui/button": "^3.0.1",
     "@keystone-ui/core": "^2.0.2",
     "@keystone-ui/fields": "^2.1.0",
     "@keystone-ui/pill": "^2.0.1",
     "@types/react": "^17.0.3",
+    "cloudinary": "^1.25.1",
+    "cuid": "^2.1.8",
     "react": "^17.0.2"
+  },
+  "devDependencies": {
+    "@keystone-next/fields": "*",
+    "graphql-upload": "^11.0.0",
+    "mime": "^2.5.2"
   },
   "engines": {
     "node": ">=10.0.0"

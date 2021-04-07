@@ -49,8 +49,8 @@ const expectNamedArray = <T extends { id: IdType }, N extends string>(
   });
 };
 
-multiAdapterRunners().map(({ before, after, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ before, after, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     let keystone: any,
       items: Record<string, { id: IdType; name: string }[]>,
       user: { id: IdType; name: string; yesRead: string; noRead: string },
@@ -248,14 +248,14 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
 
               test(`single not existing: ${JSON.stringify(access)}`, async () => {
                 const singleQueryName = nameFn[mode](access);
-                const query = `query { ${singleQueryName}(where: { id: "${FAKE_ID[adapterName]}" }) { id } }`;
+                const query = `query { ${singleQueryName}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
                 expectNoAccess(data, errors, singleQueryName);
               });
 
               test(`multiple not existing: ${JSON.stringify(access)}`, async () => {
                 const allQueryName = `all${nameFn[mode](access)}s`;
-                const query = `query { ${allQueryName}(where: { id_in: ["${FAKE_ID[adapterName]}", "${FAKE_ID_2[adapterName]}"] }) { id } }`;
+                const query = `query { ${allQueryName}(where: { id_in: ["${FAKE_ID[provider]}", "${FAKE_ID_2[provider]}"] }) { id } }`;
                 const data = await context.exitSudo().graphql.run({ query });
                 expect(data[allQueryName]).toHaveLength(0);
               });
@@ -331,7 +331,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
             .forEach(access => {
               test(`denies missing: ${JSON.stringify(access)}`, async () => {
                 const updateMutationName = `update${nameFn[mode](access)}`;
-                const query = `mutation { ${updateMutationName}(id: "${FAKE_ID[adapterName]}", data: { name: "bar" }) { id } }`;
+                const query = `mutation { ${updateMutationName}(id: "${FAKE_ID[provider]}", data: { name: "bar" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
                 expectNoAccess(data, errors, updateMutationName);
               });
@@ -467,7 +467,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
 
               test(`single denies missing: ${JSON.stringify(access)}`, async () => {
                 const deleteMutationName = `delete${nameFn[mode](access)}`;
-                const query = `mutation { ${deleteMutationName}(id: "${FAKE_ID[adapterName]}") { id } }`;
+                const query = `mutation { ${deleteMutationName}(id: "${FAKE_ID[provider]}") { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
                 expectNoAccess(data, errors, deleteMutationName);
               });
@@ -509,7 +509,7 @@ multiAdapterRunners().map(({ before, after, adapterName }) =>
 
               test(`multi denies missing: ${JSON.stringify(access)}`, async () => {
                 const multiDeleteMutationName = `delete${nameFn[mode](access)}s`;
-                const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID[adapterName]}", "${FAKE_ID_2[adapterName]}"]) { id } }`;
+                const query = `mutation { ${multiDeleteMutationName}(ids: ["${FAKE_ID[provider]}", "${FAKE_ID_2[provider]}"]) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
                 expectNamedArray(data, errors, multiDeleteMutationName, []);
               });

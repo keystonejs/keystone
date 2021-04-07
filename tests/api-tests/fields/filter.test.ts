@@ -10,13 +10,13 @@ const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixture
 });
 testModules.push(path.resolve('packages/fields/tests/test-fixtures.js'));
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`${adapterName} adapter`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`${provider} provider`, () => {
     testModules
       .map(require)
       .filter(
         ({ skipCrudTest, unSupportedAdapterList = [] }) =>
-          !skipCrudTest && !unSupportedAdapterList.includes(adapterName)
+          !skipCrudTest && !unSupportedAdapterList.includes(provider)
       )
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
@@ -24,7 +24,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           const getServer = () =>
             setupFromConfig({
-              adapterName,
+              provider,
               config: testConfig({
                 lists: createSchema({
                   [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
@@ -39,7 +39,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               for (const item of mod.initItems(matrixValue)) {
                 await createItem({ context, listKey, item });
               }
-              return testFn({ context, listKey, adapterName, ...rest });
+              return testFn({ context, listKey, provider, ...rest });
             });
 
           if (mod.filterTests) {
@@ -97,7 +97,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 `Empty Filter`,
                 withKeystone(({ context }) => match(context, {}, [0, 1, 2, 3, 4, 5, 6]))
               );
-              if (mod.supportedFilters(adapterName).includes('null_equality')) {
+              if (mod.supportedFilters(provider).includes('null_equality')) {
                 test(
                   'Equals null',
                   withKeystone(({ context }) => match(context, { [`${fieldName}`]: null }, [5, 6]))
@@ -109,7 +109,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('equality')) {
+              if (mod.supportedFilters(provider).includes('equality')) {
                 test(
                   'Equals',
                   withKeystone(({ context }) =>
@@ -130,7 +130,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('equality_case_insensitive')) {
+              if (mod.supportedFilters(provider).includes('equality_case_insensitive')) {
                 test(
                   `Equals - Case Insensitive`,
                   withKeystone(({ context }) =>
@@ -150,7 +150,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('string')) {
+              if (mod.supportedFilters(provider).includes('string')) {
                 test(
                   `Contains`,
                   withKeystone(({ context }) =>
@@ -188,7 +188,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('string_case_insensitive')) {
+              if (mod.supportedFilters(provider).includes('string_case_insensitive')) {
                 test(
                   `Contains - Case Insensitive`,
                   withKeystone(({ context }) =>
@@ -231,7 +231,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('ordering')) {
+              if (mod.supportedFilters(provider).includes('ordering')) {
                 test(
                   'Less than',
                   withKeystone(({ context }) =>
@@ -257,7 +257,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('in_empty_null')) {
+              if (mod.supportedFilters(provider).includes('in_empty_null')) {
                 test(
                   'In - Empty List',
                   withKeystone(({ context }) => match(context, { [`${fieldName}_in`]: [] }, []))
@@ -284,7 +284,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('in_equal')) {
+              if (mod.supportedFilters(provider).includes('in_equal')) {
                 test(
                   'In - values',
                   withKeystone(({ context }) =>
@@ -319,7 +319,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   )
                 );
               }
-              if (mod.supportedFilters(adapterName).includes('is_set')) {
+              if (mod.supportedFilters(provider).includes('is_set')) {
                 test(
                   'Is Set - true',
                   withKeystone(({ context }) =>

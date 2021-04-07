@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import type { AdapterName } from '@keystone-next/test-utils-legacy';
+import type { ProviderName } from '@keystone-next/test-utils-legacy';
 import type { KeystoneContext } from '@keystone-next/types';
 
 type IdType = any;
@@ -105,9 +105,9 @@ const createReadData = async (context: KeystoneContext) => {
   );
 };
 
-const setupKeystone = (adapterName: AdapterName) =>
+const setupKeystone = (provider: ProviderName) =>
   setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         User: list({
@@ -121,8 +121,8 @@ const setupKeystone = (adapterName: AdapterName) =>
     }),
   });
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe(`Many-to-many relationships`, () => {
       describe('Read', () => {
         test(

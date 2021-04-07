@@ -112,7 +112,7 @@ jobs:
       fail-fast: false
       matrix:
         index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        adapter: ['prisma_postgresql', 'prisma_sqlite']
+        adapter: ['postgresql', 'sqlite']
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -147,13 +147,13 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --maxWorkers=1 api-tests
         env:
-          CLOUDINARY_CLOUD_NAME: keystone-cloudinary
-          CLOUDINARY_KEY: 758252673115372
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
           CI_NODE_TOTAL: 9
           CI_NODE_INDEX: ${{ matrix.index }}
           TEST_ADAPTER: ${{ matrix.adapter }}
-          DATABASE_URL: ${{ matrix.adapter == 'prisma_sqlite' && 'file:./dev.db' || 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' }}
+          DATABASE_URL: ${{ matrix.adapter == 'sqlite' && 'file:./dev.db' || 'postgres://keystone5:k3yst0n3@localhost:5432/test_db' }}
 
   non-api-tests:
     name: Package Unit Tests
@@ -200,8 +200,8 @@ jobs:
       - name: Unit tests
         run: yarn jest --ci --maxWorkers=1 --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests
         env:
-          CLOUDINARY_CLOUD_NAME: keystone-cloudinary
-          CLOUDINARY_KEY: 758252673115372
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
 
   examples_smoke_tests:

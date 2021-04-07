@@ -5,15 +5,15 @@ import {
   setupFromConfig,
   networkedGraphqlRequest,
   testConfig,
-  AdapterName,
+  ProviderName,
 } from '@keystone-next/test-utils-legacy';
 import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 // @ts-ignore
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Post: list({
@@ -45,8 +45,8 @@ function setupKeystone(adapterName: AdapterName) {
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('maxResults Limit', () => {
       describe('Basic querying', () => {
         test(

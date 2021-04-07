@@ -6,10 +6,10 @@ import {
 } from '../artifacts';
 import { requireSource } from '../lib/requireSource';
 import { initConfig } from '../lib/initConfig';
-import { CONFIG_PATH } from './utils';
+import { getConfigPath } from './utils';
 
 export async function postinstall(cwd: string, shouldFix: boolean) {
-  const config = initConfig(requireSource(CONFIG_PATH).default);
+  const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
   const { keystone, graphQLSchema } = createSystem(config);
 
