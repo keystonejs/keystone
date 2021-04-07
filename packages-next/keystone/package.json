@@ -4,6 +4,17 @@
   "license": "MIT",
   "main": "dist/keystone.cjs.js",
   "module": "dist/keystone.esm.js",
+  "files": [
+    "session",
+    "bin",
+    "artifacts",
+    "___internal-do-not-use-will-break-in-patch",
+    "migrations",
+    "next",
+    "schema",
+    "scripts",
+    "session"
+  ],
   "bin": {
     "keystone-next": "bin/cli.js"
   },
