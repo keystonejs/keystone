@@ -13,7 +13,7 @@ function uploadStream(stream, options) {
   });
 }
 
-module.exports = class CloudinaryAdapter {
+export class CloudinaryAdapter {
   constructor({ cloudName, apiKey, apiSecret, folder }) {
     if (!cloudName || !apiKey || !apiSecret) {
       throw new Error('CloudinaryAdapter requires cloudName, apiKey, and apiSecret');
@@ -100,4 +100,4 @@ module.exports = class CloudinaryAdapter {
       cloud_name: this.cloudName,
     });
   }
-};
+}
