@@ -20,7 +20,7 @@ export type KeystoneContext = {
   executeGraphQL: any; // TODO: type this
   /** @deprecated */
   keystone: BaseKeystone;
-  images: ImagesAPI;
+  images: ImagesContext | undefined;
 } & AccessControlContext &
   Partial<SessionContext<any>> &
   DatabaseAPIs;
@@ -123,13 +123,13 @@ export type ImageData = {
   filesize: number;
   width: number;
   height: number;
-  blurHash: string;
+  blurhash: string;
 };
 
-type ImagesAPI = {
-  getSrc: (mode: ImageMode, id: string, ext: string) => string;
-  getRef: (mode: ImageMode, id: string, ext: string) => string;
-  parseRef: (ref: string) => { mode: ImageMode; id: string; ext: string };
+export type ImagesContext = {
+  getSrc: (mode: ImageMode, id: string, ext: ImageExtension) => string;
+  getRef: (mode: ImageMode, id: string, ext: ImageExtension) => string;
+  parseRef: (ref: string) => { mode: ImageMode; id: string; ext: ImageExtension };
   getDataFromRef: (ref: string) => Promise<ImageData>;
   getDataFromStream: (stream: Readable) => Promise<ImageData>;
 };
