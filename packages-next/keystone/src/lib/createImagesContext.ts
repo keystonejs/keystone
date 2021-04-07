@@ -103,7 +103,6 @@ export function createImagesContext(config: KeystoneConfig['images']): ImagesCon
       const id = uuid();
       const chunks = [];
 
-      // @ts-ignore
       for await (let chunk of stream) {
         chunks.push(chunk);
       }
