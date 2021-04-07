@@ -1,9 +1,9 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { KeyboardEvent, MutableRefObject, ReactNode, useContext, useState } from 'react';
+import { KeyboardEvent, MutableRefObject, ReactNode, useState } from 'react';
 import isHotkey from 'is-hotkey';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   Editor,
   Node,
@@ -15,7 +15,6 @@ import {
   Text,
   Descendant,
   Path,
-  Operation,
 } from 'slate';
 import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
@@ -30,11 +29,7 @@ import { Toolbar } from './Toolbar';
 import { renderElement } from './render-element';
 import { withHeading } from './heading';
 import { nestList, unnestList, withList } from './lists';
-import {
-  ComponentBlockContext,
-  getPlaceholderTextForPropPath,
-  withComponentBlocks,
-} from './component-blocks';
+import { withComponentBlocks } from './component-blocks';
 import { withBlockquote } from './blockquote';
 import { Relationships, withRelationship } from './relationship';
 import { withDivider } from './divider';
@@ -59,39 +54,6 @@ const HOTKEYS: Record<string, Mark> = {
   'mod+u': 'underline',
 };
 
-const IS_NODE_LIST_CACHE = new WeakMap<any[], boolean>();
-
-// a workaround until https://github.com/ianstormtaylor/slate/pull/4072 is merged
-// this has taken an average keypress from ~40-50ms to ~20-30ms in dev
-Node.isNodeList = (value): value is Node[] => {
-  if (!Array.isArray(value)) {
-    return false;
-  }
-  const cachedResult = IS_NODE_LIST_CACHE.get(value);
-  if (cachedResult !== undefined) {
-    return cachedResult;
-  }
-  const isNodeList = value.every(val => Node.isNode(val));
-  IS_NODE_LIST_CACHE.set(value, isNodeList);
-  return isNodeList;
-};
-
-const IS_OPERATION_LIST_CACHE = new WeakMap<any[], boolean>();
-
-// this has taken pasting a pretty large document from ~5 seconds to ~3 seconds in dev
-Operation.isOperationList = (value): value is Operation[] => {
-  if (!Array.isArray(value)) {
-    return false;
-  }
-  const cachedResult = IS_OPERATION_LIST_CACHE.get(value);
-  if (cachedResult !== undefined) {
-    return cachedResult;
-  }
-  const isOperationList = value.every(val => Operation.isOperation(val));
-  IS_OPERATION_LIST_CACHE.set(value, isOperationList);
-  return isOperationList;
-};
-
 function isMarkActive(editor: Editor, mark: Mark) {
   const marks = Editor.marks(editor);
   if (marks?.[mark]) {
@@ -106,7 +68,7 @@ function isMarkActive(editor: Editor, mark: Mark) {
   return false;
 }
 
-const getKeyDownHandler = (editor: ReactEditor) => (event: KeyboardEvent) => {
+const getKeyDownHandler = (editor: Editor) => (event: KeyboardEvent) => {
   if (event.defaultPrevented) return;
   for (const hotkey in HOTKEYS) {
     if (isHotkey(hotkey, event.nativeEvent)) {
@@ -304,7 +266,7 @@ export function DocumentEditorProvider({
   children: ReactNode;
   value: Descendant[];
   onChange: (value: Descendant[]) => void;
-  editor: ReactEditor;
+  editor: Editor;
   componentBlocks: Record<string, ComponentBlock>;
   relationships: Relationships;
   documentFeatures: DocumentFeatures;
@@ -349,51 +311,11 @@ export function DocumentEditorEditable({
   readOnly?: boolean;
 }) {
   const editor = useSlate();
-  const componentBlocks = useContext(ComponentBlockContext);
 
   const onKeyDown = useMemo(() => getKeyDownHandler(editor), [editor]);
 
   return (
     <Editable
-      decorate={useCallback(
-        ([node, path]: NodeEntry<Node>) => {
-          let decorations: Range[] = [];
-          if (node.type === 'component-block') {
-            if (
-              node.children.length === 1 &&
-              Element.isElement(node.children[0]) &&
-              node.children[0].type === 'component-inline-prop' &&
-              node.children[0].propPath === undefined
-            ) {
-              return decorations;
-            }
-            node.children.forEach((child, index) => {
-              if (
-                Node.string(child) === '' &&
-                Element.isElement(child) &&
-                (child.type === 'component-block-prop' || child.type === 'component-inline-prop') &&
-                child.propPath !== undefined
-              ) {
-                const start = Editor.start(editor, [...path, index]);
-                const placeholder = getPlaceholderTextForPropPath(
-                  child.propPath,
-                  componentBlocks[node.component].props,
-                  node.props
-                );
-                if (placeholder) {
-                  decorations.push({
-                    placeholder,
-                    anchor: start,
-                    focus: start,
-                  });
-                }
-              }
-            });
-          }
-          return decorations;
-        },
-        [editor]
-      )}
       css={styles}
       autoFocus={autoFocus}
       onKeyDown={onKeyDown}

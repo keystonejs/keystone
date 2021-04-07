@@ -11,7 +11,6 @@ import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 
-import { HistoryEditor } from 'slate-history';
 import { DocumentFeatures } from '../views';
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import {
@@ -213,7 +212,7 @@ export const linkButton = (
 
 const markdownLinkPattern = /(^|\s)\[(.+?)\]\((\S+)\)$/;
 
-export function withLink<T extends HistoryEditor>(
+export function withLink<T extends Editor>(
   editorDocumentFeatures: DocumentFeatures,
   componentBlocks: Record<string, ComponentBlock>,
   editor: T

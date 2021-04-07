@@ -1,9 +1,11 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, createContext, useContext } from 'react';
 import { RenderLeafProps } from 'slate-react';
 import { InsertMenu } from './insert-menu';
+
+export const PlaceholderContext = createContext<string | null>(null);
 
 function Placeholder({ placeholder, children }: { placeholder: string; children: ReactNode }) {
   const [width, setWidth] = useState(0);
@@ -56,11 +58,12 @@ const Leaf = ({ leaf, text, children, attributes }: RenderLeafProps) => {
     keyboard,
     superscript,
     subscript,
-    placeholder,
     insertMenu,
   } = leaf;
 
-  if (placeholder !== undefined) {
+  const placeholder = useContext(PlaceholderContext);
+
+  if (placeholder !== null) {
     children = <Placeholder placeholder={placeholder}>{children}</Placeholder>;
   }
 

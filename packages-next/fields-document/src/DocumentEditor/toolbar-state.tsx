@@ -1,6 +1,6 @@
 import React, { ReactNode, useContext } from 'react';
 import { Editor, Range, Text } from 'slate';
-import { ReactEditor, useSlate } from 'slate-react';
+import { useSlate } from 'slate-react';
 import { DocumentFeatures } from '../views';
 import { ComponentBlockContext } from './component-blocks';
 import { ComponentBlock } from './component-blocks/api';
@@ -46,7 +46,7 @@ export type ToolbarState = {
   dividers: { isDisabled: boolean };
   code: BasicToolbarItem;
   relationships: { isDisabled: boolean };
-  editor: ReactEditor;
+  editor: Editor;
   editorDocumentFeatures: DocumentFeatures;
 };
 
@@ -90,7 +90,7 @@ export function getAncestorComponentChildFieldDocumentFeatures(
 }
 
 export const createToolbarState = (
-  editor: ReactEditor,
+  editor: Editor,
   componentBlocks: Record<string, ComponentBlock>,
   editorDocumentFeatures: DocumentFeatures
 ): ToolbarState => {
