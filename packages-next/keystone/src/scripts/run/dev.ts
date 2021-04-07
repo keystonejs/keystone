@@ -1,6 +1,7 @@
 import path from 'path';
 import express from 'express';
 import { generateAdminUI } from '@keystone-next/admin-ui/system';
+import { KeystoneConfig } from '@keystone-next/types';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
@@ -22,13 +23,17 @@ const devLoadingHTMLFilepath = path.join(
   'dev-loading.html'
 );
 
-export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
+export const dev = async (
+  cwd: string,
+  shouldDropDatabase: boolean,
+  customConfig?: KeystoneConfig
+) => {
   console.log('✨ Starting Keystone');
 
   const server = express();
   let expressServer: null | ReturnType<typeof express> = null;
 
-  const config = initConfig(requireSource(CONFIG_PATH).default);
+  const config = customConfig ?? initConfig(requireSource(CONFIG_PATH).default);
   const initKeystone = async () => {
     {
       const { keystone, graphQLSchema } = createSystem(config);
