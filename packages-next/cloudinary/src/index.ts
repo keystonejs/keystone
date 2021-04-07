@@ -1,9 +1,8 @@
 import path from 'path';
 // @ts-ignore
-import { CloudinaryImage } from '@keystone-next/fields-cloudinary-image-legacy';
-// @ts-ignore
 import { CloudinaryAdapter } from '@keystone-next/file-adapters-legacy';
 import type { FieldType, FieldConfig, BaseGeneratedListTypes } from '@keystone-next/types';
+import { CloudinaryImage, PrismaCloudinaryImageInterface } from './Implementation';
 
 type CloudinaryImageFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
@@ -21,7 +20,11 @@ export const cloudinaryImage = <TGeneratedListTypes extends BaseGeneratedListTyp
   cloudinary,
   ...config
 }: CloudinaryImageFieldConfig<TGeneratedListTypes>): FieldType<TGeneratedListTypes> => ({
-  type: CloudinaryImage,
+  type: {
+    type: 'CloudinaryImage',
+    implementation: CloudinaryImage,
+    adapters: { prisma: PrismaCloudinaryImageInterface },
+  },
   config: {
     ...config,
     // @ts-ignore

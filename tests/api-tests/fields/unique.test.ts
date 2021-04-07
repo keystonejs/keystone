@@ -6,13 +6,13 @@ import { text } from '@keystone-next/fields';
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-multiAdapterRunners().map(({ runner, adapterName, after }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider, after }) =>
+  describe(`Provider: ${provider}`, () => {
     testModules
       .map(require)
       .filter(
         ({ supportsUnique, unSupportedAdapterList = [] }) =>
-          supportsUnique && !unSupportedAdapterList.includes(adapterName)
+          supportsUnique && !unSupportedAdapterList.includes(provider)
       )
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
@@ -31,7 +31,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
               runner(
                 () =>
                   setupFromConfig({
-                    adapterName,
+                    provider,
                     config: testConfig({
                       lists: createSchema({
                         Test: list({
@@ -131,9 +131,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
       .map(require)
       .filter(
         ({ supportsUnique, unSupportedAdapterList = [] }) =>
-          !supportsUnique &&
-          supportsUnique !== null &&
-          !unSupportedAdapterList.includes(adapterName)
+          !supportsUnique && supportsUnique !== null && !unSupportedAdapterList.includes(provider)
       )
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
@@ -143,7 +141,7 @@ multiAdapterRunners().map(({ runner, adapterName, after }) =>
               let erroredOut = false;
               try {
                 await setupFromConfig({
-                  adapterName,
+                  provider,
                   config: testConfig({
                     lists: createSchema({
                       Test: list({
