@@ -4,11 +4,11 @@ import { SubscribeForm } from '../components/SubscribeForm';
 
 # Roadmap
 
-Big things! While we work towards Keystone 6 (our next major release of KeystoneJS this year) we’ve launched Keystone Next - an exciting preview of the most powerful headless content management system around.
+While we work towards Keystone 6 (our next major release of KeystoneJS this year) we’ve launched Keystone Next - an exciting preview of the most powerful headless content management system around.
 
 In 2018 when Keystone 5 was announced, it was a great leap forward from a back-end Node.js CMS platform built with MongoDB, to a modern platform with first class support for GraphQL, PostgreSQL, and more.
 
-Over the last six months, we’ve built around the existing stable core of Keystone 5's packages to test the changes we wanted to make and validate our ideas. Now, in Keystone Next, we've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
+Over the last nine months, we’ve built around the existing stable core of Keystone 5's packages to test the changes we wanted to make and validate our ideas. Now, in Keystone Next, we've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
 
 There is a lot more to do, and with a larger than ever team at [Thinkmill](https://www.thinkmill.com.au) working on it, we're excited to show you what we're planning and get it shipped!
 
@@ -18,19 +18,20 @@ If you’re looking for active conversations and interactions, please join our [
 
 ## Project Status
 
-Keystone Next has been released to npm as a preview of where we're going.
-We have completely switched over to Prisma as our backend and have an updated CLI which supports migration via Prisa migrate.
-Now we're focussing on making this platform as easy to get started with as possible, which includes:
+If you're adventurous, Keystone Next is ready to start using for new projects. We have a [comparison page](/guides/keystone-5-vs-keystone-next) to help you decide whether to get on board with the new platform or stick with the more stable Keystone 5.
 
-- Writing docs and making Keystone easy to get started with <Status look="makingItHappen" />
-- Updating the `create-keystone-next-app` package to take advantage of the new features of Prisma and our CLI.
-- Writing comprehensive tests to make sure our CLI is rock solid in all situations.
+Recently, we have completely switched over to Prisma as our database backend and have an updated CLI which supports database migrations via Prisa Migrate.
+Now we're focusing on making the new version as easy to get started with as possible, which includes:
+
+- Writing more docs, guides, and example projects
+- Updating the `create-keystone-next-app` package to take advantage of the new features of Prisma and our CLI
+- Adding comprehensive tests to make sure your system is rock solid
 
 Here's what you'll see in the next month:
 
-- A new set of example projects demoing how to use Keystone Next features
-- Updated documentation on how to get started with Keystone.
-- Improvements to our field types in both the GraphQL API and the Admin UI.
+- New field types for Images and Files
+- A new, streamlined way of integrating Keystone Next into Next.js apps
+- Improvements to all our field types in both the GraphQL API and the Admin UI
 
 <SubscribeForm>
   <p>Keep up to date as we progress through our roadmap:</p>
@@ -63,6 +64,14 @@ Among other benefits, this will (finally!) give us the database schema migration
 has always been missing; custom field types will be simpler to add and maintain; and it also means
 anyone building apps on Keystone has the full power of Prisma Client available to them.
 
+## New back-end APIs for Node.js apps
+
+<Status look="theresAPlan" />
+
+Keystone has so far focused on delivering a great GraphQL API for front-end apps to use. We're expanding on this with first class support for accessing the same APIs from Node.js so you have more flexibility in how you write your apps, including hybrid use-cases.
+
+These new APIs will make fetching and updating your Keystone data from custom GraphQL queries and resolvers, express apps, and server-side frameworks like Next.js incredibly straight-forward.
+
 ## Improved Build and Deployment Options
 
 <Status look="cleaningUp" />
@@ -74,6 +83,12 @@ help streamline these options.
 This will include building for serverless environments, targeting different architectures for your
 GraphQL API and Admin UI applications, and independent `dev`, `build` and `start` commands. Thanks
 to Prisma, it will also include tools for previewing and managing database changes.
+
+## New Image and File functionality
+
+<Status look="theresAPlan" />
+
+We are building new functionality for handling images and files in Keystone. Initially this will mean support for local image and file uploads, and we have plans to expand this into native cloud hosting support as well.
 
 ## Field Types Review
 
