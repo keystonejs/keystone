@@ -12,7 +12,7 @@ import {
   getSchemaPaths,
   requirePrismaClient,
 } from '../../artifacts';
-import { CONFIG_PATH, getAdminPath } from '../utils';
+import { getAdminPath, getConfigPath } from '../utils';
 
 // TODO: Don't generate or start an Admin UI if it isn't configured!!
 const devLoadingHTMLFilepath = path.join(
@@ -28,7 +28,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   const server = express();
   let expressServer: null | ReturnType<typeof express> = null;
 
-  const config = initConfig(requireSource(CONFIG_PATH).default);
+  const config = initConfig(requireSource(getConfigPath(cwd)).default);
   const initKeystone = async () => {
     {
       const { keystone, graphQLSchema } = createSystem(config);
