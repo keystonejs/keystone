@@ -32,7 +32,7 @@ function validateImageInput({ ref, upload }: ImageInput): ValidatedImageInput {
 export async function handleImageData(input: ImageInput, context: KeystoneContext) {
   const data = validateImageInput(input);
   if (data.kind === 'upload') {
-    return context.images.getDataFromStream(data.upload.createReadStream());
+    return context.images!.getDataFromStream(data.upload.createReadStream());
   }
-  return context.images.getDataFromRef(data.ref);
+  return context.images!.getDataFromRef(data.ref);
 }
