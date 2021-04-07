@@ -2,8 +2,8 @@ import fs from 'fs';
 import mime from 'mime';
 import { Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
-import { cloudinaryImage } from '@keystone-next/cloudinary';
 import { text } from '@keystone-next/fields';
+import { cloudinaryImage } from './index.ts';
 
 const path = require('path');
 
@@ -14,7 +14,7 @@ cloudinary.v2.config({
 });
 
 const prepareFile = _filePath => {
-  const filePath = path.resolve(`packages/fields-cloudinary-image/src/test-files/${_filePath}`);
+  const filePath = path.resolve(`packages-next/cloudinary/src/test-files/${_filePath}`);
   const upload = new Upload();
   upload.resolve({
     createReadStream: () => fs.createReadStream(filePath),

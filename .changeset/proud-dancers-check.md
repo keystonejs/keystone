@@ -1,5 +1,5 @@
 ---
-'@keystone-next/fields-cloudinary-image-legacy': patch
+'@keystone-next/cloudinary': patch
 ---
 
 Fixed the type resolver when using the `sqlite` provider.
