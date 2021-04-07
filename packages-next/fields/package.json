@@ -35,7 +35,7 @@
     "react": "^17.0.2"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "preconstruct": {
     "entrypoints": [

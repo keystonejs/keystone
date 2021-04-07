@@ -7,7 +7,7 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "dependencies": {
     "@keystone-next/keystone-legacy": "^23.0.0",

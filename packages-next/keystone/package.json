@@ -75,7 +75,7 @@
     "uid-safe": "^2.1.5"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "preconstruct": {
     "entrypoints": [
