@@ -9,11 +9,11 @@ import { lists } from './schema';
 export default config({
   db: process.env.DATABASE_URL?.startsWith('postgres')
     ? {
-        adapter: 'prisma_postgresql',
+        provider: 'postgresql',
         url: process.env.DATABASE_URL,
       }
     : {
-        adapter: 'prisma_sqlite',
+        provider: 'sqlite',
         url: process.env.DATABASE_URL || 'file:./dev.db',
       },
   lists,

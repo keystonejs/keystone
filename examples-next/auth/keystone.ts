@@ -58,8 +58,8 @@ const { withAuth } = createAuth({
 export default withAuth(
   config({
     db: process.env.DATABASE_URL
-      ? { adapter: 'prisma_postgresql', url: process.env.DATABASE_URL }
-      : { adapter: 'prisma_sqlite', url: 'file:./keystone.db' },
+      ? { provider: 'postgresql', url: process.env.DATABASE_URL }
+      : { provider: 'sqlite', url: 'file:./keystone.db' },
     lists,
     ui: {},
     session: withItemData(
