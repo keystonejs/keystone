@@ -5,6 +5,7 @@ import React from 'react';
 import { act, render } from '@testing-library/react';
 import jestDiff from 'jest-diff';
 import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
+import { HistoryEditor } from 'slate-history';
 import { createDocumentEditor, DocumentEditorEditable } from '..';
 import { ComponentBlock } from '../../component-blocks';
 import { DocumentFeatures } from '../../views';
@@ -190,7 +191,7 @@ export const makeEditor = (
     isShiftPressedRef?: MutableRefObject<boolean>;
     skipRenderingDOM?: boolean;
   } = {}
-): ReactEditor => {
+): ReactEditor & HistoryEditor => {
   if (!Editor.isEditor(node)) {
     throw new Error('Unexpected non-editor passed to makeEditor');
   }
