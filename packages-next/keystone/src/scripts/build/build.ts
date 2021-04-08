@@ -85,15 +85,13 @@ const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
 };
 
 export async function build(cwd: string) {
-  console.log('✨ Building Keystone');
-
   const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
   const { keystone, graphQLSchema } = createSystem(config);
 
   await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
 
-  console.log('✨ Generating database client');
+  console.log('✨ Building Keystone');
   // FIXME: This needs to generate clients for the correct build target using binaryTarget
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
   await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
