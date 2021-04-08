@@ -250,43 +250,10 @@ export const upcase = (str: string) => str.substr(0, 1).toUpperCase() + str.subs
  */
 export const humanize = (str: string) => {
   let label = str
-    .replace(/([a-z])([A-Z]+)/g, '$1 $2 ')
+    .replace(/([a-z])([A-Z]+)/g, '$1 $2')
     .split(/\s|_|\-/)
     .filter(i => i)
-    .reduce((acc: string[], curr: string): string[] => {
-      // If this is the first item
-      // just push a new item in and return
-
-      if (acc.length === 0) {
-        acc.push(curr);
-        return acc;
-      }
-      // Otherwise, grab the last in the array item;
-      const lastItem = acc.pop() as string;
-      if (lastItem.length === 1 && lastItem.toUpperCase() === lastItem) {
-        // If its a single capitalised letter,
-        // Append it to the beginning of the currentValue
-        acc.push(lastItem + curr);
-      } else if (lastItem.length > 1 && lastItem.toUpperCase() === lastItem) {
-        // If its multiple capitalized letters,
-        // Split out the last character and append it to the beginning of the current value.
-        // Push both the truncated lastItem and the ammended current value into the array
-        const newLastItem = lastItem.substring(0, lastItem.length - 1);
-        const newCurrItem = `${lastItem.substring(lastItem.length - 1)}${curr}`;
-        acc.push(newLastItem, newCurrItem);
-      } else {
-        // Otherwise push both the lastItem and the current item into the array.
-        acc.push(lastItem, curr);
-      }
-      return acc;
-    }, [] as string[])
     .map(upcase)
-    .map(i => {
-      if (i === 'Id') {
-        return i.toUpperCase();
-      }
-      return i;
-    })
     .join(' ');
 
   return label;
