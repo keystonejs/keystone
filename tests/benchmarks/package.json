@@ -6,7 +6,7 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "scripts": {
     "go": "node fixtures/index.js"
@@ -15,7 +15,6 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "dependencies": {
     "@keystone-next/fields": "^6.0.0",
-    "@keystone-next/fields-legacy": "^25.0.0",
     "@keystone-next/keystone": "^15.0.0",
     "@keystone-next/keystone-legacy": "^23.0.0",
     "@keystone-next/server-side-graphql-client-legacy": "^3.0.1",

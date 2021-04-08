@@ -3,10 +3,10 @@ import { createSystem } from '../lib/createSystem';
 import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../artifacts';
 import { requireSource } from '../lib/requireSource';
 import { initConfig } from '../lib/initConfig';
-import { CONFIG_PATH } from './utils';
+import { getConfigPath } from './utils';
 
 export async function prisma(cwd: string, args: string[]) {
-  const config = initConfig(requireSource(CONFIG_PATH).default);
+  const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
   const { keystone, graphQLSchema } = createSystem(config);
 

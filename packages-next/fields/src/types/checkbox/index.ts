@@ -1,8 +1,7 @@
-// @ts-ignore
-import { Checkbox } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
+import { Checkbox, PrismaCheckboxInterface } from './Implementation';
 
 export type CheckboxFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
@@ -14,7 +13,11 @@ export type CheckboxFieldConfig<
 export const checkbox = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: CheckboxFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
-  type: Checkbox,
+  type: {
+    type: 'Checkbox',
+    implementation: Checkbox,
+    adapters: { prisma: PrismaCheckboxInterface },
+  },
   config,
   views: resolveView('checkbox/views'),
 });

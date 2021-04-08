@@ -1,4 +1,5 @@
 import { Range, Editor, Transforms, Path } from 'slate';
+import { HistoryEditor } from 'slate-history';
 export const shortcuts: Record<string, string> = {
   '...': '…',
   '-->': '→',
@@ -8,7 +9,7 @@ export const shortcuts: Record<string, string> = {
   '--': '–',
 };
 
-export function withShortcuts<T extends Editor>(editor: T): T {
+export function withShortcuts<T extends HistoryEditor>(editor: T): T {
   const { insertText } = editor;
   editor.insertText = text => {
     insertText(text);
@@ -25,6 +26,7 @@ export function withShortcuts<T extends Editor>(editor: T): T {
             const range = { anchor: selectionPoint, focus: pointBefore };
             const str = Editor.string(editor, range);
             if (str.substr(0, shortcut.length) === shortcut) {
+              editor.history.undos.push([]);
               Transforms.select(editor, range);
               editor.insertText(shortcuts[shortcut] + ' ');
             }

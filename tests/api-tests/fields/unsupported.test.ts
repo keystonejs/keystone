@@ -6,14 +6,14 @@ import { createSchema, list } from '@keystone-next/keystone/schema';
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-testModules.push(path.resolve('packages/fields/tests/test-fixtures.js'));
+testModules.push(path.resolve('packages-next/fields/src/tests/test-fixtures.js'));
 
-multiAdapterRunners().map(({ adapterName, after }) => {
+multiAdapterRunners().map(({ provider, after }) => {
   const unsupportedModules = testModules
     .map(require)
-    .filter(({ unSupportedAdapterList = [] }) => unSupportedAdapterList.includes(adapterName));
+    .filter(({ unSupportedAdapterList = [] }) => unSupportedAdapterList.includes(provider));
   if (unsupportedModules.length > 0) {
-    describe(`${adapterName} adapter`, () => {
+    describe(`${provider} provider`, () => {
       unsupportedModules.forEach(mod => {
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
           const listKey = 'Test';
@@ -35,7 +35,7 @@ multiAdapterRunners().map(({ adapterName, after }) => {
             test('Throws', async () => {
               await expect(async () =>
                 setupFromConfig({
-                  adapterName,
+                  provider,
                   config: testConfig({
                     lists: createSchema({
                       [listKey]: list({ fields: mod.getTestFields(matrixValue) }),

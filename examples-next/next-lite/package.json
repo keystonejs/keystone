@@ -21,7 +21,7 @@
     "typescript": "^4.2.3"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/next-lite"
 }

@@ -1,7 +1,7 @@
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
@@ -10,9 +10,9 @@ import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
 type IdType = any;
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Note: list({
@@ -32,8 +32,8 @@ function setupKeystone(adapterName: AdapterName) {
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('Reconnect', () => {
       test(
         'Reconnect from the many side',
@@ -51,11 +51,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create some users that does the linking
-          type T = {
-            data: { createUser: { id: IdType; notes: { id: IdType; title: string }[] } };
-            errors: unknown;
-          };
-          const { data: alice, errors }: T = await context.executeGraphQL({
+          type T = { createUser: { id: IdType; notes: { id: IdType; title: string }[] } };
+          const alice = (await context.graphql.run({
             query: `
               mutation {
                 createUser(data: {
@@ -66,9 +63,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   notes(sortBy: title_ASC) { id title }
                 }
               }`,
-          });
-          expect(errors).toBe(undefined);
-          const { data: bob, errors: errors2 }: T = await context.executeGraphQL({
+          })) as T;
+
+          const bob = (await context.graphql.run({
             query: `
               mutation {
                 createUser(data: {
@@ -79,8 +76,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   notes(sortBy: title_ASC) { id title }
                 }
               }`,
-          });
-          expect(errors2).toBe(undefined);
+          })) as T;
           // Make sure everyone has the correct notes
           expect(alice.createUser).toEqual({ id: expect.any(String), notes: expect.any(Array) });
           expect(alice.createUser.notes.map(({ title }) => title)).toEqual(['A', 'B']);
@@ -89,11 +85,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // Set Bob as the author of note B
           await (async () => {
-            type T = {
-              data: { updateUser: { id: IdType; notes: { id: IdType; title: string }[] } };
-              errors: unknown;
-            };
-            const { data, errors }: T = await context.executeGraphQL({
+            type T = { updateUser: { id: IdType; notes: { id: IdType; title: string }[] } };
+            const data = (await context.graphql.run({
               query: `
                 mutation {
                   updateUser(id: "${bob.createUser.id}" data: {
@@ -103,15 +96,14 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     notes(sortBy: title_ASC) { id title }
                   }
                 }`,
-            });
-            expect(errors).toBe(undefined);
+            })) as T;
             expect(data.updateUser).toEqual({ id: bob.createUser.id, notes: expect.any(Array) });
             expect(data.updateUser.notes.map(({ title }) => title)).toEqual(['B', 'C', 'D']);
           })();
 
           // B should see Bob as its author
           await (async () => {
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 query {
                   Note(where: { id: "${noteB.id}"}) {
@@ -120,7 +112,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }`,
             });
-            expect(errors).toBe(undefined);
             expect(data.Note).toEqual({
               id: noteB.id,
               author: { id: bob.createUser.id, username: 'Bob' },
@@ -129,11 +120,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
           // Alice should no longer see `B` in her notes
           await (async () => {
-            type T = {
-              data: { User: { id: IdType; notes: { id: IdType; title: string }[] } };
-              errors: unknown;
-            };
-            const { data, errors }: T = await context.executeGraphQL({
+            type T = { User: { id: IdType; notes: { id: IdType; title: string }[] } };
+            const data = (await context.graphql.run({
               query: `
                 query {
                   User(where: { id: "${alice.createUser.id}"}) {
@@ -141,8 +129,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                     notes(sortBy: title_ASC) { id title }
                   }
                 }`,
-            });
-            expect(errors).toBe(undefined);
+            })) as T;
             expect(data.User).toEqual({ id: alice.createUser.id, notes: expect.any(Array) });
             expect(data.User.notes.map(({ title }) => title)).toEqual(['A']);
           })();

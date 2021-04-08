@@ -3,7 +3,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
@@ -12,9 +12,9 @@ import { createItem, createItems } from '@keystone-next/server-side-graphql-clie
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Post: list({
@@ -34,8 +34,8 @@ function setupKeystone(adapterName: AdapterName) {
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('Querying with relationship filters', () => {
       describe('to-single', () => {
         test(
