@@ -3,7 +3,7 @@ import prompts from 'prompts';
 // prompts is badly typed so we have some more specific typed APIs
 // prompts also returns an undefined value on SIGINT which we really just want to exit on
 
-export async function confirmPrompt(message: string): Promise<boolean> {
+async function confirmPromptImpl(message: string): Promise<boolean> {
   const { value } = await prompts({
     name: 'value',
     type: 'confirm',
@@ -16,7 +16,7 @@ export async function confirmPrompt(message: string): Promise<boolean> {
   return value;
 }
 
-export async function textPrompt(message: string): Promise<string> {
+async function textPromptImpl(message: string): Promise<string> {
   const { value } = await prompts({
     name: 'value',
     type: 'text',
@@ -26,4 +26,25 @@ export async function textPrompt(message: string): Promise<string> {
     process.exit(1);
   }
   return value;
+}
+
+export let shouldPrompt = process.stdout.isTTY;
+
+export let confirmPrompt = confirmPromptImpl;
+export let textPrompt = textPromptImpl;
+
+// we could do this with jest.mock but i find jest.mock unpredictable and this is much easier to understand
+export function mockPrompts(prompts: {
+  text: (message: string) => Promise<string>;
+  confirm: (message: string) => Promise<boolean>;
+  shouldPrompt: boolean;
+}) {
+  confirmPrompt = prompts.confirm;
+  textPrompt = prompts.text;
+  shouldPrompt = prompts.shouldPrompt;
+}
+
+export function resetPrompts() {
+  confirmPrompt = confirmPromptImpl;
+  textPrompt = textPromptImpl;
 }

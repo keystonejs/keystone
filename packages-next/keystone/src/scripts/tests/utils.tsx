@@ -10,8 +10,9 @@ import outdent from 'outdent';
 import { KeystoneConfig } from '@keystone-next/types';
 import { parseArgsStringToArgv } from 'string-argv';
 import { cli } from '../cli';
+import { mockPrompts } from '../../lib/prompts';
 
-export function recordConsole() {
+export function recordConsole(promptResponses?: Record<string, string | boolean>) {
   let oldConsole = { ...console };
   let contents = '';
   const log = (...args: any[]) => {
@@ -20,7 +21,59 @@ export function recordConsole() {
 
   Object.assign(console, { log, error: log, warn: log, info: log });
 
+  const debugOutput = () =>
+    `\nConsole output:\n${contents.trim()}\n\nPrompts left:\n${JSON.stringify(
+      promptResponseEntries
+    )}`;
+
+  const promptResponseEntries = Object.entries(promptResponses || {});
+  const getPromptAnswer = (message: string) => {
+    const response = promptResponseEntries.shift()!;
+    if (!response) {
+      throw new Error(
+        `The prompt question "${message}" was asked but there are no responses left${debugOutput()}`
+      );
+    }
+    const [expectedMessage, answer] = response;
+    if (expectedMessage !== message) {
+      throw new Error(
+        `The expected prompt question was "${expectedMessage}" but the actual question was "${message}"${debugOutput()}`
+      );
+    }
+    contents += `\nPrompt: ${message} ${answer}`;
+
+    return answer;
+  };
+  mockPrompts({
+    confirm: async message => {
+      const answer = getPromptAnswer(message);
+      if (typeof answer === 'string') {
+        throw new Error(
+          `The answer to "${message}" is a string but the question is a confirm prompt that should return a boolean${debugOutput()}`
+        );
+      }
+
+      return answer;
+    },
+    text: async message => {
+      const answer = getPromptAnswer(message);
+      if (typeof answer === 'boolean') {
+        throw new Error(
+          `The answer to "${message}" is a boolean but the question is a text prompt that should return a string${debugOutput()}`
+        );
+      }
+
+      return answer;
+    },
+    shouldPrompt: promptResponses !== undefined,
+  });
+
   return () => {
+    if (promptResponseEntries.length) {
+      throw new Error(
+        `Some prompt responses were left when the recording was ended.${debugOutput()}`
+      );
+    }
     Object.assign(console, oldConsole);
     return contents.trim();
   };
@@ -39,6 +92,8 @@ export const symlinkKeystoneDeps = Object.fromEntries(
     '@keystone-next/admin-ui',
     '@keystone-next/auth',
     '@keystone-next/fields',
+    '@prisma/engines',
+    '@prisma/client',
   ].map(pkg => [
     `node_modules/${pkg}`,
     { kind: 'symlink' as const, path: path.dirname(require.resolve(`${pkg}/package.json`)) },
