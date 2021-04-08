@@ -1,0 +1,82 @@
+import { Markdown } from '../../components/Page';
+
+# Command Line
+
+Keystone provides a command line interface (CLI) for running your Keystone system.
+The command `keystone-next` lets you control how you build and run your system, and how your migrate and seed the data in your database.
+
+```
+Usage
+  $ keystone-next [command]
+Commands
+  Run
+    dev           (default) start the project in development mode
+    start         start the project in production mode
+  Build
+    build         build the project (must be done before using start)
+  Migrate (Prisma only)
+    reset         reset the database (this will drop all data!)
+    generate      generate a migration
+    deploy        deploy all migrations
+```
+
+The CLI supports commands in three categories; Run, Build and Migrate.
+
+### Run
+
+The **run** commands are used to prepare and then start your Keystone server.
+Keystone can be run in two different modes; **dev** and **production**.
+
+Note: All the **run** commands expect to find a module called `keystone.ts` with a default export which returns a system configuration `config()` from `@keystone-next/keystone/schema`.
+See the [System Configuration API](../apis/config) for details on how to configure a Keystone system.
+
+#### keystone-next dev (default)
+
+In **dev** mode, Keystone will start the dev server and update your database is a different way depending on `db.useMigrations`:
+
+- If `db.useMigrations` is `false` (the default), Keystone will use Prisma Migrate to update your database so that it matches your schema. It may lose data while updating your database so you should only use this mode in initial development.
+- If `db.useMigrations` is `true`, Keystone will use Prisma Migrate to apply any existing migrations and prompt you to create a migration if there was a change to your schema.
+
+#### keystone-next start
+
+In **production** mode Keystone will not apply or generate any database migrations.
+It will use the pre-built version of the Admin UI Next.js application, and a pre-built Prisma client.
+If database migrations have not been applied, the Prisma client is outdated or missing, or the Admin UI has not been built, then the server will not start.
+
+Note: Database migrations are only handled when using the `prisma` adapter.
+
+### Build
+
+#### keystone-next build
+
+The `build` command is used to generate a built version of Admin UI Next.js application and the Prisma client (if using the `prisma` adapter) which can be used when running the system in production mode (`keystone-next start`).
+
+### Migrate (Prisma only)
+
+#### keystone-next reset
+
+This command invokes `prisma migrate reset` to reset your local database to a state consistent with the migrations directory.
+You generally shouldn't need to use `keystone-next reset` directly unless you want to have a fresh database because `keystone-next dev` and `keystone-next generate` will prompt you to reset your database when it determines your database is inconsistent with your migrations.
+
+#### keystone-next generate
+
+> keystone-next generate is only usable when db.useMigrations is set to true in your config
+
+This command will generate a migration based on the current state of your database and your Keystone schema.
+The generated migration artefact should be added to your repository so that it can be shared with other developers and deployed in production.
+You should generally use `keystone-next dev` instead of `keystone-next generate` because it will prompt you to create a migration when you need to.
+You only need to use `keystone-next generate` when you want to generate an empty migration to do something that isn't a result of a schema change or generate a migration in a non-interactive environment.
+`keystone-next generate` accepts the following options as command line arguments or as prompts:
+
+- `--name` to set the name of the migration
+- `--accept-data-loss` to allow resetting the database when it is out of sync with the migrations
+- `--allow-empty` to create an empty migration when there are no changes to the schema
+
+#### keystone-next deploy
+
+> keystone-next deploy is only usable when db.useMigrations is set to true in your config
+
+This command will apply any migrations in the migrations directory.
+It should be used in production to apply migrations before starting the server.
+
+export default ({ children }) => <Markdown>{children}</Markdown>;

@@ -1,8 +1,0 @@
-[build]
-  command = "cd ../../../ && yarn prepare && cd packages/arch/docs && yarn build"
-  publish = "public"
-  ignore = "git diff --quiet HEAD^ HEAD ../"
-[build.environment]
-  NODE_VERSION = "10"
-  YARN_VERSION = "1.15.2"
-  YARN_FLAGS = "--frozen-lockfile"

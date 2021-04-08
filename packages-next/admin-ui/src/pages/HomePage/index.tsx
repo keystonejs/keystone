@@ -1,6 +1,6 @@
 /* @jsx jsx */
 
-import { ButtonHTMLAttributes, useState } from 'react';
+import { ButtonHTMLAttributes, useMemo, useState } from 'react';
 
 import { Center, Inline, Heading, VisuallyHidden, jsx, useTheme } from '@keystone-ui/core';
 import { makeDataGetter } from '@keystone-next/admin-ui-utils';
@@ -10,7 +10,7 @@ import { LoadingDots } from '@keystone-ui/loading';
 
 import { CreateItemDrawer } from '../../components/CreateItemDrawer';
 import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
-import { DocumentNode, useQuery } from '../../apollo';
+import { gql, useQuery } from '../../apollo';
 import { useKeystone, useList } from '../../context';
 import { useRouter, Link } from '../../router';
 
@@ -121,12 +121,33 @@ const CreateButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   );
 };
 
-export const HomePage = ({ query }: { query: DocumentNode }) => {
+export const HomePage = () => {
   const {
     adminMeta: { lists },
     visibleLists,
   } = useKeystone();
-
+  const query = useMemo(
+    () => gql`
+    query {
+      keystone {
+        adminMeta {
+          lists {
+            key
+            fields {
+              path
+              createView {
+                fieldMode
+              }
+            }
+          }
+        }
+      }
+      ${Object.entries(lists)
+        .map(([listKey, list]) => `${listKey}: ${list.gqlNames.listQueryMetaName} { count }`)
+        .join('\n')}
+    }`,
+    [lists]
+  );
   let { data, error } = useQuery(query, { errorPolicy: 'all' });
 
   const dataGetter = makeDataGetter(data, error?.graphQLErrors);

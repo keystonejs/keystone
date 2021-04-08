@@ -1,52 +1,76 @@
 /** @jsx jsx */
 
 import { jsx } from '@keystone-ui/core';
-import { ReactEditor, RenderElementProps } from 'slate-react';
+import { RenderElementProps } from 'slate-react';
 
-import { Editor, Transforms } from 'slate';
-import { getMaybeMarkdownShortcutText } from './utils';
+import { Editor, Transforms, Range, Point, Path, Node, Element, Text } from 'slate';
 
-export const HeadingElement = ({ attributes, children, element }: RenderElementProps) => {
-  const Tag = `h${element.level}`;
-  return <Tag {...attributes}>{children}</Tag>;
+const headingStylesMap = {
+  h1: { fontSize: '2.2rem' },
+  h2: { fontSize: '1.8rem' },
+  h3: { fontSize: '1.5rem' },
+  h4: { fontSize: '1.2rem' },
+  h5: { fontSize: '0.83rem' },
+  h6: { fontSize: '0.67rem' },
 };
 
-export function withHeading(headingLevels: (1 | 2 | 3 | 4 | 5 | 6)[], editor: ReactEditor) {
-  const { insertBreak, insertText } = editor;
+export const HeadingElement = ({
+  attributes,
+  children,
+  element,
+}: RenderElementProps & { element: { type: 'heading' } }) => {
+  const Tag = `h${element.level}` as const;
+  const headingStyle = headingStylesMap[Tag];
+  return (
+    <Tag
+      {...attributes}
+      css={{
+        ...headingStyle,
+        textAlign: element.textAlign,
+      }}
+    >
+      {children}
+    </Tag>
+  );
+};
+
+export function withHeading<T extends Editor>(editor: T): T {
+  const { insertBreak } = editor;
   editor.insertBreak = () => {
     insertBreak();
 
-    const [match] = Editor.nodes(editor, {
+    const entry = Editor.above(editor, {
       match: n => n.type === 'heading',
     });
-    if (!match) return;
-    const [, path] = match;
-    Transforms.setNodes(
-      editor,
-      { type: 'paragraph', children: [{ text: '' }] },
-      {
+    if (!entry || !editor.selection || !Range.isCollapsed(editor.selection)) return;
+    const path = entry[1];
+
+    if (
+      // we want to unwrap the heading when the user inserted a break at the end of the heading
+      // when the user inserts a break at the end of a heading, the new heading
+      // that we want to unwrap will be empty so the end will be equal to the selection
+      Point.equals(Editor.end(editor, path), editor.selection.anchor)
+    ) {
+      Transforms.unwrapNodes(editor, {
         at: path,
-      }
-    );
+      });
+      return;
+    }
+    // we also want to unwrap the _previous_ heading when the user inserted a break
+    // at the start of the heading, essentially just inserting an empty paragraph above the heading
+    if (!Path.hasPrevious(path)) return;
+    const previousPath = Path.previous(path);
+    const previousNode = Node.get(editor, previousPath) as Element;
+    if (
+      previousNode.type === 'heading' &&
+      previousNode.children.length === 1 &&
+      Text.isText(previousNode.children[0]) &&
+      previousNode.children[0].text === ''
+    ) {
+      Transforms.unwrapNodes(editor, {
+        at: previousPath,
+      });
+    }
   };
-  if (headingLevels.length) {
-    const shortcuts: Record<string, number> = {};
-    headingLevels.forEach(value => {
-      shortcuts['#'.repeat(value)] = value;
-    });
-    editor.insertText = text => {
-      const [shortcutText, deleteShortcutText] = getMaybeMarkdownShortcutText(text, editor);
-      if (shortcutText && shortcuts[shortcutText] !== undefined) {
-        deleteShortcutText();
-        Transforms.setNodes(
-          editor,
-          { type: 'heading', level: shortcuts[shortcutText] },
-          { match: node => node.type === 'paragraph' }
-        );
-        return;
-      }
-      insertText(text);
-    };
-  }
   return editor;
 }

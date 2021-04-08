@@ -1,4 +1,0 @@
-{
-  "main": "dist/fields-markdown.cjs.js",
-  "module": "dist/fields-markdown.esm.js"
-}

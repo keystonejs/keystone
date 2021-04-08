@@ -1,5 +1,76 @@
 # @keystonejs/access-control
 
+## 9.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`97609a623`](https://github.com/keystonejs/keystone/commit/97609a623334fd8d7b9e24dd099abda2e2a37853)]:
+  - @keystone-next/utils-legacy@8.0.0
+
+## 9.0.0
+
+### Major Changes
+
+- [#5147](https://github.com/keystonejs/keystone/pull/5147) [`4ac9148a0`](https://github.com/keystonejs/keystone/commit/4ac9148a0fa5b302d50e0ca4293206e2ef3616b7) Thanks [@timleslie](https://github.com/timleslie)! - Removed `parseCustomAccess` and `validateCustomAccessControl`.
+
+## 8.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`b44f07b6a`](https://github.com/keystonejs/keystone/commit/b44f07b6a7ce1eef6d41513096eadea5aa2be5f7)]:
+  - @keystone-next/utils-legacy@7.0.0
+
+## 8.0.0
+
+### Major Changes
+
+- [`6f985acc7`](https://github.com/keystonejs/keystone/commit/6f985acc775d6037ac69a01215f962285de78c75) [#4861](https://github.com/keystonejs/keystone/pull/4861) Thanks [@timleslie](https://github.com/timleslie)! - The functions `validate*AccessControl` no longer set default values for the `authentication` value. If you are calling these functions directly you will need to make sure you pass in a value for `authentication`. If you are not directly calling these functions then there are no changes required.
+
+* [`4eb4753e4`](https://github.com/keystonejs/keystone/commit/4eb4753e45e5a6ca37bdc756aef7adda7f551da4) [#4865](https://github.com/keystonejs/keystone/pull/4865) Thanks [@timleslie](https://github.com/timleslie)! - Updated `validateAuthAccessControl` to now require an explicit `operation` argument.
+
+- [`891cd490a`](https://github.com/keystonejs/keystone/commit/891cd490a17026f4af29f0ed9b9ca411747d1d63) [#4875](https://github.com/keystonejs/keystone/pull/4875) Thanks [@timleslie](https://github.com/timleslie)! - Updated the `validate*AccessControl` functions to take `{ access, args: ... }`. Unless you are directly calling these functions no code changes are required.
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+* [`15b1132d2`](https://github.com/keystonejs/keystone/commit/15b1132d20d13f79bbf1707e1897b31da887c2b7) [#4853](https://github.com/keystonejs/keystone/pull/4853) Thanks [@timleslie](https://github.com/timleslie)! - Updated types to be parameterised by imperative argument type.
+
+* Updated dependencies [[`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7)]:
+  - @keystone-next/utils-legacy@6.0.2
+
+## 7.0.0
+
+### Major Changes
+
+- [`28a61dc67`](https://github.com/keystonejs/keystone/commit/28a61dc67b990ebd16bfc4e1c0a1e9ffb0e54d81) [#4801](https://github.com/keystonejs/keystone/pull/4801) Thanks [@timleslie](https://github.com/timleslie)! - Converted the `@keystonejs/access-control` package to TypeScript.
+
+## 6.3.2
+
+### Patch Changes
+
+- [`619ef5051`](https://github.com/keystonejs/keystone/commit/619ef50512c09d7cf988dc3c877eed868eba68a6) [#4730](https://github.com/keystonejs/keystone/pull/4730) Thanks [@timleslie](https://github.com/timleslie)! - Refactored access parsing to separate parsing from validation.
+
+* [`86b597d41`](https://github.com/keystonejs/keystone/commit/86b597d410c907ed54a4948da438de48e313302f) [#4724](https://github.com/keystonejs/keystone/pull/4724) Thanks [@timleslie](https://github.com/timleslie)! - Rearranged code to have an explicit exports group.
+
+- [`c1257ca83`](https://github.com/keystonejs/keystone/commit/c1257ca834ccf5a0407debe6e7d27b45ed32a26a) [#4727](https://github.com/keystonejs/keystone/pull/4727) Thanks [@timleslie](https://github.com/timleslie)! - Refactored out `parseAccess` and added `checkSchemaNames`.
+
+* [`5e22cc765`](https://github.com/keystonejs/keystone/commit/5e22cc765a8f18c467457fd2ba738cd90273c8c5) [#4725](https://github.com/keystonejs/keystone/pull/4725) Thanks [@timleslie](https://github.com/timleslie)! - Refactored calls to `validateGranularConfigTypes` to be more explicit.
+
+- [`b9ec7fff9`](https://github.com/keystonejs/keystone/commit/b9ec7fff9d96ac56e2836543d698cf0b62b5dc8f) [#4723](https://github.com/keystonejs/keystone/pull/4723) Thanks [@timleslie](https://github.com/timleslie)! - Replaced usage of `getType()` with `typeof`.
+
+* [`5ad7c12e8`](https://github.com/keystonejs/keystone/commit/5ad7c12e86573e73e85368076bdc1296f3f69db3) [#4726](https://github.com/keystonejs/keystone/pull/4726) Thanks [@timleslie](https://github.com/timleslie)! - Refactored `parseAccess` and inlined the code from `validateGranularConfigTypes` and `parseAccessCore`.
+
+* Updated dependencies [[`94c8d349d`](https://github.com/keystonejs/keystone/commit/94c8d349d3795cd9abec407f78752417623ee56f)]:
+  - @keystonejs/utils@6.0.1
+
+## 6.3.1
+
+### Patch Changes
+
+- Updated dependencies [[`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be)]:
+  - @keystonejs/utils@6.0.0
+
 ## 6.3.0
 
 ### Minor Changes

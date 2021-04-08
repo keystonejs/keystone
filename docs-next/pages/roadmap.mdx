@@ -1,0 +1,169 @@
+import { Markdown } from '../components/Page';
+import { Status } from '../components/Status';
+import { SubscribeForm } from '../components/SubscribeForm';
+
+# Roadmap
+
+While we work towards Keystone 6 (our next major release of KeystoneJS this year) we’ve launched Keystone Next - an exciting preview of the most powerful headless content management system around.
+
+In 2018 when Keystone 5 was announced, it was a great leap forward from a back-end Node.js CMS platform built with MongoDB, to a modern platform with first class support for GraphQL, PostgreSQL, and more.
+
+Over the last nine months, we’ve built around the existing stable core of Keystone 5's packages to test the changes we wanted to make and validate our ideas. Now, in Keystone Next, we've substantially rewritten the CLI, Schema config, and Admin UI to make them more powerful and easier to use than ever before.
+
+There is a lot more to do, and with a larger than ever team at [Thinkmill](https://www.thinkmill.com.au) working on it, we're excited to show you what we're planning and get it shipped!
+
+We'll be updating this roadmap fortnightly (or as often as we need to) to help you track our progress and plans, find info that matters to your project, and communicate with us more dynamically while we grow the platform.
+
+If you’re looking for active conversations and interactions, please join our [KeystoneJS Slack](http://community.keystonejs.com), and feel free to [open a PR](https://github.com/keystonejs/keystone/pulls).
+
+## Project Status
+
+If you're adventurous, Keystone Next is ready to start using for new projects. We have a [comparison page](/guides/keystone-5-vs-keystone-next) to help you decide whether to get on board with the new platform or stick with the more stable Keystone 5.
+
+Recently, we have completely switched over to Prisma as our database backend and have an updated CLI which supports database migrations via Prisa Migrate.
+Now we're focusing on making the new version as easy to get started with as possible, which includes:
+
+- Writing more docs, guides, and example projects
+- Updating the `create-keystone-next-app` package to take advantage of the new features of Prisma and our CLI
+- Adding comprehensive tests to make sure your system is rock solid
+
+Here's what you'll see in the next month:
+
+- New field types for Images and Files
+- A new, streamlined way of integrating Keystone Next into Next.js apps
+- Improvements to all our field types in both the GraphQL API and the Admin UI
+
+<SubscribeForm>
+  <p>Keep up to date as we progress through our roadmap:</p>
+</SubscribeForm>
+
+### 👇 What's next on our list
+
+We’re status-tagging everything we’re tracking. Borrowing from RedwoodJS's roadmap format and leaning on Basecamp’s [Shape Up](https://basecamp.com/shapeup/3.4-chapter-12#work-is-like-a-hill) we’re using colour-coded labels to help surface our activities, making it quicker and clearer for you to understand where things are up to:
+
+- <Status look="notStarted" />
+- <Status look="figuringItOut" />
+- <Status look="theresAPlan" />
+- <Status look="makingItHappen" />
+- <Status look="cleaningUp" />
+
+## Streamlined back-end with Prisma
+
+<Status look="cleaningUp" />
+
+[Prisma](https://www.prisma.io/) is the next-generation ORM for JavaScript and TypeScript, and we
+added it to Keystone in 2020. It supports PostgreSQL, MySQL and SQLite with MS SQL and MongoDB
+support on the way. Today, Prisma is mature enough for Keystone to use and is already more powerful
+than the Knex and Mongoose ORMs we used in Keystone 5.
+
+To simplify Keystone's back-end, and let us focus on building higher level features to make content
+management and application development on Keystone even better, we're planning to remove our
+database adapter infrastructure and translate Keystone APIs to Prisma directly.
+
+Among other benefits, this will (finally!) give us the database schema migration story that Keystone
+has always been missing; custom field types will be simpler to add and maintain; and it also means
+anyone building apps on Keystone has the full power of Prisma Client available to them.
+
+## New back-end APIs for Node.js apps
+
+<Status look="theresAPlan" />
+
+Keystone has so far focused on delivering a great GraphQL API for front-end apps to use. We're expanding on this with first class support for accessing the same APIs from Node.js so you have more flexibility in how you write your apps, including hybrid use-cases.
+
+These new APIs will make fetching and updating your Keystone data from custom GraphQL queries and resolvers, express apps, and server-side frameworks like Next.js incredibly straight-forward.
+
+## Improved Build and Deployment Options
+
+<Status look="cleaningUp" />
+
+Deploying a database-backed application to production is still surprisingly complex, and it can be
+challenging to find the right tradeoffs and hosting providers. So we're looking at ways Keystone can
+help streamline these options.
+
+This will include building for serverless environments, targeting different architectures for your
+GraphQL API and Admin UI applications, and independent `dev`, `build` and `start` commands. Thanks
+to Prisma, it will also include tools for previewing and managing database changes.
+
+## New Image and File functionality
+
+<Status look="theresAPlan" />
+
+We are building new functionality for handling images and files in Keystone. Initially this will mean support for local image and file uploads, and we have plans to expand this into native cloud hosting support as well.
+
+## Field Types Review
+
+<Status look="theresAPlan" />
+
+We're planning to revisit our field types and make them more powerful and consistent. This will
+include new interface options for the Admin UI, new features for validation and logic, and better
+`null` value handling.
+
+## GraphQL API Updates
+
+<Status look="figuringItOut" />
+
+Keystone's GraphQL API has been stable (no breaking changes!) for several years now. While this has
+been great for building front-end apps with confidence, it has held us back from fixing some pain
+points (like error handling) for a while now.
+
+We take the stability of code written against Keystone very seriously, and with that in mind are
+planning to make some changes to the API that we expect to provide backwards-compatibility and
+streamlined migration stories for.
+
+## Nested (JSON) Fields
+
+<Status look="notStarted" />
+
+Often when you're working with items, you want to allow content authors to manage nested repeating
+data. Relationships have traditionally been the answer for this, but come with complexity and can't
+be ordered.
+
+So we're looking to add support for defining simplified nested schemas to lists, which will be
+stored in a JSON field in the database.
+
+## Singletons
+
+<Status look="notStarted" />
+
+Keystone is great for lists of data, but sometimes you want a single object that is editable through
+the Admin UI and accessible in the GraphQL API. So we're planning to add the ability to define
+singletons in Keystone's Schema.
+
+## Translation Support
+
+<Status look="notStarted" />
+
+If you're building a website with multi-language support, in Keystone 5 you have to add individual
+fields for each translation. To make for a better authoring experience, simpler schema definition,
+and streamlined experience for front-end developers we're planning to build first-class support for
+translated fields into Keystone.
+
+## Draft / Preview / Publishing Workflow
+
+<Status look="notStarted" />
+
+Previewing content changes is a critical part of editing with confidence, but it's hard to implement
+consistently across sets of changes in a relational database backend.
+
+Now that popular front-ends like Next.js have built-in support for live content previews, we're
+planning to develop an integrated workflow for Keystone content that will allow authors to preview
+sets of content changes in draft, and publish them atomically.
+
+We're also looking at a built-in solution for tracking changes and version history.
+
+## Admin UI Field Groups and Dynamic Updates
+
+<Status look="notStarted" />
+
+When lists get complex, you want to break up the form into multiple sections of fields. Also, some
+fields depend on the value of others, and the form should update dynamically as item data is
+changed.
+
+We're planning to design a way of defining this behaviour in your List Schema, so you can ship a
+better authoring experience out of the box.
+
+## Feedback
+
+We'd love to hear from you! If you’ve got feedback (or praise 🙌), send it our way at [@KeystoneJS](https://twitter.com/keystonejs) on Twitter, or start a discussion / ask a question / make some friends in our [KeystoneJS Slack community](http://community.keystonejs.com).
+
+export default ({ children }) => <Markdown>{children}</Markdown>;

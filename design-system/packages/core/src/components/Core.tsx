@@ -1,7 +1,7 @@
 /* @jsx jsx */
 
-import { jsx, Global } from '../emotion';
 import { Fragment, ReactNode } from 'react';
+import { jsx, Global } from '../emotion';
 
 import { normalize } from '../normalize';
 import { useTheme } from '../theme';
@@ -55,11 +55,9 @@ const BaseCSS = ({ includeNormalize, optimizeLegibility }: BaseCSSProps) => {
 
             // optimize legibility
             ...(optimizeLegibility && {
-              fontFeatureSettings: '"liga" 1', // Enable OpenType ligatures in IE
               textRendering: 'optimizeLegibility',
               WebkitFontSmoothing: 'antialiased',
               MozOsxFontSmoothing: 'grayscale',
-              MozFontFeatureSettings: '"liga" on',
             }),
           },
 

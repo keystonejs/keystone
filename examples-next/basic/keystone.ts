@@ -24,17 +24,16 @@ const auth = createAuth({
 
 export default auth.withAuth(
   config({
-    db: {
-      adapter: 'mongoose',
-      url: 'mongodb://localhost/keystone-examples-next-basic',
-    },
-    graphql: {
-      // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
-      path: '/api/graphql',
-    },
+    db: process.env.DATABASE_URL
+      ? { provider: 'postgresql', url: process.env.DATABASE_URL }
+      : { provider: 'sqlite', url: 'file:./keystone.db' },
+    // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
+    // graphql: {
+    //   path: '/api/graphql',
+    // },
     ui: {
       // NOTE -- this is not implemented, keystone currently always provides an admin ui at /
-      path: '/admin',
+      // path: '/admin',
       // isAccessAllowed,
     },
     lists,

@@ -1,46 +1,83 @@
 /** @jsx jsx */
 
 import { jsx, useTheme } from '@keystone-ui/core';
-import { RenderElementProps } from 'slate-react';
+import { RenderElementProps, useSelected } from 'slate-react';
 
-import { renderColumnsElement } from './columns';
+import { LayoutArea, LayoutContainer } from './layouts';
 import { ComponentBlocksElement, ComponentInlineProp } from './component-blocks';
 import { LinkElement } from './link';
 import { HeadingElement } from './heading';
 import { BlockquoteElement } from './blockquote';
 import { RelationshipElement } from './relationship';
 
+// some of the renderers read properties of the element
+// and TS doesn't understand the type narrowing when doing a spread for some reason
+// so that's why things aren't being spread in some cases
 export const renderElement = (props: RenderElementProps) => {
-  const columnsElement = renderColumnsElement(props);
-  if (columnsElement) return columnsElement;
-
   switch (props.element.type) {
+    case 'layout':
+      return (
+        <LayoutContainer
+          attributes={props.attributes}
+          children={props.children}
+          element={props.element}
+        />
+      );
+    case 'layout-area':
+      return <LayoutArea {...props} />;
     case 'code':
       return <CodeElement {...props} />;
-    case 'component-block':
-      return <ComponentBlocksElement {...props} />;
+    case 'component-block': {
+      return (
+        <ComponentBlocksElement
+          attributes={props.attributes}
+          children={props.children}
+          element={props.element}
+        />
+      );
+    }
     case 'component-inline-prop':
     case 'component-block-prop':
       return <ComponentInlineProp {...props} />;
     case 'heading':
-      return <HeadingElement {...props} />;
+      return (
+        <HeadingElement
+          attributes={props.attributes}
+          children={props.children}
+          element={props.element}
+        />
+      );
     case 'link':
-      return <LinkElement {...props} />;
+      return (
+        <LinkElement
+          attributes={props.attributes}
+          children={props.children}
+          element={props.element}
+        />
+      );
     case 'ordered-list':
       return <ol {...props.attributes}>{props.children}</ol>;
     case 'unordered-list':
       return <ul {...props.attributes}>{props.children}</ul>;
     case 'list-item':
       return <li {...props.attributes}>{props.children}</li>;
+    case 'list-item-content':
+      return <span {...props.attributes}>{props.children}</span>;
     case 'blockquote':
       return <BlockquoteElement {...props} />;
     case 'relationship':
-      return <RelationshipElement {...props} />;
+      return (
+        <RelationshipElement
+          attributes={props.attributes}
+          children={props.children}
+          element={props.element}
+        />
+      );
     case 'divider':
       return <DividerElement {...props} />;
     default:
       return (
-        <p css={{ textAlign: props.element.textAlign as any }} {...props.attributes}>
+        <p css={{ textAlign: props.element.textAlign }} {...props.attributes}>
           {props.children}
         </p>
       );
@@ -71,15 +108,23 @@ const CodeElement = ({ attributes, children }: RenderElementProps) => {
 
 const DividerElement = ({ attributes, children }: RenderElementProps) => {
   const { colors, spacing } = useTheme();
+  const selected = useSelected();
   return (
-    <div {...attributes}>
+    <div
+      {...attributes}
+      css={{
+        paddingBottom: spacing.medium,
+        paddingTop: spacing.medium,
+        marginBottom: spacing.medium,
+        marginTop: spacing.medium,
+        caretColor: 'transparent',
+      }}
+    >
       <hr
         css={{
-          backgroundColor: colors.border,
+          backgroundColor: selected ? colors.linkColor : colors.border,
           border: 0,
           height: 2,
-          marginBottom: spacing.xlarge,
-          marginTop: spacing.xlarge,
         }}
       />
       {children}

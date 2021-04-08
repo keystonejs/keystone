@@ -8,9 +8,9 @@ import { Popover } from '@keystone-ui/popover';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 import { ChevronRightIcon } from '@keystone-ui/icons/icons/ChevronRightIcon';
 
-import { SignoutButton } from './SignoutButton';
 import { useKeystone } from '../context';
 import { Link } from '../router';
+import { SignoutButton } from './SignoutButton';
 
 type NavItemProps = {
   href: string;

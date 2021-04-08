@@ -1,5 +1,31 @@
 # @keystone-ui/core
 
+## 2.0.2
+
+### Patch Changes
+
+- [#5150](https://github.com/keystonejs/keystone/pull/5150) [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed) Thanks [@timleslie](https://github.com/timleslie)! - Applied eslint `import/order` rule.
+
+## 2.0.1
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+* [`3ca5038a0`](https://github.com/keystonejs/keystone/commit/3ca5038a021105a7452f4e7a4641107caa4ffe3a) [#4856](https://github.com/keystonejs/keystone/pull/4856) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Stopped enabling lignatures with the `optimizeLegibility` prop in `Core`
+
+## 2.0.0
+
+### Major Changes
+
+- [`b97216a65`](https://github.com/keystonejs/keystone/commit/b97216a6526fffcca8232d86b115c28cb19587bf) [#4622](https://github.com/keystonejs/keystone/pull/4622) Thanks [@renovate](https://github.com/apps/renovate)! - Updated react and react-dom to v17
+
+## 1.0.4
+
+### Patch Changes
+
+- [`88b230317`](https://github.com/keystonejs/keystone/commit/88b2303177253aa5d76b50d40d19138af2bc3e41) [#4511](https://github.com/keystonejs/keystone/pull/4511) Thanks [@renovate](https://github.com/apps/renovate)! - Fixed type error with newer version of `@emotion/react`.
+
 ## 1.0.3
 
 ### Patch Changes

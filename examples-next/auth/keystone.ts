@@ -1,7 +1,7 @@
 import { config } from '@keystone-next/keystone/schema';
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
-import { lists } from './schema';
 import { createAuth } from '@keystone-next/auth';
+import { lists } from './schema';
 
 /**
  * TODO: Implement validateItem. Would be invoked by the getItem() method in
@@ -57,10 +57,9 @@ const { withAuth } = createAuth({
 // withAuth applies the signin functionality to the keystone config
 export default withAuth(
   config({
-    db: {
-      adapter: 'mongoose',
-      url: 'mongodb://localhost/keystone-examples-next-auth',
-    },
+    db: process.env.DATABASE_URL
+      ? { provider: 'postgresql', url: process.env.DATABASE_URL }
+      : { provider: 'sqlite', url: 'file:./keystone.db' },
     lists,
     ui: {},
     session: withItemData(

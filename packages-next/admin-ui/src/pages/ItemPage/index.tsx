@@ -3,7 +3,17 @@
 import copyToClipboard from 'clipboard-copy';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment, HTMLAttributes, useCallback, useMemo, useState } from 'react';
+import {
+  Fragment,
+  HTMLAttributes,
+  memo,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { ListMeta } from '@keystone-next/types';
 import { Button } from '@keystone-ui/button';
@@ -37,6 +47,17 @@ import { Container } from '../../components/Container';
 type ItemPageProps = {
   listKey: string;
 };
+
+function useEventCallback<Func extends (...args: any) => any>(callback: Func): Func {
+  const callbackRef = useRef(callback);
+  const cb = useCallback((...args) => {
+    return callbackRef.current(...args);
+  }, []);
+  useEffect(() => {
+    callbackRef.current = callback;
+  });
+  return cb as any;
+}
 
 function ItemForm({
   listKey,
@@ -99,54 +120,47 @@ function ItemForm({
 
   const [forceValidation, setForceValidation] = useState(false);
   const toasts = useToasts();
-  const saveButtonProps = {
-    isLoading: loading,
-    weight: 'bold',
-    tone: 'active',
-    onClick: () => {
-      const newForceValidation = invalidFields.size !== 0;
-      setForceValidation(newForceValidation);
-      if (newForceValidation) return;
+  const onSave = useEventCallback(() => {
+    const newForceValidation = invalidFields.size !== 0;
+    setForceValidation(newForceValidation);
+    if (newForceValidation) return;
 
-      update({
-        variables: {
-          data: dataForUpdate,
-          id: itemGetter.get('id').data,
-        },
-      })
-        // TODO -- Experimenting with less detail in the toasts, so the data lines are commented
-        // out below. If we're happy with this, clean up the unused lines.
-        .then(({ /* data, */ errors }) => {
-          // we're checking for path.length === 1 because errors with a path larger than 1 will
-          // be field level errors which are handled seperately and do not indicate a failure to
-          // update the item
-          const error = errors?.find(x => x.path?.length === 1);
-          if (error) {
-            toasts.addToast({
-              title: 'Failed to update item',
-              tone: 'negative',
-              message: error.message,
-            });
-          } else {
-            toasts.addToast({
-              // title: data.item[list.labelField] || data.item.id,
-              tone: 'positive',
-              title: 'Saved successfully',
-              // message: 'Saved successfully',
-            });
-          }
-        })
-        .catch(err => {
+    update({
+      variables: {
+        data: dataForUpdate,
+        id: itemGetter.get('id').data,
+      },
+    })
+      // TODO -- Experimenting with less detail in the toasts, so the data lines are commented
+      // out below. If we're happy with this, clean up the unused lines.
+      .then(({ /* data, */ errors }) => {
+        // we're checking for path.length === 1 because errors with a path larger than 1 will
+        // be field level errors which are handled seperately and do not indicate a failure to
+        // update the item
+        const error = errors?.find(x => x.path?.length === 1);
+        if (error) {
           toasts.addToast({
             title: 'Failed to update item',
             tone: 'negative',
-            message: err.message,
+            message: error.message,
           });
+        } else {
+          toasts.addToast({
+            // title: data.item[list.labelField] || data.item.id,
+            tone: 'positive',
+            title: 'Saved successfully',
+            // message: 'Saved successfully',
+          });
+        }
+      })
+      .catch(err => {
+        toasts.addToast({
+          title: 'Failed to update item',
+          tone: 'negative',
+          message: err.message,
         });
-    },
-    children: 'Save changes',
-  } as const;
-
+      });
+  });
   return (
     <Box marginTop="xlarge">
       <GraphQLErrorNotice
@@ -171,35 +185,28 @@ function ItemForm({
         )}
         value={state.value}
       />
-      <Toolbar>
-        <Stack align="center" across gap="small">
-          <Button isDisabled={!changedFields.size} {...saveButtonProps} />
-          {changedFields.size ? (
-            <Button
-              weight="none"
-              onClick={() => {
-                setValue({
-                  item: itemGetter.data,
-                  value: deserializeValue(list.fields, itemGetter),
-                });
-              }}
-            >
-              Reset changes
-            </Button>
-          ) : (
-            <Text weight="medium" paddingX="large" color="neutral600">
-              No changes
-            </Text>
-          )}
-        </Stack>
-        {showDelete && (
-          <DeleteButton
-            list={list}
-            itemLabel={(itemGetter.data?.[list.labelField] ?? itemGetter.data?.id!) as string}
-            itemId={itemGetter.data?.id!}
-          />
+      <Toolbar
+        onSave={onSave}
+        hasChangedFields={!!changedFields.size}
+        onReset={useEventCallback(() => {
+          setValue({
+            item: itemGetter.data,
+            value: deserializeValue(list.fields, itemGetter),
+          });
+        })}
+        loading={loading}
+        deleteButton={useMemo(
+          () =>
+            showDelete ? (
+              <DeleteButton
+                list={list}
+                itemLabel={(itemGetter.data?.[list.labelField] ?? itemGetter.data?.id!) as string}
+                itemId={itemGetter.data?.id!}
+              />
+            ) : undefined,
+          [showDelete, list, itemGetter.data?.[list.labelField], itemGetter.data?.id]
         )}
-      </Toolbar>
+      />
     </Box>
   );
 }
@@ -274,7 +281,9 @@ function DeleteButton({
   );
 }
 
-export const ItemPage = ({ listKey }: ItemPageProps) => {
+export const getItemPage = (props: ItemPageProps) => () => <ItemPage {...props} />;
+
+const ItemPage = ({ listKey }: ItemPageProps) => {
   const router = useRouter();
   const { id } = router.query;
   const list = useList(listKey);
@@ -510,7 +519,19 @@ const CreateButton = ({ id, listKey }: { id: string; listKey: string }) => {
 // Styled Components
 // ------------------------------
 
-const Toolbar = (props: HTMLAttributes<HTMLDivElement>) => {
+const Toolbar = memo(function Toolbar({
+  hasChangedFields,
+  loading,
+  onSave,
+  onReset,
+  deleteButton,
+}: {
+  hasChangedFields: boolean;
+  loading: boolean;
+  onSave: () => void;
+  onReset: () => void;
+  deleteButton?: ReactElement;
+}) {
   const { colors, spacing } = useTheme();
   return (
     <div
@@ -526,16 +547,39 @@ const Toolbar = (props: HTMLAttributes<HTMLDivElement>) => {
         position: 'sticky',
         zIndex: 10,
       }}
-      {...props}
-    />
+    >
+      <Stack align="center" across gap="small">
+        <Button
+          isDisabled={!hasChangedFields}
+          isLoading={loading}
+          weight="bold"
+          tone="active"
+          onClick={onSave}
+        >
+          Save changes
+        </Button>
+        {hasChangedFields ? (
+          <Button weight="none" onClick={onReset}>
+            Reset changes
+          </Button>
+        ) : (
+          <Text weight="medium" paddingX="large" color="neutral600">
+            No changes
+          </Text>
+        )}
+      </Stack>
+      {deleteButton}
+    </div>
   );
-};
+});
 
 const ColumnLayout = (props: HTMLAttributes<HTMLDivElement>) => {
   const { spacing } = useTheme();
 
   return (
-    <Container css={{ position: 'relative' }}>
+    // this container must be relative to catch absolute children
+    // particularly the "expanded" document-field, which needs a height of 100%
+    <Container css={{ position: 'relative', height: '100%' }}>
       <div
         css={{
           alignItems: 'start',

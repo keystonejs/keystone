@@ -1,63 +1,83 @@
-import 'dotenv/config';
-
-import { config } from '@keystone-next/keystone/schema';
-import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
-import { lists } from './schema';
-import { extendGraphqlSchema } from './mutations';
 import { createAuth } from '@keystone-next/auth';
+import { config, createSchema } from '@keystone-next/keystone/schema';
+import { withItemData, statelessSessions } from '@keystone-next/keystone/session';
+import { permissionsList } from './schemas/fields';
+import { Role } from './schemas/Role';
+import { OrderItem } from './schemas/OrderItem';
+import { Order } from './schemas/Order';
+import { CartItem } from './schemas/CartItem';
+import { ProductImage } from './schemas/ProductImage';
+import { Product } from './schemas/Product';
+import { User } from './schemas/User';
+import 'dotenv/config';
 import { insertSeedData } from './seed-data';
-import { permissionsList } from './fields';
+import { sendPasswordResetEmail } from './lib/mail';
+import { extendGraphqlSchema } from './mutations';
 
-const databaseUrl = process.env.DATABASE_URL || 'mongodb://localhost/keystone-examples-ecommerce';
-const protectIdentities = process.env.NODE_ENV === 'production';
+const databaseURL = process.env.DATABASE_URL || 'file:./keystone.db';
+
 const sessionConfig = {
-  maxAge: 60 * 60 * 24 * 30, // 30 days
-  secret: process.env.COOKIE_SECRET || '',
+  maxAge: 60 * 60 * 24 * 360, // How long they stay signed in?
+  secret: process.env.COOKIE_SECRET || 'this secret should only be used in testing',
 };
 
 const { withAuth } = createAuth({
   listKey: 'User',
   identityField: 'email',
   secretField: 'password',
-  protectIdentities,
   initFirstItem: {
     fields: ['name', 'email', 'password'],
-    itemData: {
-      role: {
-        create: {
-          name: 'Admin Role',
-          ...Object.fromEntries(permissionsList.map(i => [i, true])),
-        },
-      },
-    },
+    // TODO: Add in inital roles here
   },
   passwordResetLink: {
-    sendToken(args) {
-      console.log(`Password reset info:`, args);
+    async sendToken(args) {
+      // send the email
+      await sendPasswordResetEmail(args.token, args.identity);
     },
   },
 });
 
 export default withAuth(
   config({
-    db: {
-      adapter: 'mongoose',
-      url: databaseUrl,
-      onConnect: async context => {
-        if (process.argv.includes('--seed-data')) {
-          insertSeedData(context);
-        }
+    // @ts-ignore
+    server: {
+      cors: {
+        origin: [process.env.FRONTEND_URL!],
+        credentials: true,
       },
     },
-    lists,
+    db: process.env.DATABASE_URL
+      ? { provider: 'postgresql', url: process.env.DATABASE_URL }
+      : {
+          provider: 'sqlite',
+          url: databaseURL,
+          async onConnect(keystone) {
+            console.log('Connected to the database!');
+            if (process.argv.includes('--seed-data')) {
+              await insertSeedData(keystone);
+            }
+          },
+        },
+    lists: createSchema({
+      // Schema items go in here
+      User,
+      Product,
+      ProductImage,
+      CartItem,
+      OrderItem,
+      Order,
+      Role,
+    }),
     extendGraphqlSchema,
     ui: {
-      // Anyone who has been assigned a role can access the Admin UI
-      isAccessAllowed: ({ session }) => !!session?.data.role,
+      // Show the UI only for poeple who pass this test
+      isAccessAllowed: ({ session }) =>
+        // console.log(session);
+        !!session?.data,
     },
     session: withItemData(statelessSessions(sessionConfig), {
-      // Cache the permission fields from the role in the session so we don't have to look them up again in access checks
-      User: `id name role { ${permissionsList.join(' ')} }`,
+      // GraphQL Query
+      User: `id name email role { ${permissionsList.join(' ')} }`,
     }),
   })
 );

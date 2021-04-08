@@ -1,19 +1,27 @@
-import { Editor, Transforms, Element, Text, Range } from 'slate';
-import { ReactEditor } from 'slate-react';
+/** @jsx jsx */
+import { jsx } from '@keystone-ui/core';
+import { Tooltip } from '@keystone-ui/tooltip';
+import { useMemo, Fragment } from 'react';
+import { Editor, Transforms, Element, Text, Range, Point } from 'slate';
+import { CodeIcon } from '@keystone-ui/icons/icons/CodeIcon';
+import { ToolbarButton, KeyboardInTooltip } from './primitives';
+import { useToolbarState } from './toolbar-state';
 
-export function insertCodeBlock(editor: ReactEditor) {
-  Transforms.wrapNodes(editor, { type: 'code', children: [{ text: '' }] });
-}
+export function withCodeBlock<T extends Editor>(editor: T): T {
+  const { insertBreak, normalizeNode } = editor;
 
-export function withCodeBlock(enabled: boolean, editor: ReactEditor) {
-  const { insertBreak, normalizeNode, insertText } = editor;
   editor.insertBreak = () => {
     const [node, path] = Editor.above(editor, {
       match: n => Editor.isBlock(editor, n),
     }) || [editor, []];
-    if (node.type === 'code') {
-      const text = node.children[0].text as string;
-      if (text[text.length - 1] === '\n') {
+    if (node.type === 'code' && Text.isText(node.children[0])) {
+      const text = node.children[0].text;
+      if (
+        text[text.length - 1] === '\n' &&
+        editor.selection &&
+        Range.isCollapsed(editor.selection) &&
+        Point.equals(Editor.end(editor, path), editor.selection.anchor)
+      ) {
         insertBreak();
         Transforms.setNodes(editor, { type: 'paragraph', children: [] });
         Transforms.delete(editor, {
@@ -30,7 +38,6 @@ export function withCodeBlock(enabled: boolean, editor: ReactEditor) {
   editor.normalizeNode = ([node, path]) => {
     if (node.type === 'code' && Element.isElement(node)) {
       for (const [index, childNode] of node.children.entries()) {
-        // debugger;
         if (!Text.isText(childNode)) {
           if (editor.isVoid(childNode)) {
             Transforms.removeNodes(editor, { at: [...path, index] });
@@ -48,28 +55,47 @@ export function withCodeBlock(enabled: boolean, editor: ReactEditor) {
     }
     normalizeNode([node, path]);
   };
-  if (enabled) {
-    // this is slightly different to the usages of getMaybeMarkdownShortcutText because the insertion happens on ` rather than a space
-    editor.insertText = text => {
-      const { selection } = editor;
-      if (text === '`' && selection && Range.isCollapsed(selection)) {
-        const { anchor } = selection;
-        const block = Editor.above(editor, {
-          match: n => n.type === 'paragraph',
-        });
-        const path = block ? block[1] : [];
-        const start = Editor.start(editor, path);
-        const range = { anchor, focus: start };
-        const content = Editor.string(editor, range);
-        if (content === '``') {
-          Transforms.select(editor, range);
-          Transforms.delete(editor);
-          Transforms.wrapNodes(editor, { type: 'code', children: [] }, { at: path });
-          return;
-        }
-      }
-      insertText(text);
-    };
-  }
+
   return editor;
 }
+
+function CodeButton({ attrs }: { attrs: {} }) {
+  const {
+    editor,
+    code: { isDisabled, isSelected },
+  } = useToolbarState();
+
+  return useMemo(
+    () => (
+      <ToolbarButton
+        isSelected={isSelected}
+        isDisabled={isDisabled}
+        onMouseDown={event => {
+          event.preventDefault();
+          if (isSelected) {
+            Transforms.unwrapNodes(editor, { match: node => node.type === 'code' });
+          } else {
+            Transforms.wrapNodes(editor, { type: 'code', children: [{ text: '' }] });
+          }
+        }}
+        {...attrs}
+      >
+        <CodeIcon size="small" />
+      </ToolbarButton>
+    ),
+    [isDisabled, isSelected, attrs]
+  );
+}
+
+export const codeButton = (
+  <Tooltip
+    weight="subtle"
+    content={
+      <Fragment>
+        Code block <KeyboardInTooltip>```</KeyboardInTooltip>
+      </Fragment>
+    }
+  >
+    {attrs => <CodeButton attrs={attrs} />}
+  </Tooltip>
+);

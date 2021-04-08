@@ -1,6 +1,18 @@
 /** @jsx jsx */
 
-import { CSSProperties, Fragment, ReactElement, Ref, forwardRef, useEffect, useRef } from 'react';
+import {
+  CSSProperties,
+  Fragment,
+  ReactElement,
+  Ref,
+  forwardRef,
+  useEffect,
+  useRef,
+  memo,
+  useCallback,
+  useMemo,
+  ReactNode,
+} from 'react';
 import { applyRefs } from 'apply-ref';
 import { jsx, useId, useTheme, Portal } from '@keystone-ui/core';
 import { usePopover } from '@keystone-ui/popover';
@@ -20,7 +32,7 @@ type Props = {
   /** The target element. */
   children: (props: RenderProps) => ReactElement;
   /** The content of the tooltip. */
-  content: string;
+  content: ReactNode;
   /** Turn off, to maintain the tooltip when the user clicks the trigger element. */
   hideOnClick?: boolean;
   /** Where, in relation to the target, to place the tooltip. */
@@ -52,8 +64,8 @@ export const Tooltip = ({
   });
 
   const tooltipId = useId();
-  const showTooltip = () => setOpen(true);
-  const hideTooltip = () => setOpen(false);
+  const showTooltip = useCallback(() => setOpen(true), []);
+  const hideTooltip = useCallback(() => setOpen(false), []);
   const internalRef = useRef<HTMLElement>(null);
 
   // avoid overriding the consumer's `onClick` handler
@@ -69,14 +81,18 @@ export const Tooltip = ({
 
   return (
     <Fragment>
-      {children({
-        onMouseEnter: showTooltip,
-        onMouseLeave: hideTooltip,
-        onFocus: showTooltip,
-        onBlur: hideTooltip,
-        'aria-describedby': tooltipId,
-        ref: applyRefs(trigger.ref, internalRef),
-      })}
+      {useMemo(
+        () =>
+          children({
+            onMouseEnter: showTooltip,
+            onMouseLeave: hideTooltip,
+            onFocus: showTooltip,
+            onBlur: hideTooltip,
+            'aria-describedby': tooltipId,
+            ref: applyRefs(trigger.ref, internalRef),
+          }),
+        [children, showTooltip, hideTooltip, tooltipId, trigger.ref, internalRef]
+      )}
       <TooltipElement
         id={tooltipId}
         isVisible={isOpen}
@@ -96,7 +112,7 @@ export const Tooltip = ({
 
 type ElementProps = {
   /** The content of the tooltip. */
-  children: string;
+  children: ReactNode;
   /** ID used to describe the invoking element. */
   id?: string;
   /** When true, the tooltip will be visible. */
@@ -112,44 +128,46 @@ type ElementProps = {
   };
 };
 
-export const TooltipElement = forwardRef<HTMLDivElement, ElementProps>(
-  ({ isVisible, children, arrow, weight, ...props }, consumerRef) => {
-    const isBold = weight === 'bold';
-    const { elevation, radii, colors, spacing, typography } = useTheme();
-    const arrowStyles = useArrowStyles();
+export const TooltipElement = memo(
+  forwardRef<HTMLDivElement, ElementProps>(
+    ({ isVisible, children, arrow, weight, ...props }, consumerRef) => {
+      const isBold = weight === 'bold';
+      const { elevation, radii, colors, spacing, typography } = useTheme();
+      const arrowStyles = useArrowStyles();
 
-    return (
-      <Portal>
-        <div
-          role="tooltip"
-          aria-hidden={!isVisible}
-          ref={consumerRef}
-          css={{
-            backgroundColor: colors.foregroundMuted,
-            borderRadius: radii.xsmall,
-            color: colors.background,
-            fontSize: isBold ? typography.fontSize.small : typography.fontSize.xsmall,
-            fontWeight: typography.fontWeight.medium,
-            lineHeight: typography.leading.tight,
-            maxWidth: 320, // less than desirable magic number, but not sure if this needs to be in theme...
-            opacity: isVisible ? (isBold ? 1 : 0.9) : 0,
-            padding: isBold
-              ? `${spacing.small}px ${spacing.medium}px`
-              : `${spacing.xsmall}px ${spacing.small}px`,
-            pointerEvents: isVisible ? undefined : 'none',
-            zIndex: elevation.e500,
-            ...arrowStyles,
-          }}
-          {...props}
-        >
-          {children}
-          {arrow && (
-            <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
-          )}
-        </div>
-      </Portal>
-    );
-  }
+      return (
+        <Portal>
+          <div
+            role="tooltip"
+            aria-hidden={!isVisible}
+            ref={consumerRef}
+            css={{
+              backgroundColor: colors.foregroundMuted,
+              borderRadius: radii.xsmall,
+              color: colors.background,
+              fontSize: isBold ? typography.fontSize.small : typography.fontSize.xsmall,
+              fontWeight: typography.fontWeight.medium,
+              lineHeight: typography.leading.tight,
+              maxWidth: 320, // less than desirable magic number, but not sure if this needs to be in theme...
+              opacity: isVisible ? (isBold ? 1 : 0.9) : 0,
+              padding: isBold
+                ? `${spacing.small}px ${spacing.medium}px`
+                : `${spacing.xsmall}px ${spacing.small}px`,
+              pointerEvents: isVisible ? undefined : 'none',
+              zIndex: elevation.e500,
+              ...arrowStyles,
+            }}
+            {...props}
+          >
+            {children}
+            {arrow && (
+              <div data-popper-arrow ref={arrow.ref} className="tooltipArrow" {...arrow.props} />
+            )}
+          </div>
+        </Portal>
+      );
+    }
+  )
 );
 
 const useArrowStyles = () => {

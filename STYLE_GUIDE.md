@@ -33,7 +33,7 @@ Also, it should go without saying:
 
 - Ensure correct spelling; spell-check documents before committing.
   (We _favour_ UK/Australian spelling.)
-- Ensure correct capitalisation, inc. product names and acronyms (eg: JavaScript, URL, Node.js, MongoDB).
+- Ensure correct capitalisation, inc. product names and acronyms (eg: JavaScript, URL, Node.js).
   Note, _abbreviations_ like "etc.", "ie." and "eg." are not acronyms;
   they should only be capitalised if at the start of a sentence.
 - Ensure correct English grammar (or Miss Willings will come for you 👩🏼‍🏫).
@@ -124,7 +124,7 @@ For links to work across these mediums, certain rules for URLs formulation must 
     - Eg. `/docs/guides/access-control.md` (**not** `/docs/guides/access-control`)
 - Links to `README.md` files must be explicit; they cannot rely on the GitHub behaviour that uses `README.md` at a sort of "index" for a directory
   - Eg. `/packages/auth-password/README.md#identity` (**not** `/packages/auth-password#identity`)
-- Links to directories end in a slash (eg. `/packages/email/`)
+- Links to directories end in a slash (eg. `/packages/keystone/`)
   - This as is convention for URLs (so as not to be confused with a files)
 
 ## Code and Code Blocks

@@ -24,7 +24,6 @@ const noticeIconMap = {
 export const componentBlocks = {
   hero: component({
     component: props => {
-      console.log('title', props.title);
       return (
         <div
           css={{
@@ -96,10 +95,7 @@ export const componentBlocks = {
         false: fields.empty(),
         true: fields.object({
           text: fields.child({ kind: 'inline', placeholder: 'CTA...' }),
-          href: fields.text({
-            label: 'Call to action link',
-            defaultValue: '#',
-          }),
+          href: fields.url({ label: 'Call to action link' }),
         }),
       }),
     },
@@ -128,13 +124,13 @@ export const componentBlocks = {
           <h1>{props.title}</h1>
           <NotEditable>
             <ul>
-              {props.authors.value.map(author => {
+              {props.authors.value.map((author, i) => {
                 return (
-                  <li>
+                  <li key={i}>
                     {author.label}
                     <ul>
-                      {author.data.posts.map((post: { title: string | null }) => {
-                        return <li>{post.title}</li>;
+                      {author.data.posts.map((post: { title: string | null }, i: number) => {
+                        return <li key={i}>{post.title}</li>;
                       })}
                     </ul>
                   </li>
@@ -189,25 +185,23 @@ export const componentBlocks = {
             background: intentConfig.background,
           }}
         >
-          <div
-            contentEditable={false}
-            css={{
-              color: intentConfig.foreground,
-              marginRight: spacing.small,
-              marginTop: '1em',
-              userSelect: 'none',
-            }}
-          >
-            <intentConfig.icon />
-          </div>
+          <NotEditable>
+            <div
+              css={{
+                color: intentConfig.foreground,
+                marginRight: spacing.small,
+                marginTop: '1em',
+              }}
+            >
+              <intentConfig.icon />
+            </div>
+          </NotEditable>
           <div css={{ flex: 1 }}>{content}</div>
         </div>
       );
     },
     label: 'Notice',
     chromeless: true,
-    unwrapOnBackspaceAtStart: true,
-    exitOnEnterInEmptyLineAtEndOfChild: true,
     props: {
       intent: fields.select({
         label: 'Intent',
@@ -219,7 +213,14 @@ export const componentBlocks = {
         ] as const,
         defaultValue: 'info',
       }),
-      content: fields.child({ kind: 'block', placeholder: '' }),
+      content: fields.child({
+        kind: 'block',
+        placeholder: '',
+        formatting: 'inherit',
+        dividers: 'inherit',
+        links: 'inherit',
+        relationships: 'inherit',
+      }),
     },
     toolbar({ props, onRemove }) {
       return (
@@ -268,24 +269,20 @@ export const componentBlocks = {
         >
           <div css={{ fontStyle: 'italic', color: '#4A5568' }}>{content}</div>
           <div css={{ fontWeight: 'bold', color: '#718096' }}>
-            <span
-              contentEditable={false}
-              style={{
-                userSelect: 'none',
-              }}
-            >
-              —{' '}
-            </span>
+            <NotEditable>— </NotEditable>
             {attribution}
           </div>
         </div>
       );
     },
     label: 'Quote',
-    unwrapOnBackspaceAtStart: true,
-    exitOnEnterInEmptyLineAtEndOfChild: true,
     props: {
-      content: fields.child({ kind: 'block', placeholder: 'Quote...' }),
+      content: fields.child({
+        kind: 'block',
+        placeholder: 'Quote...',
+        formatting: { inlineMarks: 'inherit', softBreaks: 'inherit' },
+        links: 'inherit',
+      }),
       attribution: fields.child({ kind: 'inline', placeholder: 'Attribution...' }),
     },
     chromeless: true,

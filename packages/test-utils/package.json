@@ -1,20 +1,20 @@
 {
-  "name": "@keystonejs/test-utils",
+  "name": "@keystone-next/test-utils-legacy",
   "description": "Common utilities used while testing @keystonejs/* packages.",
-  "version": "10.0.0",
+  "version": "16.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
+  "main": "dist/test-utils-legacy.cjs.js",
+  "module": "dist/test-utils-legacy.esm.js",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "dependencies": {
-    "@keystonejs/adapter-knex": "^12.0.2",
-    "@keystonejs/adapter-mongoose": "^10.0.1",
-    "@keystonejs/adapter-prisma": "^1.0.7",
-    "@keystonejs/app-graphql": "^6.1.3",
-    "@keystonejs/keystone": "^17.1.1",
+    "@keystone-next/adapter-prisma-legacy": "^5.0.0",
+    "@keystone-next/keystone": "15.0.0",
+    "@keystone-next/keystone-legacy": "^23.0.0",
     "express": "^4.17.1",
-    "mongodb-memory-server-core": "^6.9.2",
+    "memoize-one": "^5.1.1",
     "supertest-light": "^1.0.3"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/test-utils"

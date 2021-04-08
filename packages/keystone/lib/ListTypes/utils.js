@@ -1,4 +1,4 @@
-const { upcase, resolveAllKeys, arrayToObject } = require('@keystonejs/utils');
+const { upcase, resolveAllKeys, arrayToObject } = require('@keystone-next/utils-legacy');
 
 const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
 

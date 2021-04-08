@@ -1,6 +1,6 @@
 # Keystone-Next eCommerce Example
 
-👋🏻 This is an example eCommerce backend implementation using KeystoneJS.
+👋 This is an example eCommerce backend implementation using KeystoneJS.
 
 It is based on the [sick-fits backend](https://github.com/wesbos/advanced-react-rerecord) by [Wes Bos](https://twitter.com/wesbos), built as part of his [Advanced React Course](http://advancedreact.com)
 
@@ -14,7 +14,6 @@ To run the project locally:
 
 - Clone this repo
 - Run `yarn` in the root (this repo is a monorepo and uses yarn workspaces, so that will install everything you'll need)
-- Make sure you have a local mongo server up and running on the default port
 - Open this folder in your terminal and run `yarn dev`
 
-If everything works 🤞🏻 the GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000)
+If everything works 🤞 the GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000)

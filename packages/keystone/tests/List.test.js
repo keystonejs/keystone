@@ -1,20 +1,24 @@
 const { gql } = require('apollo-server-express');
 const { print } = require('graphql/language/printer');
-
+const { Text: TextImplementation } = require('@keystone-next/fields/src/types/text/Implementation');
+const {
+  Relationship: RelationshipImplementation,
+} = require('@keystone-next/fields/src/types/relationship/Implementation');
+const { Integer } = require('@keystone-next/fields/src/types/integer/Implementation');
 const { List } = require('../lib/ListTypes');
 const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
-const { Text, Checkbox, Float, Relationship, Integer } = require('@keystonejs/fields');
-const path = require('path');
 
-let fieldsPackagePath = path.dirname(require.resolve('@keystonejs/fields/package.json'));
-function resolveViewPath(viewPath) {
-  return path.join(fieldsPackagePath, 'types', viewPath);
-}
-
-Text.adapters['mock'] = {};
-Checkbox.adapters['mock'] = {};
-Float.adapters['mock'] = {};
-Relationship.adapters['mock'] = {};
+const Relationship = {
+  type: 'Relationship',
+  isRelationship: true, // Used internally for this special case
+  implementation: RelationshipImplementation,
+  adapters: { mock: {} },
+};
+const Text = {
+  type: 'Text',
+  implementation: TextImplementation,
+  adapters: { mock: {} },
+};
 
 const context = {
   getListAccessControlForUser: () => true,
@@ -30,16 +34,6 @@ const context = {
 // Convert a gql field into a normalised format for comparison.
 // Needs to be wrapped in a mock type for gql to correctly parse it.
 const normalise = s => print(gql(`type t { ${s} }`));
-
-const config = {
-  fields: {
-    name: { type: Text },
-    email: { type: Text },
-    other: { type: Relationship, ref: 'Other' },
-    hidden: { type: Text, access: { read: false, create: true, update: true, delete: true } },
-    writeOnce: { type: Text, access: { read: true, create: true, update: false, delete: true } },
-  },
-};
 
 const getListByKey = listKey => {
   if (listKey === 'Other') {
@@ -73,9 +67,6 @@ class MockFieldImplementation {
     this.config = {};
     this.hooks = {};
   }
-  getAdminMeta() {
-    return { path: 'id' };
-  }
   gqlOutputFields() {
     return ['id: ID'];
   }
@@ -94,23 +85,14 @@ class MockFieldImplementation {
   getGqlAuxQueries() {
     return [];
   }
-  getGqlAuxMutations() {
-    return [];
-  }
   gqlOutputFieldResolvers() {
     return {};
   }
   gqlAuxQueryResolvers() {
     return {};
   }
-  gqlAuxMutationResolvers() {
-    return {};
-  }
   gqlAuxFieldResolvers() {
     return {};
-  }
-  extendAdminViews(views) {
-    return views;
   }
   getDefaultValue() {
     return;
@@ -125,11 +107,12 @@ class MockFieldImplementation {
   async validateDelete() {}
   async afterDelete() {}
 }
-class MockFieldAdapter {}
+class MockFieldAdapter {
+  listAdapter = { name: 'mock' };
+}
 
 const MockIdType = {
   implementation: MockFieldImplementation,
-  views: {},
   adapters: { mock: MockFieldAdapter },
 };
 
@@ -139,9 +122,9 @@ class MockListAdapter {
     this.parentAdapter = parentAdapter;
     this.index = 3;
     this.items = {
-      0: { name: 'a', email: 'a@example.com', index: 0 },
-      1: { name: 'b', email: 'b@example.com', index: 1 },
-      2: { name: 'c', email: 'c@example.com', index: 2 },
+      0: { name: 'a', email: 'a@example.com', id: 0 },
+      1: { name: 'b', email: 'b@example.com', id: 1 },
+      2: { name: 'c', email: 'c@example.com', id: 2 },
     };
   }
   newFieldAdapter = () => new MockFieldAdapter();
@@ -153,7 +136,6 @@ class MockListAdapter {
     this.index += 1;
     return this.items[this.index - 1];
   };
-  findById = id => this.items[id];
   delete = async id => {
     this.items[id] = undefined;
   };
@@ -171,7 +153,6 @@ class MockListAdapter {
         : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
     }
   };
-  itemsQueryMeta = async args => this.itemsQuery(args, { meta: true });
   update = (id, item) => {
     this.items[id] = { ...this.items[id], ...item };
     return this.items[id];
@@ -181,7 +162,6 @@ class MockListAdapter {
 class MockAdapter {
   name = 'mock';
   newListAdapter = () => new MockListAdapter(this);
-  getDefaultPrimaryKeyConfig = () => ({ type: MockIdType });
 }
 
 const listExtras = () => ({
@@ -191,6 +171,17 @@ const listExtras = () => ({
   registerType: () => {},
   schemaNames: ['public'],
 });
+
+const config = {
+  fields: {
+    id: { type: MockIdType },
+    name: { type: Text },
+    email: { type: Text },
+    other: { type: Relationship, ref: 'Other' },
+    hidden: { type: Text, access: { read: false, create: true, update: true, delete: true } },
+    writeOnce: { type: Text, access: { read: true, create: true, update: false, delete: true } },
+  },
+};
 
 const setup = extraConfig => {
   const list = new List('Test', { ...config, ...extraConfig }, listExtras());
@@ -294,44 +285,11 @@ describe('new List()', () => {
     expect(list.fieldsByPath['hidden']).toBeInstanceOf(Text.implementation);
     expect(list.fieldsByPath['writeOnce']).toBeInstanceOf(Text.implementation);
 
-    const idOnlyList = new List('NoField', { fields: {} }, listExtras());
+    const idOnlyList = new List('NoField', { fields: { id: { type: MockIdType } } }, listExtras());
     idOnlyList.initFields();
     expect(idOnlyList.fields).toHaveLength(1);
     expect(list.fields[0]).toBeInstanceOf(MockIdType.implementation);
     expect(list.fieldsByPath['id']).toBeInstanceOf(MockIdType.implementation);
-  });
-
-  test('new List() - views', () => {
-    const list = setup();
-    expect(list.views).toEqual({
-      id: {},
-      name: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      email: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      other: {
-        Controller: resolveViewPath('Relationship/views/Controller'),
-        Field: resolveViewPath('Relationship/views/Field'),
-        Filter: resolveViewPath('Relationship/views/Filter'),
-        Cell: resolveViewPath('Relationship/views/Cell'),
-      },
-      hidden: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-      writeOnce: {
-        Controller: resolveViewPath('Text/views/Controller'),
-        Field: resolveViewPath('Text/views/Field'),
-        Filter: resolveViewPath('Text/views/Filter'),
-      },
-    });
   });
 
   test('new List() - adapter', () => {
@@ -403,73 +361,6 @@ test('labelResolver', () => {
     listExtras()
   );
   expect(list4.labelResolver({ email: 'a@example.com', id: '4' })).toEqual('4');
-});
-
-describe('getAdminMeta()', () => {
-  test('adminMeta() - Smoke test', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-    expect(adminMeta).not.toBeNull();
-  });
-
-  test('getAdminMeta() - labels', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-
-    expect(adminMeta.key).toEqual('Test');
-    expect(adminMeta.access).toEqual({
-      create: true,
-      delete: true,
-      read: true,
-      update: true,
-      auth: true,
-    });
-    expect(adminMeta.label).toEqual('Tests');
-    expect(adminMeta.singular).toEqual('Test');
-    expect(adminMeta.plural).toEqual('Tests');
-    expect(adminMeta.path).toEqual('tests');
-    expect(adminMeta.gqlNames).toEqual({
-      outputTypeName: 'Test',
-      itemQueryName: 'Test',
-      listQueryName: 'allTests',
-      listQueryMetaName: '_allTestsMeta',
-      listSortName: 'SortTestsBy',
-      listMetaName: '_TestsMeta',
-      deleteMutationName: 'deleteTest',
-      deleteManyMutationName: 'deleteTests',
-      updateMutationName: 'updateTest',
-      createMutationName: 'createTest',
-      updateManyMutationName: 'updateTests',
-      createManyMutationName: 'createTests',
-      whereInputName: 'TestWhereInput',
-      whereUniqueInputName: 'TestWhereUniqueInput',
-      updateInputName: 'TestUpdateInput',
-      createInputName: 'TestCreateInput',
-      updateManyInputName: 'TestsUpdateInput',
-      createManyInputName: 'TestsCreateInput',
-      relateToManyInputName: 'TestRelateToManyInput',
-      relateToOneInputName: 'TestRelateToOneInput',
-    });
-    expect(adminMeta.adminConfig).toEqual({
-      defaultColumns: 'name,email',
-      defaultSort: 'name',
-    });
-  });
-
-  test('getAdminMeta() - fields', () => {
-    const list = setup();
-    const schemaName = 'public';
-    const adminMeta = list.getAdminMeta({ schemaName });
-
-    expect(adminMeta.fields).toHaveLength(5);
-    expect(adminMeta.fields[0].path).toEqual('id');
-    expect(adminMeta.fields[1].path).toEqual('name');
-    expect(adminMeta.fields[2].path).toEqual('email');
-    expect(adminMeta.fields[3].path).toEqual('other');
-    expect(adminMeta.fields[4].path).toEqual('writeOnce');
-  });
 });
 
 describe(`getGqlTypes()`, () => {
@@ -722,12 +613,6 @@ describe(`getGqlQueries()`, () => {
   });
 });
 
-test('getFieldsRelatedTo', () => {
-  const list = setup();
-  expect(list.getFieldsRelatedTo('Other')).toEqual([list.fieldsByPath['other']]);
-  expect(list.getFieldsRelatedTo('Missing')).toEqual([]);
-});
-
 test('_wrapFieldResolverWith', async () => {
   const resolver = () => 'result';
   const list = setup();
@@ -758,11 +643,6 @@ test('gqlAuxFieldResolvers', () => {
 test('gqlAuxQueryResolvers', () => {
   const list = setup();
   expect(list.gqlAuxQueryResolvers()).toEqual({});
-});
-
-test('gqlAuxMutationResolvers', () => {
-  const list = setup();
-  expect(list.gqlAuxMutationResolvers()).toEqual({});
 });
 
 describe(`getGqlMutations()`, () => {
@@ -916,7 +796,7 @@ test('getAccessControlledItem', async () => {
   ).toEqual({
     name: 'b',
     email: 'b@example.com',
-    index: 1,
+    id: 1,
   });
   await expect(
     list.getAccessControlledItem(10, true, { context, operation: 'read', gqlName: 'testing' })
@@ -931,7 +811,7 @@ test('getAccessControlledItem', async () => {
   ).toEqual({
     name: 'b',
     email: 'b@example.com',
-    index: 1,
+    id: 1,
   });
   await expect(
     list.getAccessControlledItem(1, { id: 2 }, { context, operation: 'read', gqlName: 'testing' })
@@ -946,7 +826,7 @@ test('getAccessControlledItem', async () => {
   ).toEqual({
     name: 'b',
     email: 'b@example.com',
-    index: 1,
+    id: 1,
   });
   await expect(
     list.getAccessControlledItem(
@@ -965,7 +845,7 @@ test('getAccessControlledItem', async () => {
   ).toEqual({
     name: 'b',
     email: 'b@example.com',
-    index: 1,
+    id: 1,
   });
   await expect(
     list.getAccessControlledItem(
@@ -984,7 +864,7 @@ test('getAccessControlledItem', async () => {
   ).toEqual({
     name: 'b',
     email: 'b@example.com',
-    index: 1,
+    id: 1,
   });
   await expect(
     list.getAccessControlledItem(
@@ -999,43 +879,43 @@ test('getAccessControlledItems', async () => {
   const list = setup();
   expect(await list.getAccessControlledItems([], true)).toEqual([]);
   expect(await list.getAccessControlledItems([1, 2], true)).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'b', email: 'b@example.com', id: 1 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
   expect(await list.getAccessControlledItems([1, 2, 1, 2], true)).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'b', email: 'b@example.com', id: 1 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
 
   expect(await list.getAccessControlledItems([1, 2], { id: 1 })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'b', email: 'b@example.com', id: 1 },
   ]);
   expect(await list.getAccessControlledItems([1, 2], { id: 3 })).toEqual([]);
 
   expect(await list.getAccessControlledItems([1, 2], { id_in: [1, 2, 3] })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'b', email: 'b@example.com', id: 1 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
   expect(await list.getAccessControlledItems([1, 2], { id_in: [2, 3] })).toEqual([
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
   expect(await list.getAccessControlledItems([1, 2], { id_in: [3, 4] })).toEqual([]);
 
   expect(await list.getAccessControlledItems([1, 2], { id_not: 2 })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'b', email: 'b@example.com', id: 1 },
   ]);
   expect(await list.getAccessControlledItems([1, 2], { id_not: 3 })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'b', email: 'b@example.com', id: 1 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
 
   expect(await list.getAccessControlledItems([1, 2], { id_not_in: [1, 2, 3] })).toEqual([]);
   expect(await list.getAccessControlledItems([1, 2], { id_not_in: [2, 3] })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'b', email: 'b@example.com', id: 1 },
   ]);
   expect(await list.getAccessControlledItems([1, 2], { id_not_in: [3, 4] })).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'b', email: 'b@example.com', id: 1 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
 });
 
@@ -1057,7 +937,7 @@ test(`gqlQueryResolvers`, () => {
 test('listQuery', async () => {
   const list = setup();
   expect(await list.listQuery({ where: { id: 1 } }, context, 'testing')).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
+    { name: 'b', email: 'b@example.com', id: 1 },
   ]);
 });
 
@@ -1151,7 +1031,7 @@ test('itemQuery', async () => {
   expect(await list.itemQuery({ where: { id: 0 } }, context)).toEqual({
     name: 'a',
     email: 'a@example.com',
-    index: 0,
+    id: 0,
   });
   await expect(list.itemQuery({ where: { id: 4 } }, context)).rejects.toThrow(AccessDeniedError);
 });
@@ -1234,7 +1114,7 @@ test('updateMutation', async () => {
     { name: 'update', email: 'update@example.com' },
     context
   );
-  expect(result).toEqual({ name: 'update', email: 'update@example.com', index: 1 });
+  expect(result).toEqual({ name: 'update', email: 'update@example.com', id: 1 });
 });
 
 test('updateManyMutation', async () => {
@@ -1247,33 +1127,24 @@ test('updateManyMutation', async () => {
     context
   );
   expect(result).toEqual([
-    { name: 'update1', email: 'update1@example.com', index: 1 },
-    { name: 'c', email: 'update2@example.com', index: 2 },
+    { name: 'update1', email: 'update1@example.com', id: 1 },
+    { name: 'c', email: 'update2@example.com', id: 2 },
   ]);
 });
 
 test('deleteMutation', async () => {
   const list = setup();
   const result = await list.deleteMutation(1, context);
-  expect(result).toEqual({ name: 'b', email: 'b@example.com', index: 1 });
+  expect(result).toEqual({ name: 'b', email: 'b@example.com', id: 1 });
 });
 
 test('deleteManyMutation', async () => {
   const list = setup();
   const result = await list.deleteManyMutation([1, 2], context);
   expect(result).toEqual([
-    { name: 'b', email: 'b@example.com', index: 1 },
-    { name: 'c', email: 'c@example.com', index: 2 },
+    { name: 'b', email: 'b@example.com', id: 1 },
+    { name: 'c', email: 'c@example.com', id: 2 },
   ]);
-});
-
-test('getFieldByPath', () => {
-  const list = setup();
-  expect(list.getFieldByPath('name').path).toEqual('name');
-  expect(list.getFieldByPath('email').path).toEqual('email');
-  expect(list.getFieldByPath('hidden').path).toEqual('hidden');
-  expect(list.getFieldByPath('writeOnce').path).toEqual('writeOnce');
-  expect(list.getFieldByPath('missing')).toBe(undefined);
 });
 
 describe('List Hooks', () => {

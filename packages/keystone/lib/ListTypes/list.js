@@ -10,9 +10,8 @@ const {
   flatten,
   zipObj,
   createLazyDeferred,
-  arrayToObject,
-} = require('@keystonejs/utils');
-const { parseListAccess } = require('@keystonejs/access-control');
+} = require('@keystone-next/utils-legacy');
+const { parseListAccess } = require('@keystone-next/access-control-legacy');
 const {
   preventInvalidUnderscorePrefix,
   keyToLabel,
@@ -24,8 +23,6 @@ const {
 } = require('./utils');
 const { HookManager } = require('./hooks');
 const { LimitsExceededError, throwAccessDenied } = require('./graphqlErrors');
-
-const { graphqlLogger } = require('../Keystone/logger');
 
 module.exports = class List {
   constructor(
@@ -49,7 +46,7 @@ module.exports = class List {
       queryLimits = {},
       cacheHint,
     },
-    { getListByKey, adapter, defaultAccess, registerType, createAuxList, isAuxList, schemaNames }
+    { getListByKey, adapter, defaultAccess, registerType, createAuxList, isAuxList }
   ) {
     this.key = key;
     this._fields = fields;
@@ -116,7 +113,7 @@ module.exports = class List {
 
     this.adapterName = adapter.name;
     this.adapter = adapter.newListAdapter(this.key, adapterConfig);
-    this._schemaNames = schemaNames;
+    this._schemaNames = ['public'];
 
     this.access = parseListAccess({
       schemaNames: this._schemaNames,
@@ -167,18 +164,7 @@ module.exports = class List {
 
     // Add an 'id' field if none supplied
     if (!sanitisedFieldsConfig.id) {
-      if (typeof this.adapter.parentAdapter.getDefaultPrimaryKeyConfig !== 'function') {
-        throw new Error(
-          `No 'id' field given for the '${this.key}' list and the list adapter ` +
-            `in used (${this.adapter.key}) doesn't supply a default primary key config ` +
-            `(no 'getDefaultPrimaryKeyConfig()' function)`
-        );
-      }
-      // Rebuild the object so id is "first"
-      sanitisedFieldsConfig = {
-        id: this.adapter.parentAdapter.getDefaultPrimaryKeyConfig(),
-        ...sanitisedFieldsConfig,
-      };
+      throw new Error(`No 'id' field given for the '${this.key}' list.`);
     }
 
     // Helpful errors for misconfigured lists
@@ -224,34 +210,11 @@ module.exports = class List {
         })
     );
     this.fields = Object.values(this.fieldsByPath);
-    this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
-      this.fieldsByPath[path].extendAdminViews({ ...type.views })
-    );
     this.hookManager = new HookManager({
       fields: this.fields,
       hooks: this._hooks,
       listKey: this.key,
     });
-  }
-
-  getAdminMeta({ schemaName }) {
-    const schemaAccess = this.access[schemaName];
-    return {
-      key: this.key,
-      // Reduce to truthy values (functions can't be passed over the webpack
-      // boundary)
-      access: mapKeys(schemaAccess, val => !!val),
-      label: this.adminUILabels.label,
-      singular: this.adminUILabels.singular,
-      plural: this.adminUILabels.plural,
-      path: this.adminUILabels.path,
-      gqlNames: this.gqlNames,
-      fields: this.fields
-        .filter(field => field.access[schemaName].read)
-        .map(field => field.getAdminMeta({ schemaName })),
-      adminDoc: this.adminDoc,
-      adminConfig: this.adminConfig,
-    };
   }
 
   getFieldsWithAccess({ schemaName, access }) {
@@ -274,16 +237,6 @@ module.exports = class List {
       `first: Int`,
       `skip: Int`,
     ];
-  }
-
-  getFieldsRelatedTo(listKey) {
-    return this.fields.filter(
-      ({ isRelationship, refListKey }) => isRelationship && refListKey === listKey
-    );
-  }
-
-  getFieldByPath(path) {
-    return this.fieldsByPath[path];
   }
 
   getPrimaryKey() {
@@ -363,11 +316,6 @@ module.exports = class List {
       }
     );
     if (!access) {
-      graphqlLogger.debug(
-        { operation, access, gqlName, ...extraInternalData },
-        'Access statically or implicitly denied'
-      );
-      graphqlLogger.info({ operation, gqlName, ...extraInternalData }, 'Access Denied');
       // If the client handles errors correctly, it should be able to
       // receive partial data (for the fields the user has access to),
       // and then an `errors` array of AccessDeniedError's
@@ -377,9 +325,7 @@ module.exports = class List {
   }
 
   async getAccessControlledItem(id, access, { context, operation, gqlName, info }) {
-    const _throwAccessDenied = msg => {
-      graphqlLogger.debug({ id, operation, access, gqlName }, msg);
-      graphqlLogger.info({ id, operation, gqlName }, 'Access Denied');
+    const _throwAccessDenied = () => {
       // If the client handles errors correctly, it should be able to
       // receive partial data (for the fields the user has access to),
       // and then an `errors` array of AccessDeniedError's
@@ -397,7 +343,7 @@ module.exports = class List {
       // the user has access to. So we have to do a check here to see if the
       // ID they're requesting matches that ID.
       // Nice side-effect: We can throw without having to ever query the DB.
-      _throwAccessDenied('Item excluded this id from filters');
+      _throwAccessDenied();
     } else {
       // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
       // We only want 1 item, don't make the DB do extra work
@@ -418,7 +364,7 @@ module.exports = class List {
       // that return null do not exist). Similar to how S3 returns 403's
       // always instead of ever returning 404's.
       // Our version is to always throw if not found.
-      _throwAccessDenied('Zero items found');
+      _throwAccessDenied();
     }
     // Found the item, and it passed the filter test
     return item;
@@ -516,7 +462,6 @@ module.exports = class List {
     info
   ) {
     const operation = 'read';
-    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
 
     const access = await this.checkListAccess(context, undefined, operation, {
       gqlName,
@@ -530,7 +475,6 @@ module.exports = class List {
       info,
     });
 
-    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'End query');
     return result;
   }
 
@@ -614,6 +558,8 @@ module.exports = class List {
   async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
     const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
     const resolvedRelationships = await mapToFields(fields, async field => {
+      // Treat `null` as `undefined`, e.g. a no-op
+      if (data[field.path] === null) return undefined;
       const { create, connect, disconnect, currentValue } = await field.resolveNestedOperations(
         data[field.path],
         existingItem,
@@ -824,24 +770,34 @@ module.exports = class List {
     const extraData = { gqlName, itemIds: ids };
 
     const access = await this.checkListAccess(context, data, operation, extraData);
-
     const existingItems = await this.getAccessControlledItems(ids, access);
-    const existingItemsById = arrayToObject(existingItems, 'id');
 
+    // Only update those items which pass access control
     const itemsToUpdate = zipObj({
-      existingItem: ids.map(id => existingItemsById[id]),
-      id: ids, // itemId is taken from here in checkFieldAccess
-      data: data.map(d => d.data),
+      existingItem: existingItems,
+      id: existingItems.map(({ id }) => id), // itemId is taken from here in checkFieldAccess
+      data: existingItems.map(({ id }) => data.find(d => d.id === id).data),
     });
 
     // FIXME: We should do all of these in parallel and return *all* the field access violations
     await this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
-    return Promise.all(
-      itemsToUpdate.map(({ existingItem, id, data }) =>
-        this._updateSingle(id, data, existingItem, context, mutationState)
-      )
-    );
+    if (this.adapterName === 'prisma' && this.adapter.parentAdapter.provider === 'sqlite') {
+      // We perform these operations sequentially as a workaround for a connection
+      // timeout bug that happens in prisma+sqlite: https://github.com/prisma/prisma/issues/2955
+      const ret = [];
+      for (const item of itemsToUpdate) {
+        const { existingItem, id, data } = item;
+        ret.push(await this._updateSingle(id, data, existingItem, context, mutationState));
+      }
+      return ret;
+    } else {
+      return Promise.all(
+        itemsToUpdate.map(({ existingItem, id, data }) =>
+          this._updateSingle(id, data, existingItem, context, mutationState)
+        )
+      );
+    }
   }
 
   async _updateSingle(id, originalInput, existingItem, context, mutationState) {
@@ -924,9 +880,19 @@ module.exports = class List {
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 
-    return Promise.all(
-      existingItems.map(existingItem => this._deleteSingle(existingItem, context, mutationState))
-    );
+    if (this.adapterName === 'prisma' && this.adapter.parentAdapter.provider === 'sqlite') {
+      // We perform these operations sequentially as a workaround for a connection
+      // timeout bug that happens in prisma+sqlite: https://github.com/prisma/prisma/issues/2955
+      const ret = [];
+      for (const existingItem of existingItems) {
+        ret.push(await this._deleteSingle(existingItem, context, mutationState));
+      }
+      return ret;
+    } else {
+      return Promise.all(
+        existingItems.map(existingItem => this._deleteSingle(existingItem, context, mutationState))
+      );
+    }
   }
 
   async _deleteSingle(existingItem, context, mutationState) {
@@ -954,13 +920,7 @@ module.exports = class List {
     // We want to include `id` fields
     // If read is globally set to false, makes sense to never show it
     const readFields = this.getAllFieldsWithAccess({ schemaName, access: 'read' });
-    if (
-      schemaAccess.read ||
-      schemaAccess.create ||
-      schemaAccess.update ||
-      schemaAccess.delete ||
-      schemaAccess.auth
-    ) {
+    if (schemaAccess.read || schemaAccess.create || schemaAccess.update || schemaAccess.delete) {
       types.push(
         ...flatten(this.fields.map(field => field.getGqlAuxTypes({ schemaName }))),
         `
@@ -1090,7 +1050,7 @@ module.exports = class List {
 
   getGqlMutations({ schemaName }) {
     const schemaAccess = this.access[schemaName];
-    const mutations = flatten(this.fields.map(field => field.getGqlAuxMutations()));
+    const mutations = [];
 
     // NOTE: We only check for truthy as it could be `true`, or a function (the
     // function is executed later in the resolver)
@@ -1151,13 +1111,7 @@ module.exports = class List {
 
   gqlAuxFieldResolvers({ schemaName }) {
     const schemaAccess = this.access[schemaName];
-    if (
-      schemaAccess.read ||
-      schemaAccess.create ||
-      schemaAccess.update ||
-      schemaAccess.delete ||
-      schemaAccess.auth
-    ) {
+    if (schemaAccess.read || schemaAccess.create || schemaAccess.update || schemaAccess.delete) {
       return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers({ schemaName })));
     }
     return {};
@@ -1285,11 +1239,6 @@ module.exports = class List {
         };
       },
     };
-  }
-
-  gqlAuxMutationResolvers() {
-    // TODO: Obey the same ACL rules based on parent type
-    return objMerge(this.fields.map(field => field.gqlAuxMutationResolvers()));
   }
 
   gqlMutationResolvers({ schemaName }) {

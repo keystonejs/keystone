@@ -1,4 +1,0 @@
-{
-  "main": "dist/fields-mongoid.cjs.js",
-  "module": "dist/fields-mongoid.esm.js"
-}

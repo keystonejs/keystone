@@ -1,3 +1,8 @@
+const reactComponentTypeMessage = {
+  message:
+    'This type includes the children prop which is generally wrong, instead of using this type, type the props of the component',
+};
+
 module.exports = {
   parser: '@typescript-eslint/parser',
   env: {
@@ -7,7 +12,15 @@ module.exports = {
     jest: true,
     'cypress/globals': true,
   },
-  plugins: ['react', 'react-hooks', 'jest', 'cypress', 'import', '@typescript-eslint'],
+  plugins: [
+    'react',
+    'react-hooks',
+    'jest',
+    'cypress',
+    'import',
+    '@typescript-eslint',
+    '@preconstruct/format-js-tag',
+  ],
   settings: {
     react: {
       version: 'detect',
@@ -35,7 +48,6 @@ module.exports = {
           '**/__tests__/**/*',
           '**/*test.*',
           '**/tests/**/*',
-          '**/examples/**/*',
           '**/build/**/*',
           `packages/fields/src/**/filterTests.*`,
           '**/test-fixtures.*',
@@ -43,6 +55,7 @@ module.exports = {
       },
     ],
     'import/no-unresolved': 'error',
+    'import/order': 'error',
     'jest/valid-describe': 'off',
     'jest/valid-expect': 'off',
     'jest/no-conditional-expect': 'off',
@@ -89,9 +102,16 @@ module.exports = {
               'The `String` type refers to the String object which is probably not what you want, you probably want `string` instead which refers to the string primitive type.',
             fixWith: 'string',
           },
+          ComponentType: reactComponentTypeMessage,
+          FC: reactComponentTypeMessage,
+          SFC: reactComponentTypeMessage,
+          'React.ComponentType': reactComponentTypeMessage,
+          'React.FC': reactComponentTypeMessage,
+          'React.SFC': reactComponentTypeMessage,
         },
       },
     ],
+    '@preconstruct/format-js-tag/format': 'error',
   },
   extends: ['plugin:jest/recommended'],
 

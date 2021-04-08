@@ -1,6 +1,6 @@
 # Keystone-Next Examples
 
-👋🏻 These are the example projects for the next version of Keystone.
+👋 These are the example projects for the next version of Keystone.
 
 We'll be adding documentation in the coming days and weeks, but in the meantime, you can take a look at these projects to get an idea of what we've been up to.
 
@@ -12,10 +12,9 @@ To run the projects locally:
 
 - Clone this repo
 - Run `yarn` in the root (this repo is a monorepo and uses yarn workspaces, so that will install everything you'll need)
-- Make sure you have a local mongo server up and running on the default port
 - Open one of the example project folders in your terminal and run `yarn dev`
 
-If everything works 🤞🏻 the GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000)
+If everything works 🤞 the GraphQL Server and Admin UI will start on [localhost:3000](http://localhost:3000)
 
 ## A quick note about the new interfaces
 

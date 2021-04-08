@@ -1,24 +1,30 @@
 {
   "name": "@keystone-next/cloudinary",
-  "version": "2.0.2",
+  "version": "3.0.6",
   "license": "MIT",
   "main": "dist/cloudinary.cjs.js",
   "module": "dist/cloudinary.esm.js",
   "dependencies": {
-    "@babel/runtime": "^7.12.5",
-    "@keystone-next/admin-ui": "^3.1.2",
-    "@keystone-next/types": "^5.0.0",
-    "@keystone-ui/button": "^2.0.1",
-    "@keystone-ui/core": "^1.0.2",
-    "@keystone-ui/fields": "^1.0.1",
-    "@keystone-ui/pill": "^1.0.2",
-    "@keystonejs/fields-cloudinary-image": "^2.1.0",
-    "@keystonejs/file-adapters": "^7.0.8",
-    "@types/react": "^16.14.2",
-    "react": "^16.14.0"
+    "@babel/runtime": "^7.13.10",
+    "@keystone-next/adapter-prisma-legacy": "^5.0.0",
+    "@keystone-next/admin-ui": "^13.0.0",
+    "@keystone-next/fields": "^6.0.0",
+    "@keystone-next/types": "^16.0.0",
+    "@keystone-ui/button": "^3.0.1",
+    "@keystone-ui/core": "^2.0.2",
+    "@keystone-ui/fields": "^2.1.0",
+    "@keystone-ui/pill": "^2.0.1",
+    "@types/react": "^17.0.3",
+    "cloudinary": "^1.25.1",
+    "cuid": "^2.1.8",
+    "react": "^17.0.2"
+  },
+  "devDependencies": {
+    "graphql-upload": "^11.0.0",
+    "mime": "^2.5.2"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "preconstruct": {
     "entrypoints": [

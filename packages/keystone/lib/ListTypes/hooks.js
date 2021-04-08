@@ -1,4 +1,4 @@
-const { omitBy, arrayToObject } = require('@keystonejs/utils');
+const { omitBy, arrayToObject } = require('@keystone-next/utils-legacy');
 const { mapToFields } = require('./utils');
 const { ValidationFailureError } = require('./graphqlErrors');
 
@@ -109,12 +109,13 @@ class HookManager {
     const { originalInput } = args;
     const fieldValidationErrors = [];
     // FIXME: Can we do this in a way where we simply return validation errors instead?
-    args.addFieldValidationError = (msg, _data = {}, internalData = {}) =>
+    const addFieldValidationError = (msg, _data = {}, internalData = {}) =>
       fieldValidationErrors.push({ msg, data: _data, internalData });
-    await mapToFields(fields, field => field[hookName](args));
+    const fieldArgs = { addFieldValidationError, ...args };
+    await mapToFields(fields, field => field[hookName]({ fieldPath: field.path, ...fieldArgs }));
     await mapToFields(
       fields.filter(field => field.hooks[hookName]),
-      field => field.hooks[hookName]({ fieldPath: field.path, ...args })
+      field => field.hooks[hookName]({ fieldPath: field.path, ...fieldArgs })
     );
     if (fieldValidationErrors.length) {
       this._throwValidationFailure({ errors: fieldValidationErrors, operation, originalInput });

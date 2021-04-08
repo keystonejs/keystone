@@ -1,4 +1,0 @@
-{
-  "main": "dist/fields-cloudinary-image.cjs.js",
-  "module": "dist/fields-cloudinary-image.esm.js"
-}

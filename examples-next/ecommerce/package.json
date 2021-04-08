@@ -1,33 +1,45 @@
 {
   "name": "@keystone-next/example-ecommerce",
-  "version": "0.2.3",
+  "version": "2.0.1",
   "private": true,
   "author": "Wes Bos & Jed Watson",
   "license": "MIT",
   "scripts": {
-    "dev": "keystone-next",
+    "dev": "keystone-next dev",
+    "start": "keystone-next start",
+    "build": "keystone-next build",
     "seed-data": "keystone-next --seed-data"
   },
   "dependencies": {
-    "@keystone-next/admin-ui": "^3.1.2",
-    "@keystone-next/auth": "^6.0.0",
-    "@keystone-next/cloudinary": "^2.0.2",
-    "@keystone-next/fields": "^3.2.1",
-    "@keystone-next/keystone": "^5.0.0",
-    "@keystone-next/types": "^5.0.0",
-    "@keystonejs/server-side-graphql-client": "^1.1.2",
+    "@babel/plugin-transform-runtime": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-react": "^7.13.13",
+    "@babel/preset-typescript": "^7.13.0",
+    "@babel/runtime": "^7.13.10",
+    "@keystone-next/admin-ui": "^13.0.0",
+    "@keystone-next/auth": "^20.0.0",
+    "@keystone-next/cloudinary": "^3.0.6",
+    "@keystone-next/fields": "^6.0.0",
+    "@keystone-next/keystone": "^15.0.0",
+    "@keystone-next/server-side-graphql-client-legacy": "^3.0.1",
+    "@keystone-next/types": "^16.0.0",
+    "@types/nodemailer": "^6.4.1",
     "dotenv": "^8.2.0",
-    "next": "^9.5.5",
-    "nodemailer": "^6.4.16",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "stripe": "^8.126.0"
+    "next": "^10.0.9",
+    "nodemailer": "^6.5.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "stripe": "^8.142.0"
   },
   "devDependencies": {
-    "typescript": "^4.1.2"
+    "@keystone-next/test-utils-legacy": "^16.0.0",
+    "typescript": "^4.2.3"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
+  },
+  "prisma": {
+    "schema": ".keystone/prisma/schema.prisma"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/ecommerce"
 }

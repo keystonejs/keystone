@@ -1,30 +1,23 @@
-import { GraphQLSchema, GraphQLObjectType } from 'graphql';
-import { mergeSchemas } from '@graphql-tools/merge';
+import { GraphQLObjectType } from 'graphql';
 import { mapSchema } from '@graphql-tools/utils';
-import type {
-  KeystoneConfig,
-  SessionStrategy,
-  KeystoneContext,
-  BaseKeystone,
-} from '@keystone-next/types';
-import { adminMetaSchemaExtension } from '@keystone-next/admin-ui/templates';
-
-import { gql } from '../schema';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
+import { getAdminMetaSchema } from '@keystone-next/admin-ui/system';
+import { sessionSchema } from '../session';
 
 export function createGraphQLSchema(
   config: KeystoneConfig,
   keystone: BaseKeystone,
-  adminMeta: any,
-  sessionStrategy?: SessionStrategy<unknown>,
-  sessionImplementation?: any
+  schemaName: 'public' | 'internal' = 'public'
 ) {
-  // @ts-ignore
-  const server = keystone.createApolloServer({
-    schemaName: 'public',
-    dev: process.env.NODE_ENV === 'development',
+  // Start with the core keystone graphQL schema
+  let graphQLSchema = makeExecutableSchema({
+    typeDefs: keystone.getTypeDefs({ schemaName }),
+    resolvers: keystone.getResolvers({ schemaName }),
   });
-  const schemaFromApolloServer: GraphQLSchema = server.schema;
-  const schema = mapSchema(schemaFromApolloServer, {
+
+  // Filter out the _label_ field from all lists
+  graphQLSchema = mapSchema(graphQLSchema, {
     'MapperKind.OBJECT_TYPE'(type) {
       if (
         config.lists[type.name] !== undefined &&
@@ -43,35 +36,17 @@ export function createGraphQLSchema(
 
   // TODO: find a way to not pass keystone in here, if we can - it's too broad and makes
   // everything in the keystone instance public API
-  let graphQLSchema = config.extendGraphqlSchema?.(schema, keystone) || schema;
-  if (sessionStrategy?.end) {
-    graphQLSchema = mergeSchemas({
-      schemas: [graphQLSchema],
-      typeDefs: gql`
-        type Mutation {
-          endSession: Boolean!
-        }
-      `,
-      resolvers: {
-        Mutation: {
-          async endSession(rootVal, args, context: KeystoneContext) {
-            if (context.endSession) {
-              await context.endSession();
-            }
-            return true;
-          },
-        },
-      },
-    });
+  // Merge in the user defined graphQL API
+  if (config.extendGraphqlSchema) {
+    graphQLSchema = config.extendGraphqlSchema(graphQLSchema, keystone);
   }
-  graphQLSchema = adminMetaSchemaExtension({
-    adminMeta,
-    graphQLSchema,
-    isAccessAllowed:
-      sessionImplementation === undefined
-        ? undefined
-        : config.ui?.isAccessAllowed ?? (({ session }) => session !== undefined),
-    config,
-  });
+
+  // Merge in session graphQL API
+  if (config.session) {
+    graphQLSchema = sessionSchema(graphQLSchema);
+  }
+
+  // Merge in the admin-meta graphQL API
+  graphQLSchema = getAdminMetaSchema({ keystone, config, schema: graphQLSchema });
   return graphQLSchema;
 }

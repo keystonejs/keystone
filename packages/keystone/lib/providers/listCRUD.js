@@ -1,5 +1,5 @@
 const { GraphQLJSON } = require('graphql-type-json');
-const { flatten, objMerge, unique } = require('@keystonejs/utils');
+const { flatten, objMerge, unique } = require('@keystone-next/utils-legacy');
 
 const { getListCRUDTypes } = require('./listCRUDTypes');
 
@@ -89,8 +89,8 @@ class ListCRUDProvider {
           .map(list => ({
             type: list.gqlNames.outputTypeName,
             fields: flatten(
-              list
-                .getFieldsRelatedTo(key)
+              list.fields
+                .filter(field => field.isRelationship && field.refListKey === key)
                 .filter(field => field.access[schemaName].read)
                 .map(field => Object.keys(field.gqlOutputFieldResolvers({ schemaName })))
             ),
@@ -132,10 +132,7 @@ class ListCRUDProvider {
 
   getMutationResolvers({ schemaName }) {
     const firstClassLists = this.lists.filter(list => !list.isAuxList);
-    return {
-      ...objMerge(firstClassLists.map(list => list.gqlAuxMutationResolvers())),
-      ...objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName }))),
-    };
+    return objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName })));
   }
 
   getSubscriptionResolvers({}) {

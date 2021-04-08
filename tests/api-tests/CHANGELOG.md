@@ -1,5 +1,145 @@
 # @keystonejs/api-tests
 
+## 9.2.2
+
+### Patch Changes
+
+- [#5280](https://github.com/keystonejs/keystone/pull/5280) [`9e450d6b3`](https://github.com/keystonejs/keystone/commit/9e450d6b326e2ba5f46e49ecf53b6bd7a627e9ca) Thanks [@timleslie](https://github.com/timleslie)! - Removed the `adapters-mongoose-legacy` packages dependency.
+
+- Updated dependencies [[`1a4db6c87`](https://github.com/keystonejs/keystone/commit/1a4db6c87c17706c8e5db2816e0a6b1b8f79e217), [`e702fea44`](https://github.com/keystonejs/keystone/commit/e702fea44c3116db158d97b5ffd24440f09c9d49), [`c28e765d1`](https://github.com/keystonejs/keystone/commit/c28e765d12655f802e324b82529fcf571d88c0c6), [`b40016301`](https://github.com/keystonejs/keystone/commit/b40016301dab71630068cc86c04828c5ee1683e8), [`192393d0d`](https://github.com/keystonejs/keystone/commit/192393d0df67e123a694a42dd3f95ffa6d40042b), [`c28e765d1`](https://github.com/keystonejs/keystone/commit/c28e765d12655f802e324b82529fcf571d88c0c6), [`1886b4323`](https://github.com/keystonejs/keystone/commit/1886b43235e50bd2e070350d258f0a3145c19bbc), [`8665cfe66`](https://github.com/keystonejs/keystone/commit/8665cfe66016e0356681413e31f80a6d5586d364), [`4fa66ac1f`](https://github.com/keystonejs/keystone/commit/4fa66ac1fc6fd0a43da17dd90797733e8c958785), [`399e6db39`](https://github.com/keystonejs/keystone/commit/399e6db39c51cf9e8bbf3dde0887e5bf55dd1c4d), [`9e450d6b3`](https://github.com/keystonejs/keystone/commit/9e450d6b326e2ba5f46e49ecf53b6bd7a627e9ca)]:
+  - @keystone-next/test-utils-legacy@16.0.0
+  - @keystone-next/fields-legacy@25.0.0
+  - @keystone-next/types@16.0.0
+
+## 9.2.1
+
+### Patch Changes
+
+- [#5212](https://github.com/keystonejs/keystone/pull/5212) [`76e5c7bd3`](https://github.com/keystonejs/keystone/commit/76e5c7bd3d5e4b74b1b3b6b6d6c23d087e81bb21) Thanks [@timleslie](https://github.com/timleslie)! - Moved test fixtures into the new packages.
+
+* [#5184](https://github.com/keystonejs/keystone/pull/5184) [`5510ae33f`](https://github.com/keystonejs/keystone/commit/5510ae33fb18d42e378a00f1f78b803fb01b3fad) Thanks [@timleslie](https://github.com/timleslie)! - Fixed bug with updateMany on lists with declarative access control.
+
+* Updated dependencies [[`ca1be4156`](https://github.com/keystonejs/keystone/commit/ca1be415663dd822b3adda1e073bd7a1d4a9b97b), [`97609a623`](https://github.com/keystonejs/keystone/commit/97609a623334fd8d7b9e24dd099abda2e2a37853), [`4d405390c`](https://github.com/keystonejs/keystone/commit/4d405390c0f8dcc37e6fe4da7ce3866c699088f3), [`34dd809ee`](https://github.com/keystonejs/keystone/commit/34dd809eef2368bba1e50ed613b36c5dac7262d1), [`a8be4c860`](https://github.com/keystonejs/keystone/commit/a8be4c8602bcda63d96fc956ead8568d8c989ffc), [`b36758a12`](https://github.com/keystonejs/keystone/commit/b36758a121c096e8776420949c77a5304957a969), [`0e1487385`](https://github.com/keystonejs/keystone/commit/0e1487385c42556c027a6f7bfbc9aa806b3cbd66), [`d8e32c50e`](https://github.com/keystonejs/keystone/commit/d8e32c50e540c9b4aa9fe0e20d3de9228cca402a), [`33bc4de6c`](https://github.com/keystonejs/keystone/commit/33bc4de6c76cfe264a015f46830f55604f4c18c1), [`aa76102c1`](https://github.com/keystonejs/keystone/commit/aa76102c11bdfea02059df66f406a8b1d387c879), [`f448a8b3a`](https://github.com/keystonejs/keystone/commit/f448a8b3a36b295d4ce5ff9ef2fd7aabcdb5dacc)]:
+  - @keystone-next/fields-legacy@24.0.0
+  - @keystone-next/utils-legacy@8.0.0
+  - @keystone-next/types@15.0.1
+  - @keystone-next/test-utils-legacy@15.0.0
+
+## 9.2.0
+
+### Minor Changes
+
+- [#3946](https://github.com/keystonejs/keystone/pull/3946) [`8e9b04ecd`](https://github.com/keystonejs/keystone/commit/8e9b04ecd07d9c5d0e6aead4705e7a655498ae05) Thanks [@timleslie](https://github.com/timleslie)! - Added experimental support for Prisma + SQLite as a database adapter.
+
+### Patch Changes
+
+- [#5150](https://github.com/keystonejs/keystone/pull/5150) [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed) Thanks [@timleslie](https://github.com/timleslie)! - Applied eslint `import/order` rule.
+
+- Updated dependencies [[`fbc6d6d68`](https://github.com/keystonejs/keystone/commit/fbc6d6d6842c498b984b2dc77b0aa2c16a4babf0), [`8e9b04ecd`](https://github.com/keystonejs/keystone/commit/8e9b04ecd07d9c5d0e6aead4705e7a655498ae05), [`17c86e0c3`](https://github.com/keystonejs/keystone/commit/17c86e0c3eda7ba08d1bb8edf5eb8ddc9a819e5a), [`2d39de79d`](https://github.com/keystonejs/keystone/commit/2d39de79d6848ced51e6be97d40568c725433e11), [`e2edaaff8`](https://github.com/keystonejs/keystone/commit/e2edaaff8e5f71800e9f00fa18082a6752407e2d), [`ff9292184`](https://github.com/keystonejs/keystone/commit/ff9292184a87ba5554c105a91523451c382371bb), [`714bdadce`](https://github.com/keystonejs/keystone/commit/714bdadce8c87a15cf3a296b44a31b9b9ca95e9d), [`b84abebb6`](https://github.com/keystonejs/keystone/commit/b84abebb6c817172d04f338befa45b3573af55d6), [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed), [`56e5fe10b`](https://github.com/keystonejs/keystone/commit/56e5fe10bc89877be7d7e3013e53012b4d82b648), [`56e5fe10b`](https://github.com/keystonejs/keystone/commit/56e5fe10bc89877be7d7e3013e53012b4d82b648), [`b37cbffc8`](https://github.com/keystonejs/keystone/commit/b37cbffc886a4317793a97b7a8afd95639f59ce0), [`40d4fff5d`](https://github.com/keystonejs/keystone/commit/40d4fff5d63850cbd513c80bcb5e551e5782dc4b), [`215aed387`](https://github.com/keystonejs/keystone/commit/215aed387d35e9d4c896fe76991b12b54789cc55), [`b37cbffc8`](https://github.com/keystonejs/keystone/commit/b37cbffc886a4317793a97b7a8afd95639f59ce0), [`d31acf61b`](https://github.com/keystonejs/keystone/commit/d31acf61bcca96ac059d4ba2e78955513a6a0f91)]:
+  - @keystone-next/test-utils-legacy@14.0.0
+  - @keystone-next/types@15.0.0
+  - @keystone-next/fields-legacy@23.1.0
+
+## 9.1.2
+
+### Patch Changes
+
+- Updated dependencies [[`b44f07b6a`](https://github.com/keystonejs/keystone/commit/b44f07b6a7ce1eef6d41513096eadea5aa2be5f7), [`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393), [`b4b276cf6`](https://github.com/keystonejs/keystone/commit/b4b276cf66f90dce2d711c144c0d99c4752f1f5e)]:
+  - @keystone-next/utils-legacy@7.0.0
+  - @keystone-next/fields-legacy@23.0.0
+  - @keystone-next/test-utils-legacy@13.0.3
+  - @keystone-next/auth-password-legacy@6.0.3
+  - @keystone-next/fields-authed-relationship-legacy@1.0.19
+  - @keystone-next/list-plugins-legacy@8.0.2
+
+## 9.1.1
+
+### Patch Changes
+
+- [#5079](https://github.com/keystonejs/keystone/pull/5079) [`57c98c90e`](https://github.com/keystonejs/keystone/commit/57c98c90ee4220bcc59925a154a231989d25de51) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@hapi/iron` to `^6.0.0`.
+
+- Updated dependencies []:
+  - @keystone-next/test-utils-legacy@13.0.2
+
+## 9.1.0
+
+### Minor Changes
+
+- [`5d565ea57`](https://github.com/keystonejs/keystone/commit/5d565ea57853713458329b823bde7a38776b02bc) [#4892](https://github.com/keystonejs/keystone/pull/4892) Thanks [@timleslie](https://github.com/timleslie)! - Added support for configuring the field to use for `search` filtering via the `db: { searchField }` list config option.
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+* [`a16d2cbff`](https://github.com/keystonejs/keystone/commit/a16d2cbffd9aa57d0cbdd783ff5ff0c699ff2d8b) [#5016](https://github.com/keystonejs/keystone/pull/5016) Thanks [@timleslie](https://github.com/timleslie)! - Added explicit handling of `null` values for relationship fields in `create` and `update` mutations.
+
+* Updated dependencies [[`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7), [`6dcd01c5d`](https://github.com/keystonejs/keystone/commit/6dcd01c5d55e809e62ce72c4ba5fbdbf8bd87515), [`7ae67b857`](https://github.com/keystonejs/keystone/commit/7ae67b857745985061700b0477c3f585b3b8efbf), [`7b84c4066`](https://github.com/keystonejs/keystone/commit/7b84c40661a086b5468cc4d4542dfb696bfc2f93), [`0cd5acb82`](https://github.com/keystonejs/keystone/commit/0cd5acb82b2e640821c092eb429401eb9d7e8e9a)]:
+  - @keystone-next/auth-password-legacy@6.0.2
+  - @keystone-next/fields-legacy@22.0.1
+  - @keystone-next/fields-authed-relationship-legacy@1.0.18
+  - @keystone-next/list-plugins-legacy@8.0.1
+  - @keystone-next/test-utils-legacy@13.0.0
+  - @keystone-next/utils-legacy@6.0.2
+
+## 9.0.0
+
+### Major Changes
+
+- [`8d0be8a89`](https://github.com/keystonejs/keystone/commit/8d0be8a89e2d9b89826365f81f47b8d8863b93d0) [#4815](https://github.com/keystonejs/keystone/pull/4815) Thanks [@timleslie](https://github.com/timleslie)! - Added a `.sudo()` method to `context` objects, which is equivalent to the common operation `context.createContext({ skipAccessControl: true })`.
+
+### Patch Changes
+
+- Updated dependencies [[`b97216a65`](https://github.com/keystonejs/keystone/commit/b97216a6526fffcca8232d86b115c28cb19587bf), [`4035218df`](https://github.com/keystonejs/keystone/commit/4035218df390beff3d42c0d3fc21335230d8a60d), [`8d0be8a89`](https://github.com/keystonejs/keystone/commit/8d0be8a89e2d9b89826365f81f47b8d8863b93d0)]:
+  - @keystonejs/fields@22.0.0
+  - @keystonejs/list-plugins@8.0.0
+  - @keystonejs/test-utils@12.0.0
+  - @keystonejs/auth-password@6.0.1
+  - @keystonejs/fields-authed-relationship@1.0.17
+
+## 8.1.0
+
+### Minor Changes
+
+- [`564879779`](https://github.com/keystonejs/keystone/commit/564879779209aa828ecb2fbc8c9688a2d770da76) [#4701](https://github.com/keystonejs/keystone/pull/4701) Thanks [@timleslie](https://github.com/timleslie)! - Ported field-level access-control tests from cypress to the API test framework.
+
+### Patch Changes
+
+- [`e7d4d54e5`](https://github.com/keystonejs/keystone/commit/e7d4d54e5b94e6b376d6eab28a0f2b074f2c95ed) [#4697](https://github.com/keystonejs/keystone/pull/4697) Thanks [@timleslie](https://github.com/timleslie)! - Fixed cases sensitivity and partial string search for the Prisma adapter.
+
+- Updated dependencies [[`fe0c228b1`](https://github.com/keystonejs/keystone/commit/fe0c228b12530f6d384fa5eed9d5086768a24782), [`fc2b7101f`](https://github.com/keystonejs/keystone/commit/fc2b7101f35f20e4d729269a005816546bb37464)]:
+  - @keystonejs/test-utils@11.1.0
+  - @keystonejs/fields@21.0.2
+
+## 8.0.6
+
+### Patch Changes
+
+- Updated dependencies [[`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be), [`6ea4ff3cf`](https://github.com/keystonejs/keystone/commit/6ea4ff3cf77d5d2278bf4f0415d11aa7399a0490), [`81e86cbaa`](https://github.com/keystonejs/keystone/commit/81e86cbaa5c73633d6cb0ca2f84e834201e8bf9a)]:
+  - @keystonejs/utils@6.0.0
+  - @keystonejs/test-utils@11.0.0
+  - @keystonejs/fields@21.0.1
+
+## 8.0.5
+
+### Patch Changes
+
+- Updated dependencies [[`0dfb63414`](https://github.com/keystonejs/keystone/commit/0dfb6341412c3c7ae60f069d37fa96e0c9adc900)]:
+  - @keystonejs/auth-password@6.0.0
+  - @keystonejs/test-utils@10.1.2
+
+## 8.0.4
+
+### Patch Changes
+
+- [`32aee8503`](https://github.com/keystonejs/keystone/commit/32aee85035b4ff123b0270d142ee0f3cf27a6ac8) [#4510](https://github.com/keystonejs/keystone/pull/4510) Thanks [@timleslie](https://github.com/timleslie)! - Added a function `setupFromConfig` to support running tests against systems defined with the new config API.
+
+- Updated dependencies [[`364ac9254`](https://github.com/keystonejs/keystone/commit/364ac9254735befd2d4804789bb62464bb51ee5b), [`32aee8503`](https://github.com/keystonejs/keystone/commit/32aee85035b4ff123b0270d142ee0f3cf27a6ac8), [`841be0bc9`](https://github.com/keystonejs/keystone/commit/841be0bc9d192cf64399231a543a9ba9ff41b9a0), [`efe97de24`](https://github.com/keystonejs/keystone/commit/efe97de24bd1de7a0f50bcbee6b445f4eef7311b)]:
+  - @keystonejs/fields@21.0.0
+  - @keystonejs/test-utils@10.1.0
+  - @keystonejs/auth-password@5.1.18
+  - @keystonejs/fields-authed-relationship@1.0.16
+  - @keystonejs/list-plugins@7.1.5
+
 ## 8.0.3
 
 ### Patch Changes

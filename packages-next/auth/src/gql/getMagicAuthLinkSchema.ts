@@ -2,11 +2,11 @@ import type { GraphQLSchemaExtension } from '@keystone-next/types';
 
 import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 
-import { updateAuthToken } from '../lib/updateAuthToken';
+import { createAuthToken } from '../lib/createAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
 import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
 
-export function getMagicAuthLinkSchema({
+export function getMagicAuthLinkSchema<I extends string>({
   listKey,
   identityField,
   protectIdentities,
@@ -14,8 +14,7 @@ export function getMagicAuthLinkSchema({
   magicAuthLink,
 }: {
   listKey: string;
-  identityField: string;
-  secretField: string;
+  identityField: I;
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   magicAuthLink: AuthTokenTypeConfig;
@@ -25,6 +24,7 @@ export function getMagicAuthLinkSchema({
       # Magic links
       type Mutation {
         ${gqlNames.sendItemMagicAuthLink}(${identityField}: String!): ${gqlNames.SendItemMagicAuthLinkResult}
+        ${gqlNames.redeemItemMagicAuthToken}(${identityField}: String!, token: String!): ${gqlNames.RedeemItemMagicAuthTokenResult}!
       }
       type ${gqlNames.SendItemMagicAuthLinkResult} {
         code: MagicLinkRequestErrorCode!
@@ -33,9 +33,6 @@ export function getMagicAuthLinkSchema({
       enum MagicLinkRequestErrorCode {
         IDENTITY_NOT_FOUND
         MULTIPLE_IDENTITY_MATCHES
-      }
-      type Mutation {
-        ${gqlNames.redeemItemMagicAuthToken}(${identityField}: String!, token: String!): ${gqlNames.RedeemItemMagicAuthTokenResult}!
       }
       union ${gqlNames.RedeemItemMagicAuthTokenResult} = ${gqlNames.RedeemItemMagicAuthTokenSuccess} | ${gqlNames.RedeemItemMagicAuthTokenFailure}
       type ${gqlNames.RedeemItemMagicAuthTokenSuccess} {
@@ -58,15 +55,16 @@ export function getMagicAuthLinkSchema({
     `,
     resolvers: {
       Mutation: {
-        async [gqlNames.sendItemMagicAuthLink](root, args, context) {
+        async [gqlNames.sendItemMagicAuthLink](root: any, args: { [P in I]: string }, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const itemAPI = context.sudo().lists[listKey];
           const tokenType = 'magicAuth';
           const identity = args[identityField];
 
-          const result = await updateAuthToken(identityField, protectIdentities, identity, itemAPI);
+          const result = await createAuthToken(identityField, protectIdentities, identity, itemAPI);
 
           // Note: `success` can be false with no code
+          // If protectIdentities === true then result.code will *always* be undefined.
           if (!result.success && result.code) {
             const message = getAuthTokenErrorMessage({
               identityField,
@@ -88,19 +86,24 @@ export function getMagicAuthLinkSchema({
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
                 [`${tokenType}RedeemedAt`]: null,
               },
+              resolveFields: false,
             });
 
-            await magicAuthLink.sendToken({ itemId, identity, token });
+            await magicAuthLink.sendToken({ itemId, identity, token, context });
           }
           return null;
         },
-        async [gqlNames.redeemItemMagicAuthToken](root, args, context) {
+        async [gqlNames.redeemItemMagicAuthToken](
+          root: any,
+          args: { [P in I]: string } & { token: string },
+          context
+        ) {
           if (!context.startSession) {
             throw new Error('No session implementation available on context');
           }
 
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const itemAPI = context.sudo().lists[listKey];
           const tokenType = 'magicAuth';
           const result = await validateAuthToken(
             tokenType,
@@ -128,6 +131,7 @@ export function getMagicAuthLinkSchema({
           await itemAPI.updateOne({
             id: result.item.id,
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
+            resolveFields: false,
           });
 
           const sessionToken = await context.startSession({ listKey, itemId: result.item.id });

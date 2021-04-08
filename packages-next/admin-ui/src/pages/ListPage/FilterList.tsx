@@ -1,12 +1,12 @@
 /** @jsx jsx */
 import { Inline, jsx, Stack } from '@keystone-ui/core';
 import { FieldMeta, ListMeta } from '@keystone-next/types';
-import { Filter } from './useFilters';
-import { useRouter } from '../../router';
 import { Button } from '@keystone-ui/button';
 import { usePopover, PopoverDialog } from '@keystone-ui/popover';
-import { ComponentType, FormEvent, Fragment, useState } from 'react';
+import { FormEvent, Fragment, useState } from 'react';
 import { Pill } from '@keystone-ui/pill';
+import { useRouter } from '../../router';
+import { Filter } from './useFilters';
 
 export function FilterList({ filters, list }: { filters: Filter[]; list: ListMeta }) {
   return (
@@ -34,11 +34,11 @@ function FilterPill({ filter, field }: { filter: Filter; field: FieldMeta }) {
   });
   // doing this because returning a string from Label will be VERY common
   // but https://github.com/microsoft/TypeScript/issues/21699 isn't resolved yet
-  const Label = field.controller.filter!.Label as ComponentType<{
+  const Label = field.controller.filter!.Label as (props: {
     label: string;
     type: string;
     value: any;
-  }>;
+  }) => JSX.Element;
   return (
     <Fragment>
       <Pill

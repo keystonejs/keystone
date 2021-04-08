@@ -1,123 +1,17 @@
-import type { IncomingMessage, ServerResponse } from 'http';
-import { Keystone } from '@keystonejs/keystone';
-import { MongooseAdapter } from '@keystonejs/adapter-mongoose';
-import { KnexAdapter } from '@keystonejs/adapter-knex';
-import type { KeystoneConfig, KeystoneSystem, BaseKeystone } from '@keystone-next/types';
+import type { KeystoneConfig } from '@keystone-next/types';
 
-import { applyIdFieldDefaults } from './applyIdFieldDefaults';
-import { createAdminMeta } from './createAdminMeta';
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './createContext';
+import { createKeystone } from './createKeystone';
 
-import { implementSession } from '../session';
+export function createSystem(config: KeystoneConfig, prismaClient?: any) {
+  const keystone = createKeystone(config, prismaClient);
 
-export function createKeystone(
-  config: KeystoneConfig,
-  createContextFactory: () => ReturnType<typeof makeCreateContext>
-) {
-  // Note: For backwards compatibility we may want to expose
-  // this as a public API so that users can start their transition process
-  // by using this pattern for creating their Keystone object before using
-  // it in their existing custom servers or original CLI systems.
-  const { db, graphql, lists } = config;
-  // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
-  const keystone: BaseKeystone = new Keystone({
-    adapter:
-      // FIXME: prisma support
-      db.adapter === 'knex'
-        ? new KnexAdapter({
-            knexOptions: { connection: db.url },
-            // FIXME: Add support for all options
-          })
-        : new MongooseAdapter({
-            mongoUri: db.url,
-            //FIXME: Add support for all options
-          }),
-    cookieSecret: '123456789', // FIXME: Don't provide a default here. See #2882
-    queryLimits: graphql?.queryLimits,
-    // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
-    onConnect: () => {
-      return config.db.onConnect?.(createContextFactory()({ skipAccessControl: true }));
-    },
-    // FIXME: Unsupported options: Need to work which of these we want to support with backwards
-    // compatibility options.
-    // defaultAccess
-    // adapters
-    // defaultAdapter
-    // sessionStore
-    // cookie
-    // schemaNames
-    // appVersion
-  });
+  const graphQLSchema = createGraphQLSchema(config, keystone, 'public');
 
-  Object.entries(lists).forEach(([key, { fields, graphql, access, hooks, description }]) => {
-    keystone.createList(key, {
-      fields: Object.fromEntries(
-        Object.entries(fields).map(([key, { type, config }]: any) => [key, { type, ...config }])
-      ),
-      access,
-      queryLimits: graphql?.queryLimits,
-      schemaDoc: graphql?.description ?? description,
-      listQueryName: graphql?.listQueryName,
-      itemQueryName: graphql?.itemQueryName,
-      hooks,
-      // FIXME: Unsupported options: Need to work which of these we want to support with backwards
-      // compatibility options.
-      // adminDoc
-      // labelResolver
-      // labelField
-      // adminConfig
-      // label
-      // singular
-      // plural
-      // path
-      // adapterConfig
-      // cacheHint
-      // plugins
-    });
-  });
+  const internalSchema = createGraphQLSchema(config, keystone, 'internal');
 
-  return keystone;
-}
+  const createContext = makeCreateContext({ keystone, graphQLSchema, internalSchema });
 
-export function createSystem(config: KeystoneConfig): KeystoneSystem {
-  config = applyIdFieldDefaults(config);
-
-  const keystone = createKeystone(config, () => createContext);
-
-  const sessionStrategy = config.session?.();
-
-  const { adminMeta, views } = createAdminMeta(config, keystone, sessionStrategy);
-
-  let sessionImplementation = sessionStrategy ? implementSession(sessionStrategy) : undefined;
-
-  const graphQLSchema = createGraphQLSchema(
-    config,
-    keystone,
-    adminMeta,
-    sessionStrategy,
-    sessionImplementation
-  );
-
-  const createSessionContext = sessionImplementation?.createContext;
-  const createContext = makeCreateContext({ keystone, graphQLSchema });
-
-  let system = {
-    keystone,
-    adminMeta,
-    graphQLSchema,
-    views,
-    createSessionContext: createSessionContext
-      ? (req: IncomingMessage, res: ServerResponse) => createSessionContext(req, res, system)
-      : undefined,
-    createContext,
-    async createContextFromRequest(req: IncomingMessage, res: ServerResponse) {
-      return createContext({
-        sessionContext: await sessionImplementation?.createContext(req, res, system),
-      });
-    },
-    config,
-  };
-
-  return system;
+  return { keystone, graphQLSchema, createContext };
 }

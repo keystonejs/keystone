@@ -1,7 +1,10 @@
-import { DocumentFieldType } from './base-field-type';
-import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-next/types';
 import path from 'path';
+import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-next/types';
+import { DocumentFieldType } from './base-field-type';
 import { Relationships } from './DocumentEditor/relationship';
+import { ComponentBlock } from './component-blocks';
+import { DocumentFeatures } from './views';
+import { validateAndNormalizeDocument } from './validation';
 
 type RelationshipsConfig = Record<
   string,
@@ -9,9 +12,6 @@ type RelationshipsConfig = Record<
     listKey: string;
     /** GraphQL fields to select when querying the field */
     selection?: string;
-    // TODO: remove the need for this
-    /** This must be identical to the labelField of the list specified in the listKey */
-    labelField: string;
   } & (
     | {
         kind: 'inline';
@@ -24,39 +24,50 @@ type RelationshipsConfig = Record<
   )
 >;
 
+type FormattingConfig = {
+  inlineMarks?:
+    | true
+    | {
+        bold?: true;
+        italic?: true;
+        underline?: true;
+        strikethrough?: true;
+        code?: true;
+        superscript?: true;
+        subscript?: true;
+        keyboard?: true;
+      };
+  listTypes?:
+    | true
+    | {
+        ordered?: true;
+        unordered?: true;
+      };
+  alignment?:
+    | true
+    | {
+        center?: true;
+        end?: true;
+      };
+  headingLevels?: true | readonly (1 | 2 | 3 | 4 | 5 | 6)[];
+  blockTypes?:
+    | true
+    | {
+        blockquote?: true;
+        code?: true;
+      };
+  softBreaks?: true;
+};
+
 export type DocumentFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = FieldConfig<TGeneratedListTypes> & {
-  isRequired?: boolean;
   relationships?: RelationshipsConfig;
-  inlineMarks?: {
-    bold?: true;
-    italic?: true;
-    underline?: true;
-    strikethrough?: true;
-    code?: true;
-    superscript?: true;
-    subscript?: true;
-    keyboard?: true;
-  };
-  listTypes?: {
-    ordered?: true;
-    unordered?: true;
-  };
-  alignment?: {
-    center?: true;
-    end?: true;
-  };
-  headingLevels?: readonly (1 | 2 | 3 | 4 | 5 | 6)[];
-  blockTypes?: {
-    blockquote?: true;
-    panel?: true;
-    quote?: true;
-    code?: true;
-  };
-  link?: true;
+  componentBlocks?: Record<string, ComponentBlock>;
+  formatting?: true | FormattingConfig;
+  links?: true;
   dividers?: true;
-  columns?: readonly (readonly [number, ...number[]])[];
+  layouts?: readonly (readonly [number, ...number[]])[];
 };
 
 const views = path.join(
@@ -66,60 +77,108 @@ const views = path.join(
 
 export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: DocumentFieldConfig<TGeneratedListTypes> = {}
-): FieldType<TGeneratedListTypes> => ({
-  type: DocumentFieldType,
-  config,
-  getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
-    const relationships: Relationships = {};
-    const configRelationships = config.relationships;
-    if (configRelationships) {
-      Object.keys(configRelationships).forEach(key => {
-        const relationship = configRelationships[key];
-        relationships[key] =
-          relationship.kind === 'inline'
-            ? { ...relationship, selection: relationship.selection ?? null }
-            : {
-                ...relationship,
-                selection: relationship.selection ?? null,
-                many: relationship.many || false,
-              };
-      });
-    }
-    return {
-      relationships,
-      documentFeatures: {
-        alignment: {
-          center: !!config.alignment?.center,
-          end: !!config.alignment?.end,
-        },
-        blockTypes: {
-          blockquote: !!config.blockTypes?.blockquote,
-          panel: !!config.blockTypes?.panel,
-          quote: !!config.blockTypes?.quote,
-          code: !!config.blockTypes?.code,
-        },
-        headingLevels: [...new Set(config.headingLevels)].sort(),
-        inlineMarks: {
-          bold: !!config.inlineMarks?.bold,
-          code: !!config.inlineMarks?.code,
-          italic: !!config.inlineMarks?.italic,
-          strikethrough: !!config.inlineMarks?.strikethrough,
-          underline: !!config.inlineMarks?.underline,
-          keyboard: !!config.inlineMarks?.keyboard,
-          subscript: !!config.inlineMarks?.subscript,
-          superscript: !!config.inlineMarks?.superscript,
-        },
-        listTypes: {
-          ordered: !!config.listTypes?.ordered,
-          unordered: !!config.listTypes?.unordered,
-        },
-        link: !!config.link,
-        columns: [...new Set((config.columns || []).map(x => JSON.stringify(x)))].map(x =>
-          JSON.parse(x)
-        ),
-        dividers: !!config.dividers,
-      },
-    };
-  },
-  views,
-});
+): FieldType<TGeneratedListTypes> => {
+  const relationships: Relationships = {};
+  const configRelationships = config.relationships;
+  if (configRelationships) {
+    Object.keys(configRelationships).forEach(key => {
+      const relationship = configRelationships[key];
+      relationships[key] =
+        relationship.kind === 'inline'
+          ? { ...relationship, selection: relationship.selection ?? null }
+          : {
+              ...relationship,
+              selection: relationship.selection ?? null,
+              many: relationship.many || false,
+            };
+    });
+  }
+  const formatting: FormattingConfig =
+    config.formatting === true
+      ? {
+          alignment: true,
+          blockTypes: true,
+          headingLevels: true,
+          inlineMarks: true,
+          listTypes: true,
+          softBreaks: true,
+        }
+      : config.formatting ?? {};
+  const documentFeatures: DocumentFeatures = {
+    formatting: {
+      alignment:
+        formatting.alignment === true
+          ? {
+              center: true,
+              end: true,
+            }
+          : {
+              center: !!formatting.alignment?.center,
+              end: !!formatting.alignment?.end,
+            },
+      blockTypes:
+        formatting?.blockTypes === true
+          ? { blockquote: true, code: true }
+          : {
+              blockquote: !!formatting.blockTypes?.blockquote,
+              code: !!formatting.blockTypes?.code,
+            },
+      headingLevels:
+        formatting?.headingLevels === true
+          ? [1, 2, 3, 4, 5, 6]
+          : [...new Set(formatting?.headingLevels)].sort(),
+      inlineMarks:
+        formatting.inlineMarks === true
+          ? {
+              bold: true,
+              code: true,
+              italic: true,
+              keyboard: true,
+              strikethrough: true,
+              subscript: true,
+              superscript: true,
+              underline: true,
+            }
+          : {
+              bold: !!formatting.inlineMarks?.bold,
+              code: !!formatting.inlineMarks?.code,
+              italic: !!formatting.inlineMarks?.italic,
+              strikethrough: !!formatting.inlineMarks?.strikethrough,
+              underline: !!formatting.inlineMarks?.underline,
+              keyboard: !!formatting.inlineMarks?.keyboard,
+              subscript: !!formatting.inlineMarks?.subscript,
+              superscript: !!formatting.inlineMarks?.superscript,
+            },
+      listTypes:
+        formatting.listTypes === true
+          ? { ordered: true, unordered: true }
+          : {
+              ordered: !!formatting.listTypes?.ordered,
+              unordered: !!formatting.listTypes?.unordered,
+            },
+      softBreaks: !!formatting.softBreaks,
+    },
+    links: !!config.links,
+    layouts: [...new Set((config.layouts || []).map(x => JSON.stringify(x)))].map(x =>
+      JSON.parse(x)
+    ),
+    dividers: !!config.dividers,
+  };
+  const componentBlocks = config.componentBlocks || {};
+  return {
+    type: DocumentFieldType,
+    config: {
+      ...config,
+      ___validateAndNormalize: (data: unknown) =>
+        validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships),
+    } as any,
+    getAdminMeta(): Parameters<typeof import('./views').controller>[0]['fieldMeta'] {
+      return {
+        relationships,
+        documentFeatures,
+        componentBlocksPassedOnServer: Object.keys(componentBlocks),
+      };
+    },
+    views,
+  };
+};

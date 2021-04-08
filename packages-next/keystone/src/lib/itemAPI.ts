@@ -1,103 +1,122 @@
 import { GraphQLSchema } from 'graphql';
 import {
+  getItem,
+  getItems,
+  createItem,
+  createItems,
+  updateItem,
+  updateItems,
+  deleteItem,
+  deleteItems,
+} from '@keystone-next/server-side-graphql-client-legacy';
+import {
   BaseGeneratedListTypes,
   BaseKeystoneList,
-  KeystoneSystem,
   KeystoneListsAPI,
+  KeystoneContext,
 } from '@keystone-next/types';
 import { getCoerceAndValidateArgumentsFnForGraphQLField } from './getCoerceAndValidateArgumentsFnForGraphQLField';
 
-export function itemAPIForList(
-  list: BaseKeystoneList,
-  schema: GraphQLSchema,
-  createContext: KeystoneSystem['createContext']
-): KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>[string] {
+export function getArgsFactory(list: BaseKeystoneList, schema: GraphQLSchema) {
   const queryFields = schema.getQueryType()!.getFields();
   const mutationFields = schema.getMutationType()!.getFields();
-
-  const getArgsForFindOne = getCoerceAndValidateArgumentsFnForGraphQLField(
-    schema,
-    queryFields[list.gqlNames.itemQueryName]
-  );
-
-  const getArgsForFindMany = getCoerceAndValidateArgumentsFnForGraphQLField(
-    schema,
-    queryFields[list.gqlNames.listQueryName]
-  );
-
-  const getArgsForMeta = getCoerceAndValidateArgumentsFnForGraphQLField(
-    schema,
-    queryFields[list.gqlNames.listQueryMetaName]
-  );
-
-  const getArgsForCreateOne = getCoerceAndValidateArgumentsFnForGraphQLField(
-    schema,
-    mutationFields[list.gqlNames.createMutationName]
-  );
-
-  const getArgsForCreateMany = getCoerceAndValidateArgumentsFnForGraphQLField(
-    schema,
-    mutationFields[list.gqlNames.createManyMutationName]
-  );
-
-  const getArgsForUpdateOne = getCoerceAndValidateArgumentsFnForGraphQLField(
-    schema,
-    mutationFields[list.gqlNames.updateMutationName]
-  );
-
-  const getArgsForUpdateMany = getCoerceAndValidateArgumentsFnForGraphQLField(
-    schema,
-    mutationFields[list.gqlNames.updateManyMutationName]
-  );
-
-  const getArgsForDeleteOne = getCoerceAndValidateArgumentsFnForGraphQLField(
-    schema,
-    mutationFields[list.gqlNames.deleteMutationName]
-  );
-
-  const getArgsForDeleteMany = getCoerceAndValidateArgumentsFnForGraphQLField(
-    schema,
-    mutationFields[list.gqlNames.deleteManyMutationName]
-  );
-
+  const f = getCoerceAndValidateArgumentsFnForGraphQLField;
   return {
-    findOne(rawArgs) {
-      const args = getArgsForFindOne(rawArgs);
-      return list.itemQuery(args as any, createContext({ skipAccessControl: true }));
+    findOne: f(schema, queryFields[list.gqlNames.itemQueryName]),
+    findMany: f(schema, queryFields[list.gqlNames.listQueryName]),
+    count: f(schema, queryFields[list.gqlNames.listQueryMetaName]),
+    createOne: f(schema, mutationFields[list.gqlNames.createMutationName]),
+    createMany: f(schema, mutationFields[list.gqlNames.createManyMutationName]),
+    updateOne: f(schema, mutationFields[list.gqlNames.updateMutationName]),
+    updateMany: f(schema, mutationFields[list.gqlNames.updateManyMutationName]),
+    deleteOne: f(schema, mutationFields[list.gqlNames.deleteMutationName]),
+    deleteMany: f(schema, mutationFields[list.gqlNames.deleteManyMutationName]),
+  };
+}
+
+export function itemAPIForList(
+  list: BaseKeystoneList,
+  context: KeystoneContext,
+  getArgs: ReturnType<typeof getArgsFactory>
+): KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>[string] {
+  const listKey = list.key;
+  return {
+    findOne({ resolveFields = 'id', ...rawArgs }) {
+      if (!getArgs.findOne) throw new Error('You do not have access to this resource');
+      const args = getArgs.findOne(rawArgs) as { where: { id: string } };
+      if (resolveFields) {
+        return getItem({ listKey, context, returnFields: resolveFields, itemId: args.where.id });
+      } else {
+        return list.itemQuery(args, context);
+      }
     },
-    findMany(rawArgs) {
-      const args = getArgsForFindMany(rawArgs);
-      return list.listQuery(args, createContext({ skipAccessControl: true }));
+    findMany({ resolveFields = 'id', ...rawArgs }) {
+      if (!getArgs.findMany) throw new Error('You do not have access to this resource');
+      const args = getArgs.findMany(rawArgs);
+      if (resolveFields) {
+        return getItems({ listKey, context, returnFields: resolveFields, ...args });
+      } else {
+        return list.listQuery(args, context);
+      }
     },
     async count(rawArgs) {
-      const args = getArgsForMeta(rawArgs);
-      return (
-        await list.listQueryMeta(args, createContext({ skipAccessControl: true }))
-      ).getCount();
+      if (!getArgs.count) throw new Error('You do not have access to this resource');
+      const args = getArgs.count(rawArgs!);
+      return (await list.listQueryMeta(args, context)).getCount();
     },
-    createOne(rawArgs) {
-      const { data } = getArgsForCreateOne(rawArgs);
-      return list.createMutation(data, createContext({ skipAccessControl: true }));
+    createOne({ resolveFields = 'id', ...rawArgs }) {
+      if (!getArgs.createOne) throw new Error('You do not have access to this resource');
+      const { data } = getArgs.createOne(rawArgs);
+      if (resolveFields) {
+        return createItem({ listKey, context, returnFields: resolveFields, item: data });
+      } else {
+        return list.createMutation(data, context);
+      }
     },
-    createMany(rawArgs) {
-      const { data } = getArgsForCreateMany(rawArgs);
-      return list.createManyMutation(data, createContext({ skipAccessControl: true }));
+    createMany({ resolveFields = 'id', ...rawArgs }) {
+      if (!getArgs.createMany) throw new Error('You do not have access to this resource');
+      const { data } = getArgs.createMany(rawArgs);
+      if (resolveFields) {
+        return createItems({ listKey, context, returnFields: resolveFields, items: data });
+      } else {
+        return list.createManyMutation(data, context);
+      }
     },
-    updateOne(rawArgs) {
-      const { id, data } = getArgsForUpdateOne(rawArgs);
-      return list.updateMutation(id, data, createContext({ skipAccessControl: true }));
+    updateOne({ resolveFields = 'id', ...rawArgs }) {
+      if (!getArgs.updateOne) throw new Error('You do not have access to this resource');
+      const { id, data } = getArgs.updateOne(rawArgs);
+      if (resolveFields) {
+        return updateItem({ listKey, context, returnFields: resolveFields, item: { id, data } });
+      } else {
+        return list.updateMutation(id, data, context);
+      }
     },
-    updateMany(rawArgs) {
-      const { data } = getArgsForUpdateMany(rawArgs);
-      return list.updateManyMutation(data, createContext({ skipAccessControl: true }));
+    updateMany({ resolveFields = 'id', ...rawArgs }) {
+      if (!getArgs.updateMany) throw new Error('You do not have access to this resource');
+      const { data } = getArgs.updateMany(rawArgs);
+      if (resolveFields) {
+        return updateItems({ listKey, context, returnFields: resolveFields, items: data });
+      } else {
+        return list.updateManyMutation(data, context);
+      }
     },
-    deleteOne(rawArgs) {
-      const { id } = getArgsForDeleteOne(rawArgs);
-      return list.deleteMutation(id, createContext({ skipAccessControl: true }));
+    deleteOne({ resolveFields = 'id', ...rawArgs }) {
+      if (!getArgs.deleteOne) throw new Error('You do not have access to this resource');
+      const { id } = getArgs.deleteOne(rawArgs);
+      if (resolveFields) {
+        return deleteItem({ listKey, context, returnFields: resolveFields, itemId: id });
+      } else {
+        return list.deleteMutation(id, context);
+      }
     },
-    deleteMany(rawArgs) {
-      const { ids } = getArgsForDeleteMany(rawArgs);
-      return list.deleteManyMutation(ids, createContext({ skipAccessControl: true }));
+    deleteMany({ resolveFields = 'id', ...rawArgs }) {
+      if (!getArgs.deleteMany) throw new Error('You do not have access to this resource');
+      const { ids } = getArgs.deleteMany(rawArgs);
+      if (resolveFields) {
+        return deleteItems({ listKey, context, returnFields: resolveFields, items: ids });
+      } else {
+        return list.deleteManyMutation(ids, context);
+      }
     },
   };
 }

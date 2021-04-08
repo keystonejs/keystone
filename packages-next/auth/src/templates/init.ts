@@ -1,27 +1,22 @@
-import { BaseGeneratedListTypes, SerializedFieldMeta } from '@keystone-next/types';
+import { BaseGeneratedListTypes } from '@keystone-next/types';
 import { AuthConfig } from '../types';
 
 type InitTemplateArgs = {
   listKey: string;
   initFirstItem: NonNullable<AuthConfig<BaseGeneratedListTypes>['initFirstItem']>;
-  fields: Record<string, SerializedFieldMeta>;
 };
 
-export const initTemplate = ({ listKey, initFirstItem, fields }: InitTemplateArgs) => {
+export const initTemplate = ({ listKey, initFirstItem }: InitTemplateArgs) => {
   // -- TEMPLATE START
-  return `import { InitPage } from '@keystone-next/auth/pages/InitPage';
-  import React from 'react';
-  import { gql } from '@keystone-next/admin-ui/apollo';
+  return `import { getInitPage } from '@keystone-next/auth/pages/InitPage';
 
-  const fieldsMeta = ${JSON.stringify(fields)}
+const fieldPaths = ${JSON.stringify(initFirstItem.fields)};
 
-  export default function Init() {
-    return <InitPage listKey=${JSON.stringify(
-      listKey
-    )} fields={fieldsMeta} showKeystoneSignup={${JSON.stringify(
-    !initFirstItem.skipKeystoneSignup
-  )}} />
-  }
-  `;
+export default getInitPage(${JSON.stringify({
+    listKey,
+    fieldPaths: initFirstItem.fields,
+    enableWelcome: !initFirstItem.skipKeystoneWelcome,
+  })});
+`;
   // -- TEMPLATE END
 };

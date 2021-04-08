@@ -1,8 +1,7 @@
-// @ts-ignore
-import { Virtual } from '@keystonejs/fields';
 import type { FieldType, BaseGeneratedListTypes, KeystoneContext } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
+import { Virtual, PrismaVirtualInterface } from './Implementation';
 
 export type VirtualFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
@@ -17,7 +16,11 @@ export type VirtualFieldConfig<
 export const virtual = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: VirtualFieldConfig<TGeneratedListTypes>
 ): FieldType<TGeneratedListTypes> => ({
-  type: Virtual,
+  type: {
+    type: 'Virtual',
+    implementation: Virtual,
+    adapters: { prisma: PrismaVirtualInterface },
+  },
   config,
   views: resolveView('virtual/views'),
   getAdminMeta: () => ({ graphQLReturnFragment: config.graphQLReturnFragment ?? '' }),

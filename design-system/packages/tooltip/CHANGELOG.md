@@ -1,5 +1,48 @@
 # @keystone-ui/tooltip
 
+## 2.0.1
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+- Updated dependencies [[`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7), [`3ca5038a0`](https://github.com/keystonejs/keystone/commit/3ca5038a021105a7452f4e7a4641107caa4ffe3a)]:
+  - @keystone-ui/core@2.0.1
+  - @keystone-ui/popover@2.0.1
+
+## 2.0.0
+
+### Major Changes
+
+- [`b97216a65`](https://github.com/keystonejs/keystone/commit/b97216a6526fffcca8232d86b115c28cb19587bf) [#4622](https://github.com/keystonejs/keystone/pull/4622) Thanks [@renovate](https://github.com/apps/renovate)! - Updated react and react-dom to v17
+
+### Patch Changes
+
+- Updated dependencies [[`b97216a65`](https://github.com/keystonejs/keystone/commit/b97216a6526fffcca8232d86b115c28cb19587bf)]:
+  - @keystone-ui/core@2.0.0
+  - @keystone-ui/popover@2.0.0
+
+## 1.0.6
+
+### Patch Changes
+
+- [`858eedb18`](https://github.com/keystonejs/keystone/commit/858eedb18c14ed017b01f588071192cdac355c47) [#4655](https://github.com/keystonejs/keystone/pull/4655) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Allowed `ReactNode` instead of just `string` for Tooltip content
+
+## 1.0.5
+
+### Patch Changes
+
+- [`160bd77d3`](https://github.com/keystonejs/keystone/commit/160bd77d39d5e99b11bee056fe2c3b2585126bbc) [#4638](https://github.com/keystonejs/keystone/pull/4638) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Improve performance when scrolling and resizing the page
+
+- Updated dependencies [[`160bd77d3`](https://github.com/keystonejs/keystone/commit/160bd77d39d5e99b11bee056fe2c3b2585126bbc)]:
+  - @keystone-ui/popover@1.1.1
+
+## 1.0.4
+
+### Patch Changes
+
+- [`ba842d48b`](https://github.com/keystonejs/keystone/commit/ba842d48b5e9499ccd6f59d1610d55e964ffdb93) [#4579](https://github.com/keystonejs/keystone/pull/4579) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Memoized tooltip element to improve performance
+
 ## 1.0.3
 
 ### Patch Changes

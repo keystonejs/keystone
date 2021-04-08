@@ -1,4 +1,0 @@
-{
-  "main": "dist/fields-unsplash.cjs.js",
-  "module": "dist/fields-unsplash.esm.js"
-}

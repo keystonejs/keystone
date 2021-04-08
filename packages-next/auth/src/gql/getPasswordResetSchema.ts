@@ -2,11 +2,11 @@ import type { GraphQLSchemaExtension } from '@keystone-next/types';
 
 import { AuthGqlNames, AuthTokenTypeConfig } from '../types';
 
-import { updateAuthToken } from '../lib/updateAuthToken';
+import { createAuthToken } from '../lib/createAuthToken';
 import { validateAuthToken } from '../lib/validateAuthToken';
 import { getAuthTokenErrorMessage } from '../lib/getErrorMessage';
 
-export function getPasswordResetSchema({
+export function getPasswordResetSchema<I extends string, S extends string>({
   listKey,
   identityField,
   secretField,
@@ -15,8 +15,8 @@ export function getPasswordResetSchema({
   passwordResetLink,
 }: {
   listKey: string;
-  identityField: string;
-  secretField: string;
+  identityField: I;
+  secretField: S;
   protectIdentities: boolean;
   gqlNames: AuthGqlNames;
   passwordResetLink: AuthTokenTypeConfig;
@@ -24,8 +24,12 @@ export function getPasswordResetSchema({
   return {
     typeDefs: `
       # Reset password
+      type Query {
+        ${gqlNames.validateItemPasswordResetToken}(${identityField}: String!, token: String!): ${gqlNames.ValidateItemPasswordResetTokenResult}
+      }
       type Mutation {
         ${gqlNames.sendItemPasswordResetLink}(${identityField}: String!): ${gqlNames.SendItemPasswordResetLinkResult}
+        ${gqlNames.redeemItemPasswordResetToken}(${identityField}: String!, token: String!, ${secretField}: String!): ${gqlNames.RedeemItemPasswordResetTokenResult}
       }
       type ${gqlNames.SendItemPasswordResetLinkResult} {
         code: PasswordResetRequestErrorCode!
@@ -35,15 +39,10 @@ export function getPasswordResetSchema({
         IDENTITY_NOT_FOUND
         MULTIPLE_IDENTITY_MATCHES
       }
-      type Query {
-        ${gqlNames.validateItemPasswordResetToken}(${identityField}: String!, token: String!): ${gqlNames.ValidateItemPasswordResetTokenResult}
-      }
+
       type ${gqlNames.ValidateItemPasswordResetTokenResult} {
         code: PasswordResetRedemptionErrorCode!
         message: String!
-      }
-      type Mutation {
-        ${gqlNames.redeemItemPasswordResetToken}(${identityField}: String!, token: String!, ${secretField}: String!): ${gqlNames.RedeemItemPasswordResetTokenResult}
       }
       type ${gqlNames.RedeemItemPasswordResetTokenResult} {
         code: PasswordResetRedemptionErrorCode!
@@ -61,14 +60,16 @@ export function getPasswordResetSchema({
     `,
     resolvers: {
       Mutation: {
-        async [gqlNames.sendItemPasswordResetLink](root, args, context) {
+        async [gqlNames.sendItemPasswordResetLink](root: any, args: { [P in I]: string }, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const itemAPI = context.sudo().lists[listKey];
           const tokenType = 'passwordReset';
           const identity = args[identityField];
-          const result = await updateAuthToken(identityField, protectIdentities, identity, itemAPI);
+
+          const result = await createAuthToken(identityField, protectIdentities, identity, itemAPI);
 
           // Note: `success` can be false with no code
+          // If protectIdentities === true then result.code will *always* be undefined.
           if (!result.success && result.code) {
             const message = getAuthTokenErrorMessage({
               identityField,
@@ -78,6 +79,7 @@ export function getPasswordResetSchema({
             });
             return { code: result.code, message };
           }
+
           // Update system state
           if (result.success) {
             // Save the token and related info back to the item
@@ -89,15 +91,20 @@ export function getPasswordResetSchema({
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
                 [`${tokenType}RedeemedAt`]: null,
               },
+              resolveFields: false,
             });
 
-            await passwordResetLink.sendToken({ itemId, identity, token });
+            await passwordResetLink.sendToken({ itemId, identity, token, context });
           }
           return null;
         },
-        async [gqlNames.redeemItemPasswordResetToken](root, args, context) {
+        async [gqlNames.redeemItemPasswordResetToken](
+          root: any,
+          args: { [P in I]: string } & { [P in S]: string } & { token: string },
+          context
+        ) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const itemAPI = context.sudo().lists[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             tokenType,
@@ -111,6 +118,9 @@ export function getPasswordResetSchema({
           );
 
           if (!result.success) {
+            // Code could be FAILURE, TOKEN_REDEEMED, or TOKEN_EXPIRED
+            // Message will be 'Auth token redemption failed.', 'Auth tokens are single use and the auth token provided has already been redeemed.'
+            // or 'The auth token provided has expired.'
             const message = getAuthTokenErrorMessage({
               identityField,
               itemSingular: list.adminUILabels.singular,
@@ -126,20 +136,29 @@ export function getPasswordResetSchema({
           await itemAPI.updateOne({
             id: itemId,
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
+            resolveFields: false,
           });
 
           // Save the provided secret. Do this as a separate step as password validation
           // may fail, in which case we still want to mark the token as redeemed
           // (NB: Is this *really* what we want? -TL)
-          await itemAPI.updateOne({ id: itemId, data: { [secretField]: args[secretField] } });
+          await itemAPI.updateOne({
+            id: itemId,
+            data: { [secretField]: args[secretField] },
+            resolveFields: false,
+          });
 
           return null;
         },
       },
       Query: {
-        async [gqlNames.validateItemPasswordResetToken](root, args, context) {
+        async [gqlNames.validateItemPasswordResetToken](
+          root: any,
+          args: { [P in I]: string } & { token: string },
+          context
+        ) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.lists[listKey];
+          const itemAPI = context.sudo().lists[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             tokenType,

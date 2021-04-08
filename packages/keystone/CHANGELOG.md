@@ -1,5 +1,179 @@
 # @keystonejs/keystone
 
+## 23.0.0
+
+### Major Changes
+
+- [#5343](https://github.com/keystonejs/keystone/pull/5343) [`955787055`](https://github.com/keystonejs/keystone/commit/955787055a54fb33eb45c80dd39fa86a9ff632a0) Thanks [@timleslie](https://github.com/timleslie)! - Removed logging of errors to stdout using `pino` pending a complete rewrite of this functionality.
+
+* [#5320](https://github.com/keystonejs/keystone/pull/5320) [`fda82869c`](https://github.com/keystonejs/keystone/commit/fda82869c376d05fd007bec22d7bde2604db445b) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy default ID field support.
+
+- [#5281](https://github.com/keystonejs/keystone/pull/5281) [`4f0abec0b`](https://github.com/keystonejs/keystone/commit/4f0abec0b19c3495c1ae6d7dac49fb46253cf7b3) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy `BaseKeystoneAdapter`, `BaseListAdapter`, and `BaseFieldAdapter` exports.
+
+### Patch Changes
+
+- [#5324](https://github.com/keystonejs/keystone/pull/5324) [`e702fea44`](https://github.com/keystonejs/keystone/commit/e702fea44c3116db158d97b5ffd24440f09c9d49) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy `.find()`, `.findAll()`, `.findOne()`, `.findById()`, `.itemsQueryMeta()`, `.getFieldAdapterByPath()`, and `.getPrimaryKeyAdapter()` methods from `PrismaListAdapter`.
+
+## 22.0.0
+
+### Major Changes
+
+- [#5250](https://github.com/keystonejs/keystone/pull/5250) [`e944b1ebb`](https://github.com/keystonejs/keystone/commit/e944b1ebbede95500b06028c591ee8947278a479) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy method `keystone.createContext()`.
+
+* [#5196](https://github.com/keystonejs/keystone/pull/5196) [`ca1be4156`](https://github.com/keystonejs/keystone/commit/ca1be415663dd822b3adda1e073bd7a1d4a9b97b) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy method `.getAdminMeta` from `Keystone`, `List` and `Field` classes.
+
+- [#5220](https://github.com/keystonejs/keystone/pull/5220) [`7ae452ad1`](https://github.com/keystonejs/keystone/commit/7ae452ad144d1186225e94ff39be0eaf9983f585) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy `keystone.createAuthStrategy()` method.
+
+* [#5226](https://github.com/keystonejs/keystone/pull/5226) [`45272d0b1`](https://github.com/keystonejs/keystone/commit/45272d0b1dc68e6ae8dbc4cfda790b3a50cf1b25) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy method `keystone.prepare()`.
+
+- [#5248](https://github.com/keystonejs/keystone/pull/5248) [`ade638de0`](https://github.com/keystonejs/keystone/commit/ade638de07142e8ecd0c3bf6c805eed76fd89878) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for legacy `plugins` argument to `List` config.
+
+* [#5247](https://github.com/keystonejs/keystone/pull/5247) [`2a1fc416e`](https://github.com/keystonejs/keystone/commit/2a1fc416e8f0a83e108a72fcec81b380c601f3ef) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy method `keystone.executeGraphQL()`.
+
+- [#5208](https://github.com/keystonejs/keystone/pull/5208) [`4d405390c`](https://github.com/keystonejs/keystone/commit/4d405390c0f8dcc37e6fe4da7ce3866c699088f3) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy property `List.views` and method `Field.extendAdminViews()`.
+
+* [#5198](https://github.com/keystonejs/keystone/pull/5198) [`b36758a12`](https://github.com/keystonejs/keystone/commit/b36758a121c096e8776420949c77a5304957a969) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy `cookieSecret`, `cookie`, and `sessionStore` arguments from the `Keystone` constructor.
+
+- [#5249](https://github.com/keystonejs/keystone/pull/5249) [`fe9fc5e0d`](https://github.com/keystonejs/keystone/commit/fe9fc5e0de8cefb889624e43bc281ac408bcd3b8) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy `schemaNames` argument from the `Keystone` and `List` constructors.
+
+* [#5246](https://github.com/keystonejs/keystone/pull/5246) [`b8cd13fdf`](https://github.com/keystonejs/keystone/commit/b8cd13fdfcec645140a06b0331b240583eace061) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy `keystone.createApolloServer` method.
+
+- [#5195](https://github.com/keystonejs/keystone/pull/5195) [`32578f01e`](https://github.com/keystonejs/keystone/commit/32578f01e70ea972d438a29fa1e3793c1e02750b) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy method `Keystone.getAdminViews()`.
+
+### Patch Changes
+
+- [#5184](https://github.com/keystonejs/keystone/pull/5184) [`5510ae33f`](https://github.com/keystonejs/keystone/commit/5510ae33fb18d42e378a00f1f78b803fb01b3fad) Thanks [@timleslie](https://github.com/timleslie)! - Fixed bug with updateMany on lists with declarative access control.
+
+- Updated dependencies [[`97609a623`](https://github.com/keystonejs/keystone/commit/97609a623334fd8d7b9e24dd099abda2e2a37853)]:
+  - @keystone-next/utils-legacy@8.0.0
+  - @keystone-next/access-control-legacy@9.0.1
+
+## 21.0.0
+
+### Major Changes
+
+- [#5154](https://github.com/keystonejs/keystone/pull/5154) [`2bccf71b1`](https://github.com/keystonejs/keystone/commit/2bccf71b152a9be65a2df6a9751f1d7a382041ae) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused `keystone.dumpSchema()`.
+
+* [#5147](https://github.com/keystonejs/keystone/pull/5147) [`4ac9148a0`](https://github.com/keystonejs/keystone/commit/4ac9148a0fa5b302d50e0ca4293206e2ef3616b7) Thanks [@timleslie](https://github.com/timleslie)! - Removed `context.getCustomAccessControlForUser()`.
+
+- [#5145](https://github.com/keystonejs/keystone/pull/5145) [`bafdcb7bd`](https://github.com/keystonejs/keystone/commit/bafdcb7bdcba641bb8a00689a2bcefed10f4d890) Thanks [@timleslie](https://github.com/timleslie)! - Removed `keystone.extendGraphQLSchema()`.
+
+### Minor Changes
+
+- [#3946](https://github.com/keystonejs/keystone/pull/3946) [`8e9b04ecd`](https://github.com/keystonejs/keystone/commit/8e9b04ecd07d9c5d0e6aead4705e7a655498ae05) Thanks [@timleslie](https://github.com/timleslie)! - Added experimental support for Prisma + SQLite as a database adapter.
+
+### Patch Changes
+
+- [#5150](https://github.com/keystonejs/keystone/pull/5150) [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed) Thanks [@timleslie](https://github.com/timleslie)! - Applied eslint `import/order` rule.
+
+* [#4931](https://github.com/keystonejs/keystone/pull/4931) [`a4002b045`](https://github.com/keystonejs/keystone/commit/a4002b045b3e783971c382f9373159c04845beeb) Thanks [@timleslie](https://github.com/timleslie)! - Updated schema generation to no longer consider `access.auth`, as it is no longer used in Keystone Next.
+
+* Updated dependencies [[`4ac9148a0`](https://github.com/keystonejs/keystone/commit/4ac9148a0fa5b302d50e0ca4293206e2ef3616b7)]:
+  - @keystone-next/access-control-legacy@9.0.0
+
+## 20.0.0
+
+### Major Changes
+
+- [#5065](https://github.com/keystonejs/keystone/pull/5065) [`c45cbb9b1`](https://github.com/keystonejs/keystone/commit/c45cbb9b14010b3ced7ea012f3502998ba2ec393) Thanks [@timleslie](https://github.com/timleslie)! - Removed the obsolete methods `List.getFieldsRelatedTo()`, `List.getFieldByPath()`, `List.gqlAuxMutationResolvers()`, `Field.parseFieldAccess()`, `Field.getGqlAuxMutations()`, and `Field.gqlAuxMutationResolvers()`.
+
+* [#5041](https://github.com/keystonejs/keystone/pull/5041) [`ab14e7043`](https://github.com/keystonejs/keystone/commit/ab14e70435ef89cf702d407c90396eca53bc3f4d) Thanks [@timleslie](https://github.com/timleslie)! - Removed CLI from the package.
+
+- [#5062](https://github.com/keystonejs/keystone/pull/5062) [`7ad7430dc`](https://github.com/keystonejs/keystone/commit/7ad7430dc377f79f7ad4024879ec2966ba0d185f) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy appVersion support.
+
+### Patch Changes
+
+- [#5038](https://github.com/keystonejs/keystone/pull/5038) [`b4b276cf6`](https://github.com/keystonejs/keystone/commit/b4b276cf66f90dce2d711c144c0d99c4752f1f5e) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for `GraphQLPlaygroundApp`.
+
+- Updated dependencies [[`b44f07b6a`](https://github.com/keystonejs/keystone/commit/b44f07b6a7ce1eef6d41513096eadea5aa2be5f7)]:
+  - @keystone-next/utils-legacy@7.0.0
+  - @keystone-next/access-control-legacy@8.0.1
+
+## 19.3.0
+
+### Minor Changes
+
+- [`5d565ea57`](https://github.com/keystonejs/keystone/commit/5d565ea57853713458329b823bde7a38776b02bc) [#4892](https://github.com/keystonejs/keystone/pull/4892) Thanks [@timleslie](https://github.com/timleslie)! - Added support for configuring the field to use for `search` filtering via the `db: { searchField }` list config option.
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+* [`6f985acc7`](https://github.com/keystonejs/keystone/commit/6f985acc775d6037ac69a01215f962285de78c75) [#4861](https://github.com/keystonejs/keystone/pull/4861) Thanks [@timleslie](https://github.com/timleslie)! - The functions `validate*AccessControl` no longer set default values for the `authentication` value. If you are calling these functions directly you will need to make sure you pass in a value for `authentication`. If you are not directly calling these functions then there are no changes required.
+
+- [`4eb4753e4`](https://github.com/keystonejs/keystone/commit/4eb4753e45e5a6ca37bdc756aef7adda7f551da4) [#4865](https://github.com/keystonejs/keystone/pull/4865) Thanks [@timleslie](https://github.com/timleslie)! - Updated `validateAuthAccessControl` to now require an explicit `operation` argument.
+
+* [`891cd490a`](https://github.com/keystonejs/keystone/commit/891cd490a17026f4af29f0ed9b9ca411747d1d63) [#4875](https://github.com/keystonejs/keystone/pull/4875) Thanks [@timleslie](https://github.com/timleslie)! - Updated the `validate*AccessControl` functions to take `{ access, args: ... }`. Unless you are directly calling these functions no code changes are required.
+
+- [`a16d2cbff`](https://github.com/keystonejs/keystone/commit/a16d2cbffd9aa57d0cbdd783ff5ff0c699ff2d8b) [#5016](https://github.com/keystonejs/keystone/pull/5016) Thanks [@timleslie](https://github.com/timleslie)! - Added explicit handling of `null` values for relationship fields in `create` and `update` mutations.
+
+- Updated dependencies [[`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7), [`15b1132d2`](https://github.com/keystonejs/keystone/commit/15b1132d20d13f79bbf1707e1897b31da887c2b7), [`6f985acc7`](https://github.com/keystonejs/keystone/commit/6f985acc775d6037ac69a01215f962285de78c75), [`4eb4753e4`](https://github.com/keystonejs/keystone/commit/4eb4753e45e5a6ca37bdc756aef7adda7f551da4), [`891cd490a`](https://github.com/keystonejs/keystone/commit/891cd490a17026f4af29f0ed9b9ca411747d1d63)]:
+  - @keystone-next/access-control-legacy@8.0.0
+  - @keystone-next/app-version-legacy@2.0.1
+  - @keystone-next/session-legacy@8.2.1
+  - @keystone-next/utils-legacy@6.0.2
+
+## 19.2.0
+
+### Minor Changes
+
+- [`4035218df`](https://github.com/keystonejs/keystone/commit/4035218df390beff3d42c0d3fc21335230d8a60d) [#4512](https://github.com/keystonejs/keystone/pull/4512) Thanks [@renovate](https://github.com/apps/renovate)! - Upgraded dependency `apollo-server-express` to `^2.21.0`. Apollo Server can now be installed with `graphql@15` without causing peer dependency errors or warnings.
+
+* [`8d0be8a89`](https://github.com/keystonejs/keystone/commit/8d0be8a89e2d9b89826365f81f47b8d8863b93d0) [#4815](https://github.com/keystonejs/keystone/pull/4815) Thanks [@timleslie](https://github.com/timleslie)! - Added a `.sudo()` method to `context` objects, which is equivalent to the common operation `context.createContext({ skipAccessControl: true })`.
+
+### Patch Changes
+
+- Updated dependencies [[`28a61dc67`](https://github.com/keystonejs/keystone/commit/28a61dc67b990ebd16bfc4e1c0a1e9ffb0e54d81), [`92727414a`](https://github.com/keystonejs/keystone/commit/92727414af4e6efcb8d691f8197c6165ae469577)]:
+  - @keystonejs/access-control@7.0.0
+  - @keystonejs/app-version@2.0.0
+
+## 19.1.0
+
+### Minor Changes
+
+- [`3c1fa3203`](https://github.com/keystonejs/keystone/commit/3c1fa3203a6a9eeb2525c256f858f2e6cebea804) [#4738](https://github.com/keystonejs/keystone/pull/4738) Thanks [@MurzNN](https://github.com/MurzNN)! - Added an `APP_URL` environment variable and `--app-url` command line option to a set custom URL to be reported when starting the server.
+
+## 19.0.0
+
+### Major Changes
+
+- [`749d1c86c`](https://github.com/keystonejs/keystone/commit/749d1c86c89690ef10014a4a0a12641eb24bfe1d) [#4709](https://github.com/keystonejs/keystone/pull/4709) Thanks [@timleslie](https://github.com/timleslie)! - Database adapters no longer support custom `ListAdapter` classes via the `listAdapterClass` option of `adapterConfig` in `createList()`.
+
+* [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9) [#3222](https://github.com/keystonejs/keystone/pull/3222) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for multiple database adapters in a single `Keystone` system. The `adapters` and `defaultAdapter` config options were removed from the `Keystone()` constructor. If you were accessing the adapter object via `keystone.adapters.KnexAdapter` or `keystone.adapters.MongooseAdapter` you should now simply access `keystone.adapter`.
+
+### Patch Changes
+
+- Updated dependencies [[`619ef5051`](https://github.com/keystonejs/keystone/commit/619ef50512c09d7cf988dc3c877eed868eba68a6), [`86b597d41`](https://github.com/keystonejs/keystone/commit/86b597d410c907ed54a4948da438de48e313302f), [`c1257ca83`](https://github.com/keystonejs/keystone/commit/c1257ca834ccf5a0407debe6e7d27b45ed32a26a), [`621db113a`](https://github.com/keystonejs/keystone/commit/621db113a6a579cc3da19ae9cef50dc63ac8ca55), [`5e22cc765`](https://github.com/keystonejs/keystone/commit/5e22cc765a8f18c467457fd2ba738cd90273c8c5), [`b9ec7fff9`](https://github.com/keystonejs/keystone/commit/b9ec7fff9d96ac56e2836543d698cf0b62b5dc8f), [`5ad7c12e8`](https://github.com/keystonejs/keystone/commit/5ad7c12e86573e73e85368076bdc1296f3f69db3), [`94c8d349d`](https://github.com/keystonejs/keystone/commit/94c8d349d3795cd9abec407f78752417623ee56f)]:
+  - @keystonejs/access-control@6.3.2
+  - @keystonejs/session@8.2.0
+  - @keystonejs/utils@6.0.1
+
+## 18.1.0
+
+### Minor Changes
+
+- [`4768fbf83`](https://github.com/keystonejs/keystone/commit/4768fbf831ffff648e540c479a1954ae40e05aaa) [#4654](https://github.com/keystonejs/keystone/pull/4654) Thanks [@timleslie](https://github.com/timleslie)! - Added an `args` paramter to `Keystone.connect(args)`, which is passed through as the second argument to the config function `onConnect(keystone, args)`.
+
+### Patch Changes
+
+- [`3b7a056bb`](https://github.com/keystonejs/keystone/commit/3b7a056bb835482ceb408a70bf97300741552d19) [#4652](https://github.com/keystonejs/keystone/pull/4652) Thanks [@timleslie](https://github.com/timleslie)! - Removed `addFieldValidationError` from the args passed to list validation hooks, as it was unused and could lead to confusion. Updated docs to clarify the validation hook arguments. Thanks @pahaz for the fix.
+
+* [`74a8528ea`](https://github.com/keystonejs/keystone/commit/74a8528ea0dad739f4f16af32fe4f8926a188b61) [#4649](https://github.com/keystonejs/keystone/pull/4649) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `serialize-error` to `^8.0.0`.
+
+* Updated dependencies [[`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be)]:
+  - @keystonejs/utils@6.0.0
+  - @keystonejs/access-control@6.3.1
+
+## 18.0.0
+
+### Major Changes
+
+- [`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95) [#4588](https://github.com/keystonejs/keystone/pull/4588) Thanks [@timleslie](https://github.com/timleslie)! - Updated `keystone.getTypedefs` and `keystone.getResolvers` to explicity return `scalar Upload` and its associated resolver.
+
+### Minor Changes
+
+- [`1200c3562`](https://github.com/keystonejs/keystone/commit/1200c356272ae8deea9da4267ce62c1449498e95) [#4588](https://github.com/keystonejs/keystone/pull/4588) Thanks [@timleslie](https://github.com/timleslie)! - Updated graphql server to use the `graphql-upload` package directly to support uploads, rather than the built-in support provided by Apollo Server.
+
 ## 17.1.2
 
 ### Patch Changes

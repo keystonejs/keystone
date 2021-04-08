@@ -11,22 +11,22 @@ import { LoadingDots } from '@keystone-ui/loading';
 import { AlertDialog, DrawerController } from '@keystone-ui/modals';
 import { useToasts } from '@keystone-ui/toast';
 
-import { gql, TypedDocumentNode, useMutation, useQuery } from '../../apollo';
-import { CellLink } from '../../components';
-import { CreateItemDrawer } from '../../components/CreateItemDrawer';
-import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
-import { useList } from '../../context';
-import { Link, useRouter } from '../../router';
 import {
   getRootGraphQLFieldsFromFieldController,
   DataGetter,
   DeepNullable,
   makeDataGetter,
 } from '@keystone-next/admin-ui-utils';
+import { gql, TypedDocumentNode, useMutation, useQuery } from '../../apollo';
+import { CellLink } from '../../components';
+import { CreateItemDrawer } from '../../components/CreateItemDrawer';
+import { PageContainer, HEADER_HEIGHT } from '../../components/PageContainer';
+import { Pagination, PaginationLabel } from '../../components/Pagination';
+import { useList } from '../../context';
+import { Link, useRouter } from '../../router';
 import { FieldSelection } from './FieldSelection';
 import { FilterAdd } from './FilterAdd';
 import { FilterList } from './FilterList';
-import { PaginationLabel, Pagination } from './pagination';
 import { SortSelection } from './SortSelection';
 import { useFilters } from './useFilters';
 import { useSelectedFields } from './useSelectedFields';
@@ -115,7 +115,9 @@ function useQueryParamsFromLocalStorage(listKey: string) {
   }, [localStorageKey, router]);
 }
 
-export const ListPage = ({ listKey }: ListPageProps) => {
+export const getListPage = (props: ListPageProps) => () => <ListPage {...props} />;
+
+const ListPage = ({ listKey }: ListPageProps) => {
   const list = useList(listKey);
 
   const { query } = useRouter();
@@ -674,7 +676,7 @@ function ListTable({
           })}
         </tbody>
       </TableContainer>
-      <Pagination listKey={listKey} total={count} currentPage={currentPage} pageSize={pageSize} />
+      <Pagination list={list} total={count} currentPage={currentPage} pageSize={pageSize} />
     </Box>
   );
 }

@@ -1,5 +1,283 @@
 # @keystone-next/types
 
+## 16.0.0
+
+### Major Changes
+
+- [#5266](https://github.com/keystonejs/keystone/pull/5266) [`c28e765d1`](https://github.com/keystonejs/keystone/commit/c28e765d12655f802e324b82529fcf571d88c0c6) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed `migrationAction` argument to `createSystem` and require that the PrismaClient is passed to `createSystem` to be able to connect to the database.
+
+* [#5256](https://github.com/keystonejs/keystone/pull/5256) [`399e6db39`](https://github.com/keystonejs/keystone/commit/399e6db39c51cf9e8bbf3dde0887e5bf55dd1c4d) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for the `knex` and `mongoose` database adapters. We now only support `prisma_postgresql` and `prisma_sqlite`.
+
+### Minor Changes
+
+- [#5368](https://github.com/keystonejs/keystone/pull/5368) [`b40016301`](https://github.com/keystonejs/keystone/commit/b40016301dab71630068cc86c04828c5ee1683e8) Thanks [@timleslie](https://github.com/timleslie)! - The config option `db.adapter` is now deprecated. It has been repaced with `db.provider` which can take the values `postgresql` or `sqlite`.
+
+* [#5283](https://github.com/keystonejs/keystone/pull/5283) [`192393d0d`](https://github.com/keystonejs/keystone/commit/192393d0df67e123a694a42dd3f95ffa6d40042b) Thanks [@timleslie](https://github.com/timleslie)! - The flag `{ experimental: { prismaSqlite: true } }` is no longer required to use the SQLite adapter.
+
+- [#5341](https://github.com/keystonejs/keystone/pull/5341) [`1886b4323`](https://github.com/keystonejs/keystone/commit/1886b43235e50bd2e070350d258f0a3145c19bbc) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added `generateNextGraphqlAPI` and `generateNodeAPI` experimental options
+
+## 15.0.1
+
+### Patch Changes
+
+- [#5257](https://github.com/keystonejs/keystone/pull/5257) [`34dd809ee`](https://github.com/keystonejs/keystone/commit/34dd809eef2368bba1e50ed613b36c5dac7262d1) Thanks [@timleslie](https://github.com/timleslie)! - Updated type `GraphQLExecutionArguments.variables` to be optional.
+
+## 15.0.0
+
+### Major Changes
+
+- [#5155](https://github.com/keystonejs/keystone/pull/5155) [`215aed387`](https://github.com/keystonejs/keystone/commit/215aed387d35e9d4c896fe76991b12b54789cc55) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed `createOnly` migration mode
+
+* [#5163](https://github.com/keystonejs/keystone/pull/5163) [`b37cbffc8`](https://github.com/keystonejs/keystone/commit/b37cbffc886a4317793a97b7a8afd95639f59ce0) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Replaced `MigrationMode` type with `MigrationAction` that `createSystem` and `createKeystone` now accept.
+
+### Minor Changes
+
+- [#3946](https://github.com/keystonejs/keystone/pull/3946) [`8e9b04ecd`](https://github.com/keystonejs/keystone/commit/8e9b04ecd07d9c5d0e6aead4705e7a655498ae05) Thanks [@timleslie](https://github.com/timleslie)! - Added experimental support for Prisma + SQLite as a database adapter.
+
+* [#5102](https://github.com/keystonejs/keystone/pull/5102) [`714bdadce`](https://github.com/keystonejs/keystone/commit/714bdadce8c87a15cf3a296b44a31b9b9ca95e9d) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added `none-skip-client-generation` migrationMode
+
+- [#5087](https://github.com/keystonejs/keystone/pull/5087) [`56e5fe10b`](https://github.com/keystonejs/keystone/commit/56e5fe10bc89877be7d7e3013e53012b4d82b648) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added `MigrationMode` type
+
+* [#5163](https://github.com/keystonejs/keystone/pull/5163) [`b37cbffc8`](https://github.com/keystonejs/keystone/commit/b37cbffc886a4317793a97b7a8afd95639f59ce0) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added `db.useMigrations` option to replace using `keystone-next dev` and `keystone-next prototype` depending on what kind of migration strategy you want to use. If you were previously using `keystone-next dev`, you should set `db.useMigrations` to true in your config and continue using `keystone-next dev`. If you were previously using `keystone-next prototype`, you should now use `keystone-next dev`.
+
+- [#5084](https://github.com/keystonejs/keystone/pull/5084) [`40d4fff5d`](https://github.com/keystonejs/keystone/commit/40d4fff5d63850cbd513c80bcb5e551e5782dc4b) Thanks [@timleslie](https://github.com/timleslie)! - Updated `context.sudo()` to provide access to all operations, including those excluded by `{ access: false }` in the public schema.
+
+* [#4912](https://github.com/keystonejs/keystone/pull/4912) [`d31acf61b`](https://github.com/keystonejs/keystone/commit/d31acf61bcca96ac059d4ba2e78955513a6a0f91) Thanks [@timleslie](https://github.com/timleslie)! - Added a `config.graphql.apolloConfig` option to allow developers to configure the `ApolloServer` object provided by Keystone.
+
+### Patch Changes
+
+- [#5104](https://github.com/keystonejs/keystone/pull/5104) [`b84abebb6`](https://github.com/keystonejs/keystone/commit/b84abebb6c817172d04f338befa45b3573af55d6) Thanks [@timleslie](https://github.com/timleslie)! - Fixed type of `defaultValue` for fields.
+
+* [#5150](https://github.com/keystonejs/keystone/pull/5150) [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed) Thanks [@timleslie](https://github.com/timleslie)! - Applied eslint `import/order` rule.
+
+## 14.0.1
+
+### Patch Changes
+
+- [`9b202b31a`](https://github.com/keystonejs/keystone/commit/9b202b31a7d4944b709fe0ce58d6ca7ec1523a02) [#5033](https://github.com/keystonejs/keystone/pull/5033) Thanks [@rohan-deshpande](https://github.com/rohan-deshpande)! - Added `experimental` config namespace and `enableNextJsGraphqlApiEndpoint` property to support the GraphQL API being served from a Next.js API route rather than Express
+
+## 14.0.0
+
+### Major Changes
+
+- [`24e0ef5b6`](https://github.com/keystonejs/keystone/commit/24e0ef5b6bd93c105fdef2caea6b862ff1dfd6f3) [#4945](https://github.com/keystonejs/keystone/pull/4945) Thanks [@timleslie](https://github.com/timleslie)! - Removed the `context` argument from `KeystoneContext.graphql.raw` and `KeystoneContext.graphql.run`.
+
+* [`0f86e99bb`](https://github.com/keystonejs/keystone/commit/0f86e99bb3aa15f691ab7ff79e5a9ae3d1ac464e) [#4839](https://github.com/keystonejs/keystone/pull/4839) Thanks [@timleslie](https://github.com/timleslie)! - Removed `context.graphql.createContext` from `KeystoneContext`.
+
+### Minor Changes
+
+- [`2655c0b1b`](https://github.com/keystonejs/keystone/commit/2655c0b1bf714d80d46e1ff4e414b4bce474c23d) [#4866](https://github.com/keystonejs/keystone/pull/4866) Thanks [@timleslie](https://github.com/timleslie)! - Added a `config.ui.isDisabled` option to completely disable the Admin UI.
+
+* [`bea9008f8`](https://github.com/keystonejs/keystone/commit/bea9008f82efea7fcf1cb547f3841915cd4689cc) [#4944](https://github.com/keystonejs/keystone/pull/4944) Thanks [@timleslie](https://github.com/timleslie)! - Deprecated `KeystoneContext.keystone`.
+
+- [`5d565ea57`](https://github.com/keystonejs/keystone/commit/5d565ea57853713458329b823bde7a38776b02bc) [#4892](https://github.com/keystonejs/keystone/pull/4892) Thanks [@timleslie](https://github.com/timleslie)! - Added support for configuring the field to use for `search` filtering via the `db: { searchField }` list config option.
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+* [`687fd5ef0`](https://github.com/keystonejs/keystone/commit/687fd5ef0f798da996f970af1591411f9cfe0985) [#4835](https://github.com/keystonejs/keystone/pull/4835) Thanks [@timleslie](https://github.com/timleslie)! - Removed the unused `connect` and `disconnect` properties of `SessionStrategy`.
+
+- [`29e787983`](https://github.com/keystonejs/keystone/commit/29e787983bdc26b147d6b5f476e70768bbc5318c) [#4905](https://github.com/keystonejs/keystone/pull/4905) Thanks [@gautamsi](https://github.com/gautamsi)! - Fixed typing for `afterDelete` or `beforeDelete` hooks. Also added type for `updatedItem` in the `afterChange` or `beforeChange` hook
+
+* [`45ea93421`](https://github.com/keystonejs/keystone/commit/45ea93421f9a6cf9b7ccbd983e0c9cbd687ff6af) [#4810](https://github.com/keystonejs/keystone/pull/4810) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Replaced usage of `React.ComponentType` with more accurate types that do not automatically add `children` prop.
+
+- [`6c949dbf2`](https://github.com/keystonejs/keystone/commit/6c949dbf262350e280072d82cd48fdd31ff5ba6d) [#4942](https://github.com/keystonejs/keystone/pull/4942) Thanks [@timleslie](https://github.com/timleslie)! - Refactored `KeystoneContext` definition to make documentation easier. No functional changes.
+
+## 13.0.0
+
+### Major Changes
+
+- [`e29ae2749`](https://github.com/keystonejs/keystone/commit/e29ae2749321c103dd494eba6778ee4137bb2aa3) [#4818](https://github.com/keystonejs/keystone/pull/4818) Thanks [@timleslie](https://github.com/timleslie)! - Added `context.exitSudo()` and `context.withSession(session)` methods. Removed `context.createContext()`.
+
+* [`8d0be8a89`](https://github.com/keystonejs/keystone/commit/8d0be8a89e2d9b89826365f81f47b8d8863b93d0) [#4815](https://github.com/keystonejs/keystone/pull/4815) Thanks [@timleslie](https://github.com/timleslie)! - Added a `.sudo()` method to `context` objects, which is equivalent to the common operation `context.createContext({ skipAccessControl: true })`.
+
+### Patch Changes
+
+- [`208722a42`](https://github.com/keystonejs/keystone/commit/208722a4234434e116846756bab18f7e11674ec8) [#4784](https://github.com/keystonejs/keystone/pull/4784) Thanks [@timleslie](https://github.com/timleslie)! - Reordered type definitions for consistency with docs. Remove unused type `ListAdminUIConfig.path`.
+
+* [`ad75e3d61`](https://github.com/keystonejs/keystone/commit/ad75e3d61c73ba1239fd21b58f175aac01d9f302) [#4798](https://github.com/keystonejs/keystone/pull/4798) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused type `config.ui.path`.
+
+- [`954350389`](https://github.com/keystonejs/keystone/commit/9543503894c3e78a9b69a75cbfb3ca6b85ae34e8) [#4778](https://github.com/keystonejs/keystone/pull/4778) Thanks [@timleslie](https://github.com/timleslie)! - Removed the unused `plural`, `singular`, `label`, `db`, and `graphql.cacheHint` list config options.
+
+## 12.0.1
+
+### Patch Changes
+
+- [`6ecd2a766`](https://github.com/keystonejs/keystone/commit/6ecd2a766c868d46f84291bc1611eadef79e6100) [#4772](https://github.com/keystonejs/keystone/pull/4772) Thanks [@timleslie](https://github.com/timleslie)! - Removed `config.db.dropDatabase` for `prisma_postgresql` and `config.db.knexOptions` for `knex` as they were unused.
+
+* [`777981069`](https://github.com/keystonejs/keystone/commit/7779810691c4154e1344ced4fb94c5bb9524a71f) [#4765](https://github.com/keystonejs/keystone/pull/4765) Thanks [@timleslie](https://github.com/timleslie)! - Reorganised package internals to allow for easier documentation.
+
+- [`4d808eaa5`](https://github.com/keystonejs/keystone/commit/4d808eaa5aa1593ad1e54000d80f674f7c4d12bd) [#4766](https://github.com/keystonejs/keystone/pull/4766) Thanks [@timleslie](https://github.com/timleslie)! - Removed `config.db.provider` option, which did not have any meaningful, viable value.
+
+## 12.0.0
+
+### Major Changes
+
+- [`1744c5f05`](https://github.com/keystonejs/keystone/commit/1744c5f05c9a13e680aaa1ed151f23f1d015ed9c) [#4763](https://github.com/keystonejs/keystone/pull/4763) Thanks [@timleslie](https://github.com/timleslie)! - Removed the type `SchemaConfig`. Updated the `keystone` parameter of `ExtendGraphqlSchema` to be `BaseKeystone`.
+
+* [`5be53ddc3`](https://github.com/keystonejs/keystone/commit/5be53ddc39be1415d56e2fa5e7898ab9edf468d5) [#4762](https://github.com/keystonejs/keystone/pull/4762) Thanks [@timleslie](https://github.com/timleslie)! - Renamed the type `KeystoneAdminUIConfig` to `AdminUIConfig`.
+
+### Minor Changes
+
+- [`fd0dff3fd`](https://github.com/keystonejs/keystone/commit/fd0dff3fdfcbe20b2884357a6e1b20f1b7307652) [#4669](https://github.com/keystonejs/keystone/pull/4669) Thanks [@MurzNN](https://github.com/MurzNN)! - Added the ability to set the server port number via `config.server.port`.
+
+### Patch Changes
+
+- [`d9675553b`](https://github.com/keystonejs/keystone/commit/d9675553b33f39e2c7ada7eb6555d16e9fccb37e) [#4761](https://github.com/keystonejs/keystone/pull/4761) Thanks [@timleslie](https://github.com/timleslie)! - Remove unused configuration option `config.graphql.path` from the `KeystoneConfig` type.
+
+* [`096927a68`](https://github.com/keystonejs/keystone/commit/096927a6813a23030988ba8b64b2e8452f571a33) [#4756](https://github.com/keystonejs/keystone/pull/4756) Thanks [@timleslie](https://github.com/timleslie)! - Added correct types for `config.server.cors`.
+
+## 11.0.2
+
+### Patch Changes
+
+- [`94fbb45f1`](https://github.com/keystonejs/keystone/commit/94fbb45f1920781423f6a8e489e812b74a260099) [#4728](https://github.com/keystonejs/keystone/pull/4728) Thanks [@timleslie](https://github.com/timleslie)! - Added new CLI options to support migrations in the Prisma adapter: `prototype`, `reset`, `generate`, and `deploy`.
+
+* [`588be9ea1`](https://github.com/keystonejs/keystone/commit/588be9ea16ab5fb6e74f844b917ca8aeb91a9ac9) [#3222](https://github.com/keystonejs/keystone/pull/3222) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for multiple database adapters in a single `Keystone` system. The `adapters` and `defaultAdapter` config options were removed from the `Keystone()` constructor. If you were accessing the adapter object via `keystone.adapters.KnexAdapter` or `keystone.adapters.MongooseAdapter` you should now simply access `keystone.adapter`.
+
+## 11.0.1
+
+### Patch Changes
+
+- [`a96c24cca`](https://github.com/keystonejs/keystone/commit/a96c24ccab8dadc9e8f0131fe6509abd64a776f5) [#4696](https://github.com/keystonejs/keystone/pull/4696) Thanks [@timleslie](https://github.com/timleslie)! - Marked `db.enableLogging` as optional.
+
+## 11.0.0
+
+### Major Changes
+
+- [`0d9404768`](https://github.com/keystonejs/keystone/commit/0d94047686d1bb1308fd8c47b769c999390d8f6d) [#4659](https://github.com/keystonejs/keystone/pull/4659) Thanks [@timleslie](https://github.com/timleslie)! - Removed `system` argument from `config.ui.getAdditionalFiles`.
+
+* [`7ffd2ebb4`](https://github.com/keystonejs/keystone/commit/7ffd2ebb42dfaf12e23ba166b44ec4db60d9824b) [#4662](https://github.com/keystonejs/keystone/pull/4662) Thanks [@timleslie](https://github.com/timleslie)! - Remove type `KeystoneSystem`.
+
+### Minor Changes
+
+- [`4768fbf83`](https://github.com/keystonejs/keystone/commit/4768fbf831ffff648e540c479a1954ae40e05aaa) [#4654](https://github.com/keystonejs/keystone/pull/4654) Thanks [@timleslie](https://github.com/timleslie)! - Added an `args` paramter to `Keystone.connect(args)`, which is passed through as the second argument to the config function `onConnect(keystone, args)`.
+
+### Patch Changes
+
+- [`6ea4ff3cf`](https://github.com/keystonejs/keystone/commit/6ea4ff3cf77d5d2278bf4f0415d11aa7399a0490) [#4660](https://github.com/keystonejs/keystone/pull/4660) Thanks [@timleslie](https://github.com/timleslie)! - Converted `@keystonejs/test-utils` to TypeScript.
+
+## 10.0.0
+
+### Major Changes
+
+- [`24ecd72e5`](https://github.com/keystonejs/keystone/commit/24ecd72e54eee12442c7c1d0533936a9ad86620a) [#4604](https://github.com/keystonejs/keystone/pull/4604) Thanks [@timleslie](https://github.com/timleslie)! - Renamed `SerializedAdminMeta` to `AdminMetaRootVal`.
+
+## 9.0.0
+
+### Major Changes
+
+- [`89f7d4599`](https://github.com/keystonejs/keystone/commit/89f7d459906072940da1355c38815d1b3ef49368) [#4586](https://github.com/keystonejs/keystone/pull/4586) Thanks [@timleslie](https://github.com/timleslie)! - Removed `adminMeta` from `KeystoneSystem`. `getAdminMetaSchema` now takes a `BaseKeystone` argument `keystone` rather than `adminMeta`.
+
+### Patch Changes
+
+- [`933c78a1e`](https://github.com/keystonejs/keystone/commit/933c78a1edc070b63f7720f64c15421ba28bdde5) [#4587](https://github.com/keystonejs/keystone/pull/4587) Thanks [@timleslie](https://github.com/timleslie)! - Use `keystone.getTypeDefs` and `keystone.getResolvers` when creating the graphQL schema.
+
+## 8.0.0
+
+### Major Changes
+
+- [`075ef1628`](https://github.com/keystonejs/keystone/commit/075ef16281a89c8291f90275adca98f042cc54da) [#4547](https://github.com/keystonejs/keystone/pull/4547) Thanks [@timleslie](https://github.com/timleslie)! - Removed `allViews` from `KeystoneSystem` type. `createAdminMeta` no longer returns `allViews`.
+
+## 7.0.0
+
+### Major Changes
+
+- [`661104764`](https://github.com/keystonejs/keystone/commit/66110476491953af2134cd3cd4e3ef7c361ac5da) [#4509](https://github.com/keystonejs/keystone/pull/4509) Thanks [@timleslie](https://github.com/timleslie)! - Replaced `KeystoneAdminUIConfig.system` with `KeystoneAdminUIConfig.createConfig` to reduce API surface area.
+
+* [`481e456ac`](https://github.com/keystonejs/keystone/commit/481e456ac4158207436ddd9be18fdca0f27b6409) [#4533](https://github.com/keystonejs/keystone/pull/4533) Thanks [@timleslie](https://github.com/timleslie)! - Renamed to `SessionImplementation.createContext` to `createSessionContext`.
+
+### Minor Changes
+
+- [`6d09df338`](https://github.com/keystonejs/keystone/commit/6d09df3381d1682b8002d52ed1696b661fdff035) [#4523](https://github.com/keystonejs/keystone/pull/4523) Thanks [@timleslie](https://github.com/timleslie)! - Added support for all database adapter configuration options.
+
+* [`2308e5efc`](https://github.com/keystonejs/keystone/commit/2308e5efc7c6893c87652411496b15a8124f6e05) [#4527](https://github.com/keystonejs/keystone/pull/4527) Thanks [@timleslie](https://github.com/timleslie)! - Added an optional `req` property to the `KeystoneContext` type.
+
+- [`f2c7675fb`](https://github.com/keystonejs/keystone/commit/f2c7675fb51ed41e6df8248c76b9322d6de5ee0d) [#4528](https://github.com/keystonejs/keystone/pull/4528) Thanks [@timleslie](https://github.com/timleslie)! - `KeystoneAdminUIConfig.isAccessAllowed` now takes a full `KeystoneContext` object, rather than just `{ session }`.
+
+### Patch Changes
+
+- [`39639b203`](https://github.com/keystonejs/keystone/commit/39639b2031bb749067ef537ea47e5d93a8bb89da) [#4529](https://github.com/keystonejs/keystone/pull/4529) Thanks [@timleslie](https://github.com/timleslie)! - Added missing attributes `path`, `viewsIndex`, and `customViews` to `FieldMeta`.
+
+## 6.0.0
+
+### Major Changes
+
+- [`dc58df5c8`](https://github.com/keystonejs/keystone/commit/dc58df5c87d694ce94b7d1c2b20d4976176dbd13) [#4493](https://github.com/keystonejs/keystone/pull/4493) Thanks [@timleslie](https://github.com/timleslie)! - Renamed `SerializedFieldMeta.views` to `SerializedFieldMeta.viewsIndex` to makes it clear that this is the index, not the views object itself.
+
+* [`a5d7b264a`](https://github.com/keystonejs/keystone/commit/a5d7b264ad3e5590e335758881d22f7f296203c9) [#4473](https://github.com/keystonejs/keystone/pull/4473) Thanks [@timleslie](https://github.com/timleslie)! - Added a `resolveFields: false | string` argument to the items API methods.
+
+  This function controls the return type of the methods on the items API.
+  If a `string` value is provided, it will be interpreted as a graphQL field specification fragment.
+  The method will construct and run a graphQL operation and return the values specified by `resolveFields`.
+  The default value for `resolveFields` is `id`.
+
+  For example, to find the title and author name for all posts in our system we would run:
+
+  ```js
+  const posts = await context.lists.Post.findMany({ resolveFields: 'id title author { id name }' });
+  ```
+
+  If `resolveFields: false` is provided, this indicates to the method that no field-resolving is desired.
+  Instead, the method will return the result of the item-level resolver for the corresponding operation.
+  These objects are the internal data representation of the items in the system which would normally be passed to the field resolvers.
+
+  This flag is most useful in two specific scenarios. Firstly, if you need to inspect data which isn't generally available as a graphQL field, such as password hash values.
+
+  Secondly, if you are writing a custom mutation which returns a list item type, such as `Post`. For example
+
+  ```js
+  export const extendGraphqlSchema = graphQLSchemaExtension({
+    typeDefs: `
+      type Mutation {
+        topPost(userId: ID): Post
+      }
+    `,
+    resolvers: {
+      Mutation: {
+        topPost: (root, { userId }: { userId: string }, context) => {
+          return context.lists.Post.findMany({
+            where: { user: { id: userId } },
+            first: 1,
+            sortBy: ['stars_DESC'],
+            resolveFields: false,
+          });
+        },
+      },
+    },
+  });
+  ```
+
+- [`b7a4b997b`](https://github.com/keystonejs/keystone/commit/b7a4b997bae5b2269bea0ad94ca771e63c26ab95) [#4501](https://github.com/keystonejs/keystone/pull/4501) Thanks [@timleslie](https://github.com/timleslie)! - Removed `sessionImplementation` from `KeystoneSystem` and instead pass it explicitly where needed.
+
+* [`ca34424d5`](https://github.com/keystonejs/keystone/commit/ca34424d58e58cc4a657828b1362978be8ee4f62) [#4494](https://github.com/keystonejs/keystone/pull/4494) Thanks [@timleslie](https://github.com/timleslie)! - Renamed `KeystoneSystem.views` to `KeystoneSystem.allViews`.
+
+- [`57092b7c1`](https://github.com/keystonejs/keystone/commit/57092b7c13845fffd1f3767bb609d203afbc2776) [#4465](https://github.com/keystonejs/keystone/pull/4465) Thanks [@timleslie](https://github.com/timleslie)! - Updated `SessionStrategy.start` and `SessionStrategy.end` to be required attributes.
+
+* [`b21b62ed5`](https://github.com/keystonejs/keystone/commit/b21b62ed59fcd83ef2fc89587544b9d64522ba27) [#4477](https://github.com/keystonejs/keystone/pull/4477) Thanks [@timleslie](https://github.com/timleslie)! - Changed the type `SessionContext` to have parameters `startSession` and `endSession` as required. This type also takes a type parameter `T` which corresponds to the data type of the `data` argument to `startSession`.
+
+- [`2da044a0c`](https://github.com/keystonejs/keystone/commit/2da044a0cb22dc16a54b7b5555c2b2678e8d4cab) [#4482](https://github.com/keystonejs/keystone/pull/4482) Thanks [@timleslie](https://github.com/timleslie)! - Removed `config` from type `KeystoneSystem`. The config object is now explicitly passed around where needed to make it clear which code is consuming it.
+  Type `KeystoneAdminUIConfig.getAdditionalFiles` now takes a `config` parameter.
+
+* [`3f3c65ab2`](https://github.com/keystonejs/keystone/commit/3f3c65ab2d206ef1c72f17259e73fb24a79f0a9b) [#4458](https://github.com/keystonejs/keystone/pull/4458) Thanks [@timleslie](https://github.com/timleslie)! - Removed `createContextFromRequest` and `createSessionContext` from `KeystoneSystem` and replaced them with `sessionImplementation`, which provides the same core functionality.
+
+- [`fe52e25e0`](https://github.com/keystonejs/keystone/commit/fe52e25e04db121adbc6a0ce3bd0dbe1c7270180) [#4492](https://github.com/keystonejs/keystone/pull/4492) Thanks [@timleslie](https://github.com/timleslie)! - Replaced the `system` argument on `SessionStrategy.start`, '.end`, and`.get`with`createContext`.
+
+### Minor Changes
+
+- [`68d361d25`](https://github.com/keystonejs/keystone/commit/68d361d2596e8811caf00390c60341ef0c233c7b) [#4467](https://github.com/keystonejs/keystone/pull/4467) Thanks [@timleslie](https://github.com/timleslie)! - Added type for `BaseKeystone.createApolloServer()`.
+
+### Patch Changes
+
+- [`341ee2b4b`](https://github.com/keystonejs/keystone/commit/341ee2b4b7eab89f296146ff9e14ce53233235f6) [#4475](https://github.com/keystonejs/keystone/pull/4475) Thanks [@timleslie](https://github.com/timleslie)! - Use `SerializedAdminMeta` in `createGraphQLSchema` and `FieldType<...>.getAdminMeta?`.
+
+* [`4b019b8cf`](https://github.com/keystonejs/keystone/commit/4b019b8cfcb7bea6f800609da5d07e8c8abfc80a) [#4478](https://github.com/keystonejs/keystone/pull/4478) Thanks [@timleslie](https://github.com/timleslie)! - Refactored types to isolate base keystone type definitions.
+
+- [`bf22d9f2a`](https://github.com/keystonejs/keystone/commit/bf22d9f2afe537111b95571b86d4fd2759eb6a98) [#4498](https://github.com/keystonejs/keystone/pull/4498) Thanks [@timleslie](https://github.com/timleslie)! - Removed usage of `keystone as any`.
+
+* [`1c12b8204`](https://github.com/keystonejs/keystone/commit/1c12b8204f8238997ddaf7337c44cf26ebea9ba4) [#4424](https://github.com/keystonejs/keystone/pull/4424) Thanks [@timleslie](https://github.com/timleslie)! - Added more specific types for `listQuery`, `listQueryMeta`, and the items API.
+
 ## 5.0.0
 
 ### Major Changes

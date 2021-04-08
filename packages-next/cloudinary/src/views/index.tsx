@@ -7,8 +7,8 @@ import {
   FieldController,
   FieldControllerConfig,
 } from '@keystone-next/types';
-import { validateImage } from './Field';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
+import { validateImage } from './Field';
 
 export { Field } from './Field';
 

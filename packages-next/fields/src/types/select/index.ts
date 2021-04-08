@@ -1,7 +1,7 @@
-import { Text } from '@keystonejs/fields';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
+import { Select, PrismaSelectInterface } from './Implementation';
 
 export type SelectFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
@@ -22,14 +22,17 @@ export type SelectFieldConfig<
       displayMode?: 'select' | 'segmented-control';
     };
     isRequired?: boolean;
-    isIndexed?: boolean;
     isUnique?: boolean;
   };
 
 export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: SelectFieldConfig<TGeneratedListTypes>
 ): FieldType<TGeneratedListTypes> => ({
-  type: Text,
+  type: {
+    type: 'Select',
+    implementation: Select,
+    adapters: { prisma: PrismaSelectInterface },
+  },
   config,
   views: resolveView('select/views'),
   getAdminMeta: () => ({

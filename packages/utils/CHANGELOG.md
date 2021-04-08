@@ -1,5 +1,35 @@
 # @keystonejs/utils
 
+## 8.0.0
+
+### Major Changes
+
+- [#5197](https://github.com/keystonejs/keystone/pull/5197) [`97609a623`](https://github.com/keystonejs/keystone/commit/97609a623334fd8d7b9e24dd099abda2e2a37853) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused functions `captureSuspensePromises` and `countArrays`.
+
+## 7.0.0
+
+### Major Changes
+
+- [#5066](https://github.com/keystonejs/keystone/pull/5066) [`b44f07b6a`](https://github.com/keystonejs/keystone/commit/b44f07b6a7ce1eef6d41513096eadea5aa2be5f7) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused functions `flatMap`, `compose`, and `asyncForEach`.
+
+## 6.0.2
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+## 6.0.1
+
+### Patch Changes
+
+- [`94c8d349d`](https://github.com/keystonejs/keystone/commit/94c8d349d3795cd9abec407f78752417623ee56f) [#4729](https://github.com/keystonejs/keystone/pull/4729) Thanks [@timleslie](https://github.com/timleslie)! - Updated type defintions of API functions to be more correct and informative.
+
+## 6.0.0
+
+### Major Changes
+
+- [`b76241695`](https://github.com/keystonejs/keystone/commit/b7624169554b01dba2185ef43856a223d32f12be) [#4430](https://github.com/keystonejs/keystone/pull/4430) Thanks [@timleslie](https://github.com/timleslie)! - Converted package to TypeScript. `flatMap` no longer defaults the `fn` argument to `i => i`.
+
 ## 5.4.3
 
 ### Patch Changes

@@ -1,33 +1,16 @@
 /** @jsx jsx */
 
 import { createContext, Fragment, useContext } from 'react';
-import { ReactEditor, RenderElementProps, useSlate } from 'slate-react';
-import { Transforms } from 'slate';
+import { ReactEditor, RenderElementProps } from 'slate-react';
+import { Transforms, Editor } from 'slate';
 
 import { jsx } from '@keystone-ui/core';
-import { useKeystone } from '@keystone-next/admin-ui/src';
+import { useKeystone } from '@keystone-next/admin-ui/context';
 import { RelationshipSelect } from '@keystone-next/fields/types/relationship/views/RelationshipSelect';
 
 import { ToolbarButton } from './primitives';
-
-// let pageQuery1 = gql`
-//   query {
-//     allPages(where: { site: { key: $SITE_KEY } }) {
-//       title
-//       content {
-//         document(hydrateRelationships: true)
-//         relationships {
-//           mention {
-//             id
-//             role {
-//               canReadWhatever
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// `;
+import { useStaticEditor } from './utils';
+import { useToolbarState } from './toolbar-state';
 
 export type Relationships = Record<
   string,
@@ -35,9 +18,6 @@ export type Relationships = Record<
     listKey: string;
     /** GraphQL fields to select when querying the field */
     selection: string | null;
-    // TODO: remove the need for this
-    /** This must be identical to the labelField of the list specified in the listKey */
-    labelField: string;
   } & (
     | {
         kind: 'inline';
@@ -50,33 +30,30 @@ export type Relationships = Record<
   )
 >;
 
-const DocumentFieldRelationshipsContext = createContext<null | Relationships>(null);
+const DocumentFieldRelationshipsContext = createContext<Relationships>({});
 
 export function useDocumentFieldRelationships() {
-  let relationships = useContext(DocumentFieldRelationshipsContext);
-  if (!relationships) {
-    throw new Error(
-      'DocumentFieldRelationshipsProvider must be used above call to useDocumentFieldRelationships'
-    );
-  }
-  return relationships;
+  return useContext(DocumentFieldRelationshipsContext);
 }
 
 export const DocumentFieldRelationshipsProvider = DocumentFieldRelationshipsContext.Provider;
 
-export function withRelationship(relationships: Relationships, editor: ReactEditor) {
-  const { isVoid } = editor;
+export function withRelationship<T extends Editor>(editor: T): T {
+  const { isVoid, isInline } = editor;
   editor.isVoid = element => {
     return element.type === 'relationship' || isVoid(element);
   };
   editor.isInline = element => {
-    return element.type === 'relationship';
+    return element.type === 'relationship' || isInline(element);
   };
   return editor;
 }
 
-export function RelationshipButton() {
-  const editor = useSlate();
+export function RelationshipButton({ onClose }: { onClose: () => void }) {
+  const {
+    editor,
+    relationships: { isDisabled },
+  } = useToolbarState();
   const relationships = useContext(DocumentFieldRelationshipsContext)!;
   return (
     <Fragment>
@@ -85,12 +62,16 @@ export function RelationshipButton() {
         return (
           <ToolbarButton
             key={key}
-            onClick={() => {
+            isDisabled={isDisabled}
+            onMouseDown={event => {
+              event.preventDefault();
               Transforms.insertNodes(editor, {
                 type: 'relationship',
                 relationship: key,
+                data: null,
                 children: [{ text: '' }],
               });
+              onClose();
             }}
           >
             {relationship.label}
@@ -101,11 +82,15 @@ export function RelationshipButton() {
   );
 }
 
-export function RelationshipElement({ attributes, children, element }: RenderElementProps) {
+export function RelationshipElement({
+  attributes,
+  children,
+  element,
+}: RenderElementProps & { element: { type: 'relationship' } }) {
   const keystone = useKeystone();
-  const editor = useSlate();
+  const editor = useStaticEditor();
   const relationships = useContext(DocumentFieldRelationshipsContext)!;
-  const relationship = relationships[element.relationship as string] as Exclude<
+  const relationship = relationships[element.relationship] as Exclude<
     Relationships[string],
     { kind: 'prop' }
   >;
@@ -135,7 +120,10 @@ export function RelationshipElement({ attributes, children, element }: RenderEle
             list={keystone.adminMeta.lists[relationship.listKey]}
             state={{
               kind: 'one',
-              value: (element.data as any) || null,
+              value:
+                element.data === null
+                  ? null
+                  : { id: element.data.id, label: element.data.label || element.data.id },
               onChange(value) {
                 Transforms.setNodes(
                   editor,

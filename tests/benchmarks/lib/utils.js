@@ -1,12 +1,11 @@
-const { multiAdapterRunners } = require('@keystonejs/test-utils');
-const { runCustomQuery } = require('@keystonejs/server-side-graphql-client');
+const { multiAdapterRunners } = require('@keystone-next/test-utils-legacy');
 
-const timeQuery = async ({ keystone, query, variables, repeat = 1 }) => {
+const timeQuery = async ({ context, query, variables, repeat = 1 }) => {
   const t0_us = process.hrtime.bigint();
   const allErrors = [];
   for (let i = 0; i < repeat; i++) {
     try {
-      await runCustomQuery({ keystone, query, variables });
+      await context.graphql.run({ query, variables });
     } catch (error) {
       allErrors.push(error);
     }
@@ -19,8 +18,8 @@ const timeQuery = async ({ keystone, query, variables, repeat = 1 }) => {
 };
 
 const fixture = async (setupKeystone, fn) => {
-  const subfixtures = multiAdapterRunners().map(({ runner, adapterName }) =>
-    runner(setupKeystone, args => fn({ ...args, adapterName }))
+  const subfixtures = multiAdapterRunners().map(({ runner, provider }) =>
+    runner(setupKeystone, args => fn({ ...args, provider }))
   );
   for (let i = 0; i < subfixtures.length; i++) {
     await subfixtures[i]();

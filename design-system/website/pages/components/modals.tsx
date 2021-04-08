@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { jsx, Stack } from '@keystone-ui/core';
-import { Page } from '../../components/Page';
 import { Button } from '@keystone-ui/button';
 import { Drawer, DrawerController, AlertDialog } from '@keystone-ui/modals';
+import { Page } from '../../components/Page';
 
 export default function ModalsPage() {
   let [isNarrowOpen, setIsNarrowOpen] = useState(false);

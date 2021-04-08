@@ -1,7 +1,0 @@
-{
-  "main": "dist/fields-content.cjs.js",
-  "module": "dist/fields-content.esm.js",
-  "field-types": {
-    "source": "../src/blocks"
-  }
-}

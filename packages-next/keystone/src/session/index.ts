@@ -1,26 +1,22 @@
 import { IncomingMessage, ServerResponse } from 'http';
+import { mergeSchemas } from '@graphql-tools/merge';
+import { GraphQLSchema } from 'graphql';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
-import { execute, parse } from 'graphql';
 import {
   SessionStrategy,
   JSONValue,
   SessionStoreFunction,
   SessionContext,
-  KeystoneSystem,
+  CreateContext,
+  KeystoneContext,
 } from '@keystone-next/types';
-
 // uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
+import { gql } from '../schema';
 
 function generateSessionId() {
   return uid(24);
-}
-
-function sessionStrategy<TSessionStrategy extends SessionStrategy<any>>(
-  sessionStrategy: TSessionStrategy
-): TSessionStrategy {
-  return sessionStrategy;
 }
 
 const TOKEN_NAME = 'keystonejs-session';
@@ -34,6 +30,7 @@ type StatelessSessionsOptions = {
   secret: string;
   /**
    * Iron seal options for customizing the key derivation algorithm used to generate encryption and integrity verification keys as well as the algorithms and salt sizes used.
+   * See {@link https://hapi.dev/module/iron/api/?v=6.0.0#options} for available options.
    *
    * @default Iron.defaults
    */
@@ -61,67 +58,71 @@ type StatelessSessionsOptions = {
    * @default '/'
    */
   path?: string;
+  /**
+   * Specifies the domain for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.3|`Domain` `Set-Cookie` attribute}
+   *
+   * @default current domain
+   */
+  domain?: string;
 };
 
 type FieldSelections = {
   [listKey: string]: string;
 };
 
-type CreateSession = ReturnType<typeof statelessSessions>;
-
 /* TODO:
   - [ ] We could support additional where input to validate item sessions (e.g an isEnabled boolean)
 */
 
-export function withItemData(createSession: CreateSession, fieldSelections: FieldSelections = {}) {
+export function withItemData<T extends { listKey: string; itemId: string }>(
+  createSession: () => SessionStrategy<T>,
+  fieldSelections: FieldSelections = {}
+): () => SessionStrategy<T & { data: any }> {
   return (): SessionStrategy<any> => {
     const { get, ...sessionStrategy } = createSession();
     return {
       ...sessionStrategy,
-      get: async ({ req, system }) => {
-        const session = await get({ req, system });
+      get: async ({ req, createContext }) => {
+        const session = await get({ req, createContext });
+        const sudoContext = createContext({}).sudo();
         if (
           !session ||
           !session.listKey ||
           !session.itemId ||
-          !system.adminMeta.lists[session.listKey]
+          !sudoContext.lists[session.listKey]
         ) {
           return;
         }
-        const context = system.createContext({ skipAccessControl: true });
-        const { gqlNames } = system.adminMeta.lists[session.listKey];
-        // If no field selection is specified, just load the id. We still load the item,
-        // because doing so validates that it exists in the database
-        const fields = fieldSelections[session.listKey] || 'id';
-        const query = parse(`query($id: ID!) {
-          item: ${gqlNames.itemQueryName}(where: { id: $id }) {
-            ${fields}
-          }
-        }`);
-        const args = { id: session.itemId };
-        const result = await execute(system.graphQLSchema, query, null, context, args);
-        // TODO: This causes "not found" errors to throw, which is not what we want
-        // TODO: Also, why is this coming back as an access denied error instead of "not found" with an invalid session?
-        // if (result.errors?.length) {
-        //   throw result.errors[0];
-        // }
-        // If there is no matching item found, return no session
-        if (!result?.data?.item) {
+
+        // NOTE: This is wrapped in a try-catch block because a "not found" result will currently
+        // throw; I think this needs to be reviewed, but for now this prevents a system crash when
+        // the session item is invalid
+        try {
+          // If no field selection is specified, just load the id. We still load the item,
+          // because doing so validates that it exists in the database
+          const item = await sudoContext.lists[session.listKey].findOne({
+            where: { id: session.itemId },
+            resolveFields: fieldSelections[session.listKey] || 'id',
+          });
+          return { ...session, data: item };
+        } catch (e) {
+          // TODO: This swallows all errors, we need a way to differentiate between "not found" and
+          // actual exceptions that should be thrown
           return;
         }
-        return { ...session, data: result.data.item };
       },
     };
   };
 }
 
-export function statelessSessions({
+export function statelessSessions<T>({
   secret,
   maxAge = MAX_AGE,
   path = '/',
   secure = process.env.NODE_ENV === 'production',
   ironOptions = Iron.defaults,
-}: StatelessSessionsOptions) {
+  domain,
+}: StatelessSessionsOptions): () => SessionStrategy<T> {
   return () => {
     if (!secret) {
       throw new Error('You must specify a session secret to use sessions');
@@ -129,9 +130,8 @@ export function statelessSessions({
     if (secret.length < 32) {
       throw new Error('The session secret must be at least 32 characters long');
     }
-    return sessionStrategy({
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      async get({ req, system }) {
+    return {
+      async get({ req }) {
         if (!req.headers.cookie) return;
         let cookies = cookie.parse(req.headers.cookie);
         if (!cookies[TOKEN_NAME]) return;
@@ -149,6 +149,7 @@ export function statelessSessions({
             secure,
             path,
             sameSite: 'lax',
+            domain,
           })
         );
       },
@@ -164,12 +165,13 @@ export function statelessSessions({
             secure,
             path,
             sameSite: 'lax',
+            domain,
           })
         );
 
         return sealedData;
       },
-    });
+    };
   };
 }
 
@@ -183,26 +185,37 @@ export function storedSessions({
   return () => {
     let { get, start, end } = statelessSessions({ ...statelessSessionsOptions, maxAge })();
     let store = typeof storeOption === 'function' ? storeOption({ maxAge }) : storeOption;
+    let isConnected = false;
     return {
-      connect: store.connect,
-      disconnect: store.disconnect,
-      async get({ req, system }) {
-        let sessionId = await get({ req, system });
+      async get({ req, createContext }) {
+        let sessionId = await get({ req, createContext });
         if (typeof sessionId === 'string') {
+          if (!isConnected) {
+            await store.connect?.();
+            isConnected = true;
+          }
           return store.get(sessionId);
         }
       },
-      async start({ res, data, system }) {
+      async start({ res, data, createContext }) {
         let sessionId = generateSessionId();
+        if (!isConnected) {
+          await store.connect?.();
+          isConnected = true;
+        }
         await store.set(sessionId, data);
-        return start({ res, data: { sessionId }, system });
+        return start?.({ res, data: { sessionId }, createContext }) || '';
       },
-      async end({ req, res, system }) {
-        let sessionId = await get({ req, system });
+      async end({ req, res, createContext }) {
+        let sessionId = await get({ req, createContext });
         if (typeof sessionId === 'string') {
+          if (!isConnected) {
+            await store.connect?.();
+            isConnected = true;
+          }
           await store.delete(sessionId);
         }
-        await end({ req, res, system });
+        await end?.({ req, res, createContext });
       },
     };
   };
@@ -211,28 +224,36 @@ export function storedSessions({
 /**
  * This is the function createSystem uses to implement the session strategy provided
  */
-export function implementSession(sessionStrategy: SessionStrategy<unknown>) {
-  let isConnected = false;
+export async function createSessionContext<T>(
+  sessionStrategy: SessionStrategy<T>,
+  req: IncomingMessage,
+  res: ServerResponse,
+  createContext: CreateContext
+): Promise<SessionContext<T>> {
   return {
-    async createContext(
-      req: IncomingMessage,
-      res: ServerResponse,
-      system: KeystoneSystem
-    ): Promise<SessionContext> {
-      if (!isConnected) {
-        await sessionStrategy.connect?.();
-        isConnected = true;
-      }
-      const session = await sessionStrategy.get({ req, system });
-      const startSession = sessionStrategy.start;
-      const endSession = sessionStrategy.end;
-      return {
-        session,
-        startSession: startSession
-          ? (data: unknown) => startSession({ res, data, system })
-          : undefined,
-        endSession: endSession ? () => endSession({ req, res, system }) : undefined,
-      };
-    },
+    session: await sessionStrategy.get({ req, createContext }),
+    startSession: (data: T) => sessionStrategy.start({ res, data, createContext }),
+    endSession: () => sessionStrategy.end({ req, res, createContext }),
   };
+}
+
+export function sessionSchema(graphQLSchema: GraphQLSchema) {
+  return mergeSchemas({
+    schemas: [graphQLSchema],
+    typeDefs: gql`
+      type Mutation {
+        endSession: Boolean!
+      }
+    `,
+    resolvers: {
+      Mutation: {
+        async endSession(rootVal, args, context: KeystoneContext) {
+          if (context.endSession) {
+            await context.endSession();
+          }
+          return true;
+        },
+      },
+    },
+  });
 }

@@ -1,52 +1,86 @@
 /** @jsx jsx */
 
-import { ReactNode, forwardRef } from 'react';
-import { Editor, Element, Node, Path, Transforms } from 'slate';
-import { ReactEditor, useSlate } from 'slate-react';
+import { ReactNode, forwardRef, useMemo } from 'react';
+import { Editor, Element, Node, Path, Transforms, Range } from 'slate';
 import { jsx } from '@keystone-ui/core';
 
-import { DocumentFeatures } from '../views';
-
-import {
-  getMaybeMarkdownShortcutText,
-  isBlockActive,
-  moveChildren,
-  onlyContainerNodeInCurrentSelection,
-} from './utils';
+import { isElementActive, moveChildren, nodeTypeMatcher } from './utils';
 import { ToolbarButton } from './primitives';
+import { getListTypeAbove, useToolbarState } from './toolbar-state';
 
-export const isListType = (type: string) => type === 'ordered-list' || type === 'unordered-list';
+export const isListType = (type: string | undefined) =>
+  type === 'ordered-list' || type === 'unordered-list';
 
-const toggleList = (editor: ReactEditor, format: string) => {
-  const isActive = isBlockActive(editor, format);
-  if (isActive) {
+export const isListNode = (
+  node: Node
+): node is Element & { type: 'ordered-list' | 'unordered-list' } => isListType(node.type);
+
+export const toggleList = (editor: Editor, format: 'ordered-list' | 'unordered-list') => {
+  const listAbove = getListTypeAbove(editor);
+  const isActive =
+    isElementActive(editor, format) && (listAbove === 'none' || listAbove === format);
+  Editor.withoutNormalizing(editor, () => {
     Transforms.unwrapNodes(editor, {
-      match: n => isListType(n.type as string),
+      match: isListNode,
       split: true,
+      mode: isActive ? 'all' : 'lowest',
     });
-  } else {
-    const oppositeListType = format === 'ordered-list' ? 'unordered-list' : 'ordered-list';
-    if (isBlockActive(editor, oppositeListType)) {
-      Transforms.setNodes(
+    if (!isActive) {
+      Transforms.wrapNodes(
         editor,
-        { type: format },
-        { match: node => isListType(node.type as string), split: true }
+        { type: format, children: [] },
+        { match: x => x.type !== 'list-item-content' && Editor.isBlock(editor, x) }
       );
-    } else {
-      Transforms.wrapNodes(editor, { type: format, children: [] });
     }
-  }
+  });
 };
 
-export function withList(listTypes: DocumentFeatures['listTypes'], editor: ReactEditor) {
-  const { insertBreak, normalizeNode, insertText } = editor;
+function getAncestorList(editor: Editor) {
+  if (editor.selection) {
+    const listItem = Editor.above(editor, {
+      match: nodeTypeMatcher('list-item'),
+    });
+    const list = Editor.above(editor, {
+      match: isListNode,
+    });
+    if (listItem && list) {
+      return {
+        isInside: true,
+        listItem,
+        list,
+      } as const;
+    }
+  }
+  return { isInside: false } as const;
+}
+
+export function withList<T extends Editor>(editor: T): T {
+  const { insertBreak, normalizeNode, deleteBackward } = editor;
+  editor.deleteBackward = unit => {
+    if (editor.selection) {
+      const ancestorList = getAncestorList(editor);
+      if (
+        ancestorList.isInside &&
+        Range.isCollapsed(editor.selection) &&
+        Editor.isStart(editor, editor.selection.anchor, ancestorList.list[1])
+      ) {
+        Transforms.unwrapNodes(editor, {
+          match: isListNode,
+          split: true,
+        });
+        return;
+      }
+    }
+    deleteBackward(unit);
+  };
   editor.insertBreak = () => {
     const [listItem] = Editor.nodes(editor, {
       match: node => node.type === 'list-item',
+      mode: 'lowest',
     });
     if (listItem && Node.string(listItem[0]) === '') {
       Transforms.unwrapNodes(editor, {
-        match: node => isListType(node.type as string),
+        match: isListNode,
         split: true,
       });
       return;
@@ -55,73 +89,60 @@ export function withList(listTypes: DocumentFeatures['listTypes'], editor: React
     insertBreak();
   };
 
-  if (listTypes.ordered || listTypes.unordered) {
-    editor.insertText = text => {
-      const [shortcutText, deleteShortcutText] = getMaybeMarkdownShortcutText(text, editor);
-      const listType =
-        shortcutText === '1.' && listTypes.ordered
-          ? 'ordered-list'
-          : shortcutText === '-' && listTypes.unordered
-          ? 'unordered-list'
-          : undefined;
-      if (listType) {
-        Editor.withoutNormalizing(editor, () => {
-          deleteShortcutText();
-          Transforms.setNodes(
-            editor,
-            { type: 'list-item' },
-            { match: n => Editor.isBlock(editor, n) }
-          );
-          Transforms.wrapNodes(
-            editor,
-            { type: listType, children: [] },
-            { match: n => n.type === 'list-item' }
-          );
-        });
-
-        return;
-      }
-
-      insertText(text);
-    };
-  }
   editor.normalizeNode = entry => {
     const [node, path] = entry;
     if (Element.isElement(node) || Editor.isEditor(node)) {
-      const isList = isListType(node.type as string);
+      const isElementBeingNormalizedAList = isListNode(node);
       for (const [childNode, childPath] of Node.children(editor, path)) {
-        if (isList) {
-          if (childNode.type !== 'list-item' && !isListType(childNode.type as string)) {
-            Transforms.setNodes(editor, { type: 'list-item' }, { at: childPath });
+        const index = childPath[childPath.length - 1];
+        // merge sibling lists
+        if (isListNode(childNode)) {
+          if (node.children[childPath[childPath.length - 1] + 1]?.type === childNode.type) {
+            const siblingNodePath = Path.next(childPath);
+            moveChildren(editor, siblingNodePath, [...childPath, childNode.children.length]);
+            Transforms.removeNodes(editor, { at: siblingNodePath });
             return;
           }
-        } else if (childNode.type === 'list-item') {
-          Transforms.setNodes(editor, { type: 'paragraph' }, { at: childPath });
-          return;
+          if (isElementBeingNormalizedAList) {
+            const previousChild = node.children[index - 1];
+            if (Element.isElement(previousChild)) {
+              Transforms.moveNodes(editor, {
+                at: childPath,
+                to: [...Path.previous(childPath), previousChild.children.length - 1],
+              });
+            } else {
+              Transforms.unwrapNodes(editor, { at: childPath });
+            }
+            return;
+          }
         }
         if (
           node.type === 'list-item' &&
-          Element.isElement(childNode) &&
-          !editor.isInline(childNode)
+          childNode.type !== 'list-item-content' &&
+          index === 0 &&
+          Editor.isBlock(editor, childNode)
         ) {
+          if (path[path.length - 1] !== 0) {
+            const previousChild = Node.get(editor, Path.previous(path));
+
+            if (Element.isElement(previousChild)) {
+              Transforms.moveNodes(editor, {
+                at: path,
+                to: [...Path.previous(path), previousChild.children.length],
+              });
+              return;
+            }
+          }
           Transforms.unwrapNodes(editor, { at: childPath });
           return;
         }
-
-        if (
-          isListType(childNode.type as string) &&
-          node.children[childPath[childPath.length - 1] + 1]?.type === childNode.type
-        ) {
-          const [, siblingNodePath] = Editor.node(editor, Path.next(childPath));
-          moveChildren(editor, siblingNodePath, [
-            ...childPath,
-            (childNode.children as Element).length as number,
-          ]);
-          Transforms.removeNodes(editor, { at: siblingNodePath });
+        if (node.type === 'list-item' && childNode.type === 'list-item-content' && index !== 0) {
+          Transforms.splitNodes(editor, { at: childPath });
           return;
         }
       }
     }
+
     normalizeNode(entry);
   };
   return editor;
@@ -133,21 +154,80 @@ export const ListButton = forwardRef<
     type: 'ordered-list' | 'unordered-list';
     children: ReactNode;
   }
->(({ type, ...props }, ref) => {
-  const editor = useSlate();
-  return (
-    <ToolbarButton
-      ref={ref}
-      isDisabled={
-        !onlyContainerNodeInCurrentSelection(editor) &&
-        !(isBlockActive(editor, 'ordered-list') || isBlockActive(editor, 'unordered-list'))
-      }
-      isSelected={isBlockActive(editor, type)}
-      onMouseDown={event => {
-        event.preventDefault();
-        toggleList(editor, type);
-      }}
-      {...props}
-    />
-  );
+>(function ListButton(props, ref) {
+  const {
+    editor,
+    lists: {
+      [props.type === 'ordered-list' ? 'ordered' : 'unordered']: { isDisabled, isSelected },
+    },
+  } = useToolbarState();
+
+  return useMemo(() => {
+    const { type, ...restProps } = props;
+    return (
+      <ToolbarButton
+        ref={ref}
+        isDisabled={isDisabled}
+        isSelected={isSelected}
+        onMouseDown={event => {
+          event.preventDefault();
+          toggleList(editor, type);
+        }}
+        {...restProps}
+      />
+    );
+  }, [props, ref, isDisabled, isSelected]);
 });
+
+export function nestList(editor: Editor) {
+  const block = Editor.above(editor, {
+    match: n => Editor.isBlock(editor, n),
+  });
+
+  if (!block || block[0].type !== 'list-item-content') {
+    return false;
+  }
+  const listItemPath = Path.parent(block[1]);
+  // we're the first item in the list therefore we can't nest
+  if (listItemPath[listItemPath.length - 1] === 0) {
+    return false;
+  }
+  const previousListItemPath = Path.previous(listItemPath);
+  const previousListItemNode = Node.get(editor, previousListItemPath) as Element;
+  if (previousListItemNode.children.length !== 1) {
+    // there's a list nested inside our previous sibling list item so move there
+    Transforms.moveNodes(editor, {
+      at: listItemPath,
+      to: [
+        ...previousListItemPath,
+        previousListItemNode.children.length - 1,
+        (previousListItemNode.children[previousListItemNode.children.length - 1] as any).children
+          .length,
+      ],
+    });
+    return true;
+  }
+  const type = Editor.parent(editor, Path.parent(block[1]))[0].type as
+    | 'ordered-list'
+    | 'unordered-list';
+  Transforms.wrapNodes(editor, {
+    type,
+    children: [],
+  });
+  return true;
+}
+
+export function unnestList(editor: Editor) {
+  const block = Editor.above(editor, {
+    match: n => Editor.isBlock(editor, n),
+  });
+
+  if (block && block[0].type === 'list-item-content') {
+    Transforms.unwrapNodes(editor, {
+      match: isListNode,
+      split: true,
+    });
+    return true;
+  }
+  return false;
+}

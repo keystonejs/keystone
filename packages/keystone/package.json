@@ -1,51 +1,30 @@
 {
-  "name": "@keystonejs/keystone",
+  "name": "@keystone-next/keystone-legacy",
   "description": "The main @keystonejs class & CLI. This is where the magic happens.",
-  "version": "17.1.2",
+  "version": "23.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
-  },
-  "bin": {
-    "keystone": "bin/cli.js"
+    "node": ">=12.13.0"
   },
   "dependencies": {
-    "@keystonejs/access-control": "^6.3.0",
-    "@keystonejs/app-version": "^1.0.2",
-    "@keystonejs/session": "^8.1.1",
-    "@keystonejs/utils": "^5.4.3",
+    "@keystone-next/access-control-legacy": "^9.0.1",
+    "@keystone-next/utils-legacy": "^8.0.0",
     "apollo-errors": "^1.9.0",
-    "apollo-server-express": "^2.19.0",
-    "arg": "^5.0.0",
-    "chalk": "^4.1.0",
-    "ci-info": "^2.0.0",
-    "cors": "^2.8.5",
+    "apollo-server-express": "^2.22.2",
     "cuid": "^2.1.8",
-    "endent": "^2.0.1",
     "ensure-error": "^3.0.1",
     "express": "^4.17.1",
-    "express-pino-logger": "^5.0.0",
-    "falsey": "^1.0.0",
-    "fs-extra": "^9.0.1",
-    "globby": "^11.0.1",
-    "graphql": "^15.4.0",
     "graphql-type-json": "^0.3.2",
-    "lodash.flattendeep": "^4.4.0",
-    "micro-memoize": "^4.0.9",
-    "ora": "^5.1.0",
-    "p-waterfall": "^2.1.0",
-    "pino": "^6.7.0",
+    "graphql-upload": "^11.0.0",
     "pluralize": "^8.0.0",
-    "serialize-error": "^7.0.1",
-    "stack-utils": "^2.0.3",
-    "terminal-link": "^2.1.1"
+    "serialize-error": "^8.0.1",
+    "stack-utils": "^2.0.3"
   },
   "devDependencies": {
-    "@keystonejs/fields": "^20.1.2",
-    "@keystonejs/test-utils": "*",
-    "p-is-promise": "^3.0.0",
-    "tmp": "^0.2.1"
+    "@keystone-next/fields": "^6.0.0",
+    "@keystone-next/test-utils-legacy": "*",
+    "graphql": "^15.5.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/keystone"
 }

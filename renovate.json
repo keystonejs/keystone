@@ -6,12 +6,7 @@
   "prConcurrentLimit": 0,
   "packageRules": [
     {
-      "packageNames": ["slate", "slate-react"],
-      "paths": ["packages/**/package.json"],
-      "enabled": false
-    },
-    {
-      "packagePatterns": ["gatsby", "remark", "babel-plugin-remove-graphql-queries"],
+      "packagePatterns": ["remark", "babel-plugin-remove-graphql-queries", "react-day-picker"],
       "enabled": false
     },
     {
@@ -20,7 +15,7 @@
     }
   ],
   "rangeStrategy": "bump",
-  "schedule": ["before 7am on Tuesday"],
+  "schedule": ["before 7am on Tuesday", "before 7am on Wednesday"],
   "timezone": "Australia/Sydney",
   "updateNotScheduled": false
 }

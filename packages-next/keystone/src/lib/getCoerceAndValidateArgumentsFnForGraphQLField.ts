@@ -43,8 +43,9 @@ function getTypeNodeForType(type: GraphQLType): TypeNode {
 
 export function getCoerceAndValidateArgumentsFnForGraphQLField(
   schema: GraphQLSchema,
-  field: GraphQLField<any, any>
+  field?: GraphQLField<any, any>
 ) {
+  if (!field) return;
   const variableDefintions: VariableDefinitionNode[] = [];
 
   for (const arg of field.args) {

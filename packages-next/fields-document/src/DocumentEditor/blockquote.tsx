@@ -1,28 +1,32 @@
 /** @jsx jsx */
 
-import { ButtonHTMLAttributes } from 'react';
+import { ComponentProps, Fragment, useMemo } from 'react';
 import { Editor, Node, Path, Range, Transforms } from 'slate';
-import { ReactEditor, RenderElementProps, useEditor } from 'slate-react';
+import { ReactEditor, RenderElementProps } from 'slate-react';
 
 import { jsx, useTheme } from '@keystone-ui/core';
 import { Tooltip } from '@keystone-ui/tooltip';
 
 import { IconBase } from './Toolbar';
-import { ToolbarButton } from './primitives';
-import { getMaybeMarkdownShortcutText } from './utils';
+import { KeyboardInTooltip, ToolbarButton } from './primitives';
+import { isElementActive } from './utils';
+import { useToolbarState } from './toolbar-state';
 
 export const insertBlockquote = (editor: ReactEditor) => {
-  Transforms.wrapNodes(
-    editor,
-    {
+  const isActive = isElementActive(editor, 'blockquote');
+  if (isActive) {
+    Transforms.unwrapNodes(editor, {
+      match: node => node.type === 'blockquote',
+    });
+  } else {
+    Transforms.wrapNodes(editor, {
       type: 'blockquote',
-      children: [{ type: 'paragraph', children: [{ text: '' }] }],
-    },
-    { match: node => node.type === 'paragraph' }
-  );
+      children: [],
+    });
+  }
 };
 
-function getDirectBlockquoteParentFromSelection(editor: ReactEditor) {
+function getDirectBlockquoteParentFromSelection(editor: Editor) {
   if (!editor.selection) return { isInside: false } as const;
   const [, parentPath] = Editor.parent(editor, editor.selection);
   const [maybeBlockquoteParent, maybeBlockquoteParentPath] = Editor.parent(editor, parentPath);
@@ -32,8 +36,8 @@ function getDirectBlockquoteParentFromSelection(editor: ReactEditor) {
     : ({ isInside: false } as const);
 }
 
-export const withBlockquote = (enableBlockquote: boolean, editor: ReactEditor) => {
-  const { insertBreak, deleteBackward, insertText } = editor;
+export function withBlockquote<T extends Editor>(editor: T): T {
+  const { insertBreak, deleteBackward } = editor;
   editor.deleteBackward = unit => {
     if (editor.selection) {
       const parentBlockquote = getDirectBlockquoteParentFromSelection(editor);
@@ -45,7 +49,10 @@ export const withBlockquote = (enableBlockquote: boolean, editor: ReactEditor) =
         // it's the first paragraph in the panel
         editor.selection.anchor.path[editor.selection.anchor.path.length - 2] === 0
       ) {
-        Transforms.unwrapNodes(editor, { at: parentBlockquote.path });
+        Transforms.unwrapNodes(editor, {
+          match: node => node.type === 'blockquote',
+          split: true,
+        });
         return;
       }
     }
@@ -65,32 +72,19 @@ export const withBlockquote = (enableBlockquote: boolean, editor: ReactEditor) =
     }
     insertBreak();
   };
-  if (enableBlockquote) {
-    editor.insertText = text => {
-      const [shortcutText, deleteShortcutText] = getMaybeMarkdownShortcutText(text, editor);
-      if (shortcutText === '>') {
-        deleteShortcutText();
-        Transforms.wrapNodes(
-          editor,
-          { type: 'blockquote', children: [] },
-          { match: node => node.type === 'paragraph' }
-        );
-        return;
-      }
-      insertText(text);
-    };
-  }
+
   return editor;
-};
+}
 
 export const BlockquoteElement = ({ attributes, children }: RenderElementProps) => {
   const { colors, spacing } = useTheme();
   return (
     <blockquote
       css={{
+        borderLeft: '3px solid #CBD5E0',
         color: colors.foregroundDim,
         margin: 0,
-        padding: `0 ${spacing.xxlarge}px`,
+        padding: `0 ${spacing.xlarge}px`,
       }}
       {...attributes}
     >
@@ -99,30 +93,44 @@ export const BlockquoteElement = ({ attributes, children }: RenderElementProps) 
   );
 };
 
-const BlockquoteButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
-  // useEditor does not update when the value/selection changes.
-  // that's fine for what it's being used for here
-  // because we're just inserting things on events, not reading things in render
-  const editor = useEditor();
-
-  return (
-    <Tooltip content="Quote" weight="subtle">
-      {attrs => (
-        <ToolbarButton
-          onMouseDown={event => {
-            event.preventDefault();
-            insertBlockquote(editor);
-          }}
-          {...attrs}
-          {...props}
-        >
-          <QuoteIcon />
-        </ToolbarButton>
-      )}
-    </Tooltip>
+const BlockquoteButton = ({
+  attrs,
+}: {
+  attrs: Parameters<ComponentProps<typeof Tooltip>['children']>[0];
+}) => {
+  const {
+    editor,
+    blockquote: { isDisabled, isSelected },
+  } = useToolbarState();
+  return useMemo(
+    () => (
+      <ToolbarButton
+        isSelected={isSelected}
+        isDisabled={isDisabled}
+        onMouseDown={event => {
+          event.preventDefault();
+          insertBlockquote(editor);
+        }}
+        {...attrs}
+      >
+        <QuoteIcon />
+      </ToolbarButton>
+    ),
+    [attrs, isDisabled, isSelected]
   );
 };
-export const blockquoteButton = <BlockquoteButton />;
+export const blockquoteButton = (
+  <Tooltip
+    content={
+      <Fragment>
+        Quote<KeyboardInTooltip>{'> '}</KeyboardInTooltip>
+      </Fragment>
+    }
+    weight="subtle"
+  >
+    {attrs => <BlockquoteButton attrs={attrs} />}
+  </Tooltip>
+);
 
 const QuoteIcon = () => (
   <IconBase>

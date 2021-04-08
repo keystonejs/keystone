@@ -7,10 +7,20 @@ import { Button } from '@keystone-ui/button';
 import { TextInput } from '@keystone-ui/fields';
 import { Notice } from '@keystone-ui/notice';
 
-import { SigninContainer } from '../components/SigninContainer';
 import { useMutation, gql } from '@keystone-next/admin-ui/apollo';
 import { useRawKeystone, useReinitContext } from '@keystone-next/admin-ui/context';
 import { useRouter } from '@keystone-next/admin-ui/router';
+import { SigninContainer } from '../components/SigninContainer';
+
+type SigninPageProps = {
+  identityField: string;
+  secretField: string;
+  mutationName: string;
+  successTypename: string;
+  failureTypename: string;
+};
+
+export const getSigninPage = (props: SigninPageProps) => () => <SigninPage {...props} />;
 
 export const SigninPage = ({
   identityField,
@@ -18,13 +28,7 @@ export const SigninPage = ({
   mutationName,
   successTypename,
   failureTypename,
-}: {
-  identityField: string;
-  secretField: string;
-  mutationName: string;
-  successTypename: string;
-  failureTypename: string;
-}) => {
+}: SigninPageProps) => {
   const mutation = gql`
     mutation($identity: String!, $secret: String!) {
       authenticate: ${mutationName}(${identityField}: $identity, ${secretField}: $secret) {

@@ -1,4 +1,3 @@
-const isPromise = require('p-is-promise');
 const {
   getType,
   escapeRegExp,
@@ -14,11 +13,8 @@ const {
   defaultObj,
   arrayToObject,
   flatten,
-  flatMap,
   zipObj,
-  captureSuspensePromises,
   upcase,
-  asyncForEach,
   ...utils
 } = require('../src');
 
@@ -212,24 +208,6 @@ describe('utils', () => {
     expect(flatten(a)).toEqual([1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]);
   });
 
-  test('flatMap', () => {
-    expect(flatMap([])).toEqual([]);
-    expect(flatMap([1, 2, 3])).toEqual([1, 2, 3]);
-    expect(flatMap([[1, 2, 3]])).toEqual([1, 2, 3]);
-    expect(
-      flatMap([
-        [1, 2, 3],
-        [4, 5],
-        6,
-        [
-          [7, 8],
-          [9, 10],
-        ],
-      ])
-    ).toEqual([1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]);
-    expect(flatMap([{ vals: [2, 2] }, { vals: [3] }], x => x.vals)).toEqual([2, 2, 3]);
-  });
-
   ['noop', 'identity'].forEach(fnName => {
     test(fnName, () => {
       expect(utils[fnName]()).toEqual(undefined);
@@ -294,138 +272,6 @@ describe('utils', () => {
           { d: 20, c: ['3', '4'] },
         ],
       },
-    });
-  });
-
-  test('asyncForEach', async () => {
-    const callback = jest.fn().mockResolvedValue(1);
-    const array = [10, 20, 30];
-    await asyncForEach(array, callback);
-    expect(callback).toHaveBeenCalledTimes(3);
-    expect(callback).toHaveBeenNthCalledWith(1, 10, 0, array);
-    expect(callback).toHaveBeenNthCalledWith(2, 20, 1, array);
-    expect(callback).toHaveBeenNthCalledWith(3, 30, 2, array);
-  });
-
-  describe('captureSuspensePromises', () => {
-    test('executes all fns sync when no Promises thrown', () => {
-      const funcs = [jest.fn(), jest.fn()];
-
-      try {
-        captureSuspensePromises(funcs);
-      } catch (e) {}
-
-      expect(funcs[0]).toHaveBeenCalledTimes(1);
-      expect(funcs[1]).toHaveBeenCalledTimes(1);
-    });
-
-    test('does not throw when no executors throw', () => {
-      const funcs = [jest.fn(), jest.fn()];
-
-      try {
-        captureSuspensePromises(funcs);
-      } catch (e) {
-        expect(true).toBeFalsey();
-      }
-
-      expect(funcs[0]).toHaveBeenCalledTimes(1);
-      expect(funcs[1]).toHaveBeenCalledTimes(1);
-    });
-
-    test('executes all fns sync when a Promise is thrown', () => {
-      const funcs = [
-        jest.fn(),
-        jest.fn(() => {
-          throw Promise.resolve();
-        }),
-        jest.fn(),
-      ];
-
-      try {
-        captureSuspensePromises(funcs);
-      } catch (e) {}
-
-      expect(funcs[0]).toHaveBeenCalledTimes(1);
-      expect(funcs[1]).toHaveBeenCalledTimes(1);
-      expect(funcs[2]).toHaveBeenCalledTimes(1);
-    });
-
-    test('throws a Promise when executor throws a Promise', () => {
-      const funcs = [
-        jest.fn(),
-        jest.fn(() => {
-          throw Promise.resolve();
-        }),
-        jest.fn(),
-      ];
-
-      try {
-        captureSuspensePromises(funcs);
-        expect(true).toBeFalsey();
-      } catch (maybePromise) {
-        expect(isPromise(maybePromise)).toBeTruthy();
-      }
-    });
-
-    test('thrown Promise resolves all thrown Promises', () => {
-      const resolvers = [jest.fn(), jest.fn(), jest.fn()];
-
-      const funcs = [
-        jest.fn(() => {
-          throw new Promise(resolve => {
-            // Artificially delay this promise's resolution to the next tick
-            // which will ensure the microtask (aka: Promise) queue is fully
-            // flushed
-            process.nextTick(() => {
-              resolvers[0]();
-              resolve();
-            });
-          });
-        }),
-        jest.fn(() => {
-          throw Promise.resolve().then(resolvers[1]);
-        }),
-        jest.fn(() => {
-          throw Promise.resolve().then(resolvers[2]);
-        }),
-      ];
-
-      try {
-        captureSuspensePromises(funcs);
-      } catch (thrownPromise) {
-        return thrownPromise.then(() => {
-          expect(resolvers[0]).toHaveBeenCalledTimes(1);
-          expect(resolvers[1]).toHaveBeenCalledTimes(1);
-          expect(resolvers[2]).toHaveBeenCalledTimes(1);
-        });
-      }
-
-      expect(true).toBeFalsey();
-    });
-
-    test('throws a Error when executor throws a Error', () => {
-      const funcs = [
-        jest.fn(),
-        jest.fn(() => {
-          throw new Error();
-        }),
-        jest.fn(),
-      ];
-
-      try {
-        captureSuspensePromises(funcs);
-        expect(true).toBeFalsey();
-      } catch (maybePromise) {
-        expect(!isPromise(maybePromise)).toBeTruthy();
-      }
-    });
-
-    test('acts like .map when no promises thrown', () => {
-      const funcs = [jest.fn(() => 'foo'), jest.fn(() => 'bar')];
-
-      const result = captureSuspensePromises(funcs);
-
-      expect(result).toMatchObject(['foo', 'bar']);
     });
   });
 });

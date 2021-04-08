@@ -5,7 +5,11 @@ import { AlertTriangleIcon } from '@keystone-ui/icons/icons/AlertTriangleIcon';
 import { SignoutButton } from '../../components/SignoutButton';
 import { ErrorContainer } from '../../components/Errors';
 
-export const NoAccessPage = ({ sessionsEnabled }: { sessionsEnabled: boolean }) => {
+type NoAccessPage = { sessionsEnabled: boolean };
+
+export const getNoAccessPage = (props: NoAccessPage) => () => <NoAccessPage {...props} />;
+
+export const NoAccessPage = ({ sessionsEnabled }: NoAccessPage) => {
   return (
     <ErrorContainer>
       <Stack align="center" gap="medium">

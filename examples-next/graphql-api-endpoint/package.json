@@ -1,0 +1,22 @@
+{
+  "name": "keystone-next-app",
+  "version": "0.0.5",
+  "private": true,
+  "scripts": {
+    "dev": "keystone-next dev",
+    "start": "keystone-next start",
+    "build": "keystone-next build"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.13.10",
+    "@keystone-next/auth": "^20.0.0",
+    "@keystone-next/fields": "^6.0.0",
+    "@keystone-next/fields-document": "^4.0.0",
+    "@keystone-next/keystone": "^15.0.0",
+    "apollo-server-micro": "^2.22.2"
+  },
+  "prisma": {
+    "schema": ".keystone/prisma/schema.prisma"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/graphql-api-endpoint"
+}

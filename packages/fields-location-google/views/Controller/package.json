@@ -1,4 +1,0 @@
-{
-  "main": "dist/fields-location-google.cjs.js",
-  "module": "dist/fields-location-google.esm.js"
-}

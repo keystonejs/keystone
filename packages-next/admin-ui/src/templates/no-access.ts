@@ -1,15 +1,7 @@
 import type { KeystoneConfig } from '@keystone-next/types';
 
-export const noAccessTemplate = (session: KeystoneConfig['session']) => {
-  // -- TEMPLATE START
-  return `
-import React from 'react';
+export const noAccessTemplate = (session: KeystoneConfig['session']) =>
+  `import { getNoAccessPage } from '@keystone-next/admin-ui/pages/NoAccessPage';
 
-import { NoAccessPage } from '@keystone-next/admin-ui/pages/NoAccessPage';
-
-export default function Home() {
-  return <NoAccessPage sessionsEnabled={${!!session}} />;
-}
-  `;
-  // -- TEMPLATE END
-};
+export default getNoAccessPage(${JSON.stringify({ sessionsEnabled: !!session })})
+`;

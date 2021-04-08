@@ -1,8 +1,7 @@
 /** @jsx jsx */
 
-import { Fragment, ReactNode, forwardRef, useState, memo, HTMLAttributes, useMemo } from 'react';
+import { Fragment, ReactNode, forwardRef, useState, HTMLAttributes, useMemo } from 'react';
 import { Editor, Transforms } from 'slate';
-import { useSlate } from 'slate-react';
 import { applyRefs } from 'apply-ref';
 
 import { jsx, useTheme } from '@keystone-ui/core';
@@ -17,116 +16,153 @@ import { Maximize2Icon } from '@keystone-ui/icons/icons/Maximize2Icon';
 import { Minimize2Icon } from '@keystone-ui/icons/icons/Minimize2Icon';
 import { MoreHorizontalIcon } from '@keystone-ui/icons/icons/MoreHorizontalIcon';
 
-import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
+import { DocumentFeatures } from '../views';
+import {
+  InlineDialog,
+  KeyboardInTooltip,
+  ToolbarButton,
+  ToolbarGroup,
+  ToolbarSeparator,
+} from './primitives';
 import { linkButton } from './link';
 import { BlockComponentsButtons } from './component-blocks';
-import { Mark, isMarkActive, onlyContainerNodeInCurrentSelection, toggleMark } from './utils';
-import { ColumnsButton } from './columns';
+import { clearFormatting, Mark, modifierKeyText } from './utils';
+import { LayoutsButton } from './layouts';
 import { ListButton } from './lists';
 import { blockquoteButton } from './blockquote';
 import { RelationshipButton } from './relationship';
-import { DocumentFeatures } from '../views';
-import { insertCodeBlock } from './code-block';
+import { codeButton } from './code-block';
 import { TextAlignMenu } from './alignment';
 import { dividerButton } from './divider';
+import { useToolbarState } from './toolbar-state';
 
-// TODO: how to manage separators with dynamic feature sets...
-
-const unorderedListButton = (
-  <Tooltip content="Bullet list" weight="subtle">
-    {attrs => (
-      <ListButton type="unordered-list" {...attrs}>
-        <BulletListIcon />
-      </ListButton>
-    )}
-  </Tooltip>
-);
-
-const orderedListButton = (
-  <Tooltip content="Numbered list" weight="subtle">
-    {attrs => (
-      <ListButton type="ordered-list" {...attrs}>
-        <NumberedListIcon />
-      </ListButton>
-    )}
-  </Tooltip>
-);
-
-export const Toolbar = memo(function Toolbar({
+export function Toolbar({
   documentFeatures,
   viewState,
 }: {
   documentFeatures: DocumentFeatures;
-  viewState: { expanded: boolean; toggle: () => void };
+  viewState?: { expanded: boolean; toggle: () => void };
 }) {
-  const ExpandIcon = viewState.expanded ? Minimize2Icon : Maximize2Icon;
+  const ExpandIcon = viewState?.expanded ? Minimize2Icon : Maximize2Icon;
 
   return (
     <ToolbarContainer>
-      {!!documentFeatures.headingLevels.length && (
+      {!!documentFeatures.formatting.headingLevels.length && (
         <Fragment>
-          <HeadingMenu headingLevels={documentFeatures.headingLevels} />
+          <HeadingMenu headingLevels={documentFeatures.formatting.headingLevels} />
           <ToolbarSeparator />
         </Fragment>
       )}
-      {Object.values(documentFeatures.inlineMarks).some(x => x) && (
+      {Object.values(documentFeatures.formatting.inlineMarks).some(x => x) && (
         <Fragment>
-          <InlineMarks marks={documentFeatures.inlineMarks} />
+          <InlineMarks marks={documentFeatures.formatting.inlineMarks} />
           <ToolbarSeparator />
         </Fragment>
       )}
-      {(documentFeatures.alignment.center || documentFeatures.alignment.end) && (
-        <TextAlignMenu alignment={documentFeatures.alignment} />
+      {(documentFeatures.formatting.alignment.center ||
+        documentFeatures.formatting.alignment.end) && (
+        <TextAlignMenu alignment={documentFeatures.formatting.alignment} />
       )}
-      {documentFeatures.listTypes.unordered && unorderedListButton}
-      {documentFeatures.listTypes.ordered && orderedListButton}
-      {(documentFeatures.alignment.center ||
-        documentFeatures.alignment.end ||
-        documentFeatures.listTypes.unordered ||
-        documentFeatures.listTypes.ordered) && <ToolbarSeparator />}
+      {documentFeatures.formatting.listTypes.unordered && (
+        <Tooltip
+          content={
+            <Fragment>
+              Bullet List <KeyboardInTooltip>- </KeyboardInTooltip>
+            </Fragment>
+          }
+          weight="subtle"
+        >
+          {attrs => (
+            <ListButton type="unordered-list" {...attrs}>
+              <BulletListIcon />
+            </ListButton>
+          )}
+        </Tooltip>
+      )}
+      {documentFeatures.formatting.listTypes.ordered && (
+        <Tooltip
+          content={
+            <Fragment>
+              Numbered List <KeyboardInTooltip>1. </KeyboardInTooltip>
+            </Fragment>
+          }
+          weight="subtle"
+        >
+          {attrs => (
+            <ListButton type="ordered-list" {...attrs}>
+              <NumberedListIcon />
+            </ListButton>
+          )}
+        </Tooltip>
+      )}
+      {(documentFeatures.formatting.alignment.center ||
+        documentFeatures.formatting.alignment.end ||
+        documentFeatures.formatting.listTypes.unordered ||
+        documentFeatures.formatting.listTypes.ordered) && <ToolbarSeparator />}
 
       {documentFeatures.dividers && dividerButton}
-      {documentFeatures.link && linkButton}
-      {documentFeatures.blockTypes.blockquote && blockquoteButton}
-      {!!documentFeatures.columns.length && <ColumnsButton columns={documentFeatures.columns} />}
-
-      <InsertBlockMenu blockTypes={documentFeatures.blockTypes} />
+      {documentFeatures.links && linkButton}
+      {documentFeatures.formatting.blockTypes.blockquote && blockquoteButton}
+      {!!documentFeatures.layouts.length && <LayoutsButton layouts={documentFeatures.layouts} />}
+      {documentFeatures.formatting.blockTypes.code && codeButton}
+      <InsertBlockMenu />
 
       <ToolbarSeparator />
       {useMemo(
-        () => (
-          <Tooltip content={viewState.expanded ? 'Collapse' : 'Expand'} weight="subtle">
-            {attrs => (
-              <ToolbarButton onClick={viewState.toggle} {...attrs}>
-                <ExpandIcon size="small" />
-              </ToolbarButton>
-            )}
-          </Tooltip>
-        ),
+        () =>
+          viewState && (
+            <Tooltip content={viewState.expanded ? 'Collapse' : 'Expand'} weight="subtle">
+              {attrs => (
+                <ToolbarButton
+                  onMouseDown={event => {
+                    event.preventDefault();
+                    viewState.toggle();
+                  }}
+                  {...attrs}
+                >
+                  <ExpandIcon size="small" />
+                </ToolbarButton>
+              )}
+            </Tooltip>
+          ),
         [viewState]
       )}
     </ToolbarContainer>
   );
-});
+}
 
 /* UI Components */
 
-const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(
-  ({ type, ...props }, ref) => {
-    const editor = useSlate();
+const MarkButton = forwardRef<any, { children: ReactNode; type: Mark }>(function MarkButton(
+  props,
+  ref
+) {
+  const {
+    editor,
+    marks: {
+      [props.type]: { isDisabled, isSelected },
+    },
+  } = useToolbarState();
+  return useMemo(() => {
+    const { type, ...restProps } = props;
     return (
       <ToolbarButton
         ref={ref}
-        isSelected={isMarkActive(editor, type)}
+        isDisabled={isDisabled}
+        isSelected={isSelected}
         onMouseDown={event => {
           event.preventDefault();
-          toggleMark(editor, type);
+          if (isSelected) {
+            Editor.removeMark(editor, props.type);
+          } else {
+            Editor.addMark(editor, props.type, true);
+          }
         }}
-        {...props}
+        {...restProps}
       />
     );
-  }
-);
+  }, [editor, isDisabled, isSelected, props]);
+});
 
 const ToolbarContainer = ({ children }: { children: ReactNode }) => {
   const { colors, spacing } = useTheme();
@@ -148,9 +184,48 @@ const ToolbarContainer = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headingLevels'] }) => {
+const downIcon = <ChevronDownIcon size="small" />;
+
+function HeadingButton({
+  trigger,
+  onToggleShowMenu,
+  showMenu,
+}: {
+  trigger: ReturnType<typeof useControlledPopover>['trigger'];
+  showMenu: boolean;
+  onToggleShowMenu: () => void;
+}) {
+  const { textStyles } = useToolbarState();
+  let buttonLabel =
+    textStyles.selected === 'normal' ? 'Normal text' : 'Heading ' + textStyles.selected;
+  const isDisabled = textStyles.allowedHeadingLevels.length === 0;
+  return useMemo(
+    () => (
+      <ToolbarButton
+        ref={trigger.ref}
+        isPressed={showMenu}
+        isDisabled={isDisabled}
+        onMouseDown={event => {
+          event.preventDefault();
+          onToggleShowMenu();
+        }}
+        style={{ textAlign: 'left', width: 116 }}
+        {...trigger.props}
+      >
+        <span css={{ flex: 1 }}>{buttonLabel}</span>
+        {downIcon}
+      </ToolbarButton>
+    ),
+    [buttonLabel, trigger, showMenu, onToggleShowMenu, isDisabled]
+  );
+}
+
+const HeadingMenu = ({
+  headingLevels,
+}: {
+  headingLevels: DocumentFeatures['formatting']['headingLevels'];
+}) => {
   const [showMenu, setShowMenu] = useState(false);
-  const editor = useSlate();
   const { dialog, trigger } = useControlledPopover(
     {
       isOpen: showMenu,
@@ -169,15 +244,6 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
     }
   );
 
-  // prep button label
-  let [headingNodes] = Editor.nodes(editor, {
-    match: n => n.type === 'heading',
-  });
-  let buttonLabel = 'Normal text';
-  if (headingNodes) {
-    buttonLabel = 'Heading ' + headingNodes[0].level;
-  }
-
   return (
     <div
       css={{
@@ -185,63 +251,69 @@ const HeadingMenu = ({ headingLevels }: { headingLevels: DocumentFeatures['headi
         position: 'relative',
       }}
     >
-      <ToolbarButton
-        ref={trigger.ref}
-        isPressed={showMenu}
-        onClick={event => {
-          event.preventDefault();
-          setShowMenu(v => !v);
+      <HeadingButton
+        showMenu={showMenu}
+        trigger={trigger}
+        onToggleShowMenu={() => {
+          setShowMenu(x => !x);
         }}
-        style={{ textAlign: 'left', width: 116 }}
-        {...trigger.props}
-      >
-        <span css={{ flex: 1 }}>{buttonLabel}</span>
-        <ChevronDownIcon size="small" />
-      </ToolbarButton>
+      />
+
       {showMenu ? (
         <InlineDialog ref={dialog.ref} {...dialog.props}>
-          <ToolbarGroup direction="column">
-            {headingLevels.map(hNum => {
-              let [node] = Editor.nodes(editor, {
-                match: n => n.type === 'heading' && n.level === hNum,
-              });
-              let isActive = !!node;
-              let Tag = `h${hNum}` as any; // maybe? `keyof JSX.IntrinsicElements`
-
-              return (
-                <ToolbarButton
-                  isSelected={isActive}
-                  onMouseDown={event => {
-                    event.preventDefault();
-                    Transforms.setNodes(
-                      editor,
-                      isActive
-                        ? {
-                            type: 'paragraph',
-                            level: undefined,
-                          }
-                        : { type: 'heading', level: hNum }
-                    );
-
-                    setShowMenu(false);
-                  }}
-                >
-                  <Tag>Heading {hNum}</Tag>
-                </ToolbarButton>
-              );
-            })}
-          </ToolbarGroup>
+          <HeadingDialog
+            headingLevels={headingLevels}
+            onCloseMenu={() => {
+              setShowMenu(false);
+            }}
+          />
         </InlineDialog>
       ) : null}
     </div>
   );
 };
 
-const InsertBlockMenu = memo(function InsertBlockMenu({
-  blockTypes,
+function HeadingDialog({
+  headingLevels,
+  onCloseMenu,
 }: {
-  blockTypes: DocumentFeatures['blockTypes'];
+  headingLevels: DocumentFeatures['formatting']['headingLevels'];
+  onCloseMenu: () => void;
 }) {
+  const { editor, textStyles } = useToolbarState();
+  return (
+    <ToolbarGroup direction="column">
+      {headingLevels.map(hNum => {
+        let Tag = `h${hNum}` as const;
+        const isSelected = textStyles.selected === hNum;
+        return (
+          <ToolbarButton
+            key={hNum}
+            isSelected={isSelected}
+            onMouseDown={event => {
+              event.preventDefault();
+
+              if (isSelected) {
+                Transforms.unwrapNodes(editor, { match: n => n.type === 'heading' });
+              } else {
+                Transforms.setNodes(
+                  editor,
+                  { type: 'heading', level: hNum },
+                  { match: node => node.type === 'paragraph' || node.type === 'heading' }
+                );
+              }
+              onCloseMenu();
+            }}
+          >
+            <Tag>Heading {hNum}</Tag>
+          </ToolbarButton>
+        );
+      })}
+    </ToolbarGroup>
+  );
+}
+
+function InsertBlockMenu() {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {
@@ -268,7 +340,14 @@ const InsertBlockMenu = memo(function InsertBlockMenu({
         position: 'relative',
       }}
     >
-      <Tooltip content="Insert" weight="subtle">
+      <Tooltip
+        content={
+          <Fragment>
+            Insert <KeyboardInTooltip>/</KeyboardInTooltip>
+          </Fragment>
+        }
+        weight="subtle"
+      >
         {({ ref, ...attrs }) => (
           <ToolbarButton
             ref={applyRefs(ref, trigger.ref)}
@@ -287,49 +366,17 @@ const InsertBlockMenu = memo(function InsertBlockMenu({
       </Tooltip>
       {showMenu ? (
         <InlineDialog ref={dialog.ref} {...dialog.props}>
-          <InnerInsertBlockMenu blockTypes={blockTypes} onClose={() => setShowMenu(false)} />
+          <ToolbarGroup direction="column">
+            <RelationshipButton onClose={() => setShowMenu(false)} />
+            <BlockComponentsButtons onClose={() => setShowMenu(false)} />
+          </ToolbarGroup>
         </InlineDialog>
       ) : null}
     </div>
   );
-});
-
-function InnerInsertBlockMenu({
-  blockTypes,
-  onClose,
-}: {
-  blockTypes: DocumentFeatures['blockTypes'];
-  onClose: () => void;
-}) {
-  const editor = useSlate();
-  const shouldInsertBlock = onlyContainerNodeInCurrentSelection(editor);
-
-  return (
-    <ToolbarGroup direction="column">
-      {blockTypes.code && (
-        <ToolbarButton
-          isDisabled={!shouldInsertBlock}
-          onMouseDown={event => {
-            event.preventDefault();
-            insertCodeBlock(editor);
-            onClose();
-          }}
-        >
-          Code block
-        </ToolbarButton>
-      )}
-      <RelationshipButton />
-      <BlockComponentsButtons onClose={onClose} shouldInsertBlock={shouldInsertBlock} />
-    </ToolbarGroup>
-  );
 }
 
-// TODO: Clear formatting
-const InlineMarks = memo(function InlineMarks({
-  marks,
-}: {
-  marks: DocumentFeatures['inlineMarks'];
-}) {
+function InlineMarks({ marks }: { marks: DocumentFeatures['formatting']['inlineMarks'] }) {
   const [showMenu, setShowMenu] = useState(false);
   const { dialog, trigger } = useControlledPopover(
     {
@@ -348,12 +395,18 @@ const InlineMarks = memo(function InlineMarks({
       ],
     }
   );
-  const hasMenu = marks.strikethrough || marks.underline || marks.code;
-
   return (
     <Fragment>
       {marks.bold && (
-        <Tooltip content="Bold" weight="subtle">
+        <Tooltip
+          content={
+            <Fragment>
+              Bold
+              <KeyboardInTooltip>{modifierKeyText}B</KeyboardInTooltip>
+            </Fragment>
+          }
+          weight="subtle"
+        >
           {attrs => (
             <MarkButton type="bold" {...attrs}>
               <BoldIcon size="small" style={{ strokeWidth: 3 }} />
@@ -362,7 +415,15 @@ const InlineMarks = memo(function InlineMarks({
         </Tooltip>
       )}
       {marks.italic && (
-        <Tooltip content="Italic" weight="subtle">
+        <Tooltip
+          content={
+            <Fragment>
+              Italic
+              <KeyboardInTooltip>{modifierKeyText}I</KeyboardInTooltip>
+            </Fragment>
+          }
+          weight="subtle"
+        >
           {attrs => (
             <MarkButton type="italic" {...attrs}>
               <ItalicIcon size="small" />
@@ -371,41 +432,153 @@ const InlineMarks = memo(function InlineMarks({
         </Tooltip>
       )}
 
-      {hasMenu && (
-        <Fragment>
-          <Tooltip content="More formatting" weight="subtle">
-            {({ ref, ...attrs }) => (
-              <ToolbarButton
-                ref={applyRefs(ref, trigger.ref)}
-                isPressed={showMenu}
-                onClick={event => {
-                  event.preventDefault();
-                  setShowMenu(v => !v);
-                }}
-                {...trigger.props}
-                {...attrs}
-              >
-                <MoreHorizontalIcon size="small" />
-              </ToolbarButton>
-            )}
-          </Tooltip>
-          {showMenu && (
-            <InlineDialog ref={dialog.ref} {...dialog.props}>
-              <ToolbarGroup direction="column">
-                {marks.underline && <MarkButton type="underline">Underline</MarkButton>}
-                {marks.strikethrough && <MarkButton type="strikethrough">Strikethrough</MarkButton>}
-                {marks.code && <MarkButton type="code">Code</MarkButton>}
-                {marks.keyboard && <MarkButton type="keyboard">Keyboard</MarkButton>}
-                {marks.subscript && <MarkButton type="subscript">Subscript</MarkButton>}
-                {marks.superscript && <MarkButton type="superscript">Superscript</MarkButton>}
-              </ToolbarGroup>
-            </InlineDialog>
-          )}
-        </Fragment>
+      <Tooltip content="More formatting" weight="subtle">
+        {attrs => (
+          <MoreFormattingButton
+            isOpen={showMenu}
+            onToggle={() => {
+              setShowMenu(v => !v);
+            }}
+            trigger={trigger}
+            attrs={attrs}
+          />
+        )}
+      </Tooltip>
+      {showMenu && (
+        <MoreFormattingDialog
+          onCloseMenu={() => {
+            setShowMenu(false);
+          }}
+          dialog={dialog}
+          marks={marks}
+        />
       )}
     </Fragment>
   );
-});
+}
+
+function MoreFormattingDialog({
+  dialog,
+  marks,
+  onCloseMenu,
+}: {
+  dialog: ReturnType<typeof useControlledPopover>['dialog'];
+  marks: DocumentFeatures['formatting']['inlineMarks'];
+  onCloseMenu: () => void;
+}) {
+  // not doing optimisations in here because this will only render when it's open
+  // which will be rare and you won't be typing while it's open
+  const {
+    editor,
+    clearFormatting: { isDisabled },
+  } = useToolbarState();
+  return (
+    <InlineDialog
+      onMouseDown={event => {
+        if ((event.target as any).nodeName === 'BUTTON') {
+          onCloseMenu();
+        }
+      }}
+      ref={dialog.ref}
+      {...dialog.props}
+    >
+      <ToolbarGroup direction="column">
+        {marks.underline && (
+          <MarkButton type="underline">
+            <ContentInButtonWithShortcut content="Underline" shortcut={`${modifierKeyText}U`} />
+          </MarkButton>
+        )}
+        {marks.strikethrough && <MarkButton type="strikethrough">Strikethrough</MarkButton>}
+        {marks.code && <MarkButton type="code">Code</MarkButton>}
+        {marks.keyboard && <MarkButton type="keyboard">Keyboard</MarkButton>}
+        {marks.subscript && <MarkButton type="subscript">Subscript</MarkButton>}
+        {marks.superscript && <MarkButton type="superscript">Superscript</MarkButton>}
+        <ToolbarButton
+          isDisabled={isDisabled}
+          onMouseDown={event => {
+            event.preventDefault();
+            clearFormatting(editor);
+          }}
+        >
+          <ContentInButtonWithShortcut
+            content="Clear Formatting"
+            shortcut={`${modifierKeyText}\\`}
+          />
+        </ToolbarButton>
+      </ToolbarGroup>
+    </InlineDialog>
+  );
+}
+
+function ContentInButtonWithShortcut({ content, shortcut }: { content: string; shortcut: string }) {
+  const theme = useTheme();
+  return (
+    <span
+      css={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+      }}
+    >
+      <span>{content}</span>
+      <kbd
+        css={{
+          fontFamily: 'inherit',
+          marginLeft: theme.spacing.small,
+          padding: theme.spacing.xxsmall,
+          paddingLeft: theme.spacing.xsmall,
+          paddingRight: theme.spacing.xsmall,
+          backgroundColor: theme.palette.neutral400,
+          borderRadius: theme.radii.xsmall,
+          color: theme.colors.foregroundDim,
+          whiteSpace: 'pre',
+        }}
+      >
+        {shortcut}
+      </kbd>
+    </span>
+  );
+}
+
+function MoreFormattingButton({
+  onToggle,
+  isOpen,
+  trigger,
+  attrs,
+}: {
+  onToggle: () => void;
+  isOpen: boolean;
+  trigger: ReturnType<typeof useControlledPopover>['trigger'];
+  attrs: { ref: any };
+}) {
+  const { marks } = useToolbarState();
+  const isActive =
+    marks.strikethrough.isSelected ||
+    marks.underline.isSelected ||
+    marks.code.isSelected ||
+    marks.keyboard.isSelected ||
+    marks.subscript.isSelected ||
+    marks.superscript.isSelected;
+  return useMemo(
+    () => (
+      <ToolbarButton
+        isPressed={isOpen}
+        isSelected={isActive}
+        onMouseDown={event => {
+          event.preventDefault();
+          onToggle();
+        }}
+        {...trigger.props}
+        {...attrs}
+        ref={applyRefs(attrs.ref, trigger.ref)}
+      >
+        <MoreHorizontalIcon size="small" />
+      </ToolbarButton>
+    ),
+    [isActive, onToggle, isOpen, trigger, attrs]
+  );
+}
 
 // Custom (non-feather) Icons
 // ------------------------------

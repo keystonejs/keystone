@@ -1,5 +1,67 @@
 # @keystone-ui/fields
 
+## 2.1.0
+
+### Minor Changes
+
+- [#5322](https://github.com/keystonejs/keystone/pull/5322) [`d93bab17b`](https://github.com/keystonejs/keystone/commit/d93bab17b69c76e57580dc00e41314215da6d49b) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Added styles prop to @keystone-ui/fields select components to enable style customisations to propagate to the underlying reaect-select implementation.
+
+## 2.0.2
+
+### Patch Changes
+
+- [#4717](https://github.com/keystonejs/keystone/pull/4717) [`17c86e0c3`](https://github.com/keystonejs/keystone/commit/17c86e0c3eda7ba08d1bb8edf5eb8ddc9a819e5a) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency react-select to v4
+
+* [#5150](https://github.com/keystonejs/keystone/pull/5150) [`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed) Thanks [@timleslie](https://github.com/timleslie)! - Applied eslint `import/order` rule.
+
+* Updated dependencies [[`3a9d20ce1`](https://github.com/keystonejs/keystone/commit/3a9d20ce11463e7f73f6b6325375cdcee17d63ed)]:
+  - @keystone-ui/core@2.0.2
+
+## 2.0.1
+
+### Patch Changes
+
+- [`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7) [#5018](https://github.com/keystonejs/keystone/pull/5018) Thanks [@bladey](https://github.com/bladey)! - Updated legacy packages to the @keystone-next namespace.
+
+- Updated dependencies [[`f4e4498c6`](https://github.com/keystonejs/keystone/commit/f4e4498c6e4c7301288f23048f4aad3c492985c7), [`3ca5038a0`](https://github.com/keystonejs/keystone/commit/3ca5038a021105a7452f4e7a4641107caa4ffe3a)]:
+  - @keystone-ui/core@2.0.1
+  - @keystone-ui/icons@2.0.1
+  - @keystone-ui/popover@2.0.1
+
+## 2.0.0
+
+### Major Changes
+
+- [`b97216a65`](https://github.com/keystonejs/keystone/commit/b97216a6526fffcca8232d86b115c28cb19587bf) [#4622](https://github.com/keystonejs/keystone/pull/4622) Thanks [@renovate](https://github.com/apps/renovate)! - Updated react and react-dom to v17
+
+### Patch Changes
+
+- Updated dependencies [[`b97216a65`](https://github.com/keystonejs/keystone/commit/b97216a6526fffcca8232d86b115c28cb19587bf)]:
+  - @keystone-ui/core@2.0.0
+  - @keystone-ui/icons@2.0.0
+  - @keystone-ui/popover@2.0.0
+
+## 1.1.0
+
+### Minor Changes
+
+- [`177cbd530`](https://github.com/keystonejs/keystone/commit/177cbd5303b814d1acaa8ded98e3d114c770bdba) [#4643](https://github.com/keystonejs/keystone/pull/4643) Thanks [@gwyneplaine](https://github.com/gwyneplaine)! - Add DatePicker component to design system.
+  Update timestamp field in keystone-next to use the new DatePicker an an additional time picker input.
+
+### Patch Changes
+
+- Updated dependencies [[`160bd77d3`](https://github.com/keystonejs/keystone/commit/160bd77d39d5e99b11bee056fe2c3b2585126bbc)]:
+  - @keystone-ui/popover@1.1.1
+
+## 1.0.3
+
+### Patch Changes
+
+- [`88b230317`](https://github.com/keystonejs/keystone/commit/88b2303177253aa5d76b50d40d19138af2bc3e41) [#4511](https://github.com/keystonejs/keystone/pull/4511) Thanks [@renovate](https://github.com/apps/renovate)! - Patched types based on changes to `@types/react-select`.
+
+- Updated dependencies [[`88b230317`](https://github.com/keystonejs/keystone/commit/88b2303177253aa5d76b50d40d19138af2bc3e41)]:
+  - @keystone-ui/core@1.0.4
+
 ## 1.0.2
 
 ### Patch Changes

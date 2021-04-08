@@ -1,7 +1,7 @@
-import { Relationship } from '@keystonejs/fields';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
+import { Relationship, PrismaRelationshipInterface } from './Implementation';
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
@@ -44,25 +44,29 @@ export type RelationshipFieldConfig<
     hideCreate?: boolean;
   };
   defaultValue?: FieldDefaultValue<Record<string, unknown>>;
-  isIndexed?: boolean;
   isUnique?: boolean;
 } & (SelectDisplayConfig | CardsDisplayConfig);
 
 export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: RelationshipFieldConfig<TGeneratedListTypes>
 ): FieldType<TGeneratedListTypes> => ({
-  type: Relationship,
+  type: {
+    type: 'Relationship',
+    isRelationship: true, // Used internally for this special case
+    implementation: Relationship,
+    adapters: { prisma: PrismaRelationshipInterface },
+  },
   config,
   views: resolveView('relationship/views'),
   getAdminMeta: (
     listKey,
     path,
-    adminMeta
+    adminMetaRoot
   ): Parameters<
     typeof import('@keystone-next/fields/types/relationship/views').controller
   >[0]['fieldMeta'] => {
     const refListKey = config.ref.split('.')[0];
-    if (!adminMeta.lists[refListKey]) {
+    if (!adminMetaRoot.listsByKey[refListKey]) {
       throw new Error(`The ref [${config.ref}] on relationship [${listKey}.${path}] is invalid`);
     }
     return {
@@ -81,7 +85,7 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
           }
         : {
             displayMode: 'select',
-            refLabelField: adminMeta.lists[refListKey].labelField,
+            refLabelField: adminMetaRoot.listsByKey[refListKey].labelField,
           }),
     };
   },

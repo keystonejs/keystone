@@ -1,39 +1,44 @@
 {
   "name": "@keystone-next/app-basic",
-  "version": "0.0.7",
+  "version": "2.0.1",
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "keystone-next"
+    "dev": "keystone-next dev",
+    "start": "keystone-next start",
+    "build": "keystone-next build"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.5",
-    "@emotion/core": "^10.1.1",
-    "@graphql-tools/merge": "^6.2.6",
-    "@keystone-next/admin-ui": "^3.1.2",
-    "@keystone-next/auth": "^6.0.0",
-    "@keystone-next/fields": "^3.2.1",
-    "@keystone-next/fields-document": "^0.0.2",
-    "@keystone-next/keystone": "^5.0.0",
-    "@keystone-next/types": "^5.0.0",
-    "@keystone-ui/core": "^1.0.3",
-    "@keystone-ui/fields": "^1.0.2",
-    "@keystone-ui/icons": "^1.0.0",
-    "@keystone-ui/tooltip": "^1.0.3",
+    "@babel/runtime": "^7.13.10",
+    "@graphql-tools/merge": "^6.2.11",
+    "@keystone-next/admin-ui": "^13.0.0",
+    "@keystone-next/auth": "^20.0.0",
+    "@keystone-next/document-renderer": "^2.0.2",
+    "@keystone-next/fields": "^6.0.0",
+    "@keystone-next/fields-document": "^4.0.0",
+    "@keystone-next/keystone": "^15.0.0",
+    "@keystone-next/types": "^16.0.0",
+    "@keystone-ui/core": "^2.0.2",
+    "@keystone-ui/fields": "^2.1.0",
+    "@keystone-ui/icons": "^2.0.1",
+    "@keystone-ui/tooltip": "^2.0.1",
     "@preconstruct/next": "^2.0.0",
-    "@types/react": "^16.14.2",
-    "apollo-server-micro": "^2.19.0",
-    "graphql": "^15.4.0",
+    "@types/react": "^17.0.3",
+    "apollo-server-micro": "^2.22.2",
+    "graphql": "^15.5.0",
     "graphql-tag": "^2.11.0",
-    "next": "^9.5.5",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0"
+    "next": "^10.0.9",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "typescript": "^4.1.2"
+    "typescript": "^4.2.3"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
+  },
+  "prisma": {
+    "schema": ".keystone/prisma/schema.prisma"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/basic"
 }

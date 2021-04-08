@@ -1,6 +1,6 @@
 {
-  "name": "@keystonejs/mono-repo",
-  "description": "KeystoneJS monorepo for all the @keystonejs / @arch-ui (and more) packages. Powered by Yarn.",
+  "name": "@keystone-next/mono-repo",
+  "description": "KeystoneJS monorepo for all the @keystonejs-next packages",
   "private": true,
   "version": "0.0.0",
   "author": "The KeystoneJS Development Team",
@@ -9,116 +9,82 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
     "prisma": "prisma",
-    "dev": "yarn demo todo dev",
-    "demo": "yarn --cwd ./examples",
-    "website": "manypkg run @keystonejs/website",
-    "arch-docs": "manypkg run arch/docs",
+    "docs-next": "manypkg run @keystone-next/website dev",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
-    "cypress:run": "status=0; yarn workspace @keystonejs/cypress-project-basic run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-login run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-twitter-login run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-access-control run cypress:run || status=$?; yarn workspace @keystonejs/cypress-project-client-validation run cypress:run || status=$?; exit $status",
-    "cypress:open": "status=0; yarn workspace @keystonejs/cypress-project-basic run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-login run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-twitter-login run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-access-control run cypress:open || status=$?; yarn workspace @keystonejs/cypress-project-client-validation run cypress:open || status=$?; exit $status",
     "format:file": "prettier --write",
-    "format": "prettier --write \"**/*.{js,json,ts,tsx,md}\" && remark . --output",
+    "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\" && remark . --output",
     "fresh": "yarn clean && yarn",
-    "clean": "rimraf \"**/cypress/{screenshots,videos,reports}\" \"**/node_modules\" \"**/yarn-error.log\" \"**/out.log\" \"**/.DS_Store\" \"**/website/.cache\" \"**/dist\"",
+    "clean": "rimraf \"**/cypress/{screenshots,videos,reports}\" \"**/node_modules\" \"**/yarn-error.log\" \"**/out.log\" \"**/.DS_Store\" \"**/dist\"",
     "lint:eslint": "eslint . --ext ts,tsx,js",
     "lint:prettier": "prettier --list-different \"**/*.{js,json,ts,tsx}\"",
     "lint:markdown": "remark . --frail --quiet",
     "lint:types": "tsc",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:markdown && yarn lint:types",
-    "test": "yarn lint && yarn test:unit && yarn cypress:run",
+    "test": "yarn lint && yarn test:unit",
     "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --maxWorkers=1 --logHeapUsage",
     "test:unit:debug": "cross-env NODE_ENV=test node --inspect-brk `which jest` --runInBand",
-    "benchmark": "yarn workspace @keystonejs/benchmarks go",
+    "benchmark": "yarn workspace @keystone-next/benchmarks-legacy go",
     "changeset": "changeset",
     "publish-changed": "yarn build && changeset publish --public",
-    "version-packages": "changeset version && node .github/write-release-count.js",
+    "version-packages": "changeset version",
     "build": "preconstruct build",
     "prepare": "manypkg check && preconstruct dev && yarn run --silent contributing-guide",
     "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md\"",
-    "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate",
-    "heroku-postbuild": "yarn build && yarn workspace @keystonejs/demo-project-blog build",
     "npm-tag": "manypkg npm-tag",
     "update": "manypkg upgrade",
     "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn"
   },
   "dependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/helper-module-imports": "^7.12.5",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
+    "@babel/core": "^7.13.14",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.13.8",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
-    "@babel/plugin-transform-runtime": "^7.12.1",
-    "@babel/preset-env": "^7.12.7",
-    "@babel/preset-react": "^7.12.7",
-    "@babel/preset-typescript": "^7.12.7",
-    "@changesets/changelog-github": "^0.2.7",
-    "@changesets/cli": "^2.11.2",
+    "@babel/plugin-transform-runtime": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-react": "^7.13.13",
+    "@babel/preset-typescript": "^7.13.0",
+    "@changesets/changelog-github": "^0.3.0",
+    "@changesets/cli": "^2.15.0",
     "@jest/test-sequencer": "^26.6.3",
-    "@manypkg/cli": "^0.16.1",
-    "@preconstruct/cli": "2.0.0",
-    "@types/jest": "^26.0.15",
-    "@typescript-eslint/eslint-plugin": "^4.8.2",
-    "@typescript-eslint/parser": "^4.8.2",
-    "all-contributors-cli": "^6.19.0",
-    "babel-plugin-emotion": "^10.0.33",
-    "chalk": "^4.1.0",
+    "@manypkg/cli": "^0.17.0",
+    "@preconstruct/cli": "2.0.6",
+    "@preconstruct/eslint-plugin-format-js-tag": "^0.1.0",
+    "@testing-library/jest-dom": "^5.11.10",
+    "@types/jest": "^26.0.22",
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
     "chalk-cli": "^4.1.0",
-    "cross-env": "^7.0.2",
-    "cypress": "^5.6.0",
-    "cypress-multi-reporters": "^1.4.0",
-    "dotenv": "^8.2.0",
-    "dotenv-safe": "^8.2.0",
-    "endent": "^2.0.1",
-    "eslint": "^7.14.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.23.0",
     "eslint-plugin-cypress": "^2.11.2",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jest": "^24.1.3",
-    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-jest": "^24.3.4",
+    "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "falsey": "^1.0.0",
-    "is-ci": "^2.0.0",
+    "is-ci": "^3.0.0",
     "jest": "^26.6.3",
-    "jest-haste-map": "^26.6.2",
-    "jest-junit": "^12.0.0",
-    "jest-resolve": "^26.6.2",
-    "knex": "^0.21.12",
-    "luxon": "^1.25.0",
-    "mdast-util-to-string": "^2.0.0",
-    "memoize-one": "^5.1.1",
-    "mocha": "^8.2.1",
-    "mocha-junit-reporter": "^2.0.0",
-    "mongodb": "^3.6.3",
-    "p-is-promise": "^3.0.0",
-    "pino-colada": "^2.1.0",
     "prettier": "^2.2.1",
-    "rehype-highlight": "^4.0.0",
     "remark-cli": "^6.0.1",
     "remark-frontmatter": "^1.3.3",
     "remark-toc": "^5.1.1",
     "rimraf": "^3.0.2",
-    "split": "^1.0.1",
-    "stack-utils": "^2.0.3",
-    "start-server-and-test": "^1.11.6",
-    "supertest-light": "^1.0.3",
-    "terminal-link": "^2.1.1",
     "terminal-link-cli": "^2.0.0",
-    "testcheck": "^1.0.0-rc.2",
-    "tinymce": "^5.6.1",
-    "tmp": "^0.2.1",
-    "to-pascal-case": "^1.0.0",
-    "typescript": "^4.1.2",
-    "unist-util-visit": "^2.0.3",
-    "unsplash-js": "^6.3.0",
-    "webpack": "4.44.2"
+    "typescript": "^4.2.3"
   },
   "prettier": {
     "proseWrap": "preserve",
     "singleQuote": true,
     "trailingComma": "es5",
     "printWidth": 100,
-    "arrowParens": "avoid"
+    "arrowParens": "avoid",
+    "overrides": [
+      {
+        "files": "docs-next/**",
+        "options": {
+          "embeddedLanguageFormatting": "off"
+        }
+      }
+    ]
   },
   "remarkConfig": {
     "settings": {
@@ -136,21 +102,15 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "!packages/arch",
-      "packages/arch/docs",
-      "packages/arch/packages/*",
-      "tests/test-projects/*",
       "tests/api-tests",
       "tests/benchmarks",
-      "examples/*",
-      "website",
-      "packages/create-keystone-app/example-projects/*",
+      "tests/examples-smoke-tests",
       "projects/*",
       "examples-next/*",
       "packages-next/*",
       "design-system/packages/*",
       "design-system/website",
-      "docs-next/website"
+      "docs-next"
     ],
     "nohoist": [
       "**/cypress-multi-reporters"
@@ -158,21 +118,12 @@
   },
   "preconstruct": {
     "packages": [
-      "packages/arch/packages/*",
-      "packages/apollo-helpers",
+      "packages/access-control",
+      "packages/session",
+      "packages/test-utils",
       "packages/utils",
-      "packages/fields-authed-relationship",
-      "packages/fields-auto-increment",
-      "packages/fields-oembed",
-      "packages/fields-unsplash",
-      "packages/fields-cloudinary-image",
-      "packages/fields-markdown",
-      "packages/fields-mongoid",
-      "packages/fields-location-google",
-      "packages/fields-wysiwyg-tinymce",
-      "packages/fields-content",
-      "packages/fields-color",
-      "packages/fields",
+      "packages/adapter-prisma",
+      "packages/server-side-graphql-client",
       "packages-next/*",
       "design-system/packages/*"
     ],
@@ -180,13 +131,12 @@
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "./tests/jest/setup.js"
+      "./tests/jest/setup.ts"
     ],
     "testSequencer": "./tests/jest/jest-sequencer.js",
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
-      "/node_modules/",
-      "<rootDir>/website/.cache"
+      "/node_modules/"
     ],
     "transformIgnorePatterns": [
       "/node_modules/",
@@ -196,24 +146,16 @@
     "collectCoverageFrom": [
       "packages/**/*.js",
       "!packages/**/dist/**",
-      "!packages/apollo-helpers/**",
-      "!packages/app-admin-ui/client/**",
-      "!packages/arch/**",
-      "!packages/create-keystone-app/templates/**",
       "!packages/core/tests/default-entry/index.js",
-      "!packages/fields/**/views/**",
       "!packages/fields/**/test-fixtures.js",
+      "!packages/fields/**/test-fixtures.ts",
       "!packages/fields/types.js"
     ]
   },
   "resolutions": {
-    "babel-plugin-remove-graphql-queries": "2.7.2",
-    "graphql-upload": "^11.0.0",
-    "gatsby-cli": "2.7.15",
-    "gatsby-link": "2.2.2",
-    "gatsby-plugin-page-creator": "2.1.5"
+    "babel-plugin-remove-graphql-queries": "2.7.2"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   }
 }

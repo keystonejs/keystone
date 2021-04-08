@@ -1,12 +1,12 @@
 import React, { ReactNode, createContext, useContext, useMemo } from 'react';
-import { ApolloProvider, ApolloClient, InMemoryCache, ApolloError, DocumentNode } from './apollo';
 import type { AdminConfig, AdminMeta, FieldViews } from '@keystone-next/types';
 import { Center } from '@keystone-ui/core';
 import { ToastProvider } from '@keystone-ui/toast';
 import { LoadingDots } from '@keystone-ui/loading';
 import { DrawerProvider } from '@keystone-ui/modals';
-import { useAdminMeta } from './utils/useAdminMeta';
 import { createUploadLink } from 'apollo-upload-client';
+import { useAdminMeta } from './utils/useAdminMeta';
+import { ApolloProvider, ApolloClient, InMemoryCache, ApolloError, DocumentNode } from './apollo';
 import {
   AuthenticatedItem,
   VisibleLists,
@@ -93,7 +93,6 @@ export const KeystoneProvider = (props: KeystoneProviderProps) => {
 
   return (
     <ApolloProvider client={apolloClient}>
-      <script src="http://localhost:8097" />
       <InternalKeystoneProvider {...props} />
     </ApolloProvider>
   );

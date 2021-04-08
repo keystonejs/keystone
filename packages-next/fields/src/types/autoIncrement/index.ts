@@ -1,14 +1,12 @@
-// @ts-ignore
-import { AutoIncrement } from '@keystonejs/fields-auto-increment';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
+import { AutoIncrementImplementation, PrismaAutoIncrementInterface } from './Implementation';
 
 export type AutoIncrementFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = FieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
-  isIndexed?: boolean;
   isUnique?: boolean;
   defaultValue?: FieldDefaultValue<number>;
 };
@@ -16,7 +14,11 @@ export type AutoIncrementFieldConfig<
 export const autoIncrement = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: AutoIncrementFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
-  type: AutoIncrement,
+  type: {
+    type: 'AutoIncrement',
+    implementation: AutoIncrementImplementation,
+    adapters: { prisma: PrismaAutoIncrementInterface },
+  },
   config,
   views: resolveView('integer/views'),
 });
