@@ -12,7 +12,15 @@ module.exports = {
     jest: true,
     'cypress/globals': true,
   },
-  plugins: ['react', 'react-hooks', 'jest', 'cypress', 'import', '@typescript-eslint'],
+  plugins: [
+    'react',
+    'react-hooks',
+    'jest',
+    'cypress',
+    'import',
+    '@typescript-eslint',
+    '@preconstruct/format-js-tag',
+  ],
   settings: {
     react: {
       version: 'detect',
@@ -103,6 +111,7 @@ module.exports = {
         },
       },
     ],
+    '@preconstruct/format-js-tag/format': 'error',
   },
   extends: ['plugin:jest/recommended'],
 

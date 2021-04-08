@@ -5,6 +5,7 @@ import type { BaseKeystone, KeystoneConfig } from '@keystone-next/types';
 import { getGenerator, formatSchema } from '@prisma/sdk';
 import { confirmPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
+import { ExitError } from './scripts/utils';
 
 export function getSchemaPaths(cwd: string) {
   return {
@@ -82,7 +83,7 @@ export async function validateCommittedArtifacts(
       await writeCommittedArtifacts(artifacts, cwd);
     } else {
       console.log(`Please run keystone-next postinstall --fix to update your ${term}`);
-      process.exit(1);
+      throw new ExitError(1);
     }
   }
 }
