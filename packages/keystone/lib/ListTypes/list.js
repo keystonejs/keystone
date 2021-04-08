@@ -71,6 +71,8 @@ module.exports = class List {
     const _singular = singular || pluralize.singular(_label);
     const _plural = plural || pluralize.plural(_label);
 
+    console.log(_label, _singular, _plural);
+
     if (_plural === _label) {
       throw new Error(
         `Unable to use ${_label} as a List name - it has an ambiguous plural (${_plural}). Please choose another name for your list.`
@@ -169,6 +171,7 @@ module.exports = class List {
 
     // Helpful errors for misconfigured lists
     Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
+      // console.log(fieldKey, fieldConfig);
       if (!this.isAuxList && fieldKey[0] === '_') {
         throw new Error(
           `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`
