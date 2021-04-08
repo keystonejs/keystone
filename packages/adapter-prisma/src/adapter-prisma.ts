@@ -64,7 +64,6 @@ class PrismaAdapter {
   };
   listAdapters: Record<string, PrismaListAdapter>;
   listAdapterClass?: any;
-  _prismaClient?: any;
   name: 'prisma';
   provider: 'postgresql' | 'sqlite';
   enableLogging: boolean;
