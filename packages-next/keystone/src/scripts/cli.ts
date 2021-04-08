@@ -36,13 +36,13 @@ export async function cli(cwd: string, argv: string[]) {
   }
 
   if (command === 'prisma') {
-    await prisma(cwd, argv.slice(1));
+    return prisma(cwd, argv.slice(1));
   } else if (command === 'postinstall') {
-    await postinstall(cwd, flags.fix);
+    return postinstall(cwd, flags.fix);
   } else if (command === 'dev') {
-    await dev(cwd, flags.resetDb);
+    return dev(cwd, flags.resetDb);
   } else {
-    await commands[command](cwd);
+    return commands[command](cwd);
   }
 }
 

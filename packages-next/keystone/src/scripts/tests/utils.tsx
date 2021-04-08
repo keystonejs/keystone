@@ -9,6 +9,7 @@ import fixturez from 'fixturez';
 import outdent from 'outdent';
 import { KeystoneConfig } from '@keystone-next/types';
 import { parseArgsStringToArgv } from 'string-argv';
+import { IntrospectionEngine, uriToCredentials } from '@prisma/sdk';
 import { cli } from '../cli';
 import { mockPrompts } from '../../lib/prompts';
 
@@ -202,4 +203,17 @@ export async function getFiles(dir: string, glob: string[] = ['**', '!node_modul
     newObj[filename] = filesObj[filename];
   });
   return newObj;
+}
+
+export async function introspectDb(cwd: string, url: string) {
+  const engine = new IntrospectionEngine({ cwd });
+  try {
+    const { datamodel } = await engine.introspect(`datasource db {
+  url = ${JSON.stringify(url)}
+  provider = ${JSON.stringify(uriToCredentials(url).type)}
+}`);
+    return datamodel;
+  } finally {
+    engine.stop();
+  }
 }

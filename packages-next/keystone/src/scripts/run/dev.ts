@@ -25,7 +25,7 @@ const devLoadingHTMLFilepath = path.join(
 export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   console.log('✨ Starting Keystone');
 
-  const server = express();
+  const app = express();
   let expressServer: null | ReturnType<typeof express> = null;
 
   const config = initConfig(requireSource(getConfigPath(cwd)).default);
@@ -53,7 +53,6 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
         );
       }
     }
-
     const prismaClient = requirePrismaClient(cwd);
 
     const { keystone, graphQLSchema, createContext } = createSystem(config, prismaClient);
@@ -79,23 +78,50 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     console.log(`👋 Admin UI and graphQL API ready`);
   };
 
-  server.use('/__keystone_dev_status', (req, res) => {
+  app.use('/__keystone_dev_status', (req, res) => {
     res.json({ ready: expressServer ? true : false });
   });
-  server.use((req, res, next) => {
+  app.use((req, res, next) => {
     if (expressServer) return expressServer(req, res, next);
     res.sendFile(devLoadingHTMLFilepath);
   });
   const port = config.server?.port || process.env.PORT || 3000;
-  server.listen(port, (err?: any) => {
+  let initKeystonePromiseResolve: () => void | undefined;
+  let initKeystonePromiseReject: (err: any) => void | undefined;
+  let initKeystonePromise = new Promise<void>((resolve, reject) => {
+    initKeystonePromiseResolve = resolve;
+    initKeystonePromiseReject = reject;
+  });
+  const server = app.listen(port, (err?: any) => {
     if (err) throw err;
     console.log(`⭐️ Dev Server Ready on http://localhost:${port}`);
     // Don't start initialising Keystone until the dev server is ready,
     // otherwise it slows down the first response significantly
-    initKeystone().catch(err => {
-      console.error(`🚨 There was an error initialising Keystone`);
-      console.error(err);
-      process.exit(1);
-    });
+    initKeystone()
+      .then(() => {
+        initKeystonePromiseResolve();
+      })
+      .catch(err => {
+        server.close(closeErr => {
+          if (closeErr) {
+            console.log('There was an error while closing the server');
+            console.log(closeErr);
+          }
+          initKeystonePromiseReject(err);
+        });
+      });
   });
+
+  await initKeystonePromise;
+
+  return () =>
+    new Promise<void>((resolve, reject) => {
+      server.close(err => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
 };

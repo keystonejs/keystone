@@ -144,11 +144,10 @@
       ".api-test-prisma-clients/"
     ],
     "collectCoverageFrom": [
-      "packages/**/*.js",
-      "!packages/**/dist/**",
-      "!packages/core/tests/default-entry/index.js",
-      "!packages/fields/**/test-fixtures.js",
-      "!packages/fields/**/test-fixtures.ts",
+      "packages{,-next}/**/*.{js,ts,tsx}",
+      "!**/*.d.ts",
+      "!packages{,-next}/**/dist/**",
+      "!packages{,-next}/fields/**/test-fixtures.{js,ts}",
       "!packages/fields/types.js"
     ]
   },
