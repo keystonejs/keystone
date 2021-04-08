@@ -23,6 +23,7 @@
     "date-fns": "^2.19.0",
     "decimal.js": "^10.2.1",
     "dumb-passwords": "^0.2.1",
+    "inflection": "^1.12.0",
     "lodash.groupby": "^4.6.0",
     "p-settle": "^4.1.1"
   },
