@@ -36,7 +36,7 @@ export async function cli(cwd: string, argv: string[]) {
   }
 
   if (command === 'prisma') {
-    await prisma(cwd, process.argv.slice(3));
+    await prisma(cwd, argv.slice(1));
   } else if (command === 'postinstall') {
     await postinstall(cwd, flags.fix);
   } else if (command === 'dev') {
