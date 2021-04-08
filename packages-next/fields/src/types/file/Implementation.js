@@ -1,6 +1,6 @@
 import cuid from 'cuid';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '../../Implementation';
+import { Implementation } from '../../Implementation.ts';
 
 export class File extends Implementation {
   constructor(path, { adapter }) {

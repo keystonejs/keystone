@@ -1,11 +1,66 @@
 import { humanize } from '@keystone-next/utils-legacy';
 import { parseFieldAccess } from '@keystone-next/access-control-legacy';
+import { KeystoneContext } from '@keystone-next/types';
 
-class Field {
+type List = {};
+
+export type FieldConfigArgs = {
+  hooks?: any;
+  isRequired?: boolean;
+  defaultValue?: any;
+  access?: any;
+  label?: string;
+  schemaDoc?: string;
+  isUnique?: boolean;
+};
+
+export type FieldExtraArgs = {
+  getListByKey: (key: string) => List | undefined;
+  listKey: string;
+  listAdapter: any;
+  fieldAdapterClass: any;
+  defaultAccess: any;
+  schemaNames: any;
+};
+
+class Field<P extends string> {
+  path: P;
+  isPrimaryKey: boolean;
+  schemaDoc?: string;
+  config: {
+    isUnique?: boolean;
+  };
+  isRequired: boolean;
+  defaultValue?: any;
+  isOrderable: boolean;
+  hooks: any;
+  getListByKey: (key: string) => List | undefined;
+  listKey: string;
+  label: string;
+  adapter: any;
+  isRelationship: boolean;
+  access: any;
+  refListKey: string;
+
   constructor(
-    path,
-    { hooks = {}, isRequired, defaultValue, access, label, schemaDoc, ...config },
-    { getListByKey, listKey, listAdapter, fieldAdapterClass, defaultAccess, schemaNames }
+    path: P,
+    {
+      hooks = {},
+      isRequired,
+      defaultValue,
+      access,
+      label,
+      schemaDoc,
+      ...config
+    }: FieldConfigArgs & Record<string, any>,
+    {
+      getListByKey,
+      listKey,
+      listAdapter,
+      fieldAdapterClass,
+      defaultAccess,
+      schemaNames,
+    }: FieldExtraArgs
   ) {
     this.path = path;
     this.isPrimaryKey = path === 'id';
@@ -36,6 +91,7 @@ class Field {
 
     // Should be overwritten by types that implement a Relationship interface
     this.isRelationship = false;
+    this.refListKey = '';
 
     this.access = this._modifyAccess(
       parseFieldAccess({ schemaNames, listKey, fieldKey: path, defaultAccess, access })
@@ -48,13 +104,13 @@ class Field {
     return false;
   }
 
-  _modifyAccess(access) {
+  _modifyAccess(access: any) {
     return access;
   }
 
   // Field types should replace this if they want to any fields to the output type
   gqlOutputFields() {
-    return [];
+    return [] as string[];
   }
   gqlOutputFieldResolvers() {
     return {};
@@ -71,7 +127,7 @@ class Field {
    * overwrite any auxiliary types defined by an individual type.
    */
   getGqlAuxTypes() {
-    return [];
+    return [] as string[];
   }
   gqlAuxFieldResolvers() {
     return {};
@@ -95,7 +151,7 @@ class Field {
    * @param {Object} data.originalInput The raw incoming item from the mutation
    * (no relationships or defaults resolved)
    */
-  async resolveInput({ resolvedData }) {
+  async resolveInput({ resolvedData }: { resolvedData: Record<P, any> }) {
     return resolvedData[this.path];
   }
 
@@ -112,18 +168,18 @@ class Field {
   async afterDelete() {}
 
   gqlQueryInputFields() {
-    return [];
+    return [] as string[];
   }
-  equalityInputFields(type) {
+  equalityInputFields(type: string) {
     return [`${this.path}: ${type}`, `${this.path}_not: ${type}`];
   }
-  equalityInputFieldsInsensitive(type) {
+  equalityInputFieldsInsensitive(type: string) {
     return [`${this.path}_i: ${type}`, `${this.path}_not_i: ${type}`];
   }
-  inInputFields(type) {
+  inInputFields(type: string) {
     return [`${this.path}_in: [${type}]`, `${this.path}_not_in: [${type}]`];
   }
-  orderingInputFields(type) {
+  orderingInputFields(type: string) {
     return [
       `${this.path}_lt: ${type}`,
       `${this.path}_lte: ${type}`,
@@ -131,10 +187,10 @@ class Field {
       `${this.path}_gte: ${type}`,
     ];
   }
-  containsInputFields(type) {
+  containsInputFields(type: string) {
     return [`${this.path}_contains: ${type}`, `${this.path}_not_contains: ${type}`];
   }
-  stringInputFields(type) {
+  stringInputFields(type: string) {
     return [
       ...this.containsInputFields(type),
       `${this.path}_starts_with: ${type}`,
@@ -143,7 +199,7 @@ class Field {
       `${this.path}_not_ends_with: ${type}`,
     ];
   }
-  stringInputFieldsInsensitive(type) {
+  stringInputFieldsInsensitive(type: string) {
     return [
       `${this.path}_contains_i: ${type}`,
       `${this.path}_not_contains_i: ${type}`,
@@ -154,12 +210,12 @@ class Field {
     ];
   }
   gqlCreateInputFields() {
-    return [];
+    return [] as string[];
   }
   gqlUpdateInputFields() {
-    return [];
+    return [] as string[];
   }
-  getDefaultValue({ context, originalInput }) {
+  getDefaultValue({ context, originalInput }: { context: KeystoneContext; originalInput: any }) {
     if (typeof this.defaultValue !== 'undefined') {
       if (typeof this.defaultValue === 'function') {
         return this.defaultValue({ context, originalInput });

@@ -1,9 +1,13 @@
+// @ts-ignore
 import inflection from 'inflection';
 import { humanize } from '@keystone-next/utils-legacy';
-import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '../../Implementation';
+import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
 
-function initOptions(options) {
+type List = { adapter: PrismaListAdapter };
+type DataType = 'string' | 'integer' | 'enum';
+
+function initOptions(options: string | any[]) {
   let optionsArray = options;
   if (typeof options === 'string') optionsArray = options.split(/\,\s*/);
   if (!Array.isArray(optionsArray)) return null;
@@ -15,7 +19,17 @@ function initOptions(options) {
 const VALID_DATA_TYPES = ['enum', 'string', 'integer'];
 const DOCS_URL = 'https://keystonejs.com/keystonejs/fields/src/types/select/';
 
-function validateOptions({ options, dataType, listKey, path }) {
+function validateOptions({
+  options,
+  dataType,
+  listKey,
+  path,
+}: {
+  options: any;
+  dataType: DataType;
+  listKey: string;
+  path: string;
+}) {
   if (!VALID_DATA_TYPES.includes(dataType)) {
     throw new Error(
       `
@@ -24,7 +38,7 @@ function validateOptions({ options, dataType, listKey, path }) {
 `
     );
   }
-  options.forEach((option, i) => {
+  options.forEach((option: { value: string }, i: number) => {
     if (dataType === 'enum') {
       if (!/^[a-zA-Z]\w*$/.test(option.value)) {
         throw new Error(
@@ -62,9 +76,19 @@ function validateOptions({ options, dataType, listKey, path }) {
   });
 }
 
-export class Select extends Implementation {
-  constructor(path, { options, dataType = 'string' }) {
-    super(...arguments);
+export class Select<P extends string> extends Implementation<P> {
+  options: any;
+  dataType: DataType;
+  constructor(
+    path: P,
+    {
+      options,
+      dataType = 'string',
+      ...configArgs
+    }: FieldConfigArgs & { options: any; dataType?: DataType },
+    extraArgs: FieldExtraArgs
+  ) {
+    super(path, { options, dataType, ...configArgs }, extraArgs);
     this.options = initOptions(options);
     validateOptions({ options: this.options, dataType, listKey: this.listKey, path });
     this.dataType = dataType;
@@ -79,7 +103,7 @@ export class Select extends Implementation {
     return [`${this.path}: ${this.getTypeName()}`];
   }
   gqlOutputFieldResolvers() {
-    return { [`${this.path}`]: item => item[this.path] };
+    return { [`${this.path}`]: (item: Record<P, any>) => item[this.path] };
   }
 
   getTypeName() {
@@ -96,7 +120,7 @@ export class Select extends Implementation {
       ? [
           `
       enum ${this.getTypeName()} {
-        ${this.options.map(i => i.value).join('\n        ')}
+        ${this.options.map((i: { value: string }) => i.value).join('\n        ')}
       }
     `,
         ]
@@ -122,9 +146,21 @@ export class Select extends Implementation {
   }
 }
 
-export class PrismaSelectInterface extends PrismaFieldAdapter {
-  constructor() {
-    super(...arguments);
+export class PrismaSelectInterface<P extends string> extends PrismaFieldAdapter<P> {
+  field: Select<P>;
+  isUnique: boolean;
+  isIndexed: boolean;
+  _prismaType: string;
+  constructor(
+    fieldName: string,
+    path: P,
+    field: Select<P>,
+    listAdapter: PrismaListAdapter,
+    getListByKey: (arg: string) => List | undefined,
+    config = {}
+  ) {
+    super(fieldName, path, field, listAdapter, getListByKey, config);
+    this.field = field;
     this.isUnique = !!this.config.isUnique;
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
     this._prismaType =
@@ -139,7 +175,7 @@ export class PrismaSelectInterface extends PrismaFieldAdapter {
     if (!['Int', 'String'].includes(this._prismaType)) {
       return [
         `enum ${this._prismaType} {
-          ${this.field.options.map(i => i.value).join('\n')}
+          ${this.field.options.map((i: { value: string }) => i.value).join('\n')}
         }`,
       ];
     } else return [];
@@ -149,7 +185,7 @@ export class PrismaSelectInterface extends PrismaFieldAdapter {
     return [this._schemaField({ type: this._prismaType })];
   }
 
-  getQueryConditions(dbPath) {
+  getQueryConditions(dbPath: string) {
     return {
       ...this.equalityConditions(dbPath),
       ...this.inConditions(dbPath),

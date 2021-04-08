@@ -1,9 +1,16 @@
-import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '../../Implementation';
+import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
 
-export class Text extends Implementation {
-  constructor(path, { isMultiline }) {
-    super(...arguments);
+type List = { adapter: PrismaListAdapter };
+
+export class Text<P extends string> extends Implementation<P> {
+  isMultiline?: boolean;
+  constructor(
+    path: P,
+    { isMultiline, ...configArgs }: FieldConfigArgs & { isMultiline?: boolean },
+    extraArgs: FieldExtraArgs
+  ) {
+    super(path, { isMultiline, ...configArgs }, extraArgs);
     this.isMultiline = isMultiline;
     this.isOrderable = true;
   }
@@ -16,7 +23,7 @@ export class Text extends Implementation {
     return [`${this.path}: String`];
   }
   gqlOutputFieldResolvers() {
-    return { [`${this.path}`]: item => item[this.path] };
+    return { [`${this.path}`]: (item: Record<P, any>) => item[this.path] };
   }
   gqlQueryInputFields() {
     const { listAdapter } = this.adapter;
@@ -43,9 +50,18 @@ export class Text extends Implementation {
   }
 }
 
-export class PrismaTextInterface extends PrismaFieldAdapter {
-  constructor() {
-    super(...arguments);
+export class PrismaTextInterface<P extends string> extends PrismaFieldAdapter<P> {
+  isUnique: boolean;
+  isIndexed: boolean;
+  constructor(
+    fieldName: string,
+    path: P,
+    field: Text<P>,
+    listAdapter: PrismaListAdapter,
+    getListByKey: (arg: string) => List | undefined,
+    config = {}
+  ) {
+    super(fieldName, path, field, listAdapter, getListByKey, config);
     this.isUnique = !!this.config.isUnique;
     this.isIndexed = !!this.config.isIndexed && !this.config.isUnique;
   }
@@ -54,7 +70,7 @@ export class PrismaTextInterface extends PrismaFieldAdapter {
     return [this._schemaField({ type: 'String' })];
   }
 
-  getQueryConditions(dbPath) {
+  getQueryConditions(dbPath: string) {
     const { listAdapter } = this;
     return {
       ...this.equalityConditions(dbPath),
