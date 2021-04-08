@@ -1,0 +1,37 @@
+{
+  "name": "@keystone-next/fields-legacy",
+  "description": "KeystoneJS Field Types including Text, Password, Integer, and more.",
+  "homepage": "https://github.com/keystonejs/keystone",
+  "repository": "https://github.com/keystonejs/keystone/tree/master/packages/fields",
+  "version": "25.0.0",
+  "main": "dist/fields-legacy.cjs.js",
+  "module": "dist/fields-legacy.esm.js",
+  "author": "The KeystoneJS Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.13.10",
+    "@keystone-next/access-control-legacy": "^9.0.1",
+    "@keystone-next/adapter-prisma-legacy": "^5.0.0",
+    "@keystone-next/fields": "6.0.0",
+    "@keystone-next/utils-legacy": "^8.0.0",
+    "apollo-errors": "^1.9.0",
+    "bcryptjs": "^2.4.3",
+    "cuid": "^2.1.8",
+    "date-fns": "^2.19.0",
+    "decimal.js": "^10.2.1",
+    "dumb-passwords": "^0.2.1",
+    "lodash.groupby": "^4.6.0",
+    "p-settle": "^4.1.1"
+  },
+  "devDependencies": {
+    "@apollo/client": "^3.3.14",
+    "@keystone-next/file-adapters-legacy": "*",
+    "@keystone-next/server-side-graphql-client-legacy": "*",
+    "@keystone-next/test-utils-legacy": "*",
+    "graphql-upload": "^11.0.0",
+    "mime": "^2.5.2"
+  }
+}

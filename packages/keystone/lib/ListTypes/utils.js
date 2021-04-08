@@ -5,6 +5,7 @@ const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
 const keyToLabel = str => {
   let label = humanize(str);
 
+  // Retain the leading underscore for auxiliary lists
   if (str[0] === '_') {
     label = `_${label}`;
   }
