@@ -74,6 +74,13 @@
     "typescript": "^4.2.3",
     "uid-safe": "^2.1.5"
   },
+  "devDependencies": {
+    "fast-glob": "^3.2.5",
+    "fixturez": "^1.1.0",
+    "outdent": "^0.8.0",
+    "string-argv": "^0.3.1",
+    "strip-ansi": "^6.0.0"
+  },
   "engines": {
     "node": ">=12.13.0"
   },
