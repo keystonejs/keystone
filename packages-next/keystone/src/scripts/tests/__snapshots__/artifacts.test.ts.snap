@@ -26,18 +26,6 @@ export type TodoWhereInput = {
   readonly title_not?: Scalars['String'] | null;
   readonly title_contains?: Scalars['String'] | null;
   readonly title_not_contains?: Scalars['String'] | null;
-  readonly title_starts_with?: Scalars['String'] | null;
-  readonly title_not_starts_with?: Scalars['String'] | null;
-  readonly title_ends_with?: Scalars['String'] | null;
-  readonly title_not_ends_with?: Scalars['String'] | null;
-  readonly title_i?: Scalars['String'] | null;
-  readonly title_not_i?: Scalars['String'] | null;
-  readonly title_contains_i?: Scalars['String'] | null;
-  readonly title_not_contains_i?: Scalars['String'] | null;
-  readonly title_starts_with_i?: Scalars['String'] | null;
-  readonly title_not_starts_with_i?: Scalars['String'] | null;
-  readonly title_ends_with_i?: Scalars['String'] | null;
-  readonly title_not_ends_with_i?: Scalars['String'] | null;
   readonly title_in?: ReadonlyArray<Scalars['String'] | null> | null;
   readonly title_not_in?: ReadonlyArray<Scalars['String'] | null> | null;
 };

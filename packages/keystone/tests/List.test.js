@@ -108,7 +108,7 @@ class MockFieldImplementation {
   async afterDelete() {}
 }
 class MockFieldAdapter {
-  listAdapter = { name: 'mock' };
+  listAdapter = { name: 'mock', parentAdapter: {} };
 }
 
 const MockIdType = {

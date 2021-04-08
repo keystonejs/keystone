@@ -21,18 +21,6 @@ input TodoWhereInput {
   title_not: String
   title_contains: String
   title_not_contains: String
-  title_starts_with: String
-  title_not_starts_with: String
-  title_ends_with: String
-  title_not_ends_with: String
-  title_i: String
-  title_not_i: String
-  title_contains_i: String
-  title_not_contains_i: String
-  title_starts_with_i: String
-  title_not_starts_with_i: String
-  title_ends_with_i: String
-  title_not_ends_with_i: String
   title_in: [String]
   title_not_in: [String]
 }

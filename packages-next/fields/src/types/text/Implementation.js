@@ -22,8 +22,8 @@ export class Text extends Implementation {
     const { listAdapter } = this.adapter;
     return [
       ...this.equalityInputFields('String'),
-      ...(listAdapter.name === 'prisma' && listAdapter.provider === 'sqlite'
-        ? []
+      ...(listAdapter.parentAdapter.provider === 'sqlite'
+        ? this.containsInputFields('String')
         : [
             ...this.stringInputFields('String'),
             ...this.equalityInputFieldsInsensitive('String'),
@@ -58,8 +58,8 @@ export class PrismaTextInterface extends PrismaFieldAdapter {
     const { listAdapter } = this;
     return {
       ...this.equalityConditions(dbPath),
-      ...(listAdapter.provider === 'sqlite'
-        ? {}
+      ...(listAdapter.parentAdapter.provider === 'sqlite'
+        ? this.containsConditions(dbPath)
         : {
             ...this.stringConditions(dbPath),
             ...this.equalityConditionsInsensitive(dbPath),

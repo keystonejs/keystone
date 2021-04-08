@@ -687,12 +687,18 @@ class PrismaFieldAdapter<P extends string> {
     };
   }
 
-  stringConditions(dbPath: string, f = identity) {
+  containsConditions(dbPath: string, f = identity) {
     return {
       [`${this.path}_contains`]: (value: string) => ({ [dbPath]: { contains: f(value) } }),
       [`${this.path}_not_contains`]: (value: string) => ({
         OR: [{ NOT: { [dbPath]: { contains: f(value) } } }, { [dbPath]: null }],
       }),
+    };
+  }
+
+  stringConditions(dbPath: string, f = identity) {
+    return {
+      ...this.containsConditions(dbPath, f),
       [`${this.path}_starts_with`]: (value: string) => ({ [dbPath]: { startsWith: f(value) } }),
       [`${this.path}_not_starts_with`]: (value: string) => ({
         OR: [{ NOT: { [dbPath]: { startsWith: f(value) } } }, { [dbPath]: null }],
