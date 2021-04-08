@@ -1,4 +1,5 @@
 import inflection from 'inflection';
+import { humanize } from '@keystone-next/utils-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '../../Implementation';
 
@@ -7,7 +8,7 @@ function initOptions(options) {
   if (typeof options === 'string') optionsArray = options.split(/\,\s*/);
   if (!Array.isArray(optionsArray)) return null;
   return optionsArray.map(i => {
-    return typeof i === 'string' ? { value: i, label: inflection.humanize(i) } : i;
+    return typeof i === 'string' ? { value: i, label: humanize(i) } : i;
   });
 }
 

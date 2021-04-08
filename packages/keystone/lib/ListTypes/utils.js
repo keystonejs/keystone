@@ -1,14 +1,9 @@
-const { upcase, resolveAllKeys, arrayToObject } = require('@keystone-next/utils-legacy');
+const { humanize, resolveAllKeys, arrayToObject } = require('@keystone-next/utils-legacy');
 
 const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
 
 const keyToLabel = str => {
-  let label = str
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .split(/\s|_|\-/)
-    .filter(i => i)
-    .map(upcase)
-    .join(' ');
+  let label = humanize(str);
 
   // Retain the leading underscore for auxiliary lists
   if (str[0] === '_') {
