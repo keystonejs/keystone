@@ -27,7 +27,6 @@
     "testcheck": "^1.0.0-rc.2"
   },
   "dependencies": {
-    "@keystone-next/fields-legacy": "^25.0.0",
     "@keystone-next/test-utils-legacy": "^16.0.0",
     "@keystone-next/types": "^16.0.0",
     "@keystone-next/utils-legacy": "^8.0.0",

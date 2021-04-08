@@ -1,5 +1,5 @@
-import { Implementation } from '@keystone-next/fields-legacy';
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { Implementation } from '../../Implementation';
 
 export class AutoIncrementImplementation extends Implementation {
   constructor(path, { gqlType, isUnique = true, access = {}, ...config } = {}, context = {}) {

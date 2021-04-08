@@ -19,7 +19,6 @@
     "@keystone-next/adapter-prisma-legacy": "^5.0.0",
     "@keystone-next/admin-ui": "^13.0.0",
     "@keystone-next/admin-ui-utils": "^3.0.3",
-    "@keystone-next/fields-legacy": "^25.0.0",
     "@keystone-next/types": "^16.0.0",
     "@keystone-next/utils-legacy": "^8.0.0",
     "@keystone-ui/button": "^3.0.1",

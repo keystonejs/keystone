@@ -9,3 +9,4 @@ export { decimal } from './types/decimal';
 export { autoIncrement } from './types/autoIncrement';
 export { select } from './types/select';
 export { virtual } from './types/virtual';
+export { Implementation } from './Implementation';

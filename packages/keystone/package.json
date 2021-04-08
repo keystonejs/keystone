@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "@keystone-next/fields": "^6.0.0",
-    "@keystone-next/fields-legacy": "^25.0.0",
     "@keystone-next/test-utils-legacy": "*",
     "graphql": "^15.5.0"
   },

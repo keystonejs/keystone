@@ -1,5 +1,5 @@
 import { getItems } from '@keystone-next/server-side-graphql-client-legacy';
-import { text } from '@keystone-next/fields';
+import { text } from '../types/text/index.ts';
 
 export const name = 'ID';
 
@@ -18,6 +18,8 @@ export const initItems = () => {
 
 export const skipCrudTest = true;
 export const skipCommonFilterTest = true;
+export const skipRequiredTest = true;
+export const skipUniqueTest = true;
 
 const getIDs = async keystone => {
   const IDs = {};

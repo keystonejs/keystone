@@ -1,6 +1,6 @@
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { parseFieldAccess } from '@keystone-next/access-control-legacy';
-import { Implementation } from '@keystone-next/fields-legacy';
+import { Implementation } from '../../Implementation';
 
 export class Virtual extends Implementation {
   constructor(

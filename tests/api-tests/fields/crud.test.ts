@@ -14,7 +14,7 @@ import { KeystoneContext } from '@keystone-next/types';
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-testModules.push(path.resolve('packages/fields/tests/test-fixtures.js'));
+testModules.push(path.resolve('packages-next/fields/src/tests/test-fixtures.js'));
 
 multiAdapterRunners().map(({ runner, provider }) =>
   describe(`${provider} provider`, () => {
