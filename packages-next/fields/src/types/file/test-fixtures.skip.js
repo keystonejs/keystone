@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { LocalFileAdapter } from '@keystone-next/file-adapters-legacy';
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
 // import Text from '../Text';
+import { LocalFileAdapter } from './local-file';
 import File from './';
 
 export const name = 'File';
