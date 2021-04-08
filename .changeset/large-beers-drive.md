@@ -30,8 +30,6 @@
 '@keystone-next/types': major
 '@keystone-next/access-control-legacy': major
 '@keystone-next/adapter-prisma-legacy': major
-'@keystone-next/fields-legacy': major
-'@keystone-next/file-adapters-legacy': major
 '@keystone-next/keystone-legacy': major
 '@keystone-next/server-side-graphql-client-legacy': major
 '@keystone-next/test-utils-legacy': major
