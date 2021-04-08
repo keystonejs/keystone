@@ -1,4 +1,4 @@
-import inflection from 'inflection';
+import { humanize } from '@keystone-next/utils-legacy';
 import { parseFieldAccess } from '@keystone-next/access-control-legacy';
 
 class Field {
@@ -17,7 +17,8 @@ class Field {
     this.hooks = hooks;
     this.getListByKey = getListByKey;
     this.listKey = listKey;
-    this.label = label || inflection.humanize(inflection.underscore(path));
+    this.label = label || humanize(path);
+
     if (this.config.isUnique && !this._supportsUnique) {
       throw new Error(
         `isUnique is not a supported option for field type ${this.constructor.name} (${this.path})`
