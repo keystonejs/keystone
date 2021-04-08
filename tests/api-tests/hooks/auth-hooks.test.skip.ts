@@ -1,6 +1,6 @@
 import { AddressInfo } from 'net';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   testConfig,
   setupFromConfig,
@@ -12,9 +12,9 @@ import express from 'express';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text, password } from '@keystone-next/fields';
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         User: list({
@@ -127,8 +127,8 @@ const runTestInServer = async (app: express.Application, testFn: (arg: any) => P
   }
 };
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('Auth Hooks', () => {
       test(
         'Auth/unauth with valid creds',

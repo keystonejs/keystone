@@ -43,8 +43,8 @@ const imperativeList = getImperativeListName({
   delete: true,
 });
 
-multiAdapterRunners().map(({ before, after, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ before, after, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     let keystone: any,
       queries: string[],
       mutations: string[],

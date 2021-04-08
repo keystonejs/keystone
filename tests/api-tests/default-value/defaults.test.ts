@@ -1,13 +1,13 @@
-import { AdapterName, testConfig } from '@keystone-next/test-utils-legacy';
+import { ProviderName, testConfig } from '@keystone-next/test-utils-legacy';
 import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 import { text } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
 import type { BaseFields } from '@keystone-next/types';
 
-const setupList = (adapterName: AdapterName, fields: BaseFields<any>) => () =>
+const setupList = (provider: ProviderName, fields: BaseFields<any>) => () =>
   setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         User: list({ fields }),
@@ -16,11 +16,11 @@ const setupList = (adapterName: AdapterName, fields: BaseFields<any>) => () =>
   });
 
 describe('defaultValue field config', () => {
-  multiAdapterRunners().map(({ runner, adapterName }) =>
-    describe(`Adapter: ${adapterName}`, () => {
+  multiAdapterRunners().map(({ runner, provider }) =>
+    describe(`Provider: ${provider}`, () => {
       test(
         'Has no default by default',
-        runner(setupList(adapterName, { name: text() }), async ({ context }) => {
+        runner(setupList(provider, { name: text() }), async ({ context }) => {
           const listKey = 'User';
           const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
           expect(result).toMatchObject({ name: null });
@@ -30,7 +30,7 @@ describe('defaultValue field config', () => {
       test(
         'Sets undefined as a default',
         runner(
-          setupList(adapterName, { name: text({ defaultValue: undefined }) }),
+          setupList(provider, { name: text({ defaultValue: undefined }) }),
           async ({ context }) => {
             const listKey = 'User';
             const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
@@ -41,20 +41,17 @@ describe('defaultValue field config', () => {
 
       test(
         'Sets null as a default',
-        runner(
-          setupList(adapterName, { name: text({ defaultValue: null }) }),
-          async ({ context }) => {
-            const listKey = 'User';
-            const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
-            expect(result).toMatchObject({ name: null });
-          }
-        )
+        runner(setupList(provider, { name: text({ defaultValue: null }) }), async ({ context }) => {
+          const listKey = 'User';
+          const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
+          expect(result).toMatchObject({ name: null });
+        })
       );
 
       test(
         'Sets a scalar as a default',
         runner(
-          setupList(adapterName, { name: text({ defaultValue: 'hello' }) }),
+          setupList(provider, { name: text({ defaultValue: 'hello' }) }),
           async ({ context }) => {
             const listKey = 'User';
             const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
@@ -66,7 +63,7 @@ describe('defaultValue field config', () => {
       test(
         'executes a function to get default',
         runner(
-          setupList(adapterName, { name: text({ defaultValue: () => 'foobar' }) }),
+          setupList(provider, { name: text({ defaultValue: () => 'foobar' }) }),
           async ({ context }) => {
             const listKey = 'User';
             const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
@@ -78,7 +75,7 @@ describe('defaultValue field config', () => {
       test(
         'handles promises returned from function',
         runner(
-          setupList(adapterName, {
+          setupList(provider, {
             name: text({ defaultValue: () => Promise.resolve('zippity') }),
           }),
           async ({ context }) => {
@@ -92,7 +89,7 @@ describe('defaultValue field config', () => {
       test('executes the function with the correct parameters', () => {
         const defaultValue = jest.fn();
         return runner(
-          setupList(adapterName, { name: text({ defaultValue }) }),
+          setupList(provider, { name: text({ defaultValue }) }),
           async ({ context }) => {
             await createItem({ context, listKey: 'User', item: {} });
             expect(defaultValue).toHaveBeenCalledTimes(1);
@@ -109,7 +106,7 @@ describe('defaultValue field config', () => {
       test('passes the originalInput', () => {
         const defaultValue = jest.fn(({ originalInput }) => `${originalInput.salutation} X`);
         return runner(
-          setupList(adapterName, {
+          setupList(provider, {
             name: text({ defaultValue }),
             salutation: text(),
           }),

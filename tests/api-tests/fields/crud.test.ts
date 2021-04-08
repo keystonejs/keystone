@@ -14,15 +14,15 @@ import { KeystoneContext } from '@keystone-next/types';
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-testModules.push(path.resolve('packages/fields/tests/test-fixtures.js'));
+testModules.push(path.resolve('packages-next/fields/src/tests/test-fixtures.js'));
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`${adapterName} adapter`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`${provider} provider`, () => {
     testModules
       .map(require)
       .filter(
         ({ skipCrudTest, unSupportedAdapterList = [] }) =>
-          !skipCrudTest && !unSupportedAdapterList.includes(adapterName)
+          !skipCrudTest && !unSupportedAdapterList.includes(provider)
       )
       .forEach(mod => {
         (mod.testMatrix || ['default']).forEach((matrixValue: string) => {
@@ -31,7 +31,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             runner(
               () =>
                 setupFromConfig({
-                  adapterName,
+                  provider,
                   config: testConfig({
                     lists: createSchema({
                       [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
@@ -44,7 +44,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 for (const item of mod.initItems(matrixValue)) {
                   await createItem({ context, listKey, item });
                 }
-                return testFn({ context, listKey, adapterName, ...rest });
+                return testFn({ context, listKey, provider, ...rest });
               }
             );
 

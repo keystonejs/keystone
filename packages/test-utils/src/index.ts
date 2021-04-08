@@ -18,21 +18,21 @@ import {
 import type { KeystoneConfig, BaseKeystone, KeystoneContext } from '@keystone-next/types';
 import memoizeOne from 'memoize-one';
 
-export type AdapterName = 'prisma_postgresql' | 'prisma_sqlite';
+export type ProviderName = 'postgresql' | 'sqlite';
 
 const hashPrismaSchema = memoizeOne(prismaSchema =>
   crypto.createHash('md5').update(prismaSchema).digest('hex')
 );
 
 const argGenerator = {
-  prisma_postgresql: () => ({
+  postgresql: () => ({
     url: process.env.DATABASE_URL!,
     provider: 'postgresql' as const,
     getDbSchemaName: () => null as any,
     // Turn this on if you need verbose debug info
     enableLogging: false,
   }),
-  prisma_sqlite: () => ({
+  sqlite: () => ({
     url: process.env.DATABASE_URL!,
     provider: 'sqlite' as const,
     // Turn this on if you need verbose debug info
@@ -49,13 +49,13 @@ export const testConfig = (config: TestKeystoneConfig) => config;
 const alreadyGeneratedProjects = new Set<string>();
 
 async function setupFromConfig({
-  adapterName,
+  provider,
   config: _config,
 }: {
-  adapterName: AdapterName;
+  provider: ProviderName;
   config: TestKeystoneConfig;
 }) {
-  const adapterArgs = await argGenerator[adapterName]();
+  const adapterArgs = await argGenerator[provider]();
   const config = initConfig({
     ..._config,
     db: adapterArgs,
@@ -66,7 +66,7 @@ async function setupFromConfig({
     const { keystone, graphQLSchema } = createSystem(config);
     const artifacts = await getCommittedArtifacts(graphQLSchema, keystone);
     const hash = hashPrismaSchema(artifacts.prisma);
-    if (adapterName === 'prisma_postgresql') {
+    if (provider === 'postgresql') {
       config.db.url = `${config.db.url}?schema=${hash.toString()}`;
     }
     const cwd = path.resolve('.api-test-prisma-clients', hash);
@@ -124,9 +124,9 @@ function networkedGraphqlRequest({
 
 type Setup = { keystone: BaseKeystone; context: KeystoneContext; app: express.Application };
 
-function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promise<void> | void) {
+function _keystoneRunner(provider: ProviderName, tearDownFunction: () => Promise<void> | void) {
   return function (
-    setupKeystoneFn: (adaptername: AdapterName) => Promise<Setup>,
+    setupKeystoneFn: (provider: ProviderName) => Promise<Setup>,
     testFn?: (setup: Setup) => Promise<void>
   ) {
     return async function () {
@@ -134,14 +134,14 @@ function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promi
         // If a testFn is not defined then we just need
         // to excute setup and tear down in isolation.
         try {
-          await setupKeystoneFn(adapterName);
+          await setupKeystoneFn(provider);
         } catch (error) {
           await tearDownFunction();
           throw error;
         }
         return;
       }
-      const setup = await setupKeystoneFn(adapterName);
+      const setup = await setupKeystoneFn(provider);
       const { keystone } = setup;
       await keystone.connect();
 
@@ -155,13 +155,13 @@ function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promi
   };
 }
 
-function _before(adapterName: AdapterName) {
+function _before(provider: ProviderName) {
   return async function (
     setupKeystone: (
-      adapterName: AdapterName
+      provider: ProviderName
     ) => Promise<{ keystone: Keystone<string>; app: any; context: any }>
   ) {
-    const { keystone, context, app } = await setupKeystone(adapterName);
+    const { keystone, context, app } = await setupKeystone(provider);
     await keystone.connect();
     return { keystone, context, app };
   };
@@ -177,18 +177,18 @@ function _after(tearDownFunction: () => Promise<void> | void) {
 function multiAdapterRunners(only = process.env.TEST_ADAPTER) {
   return [
     {
-      runner: _keystoneRunner('prisma_postgresql', () => {}),
-      adapterName: 'prisma_postgresql' as const,
-      before: _before('prisma_postgresql'),
+      runner: _keystoneRunner('postgresql', () => {}),
+      provider: 'postgresql' as const,
+      before: _before('postgresql'),
       after: _after(() => {}),
     },
     {
-      runner: _keystoneRunner('prisma_sqlite', () => {}),
-      adapterName: 'prisma_sqlite' as const,
-      before: _before('prisma_sqlite'),
+      runner: _keystoneRunner('sqlite', () => {}),
+      provider: 'sqlite' as const,
+      before: _before('sqlite'),
       after: _after(() => {}),
     },
-  ].filter(a => typeof only === 'undefined' || a.adapterName === only);
+  ].filter(a => typeof only === 'undefined' || a.provider === only);
 }
 
 export { setupFromConfig, multiAdapterRunners, networkedGraphqlRequest };

@@ -9,14 +9,13 @@
   "main": "dist/server-side-graphql-client-legacy.cjs.js",
   "module": "dist/server-side-graphql-client-legacy.esm.js",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "dependencies": {
     "@keystone-next/types": "^16.0.0",
     "graphql": "^15.5.0"
   },
   "devDependencies": {
-    "@keystone-next/fields-legacy": "*",
     "@keystone-next/test-utils-legacy": "*"
   }
 }

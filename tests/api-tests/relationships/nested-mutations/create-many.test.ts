@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import {
-  AdapterName,
+  ProviderName,
   multiAdapterRunners,
   setupFromConfig,
   testConfig,
@@ -13,9 +13,9 @@ const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 type IdType = any;
 
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
-    adapterName,
+    provider,
     config: testConfig({
       lists: createSchema({
         Note: list({
@@ -62,8 +62,8 @@ function setupKeystone(adapterName: AdapterName) {
   });
 }
 
-multiAdapterRunners().map(({ runner, adapterName }) =>
-  describe(`Adapter: ${adapterName}`, () => {
+multiAdapterRunners().map(({ runner, provider }) =>
+  describe(`Provider: ${provider}`, () => {
     describe('no access control', () => {
       test(
         'create nested from within create mutation',
@@ -73,7 +73,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           const noteContent3 = `c${sampleOne(alphanumGenerator)}`;
 
           // Create an item that does the nested create
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 createUser(data: {
@@ -89,7 +89,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
               }`,
           });
 
-          expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             createUser: {
               id: expect.any(String),
@@ -98,15 +97,9 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Create an item that does the nested create
-          type T = {
-            data: { createUser: { id: IdType; notes: { id: IdType; content: string }[] } };
-            errors: unknown;
-          };
+          type T = { createUser: { id: IdType; notes: { id: IdType; content: string }[] } };
 
-          const {
-            data: { createUser },
-            errors: errors2,
-          }: T = await context.executeGraphQL({
+          const { createUser } = (await context.graphql.run({
             query: `
               mutation {
                 createUser(data: {
@@ -122,8 +115,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }
               }`,
-          });
-          expect(errors2).toBe(undefined);
+          })) as T;
           expect(createUser).toMatchObject({
             id: expect.any(String),
             notes: [
@@ -133,10 +125,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Sanity check that the items are actually created
-          const {
-            data: { allNotes },
-            errors: errors3,
-          } = await context.executeGraphQL({
+          const { allNotes } = await context.graphql.run({
             query: `
               query {
                 allNotes(where: { id_in: [${createUser.notes
@@ -147,11 +136,10 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-          expect(errors3).toBe(undefined);
           expect(allNotes).toHaveLength(createUser.notes.length);
 
           // Test an empty list of related notes
-          const result = await context.executeGraphQL({
+          const data2 = await context.graphql.run({
             query: `
               mutation {
                 createUser(data: {
@@ -163,8 +151,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-          expect(result.errors).toBe(undefined);
-          expect(result.data.createUser).toMatchObject({ id: expect.any(String), notes: [] });
+          expect(data2.createUser).toMatchObject({ id: expect.any(String), notes: [] });
         })
       );
 
@@ -183,7 +170,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Update an item that does the nested create
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 updateUser(
@@ -201,7 +188,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-          expect(errors).toBe(undefined);
           expect(data).toMatchObject({
             updateUser: {
               id: expect.any(String),
@@ -209,14 +195,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             },
           });
 
-          type T = {
-            data: { updateUser: { id: IdType; notes: { id: IdType; content: string }[] } };
-            errors: unknown;
-          };
-          const {
-            data: { updateUser },
-            errors: errors2,
-          }: T = await context.executeGraphQL({
+          type T = { updateUser: { id: IdType; notes: { id: IdType; content: string }[] } };
+          const { updateUser } = (await context.graphql.run({
             query: `
               mutation {
                 updateUser(
@@ -238,9 +218,8 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }
               }`,
-          });
+          })) as T;
 
-          expect(errors2).toBe(undefined);
           expect(updateUser).toMatchObject({
             id: expect.any(String),
             notes: [
@@ -251,10 +230,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
           });
 
           // Sanity check that the items are actually created
-          const {
-            data: { allNotes },
-            errors: errors3,
-          } = await context.executeGraphQL({
+          const { allNotes } = await context.graphql.run({
             query: `
               query {
                 allNotes(where: { id_in: [${updateUser.notes
@@ -265,7 +241,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                 }
               }`,
           });
-          expect(errors3).toBe(undefined);
           expect(allNotes).toHaveLength(updateUser.notes.length);
         })
       );
@@ -419,7 +394,7 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
             });
 
             // Update an item that does the nested create
-            const { errors } = await context.exitSudo().executeGraphQL({
+            const { errors } = await context.exitSudo().graphql.raw({
               query: `
                 mutation {
                   updateUserToNotesNoCreate(
@@ -436,18 +411,15 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
 
             // Assert it throws an access denied error
             expect(errors).toHaveLength(1);
-            const error = errors[0];
+            const error = errors![0];
             expect(error.message).toEqual(
               'Unable to create and/or connect 1 UserToNotesNoCreate.notes<NoteNoCreate>'
             );
             expect(error.path).toHaveLength(1);
-            expect(error.path[0]).toEqual('updateUserToNotesNoCreate');
+            expect(error.path![0]).toEqual('updateUserToNotesNoCreate');
 
             // Confirm it didn't insert the record anyway
-            const {
-              data: { allNoteNoCreates },
-              errors: errors2,
-            } = await context.executeGraphQL({
+            const { allNoteNoCreates } = await context.graphql.run({
               query: `
                 query {
                   allNoteNoCreates(where: { content: "${noteContent}" }) {
@@ -456,7 +428,6 @@ multiAdapterRunners().map(({ runner, adapterName }) =>
                   }
                 }`,
             });
-            expect(errors2).toBe(undefined);
             expect(allNoteNoCreates).toMatchObject([]);
           })
         );

@@ -1,4 +1,4 @@
-import { AdapterName } from '@keystone-next/test-utils-legacy';
+import { ProviderName } from '@keystone-next/test-utils-legacy';
 import { decimal } from '..';
 import { text } from '../../text';
 
@@ -8,7 +8,7 @@ export const exampleValue = () => '6.28';
 export const exampleValue2 = () => '6.45';
 export const supportsUnique = true;
 export const fieldName = 'price';
-export const unSupportedAdapterList = ['prisma_sqlite'];
+export const unSupportedAdapterList = ['sqlite'];
 
 export const getTestFields = () => ({
   name: text(),
@@ -37,10 +37,10 @@ export const storedValues = () => [
   { name: 'price7', price: null },
 ];
 
-export const supportedFilters = (adapterName: AdapterName) => [
+export const supportedFilters = (provider: ProviderName) => [
   'null_equality',
   'equality',
   'ordering',
-  adapterName !== 'prisma_postgresql' && 'in_empty_null',
-  adapterName !== 'prisma_postgresql' && 'in_equal',
+  provider !== 'postgresql' && 'in_empty_null',
+  provider !== 'postgresql' && 'in_equal',
 ];
