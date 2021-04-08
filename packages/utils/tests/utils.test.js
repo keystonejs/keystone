@@ -15,10 +15,22 @@ const {
   flatten,
   zipObj,
   upcase,
+  humanize,
   ...utils
 } = require('../src');
 
 describe('utils', () => {
+  test('humanize()', () => {
+    expect(humanize('helloDarknessMyOldFriend')).toBe('Hello Darkness My Old Friend');
+    expect(humanize('someHTML')).toBe('Some HTML');
+    expect(humanize('snake_case')).toBe('Snake Case');
+    expect(humanize('kebab-case')).toBe('Kebab Case');
+    expect(humanize('someId')).toBe('Some ID');
+    expect(humanize('SomeHIDDENId')).toBe('Some HIDDEN ID');
+    expect(humanize('multiple words here')).toBe('Multiple Words Here');
+    expect(humanize('Multiple Words Here')).toBe('Multiple Words Here');
+  });
+
   test('upcase', () => {
     expect(upcase('Foo')).toEqual('Foo');
     expect(upcase('foo')).toEqual('Foo');
