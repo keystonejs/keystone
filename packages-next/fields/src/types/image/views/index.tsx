@@ -72,7 +72,8 @@ export const controller = (config: FieldControllerConfig): ImageController => {
     path: config.path,
     label: config.label,
     graphqlSelection: `${config.path} {
-        src
+        id
+        extension
       }`,
     defaultValue: { kind: 'empty' },
     deserialize(item) {
@@ -80,7 +81,9 @@ export const controller = (config: FieldControllerConfig): ImageController => {
       if (!value) return { kind: 'empty' };
       return {
         kind: 'from-server',
-        data: value,
+        data: {
+          src: `/images/${value.id}.${value.extension}`,
+        },
       };
     },
     validate(value) {
