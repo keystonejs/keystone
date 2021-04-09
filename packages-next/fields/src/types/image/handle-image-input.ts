@@ -2,14 +2,14 @@ import { KeystoneContext } from '@keystone-next/types';
 import { FileUpload } from 'graphql-upload';
 
 type ImageInput = {
-  upload?: FileUpload | null;
+  upload?: Promise<FileUpload> | null;
   ref?: string | null;
 };
 
 type ValidatedImageInput =
   | {
       kind: 'upload';
-      upload: FileUpload;
+      upload: Promise<FileUpload>;
     }
   | {
       kind: 'ref';
@@ -32,7 +32,7 @@ function validateImageInput({ ref, upload }: ImageInput): ValidatedImageInput {
 export async function handleImageData(input: ImageInput, context: KeystoneContext) {
   const data = validateImageInput(input);
   if (data.kind === 'upload') {
-    return context.images!.getDataFromStream(data.upload.createReadStream());
+    return context.images!.getDataFromStream((await data.upload).createReadStream());
   }
   return context.images!.getDataFromRef(data.ref);
 }
