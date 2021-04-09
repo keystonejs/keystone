@@ -17,14 +17,13 @@ const parseImageRef = (ref: string): { mode: ImageMode; id: string; ext: ImageEx
     throw new Error('Invalid image reference');
   }
 
-  const mode = ref.split(':')[0] as ImageMode;
-  const ext = ref.split('.')[1] as ImageExtension;
-  const id = mode.split('.')[0];
+  const [mode, idAndExt] = ref.split(':');
+  const [id, ext] = idAndExt.split('.');
 
   return {
-    mode,
+    mode: mode as ImageMode,
     id,
-    ext,
+    ext: ext as ImageExtension,
   };
 };
 
