@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
 import { fromBuffer } from 'file-type';
 import imageSize from 'image-size';
+import sharp from 'sharp';
 
 const DEFAULT_BASE_URL = 'http://localhost:3000';
 const DEFAULT_STORAGE_PATH = './public/images';
@@ -48,14 +49,17 @@ const getImageMetadataFromBuffer = async (buffer: Buffer) => {
   return { width, height, filesize, extension: ext };
 };
 
-const getBlurhashFromBuffer = async (
-  buffer: Buffer,
-  width: number,
-  height: number
-): Promise<string> => {
-  return '';
+const getBlurhashFromBuffer = async (buffer: Buffer): Promise<string> => {
+  const SIZE = 50;
+  const {
+    data,
+    info: { width, height },
+  } = await sharp(buffer)
+    .raw()
+    .resize(SIZE, SIZE, { fit: 'inside' })
+    .toBuffer({ resolveWithObject: true });
   const blurhash = encode(
-    new Uint8ClampedArray(buffer),
+    new Uint8ClampedArray(data),
     width,
     height,
     BLURHASH_COMPONENT_X,
@@ -74,7 +78,7 @@ export function createImagesContext(config: KeystoneConfig['images']): ImagesCon
     return;
   }
 
-  const { baseUrl = '/images', storagePath = DEFAULT_STORAGE_PATH } = config.local || {};
+  const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = config.local || {};
 
   fs.mkdirSync(storagePath, { recursive: true });
 
@@ -82,8 +86,6 @@ export function createImagesContext(config: KeystoneConfig['images']): ImagesCon
     getSrc: (mode, id, ext) => {
       if (isLocal(mode)) {
         const filename = `${id}.${ext}`;
-        const { baseUrl = DEFAULT_BASE_URL } = config.local || {};
-
         return `${baseUrl}/${filename}`;
       }
 
@@ -101,13 +103,13 @@ export function createImagesContext(config: KeystoneConfig['images']): ImagesCon
       if (isLocal(mode)) {
         const buffer = await fs.readFile(path.join(storagePath, `${id}.${extension}`));
         const metadata = await getImageMetadataFromBuffer(buffer);
-        const blurhash = await getBlurhashFromBuffer(buffer, metadata.width, metadata.height);
+        const blurHash = await getBlurhashFromBuffer(buffer, metadata.width, metadata.height);
 
         return {
           mode,
           id,
           ...metadata,
-          blurhash,
+          blurHash,
         };
       }
 
@@ -131,13 +133,13 @@ export function createImagesContext(config: KeystoneConfig['images']): ImagesCon
       const metadata = await getImageMetadataFromBuffer(buffer);
 
       await fs.writeFile(path.join(storagePath, `${id}.${metadata.extension}`), buffer);
-      const blurhash = await getBlurhashFromBuffer(buffer, metadata.width, metadata.height);
+      const blurHash = await getBlurhashFromBuffer(buffer, metadata.width, metadata.height);
 
       return {
         mode,
         id,
         ...metadata,
-        blurhash,
+        blurHash,
       };
     },
   };
