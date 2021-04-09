@@ -131,10 +131,12 @@ class Field {
       `${this.path}_gte: ${type}`,
     ];
   }
+  containsInputFields(type) {
+    return [`${this.path}_contains: ${type}`, `${this.path}_not_contains: ${type}`];
+  }
   stringInputFields(type) {
     return [
-      `${this.path}_contains: ${type}`,
-      `${this.path}_not_contains: ${type}`,
+      ...this.containsInputFields(type),
       `${this.path}_starts_with: ${type}`,
       `${this.path}_not_starts_with: ${type}`,
       `${this.path}_ends_with: ${type}`,
