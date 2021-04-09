@@ -50,6 +50,7 @@ type ImageData = {
 
 type ImageValue =
   | { kind: 'empty' }
+  | { kind: 'ref'; data: string }
   | {
       kind: 'from-server';
       data: ImageData;
@@ -87,7 +88,10 @@ export const controller = (config: FieldControllerConfig): ImageController => {
     },
     serialize(value) {
       if (value.kind === 'upload') {
-        return { [config.path]: value.data.file };
+        return { [config.path]: { upload: value.data.file } };
+      }
+      if (value.kind === 'ref') {
+        return { [config.path]: { ref: value.data } };
       }
       if (value.kind === 'remove') {
         return { [config.path]: null };
