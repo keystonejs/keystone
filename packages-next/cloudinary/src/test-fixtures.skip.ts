@@ -1,9 +1,11 @@
 import fs from 'fs';
 import mime from 'mime';
+// @ts-ignore
 import { Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
 import { text } from '@keystone-next/fields';
-import { cloudinaryImage } from './index.ts';
+import { ProviderName } from '@keystone-next/test-utils-legacy';
+import { cloudinaryImage } from './index';
 
 const path = require('path');
 
@@ -13,12 +15,13 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_SECRET || 'cloudinary_secret',
 });
 
-const prepareFile = _filePath => {
+const prepareFile = (_filePath: string) => {
   const filePath = path.resolve(`packages-next/cloudinary/src/test-files/${_filePath}`);
   const upload = new Upload();
   upload.resolve({
     createReadStream: () => fs.createReadStream(filePath),
     filename: path.basename(filePath),
+    // @ts-ignore
     mimetype: mime.getType(filePath),
     encoding: 'utf-8',
   });
@@ -80,7 +83,7 @@ export const storedValues = () => [
   { image: null, name: 'file6' },
 ];
 
-export const supportedFilters = provider => [
+export const supportedFilters = (provider: ProviderName) => [
   'null_equality',
   !['postgresql', 'sqlite'].includes(provider) && 'in_empty_null',
 ];

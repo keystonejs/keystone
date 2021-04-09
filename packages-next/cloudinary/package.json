@@ -17,10 +17,11 @@
     "@types/react": "^17.0.3",
     "cloudinary": "^1.25.1",
     "cuid": "^2.1.8",
+    "graphql-upload": "^11.0.0",
     "react": "^17.0.2"
   },
   "devDependencies": {
-    "graphql-upload": "^11.0.0",
+    "@keystone-next/test-utils-legacy": "16.0.0",
     "mime": "^2.5.2"
   },
   "engines": {
