@@ -1,5 +1,4 @@
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { parseFieldAccess } from '@keystone-next/access-control-legacy';
 import { Implementation } from '../../Implementation';
 
 export class Virtual extends Implementation {
@@ -41,11 +40,12 @@ export class Virtual extends Implementation {
     return [];
   }
 
-  parseFieldAccess(args) {
-    const parsedAccess = parseFieldAccess(args);
-    const fieldDefaults = { create: false, update: false, delete: false };
+  _modifyAccess(parsedAccess) {
+    // The virtual field is not just a read-only field, it fundamentally doesn't
+    // mean anything to do a create/update on this field. As such, we explicitly
+    // set the access control to false for these operations.
     return Object.keys(parsedAccess).reduce((prev, schemaName) => {
-      prev[schemaName] = { ...fieldDefaults, read: parsedAccess[schemaName].read };
+      prev[schemaName] = { create: false, update: false, read: parsedAccess[schemaName].read };
       return prev;
     }, {});
   }

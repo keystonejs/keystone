@@ -37,13 +37,19 @@ class Field {
     // Should be overwritten by types that implement a Relationship interface
     this.isRelationship = false;
 
-    this.access = parseFieldAccess({ schemaNames, listKey, fieldKey: path, defaultAccess, access });
+    this.access = this._modifyAccess(
+      parseFieldAccess({ schemaNames, listKey, fieldKey: path, defaultAccess, access })
+    );
   }
 
   // By default we assume that fields do not support unique constraints.
   // Fields should override this method if they want to support uniqueness.
   get _supportsUnique() {
     return false;
+  }
+
+  _modifyAccess(access) {
+    return access;
   }
 
   // Field types should replace this if they want to any fields to the output type
