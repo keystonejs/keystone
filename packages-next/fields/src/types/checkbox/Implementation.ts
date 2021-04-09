@@ -1,9 +1,11 @@
-import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '../../Implementation';
+import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
 
-export class Checkbox extends Implementation {
-  constructor() {
-    super(...arguments);
+type List = { adapter: PrismaListAdapter };
+
+export class Checkbox<P extends string> extends Implementation<P> {
+  constructor(path: P, configArgs: FieldConfigArgs, extraArgs: FieldExtraArgs) {
+    super(path, configArgs, extraArgs);
     this.isOrderable = true;
   }
 
@@ -15,7 +17,7 @@ export class Checkbox extends Implementation {
     return [`${this.path}: Boolean`];
   }
   gqlOutputFieldResolvers() {
-    return { [`${this.path}`]: item => item[this.path] };
+    return { [`${this.path}`]: (item: Record<P, any>) => item[this.path] };
   }
 
   gqlQueryInputFields() {
@@ -32,9 +34,16 @@ export class Checkbox extends Implementation {
   }
 }
 
-export class PrismaCheckboxInterface extends PrismaFieldAdapter {
-  constructor() {
-    super(...arguments);
+export class PrismaCheckboxInterface<P extends string> extends PrismaFieldAdapter<P> {
+  constructor(
+    fieldName: string,
+    path: P,
+    field: Checkbox<P>,
+    listAdapter: PrismaListAdapter,
+    getListByKey: (arg: string) => List | undefined,
+    config = {}
+  ) {
+    super(fieldName, path, field, listAdapter, getListByKey, config);
 
     // Error rather than ignoring invalid config
     if (this.config.isIndexed) {
@@ -48,7 +57,7 @@ export class PrismaCheckboxInterface extends PrismaFieldAdapter {
     return [this._schemaField({ type: 'Boolean' })];
   }
 
-  getQueryConditions(dbPath) {
+  getQueryConditions(dbPath: string) {
     return this.equalityConditions(dbPath);
   }
 }

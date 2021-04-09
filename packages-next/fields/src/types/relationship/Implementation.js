@@ -1,5 +1,5 @@
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '../../Implementation';
+import { Implementation } from '../../Implementation.ts';
 import { resolveNested } from './nested-mutations';
 
 export class Relationship extends Implementation {

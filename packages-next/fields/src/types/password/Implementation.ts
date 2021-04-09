@@ -1,28 +1,53 @@
-import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+// @ts-ignore
 import dumbPasswords from 'dumb-passwords';
-import { Implementation } from '../../Implementation';
+import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
+
+type List = { adapter: PrismaListAdapter };
 
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 
-export class Password extends Implementation {
+export class Password<P extends string> extends Implementation<P> {
+  bcrypt: Pick<typeof import('bcryptjs'), 'compare' | 'compareSync' | 'hash' | 'hashSync'>;
+  rejectCommon: boolean;
+  minLength: number;
+  workFactor: number;
+
   constructor(
-    path,
-    { rejectCommon, minLength, workFactor, useCompiledBcrypt, bcrypt },
-    { listKey }
+    path: P,
+    {
+      rejectCommon,
+      minLength = 8,
+      workFactor = 10,
+      useCompiledBcrypt,
+      bcrypt,
+      ...configArgs
+    }: FieldConfigArgs & {
+      rejectCommon?: boolean;
+      minLength?: number;
+      workFactor?: number;
+      useCompiledBcrypt?: boolean;
+      bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'compareSync' | 'hash' | 'hashSync'>;
+    },
+    extraArgs: FieldExtraArgs
   ) {
-    super(...arguments);
+    super(
+      path,
+      { rejectCommon, minLength, workFactor, useCompiledBcrypt, bcrypt, ...configArgs },
+      extraArgs
+    );
     if (useCompiledBcrypt) {
       throw new Error(
-        `The Password field at ${listKey}.${path} specifies the option "useCompiledBcrypt", this has been replaced with a "bcrypt" option which accepts a different implementation of bcrypt(such as the native npm package, "bcrypt")`
+        `The Password field at ${this.listKey}.${path} specifies the option "useCompiledBcrypt", this has been replaced with a "bcrypt" option which accepts a different implementation of bcrypt(such as the native npm package, "bcrypt")`
       );
     }
     this.bcrypt = bcrypt || require('bcryptjs');
 
     // Sanitise field specific config
     this.rejectCommon = !!rejectCommon;
-    this.minLength = Math.max(Number.parseInt(minLength) || 8, 1);
+    this.minLength = Math.max(minLength, 1);
     // Min 4, max: 31, default: 10
-    this.workFactor = Math.min(Math.max(Number.parseInt(workFactor) || 10, 4), 31);
+    this.workFactor = Math.min(Math.max(workFactor, 4), 31);
 
     if (this.workFactor < 6) {
       console.warn(
@@ -41,7 +66,7 @@ export class Password extends Implementation {
   }
   gqlOutputFieldResolvers() {
     return {
-      [`${this.path}_is_set`]: item => {
+      [`${this.path}_is_set`]: (item: Record<P, any>) => {
         const val = item[this.path];
         return bcryptHashRegex.test(val);
       },
@@ -61,23 +86,23 @@ export class Password extends Implementation {
   // Wrap bcrypt functionality
   // The compare() and compareSync() functions are constant-time
   // The compare() and generateHash() functions will return a Promise if no call back is provided
-  compare(candidate, hash, callback) {
-    return this.bcrypt.compare(candidate, hash, callback);
+  compare(candidate: string, hash: string) {
+    return this.bcrypt.compare(candidate, hash);
   }
-  compareSync(candidate, hash) {
+  compareSync(candidate: string, hash: string) {
     return this.bcrypt.compareSync(candidate, hash);
   }
-  generateHash(plaintext, callback) {
+  generateHash(plaintext: string) {
     this.validateNewPassword(plaintext);
-    return this.bcrypt.hash(plaintext, this.workFactor, callback);
+    return this.bcrypt.hash(plaintext, this.workFactor);
   }
-  generateHashSync(plaintext) {
+  generateHashSync(plaintext: string) {
     this.validateNewPassword(plaintext);
     return this.bcrypt.hashSync(plaintext, this.workFactor);
   }
 
   // Force values to be hashed when set
-  validateNewPassword(password) {
+  validateNewPassword(password: string) {
     if (this.rejectCommon && dumbPasswords.check(password)) {
       throw new Error(
         `[password:rejectCommon:${this.listKey}:${this.path}] Common and frequently-used passwords are not allowed.`
@@ -96,9 +121,18 @@ export class Password extends Implementation {
   }
 }
 
-export class PrismaPasswordInterface extends PrismaFieldAdapter {
-  constructor() {
-    super(...arguments);
+export class PrismaPasswordInterface<P extends string> extends PrismaFieldAdapter<P> {
+  field: Password<P>;
+  constructor(
+    fieldName: string,
+    path: P,
+    field: Password<P>,
+    listAdapter: PrismaListAdapter,
+    getListByKey: (arg: string) => List | undefined,
+    config = {}
+  ) {
+    super(fieldName, path, field, listAdapter, getListByKey, config);
+    this.field = field;
 
     // Error rather than ignoring invalid config
     if (this.config.isUnique || this.config.isIndexed) {
@@ -113,20 +147,21 @@ export class PrismaPasswordInterface extends PrismaFieldAdapter {
     return [this._schemaField({ type: 'String' })];
   }
 
-  getQueryConditions(dbPath) {
+  getQueryConditions<T>(dbPath: string) {
     // JM: I wonder if performing a regex match here leaks any timing info that
     // could be used to extract information about the hash.. :/
     return {
       // FIXME: Prisma needs to support regex matching...
-      [`${this.path}_is_set`]: value => (value ? { NOT: { [dbPath]: null } } : { [dbPath]: null }),
+      [`${this.path}_is_set`]: (value: T | null) =>
+        value ? { NOT: { [dbPath]: null } } : { [dbPath]: null },
       // ? b.where(dbPath, '~', bcryptHashRegex.source)
       // : b.where(dbPath, '!~', bcryptHashRegex.source).orWhereNull(dbPath),
     };
   }
 
-  setupHooks({ addPreSaveHook }) {
+  setupHooks({ addPreSaveHook }: { addPreSaveHook: (hook: any) => void }) {
     // Updates the relevant value in the item provided (by referrence)
-    addPreSaveHook(async item => {
+    addPreSaveHook(async (item: Record<P, any>) => {
       const path = this.field.path;
       const plaintext = item[path];
 

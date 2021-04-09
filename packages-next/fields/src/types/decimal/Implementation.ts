@@ -1,10 +1,17 @@
 import { Decimal as _Decimal } from 'decimal.js';
-import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '../../Implementation';
+import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
 
-export class Decimal extends Implementation {
-  constructor(path, { symbol }) {
-    super(...arguments);
+type List = { adapter: PrismaListAdapter };
+
+export class Decimal<P extends string> extends Implementation<P> {
+  symbol?: string;
+  constructor(
+    path: P,
+    { symbol, ...configArgs }: FieldConfigArgs & { symbol?: string },
+    extraArgs: FieldExtraArgs
+  ) {
+    super(path, { symbol, ...configArgs }, extraArgs);
     this.symbol = symbol;
     this.isOrderable = true;
   }
@@ -17,7 +24,7 @@ export class Decimal extends Implementation {
     return [`${this.path}: String`];
   }
   gqlOutputFieldResolvers() {
-    return { [`${this.path}`]: item => item[this.path] };
+    return { [`${this.path}`]: (item: Record<P, any>) => item[this.path] };
   }
 
   gqlQueryInputFields() {
@@ -40,9 +47,21 @@ export class Decimal extends Implementation {
   }
 }
 
-export class PrismaDecimalInterface extends PrismaFieldAdapter {
-  constructor() {
-    super(...arguments);
+export class PrismaDecimalInterface<P extends string> extends PrismaFieldAdapter<P> {
+  isUnique: boolean;
+  isIndexed: boolean;
+  precision: null | number;
+  scale: null | number;
+
+  constructor(
+    fieldName: string,
+    path: P,
+    field: Decimal<P>,
+    listAdapter: PrismaListAdapter,
+    getListByKey: (arg: string) => List | undefined,
+    config = {}
+  ) {
+    super(fieldName, path, field, listAdapter, getListByKey, config);
     if (this.listAdapter.parentAdapter.provider === 'sqlite') {
       throw new Error(
         `PrismaAdapter provider "sqlite" does not support field type "${this.field.constructor.name}"`
@@ -63,15 +82,23 @@ export class PrismaDecimalInterface extends PrismaFieldAdapter {
   }
 
   getPrismaSchema() {
-    return this._schemaField({
-      type: 'Decimal',
-      extra: `@postgresql.Decimal(${this.precision}, ${this.scale})`,
-    });
+    return [
+      this._schemaField({
+        type: 'Decimal',
+        extra: `@postgresql.Decimal(${this.precision}, ${this.scale})`,
+      }),
+    ];
   }
 
-  setupHooks({ addPreSaveHook, addPostReadHook }) {
+  setupHooks({
+    addPreSaveHook,
+    addPostReadHook,
+  }: {
+    addPreSaveHook: (hook: any) => void;
+    addPostReadHook: (hook: any) => void;
+  }) {
     // Updates the relevant value in the item provided (by reference)
-    addPreSaveHook(item => {
+    addPreSaveHook((item: Record<P, any>) => {
       // Only run the hook if the item actually contains the field
       if (!(this.path in item)) {
         return item;
@@ -91,7 +118,7 @@ export class PrismaDecimalInterface extends PrismaFieldAdapter {
       return item;
     });
 
-    addPostReadHook(item => {
+    addPostReadHook((item: Record<P, any>) => {
       if (item[this.path]) {
         item[this.path] = item[this.path].toFixed(this.scale);
       }
@@ -99,7 +126,7 @@ export class PrismaDecimalInterface extends PrismaFieldAdapter {
     });
   }
 
-  getQueryConditions(dbPath) {
+  getQueryConditions(dbPath: string) {
     return {
       ...this.equalityConditions(dbPath),
       ...this.orderingConditions(dbPath),
