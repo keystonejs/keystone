@@ -8,7 +8,6 @@ import {
   ProviderName,
 } from '@keystone-next/test-utils-legacy';
 import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
-// @ts-ignore
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
 function setupKeystone(provider: ProviderName) {
