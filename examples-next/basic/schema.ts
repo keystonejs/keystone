@@ -37,7 +37,7 @@ export const lists = createSchema({
   User: list({
     ui: {
       listView: {
-        initialColumns: ['name', 'posts'],
+        initialColumns: ['name', 'posts', 'avatar'],
       },
     },
     fields: {

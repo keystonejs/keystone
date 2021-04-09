@@ -114,7 +114,7 @@ export type DatabaseAPIs = {
 
 export type ImageMode = 'local';
 
-export type ImageExtension = 'jpeg' | 'png' | 'webp' | 'svg' | 'gif';
+export type ImageExtension = 'jpeg' | 'png' | 'webp' | 'gif';
 
 export type ImageData = {
   mode: ImageMode;

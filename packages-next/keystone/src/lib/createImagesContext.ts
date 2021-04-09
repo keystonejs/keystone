@@ -1,10 +1,13 @@
+import path from 'path';
 import { KeystoneConfig, ImagesContext, ImageExtension, ImageMode } from '@keystone-next/types';
-import sharp from 'sharp';
 import { encode } from 'blurhash';
 import { v4 as uuid } from 'uuid';
+import fs from 'fs-extra';
+import { fromBuffer } from 'file-type';
+import imageSize from 'image-size';
 
 const DEFAULT_BASE_URL = 'http://localhost:3000';
-const DEFAULT_STORAGE_PATH = '/public/images';
+const DEFAULT_STORAGE_PATH = './public/images';
 const BLURHASH_COMPONENT_X = 4;
 const BLURHASH_COMPONENT_Y = 4;
 
@@ -24,16 +27,33 @@ const parseImageRef = (ref: string): { mode: ImageMode; id: string; ext: ImageEx
   };
 };
 
-const getImageMeta = async (input: string | Buffer) =>
-  await sharp(input).toBuffer({ resolveWithObject: true });
+const getImageMetadataFromBuffer = async (buffer: Buffer) => {
+  const filesize = buffer.length;
+  const fileType = await fromBuffer(buffer);
+  if (!fileType) {
+    throw new Error('File type not found');
+  }
+  const extension = fileType.ext === 'jpg' ? 'jpeg' : fileType.ext;
+  if (extension !== 'jpeg' && extension !== 'png' && extension !== 'webp' && extension !== 'gif') {
+    throw new Error(`${extension} is not a supported image type`);
+  }
 
-const getBlurhashFromBuffer = async (buffer: Buffer, size: number = 32): Promise<string> => {
-  const {
-    info: { width, height },
-  } = await sharp(buffer)
-    .raw()
-    .resize(size, size, { fit: 'inside' })
-    .toBuffer({ resolveWithObject: true });
+  const ext: ImageExtension = extension;
+
+  const { height, width } = imageSize(buffer);
+
+  if (width === undefined || height === undefined) {
+    throw new Error('Height and width could not be found for image');
+  }
+  return { width, height, filesize, extension: ext };
+};
+
+const getBlurhashFromBuffer = async (
+  buffer: Buffer,
+  width: number,
+  height: number
+): Promise<string> => {
+  return '';
   const blurhash = encode(
     new Uint8ClampedArray(buffer),
     width,
@@ -54,6 +74,10 @@ export function createImagesContext(config: KeystoneConfig['images']): ImagesCon
     return;
   }
 
+  const { baseUrl = '/images', storagePath = DEFAULT_STORAGE_PATH } = config.local || {};
+
+  fs.mkdirSync(storagePath, { recursive: true });
+
   return {
     getSrc: (mode, id, ext) => {
       if (isLocal(mode)) {
@@ -73,21 +97,16 @@ export function createImagesContext(config: KeystoneConfig['images']): ImagesCon
     parseRef: ref => parseImageRef(ref),
     getDataFromRef: async ref => {
       const { mode, id, ext: extension } = parseImageRef(ref);
-      const { storagePath = DEFAULT_STORAGE_PATH } = config.local || {};
 
       if (isLocal(mode)) {
-        const file = `${storagePath}/${id}.${extension}`;
-        const { data: buffer, info } = await getImageMeta(file);
-        const { size: filesize, width, height } = info;
-        const blurhash = await getBlurhashFromBuffer(buffer);
+        const buffer = await fs.readFile(path.join(storagePath, `${id}.${extension}`));
+        const metadata = await getImageMetadataFromBuffer(buffer);
+        const blurhash = await getBlurhashFromBuffer(buffer, metadata.width, metadata.height);
 
         return {
           mode,
           id,
-          extension,
-          filesize,
-          width,
-          height,
+          ...metadata,
           blurhash,
         };
       }
@@ -108,18 +127,16 @@ export function createImagesContext(config: KeystoneConfig['images']): ImagesCon
       }
 
       const buffer = Buffer.concat(chunks);
-      const { info } = await getImageMeta(buffer);
-      const { size: filesize, width, height, format } = info;
-      const extension = format as ImageExtension;
-      const blurhash = await getBlurhashFromBuffer(buffer);
+
+      const metadata = await getImageMetadataFromBuffer(buffer);
+
+      await fs.writeFile(path.join(storagePath, `${id}.${metadata.extension}`), buffer);
+      const blurhash = await getBlurhashFromBuffer(buffer, metadata.width, metadata.height);
 
       return {
         mode,
         id,
-        extension,
-        filesize,
-        width,
-        height,
+        ...metadata,
         blurhash,
       };
     },
