@@ -1,12 +1,13 @@
 /** @jsx jsx */
 
 import { jsx, Stack, useTheme } from '@keystone-ui/core';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { Pill } from '@keystone-ui/pill';
 import { Button } from '@keystone-ui/button';
 import { FieldProps } from '@keystone-next/types';
+import NextImage from '@keystone-next/admin-ui/image';
 
 function useObjectURL(fileData: File | undefined) {
   let [objectURL, setObjectURL] = useState<string | undefined>(undefined);
@@ -35,7 +36,6 @@ export function Field({
   const imagePathFromUpload = useObjectURL(
     errorMessage === undefined && value.kind === 'upload' ? value.data.file : undefined
   );
-  const imagePath = value.kind === 'from-server' ? value.data.src : imagePathFromUpload;
 
   // Generate a random input key when the value changes, to ensure the file input is unmounted and
   // remounted (this is the only way to reset its value and ensure onChange will fire again if
@@ -47,7 +47,28 @@ export function Field({
       <FieldLabel>{field.label}</FieldLabel>
       {value.kind === 'from-server' || value.kind === 'upload' ? (
         <Stack gap="small">
-          {imagePath && errorMessage === undefined && <Image src={imagePath} alt={field.path} />}
+          {errorMessage === undefined &&
+            (value.kind === 'from-server' ? (
+              <ImageWrapper>
+                <NextImage
+                  height={value.data.height}
+                  width={value.data.width}
+                  src={value.data.src}
+                  alt={field.path}
+                />
+              </ImageWrapper>
+            ) : (
+              <ImageWrapper>
+                <img
+                  css={{
+                    height: 'auto',
+                    maxWidth: '100%',
+                  }}
+                  src={imagePathFromUpload}
+                  alt={field.path}
+                />
+              </ImageWrapper>
+            ))}
           {onChange && (
             <Stack across gap="small" align="center">
               <Button
@@ -169,8 +190,9 @@ export function validateImage({
 // Styled Components
 // ==============================
 
-const Image = (props: { src: string; alt: string }) => {
+const ImageWrapper = ({ children }: { children: ReactNode }) => {
   const theme = useTheme();
+
   return (
     <div
       css={{
@@ -185,13 +207,7 @@ const Image = (props: { src: string; alt: string }) => {
         width: 130, // 120px image + chrome
       }}
     >
-      <img
-        css={{
-          height: 'auto',
-          maxWidth: '100%',
-        }}
-        {...props}
-      />
+      {children}
     </div>
   );
 };

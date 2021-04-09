@@ -45,10 +45,10 @@ export class ImageImplementation extends Implementation {
     return {
       ImageFieldOutput: {
         src(data, _args, context) {
-          return context.images.getSrc(data.mode, data.kind, data.extension);
+          return context.images.getSrc(data.mode, data.id, data.extension);
         },
         ref(data, _args, context) {
-          return context.images.getRef(data.mode, data.kind, data.extension);
+          return context.images.getRef(data.mode, data.id, data.extension);
         },
       },
     };

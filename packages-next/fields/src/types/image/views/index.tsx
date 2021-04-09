@@ -46,6 +46,8 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 
 type ImageData = {
   src: string;
+  height: number;
+  width: number;
 };
 
 type ImageValue =
@@ -74,6 +76,8 @@ export const controller = (config: FieldControllerConfig): ImageController => {
     graphqlSelection: `${config.path} {
         id
         extension
+        width
+        height
       }`,
     defaultValue: { kind: 'empty' },
     deserialize(item) {
@@ -83,6 +87,8 @@ export const controller = (config: FieldControllerConfig): ImageController => {
         kind: 'from-server',
         data: {
           src: `/images/${value.id}.${value.extension}`,
+          width: value.width,
+          height: value.height,
         },
       };
     },
