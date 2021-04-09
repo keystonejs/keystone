@@ -25,7 +25,6 @@ export class ImageImplementation extends Implementation {
         jpeg
         png
         webp
-        svg
         gif
       }
       type ImageFieldOutput {
