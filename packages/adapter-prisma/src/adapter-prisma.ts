@@ -620,8 +620,8 @@ class PrismaFieldAdapter<P extends string> {
     return [this._schemaField({ type: 'String' })];
   }
 
-  getPrismaEnums() {
-    return [] as string[];
+  getPrismaEnums(): string[] {
+    return [];
   }
 
   // The following methods provide helpers for constructing the return values of `getQueryConditions`.

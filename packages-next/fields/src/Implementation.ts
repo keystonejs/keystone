@@ -109,8 +109,8 @@ class Field<P extends string> {
   }
 
   // Field types should replace this if they want to any fields to the output type
-  gqlOutputFields() {
-    return [] as string[];
+  gqlOutputFields(): string[] {
+    return [];
   }
   gqlOutputFieldResolvers() {
     return {};
@@ -126,8 +126,8 @@ class Field<P extends string> {
    * NOTE: When a naming conflict occurs, a list's types/queries/mutations will
    * overwrite any auxiliary types defined by an individual type.
    */
-  getGqlAuxTypes() {
-    return [] as string[];
+  getGqlAuxTypes(): string[] {
+    return [];
   }
   gqlAuxFieldResolvers() {
     return {};
@@ -167,8 +167,8 @@ class Field<P extends string> {
 
   async afterDelete() {}
 
-  gqlQueryInputFields() {
-    return [] as string[];
+  gqlQueryInputFields(): string[] {
+    return [];
   }
   equalityInputFields(type: string) {
     return [`${this.path}: ${type}`, `${this.path}_not: ${type}`];
@@ -209,11 +209,11 @@ class Field<P extends string> {
       `${this.path}_not_ends_with_i: ${type}`,
     ];
   }
-  gqlCreateInputFields() {
-    return [] as string[];
+  gqlCreateInputFields(): string[] {
+    return [];
   }
-  gqlUpdateInputFields() {
-    return [] as string[];
+  gqlUpdateInputFields(): string[] {
+    return [];
   }
   getDefaultValue({ context, originalInput }: { context: KeystoneContext; originalInput: any }) {
     if (typeof this.defaultValue !== 'undefined') {
