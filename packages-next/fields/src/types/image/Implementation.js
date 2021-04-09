@@ -21,7 +21,7 @@ export class ImageImplementation extends Implementation {
         upload: Upload
         ref: String
       }
-      enum Extension {
+      enum ImageExtension {
         jpeg
         png
         webp
@@ -34,6 +34,7 @@ export class ImageImplementation extends Implementation {
         width: Int!
         height: Int!
         blurHash: String!
+        extension: ImageExtension!
         ref: String!
         src: String!
       }`,
@@ -61,7 +62,7 @@ export class ImageImplementation extends Implementation {
           // we store image data as a string on sqlite because Prisma doesn't support Json on sqlite
           // https://github.com/prisma/prisma/issues/3786
           try {
-            imageData = JSON.parse(document);
+            imageData = JSON.parse(imageData);
           } catch (err) {}
         }
         return imageData;
