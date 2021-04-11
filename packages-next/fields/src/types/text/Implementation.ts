@@ -4,14 +4,8 @@ import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implement
 type List = { adapter: PrismaListAdapter };
 
 export class Text<P extends string> extends Implementation<P> {
-  isMultiline?: boolean;
-  constructor(
-    path: P,
-    { isMultiline, ...configArgs }: FieldConfigArgs & { isMultiline?: boolean },
-    extraArgs: FieldExtraArgs
-  ) {
-    super(path, { isMultiline, ...configArgs }, extraArgs);
-    this.isMultiline = isMultiline;
+  constructor(path: P, configArgs: FieldConfigArgs, extraArgs: FieldExtraArgs) {
+    super(path, configArgs, extraArgs);
     this.isOrderable = true;
   }
 
