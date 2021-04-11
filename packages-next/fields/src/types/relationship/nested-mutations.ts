@@ -94,7 +94,7 @@ export const cleanAndValidateInput = ({
 
 const _runActions = async (
   action: (arg: any) => Promise<any>,
-  targets: any[] | undefined,
+  targets: any[] | null | undefined,
   path: string[]
 ) => {
   const results = await pSettle((targets || []).map(action));
