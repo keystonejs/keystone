@@ -1,6 +1,6 @@
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '@keystone-next/fields';
-import { FieldConfigArgs, FieldExtraArgs } from '@keystone-next/fields/src/Implementation';
+import { FieldConfigArgs, FieldExtraArgs } from '@keystone-next/fields';
 import { KeystoneContext } from '@keystone-next/types';
 // eslint-disable-next-line import/no-unresolved
 import { addRelationshipData } from './relationship-data';
