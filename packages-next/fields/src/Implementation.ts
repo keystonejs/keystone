@@ -151,7 +151,7 @@ class Field<P extends string> {
    * @param {Object} data.originalInput The raw incoming item from the mutation
    * (no relationships or defaults resolved)
    */
-  async resolveInput({ resolvedData }: { resolvedData: Record<P, any> }) {
+  async resolveInput({ resolvedData }: { resolvedData: Record<P, any> }): Promise<any> {
     return resolvedData[this.path];
   }
 
