@@ -9,14 +9,14 @@ export type RelationshipSingleOperation = {
   connect?: any;
   create?: any;
   disconnect?: any;
-  disconnectAll?: boolean;
+  disconnectAll?: boolean | null;
 };
 
 export type RelationshipManyOperation = {
-  connect?: any[];
-  create?: any[];
-  disconnect?: any[];
-  disconnectAll?: boolean;
+  connect?: any[] | null;
+  create?: any[] | null;
+  disconnect?: any[] | null;
+  disconnectAll?: boolean | null;
 };
 
 export type RelationshipOperation = RelationshipSingleOperation | RelationshipManyOperation;
