@@ -490,7 +490,7 @@ describe.each(
     );
 
     editor.insertText(shortcut.slice(-1));
-    (editor as any).undo();
+    editor.undo();
     expect(editor).toEqualEditor(
       makeEditor(
         <editor>

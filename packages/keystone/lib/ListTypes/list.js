@@ -111,7 +111,6 @@ module.exports = class List {
       relateToOneInputName: `${_itemQueryName}RelateToOneInput`,
     };
 
-    this.adapterName = adapter.name;
     this.adapter = adapter.newListAdapter(this.key, adapterConfig);
     this._schemaNames = ['public'];
 
@@ -180,18 +179,9 @@ module.exports = class List {
             `(${this.key}.${fieldKey}.type is undefined)`
         );
       }
-      const adapters = fieldConfig.type.adapters;
-      if (typeof adapters === 'undefined' || Object.entries(adapters).length === 0) {
+      if (typeof fieldConfig.type.adapter === 'undefined') {
         throw new Error(
-          `The type given for the '${this.key}.${fieldKey}' field doesn't define any adapters.`
-        );
-      }
-    });
-
-    Object.values(sanitisedFieldsConfig).forEach(({ type }) => {
-      if (!type.adapters[this.adapterName]) {
-        throw new Error(
-          `Adapter type "${this.adapterName}" does not support field type "${type.type}"`
+          `The type given for the '${this.key}.${fieldKey}' field doesn't define an adapter.`
         );
       }
     });
@@ -203,7 +193,7 @@ module.exports = class List {
           getListByKey: this.getListByKey,
           listKey: this.key,
           listAdapter: this.adapter,
-          fieldAdapterClass: type.adapters[this.adapterName],
+          fieldAdapterClass: type.adapter,
           defaultAccess: this.defaultAccess.field,
           createAuxList: this.createAuxList,
           schemaNames: this._schemaNames,
@@ -782,7 +772,7 @@ module.exports = class List {
     // FIXME: We should do all of these in parallel and return *all* the field access violations
     await this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
-    if (this.adapterName === 'prisma' && this.adapter.parentAdapter.provider === 'sqlite') {
+    if (this.adapter.parentAdapter.provider === 'sqlite') {
       // We perform these operations sequentially as a workaround for a connection
       // timeout bug that happens in prisma+sqlite: https://github.com/prisma/prisma/issues/2955
       const ret = [];
@@ -880,7 +870,7 @@ module.exports = class List {
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 
-    if (this.adapterName === 'prisma' && this.adapter.parentAdapter.provider === 'sqlite') {
+    if (this.adapter.parentAdapter.provider === 'sqlite') {
       // We perform these operations sequentially as a workaround for a connection
       // timeout bug that happens in prisma+sqlite: https://github.com/prisma/prisma/issues/2955
       const ret = [];

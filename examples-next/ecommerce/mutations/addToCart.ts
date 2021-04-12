@@ -1,13 +1,11 @@
 import { KeystoneContext } from '@keystone-next/types';
 import { Session } from '../types';
 
-import { CartItemCreateInput } from '../.keystone/schema-types';
-
 async function addToCart(
   root: any,
   { productId }: { productId: string },
   context: KeystoneContext
-): Promise<CartItemCreateInput> {
+): Promise<any> {
   console.log('ADDING TO CART!');
   // 1. Query the current user see if they are signed in
   const sesh = context.session as Session;

@@ -1,8 +1,7 @@
-// @ts-ignore
-import { Select } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
+import { Select, PrismaSelectInterface } from './Implementation';
 
 export type SelectFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
@@ -29,7 +28,11 @@ export type SelectFieldConfig<
 export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: SelectFieldConfig<TGeneratedListTypes>
 ): FieldType<TGeneratedListTypes> => ({
-  type: Select,
+  type: {
+    type: 'Select',
+    implementation: Select,
+    adapter: PrismaSelectInterface,
+  },
   config,
   views: resolveView('select/views'),
   getAdminMeta: () => ({

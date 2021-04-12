@@ -7,7 +7,7 @@ import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { requireSource } from '../../lib/requireSource';
 import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../../artifacts';
-import { CONFIG_PATH, getAdminPath } from '../utils';
+import { getAdminPath, getConfigPath } from '../utils';
 
 // FIXME: Duplicated from admin-ui package. Need to decide on a common home.
 async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
@@ -41,7 +41,9 @@ export function serializePathForImport(path: string) {
 export const formatSource = (src: string, parser: 'babel' | 'babel-ts' = 'babel') =>
   prettier.format(src, { parser, trailingComma: 'es5', singleQuote: true });
 
-const reexportKeystoneConfig = async (projectAdminPath: string, isDisabled?: boolean) => {
+const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
+  const projectAdminPath = getAdminPath(cwd);
+  const configPath = getConfigPath(cwd);
   if (isDisabled) {
     // Nuke any existing files in our target directory
     await fs.remove(projectAdminPath);
@@ -57,7 +59,7 @@ const reexportKeystoneConfig = async (projectAdminPath: string, isDisabled?: boo
     {
       mode: 'write',
       src: `export { default as config } from ${serializePathForImport(
-        Path.relative(Path.join(projectAdminPath, 'pages', 'api'), CONFIG_PATH)
+        Path.relative(Path.join(projectAdminPath, 'pages', 'api'), configPath)
       )}
             export default function (req, res) { return res.status(500) }`,
       outputPath: Path.join('pages', 'api', '__keystone_api_build.js'),
@@ -83,15 +85,13 @@ const reexportKeystoneConfig = async (projectAdminPath: string, isDisabled?: boo
 };
 
 export async function build(cwd: string) {
-  console.log('✨ Building Keystone');
-
-  const config = initConfig(requireSource(CONFIG_PATH).default);
+  const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
   const { keystone, graphQLSchema } = createSystem(config);
 
   await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
 
-  console.log('✨ Generating database client');
+  console.log('✨ Building Keystone');
   // FIXME: This needs to generate clients for the correct build target using binaryTarget
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
   await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
@@ -104,7 +104,7 @@ export async function build(cwd: string) {
   }
 
   console.log('✨ Generating Keystone config code');
-  await reexportKeystoneConfig(getAdminPath(cwd), config.ui?.isDisabled);
+  await reexportKeystoneConfig(cwd, config.ui?.isDisabled);
 
   console.log('✨ Building Admin UI');
   await buildAdminUI(getAdminPath(cwd));

@@ -147,8 +147,8 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         run: yarn jest --ci --maxWorkers=1 api-tests
         env:
-          CLOUDINARY_CLOUD_NAME: keystone-cloudinary
-          CLOUDINARY_KEY: 758252673115372
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
           CI_NODE_TOTAL: 9
           CI_NODE_INDEX: ${{ matrix.index }}
@@ -200,8 +200,8 @@ jobs:
       - name: Unit tests
         run: yarn jest --ci --maxWorkers=1 --testPathIgnorePatterns=api-tests --testPathIgnorePatterns=examples-smoke-tests
         env:
-          CLOUDINARY_CLOUD_NAME: keystone-cloudinary
-          CLOUDINARY_KEY: 758252673115372
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
           CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
 
   examples_smoke_tests:

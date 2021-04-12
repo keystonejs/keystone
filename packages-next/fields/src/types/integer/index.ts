@@ -1,8 +1,7 @@
-// @ts-ignore
-import { Integer } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
+import { Integer, PrismaIntegerInterface } from './Implementation';
 
 export type IntegerFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
@@ -15,7 +14,11 @@ export type IntegerFieldConfig<
 export const integer = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: IntegerFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
-  type: Integer,
+  type: {
+    type: 'Integer',
+    implementation: Integer,
+    adapter: PrismaIntegerInterface,
+  },
   config,
   views: resolveView('integer/views'),
 });

@@ -1,14 +1,24 @@
 const { gql } = require('apollo-server-express');
 const { print } = require('graphql/language/printer');
-
-const { Text, Checkbox, Float, Relationship, Integer } = require('@keystone-next/fields-legacy');
+const { Text: TextImplementation } = require('@keystone-next/fields/src/types/text/Implementation');
+const {
+  Relationship: RelationshipImplementation,
+} = require('@keystone-next/fields/src/types/relationship/Implementation');
+const { Integer } = require('@keystone-next/fields/src/types/integer/Implementation');
 const { List } = require('../lib/ListTypes');
 const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
 
-Text.adapters['mock'] = {};
-Checkbox.adapters['mock'] = {};
-Float.adapters['mock'] = {};
-Relationship.adapters['mock'] = {};
+const Relationship = {
+  type: 'Relationship',
+  isRelationship: true, // Used internally for this special case
+  implementation: RelationshipImplementation,
+  adapter: {},
+};
+const Text = {
+  type: 'Text',
+  implementation: TextImplementation,
+  adapter: {},
+};
 
 const context = {
   getListAccessControlForUser: () => true,
@@ -98,12 +108,12 @@ class MockFieldImplementation {
   async afterDelete() {}
 }
 class MockFieldAdapter {
-  listAdapter = { name: 'mock' };
+  listAdapter = { name: 'mock', parentAdapter: {} };
 }
 
 const MockIdType = {
   implementation: MockFieldImplementation,
-  adapters: { mock: MockFieldAdapter },
+  adapter: MockFieldAdapter,
 };
 
 class MockListAdapter {

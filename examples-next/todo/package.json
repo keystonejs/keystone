@@ -6,10 +6,7 @@
   "scripts": {
     "dev": "keystone-next dev",
     "start": "keystone-next start",
-    "build": "keystone-next build",
-    "reset": "keystone-next reset",
-    "generate": "keystone-next generate",
-    "deploy": "keystone-next deploy"
+    "build": "keystone-next build"
   },
   "dependencies": {
     "@keystone-next/admin-ui": "^13.0.0",
@@ -25,10 +22,7 @@
     "typescript": "^4.2.3"
   },
   "engines": {
-    "node": ">=10.0.0"
-  },
-  "prisma": {
-    "schema": ".keystone/prisma/schema.prisma"
+    "node": ">=12.13.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/todo"
 }

@@ -1,24 +1,48 @@
 import path from 'path';
 import { KeystoneConfig, ImagesContext, ImageExtension, ImageMode } from '@keystone-next/types';
-import { encode } from 'blurhash';
 import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
 import { fromBuffer } from 'file-type';
 import imageSize from 'image-size';
-import sharp from 'sharp';
 
+const SUPPORTED_IMAGE_EXTENSIONS = ['jpeg', 'png', 'webp', 'gif'];
+const MODE_LOCAL = 'local';
 const DEFAULT_BASE_URL = 'http://localhost:3000';
 const DEFAULT_STORAGE_PATH = './public/images';
-const BLURHASH_COMPONENT_X = 4;
-const BLURHASH_COMPONENT_Y = 4;
+
+const isValidImageRef = (ref: string): boolean => {
+  if (!ref.includes(MODE_LOCAL, 0)) {
+    return false;
+  }
+
+  if (ref.includes(MODE_LOCAL, 0) && !ref.includes(':', MODE_LOCAL.length - 1)) {
+    return false;
+  }
+
+  if (!ref.includes('.')) {
+    return false;
+  }
+
+  return true;
+};
+
+const isValidImageExtension = (ext: string): boolean => SUPPORTED_IMAGE_EXTENSIONS.includes(ext);
 
 const parseImageRef = (ref: string): { mode: ImageMode; id: string; ext: ImageExtension } => {
-  if (!ref.includes(':') || !ref.includes('.')) {
+  const throwInvalidRefError = () => {
     throw new Error('Invalid image reference');
+  };
+
+  if (!isValidImageRef(ref)) {
+    throwInvalidRefError();
   }
 
   const [mode, idAndExt] = ref.split(':');
   const [id, ext] = idAndExt.split('.');
+
+  if (!isValidImageExtension(ext)) {
+    throwInvalidRefError();
+  }
 
   return {
     mode: mode as ImageMode,
@@ -46,26 +70,6 @@ const getImageMetadataFromBuffer = async (buffer: Buffer) => {
     throw new Error('Height and width could not be found for image');
   }
   return { width, height, filesize, extension: ext };
-};
-
-const getBlurhashFromBuffer = async (buffer: Buffer): Promise<string> => {
-  const SIZE = 50;
-  const {
-    data,
-    info: { width, height },
-  } = await sharp(buffer)
-    .raw()
-    .resize(SIZE, SIZE, { fit: 'inside' })
-    .toBuffer({ resolveWithObject: true });
-  const blurhash = encode(
-    new Uint8ClampedArray(data),
-    width,
-    height,
-    BLURHASH_COMPONENT_X,
-    BLURHASH_COMPONENT_Y
-  );
-
-  return blurhash;
 };
 
 const isLocal = (mode: ImageMode) => mode === 'local';
@@ -102,13 +106,11 @@ export function createImagesContext(config: KeystoneConfig['images']): ImagesCon
       if (isLocal(mode)) {
         const buffer = await fs.readFile(path.join(storagePath, `${id}.${extension}`));
         const metadata = await getImageMetadataFromBuffer(buffer);
-        const blurHash = await getBlurhashFromBuffer(buffer, metadata.width, metadata.height);
 
         return {
           mode,
           id,
           ...metadata,
-          blurHash,
         };
       }
 
@@ -128,17 +130,14 @@ export function createImagesContext(config: KeystoneConfig['images']): ImagesCon
       }
 
       const buffer = Buffer.concat(chunks);
-
       const metadata = await getImageMetadataFromBuffer(buffer);
 
       await fs.writeFile(path.join(storagePath, `${id}.${metadata.extension}`), buffer);
-      const blurHash = await getBlurhashFromBuffer(buffer, metadata.width, metadata.height);
 
       return {
         mode,
         id,
         ...metadata,
-        blurHash,
       };
     },
   };

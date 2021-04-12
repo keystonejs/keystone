@@ -3,8 +3,10 @@ import { printSchema, GraphQLSchema } from 'graphql';
 import * as fs from 'fs-extra';
 import type { BaseKeystone, KeystoneConfig } from '@keystone-next/types';
 import { getGenerator, formatSchema } from '@prisma/sdk';
-import { confirmPrompt } from './lib/prompts';
+import { format } from 'prettier';
+import { confirmPrompt, shouldPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
+import { ExitError } from './scripts/utils';
 
 export function getSchemaPaths(cwd: string) {
   return {
@@ -23,7 +25,7 @@ export async function getCommittedArtifacts(
   keystone: BaseKeystone
 ): Promise<CommittedArtifacts> {
   return {
-    graphql: printSchema(graphQLSchema),
+    graphql: format(printSchema(graphQLSchema), { parser: 'graphql' }),
     prisma: await formatSchema({
       schema: keystone.adapter._generatePrismaSchema({
         rels: keystone._consolidateRelationships(),
@@ -78,11 +80,11 @@ export async function validateCommittedArtifacts(
       prisma: 'Prisma schema',
       graphql: 'GraphQL schema',
     }[outOfDateSchemas];
-    if (process.stdout.isTTY && (await confirmPrompt(`Would you like to update your ${term}?`))) {
+    if (shouldPrompt && (await confirmPrompt(`Would you like to update your ${term}?`))) {
       await writeCommittedArtifacts(artifacts, cwd);
     } else {
       console.log(`Please run keystone-next postinstall --fix to update your ${term}`);
-      process.exit(1);
+      throw new ExitError(1);
     }
   }
 }
