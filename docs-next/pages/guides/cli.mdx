@@ -63,7 +63,7 @@ In development, Keystone will migrate the structure of your database for you in 
 
 When you are using migrations, the recommended workflow is to have `keystone-next dev` generate the migrations for you and apply them automatically in development.
 
-Commit the migration files to source control, then when you are hosting your app in production, use the `keystone-next prisma` command (see below) to deploy your migrations before starting Keystone.
+Commit the migration files to source control, then when you are hosting your app in production, use the `keystone-next prisma migrate deploy` command (see below) to deploy your migrations before starting Keystone.
 
 !> We strongly recommend enabling migrations if you are going to run your app in production. Not doing so risks data loss.
 
