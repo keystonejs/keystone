@@ -24,13 +24,11 @@ export const skipUniqueTest = true;
 
 const getIDs = async (context: KeystoneContext) => {
   const IDs: Record<string, string> = {};
-  await context.keystone.lists['Test'].adapter
-    .itemsQuery({}, {})
-    .then((data: { name: string; id: string | number }[]) => {
-      data.forEach(entry => {
-        IDs[entry.name] = entry.id.toString();
-      });
+  await context.keystone.lists['Test'].adapter.itemsQuery({}, {}).then(data => {
+    (data as any[]).forEach(entry => {
+      IDs[entry.name] = entry.id.toString();
     });
+  });
   return IDs;
 };
 
