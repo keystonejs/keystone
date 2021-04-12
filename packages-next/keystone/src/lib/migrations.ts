@@ -87,7 +87,7 @@ export async function pushPrismaSchemaToDatabase(
         !(await confirmPrompt(`Do you want to continue? ${chalk.red('All data will be lost')}.`))
       ) {
         console.log('Reset cancelled');
-        process.exit(0);
+        throw new ExitError(0);
       }
       await runMigrateWithDbUrl(dbUrl, () => migrate.reset());
       return runMigrateWithDbUrl(dbUrl, () =>
@@ -103,7 +103,7 @@ export async function pushPrismaSchemaToDatabase(
         !(await confirmPrompt(`Do you want to continue? ${chalk.red('Some data will be lost')}.`))
       ) {
         console.log('Push cancelled.');
-        process.exit(0);
+        throw new ExitError(0);
       }
       return runMigrateWithDbUrl(dbUrl, () =>
         migrate.engine.schemaPush({
@@ -234,9 +234,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
         })
       );
 
-      console.log(
-        `✨ A migration has been created at migrations/${generatedMigrationName}`
-      );
+      console.log(`✨ A migration has been created at migrations/${generatedMigrationName}`);
 
       let shouldApplyMigration =
         migrationCanBeApplied && (await confirmPrompt('Would you like to apply this migration?'));

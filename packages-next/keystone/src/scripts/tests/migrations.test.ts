@@ -71,42 +71,60 @@ async function getGeneratedMigration(
 // so that the timestamps in the logs are all 0ms
 Date.now = () => 0;
 
+async function setupInitialProjectWithoutMigrations() {
+  const tmp = await testdir({
+    ...symlinkKeystoneDeps,
+    'keystone.js': basicKeystoneConfig(false),
+  });
+  const recording = recordConsole();
+  await setupAndStopDevServerForMigrations(tmp);
+
+  expect(await introspectDb(tmp, dbUrl)).toEqual(`datasource db {
+  provider = "sqlite"
+  url      = "file:./app.db"
+}
+
+model Todo {
+  id    Int     @id @default(autoincrement())
+  title String?
+}
+`);
+
+  expect(recording()).toEqual(`✨ Starting Keystone
+⭐️ Dev Server Ready on http://localhost:3000
+✨ Generating GraphQL and Prisma schemas
+✨ sqlite database "app.db" created at file:./app.db
+✨ Your database is now in sync with your schema. Done in 0ms
+✨ Connecting to the database
+✨ Skipping Admin UI code generation
+✨ Creating server
+✨ Preparing GraphQL Server
+✨ Skipping Admin UI app
+👋 Admin UI and graphQL API ready`);
+  return tmp;
+}
+
 // TODO: when we can make fields non-nullable, we should have tests for unexecutable migrations
 describe('useMigrations: false', () => {
   test('creates database and pushes schema from empty', async () => {
-    const tmp = await testdir({
-      ...symlinkKeystoneDeps,
-      'keystone.js': basicKeystoneConfig(false),
-    });
+    await setupInitialProjectWithoutMigrations();
+  });
+  test('logs correctly when things are already up to date', async () => {
+    const tmp = await setupInitialProjectWithoutMigrations();
     const recording = recordConsole();
     await setupAndStopDevServerForMigrations(tmp);
 
-    expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
-      "datasource db {
-        provider = \\"sqlite\\"
-        url      = \\"file:./app.db\\"
-      }
-
-      model Todo {
-        id    Int     @id @default(autoincrement())
-        title String?
-      }
-      "
-    `);
-
-    expect(recording()).toMatchInlineSnapshot(`
-      "✨ Starting Keystone
-      ⭐️ Dev Server Ready on http://localhost:3000
-      ✨ Generating GraphQL and Prisma schemas
-      ✨ sqlite database \\"app.db\\" created at file:./app.db
-      ✨ Your database is now in sync with your schema. Done in 0ms
-      ✨ Connecting to the database
-      ✨ Skipping Admin UI code generation
-      ✨ Creating server
-      ✨ Preparing GraphQL Server
-      ✨ Skipping Admin UI app
-      👋 Admin UI and graphQL API ready"
-    `);
+    expect(recording()).toMatchInlineSnapshot(`✨ Starting Keystone
+⭐️ Dev Server Ready on http://localhost:3000
+✨ Generating GraphQL and Prisma schemas
+✨ sqlite database \\"app.db\\" created at file:./app.db
+✨ Your database is now in sync with your schema. Done in 0ms
+✨ Connecting to the database
+✨ Skipping Admin UI code generation
+✨ Creating server
+✨ Preparing GraphQL Server
+✨ Skipping Admin UI app
+👋 Admin UI and graphQL API ready`);
   });
 });
 

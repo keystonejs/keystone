@@ -122,8 +122,21 @@ export async function runCommand(cwd: string, args: string) {
   return cli(cwd, argv);
 }
 
+let dirsToRemove: string[] = [];
+
+afterEach(async () => {
+  await Promise.all(
+    dirsToRemove.map(filepath => {
+      console.log('removing', filepath);
+      return fs.remove(filepath);
+    })
+  );
+  dirsToRemove = [];
+});
+
 export async function testdir(dir: Fixture): Promise<string> {
   const temp = f.temp();
+  dirsToRemove.push(temp);
   await Promise.all(
     Object.keys(dir).map(async filename => {
       const output = dir[filename];
