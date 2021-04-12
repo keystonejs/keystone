@@ -59,6 +59,7 @@ async function getGeneratedMigration(
   }[] = await prismaClient.$queryRaw(
     'SELECT migration_name,finished_at FROM _prisma_migrations ORDER BY finished_at DESC'
   );
+  await prismaClient.$disconnect();
   expect(migrations).toHaveLength(expectedNumberOfMigrations);
   expect(migrations.every(x => !!x.finished_at)).toBeTruthy();
   const migrationName = migrations[0].migration_name;
@@ -131,6 +132,7 @@ describe('useMigrations: false', () => {
     const prevCwd = await setupInitialProjectWithoutMigrations();
     const prismaClient = getPrismaClient(prevCwd);
     await prismaClient.todo.create({ data: { title: 'todo' } });
+    await prismaClient.$disconnect();
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
@@ -178,6 +180,7 @@ describe('useMigrations: false', () => {
     const prevCwd = await setupInitialProjectWithoutMigrations();
     const prismaClient = getPrismaClient(prevCwd);
     await prismaClient.todo.create({ data: { title: 'todo' } });
+    await prismaClient.$disconnect();
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
@@ -221,12 +224,14 @@ describe('useMigrations: false', () => {
     {
       const prismaClient = await getPrismaClient(tmp);
       await prismaClient.todo.create({ data: { title: 'something' } });
+      await prismaClient.$disconnect();
     }
     const recording = recordConsole();
     await setupAndStopDevServerForMigrations(tmp, true);
     {
       const prismaClient = await getPrismaClient(tmp);
       expect(await prismaClient.todo.findMany()).toHaveLength(0);
+      await prismaClient.$disconnect();
     }
 
     expect(recording()).toMatchInlineSnapshot(`
@@ -367,6 +372,7 @@ describe('useMigrations: true', () => {
     const prevCwd = await setupInitialProjectWithMigrations();
     const prismaClient = getPrismaClient(prevCwd);
     await prismaClient.todo.create({ data: { title: 'todo' } });
+    await prismaClient.$disconnect();
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
       ...(await getDatabaseFiles(prevCwd)),
@@ -649,12 +655,14 @@ describe('useMigrations: true', () => {
     {
       const prismaClient = await getPrismaClient(tmp);
       await prismaClient.todo.create({ data: { title: 'something' } });
+      await prismaClient.$disconnect();
     }
     const recording = recordConsole();
     await setupAndStopDevServerForMigrations(tmp, true);
     {
       const prismaClient = await getPrismaClient(tmp);
       expect(await prismaClient.todo.findMany()).toHaveLength(0);
+      await prismaClient.$disconnect();
     }
 
     const { migrationName } = await getGeneratedMigration(tmp, 1, 'init');

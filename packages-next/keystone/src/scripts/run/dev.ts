@@ -28,7 +28,10 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
   const app = express();
   let expressServer: null | ReturnType<typeof express> = null;
 
+  let disconnect: null | (() => Promise<void>) = null;
+
   const config = initConfig(requireSource(getConfigPath(cwd)).default);
+
   const initKeystone = async () => {
     {
       const { keystone, graphQLSchema } = createSystem(config);
@@ -59,7 +62,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
 
     console.log('✨ Connecting to the database');
     await keystone.connect({ context: createContext().sudo() });
-
+    disconnect = () => keystone.disconnect();
     if (config.ui?.isDisabled) {
       console.log('✨ Skipping Admin UI code generation');
     } else {
@@ -102,11 +105,18 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
         initKeystonePromiseResolve();
       })
       .catch(err => {
-        server.close(closeErr => {
+        server.close(async closeErr => {
           if (closeErr) {
             console.log('There was an error while closing the server');
             console.log(closeErr);
           }
+          try {
+            await disconnect?.();
+          } catch (err) {
+            console.log('There was an error while disconnecting from the database');
+            console.log(err);
+          }
+
           initKeystonePromiseReject(err);
         });
       });
@@ -116,7 +126,17 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
 
   return () =>
     new Promise<void>((resolve, reject) => {
-      server.close(err => {
+      server.close(async err => {
+        try {
+          await disconnect?.();
+        } catch (disconnectionError) {
+          if (!err) {
+            err = disconnectionError;
+          } else {
+            console.log('There was an error while disconnecting from the database');
+            console.log(disconnectionError);
+          }
+        }
         if (err) {
           reject(err);
         } else {
