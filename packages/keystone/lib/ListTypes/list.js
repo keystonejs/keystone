@@ -18,7 +18,6 @@ const {
   labelToPath,
   labelToClass,
   opToType,
-  getDefaultLabelResolver,
   mapToFields,
 } = require('./utils');
 const { HookManager } = require('./hooks');
@@ -32,8 +31,6 @@ module.exports = class List {
       hooks = {},
       adminDoc,
       schemaDoc,
-      labelResolver,
-      labelField,
       access,
       adminConfig = {},
       itemQueryName,
@@ -62,7 +59,6 @@ module.exports = class List {
       ...adminConfig,
     };
 
-    this.labelResolver = labelResolver || getDefaultLabelResolver(labelField);
     this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
@@ -916,14 +912,6 @@ module.exports = class List {
         `
         """ ${this.schemaDoc || 'A keystone list'} """
         type ${this.gqlNames.outputTypeName} {
-          """
-          This virtual field will be resolved in one of the following ways (in this order):
-           1. Execution of 'labelResolver' set on the ${this.key} List config, or
-           2. As an alias to the field set on 'labelField' in the ${this.key} List config, or
-           3. As an alias to a 'name' field on the ${this.key} List (if one exists), or
-           4. As an alias to the 'id' field on the ${this.key} List.
-          """
-          _label_: String
           ${flatten(
             readFields.map(field =>
               field.schemaDoc
@@ -1112,10 +1100,9 @@ module.exports = class List {
     if (!schemaAccess.read) {
       return {};
     }
-    const fieldResolvers = {
-      // TODO: The `_label_` output field currently circumvents access control
-      _label_: this.labelResolver,
-      ...objMerge(
+
+    return {
+      [this.gqlNames.outputTypeName]: objMerge(
         this.fields
           .filter(field => field.access[schemaName].read)
           .map(field =>
@@ -1126,7 +1113,6 @@ module.exports = class List {
           )
       ),
     };
-    return { [this.gqlNames.outputTypeName]: fieldResolvers };
   }
 
   gqlAuxQueryResolvers() {

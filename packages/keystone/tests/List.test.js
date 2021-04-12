@@ -4,7 +4,6 @@ const { Text: TextImplementation } = require('@keystone-next/fields/src/types/te
 const {
   Relationship: RelationshipImplementation,
 } = require('@keystone-next/fields/src/types/relationship/Implementation');
-const { Integer } = require('@keystone-next/fields/src/types/integer/Implementation');
 const { List } = require('../lib/ListTypes');
 const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
 
@@ -204,7 +203,6 @@ describe('new List()', () => {
 
   test('new List() - config', () => {
     const list = setup();
-    expect(list.labelResolver).toBeInstanceOf(Function);
     expect(list.fields).toBeInstanceOf(Object);
     expect(list.adminConfig).toEqual({
       defaultColumns: 'name,email',
@@ -298,82 +296,9 @@ describe('new List()', () => {
   });
 });
 
-test('labelResolver', () => {
-  // Default: Use name
-  const list = setup();
-  expect(list.labelResolver({ name: 'a', email: 'a@example.com', id: '1' })).toEqual('a');
-
-  // Use config.labelField if supplied
-  const list2 = new List(
-    'List2',
-    {
-      fields: {
-        name: { type: Text },
-        email: { type: Text },
-      },
-      labelField: 'email',
-    },
-    listExtras()
-  );
-  expect(list2.labelResolver({ name: 'a', email: 'a@example.com', id: '2' })).toEqual(
-    'a@example.com'
-  );
-
-  // Use Integer as a labelField
-  const list21 = new List(
-    'List21',
-    {
-      fields: {
-        index: { type: Integer },
-        name: { type: Text },
-      },
-      labelField: 'index',
-    },
-    listExtras()
-  );
-  expect(list21.labelResolver({ name: 'Test integer', index: 0, id: '21' })).toEqual('0');
-
-  // Use labelResolver if supplied (over-rides labelField)
-  const list3 = new List(
-    'List3',
-    {
-      fields: {
-        name: { type: Text },
-        email: { type: Text },
-      },
-      labelField: 'email',
-      labelResolver: item => `${item.name} - ${item.email}`,
-    },
-    listExtras()
-  );
-  expect(list3.labelResolver({ name: 'a', email: 'a@example.com', id: '3' })).toEqual(
-    'a - a@example.com'
-  );
-
-  // Fall back to id if no name or label resolvers available
-  const list4 = new List(
-    'List4',
-    {
-      fields: {
-        email: { type: Text },
-      },
-    },
-    listExtras()
-  );
-  expect(list4.labelResolver({ email: 'a@example.com', id: '4' })).toEqual('4');
-});
-
 describe(`getGqlTypes()`, () => {
   const type = `""" A keystone list """
       type Test {
-        """
-        This virtual field will be resolved in one of the following ways (in this order):
-        1. Execution of 'labelResolver' set on the Test List config, or
-        2. As an alias to the field set on 'labelField' in the Test List config, or
-        3. As an alias to a 'name' field on the Test List (if one exists), or
-        4. As an alias to the 'id' field on the Test List.
-        """
-        _label_: String
         id: ID
         name: String
         email: String
@@ -624,7 +549,6 @@ test('_wrapFieldResolverWith', async () => {
 test('gqlFieldResolvers', () => {
   const schemaName = 'public';
   const resolvers = setup().gqlFieldResolvers({ schemaName });
-  expect(resolvers.Test._label_).toBeInstanceOf(Function);
   expect(resolvers.Test.email).toBeInstanceOf(Function);
   expect(resolvers.Test.name).toBeInstanceOf(Function);
   expect(resolvers.Test.other).toBeInstanceOf(Function);
