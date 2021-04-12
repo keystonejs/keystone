@@ -220,7 +220,7 @@ export function Field({
                   {errorMessage}
                 </Pill>
               ) : (
-                (value.kind === 'upload' || value.kind === 'ref') && (
+                value.kind === 'upload' && (
                   <Pill weight="light" tone="positive">
                     Save to upload this image
                   </Pill>
@@ -232,13 +232,6 @@ export function Field({
         </Stack>
       ) : (
         <Stack gap="small">
-          {canSetRef && (
-            <TextInput
-              placeholder="Paste the image ref here"
-              value={value?.data?.ref}
-              onChange={onRefChange}
-            />
-          )}
           <Stack css={{ alignItems: 'center' }} gap="small" across>
             <Button
               size="small"

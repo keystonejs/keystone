@@ -24,7 +24,7 @@ const isValidImageRef = (
     return false;
   }
 
-  if (ref.includes(MODE_LOCAL, 0) && !ref.includes(':', MODE_LOCAL.length - 1)) {
+  if (!ref.includes(':', MODE_LOCAL.length - 1)) {
     return false;
   }
 
@@ -33,11 +33,12 @@ const isValidImageRef = (
   }
 
   if (isLocal(mode)) {
-    return fs.existsSync(path.join(storagePath, ref));
+    return fs.existsSync(path.join(storagePath, ref.replace(`${MODE_LOCAL}:`, '')));
   }
 
   if (isCloud(mode)) {
     // TODO
+    return false;
   }
 
   return false;
