@@ -67,7 +67,7 @@ export const resolveAllKeys = async <T extends Record<string, Promise<any>>>(obj
 
 export const unique = <T>(arr: T[]): T[] => [...new Set(arr)];
 
-export const intersection = <T>(array1: T[], array2: T[]) =>
+export const intersection = <T>(array1: readonly T[], array2: readonly T[]) =>
   unique(array1.filter(value => array2.includes(value)));
 
 export const pick = <T, K extends keyof T>(obj: T, keys: K[]) =>

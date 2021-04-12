@@ -85,8 +85,8 @@ test('gqlQueryInputFields', () => {
 
 test('gqlUpdateInputFields', () => {
   const impl = new Field('path', {}, args);
-
-  expect(impl.gqlUpdateInputFields()).toEqual([]);
+  const schemaName = 'public';
+  expect(impl.gqlUpdateInputFields({ schemaName })).toEqual([]);
 });
 
 test('gqlOutputFieldResolvers', () => {

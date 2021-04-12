@@ -1,19 +1,45 @@
+// @ts-ignore
 import groupBy from 'lodash.groupby';
 import pSettle from 'p-settle';
 import { intersection, pick } from '@keystone-next/utils-legacy';
+import { PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { KeystoneContext } from '@keystone-next/types';
 import { ParameterError } from './graphqlErrors';
+import {
+  Relationship,
+  RelationshipManyOperation,
+  RelationshipOperation,
+  RelationshipSingleOperation,
+} from './Implementation';
 
-const NESTED_MUTATIONS = ['create', 'connect', 'disconnect', 'disconnectAll'];
+type List = {
+  key: string;
+  adapter: PrismaListAdapter;
+  gqlNames: { itemQueryName: string };
+  itemQuery: any;
+  createMutation: any;
+};
+
+type Operations = 'create' | 'connect' | 'disconnect' | 'disconnectAll';
+const NESTED_MUTATIONS: Operations[] = ['create', 'connect', 'disconnect', 'disconnectAll'];
 
 /*** Input validation  ***/
-const throwWithErrors = (message, meta) => {
+const throwWithErrors = (message: string, meta: Record<string, any>) => {
   const error = new Error(message);
   throw Object.assign(error, meta);
 };
 
-function validateInput({ input, target, many }) {
+function validateInput({
+  input,
+  target,
+  many,
+}: {
+  input: RelationshipOperation;
+  target: string;
+  many: boolean;
+}) {
   // Only accept mutations which we know how to handle.
-  let validInputMutations = intersection(Object.keys(input), NESTED_MUTATIONS);
+  let validInputMutations = intersection(Object.keys(input), NESTED_MUTATIONS) as Operations[];
 
   // Filter out mutations which don't have any parameters
   if (many) {
@@ -45,7 +71,17 @@ function validateInput({ input, target, many }) {
   return validInputMutations;
 }
 
-const cleanAndValidateInput = ({ input, many, localField, target }) => {
+export const cleanAndValidateInput = ({
+  input,
+  many,
+  localField,
+  target,
+}: {
+  input: RelationshipOperation;
+  many: boolean;
+  localField: Relationship<any>;
+  target: string;
+}) => {
   try {
     return pick(input, validateInput({ input, target, many }));
   } catch (error) {
@@ -53,22 +89,29 @@ const cleanAndValidateInput = ({ input, many, localField, target }) => {
     error.path = ['<validate>'];
     throwWithErrors(message, { errors: [error], path: [localField.path] });
   }
+  return {};
 };
 
-const _runActions = async (action, targets, path) => {
+const _runActions = async (
+  action: (arg: any) => Promise<any>,
+  targets: any[] | null | undefined,
+  path: string[]
+) => {
   const results = await pSettle((targets || []).map(action));
   const errors = results
     .map((settleInfo, index) => ({ ...settleInfo, index }))
     .filter(({ isRejected }) => isRejected)
+    // @ts-ignore
     .map(({ reason, index }) => {
       reason.path = [...path, index];
       return reason;
     });
   // If there are no errors we know everything resolved successfully
+  // @ts-ignore
   return [errors.length ? [] : results.map(({ value }) => value), errors];
 };
 
-async function resolveNestedMany({
+export async function resolveNestedMany({
   input,
   currentValue,
   refList,
@@ -76,16 +119,28 @@ async function resolveNestedMany({
   localField,
   target,
   mutationState,
+}: {
+  input: RelationshipManyOperation;
+  currentValue: string[];
+  target: string;
+  refList: List;
+  context: KeystoneContext;
+  localField: Relationship<any>;
+  mutationState: { afterChangeStack: any[]; transaction: {} };
 }) {
   // Disconnections
-  let disconnectIds = [];
+  let disconnectIds = [] as string[];
   if (input.disconnectAll) {
     disconnectIds = [...currentValue];
   } else if (input.disconnect) {
     // We want to avoid DB lookups where possible, so we split the input into
     // two halves; one with ids, and the other without ids
-    const { withId, withoutId } = groupBy(input.disconnect, ({ id }) =>
-      id ? 'withId' : 'withoutId'
+    const {
+      withId,
+      withoutId,
+    }: { withId: { id: any }[]; withoutId: { id: any }[] } = groupBy(
+      input.disconnect,
+      ({ id }: { id: any }) => (id ? 'withId' : 'withoutId')
     );
 
     // We set the Ids we do find immediately
@@ -95,11 +150,13 @@ async function resolveNestedMany({
     // This will resolve access control, etc for us.
     // In the future, when WhereUniqueInput accepts more than just an id,
     // this will also resolve those queries for us too.
-    const action = where => refList.itemQuery(where, context, refList.gqlNames.itemQueryName);
+    const action = (where: { id: any }) =>
+      refList.itemQuery(where, context, refList.gqlNames.itemQueryName);
     // We don't throw if any fail; we're only interested in the ones this user has
     // access to read (and hence remove from the list)
     const disconnectItems = (await pSettle((withoutId || []).map(action)))
       .filter(({ isFulfilled }) => isFulfilled)
+      // @ts-ignore
       .map(({ value }) => value)
       .filter(itemToDisconnect => itemToDisconnect); // Possible to get null results when the id doesn't exist, or read access is denied
 
@@ -107,8 +164,8 @@ async function resolveNestedMany({
   }
 
   // Connections
-  let connectedIds = [];
-  let createdIds = [];
+  let connectedIds = [] as string[];
+  let createdIds = [] as string[];
   if (input.connect || input.create) {
     // This will resolve access control, etc for us.
     // In the future, when WhereUniqueInput accepts more than just an id,
@@ -154,7 +211,7 @@ async function resolveNestedMany({
   return { disconnect: disconnectIds, connect: connectedIds, create: createdIds };
 }
 
-async function resolveNestedSingle({
+export async function resolveNestedSingle({
   input,
   currentValue,
   localField,
@@ -162,8 +219,20 @@ async function resolveNestedSingle({
   context,
   target,
   mutationState,
+}: {
+  input: RelationshipSingleOperation;
+  currentValue?: string;
+  target: string;
+  localField: Relationship<any>;
+  refList: List;
+  context: KeystoneContext;
+  mutationState: { afterChangeStack: any[]; transaction: {} };
 }) {
-  let result_ = {};
+  let result_ = {
+    create: [] as string[],
+    connect: [] as string[],
+    disconnect: [] as string[],
+  };
   if ((input.disconnect || input.disconnectAll) && currentValue) {
     let idToDisconnect;
     if (input.disconnectAll) {
@@ -193,7 +262,7 @@ async function resolveNestedSingle({
     }
   }
 
-  let operation;
+  let operation: 'connect' | 'create' | undefined;
   let method;
 
   if (input.connect) {
@@ -205,7 +274,7 @@ async function resolveNestedSingle({
     method = () => refList.createMutation(input.create, context, mutationState);
   }
 
-  if (operation) {
+  if (operation && method) {
     // override result with the connected/created value
     // input is of type *RelateToOneInput
     let item;
@@ -223,33 +292,4 @@ async function resolveNestedSingle({
     }
   }
   return result_;
-}
-
-/*
- * Resolve the nested mutations and return the ids of items to be connected/disconnected
- *
- * Returns: { connect: [id], disconnect: [id]}
- */
-export async function resolveNested({
-  input,
-  currentValue,
-  many,
-  listInfo,
-  context,
-  mutationState,
-}) {
-  const localList = listInfo.local.list;
-  const localField = listInfo.local.field;
-  const refList = listInfo.foreign.list;
-  const target = `${localList.key}.${localField.path}<${refList.key}>`;
-  const args = {
-    currentValue,
-    refList,
-    input: cleanAndValidateInput({ input, many, localField, target }),
-    context,
-    localField,
-    target,
-    mutationState,
-  };
-  return await (many ? resolveNestedMany(args) : resolveNestedSingle(args));
 }

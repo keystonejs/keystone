@@ -1,10 +1,41 @@
-import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '../../Implementation.ts';
-import { resolveNested } from './nested-mutations';
+import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { KeystoneContext } from '@keystone-next/types';
+import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
+import { resolveNestedMany, resolveNestedSingle, cleanAndValidateInput } from './nested-mutations';
 
-export class Relationship extends Implementation {
-  constructor(path, { ref, many, withMeta }) {
-    super(...arguments);
+type List = { adapter: PrismaListAdapter };
+
+export type RelationshipSingleOperation = {
+  connect?: any;
+  create?: any;
+  disconnect?: any;
+  disconnectAll?: boolean | null;
+};
+
+export type RelationshipManyOperation = {
+  connect?: any[] | null;
+  create?: any[] | null;
+  disconnect?: any[] | null;
+  disconnectAll?: boolean | null;
+};
+
+export type RelationshipOperation = RelationshipSingleOperation | RelationshipManyOperation;
+
+export class Relationship<P extends string> extends Implementation<P> {
+  many: boolean;
+  refFieldPath?: string;
+  withMeta: boolean;
+  constructor(
+    path: P,
+    {
+      ref,
+      many,
+      withMeta,
+      ...configArgs
+    }: FieldConfigArgs & { ref: string; many?: boolean; withMeta?: boolean },
+    extraArgs: FieldExtraArgs
+  ) {
+    super(path, { ref, many, withMeta, ...configArgs }, extraArgs);
 
     // JM: It bugs me this is duplicated in the field adapters but initialisation order makes it hard to avoid
     const [refListKey, refFieldPath] = ref.split('.');
@@ -13,7 +44,7 @@ export class Relationship extends Implementation {
     this.isOrderable = true;
 
     this.isRelationship = true;
-    this.many = many;
+    this.many = !!many;
     this.withMeta = typeof withMeta !== 'undefined' ? withMeta : true;
   }
 
@@ -44,7 +75,7 @@ export class Relationship extends Implementation {
     return { refList, refField };
   }
 
-  gqlOutputFields({ schemaName }) {
+  gqlOutputFields({ schemaName }: { schemaName: string }) {
     const { refList } = this.tryResolveRefList();
 
     if (!refList.access[schemaName].read) {
@@ -63,7 +94,7 @@ export class Relationship extends Implementation {
     }
   }
 
-  gqlQueryInputFields({ schemaName }) {
+  gqlQueryInputFields({ schemaName }: { schemaName: string }) {
     const { refList } = this.tryResolveRefList();
 
     if (!refList.access[schemaName].read) {
@@ -85,7 +116,7 @@ export class Relationship extends Implementation {
     }
   }
 
-  gqlOutputFieldResolvers({ schemaName }) {
+  gqlOutputFieldResolvers({ schemaName }: { schemaName: string }) {
     const { refList } = this.tryResolveRefList();
 
     if (!refList.access[schemaName].read) {
@@ -95,7 +126,7 @@ export class Relationship extends Implementation {
 
     if (this.many) {
       return {
-        [this.path]: (item, args, context, info) => {
+        [this.path]: (item: any, args: any, context: KeystoneContext, info: any) => {
           return refList.listQuery(args, context, info.fieldName, info, {
             fromList: this.getListByKey(this.listKey),
             fromId: item.id,
@@ -104,7 +135,7 @@ export class Relationship extends Implementation {
         },
 
         ...(this.withMeta && {
-          [`_${this.path}Meta`]: (item, args, context, info) => {
+          [`_${this.path}Meta`]: (item: any, args: any, context: KeystoneContext, info: any) => {
             return refList.listQueryMeta(args, context, info.fieldName, info, {
               fromList: this.getListByKey(this.listKey),
               fromId: item.id,
@@ -115,7 +146,7 @@ export class Relationship extends Implementation {
       };
     } else {
       return {
-        [this.path]: (item, _, context, info) => {
+        [this.path]: (item: any, _: any, context: KeystoneContext, info: any) => {
           // No ID set, so we return null for the value
           const id = item && (item[this.adapter.idPath] || (item[this.path] && item[this.path].id));
           if (!id) {
@@ -125,7 +156,7 @@ export class Relationship extends Implementation {
           // We do a full query to ensure things like access control are applied
           return refList
             .listQuery(filteredQueryArgs, context, refList.gqlNames.listQueryName, info)
-            .then(items => (items && items.length ? items[0] : null));
+            .then((items?: any[]) => (items && items.length ? items[0] : null));
         },
       };
     }
@@ -157,10 +188,16 @@ export class Relationship extends Implementation {
    * previous stored values, which means indecies may not match those passed in
    * `operations`.
    */
-  async resolveNestedOperations(operations, item, context, getItem, mutationState) {
+  async resolveNestedOperations(
+    operations: RelationshipOperation,
+    item: any,
+    context: KeystoneContext,
+    getItem: any,
+    mutationState: { afterChangeStack: any[]; transaction: {} }
+  ) {
     const { refList, refField } = this.tryResolveRefList();
     const listInfo = {
-      local: { list: this.getListByKey(this.listKey), field: this },
+      local: { list: this.getListByKey(this.listKey)!, field: this },
       foreign: { list: refList, field: refField },
     };
 
@@ -186,10 +223,10 @@ export class Relationship extends Implementation {
       });
     }
 
-    let currentValue;
+    let currentValue: string | string[];
     if (this.many) {
       const info = { fieldName: this.path };
-      currentValue = item
+      const _currentValue: { id: any }[] = item
         ? await refList.listQuery(
             {},
             { ...context, getListAccessControlForUser: () => true },
@@ -198,7 +235,7 @@ export class Relationship extends Implementation {
             { fromList: this.getListByKey(this.listKey), fromId: item.id, fromField: this.path }
           )
         : [];
-      currentValue = currentValue.map(({ id }) => id.toString());
+      currentValue = _currentValue.map(({ id }) => id.toString());
     } else {
       currentValue = item && (item[this.adapter.idPath] || (item[this.path] && item[this.path].id));
       currentValue = currentValue && currentValue.toString();
@@ -206,19 +243,37 @@ export class Relationship extends Implementation {
 
     // Collect the IDs to be connected and disconnected. This step may trigger
     // createMutation calls in order to obtain these IDs if required.
-    const { create = [], connect = [], disconnect = [] } = await resolveNested({
-      input: operations,
-      currentValue,
-      listInfo,
-      many: this.many,
-      context,
-      mutationState,
-    });
-
+    const localList = listInfo.local.list;
+    const localField = listInfo.local.field;
+    const target = `${localList.key}.${localField.path}<${refList.key}>`;
+    const input = cleanAndValidateInput({ input: operations, many: this.many, localField, target });
+    let resolved: { create: string[]; connect: string[]; disconnect: string[] };
+    if (this.many) {
+      resolved = await resolveNestedMany({
+        currentValue: currentValue as string[],
+        refList: listInfo.foreign.list,
+        input,
+        context,
+        localField,
+        target,
+        mutationState,
+      });
+    } else {
+      resolved = await resolveNestedSingle({
+        currentValue: currentValue as string | undefined,
+        refList: listInfo.foreign.list,
+        input,
+        context,
+        localField,
+        target,
+        mutationState,
+      });
+    }
+    const { create, connect, disconnect } = resolved;
     return { create, connect, disconnect, currentValue };
   }
 
-  getGqlAuxTypes({ schemaName }) {
+  getGqlAuxTypes({ schemaName }: { schemaName: string }) {
     const { refList } = this.tryResolveRefList();
     const schemaAccess = refList.access[schemaName];
     // We need an input type that is specific to creating nested items when
@@ -291,7 +346,7 @@ export class Relationship extends Implementation {
       return [];
     }
   }
-  gqlUpdateInputFields({ schemaName }) {
+  gqlUpdateInputFields({ schemaName }: { schemaName: string }) {
     const { refList } = this.tryResolveRefList();
     const schemaAccess = refList.access[schemaName];
     if (
@@ -310,7 +365,7 @@ export class Relationship extends Implementation {
       return [];
     }
   }
-  gqlCreateInputFields({ schemaName }) {
+  gqlCreateInputFields({ schemaName }: { schemaName: string }) {
     return this.gqlUpdateInputFields({ schemaName });
   }
   getBackingTypes() {
@@ -318,9 +373,20 @@ export class Relationship extends Implementation {
   }
 }
 
-export class PrismaRelationshipInterface extends PrismaFieldAdapter {
-  constructor() {
-    super(...arguments);
+export class PrismaRelationshipInterface<P extends string> extends PrismaFieldAdapter<P> {
+  idPath: string;
+  isUnique: boolean;
+  isIndexed: boolean;
+  refFieldPath?: string;
+  constructor(
+    fieldName: string,
+    path: P,
+    field: Relationship<P>,
+    listAdapter: PrismaListAdapter,
+    getListByKey: (arg: string) => List | undefined,
+    config = {}
+  ) {
+    super(fieldName, path, field, listAdapter, getListByKey, config);
     this.idPath = `${this.dbPath}Id`;
     this.isRelationship = true;
 
@@ -338,9 +404,10 @@ export class PrismaRelationshipInterface extends PrismaFieldAdapter {
     this.refFieldPath = refFieldPath;
   }
 
-  getQueryConditions(dbPath) {
+  getQueryConditions<T>(dbPath: string) {
     return {
-      [`${this.path}_is_null`]: value => (value ? { [dbPath]: null } : { NOT: { [dbPath]: null } }),
+      [`${this.path}_is_null`]: (value: T | null) =>
+        value ? { [dbPath]: null } : { NOT: { [dbPath]: null } },
     };
   }
 }

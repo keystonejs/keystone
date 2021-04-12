@@ -1,8 +1,29 @@
 import { humanize } from '@keystone-next/utils-legacy';
 import { parseFieldAccess } from '@keystone-next/access-control-legacy';
 import { KeystoneContext } from '@keystone-next/types';
+import { PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
 
-type List = {};
+export type List = {
+  key: string;
+  adapter: PrismaListAdapter;
+  gqlNames: {
+    relateToOneInputName: string;
+    whereUniqueInputName: string;
+    createInputName: string;
+    relateToManyInputName: string;
+    whereInputName: string;
+    outputTypeName: string;
+    listQueryName: string;
+    itemQueryName: string;
+  };
+  access: Record<string, any>;
+  fieldsByPath: Record<string, Field<any>>;
+  getGraphqlFilterFragment: () => string[];
+  listQuery: any;
+  listQueryMeta: any;
+  itemQuery: any;
+  createMutation: any;
+};
 
 export type FieldConfigArgs = {
   hooks?: any;
@@ -109,10 +130,12 @@ class Field<P extends string> {
   }
 
   // Field types should replace this if they want to any fields to the output type
-  gqlOutputFields(): string[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  gqlOutputFields({ schemaName }: { schemaName: string }): string[] {
     return [];
   }
-  gqlOutputFieldResolvers() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  gqlOutputFieldResolvers({ schemaName }: { schemaName: string }) {
     return {};
   }
 
@@ -126,7 +149,8 @@ class Field<P extends string> {
    * NOTE: When a naming conflict occurs, a list's types/queries/mutations will
    * overwrite any auxiliary types defined by an individual type.
    */
-  getGqlAuxTypes(): string[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getGqlAuxTypes({ schemaName }: { schemaName: string }): string[] {
     return [];
   }
   gqlAuxFieldResolvers() {
@@ -167,7 +191,8 @@ class Field<P extends string> {
 
   async afterDelete() {}
 
-  gqlQueryInputFields(): string[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  gqlQueryInputFields({ schemaName }: { schemaName: string }): string[] {
     return [];
   }
   equalityInputFields(type: string) {
@@ -209,10 +234,12 @@ class Field<P extends string> {
       `${this.path}_not_ends_with_i: ${type}`,
     ];
   }
-  gqlCreateInputFields(): string[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  gqlCreateInputFields({ schemaName }: { schemaName: string }): string[] {
     return [];
   }
-  gqlUpdateInputFields(): string[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  gqlUpdateInputFields({ schemaName }: { schemaName: string }): string[] {
     return [];
   }
   getDefaultValue({ context, originalInput }: { context: KeystoneContext; originalInput: any }) {
