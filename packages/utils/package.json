@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
-    "p-lazy": "^3.1.0",
+    "p-lazy": "^4.0.0",
     "p-reflect": "^2.1.0",
     "semver": "^7.3.5"
   }
