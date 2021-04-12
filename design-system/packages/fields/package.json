@@ -13,7 +13,7 @@
     "@keystone-ui/icons": "^2.0.1",
     "@keystone-ui/popover": "^2.0.1",
     "@types/react-select": "^4.0.14",
-    "date-fns": "^2.19.0",
+    "date-fns": "^2.20.2",
     "react": "^17.0.2",
     "react-day-picker": "npm:react-day-picker@^7.4.8",
     "react-focus-lock": "^2.5.0",
