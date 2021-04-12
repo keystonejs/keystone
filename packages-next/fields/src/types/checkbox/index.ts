@@ -16,7 +16,7 @@ export const checkbox = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: {
     type: 'Checkbox',
     implementation: Checkbox,
-    adapters: { prisma: PrismaCheckboxInterface },
+    adapter: PrismaCheckboxInterface,
   },
   config,
   views: resolveView('checkbox/views'),

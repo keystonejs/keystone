@@ -31,7 +31,7 @@ export const select = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: {
     type: 'Select',
     implementation: Select,
-    adapters: { prisma: PrismaSelectInterface },
+    adapter: PrismaSelectInterface,
   },
   config,
   views: resolveView('select/views'),

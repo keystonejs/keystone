@@ -20,7 +20,7 @@ export const text = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: {
     type: 'Text',
     implementation: Text,
-    adapters: { prisma: PrismaTextInterface },
+    adapter: PrismaTextInterface,
   },
   config,
   views: resolveView('text/views'),
