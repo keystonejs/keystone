@@ -75,7 +75,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       true,
       getAdminPath(cwd)
     );
-    console.log(`👋 Admin UI and graphQL API ready`);
+    console.log(`👋 Admin UI and GraphQL API ready`);
   };
 
   app.use('/__keystone_dev_status', (req, res) => {

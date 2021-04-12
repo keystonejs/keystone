@@ -100,7 +100,7 @@ model Todo {
 ✨ Creating server
 ✨ Preparing GraphQL Server
 ✨ Skipping Admin UI app
-👋 Admin UI and graphQL API ready`);
+👋 Admin UI and GraphQL API ready`);
   return tmp;
 }
 
@@ -114,17 +114,134 @@ describe('useMigrations: false', () => {
     const recording = recordConsole();
     await setupAndStopDevServerForMigrations(tmp);
 
-    expect(recording()).toMatchInlineSnapshot(`✨ Starting Keystone
-⭐️ Dev Server Ready on http://localhost:3000
-✨ Generating GraphQL and Prisma schemas
-✨ sqlite database \\"app.db\\" created at file:./app.db
-✨ Your database is now in sync with your schema. Done in 0ms
-✨ Connecting to the database
-✨ Skipping Admin UI code generation
-✨ Creating server
-✨ Preparing GraphQL Server
-✨ Skipping Admin UI app
-👋 Admin UI and graphQL API ready`);
+    expect(recording()).toMatchInlineSnapshot(`
+      "✨ Starting Keystone
+      ⭐️ Dev Server Ready on http://localhost:3000
+      ✨ Generating GraphQL and Prisma schemas
+      ✨ The database is already in sync with the Prisma schema.
+      ✨ Connecting to the database
+      ✨ Skipping Admin UI code generation
+      ✨ Creating server
+      ✨ Preparing GraphQL Server
+      ✨ Skipping Admin UI app
+      👋 Admin UI and GraphQL API ready"
+    `);
+  });
+  test('warns when dropping field that has data in it', async () => {
+    const prevCwd = await setupInitialProjectWithoutMigrations();
+    const prismaClient = getPrismaClient(prevCwd);
+    await prismaClient.todo.create({ data: { title: 'todo' } });
+    const tmp = await testdir({
+      ...symlinkKeystoneDeps,
+      ...(await getDatabaseFiles(prevCwd)),
+      'keystone.js': basicKeystoneConfig(false, {
+        Todo: {
+          fields: {},
+        },
+      }),
+    });
+    const recording = recordConsole({
+      'Do you want to continue? Some data will be lost.': true,
+    });
+    await setupAndStopDevServerForMigrations(tmp);
+
+    expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
+      "datasource db {
+        provider = \\"sqlite\\"
+        url      = \\"file:./app.db\\"
+      }
+
+      model Todo {
+        id Int @id @default(autoincrement())
+      }
+      "
+    `);
+    expect(recording()).toMatchInlineSnapshot(`
+      "✨ Starting Keystone
+      ⭐️ Dev Server Ready on http://localhost:3000
+      ✨ Generating GraphQL and Prisma schemas
+
+      ⚠️  Warnings:
+
+        • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
+      Prompt: Do you want to continue? Some data will be lost. true
+      ✨ Your database is now in sync with your schema. Done in 0ms
+      ✨ Connecting to the database
+      ✨ Skipping Admin UI code generation
+      ✨ Creating server
+      ✨ Preparing GraphQL Server
+      ✨ Skipping Admin UI app
+      👋 Admin UI and GraphQL API ready"
+    `);
+  });
+  test('exits when refusing data loss prompt', async () => {
+    const prevCwd = await setupInitialProjectWithoutMigrations();
+    const prismaClient = getPrismaClient(prevCwd);
+    await prismaClient.todo.create({ data: { title: 'todo' } });
+    const tmp = await testdir({
+      ...symlinkKeystoneDeps,
+      ...(await getDatabaseFiles(prevCwd)),
+      'keystone.js': basicKeystoneConfig(false, {
+        Todo: {
+          fields: {},
+        },
+      }),
+    });
+    const recording = recordConsole({
+      'Do you want to continue? Some data will be lost.': false,
+    });
+    await expect(setupAndStopDevServerForMigrations(tmp)).rejects.toEqual(new ExitError(0));
+
+    expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
+      "datasource db {
+        provider = \\"sqlite\\"
+        url      = \\"file:./app.db\\"
+      }
+
+      model Todo {
+        id    Int     @id @default(autoincrement())
+        title String?
+      }
+      "
+    `);
+    expect(recording()).toMatchInlineSnapshot(`
+      "✨ Starting Keystone
+      ⭐️ Dev Server Ready on http://localhost:3000
+      ✨ Generating GraphQL and Prisma schemas
+
+      ⚠️  Warnings:
+
+        • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
+      Prompt: Do you want to continue? Some data will be lost. false
+      Push cancelled."
+    `);
+  });
+  test('--reset-db flag', async () => {
+    const tmp = await setupInitialProjectWithoutMigrations();
+    {
+      const prismaClient = await getPrismaClient(tmp);
+      await prismaClient.todo.create({ data: { title: 'something' } });
+    }
+    const recording = recordConsole();
+    await setupAndStopDevServerForMigrations(tmp, true);
+    {
+      const prismaClient = await getPrismaClient(tmp);
+      expect(await prismaClient.todo.findMany()).toHaveLength(0);
+    }
+
+    expect(recording()).toMatchInlineSnapshot(`
+      "✨ Starting Keystone
+      ⭐️ Dev Server Ready on http://localhost:3000
+      ✨ Generating GraphQL and Prisma schemas
+      ✨ Your database has been reset
+      ✨ Your database is now in sync with your schema. Done in 0ms
+      ✨ Connecting to the database
+      ✨ Skipping Admin UI code generation
+      ✨ Creating server
+      ✨ Preparing GraphQL Server
+      ✨ Skipping Admin UI app
+      👋 Admin UI and GraphQL API ready"
+    `);
   });
 });
 
@@ -174,7 +291,7 @@ Prompt: Would you like to apply this migration? true
 ✨ Creating server
 ✨ Preparing GraphQL Server
 ✨ Skipping Admin UI app
-👋 Admin UI and graphQL API ready`);
+👋 Admin UI and GraphQL API ready`);
   return tmp;
 }
 
@@ -243,7 +360,7 @@ describe('useMigrations: true', () => {
       ✨ Creating server
       ✨ Preparing GraphQL Server
       ✨ Skipping Admin UI app
-      👋 Admin UI and graphQL API ready"
+      👋 Admin UI and GraphQL API ready"
     `);
   });
   test('warns when dropping field that has data in it', async () => {
@@ -322,7 +439,7 @@ describe('useMigrations: true', () => {
       ✨ Creating server
       ✨ Preparing GraphQL Server
       ✨ Skipping Admin UI app
-      👋 Admin UI and graphQL API ready"
+      👋 Admin UI and GraphQL API ready"
     `);
   });
   test('prompts to drop database when database is out of sync with migrations directory', async () => {
@@ -390,7 +507,7 @@ describe('useMigrations: true', () => {
       ✨ Creating server
       ✨ Preparing GraphQL Server
       ✨ Skipping Admin UI app
-      👋 Admin UI and graphQL API ready"
+      👋 Admin UI and GraphQL API ready"
     `);
   });
   test("doesn't drop when prompt denied", async () => {
@@ -524,7 +641,7 @@ describe('useMigrations: true', () => {
       ✨ Creating server
       ✨ Preparing GraphQL Server
       ✨ Skipping Admin UI app
-      👋 Admin UI and graphQL API ready"
+      👋 Admin UI and GraphQL API ready"
     `);
   });
   test('--reset-db flag', async () => {
@@ -558,7 +675,7 @@ describe('useMigrations: true', () => {
       ✨ Creating server
       ✨ Preparing GraphQL Server
       ✨ Skipping Admin UI app
-      👋 Admin UI and graphQL API ready"
+      👋 Admin UI and GraphQL API ready"
     `);
   });
   test('logs correctly when no migrations need to be created or applied', async () => {
@@ -576,7 +693,7 @@ describe('useMigrations: true', () => {
       ✨ Creating server
       ✨ Preparing GraphQL Server
       ✨ Skipping Admin UI app
-      👋 Admin UI and graphQL API ready"
+      👋 Admin UI and GraphQL API ready"
     `);
   });
 });

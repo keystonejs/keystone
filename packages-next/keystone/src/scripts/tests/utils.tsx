@@ -127,7 +127,6 @@ let dirsToRemove: string[] = [];
 afterEach(async () => {
   await Promise.all(
     dirsToRemove.map(filepath => {
-      console.log('removing', filepath);
       return fs.remove(filepath);
     })
   );
