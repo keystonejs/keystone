@@ -2,7 +2,9 @@ import { Markdown } from '../../components/Page';
 
 # Command Line
 
-Keystone provides a command line interface (CLI) for running your Keystone system. The command `keystone-next` lets you control how you build and run your system, and migrate the structure of your database as your schema changes.
+Keystone's command line interface (CLI) has been designed to help you develop, build, and deploy your Keystone project.
+
+Using the `keystone-next` command you can start the dev process, build and run your app in production, and control how you migrate the structure of your database as your schema changes.
 
 ### Usage
 
@@ -14,7 +16,7 @@ Commands
   postinstall   generate client APIs and types (optional)
   build         build the project (must be done before using start)
   start         start the project in production mode
-  prisma        run Prisma CLI commands safely in the project
+  prisma        run Prisma CLI commands safely
 ```
 
 !> All the commands expect to find a module called `keystone.ts` with a default export which returns a system configuration `config()` from `@keystone-next/keystone/schema`. See the [System Configuration API](../apis/config) for details on how to configure a Keystone system.
@@ -35,6 +37,8 @@ We recommend adding the following scripts to your project's `package.json` file:
 ```
 
 !> Note: the deploy script above assumes you are using migrations
+
+Read on below for more details about each command, and see [bringing it all together](#bringing-it-all-together) for more details (including some important caveats) about how that "deploy" command works.
 
 ## dev
 
