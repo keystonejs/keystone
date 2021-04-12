@@ -5,11 +5,11 @@ const u = require('unist-builder');
 
 const classNames = {
   // tip
-  'bg-lightblue-100 border border-lightblue-200 my-4 p-4 rounded-md text-lightblue-900': /^!&gt;|!>\s/,
+  'bg-lightblue-50 border border-lightblue-200 my-4 p-4 rounded-md text-lightblue-900': /^!&gt;|!>\s/,
   // warning
-  'bg-amber-100 border border-amber-200 my-4 p-4 rounded-md text-amber-900': /^\?&gt;|\?>\s/,
+  'bg-amber-50 border border-amber-200 my-4 p-4 rounded-md text-amber-900': /^\?&gt;|\?>\s/,
   // error
-  'bg-red-100 border border-red-200 my-4 p-4 rounded-md text-red-900': /^x&gt;|x>\s/,
+  'bg-red-50 border border-red-200 my-4 p-4 rounded-md text-red-900': /^x&gt;|x>\s/,
 };
 
 // from github.com/syntax-tree/unist-util-map/blob/bb0567f651517b2d521af711d7376475b3d8446a/index.js
@@ -66,3 +66,5 @@ module.exports = () => tree => {
     return u('paragraph', props, [newChild, ...siblings]);
   });
 };
+
+module.exports.safelist = new Set(Object.keys(classNames).join(' ').split(' '));

@@ -153,7 +153,8 @@ class Field<P extends string> {
   getGqlAuxTypes({ schemaName }: { schemaName: string }): string[] {
     return [];
   }
-  gqlAuxFieldResolvers() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  gqlAuxFieldResolvers({ schemaName }: { schemaName: string }) {
     return {};
   }
 

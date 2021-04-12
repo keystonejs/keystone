@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+// @ts-ignore
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
-// import Text from '../Text';
+import { ProviderName } from '@keystone-next/test-utils-legacy';
 import { LocalFileAdapter } from './local-file';
 import File from './';
 
@@ -15,12 +16,13 @@ export const subfieldName = 'originalFilename';
 // Grab all the image files from the directory
 const directory = './files';
 
-const prepareFile = _filePath => {
+const prepareFile = (_filePath: string) => {
   const filePath = path.resolve(`packages/fields/src/types/File/test-files/${_filePath}`);
   const upload = new Upload();
   upload.resolve({
     createReadStream: () => fs.createReadStream(filePath),
     filename: path.basename(filePath),
+    // @ts-ignore
     mimetype: mime.getType(filePath),
     encoding: 'utf-8',
   });
@@ -69,7 +71,7 @@ export const beforeAll = () => {
 };
 
 // Remove all the files in the './files' directory after all the tests are completed
-export const afterAll = () => {
+export const afterAll = (): Promise<void> => {
   return new Promise(resolve => {
     fs.readdir(directory, (err, files) => {
       if (err) throw err;
@@ -87,7 +89,7 @@ export const afterAll = () => {
   });
 };
 
-export const supportedFilters = provider => [
+export const supportedFilters = (provider: ProviderName) => [
   'null_equality',
   !['postgresql'].includes(provider) && 'in_empty_null',
 ];
