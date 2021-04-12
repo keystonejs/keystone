@@ -9,7 +9,7 @@
   "main": "dist/utils-legacy.cjs.js",
   "module": "dist/utils-legacy.esm.js",
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.22.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",

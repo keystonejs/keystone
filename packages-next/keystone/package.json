@@ -81,7 +81,7 @@
     "strip-ansi": "^6.0.0"
   },
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.22.1"
   },
   "preconstruct": {
     "entrypoints": [

@@ -20,7 +20,7 @@
     "react": "^17.0.2"
   },
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.22.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/admin-ui-utils"
 }

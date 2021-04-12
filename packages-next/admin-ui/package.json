@@ -41,7 +41,7 @@
     "tabbable": "^5.1.6"
   },
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.22.1"
   },
   "preconstruct": {
     "entrypoints": [

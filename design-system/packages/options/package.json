@@ -19,7 +19,7 @@
     "react-select": "^4.3.0"
   },
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.22.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/options"
 }

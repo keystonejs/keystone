@@ -7,7 +7,7 @@
   "main": "dist/test-utils-legacy.cjs.js",
   "module": "dist/test-utils-legacy.esm.js",
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.22.1"
   },
   "dependencies": {
     "@keystone-next/adapter-prisma-legacy": "^5.0.0",

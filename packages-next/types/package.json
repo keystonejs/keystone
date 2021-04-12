@@ -5,7 +5,7 @@
   "main": "dist/types.cjs.js",
   "module": "dist/types.esm.js",
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.22.1"
   },
   "dependencies": {
     "apollo-server-types": "^0.7.0",

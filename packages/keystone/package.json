@@ -5,7 +5,7 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.22.1"
   },
   "dependencies": {
     "@keystone-next/access-control-legacy": "^9.0.1",
