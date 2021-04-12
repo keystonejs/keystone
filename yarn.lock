@@ -11976,10 +11976,10 @@ slate-history@^0.60.4:
     immer "^7.0.0"
     is-plain-object "^3.0.0"
 
-slate-hyperscript@^0.60.8:
-  version "0.60.8"
-  resolved "https://registry.yarnpkg.com/slate-hyperscript/-/slate-hyperscript-0.60.8.tgz#e71fef456e24429c5cfac5fe6077567b0fdbb9d1"
-  integrity sha512-BmNo4b6U8lJq31oCNcd2a4LWoC5Z2yZcWOfBbcewEO1xwXGLnUxQkUKNsixtfbRTerUFV/wuvssVL+r93Y07BA==
+slate-hyperscript@^0.62.0:
+  version "0.62.0"
+  resolved "https://registry.yarnpkg.com/slate-hyperscript/-/slate-hyperscript-0.62.0.tgz#ff6f86e94936fbf90f8ec07d2ae8fbcd7e45a927"
+  integrity sha512-PbtxrrIr4qPvtPmKli4/FnvQFjf8zmnF0kyNeDQGHvUzpHnsoSYHM/i4POye3/qt5d8WGukiJBPL03QsIW+SIw==
   dependencies:
     is-plain-object "^3.0.0"
 

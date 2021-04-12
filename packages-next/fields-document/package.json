@@ -59,6 +59,6 @@
     "array.prototype.flat": "^1.2.4",
     "jest-diff": "^26.6.2",
     "pretty-format": "^26.6.2",
-    "slate-hyperscript": "^0.60.8"
+    "slate-hyperscript": "^0.62.0"
   }
 }
