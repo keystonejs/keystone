@@ -1,4 +1,5 @@
 const colors = require('tailwindcss/colors');
+const hintSafelist = require('./remark-plugins/hints').safelist;
 
 const preserveColors = ['gray', 'orange', 'pink', 'blue', 'green'];
 
@@ -10,6 +11,7 @@ module.exports = {
       safelist: [
         ...preserveColors.map(i => `bg-${i}-100`),
         ...preserveColors.map(i => `text-${i}-700`),
+        ...hintSafelist,
       ],
     },
   },
