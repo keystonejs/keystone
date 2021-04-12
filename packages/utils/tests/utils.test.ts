@@ -1,4 +1,4 @@
-const {
+import {
   getType,
   escapeRegExp,
   mapKeys,
@@ -16,8 +16,9 @@ const {
   zipObj,
   upcase,
   humanize,
-  ...utils
-} = require('../src');
+  noop,
+  identity,
+} from '../src';
 
 describe('utils', () => {
   test('humanize()', () => {
@@ -56,30 +57,35 @@ describe('utils', () => {
     expect(escapeRegExp(s)).toEqual(t);
     expect(escapeRegExp('abc')).toEqual('abc');
     expect(escapeRegExp('')).toEqual('');
+    // @ts-ignore
     expect(escapeRegExp(null)).toEqual('');
+    // @ts-ignore
     expect(escapeRegExp(undefined)).toEqual('');
+    // @ts-ignore
     expect(escapeRegExp()).toEqual('');
   });
 
   test('mapKeys', () => {
     // Simple value based function
     const o = { a: 1, b: 2, c: 3 };
-    const f = x => 2 * x;
+    const f = (x: number) => 2 * x;
     expect(mapKeys(o, f)).toEqual({ a: 2, b: 4, c: 6 });
 
     // Complex value/key/object base function.
-    const g = (value, key, object) => value * key.charCodeAt(0) + Object.keys(object).length;
+    const g = (value: number, key: string, object: Record<string, any>) =>
+      value * key.charCodeAt(0) + Object.keys(object).length;
     expect(mapKeys(o, g)).toEqual({ a: 100, b: 199, c: 300 });
   });
 
   test('mapKeyNames', () => {
     // Simple value based function
     const o = { 1: 'a', 2: 'b', 3: 'c' };
-    const f = x => 2 * x;
+    const f = (x: number) => 2 * x;
     expect(mapKeyNames(o, f)).toEqual({ 2: 'a', 4: 'b', 6: 'c' });
 
     // Complex value/key/object base function.
-    const g = (key, value, object) => key * value.charCodeAt(0) + Object.keys(object).length;
+    const g = (key: number, value: string, object: Record<string, any>) =>
+      key * value.charCodeAt(0) + Object.keys(object).length;
     expect(mapKeyNames(o, g)).toEqual({ 100: 'a', 199: 'b', 300: 'c' });
   });
 
@@ -129,6 +135,7 @@ describe('utils', () => {
     // Pick specified keys
     expect(pick(o, ['b', 'c'])).toEqual({ b: 2, c: 3 });
     // Pick specified keys, ignore keys which don't exist
+    // @ts-ignore
     expect(pick(o, ['b', 'c', 'e'])).toEqual({ b: 2, c: 3 });
     // o remains unchanged
     expect(o).toEqual({ a: 1, b: 2, c: 3, d: 4 });
@@ -147,6 +154,7 @@ describe('utils', () => {
     // Remove specified keys
     expect(omit(o, ['b', 'c'])).toEqual({ a: 1, d: 4 });
     // Remove specified keys, ignore keys which don't exist
+    // @ts-ignore
     expect(omit(o, ['b', 'c', 'e'])).toEqual({ a: 1, d: 4 });
     // o remains unchanged
     expect(o).toEqual({ a: 1, b: 2, c: 3, d: 4 });
@@ -194,7 +202,9 @@ describe('utils', () => {
       c: { name: 'c', animal: 'cat' },
       d: { name: 'd', animal: 'dog' },
     });
-    expect(arrayToObject(pets, 'name', pet => pet.animal)).toEqual({
+    expect(
+      arrayToObject(pets, 'name', (pet: { name: string; animal: string }) => pet.animal)
+    ).toEqual({
       a: 'cat',
       b: 'dog',
       c: 'cat',
@@ -215,16 +225,24 @@ describe('utils', () => {
     expect(flatten([])).toEqual([]);
     expect(flatten([1, 2, 3])).toEqual([1, 2, 3]);
     expect(flatten([[1, 2, 3]])).toEqual([1, 2, 3]);
+    // @ts-ignore
     expect(flatten(a)).toEqual([1, 2, 3, 4, 5, 6, [7, 8], [9, 10]]);
   });
 
-  ['noop', 'identity'].forEach(fnName => {
-    test(fnName, () => {
-      expect(utils[fnName]()).toEqual(undefined);
-      expect(utils[fnName]('hello')).toEqual('hello');
-      const input = { bar: 'zip' };
-      expect(utils[fnName](input)).toEqual(input);
-    });
+  test('noop', () => {
+    // @ts-ignore
+    expect(noop()).toEqual(undefined);
+    expect(noop('hello')).toEqual('hello');
+    const input = { bar: 'zip' };
+    expect(noop(input)).toEqual(input);
+  });
+
+  test('identity', () => {
+    // @ts-ignore
+    expect(identity()).toEqual(undefined);
+    expect(identity('hello')).toEqual('hello');
+    const input = { bar: 'zip' };
+    expect(identity(input)).toEqual(input);
   });
 
   test('zipObj', () => {
@@ -237,11 +255,14 @@ describe('utils', () => {
   });
 
   test('mergeWhereClause', () => {
-    let args = { a: 1 };
+    let args: Record<string, any> = { a: 1 };
 
     // Non-objects for where clause, simply return
+    // @ts-ignore
     expect(mergeWhereClause(args, undefined)).toEqual(args);
+    // @ts-ignore
     expect(mergeWhereClause(args, true)).toEqual(args);
+    // @ts-ignore
     expect(mergeWhereClause(args, 10)).toEqual(args);
 
     let where = {};
