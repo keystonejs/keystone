@@ -123,7 +123,6 @@ export type ImageData = {
   filesize: number;
   width: number;
   height: number;
-  blurHash: string;
 };
 
 export type ImagesContext = {
