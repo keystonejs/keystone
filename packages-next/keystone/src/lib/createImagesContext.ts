@@ -1,5 +1,10 @@
 import path from 'path';
-import { KeystoneConfig, ImagesContext, ImageExtension, ImageMode } from '@keystone-next/types';
+import {
+  ImagesConfig as KeystoneImagesConfig,
+  ImagesContext,
+  ImageExtension,
+  ImageMode,
+} from '@keystone-next/types';
 import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
 import { fromBuffer } from 'file-type';
@@ -10,7 +15,11 @@ const MODE_LOCAL = 'local';
 const DEFAULT_BASE_URL = 'http://localhost:3000';
 const DEFAULT_STORAGE_PATH = './public/images';
 
-const isValidImageRef = (ref: string): boolean => {
+const isValidImageRef = (
+  ref: string,
+  mode: ImageMode,
+  { storagePath }: { storagePath: string }
+): boolean => {
   if (!ref.includes(MODE_LOCAL, 0)) {
     return false;
   }
@@ -23,22 +32,32 @@ const isValidImageRef = (ref: string): boolean => {
     return false;
   }
 
-  return true;
+  if (isLocal(mode)) {
+    return fs.existsSync(path.join(storagePath, ref));
+  }
+
+  if (isCloud(mode)) {
+    // TODO
+  }
+
+  return false;
 };
 
 const isValidImageExtension = (ext: string): boolean => SUPPORTED_IMAGE_EXTENSIONS.includes(ext);
 
-const parseImageRef = (ref: string): { mode: ImageMode; id: string; ext: ImageExtension } => {
+const parseImageRef = (
+  ref: string,
+  config: { storagePath: string }
+): { mode: ImageMode; id: string; ext: ImageExtension } => {
   const throwInvalidRefError = () => {
     throw new Error('Invalid image reference');
   };
-
-  if (!isValidImageRef(ref)) {
-    throwInvalidRefError();
-  }
-
   const [mode, idAndExt] = ref.split(':');
   const [id, ext] = idAndExt.split('.');
+
+  if (!isValidImageRef(ref, mode as ImageMode, config)) {
+    throwInvalidRefError();
+  }
 
   if (!isValidImageExtension(ext)) {
     throwInvalidRefError();
@@ -76,7 +95,7 @@ const isLocal = (mode: ImageMode) => mode === 'local';
 
 const isCloud = (mode: ImageMode) => mode !== 'local';
 
-export function createImagesContext(config: KeystoneConfig['images']): ImagesContext | undefined {
+export function createImagesContext(config: KeystoneImagesConfig): ImagesContext | undefined {
   if (!config) {
     return;
   }
@@ -99,9 +118,9 @@ export function createImagesContext(config: KeystoneConfig['images']): ImagesCon
       throw new Error('Image not found');
     },
     getRef: (mode, id, ext) => `${mode}:${id}.${ext}`,
-    parseRef: ref => parseImageRef(ref),
+    parseRef: ref => parseImageRef(ref, { storagePath }),
     getDataFromRef: async ref => {
-      const { mode, id, ext: extension } = parseImageRef(ref);
+      const { mode, id, ext: extension } = parseImageRef(ref, { storagePath });
 
       if (isLocal(mode)) {
         const buffer = await fs.readFile(path.join(storagePath, `${id}.${extension}`));
