@@ -3,6 +3,7 @@ import { createDatabase, uriToCredentials, DatabaseCredentials } from '@prisma/s
 import { Migrate } from '@prisma/migrate';
 import chalk from 'chalk';
 import slugify from '@sindresorhus/slugify';
+import { ExitError } from '../scripts/utils';
 import { confirmPrompt, textPrompt } from './prompts';
 
 // we don't want to pollute process.env.DATABASE_URL so we're
@@ -175,7 +176,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
 
         if (!confirmedReset) {
           console.info('Reset cancelled.');
-          process.exit(0);
+          throw new ExitError(0);
         }
 
         // Do the reset
@@ -246,7 +247,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
         console.log(
           'Please edit the migration and run keystone-next dev again to apply the migration'
         );
-        process.exit(0);
+        throw new ExitError(0);
       }
     } else {
       if (appliedMigrationNames.length) {
