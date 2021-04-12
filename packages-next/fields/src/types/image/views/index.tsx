@@ -8,7 +8,7 @@ import {
   FieldControllerConfig,
 } from '@keystone-next/types';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
-import { validateImage } from './Field';
+import { validateImage, validateRef } from './Field';
 
 export { Field } from './Field';
 
@@ -71,7 +71,7 @@ type ImageValue =
       };
       previous: ImageValue;
     }
-  | { kind: 'remove'; previous: Exclude<ImageValue, { kind: 'remove' }> };
+  | { kind: 'remove'; previous?: Exclude<ImageValue, { kind: 'remove' }> };
 
 type ImageController = FieldController<ImageValue>;
 
@@ -100,8 +100,12 @@ export const controller = (config: FieldControllerConfig): ImageController => {
         },
       };
     },
-    validate(value) {
-      console.log(value.kind !== 'upload' || validateImage(value.data) === undefined);
+    validate(value): boolean {
+      if (value.kind === 'ref') {
+        console.log(value);
+        console.log(validateRef(value.data));
+        return validateRef(value.data) === undefined;
+      }
       return value.kind !== 'upload' || validateImage(value.data) === undefined;
     },
     serialize(value) {

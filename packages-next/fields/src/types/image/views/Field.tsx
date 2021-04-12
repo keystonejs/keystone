@@ -4,13 +4,15 @@ import { jsx, Stack, useTheme } from '@keystone-ui/core';
 import { useToasts } from '@keystone-ui/toast';
 import { TextInput } from '@keystone-ui/fields';
 import copy from 'copy-to-clipboard';
-import { Fragment, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import { Pill } from '@keystone-ui/pill';
 import { Button } from '@keystone-ui/button';
 import { FieldProps } from '@keystone-next/types';
 import NextImage from '@keystone-next/admin-ui/image';
+
+import { ImageValue } from './index';
 
 function useObjectURL(fileData: File | undefined) {
   let [objectURL, setObjectURL] = useState<string | undefined>(undefined);
@@ -30,13 +32,16 @@ export function Field({
   autoFocus,
   field,
   value,
+  forceValidation,
   onChange,
 }: FieldProps<typeof import('.').controller>) {
   const { addToast } = useToasts();
   const [canSetRef, setSetRef] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [previousFile, setPrevious] = useState<ImageValue | null>(null);
 
-  const errorMessage = value.kind === 'upload' ? validateImage(value.data) : undefined;
+  const errorMessage = createErrorMessage(value, forceValidation);
+  console.log(forceValidation, errorMessage);
 
   const onUploadChange = ({
     currentTarget: { validity, files },
@@ -78,6 +83,9 @@ export function Field({
   };
 
   const toggleSetRefUI = () => {
+    if (value.kind === 'from-server') {
+      setPrevious(value);
+    }
     setSetRef(!canSetRef);
   };
 
@@ -107,35 +115,61 @@ export function Field({
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      {value.kind === 'from-server' || value.kind === 'upload' ? (
+      {canSetRef ? (
         <Stack gap="small">
-          {errorMessage === undefined && canSetRef ? (
-            <TextInput
-              placeholder="Paste the image ref here"
-              value={value?.data?.ref}
-              onChange={onRefChange}
-            />
-          ) : value.kind === 'from-server' ? (
-            <ImageWrapper>
-              <NextImage
-                height={value.data.height}
-                width={value.data.width}
-                src={value.data.src}
-                alt={field.path}
-              />
-            </ImageWrapper>
-          ) : (
-            <ImageWrapper>
-              <img
-                css={{
-                  height: 'auto',
-                  maxWidth: '100%',
-                }}
-                src={imagePathFromUpload}
-                alt={field.path}
-              />
-            </ImageWrapper>
-          )}
+          <TextInput
+            placeholder="Paste the image ref here"
+            value={value?.data?.ref}
+            onChange={onRefChange}
+          />
+          <Stack gap="small" across>
+            <Button
+              tone="negative"
+              onClick={() => {
+                setSetRef(false);
+                console.log('previousFile', previousFile);
+                if (previousFile) {
+                  // if value.kind === 'from-server' save state
+                  console.log('### PREVIOUSFILE', previousFile);
+                  return onChange?.({ kind: 'remove', previous: previousFile });
+                }
+                return onChange?.({ kind: 'remove' });
+              }}
+            >
+              Cancel
+            </Button>
+            {forceValidation && errorMessage ? (
+              <Pill weight="light" tone="negative">
+                {errorMessage}
+              </Pill>
+            ) : null}
+          </Stack>
+        </Stack>
+      ) : value.kind === 'from-server' || value.kind === 'upload' ? (
+        <Stack gap="small">
+          {errorMessage === undefined ? (
+            value.kind === 'from-server' ? (
+              <ImageWrapper>
+                <NextImage
+                  height={value.data.height}
+                  width={value.data.width}
+                  src={value.data.src}
+                  alt={field.path}
+                />
+              </ImageWrapper>
+            ) : (
+              <ImageWrapper>
+                <img
+                  css={{
+                    height: 'auto',
+                    maxWidth: '100%',
+                  }}
+                  src={imagePathFromUpload}
+                  alt={field.path}
+                />
+              </ImageWrapper>
+            )
+          ) : null}
           {onChange && (
             <Stack across gap="small" align="center">
               <Button
@@ -147,12 +181,14 @@ export function Field({
               >
                 Change image
               </Button>
-              <Button size="small" tone="active" onClick={toggleSetRefUI}>
-                {canSetRef ? 'View Preview' : 'Set From Ref'}
-              </Button>
+              {value.kind !== 'upload' ? (
+                <Button size="small" tone="passive" onClick={toggleSetRefUI}>
+                  {'Set From Ref'}
+                </Button>
+              ) : null}
               {value.kind === 'from-server' && (
                 <Stack across gap="small">
-                  <Button size="small" tone="help" onClick={copyRef}>
+                  <Button size="small" tone="passive" onClick={copyRef}>
                     Copy Ref
                   </Button>
                   <Button
@@ -184,7 +220,7 @@ export function Field({
                   {errorMessage}
                 </Pill>
               ) : (
-                value.kind === 'upload' && (
+                (value.kind === 'upload' || value.kind === 'ref') && (
                   <Pill weight="light" tone="positive">
                     Save to upload this image
                   </Pill>
@@ -213,10 +249,13 @@ export function Field({
             >
               Upload Image
             </Button>
-            <Button size="small" tone="active" onClick={toggleSetRefUI}>
-              {'Set from Ref'}
-            </Button>
-            {value.kind === 'remove' && (
+            {!canSetRef && (
+              <Button size="small" tone="active" onClick={toggleSetRefUI}>
+                {'Set from Ref'}
+              </Button>
+            )}
+
+            {value.kind === 'remove' && value.previous && (
               <Button
                 size="small"
                 tone="negative"
@@ -252,6 +291,20 @@ export function Field({
       />
     </FieldContainer>
   );
+}
+
+export function validateRef({ ref }: { ref: string }) {
+  if (!/(local|cloud):(.+)\.(gif|jpg|png|jpeg)$/.test(ref)) {
+    return 'Invalid ref';
+  }
+}
+
+function createErrorMessage(value: ImageValue, forceValidation: boolean) {
+  if (value.kind === 'upload') {
+    return validateImage(value.data);
+  } else if (value.kind === 'ref') {
+    return forceValidation ? validateRef(value.data) : undefined;
+  }
 }
 
 export function validateImage({
