@@ -235,7 +235,7 @@ We need to reset the ${credentials.type} database "${credentials.database}" at $
       );
 
       console.log(
-        `✨ A migration has been created at .keystone/prisma/migrations/${generatedMigrationName}`
+        `✨ A migration has been created at migrations/${generatedMigrationName}`
       );
 
       let shouldApplyMigration =
@@ -267,7 +267,7 @@ async function getMigrationName() {
 }
 
 function printFilesFromMigrationIds(migrationIds: string[]) {
-  return `.keystone/prisma/migrations/\n${migrationIds
+  return `migrations/\n${migrationIds
     .map(migrationId => `  └─ ${printMigrationId(migrationId)}/\n    └─ migration.sql`)
     .join('\n')}`;
 }

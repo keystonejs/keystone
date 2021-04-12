@@ -32,8 +32,11 @@ const basicKeystoneConfig = (useMigrations: boolean, lists: ListSchemaConfig = b
   }),
 });
 
-async function setupAndStopDevServerForMigrations(cwd: string) {
-  let stopServer = (await runCommand(cwd, 'dev')) as () => Promise<void>;
+async function setupAndStopDevServerForMigrations(cwd: string, resetDb: boolean = false) {
+  let stopServer = (await runCommand(
+    cwd,
+    `dev${resetDb ? ' --reset-db' : ''}`
+  )) as () => Promise<void>;
   await stopServer();
 }
 
@@ -68,6 +71,7 @@ async function getGeneratedMigration(
 // so that the timestamps in the logs are all 0ms
 Date.now = () => 0;
 
+// TODO: when we can make fields non-nullable, we should have tests for unexecutable migrations
 describe('useMigrations: false', () => {
   test('creates database and pushes schema from empty', async () => {
     const tmp = await testdir({
@@ -144,7 +148,7 @@ CREATE TABLE "Todo" (
 ✨ There has been a change to your Keystone schema that requires a migration
 
 Prompt: Name of migration init
-✨ A migration has been created at .keystone/prisma/migrations/migration_name
+✨ A migration has been created at migrations/migration_name
 Prompt: Would you like to apply this migration? true
 ✅ The migration has been applied
 ✨ Connecting to the database
@@ -213,7 +217,7 @@ describe('useMigrations: true', () => {
       ✨ There has been a change to your Keystone schema that requires a migration
 
       Prompt: Name of migration add-is-complete
-      ✨ A migration has been created at .keystone/prisma/migrations/migration_name
+      ✨ A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
       ✅ The migration has been applied
       ✨ Connecting to the database
@@ -292,7 +296,7 @@ describe('useMigrations: true', () => {
         • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
 
       Prompt: Name of migration remove all fields except id
-      ✨ A migration has been created at .keystone/prisma/migrations/migration_name
+      ✨ A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
       ✅ The migration has been applied
       ✨ Connecting to the database
@@ -360,7 +364,7 @@ describe('useMigrations: true', () => {
       ✨ There has been a change to your Keystone schema that requires a migration
 
       Prompt: Name of migration init
-      ✨ A migration has been created at .keystone/prisma/migrations/migration_name
+      ✨ A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? true
       ✅ The migration has been applied
       ✨ Connecting to the database
@@ -455,12 +459,12 @@ describe('useMigrations: true', () => {
       ✨ There has been a change to your Keystone schema that requires a migration
 
       Prompt: Name of migration add-is-complete
-      ✨ A migration has been created at .keystone/prisma/migrations/migration_name
+      ✨ A migration has been created at migrations/migration_name
       Prompt: Would you like to apply this migration? false
       Please edit the migration and run keystone-next dev again to apply the migration"
     `);
   });
-  test('apply migrations', async () => {
+  test('apply already existing migrations', async () => {
     const prevCwd = await setupInitialProjectWithMigrations();
     const { 'app.db': _ignore, ...migrations } = await getDatabaseFiles(prevCwd);
     const tmp = await testdir({
@@ -493,10 +497,62 @@ describe('useMigrations: true', () => {
       ✨ sqlite database \\"app.db\\" created at file:./app.db
       ✨ The following migration(s) have been applied:
 
-      .keystone/prisma/migrations/
+      migrations/
         └─ migration_name/
           └─ migration.sql
       ✨ Your migrations are up to date, no new migrations need to be created
+      ✨ Connecting to the database
+      ✨ Skipping Admin UI code generation
+      ✨ Creating server
+      ✨ Preparing GraphQL Server
+      ✨ Skipping Admin UI app
+      👋 Admin UI and graphQL API ready"
+    `);
+  });
+  test('--reset-db flag', async () => {
+    const tmp = await setupInitialProjectWithMigrations();
+    {
+      const prismaClient = await getPrismaClient(tmp);
+      await prismaClient.todo.create({ data: { title: 'something' } });
+    }
+    const recording = recordConsole();
+    await setupAndStopDevServerForMigrations(tmp, true);
+    {
+      const prismaClient = await getPrismaClient(tmp);
+      expect(await prismaClient.todo.findMany()).toHaveLength(0);
+    }
+
+    const { migrationName } = await getGeneratedMigration(tmp, 1, 'init');
+
+    expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
+      "✨ Starting Keystone
+      ⭐️ Dev Server Ready on http://localhost:3000
+      ✨ Generating GraphQL and Prisma schemas
+      ✨ Your database has been reset
+      ✨ The following migration(s) have been applied:
+
+      migrations/
+        └─ migration_name/
+          └─ migration.sql
+      ✨ Your migrations are up to date, no new migrations need to be created
+      ✨ Connecting to the database
+      ✨ Skipping Admin UI code generation
+      ✨ Creating server
+      ✨ Preparing GraphQL Server
+      ✨ Skipping Admin UI app
+      👋 Admin UI and graphQL API ready"
+    `);
+  });
+  test('logs correctly when no migrations need to be created or applied', async () => {
+    const tmp = await setupInitialProjectWithMigrations();
+    const recording = recordConsole();
+    await setupAndStopDevServerForMigrations(tmp);
+
+    expect(recording()).toMatchInlineSnapshot(`
+      "✨ Starting Keystone
+      ⭐️ Dev Server Ready on http://localhost:3000
+      ✨ Generating GraphQL and Prisma schemas
+      ✨ Your database is up to date, no migrations need to be created or applied
       ✨ Connecting to the database
       ✨ Skipping Admin UI code generation
       ✨ Creating server
