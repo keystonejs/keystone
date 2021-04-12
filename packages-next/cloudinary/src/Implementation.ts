@@ -1,10 +1,62 @@
 import cuid from 'cuid';
-import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '@keystone-next/fields';
+import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { Implementation, FieldConfigArgs, FieldExtraArgs } from '@keystone-next/fields';
+import cloudinary from 'cloudinary';
+import { FileUpload } from 'graphql-upload';
+import { CloudinaryAdapter, File } from './cloudinary';
 
-class CloudinaryImage extends Implementation {
-  constructor(path, { adapter }) {
-    super(...arguments);
+type List = { adapter: PrismaListAdapter };
+
+type StoredFile = {
+  id: string;
+  filename: string;
+  originalFilename: string;
+  mimetype: any;
+  encoding: any;
+  _meta: cloudinary.UploadApiResponse;
+};
+
+export type CloudinaryImageFormat = {
+  prettyName?: string | null;
+  width?: string | null;
+  height?: string | null;
+  crop?: string | null;
+  aspect_ratio?: string | null;
+  gravity?: string | null;
+  zoom?: string | null;
+  x?: string | null;
+  y?: string | null;
+  format?: string | null;
+  fetch_format?: string | null;
+  quality?: string | null;
+  radius?: string | null;
+  angle?: string | null;
+  effect?: string | null;
+  opacity?: string | null;
+  border?: string | null;
+  background?: string | null;
+  overlay?: string | null;
+  underlay?: string | null;
+  default_image?: string | null;
+  delay?: string | null;
+  color?: string | null;
+  color_space?: string | null;
+  dpr?: string | null;
+  page?: string | null;
+  density?: string | null;
+  flags?: string | null;
+  transformation?: string | null;
+};
+
+class CloudinaryImage<P extends string> extends Implementation<P> {
+  fileAdapter: CloudinaryAdapter;
+  graphQLOutputType: string;
+  constructor(
+    path: P,
+    { adapter, ...configArgs }: FieldConfigArgs & { adapter: CloudinaryAdapter },
+    extraArgs: FieldExtraArgs
+  ) {
+    super(path, { adapter, ...configArgs }, extraArgs);
     this.graphQLOutputType = 'CloudinaryImage_File';
     this.fileAdapter = adapter;
 
@@ -93,31 +145,37 @@ class CloudinaryImage extends Implementation {
   // Called on `User.avatar` for example
   gqlOutputFieldResolvers() {
     return {
-      [this.path]: item => {
-        let itemValues = item[this.path];
-        if (!itemValues) {
+      [this.path]: (item: Record<P, undefined | null | string | File>) => {
+        let itemValues: undefined | null | string | File = item[this.path];
+        if (itemValues === null || itemValues === undefined) {
           return null;
         }
         if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
           // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
           // https://github.com/prisma/prisma/issues/3786
           try {
-            itemValues = JSON.parse(itemValues);
+            itemValues = JSON.parse(itemValues as string) as File;
           } catch (err) {}
         }
-
+        const _itemValues = itemValues as File;
         return {
-          publicUrl: this.fileAdapter.publicUrl(itemValues),
-          publicUrlTransformed: ({ transformation }) =>
-            this.fileAdapter.publicUrlTransformed(itemValues, transformation),
-          ...itemValues,
+          publicUrl: this.fileAdapter.publicUrl(_itemValues),
+          publicUrlTransformed: ({ transformation }: { transformation: CloudinaryImageFormat }) =>
+            this.fileAdapter.publicUrlTransformed(_itemValues, transformation),
+          ..._itemValues,
         };
       },
     };
   }
 
-  async resolveInput({ resolvedData, existingItem }) {
-    const previousData = existingItem && existingItem[this.path];
+  async resolveInput({
+    resolvedData,
+    existingItem,
+  }: {
+    resolvedData: Record<P, FileUpload>;
+    existingItem?: Record<P, string | StoredFile>;
+  }) {
+    const previousData: string | StoredFile | undefined = existingItem && existingItem[this.path];
     const uploadData = resolvedData[this.path];
 
     // NOTE: The following two conditions could easily be combined into a
@@ -148,12 +206,10 @@ class CloudinaryImage extends Implementation {
     const { id, filename, _meta } = await this.fileAdapter.save({
       stream,
       filename: originalFilename,
-      mimetype,
-      encoding,
       id: cuid(),
     });
 
-    const ret = { id, filename, originalFilename, mimetype, encoding, _meta };
+    const ret: StoredFile = { id, filename, originalFilename, mimetype, encoding, _meta };
     if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
       // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
       // https://github.com/prisma/prisma/issues/3786
@@ -175,9 +231,16 @@ class CloudinaryImage extends Implementation {
   }
 }
 
-class PrismaCloudinaryImageInterface extends PrismaFieldAdapter {
-  constructor() {
-    super(...arguments);
+class PrismaCloudinaryImageInterface<P extends string> extends PrismaFieldAdapter<P> {
+  constructor(
+    fieldName: string,
+    path: P,
+    field: CloudinaryImage<P>,
+    listAdapter: PrismaListAdapter,
+    getListByKey: (arg: string) => List | undefined,
+    config = {}
+  ) {
+    super(fieldName, path, field, listAdapter, getListByKey, config);
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
     if (this.config.isIndexed) {
@@ -196,7 +259,7 @@ class PrismaCloudinaryImageInterface extends PrismaFieldAdapter {
       }),
     ];
   }
-  getQueryConditions(dbPath) {
+  getQueryConditions(dbPath: string) {
     return {
       ...this.equalityConditions(dbPath),
       ...this.inConditions(dbPath),
