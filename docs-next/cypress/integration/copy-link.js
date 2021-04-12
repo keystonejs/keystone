@@ -1,4 +1,5 @@
-describe('on click of a link icon', () => {
+/* eslint-disable jest/no-disabled-tests */
+describe.skip('on click of a link icon', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8000/guides/cli', {
       onBeforeLoad(win) {
