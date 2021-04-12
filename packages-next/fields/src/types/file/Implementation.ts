@@ -1,10 +1,30 @@
 import cuid from 'cuid';
-import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '../../Implementation.ts';
+import { FileUpload } from 'graphql-upload';
+import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
+import { LocalFileAdapter } from './local-file';
 
-export class File extends Implementation {
-  constructor(path, { adapter }) {
-    super(...arguments);
+type List = { adapter: PrismaListAdapter };
+
+type StoredFile = {
+  id: string;
+  filename: string;
+  originalFilename: string;
+  mimetype: any;
+  encoding: any;
+  _meta?: Record<string, any>;
+};
+
+export class File<P extends string> extends Implementation<P> {
+  graphQLOutputType: string;
+  fileAdapter: LocalFileAdapter;
+
+  constructor(
+    path: P,
+    { adapter, ...configArgs }: FieldConfigArgs & { adapter: LocalFileAdapter },
+    extraArgs: FieldExtraArgs
+  ) {
+    super(path, { adapter, ...configArgs }, extraArgs);
     this.graphQLOutputType = 'File';
     this.fileAdapter = adapter;
 
@@ -43,7 +63,7 @@ export class File extends Implementation {
   // Called on `User.avatar` for example
   gqlOutputFieldResolvers() {
     return {
-      [this.path]: item => {
+      [this.path]: (item: Record<P, any>) => {
         let itemValues = item[this.path];
         if (!itemValues) {
           return null;
@@ -64,7 +84,13 @@ export class File extends Implementation {
     };
   }
 
-  async resolveInput({ resolvedData, existingItem }) {
+  async resolveInput({
+    resolvedData,
+    existingItem,
+  }: {
+    resolvedData: Record<P, FileUpload>;
+    existingItem?: Record<P, string | StoredFile>;
+  }) {
     const previousData = existingItem && existingItem[this.path];
     const uploadData = resolvedData[this.path];
 
@@ -93,15 +119,13 @@ export class File extends Implementation {
       return previousData;
     }
 
-    const { id, filename, _meta } = await this.fileAdapter.save({
+    const { id, filename } = await this.fileAdapter.save({
       stream,
       filename: originalFilename,
-      mimetype,
-      encoding,
       id: cuid(),
     });
 
-    const ret = { id, filename, originalFilename, mimetype, encoding, _meta };
+    const ret = { id, filename, originalFilename, mimetype, encoding, _meta: undefined };
     if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
       // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
       // https://github.com/prisma/prisma/issues/3786
@@ -131,9 +155,16 @@ export class File extends Implementation {
   }
 }
 
-export class PrismaFileInterface extends PrismaFieldAdapter {
-  constructor() {
-    super(...arguments);
+export class PrismaFileInterface<P extends string> extends PrismaFieldAdapter<P> {
+  constructor(
+    fieldName: string,
+    path: P,
+    field: File<P>,
+    listAdapter: PrismaListAdapter,
+    getListByKey: (arg: string) => List | undefined,
+    config = {}
+  ) {
+    super(fieldName, path, field, listAdapter, getListByKey, config);
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
     if (this.config.isIndexed) {
@@ -152,7 +183,7 @@ export class PrismaFileInterface extends PrismaFieldAdapter {
       }),
     ];
   }
-  getQueryConditions(dbPath) {
+  getQueryConditions(dbPath: string) {
     return {
       ...this.equalityConditions(dbPath),
       ...this.inConditions(dbPath),
