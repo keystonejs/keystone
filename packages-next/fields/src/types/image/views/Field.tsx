@@ -128,9 +128,9 @@ export function Field({
               onClick={() => {
                 setSetRef(false);
                 console.log('previousFile', previousFile);
+                if (value.kind === 'from-server') return;
                 if (previousFile) {
                   // if value.kind === 'from-server' save state
-                  console.log('### PREVIOUSFILE', previousFile);
                   return onChange?.({ kind: 'remove', previous: previousFile });
                 }
                 return onChange?.({ kind: 'remove' });
@@ -250,7 +250,7 @@ export function Field({
               Upload Image
             </Button>
             {!canSetRef && (
-              <Button size="small" tone="active" onClick={toggleSetRefUI}>
+              <Button size="small" tone="passive" onClick={toggleSetRefUI}>
                 {'Set from Ref'}
               </Button>
             )}
