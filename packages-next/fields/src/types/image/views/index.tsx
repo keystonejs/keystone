@@ -46,13 +46,19 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
 
 type ImageData = {
   src: string;
+  ref: string;
   height: number;
   width: number;
 };
 
 type ImageValue =
   | { kind: 'empty' }
-  | { kind: 'ref'; data: string }
+  | {
+      kind: 'ref';
+      data: {
+        ref: string;
+      };
+    }
   | {
       kind: 'from-server';
       data: ImageData;
@@ -75,6 +81,7 @@ export const controller = (config: FieldControllerConfig): ImageController => {
     label: config.label,
     graphqlSelection: `${config.path} {
         id
+        ref
         extension
         width
         height
@@ -87,12 +94,14 @@ export const controller = (config: FieldControllerConfig): ImageController => {
         kind: 'from-server',
         data: {
           src: `/images/${value.id}.${value.extension}`,
+          ref: value.ref,
           width: value.width,
           height: value.height,
         },
       };
     },
     validate(value) {
+      console.log(value.kind !== 'upload' || validateImage(value.data) === undefined);
       return value.kind !== 'upload' || validateImage(value.data) === undefined;
     },
     serialize(value) {
@@ -100,7 +109,7 @@ export const controller = (config: FieldControllerConfig): ImageController => {
         return { [config.path]: { upload: value.data.file } };
       }
       if (value.kind === 'ref') {
-        return { [config.path]: { ref: value.data } };
+        return { [config.path]: { ref: value.data.ref } };
       }
       if (value.kind === 'remove') {
         return { [config.path]: null };
