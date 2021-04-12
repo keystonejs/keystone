@@ -1,4 +1,6 @@
 import { gql } from '@apollo/client';
+import { PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { List, Implementation as Field } from '../../../Implementation';
 import { Relationship } from '../Implementation';
 
 class MockFieldAdapter {}
@@ -24,13 +26,36 @@ const mockFilterAST = [
 ];
 
 class MockList {
-  constructor(ref) {
+  key: string;
+  adapter: PrismaListAdapter;
+  gqlNames: {
+    relateToOneInputName: string;
+    whereUniqueInputName: string;
+    createInputName: string;
+    relateToManyInputName: string;
+    whereInputName: string;
+    outputTypeName: string;
+    listQueryName: string;
+    itemQueryName: string;
+  };
+  access: Record<string, any>;
+  fieldsByPath: Record<string, Field<any>>;
+  // getGraphqlFilterFragment: () => string[];
+  listQuery: any;
+  listQueryMeta: any;
+  itemQuery: any;
+  createMutation: any;
+  constructor(ref: string) {
+    this.key = '';
     this.gqlNames = {
       outputTypeName: ref,
       createInputName: `${ref}CreateInput`,
       whereUniqueInputName: `${ref}WhereUniqueInput`,
       relateToManyInputName: `${ref}RelateToManyInput`,
       relateToOneInputName: `${ref}RelateToOneInput`,
+      whereInputName: '',
+      listQueryName: '',
+      itemQueryName: '',
     };
     this.access = {
       public: {
@@ -40,13 +65,23 @@ class MockList {
         delete: true,
       },
     };
+    this.fieldsByPath = {};
+    this.adapter = {} as PrismaListAdapter;
   }
   // The actual implementation in `@keystone-next/keystone-legacy/List/index.js` returns
   // more, but we only want to test that this codepath is called
   getGraphqlFilterFragment = () => mockFilterFragment;
 }
 
-function createRelationship({ path, config = {}, getListByKey = () => new MockList(config.ref) }) {
+function createRelationship({
+  path,
+  config,
+  getListByKey = () => new MockList(config.ref),
+}: {
+  path: string;
+  config: { many?: boolean; ref: string; withMeta?: boolean };
+  getListByKey?: (key: string) => List | undefined;
+}) {
   return new Relationship(path, config, {
     getListByKey,
     listKey: 'FakeList',
@@ -271,6 +306,7 @@ describe('Type Generation', () => {
       ],
     });
 
+    // @ts-ignore
     expect(fieldAST.definitions[0].fields[0].arguments).toHaveLength(0);
   });
 
@@ -335,6 +371,7 @@ describe('Type Generation', () => {
       ],
     });
 
+    // @ts-ignore
     expect(fieldAST.definitions[0].fields[0].arguments).toHaveLength(1);
   });
 
@@ -385,6 +422,7 @@ describe('Type Generation', () => {
       ],
     });
 
+    // @ts-ignore
     expect(fieldAST.definitions[0].fields[0].arguments).toHaveLength(1);
   });
 });
@@ -409,45 +447,50 @@ describe('Referenced list errors', () => {
 
   // Some methods are sync, others async, so we force all to be async so we can
   // have a consistent testing API
-  async function asyncify(func) {
+  async function asyncify(func: () => any | Promise<any>) {
     return await func();
   }
 
-  ['gqlOutputFields', 'gqlQueryInputFields', 'gqlOutputFieldResolvers'].forEach(method => {
-    describe(`${method}()`, () => {
-      const schemaName = 'public';
+  (['gqlOutputFields', 'gqlQueryInputFields', 'gqlOutputFieldResolvers'] as const).forEach(
+    method => {
+      describe(`${method}()`, () => {
+        const schemaName = 'public';
 
-      test('throws when list not found', async () => {
-        const relMany = createRelationship({
-          path: 'foo',
-          config: { many: true, ref: 'Zip' },
-          // ie; "not found"
-          getListByKey: () => {},
+        test('throws when list not found', async () => {
+          const relMany = createRelationship({
+            path: 'foo',
+            config: { many: true, ref: 'Zip' },
+            // ie; "not found"
+            // @ts-ignore
+            getListByKey: () => {},
+          });
+          expect(asyncify(() => relMany[method]({ schemaName }))).rejects.toThrow(
+            /Unable to resolve related list 'Zip'/
+          );
         });
-        expect(asyncify(() => relMany[method]({ schemaName }))).rejects.toThrow(
-          /Unable to resolve related list 'Zip'/
-        );
-      });
 
-      test('does not throw when no two way relationship specified', async () => {
-        const relMany = createRelationship({
-          path: 'foo',
-          config: { many: true, ref: 'Zip' },
-          getListByKey: () => mockList,
+        test('does not throw when no two way relationship specified', async () => {
+          const relMany = createRelationship({
+            path: 'foo',
+            config: { many: true, ref: 'Zip' },
+            // @ts-ignore
+            getListByKey: () => mockList,
+          });
+          return asyncify(() => relMany[method]({ schemaName }));
         });
-        return asyncify(() => relMany[method]({ schemaName }));
-      });
 
-      test('throws when field on list not found', async () => {
-        const relMany = createRelationship({
-          path: 'foo',
-          config: { many: true, ref: 'Zip.bar' },
-          getListByKey: () => mockList,
+        test('throws when field on list not found', async () => {
+          const relMany = createRelationship({
+            path: 'foo',
+            config: { many: true, ref: 'Zip.bar' },
+            // @ts-ignore
+            getListByKey: () => mockList,
+          });
+          expect(asyncify(() => relMany[method]({ schemaName }))).rejects.toThrow(
+            /Unable to resolve two way relationship field 'Zip.bar'/
+          );
         });
-        expect(asyncify(() => relMany[method]({ schemaName }))).rejects.toThrow(
-          /Unable to resolve two way relationship field 'Zip.bar'/
-        );
       });
-    });
-  });
+    }
+  );
 });
