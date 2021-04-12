@@ -1,5 +1,4 @@
 import { KeystoneContext } from '@keystone-next/types';
-import { OrderCreateInput } from '../.keystone/schema-types';
 
 // import stripeConfig from '../lib/stripe';
 
@@ -9,11 +8,7 @@ interface Arguments {
   token: string;
 }
 
-async function checkout(
-  root: any,
-  { token }: Arguments,
-  context: KeystoneContext
-): Promise<OrderCreateInput> {
+async function checkout(root: any, { token }: Arguments, context: KeystoneContext): Promise<any> {
   // 1. Make sure they are signed in
   const userId = context.session.itemId;
   if (!userId) {
