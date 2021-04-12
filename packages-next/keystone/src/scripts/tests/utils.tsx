@@ -29,6 +29,7 @@ export function recordConsole(promptResponses?: Record<string, string | boolean>
 
   const promptResponseEntries = Object.entries(promptResponses || {});
   const getPromptAnswer = (message: string) => {
+    message = stripAnsi(message);
     const response = promptResponseEntries.shift()!;
     if (!response) {
       throw new Error(
@@ -104,6 +105,7 @@ export const symlinkKeystoneDeps = Object.fromEntries(
 type Fixture = {
   [key: string]:
     | string
+    | Buffer
     | { kind: 'symlink'; path: string }
     | { kind: 'config'; config: KeystoneConfig };
 };
@@ -126,7 +128,7 @@ export async function testdir(dir: Fixture): Promise<string> {
     Object.keys(dir).map(async filename => {
       const output = dir[filename];
       const fullPath = path.join(temp, filename);
-      if (typeof output === 'string') {
+      if (typeof output === 'string' || Buffer.isBuffer(output)) {
         await fs.outputFile(fullPath, dir[filename]);
       } else if (output.kind === 'config') {
         // note this is sync so that it doesn't conflict with any other `kind: 'config'`
@@ -174,31 +176,24 @@ expect.addSnapshotSerializer({
 
 const dirPrintingSymbol = Symbol('dir printing symbol');
 
-async function readNormalizedFile(filePath: string): Promise<string> {
-  let content = await fs.readFile(filePath, 'utf8');
-  // to normalise windows line endings
-  content = content.replace(/\r\n/g, '\n');
-  if (/\.map$/.test(filePath)) {
-    const sourceMap = JSON.parse(content);
-    sourceMap.sourcesContent = sourceMap.sourcesContent.map((source: string) =>
-      source.replace(/\r\n/g, '\n')
-    );
-    content = JSON.stringify(sourceMap);
-  }
-  return content;
-}
-
-export async function getFiles(dir: string, glob: string[] = ['**', '!node_modules/**']) {
+export async function getFiles(
+  dir: string,
+  glob: string[] = ['**', '!node_modules/**'],
+  encoding: 'utf8' | null = 'utf8'
+) {
   const files = await fastGlob(glob, { cwd: dir });
-  const filesObj: Record<string, string> = {
+  const filesObj: Record<string, string | Buffer> = {
     [dirPrintingSymbol]: true,
   };
   await Promise.all(
     files.map(async filename => {
-      filesObj[filename] = await readNormalizedFile(path.join(dir, filename));
+      const filepath = path.join(dir, filename);
+      filesObj[filename] = await (encoding === null
+        ? fs.readFile(filepath)
+        : fs.readFile(filepath, encoding));
     })
   );
-  let newObj: Record<string, string> = { [dirPrintingSymbol]: true };
+  let newObj: Record<string, string | Buffer> = { [dirPrintingSymbol]: true };
   files.sort().forEach(filename => {
     newObj[filename] = filesObj[filename];
   });

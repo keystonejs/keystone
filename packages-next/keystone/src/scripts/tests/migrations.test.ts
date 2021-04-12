@@ -1,8 +1,16 @@
-import { text } from '@keystone-next/fields';
+import { checkbox, text } from '@keystone-next/fields';
+import { ListSchemaConfig } from '@keystone-next/types';
 import fs from 'fs-extra';
 import { requirePrismaClient } from '../../artifacts';
 import { config, list } from '../../schema';
-import { introspectDb, recordConsole, runCommand, symlinkKeystoneDeps, testdir } from './utils';
+import {
+  getFiles,
+  introspectDb,
+  recordConsole,
+  runCommand,
+  symlinkKeystoneDeps,
+  testdir,
+} from './utils';
 
 const basicLists = {
   Todo: list({
@@ -14,12 +22,12 @@ const basicLists = {
 
 const dbUrl = 'file:./app.db';
 
-const basicKeystoneConfig = (useMigrations: boolean) => ({
+const basicKeystoneConfig = (useMigrations: boolean, lists: ListSchemaConfig = basicLists) => ({
   kind: 'config' as const,
   config: config({
     db: { provider: 'sqlite', url: dbUrl, useMigrations },
     ui: { isDisabled: true },
-    lists: basicLists,
+    lists,
   }),
 });
 
@@ -28,10 +36,19 @@ async function setupAndStopDevServerForMigrations(cwd: string) {
   await stopServer();
 }
 
-async function getGeneratedMigrationName(cwd: string, expectedNumberOfMigrations: number) {
+function getPrismaClient(cwd: string) {
   const prismaClient = new (requirePrismaClient(cwd))({
     datasources: { sqlite: { url: dbUrl } },
   });
+  return prismaClient;
+}
+
+async function getGeneratedMigration(
+  cwd: string,
+  expectedNumberOfMigrations: number,
+  expectedName: string
+) {
+  const prismaClient = getPrismaClient(cwd);
   const migrations: {
     migration_name: string;
     finished_at: string;
@@ -40,7 +57,11 @@ async function getGeneratedMigrationName(cwd: string, expectedNumberOfMigrations
   );
   expect(migrations).toHaveLength(expectedNumberOfMigrations);
   expect(migrations.every(x => !!x.finished_at)).toBeTruthy();
-  return migrations[0].migration_name;
+  const migrationName = migrations[0].migration_name;
+  expect(migrationName).toMatch(new RegExp(`\\d+_${expectedName}$`));
+  const migrationFilepath = `${cwd}/migrations/${migrationName}/migration.sql`;
+  const migration = await fs.readFile(migrationFilepath, 'utf8');
+  return { migration, migrationFilepath, migrationName };
 }
 
 // so that the timestamps in the logs are all 0ms
@@ -84,13 +105,217 @@ describe('useMigrations: false', () => {
   });
 });
 
+async function setupInitialProjectWithMigrations() {
+  const tmp = await testdir({
+    ...symlinkKeystoneDeps,
+    'keystone.js': basicKeystoneConfig(true),
+  });
+  const recording = recordConsole({
+    'Name of migration': 'init',
+    'Would you like to apply this migration?': true,
+  });
+  await setupAndStopDevServerForMigrations(tmp);
+
+  expect(await introspectDb(tmp, dbUrl)).toEqual(`datasource db {
+  provider = "sqlite"
+  url      = "file:./app.db"
+}
+
+model Todo {
+  id    Int     @id @default(autoincrement())
+  title String?
+}
+`);
+
+  const { migration, migrationName } = await getGeneratedMigration(tmp, 1, 'init');
+
+  expect(migration).toEqual(`-- CreateTable
+CREATE TABLE "Todo" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "title" TEXT
+);
+`);
+
+  expect(recording().replace(migrationName, 'migration_name')).toEqual(`✨ Starting Keystone
+⭐️ Dev Server Ready on http://localhost:3000
+✨ Generating GraphQL and Prisma schemas
+✨ sqlite database "app.db" created at file:./app.db
+✨ There has been a change to your Keystone schema that requires a migration
+
+Prompt: Name of migration init
+✨ A migration has been created at .keystone/prisma/migrations/migration_name
+Prompt: Would you like to apply this migration? true
+✅ The migration has been applied
+✨ Connecting to the database
+✨ Skipping Admin UI code generation
+✨ Creating server
+✨ Preparing GraphQL Server
+✨ Skipping Admin UI app
+👋 Admin UI and graphQL API ready`);
+  return tmp;
+}
+
+async function getDatabaseFiles(cwd: string) {
+  return getFiles(cwd, ['app.db', 'migrations/**/*'], null);
+}
+
 describe('useMigrations: true', () => {
   test('creates database, creates migration and applies from empty', async () => {
+    await setupInitialProjectWithMigrations();
+  });
+  test('adding a field', async () => {
+    const prevCwd = await setupInitialProjectWithMigrations();
     const tmp = await testdir({
       ...symlinkKeystoneDeps,
-      'keystone.js': basicKeystoneConfig(true),
+      ...(await getDatabaseFiles(prevCwd)),
+      'keystone.js': basicKeystoneConfig(true, {
+        Todo: {
+          fields: {
+            title: text(),
+            isComplete: checkbox(),
+          },
+        },
+      }),
     });
     const recording = recordConsole({
+      'Name of migration': 'add-is-complete',
+      'Would you like to apply this migration?': true,
+    });
+    await setupAndStopDevServerForMigrations(tmp);
+
+    expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
+      "datasource db {
+        provider = \\"sqlite\\"
+        url      = \\"file:./app.db\\"
+      }
+
+      model Todo {
+        id         Int      @id @default(autoincrement())
+        title      String?
+        isComplete Boolean?
+      }
+      "
+    `);
+
+    const { migration, migrationName } = await getGeneratedMigration(tmp, 2, 'add_is_complete');
+
+    expect(migration).toMatchInlineSnapshot(`
+      "-- AlterTable
+      ALTER TABLE \\"Todo\\" ADD COLUMN \\"isComplete\\" BOOLEAN;
+      "
+    `);
+
+    expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
+      "✨ Starting Keystone
+      ⭐️ Dev Server Ready on http://localhost:3000
+      ✨ Generating GraphQL and Prisma schemas
+      ✨ There has been a change to your Keystone schema that requires a migration
+
+      Prompt: Name of migration add-is-complete
+      ✨ A migration has been created at .keystone/prisma/migrations/migration_name
+      Prompt: Would you like to apply this migration? true
+      ✅ The migration has been applied
+      ✨ Connecting to the database
+      ✨ Skipping Admin UI code generation
+      ✨ Creating server
+      ✨ Preparing GraphQL Server
+      ✨ Skipping Admin UI app
+      👋 Admin UI and graphQL API ready"
+    `);
+  });
+  test('warns when dropping field that has data in it', async () => {
+    const prevCwd = await setupInitialProjectWithMigrations();
+    const prismaClient = getPrismaClient(prevCwd);
+    await prismaClient.todo.create({ data: { title: 'todo' } });
+    const tmp = await testdir({
+      ...symlinkKeystoneDeps,
+      ...(await getDatabaseFiles(prevCwd)),
+      'keystone.js': basicKeystoneConfig(true, {
+        Todo: {
+          fields: {},
+        },
+      }),
+    });
+    const recording = recordConsole({
+      'Name of migration': 'remove all fields except id',
+      'Would you like to apply this migration?': true,
+    });
+    await setupAndStopDevServerForMigrations(tmp);
+
+    expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
+      "datasource db {
+        provider = \\"sqlite\\"
+        url      = \\"file:./app.db\\"
+      }
+
+      model Todo {
+        id Int @id @default(autoincrement())
+      }
+      "
+    `);
+
+    const { migration, migrationName } = await getGeneratedMigration(
+      tmp,
+      2,
+      'remove_all_fields_except_id'
+    );
+
+    expect(migration).toMatchInlineSnapshot(`
+      "/*
+        Warnings:
+
+        - You are about to drop the column \`title\` on the \`Todo\` table. All the data in the column will be lost.
+
+      */
+      -- RedefineTables
+      PRAGMA foreign_keys=OFF;
+      CREATE TABLE \\"new_Todo\\" (
+          \\"id\\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+      );
+      INSERT INTO \\"new_Todo\\" (\\"id\\") SELECT \\"id\\" FROM \\"Todo\\";
+      DROP TABLE \\"Todo\\";
+      ALTER TABLE \\"new_Todo\\" RENAME TO \\"Todo\\";
+      PRAGMA foreign_key_check;
+      PRAGMA foreign_keys=ON;
+      "
+    `);
+
+    expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
+      "✨ Starting Keystone
+      ⭐️ Dev Server Ready on http://localhost:3000
+      ✨ Generating GraphQL and Prisma schemas
+      ✨ There has been a change to your Keystone schema that requires a migration
+
+      ⚠️  Warnings:
+
+        • You are about to drop the column \`title\` on the \`Todo\` table, which still contains 1 non-null values.
+
+      Prompt: Name of migration remove all fields except id
+      ✨ A migration has been created at .keystone/prisma/migrations/migration_name
+      Prompt: Would you like to apply this migration? true
+      ✅ The migration has been applied
+      ✨ Connecting to the database
+      ✨ Skipping Admin UI code generation
+      ✨ Creating server
+      ✨ Preparing GraphQL Server
+      ✨ Skipping Admin UI app
+      👋 Admin UI and graphQL API ready"
+    `);
+  });
+  test('prompts to drop database when database is out of sync with migrations directory', async () => {
+    const prevCwd = await setupInitialProjectWithMigrations();
+    const { migrationName: oldMigrationName } = await getGeneratedMigration(prevCwd, 1, 'init');
+    const tmp = await testdir({
+      ...symlinkKeystoneDeps,
+      'app.db': await fs.readFile(`${prevCwd}/app.db`),
+      'keystone.js': basicKeystoneConfig(true, {
+        Todo: {
+          fields: {},
+        },
+      }),
+    });
+    const recording = recordConsole({
+      'Do you want to continue? All data will be lost.': true,
       'Name of migration': 'init',
       'Would you like to apply this migration?': true,
     });
@@ -103,31 +328,106 @@ describe('useMigrations: true', () => {
       }
 
       model Todo {
-        id    Int     @id @default(autoincrement())
-        title String?
+        id Int @id @default(autoincrement())
       }
       "
     `);
 
-    const migrationName = await getGeneratedMigrationName(tmp, 1);
+    const { migration, migrationName } = await getGeneratedMigration(tmp, 1, 'init');
 
-    expect(await fs.readFile(`${tmp}/migrations/${migrationName}/migration.sql`, 'utf8'))
-      .toMatchInlineSnapshot(`
+    expect(migration).toMatchInlineSnapshot(`
       "-- CreateTable
       CREATE TABLE \\"Todo\\" (
-          \\"id\\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-          \\"title\\" TEXT
+          \\"id\\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
       );
       "
     `);
 
-    expect(migrationName).toMatch(/\d+_init$/);
-
-    expect(recording().replace(migrationName, 'migration_name')).toMatchInlineSnapshot(`
+    expect(
+      recording()
+        .replace(migrationName, 'migration_name')
+        .replace(oldMigrationName, 'old_migration_name')
+    ).toMatchInlineSnapshot(`
       "✨ Starting Keystone
       ⭐️ Dev Server Ready on http://localhost:3000
       ✨ Generating GraphQL and Prisma schemas
-      ✨ sqlite database \\"app.db\\" created at file:./app.db
+      - Drift detected: Your database schema is not in sync with your migration history.
+      - The following migration(s) are applied to the database but missing from the local migrations directory: old_migration_name
+
+
+      We need to reset the sqlite database \\"app.db\\" at file:./app.db.
+      Prompt: Do you want to continue? All data will be lost. true
+
+      ✨ There has been a change to your Keystone schema that requires a migration
+
+      Prompt: Name of migration init
+      ✨ A migration has been created at .keystone/prisma/migrations/migration_name
+      Prompt: Would you like to apply this migration? true
+      ✅ The migration has been applied
+      ✨ Connecting to the database
+      ✨ Skipping Admin UI code generation
+      ✨ Creating server
+      ✨ Preparing GraphQL Server
+      ✨ Skipping Admin UI app
+      👋 Admin UI and graphQL API ready"
+    `);
+  });
+  test('doesn\'t drop when prompt denied', async () => {
+    const prevCwd = await setupInitialProjectWithMigrations();
+    const { migrationName: oldMigrationName } = await getGeneratedMigration(prevCwd, 1, 'init');
+    const tmp = await testdir({
+      ...symlinkKeystoneDeps,
+      'app.db': await fs.readFile(`${prevCwd}/app.db`),
+      'keystone.js': basicKeystoneConfig(true, {
+        Todo: {
+          fields: {},
+        },
+      }),
+    });
+    const recording = recordConsole({
+      'Do you want to continue? All data will be lost.': false,
+      'Name of migration': 'init',
+      'Would you like to apply this migration?': true,
+    });
+    await setupAndStopDevServerForMigrations(tmp);
+
+    expect(await introspectDb(tmp, dbUrl)).toMatchInlineSnapshot(`
+      "datasource db {
+        provider = \\"sqlite\\"
+        url      = \\"file:./app.db\\"
+      }
+
+      model Todo {
+        id Int @id @default(autoincrement())
+      }
+      "
+    `);
+
+    const { migration, migrationName } = await getGeneratedMigration(tmp, 1, 'init');
+
+    expect(migration).toMatchInlineSnapshot(`
+      "-- CreateTable
+      CREATE TABLE \\"Todo\\" (
+          \\"id\\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+      );
+      "
+    `);
+
+    expect(
+      recording()
+        .replace(migrationName, 'migration_name')
+        .replace(oldMigrationName, 'old_migration_name')
+    ).toMatchInlineSnapshot(`
+      "✨ Starting Keystone
+      ⭐️ Dev Server Ready on http://localhost:3000
+      ✨ Generating GraphQL and Prisma schemas
+      - Drift detected: Your database schema is not in sync with your migration history.
+      - The following migration(s) are applied to the database but missing from the local migrations directory: old_migration_name
+
+
+      We need to reset the sqlite database \\"app.db\\" at file:./app.db.
+      Prompt: Do you want to continue? All data will be lost. true
+
       ✨ There has been a change to your Keystone schema that requires a migration
 
       Prompt: Name of migration init
