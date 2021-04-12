@@ -19,7 +19,7 @@ Commands
   prisma        run Prisma CLI commands safely
 ```
 
-!> All the commands expect to find a module called `keystone.ts` with a default export which returns a system configuration `config()` from `@keystone-next/keystone/schema`. See the [System Configuration API](../apis/config) for details on how to configure a Keystone system.
+!> All the commands expect to find a module called `keystone.js` (or `.ts`) with a default export that returns a Keystone System `config()` from `@keystone-next/keystone/schema`. See [System Configuration](../apis/config) for details.
 
 ## Setting up package.json
 
@@ -50,7 +50,7 @@ This is the command you use to start Keystone for local development. It will:
 
 - Generate the files required by Keystone's APIs and Admin UI
 - Generate and apply database migrations based on your Keystone Schema
-- Start the local development server, which hosts the GraphQL API and Admin UI
+- Start the local dev server, which hosts the GraphQL API and Admin UI
 
 ?> Keystone does not currently watch your local files for changes. If you update the config, schema or any other files in your keystone project you'll need to restart the server.
 
