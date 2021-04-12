@@ -18,7 +18,7 @@ export const mapKeys = <T, R>(obj: T, func: (value: T[keyof T], key: keyof T, ob
   );
 
 // { key: value, ... } => { mapFn(key, value): value, ... }
-export const mapKeyNames = <T, R extends string>(
+export const mapKeyNames = <T, R extends string | number>(
   obj: T,
   func: (key: keyof T, value: T[keyof T], obj: T) => R
 ) =>
@@ -142,7 +142,7 @@ export const arrayToObject = <V extends string, T extends Record<string, V>, R>(
  * @param {Array} arr An array of one or more arrays
  * @returns The new array.
  */
-export const flatten = <T>(arr: T[][]) => Array.prototype.concat(...arr);
+export const flatten = <T>(arr: (T[] | T)[]) => Array.prototype.concat(...arr);
 
 // { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar: 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
 export const zipObj = <V, T extends Record<string, V[]>>(obj: T) =>
