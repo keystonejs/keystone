@@ -1,13 +1,15 @@
-const { Implementation: Field } = require('../');
+import { KeystoneContext } from '@keystone-next/types';
+import { Implementation as Field } from '../';
 
 const args = {
-  getListByKey: {},
-  listKey: {},
+  getListByKey: () => undefined,
+  listKey: 'key',
   listAdapter: {
     newFieldAdapter: jest.fn(),
   },
   defaultAccess: true,
   schemaNames: ['public'],
+  fieldAdapterClass: {},
 };
 
 describe('new Implementation()', () => {
@@ -16,19 +18,19 @@ describe('new Implementation()', () => {
       'path',
       {},
       {
-        getListByKey: {},
-        listKey: {},
+        getListByKey: () => undefined,
+        listKey: 'key',
         listAdapter: {
           newFieldAdapter: jest.fn(),
         },
         defaultAccess: true,
         schemaNames: ['public'],
+        fieldAdapterClass: {},
       }
     );
     expect(impl).not.toBeNull();
     expect(impl.path).toEqual('path');
-    expect(impl.getListByKey).toEqual({});
-    expect(impl.listKey).toEqual({});
+    expect(impl.listKey).toEqual('key');
     expect(impl.label).toEqual('Path');
   });
 
@@ -98,21 +100,23 @@ test('gqlOutputFieldResolvers', () => {
 describe('getDefaultValue()', () => {
   test('undefined by default', () => {
     const impl = new Field('path', {}, args);
-
-    const value = impl.getDefaultValue({});
+    const context = {} as KeystoneContext;
+    const originalInput = {};
+    const value = impl.getDefaultValue({ context, originalInput });
     expect(value).toEqual(undefined);
   });
 
   test('static value is returned', () => {
     const impl = new Field('path', { defaultValue: 'foobar' }, args);
-
-    const value = impl.getDefaultValue({});
+    const context = {} as KeystoneContext;
+    const originalInput = {};
+    const value = impl.getDefaultValue({ context, originalInput });
     expect(value).toEqual('foobar');
   });
 
   test('executes a function', () => {
     const defaultValue = jest.fn(() => 'foobar');
-    const context = {};
+    const context = {} as KeystoneContext;
     const originalInput = {};
 
     const impl = new Field('path', { defaultValue }, args);
