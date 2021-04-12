@@ -1,16 +1,24 @@
-const fs = require('fs');
-const path = require('path');
-const mkdirp = require('mkdirp');
+import fs from 'fs';
+import path from 'path';
+// @ts-ignore
+import mkdirp from 'mkdirp';
 
-module.exports = class LocalFileAdapter {
-  constructor({ src, path: inputPath, getFilename }) {
+export class LocalFileAdapter {
+  src: string;
+  path: string;
+  getFilename: (arg: { id: string; originalFilename: string }) => string;
+  constructor({
+    src,
+    path: inputPath,
+    getFilename,
+  }: {
+    src: string;
+    path?: string;
+    getFilename?: (arg: { id: string; originalFilename: string }) => string;
+  }) {
     this.src = path.resolve(src);
-    this.path = inputPath;
-    this.getFilename = getFilename;
-
-    if (!this.getFilename) {
-      this.getFilename = ({ id, originalFilename }) => `${id}-${originalFilename}`;
-    }
+    this.path = inputPath || '';
+    this.getFilename = getFilename || (({ id, originalFilename }) => `${id}-${originalFilename}`);
 
     if (!this.src) {
       throw new Error('LocalFileAdapter requires a src attribute.');
@@ -26,7 +34,15 @@ module.exports = class LocalFileAdapter {
   /**
    * Params: { stream, filename, mimetype, encoding, id }
    */
-  save({ stream, filename: originalFilename, id }) {
+  save({
+    stream,
+    filename: originalFilename,
+    id,
+  }: {
+    stream: fs.ReadStream;
+    filename: string;
+    id: string;
+  }): Promise<{ filename: string; id: string }> {
     const filename = this.getFilename({ id, originalFilename });
     if (!filename) {
       throw new Error(
@@ -38,6 +54,7 @@ module.exports = class LocalFileAdapter {
     return new Promise((resolve, reject) =>
       stream
         .on('error', error => {
+          // @ts-ignore
           if (stream.truncated) {
             // Delete the truncated file
             fs.unlinkSync(filePath);
@@ -54,7 +71,7 @@ module.exports = class LocalFileAdapter {
    * Deletes the file from disk
    * @param file File field data
    */
-  delete(file) {
+  delete(file?: { filename: string }): Promise<void> {
     return new Promise((resolve, reject) => {
       if (file) {
         fs.unlink(path.join(this.src, file.filename), error => {
@@ -73,7 +90,7 @@ module.exports = class LocalFileAdapter {
   /**
    * Params: { id, filename }
    */
-  publicUrl({ filename }) {
+  publicUrl({ filename }: { filename: string }) {
     return `${this.path}/${filename}`;
   }
-};
+}
