@@ -19,7 +19,7 @@ export const virtual = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: {
     type: 'Virtual',
     implementation: Virtual,
-    adapters: { prisma: PrismaVirtualInterface },
+    adapter: PrismaVirtualInterface,
   },
   config,
   views: resolveView('virtual/views'),

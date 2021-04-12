@@ -22,7 +22,7 @@ export const cloudinaryImage = <TGeneratedListTypes extends BaseGeneratedListTyp
   type: {
     type: 'CloudinaryImage',
     implementation: CloudinaryImage,
-    adapters: { prisma: PrismaCloudinaryImageInterface },
+    adapter: PrismaCloudinaryImageInterface,
   },
   config: {
     ...config,

@@ -616,11 +616,11 @@ class PrismaFieldAdapter<P extends string> {
     } ${isUnique && !this.field.isPrimaryKey ? '@unique' : ''} ${extra}`;
   }
 
-  getPrismaSchema() {
+  getPrismaSchema(): string[] {
     return [this._schemaField({ type: 'String' })];
   }
 
-  getPrismaEnums() {
+  getPrismaEnums(): string[] {
     return [];
   }
 
@@ -629,7 +629,7 @@ class PrismaFieldAdapter<P extends string> {
   //   `dbPath`: The database field/column name to be used in the comparison
   //   `f`: (non-string methods only) A value transformation function which converts from a string type
   //        provided by graphQL into a native adapter type.
-  equalityConditions<T>(dbPath: string, f = identity) {
+  equalityConditions<T>(dbPath: string, f: (a: any) => any = identity) {
     return {
       [this.path]: (value: T) => ({ [dbPath]: { equals: f(value) } }),
       [`${this.path}_not`]: (value: T | null) =>
@@ -641,7 +641,7 @@ class PrismaFieldAdapter<P extends string> {
     };
   }
 
-  equalityConditionsInsensitive(dbPath: string, f = identity) {
+  equalityConditionsInsensitive(dbPath: string, f: (a: any) => any = identity) {
     return {
       [`${this.path}_i`]: (value: string) => ({
         [dbPath]: { equals: f(value), mode: 'insensitive' },
@@ -658,14 +658,14 @@ class PrismaFieldAdapter<P extends string> {
     };
   }
 
-  inConditions<T>(dbPath: string, f = identity) {
+  inConditions<T>(dbPath: string, f: (a: any) => any = identity) {
     return {
       [`${this.path}_in`]: (value: (T | null)[]) =>
-        value.includes(null)
+        (value.includes(null)
           ? { OR: [{ [dbPath]: { in: value.filter(x => x !== null).map(f) } }, { [dbPath]: null }] }
-          : { [dbPath]: { in: value.map(f) } },
+          : { [dbPath]: { in: value.map(f) } }) as Record<string, any>,
       [`${this.path}_not_in`]: (value: (T | null)[]) =>
-        value.includes(null)
+        (value.includes(null)
           ? {
               AND: [
                 { NOT: { [dbPath]: { in: value.filter(x => x !== null).map(f) } } },
@@ -674,11 +674,11 @@ class PrismaFieldAdapter<P extends string> {
             }
           : {
               OR: [{ NOT: { [dbPath]: { in: value.map(f) } } }, { [dbPath]: null }],
-            },
+            }) as Record<string, any>,
     };
   }
 
-  orderingConditions<T>(dbPath: string, f = identity) {
+  orderingConditions<T>(dbPath: string, f: (a: any) => any = identity) {
     return {
       [`${this.path}_lt`]: (value: T) => ({ [dbPath]: { lt: f(value) } }),
       [`${this.path}_lte`]: (value: T) => ({ [dbPath]: { lte: f(value) } }),
@@ -687,12 +687,18 @@ class PrismaFieldAdapter<P extends string> {
     };
   }
 
-  stringConditions(dbPath: string, f = identity) {
+  containsConditions(dbPath: string, f: (a: any) => any = identity) {
     return {
       [`${this.path}_contains`]: (value: string) => ({ [dbPath]: { contains: f(value) } }),
       [`${this.path}_not_contains`]: (value: string) => ({
         OR: [{ NOT: { [dbPath]: { contains: f(value) } } }, { [dbPath]: null }],
       }),
+    };
+  }
+
+  stringConditions(dbPath: string, f: (a: any) => any = identity) {
+    return {
+      ...this.containsConditions(dbPath, f),
       [`${this.path}_starts_with`]: (value: string) => ({ [dbPath]: { startsWith: f(value) } }),
       [`${this.path}_not_starts_with`]: (value: string) => ({
         OR: [{ NOT: { [dbPath]: { startsWith: f(value) } } }, { [dbPath]: null }],
@@ -704,7 +710,7 @@ class PrismaFieldAdapter<P extends string> {
     };
   }
 
-  stringConditionsInsensitive(dbPath: string, f = identity) {
+  stringConditionsInsensitive(dbPath: string, f: (a: any) => any = identity) {
     return {
       [`${this.path}_contains_i`]: (value: string) => ({
         [dbPath]: { contains: f(value), mode: 'insensitive' },

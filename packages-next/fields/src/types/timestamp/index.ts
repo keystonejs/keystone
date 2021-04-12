@@ -17,7 +17,7 @@ export const timestamp = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: {
     type: 'DateTimeUtc',
     implementation: DateTimeUtcImplementation,
-    adapters: { prisma: PrismaDateTimeUtcInterface },
+    adapter: PrismaDateTimeUtcInterface,
   },
   config,
   views: resolveView('timestamp/views'),

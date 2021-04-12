@@ -6,7 +6,7 @@ import { createSchema, list } from '@keystone-next/keystone/schema';
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
 });
-testModules.push(path.resolve('packages-next/fields/src/tests/test-fixtures.js'));
+testModules.push(path.resolve('packages-next/fields/src/tests/test-fixtures.ts'));
 
 multiAdapterRunners().map(({ provider, after }) => {
   const unsupportedModules = testModules

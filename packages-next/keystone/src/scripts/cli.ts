@@ -14,11 +14,11 @@ export async function cli(cwd: string, argv: string[]) {
     Usage
       $ keystone-next [command]
     Commands
-        dev           (default) start the project in development mode
-        start         start the project in production mode
+        dev           start the project in development mode (default)
+        postinstall   generate client APIs and types (optional)
         build         build the project (must be done before using start)
-        prisma        run the prisma CLI
-        postinstall   
+        start         start the project in production mode
+        prisma        run Prisma CLI commands safely
     `,
     {
       flags: {

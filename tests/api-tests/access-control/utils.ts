@@ -127,9 +127,9 @@ function setupKeystone(provider: ProviderName) {
       access: {
         create: access.create,
         // arbitrarily restrict the data to a single item (see data.js)
-        read: () => access.read && { name_starts_with: 'Hello' },
-        update: () => access.update && { name_starts_with: 'Hello' },
-        delete: () => access.delete && { name_starts_with: 'Hello' },
+        read: () => access.read && { name: 'Hello' },
+        update: () => access.update && { name: 'Hello' },
+        delete: () => access.delete && { name: 'Hello' },
       },
     });
   });

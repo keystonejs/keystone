@@ -17,7 +17,7 @@ export const integer = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: {
     type: 'Integer',
     implementation: Integer,
-    adapters: { prisma: PrismaIntegerInterface },
+    adapter: PrismaIntegerInterface,
   },
   config,
   views: resolveView('integer/views'),
