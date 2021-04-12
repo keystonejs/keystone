@@ -18,7 +18,7 @@ export const password = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: {
     type: 'Password',
     implementation: Password,
-    adapters: { prisma: PrismaPasswordInterface },
+    adapter: PrismaPasswordInterface,
   },
   config,
   views: resolveView('password/views'),

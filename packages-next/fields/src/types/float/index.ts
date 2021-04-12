@@ -17,7 +17,7 @@ export const float = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: {
     type: 'Float',
     implementation: Float,
-    adapters: { prisma: PrismaFloatInterface },
+    adapter: PrismaFloatInterface,
   },
   config,
   views: resolveView('float/views'),

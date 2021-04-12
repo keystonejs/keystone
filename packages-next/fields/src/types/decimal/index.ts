@@ -19,7 +19,7 @@ export const decimal = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   type: {
     type: 'Decimal',
     implementation: Decimal,
-    adapters: { prisma: PrismaDecimalInterface },
+    adapter: PrismaDecimalInterface,
   },
   config,
   views: resolveView('decimal/views'),

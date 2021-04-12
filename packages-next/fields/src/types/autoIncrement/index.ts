@@ -17,7 +17,7 @@ export const autoIncrement = <TGeneratedListTypes extends BaseGeneratedListTypes
   type: {
     type: 'AutoIncrement',
     implementation: AutoIncrementImplementation,
-    adapters: { prisma: PrismaAutoIncrementInterface },
+    adapter: PrismaAutoIncrementInterface,
   },
   config,
   views: resolveView('integer/views'),

@@ -12,12 +12,12 @@ const Relationship = {
   type: 'Relationship',
   isRelationship: true, // Used internally for this special case
   implementation: RelationshipImplementation,
-  adapters: { mock: {} },
+  adapter: {},
 };
 const Text = {
   type: 'Text',
   implementation: TextImplementation,
-  adapters: { mock: {} },
+  adapter: {},
 };
 
 const context = {
@@ -113,7 +113,7 @@ class MockFieldAdapter {
 
 const MockIdType = {
   implementation: MockFieldImplementation,
-  adapters: { mock: MockFieldAdapter },
+  adapter: MockFieldAdapter,
 };
 
 class MockListAdapter {

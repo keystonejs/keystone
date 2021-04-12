@@ -169,7 +169,7 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
     type: {
       type: 'Document',
       implementation: DocumentImplementation,
-      adapters: { prisma: PrismaDocumentInterface },
+      adapter: PrismaDocumentInterface,
     },
     config: {
       ...config,

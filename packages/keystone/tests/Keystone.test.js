@@ -37,7 +37,7 @@ class MockFieldImplementation {
 
 const MockFieldType = {
   implementation: MockFieldImplementation,
-  adapters: { mock: MockFieldAdapter },
+  adapter: MockFieldAdapter,
 };
 
 class MockListAdapter {

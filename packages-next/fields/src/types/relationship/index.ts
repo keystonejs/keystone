@@ -54,7 +54,7 @@ export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>
     type: 'Relationship',
     isRelationship: true, // Used internally for this special case
     implementation: Relationship,
-    adapters: { prisma: PrismaRelationshipInterface },
+    adapter: PrismaRelationshipInterface,
   },
   config,
   views: resolveView('relationship/views'),
