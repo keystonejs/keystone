@@ -41,7 +41,6 @@ export function Field({
   const [previousFile, setPrevious] = useState<ImageValue | null>(null);
 
   const errorMessage = createErrorMessage(value, forceValidation);
-  console.log(forceValidation, errorMessage);
 
   const onUploadChange = ({
     currentTarget: { validity, files },
@@ -112,6 +111,8 @@ export function Field({
     }
   };
 
+  const refValue = value.kind === 'from-server' || value.kind === 'ref' ? value?.data.ref : '';
+
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
@@ -119,7 +120,7 @@ export function Field({
         <Stack gap="small">
           <TextInput
             placeholder="Paste the image ref here"
-            value={value?.data?.ref}
+            value={refValue}
             onChange={onRefChange}
           />
           <Stack gap="small" across>
@@ -127,9 +128,8 @@ export function Field({
               tone="negative"
               onClick={() => {
                 setSetRef(false);
-                console.log('previousFile', previousFile);
                 if (value.kind === 'from-server') return;
-                if (previousFile) {
+                if (previousFile && previousFile.kind === 'from-server') {
                   // if value.kind === 'from-server' save state
                   return onChange?.({ kind: 'remove', previous: previousFile });
                 }
@@ -254,7 +254,9 @@ export function Field({
                 tone="negative"
                 onClick={() => {
                   setSetRef(false);
-                  onChange?.(value.previous);
+                  if (value.previous !== undefined) {
+                    onChange?.(value?.previous);
+                  }
                 }}
               >
                 Undo removal
@@ -292,7 +294,7 @@ export function validateRef({ ref }: { ref: string }) {
   }
 }
 
-function createErrorMessage(value: ImageValue, forceValidation: boolean) {
+function createErrorMessage(value: ImageValue, forceValidation?: boolean) {
   if (value.kind === 'upload') {
     return validateImage(value.data);
   } else if (value.kind === 'ref') {

@@ -128,10 +128,7 @@ export type ImageData = {
 export type ImagesContext = {
   getSrc: (mode: ImageMode, id: string, ext: ImageExtension) => string;
   getRef: (mode: ImageMode, id: string, ext: ImageExtension) => string;
-  parseRef: (
-    ref: string,
-    storagePath: string
-  ) => { mode: ImageMode; id: string; ext: ImageExtension };
-  getDataFromRef: (ref: string, storagePath: string) => Promise<ImageData>;
+  parseRef: (ref: string) => { mode: ImageMode; id: string; ext: ImageExtension };
+  getDataFromRef: (ref: string) => Promise<ImageData>;
   getDataFromStream: (stream: Readable) => Promise<ImageData>;
 };

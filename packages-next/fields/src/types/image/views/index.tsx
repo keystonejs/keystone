@@ -51,7 +51,7 @@ type ImageData = {
   width: number;
 };
 
-type ImageValue =
+export type ImageValue =
   | { kind: 'empty' }
   | {
       kind: 'ref';

@@ -1,9 +1,10 @@
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '../../Implementation';
+import { ImageData, KeystoneContext } from '@keystone-next/types';
 // eslint-disable-next-line import/no-unresolved
 import { handleImageData } from './handle-image-input';
 
-export class ImageImplementation extends Implementation {
+export class ImageImplementation<P extends string> extends Implementation<P> {
   get _supportsUnique() {
     return false;
   }
@@ -43,10 +44,10 @@ export class ImageImplementation extends Implementation {
   gqlAuxFieldResolvers() {
     return {
       ImageFieldOutput: {
-        src(data, _args, context) {
+        src(data: ImageData, _args: any, context: KeystoneContext) {
           return context.images.getSrc(data.mode, data.id, data.extension);
         },
-        ref(data, _args, context) {
+        ref(data: ImageData, _args: any, context: KeystoneContext) {
           return context.images.getRef(data.mode, data.id, data.extension);
         },
       },
@@ -97,7 +98,7 @@ export class ImageImplementation extends Implementation {
   }
 }
 
-export class PrismaImageInterface extends PrismaFieldAdapter {
+export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P> {
   constructor() {
     super(...arguments);
     // Error rather than ignoring invalid config
