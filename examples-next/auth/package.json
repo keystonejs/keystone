@@ -23,8 +23,5 @@
   "engines": {
     "node": ">=12.13.0"
   },
-  "prisma": {
-    "schema": ".keystone/prisma/schema.prisma"
-  },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/auth"
 }

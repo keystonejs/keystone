@@ -10,8 +10,6 @@ import {
 } from '@keystone-next/fields';
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
-import { KeystoneListsAPI } from '@keystone-next/types';
-import { KeystoneListsTypeInfo } from './.keystone/schema-types';
 import { componentBlocks } from './admin/fieldViews/Content';
 
 // TODO: Can we generate this type based on withItemData in the main config?
@@ -205,9 +203,8 @@ export const extendGraphqlSchema = graphQLSchemaExtension({
       createRandomPosts(root, args, context) {
         // TODO: add a way to verify access control here, e.g
         // await context.verifyAccessControl(userIsAdmin);
-        const lists: KeystoneListsAPI<KeystoneListsTypeInfo> = context.lists;
         const data = Array.from({ length: 238 }).map((x, i) => ({ data: { title: `Post ${i}` } }));
-        return lists.Post.createMany({ data });
+        return context.lists.Post.createMany({ data });
       },
     },
     Query: {
