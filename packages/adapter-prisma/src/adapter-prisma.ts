@@ -1,11 +1,13 @@
 import pWaterfall from 'p-waterfall';
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
+import { Implementation } from '@keystone-next/fields';
+import { BaseKeystoneList } from '@keystone-next/types';
 
 // Note: These type definitions are preliminary while we're working towards
 // a full TypeScript conversion.
 type Rel = {
-  left: Field<any>;
-  right: Field<any>;
+  left: Implementation<any>;
+  right: Implementation<any>;
   cardinality: 'N:N' | 'N:1' | '1:N' | '1:1';
   tableName: string;
   columnName: string;
@@ -14,22 +16,11 @@ type Rels = Rel[];
 
 type ListAdapterConfig = { searchField?: string };
 
-type List = { adapter: PrismaListAdapter };
-
-type Field<P extends string> = {
-  isRelationship: boolean;
-  path: P;
-  listKey: string;
-  refListKey: string;
-  isPrimaryKey: boolean;
-  adapter: PrismaFieldAdapter<P>;
-};
-
 type ItemQueryArgs = Record<string, any>;
 
 type IdType = string | number;
 
-type FromType = { fromId?: IdType; fromField?: string; fromList?: List };
+type FromType = { fromId?: IdType; fromField?: string; fromList?: BaseKeystoneList };
 
 type PrismaModel = {
   count: (filter: Filter) => Promise<number>;
@@ -63,7 +54,7 @@ class PrismaAdapter {
     url?: string;
   };
   listAdapters: Record<string, PrismaListAdapter>;
-  listAdapterClass?: any;
+  listAdapterClass?: typeof PrismaListAdapter;
   name: 'prisma';
   provider: 'postgresql' | 'sqlite';
   enableLogging: boolean;
@@ -258,9 +249,9 @@ class PrismaListAdapter {
     fieldAdapterClass: typeof PrismaFieldAdapter,
     name: string,
     path: P,
-    field: Field<P>,
-    getListByKey: (key: string) => List | undefined,
-    config: ListAdapterConfig
+    field: Implementation<P>,
+    getListByKey: (key: string) => BaseKeystoneList | undefined,
+    config: Record<string, any>
   ) {
     const adapter = new fieldAdapterClass(name, path, field, this, getListByKey, config);
     adapter.setupHooks({
@@ -571,10 +562,10 @@ type PrismaType = string;
 class PrismaFieldAdapter<P extends string> {
   fieldName: string;
   path: P;
-  field: Field<P>;
+  field: Implementation<P>;
   listAdapter: PrismaListAdapter;
   config: Record<string, any>;
-  getListByKey: (arg: string) => List | undefined;
+  getListByKey: (arg: string) => BaseKeystoneList | undefined;
   dbPath: string;
   isRelationship?: boolean;
   rel?: Rel;
@@ -584,9 +575,9 @@ class PrismaFieldAdapter<P extends string> {
   constructor(
     fieldName: string,
     path: P,
-    field: Field<P>,
+    field: Implementation<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined,
+    getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
   ) {
     this.fieldName = fieldName;

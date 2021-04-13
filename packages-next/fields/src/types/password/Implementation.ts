@@ -1,9 +1,8 @@
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { BaseKeystoneList } from '@keystone-next/types';
 // @ts-ignore
 import dumbPasswords from 'dumb-passwords';
 import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
-
-type List = { adapter: PrismaListAdapter };
 
 const bcryptHashRegex = /^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$/;
 
@@ -128,7 +127,7 @@ export class PrismaPasswordInterface<P extends string> extends PrismaFieldAdapte
     path: P,
     field: Password<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined,
+    getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
   ) {
     super(fieldName, path, field, listAdapter, getListByKey, config);

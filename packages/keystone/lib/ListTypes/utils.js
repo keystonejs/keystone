@@ -23,14 +23,6 @@ const opToType = {
   delete: 'mutation',
 };
 
-const getDefaultLabelResolver = labelField => item => {
-  const value = item[labelField || 'name'];
-  if (typeof value === 'number') {
-    return value.toString();
-  }
-  return value || item.id;
-};
-
 const mapToFields = (fields, action) =>
   resolveAllKeys(arrayToObject(fields, 'path', action)).catch(error => {
     if (!error.errors) {
@@ -47,6 +39,5 @@ module.exports = {
   labelToPath,
   labelToClass,
   opToType,
-  getDefaultLabelResolver,
   mapToFields,
 };

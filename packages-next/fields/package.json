@@ -38,7 +38,7 @@
     "bytes": "^3.1.0",
     "copy-to-clipboard": "^3.3.1",
     "cuid": "^2.1.8",
-    "date-fns": "^2.19.0",
+    "date-fns": "^2.20.2",
     "decimal.js": "^10.2.1",
     "dumb-passwords": "^0.2.1",
     "fast-deep-equal": "^3.1.3",

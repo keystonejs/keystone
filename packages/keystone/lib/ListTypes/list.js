@@ -18,7 +18,6 @@ const {
   labelToPath,
   labelToClass,
   opToType,
-  getDefaultLabelResolver,
   mapToFields,
 } = require('./utils');
 const { HookManager } = require('./hooks');
@@ -32,10 +31,7 @@ module.exports = class List {
       hooks = {},
       adminDoc,
       schemaDoc,
-      labelResolver,
-      labelField,
       access,
-      adminConfig = {},
       itemQueryName,
       listQueryName,
       label,
@@ -46,7 +42,7 @@ module.exports = class List {
       queryLimits = {},
       cacheHint,
     },
-    { getListByKey, adapter, defaultAccess, registerType, createAuxList, isAuxList }
+    { getListByKey, adapter, defaultAccess }
   ) {
     this.key = key;
     this._fields = fields;
@@ -54,16 +50,6 @@ module.exports = class List {
     this.schemaDoc = schemaDoc;
     this.adminDoc = adminDoc;
 
-    // Assuming the id column shouldn't be included in default columns or sort
-    const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
-    this.adminConfig = {
-      defaultColumns: nonIdFieldNames ? nonIdFieldNames.slice(0, 2).join(',') : 'id',
-      defaultSort: nonIdFieldNames.length ? nonIdFieldNames[0] : '',
-      ...adminConfig,
-    };
-
-    this.labelResolver = labelResolver || getDefaultLabelResolver(labelField);
-    this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
 
@@ -133,26 +119,6 @@ module.exports = class List {
       throw new Error(`List ${label}'s cacheHint must be an object or function`);
     }
     this.cacheHint = cacheHint;
-
-    // Tell Keystone about all the types we've seen
-    Object.values(fields).forEach(({ type }) => registerType(type));
-
-    this.createAuxList = (auxKey, auxConfig) =>
-      createAuxList(auxKey, {
-        access: Object.entries(this.access)
-          .filter(([key]) => key !== 'internal')
-          .reduce(
-            (acc, [schemaName, access]) => ({
-              ...acc,
-              [schemaName]: Object.entries(access).reduce(
-                (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
-                {}
-              ),
-            }),
-            {}
-          ),
-        ...auxConfig,
-      });
   }
 
   initFields() {
@@ -168,7 +134,7 @@ module.exports = class List {
 
     // Helpful errors for misconfigured lists
     Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
-      if (!this.isAuxList && fieldKey[0] === '_') {
+      if (fieldKey[0] === '_') {
         throw new Error(
           `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`
         );
@@ -195,7 +161,6 @@ module.exports = class List {
           listAdapter: this.adapter,
           fieldAdapterClass: type.adapter,
           defaultAccess: this.defaultAccess.field,
-          createAuxList: this.createAuxList,
           schemaNames: this._schemaNames,
         })
     );
@@ -229,10 +194,6 @@ module.exports = class List {
     ];
   }
 
-  getPrimaryKey() {
-    return this.fieldsByPath['id'];
-  }
-
   _wrapFieldResolver(field, innerResolver) {
     // Wrap the "inner" resolver for a single output field with list-specific modifiers
     return async (item, args, context, info) => {
@@ -251,9 +212,7 @@ module.exports = class List {
         // If the client handles errors correctly, it should be able to
         // receive partial data (for the fields the user has access to),
         // and then an `errors` array of AccessDeniedError's
-        throwAccessDenied(opToType[operation], context, field.path, {
-          itemId: item ? item.id : null,
-        });
+        throwAccessDenied(opToType[operation], field.path, { itemId: item ? item.id : null });
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
@@ -287,9 +246,7 @@ module.exports = class List {
       }
     }
     if (restrictedFields.length) {
-      throwAccessDenied(opToType[operation], context, gqlName, extraInternalData, {
-        restrictedFields,
-      });
+      throwAccessDenied(opToType[operation], gqlName, extraInternalData, { restrictedFields });
     }
   }
 
@@ -309,7 +266,7 @@ module.exports = class List {
       // If the client handles errors correctly, it should be able to
       // receive partial data (for the fields the user has access to),
       // and then an `errors` array of AccessDeniedError's
-      throwAccessDenied(opToType[operation], context, gqlName, extraInternalData);
+      throwAccessDenied(opToType[operation], gqlName, extraInternalData);
     }
     return access;
   }
@@ -319,7 +276,7 @@ module.exports = class List {
       // If the client handles errors correctly, it should be able to
       // receive partial data (for the fields the user has access to),
       // and then an `errors` array of AccessDeniedError's
-      throwAccessDenied(opToType[operation], context, gqlName, { itemId: id });
+      throwAccessDenied(opToType[operation], gqlName, { itemId: id });
     };
 
     let item;
@@ -444,13 +401,7 @@ module.exports = class List {
     };
   }
 
-  async itemQuery(
-    // prettier-ignore
-    { where: { id } },
-    context,
-    gqlName,
-    info
-  ) {
+  async itemQuery({ where: { id } }, context, gqlName, info) {
     const operation = 'read';
 
     const access = await this.checkListAccess(context, undefined, operation, {
@@ -458,14 +409,7 @@ module.exports = class List {
       itemId: id,
     });
 
-    const result = await this.getAccessControlledItem(id, access, {
-      context,
-      operation,
-      gqlName,
-      info,
-    });
-
-    return result;
+    return this.getAccessControlledItem(id, access, { context, operation, gqlName, info });
   }
 
   async _itemsQuery(args, extra) {
@@ -474,12 +418,7 @@ module.exports = class List {
     const { maxResults } = this.queryLimits;
 
     const throwLimitsExceeded = args => {
-      throw new LimitsExceededError({
-        data: {
-          list: this.key,
-          ...args,
-        },
-      });
+      throw new LimitsExceededError({ data: { list: this.key, ...args } });
     };
 
     // Need to enforce List-specific query limits
@@ -579,10 +518,7 @@ module.exports = class List {
       }
     });
 
-    return {
-      ...data,
-      ...resolvedRelationships,
-    };
+    return { ...data, ...resolvedRelationships };
   }
 
   async _resolveDefaults({ context, originalInput }) {
@@ -602,7 +538,7 @@ module.exports = class List {
     };
   }
 
-  async _nestedMutation(mutationState, context, mutation) {
+  async _nestedMutation(mutationState, mutation) {
     // Set up a fresh mutation state if we're the root mutation
     const isRootMutation = !mutationState;
     if (isRootMutation) {
@@ -663,7 +599,7 @@ module.exports = class List {
 
   async _createSingle(originalInput, existingItem, context, mutationState) {
     const operation = 'create';
-    return await this._nestedMutation(mutationState, context, async mutationState => {
+    return await this._nestedMutation(mutationState, async mutationState => {
       const defaultedItem = await this._resolveDefaults({ context, originalInput });
 
       // Enable resolveRelationship to perform some action after the item is created by
@@ -792,7 +728,7 @@ module.exports = class List {
 
   async _updateSingle(id, originalInput, existingItem, context, mutationState) {
     const operation = 'update';
-    return await this._nestedMutation(mutationState, context, async mutationState => {
+    return await this._nestedMutation(mutationState, async mutationState => {
       let resolvedData = await this._resolveRelationship(
         originalInput,
         existingItem,
@@ -888,7 +824,7 @@ module.exports = class List {
   async _deleteSingle(existingItem, context, mutationState) {
     const operation = 'delete';
 
-    return await this._nestedMutation(mutationState, context, async () => {
+    return await this._nestedMutation(mutationState, async () => {
       await this.hookManager.validateDelete({ existingItem, context, operation });
 
       await this.hookManager.beforeDelete({ existingItem, context, operation });
@@ -916,14 +852,6 @@ module.exports = class List {
         `
         """ ${this.schemaDoc || 'A keystone list'} """
         type ${this.gqlNames.outputTypeName} {
-          """
-          This virtual field will be resolved in one of the following ways (in this order):
-           1. Execution of 'labelResolver' set on the ${this.key} List config, or
-           2. As an alias to the field set on 'labelField' in the ${this.key} List config, or
-           3. As an alias to a 'name' field on the ${this.key} List (if one exists), or
-           4. As an alias to the 'id' field on the ${this.key} List.
-          """
-          _label_: String
           ${flatten(
             readFields.map(field =>
               field.schemaDoc
@@ -1112,10 +1040,9 @@ module.exports = class List {
     if (!schemaAccess.read) {
       return {};
     }
-    const fieldResolvers = {
-      // TODO: The `_label_` output field currently circumvents access control
-      _label_: this.labelResolver,
-      ...objMerge(
+
+    return {
+      [this.gqlNames.outputTypeName]: objMerge(
         this.fields
           .filter(field => field.access[schemaName].read)
           .map(field =>
@@ -1126,7 +1053,6 @@ module.exports = class List {
           )
       ),
     };
-    return { [this.gqlNames.outputTypeName]: fieldResolvers };
   }
 
   gqlAuxQueryResolvers() {

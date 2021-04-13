@@ -1,9 +1,7 @@
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { KeystoneContext } from '@keystone-next/types';
+import { BaseKeystoneList, KeystoneContext } from '@keystone-next/types';
 import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
 import { resolveNestedMany, resolveNestedSingle, cleanAndValidateInput } from './nested-mutations';
-
-type List = { adapter: PrismaListAdapter };
 
 export type RelationshipSingleOperation = {
   connect?: any;
@@ -25,6 +23,7 @@ export class Relationship<P extends string> extends Implementation<P> {
   many: boolean;
   refFieldPath?: string;
   withMeta: boolean;
+  // adapter: PrismaRelationshipInterface<P>;
   constructor(
     path: P,
     {
@@ -148,6 +147,7 @@ export class Relationship<P extends string> extends Implementation<P> {
       return {
         [this.path]: (item: any, _: any, context: KeystoneContext, info: any) => {
           // No ID set, so we return null for the value
+          // @ts-ignore
           const id = item && (item[this.adapter.idPath] || (item[this.path] && item[this.path].id));
           if (!id) {
             return null;
@@ -226,7 +226,7 @@ export class Relationship<P extends string> extends Implementation<P> {
     let currentValue: string | string[];
     if (this.many) {
       const info = { fieldName: this.path };
-      const _currentValue: { id: any }[] = item
+      const _currentValue = item
         ? await refList.listQuery(
             {},
             { ...context, getListAccessControlForUser: () => true },
@@ -237,6 +237,7 @@ export class Relationship<P extends string> extends Implementation<P> {
         : [];
       currentValue = _currentValue.map(({ id }) => id.toString());
     } else {
+      // @ts-ignore
       currentValue = item && (item[this.adapter.idPath] || (item[this.path] && item[this.path].id));
       currentValue = currentValue && currentValue.toString();
     }
@@ -383,7 +384,7 @@ export class PrismaRelationshipInterface<P extends string> extends PrismaFieldAd
     path: P,
     field: Relationship<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined,
+    getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
   ) {
     super(fieldName, path, field, listAdapter, getListByKey, config);

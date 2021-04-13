@@ -1,7 +1,6 @@
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { BaseKeystoneList } from '@keystone-next/types';
 import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
-
-type List = { adapter: PrismaListAdapter };
 
 export class DateTimeUtcImplementation<P extends string> extends Implementation<P> {
   format: string;
@@ -61,7 +60,7 @@ export class PrismaDateTimeUtcInterface<P extends string> extends PrismaFieldAda
     path: P,
     field: DateTimeUtcImplementation<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined,
+    getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
   ) {
     super(fieldName, path, field, listAdapter, getListByKey, config);

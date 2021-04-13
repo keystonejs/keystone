@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
-import { PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { List, Implementation as Field } from '../../../Implementation';
+import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { BaseKeystoneList } from '@keystone-next/types';
+import { Implementation as Field } from '../../../Implementation';
 import { Relationship } from '../Implementation';
 
 class MockFieldAdapter {}
@@ -76,17 +77,17 @@ class MockList {
 function createRelationship({
   path,
   config,
-  getListByKey = () => new MockList(config.ref),
+  getListByKey = () => new MockList(config.ref) as BaseKeystoneList,
 }: {
   path: string;
   config: { many?: boolean; ref: string; withMeta?: boolean };
-  getListByKey?: (key: string) => List | undefined;
+  getListByKey?: (key: string) => BaseKeystoneList | undefined;
 }) {
   return new Relationship(path, config, {
     getListByKey,
     listKey: 'FakeList',
-    listAdapter: new MockListAdapter(),
-    fieldAdapterClass: MockFieldAdapter,
+    listAdapter: (new MockListAdapter() as unknown) as PrismaListAdapter,
+    fieldAdapterClass: (MockFieldAdapter as unknown) as typeof PrismaFieldAdapter,
     defaultAccess: true,
     schemaNames: ['public'],
   });

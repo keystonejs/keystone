@@ -9,8 +9,37 @@ import fixturez from 'fixturez';
 import outdent from 'outdent';
 import { KeystoneConfig } from '@keystone-next/types';
 import { parseArgsStringToArgv } from 'string-argv';
+import { IntrospectionEngine, uriToCredentials } from '@prisma/sdk';
 import { cli } from '../cli';
 import { mockPrompts } from '../../lib/prompts';
+
+export const cliBinPath = require.resolve('@keystone-next/keystone/bin/cli.js');
+
+export const js = outdent;
+export const ts = outdent;
+export const tsx = outdent;
+export const graphql = outdent;
+
+export const basicKeystoneConfig = js`
+                                     import { config, list } from "@keystone-next/keystone/schema";
+                                     import { text } from "@keystone-next/fields";
+
+                                     export default config({
+                                       db: { provider: "sqlite", url: "file:./app.db" },
+                                       lists: {
+                                         Todo: list({
+                                           fields: {
+                                             title: text(),
+                                           },
+                                         }),
+                                       },
+                                     });
+                                   `;
+
+export const schemas = {
+  'schema.graphql': fs.readFileSync(`${__dirname}/fixtures/basic-project/schema.graphql`, 'utf8'),
+  'schema.prisma': fs.readFileSync(`${__dirname}/fixtures/basic-project/schema.prisma`, 'utf8'),
+};
 
 export function recordConsole(promptResponses?: Record<string, string | boolean>) {
   let oldConsole = { ...console };
@@ -28,6 +57,7 @@ export function recordConsole(promptResponses?: Record<string, string | boolean>
 
   const promptResponseEntries = Object.entries(promptResponses || {});
   const getPromptAnswer = (message: string) => {
+    message = stripAnsi(message);
     const response = promptResponseEntries.shift()!;
     if (!response) {
       throw new Error(
@@ -81,11 +111,6 @@ export function recordConsole(promptResponses?: Record<string, string | boolean>
 
 let f = fixturez(__dirname);
 
-export const js = outdent;
-export const ts = outdent;
-export const tsx = outdent;
-export const graphql = outdent;
-
 export const symlinkKeystoneDeps = Object.fromEntries(
   [
     '@keystone-next/keystone',
@@ -94,6 +119,12 @@ export const symlinkKeystoneDeps = Object.fromEntries(
     '@keystone-next/fields',
     '@prisma/engines',
     '@prisma/client',
+    'typescript',
+    '@types/react',
+    '@types/node',
+    'next',
+    'react',
+    'react-dom',
   ].map(pkg => [
     `node_modules/${pkg}`,
     { kind: 'symlink' as const, path: path.dirname(require.resolve(`${pkg}/package.json`)) },
@@ -103,6 +134,7 @@ export const symlinkKeystoneDeps = Object.fromEntries(
 type Fixture = {
   [key: string]:
     | string
+    | Buffer
     | { kind: 'symlink'; path: string }
     | { kind: 'config'; config: KeystoneConfig };
 };
@@ -119,13 +151,25 @@ export async function runCommand(cwd: string, args: string) {
   return cli(cwd, argv);
 }
 
+let dirsToRemove: string[] = [];
+
+afterEach(async () => {
+  await Promise.all(
+    dirsToRemove.map(filepath => {
+      return fs.remove(filepath);
+    })
+  );
+  dirsToRemove = [];
+});
+
 export async function testdir(dir: Fixture): Promise<string> {
   const temp = f.temp();
+  dirsToRemove.push(temp);
   await Promise.all(
     Object.keys(dir).map(async filename => {
       const output = dir[filename];
       const fullPath = path.join(temp, filename);
-      if (typeof output === 'string') {
+      if (typeof output === 'string' || Buffer.isBuffer(output)) {
         await fs.outputFile(fullPath, dir[filename]);
       } else if (output.kind === 'config') {
         // note this is sync so that it doesn't conflict with any other `kind: 'config'`
@@ -173,33 +217,39 @@ expect.addSnapshotSerializer({
 
 const dirPrintingSymbol = Symbol('dir printing symbol');
 
-async function readNormalizedFile(filePath: string): Promise<string> {
-  let content = await fs.readFile(filePath, 'utf8');
-  // to normalise windows line endings
-  content = content.replace(/\r\n/g, '\n');
-  if (/\.map$/.test(filePath)) {
-    const sourceMap = JSON.parse(content);
-    sourceMap.sourcesContent = sourceMap.sourcesContent.map((source: string) =>
-      source.replace(/\r\n/g, '\n')
-    );
-    content = JSON.stringify(sourceMap);
-  }
-  return content;
-}
-
-export async function getFiles(dir: string, glob: string[] = ['**', '!node_modules/**']) {
+export async function getFiles(
+  dir: string,
+  glob: string[] = ['**', '!node_modules/**'],
+  encoding: 'utf8' | null = 'utf8'
+) {
   const files = await fastGlob(glob, { cwd: dir });
-  const filesObj: Record<string, string> = {
+  const filesObj: Record<string, string | Buffer> = {
     [dirPrintingSymbol]: true,
   };
   await Promise.all(
     files.map(async filename => {
-      filesObj[filename] = await readNormalizedFile(path.join(dir, filename));
+      const filepath = path.join(dir, filename);
+      filesObj[filename] = await (encoding === null
+        ? fs.readFile(filepath)
+        : fs.readFile(filepath, encoding));
     })
   );
-  let newObj: Record<string, string> = { [dirPrintingSymbol]: true };
+  let newObj: Record<string, string | Buffer> = { [dirPrintingSymbol]: true };
   files.sort().forEach(filename => {
     newObj[filename] = filesObj[filename];
   });
   return newObj;
+}
+
+export async function introspectDb(cwd: string, url: string) {
+  const engine = new IntrospectionEngine({ cwd });
+  try {
+    const { datamodel } = await engine.introspect(`datasource db {
+  url = ${JSON.stringify(url)}
+  provider = ${JSON.stringify(uriToCredentials(url).type)}
+}`);
+    return datamodel;
+  } finally {
+    engine.stop();
+  }
 }

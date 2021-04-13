@@ -2,9 +2,9 @@
 import inflection from 'inflection';
 import { humanize } from '@keystone-next/utils-legacy';
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { BaseKeystoneList } from '@keystone-next/types';
 import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
 
-type List = { adapter: PrismaListAdapter };
 type DataType = 'string' | 'integer' | 'enum';
 
 function initOptions(options: string | any[]) {
@@ -156,7 +156,7 @@ export class PrismaSelectInterface<P extends string> extends PrismaFieldAdapter<
     path: P,
     field: Select<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined,
+    getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
   ) {
     super(fieldName, path, field, listAdapter, getListByKey, config);

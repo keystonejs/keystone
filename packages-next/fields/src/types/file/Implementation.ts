@@ -1,10 +1,9 @@
 import cuid from 'cuid';
 import { FileUpload } from 'graphql-upload';
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { BaseKeystoneList } from '@keystone-next/types';
 import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
 import { LocalFileAdapter } from './local-file';
-
-type List = { adapter: PrismaListAdapter };
 
 type StoredFile = {
   id: string;
@@ -161,7 +160,7 @@ export class PrismaFileInterface<P extends string> extends PrismaFieldAdapter<P>
     path: P,
     field: File<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined,
+    getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
   ) {
     super(fieldName, path, field, listAdapter, getListByKey, config);

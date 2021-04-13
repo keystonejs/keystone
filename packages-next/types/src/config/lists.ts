@@ -1,3 +1,5 @@
+import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { Implementation } from '@keystone-next/fields';
 import { AdminMetaRootVal } from '../admin-meta';
 import type { BaseGeneratedListTypes, MaybePromise, JSONValue } from '../utils';
 import type { ListHooks } from './hooks';
@@ -165,7 +167,12 @@ export type FieldType<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   /**
    * The real keystone type for the field
    */
-  type: any;
+  type: {
+    type: string;
+    implementation: typeof Implementation;
+    adapter: typeof PrismaFieldAdapter;
+    isRelationship?: boolean;
+  };
   /**
    * The config for the field
    */

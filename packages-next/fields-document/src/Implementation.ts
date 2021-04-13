@@ -1,13 +1,11 @@
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '@keystone-next/fields';
 import { FieldConfigArgs, FieldExtraArgs } from '@keystone-next/fields';
-import { KeystoneContext } from '@keystone-next/types';
+import { BaseKeystoneList, KeystoneContext } from '@keystone-next/types';
 // eslint-disable-next-line import/no-unresolved
 import { addRelationshipData } from './relationship-data';
 import { ComponentBlock } from './component-blocks';
 import { Relationships } from './DocumentEditor/relationship';
-
-type List = { adapter: PrismaListAdapter };
 
 // this includes the list key and path because in the future
 // there will likely be additional fields specific to a particular field
@@ -130,7 +128,7 @@ export class PrismaDocumentInterface<P extends string> extends PrismaFieldAdapte
     path: P,
     field: DocumentImplementation<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined,
+    getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
   ) {
     super(fieldName, path, field, listAdapter, getListByKey, config);
