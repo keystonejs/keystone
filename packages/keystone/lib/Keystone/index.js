@@ -5,8 +5,7 @@ const { List } = require('../ListTypes');
 const { ListCRUDProvider } = require('../providers');
 
 module.exports = class Keystone {
-  constructor({ defaultAccess, adapter, onConnect, queryLimits = {} }) {
-    this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
+  constructor({ adapter, onConnect, queryLimits = {} }) {
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
@@ -42,8 +41,7 @@ module.exports = class Keystone {
       );
     }
 
-    const { defaultAccess } = this;
-    const list = new List(key, config, { getListByKey, adapter, defaultAccess });
+    const list = new List(key, config, { getListByKey, adapter });
     this.lists[key] = list;
     this.listsArray.push(list);
     this._listCRUDProvider.lists.push(list);
