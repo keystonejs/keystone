@@ -43,7 +43,7 @@ module.exports = class List {
       queryLimits = {},
       cacheHint,
     },
-    { getListByKey, adapter, defaultAccess, registerType, createAuxList, isAuxList }
+    { getListByKey, adapter, defaultAccess, registerType }
   ) {
     this.key = key;
     this._fields = fields;
@@ -59,7 +59,6 @@ module.exports = class List {
       ...adminConfig,
     };
 
-    this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
 
@@ -132,23 +131,6 @@ module.exports = class List {
 
     // Tell Keystone about all the types we've seen
     Object.values(fields).forEach(({ type }) => registerType(type));
-
-    this.createAuxList = (auxKey, auxConfig) =>
-      createAuxList(auxKey, {
-        access: Object.entries(this.access)
-          .filter(([key]) => key !== 'internal')
-          .reduce(
-            (acc, [schemaName, access]) => ({
-              ...acc,
-              [schemaName]: Object.entries(access).reduce(
-                (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
-                {}
-              ),
-            }),
-            {}
-          ),
-        ...auxConfig,
-      });
   }
 
   initFields() {
@@ -164,7 +146,7 @@ module.exports = class List {
 
     // Helpful errors for misconfigured lists
     Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
-      if (!this.isAuxList && fieldKey[0] === '_') {
+      if (fieldKey[0] === '_') {
         throw new Error(
           `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`
         );
@@ -191,7 +173,6 @@ module.exports = class List {
           listAdapter: this.adapter,
           fieldAdapterClass: type.adapter,
           defaultAccess: this.defaultAccess.field,
-          createAuxList: this.createAuxList,
           schemaNames: this._schemaNames,
         })
     );

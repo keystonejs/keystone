@@ -20,19 +20,15 @@ class ListCRUDProvider {
   }
 
   getQueries({ schemaName }) {
-    // Aux lists are only there for typing and internal operations, they should
-    // not have any GraphQL operations performed on them
-    const firstClassLists = this.lists.filter(list => !list.isAuxList);
     return [
-      ...flatten(firstClassLists.map(list => list.getGqlQueries({ schemaName }))),
+      ...flatten(this.lists.map(list => list.getGqlQueries({ schemaName }))),
       `""" Retrieve the meta-data for all lists. """
       ${this.gqlNames.listsMeta}(where: ${this.gqlNames.listsMetaInput}): [_ListMeta]`,
     ];
   }
 
   getMutations({ schemaName }) {
-    const firstClassLists = this.lists.filter(list => !list.isAuxList);
-    return flatten(firstClassLists.map(list => list.getGqlMutations({ schemaName })));
+    return flatten(this.lists.map(list => list.getGqlMutations({ schemaName })));
   }
 
   getSubscriptions({}) {
@@ -85,7 +81,6 @@ class ListCRUDProvider {
       // self-referential field (eg: User { friends: [User] })
       relatedFields: ({ key }) =>
         this.lists
-          .filter(list => !list.isAuxList)
           .map(list => ({
             type: list.gqlNames.outputTypeName,
             fields: flatten(
@@ -110,12 +105,11 @@ class ListCRUDProvider {
   }
 
   getQueryResolvers({ schemaName }) {
-    const firstClassLists = this.lists.filter(list => !list.isAuxList);
     return {
       // Order is also important here, any TypeQuery's defined by types
       // shouldn't be able to override list-level queries
-      ...objMerge(firstClassLists.map(list => list.gqlAuxQueryResolvers())),
-      ...objMerge(firstClassLists.map(list => list.gqlQueryResolvers({ schemaName }))),
+      ...objMerge(this.lists.map(list => list.gqlAuxQueryResolvers())),
+      ...objMerge(this.lists.map(list => list.gqlQueryResolvers({ schemaName }))),
 
       // And the Keystone meta queries must always be available
       [this.gqlNames.listsMeta]: (_, { where: { key, auxiliary } = {} }, context) =>
@@ -124,15 +118,14 @@ class ListCRUDProvider {
             list =>
               list.access[schemaName].read &&
               (!key || list.key === key) &&
-              (auxiliary === undefined || list.isAuxList === auxiliary)
+              (auxiliary === undefined || auxiliary === false)
           )
           .map(list => list.listMeta(context)),
     };
   }
 
   getMutationResolvers({ schemaName }) {
-    const firstClassLists = this.lists.filter(list => !list.isAuxList);
-    return objMerge(firstClassLists.map(list => list.gqlMutationResolvers({ schemaName })));
+    return objMerge(this.lists.map(list => list.gqlMutationResolvers({ schemaName })));
   }
 
   getSubscriptionResolvers({}) {
