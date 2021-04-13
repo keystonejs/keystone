@@ -1,7 +1,9 @@
-import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '../../Implementation';
 import { ImageData, KeystoneContext } from '@keystone-next/types';
 import { handleImageData } from './handle-image-input';
+
+type List = { adapter: PrismaListAdapter };
 
 export class ImageImplementation<P extends string> extends Implementation<P> {
   get _supportsUnique() {
@@ -44,10 +46,10 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
     return {
       ImageFieldOutput: {
         src(data: ImageData, _args: any, context: KeystoneContext) {
-          return context.images.getSrc(data.mode, data.id, data.extension);
+          return context.images?.getSrc(data.mode, data.id, data.extension);
         },
         ref(data: ImageData, _args: any, context: KeystoneContext) {
-          return context.images.getRef(data.mode, data.id, data.extension);
+          return context.images?.getRef(data.mode, data.id, data.extension);
         },
       },
     };
@@ -55,7 +57,7 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
   // Called on `User.avatar` for example
   gqlOutputFieldResolvers() {
     return {
-      [this.path]: item => {
+      [this.path]: (item: Record<P, any>) => {
         let imageData = item[this.path];
         if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
           // we store image data as a string on sqlite because Prisma doesn't support Json on sqlite
@@ -69,7 +71,13 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
     };
   }
 
-  async resolveInput({ resolvedData, context }) {
+  async resolveInput({
+    resolvedData,
+    context,
+  }: {
+    resolvedData: Record<P, any>;
+    context: KeystoneContext;
+  }) {
     const data = resolvedData[this.path];
     if (data === null) {
       return null;
@@ -98,8 +106,15 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
 }
 
 export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P> {
-  constructor() {
-    super(...arguments);
+  constructor(
+    fieldName: string,
+    path: P,
+    field: ImageImplementation<P>,
+    listAdapter: PrismaListAdapter,
+    getListByKey: (arg: string) => List | undefined,
+    config = {}
+  ) {
+    super(fieldName, path, field, listAdapter, getListByKey, config);
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
     if (this.config.isIndexed) {
