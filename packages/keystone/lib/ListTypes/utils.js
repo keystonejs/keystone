@@ -1,7 +1,5 @@
 const { humanize, resolveAllKeys, arrayToObject } = require('@keystone-next/utils-legacy');
 
-const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
-
 const keyToLabel = str => {
   let label = humanize(str);
 
@@ -33,11 +31,4 @@ const mapToFields = (fields, action) =>
     throw errorCopy;
   });
 
-module.exports = {
-  preventInvalidUnderscorePrefix,
-  keyToLabel,
-  labelToPath,
-  labelToClass,
-  opToType,
-  mapToFields,
-};
+module.exports = { keyToLabel, labelToPath, labelToClass, opToType, mapToFields };
