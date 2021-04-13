@@ -35,8 +35,11 @@ export function getArgsFactory(list: BaseKeystoneList, schema: GraphQLSchema) {
 }
 
 function defaultQueryParam(query?: string | false, resolveFields?: string | false) {
-  if (resolveFields !== undefined) return resolveFields;
+  if (query !== undefined && resolveFields !== undefined) {
+    throw new Error('query and resolveFields cannot both be passed to an Items API query');
+  }
   if (query !== undefined) return query;
+  if (resolveFields !== undefined) return resolveFields;
   return 'id';
 }
 
