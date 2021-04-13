@@ -34,6 +34,12 @@ export function getArgsFactory(list: BaseKeystoneList, schema: GraphQLSchema) {
   };
 }
 
+function defaultQueryParam(query?: string | false, resolveFields?: string | false) {
+  if (resolveFields !== undefined) return resolveFields;
+  if (query !== undefined) return query;
+  return 'id';
+}
+
 export function itemAPIForList(
   list: BaseKeystoneList,
   context: KeystoneContext,
@@ -41,20 +47,22 @@ export function itemAPIForList(
 ): KeystoneListsAPI<Record<string, BaseGeneratedListTypes>>[string] {
   const listKey = list.key;
   return {
-    findOne({ resolveFields = 'id', ...rawArgs }) {
+    findOne({ query, resolveFields, ...rawArgs }) {
       if (!getArgs.findOne) throw new Error('You do not have access to this resource');
       const args = getArgs.findOne(rawArgs) as { where: { id: string } };
-      if (resolveFields) {
-        return getItem({ listKey, context, returnFields: resolveFields, itemId: args.where.id });
+      const returnFields = defaultQueryParam(query, resolveFields);
+      if (returnFields) {
+        return getItem({ listKey, context, returnFields, itemId: args.where.id });
       } else {
         return list.itemQuery(args, context);
       }
     },
-    findMany({ resolveFields = 'id', ...rawArgs }) {
+    findMany({ query, resolveFields, ...rawArgs }) {
       if (!getArgs.findMany) throw new Error('You do not have access to this resource');
       const args = getArgs.findMany(rawArgs);
-      if (resolveFields) {
-        return getItems({ listKey, context, returnFields: resolveFields, ...args });
+      const returnFields = defaultQueryParam(query, resolveFields);
+      if (returnFields) {
+        return getItems({ listKey, context, returnFields, ...args });
       } else {
         return list.listQuery(args, context);
       }
@@ -64,56 +72,62 @@ export function itemAPIForList(
       const args = getArgs.count(rawArgs!);
       return (await list.listQueryMeta(args, context)).getCount();
     },
-    createOne({ resolveFields = 'id', ...rawArgs }) {
+    createOne({ query, resolveFields, ...rawArgs }) {
       if (!getArgs.createOne) throw new Error('You do not have access to this resource');
       const { data } = getArgs.createOne(rawArgs);
-      if (resolveFields) {
-        return createItem({ listKey, context, returnFields: resolveFields, item: data });
+      const returnFields = defaultQueryParam(query, resolveFields);
+      if (returnFields) {
+        return createItem({ listKey, context, returnFields, item: data });
       } else {
         return list.createMutation(data, context);
       }
     },
-    createMany({ resolveFields = 'id', ...rawArgs }) {
+    createMany({ query, resolveFields, ...rawArgs }) {
       if (!getArgs.createMany) throw new Error('You do not have access to this resource');
       const { data } = getArgs.createMany(rawArgs);
-      if (resolveFields) {
-        return createItems({ listKey, context, returnFields: resolveFields, items: data });
+      const returnFields = defaultQueryParam(query, resolveFields);
+      if (returnFields) {
+        return createItems({ listKey, context, returnFields, items: data });
       } else {
         return list.createManyMutation(data, context);
       }
     },
-    updateOne({ resolveFields = 'id', ...rawArgs }) {
+    updateOne({ query, resolveFields, ...rawArgs }) {
       if (!getArgs.updateOne) throw new Error('You do not have access to this resource');
       const { id, data } = getArgs.updateOne(rawArgs);
-      if (resolveFields) {
-        return updateItem({ listKey, context, returnFields: resolveFields, item: { id, data } });
+      const returnFields = defaultQueryParam(query, resolveFields);
+      if (returnFields) {
+        return updateItem({ listKey, context, returnFields, item: { id, data } });
       } else {
         return list.updateMutation(id, data, context);
       }
     },
-    updateMany({ resolveFields = 'id', ...rawArgs }) {
+    updateMany({ query, resolveFields, ...rawArgs }) {
       if (!getArgs.updateMany) throw new Error('You do not have access to this resource');
       const { data } = getArgs.updateMany(rawArgs);
-      if (resolveFields) {
-        return updateItems({ listKey, context, returnFields: resolveFields, items: data });
+      const returnFields = defaultQueryParam(query, resolveFields);
+      if (returnFields) {
+        return updateItems({ listKey, context, returnFields, items: data });
       } else {
         return list.updateManyMutation(data, context);
       }
     },
-    deleteOne({ resolveFields = 'id', ...rawArgs }) {
+    deleteOne({ query, resolveFields, ...rawArgs }) {
       if (!getArgs.deleteOne) throw new Error('You do not have access to this resource');
       const { id } = getArgs.deleteOne(rawArgs);
-      if (resolveFields) {
-        return deleteItem({ listKey, context, returnFields: resolveFields, itemId: id });
+      const returnFields = defaultQueryParam(query, resolveFields);
+      if (returnFields) {
+        return deleteItem({ listKey, context, returnFields, itemId: id });
       } else {
         return list.deleteMutation(id, context);
       }
     },
-    deleteMany({ resolveFields = 'id', ...rawArgs }) {
+    deleteMany({ query, resolveFields, ...rawArgs }) {
       if (!getArgs.deleteMany) throw new Error('You do not have access to this resource');
       const { ids } = getArgs.deleteMany(rawArgs);
-      if (resolveFields) {
-        return deleteItems({ listKey, context, returnFields: resolveFields, items: ids });
+      const returnFields = defaultQueryParam(query, resolveFields);
+      if (returnFields) {
+        return deleteItems({ listKey, context, returnFields, items: ids });
       } else {
         return list.deleteManyMutation(ids, context);
       }

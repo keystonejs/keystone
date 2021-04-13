@@ -14,7 +14,7 @@ export default function PostPage({ post }) {
 
 export async function getStaticPaths() {
   const posts = await lists.Post.findMany({
-    resolveFields: 'slug',
+    query: 'slug',
   });
 
   const paths = posts.map(post => post.slug).map(slug => `/post/${slug}`);
@@ -27,7 +27,7 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params: { slug } }) {
   const [post] = await lists.Post.findMany({
     where: { slug: slug },
-    resolveFields: 'title content',
+    query: 'title content',
   });
   return { props: { post } };
 }

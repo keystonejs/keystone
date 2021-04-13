@@ -102,7 +102,7 @@ export function withItemData<T extends { listKey: string; itemId: string }>(
           // because doing so validates that it exists in the database
           const item = await sudoContext.lists[session.listKey].findOne({
             where: { id: session.itemId },
-            resolveFields: fieldSelections[session.listKey] || 'id',
+            query: fieldSelections[session.listKey] || 'id',
           });
           return { ...session, data: item };
         } catch (e) {
