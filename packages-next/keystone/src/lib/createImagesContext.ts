@@ -12,7 +12,7 @@ import imageSize from 'image-size';
 
 const SUPPORTED_IMAGE_EXTENSIONS = ['jpeg', 'png', 'webp', 'gif'];
 const MODE_LOCAL = 'local';
-const DEFAULT_BASE_URL = 'http://localhost:3000';
+const DEFAULT_BASE_URL = '/images';
 const DEFAULT_STORAGE_PATH = './public/images';
 
 const isValidImageRef = (

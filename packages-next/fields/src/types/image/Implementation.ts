@@ -1,7 +1,6 @@
 import { PrismaFieldAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '../../Implementation';
 import { ImageData, KeystoneContext } from '@keystone-next/types';
-// eslint-disable-next-line import/no-unresolved
 import { handleImageData } from './handle-image-input';
 
 export class ImageImplementation<P extends string> extends Implementation<P> {
