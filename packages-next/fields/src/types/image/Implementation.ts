@@ -46,10 +46,16 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
     return {
       ImageFieldOutput: {
         src(data: ImageData, _args: any, context: KeystoneContext) {
-          return context.images?.getSrc(data.mode, data.id, data.extension);
+          if (!context.images) {
+            throw new Error('Image context is undefined');
+          }
+          return context.images.getSrc(data.mode, data.id, data.extension);
         },
         ref(data: ImageData, _args: any, context: KeystoneContext) {
-          return context.images?.getRef(data.mode, data.id, data.extension);
+          if (!context.images) {
+            throw new Error('Image context is undefined');
+          }
+          return context.images.getRef(data.mode, data.id, data.extension);
         },
       },
     };
@@ -111,7 +117,7 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
     path: P,
     field: ImageImplementation<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined,
+    getListByKey: (arg: string) => List | undefined, // needs to be BaseKeystoneList
     config = {}
   ) {
     super(fieldName, path, field, listAdapter, getListByKey, config);
