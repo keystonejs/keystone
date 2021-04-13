@@ -13,15 +13,8 @@ const LimitsExceededError = createError('LimitsExceededError', {
   options: { showPath: true },
 });
 
-const throwAccessDenied = (type, context, target, extraInternalData = {}, extraData = {}) => {
-  throw new AccessDeniedError({
-    data: { type, target, ...extraData },
-    internalData: {
-      authedId: context.authedItem && context.authedItem.id,
-      authedListKey: context.authedListKey,
-      ...extraInternalData,
-    },
-  });
+const throwAccessDenied = (type, target, internalData = {}, extraData = {}) => {
+  throw new AccessDeniedError({ data: { type, target, ...extraData }, internalData });
 };
 
 module.exports = {
