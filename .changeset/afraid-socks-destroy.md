@@ -9,9 +9,9 @@
 "@keystone-next/website": patch
 ---
 
-Renamed `resolveFields` to `query` in the Items API.
+Added `query` option to the Items API, replacing `resolveFields`.
 
-`resolveFields` is now deprecated and will be removed in a future major version.
+`resolveFields` is now reserved for passing `false` when fields should not be resolved at all.
 
 For example, to query a Post you would now write:
 
@@ -26,5 +26,14 @@ const [post] = await lists.Post.findMany({
       width
       height
     }`,
+});
+```
+
+And to query for the raw data stored in the database, you would write:
+
+```js
+const [post] = await lists.Post.findMany({
+  where: { slug },
+  resolveFields: false,
 });
 ```
