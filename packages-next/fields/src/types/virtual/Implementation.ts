@@ -1,8 +1,6 @@
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { GraphQLResolver } from '@keystone-next/types';
+import { BaseKeystoneList, GraphQLResolver } from '@keystone-next/types';
 import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
-
-type List = { adapter: PrismaListAdapter };
 
 export class Virtual<P extends string> extends Implementation<P> {
   resolver: GraphQLResolver;
@@ -88,7 +86,7 @@ export class PrismaVirtualInterface<P extends string> extends PrismaFieldAdapter
     path: P,
     field: Virtual<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined,
+    getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
   ) {
     super(fieldName, path, field, listAdapter, getListByKey, config);

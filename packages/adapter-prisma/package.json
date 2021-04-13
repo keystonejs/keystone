@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
+    "@keystone-next/fields": "^6.0.0",
     "@keystone-next/keystone-legacy": "^23.0.0",
+    "@keystone-next/types": "^16.0.0",
     "@keystone-next/utils-legacy": "^8.0.0",
     "p-waterfall": "^2.1.1"
   },

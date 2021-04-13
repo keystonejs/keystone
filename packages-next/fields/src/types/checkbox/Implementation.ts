@@ -1,7 +1,6 @@
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { BaseKeystoneList } from '@keystone-next/types';
 import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
-
-type List = { adapter: PrismaListAdapter };
 
 export class Checkbox<P extends string> extends Implementation<P> {
   constructor(path: P, configArgs: FieldConfigArgs, extraArgs: FieldExtraArgs) {
@@ -40,7 +39,7 @@ export class PrismaCheckboxInterface<P extends string> extends PrismaFieldAdapte
     path: P,
     field: Checkbox<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined,
+    getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
   ) {
     super(fieldName, path, field, listAdapter, getListByKey, config);

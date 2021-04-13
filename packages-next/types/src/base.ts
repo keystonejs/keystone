@@ -1,10 +1,21 @@
+import { PrismaAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { Implementation } from '@keystone-next/fields';
 import type { KeystoneContext } from './context';
 import type { BaseGeneratedListTypes, GqlNames } from './utils';
+
+type Rel = {
+  left: Implementation<any>;
+  right: Implementation<any>;
+  cardinality: 'N:N' | 'N:1' | '1:N' | '1:1';
+  tableName: string;
+  columnName: string;
+};
+type Rels = Rel[];
 
 // TODO: This is only a partial typing of the core Keystone class.
 // We should definitely invest some time into making this more correct.
 export type BaseKeystone = {
-  adapter: Record<string, any>;
+  adapter: PrismaAdapter;
   createList: (
     key: string,
     config: {
@@ -25,15 +36,16 @@ export type BaseKeystone = {
   getTypeDefs: (args: { schemaName: string }) => any;
   getResolvers: (args: { schemaName: string }) => any;
   queryLimits: { maxTotalResults: number };
-  _consolidateRelationships: () => Record<string, any>[];
+  _consolidateRelationships: () => Rels;
 };
 
 // TODO: This needs to be reviewed and expanded
 export type BaseKeystoneList = {
   key: string;
-  fieldsByPath: Record<string, BaseKeystoneField>;
-  fields: BaseKeystoneField[];
-  adapter: { itemsQuery: (args: Record<string, any>, extra: Record<string, any>) => any };
+  fieldsByPath: Record<string, Implementation<any>>;
+  fields: Implementation<any>[];
+  adapter: PrismaListAdapter;
+  access: Record<string, any>;
   adminUILabels: {
     label: string;
     singular: string;
@@ -94,11 +106,5 @@ export type BaseKeystoneList = {
     context: KeystoneContext,
     mutationState?: any
   ): Promise<Record<string, any>[]>;
-};
-
-type BaseKeystoneField = {
-  gqlCreateInputFields: (arg: { schemaName: string }) => void;
-  getBackingTypes: () => Record<string, { optional: true; type: 'string | null' }>;
-  label: string;
-  isOrderable: boolean;
+  getGraphqlFilterFragment: () => string[];
 };

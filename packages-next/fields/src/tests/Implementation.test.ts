@@ -1,15 +1,14 @@
+import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import { Implementation as Field } from '../';
 
 const args = {
   getListByKey: () => undefined,
   listKey: 'key',
-  listAdapter: {
-    newFieldAdapter: jest.fn(),
-  },
+  listAdapter: ({ newFieldAdapter: jest.fn() } as unknown) as PrismaListAdapter,
   defaultAccess: true,
   schemaNames: ['public'],
-  fieldAdapterClass: {},
+  fieldAdapterClass: {} as typeof PrismaFieldAdapter,
 };
 
 describe('new Implementation()', () => {
@@ -20,12 +19,10 @@ describe('new Implementation()', () => {
       {
         getListByKey: () => undefined,
         listKey: 'key',
-        listAdapter: {
-          newFieldAdapter: jest.fn(),
-        },
+        listAdapter: ({ newFieldAdapter: jest.fn() } as unknown) as PrismaListAdapter,
         defaultAccess: true,
         schemaNames: ['public'],
-        fieldAdapterClass: {},
+        fieldAdapterClass: {} as typeof PrismaFieldAdapter,
       }
     );
     expect(impl).not.toBeNull();
