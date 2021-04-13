@@ -51,7 +51,6 @@ export function createKeystone(config: KeystoneConfig, prismaClient?: any) {
       // FIXME: Unsupported options: Need to work which of these we want to support with backwards
       // compatibility options.
       // adminDoc
-      // adminConfig
       // label
       // singular
       // plural

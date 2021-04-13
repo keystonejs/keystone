@@ -24,10 +24,6 @@ const context = {
   getFieldAccessControlForUser: (access, listKey, fieldPath, originalInput, existingItem) =>
     !(existingItem && existingItem.makeFalse && fieldPath === 'name'),
   getAuthAccessControlForUser: () => true,
-  authedItem: {
-    id: 1,
-  },
-  authedListKey: 'Test',
 };
 
 // Convert a gql field into a normalised format for comparison.
@@ -167,7 +163,6 @@ const listExtras = () => ({
   getListByKey,
   adapter: new MockAdapter(),
   defaultAccess: { list: true, field: true },
-  registerType: () => {},
   schemaNames: ['public'],
 });
 
@@ -204,10 +199,6 @@ describe('new List()', () => {
   test('new List() - config', () => {
     const list = setup();
     expect(list.fields).toBeInstanceOf(Object);
-    expect(list.adminConfig).toEqual({
-      defaultColumns: 'name,email',
-      defaultSort: 'name',
-    });
   });
 
   test('new List() - labels', () => {
@@ -686,11 +677,7 @@ test('checkFieldAccess', async () => {
     target: 'testing',
     type: 'query',
   });
-  expect(thrownError.internalData).toEqual({
-    authedId: 1,
-    authedListKey: 'Test',
-    extra: 1,
-  });
+  expect(thrownError.internalData).toEqual({ extra: 1 });
 });
 
 test('checkListAccess', async () => {
