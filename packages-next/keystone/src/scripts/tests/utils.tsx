@@ -119,6 +119,12 @@ export const symlinkKeystoneDeps = Object.fromEntries(
     '@keystone-next/fields',
     '@prisma/engines',
     '@prisma/client',
+    'typescript',
+    '@types/react',
+    '@types/node',
+    'next',
+    'react',
+    'react-dom',
   ].map(pkg => [
     `node_modules/${pkg}`,
     { kind: 'symlink' as const, path: path.dirname(require.resolve(`${pkg}/package.json`)) },
