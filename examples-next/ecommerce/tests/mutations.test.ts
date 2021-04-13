@@ -62,7 +62,7 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
               price: 5,
               photo: { create: { altText: 'product 1' } },
             },
-            resolveFields: 'id name description price photo { id }',
+            query: 'id name description price photo { id }',
           });
           const product2 = await Product.createOne({
             data: {
@@ -72,7 +72,7 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
               price: 7,
               photo: { create: { altText: 'product 2' } },
             },
-            resolveFields: 'id name description price photo { id }',
+            query: 'id name description price photo { id }',
           });
 
           // Create some users
@@ -329,13 +329,13 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
           await q({ query, variables: { productId: product1.id } });
           const result1 = await context.lists.CartItem.findMany({
             where: { product: { id: product1.id } },
-            resolveFields: 'quantity',
+            query: 'quantity',
           });
           expect(result1).toHaveLength(1);
           expect(result1[0].quantity).toEqual(3);
           const result2 = await context.lists.CartItem.findMany({
             where: { product: { id: product2.id } },
-            resolveFields: 'quantity',
+            query: 'quantity',
           });
           expect(result2).toHaveLength(1);
           expect(result2[0].quantity).toEqual(2);

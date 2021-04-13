@@ -91,7 +91,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
             try {
               return lists[session.listKey].findOne({
                 where: { id: session.itemId },
-                resolveFields: false,
+                query: false,
               });
             } catch (e) {
               return null;
