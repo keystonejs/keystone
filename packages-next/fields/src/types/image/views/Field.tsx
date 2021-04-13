@@ -29,6 +29,46 @@ function useObjectURL(fileData: File | undefined) {
   return objectURL;
 }
 
+const RefView = ({
+  onChange,
+  onCancel,
+  error,
+}: {
+  onChange: (event: React.SyntheticEvent<HTMLInputElement>) => void;
+  onCancel: () => void;
+  error?: string;
+}) => {
+  return (
+    <Stack
+      gap="small"
+      across
+      css={{
+        width: '100%',
+        justifyContent: 'space-between',
+        'div:first-of-type': {
+          flex: '2',
+        },
+      }}
+    >
+      <TextInput
+        placeholder="Paste the image ref here"
+        onChange={onChange}
+        css={{
+          width: '100%',
+        }}
+      />
+      <Button tone="passive" onClick={onCancel}>
+        Cancel
+      </Button>
+      {error ? (
+        <Pill weight="light" tone="negative">
+          {error}
+        </Pill>
+      ) : null}
+    </Stack>
+  );
+};
+
 export function Field({
   autoFocus,
   field,
@@ -86,6 +126,9 @@ export function Field({
     if (value.kind === 'from-server') {
       setPrevious(value);
     }
+    if (value.kind === 'remove' && value.previous?.kind === 'from-server') {
+      setPrevious(value.previous);
+    }
     setSetRef(!canSetRef);
   };
 
@@ -112,191 +155,166 @@ export function Field({
     }
   };
 
+  const imgView =
+    value.kind === 'from-server' || value.kind === 'upload' ? (
+      <Stack gap="small" across align="center">
+        {errorMessage === undefined ? (
+          value.kind === 'from-server' ? (
+            <ImageWrapper>
+              <NextImage
+                height={value.data.height}
+                width={value.data.width}
+                src={value.data.src}
+                alt={field.path}
+              />
+            </ImageWrapper>
+          ) : (
+            <ImageWrapper>
+              <img
+                css={{
+                  height: 'auto',
+                  maxWidth: '100%',
+                }}
+                src={imagePathFromUpload}
+                alt={field.path}
+              />
+            </ImageWrapper>
+          )
+        ) : null}
+        {onChange && (
+          <Stack gap="small">
+            {value.kind === 'from-server' && (
+              <Stack padding="xxsmall" gap="xxsmall">
+                <Stack across align="center" gap="small">
+                  <Text size="small">
+                    <a href={value.data.src} target="_blank">
+                      {`${value.data.id}.${value.data.extension}`}
+                    </a>
+                  </Text>
+                  <Button size="small" tone="passive" onClick={copyRef}>
+                    Copy
+                  </Button>
+                </Stack>
+                <Text size="xsmall">{`${value.data.width} x ${value.data.height} (${bytes(
+                  value.data.filesize
+                )})`}</Text>
+              </Stack>
+            )}
+            <Stack across gap="small" align="center">
+              <Button
+                size="small"
+                onClick={() => {
+                  setSetRef(false);
+                  inputRef.current?.click();
+                }}
+              >
+                Change
+              </Button>
+              {value.kind !== 'upload' ? (
+                <Button size="small" tone="passive" onClick={toggleSetRefUI}>
+                  Paste
+                </Button>
+              ) : null}
+              {value.kind === 'from-server' && (
+                <Button
+                  size="small"
+                  tone="negative"
+                  onClick={() => {
+                    setSetRef(false);
+                    onChange({ kind: 'remove', previous: value });
+                  }}
+                >
+                  Remove
+                </Button>
+              )}
+              {value.kind === 'upload' && (
+                <Button
+                  size="small"
+                  tone="negative"
+                  onClick={() => {
+                    setSetRef(false);
+                    onChange(value.previous);
+                  }}
+                >
+                  Cancel
+                </Button>
+              )}
+              {errorMessage ? (
+                <Pill tone="negative" weight="light">
+                  {errorMessage}
+                </Pill>
+              ) : (
+                value.kind === 'upload' && (
+                  <Pill weight="light" tone="positive">
+                    Save to upload this image
+                  </Pill>
+                )
+              )}
+            </Stack>
+          </Stack>
+        )}
+      </Stack>
+    ) : (
+      <Stack gap="small">
+        <Stack css={{ alignItems: 'center' }} gap="small" across>
+          <Button
+            size="small"
+            disabled={onChange === undefined}
+            onClick={() => {
+              inputRef.current?.click();
+            }}
+            tone="positive"
+          >
+            Upload Image
+          </Button>
+          <Button size="small" tone="passive" onClick={toggleSetRefUI}>
+            {'Paste Ref'}
+          </Button>
+          {value.kind === 'remove' && value.previous && (
+            <Button
+              size="small"
+              tone="negative"
+              onClick={() => {
+                setSetRef(false);
+                if (value.previous !== undefined) {
+                  onChange?.(value?.previous);
+                }
+              }}
+            >
+              Undo removal
+            </Button>
+          )}
+          {value.kind === 'remove' &&
+            // NOTE -- UX decision is to not display this, I think it would only be relevant
+            // for deleting uploaded images (and we don't support that yet)
+            // <Pill weight="light" tone="warning">
+            //   Save to remove this image
+            // </Pill>
+            null}
+        </Stack>
+      </Stack>
+    );
+
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      {canSetRef ? (
-        <Stack
-          gap="small"
-          across
-          css={{
-            width: '100%',
-            justifyContent: 'space-between',
-            'div:first-of-type': {
-              flex: '2',
-            },
+      {onChange && canSetRef ? (
+        <RefView
+          onChange={onRefChange}
+          error={forceValidation && errorMessage ? errorMessage : undefined}
+          onCancel={() => {
+            setSetRef(false);
+            if (value.kind === 'from-server') return;
+            if (previousFile && previousFile.kind === 'from-server') {
+              // if value.kind === 'from-server' save state
+              return onChange?.({ kind: 'remove', previous: previousFile });
+            }
+            return onChange?.({ kind: 'remove' });
           }}
-        >
-          <TextInput
-            placeholder="Paste the image ref here"
-            onChange={onRefChange}
-            css={{
-              width: '100%',
-            }}
-          />
-          <Button
-            tone="passive"
-            onClick={() => {
-              setSetRef(false);
-              if (value.kind === 'from-server') return;
-              if (previousFile && previousFile.kind === 'from-server') {
-                // if value.kind === 'from-server' save state
-                return onChange?.({ kind: 'remove', previous: previousFile });
-              }
-              return onChange?.({ kind: 'remove' });
-            }}
-          >
-            Cancel
-          </Button>
-          {forceValidation && errorMessage ? (
-            <Pill weight="light" tone="negative">
-              {errorMessage}
-            </Pill>
-          ) : null}
-        </Stack>
-      ) : value.kind === 'from-server' || value.kind === 'upload' ? (
-        <Stack gap="small" across align="center">
-          {errorMessage === undefined ? (
-            value.kind === 'from-server' ? (
-              <ImageWrapper>
-                <NextImage
-                  height={value.data.height}
-                  width={value.data.width}
-                  src={value.data.src}
-                  alt={field.path}
-                />
-              </ImageWrapper>
-            ) : (
-              <ImageWrapper>
-                <img
-                  css={{
-                    height: 'auto',
-                    maxWidth: '100%',
-                  }}
-                  src={imagePathFromUpload}
-                  alt={field.path}
-                />
-              </ImageWrapper>
-            )
-          ) : null}
-          {onChange && (
-            <Stack gap="small">
-              {value.kind === 'from-server' && (
-                <Stack padding="xxsmall" gap="xxsmall">
-                  <Stack across align="center" gap="small">
-                    <Text size="small">
-                      <a href={value.data.src} target="_blank">
-                        {`${value.data.id}.${value.data.extension}`}
-                      </a>
-                    </Text>
-                    <Button size="small" tone="passive" onClick={copyRef}>
-                      Copy
-                    </Button>
-                  </Stack>
-                  <Text size="xsmall">{`${value.data.width} x ${value.data.height} (${bytes(
-                    value.data.filesize
-                  )})`}</Text>
-                </Stack>
-              )}
-              <Stack across gap="small" align="center">
-                <Button
-                  size="small"
-                  onClick={() => {
-                    setSetRef(false);
-                    inputRef.current?.click();
-                  }}
-                >
-                  Change
-                </Button>
-                {value.kind !== 'upload' ? (
-                  <Button size="small" tone="passive" onClick={toggleSetRefUI}>
-                    {'Paste'}
-                  </Button>
-                ) : null}
-                {value.kind === 'from-server' && (
-                  <Button
-                    size="small"
-                    tone="negative"
-                    onClick={() => {
-                      setSetRef(false);
-                      onChange({ kind: 'remove', previous: value });
-                    }}
-                  >
-                    Remove
-                  </Button>
-                )}
-                {value.kind === 'upload' && (
-                  <Button
-                    size="small"
-                    tone="negative"
-                    onClick={() => {
-                      setSetRef(false);
-                      onChange(value.previous);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                )}
-                {errorMessage ? (
-                  <Pill tone="negative" weight="light">
-                    {errorMessage}
-                  </Pill>
-                ) : (
-                  value.kind === 'upload' && (
-                    <Pill weight="light" tone="positive">
-                      Save to upload this image
-                    </Pill>
-                  )
-                )}
-              </Stack>
-            </Stack>
-          )}
-          {}
-        </Stack>
+        />
       ) : (
-        <Stack gap="small">
-          <Stack css={{ alignItems: 'center' }} gap="small" across>
-            <Button
-              size="small"
-              disabled={onChange === undefined}
-              onClick={() => {
-                inputRef.current?.click();
-              }}
-              tone="positive"
-            >
-              Upload Image
-            </Button>
-            {!canSetRef && (
-              <Button size="small" tone="passive" onClick={toggleSetRefUI}>
-                {'Set from Ref'}
-              </Button>
-            )}
-
-            {value.kind === 'remove' && value.previous && (
-              <Button
-                size="small"
-                tone="negative"
-                onClick={() => {
-                  setSetRef(false);
-                  if (value.previous !== undefined) {
-                    onChange?.(value?.previous);
-                  }
-                }}
-              >
-                Undo removal
-              </Button>
-            )}
-            {value.kind === 'remove' &&
-              // NOTE -- UX decision is to not display this, I think it would only be relevant
-              // for deleting uploaded images (and we don't support that yet)
-              // <Pill weight="light" tone="warning">
-              //   Save to remove this image
-              // </Pill>
-              null}
-          </Stack>
-        </Stack>
+        imgView
       )}
-
       <input
         css={{ display: 'none' }}
         autoComplete="off"
