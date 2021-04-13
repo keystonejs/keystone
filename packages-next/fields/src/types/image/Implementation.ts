@@ -1,9 +1,7 @@
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '../../Implementation';
-import { ImageData, KeystoneContext } from '@keystone-next/types';
+import { ImageData, KeystoneContext, BaseKeystoneList } from '@keystone-next/types';
 import { handleImageData } from './handle-image-input';
-
-type List = { adapter: PrismaListAdapter };
 
 export class ImageImplementation<P extends string> extends Implementation<P> {
   get _supportsUnique() {
@@ -117,7 +115,7 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
     path: P,
     field: ImageImplementation<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined, // needs to be BaseKeystoneList
+    getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
   ) {
     super(fieldName, path, field, listAdapter, getListByKey, config);
