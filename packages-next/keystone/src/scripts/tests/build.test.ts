@@ -58,6 +58,13 @@ test('build works with typescript without the user defining a babel config', asy
     reject: false,
     all: true,
     cwd: tmp,
+    env: {
+      ...process.env,
+      // to make next not print stuff about telementry
+      NEXT_TELEMETRY_DISABLED: '1',
+      // to make next not print stuff about a missing build cache
+      CI: undefined,
+    },
   });
   expect(await fs.readFile(`${tmp}/node_modules/.keystone/types.js`, 'utf8')).toBe('');
   expect(result.exitCode).toBe(0);
