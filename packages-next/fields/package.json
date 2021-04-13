@@ -7,6 +7,7 @@
   "devDependencies": {
     "@keystone-next/server-side-graphql-client-legacy": "3.0.1",
     "@keystone-next/test-utils-legacy": "16.0.0",
+    "@types/bytes": "^3.1.0",
     "mime": "^2.5.2",
     "typescript": "^4.2.3"
   },
@@ -34,6 +35,7 @@
     "@types/react": "^17.0.3",
     "apollo-errors": "^1.9.0",
     "bcryptjs": "^2.4.3",
+    "bytes": "^3.1.0",
     "copy-to-clipboard": "^3.3.1",
     "cuid": "^2.1.8",
     "date-fns": "^2.19.0",
