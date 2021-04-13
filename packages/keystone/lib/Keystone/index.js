@@ -34,9 +34,9 @@ module.exports = class Keystone {
     }
   }
 
-  createList(key, config, { isAuxList = false } = {}) {
+  createList(key, config) {
     const { getListByKey, adapter } = this;
-    const isReservedName = !isAuxList && key[0] === '_';
+    const isReservedName = key[0] === '_';
 
     if (isReservedName) {
       throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
@@ -61,15 +61,6 @@ module.exports = class Keystone {
       adapter,
       defaultAccess: this.defaultAccess,
       registerType: type => this.registeredTypes.add(type),
-      isAuxList,
-      createAuxList: (auxKey, auxConfig) => {
-        if (isAuxList) {
-          throw new Error(
-            `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
-          );
-        }
-        return this.createList(auxKey, auxConfig, { isAuxList: true });
-      },
     });
     this.lists[key] = list;
     this.listsArray.push(list);
