@@ -96,7 +96,7 @@ const isLocal = (mode: ImageMode) => mode === 'local';
 
 const isCloud = (mode: ImageMode) => mode !== 'local';
 
-export function createImagesContext(config: KeystoneImagesConfig): ImagesContext | undefined {
+export function createImagesContext(config?: KeystoneImagesConfig): ImagesContext | undefined {
   if (!config) {
     return;
   }
