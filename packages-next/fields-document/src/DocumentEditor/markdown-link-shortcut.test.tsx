@@ -400,8 +400,7 @@ test('an undo only reverts to the whole shortcut text', () => {
       </paragraph>
     </editor>
   `);
-  // TODO: need to fix stuff around editor types
-  (editor as any).undo();
+  editor.undo();
   expect(editor).toMatchInlineSnapshot(`
     <editor>
       <paragraph>

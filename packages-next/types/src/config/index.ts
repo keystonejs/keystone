@@ -1,10 +1,14 @@
-import type { ConnectOptions } from 'mongoose';
+import { IncomingMessage } from 'http';
 import { CorsOptions } from 'cors';
 import type { GraphQLSchema } from 'graphql';
-import { IncomingMessage } from 'http';
+import type { Config } from 'apollo-server-express';
 
-import type { ListHooks } from './hooks';
-import type { ListAccessControl, FieldAccessControl } from './access-control';
+import type { KeystoneContext } from '..';
+
+import { CreateContext } from '../core';
+import type { BaseKeystone } from '../base';
+import { SessionStrategy } from '../session';
+import type { MaybePromise } from '../utils';
 import type {
   ListSchemaConfig,
   ListConfig,
@@ -15,12 +19,8 @@ import type {
   MaybeItemFunction,
   // CacheHint,
 } from './lists';
-
-import type { KeystoneContext } from '..';
-import { CreateContext } from '../core';
-import type { BaseKeystone } from '../base';
-import { SessionStrategy } from '../session';
-import type { MaybePromise } from '../utils';
+import type { ListAccessControl, FieldAccessControl } from './access-control';
+import type { ListHooks } from './hooks';
 
 export type KeystoneConfig = {
   lists: ListSchemaConfig;
@@ -34,6 +34,10 @@ export type KeystoneConfig = {
   experimental?: {
     /** Enables nextjs graphql api route mode */
     enableNextJsGraphqlApiEndpoint?: boolean;
+    /** Creates a file at `node_modules/.keystone/api` with a `lists` export */
+    generateNodeAPI?: boolean;
+    /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */
+    generateNextGraphqlAPI?: boolean;
   };
 };
 
@@ -59,14 +63,36 @@ export type DatabaseCommon = {
 
 export type DatabaseConfig = DatabaseCommon &
   (
-    | {
-        adapter: 'prisma_postgresql';
+    | ((
+        | {
+            /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
+            adapter: 'prisma_postgresql';
+            provider?: undefined;
+          }
+        | {
+            /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
+            adapter?: undefined;
+            provider: 'postgresql';
+          }
+      ) & {
+        useMigrations?: boolean;
         enableLogging?: boolean;
-        getPrismaPath?: (arg: { prismaSchema: any }) => string;
-        getDbSchemaName?: (arg: { prismaSchema: any }) => string;
-      }
-    | { adapter: 'knex'; dropDatabase?: boolean; schemaName?: string }
-    | { adapter: 'mongoose'; mongooseOptions?: { mongoUri?: string } & ConnectOptions }
+      })
+    | ((
+        | {
+            /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
+            adapter: 'prisma_sqlite';
+            provider?: undefined;
+          }
+        | {
+            /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
+            adapter?: undefined;
+            provider: 'sqlite';
+          }
+      ) & {
+        useMigrations?: boolean;
+        enableLogging?: boolean;
+      })
   );
 
 // config.ui
@@ -114,6 +140,11 @@ export type GraphQLConfig = {
   queryLimits?: {
     maxTotalResults?: number;
   };
+  /**
+   *  Additional options to pass into the ApolloServer constructor.
+   *  @see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#constructor
+   */
+  apolloConfig?: Config;
 };
 
 // config.extendGraphqlSchema

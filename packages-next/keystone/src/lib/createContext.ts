@@ -64,10 +64,6 @@ export function makeCreateContext({
       lists: itemAPI,
       totalResults: 0,
       keystone,
-      // Only one of these will be available on any given context
-      // TODO: Capture that in the type
-      knex: keystone.adapter.knex,
-      mongoose: keystone.adapter.mongoose,
       prisma: keystone.adapter.prisma,
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
       maxTotalResults: keystone.queryLimits.maxTotalResults,
@@ -83,7 +79,7 @@ export function makeCreateContext({
       req,
       ...sessionContext,
       // Note: These two fields let us use the server-side-graphql-client library.
-      // We may want to remove them once the updated itemAPI w/ resolveFields is available.
+      // We may want to remove them once the updated itemAPI w/ query is available.
       executeGraphQL: rawGraphQL,
       gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
     };

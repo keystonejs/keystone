@@ -1,19 +1,20 @@
 import { ReactElement, createElement, MutableRefObject, useState } from 'react';
 import { Editor, Node, Path, Text, Range } from 'slate';
 import { ReactEditor, Slate } from 'slate-react';
+import React from 'react';
+import { act, render } from '@testing-library/react';
+import jestDiff from 'jest-diff';
+import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
+import { HistoryEditor } from 'slate-history';
 import { createDocumentEditor, DocumentEditorEditable } from '..';
 import { ComponentBlock } from '../../component-blocks';
 import { DocumentFeatures } from '../../views';
 
 export { __jsx as jsx } from './jsx/namespace';
-import prettyFormat, { plugins, NewPlugin } from 'pretty-format';
-import jestDiff from 'jest-diff';
 import { validateDocumentStructure } from '../../structure-validation';
 import { Relationships } from '../relationship';
 import { createToolbarState, ToolbarStateProvider } from '../toolbar-state';
 import { validateAndNormalizeDocument } from '../../validation';
-import React from 'react';
-import { act, render } from '@testing-library/react';
 
 let oldConsoleError = console.error;
 
@@ -190,7 +191,7 @@ export const makeEditor = (
     isShiftPressedRef?: MutableRefObject<boolean>;
     skipRenderingDOM?: boolean;
   } = {}
-): ReactEditor => {
+): ReactEditor & HistoryEditor => {
   if (!Editor.isEditor(node)) {
     throw new Error('Unexpected non-editor passed to makeEditor');
   }

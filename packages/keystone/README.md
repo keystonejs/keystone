@@ -13,21 +13,12 @@ const { Keystone } = require('@keystone-next/keystone-legacy');
 
 const keystone = new Keystone({
   adapter,
-  cookie,
-  cookieSecret,
   defaultAccess,
   onConnect,
   queryLimits,
-  sessionStore,
   schemaNames,
 });
 ```
-
-### `cookie`
-
-_**Default:**_ see Usage.
-
-A description of the cookie properties is included in the [express-session documentation](https://github.com/expressjs/session#cookie).
 
 #### `secure`
 
@@ -47,10 +38,6 @@ const keystone = new Keystone({
   },
 });
 ```
-
-### `cookieSecret`
-
-The secret used to sign session ID cookies. In production mode (`process.env.NODE_ENV === 'production'`) this option is required. In development mode, if undefined, a random `cookieSecret` will be generated each time Keystone starts (this will cause sessions to be reset between restarts).
 
 ### `defaultAccess`
 
@@ -90,37 +77,19 @@ const keystone = new Keystone({
 
 Note that `maxTotalResults` applies to the total results of all relationship queries separately, even if some are nested inside others.
 
-### `sessionStore`
-
-Sets the Express server's [session middleware](https://github.com/expressjs/session). This should be configured before deploying your app.
-
-This example uses the [`connect-mongo`](https://github.com/jdesboeufs/connect-mongo) middleware, but you can use [any of the stores that work with `express session`](https://github.com/expressjs/session#compatible-session-stores).
-
-```javascript
-const expressSession = require('express-session');
-const MongoStore = require('connect-mongo')(expressSession);
-
-const keystone = new Keystone({
-  sessionStore: new MongoStore({ url: 'mongodb://localhost/my-app' }),
-});
-```
-
 ### `schemaNames`
 
 _**Default:**_ `['public']`
 
 ## Methods
 
-| Method                | Description                                                                  |
-| --------------------- | ---------------------------------------------------------------------------- |
-| `connect`             | Manually connect to Adapter.                                                 |
-| `createAuthStrategy`  | Creates a new authentication middleware instance.                            |
-| `createList`          | Add a list to the `Keystone` schema.                                         |
-| `disconnect`          | Disconnect from the adapter.                                                 |
-| `extendGraphQLSchema` | Extend keystones generated schema with custom types, queries, and mutations. |
-| `prepare`             | Manually prepare `Keystone` middlewares.                                     |
-| `createContext`       | Create a `context` object that can be used with `executeGraphQL()`.          |
-| `executeGraphQL`      | Execute a server-side GraphQL operation within the given context.            |
+| Method          | Description                                                              |
+| --------------- | ------------------------------------------------------------------------ |
+| `connect`       | Manually connect to Adapter.                                             |
+| `createList`    | Add a list to the `Keystone` schema.                                     |
+| `disconnect`    | Disconnect from the adapter.                                             |
+| `prepare`       | Manually prepare `Keystone` middlewares.                                 |
+| `createContext` | Create a `context` object that can be used with `context.graphql.raw()`. |
 
 <!--
 ## Super secret methods
@@ -130,7 +99,6 @@ Please note: We use these internally but provide no support or assurance if used
 
 | Method                | Description                                                                  |
 | --------------------- | ---------------------------------------------------------------------------- |
-| `dumpSchema`          | Dump schema to a string.                                                     |
 | `getTypeDefs`         | Remove from user documentation?                                              |
 | `getResolvers`        | Remove from user documentation?                                              |
 | `getAdminMeta`        | Remove from user documentation?                                              |
@@ -145,17 +113,6 @@ keystone.connect();
 ```
 
 > **Note:** `keystone.connect()` is only required for custom servers. Most example projects use the `keystone start` command to start a server and automatically connect.
-
-### `createAuthStrategy(config)`
-
-Creates a new authentication middleware instance. See:
-
-- [Authentication guide](https://www.keystonejs.com/guides/authentication)
-- [Authentication API docs](https://www.keystonejs.com/api/authentication)
-
-```javascript allowCopy=false showLanguage=false
-const authStrategy = keystone.createAuthStrategy({...});
-```
 
 ### `createList(listKey, config)`
 
@@ -178,30 +135,6 @@ keystone.createList('Posts', {...});
 ### `disconnect()`
 
 Disconnect the adapter.
-
-### `extendGraphQLSchema(config)`
-
-Extends keystones generated schema with custom types, queries, and mutations.
-
-```javascript
-keystone.extendGraphQLSchema({
-  types: [{ type: 'type MyType { original: Int, double: Float }' }],
-  queries: [
-    {
-      schema: 'double(x: Int): MyType',
-      resolver: (_, { x }) => ({ original: x, double: 2.0 * x }),
-    },
-  ],
-  mutations: [
-    {
-      schema: 'triple(x: Int): Int',
-      resolver: (_, { x }) => 3 * x,
-    },
-  ],
-});
-```
-
-See the [Custom schema guide](/docs/guides/custom-schema.md) for more information on utilizing custom schema.
 
 #### Config
 
@@ -236,19 +169,6 @@ For more information about the first four arguments, please see the [Apollo docs
 - The `access` argument for `types`, `queries`, and `mutations` are all either boolean values which are used at schema generation time to include or exclude the item from the schema, or a function which must return boolean.
 - See the [Access control API](https://www.keystonejs.com/api/access-control#custom-schema-access-control) docs for more details.
 
-### `prepare(config)`
-
-Manually prepare middlewares. Returns a promise representing the processed middlewares. They are available as an array through the `middlewares` property of the returned object.
-
-#### Usage
-
-```javascript
-const { middlewares } = await keystone.prepare({
-  apps,
-  dev: process.env.NODE_ENV !== 'production',
-});
-```
-
 #### Config
 
 | Option        | Type      | default                               | Description                                                                                                         |
@@ -261,7 +181,7 @@ const { middlewares } = await keystone.prepare({
 
 ### `createContext({ schemaName, authentication, skipAccessControl })`
 
-Create a `context` object that can be used with `executeGraphQL()`.
+Create a `context` object that can be used with `context.graphql.raw()`.
 
 #### Usage
 
@@ -272,7 +192,7 @@ const { gql } = require('apollo-server-express');
 const context = keystone.createContext().sudo()
 
 // Execute a GraphQL operation with no access control
-const { data, errors } = await keystone.executeGraphQL({ context, query: gql` ... `, variables: { ... }})
+const { data, errors } = await context.graphql.raw({ context, query: gql` ... `, variables: { ... }})
 ```
 
 #### Config
@@ -283,10 +203,6 @@ const { data, errors } = await keystone.executeGraphQL({ context, query: gql` ..
 | `authentication`    | `Object`  | `{}`     | `{ item: { id }, listAuthKey: "" }`. Specifies the item to be used in access control checks. |
 | `skipAccessControl` | `Boolean` | `false`  | Set to `true` to skip all access control checks.                                             |
 
-### `executeGraphQL({ context, query, variables })`
-
-Execute a server-side GraphQL query within the given context.
-
 #### Usage
 
 ```javascript
@@ -296,7 +212,7 @@ const { gql } = require('apollo-server-express');
 const context = keystone.createContext().sudo()
 
 // Execute a GraphQL operation with no access control
-const { data, errors } = await keystone.executeGraphQL({ context, query: gql` ... `, variables: { ... }})
+const { data, errors } = await context.graphql.raw({ query: gql` ... `, variables: { ... }})
 ```
 
 #### Config

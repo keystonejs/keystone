@@ -1,8 +1,7 @@
-// @ts-ignore
-import { Relationship } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
+import { Relationship, PrismaRelationshipInterface } from './Implementation';
 
 // This is the default display mode for Relationships
 type SelectDisplayConfig = {
@@ -45,14 +44,18 @@ export type RelationshipFieldConfig<
     hideCreate?: boolean;
   };
   defaultValue?: FieldDefaultValue<Record<string, unknown>>;
-  isIndexed?: boolean;
   isUnique?: boolean;
 } & (SelectDisplayConfig | CardsDisplayConfig);
 
 export const relationship = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: RelationshipFieldConfig<TGeneratedListTypes>
 ): FieldType<TGeneratedListTypes> => ({
-  type: Relationship,
+  type: {
+    type: 'Relationship',
+    isRelationship: true, // Used internally for this special case
+    implementation: Relationship,
+    adapter: PrismaRelationshipInterface,
+  },
   config,
   views: resolveView('relationship/views'),
   getAdminMeta: (

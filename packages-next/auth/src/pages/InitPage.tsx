@@ -10,18 +10,18 @@ import { useRawKeystone } from '@keystone-next/admin-ui/context';
 import { FieldMeta } from '@keystone-next/types';
 import isDeepEqual from 'fast-deep-equal';
 
-import { SigninContainer } from '../components/SigninContainer';
 import { gql, useMutation } from '@keystone-next/admin-ui/apollo';
 import { useReinitContext, useKeystone } from '@keystone-next/admin-ui/context';
 import { useRouter, Link } from '@keystone-next/admin-ui/router';
-import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics';
 import { GraphQLErrorNotice } from '@keystone-next/admin-ui/components';
-import { IconTwitter, IconGithub } from '../components/Icons';
 import {
   Fields,
   serializeValueToObjByFieldKey,
   useInvalidFields,
 } from '@keystone-next/admin-ui-utils';
+import { guessEmailFromValue, validEmail } from '../lib/emailHeuristics';
+import { IconTwitter, IconGithub } from '../components/Icons';
+import { SigninContainer } from '../components/SigninContainer';
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
 

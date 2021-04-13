@@ -1,5 +1,5 @@
-import type { RedisClient } from 'redis';
 import { promisify } from 'util';
+import type { RedisClient } from 'redis';
 import type { SessionStoreFunction } from '@keystone-next/types';
 
 type Options = {

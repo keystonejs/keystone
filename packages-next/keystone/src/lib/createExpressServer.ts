@@ -1,3 +1,4 @@
+import type { Config } from 'apollo-server-express';
 import cors, { CorsOptions } from 'cors';
 import express from 'express';
 import { GraphQLSchema } from 'graphql';
@@ -11,14 +12,23 @@ const addApolloServer = ({
   graphQLSchema,
   createContext,
   sessionStrategy,
+  apolloConfig,
 }: {
   server: express.Express;
   graphQLSchema: GraphQLSchema;
   createContext: CreateContext;
   sessionStrategy?: SessionStrategy<any>;
+  apolloConfig?: Config;
 }) => {
-  const apolloServer = createApolloServerExpress({ graphQLSchema, createContext, sessionStrategy });
+  const apolloServer = createApolloServerExpress({
+    graphQLSchema,
+    createContext,
+    sessionStrategy,
+    apolloConfig,
+  });
   server.use(graphqlUploadExpress());
+  // FIXME: Support custom API path via config.graphql.path.
+  // Note: Core keystone uses '/admin/api' as the default.
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql', cors: false });
 };
 
@@ -45,7 +55,13 @@ export const createExpressServer = async (
   const sessionStrategy = config.session ? config.session() : undefined;
 
   if (isVerbose) console.log('✨ Preparing GraphQL Server');
-  addApolloServer({ server, graphQLSchema, createContext, sessionStrategy });
+  addApolloServer({
+    server,
+    graphQLSchema,
+    createContext,
+    sessionStrategy,
+    apolloConfig: config.graphql?.apolloConfig,
+  });
 
   if (config.ui?.isDisabled) {
     if (isVerbose) console.log('✨ Skipping Admin UI app');

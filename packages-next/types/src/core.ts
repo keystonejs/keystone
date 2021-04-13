@@ -4,10 +4,11 @@ import type { KeystoneContext, SessionContext } from './context';
 
 /* TODO: Review these types */
 type FieldDefaultValueArgs<T> = { context: KeystoneContext; originalInput?: T };
+
 export type FieldDefaultValue<T> =
   | T
   | null
-  | MaybePromise<(args: FieldDefaultValueArgs<T>) => T | null | undefined>;
+  | ((args: FieldDefaultValueArgs<T>) => MaybePromise<T | null | undefined>);
 
 export type CreateContext = (args: {
   sessionContext?: SessionContext<any>;
@@ -65,10 +66,3 @@ export function getGqlNames({
     relateToOneInputName: `${_itemQueryName}RelateToOneInput`,
   };
 }
-
-export type MigrationMode =
-  | 'none-skip-client-generation'
-  | 'none'
-  | 'createOnly'
-  | 'dev'
-  | 'prototype';

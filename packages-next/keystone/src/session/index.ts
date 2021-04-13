@@ -1,6 +1,6 @@
+import { IncomingMessage, ServerResponse } from 'http';
 import { mergeSchemas } from '@graphql-tools/merge';
 import { GraphQLSchema } from 'graphql';
-import { IncomingMessage, ServerResponse } from 'http';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
 import {
@@ -11,10 +11,9 @@ import {
   CreateContext,
   KeystoneContext,
 } from '@keystone-next/types';
-import { gql } from '../schema';
-
 // uid-safe is what express-session uses so let's just use it
 import { sync as uid } from 'uid-safe';
+import { gql } from '../schema';
 
 function generateSessionId() {
   return uid(24);
@@ -92,7 +91,7 @@ export function withItemData<T extends { listKey: string; itemId: string }>(
           !session.itemId ||
           !sudoContext.lists[session.listKey]
         ) {
-          return session;
+          return;
         }
 
         // NOTE: This is wrapped in a try-catch block because a "not found" result will currently
@@ -103,17 +102,13 @@ export function withItemData<T extends { listKey: string; itemId: string }>(
           // because doing so validates that it exists in the database
           const item = await sudoContext.lists[session.listKey].findOne({
             where: { id: session.itemId },
-            resolveFields: fieldSelections[session.listKey] || 'id',
+            query: fieldSelections[session.listKey] || 'id',
           });
-          // If there is no matching item found, return the session without a `data value
-          if (!item) {
-            return session;
-          }
           return { ...session, data: item };
         } catch (e) {
           // TODO: This swallows all errors, we need a way to differentiate between "not found" and
           // actual exceptions that should be thrown
-          return session;
+          return;
         }
       },
     };

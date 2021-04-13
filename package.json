@@ -11,8 +11,6 @@
     "prisma": "prisma",
     "docs-next": "manypkg run @keystone-next/website dev",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
-    "cypress:run": "status=0; yarn workspace @keystone-next/cypress-project-basic-legacy run cypress:run || status=$?; yarn workspace @keystone-next/cypress-project-login-legacy run cypress:run || status=$?; yarn workspace @keystone-next/cypress-project-twitter-login-legacy run cypress:run || status=$?; yarn workspace @keystone-next/cypress-project-access-control-legacy run cypress:run || status=$?; yarn workspace @keystone-next/cypress-project-client-validation-legacy run cypress:run || status=$?; exit $status",
-    "cypress:open": "status=0; yarn workspace @keystone-next/cypress-project-basic-legacy run cypress:open || status=$?; yarn workspace @keystone-next/cypress-project-login-legacy run cypress:open || status=$?; yarn workspace @keystone-next/cypress-project-twitter-login-legacy run cypress:open || status=$?; yarn workspace @keystone-next/cypress-project-access-control-legacy run cypress:open || status=$?; yarn workspace @keystone-next/cypress-project-client-validation-legacy run cypress:open || status=$?; exit $status",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\" && remark . --output",
     "fresh": "yarn clean && yarn",
@@ -22,7 +20,7 @@
     "lint:markdown": "remark . --frail --quiet",
     "lint:types": "tsc",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:markdown && yarn lint:types",
-    "test": "yarn lint && yarn test:unit && yarn cypress:run",
+    "test": "yarn lint && yarn test:unit",
     "test:unit": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --no-watchman --maxWorkers=1 --logHeapUsage",
     "test:unit:debug": "cross-env NODE_ENV=test node --inspect-brk `which jest` --runInBand",
     "benchmark": "yarn workspace @keystone-next/benchmarks-legacy go",
@@ -37,31 +35,33 @@
     "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn"
   },
   "dependencies": {
-    "@babel/core": "^7.13.10",
+    "@babel/core": "^7.13.14",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.13.8",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.13.10",
-    "@babel/preset-env": "^7.13.10",
-    "@babel/preset-react": "^7.12.13",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
-    "@changesets/changelog-github": "^0.3.0",
-    "@changesets/cli": "^2.14.1",
+    "@changesets/changelog-github": "^0.4.0",
+    "@changesets/cli": "^2.16.0",
     "@jest/test-sequencer": "^26.6.3",
     "@manypkg/cli": "^0.17.0",
     "@preconstruct/cli": "2.0.6",
-    "@types/jest": "^26.0.20",
-    "@typescript-eslint/eslint-plugin": "^4.17.0",
-    "@typescript-eslint/parser": "^4.17.0",
+    "@preconstruct/eslint-plugin-format-js-tag": "^0.1.0",
+    "@testing-library/jest-dom": "^5.11.10",
+    "@types/jest": "^26.0.22",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
     "chalk-cli": "^4.1.0",
     "cross-env": "^7.0.3",
-    "eslint": "^7.21.0",
+    "eslint": "^7.24.0",
     "eslint-plugin-cypress": "^2.11.2",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jest": "^24.2.0",
-    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-jest": "^24.3.4",
+    "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "is-ci": "^2.0.0",
+    "is-ci": "^3.0.0",
     "jest": "^26.6.3",
     "prettier": "^2.2.1",
     "remark-cli": "^6.0.1",
@@ -77,12 +77,14 @@
     "trailingComma": "es5",
     "printWidth": 100,
     "arrowParens": "avoid",
-    "overrides": [{
-      "files": "docs-next/**",
-      "options": {
-        "embeddedLanguageFormatting": "off"
+    "overrides": [
+      {
+        "files": "docs-next/**",
+        "options": {
+          "embeddedLanguageFormatting": "off"
+        }
       }
-    }]
+    ]
   },
   "remarkConfig": {
     "settings": {
@@ -100,7 +102,6 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "tests/test-projects/*",
       "tests/api-tests",
       "tests/benchmarks",
       "tests/examples-smoke-tests",
@@ -121,18 +122,8 @@
       "packages/session",
       "packages/test-utils",
       "packages/utils",
-      "packages/fields-authed-relationship",
-      "packages/fields-auto-increment",
-      "packages/fields-oembed",
-      "packages/fields-unsplash",
-      "packages/fields-cloudinary-image",
-      "packages/fields-markdown",
-      "packages/fields-mongoid",
-      "packages/fields-location-google",
-      "packages/fields-wysiwyg-tinymce",
-      "packages/fields-color",
-      "packages/fields",
       "packages/adapter-prisma",
+      "packages/server-side-graphql-client",
       "packages-next/*",
       "design-system/packages/*"
     ],
@@ -140,7 +131,7 @@
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "./tests/jest/setup.js"
+      "./tests/jest/setup.ts"
     ],
     "testSequencer": "./tests/jest/jest-sequencer.js",
     "testEnvironment": "node",
@@ -153,12 +144,10 @@
       ".api-test-prisma-clients/"
     ],
     "collectCoverageFrom": [
-      "packages/**/*.js",
-      "!packages/**/dist/**",
-      "!packages/app-admin-ui/client/**",
-      "!packages/core/tests/default-entry/index.js",
-      "!packages/fields/**/views/**",
-      "!packages/fields/**/test-fixtures.js",
+      "packages{,-next}/**/*.{js,ts,tsx}",
+      "!**/*.d.ts",
+      "!packages{,-next}/**/dist/**",
+      "!packages{,-next}/fields/**/test-fixtures.{js,ts}",
       "!packages/fields/types.js"
     ]
   },
@@ -166,6 +155,6 @@
     "babel-plugin-remove-graphql-queries": "2.7.2"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   }
 }

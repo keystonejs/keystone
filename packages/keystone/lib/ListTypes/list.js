@@ -10,7 +10,6 @@ const {
   flatten,
   zipObj,
   createLazyDeferred,
-  arrayToObject,
 } = require('@keystone-next/utils-legacy');
 const { parseListAccess } = require('@keystone-next/access-control-legacy');
 const {
@@ -19,13 +18,10 @@ const {
   labelToPath,
   labelToClass,
   opToType,
-  getDefaultLabelResolver,
   mapToFields,
 } = require('./utils');
 const { HookManager } = require('./hooks');
 const { LimitsExceededError, throwAccessDenied } = require('./graphqlErrors');
-
-const { graphqlLogger } = require('../Keystone/logger');
 
 module.exports = class List {
   constructor(
@@ -35,10 +31,7 @@ module.exports = class List {
       hooks = {},
       adminDoc,
       schemaDoc,
-      labelResolver,
-      labelField,
       access,
-      adminConfig = {},
       itemQueryName,
       listQueryName,
       label,
@@ -49,7 +42,7 @@ module.exports = class List {
       queryLimits = {},
       cacheHint,
     },
-    { getListByKey, adapter, defaultAccess, registerType, createAuxList, isAuxList, schemaNames }
+    { getListByKey, adapter, defaultAccess }
   ) {
     this.key = key;
     this._fields = fields;
@@ -57,16 +50,6 @@ module.exports = class List {
     this.schemaDoc = schemaDoc;
     this.adminDoc = adminDoc;
 
-    // Assuming the id column shouldn't be included in default columns or sort
-    const nonIdFieldNames = Object.keys(fields).filter(k => k !== 'id');
-    this.adminConfig = {
-      defaultColumns: nonIdFieldNames ? nonIdFieldNames.slice(0, 2).join(',') : 'id',
-      defaultSort: nonIdFieldNames.length ? nonIdFieldNames[0] : '',
-      ...adminConfig,
-    };
-
-    this.labelResolver = labelResolver || getDefaultLabelResolver(labelField);
-    this.isAuxList = isAuxList;
     this.getListByKey = getListByKey;
     this.defaultAccess = defaultAccess;
 
@@ -114,9 +97,8 @@ module.exports = class List {
       relateToOneInputName: `${_itemQueryName}RelateToOneInput`,
     };
 
-    this.adapterName = adapter.name;
     this.adapter = adapter.newListAdapter(this.key, adapterConfig);
-    this._schemaNames = schemaNames;
+    this._schemaNames = ['public'];
 
     this.access = parseListAccess({
       schemaNames: this._schemaNames,
@@ -137,26 +119,6 @@ module.exports = class List {
       throw new Error(`List ${label}'s cacheHint must be an object or function`);
     }
     this.cacheHint = cacheHint;
-
-    // Tell Keystone about all the types we've seen
-    Object.values(fields).forEach(({ type }) => registerType(type));
-
-    this.createAuxList = (auxKey, auxConfig) =>
-      createAuxList(auxKey, {
-        access: Object.entries(this.access)
-          .filter(([key]) => key !== 'internal')
-          .reduce(
-            (acc, [schemaName, access]) => ({
-              ...acc,
-              [schemaName]: Object.entries(access).reduce(
-                (acc, [op, rule]) => ({ ...acc, [op]: !!rule }), // Reduce the entries to truthy values
-                {}
-              ),
-            }),
-            {}
-          ),
-        ...auxConfig,
-      });
   }
 
   initFields() {
@@ -167,23 +129,12 @@ module.exports = class List {
 
     // Add an 'id' field if none supplied
     if (!sanitisedFieldsConfig.id) {
-      if (typeof this.adapter.parentAdapter.getDefaultPrimaryKeyConfig !== 'function') {
-        throw new Error(
-          `No 'id' field given for the '${this.key}' list and the list adapter ` +
-            `in used (${this.adapter.key}) doesn't supply a default primary key config ` +
-            `(no 'getDefaultPrimaryKeyConfig()' function)`
-        );
-      }
-      // Rebuild the object so id is "first"
-      sanitisedFieldsConfig = {
-        id: this.adapter.parentAdapter.getDefaultPrimaryKeyConfig(),
-        ...sanitisedFieldsConfig,
-      };
+      throw new Error(`No 'id' field given for the '${this.key}' list.`);
     }
 
     // Helpful errors for misconfigured lists
     Object.entries(sanitisedFieldsConfig).forEach(([fieldKey, fieldConfig]) => {
-      if (!this.isAuxList && fieldKey[0] === '_') {
+      if (fieldKey[0] === '_') {
         throw new Error(
           `Invalid field name "${fieldKey}". Field names cannot start with an underscore.`
         );
@@ -194,18 +145,9 @@ module.exports = class List {
             `(${this.key}.${fieldKey}.type is undefined)`
         );
       }
-      const adapters = fieldConfig.type.adapters;
-      if (typeof adapters === 'undefined' || Object.entries(adapters).length === 0) {
+      if (typeof fieldConfig.type.adapter === 'undefined') {
         throw new Error(
-          `The type given for the '${this.key}.${fieldKey}' field doesn't define any adapters.`
-        );
-      }
-    });
-
-    Object.values(sanitisedFieldsConfig).forEach(({ type }) => {
-      if (!type.adapters[this.adapterName]) {
-        throw new Error(
-          `Adapter type "${this.adapterName}" does not support field type "${type.type}"`
+          `The type given for the '${this.key}.${fieldKey}' field doesn't define an adapter.`
         );
       }
     });
@@ -217,41 +159,17 @@ module.exports = class List {
           getListByKey: this.getListByKey,
           listKey: this.key,
           listAdapter: this.adapter,
-          fieldAdapterClass: type.adapters[this.adapterName],
+          fieldAdapterClass: type.adapter,
           defaultAccess: this.defaultAccess.field,
-          createAuxList: this.createAuxList,
           schemaNames: this._schemaNames,
         })
     );
     this.fields = Object.values(this.fieldsByPath);
-    this.views = mapKeys(sanitisedFieldsConfig, ({ type }, path) =>
-      this.fieldsByPath[path].extendAdminViews({ ...type.views })
-    );
     this.hookManager = new HookManager({
       fields: this.fields,
       hooks: this._hooks,
       listKey: this.key,
     });
-  }
-
-  getAdminMeta({ schemaName }) {
-    const schemaAccess = this.access[schemaName];
-    return {
-      key: this.key,
-      // Reduce to truthy values (functions can't be passed over the webpack
-      // boundary)
-      access: mapKeys(schemaAccess, val => !!val),
-      label: this.adminUILabels.label,
-      singular: this.adminUILabels.singular,
-      plural: this.adminUILabels.plural,
-      path: this.adminUILabels.path,
-      gqlNames: this.gqlNames,
-      fields: this.fields
-        .filter(field => field.access[schemaName].read)
-        .map(field => field.getAdminMeta({ schemaName })),
-      adminDoc: this.adminDoc,
-      adminConfig: this.adminConfig,
-    };
   }
 
   getFieldsWithAccess({ schemaName, access }) {
@@ -276,10 +194,6 @@ module.exports = class List {
     ];
   }
 
-  getPrimaryKey() {
-    return this.fieldsByPath['id'];
-  }
-
   _wrapFieldResolver(field, innerResolver) {
     // Wrap the "inner" resolver for a single output field with list-specific modifiers
     return async (item, args, context, info) => {
@@ -298,9 +212,7 @@ module.exports = class List {
         // If the client handles errors correctly, it should be able to
         // receive partial data (for the fields the user has access to),
         // and then an `errors` array of AccessDeniedError's
-        throwAccessDenied(opToType[operation], context, field.path, {
-          itemId: item ? item.id : null,
-        });
+        throwAccessDenied(opToType[operation], field.path, { itemId: item ? item.id : null });
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
@@ -334,9 +246,7 @@ module.exports = class List {
       }
     }
     if (restrictedFields.length) {
-      throwAccessDenied(opToType[operation], context, gqlName, extraInternalData, {
-        restrictedFields,
-      });
+      throwAccessDenied(opToType[operation], gqlName, extraInternalData, { restrictedFields });
     }
   }
 
@@ -353,27 +263,20 @@ module.exports = class List {
       }
     );
     if (!access) {
-      graphqlLogger.debug(
-        { operation, access, gqlName, ...extraInternalData },
-        'Access statically or implicitly denied'
-      );
-      graphqlLogger.info({ operation, gqlName, ...extraInternalData }, 'Access Denied');
       // If the client handles errors correctly, it should be able to
       // receive partial data (for the fields the user has access to),
       // and then an `errors` array of AccessDeniedError's
-      throwAccessDenied(opToType[operation], context, gqlName, extraInternalData);
+      throwAccessDenied(opToType[operation], gqlName, extraInternalData);
     }
     return access;
   }
 
   async getAccessControlledItem(id, access, { context, operation, gqlName, info }) {
-    const _throwAccessDenied = msg => {
-      graphqlLogger.debug({ id, operation, access, gqlName }, msg);
-      graphqlLogger.info({ id, operation, gqlName }, 'Access Denied');
+    const _throwAccessDenied = () => {
       // If the client handles errors correctly, it should be able to
       // receive partial data (for the fields the user has access to),
       // and then an `errors` array of AccessDeniedError's
-      throwAccessDenied(opToType[operation], context, gqlName, { itemId: id });
+      throwAccessDenied(opToType[operation], gqlName, { itemId: id });
     };
 
     let item;
@@ -387,7 +290,7 @@ module.exports = class List {
       // the user has access to. So we have to do a check here to see if the
       // ID they're requesting matches that ID.
       // Nice side-effect: We can throw without having to ever query the DB.
-      _throwAccessDenied('Item excluded this id from filters');
+      _throwAccessDenied();
     } else {
       // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
       // We only want 1 item, don't make the DB do extra work
@@ -408,7 +311,7 @@ module.exports = class List {
       // that return null do not exist). Similar to how S3 returns 403's
       // always instead of ever returning 404's.
       // Our version is to always throw if not found.
-      _throwAccessDenied('Zero items found');
+      _throwAccessDenied();
     }
     // Found the item, and it passed the filter test
     return item;
@@ -498,30 +401,15 @@ module.exports = class List {
     };
   }
 
-  async itemQuery(
-    // prettier-ignore
-    { where: { id } },
-    context,
-    gqlName,
-    info
-  ) {
+  async itemQuery({ where: { id } }, context, gqlName, info) {
     const operation = 'read';
-    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'Start query');
 
     const access = await this.checkListAccess(context, undefined, operation, {
       gqlName,
       itemId: id,
     });
 
-    const result = await this.getAccessControlledItem(id, access, {
-      context,
-      operation,
-      gqlName,
-      info,
-    });
-
-    graphqlLogger.debug({ id, operation, type: opToType[operation], gqlName }, 'End query');
-    return result;
+    return this.getAccessControlledItem(id, access, { context, operation, gqlName, info });
   }
 
   async _itemsQuery(args, extra) {
@@ -530,12 +418,7 @@ module.exports = class List {
     const { maxResults } = this.queryLimits;
 
     const throwLimitsExceeded = args => {
-      throw new LimitsExceededError({
-        data: {
-          list: this.key,
-          ...args,
-        },
-      });
+      throw new LimitsExceededError({ data: { list: this.key, ...args } });
     };
 
     // Need to enforce List-specific query limits
@@ -635,10 +518,7 @@ module.exports = class List {
       }
     });
 
-    return {
-      ...data,
-      ...resolvedRelationships,
-    };
+    return { ...data, ...resolvedRelationships };
   }
 
   async _resolveDefaults({ context, originalInput }) {
@@ -658,7 +538,7 @@ module.exports = class List {
     };
   }
 
-  async _nestedMutation(mutationState, context, mutation) {
+  async _nestedMutation(mutationState, mutation) {
     // Set up a fresh mutation state if we're the root mutation
     const isRootMutation = !mutationState;
     if (isRootMutation) {
@@ -719,7 +599,7 @@ module.exports = class List {
 
   async _createSingle(originalInput, existingItem, context, mutationState) {
     const operation = 'create';
-    return await this._nestedMutation(mutationState, context, async mutationState => {
+    return await this._nestedMutation(mutationState, async mutationState => {
       const defaultedItem = await this._resolveDefaults({ context, originalInput });
 
       // Enable resolveRelationship to perform some action after the item is created by
@@ -816,29 +696,39 @@ module.exports = class List {
     const extraData = { gqlName, itemIds: ids };
 
     const access = await this.checkListAccess(context, data, operation, extraData);
-
     const existingItems = await this.getAccessControlledItems(ids, access);
-    const existingItemsById = arrayToObject(existingItems, 'id');
 
+    // Only update those items which pass access control
     const itemsToUpdate = zipObj({
-      existingItem: ids.map(id => existingItemsById[id]),
-      id: ids, // itemId is taken from here in checkFieldAccess
-      data: data.map(d => d.data),
+      existingItem: existingItems,
+      id: existingItems.map(({ id }) => id), // itemId is taken from here in checkFieldAccess
+      data: existingItems.map(({ id }) => data.find(d => d.id === id).data),
     });
 
     // FIXME: We should do all of these in parallel and return *all* the field access violations
     await this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
 
-    return Promise.all(
-      itemsToUpdate.map(({ existingItem, id, data }) =>
-        this._updateSingle(id, data, existingItem, context, mutationState)
-      )
-    );
+    if (this.adapter.parentAdapter.provider === 'sqlite') {
+      // We perform these operations sequentially as a workaround for a connection
+      // timeout bug that happens in prisma+sqlite: https://github.com/prisma/prisma/issues/2955
+      const ret = [];
+      for (const item of itemsToUpdate) {
+        const { existingItem, id, data } = item;
+        ret.push(await this._updateSingle(id, data, existingItem, context, mutationState));
+      }
+      return ret;
+    } else {
+      return Promise.all(
+        itemsToUpdate.map(({ existingItem, id, data }) =>
+          this._updateSingle(id, data, existingItem, context, mutationState)
+        )
+      );
+    }
   }
 
   async _updateSingle(id, originalInput, existingItem, context, mutationState) {
     const operation = 'update';
-    return await this._nestedMutation(mutationState, context, async mutationState => {
+    return await this._nestedMutation(mutationState, async mutationState => {
       let resolvedData = await this._resolveRelationship(
         originalInput,
         existingItem,
@@ -916,15 +806,25 @@ module.exports = class List {
 
     const existingItems = await this.getAccessControlledItems(ids, access);
 
-    return Promise.all(
-      existingItems.map(existingItem => this._deleteSingle(existingItem, context, mutationState))
-    );
+    if (this.adapter.parentAdapter.provider === 'sqlite') {
+      // We perform these operations sequentially as a workaround for a connection
+      // timeout bug that happens in prisma+sqlite: https://github.com/prisma/prisma/issues/2955
+      const ret = [];
+      for (const existingItem of existingItems) {
+        ret.push(await this._deleteSingle(existingItem, context, mutationState));
+      }
+      return ret;
+    } else {
+      return Promise.all(
+        existingItems.map(existingItem => this._deleteSingle(existingItem, context, mutationState))
+      );
+    }
   }
 
   async _deleteSingle(existingItem, context, mutationState) {
     const operation = 'delete';
 
-    return await this._nestedMutation(mutationState, context, async () => {
+    return await this._nestedMutation(mutationState, async () => {
       await this.hookManager.validateDelete({ existingItem, context, operation });
 
       await this.hookManager.beforeDelete({ existingItem, context, operation });
@@ -952,14 +852,6 @@ module.exports = class List {
         `
         """ ${this.schemaDoc || 'A keystone list'} """
         type ${this.gqlNames.outputTypeName} {
-          """
-          This virtual field will be resolved in one of the following ways (in this order):
-           1. Execution of 'labelResolver' set on the ${this.key} List config, or
-           2. As an alias to the field set on 'labelField' in the ${this.key} List config, or
-           3. As an alias to a 'name' field on the ${this.key} List (if one exists), or
-           4. As an alias to the 'id' field on the ${this.key} List.
-          """
-          _label_: String
           ${flatten(
             readFields.map(field =>
               field.schemaDoc
@@ -1148,10 +1040,9 @@ module.exports = class List {
     if (!schemaAccess.read) {
       return {};
     }
-    const fieldResolvers = {
-      // TODO: The `_label_` output field currently circumvents access control
-      _label_: this.labelResolver,
-      ...objMerge(
+
+    return {
+      [this.gqlNames.outputTypeName]: objMerge(
         this.fields
           .filter(field => field.access[schemaName].read)
           .map(field =>
@@ -1162,7 +1053,6 @@ module.exports = class List {
           )
       ),
     };
-    return { [this.gqlNames.outputTypeName]: fieldResolvers };
   }
 
   gqlAuxQueryResolvers() {

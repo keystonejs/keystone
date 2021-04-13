@@ -2,18 +2,28 @@ import { KeystoneContext } from '@keystone-next/types';
 import {
   multiAdapterRunners,
   setupFromConfig,
-  AdapterName,
+  ProviderName,
+  testConfig,
 } from '@keystone-next/test-utils-legacy';
 import config from '../keystone';
 
-function setupKeystone(adapterName: AdapterName) {
-  return setupFromConfig({ adapterName, config });
+function setupKeystone(provider: ProviderName) {
+  return setupFromConfig({
+    provider,
+    config: testConfig({
+      lists: config.lists,
+      extendGraphqlSchema: config.extendGraphqlSchema,
+      session: config.session,
+    }),
+  });
 }
 
-const asUser = (context: KeystoneContext, itemId?: string) =>
+const FAKE_ID = 12345;
+
+const asUser = (context: KeystoneContext, itemId?: number) =>
   context.exitSudo().withSession({ itemId, data: {} });
 
-multiAdapterRunners('mongoose').map(({ runner }) =>
+multiAdapterRunners('postgresql').map(({ runner }) =>
   describe(`Custom mutations`, () => {
     describe('checkout(token)', () => {
       const token = 'TOKEN'; // This is not currently used by the mutation
@@ -52,7 +62,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
               price: 5,
               photo: { create: { altText: 'product 1' } },
             },
-            resolveFields: 'id name description price photo { id }',
+            query: 'id name description price photo { id }',
           });
           const product2 = await Product.createOne({
             data: {
@@ -62,7 +72,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
               price: 7,
               photo: { create: { altText: 'product 2' } },
             },
-            resolveFields: 'id name description price photo { id }',
+            query: 'id name description price photo { id }',
           });
 
           // Create some users
@@ -145,7 +155,7 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
         'Not logged in should throw',
         runner(setupKeystone, async ({ context }) => {
           const { graphql } = asUser(context, undefined);
-          const productId = '123456781234567812345678';
+          const productId = FAKE_ID;
           const { data, errors } = await graphql.raw({ query, variables: { productId } });
           expect(data).toEqual({ addToCart: null });
           expect(errors).toHaveLength(1);
@@ -156,8 +166,8 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
       test(
         'Adding a non-existant product should throw',
         runner(setupKeystone, async ({ context }) => {
-          const { graphql } = asUser(context, '123456781234567812345678');
-          const productId = '123456781234567812345678';
+          const { graphql } = asUser(context, FAKE_ID);
+          const productId = FAKE_ID;
           const { data, errors } = await graphql.raw({ query, variables: { productId } });
           expect(data).toEqual({ addToCart: null });
           expect(errors).toHaveLength(1);
@@ -166,23 +176,9 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
       );
 
       test(
-        'Adding a mis-formed product should throw',
-        runner(setupKeystone, async ({ context }) => {
-          const { graphql } = asUser(context, '123456781234567812345678');
-          const productId = '123';
-          const { data, errors } = await graphql.raw({ query, variables: { productId } });
-          expect(data).toEqual({ addToCart: null });
-          expect(errors).toHaveLength(1);
-          expect(errors![0].message).toEqual(
-            'Argument passed in must be a single String of 12 bytes or a string of 24 hex characters'
-          );
-        })
-      );
-
-      test(
         'Adding a null product should throw',
         runner(setupKeystone, async ({ context }) => {
-          const { graphql } = asUser(context, '123456781234567812345678');
+          const { graphql } = asUser(context, FAKE_ID);
           const { data, errors } = await graphql.raw({
             // Note: $pid can be null as we need to check the behaviour of addToCart
             query: 'mutation m($pid: ID){ addToCart(productId: $pid) { id } }',
@@ -333,13 +329,13 @@ multiAdapterRunners('mongoose').map(({ runner }) =>
           await q({ query, variables: { productId: product1.id } });
           const result1 = await context.lists.CartItem.findMany({
             where: { product: { id: product1.id } },
-            resolveFields: 'quantity',
+            query: 'quantity',
           });
           expect(result1).toHaveLength(1);
           expect(result1[0].quantity).toEqual(3);
           const result2 = await context.lists.CartItem.findMany({
             where: { product: { id: product2.id } },
-            resolveFields: 'quantity',
+            query: 'quantity',
           });
           expect(result2).toHaveLength(1);
           expect(result2[0].quantity).toEqual(2);

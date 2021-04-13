@@ -1,7 +1,7 @@
 import { config } from '@keystone-next/keystone/schema';
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
-import { lists } from './schema';
 import { createAuth } from '@keystone-next/auth';
+import { lists } from './schema';
 
 import { isSignedIn } from './access';
 
@@ -41,11 +41,8 @@ const { withAuth } = createAuth({
 export default withAuth(
   config({
     db: process.env.DATABASE_URL
-      ? { adapter: 'prisma_postgresql', url: process.env.DATABASE_URL }
-      : {
-          adapter: 'mongoose',
-          url: 'mongodb://localhost/keystone-examples-roles',
-        },
+      ? { provider: 'postgresql', url: process.env.DATABASE_URL }
+      : { provider: 'sqlite', url: 'file:./keystone.db' },
     lists,
     ui: {
       /* Everyone who is signed in can access the Admin UI */

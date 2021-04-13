@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/website",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -9,12 +9,12 @@
   "dependencies": {
     "@babel/runtime": "^7.13.10",
     "@keystone-ui/button": "^3.0.1",
-    "@keystone-ui/core": "^2.0.1",
-    "@keystone-ui/fields": "^2.0.1",
+    "@keystone-ui/core": "^2.0.2",
+    "@keystone-ui/fields": "^2.0.2",
     "@keystone-ui/loading": "^2.0.1",
     "@keystone-ui/modals": "^2.0.1",
-    "@keystone-ui/notice": "^2.0.1",
-    "@keystone-ui/options": "^2.0.1",
+    "@keystone-ui/notice": "^2.0.2",
+    "@keystone-ui/options": "^2.0.2",
     "@keystone-ui/pill": "^2.0.1",
     "@keystone-ui/popover": "^2.0.1",
     "@keystone-ui/segmented-control": "^2.0.1",
@@ -22,19 +22,19 @@
     "@keystone-ui/tooltip": "^2.0.1",
     "@preconstruct/next": "^2.0.0",
     "@types/react": "^17.0.3",
-    "@types/react-dom": "^17.0.2",
+    "@types/react-dom": "^17.0.3",
     "@types/tinycolor2": "^1.4.2",
-    "@types/webpack": "^4.41.26",
-    "next": "10.0.8",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "@types/webpack": "^4.41.27",
+    "next": "^10.0.9",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "tinycolor2": "^1.4.2"
   },
   "devDependencies": {
     "typescript": "^4.2.3"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/website"
 }

@@ -1,5 +1,29 @@
 # @keystonejs/server-side-graphql-client
 
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`c28e765d1`](https://github.com/keystonejs/keystone/commit/c28e765d12655f802e324b82529fcf571d88c0c6), [`b40016301`](https://github.com/keystonejs/keystone/commit/b40016301dab71630068cc86c04828c5ee1683e8), [`192393d0d`](https://github.com/keystonejs/keystone/commit/192393d0df67e123a694a42dd3f95ffa6d40042b), [`1886b4323`](https://github.com/keystonejs/keystone/commit/1886b43235e50bd2e070350d258f0a3145c19bbc), [`399e6db39`](https://github.com/keystonejs/keystone/commit/399e6db39c51cf9e8bbf3dde0887e5bf55dd1c4d)]:
+  - @keystone-next/types@16.0.0
+
+## 3.0.0
+
+### Major Changes
+
+- [#5222](https://github.com/keystonejs/keystone/pull/5222) [`db6cb59dc`](https://github.com/keystonejs/keystone/commit/db6cb59dc0d32e3700c5aa0202428b627c40503d) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy `keystone` argument from all exported functions.
+
+* [#5258](https://github.com/keystonejs/keystone/pull/5258) [`0b679b742`](https://github.com/keystonejs/keystone/commit/0b679b742fb0d5d4c19db4498e327c44dd68b963) Thanks [@timleslie](https://github.com/timleslie)! - Removed legacy `runCustomQuery` function.
+
+### Minor Changes
+
+- [#5260](https://github.com/keystonejs/keystone/pull/5260) [`f73cc9377`](https://github.com/keystonejs/keystone/commit/f73cc93779c9fce1f86730e065c02ede92016ad2) Thanks [@timleslie](https://github.com/timleslie)! - Convert the package to TypeScript.
+
+### Patch Changes
+
+- Updated dependencies [[`34dd809ee`](https://github.com/keystonejs/keystone/commit/34dd809eef2368bba1e50ed613b36c5dac7262d1)]:
+  - @keystone-next/types@15.0.1
+
 ## 2.0.1
 
 ### Patch Changes

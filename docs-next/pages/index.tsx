@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 
+import { Button } from '@keystone-ui/button';
 import { Page } from '../components/Page';
 import { SubscribeForm } from '../components/SubscribeForm';
 
@@ -13,17 +14,22 @@ export default function IndexPage() {
         headless content management system around.
       </p>
       <p>
-        🗺 If you're wondering what we're up to, check out our <Link href="/roadmap">Roadmap</Link>.
+        <Link href="/tutorials/getting-started-with-create-keystone-next-app" passHref>
+          <Button tone="active" weight="bold">
+            Get started
+          </Button>
+        </Link>
       </p>
       <p>
-        In this major update, we've focused on improving Keystone's <strong>interfaces</strong>,
-        including the way you configure and run Keystone projects, and a whole new Admin UI. To
-        learn more, check out our <Link href="/whats-new">What's New</Link> page.
+        We’re improving Keystone's <strong>interfaces</strong>, including the way you configure and
+        run projects, and creating a whole new Admin UI. To learn more, check out our{' '}
+        <Link href="/roadmap">Roadmap</Link>, and <Link href="/whats-new">What’s New</Link>.
       </p>
       <p>
-        🤩 If you want to see one of our favourite new features, check out our{' '}
-        <Link href="/guides/document-fields">Document Field</Link>
+        🤩 &nbsp;To see one of our favourite new features, check out the{' '}
+        <Link href="/guides/document-fields">Document Field</Link>.
       </p>
+      <h2>Stay connected</h2>
       <p>
         <SubscribeForm>
           <div className="mb-2">
@@ -35,11 +41,15 @@ export default function IndexPage() {
         </SubscribeForm>
       </p>
       <p>
-        Hit us up at{' '}
+        Get help in our{' '}
+        <a href="https://community.keystonejs.com/" target="_blank">
+          Community Slack
+        </a>
+        , and follow us on{' '}
         <a href="https://twitter.com/keystonejs" target="_blank">
-          @KeystoneJS
+          Twitter
         </a>{' '}
-        with your feedback.
+        for the latest news and anouncements.
       </p>
     </Page>
   );

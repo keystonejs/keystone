@@ -1,6 +1,5 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
-import isPromise from 'p-is-promise';
 import semver from 'semver';
 
 export const noop = <T>(x: T): T => x;
@@ -19,7 +18,7 @@ export const mapKeys = <T, R>(obj: T, func: (value: T[keyof T], key: keyof T, ob
   );
 
 // { key: value, ... } => { mapFn(key, value): value, ... }
-export const mapKeyNames = <T, R extends string>(
+export const mapKeyNames = <T, R extends string | number>(
   obj: T,
   func: (key: keyof T, value: T[keyof T], obj: T) => R
 ) =>
@@ -68,7 +67,7 @@ export const resolveAllKeys = async <T extends Record<string, Promise<any>>>(obj
 
 export const unique = <T>(arr: T[]): T[] => [...new Set(arr)];
 
-export const intersection = <T>(array1: T[], array2: T[]) =>
+export const intersection = <T>(array1: readonly T[], array2: readonly T[]) =>
   unique(array1.filter(value => array2.includes(value)));
 
 export const pick = <T, K extends keyof T>(obj: T, keys: K[]) =>
@@ -143,7 +142,7 @@ export const arrayToObject = <V extends string, T extends Record<string, V>, R>(
  * @param {Array} arr An array of one or more arrays
  * @returns The new array.
  */
-export const flatten = <T>(arr: T[][]) => Array.prototype.concat(...arr);
+export const flatten = <T>(arr: (T[] | T)[]) => Array.prototype.concat(...arr);
 
 // { foo: [1, 2, 3], bar: [4, 5, 6]} => [{ foo: 1, bar: 4}, { foo: 2, bar: 5}, { foo: 3, bar: 6 }]
 export const zipObj = <V, T extends Record<string, V[]>>(obj: T) =>
@@ -213,45 +212,6 @@ export const createLazyDeferred = <T, S>() => {
 };
 
 /**
- * Given an array of functions which may throw a Promise when executed, we want
- * to ensure all functions are executed, reducing any thrown Promises to a
- * single Promise, which is itself rethrown.
- * If no Promises are thrown, this is the equivalent of a .map
- * @param {Array} executors
- */
-export const captureSuspensePromises = <T>(executors: (() => T)[]) => {
-  const values: T[] = [];
-  const promises = executors
-    .map(executor => {
-      try {
-        values.push(executor());
-      } catch (loadingPromiseOrError) {
-        // An actual error was thrown, so we want to bubble that up
-        if (!isPromise(loadingPromiseOrError)) {
-          throw loadingPromiseOrError;
-        }
-        // Return a Suspense promise
-        return loadingPromiseOrError;
-      }
-    })
-    .filter(Boolean);
-
-  if (promises.length) {
-    // All the suspense promises are reduced to a single promise then rethrown
-    throw Promise.all(promises);
-  }
-
-  return values;
-};
-
-/**
- * Returns the length of all arrays in obj
- * @param {*} obj An objects whose property values are arrays.
- */
-export const countArrays = (obj: Record<string, any[]>) =>
-  Object.values(obj).reduce((total, items) => total + (items ? items.length : 0), 0);
-
-/**
  * Compares two version strings or number arrays in the major.minor.patch format.
  * @param {Array<Number>|String} comp The version to compare.
  * @param {Array<Number>|String} base The version against which to compare.
@@ -281,3 +241,18 @@ export const versionGreaterOrEqualTo = (
  * @returns The new string
  */
 export const upcase = (str: string) => str.substr(0, 1).toUpperCase() + str.substr(1);
+
+/**
+ * Turns a passed in string into
+ * a human readable label
+ * @param {String} str The string to convert.
+ * @returns The new string
+ */
+export const humanize = (str: string) => {
+  return str
+    .replace(/([a-z])([A-Z]+)/g, '$1 $2')
+    .split(/\s|_|\-/)
+    .filter(i => i)
+    .map(upcase)
+    .join(' ');
+};

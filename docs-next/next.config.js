@@ -1,6 +1,8 @@
 const withPreconstruct = require('@preconstruct/next');
 const withPlugins = require('next-compose-plugins');
+// eslint-disable-next-line import/order
 const mdxHints = require('./remark-plugins/hints');
+const withImages = require('next-images');
 const withMDX = require('@next/mdx')({
   extension: /\.mdx?$/,
   options: {
@@ -10,6 +12,7 @@ const withMDX = require('@next/mdx')({
 
 module.exports = withPlugins([
   withPreconstruct,
+  withImages,
   [withMDX, { pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'] }],
   nextConfig => {
     nextConfig.env = {

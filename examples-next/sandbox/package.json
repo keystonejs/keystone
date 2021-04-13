@@ -1,0 +1,20 @@
+{
+  "name": "@keystone-next/example-sandbox",
+  "version": "1.0.5",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "keystone-next dev",
+    "sandbox": "yarn && yarn dev"
+  },
+  "dependencies": {
+    "@keystone-next/admin-ui": "^13.0.0",
+    "@keystone-next/auth": "^20.0.0",
+    "@keystone-next/fields": "^6.0.0",
+    "@keystone-next/keystone": "^15.0.0"
+  },
+  "engines": {
+    "node": ">=12.13.0"
+  },
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/sandbox"
+}

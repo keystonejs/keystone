@@ -77,9 +77,6 @@ async function validateFieldAccessControl({
   return result;
 }
 
-// getCustomAccessControlForUser and getAuthAccessControlForUser do not exist here
-// since the places where they're used are not used in the new interfaces
-
 export const skipAccessControlContext = {
   getListAccessControlForUser: () => true,
   getFieldAccessControlForUser: () => true,

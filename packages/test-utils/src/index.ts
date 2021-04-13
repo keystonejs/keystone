@@ -1,51 +1,40 @@
 import path from 'path';
 import crypto from 'crypto';
 import { ServerResponse } from 'http';
+import fs from 'fs';
 import express from 'express';
 // @ts-ignore
 import supertest from 'supertest-light';
-import MongoDBMemoryServer from 'mongodb-memory-server-core';
-import url from 'url';
 // @ts-ignore
 import { Keystone } from '@keystone-next/keystone-legacy';
-// @ts-ignore
-import { GraphQLApp } from '@keystone-next/app-graphql-legacy';
-// @ts-ignore
-import { KnexAdapter } from '@keystone-next/adapter-knex-legacy';
-// @ts-ignore
-import { MongooseAdapter } from '@keystone-next/adapter-mongoose-legacy';
-// @ts-ignore
-import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { initConfig, createSystem, createExpressServer } from '@keystone-next/keystone';
+import { pushPrismaSchemaToDatabase } from '@keystone-next/keystone/migrations';
+import {
+  getCommittedArtifacts,
+  writeCommittedArtifacts,
+  requirePrismaClient,
+  generateNodeModulesArtifacts,
+} from '@keystone-next/keystone/artifacts';
 import type { KeystoneConfig, BaseKeystone, KeystoneContext } from '@keystone-next/types';
 import memoizeOne from 'memoize-one';
 
-export type AdapterName = 'mongoose' | 'knex' | 'prisma_postgresql';
+export type ProviderName = 'postgresql' | 'sqlite';
 
 const hashPrismaSchema = memoizeOne(prismaSchema =>
   crypto.createHash('md5').update(prismaSchema).digest('hex')
 );
 
 const argGenerator = {
-  mongoose: getMongoMemoryServerConfig,
-  knex: () => ({
-    dropDatabase: true,
-    knexOptions: {
-      connection:
-        process.env.DATABASE_URL || process.env.KNEX_URI || 'postgres://localhost/keystone',
-    },
+  postgresql: () => ({
+    url: process.env.DATABASE_URL!,
+    provider: 'postgresql' as const,
+    getDbSchemaName: () => null as any,
+    // Turn this on if you need verbose debug info
+    enableLogging: false,
   }),
-  prisma_postgresql: () => ({
-    migrationMode: 'prototype',
-    dropDatabase: true,
-    url: process.env.DATABASE_URL || '',
-    provider: 'postgresql',
-    // Put the generated client at a unique path
-    getPrismaPath: ({ prismaSchema }: { prismaSchema: string }) =>
-      path.join('.api-test-prisma-clients', hashPrismaSchema(prismaSchema)),
-    // Slice down to the hash make a valid postgres schema name
-    getDbSchemaName: ({ prismaSchema }: { prismaSchema: string }) =>
-      hashPrismaSchema(prismaSchema).slice(0, 16),
+  sqlite: () => ({
+    url: process.env.DATABASE_URL!,
+    provider: 'sqlite' as const,
     // Turn this on if you need verbose debug info
     enableLogging: false,
   }),
@@ -57,89 +46,50 @@ const argGenerator = {
 type TestKeystoneConfig = Omit<KeystoneConfig, 'db' | 'ui'>;
 export const testConfig = (config: TestKeystoneConfig) => config;
 
+const alreadyGeneratedProjects = new Set<string>();
+
 async function setupFromConfig({
-  adapterName,
-  config,
+  provider,
+  config: _config,
 }: {
-  adapterName: AdapterName;
+  provider: ProviderName;
   config: TestKeystoneConfig;
 }) {
-  let db: KeystoneConfig['db'];
-  if (adapterName === 'knex') {
-    const adapterArgs = await argGenerator[adapterName]();
-    db = { adapter: adapterName, url: adapterArgs.knexOptions.connection, ...adapterArgs };
-  } else if (adapterName === 'mongoose') {
-    const adapterArgs = await argGenerator[adapterName]();
-    db = { adapter: adapterName, url: adapterArgs.mongoUri, mongooseOptions: adapterArgs };
-  } else if (adapterName === 'prisma_postgresql') {
-    const adapterArgs = await argGenerator[adapterName]();
-    db = { adapter: adapterName, ...adapterArgs };
-  }
-  const _config = initConfig({ ...config, db: db!, ui: { isDisabled: true } });
-
-  const { keystone, createContext, graphQLSchema } = createSystem(
-    _config,
-    path.resolve('.keystone'),
-    'prototype'
-  );
-
-  const app = await createExpressServer(_config, graphQLSchema, createContext, true, '', false);
-
-  return { keystone, context: createContext().sudo(), app };
-}
-
-async function setupServer({
-  adapterName,
-  schemaName = 'public',
-  schemaNames = ['public'],
-  createLists = () => {},
-  keystoneOptions,
-  graphqlOptions = {},
-}: {
-  adapterName: AdapterName;
-  schemaName: string;
-  schemaNames: string[];
-  createLists: (args: Keystone<string>) => void;
-  keystoneOptions: Record<string, any>; // FIXME: should match args of Keystone constructor
-  graphqlOptions: Record<string, any>; // FIXME: should match args of GraphQLApp constuctor
-}) {
-  const Adapter = {
-    mongoose: MongooseAdapter,
-    knex: KnexAdapter,
-    prisma_postgresql: PrismaAdapter,
-  }[adapterName];
-
-  const keystone = new Keystone({
-    adapter: new Adapter(await argGenerator[adapterName]()),
-    // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
-    defaultAccess: { list: true, field: true },
-    schemaNames,
-    cookieSecret: 'secretForTesting',
-    ...keystoneOptions,
+  const adapterArgs = await argGenerator[provider]();
+  const config = initConfig({
+    ..._config,
+    db: adapterArgs,
+    ui: { isDisabled: true },
   });
 
-  createLists(keystone);
+  const prismaClient = await (async () => {
+    const { keystone, graphQLSchema } = createSystem(config);
+    const artifacts = await getCommittedArtifacts(graphQLSchema, keystone);
+    const hash = hashPrismaSchema(artifacts.prisma);
+    if (provider === 'postgresql') {
+      config.db.url = `${config.db.url}?schema=${hash.toString()}`;
+    }
+    const cwd = path.resolve('.api-test-prisma-clients', hash);
+    if (!alreadyGeneratedProjects.has(hash)) {
+      alreadyGeneratedProjects.add(hash);
+      fs.mkdirSync(cwd, { recursive: true });
+      await writeCommittedArtifacts(artifacts, cwd);
+      await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
+    }
+    await pushPrismaSchemaToDatabase(
+      config.db.url,
+      artifacts.prisma,
+      path.join(cwd, 'schema.prisma'),
+      true
+    );
+    return requirePrismaClient(cwd);
+  })();
 
-  const apps = [
-    new GraphQLApp({
-      schemaName,
-      apiPath: '/api/graphql',
-      apollo: {
-        tracing: true,
-        cacheControl: {
-          defaultMaxAge: 3600,
-        },
-      },
-      ...graphqlOptions,
-    }),
-  ];
+  const { keystone, createContext, graphQLSchema } = createSystem(config, prismaClient);
 
-  const { middlewares } = await keystone.prepare({ dev: true, apps });
+  const app = await createExpressServer(config, graphQLSchema, createContext, true, '', false);
 
-  const app = express();
-  app.use(middlewares);
-
-  return { keystone, app };
+  return { keystone, context: createContext().sudo(), app };
 }
 
 function networkedGraphqlRequest({
@@ -153,9 +103,9 @@ function networkedGraphqlRequest({
   app: express.Application;
   query: string;
   variables?: Record<string, any>;
-  headers: Record<string, any>;
-  expectedStatusCode: number;
-  operationName: string;
+  headers?: Record<string, any>;
+  expectedStatusCode?: number;
+  operationName?: string;
 }) {
   const request = supertest(app).set('Accept', 'application/json');
 
@@ -172,61 +122,27 @@ function networkedGraphqlRequest({
     }));
 }
 
-// One instance per node.js thread which cleans itself up when the main process
-// exits
-let mongoServer: MongoDBMemoryServer | undefined | null;
-let mongoServerReferences = 0;
+type Setup = { keystone: BaseKeystone; context: KeystoneContext; app: express.Application };
 
-async function getMongoMemoryServerConfig() {
-  mongoServer = mongoServer || new MongoDBMemoryServer();
-  mongoServerReferences++;
-  // Passing `true` here generates a new, random DB name for us
-  const mongoUri = await mongoServer.getConnectionString(true);
-  // In theory the dbName can contain query params so lets parse it then extract the db name
-  const dbName = url.parse(mongoUri).pathname!.split('/').pop();
-
-  return { mongoUri, dbName };
-}
-
-async function teardownMongoMemoryServer() {
-  mongoServerReferences--;
-  if (mongoServerReferences < 0) {
-    mongoServerReferences = 0;
-  }
-
-  if (mongoServerReferences > 0) {
-    return Promise.resolve();
-  }
-
-  if (!mongoServer) {
-    return Promise.resolve();
-  }
-  await mongoServer.stop();
-  mongoServer = null;
-}
-
-type Setup = { keystone: Keystone<string> | BaseKeystone; context: KeystoneContext };
-
-function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promise<void> | void) {
+function _keystoneRunner(provider: ProviderName, tearDownFunction: () => Promise<void> | void) {
   return function (
-    setupKeystoneFn: (adaptername: AdapterName) => Promise<Setup>,
-    testFn: (setup: Setup) => Promise<void>
+    setupKeystoneFn: (provider: ProviderName) => Promise<Setup>,
+    testFn?: (setup: Setup) => Promise<void>
   ) {
     return async function () {
       if (!testFn) {
         // If a testFn is not defined then we just need
         // to excute setup and tear down in isolation.
         try {
-          await setupKeystoneFn(adapterName);
+          await setupKeystoneFn(provider);
         } catch (error) {
           await tearDownFunction();
           throw error;
         }
         return;
       }
-      const setup = await setupKeystoneFn(adapterName);
+      const setup = await setupKeystoneFn(provider);
       const { keystone } = setup;
-
       await keystone.connect();
 
       try {
@@ -239,13 +155,13 @@ function _keystoneRunner(adapterName: AdapterName, tearDownFunction: () => Promi
   };
 }
 
-function _before(adapterName: AdapterName) {
+function _before(provider: ProviderName) {
   return async function (
     setupKeystone: (
-      adapterName: AdapterName
+      provider: ProviderName
     ) => Promise<{ keystone: Keystone<string>; app: any; context: any }>
   ) {
-    const { keystone, context, app } = await setupKeystone(adapterName);
+    const { keystone, context, app } = await setupKeystone(provider);
     await keystone.connect();
     return { keystone, context, app };
   };
@@ -261,24 +177,18 @@ function _after(tearDownFunction: () => Promise<void> | void) {
 function multiAdapterRunners(only = process.env.TEST_ADAPTER) {
   return [
     {
-      runner: _keystoneRunner('mongoose', teardownMongoMemoryServer),
-      adapterName: 'mongoose' as const,
-      before: _before('mongoose'),
-      after: _after(teardownMongoMemoryServer),
-    },
-    {
-      runner: _keystoneRunner('knex', () => {}),
-      adapterName: 'knex' as const,
-      before: _before('knex'),
+      runner: _keystoneRunner('postgresql', () => {}),
+      provider: 'postgresql' as const,
+      before: _before('postgresql'),
       after: _after(() => {}),
     },
     {
-      runner: _keystoneRunner('prisma_postgresql', () => {}),
-      adapterName: 'prisma_postgresql' as const,
-      before: _before('prisma_postgresql'),
+      runner: _keystoneRunner('sqlite', () => {}),
+      provider: 'sqlite' as const,
+      before: _before('sqlite'),
       after: _after(() => {}),
     },
-  ].filter(a => typeof only === 'undefined' || a.adapterName === only);
+  ].filter(a => typeof only === 'undefined' || a.provider === only);
 }
 
-export { setupServer, setupFromConfig, multiAdapterRunners, networkedGraphqlRequest };
+export { setupFromConfig, multiAdapterRunners, networkedGraphqlRequest };

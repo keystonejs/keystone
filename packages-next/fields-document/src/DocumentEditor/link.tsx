@@ -11,6 +11,8 @@ import { LinkIcon } from '@keystone-ui/icons/icons/LinkIcon';
 import { Trash2Icon } from '@keystone-ui/icons/icons/Trash2Icon';
 import { ExternalLinkIcon } from '@keystone-ui/icons/icons/ExternalLinkIcon';
 
+import { HistoryEditor } from 'slate-history';
+import { DocumentFeatures } from '../views';
 import { InlineDialog, ToolbarButton, ToolbarGroup, ToolbarSeparator } from './primitives';
 import {
   EditorAfterButIgnoringingPointsWithNoContent,
@@ -21,9 +23,7 @@ import {
 } from './utils';
 import { getAncestorComponentChildFieldDocumentFeatures, useToolbarState } from './toolbar-state';
 import { useEventCallback } from './utils';
-import { DocumentFeatures } from '../views';
 import { ComponentBlock } from './component-blocks/api';
-import { HistoryEditor } from 'slate-history';
 import { isValidURL } from './isValidURL';
 
 const isLinkActive = (editor: Editor) => {

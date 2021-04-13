@@ -5,10 +5,10 @@
   "main": "dist/pill.cjs.js",
   "module": "dist/pill.esm.js",
   "peerDependencies": {
-    "react": "^17.0.1"
+    "react": "^17.0.2"
   },
   "devDependencies": {
-    "react": "^17.0.1"
+    "react": "^17.0.2"
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
@@ -16,7 +16,7 @@
     "@keystone-ui/icons": "^2.0.1"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/pill"
 }

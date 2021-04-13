@@ -1,5 +1,11 @@
 # @keystonejs/utils
 
+## 8.0.0
+
+### Major Changes
+
+- [#5197](https://github.com/keystonejs/keystone/pull/5197) [`97609a623`](https://github.com/keystonejs/keystone/commit/97609a623334fd8d7b9e24dd099abda2e2a37853) Thanks [@timleslie](https://github.com/timleslie)! - Removed unused functions `captureSuspensePromises` and `countArrays`.
+
 ## 7.0.0
 
 ### Major Changes

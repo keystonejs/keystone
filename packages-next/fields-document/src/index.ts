@@ -1,6 +1,6 @@
-import { DocumentFieldType } from './base-field-type';
-import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-next/types';
 import path from 'path';
+import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-next/types';
+import { DocumentImplementation, PrismaDocumentInterface } from './Implementation';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
 import { DocumentFeatures } from './views';
@@ -166,9 +166,15 @@ export const document = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   };
   const componentBlocks = config.componentBlocks || {};
   return {
-    type: DocumentFieldType,
+    type: {
+      type: 'Document',
+      implementation: DocumentImplementation,
+      adapter: PrismaDocumentInterface,
+    },
     config: {
       ...config,
+      componentBlocks,
+      relationships,
       ___validateAndNormalize: (data: unknown) =>
         validateAndNormalizeDocument(data, documentFeatures, componentBlocks, relationships),
     } as any,

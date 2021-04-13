@@ -83,7 +83,7 @@ export const SubscribeForm = ({
               {error ? 'Try again' : 'Subscribe'}
             </Button>
           </Stack>
-          {error ? <p css={{ margin: '0 !important', color: 'red' }}>{error}</p> : null}
+          {error ? <p css={{ margin: '0', color: 'red' }}>{error}</p> : null}
         </Stack>
       </form>
     </Fragment>

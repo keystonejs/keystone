@@ -1,21 +1,13 @@
 import { text, password } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
-import { AdapterName, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
+import { ProviderName, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createAuth } from '@keystone-next/auth';
 import { objMerge } from '@keystone-next/utils-legacy';
 import type { KeystoneConfig } from '@keystone-next/types';
 
-const FAKE_ID = {
-  mongoose: '5b3eabd9e9f2e3e4866742ea',
-  knex: 137,
-  prisma_postgresql: 137,
-} as const;
-const FAKE_ID_2 = {
-  mongoose: '5b3eabd9e9f2e3e4866742eb',
-  knex: 138,
-  prisma_postgresql: 138,
-} as const;
+const FAKE_ID = { postgresql: 137, sqlite: 137 } as const;
+const FAKE_ID_2 = { postgresql: 138, sqlite: 138 } as const;
 const COOKIE_SECRET = 'qwertyuiopasdfghjlkzxcvbmnm1234567890';
 
 const yesNo = (truthy: boolean | undefined) => (truthy ? 'Yes' : 'No');
@@ -97,7 +89,7 @@ const createFieldImperative = (fieldAccess: BooleanAccess) => ({
     },
   }),
 });
-function setupKeystone(adapterName: AdapterName) {
+function setupKeystone(provider: ProviderName) {
   const lists = createSchema({
     User: list({
       fields: {
@@ -135,15 +127,15 @@ function setupKeystone(adapterName: AdapterName) {
       access: {
         create: access.create,
         // arbitrarily restrict the data to a single item (see data.js)
-        read: () => access.read && { name_starts_with: 'Hello' },
-        update: () => access.update && { name_starts_with: 'Hello' },
-        delete: () => access.delete && { name_starts_with: 'Hello' },
+        read: () => access.read && { name: 'Hello' },
+        update: () => access.update && { name: 'Hello' },
+        delete: () => access.delete && { name: 'Hello' },
       },
     });
   });
   const auth = createAuth({ listKey: 'User', identityField: 'email', secretField: 'password' });
   return setupFromConfig({
-    adapterName,
+    provider,
     config: auth.withAuth(
       testConfig({
         lists,

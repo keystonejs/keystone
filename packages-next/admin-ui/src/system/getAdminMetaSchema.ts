@@ -1,4 +1,3 @@
-import { createAdminMeta } from './createAdminMeta';
 import {
   KeystoneContext,
   KeystoneConfig,
@@ -10,6 +9,7 @@ import {
 } from '@keystone-next/types';
 import { bindTypesToContext } from '@ts-gql/schema';
 import { GraphQLObjectType, GraphQLScalarType, GraphQLSchema } from 'graphql';
+import { createAdminMeta } from './createAdminMeta';
 
 const types = bindTypesToContext<KeystoneContext | { isAdminUIBuildProcess: true }>();
 
@@ -132,7 +132,7 @@ export function getAdminMetaSchema({
                 }
                 const item = await context.sudo().lists[rootVal.listKey].findOne({
                   where: { id: rootVal.itemId },
-                  resolveFields: false,
+                  query: false,
                 });
                 const listConfig = config.lists[rootVal.listKey];
                 const sessionFunction =

@@ -1,14 +1,9 @@
-const { upcase, resolveAllKeys, arrayToObject } = require('@keystone-next/utils-legacy');
+const { humanize, resolveAllKeys, arrayToObject } = require('@keystone-next/utils-legacy');
 
 const preventInvalidUnderscorePrefix = str => str.replace(/^__/, '_');
 
 const keyToLabel = str => {
-  let label = str
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .split(/\s|_|\-/)
-    .filter(i => i)
-    .map(upcase)
-    .join(' ');
+  let label = humanize(str);
 
   // Retain the leading underscore for auxiliary lists
   if (str[0] === '_') {
@@ -28,14 +23,6 @@ const opToType = {
   delete: 'mutation',
 };
 
-const getDefaultLabelResolver = labelField => item => {
-  const value = item[labelField || 'name'];
-  if (typeof value === 'number') {
-    return value.toString();
-  }
-  return value || item.id;
-};
-
 const mapToFields = (fields, action) =>
   resolveAllKeys(arrayToObject(fields, 'path', action)).catch(error => {
     if (!error.errors) {
@@ -52,6 +39,5 @@ module.exports = {
   labelToPath,
   labelToClass,
   opToType,
-  getDefaultLabelResolver,
   mapToFields,
 };

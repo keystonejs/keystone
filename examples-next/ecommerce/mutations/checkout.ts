@@ -1,6 +1,5 @@
-import { OrderCreateInput } from '../.keystone/schema-types';
-
 import { KeystoneContext } from '@keystone-next/types';
+
 // import stripeConfig from '../lib/stripe';
 
 const graphql = String.raw;
@@ -9,11 +8,7 @@ interface Arguments {
   token: string;
 }
 
-async function checkout(
-  root: any,
-  { token }: Arguments,
-  context: KeystoneContext
-): Promise<OrderCreateInput> {
+async function checkout(root: any, { token }: Arguments, context: KeystoneContext): Promise<any> {
   // 1. Make sure they are signed in
   const userId = context.session.itemId;
   if (!userId) {
@@ -22,7 +17,7 @@ async function checkout(
   // 1.5 Query the current user
   const user = await context.lists.User.findOne({
     where: { id: userId },
-    resolveFields: graphql`
+    query: graphql`
       id
       name
       email
@@ -87,7 +82,7 @@ async function checkout(
       items: { create: orderItems },
       user: { connect: { id: userId } },
     },
-    resolveFields: false,
+    query: false,
   });
   console.log({ order });
   // 6. Clean up any old cart item

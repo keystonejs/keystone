@@ -1,255 +1,28 @@
-const { ApolloServer, gql } = require('apollo-server-express');
-const flattenDeep = require('lodash.flattendeep');
-const memoize = require('micro-memoize');
-const falsey = require('falsey');
-const createCorsMiddleware = require('cors');
-const { execute, print } = require('graphql');
+const { gql } = require('apollo-server-express');
 const { GraphQLUpload } = require('graphql-upload');
-const {
-  arrayToObject,
-  objMerge,
-  flatten,
-  unique,
-  filterValues,
-} = require('@keystone-next/utils-legacy');
-const {
-  validateFieldAccessControl,
-  validateListAccessControl,
-  validateCustomAccessControl,
-  validateAuthAccessControl,
-} = require('@keystone-next/access-control-legacy');
-const { SessionManager } = require('@keystone-next/session-legacy');
-
+const { objMerge, flatten, unique, filterValues } = require('@keystone-next/utils-legacy');
 const { List } = require('../ListTypes');
-const { CustomProvider, ListAuthProvider, ListCRUDProvider } = require('../providers');
-const { formatError } = require('./format-error');
-
-// composePlugins([f, g, h])(o, e) = h(g(f(o, e), e), e)
-const composePlugins = fns => (o, e) => fns.reduce((acc, fn) => fn(acc, e), o);
+const { ListCRUDProvider } = require('../providers');
 
 module.exports = class Keystone {
-  constructor({
-    defaultAccess,
-    adapter,
-    onConnect,
-    cookieSecret,
-    sessionStore,
-    queryLimits = {},
-    cookie = {
-      secure: process.env.NODE_ENV === 'production', // Default to true in production
-      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-      sameSite: false,
-    },
-    schemaNames = ['public'],
-  }) {
+  constructor({ defaultAccess, adapter, onConnect, queryLimits = {} }) {
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
-    this.auth = {};
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
-    this._schemas = {};
-    this._sessionManager = new SessionManager({
-      cookieSecret,
-      cookie,
-      sessionStore,
-    });
-    this.eventHandlers = { onConnect };
-    this.registeredTypes = new Set();
-    this._schemaNames = schemaNames;
-
+    this.onConnect = onConnect;
     this._listCRUDProvider = new ListCRUDProvider();
-    this._customProvider = new CustomProvider({ schemaNames, defaultAccess: this.defaultAccess });
-    this._providers = [this._listCRUDProvider, this._customProvider];
-
-    if (adapter) {
-      this.adapter = adapter;
-    } else {
-      throw new Error('No database adapter provided');
-    }
-
-    this.queryLimits = {
-      maxTotalResults: Infinity,
-      ...queryLimits,
-    };
+    this._providers = [this._listCRUDProvider];
+    this.adapter = adapter;
+    this.queryLimits = { maxTotalResults: Infinity, ...queryLimits };
     if (this.queryLimits.maxTotalResults < 1) {
       throw new Error("queryLimits.maxTotalResults can't be < 1");
     }
   }
 
-  _getAccessControlContext({ schemaName, authentication, skipAccessControl }) {
-    if (skipAccessControl) {
-      return {
-        getCustomAccessControlForUser: () => true,
-        getListAccessControlForUser: () => true,
-        getFieldAccessControlForUser: () => true,
-        getAuthAccessControlForUser: () => true,
-      };
-    }
-    // memoizing to avoid requests that hit the same type multiple times.
-    // We do it within the request callback so we can resolve it based on the
-    // request info (like who's logged in right now, etc)
-    const getCustomAccessControlForUser = memoize(
-      async (item, args, context, info, access, gqlName) => {
-        return validateCustomAccessControl({
-          access: access[schemaName],
-          args: {
-            item,
-            args,
-            context,
-            info,
-            authentication: authentication && authentication.item ? authentication : {},
-            gqlName,
-          },
-        });
-      },
-      { isPromise: true }
-    );
-
-    const getListAccessControlForUser = memoize(
-      async (
-        access,
-        listKey,
-        originalInput,
-        operation,
-        { gqlName, itemId, itemIds, context } = {}
-      ) => {
-        return validateListAccessControl({
-          access: access[schemaName],
-          args: {
-            originalInput,
-            operation,
-            authentication: authentication && authentication.item ? authentication : {},
-            listKey,
-            gqlName,
-            itemId,
-            itemIds,
-            context,
-          },
-        });
-      },
-      { isPromise: true }
-    );
-
-    const getFieldAccessControlForUser = memoize(
-      async (
-        access,
-        listKey,
-        fieldKey,
-        originalInput,
-        existingItem,
-        operation,
-        { gqlName, itemId, itemIds, context } = {}
-      ) => {
-        return validateFieldAccessControl({
-          access: access[schemaName],
-          args: {
-            originalInput,
-            existingItem,
-            operation,
-            authentication: authentication && authentication.item ? authentication : {},
-            fieldKey,
-            listKey,
-            gqlName,
-            itemId,
-            itemIds,
-            context,
-          },
-        });
-      },
-      { isPromise: true }
-    );
-
-    const getAuthAccessControlForUser = memoize(
-      async (access, listKey, { gqlName, context } = {}) => {
-        return validateAuthAccessControl({
-          access: access[schemaName],
-          args: {
-            authentication: authentication && authentication.item ? authentication : {},
-            listKey,
-            gqlName,
-            context,
-            operation: 'auth',
-          },
-        });
-      },
-      { isPromise: true }
-    );
-
-    return {
-      getCustomAccessControlForUser,
-      getListAccessControlForUser,
-      getFieldAccessControlForUser,
-      getAuthAccessControlForUser,
-    };
-  }
-
-  createContext({ schemaName = 'public', authentication = {}, skipAccessControl = false } = {}) {
-    const context = {
-      schemaName,
-      authedItem: authentication.item,
-      authedListKey: authentication.listKey,
-      ...this._getAccessControlContext({ schemaName, authentication, skipAccessControl }),
-      totalResults: 0,
-      maxTotalResults: this.queryLimits.maxTotalResults,
-    };
-    // Locally bind the values we use as defaults into an object to make
-    // JS behave the way we want.
-    const defaults = { schemaName, authentication, skipAccessControl, context };
-    context.createContext = ({
-      schemaName = defaults.schemaName,
-      authentication = defaults.authentication,
-      skipAccessControl = defaults.skipAccessControl,
-    } = {}) => this.createContext({ schemaName, authentication, skipAccessControl });
-    context.sudo = () =>
-      this.createContext({ schemaName, authentication, skipAccessControl: true });
-    context.executeGraphQL = ({ context = defaults.context, query, variables }) =>
-      this.executeGraphQL({ context, query, variables });
-    context.gqlNames = listKey => this.lists[listKey].gqlNames;
-    return context;
-  }
-
-  executeGraphQL({ context, query, variables }) {
-    if (!context) {
-      context = this.createContext({});
-    }
-
-    const schema = this._schemas[context.schemaName];
-    if (!schema) {
-      throw new Error(
-        `No executable schema named '${context.schemaName}' is available. Have you setup '@keystone-next/app-graphql-legacy'?`
-      );
-    }
-
-    if (typeof query === 'string') {
-      query = gql(query);
-    }
-
-    return execute(schema, query, null, context, variables);
-  }
-
-  createAuthStrategy(options) {
-    const { type: StrategyType, list: listKey, config, hooks } = composePlugins(
-      options.plugins || []
-    )(options, { keystone: this });
-    const { authType } = StrategyType;
-    if (!this.auth[listKey]) {
-      this.auth[listKey] = {};
-    }
-    const strategy = new StrategyType(this, listKey, config);
-    strategy.authType = authType;
-    this.auth[listKey][authType] = strategy;
-    if (!this.lists[listKey]) {
-      throw new Error(`List "${listKey}" does not exist.`);
-    }
-    this._providers.push(
-      new ListAuthProvider({ list: this.lists[listKey], authStrategy: strategy, hooks })
-    );
-    return strategy;
-  }
-
-  createList(key, config, { isAuxList = false } = {}) {
+  createList(key, config) {
     const { getListByKey, adapter } = this;
-    const isReservedName = !isAuxList && key[0] === '_';
+    const isReservedName = key[0] === '_';
 
     if (isReservedName) {
       throw new Error(`Invalid list name "${key}". List names cannot start with an underscore.`);
@@ -269,35 +42,13 @@ module.exports = class Keystone {
       );
     }
 
-    const list = new List(
-      key,
-      composePlugins(config.plugins || [])(config, { listKey: key, keystone: this }),
-      {
-        getListByKey,
-        adapter,
-        defaultAccess: this.defaultAccess,
-        registerType: type => this.registeredTypes.add(type),
-        isAuxList,
-        createAuxList: (auxKey, auxConfig) => {
-          if (isAuxList) {
-            throw new Error(
-              `Aux list "${key}" shouldn't be creating more aux lists ("${auxKey}"). Something's probably not right here.`
-            );
-          }
-          return this.createList(auxKey, auxConfig, { isAuxList: true });
-        },
-        schemaNames: this._schemaNames,
-      }
-    );
+    const { defaultAccess } = this;
+    const list = new List(key, config, { getListByKey, adapter, defaultAccess });
     this.lists[key] = list;
     this.listsArray.push(list);
     this._listCRUDProvider.lists.push(list);
     list.initFields();
     return list;
-  }
-
-  extendGraphQLSchema({ types = [], queries = [], mutations = [], subscriptions = [] }) {
-    return this._customProvider.extendGraphQLSchema({ types, queries, mutations, subscriptions });
   }
 
   _consolidateRelationships() {
@@ -424,90 +175,16 @@ module.exports = class Keystone {
     return Object.values(rels);
   }
 
-  /**
-   * Connects to the database via the given adapter(s)
-   *
-   * @return Promise<any> the result of executing `onConnect` as passed to the
-   * constructor, or `undefined` if no `onConnect` method specified.
-   */
   async connect(args) {
     await this.adapter.connect({ rels: this._consolidateRelationships() });
 
-    if (this.eventHandlers.onConnect) {
-      return this.eventHandlers.onConnect(this, args);
+    if (this.onConnect) {
+      return this.onConnect(this, args);
     }
   }
 
-  createApolloServer({ apolloConfig = {}, schemaName, dev }) {
-    // add the Admin GraphQL API
-    const server = new ApolloServer({
-      typeDefs: this.getTypeDefs({ schemaName }),
-      resolvers: this.getResolvers({ schemaName }),
-      context: ({ req }) => ({
-        ...this.createContext({
-          schemaName,
-          authentication: { item: req.user, listKey: req.authedListKey },
-          skipAccessControl: false,
-        }),
-        ...this._sessionManager.getContext(req),
-        req,
-      }),
-      ...(process.env.ENGINE_API_KEY || process.env.APOLLO_KEY
-        ? {
-            tracing: true,
-          }
-        : {
-            engine: false,
-            // Only enable tracing in dev mode so we can get local debug info, but
-            // don't bother returning that info on prod when the `engine` is
-            // disabled.
-            tracing: dev,
-          }),
-      formatError,
-      ...apolloConfig,
-      uploads: false, // User cannot override this as it would clash with the upload middleware
-    });
-    this._schemas[schemaName] = server.schema;
-
-    return server;
-  }
-
-  /**
-   * @return Promise<null>
-   */
   async disconnect() {
     await this.adapter.disconnect();
-  }
-
-  getAdminMeta({ schemaName }) {
-    // We've consciously made a design choice that the `read` permission on a
-    // list is a master switch in the Admin UI (not the GraphQL API).
-    // Justification: If you want to Create without the Read permission, you
-    // technically don't have permission to read the result of your creation.
-    // If you want to Update an item, you can't see what the current values
-    // are. If you want to delete an item, you'd need to be given direct
-    // access to it (direct URI), but can't see anything about that item. And
-    // in fact, being able to load a page with a 'delete' button on it
-    // violates the read permission as it leaks the fact that item exists.
-    // In all these cases, the Admin UI becomes unnecessarily complex.
-    // So we only allow all these actions if you also have read access.
-    const lists = arrayToObject(
-      this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
-      'key',
-      list => list.getAdminMeta({ schemaName })
-    );
-
-    return { lists };
-  }
-
-  getAdminViews({ schemaName }) {
-    return {
-      listViews: arrayToObject(
-        this.listsArray.filter(list => list.access[schemaName].read && !list.isAuxList),
-        'key',
-        list => list.views
-      ),
-    };
   }
 
   getTypeDefs({ schemaName }) {
@@ -554,56 +231,5 @@ module.exports = class Keystone {
       },
       o => Object.entries(o).length > 0
     );
-  }
-
-  dumpSchema(schemaName = 'public') {
-    return this.getTypeDefs({ schemaName })
-      .map(t => print(t))
-      .join('\n');
-  }
-
-  async _prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors }) {
-    return flattenDeep([
-      // Used by other middlewares such as authentication strategies. Important
-      // to be first so the methods added to `req` are available further down
-      // the request pipeline.
-      // TODO: set up a session test rig (maybe by wrapping an in-memory store)
-      this._sessionManager.getSessionMiddleware({ keystone: this }),
-      falsey(process.env.DISABLE_LOGGING) && require('express-pino-logger')(pinoOptions),
-      cors && createCorsMiddleware(cors),
-      ...(await Promise.all(
-        [
-          // Inject any field middlewares (eg; WYSIWIG's static assets)
-          // We do this first to avoid it conflicting with any catch-all routes the
-          // user may have specified
-          ...this.registeredTypes,
-          ...flattenDeep(
-            Object.values(this.auth).map(authStrategies => Object.values(authStrategies))
-          ),
-          ...apps,
-        ]
-          .filter(({ prepareMiddleware } = {}) => !!prepareMiddleware)
-          .map(app => app.prepareMiddleware({ keystone: this, dev, distDir: distDir || 'dist' }))
-      )),
-    ]).filter(middleware => !!middleware);
-  }
-
-  async prepare({
-    dev = false,
-    apps = [],
-    distDir,
-    pinoOptions,
-    cors = { origin: true, credentials: true },
-  } = {}) {
-    this.createApolloServer({ schemaName: 'internal' });
-    const middlewares = await this._prepareMiddlewares({ dev, apps, distDir, pinoOptions, cors });
-    // These function can't be called after prepare(), so make them throw an error from now on.
-    ['extendGraphQLSchema', 'createList', 'createAuthStrategy'].forEach(f => {
-      this[f] = () => {
-        throw new Error(`keystone.${f} must be called before keystone.prepare()`);
-      };
-    });
-
-    return { middlewares };
   }
 };

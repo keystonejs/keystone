@@ -6,9 +6,8 @@ import { AdminFileToWrite } from '@keystone-next/types';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { requireSource } from '../../lib/requireSource';
-import { saveSchemaAndTypes } from '../../lib/saveSchemaAndTypes';
-import { CONFIG_PATH } from '../utils';
-import type { StaticPaths } from '..';
+import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../../artifacts';
+import { getAdminPath, getConfigPath } from '../utils';
 
 // FIXME: Duplicated from admin-ui package. Need to decide on a common home.
 async function writeAdminFile(file: AdminFileToWrite, projectAdminPath: string) {
@@ -42,7 +41,9 @@ export function serializePathForImport(path: string) {
 export const formatSource = (src: string, parser: 'babel' | 'babel-ts' = 'babel') =>
   prettier.format(src, { parser, trailingComma: 'es5', singleQuote: true });
 
-const reexportKeystoneConfig = async (projectAdminPath: string, isDisabled?: boolean) => {
+const reexportKeystoneConfig = async (cwd: string, isDisabled?: boolean) => {
+  const projectAdminPath = getAdminPath(cwd);
+  const configPath = getConfigPath(cwd);
   if (isDisabled) {
     // Nuke any existing files in our target directory
     await fs.remove(projectAdminPath);
@@ -58,7 +59,7 @@ const reexportKeystoneConfig = async (projectAdminPath: string, isDisabled?: boo
     {
       mode: 'write',
       src: `export { default as config } from ${serializePathForImport(
-        Path.relative(Path.join(projectAdminPath, 'pages', 'api'), CONFIG_PATH)
+        Path.relative(Path.join(projectAdminPath, 'pages', 'api'), configPath)
       )}
             export default function (req, res) { return res.status(500) }`,
       outputPath: Path.join('pages', 'api', '__keystone_api_build.js'),
@@ -83,34 +84,28 @@ const reexportKeystoneConfig = async (projectAdminPath: string, isDisabled?: boo
   await Promise.all(files.map(file => writeAdminFile(file, projectAdminPath)));
 };
 
-export async function build({ dotKeystonePath, projectAdminPath }: StaticPaths) {
-  console.log('🤞 Building Keystone');
+export async function build(cwd: string) {
+  const config = initConfig(requireSource(getConfigPath(cwd)).default);
 
-  const config = initConfig(requireSource(CONFIG_PATH).default);
+  const { keystone, graphQLSchema } = createSystem(config);
 
-  const { keystone, graphQLSchema } = createSystem(config, dotKeystonePath, 'none');
+  await validateCommittedArtifacts(graphQLSchema, keystone, cwd);
 
-  console.log('✨ Generating graphQL schema');
-  await saveSchemaAndTypes(graphQLSchema, keystone, dotKeystonePath);
+  console.log('✨ Building Keystone');
+  // FIXME: This needs to generate clients for the correct build target using binaryTarget
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
+  await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
 
   if (config.ui?.isDisabled) {
     console.log('✨ Skipping Admin UI code generation');
   } else {
     console.log('✨ Generating Admin UI code');
-    await generateAdminUI(config, graphQLSchema, keystone, projectAdminPath);
+    await generateAdminUI(config, graphQLSchema, keystone, getAdminPath(cwd));
   }
 
   console.log('✨ Generating Keystone config code');
-  await reexportKeystoneConfig(projectAdminPath, config.ui?.isDisabled);
-
-  console.log('✨ Generating database client');
-  // FIXME: This should never generate a migratration... right?
-  // FIXME: This needs to generate clients for the correct build target using binaryTarget
-  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#binarytargets-options
-  if (keystone.adapter.name === 'prisma') {
-    await keystone.adapter._generateClient(keystone._consolidateRelationships());
-  }
+  await reexportKeystoneConfig(cwd, config.ui?.isDisabled);
 
   console.log('✨ Building Admin UI');
-  await buildAdminUI(projectAdminPath);
+  await buildAdminUI(getAdminPath(cwd));
 }

@@ -1,5 +1,18 @@
 # @keystonejs/access-control
 
+## 9.0.1
+
+### Patch Changes
+
+- Updated dependencies [[`97609a623`](https://github.com/keystonejs/keystone/commit/97609a623334fd8d7b9e24dd099abda2e2a37853)]:
+  - @keystone-next/utils-legacy@8.0.0
+
+## 9.0.0
+
+### Major Changes
+
+- [#5147](https://github.com/keystonejs/keystone/pull/5147) [`4ac9148a0`](https://github.com/keystonejs/keystone/commit/4ac9148a0fa5b302d50e0ca4293206e2ef3616b7) Thanks [@timleslie](https://github.com/timleslie)! - Removed `parseCustomAccess` and `validateCustomAccessControl`.
+
 ## 8.0.1
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
   "name": "@keystone-next/utils-legacy",
   "description": "Common utility functions used throughout @keystonejs packages.",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "homepage": "https://github.com/keystonejs/keystone",
@@ -9,13 +9,12 @@
   "main": "dist/utils-legacy.cjs.js",
   "module": "dist/utils-legacy.esm.js",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
-    "p-is-promise": "^3.0.0",
     "p-lazy": "^3.1.0",
     "p-reflect": "^2.1.0",
-    "semver": "^7.3.4"
+    "semver": "^7.3.5"
   }
 }

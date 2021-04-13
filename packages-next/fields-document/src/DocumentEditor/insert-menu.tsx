@@ -4,15 +4,15 @@ import { useControlledPopover } from '@keystone-ui/popover';
 import { Fragment, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { Transforms, Text, Editor, Path, Point, Node } from 'slate';
 import { ReactEditor } from 'slate-react';
+import { matchSorter } from 'match-sorter';
+import scrollIntoView from 'scroll-into-view-if-needed';
 import { ComponentBlockContext, insertComponentBlock } from './component-blocks';
 import { ComponentBlock } from './component-blocks/api';
 import { InlineDialog, ToolbarButton } from './primitives';
 import { Relationships, useDocumentFieldRelationships } from './relationship';
-import { matchSorter } from 'match-sorter';
 import { ToolbarState, useToolbarState } from './toolbar-state';
 import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './utils';
 import { insertLayout } from './layouts';
-import scrollIntoView from 'scroll-into-view-if-needed';
 
 let noop = () => {};
 

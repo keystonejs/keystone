@@ -1,10 +1,11 @@
 /** @jsx jsx */
-import { jsx, Core } from '@keystone-ui/core';
+import { jsx, Core, Global, css } from '@keystone-ui/core';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { ToastProvider } from '@keystone-ui/toast';
+import { proseStyles } from '../lib/prose-lite';
 
 import { handleRouteChange } from '../lib/analytics';
 
@@ -22,6 +23,13 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <Core>
+      <Global
+        styles={css`
+        .prose {
+          ${proseStyles}
+        }
+      `}
+      />
       <Head>
         <meta
           name="viewport"

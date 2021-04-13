@@ -1,9 +1,9 @@
-import { DataGetter } from './dataGetter';
-import { ItemData, deserializeValue, serializeValueToObjByFieldKey } from './serialization';
 import { FieldMeta } from '@keystone-next/types';
 import { GraphQLError } from 'graphql';
 import { useMemo } from 'react';
 import isDeepEqual from 'fast-deep-equal';
+import { ItemData, deserializeValue, serializeValueToObjByFieldKey } from './serialization';
+import { DataGetter } from './dataGetter';
 
 export type Value = Record<
   string,

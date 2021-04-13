@@ -25,11 +25,8 @@ const auth = createAuth({
 export default auth.withAuth(
   config({
     db: process.env.DATABASE_URL
-      ? { adapter: 'prisma_postgresql', url: process.env.DATABASE_URL }
-      : {
-          adapter: 'mongoose',
-          url: 'mongodb://localhost/keystone-examples-next-basic',
-        },
+      ? { provider: 'postgresql', url: process.env.DATABASE_URL }
+      : { provider: 'sqlite', url: 'file:./keystone.db' },
     // NOTE -- this is not implemented, keystone currently always provides a graphql api at /api/graphql
     // graphql: {
     //   path: '/api/graphql',

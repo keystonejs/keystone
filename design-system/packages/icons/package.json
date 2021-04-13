@@ -16,8 +16,8 @@
     "chalk": "^4.1.0",
     "feather-icons": "^4.28.0",
     "fs-extra": "^9.1.0",
-    "globby": "^11.0.2",
-    "react": "^17.0.1",
+    "globby": "^11.0.3",
+    "react": "^17.0.2",
     "to-pascal-case": "^1.0.0"
   },
   "dependencies": {
@@ -25,10 +25,10 @@
     "@keystone-ui/core": "^2.0.1"
   },
   "peerDependencies": {
-    "react": "^17.0.1"
+    "react": "^17.0.2"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "preconstruct": {
     "entrypoints": [

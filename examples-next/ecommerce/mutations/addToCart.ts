@@ -1,13 +1,11 @@
 import { KeystoneContext } from '@keystone-next/types';
 import { Session } from '../types';
 
-import { CartItemCreateInput } from '../.keystone/schema-types';
-
 async function addToCart(
   root: any,
   { productId }: { productId: string },
   context: KeystoneContext
-): Promise<CartItemCreateInput> {
+): Promise<any> {
   console.log('ADDING TO CART!');
   // 1. Query the current user see if they are signed in
   const sesh = context.session as Session;
@@ -17,7 +15,7 @@ async function addToCart(
   // 2. Query the current users cart
   const allCartItems = await context.lists.CartItem.findMany({
     where: { user: { id: sesh.itemId }, product: { id: productId } },
-    resolveFields: 'id quantity',
+    query: 'id quantity',
   });
 
   const [existingCartItem] = allCartItems;
@@ -29,7 +27,7 @@ async function addToCart(
     return await context.lists.CartItem.updateOne({
       id: existingCartItem.id,
       data: { quantity: existingCartItem.quantity + 1 },
-      resolveFields: false,
+      query: false,
     });
   }
   // 4. if it isnt, create a new cart item!
@@ -38,7 +36,7 @@ async function addToCart(
       product: { connect: { id: productId } },
       user: { connect: { id: sesh.itemId } },
     },
-    resolveFields: false,
+    query: false,
   });
 }
 

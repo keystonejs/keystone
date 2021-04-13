@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { useMemo } from 'react';
-import { DocumentNode, useQuery, QueryResult, ServerError, ServerParseError } from '../apollo';
 import { DeepNullable, makeDataGetter } from '@keystone-next/admin-ui-utils';
+import { DocumentNode, useQuery, QueryResult, ServerError, ServerParseError } from '../apollo';
 
 export type AuthenticatedItem =
   | { state: 'unauthenticated' }

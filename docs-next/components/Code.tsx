@@ -14,7 +14,7 @@ export const Code = ({ children, className }: { children: string; className: any
             className={className}
             style={{
               ...style,
-              backgroundColor: 'transparent !important',
+              backgroundColor: 'transparent',
             }}
           >
             {tokens.map((line, i) => {
@@ -36,7 +36,7 @@ export const Code = ({ children, className }: { children: string; className: any
 export const InlineCode = ({ children }: { children: ReactNode }) => {
   return (
     <code
-      className="bg-gray-100 py-1 px-1.5 m-0 rounded-sm"
+      className="bg-gray-200 py-1 px-1.5 m-0 rounded-sm bg-opacity-50"
       css={css`
         &::before {
           display: none;
@@ -44,9 +44,9 @@ export const InlineCode = ({ children }: { children: ReactNode }) => {
         &::after {
           display: none;
         }
-        font-size: 85% !important;
+        font-size: 85%;
         font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
-        color: #24292e !important;
+        color: #24292e;
       `}
     >
       {children}

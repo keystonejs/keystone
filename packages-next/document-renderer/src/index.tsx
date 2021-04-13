@@ -197,6 +197,9 @@ function DocumentNode({
         />
       );
     }
+    case 'link': {
+      return <renderers.inline.link href={node.href as string}>{children}</renderers.inline.link>;
+    }
   }
   return <Fragment>{children}</Fragment>;
 }
@@ -233,8 +236,8 @@ export function DocumentRenderer<ComponentBlocks extends Record<string, Componen
   props: DocumentRendererProps<ComponentBlocks>
 ) {
   const renderers = {
-    inline: { ...props.renderers?.inline, ...defaultRenderers.inline },
-    block: { ...props.renderers?.block, ...defaultRenderers.block },
+    inline: { ...defaultRenderers.inline, ...props.renderers?.inline },
+    block: { ...defaultRenderers.block, ...props.renderers?.block },
   };
   const componentBlocks = props.componentBlocks || {};
   return (

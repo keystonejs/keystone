@@ -1,14 +1,12 @@
-// @ts-ignore
-import { Decimal } from '@keystone-next/fields-legacy';
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
 import type { FieldConfig } from '../../interfaces';
+import { Decimal, PrismaDecimalInterface } from './Implementation';
 
 export type DecimalFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = FieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
-  isIndexed?: boolean;
   isUnique?: boolean;
   precision?: number;
   scale?: number;
@@ -18,7 +16,11 @@ export type DecimalFieldConfig<
 export const decimal = <TGeneratedListTypes extends BaseGeneratedListTypes>(
   config: DecimalFieldConfig<TGeneratedListTypes> = {}
 ): FieldType<TGeneratedListTypes> => ({
-  type: Decimal,
+  type: {
+    type: 'Decimal',
+    implementation: Decimal,
+    adapter: PrismaDecimalInterface,
+  },
   config,
   views: resolveView('decimal/views'),
   getAdminMeta: () => ({

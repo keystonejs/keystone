@@ -20,6 +20,8 @@ import {
 import { Editable, ReactEditor, Slate, useSlate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 
+import { ComponentBlock } from '../component-blocks';
+import { DocumentFeatures } from '../views';
 import { withParagraphs } from './paragraphs';
 import { withLink, wrapLink } from './link';
 import { withLayouts } from './layouts';
@@ -34,9 +36,7 @@ import {
   withComponentBlocks,
 } from './component-blocks';
 import { withBlockquote } from './blockquote';
-import { ComponentBlock } from '../component-blocks';
 import { Relationships, withRelationship } from './relationship';
-import { DocumentFeatures } from '../views';
 import { withDivider } from './divider';
 import { withCodeBlock } from './code-block';
 import { withMarks } from './marks';

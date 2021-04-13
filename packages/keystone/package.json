@@ -1,39 +1,30 @@
 {
   "name": "@keystone-next/keystone-legacy",
   "description": "The main @keystonejs class & CLI. This is where the magic happens.",
-  "version": "20.0.0",
+  "version": "23.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "dependencies": {
-    "@keystone-next/access-control-legacy": "^8.0.1",
-    "@keystone-next/session-legacy": "^8.2.1",
-    "@keystone-next/utils-legacy": "^7.0.0",
+    "@keystone-next/access-control-legacy": "^9.0.1",
+    "@keystone-next/utils-legacy": "^8.0.0",
     "apollo-errors": "^1.9.0",
-    "apollo-server-express": "^2.21.1",
-    "cors": "^2.8.5",
+    "apollo-server-express": "^2.22.2",
     "cuid": "^2.1.8",
     "ensure-error": "^3.0.1",
     "express": "^4.17.1",
-    "express-pino-logger": "^6.0.0",
-    "falsey": "^1.0.0",
-    "graphql": "^15.5.0",
     "graphql-type-json": "^0.3.2",
     "graphql-upload": "^11.0.0",
-    "lodash.flattendeep": "^4.4.0",
-    "micro-memoize": "^4.0.9",
-    "p-waterfall": "^2.1.1",
-    "pino": "^6.11.1",
     "pluralize": "^8.0.0",
     "serialize-error": "^8.0.1",
     "stack-utils": "^2.0.3"
   },
   "devDependencies": {
-    "@keystone-next/fields-legacy": "^23.0.0",
+    "@keystone-next/fields": "^6.0.0",
     "@keystone-next/test-utils-legacy": "*",
-    "p-is-promise": "^3.0.0"
+    "graphql": "^15.5.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages/keystone"
 }

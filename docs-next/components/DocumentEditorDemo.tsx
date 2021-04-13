@@ -19,9 +19,9 @@ import {
   InferRenderersForComponentBlocks,
 } from '@keystone-next/fields-document/component-blocks';
 
-import { Code } from './Code';
 import { initialContent } from '../lib/initialDocumentDemoContent';
 import { componentBlocks as componentBlocksInExampleProject } from '../../examples-next/basic/admin/fieldViews/Content';
+import { Code } from './Code';
 
 const headingLevels = ['1', '2', '3', '4', '5', '6'] as const;
 

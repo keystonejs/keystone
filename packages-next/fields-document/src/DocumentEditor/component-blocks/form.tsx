@@ -3,10 +3,10 @@ import { RelationshipSelect } from '@keystone-next/fields/types/relationship/vie
 import { Stack } from '@keystone-ui/core';
 import { FieldContainer, FieldLabel } from '@keystone-ui/fields';
 import React, { useState } from 'react';
+import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import { ComponentPropField, RelationshipData, ComponentBlock } from '../../component-blocks';
 import { useDocumentFieldRelationships, Relationships } from '../relationship';
 import { assertNever, getPropsForConditionalChange } from './utils';
-import { Button as KeystoneUIButton } from '@keystone-ui/button';
 import { RelationshipField } from './api';
 
 // this is in a different component to the other form inputs because it uses useKeystone

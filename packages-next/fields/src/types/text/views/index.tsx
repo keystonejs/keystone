@@ -85,6 +85,7 @@ export const controller = (
       Label({ label, value }) {
         return `${label.toLowerCase()}: "${value}"`;
       },
+      // FIXME: Not all of these options will work with prisma_sqlite
       types: {
         contains_i: {
           label: 'Contains',

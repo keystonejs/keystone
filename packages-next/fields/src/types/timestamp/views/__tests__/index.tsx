@@ -1,5 +1,5 @@
-import { controller } from '../index';
 import { formatISO, parseISO } from 'date-fns';
+import { controller } from '../index';
 const STUBCONFIG = {
   listKey: 'timestamp',
   path: './timestamp',

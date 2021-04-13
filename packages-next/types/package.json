@@ -1,13 +1,16 @@
 {
   "name": "@keystone-next/types",
-  "version": "14.0.1",
+  "version": "16.0.0",
   "license": "MIT",
   "main": "dist/types.cjs.js",
   "module": "dist/types.esm.js",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.13.0"
   },
   "dependencies": {
+    "@keystone-next/adapter-prisma-legacy": "^5.0.0",
+    "@keystone-next/fields": "^6.0.0",
+    "apollo-server-types": "^0.7.0",
     "cors": "^2.8.5",
     "graphql": "^15.5.0"
   },
