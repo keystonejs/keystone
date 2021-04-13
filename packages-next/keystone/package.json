@@ -14,7 +14,8 @@
     "schema",
     "scripts",
     "session",
-    "dist"
+    "dist",
+    "static"
   ],
   "bin": {
     "keystone-next": "bin/cli.js"
