@@ -65,7 +65,13 @@ test('build works with typescript without the user defining a babel config', asy
   expect(await fs.readFile(`${tmp}/node_modules/.keystone/types.js`, 'utf8')).toBe('');
   expect(result.exitCode).toBe(0);
   expect(
-    result.all!.replace(/\d+(|\.\d+) k?B/g, 'size').replace(/chunks\/.*\.js/g, 'chunks/hash.js')
+    result
+      .all!.replace(/\d+(|\.\d+) k?B/g, 'size')
+      .replace(/chunks\/.*\.js/g, 'chunks/hash.js')
+      .replace(
+        '\nwarn  - No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache',
+        ''
+      )
   ).toMatchInlineSnapshot(`
     "✨ Building Keystone
     ✨ Generating Admin UI code
