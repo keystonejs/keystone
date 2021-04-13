@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import { createSystem } from '../../lib/createSystem';
 import { initConfig } from '../../lib/initConfig';
 import { createExpressServer } from '../../lib/createExpressServer';
-import { getAdminPath } from '../utils';
+import { ExitError, getAdminPath } from '../utils';
 import { requirePrismaClient } from '../../artifacts';
 
 export const start = async (cwd: string) => {
@@ -13,7 +13,8 @@ export const start = async (cwd: string) => {
   // See reexportKeystoneConfig().
   const apiFile = path.join(getAdminPath(cwd), '.next/server/pages/api/__keystone_api_build.js');
   if (!fs.existsSync(apiFile)) {
-    throw new Error('keystone-next build must be run before running keystone-next start');
+    console.log('🚨 keystone-next build must be run before running keystone-next start');
+    throw new ExitError(1);
   }
   const config = initConfig(require(apiFile).config);
   const { keystone, graphQLSchema, createContext } = createSystem(config, requirePrismaClient(cwd));
