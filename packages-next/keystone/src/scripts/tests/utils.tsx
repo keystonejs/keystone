@@ -13,6 +13,34 @@ import { IntrospectionEngine, uriToCredentials } from '@prisma/sdk';
 import { cli } from '../cli';
 import { mockPrompts } from '../../lib/prompts';
 
+export const cliBinPath = require.resolve('@keystone-next/keystone/bin/cli.js');
+
+export const js = outdent;
+export const ts = outdent;
+export const tsx = outdent;
+export const graphql = outdent;
+
+export const basicKeystoneConfig = js`
+                                     import { config, list } from "@keystone-next/keystone/schema";
+                                     import { text } from "@keystone-next/fields";
+
+                                     export default config({
+                                       db: { provider: "sqlite", url: "file:./app.db" },
+                                       lists: {
+                                         Todo: list({
+                                           fields: {
+                                             title: text(),
+                                           },
+                                         }),
+                                       },
+                                     });
+                                   `;
+
+export const schemas = {
+  'schema.graphql': fs.readFileSync(`${__dirname}/fixtures/basic-project/schema.graphql`, 'utf8'),
+  'schema.prisma': fs.readFileSync(`${__dirname}/fixtures/basic-project/schema.prisma`, 'utf8'),
+};
+
 export function recordConsole(promptResponses?: Record<string, string | boolean>) {
   let oldConsole = { ...console };
   let contents = '';
@@ -82,11 +110,6 @@ export function recordConsole(promptResponses?: Record<string, string | boolean>
 }
 
 let f = fixturez(__dirname);
-
-export const js = outdent;
-export const ts = outdent;
-export const tsx = outdent;
-export const graphql = outdent;
 
 export const symlinkKeystoneDeps = Object.fromEntries(
   [

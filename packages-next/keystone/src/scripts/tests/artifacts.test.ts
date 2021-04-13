@@ -1,8 +1,14 @@
-import fs from 'fs-extra';
 import { text } from '@keystone-next/fields';
 import { config, list } from '../../schema';
 import { ExitError } from '../utils';
-import { getFiles, recordConsole, runCommand, symlinkKeystoneDeps, testdir } from './utils';
+import {
+  getFiles,
+  recordConsole,
+  runCommand,
+  schemas,
+  symlinkKeystoneDeps,
+  testdir,
+} from './utils';
 
 const basicKeystoneConfig = {
   kind: 'config' as const,
@@ -16,11 +22,6 @@ const basicKeystoneConfig = {
       }),
     },
   }),
-};
-
-const schemas = {
-  'schema.graphql': fs.readFileSync(`${__dirname}/fixtures/basic-project/schema.graphql`, 'utf8'),
-  'schema.prisma': fs.readFileSync(`${__dirname}/fixtures/basic-project/schema.prisma`, 'utf8'),
 };
 
 describe.each(['postinstall', 'build', 'prisma migrate status'])('%s', command => {
