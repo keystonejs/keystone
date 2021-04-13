@@ -68,8 +68,12 @@ export type KeystoneListsAPI<
 };
 
 type ResolveFields = {
-  readonly query?: false | string;
-  /** @deprecated resolveFields has been renamed to query */
+  readonly query?: string;
+  /**
+   * Note: resolveFields accepts a string for backwards compatibility, but
+   * you should now use the query option for selecting fields to return.
+   * This will be changed to only accept a boolean in a future major release.
+   * */
   readonly resolveFields?: false | string;
 };
 
