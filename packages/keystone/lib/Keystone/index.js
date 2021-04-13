@@ -1,34 +1,20 @@
 const { gql } = require('apollo-server-express');
 const { GraphQLUpload } = require('graphql-upload');
 const { objMerge, flatten, unique, filterValues } = require('@keystone-next/utils-legacy');
-
 const { List } = require('../ListTypes');
 const { ListCRUDProvider } = require('../providers');
 
 module.exports = class Keystone {
   constructor({ defaultAccess, adapter, onConnect, queryLimits = {} }) {
     this.defaultAccess = { list: true, field: true, custom: true, ...defaultAccess };
-    this.auth = {};
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
-    this._schemas = {};
-    this.eventHandlers = { onConnect };
-    this.registeredTypes = new Set();
-
+    this.onConnect = onConnect;
     this._listCRUDProvider = new ListCRUDProvider();
     this._providers = [this._listCRUDProvider];
-
-    if (adapter) {
-      this.adapter = adapter;
-    } else {
-      throw new Error('No database adapter provided');
-    }
-
-    this.queryLimits = {
-      maxTotalResults: Infinity,
-      ...queryLimits,
-    };
+    this.adapter = adapter;
+    this.queryLimits = { maxTotalResults: Infinity, ...queryLimits };
     if (this.queryLimits.maxTotalResults < 1) {
       throw new Error("queryLimits.maxTotalResults can't be < 1");
     }
@@ -56,12 +42,8 @@ module.exports = class Keystone {
       );
     }
 
-    const list = new List(key, config, {
-      getListByKey,
-      adapter,
-      defaultAccess: this.defaultAccess,
-      registerType: type => this.registeredTypes.add(type),
-    });
+    const { defaultAccess } = this;
+    const list = new List(key, config, { getListByKey, adapter, defaultAccess });
     this.lists[key] = list;
     this.listsArray.push(list);
     this._listCRUDProvider.lists.push(list);
@@ -193,23 +175,14 @@ module.exports = class Keystone {
     return Object.values(rels);
   }
 
-  /**
-   * Connects to the database via the given adapter(s)
-   *
-   * @return Promise<any> the result of executing `onConnect` as passed to the
-   * constructor, or `undefined` if no `onConnect` method specified.
-   */
   async connect(args) {
     await this.adapter.connect({ rels: this._consolidateRelationships() });
 
-    if (this.eventHandlers.onConnect) {
-      return this.eventHandlers.onConnect(this, args);
+    if (this.onConnect) {
+      return this.onConnect(this, args);
     }
   }
 
-  /**
-   * @return Promise<null>
-   */
   async disconnect() {
     await this.adapter.disconnect();
   }

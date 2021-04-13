@@ -14,10 +14,8 @@ import {
 } from '../../artifacts';
 import { getAdminPath, getConfigPath } from '../utils';
 
-// TODO: Don't generate or start an Admin UI if it isn't configured!!
 const devLoadingHTMLFilepath = path.join(
   path.dirname(require.resolve('@keystone-next/keystone/package.json')),
-  'src',
   'static',
   'dev-loading.html'
 );
