@@ -1121,13 +1121,13 @@
     "@manypkg/get-packages" "^1.0.1"
     semver "^5.4.1"
 
-"@changesets/changelog-github@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@changesets/changelog-github/-/changelog-github-0.3.0.tgz#b9c00e1f859d8390dfdb4992f4a633d5772b42f8"
-  integrity sha512-b+/QeTtJnn+s/rhZtS3dDg4tgNiiKmQlfZU7onLfFkn7HhINVoBsVSjWJh0fsVRv+OfKhSErv0i15/3kvyhTpg==
+"@changesets/changelog-github@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@changesets/changelog-github/-/changelog-github-0.4.0.tgz#ec80b18b9a5645191b5323fbddce4e4a012302d4"
+  integrity sha512-4GphTAdHJfECuuQg4l0eFGYyUh26mfyXpAi2FImrQvaN+boqTM+9EAAJe2b8Y3OKRfoET+ihgo+LARhW2xJoiw==
   dependencies:
     "@changesets/get-github-info" "^0.5.0"
-    "@changesets/types" "^3.0.0"
+    "@changesets/types" "^4.0.0"
     dotenv "^8.1.0"
 
 "@changesets/cli@^2.16.0":
@@ -1279,11 +1279,6 @@
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@changesets/types/-/types-0.4.0.tgz#3413badb2c3904357a36268cb9f8c7e0afc3a804"
   integrity sha512-TclHHKDVYQ8rJGZgVeWiF7c91yWzTTWdPagltgutelGu/Psup5PQlUq6svx7S8suj+jXcaE34yEEsfIvzXXB2Q==
-
-"@changesets/types@^3.0.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@changesets/types/-/types-3.3.0.tgz#04cd8184b2d2da760667bd89bf9b930938dbd96e"
-  integrity sha512-rJamRo+OD/MQekImfIk07JZwYSB18iU6fYL8xOg0gfAiTh1a1+OlR1fPIxm55I7RsWw812is2YcPPwXdIewrhA==
 
 "@changesets/types@^4.0.0":
   version "4.0.0"
@@ -12527,10 +12522,10 @@ strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
-stripe@^8.142.0:
-  version "8.142.0"
-  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.142.0.tgz#8a55e92837ea5c8bc4f65754df01c004a2beebed"
-  integrity sha512-0CimG7f5lsqD+qf+Vv8QgBPuYT0hqn/gfXBNEdeQxIIA+WUrxqXEyS5C0r5YIxa/Et5WiByfCpXJdMsxh4G35Q==
+stripe@^8.143.0:
+  version "8.143.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-8.143.0.tgz#647605f4faa0f2c731caee1f22046b8306f7ace0"
+  integrity sha512-MKdcJCNCc/eSCn+dvzHIEWaQi0l2rtKbz33V+jbIL6ao8zBQyeLeULYqsCEOV6wI//GSk2u1e3B0MratMhbf+w==
   dependencies:
     "@types/node" ">=8.1.0"
     qs "^6.6.0"
@@ -12694,7 +12689,7 @@ symbol-tree@^3.2.4:
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
 
-tabbable@^5.1.6:
+tabbable@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.2.0.tgz#4fba60991d8bb89d06e5d9455c92b453acf88fb2"
   integrity sha512-0uyt8wbP0P3T4rrsfYg/5Rg3cIJ8Shl1RJ54QMqYxm1TLdWqJD1u6+RQjr2Lor3wmfT7JRHkirIwy99ydBsyPg==
