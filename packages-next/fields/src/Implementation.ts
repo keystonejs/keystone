@@ -1,29 +1,7 @@
 import { humanize } from '@keystone-next/utils-legacy';
 import { parseFieldAccess } from '@keystone-next/access-control-legacy';
-import { KeystoneContext } from '@keystone-next/types';
-import { PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
-
-export type List = {
-  key: string;
-  adapter: PrismaListAdapter;
-  gqlNames: {
-    relateToOneInputName: string;
-    whereUniqueInputName: string;
-    createInputName: string;
-    relateToManyInputName: string;
-    whereInputName: string;
-    outputTypeName: string;
-    listQueryName: string;
-    itemQueryName: string;
-  };
-  access: Record<string, any>;
-  fieldsByPath: Record<string, Field<any>>;
-  getGraphqlFilterFragment: () => string[];
-  listQuery: any;
-  listQueryMeta: any;
-  itemQuery: any;
-  createMutation: any;
-};
+import { BaseKeystoneList, KeystoneContext } from '@keystone-next/types';
+import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
 
 export type FieldConfigArgs = {
   hooks?: any;
@@ -36,12 +14,12 @@ export type FieldConfigArgs = {
 };
 
 export type FieldExtraArgs = {
-  getListByKey: (key: string) => List | undefined;
+  getListByKey: (key: string) => BaseKeystoneList | undefined;
   listKey: string;
-  listAdapter: any;
-  fieldAdapterClass: any;
+  listAdapter: PrismaListAdapter;
+  fieldAdapterClass: typeof PrismaFieldAdapter;
   defaultAccess: any;
-  schemaNames: any;
+  schemaNames: string[];
 };
 
 class Field<P extends string> {
@@ -55,10 +33,10 @@ class Field<P extends string> {
   defaultValue?: any;
   isOrderable: boolean;
   hooks: any;
-  getListByKey: (key: string) => List | undefined;
+  getListByKey: (key: string) => BaseKeystoneList | undefined;
   listKey: string;
   label: string;
-  adapter: any;
+  adapter: PrismaFieldAdapter<P>;
   isRelationship: boolean;
   access: any;
   refListKey: string;

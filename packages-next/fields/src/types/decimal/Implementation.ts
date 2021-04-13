@@ -1,8 +1,7 @@
 import { Decimal as _Decimal } from 'decimal.js';
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { BaseKeystoneList } from '@keystone-next/types';
 import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
-
-type List = { adapter: PrismaListAdapter };
 
 export class Decimal<P extends string> extends Implementation<P> {
   symbol?: string;
@@ -31,7 +30,7 @@ export class Decimal<P extends string> extends Implementation<P> {
     return [
       ...this.equalityInputFields('String'),
       ...this.orderingInputFields('String'),
-      ...(this.adapter.listAdapter.parentAdapter.name === 'postgresql'
+      ...(this.adapter.listAdapter.parentAdapter.provider === 'postgresql'
         ? []
         : this.inInputFields('String')),
     ];
@@ -58,7 +57,7 @@ export class PrismaDecimalInterface<P extends string> extends PrismaFieldAdapter
     path: P,
     field: Decimal<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined,
+    getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
   ) {
     super(fieldName, path, field, listAdapter, getListByKey, config);

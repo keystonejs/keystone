@@ -1,11 +1,10 @@
 import cuid from 'cuid';
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation, FieldConfigArgs, FieldExtraArgs } from '@keystone-next/fields';
+import { BaseKeystoneList } from '@keystone-next/types';
 import cloudinary from 'cloudinary';
 import { FileUpload } from 'graphql-upload';
 import { CloudinaryAdapter, File } from './cloudinary';
-
-type List = { adapter: PrismaListAdapter };
 
 type StoredFile = {
   id: string;
@@ -237,7 +236,7 @@ class PrismaCloudinaryImageInterface<P extends string> extends PrismaFieldAdapte
     path: P,
     field: CloudinaryImage<P>,
     listAdapter: PrismaListAdapter,
-    getListByKey: (arg: string) => List | undefined,
+    getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
   ) {
     super(fieldName, path, field, listAdapter, getListByKey, config);
