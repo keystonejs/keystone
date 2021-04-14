@@ -1,23 +1,11 @@
-const { gql } = require('apollo-server-express');
-const { print } = require('graphql/language/printer');
-const { Text: TextImplementation } = require('@keystone-next/fields/src/types/text/Implementation');
-const {
-  Relationship: RelationshipImplementation,
-} = require('@keystone-next/fields/src/types/relationship/Implementation');
-const { List } = require('../lib/ListTypes');
-const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
+import { gql } from 'apollo-server-express';
+import { print } from 'graphql/language/printer';
+import { text, relationship } from '@keystone-next/fields';
+import { List } from '../ListTypes';
+import { AccessDeniedError } from '../ListTypes/graphqlErrors';
 
-const Relationship = {
-  type: 'Relationship',
-  isRelationship: true, // Used internally for this special case
-  implementation: RelationshipImplementation,
-  adapter: {},
-};
-const Text = {
-  type: 'Text',
-  implementation: TextImplementation,
-  adapter: {},
-};
+const Relationship = relationship().type;
+const Text = text().type;
 
 const context = {
   getListAccessControlForUser: () => true,

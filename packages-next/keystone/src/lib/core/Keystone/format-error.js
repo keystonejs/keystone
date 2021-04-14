@@ -1,12 +1,12 @@
-const {
+import {
   createError,
-  formatError: _formatError,
-  isInstance: isApolloErrorInstance,
-} = require('apollo-errors');
-const { serializeError } = require('serialize-error');
-const StackUtils = require('stack-utils');
-const cuid = require('cuid');
-const { omit } = require('@keystone-next/utils-legacy');
+  formatError as _formatError,
+  isInstance as isApolloErrorInstance,
+} from 'apollo-errors';
+import { serializeError } from 'serialize-error';
+import StackUtils from 'stack-utils';
+import cuid from 'cuid';
+import { omit } from '@keystone-next/utils-legacy';
 
 const stackUtil = new StackUtils({ cwd: process.cwd(), internals: StackUtils.nodeInternals() });
 
@@ -63,7 +63,7 @@ const flattenNestedErrors = error =>
     []
   );
 
-const formatError = error => {
+export const formatError = error => {
   const { originalError } = error;
   if (originalError && !originalError.path) {
     originalError.path = error.path;
@@ -98,8 +98,4 @@ const formatError = error => {
     // least some useful info
     return safeFormatError(error);
   }
-};
-
-module.exports = {
-  formatError,
 };

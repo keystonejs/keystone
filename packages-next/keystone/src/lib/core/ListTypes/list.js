@@ -1,5 +1,5 @@
-const pluralize = require('pluralize');
-const {
+import pluralize from 'pluralize';
+import {
   mapKeys,
   omit,
   omitBy,
@@ -10,13 +10,13 @@ const {
   flatten,
   zipObj,
   createLazyDeferred,
-} = require('@keystone-next/utils-legacy');
-const { parseListAccess } = require('@keystone-next/access-control-legacy');
-const { keyToLabel, labelToPath, labelToClass, opToType, mapToFields } = require('./utils');
-const { HookManager } = require('./hooks');
-const { LimitsExceededError, throwAccessDenied } = require('./graphqlErrors');
+} from '@keystone-next/utils-legacy';
+import { parseListAccess } from '@keystone-next/access-control-legacy';
+import { keyToLabel, labelToPath, labelToClass, opToType, mapToFields } from './utils';
+import { HookManager } from './hooks';
+import { LimitsExceededError, throwAccessDenied } from './graphqlErrors';
 
-module.exports = class List {
+export class List {
   constructor(
     key,
     {
@@ -1100,4 +1100,4 @@ module.exports = class List {
 
     return mutationResolvers;
   }
-};
+}

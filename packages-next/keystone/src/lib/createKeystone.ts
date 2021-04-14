@@ -1,7 +1,6 @@
-// @ts-ignore
-import { Keystone } from '@keystone-next/keystone-legacy';
 import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
 import type { KeystoneConfig, BaseKeystone } from '@keystone-next/types';
+import { Keystone } from './core/Keystone/index';
 
 export function createKeystone(config: KeystoneConfig, prismaClient?: any) {
   // Note: For backwards compatibility we may want to expose

@@ -1,5 +1,4 @@
 ---
-'@keystone-next/keystone-legacy': major
 '@keystone-next/fields': patch
 '@keystone-next/keystone': patch
 ---

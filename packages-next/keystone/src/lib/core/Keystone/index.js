@@ -1,10 +1,10 @@
-const { gql } = require('apollo-server-express');
-const { GraphQLUpload } = require('graphql-upload');
-const { objMerge, flatten, unique, filterValues } = require('@keystone-next/utils-legacy');
-const { List } = require('../ListTypes');
-const { ListCRUDProvider } = require('../providers');
+import { gql } from 'apollo-server-express';
+import { GraphQLUpload } from 'graphql-upload';
+import { objMerge, flatten, unique, filterValues } from '@keystone-next/utils-legacy';
+import { List } from '../ListTypes';
+import { ListCRUDProvider } from '../providers';
 
-module.exports = class Keystone {
+export class Keystone {
   constructor({ adapter, onConnect, queryLimits = {} }) {
     this.lists = {};
     this.listsArray = [];
@@ -230,4 +230,4 @@ module.exports = class Keystone {
       o => Object.entries(o).length > 0
     );
   }
-};
+}

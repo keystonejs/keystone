@@ -12,7 +12,6 @@
   "dependencies": {
     "@keystone-next/adapter-prisma-legacy": "^5.0.0",
     "@keystone-next/keystone": "15.0.0",
-    "@keystone-next/keystone-legacy": "^23.0.0",
     "express": "^4.17.1",
     "memoize-one": "^5.1.1",
     "supertest-light": "^1.0.3"

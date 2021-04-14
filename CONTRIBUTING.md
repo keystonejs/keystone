@@ -62,7 +62,7 @@ An example, if you generate a changeset that includes `adapter-prisma` as a patc
 ```md
 ---
 '@keystone-next/adapter-prisma-legacy': patch
-'@keystone-next/keystone-legacy': minor
+'@keystone-next/keystone': minor
 ---
 
 A very useful description of the changes should be here.

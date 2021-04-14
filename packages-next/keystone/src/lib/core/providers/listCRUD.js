@@ -1,7 +1,7 @@
-const { GraphQLJSON } = require('graphql-type-json');
-const { flatten, objMerge, unique } = require('@keystone-next/utils-legacy');
+import { GraphQLJSON } from 'graphql-type-json';
+import { flatten, objMerge, unique } from '@keystone-next/utils-legacy';
 
-class ListCRUDProvider {
+export class ListCRUDProvider {
   constructor() {
     this.lists = [];
   }
@@ -70,5 +70,3 @@ class ListCRUDProvider {
     return {};
   }
 }
-
-module.exports = { ListCRUDProvider };
