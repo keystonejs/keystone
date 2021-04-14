@@ -17,7 +17,7 @@ async function checkout(root: any, { token }: Arguments, context: KeystoneContex
   // 1.5 Query the current user
   const user = await context.lists.User.findOne({
     where: { id: userId },
-    resolveFields: graphql`
+    query: graphql`
       id
       name
       email
@@ -82,7 +82,7 @@ async function checkout(root: any, { token }: Arguments, context: KeystoneContex
       items: { create: orderItems },
       user: { connect: { id: userId } },
     },
-    resolveFields: false,
+    query: false,
   });
   console.log({ order });
   // 6. Clean up any old cart item

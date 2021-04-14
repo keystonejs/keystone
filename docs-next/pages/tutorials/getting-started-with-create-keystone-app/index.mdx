@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 <img
   src={require('./assets/cover.svg')}
-  alt="A terminal with the output of create-keystone-next-app"
+  alt="A terminal with the output of create-keystone-app"
   style={{
     margin: '0 -1rem 2rem -1rem',
     width: 'calc(100% + 2rem)',
@@ -18,13 +18,13 @@ import Link from 'next/link';
 
 # Getting started
 
-[`create-keystone-next-app`](https://github.com/keystonejs/create-keystone-next-app) is a CLI app that makes it easier for you to get started with Keystone.
+[`create-keystone-app`](https://github.com/keystonejs/create-keystone-app) is a CLI app that makes it easier for you to get started with Keystone.
 It will generate a couple of files for you and install all the dependencies you need to run the Admin UI and start using the GraphQL API.
 
 ## Quick Start
 
 ```sh
-yarn create keystone-next-app
+yarn create keystone-app
 cd my-app
 yarn dev
 ```
@@ -32,7 +32,7 @@ yarn dev
 ## Installing your own Keystone instance
 
 Open your preferred shell and make sure you are in the folder you would like to create your new project in.
-`create-keystone-next-app` will generate a new folder with your new Keystone files in it.
+`create-keystone-app` will generate a new folder with your new Keystone files in it.
 
 ### Yarn
 
@@ -40,7 +40,7 @@ Use [`yarn create`](https://classic.yarnpkg.com/en/docs/cli/create/):
 
 ```sh
 cd your/path/
-yarn create keystone-next-app
+yarn create keystone-app
 ```
 
 ### npm
@@ -49,7 +49,7 @@ Use [`npm init`](https://docs.npmjs.com/cli/v7/commands/npm-init):
 
 ```sh
 cd your/path/
-npm init keystone-next-app
+npm init keystone-app
 ```
 
 <Alert>
@@ -62,7 +62,7 @@ Use npm's [`npx`](https://docs.npmjs.com/cli/v7/commands/npx):
 
 ```sh
 cd your/path/
-npx create-keystone-next-app
+npx create-keystone-app
 ```
 
 <Alert>
@@ -87,7 +87,7 @@ Make sure you have your connection URL ready for your database, e.g. `postgres:/
   height={764}
 />
 
-After running `create-keystone-next-app` you can now `cd` into the folder that was created for you and start Keystone.
+After running `create-keystone-app` you can now `cd` into the folder that was created for you and start Keystone.
 
 ```sh
 cd my-app

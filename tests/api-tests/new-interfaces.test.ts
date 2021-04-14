@@ -19,7 +19,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
     test(
       'Smoke test',
       runner(setupKeystone, async ({ context }) => {
-        const users = await context.lists.User.findMany({ resolveFields: false });
+        const users = await context.lists.User.findMany({ query: false });
         expect(users).toEqual([]);
       })
     );

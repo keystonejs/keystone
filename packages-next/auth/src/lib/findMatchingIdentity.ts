@@ -12,7 +12,7 @@ export async function findMatchingIdentity(
 > {
   const items = await itemAPI.findMany({
     where: { [identityField]: identity },
-    resolveFields: false,
+    query: false,
   });
 
   // Identity failures with helpful errors

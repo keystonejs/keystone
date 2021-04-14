@@ -91,7 +91,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
                 [`${tokenType}RedeemedAt`]: null,
               },
-              resolveFields: false,
+              query: false,
             });
 
             await passwordResetLink.sendToken({ itemId, identity, token, context });
@@ -136,7 +136,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           await itemAPI.updateOne({
             id: itemId,
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
-            resolveFields: false,
+            query: false,
           });
 
           // Save the provided secret. Do this as a separate step as password validation
@@ -145,7 +145,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           await itemAPI.updateOne({
             id: itemId,
             data: { [secretField]: args[secretField] },
-            resolveFields: false,
+            query: false,
           });
 
           return null;

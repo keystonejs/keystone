@@ -82,7 +82,7 @@ export function makeCreateContext({
       req,
       ...sessionContext,
       // Note: These two fields let us use the server-side-graphql-client library.
-      // We may want to remove them once the updated itemAPI w/ resolveFields is available.
+      // We may want to remove them once the updated itemAPI w/ query is available.
       executeGraphQL: rawGraphQL,
       gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
       images,

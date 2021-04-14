@@ -31,9 +31,6 @@ export function createKeystone(config: KeystoneConfig, prismaClient?: any) {
     // step. This ensures that context.prisma is correctly set up.
     // @ts-ignore The @types/keystonejs__keystone package has the wrong type for KeystoneOptions
     onConnect: (keystone, { context } = {}) => config.db.onConnect?.(context?.sudo()),
-    // FIXME: Unsupported options: Need to work which of these we want to support with backwards
-    // compatibility options.
-    // defaultAccess
   });
 
   Object.entries(lists).forEach(([key, { fields, graphql, access, hooks, description, db }]) => {

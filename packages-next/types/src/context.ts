@@ -69,7 +69,11 @@ export type KeystoneListsAPI<
   };
 };
 
-type ResolveFields = { readonly resolveFields?: false | string };
+type ResolveFields = {
+  readonly query?: false | string;
+  /** @deprecated resolveFields has been renamed to query */
+  readonly resolveFields?: false | string;
+};
 
 // GraphQL API
 

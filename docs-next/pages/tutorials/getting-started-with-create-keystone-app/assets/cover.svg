@@ -13,7 +13,7 @@
 		</g>
 		<text id="λ-yarn-create-keysto" font-family="Menlo-Regular, Menlo" font-size="200" font-weight="normal">
 			<tspan x="226" y="729" fill="#80B1FF">λ</tspan>
-			<tspan x="346.410156" y="729" font-family="Monaco" fill="#FFFFFF"> yarn create keystone-next-app</tspan>
+			<tspan x="346.410156" y="729" font-family="Monaco" fill="#FFFFFF"> yarn create keystone-app</tspan>
 			<tspan x="226" y="979" font-family="Monaco" fill="#FFFFFF">yarn create v1.22.10</tspan>
 			<tspan x="226" y="1229" font-family="Monaco" fill="#A9A9A9">[1/4]</tspan>
 			<tspan x="826.097656" y="1229" font-family="Monaco" fill="#FFFFFF"> </tspan>
@@ -32,11 +32,11 @@
 			<tspan x="946.117188" y="2018" font-family="AppleColorEmoji, Apple Color Emoji" fill="#FFFFFF">🔨</tspan>
 			<tspan x="1146.11719" y="2018" font-family="Monaco" fill="#FFFFFF">  Building fresh packages...</tspan>
 			<tspan x="226" y="2281" font-family="Monaco" fill="#46FF00">success</tspan>
-			<tspan x="1066.13672" y="2281" font-family="Monaco" fill="#FFFFFF"> Installed "create-keystone-next-app@1.1.0" with binaries:</tspan>
-			<tspan x="226" y="2531" font-family="Monaco" fill="#FFFFFF">&#160;&#160;&#160;&#160;&#160;&#160;- create-keystone-next-app</tspan>
+			<tspan x="1066.13672" y="2281" font-family="Monaco" fill="#FFFFFF"> Installed "create-keystone-app@1.1.0" with binaries:</tspan>
+			<tspan x="226" y="2531" font-family="Monaco" fill="#FFFFFF">&#160;&#160;&#160;&#160;&#160;&#160;- create-keystone-app</tspan>
 			<tspan x="226" y="2781" font-family="Monaco" fill="#FFFFFF">[#######################################################################] 140/140</tspan>
 			<tspan x="226" y="3031" fill="#46FF00">✔</tspan>
-			<tspan x="346.410156" y="3031" font-family="Monaco" fill="#FFFFFF" font-weight="bold"> What directory should create-keystone-next-app generate your app into? · </tspan>
+			<tspan x="346.410156" y="3031" font-family="Monaco" fill="#FFFFFF" font-weight="bold"> What directory should create-keystone-app generate your app into? · </tspan>
 			<tspan x="9227.85547" y="3031" font-family="Monaco" fill="#46FF00">my-app</tspan>
 			<tspan x="9947.97266" y="3031" font-family="Monaco" fill="#FFFFFF"></tspan>
 			<tspan x="226" y="3281" fill="#46FF00">✔</tspan>
