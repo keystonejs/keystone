@@ -1,4 +1,4 @@
-const { ListCRUDProvider } = require('./listCRUD');
+export { ListCRUDProvider } from './listCRUD';
 
 // The GraphQL Provider Framework expects to see classes with the following API:
 //
@@ -31,5 +31,3 @@ const { ListCRUDProvider } = require('./listCRUD');
 //     return {};
 //   }
 // }
-
-module.exports = { ListCRUDProvider };

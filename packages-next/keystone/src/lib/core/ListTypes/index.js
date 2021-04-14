@@ -1,3 +1,1 @@
-const List = require('./list');
-
-module.exports = { List };
+export { List } from './list';

@@ -1,6 +1,6 @@
-const { humanize, resolveAllKeys, arrayToObject } = require('@keystone-next/utils-legacy');
+import { humanize, resolveAllKeys, arrayToObject } from '@keystone-next/utils-legacy';
 
-const keyToLabel = str => {
+export const keyToLabel = str => {
   let label = humanize(str);
 
   // Retain the leading underscore for auxiliary lists
@@ -10,18 +10,18 @@ const keyToLabel = str => {
   return label;
 };
 
-const labelToPath = str => str.split(' ').join('-').toLowerCase();
+export const labelToPath = str => str.split(' ').join('-').toLowerCase();
 
-const labelToClass = str => str.replace(/\s+/g, '');
+export const labelToClass = str => str.replace(/\s+/g, '');
 
-const opToType = {
+export const opToType = {
   read: 'query',
   create: 'mutation',
   update: 'mutation',
   delete: 'mutation',
 };
 
-const mapToFields = (fields, action) =>
+export const mapToFields = (fields, action) =>
   resolveAllKeys(arrayToObject(fields, 'path', action)).catch(error => {
     if (!error.errors) {
       throw error;
@@ -30,5 +30,3 @@ const mapToFields = (fields, action) =>
     errorCopy.errors = Object.values(error.errors);
     throw errorCopy;
   });
-
-module.exports = { keyToLabel, labelToPath, labelToClass, opToType, mapToFields };
