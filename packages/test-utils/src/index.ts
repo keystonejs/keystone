@@ -5,8 +5,6 @@ import fs from 'fs';
 import express from 'express';
 // @ts-ignore
 import supertest from 'supertest-light';
-// @ts-ignore
-import { Keystone } from '@keystone-next/keystone-legacy';
 import { initConfig, createSystem, createExpressServer } from '@keystone-next/keystone';
 import { pushPrismaSchemaToDatabase } from '@keystone-next/keystone/migrations';
 import {
@@ -146,7 +144,7 @@ function _before(provider: ProviderName) {
   return async function (
     setupKeystone: (
       provider: ProviderName
-    ) => Promise<{ keystone: Keystone<string>; app: any; context: any }>
+    ) => Promise<{ keystone: BaseKeystone; app: any; context: any }>
   ) {
     const { keystone, context, app } = await setupKeystone(provider);
     await keystone.connect();
@@ -155,7 +153,7 @@ function _before(provider: ProviderName) {
 }
 
 function _after(tearDownFunction: () => Promise<void> | void) {
-  return async function (keystone: Keystone<string>) {
+  return async function (keystone: BaseKeystone) {
     await keystone.disconnect();
     await tearDownFunction();
   };

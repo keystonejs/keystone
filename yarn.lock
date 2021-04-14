@@ -5821,11 +5821,6 @@ enquirer@^2.3.0, enquirer@^2.3.5, enquirer@^2.3.6:
   dependencies:
     ansi-colors "^4.1.1"
 
-ensure-error@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/ensure-error/-/ensure-error-3.0.1.tgz#60c381f24baa8223115b2d56b2a340ff9ba5c52d"
-  integrity sha512-J2e5Z3sgnA8en6+alf2VkO5cRwe75hHgSw0rJiMn5CEE4Yyw6GSgH31IBgwN9lugeCuPKHzuOF3X/RozAFsuhQ==
-
 entities@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.2.0.tgz#098dc90ebb83d8dffa089d55256b351d34c4da55"

@@ -4,8 +4,8 @@ const { Text: TextImplementation } = require('@keystone-next/fields/src/types/te
 const {
   Relationship: RelationshipImplementation,
 } = require('@keystone-next/fields/src/types/relationship/Implementation');
-const { List } = require('../lib/ListTypes');
-const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
+const { List } = require('../ListTypes');
+const { AccessDeniedError } = require('../ListTypes/graphqlErrors');
 
 const Relationship = {
   type: 'Relationship',

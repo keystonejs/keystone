@@ -4,7 +4,7 @@ const { objMerge, flatten, unique, filterValues } = require('@keystone-next/util
 const { List } = require('../ListTypes');
 const { ListCRUDProvider } = require('../providers');
 
-module.exports = class Keystone {
+export class Keystone {
   constructor({ adapter, onConnect, queryLimits = {} }) {
     this.lists = {};
     this.listsArray = [];
@@ -230,4 +230,4 @@ module.exports = class Keystone {
       o => Object.entries(o).length > 0
     );
   }
-};
+}

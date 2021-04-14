@@ -1,6 +1,5 @@
 ---
-'@keystone-next/keystone': major
-'@keystone-next/keystone-legacy': major
+'@keystone-next/keystone': patch
 ---
 
 Removed the internal `_label_` field which is no longer used.
