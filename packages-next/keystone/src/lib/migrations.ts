@@ -13,13 +13,20 @@ import { confirmPrompt, textPrompt } from './prompts';
 
 // note that we could only run this once per Migrate instance but we're going to do it consistently for all migrate calls
 // so that calls can moved around freely without implictly relying on some other migrate command being called before it
+
+// We also want to silence messages from Prisma about available updates, since the developer is
+// not in control of their Prisma version.
+// https://www.prisma.io/docs/reference/api-reference/environment-variables-reference#prisma_hide_update_message
 function runMigrateWithDbUrl<T>(dbUrl: string, cb: () => T): T {
   let prevDBURLFromEnv = process.env.DATABASE_URL;
+  let prevHiddenUpdateMessage = process.env.PRISMA_HIDE_UPDATE_MESSAGE;
   try {
     process.env.DATABASE_URL = dbUrl;
+    process.env.PRISMA_HIDE_UPDATE_MESSAGE = '1';
     return cb();
   } finally {
     process.env.DATABASE_URL = prevDBURLFromEnv;
+    process.env.PRISMA_HIDE_UPDATE_MESSAGE = prevHiddenUpdateMessage;
   }
 }
 
