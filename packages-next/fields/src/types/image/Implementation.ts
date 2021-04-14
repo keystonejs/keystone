@@ -62,17 +62,25 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
   gqlOutputFieldResolvers() {
     return {
       [this.path]: (item: Record<P, any>) => {
-        let imageData = item[this.path];
-        if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
-          // we store image data as a string on sqlite because Prisma doesn't support Json on sqlite
-          // https://github.com/prisma/prisma/issues/3786
-          try {
-            imageData = JSON.parse(imageData);
-          } catch (err) {}
-        }
-        return imageData;
+        return item[this.path];
       },
     };
+  }
+
+  async validateInput({
+    fieldPath,
+    resolvedData,
+    addFieldValidationError,
+  }: {
+    fieldPath: string;
+    resolvedData: Record<P, any>;
+    addFieldValidationError: (msg: string) => void;
+  }) {
+    Object.keys(resolvedData).forEach(key => {
+      if (!resolvedData[key as P]) {
+        addFieldValidationError(`${fieldPath}.${key} is a non-nullable property`);
+      }
+    });
   }
 
   async resolveInput({
@@ -130,19 +138,90 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
   }
 
   getPrismaSchema() {
+    // ${this.config.isUnique ? '@unique' : ''}
+    const { isRequired } = this.config;
     return [
-      this._schemaField({
-        type:
-          this.listAdapter.parentAdapter.provider === 'sqlite'
-            ? // we store image data as a string on sqlite because Prisma doesn't support Json on sqlite
-              // https://github.com/prisma/prisma/issues/3786
-              'String'
-            : 'Json',
-      }),
+      `${this.path}_filesize    Int${isRequired ? '' : '?'} `,
+      `${this.path}_extension   String${isRequired ? '' : '?'}`,
+      `${this.path}_width   Int${isRequired ? '' : '?'}`,
+      `${this.path}_height   Int${isRequired ? '' : '?'}`,
+      `${this.path}_mode   String${isRequired ? '' : '?'}`,
+      `${this.path}_id   String${isRequired ? '' : '?'}`,
     ];
   }
 
   getQueryConditions() {
     return {};
+  }
+
+  setupHooks({
+    addPreSaveHook,
+    addPostReadHook,
+  }: {
+    addPreSaveHook: (hook: any) => void;
+    addPostReadHook: (hook: any) => void;
+  }) {
+    const field_path = this.path;
+    const filesize_field = `${this.path}_filesize`;
+    const extension_field = `${this.path}_extension`;
+    const width_field = `${this.path}_width`;
+    const height_field = `${this.path}_height`;
+    const mode_field = `${this.path}_mode`;
+    const id_field = `${this.path}_id`;
+
+    addPreSaveHook(
+      (item: Record<P, any>): Record<string, any> => {
+        if (!item.hasOwnProperty(field_path)) {
+          return item;
+        }
+        const { mode, filesize, extension, width, height, id } = item[field_path];
+
+        const newItem = {
+          [filesize_field]: parseInt(filesize, 10),
+          [extension_field]: extension,
+          [width_field]: width,
+          [height_field]: height,
+          [id_field]: id,
+          [mode_field]: mode,
+          ...item,
+        };
+
+        delete newItem[field_path];
+
+        return newItem;
+      }
+    );
+    addPostReadHook(
+      (item: Record<string, any>): Record<P, any> => {
+        if (
+          !item[filesize_field] ||
+          !item[extension_field] ||
+          !item[width_field] ||
+          !item[height_field] ||
+          !item[id_field] ||
+          !item[mode_field]
+        ) {
+          item[field_path] = null;
+          return item;
+        }
+        item[field_path] = {
+          filesize: item[filesize_field],
+          extension: item[extension_field],
+          width: item[width_field],
+          height: item[height_field],
+          id: item[id_field],
+          mode: item[mode_field],
+        };
+
+        item[filesize_field] = undefined;
+        item[extension_field] = undefined;
+        item[width_field] = undefined;
+        item[height_field] = undefined;
+        item[id_field] = undefined;
+        item[mode_field] = undefined;
+
+        return item;
+      }
+    );
   }
 }
