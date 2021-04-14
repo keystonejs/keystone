@@ -34,7 +34,7 @@
     "@keystone-next/server-side-graphql-client-legacy": "^3.0.1",
     "@keystone-next/types": "^16.0.0",
     "@keystone-next/utils-legacy": "^8.0.0",
-    "@preconstruct/next": "^2.0.0",
+    "@preconstruct/next": "^3.0.0",
     "@prisma/client": "2.20.1",
     "@prisma/migrate": "2.20.2",
     "@prisma/sdk": "2.20.1",

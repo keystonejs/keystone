@@ -3,6 +3,9 @@ import Path from 'path';
 import withPreconstruct from '@preconstruct/next';
 
 export const config = withPreconstruct({
+  future: {
+    webpack5: true,
+  },
   webpack(config: any) {
     config.resolve.alias = {
       ...config.resolve.alias,
