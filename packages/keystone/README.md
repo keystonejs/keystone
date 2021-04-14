@@ -13,7 +13,6 @@ const { Keystone } = require('@keystone-next/keystone-legacy');
 
 const keystone = new Keystone({
   adapter,
-  defaultAccess,
   onConnect,
   queryLimits,
   schemaNames,
@@ -38,20 +37,6 @@ const keystone = new Keystone({
   },
 });
 ```
-
-### `defaultAccess`
-
-_**Default:**_
-
-```js
-{
-  list: true,
-  field: true,
-  custom: true
-}
-```
-
-Default list and field access. See the [Access Control](https://www.keystonejs.com/api/access-control#defaults) page for more details.
 
 ### `onConnect`
 

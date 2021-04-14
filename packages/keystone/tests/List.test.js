@@ -162,7 +162,6 @@ class MockAdapter {
 const listExtras = () => ({
   getListByKey,
   adapter: new MockAdapter(),
-  defaultAccess: { list: true, field: true },
   schemaNames: ['public'],
 });
 
@@ -189,7 +188,6 @@ describe('new List()', () => {
     expect(list).not.toBeNull();
     expect(list.key).toEqual('Test');
     expect(list.getListByKey).toBe(getListByKey);
-    expect(list.defaultAccess).toEqual({ list: true, field: true });
   });
 
   test('new List() - Plural throws error', () => {
