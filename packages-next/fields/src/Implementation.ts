@@ -157,8 +157,39 @@ class Field<P extends string> {
   async resolveInput({ resolvedData }: { resolvedData: Record<P, any> }): Promise<any> {
     return resolvedData[this.path];
   }
-
-  async validateInput() {}
+  /**
+   * @param {Object} data
+   * @param {Object} data.resolvedData The incoming item for the mutation with
+   * relationships and defaults already resolved
+   * @param {Object} data.existingItem If this is a updateX mutation, this will
+   * be the existing data in the database
+   * @param {Object} data.context The graphQL context object of the current
+   * request
+   * @param {Object} data.originalInput The raw incoming item from the mutation
+   * (no relationships or defaults resolved)
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async validateInput({
+    resolvedData,
+    existingItem,
+    context,
+    originalInput,
+    listKey,
+    fieldPath,
+    operation,
+    addFieldValidationError,
+    addValidationError,
+  }: {
+    resolvedData: Record<P, any>;
+    existingItem: Record<string, any>;
+    context: KeystoneContext;
+    originalInput: any;
+    listKey: string;
+    fieldPath: string;
+    operation: 'create' | 'update';
+    addFieldValidationError: (msg: string) => void;
+    addValidationError: (msg: string) => void;
+  }) {}
 
   async beforeChange() {}
 
