@@ -14,6 +14,7 @@ export { Field } from './Field';
 
 export const Cell: CellComponent = ({ item, field }) => {
   const data = item[field.path];
+  console.log(data);
   if (!data) return null;
   return (
     <div
@@ -25,11 +26,7 @@ export const Cell: CellComponent = ({ item, field }) => {
         width: 24,
       }}
     >
-      <img
-        alt={data.filename}
-        css={{ maxHeight: '100%', maxWidth: '100%' }}
-        src={data.publicUrlTransformed}
-      />
+      <img alt={data.filename} css={{ maxHeight: '100%', maxWidth: '100%' }} src={data.src} />
     </div>
   );
 };
@@ -83,6 +80,7 @@ export const controller = (config: FieldControllerConfig): ImageController => {
     path: config.path,
     label: config.label,
     graphqlSelection: `${config.path} {
+        src
         id
         ref
         extension
@@ -97,7 +95,7 @@ export const controller = (config: FieldControllerConfig): ImageController => {
       return {
         kind: 'from-server',
         data: {
-          src: `/images/${value.id}.${value.extension}`,
+          src: value.src,
           id: value.id,
           extension: value.extension,
           ref: value.ref,
