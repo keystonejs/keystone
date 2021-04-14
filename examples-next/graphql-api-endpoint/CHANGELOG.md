@@ -1,4 +1,4 @@
-# keystone-app
+# keystone-next-app
 
 ## 0.0.5
 
