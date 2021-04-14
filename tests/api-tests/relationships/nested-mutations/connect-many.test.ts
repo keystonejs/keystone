@@ -72,7 +72,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 createUser(data: {
@@ -88,13 +88,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
           expect(data).toMatchObject({
             createUser: { id: expect.any(String), notes: expect.any(Array) },
           });
-          expect(errors).toBe(undefined);
 
           // Create an item that does the linking
-          const {
-            data: { createUser },
-            errors: errors2,
-          } = await context.executeGraphQL({
+          const { createUser } = await context.graphql.run({
             query: `
               mutation {
                 createUser(data: {
@@ -106,11 +102,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
               }`,
           });
-          expect(errors2).toBe(undefined);
           expect(createUser).toMatchObject({ id: expect.any(String), notes: expect.any(Array) });
 
           // Test an empty list of related notes
-          const result = await context.executeGraphQL({
+          const data2 = await context.graphql.run({
             query: `
               mutation {
                 createUser(data: {
@@ -122,8 +117,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
               }`,
           });
-          expect(result.errors).toBe(undefined);
-          expect(result.data.createUser).toMatchObject({ id: expect.any(String), notes: [] });
+          expect(data2.createUser).toMatchObject({ id: expect.any(String), notes: [] });
         })
       );
 
@@ -146,7 +140,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 createUsers(data: [
@@ -161,7 +155,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
           expect(data).toMatchObject({
             createUsers: [{ id: expect.any(String) }, { id: expect.any(String) }],
           });
-          expect(errors).toBe(undefined);
         })
       );
 
@@ -191,7 +184,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Update the item and link the relationship field
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 updateUser(
@@ -216,13 +209,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
               notes: [{ id: expect.any(String), content: noteContent }],
             },
           });
-          expect(errors).toBe(undefined);
 
           // Update the item and link multiple relationship fields
-          const {
-            data: { updateUser },
-            errors: errors2,
-          } = await context.executeGraphQL({
+          const { updateUser } = await context.graphql.run({
             query: `
               mutation {
                 updateUser(
@@ -242,7 +231,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
               }`,
           });
-          expect(errors2).toBe(undefined);
           expect(updateUser).toMatchObject({
             id: expect.any(String),
             notes: [
@@ -279,7 +267,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Update the item and link the relationship field
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 updateUser(
@@ -307,7 +295,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
               ],
             },
           });
-          expect(errors).toBe(undefined);
         })
       );
 
@@ -344,7 +331,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             item: { username: 'user2' },
           });
 
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 updateUsers(data: [
@@ -365,7 +352,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
               { id: expect.any(String), notes: [{ id: createNote2.id, content: noteContent2 }] },
             ],
           });
-          expect(errors).toBe(undefined);
         })
       );
     });
@@ -377,7 +363,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const FAKE_ID = 100;
 
           // Create an item that does the linking
-          const { errors } = await context.executeGraphQL({
+          const { errors } = await context.graphql.raw({
             query: `
               mutation {
                 createUser(data: {
@@ -405,7 +391,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const createUser = await createItem({ context, listKey: 'User', item: {} });
 
           // Create an item that does the linking
-          const { errors } = await context.executeGraphQL({
+          const { errors } = await context.graphql.raw({
             query: `
               mutation {
                 updateUser(
@@ -442,7 +428,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               item: { content: noteContent },
             });
 
-            const { errors } = await context.exitSudo().executeGraphQL({
+            const { errors } = await context.exitSudo().graphql.raw({
               query: `
                 mutation {
                   createUserToNotesNoRead(data: {
@@ -455,12 +441,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             expect(errors).toHaveLength(1);
-            const error = errors[0];
+            const error = errors![0];
             expect(error.message).toEqual(
               'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>'
             );
             expect(error.path).toHaveLength(1);
-            expect(error.path[0]).toEqual('createUserToNotesNoRead');
+            expect(error.path![0]).toEqual('createUserToNotesNoRead');
           })
         );
 
@@ -484,7 +470,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             // Update the item and link the relationship field
-            const { errors } = await context.exitSudo().executeGraphQL({
+            const { errors } = await context.exitSudo().graphql.raw({
               query: `
                 mutation {
                   updateUserToNotesNoRead(
@@ -500,12 +486,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             expect(errors).toHaveLength(1);
-            const error = errors[0];
+            const error = errors![0];
             expect(error.message).toEqual(
               'Unable to create and/or connect 1 UserToNotesNoRead.notes<NoteNoRead>'
             );
             expect(error.path).toHaveLength(1);
-            expect(error.path[0]).toEqual('updateUserToNotesNoRead');
+            expect(error.path![0]).toEqual('updateUserToNotesNoRead');
           })
         );
       });
@@ -524,7 +510,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             // Create an item that does the linking
-            const { data, errors } = await context.exitSudo().executeGraphQL({
+            const data = await context.exitSudo().graphql.run({
               query: `
                 mutation {
                   createUserToNotesNoCreate(data: {
@@ -536,7 +522,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }`,
             });
 
-            expect(errors).toBe(undefined);
             expect(data.createUserToNotesNoCreate).toMatchObject({ id: expect.any(String) });
           })
         );
@@ -561,7 +546,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             // Update the item and link the relationship field
-            const { data, errors } = await context.exitSudo().executeGraphQL({
+            const data = await context.exitSudo().graphql.run({
               query: `
                 mutation {
                   updateUserToNotesNoCreate(
@@ -578,7 +563,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }`,
             });
 
-            expect(errors).toBe(undefined);
             expect(data.updateUserToNotesNoCreate).toMatchObject({ id: expect.any(String) });
           })
         );
