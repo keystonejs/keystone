@@ -161,17 +161,7 @@ class Field<P extends string> {
    * (no relationships or defaults resolved)
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async validateInput({
-    resolvedData,
-    existingItem,
-    context,
-    originalInput,
-    listKey,
-    fieldPath,
-    operation,
-    addFieldValidationError,
-    addValidationError,
-  }: {
+  async validateInput(data: {
     resolvedData: Record<P, any>;
     existingItem: Record<string, any>;
     context: KeystoneContext;

@@ -1,6 +1,6 @@
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { Implementation } from '../../Implementation';
 import { ImageData, KeystoneContext, BaseKeystoneList } from '@keystone-next/types';
+import { Implementation } from '../../Implementation';
 import { handleImageData } from './handle-image-input';
 
 export class ImageImplementation<P extends string> extends Implementation<P> {
