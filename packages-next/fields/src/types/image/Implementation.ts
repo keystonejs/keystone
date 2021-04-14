@@ -96,11 +96,6 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
       return undefined;
     }
     const imageData = await handleImageData(data, context);
-    if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
-      // we store image data as a string on sqlite because Prisma doesn't support Json on sqlite
-      // https://github.com/prisma/prisma/issues/3786
-      return JSON.stringify(imageData);
-    }
     return imageData;
   }
 
