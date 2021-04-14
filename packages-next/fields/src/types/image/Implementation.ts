@@ -60,11 +60,7 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
   }
   // Called on `User.avatar` for example
   gqlOutputFieldResolvers() {
-    return {
-      [this.path]: (item: Record<P, any>) => {
-        return item[this.path];
-      },
-    };
+    return { [`${this.path}`]: (item: Record<P, any>) => item[this.path] };
   }
 
   async validateInput({
