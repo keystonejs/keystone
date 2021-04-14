@@ -76,8 +76,10 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
     resolvedData: Record<P, any>;
     addFieldValidationError: (msg: string) => void;
   }) {
-    Object.keys(resolvedData).forEach(key => {
-      if (!resolvedData[key as P]) {
+    if (!resolvedData[fieldPath as P]) return;
+    const img = resolvedData[fieldPath as P];
+    Object.keys(img).forEach(key => {
+      if (!img[key]) {
         addFieldValidationError(`${fieldPath}.${key} is a non-nullable property`);
       }
     });
@@ -174,21 +176,39 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
         if (!item.hasOwnProperty(field_path)) {
           return item;
         }
-        const { mode, filesize, extension, width, height, id } = item[field_path];
+        if (item[field_path as P] === null) {
+          // If the property exists on the field but is null or falsey
+          // all split fields are null
+          // delete the original field item
+          // return the item
+          const newItem = {
+            [filesize_field]: null,
+            [extension_field]: null,
+            [width_field]: null,
+            [height_field]: null,
+            [id_field]: null,
+            [mode_field]: null,
+            ...item,
+          };
+          delete newItem[field_path];
+          return newItem;
+        } else {
+          const { mode, filesize, extension, width, height, id } = item[field_path];
 
-        const newItem = {
-          [filesize_field]: parseInt(filesize, 10),
-          [extension_field]: extension,
-          [width_field]: width,
-          [height_field]: height,
-          [id_field]: id,
-          [mode_field]: mode,
-          ...item,
-        };
+          const newItem = {
+            [filesize_field]: parseInt(filesize, 10),
+            [extension_field]: extension,
+            [width_field]: width,
+            [height_field]: height,
+            [id_field]: id,
+            [mode_field]: mode,
+            ...item,
+          };
 
-        delete newItem[field_path];
+          delete newItem[field_path];
 
-        return newItem;
+          return newItem;
+        }
       }
     );
     addPostReadHook(
@@ -213,12 +233,12 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
           mode: item[mode_field],
         };
 
-        item[filesize_field] = undefined;
-        item[extension_field] = undefined;
-        item[width_field] = undefined;
-        item[height_field] = undefined;
-        item[id_field] = undefined;
-        item[mode_field] = undefined;
+        delete item[filesize_field];
+        delete item[extension_field];
+        delete item[width_field];
+        delete item[height_field];
+        delete item[id_field];
+        delete item[mode_field];
 
         return item;
       }

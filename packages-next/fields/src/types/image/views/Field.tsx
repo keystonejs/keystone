@@ -83,6 +83,16 @@ export function Field({
 
   const errorMessage = createErrorMessage(value, forceValidation);
 
+  useEffect(() => {
+    if (value.kind === 'from-server') {
+      setPrevious(value);
+    } else if (value.kind === 'remove' && value.previous?.kind === 'from-server') {
+      setPrevious(value.previous);
+    } else if (value.kind === 'empty') {
+      setPrevious(null);
+    }
+  }, [value]);
+
   const onUploadChange = ({
     currentTarget: { validity, files },
   }: React.SyntheticEvent<HTMLInputElement>) => {
@@ -123,12 +133,6 @@ export function Field({
   };
 
   const toggleSetRefUI = () => {
-    if (value.kind === 'from-server') {
-      setPrevious(value);
-    }
-    if (value.kind === 'remove' && value.previous?.kind === 'from-server') {
-      setPrevious(value.previous);
-    }
     setSetRef(!canSetRef);
   };
 
