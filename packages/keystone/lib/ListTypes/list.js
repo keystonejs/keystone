@@ -42,7 +42,7 @@ module.exports = class List {
       queryLimits = {},
       cacheHint,
     },
-    { getListByKey, adapter, defaultAccess }
+    { getListByKey, adapter }
   ) {
     this.key = key;
     this._fields = fields;
@@ -51,7 +51,6 @@ module.exports = class List {
     this.adminDoc = adminDoc;
 
     this.getListByKey = getListByKey;
-    this.defaultAccess = defaultAccess;
 
     const _label = label || keyToLabel(key);
     const _singular = singular || pluralize.singular(_label);
@@ -104,7 +103,7 @@ module.exports = class List {
       schemaNames: this._schemaNames,
       listKey: key,
       access,
-      defaultAccess: this.defaultAccess.list,
+      defaultAccess: true,
     });
 
     this.queryLimits = {
@@ -160,7 +159,6 @@ module.exports = class List {
           listKey: this.key,
           listAdapter: this.adapter,
           fieldAdapterClass: type.adapter,
-          defaultAccess: this.defaultAccess.field,
           schemaNames: this._schemaNames,
         })
     );
