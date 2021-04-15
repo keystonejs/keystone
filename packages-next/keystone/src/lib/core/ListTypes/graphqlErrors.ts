@@ -17,7 +17,7 @@ export const LimitsExceededError = createError('LimitsExceededError', {
 type ValueOf<T> = T[keyof T];
 export const throwAccessDenied = (
   type: ValueOf<typeof opToType>,
-  target: string,
+  target?: string,
   internalData = {},
   extraData = {}
 ) => {

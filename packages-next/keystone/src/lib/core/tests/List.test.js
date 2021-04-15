@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server-express';
 import { print } from 'graphql/language/printer';
 import { text, relationship } from '@keystone-next/fields';
-import { List } from '../ListTypes';
+import { List } from '../ListTypes/index.ts';
 import { AccessDeniedError } from '../ListTypes/graphqlErrors.ts';
 
 const Relationship = relationship().type;
