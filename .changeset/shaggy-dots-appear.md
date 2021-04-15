@@ -1,5 +1,5 @@
 ---
-'@keystone-next/fields': patch
+'@keystone-next/fields': minor
 ---
 
 Added new image field type.
