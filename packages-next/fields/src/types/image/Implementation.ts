@@ -166,7 +166,7 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
           const { mode, filesize, extension, width, height, id } = item[field_path];
 
           const newItem = {
-            [filesize_field]: parseInt(filesize, 10),
+            [filesize_field]: filesize,
             [extension_field]: extension,
             [width_field]: width,
             [height_field]: height,
