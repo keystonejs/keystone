@@ -3,6 +3,8 @@ import { ImageData, KeystoneContext, BaseKeystoneList } from '@keystone-next/typ
 import { Implementation } from '../../Implementation';
 import { handleImageData } from './handle-image-input';
 
+const SUPPORTED_IMAGE_EXTENSIONS = ['jpeg', 'png', 'webp', 'gif'];
+
 export class ImageImplementation<P extends string> extends Implementation<P> {
   get _supportsUnique() {
     return false;
@@ -22,10 +24,7 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
         ref: String
       }
       enum ImageExtension {
-        jpeg
-        png
-        webp
-        gif
+        ${SUPPORTED_IMAGE_EXTENSIONS.join('\n')}
       }
       type ImageFieldOutput {
         mode: ImageMode!
@@ -135,12 +134,24 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
     const { isRequired } = this.config;
     return [
       `${this.path}_filesize    Int${isRequired ? '' : '?'} `,
-      `${this.path}_extension   String${isRequired ? '' : '?'}`,
+      `${this.path}_extension   ${
+        this.listAdapter.parentAdapter.provider !== 'sqlite' ? 'Extensions' : 'String'
+      }${isRequired ? '' : '?'}`,
       `${this.path}_width   Int${isRequired ? '' : '?'}`,
       `${this.path}_height   Int${isRequired ? '' : '?'}`,
       `${this.path}_mode   String${isRequired ? '' : '?'}`,
       `${this.path}_id   String${isRequired ? '' : '?'}`,
     ];
+  }
+
+  getPrismaEnums() {
+    return this.listAdapter.parentAdapter.provider !== 'sqlite'
+      ? [
+          `enum Extensions {
+        ${SUPPORTED_IMAGE_EXTENSIONS.join('\n')}
+    }`,
+        ]
+      : [];
   }
 
   getQueryConditions() {
