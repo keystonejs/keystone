@@ -167,7 +167,7 @@ class Field<P extends string> {
     context: KeystoneContext;
     originalInput: any;
     listKey: string;
-    fieldPath: string;
+    fieldPath: P;
     operation: 'create' | 'update';
     addFieldValidationError: (msg: string) => void;
     addValidationError: (msg: string) => void;
