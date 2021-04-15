@@ -7,8 +7,6 @@ export type ImageFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
 > = FieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
-  // not sure if this would or should work
-  // defaultValue?: FieldDefaultValue<ImageInput>;
 };
 
 export const image = <TGeneratedListTypes extends BaseGeneratedListTypes>(
