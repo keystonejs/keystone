@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@keystone-ui/core';
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 
 import { Page } from '../components/Page';
 import { COLORS } from '../lib/COLORS';
