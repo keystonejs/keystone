@@ -12,9 +12,9 @@ import {
   createLazyDeferred,
 } from '@keystone-next/utils-legacy';
 import { parseListAccess } from '@keystone-next/access-control-legacy';
-import { keyToLabel, labelToPath, labelToClass, opToType, mapToFields } from './utils';
-import { HookManager } from './hooks';
-import { LimitsExceededError, throwAccessDenied } from './graphqlErrors';
+import { keyToLabel, labelToPath, labelToClass, opToType, mapToFields } from './utils.ts';
+import { HookManager } from './hooks.ts';
+import { LimitsExceededError, throwAccessDenied } from './graphqlErrors.ts';
 
 export class List {
   constructor(
