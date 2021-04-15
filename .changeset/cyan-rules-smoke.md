@@ -4,4 +4,4 @@
 '@keystone-next/website': patch
 ---
 
-Removed the deprecated `context.executeGraphQL`. Identical functionality is available via `context.graphql.run`.
+Removed the deprecated `context.executeGraphQL`. Identical functionality is available via `context.graphql.raw`.
