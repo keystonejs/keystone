@@ -4,6 +4,7 @@ import { Implementation } from '../../Implementation';
 import { handleImageData } from './handle-image-input';
 
 const SUPPORTED_IMAGE_EXTENSIONS = ['jpeg', 'png', 'webp', 'gif'];
+const SUPPORTED_MODES = ['local'];
 
 export class ImageImplementation<P extends string> extends Implementation<P> {
   get _supportsUnique() {
@@ -62,24 +63,6 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
     return { [`${this.path}`]: (item: Record<P, any>) => item[this.path] };
   }
 
-  async validateInput({
-    fieldPath,
-    resolvedData,
-    addFieldValidationError,
-  }: {
-    fieldPath: string;
-    resolvedData: Record<P, any>;
-    addFieldValidationError: (msg: string) => void;
-  }) {
-    if (!resolvedData[fieldPath as P]) return;
-    const img = resolvedData[fieldPath as P];
-    Object.keys(img).forEach(key => {
-      if (!img[key]) {
-        addFieldValidationError(`${fieldPath}.${key} is a non-nullable property`);
-      }
-    });
-  }
-
   async resolveInput({
     resolvedData,
     context,
@@ -130,25 +113,28 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
   }
 
   getPrismaSchema() {
-    // ${this.config.isUnique ? '@unique' : ''}
-    const { isRequired } = this.config;
     return [
-      `${this.path}_filesize    Int${isRequired ? '' : '?'} `,
+      `${this.path}_filesize    Int?`,
       `${this.path}_extension   ${
-        this.listAdapter.parentAdapter.provider !== 'sqlite' ? 'Extensions' : 'String'
-      }${isRequired ? '' : '?'}`,
-      `${this.path}_width   Int${isRequired ? '' : '?'}`,
-      `${this.path}_height   Int${isRequired ? '' : '?'}`,
-      `${this.path}_mode   String${isRequired ? '' : '?'}`,
-      `${this.path}_id   String${isRequired ? '' : '?'}`,
+        this.listAdapter.parentAdapter.provider !== 'sqlite' ? 'ImageExtensions' : 'String'
+      }?`,
+      `${this.path}_width   Int?`,
+      `${this.path}_height   Int?`,
+      `${this.path}_mode   ${
+        this.listAdapter.parentAdapter.provider !== 'sqlite' ? 'ImageMode' : 'String'
+      }?`,
+      `${this.path}_id   String?`,
     ];
   }
 
   getPrismaEnums() {
     return this.listAdapter.parentAdapter.provider !== 'sqlite'
       ? [
-          `enum Extensions {
+          `enum ImageExtensions {
         ${SUPPORTED_IMAGE_EXTENSIONS.join('\n')}
+    }`,
+          `enum ImageMode {
+      ${SUPPORTED_MODES.join('\n')}
     }`,
         ]
       : [];
