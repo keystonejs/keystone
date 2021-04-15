@@ -161,7 +161,7 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
 
     addPreSaveHook(
       (item: Record<P, any>): Record<string, any> => {
-        if (!item.hasOwnProperty(field_path)) {
+        if (!Object.prototype.hasOwnProperty.call(item, field_path)) {
           return item;
         }
         if (item[field_path as P] === null) {
