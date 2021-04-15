@@ -1,20 +1,6 @@
-import { Page, components } from '../../../components/Page';
-import { getHeadings } from '../../../lib/getHeadings';
-import { InlineCode } from '../../../components/Code';
-import { Alert } from '../../../components/Alert';
-import { MDXProvider } from '@mdx-js/react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Markdown } from '../../../components/Page';
 
-<img
-  src={require('./assets/cover.svg')}
-  alt="A terminal with the output of create-keystone-app"
-  style={{
-    margin: '0 -1rem 2rem -1rem',
-    width: 'calc(100% + 2rem)',
-    maxWidth: 'none',
-  }}
-/>
+![A terminal with the output of create-keystone-app](/assets/tutorials/getting-started/cover.svg)
 
 # Getting started
 
@@ -52,9 +38,7 @@ cd your/path/
 npm init keystone-app
 ```
 
-<Alert>
-  <InlineCode>npm init {"<initializer>"}</InlineCode> is available in npm 6+
-</Alert>
+?> `npm init "<initializer>"` is available in npm 6+
 
 ### npx
 
@@ -65,27 +49,18 @@ cd your/path/
 npx create-keystone-app
 ```
 
-<Alert>
-  <InlineCode>npx</InlineCode> comes with npm 5.2+
-</Alert>
+?> `npx` comes with npm 5.2+
 
 ## Connecting your database
 
 The CLI will ask you to name your new app and for a way to connect to your database.
 Make sure you have your connection URL ready for your database, e.g. `postgres://localhost/my-app` or `postgres://username:password@localhost/my-app`.
 
-<Alert>
-  If you run into trouble with the database, check out this guide on <Link href="https://www.keystonejs.com/quick-start/adapters">Database Setup</Link>
-</Alert>
+?> If you run into trouble with the database, check out this guide on [Database Setup](https://www.keystonejs.com/quick-start/adapters)
 
 ## Opening your shiny new Admin UI
 
-<Image
-  src={require('./assets/adminui.png')}
-  alt="The AdminUI of Keystone showing the two lists: User and Posts"
-  width={1954}
-  height={764}
-/>
+![The AdminUI of Keystone showing the two lists: User and Posts](/assets/tutorials/getting-started/adminui.png)
 
 After running `create-keystone-app` you can now `cd` into the folder that was created for you and start Keystone.
 
@@ -96,12 +71,7 @@ yarn dev
 
 This will generate the Admin UI pages via [Next.js](https://nextjs.org/) on [http://localhost:3000](http://localhost:3000).
 
-<Image
-  src={require('./assets/welcome-screen.png')}
-  alt="The welcome screen giving you the ability the create a new user to log into the AdminUI"
-  width={1328}
-  height={1020}
-/>
+![The welcome screen giving you the ability the create a new user to log into the AdminUI](/assets/tutorials/getting-started/welcome-screen.png)
 
 When you visit the Admin UI for the first time you will be presented with a handy screen that asks you to create a user.
 Go ahead and create your first user.
@@ -148,15 +118,6 @@ Read more about the cli in our [command line guides](/guides/cli).
 - Customize Keystone with the [System Configuration API](/apis/config).
 - Add fields and relationships using [Schema API](/apis/schema).
 
-export default ({ children }) => {
-  const headings = getHeadings(children);
-  return (
-    <Page
-      title={'Getting started'}
-      headings={headings}
-      isProse
-    >
-      <MDXProvider components={components}>{children}</MDXProvider>
-    </Page>
-  );
-};
+export default ({ children }) => <Markdown>{children}</Markdown>
+
+;
