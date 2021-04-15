@@ -44,12 +44,13 @@ const isValidImageRef = (
   return false;
 };
 
-const isValidImageExtension = (ext: string): boolean => SUPPORTED_IMAGE_EXTENSIONS.includes(ext);
+const isValidImageExtension = (extension: string): boolean =>
+  SUPPORTED_IMAGE_EXTENSIONS.includes(extension);
 
 const parseImageRef = (
   ref: string,
   config: { storagePath: string }
-): { mode: ImageMode; id: string; ext: ImageExtension } => {
+): { mode: ImageMode; id: string; extension: ImageExtension } => {
   const throwInvalidRefError = () => {
     throw new Error('Invalid image reference');
   };
@@ -67,7 +68,7 @@ const parseImageRef = (
   return {
     mode: mode as ImageMode,
     id,
-    ext: ext as ImageExtension,
+    extension: ext as ImageExtension,
   };
 };
 
@@ -77,19 +78,19 @@ const getImageMetadataFromBuffer = async (buffer: Buffer) => {
   if (!fileType) {
     throw new Error('File type not found');
   }
-  const extension = fileType.ext === 'jpg' ? 'jpeg' : fileType.ext;
-  if (extension !== 'jpeg' && extension !== 'png' && extension !== 'webp' && extension !== 'gif') {
-    throw new Error(`${extension} is not a supported image type`);
+  const ext = fileType.ext === 'jpg' ? 'jpeg' : fileType.ext;
+  if (ext !== 'jpeg' && ext !== 'png' && ext !== 'webp' && ext !== 'gif') {
+    throw new Error(`${ext} is not a supported image type`);
   }
 
-  const ext: ImageExtension = extension;
+  const extension: ImageExtension = ext;
 
   const { height, width } = imageSize(buffer);
 
   if (width === undefined || height === undefined) {
     throw new Error('Height and width could not be found for image');
   }
-  return { width, height, filesize, extension: ext };
+  return { width, height, filesize, extension };
 };
 
 const isLocal = (mode: ImageMode) => mode === 'local';
@@ -106,9 +107,9 @@ export function createImagesContext(config?: KeystoneImagesConfig): ImagesContex
   fs.mkdirSync(storagePath, { recursive: true });
 
   return {
-    getSrc: (mode, id, ext) => {
+    getSrc: (mode, id, extension) => {
       if (isLocal(mode)) {
-        const filename = `${id}.${ext}`;
+        const filename = `${id}.${extension}`;
         return `${baseUrl}/${filename}`;
       }
 
@@ -121,7 +122,7 @@ export function createImagesContext(config?: KeystoneImagesConfig): ImagesContex
     getRef: (mode, id, ext) => `${mode}:${id}.${ext}`,
     parseRef: ref => parseImageRef(ref, { storagePath }),
     getDataFromRef: async ref => {
-      const { mode, id, ext: extension } = parseImageRef(ref, { storagePath });
+      const { mode, id, extension } = parseImageRef(ref, { storagePath });
 
       if (isLocal(mode)) {
         const buffer = await fs.readFile(path.join(storagePath, `${id}.${extension}`));

@@ -14,7 +14,6 @@ export { Field } from './Field';
 
 export const Cell: CellComponent = ({ item, field }) => {
   const data = item[field.path];
-  console.log(data);
   if (!data) return null;
   return (
     <div
