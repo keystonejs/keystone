@@ -4,6 +4,8 @@ import { MDXProvider } from '@mdx-js/react';
 import { jsx } from '@keystone-ui/core';
 import Head from 'next/head';
 
+import cx from 'classnames';
+
 import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
 import { getHeadings, Heading } from '../lib/getHeadings';
 import { Code, InlineCode } from '../components/Code';
@@ -11,8 +13,6 @@ import { TableOfContents } from './TableOfContents';
 // import { media } from '../lib/media';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
-
-import cx from 'classnames';
 
 export function Page({
   headings = [],
