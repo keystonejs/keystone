@@ -114,4 +114,14 @@ export type BaseKeystoneList = {
     mutationState?: any
   ): Promise<Record<string, any>[]>;
   getGraphqlFilterFragment: () => string[];
+
+  getGqlTypes: ({ schemaName }: { schemaName: string }) => string[];
+  getGqlQueries: ({ schemaName }: { schemaName: string }) => string[];
+  getGqlMutations: ({ schemaName }: { schemaName: string }) => string[];
+
+  gqlAuxFieldResolvers: ({ schemaName }: { schemaName: string }) => Record<string, any>;
+  gqlFieldResolvers: ({ schemaName }: { schemaName: string }) => Record<string, any>;
+  gqlAuxQueryResolvers: ({ schemaName }: { schemaName: string }) => Record<string, any>;
+  gqlQueryResolvers: ({ schemaName }: { schemaName: string }) => Record<string, any>;
+  gqlMutationResolvers: ({ schemaName }: { schemaName: string }) => Record<string, any>;
 };
