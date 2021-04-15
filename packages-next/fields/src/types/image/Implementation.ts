@@ -4,7 +4,6 @@ import { Implementation } from '../../Implementation';
 import { handleImageData } from './handle-image-input';
 
 const SUPPORTED_IMAGE_EXTENSIONS = ['jpeg', 'png', 'webp', 'gif'];
-const SUPPORTED_MODES = ['local'];
 
 export class ImageImplementation<P extends string> extends Implementation<P> {
   get _supportsUnique() {
