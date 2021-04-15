@@ -11,56 +11,56 @@
 			<circle id="Oval" fill="#FFBD2E" cx="470" cy="200" r="85"></circle>
 			<circle id="Oval" fill="#18C132" cx="740" cy="200" r="85"></circle>
 		</g>
-		<text id="λ-yarn-create-keysto" font-family="Menlo-Regular, Menlo" font-size="200" font-weight="normal">
+		<text id="λ-yarn-create-keysto" font-family="'Source Code Pro', monospace" font-size="200" font-weight="normal">
 			<tspan x="226" y="729" fill="#80B1FF">λ</tspan>
-			<tspan x="346.410156" y="729" font-family="Monaco" fill="#FFFFFF"> yarn create keystone-app</tspan>
-			<tspan x="226" y="979" font-family="Monaco" fill="#FFFFFF">yarn create v1.22.10</tspan>
-			<tspan x="226" y="1229" font-family="Monaco" fill="#A9A9A9">[1/4]</tspan>
-			<tspan x="826.097656" y="1229" font-family="Monaco" fill="#FFFFFF"> </tspan>
+			<tspan x="346.410156" y="729" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> yarn create keystone-app</tspan>
+			<tspan x="226" y="979" font-family="'Source Code Pro', monospace" fill="#FFFFFF">yarn create v1.22.10</tspan>
+			<tspan x="226" y="1229" font-family="'Source Code Pro', monospace" fill="#A9A9A9">[1/4]</tspan>
+			<tspan x="826.097656" y="1229" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> </tspan>
 			<tspan x="946.117188" y="1229" font-family="AppleColorEmoji, Apple Color Emoji" fill="#FFFFFF">🔍</tspan>
-			<tspan x="1146.11719" y="1229" font-family="Monaco" fill="#FFFFFF">  Resolving packages...</tspan>
-			<tspan x="226" y="1492" font-family="Monaco" fill="#A9A9A9">[2/4]</tspan>
-			<tspan x="826.097656" y="1492" font-family="Monaco" fill="#FFFFFF"> </tspan>
+			<tspan x="1146.11719" y="1229" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  Resolving packages...</tspan>
+			<tspan x="226" y="1492" font-family="'Source Code Pro', monospace" fill="#A9A9A9">[2/4]</tspan>
+			<tspan x="826.097656" y="1492" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> </tspan>
 			<tspan x="946.117188" y="1492" font-family="AppleColorEmoji, Apple Color Emoji" fill="#FFFFFF">🚚</tspan>
-			<tspan x="1146.11719" y="1492" font-family="Monaco" fill="#FFFFFF">  Fetching packages...</tspan>
-			<tspan x="226" y="1755" font-family="Monaco" fill="#A9A9A9">[3/4]</tspan>
-			<tspan x="826.097656" y="1755" font-family="Monaco" fill="#FFFFFF"> </tspan>
+			<tspan x="1146.11719" y="1492" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  Fetching packages...</tspan>
+			<tspan x="226" y="1755" font-family="'Source Code Pro', monospace" fill="#A9A9A9">[3/4]</tspan>
+			<tspan x="826.097656" y="1755" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> </tspan>
 			<tspan x="946.117188" y="1755" font-family="AppleColorEmoji, Apple Color Emoji" fill="#FFFFFF">🔗</tspan>
-			<tspan x="1146.11719" y="1755" font-family="Monaco" fill="#FFFFFF">  Linking dependencies...</tspan>
-			<tspan x="226" y="2018" font-family="Monaco" fill="#A9A9A9">[4/4]</tspan>
-			<tspan x="826.097656" y="2018" font-family="Monaco" fill="#FFFFFF"> </tspan>
+			<tspan x="1146.11719" y="1755" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  Linking dependencies...</tspan>
+			<tspan x="226" y="2018" font-family="'Source Code Pro', monospace" fill="#A9A9A9">[4/4]</tspan>
+			<tspan x="826.097656" y="2018" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> </tspan>
 			<tspan x="946.117188" y="2018" font-family="AppleColorEmoji, Apple Color Emoji" fill="#FFFFFF">🔨</tspan>
-			<tspan x="1146.11719" y="2018" font-family="Monaco" fill="#FFFFFF">  Building fresh packages...</tspan>
-			<tspan x="226" y="2281" font-family="Monaco" fill="#46FF00">success</tspan>
-			<tspan x="1066.13672" y="2281" font-family="Monaco" fill="#FFFFFF"> Installed "create-keystone-app@1.1.0" with binaries:</tspan>
-			<tspan x="226" y="2531" font-family="Monaco" fill="#FFFFFF">&#160;&#160;&#160;&#160;&#160;&#160;- create-keystone-app</tspan>
-			<tspan x="226" y="2781" font-family="Monaco" fill="#FFFFFF">[#######################################################################] 140/140</tspan>
+			<tspan x="1146.11719" y="2018" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  Building fresh packages...</tspan>
+			<tspan x="226" y="2281" font-family="'Source Code Pro', monospace" fill="#46FF00">success</tspan>
+			<tspan x="1066.13672" y="2281" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> Installed "create-keystone-app@1.1.0" with binaries:</tspan>
+			<tspan x="226" y="2531" font-family="'Source Code Pro', monospace" fill="#FFFFFF">&#160;&#160;&#160;&#160;&#160;&#160;- create-keystone-app</tspan>
+			<tspan x="226" y="2781" font-family="'Source Code Pro', monospace" fill="#FFFFFF">[#######################################################################] 140/140</tspan>
 			<tspan x="226" y="3031" fill="#46FF00">✔</tspan>
-			<tspan x="346.410156" y="3031" font-family="Monaco" fill="#FFFFFF" font-weight="bold"> What directory should create-keystone-app generate your app into? · </tspan>
-			<tspan x="9227.85547" y="3031" font-family="Monaco" fill="#46FF00">my-app</tspan>
-			<tspan x="9947.97266" y="3031" font-family="Monaco" fill="#FFFFFF"></tspan>
+			<tspan x="346.410156" y="3031" font-family="'Source Code Pro', monospace" fill="#FFFFFF" font-weight="bold"> What directory should create-keystone-app generate your app into? · </tspan>
+			<tspan x="8600" y="3031" font-family="'Source Code Pro', monospace" fill="#46FF00">my-app</tspan>
+			<tspan x="9947.97266" y="3031" font-family="'Source Code Pro', monospace" fill="#FFFFFF"></tspan>
 			<tspan x="226" y="3281" fill="#46FF00">✔</tspan>
-			<tspan x="346.410156" y="3281" font-family="Monaco" fill="#FFFFFF" font-weight="bold"> What database url should we use? · </tspan>
-			<tspan x="4667.11328" y="3281" font-family="Monaco" fill="#46FF00">postgres://localhost/db</tspan>
-			<tspan x="7427.5625" y="3281" font-family="Monaco" fill="#FFFFFF"></tspan>
+			<tspan x="346.410156" y="3281" font-family="'Source Code Pro', monospace" fill="#FFFFFF" font-weight="bold"> What database url should we use? · </tspan>
+			<tspan x="4667.11328" y="3281" font-family="'Source Code Pro', monospace" fill="#46FF00">postgres://localhost/db</tspan>
+			<tspan x="7427.5625" y="3281" font-family="'Source Code Pro', monospace" fill="#FFFFFF"></tspan>
 			<tspan x="226" y="3531" fill="#46FF00">✔</tspan>
-			<tspan x="346.410156" y="3531" font-family="Monaco" fill="#FFFFFF"> Installed dependencies with yarn.</tspan>
+			<tspan x="346.410156" y="3531" font-family="'Source Code Pro', monospace" fill="#FFFFFF"> Installed dependencies with yarn.</tspan>
 			<tspan x="226" y="3781" font-family="AppleColorEmoji, Apple Color Emoji" fill="#FFFFFF">🎉</tspan>
-			<tspan x="426" y="3781" font-family="Monaco" fill="#FFFFFF">  Keystone created a starter project in: my-app</tspan>
-			<tspan x="226" y="4044" font-family="Monaco" fill="#FFFFFF"></tspan>
-			<tspan x="226" y="4294" font-family="Monaco" fill="#FFFFFF">  To launch your app, run:</tspan>
-			<tspan x="226" y="4544" font-family="Monaco" fill="#FFFFFF"></tspan>
-			<tspan x="226" y="4794" font-family="Monaco" fill="#FFFFFF">  - cd my-app</tspan>
-			<tspan x="226" y="5044" font-family="Monaco" fill="#FFFFFF">  - yarn dev</tspan>
-			<tspan x="226" y="5294" font-family="Monaco" fill="#FFFFFF"></tspan>
-			<tspan x="226" y="5544" font-family="Monaco" fill="#FFFFFF">  Next steps:</tspan>
-			<tspan x="226" y="5794" font-family="Monaco" fill="#FFFFFF"></tspan>
-			<tspan x="226" y="6044" font-family="Monaco" fill="#FFFFFF">  - Edit my-app/keystone.ts to customize your app.</tspan>
-			<tspan x="226" y="6294" font-family="Monaco" fill="#FFFFFF">  - Open the Admin UI (​http://localhost:3000​)</tspan>
-			<tspan x="226" y="6544" font-family="Monaco" fill="#FFFFFF">  - Read the docs (​https://next.keystonejs.com​)</tspan>
-			<tspan x="226" y="6794" font-family="Monaco" fill="#FFFFFF">  - Star Keystone on GitHub (​https://github.com/keystonejs/keystone​)</tspan>
+			<tspan x="426" y="3781" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  Keystone created a starter project in: my-app</tspan>
+			<tspan x="226" y="4044" font-family="'Source Code Pro', monospace" fill="#FFFFFF"></tspan>
+			<tspan x="226" y="4294" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  To launch your app, run:</tspan>
+			<tspan x="226" y="4544" font-family="'Source Code Pro', monospace" fill="#FFFFFF"></tspan>
+			<tspan x="226" y="4794" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - cd my-app</tspan>
+			<tspan x="226" y="5044" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - yarn dev</tspan>
+			<tspan x="226" y="5294" font-family="'Source Code Pro', monospace" fill="#FFFFFF"></tspan>
+			<tspan x="226" y="5544" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  Next steps:</tspan>
+			<tspan x="226" y="5794" font-family="'Source Code Pro', monospace" fill="#FFFFFF"></tspan>
+			<tspan x="226" y="6044" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - Edit my-app/keystone.ts to customize your app.</tspan>
+			<tspan x="226" y="6294" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - Open the Admin UI (​http://localhost:3000​)</tspan>
+			<tspan x="226" y="6544" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - Read the docs (​https://next.keystonejs.com​)</tspan>
+			<tspan x="226" y="6794" font-family="'Source Code Pro', monospace" fill="#FFFFFF">  - Star Keystone on GitHub (​https://github.com/keystonejs/keystone​)</tspan>
 			<tspan x="226" y="7044" fill="#80B1FF">λ</tspan>
-			<tspan x="346.410156" y="7044" font-family="Monaco" fill="#80B1FF"> </tspan>
+			<tspan x="346.410156" y="7044" font-family="'Source Code Pro', monospace" fill="#80B1FF"> </tspan>
 		</text>
 		<polygon id="cursor" fill="#6F7683" fill-rule="nonzero" points="424 6883 521 6883 521 7074 424 7074"></polygon>
 	</g>
