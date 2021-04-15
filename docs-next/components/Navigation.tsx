@@ -1,39 +1,61 @@
+/** @jsx jsx */
 import React, { Fragment, ReactNode } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import cx from 'classnames';
+import { jsx } from '@keystone-ui/core';
+import Link from 'next/link';
 
 type SectionProps = { label: string; children: ReactNode };
-const Section = ({ label, children }: SectionProps) => {
+function Section({ label, children }: SectionProps) {
   return (
     <Fragment>
-      <h3 className="uppercase mt-6 mb-2 text-gray-700 font-bold">{label}</h3>
+      <h3
+        css={{
+          textTransform: 'uppercase',
+          margin: '1.5rem 0 0.5rem 0',
+          color: 'var(--gray-700)',
+          fontWeight: 700,
+        }}
+      >
+        {label}
+      </h3>
       {children}
     </Fragment>
   );
-};
+}
 
 type NavItemProps = { href: string; isPlaceholder?: boolean; children: ReactNode };
-const NavItem = ({ href, isPlaceholder, children }: NavItemProps) => {
+function NavItem({ href, isPlaceholder, children }: NavItemProps) {
   const router = useRouter();
   const isSelected = router.pathname === href;
+
   return (
     <Link href={href} passHref>
       <a
-        className={cx(
-          isSelected ? 'text-gray-900' : `${isPlaceholder ? 'text-gray-300' : 'text-gray-500'}`,
-          'block no-underline py-1 hover:text-gray-800'
-        )}
+        css={{
+          display: 'block',
+          textDecoration: 'none',
+          padding: '0.25rem 0',
+          color: isSelected
+            ? 'var(--gray-900)'
+            : `${isPlaceholder ? 'var(--gray-300)' : 'var(--gray-500)'}`,
+          ':hover': {
+            color: 'var(--gray-800)',
+          },
+        }}
       >
         {children}
       </a>
     </Link>
   );
-};
+}
 
-export const Navigation = () => {
+export function Navigation() {
   return (
-    <nav className="font-medium">
+    <nav
+      css={{
+        fontWeight: 500,
+      }}
+    >
       <NavItem href="/">Welcome</NavItem>
       <NavItem href="/whats-new">What's New</NavItem>
       <NavItem href="/roadmap">Roadmap</NavItem>
@@ -82,4 +104,4 @@ export const Navigation = () => {
       </Section>
     </nav>
   );
-};
+}
