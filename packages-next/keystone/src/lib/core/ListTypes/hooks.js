@@ -1,8 +1,8 @@
-const { omitBy, arrayToObject } = require('@keystone-next/utils-legacy');
-const { mapToFields } = require('./utils');
-const { ValidationFailureError } = require('./graphqlErrors');
+import { omitBy, arrayToObject } from '@keystone-next/utils-legacy';
+import { mapToFields } from './utils';
+import { ValidationFailureError } from './graphqlErrors';
 
-class HookManager {
+export class HookManager {
   constructor({ fields, hooks, listKey }) {
     this.fields = fields;
     this.hooks = hooks;
@@ -170,5 +170,3 @@ class HookManager {
     if (this.hooks[hookName]) await this.hooks[hookName](args);
   }
 }
-
-module.exports = { HookManager };

@@ -1,23 +1,11 @@
-const { gql } = require('apollo-server-express');
-const { print } = require('graphql/language/printer');
-const { Text: TextImplementation } = require('@keystone-next/fields/src/types/text/Implementation');
-const {
-  Relationship: RelationshipImplementation,
-} = require('@keystone-next/fields/src/types/relationship/Implementation');
-const { List } = require('../lib/ListTypes');
-const { AccessDeniedError } = require('../lib/ListTypes/graphqlErrors');
+import { gql } from 'apollo-server-express';
+import { print } from 'graphql/language/printer';
+import { text, relationship } from '@keystone-next/fields';
+import { List } from '../ListTypes';
+import { AccessDeniedError } from '../ListTypes/graphqlErrors';
 
-const Relationship = {
-  type: 'Relationship',
-  isRelationship: true, // Used internally for this special case
-  implementation: RelationshipImplementation,
-  adapter: {},
-};
-const Text = {
-  type: 'Text',
-  implementation: TextImplementation,
-  adapter: {},
-};
+const Relationship = relationship().type;
+const Text = text().type;
 
 const context = {
   getListAccessControlForUser: () => true,
@@ -216,7 +204,6 @@ describe('new List()', () => {
       itemQueryName: 'Test',
       listQueryName: 'allTests',
       listQueryMetaName: '_allTestsMeta',
-      listMetaName: '_TestsMeta',
       listSortName: 'SortTestsBy',
       deleteMutationName: 'deleteTest',
       deleteManyMutationName: 'deleteTests',
@@ -517,8 +504,6 @@ describe(`getGqlQueries()`, () => {
           first: Int
           skip: Int
         ): _QueryMeta`,
-        `""" Retrieve the meta-data for the Test list. """
-        _TestsMeta: _ListMeta`,
       ].map(normalise)
     );
   });
@@ -833,13 +818,11 @@ test(`gqlQueryResolvers`, () => {
   const resolvers = setup({ access: true }).gqlQueryResolvers({ schemaName });
   expect(resolvers['allTests']).toBeInstanceOf(Function); // listQueryName
   expect(resolvers['_allTestsMeta']).toBeInstanceOf(Function); // listQueryMetaName
-  expect(resolvers['_TestsMeta']).toBeInstanceOf(Function); // listMetaName
   expect(resolvers['Test']).toBeInstanceOf(Function); // itemQueryName
 
   const resolvers2 = setup({ access: false }).gqlQueryResolvers({ schemaName });
   expect(resolvers2['allTests']).toBe(undefined); // listQueryName
   expect(resolvers2['_allTestsMeta']).toBe(undefined); // listQueryMetaName
-  expect(resolvers2['_TestsMeta']).toBe(undefined); // listMetaName
   expect(resolvers2['Test']).toBe(undefined); // itemQueryName
 });
 
@@ -858,81 +841,6 @@ test('listQueryMeta', async () => {
   expect(
     await (await list.listQueryMeta({ where: { id_in: [1, 2] } }, context, 'testing')).getCount()
   ).toEqual(2);
-});
-
-test(`listMeta`, () => {
-  const meta = setup({}).listMeta(context);
-  expect(meta.getAccess).toBeInstanceOf(Function);
-  expect(meta.getSchema).toBeInstanceOf(Function);
-  expect(meta.name).toEqual('Test');
-
-  const access = meta.getAccess();
-  expect(access.getCreate).toBeInstanceOf(Function);
-  expect(access.getDelete).toBeInstanceOf(Function);
-  expect(access.getRead).toBeInstanceOf(Function);
-  expect(access.getUpdate).toBeInstanceOf(Function);
-
-  expect(access.getCreate()).toEqual(true);
-  expect(access.getDelete()).toEqual(true);
-  expect(access.getRead()).toEqual(true);
-  expect(access.getUpdate()).toEqual(true);
-
-  const schema = meta.getSchema();
-  expect(schema).toEqual({
-    key: 'Test',
-    queries: {
-      item: 'Test',
-      list: 'allTests',
-      meta: '_allTestsMeta',
-    },
-    mutations: {
-      create: 'createTest',
-      createMany: 'createTests',
-      update: 'updateTest',
-      updateMany: 'updateTests',
-      delete: 'deleteTest',
-      deleteMany: 'deleteTests',
-    },
-    inputTypes: {
-      whereInput: 'TestWhereInput',
-      whereUniqueInput: 'TestWhereUniqueInput',
-      createInput: 'TestCreateInput',
-      createManyInput: 'TestsCreateInput',
-      updateInput: 'TestUpdateInput',
-      updateManyInput: 'TestsUpdateInput',
-    },
-    type: 'Test',
-  });
-
-  expect(
-    setup({ access: true }, () => false)
-      .listMeta(context)
-      .getSchema()
-  ).toEqual({
-    key: 'Test',
-    queries: {
-      item: 'Test',
-      list: 'allTests',
-      meta: '_allTestsMeta',
-    },
-    mutations: {
-      create: 'createTest',
-      createMany: 'createTests',
-      update: 'updateTest',
-      updateMany: 'updateTests',
-      delete: 'deleteTest',
-      deleteMany: 'deleteTests',
-    },
-    inputTypes: {
-      whereInput: 'TestWhereInput',
-      whereUniqueInput: 'TestWhereUniqueInput',
-      createInput: 'TestCreateInput',
-      createManyInput: 'TestsCreateInput',
-      updateInput: 'TestUpdateInput',
-      updateManyInput: 'TestsUpdateInput',
-    },
-    type: 'Test',
-  });
 });
 
 test('itemQuery', async () => {

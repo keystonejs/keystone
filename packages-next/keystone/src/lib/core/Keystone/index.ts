@@ -1,11 +1,37 @@
-const { gql } = require('apollo-server-express');
-const { GraphQLUpload } = require('graphql-upload');
-const { objMerge, flatten, unique, filterValues } = require('@keystone-next/utils-legacy');
-const { List } = require('../ListTypes');
-const { ListCRUDProvider } = require('../providers');
+import { gql } from 'apollo-server-express';
+import { GraphQLUpload } from 'graphql-upload';
+import { objMerge, flatten, unique, filterValues } from '@keystone-next/utils-legacy';
+import {
+  BaseKeystone,
+  BaseKeystoneList,
+  BaseListConfig,
+  KeystoneContext,
+  Rel,
+} from '@keystone-next/types';
+import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { Relationship } from '@keystone-next/fields/src/types/relationship/Implementation';
+import { List } from '../ListTypes';
+import { ListCRUDProvider } from '../providers';
 
-module.exports = class Keystone {
-  constructor({ adapter, onConnect, queryLimits = {} }) {
+export class Keystone implements BaseKeystone {
+  lists: Record<string, BaseKeystoneList>;
+  listsArray: BaseKeystoneList[];
+  getListByKey: (key: string) => BaseKeystoneList | undefined;
+  onConnect: (keystone: BaseKeystone, args?: { context: KeystoneContext }) => Promise<void>;
+  _listCRUDProvider: any;
+  _providers: any[];
+  adapter: PrismaAdapter;
+  queryLimits: { maxTotalResults: number };
+
+  constructor({
+    adapter,
+    onConnect,
+    queryLimits = {},
+  }: {
+    adapter: PrismaAdapter;
+    onConnect: (keystone: BaseKeystone, args?: { context: KeystoneContext }) => Promise<void>;
+    queryLimits: { maxTotalResults?: number | undefined } | undefined;
+  }) {
     this.lists = {};
     this.listsArray = [];
     this.getListByKey = key => this.lists[key];
@@ -19,7 +45,7 @@ module.exports = class Keystone {
     }
   }
 
-  createList(key, config) {
+  createList(key: string, config: BaseListConfig) {
     const { getListByKey, adapter } = this;
     const isReservedName = key[0] === '_';
 
@@ -41,7 +67,7 @@ module.exports = class Keystone {
       );
     }
 
-    const list = new List(key, config, { getListByKey, adapter });
+    const list: BaseKeystoneList = new List(key, config, { getListByKey, adapter });
     this.lists[key] = list;
     this.listsArray.push(list);
     this._listCRUDProvider.lists.push(list);
@@ -50,12 +76,13 @@ module.exports = class Keystone {
   }
 
   _consolidateRelationships() {
-    const rels = {};
-    const otherSides = {};
+    const rels: Record<string, Rel> = {};
+    const otherSides: Record<string, string> = {};
     this.listsArray.forEach(list => {
       list.fields
         .filter(f => f.isRelationship)
-        .forEach(f => {
+        .forEach(_f => {
+          const f = _f as Relationship<any>;
           const myRef = `${f.listKey}.${f.path}`;
           if (otherSides[myRef]) {
             // I'm already there, go and update rels[otherSides[myRef]] with my info
@@ -63,17 +90,15 @@ module.exports = class Keystone {
 
             // Make sure I'm actually referencing the thing on the left
             const { left } = rels[otherSides[myRef]];
-            if (f.config.ref !== `${left.listKey}.${left.path}`) {
-              throw new Error(
-                `${myRef} refers to ${f.config.ref}. Expected ${left.listKey}.${left.path}`
-              );
+            if (f.ref !== `${left.listKey}.${left.path}`) {
+              throw new Error(`${myRef} refers to ${f.ref}. Expected ${left.listKey}.${left.path}`);
             }
           } else {
             // Got us a new relationship!
             rels[myRef] = { left: f };
             if (f.refFieldPath) {
               // Populate otherSides
-              otherSides[f.config.ref] = myRef;
+              otherSides[f.ref] = myRef;
             }
           }
         });
@@ -82,9 +107,7 @@ module.exports = class Keystone {
     const badRel = Object.values(rels).find(({ left, right }) => left.refFieldPath && !right);
     if (badRel) {
       const { left } = badRel;
-      throw new Error(
-        `${left.listKey}.${left.path} refers to a non-existant field, ${left.config.ref}`
-      );
+      throw new Error(`${left.listKey}.${left.path} refers to a non-existant field, ${left.ref}`);
     }
 
     // Ensure that the left/right pattern is always the same no matter what order
@@ -109,10 +132,10 @@ module.exports = class Keystone {
 
     Object.values(rels).forEach(rel => {
       const { left, right } = rel;
-      let cardinality;
-      if (left.config.many) {
+      let cardinality: Rel['cardinality'];
+      if (left.many) {
         if (right) {
-          if (right.config.many) {
+          if (right.many) {
             cardinality = 'N:N';
           } else {
             cardinality = '1:N';
@@ -123,7 +146,7 @@ module.exports = class Keystone {
         }
       } else {
         if (right) {
-          if (right.config.many) {
+          if (right.many) {
             cardinality = 'N:1';
           } else {
             cardinality = '1:1';
@@ -150,18 +173,18 @@ module.exports = class Keystone {
           };
         } else {
           const leftKey = `${left.listKey}.${left.path}`;
-          const rightKey = `${left.config.ref}`;
+          const rightKey = `${left.ref}`;
           rel.columnNames = {
-            [leftKey]: { near: `${left.listKey}_left_id`, far: `${left.config.ref}_right_id` },
-            [rightKey]: { near: `${left.config.ref}_right_id`, far: `${left.listKey}_left_id` },
+            [leftKey]: { near: `${left.listKey}_left_id`, far: `${left.ref}_right_id` },
+            [rightKey]: { near: `${left.ref}_right_id`, far: `${left.listKey}_left_id` },
           };
         }
       } else if (cardinality === '1:1') {
         tableName = left.listKey;
         columnName = left.path;
       } else if (cardinality === '1:N') {
-        tableName = right.listKey;
-        columnName = right.path;
+        tableName = right!.listKey;
+        columnName = right!.path;
       } else {
         tableName = left.listKey;
         columnName = left.path;
@@ -173,7 +196,7 @@ module.exports = class Keystone {
     return Object.values(rels);
   }
 
-  async connect(args) {
+  async connect(args?: { context: KeystoneContext }): Promise<void> {
     await this.adapter.connect({ rels: this._consolidateRelationships() });
 
     if (this.onConnect) {
@@ -185,7 +208,7 @@ module.exports = class Keystone {
     await this.adapter.disconnect();
   }
 
-  getTypeDefs({ schemaName }) {
+  getTypeDefs({ schemaName }: { schemaName: string }) {
     const queries = unique(flatten(this._providers.map(p => p.getQueries({ schemaName }))));
     const mutations = unique(flatten(this._providers.map(p => p.getMutations({ schemaName }))));
     const subscriptions = unique(
@@ -208,26 +231,22 @@ module.exports = class Keystone {
       .map(s => gql(s));
   }
 
-  getResolvers({ schemaName }) {
+  getResolvers({ schemaName }: { schemaName: string }) {
     // Like the `typeDefs`, we want to dedupe the resolvers. We rely on the
     // semantics of the JS spread operator here (duplicate keys are overridden
     // - last one wins)
     // TODO: Document this order of precedence, because it's not obvious, and
     // there's no errors thrown
     // TODO: console.warn when duplicate keys are detected?
-    return filterValues(
-      {
-        // Order of spreading is important here - we don't want user-defined types
-        // to accidentally override important things like `Query`.
-        ...objMerge(this._providers.map(p => p.getTypeResolvers({ schemaName }))),
-        Query: objMerge(this._providers.map(p => p.getQueryResolvers({ schemaName }))),
-        Mutation: objMerge(this._providers.map(p => p.getMutationResolvers({ schemaName }))),
-        Subscription: objMerge(
-          this._providers.map(p => p.getSubscriptionResolvers({ schemaName }))
-        ),
-        Upload: GraphQLUpload,
-      },
-      o => Object.entries(o).length > 0
-    );
+    const resolvers: Record<string, any> = {
+      // Order of spreading is important here - we don't want user-defined types
+      // to accidentally override important things like `Query`.
+      ...objMerge(this._providers.map(p => p.getTypeResolvers({ schemaName }))),
+      Query: objMerge(this._providers.map(p => p.getQueryResolvers({ schemaName }))),
+      Mutation: objMerge(this._providers.map(p => p.getMutationResolvers({ schemaName }))),
+      Subscription: objMerge(this._providers.map(p => p.getSubscriptionResolvers({ schemaName }))),
+      Upload: GraphQLUpload,
+    };
+    return filterValues(resolvers, o => Object.entries(o).length > 0);
   }
-};
+}

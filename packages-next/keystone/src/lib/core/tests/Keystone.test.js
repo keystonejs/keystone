@@ -1,5 +1,6 @@
-const Keystone = require('../lib/Keystone');
-const { List } = require('../lib/ListTypes');
+import { Keystone } from '../Keystone/index.ts';
+import { List } from '../ListTypes';
+
 class MockFieldAdapter {}
 
 class MockFieldImplementation {

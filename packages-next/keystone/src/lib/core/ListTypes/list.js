@@ -1,5 +1,5 @@
-const pluralize = require('pluralize');
-const {
+import pluralize from 'pluralize';
+import {
   mapKeys,
   omit,
   omitBy,
@@ -10,20 +10,13 @@ const {
   flatten,
   zipObj,
   createLazyDeferred,
-} = require('@keystone-next/utils-legacy');
-const { parseListAccess } = require('@keystone-next/access-control-legacy');
-const {
-  preventInvalidUnderscorePrefix,
-  keyToLabel,
-  labelToPath,
-  labelToClass,
-  opToType,
-  mapToFields,
-} = require('./utils');
-const { HookManager } = require('./hooks');
-const { LimitsExceededError, throwAccessDenied } = require('./graphqlErrors');
+} from '@keystone-next/utils-legacy';
+import { parseListAccess } from '@keystone-next/access-control-legacy';
+import { keyToLabel, labelToPath, labelToClass, opToType, mapToFields } from './utils';
+import { HookManager } from './hooks';
+import { LimitsExceededError, throwAccessDenied } from './graphqlErrors';
 
-module.exports = class List {
+export class List {
   constructor(
     key,
     {
@@ -78,7 +71,6 @@ module.exports = class List {
       itemQueryName: _itemQueryName,
       listQueryName: `all${_listQueryName}`,
       listQueryMetaName: `_all${_listQueryName}Meta`,
-      listMetaName: preventInvalidUnderscorePrefix(`_${_listQueryName}Meta`),
       listSortName: `Sort${_listQueryName}By`,
       deleteMutationName: `delete${_itemQueryName}`,
       updateMutationName: `update${_itemQueryName}`,
@@ -953,11 +945,7 @@ module.exports = class List {
         } items which match the where clause. """
         ${this.gqlNames.listQueryMetaName}(
           ${this.getGraphqlFilterFragment().join('\n')}
-        ): _QueryMeta`,
-
-        `
-        """ Retrieve the meta-data for the ${this.gqlNames.itemQueryName} list. """
-        ${this.gqlNames.listMetaName}: _ListMeta`
+        ): _QueryMeta`
       );
     }
 
@@ -1072,87 +1060,12 @@ module.exports = class List {
         [this.gqlNames.listQueryMetaName]: (_, args, context, info) =>
           this.listQueryMeta(args, context, this.gqlNames.listQueryMetaName, info),
 
-        [this.gqlNames.listMetaName]: (_, args, context) => this.listMeta(context),
-
         [this.gqlNames.itemQueryName]: (_, args, context, info) =>
           this.itemQuery(args, context, this.gqlNames.itemQueryName, info),
       };
     }
 
     return resolvers;
-  }
-
-  listMeta(context) {
-    return {
-      key: this.key,
-      name: this.key,
-      description: this.adminDoc,
-      label: this.adminUILabels.label,
-      singular: this.adminUILabels.singular,
-      plural: this.adminUILabels.plural,
-      path: this.adminUILabels.path,
-
-      // Return these as functions so they're lazily evaluated depending
-      // on what the user requested
-      // Evaluation takes place in ../providers/listCRUD.js
-      // NOTE: These could return a Boolean or a JSON object (if using the
-      // declarative syntax)
-      getAccess: () => ({
-        getCreate: () =>
-          context.getListAccessControlForUser(this.access, this.key, undefined, 'create', {
-            context,
-          }),
-        getRead: () =>
-          context.getListAccessControlForUser(this.access, this.key, undefined, 'read', {
-            context,
-          }),
-        getUpdate: () =>
-          context.getListAccessControlForUser(this.access, this.key, undefined, 'update', {
-            context,
-          }),
-        getDelete: () =>
-          context.getListAccessControlForUser(this.access, this.key, undefined, 'delete', {
-            context,
-          }),
-        getAuth: () => context.getAuthAccessControlForUser(this.access, this.key, { context }),
-      }),
-
-      getSchema: () => {
-        const queries = {
-          item: this.gqlNames.itemQueryName,
-          list: this.gqlNames.listQueryName,
-          meta: this.gqlNames.listQueryMetaName,
-        };
-
-        const mutations = {
-          create: this.gqlNames.createMutationName,
-          createMany: this.gqlNames.createManyMutationName,
-          update: this.gqlNames.updateMutationName,
-          updateMany: this.gqlNames.updateManyMutationName,
-          delete: this.gqlNames.deleteMutationName,
-          deleteMany: this.gqlNames.deleteManyMutationName,
-        };
-
-        const inputTypes = {
-          whereInput: this.gqlNames.whereInputName,
-          whereUniqueInput: this.gqlNames.whereUniqueInputName,
-          createInput: this.gqlNames.createInputName,
-          createManyInput: this.gqlNames.createManyInputName,
-          updateInput: this.gqlNames.updateInputName,
-          updateManyInput: this.gqlNames.updateManyInputName,
-        };
-
-        // NOTE: Other fields on this type are resolved in the main resolver in
-        // ../providers/listCRUD.js
-        return {
-          type: this.gqlNames.outputTypeName,
-          queries,
-          mutations,
-          inputTypes,
-          key: this.key, // Used to resolve fields
-        };
-      },
-    };
   }
 
   gqlMutationResolvers({ schemaName }) {
@@ -1187,4 +1100,4 @@ module.exports = class List {
 
     return mutationResolvers;
   }
-};
+}
