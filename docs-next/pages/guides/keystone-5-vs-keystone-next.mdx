@@ -1,6 +1,4 @@
-import { Page, components } from '../../components/Page';
-import { getHeadings } from '../../lib/getHeadings';
-import { MDXProvider } from '@mdx-js/react';
+import { Markdown } from '../../components/Page';
 
 # Keystone 5 vs Next. Which should you use?
 
@@ -89,15 +87,4 @@ You’ll have to rewrite your config, schema, session and access control functio
 
 Reach out in the [community Slack](https://community.keystonejs.com/) for help and advice.
 
-export default ({ children }) => {
-  const headings = getHeadings(children);
-  return (
-    <Page
-      title={'Keystone 5 vs Next. Which should you use?'}
-      headings={headings}
-      isProse
-    >
-      <MDXProvider components={components}>{children}</MDXProvider>
-    </Page>
-  );
-};
+export default ({ children }) => <Markdown>{children}</Markdown>;
