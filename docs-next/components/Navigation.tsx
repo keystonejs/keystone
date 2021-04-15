@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import React, { Fragment, ReactNode } from 'react';
+import { Fragment, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { jsx } from '@keystone-ui/core';
 import Link from 'next/link';
