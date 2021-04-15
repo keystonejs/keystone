@@ -150,7 +150,8 @@ class Field<P extends string> {
     return resolvedData[this.path];
   }
 
-  async validateInput() {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async validateInput(args: any) {}
 
   async beforeChange() {}
 

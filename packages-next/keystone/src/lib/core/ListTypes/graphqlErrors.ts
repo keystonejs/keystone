@@ -1,4 +1,5 @@
 import { createError } from 'apollo-errors';
+import { opToType } from './utils';
 
 export const AccessDeniedError = createError('AccessDeniedError', {
   message: 'You do not have access to this resource',
@@ -13,6 +14,12 @@ export const LimitsExceededError = createError('LimitsExceededError', {
   options: { showPath: true },
 });
 
-export const throwAccessDenied = (type, target, internalData = {}, extraData = {}) => {
+type ValueOf<T> = T[keyof T];
+export const throwAccessDenied = (
+  type: ValueOf<typeof opToType>,
+  target: string,
+  internalData = {},
+  extraData = {}
+) => {
   throw new AccessDeniedError({ data: { type, target, ...extraData }, internalData });
 };
