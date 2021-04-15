@@ -115,29 +115,12 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
   getPrismaSchema() {
     return [
       `${this.path}_filesize    Int?`,
-      `${this.path}_extension   ${
-        this.listAdapter.parentAdapter.provider !== 'sqlite' ? 'ImageExtension' : 'String'
-      }?`,
+      `${this.path}_extension   String?`,
       `${this.path}_width   Int?`,
       `${this.path}_height   Int?`,
-      `${this.path}_mode   ${
-        this.listAdapter.parentAdapter.provider !== 'sqlite' ? 'ImageMode' : 'String'
-      }?`,
+      `${this.path}_mode   String?`,
       `${this.path}_id   String?`,
     ];
-  }
-
-  getPrismaEnums() {
-    return this.listAdapter.parentAdapter.provider !== 'sqlite'
-      ? [
-          `enum ImageExtension {
-        ${SUPPORTED_IMAGE_EXTENSIONS.join('\n')}
-    }`,
-          `enum ImageMode {
-      ${SUPPORTED_MODES.join('\n')}
-    }`,
-        ]
-      : [];
   }
 
   getQueryConditions() {
