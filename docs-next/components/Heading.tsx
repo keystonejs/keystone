@@ -1,8 +1,9 @@
 /** @jsx jsx */
-import { CopyToClipboard } from './CopyToClipboard';
 import slugify from '@sindresorhus/slugify';
 import { jsx } from '@keystone-ui/core';
 import { useRef } from 'react';
+
+import { CopyToClipboard } from './CopyToClipboard';
 
 function getAnchor(text: string) {
   if (typeof text === 'string') {
