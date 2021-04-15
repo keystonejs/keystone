@@ -10,7 +10,7 @@ import fs from 'fs-extra';
 import { fromBuffer } from 'file-type';
 import imageSize from 'image-size';
 
-const SUPPORTED_IMAGE_EXTENSIONS = ['jpeg', 'png', 'webp', 'gif'];
+const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
 const MODE_LOCAL = 'local';
 const DEFAULT_BASE_URL = '/images';
 const DEFAULT_STORAGE_PATH = './public/images';

@@ -335,7 +335,7 @@ export function Field({
 }
 
 export function validateRef({ ref }: { ref: string }) {
-  if (!/^(local|cloud):(.+)\.(gif|jpg|png|jpeg|webp)$/.test(ref)) {
+  if (!/^(local|cloud):(.+)\.(gif|jpg|png|webp)$/.test(ref)) {
     return 'Invalid ref';
   }
 }
