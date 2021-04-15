@@ -1,10 +1,11 @@
 /** @jsx jsx */
-import { ReactNode } from 'react';
-import { jsx, css } from '@keystone-ui/core';
 import Highlight, { Language, Prism } from 'prism-react-renderer';
+import { jsx } from '@keystone-ui/core';
+import { ReactNode } from 'react';
+
 import theme from '../lib/prism-theme';
 
-export const Code = ({ children, className }: { children: string; className: any }) => {
+export function Code({ children, className }: { children: string; className: any }) {
   const language: Language = className ? className.replace(/language-/, '') : 'typescript';
   return (
     <Highlight Prism={Prism} code={children.trim()} language={language} theme={theme}>
@@ -12,7 +13,7 @@ export const Code = ({ children, className }: { children: string; className: any
         return (
           <div
             className={className}
-            style={{
+            css={{
               ...style,
               backgroundColor: 'transparent',
             }}
@@ -31,25 +32,22 @@ export const Code = ({ children, className }: { children: string; className: any
       }}
     </Highlight>
   );
-};
+}
 
-export const InlineCode = ({ children }: { children: ReactNode }) => {
+export function InlineCode({ children }: { children: ReactNode }) {
   return (
     <code
-      className="bg-gray-200 py-1 px-1.5 m-0 rounded-sm bg-opacity-50"
-      css={css`
-        &::before {
-          display: none;
-        }
-        &::after {
-          display: none;
-        }
-        font-size: 85%;
-        font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
-        color: #24292e;
-      `}
+      css={{
+        background: 'var(--code-bg)',
+        padding: '0.25rem 0.375rem',
+        margin: 0,
+        borderRadius: '0.125rem',
+        fontSize: '85%',
+        fontFamily: 'SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace',
+        color: '#24292e',
+      }}
     >
       {children}
     </code>
   );
-};
+}

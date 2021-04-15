@@ -1,14 +1,16 @@
 /** @jsx jsx */
 import { jsx, Core, Global, css } from '@keystone-ui/core';
-import Head from 'next/head';
-import { useEffect } from 'react';
+import { ToastProvider } from '@keystone-ui/toast';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import { ToastProvider } from '@keystone-ui/toast';
-import { proseStyles } from '../lib/prose-lite';
+import { useEffect } from 'react';
+import Head from 'next/head';
 
 import { handleRouteChange } from '../lib/analytics';
+import { proseStyles } from '../lib/prose-lite';
+import { Theme } from '../components/Theme';
 
+// TODO: remove me
 import 'tailwindcss/tailwind.css';
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -30,6 +32,7 @@ export default function App({ Component, pageProps }: AppProps) {
         }
       `}
       />
+      <Theme />
       <Head>
         <meta
           name="viewport"
