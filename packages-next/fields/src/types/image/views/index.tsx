@@ -107,8 +107,6 @@ export const controller = (config: FieldControllerConfig): ImageController => {
     },
     validate(value): boolean {
       if (value.kind === 'ref') {
-        console.log(value);
-        console.log(validateRef(value.data));
         return validateRef(value.data) === undefined;
       }
       return value.kind !== 'upload' || validateImage(value.data) === undefined;
