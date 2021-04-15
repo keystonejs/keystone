@@ -1,6 +1,6 @@
 /** @jsx jsx  */
-import { useRef, useState, Fragment, ReactNode } from 'react';
 import { jsx } from '@keystone-ui/core';
+import { useState } from 'react';
 
 import { Navigation } from './Navigation';
 
