@@ -1,4 +1,4 @@
-import { Keystone } from '../Keystone';
+import { Keystone } from '../Keystone/index.ts';
 import { List } from '../ListTypes';
 
 class MockFieldAdapter {}
