@@ -116,7 +116,7 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
     return [
       `${this.path}_filesize    Int?`,
       `${this.path}_extension   ${
-        this.listAdapter.parentAdapter.provider !== 'sqlite' ? 'ImageExtensions' : 'String'
+        this.listAdapter.parentAdapter.provider !== 'sqlite' ? 'ImageExtension' : 'String'
       }?`,
       `${this.path}_width   Int?`,
       `${this.path}_height   Int?`,
@@ -130,7 +130,7 @@ export class PrismaImageInterface<P extends string> extends PrismaFieldAdapter<P
   getPrismaEnums() {
     return this.listAdapter.parentAdapter.provider !== 'sqlite'
       ? [
-          `enum ImageExtensions {
+          `enum ImageExtension {
         ${SUPPORTED_IMAGE_EXTENSIONS.join('\n')}
     }`,
           `enum ImageMode {
