@@ -16,6 +16,9 @@ export function Theme() {
           '--space-large': '1.5rem',
           '--space-xlarge': '3rem',
           '--space-xxlarge': '6rem',
+          '--font-body':
+            'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
+          '--font-mono': '"Source Code Pro", monospace',
         },
       }}
     />

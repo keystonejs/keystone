@@ -23,7 +23,7 @@ export const media: MediaType = Object.entries(BREAK_POINTS).reduce(
 );
 
 const paint = weakMemo(breakpoints =>
-  facepaint(Object.entries(breakpoints).map(([_, width]) => `@media (min-width: ${width}px)`))
+  facepaint(Object.entries(breakpoints).map(([, width]) => `@media (min-width: ${width}px)`))
 );
 
 export function useMediaQuery() {
