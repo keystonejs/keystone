@@ -5,6 +5,7 @@ import type {
   KeystoneContext,
   KeystoneGraphQLAPI,
   BaseKeystone,
+  ImagesContext,
 } from '@keystone-next/types';
 
 import { itemAPIForList, getArgsFactory } from './itemAPI';
@@ -14,10 +15,12 @@ export function makeCreateContext({
   graphQLSchema,
   internalSchema,
   keystone,
+  images,
 }: {
   graphQLSchema: GraphQLSchema;
   internalSchema: GraphQLSchema;
   keystone: BaseKeystone;
+  images: ImagesContext | undefined;
 }) {
   // We precompute these helpers here rather than every time createContext is called
   // because they require parsing the entire schema, which is potentially expensive.
@@ -81,6 +84,7 @@ export function makeCreateContext({
       // Note: This field lets us use the server-side-graphql-client library.
       // We may want to remove it once the updated itemAPI w/ query is available.
       gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
+      images,
     };
     const getArgsByList = schemaName === 'public' ? publicGetArgsByList : internalGetArgsByList;
     for (const [listKey, list] of Object.entries(keystone.lists)) {

@@ -7,6 +7,7 @@ import {
   timestamp,
   select,
   virtual,
+  image,
 } from '@keystone-next/fields';
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
@@ -34,7 +35,7 @@ export const lists = createSchema({
   User: list({
     ui: {
       listView: {
-        initialColumns: ['name', 'posts'],
+        initialColumns: ['name', 'posts', 'avatar'],
       },
     },
     fields: {
@@ -42,13 +43,7 @@ export const lists = createSchema({
       name: text({ isRequired: true }),
       /** Email is used to log into the system. */
       email: text({ isRequired: true, isUnique: true }),
-      // avatar: cloudinaryImage({
-      //   cloudinary: {
-      //     cloudName: '/* TODO */',
-      //     apiKey: '/* TODO */',
-      //     apiSecret: '/* TODO */',
-      //   },
-      // }),
+      avatar: image(),
       /** Used to log in. */
       password: password(),
       /** Administrators have more access to various lists and fields. */

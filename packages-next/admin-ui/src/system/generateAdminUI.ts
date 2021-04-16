@@ -53,6 +53,14 @@ export const generateAdminUI = async (
   // Nuke any existing files in our target directory
   await fs.remove(projectAdminPath);
 
+  if (config.images) {
+    const publicDirectory = Path.join(projectAdminPath, 'public');
+    await fs.mkdir(publicDirectory, { recursive: true });
+    const storagePath = Path.resolve(config.images.local?.storagePath ?? './public/images');
+    await fs.mkdir(storagePath, { recursive: true });
+    await fs.symlink(storagePath, Path.join(publicDirectory, 'images'), 'junction');
+  }
+
   // Write out the files configured by the user
   const userPages = config.ui?.getAdditionalFiles?.map(x => x(config)) ?? [];
   const userFilesToWrite = (await Promise.all(userPages)).flat();

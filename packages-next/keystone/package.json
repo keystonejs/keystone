@@ -50,6 +50,7 @@
     "@types/prompts": "^2.0.10",
     "@types/source-map-support": "^0.5.3",
     "@types/uid-safe": "^2.1.2",
+    "@types/uuid": "^8.3.0",
     "apollo-errors": "^1.9.0",
     "apollo-server-express": "^2.22.2",
     "apollo-server-micro": "^2.22.2",
@@ -64,6 +65,8 @@
     "graphql": "^15.5.0",
     "graphql-type-json": "^0.3.2",
     "graphql-upload": "^11.0.0",
+    "image-size": "^0.9.7",
+    "image-type": "^4.1.0",
     "meow": "^9.0.0",
     "next": "^10.0.9",
     "object-hash": "^2.1.1",
@@ -78,7 +81,8 @@
     "source-map-support": "^0.5.19",
     "stack-utils": "^2.0.3",
     "typescript": "^4.2.3",
-    "uid-safe": "^2.1.5"
+    "uid-safe": "^2.1.5",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "fast-glob": "^3.2.5",

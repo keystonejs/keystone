@@ -52,7 +52,8 @@
       "apollo.tsx",
       "context.tsx",
       "router.tsx",
-      "next-config.ts"
+      "next-config.ts",
+      "image.tsx"
     ]
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/admin-ui",

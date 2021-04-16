@@ -1,6 +1,7 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
 import semver from 'semver';
+import { ImageMode, ImageExtension } from '@keystone-next/types';
 
 export const noop = <T>(x: T): T => x;
 export const identity = noop;
@@ -255,4 +256,26 @@ export const humanize = (str: string) => {
     .filter(i => i)
     .map(upcase)
     .join(' ');
+};
+
+const REFREGEX = /^(local):([^:\n]+)\.(gif|jpg|png|webp)$/;
+
+export const getImageRef = (mode: ImageMode, id: string, extension: ImageExtension) =>
+  `${mode}:${id}.${extension}`;
+
+export const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
+
+export const parseImageRef = (
+  ref: string
+): { mode: ImageMode; id: string; extension: ImageExtension } | undefined => {
+  const match = ref.match(REFREGEX);
+  if (match) {
+    const [, mode, id, ext] = match;
+    return {
+      mode: mode as ImageMode,
+      id,
+      extension: ext as ImageExtension,
+    };
+  }
+  return undefined;
 };
