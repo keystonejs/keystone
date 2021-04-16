@@ -258,11 +258,13 @@ export const humanize = (str: string) => {
     .join(' ');
 };
 
+const REFREGEX = /^(local):([^:\n]+)\.(gif|jpg|png|webp)$/;
+
 export const getImageRef = (mode: ImageMode, id: string, extension: ImageExtension) =>
   `${mode}:${id}.${extension}`;
 
 export const isValidImageRef = (ref: string): boolean => {
-  if (/^(local):(.+)\.(gif|jpg|png|webp)$/.test(ref)) {
+  if (REFREGEX.test(ref)) {
     return true;
   }
 
@@ -280,12 +282,15 @@ export const parseImageRef = (
   const throwInvalidRefError = () => {
     throw new Error('Invalid image reference');
   };
-  const [mode, idAndExt] = ref.split(':');
-  const [id, ext] = idAndExt.split('.');
 
   if (!isValidImageRef(ref)) {
     throwInvalidRefError();
   }
+
+  const [__, mode, id, ext] = ref.match(REFREGEX) as RegExpMatchArray;
+
+  // const [mode, idAndExt] = ref.split(':');
+  // const [id, ext] = idAndExt.split('.');
 
   if (!isValidImageExtension(ext)) {
     throwInvalidRefError();
