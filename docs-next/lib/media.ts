@@ -1,3 +1,4 @@
+import weakMemo from '@emotion/weak-memoize';
 import facepaint from 'facepaint';
 
 type BREAKPOINTSTYPE = {
@@ -21,13 +22,10 @@ export const media: MediaType = Object.entries(BREAK_POINTS).reduce(
   {} as Record<keyof MediaType, string>
 );
 
-/*
-  Array Syntax for Breakpoints
-  ------------------------------
-  <div css={mq({
-    fontSize: [14, 16],
-    width: ['12rem', '24rem', '36rem', '48rem'],
-  })} />
-*/
+const paint = weakMemo(breakpoints =>
+  facepaint(Object.entries(breakpoints).map(([_, width]) => `@media (min-width: ${width}px)`))
+);
 
-export const mq = facepaint(Object.values(BREAK_POINTS).map(value => minWidth(value)));
+export function useMediaQuery() {
+  return paint(BREAK_POINTS);
+}

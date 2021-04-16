@@ -49,7 +49,7 @@ export default function IndexPage() {
         <a href="https://twitter.com/keystonejs" target="_blank">
           Twitter
         </a>{' '}
-        for the latest news and anouncements.
+        for the latest news and announcements.
       </p>
     </Page>
   );

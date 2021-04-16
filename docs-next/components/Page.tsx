@@ -4,13 +4,11 @@ import { MDXProvider } from '@mdx-js/react';
 import { jsx } from '@keystone-ui/core';
 import Head from 'next/head';
 
-import cx from 'classnames';
-
 import { H1, H2, H3, H4, H5, H6 } from '../components/Heading';
 import { getHeadings, Heading } from '../lib/getHeadings';
 import { Code, InlineCode } from '../components/Code';
 import { TableOfContents } from './TableOfContents';
-// import { media } from '../lib/media';
+import { useMediaQuery } from '../lib/media';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 
@@ -27,6 +25,7 @@ export function Page({
 }) {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const metaTitle = title ? `${title} - Keystone Next Documentation` : `Keystone Next`;
+  const mq = useMediaQuery();
 
   return (
     <Fragment>
@@ -40,26 +39,30 @@ export function Page({
         }}
       >
         <Header />
-        <main className="w-full max-w-5xl mx-auto block md:flex">
+        <div
+          css={mq({
+            display: ['block', null, 'grid'],
+            gridTemplateColumns: '9rem minmax(0, auto) 12rem',
+            maxWidth: '66rem',
+            margin: '0 auto',
+            gap: '3rem',
+            padding: ['0', null, '0 1rem'],
+          })}
+        >
           <Sidebar />
-          <div
+
+          <main
             ref={contentRef}
-            className="min-w-0 md:flex w-full flex-auto max-h-full overflow-visible px-2"
+            className={isProse ? 'prose' : ''}
+            css={mq({
+              marginTop: '1.5rem',
+              padding: ['0 1rem', null, '0'],
+            })}
           >
-            <main
-              className={cx({ prose: isProse }, 'w-full max-w-none mt-6', {
-                'md:w-3/4': headings.length,
-              })}
-            >
-              {children}
-            </main>
-            {headings.length ? (
-              <div className="md:w-1/4 hidden md:block">
-                <TableOfContents container={contentRef} headings={headings} />
-              </div>
-            ) : null}
-          </div>
-        </main>
+            {children}
+          </main>
+          {!!headings.length && <TableOfContents container={contentRef} headings={headings} />}
+        </div>
       </div>
     </Fragment>
   );
@@ -76,11 +79,12 @@ export const components = {
   inlineCode: InlineCode,
 };
 
-export const Markdown = ({ children }: { children: ReactNode }) => {
+export function Markdown({ children }: { children: ReactNode }) {
   const headings = getHeadings(children);
+
   return (
     <Page headings={headings} isProse title={headings[0].label}>
       <MDXProvider components={components}>{children}</MDXProvider>
     </Page>
   );
-};
+}

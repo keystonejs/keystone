@@ -2,39 +2,59 @@
 import { jsx } from '@keystone-ui/core';
 import { useState } from 'react';
 
+import { useMediaQuery } from '../lib/media';
 import { Navigation } from './Navigation';
 
 export function Sidebar() {
   const [mobileNavCollapsed, setMobileNavCollapsed] = useState(true);
+  const mq = useMediaQuery();
 
   return (
-    <aside className="flex-none md:w-52 md:mr-4 md:text-sm">
+    <aside
+      css={mq({
+        fontSize: '0.875rem',
+        borderBottom: ['1px solid var(--gray-200)', null, 'none'],
+      })}
+    >
       {mobileNavCollapsed ? (
-        <a
-          href="#"
-          className="block text-gray-600 hover:text-gray-900 py-4 px-2 border-b border-grey-200 font-semibold md:hidden"
-          onClick={event => {
-            event.preventDefault();
-            setMobileNavCollapsed(false);
-          }}
+        <button
+          onClick={() => setMobileNavCollapsed(false)}
+          css={mq({
+            display: ['block', null, 'none'],
+            fontWeight: 600,
+            fontSize: '1rem',
+            padding: '1rem',
+            width: '100%',
+            textAlign: 'left',
+          })}
         >
           Show Nav
-        </a>
+        </button>
       ) : null}
-      <div className={`px-2 mt-6 md:block ${mobileNavCollapsed ? 'hidden' : ''}`}>
+      <div
+        css={mq({
+          display: [mobileNavCollapsed ? 'none' : 'block', null, 'block'],
+          marginTop: '1.5rem',
+          padding: ['0 0 1rem 1rem', null, 0],
+          borderBottom: ['1px solid var(--gray-200)', null, 'none'],
+        })}
+      >
         <Navigation />
       </div>
       {!mobileNavCollapsed ? (
-        <a
-          href="#"
-          className="block text-gray-600 hover:text-gray-900 py-4 px-2 mt-4 border-b border-t border-grey-200 font-semibold md:hidden"
-          onClick={event => {
-            event.preventDefault();
-            setMobileNavCollapsed(true);
-          }}
+        <button
+          onClick={() => setMobileNavCollapsed(true)}
+          css={mq({
+            display: ['block', null, 'none'],
+            fontWeight: 600,
+            fontSize: '1rem',
+            padding: '1rem',
+            width: '100%',
+            textAlign: 'left',
+          })}
         >
           Hide Nav
-        </a>
+        </button>
       ) : null}
     </aside>
   );
