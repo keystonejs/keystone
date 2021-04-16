@@ -1,6 +1,7 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
 import semver from 'semver';
+import { ImageMode, ImageExtension } from '@keystone-next/types';
 
 export const noop = <T>(x: T): T => x;
 export const identity = noop;
@@ -255,4 +256,44 @@ export const humanize = (str: string) => {
     .filter(i => i)
     .map(upcase)
     .join(' ');
+};
+
+export const getImageRef = (mode: ImageMode, id: string, extension: ImageExtension) =>
+  `${mode}:${id}.${extension}`;
+
+export const isValidImageRef = (ref: string): boolean => {
+  if (/^(local):(.+)\.(gif|jpg|png|webp)$/.test(ref)) {
+    return true;
+  }
+
+  return false;
+};
+
+export const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
+
+const isValidImageExtension = (extension: string): boolean =>
+  SUPPORTED_IMAGE_EXTENSIONS.includes(extension);
+
+export const parseImageRef = (
+  ref: string
+): { mode: ImageMode; id: string; extension: ImageExtension } => {
+  const throwInvalidRefError = () => {
+    throw new Error('Invalid image reference');
+  };
+  const [mode, idAndExt] = ref.split(':');
+  const [id, ext] = idAndExt.split('.');
+
+  if (!isValidImageRef(ref)) {
+    throwInvalidRefError();
+  }
+
+  if (!isValidImageExtension(ext)) {
+    throwInvalidRefError();
+  }
+
+  return {
+    mode: mode as ImageMode,
+    id,
+    extension: ext as ImageExtension,
+  };
 };

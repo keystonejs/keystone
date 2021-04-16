@@ -1,9 +1,8 @@
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { getImageRef, SUPPORTED_IMAGE_EXTENSIONS } from '@keystone-next/utils-legacy';
 import { ImageData, KeystoneContext, BaseKeystoneList } from '@keystone-next/types';
 import { Implementation } from '../../Implementation';
 import { handleImageData } from './handle-image-input';
-
-const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
 
 export class ImageImplementation<P extends string> extends Implementation<P> {
   get _supportsUnique() {
@@ -52,7 +51,7 @@ export class ImageImplementation<P extends string> extends Implementation<P> {
           if (!context.images) {
             throw new Error('Image context is undefined');
           }
-          return context.images.getRef(data.mode, data.id, data.extension);
+          return getImageRef(data.mode, data.id, data.extension);
         },
       },
     };

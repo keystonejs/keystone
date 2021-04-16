@@ -3,6 +3,7 @@
 import { jsx, Stack, useTheme, Text } from '@keystone-ui/core';
 import { useToasts } from '@keystone-ui/toast';
 import { TextInput } from '@keystone-ui/fields';
+import { isValidImageRef } from '@keystone-next/utils-legacy';
 import copy from 'copy-to-clipboard';
 import bytes from 'bytes';
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
@@ -335,7 +336,7 @@ export function Field({
 }
 
 export function validateRef({ ref }: { ref: string }) {
-  if (!/^(local|cloud):(.+)\.(gif|jpg|png|webp)$/.test(ref)) {
+  if (!isValidImageRef(ref)) {
     return 'Invalid ref';
   }
 }

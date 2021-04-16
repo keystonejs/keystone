@@ -10,67 +10,10 @@ import fs from 'fs-extra';
 import { fromBuffer } from 'file-type';
 import imageSize from 'image-size';
 
-const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
-const MODE_LOCAL = 'local';
+import { parseImageRef } from '@keystone-next/utils-legacy';
+
 const DEFAULT_BASE_URL = '/images';
 const DEFAULT_STORAGE_PATH = './public/images';
-
-const isValidImageRef = (
-  ref: string,
-  mode: ImageMode,
-  { storagePath }: { storagePath: string }
-): boolean => {
-  if (!ref.includes(MODE_LOCAL, 0)) {
-    return false;
-  }
-
-  if (!ref.includes(':', MODE_LOCAL.length - 1)) {
-    return false;
-  }
-
-  if (!ref.includes('.')) {
-    return false;
-  }
-
-  if (isLocal(mode)) {
-    return fs.existsSync(path.join(storagePath, ref.replace(`${MODE_LOCAL}:`, '')));
-  }
-
-  if (isCloud(mode)) {
-    // TODO
-    return false;
-  }
-
-  return false;
-};
-
-const isValidImageExtension = (extension: string): boolean =>
-  SUPPORTED_IMAGE_EXTENSIONS.includes(extension);
-
-const parseImageRef = (
-  ref: string,
-  config: { storagePath: string }
-): { mode: ImageMode; id: string; extension: ImageExtension } => {
-  const throwInvalidRefError = () => {
-    throw new Error('Invalid image reference');
-  };
-  const [mode, idAndExt] = ref.split(':');
-  const [id, ext] = idAndExt.split('.');
-
-  if (!isValidImageRef(ref, mode as ImageMode, config)) {
-    throwInvalidRefError();
-  }
-
-  if (!isValidImageExtension(ext)) {
-    throwInvalidRefError();
-  }
-
-  return {
-    mode: mode as ImageMode,
-    id,
-    extension: ext as ImageExtension,
-  };
-};
 
 const getImageMetadataFromBuffer = async (buffer: Buffer) => {
   const filesize = buffer.length;
@@ -78,12 +21,17 @@ const getImageMetadataFromBuffer = async (buffer: Buffer) => {
   if (!fileType) {
     throw new Error('File type not found');
   }
-  const ext = fileType.ext === 'jpg' ? 'jpeg' : fileType.ext;
-  if (ext !== 'jpeg' && ext !== 'png' && ext !== 'webp' && ext !== 'gif') {
-    throw new Error(`${ext} is not a supported image type`);
+
+  if (
+    fileType.ext !== 'jpg' &&
+    fileType.ext !== 'png' &&
+    fileType.ext !== 'webp' &&
+    fileType.ext !== 'gif'
+  ) {
+    throw new Error(`${fileType.ext} is not a supported image type`);
   }
 
-  const extension: ImageExtension = ext;
+  const extension: ImageExtension = fileType.ext;
 
   const { height, width } = imageSize(buffer);
 
@@ -119,10 +67,8 @@ export function createImagesContext(config?: KeystoneImagesConfig): ImagesContex
 
       throw new Error('Image not found');
     },
-    getRef: (mode, id, ext) => `${mode}:${id}.${ext}`,
-    parseRef: ref => parseImageRef(ref, { storagePath }),
     getDataFromRef: async ref => {
-      const { mode, id, extension } = parseImageRef(ref, { storagePath });
+      const { mode, id, extension } = parseImageRef(ref);
 
       if (isLocal(mode)) {
         const buffer = await fs.readFile(path.join(storagePath, `${id}.${extension}`));

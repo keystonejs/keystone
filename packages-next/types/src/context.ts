@@ -116,7 +116,7 @@ export type DatabaseAPIs = {
 
 export type ImageMode = 'local';
 
-export type ImageExtension = 'jpeg' | 'png' | 'webp' | 'gif';
+export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif';
 
 export type ImageData = {
   mode: ImageMode;
@@ -129,8 +129,6 @@ export type ImageData = {
 
 export type ImagesContext = {
   getSrc: (mode: ImageMode, id: string, extension: ImageExtension) => string;
-  getRef: (mode: ImageMode, id: string, extension: ImageExtension) => string;
-  parseRef: (ref: string) => { mode: ImageMode; id: string; extension: ImageExtension };
   getDataFromRef: (ref: string) => Promise<ImageData>;
   getDataFromStream: (stream: Readable) => Promise<ImageData>;
 };
