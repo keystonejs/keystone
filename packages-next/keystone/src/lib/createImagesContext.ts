@@ -6,7 +6,7 @@ import {
 } from '@keystone-next/types';
 import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
-import { fromBuffer } from 'file-type';
+import fromBuffer from 'image-type';
 import imageSize from 'image-size';
 
 import { parseImageRef } from '@keystone-next/utils-legacy';
@@ -16,7 +16,7 @@ const DEFAULT_STORAGE_PATH = './public/images';
 
 const getImageMetadataFromBuffer = async (buffer: Buffer) => {
   const filesize = buffer.length;
-  const fileType = await fromBuffer(buffer);
+  const fileType = fromBuffer(buffer);
   if (!fileType) {
     throw new Error('File type not found');
   }
