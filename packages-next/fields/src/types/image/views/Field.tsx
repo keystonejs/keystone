@@ -130,7 +130,7 @@ export function Field({
     addToast({ title: 'Copied image ref to clipboard', tone: 'positive' });
   };
   const onFailure = () => {
-    addToast({ title: 'Faild to copy image ref to clipboard', tone: 'negative' });
+    addToast({ title: 'Failed to copy image ref to clipboard', tone: 'negative' });
   };
 
   const toggleSetRefUI = () => {
