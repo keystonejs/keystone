@@ -289,7 +289,7 @@ export class List implements BaseKeystoneList {
       data: Record<string, any>;
     }[],
     context: KeystoneContext,
-    { gqlName, ...extraInternalData }: { gqlName: string }
+    { gqlName, ...extraInternalData }: { gqlName: string } & Record<string, any>
   ) {
     const restrictedFields = [];
     for (const { existingItem, id, data } of itemsToUpdate) {

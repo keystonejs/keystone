@@ -1,10 +1,14 @@
-import { Keystone } from '../Keystone/index.ts';
-import { List } from '../ListTypes/index.ts';
+import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
+import { Keystone } from '../Keystone/index';
+import { List } from '../ListTypes';
 
 class MockFieldAdapter {}
 
 class MockFieldImplementation {
-  constructor(name) {
+  name: string;
+  access: any;
+  config: any;
+  constructor(name: string) {
     this.access = {
       public: {
         create: true,
@@ -42,7 +46,8 @@ const MockFieldType = {
 };
 
 class MockListAdapter {
-  constructor(parentAdapter) {
+  parentAdapter: MockAdapter;
+  constructor(parentAdapter: MockAdapter) {
     this.parentAdapter = parentAdapter;
   }
   key = 'mock';
@@ -61,7 +66,9 @@ test('Check require', () => {
 describe('Keystone.createList()', () => {
   test('basic', () => {
     const config = {
-      adapter: new MockAdapter(),
+      adapter: (new MockAdapter() as unknown) as PrismaAdapter,
+      onConnect: async () => {},
+      queryLimits: {},
     };
     const keystone = new Keystone(config);
 
@@ -74,6 +81,7 @@ describe('Keystone.createList()', () => {
         name: { type: MockFieldType },
         email: { type: MockFieldType },
       },
+      access: true,
     });
 
     expect(keystone.lists).toHaveProperty('User');
@@ -86,12 +94,14 @@ describe('Keystone.createList()', () => {
 
   test('Reserved words', () => {
     const config = {
-      adapter: new MockAdapter(),
+      adapter: (new MockAdapter() as unknown) as PrismaAdapter,
+      onConnect: async () => {},
+      queryLimits: {},
     };
     const keystone = new Keystone(config);
 
     for (const listName of ['Query', 'Mutation', 'Subscription']) {
-      expect(() => keystone.createList(listName, {})).toThrow(
+      expect(() => keystone.createList(listName, { fields: [], access: true })).toThrow(
         `Invalid list name "${listName}". List names cannot be reserved GraphQL keywords`
       );
     }
