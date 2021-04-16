@@ -18,7 +18,6 @@ export type FieldExtraArgs = {
   listKey: string;
   listAdapter: PrismaListAdapter;
   fieldAdapterClass: typeof PrismaFieldAdapter;
-  defaultAccess: any;
   schemaNames: string[];
 };
 
@@ -52,14 +51,7 @@ class Field<P extends string> {
       schemaDoc,
       ...config
     }: FieldConfigArgs & Record<string, any>,
-    {
-      getListByKey,
-      listKey,
-      listAdapter,
-      fieldAdapterClass,
-      defaultAccess,
-      schemaNames,
-    }: FieldExtraArgs
+    { getListByKey, listKey, listAdapter, fieldAdapterClass, schemaNames }: FieldExtraArgs
   ) {
     this.path = path;
     this.isPrimaryKey = path === 'id';
@@ -93,7 +85,7 @@ class Field<P extends string> {
     this.refListKey = '';
 
     this.access = this._modifyAccess(
-      parseFieldAccess({ schemaNames, listKey, fieldKey: path, defaultAccess, access })
+      parseFieldAccess({ schemaNames, listKey, fieldKey: path, defaultAccess: true, access })
     );
   }
 
@@ -158,7 +150,8 @@ class Field<P extends string> {
     return resolvedData[this.path];
   }
 
-  async validateInput() {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async validateInput(args: any) {}
 
   async beforeChange() {}
 

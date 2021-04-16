@@ -39,7 +39,7 @@ export const Navigation = () => {
       <NavItem href="/roadmap">Roadmap</NavItem>
       <NavItem href="/faqs">FAQs</NavItem>
       <Section label="Tutorials">
-        <NavItem href="/tutorials/getting-started-with-create-keystone-next-app">
+        <NavItem href="/tutorials/getting-started-with-create-keystone-app">
           Getting started
         </NavItem>
       </Section>

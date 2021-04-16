@@ -2,6 +2,7 @@ import globby from 'globby';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { text } from '@keystone-next/fields';
+import { BaseKeystone } from '@keystone-next/types';
 
 const testModules = globby.sync(`{packages,packages-next}/**/src/**/test-fixtures.{js,ts}`, {
   absolute: true,
@@ -162,7 +163,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
                 expect(error.message).toMatch('isUnique is not a supported option for field type');
                 erroredOut = true;
               } finally {
-                after({ disconnect: () => {} });
+                after({ disconnect: async () => {} } as BaseKeystone);
               }
               expect(erroredOut).toEqual(true);
             });

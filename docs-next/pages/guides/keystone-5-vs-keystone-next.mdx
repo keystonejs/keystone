@@ -1,16 +1,8 @@
-import { Page, components } from '../../components/Page';
-import { getHeadings } from '../../lib/getHeadings';
-import { InlineCode } from '../../components/Code';
-import { Alert } from '../../components/Alert';
-import { MDXProvider } from '@mdx-js/react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Markdown } from '../../components/Page';
 
 # Keystone 5 vs Next. Which should you use?
 
-<Alert>
-  Updated March 31st, 2021. See our <Link href="https://next.keystonejs.com/roadmap">roadmap</Link> for the latest improvements.
-</Alert>
+?> Updated March 31st, 2021. See our [roadmap](https://next.keystonejs.com/roadmap) for the latest improvements.
 
 Keystone 5 is now in **maintenance mode**. We‘re focusing all our efforts on Keystone Next, to be released as Keystone 6 later this year. If you’re wondering which version to start your next project with, this guide is for you.
 
@@ -95,15 +87,4 @@ You’ll have to rewrite your config, schema, session and access control functio
 
 Reach out in the [community Slack](https://community.keystonejs.com/) for help and advice.
 
-export default ({ children }) => {
-  const headings = getHeadings(children);
-  return (
-    <Page
-      title={'Should you use Keystone 5 or Keystone Next'}
-      headings={headings}
-      isProse
-    >
-      <MDXProvider components={components}>{children}</MDXProvider>
-    </Page>
-  );
-};
+export default ({ children }) => <Markdown>{children}</Markdown>

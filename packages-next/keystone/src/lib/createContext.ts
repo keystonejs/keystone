@@ -78,9 +78,8 @@ export function makeCreateContext({
         }),
       req,
       ...sessionContext,
-      // Note: These two fields let us use the server-side-graphql-client library.
-      // We may want to remove them once the updated itemAPI w/ query is available.
-      executeGraphQL: rawGraphQL,
+      // Note: This field lets us use the server-side-graphql-client library.
+      // We may want to remove it once the updated itemAPI w/ query is available.
       gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
     };
     const getArgsByList = schemaName === 'public' ? publicGetArgsByList : internalGetArgsByList;

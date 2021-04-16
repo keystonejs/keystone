@@ -14,7 +14,7 @@ export default function IndexPage() {
         headless content management system around.
       </p>
       <p>
-        <Link href="/tutorials/getting-started-with-create-keystone-next-app" passHref>
+        <Link href="/tutorials/getting-started-with-create-keystone-app" passHref>
           <Button tone="active" weight="bold">
             Get started
           </Button>

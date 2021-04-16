@@ -24,14 +24,12 @@ export type SessionImplementation = {
   ): Promise<SessionContext<any>>;
 };
 
-export type GraphQLResolver = (root: any, args: any, context: KeystoneContext) => any;
+export type GraphQLResolver = (root: any, args: any, context: KeystoneContext, info?: any) => any;
 
 export type GraphQLSchemaExtension = {
   typeDefs: string;
   resolvers: Record<string, Record<string, GraphQLResolver>>;
 };
-
-const preventInvalidUnderscorePrefix = (str: string) => str.replace(/^__/, '_');
 
 // TODO: don't duplicate this between here and packages/keystone/ListTypes/list.js
 export function getGqlNames({
@@ -48,7 +46,6 @@ export function getGqlNames({
     itemQueryName: _itemQueryName,
     listQueryName: `all${_listQueryName}`,
     listQueryMetaName: `_all${_listQueryName}Meta`,
-    listMetaName: preventInvalidUnderscorePrefix(`_${_listQueryName}Meta`),
     listSortName: `Sort${_listQueryName}By`,
     deleteMutationName: `delete${_itemQueryName}`,
     updateMutationName: `update${_itemQueryName}`,

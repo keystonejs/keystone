@@ -16,8 +16,6 @@ export type KeystoneContext = {
   /** @deprecated */
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   /** @deprecated */
-  executeGraphQL: any; // TODO: type this
-  /** @deprecated */
   keystone: BaseKeystone;
 } & AccessControlContext &
   Partial<SessionContext<any>> &

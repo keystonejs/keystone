@@ -1,42 +1,54 @@
 import { PrismaAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { Implementation } from '@keystone-next/fields';
+import { Relationship } from '@keystone-next/fields/src/types/relationship/Implementation';
+import { DocumentNode } from 'graphql';
 import type { KeystoneContext } from './context';
 import type { BaseGeneratedListTypes, GqlNames } from './utils';
 
-type Rel = {
-  left: Implementation<any>;
-  right: Implementation<any>;
-  cardinality: 'N:N' | 'N:1' | '1:N' | '1:1';
-  tableName: string;
-  columnName: string;
+export type Rel = {
+  left: Relationship<any>;
+  right?: Relationship<any>;
+  cardinality?: 'N:N' | 'N:1' | '1:N' | '1:1';
+  tableName?: string;
+  columnName?: string;
+  columnNames?: Record<string, { near: string; far: string }>;
 };
-type Rels = Rel[];
+
+export type BaseListConfig = {
+  fields: Record<string, any>;
+  access: any;
+  queryLimits?: { maxResults?: number };
+  schemaDoc?: string;
+  adminDoc?: string;
+  listQueryName?: string;
+  itemQueryName?: string;
+  label?: string;
+  singular?: string;
+  plural?: string;
+  path?: string;
+  hooks?: Record<string, any>;
+  adapterConfig?: { searchField?: string };
+  cacheHint?: any;
+};
 
 // TODO: This is only a partial typing of the core Keystone class.
 // We should definitely invest some time into making this more correct.
 export type BaseKeystone = {
-  adapter: PrismaAdapter;
-  createList: (
-    key: string,
-    config: {
-      fields: Record<string, any>;
-      access: any;
-      queryLimits?: { maxResults?: number };
-      schemaDoc?: string;
-      listQueryName?: string;
-      itemQueryName?: string;
-      hooks?: Record<string, any>;
-      adapterConfig?: { searchField?: string };
-    }
-  ) => BaseKeystoneList;
-  connect: (args?: any) => Promise<void>;
-  disconnect: () => Promise<void>;
   lists: Record<string, BaseKeystoneList>;
-  createApolloServer: (args: { schemaName: string; dev: boolean }) => any;
-  getTypeDefs: (args: { schemaName: string }) => any;
-  getResolvers: (args: { schemaName: string }) => any;
+  listsArray: BaseKeystoneList[];
+  getListByKey: (key: string) => BaseKeystoneList | undefined;
+  onConnect: (keystone: BaseKeystone, args?: { context: KeystoneContext }) => Promise<void>;
+  _listCRUDProvider: any;
+  _providers: any[];
+  adapter: PrismaAdapter;
   queryLimits: { maxTotalResults: number };
-  _consolidateRelationships: () => Rels;
+
+  createList: (key: string, config: BaseListConfig) => BaseKeystoneList;
+  _consolidateRelationships: () => Rel[];
+  connect: (args?: { context: KeystoneContext }) => Promise<void>;
+  disconnect: () => Promise<void>;
+  getTypeDefs: (args: { schemaName: string }) => DocumentNode[];
+  getResolvers: (args: { schemaName: string }) => Record<string, any>;
 };
 
 // TODO: This needs to be reviewed and expanded
@@ -53,6 +65,8 @@ export type BaseKeystoneList = {
     path: string;
   };
   gqlNames: GqlNames;
+
+  initFields: () => void;
   listQuery(
     args: BaseGeneratedListTypes['args']['listQuery'],
     context: KeystoneContext,
@@ -66,9 +80,9 @@ export type BaseKeystoneList = {
     gqlName?: string,
     info?: any,
     from?: any
-  ): {
+  ): Promise<{
     getCount: () => Promise<number>;
-  };
+  }>;
   itemQuery(
     args: { where: { id: string } },
     context: KeystoneContext,
@@ -107,4 +121,14 @@ export type BaseKeystoneList = {
     mutationState?: any
   ): Promise<Record<string, any>[]>;
   getGraphqlFilterFragment: () => string[];
+
+  getGqlTypes: ({ schemaName }: { schemaName: string }) => string[];
+  getGqlQueries: ({ schemaName }: { schemaName: string }) => string[];
+  getGqlMutations: ({ schemaName }: { schemaName: string }) => string[];
+
+  gqlAuxFieldResolvers: ({ schemaName }: { schemaName: string }) => Record<string, any>;
+  gqlFieldResolvers: ({ schemaName }: { schemaName: string }) => Record<string, any>;
+  gqlAuxQueryResolvers: ({ schemaName }: { schemaName: string }) => Record<string, any>;
+  gqlQueryResolvers: ({ schemaName }: { schemaName: string }) => Record<string, any>;
+  gqlMutationResolvers: ({ schemaName }: { schemaName: string }) => Record<string, any>;
 };

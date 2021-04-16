@@ -1,17 +1,10 @@
 import pWaterfall from 'p-waterfall';
 import { defaultObj, mapKeys, identity, flatten } from '@keystone-next/utils-legacy';
 import { Implementation } from '@keystone-next/fields';
-import { BaseKeystoneList } from '@keystone-next/types';
+import { BaseKeystoneList, Rel } from '@keystone-next/types';
 
 // Note: These type definitions are preliminary while we're working towards
 // a full TypeScript conversion.
-type Rel = {
-  left: Implementation<any>;
-  right: Implementation<any>;
-  cardinality: 'N:N' | 'N:1' | '1:N' | '1:1';
-  tableName: string;
-  columnName: string;
-};
 type Rels = Rel[];
 
 type ListAdapterConfig = { searchField?: string };
@@ -324,7 +317,7 @@ class PrismaListAdapter {
     const include = defaultObj(
       this.fieldAdapters
         .filter(({ isRelationship }) => isRelationship)
-        .filter(a => a.config.many || (a.rel!.cardinality === '1:1' && a.rel!.right.adapter === a))
+        .filter(a => a.config.many || (a.rel!.cardinality === '1:1' && a.rel!.right!.adapter === a))
         .map(a => a.path),
       { select: { id: true } }
     );
@@ -448,7 +441,7 @@ class PrismaListAdapter {
           : `from_${a.rel.left.listKey}_${a.rel.left.path}`; // One-sided
         ret.where[path] = { some: { id: Number(from.fromId) } };
       } else {
-        ret.where[a.rel.columnName] = { id: Number(from.fromId) };
+        ret.where[a.rel.columnName!] = { id: Number(from.fromId) };
       }
     }
 
