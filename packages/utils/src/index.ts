@@ -131,9 +131,9 @@ export const filterValues = <T>(obj: T, predicate: (value: T[keyof T]) => boolea
  * @param {String} keyedBy The property on the input objects to key the result.
  * @param {Function} mapFn A function returning the output object values. Takes each full input object.
  */
-export const arrayToObject = <V extends string, T extends Record<string, V>, R>(
+export const arrayToObject = <K extends string, V extends string, T extends Record<K, V>, R>(
   objs: T[],
-  keyedBy: keyof T,
+  keyedBy: K,
   mapFn: (a: T) => R = i => i as any
 ) => objs.reduce((acc, obj) => ({ ...acc, [obj[keyedBy]]: mapFn(obj) }), {} as Record<V, R>);
 

@@ -1,12 +1,14 @@
 import { GraphQLJSON } from 'graphql-type-json';
 import { flatten, objMerge, unique } from '@keystone-next/utils-legacy';
+import { BaseKeystoneList } from '@keystone-next/types';
 
 export class ListCRUDProvider {
+  lists: BaseKeystoneList[];
   constructor() {
     this.lists = [];
   }
 
-  getTypes({ schemaName }) {
+  getTypes({ schemaName }: { schemaName: string }): string[] {
     return unique([
       ...flatten(this.lists.map(list => list.getGqlTypes({ schemaName }))),
       ...[
@@ -27,11 +29,11 @@ export class ListCRUDProvider {
     ]);
   }
 
-  getQueries({ schemaName }) {
+  getQueries({ schemaName }: { schemaName: string }): string[] {
     return flatten(this.lists.map(list => list.getGqlQueries({ schemaName })));
   }
 
-  getMutations({ schemaName }) {
+  getMutations({ schemaName }: { schemaName: string }): string[] {
     return flatten(this.lists.map(list => list.getGqlMutations({ schemaName })));
   }
 
@@ -39,10 +41,10 @@ export class ListCRUDProvider {
     return [];
   }
 
-  getTypeResolvers({ schemaName }) {
+  getTypeResolvers({ schemaName }: { schemaName: string }) {
     const queryMetaResolver = {
       // meta is passed in from the list's resolver (eg; '_allUsersMeta')
-      count: meta => meta.getCount(),
+      count: (meta: { getCount: () => number }) => meta.getCount(),
     };
 
     return {
@@ -53,20 +55,20 @@ export class ListCRUDProvider {
     };
   }
 
-  getQueryResolvers({ schemaName }) {
+  getQueryResolvers({ schemaName }: { schemaName: string }) {
     return {
       // Order is also important here, any TypeQuery's defined by types
       // shouldn't be able to override list-level queries
-      ...objMerge(this.lists.map(list => list.gqlAuxQueryResolvers())),
+      ...objMerge(this.lists.map(list => list.gqlAuxQueryResolvers({ schemaName }))),
       ...objMerge(this.lists.map(list => list.gqlQueryResolvers({ schemaName }))),
     };
   }
 
-  getMutationResolvers({ schemaName }) {
+  getMutationResolvers({ schemaName }: { schemaName: string }) {
     return objMerge(this.lists.map(list => list.gqlMutationResolvers({ schemaName })));
   }
 
-  getSubscriptionResolvers({}) {
+  getSubscriptionResolvers({}: { schemaName: string }) {
     return {};
   }
 }

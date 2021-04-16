@@ -194,7 +194,6 @@ export class Relationship<P extends string> extends Implementation<P> {
     operations: RelationshipOperation,
     item: any,
     context: KeystoneContext,
-    getItem: any,
     mutationState: { afterChangeStack: any[]; transaction: {} }
   ) {
     const { refList, refField } = this.tryResolveRefList();
@@ -222,6 +221,7 @@ export class Relationship<P extends string> extends Implementation<P> {
         create: [],
         connect: [],
         disconnect: [],
+        currentValue: []
       });
     }
 
