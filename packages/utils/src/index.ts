@@ -263,42 +263,18 @@ const REFREGEX = /^(local):([^:\n]+)\.(gif|jpg|png|webp)$/;
 export const getImageRef = (mode: ImageMode, id: string, extension: ImageExtension) =>
   `${mode}:${id}.${extension}`;
 
-export const isValidImageRef = (ref: string): boolean => {
-  if (REFREGEX.test(ref)) {
-    return true;
-  }
-
-  return false;
-};
-
 export const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
-
-const isValidImageExtension = (extension: string): boolean =>
-  SUPPORTED_IMAGE_EXTENSIONS.includes(extension);
 
 export const parseImageRef = (
   ref: string
-): { mode: ImageMode; id: string; extension: ImageExtension } => {
-  const throwInvalidRefError = () => {
-    throw new Error('Invalid image reference');
-  };
-
-  if (!isValidImageRef(ref)) {
-    throwInvalidRefError();
+): { mode: ImageMode; id: string; extension: ImageExtension } | undefined => {
+  if (ref.match(REFREGEX)) {
+    const [__, mode, id, ext] = ref.match(REFREGEX) as RegExpMatchArray;
+    return {
+      mode: mode as ImageMode,
+      id,
+      extension: ext as ImageExtension,
+    };
   }
-
-  const [__, mode, id, ext] = ref.match(REFREGEX) as RegExpMatchArray;
-
-  // const [mode, idAndExt] = ref.split(':');
-  // const [id, ext] = idAndExt.split('.');
-
-  if (!isValidImageExtension(ext)) {
-    throwInvalidRefError();
-  }
-
-  return {
-    mode: mode as ImageMode,
-    id,
-    extension: ext as ImageExtension,
-  };
+  return undefined;
 };

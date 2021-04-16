@@ -68,7 +68,16 @@ export function createImagesContext(config?: KeystoneImagesConfig): ImagesContex
       throw new Error('Image not found');
     },
     getDataFromRef: async ref => {
-      const { mode, id, extension } = parseImageRef(ref);
+      const throwInvalidRefError = () => {
+        throw new Error('Invalid image reference');
+      };
+      if (!parseImageRef(ref)) throwInvalidRefError();
+
+      const { mode, id, extension } = parseImageRef(ref) as {
+        mode: ImageMode;
+        id: string;
+        extension: ImageExtension;
+      };
 
       if (isLocal(mode)) {
         const buffer = await fs.readFile(path.join(storagePath, `${id}.${extension}`));
