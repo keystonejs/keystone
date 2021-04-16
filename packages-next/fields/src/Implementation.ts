@@ -149,7 +149,7 @@ class Field<P extends string> {
   async resolveInput({ resolvedData }: { resolvedData: Record<P, any> }): Promise<any> {
     return resolvedData[this.path];
   }
-  
+
   /**
    * @param {Object} data
    * @param {Object} data.resolvedData The incoming item for the mutation with
