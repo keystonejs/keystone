@@ -9,6 +9,10 @@ const em = (px: number, base: number) => `${round(px / base)}em`;
 export const proseStyles = {
   color: 'var(--gray-800)',
   maxWidth: '65ch',
+  'img, video': {
+    maxWidth: '100%',
+    height: 'auto',
+  },
   '[class~="lead"]': {
     color: 'var(--gray-600)',
     fontSize: em(20, 16),
