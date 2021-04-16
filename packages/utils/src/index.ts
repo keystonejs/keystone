@@ -268,8 +268,9 @@ export const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
 export const parseImageRef = (
   ref: string
 ): { mode: ImageMode; id: string; extension: ImageExtension } | undefined => {
-  if (ref.match(REFREGEX)) {
-    const [__, mode, id, ext] = ref.match(REFREGEX) as RegExpMatchArray;
+  const match = ref.match(REFREGEX);
+  if (match) {
+    const [__, mode, id, ext] = match;
     return {
       mode: mode as ImageMode,
       id,
