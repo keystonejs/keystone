@@ -1,6 +1,6 @@
 ---
-'@keystone-next/fields': patch
-'@keystone-next/keystone': patch
+'@keystone-next/fields': major
+'@keystone-next/keystone': major
 '@keystone-next/types': patch
 ---
 
