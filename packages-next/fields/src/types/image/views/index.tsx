@@ -57,6 +57,7 @@ export type ImageValue =
       data: {
         ref: string;
       };
+      previous: ImageValue;
     }
   | {
       kind: 'from-server';
