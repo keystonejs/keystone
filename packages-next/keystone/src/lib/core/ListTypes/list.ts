@@ -1,10 +1,8 @@
 import pluralize from 'pluralize';
 import {
   mapKeys,
-  omit,
   omitBy,
   unique,
-  intersection,
   mergeWhereClause,
   objMerge,
   flatten,
@@ -352,36 +350,16 @@ export class List implements BaseKeystoneList {
       info?: any;
     }
   ) {
-    const _throwAccessDenied = () => {
-      // If the client handles errors correctly, it should be able to
-      // receive partial data (for the fields the user has access to),
-      // and then an `errors` array of AccessDeniedError's
-      throwAccessDenied(opToType[operation], gqlName, { itemId: id });
-    };
+    // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
+    // We only want 1 item, don't make the DB do extra work
+    // NOTE: Order in where: { ... } doesn't matter, if `access.id !== id`, it will
+    // have been caught earlier, so this spread and overwrite can only
+    // ever be additive or overwrite with the same value
+    let item = ((await this._itemsQuery(
+      { first: 1, where: { ...access, id } },
+      { context, info }
+    )) as Record<string, any>[])[0];
 
-    let item;
-    if (
-      (access.id && access.id !== id) ||
-      (access.id_not && access.id_not === id) ||
-      (access.id_in && !access.id_in.includes(id)) ||
-      (access.id_not_in && access.id_not_in.includes(id))
-    ) {
-      // It's odd, but conceivable the access control specifies a single id
-      // the user has access to. So we have to do a check here to see if the
-      // ID they're requesting matches that ID.
-      // Nice side-effect: We can throw without having to ever query the DB.
-      _throwAccessDenied();
-    } else {
-      // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
-      // We only want 1 item, don't make the DB do extra work
-      // NOTE: Order in where: { ... } doesn't matter, if `access.id !== id`, it will
-      // have been caught earlier, so this spread and overwrite can only
-      // ever be additive or overwrite with the same value
-      item = ((await this._itemsQuery(
-        { first: 1, where: { ...access, id } },
-        { context, info }
-      )) as Record<string, any>[])[0];
-    }
     if (!item) {
       // Throwing an AccessDenied here if the item isn't found because we're
       // strict about accidentally leaking information (that the item doesn't
@@ -394,7 +372,10 @@ export class List implements BaseKeystoneList {
       // that return null do not exist). Similar to how S3 returns 403's
       // always instead of ever returning 404's.
       // Our version is to always throw if not found.
-      _throwAccessDenied();
+      // If the client handles errors correctly, it should be able to
+      // receive partial data (for the fields the user has access to),
+      // and then an `errors` array of AccessDeniedError's
+      throwAccessDenied(opToType[operation], gqlName, { itemId: id });
     }
     // Found the item, and it passed the filter test
     return item as { id: IdType } & Record<string, any>;
@@ -416,48 +397,13 @@ export class List implements BaseKeystoneList {
       return await this._itemsQuery({ where: { id_in: uniqueIds } }, { context, info });
     }
 
-    let idFilters: Record<string, any> = {};
-
-    if (access.id || access.id_in) {
-      const accessControlIdsAllowed = unique([].concat(access.id, access.id_in).filter(id => id));
-
-      idFilters.id_in = intersection(accessControlIdsAllowed, uniqueIds);
-    } else {
-      idFilters.id_in = uniqueIds;
-    }
-
-    if (access.id_not || access.id_not_in) {
-      const accessControlIdsDisallowed = unique(
-        [].concat(access.id_not, access.id_not_in).filter(id => id)
-      );
-
-      idFilters.id_not_in = intersection(accessControlIdsDisallowed, uniqueIds);
-    }
-
-    // It's odd, but conceivable the access control specifies a single id
-    // the user has access to. So we have to do a check here to see if the
-    // ID they're requesting matches that ID.
-    // Nice side-effect: We can throw without having to ever query the DB.
-    if (
-      // Only some ids are allowed, and none of them have been passed in
-      (idFilters.id_in && idFilters.id_in.length === 0) ||
-      // All the passed in ids have been explicitly disallowed
-      (idFilters.id_not_in && idFilters.id_not_in.length === uniqueIds.length)
-    ) {
-      // NOTE: We don't throw an error for multi-actions, only return an empty
-      // array because there's no mechanism in GraphQL to return more than one
-      // error for a list result.
-      return [];
-    }
-
     // NOTE: The fields will be filtered by the ACL checking in gqlFieldResolvers()
     // NOTE: Unlike in the single-operation variation, there is no security risk
     // in returning the result of the query here, because if no items match, we
     // return an empty array regardless of if that's because of lack of
     // permissions or because of those items don't exist.
-    const remainingAccess = omit(access, ['id', 'id_not', 'id_in', 'id_not_in']);
     return await this._itemsQuery(
-      { where: { ...remainingAccess, ...idFilters } },
+      { where: { AND: [access, { id_in: uniqueIds }] } },
       { context, info }
     );
   }
@@ -599,7 +545,6 @@ export class List implements BaseKeystoneList {
     data: Record<string, any>,
     existingItem: Record<string, any> | undefined,
     context: KeystoneContext,
-    getItem: any,
     mutationState: MutationState
   ) {
     const fields = this._fieldsFromObject(data).filter(
@@ -749,7 +694,6 @@ export class List implements BaseKeystoneList {
         defaultedItem,
         existingItem,
         context,
-        createdPromise.promise,
         mutationState
       );
 
@@ -889,7 +833,6 @@ export class List implements BaseKeystoneList {
         originalInput,
         existingItem,
         context,
-        undefined,
         mutationState
       );
 
