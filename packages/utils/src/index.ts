@@ -270,7 +270,7 @@ export const parseImageRef = (
 ): { mode: ImageMode; id: string; extension: ImageExtension } | undefined => {
   const match = ref.match(REFREGEX);
   if (match) {
-    const [__, mode, id, ext] = match;
+    const [, mode, id, ext] = match;
     return {
       mode: mode as ImageMode,
       id,

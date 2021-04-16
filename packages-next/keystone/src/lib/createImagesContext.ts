@@ -3,7 +3,6 @@ import {
   ImagesConfig as KeystoneImagesConfig,
   ImagesContext,
   ImageExtension,
-  ImageMode,
 } from '@keystone-next/types';
 import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
@@ -41,10 +40,6 @@ const getImageMetadataFromBuffer = async (buffer: Buffer) => {
   return { width, height, filesize, extension };
 };
 
-const isLocal = (mode: ImageMode) => mode === 'local';
-
-const isCloud = (mode: ImageMode) => mode !== 'local';
-
 export function createImagesContext(config?: KeystoneImagesConfig): ImagesContext | undefined {
   if (!config) {
     return;
@@ -56,45 +51,23 @@ export function createImagesContext(config?: KeystoneImagesConfig): ImagesContex
 
   return {
     getSrc: (mode, id, extension) => {
-      if (isLocal(mode)) {
-        const filename = `${id}.${extension}`;
-        return `${baseUrl}/${filename}`;
-      }
-
-      if (isCloud(mode)) {
-        // TODO
-      }
-
-      throw new Error('Image not found');
+      const filename = `${id}.${extension}`;
+      return `${baseUrl}/${filename}`;
     },
     getDataFromRef: async ref => {
-      const throwInvalidRefError = () => {
+      const imageRef = parseImageRef(ref);
+      if (!imageRef) {
         throw new Error('Invalid image reference');
-      };
-      if (!parseImageRef(ref)) throwInvalidRefError();
-
-      const { mode, id, extension } = parseImageRef(ref) as {
-        mode: ImageMode;
-        id: string;
-        extension: ImageExtension;
-      };
-
-      if (isLocal(mode)) {
-        const buffer = await fs.readFile(path.join(storagePath, `${id}.${extension}`));
-        const metadata = await getImageMetadataFromBuffer(buffer);
-
-        return {
-          mode,
-          id,
-          ...metadata,
-        };
       }
+      const buffer = await fs.readFile(
+        path.join(storagePath, `${imageRef.id}.${imageRef.extension}`)
+      );
+      const metadata = await getImageMetadataFromBuffer(buffer);
 
-      if (isCloud(mode)) {
-        // TODO
-      }
-
-      throw new Error('Unable to read image data from image reference');
+      return {
+        ...imageRef,
+        ...metadata,
+      };
     },
     getDataFromStream: async stream => {
       const { upload: mode } = config;
