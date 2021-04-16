@@ -15,7 +15,7 @@ export function Header() {
           gridTemplateColumns: 'auto 1fr',
           justifyItems: 'start',
           padding: '1rem',
-          maxWidth: '66rem',
+          maxWidth: 'var(--wrapper-width)',
           margin: '0 auto',
         }}
       >

@@ -19,6 +19,7 @@ export function Theme() {
           '--font-body':
             'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
           '--font-mono': '"Source Code Pro", monospace',
+          '--wrapper-width': '67rem',
         },
       }}
     />
