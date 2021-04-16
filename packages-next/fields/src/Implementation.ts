@@ -150,8 +150,28 @@ class Field<P extends string> {
     return resolvedData[this.path];
   }
 
+  /**
+   * @param {Object} data
+   * @param {Object} data.resolvedData The incoming item for the mutation with
+   * relationships and defaults already resolved
+   * @param {Object} data.existingItem If this is a updateX mutation, this will
+   * be the existing data in the database
+   * @param {Object} data.context The graphQL context object of the current
+   * request
+   * @param {Object} data.originalInput The raw incoming item from the mutation
+   * (no relationships or defaults resolved)
+   */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async validateInput(args: any) {}
+  async validateInput(data: {
+    resolvedData: Record<P, any>;
+    existingItem?: Record<string, any>;
+    context: KeystoneContext;
+    originalInput: any;
+    listKey: string;
+    fieldPath: P;
+    operation: 'create' | 'update';
+    addFieldValidationError: (msg: string) => void;
+  }) {}
 
   async beforeChange() {}
 
