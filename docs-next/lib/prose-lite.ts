@@ -217,13 +217,10 @@ export const proseStyles = {
   'h3 code': {
     fontSize: em(18, 20),
   },
-  ol: {
-    marginTop: em(20, 16),
-    marginBottom: em(20, 16),
-  },
-  ul: {
-    marginTop: em(20, 16),
-    marginBottom: em(20, 16),
+  'ol, ul': {
+    listStyle: 'none',
+    margin: `${em(20, 16)} 0`,
+    padding: 0,
   },
   li: {
     marginTop: em(8, 16),

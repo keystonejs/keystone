@@ -1,9 +1,10 @@
-import React from 'react';
+/** @jsx jsx  */
+import { Button } from '@keystone-ui/button';
+import { jsx } from '@keystone-ui/core';
 import Link from 'next/link';
 
-import { Button } from '@keystone-ui/button';
-import { Page } from '../components/Page';
 import { SubscribeForm } from '../components/SubscribeForm';
+import { Page } from '../components/Page';
 
 export default function IndexPage() {
   return (
@@ -32,8 +33,25 @@ export default function IndexPage() {
       <h2>Stay connected</h2>
       <p>
         <SubscribeForm>
-          <div className="mb-2">
-            <span className="inline-block bg-green-100 border border-green-300 uppercase text-green-600 px-2 text-sm font-semibold rounded">
+          <div
+            css={{
+              marginBottom: '0.5rem',
+            }}
+          >
+            <span
+              css={{
+                display: 'inline-block',
+                border: '1px solid var(--green-300)',
+                borderRadius: '0.25rem',
+                textTransform: 'uppercase',
+                background: 'var(--green-100)',
+                color: 'var(--green-600)',
+                padding: '0 0.5rem',
+                fontWeight: 600,
+                fontSize: '0.875rem',
+                lineHeight: '1.25rem',
+              }}
+            >
               New
             </span>{' '}
             Subscribe to our mailing list to stay in the loop!

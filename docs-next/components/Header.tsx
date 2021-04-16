@@ -29,6 +29,8 @@ export function Header() {
                 fontSize: '1.25rem',
                 lineHeight: '1.75rem',
                 color: 'transparent',
+                verticalAlign: 'middle',
+                transition: 'color 0.3s ease',
               }}
             >
               <svg
@@ -38,7 +40,8 @@ export function Header() {
                   display: 'inline-block',
                   width: '2rem',
                   height: '2rem',
-                  marginRight: '0.5rem',
+                  margin: '0 0.5rem 0.25rem 0',
+                  verticalAlign: 'middle',
                 }}
               >
                 <defs>
@@ -66,6 +69,7 @@ export function Header() {
               color: 'var(--gray-500)',
               border: '1px solid var(--gray-200)',
               fontSize: '0.75rem',
+              fontWeight: 400,
               lineHeight: '1rem',
               marginLeft: '0.5rem',
             }}

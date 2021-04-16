@@ -43,7 +43,7 @@ export function InlineCode({ children }: { children: ReactNode }) {
         margin: 0,
         borderRadius: '0.125rem',
         fontSize: '85%',
-        fontFamily: 'SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace',
+        fontFamily: 'var(--font-mono)',
         color: '#24292e',
       }}
     >

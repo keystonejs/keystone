@@ -26,6 +26,9 @@ export function Sidebar() {
             padding: '1rem',
             width: '100%',
             textAlign: 'left',
+            background: 'transparent',
+            appearance: 'none',
+            boxShadow: 'none',
           })}
         >
           Show Nav
@@ -51,6 +54,9 @@ export function Sidebar() {
             padding: '1rem',
             width: '100%',
             textAlign: 'left',
+            background: 'transparent',
+            appearance: 'none',
+            boxShadow: 'none',
           })}
         >
           Hide Nav

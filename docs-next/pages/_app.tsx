@@ -10,9 +10,6 @@ import { handleRouteChange } from '../lib/analytics';
 import { proseStyles } from '../lib/prose-lite';
 import { Theme } from '../components/Theme';
 
-// TODO: remove me
-import 'tailwindcss/tailwind.css';
-
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
@@ -29,6 +26,38 @@ export default function App({ Component, pageProps }: AppProps) {
         styles={css`
         .prose {
           ${proseStyles}
+        }
+      `}
+      />
+      <Global
+        styles={css`
+        *, ::before, ::after {
+          box-sizing: border-box;
+        }
+        blockquote, dd, dl, figure, h1, h2, h3, h4, h5, h6, hr, p, pre {
+          margin: 0;
+        }
+        a {
+          text-decoration: none;
+        }
+        .hint {
+          border-radius: 0.375rem;
+          padding: 1rem;
+        }
+        .hint.tip {
+          background: var(--blue-50);
+          color: var(--blue-900);
+          border: 1px solid var(--blue-200);
+        }
+        .hint.warn {
+          background: var(--yellow-50);
+          color: var(--yellow-900);
+          border: 1px solid var(--yellow-200);
+        }
+        .hint.error {
+          background: var(--red-50);
+          color: var(--red-900);
+          border: 1px solid var(--red-200);
         }
       `}
       />
