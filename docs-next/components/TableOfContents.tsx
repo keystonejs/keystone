@@ -1,7 +1,8 @@
 /** @jsx jsx */
 import { useState, useEffect } from 'react';
 import { jsx } from '@keystone-ui/core';
-import { media } from '../lib/media';
+
+import { useMediaQuery } from '../lib/media';
 
 // it's important that IDs are sorted by the order they appear in the document
 // so we can pluck active from the beginning
@@ -15,24 +16,24 @@ const observerOptions = {
   threshold: 1.0,
 };
 
-const gridSize = 8;
-
 interface Heading {
   id: string;
   label: string;
   depth: number;
 }
 
-export const TableOfContents = ({
+export function TableOfContents({
   container,
   headings,
 }: {
   container: React.RefObject<HTMLElement | null>;
   headings: Heading[];
-}) => {
+}) {
   let allIds = headings.map(h => h.id);
   let [visibleIds, setVisibleIds] = useState<Array<string | null>>([]);
   let [lastVisibleId, setLastVisbleId] = useState<string | null>(null);
+
+  const mq = useMediaQuery();
 
   // observe relevant headings
 
@@ -62,22 +63,18 @@ export const TableOfContents = ({
 
   return (
     <div
-      css={{
+      css={mq({
+        position: 'sticky',
         boxSizing: 'border-box',
-        display: 'none',
-        flexShrink: 0,
+        display: ['none', 'block'],
         height: 'calc(100vh - 60px)',
         overflowY: 'auto',
-        paddingLeft: gridSize * 6,
-        paddingRight: gridSize * 3,
-        paddingTop: 32,
-        position: 'sticky',
-        top: 60,
+        paddingTop: '2rem',
+        top: '3.75rem',
         WebkitOverflowScrolling: 'touch',
-        width: 280,
 
-        [media.sm]: { display: 'block' },
-      }}
+        // [media.sm]: { display: 'block' },
+      })}
     >
       <h4
         css={{
@@ -129,4 +126,4 @@ export const TableOfContents = ({
       </ul>
     </div>
   );
-};
+}
