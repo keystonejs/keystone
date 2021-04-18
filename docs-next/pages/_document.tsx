@@ -1,5 +1,6 @@
-import React from 'react';
+/** @jsx jsx */
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document';
+import { jsx } from '@keystone-ui/core';
 
 import { GA_TRACKING_ID } from '../lib/analytics';
 
@@ -51,7 +52,12 @@ class MyDocument extends Document {
             }}
           />
         </Head>
-        <body className="antialiased">
+        <body
+          css={{
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale',
+          }}
+        >
           <Main />
           <NextScript />
         </body>

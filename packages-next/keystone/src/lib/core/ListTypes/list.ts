@@ -12,13 +12,60 @@ import {
   createLazyDeferred,
 } from '@keystone-next/utils-legacy';
 import { parseListAccess } from '@keystone-next/access-control-legacy';
-import { keyToLabel, labelToPath, labelToClass, opToType, mapToFields } from './utils.ts';
-import { HookManager } from './hooks.ts';
-import { LimitsExceededError, throwAccessDenied } from './graphqlErrors.ts';
+import {
+  PrismaAdapter,
+  PrismaFieldAdapter,
+  PrismaListAdapter,
+} from '@keystone-next/adapter-prisma-legacy';
+import {
+  BaseGeneratedListTypes,
+  BaseKeystoneList,
+  BaseListConfig,
+  GraphQLResolver,
+  KeystoneContext,
+  ListHooks,
+} from '@keystone-next/types';
+import { Implementation } from '@keystone-next/fields';
+import { Relationship } from '@keystone-next/fields/src/types/relationship/Implementation';
+import { keyToLabel, labelToPath, labelToClass, opToType, mapToFields } from './utils';
+import { HookManager } from './hooks';
+import { LimitsExceededError, throwAccessDenied } from './graphqlErrors';
 
-export class List {
+type MutationState = { afterChangeStack: any[]; transaction: {} };
+
+type IdType = string | number;
+
+type CreateUpdateData = Record<string, any>;
+
+type FullFieldConfig = {
+  type: {
+    type: string;
+    implementation: typeof Implementation;
+    adapter: typeof PrismaFieldAdapter;
+    isRelationship?: boolean;
+  };
+};
+
+export class List implements BaseKeystoneList {
+  key: string;
+  _fields: Record<string, FullFieldConfig>;
+  _hooks: ListHooks<any>;
+  adapter: PrismaListAdapter;
+  access: Record<string, any>;
+  _schemaNames: string[];
+  gqlNames: BaseKeystoneList['gqlNames'];
+  fields: Implementation<any>[];
+  fieldsByPath: Record<string, Implementation<any>>;
+  hookManager: HookManager;
+  schemaDoc?: string;
+  adminDoc?: string;
+  adminUILabels: { label: string; singular: string; plural: string; path: string };
+  getListByKey: (key: string) => BaseKeystoneList | undefined;
+  fieldsInitialised: boolean;
+  queryLimits: { maxResults: number };
+  cacheHint: any;
   constructor(
-    key,
+    key: string,
     {
       fields,
       hooks = {},
@@ -34,8 +81,11 @@ export class List {
       adapterConfig = {},
       queryLimits = {},
       cacheHint,
-    },
-    { getListByKey, adapter }
+    }: BaseListConfig,
+    {
+      getListByKey,
+      adapter,
+    }: { getListByKey: (key: string) => BaseKeystoneList | undefined; adapter: PrismaAdapter }
   ) {
     this.key = key;
     this._fields = fields;
@@ -98,10 +148,7 @@ export class List {
       defaultAccess: true,
     });
 
-    this.queryLimits = {
-      maxResults: Infinity,
-      ...queryLimits,
-    };
+    this.queryLimits = { maxResults: Infinity, ...queryLimits };
     if (this.queryLimits.maxResults < 1) {
       throw new Error(`List ${label}'s queryLimits.maxResults can't be < 1`);
     }
@@ -110,6 +157,11 @@ export class List {
       throw new Error(`List ${label}'s cacheHint must be an object or function`);
     }
     this.cacheHint = cacheHint;
+
+    this.fields = [];
+    this.fieldsByPath = {};
+    this.hookManager = {} as HookManager;
+    this.fieldsInitialised = false;
   }
 
   initFields() {
@@ -162,13 +214,25 @@ export class List {
     });
   }
 
-  getFieldsWithAccess({ schemaName, access }) {
+  getFieldsWithAccess({
+    schemaName,
+    access,
+  }: {
+    schemaName: string;
+    access: 'read' | 'update' | 'create';
+  }) {
     return this.fields
       .filter(({ path }) => path !== 'id') // Exclude the id fields update types
       .filter(field => field.access[schemaName][access]); // If it's globally set to false, makes sense to never let it be updated
   }
 
-  getAllFieldsWithAccess({ schemaName, access }) {
+  getAllFieldsWithAccess({
+    schemaName,
+    access,
+  }: {
+    schemaName: string;
+    access: 'create' | 'read' | 'update' | 'create';
+  }) {
     // Equivalent to getFieldsWithAccess but includes `id` fields.
     return this.fields.filter(field => field.access[schemaName][access]);
   }
@@ -184,9 +248,9 @@ export class List {
     ];
   }
 
-  _wrapFieldResolver(field, innerResolver) {
+  _wrapFieldResolver(field: Implementation<any>, innerResolver: GraphQLResolver) {
     // Wrap the "inner" resolver for a single output field with list-specific modifiers
-    return async (item, args, context, info) => {
+    return (async (item, args, context, info) => {
       // Check access
       const operation = 'read';
       const access = await context.getFieldAccessControlForUser(
@@ -206,16 +270,27 @@ export class List {
       }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
+      // @ts-ignore
       if (field.config.cacheHint && info && info.cacheControl) {
+        // @ts-ignore
         info.cacheControl.setCacheHint(field.config.cacheHint);
       }
 
       // Execute the original/inner resolver
       return innerResolver(item, args, context, info);
-    };
+    }) as GraphQLResolver;
   }
 
-  async checkFieldAccess(operation, itemsToUpdate, context, { gqlName, ...extraInternalData }) {
+  async checkFieldAccess(
+    operation: 'create' | 'read' | 'update' | 'delete',
+    itemsToUpdate: {
+      existingItem: Record<string, any> | undefined;
+      id?: IdType;
+      data: Record<string, any>;
+    }[],
+    context: KeystoneContext,
+    { gqlName, ...extraInternalData }: { gqlName: string } & Record<string, any>
+  ) {
     const restrictedFields = [];
     for (const { existingItem, id, data } of itemsToUpdate) {
       const fields = this.fields.filter(field => field.path in data);
@@ -240,17 +315,18 @@ export class List {
     }
   }
 
-  async checkListAccess(context, originalInput, operation, { gqlName, ...extraInternalData }) {
+  async checkListAccess(
+    context: KeystoneContext,
+    originalInput: Record<string, any> | undefined,
+    operation: 'create' | 'read' | 'update' | 'delete',
+    { gqlName, ...extraInternalData }: { gqlName?: string } & Record<string, any>
+  ) {
     const access = await context.getListAccessControlForUser(
       this.access,
       this.key,
       originalInput,
       operation,
-      {
-        gqlName,
-        context,
-        ...extraInternalData,
-      }
+      { gqlName, context, ...extraInternalData }
     );
     if (!access) {
       // If the client handles errors correctly, it should be able to
@@ -261,7 +337,21 @@ export class List {
     return access;
   }
 
-  async getAccessControlledItem(id, access, { context, operation, gqlName, info }) {
+  async getAccessControlledItem(
+    id: IdType,
+    access: any,
+    {
+      context,
+      operation,
+      gqlName,
+      info,
+    }: {
+      context: KeystoneContext;
+      operation: 'create' | 'read' | 'update' | 'delete';
+      gqlName?: string;
+      info?: any;
+    }
+  ) {
     const _throwAccessDenied = () => {
       // If the client handles errors correctly, it should be able to
       // receive partial data (for the fields the user has access to),
@@ -287,7 +377,10 @@ export class List {
       // NOTE: Order in where: { ... } doesn't matter, if `access.id !== id`, it will
       // have been caught earlier, so this spread and overwrite can only
       // ever be additive or overwrite with the same value
-      item = (await this._itemsQuery({ first: 1, where: { ...access, id } }, { context, info }))[0];
+      item = ((await this._itemsQuery(
+        { first: 1, where: { ...access, id } },
+        { context, info }
+      )) as Record<string, any>[])[0];
     }
     if (!item) {
       // Throwing an AccessDenied here if the item isn't found because we're
@@ -304,10 +397,14 @@ export class List {
       _throwAccessDenied();
     }
     // Found the item, and it passed the filter test
-    return item;
+    return item as { id: IdType } & Record<string, any>;
   }
 
-  async getAccessControlledItems(ids, access, { context, info } = {}) {
+  async getAccessControlledItems(
+    ids: IdType[],
+    access: any,
+    { context, info }: { context?: KeystoneContext; info?: any } = {}
+  ) {
     if (ids.length === 0) {
       return [];
     }
@@ -319,7 +416,7 @@ export class List {
       return await this._itemsQuery({ where: { id_in: uniqueIds } }, { context, info });
     }
 
-    let idFilters = {};
+    let idFilters: Record<string, any> = {};
 
     if (access.id || access.id_in) {
       const accessControlIdsAllowed = unique([].concat(access.id, access.id_in).filter(id => id));
@@ -365,13 +462,27 @@ export class List {
     );
   }
 
-  async listQuery(args, context, gqlName, info, from) {
+  async listQuery(
+    args: BaseGeneratedListTypes['args']['listQuery'],
+    context: KeystoneContext,
+    gqlName: string,
+    info: any,
+    from?: any
+  ) {
     const access = await this.checkListAccess(context, undefined, 'read', { gqlName });
 
-    return this._itemsQuery(mergeWhereClause(args, access), { context, info, from });
+    return this._itemsQuery(mergeWhereClause(args, access), { context, info, from }) as Promise<
+      Record<string, any>[]
+    >;
   }
 
-  async listQueryMeta(args, context, gqlName, info, from) {
+  async listQueryMeta(
+    args: Record<string, any>,
+    context: KeystoneContext,
+    gqlName: string,
+    info: any,
+    from?: any
+  ) {
     return {
       // Return these as functions so they're lazily evaluated depending
       // on what the user requested
@@ -379,19 +490,24 @@ export class List {
       getCount: async () => {
         const access = await this.checkListAccess(context, undefined, 'read', { gqlName });
 
-        const { count } = await this._itemsQuery(mergeWhereClause(args, access), {
+        const { count } = (await this._itemsQuery(mergeWhereClause(args, access), {
           meta: true,
           context,
           info,
           from,
-        });
+        })) as { count: number };
 
         return count;
       },
     };
   }
 
-  async itemQuery({ where: { id } }, context, gqlName, info) {
+  async itemQuery(
+    { where: { id } }: { where: { id: string } },
+    context: KeystoneContext,
+    gqlName?: string,
+    info?: any
+  ) {
     const operation = 'read';
 
     const access = await this.checkListAccess(context, undefined, operation, {
@@ -402,12 +518,20 @@ export class List {
     return this.getAccessControlledItem(id, access, { context, operation, gqlName, info });
   }
 
-  async _itemsQuery(args, extra) {
+  async _itemsQuery(
+    args: Record<string, any>,
+    {
+      meta,
+      context,
+      info,
+      from,
+    }: { meta?: boolean; context?: KeystoneContext; info?: any; from?: {} } = {}
+  ) {
     // This is private because it doesn't handle access control
 
     const { maxResults } = this.queryLimits;
 
-    const throwLimitsExceeded = args => {
+    const throwLimitsExceeded = (args: { type: string; limit: number }) => {
       throw new LimitsExceededError({ data: { list: this.key, ...args } });
     };
 
@@ -423,7 +547,7 @@ export class List {
     if (first < Infinity && first > maxResults) {
       throwLimitsExceeded({ type: 'maxResults', limit: maxResults });
     }
-    if (!(extra && extra.meta)) {
+    if (!meta) {
       // "first" is designed to truncate the count value, but accurate counts are still
       // needed for pagination.  resultsLimit is meant for protecting KS memory usage,
       // not DB performance, anyway, so resultsLimit is only applied to queries that
@@ -434,29 +558,26 @@ export class List {
         args.first = resultsLimit;
       }
     }
-    const results = await this.adapter.itemsQuery(args, extra);
-    if (results.length > maxResults) {
+    const results = await this.adapter.itemsQuery(args, { meta, from });
+    if (Array.isArray(results) && results.length > maxResults) {
       throwLimitsExceeded({ type: 'maxResults', limit: maxResults });
     }
-    if (extra && extra.context) {
-      const context = extra.context;
-      context.totalResults += results.length;
+    if (context) {
+      context.totalResults += Array.isArray(results) ? results.length : 1;
       if (context.totalResults > context.maxTotalResults) {
         throwLimitsExceeded({ type: 'maxTotalResults', limit: context.maxTotalResults });
       }
     }
 
-    if (extra && extra.info && extra.info.cacheControl) {
+    if (info && info.cacheControl) {
       switch (typeof this.cacheHint) {
         case 'object':
-          extra.info.cacheControl.setCacheHint(this.cacheHint);
+          info.cacheControl.setCacheHint(this.cacheHint);
           break;
 
         case 'function':
-          const operationName = extra.info.operation.name && extra.info.operation.name.value;
-          extra.info.cacheControl.setCacheHint(
-            this.cacheHint({ results, operationName, meta: !!extra.meta })
-          );
+          const operationName = info.operation.name && info.operation.name.value;
+          info.cacheControl.setCacheHint(this.cacheHint({ results, operationName, meta: !!meta }));
           break;
 
         case 'undefined':
@@ -468,14 +589,22 @@ export class List {
   }
 
   // Mutation resolvers
-  _fieldsFromObject(obj) {
+  _fieldsFromObject(obj: Record<string, any>) {
     return Object.keys(obj)
       .map(fieldPath => this.fieldsByPath[fieldPath])
       .filter(field => field);
   }
 
-  async _resolveRelationship(data, existingItem, context, getItem, mutationState) {
-    const fields = this._fieldsFromObject(data).filter(field => field.isRelationship);
+  async _resolveRelationship(
+    data: Record<string, any>,
+    existingItem: Record<string, any> | undefined,
+    context: KeystoneContext,
+    getItem: any,
+    mutationState: MutationState
+  ) {
+    const fields = this._fieldsFromObject(data).filter(
+      field => field.isRelationship
+    ) as Relationship<any>[];
     const resolvedRelationships = await mapToFields(fields, async field => {
       // Treat `null` as `undefined`, e.g. a no-op
       if (data[field.path] === null) return undefined;
@@ -483,7 +612,6 @@ export class List {
         data[field.path],
         existingItem,
         context,
-        getItem,
         mutationState
       );
       // This code codifies the order of operations for nested mutations:
@@ -493,7 +621,7 @@ export class List {
       // 4. connect
       if (field.many) {
         return [
-          ...currentValue.filter(id => !disconnect.includes(id)),
+          ...(currentValue as string[]).filter((id: string) => !disconnect.includes(id)),
           ...connect,
           ...create,
         ].filter(id => !!id);
@@ -511,7 +639,13 @@ export class List {
     return { ...data, ...resolvedRelationships };
   }
 
-  async _resolveDefaults({ context, originalInput }) {
+  async _resolveDefaults({
+    context,
+    originalInput,
+  }: {
+    context: KeystoneContext;
+    originalInput: Record<string, any>;
+  }) {
     const args = { context, originalInput };
 
     const fieldsWithoutValues = this.fields.filter(
@@ -528,10 +662,13 @@ export class List {
     };
   }
 
-  async _nestedMutation(mutationState, mutation) {
+  async _nestedMutation(
+    mutationState: MutationState | undefined,
+    mutation: (mutationState: MutationState) => Promise<{ result: any; afterHook: any }>
+  ) {
     // Set up a fresh mutation state if we're the root mutation
     const isRootMutation = !mutationState;
-    if (isRootMutation) {
+    if (!mutationState) {
       mutationState = {
         afterChangeStack: [], // post-hook stack
         transaction: {}, // transaction
@@ -557,7 +694,11 @@ export class List {
     return result;
   }
 
-  async createMutation(data, context, mutationState) {
+  async createMutation(
+    data: CreateUpdateData,
+    context: KeystoneContext,
+    mutationState?: MutationState
+  ) {
     const operation = 'create';
     const gqlName = this.gqlNames.createMutationName;
 
@@ -569,10 +710,14 @@ export class List {
 
     await this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
 
-    return await this._createSingle(data, existingItem, context, mutationState);
+    return await this._createSingle(data, context, mutationState);
   }
 
-  async createManyMutation(data, context, mutationState) {
+  async createManyMutation(
+    data: { data: CreateUpdateData }[],
+    context: KeystoneContext,
+    mutationState?: MutationState
+  ) {
     const operation = 'create';
     const gqlName = this.gqlNames.createManyMutationName;
 
@@ -582,14 +727,17 @@ export class List {
 
     await this.checkFieldAccess(operation, itemsToUpdate, context, { gqlName });
 
-    return Promise.all(
-      data.map(d => this._createSingle(d.data, undefined, context, mutationState))
-    );
+    return Promise.all(data.map(d => this._createSingle(d.data, context, mutationState)));
   }
 
-  async _createSingle(originalInput, existingItem, context, mutationState) {
+  async _createSingle(
+    originalInput: Record<string, any>,
+    context: KeystoneContext,
+    mutationState?: MutationState
+  ) {
     const operation = 'create';
-    return await this._nestedMutation(mutationState, async mutationState => {
+    const existingItem = undefined;
+    return await this._nestedMutation(mutationState, async (mutationState: MutationState) => {
       const defaultedItem = await this._resolveDefaults({ context, originalInput });
 
       // Enable resolveRelationship to perform some action after the item is created by
@@ -629,9 +777,9 @@ export class List {
         originalInput,
       });
 
-      let updatedItem;
+      let updatedItem: Record<string, any>;
       try {
-        updatedItem = await this.adapter.create(resolvedData);
+        updatedItem = (await this.adapter.create(resolvedData)) as Record<string, any>;
         createdPromise.resolve(updatedItem);
         // Wait until next tick so the promise/micro-task queue can be flushed
         // fully, ensuring the deferred handlers get executed before we move on
@@ -659,7 +807,12 @@ export class List {
     });
   }
 
-  async updateMutation(id, data, context, mutationState) {
+  async updateMutation(
+    id: IdType,
+    data: CreateUpdateData,
+    context: KeystoneContext,
+    mutationState?: MutationState
+  ) {
     const operation = 'update';
     const gqlName = this.gqlNames.updateMutationName;
     const extraData = { gqlName, itemId: id };
@@ -679,21 +832,28 @@ export class List {
     return await this._updateSingle(id, data, existingItem, context, mutationState);
   }
 
-  async updateManyMutation(data, context, mutationState) {
+  async updateManyMutation(
+    data: { id: IdType; data: CreateUpdateData }[],
+    context: KeystoneContext,
+    mutationState?: MutationState
+  ) {
     const operation = 'update';
     const gqlName = this.gqlNames.updateManyMutationName;
     const ids = data.map(d => d.id);
     const extraData = { gqlName, itemIds: ids };
 
     const access = await this.checkListAccess(context, data, operation, extraData);
-    const existingItems = await this.getAccessControlledItems(ids, access);
+    const existingItems = (await this.getAccessControlledItems(ids, access)) as Record<
+      string,
+      any
+    >[];
 
     // Only update those items which pass access control
     const itemsToUpdate = zipObj({
       existingItem: existingItems,
       id: existingItems.map(({ id }) => id), // itemId is taken from here in checkFieldAccess
-      data: existingItems.map(({ id }) => data.find(d => d.id === id).data),
-    });
+      data: existingItems.map(({ id }) => data.find(d => d.id === id)!.data),
+    }) as { existingItem: Record<string, any>; id: IdType; data: Record<string, any> }[];
 
     // FIXME: We should do all of these in parallel and return *all* the field access violations
     await this.checkFieldAccess(operation, itemsToUpdate, context, extraData);
@@ -716,9 +876,15 @@ export class List {
     }
   }
 
-  async _updateSingle(id, originalInput, existingItem, context, mutationState) {
+  async _updateSingle(
+    id: IdType,
+    originalInput: Record<string, any>,
+    existingItem: Record<string, any>,
+    context: KeystoneContext,
+    mutationState?: MutationState
+  ) {
     const operation = 'update';
-    return await this._nestedMutation(mutationState, async mutationState => {
+    return await this._nestedMutation(mutationState, async (mutationState: MutationState) => {
       let resolvedData = await this._resolveRelationship(
         originalInput,
         existingItem,
@@ -751,7 +917,7 @@ export class List {
         originalInput,
       });
 
-      const updatedItem = await this.adapter.update(id, resolvedData);
+      const updatedItem = (await this.adapter.update(id, resolvedData)) as Record<string, any>;
 
       return {
         result: updatedItem,
@@ -767,7 +933,7 @@ export class List {
     });
   }
 
-  async deleteMutation(id, context, mutationState) {
+  async deleteMutation(id: IdType, context: KeystoneContext, mutationState?: MutationState) {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteMutationName;
 
@@ -785,7 +951,7 @@ export class List {
     return this._deleteSingle(existingItem, context, mutationState);
   }
 
-  async deleteManyMutation(ids, context, mutationState) {
+  async deleteManyMutation(ids: IdType[], context: KeystoneContext, mutationState?: MutationState) {
     const operation = 'delete';
     const gqlName = this.gqlNames.deleteManyMutationName;
 
@@ -794,7 +960,7 @@ export class List {
       itemIds: ids,
     });
 
-    const existingItems = await this.getAccessControlledItems(ids, access);
+    const existingItems = (await this.getAccessControlledItems(ids, access)) as any[];
 
     if (this.adapter.parentAdapter.provider === 'sqlite') {
       // We perform these operations sequentially as a workaround for a connection
@@ -811,7 +977,11 @@ export class List {
     }
   }
 
-  async _deleteSingle(existingItem, context, mutationState) {
+  async _deleteSingle(
+    existingItem: { id: IdType } & Record<string, any>,
+    context: KeystoneContext,
+    mutationState?: MutationState
+  ) {
     const operation = 'delete';
 
     return await this._nestedMutation(mutationState, async () => {
@@ -829,7 +999,7 @@ export class List {
   }
 
   // Methods called from ListCRUDProvider
-  getGqlTypes({ schemaName }) {
+  getGqlTypes({ schemaName }: { schemaName: string }) {
     const schemaAccess = this.access[schemaName];
     const types = [];
 
@@ -918,7 +1088,7 @@ export class List {
     return types;
   }
 
-  getGqlQueries({ schemaName }) {
+  getGqlQueries({ schemaName }: { schemaName: string }): string[] {
     const schemaAccess = this.access[schemaName];
     // All the auxiliary queries the fields want to add
     const queries = flatten(this.fields.map(field => field.getGqlAuxQueries()));
@@ -952,7 +1122,7 @@ export class List {
     return queries;
   }
 
-  getGqlMutations({ schemaName }) {
+  getGqlMutations({ schemaName }: { schemaName: string }) {
     const schemaAccess = this.access[schemaName];
     const mutations = [];
 
@@ -1013,7 +1183,7 @@ export class List {
     return mutations;
   }
 
-  gqlAuxFieldResolvers({ schemaName }) {
+  gqlAuxFieldResolvers({ schemaName }: { schemaName: string }): Record<string, any> {
     const schemaAccess = this.access[schemaName];
     if (schemaAccess.read || schemaAccess.create || schemaAccess.update || schemaAccess.delete) {
       return objMerge(this.fields.map(field => field.gqlAuxFieldResolvers({ schemaName })));
@@ -1021,7 +1191,7 @@ export class List {
     return {};
   }
 
-  gqlFieldResolvers({ schemaName }) {
+  gqlFieldResolvers({ schemaName }: { schemaName: string }): Record<string, any> {
     const schemaAccess = this.access[schemaName];
     if (!schemaAccess.read) {
       return {};
@@ -1041,14 +1211,14 @@ export class List {
     };
   }
 
-  gqlAuxQueryResolvers() {
+  gqlAuxQueryResolvers(): Record<string, any> {
     // TODO: Obey the same ACL rules based on parent type
     return objMerge(this.fields.map(field => field.gqlAuxQueryResolvers()));
   }
 
-  gqlQueryResolvers({ schemaName }) {
+  gqlQueryResolvers({ schemaName }: { schemaName: string }) {
     const schemaAccess = this.access[schemaName];
-    let resolvers = {};
+    let resolvers: Record<string, GraphQLResolver> = {};
 
     // If set to false, we can confidently remove these resolvers entirely from
     // the graphql schema
@@ -1068,9 +1238,9 @@ export class List {
     return resolvers;
   }
 
-  gqlMutationResolvers({ schemaName }) {
+  gqlMutationResolvers({ schemaName }: { schemaName: string }) {
     const schemaAccess = this.access[schemaName];
-    const mutationResolvers = {};
+    const mutationResolvers: Record<string, GraphQLResolver> = {};
 
     const createFields = this.getFieldsWithAccess({ schemaName, access: 'create' });
     if (schemaAccess.create && createFields.length) {

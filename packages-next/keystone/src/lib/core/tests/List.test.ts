@@ -1,26 +1,34 @@
 import { gql } from 'apollo-server-express';
 import { print } from 'graphql/language/printer';
 import { text, relationship } from '@keystone-next/fields';
+import { BaseListConfig, KeystoneContext } from '@keystone-next/types';
+import { PrismaAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { List } from '../ListTypes';
-import { AccessDeniedError } from '../ListTypes/graphqlErrors.ts';
+import { AccessDeniedError } from '../ListTypes/graphqlErrors';
 
-const Relationship = relationship().type;
+const Relationship = relationship({ ref: '' }).type;
 const Text = text().type;
 
-const context = {
+const context = ({
   getListAccessControlForUser: () => true,
-  getFieldAccessControlForUser: (access, listKey, fieldPath, originalInput, existingItem) =>
-    !(existingItem && existingItem.makeFalse && fieldPath === 'name'),
+  getFieldAccessControlForUser: (
+    access: any,
+    listKey: string,
+    fieldPath: string,
+    originalInput: any,
+    existingItem: any
+  ) => !(existingItem && existingItem.makeFalse && fieldPath === 'name'),
   getAuthAccessControlForUser: () => true,
-};
+} as unknown) as KeystoneContext;
 
 // Convert a gql field into a normalised format for comparison.
 // Needs to be wrapped in a mock type for gql to correctly parse it.
-const normalise = s => print(gql(`type t { ${s} }`));
+const normalise = (s: string) => print(gql(`type t { ${s} }`));
 
-const getListByKey = listKey => {
+const getListByKey = (listKey: string) => {
   if (listKey === 'Other') {
-    return {
+    return ({
+      // @ts-ignore
       gqlNames: {
         outputTypeName: 'Other',
         createInputName: 'createOther',
@@ -33,11 +41,14 @@ const getListByKey = listKey => {
           read: true,
         },
       },
-    };
+    } as unknown) as List;
   }
 };
 
 class MockFieldImplementation {
+  access: any;
+  config: any;
+  hooks: any;
   constructor() {
     this.access = {
       public: {
@@ -80,7 +91,7 @@ class MockFieldImplementation {
   getDefaultValue() {
     return;
   }
-  async resolveInput({ resolvedData }) {
+  async resolveInput({ resolvedData }: { resolvedData: { id: any } }) {
     return resolvedData.id;
   }
   async validateInput() {}
@@ -101,7 +112,10 @@ const MockIdType = {
 
 class MockListAdapter {
   name = 'mock';
-  constructor(parentAdapter) {
+  parentAdapter: any;
+  index: number;
+  items: Record<number, Record<string, any> | undefined>;
+  constructor(parentAdapter: any) {
     this.parentAdapter = parentAdapter;
     this.index = 3;
     this.items = {
@@ -111,7 +125,7 @@ class MockListAdapter {
     };
   }
   newFieldAdapter = () => new MockFieldAdapter();
-  create = async item => {
+  create = async (item: Record<string, any>) => {
     this.items[this.index] = {
       ...item,
       index: this.index,
@@ -119,24 +133,28 @@ class MockListAdapter {
     this.index += 1;
     return this.items[this.index - 1];
   };
-  delete = async id => {
+  delete = async (id: number) => {
     this.items[id] = undefined;
   };
-  itemsQuery = async ({ where: { id_in: ids, id, id_not_in } }, { meta = false } = {}) => {
+  itemsQuery = async ({ where: { id_in: ids, id, id_not_in } }: any, { meta = false } = {}) => {
     if (meta) {
       return {
         count: (id !== undefined
           ? [this.items[id]]
-          : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i])
+          : ids
+              .filter((i: number) => !id_not_in || !id_not_in.includes(i))
+              .map((i: number) => this.items[i])
         ).length,
       };
     } else {
       return id !== undefined
         ? [this.items[id]]
-        : ids.filter(i => !id_not_in || !id_not_in.includes(i)).map(i => this.items[i]);
+        : ids
+            .filter((i: number) => !id_not_in || !id_not_in.includes(i))
+            .map((i: number) => this.items[i]);
     }
   };
-  update = (id, item) => {
+  update = (id: number, item: Record<string, any>) => {
     this.items[id] = { ...this.items[id], ...item };
     return this.items[id];
   };
@@ -149,7 +167,7 @@ class MockAdapter {
 
 const listExtras = () => ({
   getListByKey,
-  adapter: new MockAdapter(),
+  adapter: (new MockAdapter() as unknown) as PrismaAdapter,
   schemaNames: ['public'],
 });
 
@@ -164,8 +182,12 @@ const config = {
   },
 };
 
-const setup = extraConfig => {
-  const list = new List('Test', { ...config, ...extraConfig }, listExtras());
+const setup = (extraConfig?: Record<string, any>) => {
+  const list = new List(
+    'Test',
+    ({ ...config, ...extraConfig } as unknown) as BaseListConfig,
+    listExtras()
+  );
   list.initFields();
   return list;
 };
@@ -179,7 +201,9 @@ describe('new List()', () => {
   });
 
   test('new List() - Plural throws error', () => {
-    expect(() => new List('Tests', config, listExtras())).toThrow(Error);
+    expect(() => new List('Tests', (config as unknown) as BaseListConfig, listExtras())).toThrow(
+      Error
+    );
   });
 
   test('new List() - config', () => {
@@ -259,7 +283,11 @@ describe('new List()', () => {
     expect(list.fieldsByPath['hidden']).toBeInstanceOf(Text.implementation);
     expect(list.fieldsByPath['writeOnce']).toBeInstanceOf(Text.implementation);
 
-    const idOnlyList = new List('NoField', { fields: { id: { type: MockIdType } } }, listExtras());
+    const idOnlyList = new List(
+      'NoField',
+      { fields: { id: { type: MockIdType } }, access: {} },
+      listExtras()
+    );
     idOnlyList.initFields();
     expect(idOnlyList.fields).toHaveLength(1);
     expect(list.fields[0]).toBeInstanceOf(MockIdType.implementation);
@@ -672,8 +700,12 @@ test('checkListAccess', async () => {
 
   const newContext = {
     ...context,
-    getListAccessControlForUser: (access, listKey, originalInput, operation) =>
-      operation === 'update',
+    getListAccessControlForUser: (
+      access: any,
+      listKey: string,
+      originalInput: any,
+      operation: string
+    ) => operation === 'update',
   };
   await expect(
     list.checkListAccess(newContext, originalInput, 'update', { gqlName: 'testing' })
@@ -828,7 +860,7 @@ test(`gqlQueryResolvers`, () => {
 
 test('listQuery', async () => {
   const list = setup();
-  expect(await list.listQuery({ where: { id: 1 } }, context, 'testing')).toEqual([
+  expect(await list.listQuery({ where: { id: 1 } }, context, 'testing', undefined)).toEqual([
     { name: 'b', email: 'b@example.com', id: 1 },
   ]);
 });
@@ -836,21 +868,23 @@ test('listQuery', async () => {
 test('listQueryMeta', async () => {
   const list = setup();
   expect(
-    await (await list.listQueryMeta({ where: { id: 1 } }, context, 'testing')).getCount()
+    await (await list.listQueryMeta({ where: { id: 1 } }, context, 'testing', undefined)).getCount()
   ).toEqual(1);
   expect(
-    await (await list.listQueryMeta({ where: { id_in: [1, 2] } }, context, 'testing')).getCount()
+    await (
+      await list.listQueryMeta({ where: { id_in: [1, 2] } }, context, 'testing', undefined)
+    ).getCount()
   ).toEqual(2);
 });
 
 test('itemQuery', async () => {
   const list = setup();
-  expect(await list.itemQuery({ where: { id: 0 } }, context)).toEqual({
+  expect(await list.itemQuery({ where: { id: '0' } }, context)).toEqual({
     name: 'a',
     email: 'a@example.com',
     id: 0,
   });
-  await expect(list.itemQuery({ where: { id: 4 } }, context)).rejects.toThrow(AccessDeniedError);
+  await expect(list.itemQuery({ where: { id: '4' } }, context)).rejects.toThrow(AccessDeniedError);
 });
 
 describe(`gqlMutationResolvers`, () => {
@@ -969,8 +1003,9 @@ describe('List Hooks', () => {
     test('provides the expected list API', () => {
       return Promise.all(
         [
-          list => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
-          list => list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
+          (list: List) => list.createMutation({ name: 'test', email: 'test@example.com' }, context),
+          (list: List) =>
+            list.updateMutation(1, { name: 'update', email: 'update@example.com' }, context),
         ].map(async action => {
           const hooks = {
             resolveInput: jest.fn(({ resolvedData }) => resolvedData),
@@ -982,6 +1017,7 @@ describe('List Hooks', () => {
           await action(list);
 
           Object.keys(hooks).forEach(hook => {
+            // @ts-ignore
             expect(hooks[hook]).toHaveBeenCalledWith(expect.objectContaining({}));
           });
         })
@@ -1000,6 +1036,7 @@ describe('List Hooks', () => {
       await list.deleteMutation(1, context);
 
       Object.keys(hooks).forEach(hook => {
+        // @ts-ignore
         expect(hooks[hook]).toHaveBeenCalledWith(expect.objectContaining({}));
       });
     });

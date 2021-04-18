@@ -19,10 +19,16 @@ export type BaseListConfig = {
   access: any;
   queryLimits?: { maxResults?: number };
   schemaDoc?: string;
+  adminDoc?: string;
   listQueryName?: string;
   itemQueryName?: string;
+  label?: string;
+  singular?: string;
+  plural?: string;
+  path?: string;
   hooks?: Record<string, any>;
   adapterConfig?: { searchField?: string };
+  cacheHint?: any;
 };
 
 // TODO: This is only a partial typing of the core Keystone class.
@@ -59,7 +65,8 @@ export type BaseKeystoneList = {
     path: string;
   };
   gqlNames: GqlNames;
-  initFields: () => {};
+
+  initFields: () => void;
   listQuery(
     args: BaseGeneratedListTypes['args']['listQuery'],
     context: KeystoneContext,
@@ -73,9 +80,9 @@ export type BaseKeystoneList = {
     gqlName?: string,
     info?: any,
     from?: any
-  ): {
+  ): Promise<{
     getCount: () => Promise<number>;
-  };
+  }>;
   itemQuery(
     args: { where: { id: string } },
     context: KeystoneContext,

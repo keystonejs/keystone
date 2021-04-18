@@ -7,10 +7,11 @@ import { serializeError } from 'serialize-error';
 import StackUtils from 'stack-utils';
 import cuid from 'cuid';
 import { omit } from '@keystone-next/utils-legacy';
+import { GraphQLError, GraphQLFormattedError } from 'graphql';
 
 const stackUtil = new StackUtils({ cwd: process.cwd(), internals: StackUtils.nodeInternals() });
 
-const cleanError = maybeError => {
+const cleanError = (maybeError: any) => {
   if (!maybeError.stack) {
     return maybeError;
   }
@@ -23,7 +24,7 @@ const NestedError = createError('NestedError', {
   options: { showPath: true },
 });
 
-const safeFormatError = error => {
+const safeFormatError = (error: GraphQLError) => {
   const formattedError = _formatError(error, true);
   if (formattedError) {
     return cleanError(formattedError);
@@ -31,7 +32,7 @@ const safeFormatError = error => {
   return serializeError(cleanError(error));
 };
 
-const duplicateError = (error, ignoreKeys = []) => {
+const duplicateError = (error: any, ignoreKeys: string[] = []) => {
   const newError = new error.constructor(error.message);
   if (error.stack) {
     if (isApolloErrorInstance(error)) {
@@ -46,9 +47,9 @@ const duplicateError = (error, ignoreKeys = []) => {
   return Object.assign(newError, omit(error, ignoreKeys));
 };
 
-const flattenNestedErrors = error =>
+const flattenNestedErrors = (error: any) =>
   (error.errors || []).reduce(
-    (errors, nestedError) => [
+    (errors: any[], nestedError: Error) => [
       ...errors,
       ...[duplicateError(nestedError, ['errors']), ...flattenNestedErrors(nestedError)].map(
         flattenedError => {
@@ -63,12 +64,13 @@ const flattenNestedErrors = error =>
     []
   );
 
-export const formatError = error => {
-  const { originalError } = error;
+export const formatError = (error: GraphQLError) => {
+  const { originalError }: { originalError: any } = error;
   if (originalError && !originalError.path) {
     originalError.path = error.path;
   }
   // For correlating user error reports with logs
+  // @ts-ignore
   error.uid = cuid();
 
   try {
@@ -84,12 +86,13 @@ export const formatError = error => {
     } else {
       formattedError = safeFormatError(error);
     }
-
+    // @ts-ignore
     if (error.uid) {
+      // @ts-ignore
       formattedError.uid = error.uid;
     }
 
-    return formattedError;
+    return formattedError as GraphQLFormattedError;
   } catch (formatErrorError) {
     // NOTE: We don't log again here as we assume the earlier try/catch
     // correctly logged

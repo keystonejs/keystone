@@ -22,9 +22,9 @@ export const opToType = {
   delete: 'mutation',
 } as const;
 
-export const mapToFields = (
-  fields: Implementation<any>[],
-  action: (f: Implementation<any>) => Promise<unknown>
+export const mapToFields = <F extends Implementation<any>>(
+  fields: F[],
+  action: (f: F) => Promise<unknown>
 ) =>
   resolveAllKeys(arrayToObject(fields, 'path', action)).catch(error => {
     if (!error.errors) {
