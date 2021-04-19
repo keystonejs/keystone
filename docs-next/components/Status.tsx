@@ -29,11 +29,19 @@ type StatusProps = {
 };
 export function Status({ look }: StatusProps) {
   const status = statusMap[look];
-  const styles = `
-    rounded font-mono text-sm py-1 px-2
-    bg-${status.color}-100
-    text-${status.color}-700
-  `;
 
-  return <span className={styles}>{status.label}</span>;
+  return (
+    <span
+      css={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.875rem',
+        borderRadius: '0.25rem',
+        padding: '0.25rem 0.5rem',
+        background: `var(--${status.color}-100)`,
+        color: `var(--${status.color}-700)`,
+      }}
+    >
+      {status.label}
+    </span>
+  );
 }

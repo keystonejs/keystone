@@ -10,11 +10,8 @@ type IdType = any;
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const createInitialData = async (context: KeystoneContext) => {
-  type T = {
-    data: { createUsers: { id: IdType }[] };
-    errors: unknown;
-  };
-  const { data, errors }: T = await context.executeGraphQL({
+  type T = { createUsers: { id: IdType }[] };
+  const data = (await context.graphql.run({
     query: `
       mutation {
         createUsers(data: [
@@ -23,28 +20,20 @@ const createInitialData = async (context: KeystoneContext) => {
           { data: { name: "${sampleOne(alphanumGenerator)}" } }
         ]) { id }
       }`,
-  });
-  expect(errors).toBe(undefined);
+  })) as T;
   return { users: data.createUsers };
 };
 
 const createUserAndFriend = async (context: KeystoneContext) => {
-  type T = {
-    data: { createUser: { id: IdType; friends: { id: IdType; friendOf: { id: IdType } }[] } };
-    errors: unknown;
-  };
-  const {
-    data: { createUser },
-    errors,
-  }: T = await context.executeGraphQL({
+  type T = { createUser: { id: IdType; friends: { id: IdType; friendOf: { id: IdType } }[] } };
+  const { createUser } = (await context.graphql.run({
     query: `
       mutation {
         createUser(data: {
           friends: { create: [{ name: "${sampleOne(alphanumGenerator)}" }] }
         }) { id friends { id friendOf { id }} }
       }`,
-  });
-  expect(errors).toBe(undefined);
+  })) as T;
   const { User, Friend } = await getUserAndFriend(context, createUser.id, createUser.friends[0].id);
 
   // Sanity check the links are setup correctly
@@ -61,25 +50,24 @@ const getUserAndFriend = async (context: KeystoneContext, userId: IdType, friend
       Friend: { id: IdType; friendOf: { id: IdType }[] };
     };
   };
-  const result: T = await context.executeGraphQL({
+  const result = (await context.graphql.raw({
     query: `
       {
         User(where: { id: "${userId}"} ) { id friends { id } }
         Friend: User(where: { id: "${friendId}"} ) { id friendOf { id } }
       }`,
-  });
+  })) as T;
   return result.data;
 };
 
 const createReadData = async (context: KeystoneContext) => {
   // create locations [A, A, B, B, C, C];
-  const { data, errors } = await context.executeGraphQL({
+  const data = await context.graphql.run({
     query: `mutation create($users: [UsersCreateInput]) { createUsers(data: $users) { id name } }`,
     variables: {
       users: ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D', 'E'].map(name => ({ data: { name } })),
     },
   });
-  expect(errors).toBe(undefined);
   const { createUsers } = data;
   await Promise.all(
     [
@@ -94,13 +82,12 @@ const createReadData = async (context: KeystoneContext) => {
       [], //  -> []
     ].map(async (locationIdxs, j) => {
       const ids = locationIdxs.map(i => ({ id: createUsers[i].id }));
-      const { errors } = await context.executeGraphQL({
+      await context.graphql.run({
         query: `mutation update($friends: [UserWhereUniqueInput], $user: ID!) { updateUser(id: $user data: {
     friends: { connect: $friends }
   }) { id friends { name }}}`,
         variables: { friends: ids, user: createUsers[j].id },
       });
-      expect(errors).toBe(undefined);
     })
   );
 };
@@ -136,10 +123,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 3],
                 ['D', 0],
               ].map(async ([name, count]) => {
-                const { data, errors } = await context.executeGraphQL({
+                const data = await context.graphql.run({
                   query: `{ allUsers(where: { friends_some: { name: "${name}"}}) { id }}`,
                 });
-                expect(errors).toBe(undefined);
                 expect(data.allUsers.length).toEqual(count);
               })
             );
@@ -156,10 +142,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 6],
                 ['D', 9],
               ].map(async ([name, count]) => {
-                const { data, errors } = await context.executeGraphQL({
+                const data = await context.graphql.run({
                   query: `{ allUsers(where: { friends_none: { name: "${name}"}}) { id }}`,
                 });
-                expect(errors).toBe(undefined);
                 expect(data.allUsers.length).toEqual(count);
               })
             );
@@ -176,10 +161,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 1],
                 ['D', 1],
               ].map(async ([name, count]) => {
-                const { data, errors } = await context.executeGraphQL({
+                const data = await context.graphql.run({
                   query: `{ allUsers(where: { friends_every: { name: "${name}"}}) { id }}`,
                 });
-                expect(errors).toBe(undefined);
                 expect(data.allUsers.length).toEqual(count);
               })
             );
@@ -192,14 +176,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'Count',
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 {
                   _allUsersMeta { count }
                 }
             `,
             });
-            expect(errors).toBe(undefined);
             expect(data._allUsersMeta.count).toEqual(3);
           })
         );
@@ -211,7 +194,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             const { users } = await createInitialData(context);
             const friend = users[0];
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   createUser(data: {
@@ -220,7 +203,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
             expect(data.createUser.friends[0].id.toString()).toEqual(friend.id);
 
             const { User, Friend } = await getUserAndFriend(context, data.createUser.id, friend.id);
@@ -235,7 +217,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'With create',
           runner(setupKeystone, async ({ context }) => {
             const locationName = sampleOne(alphanumGenerator);
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   createUser(data: {
@@ -244,7 +226,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
 
             const { User, Friend } = await getUserAndFriend(
               context,
@@ -265,7 +246,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const user = users[0];
             const friendName = sampleOne(alphanumGenerator);
 
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   createUser(data: {
@@ -274,7 +255,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
 
             const { User, Friend } = await getUserAndFriend(
               context,
@@ -285,13 +265,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(User.friends.map(({ id }) => id.toString())).toEqual([Friend.id.toString()]);
             expect(Friend.friendOf.length).toEqual(2);
 
-            const {
-              data: { allUsers },
-              errors: errors2,
-            } = await context.executeGraphQL({
+            const { allUsers } = await context.graphql.run({
               query: `{ allUsers { id friends { id friendOf { id } } } }`,
             });
-            expect(errors2).toBe(undefined);
             // Both companies should have a location, and the location should have two companies
             const linkedUsers = allUsers.filter(
               ({ id }: { id: IdType }) => id === user.id || id === User.id
@@ -311,7 +287,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             const friendName = sampleOne(alphanumGenerator);
             const userName = sampleOne(alphanumGenerator);
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   createUser(data: {
@@ -320,7 +296,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
 
             const { User, Friend } = await getUserAndFriend(
               context,
@@ -333,13 +308,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(Friend.friendOf.length).toEqual(2);
 
             // Both companies should have a location, and the location should have two companies
-            const {
-              data: { allUsers },
-              errors: errors2,
-            } = await context.executeGraphQL({
+            const { allUsers } = await context.graphql.run({
               query: `{ allUsers { id friends { id friendOf { id } } } }`,
             });
-            expect(errors2).toBe(undefined);
             allUsers.forEach(({ id, friends }: { id: IdType; friends: any[] }) => {
               if (id === Friend.id) {
                 expect(friends.map(({ id }: { id: IdType }) => id)).toEqual([]);
@@ -357,7 +328,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         test(
           'With null',
           runner(setupKeystone, async ({ context }) => {
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   createUser(data: {
@@ -366,7 +337,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
 
             // Friends should be empty
             expect(data.createUser.friends).toHaveLength(0);
@@ -386,7 +356,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(user.friends).not.toBe(expect.anything());
             expect(friend.friendOf).not.toBe(expect.anything());
 
-            const { errors } = await context.executeGraphQL({
+            await context.graphql.run({
               query: `
                 mutation {
                   updateUser(
@@ -395,7 +365,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   ) { id friends { id } } }
             `,
             });
-            expect(errors).toBe(undefined);
 
             const { User, Friend } = await getUserAndFriend(context, user.id, friend.id);
             // Everything should now be connected
@@ -410,7 +379,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { users } = await createInitialData(context);
             let user = users[0];
             const locationName = sampleOne(alphanumGenerator);
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   updateUser(
@@ -420,7 +389,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
 
             const { User, Friend } = await getUserAndFriend(
               context,
@@ -441,7 +409,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   updateUser(
@@ -451,7 +419,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
             expect(data.updateUser.id).toEqual(user.id);
             expect(data.updateUser.friends).toEqual([]);
 
@@ -469,7 +436,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   updateUser(
@@ -479,7 +446,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
             expect(data.updateUser.id).toEqual(user.id);
             expect(data.updateUser.friends).toEqual([]);
 
@@ -497,7 +463,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query with a null operation
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   updateUser(
@@ -507,7 +473,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
 
             // Check that the friends are still there
             expect(data.updateUser.id).toEqual(user.id);
@@ -525,10 +490,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { user, friend } = await createUserAndFriend(context);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `mutation { deleteUser(id: "${user.id}") { id } } `,
             });
-            expect(errors).toBe(undefined);
             expect(data.deleteUser.id).toBe(user.id);
 
             // Check the link has been broken

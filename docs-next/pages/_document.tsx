@@ -1,5 +1,6 @@
-import React from 'react';
+/** @jsx jsx */
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document';
+import { jsx } from '@keystone-ui/core';
 
 import { GA_TRACKING_ID } from '../lib/analytics';
 
@@ -33,6 +34,11 @@ class MyDocument extends Document {
           <meta name="msapplication-config" content="/browserconfig.xml" />
           <meta name="theme-color" content="#ffffff" />
 
+          <link
+            href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap"
+            rel="stylesheet"
+          />
+
           <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} />
           <script
             dangerouslySetInnerHTML={{
@@ -46,7 +52,12 @@ class MyDocument extends Document {
             }}
           />
         </Head>
-        <body className="antialiased">
+        <body
+          css={{
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale',
+          }}
+        >
           <Main />
           <NextScript />
         </body>

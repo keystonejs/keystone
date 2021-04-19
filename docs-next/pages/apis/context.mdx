@@ -50,7 +50,6 @@ context = {
 
   // Deprecated
   gqlNames,
-  executeGraphQL,
   keystone,
 };
 ```
@@ -129,8 +128,6 @@ The following properties are deprecated and should not be used.
 They will be removed in future releases.
 
 `gqlNames`: A function which takes a `listKey` and returns an object containing the GraphQL query, mutation and type names related to that list.
-
-`executeGraphQL`: This function is identical to `context.graphql.raw`, which is the preferred API to use.
 
 `keystone`: An object representing the internal state of the system.
 

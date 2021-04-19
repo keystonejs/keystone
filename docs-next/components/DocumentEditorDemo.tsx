@@ -1,26 +1,25 @@
 /** @jsx jsx */
+import { getInitialPropsValue } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/initial-values';
+import { FormValueContent } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/form';
+import { useKeyDownRef } from '@keystone-next/fields-document/src/DocumentEditor/soft-breaks';
 import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { Global, jsx, useTheme } from '@keystone-ui/core';
-
+import { Toolbar } from '@keystone-next/fields-document/src/DocumentEditor/Toolbar';
+import { DocumentFeatures } from '@keystone-next/fields-document/views';
 import {
   createDocumentEditor,
   DocumentEditorEditable,
   DocumentEditorProvider,
   Editor,
 } from '@keystone-next/fields-document/src/DocumentEditor';
-import { Toolbar } from '@keystone-next/fields-document/src/DocumentEditor/Toolbar';
-import { useKeyDownRef } from '@keystone-next/fields-document/src/DocumentEditor/soft-breaks';
-import { FormValueContent } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/form';
-import { getInitialPropsValue } from '@keystone-next/fields-document/src/DocumentEditor/component-blocks/initial-values';
-import { DocumentFeatures } from '@keystone-next/fields-document/views';
 import {
   ComponentBlock,
   fields,
   InferRenderersForComponentBlocks,
 } from '@keystone-next/fields-document/component-blocks';
+import { Global, jsx } from '@keystone-ui/core';
 
-import { initialContent } from '../lib/initialDocumentDemoContent';
 import { componentBlocks as componentBlocksInExampleProject } from '../../examples-next/basic/admin/fieldViews/Content';
+import { initialContent } from '../lib/initialDocumentDemoContent';
 import { Code } from './Code';
 
 const headingLevels = ['1', '2', '3', '4', '5', '6'] as const;
@@ -286,8 +285,6 @@ export function DocumentFeaturesFormAndCode() {
 
 export const DocumentEditorDemo = () => {
   const [value, setValue] = useState(initialContent as any);
-
-  const theme = useTheme();
   const { documentFeatures } = useContext(DocumentFeaturesContext);
 
   const isShiftPressedRef = useKeyDownRef('Shift');
@@ -334,9 +331,9 @@ export const DocumentEditorDemo = () => {
       />
       <div
         css={{
-          marginTop: theme.spacing.xlarge,
-          marginBottom: theme.spacing.xlarge,
-          borderBottom: `1px ${theme.colors.border} solid`,
+          marginTop: 'var(--space-large)',
+          marginBottom: 'var(--space-large)',
+          borderBottom: `1px var(--gray-200) solid`,
         }}
       >
         <DocumentEditorProvider
@@ -356,7 +353,7 @@ export const DocumentEditorDemo = () => {
           <DocumentEditorEditable />
         </DocumentEditorProvider>
       </div>
-      <details css={{ marginBottom: theme.spacing.xlarge }}>
+      <details css={{ marginBottom: 'var(--space-large)' }}>
         <summary>View Document Structure</summary>
         <pre>{JSON.stringify(value, null, 2)}</pre>
       </details>

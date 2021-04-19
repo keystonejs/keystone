@@ -2,7 +2,6 @@
 '@keystone-next/cloudinary': major
 '@keystone-next/fields': major
 '@keystone-next/fields-document': major
-'@keystone-next/keystone-legacy': major
 '@keystone-next/keystone': major
 ---
 
