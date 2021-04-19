@@ -25,6 +25,6 @@ export async function findMatchingIdentity(
   if (code) {
     return { success: false, code };
   } else {
-    return { success: true, item: items[0] };
+    return { success: true, item: items[0] as any };
   }
 }
