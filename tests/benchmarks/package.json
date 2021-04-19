@@ -6,7 +6,7 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.13.1"
   },
   "scripts": {
     "go": "node fixtures/index.js"
