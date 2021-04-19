@@ -70,6 +70,9 @@ export type KeystoneListsAPI<
 };
 
 type ResolveFields = {
+  /**
+   * @default 'id'
+   */
   readonly query?: string;
   /**
    * @deprecated
