@@ -54,7 +54,7 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
           const { Product, User } = context.lists;
 
           // Create some products: FIXME: createMany
-          const product1 = await Product.createOne({
+          const product1 = (await Product.createOne({
             data: {
               name: 'test product 1',
               description: 'TEST 1',
@@ -63,8 +63,8 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
               photo: { create: { altText: 'product 1' } },
             },
             query: 'id name description price photo { id }',
-          });
-          const product2 = await Product.createOne({
+          }))!;
+          const product2 = (await Product.createOne({
             data: {
               name: 'test product 2',
               description: 'TEST 2',
@@ -73,15 +73,15 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
               photo: { create: { altText: 'product 2' } },
             },
             query: 'id name description price photo { id }',
-          });
+          }))!;
 
           // Create some users
-          const user1 = await User.createOne({
+          const user1 = (await User.createOne({
             data: { name: 'Test User 1', email: 'test1@example.com' },
-          });
-          const user2 = await User.createOne({
+          }))!;
+          const user2 = (await User.createOne({
             data: { name: 'Test User 2', email: 'test2@example.com' },
-          });
+          }))!;
 
           // Add some products to some carts
           const q1 = asUser(context, user1.id).graphql.raw;
@@ -197,14 +197,14 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
         runner(setupKeystone, async ({ context }) => {
           const { User, Product } = context.lists;
           // Setup user
-          const user = await User.createOne({
+          const user = (await User.createOne({
             data: { name: 'Test User', email: 'test@example.com' },
-          });
+          }))!;
 
           // Setup product
-          const product = await Product.createOne({
+          const product = (await Product.createOne({
             data: { name: 'test product', status: 'DRAFT' },
-          });
+          }))!;
 
           // Add product to cart
           const { data, errors } = await asUser(context, user.id).graphql.raw({
@@ -232,9 +232,9 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
           });
 
           // Add product to cart
-          const { data, errors } = await asUser(context, user.id).graphql.raw({
+          const { data, errors } = await asUser(context, user!.id).graphql.raw({
             query,
-            variables: { productId: product.id },
+            variables: { productId: product!.id },
           });
           expect(data).toEqual({ addToCart: null });
           expect(errors).toHaveLength(1);
@@ -257,15 +257,15 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
           });
 
           // Add product to cart
-          const { data, errors } = await asUser(context, user.id).graphql.raw({
+          const { data, errors } = await asUser(context, user!.id).graphql.raw({
             query,
-            variables: { productId: product.id },
+            variables: { productId: product!.id },
           });
           console.log(errors);
           expect(errors).toBe(undefined);
           expect(data!.addToCart.quantity).toEqual(1);
-          expect(data!.addToCart.product.id).toEqual(product.id);
-          expect(data!.addToCart.user.id).toEqual(user.id);
+          expect(data!.addToCart.product.id).toEqual(product!.id);
+          expect(data!.addToCart.user.id).toEqual(user!.id);
         })
       );
 
@@ -274,14 +274,14 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
         runner(setupKeystone, async ({ context }) => {
           const { User, Product } = context.lists;
           // Setup user
-          const user = await User.createOne({
+          const user = (await User.createOne({
             data: { name: 'Test User', email: 'test@example.com' },
-          });
+          }))!;
 
           // Setup product
-          const product = await Product.createOne({
+          const product = (await Product.createOne({
             data: { name: 'test product', status: 'AVAILABLE' },
-          });
+          }))!;
 
           // Add product to cart
           await asUser(context, user.id).graphql.raw({
@@ -308,17 +308,17 @@ multiAdapterRunners('postgresql').map(({ runner }) =>
         runner(setupKeystone, async ({ context }) => {
           const { User, Product } = context.lists;
           // Setup user
-          const user = await User.createOne({
+          const user = (await User.createOne({
             data: { name: 'Test User', email: 'test@example.com' },
-          });
+          }))!;
 
           // Setup products
-          const product1 = await Product.createOne({
+          const product1 = (await Product.createOne({
             data: { name: 'test product 1', status: 'AVAILABLE' },
-          });
-          const product2 = await Product.createOne({
+          }))!;
+          const product2 = (await Product.createOne({
             data: { name: 'test product 2', status: 'AVAILABLE' },
-          });
+          }))!;
 
           // Add products to cart
           const q = asUser(context, user.id).graphql.raw;
