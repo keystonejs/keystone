@@ -22,9 +22,9 @@ export type FieldTypeFunc<
   CreateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
-> = (data: FieldData) => FieldType<TDBField, CreateArg, UpdateArg, FilterArg>;
+> = (data: FieldData) => NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg>;
 
-export type FieldType<
+export type NextFieldType<
   TDBField extends DBField = DBField,
   CreateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
@@ -85,14 +85,15 @@ export type EnumDBField<Value extends string, Mode extends 'required' | 'many' |
 
 export type NoDBField = { kind: 'none' };
 
-export type RealDBField =
+export type ScalarishDBField =
   | ScalarDBField<keyof ScalarPrismaTypes, 'required' | 'many' | 'optional'>
-  | RelationDBField<'many' | 'one'>
   | EnumDBField<string, 'required' | 'many' | 'optional'>;
+
+export type RealDBField = ScalarishDBField | RelationDBField<'many' | 'one'>;
 
 type MultiDBField<Fields extends Record<string, RealDBField>> = { kind: 'multi'; fields: Fields };
 
-export type DBField = RealDBField | NoDBField | MultiDBField<Record<string, RealDBField>>;
+export type DBField = RealDBField | NoDBField | MultiDBField<Record<string, ScalarishDBField>>;
 
 type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBField<
   infer Scalar,
@@ -181,7 +182,7 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
       'value',
       KeystoneContext
     >;
-  }): FieldType<TDBField, CreateArg, UpdateArg, FilterArg> {
+  }): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg> {
     return { ...stuff, dbField };
   };
 }
