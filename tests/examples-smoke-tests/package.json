@@ -2,7 +2,7 @@
   "name": "@keystonejs/examples-smoke-tests",
   "description": "A set of tests for smoke testing our examples",
   "private": true,
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
