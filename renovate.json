@@ -6,7 +6,12 @@
   "prConcurrentLimit": 0,
   "packageRules": [
     {
-      "packagePatterns": ["remark", "babel-plugin-remove-graphql-queries", "react-day-picker", "^slate"],
+      "packagePatterns": [
+        "remark",
+        "babel-plugin-remove-graphql-queries",
+        "react-day-picker",
+        "^slate"
+      ],
       "enabled": false
     },
     {
