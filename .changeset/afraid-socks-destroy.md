@@ -9,14 +9,14 @@
 "@keystone-next/website": patch
 ---
 
-Added `query` option to the Items API, replacing `resolveFields`.
+With the goal of making the Lists API (i.e `context.lists.{List}`) more intuitive to use, the `resolveFields` option has been deprecated in favor of two new methods:
 
-`resolveFields` is now reserved for passing `false` when fields should not be resolved at all.
+(1) You can specify a string of fields to return with the new `query` option, when you want to query for resolved field values (including querying relationships and virtual fields). This replaces the `resolveFields: string` use case.
 
 For example, to query a Post you would now write:
 
 ```js
-const [post] = await lists.Post.findMany({
+const [post] = await context.lists.Post.findMany({
   where: { slug },
   query: `
     title
@@ -29,11 +29,12 @@ const [post] = await lists.Post.findMany({
 });
 ```
 
-And to query for the raw data stored in the database, you would write:
+(2) Alternatively, there is a new set of APIs on `context.db.lists.{List}` which will return the unresolved item data from the database (but with read hooks applied), which can then be referenced directly or returned from a custom mutation or query in the GraphQL API to be handled by the Field resolvers. This replaces the `resolveFields: boolean` use case.
+
+For example, to query for the raw data stored in the database, you would write:
 
 ```js
-const [post] = await lists.Post.findMany({
-  where: { slug },
-  resolveFields: false,
+const [post] = await context.db.lists.Post.findMany({
+  where: { slug }
 });
 ```

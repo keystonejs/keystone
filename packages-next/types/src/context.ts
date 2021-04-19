@@ -5,6 +5,7 @@ import type { BaseGeneratedListTypes } from './utils';
 
 export type KeystoneContext = {
   req?: IncomingMessage;
+  db: { lists: KeystoneDbAPI<any> };
   lists: KeystoneListsAPI<any>;
   graphql: KeystoneGraphQLAPI<any>;
   sudo: () => KeystoneContext;
@@ -25,23 +26,26 @@ export type KeystoneContext = {
 
 // List item API
 
+// TODO: Work out whether we can generate useful return types based on the GraphQL Query
+// passed to List API functions (see `readonly Record<string, any>` below)
+
 export type KeystoneListsAPI<
   KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>
 > = {
   [Key in keyof KeystoneListsTypeInfo]: {
     findMany(
       args: KeystoneListsTypeInfo[Key]['args']['listQuery'] & ResolveFields
-    ): Promise<readonly KeystoneListsTypeInfo[Key]['backing'][]>;
+    ): Promise<readonly Record<string, any>[]>;
     findOne(
       args: { readonly where: { readonly id: string } } & ResolveFields
-    ): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    ): Promise<Record<string, any> | null>;
     count(args: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
     updateOne(
       args: {
         readonly id: string;
         readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
       } & ResolveFields
-    ): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    ): Promise<Record<string, any> | null>;
     updateMany(
       args: {
         readonly data: readonly {
@@ -49,32 +53,63 @@ export type KeystoneListsAPI<
           readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
         }[];
       } & ResolveFields
-    ): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
+    ): Promise<(Record<string, any> | null)[] | null>;
     createOne(
       args: { readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'] } & ResolveFields
-    ): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    ): Promise<Record<string, any> | null>;
     createMany(
       args: {
         readonly data: readonly { readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'] }[];
       } & ResolveFields
-    ): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
-    deleteOne(
-      args: { readonly id: string } & ResolveFields
-    ): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    ): Promise<(Record<string, any> | null)[] | null>;
+    deleteOne(args: { readonly id: string } & ResolveFields): Promise<Record<string, any> | null>;
     deleteMany(
       args: { readonly ids: readonly string[] } & ResolveFields
-    ): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
+    ): Promise<(Record<string, any> | null)[] | null>;
   };
 };
 
 type ResolveFields = {
   readonly query?: string;
   /**
-   * Note: resolveFields accepts a string for backwards compatibility, but
-   * you should now use the query option for selecting fields to return.
-   * This will be changed to only accept a boolean in a future major release.
-   * */
+   * @deprecated
+   *
+   * resolveFields has been deprecated. Please use the `query` param to query fields,
+   * or `context.db.lists.{List}` instead of passing `resolveFields: false`
+   */
   readonly resolveFields?: false | string;
+};
+
+export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>> = {
+  [Key in keyof KeystoneListsTypeInfo]: {
+    findMany(
+      args: KeystoneListsTypeInfo[Key]['args']['listQuery']
+    ): Promise<readonly KeystoneListsTypeInfo[Key]['backing'][]>;
+    findOne(args: {
+      readonly where: { readonly id: string };
+    }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    count(args: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
+    updateOne(args: {
+      readonly id: string;
+      readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
+    }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    updateMany(args: {
+      readonly data: readonly {
+        readonly id: string;
+        readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
+      }[];
+    }): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
+    createOne(args: {
+      readonly data: KeystoneListsTypeInfo[Key]['inputs']['create'];
+    }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    createMany(args: {
+      readonly data: readonly { readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'] }[];
+    }): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
+    deleteOne(args: { readonly id: string }): Promise<KeystoneListsTypeInfo[Key]['backing'] | null>;
+    deleteMany(args: {
+      readonly ids: readonly string[];
+    }): Promise<(KeystoneListsTypeInfo[Key]['backing'] | null)[] | null>;
+  };
 };
 
 // GraphQL API

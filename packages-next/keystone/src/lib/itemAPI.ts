@@ -12,6 +12,7 @@ import {
 import {
   BaseGeneratedListTypes,
   BaseKeystoneList,
+  KeystoneDbAPI,
   KeystoneListsAPI,
   KeystoneContext,
 } from '@keystone-next/types';
@@ -43,6 +44,14 @@ function defaultQueryParam(query?: string, resolveFields?: string | false) {
   return 'id';
 }
 
+/* NOTE
+ *
+ * The `resolveFields` param has been deprecated in favor of `query` (when selecting fields to
+ * query) or the new dbAPI which is available via `context.db.lists.{List}`, which replaces
+ * the previous `resolveFields: false` behaviour.
+ *
+ * We'll be removing the option to use `resolveFields` entirely in a future release.
+ */
 export function itemAPIForList(
   list: BaseKeystoneList,
   context: KeystoneContext,
@@ -134,6 +143,60 @@ export function itemAPIForList(
       } else {
         return list.deleteManyMutation(ids, context);
       }
+    },
+  };
+}
+
+export function itemDbAPIForList(
+  list: BaseKeystoneList,
+  context: KeystoneContext,
+  getArgs: ReturnType<typeof getArgsFactory>
+): KeystoneDbAPI<Record<string, BaseGeneratedListTypes>>[string] {
+  return {
+    findOne(rawArgs) {
+      if (!getArgs.findOne) throw new Error('You do not have access to this resource');
+      const args = getArgs.findOne(rawArgs) as { where: { id: string } };
+      return list.itemQuery(args, context);
+    },
+    findMany(rawArgs) {
+      if (!getArgs.findMany) throw new Error('You do not have access to this resource');
+      const args = getArgs.findMany(rawArgs);
+      return list.listQuery(args, context);
+    },
+    async count(rawArgs) {
+      if (!getArgs.count) throw new Error('You do not have access to this resource');
+      const args = getArgs.count(rawArgs!);
+      return (await list.listQueryMeta(args, context)).getCount();
+    },
+    createOne(rawArgs) {
+      if (!getArgs.createOne) throw new Error('You do not have access to this resource');
+      const { data } = getArgs.createOne(rawArgs);
+      return list.createMutation(data, context);
+    },
+    createMany(rawArgs) {
+      if (!getArgs.createMany) throw new Error('You do not have access to this resource');
+      const { data } = getArgs.createMany(rawArgs);
+      return list.createManyMutation(data, context);
+    },
+    updateOne(rawArgs) {
+      if (!getArgs.updateOne) throw new Error('You do not have access to this resource');
+      const { id, data } = getArgs.updateOne(rawArgs);
+      return list.updateMutation(id, data, context);
+    },
+    updateMany(rawArgs) {
+      if (!getArgs.updateMany) throw new Error('You do not have access to this resource');
+      const { data } = getArgs.updateMany(rawArgs);
+      return list.updateManyMutation(data, context);
+    },
+    deleteOne(rawArgs) {
+      if (!getArgs.deleteOne) throw new Error('You do not have access to this resource');
+      const { id } = getArgs.deleteOne(rawArgs);
+      return list.deleteMutation(id, context);
+    },
+    deleteMany(rawArgs) {
+      if (!getArgs.deleteMany) throw new Error('You do not have access to this resource');
+      const { ids } = getArgs.deleteMany(rawArgs);
+      return list.deleteManyMutation(ids, context);
     },
   };
 }
