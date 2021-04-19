@@ -25,9 +25,9 @@
     "@mdx-js/loader": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
     "@next/mdx": "^10.0.9",
-    "@preconstruct/next": "^2.0.0",
+    "@preconstruct/next": "^2.0.2",
     "@primer/octicons-react": "^13.0.0",
-    "@sindresorhus/slugify": "^1.1.0",
+    "@sindresorhus/slugify": "^1.1.2",
     "@types/gtag.js": "^0.0.4",
     "@types/mdx-js__react": "^1.5.3",
     "@types/react": "^17.0.3",
@@ -48,10 +48,10 @@
   },
   "devDependencies": {
     "start-server-and-test": "^1.12.1",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.4"
   },
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.13.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/docs-next"
 }

@@ -6,7 +6,7 @@
   "author": "The KeystoneJS Development Team",
   "license": "MIT",
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.13.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/tests/api-tests",
   "homepage": "https://github.com/keystonejs/keystone",

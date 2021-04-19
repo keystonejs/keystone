@@ -3,7 +3,7 @@
   "version": "13.0.0",
   "license": "MIT",
   "dependencies": {
-    "@apollo/client": "^3.3.14",
+    "@apollo/client": "^3.3.15",
     "@babel/runtime": "^7.13.10",
     "@emotion/hash": "^0.8.0",
     "@emotion/weak-memoize": "^0.2.5",
@@ -22,7 +22,7 @@
     "@keystone-ui/popover": "^2.0.1",
     "@keystone-ui/toast": "^2.0.1",
     "@keystone-ui/tooltip": "^2.0.1",
-    "@preconstruct/next": "^2.0.0",
+    "@preconstruct/next": "^2.0.2",
     "@ts-gql/schema": "^0.5.0",
     "@types/apollo-upload-client": "14.1.0",
     "@types/react": "^17.0.3",
@@ -41,7 +41,7 @@
     "tabbable": "^5.2.0"
   },
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.13.1"
   },
   "preconstruct": {
     "entrypoints": [
@@ -60,6 +60,6 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.6",
-    "@testing-library/user-event": "^13.1.1"
+    "@testing-library/user-event": "^13.1.4"
   }
 }

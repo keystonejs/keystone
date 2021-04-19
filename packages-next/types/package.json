@@ -5,7 +5,7 @@
   "main": "dist/types.cjs.js",
   "module": "dist/types.esm.js",
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.13.1"
   },
   "dependencies": {
     "@keystone-next/adapter-prisma-legacy": "^5.0.0",
