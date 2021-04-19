@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/segmented-control",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "license": "MIT",
   "main": "dist/segmented-control.cjs.js",
   "module": "dist/segmented-control.esm.js",

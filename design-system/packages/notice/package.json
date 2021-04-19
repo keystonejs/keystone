@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/notice",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "license": "MIT",
   "main": "dist/notice.cjs.js",
   "module": "dist/notice.esm.js",
@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
-    "@keystone-ui/button": "^3.0.1",
+    "@keystone-ui/button": "^4.0.0",
     "@keystone-ui/core": "^2.0.2",
-    "@keystone-ui/icons": "^2.0.1",
+    "@keystone-ui/icons": "^3.0.0",
     "react": "^17.0.2"
   },
   "engines": {

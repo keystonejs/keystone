@@ -1,5 +1,58 @@
 # @keystone-next/website
 
+## 2.0.0
+
+### Major Changes
+
+- [#5397](https://github.com/keystonejs/keystone/pull/5397) [`a5627304b`](https://github.com/keystonejs/keystone/commit/a5627304b7921a0f1484d6d08330115d0edbb45b) Thanks [@bladey](https://github.com/bladey)! - Updated Node engine version to 12.x due to 10.x reaching EOL on 2021-04-30.
+
+### Patch Changes
+
+- [#5451](https://github.com/keystonejs/keystone/pull/5451) [`9e060fe83`](https://github.com/keystonejs/keystone/commit/9e060fe83459269bc5d257f31a23c164d2283624) Thanks [@JedWatson](https://github.com/JedWatson)! - With the goal of making the Lists API (i.e `context.lists.{List}`) more intuitive to use, the `resolveFields` option has been deprecated in favor of two new methods:
+
+  (1) You can specify a string of fields to return with the new `query` option, when you want to query for resolved field values (including querying relationships and virtual fields). This replaces the `resolveFields: false` use case.
+
+  For example, to query a Post you would now write:
+
+  ```js
+  const [post] = await context.lists.Post.findMany({
+    where: { slug },
+    query: `
+      title
+      content
+      image {
+        src
+        width
+        height
+      }`,
+  });
+  ```
+
+  (2) Alternatively, there is a new set of APIs on `context.db.lists.{List}` which will return the unresolved item data from the database (but with read hooks applied), which can then be referenced directly or returned from a custom mutation or query in the GraphQL API to be handled by the Field resolvers. This replaces the `resolveFields: boolean` use case.
+
+  For example, to query for the raw data stored in the database, you would write:
+
+  ```js
+  const [post] = await context.db.lists.Post.findMany({
+    where: { slug },
+  });
+  ```
+
+* [#5467](https://github.com/keystonejs/keystone/pull/5467) [`7498fcabb`](https://github.com/keystonejs/keystone/commit/7498fcabba3ef6b411dd3bf67a20821702442ebc) Thanks [@timleslie](https://github.com/timleslie)! - Removed the deprecated `context.executeGraphQL`. Identical functionality is available via `context.graphql.raw`.
+
+- [#5471](https://github.com/keystonejs/keystone/pull/5471) [`838247cc0`](https://github.com/keystonejs/keystone/commit/838247cc0644ccedbd16210dfefc1ce7810f74ee) Thanks [@raveling](https://github.com/raveling)! - Fixed typo in guide meta title.
+
+* [#5366](https://github.com/keystonejs/keystone/pull/5366) [`115b06130`](https://github.com/keystonejs/keystone/commit/115b06130d801e00dec88935a5d400e71f089853) Thanks [@renovate](https://github.com/apps/renovate)! - Updated Next.js dependency to `^10.1.3`.
+
+* Updated dependencies [[`fe55e9289`](https://github.com/keystonejs/keystone/commit/fe55e9289b898bdcb937eb5e981dba2bb58a672f), [`a5627304b`](https://github.com/keystonejs/keystone/commit/a5627304b7921a0f1484d6d08330115d0edbb45b), [`1d85d7ff4`](https://github.com/keystonejs/keystone/commit/1d85d7ff4e8d7795d6e0f82484cf7108d11925db), [`43a0f5429`](https://github.com/keystonejs/keystone/commit/43a0f5429028eb9df53e93f19f2dd6fc328cde32), [`d7e8cad4f`](https://github.com/keystonejs/keystone/commit/d7e8cad4fca5d8ffefa235c2ff30ec8e2e0d6276), [`ecf07393a`](https://github.com/keystonejs/keystone/commit/ecf07393a19714f1686772bd082de7d229065aa2), [`8eebf9195`](https://github.com/keystonejs/keystone/commit/8eebf9195ac625f6642c76ea145642f075e725fe)]:
+  - @keystone-next/fields-document@5.0.0
+  - @keystone-ui/button@4.0.0
+  - @keystone-ui/fields@3.0.0
+  - @keystone-ui/icons@3.0.0
+  - @keystone-ui/notice@3.0.0
+  - @keystone-ui/toast@3.0.0
+  - @keystone-ui/tooltip@3.0.0
+
 ## 1.3.0
 
 ### Minor Changes
