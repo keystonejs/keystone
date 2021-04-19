@@ -2,7 +2,7 @@
 '@keystone-next/fields': minor
 '@keystone-next/cloudinary': patch
 '@keystone-next/fields-document': patch
-'@keystone-next/keystone-legacy': patch
+'@keystone-next/keystone': patch
 '@keystone-next/server-side-graphql-client-legacy': patch
 '@keystone-next/api-tests-legacy': patch
 '@keystone-next/benchmarks-legacy': patch

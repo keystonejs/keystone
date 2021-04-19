@@ -11,11 +11,8 @@ type IdType = any;
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const createInitialData = async (context: KeystoneContext) => {
-  type T = {
-    data: { createLocations: { id: IdType }[]; createCompanies: { id: IdType }[] };
-    errors: unknown;
-  };
-  const { data, errors }: T = await context.executeGraphQL({
+  type T = { createLocations: { id: IdType }[]; createCompanies: { id: IdType }[] };
+  const data = (await context.graphql.run({
     query: `
       mutation {
         createCompanies(data: [
@@ -30,26 +27,20 @@ const createInitialData = async (context: KeystoneContext) => {
           { data: { name: "${sampleOne(alphanumGenerator)}" } }
         ]) { id }
       }`,
-  });
-  expect(errors).toBe(undefined);
+  })) as T;
   return { locations: data.createLocations, companies: data.createCompanies };
 };
 
 const createCompanyAndLocation = async (context: KeystoneContext) => {
   type T = {
-    data: {
-      createCompany: {
-        id: IdType;
-        name: string;
-        location: { id: IdType; name: string; company: { id: IdType } };
-      };
+    createCompany: {
+      id: IdType;
+      name: string;
+      location: { id: IdType; name: string; company: { id: IdType } };
     };
-    errors: unknown;
   };
-  const {
-    data: { createCompany },
-    errors,
-  }: T = await context.executeGraphQL({
+
+  const { createCompany } = (await context.graphql.run({
     query: `
       mutation {
         createCompany(data: {
@@ -57,8 +48,7 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
           location: { create: { name: "${sampleOne(alphanumGenerator)}" } }
         }) { id name location { id name company { id } } }
       }`,
-  });
-  expect(errors).toBe(undefined);
+  })) as T;
   const { Company, Location } = await getCompanyAndLocation(
     context,
     createCompany.id,
@@ -74,19 +64,14 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
 
 const createLocationAndCompany = async (context: KeystoneContext) => {
   type T = {
-    data: {
-      createLocation: {
-        id: IdType;
-        name: string;
-        company: { id: IdType; name: string; location: { id: IdType } };
-      };
+    createLocation: {
+      id: IdType;
+      name: string;
+      company: { id: IdType; name: string; location: { id: IdType } };
     };
-    errors: unknown;
   };
-  const {
-    data: { createLocation },
-    errors,
-  }: T = await context.executeGraphQL({
+
+  const { createLocation } = (await context.graphql.run({
     query: `
       mutation {
         createLocation(data: {
@@ -94,8 +79,7 @@ const createLocationAndCompany = async (context: KeystoneContext) => {
           company: { create: { name: "${sampleOne(alphanumGenerator)}" } }
         }) { id name company { id name location { id } } }
       }`,
-  });
-  expect(errors).toBe(undefined);
+  })) as T;
   const { Company, Location } = await getCompanyAndLocation(
     context,
     createLocation.company.id,
@@ -120,13 +104,13 @@ const getCompanyAndLocation = async (
       Location: { id: IdType; company: { id: IdType } };
     };
   };
-  const { data }: T = await context.executeGraphQL({
+  const { data } = (await context.graphql.raw({
     query: `
   {
     Company(where: { id: "${companyId}"} ) { id location { id } }
     Location(where: { id: "${locationId}"} ) { id company { id } }
   }`,
-  });
+  })) as T;
   return data;
 };
 
@@ -160,13 +144,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             const { location, company } = await createCompanyAndLocation(context);
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `{
                   allLocations(where: { company: { name: "${company.name}"} }) { id }
                   allCompanies(where: { location: { name: "${location.name}"} }) { id }
                 }`,
             });
-            expect(errors).toBe(undefined);
             expect(data.allLocations.length).toEqual(1);
             expect(data.allLocations[0].id).toEqual(location.id);
             expect(data.allCompanies.length).toEqual(1);
@@ -178,13 +161,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             const { location, company } = await createLocationAndCompany(context);
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `{
                   allLocations(where: { company: { name: "${company.name}"} }) { id }
                   allCompanies(where: { location: { name: "${location.name}"} }) { id }
                 }`,
             });
-            expect(errors).toBe(undefined);
             expect(data.allLocations.length).toEqual(1);
             expect(data.allLocations[0].id).toEqual(location.id);
             expect(data.allCompanies.length).toEqual(1);
@@ -364,7 +346,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             const { companies } = await createInitialData(context);
             const company = companies[0];
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   createLocation(data: {
@@ -373,7 +355,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
             expect(data.createLocation.company.id.toString()).toEqual(company.id);
 
             const { Company, Location } = await getCompanyAndLocation(
@@ -466,18 +447,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(Location.company.id.toString()).toBe(Company.id.toString());
 
             type T = {
-              data: {
-                allCompanies: { id: IdType; location: { id: IdType; company: { id: IdType } } }[];
-              };
-              errors: unknown;
+              allCompanies: { id: IdType; location: { id: IdType; company: { id: IdType } } }[];
             };
-            const {
-              data: { allCompanies },
-              errors: errors2,
-            }: T = await context.executeGraphQL({
+
+            const { allCompanies } = (await context.graphql.run({
               query: `{ allCompanies { id location { id company { id }} } }`,
-            });
-            expect(errors2).toBe(undefined);
+            })) as T;
             // The nested company should not have a location
             expect(
               allCompanies.filter(({ id }) => id === Company.id)[0].location.company.id
@@ -516,18 +491,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(Location.company.id.toString()).toBe(Company.id.toString());
 
             type T = {
-              data: {
-                allLocations: { id: IdType; company: { id: IdType; location: { id: IdType } } }[];
-              };
-              errors: unknown;
+              allLocations: { id: IdType; company: { id: IdType; location: { id: IdType } } }[];
             };
-            const {
-              data: { allLocations },
-              errors: errors2,
-            }: T = await context.executeGraphQL({
+
+            const { allLocations } = (await context.graphql.run({
               query: `{ allLocations { id company { id location { id }} } }`,
-            });
-            expect(errors2).toBe(undefined);
+            })) as T;
             // The nested company should not have a location
             expect(
               allLocations.filter(({ id }) => id === Location.id)[0].company.location.id
@@ -546,7 +515,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const locationName = sampleOne(alphanumGenerator);
             const companyName = sampleOne(alphanumGenerator);
 
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   createCompany(data: {
@@ -555,7 +524,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
 
             const { Company, Location } = await getCompanyAndLocation(
               context,
@@ -568,18 +536,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
             // The nested company should not have a location
             type T = {
-              data: {
-                allCompanies: { id: IdType; location: { id: IdType; company: { id: IdType } } }[];
-              };
-              errors: unknown;
+              allCompanies: { id: IdType; location: { id: IdType; company: { id: IdType } } }[];
             };
-            const {
-              data: { allCompanies },
-              errors: errors2,
-            }: T = await context.executeGraphQL({
+            const { allCompanies } = (await context.graphql.run({
               query: `{ allCompanies { id location { id company { id }} } }`,
-            });
-            expect(errors2).toBe(undefined);
+            })) as T;
             expect(
               allCompanies.filter(({ id }) => id === Company.id)[0].location.company.id
             ).toEqual(Company.id);
@@ -708,7 +669,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         test(
           'With null A',
           runner(setupKeystone, async ({ context }) => {
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   createCompany(data: {
@@ -717,7 +678,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
 
             // Location should be empty
             expect(data.createCompany.location).toBe(null);
@@ -755,7 +715,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(company.location).not.toBe(expect.anything());
             expect(location.company).not.toBe(expect.anything());
 
-            const { errors } = await context.executeGraphQL({
+            await context.graphql.run({
               query: `
                 mutation {
                   updateCompany(
@@ -764,7 +724,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   ) { id location { id } } }
             `,
             });
-            expect(errors).toBe(undefined);
 
             const { Company, Location } = await getCompanyAndLocation(
               context,
@@ -899,7 +858,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const originalLocationId = Location.id;
             await (async () => {
               const locationName = sampleOne(alphanumGenerator);
-              const { data, errors } = await context.executeGraphQL({
+              const data = await context.graphql.run({
                 query: `
                   mutation {
                     updateCompany(
@@ -909,7 +868,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   }
               `,
               });
-              expect(errors).toBe(undefined);
 
               const { Company, Location } = await getCompanyAndLocation(
                 context,
@@ -921,11 +879,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
               expect(Company.location.id.toString()).toBe(Location.id.toString());
               expect(Location.company.id.toString()).toBe(Company.id.toString());
 
-              const result = await context.executeGraphQL({
+              const data2 = await context.graphql.run({
                 query: `{ Location(where: { id: "${originalLocationId}" }) { id company { id } } }`,
               });
-              expect(result.errors).toBe(undefined);
-              expect(result.data.Location.company).toBe(null);
+              expect(data2.Location.company).toBe(null);
             })();
           })
         );
@@ -936,7 +893,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { locations } = await createInitialData(context);
             let location = locations[0];
             const companyName = sampleOne(alphanumGenerator);
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   updateLocation(
@@ -946,7 +903,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
             `,
             });
-            expect(errors).toBe(undefined);
 
             const { Company, Location } = await getCompanyAndLocation(
               context,
@@ -1075,7 +1031,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { location, company } = await createLocationAndCompany(context);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `
                 mutation {
                   updateLocation(
@@ -1084,7 +1040,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   ) { id company { id name } }
                 }`,
             });
-            expect(errors).toBe(undefined);
             expect(data.updateLocation.id).toEqual(location.id);
             expect(data.updateLocation.company).toBe(null);
 
@@ -1152,10 +1107,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { location, company } = await createCompanyAndLocation(context);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `mutation { deleteCompany(id: "${company.id}") { id } } `,
             });
-            expect(errors).toBe(undefined);
             expect(data.deleteCompany.id).toBe(company.id);
 
             // Check the link has been broken
@@ -1172,10 +1126,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const { location, company } = await createLocationAndCompany(context);
 
             // Run the query to disconnect the location from company
-            const { data, errors } = await context.executeGraphQL({
+            const data = await context.graphql.run({
               query: `mutation { deleteLocation(id: "${location.id}") { id } } `,
             });
-            expect(errors).toBe(undefined);
             expect(data.deleteLocation.id).toBe(location.id);
 
             // Check the link has been broken

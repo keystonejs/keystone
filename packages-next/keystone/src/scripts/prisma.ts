@@ -20,6 +20,7 @@ export async function prisma(cwd: string, args: string[]) {
     env: {
       ...process.env,
       DATABASE_URL: config.db.url,
+      PRISMA_HIDE_UPDATE_MESSAGE: '1',
     },
   });
   if (result.exitCode !== 0) {

@@ -1,6 +1,7 @@
 import pLazy from 'p-lazy';
 import pReflect from 'p-reflect';
 import semver from 'semver';
+import { ImageMode, ImageExtension } from '@keystone-next/types';
 
 export const noop = <T>(x: T): T => x;
 export const identity = noop;
@@ -130,9 +131,9 @@ export const filterValues = <T>(obj: T, predicate: (value: T[keyof T]) => boolea
  * @param {String} keyedBy The property on the input objects to key the result.
  * @param {Function} mapFn A function returning the output object values. Takes each full input object.
  */
-export const arrayToObject = <V extends string, T extends Record<string, V>, R>(
+export const arrayToObject = <K extends string, V extends string, T extends Record<K, V>, R>(
   objs: T[],
-  keyedBy: keyof T,
+  keyedBy: K,
   mapFn: (a: T) => R = i => i as any
 ) => objs.reduce((acc, obj) => ({ ...acc, [obj[keyedBy]]: mapFn(obj) }), {} as Record<V, R>);
 
@@ -255,4 +256,26 @@ export const humanize = (str: string) => {
     .filter(i => i)
     .map(upcase)
     .join(' ');
+};
+
+const REFREGEX = /^(local):([^:\n]+)\.(gif|jpg|png|webp)$/;
+
+export const getImageRef = (mode: ImageMode, id: string, extension: ImageExtension) =>
+  `${mode}:${id}.${extension}`;
+
+export const SUPPORTED_IMAGE_EXTENSIONS = ['jpg', 'png', 'webp', 'gif'];
+
+export const parseImageRef = (
+  ref: string
+): { mode: ImageMode; id: string; extension: ImageExtension } | undefined => {
+  const match = ref.match(REFREGEX);
+  if (match) {
+    const [, mode, id, ext] = match;
+    return {
+      mode: mode as ImageMode,
+      id,
+      extension: ext as ImageExtension,
+    };
+  }
+  return undefined;
 };

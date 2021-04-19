@@ -5,11 +5,11 @@
   "main": "dist/auth.cjs.js",
   "module": "dist/auth.esm.js",
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.13.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
-    "@graphql-tools/merge": "^6.2.11",
+    "@graphql-tools/merge": "^6.2.13",
     "@keystone-next/admin-ui-utils": "^3.0.3",
     "@keystone-next/fields": "^6.0.0",
     "@keystone-next/types": "^16.0.0",

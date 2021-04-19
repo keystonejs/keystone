@@ -18,7 +18,6 @@ export type FieldExtraArgs = {
   listKey: string;
   listAdapter: PrismaListAdapter;
   fieldAdapterClass: typeof PrismaFieldAdapter;
-  defaultAccess: any;
   schemaNames: string[];
 };
 
@@ -52,14 +51,7 @@ class Field<P extends string> {
       schemaDoc,
       ...config
     }: FieldConfigArgs & Record<string, any>,
-    {
-      getListByKey,
-      listKey,
-      listAdapter,
-      fieldAdapterClass,
-      defaultAccess,
-      schemaNames,
-    }: FieldExtraArgs
+    { getListByKey, listKey, listAdapter, fieldAdapterClass, schemaNames }: FieldExtraArgs
   ) {
     this.path = path;
     this.isPrimaryKey = path === 'id';
@@ -93,7 +85,7 @@ class Field<P extends string> {
     this.refListKey = '';
 
     this.access = this._modifyAccess(
-      parseFieldAccess({ schemaNames, listKey, fieldKey: path, defaultAccess, access })
+      parseFieldAccess({ schemaNames, listKey, fieldKey: path, defaultAccess: true, access })
     );
   }
 
@@ -158,7 +150,28 @@ class Field<P extends string> {
     return resolvedData[this.path];
   }
 
-  async validateInput() {}
+  /**
+   * @param {Object} data
+   * @param {Object} data.resolvedData The incoming item for the mutation with
+   * relationships and defaults already resolved
+   * @param {Object} data.existingItem If this is a updateX mutation, this will
+   * be the existing data in the database
+   * @param {Object} data.context The graphQL context object of the current
+   * request
+   * @param {Object} data.originalInput The raw incoming item from the mutation
+   * (no relationships or defaults resolved)
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async validateInput(data: {
+    resolvedData: Record<P, any>;
+    existingItem?: Record<string, any>;
+    context: KeystoneContext;
+    originalInput: any;
+    listKey: string;
+    fieldPath: P;
+    operation: 'create' | 'update';
+    addFieldValidationError: (msg: string) => void;
+  }) {}
 
   async beforeChange() {}
 

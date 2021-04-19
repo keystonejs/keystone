@@ -23,6 +23,7 @@ export class Relationship<P extends string> extends Implementation<P> {
   many: boolean;
   refFieldPath?: string;
   withMeta: boolean;
+  ref: string;
   // adapter: PrismaRelationshipInterface<P>;
   constructor(
     path: P,
@@ -37,6 +38,7 @@ export class Relationship<P extends string> extends Implementation<P> {
     super(path, { ref, many, withMeta, ...configArgs }, extraArgs);
 
     // JM: It bugs me this is duplicated in the field adapters but initialisation order makes it hard to avoid
+    this.ref = ref;
     const [refListKey, refFieldPath] = ref.split('.');
     this.refListKey = refListKey;
     this.refFieldPath = refFieldPath;
@@ -192,7 +194,6 @@ export class Relationship<P extends string> extends Implementation<P> {
     operations: RelationshipOperation,
     item: any,
     context: KeystoneContext,
-    getItem: any,
     mutationState: { afterChangeStack: any[]; transaction: {} }
   ) {
     const { refList, refField } = this.tryResolveRefList();
@@ -220,6 +221,7 @@ export class Relationship<P extends string> extends Implementation<P> {
         create: [],
         connect: [],
         disconnect: [],
+        currentValue: []
       });
     }
 

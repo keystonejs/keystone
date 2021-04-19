@@ -1,4 +1,5 @@
 import { IncomingMessage } from 'http';
+import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
 import { BaseKeystone } from './base';
 import type { BaseGeneratedListTypes } from './utils';
@@ -17,9 +18,8 @@ export type KeystoneContext = {
   /** @deprecated */
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   /** @deprecated */
-  executeGraphQL: any; // TODO: type this
-  /** @deprecated */
   keystone: BaseKeystone;
+  images: ImagesContext | undefined;
 } & AccessControlContext &
   Partial<SessionContext<any>> &
   DatabaseAPIs;
@@ -151,4 +151,23 @@ export type SessionContext<T> = {
 // context and other developer-facing APIs in Keystone, so they can be used easily.
 export type DatabaseAPIs = {
   prisma?: any;
+};
+
+export type ImageMode = 'local';
+
+export type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif';
+
+export type ImageData = {
+  mode: ImageMode;
+  id: string;
+  extension: ImageExtension;
+  filesize: number;
+  width: number;
+  height: number;
+};
+
+export type ImagesContext = {
+  getSrc: (mode: ImageMode, id: string, extension: ImageExtension) => string;
+  getDataFromRef: (ref: string) => Promise<ImageData>;
+  getDataFromStream: (stream: Readable) => Promise<ImageData>;
 };

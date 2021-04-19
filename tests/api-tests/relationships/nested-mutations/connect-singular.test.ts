@@ -110,7 +110,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Create an item that does the linking
-          const { data, errors } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 createEvent(data: {
@@ -123,7 +123,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           expect(data).toMatchObject({ createEvent: { id: expect.any(String) } });
-          expect(errors).toBe(undefined);
         })
       );
 
@@ -140,16 +139,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Create an item to update
-          const {
-            data: { createEvent },
-            errors,
-          } = await context.executeGraphQL({
+          const { createEvent } = await context.graphql.run({
             query: 'mutation { createEvent(data: { title: "A thing", }) { id } }',
           });
-          expect(errors).toBe(undefined);
 
           // Update the item and link the relationship field
-          const { data, errors: errors2 } = await context.executeGraphQL({
+          const data = await context.graphql.run({
             query: `
               mutation {
                 updateEvent(
@@ -167,7 +162,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }
               }`,
           });
-          expect(errors2).toBe(undefined);
           expect(data).toMatchObject({
             updateEvent: {
               id: expect.any(String),
@@ -185,7 +179,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const FAKE_ID = 100;
 
           // Create an item that does the linking
-          const { errors } = await context.executeGraphQL({
+          const { errors } = await context.graphql.raw({
             query: `
               mutation {
                 createEvent(data: {
@@ -211,7 +205,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const createEvent = await createItem({ context, listKey: 'Event', item: {} });
 
           // Create an item that does the linking
-          const { errors } = await context.executeGraphQL({
+          const { errors } = await context.graphql.raw({
             query: `
               mutation {
                 updateEvent(
@@ -258,7 +252,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 expect(id).toBeTruthy();
 
                 // Create an item that does the linking
-                const { data, errors } = await context.exitSudo().executeGraphQL({
+                const data = await context.exitSudo().graphql.run({
                   query: `
                     mutation {
                       createEventTo${group.name}(data: {
@@ -276,7 +270,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 expect(data).toMatchObject({
                   [`createEventTo${group.name}`]: { id: expect.any(String), group: { id } },
                 });
-                expect(errors).toBe(undefined);
               })
             );
             test(
@@ -301,7 +294,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 expect(eventModel.id).toBeTruthy();
 
                 // Update the item and link the relationship field
-                const { data, errors } = await context.exitSudo().executeGraphQL({
+                const data = await context.exitSudo().graphql.run({
                   query: `
                     mutation {
                       updateEventTo${group.name}(
@@ -326,7 +319,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
                     group: { id: expect.any(String), name: groupName },
                   },
                 });
-                expect(errors).toBe(undefined);
 
                 // See that it actually stored the group ID on the Event record
                 const event = await getItem({
@@ -363,7 +355,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 expect(eventModel.id).toBeTruthy();
 
                 // Update the item and link the relationship field
-                const { errors } = await context.exitSudo().executeGraphQL({
+                const { errors } = await context.exitSudo().graphql.raw({
                   query: `
                     mutation {
                       updateEventTo${group.name}(
@@ -378,12 +370,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
                     }`,
                 });
                 expect(errors).toHaveLength(1);
-                const error = errors[0];
+                const error = errors![0];
                 expect(error.message).toEqual(
                   `Unable to connect a EventTo${group.name}.group<${group.name}>`
                 );
                 expect(error.path).toHaveLength(1);
-                expect(error.path[0]).toEqual(`updateEventTo${group.name}`);
+                expect(error.path![0]).toEqual(`updateEventTo${group.name}`);
               })
             );
 
@@ -401,7 +393,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 expect(id).toBeTruthy();
 
                 // Create an item that does the linking
-                const { errors } = await context.exitSudo().executeGraphQL({
+                const { errors } = await context.exitSudo().graphql.raw({
                   query: `
                     mutation {
                       createEventTo${group.name}(data: {
@@ -413,12 +405,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
                     }`,
                 });
                 expect(errors).toHaveLength(1);
-                const error = errors[0];
+                const error = errors![0];
                 expect(error.message).toEqual(
                   `Unable to connect a EventTo${group.name}.group<${group.name}>`
                 );
                 expect(error.path).toHaveLength(1);
-                expect(error.path[0]).toEqual(`createEventTo${group.name}`);
+                expect(error.path![0]).toEqual(`createEventTo${group.name}`);
               })
             );
           }
