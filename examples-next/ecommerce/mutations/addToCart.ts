@@ -27,7 +27,7 @@ async function addToCart(
     return await context.lists.CartItem.updateOne({
       id: existingCartItem.id,
       data: { quantity: existingCartItem.quantity + 1 },
-      query: false,
+      resolveFields: false,
     });
   }
   // 4. if it isnt, create a new cart item!
@@ -36,7 +36,7 @@ async function addToCart(
       product: { connect: { id: productId } },
       user: { connect: { id: sesh.itemId } },
     },
-    query: false,
+    resolveFields: false,
   });
 }
 

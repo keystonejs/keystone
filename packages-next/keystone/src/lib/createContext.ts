@@ -8,7 +8,7 @@ import type {
   ImagesContext,
 } from '@keystone-next/types';
 
-import { itemAPIForList, getArgsFactory } from './itemAPI';
+import { itemDbAPIForList, itemAPIForList, getArgsFactory } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 
 export function makeCreateContext({
@@ -60,10 +60,12 @@ export function makeCreateContext({
       }
       return result.data as Record<string, any>;
     };
+    const dbAPI: Record<string, ReturnType<typeof itemDbAPIForList>> = {};
     const itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
     const contextToReturn: KeystoneContext = {
       schemaName,
       ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
+      db: { lists: dbAPI },
       lists: itemAPI,
       totalResults: 0,
       keystone,
@@ -88,6 +90,7 @@ export function makeCreateContext({
     };
     const getArgsByList = schemaName === 'public' ? publicGetArgsByList : internalGetArgsByList;
     for (const [listKey, list] of Object.entries(keystone.lists)) {
+      dbAPI[listKey] = itemDbAPIForList(list, contextToReturn, getArgsByList[listKey]);
       itemAPI[listKey] = itemAPIForList(list, contextToReturn, getArgsByList[listKey]);
     }
     return contextToReturn;

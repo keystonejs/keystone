@@ -99,7 +99,7 @@ const getItem = async ({
   itemId: number | string;
   returnFields?: string;
   context: KeystoneContext;
-}): Promise<Record<string, any> | null> => {
+}): Promise<Record<string, any>> => {
   const { itemQueryName } = context.gqlNames(listKey);
 
   const query = `query ($id: ID!) { ${itemQueryName}(where: { id: $id }) { ${returnFields} }  }`;
@@ -171,7 +171,7 @@ const updateItem = async ({
   item: Record<string, any>;
   returnFields?: string;
   context: KeystoneContext;
-}): Promise<Record<string, any> | null> => {
+}): Promise<Record<string, any>> => {
   const { updateMutationName, updateInputName } = context.gqlNames(listKey);
 
   const query = `mutation ($id: ID!, $data: ${updateInputName}){
