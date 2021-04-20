@@ -55,8 +55,33 @@ type ScalarPrismaTypes = {
   Int: number;
   Float: number;
   DateTime: Date;
-  Json: unknown;
+  BigInt: bigint;
+  Json: JSONValue;
 };
+
+type NumberLiteralDefault = { kind: 'literal'; value: number };
+type BigIntLiteralDefault = { kind: 'literal'; value: bigint };
+type BooleanLiteralDefault = { kind: 'literal'; value: boolean };
+type StringLiteralDefault = { kind: 'literal'; value: string };
+// https://github.com/prisma/prisma-engines/blob/98490f4bb05f4a47cd715617154a06c2c0d05756/libs/datamodel/connectors/dml/src/default_value.rs#L183-L194
+type DBGeneratedDefault = { kind: 'dbgenerated'; value: string };
+type AutoIncrementDefault = { kind: 'autoincrement' };
+type NowDefault = { kind: 'now' };
+type UuidDefault = { kind: 'uuid' };
+type CuidDefault = { kind: 'cuid' };
+export type ScalarDBFieldDefault<
+  Scalar extends keyof ScalarPrismaTypes = keyof ScalarPrismaTypes
+> =
+  | {
+      String: StringLiteralDefault | UuidDefault | CuidDefault;
+      Boolean: BooleanLiteralDefault;
+      Json: StringLiteralDefault;
+      Float: NumberLiteralDefault;
+      Int: AutoIncrementDefault | NumberLiteralDefault;
+      BigInt: AutoIncrementDefault | BigIntLiteralDefault;
+      DateTime: NowDefault | StringLiteralDefault;
+    }[Scalar]
+  | DBGeneratedDefault;
 
 export type ScalarDBField<
   Scalar extends keyof ScalarPrismaTypes,
@@ -65,21 +90,31 @@ export type ScalarDBField<
   kind: 'scalar';
   scalar: Scalar;
   mode: Mode;
-  isUnique?: boolean;
+  /**
+   * The native database type that the field should use. See https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#model-field-scalar-types for what the possible native types should be
+   * The native type should not include @datasourcename. so to specify the uuid type, the correct value for nativeType would be `Uuid`
+   */
+  // TODO: type this nicely rather than just accepting a string(it can't just be a set of string literals though)
+  nativeType?: string;
+  default?: ScalarDBFieldDefault<Scalar>;
+  index?: 'unique' | 'index';
   isOrderable?: boolean;
 };
 
 export type RelationDBField<Mode extends 'many' | 'one'> = {
   kind: 'relation';
-  relation: { model: string; field: string };
+  list: string;
+  field?: string;
   mode: Mode;
 };
 
 export type EnumDBField<Value extends string, Mode extends 'required' | 'many' | 'optional'> = {
   kind: 'enum';
-  enum: Value[];
+  name: string;
+  values: Value[];
   mode: Mode;
-  isUnique?: boolean;
+  default?: Value;
+  index?: 'unique' | 'index';
   isOrderable?: boolean;
 };
 
@@ -91,7 +126,10 @@ export type ScalarishDBField =
 
 export type RealDBField = ScalarishDBField | RelationDBField<'many' | 'one'>;
 
-type MultiDBField<Fields extends Record<string, RealDBField>> = { kind: 'multi'; fields: Fields };
+export type MultiDBField<Fields extends Record<string, RealDBField>> = {
+  kind: 'multi';
+  fields: Fields;
+};
 
 export type DBField = RealDBField | NoDBField | MultiDBField<Record<string, ScalarishDBField>>;
 
