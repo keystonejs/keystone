@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { Fragment, useState, ReactNode, SyntheticEvent } from 'react';
+import { TextInput } from '@keystone-ui/fields';
 import { jsx, Stack } from '@keystone-ui/core';
 import { Button } from '@keystone-ui/button';
-import { TextInput } from '@keystone-ui/fields';
 
 const validEmail = (email: string) =>
   /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
@@ -10,17 +10,19 @@ const validEmail = (email: string) =>
   );
 
 const signupURL = 'https://signup.keystonejs.cloud/api/newsletter-signup';
-export const SubscribeForm = ({
+
+export function SubscribeForm({
   autoFocus,
   children,
 }: {
   autoFocus?: boolean;
   children: ReactNode;
-}) => {
+}) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
+
   const onSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
     setError(null);
@@ -66,6 +68,7 @@ export const SubscribeForm = ({
       return;
     }
   };
+
   return !formSubmitted ? (
     <Fragment>
       {children}
@@ -90,4 +93,4 @@ export const SubscribeForm = ({
   ) : (
     <p>❤️ Thank you for subscribing!</p>
   );
-};
+}

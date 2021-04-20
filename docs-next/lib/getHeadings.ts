@@ -7,7 +7,7 @@ export interface Heading {
   label: string;
 }
 
-export const getHeadings = (children: ReactNode): Heading[] => {
+export function getHeadings(children: ReactNode): Heading[] {
   return Children.toArray(children)
     .filter((child: any) => {
       return child.props?.mdxType && ['h1', 'h2', 'h3'].includes(child.props.mdxType);
@@ -21,4 +21,4 @@ export const getHeadings = (children: ReactNode): Heading[] => {
         label: child.props.children,
       };
     });
-};
+}

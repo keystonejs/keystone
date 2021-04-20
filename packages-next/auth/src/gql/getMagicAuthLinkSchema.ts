@@ -86,7 +86,7 @@ export function getMagicAuthLinkSchema<I extends string>({
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
                 [`${tokenType}RedeemedAt`]: null,
               },
-              query: false,
+              resolveFields: false,
             });
 
             await magicAuthLink.sendToken({ itemId, identity, token, context });
@@ -131,7 +131,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           await itemAPI.updateOne({
             id: result.item.id,
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
-            query: false,
+            resolveFields: false,
           });
 
           const sessionToken = await context.startSession({ listKey, itemId: result.item.id });

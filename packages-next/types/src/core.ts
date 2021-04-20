@@ -24,7 +24,7 @@ export type SessionImplementation = {
   ): Promise<SessionContext<any>>;
 };
 
-export type GraphQLResolver = (root: any, args: any, context: KeystoneContext) => any;
+export type GraphQLResolver = (root: any, args: any, context: KeystoneContext, info?: any) => any;
 
 export type GraphQLSchemaExtension = {
   typeDefs: string;

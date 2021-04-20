@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/popover",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "license": "MIT",
   "main": "dist/popover.cjs.js",
   "module": "dist/popover.esm.js",
@@ -19,7 +19,7 @@
     "react-popper": "^2.2.5"
   },
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.13.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/popover"
 }

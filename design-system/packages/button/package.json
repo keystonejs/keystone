@@ -1,6 +1,6 @@
 {
   "name": "@keystone-ui/button",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "license": "MIT",
   "main": "dist/button.cjs.js",
   "module": "dist/button.esm.js",
@@ -10,12 +10,12 @@
   "dependencies": {
     "@babel/runtime": "^7.13.10",
     "@keystone-ui/core": "^2.0.1",
-    "@keystone-ui/icons": "^2.0.1",
-    "@keystone-ui/loading": "^2.0.1",
+    "@keystone-ui/icons": "^3.0.0",
+    "@keystone-ui/loading": "^3.0.0",
     "react": "^17.0.2"
   },
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.13.1"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/design-system/packages/button"
 }
