@@ -334,7 +334,7 @@ function printField(
     }
     const relationField = `${fieldPath} ${field.list}? @relation("${field.relationName}")`;
     const relationIdFieldPath = `${fieldPath}Id`;
-    const foreignIdField = lists[field.list].fields[field.field];
+    const foreignIdField = lists[field.list].fields.id;
     assertFieldIsValidIdField(field.list, foreignIdField);
     const nativeType = printNativeType(foreignIdField.nativeType, datasourceName);
     const index = printIndex(fieldPath, field.foreignIdField === 'owned' ? 'index' : 'unique');
