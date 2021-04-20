@@ -8,7 +8,7 @@
     "node": ">=v12.13.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.10",
+    "@babel/runtime": "^7.13.16",
     "@types/redis": "^2.8.28"
   },
   "devDependencies": {
