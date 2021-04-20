@@ -5,7 +5,7 @@
   "main": "dist/cloudinary.cjs.js",
   "module": "dist/cloudinary.esm.js",
   "dependencies": {
-    "@babel/runtime": "^7.13.10",
+    "@babel/runtime": "^7.13.16",
     "@keystone-next/adapter-prisma-legacy": "^6.0.0",
     "@keystone-next/admin-ui": "^14.0.0",
     "@keystone-next/fields": "^7.0.0",
