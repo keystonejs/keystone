@@ -3526,7 +3526,7 @@ apollo-server-errors@^2.5.0:
   resolved "https://registry.yarnpkg.com/apollo-server-errors/-/apollo-server-errors-2.5.0.tgz#5d1024117c7496a2979e3e34908b5685fe112b68"
   integrity sha512-lO5oTjgiC3vlVg2RKr3RiXIIQ5pGXBFxYGGUkKDhTud3jMIhs+gel8L8zsEjKaKxkjHhCQAA/bcEfYiKkGQIvA==
 
-apollo-server-express@^2.22.2:
+apollo-server-express@^2.23.0:
   version "2.23.0"
   resolved "https://registry.yarnpkg.com/apollo-server-express/-/apollo-server-express-2.23.0.tgz#7a779e45522f3c8f68ac748fea1a09e982981549"
   integrity sha512-tzil7c51ODH0rT1Bc5VMksdWzHrYGavdLtnDz4M0ePiTm18Gc81HD7X/4DPczorerEpfwwkf2YlADtPQfRSxlw==
@@ -3549,7 +3549,7 @@ apollo-server-express@^2.22.2:
     subscriptions-transport-ws "^0.9.16"
     type-is "^1.6.16"
 
-apollo-server-micro@^2.22.2:
+apollo-server-micro@^2.23.0:
   version "2.23.0"
   resolved "https://registry.yarnpkg.com/apollo-server-micro/-/apollo-server-micro-2.23.0.tgz#a2b66a47515a09e256c417c514996e9f47de1aff"
   integrity sha512-XQKM66cqpmJFIXmRbcNFjTMdZFhqD/TvXtd5Mid/fSUeyRro0FaZopEQ/gcx3QbqJmv4K86wznRx4kvYtuRFqw==
