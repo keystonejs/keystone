@@ -22,7 +22,7 @@
     "@keystone-ui/popover": "^3.0.0",
     "@keystone-ui/toast": "^3.0.0",
     "@keystone-ui/tooltip": "^3.0.0",
-    "@preconstruct/next": "^2.0.2",
+    "@preconstruct/next": "^3.0.0",
     "@ts-gql/schema": "^0.5.0",
     "@types/apollo-upload-client": "14.1.0",
     "@types/react": "^17.0.3",

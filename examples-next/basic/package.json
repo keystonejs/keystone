@@ -22,7 +22,7 @@
     "@keystone-ui/fields": "^3.0.0",
     "@keystone-ui/icons": "^3.0.0",
     "@keystone-ui/tooltip": "^3.0.0",
-    "@preconstruct/next": "^2.0.2",
+    "@preconstruct/next": "^3.0.0",
     "@types/react": "^17.0.3",
     "apollo-server-micro": "^2.22.2",
     "graphql": "^15.5.0",
