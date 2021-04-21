@@ -82,39 +82,40 @@ export const storedValues = () => [
 export const supportedFilters = () => [];
 
 export const crudTests = (keystoneTestWrapper: any) => {
-  test.only(
+  test(
     'upload values should match expected',
     keystoneTestWrapper(async ({ context }: { context: any }) => {
-      const filenames = ['keystone.jpeg', 'keystone.jpg'];
-      //   for (const filename of filenames) {
-      //     console.log(filename);
-      const data = await context.lists.Test.createOne({
-        item: { name: 'Newly created', avatar: prepareFile('keystone.jpg') },
-        query: `
+      const filenames = ['keystone.jpeg', 'keystone.jpg', 'keystone'];
+      for (const filename of filenames) {
+        const data = await createItem({
+          context,
+          listKey: 'Test',
+          item: { avatar: prepareFile(filename) },
+          returnFields: `
             avatar {
-                id 
-                mode
-                filesize
-                width
-                height
-                extension
-                ref
-                src
+              id
+              mode
+              filesize
+              width
+              height
+              extension
+              ref
+              src
             }
         `,
-      });
-      expect(data).not.toBe(null);
-      expect(data.avatar).toEqual({
-        ref: `local:${data.avatar.id}.jpg`,
-        src: `/images/${data.avatar.id}.jpg`,
-        id: data.avatar.id,
-        mode: 'local',
-        filesize: 3250,
-        width: 150,
-        height: 152,
-        extension: 'jpg',
-      });
-      //   }
+        });
+        expect(data).not.toBe(null);
+        expect(data.avatar).toEqual({
+          ref: `local:${data.avatar.id}.jpg`,
+          src: `/images/${data.avatar.id}.jpg`,
+          id: data.avatar.id,
+          mode: 'local',
+          filesize: 3250,
+          width: 150,
+          height: 152,
+          extension: 'jpg',
+        });
+      }
     })
   );
   test(
@@ -123,10 +124,10 @@ export const crudTests = (keystoneTestWrapper: any) => {
       const { data, errors } = await context.graphql.raw({
         query: `
             mutation ($item: TestCreateInput) {
-                createTest(data: $item) { 
+                createTest(data: $item) {
                     avatar {
                         id
-                    } 
+                    }
                 }
             }
         `,
@@ -135,15 +136,6 @@ export const crudTests = (keystoneTestWrapper: any) => {
       expect(data).toEqual({ createTest: null });
       expect(errors).toHaveLength(1);
       expect(errors![0].message).toEqual('File type not found');
-    })
-  );
-  test(
-    'if no image extension, throw',
-    keystoneTestWrapper(async ({ context }: { context: any }) => {
-      await context.lists.Test.createOne({
-        item: { name: 'Newly created', avatar: prepareFile('keystone') },
-        query: `avatar { id }`,
-      });
     })
   );
 };
