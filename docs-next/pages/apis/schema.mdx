@@ -111,7 +111,7 @@ Options:
   Can be either a boolean value, or an async function with an argument `{ session }` that returns a boolean value.
 - `listView`: Controls the list view page of the Admin UI.
   - `defaultFieldMode` (default: `'read'`): Controls the default mode of fields in the list view.
-    Can be overriden by per-field values in the `field.ui.listView.fieldMode` config.
+    Can be overridden by per-field values in the `field.ui.listView.fieldMode` config.
     See the [Fields API](./fields) for details.
     Can be one of `['read', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['read', 'hidden']`.
   - `initialColumns` (default: `[labelField]`). A list of field names to display in columns in the list view. By default only the label column, as determined by `labelField`, is shown.
@@ -121,12 +121,12 @@ Options:
   - `pageSize` (default: `50`): Sets the number of items to show per page in the list view.
 - `createView`: Controls the create view page of the Admin UI.
   - `defaultFieldMode` (default: `'edit'`):
-    Can be overriden by per-field values in the `field.ui.createView.fieldMode` config.
+    Can be overridden by per-field values in the `field.ui.createView.fieldMode` config.
     See the [Fields API](./fields) for details.
     Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['edit', 'hidden']`.
 - `itemView`: Controls the item view page of the Admin UI.
   - `defaultFieldMode` (default: `'edit'`):
-    Can be overriden by per-field values in the `field.ui.itemView.fieldMode` config.
+    Can be overridden by per-field values in the `field.ui.itemView.fieldMode` config.
     See the [Fields API](./fields) for details.
     Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['edit', 'read', 'hidden']`.
 
@@ -232,6 +232,6 @@ export default config({
 ## description
 
 The `description` option defines a string which will be used as a description in the Admin UI and GraphQL API docs.
-This option can be individually overriden by the `graphql.description` or `ui.description` options.
+This option can be individually overridden by the `graphql.description` or `ui.description` options.
 
 export default ({ children }) => <Markdown>{children}</Markdown>;
