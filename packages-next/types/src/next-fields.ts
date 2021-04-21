@@ -70,18 +70,21 @@ type NowDefault = { kind: 'now' };
 type UuidDefault = { kind: 'uuid' };
 type CuidDefault = { kind: 'cuid' };
 export type ScalarDBFieldDefault<
-  Scalar extends keyof ScalarPrismaTypes = keyof ScalarPrismaTypes
-> =
-  | {
-      String: StringLiteralDefault | UuidDefault | CuidDefault;
-      Boolean: BooleanLiteralDefault;
-      Json: StringLiteralDefault;
-      Float: NumberLiteralDefault;
-      Int: AutoIncrementDefault | NumberLiteralDefault;
-      BigInt: AutoIncrementDefault | BigIntLiteralDefault;
-      DateTime: NowDefault | StringLiteralDefault;
-    }[Scalar]
-  | DBGeneratedDefault;
+  Scalar extends keyof ScalarPrismaTypes = keyof ScalarPrismaTypes,
+  Mode extends 'required' | 'many' | 'optional' = 'required' | 'many' | 'optional'
+> = Mode extends 'many'
+  ? never
+  :
+      | {
+          String: StringLiteralDefault | UuidDefault | CuidDefault;
+          Boolean: BooleanLiteralDefault;
+          Json: StringLiteralDefault;
+          Float: NumberLiteralDefault;
+          Int: AutoIncrementDefault | NumberLiteralDefault;
+          BigInt: AutoIncrementDefault | BigIntLiteralDefault;
+          DateTime: NowDefault | StringLiteralDefault;
+        }[Scalar]
+      | DBGeneratedDefault;
 
 export type ScalarDBField<
   Scalar extends keyof ScalarPrismaTypes,
@@ -96,7 +99,7 @@ export type ScalarDBField<
    */
   // TODO: type this nicely rather than just accepting a string(it can't just be a set of string literals though)
   nativeType?: string;
-  default?: ScalarDBFieldDefault<Scalar>;
+  default?: ScalarDBFieldDefault<Scalar, Mode>;
   index?: 'unique' | 'index';
   isOrderable?: boolean;
 };
