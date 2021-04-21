@@ -157,6 +157,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
                         },
                       }),
                     }),
+                    images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
                   }),
                 });
               } catch (error) {

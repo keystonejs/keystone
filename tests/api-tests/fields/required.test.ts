@@ -44,6 +44,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                           },
                         }),
                       }),
+                      images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
                     }),
                   }),
                 testFn

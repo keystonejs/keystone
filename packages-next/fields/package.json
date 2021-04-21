@@ -8,6 +8,7 @@
     "@keystone-next/server-side-graphql-client-legacy": "4.0.0",
     "@keystone-next/test-utils-legacy": "17.0.0",
     "@types/bytes": "^3.1.0",
+    "fs-extra": "^9.1.0",
     "mime": "^2.5.2",
     "typescript": "^4.2.4"
   },
