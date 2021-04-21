@@ -82,15 +82,73 @@ export const storedValues = () => [
 export const supportedFilters = () => [];
 
 export const crudTests = (keystoneTestWrapper: any) => {
-  test(
-    'upload values should match expected',
-    keystoneTestWrapper(async ({ context }: { context: any }) => {
-      const filenames = ['keystone.jpeg', 'keystone.jpg', 'keystone'];
-      for (const filename of filenames) {
-        const data = await createItem({
+  describe('Create - upload', () => {
+    test(
+      'upload values should match expected',
+      keystoneTestWrapper(async ({ context }: { context: any }) => {
+        const filenames = ['keystone.jpeg', 'keystone.jpg', 'keystone'];
+        for (const filename of filenames) {
+          const data = await createItem({
+            context,
+            listKey: 'Test',
+            item: { avatar: prepareFile(filename) },
+            returnFields: `
+            avatar {
+              id
+              mode
+              filesize
+              width
+              height
+              extension
+              ref
+              src
+            }
+        `,
+          });
+          expect(data).not.toBe(null);
+          expect(data.avatar).toEqual({
+            ref: `local:${data.avatar.id}.jpg`,
+            src: `/images/${data.avatar.id}.jpg`,
+            id: data.avatar.id,
+            mode: 'local',
+            filesize: 3250,
+            width: 150,
+            height: 152,
+            extension: 'jpg',
+          });
+        }
+      })
+    );
+    test(
+      'if not image file, throw',
+      keystoneTestWrapper(async ({ context }: { context: any }) => {
+        const { data, errors } = await context.graphql.raw({
+          query: `
+            mutation ($item: TestCreateInput) {
+                createTest(data: $item) {
+                    avatar {
+                        id
+                    }
+                }
+            }
+        `,
+          variables: { item: { avatar: prepareFile('badfile.txt') } },
+        });
+        expect(data).toEqual({ createTest: null });
+        expect(errors).toHaveLength(1);
+        expect(errors![0].message).toEqual('File type not found');
+      })
+    );
+  });
+  describe('Create - ref', () => {
+    test(
+      'From existing item succeeds',
+      keystoneTestWrapper(async ({ context }: { context: any }) => {
+        // Create an initial item
+        const initialItem = await createItem({
           context,
           listKey: 'Test',
-          item: { avatar: prepareFile(filename) },
+          item: { avatar: prepareFile('keystone.jpg') },
           returnFields: `
             avatar {
               id
@@ -104,25 +162,38 @@ export const crudTests = (keystoneTestWrapper: any) => {
             }
         `,
         });
-        expect(data).not.toBe(null);
-        expect(data.avatar).toEqual({
-          ref: `local:${data.avatar.id}.jpg`,
-          src: `/images/${data.avatar.id}.jpg`,
-          id: data.avatar.id,
-          mode: 'local',
-          filesize: 3250,
-          width: 150,
-          height: 152,
-          extension: 'jpg',
+        expect(initialItem).not.toBe(null);
+
+        // Create a new item base on the first items ref
+        const ref = initialItem.avatar.ref;
+        const newItem = await createItem({
+          context,
+          listKey: 'Test',
+          item: { avatar: { ref } },
+          returnFields: `
+            avatar {
+              id
+              mode
+              filesize
+              width
+              height
+              extension
+              ref
+              src
+            }
+        `,
         });
-      }
-    })
-  );
-  test(
-    'if not image file, throw',
-    keystoneTestWrapper(async ({ context }: { context: any }) => {
-      const { data, errors } = await context.graphql.raw({
-        query: `
+        expect(newItem).not.toBe(null);
+
+        // Check that the details of both items match
+        expect(newItem.avatar).toEqual(initialItem.avatar);
+      })
+    );
+    test(
+      'From invalid ref fails',
+      keystoneTestWrapper(async ({ context }: { context: any }) => {
+        const { data, errors } = await context.graphql.raw({
+          query: `
             mutation ($item: TestCreateInput) {
                 createTest(data: $item) {
                     avatar {
@@ -131,11 +202,90 @@ export const crudTests = (keystoneTestWrapper: any) => {
                 }
             }
         `,
-        variables: { item: { avatar: prepareFile('badfile.txt') } },
-      });
-      expect(data).toEqual({ createTest: null });
-      expect(errors).toHaveLength(1);
-      expect(errors![0].message).toEqual('File type not found');
-    })
-  );
+          variables: { item: { avatar: { ref: 'Invalid ref!' } } },
+        });
+        expect(data).toEqual({ createTest: null });
+        expect(errors).toHaveLength(1);
+        expect(errors![0].message).toEqual('Invalid image reference');
+      })
+    );
+    test(
+      'From null ref fails',
+      keystoneTestWrapper(async ({ context }: { context: any }) => {
+        const { data, errors } = await context.graphql.raw({
+          query: `
+            mutation ($item: TestCreateInput) {
+                createTest(data: $item) {
+                    avatar {
+                        id
+                    }
+                }
+            }
+        `,
+          variables: { item: { avatar: { ref: null } } },
+        });
+        expect(data).toEqual({ createTest: null });
+        expect(errors).toHaveLength(1);
+        expect(errors![0].message).toEqual(
+          'Either ref or upload must be passed to ImageFieldInput'
+        );
+      })
+    );
+    test(
+      'Both upload and ref fails - valid ref',
+      keystoneTestWrapper(async ({ context }: { context: any }) => {
+        const initialItem = await createItem({
+          context,
+          listKey: 'Test',
+          item: { avatar: prepareFile('keystone.jpg') },
+          returnFields: `avatar { ref }`,
+        });
+        expect(initialItem).not.toBe(null);
+
+        const { data, errors } = await context.graphql.raw({
+          query: `
+          mutation ($item: TestCreateInput) {
+              createTest(data: $item) {
+                  avatar {
+                      id
+                  }
+              }
+          }
+      `,
+          variables: {
+            item: { avatar: { ref: initialItem.avatar.ref, ...prepareFile('keystone.jpg') } },
+          },
+        });
+        expect(data).toEqual({ createTest: null });
+        expect(errors).toHaveLength(1);
+        expect(errors![0].message).toEqual(
+          'Only one of ref and upload can be passed to ImageFieldInput'
+        );
+      })
+    );
+    test(
+      'Both upload and ref fails - invalid ref',
+      keystoneTestWrapper(async ({ context }: { context: any }) => {
+        const { data, errors } = await context.graphql.raw({
+          query: `
+          mutation ($item: TestCreateInput) {
+              createTest(data: $item) {
+                  avatar {
+                      id
+                  }
+              }
+          }
+      `,
+          variables: {
+            item: { avatar: { ref: 'Invalid', ...prepareFile('keystone.jpg') } },
+          },
+        });
+        expect(data).toEqual({ createTest: null });
+        expect(errors).toHaveLength(1);
+        expect(errors![0].message).toEqual(
+          'Only one of ref and upload can be passed to ImageFieldInput'
+        );
+      })
+    );
+  });
 };

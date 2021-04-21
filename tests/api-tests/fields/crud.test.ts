@@ -53,7 +53,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             );
 
           if (mod.crudTests) {
-            describe.only(`${mod.name} - ${matrixValue} - Custom CRUD operations`, () => {
+            describe(`${mod.name} - ${matrixValue} - Custom CRUD operations`, () => {
               beforeAll(() => {
                 if (mod.beforeAll) {
                   mod.beforeAll();
