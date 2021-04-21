@@ -4,6 +4,8 @@ import { createAuth } from '@keystone-next/auth';
 
 import { lists, extendGraphqlSchema } from './schema';
 
+import { PrismaClient } from '.prisma/client';
+
 let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 

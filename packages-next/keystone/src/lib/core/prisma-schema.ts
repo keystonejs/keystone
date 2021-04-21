@@ -36,7 +36,7 @@ type ResolvedListsToPrintPrismaSchema = Record<
   { fields: ResolvedFieldsToPrintPrismaSchema }
 >;
 
-type ResolvedField =
+export type ResolvedField =
   | ResolvedRelationDBField
   | ScalarishDBField
   | NoDBField

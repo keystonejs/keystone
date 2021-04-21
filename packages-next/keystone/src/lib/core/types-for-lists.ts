@@ -7,11 +7,13 @@ import {
   TypesForList,
   FieldTypeFunc,
   getGqlNames,
+  NextFieldType,
 } from '@keystone-next/types';
 // import { runInputResolvers } from './input-resolvers';
 import { getPrismaModelForList, IdType } from './utils';
 import {
   getDBFieldPathForFieldOnMultiField,
+  ResolvedField,
   ResolvedRelationDBField,
   resolveRelationships,
 } from './prisma-schema';
@@ -31,7 +33,18 @@ type ListForListTypes = {
   pluralGraphQLName: string;
 };
 
-export function getTypes(lists: Record<string, ListForListTypes>): Record<string, TypesForList> {
+type InitialisedField = Omit<NextFieldType, 'dbField'> & { dbField: ResolvedField };
+
+export type InitialisedList = {
+  fields: Record<string, InitialisedField>;
+  singularGraphQLName: string;
+  pluralGraphQLName: string;
+  types: TypesForList;
+};
+
+export function initialiseLists(
+  lists: Record<string, ListForListTypes>
+): Record<string, InitialisedList> {
   const typesForLists: Record<string, TypesForList> = {};
 
   const listsWithInitialisedFields = Object.fromEntries(
@@ -83,8 +96,8 @@ export function getTypes(lists: Record<string, ListForListTypes>): Record<string
   )) {
     const names = getGqlNames({
       listKey,
-      listQueryName: list.pluralGraphQLName,
-      itemQueryName: list.singularGraphQLName,
+      pluralGraphQLName: list.pluralGraphQLName,
+      singularGraphQLName: list.singularGraphQLName,
     });
     let output = types.object<ItemRootValue>()({
       name: names.outputTypeName,
@@ -333,5 +346,10 @@ export function getTypes(lists: Record<string, ListForListTypes>): Record<string
     };
   }
 
-  return typesForLists;
+  return Object.fromEntries(
+    Object.entries(listsWithInitialisedFieldsAndResolvedDbFields).map(([listKey, list]) => [
+      listKey,
+      { ...list, types: typesForLists[listKey] },
+    ])
+  );
 }
