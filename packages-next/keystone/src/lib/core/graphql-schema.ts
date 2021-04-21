@@ -1,10 +1,10 @@
 import { GraphQLSchema } from 'graphql';
 import { getGqlNames, types } from '@keystone-next/types';
 import { getFindManyArgs } from '@keystone-next/types';
-import { InitialisedList } from './types-for-lists';
+import { InitialisedList } from './types-for-lists.js';
 // import { runInputResolvers } from './input-resolvers';
 
-import { getPrismaModelForList } from './utils';
+import { getPrismaModelForList } from './utils.js';
 
 const queryMeta = types.object<{ getCount: () => Promise<number> }>()({
   name: '_QueryMeta',
@@ -171,9 +171,20 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>) {
         const updateMany = types.field({
           type: list.types.output,
           args: {
-            data: types,
+            data: types.arg({
+              type: types.nonNull(
+                types.list(
+                  types.nonNull(
+                    types.inputObject({
+                      name: names.updateManyInputName,
+                      fields: updateOneArgs,
+                    })
+                  )
+                )
+              ),
+            }),
           },
-          async resolve(_rootVal, { where: rawUniqueWhere, data: rawData }, context) {
+          async resolve(_rootVal, {}, context) {
             // const [data, where] = await Promise.all([
             //   runInputResolvers(typesForLists, lists, listKey, 'update', rawData),
             //   runInputResolvers(typesForLists, lists, listKey, 'uniqueWhere', rawUniqueWhere),
