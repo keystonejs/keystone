@@ -11,6 +11,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
   describe(`Provider: ${provider}`, () => {
     testModules
       .map(require)
+      .filter(mod => mod.name === 'Image')
       .filter(mod => !mod.skipUniqueTest)
       .filter(
         ({ supportsUnique, unSupportedAdapterList = [] }) =>
@@ -131,6 +132,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
 
     testModules
       .map(require)
+      .filter(mod => mod.name === 'Image')
       .filter(mod => !mod.skipUniqueTest)
       .filter(
         ({ supportsUnique, unSupportedAdapterList = [] }) =>
@@ -157,6 +159,9 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
                         },
                       }),
                     }),
+                    images: {
+                      upload: 'local',
+                    },
                   }),
                 });
               } catch (error) {

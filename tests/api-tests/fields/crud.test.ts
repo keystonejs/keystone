@@ -20,6 +20,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
   describe(`${provider} provider`, () => {
     testModules
       .map(require)
+      .filter(mod => mod.name === 'Image')
       .filter(
         ({ skipCrudTest, unSupportedAdapterList = [] }) =>
           !skipCrudTest && !unSupportedAdapterList.includes(provider)
@@ -36,6 +37,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                     lists: createSchema({
                       [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
                     }),
+                    images: {
+                      upload: 'local',
+                    },
                   }),
                 }),
 
@@ -49,7 +53,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             );
 
           if (mod.crudTests) {
-            describe(`${mod.name} - ${matrixValue} - Custom CRUD operations`, () => {
+            describe.only(`${mod.name} - ${matrixValue} - Custom CRUD operations`, () => {
               beforeAll(() => {
                 if (mod.beforeAll) {
                   mod.beforeAll();

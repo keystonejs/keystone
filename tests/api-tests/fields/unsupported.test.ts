@@ -12,6 +12,7 @@ testModules.push(path.resolve('packages-next/fields/src/tests/test-fixtures.ts')
 multiAdapterRunners().map(({ provider, after }) => {
   const unsupportedModules = testModules
     .map(require)
+    .filter(mod => mod.name === 'Image')
     .filter(({ unSupportedAdapterList = [] }) => unSupportedAdapterList.includes(provider));
   if (unsupportedModules.length > 0) {
     describe(`${provider} provider`, () => {
@@ -41,6 +42,9 @@ multiAdapterRunners().map(({ provider, after }) => {
                     lists: createSchema({
                       [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
                     }),
+                    images: {
+                      upload: 'local',
+                    },
                   }),
                 })
               ).rejects.toThrow(Error);

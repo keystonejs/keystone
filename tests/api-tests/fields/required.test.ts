@@ -10,6 +10,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
   describe(`Provider: ${provider}`, () => {
     testModules
       .map(require)
+      .filter(mod => mod.name === 'Image')
       .filter(
         ({ skipRequiredTest, unSupportedAdapterList = [] }) =>
           !skipRequiredTest && !unSupportedAdapterList.includes(provider)
@@ -44,6 +45,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                           },
                         }),
                       }),
+                      images: {
+                        upload: 'local',
+                      },
                     }),
                   }),
                 testFn
