@@ -47,6 +47,7 @@ export type GqlNames = {
   createManyInputName: string;
   relateToManyInputName: string;
   relateToOneInputName: string;
+  manyRelationFilter: string;
 };
 
 export type MaybePromise<T> = T | Promise<T>;

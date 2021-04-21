@@ -1,3 +1,4 @@
+import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
 import * as tsgql from '@ts-gql/schema';
 import GraphQLJSON from 'graphql-type-json';
 import { JSONValue, KeystoneContext, MaybePromise } from '.';
@@ -7,7 +8,7 @@ export const types = {
   ...tsgql.bindTypesToContext<KeystoneContext>(),
 };
 
-export type ItemRootValue = { id: string; [key: string]: unknown };
+export type ItemRootValue = { id: IdType; [key: string]: unknown };
 
 export type MaybeFunction<Params extends any[], Ret> = Ret | ((...params: Params) => Ret);
 
@@ -28,17 +29,19 @@ export type NextFieldType<
   TDBField extends DBField = DBField,
   CreateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
+  FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
+  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
 > = {
   dbField: TDBField;
   input?: {
+    uniqueWhere?: FieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
     where?: FieldInputArg<DBFieldFilters<TDBField>, FilterArg>;
     create?: FieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
     update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
   };
   output: tsgql.OutputField<
     {
-      id: string;
+      id: IdType;
       value: DBFieldToOutputValue<TDBField>;
       item: ItemRootValue;
     },
@@ -161,6 +164,8 @@ type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBFi
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 type DBFieldFilters<TDBField extends DBField> = any;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type DBFieldUniqueFilter<TDBField extends DBField> = any;
 
 type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBField<
   infer Scalar,
@@ -192,29 +197,27 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
   : never;
 
 type FieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
-  arg: MaybeFunction<[types: Record<string, TypesForList>], TArg>;
+  arg: TArg;
 } & (Val | undefined extends tsgql.InferValueFromArg<TArg>
-  ? {
-      resolve?(value: tsgql.InferValueFromArg<TArg>): MaybePromise<Val | undefined>;
-    }
-  : {
-      resolve(value: tsgql.InferValueFromArg<TArg>): MaybePromise<Val | undefined>;
-    });
+  ? { resolve?(value: tsgql.InferValueFromArg<TArg>): MaybePromise<Val | undefined> }
+  : { resolve(value: tsgql.InferValueFromArg<TArg>): MaybePromise<Val | undefined> });
 
 export function fieldType<TDBField extends DBField>(dbField: TDBField) {
   return function <
     CreateArg extends tsgql.Arg<tsgql.InputType, any>,
     UpdateArg extends tsgql.Arg<tsgql.InputType, any>,
-    FilterArg extends tsgql.Arg<tsgql.InputType, any>
+    FilterArg extends tsgql.Arg<tsgql.InputType, any>,
+    UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any>
   >(stuff: {
     input?: {
+      uniqueWhere?: FieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
       where?: FieldInputArg<DBFieldFilters<TDBField>, FilterArg>;
       create?: FieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
       update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
     };
     output: tsgql.OutputField<
       {
-        id: string;
+        id: IdType;
         value: DBFieldToOutputValue<TDBField>;
         item: ItemRootValue;
       },
@@ -223,15 +226,13 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
       'value',
       KeystoneContext
     >;
-  }): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg> {
+  }): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg> {
     return { ...stuff, dbField };
   };
 }
 
 type AnyInputObj = tsgql.InputObjectType<
-  {
-    [Key in keyof any]: tsgql.Arg<tsgql.InputType, tsgql.InferValueFromInputType<tsgql.InputType>>;
-  }
+  Record<string, tsgql.Arg<tsgql.InputType, tsgql.InferValueFromInputType<tsgql.InputType>>>
 >;
 
 export type TypesForList = {
@@ -239,11 +240,8 @@ export type TypesForList = {
   create: AnyInputObj;
   uniqueWhere: AnyInputObj;
   where: AnyInputObj;
-  manyRelationFilter: AnyInputObj;
-  relateToOne: AnyInputObj;
-  relateToMany: AnyInputObj;
   sortBy: AnyInputObj;
-  output: tsgql.ObjectType<{ id: string; [key: string]: unknown }, string, KeystoneContext>;
+  output: tsgql.ObjectType<ItemRootValue, string, KeystoneContext>;
 };
 
 export type FindManyArgs = {

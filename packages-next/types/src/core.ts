@@ -61,5 +61,6 @@ export function getGqlNames({
     createManyInputName: `${_listQueryName}CreateInput`,
     relateToManyInputName: `${_itemQueryName}RelateToManyInput`,
     relateToOneInputName: `${_itemQueryName}RelateToOneInput`,
+    manyRelationFilter: `${_listQueryName}RelationFilter`,
   };
 }

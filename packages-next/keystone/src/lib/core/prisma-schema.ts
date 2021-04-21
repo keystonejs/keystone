@@ -22,7 +22,7 @@ type BaseComputedRelationDBField = {
   relationName: string;
 };
 
-type ResolvedRelationDBField =
+export type ResolvedRelationDBField =
   | (BaseComputedRelationDBField & {
       mode: 'many';
     })
@@ -68,7 +68,9 @@ function sortRelationships(left: Rel, right: Rel) {
 
 // TODO: validate no conflicts with multi fields so users get a better error than prisma format failing
 
-function resolveRelationships(lists: ListsToPrintPrismaSchema): ResolvedListsToPrintPrismaSchema {
+export function resolveRelationships(
+  lists: ListsToPrintPrismaSchema
+): ResolvedListsToPrintPrismaSchema {
   const alreadyResolvedTwoWayRelationships = new Set<string>();
   const resolvedLists: ResolvedListsToPrintPrismaSchema = Object.fromEntries(
     Object.keys(lists).map(listKey => [listKey, { fields: {} }])

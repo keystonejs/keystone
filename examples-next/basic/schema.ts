@@ -160,7 +160,6 @@ export const lists = createSchema({
         dividers: true,
         componentBlocks,
       }),
-      publishDate: timestamp(),
       author: relationship({
         ref: 'User.posts',
         ui: {
