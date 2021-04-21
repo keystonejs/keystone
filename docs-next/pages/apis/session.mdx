@@ -131,7 +131,7 @@ Keystone provides the wrapper function `withItemData()`, which will inject an ad
 This `data` value will be populated based on the value of `listKey` and `itemId` from the wrapped session strategy, and the configuration options passed to `withItemData()`.
 
 `withItemData()` accepts two arguments. The first is the session strategy to be wrapped, such as `statelessSessions()` or `storedSessions()`.
-The second argument is an oject of the form `{ [listKey]: query }`.
+The second argument is an object of the form `{ [listKey]: query }`.
 When the session data is created, the wrapper function will look up the item in the list `listKey`, performing a GraphQL query filtering on `itemId` and returning the fields in `query`.
 The returned item will be available as `context.session.data`.
 
