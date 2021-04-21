@@ -1,0 +1,301 @@
+import { Markdown } from '../../components/Page';
+
+# Understanding Relationships
+
+Keystone allows you to model your data by declaring _relationships_ between lists.
+For example, a blogging application might have lists called `Post` and `User`, where each post has a single author.
+This would be represented in Keystone by a relationship between the `Post` and `User` lists.
+
+This guide describes the different types of relationships available in Keystone.
+Once you understand these core concepts you can follow the [configuring relationships](./configuring-relationships) guide to put these ideas into practice.
+
+## Defining a relationship
+
+Relationships are implemented using the [`relationship`](../apis/fields#relationship) field type and defined along with other fields in a [`list()`](../apis/schema#fields).
+For our blog example, we could define:
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text, relationship } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    User: list({ fields: { name: text() } }),
+    Post: list({
+      fields: {
+        title: text(),
+        content: text(),
+        author: relationship({ ref: 'User', many: false }),
+      },
+    }),
+  }),
+});
+```
+
+The `relationship` field type takes a config option `ref` which references another list in the application.
+In this case, the `author` field references the `User` list.
+
+If we wanted to allow a post to have multiple authors we could change our definition to
+
+```javascript
+authors: relationship({ ref: 'User', many: true }),
+```
+
+We have used `many: true` to indicate that the post relates to multiple `Users`, who are the `authors` of that post.
+The default configuration is `many: false`, which indicates that each post is related to exactly one user.
+
+### One-sided vs two-sided
+
+In our example we know the authors of each post.
+We can access this information from our GraphQL API by querying for the `authors` field of a post.
+
+```graphql
+Query {
+  allPosts {
+    title
+    content
+    authors {
+      name
+    }
+  }
+}
+```
+
+If we can find all `authors` of a post, this implies there is enough information available to find all posts written by a particular user.
+To access this information from the `Users` list as well, we update our list definitions as such:
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text, relationship } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    User: list({
+      fields: {
+        name: text(),
+        posts: relationship({ref: 'Post.authors', many: true }),
+      },
+    }),
+    Post: list({
+      fields: {
+        title: text(),
+        content: text(),
+        authors: relationship({ ref: 'User.posts', many: true }),
+      },
+    }),
+  }),
+});
+```
+
+We have now added a `posts` field to the `User` list, and changed the `ref` config of the `authors` field to be `'User.posts`.
+We now have two `relationship` fields, but importantly, we still **only have one relationship**.
+The two fields simply represent different sides of the one relationship.
+
+This type of configuration is called a _two-sided_ relationship, while the original configuration without `posts` was a _one-sided_ relationship.
+
+We can now write the following query to find all the posts written by each user:
+
+```graphql
+Query {
+  allUsers {
+    name
+    posts {
+      title
+      content
+    }
+  }
+}
+```
+
+There are some important things to remember when defining a two-sided relationship:
+
+- Even though there are two fields, there is only one relationship between the lists.
+- The `ref` config must be formatted as `<listName>.<fieldName>` and both sides must refer to each other.
+- Both fields are sharing the same data. If you change the author of a post, that post will no longer show up in the original author's `posts`.
+
+## Self-referential lists
+
+In the above examples we defined relationships between two different lists, `Users` and `Posts`.
+It is also possible to define relationships which refer to the same list.
+For example if we wanted to implement a Twitter style following relationship we could define:
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text, relationship } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    User: list({
+      fields: {
+        name: text(),
+        follows: relationship({ ref: 'User', many: true }),
+      },
+    }),
+  }),
+});
+```
+
+This one-sided relationship allows us to keep track of who each user is following.
+We could turn this into a two-sided relationship to also access the followers of each user:
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text, relationship } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    User: list({
+      fields: {
+        name: text(),
+        follows: relationship({ ref: 'User.followers', many: true }),
+        followers: relationship({ ref: 'User.follows', many: true }),
+      },
+    }),
+  }),
+});
+```
+
+The only relationship configuration not currently supported is having a field reference _itself_, e.g. `friends: relationship({ ref: 'User.friends', many: true })`.
+
+## Cardinality
+
+The _cardinality_ of a relationship is the number items which can exist on either side of the relationship.
+In general, each side can have either `one` or `many` related items.
+Since each relationship has two sides this means we can have `one-to-one`, `one-to-many` and `many-to-many` relationships.
+
+The cardinality of a relationship is controlled by the use of the `many` config option.
+In two-sided relationships the `many` option on both sides must be considered.
+The follow examples will demonstrate how to set up each type of cardinality in the context of our blog.
+
+### One-sided
+
+#### One-to-many
+
+Each post has a single author, and each user can have multiple posts, however we cannot directly access a users' posts.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { text, relationship } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    User: list({
+      fields: {
+        name: text(),
+      },
+    }),
+    Post: list({
+      fields: {
+        title: text(),
+        content: text(),
+        author: relationship({ ref: 'User', many: false }),
+      },
+    }),
+  }),
+});
+```
+
+#### Many-to-many
+
+Each post has multiple authors, and each user can have multiple posts, however we cannot directly access a users' posts.
+
+```typescript
+export default config({
+  lists: createSchema({
+    User: list({
+      fields: {
+        name: text(),
+      },
+    }),
+    Post: list({
+      fields: {
+        title: text(),
+        content: text(),
+        authors: relationship({ ref: 'User', many: true }),
+      },
+    }),
+  }),
+});
+```
+
+### Two-sided
+
+#### One-to-one
+
+Each post has a single author, and each user is only allowed to write one post.
+
+```typescript
+export default config({
+  lists: createSchema({
+    User: list({
+      fields: {
+        name: text(),
+        post: relationship({ ref: 'Post.author', many: false }),
+      },
+    }),
+    Post: list({
+      fields: {
+        title: text(),
+        content: text(),
+        author: relationship({ ref: 'User.post', many: false }),
+      },
+    }),
+  }),
+});
+```
+
+#### One-to-many
+
+Each post has a single author, and each user can have multiple posts.
+
+```typescript
+export default config({
+  lists: createSchema({
+    User: list({
+      fields: {
+        name: text(),
+        posts: relationship({ref: 'Post.author', many: true }),
+      },
+    }),
+    Post: list({
+      fields: {
+        title: text(),
+        content: text(),
+        author: relationship({ ref: 'User.posts', many: false }),
+      },
+    }),
+  }),
+});
+```
+
+#### Many-to-many
+
+Each post can have multiple authors, and each user can have multiple posts.
+
+```typescript
+export default config({
+  lists: createSchema({
+    User: list({
+      fields: {
+        name: text(),
+        posts: relationship({ ref: 'Post.authors', many: true }),
+      },
+    }),
+    Post: list({
+      fields: {
+        title: text(),
+        content: text(),
+        authors: relationship({ ref: 'User.posts', many: true }),
+      },
+    }),
+  }),
+});
+```
+
+## Summary
+
+Keystone relationships are managed using the `relationship` field type.
+They can be configured as one-sided or two-sided by the `ref` config option, and the cardinality can be set using the `many` flag.
+If you need help deciding which options to use, please consult the [relationship configuration guide](./configuring-relationships).
+
+export default ({ children }) => <Markdown>{children}</Markdown>;

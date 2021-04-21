@@ -44,6 +44,7 @@ export type RelationshipFieldConfig<
     hideCreate?: boolean;
   };
   defaultValue?: FieldDefaultValue<Record<string, unknown>>;
+  // FIXME: NOT IMPLEMENTED
   isUnique?: boolean;
 } & (SelectDisplayConfig | CardsDisplayConfig);
 
