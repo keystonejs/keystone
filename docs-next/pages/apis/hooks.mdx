@@ -425,7 +425,7 @@ export default config({
 
 Create and update operations take a `data` value for a single item from the GraphQL input and then perform a number of _data resolving_ steps before writing the final value to the database.
 
-At each stage of the data resolving process, the value of `resolvedData` can be modifed or augmented.
+At each stage of the data resolving process, the value of `resolvedData` can be modified or augmented.
 The final value of `resolvedData` is the value that will be validated and saved to the database.
 
 The data resolving steps are applied in the following order:
