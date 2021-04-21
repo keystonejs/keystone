@@ -30,9 +30,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 lists: createSchema({
                   [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
                 }),
-                images: {
-                  upload: 'local',
-                },
+                images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
               }),
             });
 

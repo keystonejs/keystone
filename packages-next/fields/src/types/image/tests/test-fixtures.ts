@@ -1,16 +1,9 @@
-// import { ProviderName } from '@keystone-next/test-utils-legacy';
 import path from 'path';
 import fs from 'fs-extra';
+// @ts-ignore
 import { Upload } from 'graphql-upload';
-import {
-  createItem,
-  //   deleteItem,
-  //   getItems,
-  //   getItem,
-  //   updateItem,
-} from '@keystone-next/server-side-graphql-client-legacy';
 import mime from 'mime';
-
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 import { text } from '../../text';
 import { image } from '..';
 
@@ -27,24 +20,6 @@ const prepareFile = (_filePath: string) => {
   return { upload };
 };
 
-// const withHelpers = (wrappedFn: (args: any) => void | Promise<void>) => {
-//                 return async ({
-//                   context,
-//                   listKey,
-//                 }: {
-//                   context: KeystoneContext;
-//                   listKey: string;
-//                 }) => {
-//                   const items = await getItems({
-//                     context,
-//                     listKey,
-//                     returnFields,
-//                     sortBy: 'name_ASC',
-//                   });
-//                   return wrappedFn({ context, listKey, items });
-//                 };
-//               };
-
 export const name = 'Image';
 export const typeFunction = image;
 
@@ -58,6 +33,11 @@ export const fieldName = 'avatar';
 export const subfieldName = 'extension';
 
 export const getTestFields = () => ({ name: text(), avatar: image() });
+
+export const afterAll = async () => {
+  // This matches the storagePath in the keystone config in the various test files.
+  fs.rmdirSync('tmp_test_images', { recursive: true });
+};
 
 export const initItems = () => [
   { avatar: prepareFile('graphql.jpg'), name: 'file0' },
