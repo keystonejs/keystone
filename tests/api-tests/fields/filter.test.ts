@@ -14,7 +14,6 @@ multiAdapterRunners().map(({ runner, provider }) =>
   describe(`${provider} provider`, () => {
     testModules
       .map(require)
-      .filter(mod => mod.name === 'Image')
       .filter(
         ({ skipCrudTest, unSupportedAdapterList = [] }) =>
           !skipCrudTest && !unSupportedAdapterList.includes(provider)
