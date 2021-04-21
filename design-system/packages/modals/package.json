@@ -8,7 +8,7 @@
     "@types/react": "^17.0.3"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.10",
+    "@babel/runtime": "^7.13.16",
     "@keystone-ui/button": "^4.0.0",
     "@keystone-ui/core": "^2.0.1",
     "react": "^17.0.2",

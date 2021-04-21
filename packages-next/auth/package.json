@@ -8,7 +8,7 @@
     "node": ">=v12.13.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.10",
+    "@babel/runtime": "^7.13.16",
     "@graphql-tools/merge": "^6.2.13",
     "@keystone-next/admin-ui-utils": "^4.0.0",
     "@keystone-next/fields": "^7.0.0",

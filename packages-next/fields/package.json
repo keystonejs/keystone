@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.15",
-    "@babel/runtime": "^7.13.10",
+    "@babel/runtime": "^7.13.16",
     "@keystone-next/access-control-legacy": "^10.0.0",
     "@keystone-next/adapter-prisma-legacy": "^6.0.0",
     "@keystone-next/admin-ui": "^14.0.0",
@@ -39,7 +39,7 @@
     "bytes": "^3.1.0",
     "copy-to-clipboard": "^3.3.1",
     "cuid": "^2.1.8",
-    "date-fns": "^2.20.3",
+    "date-fns": "^2.21.1",
     "decimal.js": "^10.2.1",
     "dumb-passwords": "^0.2.1",
     "fast-deep-equal": "^3.1.3",
