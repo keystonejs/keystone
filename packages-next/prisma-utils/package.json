@@ -4,7 +4,7 @@
   "private": true,
   "main": "dist/prisma-utils.cjs.js",
   "dependencies": {
-    "@prisma/sdk": "2.20.1",
+    "@prisma/sdk": "2.21.2",
     "fs-extra": "^9.1.0"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/prisma-utils"

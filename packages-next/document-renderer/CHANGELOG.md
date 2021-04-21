@@ -1,5 +1,11 @@
 # @keystone-next/document-renderer
 
+## 2.0.3
+
+### Patch Changes
+
+- [#5417](https://github.com/keystonejs/keystone/pull/5417) [`34e3b6309`](https://github.com/keystonejs/keystone/commit/34e3b6309e3eb8a7efe8469fe76e8ffd4417b244) Thanks [@alexmgrant](https://github.com/alexmgrant)! - Fixed `renderers` prop not being respected.
+
 ## 2.0.2
 
 ### Patch Changes

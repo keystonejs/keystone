@@ -132,7 +132,7 @@ export function getAdminMetaSchema({
                 }
                 const item = await context.sudo().lists[rootVal.listKey].findOne({
                   where: { id: rootVal.itemId },
-                  query: false,
+                  resolveFields: false,
                 });
                 const listConfig = config.lists[rootVal.listKey];
                 const sessionFunction =

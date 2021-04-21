@@ -35,19 +35,19 @@
     "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn"
   },
   "dependencies": {
-    "@babel/core": "^7.13.14",
+    "@babel/core": "^7.13.16",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.13.8",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.13.10",
-    "@babel/preset-env": "^7.13.12",
+    "@babel/plugin-transform-runtime": "^7.13.15",
+    "@babel/preset-env": "^7.13.15",
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
     "@changesets/changelog-github": "^0.4.0",
     "@changesets/cli": "^2.16.0",
     "@jest/test-sequencer": "^26.6.3",
     "@manypkg/cli": "^0.17.0",
-    "@preconstruct/cli": "2.0.6",
+    "@preconstruct/cli": "2.0.7",
     "@preconstruct/eslint-plugin-format-js-tag": "^0.1.0",
     "@testing-library/jest-dom": "^5.11.10",
     "@types/jest": "^26.0.22",
@@ -58,8 +58,8 @@
     "eslint": "^7.24.0",
     "eslint-plugin-cypress": "^2.11.2",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jest": "^24.3.4",
-    "eslint-plugin-react": "^7.23.1",
+    "eslint-plugin-jest": "^24.3.5",
+    "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-hooks": "^4.2.0",
     "is-ci": "^3.0.0",
     "jest": "^26.6.3",
@@ -69,7 +69,7 @@
     "remark-toc": "^5.1.1",
     "rimraf": "^3.0.2",
     "terminal-link-cli": "^2.0.0",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.4"
   },
   "prettier": {
     "proseWrap": "preserve",
@@ -155,6 +155,6 @@
     "babel-plugin-remove-graphql-queries": "2.7.2"
   },
   "engines": {
-    "node": ">=12.13.0"
+    "node": ">=v12.13.1"
   }
 }

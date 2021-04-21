@@ -82,7 +82,7 @@ async function checkout(root: any, { token }: Arguments, context: KeystoneContex
       items: { create: orderItems },
       user: { connect: { id: userId } },
     },
-    query: false,
+    resolveFields: false,
   });
   console.log({ order });
   // 6. Clean up any old cart item

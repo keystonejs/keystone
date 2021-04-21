@@ -1,8 +1,7 @@
 const withPreconstruct = require('@preconstruct/next');
 const withPlugins = require('next-compose-plugins');
-// eslint-disable-next-line import/order
-const mdxHints = require('./remark-plugins/hints');
 const withImages = require('next-images');
+const mdxHints = require('remark-hint');
 const withMDX = require('@next/mdx')({
   extension: /\.mdx?$/,
   options: {
