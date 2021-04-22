@@ -48,6 +48,13 @@ context = {
   getListAccessControlForUser,
   getFieldAccessControlForUser,
 
+  // Images API
+  images: {
+    getSrc,
+    getDataFromRef,
+    getDataFromStream,
+  },
+
   // Internal state
   totalResults,
   maxTotalResults,
@@ -120,6 +127,32 @@ The `KeystoneContext` object exposes the underlying database driver directly via
 
 The functions `getListAccessControlForUser()` and `getFieldAccessControlForUser()` are used by the internal Keystone resolvers to apply access control.
 They should not be called directly.
+
+### Images API
+
+If [support for image fields](./config#images) is enabled in the system, then an `images` API will be made available on the `context` object.
+This API takes advantage of the following types:
+
+```
+type ImageMode = 'local';
+
+type ImageExtension = 'jpg' | 'png' | 'webp' | 'gif';
+
+type ImageData = {
+  mode: ImageMode;
+  id: string;
+  extension: ImageExtension;
+  filesize: number;
+  width: number;
+  height: number;
+};
+```
+
+`images.getSrc(mode, id, extension)`: Given a `mode`, `id`, and `extension` from an `ImageData` object, returns the `src` value representing the location from which the image can be accessed over HTTP.
+
+`async images.getDataFromRef(ref)`: Given a `ref` string, taken from the `id` field of an existing image, returns an `ImageData` object.
+
+`async images.getDataFromStream(stream)`: Given a readable data stream, returns an `ImageData` object. The `mode` will be taken from `config.images.mode`, and `id` will be a `uuid` value. The other values will be inferred from the data stream itself. The contents of the stream will be written to the filesystem at `config.images.local.storagePath`.
 
 ### Internal state
 
