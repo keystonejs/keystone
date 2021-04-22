@@ -44,7 +44,7 @@ export const filterTests = (withKeystone: any) => {
         listKey: 'Test',
         where,
         returnFields: 'id name',
-        sortBy: 'name_ASC',
+        sortBy: ['name_ASC'],
       })
     ).toEqual(expected);
 

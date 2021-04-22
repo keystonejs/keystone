@@ -104,7 +104,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                     context,
                     listKey,
                     returnFields,
-                    sortBy: 'name_ASC',
+                    sortBy: ['name_ASC'],
                   });
                   return wrappedFn({ context, listKey, items });
                 };

@@ -79,7 +79,7 @@ export const filterTests = (withKeystone: (arg: any) => any, matrixValue: Matrix
         listKey: 'Test',
         where,
         returnFields: 'name orderNumber',
-        sortBy: 'name_ASC',
+        sortBy: ['name_ASC'],
       })
     ).toEqual(expected.map(i => _storedValues[i]));
 
