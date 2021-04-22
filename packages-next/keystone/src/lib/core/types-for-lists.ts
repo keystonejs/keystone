@@ -8,9 +8,16 @@ import {
   FieldTypeFunc,
   getGqlNames,
   NextFieldType,
+  CacheHint,
+  FieldReadAccessArgs,
+  IndividualFieldAccessControl,
+  FieldAccessControl,
+  FieldCreateAccessArgs,
+  FieldUpdateAccessArgs,
+  BaseGeneratedListTypes,
 } from '@keystone-next/types';
-import { CacheHint } from 'apollo-cache-control';
 // import { runInputResolvers } from './input-resolvers';
+import { validateFieldAccessControl } from '../createAccessControlContext';
 import { getPrismaModelForList, IdType } from './utils';
 import {
   getDBFieldPathForFieldOnMultiField,
@@ -19,7 +26,6 @@ import {
   resolveRelationships,
 } from './prisma-schema';
 import { throwAccessDenied } from './ListTypes/graphqlErrors';
-import { opToType } from './ListTypes/utils';
 
 const sortDirectionEnum = types.enum({
   name: 'SortDirection',
@@ -32,7 +38,10 @@ type ListForListTypes = {
   pluralGraphQLName: string;
 };
 
-export type InitialisedField = Omit<NextFieldType, 'dbField'> & { dbField: ResolvedDBField };
+export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
+  dbField: ResolvedDBField;
+  access: ResolvedFieldAccessControl;
+};
 
 export type InitialisedList = {
   fields: Record<string, InitialisedField>;
@@ -133,6 +142,7 @@ function outputTypeField(
   output: NextFieldType['output'],
   dbField: ResolvedDBField,
   cacheHint: CacheHint | undefined,
+  access: IndividualFieldAccessControl<FieldReadAccessArgs>,
   listKey: string,
   fieldPath: string
 ) {
@@ -146,26 +156,27 @@ function outputTypeField(
       const id = (rootVal as any).id as IdType;
 
       // Check access
-      // const operation = 'read';
-      // const access = await context.getFieldAccessControlForUser(
-      //   field.access,
-      //   listKey,
-      //   fieldPath,
-      //   undefined,
-      //   rootVal,
-      //   operation,
-      //   { context, gqlName: undefined as any }
-      // );
-      // if (!access) {
-      //   // If the client handles errors correctly, it should be able to
-      //   // receive partial data (for the fields the user has access to),
-      //   // and then an `errors` array of AccessDeniedError's
-      //   throwAccessDenied(opToType[operation], fieldPath, { itemId: rootVal.id });
-      // }
+      const canAccess = await validateFieldAccessControl({
+        access,
+        args: {
+          context,
+          fieldKey: fieldPath,
+          item: rootVal,
+          listKey,
+          operation: 'read',
+          session: context.session,
+        },
+      });
+      if (!canAccess) {
+        // If the client handles errors correctly, it should be able to
+        // receive partial data (for the fields the user has access to),
+        // and then an `errors` array of AccessDeniedError's
+        throwAccessDenied('query', fieldPath, { itemId: rootVal.id });
+      }
 
       // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
       if (cacheHint && info && info.cacheControl) {
-        info.cacheControl.setCacheHint(cacheHint);
+        info.cacheControl.setCacheHint(cacheHint as any);
       }
 
       const value = getValueForDBField(rootVal, dbField, id, listKey, fieldPath, context);
@@ -233,6 +244,37 @@ function assertIdFieldGraphQLTypesCorrect(
   }
 }
 
+type ResolvedFieldAccessControl = {
+  read: IndividualFieldAccessControl<FieldReadAccessArgs>;
+  create: IndividualFieldAccessControl<FieldCreateAccessArgs>;
+  update: IndividualFieldAccessControl<FieldUpdateAccessArgs>;
+};
+
+function parseFieldAccessControl(
+  access: FieldAccessControl<BaseGeneratedListTypes> | undefined
+): ResolvedFieldAccessControl {
+  if (access === undefined) {
+    return {
+      create: true,
+      read: true,
+      update: true,
+    };
+  }
+  if (typeof access === 'boolean' || typeof access === 'function') {
+    return {
+      create: access,
+      read: access,
+      update: access,
+    };
+  }
+  return {
+    create: true,
+    read: true,
+    update: true,
+    ...access,
+  };
+}
+
 export function initialiseLists(
   lists: Record<string, ListForListTypes>
 ): Record<string, InitialisedList> {
@@ -273,10 +315,13 @@ export function initialiseLists(
       {
         ...list,
         fields: Object.fromEntries(
-          Object.entries(list.fields).map(([fieldPath, field]) => [
-            fieldPath,
-            { ...field, dbField: resolvedLists[listKey].fields[fieldPath] },
-          ])
+          Object.entries(list.fields).map(([fieldKey, field]) => {
+            const access = parseFieldAccessControl(field.access);
+            return [
+              fieldKey,
+              { ...field, access, dbField: resolvedLists[listKey].fields[fieldKey] },
+            ];
+          })
         ),
       },
     ])
@@ -308,7 +353,8 @@ export function initialiseLists(
                   outputField,
                   field.dbField,
                   field.cacheHint,
-                  field.listKey,
+                  field.access.read,
+                  listKey,
                   fieldPath
                 ),
               ];

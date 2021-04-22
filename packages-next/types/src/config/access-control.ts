@@ -5,8 +5,6 @@ type BaseAccessArgs = {
   session: any;
   listKey: string;
   context: KeystoneContext;
-  // idk if this is optional or not
-  gqlName?: string;
 };
 
 type CreateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = BaseAccessArgs & {
@@ -87,23 +85,25 @@ export type ListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes>
         | DeleteAccessArgs
     ) => MaybePromise<GeneratedListTypes['inputs']['where'] | boolean>);
 
-type IndividualFieldAccessControl<Args> = boolean | ((args: Args) => MaybePromise<boolean>);
+export type IndividualFieldAccessControl<Args> = boolean | ((args: Args) => MaybePromise<boolean>);
 
 type BaseFieldAccessArgs = {
   fieldKey: string;
 };
 
-type FieldCreateAccessArgs<
-  GeneratedListTypes extends BaseGeneratedListTypes
+export type FieldCreateAccessArgs<
+  GeneratedListTypes extends BaseGeneratedListTypes = BaseGeneratedListTypes
 > = CreateAccessArgs<GeneratedListTypes> & BaseFieldAccessArgs;
 
-type FieldReadAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = ReadAccessArgs &
+export type FieldReadAccessArgs<
+  GeneratedListTypes extends BaseGeneratedListTypes = BaseGeneratedListTypes
+> = ReadAccessArgs &
   BaseFieldAccessArgs & {
     item: GeneratedListTypes['backing'];
   };
 
-type FieldUpdateAccessArgs<
-  GeneratedListTypes extends BaseGeneratedListTypes
+export type FieldUpdateAccessArgs<
+  GeneratedListTypes extends BaseGeneratedListTypes = BaseGeneratedListTypes
 > = UpdateAccessArgs<GeneratedListTypes> &
   BaseFieldAccessArgs & {
     item: GeneratedListTypes['backing'];

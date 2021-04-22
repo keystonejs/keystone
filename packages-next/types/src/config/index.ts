@@ -171,3 +171,10 @@ export type ExtendGraphqlSchema = (schema: GraphQLSchema, keystone: BaseKeystone
 // Exports from sibling packages
 
 export type { ListHooks, ListAccessControl, FieldAccessControl };
+
+export type {
+  FieldCreateAccessArgs,
+  FieldReadAccessArgs,
+  FieldUpdateAccessArgs,
+  IndividualFieldAccessControl,
+} from './access-control';

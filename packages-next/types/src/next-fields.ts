@@ -1,7 +1,9 @@
 import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
 import * as tsgql from '@ts-gql/schema';
 import GraphQLJSON from 'graphql-type-json';
-import { JSONValue, KeystoneContext, MaybePromise } from '.';
+import { BaseGeneratedListTypes } from './utils';
+import { ListHooks } from './config';
+import { FieldAccessControl, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export const types = {
   JSON: tsgql.types.scalar<JSONValue>(GraphQLJSON),
@@ -53,6 +55,8 @@ export type NextFieldType<
   output: FieldTypeOutputField<TDBField>;
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   cacheHint?: CacheHint;
+  access?: FieldAccessControl<BaseGeneratedListTypes>;
+  hooks?: ListHooks<BaseGeneratedListTypes>;
 };
 
 type ScalarPrismaTypes = {
@@ -229,6 +233,8 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
     output: FieldTypeOutputField<TDBField>;
     extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
     cacheHint?: CacheHint;
+    access?: FieldAccessControl<BaseGeneratedListTypes>;
+    hooks?: ListHooks<BaseGeneratedListTypes>;
   }): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg> {
     return { ...stuff, dbField };
   };
