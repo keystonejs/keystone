@@ -83,7 +83,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 context: KeystoneContext,
                 where: Record<string, any> | undefined,
                 expected: any[],
-                sortBy = 'name_ASC'
+                sortBy = ['name_ASC']
               ) =>
                 expect(await getItems({ context, listKey, where, returnFields, sortBy })).toEqual(
                   expected.map(i => storedValues[i])
