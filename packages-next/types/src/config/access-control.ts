@@ -1,3 +1,4 @@
+import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
 import type { MaybePromise } from '../utils';
 import type { BaseGeneratedListTypes, KeystoneContext } from '..';
 
@@ -12,38 +13,30 @@ type CreateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = BaseA
   /**
    * The input passed in from the GraphQL API
    */
-  originalInput?:
-    | GeneratedListTypes['inputs']['create']
-    | readonly { readonly data: GeneratedListTypes['inputs']['create'] }[];
+  originalInput: GeneratedListTypes['inputs']['create'];
 };
 
-type CreateAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
+export type CreateAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
   | boolean
   | ((args: CreateAccessArgs<GeneratedListTypes>) => MaybePromise<boolean>);
 
 type ReadAccessArgs = BaseAccessArgs & { operation: 'read' };
 
-type ReadListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
+export type ReadListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
   | boolean
   | GeneratedListTypes['inputs']['where']
   | ((args: ReadAccessArgs) => MaybePromise<GeneratedListTypes['inputs']['where'] | boolean>);
 
 type UpdateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = BaseAccessArgs & {
   /**
-   * The id being updated if a single item is being updated
+   * The id being updated
    */
-  itemId?: string;
-  /**
-   * The ids being updated if many items are being updated
-   */
-  itemIds?: string[];
+  itemId: IdType;
   operation: 'update';
   /**
    * The input passed in from the GraphQL API
    */
-  originalInput?:
-    | GeneratedListTypes['inputs']['update']
-    | readonly { readonly id: string; readonly data: GeneratedListTypes['inputs']['update'] }[];
+  originalInput: GeneratedListTypes['inputs']['update'];
 };
 
 type UpdateListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
@@ -55,13 +48,9 @@ type UpdateListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> 
 
 type DeleteAccessArgs = BaseAccessArgs & {
   /**
-   * The id being deleted if a single item is being deleted
+   * The id being deleted
    */
-  itemId?: string;
-  /**
-   * The ids being deleted if many items are being deleted
-   */
-  itemIds?: string[];
+  itemId: IdType;
   operation: 'delete';
 };
 

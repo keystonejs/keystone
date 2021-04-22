@@ -177,4 +177,6 @@ export type {
   FieldReadAccessArgs,
   FieldUpdateAccessArgs,
   IndividualFieldAccessControl,
+  CreateAccessControl,
+  ReadListAccessControl,
 } from './access-control';

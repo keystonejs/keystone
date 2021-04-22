@@ -1,6 +1,7 @@
 import { IdType } from '@keystone-next/keystone/src/lib/core/utils';
 import * as tsgql from '@ts-gql/schema';
 import GraphQLJSON from 'graphql-type-json';
+import { InputResolvers } from '@keystone-next/keystone/src/lib/core/input-resolvers';
 import { BaseGeneratedListTypes } from './utils';
 import { ListHooks } from './config';
 import { FieldAccessControl, JSONValue, KeystoneContext, MaybePromise } from '.';
@@ -170,7 +171,14 @@ type DBFieldToInputValue<TDBField extends DBField> = TDBField extends ScalarDBFi
   : never;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-type DBFieldFilters<TDBField extends DBField> = any;
+type DBFieldFiltersInner<TDBField extends DBField> = Record<string, any>;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type DBFieldFilters<TDBField extends DBField> = {
+  AND?: DBFieldFiltersInner<TDBField>;
+  OR?: DBFieldFiltersInner<TDBField>;
+  NOT?: DBFieldFiltersInner<TDBField>;
+} & DBFieldFiltersInner<TDBField>;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 type DBFieldUniqueFilter<TDBField extends DBField> = any;
 
@@ -206,8 +214,18 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
 type FieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
   arg: TArg;
 } & (Val | undefined extends tsgql.InferValueFromArg<TArg>
-  ? { resolve?(value: tsgql.InferValueFromArg<TArg>): MaybePromise<Val | undefined> }
-  : { resolve(value: tsgql.InferValueFromArg<TArg>): MaybePromise<Val | undefined> });
+  ? {
+      resolve?(
+        value: tsgql.InferValueFromArg<TArg>,
+        resolvers: Record<string, InputResolvers>
+      ): MaybePromise<Val | undefined>;
+    }
+  : {
+      resolve(
+        value: tsgql.InferValueFromArg<TArg>,
+        resolvers: Record<string, InputResolvers>
+      ): MaybePromise<Val | undefined>;
+    });
 
 type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
   { id: IdType; value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },

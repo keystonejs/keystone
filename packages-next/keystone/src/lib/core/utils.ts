@@ -51,6 +51,9 @@ export function getPrismaModelForList(prismaClient: PrismaClient, listKey: strin
   return prismaClient[listKey[0].toLowerCase() + listKey.slice(1)];
 }
 
+// this is wrong
+// all the things should be generic over the id type
+// i don't want to deal with that right now though
 declare const idTypeSymbol: unique symbol;
 
-export type IdType = { ___keystoneIdType: typeof idTypeSymbol };
+export type IdType = { ___keystoneIdType: typeof idTypeSymbol; toString(): string };
