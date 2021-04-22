@@ -21,6 +21,7 @@ export default config({
   session: () => { /* ... */ },
   graphql: { /* ... */ },
   extendGraphqlSchema: { /* ... */ },
+  images: { /* ... */ },
   experimental: { /* ... */ },
 });
 ```
@@ -250,6 +251,34 @@ export default config({
 ```
 
 See the [schema extension guide](../guides/schema-extension) for more details on how to use `graphQLSchemaExtension()` to extend your GraphQL API.
+
+## images
+
+Keystone supports image handling via the [`image`](./fields#image) field type.
+In order to use this field type you need to configure Keystone with information about where your images will be stored and served from.
+At the moment Keystone supports storing files on the local filesystem, and is agnostic about how images are served.
+
+```typescript
+import { config } from '@keystone-next/keystone/schema';
+
+export default config({
+  images: {
+    upload: 'local',
+    local: {
+      storagePath: 'public/images',
+      baseUrl: '/images',
+    },
+  }
+  /* ... */
+});
+```
+
+Options:
+
+- `upload`: The storage target when uploading images. Currently only `local` is supported.
+- `local`: Configuration options when using the `local` storage target.
+  - `storagePath`: The path local images are uploaded to.
+  - `baseUrl`: The base of the URL local images will be served from, outside of keystone.
 
 ## experimental
 

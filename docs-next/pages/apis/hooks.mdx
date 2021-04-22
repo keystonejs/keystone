@@ -126,20 +126,19 @@ The `validateInput` function is used to validate the [`resolvedData`](#resolved-
 
 It is invoked after the `resolveInput` hooks have been run.
 
-If the `resolvedData` is invalid then the function should report validation errors with `addValidationError(msg)` for list hooks, or `addFieldValidationError(msg)` for field hooks.
+If the `resolvedData` is invalid then the function should report validation errors with `addValidationError(msg)`.
 These error messages will be returned as a `ValidationFailureError` from the GraphQL API, and the operation will not be completed.
 
-| Argument                       | Description                                                                                                                                                                                                 |
-| :----------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `listKey`                      | The key of the list being operated on.                                                                                                                                                                      |
-| `fieldPath`                    | The path of the field being operated on (field hooks only).                                                                                                                                                 |
-| `operation`                    | The operation being performed (`'create'` or `'update'`).                                                                                                                                                   |
-| `originalInput`                | The value of `data` passed into the mutation.                                                                                                                                                               |
-| `existingItem`                 | The current value of the item being updated (`undefined` for `create` operations). This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
-| `resolvedData`                 | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed.                                                                              |
-| `context`                      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                             |
-| `addFieldValidationError(msg)` | Used to set a field validation error (field hooks only).                                                                                                                                                    |
-| `addValidationError(msg)`      | Used to set a validation error (list hooks only).                                                                                                                                                           |
+| Argument                  | Description                                                                                                                                                                                                 |
+| :------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `listKey`                 | The key of the list being operated on.                                                                                                                                                                      |
+| `fieldPath`               | The path of the field being operated on (field hooks only).                                                                                                                                                 |
+| `operation`               | The operation being performed (`'create'` or `'update'`).                                                                                                                                                   |
+| `originalInput`           | The value of `data` passed into the mutation.                                                                                                                                                               |
+| `existingItem`            | The current value of the item being updated (`undefined` for `create` operations). This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
+| `resolvedData`            | A [`resolved data`](#resolved-data-stages) object. The resolved data value after all data resolver stages have been completed.                                                                              |
+| `context`                 | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                                                                             |
+| `addValidationError(msg)` | Used to set a validation error.                                                                                                                                                                             |
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -170,7 +169,7 @@ export default config({
               existingItem,
               resolvedData,
               context,
-              addFieldValidationError,
+              addValidationError,
             }) => { /* ... */ },
           },
         }),
@@ -295,18 +294,17 @@ The `validateDelete` function is used to validate that deleting the selected ite
 
 It is invoked after access control has been applied.
 
-If the delete operation is invalid then the function should report validation errors with `addValidationError(msg)` for list hooks, or `addFieldValidationError(msg)` for field hooks.
+If the delete operation is invalid then the function should report validation errors with `addValidationError(msg)`.
 These error messages will be returned as a `ValidationFailureError` from the GraphQL API.
 
-| Argument                       | Description                                                                                                                                                   |
-| :----------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `listKey`                      | The key of the list being operated on.                                                                                                                        |
-| `fieldPath`                    | The path of the field being operated on (field hooks only).                                                                                                   |
-| `operation`                    | The operation being performed (`'delete'`).                                                                                                                   |
-| `existingItem`                 | The value of the item to be deleted. This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
-| `context`                      | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                               |
-| `addValidationError(msg)`      | Used to set a validation error (list hooks only).                                                                                                             |
-| `addFieldValidationError(msg)` | Used to set a field validation error (field hooks only).                                                                                                      |
+| Argument                  | Description                                                                                                                                                   |
+| :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `listKey`                 | The key of the list being operated on.                                                                                                                        |
+| `fieldPath`               | The path of the field being operated on (field hooks only).                                                                                                   |
+| `operation`               | The operation being performed (`'delete'`).                                                                                                                   |
+| `existingItem`            | The value of the item to be deleted. This object is an unresolved list item. See the [list item API](./list-items) for more details on unresolved list items. |
+| `context`                 | The [`KeystoneContext`](./context) object of the originating GraphQL operation.                                                                               |
+| `addValidationError(msg)` | Used to set a validation error.                                                                                                                               |
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -333,7 +331,7 @@ export default config({
               operation,
               existingItem,
               context,
-              addFieldValidationError,
+              addValidationError,
             }) => { /* ... */ },
           },
         }),
@@ -425,7 +423,7 @@ export default config({
 
 Create and update operations take a `data` value for a single item from the GraphQL input and then perform a number of _data resolving_ steps before writing the final value to the database.
 
-At each stage of the data resolving process, the value of `resolvedData` can be modifed or augmented.
+At each stage of the data resolving process, the value of `resolvedData` can be modified or augmented.
 The final value of `resolvedData` is the value that will be validated and saved to the database.
 
 The data resolving steps are applied in the following order:

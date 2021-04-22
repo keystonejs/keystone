@@ -28,6 +28,9 @@ import {
 
   // Virtual type
   virtual,
+
+  // File types
+  image,
 } from '@keystone-next/fields';
 
 // Complex types
@@ -501,6 +504,44 @@ export default config({
             { name: '...', type: 'String' },
             /* ... */
           ],
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
+
+## File types
+
+File types allow you to upload different types of files to your Keystone system.
+
+### file
+
+(coming soon)
+
+### image
+
+An `image` field represents an image file, i.e. `.jpg`, `.png`, `.webp`, or `.gif`.
+
+See [`config.images`](./config#images) for details on how to configure your Keystone system with support for the `image` field type.
+
+Options:
+
+- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { image } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        avatar: image({
+          isRequired: true,
         }),
         /* ... */
       },

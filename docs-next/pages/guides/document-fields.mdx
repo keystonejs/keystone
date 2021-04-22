@@ -138,7 +138,7 @@ export default config({
 
 <summary>
   In the document editor at the top of this page, the Quote(shown above), Notice and Hero are
-  implemented as component blocks, see the implemention for Notice and Hero by expanding this.
+  implemented as component blocks, see the implementation for Notice and Hero by expanding this.
 </summary>
 
 ```tsx
@@ -305,7 +305,7 @@ type FormField<Value, Options> = {
    * - on the client in the editor when a user is changing the value.
    *   Returning `false` will block closing the form
    *   and saving the item.
-   * - on the server when a change is recieved before allowing it to be saved
+   * - on the server when a change is received before allowing it to be saved
    *   if `true` is returned
    * @param value The value of the form field. You should NOT trust
    * this value to be of the correct type because it could come from
@@ -391,7 +391,7 @@ import { fields } from '@keystone-next/fields-document/component-blocks';
 fields.conditional(fields.checkbox({ label: 'Show Call to action' }), {
   true: fields.object({
     url: fields.url({ label: 'URL' }),
-    content: fields.child({ kind: 'inline', placehodler: 'Call to Action' }),
+    content: fields.child({ kind: 'inline', placeholder: 'Call to Action' }),
   }),
   false: fields.empty(),
 });
