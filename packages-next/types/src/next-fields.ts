@@ -39,17 +39,8 @@ export type NextFieldType<
     create?: FieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
     update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
   };
-  output: tsgql.OutputField<
-    {
-      id: IdType;
-      value: DBFieldToOutputValue<TDBField>;
-      item: ItemRootValue;
-    },
-    any,
-    any,
-    'value',
-    KeystoneContext
-  >;
+  output: FieldTypeOutputField<TDBField>;
+  extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
 };
 
 type ScalarPrismaTypes = {
@@ -202,6 +193,14 @@ type FieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
   ? { resolve?(value: tsgql.InferValueFromArg<TArg>): MaybePromise<Val | undefined> }
   : { resolve(value: tsgql.InferValueFromArg<TArg>): MaybePromise<Val | undefined> });
 
+type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
+  { id: IdType; value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },
+  any,
+  any,
+  'value',
+  KeystoneContext
+>;
+
 export function fieldType<TDBField extends DBField>(dbField: TDBField) {
   return function <
     CreateArg extends tsgql.Arg<tsgql.InputType, any>,
@@ -215,17 +214,8 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
       create?: FieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
       update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
     };
-    output: tsgql.OutputField<
-      {
-        id: IdType;
-        value: DBFieldToOutputValue<TDBField>;
-        item: ItemRootValue;
-      },
-      any,
-      any,
-      'value',
-      KeystoneContext
-    >;
+    output: FieldTypeOutputField<TDBField>;
+    extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   }): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg> {
     return { ...stuff, dbField };
   };

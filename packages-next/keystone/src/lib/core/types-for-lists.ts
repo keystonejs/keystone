@@ -13,7 +13,7 @@ import {
 import { getPrismaModelForList, IdType } from './utils';
 import {
   getDBFieldPathForFieldOnMultiField,
-  ResolvedField,
+  ResolvedDBField,
   ResolvedRelationDBField,
   resolveRelationships,
 } from './prisma-schema';
@@ -23,17 +23,13 @@ const sortDirectionEnum = types.enum({
   values: types.enumValues(['asc', 'desc']),
 });
 
-const fromEntriesButTypedWell: <Key extends string | number | symbol, Val>(
-  iterable: Iterable<readonly [Key, Val]>
-) => Record<Key, Val> = Object.fromEntries;
-
 type ListForListTypes = {
   fields: Record<string, FieldTypeFunc>;
   singularGraphQLName: string;
   pluralGraphQLName: string;
 };
 
-type InitialisedField = Omit<NextFieldType, 'dbField'> & { dbField: ResolvedField };
+export type InitialisedField = Omit<NextFieldType, 'dbField'> & { dbField: ResolvedDBField };
 
 export type InitialisedList = {
   fields: Record<string, InitialisedField>;
@@ -41,6 +37,183 @@ export type InitialisedList = {
   pluralGraphQLName: string;
   types: TypesForList;
 };
+
+function getRelationVal(
+  dbField: ResolvedRelationDBField,
+  id: IdType,
+  listKey: string,
+  key: string,
+  context: KeystoneContext
+) {
+  return dbField.mode === 'many'
+    ? {
+        findMany: async ({ first, skip, sortBy, where }: FindManyArgsValue) => {
+          return getPrismaModelForList(context.prisma, dbField.list).findMany({
+            where: {
+              AND: [
+                {
+                  [dbField.field]: { id },
+                },
+                //   await runInputResolvers(
+                //     typesForLists,
+                //     lists,
+                //     listKey,
+                //     'where',
+                //     where || {}
+                //   ),
+              ],
+            },
+            // TODO: needs to have input resolvers
+            orderBy: sortBy,
+            take: first ?? undefined,
+            skip,
+          });
+        },
+        count: async ({ first, skip, sortBy, where }: FindManyArgsValue) => {
+          return getPrismaModelForList(context.prisma, dbField.list).count({
+            where: {
+              AND: [
+                {
+                  [dbField.field]: { id },
+                },
+                //   await runInputResolvers(
+                //     typesForLists,
+                //     lists,
+                //     listKey,
+                //     'where',
+                //     where || {}
+                //   ),
+              ],
+            },
+            // TODO: needs to have input resolvers
+            orderBy: sortBy,
+            take: first ?? undefined,
+            skip,
+          });
+        },
+      }
+    : async () => {
+        return (
+          await getPrismaModelForList(context.prisma, listKey).findUnique({
+            where: {
+              id,
+            },
+            select: { [key]: true },
+          })
+        )?.[key];
+      };
+}
+
+function getValueForDBField(
+  rootVal: ItemRootValue,
+  dbField: ResolvedDBField,
+  id: IdType,
+  listKey: string,
+  fieldPath: string,
+  context: KeystoneContext
+) {
+  if (dbField.kind === 'multi') {
+    return Object.fromEntries(
+      Object.keys(dbField.fields).map(innerDBFieldKey => {
+        const keyOnDbValue = getDBFieldPathForFieldOnMultiField(fieldPath, innerDBFieldKey);
+        return [innerDBFieldKey, rootVal[keyOnDbValue] as any];
+      })
+    );
+  }
+  if (dbField.kind === 'relation') {
+    return getRelationVal(dbField, id, listKey, fieldPath, context);
+  }
+  return rootVal[fieldPath] as any;
+}
+
+function outputTypeField(
+  output: NextFieldType['output'],
+  dbField: ResolvedDBField,
+  listKey: string,
+  fieldPath: string
+) {
+  return types.field<ItemRootValue, any, any, string, KeystoneContext>({
+    type: output.type,
+    deprecationReason: output.deprecationReason,
+    description: output.description,
+    args: output.args,
+    extensions: output.extensions,
+    resolve(rootVal, args, context, info) {
+      const id = (rootVal as any).id as IdType;
+
+      const value = getValueForDBField(rootVal, dbField, id, listKey, fieldPath, context);
+
+      if (output.resolve) {
+        return output.resolve(
+          {
+            id,
+            value,
+            item: rootVal,
+          },
+          args,
+          context,
+          info
+        );
+      }
+      return value;
+    },
+  });
+}
+
+function assertNoConflictingExtraOutputFields(
+  listKey: string,
+  fields: Record<string, InitialisedField>
+) {
+  const fieldPaths = new Set(Object.keys(fields));
+  const alreadyFoundFields: Record<string, string> = {};
+  for (const [fieldPath, field] of Object.entries(fields)) {
+    if (field.extraOutputFields) {
+      for (const outputTypeFieldName of Object.keys(field.extraOutputFields)) {
+        // note that this and the case handled below are fundamentally the same thing but i want different errors for each of them
+        if (fieldPaths.has(outputTypeFieldName)) {
+          throw new Error(
+            `The field ${fieldPath} on the ${listKey} list defines an extra GraphQL output field named ${outputTypeFieldName} which conflicts with the Keystone field type named ${outputTypeFieldName} on the same list`
+          );
+        }
+        const alreadyFoundField = alreadyFoundFields[outputTypeFieldName];
+        if (alreadyFoundField !== undefined) {
+          throw new Error(
+            `The field ${fieldPath} on the ${listKey} list defines an extra GraphQL output field named ${outputTypeFieldName} which conflicts with the Keystone field type named ${alreadyFoundField} which also defines an extra GraphQL output field named ${outputTypeFieldName}`
+          );
+        }
+        alreadyFoundFields[outputTypeFieldName] = fieldPath;
+      }
+    }
+  }
+}
+
+function assertIdFieldGraphQLTypesCorrect(
+  listKey: string,
+  fields: Record<string, InitialisedField>
+) {
+  const idField = fields.id;
+  if (idField.input?.uniqueWhere === undefined) {
+    throw new Error(
+      `The idField on a list must define a uniqueWhere GraphQL input with the ID GraphQL scalar type but the idField for ${listKey} does not define one`
+    );
+  }
+  if (idField.input.uniqueWhere.arg.type !== types.ID) {
+    throw new Error(
+      `The idField on a list must define a uniqueWhere GraphQL input with the ID GraphQL scalar type but the idField for ${listKey} defines the type ${idField.input.uniqueWhere.arg.type.graphQLType.toString()}`
+    );
+  }
+  // we may want to loosen these constraints in the future
+  if (idField.input.create !== undefined) {
+    throw new Error(
+      `The idField on a list must not define a create GraphQL input but the idField for ${listKey} does define one`
+    );
+  }
+  if (idField.input.update !== undefined) {
+    throw new Error(
+      `The idField on a list must not define an update GraphQL input but the idField for ${listKey} does define one`
+    );
+  }
+}
 
 export function initialiseLists(
   lists: Record<string, ListForListTypes>
@@ -99,122 +272,23 @@ export function initialiseLists(
       pluralGraphQLName: list.pluralGraphQLName,
       singularGraphQLName: list.singularGraphQLName,
     });
+
+    assertNoConflictingExtraOutputFields(listKey, fields);
+    assertIdFieldGraphQLTypesCorrect(listKey, fields);
     let output = types.object<ItemRootValue>()({
       name: names.outputTypeName,
       fields: () => ({
         ...Object.fromEntries(
-          Object.entries(fields).map(([fieldPath, field]) => {
-            const output = field.output;
-            return [
-              fieldPath,
-              types.field<ItemRootValue, any, any, string, KeystoneContext>({
-                type: output.type,
-                deprecationReason: output.deprecationReason,
-                description: output.description,
-                args: output.args,
-                extensions: output.extensions,
-                resolve(rootVal, args, ctx, info) {
-                  let getRelationVal = (
-                    dbField: ResolvedRelationDBField,
-                    id: IdType,
-                    key: string
-                  ) =>
-                    dbField.mode === 'many'
-                      ? {
-                          findMany: async ({ first, skip, sortBy, where }: FindManyArgsValue) => {
-                            return getPrismaModelForList(ctx.prisma, dbField.list).findMany({
-                              where: {
-                                AND: [
-                                  {
-                                    [dbField.field]: { id },
-                                  },
-                                  //   await runInputResolvers(
-                                  //     typesForLists,
-                                  //     lists,
-                                  //     listKey,
-                                  //     'where',
-                                  //     where || {}
-                                  //   ),
-                                ],
-                              },
-                              // TODO: needs to have input resolvers
-                              orderBy: sortBy,
-                              take: first ?? undefined,
-                              skip,
-                            });
-                          },
-                          count: async ({ first, skip, sortBy, where }: FindManyArgsValue) => {
-                            return getPrismaModelForList(ctx.prisma, dbField.list).count({
-                              where: {
-                                AND: [
-                                  {
-                                    [dbField.field]: { id },
-                                  },
-                                  //   await runInputResolvers(
-                                  //     typesForLists,
-                                  //     lists,
-                                  //     listKey,
-                                  //     'where',
-                                  //     where || {}
-                                  //   ),
-                                ],
-                              },
-                              // TODO: needs to have input resolvers
-                              orderBy: sortBy,
-                              take: first ?? undefined,
-                              skip,
-                            });
-                          },
-                        }
-                      : async () => {
-                          return (
-                            await getPrismaModelForList(ctx.prisma, listKey).findUnique({
-                              where: {
-                                id,
-                              },
-                              select: { [key]: true },
-                            })
-                          )?.[key];
-                        };
-
-                  const id = (rootVal as any).id as IdType;
-
-                  const value = (() => {
-                    const dbField = field.dbField;
-                    if (dbField.kind === 'multi') {
-                      return Object.fromEntries(
-                        Object.keys(dbField.fields).map(innerDBFieldKey => {
-                          const keyOnDbValue = getDBFieldPathForFieldOnMultiField(
-                            fieldPath,
-                            innerDBFieldKey
-                          );
-                          return [innerDBFieldKey, rootVal[keyOnDbValue] as any];
-                        })
-                      );
-                    }
-                    if (dbField.kind === 'relation') {
-                      return getRelationVal(dbField, id, fieldPath);
-                    }
-                    return rootVal[fieldPath] as any;
-                  })();
-
-                  if (output.resolve) {
-                    return output.resolve(
-                      {
-                        id,
-                        value,
-                        item: rootVal,
-                      },
-                      args,
-                      ctx,
-                      info
-                    );
-                  }
-                  return value;
-                },
-              }),
-            ];
-          })
+          Object.entries(fields).flatMap(([fieldPath, field]) =>
+            [[fieldPath, field.output], ...Object.entries(field.extraOutputFields || {})].map(
+              outputTypeFieldName => {
+                return [
+                  outputTypeFieldName,
+                  outputTypeField(field.output, field.dbField, listKey, fieldPath),
+                ];
+              }
+            )
+          )
         ),
       }),
     });
@@ -259,7 +333,7 @@ export function initialiseLists(
           NOT: types.arg({
             type: types.list(types.nonNull(where)),
           }),
-          ...fromEntriesButTypedWell(
+          ...Object.fromEntries(
             Object.entries(fields)
               .map(([key, val]) => {
                 return [key, val.input?.where?.arg] as const;

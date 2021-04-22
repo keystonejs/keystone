@@ -36,7 +36,7 @@ type ResolvedListsToPrintPrismaSchema = Record<
   { fields: ResolvedFieldsToPrintPrismaSchema }
 >;
 
-export type ResolvedField =
+export type ResolvedDBField =
   | ResolvedRelationDBField
   | ScalarishDBField
   | NoDBField
@@ -44,7 +44,7 @@ export type ResolvedField =
 
 // note: all keystone fields correspond to a field here
 // not all fields here correspond to keystone fields(the implicit side of one-sided relation fields)
-type ResolvedFieldsToPrintPrismaSchema = Record<string, ResolvedField>;
+type ResolvedFieldsToPrintPrismaSchema = Record<string, ResolvedDBField>;
 
 type Rel = {
   listKey: string;
@@ -296,7 +296,7 @@ function assertNever(arg: never): never {
 
 function printField(
   fieldPath: string,
-  field: Exclude<ResolvedField, { kind: 'none' }>,
+  field: Exclude<ResolvedDBField, { kind: 'none' }>,
   datasourceName: string,
   lists: ResolvedListsToPrintPrismaSchema
 ): string {
@@ -384,7 +384,7 @@ function collectEnums(lists: ResolvedListsToPrintPrismaSchema) {
 
 function assertFieldIsValidIdField(
   listKey: string,
-  field: ResolvedField
+  field: ResolvedDBField
 ): asserts field is ScalarDBField<'Int' | 'String', 'required'> {
   if (field.kind !== 'scalar') {
     throw new Error(
