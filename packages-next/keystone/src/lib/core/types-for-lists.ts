@@ -281,19 +281,18 @@ export function initialiseLists(
   const typesForLists: Record<string, TypesForList> = {};
 
   const listsWithInitialisedFields = Object.fromEntries(
-    Object.entries(lists).map(([listKey, { fields, ...list }]) => {
-      return [
-        listKey,
-        {
-          fields: Object.fromEntries(
-            Object.entries(fields).map(([fieldPath, fieldFunc]) => {
-              return [fieldPath, fieldFunc({ fieldPath, listKey, typesForLists })];
-            })
-          ),
-          ...list,
-        },
-      ];
-    })
+    Object.entries(lists).map(([listKey, { fields, ...list }]) => [
+      listKey,
+      {
+        fields: Object.fromEntries(
+          Object.entries(fields).map(([fieldPath, fieldFunc]) => [
+            fieldPath,
+            fieldFunc({ fieldPath, listKey, typesForLists }),
+          ])
+        ),
+        ...list,
+      },
+    ])
   );
 
   const resolvedLists = resolveRelationships(
@@ -391,6 +390,7 @@ export function initialiseLists(
       //       .filter((x): x is [string, Exclude<typeof x[1], false>] => x[1] !== false)
       //   ),
     });
+    // TODO: validate no fields are named AND, NOT, or OR
     const where: TypesForList['where'] = types.inputObject({
       name: names.whereInputName,
       fields: () => {
@@ -468,7 +468,7 @@ export function initialiseLists(
                   key,
                   types.arg({
                     type: types.inputObject({
-                      name: names.listSortName,
+                      name: `${listKey}_${key}SortBy`,
                       fields,
                     }),
                   }),

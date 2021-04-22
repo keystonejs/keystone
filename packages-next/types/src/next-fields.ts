@@ -139,7 +139,7 @@ export type ScalarishDBField =
 
 export type RealDBField = ScalarishDBField | RelationDBField<'many' | 'one'>;
 
-export type MultiDBField<Fields extends Record<string, RealDBField>> = {
+export type MultiDBField<Fields extends Record<string, ScalarishDBField>> = {
   kind: 'multi';
   fields: Fields;
 };
