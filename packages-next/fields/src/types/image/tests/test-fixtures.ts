@@ -68,22 +68,20 @@ export const crudTests = (keystoneTestWrapper: any) => {
       keystoneTestWrapper(async ({ context }: { context: any }) => {
         const filenames = ['keystone.jpeg', 'keystone.jpg', 'keystone'];
         for (const filename of filenames) {
-          const data = await createItem({
-            context,
-            listKey: 'Test',
-            item: { avatar: prepareFile(filename) },
-            returnFields: `
-            avatar {
-              id
-              mode
-              filesize
-              width
-              height
-              extension
-              ref
-              src
-            }
-        `,
+          const data = await context.lists.Test.createOne({
+            data: { avatar: prepareFile(filename) },
+            query: `
+              avatar {
+                id
+                mode
+                filesize
+                width
+                height
+                extension
+                ref
+                src
+              }
+          `,
           });
           expect(data).not.toBe(null);
           expect(data.avatar).toEqual({

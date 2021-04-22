@@ -11,12 +11,12 @@ const _runChunkedMutation = async ({
   query: string | DocumentNode;
   gqlName: string;
   pageSize: number;
-  items: Record<string, any>[];
+  items: readonly (Record<string, any> | string)[];
   context: KeystoneContext;
 }): Promise<Record<string, any>[]> => {
   if (pageSize <= 0) pageSize = 1;
 
-  const chunks = items.reduce((accum: Record<string, any>[][], item, index) => {
+  const chunks = items.reduce((accum: (Record<string, any> | string)[][], item, index) => {
     const chunkIndex = Math.floor(index / pageSize);
 
     if (!accum[chunkIndex]) {
@@ -69,7 +69,7 @@ const createItems = async ({
   context,
 }: {
   listKey: string;
-  items: Record<string, any>[];
+  items: readonly { readonly data: Record<string, any> }[];
   pageSize?: number;
   returnFields?: string;
   context: KeystoneContext;
@@ -118,10 +118,10 @@ const getItems = async ({
   context,
 }: {
   listKey: string;
-  where?: Record<string, any>;
-  sortBy?: string;
-  first?: number;
-  skip?: number;
+  where?: Record<string, any> | null;
+  sortBy?: readonly string[] | null;
+  first?: number | null;
+  skip?: number | null;
   pageSize?: number;
   returnFields?: string;
   context: KeystoneContext;
@@ -156,7 +156,10 @@ const getItems = async ({
     allItems.push(...latestResult);
 
     _skip += pageSize;
-  } while (latestResult.length === _first && (first === undefined || allItems.length < first));
+  } while (
+    latestResult.length === _first &&
+    (first === undefined || first === null || allItems.length < first)
+  );
 
   return allItems;
 };
@@ -191,7 +194,7 @@ const updateItems = async ({
   context,
 }: {
   listKey: string;
-  items: Record<string, any>[];
+  items: readonly { readonly id: string; readonly data: Record<string, any> }[];
   pageSize?: number;
   returnFields?: string;
   context: KeystoneContext;
@@ -241,7 +244,7 @@ const deleteItems = async ({
   listKey: string;
   pageSize?: number;
   returnFields?: string;
-  items: Record<string, any>[];
+  items: readonly string[];
   context: KeystoneContext;
 }) => {
   const { deleteManyMutationName } = context.gqlNames(listKey);
