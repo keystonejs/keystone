@@ -1,9 +1,5 @@
 import path from 'path';
-import {
-  ImagesConfig as KeystoneImagesConfig,
-  ImagesContext,
-  ImageExtension,
-} from '@keystone-next/types';
+import { ImagesConfig, ImagesContext } from '@keystone-next/types';
 import { v4 as uuid } from 'uuid';
 import fs from 'fs-extra';
 import fromBuffer from 'image-type';
@@ -30,7 +26,7 @@ const getImageMetadataFromBuffer = async (buffer: Buffer) => {
     throw new Error(`${fileType.ext} is not a supported image type`);
   }
 
-  const extension: ImageExtension = fileType.ext;
+  const extension = fileType.ext;
 
   const { height, width } = imageSize(buffer);
 
@@ -40,7 +36,7 @@ const getImageMetadataFromBuffer = async (buffer: Buffer) => {
   return { width, height, filesize, extension };
 };
 
-export function createImagesContext(config?: KeystoneImagesConfig): ImagesContext | undefined {
+export function createImagesContext(config?: ImagesConfig): ImagesContext | undefined {
   if (!config) {
     return;
   }
@@ -64,10 +60,7 @@ export function createImagesContext(config?: KeystoneImagesConfig): ImagesContex
       );
       const metadata = await getImageMetadataFromBuffer(buffer);
 
-      return {
-        ...imageRef,
-        ...metadata,
-      };
+      return { ...imageRef, ...metadata };
     },
     getDataFromStream: async stream => {
       const { upload: mode } = config;
@@ -83,11 +76,7 @@ export function createImagesContext(config?: KeystoneImagesConfig): ImagesContex
 
       await fs.writeFile(path.join(storagePath, `${id}.${metadata.extension}`), buffer);
 
-      return {
-        mode,
-        id,
-        ...metadata,
-      };
+      return { mode, id, ...metadata };
     },
   };
 }
