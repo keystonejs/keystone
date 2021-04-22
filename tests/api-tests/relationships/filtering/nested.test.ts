@@ -294,10 +294,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'nested to-many relationship meta can be filtered',
         runner(setupKeystone, async ({ context }) => {
-          const ids = await createItems({
-            context,
-            listKey: 'Post',
-            items: [
+          const ids = await context.lists.Post.createMany({
+            data: [
               { data: { content: 'Hello world' } },
               { data: { content: 'hi world' } },
               { data: { content: 'Hello? Or hi?' } },

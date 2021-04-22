@@ -99,11 +99,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   context: KeystoneContext;
                   listKey: string;
                 }) => {
-                  const items = await getItems({
-                    context,
-                    listKey,
-                    returnFields,
+                  const items = await context.lists[listKey].findMany({
                     sortBy: ['name_ASC'],
+                    query: returnFields,
                   });
                   return wrappedFn({ context, listKey, items });
                 };

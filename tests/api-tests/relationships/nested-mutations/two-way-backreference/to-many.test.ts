@@ -274,10 +274,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           });
 
-          await updateItems({
-            context,
-            listKey: 'Teacher',
-            items: [
+          await context.lists.Teacher.updateMany({
+            data: [
               {
                 id: teacher1.id,
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },

@@ -4,7 +4,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-import { createItem, createItems } from '@keystone-next/server-side-graphql-client-legacy';
+import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -54,10 +54,8 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
     ],
   });
 
-  return createItem({
-    context,
-    listKey: 'Owner',
-    item: {
+  return context.lists.Owner.createOne({
+    data: {
       name: sampleOne(alphanumGenerator),
       companies: {
         create: [
@@ -91,7 +89,7 @@ const createCompanyAndLocation = async (context: KeystoneContext) => {
         ],
       },
     },
-    returnFields: 'id name companies { id name location { id name custodians { id name } } }',
+    query: 'id name companies { id name location { id name custodians { id name } } }',
   });
 };
 

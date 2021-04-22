@@ -70,7 +70,7 @@ export function itemAPIForList(
         return list.itemQuery(args, context);
       }
     },
-    findMany({ query, resolveFields, ...rawArgs }) {
+    findMany({ query, resolveFields, ...rawArgs } = {}) {
       if (!getArgs.findMany) throw new Error('You do not have access to this resource');
       const returnFields = defaultQueryParam(query, resolveFields);
       if (returnFields) {
@@ -81,7 +81,7 @@ export function itemAPIForList(
         return list.listQuery(args, context);
       }
     },
-    async count(rawArgs) {
+    async count(rawArgs = {}) {
       if (!getArgs.count) throw new Error('You do not have access to this resource');
       const args = getArgs.count(rawArgs!);
       return (await list.listQueryMeta(args, context)).getCount();
@@ -166,12 +166,12 @@ export function itemDbAPIForList(
       const args = getArgs.findOne(rawArgs) as { where: { id: string } };
       return list.itemQuery(args, context);
     },
-    findMany(rawArgs) {
+    findMany(rawArgs = {}) {
       if (!getArgs.findMany) throw new Error('You do not have access to this resource');
       const args = getArgs.findMany(rawArgs);
       return list.listQuery(args, context);
     },
-    async count(rawArgs) {
+    async count(rawArgs = {}) {
       if (!getArgs.count) throw new Error('You do not have access to this resource');
       const args = getArgs.count(rawArgs!);
       return (await list.listQueryMeta(args, context)).getCount();
