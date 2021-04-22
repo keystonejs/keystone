@@ -8,6 +8,17 @@ export const types = {
   ...tsgql.bindTypesToContext<KeystoneContext>(),
 };
 
+// CacheScope and CacheHint are sort of duplicated from apollo-cache-control
+// because they use an enum which means TS users have to import the CacheScope enum from apollo-cache-control which isn't great
+// so we have a copy of it but using a union of string literals instead of an enum
+// (note people importing the enum from apollo-cache-control will still be able to use it because you can use enums as their literal values but not the opposite)
+export type CacheScope = 'PUBLIC' | 'PRIVATE';
+
+export type CacheHint = {
+  maxAge?: number;
+  scope?: CacheScope;
+};
+
 export type ItemRootValue = { id: IdType; [key: string]: unknown };
 
 export type MaybeFunction<Params extends any[], Ret> = Ret | ((...params: Params) => Ret);
@@ -41,6 +52,7 @@ export type NextFieldType<
   };
   output: FieldTypeOutputField<TDBField>;
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
+  cacheHint?: CacheHint;
 };
 
 type ScalarPrismaTypes = {
@@ -216,6 +228,7 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
     };
     output: FieldTypeOutputField<TDBField>;
     extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
+    cacheHint?: CacheHint;
   }): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg> {
     return { ...stuff, dbField };
   };

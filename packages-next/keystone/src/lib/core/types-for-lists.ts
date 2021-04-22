@@ -9,6 +9,7 @@ import {
   getGqlNames,
   NextFieldType,
 } from '@keystone-next/types';
+import { CacheHint } from 'apollo-cache-control';
 // import { runInputResolvers } from './input-resolvers';
 import { getPrismaModelForList, IdType } from './utils';
 import {
@@ -17,6 +18,8 @@ import {
   ResolvedRelationDBField,
   resolveRelationships,
 } from './prisma-schema';
+import { throwAccessDenied } from './ListTypes/graphqlErrors';
+import { opToType } from './ListTypes/utils';
 
 const sortDirectionEnum = types.enum({
   name: 'SortDirection',
@@ -129,6 +132,7 @@ function getValueForDBField(
 function outputTypeField(
   output: NextFieldType['output'],
   dbField: ResolvedDBField,
+  cacheHint: CacheHint | undefined,
   listKey: string,
   fieldPath: string
 ) {
@@ -138,22 +142,36 @@ function outputTypeField(
     description: output.description,
     args: output.args,
     extensions: output.extensions,
-    resolve(rootVal, args, context, info) {
+    async resolve(rootVal, args, context, info) {
       const id = (rootVal as any).id as IdType;
+
+      // Check access
+      // const operation = 'read';
+      // const access = await context.getFieldAccessControlForUser(
+      //   field.access,
+      //   listKey,
+      //   fieldPath,
+      //   undefined,
+      //   rootVal,
+      //   operation,
+      //   { context, gqlName: undefined as any }
+      // );
+      // if (!access) {
+      //   // If the client handles errors correctly, it should be able to
+      //   // receive partial data (for the fields the user has access to),
+      //   // and then an `errors` array of AccessDeniedError's
+      //   throwAccessDenied(opToType[operation], fieldPath, { itemId: rootVal.id });
+      // }
+
+      // Only static cache hints are supported at the field level until a use-case makes it clear what parameters a dynamic hint would take
+      if (cacheHint && info && info.cacheControl) {
+        info.cacheControl.setCacheHint(cacheHint);
+      }
 
       const value = getValueForDBField(rootVal, dbField, id, listKey, fieldPath, context);
 
       if (output.resolve) {
-        return output.resolve(
-          {
-            id,
-            value,
-            item: rootVal,
-          },
-          args,
-          context,
-          info
-        );
+        return output.resolve({ id, value, item: rootVal }, args, context, info);
       }
       return value;
     },
@@ -280,14 +298,21 @@ export function initialiseLists(
       fields: () => ({
         ...Object.fromEntries(
           Object.entries(fields).flatMap(([fieldPath, field]) =>
-            [[fieldPath, field.output], ...Object.entries(field.extraOutputFields || {})].map(
-              outputTypeFieldName => {
-                return [
-                  outputTypeFieldName,
-                  outputTypeField(field.output, field.dbField, listKey, fieldPath),
-                ];
-              }
-            )
+            [
+              [fieldPath, field.output] as const,
+              ...Object.entries(field.extraOutputFields || {}),
+            ].map(([outputTypeFieldName, outputField]) => {
+              return [
+                outputTypeFieldName,
+                outputTypeField(
+                  outputField,
+                  field.dbField,
+                  field.cacheHint,
+                  field.listKey,
+                  fieldPath
+                ),
+              ];
+            })
           )
         ),
       }),
