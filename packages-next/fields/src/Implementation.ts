@@ -170,7 +170,7 @@ class Field<P extends string> {
     listKey: string;
     fieldPath: P;
     operation: 'create' | 'update';
-    addFieldValidationError: (msg: string) => void;
+    addValidationError: (msg: string) => void;
   }) {}
 
   async beforeChange() {}
