@@ -3,7 +3,7 @@ import { jsx } from '@keystone-ui/core';
 import { Fragment } from 'react';
 
 import { Page } from '../components/Page';
-import { COLORS } from '../lib/COLORS';
+import { COLORS } from '../lib/TOKENS';
 
 export default function DS() {
   return (
