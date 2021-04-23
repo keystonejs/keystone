@@ -11,7 +11,7 @@ function Section({ label, children }: SectionProps) {
       <h3
         css={{
           textTransform: 'uppercase',
-          margin: '1.5rem 0 0.5rem 0',
+          margin: 'var(--space-xlarge) 0 var(--space-medium) 0',
           color: 'var(--gray-700)',
           fontWeight: 700,
         }}
@@ -34,7 +34,7 @@ function NavItem({ href, isPlaceholder, children }: NavItemProps) {
         css={{
           display: 'block',
           textDecoration: 'none',
-          padding: '0.25rem 0',
+          padding: 'var(--space-xsmall) 0',
           color: isSelected
             ? 'var(--gray-900)'
             : `${isPlaceholder ? 'var(--gray-300)' : 'var(--gray-500)'}`,

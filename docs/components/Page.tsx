@@ -43,10 +43,10 @@ export function Page({
           css={mq({
             display: ['block', null, 'grid'],
             gridTemplateColumns: '9rem minmax(0, auto) 12rem',
-            maxWidth: '66rem',
+            maxWidth: 'calc(var(--wrapper-width) - 1rem)',
             margin: '0 auto',
-            gap: '3rem',
-            padding: ['0', null, '0 1rem'],
+            gap: 'calc(var(--space-large) * 3)',
+            padding: ['0', null, '0 var(--space-large)'],
           })}
         >
           <Sidebar />
@@ -55,8 +55,8 @@ export function Page({
             ref={contentRef}
             className={isProse ? 'prose' : ''}
             css={mq({
-              marginTop: '1.5rem',
-              padding: ['0 1rem', null, '0'],
+              marginTop: 'var(--space-xlarge)',
+              padding: ['0 var(--space-large)', null, '0'],
             })}
           >
             {children}

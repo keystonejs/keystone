@@ -69,7 +69,7 @@ export function TableOfContents({
         display: ['none', 'block'],
         height: 'calc(100vh - 60px)',
         overflowY: 'auto',
-        paddingTop: '2rem',
+        paddingTop: 'var(--space-xlarge)',
         top: '3.75rem',
         WebkitOverflowScrolling: 'touch',
 
@@ -79,7 +79,7 @@ export function TableOfContents({
       <h4
         css={{
           color: '#97A0AF', //colors.N40,
-          fontSize: '0.8rem',
+          fontSize: 'var(--font-xsmall)',
           fontWeight: 700,
           marginTop: 0,
           textTransform: 'uppercase',
@@ -104,13 +104,13 @@ export function TableOfContents({
                 css={{
                   color: isActive ? '#2684FF' : h.depth === 2 ? '#253858' : '#6C798F',
                   display: 'block',
-                  fontSize: h.depth === 3 ? '0.8rem' : '0.9rem',
+                  fontSize: h.depth === 3 ? 'var(--font-xxsmall)' : 'var(--font-xsmall)',
                   fontWeight: isActive ? 500 : 'normal',
-                  paddingLeft: h.depth === 3 ? '0.5rem' : undefined,
+                  paddingLeft: h.depth === 3 ? 'var(--space-medium)' : undefined,
 
                   // prefer padding an anchor, rather than margin on list-item, to increase hit area
-                  paddingBottom: '0.4em',
-                  paddingTop: '0.4em',
+                  paddingBottom: 'var(--space-xsmall)',
+                  paddingTop: 'var(--space-xsmall)',
 
                   ':hover': {
                     color: '#2684FF',

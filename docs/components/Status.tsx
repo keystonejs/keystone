@@ -34,9 +34,9 @@ export function Status({ look }: StatusProps) {
     <span
       css={{
         fontFamily: 'var(--font-mono)',
-        fontSize: '0.875rem',
+        fontSize: 'var(--font-xsmall)',
         borderRadius: '0.25rem',
-        padding: '0.25rem 0.5rem',
+        padding: 'var(--space-xsmall) var(--space-medium)',
         background: `var(--${status.color}-100)`,
         color: `var(--${status.color}-700)`,
       }}

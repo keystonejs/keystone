@@ -14,7 +14,7 @@ export function CopyToClipboard({ value }: { value: string }) {
   };
 
   const onFailure = () => {
-    addToast({ title: 'Faild to oopy to clipboard', tone: 'negative' });
+    addToast({ title: 'Failed to copy to clipboard', tone: 'negative' });
   };
 
   const onClick = () => {
@@ -47,7 +47,7 @@ export function CopyToClipboard({ value }: { value: string }) {
         alignItems: 'center',
         color: 'var(--gray-400)',
         display: 'flex',
-        fontSize: '1rem',
+        fontSize: 'var(--font-small)',
         height: iconSize,
         justifyContent: 'center',
         marginTop: -iconSize / 2,

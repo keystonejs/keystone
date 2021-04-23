@@ -14,7 +14,7 @@ export function Header() {
           display: 'grid',
           gridTemplateColumns: 'auto 1fr',
           justifyItems: 'start',
-          padding: '1rem',
+          padding: 'var(--space-large)',
           maxWidth: 'var(--wrapper-width)',
           margin: '0 auto',
         }}
@@ -26,7 +26,7 @@ export function Header() {
                 backgroundImage: 'linear-gradient(to right, var(--blue-500), var(--indigo-600))',
                 backgroundClip: 'text',
                 fontWeight: 600,
-                fontSize: '1.25rem',
+                fontSize: 'var(--font-medium)',
                 lineHeight: '1.75rem',
                 color: 'transparent',
                 verticalAlign: 'middle',
@@ -40,7 +40,7 @@ export function Header() {
                   display: 'inline-block',
                   width: '2rem',
                   height: '2rem',
-                  margin: '0 0.5rem 0.25rem 0',
+                  margin: '0 var(--space-medium) var(--space-xsmall) 0',
                   verticalAlign: 'middle',
                 }}
               >
@@ -63,15 +63,15 @@ export function Header() {
           <span
             css={{
               display: 'inline-block',
-              padding: '0 0.25rem',
+              padding: '0 var(--space-xsmall)',
               borderRadius: '0.25rem',
               background: 'var(--gray-100)',
               color: 'var(--gray-500)',
               border: '1px solid var(--gray-200)',
-              fontSize: '0.75rem',
+              fontSize: 'var(--font-xxsmall)',
               fontWeight: 400,
               lineHeight: '1rem',
-              marginLeft: '0.5rem',
+              marginLeft: 'var(--space-medium)',
             }}
           >
             preview
@@ -81,7 +81,7 @@ export function Header() {
           css={{
             display: 'inline-grid',
             gridTemplateColumns: '1fr 1fr 1fr',
-            gap: '1rem',
+            gap: 'var(--space-large)',
             alignItems: 'center',
             marginLeft: 'auto',
           }}
