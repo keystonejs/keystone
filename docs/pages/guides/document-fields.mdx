@@ -8,6 +8,8 @@ import {
 } from '../../components/DocumentEditorDemo';
 import { MDXProvider } from '@mdx-js/react';
 
+import Intro from './_doc-field-intro.mdx';
+
 ### General Features
 
 The specific features of the editor that are enabled can be customised.
@@ -490,6 +492,7 @@ export default ({ children }) => {
       <DocumentFeaturesProvider>
         <div className="prose">
           <H1>How To Use Document Fields</H1>
+          <Intro />
         </div>
         <DocumentEditorDemo />
         <div className="prose">

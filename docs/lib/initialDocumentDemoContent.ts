@@ -240,7 +240,7 @@ export const initialContent = [
     children: [
       {
         text:
-          'Everything above this line 👇 is editable. Expand the block below to see how the data is stored.',
+          'This is the end of the editable document. Expand the block below to see how the data is stored.',
       },
     ],
   },
