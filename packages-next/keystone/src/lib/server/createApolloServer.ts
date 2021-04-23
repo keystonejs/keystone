@@ -4,8 +4,8 @@ import { ApolloServer as ApolloServerMicro } from 'apollo-server-micro';
 import { ApolloServer as ApolloServerExpress } from 'apollo-server-express';
 import type { Config } from 'apollo-server-express';
 import type { CreateContext, SessionStrategy } from '@keystone-next/types';
-import { createSessionContext } from '../session';
-import { formatError } from './core/Keystone/format-error';
+import { createSessionContext } from '../../session';
+import { formatError } from '../core/Keystone/format-error';
 
 export const createApolloServerMicro = ({
   graphQLSchema,

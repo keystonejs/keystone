@@ -1,6 +1,6 @@
 import { KeystoneConfig } from '@keystone-next/types';
 
-import { applyIdFieldDefaults } from '../lib/applyIdFieldDefaults';
+import { applyIdFieldDefaults } from './applyIdFieldDefaults';
 
 /*
   This function executes the validation and other initialisation logic that

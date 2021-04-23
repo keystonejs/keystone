@@ -4,8 +4,8 @@ import fs from 'fs-extra';
 import { buildAdminUI, generateAdminUI } from '@keystone-next/admin-ui/system';
 import { AdminFileToWrite } from '@keystone-next/types';
 import { createSystem } from '../../lib/createSystem';
-import { initConfig } from '../../lib/initConfig';
-import { requireSource } from '../../lib/requireSource';
+import { initConfig } from '../../lib/config/initConfig';
+import { requireSource } from '../../lib/config/requireSource';
 import { generateNodeModulesArtifacts, validateCommittedArtifacts } from '../../artifacts';
 import { getAdminPath, getConfigPath } from '../utils';
 
