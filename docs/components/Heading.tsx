@@ -61,7 +61,7 @@ export function H1(props: StringOnlyChildren) {
   return (
     <Heading
       css={{
-        fontSize: '2.4rem',
+        fontSize: 'var(--font-xxlarge)',
         fontWeight: 500,
         letterSpacing: '-0.025em',
         marginTop: 0,
@@ -76,7 +76,7 @@ export function H2(props: StringOnlyChildren) {
   return (
     <Heading
       css={{
-        fontSize: '1.8rem',
+        fontSize: 'var(--font-xlarge)',
         fontWeight: 500,
         letterSpacing: '-0.025em',
         marginTop: 0,
@@ -91,7 +91,7 @@ export function H3(props: StringOnlyChildren) {
   return (
     <Heading
       css={{
-        fontSize: '1.4rem',
+        fontSize: 'var(--font-large)',
         fontWeight: 500,
         letterSpacing: '-0.025em',
         marginTop: 0,
@@ -107,11 +107,11 @@ export function H4(props: StringOnlyChildren) {
 }
 
 export function H5(props: StringOnlyChildren) {
-  return <Heading css={{ fontSize: '1rem' }} as="h5" {...props} />;
+  return <Heading css={{ fontSize: 'var(--font-small)' }} as="h5" {...props} />;
 }
 
 export function H6(props: StringOnlyChildren) {
-  return <Heading css={{ fontSize: '0.9rem' }} as="h6" {...props} />;
+  return <Heading css={{ fontSize: 'var(--font-xsmall)' }} as="h6" {...props} />;
 }
 
 export default Heading;

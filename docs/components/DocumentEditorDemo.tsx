@@ -331,8 +331,8 @@ export const DocumentEditorDemo = () => {
       />
       <div
         css={{
-          marginTop: 'var(--space-large)',
-          marginBottom: 'var(--space-large)',
+          marginTop: 'var(--space-xlarge)',
+          marginBottom: 'var(--space-xlarge)',
           borderBottom: `1px var(--gray-200) solid`,
         }}
       >
@@ -353,7 +353,7 @@ export const DocumentEditorDemo = () => {
           <DocumentEditorEditable />
         </DocumentEditorProvider>
       </div>
-      <details css={{ marginBottom: 'var(--space-large)' }}>
+      <details css={{ marginBottom: 'var(--space-xlarge)' }}>
         <summary>View Document Structure</summary>
         <pre>{JSON.stringify(value, null, 2)}</pre>
       </details>

@@ -12,7 +12,7 @@ export function Sidebar() {
   return (
     <aside
       css={mq({
-        fontSize: '0.875rem',
+        fontSize: 'var(--font-xsmall)',
         borderBottom: ['1px solid var(--gray-200)', null, 'none'],
       })}
     >
@@ -22,8 +22,8 @@ export function Sidebar() {
           css={mq({
             display: ['block', null, 'none'],
             fontWeight: 600,
-            fontSize: '1rem',
-            padding: '1rem',
+            fontSize: 'var(--font-small)',
+            padding: 'var(--space-large)',
             width: '100%',
             textAlign: 'left',
             background: 'transparent',
@@ -37,8 +37,8 @@ export function Sidebar() {
       <div
         css={mq({
           display: [mobileNavCollapsed ? 'none' : 'block', null, 'block'],
-          marginTop: '1.5rem',
-          padding: ['0 0 1rem 1rem', null, 0],
+          marginTop: 'var(--space-xlarge)',
+          padding: ['0 0 var(--space-large) var(--space-large)', null, 0],
           borderBottom: ['1px solid var(--gray-200)', null, 'none'],
         })}
       >
@@ -50,8 +50,8 @@ export function Sidebar() {
           css={mq({
             display: ['block', null, 'none'],
             fontWeight: 600,
-            fontSize: '1rem',
-            padding: '1rem',
+            fontSize: 'var(--font-small)',
+            padding: 'var(--space-large)',
             width: '100%',
             textAlign: 'left',
             background: 'transparent',

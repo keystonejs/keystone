@@ -39,7 +39,7 @@ export function InlineCode({ children }: { children: ReactNode }) {
     <code
       css={{
         background: 'var(--code-bg)',
-        padding: '0.25rem 0.375rem',
+        padding: 'var(--space-xsmall) var(--space-small)',
         margin: 0,
         borderRadius: '0.125rem',
         fontSize: '85%',
