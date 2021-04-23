@@ -5,23 +5,25 @@ import type {
   KeystoneContext,
   KeystoneGraphQLAPI,
   BaseKeystone,
-  ImagesContext,
+  ImagesConfig,
 } from '@keystone-next/types';
 
 import { itemDbAPIForList, itemAPIForList, getArgsFactory } from './itemAPI';
 import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
+import { createImagesContext } from './createImagesContext';
 
 export function makeCreateContext({
   graphQLSchema,
   internalSchema,
   keystone,
-  images,
+  imagesConfig,
 }: {
   graphQLSchema: GraphQLSchema;
   internalSchema: GraphQLSchema;
   keystone: BaseKeystone;
-  images: ImagesContext | undefined;
+  imagesConfig?: ImagesConfig;
 }) {
+  const images = createImagesContext(imagesConfig);
   // We precompute these helpers here rather than every time createContext is called
   // because they require parsing the entire schema, which is potentially expensive.
   const publicGetArgsByList: Record<string, ReturnType<typeof getArgsFactory>> = {};
