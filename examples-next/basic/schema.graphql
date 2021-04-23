@@ -1,0 +1,777 @@
+enum FileMode {
+  local
+}
+
+input FileFieldInput {
+  upload: Upload
+  ref: String
+}
+
+type FileFieldOutput {
+  mode: FileMode!
+  name: String!
+  filesize: Int!
+  ref: String!
+  src: String!
+}
+
+enum ImageMode {
+  local
+}
+
+input ImageFieldInput {
+  upload: Upload
+  ref: String
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
+
+type ImageFieldOutput {
+  mode: ImageMode!
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
+}
+
+input PhoneNumberRelateToManyInput {
+  create: [PhoneNumberCreateInput]
+  connect: [PhoneNumberWhereUniqueInput]
+  disconnect: [PhoneNumberWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input PostRelateToManyInput {
+  create: [PostCreateInput]
+  connect: [PostWhereUniqueInput]
+  disconnect: [PostWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type User {
+  id: ID!
+  repo: FileFieldOutput
+  name: String
+  email: String
+  avatar: ImageFieldOutput
+  password_is_set: Boolean
+  isAdmin: Boolean
+  roles: String
+  phoneNumbers(
+    where: PhoneNumberWhereInput
+    search: String
+    sortBy: [SortPhoneNumbersBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [PhoneNumber!]!
+  _phoneNumbersMeta(
+    where: PhoneNumberWhereInput
+    search: String
+    sortBy: [SortPhoneNumbersBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+  posts(
+    where: PostWhereInput
+    search: String
+    sortBy: [SortPostsBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [Post!]!
+  _postsMeta(
+    where: PostWhereInput
+    search: String
+    sortBy: [SortPostsBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+  randomNumber: Float
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput]
+  OR: [UserWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_i: String
+  name_not_i: String
+  name_contains_i: String
+  name_not_contains_i: String
+  name_starts_with_i: String
+  name_not_starts_with_i: String
+  name_ends_with_i: String
+  name_not_ends_with_i: String
+  name_in: [String]
+  name_not_in: [String]
+  email: String
+  email_not: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  email_i: String
+  email_not_i: String
+  email_contains_i: String
+  email_not_contains_i: String
+  email_starts_with_i: String
+  email_not_starts_with_i: String
+  email_ends_with_i: String
+  email_not_ends_with_i: String
+  email_in: [String]
+  email_not_in: [String]
+  password_is_set: Boolean
+  isAdmin: Boolean
+  isAdmin_not: Boolean
+  roles: String
+  roles_not: String
+  roles_contains: String
+  roles_not_contains: String
+  roles_starts_with: String
+  roles_not_starts_with: String
+  roles_ends_with: String
+  roles_not_ends_with: String
+  roles_i: String
+  roles_not_i: String
+  roles_contains_i: String
+  roles_not_contains_i: String
+  roles_starts_with_i: String
+  roles_not_starts_with_i: String
+  roles_ends_with_i: String
+  roles_not_ends_with_i: String
+  roles_in: [String]
+  roles_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
+  phoneNumbers_every: PhoneNumberWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  phoneNumbers_some: PhoneNumberWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  phoneNumbers_none: PhoneNumberWhereInput
+
+  """
+   condition must be true for all nodes
+  """
+  posts_every: PostWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  posts_some: PostWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  posts_none: PostWhereInput
+}
+
+input UserWhereUniqueInput {
+  id: ID!
+}
+
+enum SortUsersBy {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  isAdmin_ASC
+  isAdmin_DESC
+  roles_ASC
+  roles_DESC
+  phoneNumbers_ASC
+  phoneNumbers_DESC
+  posts_ASC
+  posts_DESC
+}
+
+input UserUpdateInput {
+  repo: FileFieldInput
+  name: String
+  email: String
+  avatar: ImageFieldInput
+  password: String
+  isAdmin: Boolean
+  roles: String
+  phoneNumbers: PhoneNumberRelateToManyInput
+  posts: PostRelateToManyInput
+}
+
+input UsersUpdateInput {
+  id: ID!
+  data: UserUpdateInput
+}
+
+input UserCreateInput {
+  repo: FileFieldInput
+  name: String
+  email: String
+  avatar: ImageFieldInput
+  password: String
+  isAdmin: Boolean
+  roles: String
+  phoneNumbers: PhoneNumberRelateToManyInput
+  posts: PostRelateToManyInput
+}
+
+input UsersCreateInput {
+  data: UserCreateInput
+}
+
+input UserRelateToOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: UserWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+"""
+ A keystone list
+"""
+type PhoneNumber {
+  id: ID!
+  label: String
+  user: User
+  type: String
+  value: String
+}
+
+input PhoneNumberWhereInput {
+  AND: [PhoneNumberWhereInput]
+  OR: [PhoneNumberWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  user: UserWhereInput
+  user_is_null: Boolean
+  type: String
+  type_not: String
+  type_in: [String]
+  type_not_in: [String]
+  value: String
+  value_not: String
+  value_contains: String
+  value_not_contains: String
+  value_starts_with: String
+  value_not_starts_with: String
+  value_ends_with: String
+  value_not_ends_with: String
+  value_i: String
+  value_not_i: String
+  value_contains_i: String
+  value_not_contains_i: String
+  value_starts_with_i: String
+  value_not_starts_with_i: String
+  value_ends_with_i: String
+  value_not_ends_with_i: String
+  value_in: [String]
+  value_not_in: [String]
+}
+
+input PhoneNumberWhereUniqueInput {
+  id: ID!
+}
+
+enum SortPhoneNumbersBy {
+  id_ASC
+  id_DESC
+  user_ASC
+  user_DESC
+  type_ASC
+  type_DESC
+  value_ASC
+  value_DESC
+}
+
+input PhoneNumberUpdateInput {
+  user: UserRelateToOneInput
+  type: String
+  value: String
+}
+
+input PhoneNumbersUpdateInput {
+  id: ID!
+  data: PhoneNumberUpdateInput
+}
+
+input PhoneNumberCreateInput {
+  user: UserRelateToOneInput
+  type: String
+  value: String
+}
+
+input PhoneNumbersCreateInput {
+  data: PhoneNumberCreateInput
+}
+
+type Post_content_DocumentField {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+"""
+ A keystone list
+"""
+type Post {
+  id: ID!
+  title: String
+  status: String
+  content: Post_content_DocumentField
+  publishDate: String
+  author: User
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput]
+  OR: [PostWhereInput]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  title: String
+  title_not: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  title_i: String
+  title_not_i: String
+  title_contains_i: String
+  title_not_contains_i: String
+  title_starts_with_i: String
+  title_not_starts_with_i: String
+  title_ends_with_i: String
+  title_not_ends_with_i: String
+  title_in: [String]
+  title_not_in: [String]
+  status: String
+  status_not: String
+  status_in: [String]
+  status_not_in: [String]
+  publishDate: String
+  publishDate_not: String
+  publishDate_lt: String
+  publishDate_lte: String
+  publishDate_gt: String
+  publishDate_gte: String
+  publishDate_in: [String]
+  publishDate_not_in: [String]
+  author: UserWhereInput
+  author_is_null: Boolean
+}
+
+input PostWhereUniqueInput {
+  id: ID!
+}
+
+enum SortPostsBy {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  status_ASC
+  status_DESC
+  publishDate_ASC
+  publishDate_DESC
+  author_ASC
+  author_DESC
+}
+
+input PostUpdateInput {
+  title: String
+  status: String
+  content: JSON
+  publishDate: String
+  author: UserRelateToOneInput
+}
+
+input PostsUpdateInput {
+  id: ID!
+  data: PostUpdateInput
+}
+
+input PostCreateInput {
+  title: String
+  status: String
+  content: JSON
+  publishDate: String
+  author: UserRelateToOneInput
+}
+
+input PostsCreateInput {
+  data: PostCreateInput
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+  @specifiedBy(
+    url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf"
+  )
+
+type _QueryMeta {
+  count: Int
+}
+
+type Mutation {
+  """
+   Create a single User item.
+  """
+  createUser(data: UserCreateInput): User
+
+  """
+   Create multiple User items.
+  """
+  createUsers(data: [UsersCreateInput]): [User]
+
+  """
+   Update a single User item by ID.
+  """
+  updateUser(id: ID!, data: UserUpdateInput): User
+
+  """
+   Update multiple User items by ID.
+  """
+  updateUsers(data: [UsersUpdateInput]): [User]
+
+  """
+   Delete a single User item by ID.
+  """
+  deleteUser(id: ID!): User
+
+  """
+   Delete multiple User items by ID.
+  """
+  deleteUsers(ids: [ID!]): [User]
+
+  """
+   Create a single PhoneNumber item.
+  """
+  createPhoneNumber(data: PhoneNumberCreateInput): PhoneNumber
+
+  """
+   Create multiple PhoneNumber items.
+  """
+  createPhoneNumbers(data: [PhoneNumbersCreateInput]): [PhoneNumber]
+
+  """
+   Update a single PhoneNumber item by ID.
+  """
+  updatePhoneNumber(id: ID!, data: PhoneNumberUpdateInput): PhoneNumber
+
+  """
+   Update multiple PhoneNumber items by ID.
+  """
+  updatePhoneNumbers(data: [PhoneNumbersUpdateInput]): [PhoneNumber]
+
+  """
+   Delete a single PhoneNumber item by ID.
+  """
+  deletePhoneNumber(id: ID!): PhoneNumber
+
+  """
+   Delete multiple PhoneNumber items by ID.
+  """
+  deletePhoneNumbers(ids: [ID!]): [PhoneNumber]
+
+  """
+   Create a single Post item.
+  """
+  createPost(data: PostCreateInput): Post
+
+  """
+   Create multiple Post items.
+  """
+  createPosts(data: [PostsCreateInput]): [Post]
+
+  """
+   Update a single Post item by ID.
+  """
+  updatePost(id: ID!, data: PostUpdateInput): Post
+
+  """
+   Update multiple Post items by ID.
+  """
+  updatePosts(data: [PostsUpdateInput]): [Post]
+
+  """
+   Delete a single Post item by ID.
+  """
+  deletePost(id: ID!): Post
+
+  """
+   Delete multiple Post items by ID.
+  """
+  deletePosts(ids: [ID!]): [Post]
+  authenticateUserWithPassword(
+    email: String!
+    password: String!
+  ): UserAuthenticationWithPasswordResult!
+  createInitialUser(
+    data: CreateInitialUserInput!
+  ): UserAuthenticationWithPasswordSuccess!
+  createRandomPosts: [Post!]!
+  endSession: Boolean!
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+union AuthenticatedItem = User
+
+union UserAuthenticationWithPasswordResult =
+    UserAuthenticationWithPasswordSuccess
+  | UserAuthenticationWithPasswordFailure
+
+type UserAuthenticationWithPasswordSuccess {
+  sessionToken: String!
+  item: User!
+}
+
+type UserAuthenticationWithPasswordFailure {
+  code: PasswordAuthErrorCode!
+  message: String!
+}
+
+enum PasswordAuthErrorCode {
+  FAILURE
+  IDENTITY_NOT_FOUND
+  SECRET_NOT_SET
+  MULTIPLE_IDENTITY_MATCHES
+  SECRET_MISMATCH
+}
+
+input CreateInitialUserInput {
+  name: String
+  email: String
+  password: String
+}
+
+type RandomNumber {
+  number: Int
+  generatedAt: Int
+}
+
+type Query {
+  """
+   Search for all User items which match the where clause.
+  """
+  allUsers(
+    where: UserWhereInput
+    search: String
+    sortBy: [SortUsersBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [User]
+
+  """
+   Search for the User item with the matching ID.
+  """
+  User(where: UserWhereUniqueInput!): User
+
+  """
+   Perform a meta-query on all User items which match the where clause.
+  """
+  _allUsersMeta(
+    where: UserWhereInput
+    search: String
+    sortBy: [SortUsersBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+
+  """
+   Search for all PhoneNumber items which match the where clause.
+  """
+  allPhoneNumbers(
+    where: PhoneNumberWhereInput
+    search: String
+    sortBy: [SortPhoneNumbersBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [PhoneNumber]
+
+  """
+   Search for the PhoneNumber item with the matching ID.
+  """
+  PhoneNumber(where: PhoneNumberWhereUniqueInput!): PhoneNumber
+
+  """
+   Perform a meta-query on all PhoneNumber items which match the where clause.
+  """
+  _allPhoneNumbersMeta(
+    where: PhoneNumberWhereInput
+    search: String
+    sortBy: [SortPhoneNumbersBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+
+  """
+   Search for all Post items which match the where clause.
+  """
+  allPosts(
+    where: PostWhereInput
+    search: String
+    sortBy: [SortPostsBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): [Post]
+
+  """
+   Search for the Post item with the matching ID.
+  """
+  Post(where: PostWhereUniqueInput!): Post
+
+  """
+   Perform a meta-query on all Post items which match the where clause.
+  """
+  _allPostsMeta(
+    where: PostWhereInput
+    search: String
+    sortBy: [SortPostsBy!]
+    orderBy: String
+    first: Int
+    skip: Int
+  ): _QueryMeta
+  authenticatedItem: AuthenticatedItem
+  randomNumber: RandomNumber
+  keystone: KeystoneMeta!
+}
+
+type KeystoneMeta {
+  adminMeta: KeystoneAdminMeta!
+}
+
+type KeystoneAdminMeta {
+  enableSignout: Boolean!
+  enableSessionItem: Boolean!
+  lists: [KeystoneAdminUIListMeta!]!
+  list(key: String!): KeystoneAdminUIListMeta
+}
+
+type KeystoneAdminUIListMeta {
+  key: String!
+  itemQueryName: String!
+  listQueryName: String!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  path: String!
+  label: String!
+  singular: String!
+  plural: String!
+  description: String
+  initialColumns: [String!]!
+  pageSize: Int!
+  labelField: String!
+  fields: [KeystoneAdminUIFieldMeta!]!
+  initialSort: KeystoneAdminUISort
+  isHidden: Boolean!
+}
+
+type KeystoneAdminUIFieldMeta {
+  path: String!
+  label: String!
+  isOrderable: Boolean!
+  fieldMeta: JSON
+  viewsIndex: Int!
+  customViewsIndex: Int
+  createView: KeystoneAdminUIFieldMetaCreateView!
+  listView: KeystoneAdminUIFieldMetaListView!
+  itemView(id: ID!): KeystoneAdminUIFieldMetaItemView
+}
+
+type KeystoneAdminUIFieldMetaCreateView {
+  fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaCreateViewFieldMode {
+  edit
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaListView {
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaListViewFieldMode {
+  read
+  hidden
+}
+
+type KeystoneAdminUIFieldMetaItemView {
+  fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode!
+}
+
+enum KeystoneAdminUIFieldMetaItemViewFieldMode {
+  edit
+  read
+  hidden
+}
+
+type KeystoneAdminUISort {
+  field: String!
+  direction: KeystoneAdminUISortDirection!
+}
+
+enum KeystoneAdminUISortDirection {
+  ASC
+  DESC
+}

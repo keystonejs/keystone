@@ -12,3 +12,4 @@ export { virtual } from './types/virtual';
 export { Implementation } from './Implementation';
 export type { FieldConfigArgs, FieldExtraArgs } from './Implementation';
 export { image } from './types/image';
+export { file } from './types/file';

@@ -8,6 +8,7 @@ import {
   select,
   virtual,
   image,
+  file,
 } from '@keystone-next/fields';
 import { document } from '@keystone-next/fields-document';
 // import { cloudinaryImage } from '@keystone-next/cloudinary';
@@ -39,6 +40,7 @@ export const lists = createSchema({
       },
     },
     fields: {
+      repo: file(),
       /** The user's first and last name. */
       name: text({ isRequired: true }),
       /** Email is used to log into the system. */

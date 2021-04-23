@@ -1,156 +1,86 @@
-import cuid from 'cuid';
-import { FileUpload } from 'graphql-upload';
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
-import { BaseKeystoneList } from '@keystone-next/types';
-import { FieldConfigArgs, FieldExtraArgs, Implementation } from '../../Implementation';
-import { LocalFileAdapter } from './local-file';
+import { getFileRef } from '@keystone-next/utils-legacy';
+import { FileData, KeystoneContext, BaseKeystoneList } from '@keystone-next/types';
+import { Implementation } from '../../Implementation';
+import { handleFileData } from './handle-file-input';
 
-type StoredFile = {
-  id: string;
-  filename: string;
-  originalFilename: string;
-  mimetype: any;
-  encoding: any;
-  _meta?: Record<string, any>;
-};
-
-export class File<P extends string> extends Implementation<P> {
-  graphQLOutputType: string;
-  fileAdapter: LocalFileAdapter;
-
-  constructor(
-    path: P,
-    { adapter, ...configArgs }: FieldConfigArgs & { adapter: LocalFileAdapter },
-    extraArgs: FieldExtraArgs
-  ) {
-    super(path, { adapter, ...configArgs }, extraArgs);
-    this.graphQLOutputType = 'File';
-    this.fileAdapter = adapter;
-
-    if (!this.fileAdapter) {
-      throw new Error(`No file adapter provided for File field.`);
-    }
-  }
+export class FileImplementation<P extends string> extends Implementation<P> {
   get _supportsUnique() {
     return false;
   }
 
   gqlOutputFields() {
-    return [`${this.path}: ${this.graphQLOutputType}`];
+    return [`${this.path}: FileFieldOutput`];
   }
-  gqlQueryInputFields() {
-    return [...this.equalityInputFields('String'), ...this.inInputFields('String')];
-  }
-  getFileUploadType() {
-    return 'Upload';
-  }
+
   getGqlAuxTypes() {
     return [
-      `
-      type ${this.graphQLOutputType} {
-        id: ID
-        path: String
-        filename: String
-        originalFilename: String
-        mimetype: String
-        encoding: String
-        publicUrl: String
+      `enum FileMode {
+        local
       }
-    `,
+      input FileFieldInput {
+        upload: Upload
+        ref: String
+      }
+      type FileFieldOutput {
+        mode: FileMode!
+        name: String!
+        filesize: Int!
+        ref: String!
+        src: String!
+      }`,
     ];
+  }
+
+  gqlAuxFieldResolvers() {
+    return {
+      FileFieldOutput: {
+        src(data: FileData, _args: any, context: KeystoneContext) {
+          if (!context.files) {
+            throw new Error('File context is undefined');
+          }
+          return context.files.getSrc(data.mode, data.name);
+        },
+        ref(data: FileData, _args: any, context: KeystoneContext) {
+          if (!context.files) {
+            throw new Error('File context is undefined');
+          }
+          return getFileRef(data.mode, data.name);
+        },
+      },
+    };
   }
   // Called on `User.avatar` for example
   gqlOutputFieldResolvers() {
-    return {
-      [this.path]: (item: Record<P, any>) => {
-        let itemValues = item[this.path];
-        if (!itemValues) {
-          return null;
-        }
-        if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
-          // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
-          // https://github.com/prisma/prisma/issues/3786
-          try {
-            itemValues = JSON.parse(itemValues);
-          } catch (err) {}
-        }
-
-        return {
-          publicUrl: this.fileAdapter.publicUrl(itemValues),
-          ...itemValues,
-        };
-      },
-    };
+    return { [`${this.path}`]: (item: Record<P, any>) => item[this.path] };
   }
 
   async resolveInput({
     resolvedData,
-    existingItem,
+    context,
   }: {
-    resolvedData: Record<P, FileUpload>;
-    existingItem?: Record<P, string | StoredFile>;
+    resolvedData: Record<P, any>;
+    context: KeystoneContext;
   }) {
-    const previousData = existingItem && existingItem[this.path];
-    const uploadData = resolvedData[this.path];
-
-    // NOTE: The following two conditions could easily be combined into a
-    // single `if (!uploadData) return uploadData`, but that would lose the
-    // nuance of returning `undefined` vs `null`.
-    // Premature Optimisers; be ware!
-    if (typeof uploadData === 'undefined') {
-      // Nothing was passed in, so we can bail early.
-      return undefined;
-    }
-
-    if (uploadData === null) {
-      // `null` was specifically uploaded, and we should set the field value to
-      // null. To do that we... return `null`
+    const data = resolvedData[this.path];
+    if (data === null) {
       return null;
     }
-
-    const { createReadStream, filename: originalFilename, mimetype, encoding } = await uploadData;
-    const stream = createReadStream();
-
-    if (!stream && previousData) {
-      // TODO: FIXME: Handle when stream is null. Can happen when:
-      // Updating some other part of the item, but not the file (gets null
-      // because no File DOM element is uploaded)
-      return previousData;
+    if (data === undefined) {
+      return undefined;
     }
-
-    const { id, filename } = await this.fileAdapter.save({
-      stream,
-      filename: originalFilename,
-      id: cuid(),
-    });
-
-    const ret = { id, filename, originalFilename, mimetype, encoding, _meta: undefined };
-    if (this.adapter.listAdapter.parentAdapter.provider === 'sqlite') {
-      // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
-      // https://github.com/prisma/prisma/issues/3786
-      return JSON.stringify(ret);
-    }
-    return ret;
+    const fileData = await handleFileData(data, context);
+    return fileData;
   }
 
   gqlUpdateInputFields() {
-    return [`${this.path}: ${this.getFileUploadType()}`];
+    return [`${this.path}: FileFieldInput`];
   }
   gqlCreateInputFields() {
-    return [`${this.path}: ${this.getFileUploadType()}`];
+    return [`${this.path}: FileFieldInput`];
   }
   getBackingTypes() {
-    const type = `null | {
-      id: string;
-      path: string;
-      filename: string;
-      originalFilename: string;
-      mimetype: string;
-      encoding: string;
-      _meta: Record<string, any>
-     }
-    `;
-    return { [this.path]: { optional: true, type } };
+    return { [this.path]: { optional: true, type: 'Record<string, any> | null' } };
   }
 }
 
@@ -158,7 +88,7 @@ export class PrismaFileInterface<P extends string> extends PrismaFieldAdapter<P>
   constructor(
     fieldName: string,
     path: P,
-    field: File<P>,
+    field: FileImplementation<P>,
     listAdapter: PrismaListAdapter,
     getListByKey: (arg: string) => BaseKeystoneList | undefined,
     config = {}
@@ -167,25 +97,89 @@ export class PrismaFileInterface<P extends string> extends PrismaFieldAdapter<P>
     // Error rather than ignoring invalid config
     // We totally can index these values, it's just not trivial. See issue #1297
     if (this.config.isIndexed) {
-      throw (
+      throw new Error(
         `The File field type doesn't support indexes on Prisma. ` +
-        `Check the config for ${this.path} on the ${this.field.listKey} list`
+          `Check the config for ${this.path} on the ${this.field.listKey} list`
       );
     }
   }
+
   getPrismaSchema() {
-    // we store document data as a string on sqlite because Prisma doesn't support Json on sqlite
-    // https://github.com/prisma/prisma/issues/3786
     return [
-      this._schemaField({
-        type: this.listAdapter.parentAdapter.provider === 'sqlite' ? 'String' : 'Json',
-      }),
+      `${this.path}_filesize    Int?`,
+      `${this.path}_mode   String?`,
+      `${this.path}_name   String?`,
     ];
   }
-  getQueryConditions(dbPath: string) {
-    return {
-      ...this.equalityConditions(dbPath),
-      ...this.inConditions(dbPath),
-    };
+
+  getQueryConditions() {
+    return {};
+  }
+
+  setupHooks({
+    addPreSaveHook,
+    addPostReadHook,
+  }: {
+    addPreSaveHook: (hook: any) => void;
+    addPostReadHook: (hook: any) => void;
+  }) {
+    const field_path = this.path;
+    const filesize_field = `${this.path}_filesize`;
+    const mode_field = `${this.path}_mode`;
+    const name_field = `${this.path}_name`;
+
+    addPreSaveHook(
+      (item: Record<P, any>): Record<string, any> => {
+        if (!Object.prototype.hasOwnProperty.call(item, field_path)) {
+          return item;
+        }
+        if (item[field_path as P] === null) {
+          // If the property exists on the field but is null or falsey
+          // all split fields are null
+          // delete the original field item
+          // return the item
+          const newItem = {
+            [filesize_field]: null,
+            [name_field]: null,
+            [mode_field]: null,
+            ...item,
+          };
+          delete newItem[field_path];
+          return newItem;
+        } else {
+          const { mode, filesize, name } = item[field_path];
+
+          const newItem = {
+            [filesize_field]: filesize,
+            [name_field]: name,
+            [mode_field]: mode,
+            ...item,
+          };
+
+          delete newItem[field_path];
+
+          return newItem;
+        }
+      }
+    );
+    addPostReadHook(
+      (item: Record<string, any>): Record<P, any> => {
+        if (!item[filesize_field] || !item[name_field] || !item[mode_field]) {
+          item[field_path] = null;
+          return item;
+        }
+        item[field_path] = {
+          filesize: item[filesize_field],
+          name: item[name_field],
+          mode: item[mode_field],
+        };
+
+        delete item[filesize_field];
+        delete item[name_field];
+        delete item[mode_field];
+
+        return item;
+      }
+    );
   }
 }

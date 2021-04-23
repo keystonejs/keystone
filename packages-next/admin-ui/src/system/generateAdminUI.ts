@@ -52,13 +52,21 @@ export const generateAdminUI = async (
 ) => {
   // Nuke any existing files in our target directory
   await fs.remove(projectAdminPath);
-
+  const publicDirectory = Path.join(projectAdminPath, 'public');
   if (config.images) {
-    const publicDirectory = Path.join(projectAdminPath, 'public');
     await fs.mkdir(publicDirectory, { recursive: true });
     const storagePath = Path.resolve(config.images.local?.storagePath ?? './public/images');
     await fs.mkdir(storagePath, { recursive: true });
     await fs.symlink(storagePath, Path.join(publicDirectory, 'images'), 'junction');
+  }
+
+  if (config.files) {
+    if (!fs.existsSync(Path.join(projectAdminPath, 'public'))) {
+      await fs.mkdir(publicDirectory, { recursive: true });
+    }
+    const storagePath = Path.resolve(config.files.local?.storagePath ?? './public/files');
+    await fs.mkdir(storagePath, { recursive: true });
+    await fs.symlink(storagePath, Path.join(publicDirectory, 'files'), 'junction');
   }
 
   // Write out the files configured by the user
