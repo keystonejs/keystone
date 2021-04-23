@@ -3,7 +3,6 @@ import globby from 'globby';
 import { multiAdapterRunners, testConfig, setupFromConfig } from '@keystone-next/test-utils-legacy';
 import {
   createItem,
-  deleteItem,
   getItems,
   getItem,
   updateItem,
@@ -231,11 +230,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   'Delete',
                   keystoneTestWrapper(
                     withHelpers(async ({ context, items, listKey }) => {
-                      const data = await deleteItem({
-                        context,
-                        listKey,
-                        itemId: items[0].id,
-                        returnFields,
+                      const data = await context.lists[listKey].deleteOne({
+                        id: items[0].id,
+                        query: returnFields,
                       });
                       expect(data).not.toBe(null);
                       expect(data!.name).toBe(items[0].name);

@@ -3,7 +3,6 @@ import { multiAdapterRunners } from '@keystone-next/test-utils-legacy';
 import {
   createItem,
   createItems,
-  deleteItem,
   updateItem,
 } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
@@ -103,10 +102,8 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const data = await context.exitSudo().graphql.run({ query });
                 expect(data[createMutationName]).not.toBe(null);
                 expect(data[createMutationName].id).not.toBe(null);
-                await deleteItem({
-                  context,
-                  listKey: nameFn[mode](access),
-                  itemId: data[createMutationName].id,
+                await context.lists[nameFn[mode](access)].deleteOne({
+                  id: data[createMutationName].id,
                 });
               });
             });
@@ -137,10 +134,8 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 } else {
                   expect(data[createMutationName][fieldName]).toBe(undefined);
                 }
-                await deleteItem({
-                  context,
-                  listKey: nameFn[mode](listAccess),
-                  itemId: data[createMutationName].id,
+                await context.lists[nameFn[mode](listAccess)].deleteOne({
+                  id: data[createMutationName].id,
                 });
               });
             });
@@ -164,10 +159,8 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const data = await context.exitSudo().graphql.run({ query });
                 expect(data[createMutationName]).not.toBe(null);
                 expect(data[createMutationName].id).not.toBe(null);
-                await deleteItem({
-                  context,
-                  listKey: nameFn[mode](listAccess),
-                  itemId: data[createMutationName].id,
+                await context.lists[nameFn[mode](listAccess)].deleteOne({
+                  id: data[createMutationName].id,
                 });
               });
             });
