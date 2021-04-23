@@ -12,6 +12,9 @@ export type KeystoneContext = {
   sudo: () => KeystoneContext;
   exitSudo: () => KeystoneContext;
   withSession: (session: any) => KeystoneContext;
+  // TODO: Correctly type this as a prisma client
+  prisma: any;
+  images: ImagesContext | undefined;
   totalResults: number;
   maxTotalResults: number;
   schemaName: 'public' | 'internal';
@@ -19,10 +22,8 @@ export type KeystoneContext = {
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   /** @deprecated */
   keystone: BaseKeystone;
-  images: ImagesContext | undefined;
 } & AccessControlContext &
-  Partial<SessionContext<any>> &
-  DatabaseAPIs;
+  Partial<SessionContext<any>>;
 
 // List item API
 
@@ -150,11 +151,7 @@ export type SessionContext<T> = {
   endSession(): Promise<void>;
 };
 
-// DatabaseAPIs is used to provide access to the underlying database abstraction through
-// context and other developer-facing APIs in Keystone, so they can be used easily.
-export type DatabaseAPIs = {
-  prisma?: any;
-};
+// Images API
 
 export type ImageMode = 'local';
 
