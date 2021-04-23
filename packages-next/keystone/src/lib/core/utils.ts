@@ -1,4 +1,5 @@
-import { types } from '@keystone-next/types';
+import { ItemRootValue, types } from '@keystone-next/types';
+import { PrismaFilter, UniquePrismaFilter } from './input-resolvers';
 
 export const prismaScalarsToGraphQLScalars = {
   String: types.String,
@@ -11,32 +12,37 @@ export const prismaScalarsToGraphQLScalars = {
 
 type PrismaModel = {
   count: (arg: {
-    where?: Record<string, any>;
+    where?: PrismaFilter;
     take?: number;
     skip?: number;
     orderBy?: Record<string, any>;
   }) => Promise<number>;
   findMany: (arg: {
-    where?: Record<string, any>;
+    where?: PrismaFilter;
     take?: number;
     skip?: number;
     orderBy?: Record<string, any>;
     include?: Record<string, boolean>;
     select?: Record<string, any>;
-  }) => Promise<any[]>;
-  delete: (arg: { where: { id: IdType } }) => Promise<void>;
+  }) => Promise<ItemRootValue[]>;
+  delete: (arg: { where: UniquePrismaFilter }) => Promise<void>;
   findUnique: (args: {
-    where: { id: IdType };
+    where: UniquePrismaFilter;
     include?: Record<string, any>;
     select?: Record<string, any>;
-  }) => Promise<Record<string, any> | undefined>;
+  }) => Promise<ItemRootValue | null>;
+  findFirst: (args: {
+    where: PrismaFilter;
+    include?: Record<string, any>;
+    select?: Record<string, any>;
+  }) => Promise<ItemRootValue | null>;
   create: (args: {
     data: Record<string, any>;
     include?: Record<string, any>;
     select?: Record<string, any>;
   }) => Promise<any>;
   update: (args: {
-    where: { id: IdType };
+    where: UniquePrismaFilter;
     data: Record<string, any>;
     include?: Record<string, any>;
     select?: Record<string, any>;

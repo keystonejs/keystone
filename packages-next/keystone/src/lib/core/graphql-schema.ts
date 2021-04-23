@@ -1,10 +1,16 @@
 import { GraphQLSchema } from 'graphql';
-import { getGqlNames, types } from '@keystone-next/types';
+import { getGqlNames, KeystoneContext, types } from '@keystone-next/types';
 import { getFindManyArgs } from '@keystone-next/types';
+import { validateNonCreateListAccessControl } from '../createAccessControlContext.js';
 import { InitialisedList } from './types-for-lists.js';
-// import { runInputResolvers } from './input-resolvers';
 
 import { getPrismaModelForList } from './utils.js';
+import {
+  InputFilter,
+  PrismaFilter,
+  UniqueInputFilter,
+  UniquePrismaFilter,
+} from './input-resolvers.js';
 
 const queryMeta = types.object<{ getCount: () => Promise<number> }>()({
   name: '_QueryMeta',
@@ -18,6 +24,80 @@ const queryMeta = types.object<{ getCount: () => Promise<number> }>()({
   },
 });
 
+// TODO: search
+export async function getResolvedWhere(
+  listKey: string,
+  list: InitialisedList,
+  context: KeystoneContext,
+  where: InputFilter
+): Promise<false | PrismaFilter> {
+  const access = await validateNonCreateListAccessControl({
+    access: list.access.read,
+    args: {
+      context,
+      listKey,
+      operation: 'read',
+      session: context.session,
+    },
+  });
+  if (!access) {
+    return false;
+  }
+  let resolvedWhere = await list.inputResolvers.where(where || {});
+  if (typeof access === 'object') {
+    resolvedWhere = {
+      AND: [resolvedWhere, await list.inputResolvers.where(access)],
+    };
+  }
+  return resolvedWhere;
+}
+
+// this will need to do special things when we support multi-field unique indexes
+// we want to do this explicit mapping because:
+// - we are passing the values into a normal where filter and we want to ensure that fields cannot do non-unique filters(we don't do validation on non-unique wheres because prisma will validate all that)
+// - for multi-field unique indexes, we need to a mapping because iirc findFirst/findMany won't understand the syntax for filtering by multi-field unique indexes(which makes sense and is correct imo)
+function mapUniqueWhereToWhere(
+  list: InitialisedList,
+  uniqueWhere: UniquePrismaFilter
+): PrismaFilter {
+  // inputResolvers.uniqueWhere validates that there is only one key
+  const key = Object.keys(uniqueWhere)[0];
+  const dbField = list.fields[key].dbField;
+  if (dbField.kind !== 'scalar' || (dbField.scalar !== 'String' && dbField.scalar !== 'Int')) {
+    throw new Error(
+      'Currently only String and Int scalar db fields can provide a uniqueWhere input'
+    );
+  }
+  const val = uniqueWhere[key];
+  if (dbField.scalar === 'Int' && typeof val !== 'number') {
+    throw new Error('uniqueWhere inputs must return an integer for Int db fields');
+  }
+  if (dbField.scalar === 'String' && typeof val !== 'string') {
+    throw new Error('uniqueWhere inputs must return an string for String db fields');
+  }
+  return { [key]: val };
+}
+
+export async function getItemByUniqueWhere(
+  context: KeystoneContext,
+  listKey: string,
+  list: InitialisedList,
+  uniqueWhere: UniqueInputFilter,
+  access: InputFilter | boolean
+) {
+  if (access === false) {
+    return null;
+  }
+  let resolvedUniqueWhere = await list.inputResolvers.uniqueWhere(uniqueWhere || {});
+  const wherePrismaFilter = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
+  return getPrismaModelForList(context.prisma, listKey).findFirst({
+    where:
+      access === true
+        ? wherePrismaFilter
+        : [wherePrismaFilter, await list.inputResolvers.where(access)],
+  });
+}
+
 export function getGraphQLSchema(lists: Record<string, InitialisedList>) {
   let query = types.object()({
     name: 'Query',
@@ -25,6 +105,7 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>) {
       Object.fromEntries(
         Object.entries(lists).flatMap(([listKey, list]) => {
           const names = getGqlNames({ listKey, ...list });
+
           const findOne = types.field({
             type: list.types.output,
             args: {
@@ -33,9 +114,16 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>) {
               }),
             },
             async resolve(_rootVal, { where }, context) {
-              //   return getPrismaModelForList(context.prisma, listKey).findUnique({
-              //     where: await runInputResolvers(typesForLists, lists, listKey, 'uniqueWhere', where),
-              //   });
+              const access = await validateNonCreateListAccessControl({
+                access: list.access.read,
+                args: {
+                  context,
+                  listKey,
+                  operation: 'read',
+                  session: context.session,
+                },
+              });
+              return getItemByUniqueWhere(context, listKey, list, where, access);
             },
           });
           const findManyArgs = getFindManyArgs(list.types);
@@ -43,8 +131,12 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>) {
             type: types.nonNull(types.list(types.nonNull(list.types.output))),
             args: findManyArgs,
             async resolve(_rootVal, { where, sortBy, first, skip }, context) {
+              const resolvedWhere = await getResolvedWhere(listKey, list, context, where || {});
+              if (resolvedWhere === false) {
+                return [];
+              }
               return getPrismaModelForList(context.prisma, listKey).findMany({
-                // where: await runInputResolvers(typesForLists, lists, listKey, 'where', where || {}),
+                where: resolvedWhere,
                 // TODO: needs to have input resolvers
                 orderBy: sortBy,
                 take: first ?? undefined,
@@ -57,20 +149,20 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>) {
             args: findManyArgs,
             async resolve(_rootVal, { where, sortBy, first, skip }, context) {
               return {
-                getCount: () =>
-                  getPrismaModelForList(context.prisma, listKey).count({
-                    // where: await runInputResolvers(
-                    //   typesForLists,
-                    //   lists,
-                    //   listKey,
-                    //   'where',
-                    //   where || {}
-                    // ),
+                getCount: async () => {
+                  const resolvedWhere = await getResolvedWhere(listKey, list, context, where || {});
+                  if (resolvedWhere === false) {
+                    return 0;
+                  }
+                  // TODO: check take skip things
+                  return getPrismaModelForList(context.prisma, listKey).count({
+                    where: resolvedWhere,
                     // TODO: needs to have input resolvers
                     orderBy: sortBy,
                     take: first ?? undefined,
                     skip,
-                  }),
+                  });
+                },
               };
             },
           });

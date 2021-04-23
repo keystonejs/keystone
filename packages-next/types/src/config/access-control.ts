@@ -39,7 +39,7 @@ type UpdateAccessArgs<GeneratedListTypes extends BaseGeneratedListTypes> = BaseA
   originalInput: GeneratedListTypes['inputs']['update'];
 };
 
-type UpdateListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
+export type UpdateListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
   | boolean
   | GeneratedListTypes['inputs']['where']
   | ((
@@ -54,7 +54,7 @@ type DeleteAccessArgs = BaseAccessArgs & {
   operation: 'delete';
 };
 
-type DeleteListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
+export type DeleteListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes> =
   | boolean
   | GeneratedListTypes['inputs']['where']
   | ((args: DeleteAccessArgs) => MaybePromise<GeneratedListTypes['inputs']['where'] | boolean>);
@@ -72,7 +72,7 @@ export type ListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes>
         | CreateAccessArgs<GeneratedListTypes>
         | UpdateAccessArgs<GeneratedListTypes>
         | DeleteAccessArgs
-    ) => MaybePromise<GeneratedListTypes['inputs']['where'] | boolean>);
+    ) => MaybePromise<boolean>);
 
 export type IndividualFieldAccessControl<Args> = boolean | ((args: Args) => MaybePromise<boolean>);
 

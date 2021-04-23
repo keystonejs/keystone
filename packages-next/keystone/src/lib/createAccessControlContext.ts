@@ -1,42 +1,39 @@
-import { KeystoneContext } from '@keystone-next/types';
+import { InputFilter } from './core/input-resolvers';
 
-type ListAccessArgs = {
-  listKey: string;
-  operation: string;
-  session: any;
-  originalInput: any;
-  gqlName: string;
-  itemId: any;
-  itemIds: any;
-  context: KeystoneContext;
-};
-
-export async function validateListAccessControl({
+export async function validateNonCreateListAccessControl<
+  Args extends { listKey: string; operation: 'read' | 'update' | 'delete' }
+>({
   access,
-  operation,
-  listKey,
-  ...args
-}: { access: any } & ListAccessArgs) {
-  // Either a boolean or an object describing a where clause
-  let result;
-  if (typeof access[operation] !== 'function') {
-    result = access[operation];
-  } else {
-    result = await access[operation]({ listKey, operation, ...args });
-  }
+  args,
+}: {
+  access: ((args: Args) => boolean | Record<string, any>) | boolean | Record<string, any>;
+  args: Args;
+}): Promise<InputFilter | boolean> {
+  const result = typeof access === 'function' ? await access(args) : access;
 
-  const type = typeof result;
-
-  if (!['object', 'boolean'].includes(type) || result === null) {
+  if (result === null || (typeof result !== 'object' && typeof result !== 'boolean')) {
     throw new Error(
-      `Must return an Object or Boolean from Imperative or Declarative access control function. Got ${type}`
+      `Must return an object or boolean from Imperative or Declarative access control function. Got ${type}`
     );
   }
 
-  // Special case for 'create' permission
-  if (operation === 'create' && type === 'object') {
+  return result;
+}
+
+export async function validateCreateListAccessControl<Args extends { listKey: string }>({
+  access,
+  args,
+}: {
+  access: ((args: Args) => Promise<boolean> | boolean) | boolean;
+  args: Args;
+}) {
+  const result = typeof access === 'function' ? await access(args) : access;
+
+  if (typeof result !== 'boolean') {
     throw new Error(
-      `Expected a Boolean for ${listKey}.access.create(), but got Object. (NOTE: 'create' cannot have a Declarative access control config)`
+      `${
+        args.listKey
+      }.access.create() must return a boolean but it got a ${typeof result}. (NOTE: 'create' cannot have a Declarative access control config)`
     );
   }
 

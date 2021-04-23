@@ -15,6 +15,12 @@ import {
   FieldCreateAccessArgs,
   FieldUpdateAccessArgs,
   BaseGeneratedListTypes,
+  CreateAccessControl,
+  DeleteListAccessControl,
+  ReadListAccessControl,
+  UpdateListAccessControl,
+  ListAccessControl,
+  ListInfo,
 } from '@keystone-next/types';
 // import { runInputResolvers } from './input-resolvers';
 import { validateFieldAccessControl } from '../createAccessControlContext';
@@ -26,6 +32,7 @@ import {
   resolveRelationships,
 } from './prisma-schema';
 import { throwAccessDenied } from './ListTypes/graphqlErrors';
+import { InputResolvers, resolveWhereInput } from './input-resolvers';
 
 const sortDirectionEnum = types.enum({
   name: 'SortDirection',
@@ -34,6 +41,7 @@ const sortDirectionEnum = types.enum({
 
 type ListForListTypes = {
   fields: Record<string, FieldTypeFunc>;
+  access?: ListAccessControl<BaseGeneratedListTypes>;
   singularGraphQLName: string;
   pluralGraphQLName: string;
 };
@@ -43,11 +51,20 @@ export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   access: ResolvedFieldAccessControl;
 };
 
+type ResolvedListAccessControl = {
+  read: ReadListAccessControl<BaseGeneratedListTypes>;
+  create: CreateAccessControl<BaseGeneratedListTypes>;
+  update: UpdateListAccessControl<BaseGeneratedListTypes>;
+  delete: DeleteListAccessControl<BaseGeneratedListTypes>;
+};
+
 export type InitialisedList = {
   fields: Record<string, InitialisedField>;
   singularGraphQLName: string;
   pluralGraphQLName: string;
   types: TypesForList;
+  access: ResolvedListAccessControl;
+  inputResolvers: InputResolvers;
 };
 
 function getRelationVal(
@@ -59,7 +76,7 @@ function getRelationVal(
 ) {
   return dbField.mode === 'many'
     ? {
-        findMany: async ({ first, skip, sortBy, where }: FindManyArgsValue) => {
+        findMany: async ({ first, skip, sortBy }: FindManyArgsValue) => {
           return getPrismaModelForList(context.prisma, dbField.list).findMany({
             where: {
               AND: [
@@ -81,7 +98,7 @@ function getRelationVal(
             skip,
           });
         },
-        count: async ({ first, skip, sortBy, where }: FindManyArgsValue) => {
+        count: async ({ first, skip, sortBy }: FindManyArgsValue) => {
           return getPrismaModelForList(context.prisma, dbField.list).count({
             where: {
               AND: [
@@ -253,32 +270,36 @@ type ResolvedFieldAccessControl = {
 function parseFieldAccessControl(
   access: FieldAccessControl<BaseGeneratedListTypes> | undefined
 ): ResolvedFieldAccessControl {
-  if (access === undefined) {
-    return {
-      create: true,
-      read: true,
-      update: true,
-    };
-  }
   if (typeof access === 'boolean' || typeof access === 'function') {
-    return {
-      create: access,
-      read: access,
-      update: access,
-    };
+    return { create: access, read: access, update: access };
   }
+  // note i'm intentionally not using spread here because typescript can't express an optional property which cannot be undefined so spreading would mean there is a possibility that someone could pass {access: undefined} or {access:{read: undefined}} and bad things would happen
   return {
-    create: true,
-    read: true,
-    update: true,
-    ...access,
+    create: access?.create ?? true,
+    read: access?.read ?? true,
+    update: access?.update ?? true,
+  };
+}
+
+function parseListAccessControl(
+  access: ListAccessControl<BaseGeneratedListTypes> | undefined
+): ResolvedListAccessControl {
+  if (typeof access === 'boolean' || typeof access === 'function') {
+    return { create: access, read: access, update: access, delete: access };
+  }
+  // note i'm intentionally not using spread here because typescript can't express an optional property which cannot be undefined so spreading would mean there is a possibility that someone could pass {access: undefined} or {access:{read: undefined}} and bad things would happen
+  return {
+    create: access?.create ?? true,
+    read: access?.read ?? true,
+    update: access?.update ?? true,
+    delete: access?.delete ?? true,
   };
 }
 
 export function initialiseLists(
   lists: Record<string, ListForListTypes>
 ): Record<string, InitialisedList> {
-  const typesForLists: Record<string, TypesForList> = {};
+  const listInfos: Record<string, ListInfo> = {};
 
   const listsWithInitialisedFields = Object.fromEntries(
     Object.entries(lists).map(([listKey, { fields, ...list }]) => [
@@ -287,7 +308,7 @@ export function initialiseLists(
         fields: Object.fromEntries(
           Object.entries(fields).map(([fieldPath, fieldFunc]) => [
             fieldPath,
-            fieldFunc({ fieldPath, listKey, typesForLists }),
+            fieldFunc({ fieldPath, listKey, lists: listInfos }),
           ])
         ),
         ...list,
@@ -313,6 +334,7 @@ export function initialiseLists(
       listKey,
       {
         ...list,
+        access: parseListAccessControl(list.access),
         fields: Object.fromEntries(
           Object.entries(list.fields).map(([fieldKey, field]) => {
             const access = parseFieldAccessControl(field.access);
@@ -481,20 +503,42 @@ export function initialiseLists(
       ),
     });
 
-    typesForLists[listKey] = {
-      output,
-      uniqueWhere,
-      where,
-      create,
-      sortBy,
-      update,
+    const inputResolvers: InputResolvers = {
+      where: input => resolveWhereInput(input, fields),
+      uniqueWhere: async input => {
+        const inputKeys = Object.keys(input);
+        if (inputKeys.length !== 1) {
+          throw new Error(
+            `Exactly one key must be passed in a unique where input but ${inputKeys.length} keys were passed`
+          );
+        }
+        const key = inputKeys[0];
+        const val = input[key];
+        const resolver = fields[key].input!.uniqueWhere!.resolve;
+        const resolvedVal = resolver ? await resolver(val) : val;
+        return {
+          [key]: resolvedVal,
+        };
+      },
+    };
+
+    listInfos[listKey] = {
+      inputResolvers,
+      types: {
+        output,
+        uniqueWhere,
+        where,
+        create,
+        sortBy,
+        update,
+      },
     };
   }
 
   return Object.fromEntries(
     Object.entries(listsWithInitialisedFieldsAndResolvedDbFields).map(([listKey, list]) => [
       listKey,
-      { ...list, types: typesForLists[listKey] },
+      { ...list, ...listInfos[listKey] },
     ])
   );
 }

@@ -6,6 +6,12 @@ import { lists, extendGraphqlSchema } from './schema';
 
 import { PrismaClient } from '.prisma/client';
 
+const prisma = new PrismaClient({ rejectOnNotFound: false });
+
+let x = async () => {
+  let x = await prisma.post.findUnique({ where: { id: 1 }, rejectOnNotFound: false });
+};
+
 let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
 let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 

@@ -179,4 +179,6 @@ export type {
   IndividualFieldAccessControl,
   CreateAccessControl,
   ReadListAccessControl,
+  DeleteListAccessControl,
+  UpdateListAccessControl,
 } from './access-control';

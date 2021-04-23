@@ -26,8 +26,10 @@ export type ItemRootValue = { id: IdType; [key: string]: unknown };
 
 export type MaybeFunction<Params extends any[], Ret> = Ret | ((...params: Params) => Ret);
 
+export type ListInfo = { types: TypesForList; inputResolvers: InputResolvers };
+
 export type FieldData = {
-  typesForLists: Record<string, TypesForList>;
+  lists: Record<string, ListInfo>;
   listKey: string;
   fieldPath: string;
 };
@@ -214,18 +216,8 @@ type DBFieldToOutputValue<TDBField extends DBField> = TDBField extends ScalarDBF
 type FieldInputArg<Val, TArg extends tsgql.Arg<tsgql.InputType, any>> = {
   arg: TArg;
 } & (Val | undefined extends tsgql.InferValueFromArg<TArg>
-  ? {
-      resolve?(
-        value: tsgql.InferValueFromArg<TArg>,
-        resolvers: Record<string, InputResolvers>
-      ): MaybePromise<Val | undefined>;
-    }
-  : {
-      resolve(
-        value: tsgql.InferValueFromArg<TArg>,
-        resolvers: Record<string, InputResolvers>
-      ): MaybePromise<Val | undefined>;
-    });
+  ? { resolve?(value: tsgql.InferValueFromArg<TArg>): MaybePromise<Val | undefined> }
+  : { resolve(value: tsgql.InferValueFromArg<TArg>): MaybePromise<Val | undefined> });
 
 type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
   { id: IdType; value: DBFieldToOutputValue<TDBField>; item: ItemRootValue },
