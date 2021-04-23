@@ -75,14 +75,13 @@ async function checkout(root: any, { token }: Arguments, context: KeystoneContex
   });
   console.log('gonna create the order');
   // 5. Create the order and return it
-  const order = await context.lists.Order.createOne({
+  const order = await context.db.lists.Order.createOne({
     data: {
       total: charge.amount,
       charge: charge.id,
       items: { create: orderItems },
       user: { connect: { id: userId } },
     },
-    resolveFields: false,
   });
   console.log({ order });
   // 6. Clean up any old cart item
