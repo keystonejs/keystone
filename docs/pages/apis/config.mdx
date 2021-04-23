@@ -2,7 +2,7 @@ import { Markdown } from '../../components/Page';
 
 # System Configuration API
 
-The `keystone-next` CLI expects to find a module named `keystone.ts` with a default export of a Keystone system configuration returned from the function `config()`.
+The `keystone-next` [CLI](../guides/cli) expects to find a module named `keystone.ts` with a default export of a Keystone system configuration returned from the function `config()`.
 
 ```typescript filename=keystone.ts
 import { config } from '@keystone-next/keystone/schema';
@@ -148,7 +148,7 @@ export default config({
     enableSessionItem: true,
     publicPages: [],
     getAdditionalFiles: async () => [],
-    pageMiddleware: (async() = {}),
+    pageMiddleware: async () = {},
   },
   /* ... */
 });
@@ -160,7 +160,7 @@ export default config({
 import type { ServerConfig } from '@keystone-next/types';
 ```
 
-The **run** commands from the Keystone [command line](../guides/cli) will start an Express web-server for you.
+The `dev` and `start` commands from the Keystone [command line](../guides/cli) will start an Express web-server for you.
 This server is configured via the `server` configuration option.
 
 Options:
