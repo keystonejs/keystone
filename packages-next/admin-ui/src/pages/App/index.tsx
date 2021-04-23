@@ -15,7 +15,7 @@ type AppConfig = {
 
 export const getApp = (props: AppConfig) => ({ Component, pageProps }: AppProps) => {
   return (
-    <Core>
+    <Core theme={props.adminConfig?.theme}>
       <KeystoneProvider {...props}>
         <ErrorBoundary>
           <Component {...pageProps} />
