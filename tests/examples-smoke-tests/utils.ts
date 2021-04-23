@@ -46,7 +46,7 @@ export const exampleProjectTests = (
   exampleName: string,
   tests: (browser: playwright.BrowserType<playwright.Browser>) => void
 ) => {
-  const projectDir = path.join(__dirname, '..', '..', 'examples-next', exampleName);
+  const projectDir = path.join(__dirname, '..', '..', 'examples', exampleName);
   describe.each(['dev', 'prod'] as const)('%s', mode => {
     let cleanupKeystoneProcess = () => {};
 

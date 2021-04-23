@@ -23,5 +23,5 @@
   "engines": {
     "node": ">=v12.13.1"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/next-lite"
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples/next-lite"
 }

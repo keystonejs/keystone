@@ -16,5 +16,5 @@
   "engines": {
     "node": ">=v12.13.1"
   },
-  "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/sandbox"
+  "repository": "https://github.com/keystonejs/keystone/tree/master/examples/sandbox"
 }

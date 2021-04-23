@@ -18,7 +18,7 @@ import {
 } from '@keystone-next/fields-document/component-blocks';
 import { Global, jsx } from '@keystone-ui/core';
 
-import { componentBlocks as componentBlocksInExampleProject } from '../../examples-next/basic/admin/fieldViews/Content';
+import { componentBlocks as componentBlocksInExampleProject } from '../../examples/basic/admin/fieldViews/Content';
 import { initialContent } from '../lib/initialDocumentDemoContent';
 import { Code } from './Code';
 
