@@ -9,7 +9,7 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
     "prisma": "prisma",
-    "docs-next": "manypkg run @keystone-next/website dev",
+    "docs": "manypkg run @keystone-next/website dev",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\" && remark . --output",
@@ -79,7 +79,7 @@
     "arrowParens": "avoid",
     "overrides": [
       {
-        "files": "docs-next/**",
+        "files": "docs/**",
         "options": {
           "embeddedLanguageFormatting": "off"
         }
@@ -110,7 +110,7 @@
       "packages-next/*",
       "design-system/packages/*",
       "design-system/website",
-      "docs-next"
+      "docs"
     ],
     "nohoist": [
       "**/cypress-multi-reporters"
