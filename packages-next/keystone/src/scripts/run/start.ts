@@ -1,8 +1,8 @@
 import path from 'path';
 import * as fs from 'fs-extra';
 import { createSystem } from '../../lib/createSystem';
-import { initConfig } from '../../lib/initConfig';
-import { createExpressServer } from '../../lib/createExpressServer';
+import { initConfig } from '../../lib/config/initConfig';
+import { createExpressServer } from '../../lib/server/createExpressServer';
 import { ExitError, getAdminPath } from '../utils';
 import { requirePrismaClient } from '../../artifacts';
 

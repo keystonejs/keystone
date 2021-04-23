@@ -4,8 +4,8 @@ import {
   generateNodeModulesArtifacts,
   validateCommittedArtifacts,
 } from '../artifacts';
-import { requireSource } from '../lib/requireSource';
-import { initConfig } from '../lib/initConfig';
+import { requireSource } from '../lib/config/requireSource';
+import { initConfig } from '../lib/config/initConfig';
 import { getConfigPath } from './utils';
 
 // The postinstall step serves two purposes:
