@@ -1,10 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { multiAdapterRunners } from '@keystone-next/test-utils-legacy';
-import {
-  createItem,
-  createItems,
-  updateItem,
-} from '@keystone-next/server-side-graphql-client-legacy';
+import { createItem, createItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import {
   FAKE_ID,
@@ -292,10 +288,9 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const item = items[listKey][0];
                 const fieldName = getFieldName(access);
                 const allQueryName = `all${listKey}s`;
-                await updateItem({
-                  context,
-                  listKey,
-                  item: { id: item.id, data: { [fieldName]: 'hello' } },
+                await context.lists[listKey].updateOne({
+                  id: item.id,
+                  data: { [fieldName]: 'hello' },
                 });
                 const query = `query { ${allQueryName} { id ${fieldName} } }`;
                 const data = await context.exitSudo().graphql.run({ query });
