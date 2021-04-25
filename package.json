@@ -155,6 +155,6 @@
     "babel-plugin-remove-graphql-queries": "2.7.2"
   },
   "engines": {
-    "node": ">=v12.13.1"
+    "node": ">=v12.17.0"
   }
 }
