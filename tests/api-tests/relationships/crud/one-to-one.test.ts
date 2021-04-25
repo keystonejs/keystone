@@ -591,11 +591,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
             expect(result).toHaveLength(1);
 
-            const result1 = await getItem({
-              context,
-              listKey: 'Company',
-              itemId: company1.id,
-              returnFields: 'id location { id }',
+            const result1 = await context.lists.Company.findOne({
+              where: { id: company1.id },
+              query: 'id location { id }',
             });
             expect(result1?.location).toBe(null);
 

@@ -98,9 +98,7 @@ export function Navigation() {
         <NavItem href="/apis/auth">Authentication API</NavItem>
         <NavItem href="/apis/context">Context API</NavItem>
         <NavItem href="/apis/graphql">GraphQL API</NavItem>
-        <NavItem href="/apis/list-items" isPlaceholder>
-          List Item API
-        </NavItem>
+        <NavItem href="/apis/list-items">List Item API</NavItem>
       </Section>
     </nav>
   );

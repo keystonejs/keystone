@@ -271,10 +271,9 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const item = items[listKey][0];
                 const fieldName = getFieldName(access);
                 const singleQueryName = listKey;
-                await updateItem({
-                  context,
-                  listKey,
-                  item: { id: item.id, data: { [fieldName]: 'hello' } },
+                await context.lists[listKey].updateOne({
+                  id: item.id,
+                  data: { [fieldName]: 'hello' },
                 });
                 const query = `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`;
                 const data = await context.exitSudo().graphql.run({ query });
