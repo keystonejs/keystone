@@ -1,4 +1,3 @@
-import { getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import { text } from '../../text';
 import { autoIncrement } from '..';
@@ -74,13 +73,7 @@ export const filterTests = (withKeystone: (arg: any) => any, matrixValue: Matrix
   const _f = matrixValue === 'ID' ? (x: any) => x.toString() : (x: any) => x;
   const match = async (context: KeystoneContext, where: Record<string, any>, expected: any[]) =>
     expect(
-      await getItems({
-        context,
-        listKey: 'Test',
-        where,
-        returnFields: 'name orderNumber',
-        sortBy: ['name_ASC'],
-      })
+      await context.lists.Test.findMany({ where, sortBy: ['name_ASC'], query: 'name orderNumber' })
     ).toEqual(expected.map(i => _storedValues[i]));
 
   test(
