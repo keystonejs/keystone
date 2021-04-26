@@ -1,12 +1,6 @@
 import path from 'path';
 import globby from 'globby';
 import { multiAdapterRunners, testConfig, setupFromConfig } from '@keystone-next/test-utils-legacy';
-import {
-  createItem,
-  getItems,
-  getItem,
-  updateItem,
-} from '@keystone-next/server-side-graphql-client-legacy';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { KeystoneContext } from '@keystone-next/types';
 
@@ -41,8 +35,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
               async ({ context, ...rest }) => {
                 // Populate the database before running the tests
-                for (const item of mod.initItems(matrixValue)) {
-                  await createItem({ context, listKey, item });
+                for (const data of mod.initItems(matrixValue)) {
+                  await context.lists[listKey].createOne({ data });
                 }
                 return testFn({ context, listKey, provider, ...rest });
               }
@@ -86,8 +80,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 readFieldName,
               } = mod;
 
-              // Some  field types can have subfields
-              const returnFields = subfieldName
+              // Some field types can have subfields
+              const query = subfieldName
                 ? `id name ${readFieldName || fieldName} { ${subfieldName} }`
                 : `id name ${readFieldName || fieldName}`;
 
@@ -101,7 +95,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 }) => {
                   const items = await context.lists[listKey].findMany({
                     sortBy: ['name_ASC'],
-                    query: returnFields,
+                    query,
                   });
                   return wrappedFn({ context, listKey, items });
                 };
@@ -114,11 +108,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   'Create',
                   keystoneTestWrapper(
                     withHelpers(async ({ context, listKey }) => {
-                      const data = await createItem({
-                        context,
-                        listKey,
-                        item: { name: 'Newly created', [fieldName]: exampleValue(matrixValue) },
-                        returnFields,
+                      const data = await context.lists[listKey].createOne({
+                        data: { name: 'Newly created', [fieldName]: exampleValue(matrixValue) },
+                        query,
                       });
                       expect(data).not.toBe(null);
                       expect(
@@ -136,11 +128,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   'Read',
                   keystoneTestWrapper(
                     withHelpers(async ({ context, listKey, items }) => {
-                      const data = await getItem({
-                        context,
-                        listKey,
-                        itemId: items[0].id,
-                        returnFields,
+                      const data = await context.lists[listKey].findOne({
+                        where: { id: items[0].id },
+                        query,
                       });
                       expect(data).not.toBe(null);
                       expect(
@@ -159,14 +149,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                     'Updating the value',
                     keystoneTestWrapper(
                       withHelpers(async ({ context, items, listKey }) => {
-                        const data = await updateItem({
-                          context,
-                          listKey,
-                          item: {
-                            id: items[0].id,
-                            data: { [fieldName]: exampleValue2(matrixValue) },
-                          },
-                          returnFields,
+                        const data = await context.lists[listKey].updateOne({
+                          id: items[0].id,
+                          data: { [fieldName]: exampleValue2(matrixValue) },
+                          query,
                         });
                         expect(data).not.toBe(null);
                         expect(
@@ -182,14 +168,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                     'Updating the value to null',
                     keystoneTestWrapper(
                       withHelpers(async ({ context, items, listKey }) => {
-                        const data = await updateItem({
-                          context,
-                          listKey,
-                          item: {
-                            id: items[0].id,
-                            data: { [fieldName]: null },
-                          },
-                          returnFields,
+                        const data = await context.lists[listKey].updateOne({
+                          id: items[0].id,
+                          data: { [fieldName]: null },
+                          query,
                         });
                         expect(data).not.toBe(null);
                         expect(data?.[fieldName]).toBe(null);
@@ -201,14 +183,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                     'Updating without this field',
                     keystoneTestWrapper(
                       withHelpers(async ({ context, items, listKey }) => {
-                        const data = await updateItem({
-                          context,
-                          listKey,
-                          item: {
-                            id: items[0].id,
-                            data: { name: 'Updated value' },
-                          },
-                          returnFields,
+                        const data = await context.lists[listKey].updateOne({
+                          id: items[0].id,
+                          data: { name: 'Updated value' },
+                          query,
                         });
                         expect(data).not.toBe(null);
                         expect(data!.name).toBe('Updated value');
@@ -230,7 +208,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                     withHelpers(async ({ context, items, listKey }) => {
                       const data = await context.lists[listKey].deleteOne({
                         id: items[0].id,
-                        query: returnFields,
+                        query,
                       });
                       expect(data).not.toBe(null);
                       expect(data!.name).toBe(items[0].name);
@@ -240,7 +218,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                         subfieldName ? items[0][fieldName][subfieldName] : items[0][fieldName]
                       );
 
-                      const allItems = await getItems({ context, listKey, returnFields });
+                      const allItems = await context.lists[listKey].findMany({ query });
                       expect(allItems).toEqual(expect.not.arrayContaining([data]));
                     })
                   )

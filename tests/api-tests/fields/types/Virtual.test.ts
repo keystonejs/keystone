@@ -35,13 +35,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             foo: virtual({ resolver: () => 'Hello world!' }),
           }),
           async ({ context }) => {
-            const data = await context.graphql.run({
-              query: `mutation {
-                createPost(data: { value: 1 }) { value, foo }
-              }`,
+            const data = await context.lists.Post.createOne({
+              data: { value: 1 },
+              query: 'value foo',
             });
-            expect(data.createPost.value).toEqual(1);
-            expect(data.createPost.foo).toEqual('Hello world!');
+            expect(data.value).toEqual(1);
+            expect(data.foo).toEqual('Hello world!');
           }
         )
       );
@@ -53,13 +52,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             foo: virtual({ graphQLReturnType: 'Int', resolver: () => 42 }),
           }),
           async ({ context }) => {
-            const data = await context.graphql.run({
-              query: `mutation {
-                createPost(data: { value: 1 }) { value, foo }
-              }`,
+            const data = await context.lists.Post.createOne({
+              data: { value: 1 },
+              query: 'value foo',
             });
-            expect(data.createPost.value).toEqual(1);
-            expect(data.createPost.foo).toEqual(42);
+            expect(data.value).toEqual(1);
+            expect(data.foo).toEqual(42);
           }
         )
       );
@@ -78,13 +76,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }),
           }),
           async ({ context }) => {
-            const data = await context.graphql.run({
-              query: `mutation {
-                createPost(data: { value: 1 }) { value, foo(x: 10, y: 20) }
-              }`,
+            const data = await context.lists.Post.createOne({
+              data: { value: 1 },
+              query: 'value foo(x: 10, y: 20)',
             });
-            expect(data.createPost.value).toEqual(1);
-            expect(data.createPost.foo).toEqual(200);
+            expect(data.value).toEqual(1);
+            expect(data.foo).toEqual(200);
           }
         )
       );
@@ -103,13 +100,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }),
           }),
           async ({ context }) => {
-            const data = await context.graphql.run({
-              query: `mutation {
-                createPost(data: { value: 1 }) { value, foo }
-              }`,
+            const data = await context.lists.Post.createOne({
+              data: { value: 1 },
+              query: 'value foo',
             });
-            expect(data.createPost.value).toEqual(1);
-            expect(data.createPost.foo).toEqual(30);
+            expect(data.value).toEqual(1);
+            expect(data.foo).toEqual(30);
           }
         )
       );
@@ -125,13 +121,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             }),
           }),
           async ({ context }) => {
-            const data = await context.graphql.run({
-              query: `mutation {
-                createPost(data: { value: 1 }) { value, foo { title rating } }
-              }`,
+            const data = await context.lists.Post.createOne({
+              data: { value: 1 },
+              query: 'value foo { title rating }',
             });
-            expect(data.createPost.value).toEqual(1);
-            expect(data.createPost.foo).toEqual([{ title: 'CATS!', rating: 100 }]);
+            expect(data.value).toEqual(1);
+            expect(data.foo).toEqual([{ title: 'CATS!', rating: 100 }]);
           }
         )
       );
