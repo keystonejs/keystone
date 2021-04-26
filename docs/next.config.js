@@ -9,6 +9,19 @@ const withMDX = require('@next/mdx')({
   },
 });
 
+const redirects = {
+  async redirects() {
+    // if this array becomes bigger than 3 entries, please make it a separate file
+    return [
+      {
+        source: '/faqs',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
+};
+
 module.exports = withPlugins([
   withPreconstruct,
   withImages,
@@ -26,4 +39,5 @@ module.exports = withPlugins([
     };
     return nextConfig;
   },
+  redirects,
 ]);
