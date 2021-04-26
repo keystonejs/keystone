@@ -172,6 +172,7 @@ export type ImagesConfig = {
 // config.files
 export type FilesConfig = {
   upload: FileMode;
+  maxSize?: number;
   local?: {
     /**
      * The path local images are uploaded to.

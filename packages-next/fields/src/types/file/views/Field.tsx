@@ -43,7 +43,7 @@ const RefView = ({
       }}
     >
       <TextInput
-        placeholder="Paste the image ref here"
+        placeholder="Paste the file ref here"
         onChange={event => {
           onChange(event.target.value);
         }}
@@ -149,10 +149,10 @@ function FileView({
   //   errorMessage === undefined && value.kind === 'upload' ? value.data.file : undefined
   // );
   const onSuccess = () => {
-    addToast({ title: 'Copied image ref to clipboard', tone: 'positive' });
+    addToast({ title: 'Copied file ref to clipboard', tone: 'positive' });
   };
   const onFailure = () => {
-    addToast({ title: 'Failed to copy image ref to clipboard', tone: 'negative' });
+    addToast({ title: 'Failed to copy file ref to clipboard', tone: 'negative' });
   };
 
   const copyRef = () => {

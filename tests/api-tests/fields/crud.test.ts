@@ -13,6 +13,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
   describe(`${provider} provider`, () => {
     testModules
       .map(require)
+      .filter(({ name }) => name === 'File')
       .filter(
         ({ skipCrudTest, unSupportedAdapterList = [] }) =>
           !skipCrudTest && !unSupportedAdapterList.includes(provider)
@@ -30,6 +31,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                       [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
                     }),
                     images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
+                    files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
                   }),
                 }),
 
@@ -49,6 +51,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   mod.beforeAll();
                 }
               });
+              afterEach(async () => {
+                if (mod.afterEach) {
+                  await mod.afterEach();
+                }
+              });
+              beforeEach(() => {
+                if (mod.beforeEach) {
+                  mod.beforeEach();
+                }
+              });
               afterAll(async () => {
                 if (mod.afterAll) {
                   await mod.afterAll();
@@ -60,9 +72,19 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
           if (!mod.skipCommonCrudTest) {
             describe(`${mod.name} - ${matrixValue} - CRUD operations`, () => {
+              beforeEach(() => {
+                if (mod.beforeEach) {
+                  mod.beforeEach();
+                }
+              });
               beforeAll(() => {
                 if (mod.beforeAll) {
                   mod.beforeAll();
+                }
+              });
+              afterEach(async () => {
+                if (mod.afterEach) {
+                  await mod.afterEach();
                 }
               });
               afterAll(async () => {
@@ -70,6 +92,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   await mod.afterAll();
                 }
               });
+
               const {
                 fieldName,
                 exampleValue,

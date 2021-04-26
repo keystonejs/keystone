@@ -24,8 +24,8 @@ export function makeCreateContext({
   graphQLSchema: GraphQLSchema;
   internalSchema: GraphQLSchema;
   keystone: BaseKeystone;
-  imagesConfig: ImagesConfig;
-  filesConfig: FilesConfig;
+  imagesConfig: ImagesConfig | undefined;
+  filesConfig: FilesConfig | undefined;
 }) {
   const images = createImagesContext(imagesConfig);
   const files = createFilesContext(filesConfig);

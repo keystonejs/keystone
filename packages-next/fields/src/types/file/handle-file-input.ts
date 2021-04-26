@@ -19,12 +19,12 @@ type ValidatedFileInput =
 function validateFileInput({ ref, upload }: FileInput): ValidatedFileInput {
   if (ref != null) {
     if (upload) {
-      throw new Error('Only one of ref and upload can be passed to ImageFieldInput');
+      throw new Error('Only one of ref and upload can be passed to FileFieldInput');
     }
     return { kind: 'ref', ref };
   }
   if (!upload) {
-    throw new Error('Either ref or upload must be passed to ImageFieldInput');
+    throw new Error('Either ref or upload must be passed to FileFieldInput');
   }
   return { kind: 'upload', upload };
 }
