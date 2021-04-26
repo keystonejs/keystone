@@ -2,7 +2,6 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import { getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import type { ProviderName } from '@keystone-next/test-utils-legacy';
 import type { KeystoneContext } from '@keystone-next/types';
 
@@ -578,10 +577,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             // Make sure the original Company does not point to the location
-            const result = await getItems({
-              context,
-              listKey: 'Location',
-              returnFields: 'id name company { id }',
+            const result = await context.lists.Location.findMany({
+              query: 'id name company { id }',
             });
             expect(result).toHaveLength(1);
 
@@ -625,11 +622,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             // Make sure the original Company does not point to the location
-            const result = await getItems({
-              context,
-              listKey: 'Company',
-              returnFields: 'id location { id }',
-            });
+            const result = await context.lists.Company.findMany({ query: 'id location { id }' });
             expect(result).toHaveLength(1);
 
             const result1 = await context.lists.Location.findOne({
