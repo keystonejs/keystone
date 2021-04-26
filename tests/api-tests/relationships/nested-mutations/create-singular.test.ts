@@ -7,7 +7,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
@@ -161,11 +160,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item to update
-          const createEvent = await createItem({
-            context,
-            listKey: 'Event',
-            item: { title: 'A thing' },
-          });
+          const createEvent = await context.lists.Event.createOne({ data: { title: 'A thing' } });
 
           // Update an item that does the nested create
           const data = await context.graphql.run({
@@ -258,10 +253,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to update
-                const eventModel = await createItem({
-                  context,
-                  listKey: `EventTo${group.name}`,
-                  item: { title: 'A thing' },
+                const eventModel = await context.lists[`EventTo${group.name}`].createOne({
+                  data: { title: 'A thing' },
                 });
 
                 // Update an item that does the nested create
@@ -366,10 +359,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to update
-                const eventModel = await createItem({
-                  context,
-                  listKey: `EventTo${group.name}`,
-                  item: { title: 'A thing' },
+                const eventModel = await context.lists[`EventTo${group.name}`].createOne({
+                  data: { title: 'A thing' },
                 });
 
                 // Update an item that does the nested create

@@ -7,7 +7,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -54,18 +53,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           const groupName = `foo${sampleOne(alphanumGenerator)}`;
 
-          const createGroup = await createItem({
-            context,
-            listKey: 'Group',
-            item: { name: groupName },
-          });
+          const createGroup = await context.lists.Group.createOne({ data: { name: groupName } });
 
           // Create an item to update
-          const createEvent = await createItem({
-            context,
-            listKey: 'Event',
-            item: { title: 'A thing', group: { connect: { id: createGroup.id } } },
-            returnFields: 'id group { id }',
+          const createEvent = await context.lists.Event.createOne({
+            data: { title: 'A thing', group: { connect: { id: createGroup.id } } },
+            query: 'id group { id }',
           });
 
           // Avoid false-positives by checking the database directly
@@ -130,7 +123,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'silently succeeds if no item to disconnect during update',
         runner(setupKeystone, async ({ context }) => {
           // Create an item to link against
-          const createEvent = await createItem({ context, listKey: 'Event', item: {} });
+          const createEvent = await context.lists.Event.createOne({ data: {} });
 
           // Create an item that does the linking
           const data = await context.graphql.run({
@@ -165,18 +158,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const groupName = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createGroup = await createItem({
-              context,
-              listKey: 'GroupNoRead',
-              item: { name: groupName },
+            const createGroup = await context.lists.GroupNoRead.createOne({
+              data: { name: groupName },
             });
 
             // Create an item to update
-            const createEvent = await createItem({
-              context,
-              listKey: 'EventToGroupNoRead',
-              item: { group: { connect: { id: createGroup.id } } },
-              returnFields: 'id group { id }',
+            const createEvent = await context.lists.EventToGroupNoRead.createOne({
+              data: { group: { connect: { id: createGroup.id } } },
+              query: 'id group { id }',
             });
 
             // Avoid false-positives by checking the database directly

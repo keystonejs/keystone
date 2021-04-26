@@ -5,7 +5,6 @@ import {
   testConfig,
   setupFromConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 // @ts-ignore
 import superagent from 'superagent';
 import express from 'express';
@@ -134,10 +133,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'Auth/unauth with valid creds',
         runner(setupKeystone, async ({ app, context }) => {
           // Add a user with a password
-          const user = await createItem({
-            context,
-            listKey: 'User',
-            item: { name: 'test', email: 'test@example.com', password: 'testing123' },
+          const user = await context.lists.User.createOne({
+            data: { name: 'test', email: 'test@example.com', password: 'testing123' },
           });
 
           await runTestInServer(app, async _runQuery => {
@@ -172,10 +169,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'Auth with bad resolveAuthInput return value',
         runner(setupKeystone, async ({ app, context }) => {
           // Add a user with a password
-          await createItem({
-            context,
-            listKey: 'User',
-            item: { name: 'test', email: 'test@example.com', password: 'testing123' },
+          await context.lists.User.createOne({
+            data: { name: 'test', email: 'test@example.com', password: 'testing123' },
           });
 
           await runTestInServer(app, async _runQuery => {
@@ -202,10 +197,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'Auth/unauth with good resolveAuthInput return value',
         runner(setupKeystone, async ({ app, context }) => {
           // Add a user with a password
-          const user = await createItem({
-            context,
-            listKey: 'User',
-            item: { name: 'test', email: 'test@example.com', password: 'testing123' },
+          const user = await context.lists.User.createOne({
+            data: { name: 'test', email: 'test@example.com', password: 'testing123' },
           });
 
           await runTestInServer(app, async _runQuery => {
@@ -240,10 +233,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'Auth with values caught in validation hook return value',
         runner(setupKeystone, async ({ app, context }) => {
           // Add a user with a password
-          await createItem({
-            context,
-            listKey: 'User',
-            item: { name: 'test', email: 'test@example.com', password: 'testing123' },
+          await context.lists.User.createOne({
+            data: { name: 'test', email: 'test@example.com', password: 'testing123' },
           });
 
           await runTestInServer(app, async _runQuery => {

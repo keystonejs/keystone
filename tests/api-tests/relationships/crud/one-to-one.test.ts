@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import { createItem, getItems } from '@keystone-next/server-side-graphql-client-legacy';
+import { getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import type { ProviderName } from '@keystone-next/test-utils-legacy';
 import type { KeystoneContext } from '@keystone-next/types';
 
@@ -555,32 +555,26 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'Dual create A',
           runner(setupKeystone, async ({ context }) => {
             // Create a Location
-            const location = await createItem({
-              context,
-              listKey: 'Location',
-              item: { name: sampleOne(alphanumGenerator) },
+            const location = await context.lists.Location.createOne({
+              data: { name: sampleOne(alphanumGenerator) },
             });
 
             // Create a Company pointing to Location
-            const company1 = await createItem({
-              context,
-              listKey: 'Company',
-              item: {
+            const company1 = await context.lists.Company.createOne({
+              data: {
                 name: sampleOne(alphanumGenerator),
                 location: { connect: { id: location.id } },
               },
-              returnFields: 'id location { id }',
+              query: 'id location { id }',
             });
 
             // Create another Company pointing to Location
-            const company2 = await createItem({
-              context,
-              listKey: 'Company',
-              item: {
+            const company2 = await context.lists.Company.createOne({
+              data: {
                 name: sampleOne(alphanumGenerator),
                 location: { connect: { id: location.id } },
               },
-              returnFields: 'id location { id }',
+              query: 'id location { id }',
             });
 
             // Make sure the original Company does not point to the location
@@ -608,32 +602,26 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'Dual create B',
           runner(setupKeystone, async ({ context }) => {
             // Create a Company
-            const company = await createItem({
-              context,
-              listKey: 'Company',
-              item: { name: sampleOne(alphanumGenerator) },
+            const company = await context.lists.Company.createOne({
+              data: { name: sampleOne(alphanumGenerator) },
             });
 
             // Create a Location pointing to Company
-            const location1 = await createItem({
-              context,
-              listKey: 'Location',
-              item: {
+            const location1 = await context.lists.Location.createOne({
+              data: {
                 name: sampleOne(alphanumGenerator),
                 company: { connect: { id: company.id } },
               },
-              returnFields: 'id company { id }',
+              query: 'id company { id }',
             });
 
             // Create another Location pointing to Company
-            const location2 = await createItem({
-              context,
-              listKey: 'Location',
-              item: {
+            const location2 = await context.lists.Location.createOne({
+              data: {
                 name: sampleOne(alphanumGenerator),
                 company: { connect: { id: company.id } },
               },
-              returnFields: 'id company { id }',
+              query: 'id company { id }',
             });
 
             // Make sure the original Company does not point to the location
