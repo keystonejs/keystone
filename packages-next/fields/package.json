@@ -5,7 +5,6 @@
   "main": "dist/fields.cjs.js",
   "module": "dist/fields.esm.js",
   "devDependencies": {
-    "@keystone-next/server-side-graphql-client-legacy": "4.0.0",
     "@keystone-next/test-utils-legacy": "17.0.0",
     "@types/bytes": "^3.1.0",
     "fs-extra": "^9.1.0",
