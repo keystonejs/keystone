@@ -1,4 +1,3 @@
-import { getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { ProviderName } from '@keystone-next/test-utils-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import { text } from '../../text';
@@ -50,15 +49,9 @@ export const filterTests = (withKeystone: (args: any) => any) => {
     expected: any,
     sortBy = ['name_ASC']
   ) =>
-    expect(
-      await getItems({
-        context,
-        listKey: 'Test',
-        where,
-        returnFields: 'name lastOnline',
-        sortBy,
-      })
-    ).toEqual(expected);
+    expect(await context.lists.Test.findMany({ where, sortBy, query: 'name lastOnline' })).toEqual(
+      expected
+    );
 
   test(
     'Sorting: sortBy: lastOnline_ASC',
