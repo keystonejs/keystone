@@ -7,7 +7,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -49,10 +48,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const posts = await Promise.all(
             postNames.map(name => {
               const postContent = sampleOne(alphanumGenerator);
-              return createItem({
-                context,
-                listKey: 'PostLimitedRead',
-                item: { content: postContent, name },
+              return context.lists.PostLimitedRead.createOne({
+                data: { content: postContent, name },
               });
             })
           );
@@ -60,10 +57,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // Create a user that owns 2 posts which are different from the one
           // specified in the read access control filter
           const username = sampleOne(alphanumGenerator);
-          const user = await createItem({
-            context,
-            listKey: 'UserToPostLimitedRead',
-            item: {
+          const user = await context.lists.UserToPostLimitedRead.createOne({
+            data: {
               username,
               posts: { connect: [{ id: postIds[1] }, { id: postIds[2] }] },
             },
@@ -101,10 +96,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const posts = await Promise.all(
             postNames.map(name => {
               const postContent = sampleOne(alphanumGenerator);
-              return createItem({
-                context,
-                listKey: 'PostLimitedRead',
-                item: { content: postContent, name },
+              return context.lists.PostLimitedRead.createOne({
+                data: { content: postContent, name },
               });
             })
           );
@@ -112,10 +105,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // Create a user that owns 2 posts which are different from the one
           // specified in the read access control filter
           const username = sampleOne(alphanumGenerator);
-          const user = await createItem({
-            context,
-            listKey: 'UserToPostLimitedRead',
-            item: {
+          const user = await context.lists.UserToPostLimitedRead.createOne({
+            data: {
               username,
               posts: { connect: [{ id: postIds[1] }, { id: postIds[2] }] },
             },

@@ -1,7 +1,6 @@
 const { text, relationship } = require('@keystone-next/fields');
 const { createSchema, list } = require('@keystone-next/keystone/schema');
 const { setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
 const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
 
 function setupKeystone(provider) {
@@ -29,10 +28,8 @@ const group = new FixtureGroup(setupKeystone);
 
 group.add({
   fn: async ({ context, provider }) => {
-    const { id: userId } = await createItem({
-      context,
-      listKey: 'User',
-      item: { name: 'test', posts: { create: [] } },
+    const { id: userId } = await context.lists.User.createOne({
+      data: { name: 'test', posts: { create: [] } },
     });
     const query = `query getPost($userId: ID!) { User(where: { id: $userId }) { id } }`;
     const { time, success } = await timeQuery({ context, query, variables: { userId } });
@@ -42,10 +39,8 @@ group.add({
 
 group.add({
   fn: async ({ context, provider }) => {
-    const { id: userId } = await createItem({
-      context,
-      listKey: 'User',
-      item: { name: 'test', posts: { create: [] } },
+    const { id: userId } = await context.lists.User.createOne({
+      data: { name: 'test', posts: { create: [] } },
     });
     const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
     const { time, success } = await timeQuery({
