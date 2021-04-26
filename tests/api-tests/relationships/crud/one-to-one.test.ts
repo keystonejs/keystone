@@ -2,7 +2,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import { createItem, getItems, getItem } from '@keystone-next/server-side-graphql-client-legacy';
+import { createItem, getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import type { ProviderName } from '@keystone-next/test-utils-legacy';
 import type { KeystoneContext } from '@keystone-next/types';
 
@@ -597,11 +597,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
             expect(result1?.location).toBe(null);
 
-            const result2 = await getItem({
-              context,
-              listKey: 'Company',
-              itemId: company2.id,
-              returnFields: 'id location { id }',
+            const result2 = await context.lists.Company.findOne({
+              where: { id: company2.id },
+              query: 'id location { id }',
             });
             expect(result2?.location).toEqual({ id: location.id });
           })
@@ -646,19 +644,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
             expect(result).toHaveLength(1);
 
-            const result1 = await getItem({
-              context,
-              listKey: 'Location',
-              itemId: location1.id,
-              returnFields: 'id company { id }',
+            const result1 = await context.lists.Location.findOne({
+              where: { id: location1.id },
+              query: 'id company { id }',
             });
             expect(result1?.company).toBe(null);
 
-            const result2 = await getItem({
-              context,
-              listKey: 'Location',
-              itemId: location2.id,
-              returnFields: 'id company { id }',
+            const result2 = await context.lists.Location.findOne({
+              where: { id: location2.id },
+              query: 'id company { id }',
             });
             expect(result2?.company).toEqual({ id: company.id });
           })
