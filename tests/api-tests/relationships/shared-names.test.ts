@@ -6,7 +6,7 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItems, updateItems } from '@keystone-next/server-side-graphql-client-legacy';
+import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 
 type IdType = any;
@@ -93,10 +93,8 @@ const createInitialData = async (context: KeystoneContext) => {
     ],
     returnFields: 'id name',
   });
-  await updateItems({
-    context,
-    listKey: 'Role',
-    items: [
+  await context.lists.Role.updateMany({
+    data: [
       {
         id: roles.find(({ name }) => name === 'RoleA')!.id,
         data: {
