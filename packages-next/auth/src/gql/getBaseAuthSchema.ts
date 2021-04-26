@@ -58,7 +58,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
           }
 
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.sudo().lists[listKey];
+          const dbItemAPI = context.sudo().db.lists[listKey];
           const result = await validateSecret(
             list,
             identityField,
@@ -66,7 +66,7 @@ export function getBaseAuthSchema<I extends string, S extends string>({
             secretField,
             protectIdentities,
             args[secretField],
-            itemAPI
+            dbItemAPI
           );
 
           if (!result.success) {
@@ -86,13 +86,10 @@ export function getBaseAuthSchema<I extends string, S extends string>({
         },
       },
       Query: {
-        async authenticatedItem(root, args, { session, lists }) {
+        async authenticatedItem(root, args, { session, db }) {
           if (typeof session?.itemId === 'string' && typeof session.listKey === 'string') {
             try {
-              return lists[session.listKey].findOne({
-                where: { id: session.itemId },
-                resolveFields: false,
-              });
+              return db.lists[session.listKey].findOne({ where: { id: session.itemId } });
             } catch (e) {
               return null;
             }

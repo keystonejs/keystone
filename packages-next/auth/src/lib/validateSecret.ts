@@ -1,4 +1,4 @@
-import type { KeystoneListsAPI } from '@keystone-next/types';
+import type { KeystoneDbAPI } from '@keystone-next/types';
 import { PasswordAuthErrorCode } from '../types';
 import { findMatchingIdentity } from './findMatchingIdentity';
 
@@ -9,12 +9,12 @@ export async function validateSecret(
   secretField: string,
   protectIdentities: boolean,
   secret: string,
-  itemAPI: KeystoneListsAPI<any>[string]
+  dbItemAPI: KeystoneDbAPI<any>[string]
 ): Promise<
   | { success: false; code: PasswordAuthErrorCode }
   | { success: true; item: { id: any; [prop: string]: any } }
 > {
-  const match = await findMatchingIdentity(identityField, identity, itemAPI);
+  const match = await findMatchingIdentity(identityField, identity, dbItemAPI);
   // Identity failures with helpful errors
   let code: PasswordAuthErrorCode | undefined;
   if (!match.success) {
