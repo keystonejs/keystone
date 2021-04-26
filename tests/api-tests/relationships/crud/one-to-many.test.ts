@@ -10,23 +10,21 @@ type IdType = any;
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
 const createInitialData = async (context: KeystoneContext) => {
-  type T = { createLocations: { id: IdType }[]; createCompanies: { id: IdType }[] };
-  const data = (await context.graphql.run({
-    query: `
-      mutation {
-        createCompanies(data: [
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } }
-        ]) { id }
-        createLocations(data: [
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } },
-          { data: { name: "${sampleOne(alphanumGenerator)}" } }
-        ]) { id }
-      }`,
-  })) as T;
-  return { locations: data.createLocations, companies: data.createCompanies };
+  const companies = await context.lists.Company.createMany({
+    data: [
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+    ],
+  });
+  const locations = await context.lists.Location.createMany({
+    data: [
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+      { data: { name: sampleOne(alphanumGenerator) } },
+    ],
+  });
+  return { locations, companies };
 };
 
 const createCompanyAndLocation = async (context: KeystoneContext) => {
@@ -137,10 +135,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 4],
                 ['D', 0],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allLocations(where: { company: { name_contains: "${name}"}}) { id }}`,
+                const locations = await context.lists.Location.findMany({
+                  where: { company: { name_contains: name } },
                 });
-                expect(data.allLocations.length).toEqual(count);
+                expect(locations.length).toEqual(count);
               })
             );
           })
@@ -149,10 +147,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'is_null: true',
           runner(setupKeystone, async ({ context }) => {
             await createReadData(context);
-            const data = await context.graphql.run({
-              query: `{ allLocations(where: { company_is_null: true }) { id }}`,
+            const locations = await context.lists.Location.findMany({
+              where: { company_is_null: true },
             });
-            expect(data.allLocations.length).toEqual(1);
+            expect(locations.length).toEqual(1);
           })
         );
         test(
@@ -176,10 +174,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 2],
                 ['D', 0],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allCompanies(where: { locations_some: { name: "${name}"}}) { id }}`,
+                const companies = await context.lists.Company.findMany({
+                  where: { locations_some: { name } },
                 });
-                expect(data.allCompanies.length).toEqual(count);
+                expect(companies.length).toEqual(count);
               })
             );
           })
