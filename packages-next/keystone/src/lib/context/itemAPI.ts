@@ -83,8 +83,11 @@ export function itemAPIForList(
     },
     async count(rawArgs = {}) {
       if (!getArgs.count) throw new Error('You do not have access to this resource');
-      const args = getArgs.count(rawArgs!);
-      return (await list.listQueryMeta(args, context)).getCount();
+      const { first, skip, where } = rawArgs;
+      const { listQueryMetaName, whereInputName } = context.gqlNames(listKey);
+      const query = `query ($first: Int, $skip: Int, $where: ${whereInputName}) { ${listQueryMetaName}(first: $first, skip: $skip, where: $where) { count }  }`;
+      const response = await context.graphql.run({ query, variables: { first, skip, where } });
+      return response[listQueryMetaName].count;
     },
     createOne({ query, resolveFields, ...rawArgs }) {
       if (!getArgs.createOne) throw new Error('You do not have access to this resource');
