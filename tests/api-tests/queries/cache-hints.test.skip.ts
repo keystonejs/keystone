@@ -7,7 +7,6 @@ import {
   testConfig,
   ProviderName,
 } from '@keystone-next/test-utils-legacy';
-import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { list, createSchema, graphQLSchemaExtension } from '@keystone-next/keystone/schema';
 import { KeystoneContext } from '@keystone-next/types';
 
@@ -88,20 +87,16 @@ function setupKeystone(provider: ProviderName) {
 }
 
 const addFixtures = async (context: KeystoneContext) => {
-  const users = await createItems({
-    context,
-    listKey: 'User',
-    items: [
+  const users = await context.lists.user.createMany({
+    data: [
       { data: { name: 'Jess', favNumber: 1 } },
       { data: { name: 'Johanna', favNumber: 8 } },
       { data: { name: 'Sam', favNumber: 5 } },
     ],
   });
 
-  const posts = await createItems({
-    context,
-    listKey: 'Post',
-    items: [
+  const posts = await context.lists.Post.createMany({
+    data: [
       { data: { author: { connect: [{ id: users[0].id }] }, title: 'One author' } },
       {
         data: {

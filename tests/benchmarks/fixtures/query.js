@@ -1,7 +1,7 @@
 const { text, relationship } = require('@keystone-next/fields');
 const { createSchema, list } = require('@keystone-next/keystone/schema');
 const { setupFromConfig } = require('@keystone-next/test-utils-legacy');
-const { createItem, createItems } = require('@keystone-next/server-side-graphql-client-legacy');
+const { createItem } = require('@keystone-next/server-side-graphql-client-legacy');
 const { FixtureGroup, timeQuery, populate, range } = require('../lib/utils');
 
 function setupKeystone(provider) {
@@ -64,10 +64,8 @@ range(14).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const users = await createItems({
-        context,
-        listKey: 'User',
-        items: populate(N, i => ({ data: { name: `test${i}`, posts } })),
+      const users = await context.lists.User.createMany({
+        data: populate(N, i => ({ data: { name: `test${i}`, posts } })),
       });
       const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
@@ -94,10 +92,8 @@ range(k).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const users = await createItems({
-        context,
-        listKey: 'User',
-        items: populate(N, i => ({ data: { name: `test${i}`, posts } })),
+      const users = await context.lists.User.createMany({
+        data: populate(N, i => ({ data: { name: `test${i}`, posts } })),
       });
       const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id } }`;
@@ -123,10 +119,8 @@ range(14).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const users = await createItems({
-        context,
-        listKey: 'User',
-        items: populate(N, i => ({ data: { name: `test${i}`, posts } })),
+      const users = await context.lists.User.createMany({
+        data: populate(N, i => ({ data: { name: `test${i}`, posts } })),
       });
       const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id posts { id } } }`;
@@ -152,10 +146,8 @@ range(k).forEach(i => {
   group.add({
     fn: async ({ context, provider }) => {
       const posts = { create: populate(M, i => ({ title: `post${i}` })) };
-      const users = await createItems({
-        context,
-        listKey: 'User',
-        items: populate(N, i => ({ data: { name: `test${i}`, posts } })),
+      const users = await context.lists.User.createMany({
+        data: populate(N, i => ({ data: { name: `test${i}`, posts } })),
       });
       const userId = users[0].id;
       const query = `query getUser($userId: ID!) { User(where: { id: $userId }) { id posts { id } } }`;

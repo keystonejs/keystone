@@ -8,7 +8,7 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItem, createItems } from '@keystone-next/server-side-graphql-client-legacy';
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -42,19 +42,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'with data',
           runner(setupKeystone, async ({ context }) => {
             // Create an item to link against
-            const users = await createItems({
-              context,
-              listKey: 'User',
-              items: [
+            const users = await context.lists.User.createMany({
+              data: [
                 { data: { name: 'Jess' } },
                 { data: { name: 'Johanna' } },
                 { data: { name: 'Sam' } },
               ],
             });
-            const posts = await createItems({
-              context,
-              listKey: 'Post',
-              items: [
+            const posts = await context.lists.Post.createMany({
+              data: [
                 {
                   data: {
                     author: { connect: { id: users[0].id } },
@@ -80,7 +76,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   },
                 },
               ],
-              returnFields: 'id title',
+              query: 'id title',
             });
 
             // Create an item that does the linking
@@ -114,10 +110,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             // Create an item to link against
             const user = await createItem({ context, listKey: 'User', item: { name: 'Jess' } });
-            const posts = await createItems({
-              context,
-              listKey: 'Post',
-              items: [
+            const posts = await context.lists.Post.createMany({
+              data: [
                 {
                   data: {
                     author: { connect: { id: user.id } },
@@ -126,7 +120,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 },
                 { data: { title: sampleOne(alphanumGenerator) } },
               ],
-              returnFields: 'id title',
+              query: 'id title',
             });
 
             // Create an item that does the linking
