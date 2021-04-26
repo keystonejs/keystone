@@ -83,11 +83,15 @@ export function Navigation() {
         <NavItem href="/guides/virtual-fields" isPlaceholder>
           Virtual Fields
         </NavItem>
+        <NavItem href="/guides/internal-items" isPlaceholder>
+          Internal Items
+        </NavItem>
         <NavItem href="/guides/testing" isPlaceholder>
           Testing
         </NavItem>
       </Section>
       <Section label="API">
+        {/* Config */}
         <NavItem href="/apis/config">Config API</NavItem>
         <NavItem href="/apis/schema">Schema API</NavItem>
         <NavItem href="/apis/fields">Fields API</NavItem>
@@ -95,9 +99,12 @@ export function Navigation() {
         <NavItem href="/apis/hooks"> Hooks API</NavItem>
         <NavItem href="/apis/session">Session API</NavItem>
         <NavItem href="/apis/auth">Authentication API</NavItem>
+        {/* Context */}
         <NavItem href="/apis/context">Context API</NavItem>
-        <NavItem href="/apis/graphql">GraphQL API</NavItem>
         <NavItem href="/apis/list-items">List Item API</NavItem>
+        <NavItem href="/apis/db-items">DB Item API</NavItem>
+        {/* GraphQL */}
+        <NavItem href="/apis/graphql">GraphQL API</NavItem>
       </Section>
     </nav>
   );
