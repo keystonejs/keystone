@@ -6,7 +6,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
 type IdType = any;
 
@@ -39,10 +38,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'Reconnect from the many side',
         runner(setupKeystone, async ({ context }) => {
           // Create some notes
-          const [noteA, noteB, noteC, noteD] = await createItems({
-            context,
-            listKey: 'Note',
-            items: [
+          const [noteA, noteB, noteC, noteD] = await context.lists.Note.createMany({
+            data: [
               { data: { title: 'A' } },
               { data: { title: 'B' } },
               { data: { title: 'C' } },

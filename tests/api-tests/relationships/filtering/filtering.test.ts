@@ -6,7 +6,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 type IdType = any;
 
@@ -42,26 +41,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'nested to-single relationships can be filtered within AND clause',
         runner(setupKeystone, async ({ context }) => {
-          const company = await createItem({
-            context,
-            listKey: 'Company',
-            item: { name: 'Thinkmill' },
-          });
-          const otherCompany = await createItem({
-            context,
-            listKey: 'Company',
-            item: { name: 'Cete' },
-          });
+          const company = await context.lists.Company.createOne({ data: { name: 'Thinkmill' } });
+          const otherCompany = await context.lists.Company.createOne({ data: { name: 'Cete' } });
 
-          const user = await createItem({
-            context,
-            listKey: 'User',
-            item: { company: { connect: { id: company.id } } },
+          const user = await context.lists.User.createOne({
+            data: { company: { connect: { id: company.id } } },
           });
-          await createItem({
-            context,
-            listKey: 'User',
-            item: { company: { connect: { id: otherCompany.id } } },
+          await context.lists.User.createOne({
+            data: { company: { connect: { id: otherCompany.id } } },
           });
 
           const data = await context.graphql.run({
@@ -101,26 +88,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'nested to-single relationships can be filtered within OR clause',
         runner(setupKeystone, async ({ context }) => {
-          const company = await createItem({
-            context,
-            listKey: 'Company',
-            item: { name: 'Thinkmill' },
-          });
-          const otherCompany = await createItem({
-            context,
-            listKey: 'Company',
-            item: { name: 'Cete' },
-          });
+          const company = await context.lists.Company.createOne({ data: { name: 'Thinkmill' } });
+          const otherCompany = await context.lists.Company.createOne({ data: { name: 'Cete' } });
 
-          const user = await createItem({
-            context,
-            listKey: 'User',
-            item: { company: { connect: { id: company.id } } },
+          const user = await context.lists.User.createOne({
+            data: { company: { connect: { id: company.id } } },
           });
-          await createItem({
-            context,
-            listKey: 'User',
-            item: { company: { connect: { id: otherCompany.id } } },
+          await context.lists.User.createOne({
+            data: { company: { connect: { id: otherCompany.id } } },
           });
 
           const data = await context.graphql.run({
@@ -162,24 +137,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = [];
 
-          ids.push(
-            (await createItem({ context, listKey: 'Post', item: { content: 'Hello world' } })).id
-          );
-          ids.push(
-            (await createItem({ context, listKey: 'Post', item: { content: 'hi world' } })).id
-          );
-          ids.push(
-            (await createItem({ context, listKey: 'Post', item: { content: 'Hello? Or hi?' } })).id
-          );
+          ids.push((await context.lists.Post.createOne({ data: { content: 'Hello world' } })).id);
+          ids.push((await context.lists.Post.createOne({ data: { content: 'hi world' } })).id);
+          ids.push((await context.lists.Post.createOne({ data: { content: 'Hello? Or hi?' } })).id);
 
-          const user = await createItem({
-            context,
-            listKey: 'User',
-            item: { posts: { connect: ids.map(id => ({ id })) } },
+          const user = await context.lists.User.createOne({
+            data: { posts: { connect: ids.map(id => ({ id })) } },
           });
 
           // Create a dummy user to make sure we're actually filtering it out
-          await createItem({ context, listKey: 'User', item: {} });
+          await context.lists.User.createOne({ data: {} });
 
           const data = (await context.graphql.run({
             query: `
@@ -213,24 +180,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
         runner(setupKeystone, async ({ context }) => {
           const ids = [];
 
-          ids.push(
-            (await createItem({ context, listKey: 'Post', item: { content: 'Hello world' } })).id
-          );
-          ids.push(
-            (await createItem({ context, listKey: 'Post', item: { content: 'hi world' } })).id
-          );
-          ids.push(
-            (await createItem({ context, listKey: 'Post', item: { content: 'Hello? Or hi?' } })).id
-          );
+          ids.push((await context.lists.Post.createOne({ data: { content: 'Hello world' } })).id);
+          ids.push((await context.lists.Post.createOne({ data: { content: 'hi world' } })).id);
+          ids.push((await context.lists.Post.createOne({ data: { content: 'Hello? Or hi?' } })).id);
 
-          const user = await createItem({
-            context,
-            listKey: 'User',
-            item: { posts: { connect: ids.map(id => ({ id })) } },
+          const user = await context.lists.User.createOne({
+            data: { posts: { connect: ids.map(id => ({ id })) } },
           });
 
           // Create a dummy user to make sure we're actually filtering it out
-          await createItem({ context, listKey: 'User', item: {} });
+          await context.lists.User.createOne({ data: {} });
 
           const data = (await context.graphql.run({
             query: `
@@ -262,69 +221,51 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'many-to-many filtering composes with one-to-many filtering',
         runner(setupKeystone, async ({ context }) => {
-          const adsCompany = await createItem({
-            context,
-            listKey: 'Company',
-            item: { name: 'AdsAdsAds' },
-            returnFields: 'id name',
+          const adsCompany = await context.lists.Company.createOne({
+            data: { name: 'AdsAdsAds' },
+            query: 'id name',
           });
-          const otherCompany = await createItem({
-            context,
-            listKey: 'Company',
-            item: { name: 'Thinkmill' },
-            returnFields: 'id name',
+          const otherCompany = await context.lists.Company.createOne({
+            data: { name: 'Thinkmill' },
+            query: 'id name',
           });
 
           // Content can have multiple authors
-          const spam1 = await createItem({ context, listKey: 'Post', item: { content: 'spam' } });
-          const spam2 = await createItem({ context, listKey: 'Post', item: { content: 'spam' } });
-          const content = await createItem({
-            context,
-            listKey: 'Post',
-            item: { content: 'cute cat pics' },
+          const spam1 = await context.lists.Post.createOne({ data: { content: 'spam' } });
+          const spam2 = await context.lists.Post.createOne({ data: { content: 'spam' } });
+          const content = await context.lists.Post.createOne({
+            data: { content: 'cute cat pics' },
           });
 
-          const spammyUser = await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          const spammyUser = await context.lists.User.createOne({
+            data: {
               company: { connect: { id: adsCompany.id } },
               posts: { connect: [{ id: spam1.id }, { id: spam2.id }] },
             },
           });
-          const mixedUser = await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          const mixedUser = await context.lists.User.createOne({
+            data: {
               company: { connect: { id: adsCompany.id } },
               posts: { connect: [{ id: spam1.id }, { id: content.id }] },
             },
           });
-          const nonSpammyUser = await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          const nonSpammyUser = await context.lists.User.createOne({
+            data: {
               company: { connect: { id: adsCompany.id } },
               posts: { connect: [{ id: content.id }] },
             },
           });
-          const quietUser = await createItem({
-            context,
-            listKey: 'User',
-            item: { company: { connect: { id: adsCompany.id } } },
+          const quietUser = await context.lists.User.createOne({
+            data: { company: { connect: { id: adsCompany.id } } },
           });
-          await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          await context.lists.User.createOne({
+            data: {
               company: { connect: { id: otherCompany.id } },
               posts: { connect: [{ id: content.id }] },
             },
           });
-          await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          await context.lists.User.createOne({
+            data: {
               company: { connect: { id: otherCompany.id } },
               posts: { connect: [{ id: spam1.id }] },
             },

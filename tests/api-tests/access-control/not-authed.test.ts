@@ -1,6 +1,5 @@
 import { GraphQLError } from 'graphql';
 import { multiAdapterRunners } from '@keystone-next/test-utils-legacy';
-import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import {
   FAKE_ID,
@@ -52,11 +51,9 @@ multiAdapterRunners().map(({ before, after, provider }) =>
 
       items = {};
       for (const [listKey, _items] of Object.entries(initialData)) {
-        items[listKey] = (await createItems({
-          listKey,
-          items: _items.map(x => ({ data: x })),
-          returnFields: 'id, name',
-          context,
+        items[listKey] = (await context.lists[listKey].createMany({
+          data: _items.map(x => ({ data: x })),
+          query: 'id, name',
         })) as { id: IdType; name: string }[];
       }
     });

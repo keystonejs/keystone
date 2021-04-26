@@ -6,7 +6,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
@@ -39,7 +38,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
     test(
       'users',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
+        const create = async (listKey: string, data: any) =>
+          context.lists[listKey].createOne({ data });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -66,7 +66,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
     test(
       'users - case sensitive',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
+        const create = async (listKey: string, data: any) =>
+          context.lists[listKey].createOne({ data });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -93,7 +94,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
     test(
       'users - partial case sensitive',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
+        const create = async (listKey: string, data: any) =>
+          context.lists[listKey].createOne({ data });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -120,7 +122,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
     test(
       'users - like escapes',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
+        const create = async (listKey: string, data: any) =>
+          context.lists[listKey].createOne({ data });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -147,7 +150,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
     test(
       'users - regex',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
+        const create = async (listKey: string, data: any) =>
+          context.lists[listKey].createOne({ data });
 
         await Promise.all([
           create('Test', { name: 'one' }),
@@ -175,7 +179,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
     test(
       'users - numbers',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
+        const create = async (listKey: string, data: any) =>
+          context.lists[listKey].createOne({ data });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -202,7 +207,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
     test(
       'empty string',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
+        const create = async (listKey: string, data: any) =>
+          context.lists[listKey].createOne({ data });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),
@@ -233,7 +239,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
     test(
       'custom',
       runner(setupKeystone, async ({ context }) => {
-        const create = async (listKey: string, item: any) => createItem({ context, listKey, item });
+        const create = async (listKey: string, data: any) =>
+          context.lists[listKey].createOne({ data });
         await Promise.all([
           create('Test', { name: 'one' }),
           create('Test', { name: '%islikelike%' }),

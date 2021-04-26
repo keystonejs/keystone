@@ -3,7 +3,6 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -65,11 +64,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const noteContent = sampleOne(alphanumGenerator);
 
           // Create an item to link against
-          const createNote = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent },
-          });
+          const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
 
           // Create an item that does the linking
           const data = await context.graphql.run({
@@ -128,15 +123,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const noteContent2 = sampleOne(alphanumGenerator);
 
           // Create an item to link against
-          const createNote = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent },
-          });
-          const createNote2 = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent2 },
+          const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
+          const createNote2 = await context.lists.Note.createOne({
+            data: { content: noteContent2 },
           });
 
           // Create an item that does the linking
@@ -165,23 +154,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const noteContent2 = sampleOne(alphanumGenerator);
 
           // Create an item to link against
-          const createNote = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent },
-          });
-          const createNote2 = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent2 },
+          const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
+          const createNote2 = await context.lists.Note.createOne({
+            data: { content: noteContent2 },
           });
 
           // Create an item to update
-          const createUser = await createItem({
-            context,
-            listKey: 'User',
-            item: { username: 'A thing' },
-          });
+          const createUser = await context.lists.User.createOne({ data: { username: 'A thing' } });
 
           // Update the item and link the relationship field
           const data = await context.graphql.run({
@@ -248,22 +227,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const noteContent2 = sampleOne(alphanumGenerator);
 
           // Create an item to link against
-          const createNote = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent },
-          });
-          const createNote2 = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent2 },
+          const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
+          const createNote2 = await context.lists.Note.createOne({
+            data: { content: noteContent2 },
           });
 
           // Create an item to update
-          const createUser = await createItem({
-            context,
-            listKey: 'User',
-            item: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
+          const createUser = await context.lists.User.createOne({
+            data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
           });
 
           // Update the item and link the relationship field
@@ -305,31 +276,19 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const noteContent2 = sampleOne(alphanumGenerator);
 
           // Create an item to link against
-          const createNote = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent },
-          });
-          const createNote2 = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent2 },
+          const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
+          const createNote2 = await context.lists.Note.createOne({
+            data: { content: noteContent2 },
           });
 
           // Create an item to update
-          const createUser = await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          const createUser = await context.lists.User.createOne({
+            data: {
               username: 'user1',
               notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
             },
           });
-          const createUser2 = await createItem({
-            context,
-            listKey: 'User',
-            item: { username: 'user2' },
-          });
+          const createUser2 = await context.lists.User.createOne({ data: { username: 'user2' } });
 
           const data = await context.graphql.run({
             query: `
@@ -388,7 +347,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const FAKE_ID = 100;
 
           // Create an item to link against
-          const createUser = await createItem({ context, listKey: 'User', item: {} });
+          const createUser = await context.lists.User.createOne({ data: {} });
 
           // Create an item that does the linking
           const { errors } = await context.graphql.raw({
@@ -422,10 +381,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createNoteNoRead = await createItem({
-              context,
-              listKey: 'NoteNoRead',
-              item: { content: noteContent },
+            const createNoteNoRead = await context.lists.NoteNoRead.createOne({
+              data: { content: noteContent },
             });
 
             const { errors } = await context.exitSudo().graphql.raw({
@@ -456,17 +413,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createNote = await createItem({
-              context,
-              listKey: 'NoteNoRead',
-              item: { content: noteContent },
+            const createNote = await context.lists.NoteNoRead.createOne({
+              data: { content: noteContent },
             });
 
             // Create an item to update
-            const createUser = await createItem({
-              context,
-              listKey: 'UserToNotesNoRead',
-              item: { username: 'A thing' },
+            const createUser = await context.lists.UserToNotesNoRead.createOne({
+              data: { username: 'A thing' },
             });
 
             // Update the item and link the relationship field
@@ -503,10 +456,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createNoteNoCreate = await createItem({
-              context,
-              listKey: 'NoteNoCreate',
-              item: { content: noteContent },
+            const createNoteNoCreate = await context.lists.NoteNoCreate.createOne({
+              data: { content: noteContent },
             });
 
             // Create an item that does the linking
@@ -532,17 +483,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createNote = await createItem({
-              context,
-              listKey: 'NoteNoCreate',
-              item: { content: noteContent },
+            const createNote = await context.lists.NoteNoCreate.createOne({
+              data: { content: noteContent },
             });
 
             // Create an item to update
-            const createUser = await createItem({
-              context,
-              listKey: 'UserToNotesNoCreate',
-              item: { username: 'A thing' },
+            const createUser = await context.lists.UserToNotesNoCreate.createOne({
+              data: { username: 'A thing' },
             });
 
             // Update the item and link the relationship field
