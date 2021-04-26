@@ -6,6 +6,7 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
+import { KeystoneContext } from '@keystone-next/types';
 import {
   createItems,
   createItem,
@@ -15,8 +16,7 @@ import {
   getItems,
   updateItem,
   updateItems,
-} from '@keystone-next/server-side-graphql-client-legacy';
-import { KeystoneContext } from '@keystone-next/types';
+} from '@keystone-next/keystone/src/lib/context/server-side-graphql-client';
 
 const testData = Array(50)
   .fill(0)

@@ -1,5 +1,12 @@
 import { GraphQLSchema } from 'graphql';
 import {
+  BaseGeneratedListTypes,
+  BaseKeystoneList,
+  KeystoneDbAPI,
+  KeystoneListsAPI,
+  KeystoneContext,
+} from '@keystone-next/types';
+import {
   getItem,
   getItems,
   createItem,
@@ -8,14 +15,7 @@ import {
   updateItems,
   deleteItem,
   deleteItems,
-} from '@keystone-next/server-side-graphql-client-legacy';
-import {
-  BaseGeneratedListTypes,
-  BaseKeystoneList,
-  KeystoneDbAPI,
-  KeystoneListsAPI,
-  KeystoneContext,
-} from '@keystone-next/types';
+} from './server-side-graphql-client';
 import { getCoerceAndValidateArgumentsFnForGraphQLField } from './getCoerceAndValidateArgumentsFnForGraphQLField';
 
 export function getArgsFactory(list: BaseKeystoneList, schema: GraphQLSchema) {
