@@ -12,18 +12,7 @@ export const initialContent = [
     type: 'paragraph',
     children: [
       {
-        text: '🔥 For real',
-        bold: true,
-      },
-      {
-        text: ', ',
-      },
-      {
-        text: 'try it out',
-        italic: true,
-      },
-      {
-        text: '! click anywhere to start editing.',
+        text: 'Here’s just a few things you can do with it:',
       },
     ],
   },
@@ -38,7 +27,7 @@ export const initialContent = [
             type: 'paragraph',
             children: [
               {
-                text: "It's got layout blocks",
+                text: 'Add layout blocks',
               },
             ],
           },
@@ -115,7 +104,7 @@ export const initialContent = [
             children: [
               {
                 text:
-                  "We're really excited to show you what we've built, and what you can build with it!",
+                  'We’re really excited to show you what we’ve built, and what you can build with it!',
               },
             ],
           },
@@ -170,7 +159,7 @@ export const initialContent = [
             type: 'paragraph',
             children: [
               {
-                text: 'This one is the ',
+                text: 'This component is the ',
               },
               {
                 text: 'Notice',
@@ -178,7 +167,7 @@ export const initialContent = [
               },
               {
                 text:
-                  ', but you can build your own, by just defining their prop types (like you do your Keystone schema) and providing a React Component to render the preview.',
+                  ', but you can build your own by just defining their prop types (like you do your Keystone schema) and providing a React Component to render the preview.',
               },
             ],
           },
@@ -187,7 +176,14 @@ export const initialContent = [
             children: [
               {
                 text:
-                  'They store structured data, and can be inserted (and edited!) anywhere in the document. You can even link them to other item in your database with the Relationship field type.',
+                  'They store structured data, and can be inserted (and edited!) anywhere in the document. You can even link them to other items in your database with the ',
+              },
+              {
+                text: 'Relationship',
+                bold: true,
+              },
+              {
+                text: ' field type.',
               },
             ],
           },
@@ -240,7 +236,8 @@ export const initialContent = [
     children: [
       {
         text:
-          'This is the end of the editable document. Expand the block below to see how the data is stored.',
+          'This is the end of the editable document. Expand the block below to see how the data is stored ↓',
+        bold: true,
       },
     ],
   },

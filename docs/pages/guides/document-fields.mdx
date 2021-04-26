@@ -10,17 +10,17 @@ import { MDXProvider } from '@mdx-js/react';
 
 import Intro from './_doc-field-intro.mdx';
 
-### General Features
+---
 
-The specific features of the editor that are enabled can be customised.
-Try disabling certain features below.
-It will update the code block below and the editor above.
+## Customize the editor
+
+You can configure which fields appear in the editor based on what your team needs. Try adding and removing features below ↓ to see them update in the editor above ↑.
 
 <DocumentFeaturesFormAndCode />
 
-### Inline Relationships
+## Inline Relationships
 
-The document field can have inline relationships for things like mentions.
+The document field can also have inline relationships for things like mentions.
 These are not stored like relationship fields on lists, they are stored as ids in the document structure.
 
 ```tsx
@@ -52,7 +52,7 @@ export default config({
 ```
 
 By default, only the ids for relationships are sent in document.
-If you'd like to include the label and extra data from the selection specified in the relationship, you can pass `hydrateRelationships: true` to the field.
+To include the label and extra data from the selection specified in the relationship, pass `hydrateRelationships: true` to the field.
 
 ```graphql
 query {
@@ -64,11 +64,11 @@ query {
 }
 ```
 
-Whenever a value is saved to the document field, the extra data from the selection and the label on relationships are removed if they exist so only the id is stored.
+Whenever a value is saved to the document field, the extra data from the selection and the label on relationships are removed (if they exist) so only the id is stored.
 
 ## Component Blocks
 
-Component blocks allow you to add custom blocks to the editor that can accept unstructured content and render a form that renders arbitrary React components for input.
+Component blocks let you to add custom blocks to the editor that can accept unstructured content and render a form that renders arbitrary React components for input.
 
 To add component blocks, you need to create a file somewhere and export component blocks from there
 
