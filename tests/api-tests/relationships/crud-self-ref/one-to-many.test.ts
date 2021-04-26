@@ -214,14 +214,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'Count',
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
-            const data = await context.graphql.run({
-              query: `
-                {
-                  _allUsersMeta { count }
-                }
-            `,
-            });
-            expect(data._allUsersMeta.count).toEqual(3);
+            const count = await context.lists.User.count();
+            expect(count).toEqual(3);
           })
         );
       });

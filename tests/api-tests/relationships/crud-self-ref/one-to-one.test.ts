@@ -185,12 +185,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             const { friend } = await createUserAndFriend(context);
-            const data = await context.graphql.run({
-              query: `{
-                  _allUsersMeta(where: { friend: { name: "${friend.name}"} }) { count }
-                }`,
+            const count = await context.lists.User.count({
+              where: { friend: { name: friend.name } },
             });
-            expect(data._allUsersMeta.count).toEqual(1);
+            expect(count).toEqual(1);
           })
         );
 
@@ -199,12 +197,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             const { user } = await createUserAndFriend(context);
-            const data = await context.graphql.run({
-              query: `{
-                  _allUsersMeta(where: { friendOf: { name: "${user.name}"} }) { count }
-                }`,
+            const count = await context.lists.User.count({
+              where: { friendOf: { name: user.name } },
             });
-            expect(data._allUsersMeta.count).toEqual(1);
+            expect(count).toEqual(1);
           })
         );
         test(
@@ -212,12 +208,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             await createUserAndFriend(context);
-            const data = await context.graphql.run({
-              query: `{
-                  _allUsersMeta(where: { friend_is_null: true }) { count }
-                }`,
-            });
-            expect(data._allUsersMeta.count).toEqual(4);
+            const count = await context.lists.User.count({ where: { friend_is_null: true } });
+            expect(count).toEqual(4);
           })
         );
 
@@ -226,12 +218,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             await createUserAndFriend(context);
-            const data = await context.graphql.run({
-              query: `{
-                  _allUsersMeta(where: { friendOf_is_null: true }) { count }
-                }`,
-            });
-            expect(data._allUsersMeta.count).toEqual(4);
+            const count = await context.lists.User.count({ where: { friendOf_is_null: true } });
+            expect(count).toEqual(4);
           })
         );
       });
