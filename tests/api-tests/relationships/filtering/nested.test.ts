@@ -123,7 +123,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'nested to-many relationships can be filtered within AND clause',
         runner(setupKeystone, async ({ context }) => {
-          const ids = await context.lists.post.createMany({
+          const ids = await context.lists.Post.createMany({
             data: [
               { data: { content: 'Hello world' } },
               { data: { content: 'hi world' } },
