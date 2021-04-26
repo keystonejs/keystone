@@ -1,4 +1,3 @@
-import { getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import { text } from '../types/text';
 
@@ -39,13 +38,7 @@ export const filterTests = (withKeystone: any) => {
     expected: any[]
   ) =>
     expect(
-      await getItems({
-        context,
-        listKey: 'Test',
-        where,
-        returnFields: 'id name',
-        sortBy: 'name_ASC',
-      })
+      await context.lists.Test.findMany({ where, sortBy: ['name_ASC'], query: 'id name' })
     ).toEqual(expected);
 
   test(

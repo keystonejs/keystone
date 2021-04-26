@@ -7,7 +7,6 @@ import {
   testConfig,
   ProviderName,
 } from '@keystone-next/test-utils-legacy';
-import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
 function setupKeystone(provider: ProviderName) {
@@ -51,10 +50,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
         test(
           'users',
           runner(setupKeystone, async ({ context }) => {
-            const users = await createItems({
-              context,
-              listKey: 'User',
-              items: [
+            const users = await context.lists.User.createMany({
+              data: [
                 { data: { name: 'Jess', favNumber: 1 } },
                 { data: { name: 'Johanna', favNumber: 8 } },
                 { data: { name: 'Sam', favNumber: 5 } },
@@ -160,19 +157,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
         test(
           'posts by user',
           runner(setupKeystone, async ({ context }) => {
-            const users = await createItems({
-              context,
-              listKey: 'User',
-              items: [
+            const users = await context.lists.User.createMany({
+              data: [
                 { data: { name: 'Jess', favNumber: 1 } },
                 { data: { name: 'Johanna', favNumber: 8 } },
                 { data: { name: 'Sam', favNumber: 5 } },
               ],
             });
-            await createItems({
-              context,
-              listKey: 'Post',
-              items: [
+            await context.lists.Post.createMany({
+              data: [
                 { data: { author: { connect: [{ id: users[0].id }] }, title: 'One author' } },
                 {
                   data: {

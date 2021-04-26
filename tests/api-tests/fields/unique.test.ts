@@ -53,13 +53,8 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
             test(
               'uniqueness is enforced over multiple mutations',
               keystoneTestWrapper(async ({ context }) => {
-                await context.graphql.run({
-                  query: `
-                  mutation($data: TestCreateInput) {
-                    createTest(data: $data) { id }
-                  }
-                `,
-                  variables: { data: { testField: mod.exampleValue(matrixValue) } },
+                await context.lists.Test.createOne({
+                  data: { testField: mod.exampleValue(matrixValue) },
                 });
 
                 const { errors } = await context.graphql.raw({
@@ -157,6 +152,7 @@ multiAdapterRunners().map(({ runner, provider, after }) =>
                         },
                       }),
                     }),
+                    images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
                   }),
                 });
               } catch (error) {

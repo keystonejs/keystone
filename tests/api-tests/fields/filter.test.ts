@@ -1,7 +1,6 @@
 import path from 'path';
 import globby from 'globby';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import { createItem, getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { KeystoneContext } from '@keystone-next/types';
 
@@ -29,6 +28,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 lists: createSchema({
                   [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
                 }),
+                images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
               }),
             });
 
@@ -36,8 +36,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             runner(getServer, async ({ context, ...rest }) => {
               // Populate the database before running the tests
               // Note: this seeding has to be in an order defined by the array returned by `mod.initItems()`
-              for (const item of mod.initItems(matrixValue)) {
-                await createItem({ context, listKey, item });
+              for (const data of mod.initItems(matrixValue)) {
+                await context.lists[listKey].createOne({ data });
               }
               return testFn({ context, listKey, provider, ...rest });
             });
@@ -72,7 +72,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               });
               const { readFieldName, fieldName, subfieldName, storedValues: _storedValues } = mod;
               const storedValues = _storedValues(matrixValue);
-              const returnFields = readFieldName
+              const query = readFieldName
                 ? `name ${readFieldName}`
                 : subfieldName
                 ? `name ${fieldName} { ${subfieldName} }`
@@ -82,9 +82,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 context: KeystoneContext,
                 where: Record<string, any> | undefined,
                 expected: any[],
-                sortBy = 'name_ASC'
+                sortBy = ['name_ASC']
               ) =>
-                expect(await getItems({ context, listKey, where, returnFields, sortBy })).toEqual(
+                expect(await context.lists[listKey].findMany({ where, sortBy, query })).toEqual(
                   expected.map(i => storedValues[i])
                 );
 

@@ -178,9 +178,18 @@ export class HookManager {
     const { originalInput } = args;
     const fieldValidationErrors: ValidationError[] = [];
     // FIXME: Can we do this in a way where we simply return validation errors instead?
-    const addFieldValidationError = (msg: string, _data = {}, internalData = {}) =>
-      fieldValidationErrors.push({ msg, data: _data, internalData });
-    const fieldArgs = { addFieldValidationError, ...args };
+    const fieldArgs = {
+      ...args,
+      addValidationError: (msg: string, _data = {}, internalData = {}) =>
+        fieldValidationErrors.push({ msg, data: _data, internalData }),
+      // deprecated: Will be removed in a future release.
+      addFieldValidationError: (msg: string, _data = {}, internalData = {}) => {
+        console.log(
+          'addFieldValidationError is deprecated. Please use addValidationError instead.'
+        );
+        return fieldValidationErrors.push({ msg, data: _data, internalData });
+      },
+    };
     await mapToFields(fields, (field: Implementation<any>) =>
       field[hookName]({ fieldPath: field.path, ...fieldArgs })
     );

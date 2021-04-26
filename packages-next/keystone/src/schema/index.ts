@@ -1,4 +1,4 @@
-export { createSchema, list, singleton, gql, graphQLSchemaExtension, config } from './schema';
+export { createSchema, list, gql, graphQLSchemaExtension, config } from './schema';
 export type {
   ListSchemaConfig,
   ListConfig,

@@ -6,32 +6,25 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItems, updateItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 
 type IdType = any;
 
 const createInitialData = async (context: KeystoneContext) => {
-  const roles = (await createItems({
-    context,
-    listKey: 'Role',
-    items: [{ data: { name: 'RoleA' } }, { data: { name: 'RoleB' } }, { data: { name: 'RoleC' } }],
-    returnFields: 'id name',
+  const roles = (await context.lists.Role.createMany({
+    data: [{ data: { name: 'RoleA' } }, { data: { name: 'RoleB' } }, { data: { name: 'RoleC' } }],
+    query: 'id name',
   })) as { id: IdType; name: string }[];
-  const companies = (await createItems({
-    context,
-    listKey: 'Company',
-    items: [
+  const companies = (await context.lists.Company.createMany({
+    data: [
       { data: { name: 'CompanyA' } },
       { data: { name: 'CompanyB' } },
       { data: { name: 'CompanyC' } },
     ],
-    returnFields: 'id name',
+    query: 'id name',
   })) as { id: IdType; name: string }[];
-  const employees = (await createItems({
-    context,
-    listKey: 'Employee',
-    items: [
+  const employees = (await context.lists.Employee.createMany({
+    data: [
       {
         data: {
           name: 'EmployeeA',
@@ -54,12 +47,10 @@ const createInitialData = async (context: KeystoneContext) => {
         },
       },
     ],
-    returnFields: 'id name',
+    query: 'id name',
   })) as { id: IdType; name: string }[];
-  await createItems({
-    context,
-    listKey: 'Location',
-    items: [
+  await context.lists.Location.createMany({
+    data: [
       {
         data: {
           name: 'LocationA',
@@ -91,12 +82,10 @@ const createInitialData = async (context: KeystoneContext) => {
         },
       },
     ],
-    returnFields: 'id name',
+    query: 'id name',
   });
-  await updateItems({
-    context,
-    listKey: 'Role',
-    items: [
+  await context.lists.Role.updateMany({
+    data: [
       {
         id: roles.find(({ name }) => name === 'RoleA')!.id,
         data: {

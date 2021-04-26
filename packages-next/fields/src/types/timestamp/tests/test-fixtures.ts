@@ -1,4 +1,3 @@
-import { getItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { ProviderName } from '@keystone-next/test-utils-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import { text } from '../../text';
@@ -48,17 +47,11 @@ export const filterTests = (withKeystone: (args: any) => any) => {
     context: KeystoneContext,
     where: Record<string, any> | undefined,
     expected: any,
-    sortBy = 'name_ASC'
+    sortBy = ['name_ASC']
   ) =>
-    expect(
-      await getItems({
-        context,
-        listKey: 'Test',
-        where,
-        returnFields: 'name lastOnline',
-        sortBy,
-      })
-    ).toEqual(expected);
+    expect(await context.lists.Test.findMany({ where, sortBy, query: 'name lastOnline' })).toEqual(
+      expected
+    );
 
   test(
     'Sorting: sortBy: lastOnline_ASC',
@@ -85,7 +78,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
               { name: 'person6', lastOnline: null },
               { name: 'person7', lastOnline: null },
             ],
-        'lastOnline_ASC'
+        ['lastOnline_ASC']
       )
     )
   );
@@ -115,7 +108,7 @@ export const filterTests = (withKeystone: (args: any) => any) => {
               { name: 'person2', lastOnline: '1980-10-01T23:59:59.999Z' },
               { name: 'person1', lastOnline: '1979-04-12T00:08:00.000Z' },
             ],
-        'lastOnline_DESC'
+        ['lastOnline_DESC']
       )
     )
   );

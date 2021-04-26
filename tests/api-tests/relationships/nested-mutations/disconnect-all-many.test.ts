@@ -7,7 +7,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -70,22 +69,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const noteContent2 = `foo${sampleOne(alphanumGenerator)}`;
 
           // Create two items with content that can be matched
-          const createNote = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent },
-          });
-          const createNote2 = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent2 },
+          const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
+          const createNote2 = await context.lists.Note.createOne({
+            data: { content: noteContent2 },
           });
 
           // Create an item to update
-          const createUser = await createItem({
-            context,
-            listKey: 'User',
-            item: {
+          const createUser = await context.lists.User.createOne({
+            data: {
               username: 'A thing',
               notes: { connect: [{ id: createNote.id }, { id: createNote2.id }] },
             },
@@ -148,17 +139,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createNote = await createItem({
-              context,
-              listKey: 'NoteNoRead',
-              item: { content: noteContent },
+            const createNote = await context.lists.NoteNoRead.createOne({
+              data: { content: noteContent },
             });
 
             // Create an item to update
-            const createUser = await createItem({
-              context,
-              listKey: 'UserToNotesNoRead',
-              item: {
+            const createUser = await context.lists.UserToNotesNoRead.createOne({
+              data: {
                 username: 'A thing',
                 notes: { connect: [{ id: createNote.id }] },
               },

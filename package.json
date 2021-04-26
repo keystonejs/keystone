@@ -9,7 +9,7 @@
   "homepage": "https://github.com/keystonejs/keystone",
   "scripts": {
     "prisma": "prisma",
-    "docs-next": "manypkg run @keystone-next/website dev",
+    "docs": "manypkg run @keystone-next/website dev",
     "coverage": "cross-env DISABLE_LOGGING=true NODE_ENV=test jest --maxWorkers=1 --coverage",
     "format:file": "prettier --write",
     "format": "prettier --write \"**/*.{js,json,ts,tsx,md,mdx}\" && remark . --output",
@@ -29,7 +29,7 @@
     "version-packages": "changeset version",
     "build": "preconstruct build",
     "prepare": "manypkg check && preconstruct dev && yarn run --silent contributing-guide",
-    "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md\"",
+    "contributing-guide": "is-ci && exit 0 || chalk -t \"{bold 📝 Contributing to KeystoneJS?}\" && terminal-link \"🔗 Read the full Contributing Guide\" \"https://github.com/keystonejs/keystone/blob/master/CONTRIBUTING.md\"",
     "npm-tag": "manypkg npm-tag",
     "update": "manypkg upgrade",
     "no-cypress-install": "cross-env CYPRESS_INSTALL_BINARY=0 yarn"
@@ -68,7 +68,7 @@
     "remark-frontmatter": "^1.3.3",
     "remark-toc": "^5.1.1",
     "rimraf": "^3.0.2",
-    "terminal-link-cli": "^2.0.0",
+    "terminal-link-cli": "^3.0.0",
     "typescript": "^4.2.4"
   },
   "prettier": {
@@ -79,7 +79,7 @@
     "arrowParens": "avoid",
     "overrides": [
       {
-        "files": "docs-next/**",
+        "files": "docs/**",
         "options": {
           "embeddedLanguageFormatting": "off"
         }
@@ -106,11 +106,11 @@
       "tests/benchmarks",
       "tests/examples-smoke-tests",
       "projects/*",
-      "examples-next/*",
+      "examples/*",
       "packages-next/*",
       "design-system/packages/*",
       "design-system/website",
-      "docs-next"
+      "docs"
     ],
     "nohoist": [
       "**/cypress-multi-reporters"
@@ -155,6 +155,6 @@
     "babel-plugin-remove-graphql-queries": "2.7.2"
   },
   "engines": {
-    "node": ">=v12.13.1"
+    "node": ">=v12.17.0"
   }
 }

@@ -50,7 +50,7 @@ jobs:
       fail-fast: false
       matrix:
         project:
-          - docs-next
+          - docs
     steps:
       - name: Checkout Repo
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'

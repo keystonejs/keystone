@@ -2,7 +2,6 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
-import { createItem, getItems, getItem } from '@keystone-next/server-side-graphql-client-legacy';
 import type { ProviderName } from '@keystone-next/test-utils-legacy';
 import type { KeystoneContext } from '@keystone-next/types';
 
@@ -555,55 +554,43 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'Dual create A',
           runner(setupKeystone, async ({ context }) => {
             // Create a Location
-            const location = await createItem({
-              context,
-              listKey: 'Location',
-              item: { name: sampleOne(alphanumGenerator) },
+            const location = await context.lists.Location.createOne({
+              data: { name: sampleOne(alphanumGenerator) },
             });
 
             // Create a Company pointing to Location
-            const company1 = await createItem({
-              context,
-              listKey: 'Company',
-              item: {
+            const company1 = await context.lists.Company.createOne({
+              data: {
                 name: sampleOne(alphanumGenerator),
                 location: { connect: { id: location.id } },
               },
-              returnFields: 'id location { id }',
+              query: 'id location { id }',
             });
 
             // Create another Company pointing to Location
-            const company2 = await createItem({
-              context,
-              listKey: 'Company',
-              item: {
+            const company2 = await context.lists.Company.createOne({
+              data: {
                 name: sampleOne(alphanumGenerator),
                 location: { connect: { id: location.id } },
               },
-              returnFields: 'id location { id }',
+              query: 'id location { id }',
             });
 
             // Make sure the original Company does not point to the location
-            const result = await getItems({
-              context,
-              listKey: 'Location',
-              returnFields: 'id name company { id }',
+            const result = await context.lists.Location.findMany({
+              query: 'id name company { id }',
             });
             expect(result).toHaveLength(1);
 
-            const result1 = await getItem({
-              context,
-              listKey: 'Company',
-              itemId: company1.id,
-              returnFields: 'id location { id }',
+            const result1 = await context.lists.Company.findOne({
+              where: { id: company1.id },
+              query: 'id location { id }',
             });
             expect(result1?.location).toBe(null);
 
-            const result2 = await getItem({
-              context,
-              listKey: 'Company',
-              itemId: company2.id,
-              returnFields: 'id location { id }',
+            const result2 = await context.lists.Company.findOne({
+              where: { id: company2.id },
+              query: 'id location { id }',
             });
             expect(result2?.location).toEqual({ id: location.id });
           })
@@ -612,55 +599,41 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'Dual create B',
           runner(setupKeystone, async ({ context }) => {
             // Create a Company
-            const company = await createItem({
-              context,
-              listKey: 'Company',
-              item: { name: sampleOne(alphanumGenerator) },
+            const company = await context.lists.Company.createOne({
+              data: { name: sampleOne(alphanumGenerator) },
             });
 
             // Create a Location pointing to Company
-            const location1 = await createItem({
-              context,
-              listKey: 'Location',
-              item: {
+            const location1 = await context.lists.Location.createOne({
+              data: {
                 name: sampleOne(alphanumGenerator),
                 company: { connect: { id: company.id } },
               },
-              returnFields: 'id company { id }',
+              query: 'id company { id }',
             });
 
             // Create another Location pointing to Company
-            const location2 = await createItem({
-              context,
-              listKey: 'Location',
-              item: {
+            const location2 = await context.lists.Location.createOne({
+              data: {
                 name: sampleOne(alphanumGenerator),
                 company: { connect: { id: company.id } },
               },
-              returnFields: 'id company { id }',
+              query: 'id company { id }',
             });
 
             // Make sure the original Company does not point to the location
-            const result = await getItems({
-              context,
-              listKey: 'Company',
-              returnFields: 'id location { id }',
-            });
+            const result = await context.lists.Company.findMany({ query: 'id location { id }' });
             expect(result).toHaveLength(1);
 
-            const result1 = await getItem({
-              context,
-              listKey: 'Location',
-              itemId: location1.id,
-              returnFields: 'id company { id }',
+            const result1 = await context.lists.Location.findOne({
+              where: { id: location1.id },
+              query: 'id company { id }',
             });
             expect(result1?.company).toBe(null);
 
-            const result2 = await getItem({
-              context,
-              listKey: 'Location',
-              itemId: location2.id,
-              returnFields: 'id company { id }',
+            const result2 = await context.lists.Location.findOne({
+              where: { id: location2.id },
+              query: 'id company { id }',
             });
             expect(result2?.company).toEqual({ id: company.id });
           })

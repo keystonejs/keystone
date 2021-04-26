@@ -44,6 +44,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                           },
                         }),
                       }),
+                      images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
                     }),
                   }),
                 testFn
@@ -68,22 +69,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
             test(
               'Update an object with the required field having a null value',
               keystoneTestWrapper(async ({ context }) => {
-                const data0 = await context.graphql.run({
-                  query: `
-                  mutation($data: TestCreateInput) {
-                    createTest(data: $data ) { id }
-                  }`,
-                  variables: {
-                    data: {
-                      name: 'test entry',
-                      testField: mod.exampleValue(matrixValue),
-                    },
+                const data0 = await context.lists.Test.createOne({
+                  data: {
+                    name: 'test entry',
+                    testField: mod.exampleValue(matrixValue),
                   },
                 });
                 const { data, errors } = await context.graphql.raw({
                   query: `
                   mutation {
-                    updateTest(id: "${data0.createTest.id}" data: { name: "updated test entry", testField: null } ) { id }
+                    updateTest(id: "${data0.id}" data: { name: "updated test entry", testField: null } ) { id }
                   }`,
                 });
                 expect(data.updateTest).toBe(null);
@@ -97,25 +92,19 @@ multiAdapterRunners().map(({ runner, provider }) =>
             test(
               'Update an object without the required field',
               keystoneTestWrapper(async ({ context }) => {
-                const data0 = await context.graphql.run({
-                  query: `
-                  mutation($data: TestCreateInput) {
-                    createTest(data: $data ) { id }
-                  }`,
-                  variables: {
-                    data: {
-                      name: 'test entry',
-                      testField: mod.exampleValue(matrixValue),
-                    },
+                const data0 = await context.lists.Test.createOne({
+                  data: {
+                    name: 'test entry',
+                    testField: mod.exampleValue(matrixValue),
                   },
                 });
-                const data = await context.graphql.run({
-                  query: `
-                  mutation {
-                    updateTest(id: "${data0.createTest.id}" data: { name: "updated test entry" } ) { id }
-                  }`,
+                const data = await context.lists.Test.updateOne({
+                  id: data0.id,
+                  data: { name: 'updated test entry' },
+                  query: 'id name',
                 });
-                expect(data.updateTest).not.toBe(null);
+                expect(data).not.toBe(null);
+                expect(data.name).toEqual('updated test entry');
               })
             );
           });

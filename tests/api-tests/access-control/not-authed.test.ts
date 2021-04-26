@@ -1,6 +1,5 @@
 import { GraphQLError } from 'graphql';
 import { multiAdapterRunners } from '@keystone-next/test-utils-legacy';
-import { createItems, updateItem } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import {
   FAKE_ID,
@@ -52,11 +51,9 @@ multiAdapterRunners().map(({ before, after, provider }) =>
 
       items = {};
       for (const [listKey, _items] of Object.entries(initialData)) {
-        items[listKey] = (await createItems({
-          listKey,
-          items: _items.map(x => ({ data: x })),
-          returnFields: 'id, name',
-          context,
+        items[listKey] = (await context.lists[listKey].createMany({
+          data: _items.map(x => ({ data: x })),
+          query: 'id, name',
         })) as { id: IdType; name: string }[];
       }
     });
@@ -192,10 +189,9 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const item = items[listKey][0];
                 const fieldName = getFieldName(access);
                 const singleQueryName = listKey;
-                await updateItem({
-                  context,
-                  listKey,
-                  item: { id: item.id, data: { [fieldName]: 'hello' } },
+                await context.lists[listKey].updateOne({
+                  id: item.id,
+                  data: { [fieldName]: 'hello' },
                 });
                 const query = `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
@@ -219,10 +215,9 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const item = items[listKey][0];
                 const fieldName = getFieldName(access);
                 const allQueryName = `all${listKey}s`;
-                await updateItem({
-                  context,
-                  listKey,
-                  item: { id: item.id, data: { [fieldName]: 'hello' } },
+                await context.lists[listKey].updateOne({
+                  id: item.id,
+                  data: { [fieldName]: 'hello' },
                 });
                 const query = `query { ${allQueryName} { id ${fieldName} } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
@@ -260,10 +255,9 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const item = items[listKey][0];
                 const fieldName = getFieldName(access);
                 const singleQueryName = listKey;
-                await updateItem({
-                  context,
-                  listKey,
-                  item: { id: item.id, data: { [fieldName]: 'hello' } },
+                await context.lists[listKey].updateOne({
+                  id: item.id,
+                  data: { [fieldName]: 'hello' },
                 });
                 const query = `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
@@ -284,10 +278,9 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const item = items[listKey][0];
                 const fieldName = getFieldName(access);
                 const allQueryName = `all${listKey}s`;
-                await updateItem({
-                  context,
-                  listKey,
-                  item: { id: item.id, data: { [fieldName]: 'hello' } },
+                await context.lists[listKey].updateOne({
+                  id: item.id,
+                  data: { [fieldName]: 'hello' },
                 });
                 const query = `query { ${allQueryName} { id ${fieldName} } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });

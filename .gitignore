@@ -87,6 +87,9 @@ package-lock.json
 
 dist/
 
+# Used by the image field type tests as a storage target
+tmp_test_images/
+
 # Created by https://www.gitignore.io/api/vim
 # Edit at https://www.gitignore.io/?templates=vim
 
@@ -122,5 +125,5 @@ temp/
 
 # These are here temporarily until the examples properly use the new CLI
 # This should be removed and these files should be committed
-examples-next/*/schema.graphql
-examples-next/*/schema.prisma
+examples/*/schema.graphql
+examples/*/schema.prisma
