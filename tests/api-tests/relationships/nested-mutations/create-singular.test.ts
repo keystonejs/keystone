@@ -7,7 +7,7 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItem, getItem } from '@keystone-next/server-side-graphql-client-legacy';
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
@@ -242,11 +242,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 });
 
                 // See that it actually stored the group ID on the Event record
-                const event = await getItem({
-                  listKey: `EventTo${group.name}`,
-                  itemId: data[`createEventTo${group.name}`].id,
-                  returnFields: 'id group { id name }',
-                  context,
+                const event = await context.lists[`EventTo${group.name}`].findOne({
+                  where: { id: data[`createEventTo${group.name}`].id },
+                  query: 'id group { id name }',
                 });
                 expect(event).toBeTruthy();
                 expect(event!.group).toBeTruthy();
@@ -287,11 +285,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 });
 
                 // See that it actually stored the group ID on the Event record
-                const event = await getItem({
-                  listKey: `EventTo${group.name}`,
-                  itemId: data[`updateEventTo${group.name}`].id,
-                  returnFields: 'id group { id name }',
-                  context,
+                const event = await context.lists[`EventTo${group.name}`].findOne({
+                  where: { id: data[`updateEventTo${group.name}`].id },
+                  query: 'id group { id name }',
                 });
                 expect(event).toBeTruthy();
                 expect(event!.group).toBeTruthy();

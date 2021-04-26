@@ -7,7 +7,7 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItem, getItem } from '@keystone-next/server-side-graphql-client-legacy';
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -93,11 +93,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
           expect(data).toMatchObject({ updateEvent: { id: expect.any(String), group: null } });
 
           // Avoid false-positives by checking the database directly
-          const eventData = await getItem({
-            context,
-            listKey: 'Event',
-            itemId: createEvent.id,
-            returnFields: 'id group { id }',
+          const eventData = await context.lists.Event.findOne({
+            where: { id: createEvent.id },
+            query: 'id group { id }',
           });
 
           expect(eventData).toHaveProperty('group', null);
@@ -201,11 +199,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
             });
 
             // Avoid false-positives by checking the database directly
-            const eventData = await getItem({
-              context,
-              listKey: 'EventToGroupNoRead',
-              itemId: createEvent.id,
-              returnFields: 'id group { id }',
+            const eventData = await context.lists.EventToGroupNoRead.findOne({
+              where: { id: createEvent.id },
+              query: 'id group { id }',
             });
 
             expect(eventData).toHaveProperty('group');
