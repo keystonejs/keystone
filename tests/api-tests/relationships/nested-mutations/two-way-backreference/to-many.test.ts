@@ -3,7 +3,7 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-import { createItem, updateItems } from '@keystone-next/server-side-graphql-client-legacy';
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -347,10 +347,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           });
 
-          await updateItems({
-            context,
-            listKey: 'Teacher',
-            items: [
+          await context.lists.Teacher.updateMany({
+            data: [
               {
                 id: teacher1.id,
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
@@ -423,10 +421,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
         });
 
-        await updateItems({
-          context,
-          listKey: 'Teacher',
-          items: [
+        await context.lists.Teacher.updateMany({
+          data: [
             {
               id: teacher1.id,
               data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
