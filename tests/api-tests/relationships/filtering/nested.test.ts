@@ -2,7 +2,7 @@ import { ProviderName, testConfig } from '@keystone-next/test-utils-legacy';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-import { createItem, createItems } from '@keystone-next/server-side-graphql-client-legacy';
+import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 type IdType = any;
 
@@ -38,20 +38,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'nested to-many relationships can be filtered',
         runner(setupKeystone, async ({ context }) => {
-          const ids = await createItems({
-            context,
-            listKey: 'Post',
-            items: [
+          const ids = await context.lists.Post.createMany({
+            data: [
               { data: { content: 'Hello world' } },
               { data: { content: 'hi world' } },
               { data: { content: 'Hello? Or hi?' } },
             ],
           });
 
-          const [user, user2] = await createItems({
-            context,
-            listKey: 'User',
-            items: [
+          const [user, user2] = await context.lists.User.createMany({
+            data: [
               { data: { posts: { connect: ids } } },
               { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
             ],
@@ -90,20 +86,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test.skip(
         'nested to-many relationships can be limited',
         runner(setupKeystone, async ({ context }) => {
-          const ids = await createItems({
-            context,
-            listKey: 'Post',
-            items: [
+          const ids = await context.lists.Post.createMany({
+            data: [
               { data: { content: 'Hello world' } },
               { data: { content: 'hi world' } },
               { data: { content: 'Hello? Or hi?' } },
             ],
           });
 
-          const [user, user2] = await createItems({
-            context,
-            listKey: 'User',
-            items: [
+          const [user, user2] = await context.lists.User.createMany({
+            data: [
               { data: { posts: { connect: ids } } },
               { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
             ],
@@ -131,20 +123,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'nested to-many relationships can be filtered within AND clause',
         runner(setupKeystone, async ({ context }) => {
-          const ids = await createItems({
-            context,
-            listKey: 'Post',
-            items: [
+          const ids = await context.lists.Post.createMany({
+            data: [
               { data: { content: 'Hello world' } },
               { data: { content: 'hi world' } },
               { data: { content: 'Hello? Or hi?' } },
             ],
           });
 
-          const [user, user2] = await createItems({
-            context,
-            listKey: 'User',
-            items: [
+          const [user, user2] = await context.lists.User.createMany({
+            data: [
               { data: { posts: { connect: ids } } },
               { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
             ],
@@ -177,20 +165,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'nested to-many relationships can be filtered within OR clause',
         runner(setupKeystone, async ({ context }) => {
-          const ids = await createItems({
-            context,
-            listKey: 'Post',
-            items: [
+          const ids = await context.lists.Post.createMany({
+            data: [
               { data: { content: 'Hello world' } },
               { data: { content: 'hi world' } },
               { data: { content: 'Hello? Or hi?' } },
             ],
           });
 
-          const [user, user2] = await createItems({
-            context,
-            listKey: 'User',
-            items: [
+          const [user, user2] = await context.lists.User.createMany({
+            data: [
               { data: { posts: { connect: ids } } },
               { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
             ],
@@ -252,20 +236,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'nested to-many relationships return meta info',
         runner(setupKeystone, async ({ context }) => {
-          const ids = await createItems({
-            context,
-            listKey: 'Post',
-            items: [
+          const ids = await context.lists.Post.createMany({
+            data: [
               { data: { content: 'Hello world' } },
               { data: { content: 'hi world' } },
               { data: { content: 'Hello? Or hi?' } },
             ],
           });
 
-          const [user, user2] = await createItems({
-            context,
-            listKey: 'User',
-            items: [
+          const [user, user2] = await context.lists.User.createMany({
+            data: [
               { data: { posts: { connect: ids } } },
               { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
             ],
@@ -302,10 +282,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             ],
           });
 
-          const [user, user2] = await createItems({
-            context,
-            listKey: 'User',
-            items: [
+          const [user, user2] = await context.lists.User.createMany({
+            data: [
               { data: { posts: { connect: ids } } },
               { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
             ],
@@ -336,20 +314,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'nested to-many relationship meta can be limited',
         runner(setupKeystone, async ({ context }) => {
-          const ids = await createItems({
-            context,
-            listKey: 'Post',
-            items: [
+          const ids = await context.lists.Post.createMany({
+            data: [
               { data: { content: 'Hello world' } },
               { data: { content: 'hi world' } },
               { data: { content: 'Hello? Or hi?' } },
             ],
           });
 
-          const [user, user2] = await createItems({
-            context,
-            listKey: 'User',
-            items: [
+          const [user, user2] = await context.lists.User.createMany({
+            data: [
               { data: { posts: { connect: ids } } },
               { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
             ],
@@ -378,20 +352,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'nested to-many relationship meta can be filtered within AND clause',
         runner(setupKeystone, async ({ context }) => {
-          const ids = await createItems({
-            context,
-            listKey: 'Post',
-            items: [
+          const ids = await context.lists.Post.createMany({
+            data: [
               { data: { content: 'Hello world' } },
               { data: { content: 'hi world' } },
               { data: { content: 'Hello? Or hi?' } },
             ],
           });
 
-          const [user, user2] = await createItems({
-            context,
-            listKey: 'User',
-            items: [
+          const [user, user2] = await context.lists.User.createMany({
+            data: [
               { data: { posts: { connect: ids } } },
               { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
             ],
@@ -425,20 +395,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
       test(
         'nested to-many relationship meta can be filtered within OR clause',
         runner(setupKeystone, async ({ context }) => {
-          const ids = await createItems({
-            context,
-            listKey: 'Post',
-            items: [
+          const ids = await context.lists.Post.createMany({
+            data: [
               { data: { content: 'Hello world' } },
               { data: { content: 'hi world' } },
               { data: { content: 'Hello? Or hi?' } },
             ],
           });
 
-          const [user, user2] = await createItems({
-            context,
-            listKey: 'User',
-            items: [
+          const [user, user2] = await context.lists.User.createMany({
+            data: [
               { data: { posts: { connect: ids } } },
               { data: { posts: { connect: [ids[0]] } } }, // Create a dummy user to make sure we're actually filtering it out
             ],
