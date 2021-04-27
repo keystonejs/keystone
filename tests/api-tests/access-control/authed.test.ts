@@ -195,13 +195,11 @@ multiAdapterRunners().map(({ before, after, provider }) =>
               });
 
               test(`meta allowed: ${JSON.stringify(access)}`, async () => {
-                const metaName = `_all${nameFn[mode](access)}sMeta`;
-                const query = `query { ${metaName} { count } }`;
-                const data = await context.exitSudo().graphql.run({ query });
+                const count = await context.exitSudo().lists[nameFn[mode](access)].count();
                 if (mode === 'imperative') {
-                  expect(data[metaName].count).toEqual(2);
+                  expect(count).toEqual(2);
                 } else {
-                  expect(data[metaName].count).toEqual(1); // We can only read the ones our permission filter allow
+                  expect(count).toEqual(1); // We can only read the ones our permission filter allow
                 }
               });
 
