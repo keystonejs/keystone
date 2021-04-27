@@ -55,44 +55,37 @@ export type {
 
 // config.db
 
-export type DatabaseCommon = {
+export type DatabaseConfig = {
   url: string;
   onConnect?: (args: KeystoneContext) => Promise<void>;
-};
-
-export type DatabaseConfig = DatabaseCommon &
-  (
-    | ((
-        | {
-            /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
-            adapter: 'prisma_postgresql';
-            provider?: undefined;
-          }
-        | {
-            /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
-            adapter?: undefined;
-            provider: 'postgresql';
-          }
-      ) & {
-        useMigrations?: boolean;
-        enableLogging?: boolean;
-      })
-    | ((
-        | {
-            /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
-            adapter: 'prisma_sqlite';
-            provider?: undefined;
-          }
-        | {
-            /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
-            adapter?: undefined;
-            provider: 'sqlite';
-          }
-      ) & {
-        useMigrations?: boolean;
-        enableLogging?: boolean;
-      })
-  );
+  useMigrations?: boolean;
+  enableLogging?: boolean;
+} & (
+  | (
+      | {
+          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
+          adapter: 'prisma_postgresql';
+          provider?: undefined;
+        }
+      | {
+          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'postgresql' }` */
+          adapter?: undefined;
+          provider: 'postgresql';
+        }
+    )
+  | (
+      | {
+          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
+          adapter: 'prisma_sqlite';
+          provider?: undefined;
+        }
+      | {
+          /** @deprecated The `adapter` option is deprecated. Please use `{ provider: 'sqlite' }` */
+          adapter?: undefined;
+          provider: 'sqlite';
+        }
+    )
+);
 
 // config.ui
 

@@ -35,14 +35,14 @@ export type ListConfig<
    */
   hooks?: ListHooks<TGeneratedListTypes>;
 
+  graphql?: ListGraphQLConfig;
+
+  db?: ListDBConfig;
+
   /**
    * Defaults the Admin UI and GraphQL descriptions
    */
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
-
-  graphql?: ListGraphQLConfig;
-
-  db?: ListDBConfig;
 
   // Not currently supported
   // plugins?: any[]; // array of plugins that can modify the list config
