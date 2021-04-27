@@ -1,5 +1,11 @@
 import { GraphQLSchema } from 'graphql';
-import { getGqlNames, KeystoneContext, types } from '@keystone-next/types';
+import {
+  DatabaseConfig,
+  getGqlNames,
+  ItemRootValue,
+  KeystoneContext,
+  types,
+} from '@keystone-next/types';
 import { getFindManyArgs } from '@keystone-next/types';
 import { validateNonCreateListAccessControl } from '../context/createAccessControlContext';
 import { InitialisedList } from './types-for-lists.js';
@@ -101,7 +107,10 @@ export async function getItemByUniqueWhere(
   });
 }
 
-export function getGraphQLSchema(lists: Record<string, InitialisedList>) {
+export function getGraphQLSchema(
+  lists: Record<string, InitialisedList>,
+  provider: NonNullable<DatabaseConfig['provider']>
+) {
   let query = types.object()({
     name: 'Query',
     fields: () =>
@@ -249,6 +258,21 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>) {
             return item;
           },
         });
+
+        const prismaCreateMany =
+          provider === 'sqlite'
+            ? async (data: Record<string, any>[], context: KeystoneContext) => {
+                let results: ItemRootValue[] = [];
+                const model = getPrismaModelForList(context.prisma, listKey);
+                for (const item of data) {
+                  results.push(await model.create({ data: item }));
+                }
+              }
+            : (data: Record<string, any>[], context: KeystoneContext) => {
+                const model = getPrismaModelForList(context.prisma, listKey);
+                return context.prisma.$transaction(data.map(data => model.create({ data })));
+              };
+
         const createMany = types.field({
           type: types.nonNull(types.list(types.nonNull(list.types.output))),
           args: {
@@ -270,11 +294,27 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>) {
               defaultValue: [],
             }),
           },
-          async resolve(_rootVal, { data: rawData }, context) {
-            // const data = await runInputResolvers(typesForLists, lists, listKey, 'create', rawData);
-            // return getPrismaModelForList(context.prisma, listKey).create({
-            //   data,
-            // });
+          async resolve(_rootVal, { data: rawDatas }, context) {
+            const inputs = await Promise.all(
+              rawDatas.map(async rawData => {
+                await applyAccessControlForCreate(listKey, list, context, rawData);
+                return resolveInputForCreateOrUpdate(
+                  listKey,
+                  'create',
+                  list,
+                  context,
+                  rawData,
+                  undefined
+                );
+              })
+            );
+
+            const items = await prismaCreateMany(
+              inputs.map(x => x.data),
+              context
+            );
+            await Promise.all(inputs.map((x, i) => x.afterChange(items[i])));
+            return items;
           },
         });
         const updateMany = types.field({
