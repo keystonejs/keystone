@@ -354,7 +354,7 @@ export const DocumentEditorDemo = () => {
         </DocumentEditorProvider>
       </div>
       <details css={{ marginBottom: 'var(--space-xlarge)' }}>
-        <summary>View Document Structure</summary>
+        <summary>View the Document Structure</summary>
         <pre>{JSON.stringify(value, null, 2)}</pre>
       </details>
     </div>
