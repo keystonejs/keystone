@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.15",
-    "@babel/runtime": "^7.13.16",
+    "@babel/runtime": "^7.13.17",
     "@keystone-next/access-control-legacy": "^10.0.0",
     "@keystone-next/adapter-prisma-legacy": "^6.0.0",
     "@keystone-next/admin-ui": "^14.0.0",
@@ -32,7 +32,7 @@
     "@keystone-ui/tooltip": "^3.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/keystonejs__fields": "^5.1.1",
-    "@types/react": "^17.0.3",
+    "@types/react": "^17.0.4",
     "apollo-errors": "^1.9.0",
     "bcryptjs": "^2.4.3",
     "bytes": "^3.1.0",
