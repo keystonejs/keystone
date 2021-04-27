@@ -41,7 +41,7 @@ type PrismaModel = {
     data: Record<string, any>;
     include?: Record<string, any>;
     select?: Record<string, any>;
-  }) => Promise<any>;
+  }) => Promise<ItemRootValue>;
   update: (args: {
     where: UniquePrismaFilter;
     data: Record<string, any>;

@@ -13,11 +13,11 @@ export type ListHooks<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   /**
    * Used to **cause side effects** before a create or update operation once all validateInput hooks have resolved
    */
-  beforeChange?: BeforeOrAfterChangeHook<TGeneratedListTypes>;
+  beforeChange?: BeforeChangeHook<TGeneratedListTypes>;
   /**
    * Used to **cause side effects** after a create or update operation operation has occurred
    */
-  afterChange?: BeforeOrAfterChangeHook<TGeneratedListTypes>;
+  afterChange?: AfterChangeHook<TGeneratedListTypes>;
   /**
    * Used to **validate** that a delete operation can happen after access control has occurred
    */
@@ -105,9 +105,13 @@ type ValidateInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
   args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & ValidationArgs
 ) => Promise<void> | void;
 
-type BeforeOrAfterChangeHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
+type BeforeChangeHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
+  args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes>
+) => Promise<void> | void;
+
+type AfterChangeHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (
   args: ArgsForCreateOrUpdateOperation<TGeneratedListTypes> & {
-    updatedItem: TGeneratedListTypes['inputs']['create'] | TGeneratedListTypes['inputs']['update'];
+    updatedItem: TGeneratedListTypes['backing'];
   }
 ) => Promise<void> | void;
 

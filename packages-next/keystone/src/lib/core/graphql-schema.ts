@@ -1,14 +1,16 @@
 import { GraphQLSchema } from 'graphql';
 import { getGqlNames, KeystoneContext, types } from '@keystone-next/types';
 import { getFindManyArgs } from '@keystone-next/types';
-import { validateNonCreateListAccessControl } from '../createAccessControlContext.js';
+import { validateNonCreateListAccessControl } from '../context/createAccessControlContext';
 import { InitialisedList } from './types-for-lists.js';
 
 import { getPrismaModelForList } from './utils.js';
 import {
+  applyAccessControlForCreate,
   InputFilter,
   PrismaFilter,
   processDelete,
+  resolveInputForCreateOrUpdate,
   UniqueInputFilter,
   UniquePrismaFilter,
 } from './input-resolvers.js';
@@ -192,10 +194,20 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>) {
           type: types.nonNull(list.types.output),
           args: createOneArgs,
           async resolve(_rootVal, { data: rawData }, context) {
-            // const data = await runInputResolvers(typesForLists, lists, listKey, 'create', rawData);
-            // return getPrismaModelForList(context.prisma, listKey).create({
-            //   data,
-            // });
+            await applyAccessControlForCreate(listKey, list, context, rawData);
+            const { data, afterChange } = await resolveInputForCreateOrUpdate(
+              listKey,
+              'create',
+              list,
+              context,
+              rawData,
+              undefined
+            );
+            const item = await getPrismaModelForList(context.prisma, listKey).create({
+              data,
+            });
+            await afterChange(item);
+            return item;
           },
         });
         const updateOneArgs = {

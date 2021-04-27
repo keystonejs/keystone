@@ -245,10 +245,6 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
     cacheHint?: CacheHint;
     access?: FieldAccessControl<BaseGeneratedListTypes>;
     hooks?: FieldHooks<BaseGeneratedListTypes>;
-    defaultValue?: (args: {
-      context: KeystoneContext;
-      originalInput: Record<string, any>;
-    }) => DBFieldToInputValue<DBField>;
   }): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg> {
     return { ...stuff, dbField };
   };

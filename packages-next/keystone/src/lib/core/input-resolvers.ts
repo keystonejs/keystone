@@ -1,5 +1,9 @@
 import { ItemRootValue, KeystoneContext, NextFieldType } from '@keystone-next/types';
-import { validateNonCreateListAccessControl } from '../createAccessControlContext';
+import {
+  validateCreateListAccessControl,
+  validateFieldAccessControl,
+} from '../context/createAccessControlContext';
+import { validateNonCreateListAccessControl } from '../context/createAccessControlContext';
 import { throwAccessDenied, ValidationFailureError } from './ListTypes/graphqlErrors';
 import { getDBFieldPathForFieldOnMultiField, ResolvedDBField } from './prisma-schema';
 import { InitialisedList } from './types-for-lists';
@@ -145,13 +149,7 @@ export async function processDelete(
 ) {
   const access = await validateNonCreateListAccessControl({
     access: list.access.delete,
-    args: {
-      context,
-      listKey,
-      operation: 'delete',
-      session: context.session,
-      itemId,
-    },
+    args: { context, listKey, operation: 'delete', session: context.session, itemId },
   });
   const existingItem = await getAccessControlledItemByUniqueWhereForMutation(
     listKey,
@@ -161,13 +159,8 @@ export async function processDelete(
     itemId
   );
 
-  const hookArgs = {
-    operation: 'delete' as const,
-    listKey,
-    context,
-    existingItem,
-  };
-  validationHook(listKey, 'delete', undefined, async addValidationError => {
+  const hookArgs = { operation: 'delete' as const, listKey, context, existingItem };
+  await validationHook(listKey, 'delete', undefined, async addValidationError => {
     await Promise.all(
       Object.entries(list.fields).map(async ([fieldKey, field]) => {
         await field.hooks.validateDelete?.({
@@ -179,8 +172,8 @@ export async function processDelete(
     );
   });
 
-  validationHook(listKey, 'delete', undefined, async addValidationError => {
-    list.hooks.validateDelete?.({ ...hookArgs, addValidationError });
+  await validationHook(listKey, 'delete', undefined, async addValidationError => {
+    await list.hooks.validateDelete?.({ ...hookArgs, addValidationError });
   });
 
   await runSideEffectOnlyHook(list, 'beforeDelete', hookArgs, () => true);
@@ -222,4 +215,168 @@ async function runSideEffectOnlyHook<
     })
   );
   await list.hooks[hookName]?.(args);
+}
+
+async function resolveInputHook(
+  listKey: string,
+  list: InitialisedList,
+  context: KeystoneContext,
+  operation: 'create' | 'update',
+  resolvedData: Record<string, any>,
+  originalInput: Record<string, any>,
+  existingItem: Record<string, any> | undefined
+) {
+  const args = { context, listKey, operation, originalInput, resolvedData, existingItem };
+  resolvedData = await Promise.all(
+    Object.entries(list.fields).map(([fieldKey, field]) => {
+      if (field.hooks.resolveInput === undefined) {
+        return [fieldKey, resolvedData[fieldKey]];
+      }
+      field.hooks.resolveInput({
+        ...args,
+        fieldPath: fieldKey,
+      });
+    })
+  );
+  if (list.hooks.resolveInput) {
+    // TODO: the resolveInput types are wrong
+    resolvedData = (await list.hooks.resolveInput(args)) as any;
+  }
+  return resolvedData;
+}
+function flattenMultiDbFields(
+  fields: Record<string, { dbField: ResolvedDBField }>,
+  data: Record<string, any>
+) {
+  return Object.fromEntries(
+    Object.entries(data).flatMap(([fieldKey, value]) => {
+      const { dbField } = fields[fieldKey];
+      if (dbField.kind === 'multi') {
+        return Object.entries(value).map(([innerFieldKey, fieldValue]) => {
+          return [getDBFieldPathForFieldOnMultiField(fieldKey, innerFieldKey), fieldValue];
+        });
+      }
+      return [[fieldKey, value]];
+    })
+  );
+}
+
+export async function resolveInputForCreateOrUpdate(
+  listKey: string,
+  operation: 'create' | 'update',
+  list: InitialisedList,
+  context: KeystoneContext,
+  originalInput: Record<string, any>,
+  existingItem: Record<string, any> | undefined
+) {
+  let resolvedData = Object.fromEntries(
+    await Promise.all(
+      Object.entries(list.fields).map(async ([fieldKey, field]) => {
+        const inputConfig = field.input?.[operation];
+        if (!inputConfig) {
+          return [fieldKey, undefined] as const;
+        }
+        const input = originalInput[fieldKey];
+        const resolved = inputConfig.resolve ? await inputConfig.resolve(input) : input;
+        return [fieldKey, resolved] as const;
+      })
+    )
+  );
+
+  resolvedData = await resolveInputHook(
+    listKey,
+    list,
+    context,
+    operation,
+    resolvedData,
+    originalInput,
+    existingItem
+  );
+
+  const args = {
+    context,
+    listKey,
+    operation,
+    originalInput,
+    resolvedData,
+    existingItem,
+  };
+  await validationHook(listKey, operation, undefined, async addValidationError => {
+    await Promise.all(
+      Object.entries(list.fields).map(async ([fieldKey, field]) => {
+        await field.hooks.validateInput?.({
+          ...args,
+          addValidationError,
+          fieldPath: fieldKey,
+        });
+      })
+    );
+  });
+
+  await validationHook(listKey, operation, undefined, async addValidationError => {
+    await list.hooks.validateInput?.({ ...args, addValidationError });
+  });
+  const originalInputKeys = new Set(Object.keys(originalInput));
+  const shouldCallFieldLevelSideEffectHook = (fieldKey: string) => originalInputKeys.has(fieldKey);
+  runSideEffectOnlyHook(list, 'beforeChange', args, shouldCallFieldLevelSideEffectHook);
+  return {
+    data: flattenMultiDbFields(list.fields, resolvedData),
+    afterChange: async (updatedItem: ItemRootValue) => {
+      await runSideEffectOnlyHook(
+        list,
+        'afterChange',
+        { ...args, updatedItem, existingItem },
+        shouldCallFieldLevelSideEffectHook
+      );
+    },
+  };
+}
+
+export async function applyAccessControlForCreate(
+  listKey: string,
+  list: InitialisedList,
+  context: KeystoneContext,
+  originalInput: Record<string, unknown>
+) {
+  const result = await validateCreateListAccessControl({
+    access: list.access.create,
+    args: {
+      context,
+      listKey,
+      operation: 'create',
+      originalInput,
+      session: context.session,
+    },
+  });
+  if (!result) {
+    throwAccessDenied('mutation');
+  }
+  await checkFieldAccessControlForCreate(listKey, list, context, originalInput);
+}
+
+async function checkFieldAccessControlForCreate(
+  listKey: string,
+  list: InitialisedList,
+  context: KeystoneContext,
+  originalInput: Record<string, any>
+) {
+  const results = await Promise.all(
+    Object.entries(list.fields).map(([fieldKey, field]) => {
+      return validateFieldAccessControl({
+        access: field.access.create,
+        args: {
+          context,
+          fieldKey,
+          listKey,
+          operation: 'create',
+          originalInput,
+          session: context.session,
+        },
+      });
+    })
+  );
+
+  if (results.some(canAccess => !canAccess)) {
+    throwAccessDenied('mutation');
+  }
 }

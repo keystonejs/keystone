@@ -1,4 +1,4 @@
-import { InputFilter } from './core/input-resolvers';
+import { InputFilter } from '../core/input-resolvers';
 
 export async function validateNonCreateListAccessControl<
   Args extends { listKey: string; operation: 'read' | 'update' | 'delete' }
@@ -13,7 +13,7 @@ export async function validateNonCreateListAccessControl<
 
   if (result === null || (typeof result !== 'object' && typeof result !== 'boolean')) {
     throw new Error(
-      `Must return an object or boolean from Imperative or Declarative access control function. Got ${type}`
+      `Must return an object or boolean from Imperative or Declarative access control function. Got ${typeof result}`
     );
   }
 

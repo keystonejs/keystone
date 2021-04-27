@@ -25,7 +25,7 @@ import {
 } from '@keystone-next/types';
 // import { runInputResolvers } from './input-resolvers';
 import { FieldHooks } from '@keystone-next/types/src/config/hooks';
-import { validateFieldAccessControl } from '../createAccessControlContext';
+import { validateFieldAccessControl } from '../context/createAccessControlContext';
 import { getPrismaModelForList, IdType } from './utils';
 import {
   getDBFieldPathForFieldOnMultiField,
