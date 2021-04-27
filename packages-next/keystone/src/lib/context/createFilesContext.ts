@@ -1,4 +1,6 @@
 import path from 'path';
+import { v4 as uuid } from 'uuid';
+import slugify from '@sindresorhus/slugify';
 import { FilesConfig, FilesContext } from '@keystone-next/types';
 import fs from 'fs-extra';
 import { fromBuffer } from 'file-type';
@@ -10,39 +12,20 @@ const DEFAULT_STORAGE_PATH = './public/files';
 const DEFAULT_MAX_SIZE = 1024 * 1024 * 10; // 10mb
 const isValidFileSize = (fileSize: number, maxSize: number) => fileSize <= maxSize;
 
-const resolveName = ({
-  name,
-  index = 0,
-  storagePath,
-}: {
-  name: string;
-  index?: number;
-  storagePath: string;
-}): string => {
-  /*
-    This regex lazily matches for any characters that aren't a new line
-    it then optionally matches the last instance of a "." symbol 
-    followed by any alphabetical character before the end of the string
-   */
-  const [, fileName, ext] = name.match(/^([^:\n].*?)(\.[A-Za-z]+)?$/) as RegExpMatchArray;
-  let constructedName = index ? `${fileName}_${index}.${ext}` : name;
+const generateSafeFilename = (filename: string) => {
+  //   /*
+  //     This regex lazily matches for any characters that aren't a new line
+  //     it then optionally matches the last instance of a "." symbol
+  //     followed by any alphabetical character before the end of the string
+  //    */
+  const [, name, ext] = filename.match(/^([^:\n].*?)(\.[A-Za-z]+)?$/) as RegExpMatchArray;
 
-  // if we're provided an index and an extension
-  // append the index before the extension
-  if (index && ext) {
-    constructedName = `${fileName}_${index}${ext}`;
-  } else if (index) {
-    // otherwise append the idnex to the filename
-    constructedName = `${fileName}_${index}`;
-  } else {
-    // otherwise just resolve to the original name
-    constructedName = name;
+  const id = uuid();
+  const urlSafeName = slugify(name).toLowerCase();
+  if (ext) {
+    return `${urlSafeName}_${id}${ext}`;
   }
-
-  if (!fs.existsSync(path.join(storagePath, constructedName))) {
-    return constructedName;
-  }
-  return resolveName({ name, index: index + 1, storagePath });
+  return `${urlSafeName}_${uuid()}`;
 };
 
 const getFileMetadataFromBuffer = async (buffer: Buffer) => {
@@ -67,8 +50,7 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
   fs.mkdirSync(storagePath, { recursive: true });
 
   return {
-    getSrc: (mode, name) => {
-      const filename = `${name}`;
+    getSrc: (mode, filename) => {
       return `${baseUrl}/${filename}`;
     },
     getDataFromRef: async (ref: string) => {
@@ -76,7 +58,7 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
       if (!fileRef) {
         throw new Error('Invalid file reference');
       }
-      const buffer = await fs.readFile(path.join(storagePath, `${fileRef.name}`));
+      const buffer = await fs.readFile(path.join(storagePath, `${fileRef.filename}`));
       const metadata = await getFileMetadataFromBuffer(buffer);
 
       return { ...fileRef, ...metadata };
@@ -91,14 +73,16 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
 
       const buffer = Buffer.concat(chunks);
       const metadata = await getFileMetadataFromBuffer(buffer);
-
       // name conflict strategy function goes here.
-      const validFilename = resolveName({ name: filename, storagePath });
+      // const validFilename = resolveName({ name: filename, storagePath });
       if (!isValidFileSize(buffer.length, maxSize)) {
         throw new Error(`Filesize of ${buffer.length} exceeds max size of ${maxSize}`);
       }
 
-      return { mode, name: validFilename, ...metadata };
+      const pseudoSafeFilename = generateSafeFilename(filename);
+      await fs.writeFile(path.join(storagePath, pseudoSafeFilename), buffer);
+
+      return { mode, filename: pseudoSafeFilename, ...metadata };
     },
   };
 }

@@ -24,7 +24,7 @@ export class FileImplementation<P extends string> extends Implementation<P> {
       }
       type FileFieldOutput {
         mode: FileMode!
-        name: String!
+        filename: String!
         filesize: Int!
         ref: String!
         src: String!
@@ -39,13 +39,13 @@ export class FileImplementation<P extends string> extends Implementation<P> {
           if (!context.files) {
             throw new Error('File context is undefined');
           }
-          return context.files.getSrc(data.mode, data.name);
+          return context.files.getSrc(data.mode, data.filename);
         },
         ref(data: FileData, _args: any, context: KeystoneContext) {
           if (!context.files) {
             throw new Error('File context is undefined');
           }
-          return getFileRef(data.mode, data.name);
+          return getFileRef(data.mode, data.filename);
         },
       },
     };
@@ -108,7 +108,7 @@ export class PrismaFileInterface<P extends string> extends PrismaFieldAdapter<P>
     return [
       `${this.path}_filesize    Int?`,
       `${this.path}_mode   String?`,
-      `${this.path}_name   String?`,
+      `${this.path}_filename   String?`,
     ];
   }
 
@@ -126,7 +126,7 @@ export class PrismaFileInterface<P extends string> extends PrismaFieldAdapter<P>
     const field_path = this.path;
     const filesize_field = `${this.path}_filesize`;
     const mode_field = `${this.path}_mode`;
-    const name_field = `${this.path}_name`;
+    const name_field = `${this.path}_filename`;
 
     addPreSaveHook(
       (item: Record<P, any>): Record<string, any> => {
@@ -147,11 +147,11 @@ export class PrismaFileInterface<P extends string> extends PrismaFieldAdapter<P>
           delete newItem[field_path];
           return newItem;
         } else {
-          const { mode, filesize, name } = item[field_path];
+          const { mode, filesize, filename } = item[field_path];
 
           const newItem = {
             [filesize_field]: filesize,
-            [name_field]: name,
+            [name_field]: filename,
             [mode_field]: mode,
             ...item,
           };
@@ -170,7 +170,7 @@ export class PrismaFileInterface<P extends string> extends PrismaFieldAdapter<P>
         }
         item[field_path] = {
           filesize: item[filesize_field],
-          name: item[name_field],
+          filename: item[name_field],
           mode: item[mode_field],
         };
 

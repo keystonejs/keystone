@@ -113,7 +113,6 @@ export function Field({
           errorMessage={errorMessage}
           value={value}
           onChange={onChange}
-          field={field}
           inputRef={inputRef}
         />
       )}
@@ -179,29 +178,6 @@ function FileView({
   };
   return value.kind === 'from-server' || value.kind === 'upload' ? (
     <Stack gap="small" across align="center">
-      {/* {errorMessage === undefined ? (
-        value.kind === 'from-server' ? (
-          <ImageWrapper>
-            <NextImage
-              height={value.data.height}
-              width={value.data.width}
-              src={value.data.src}
-              alt={field.path}
-            />
-          </ImageWrapper>
-        ) : (
-          <ImageWrapper>
-            <img
-              css={{
-                height: 'auto',
-                maxWidth: '100%',
-              }}
-              src={imagePathFromUpload}
-              alt={field.path}
-            />
-          </ImageWrapper>
-        )
-      ) : null} */}
       {onChange && (
         <Fragment>
           {value.kind === 'from-server' && (
@@ -209,7 +185,7 @@ function FileView({
               <Stack across align="center" gap="small">
                 <Text size="medium">
                   <a href={value.data.src} target="_blank">
-                    {`${value.data.name}`}
+                    {`${value.data.filename}`}
                   </a>
                 </Text>
                 <Button size="small" tone="passive" onClick={copyRef}>

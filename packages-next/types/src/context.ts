@@ -180,12 +180,12 @@ export type FileMode = 'local';
 
 export type FileData = {
   mode: FileMode;
-  name: string;
+  filename: string;
   filesize: number;
 };
 
 export type FilesContext = {
-  getSrc: (mode: FileMode, name: string) => string;
+  getSrc: (mode: FileMode, filename: string) => string;
   getDataFromRef: (ref: string) => Promise<FileData>;
   getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
 };

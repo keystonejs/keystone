@@ -26,7 +26,7 @@ export const Cell: CellComponent = ({ item, field }) => {
         width: 24,
       }}
     >
-      {data.name}
+      {data.filename}
     </div>
   );
 };
@@ -36,7 +36,7 @@ export const CardValue: CardValueComponent = ({ item, field }) => {
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>
-      {data && data.name}
+      {data && data.filename}
     </FieldContainer>
   );
 };
@@ -45,7 +45,7 @@ type FileData = {
   src: string;
   ref: string;
   filesize: number;
-  name: string;
+  filename: string;
 };
 
 export type FileValue =
@@ -79,7 +79,7 @@ export const controller = (config: FieldControllerConfig): FileController => {
     label: config.label,
     graphqlSelection: `${config.path} {
         src
-        name
+        filename
         ref
         filesize
       }`,
@@ -91,7 +91,7 @@ export const controller = (config: FieldControllerConfig): FileController => {
         kind: 'from-server',
         data: {
           src: value.src,
-          name: value.name,
+          filename: value.filename,
           ref: value.ref,
           filesize: value.filesize,
         },

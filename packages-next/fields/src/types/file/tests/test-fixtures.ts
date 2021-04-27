@@ -62,7 +62,7 @@ export const storedValues = () => [
 export const supportedFilters = () => [];
 
 export const crudTests = (keystoneTestWrapper: any) => {
-  describe.only('Create - upload', () => {
+  describe('Create - upload', () => {
     test(
       'upload values should match expected',
       keystoneTestWrapper(async ({ context }: { context: any }) => {
