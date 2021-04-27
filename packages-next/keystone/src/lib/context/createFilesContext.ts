@@ -82,7 +82,6 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
       return { ...fileRef, ...metadata };
     },
     getDataFromStream: async (stream, filename) => {
-      console.log('getDataFromStream', filename);
       const { upload: mode } = config;
       const chunks = [];
 
