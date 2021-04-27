@@ -12,7 +12,7 @@
     "cypress:run:ci": "yarn build && start-server-and-test start http://localhost:8000 cy:run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.16",
+    "@babel/runtime": "^7.13.17",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-next/fields-document": "^5.0.0",
     "@keystone-ui/button": "^4.0.0",
@@ -30,7 +30,7 @@
     "@sindresorhus/slugify": "^1.1.2",
     "@types/gtag.js": "^0.0.4",
     "@types/mdx-js__react": "^1.5.3",
-    "@types/react": "^17.0.3",
+    "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.3",
     "@types/webpack": "^4.41.27",
     "autoprefixer": "^10.2.5",

@@ -7,7 +7,7 @@
     "dev": "next -p 8080"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.16",
+    "@babel/runtime": "^7.13.17",
     "@keystone-ui/button": "^4.0.0",
     "@keystone-ui/core": "^2.0.2",
     "@keystone-ui/fields": "^3.0.0",
@@ -21,7 +21,7 @@
     "@keystone-ui/toast": "^3.0.0",
     "@keystone-ui/tooltip": "^3.0.0",
     "@preconstruct/next": "^3.0.0",
-    "@types/react": "^17.0.3",
+    "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.3",
     "@types/tinycolor2": "^1.4.2",
     "@types/webpack": "^4.41.27",
