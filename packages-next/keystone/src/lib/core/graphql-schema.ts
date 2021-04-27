@@ -8,6 +8,7 @@ import { getPrismaModelForList } from './utils.js';
 import {
   InputFilter,
   PrismaFilter,
+  processDelete,
   UniqueInputFilter,
   UniquePrismaFilter,
 } from './input-resolvers.js';
@@ -52,7 +53,7 @@ export async function getResolvedWhere(
   return resolvedWhere;
 }
 
-// this will need to do special things when we support multi-field unique indexes
+// doing this is a result of an optimisation to skip doing a findUnique and then a findFirst(where the second one is done with access control)
 // we want to do this explicit mapping because:
 // - we are passing the values into a normal where filter and we want to ensure that fields cannot do non-unique filters(we don't do validation on non-unique wheres because prisma will validate all that)
 // - for multi-field unique indexes, we need to a mapping because iirc findFirst/findMany won't understand the syntax for filtering by multi-field unique indexes(which makes sense and is correct imo)
@@ -222,14 +223,18 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>) {
         const deleteOne = types.field({
           type: list.types.output,
           args: {
-            where: types.arg({
-              type: types.nonNull(list.types.uniqueWhere),
+            id: types.arg({
+              type: types.nonNull(types.ID),
             }),
           },
-          async resolve(rootVal, { where }, context) {
-            // return getPrismaModelForList(context.prisma, listKey).delete({
-            //   //   where: runInputResolvers(typesForLists, lists, listKey, 'uniqueWhere', where),
-            // });
+          async resolve(rootVal, { id }, context) {
+            const { id: parsedId } = await list.inputResolvers.uniqueWhere({ id });
+            const { afterDelete } = await processDelete(listKey, list, context, parsedId);
+            const item = await getPrismaModelForList(context.prisma, listKey).delete({
+              where: { id: parsedId },
+            });
+            await afterDelete();
+            return item;
           },
         });
         const createMany = types.field({
@@ -288,17 +293,35 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>) {
           },
         });
         const deleteMany = types.field({
-          type: list.types.output,
+          type: types.nonNull(types.list(types.nonNull(list.types.output))),
           args: {
-            where: types.arg({
-              type: types.nonNull(list.types.where),
-              defaultValue: {},
+            ids: types.arg({
+              type: types.nonNull(types.list(types.nonNull(types.ID))),
             }),
           },
-          async resolve(rootVal, { where }, context) {
-            // return getPrismaModelForList(context.prisma, listKey).delete({
-            //   //   where: runInputResolvers(typesForLists, lists, listKey, 'uniqueWhere', where),
-            // });
+          async resolve(rootVal, { ids }, context) {
+            const result = await Promise.all(
+              ids.map(async id => {
+                const { id: parsedId } = await list.inputResolvers.uniqueWhere({ id });
+                const { afterDelete, existingItem } = await processDelete(
+                  listKey,
+                  list,
+                  context,
+                  parsedId
+                );
+                return {
+                  parsedId,
+                  after: async () => {
+                    await afterDelete();
+                    return existingItem;
+                  },
+                };
+              })
+            );
+            await getPrismaModelForList(context.prisma, listKey).deleteMany({
+              where: { id: { in: result.map(x => x.parsedId) } },
+            });
+            return Promise.all(result.map(({ after }) => after()));
           },
         });
 

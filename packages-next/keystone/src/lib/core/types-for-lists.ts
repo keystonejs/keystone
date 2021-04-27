@@ -21,8 +21,10 @@ import {
   UpdateListAccessControl,
   ListAccessControl,
   ListInfo,
+  ListHooks,
 } from '@keystone-next/types';
 // import { runInputResolvers } from './input-resolvers';
+import { FieldHooks } from '@keystone-next/types/src/config/hooks';
 import { validateFieldAccessControl } from '../createAccessControlContext';
 import { getPrismaModelForList, IdType } from './utils';
 import {
@@ -42,6 +44,7 @@ const sortDirectionEnum = types.enum({
 type ListForListTypes = {
   fields: Record<string, FieldTypeFunc>;
   access?: ListAccessControl<BaseGeneratedListTypes>;
+  hooks?: ListHooks<BaseGeneratedListTypes>;
   singularGraphQLName: string;
   pluralGraphQLName: string;
 };
@@ -49,6 +52,7 @@ type ListForListTypes = {
 export type InitialisedField = Omit<NextFieldType, 'dbField' | 'access'> & {
   dbField: ResolvedDBField;
   access: ResolvedFieldAccessControl;
+  hooks: FieldHooks<BaseGeneratedListTypes>;
 };
 
 type ResolvedListAccessControl = {
@@ -65,6 +69,7 @@ export type InitialisedList = {
   types: TypesForList;
   access: ResolvedListAccessControl;
   inputResolvers: InputResolvers;
+  hooks: ListHooks<BaseGeneratedListTypes>;
 };
 
 function getRelationVal(
@@ -318,12 +323,13 @@ export function initialiseLists(
 
   const resolvedLists = resolveRelationships(
     Object.fromEntries(
-      Object.entries(listsWithInitialisedFields).map(([listKey, field]) => [
+      Object.entries(listsWithInitialisedFields).map(([listKey, list]) => [
         listKey,
         {
           fields: Object.fromEntries(
-            Object.entries(field.fields).map(([fieldPath, { dbField }]) => [fieldPath, dbField])
+            Object.entries(list.fields).map(([fieldPath, { dbField }]) => [fieldPath, dbField])
           ),
+          hooks: list.hooks,
         },
       ])
     )
@@ -340,7 +346,12 @@ export function initialiseLists(
             const access = parseFieldAccessControl(field.access);
             return [
               fieldKey,
-              { ...field, access, dbField: resolvedLists[listKey].fields[fieldKey] },
+              {
+                ...field,
+                access,
+                dbField: resolvedLists[listKey].fields[fieldKey],
+                hooks: field.hooks ?? {},
+              },
             ];
           })
         ),
@@ -538,7 +549,7 @@ export function initialiseLists(
   return Object.fromEntries(
     Object.entries(listsWithInitialisedFieldsAndResolvedDbFields).map(([listKey, list]) => [
       listKey,
-      { ...list, ...listInfos[listKey] },
+      { ...list, ...listInfos[listKey], hooks: list.hooks || {} },
     ])
   );
 }

@@ -32,6 +32,20 @@ export type ListHooks<TGeneratedListTypes extends BaseGeneratedListTypes> = {
   afterDelete?: BeforeOrAfterDeleteHook<TGeneratedListTypes>;
 };
 
+// TODO: probably maybe don't do this and write it out manually
+// (this is also incorrect because the return value is wrong for many of them)
+type AddFieldPathToObj<T extends (arg: any) => any> = T extends (args: infer Args) => infer Result
+  ? (args: Args & { fieldPath: string }) => Result
+  : never;
+
+type AddFieldPathArgToAllPropsOnObj<T extends Record<string, (arg: any) => any>> = {
+  [Key in keyof T]: AddFieldPathToObj<T[Key]>;
+};
+
+export type FieldHooks<
+  TGeneratedListTypes extends BaseGeneratedListTypes
+> = AddFieldPathArgToAllPropsOnObj<ListHooks<TGeneratedListTypes>>;
+
 type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedListTypes> = (
   | {
       operation: 'create';
@@ -67,12 +81,10 @@ type ArgsForCreateOrUpdateOperation<TGeneratedListTypes extends BaseGeneratedLis
    * The key of the list that the operation is occurring on
    */
   listKey: string;
-
-  // fieldPath: string
 };
 
 type ValidationArgs = {
-  addValidationError: (error: string) => void;
+  addValidationError: (error: string, data: {}, internalData: {}) => void;
 };
 
 type ResolveInputHook<TGeneratedListTypes extends BaseGeneratedListTypes> = (

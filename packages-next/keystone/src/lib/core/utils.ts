@@ -25,7 +25,8 @@ type PrismaModel = {
     include?: Record<string, boolean>;
     select?: Record<string, any>;
   }) => Promise<ItemRootValue[]>;
-  delete: (arg: { where: UniquePrismaFilter }) => Promise<void>;
+  delete: (arg: { where: UniquePrismaFilter }) => Promise<ItemRootValue>;
+  deleteMany: (arg: { where: PrismaFilter }) => Promise<ItemRootValue>;
   findUnique: (args: {
     where: UniquePrismaFilter;
     include?: Record<string, any>;

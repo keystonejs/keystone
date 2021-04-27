@@ -3,7 +3,7 @@ import * as tsgql from '@ts-gql/schema';
 import GraphQLJSON from 'graphql-type-json';
 import { InputResolvers } from '@keystone-next/keystone/src/lib/core/input-resolvers';
 import { BaseGeneratedListTypes } from './utils';
-import { ListHooks } from './config';
+import { FieldHooks } from './config/hooks';
 import { FieldAccessControl, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export const types = {
@@ -59,7 +59,7 @@ export type NextFieldType<
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   cacheHint?: CacheHint;
   access?: FieldAccessControl<BaseGeneratedListTypes>;
-  hooks?: ListHooks<BaseGeneratedListTypes>;
+  hooks?: FieldHooks<BaseGeneratedListTypes>;
 };
 
 type ScalarPrismaTypes = {
@@ -244,7 +244,7 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
     extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
     cacheHint?: CacheHint;
     access?: FieldAccessControl<BaseGeneratedListTypes>;
-    hooks?: ListHooks<BaseGeneratedListTypes>;
+    hooks?: FieldHooks<BaseGeneratedListTypes>;
   }): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg> {
     return { ...stuff, dbField };
   };

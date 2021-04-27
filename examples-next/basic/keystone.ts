@@ -10,6 +10,10 @@ const prisma = new PrismaClient({ rejectOnNotFound: false });
 
 let x = async () => {
   let x = await prisma.post.findUnique({ where: { id: 1 }, rejectOnNotFound: false });
+  const {} = await prisma.post.delete({});
+  prisma.user.create({
+    data: { phoneNumbers: {} },
+  });
 };
 
 let sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';

@@ -20,6 +20,6 @@ export const throwAccessDenied = (
   target?: string,
   internalData = {},
   extraData = {}
-) => {
+): never => {
   throw new AccessDeniedError({ data: { type, target, ...extraData }, internalData });
 };
