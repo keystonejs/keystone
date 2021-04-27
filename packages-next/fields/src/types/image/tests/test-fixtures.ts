@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 // @ts-ignore
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
+import { KeystoneContext } from '@keystone-next/types';
 import { text } from '../../text';
 import { image } from '..';
 
@@ -65,7 +65,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
   describe('Create - upload', () => {
     test(
       'upload values should match expected',
-      keystoneTestWrapper(async ({ context }: { context: any }) => {
+      keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
         const filenames = ['keystone.jpeg', 'keystone.jpg', 'keystone'];
         for (const filename of filenames) {
           const data = await context.lists.Test.createOne({
@@ -99,7 +99,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
     );
     test(
       'if not image file, throw',
-      keystoneTestWrapper(async ({ context }: { context: any }) => {
+      keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
         const { data, errors } = await context.graphql.raw({
           query: `
             mutation ($item: TestCreateInput) {
@@ -121,13 +121,11 @@ export const crudTests = (keystoneTestWrapper: any) => {
   describe('Create - ref', () => {
     test(
       'From existing item succeeds',
-      keystoneTestWrapper(async ({ context }: { context: any }) => {
+      keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
         // Create an initial item
-        const initialItem = await createItem({
-          context,
-          listKey: 'Test',
-          item: { avatar: prepareFile('keystone.jpg') },
-          returnFields: `
+        const initialItem = await context.lists.Test.createOne({
+          data: { avatar: prepareFile('keystone.jpg') },
+          query: `
             avatar {
               id
               mode
@@ -144,11 +142,9 @@ export const crudTests = (keystoneTestWrapper: any) => {
 
         // Create a new item base on the first items ref
         const ref = initialItem.avatar.ref;
-        const newItem = await createItem({
-          context,
-          listKey: 'Test',
-          item: { avatar: { ref } },
-          returnFields: `
+        const newItem = await context.lists.Test.createOne({
+          data: { avatar: { ref } },
+          query: `
             avatar {
               id
               mode
@@ -169,7 +165,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
     );
     test(
       'From invalid ref fails',
-      keystoneTestWrapper(async ({ context }: { context: any }) => {
+      keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
         const { data, errors } = await context.graphql.raw({
           query: `
             mutation ($item: TestCreateInput) {
@@ -189,7 +185,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
     );
     test(
       'From null ref fails',
-      keystoneTestWrapper(async ({ context }: { context: any }) => {
+      keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
         const { data, errors } = await context.graphql.raw({
           query: `
             mutation ($item: TestCreateInput) {
@@ -211,12 +207,10 @@ export const crudTests = (keystoneTestWrapper: any) => {
     );
     test(
       'Both upload and ref fails - valid ref',
-      keystoneTestWrapper(async ({ context }: { context: any }) => {
-        const initialItem = await createItem({
-          context,
-          listKey: 'Test',
-          item: { avatar: prepareFile('keystone.jpg') },
-          returnFields: `avatar { ref }`,
+      keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
+        const initialItem = await context.lists.Test.createOne({
+          data: { avatar: prepareFile('keystone.jpg') },
+          query: `avatar { ref }`,
         });
         expect(initialItem).not.toBe(null);
 
@@ -243,7 +237,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
     );
     test(
       'Both upload and ref fails - invalid ref',
-      keystoneTestWrapper(async ({ context }: { context: any }) => {
+      keystoneTestWrapper(async ({ context }: { context: KeystoneContext }) => {
         const { data, errors } = await context.graphql.raw({
           query: `
           mutation ($item: TestCreateInput) {

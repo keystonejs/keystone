@@ -391,10 +391,10 @@ class PrismaListAdapter {
       const { first, skip } = args;
 
       // Adjust the count as appropriate
-      if (skip !== undefined) {
+      if (skip !== undefined && skip !== null) {
         count -= skip;
       }
-      if (first !== undefined) {
+      if (first !== undefined && first !== null) {
         count = Math.min(count, first);
       }
       count = Math.max(0, count); // Don't want to go negative from a skip!
@@ -410,9 +410,9 @@ class PrismaListAdapter {
     from,
   }: {
     args: {
-      where?: Record<string, any>;
-      first?: number;
-      skip?: number;
+      where?: Record<string, any> | null;
+      first?: number | null;
+      skip?: number | null;
       sortBy?: string[];
       orderBy?: Record<string, any>;
       search?: string;
@@ -475,11 +475,11 @@ class PrismaListAdapter {
 
     // Add query modifiers as required
     if (!meta) {
-      if (first !== undefined) {
+      if (first !== undefined && first !== null) {
         // SELECT ... LIMIT <first>
         ret.take = first;
       }
-      if (skip !== undefined) {
+      if (skip !== undefined && skip !== null) {
         // SELECT ... OFFSET <skip>
         ret.skip = skip;
       }
@@ -509,7 +509,8 @@ class PrismaListAdapter {
     return ret;
   }
 
-  processWheres(where: Record<string, any>): Record<string, any> | undefined {
+  processWheres(where: Record<string, any> | null): Record<string, any> | undefined {
+    if (where === null) return undefined;
     const processRelClause = (fieldPath: string, clause: Record<string, any>) =>
       this.getListAdapterByKey(this.fieldAdaptersByPath[fieldPath].refListKey!)!.processWheres(
         clause

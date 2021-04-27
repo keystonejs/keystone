@@ -7,7 +7,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -163,11 +162,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const noteContent3 = `c${sampleOne(alphanumGenerator)}`;
 
           // Create an item to update
-          const createUser = await createItem({
-            context,
-            listKey: 'User',
-            item: { username: 'A thing' },
-          });
+          const createUser = await context.lists.User.createOne({ data: { username: 'A thing' } });
 
           // Update an item that does the nested create
           const data = await context.graphql.run({
@@ -306,10 +301,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to update
-            const createUser = await createItem({
-              context,
-              listKey: 'UserToNotesNoRead',
-              item: { username: 'A thing' },
+            const createUser = await context.lists.UserToNotesNoRead.createOne({
+              data: { username: 'A thing' },
             });
 
             // Update an item that does the nested create
@@ -387,10 +380,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const noteContent = sampleOne(alphanumGenerator);
 
             // Create an item to update
-            const createUserToNotesNoCreate = await createItem({
-              context,
-              listKey: 'UserToNotesNoCreate',
-              item: { username: 'A thing' },
+            const createUserToNotesNoCreate = await context.lists.UserToNotesNoCreate.createOne({
+              data: { username: 'A thing' },
             });
 
             // Update an item that does the nested create

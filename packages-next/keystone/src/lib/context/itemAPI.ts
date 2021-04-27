@@ -1,5 +1,12 @@
 import { GraphQLSchema } from 'graphql';
 import {
+  BaseGeneratedListTypes,
+  BaseKeystoneList,
+  KeystoneDbAPI,
+  KeystoneListsAPI,
+  KeystoneContext,
+} from '@keystone-next/types';
+import {
   getItem,
   getItems,
   createItem,
@@ -8,14 +15,7 @@ import {
   updateItems,
   deleteItem,
   deleteItems,
-} from '@keystone-next/server-side-graphql-client-legacy';
-import {
-  BaseGeneratedListTypes,
-  BaseKeystoneList,
-  KeystoneDbAPI,
-  KeystoneListsAPI,
-  KeystoneContext,
-} from '@keystone-next/types';
+} from './server-side-graphql-client';
 import { getCoerceAndValidateArgumentsFnForGraphQLField } from './getCoerceAndValidateArgumentsFnForGraphQLField';
 
 export function getArgsFactory(list: BaseKeystoneList, schema: GraphQLSchema) {
@@ -83,8 +83,11 @@ export function itemAPIForList(
     },
     async count(rawArgs = {}) {
       if (!getArgs.count) throw new Error('You do not have access to this resource');
-      const args = getArgs.count(rawArgs!);
-      return (await list.listQueryMeta(args, context)).getCount();
+      const { first, skip, where } = rawArgs;
+      const { listQueryMetaName, whereInputName } = context.gqlNames(listKey);
+      const query = `query ($first: Int, $skip: Int, $where: ${whereInputName}) { ${listQueryMetaName}(first: $first, skip: $skip, where: $where) { count }  }`;
+      const response = await context.graphql.run({ query, variables: { first, skip, where } });
+      return response[listQueryMetaName].count;
     },
     createOne({ query, resolveFields, ...rawArgs }) {
       if (!getArgs.createOne) throw new Error('You do not have access to this resource');

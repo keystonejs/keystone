@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import { jsx } from '@keystone-ui/core';
 import Link from 'next/link';
 
+import { SubHeading } from './Heading';
+
 type SectionProps = { label: string; children: ReactNode };
 function Section({ label, children }: SectionProps) {
   return (
@@ -36,8 +38,8 @@ function NavItem({ href, isPlaceholder, children }: NavItemProps) {
           textDecoration: 'none',
           padding: 'var(--space-xsmall) 0',
           color: isSelected
-            ? 'var(--gray-900)'
-            : `${isPlaceholder ? 'var(--gray-300)' : 'var(--gray-500)'}`,
+            ? 'var(--black)'
+            : `${isPlaceholder ? 'var(--gray-300)' : 'var(--gray-600)'}`,
           ':hover': {
             color: 'var(--gray-800)',
           },
@@ -59,7 +61,6 @@ export function Navigation() {
       <NavItem href="/">Welcome</NavItem>
       <NavItem href="/whats-new">What's New</NavItem>
       <NavItem href="/roadmap">Roadmap</NavItem>
-      <NavItem href="/faqs">FAQs</NavItem>
       <Section label="Tutorials">
         <NavItem href="/tutorials/getting-started-with-create-keystone-app">
           Getting started
@@ -84,11 +85,15 @@ export function Navigation() {
         <NavItem href="/guides/virtual-fields" isPlaceholder>
           Virtual Fields
         </NavItem>
+        <NavItem href="/guides/internal-items" isPlaceholder>
+          Internal Items
+        </NavItem>
         <NavItem href="/guides/testing" isPlaceholder>
           Testing
         </NavItem>
       </Section>
       <Section label="API">
+        <SubHeading as="h4">Config</SubHeading>
         <NavItem href="/apis/config">Config API</NavItem>
         <NavItem href="/apis/schema">Schema API</NavItem>
         <NavItem href="/apis/fields">Fields API</NavItem>
@@ -96,9 +101,14 @@ export function Navigation() {
         <NavItem href="/apis/hooks"> Hooks API</NavItem>
         <NavItem href="/apis/session">Session API</NavItem>
         <NavItem href="/apis/auth">Authentication API</NavItem>
+
+        <SubHeading as="h4">Context</SubHeading>
         <NavItem href="/apis/context">Context API</NavItem>
-        <NavItem href="/apis/graphql">GraphQL API</NavItem>
         <NavItem href="/apis/list-items">List Item API</NavItem>
+        <NavItem href="/apis/db-items">DB Item API</NavItem>
+
+        <SubHeading as="h4">GraphQL</SubHeading>
+        <NavItem href="/apis/graphql">GraphQL API</NavItem>
       </Section>
     </nav>
   );

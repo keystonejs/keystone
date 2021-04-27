@@ -1,4 +1,4 @@
-import type { KeystoneListsAPI } from '@keystone-next/types';
+import type { KeystoneDbAPI } from '@keystone-next/types';
 import { AuthTokenRedemptionErrorCode } from '../types';
 import { validateSecret } from './validateSecret';
 
@@ -17,7 +17,7 @@ export async function validateAuthToken(
   protectIdentities: boolean,
   tokenValidMins: number | undefined,
   token: string,
-  itemAPI: KeystoneListsAPI<any>[string]
+  dbItemAPI: KeystoneDbAPI<any>[string]
 ): Promise<
   | { success: false; code: AuthTokenRedemptionErrorCode }
   | { success: true; item: { id: any; [prop: string]: any } }
@@ -29,7 +29,7 @@ export async function validateAuthToken(
     `${tokenType}Token`,
     protectIdentities,
     token,
-    itemAPI
+    dbItemAPI
   );
   if (!result.success) {
     // Rewrite error codes

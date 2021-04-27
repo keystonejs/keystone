@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { jsx } from '@keystone-ui/core';
 
 import { useMediaQuery } from '../lib/media';
+import { SubHeading } from './Heading';
 
 // it's important that IDs are sorted by the order they appear in the document
 // so we can pluck active from the beginning
@@ -76,17 +77,7 @@ export function TableOfContents({
         // [media.sm]: { display: 'block' },
       })}
     >
-      <h4
-        css={{
-          color: '#97A0AF', //colors.N40,
-          fontSize: 'var(--font-xsmall)',
-          fontWeight: 700,
-          marginTop: 0,
-          textTransform: 'uppercase',
-        }}
-      >
-        On this page
-      </h4>
+      <SubHeading as="h4">On this page</SubHeading>
       <ul css={{ listStyle: 'none', margin: 0, padding: 0 }}>
         {headings.map((h: Heading, i: number) => {
           let isActive = activeId === h.id;
