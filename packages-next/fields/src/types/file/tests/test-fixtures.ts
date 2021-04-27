@@ -62,15 +62,14 @@ export const storedValues = () => [
 export const supportedFilters = () => [];
 
 export const crudTests = (keystoneTestWrapper: any) => {
-  describe('Create - upload', () => {
+  describe.only('Create - upload', () => {
     test(
       'upload values should match expected',
       keystoneTestWrapper(async ({ context }: { context: any }) => {
-        const filenames = ['keystone.jpeg', 'keystone.jpg', 'keystone'];
-        for (const filename of filenames) {
-          const data = await context.lists.Test.createOne({
-            data: { secretFile: prepareFile(filename) },
-            query: `
+        const filename = 'keystone.jpeg';
+        const data = await context.lists.Test.createOne({
+          data: { secretFile: prepareFile(filename) },
+          query: `
               secretFile {
                 name
                 mode
@@ -79,16 +78,15 @@ export const crudTests = (keystoneTestWrapper: any) => {
                 src
               }
           `,
-          });
-          expect(data).not.toBe(null);
-          expect(data.secretFile).toEqual({
-            ref: `local:${data.secretFile.name}`,
-            src: `/files/${data.secretFile.name}`,
-            name: filename,
-            mode: 'local',
-            filesize: 3250,
-          });
-        }
+        });
+        expect(data).not.toBe(null);
+        expect(data.secretFile).toEqual({
+          ref: `local:${data.secretFile.name}`,
+          src: `/files/${data.secretFile.name}`,
+          name: filename,
+          mode: 'local',
+          filesize: 3250,
+        });
       })
     );
   });

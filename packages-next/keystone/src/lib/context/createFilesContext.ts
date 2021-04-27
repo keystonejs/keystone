@@ -82,6 +82,7 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
       return { ...fileRef, ...metadata };
     },
     getDataFromStream: async (stream, filename) => {
+      console.log('getDataFromStream', filename);
       const { upload: mode } = config;
       const chunks = [];
 
@@ -97,8 +98,6 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
       if (!isValidFileSize(buffer.length, maxSize)) {
         throw new Error(`Filesize of ${buffer.length} exceeds max size of ${maxSize}`);
       }
-
-      await fs.writeFile(path.join(storagePath, `${validFilename}`), buffer);
 
       return { mode, name: validFilename, ...metadata };
     },
