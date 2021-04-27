@@ -49,7 +49,7 @@
     "@manypkg/cli": "^0.17.0",
     "@preconstruct/cli": "2.0.7",
     "@preconstruct/eslint-plugin-format-js-tag": "^0.1.0",
-    "@testing-library/jest-dom": "^5.11.10",
+    "@testing-library/jest-dom": "^5.12.0",
     "@types/jest": "^26.0.23",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
