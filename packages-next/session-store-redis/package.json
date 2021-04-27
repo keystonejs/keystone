@@ -8,11 +8,11 @@
     "node": ">=v12.13.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.16",
+    "@babel/runtime": "^7.13.17",
     "@types/redis": "^2.8.28"
   },
   "devDependencies": {
-    "redis": "^3.1.1"
+    "redis": "^3.1.2"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/packages-next/session-store-redis"
 }

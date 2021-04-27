@@ -5,7 +5,7 @@
   "main": "dist/cloudinary.cjs.js",
   "module": "dist/cloudinary.esm.js",
   "dependencies": {
-    "@babel/runtime": "^7.13.16",
+    "@babel/runtime": "^7.13.17",
     "@keystone-next/adapter-prisma-legacy": "^6.0.0",
     "@keystone-next/admin-ui": "^14.0.0",
     "@keystone-next/fields": "^7.0.0",
@@ -14,7 +14,7 @@
     "@keystone-ui/core": "^2.0.2",
     "@keystone-ui/fields": "^3.0.0",
     "@keystone-ui/pill": "^3.0.0",
-    "@types/react": "^17.0.3",
+    "@types/react": "^17.0.4",
     "cloudinary": "^1.25.1",
     "cuid": "^2.1.8",
     "graphql-upload": "^11.0.0",
