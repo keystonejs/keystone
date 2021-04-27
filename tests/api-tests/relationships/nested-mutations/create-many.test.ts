@@ -72,50 +72,28 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const noteContent3 = `c${sampleOne(alphanumGenerator)}`;
 
           // Create an item that does the nested create
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                createUser(data: {
-                  username: "A thing",
-                  notes: { create: [{ content: "${noteContent}" }] }
-                }) {
-                  id
-                  notes(sortBy: content_ASC) {
-                    id
-                    content
-                  }
-                }
-              }`,
+          const user = await context.lists.User.createOne({
+            data: { username: 'A thing', notes: { create: [{ content: noteContent }] } },
+            query: 'id notes(sortBy: [content_ASC]) { id content }',
           });
 
-          expect(data).toMatchObject({
-            createUser: {
-              id: expect.any(String),
-              notes: [{ id: expect.any(String), content: noteContent }],
-            },
+          expect(user).toMatchObject({
+            id: expect.any(String),
+            notes: [{ id: expect.any(String), content: noteContent }],
           });
 
           // Create an item that does the nested create
-          type T = { createUser: { id: IdType; notes: { id: IdType; content: string }[] } };
+          type T = { id: IdType; notes: { id: IdType; content: string }[] };
 
-          const { createUser } = (await context.graphql.run({
-            query: `
-              mutation {
-                createUser(data: {
-                  username: "A thing",
-                  notes: {
-                    create: [{ content: "${noteContent2}" }, { content: "${noteContent3}" }]
-                  }
-                }) {
-                  id
-                  notes(sortBy: content_ASC) {
-                    id
-                    content
-                  }
-                }
-              }`,
+          const user1 = (await context.lists.User.createOne({
+            data: {
+              username: 'A thing',
+              notes: { create: [{ content: noteContent2 }, { content: noteContent3 }] },
+            },
+            query: 'id notes(sortBy: [content_ASC]) { id content }',
           })) as T;
-          expect(createUser).toMatchObject({
+
+          expect(user1).toMatchObject({
             id: expect.any(String),
             notes: [
               { id: expect.any(String), content: noteContent2 },
@@ -127,30 +105,20 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const { allNotes } = await context.graphql.run({
             query: `
               query {
-                allNotes(where: { id_in: [${createUser.notes
-                  .map(({ id }) => `"${id}"`)
-                  .join(',')}] }) {
+                allNotes(where: { id_in: [${user1.notes.map(({ id }) => `"${id}"`).join(',')}] }) {
                   id
                   content
                 }
               }`,
           });
-          expect(allNotes).toHaveLength(createUser.notes.length);
+          expect(allNotes).toHaveLength(user1.notes.length);
 
           // Test an empty list of related notes
-          const data2 = await context.graphql.run({
-            query: `
-              mutation {
-                createUser(data: {
-                  username: "A thing",
-                  notes: { create: [] }
-                }) {
-                  id
-                  notes { id }
-                }
-              }`,
+          const user2 = await context.lists.User.createOne({
+            data: { username: 'A thing', notes: { create: [] } },
+            query: 'id notes { id }',
           });
-          expect(data2.createUser).toMatchObject({ id: expect.any(String), notes: [] });
+          expect(user2).toMatchObject({ id: expect.any(String), notes: [] });
         })
       );
 

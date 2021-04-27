@@ -67,52 +67,31 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
 
           // Create an item that does the linking
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                createUser(data: {
-                  username: "A thing",
-                  notes: { connect: [{ id: "${createNote.id}" }] }
-                }) {
-                  id
-                  notes { id }
-                }
-              }`,
+          const user = await context.lists.User.createOne({
+            data: { username: 'A thing', notes: { connect: [{ id: createNote.id }] } },
+            query: 'id notes { id }',
           });
 
-          expect(data).toMatchObject({
-            createUser: { id: expect.any(String), notes: expect.any(Array) },
-          });
+          expect(user).toMatchObject({ id: expect.any(String), notes: expect.any(Array) });
 
           // Create an item that does the linking
-          const { createUser } = await context.graphql.run({
-            query: `
-              mutation {
-                createUser(data: {
-                  username: "A thing",
-                  notes: { connect: [{ id: "${createNote.id}" }, { id: "${createNote.id}" }] }
-                }) {
-                  id
-                  notes { id }
-                }
-              }`,
+          const user1 = await context.lists.User.createOne({
+            data: {
+              username: 'A thing',
+              notes: { connect: [{ id: createNote.id }, { id: createNote.id }] },
+            },
+            query: 'id notes { id }',
           });
-          expect(createUser).toMatchObject({ id: expect.any(String), notes: expect.any(Array) });
+
+          expect(user1).toMatchObject({ id: expect.any(String), notes: expect.any(Array) });
 
           // Test an empty list of related notes
-          const data2 = await context.graphql.run({
-            query: `
-              mutation {
-                createUser(data: {
-                  username: "A thing",
-                  notes: { connect: [] }
-                }) {
-                  id
-                  notes { id }
-                }
-              }`,
+          const user2 = await context.lists.User.createOne({
+            data: { username: 'A thing', notes: { connect: [] } },
+            query: 'id notes { id }',
           });
-          expect(data2.createUser).toMatchObject({ id: expect.any(String), notes: [] });
+
+          expect(user2).toMatchObject({ id: expect.any(String), notes: [] });
         })
       );
 
