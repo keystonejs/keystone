@@ -12,13 +12,11 @@ import type { MaybePromise } from '../utils';
 import type {
   ListSchemaConfig,
   ListConfig,
-  BaseFields,
-  FieldType,
-  FieldConfig,
   MaybeSessionFunction,
   MaybeItemFunction,
   // CacheHint,
 } from './lists';
+import type { BaseFields, FieldType, FieldConfig } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
 
@@ -30,6 +28,7 @@ export type KeystoneConfig = {
   session?: () => SessionStrategy<any>;
   graphql?: GraphQLConfig;
   extendGraphqlSchema?: ExtendGraphqlSchema;
+  images?: ImagesConfig;
   /** Experimental config options */
   experimental?: {
     /** Enables nextjs graphql api route mode */
@@ -38,23 +37,6 @@ export type KeystoneConfig = {
     generateNodeAPI?: boolean;
     /** Creates a file at `node_modules/.keystone/next/graphql-api` with `default` and `config` exports that can be re-exported in a Next API route */
     generateNextGraphqlAPI?: boolean;
-  };
-  images?: ImagesConfig;
-};
-
-export type ImagesConfig = {
-  upload: ImageMode;
-  local?: {
-    /**
-     * The path local images are uploaded to.
-     * @default 'public/images'
-     */
-    storagePath?: string;
-    /**
-     * The base of the URL local images will be served from, outside of keystone.
-     * @default '/images'
-     */
-    baseUrl?: string;
   };
 };
 
@@ -167,6 +149,24 @@ export type GraphQLConfig = {
 // config.extendGraphqlSchema
 
 export type ExtendGraphqlSchema = (schema: GraphQLSchema, keystone: BaseKeystone) => GraphQLSchema;
+
+// config.images
+
+export type ImagesConfig = {
+  upload: ImageMode;
+  local?: {
+    /**
+     * The path local images are uploaded to.
+     * @default 'public/images'
+     */
+    storagePath?: string;
+    /**
+     * The base of the URL local images will be served from, outside of keystone.
+     * @default '/images'
+     */
+    baseUrl?: string;
+  };
+};
 
 // Exports from sibling packages
 

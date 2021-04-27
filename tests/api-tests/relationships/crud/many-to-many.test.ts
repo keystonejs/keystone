@@ -196,16 +196,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'Count',
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
-            const data = await context.graphql.run({
-              query: `
-                {
-                  _allCompaniesMeta { count }
-                  _allLocationsMeta { count }
-                }
-            `,
-            });
-            expect(data._allCompaniesMeta.count).toEqual(3);
-            expect(data._allLocationsMeta.count).toEqual(3);
+            const companiesCount = await context.lists.Company.count();
+            const locationsCount = await context.lists.Location.count();
+            expect(companiesCount).toEqual(3);
+            expect(locationsCount).toEqual(3);
           })
         );
         test(
@@ -219,10 +213,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 3],
                 ['D', 0],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ _allCompaniesMeta(where: { locations_some: { name: "${name}"}}) { count }}`,
+                const _count = await context.lists.Company.count({
+                  where: { locations_some: { name } },
                 });
-                expect(data._allCompaniesMeta.count).toEqual(count);
+                expect(_count).toEqual(count);
               })
             );
           })
@@ -238,10 +232,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 6],
                 ['D', 9],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ _allCompaniesMeta(where: { locations_none: { name: "${name}"}}) { count }}`,
+                const _count = await context.lists.Company.count({
+                  where: { locations_none: { name } },
                 });
-                expect(data._allCompaniesMeta.count).toEqual(count);
+                expect(_count).toEqual(count);
               })
             );
           })
@@ -257,10 +251,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 1],
                 ['D', 1],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ _allCompaniesMeta(where: { locations_every: { name: "${name}"}}) { count }}`,
+                const _count = await context.lists.Company.count({
+                  where: { locations_every: { name } },
                 });
-                expect(data._allCompaniesMeta.count).toEqual(count);
+                expect(_count).toEqual(count);
               })
             );
           })

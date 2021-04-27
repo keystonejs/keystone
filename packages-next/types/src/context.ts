@@ -12,6 +12,9 @@ export type KeystoneContext = {
   sudo: () => KeystoneContext;
   exitSudo: () => KeystoneContext;
   withSession: (session: any) => KeystoneContext;
+  // TODO: Correctly type this as a prisma client
+  prisma: any;
+  images: ImagesContext | undefined;
   totalResults: number;
   maxTotalResults: number;
   schemaName: 'public' | 'internal';
@@ -19,10 +22,8 @@ export type KeystoneContext = {
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
   /** @deprecated */
   keystone: BaseKeystone;
-  images: ImagesContext | undefined;
 } & AccessControlContext &
-  Partial<SessionContext<any>> &
-  DatabaseAPIs;
+  Partial<SessionContext<any>>;
 
 // List item API
 
@@ -34,12 +35,12 @@ export type KeystoneListsAPI<
 > = {
   [Key in keyof KeystoneListsTypeInfo]: {
     findMany(
-      args: KeystoneListsTypeInfo[Key]['args']['listQuery'] & ResolveFields
+      args?: KeystoneListsTypeInfo[Key]['args']['listQuery'] & ResolveFields
     ): Promise<readonly Record<string, any>[]>;
     findOne(
       args: { readonly where: { readonly id: string } } & ResolveFields
     ): Promise<Record<string, any>>;
-    count(args: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
+    count(args?: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
     updateOne(
       args: {
         readonly id: string;
@@ -86,12 +87,12 @@ type ResolveFields = {
 export type KeystoneDbAPI<KeystoneListsTypeInfo extends Record<string, BaseGeneratedListTypes>> = {
   [Key in keyof KeystoneListsTypeInfo]: {
     findMany(
-      args: KeystoneListsTypeInfo[Key]['args']['listQuery']
+      args?: KeystoneListsTypeInfo[Key]['args']['listQuery']
     ): Promise<readonly KeystoneListsTypeInfo[Key]['backing'][]>;
     findOne(args: {
       readonly where: { readonly id: string };
     }): Promise<KeystoneListsTypeInfo[Key]['backing']>;
-    count(args: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
+    count(args?: KeystoneListsTypeInfo[Key]['args']['listQuery']): Promise<number>;
     updateOne(args: {
       readonly id: string;
       readonly data: KeystoneListsTypeInfo[Key]['inputs']['update'];
@@ -150,11 +151,7 @@ export type SessionContext<T> = {
   endSession(): Promise<void>;
 };
 
-// DatabaseAPIs is used to provide access to the underlying database abstraction through
-// context and other developer-facing APIs in Keystone, so they can be used easily.
-export type DatabaseAPIs = {
-  prisma?: any;
-};
+// Images API
 
 export type ImageMode = 'local';
 

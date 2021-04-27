@@ -1,0 +1,153 @@
+import { Markdown } from '../../components/Page';
+
+# List Items API
+
+The list items API provides a programmatic API for running CRUD operations against your GraphQL API.
+For each list in your system the following API is available at `context.lists.<listName>`.
+
+```
+{
+  findOne({ where: { id }, query }),
+  findMany({ where, first, skip, sortBy, query }),
+  count({ where, first, skip }),
+  createOne({ data, query }),
+  createMany({ data, query }),
+  updateOne({ id, data, query }),
+  updateMany({ data, query }),
+  deleteOne({ id, query }),
+  deleteMany({ ids, query }),
+}
+```
+
+The arguments to these functions closely correspond to their equivalent GraphQL APIs, making it easy to switch between the programmatic API and the GraphQL API.
+
+The `query` argument, which defaults to `'id'` for all the functions, is a string which indicates which fields should be returned by the operation.
+Unless otherwise specified, the other arguments to all functions are required.
+
+The functions in the API all work by directly executing queries and mutations against your GraphQL API.
+
+### findOne
+
+```typescript
+const user = await context.lists.User.findOne({
+  where: { id: '...' },
+  query: 'id name posts { id title }',
+});
+```
+
+### findMany
+
+All arguments are optional.
+
+```typescript
+const users = await context.lists.User.findMany({
+  where: { name_starts_with: 'A' },
+  first: 10,
+  skip: 20,
+  sortBy: ['name_ASC'],
+  query: 'id name posts { id title }',
+});
+```
+
+### count
+
+All arguments are optional.
+
+```typescript
+const count = await context.lists.User.count({
+  where: { name_starts_with: 'A' },
+  first: 10,
+  skip: 20,
+});
+```
+
+### createOne
+
+```typescript
+const user = await context.lists.User.createOne({
+  data: {
+    name: 'Alice',
+    posts: { create: [{ title: 'My first post' }] },
+  },
+  query: 'id name posts { id title }',
+});
+```
+
+### createMany
+
+```typescript
+const users = await context.lists.User.createOne({
+  data: [
+    {
+      data: {
+        name: 'Alice',
+        posts: [{ create: { title: 'Alices first post' } }],
+      },
+    },
+    {
+      data: {
+        name: 'Bob',
+        posts: [{ create: { title: 'Bobs first post' } }],
+      },
+    },
+  ],
+  query: 'id name posts { id title }',
+});
+```
+
+### updateOne
+
+```typescript
+const user = await context.lists.User.updateOne({
+  id: '...',
+  data: {
+    name: 'Alice',
+    posts: { create: [{ title: 'My first post' }] },
+  },
+  query: 'id name posts { id title }',
+});
+```
+
+### updateMany
+
+```typescript
+const users = await context.lists.User.updateMany({
+  data: [
+    {
+      id: '...',
+      data: {
+        name: 'Alice',
+        posts: [{ create: { title: 'Alices first post' } }],
+      },
+    },
+    {
+      id: '...',
+      data: {
+        name: 'Bob',
+        posts: [{ create: { title: 'Bobs first post' } }],
+      },
+    },
+  ],
+  query: 'id name posts { id title }',
+});
+```
+
+### deleteOne
+
+```typescript
+const user = await context.lists.User.deleteOne({
+  id: '...',
+  query: 'id name posts { id title }',
+});
+```
+
+### deleteMany
+
+```typescript
+const user = await context.lists.User.deleteMany({
+  ids: ['...', '...'],
+  query: 'id name posts { id title }',
+});
+```
+
+export default ({ children }) => <Markdown>{children}</Markdown>;

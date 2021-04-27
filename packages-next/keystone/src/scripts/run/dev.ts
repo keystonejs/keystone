@@ -3,9 +3,9 @@ import express from 'express';
 import { generateAdminUI } from '@keystone-next/admin-ui/system';
 import { devMigrations, pushPrismaSchemaToDatabase } from '../../lib/migrations';
 import { createSystem } from '../../lib/createSystem';
-import { initConfig } from '../../lib/initConfig';
-import { requireSource } from '../../lib/requireSource';
-import { createExpressServer } from '../../lib/createExpressServer';
+import { initConfig } from '../../lib/config/initConfig';
+import { requireSource } from '../../lib/config/requireSource';
+import { createExpressServer } from '../../lib/server/createExpressServer';
 import {
   generateCommittedArtifacts,
   generateNodeModulesArtifacts,

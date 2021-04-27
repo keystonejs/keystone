@@ -6,6 +6,7 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
+import { KeystoneContext } from '@keystone-next/types';
 import {
   createItems,
   createItem,
@@ -15,8 +16,7 @@ import {
   getItems,
   updateItem,
   updateItems,
-} from '@keystone-next/server-side-graphql-client-legacy';
-import { KeystoneContext } from '@keystone-next/types';
+} from '@keystone-next/keystone/src/lib/context/server-side-graphql-client';
 
 const testData = Array(50)
   .fill(0)
@@ -186,7 +186,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           await seedDb({ context });
 
           const getItemsBySortOrder = (sortBy: string) =>
-            getItems({ context, listKey, returnFields, sortBy });
+            getItems({ context, listKey, returnFields, sortBy: [sortBy] });
 
           const allItemsAscAge = await getItemsBySortOrder('age_ASC');
           const allItemsDescAge = await getItemsBySortOrder('age_DESC');
@@ -206,7 +206,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
               returnFields,
               pageSize,
               first,
-              sortBy: 'age_ASC',
+              sortBy: ['age_ASC'],
             });
           expect(await getFirstItems(9, 5)).toEqual(testData.slice(0, 9).map(d => d.data));
           expect(await getFirstItems(5, 9)).toEqual(testData.slice(0, 5).map(d => d.data));
@@ -236,7 +236,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           await seedDb({ context });
           const first = 4;
           const getSortItems = (sortBy: string) =>
-            getItems({ context, listKey, returnFields, skip: 3, first, sortBy });
+            getItems({ context, listKey, returnFields, skip: 3, first, sortBy: [sortBy] });
           const itemsDESC = await getSortItems('age_DESC');
           expect(itemsDESC.length).toEqual(first);
           expect(itemsDESC[0]).toEqual({ name: 'test46', age: 460 });

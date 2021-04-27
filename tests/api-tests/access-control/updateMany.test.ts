@@ -2,7 +2,6 @@ import { text, checkbox } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig, testConfig } from '@keystone-next/test-utils-legacy';
 import type { ProviderName } from '@keystone-next/test-utils-legacy';
-import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
 const setupKeystone = (provider: ProviderName) =>
   setupFromConfig({
@@ -31,10 +30,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
       'updateMany with declarative access control',
       runner(setupKeystone, async ({ context }) => {
         // Create some items, half of which have `isUpdatable: true`
-        const users = (await createItems({
-          context,
-          listKey: 'User',
-          items: [
+        const users = (await context.lists.User.createMany({
+          data: [
             { data: { name: 'Jess', isUpdatable: true } },
             { data: { name: 'Johanna', isUpdatable: false } },
             { data: { name: 'Sam', isUpdatable: true } },

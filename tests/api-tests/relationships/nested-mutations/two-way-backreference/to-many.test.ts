@@ -3,7 +3,6 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-import { createItem, updateItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
@@ -77,12 +76,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'during create mutation',
           runner(setupKeystone, async ({ context }) => {
             // Manually setup a connected Student <-> Teacher
-            let teacher1 = await createItem({ context, listKey: 'Teacher', item: {} });
+            let teacher1 = await context.lists.Teacher.createOne({ data: {} });
             await new Promise(resolve => process.nextTick(resolve));
-            let teacher2 = await createItem({ context, listKey: 'Teacher', item: {} });
+            let teacher2 = await context.lists.Teacher.createOne({ data: {} });
 
             // canaryStudent is used as a canary to make sure nothing crosses over
-            let canaryStudent = await createItem({ context, listKey: 'Student', item: {} });
+            let canaryStudent = await context.lists.Student.createOne({ data: {} });
 
             teacher1 = await getTeacher(context, teacher1.id);
             teacher2 = await getTeacher(context, teacher2.id);
@@ -129,12 +128,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'during update mutation',
           runner(setupKeystone, async ({ context }) => {
             // Manually setup a connected Student <-> Teacher
-            let teacher1 = await createItem({ context, listKey: 'Teacher', item: {} });
-            let teacher2 = await createItem({ context, listKey: 'Teacher', item: {} });
-            let student1 = await createItem({ context, listKey: 'Student', item: {} });
+            let teacher1 = await context.lists.Teacher.createOne({ data: {} });
+            let teacher2 = await context.lists.Teacher.createOne({ data: {} });
+            let student1 = await context.lists.Student.createOne({ data: {} });
             // Student2 is used as a canary to make sure things don't accidentally
             // cross over
-            let student2 = await createItem({ context, listKey: 'Student', item: {} });
+            let student2 = await context.lists.Student.createOne({ data: {} });
 
             teacher1 = await getTeacher(context, teacher1.id);
             teacher2 = await getTeacher(context, teacher2.id);
@@ -221,7 +220,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         test(
           'during update mutation',
           runner(setupKeystone, async ({ context }) => {
-            let student = await createItem({ context, listKey: 'Student', item: {} });
+            let student = await context.lists.Student.createOne({ data: {} });
             const teacherName1 = sampleOne(alphanumGenerator);
             const teacherName2 = sampleOne(alphanumGenerator);
 
@@ -261,23 +260,17 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'nested disconnect during update mutation',
         runner(setupKeystone, async ({ context }) => {
           // Manually setup a connected Student <-> Teacher
-          let teacher1 = await createItem({ context, listKey: 'Teacher', item: {} });
-          let teacher2 = await createItem({ context, listKey: 'Teacher', item: {} });
-          let student1 = await createItem({
-            context,
-            listKey: 'Student',
-            item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+          let teacher1 = await context.lists.Teacher.createOne({ data: {} });
+          let teacher2 = await context.lists.Teacher.createOne({ data: {} });
+          let student1 = await context.lists.Student.createOne({
+            data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           });
-          let student2 = await createItem({
-            context,
-            listKey: 'Student',
-            item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+          let student2 = await context.lists.Student.createOne({
+            data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           });
 
-          await updateItems({
-            context,
-            listKey: 'Teacher',
-            items: [
+          await context.lists.Teacher.updateMany({
+            data: [
               {
                 id: teacher1.id,
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
@@ -336,23 +329,17 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'nested disconnectAll during update mutation',
         runner(setupKeystone, async ({ context }) => {
           // Manually setup a connected Student <-> Teacher
-          let teacher1 = await createItem({ context, listKey: 'Teacher', item: {} });
-          let teacher2 = await createItem({ context, listKey: 'Teacher', item: {} });
-          let student1 = await createItem({
-            context,
-            listKey: 'Student',
-            item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+          let teacher1 = await context.lists.Teacher.createOne({ data: {} });
+          let teacher2 = await context.lists.Teacher.createOne({ data: {} });
+          let student1 = await context.lists.Student.createOne({
+            data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           });
-          let student2 = await createItem({
-            context,
-            listKey: 'Student',
-            item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+          let student2 = await context.lists.Student.createOne({
+            data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
           });
 
-          await updateItems({
-            context,
-            listKey: 'Teacher',
-            items: [
+          await context.lists.Teacher.updateMany({
+            data: [
               {
                 id: teacher1.id,
                 data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },
@@ -412,23 +399,17 @@ multiAdapterRunners().map(({ runner, provider }) =>
       'delete mutation updates back references in to-many relationship',
       runner(setupKeystone, async ({ context }) => {
         // Manually setup a connected Student <-> Teacher
-        let teacher1 = await createItem({ context, listKey: 'Teacher', item: {} });
-        let teacher2 = await createItem({ context, listKey: 'Teacher', item: {} });
-        let student1 = await createItem({
-          context,
-          listKey: 'Student',
-          item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+        let teacher1 = await context.lists.Teacher.createOne({ data: {} });
+        let teacher2 = await context.lists.Teacher.createOne({ data: {} });
+        let student1 = await context.lists.Student.createOne({
+          data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
         });
-        let student2 = await createItem({
-          context,
-          listKey: 'Student',
-          item: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
+        let student2 = await context.lists.Student.createOne({
+          data: { teachers: { connect: [{ id: teacher1.id }, { id: teacher2.id }] } },
         });
 
-        await updateItems({
-          context,
-          listKey: 'Teacher',
-          items: [
+        await context.lists.Teacher.updateMany({
+          data: [
             {
               id: teacher1.id,
               data: { students: { connect: [{ id: student1.id }, { id: student2.id }] } },

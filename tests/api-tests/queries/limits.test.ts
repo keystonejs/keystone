@@ -7,7 +7,6 @@ import {
   testConfig,
   ProviderName,
 } from '@keystone-next/test-utils-legacy';
-import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { depthLimit, definitionLimit, fieldLimit } from './validation';
 
 function setupKeystone(provider: ProviderName) {
@@ -51,10 +50,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
         test(
           'users',
           runner(setupKeystone, async ({ context }) => {
-            const users = await createItems({
-              context,
-              listKey: 'User',
-              items: [
+            const users = await context.lists.User.createMany({
+              data: [
                 { data: { name: 'Jess', favNumber: 1 } },
                 { data: { name: 'Johanna', favNumber: 8 } },
                 { data: { name: 'Sam', favNumber: 5 } },
@@ -160,19 +157,15 @@ multiAdapterRunners().map(({ runner, provider }) =>
         test(
           'posts by user',
           runner(setupKeystone, async ({ context }) => {
-            const users = await createItems({
-              context,
-              listKey: 'User',
-              items: [
+            const users = await context.lists.User.createMany({
+              data: [
                 { data: { name: 'Jess', favNumber: 1 } },
                 { data: { name: 'Johanna', favNumber: 8 } },
                 { data: { name: 'Sam', favNumber: 5 } },
               ],
             });
-            await createItems({
-              context,
-              listKey: 'Post',
-              items: [
+            await context.lists.Post.createMany({
+              data: [
                 { data: { author: { connect: [{ id: users[0].id }] }, title: 'One author' } },
                 {
                   data: {
@@ -193,64 +186,28 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Reset the count for each query
             context.totalResults = 0;
             // A basic query that should work
-            let data = await context.graphql.run({
-              query: `
-          query {
-            allPosts(
-              where: { title: "One author" },
-            ) {
-              title
-              author {
-                name
-              }
-            }
-          }
-      `,
+            let posts = await context.lists.Post.findMany({
+              where: { title: 'One author' },
+              query: 'title author { name }',
             });
 
-            expect(data).toHaveProperty('allPosts');
-            expect(data.allPosts).toEqual([
-              {
-                title: 'One author',
-                author: [{ name: 'Jess' }],
-              },
-            ]);
+            expect(posts).toEqual([{ title: 'One author', author: [{ name: 'Jess' }] }]);
 
             // Reset the count for each query
             context.totalResults = 0;
             // Each subquery is within the limit (even though the total isn't)
-            data = await context.graphql.run({
-              query: `
-          query {
-            allPosts(
+            posts = await context.lists.Post.findMany({
               where: {
-                OR: [
-                  { title: "One author" },
-                  { title: "Two authors" },
-                ]
-              }
-              sortBy: title_ASC,
-            ) {
-              title
-              author(sortBy: name_ASC) {
-                name
-              }
-            }
-          }
-      `,
+                OR: [{ title: 'One author' }, { title: 'Two authors' }],
+              },
+              sortBy: ['title_ASC'],
+              query: 'title author(sortBy: [name_ASC]) { name }',
             });
-
-            expect(data).toHaveProperty('allPosts');
-            expect(data.allPosts).toEqual([
-              {
-                title: 'One author',
-                author: [{ name: 'Jess' }],
-              },
-              {
-                title: 'Two authors',
-                author: [{ name: 'Jess' }, { name: 'Johanna' }],
-              },
+            expect(posts).toEqual([
+              { title: 'One author', author: [{ name: 'Jess' }] },
+              { title: 'Two authors', author: [{ name: 'Jess' }, { name: 'Johanna' }] },
             ]);
+
             // Reset the count for each query
             context.totalResults = 0;
             // This post has too many authors
@@ -275,20 +232,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             // Requesting the too-many-authors post is okay as long as the authors aren't returned
             // Reset the count for each query
             context.totalResults = 0;
-            data = await context.graphql.run({
-              query: `
-          query {
-            allPosts(
-              where: { title: "Three authors" },
-            ) {
-              title
-            }
-          }
-      `,
+            posts = await context.lists.Post.findMany({
+              where: { title: 'Three authors' },
+              query: 'title',
             });
 
-            expect(data).toHaveProperty('allPosts');
-            expect(data.allPosts).toEqual([{ title: 'Three authors' }]);
+            expect(posts).toEqual([{ title: 'Three authors' }]);
 
             // Some posts are okay, but one breaks the limit
             // Reset the count for each query

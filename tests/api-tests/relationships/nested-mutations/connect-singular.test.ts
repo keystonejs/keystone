@@ -3,7 +3,6 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-import { createItem, getItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 function setupKeystone(provider: ProviderName) {
   return setupFromConfig({
@@ -103,11 +102,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item to link against
-          const createGroup = await createItem({
-            context,
-            listKey: 'Group',
-            item: { name: groupName },
-          });
+          const createGroup = await context.lists.Group.createOne({ data: { name: groupName } });
 
           // Create an item that does the linking
           const data = await context.graphql.run({
@@ -132,11 +127,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
           // Create an item to link against
-          const createGroup = await createItem({
-            context,
-            listKey: 'Group',
-            item: { name: groupName },
-          });
+          const createGroup = await context.lists.Group.createOne({ data: { name: groupName } });
 
           // Create an item to update
           const { createEvent } = await context.graphql.run({
@@ -202,7 +193,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const FAKE_ID = 100;
 
           // Create an item to link against
-          const createEvent = await createItem({ context, listKey: 'Event', item: {} });
+          const createEvent = await context.lists.Event.createOne({ data: {} });
 
           // Create an item that does the linking
           const { errors } = await context.graphql.raw({
@@ -244,10 +235,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
 
                 // Create an item to link against
                 // We can't use the graphQL query here (it's `create: () => false`)
-                const { id } = await createItem({
-                  listKey: group.name,
-                  item: { name: groupName },
-                  context,
+                const { id } = await context.lists[group.name].createOne({
+                  data: { name: groupName },
                 });
                 expect(id).toBeTruthy();
 
@@ -278,18 +267,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
-                const groupModel = await createItem({
-                  listKey: group.name,
-                  item: { name: groupName },
-                  context,
+                const groupModel = await context.lists[group.name].createOne({
+                  data: { name: groupName },
                 });
                 expect(groupModel.id).toBeTruthy();
 
                 // Create an item to update
-                const eventModel = await createItem({
-                  context,
-                  listKey: `EventTo${group.name}`,
-                  item: { title: 'A Thing' },
+                const eventModel = await context.lists[`EventTo${group.name}`].createOne({
+                  data: { title: 'A Thing' },
                 });
                 expect(eventModel.id).toBeTruthy();
 
@@ -321,11 +306,9 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 });
 
                 // See that it actually stored the group ID on the Event record
-                const event = await getItem({
-                  context,
-                  listKey: `EventTo${group.name}`,
-                  itemId: data[`updateEventTo${group.name}`].id,
-                  returnFields: 'id group { id name }',
+                const event = await context.lists[`EventTo${group.name}`].findOne({
+                  where: { id: data[`updateEventTo${group.name}`].id },
+                  query: 'id group { id name }',
                 });
                 expect(event).toBeTruthy();
                 expect(event!.group).toBeTruthy();
@@ -339,18 +322,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
-                const groupModel = await createItem({
-                  context,
-                  listKey: group.name,
-                  item: { name: groupName },
+                const groupModel = await context.lists[group.name].createOne({
+                  data: { name: groupName },
                 });
                 expect(groupModel.id).toBeTruthy();
 
                 // Create an item to update
-                const eventModel = await createItem({
-                  context,
-                  listKey: `EventTo${group.name}`,
-                  item: { title: 'A thing' },
+                const eventModel = await context.lists[`EventTo${group.name}`].createOne({
+                  data: { title: 'A thing' },
                 });
                 expect(eventModel.id).toBeTruthy();
 
@@ -385,10 +364,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 const groupName = sampleOne(gen.alphaNumString.notEmpty());
 
                 // Create an item to link against
-                const { id } = await createItem({
-                  context,
-                  listKey: group.name,
-                  item: { name: groupName },
+                const { id } = await context.lists[group.name].createOne({
+                  data: { name: groupName },
                 });
                 expect(id).toBeTruthy();
 
