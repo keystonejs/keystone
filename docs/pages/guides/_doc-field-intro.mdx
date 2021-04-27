@@ -1,5 +1,12 @@
-The [`document`](../apis/fields#document) field type provides a highly configurable rich content field based on [Slate](https://docs.slatejs.org/).
-The Admin UI includes a document editor, which allows content creators to quickly and easily add content to your system.
-You can try out the document editor below.
+The [`document`](../apis/fields#document) field type is a highly customizable rich text editor that lets content creators quickly and easily edit content in your system.
+
+It's built with [Slate](https://docs.slatejs.org/), stores your content as JSON-structured data, and lets you do things like:
+
+- Embed multi-column layouts (that your front-end can decide how to render)
+- Insert relationships to other items in your Keystone database
+- Define your own custom blocks based on React Components
+- Choose between automatically generated forms for editing Component Props, or create your own custom Component UI and Toolbars
+
+## Try the demo ↓
 
 export default ({ children }) => children;
