@@ -1,9 +1,8 @@
 import type { KeystoneConfig, BaseKeystone, AdminMetaRootVal } from '@keystone-next/types';
 
 export function createAdminMeta(config: KeystoneConfig, keystone: BaseKeystone) {
-  const { ui, lists, session } = config;
+  const { lists, session } = config;
   const adminMetaRoot: AdminMetaRootVal = {
-    enableSessionItem: ui?.enableSessionItem || false,
     enableSignout: session !== undefined,
     listsByKey: {},
     lists: [],

@@ -8,7 +8,6 @@ export const staticAdminMetaQuery = gql`
       adminMeta {
         __typename
         enableSignout
-        enableSessionItem
         lists {
           __typename
           key
@@ -61,10 +60,7 @@ type Maybe<T> = T | null;
 
 export type StaticAdminMetaQuery = { __typename?: 'Query' } & {
   keystone: { __typename: 'KeystoneMeta' } & {
-    adminMeta: { __typename: 'KeystoneAdminMeta' } & Pick<
-      KeystoneAdminMeta,
-      'enableSignout' | 'enableSessionItem'
-    > & {
+    adminMeta: { __typename: 'KeystoneAdminMeta' } & Pick<KeystoneAdminMeta, 'enableSignout'> & {
         lists: Array<
           { __typename: 'KeystoneAdminUIListMeta' } & Pick<
             KeystoneAdminUIListMeta,
@@ -116,7 +112,6 @@ type KeystoneMeta = {
 type KeystoneAdminMeta = {
   __typename: 'KeystoneAdminMeta';
   enableSignout: Scalars['Boolean'];
-  enableSessionItem: Scalars['Boolean'];
   lists: Array<KeystoneAdminUIListMeta>;
   list: Maybe<KeystoneAdminUIListMeta>;
 };

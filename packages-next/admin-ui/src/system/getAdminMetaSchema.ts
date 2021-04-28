@@ -233,9 +233,6 @@ export function getAdminMetaSchema({
       enableSignout: types.field({
         type: types.nonNull(types.Boolean),
       }),
-      enableSessionItem: types.field({
-        type: types.nonNull(types.Boolean),
-      }),
       lists: types.field({
         type: types.nonNull(types.list(types.nonNull(KeystoneAdminUIListMeta))),
       }),
