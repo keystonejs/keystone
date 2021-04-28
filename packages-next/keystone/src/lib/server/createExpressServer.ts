@@ -7,7 +7,7 @@ import type { KeystoneConfig, CreateContext, SessionStrategy } from '@keystone-n
 import { createAdminUIServer } from '@keystone-next/admin-ui/system';
 import { createApolloServerExpress } from './createApolloServer';
 
-const DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 mb
+const DEFAULT_MAX_FILE_SIZE = 200 * 1024 * 1024; // 200 mb
 
 const addApolloServer = ({
   server,

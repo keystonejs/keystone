@@ -8,7 +8,6 @@ import { parseFileRef } from '@keystone-next/utils-legacy';
 
 const DEFAULT_BASE_URL = '/files';
 const DEFAULT_STORAGE_PATH = './public/files';
-// const DEFAULT_MAX_SIZE = 1024 * 1024 * 10; // 10mb
 
 const generateSafeFilename = (filename: string) => {
   //   /*
@@ -24,11 +23,6 @@ const generateSafeFilename = (filename: string) => {
     return `${urlSafeName}_${id}${ext}`;
   }
   return `${urlSafeName}_${id}`;
-};
-
-const getFileMetadataFromBuffer = async (buffer: Buffer) => {
-  const filesize = buffer.length;
-  return { filesize };
 };
 
 export function createFilesContext(config?: FilesConfig): FilesContext | undefined {
@@ -49,7 +43,6 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
       if (!fileRef) {
         throw new Error('Invalid file reference');
       }
-      // const buffer = await fs.readFile(path.join(storagePath, `${fileRef.filename}`));
       const { size: filesize } = await fs.stat(path.join(storagePath, `${fileRef.filename}`));
       return { filesize, ...fileRef };
     },
@@ -64,12 +57,6 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
       }
 
       const { size: filesize } = await fs.stat(path.join(storagePath, pseudoSafeFilename));
-
-      // const buffer = Buffer.concat(chunks);
-      // const metadata = await getFileMetadataFromBuffer(buffer);
-
-      // await fs.writeFile(path.join(storagePath, pseudoSafeFilename), buffer);
-
       return { mode, filename: pseudoSafeFilename, filesize };
     },
   };

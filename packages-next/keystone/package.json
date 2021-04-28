@@ -60,6 +60,7 @@
     "cuid": "^2.1.8",
     "execa": "^5.0.0",
     "express": "^4.17.1",
+    "filenamify": "^4.3.0",
     "fs-extra": "^9.1.0",
     "graphql": "^15.5.0",
     "graphql-type-json": "^0.3.2",
