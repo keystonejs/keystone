@@ -91,13 +91,8 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
    *  - to the init page when initFirstItem is configured, and there are no user in the database
    *  - to the signin page when no valid session is present
    */
-  const pageMiddleware: AdminUIConfig['pageMiddleware'] = async ({
-    req,
-    isValidSession,
-    createContext,
-    session,
-  }) => {
-    const pathname = url.parse(req.url!).pathname!;
+  const pageMiddleware: AdminUIConfig['pageMiddleware'] = async ({ isValidSession, context }) => {
+    const pathname = url.parse(context.req!.url!).pathname!;
 
     if (isValidSession) {
       if (pathname === '/signin' || (initFirstItem && pathname === '/init')) {
@@ -106,8 +101,8 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       return;
     }
 
-    if (!session && initFirstItem) {
-      const count = await createContext({}).sudo().lists[listKey].count({});
+    if (!context.session && initFirstItem) {
+      const count = await context.sudo().lists[listKey].count({});
       if (count === 0) {
         if (pathname !== '/init') {
           return { kind: 'redirect', to: '/init' };
@@ -116,8 +111,8 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       }
     }
 
-    if (!session && pathname !== '/signin') {
-      return { kind: 'redirect', to: `/signin?from=${encodeURIComponent(req.url!)}` };
+    if (!context.session && pathname !== '/signin') {
+      return { kind: 'redirect', to: `/signin?from=${encodeURIComponent(context.req!.url!)}` };
     }
   };
 
