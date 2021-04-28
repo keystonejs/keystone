@@ -3,7 +3,6 @@ import { v4 as uuid } from 'uuid';
 import slugify from '@sindresorhus/slugify';
 import { FilesConfig, FilesContext } from '@keystone-next/types';
 import fs from 'fs-extra';
-import { fromBuffer } from 'file-type';
 
 import { parseFileRef } from '@keystone-next/utils-legacy';
 
@@ -30,11 +29,6 @@ const generateSafeFilename = (filename: string) => {
 
 const getFileMetadataFromBuffer = async (buffer: Buffer) => {
   const filesize = buffer.length;
-  const fileType = fromBuffer(buffer);
-  if (!fileType) {
-    throw new Error('File type not found');
-  }
-
   return { filesize };
 };
 
