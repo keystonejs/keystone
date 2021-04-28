@@ -72,7 +72,7 @@
     "pirates": "^4.0.1",
     "pluralize": "^8.0.0",
     "prettier": "^2.2.1",
-    "prisma": "2.22.0-dev.25",
+    "prisma": "2.22.0-dev.40",
     "prompts": "^2.4.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
