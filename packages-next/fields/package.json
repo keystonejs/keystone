@@ -30,7 +30,7 @@
     "@keystone-ui/segmented-control": "^3.0.0",
     "@keystone-ui/toast": "^3.0.0",
     "@keystone-ui/tooltip": "^3.0.0",
-    "@sindresorhus/slugify": "^1.1.0",
+    "@sindresorhus/slugify": "^1.1.2",
     "@types/bcryptjs": "^2.4.2",
     "@types/keystonejs__fields": "^5.1.1",
     "@types/react": "^17.0.4",
