@@ -88,14 +88,12 @@ multiAdapterRunners().map(({ before, after, provider }) =>
             .filter(({ create }) => create)
             .forEach(access => {
               test(`allowed: ${JSON.stringify(access)}`, async () => {
-                const createMutationName = `create${nameFn[mode](access)}`;
-                const query = `mutation { ${createMutationName}(data: { name: "bar" }) { id } }`;
-                const data = await context.exitSudo().graphql.run({ query });
-                expect(data[createMutationName]).not.toBe(null);
-                expect(data[createMutationName].id).not.toBe(null);
-                await context.lists[nameFn[mode](access)].deleteOne({
-                  id: data[createMutationName].id,
-                });
+                const listKey = nameFn[mode](access);
+                const data = { name: 'bar' };
+                const item = await context.exitSudo().lists[listKey].createOne({ data });
+                expect(item).not.toBe(null);
+                expect(item.id).not.toBe(null);
+                await context.lists[listKey].deleteOne({ id: item.id });
               });
             });
         });
@@ -112,22 +110,20 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                   update: true,
                   delete: true,
                 };
-                const createMutationName = `create${nameFn[mode](listAccess)}`;
+                const listKey = nameFn[mode](listAccess);
                 const fieldName = getFieldName(access);
-                const query = `mutation { ${createMutationName}(data: { ${fieldName}: "bar" }) { id ${
-                  access.read ? fieldName : ''
-                } } }`;
-                const data = await context.exitSudo().graphql.run({ query });
-                expect(data[createMutationName]).not.toBe(null);
-                expect(data[createMutationName].id).not.toBe(null);
-                if (access.read) {
-                  expect(data[createMutationName][fieldName]).toBe('bar');
-                } else {
-                  expect(data[createMutationName][fieldName]).toBe(undefined);
-                }
-                await context.lists[nameFn[mode](listAccess)].deleteOne({
-                  id: data[createMutationName].id,
+                const item = await context.exitSudo().lists[listKey].createOne({
+                  data: { [fieldName]: 'bar' },
+                  query: `id ${access.read ? fieldName : ''}`,
                 });
+                expect(item).not.toBe(null);
+                expect(item.id).not.toBe(null);
+                if (access.read) {
+                  expect(item[fieldName]).toBe('bar');
+                } else {
+                  expect(item[fieldName]).toBe(undefined);
+                }
+                await context.lists[listKey].deleteOne({ id: item.id });
               });
             });
         });
@@ -144,15 +140,14 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                   update: true,
                   delete: true,
                 };
-                const createMutationName = `create${nameFn[mode](listAccess)}`;
+                const listKey = nameFn[mode](listAccess);
                 const fieldName = getFieldName(access);
-                const query = `mutation { ${createMutationName}(data: { ${fieldName}: "bar" }) { id } }`;
-                const data = await context.exitSudo().graphql.run({ query });
-                expect(data[createMutationName]).not.toBe(null);
-                expect(data[createMutationName].id).not.toBe(null);
-                await context.lists[nameFn[mode](listAccess)].deleteOne({
-                  id: data[createMutationName].id,
-                });
+                const item = await context
+                  .exitSudo()
+                  .lists[listKey].createOne({ data: { [fieldName]: 'bar' } });
+                expect(item).not.toBe(null);
+                expect(item.id).not.toBe(null);
+                await context.lists[listKey].deleteOne({ id: item.id });
               });
             });
         });
@@ -162,7 +157,7 @@ multiAdapterRunners().map(({ before, after, provider }) =>
     describe('read', () => {
       test('authed user', async () => {
         const query = `query { authenticatedItem { ... on User { id yesRead noRead } } }`;
-        const _context = context.exitSudo().withSession({
+        const _context = await context.exitSudo().withSession({
           itemId: user.id,
           listKey: 'User',
           data: user,
@@ -183,19 +178,19 @@ multiAdapterRunners().map(({ before, after, provider }) =>
           listAccessVariations
             .filter(({ read }) => read)
             .forEach(access => {
+              const listKey = nameFn[mode](access);
+
               test(`'all' allowed: ${JSON.stringify(access)}`, async () => {
-                const allQueryName = `all${nameFn[mode](access)}s`;
-                const query = `query { ${allQueryName} { id } }`;
-                const data = await context.exitSudo().graphql.run({ query });
+                const _items = await context.exitSudo().lists[listKey].findMany();
                 if (mode === 'imperative') {
-                  expect(data[allQueryName]).toHaveLength(2);
+                  expect(_items).toHaveLength(2);
                 } else {
-                  expect(data[allQueryName]).toHaveLength(1); // We can only read the ones our permission filter allow
+                  expect(_items).toHaveLength(1); // We can only read the ones our permission filter allow
                 }
               });
 
               test(`meta allowed: ${JSON.stringify(access)}`, async () => {
-                const count = await context.exitSudo().lists[nameFn[mode](access)].count();
+                const count = await context.exitSudo().lists[listKey].count();
                 if (mode === 'imperative') {
                   expect(count).toEqual(2);
                 } else {
@@ -204,42 +199,40 @@ multiAdapterRunners().map(({ before, after, provider }) =>
               });
 
               test(`single allowed: ${JSON.stringify(access)}`, async () => {
-                const singleQueryName = nameFn[mode](access);
-                const validId = items[singleQueryName].find(({ name }) => name === 'Hello')?.id;
-                const query = `query { ${singleQueryName}(where: { id: "${validId}" }) { id } }`;
-                const data = await context.exitSudo().graphql.run({ query });
-                expect(data[singleQueryName]).not.toBe(null);
-                expect(data[singleQueryName].id).toEqual(validId);
+                const validId = items[listKey].find(({ name }) => name === 'Hello')?.id;
+                const item = await context
+                  .exitSudo()
+                  .lists[listKey].findOne({ where: { id: validId } });
+                expect(item).not.toBe(null);
+                expect(item.id).toEqual(validId);
               });
 
               test(`single not allowed: ${JSON.stringify(access)}`, async () => {
-                const singleQueryName = nameFn[mode](access);
-                const invalidId = items[singleQueryName].find(({ name }) => name !== 'Hello')?.id;
-                const query = `query { ${singleQueryName}(where: { id: "${invalidId}" }) { id } }`;
+                const invalidId = items[listKey].find(({ name }) => name !== 'Hello')?.id;
+                const query = `query { ${listKey}(where: { id: "${invalidId}" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
                 if (mode === 'imperative') {
                   // Imperative should work
                   expect(errors).toBe(undefined);
-                  expect(data?.[singleQueryName]).not.toBe(null);
-                  expect(data?.[singleQueryName].id).toEqual(invalidId);
+                  expect(data?.[listKey]).not.toBe(null);
+                  expect(data?.[listKey].id).toEqual(invalidId);
                 } else {
                   // but declarative should not
-                  expectNoAccess(data, errors, singleQueryName);
+                  expectNoAccess(data, errors, listKey);
                 }
               });
 
               test(`single not existing: ${JSON.stringify(access)}`, async () => {
-                const singleQueryName = nameFn[mode](access);
-                const query = `query { ${singleQueryName}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
+                const query = `query { ${listKey}(where: { id: "${FAKE_ID[provider]}" }) { id } }`;
                 const { data, errors } = await context.exitSudo().graphql.raw({ query });
-                expectNoAccess(data, errors, singleQueryName);
+                expectNoAccess(data, errors, listKey);
               });
 
               test(`multiple not existing: ${JSON.stringify(access)}`, async () => {
-                const allQueryName = `all${nameFn[mode](access)}s`;
-                const query = `query { ${allQueryName}(where: { id_in: ["${FAKE_ID[provider]}", "${FAKE_ID_2[provider]}"] }) { id } }`;
-                const data = await context.exitSudo().graphql.run({ query });
-                expect(data[allQueryName]).toHaveLength(0);
+                const _items = await context.exitSudo().lists[listKey].findMany({
+                  where: { id_in: [FAKE_ID[provider], FAKE_ID_2[provider]] },
+                });
+                expect(_items).toHaveLength(0);
               });
             });
         });
@@ -259,16 +252,16 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const listKey = nameFn[mode](listAccess);
                 const item = items[listKey][0];
                 const fieldName = getFieldName(access);
-                const singleQueryName = listKey;
                 await context.lists[listKey].updateOne({
                   id: item.id,
                   data: { [fieldName]: 'hello' },
                 });
-                const query = `query { ${singleQueryName}(where: { id: "${item.id}" }) { id ${fieldName} } }`;
-                const data = await context.exitSudo().graphql.run({ query });
-                expect(data[singleQueryName]).not.toBe(null);
-                expect(data[singleQueryName].id).not.toBe(null);
-                expect(data[singleQueryName][fieldName]).toBe('hello');
+                const _item = await context
+                  .exitSudo()
+                  .lists[listKey].findOne({ where: { id: item.id }, query: `id ${fieldName}` });
+                expect(_item).not.toBe(null);
+                expect(_item.id).not.toBe(null);
+                expect(_item[fieldName]).toBe('hello');
               });
               test(`field allowed - multi: ${JSON.stringify(access)}`, async () => {
                 const listAccess = {
@@ -280,16 +273,16 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 const listKey = nameFn[mode](listAccess);
                 const item = items[listKey][0];
                 const fieldName = getFieldName(access);
-                const allQueryName = `all${listKey}s`;
                 await context.lists[listKey].updateOne({
                   id: item.id,
                   data: { [fieldName]: 'hello' },
                 });
-                const query = `query { ${allQueryName} { id ${fieldName} } }`;
-                const data = await context.exitSudo().graphql.run({ query });
-                expect(data[allQueryName]).not.toBe(null);
-                expect(data[allQueryName]).toHaveLength(2);
-                for (const _item of data[allQueryName]) {
+                const _items = await context
+                  .exitSudo()
+                  .lists[listKey].findMany({ query: `id ${fieldName}` });
+                expect(_items).not.toBe(null);
+                expect(_items).toHaveLength(2);
+                for (const _item of _items) {
                   expect(_item.id).not.toBe(null);
                   if (_item.id === item.id) {
                     expect(_item[fieldName]).toEqual('hello');
@@ -339,12 +332,16 @@ multiAdapterRunners().map(({ before, after, provider }) =>
               test(`allows: ${JSON.stringify(access)}`, async () => {
                 const updateMutationName = `update${nameFn[mode](access)}`;
                 const singleQueryName = nameFn[mode](access);
+                const listKey = nameFn[mode](access);
                 const validId = items[singleQueryName].find(({ name }) => name === 'Hello')?.id;
-                const query = `mutation { ${updateMutationName}(id: "${validId}", data: { name: "bar" }) { id name } }`;
-                const data = await context.exitSudo().graphql.run({ query });
-                expect(data[updateMutationName]).not.toBe(null);
-                expect(data[updateMutationName].id).toEqual(validId);
-                expect(data[updateMutationName].name).toEqual('bar');
+                const item = await context.exitSudo().lists[listKey].updateOne({
+                  id: validId,
+                  data: { name: 'bar' },
+                  query: 'id name',
+                });
+                expect(item).not.toBe(null);
+                expect(item.id).toEqual(validId);
+                expect(item.name).toEqual('bar');
                 // Reset data
                 await context.graphql.raw({
                   query: `mutation { ${updateMutationName}(id: "${validId}", data: { name: "Hello" }) { id name } }`,
@@ -367,18 +364,18 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 };
                 const listKey = nameFn[mode](listAccess);
                 const item = items[listKey][0];
-                const updateMutationName = `update${listKey}`;
                 const fieldName = getFieldName(access);
-                const query = `mutation { ${updateMutationName}(id: "${
-                  item.id
-                }", data: { ${fieldName}: "bar" }) { id ${access.read ? fieldName : ''} } }`;
-                const data = await context.exitSudo().graphql.run({ query });
-                expect(data[updateMutationName]).not.toBe(null);
-                expect(data[updateMutationName].id).not.toBe(null);
+                const _item = await context.exitSudo().lists[listKey].updateOne({
+                  id: item.id,
+                  data: { [fieldName]: 'bar' },
+                  query: `id ${access.read ? fieldName : ''}`,
+                });
+                expect(_item).not.toBe(null);
+                expect(_item.id).not.toBe(null);
                 if (access.read) {
-                  expect(data[updateMutationName][fieldName]).toBe('bar');
+                  expect(_item[fieldName]).toBe('bar');
                 } else {
-                  expect(data[updateMutationName][fieldName]).toBe(undefined);
+                  expect(_item[fieldName]).toBe(undefined);
                 }
               });
             });
@@ -398,12 +395,12 @@ multiAdapterRunners().map(({ before, after, provider }) =>
                 };
                 const listKey = nameFn[mode](listAccess);
                 const item = items[listKey][0];
-                const updateMutationName = `update${listKey}`;
                 const fieldName = getFieldName(access);
-                const query = `mutation { ${updateMutationName}(id: "${item.id}", data: { ${fieldName}: "bar" }) { id } }`;
-                const data = await context.exitSudo().graphql.run({ query });
-                expect(data[updateMutationName]).not.toBe(null);
-                expect(data[updateMutationName].id).not.toBe(null);
+                const _item = await context
+                  .exitSudo()
+                  .lists[listKey].updateOne({ id: item.id, data: { [fieldName]: 'bar' } });
+                expect(_item).not.toBe(null);
+                expect(_item.id).not.toBe(null);
               });
             });
         });
@@ -419,12 +416,12 @@ multiAdapterRunners().map(({ before, after, provider }) =>
               const create = async (data: { name: string }) =>
                 context.lists[nameFn[mode](access)].createOne({ data });
               test(`single allowed: ${JSON.stringify(access)}`, async () => {
-                const { id: validId } = await create({ name: 'Hello' });
-                const deleteMutationName = `delete${nameFn[mode](access)}`;
-                const query = `mutation { ${deleteMutationName}(id: "${validId}") { id } }`;
-                const data = await context.exitSudo().graphql.run({ query });
-                expect(data[deleteMutationName]).not.toBe(null);
-                expect(data[deleteMutationName].id).toEqual(validId);
+                const { id } = await create({ name: 'Hello' });
+                const deleted = await context
+                  .exitSudo()
+                  .lists[nameFn[mode](access)].deleteOne({ id });
+                expect(deleted).not.toBe(null);
+                expect(deleted!.id).toEqual(id);
               });
 
               test(`single denies: ${JSON.stringify(access)}`, async () => {

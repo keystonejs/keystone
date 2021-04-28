@@ -39,16 +39,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
           ],
         })) as { id: any }[];
         // Attempt to update all four items
-        const data = await context.exitSudo().graphql.run({
-          query: `mutation ($data: [UsersUpdateInput]){
-              updateUsers(data: $data) { id name isUpdatable }
-            }`,
-          variables: { data: users.map(({ id }) => ({ id, data: { name: 'new name' } })) },
+        const _users = await context.exitSudo().lists.User.updateMany({
+          data: users.map(({ id }) => ({ id, data: { name: 'new name' } })),
+          query: 'id name isUpdatable',
         });
         // We don't expect an error, but only two of the items should get updated and returned
-        expect(data.updateUsers).toHaveLength(2);
-        expect(data.updateUsers[0].name).toEqual('new name');
-        expect(data.updateUsers[1].name).toEqual('new name');
+        expect(_users).toHaveLength(2);
+        expect(_users[0].name).toEqual('new name');
+        expect(_users[1].name).toEqual('new name');
       })
     );
   })
