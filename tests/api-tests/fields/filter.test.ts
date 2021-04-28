@@ -13,6 +13,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
   describe(`${provider} provider`, () => {
     testModules
       .map(require)
+      .filter(({ name }) => name === 'File')
       .filter(
         ({ skipCrudTest, unSupportedAdapterList = [] }) =>
           !skipCrudTest && !unSupportedAdapterList.includes(provider)
@@ -29,6 +30,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
                 }),
                 images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
+                files: {
+                  upload: 'local',
+                  local: {
+                    storagePath: 'tmp_test_files',
+                  },
+                },
               }),
             });
 

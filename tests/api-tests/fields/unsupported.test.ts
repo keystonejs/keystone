@@ -42,6 +42,7 @@ multiAdapterRunners().map(({ provider, after }) => {
                       [listKey]: list({ fields: mod.getTestFields(matrixValue) }),
                     }),
                     images: { upload: 'local', local: { storagePath: 'tmp_test_images' } },
+                    files: { upload: 'local', local: { storagePath: 'tmp_test_files' } },
                   }),
                 })
               ).rejects.toThrow(Error);

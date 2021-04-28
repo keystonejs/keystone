@@ -25,12 +25,12 @@ export const typeFunction = file;
 
 export const exampleValue = () => prepareFile('keystone.jpg');
 export const exampleValue2 = () => prepareFile('react.jpg');
-export const createReturnedValue = 'keystone_1.jpg';
-export const updateReturnedValue = 'react_1.jpg';
+export const createReturnedValue = 3250;
+export const updateReturnedValue = 5562;
 
 export const supportsUnique = false;
 export const fieldName = 'secretFile';
-export const subfieldName = 'name';
+export const subfieldName = 'filesize';
 
 export const getTestFields = () => ({ name: text(), secretFile: file() });
 
@@ -50,11 +50,11 @@ export const initItems = () => [
 ];
 
 export const storedValues = () => [
-  { secretFile: { name: 'graphql.jpg' }, name: 'file0' },
-  { secretFile: { name: 'keystone.jpg' }, name: 'file1' },
-  { secretFile: { name: 'react.jpg' }, name: 'file2' },
-  { secretFile: { name: 'thinkmill.jpg' }, name: 'file3' },
-  { secretFile: { name: 'thinkmill1.jpg' }, name: 'file4' },
+  { secretFile: { filesize: 2759 }, name: 'file0' },
+  { secretFile: { filesize: 3250 }, name: 'file1' },
+  { secretFile: { filesize: 5562 }, name: 'file2' },
+  { secretFile: { filesize: 1028 }, name: 'file3' },
+  { secretFile: { filesize: 1028 }, name: 'file4' },
   { secretFile: null, name: 'file5' },
   { secretFile: null, name: 'file6' },
 ];
@@ -71,7 +71,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
           data: { secretFile: prepareFile(filename) },
           query: `
               secretFile {
-                name
+                filename
                 mode
                 filesize
                 ref
@@ -80,13 +80,10 @@ export const crudTests = (keystoneTestWrapper: any) => {
           `,
         });
         expect(data).not.toBe(null);
-        expect(data.secretFile).toEqual({
-          ref: `local:${data.secretFile.name}`,
-          src: `/files/${data.secretFile.name}`,
-          name: filename,
-          mode: 'local',
-          filesize: 3250,
-        });
+        expect(data.secretFile.ref).toEqual(`local:${data.secretFile.filename}`);
+        expect(data.secretFile.src).toEqual(`/files/${data.secretFile.filename}`);
+        expect(data.secretFile.filesize).toEqual(3250);
+        expect(data.secretFile.mode).toEqual('local');
       })
     );
   });
@@ -101,7 +98,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
           item: { secretFile: prepareFile('keystone.jpg') },
           returnFields: `
             secretFile {
-              name
+              filename
               mode
               filesize
               ref
@@ -119,7 +116,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
           item: { secretFile: { ref } },
           returnFields: `
             secretFile {
-              name
+              filename
               mode
               filesize
               ref
@@ -141,7 +138,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
             mutation ($item: TestCreateInput) {
                 createTest(data: $item) {
                     secretFile {
-                        name
+                        filename
                     }
                 }
             }
@@ -161,7 +158,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
             mutation ($item: TestCreateInput) {
                 createTest(data: $item) {
                     secretFile {
-                        name
+                        filename
                     }
                 }
             }
@@ -189,7 +186,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
           mutation ($item: TestCreateInput) {
               createTest(data: $item) {
                   secretFile {
-                      name
+                     filename
                   }
               }
           }
@@ -215,7 +212,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
           mutation ($item: TestCreateInput) {
               createTest(data: $item) {
                   secretFile {
-                      name
+                      filename
                   }
               }
           }
