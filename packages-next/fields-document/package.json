@@ -19,7 +19,7 @@
     ]
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.16",
+    "@babel/runtime": "^7.13.17",
     "@braintree/sanitize-url": "^5.0.0",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-next/adapter-prisma-legacy": "^6.0.0",
@@ -33,7 +33,7 @@
     "@keystone-ui/icons": "^3.0.0",
     "@keystone-ui/popover": "^3.0.0",
     "@keystone-ui/tooltip": "^3.0.0",
-    "@types/react": "^17.0.3",
+    "@types/react": "^17.0.4",
     "apply-ref": "^1.0.0",
     "fp-ts": "^2.10.4",
     "graphql": "^15.5.0",

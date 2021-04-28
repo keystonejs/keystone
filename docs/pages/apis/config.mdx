@@ -60,7 +60,7 @@ It has a TypeScript type of `DatabaseConfig`.
 Keystone supports the database types **PostgreSQL** and **SQLite**.
 These database types are powered by their corresponding Prisma database providers; `postgresql` and `sqlite`.
 
-All database adapters require the `url` argument, which defines the connection URL for your database.
+All database providers require the `url` argument, which defines the connection URL for your database.
 They also all have an optional `onConnect` async function, which takes a [`KeystoneContext`](./context) object, and lets perform any actions you might need at startup, such as data seeding.
 
 As well as these common options, each provider supports a number of optional advanced configuration options.
@@ -111,7 +111,6 @@ export default config({
 
 The `sqlite` provider is not intended to be used in production systems, and has certain limitations:
 
-- `document`: The `document` field type is not supported.
 - `decimal`: The `decimal` field type is not supported.
 - `timestamp`: The `timestamp` field type only supports times within the range `1970 - 2038`.
 - `text`: The `text` field type does not support the advanced filtering operations `contains`, `starts_with`, `ends_with`, or case insensitive filtering.

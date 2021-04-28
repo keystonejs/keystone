@@ -62,11 +62,16 @@ export function getPasswordResetSchema<I extends string, S extends string>({
       Mutation: {
         async [gqlNames.sendItemPasswordResetLink](root: any, args: { [P in I]: string }, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.sudo().lists[listKey];
+          const dbItemAPI = context.sudo().db.lists[listKey];
           const tokenType = 'passwordReset';
           const identity = args[identityField];
 
-          const result = await createAuthToken(identityField, protectIdentities, identity, itemAPI);
+          const result = await createAuthToken(
+            identityField,
+            protectIdentities,
+            identity,
+            dbItemAPI
+          );
 
           // Note: `success` can be false with no code
           // If protectIdentities === true then result.code will *always* be undefined.
@@ -84,14 +89,13 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           if (result.success) {
             // Save the token and related info back to the item
             const { token, itemId } = result;
-            await itemAPI.updateOne({
+            await dbItemAPI.updateOne({
               id: `${itemId}`,
               data: {
                 [`${tokenType}Token`]: token,
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
                 [`${tokenType}RedeemedAt`]: null,
               },
-              resolveFields: false,
             });
 
             await passwordResetLink.sendToken({ itemId, identity, token, context });
@@ -104,7 +108,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           context
         ) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.sudo().lists[listKey];
+          const dbItemAPI = context.sudo().db.lists[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             tokenType,
@@ -114,7 +118,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             protectIdentities,
             passwordResetLink.tokensValidForMins,
             args.token,
-            itemAPI
+            dbItemAPI
           );
 
           if (!result.success) {
@@ -133,19 +137,17 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           // Update system state
           const itemId = result.item.id;
           // Save the token and related info back to the item
-          await itemAPI.updateOne({
+          await dbItemAPI.updateOne({
             id: itemId,
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
-            resolveFields: false,
           });
 
           // Save the provided secret. Do this as a separate step as password validation
           // may fail, in which case we still want to mark the token as redeemed
           // (NB: Is this *really* what we want? -TL)
-          await itemAPI.updateOne({
+          await dbItemAPI.updateOne({
             id: itemId,
             data: { [secretField]: args[secretField] },
-            resolveFields: false,
           });
 
           return null;
@@ -158,7 +160,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
           context
         ) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.sudo().lists[listKey];
+          const dbItemAPI = context.sudo().db.lists[listKey];
           const tokenType = 'passwordReset';
           const result = await validateAuthToken(
             tokenType,
@@ -168,7 +170,7 @@ export function getPasswordResetSchema<I extends string, S extends string>({
             protectIdentities,
             passwordResetLink.tokensValidForMins,
             args.token,
-            itemAPI
+            dbItemAPI
           );
 
           if (!result.success && result.code) {

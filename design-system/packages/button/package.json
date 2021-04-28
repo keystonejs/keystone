@@ -5,10 +5,10 @@
   "main": "dist/button.cjs.js",
   "module": "dist/button.esm.js",
   "devDependencies": {
-    "@types/react": "^17.0.3"
+    "@types/react": "^17.0.4"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.16",
+    "@babel/runtime": "^7.13.17",
     "@keystone-ui/core": "^2.0.1",
     "@keystone-ui/icons": "^3.0.0",
     "@keystone-ui/loading": "^3.0.0",

@@ -15,13 +15,12 @@
     "@babel/preset-env": "^7.13.15",
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
-    "@babel/runtime": "^7.13.16",
+    "@babel/runtime": "^7.13.17",
     "@keystone-next/admin-ui": "^14.0.0",
     "@keystone-next/auth": "^21.0.0",
     "@keystone-next/cloudinary": "^4.0.0",
     "@keystone-next/fields": "^7.0.0",
     "@keystone-next/keystone": "^16.0.0",
-    "@keystone-next/server-side-graphql-client-legacy": "^4.0.0",
     "@keystone-next/types": "^17.0.0",
     "@types/nodemailer": "^6.4.1",
     "dotenv": "^8.2.0",
@@ -29,7 +28,7 @@
     "nodemailer": "^6.5.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "stripe": "^8.144.0"
+    "stripe": "^8.145.0"
   },
   "devDependencies": {
     "@keystone-next/test-utils-legacy": "^17.0.0",

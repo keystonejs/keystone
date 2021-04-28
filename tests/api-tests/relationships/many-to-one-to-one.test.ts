@@ -4,7 +4,6 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -27,17 +26,13 @@ const createInitialData = async (context: KeystoneContext) => {
         ]) { id }
       }`,
   })) as { createCompanies: { id: IdType }[]; createLocations: { id: IdType }[] };
-  const owners = await createItems({
-    context,
-    listKey: 'Owner',
-    items: data.createCompanies.map(({ id }) => ({
+  const owners = await context.lists.Owner.createMany({
+    data: data.createCompanies.map(({ id }) => ({
       data: { name: `Owner_of_${id}`, companies: { connect: [{ id }] } },
     })),
   });
-  const custodians = await createItems({
-    context,
-    listKey: 'Custodian',
-    items: data.createLocations.map(({ id }) => ({
+  const custodians = await context.lists.Custodian.createMany({
+    data: data.createLocations.map(({ id }) => ({
       data: { name: `Custodian_of_${id}`, locations: { connect: [{ id }] } },
     })),
   });
@@ -45,10 +40,8 @@ const createInitialData = async (context: KeystoneContext) => {
 };
 
 const createCompanyAndLocation = async (context: KeystoneContext) => {
-  const [cu1, cu2] = await createItems({
-    context,
-    listKey: 'Custodian',
-    items: [
+  const [cu1, cu2] = await context.lists.Custodian.createMany({
+    data: [
       { data: { name: sampleOne(alphanumGenerator) } },
       { data: { name: sampleOne(alphanumGenerator) } },
     ],

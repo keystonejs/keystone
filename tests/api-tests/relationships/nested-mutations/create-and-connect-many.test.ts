@@ -3,7 +3,6 @@ import { gen, sampleOne } from 'testcheck';
 import { text, relationship } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 
 const alphanumGenerator = gen.alphaNumString.notEmpty();
 
@@ -68,56 +67,37 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const noteContent2 = sampleOne(alphanumGenerator);
 
           // Create an item to link against
-          const createNote = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent },
-          });
+          const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
 
           // Create an item that does the linking
-          type T = { createUser: { id: IdType; notes: { id: IdType; content: string }[] } };
-          const data = (await context.graphql.run({
-            query: `
-              mutation {
-                createUser(data: {
-                  username: "A thing",
-                  notes: {
-                    connect: [{ id: "${createNote.id}" }],
-                    create: [{ content: "${noteContent2}" }]
-                  }
-                }) {
-                  id
-                  notes {
-                    id
-                    content
-                  }
-                }
-              }`,
+          type T = { id: IdType; notes: { id: IdType; content: string }[] };
+          const user = (await context.lists.User.createOne({
+            data: {
+              username: 'A thing',
+              notes: { connect: [{ id: createNote.id }], create: [{ content: noteContent2 }] },
+            },
+            query: 'id notes { id content }',
           })) as T;
 
-          expect(data).toMatchObject({
-            createUser: {
-              id: expect.any(String),
-              notes: [
-                { id: expect.any(String), content: noteContent },
-                { id: expect.any(String), content: noteContent2 },
-              ],
-            },
+          expect(user).toMatchObject({
+            id: expect.any(String),
+            notes: [
+              { id: expect.any(String), content: noteContent },
+              { id: expect.any(String), content: noteContent2 },
+            ],
           });
 
           // Sanity check that the items are actually created
           const { allNotes } = await context.graphql.run({
             query: `
               query {
-                allNotes(where: { id_in: [${data.createUser.notes
-                  .map(({ id }) => `"${id}"`)
-                  .join(',')}] }) {
+                allNotes(where: { id_in: [${user.notes.map(({ id }) => `"${id}"`).join(',')}] }) {
                   id
                   content
                 }
               }`,
           });
-          expect(allNotes).toHaveLength(data.createUser.notes.length);
+          expect(allNotes).toHaveLength(user.notes.length);
         })
       );
 
@@ -128,18 +108,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const noteContent2 = sampleOne(alphanumGenerator);
 
           // Create an item to link against
-          const createNote = await createItem({
-            context,
-            listKey: 'Note',
-            item: { content: noteContent },
-          });
+          const createNote = await context.lists.Note.createOne({ data: { content: noteContent } });
 
           // Create an item to update
-          const createUser = await createItem({
-            context,
-            listKey: 'User',
-            item: { username: 'A thing' },
-          });
+          const createUser = await context.lists.User.createOne({ data: { username: 'A thing' } });
 
           // Update the item and link the relationship field
           type T = { updateUser: { id: IdType; notes: { id: IdType; content: string }[] } };
@@ -222,10 +194,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const noteContent2 = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createNoteNoRead = await createItem({
-              context,
-              listKey: 'NoteNoRead',
-              item: { content: noteContent },
+            const createNoteNoRead = await context.lists.NoteNoRead.createOne({
+              data: { content: noteContent },
             });
 
             // Create an item that does the linking
@@ -261,17 +231,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const noteContent2 = sampleOne(alphanumGenerator);
 
             // Create an item to link against
-            const createNote = await createItem({
-              context,
-              listKey: 'NoteNoRead',
-              item: { content: noteContent },
+            const createNote = await context.lists.NoteNoRead.createOne({
+              data: { content: noteContent },
             });
 
             // Create an item to update
-            const createUser = await createItem({
-              context,
-              listKey: 'UserToNotesNoRead',
-              item: { username: 'A thing' },
+            const createUser = await context.lists.UserToNotesNoRead.createOne({
+              data: { username: 'A thing' },
             });
 
             // Update the item and link the relationship field

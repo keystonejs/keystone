@@ -1,5 +1,4 @@
 import { ProviderName, testConfig } from '@keystone-next/test-utils-legacy';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 import { text } from '@keystone-next/fields';
 import { createSchema, list } from '@keystone-next/keystone/schema';
 import { multiAdapterRunners, setupFromConfig } from '@keystone-next/test-utils-legacy';
@@ -21,8 +20,7 @@ describe('defaultValue field config', () => {
       test(
         'Has no default by default',
         runner(setupList(provider, { name: text() }), async ({ context }) => {
-          const listKey = 'User';
-          const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
+          const result = await context.lists.User.createOne({ data: {}, query: 'name' });
           expect(result).toMatchObject({ name: null });
         })
       );
@@ -32,8 +30,7 @@ describe('defaultValue field config', () => {
         runner(
           setupList(provider, { name: text({ defaultValue: undefined }) }),
           async ({ context }) => {
-            const listKey = 'User';
-            const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
+            const result = await context.lists.User.createOne({ data: {}, query: 'name' });
             expect(result).toMatchObject({ name: null });
           }
         )
@@ -42,8 +39,7 @@ describe('defaultValue field config', () => {
       test(
         'Sets null as a default',
         runner(setupList(provider, { name: text({ defaultValue: null }) }), async ({ context }) => {
-          const listKey = 'User';
-          const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
+          const result = await context.lists.User.createOne({ data: {}, query: 'name' });
           expect(result).toMatchObject({ name: null });
         })
       );
@@ -53,8 +49,7 @@ describe('defaultValue field config', () => {
         runner(
           setupList(provider, { name: text({ defaultValue: 'hello' }) }),
           async ({ context }) => {
-            const listKey = 'User';
-            const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
+            const result = await context.lists.User.createOne({ data: {}, query: 'name' });
             expect(result).toMatchObject({ name: 'hello' });
           }
         )
@@ -65,8 +60,7 @@ describe('defaultValue field config', () => {
         runner(
           setupList(provider, { name: text({ defaultValue: () => 'foobar' }) }),
           async ({ context }) => {
-            const listKey = 'User';
-            const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
+            const result = await context.lists.User.createOne({ data: {}, query: 'name' });
             expect(result).toMatchObject({ name: 'foobar' });
           }
         )
@@ -79,8 +73,7 @@ describe('defaultValue field config', () => {
             name: text({ defaultValue: () => Promise.resolve('zippity') }),
           }),
           async ({ context }) => {
-            const listKey = 'User';
-            const result = await createItem({ context, listKey, item: {}, returnFields: 'name' });
+            const result = await context.lists.User.createOne({ data: {}, query: 'name' });
             expect(result).toMatchObject({ name: 'zippity' });
           }
         )
@@ -91,7 +84,7 @@ describe('defaultValue field config', () => {
         return runner(
           setupList(provider, { name: text({ defaultValue }) }),
           async ({ context }) => {
-            await createItem({ context, listKey: 'User', item: {} });
+            await context.lists.User.createOne({ data: {} });
             expect(defaultValue).toHaveBeenCalledTimes(1);
             expect(defaultValue).toHaveBeenCalledWith(
               expect.objectContaining({
@@ -111,9 +104,8 @@ describe('defaultValue field config', () => {
             salutation: text(),
           }),
           async ({ context }) => {
-            const item = { salutation: 'Doctor' };
-            const listKey = 'User';
-            const result = await createItem({ context, listKey, item, returnFields: 'name' });
+            const data = { salutation: 'Doctor' };
+            const result = await context.lists.User.createOne({ data, query: 'name' });
             expect(defaultValue).toHaveBeenCalledTimes(1);
             expect(defaultValue).toHaveBeenCalledWith(
               expect.objectContaining({

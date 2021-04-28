@@ -16,7 +16,6 @@
   "dependencies": {
     "@keystone-next/fields": "^7.0.0",
     "@keystone-next/keystone": "^16.0.0",
-    "@keystone-next/server-side-graphql-client-legacy": "^4.0.0",
     "@keystone-next/test-utils-legacy": "^17.0.0",
     "cookie-signature": "^1.1.0",
     "supertest-light": "^1.0.3",

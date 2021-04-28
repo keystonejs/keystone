@@ -1,6 +1,5 @@
 import { GraphQLError } from 'graphql';
 import { multiAdapterRunners } from '@keystone-next/test-utils-legacy';
-import { createItem, createItems } from '@keystone-next/server-side-graphql-client-legacy';
 import { KeystoneContext } from '@keystone-next/types';
 import {
   FAKE_ID,
@@ -68,18 +67,14 @@ multiAdapterRunners().map(({ before, after, provider }) =>
 
       items = {};
       for (const [listKey, _items] of Object.entries(initialData)) {
-        items[listKey] = (await createItems({
-          listKey,
-          items: _items.map(x => ({ data: x })),
-          returnFields: 'id, name',
-          context,
+        items[listKey] = (await context.lists[listKey].createMany({
+          data: _items.map(x => ({ data: x })),
+          query: 'id, name',
         })) as { id: IdType; name: string }[];
       }
-      user = (await createItem({
-        listKey: 'User',
-        item: { name: 'test', yesRead: 'yes', noRead: 'no' },
-        returnFields: 'id name yesRead noRead',
-        context,
+      user = (await context.lists.User.createOne({
+        data: { name: 'test', yesRead: 'yes', noRead: 'no' },
+        query: 'id name yesRead noRead',
       })) as { id: IdType; name: string; yesRead: string; noRead: string };
     });
     afterAll(async () => {
@@ -200,13 +195,11 @@ multiAdapterRunners().map(({ before, after, provider }) =>
               });
 
               test(`meta allowed: ${JSON.stringify(access)}`, async () => {
-                const metaName = `_all${nameFn[mode](access)}sMeta`;
-                const query = `query { ${metaName} { count } }`;
-                const data = await context.exitSudo().graphql.run({ query });
+                const count = await context.exitSudo().lists[nameFn[mode](access)].count();
                 if (mode === 'imperative') {
-                  expect(data[metaName].count).toEqual(2);
+                  expect(count).toEqual(2);
                 } else {
-                  expect(data[metaName].count).toEqual(1); // We can only read the ones our permission filter allow
+                  expect(count).toEqual(1); // We can only read the ones our permission filter allow
                 }
               });
 
@@ -423,12 +416,8 @@ multiAdapterRunners().map(({ before, after, provider }) =>
           listAccessVariations
             .filter(access => access.delete)
             .forEach(access => {
-              const create = async (item: { name: string }) =>
-                createItem({
-                  listKey: nameFn[mode](access),
-                  item,
-                  context,
-                });
+              const create = async (data: { name: string }) =>
+                context.lists[nameFn[mode](access)].createOne({ data });
               test(`single allowed: ${JSON.stringify(access)}`, async () => {
                 const { id: validId } = await create({ name: 'Hello' });
                 const deleteMutationName = `delete${nameFn[mode](access)}`;

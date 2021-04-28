@@ -12,7 +12,7 @@
     "cypress:run:ci": "yarn build && start-server-and-test start http://localhost:8000 cy:run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.16",
+    "@babel/runtime": "^7.13.17",
     "@emotion/weak-memoize": "^0.2.5",
     "@keystone-next/fields-document": "^5.0.0",
     "@keystone-ui/button": "^4.0.0",
@@ -30,10 +30,9 @@
     "@sindresorhus/slugify": "^1.1.2",
     "@types/gtag.js": "^0.0.4",
     "@types/mdx-js__react": "^1.5.3",
-    "@types/react": "^17.0.3",
+    "@types/react": "^17.0.4",
     "@types/react-dom": "^17.0.3",
     "@types/webpack": "^4.41.27",
-    "autoprefixer": "^10.2.5",
     "copy-to-clipboard": "^3.3.1",
     "cypress": "^5.6.0",
     "facepaint": "^1.2.1",
@@ -43,8 +42,7 @@
     "prism-react-renderer": "^1.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "remark-hint": "^1.0.10",
-    "unist-builder": "^2.0.3"
+    "remark-hint": "^1.0.10"
   },
   "devDependencies": {
     "start-server-and-test": "^1.12.1",

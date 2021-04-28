@@ -57,11 +57,16 @@ export function getMagicAuthLinkSchema<I extends string>({
       Mutation: {
         async [gqlNames.sendItemMagicAuthLink](root: any, args: { [P in I]: string }, context) {
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.sudo().lists[listKey];
+          const dbItemAPI = context.sudo().db.lists[listKey];
           const tokenType = 'magicAuth';
           const identity = args[identityField];
 
-          const result = await createAuthToken(identityField, protectIdentities, identity, itemAPI);
+          const result = await createAuthToken(
+            identityField,
+            protectIdentities,
+            identity,
+            dbItemAPI
+          );
 
           // Note: `success` can be false with no code
           // If protectIdentities === true then result.code will *always* be undefined.
@@ -79,14 +84,13 @@ export function getMagicAuthLinkSchema<I extends string>({
           if (result.success) {
             // Save the token and related info back to the item
             const { token, itemId } = result;
-            await itemAPI.updateOne({
+            await dbItemAPI.updateOne({
               id: `${itemId}`,
               data: {
                 [`${tokenType}Token`]: token,
                 [`${tokenType}IssuedAt`]: new Date().toISOString(),
                 [`${tokenType}RedeemedAt`]: null,
               },
-              resolveFields: false,
             });
 
             await magicAuthLink.sendToken({ itemId, identity, token, context });
@@ -103,7 +107,7 @@ export function getMagicAuthLinkSchema<I extends string>({
           }
 
           const list = context.keystone.lists[listKey];
-          const itemAPI = context.sudo().lists[listKey];
+          const dbItemAPI = context.sudo().db.lists[listKey];
           const tokenType = 'magicAuth';
           const result = await validateAuthToken(
             tokenType,
@@ -113,7 +117,7 @@ export function getMagicAuthLinkSchema<I extends string>({
             protectIdentities,
             magicAuthLink.tokensValidForMins,
             args.token,
-            itemAPI
+            dbItemAPI
           );
 
           if (!result.success) {
@@ -128,10 +132,9 @@ export function getMagicAuthLinkSchema<I extends string>({
           }
           // Update system state
           // Save the token and related info back to the item
-          await itemAPI.updateOne({
+          await dbItemAPI.updateOne({
             id: result.item.id,
             data: { [`${tokenType}RedeemedAt`]: new Date().toISOString() },
-            resolveFields: false,
           });
 
           const sessionToken = await context.startSession({ listKey, itemId: result.item.id });

@@ -6,7 +6,6 @@ import {
   setupFromConfig,
   testConfig,
 } from '@keystone-next/test-utils-legacy';
-import { createItems } from '@keystone-next/server-side-graphql-client-legacy';
 
 type IdType = any;
 
@@ -39,10 +38,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'Reconnect from the many side',
         runner(setupKeystone, async ({ context }) => {
           // Create some notes
-          const [noteA, noteB, noteC, noteD] = await createItems({
-            context,
-            listKey: 'Note',
-            items: [
+          const [noteA, noteB, noteC, noteD] = await context.lists.Note.createMany({
+            data: [
               { data: { title: 'A' } },
               { data: { title: 'B' } },
               { data: { title: 'C' } },
@@ -51,37 +48,22 @@ multiAdapterRunners().map(({ runner, provider }) =>
           });
 
           // Create some users that does the linking
-          type T = { createUser: { id: IdType; notes: { id: IdType; title: string }[] } };
-          const alice = (await context.graphql.run({
-            query: `
-              mutation {
-                createUser(data: {
-                  username: "Alice",
-                  notes: { connect: [{ id: "${noteA.id}" }, { id: "${noteB.id}" }] }
-                }) {
-                  id
-                  notes(sortBy: title_ASC) { id title }
-                }
-              }`,
+          type T = { id: IdType; notes: { id: IdType; title: string }[] };
+          const alice = (await context.lists.User.createOne({
+            data: { username: 'Alice', notes: { connect: [{ id: noteA.id }, { id: noteB.id }] } },
+            query: 'id notes(sortBy: [title_ASC]) { id title }',
           })) as T;
 
-          const bob = (await context.graphql.run({
-            query: `
-              mutation {
-                createUser(data: {
-                  username: "Bob",
-                  notes: { connect: [{ id: "${noteC.id}" }, { id: "${noteD.id}" }] }
-                }) {
-                  id
-                  notes(sortBy: title_ASC) { id title }
-                }
-              }`,
+          const bob = (await context.lists.User.createOne({
+            data: { username: 'Bob', notes: { connect: [{ id: noteC.id }, { id: noteD.id }] } },
+            query: 'id notes(sortBy: [title_ASC]) { id title }',
           })) as T;
+
           // Make sure everyone has the correct notes
-          expect(alice.createUser).toEqual({ id: expect.any(String), notes: expect.any(Array) });
-          expect(alice.createUser.notes.map(({ title }) => title)).toEqual(['A', 'B']);
-          expect(bob.createUser).toEqual({ id: expect.any(String), notes: expect.any(Array) });
-          expect(bob.createUser.notes.map(({ title }) => title)).toEqual(['C', 'D']);
+          expect(alice).toEqual({ id: expect.any(String), notes: expect.any(Array) });
+          expect(alice.notes.map(({ title }) => title)).toEqual(['A', 'B']);
+          expect(bob).toEqual({ id: expect.any(String), notes: expect.any(Array) });
+          expect(bob.notes.map(({ title }) => title)).toEqual(['C', 'D']);
 
           // Set Bob as the author of note B
           await (async () => {
@@ -89,7 +71,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const data = (await context.graphql.run({
               query: `
                 mutation {
-                  updateUser(id: "${bob.createUser.id}" data: {
+                  updateUser(id: "${bob.id}" data: {
                     notes: { connect: [{ id: "${noteB.id}" }] }
                   }) {
                     id
@@ -97,7 +79,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   }
                 }`,
             })) as T;
-            expect(data.updateUser).toEqual({ id: bob.createUser.id, notes: expect.any(Array) });
+            expect(data.updateUser).toEqual({ id: bob.id, notes: expect.any(Array) });
             expect(data.updateUser.notes.map(({ title }) => title)).toEqual(['B', 'C', 'D']);
           })();
 
@@ -112,10 +94,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
                   }
                 }`,
             });
-            expect(data.Note).toEqual({
-              id: noteB.id,
-              author: { id: bob.createUser.id, username: 'Bob' },
-            });
+            expect(data.Note).toEqual({ id: noteB.id, author: { id: bob.id, username: 'Bob' } });
           })();
 
           // Alice should no longer see `B` in her notes
@@ -124,13 +103,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const data = (await context.graphql.run({
               query: `
                 query {
-                  User(where: { id: "${alice.createUser.id}"}) {
+                  User(where: { id: "${alice.id}"}) {
                     id
                     notes(sortBy: title_ASC) { id title }
                   }
                 }`,
             })) as T;
-            expect(data.User).toEqual({ id: alice.createUser.id, notes: expect.any(Array) });
+            expect(data.User).toEqual({ id: alice.id, notes: expect.any(Array) });
             expect(data.User.notes.map(({ title }) => title)).toEqual(['A']);
           })();
         })

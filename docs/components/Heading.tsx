@@ -23,11 +23,12 @@ interface HeadingProps extends StringOnlyChildren {
   as: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
 
-function Heading({ as: Tag, children, ...props }: HeadingProps) {
+export function Heading({ as: Tag, children, ...props }: HeadingProps) {
   const headingRef = useRef(null);
   const depth = parseInt(Tag.slice(1), 10);
   const hasCopy = depth > 1 && depth < 5;
   const id = getAnchor(children);
+
   return (
     <Tag
       css={{
@@ -114,4 +115,19 @@ export function H6(props: StringOnlyChildren) {
   return <Heading css={{ fontSize: 'var(--font-xsmall)' }} as="h6" {...props} />;
 }
 
-export default Heading;
+export function SubHeading({ as: Tag, children, ...props }: HeadingProps) {
+  return (
+    <Tag
+      css={{
+        color: 'var(--gray-400)',
+        fontSize: 'var(--font-xsmall)',
+        fontWeight: 700,
+        margin: '1rem 0 0.25rem 0',
+        textTransform: 'uppercase',
+      }}
+      {...props}
+    >
+      {children}
+    </Tag>
+  );
+}
