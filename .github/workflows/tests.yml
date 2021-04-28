@@ -55,11 +55,11 @@ jobs:
       - name: Checkout Repo
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/checkout@v2
-      - name: Setup Node.js 14.x
+      - name: Setup Node.js 16.x
         uses: actions/setup-node@main
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -118,11 +118,11 @@ jobs:
         uses: actions/checkout@v2
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
 
-      - name: Setup Node.js 14.x
+      - name: Setup Node.js 16.x
         uses: actions/setup-node@main
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - name: Get yarn cache directory path
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -176,10 +176,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Setup Node.js 14.x
+      - name: Setup Node.js 16.x
         uses: actions/setup-node@main
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -228,11 +228,11 @@ jobs:
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/checkout@v2
 
-      - name: Setup Node.js 14.x
+      - name: Setup Node.js 16.x
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
         uses: actions/setup-node@main
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - name: Get yarn cache directory path
         if: needs.should_run_tests.outputs.shouldRunTests == 'true'
@@ -270,10 +270,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Setup Node.js 14.x
+      - name: Setup Node.js 16.x
         uses: actions/setup-node@main
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
