@@ -4,6 +4,9 @@ import { FileData, KeystoneContext, BaseKeystoneList } from '@keystone-next/type
 import { Implementation } from '../../Implementation';
 import { handleFileData } from './handle-file-input';
 
+const MISSING_CONFIG_ERROR =
+  'File context is undefined, this most likely means that you havent configurd keystone with a file config, see https://next.keystonejs.com/apis/config#files for details';
+
 export class FileImplementation<P extends string> extends Implementation<P> {
   get _supportsUnique() {
     return false;
@@ -37,13 +40,13 @@ export class FileImplementation<P extends string> extends Implementation<P> {
       FileFieldOutput: {
         src(data: FileData, _args: any, context: KeystoneContext) {
           if (!context.files) {
-            throw new Error('File context is undefined');
+            throw new Error(MISSING_CONFIG_ERROR);
           }
           return context.files.getSrc(data.mode, data.filename);
         },
         ref(data: FileData, _args: any, context: KeystoneContext) {
           if (!context.files) {
-            throw new Error('File context is undefined');
+            throw new Error(MISSING_CONFIG_ERROR);
           }
           return getFileRef(data.mode, data.filename);
         },
