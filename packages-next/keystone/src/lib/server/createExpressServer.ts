@@ -7,14 +7,18 @@ import type { KeystoneConfig, CreateContext, SessionStrategy } from '@keystone-n
 import { createAdminUIServer } from '@keystone-next/admin-ui/system';
 import { createApolloServerExpress } from './createApolloServer';
 
+const DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 mb
+
 const addApolloServer = ({
   server,
+  maxFileSize = DEFAULT_MAX_FILE_SIZE,
   graphQLSchema,
   createContext,
   sessionStrategy,
   apolloConfig,
 }: {
   server: express.Express;
+  maxFileSize?: number;
   graphQLSchema: GraphQLSchema;
   createContext: CreateContext;
   sessionStrategy?: SessionStrategy<any>;
@@ -26,7 +30,11 @@ const addApolloServer = ({
     sessionStrategy,
     apolloConfig,
   });
-  server.use(graphqlUploadExpress());
+  server.use(
+    graphqlUploadExpress({
+      maxFileSize: maxFileSize,
+    })
+  );
   // FIXME: Support custom API path via config.graphql.path.
   // Note: Core keystone uses '/admin/api' as the default.
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql', cors: false });
@@ -57,6 +65,7 @@ export const createExpressServer = async (
   if (isVerbose) console.log('✨ Preparing GraphQL Server');
   addApolloServer({
     server,
+    maxFileSize: config.server?.maxFileSize,
     graphQLSchema,
     createContext,
     sessionStrategy,
