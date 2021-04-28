@@ -4,7 +4,7 @@ import {
   BaseGeneratedListTypes,
   KeystoneConfig,
   KeystoneContext,
-  AdminUIConfig,
+  AdminUiRedirect,
 } from '@keystone-next/types';
 import { password, timestamp } from '@keystone-next/fields';
 
@@ -82,21 +82,21 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
   };
 
   /**
-   * pageMiddleware
+   * redirects
    *
-   * Should be added to the ui.pageMiddleware stack.
+   * Should be added to the ui.redirects stack.
    *
    * Redirects:
    *  - from the signin or init pages to the index when a valid session is present
    *  - to the init page when initFirstItem is configured, and there are no user in the database
    *  - to the signin page when no valid session is present
    */
-  const pageMiddleware: AdminUIConfig['pageMiddleware'] = async ({ isValidSession, context }) => {
+  const redirect: AdminUiRedirect = async ({ isValidSession, context }) => {
     const pathname = url.parse(context.req!.url!).pathname!;
 
     if (isValidSession) {
       if (pathname === '/signin' || (initFirstItem && pathname === '/init')) {
-        return { kind: 'redirect', to: '/' };
+        return { to: '/' };
       }
       return;
     }
@@ -105,14 +105,14 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
       const count = await context.sudo().lists[listKey].count({});
       if (count === 0) {
         if (pathname !== '/init') {
-          return { kind: 'redirect', to: '/init' };
+          return { to: '/init' };
         }
         return;
       }
     }
 
     if (!context.session && pathname !== '/signin') {
-      return { kind: 'redirect', to: `/signin?from=${encodeURIComponent(context.req!.url!)}` };
+      return { to: `/signin?from=${encodeURIComponent(context.req!.url!)}` };
     }
   };
 
@@ -252,8 +252,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
         ...keystoneConfig.ui,
         publicPages: [...(keystoneConfig.ui?.publicPages || []), ...publicPages],
         getAdditionalFiles: [...(keystoneConfig.ui?.getAdditionalFiles || []), getAdditionalFiles],
-        pageMiddleware: async args =>
-          (await pageMiddleware(args)) ?? keystoneConfig?.ui?.pageMiddleware?.(args),
+        redirects: [...(keystoneConfig?.ui?.redirects || []), redirect],
         enableSessionItem: true,
         isAccessAllowed: async (context: KeystoneContext) => {
           // Allow access to the adminMeta data from the /init path to correctly render that page
@@ -299,7 +298,7 @@ export function createAuth<GeneratedListTypes extends BaseGeneratedListTypes>({
     // In the future we may want to return the following so that developers can
     // roll their own. This is pending a review of the use cases this might be
     // appropriate for, along with documentation and testing.
-    // ui: { enableSessionItem: true, pageMiddleware, getAdditionalFiles, publicPages },
+    // ui: { enableSessionItem: true, redirects, getAdditionalFiles, publicPages },
     // fields,
     // extendGraphqlSchema,
     // validateConfig,

@@ -97,15 +97,17 @@ export type AdminUIConfig = {
   isAccessAllowed?: (context: KeystoneContext) => MaybePromise<boolean>;
   /** An array of page routes that can be accessed without passing the isAccessAllowed check */
   publicPages?: string[];
-  /** The basePath for the Admin UI App */
-  // FIXME: currently unused
-  // path?: string;
   getAdditionalFiles?: ((config: KeystoneConfig) => MaybePromise<AdminFileToWrite[]>)[];
-  pageMiddleware?: (args: {
-    isValidSession: boolean;
-    context: KeystoneContext;
-  }) => MaybePromise<{ kind: 'redirect'; to: string } | void>;
+  /** An array of functions to be called during the next.js request handler to potentionally
+   * redirect the user to a different route.
+   */
+  redirects?: AdminUiRedirect[];
 };
+
+export type AdminUiRedirect = (args: {
+  isValidSession: boolean;
+  context: KeystoneContext;
+}) => MaybePromise<{ to: string; never?: undefined } | { to: undefined; never: true } | void>;
 
 export type AdminFileToWrite =
   | { mode: 'write'; src: string; outputPath: string }
