@@ -92,9 +92,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
       keystoneTestWrapper(async ({ context }: { context: any }) => {
         // Create an initial item
         const initialItem = await context.lists.Test.createOne({
-          data: {
-            secretFile: prepareFile('keystone.jpg'),
-          },
+          data: { secretFile: prepareFile('keystone.jpg') },
           query: `
             secretFile {
               filename

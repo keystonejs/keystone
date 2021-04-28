@@ -1,8 +1,8 @@
+import { FileUpload } from 'graphql-upload';
 import { PrismaFieldAdapter, PrismaListAdapter } from '@keystone-next/adapter-prisma-legacy';
 import { getFileRef } from '@keystone-next/utils-legacy';
 import { FileData, KeystoneContext, BaseKeystoneList } from '@keystone-next/types';
 import { Implementation } from '../../Implementation';
-import { handleFileData } from './handle-file-input';
 
 const MISSING_CONFIG_ERROR =
   'File context is undefined, this most likely means that you havent configurd keystone with a file config, see https://next.keystonejs.com/apis/config#files for details';
@@ -72,8 +72,24 @@ export class FileImplementation<P extends string> extends Implementation<P> {
     if (data === undefined) {
       return undefined;
     }
-    const fileData = await handleFileData(data, context);
-    return fileData;
+
+    type FileInput = {
+      upload?: Promise<FileUpload> | null;
+      ref?: string | null;
+    };
+    const { ref, upload }: FileInput = data;
+    if (ref) {
+      if (upload) {
+        throw new Error('Only one of ref and upload can be passed to FileFieldInput');
+      }
+      return context.files!.getDataFromRef(ref);
+    }
+    if (!upload) {
+      throw new Error('Either ref or upload must be passed to FileFieldInput');
+    }
+
+    const uploadedFile = await upload;
+    return context.files!.getDataFromStream(uploadedFile.createReadStream(), uploadedFile.filename);
   }
 
   gqlUpdateInputFields() {

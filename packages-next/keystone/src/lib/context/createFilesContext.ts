@@ -10,11 +10,11 @@ const DEFAULT_BASE_URL = '/files';
 const DEFAULT_STORAGE_PATH = './public/files';
 
 const generateSafeFilename = (filename: string) => {
-  //   /*
-  //     This regex lazily matches for any characters that aren't a new line
-  //     it then optionally matches the last instance of a "." symbol
-  //     followed by any alphabetical character before the end of the string
-  //    */
+  // Appends a UUID to the filename so that people can't brute-force guess stored filenames
+  //
+  // This regex lazily matches for any characters that aren't a new line
+  // it then optionally matches the last instance of a "." symbol
+  // followed by any alphabetical character before the end of the string
   const [, name, ext] = filename.match(/^([^:\n].*?)(\.[A-Za-z]+)?$/) as RegExpMatchArray;
 
   const id = uuid();
@@ -49,15 +49,15 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
     getDataFromStream: async (stream, filename) => {
       const { upload: mode } = config;
 
-      const pseudoSafeFilename = generateSafeFilename(filename);
-      const writeStream = fs.createWriteStream(path.join(storagePath, pseudoSafeFilename));
+      const safeFilename = generateSafeFilename(filename);
+      const writeStream = fs.createWriteStream(path.join(storagePath, safeFilename));
 
       for await (let chunk of stream) {
         writeStream.write(chunk);
       }
 
-      const { size: filesize } = await fs.stat(path.join(storagePath, pseudoSafeFilename));
-      return { mode, filename: pseudoSafeFilename, filesize };
+      const { size: filesize } = await fs.stat(path.join(storagePath, safeFilename));
+      return { mode, filename: safeFilename, filesize };
     },
   };
 }
