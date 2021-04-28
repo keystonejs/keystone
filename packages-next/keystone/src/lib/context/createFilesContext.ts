@@ -24,7 +24,7 @@ const generateSafeFilename = (filename: string) => {
   if (ext) {
     return `${urlSafeName}_${id}${ext}`;
   }
-  return `${urlSafeName}_${uuid()}`;
+  return `${urlSafeName}_${id}`;
 };
 
 const getFileMetadataFromBuffer = async (buffer: Buffer) => {
