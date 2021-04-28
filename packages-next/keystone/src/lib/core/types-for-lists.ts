@@ -264,6 +264,11 @@ function assertIdFieldGraphQLTypesCorrect(
       `The idField on a list must not define an update GraphQL input but the idField for ${listKey} does define one`
     );
   }
+  if (idField.access.read === false) {
+    throw new Error(
+      `The idField on a list must not have access.read be set to false but ${listKey} does`
+    );
+  }
 }
 
 type ResolvedFieldAccessControl = {
@@ -374,8 +379,9 @@ export function initialiseLists(
       name: names.outputTypeName,
       fields: () => ({
         ...Object.fromEntries(
-          Object.entries(fields).flatMap(([fieldPath, field]) =>
-            [
+          Object.entries(fields).flatMap(([fieldPath, field]) => {
+            if (field.access.read === false) return [];
+            return [
               [fieldPath, field.output] as const,
               ...Object.entries(field.extraOutputFields || {}),
             ].map(([outputTypeFieldName, outputField]) => {
@@ -390,8 +396,8 @@ export function initialiseLists(
                   fieldPath
                 ),
               ];
-            })
-          )
+            });
+          })
         ),
       }),
     });
@@ -438,11 +444,10 @@ export function initialiseLists(
             type: types.list(types.nonNull(where)),
           }),
           ...Object.fromEntries(
-            Object.entries(fields)
-              .map(([key, val]) => {
-                return [key, val.input?.where?.arg] as const;
-              })
-              .filter(x => !!x[1])
+            Object.entries(fields).flatMap(([key, field]) => {
+              if (!field.input?.where?.arg || field.access.read === false) return [];
+              return [[key, field.input.where.arg]] as const;
+            })
           ),
         };
       },
@@ -452,9 +457,10 @@ export function initialiseLists(
       name: names.createInputName,
       fields: () =>
         Object.fromEntries(
-          Object.entries(fields)
-            .map(([key, field]) => [key, field.input?.create?.arg] as const)
-            .filter((x): x is [typeof x[0], NonNullable<typeof x[1]>] => x[1] != null)
+          Object.entries(fields).flatMap(([key, field]) => {
+            if (!field.input?.create?.arg || field.access.create === false) return [];
+            return [[key, field.input.create.arg]] as const;
+          })
         ),
     });
 
@@ -462,9 +468,10 @@ export function initialiseLists(
       name: names.updateInputName,
       fields: () =>
         Object.fromEntries(
-          Object.entries(fields)
-            .map(([key, field]) => [key, field.input?.update?.arg] as const)
-            .filter((x): x is [typeof x[0], NonNullable<typeof x[1]>] => x[1] != null)
+          Object.entries(fields).flatMap(([key, field]) => {
+            if (!field.input?.update?.arg || field.access.update === false) return [];
+            return [[key, field.input.update.arg]] as const;
+          })
         ),
     });
 

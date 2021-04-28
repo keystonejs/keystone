@@ -9,18 +9,15 @@ import type {
 } from '@keystone-next/types';
 
 import { itemDbAPIForList, itemAPIForList, getArgsFactory } from './itemAPI';
-import { accessControlContext, skipAccessControlContext } from './createAccessControlContext';
 import { createImagesContext } from './createImagesContext';
 
 export function makeCreateContext({
   graphQLSchema,
   internalSchema,
-  keystone,
   imagesConfig,
 }: {
   graphQLSchema: GraphQLSchema;
   internalSchema: GraphQLSchema;
-  keystone: BaseKeystone;
   imagesConfig?: ImagesConfig;
 }) {
   const images = createImagesContext(imagesConfig);
@@ -66,11 +63,9 @@ export function makeCreateContext({
     const itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
     const contextToReturn: KeystoneContext = {
       schemaName,
-      ...(skipAccessControl ? skipAccessControlContext : accessControlContext),
       db: { lists: dbAPI },
       lists: itemAPI,
       totalResults: 0,
-      keystone,
       prisma: keystone.adapter.prisma,
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
       maxTotalResults: keystone.queryLimits.maxTotalResults,

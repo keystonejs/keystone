@@ -1,7 +1,6 @@
 import { IncomingMessage } from 'http';
 import { Readable } from 'stream';
 import { GraphQLSchema, ExecutionResult, DocumentNode } from 'graphql';
-import { BaseKeystone } from './base';
 import type { BaseGeneratedListTypes } from './utils';
 
 export type KeystoneContext = {
@@ -20,10 +19,7 @@ export type KeystoneContext = {
   schemaName: 'public' | 'internal';
   /** @deprecated */
   gqlNames: (listKey: string) => Record<string, string>; // TODO: actual keys
-  /** @deprecated */
-  keystone: BaseKeystone;
-} & AccessControlContext &
-  Partial<SessionContext<any>>;
+} & Partial<SessionContext<any>>;
 
 // List item API
 

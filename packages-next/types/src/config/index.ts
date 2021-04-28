@@ -16,7 +16,7 @@ import type {
   MaybeItemFunction,
   // CacheHint,
 } from './lists';
-import type { BaseFields, FieldType, FieldConfig } from './fields';
+import type { BaseFields } from './fields';
 import type { ListAccessControl, FieldAccessControl } from './access-control';
 import type { ListHooks } from './hooks';
 
@@ -46,8 +46,6 @@ export type {
   ListSchemaConfig,
   ListConfig,
   BaseFields,
-  FieldType,
-  FieldConfig,
   MaybeSessionFunction,
   MaybeItemFunction,
   // CacheHint,

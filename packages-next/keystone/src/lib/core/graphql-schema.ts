@@ -117,6 +117,7 @@ export function getGraphQLSchema(
     fields: () =>
       Object.fromEntries(
         Object.entries(lists).flatMap(([listKey, list]) => {
+          if (list.access.read === false) return [];
           const names = getGqlNames({ listKey, ...list });
 
           const findOne = types.field({
@@ -430,12 +431,24 @@ export function getGraphQLSchema(
         });
 
         return [
-          [names.createMutationName, createOne],
-          [names.updateMutationName, updateOne],
-          [names.deleteMutationName, deleteOne],
-          [names.createManyMutationName, createMany],
-          [names.updateManyMutationName, updateMany],
-          [names.deleteManyMutationName, deleteMany],
+          ...(list.access.create === false
+            ? []
+            : [
+                [names.createMutationName, createOne],
+                [names.createManyMutationName, createMany],
+              ]),
+          ...(list.access.update === false
+            ? []
+            : [
+                [names.updateMutationName, updateOne],
+                [names.updateManyMutationName, updateMany],
+              ]),
+          ...(list.access.delete === false
+            ? []
+            : [
+                [names.deleteMutationName, deleteOne],
+                [names.deleteManyMutationName, deleteMany],
+              ]),
         ];
       })
     ),
