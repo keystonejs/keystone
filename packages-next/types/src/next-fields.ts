@@ -282,7 +282,7 @@ export type TypesForList = {
 };
 
 export type FindManyArgs = {
-  where: tsgql.Arg<TypesForList['where'], {}>;
+  where: tsgql.Arg<tsgql.NonNullType<TypesForList['where']>, {}>;
   sortBy: tsgql.Arg<
     tsgql.NonNullType<tsgql.ListType<tsgql.NonNullType<TypesForList['sortBy']>>>,
     any
@@ -297,7 +297,7 @@ export type FindManyArgsValue = tsgql.InferValueFromArgs<FindManyArgs>;
 export function getFindManyArgs(typesForList: TypesForList): FindManyArgs {
   return {
     where: types.arg({
-      type: typesForList.where,
+      type: types.nonNull(typesForList.where),
       defaultValue: {},
     }),
     sortBy: types.arg({

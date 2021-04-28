@@ -4,7 +4,7 @@ import {
   validateFieldAccessControl,
 } from '../context/createAccessControlContext';
 import { validateNonCreateListAccessControl } from '../context/createAccessControlContext';
-import { mapUniqueWhereToWhere } from './graphql-schema';
+import { mapUniqueWhereToWhere } from './query-resolvers';
 import {
   accessDeniedError,
   throwAccessDenied,
