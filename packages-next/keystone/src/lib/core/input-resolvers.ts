@@ -4,7 +4,12 @@ import {
   validateFieldAccessControl,
 } from '../context/createAccessControlContext';
 import { validateNonCreateListAccessControl } from '../context/createAccessControlContext';
-import { throwAccessDenied, ValidationFailureError } from './ListTypes/graphqlErrors';
+import { mapUniqueWhereToWhere } from './graphql-schema';
+import {
+  accessDeniedError,
+  throwAccessDenied,
+  ValidationFailureError,
+} from './ListTypes/graphqlErrors';
 import { getDBFieldPathForFieldOnMultiField, ResolvedDBField } from './prisma-schema';
 import { InitialisedList } from './types-for-lists';
 import { getPrismaModelForList, IdType } from './utils';
@@ -332,6 +337,56 @@ export async function resolveInputForCreateOrUpdate(
   };
 }
 
+export async function applyAccessControlForUpdate(
+  listKey: string,
+  list: InitialisedList,
+  context: KeystoneContext,
+  uniqueWhere: UniqueInputFilter,
+  update: Record<string, any>
+) {
+  const prismaModel = getPrismaModelForList(context.prisma, listKey);
+  const resolvedUniqueWhere = await list.inputResolvers.uniqueWhere(uniqueWhere);
+  const itemId =
+    resolvedUniqueWhere.id !== undefined
+      ? resolvedUniqueWhere.id
+      : await (async () => {
+          const item = await prismaModel.findUnique({
+            where: resolvedUniqueWhere,
+            select: { id: true },
+          });
+          if (!item) {
+            throw accessDeniedError('mutation');
+          }
+          return item.id;
+        })();
+  const accessControl = await validateNonCreateListAccessControl({
+    access: list.access.update,
+    args: {
+      context,
+      itemId,
+      listKey,
+      operation: 'update',
+      originalInput: update,
+      session: context.session,
+    },
+  });
+  if (accessControl === false) {
+    throw accessDeniedError('mutation');
+  }
+  const uniqueWhereInWhereForm = mapUniqueWhereToWhere(list, resolvedUniqueWhere);
+  const item = await prismaModel.findFirst({
+    where:
+      accessControl === true
+        ? uniqueWhereInWhereForm
+        : { AND: [uniqueWhereInWhereForm, await list.inputResolvers.where(accessControl)] },
+  });
+  if (!item) {
+    throw accessDeniedError('mutation');
+  }
+  await checkFieldAccessControlForUpdate(listKey, list, context, update, item);
+  return item;
+}
+
 export async function applyAccessControlForCreate(
   listKey: string,
   list: InitialisedList,
@@ -352,6 +407,36 @@ export async function applyAccessControlForCreate(
     throwAccessDenied('mutation');
   }
   await checkFieldAccessControlForCreate(listKey, list, context, originalInput);
+}
+
+async function checkFieldAccessControlForUpdate(
+  listKey: string,
+  list: InitialisedList,
+  context: KeystoneContext,
+  originalInput: Record<string, any>,
+  item: Record<string, any>
+) {
+  const results = await Promise.all(
+    Object.entries(list.fields).map(([fieldKey, field]) => {
+      return validateFieldAccessControl({
+        access: field.access.update,
+        args: {
+          context,
+          fieldKey,
+          listKey,
+          operation: 'update',
+          originalInput,
+          session: context.session,
+          item,
+          itemId: item.id,
+        },
+      });
+    })
+  );
+
+  if (results.some(canAccess => !canAccess)) {
+    throwAccessDenied('mutation');
+  }
 }
 
 async function checkFieldAccessControlForCreate(

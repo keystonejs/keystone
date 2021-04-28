@@ -23,3 +23,12 @@ export const throwAccessDenied = (
 ): never => {
   throw new AccessDeniedError({ data: { type, target, ...extraData }, internalData });
 };
+
+export const accessDeniedError = (
+  type: ValueOf<typeof opToType>,
+  target?: string,
+  internalData = {},
+  extraData = {}
+) => {
+  return new AccessDeniedError({ data: { type, target, ...extraData }, internalData });
+};

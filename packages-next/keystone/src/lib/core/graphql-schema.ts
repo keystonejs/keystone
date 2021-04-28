@@ -13,6 +13,7 @@ import { InitialisedList } from './types-for-lists.js';
 import { getPrismaModelForList } from './utils.js';
 import {
   applyAccessControlForCreate,
+  applyAccessControlForUpdate,
   InputFilter,
   PrismaFilter,
   processDelete,
@@ -65,7 +66,7 @@ export async function getResolvedWhere(
 // we want to do this explicit mapping because:
 // - we are passing the values into a normal where filter and we want to ensure that fields cannot do non-unique filters(we don't do validation on non-unique wheres because prisma will validate all that)
 // - for multi-field unique indexes, we need to a mapping because iirc findFirst/findMany won't understand the syntax for filtering by multi-field unique indexes(which makes sense and is correct imo)
-function mapUniqueWhereToWhere(
+export function mapUniqueWhereToWhere(
   list: InitialisedList,
   uniqueWhere: UniquePrismaFilter
 ): PrismaFilter {
@@ -231,14 +232,27 @@ export function getGraphQLSchema(
           type: list.types.output,
           args: updateOneArgs,
           async resolve(_rootVal, { where: rawUniqueWhere, data: rawData }, context) {
-            // const [data, where] = await Promise.all([
-            //   runInputResolvers(typesForLists, lists, listKey, 'update', rawData),
-            //   runInputResolvers(typesForLists, lists, listKey, 'uniqueWhere', rawUniqueWhere),
-            // ]);
-            // return getPrismaModelForList(context.prisma, listKey).update({
-            //   where,
-            //   data,
-            // });
+            const item = await applyAccessControlForUpdate(
+              listKey,
+              list,
+              context,
+              rawUniqueWhere,
+              rawData
+            );
+            const { afterChange, data } = await resolveInputForCreateOrUpdate(
+              listKey,
+              'create',
+              list,
+              context,
+              rawData,
+              item
+            );
+            const updatedItem = await getPrismaModelForList(context.prisma, listKey).update({
+              where: { id: item.id },
+              data,
+            });
+            await afterChange(updatedItem);
+            return updatedItem;
           },
         });
         const deleteOne = types.field({
@@ -317,6 +331,27 @@ export function getGraphQLSchema(
             return items;
           },
         });
+
+        const prismaUpdateMany =
+          provider === 'sqlite'
+            ? async (
+                data: { where: UniquePrismaFilter; data: Record<string, any> }[],
+                context: KeystoneContext
+              ) => {
+                let results: ItemRootValue[] = [];
+                const model = getPrismaModelForList(context.prisma, listKey);
+                for (const stuff of data) {
+                  results.push(await model.update(stuff));
+                }
+              }
+            : (
+                data: { where: UniquePrismaFilter; data: Record<string, any> }[],
+                context: KeystoneContext
+              ) => {
+                const model = getPrismaModelForList(context.prisma, listKey);
+                return context.prisma.$transaction(data.map(stuff => model.update(stuff)));
+              };
+
         const updateMany = types.field({
           type: list.types.output,
           args: {
@@ -333,15 +368,32 @@ export function getGraphQLSchema(
               ),
             }),
           },
-          async resolve(_rootVal, {}, context) {
-            // const [data, where] = await Promise.all([
-            //   runInputResolvers(typesForLists, lists, listKey, 'update', rawData),
-            //   runInputResolvers(typesForLists, lists, listKey, 'uniqueWhere', rawUniqueWhere),
-            // ]);
-            // return getPrismaModelForList(context.prisma, listKey).update({
-            //   where,
-            //   data,
-            // });
+          async resolve(_rootVal, { data }, context) {
+            const things = await Promise.all(
+              data.map(async ({ data: rawData, where: rawUniqueWhere }) => {
+                const item = await applyAccessControlForUpdate(
+                  listKey,
+                  list,
+                  context,
+                  rawUniqueWhere,
+                  rawData
+                );
+                return {
+                  where: { id: item.id },
+                  ...(await resolveInputForCreateOrUpdate(
+                    listKey,
+                    'create',
+                    list,
+                    context,
+                    rawData,
+                    item
+                  )),
+                };
+              })
+            );
+            const updatedItems = await prismaUpdateMany(things, context);
+            await Promise.all(things.map((x, index) => x.afterChange(updatedItems[index])));
+            return updatedItems;
           },
         });
         const deleteMany = types.field({
