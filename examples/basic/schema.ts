@@ -40,12 +40,13 @@ export const lists = createSchema({
       },
     },
     fields: {
-      repo: file(),
       /** The user's first and last name. */
       name: text({ isRequired: true }),
       /** Email is used to log into the system. */
       email: text({ isRequired: true, isUnique: true }),
+      /** Avatar upload for the users profile, stored locally */
       avatar: image(),
+      file: file(),
       /** Used to log in. */
       password: password(),
       /** Administrators have more access to various lists and fields. */
