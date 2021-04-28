@@ -30,11 +30,7 @@ const addApolloServer = ({
     sessionStrategy,
     apolloConfig,
   });
-  server.use(
-    graphqlUploadExpress({
-      maxFileSize: maxFileSize,
-    })
-  );
+  server.use(graphqlUploadExpress({ maxFileSize }));
   // FIXME: Support custom API path via config.graphql.path.
   // Note: Core keystone uses '/admin/api' as the default.
   apolloServer.applyMiddleware({ app: server, path: '/api/graphql', cors: false });

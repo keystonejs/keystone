@@ -145,10 +145,11 @@ export type GraphQLConfig = {
 
 export type ExtendGraphqlSchema = (schema: GraphQLSchema, keystone: BaseKeystone) => GraphQLSchema;
 
-// config.images
+// config.files
 
-export type ImagesConfig = {
-  upload: ImageMode;
+export type FilesConfig = {
+  upload: FileMode;
+  maxSize?: number;
   local?: {
     /**
      * The path local images are uploaded to.
@@ -163,10 +164,10 @@ export type ImagesConfig = {
   };
 };
 
-// config.files
-export type FilesConfig = {
-  upload: FileMode;
-  maxSize?: number;
+// config.images
+
+export type ImagesConfig = {
+  upload: ImageMode;
   local?: {
     /**
      * The path local images are uploaded to.

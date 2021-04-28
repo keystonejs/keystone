@@ -152,6 +152,22 @@ export type SessionContext<T> = {
   endSession(): Promise<void>;
 };
 
+// Files API
+
+export type FileMode = 'local';
+
+export type FileData = {
+  mode: FileMode;
+  filename: string;
+  filesize: number;
+};
+
+export type FilesContext = {
+  getSrc: (mode: FileMode, filename: string) => string;
+  getDataFromRef: (ref: string) => Promise<FileData>;
+  getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
+};
+
 // Images API
 
 export type ImageMode = 'local';
@@ -171,18 +187,4 @@ export type ImagesContext = {
   getSrc: (mode: ImageMode, id: string, extension: ImageExtension) => string;
   getDataFromRef: (ref: string) => Promise<ImageData>;
   getDataFromStream: (stream: Readable) => Promise<ImageData>;
-};
-
-export type FileMode = 'local';
-
-export type FileData = {
-  mode: FileMode;
-  filename: string;
-  filesize: number;
-};
-
-export type FilesContext = {
-  getSrc: (mode: FileMode, filename: string) => string;
-  getDataFromRef: (ref: string) => Promise<FileData>;
-  getDataFromStream: (stream: Readable, filename: string) => Promise<FileData>;
 };
