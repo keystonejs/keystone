@@ -3,7 +3,6 @@ import fs from 'fs-extra';
 // @ts-ignore
 import { Upload } from 'graphql-upload';
 import mime from 'mime';
-import { createItem } from '@keystone-next/server-side-graphql-client-legacy';
 import { text } from '../../text';
 import { file } from '..';
 
@@ -92,11 +91,11 @@ export const crudTests = (keystoneTestWrapper: any) => {
       'From existing item succeeds',
       keystoneTestWrapper(async ({ context }: { context: any }) => {
         // Create an initial item
-        const initialItem = await createItem({
-          context,
-          listKey: 'Test',
-          item: { secretFile: prepareFile('keystone.jpg') },
-          returnFields: `
+        const initialItem = await context.lists.Test.createOne({
+          data: {
+            secretFile: prepareFile('keystone.jpg'),
+          },
+          query: `
             secretFile {
               filename
               mode
@@ -110,11 +109,9 @@ export const crudTests = (keystoneTestWrapper: any) => {
 
         // Create a new item base on the first items ref
         const ref = initialItem.secretFile.ref;
-        const newItem = await createItem({
-          context,
-          listKey: 'Test',
-          item: { secretFile: { ref } },
-          returnFields: `
+        const newItem = await context.lists.Test.createOne({
+          data: { secretFile: { ref } },
+          query: `
             secretFile {
               filename
               mode
@@ -173,11 +170,9 @@ export const crudTests = (keystoneTestWrapper: any) => {
     test(
       'Both upload and ref fails - valid ref',
       keystoneTestWrapper(async ({ context }: { context: any }) => {
-        const initialItem = await createItem({
-          context,
-          listKey: 'Test',
-          item: { secretFile: prepareFile('keystone.jpg') },
-          returnFields: `secretFile { ref }`,
+        const initialItem = await context.lists.Test.createOne({
+          data: { secretFile: prepareFile('keystone.jpg') },
+          query: `secretFile { ref }`,
         });
         expect(initialItem).not.toBe(null);
 
