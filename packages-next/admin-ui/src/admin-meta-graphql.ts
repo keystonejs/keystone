@@ -155,8 +155,8 @@ type KeystoneAdminUIFieldMeta = {
   viewsIndex: Scalars['Int'];
   customViewsIndex: Maybe<Scalars['Int']>;
   createView: KeystoneAdminUIFieldMetaCreateView;
-  listView: KeystoneAdminUIFieldMetaListView;
   itemView: Maybe<KeystoneAdminUIFieldMetaItemView>;
+  listView: KeystoneAdminUIFieldMetaListView;
 };
 
 type KeystoneAdminUIFieldMetaCreateView = {
@@ -164,20 +164,20 @@ type KeystoneAdminUIFieldMetaCreateView = {
   fieldMode: KeystoneAdminUIFieldMetaCreateViewFieldMode;
 };
 
-type KeystoneAdminUIFieldMetaListView = {
-  __typename: 'KeystoneAdminUIFieldMetaListView';
-  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode;
-};
-
 type KeystoneAdminUIFieldMetaItemView = {
   __typename: 'KeystoneAdminUIFieldMetaItemView';
   fieldMode: KeystoneAdminUIFieldMetaItemViewFieldMode;
 };
 
+type KeystoneAdminUIFieldMetaListView = {
+  __typename: 'KeystoneAdminUIFieldMetaListView';
+  fieldMode: KeystoneAdminUIFieldMetaListViewFieldMode;
+};
+
 type KeystoneAdminUIFieldMetaCreateViewFieldMode = 'edit' | 'hidden';
 
-type KeystoneAdminUIFieldMetaListViewFieldMode = 'read' | 'hidden';
-
 type KeystoneAdminUIFieldMetaItemViewFieldMode = 'edit' | 'read' | 'hidden';
+
+type KeystoneAdminUIFieldMetaListViewFieldMode = 'read' | 'hidden';
 
 type KeystoneAdminUISortDirection = 'ASC' | 'DESC';

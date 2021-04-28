@@ -109,26 +109,26 @@ Options:
   Can be either a boolean value, or an async function with an argument `{ session }` that returns a boolean value.
 - `hideDelete` (default: `false`): Controls whether the `delete` button is available in the Admin UI for this list.
   Can be either a boolean value, or an async function with an argument `{ session }` that returns a boolean value.
+- `createView`: Controls the create view page of the Admin UI.
+  - `defaultFieldMode` (default: `'edit'`):
+    Can be overridden by per-field values in the `field.ui.createView.fieldMode` config.
+    See the [Fields API](./fields#common-configuration) for details.
+    Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['edit', 'hidden']`.
+- `itemView`: Controls the item view page of the Admin UI.
+  - `defaultFieldMode` (default: `'edit'`):
+    Can be overridden by per-field values in the `field.ui.itemView.fieldMode` config.
+    See the [Fields API](./fields#common-configuration) for details.
+    Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session, item }` that returns one of `['edit', 'read', 'hidden']`.
 - `listView`: Controls the list view page of the Admin UI.
   - `defaultFieldMode` (default: `'read'`): Controls the default mode of fields in the list view.
     Can be overridden by per-field values in the `field.ui.listView.fieldMode` config.
-    See the [Fields API](./fields) for details.
+    See the [Fields API](./fields#common-configuration) for details.
     Can be one of `['read', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['read', 'hidden']`.
   - `initialColumns` (default: The first three fields defined in the list). A list of field names to display in columns in the list view. By default only the label column, as determined by `labelField`, is shown.
   - `initialSort` (default: `undefined`): Sets the field and direction to be used to initially sort the data in the list view.
     Option `field` is the name of the field to sort by, and `direction` is either `'ASC'` or `'DESC'` for ascending and descending sorting respectively.
     If undefined then data will be unsorted.
   - `pageSize` (default: `50`): Sets the number of items to show per page in the list view.
-- `createView`: Controls the create view page of the Admin UI.
-  - `defaultFieldMode` (default: `'edit'`):
-    Can be overridden by per-field values in the `field.ui.createView.fieldMode` config.
-    See the [Fields API](./fields) for details.
-    Can be one of `['edit', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['edit', 'hidden']`.
-- `itemView`: Controls the item view page of the Admin UI.
-  - `defaultFieldMode` (default: `'edit'`):
-    Can be overridden by per-field values in the `field.ui.itemView.fieldMode` config.
-    See the [Fields API](./fields) for details.
-    Can be one of `['edit', 'read', 'hidden']`, or an async function with an argument `{ session }` that returns one of `['edit', 'read', 'hidden']`.
 
 ```typescript
 import { config, createSchema, list } from '@keystone-next/keystone/schema';
@@ -144,17 +144,17 @@ export default config({
         isHidden: ({ session }) => false,
         hideCreate: ({ session }) => false,
         hideDelete: ({ session }) => false,
-        listView: {
-          defaultFieldMode: ({ session }) => 'read',
-          initialColumns: ['name', /* ... */],
-          initialSort: { field: 'name', direction: 'ASC' },
-          pageSize: 50,
-        },
         createView: {
           defaultFieldMode: ({ session }) => 'edit',
         },
         itemView: {
           defaultFieldMode: ({ session, item }) => 'edit',
+        },
+        listView: {
+          defaultFieldMode: ({ session }) => 'read',
+          initialColumns: ['name', /* ... */],
+          initialSort: { field: 'name', direction: 'ASC' },
+          pageSize: 50,
         },
       },
     }),

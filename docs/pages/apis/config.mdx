@@ -136,7 +136,11 @@ Options:
 
 Advanced configuration:
 
-(coming soon)
+- `publicPages` (default: `[]`): An array of page routes that can be accessed without passing the `isAccessAllowed` check.
+- `getAdditionalFiles` (default: `[]`): An async function returns an array of `AdminFileToWrite` objects indicating files to be added to the system at `build` time.
+  If the `mode` is `'write'`, then the code to be written to the file should be provided as the `src` argument.
+  If the `mode` is `'copy'` then an `inputPath` value should be provided.
+  The `outputPath` indicates where the new
 
 ```typescript
 export default config({
@@ -144,10 +148,26 @@ export default config({
     isDisabled: false,
     isAccessAllowed: async context => true,
     // Optional advanced configuration
-    enableSessionItem: true,
-    publicPages: [],
-    getAdditionalFiles: async () => [],
-    pageMiddleware: async () = {},
+    publicPages: ['/welcome'],
+    getAdditionalFiles: [
+      async (config: KeystoneConfig) => [
+        {
+          mode: 'write',
+          src: `
+            /* @jsx jsx */
+            import { jsx } from '@keystone-ui/core';
+            export default function Welcome() {
+              return (<h1>Welcome to my Keystone system</h1>);
+            }`,
+          outputPath: 'pages/welcome.js',
+        },
+        {
+          mode: 'copy',
+          inputPath: '...',
+          outputPath: 'pages/farewell.js',
+        }
+      ],
+    ],
   },
   /* ... */
 });
