@@ -72,10 +72,7 @@ export function createImagesContext(config?: ImagesConfig): ImagesContext | unde
       }
 
       const buffer = Buffer.concat(chunks);
-      const file = Buffer.from(buffer).toString();
       const metadata = await getImageMetadataFromBuffer(buffer);
-
-      console.log(buffer, file, metadata);
 
       await fs.writeFile(path.join(storagePath, `${id}.${metadata.extension}`), buffer);
 
