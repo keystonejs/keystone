@@ -1,6 +1,6 @@
 import path from 'path';
 import { v4 as uuid } from 'uuid';
-import slugify from '@sindresorhus/slugify';
+import filenamify from 'filenamify';
 import { FilesConfig, FilesContext } from '@keystone-next/types';
 import fs from 'fs-extra';
 
@@ -8,8 +8,7 @@ import { parseFileRef } from '@keystone-next/utils-legacy';
 
 const DEFAULT_BASE_URL = '/files';
 const DEFAULT_STORAGE_PATH = './public/files';
-const DEFAULT_MAX_SIZE = 1024 * 1024 * 10; // 10mb
-const isValidFileSize = (fileSize: number, maxSize: number) => fileSize <= maxSize;
+// const DEFAULT_MAX_SIZE = 1024 * 1024 * 10; // 10mb
 
 const generateSafeFilename = (filename: string) => {
   //   /*
@@ -20,7 +19,7 @@ const generateSafeFilename = (filename: string) => {
   const [, name, ext] = filename.match(/^([^:\n].*?)(\.[A-Za-z]+)?$/) as RegExpMatchArray;
 
   const id = uuid();
-  const urlSafeName = slugify(name).toLowerCase();
+  const urlSafeName = filenamify(name, { replacement: '_' }).toLowerCase();
   if (ext) {
     return `${urlSafeName}_${id}${ext}`;
   }
@@ -37,8 +36,6 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
     return;
   }
 
-  const { maxSize = DEFAULT_MAX_SIZE } = config || {}; // default to 10mb
-
   const { baseUrl = DEFAULT_BASE_URL, storagePath = DEFAULT_STORAGE_PATH } = config.local || {};
 
   fs.mkdirSync(storagePath, { recursive: true });
@@ -52,31 +49,28 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
       if (!fileRef) {
         throw new Error('Invalid file reference');
       }
-      const buffer = await fs.readFile(path.join(storagePath, `${fileRef.filename}`));
-      const metadata = await getFileMetadataFromBuffer(buffer);
-
-      return { ...fileRef, ...metadata };
+      // const buffer = await fs.readFile(path.join(storagePath, `${fileRef.filename}`));
+      const { size: filesize } = await fs.stat(path.join(storagePath, `${fileRef.filename}`));
+      return { filesize, ...fileRef };
     },
     getDataFromStream: async (stream, filename) => {
       const { upload: mode } = config;
-      const chunks = [];
-
-      for await (let chunk of stream) {
-        chunks.push(chunk);
-      }
-
-      const buffer = Buffer.concat(chunks);
-      const metadata = await getFileMetadataFromBuffer(buffer);
-      // name conflict strategy function goes here.
-      // const validFilename = resolveName({ name: filename, storagePath });
-      if (!isValidFileSize(buffer.length, maxSize)) {
-        throw new Error(`Filesize of ${buffer.length} exceeds max size of ${maxSize}`);
-      }
 
       const pseudoSafeFilename = generateSafeFilename(filename);
-      await fs.writeFile(path.join(storagePath, pseudoSafeFilename), buffer);
+      const writeStream = fs.createWriteStream(path.join(storagePath, pseudoSafeFilename));
 
-      return { mode, filename: pseudoSafeFilename, ...metadata };
+      for await (let chunk of stream) {
+        writeStream.write(chunk);
+      }
+
+      const { size: filesize } = await fs.stat(path.join(storagePath, pseudoSafeFilename));
+
+      // const buffer = Buffer.concat(chunks);
+      // const metadata = await getFileMetadataFromBuffer(buffer);
+
+      // await fs.writeFile(path.join(storagePath, pseudoSafeFilename), buffer);
+
+      return { mode, filename: pseudoSafeFilename, filesize };
     },
   };
 }
