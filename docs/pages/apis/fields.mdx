@@ -520,7 +520,33 @@ File types allow you to upload different types of files to your Keystone system.
 
 ### file
 
-(coming soon)
+An `file` field represents a file of any type.
+
+See [`config.files`](./config#files) for details on how to configure your Keystone system with support for the `file` field type.
+
+Options:
+
+- `isRequired` (default: `false`): If `true` then this field can never be set to `null`.
+
+```typescript
+import { config, createSchema, list } from '@keystone-next/keystone/schema';
+import { file } from '@keystone-next/fields';
+
+export default config({
+  lists: createSchema({
+    ListName: list({
+      fields: {
+        repo: file({
+          isRequired: true,
+        }),
+        /* ... */
+      },
+    }),
+    /* ... */
+  }),
+  /* ... */
+});
+```
 
 ### image
 
