@@ -22,6 +22,7 @@ import {
   NamedTypeNode,
   ArgumentNode,
   GraphQLFieldConfig,
+  GraphQLOutputType,
 } from 'graphql';
 
 function getNamedOrListTypeNodeForType(
@@ -107,6 +108,18 @@ function argsToArgsConfig(args: GraphQLArgument[]) {
   );
 }
 
+function getTypeForField(originalType: GraphQLOutputType): GraphQLOutputType {
+  if (originalType instanceof GraphQLNonNull) {
+    return new GraphQLNonNull(
+      getTypeForField(originalType.ofType)
+    ) as GraphQLList<GraphQLOutputType>;
+  }
+  if (originalType instanceof GraphQLList) {
+    return new GraphQLList(getTypeForField(originalType.ofType)) as GraphQLList<GraphQLOutputType>;
+  }
+  return ReturnRawValueObjectType;
+}
+
 export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
   const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field);
 
@@ -143,7 +156,7 @@ export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
     extensions: field.extensions,
     resolve: field.resolve,
     subscribe: field.subscribe,
-    type: ReturnRawValueObjectType,
+    type: getTypeForField(field.type),
   };
   const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
