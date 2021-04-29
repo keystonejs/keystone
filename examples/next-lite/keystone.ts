@@ -25,16 +25,16 @@ const keystoneConfig = config({
     generateNodeAPI: true,
   },
   ui: {
-    isAccessAllowed: (context) => !!context.session?.data,
+    isAccessAllowed: context => !!context.session?.data,
   },
   lists,
   session: withItemData(
     statelessSessions({
       maxAge: sessionMaxAge,
-      secret: sessionSecret
+      secret: sessionSecret,
     }),
     { User: 'id name email' }
-  )
+  ),
 });
 
 export default withAuth(keystoneConfig);

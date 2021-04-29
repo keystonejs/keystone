@@ -25,6 +25,9 @@ module.exports = {
     react: {
       version: 'detect',
     },
+    jest: {
+      version: 26,
+    },
   },
   rules: {
     curly: ['error', 'multi-line'],
