@@ -1,5 +1,5 @@
 import * as Path from 'path';
-import type { BaseKeystone, KeystoneConfig } from '@keystone-next/types';
+import type { AdminMetaRootVal, BaseKeystone, KeystoneConfig } from '@keystone-next/types';
 import { AdminFileToWrite } from '@keystone-next/types';
 import { GraphQLSchema } from 'graphql';
 import { appTemplate } from './app';
@@ -14,7 +14,7 @@ const pkgDir = Path.dirname(require.resolve('@keystone-next/admin-ui/package.jso
 export const writeAdminFiles = (
   config: KeystoneConfig,
   graphQLSchema: GraphQLSchema,
-  keystone: BaseKeystone,
+  adminMeta: AdminMetaRootVal,
   configFileExists: boolean,
   projectAdminPath: string
 ): AdminFileToWrite[] => [
@@ -29,12 +29,12 @@ export const writeAdminFiles = (
     src: appTemplate(config, graphQLSchema, { configFileExists, projectAdminPath }),
   },
   { mode: 'write', src: homeTemplate, outputPath: 'pages/index.js' },
-  ...Object.values(keystone.lists).map(
-    ({ adminUILabels: { path }, key }) =>
+  ...adminMeta.lists.map(
+    ({ path, key }) =>
       ({ mode: 'write', src: listTemplate(key), outputPath: `pages/${path}/index.js` } as const)
   ),
-  ...Object.values(keystone.lists).map(
-    ({ adminUILabels: { path }, key }) =>
+  ...adminMeta.lists.map(
+    ({ path, key }) =>
       ({ mode: 'write', src: itemTemplate(key), outputPath: `pages/${path}/[id].js` } as const)
   ),
   ...(config.experimental?.enableNextJsGraphqlApiEndpoint

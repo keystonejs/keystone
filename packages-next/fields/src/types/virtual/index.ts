@@ -1,11 +1,11 @@
 import type { FieldType, BaseGeneratedListTypes, KeystoneContext } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { FieldConfig } from '../../interfaces';
+import type { CommonFieldConfig } from '../../interfaces';
 import { Virtual, PrismaVirtualInterface } from './Implementation';
 
 export type VirtualFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
+> = CommonFieldConfig<TGeneratedListTypes> & {
   resolver: (rootVal: any, args: any, context: KeystoneContext, info: any) => any;
   graphQLReturnType?: string;
   graphQLReturnFragment?: string;

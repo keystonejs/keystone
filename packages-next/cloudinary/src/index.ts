@@ -1,11 +1,11 @@
 import path from 'path';
-import type { FieldType, FieldConfig, BaseGeneratedListTypes } from '@keystone-next/types';
+import type { FieldType, CommonFieldConfig, BaseGeneratedListTypes } from '@keystone-next/types';
 import { CloudinaryAdapter } from './cloudinary';
 import { CloudinaryImage, PrismaCloudinaryImageInterface } from './Implementation';
 
 type CloudinaryImageFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
+> = CommonFieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
   cloudinary: {
     cloudName: string;

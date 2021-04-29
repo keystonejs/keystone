@@ -1,11 +1,11 @@
 import type { FieldType, BaseGeneratedListTypes } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { FieldConfig } from '../../interfaces';
+import type { CommonFieldConfig } from '../../interfaces';
 import { ImageImplementation, PrismaImageInterface } from './Implementation';
 
 export type ImageFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
+> = CommonFieldConfig<TGeneratedListTypes> & {
   isRequired?: boolean;
 };
 

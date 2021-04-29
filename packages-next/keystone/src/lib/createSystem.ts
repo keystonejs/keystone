@@ -12,10 +12,10 @@ export function createSystem(config: KeystoneConfig, prismaClient?: any) {
   const internalSchema = createGraphQLSchema(config, keystone, 'internal');
 
   const createContext = makeCreateContext({
-    keystone,
     graphQLSchema,
     internalSchema,
     imagesConfig: config.images,
+    maxTotalResults: config.graphql?.queryLimits?.maxTotalResults ?? Infinity,
   });
 
   return { keystone, graphQLSchema, createContext };

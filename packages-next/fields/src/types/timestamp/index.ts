@@ -1,11 +1,11 @@
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { FieldConfig } from '../../interfaces';
+import type { CommonFieldConfig } from '../../interfaces';
 import { DateTimeUtcImplementation, PrismaDateTimeUtcInterface } from './Implementation';
 
 export type TimestampFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
+> = CommonFieldConfig<TGeneratedListTypes> & {
   defaultValue?: FieldDefaultValue<string>;
   isRequired?: boolean;
   isUnique?: boolean;

@@ -1,5 +1,5 @@
 import path from 'path';
-import type { FieldType, BaseGeneratedListTypes, FieldConfig } from '@keystone-next/types';
+import type { FieldType, BaseGeneratedListTypes, CommonFieldConfig } from '@keystone-next/types';
 import { DocumentImplementation, PrismaDocumentInterface } from './Implementation';
 import { Relationships } from './DocumentEditor/relationship';
 import { ComponentBlock } from './component-blocks';
@@ -61,7 +61,7 @@ type FormattingConfig = {
 
 export type DocumentFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
+> = CommonFieldConfig<TGeneratedListTypes> & {
   relationships?: RelationshipsConfig;
   componentBlocks?: Record<string, ComponentBlock>;
   formatting?: true | FormattingConfig;

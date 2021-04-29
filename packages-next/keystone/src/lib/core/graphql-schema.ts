@@ -1,5 +1,5 @@
 import { GraphQLSchema } from 'graphql';
-import { DatabaseConfig, getGqlNames, types } from '@keystone-next/types';
+import { getGqlNames, Provider, types } from '@keystone-next/types';
 import { getFindManyArgs } from '@keystone-next/types';
 import { InitialisedList } from './types-for-lists';
 
@@ -18,10 +18,7 @@ const queryMeta = types.object<{ getCount: () => Promise<number> }>()({
   },
 });
 
-export function getGraphQLSchema(
-  lists: Record<string, InitialisedList>,
-  provider: NonNullable<DatabaseConfig['provider']>
-) {
+export function getGraphQLSchema(lists: Record<string, InitialisedList>, provider: Provider) {
   let query = types.object()({
     name: 'Query',
     fields: () =>

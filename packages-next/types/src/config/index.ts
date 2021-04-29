@@ -175,3 +175,4 @@ export type {
   DeleteListAccessControl,
   UpdateListAccessControl,
 } from './access-control';
+export type { CommonFieldConfig } from './fields';

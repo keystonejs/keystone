@@ -3,16 +3,8 @@ import * as tsgql from '@ts-gql/schema';
 import GraphQLJSON from 'graphql-type-json';
 import { InputResolvers } from '@keystone-next/keystone/src/lib/core/input-resolvers';
 import { BaseGeneratedListTypes } from './utils';
-import { FieldHooks } from './config/hooks';
-import {
-  AdminMetaRootVal,
-  FieldAccessControl,
-  JSONValue,
-  KeystoneContext,
-  MaybeItemFunction,
-  MaybePromise,
-  MaybeSessionFunction,
-} from '.';
+import { CommonFieldConfig } from './config';
+import { AdminMetaRootVal, JSONValue, KeystoneContext, MaybePromise } from '.';
 
 export const types = {
   JSON: tsgql.types.scalar<JSONValue>(GraphQLJSON),
@@ -64,11 +56,10 @@ export type NextFieldType<
     update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
   };
   output: FieldTypeOutputField<TDBField>;
+  views: string;
   extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
   cacheHint?: CacheHint;
-  access?: FieldAccessControl<BaseGeneratedListTypes>;
-  hooks?: FieldHooks<BaseGeneratedListTypes>;
-};
+} & CommonFieldConfig<BaseGeneratedListTypes>;
 
 type ScalarPrismaTypes = {
   String: string;
@@ -241,29 +232,21 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
     UpdateArg extends tsgql.Arg<tsgql.InputType, any>,
     FilterArg extends tsgql.Arg<tsgql.InputType, any>,
     UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any>
-  >(stuff: {
-    input?: {
-      uniqueWhere?: FieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
-      where?: FieldInputArg<DBFieldFilters<TDBField>, FilterArg>;
-      create?: FieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
-      update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
-    };
-    output: FieldTypeOutputField<TDBField>;
-    extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
-    cacheHint?: CacheHint;
-    access?: FieldAccessControl<BaseGeneratedListTypes>;
-    hooks?: FieldHooks<BaseGeneratedListTypes>;
-    label?: string;
-    views: string;
-    ui?: {
-      views?: string;
-      description?: string;
-      createView?: { fieldMode?: MaybeSessionFunction<'edit' | 'hidden'> };
-      listView?: { fieldMode?: MaybeSessionFunction<'read' | 'hidden'> };
-      itemView?: { fieldMode?: MaybeItemFunction<'edit' | 'read' | 'hidden'> };
-    };
-    getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
-  }): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg> {
+  >(
+    stuff: {
+      input?: {
+        uniqueWhere?: FieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
+        where?: FieldInputArg<DBFieldFilters<TDBField>, FilterArg>;
+        create?: FieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
+        update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
+      };
+      output: FieldTypeOutputField<TDBField>;
+      views: string;
+      extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
+      cacheHint?: CacheHint;
+      getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
+    } & CommonFieldConfig<BaseGeneratedListTypes>
+  ): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg> {
     return { ...stuff, dbField };
   };
 }

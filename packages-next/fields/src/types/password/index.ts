@@ -1,12 +1,12 @@
 import type { FieldType, BaseGeneratedListTypes } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { FieldConfig } from '../../interfaces';
+import type { CommonFieldConfig } from '../../interfaces';
 // @ts-ignore
 import { Password, PrismaPasswordInterface } from './Implementation';
 
 type PasswordFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
+> = CommonFieldConfig<TGeneratedListTypes> & {
   minLength?: number;
   isRequired?: boolean;
   bcrypt?: Pick<typeof import('bcryptjs'), 'compare' | 'compareSync' | 'hash' | 'hashSync'>;

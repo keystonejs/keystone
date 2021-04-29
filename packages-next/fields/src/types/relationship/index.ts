@@ -1,6 +1,6 @@
 import type { FieldType, BaseGeneratedListTypes, FieldDefaultValue } from '@keystone-next/types';
 import { resolveView } from '../../resolve-view';
-import type { FieldConfig } from '../../interfaces';
+import type { CommonFieldConfig } from '../../interfaces';
 import { Relationship, PrismaRelationshipInterface } from './Implementation';
 
 // This is the default display mode for Relationships
@@ -37,7 +37,7 @@ type CardsDisplayConfig = {
 
 export type RelationshipFieldConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes
-> = FieldConfig<TGeneratedListTypes> & {
+> = CommonFieldConfig<TGeneratedListTypes> & {
   many?: boolean;
   ref: string;
   ui?: {
