@@ -16,7 +16,7 @@ import {
   deleteItem,
   deleteItems,
 } from './server-side-graphql-client';
-import { runGraphQLFieldButGetRootValFactory } from './executeGraphQLFieldToRootVal';
+import { executeGraphQLFieldToRootVal } from './executeGraphQLFieldToRootVal';
 
 // this is generally incorrect because types are open in TS but is correct in the specific usage here.
 // (i mean it's not really any more incorrect than TS is generally is but let's ignore that)
@@ -36,7 +36,7 @@ export function getDbAPIFactory(
         throw new Error('You do not have access to this resource');
       };
     }
-    return runGraphQLFieldButGetRootValFactory(field);
+    return executeGraphQLFieldToRootVal(field);
   };
   const api = {
     findOne: f(queryFields[gqlNames.itemQueryName]),

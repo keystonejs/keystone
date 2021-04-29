@@ -86,7 +86,7 @@ function argsToArgsConfig(args: GraphQLArgument[]) {
   return Object.fromEntries(args.map((arg): [string, GraphQLArgumentConfig] => [arg.name, arg]));
 }
 
-export function runGraphQLFieldButGetRootValFactory(field: GraphQLField<any, any>) {
+export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
   const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field);
 
   const document: DocumentNode = {
