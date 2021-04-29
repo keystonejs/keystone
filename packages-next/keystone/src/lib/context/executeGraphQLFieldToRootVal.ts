@@ -87,6 +87,9 @@ const ReturnRawValueObjectType = new GraphQLObjectType({
 type RequiredButStillAllowUndefined<
   T extends Record<string, any>,
   // this being a param is important and is what makes this work
+  // i can't find a place that explains this but the tldr is that
+  // having the keyof T _inside_ the mapped type means TS will keep modifiers
+  // like readonly and optionality and we want to remove those here
   Key extends keyof T = keyof T
 > = {
   [K in Key]: T[K];
