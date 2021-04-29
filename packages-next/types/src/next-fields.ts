@@ -245,6 +245,11 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
       extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
       cacheHint?: CacheHint;
       getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
+      // maybe this should be called `types` and accept any type?
+      // the long and weird name is kinda good though because it tells people they shouldn't use it unless they know what this means
+      // context: the use case will be things like this:
+      // const x = types.interfaceType
+      unreferencedInterfaceImplementations?: tsgql.ObjectType<any, string, KeystoneContext>[];
     } & CommonFieldConfig<BaseGeneratedListTypes>
   ): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg> {
     return { ...stuff, dbField };
