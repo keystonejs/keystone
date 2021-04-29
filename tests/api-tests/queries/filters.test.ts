@@ -63,7 +63,7 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'filter works when there is one dash in field name as part of a relationship',
         runner(setupKeystone, async ({ context }) => {
           const secondaries = await context.lists.SecondaryList.findMany({
-            where: { someUser_is_null: null },
+            where: { someUser_is_null: false },
           });
           expect(secondaries).toEqual([]);
         })
