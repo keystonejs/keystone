@@ -74,7 +74,7 @@ const RawScalar = new GraphQLScalarType({ name: 'RawThingPlsDontRelyOnThisAnywhe
 const ReturnRawValueObjectType = new GraphQLObjectType({
   name: 'ReturnRawValue',
   fields: {
-    raw: {
+    [rawField]: {
       type: RawScalar,
       resolve(rootVal) {
         return rootVal;
