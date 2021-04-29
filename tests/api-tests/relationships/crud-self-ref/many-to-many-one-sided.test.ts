@@ -113,10 +113,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 3],
                 ['D', 0],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allUsers(where: { friends_some: { name: "${name}"}}) { id }}`,
+                const users = await context.lists.User.findMany({
+                  where: { friends_some: { name } },
                 });
-                expect(data.allUsers.length).toEqual(count);
+                expect(users.length).toEqual(count);
               })
             );
           })
@@ -132,10 +132,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 6],
                 ['D', 9],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allUsers(where: { friends_none: { name: "${name}"}}) { id }}`,
+                const users = await context.lists.User.findMany({
+                  where: { friends_none: { name } },
                 });
-                expect(data.allUsers.length).toEqual(count);
+                expect(users.length).toEqual(count);
               })
             );
           })
@@ -151,10 +151,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 1],
                 ['D', 1],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allUsers(where: { friends_every: { name: "${name}"}}) { id }}`,
+                const users = await context.lists.User.findMany({
+                  where: { friends_every: { name } },
                 });
-                expect(data.allUsers.length).toEqual(count);
+                expect(users.length).toEqual(count);
               })
             );
           })

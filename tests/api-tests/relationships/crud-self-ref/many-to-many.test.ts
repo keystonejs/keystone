@@ -119,10 +119,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 3],
                 ['D', 0],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allUsers(where: { friends_some: { name: "${name}"}}) { id }}`,
+                const _users = await context.lists.User.findMany({
+                  where: { friends_some: { name } },
                 });
-                expect(data.allUsers.length).toEqual(count);
+                expect(_users.length).toEqual(count);
               })
             );
           })
@@ -138,10 +138,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 6],
                 ['D', 9],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allUsers(where: { friends_none: { name: "${name}"}}) { id }}`,
+                const _users = await context.lists.User.findMany({
+                  where: { friends_none: { name } },
                 });
-                expect(data.allUsers.length).toEqual(count);
+                expect(_users.length).toEqual(count);
               })
             );
           })
@@ -157,10 +157,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 1],
                 ['D', 1],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allUsers(where: { friends_every: { name: "${name}"}}) { id }}`,
+                const users = await context.lists.User.findMany({
+                  where: { friends_every: { name } },
                 });
-                expect(data.allUsers.length).toEqual(count);
+                expect(users.length).toEqual(count);
               })
             );
           })
@@ -237,14 +237,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(User.friends.map(({ id }) => id.toString())).toEqual([Friend.id.toString()]);
             expect(Friend.friendOf.length).toEqual(2);
 
-            const { allUsers } = await context.graphql.run({
-              query: `{ allUsers { id friends { id friendOf { id } } } }`,
-            });
+            const _users = (await context.lists.User.findMany({
+              query: ' id friends { id friendOf { id } }',
+            })) as { id: IdType; friends: any[] }[];
             // Both companies should have a location, and the location should have two companies
-            const linkedUsers = allUsers.filter(
-              ({ id }: { id: IdType }) => id === user.id || id === User.id
-            );
-            linkedUsers.forEach(({ friends }: { friends: any[] }) => {
+            const linkedUsers = _users.filter(({ id }) => id === user.id || id === User.id);
+            linkedUsers.forEach(({ friends }) => {
               expect(friends.map(({ id }: { id: IdType }) => id)).toEqual([Friend.id.toString()]);
             });
             expect(linkedUsers[0].friends[0].friendOf).toEqual([
@@ -275,19 +273,19 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(Friend.friendOf.length).toEqual(2);
 
             // Both companies should have a location, and the location should have two companies
-            const { allUsers } = await context.graphql.run({
-              query: `{ allUsers { id friends { id friendOf { id } } } }`,
-            });
-            allUsers.forEach(({ id, friends }: { id: IdType; friends: any[] }) => {
+            const users = (await context.lists.User.findMany({
+              query: 'id friends { id friendOf { id } }',
+            })) as { id: IdType; friends: any[] }[];
+            users.forEach(({ id, friends }) => {
               if (id === Friend.id) {
                 expect(friends.map(({ id }: { id: IdType }) => id)).toEqual([]);
               } else {
                 expect(friends.map(({ id }: { id: IdType }) => id)).toEqual([Friend.id.toString()]);
               }
             });
-            expect(allUsers[0].friends[0].friendOf).toEqual([
-              { id: allUsers[0].id },
-              { id: allUsers[2].id },
+            expect(users[0].friends[0].friendOf).toEqual([
+              { id: users[0].id },
+              { id: users[2].id },
             ]);
           })
         );
