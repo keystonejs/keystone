@@ -21,6 +21,7 @@ import {
   ListTypeNode,
   NamedTypeNode,
   ArgumentNode,
+  GraphQLFieldConfig,
 } from 'graphql';
 
 function getNamedOrListTypeNodeForType(
@@ -82,8 +83,32 @@ const ReturnRawValueObjectType = new GraphQLObjectType({
   },
 });
 
+type AddUndefinedIfExtendsUndefinedOnOther<
+  Source extends Record<Key, any>,
+  T extends Record<string, any>,
+  Key extends keyof T = keyof T
+> = {
+  [K in Key]: T[K] | Source[K];
+};
+
+type RequiredButStillAllowUndefined<
+  T extends Record<string, any>
+> = AddUndefinedIfExtendsUndefinedOnOther<T, Required<T>>;
+
 function argsToArgsConfig(args: GraphQLArgument[]) {
-  return Object.fromEntries(args.map((arg): [string, GraphQLArgumentConfig] => [arg.name, arg]));
+  return Object.fromEntries(
+    args.map(arg => {
+      const argConfig: RequiredButStillAllowUndefined<GraphQLArgumentConfig> = {
+        astNode: arg.astNode,
+        defaultValue: arg.defaultValue,
+        deprecationReason: arg.deprecationReason,
+        description: arg.description,
+        extensions: arg.extensions,
+        type: arg.type,
+      };
+      return [arg.name, argConfig];
+    })
+  );
 }
 
 export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
@@ -113,15 +138,22 @@ export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
       },
     ],
   };
+
+  const fieldConfig: RequiredButStillAllowUndefined<GraphQLFieldConfig<any, any>> = {
+    args: argsToArgsConfig(field.args),
+    astNode: undefined,
+    deprecationReason: field.deprecationReason,
+    description: field.description,
+    extensions: field.extensions,
+    resolve: field.resolve,
+    subscribe: field.subscribe,
+    type: ReturnRawValueObjectType,
+  };
   const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
       name: 'Query',
       fields: {
-        [field.name]: {
-          ...field,
-          args: argsToArgsConfig(field.args),
-          type: ReturnRawValueObjectType,
-        },
+        [field.name]: fieldConfig,
       },
     }),
   });
