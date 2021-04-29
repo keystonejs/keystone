@@ -148,7 +148,6 @@ export type ExtendGraphqlSchema = (schema: GraphQLSchema, keystone: BaseKeystone
 
 export type FilesConfig = {
   upload: FileMode;
-  maxSize?: number;
   local?: {
     /**
      * The path local images are uploaded to.
