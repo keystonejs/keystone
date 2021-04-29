@@ -73,7 +73,7 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
         return { mode, filesize, filename: safeFilename };
       } catch (e) {
         fs.removeSync(path.join(storagePath, safeFilename));
-        throw new Error(e);
+        throw e;
       }
     },
   };
