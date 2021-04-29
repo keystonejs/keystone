@@ -85,13 +85,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             const { user, friend } = await createUserAndFriend(context);
-            const data = await context.graphql.run({
-              query: `{
-                  allUsers(where: { friend: { name: "${friend.name}"} }) { id }
-                }`,
+            const users = await context.lists.User.findMany({
+              where: { friend: { name: friend.name } },
             });
-            expect(data.allUsers.length).toEqual(1);
-            expect(data.allUsers[0].id).toEqual(user.id);
+            expect(users.length).toEqual(1);
+            expect(users[0].id).toEqual(user.id);
           })
         );
 
@@ -100,13 +98,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             const { user, friend } = await createUserAndFriend(context);
-            const data = await context.graphql.run({
-              query: `{
-                  allUsers(where: { friendOf: { name: "${user.name}"} }) { id }
-                }`,
+            const users = await context.lists.User.findMany({
+              where: { friendOf: { name: user.name } },
             });
-            expect(data.allUsers.length).toEqual(1);
-            expect(data.allUsers[0].id).toEqual(friend.id);
+            expect(users.length).toEqual(1);
+            expect(users[0].id).toEqual(friend.id);
           })
         );
         test(
@@ -114,12 +110,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             await createUserAndFriend(context);
-            const data = await context.graphql.run({
-              query: `{
-                  allUsers(where: { friend_is_null: true }) { id }
-                }`,
-            });
-            expect(data.allUsers.length).toEqual(4);
+            const users = await context.lists.User.findMany({ where: { friend_is_null: true } });
+            expect(users.length).toEqual(4);
           })
         );
         test(
@@ -127,12 +119,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             await createUserAndFriend(context);
-            const data = await context.graphql.run({
-              query: `{
-                  allUsers(where: { friendOf_is_null: true }) { id }
-                }`,
-            });
-            expect(data.allUsers.length).toEqual(4);
+            const users = await context.lists.User.findMany({ where: { friendOf_is_null: true } });
+            expect(users.length).toEqual(4);
           })
         );
         test(
@@ -140,12 +128,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             await createUserAndFriend(context);
-            const data = await context.graphql.run({
-              query: `{
-                  allUsers(where: { friend_is_null: false }) { id }
-                }`,
-            });
-            expect(data.allUsers.length).toEqual(1);
+            const users = await context.lists.User.findMany({ where: { friend_is_null: false } });
+            expect(users.length).toEqual(1);
           })
         );
         test(
@@ -153,12 +137,8 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             await createInitialData(context);
             await createUserAndFriend(context);
-            const data = await context.graphql.run({
-              query: `{
-                  allUsers(where: { friendOf_is_null: false }) { id }
-                }`,
-            });
-            expect(data.allUsers.length).toEqual(1);
+            const users = await context.lists.User.findMany({ where: { friendOf_is_null: false } });
+            expect(users.length).toEqual(1);
           })
         );
 
@@ -271,18 +251,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(User.friend.id.toString()).toBe(Friend.id.toString());
             expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
 
-            const { allUsers } = await context.graphql.run({
-              query: `{ allUsers { id friend { id friendOf { id }} } }`,
-            });
+            const _users = (await context.lists.User.findMany({
+              query: 'id friend { id friendOf { id } }',
+            })) as { id: IdType; friend: { id: IdType; friendOf: { id: IdType } } }[];
             // The nested company should not have a location
-            const _allUsers: {
-              id: IdType;
-              friend: { id: IdType; friendOf: { id: IdType } };
-            }[] = allUsers;
-            expect(_allUsers.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(
+            expect(_users.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(
               User.id
             );
-            _allUsers
+            _users
               .filter(({ id }) => id !== User.id)
               .forEach(user => {
                 expect(user.friend).toBe(null);
@@ -311,17 +287,14 @@ multiAdapterRunners().map(({ runner, provider }) =>
             expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
 
             // The nested company should not have a location
-            const { allUsers } = await context.graphql.run({
-              query: `{ allUsers { id friend { id friendOf { id }} } }`,
-            });
-            const _allUsers: {
+            const users = (await context.lists.User.findMany({
+              query: 'id friend { id friendOf { id }}',
+            })) as {
               id: IdType;
               friend: { id: IdType; friendOf: { id: IdType } };
-            }[] = allUsers;
-            expect(_allUsers.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(
-              User.id
-            );
-            _allUsers
+            }[];
+            expect(users.filter(({ id }) => id === User.id)[0].friend.friendOf.id).toEqual(User.id);
+            users
               .filter(({ id }) => id !== User.id)
               .forEach(user => {
                 expect(user.friend).toBe(null);
