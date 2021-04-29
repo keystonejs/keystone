@@ -37,10 +37,10 @@ export default config({
         title: text(),
         content: text(),
         authors: relationship({
+          // references the 'User' list from the 'authors' field in the 'Post' list
           ref: 'User',
-          // ↑ references the 'User' list from the 'author' field in the 'Post' list
-          many: true
-          // ↑ sets cardinality, see 'Establishing Cardinality' in this guide
+          // sets cardinality, see 'Establishing Cardinality' in this guide
+          many: true,
         }),
       },
     }),
