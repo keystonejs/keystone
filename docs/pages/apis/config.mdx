@@ -60,7 +60,7 @@ It has a TypeScript type of `DatabaseConfig`.
 Keystone supports the database types **PostgreSQL** and **SQLite**.
 These database types are powered by their corresponding Prisma database providers; `postgresql` and `sqlite`.
 
-All database adapters require the `url` argument, which defines the connection URL for your database.
+All database providers require the `url` argument, which defines the connection URL for your database.
 They also all have an optional `onConnect` async function, which takes a [`KeystoneContext`](./context) object, and lets perform any actions you might need at startup, such as data seeding.
 
 As well as these common options, each provider supports a number of optional advanced configuration options.
@@ -111,7 +111,6 @@ export default config({
 
 The `sqlite` provider is not intended to be used in production systems, and has certain limitations:
 
-- `document`: The `document` field type is not supported.
 - `decimal`: The `decimal` field type is not supported.
 - `timestamp`: The `timestamp` field type only supports times within the range `1970 - 2038`.
 - `text`: The `text` field type does not support the advanced filtering operations `contains`, `starts_with`, `ends_with`, or case insensitive filtering.
@@ -168,12 +167,14 @@ Options:
 - `cors` (default: `undefined`): Allows you to configure the [cors middleware](https://www.npmjs.com/package/cors#configuration-options) for your Express server.
   If left undefined `cors` will not be used.
 - `port` (default: `3000` ): The port your Express server will listen on.
+- `maxFileSize` (default: `200 * 1024 * 1024`): The maximum file size allowed for uploads. If left undefined, defaults to `200 MiB`
 
 ```typescript
 export default config({
   server: {
     cors: { origin: ['http://localhost:7777'], credentials: true }:
     port: 3000
+    maxFileSize: 200 * 1024 * 1024
   },
   /* ... */
 });

@@ -4,11 +4,10 @@ import type {
   SessionContext,
   KeystoneContext,
   KeystoneGraphQLAPI,
-  BaseKeystone,
   ImagesConfig,
 } from '@keystone-next/types';
 
-import { itemDbAPIForList, itemAPIForList, getArgsFactory } from './itemAPI';
+import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 import { createImagesContext } from './createImagesContext';
 
 export function makeCreateContext({
@@ -22,15 +21,20 @@ export function makeCreateContext({
 }) {
   const images = createImagesContext(imagesConfig);
   // We precompute these helpers here rather than every time createContext is called
-  // because they require parsing the entire schema, which is potentially expensive.
-  const publicGetArgsByList: Record<string, ReturnType<typeof getArgsFactory>> = {};
+  // because they involve creating a new GraphQLSchema, creating a GraphQL document AST(programmatically, not by parsing) and validating the
+  // note this isn't as big of an optimisation as you would imagine(at least in comparison with the rest of the system),
+  // the regular non-db lists api does more expensive things on every call
+  // like parsing the generated GraphQL document, and validating it against the schema on _every_ call
+  // is that really that bad? no not really. this has just been more optimised because the cost of what it's
+  // doing is more obvious(even though in reality it's much smaller than the alternative)
+  const publicDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
   for (const [listKey, list] of Object.entries(keystone.lists)) {
-    publicGetArgsByList[listKey] = getArgsFactory(list, graphQLSchema);
+    publicDbApiFactories[listKey] = getDbAPIFactory(list.gqlNames, graphQLSchema);
   }
 
-  const internalGetArgsByList: Record<string, ReturnType<typeof getArgsFactory>> = {};
+  const internalDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
   for (const [listKey, list] of Object.entries(keystone.lists)) {
-    internalGetArgsByList[listKey] = getArgsFactory(list, internalSchema);
+    internalDbApiFactories[listKey] = getDbAPIFactory(list.gqlNames, internalSchema);
   }
 
   const createContext = ({
@@ -59,8 +63,8 @@ export function makeCreateContext({
       }
       return result.data as Record<string, any>;
     };
-    const dbAPI: Record<string, ReturnType<typeof itemDbAPIForList>> = {};
-    const itemAPI: Record<string, ReturnType<typeof itemAPIForList>> = {};
+    const dbAPI: KeystoneContext['db']['lists'] = {};
+    const itemAPI: KeystoneContext['lists'] = {};
     const contextToReturn: KeystoneContext = {
       schemaName,
       db: { lists: dbAPI },
@@ -85,10 +89,10 @@ export function makeCreateContext({
       gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
       images,
     };
-    const getArgsByList = schemaName === 'public' ? publicGetArgsByList : internalGetArgsByList;
-    for (const [listKey, list] of Object.entries(keystone.lists)) {
-      dbAPI[listKey] = itemDbAPIForList(list, contextToReturn, getArgsByList[listKey]);
-      itemAPI[listKey] = itemAPIForList(list, contextToReturn, getArgsByList[listKey]);
+    const dbAPIFactories = schemaName === 'public' ? publicDbApiFactories : internalDbApiFactories;
+    for (const listKey of Object.keys(keystone.lists)) {
+      dbAPI[listKey] = dbAPIFactories[listKey](contextToReturn);
+      itemAPI[listKey] = itemAPIForList(listKey, contextToReturn, dbAPI[listKey]);
     }
     return contextToReturn;
   };

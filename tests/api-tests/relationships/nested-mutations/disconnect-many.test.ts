@@ -117,23 +117,11 @@ multiAdapterRunners().map(({ runner, provider }) =>
           const FAKE_ID = '5b84f38256d3c2df59a0d9bf';
 
           // Create an item that does the linking
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                createUser(data: {
-                  notes: {
-                    disconnect: [{ id: "${FAKE_ID}" }]
-                  }
-                }) {
-                  id
-                  notes {
-                    id
-                  }
-                }
-              }`,
+          const user = await context.lists.User.createOne({
+            data: { notes: { disconnect: [{ id: FAKE_ID }] } },
+            query: 'id notes { id content }',
           });
-          expect(data.createUser).toMatchObject({ id: expect.any(String), notes: [] });
-          expect(data.createUser).not.toHaveProperty('errors');
+          expect(user).toMatchObject({ id: expect.any(String), notes: [] });
         })
       );
     });

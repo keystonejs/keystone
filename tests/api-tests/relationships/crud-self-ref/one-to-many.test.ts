@@ -25,22 +25,17 @@ const createInitialData = async (context: KeystoneContext) => {
 };
 
 const createUserAndFriend = async (context: KeystoneContext) => {
-  type T = { createUser: { id: IdType; friends: { id: IdType; friendOf: { id: IdType } }[] } };
-  const { createUser } = (await context.graphql.run({
-    query: `
-      mutation {
-        createUser(data: {
-          friends: { create: [{ name: "${sampleOne(alphanumGenerator)}" }] }
-        }) { id friends { id friendOf { id } } }
-      }`,
-  })) as T;
-  const { User, Friend } = await getUserAndFriend(context, createUser.id, createUser.friends[0].id);
+  const user = await context.lists.User.createOne({
+    data: { friends: { create: [{ name: sampleOne(alphanumGenerator) }] } },
+    query: 'id friends { id friendOf { id } }',
+  });
+
+  const { User, Friend } = await getUserAndFriend(context, user.id, user.friends[0].id);
 
   // Sanity check the links are setup correctly
   expect(User.friends.map(({ id }: { id: IdType }) => id.toString())).toEqual([Friend.id]);
   expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
 
-  const user = createUser;
   return { user, friend: user.friends[0] };
 };
 
@@ -80,12 +75,9 @@ const createReadData = async (context: KeystoneContext) => {
       '': [], //  -> []
     }).map(async ([name, locationIdxs]) => {
       const ids = locationIdxs.map((i: number) => ({ id: createUsers[i].id }));
-      await context.graphql.run({
-        query: `mutation create($friends: [UserWhereUniqueInput], $name: String) { createUser(data: {
-          name: $name
-          friends: { connect: $friends }
-  }) { id friends { name }}}`,
-        variables: { friends: ids, name },
+      await context.lists.User.createOne({
+        data: { name, friends: { connect: ids } },
+        query: 'id friends { id friendOf { id } }',
       });
     })
   );
@@ -122,10 +114,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 4],
                 ['D', 0],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allUsers(where: { friendOf: { name_contains: "${name}"}}) { id }}`,
+                const users = await context.lists.User.findMany({
+                  where: { friendOf: { name_contains: name } },
                 });
-                expect(data.allUsers.length).toEqual(count);
+                expect(users.length).toEqual(count);
               })
             );
           })
@@ -134,20 +126,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'is_null: true',
           runner(setupKeystone, async ({ context }) => {
             await createReadData(context);
-            const data = await context.graphql.run({
-              query: `{ allUsers(where: { friendOf_is_null: true }) { id }}`,
-            });
-            expect(data.allUsers.length).toEqual(5);
+            const users = await context.lists.User.findMany({ where: { friendOf_is_null: true } });
+            expect(users.length).toEqual(5);
           })
         );
         test(
           'is_null: false',
           runner(setupKeystone, async ({ context }) => {
             await createReadData(context);
-            const data = await context.graphql.run({
-              query: `{ allUsers(where: { friendOf_is_null: false }) { id }}`,
-            });
-            expect(data.allUsers.length).toEqual(6);
+            const users = await context.lists.User.findMany({ where: { friendOf_is_null: false } });
+            expect(users.length).toEqual(6);
           })
         );
         test(
@@ -161,10 +149,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 2],
                 ['D', 0],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allUsers(where: { friends_some: { name: "${name}"}}) { id }}`,
+                const users = await context.lists.User.findMany({
+                  where: { friends_some: { name } },
                 });
-                expect(data.allUsers.length).toEqual(count);
+                expect(users.length).toEqual(count);
               })
             );
           })
@@ -180,10 +168,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 2 + 7],
                 ['D', 4 + 7],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allUsers(where: { friends_none: { name: "${name}"}}) { id }}`,
+                const users = await context.lists.User.findMany({
+                  where: { friends_none: { name } },
                 });
-                expect(data.allUsers.length).toEqual(count);
+                expect(users.length).toEqual(count);
               })
             );
           })
@@ -199,10 +187,10 @@ multiAdapterRunners().map(({ runner, provider }) =>
                 ['C', 2 + 7],
                 ['D', 1 + 7],
               ].map(async ([name, count]) => {
-                const data = await context.graphql.run({
-                  query: `{ allUsers(where: { friends_every: { name: "${name}"}}) { id }}`,
+                const users = await context.lists.User.findMany({
+                  where: { friends_every: { name } },
                 });
-                expect(data.allUsers.length).toEqual(count);
+                expect(users.length).toEqual(count);
               })
             );
           })
@@ -226,22 +214,17 @@ multiAdapterRunners().map(({ runner, provider }) =>
           runner(setupKeystone, async ({ context }) => {
             const { users } = await createInitialData(context);
             const user = users[0];
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  createUser(data: {
-                    friends: { connect: [{ id: "${user.id}" }] }
-                  }) { id friends { id } }
-                }
-            `,
-            });
-            const createUser: { id: IdType; friends: { id: IdType }[] } = data.createUser;
-            expect(createUser.friends.map(({ id }) => id.toString())).toEqual([user.id]);
+            const _user = (await context.lists.User.createOne({
+              data: { friends: { connect: [{ id: user.id }] } },
+              query: 'id friends { id  }',
+            })) as { id: IdType; friends: { id: IdType }[] };
 
-            const { User, Friend } = await getUserAndFriend(context, createUser.id, user.id);
+            expect(_user.friends.map(({ id }) => id.toString())).toEqual([user.id]);
+
+            const { User, Friend } = await getUserAndFriend(context, _user.id, user.id);
 
             // Everything should now be connected
-            expect(createUser.friends.map(({ id }) => id.toString())).toEqual([user.id]);
+            expect(_user.friends.map(({ id }) => id.toString())).toEqual([user.id]);
             expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
           })
         );
@@ -250,21 +233,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
           'With create',
           runner(setupKeystone, async ({ context }) => {
             const friendName = sampleOne(alphanumGenerator);
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  createUser(data: {
-                    friends: { create: [{ name: "${friendName}" }] }
-                  }) { id friends { id } }
-                }
-            `,
+            const _user = await context.lists.User.createOne({
+              data: { friends: { create: [{ name: friendName }] } },
+              query: 'id friends { id }',
             });
 
-            const { User, Friend } = await getUserAndFriend(
-              context,
-              data.createUser.id,
-              data.createUser.friends[0].id
-            );
+            const { User, Friend } = await getUserAndFriend(context, _user.id, _user.friends[0].id);
 
             // Everything should now be connected
             expect(User.friends.map(({ id }) => id.toString())).toEqual([Friend.id.toString()]);
@@ -279,38 +253,31 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const user = users[0];
             const friendName = sampleOne(alphanumGenerator);
 
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  createUser(data: {
-                    friends: { create: [{ name: "${friendName}" friendOf: { connect: { id: "${user.id}" } } }] }
-                  }) { id friends { id friendOf { id } } }
-                }
-            `,
+            const _user = await context.lists.User.createOne({
+              data: {
+                friends: { create: [{ name: friendName, friendOf: { connect: { id: user.id } } }] },
+              },
+              query: 'id friends { id friendOf { id } }',
             });
 
-            const { User, Friend } = await getUserAndFriend(
-              context,
-              data.createUser.id,
-              data.createUser.friends[0].id
-            );
+            const { User, Friend } = await getUserAndFriend(context, _user.id, _user.friends[0].id);
 
             // Everything should now be connected
             expect(User.friends.map(({ id }) => id.toString())).toEqual([Friend.id]);
             expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
 
-            const { allUsers } = await context.graphql.run({
-              query: `{ allUsers { id friends { id friendOf { id } } } }`,
-            });
-            // The nested company should not have a location
-            const _allUsers: {
+            const _users = (await context.lists.User.findMany({
+              query: 'id friends { id friendOf { id } }',
+            })) as {
               id: IdType;
               friends: { id: IdType; friendOf: { id: IdType } }[];
-            }[] = allUsers;
-            expect(_allUsers.filter(({ id }) => id === User.id)[0].friends[0].friendOf.id).toEqual(
+            }[];
+
+            // The nested company should not have a location
+            expect(_users.filter(({ id }) => id === User.id)[0].friends[0].friendOf.id).toEqual(
               User.id
             );
-            _allUsers
+            _users
               .filter(({ id }) => id !== User.id)
               .forEach(user => {
                 expect(user.friends).toEqual([]);
@@ -324,37 +291,31 @@ multiAdapterRunners().map(({ runner, provider }) =>
             const friendName = sampleOne(alphanumGenerator);
             const friendOfName = sampleOne(alphanumGenerator);
 
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  createUser(data: {
-                    friends: { create: [{ name: "${friendName}" friendOf: { create: { name: "${friendOfName}" } } }] }
-                  }) { id friends { id friendOf { id } } }
-                }
-            `,
+            const user = await context.lists.User.createOne({
+              data: {
+                friends: {
+                  create: [{ name: friendName, friendOf: { create: { name: friendOfName } } }],
+                },
+              },
+              query: 'id friends { id friendOf { id } }',
             });
 
-            const { User, Friend } = await getUserAndFriend(
-              context,
-              data.createUser.id,
-              data.createUser.friends[0].id
-            );
+            const { User, Friend } = await getUserAndFriend(context, user.id, user.friends[0].id);
             // Everything should now be connected
             expect(User.friends.map(({ id }) => id.toString())).toEqual([Friend.id]);
             expect(Friend.friendOf.id.toString()).toBe(User.id.toString());
 
             // The nested company should not have a location
-            const { allUsers } = await context.graphql.run({
-              query: `{ allUsers { id friends { id friendOf { id } } } }`,
-            });
-            const _allUsers: {
+            const users = (await context.lists.User.findMany({
+              query: 'id friends { id friendOf { id } }',
+            })) as {
               id: IdType;
               friends: { id: IdType; friendOf: { id: IdType } }[];
-            }[] = allUsers;
-            expect(_allUsers.filter(({ id }) => id === User.id)[0].friends[0].friendOf.id).toEqual(
+            }[];
+            expect(users.filter(({ id }) => id === User.id)[0].friends[0].friendOf.id).toEqual(
               User.id
             );
-            _allUsers
+            users
               .filter(({ id }) => id !== User.id)
               .forEach(user => {
                 expect(user.friends).toEqual([]);
@@ -365,18 +326,13 @@ multiAdapterRunners().map(({ runner, provider }) =>
         test(
           'With null',
           runner(setupKeystone, async ({ context }) => {
-            const data = await context.graphql.run({
-              query: `
-                mutation {
-                  createUser(data: {
-                    friends: null
-                  }) { id friends { id } }
-                }
-            `,
+            const user = await context.lists.User.createOne({
+              data: { friends: null },
+              query: 'id friends { id }',
             });
 
             // Friends should be empty
-            expect(data.createUser.friends).toHaveLength(0);
+            expect(user.friends).toHaveLength(0);
           })
         );
       });

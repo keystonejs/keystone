@@ -91,6 +91,13 @@ class PrismaAdapter {
       log: this.enableLogging && ['query'],
       datasources: { [this.provider]: { url: this.url } },
     });
+    this.prisma.$on('beforeExit', async () => {
+      // Prisma is failing to properly clean up its child processes
+      // https://github.com/keystonejs/keystone/issues/5477
+      // We explicitly send a SIGINT signal to the prisma child process on exit
+      // to ensure that the process is cleaned up appropriately.
+      this.prisma._engine.child.kill('SIGINT');
+    });
 
     // Set up all list adapter models
     Object.values(this.listAdapters).forEach(listAdapter => {

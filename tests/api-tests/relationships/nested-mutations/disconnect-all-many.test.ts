@@ -110,23 +110,12 @@ multiAdapterRunners().map(({ runner, provider }) =>
         'silently succeeds if used during create',
         runner(setupKeystone, async ({ context }) => {
           // Create an item that does the linking
-          const data = await context.graphql.run({
-            query: `
-              mutation {
-                createUser(data: {
-                  notes: {
-                    disconnectAll: true
-                  }
-                }) {
-                  id
-                  notes {
-                    id
-                  }
-                }
-              }`,
+          const user = await context.lists.User.createOne({
+            data: { notes: { disconnectAll: true } },
+            query: 'id notes { id }',
           });
 
-          expect(data.createUser).toMatchObject({ id: expect.any(String), notes: [] });
+          expect(user).toMatchObject({ id: expect.any(String), notes: [] });
         })
       );
     });

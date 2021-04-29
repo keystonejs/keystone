@@ -51,37 +51,17 @@ multiAdapterRunners().map(({ runner, provider }) =>
             data: { company: { connect: { id: otherCompany.id } } },
           });
 
-          const data = await context.graphql.run({
-            query: `
-        query {
-          allUsers(where: {
-            AND: [
-              { company: { name_contains: "in" } },
-              { company: { name_contains: "ll" } }
-            ]
-          }) {
-            id
-            company {
-              id
-              name
-            }
-          }
-        }
-      `,
+          const users = await context.lists.User.findMany({
+            where: {
+              AND: [{ company: { name_contains: 'in' } }, { company: { name_contains: 'll' } }],
+            },
+            query: 'id company { id name }',
           });
 
-          expect(data.allUsers).toHaveLength(1);
-          expect(data).toMatchObject({
-            allUsers: [
-              {
-                id: user.id,
-                company: {
-                  id: company.id,
-                  name: 'Thinkmill',
-                },
-              },
-            ],
-          });
+          expect(users).toHaveLength(1);
+          expect(users).toMatchObject([
+            { id: user.id, company: { id: company.id, name: 'Thinkmill' } },
+          ]);
         })
       );
 
@@ -98,37 +78,16 @@ multiAdapterRunners().map(({ runner, provider }) =>
             data: { company: { connect: { id: otherCompany.id } } },
           });
 
-          const data = await context.graphql.run({
-            query: `
-          query {
-            allUsers(where: {
-              OR: [
-                { company: { name_contains: "in" } },
-                { company: { name_contains: "xx" } }
-              ]
-            }) {
-              id
-              company {
-                id
-                name
-              }
-            }
-          }
-        `,
+          const users = await context.lists.User.findMany({
+            where: {
+              OR: [{ company: { name_contains: 'in' } }, { company: { name_contains: 'xx' } }],
+            },
+            query: 'id company { id name }',
           });
-
-          expect(data.allUsers).toHaveLength(1);
-          expect(data).toMatchObject({
-            allUsers: [
-              {
-                id: user.id,
-                company: {
-                  id: company.id,
-                  name: 'Thinkmill',
-                },
-              },
-            ],
-          });
+          expect(users).toHaveLength(1);
+          expect(users).toMatchObject([
+            { id: user.id, company: { id: company.id, name: 'Thinkmill' } },
+          ]);
         })
       );
 
@@ -148,30 +107,19 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // Create a dummy user to make sure we're actually filtering it out
           await context.lists.User.createOne({ data: {} });
 
-          const data = (await context.graphql.run({
-            query: `
-        query {
-          allUsers(where: {
-            AND: [
-              { posts_some: { content_contains: "hi" } },
-              { posts_some: { content_contains: "lo" } }
-            ]
-          }) {
-            id
-            posts {
-              id
-              content
-            }
-          }
-        }
-      `,
-          })) as { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
-
-          expect(data).toHaveProperty('allUsers.0.posts');
-          expect(data.allUsers).toHaveLength(1);
-          expect(data.allUsers[0].id).toEqual(user.id);
-          expect(data.allUsers[0].posts).toHaveLength(3);
-          expect(data.allUsers[0].posts.map(({ id }) => id).sort()).toEqual(ids.sort());
+          const users = (await context.lists.User.findMany({
+            where: {
+              AND: [
+                { posts_some: { content_contains: 'hi' } },
+                { posts_some: { content_contains: 'lo' } },
+              ],
+            },
+            query: 'id posts { id content }',
+          })) as { id: IdType; posts: { id: IdType; content: string }[] }[];
+          expect(users).toHaveLength(1);
+          expect(users[0].id).toEqual(user.id);
+          expect(users[0].posts).toHaveLength(3);
+          expect(users[0].posts.map(({ id }) => id).sort()).toEqual(ids.sort());
         })
       );
 
@@ -191,30 +139,19 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // Create a dummy user to make sure we're actually filtering it out
           await context.lists.User.createOne({ data: {} });
 
-          const data = (await context.graphql.run({
-            query: `
-          query {
-            allUsers(where: {
+          const users = (await context.lists.User.findMany({
+            where: {
               OR: [
-                { posts_some: { content_contains: "o w" } },
-                { posts_some: { content_contains: "? O" } }
-              ]
-            }) {
-              id
-              posts {
-                id
-                content
-              }
-            }
-          }
-        `,
-          })) as { allUsers: { id: IdType; posts: { id: IdType; content: string }[] }[] };
-
-          expect(data).toHaveProperty('allUsers.0.posts');
-          expect(data.allUsers).toHaveLength(1);
-          expect(data.allUsers[0].id).toEqual(user.id);
-          expect(data.allUsers[0].posts).toHaveLength(3);
-          expect(data.allUsers[0].posts.map(({ id }) => id).sort()).toEqual(ids.sort());
+                { posts_some: { content_contains: 'o w' } },
+                { posts_some: { content_contains: '? O' } },
+              ],
+            },
+            query: 'id posts { id content }',
+          })) as { id: IdType; posts: { id: IdType; content: string }[] }[];
+          expect(users).toHaveLength(1);
+          expect(users[0].id).toEqual(user.id);
+          expect(users[0].posts).toHaveLength(3);
+          expect(users[0].posts.map(({ id }) => id).sort()).toEqual(ids.sort());
         })
       );
 
@@ -274,103 +211,40 @@ multiAdapterRunners().map(({ runner, provider }) =>
           // adsCompany users whose every post is spam
           // NB: this includes users who have no posts at all
           type T = {
-            allUsers: {
-              id: IdType;
-              company: { id: IdType; name: string };
-              posts: { content: string }[];
-            }[];
-          };
-          const result1 = (await context.graphql.run({
-            query: `
-        query {
-          allUsers(where: {
-            company: { name: "${adsCompany.name}" }
-            posts_every: { content: "spam" }
-          }) {
-            id
-            company {
-              id
-              name
-            }
-            posts {
-              content
-            }
-          }
-        }
-      `,
+            id: IdType;
+            company: { id: IdType; name: string };
+            posts: { content: string }[];
+          }[];
+          const users = (await context.lists.User.findMany({
+            where: { company: { name: adsCompany.name }, posts_every: { content: 'spam' } },
+            query: 'id company { id name } posts { content }',
           })) as T;
-
-          expect(result1.allUsers).toHaveLength(2);
-          expect(result1.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
-          expect(result1.allUsers.map(u => u.id).sort()).toEqual(
-            [spammyUser.id, quietUser.id].sort()
-          );
-          expect(result1.allUsers.map(u => u.posts.every(p => p.content === 'spam'))).toEqual([
-            true,
-            true,
-          ]);
+          expect(users).toHaveLength(2);
+          expect(users.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
+          expect(users.map(u => u.id).sort()).toEqual([spammyUser.id, quietUser.id].sort());
+          expect(users.map(u => u.posts.every(p => p.content === 'spam'))).toEqual([true, true]);
 
           // adsCompany users with no spam
-          const result2 = (await context.graphql.run({
-            query: `
-        query {
-          allUsers(where: {
-            company: { name: "${adsCompany.name}" }
-            posts_none: { content: "spam" }
-          }) {
-            id
-            company {
-              id
-              name
-            }
-            posts {
-              content
-            }
-          }
-        }
-      `,
+          const users2 = (await context.lists.User.findMany({
+            where: { company: { name: adsCompany.name }, posts_none: { content: 'spam' } },
+            query: 'id company { id name } posts { content }',
           })) as T;
 
-          expect(result2.allUsers).toHaveLength(2);
-          expect(result2.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
-          expect(result2.allUsers.map(u => u.id).sort()).toEqual(
-            [nonSpammyUser.id, quietUser.id].sort()
-          );
-          expect(result2.allUsers.map(u => u.posts.every(p => p.content !== 'spam'))).toEqual([
-            true,
-            true,
-          ]);
+          expect(users2).toHaveLength(2);
+          expect(users2.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
+          expect(users2.map(u => u.id).sort()).toEqual([nonSpammyUser.id, quietUser.id].sort());
+          expect(users2.map(u => u.posts.every(p => p.content !== 'spam'))).toEqual([true, true]);
 
           // adsCompany users with some spam
-          const result3 = (await context.graphql.run({
-            query: `
-        query {
-          allUsers(where: {
-            company: { name: "${adsCompany.name}" }
-            posts_some: { content: "spam" }
-          }) {
-            id
-            company {
-              id
-              name
-            }
-            posts {
-              content
-            }
-          }
-        }
-      `,
+          const users3 = (await context.lists.User.findMany({
+            where: { company: { name: adsCompany.name }, posts_some: { content: 'spam' } },
+            query: 'id company { id name } posts { content }',
           })) as T;
 
-          expect(result3.allUsers).toHaveLength(2);
-          expect(result3.allUsers.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
-          expect(result3.allUsers.map(u => u.id).sort()).toEqual(
-            [mixedUser.id, spammyUser.id].sort()
-          );
-          expect(result3.allUsers.map(u => u.posts.some(p => p.content === 'spam'))).toEqual([
-            true,
-            true,
-          ]);
+          expect(users3).toHaveLength(2);
+          expect(users3.map(u => u.company.id)).toEqual([adsCompany.id, adsCompany.id]);
+          expect(users3.map(u => u.id).sort()).toEqual([mixedUser.id, spammyUser.id].sort());
+          expect(users3.map(u => u.posts.some(p => p.content === 'spam'))).toEqual([true, true]);
         })
       );
     });
