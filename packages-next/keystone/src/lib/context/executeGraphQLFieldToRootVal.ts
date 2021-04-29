@@ -49,20 +49,16 @@ function getTypeNodeForType(type: GraphQLType): TypeNode {
 }
 
 function getVariablesForGraphQLField(field: GraphQLField<any, any>) {
-  const variableDefinitions: VariableDefinitionNode[] = [];
-
-  for (const arg of field.args) {
-    variableDefinitions.push({
-      kind: 'VariableDefinition',
-      type: getTypeNodeForType(arg.type),
-      variable: { kind: 'Variable', name: { kind: 'Name', value: `${arg.name}` } },
-    });
-  }
+  const variableDefinitions: VariableDefinitionNode[] = field.args.map(arg => ({
+    kind: 'VariableDefinition',
+    type: getTypeNodeForType(arg.type),
+    variable: { kind: 'Variable', name: { kind: 'Name', value: arg.name } },
+  }));
 
   const argumentNodes: ArgumentNode[] = field.args.map(arg => ({
     kind: 'Argument',
     name: { kind: 'Name', value: arg.name },
-    value: { kind: 'Variable', name: { kind: 'Name', value: `${arg.name}` } },
+    value: { kind: 'Variable', name: { kind: 'Name', value: arg.name } },
   }));
 
   return { variableDefinitions, argumentNodes };
@@ -86,7 +82,8 @@ const ReturnRawValueObjectType = new GraphQLObjectType({
 
 type RequiredButStillAllowUndefined<
   T extends Record<string, any>,
-  // this being a param is important and is what makes this work
+  // this being a param is important and is what makes this work,
+  // please do not move it inside the mapped type.
   // i can't find a place that explains this but the tldr is that
   // having the keyof T _inside_ the mapped type means TS will keep modifiers
   // like readonly and optionality and we want to remove those here
@@ -111,21 +108,36 @@ function argsToArgsConfig(args: GraphQLArgument[]) {
   );
 }
 
-function getTypeForField(originalType: GraphQLOutputType): GraphQLOutputType {
+type OutputTypeWithoutNonNull = GraphQLObjectType | GraphQLList<OutputType>;
+
+type OutputType = OutputTypeWithoutNonNull | GraphQLNonNull<OutputTypeWithoutNonNull>;
+
+// note the GraphQLNonNull and GraphQLList constructors are incorrectly
+// not generic over their inner type which is why we have to use as
+// (the classes are generic but not the constructors)
+function getTypeForField(originalType: GraphQLOutputType): OutputType {
   if (originalType instanceof GraphQLNonNull) {
-    return new GraphQLNonNull(
-      getTypeForField(originalType.ofType)
-    ) as GraphQLList<GraphQLOutputType>;
+    return new GraphQLNonNull(getTypeForField(originalType.ofType)) as OutputType;
   }
   if (originalType instanceof GraphQLList) {
-    return new GraphQLList(getTypeForField(originalType.ofType)) as GraphQLList<GraphQLOutputType>;
+    return new GraphQLList(getTypeForField(originalType.ofType)) as OutputType;
   }
   return ReturnRawValueObjectType;
 }
 
+function getRootValGivenOutputType(originalType: OutputType, value: any): any {
+  if (originalType instanceof GraphQLNonNull) {
+    return getRootValGivenOutputType(originalType.ofType, value);
+  }
+  if (originalType instanceof GraphQLList) {
+    if (value === null) return null;
+    return value.map((x: any) => getRootValGivenOutputType(originalType.ofType, x));
+  }
+  return value[rawField];
+}
+
 export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
   const { argumentNodes, variableDefinitions } = getVariablesForGraphQLField(field);
-
   const document: DocumentNode = {
     kind: 'Document',
     definitions: [
@@ -151,6 +163,8 @@ export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
     ],
   };
 
+  const type = getTypeForField(field.type);
+
   const fieldConfig: RequiredButStillAllowUndefined<GraphQLFieldConfig<any, any>> = {
     args: argsToArgsConfig(field.args),
     astNode: undefined,
@@ -159,7 +173,7 @@ export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
     extensions: field.extensions,
     resolve: field.resolve,
     subscribe: field.subscribe,
-    type: getTypeForField(field.type),
+    type,
   };
   const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
@@ -190,6 +204,6 @@ export function executeGraphQLFieldToRootVal(field: GraphQLField<any, any>) {
     if (result.errors?.length) {
       throw result.errors[0];
     }
-    return result.data![field.name][rawField];
+    return getRootValGivenOutputType(type, result.data![field.name]);
   };
 }
