@@ -83,17 +83,13 @@ const ReturnRawValueObjectType = new GraphQLObjectType({
   },
 });
 
-type AddUndefinedIfExtendsUndefinedOnOther<
-  Source extends Record<Key, any>,
+type RequiredButStillAllowUndefined<
   T extends Record<string, any>,
+  // this being a param is important and is what makes this work
   Key extends keyof T = keyof T
 > = {
-  [K in Key]: T[K] | Source[K];
+  [K in Key]: T[K];
 };
-
-type RequiredButStillAllowUndefined<
-  T extends Record<string, any>
-> = AddUndefinedIfExtendsUndefinedOnOther<T, Required<T>>;
 
 function argsToArgsConfig(args: GraphQLArgument[]) {
   return Object.fromEntries(
