@@ -121,6 +121,8 @@ export type ServerConfig = {
   cors?: CorsOptions | true;
   /** Port number to start the server on. Defaults to process.env.PORT || 3000 */
   port?: number;
+  /** Maximum upload file size allowed (in bytes) */
+  maxFileSize?: number;
 };
 
 // config.graphql
