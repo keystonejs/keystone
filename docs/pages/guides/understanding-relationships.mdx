@@ -89,8 +89,8 @@ export default config({
       fields: {
         title: text(),
         content: text(),
-        authors: relationship({ ref: 'User.posts', many: true }),
-        // ↑ relates users to posts
+                // relates authors to posts
+                authors: relationship({ ref: 'User.posts', many: true }),
       },
     }),
   }),
