@@ -48,16 +48,33 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
     },
     getDataFromStream: async (stream, filename) => {
       const { upload: mode } = config;
-
       const pseudoSafeFilename = generateSafeFilename(filename);
       const writeStream = fs.createWriteStream(path.join(storagePath, pseudoSafeFilename));
+      const observeStreamErrors: Promise<void> = new Promise((resolve, reject) => {
+        stream.on('end', () => {
+          resolve();
+        });
+        // reject on both writeStream and read stream errors
+        writeStream.on('error', err => {
+          reject(err);
+        });
+        stream.on('error', err => {
+          reject(err);
+        });
+      });
 
       for await (let chunk of stream) {
         writeStream.write(chunk);
       }
 
-      const { size: filesize } = await fs.stat(path.join(storagePath, pseudoSafeFilename));
-      return { mode, filename: pseudoSafeFilename, filesize };
+      try {
+        await observeStreamErrors;
+        const { size: filesize } = await fs.stat(path.join(storagePath, pseudoSafeFilename));
+        return { mode, filesize, filename: pseudoSafeFilename };
+      } catch (e) {
+        fs.removeSync(path.join(storagePath, pseudoSafeFilename));
+        throw new Error(e);
+      }
     },
   };
 }
