@@ -1,9 +1,6 @@
 import { ItemRootValue, KeystoneContext, NextFieldType } from '@keystone-next/types';
-import {
-  validateCreateListAccessControl,
-  validateFieldAccessControl,
-} from '../context/createAccessControlContext';
-import { validateNonCreateListAccessControl } from '../context/createAccessControlContext';
+import { validateCreateListAccessControl, validateFieldAccessControl } from './access-control';
+import { validateNonCreateListAccessControl } from './access-control';
 import { mapUniqueWhereToWhere } from './query-resolvers';
 import {
   accessDeniedError,

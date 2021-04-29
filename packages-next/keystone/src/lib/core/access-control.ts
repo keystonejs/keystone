@@ -1,4 +1,4 @@
-import { InputFilter } from '../core/input-resolvers';
+import { InputFilter } from './input-resolvers';
 
 export async function validateNonCreateListAccessControl<
   Args extends { listKey: string; operation: 'read' | 'update' | 'delete' }

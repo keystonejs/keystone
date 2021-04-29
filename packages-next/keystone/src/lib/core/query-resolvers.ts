@@ -1,5 +1,5 @@
 import { FindManyArgsValue, KeystoneContext } from '@keystone-next/types';
-import { validateNonCreateListAccessControl } from '../context/createAccessControlContext';
+import { validateNonCreateListAccessControl } from './access-control';
 import {
   InputFilter,
   PrismaFilter,
