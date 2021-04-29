@@ -1,6 +1,6 @@
-import { lists } from '.keystone/api';
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
+import { lists } from '.keystone/api';
 
 const getCurrentUser = async req => {
 	const cookies = req.headers.cookie && cookie.parse(req.headers.cookie);

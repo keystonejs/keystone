@@ -1,14 +1,12 @@
-// read in .env
 require('dotenv').config();
 
-// continue
 import { config } from '@keystone-next/keystone/schema';
 import { statelessSessions, withItemData } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 
 import { lists } from './schema';
 
-const sessionSecret = process.env.SESSION_SECRET || "fallback_ss_0!";
+const sessionSecret = process.env.SESSION_SECRET || 'fallback_ss_0!FantasticFallBackSSSecret12345!';
 const sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 
 const { withAuth } = createAuth({

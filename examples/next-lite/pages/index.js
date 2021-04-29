@@ -1,15 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { getCurrentUser } from '../requestAuth';
 // eslint-disable-next-line import/no-unresolved
 import { lists } from '.keystone/api';
-import { getCurrentUser } from '../requestAuth';
 
 export default function HomePage({ posts, authedUser }) {
   return (
     <div>
       <Image src="/logo.svg" width="38" height="38" alt="Keystone" />
-      <h1 style={{display: 'inline', marginLeft: '10px', verticalAlign: 'top'}}>
+      <h1 style={{ display: 'inline', marginLeft: '10px', verticalAlign: 'top' }}>
         Welcome to my blog{authedUser && `, ${authedUser.name}`}
       </h1>
       <ul>
