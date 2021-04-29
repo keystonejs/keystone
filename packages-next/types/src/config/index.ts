@@ -150,13 +150,13 @@ export type FilesConfig = {
   upload: FileMode;
   local?: {
     /**
-     * The path local images are uploaded to.
-     * @default 'public/images'
+     * The path local files are uploaded to.
+     * @default 'public/files'
      */
     storagePath?: string;
     /**
-     * The base of the URL local images will be served from, outside of keystone.
-     * @default '/images'
+     * The base of the URL local files will be served from, outside of keystone.
+     * @default '/files'
      */
     baseUrl?: string;
   };
