@@ -36,17 +36,13 @@ export default config({
       fields: {
         title: text(),
         content: text(),
-        authors: relationship({
-          // references the 'User' list from the 'authors' field in the 'Post' list
-          ref: 'User',
-          // sets cardinality, see 'Establishing Cardinality' in this guide
-          many: true,
-        }),
+        authors: relationship({ ref: 'User', many: true, }),
       },
     }),
   }),
 });
 ```
+?> (info) The `many` config option relates to _cardinality_ which we explore later
 
 ## One-sided & two-sided relationships
 
@@ -168,7 +164,7 @@ export default config({
 _Cardinality_ is a term used to describe how many items can exist on either side of a relationship. Each side can have either `one` or `many` related items. Since each relationship can have one and two sides, we have the following options available:
 
 | Relationship type | One to one | One to many | Many to many |
-| :-------------: | :----------: | :-----------: | :-----------: |
+| ------------- | ---------- | ----------- | ----------- |
 | One-sided | ❌ | ✅ | ✅ |
 | Two-sided | ✅ | ✅ | ✅ |
 
