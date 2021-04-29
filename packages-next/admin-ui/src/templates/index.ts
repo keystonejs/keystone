@@ -1,5 +1,5 @@
 import * as Path from 'path';
-import type { AdminMetaRootVal, BaseKeystone, KeystoneConfig } from '@keystone-next/types';
+import type { AdminMetaRootVal, KeystoneConfig } from '@keystone-next/types';
 import { AdminFileToWrite } from '@keystone-next/types';
 import { GraphQLSchema } from 'graphql';
 import { appTemplate } from './app';

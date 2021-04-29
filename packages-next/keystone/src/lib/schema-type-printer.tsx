@@ -76,6 +76,7 @@ export function printGeneratedTypes(
   keystone: BaseKeystone,
   graphQLSchema: GraphQLSchema
 ) {
+  return '';
   let scalars = {
     ID: 'string',
     Boolean: 'boolean',

@@ -1,7 +1,6 @@
 import {
   KeystoneContext,
   KeystoneConfig,
-  BaseKeystone,
   AdminMetaRootVal,
   ListMetaRootVal,
   FieldMetaRootVal,
@@ -9,21 +8,18 @@ import {
 } from '@keystone-next/types';
 import { bindTypesToContext } from '@ts-gql/schema';
 import { GraphQLObjectType, GraphQLScalarType, GraphQLSchema } from 'graphql';
-import { createAdminMeta } from './createAdminMeta';
 
 const types = bindTypesToContext<KeystoneContext | { isAdminUIBuildProcess: true }>();
 
 export function getAdminMetaSchema({
-  keystone,
   config,
   schema,
+  adminMeta: adminMetaRoot,
 }: {
-  keystone: BaseKeystone;
+  adminMeta: AdminMetaRootVal;
   config: KeystoneConfig;
   schema: GraphQLSchema;
 }) {
-  const adminMetaRoot = createAdminMeta(config, keystone);
-
   const isAccessAllowed =
     config.session === undefined
       ? undefined
