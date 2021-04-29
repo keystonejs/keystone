@@ -46,7 +46,7 @@ export const lists = createSchema({
       email: text({ isRequired: true, isUnique: true }),
       /** Avatar upload for the users profile, stored locally */
       avatar: image(),
-      file: file(),
+      attachment: file(),
       /** Used to log in. */
       password: password(),
       /** Administrators have more access to various lists and fields. */
