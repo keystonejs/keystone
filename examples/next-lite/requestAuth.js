@@ -10,7 +10,7 @@ const getCurrentUser = async req => {
 		query: 'id name'
 	});
 
-	return user;
+	return user || false;
 };
 
 export {

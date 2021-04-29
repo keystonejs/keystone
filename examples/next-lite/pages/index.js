@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { lists } from '.keystone/api';
 import { getCurrentUser } from '../requestAuth';
 
-export default function HomePage({ posts }) {
+export default function HomePage({ posts, authedUser }) {
   return (
     <div>
       <Image src="/logo.svg" width="38" height="38" alt="Keystone" />
-      <h1 style={{display: 'inline', marginLeft: '10px', verticalAlign: 'top'}}>Welcome to my blog</h1>
+      <h1 style={{display: 'inline', marginLeft: '10px', verticalAlign: 'top'}}>
+        Welcome to my blog{authedUser && `, ${authedUser.name}`}
+      </h1>
       <ul>
         {posts.map((post, i) => (
           <li key={i}>
@@ -25,7 +27,6 @@ export default function HomePage({ posts }) {
 
 export async function getServerSideProps({ req }) {
   const authedUser = await getCurrentUser(req);
-  console.log(authedUser)
   const posts = await lists.Post.findMany({ query: 'slug title' });
-  return { props: { posts } };
+  return { props: { posts, authedUser } };
 }
