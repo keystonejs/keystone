@@ -43,7 +43,7 @@ export function createFilesContext(config?: FilesConfig): FilesContext | undefin
       if (!fileRef) {
         throw new Error('Invalid file reference');
       }
-      const { size: filesize } = await fs.stat(path.join(storagePath, `${fileRef.filename}`));
+      const { size: filesize } = await fs.stat(path.join(storagePath, fileRef.filename));
       return { filesize, ...fileRef };
     },
     getDataFromStream: async (stream, filename) => {
