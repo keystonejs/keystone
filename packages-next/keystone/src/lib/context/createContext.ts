@@ -5,8 +5,10 @@ import type {
   KeystoneContext,
   KeystoneGraphQLAPI,
   ImagesConfig,
+  GqlNames,
 } from '@keystone-next/types';
 
+import { PrismaClient } from '../core/utils';
 import { getDbAPIFactory, itemAPIForList } from './itemAPI';
 import { createImagesContext } from './createImagesContext';
 
@@ -14,10 +16,16 @@ export function makeCreateContext({
   graphQLSchema,
   internalSchema,
   imagesConfig,
+  prismaClient,
+  gqlNamesByList,
+  maxTotalResults,
 }: {
   graphQLSchema: GraphQLSchema;
   internalSchema: GraphQLSchema;
   imagesConfig?: ImagesConfig;
+  prismaClient: PrismaClient;
+  maxTotalResults: number;
+  gqlNamesByList: Record<string, GqlNames>;
 }) {
   const images = createImagesContext(imagesConfig);
   // We precompute these helpers here rather than every time createContext is called
@@ -28,13 +36,13 @@ export function makeCreateContext({
   // is that really that bad? no not really. this has just been more optimised because the cost of what it's
   // doing is more obvious(even though in reality it's much smaller than the alternative)
   const publicDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
-  for (const [listKey, list] of Object.entries(keystone.lists)) {
-    publicDbApiFactories[listKey] = getDbAPIFactory(list.gqlNames, graphQLSchema);
+  for (const [listKey, gqlNames] of Object.entries(gqlNamesByList)) {
+    publicDbApiFactories[listKey] = getDbAPIFactory(gqlNames, graphQLSchema);
   }
 
   const internalDbApiFactories: Record<string, ReturnType<typeof getDbAPIFactory>> = {};
-  for (const [listKey, list] of Object.entries(keystone.lists)) {
-    internalDbApiFactories[listKey] = getDbAPIFactory(list.gqlNames, internalSchema);
+  for (const [listKey, gqlNames] of Object.entries(gqlNamesByList)) {
+    internalDbApiFactories[listKey] = getDbAPIFactory(gqlNames, internalSchema);
   }
 
   const createContext = ({
@@ -70,9 +78,9 @@ export function makeCreateContext({
       db: { lists: dbAPI },
       lists: itemAPI,
       totalResults: 0,
-      prisma: keystone.adapter.prisma,
+      prisma: prismaClient,
       graphql: { raw: rawGraphQL, run: runGraphQL, schema },
-      maxTotalResults: keystone.queryLimits.maxTotalResults,
+      maxTotalResults,
       sudo: () =>
         createContext({ sessionContext, skipAccessControl: true, req, schemaName: 'internal' }),
       exitSudo: () => createContext({ sessionContext, skipAccessControl: false, req }),
@@ -86,11 +94,11 @@ export function makeCreateContext({
       ...sessionContext,
       // Note: This field lets us use the server-side-graphql-client library.
       // We may want to remove it once the updated itemAPI w/ query is available.
-      gqlNames: (listKey: string) => keystone.lists[listKey].gqlNames,
+      gqlNames: (listKey: string) => gqlNamesByList[listKey],
       images,
     };
     const dbAPIFactories = schemaName === 'public' ? publicDbApiFactories : internalDbApiFactories;
-    for (const listKey of Object.keys(keystone.lists)) {
+    for (const listKey of Object.keys(gqlNamesByList)) {
       dbAPI[listKey] = dbAPIFactories[listKey](contextToReturn);
       itemAPI[listKey] = itemAPIForList(listKey, contextToReturn, dbAPI[listKey]);
     }

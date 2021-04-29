@@ -50,8 +50,13 @@ type PrismaModel = {
   }) => Promise<any>;
 };
 
-type PrismaClient = {
+// please do not make this type be the value of KeystoneContext['prisma']
+// this type is meant for generic usage, KeystoneContext should be generic over a PrismaClient
+// and we should generate a KeystoneContext type in node_modules/.keystone/types which passes in the user's PrismaClient type
+// so that users get right PrismaClient types specifically for their project
+export type PrismaClient = {
   $disconnect(): Promise<void>;
+  $connect(): Promise<void>;
 } & Record<string, PrismaModel>;
 
 export function getPrismaModelForList(prismaClient: PrismaClient, listKey: string) {
