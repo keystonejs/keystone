@@ -72,8 +72,8 @@ export const crudTests = (keystoneTestWrapper: any) => {
             data: { avatar: prepareFile(filename) },
             query: `
               avatar {
+                __typename
                 id
-                mode
                 filesize
                 width
                 height
@@ -88,7 +88,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
             ref: `local:${data.avatar.id}.jpg`,
             src: `/images/${data.avatar.id}.jpg`,
             id: data.avatar.id,
-            mode: 'local',
+            __typename: 'LocalImageFieldOutput',
             filesize: 3250,
             width: 150,
             height: 152,
@@ -128,7 +128,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
           query: `
             avatar {
               id
-              mode
+              __typename
               filesize
               width
               height
@@ -147,7 +147,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
           query: `
             avatar {
               id
-              mode
+              __typename
               filesize
               width
               height
