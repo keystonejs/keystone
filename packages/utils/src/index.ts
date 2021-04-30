@@ -258,7 +258,7 @@ export const humanize = (str: string) => {
     .join(' ');
 };
 
-const REFREGEX = /^(local):image:([^:\n]+)\.(gif|jpg|png|webp)$/;
+const REFREGEX = /^(local):image:([^\\\/:\n]+)\.(gif|jpg|png|webp)$/;
 
 export const getImageRef = (mode: ImageMode, id: string, extension: ImageExtension) =>
   `${mode}:image:${id}.${extension}`;
