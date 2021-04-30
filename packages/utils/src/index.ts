@@ -259,7 +259,7 @@ export const humanize = (str: string) => {
 };
 
 const IMAGEREGEX = /^(local):([^:\n]+)\.(gif|jpg|png|webp)$/;
-const FILEREGEX = /^(local):file:([^:\n]+)/;
+const FILEREGEX = /^(local):file:([^\\\/:\n]+)/;
 
 export const getImageRef = (mode: ImageMode, id: string, extension: ImageExtension) =>
   `${mode}:${id}.${extension}`;
