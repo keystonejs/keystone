@@ -322,8 +322,4 @@ export function validateFile({ validity }: { validity: ValidityState }): string 
   if (!validity.valid) {
     return 'Something went wrong, please reload and try again.';
   }
-  //   // check if the file is actually an image
-  //   if (!file.type.includes('image')) {
-  //     return 'Only image files are allowed. Please try again.';
-  //   }
 }
