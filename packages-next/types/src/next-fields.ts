@@ -38,8 +38,9 @@ export type FieldTypeFunc<
   TDBField extends DBField = DBField,
   CreateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
-> = (data: FieldData) => NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg>;
+  FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
+  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
+> = (data: FieldData) => NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg>;
 
 export type NextFieldType<
   TDBField extends DBField = DBField,
@@ -49,17 +50,7 @@ export type NextFieldType<
   UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
 > = {
   dbField: TDBField;
-  input?: {
-    uniqueWhere?: FieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
-    where?: FieldInputArg<DBFieldFilters<TDBField>, FilterArg>;
-    create?: FieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
-    update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
-  };
-  output: FieldTypeOutputField<TDBField>;
-  views: string;
-  extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
-  cacheHint?: CacheHint;
-} & CommonFieldConfig<BaseGeneratedListTypes>;
+} & FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg>;
 
 type ScalarPrismaTypes = {
   String: string;
@@ -226,6 +217,29 @@ type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
   KeystoneContext
 >;
 
+type FieldTypeWithoutDBField<
+  TDBField extends DBField = DBField,
+  CreateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
+  UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
+  FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
+  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
+> = {
+  input?: {
+    uniqueWhere?: FieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
+    where?: FieldInputArg<DBFieldFilters<TDBField>, FilterArg>;
+    create?: FieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
+    update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
+  };
+  output: FieldTypeOutputField<TDBField>;
+  views: string;
+  extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
+  cacheHint?: CacheHint;
+  getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
+  // maybe this should be called `types` and accept any type?
+  // the long and weird name is kinda good though because it tells people they shouldn't use it unless they know what this means
+  unreferencedConcreteInterfaceImplementations?: tsgql.ObjectType<any, string, KeystoneContext>[];
+} & CommonFieldConfig<BaseGeneratedListTypes>;
+
 export function fieldType<TDBField extends DBField>(dbField: TDBField) {
   return function <
     CreateArg extends tsgql.Arg<tsgql.InputType, any>,
@@ -233,24 +247,7 @@ export function fieldType<TDBField extends DBField>(dbField: TDBField) {
     FilterArg extends tsgql.Arg<tsgql.InputType, any>,
     UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any>
   >(
-    stuff: {
-      input?: {
-        uniqueWhere?: FieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
-        where?: FieldInputArg<DBFieldFilters<TDBField>, FilterArg>;
-        create?: FieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
-        update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
-      };
-      output: FieldTypeOutputField<TDBField>;
-      views: string;
-      extraOutputFields?: Record<string, FieldTypeOutputField<TDBField>>;
-      cacheHint?: CacheHint;
-      getAdminMeta?: (adminMeta: AdminMetaRootVal) => JSONValue;
-      // maybe this should be called `types` and accept any type?
-      // the long and weird name is kinda good though because it tells people they shouldn't use it unless they know what this means
-      // context: the use case will be things like this:
-      // const x = types.interfaceType
-      unreferencedInterfaceImplementations?: tsgql.ObjectType<any, string, KeystoneContext>[];
-    } & CommonFieldConfig<BaseGeneratedListTypes>
+    stuff: FieldTypeWithoutDBField<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg>
   ): NextFieldType<TDBField, CreateArg, UpdateArg, FilterArg, UniqueFilterArg> {
     return { ...stuff, dbField };
   };
