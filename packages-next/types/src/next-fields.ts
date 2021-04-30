@@ -217,18 +217,28 @@ type FieldTypeOutputField<TDBField extends DBField> = tsgql.OutputField<
   KeystoneContext
 >;
 
+export type SortDirection = 'asc' | 'desc';
+
+type DBFieldToSortByValue<TDBField extends DBField> = TDBField extends ScalarishDBField
+  ? SortDirection
+  : TDBField extends MultiDBField<infer Fields>
+  ? { [Key in keyof Fields]: DBFieldToSortByValue<Fields[Key]> }
+  : undefined;
+
 type FieldTypeWithoutDBField<
   TDBField extends DBField = DBField,
   CreateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   UpdateArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
   FilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
-  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
+  UniqueFilterArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>,
+  SortByArg extends tsgql.Arg<tsgql.InputType, any> = tsgql.Arg<tsgql.InputType, any>
 > = {
   input?: {
     uniqueWhere?: FieldInputArg<DBFieldUniqueFilter<TDBField>, UniqueFilterArg>;
     where?: FieldInputArg<DBFieldFilters<TDBField>, FilterArg>;
     create?: FieldInputArg<DBFieldToInputValue<TDBField>, CreateArg>;
     update?: FieldInputArg<DBFieldToInputValue<TDBField>, UpdateArg>;
+    sortBy?: FieldInputArg<DBFieldToSortByValue<TDBField>, SortByArg>;
   };
   output: FieldTypeOutputField<TDBField>;
   views: string;

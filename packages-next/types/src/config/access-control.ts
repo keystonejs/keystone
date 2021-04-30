@@ -72,7 +72,8 @@ export type ListAccessControl<GeneratedListTypes extends BaseGeneratedListTypes>
         | CreateAccessArgs<GeneratedListTypes>
         | UpdateAccessArgs<GeneratedListTypes>
         | DeleteAccessArgs
-    ) => MaybePromise<boolean>);
+    ) => MaybePromise<boolean>)
+  | boolean;
 
 export type IndividualFieldAccessControl<Args> = boolean | ((args: Args) => MaybePromise<boolean>);
 

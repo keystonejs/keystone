@@ -1,10 +1,11 @@
-import type { KeystoneConfig, Provider } from '@keystone-next/types';
+import { FieldData, getGqlNames, KeystoneConfig, Provider } from '@keystone-next/types';
 
 import { createGraphQLSchema } from './createGraphQLSchema';
 import { makeCreateContext } from './context/createContext';
-import { createKeystone } from './createKeystone';
+import { initialiseLists } from './core/types-for-lists';
+import { createAdminMeta } from './createAdminMeta';
 
-function getDBProvider(db: KeystoneConfig['db']): Provider {
+export function getDBProvider(db: KeystoneConfig['db']): Provider {
   if (db.adapter === 'prisma_postgresql' || db.provider === 'postgresql') {
     return 'postgresql';
   } else if (db.adapter === 'prisma_sqlite' || db.provider === 'sqlite') {
@@ -16,22 +17,57 @@ function getDBProvider(db: KeystoneConfig['db']): Provider {
   }
 }
 
+function getInternalGraphQLSchema(config: KeystoneConfig) {
+  const transformedConfig: KeystoneConfig = {
+    ...config,
+    lists: Object.fromEntries(
+      Object.entries(config.lists).map(([listKey, list]) => {
+        return [
+          listKey,
+          {
+            ...list,
+            access: true,
+            fields: Object.fromEntries(
+              Object.entries(list.fields).map(([fieldKey, field]) => {
+                return [
+                  fieldKey,
+                  (data: FieldData) => {
+                    return { ...field(data), access: true };
+                  },
+                ];
+              })
+            ),
+          },
+        ];
+      })
+    ),
+  };
+  const { lists } = initialiseLists(transformedConfig.lists);
+  const adminMeta = createAdminMeta(transformedConfig, lists);
+  return createGraphQLSchema(transformedConfig, lists, adminMeta);
+}
+
 export function createSystem(config: KeystoneConfig, PrismaClient?: any) {
-  const keystone = createKeystone(config);
+  const { lists } = initialiseLists(config.lists);
 
-  const graphQLSchema = createGraphQLSchema(config, keystone, 'public');
+  const adminMeta = createAdminMeta(config, lists);
 
-  const internalSchema = createGraphQLSchema(config, keystone, 'internal');
+  const graphQLSchema = createGraphQLSchema(config, lists, adminMeta);
+
+  const internalGraphQLSchema = getInternalGraphQLSchema(config);
+
   const prismaClient = PrismaClient
-    ? new PrismaClient({ datasources: { [getDBProvider(config.db)]: { url: config.url } } })
+    ? new PrismaClient({ datasources: { [getDBProvider(config.db)]: { url: config.db.url } } })
     : undefined;
   const createContext = makeCreateContext({
     graphQLSchema,
-    internalSchema,
+    internalSchema: internalGraphQLSchema,
     imagesConfig: config.images,
     maxTotalResults: config.graphql?.queryLimits?.maxTotalResults ?? Infinity,
     prismaClient,
-    gqlNamesByList,
+    gqlNamesByList: Object.fromEntries(
+      Object.entries(lists).map(([listKey, list]) => [listKey, getGqlNames({ listKey, ...list })])
+    ),
   });
 
   return {
@@ -47,5 +83,8 @@ export function createSystem(config: KeystoneConfig, PrismaClient?: any) {
     },
     graphQLSchema,
     createContext,
+    // TODO: REMOVE THIS
+    // this should absolutely not under any circumstances be merged, this is much to make things easier right now to not change a bunch of other things
+    lists,
   };
 }

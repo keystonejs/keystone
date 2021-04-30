@@ -3,9 +3,9 @@ import {
   MultiDBField,
   NoDBField,
   ScalarishDBField,
-  DatabaseConfig,
   ScalarDBField,
   ScalarDBFieldDefault,
+  Provider,
 } from '@keystone-next/types';
 
 // TODO: probably validate that list keys and fields are valid prisma identifiers
@@ -13,7 +13,7 @@ import {
 
 type ListsToPrintPrismaSchema = Record<string, { fields: FieldsToPrintPrismaSchema }>;
 
-type FieldsToPrintPrismaSchema = Record<string, DBField>;
+type FieldsToPrintPrismaSchema = Record<string, { dbField: DBField }>;
 
 type BaseComputedRelationDBField = {
   kind: 'relation';
@@ -31,10 +31,7 @@ export type ResolvedRelationDBField =
       foreignIdField: 'none' | 'owned' | 'owned-unique';
     });
 
-type ResolvedListsToPrintPrismaSchema = Record<
-  string,
-  { fields: ResolvedFieldsToPrintPrismaSchema }
->;
+export type ListsWithResolvedRelations = Record<string, { fields: FieldsWithResolvedRelations }>;
 
 export type ResolvedDBField =
   | ResolvedRelationDBField
@@ -44,7 +41,7 @@ export type ResolvedDBField =
 
 // note: all keystone fields correspond to a field here
 // not all fields here correspond to keystone fields(the implicit side of one-sided relation fields)
-type ResolvedFieldsToPrintPrismaSchema = Record<string, ResolvedDBField>;
+type FieldsWithResolvedRelations = Record<string, ResolvedDBField>;
 
 type Rel = {
   listKey: string;
@@ -68,16 +65,14 @@ function sortRelationships(left: Rel, right: Rel) {
 
 // TODO: validate no conflicts with multi fields so users get a better error than prisma format failing
 
-export function resolveRelationships(
-  lists: ListsToPrintPrismaSchema
-): ResolvedListsToPrintPrismaSchema {
+export function resolveRelationships(lists: ListsToPrintPrismaSchema): ListsWithResolvedRelations {
   const alreadyResolvedTwoWayRelationships = new Set<string>();
-  const resolvedLists: ResolvedListsToPrintPrismaSchema = Object.fromEntries(
+  const resolvedLists: ListsWithResolvedRelations = Object.fromEntries(
     Object.keys(lists).map(listKey => [listKey, { fields: {} }])
   );
-  for (const [listKey, { fields }] of Object.entries(lists)) {
+  for (const [listKey, fields] of Object.entries(lists)) {
     const resolvedList = resolvedLists[listKey];
-    for (const [fieldPath, field] of Object.entries(fields)) {
+    for (const [fieldPath, { dbField: field }] of Object.entries(fields.fields)) {
       if (field.kind !== 'relation') {
         resolvedList.fields[fieldPath] = field;
         continue;
@@ -95,7 +90,7 @@ export function resolveRelationships(
           continue;
         }
         alreadyResolvedTwoWayRelationships.add(foreignRef);
-        const foreignField = foreignUnresolvedList.fields[field.field];
+        const foreignField = foreignUnresolvedList.fields[field.field].dbField;
 
         if (foreignField.kind !== 'relation') {
           throw new Error(
@@ -298,7 +293,7 @@ function printField(
   fieldPath: string,
   field: Exclude<ResolvedDBField, { kind: 'none' }>,
   datasourceName: string,
-  lists: ResolvedListsToPrintPrismaSchema
+  lists: ListsWithResolvedRelations
 ): string {
   if (field.kind === 'scalar') {
     const nativeType = printNativeType(field.nativeType, datasourceName);
@@ -348,7 +343,7 @@ function printField(
   return assertNever(field);
 }
 
-function collectEnums(lists: ResolvedListsToPrintPrismaSchema) {
+function collectEnums(lists: ListsWithResolvedRelations) {
   const enums: Record<string, { values: string[]; firstDefinedByRef: string }> = {};
   for (const [listKey, { fields }] of Object.entries(lists)) {
     for (const [fieldPath, field] of Object.entries(fields)) {
@@ -415,13 +410,11 @@ function assertFieldIsValidIdField(
   }
 }
 
-export function printSchema(
-  lists: ListsToPrintPrismaSchema,
-  provider: NonNullable<DatabaseConfig['provider']>,
+export function printPrismaSchema(
+  lists: ListsWithResolvedRelations,
+  provider: Provider,
   clientDir: string
 ) {
-  const resolvedLists = resolveRelationships(lists);
-
   let prismaSchema = `datasource ${provider} {
   url = env("DATABASE_URL")
   provider = "${provider}"
@@ -432,11 +425,11 @@ generator client {
   output = "${clientDir}"
 }
 \n`;
-  for (const [listKey, { fields }] of Object.entries(resolvedLists)) {
+  for (const [listKey, { fields }] of Object.entries(lists)) {
     prismaSchema += `model ${listKey} {`;
     for (const [fieldPath, field] of Object.entries(fields)) {
       if (field.kind !== 'none') {
-        prismaSchema += '\n' + printField(fieldPath, field, provider, resolvedLists);
+        prismaSchema += '\n' + printField(fieldPath, field, provider, lists);
       }
       if (fieldPath === 'id') {
         assertFieldIsValidIdField(listKey, field);
@@ -445,7 +438,7 @@ generator client {
     }
     prismaSchema += `\n}\n`;
   }
-  prismaSchema += `\n${collectEnums(resolvedLists)}\n`;
+  prismaSchema += `\n${collectEnums(lists)}\n`;
 
-  return { resolvedLists, prismaSchema };
+  return prismaSchema;
 }

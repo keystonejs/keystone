@@ -9,7 +9,7 @@ import { PrismaClient } from '.prisma/client';
 const prisma = new PrismaClient({ rejectOnNotFound: false });
 
 let x = async () => {
-  let x = await prisma.post.findUnique({ where: { id: 1 }, rejectOnNotFound: false });
+  let x = await prisma.post.findMany({ where: { id: 1 }, rejectOnNotFound: false });
   const {} = await prisma.post.delete({});
   prisma.user.create({
     data: { phoneNumbers: {} },

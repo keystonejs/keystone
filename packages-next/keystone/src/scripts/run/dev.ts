@@ -13,6 +13,7 @@ import {
   requirePrismaClient,
 } from '../../artifacts';
 import { getAdminPath, getConfigPath } from '../utils';
+import { createAdminMeta } from '../../lib/createAdminMeta';
 
 const devLoadingHTMLFilepath = path.join(
   path.dirname(require.resolve('@keystone-next/keystone/package.json')),
@@ -35,7 +36,7 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
       const { keystone, graphQLSchema } = createSystem(config);
 
       console.log('✨ Generating GraphQL and Prisma schemas');
-      const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, keystone, cwd)).prisma;
+      const prismaSchema = (await generateCommittedArtifacts(graphQLSchema, config, cwd)).prisma;
       await generateNodeModulesArtifacts(graphQLSchema, keystone, config, cwd);
 
       if (config.db.useMigrations) {
@@ -56,16 +57,21 @@ export const dev = async (cwd: string, shouldDropDatabase: boolean) => {
     }
     const prismaClient = requirePrismaClient(cwd);
 
-    const { keystone, graphQLSchema, createContext } = createSystem(config, prismaClient);
+    const { keystone, graphQLSchema, createContext, lists } = createSystem(config, prismaClient);
 
     console.log('✨ Connecting to the database');
-    await keystone.connect({ context: createContext().sudo() });
+    await keystone.connect();
     disconnect = () => keystone.disconnect();
     if (config.ui?.isDisabled) {
       console.log('✨ Skipping Admin UI code generation');
     } else {
       console.log('✨ Generating Admin UI code');
-      await generateAdminUI(config, graphQLSchema, keystone, getAdminPath(cwd));
+      await generateAdminUI(
+        config,
+        graphQLSchema,
+        createAdminMeta(config, lists),
+        getAdminPath(cwd)
+      );
     }
 
     console.log('✨ Creating server');

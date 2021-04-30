@@ -49,7 +49,7 @@ async function setupFromConfig({
 
   const prismaClient = await (async () => {
     const { keystone, graphQLSchema } = createSystem(config);
-    const artifacts = await getCommittedArtifacts(graphQLSchema, keystone);
+    const artifacts = await getCommittedArtifacts(graphQLSchema, config);
     const hash = hashPrismaSchema(artifacts.prisma);
     if (provider === 'postgresql') {
       config.db.url = `${config.db.url}?schema=${hash.toString()}`;

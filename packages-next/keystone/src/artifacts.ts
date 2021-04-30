@@ -7,6 +7,9 @@ import { format } from 'prettier';
 import { confirmPrompt, shouldPrompt } from './lib/prompts';
 import { printGeneratedTypes } from './lib/schema-type-printer';
 import { ExitError } from './scripts/utils';
+import { initialiseLists } from './lib/core/types-for-lists';
+import { printPrismaSchema } from './lib/core/prisma-schema';
+import { getDBProvider } from './lib/createSystem';
 
 export function getSchemaPaths(cwd: string) {
   return {
@@ -22,15 +25,18 @@ type CommittedArtifacts = {
 
 export async function getCommittedArtifacts(
   graphQLSchema: GraphQLSchema,
-  keystone: BaseKeystone
+  config: KeystoneConfig
 ): Promise<CommittedArtifacts> {
+  const { listsWithResolvedRelations } = initialiseLists(config.lists);
+  const prismaSchema = printPrismaSchema(
+    listsWithResolvedRelations,
+    getDBProvider(config.db),
+    'node_modules/.prisma/client'
+  );
   return {
     graphql: format(printSchema(graphQLSchema), { parser: 'graphql' }),
     prisma: await formatSchema({
-      schema: keystone.adapter._generatePrismaSchema({
-        rels: keystone._consolidateRelationships(),
-        clientDir: 'node_modules/.prisma/client',
-      }),
+      schema: prismaSchema,
     }),
   };
 }
@@ -48,10 +54,10 @@ async function readFileButReturnNothingIfDoesNotExist(filename: string) {
 
 export async function validateCommittedArtifacts(
   graphQLSchema: GraphQLSchema,
-  keystone: BaseKeystone,
+  config: KeystoneConfig,
   cwd: string
 ) {
-  const artifacts = await getCommittedArtifacts(graphQLSchema, keystone);
+  const artifacts = await getCommittedArtifacts(graphQLSchema, config);
   const schemaPaths = getSchemaPaths(cwd);
   const [writtenGraphQLSchema, writtenPrismaSchema] = await Promise.all([
     readFileButReturnNothingIfDoesNotExist(schemaPaths.graphql),
@@ -99,10 +105,10 @@ export async function writeCommittedArtifacts(artifacts: CommittedArtifacts, cwd
 
 export async function generateCommittedArtifacts(
   graphQLSchema: GraphQLSchema,
-  keystone: BaseKeystone,
+  config: KeystoneConfig,
   cwd: string
 ) {
-  const artifacts = await getCommittedArtifacts(graphQLSchema, keystone);
+  const artifacts = await getCommittedArtifacts(graphQLSchema, config);
   await writeCommittedArtifacts(artifacts, cwd);
   return artifacts;
 }

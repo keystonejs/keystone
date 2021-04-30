@@ -4,7 +4,10 @@ import type { ListHooks } from './hooks';
 import type { ListAccessControl } from './access-control';
 import type { BaseFields } from './fields';
 
-export type ListSchemaConfig = Record<string, ListConfig<BaseGeneratedListTypes, any>>;
+export type ListSchemaConfig = Record<
+  string,
+  ListConfig<BaseGeneratedListTypes, BaseFields<BaseGeneratedListTypes>>
+>;
 
 export type ListConfig<
   TGeneratedListTypes extends BaseGeneratedListTypes,
@@ -45,29 +48,29 @@ export type ListConfig<
    */
   description?: string; // defaults both { adminUI: { description }, graphQL: { description } }
 
-  // Not currently supported
-  // plugins?: any[]; // array of plugins that can modify the list config
-
   /**
    * The label used for the list
    * @default listKey.replace(/([a-z])([A-Z])/g, '$1 $2').split(/\s|_|\-/).filter(i => i).map(upcase).join(' ');
    */
-  // Not currently supported
-  // label?: string;
+  label?: string;
 
   /**
    * The singular form of the list key
    * @default pluralize.singular(label)
    */
-  // Not currently supported
-  // singular?: string;
+  singular?: string;
 
   /**
    * The plural form of the list key
    * @default pluralize.plural(label)
    */
-  // Not currently supported
-  // plural?: string;
+  plural?: string;
+
+  /**
+   * The path used in the Admin UI
+   */
+  // (should be in ui?)
+  path?: string;
 
   // TODO: Come back to how we can facilitate unique fields and combinations of fields (for
   // queries, upserts, etc, in particular follow Prisma's design)

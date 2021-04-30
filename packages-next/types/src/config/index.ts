@@ -141,7 +141,7 @@ export type GraphQLConfig = {
 
 // config.extendGraphqlSchema
 
-export type ExtendGraphqlSchema = (schema: GraphQLSchema, keystone: BaseKeystone) => GraphQLSchema;
+export type ExtendGraphqlSchema = (schema: GraphQLSchema) => GraphQLSchema;
 
 // config.images
 
