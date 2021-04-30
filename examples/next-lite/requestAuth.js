@@ -1,5 +1,6 @@
 import * as cookie from 'cookie';
 import Iron from '@hapi/iron';
+// eslint-disable-next-line import/no-unresolved
 import { lists } from '.keystone/api';
 
 const getCurrentUser = async req => {
