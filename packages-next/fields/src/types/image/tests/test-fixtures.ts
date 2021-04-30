@@ -85,7 +85,7 @@ export const crudTests = (keystoneTestWrapper: any) => {
           });
           expect(data).not.toBe(null);
           expect(data.avatar).toEqual({
-            ref: `local:${data.avatar.id}.jpg`,
+            ref: `local:image:${data.avatar.id}.jpg`,
             src: `/images/${data.avatar.id}.jpg`,
             id: data.avatar.id,
             __typename: 'LocalImageFieldOutput',
