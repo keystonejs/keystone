@@ -18,15 +18,18 @@ export class FileImplementation<P extends string> extends Implementation<P> {
 
   getGqlAuxTypes() {
     return [
-      `enum FileMode {
-        local
-      }
+      `
       input FileFieldInput {
         upload: Upload
         ref: String
       }
-      type FileFieldOutput {
-        mode: FileMode!
+      interface FileFieldOutput {
+        filename: String!
+        filesize: Int!
+        ref: String!
+        src: String!
+      }
+      type FileFieldOutput implements FileFieldOutput {
         filename: String!
         filesize: Int!
         ref: String!
@@ -38,6 +41,11 @@ export class FileImplementation<P extends string> extends Implementation<P> {
   gqlAuxFieldResolvers() {
     return {
       FileFieldOutput: {
+        __resolveType() {
+          return 'LocalFileFieldOutput';
+        },
+      },
+      LocalFileFieldOutput: {
         src(data: FileData, _args: any, context: KeystoneContext) {
           if (!context.files) {
             throw new Error(MISSING_CONFIG_ERROR);
