@@ -1,4 +1,4 @@
-import { GraphQLSchema } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { getGqlNames, Provider, types } from '@keystone-next/types';
 import { getFindManyArgs } from '@keystone-next/types';
 import { InitialisedList } from './types-for-lists';
@@ -194,6 +194,23 @@ export function getGraphQLSchema(lists: Record<string, InitialisedList>, provide
   let graphQLSchema = new GraphQLSchema({
     query: query.graphQLType,
     mutation: mutation.graphQLType,
+    types: collectUnreferencedConcreteInterfaceImplementations(lists),
   });
   return graphQLSchema;
+}
+
+function collectUnreferencedConcreteInterfaceImplementations(
+  lists: Record<string, InitialisedList>
+) {
+  const unreferencedConcreteInterfaceImplementations: GraphQLObjectType[] = [];
+  for (const list of Object.values(lists)) {
+    for (const field of Object.values(list.fields)) {
+      if (field.access.read !== false && field.unreferencedConcreteInterfaceImplementations) {
+        unreferencedConcreteInterfaceImplementations.push(
+          ...field.unreferencedConcreteInterfaceImplementations.map(x => x.graphQLType)
+        );
+      }
+    }
+  }
+  return unreferencedConcreteInterfaceImplementations;
 }
