@@ -42,7 +42,7 @@ export default config({
   }),
 });
 ```
-?> (info) The `many` config option relates to _cardinality_ which we explore later
+!> The `many` config option relates to _cardinality_ which we explore later
 
 ## One-sided & two-sided relationships
 
@@ -95,7 +95,7 @@ export default config({
 
 In the example above we added a `posts` field to the `User` list, and changed the `ref` config of the `authors` field to be `User.posts`.
 
-?> (info) In a two-sided relationship the `ref` config must be formatted as `<listName>.<fieldName>` and both sides must refer to each other.
+!> In a two-sided relationship the `ref` config must be formatted as `<listName>.<fieldName>` and both sides must refer to each other.
 
 Now that our relationship is two-sided we can query all the posts written by each user like so:
 
@@ -110,13 +110,7 @@ Query {
   }
 }
 ```
-?> (warning)
-
-?> **Things to keep in mind:**
-
-?> - Two-sided relationships are declared in two places, but **there is only one relationship between both lists**.
-
-?> - **Both fields share the same data**. If you change the author of a post, that post will no longer show up in the original author’s posts.
+?> **Things to keep in mind:**<br/><br/>Two-sided relationships are declared in two places, but **there is only one relationship between both lists**.<br/><br/>**Both fields share the same data**. If you change the author of a post, that post will no longer show up in the original author’s posts.
 
 ### Self-referencing relationships
 
@@ -157,7 +151,7 @@ export default config({
 });
 ```
 
-?> (info) The only relationship configuration not currently supported is having a field reference itself, e.g. `friends: relationship({ ref: 'User.friends', many: true })`.
+!> The only relationship configuration not currently supported is having a field reference itself, e.g. `friends: relationship({ ref: 'User.friends', many: true })`.
 
 ## Establishing cardinality
 
@@ -174,7 +168,7 @@ Cardinality is defined through the `relationship` field’s `many` configuration
 
 - `true` = many
 
-?> (info) false is the default state for the many config option.
+!> `false` is the default state for the many config option.
 
 Let’s explore how to set up each type of cardinality in the context of our blog:
 
@@ -232,7 +226,7 @@ export default config({
 
 ### Two-sided cardinalities
 
-?> (warning) In two-sided relationships the `many` option on both sides must be considered. 
+?> In two-sided relationships the `many` option on both sides must be considered. 
 
 #### One-to-one
 
@@ -283,7 +277,7 @@ export default config({
   }),
 });
 ```
-?> (info)Note that we’ve used `many: false` in the author field and `many: true` in the posts field.
+!> Note that we’ve used `many: false` in the author field and `many: true` in the posts field.
 
 #### Many-to-many
 
@@ -310,7 +304,7 @@ export default config({
 });
 ```
 
-?> (info) Note that we have used `many: true` in both the authors and posts fields.
+!> Note that we have used `many: true` in both the authors and posts fields.
 
 ## Summary
 
