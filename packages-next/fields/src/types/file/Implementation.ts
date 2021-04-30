@@ -29,7 +29,7 @@ export class FileImplementation<P extends string> extends Implementation<P> {
         ref: String!
         src: String!
       }
-      type FileFieldOutput implements FileFieldOutput {
+      type LocalFileFieldOutput implements FileFieldOutput {
         filename: String!
         filesize: Int!
         ref: String!
